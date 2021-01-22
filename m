@@ -2,200 +2,1779 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C9D3001DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068883001E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbhAVLps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:45:48 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2401 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727584AbhAVLpl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:45:41 -0500
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DMckz0hZmz67fSb;
-        Fri, 22 Jan 2021 19:40:27 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 22 Jan 2021 12:44:40 +0100
-Received: from localhost (10.47.73.222) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 22 Jan
- 2021 11:44:39 +0000
-Date:   Fri, 22 Jan 2021 11:43:57 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>
-Subject: Re: [RFC PATCH v3 10/16] cxl/mem: Add send command
-Message-ID: <20210122114357.00001af9@Huawei.com>
-In-Reply-To: <20210121181546.fqmsecgqklh4hep4@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-11-ben.widawsky@intel.com>
-        <20210114171038.00003636@Huawei.com>
-        <20210121181546.fqmsecgqklh4hep4@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727273AbhAVLrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:47:46 -0500
+Received: from mga06.intel.com ([134.134.136.31]:27725 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727353AbhAVLpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:45:50 -0500
+IronPort-SDR: N/Wzp4gLyjEy52nG5VXHnVb9s2TAE+W8cjP6NJtVHMju8omdabf3nm13+gE8OnCAkkiJvVXbiT
+ asEuGRqaEHXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="240976144"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="240976144"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 03:44:02 -0800
+IronPort-SDR: DNY+eA97z+btpHdXbmz41cCwJQXOoCVHMEQQH97QsaD/wjt2OYuk8zmdB2GdyOLaIWlp6eoWD1
+ vSBc0HX++8NA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="355216397"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 22 Jan 2021 03:44:00 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 4D76414F; Fri, 22 Jan 2021 13:43:59 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v1] misc: pti: Remove driver for deprecated platform
+Date:   Fri, 22 Jan 2021 13:43:58 +0200
+Message-Id: <20210122114358.39299-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.73.222]
-X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 10:15:46 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+Intel Moorestown and Medfield are quite old Intel Atom based
+32-bit platforms, which were in limited use in some Android phones,
+tablets and consumer electronics more than eight years ago.
 
-> On 21-01-14 17:10:38, Jonathan Cameron wrote:
-> > On Mon, 11 Jan 2021 14:51:14 -0800
-> > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >   
-> > > The send command allows userspace to issue mailbox commands directly to
-> > > the hardware. The driver will verify basic properties of the command and
-> > > possible inspect the input (or output) payload to determine whether or
-> > > not the command is allowed (or might taint the kernel).
-> > > 
-> > > The list of allowed commands and their properties can be determined by
-> > > using the QUERY IOCTL for CXL memory devices.
-> > > 
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > ---
-> > >  drivers/cxl/mem.c            | 204 ++++++++++++++++++++++++++++++++++-
-> > >  include/uapi/linux/cxl_mem.h |  39 +++++++
-> > >  2 files changed, 239 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index d4eb3f5b9469..f979788b4d9f 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -84,6 +84,13 @@ static DEFINE_IDR(cxl_mem_idr);
-> > >  /* protect cxl_mem_idr allocations */
-> > >  static DEFINE_MUTEX(cxl_memdev_lock);
-> > >  
-> > > +#undef C
-> > > +#define C(a, b) { b }  
-> > 
-> > I'm not following why this is here?
-> >   
-> 
-> It's used for a debug message in handle_mailbox_cmd_from_user(). This is all the
-> macro magic stolen from ftrace. Or, did I miss the question?
-> 
-> > > +static struct {
-> > > +	const char *name;
-> > > +} command_names[] = { CMDS };
-> > > +#undef C
+There are no bugs or problems ever reported outside from Intel
+for breaking any of that platforms for years. It seems no real
+users exists who run more or less fresh kernel on it. The commit
+05f4434bc130 ("ASoC: Intel: remove mfld_machine") also in align
+with this theory.
 
-Mostly that you define it then undef it without use that I can see.
+Due to above and to reduce a burden of supporting outdated drivers
+we remove the support of outdated platforms completely.
 
-> > > +
-> > >  #define CXL_CMD(_id, _flags, sin, sout, f)                                     \
-> > >  	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
-> > >  		{                                                              \  
-> > ...
-> >   
-> > > +
-> > > +/**
-> > > + * handle_mailbox_cmd_from_user() - Dispatch a mailbox command.
-> > > + * @cxlmd: The CXL memory device to communicate with.
-> > > + * @cmd: The validated command.
-> > > + * @in_payload: Pointer to userspace's input payload.
-> > > + * @out_payload: Pointer to userspace's output payload.
-> > > + * @u: The command submitted by userspace. Has output fields.
-> > > + *
-> > > + * Return:
-> > > + *  * %0	- Mailbox transaction succeeded.
-> > > + *  * %-EFAULT	- Something happened with copy_to/from_user.
-> > > + *  * %-EINTR	- Mailbox acquisition interrupted.
-> > > + *  * %-E2BIG   - Output payload would overrun buffer.
-> > > + *
-> > > + * Creates the appropriate mailbox command on behalf of a userspace request.
-> > > + * Return value, size, and output payload are all copied out to @u. The
-> > > + * parameters for the command must be validated before calling this function.
-> > > + *
-> > > + * A 0 return code indicates the command executed successfully, not that it was
-> > > + * itself successful. IOW, the retval should always be checked if wanting to  
-> > 
-> > cmd->retval perhaps to be more explicit?
-> >   
-> > > + * determine the actual result.
-> > > + */
-> > > +static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
-> > > +					const struct cxl_mem_command *cmd,
-> > > +					u64 in_payload,
-> > > +					u64 out_payload,
-> > > +					struct cxl_send_command __user *u)
-> > > +{
-> > > +	struct mbox_cmd mbox_cmd = {
-> > > +		.opcode = cmd->opcode,
-> > > +		.size_in = cmd->info.size_in,
-> > > +		.payload = NULL, /* Copied by copy_to|from_user() */
-> > > +	};
-> > > +	int rc;
-> > > +
-> > > +	if (cmd->info.size_in) {
-> > > +		/*
-> > > +		 * Directly copy the userspace payload into the hardware. UAPI
-> > > +		 * states that the buffer must already be little endian.
-> > > +		 */
-> > > +		if (copy_from_user((__force void *)cxl_payload_regs(cxlmd->cxlm),
-> > > +				   u64_to_user_ptr(in_payload),
-> > > +				   cmd->info.size_in)) {
-> > > +			cxl_mem_mbox_put(cxlmd->cxlm);  
-> > 
-> > mbox_get is after this point though it shouldn't be given we just
-> > wrote into the mbox registers.
-> > 
-> > This seems unlikely to be a high performance path, so perhaps just
-> > use a local buffer and let cxl_mem_mbox_send_cmd copy it into the registers.
-> >   
-> 
-> You're correct about the get() needing to be first. I will fix it. As for
-> performance path - so while this does potentially help with performance, it
-> actually ends up being I think a little cleaner to not have to deal with a local
-> buffer.
-> 
-> How strongly do you feel about it? I'd say if you don't care so much, let's keep
-> it as is and find a reason to undo later.
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ Documentation/driver-api/pti_intel_mid.rst | 108 ---
+ drivers/misc/Kconfig                       |  13 -
+ drivers/misc/Makefile                      |   1 -
+ drivers/misc/pti.c                         | 978 ---------------------
+ drivers/tty/Makefile                       |   2 -
+ drivers/tty/n_tracerouter.c                | 235 -----
+ drivers/tty/n_tracesink.c                  | 230 -----
+ drivers/tty/n_tracesink.h                  |  26 -
+ include/linux/intel-pti.h                  |  35 -
+ 9 files changed, 1628 deletions(-)
+ delete mode 100644 Documentation/driver-api/pti_intel_mid.rst
+ delete mode 100644 drivers/misc/pti.c
+ delete mode 100644 drivers/tty/n_tracerouter.c
+ delete mode 100644 drivers/tty/n_tracesink.c
+ delete mode 100644 drivers/tty/n_tracesink.h
+ delete mode 100644 include/linux/intel-pti.h
 
-A slightly interesting corner.  The fact that there are no other cases of this
-particular sequence in kernel bothered me...  It's more than possible I've
-missed something in the following.
-
-So with a bounce buffered we'd have
-copy_from_user()
-then 
-memcpy_toio()
-
-here we end loosing the fact that memcpy_to_io() might not be a 'simple' memcpy().
-In the generic asm form it's just a (__force void *) like you have here done using
-__io_virt() (which might make sense here if you keep this, to make it clear
-what's going on)
-
-However, not all architectures are using the generic form of memcpy_toio()
-and even if the ones we care about are safe today using the above construct,
-it's more than possible some future architecture might be more 'exciting'.
-
-So basically I'm doubtful that this construct is safe.
-
-Jonathan
-
-
-
+diff --git a/Documentation/driver-api/pti_intel_mid.rst b/Documentation/driver-api/pti_intel_mid.rst
+deleted file mode 100644
+index bacc2a4ee89f..000000000000
+--- a/Documentation/driver-api/pti_intel_mid.rst
++++ /dev/null
+@@ -1,108 +0,0 @@
+-.. SPDX-License-Identifier: GPL-2.0
+-
+-=============
+-Intel MID PTI
+-=============
+-
+-The Intel MID PTI project is HW implemented in Intel Atom
+-system-on-a-chip designs based on the Parallel Trace
+-Interface for MIPI P1149.7 cJTAG standard.  The kernel solution
+-for this platform involves the following files::
+-
+-	./include/linux/pti.h
+-	./drivers/.../n_tracesink.h
+-	./drivers/.../n_tracerouter.c
+-	./drivers/.../n_tracesink.c
+-	./drivers/.../pti.c
+-
+-pti.c is the driver that enables various debugging features
+-popular on platforms from certain mobile manufacturers.
+-n_tracerouter.c and n_tracesink.c allow extra system information to
+-be collected and routed to the pti driver, such as trace
+-debugging data from a modem.  Although n_tracerouter
+-and n_tracesink are a part of the complete PTI solution,
+-these two line disciplines can work separately from
+-pti.c and route any data stream from one /dev/tty node
+-to another /dev/tty node via kernel-space.  This provides
+-a stable, reliable connection that will not break unless
+-the user-space application shuts down (plus avoids
+-kernel->user->kernel context switch overheads of routing
+-data).
+-
+-An example debugging usage for this driver system:
+-
+-  * Hook /dev/ttyPTI0 to syslogd.  Opening this port will also start
+-    a console device to further capture debugging messages to PTI.
+-  * Hook /dev/ttyPTI1 to modem debugging data to write to PTI HW.
+-    This is where n_tracerouter and n_tracesink are used.
+-  * Hook /dev/pti to a user-level debugging application for writing
+-    to PTI HW.
+-  * `Use mipi_` Kernel Driver API in other device drivers for
+-    debugging to PTI by first requesting a PTI write address via
+-    mipi_request_masterchannel(1).
+-
+-Below is example pseudo-code on how a 'privileged' application
+-can hook up n_tracerouter and n_tracesink to any tty on
+-a system.  'Privileged' means the application has enough
+-privileges to successfully manipulate the ldisc drivers
+-but is not just blindly executing as 'root'. Keep in mind
+-the use of ioctl(,TIOCSETD,) is not specific to the n_tracerouter
+-and n_tracesink line discpline drivers but is a generic
+-operation for a program to use a line discpline driver
+-on a tty port other than the default n_tty:
+-
+-.. code-block:: c
+-
+-  /////////// To hook up n_tracerouter and n_tracesink /////////
+-
+-  // Note that n_tracerouter depends on n_tracesink.
+-  #include <errno.h>
+-  #define ONE_TTY "/dev/ttyOne"
+-  #define TWO_TTY "/dev/ttyTwo"
+-
+-  // needed global to hand onto ldisc connection
+-  static int g_fd_source = -1;
+-  static int g_fd_sink  = -1;
+-
+-  // these two vars used to grab LDISC values from loaded ldisc drivers
+-  // in OS.  Look at /proc/tty/ldiscs to get the right numbers from
+-  // the ldiscs loaded in the system.
+-  int source_ldisc_num, sink_ldisc_num = -1;
+-  int retval;
+-
+-  g_fd_source = open(ONE_TTY, O_RDWR); // must be R/W
+-  g_fd_sink   = open(TWO_TTY, O_RDWR); // must be R/W
+-
+-  if (g_fd_source <= 0) || (g_fd_sink <= 0) {
+-     // doubt you'll want to use these exact error lines of code
+-     printf("Error on open(). errno: %d\n",errno);
+-     return errno;
+-  }
+-
+-  retval = ioctl(g_fd_sink, TIOCSETD, &sink_ldisc_num);
+-  if (retval < 0) {
+-     printf("Error on ioctl().  errno: %d\n", errno);
+-     return errno;
+-  }
+-
+-  retval = ioctl(g_fd_source, TIOCSETD, &source_ldisc_num);
+-  if (retval < 0) {
+-     printf("Error on ioctl().  errno: %d\n", errno);
+-     return errno;
+-  }
+-
+-  /////////// To disconnect n_tracerouter and n_tracesink ////////
+-
+-  // First make sure data through the ldiscs has stopped.
+-
+-  // Second, disconnect ldiscs.  This provides a
+-  // little cleaner shutdown on tty stack.
+-  sink_ldisc_num = 0;
+-  source_ldisc_num = 0;
+-  ioctl(g_fd_uart, TIOCSETD, &sink_ldisc_num);
+-  ioctl(g_fd_gadget, TIOCSETD, &source_ldisc_num);
+-
+-  // Three, program closes connection, and cleanup:
+-  close(g_fd_uart);
+-  close(g_fd_gadget);
+-  g_fd_uart = g_fd_gadget = NULL;
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0d8099..47a651fe57d2 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -112,19 +112,6 @@ config PHANTOM
+ 	  If you choose to build module, its name will be phantom. If unsure,
+ 	  say N here.
+ 
+-config INTEL_MID_PTI
+-	tristate "Parallel Trace Interface for MIPI P1149.7 cJTAG standard"
+-	depends on PCI && TTY && (X86_INTEL_MID || COMPILE_TEST)
+-	help
+-	  The PTI (Parallel Trace Interface) driver directs
+-	  trace data routed from various parts in the system out
+-	  through an Intel Penwell PTI port and out of the mobile
+-	  device for analysis with a debugging tool (Lauterbach or Fido).
+-
+-	  You should select this driver if the target kernel is meant for
+-	  an Intel Atom (non-netbook) mobile device containing a MIPI
+-	  P1149.7 standard implementation.
+-
+ config TIFM_CORE
+ 	tristate "TI Flash Media interface support"
+ 	depends on PCI
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index d23231e73330..0c1d8a624878 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -8,7 +8,6 @@ obj-$(CONFIG_IBMVMC)		+= ibmvmc.o
+ obj-$(CONFIG_AD525X_DPOT)	+= ad525x_dpot.o
+ obj-$(CONFIG_AD525X_DPOT_I2C)	+= ad525x_dpot-i2c.o
+ obj-$(CONFIG_AD525X_DPOT_SPI)	+= ad525x_dpot-spi.o
+-obj-$(CONFIG_INTEL_MID_PTI)	+= pti.o
+ obj-$(CONFIG_ATMEL_SSC)		+= atmel-ssc.o
+ obj-$(CONFIG_ATMEL_TCLIB)	+= atmel_tclib.o
+ obj-$(CONFIG_DUMMY_IRQ)		+= dummy-irq.o
+diff --git a/drivers/misc/pti.c b/drivers/misc/pti.c
+deleted file mode 100644
+index 7236ae527b19..000000000000
+--- a/drivers/misc/pti.c
++++ /dev/null
+@@ -1,978 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- *  pti.c - PTI driver for cJTAG data extration
+- *
+- *  Copyright (C) Intel 2010
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * The PTI (Parallel Trace Interface) driver directs trace data routed from
+- * various parts in the system out through the Intel Penwell PTI port and
+- * out of the mobile device for analysis with a debugging tool
+- * (Lauterbach, Fido). This is part of a solution for the MIPI P1149.7,
+- * compact JTAG, standard.
+- */
+-
+-#include <linux/init.h>
+-#include <linux/sched.h>
+-#include <linux/interrupt.h>
+-#include <linux/console.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/tty.h>
+-#include <linux/tty_driver.h>
+-#include <linux/pci.h>
+-#include <linux/mutex.h>
+-#include <linux/miscdevice.h>
+-#include <linux/intel-pti.h>
+-#include <linux/slab.h>
+-#include <linux/uaccess.h>
+-
+-#define DRIVERNAME		"pti"
+-#define PCINAME			"pciPTI"
+-#define TTYNAME			"ttyPTI"
+-#define CHARNAME		"pti"
+-#define PTITTY_MINOR_START	0
+-#define PTITTY_MINOR_NUM	2
+-#define MAX_APP_IDS		16   /* 128 channel ids / u8 bit size */
+-#define MAX_OS_IDS		16   /* 128 channel ids / u8 bit size */
+-#define MAX_MODEM_IDS		16   /* 128 channel ids / u8 bit size */
+-#define MODEM_BASE_ID		71   /* modem master ID address    */
+-#define CONTROL_ID		72   /* control master ID address  */
+-#define CONSOLE_ID		73   /* console master ID address  */
+-#define OS_BASE_ID		74   /* base OS master ID address  */
+-#define APP_BASE_ID		80   /* base App master ID address */
+-#define CONTROL_FRAME_LEN	32   /* PTI control frame maximum size */
+-#define USER_COPY_SIZE		8192 /* 8Kb buffer for user space copy */
+-#define APERTURE_14		0x3800000 /* offset to first OS write addr */
+-#define APERTURE_LEN		0x400000  /* address length */
+-
+-struct pti_tty {
+-	struct pti_masterchannel *mc;
+-};
+-
+-struct pti_dev {
+-	struct tty_port port[PTITTY_MINOR_NUM];
+-	unsigned long pti_addr;
+-	unsigned long aperture_base;
+-	void __iomem *pti_ioaddr;
+-	u8 ia_app[MAX_APP_IDS];
+-	u8 ia_os[MAX_OS_IDS];
+-	u8 ia_modem[MAX_MODEM_IDS];
+-};
+-
+-/*
+- * This protects access to ia_app, ia_os, and ia_modem,
+- * which keeps track of channels allocated in
+- * an aperture write id.
+- */
+-static DEFINE_MUTEX(alloclock);
+-
+-static const struct pci_device_id pci_ids[] = {
+-		{PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x82B)},
+-		{0}
+-};
+-
+-static struct tty_driver *pti_tty_driver;
+-static struct pti_dev *drv_data;
+-
+-static unsigned int pti_console_channel;
+-static unsigned int pti_control_channel;
+-
+-/**
+- *  pti_write_to_aperture()- The private write function to PTI HW.
+- *
+- *  @mc: The 'aperture'. It's part of a write address that holds
+- *       a master and channel ID.
+- *  @buf: Data being written to the HW that will ultimately be seen
+- *        in a debugging tool (Fido, Lauterbach).
+- *  @len: Size of buffer.
+- *
+- *  Since each aperture is specified by a unique
+- *  master/channel ID, no two processes will be writing
+- *  to the same aperture at the same time so no lock is required. The
+- *  PTI-Output agent will send these out in the order that they arrived, and
+- *  thus, it will intermix these messages. The debug tool can then later
+- *  regroup the appropriate message segments together reconstituting each
+- *  message.
+- */
+-static void pti_write_to_aperture(struct pti_masterchannel *mc,
+-				  u8 *buf,
+-				  int len)
+-{
+-	int dwordcnt;
+-	int final;
+-	int i;
+-	u32 ptiword;
+-	u32 __iomem *aperture;
+-	u8 *p = buf;
+-
+-	/*
+-	 * calculate the aperture offset from the base using the master and
+-	 * channel id's.
+-	 */
+-	aperture = drv_data->pti_ioaddr + (mc->master << 15)
+-		+ (mc->channel << 8);
+-
+-	dwordcnt = len >> 2;
+-	final = len - (dwordcnt << 2);	    /* final = trailing bytes    */
+-	if (final == 0 && dwordcnt != 0) {  /* always need a final dword */
+-		final += 4;
+-		dwordcnt--;
+-	}
+-
+-	for (i = 0; i < dwordcnt; i++) {
+-		ptiword = be32_to_cpu(*(u32 *)p);
+-		p += 4;
+-		iowrite32(ptiword, aperture);
+-	}
+-
+-	aperture += PTI_LASTDWORD_DTS;	/* adding DTS signals that is EOM */
+-
+-	ptiword = 0;
+-	for (i = 0; i < final; i++)
+-		ptiword |= *p++ << (24-(8*i));
+-
+-	iowrite32(ptiword, aperture);
+-	return;
+-}
+-
+-/**
+- *  pti_control_frame_built_and_sent()- control frame build and send function.
+- *
+- *  @mc:          The master / channel structure on which the function
+- *                built a control frame.
+- *  @thread_name: The thread name associated with the master / channel or
+- *                'NULL' if using the 'current' global variable.
+- *
+- *  To be able to post process the PTI contents on host side, a control frame
+- *  is added before sending any PTI content. So the host side knows on
+- *  each PTI frame the name of the thread using a dedicated master / channel.
+- *  The thread name is retrieved from 'current' global variable if 'thread_name'
+- *  is 'NULL', else it is retrieved from 'thread_name' parameter.
+- *  This function builds this frame and sends it to a master ID CONTROL_ID.
+- *  The overhead is only 32 bytes since the driver only writes to HW
+- *  in 32 byte chunks.
+- */
+-static void pti_control_frame_built_and_sent(struct pti_masterchannel *mc,
+-					     const char *thread_name)
+-{
+-	/*
+-	 * Since we access the comm member in current's task_struct, we only
+-	 * need to be as large as what 'comm' in that structure is.
+-	 */
+-	char comm[TASK_COMM_LEN];
+-	struct pti_masterchannel mccontrol = {.master = CONTROL_ID,
+-					      .channel = 0};
+-	const char *thread_name_p;
+-	const char *control_format = "%3d %3d %s";
+-	u8 control_frame[CONTROL_FRAME_LEN];
+-
+-	if (!thread_name) {
+-		if (!in_interrupt())
+-			get_task_comm(comm, current);
+-		else
+-			strncpy(comm, "Interrupt", TASK_COMM_LEN);
+-
+-		/* Absolutely ensure our buffer is zero terminated. */
+-		comm[TASK_COMM_LEN-1] = 0;
+-		thread_name_p = comm;
+-	} else {
+-		thread_name_p = thread_name;
+-	}
+-
+-	mccontrol.channel = pti_control_channel;
+-	pti_control_channel = (pti_control_channel + 1) & 0x7f;
+-
+-	snprintf(control_frame, CONTROL_FRAME_LEN, control_format, mc->master,
+-		mc->channel, thread_name_p);
+-	pti_write_to_aperture(&mccontrol, control_frame, strlen(control_frame));
+-}
+-
+-/**
+- *  pti_write_full_frame_to_aperture()- high level function to
+- *					write to PTI.
+- *
+- *  @mc:  The 'aperture'. It's part of a write address that holds
+- *        a master and channel ID.
+- *  @buf: Data being written to the HW that will ultimately be seen
+- *        in a debugging tool (Fido, Lauterbach).
+- *  @len: Size of buffer.
+- *
+- *  All threads sending data (either console, user space application, ...)
+- *  are calling the high level function to write to PTI meaning that it is
+- *  possible to add a control frame before sending the content.
+- */
+-static void pti_write_full_frame_to_aperture(struct pti_masterchannel *mc,
+-						const unsigned char *buf,
+-						int len)
+-{
+-	pti_control_frame_built_and_sent(mc, NULL);
+-	pti_write_to_aperture(mc, (u8 *)buf, len);
+-}
+-
+-/**
+- * get_id()- Allocate a master and channel ID.
+- *
+- * @id_array:    an array of bits representing what channel
+- *               id's are allocated for writing.
+- * @max_ids:     The max amount of available write IDs to use.
+- * @base_id:     The starting SW channel ID, based on the Intel
+- *               PTI arch.
+- * @thread_name: The thread name associated with the master / channel or
+- *               'NULL' if using the 'current' global variable.
+- *
+- * Returns:
+- *	pti_masterchannel struct with master, channel ID address
+- *	0 for error
+- *
+- * Each bit in the arrays ia_app and ia_os correspond to a master and
+- * channel id. The bit is one if the id is taken and 0 if free. For
+- * every master there are 128 channel id's.
+- */
+-static struct pti_masterchannel *get_id(u8 *id_array,
+-					int max_ids,
+-					int base_id,
+-					const char *thread_name)
+-{
+-	struct pti_masterchannel *mc;
+-	int i, j, mask;
+-
+-	mc = kmalloc(sizeof(struct pti_masterchannel), GFP_KERNEL);
+-	if (mc == NULL)
+-		return NULL;
+-
+-	/* look for a byte with a free bit */
+-	for (i = 0; i < max_ids; i++)
+-		if (id_array[i] != 0xff)
+-			break;
+-	if (i == max_ids) {
+-		kfree(mc);
+-		return NULL;
+-	}
+-	/* find the bit in the 128 possible channel opportunities */
+-	mask = 0x80;
+-	for (j = 0; j < 8; j++) {
+-		if ((id_array[i] & mask) == 0)
+-			break;
+-		mask >>= 1;
+-	}
+-
+-	/* grab it */
+-	id_array[i] |= mask;
+-	mc->master  = base_id;
+-	mc->channel = ((i & 0xf)<<3) + j;
+-	/* write new master Id / channel Id allocation to channel control */
+-	pti_control_frame_built_and_sent(mc, thread_name);
+-	return mc;
+-}
+-
+-/*
+- * The following three functions:
+- * pti_request_mastercahannel(), mipi_release_masterchannel()
+- * and pti_writedata() are an API for other kernel drivers to
+- * access PTI.
+- */
+-
+-/**
+- * pti_request_masterchannel()- Kernel API function used to allocate
+- *				a master, channel ID address
+- *				to write to PTI HW.
+- *
+- * @type:        0- request Application  master, channel aperture ID
+- *                  write address.
+- *               1- request OS master, channel aperture ID write
+- *                  address.
+- *               2- request Modem master, channel aperture ID
+- *                  write address.
+- *               Other values, error.
+- * @thread_name: The thread name associated with the master / channel or
+- *               'NULL' if using the 'current' global variable.
+- *
+- * Returns:
+- *	pti_masterchannel struct
+- *	0 for error
+- */
+-struct pti_masterchannel *pti_request_masterchannel(u8 type,
+-						    const char *thread_name)
+-{
+-	struct pti_masterchannel *mc;
+-
+-	mutex_lock(&alloclock);
+-
+-	switch (type) {
+-
+-	case 0:
+-		mc = get_id(drv_data->ia_app, MAX_APP_IDS,
+-			    APP_BASE_ID, thread_name);
+-		break;
+-
+-	case 1:
+-		mc = get_id(drv_data->ia_os, MAX_OS_IDS,
+-			    OS_BASE_ID, thread_name);
+-		break;
+-
+-	case 2:
+-		mc = get_id(drv_data->ia_modem, MAX_MODEM_IDS,
+-			    MODEM_BASE_ID, thread_name);
+-		break;
+-	default:
+-		mc = NULL;
+-	}
+-
+-	mutex_unlock(&alloclock);
+-	return mc;
+-}
+-EXPORT_SYMBOL_GPL(pti_request_masterchannel);
+-
+-/**
+- * pti_release_masterchannel()- Kernel API function used to release
+- *				a master, channel ID address
+- *				used to write to PTI HW.
+- *
+- * @mc: master, channel apeture ID address to be released.  This
+- *      will de-allocate the structure via kfree().
+- */
+-void pti_release_masterchannel(struct pti_masterchannel *mc)
+-{
+-	u8 master, channel, i;
+-
+-	mutex_lock(&alloclock);
+-
+-	if (mc) {
+-		master = mc->master;
+-		channel = mc->channel;
+-
+-		if (master == APP_BASE_ID) {
+-			i = channel >> 3;
+-			drv_data->ia_app[i] &=  ~(0x80>>(channel & 0x7));
+-		} else if (master == OS_BASE_ID) {
+-			i = channel >> 3;
+-			drv_data->ia_os[i] &= ~(0x80>>(channel & 0x7));
+-		} else {
+-			i = channel >> 3;
+-			drv_data->ia_modem[i] &= ~(0x80>>(channel & 0x7));
+-		}
+-
+-		kfree(mc);
+-	}
+-
+-	mutex_unlock(&alloclock);
+-}
+-EXPORT_SYMBOL_GPL(pti_release_masterchannel);
+-
+-/**
+- * pti_writedata()- Kernel API function used to write trace
+- *                  debugging data to PTI HW.
+- *
+- * @mc:    Master, channel aperture ID address to write to.
+- *         Null value will return with no write occurring.
+- * @buf:   Trace debuging data to write to the PTI HW.
+- *         Null value will return with no write occurring.
+- * @count: Size of buf. Value of 0 or a negative number will
+- *         return with no write occuring.
+- */
+-void pti_writedata(struct pti_masterchannel *mc, u8 *buf, int count)
+-{
+-	/*
+-	 * since this function is exported, this is treated like an
+-	 * API function, thus, all parameters should
+-	 * be checked for validity.
+-	 */
+-	if ((mc != NULL) && (buf != NULL) && (count > 0))
+-		pti_write_to_aperture(mc, buf, count);
+-	return;
+-}
+-EXPORT_SYMBOL_GPL(pti_writedata);
+-
+-/*
+- * for the tty_driver_*() basic function descriptions, see tty_driver.h.
+- * Specific header comments made for PTI-related specifics.
+- */
+-
+-/**
+- * pti_tty_driver_open()- Open an Application master, channel aperture
+- * ID to the PTI device via tty device.
+- *
+- * @tty: tty interface.
+- * @filp: filp interface pased to tty_port_open() call.
+- *
+- * Returns:
+- *	int, 0 for success
+- *	otherwise, fail value
+- *
+- * The main purpose of using the tty device interface is for
+- * each tty port to have a unique PTI write aperture.  In an
+- * example use case, ttyPTI0 gets syslogd and an APP aperture
+- * ID and ttyPTI1 is where the n_tracesink ldisc hooks to route
+- * modem messages into PTI.  Modem trace data does not have to
+- * go to ttyPTI1, but ttyPTI0 and ttyPTI1 do need to be distinct
+- * master IDs.  These messages go through the PTI HW and out of
+- * the handheld platform and to the Fido/Lauterbach device.
+- */
+-static int pti_tty_driver_open(struct tty_struct *tty, struct file *filp)
+-{
+-	/*
+-	 * we actually want to allocate a new channel per open, per
+-	 * system arch.  HW gives more than plenty channels for a single
+-	 * system task to have its own channel to write trace data. This
+-	 * also removes a locking requirement for the actual write
+-	 * procedure.
+-	 */
+-	return tty_port_open(tty->port, tty, filp);
+-}
+-
+-/**
+- * pti_tty_driver_close()- close tty device and release Application
+- * master, channel aperture ID to the PTI device via tty device.
+- *
+- * @tty: tty interface.
+- * @filp: filp interface pased to tty_port_close() call.
+- *
+- * The main purpose of using the tty device interface is to route
+- * syslog daemon messages to the PTI HW and out of the handheld platform
+- * and to the Fido/Lauterbach device.
+- */
+-static void pti_tty_driver_close(struct tty_struct *tty, struct file *filp)
+-{
+-	tty_port_close(tty->port, tty, filp);
+-}
+-
+-/**
+- * pti_tty_install()- Used to set up specific master-channels
+- *		      to tty ports for organizational purposes when
+- *		      tracing viewed from debuging tools.
+- *
+- * @driver: tty driver information.
+- * @tty: tty struct containing pti information.
+- *
+- * Returns:
+- *	0 for success
+- *	otherwise, error
+- */
+-static int pti_tty_install(struct tty_driver *driver, struct tty_struct *tty)
+-{
+-	int idx = tty->index;
+-	struct pti_tty *pti_tty_data;
+-	int ret = tty_standard_install(driver, tty);
+-
+-	if (ret == 0) {
+-		pti_tty_data = kmalloc(sizeof(struct pti_tty), GFP_KERNEL);
+-		if (pti_tty_data == NULL)
+-			return -ENOMEM;
+-
+-		if (idx == PTITTY_MINOR_START)
+-			pti_tty_data->mc = pti_request_masterchannel(0, NULL);
+-		else
+-			pti_tty_data->mc = pti_request_masterchannel(2, NULL);
+-
+-		if (pti_tty_data->mc == NULL) {
+-			kfree(pti_tty_data);
+-			return -ENXIO;
+-		}
+-		tty->driver_data = pti_tty_data;
+-	}
+-
+-	return ret;
+-}
+-
+-/**
+- * pti_tty_cleanup()- Used to de-allocate master-channel resources
+- *		      tied to tty's of this driver.
+- *
+- * @tty: tty struct containing pti information.
+- */
+-static void pti_tty_cleanup(struct tty_struct *tty)
+-{
+-	struct pti_tty *pti_tty_data = tty->driver_data;
+-	if (pti_tty_data == NULL)
+-		return;
+-	pti_release_masterchannel(pti_tty_data->mc);
+-	kfree(pti_tty_data);
+-	tty->driver_data = NULL;
+-}
+-
+-/**
+- * pti_tty_driver_write()-  Write trace debugging data through the char
+- * interface to the PTI HW.  Part of the misc device implementation.
+- *
+- * @tty: tty struct containing pti information.
+- * @buf: trace data to be written.
+- * @len:  # of byte to write.
+- *
+- * Returns:
+- *	int, # of bytes written
+- *	otherwise, error
+- */
+-static int pti_tty_driver_write(struct tty_struct *tty,
+-	const unsigned char *buf, int len)
+-{
+-	struct pti_tty *pti_tty_data = tty->driver_data;
+-	if ((pti_tty_data != NULL) && (pti_tty_data->mc != NULL)) {
+-		pti_write_to_aperture(pti_tty_data->mc, (u8 *)buf, len);
+-		return len;
+-	}
+-	/*
+-	 * we can't write to the pti hardware if the private driver_data
+-	 * and the mc address is not there.
+-	 */
+-	else
+-		return -EFAULT;
+-}
+-
+-/**
+- * pti_tty_write_room()- Always returns 2048.
+- *
+- * @tty: contains tty info of the pti driver.
+- */
+-static int pti_tty_write_room(struct tty_struct *tty)
+-{
+-	return 2048;
+-}
+-
+-/**
+- * pti_char_open()- Open an Application master, channel aperture
+- * ID to the PTI device. Part of the misc device implementation.
+- *
+- * @inode: not used.
+- * @filp:  Output- will have a masterchannel struct set containing
+- *                 the allocated application PTI aperture write address.
+- *
+- * Returns:
+- *	int, 0 for success
+- *	otherwise, a fail value
+- */
+-static int pti_char_open(struct inode *inode, struct file *filp)
+-{
+-	struct pti_masterchannel *mc;
+-
+-	/*
+-	 * We really do want to fail immediately if
+-	 * pti_request_masterchannel() fails,
+-	 * before assigning the value to filp->private_data.
+-	 * Slightly easier to debug if this driver needs debugging.
+-	 */
+-	mc = pti_request_masterchannel(0, NULL);
+-	if (mc == NULL)
+-		return -ENOMEM;
+-	filp->private_data = mc;
+-	return 0;
+-}
+-
+-/**
+- * pti_char_release()-  Close a char channel to the PTI device. Part
+- * of the misc device implementation.
+- *
+- * @inode: Not used in this implementaiton.
+- * @filp:  Contains private_data that contains the master, channel
+- *         ID to be released by the PTI device.
+- *
+- * Returns:
+- *	always 0
+- */
+-static int pti_char_release(struct inode *inode, struct file *filp)
+-{
+-	pti_release_masterchannel(filp->private_data);
+-	filp->private_data = NULL;
+-	return 0;
+-}
+-
+-/**
+- * pti_char_write()-  Write trace debugging data through the char
+- * interface to the PTI HW.  Part of the misc device implementation.
+- *
+- * @filp:  Contains private data which is used to obtain
+- *         master, channel write ID.
+- * @data:  trace data to be written.
+- * @len:   # of byte to write.
+- * @ppose: Not used in this function implementation.
+- *
+- * Returns:
+- *	int, # of bytes written
+- *	otherwise, error value
+- *
+- * Notes: From side discussions with Alan Cox and experimenting
+- * with PTI debug HW like Nokia's Fido box and Lauterbach
+- * devices, 8192 byte write buffer used by USER_COPY_SIZE was
+- * deemed an appropriate size for this type of usage with
+- * debugging HW.
+- */
+-static ssize_t pti_char_write(struct file *filp, const char __user *data,
+-			      size_t len, loff_t *ppose)
+-{
+-	struct pti_masterchannel *mc;
+-	void *kbuf;
+-	const char __user *tmp;
+-	size_t size = USER_COPY_SIZE;
+-	size_t n = 0;
+-
+-	tmp = data;
+-	mc = filp->private_data;
+-
+-	kbuf = kmalloc(size, GFP_KERNEL);
+-	if (kbuf == NULL)  {
+-		pr_err("%s(%d): buf allocation failed\n",
+-			__func__, __LINE__);
+-		return -ENOMEM;
+-	}
+-
+-	do {
+-		if (len - n > USER_COPY_SIZE)
+-			size = USER_COPY_SIZE;
+-		else
+-			size = len - n;
+-
+-		if (copy_from_user(kbuf, tmp, size)) {
+-			kfree(kbuf);
+-			return n ? n : -EFAULT;
+-		}
+-
+-		pti_write_to_aperture(mc, kbuf, size);
+-		n  += size;
+-		tmp += size;
+-
+-	} while (len > n);
+-
+-	kfree(kbuf);
+-	return len;
+-}
+-
+-static const struct tty_operations pti_tty_driver_ops = {
+-	.open		= pti_tty_driver_open,
+-	.close		= pti_tty_driver_close,
+-	.write		= pti_tty_driver_write,
+-	.write_room	= pti_tty_write_room,
+-	.install	= pti_tty_install,
+-	.cleanup	= pti_tty_cleanup
+-};
+-
+-static const struct file_operations pti_char_driver_ops = {
+-	.owner		= THIS_MODULE,
+-	.write		= pti_char_write,
+-	.open		= pti_char_open,
+-	.release	= pti_char_release,
+-};
+-
+-static struct miscdevice pti_char_driver = {
+-	.minor		= MISC_DYNAMIC_MINOR,
+-	.name		= CHARNAME,
+-	.fops		= &pti_char_driver_ops
+-};
+-
+-/**
+- * pti_console_write()-  Write to the console that has been acquired.
+- *
+- * @c:   Not used in this implementaiton.
+- * @buf: Data to be written.
+- * @len: Length of buf.
+- */
+-static void pti_console_write(struct console *c, const char *buf, unsigned len)
+-{
+-	static struct pti_masterchannel mc = {.master  = CONSOLE_ID,
+-					      .channel = 0};
+-
+-	mc.channel = pti_console_channel;
+-	pti_console_channel = (pti_console_channel + 1) & 0x7f;
+-
+-	pti_write_full_frame_to_aperture(&mc, buf, len);
+-}
+-
+-/**
+- * pti_console_device()-  Return the driver tty structure and set the
+- *			  associated index implementation.
+- *
+- * @c:     Console device of the driver.
+- * @index: index associated with c.
+- *
+- * Returns:
+- *	always value of pti_tty_driver structure when this function
+- *	is called.
+- */
+-static struct tty_driver *pti_console_device(struct console *c, int *index)
+-{
+-	*index = c->index;
+-	return pti_tty_driver;
+-}
+-
+-/**
+- * pti_console_setup()-  Initialize console variables used by the driver.
+- *
+- * @c:     Not used.
+- * @opts:  Not used.
+- *
+- * Returns:
+- *	always 0.
+- */
+-static int pti_console_setup(struct console *c, char *opts)
+-{
+-	pti_console_channel = 0;
+-	pti_control_channel = 0;
+-	return 0;
+-}
+-
+-/*
+- * pti_console struct, used to capture OS printk()'s and shift
+- * out to the PTI device for debugging.  This cannot be
+- * enabled upon boot because of the possibility of eating
+- * any serial console printk's (race condition discovered).
+- * The console should be enabled upon when the tty port is
+- * used for the first time.  Since the primary purpose for
+- * the tty port is to hook up syslog to it, the tty port
+- * will be open for a really long time.
+- */
+-static struct console pti_console = {
+-	.name		= TTYNAME,
+-	.write		= pti_console_write,
+-	.device		= pti_console_device,
+-	.setup		= pti_console_setup,
+-	.flags		= CON_PRINTBUFFER,
+-	.index		= 0,
+-};
+-
+-/**
+- * pti_port_activate()- Used to start/initialize any items upon
+- * first opening of tty_port().
+- *
+- * @port: The tty port number of the PTI device.
+- * @tty:  The tty struct associated with this device.
+- *
+- * Returns:
+- *	always returns 0
+- *
+- * Notes: The primary purpose of the PTI tty port 0 is to hook
+- * the syslog daemon to it; thus this port will be open for a
+- * very long time.
+- */
+-static int pti_port_activate(struct tty_port *port, struct tty_struct *tty)
+-{
+-	if (port->tty->index == PTITTY_MINOR_START)
+-		console_start(&pti_console);
+-	return 0;
+-}
+-
+-/**
+- * pti_port_shutdown()- Used to stop/shutdown any items upon the
+- * last tty port close.
+- *
+- * @port: The tty port number of the PTI device.
+- *
+- * Notes: The primary purpose of the PTI tty port 0 is to hook
+- * the syslog daemon to it; thus this port will be open for a
+- * very long time.
+- */
+-static void pti_port_shutdown(struct tty_port *port)
+-{
+-	if (port->tty->index == PTITTY_MINOR_START)
+-		console_stop(&pti_console);
+-}
+-
+-static const struct tty_port_operations tty_port_ops = {
+-	.activate = pti_port_activate,
+-	.shutdown = pti_port_shutdown,
+-};
+-
+-/*
+- * Note the _probe() call sets everything up and ties the char and tty
+- * to successfully detecting the PTI device on the pci bus.
+- */
+-
+-/**
+- * pti_pci_probe()- Used to detect pti on the pci bus and set
+- *		    things up in the driver.
+- *
+- * @pdev: pci_dev struct values for pti.
+- * @ent:  pci_device_id struct for pti driver.
+- *
+- * Returns:
+- *	0 for success
+- *	otherwise, error
+- */
+-static int pti_pci_probe(struct pci_dev *pdev,
+-		const struct pci_device_id *ent)
+-{
+-	unsigned int a;
+-	int retval;
+-	int pci_bar = 1;
+-
+-	dev_dbg(&pdev->dev, "%s %s(%d): PTI PCI ID %04x:%04x\n", __FILE__,
+-			__func__, __LINE__, pdev->vendor, pdev->device);
+-
+-	retval = misc_register(&pti_char_driver);
+-	if (retval) {
+-		pr_err("%s(%d): CHAR registration failed of pti driver\n",
+-			__func__, __LINE__);
+-		pr_err("%s(%d): Error value returned: %d\n",
+-			__func__, __LINE__, retval);
+-		goto err;
+-	}
+-
+-	retval = pci_enable_device(pdev);
+-	if (retval != 0) {
+-		dev_err(&pdev->dev,
+-			"%s: pci_enable_device() returned error %d\n",
+-			__func__, retval);
+-		goto err_unreg_misc;
+-	}
+-
+-	drv_data = kzalloc(sizeof(*drv_data), GFP_KERNEL);
+-	if (drv_data == NULL) {
+-		retval = -ENOMEM;
+-		dev_err(&pdev->dev,
+-			"%s(%d): kmalloc() returned NULL memory.\n",
+-			__func__, __LINE__);
+-		goto err_disable_pci;
+-	}
+-	drv_data->pti_addr = pci_resource_start(pdev, pci_bar);
+-
+-	retval = pci_request_region(pdev, pci_bar, dev_name(&pdev->dev));
+-	if (retval != 0) {
+-		dev_err(&pdev->dev,
+-			"%s(%d): pci_request_region() returned error %d\n",
+-			__func__, __LINE__, retval);
+-		goto err_free_dd;
+-	}
+-	drv_data->aperture_base = drv_data->pti_addr+APERTURE_14;
+-	drv_data->pti_ioaddr =
+-		ioremap((u32)drv_data->aperture_base,
+-		APERTURE_LEN);
+-	if (!drv_data->pti_ioaddr) {
+-		retval = -ENOMEM;
+-		goto err_rel_reg;
+-	}
+-
+-	pci_set_drvdata(pdev, drv_data);
+-
+-	for (a = 0; a < PTITTY_MINOR_NUM; a++) {
+-		struct tty_port *port = &drv_data->port[a];
+-		tty_port_init(port);
+-		port->ops = &tty_port_ops;
+-
+-		tty_port_register_device(port, pti_tty_driver, a, &pdev->dev);
+-	}
+-
+-	register_console(&pti_console);
+-
+-	return 0;
+-err_rel_reg:
+-	pci_release_region(pdev, pci_bar);
+-err_free_dd:
+-	kfree(drv_data);
+-err_disable_pci:
+-	pci_disable_device(pdev);
+-err_unreg_misc:
+-	misc_deregister(&pti_char_driver);
+-err:
+-	return retval;
+-}
+-
+-/**
+- * pti_pci_remove()- Driver exit method to remove PTI from
+- *		   PCI bus.
+- * @pdev: variable containing pci info of PTI.
+- */
+-static void pti_pci_remove(struct pci_dev *pdev)
+-{
+-	struct pti_dev *drv_data = pci_get_drvdata(pdev);
+-	unsigned int a;
+-
+-	unregister_console(&pti_console);
+-
+-	for (a = 0; a < PTITTY_MINOR_NUM; a++) {
+-		tty_unregister_device(pti_tty_driver, a);
+-		tty_port_destroy(&drv_data->port[a]);
+-	}
+-
+-	iounmap(drv_data->pti_ioaddr);
+-	kfree(drv_data);
+-	pci_release_region(pdev, 1);
+-	pci_disable_device(pdev);
+-
+-	misc_deregister(&pti_char_driver);
+-}
+-
+-static struct pci_driver pti_pci_driver = {
+-	.name		= PCINAME,
+-	.id_table	= pci_ids,
+-	.probe		= pti_pci_probe,
+-	.remove		= pti_pci_remove,
+-};
+-
+-/**
+- * pti_init()- Overall entry/init call to the pti driver.
+- *             It starts the registration process with the kernel.
+- *
+- * Returns:
+- *	int __init, 0 for success
+- *	otherwise value is an error
+- *
+- */
+-static int __init pti_init(void)
+-{
+-	int retval;
+-
+-	/* First register module as tty device */
+-
+-	pti_tty_driver = alloc_tty_driver(PTITTY_MINOR_NUM);
+-	if (pti_tty_driver == NULL) {
+-		pr_err("%s(%d): Memory allocation failed for ptiTTY driver\n",
+-			__func__, __LINE__);
+-		return -ENOMEM;
+-	}
+-
+-	pti_tty_driver->driver_name		= DRIVERNAME;
+-	pti_tty_driver->name			= TTYNAME;
+-	pti_tty_driver->major			= 0;
+-	pti_tty_driver->minor_start		= PTITTY_MINOR_START;
+-	pti_tty_driver->type			= TTY_DRIVER_TYPE_SYSTEM;
+-	pti_tty_driver->subtype			= SYSTEM_TYPE_SYSCONS;
+-	pti_tty_driver->flags			= TTY_DRIVER_REAL_RAW |
+-						  TTY_DRIVER_DYNAMIC_DEV;
+-	pti_tty_driver->init_termios		= tty_std_termios;
+-
+-	tty_set_operations(pti_tty_driver, &pti_tty_driver_ops);
+-
+-	retval = tty_register_driver(pti_tty_driver);
+-	if (retval) {
+-		pr_err("%s(%d): TTY registration failed of pti driver\n",
+-			__func__, __LINE__);
+-		pr_err("%s(%d): Error value returned: %d\n",
+-			__func__, __LINE__, retval);
+-
+-		goto put_tty;
+-	}
+-
+-	retval = pci_register_driver(&pti_pci_driver);
+-	if (retval) {
+-		pr_err("%s(%d): PCI registration failed of pti driver\n",
+-			__func__, __LINE__);
+-		pr_err("%s(%d): Error value returned: %d\n",
+-			__func__, __LINE__, retval);
+-		goto unreg_tty;
+-	}
+-
+-	return 0;
+-unreg_tty:
+-	tty_unregister_driver(pti_tty_driver);
+-put_tty:
+-	put_tty_driver(pti_tty_driver);
+-	pti_tty_driver = NULL;
+-	return retval;
+-}
+-
+-/**
+- * pti_exit()- Unregisters this module as a tty and pci driver.
+- */
+-static void __exit pti_exit(void)
+-{
+-	tty_unregister_driver(pti_tty_driver);
+-	pci_unregister_driver(&pti_pci_driver);
+-	put_tty_driver(pti_tty_driver);
+-}
+-
+-module_init(pti_init);
+-module_exit(pti_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Ken Mills, Jay Freyensee");
+-MODULE_DESCRIPTION("PTI Driver");
+-
+diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
+index b3ccae932660..730de6bf048b 100644
+--- a/drivers/tty/Makefile
++++ b/drivers/tty/Makefile
+@@ -9,8 +9,6 @@ obj-$(CONFIG_AUDIT)		+= tty_audit.o
+ obj-$(CONFIG_MAGIC_SYSRQ)	+= sysrq.o
+ obj-$(CONFIG_N_HDLC)		+= n_hdlc.o
+ obj-$(CONFIG_N_GSM)		+= n_gsm.o
+-obj-$(CONFIG_TRACE_ROUTER)	+= n_tracerouter.o
+-obj-$(CONFIG_TRACE_SINK)	+= n_tracesink.o
+ obj-$(CONFIG_R3964)		+= n_r3964.o
+ 
+ obj-y				+= vt/
+diff --git a/drivers/tty/n_tracerouter.c b/drivers/tty/n_tracerouter.c
+deleted file mode 100644
+index 3490ed51b1a3..000000000000
+--- a/drivers/tty/n_tracerouter.c
++++ /dev/null
+@@ -1,235 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- *  n_tracerouter.c - Trace data router through tty space
+- *
+- *  Copyright (C) Intel 2011
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * This trace router uses the Linux line discipline framework to route
+- * trace data coming from a HW Modem to a PTI (Parallel Trace Module) port.
+- * The solution is not specific to a HW modem and this line disciple can
+- * be used to route any stream of data in kernel space.
+- * This is part of a solution for the P1149.7, compact JTAG, standard.
+- */
+-
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/ioctl.h>
+-#include <linux/tty.h>
+-#include <linux/tty_ldisc.h>
+-#include <linux/errno.h>
+-#include <linux/string.h>
+-#include <linux/mutex.h>
+-#include <linux/slab.h>
+-#include <linux/bug.h>
+-#include "n_tracesink.h"
+-
+-/*
+- * Other ldisc drivers use 65536 which basically means,
+- * 'I can always accept 64k' and flow control is off.
+- * This number is deemed appropriate for this driver.
+- */
+-#define RECEIVE_ROOM	65536
+-#define DRIVERNAME	"n_tracerouter"
+-
+-/*
+- * struct to hold private configuration data for this ldisc.
+- * opencalled is used to hold if this ldisc has been opened.
+- * kref_tty holds the tty reference the ldisc sits on top of.
+- */
+-struct tracerouter_data {
+-	u8 opencalled;
+-	struct tty_struct *kref_tty;
+-};
+-static struct tracerouter_data *tr_data;
+-
+-/* lock for when tty reference is being used */
+-static DEFINE_MUTEX(routelock);
+-
+-/**
+- * n_tracerouter_open() - Called when a tty is opened by a SW entity.
+- * @tty: terminal device to the ldisc.
+- *
+- * Return:
+- *      0 for success.
+- *
+- * Caveats: This should only be opened one time per SW entity.
+- */
+-static int n_tracerouter_open(struct tty_struct *tty)
+-{
+-	int retval = -EEXIST;
+-
+-	mutex_lock(&routelock);
+-	if (tr_data->opencalled == 0) {
+-
+-		tr_data->kref_tty = tty_kref_get(tty);
+-		if (tr_data->kref_tty == NULL) {
+-			retval = -EFAULT;
+-		} else {
+-			tr_data->opencalled = 1;
+-			tty->disc_data      = tr_data;
+-			tty->receive_room   = RECEIVE_ROOM;
+-			tty_driver_flush_buffer(tty);
+-			retval = 0;
+-		}
+-	}
+-	mutex_unlock(&routelock);
+-	return retval;
+-}
+-
+-/**
+- * n_tracerouter_close() - close connection
+- * @tty: terminal device to the ldisc.
+- *
+- * Called when a software entity wants to close a connection.
+- */
+-static void n_tracerouter_close(struct tty_struct *tty)
+-{
+-	struct tracerouter_data *tptr = tty->disc_data;
+-
+-	mutex_lock(&routelock);
+-	WARN_ON(tptr->kref_tty != tr_data->kref_tty);
+-	tty_driver_flush_buffer(tty);
+-	tty_kref_put(tr_data->kref_tty);
+-	tr_data->kref_tty = NULL;
+-	tr_data->opencalled = 0;
+-	tty->disc_data = NULL;
+-	mutex_unlock(&routelock);
+-}
+-
+-/**
+- * n_tracerouter_read() - read request from user space
+- * @tty:  terminal device passed into the ldisc.
+- * @file: pointer to open file object.
+- * @buf:  pointer to the data buffer that gets eventually returned.
+- * @nr:   number of bytes of the data buffer that is returned.
+- *
+- * function that allows read() functionality in userspace. By default if this
+- * is not implemented it returns -EIO. This module is functioning like a
+- * router via n_tracerouter_receivebuf(), and there is no real requirement
+- * to implement this function. However, an error return value other than
+- * -EIO should be used just to show that there was an intent not to have
+- * this function implemented.  Return value based on read() man pages.
+- *
+- * Return:
+- *	 -EINVAL
+- */
+-static ssize_t n_tracerouter_read(struct tty_struct *tty, struct file *file,
+-				  unsigned char *buf, size_t nr,
+-				  void **cookie, unsigned long offset)
+-{
+-	return -EINVAL;
+-}
+-
+-/**
+- * n_tracerouter_write() - Function that allows write() in userspace.
+- * @tty:  terminal device passed into the ldisc.
+- * @file: pointer to open file object.
+- * @buf:  pointer to the data buffer that gets eventually returned.
+- * @nr:   number of bytes of the data buffer that is returned.
+- *
+- * By default if this is not implemented, it returns -EIO.
+- * This should not be implemented, ever, because
+- * 1. this driver is functioning like a router via
+- *    n_tracerouter_receivebuf()
+- * 2. No writes to HW will ever go through this line discpline driver.
+- * However, an error return value other than -EIO should be used
+- * just to show that there was an intent not to have this function
+- * implemented.  Return value based on write() man pages.
+- *
+- * Return:
+- *	-EINVAL
+- */
+-static ssize_t n_tracerouter_write(struct tty_struct *tty, struct file *file,
+-				   const unsigned char *buf, size_t nr) {
+-	return -EINVAL;
+-}
+-
+-/**
+- * n_tracerouter_receivebuf() - Routing function for driver.
+- * @tty: terminal device passed into the ldisc.  It's assumed
+- *       tty will never be NULL.
+- * @cp:  buffer, block of characters to be eventually read by
+- *       someone, somewhere (user read() call or some kernel function).
+- * @fp:  flag buffer.
+- * @count: number of characters (aka, bytes) in cp.
+- *
+- * This function takes the input buffer, cp, and passes it to
+- * an external API function for processing.
+- */
+-static void n_tracerouter_receivebuf(struct tty_struct *tty,
+-					const unsigned char *cp,
+-					char *fp, int count)
+-{
+-	mutex_lock(&routelock);
+-	n_tracesink_datadrain((u8 *) cp, count);
+-	mutex_unlock(&routelock);
+-}
+-
+-/*
+- * Flush buffer is not impelemented as the ldisc has no internal buffering
+- * so the tty_driver_flush_buffer() is sufficient for this driver's needs.
+- */
+-
+-static struct tty_ldisc_ops tty_ptirouter_ldisc = {
+-	.owner		= THIS_MODULE,
+-	.magic		= TTY_LDISC_MAGIC,
+-	.name		= DRIVERNAME,
+-	.open		= n_tracerouter_open,
+-	.close		= n_tracerouter_close,
+-	.read		= n_tracerouter_read,
+-	.write		= n_tracerouter_write,
+-	.receive_buf	= n_tracerouter_receivebuf
+-};
+-
+-/**
+- * n_tracerouter_init -	module initialisation
+- *
+- * Registers this module as a line discipline driver.
+- *
+- * Return:
+- *	0 for success, any other value error.
+- */
+-static int __init n_tracerouter_init(void)
+-{
+-	int retval;
+-
+-	tr_data = kzalloc(sizeof(struct tracerouter_data), GFP_KERNEL);
+-	if (tr_data == NULL)
+-		return -ENOMEM;
+-
+-
+-	/* Note N_TRACEROUTER is defined in linux/tty.h */
+-	retval = tty_register_ldisc(N_TRACEROUTER, &tty_ptirouter_ldisc);
+-	if (retval < 0) {
+-		pr_err("%s: Registration failed: %d\n", __func__, retval);
+-		kfree(tr_data);
+-	}
+-	return retval;
+-}
+-
+-/**
+- * n_tracerouter_exit -	module unload
+- *
+- * Removes this module as a line discipline driver.
+- */
+-static void __exit n_tracerouter_exit(void)
+-{
+-	int retval = tty_unregister_ldisc(N_TRACEROUTER);
+-
+-	if (retval < 0)
+-		pr_err("%s: Unregistration failed: %d\n", __func__,  retval);
+-	else
+-		kfree(tr_data);
+-}
+-
+-module_init(n_tracerouter_init);
+-module_exit(n_tracerouter_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Jay Freyensee");
+-MODULE_ALIAS_LDISC(N_TRACEROUTER);
+-MODULE_DESCRIPTION("Trace router ldisc driver");
+diff --git a/drivers/tty/n_tracesink.c b/drivers/tty/n_tracesink.c
+deleted file mode 100644
+index 1d9931041fd8..000000000000
+--- a/drivers/tty/n_tracesink.c
++++ /dev/null
+@@ -1,230 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/*
+- *  n_tracesink.c - Trace data router and sink path through tty space.
+- *
+- *  Copyright (C) Intel 2011
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * The trace sink uses the Linux line discipline framework to receive
+- * trace data coming from the PTI source line discipline driver
+- * to a user-desired tty port, like USB.
+- * This is to provide a way to extract modem trace data on
+- * devices that do not have a PTI HW module, or just need modem
+- * trace data to come out of a different HW output port.
+- * This is part of a solution for the P1149.7, compact JTAG, standard.
+- */
+-
+-#include <linux/init.h>
+-#include <linux/kernel.h>
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/ioctl.h>
+-#include <linux/tty.h>
+-#include <linux/tty_ldisc.h>
+-#include <linux/errno.h>
+-#include <linux/string.h>
+-#include <linux/bug.h>
+-#include "n_tracesink.h"
+-
+-/*
+- * Other ldisc drivers use 65536 which basically means,
+- * 'I can always accept 64k' and flow control is off.
+- * This number is deemed appropriate for this driver.
+- */
+-#define RECEIVE_ROOM	65536
+-#define DRIVERNAME	"n_tracesink"
+-
+-/*
+- * there is a quirk with this ldisc is he can write data
+- * to a tty from anyone calling his kernel API, which
+- * meets customer requirements in the drivers/misc/pti.c
+- * project.  So he needs to know when he can and cannot write when
+- * the API is called. In theory, the API can be called
+- * after an init() but before a successful open() which
+- * would crash the system if tty is not checked.
+- */
+-static struct tty_struct *this_tty;
+-static DEFINE_MUTEX(writelock);
+-
+-/**
+- * n_tracesink_open() - Called when a tty is opened by a SW entity.
+- * @tty: terminal device to the ldisc.
+- *
+- * Return:
+- *      0 for success,
+- *      -EFAULT = couldn't get a tty kref n_tracesink will sit
+- *       on top of
+- *      -EEXIST = open() called successfully once and it cannot
+- *      be called again.
+- *
+- * Caveats: open() should only be successful the first time a
+- * SW entity calls it.
+- */
+-static int n_tracesink_open(struct tty_struct *tty)
+-{
+-	int retval = -EEXIST;
+-
+-	mutex_lock(&writelock);
+-	if (this_tty == NULL) {
+-		this_tty = tty_kref_get(tty);
+-		if (this_tty == NULL) {
+-			retval = -EFAULT;
+-		} else {
+-			tty->disc_data = this_tty;
+-			tty_driver_flush_buffer(tty);
+-			retval = 0;
+-		}
+-	}
+-	mutex_unlock(&writelock);
+-
+-	return retval;
+-}
+-
+-/**
+- * n_tracesink_close() - close connection
+- * @tty: terminal device to the ldisc.
+- *
+- * Called when a software entity wants to close a connection.
+- */
+-static void n_tracesink_close(struct tty_struct *tty)
+-{
+-	mutex_lock(&writelock);
+-	tty_driver_flush_buffer(tty);
+-	tty_kref_put(this_tty);
+-	this_tty = NULL;
+-	tty->disc_data = NULL;
+-	mutex_unlock(&writelock);
+-}
+-
+-/**
+- * n_tracesink_read() - read request from user space
+- * @tty:  terminal device passed into the ldisc.
+- * @file: pointer to open file object.
+- * @buf:  pointer to the data buffer that gets eventually returned.
+- * @nr:   number of bytes of the data buffer that is returned.
+- *
+- * function that allows read() functionality in userspace. By default if this
+- * is not implemented it returns -EIO. This module is functioning like a
+- * router via n_tracesink_receivebuf(), and there is no real requirement
+- * to implement this function. However, an error return value other than
+- * -EIO should be used just to show that there was an intent not to have
+- * this function implemented.  Return value based on read() man pages.
+- *
+- * Return:
+- *	 -EINVAL
+- */
+-static ssize_t n_tracesink_read(struct tty_struct *tty, struct file *file,
+-				unsigned char *buf, size_t nr,
+-				void **cookie, unsigned long offset)
+-{
+-	return -EINVAL;
+-}
+-
+-/**
+- * n_tracesink_write() - Function that allows write() in userspace.
+- * @tty:  terminal device passed into the ldisc.
+- * @file: pointer to open file object.
+- * @buf:  pointer to the data buffer that gets eventually returned.
+- * @nr:   number of bytes of the data buffer that is returned.
+- *
+- * By default if this is not implemented, it returns -EIO.
+- * This should not be implemented, ever, because
+- * 1. this driver is functioning like a router via
+- *    n_tracesink_receivebuf()
+- * 2. No writes to HW will ever go through this line discpline driver.
+- * However, an error return value other than -EIO should be used
+- * just to show that there was an intent not to have this function
+- * implemented.  Return value based on write() man pages.
+- *
+- * Return:
+- *	-EINVAL
+- */
+-static ssize_t n_tracesink_write(struct tty_struct *tty, struct file *file,
+-				 const unsigned char *buf, size_t nr) {
+-	return -EINVAL;
+-}
+-
+-/**
+- * n_tracesink_datadrain() - Kernel API function used to route
+- *			     trace debugging data to user-defined
+- *			     port like USB.
+- *
+- * @buf:   Trace debuging data buffer to write to tty target
+- *         port. Null value will return with no write occurring.
+- * @count: Size of buf. Value of 0 or a negative number will
+- *         return with no write occuring.
+- *
+- * Caveat: If this line discipline does not set the tty it sits
+- * on top of via an open() call, this API function will not
+- * call the tty's write() call because it will have no pointer
+- * to call the write().
+- */
+-void n_tracesink_datadrain(u8 *buf, int count)
+-{
+-	mutex_lock(&writelock);
+-
+-	if ((buf != NULL) && (count > 0) && (this_tty != NULL))
+-		this_tty->ops->write(this_tty, buf, count);
+-
+-	mutex_unlock(&writelock);
+-}
+-EXPORT_SYMBOL_GPL(n_tracesink_datadrain);
+-
+-/*
+- * Flush buffer is not impelemented as the ldisc has no internal buffering
+- * so the tty_driver_flush_buffer() is sufficient for this driver's needs.
+- */
+-
+-/*
+- * tty_ldisc function operations for this driver.
+- */
+-static struct tty_ldisc_ops tty_n_tracesink = {
+-	.owner		= THIS_MODULE,
+-	.magic		= TTY_LDISC_MAGIC,
+-	.name		= DRIVERNAME,
+-	.open		= n_tracesink_open,
+-	.close		= n_tracesink_close,
+-	.read		= n_tracesink_read,
+-	.write		= n_tracesink_write
+-};
+-
+-/**
+- * n_tracesink_init-	module initialisation
+- *
+- * Registers this module as a line discipline driver.
+- *
+- * Return:
+- *	0 for success, any other value error.
+- */
+-static int __init n_tracesink_init(void)
+-{
+-	/* Note N_TRACESINK is defined in linux/tty.h */
+-	int retval = tty_register_ldisc(N_TRACESINK, &tty_n_tracesink);
+-
+-	if (retval < 0)
+-		pr_err("%s: Registration failed: %d\n", __func__, retval);
+-
+-	return retval;
+-}
+-
+-/**
+- * n_tracesink_exit -	module unload
+- *
+- * Removes this module as a line discipline driver.
+- */
+-static void __exit n_tracesink_exit(void)
+-{
+-	int retval = tty_unregister_ldisc(N_TRACESINK);
+-
+-	if (retval < 0)
+-		pr_err("%s: Unregistration failed: %d\n", __func__,  retval);
+-}
+-
+-module_init(n_tracesink_init);
+-module_exit(n_tracesink_exit);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Jay Freyensee");
+-MODULE_ALIAS_LDISC(N_TRACESINK);
+-MODULE_DESCRIPTION("Trace sink ldisc driver");
+diff --git a/drivers/tty/n_tracesink.h b/drivers/tty/n_tracesink.h
+deleted file mode 100644
+index 7031d515a700..000000000000
+--- a/drivers/tty/n_tracesink.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- *  n_tracesink.h - Kernel driver API to route trace data in kernel space.
+- *
+- *  Copyright (C) Intel 2011
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * The PTI (Parallel Trace Interface) driver directs trace data routed from
+- * various parts in the system out through the Intel Penwell PTI port and
+- * out of the mobile device for analysis with a debugging tool
+- * (Lauterbach, Fido). This is part of a solution for the MIPI P1149.7,
+- * compact JTAG, standard.
+- *
+- * This header file is used by n_tracerouter to be able to send the
+- * data of it's tty port to the tty port this module sits.  This
+- * mechanism can also be used independent of the PTI module.
+- *
+- */
+-
+-#ifndef N_TRACESINK_H_
+-#define N_TRACESINK_H_
+-
+-void n_tracesink_datadrain(u8 *buf, int count);
+-
+-#endif
+diff --git a/include/linux/intel-pti.h b/include/linux/intel-pti.h
+deleted file mode 100644
+index fcd841a90f2f..000000000000
+--- a/include/linux/intel-pti.h
++++ /dev/null
+@@ -1,35 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- *  Copyright (C) Intel 2011
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * The PTI (Parallel Trace Interface) driver directs trace data routed from
+- * various parts in the system out through the Intel Penwell PTI port and
+- * out of the mobile device for analysis with a debugging tool
+- * (Lauterbach, Fido). This is part of a solution for the MIPI P1149.7,
+- * compact JTAG, standard.
+- *
+- * This header file will allow other parts of the OS to use the
+- * interface to write out it's contents for debugging a mobile system.
+- */
+-
+-#ifndef LINUX_INTEL_PTI_H_
+-#define LINUX_INTEL_PTI_H_
+-
+-/* offset for last dword of any PTI message. Part of MIPI P1149.7 */
+-#define PTI_LASTDWORD_DTS	0x30
+-
+-/* basic structure used as a write address to the PTI HW */
+-struct pti_masterchannel {
+-	u8 master;
+-	u8 channel;
+-};
+-
+-/* the following functions are defined in misc/pti.c */
+-void pti_writedata(struct pti_masterchannel *mc, u8 *buf, int count);
+-struct pti_masterchannel *pti_request_masterchannel(u8 type,
+-						    const char *thread_name);
+-void pti_release_masterchannel(struct pti_masterchannel *mc);
+-
+-#endif /* LINUX_INTEL_PTI_H_ */
+-- 
+2.29.2
 
