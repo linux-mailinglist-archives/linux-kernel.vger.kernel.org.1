@@ -2,114 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828DF30034C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2E2300359
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbhAVMfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:35:44 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49386 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728168AbhAVMff (ORCPT
+        id S1727854AbhAVMkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:40:40 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:28567 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbhAVMk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:35:35 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MCYL52136295;
-        Fri, 22 Jan 2021 12:34:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=jIuCDq1ZmhYjXckv6wk+/8lC9So5NyF6llF4m0ZdrDA=;
- b=tmNTmEw3nR7FyO7wTWEqF/YOKg4cMNepK0MePmWz78RqgToyEN934UjkvCj9IjOWSvUJ
- Oq1+ApYo83MNH29wHvjFByV20cJeoc9qvZKUshlbD/B93Z8KscCvZgnHqI2S3Fzr0Zli
- OPMpdVJrpgvJgW8zlz08K2pTbfDBoyh+vjQJeirybQlz2j1mZNNGjA3uKZF3fFCrc7zt
- E9IvafZPkt3D/kCLqFRhVRaM/XzVrfzZKbG2/2SjTA/zMGl1Q/IqM2iyC3naqY5qGSfn
- hEY7UFSsl6HcABvWYijrnjZpxVAsJSqayKUSdwO1nKREfQhUTxVPJHgEk308iCUq/gUJ 9A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 3668qn3tr4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 12:34:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MCFruC189345;
-        Fri, 22 Jan 2021 12:34:14 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 3668rgtr7x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 12:34:14 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10MCY4A0004548;
-        Fri, 22 Jan 2021 12:34:08 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 22 Jan 2021 04:34:04 -0800
-Date:   Fri, 22 Jan 2021 15:33:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust to clang-version.sh removal
-Message-ID: <20210122123354.GR2696@kadam>
-References: <20210121160115.4676-1-lukas.bulwahn@gmail.com>
- <CA+icZUV3p+yQYXn=iVseNNQwUSvoMwztLxNDOFpdFb731kDOJg@mail.gmail.com>
+        Fri, 22 Jan 2021 07:40:27 -0500
+Date:   Fri, 22 Jan 2021 12:39:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611319177; bh=MurfsX/xFc6EJaZnP4aHHBq5FK0oyXI/IchGUo+j9ZM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=P5QmSyiHLWiyp62ojlSpBj+PHE1FilejDgySIqAe9ggMhdv1NVhIof4xs/N55knKb
+         lYhnbkSzpBVSG7NeKVKCilPmCBlUK9jlPakwiabCSJUR/PM6ZS2gzywSP7DHzKgNjb
+         adi6rBSJEghwHIOB5DdIB89uZ648rDUIclfP0wmc/TQMTg1qmJHGUKAt575ne5q5Jg
+         5ifBiPmbKYmM+hFb1Pw/GudMxMSHsfTL8zpUD+h+qf9iaG4yXQYGf4ay9gFfsVhcuI
+         5xho5xgcUZZYbrg5vdnKdSdOHxxJm+P8rVEYObVh9g400FOY3PL1hcB9NR3UklPPR8
+         jYK62pLW0iOhg==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+Message-ID: <20210122123909.3603-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz0ve9iRmz6zkCTaBMMjckFrD0df43-uVreXVf_wM3mZ1A@mail.gmail.com>
+References: <cover.1611236588.git.xuanzhuo@linux.alibaba.com> <340f1dfa40416dd966a56e08507daba82d633088.1611236588.git.xuanzhuo@linux.alibaba.com> <dcee4592-9fa9-adbb-55ca-58a962076e7a@gmail.com> <20210122114729.1758-1-alobakin@pm.me> <20210122115519.2183-1-alobakin@pm.me> <CAJ8uoz0ve9iRmz6zkCTaBMMjckFrD0df43-uVreXVf_wM3mZ1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUV3p+yQYXn=iVseNNQwUSvoMwztLxNDOFpdFb731kDOJg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9871 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101220069
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9871 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- phishscore=0 clxscore=1011 bulkscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101220070
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 05:15:56PM +0100, Sedat Dilek wrote:
-> On Thu, Jan 21, 2021 at 5:01 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
-> >
-> > Commit 6c8ad4427f6e ("kbuild: check the minimum compiler version in
-> > Kconfig") removed ./scripts/clang-version.sh and moved its content to
-> > ./scripts/cc-version.sh.
-> >
-> > Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> >
-> >   warning: no file matches    F:    scripts/clang-version.sh
-> >
-> > The CLANG/LLVM BUILD SUPPORT section in MAINTAINERS intends to track
-> > changes in ./scripts/clang-version.sh; as the file is removed, track
-> > changes in ./scripts/cc-version.sh instead now.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> 
-> Good catch, Lukas.
-> 
-> As a tipp:
-> Next time you can pass '--subject-prefix="PATCH next-YYYYMMDD"' when
-> doing 'git format-patch ...' (or whatever you use to generate the
-> patch).
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Fri, 22 Jan 2021 13:18:47 +0100
 
-I've never seen anyone use this prefix before.
+> On Fri, Jan 22, 2021 at 12:57 PM Alexander Lobakin <alobakin@pm.me> wrote=
+:
+> >
+> > From: Alexander Lobakin <alobakin@pm.me>
+> > Date: Fri, 22 Jan 2021 11:47:45 +0000
+> >
+> > > From: Eric Dumazet <eric.dumazet@gmail.com>
+> > > Date: Thu, 21 Jan 2021 16:41:33 +0100
+> > >
+> > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > > > > This patch is used to construct skb based on page to save memory =
+copy
+> > > > > overhead.
+> > > > >
+> > > > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only =
+the
+> > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use pa=
+ge to
+> > > > > directly construct skb. If this feature is not supported, it is s=
+till
+> > > > > necessary to copy data to construct skb.
+> > > > >
+> > > > > ---------------- Performance Testing ------------
+> > > > >
+> > > > > The test environment is Aliyun ECS server.
+> > > > > Test cmd:
+> > > > > ```
+> > > > > xdpsock -i eth0 -t  -S -s <msg size>
+> > > > > ```
+> > > > >
+> > > > > Test result data:
+> > > > >
+> > > > > size    64      512     1024    1500
+> > > > > copy    1916747 1775988 1600203 1440054
+> > > > > page    1974058 1953655 1945463 1904478
+> > > > > percent 3.0%    10.0%   21.58%  32.3%
+> > > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > > > > ---
+> > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++=
+++++----------
+> > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
+> > > > >
+> > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > index 4a83117..38af7f1 100644
+> > > > > --- a/net/xdp/xsk.c
+> > > > > +++ b/net/xdp/xsk.c
+> > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff =
+*skb)
+> > > > >   sock_wfree(skb);
+> > > > >  }
+> > > > >
+> > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *x=
+s,
+> > > > > +                                       struct xdp_desc *desc)
+> > > > > +{
+> > > > > + u32 len, offset, copy, copied;
+> > > > > + struct sk_buff *skb;
+> > > > > + struct page *page;
+> > > > > + void *buffer;
+> > > > > + int err, i;
+> > > > > + u64 addr;
+> > > > > +
+> > > > > + skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > > > > + if (unlikely(!skb))
+> > > > > +         return ERR_PTR(err);
+> > > > > +
+> > > > > + addr =3D desc->addr;
+> > > > > + len =3D desc->len;
+> > > > > +
+> > > > > + buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> > > > > + offset =3D offset_in_page(buffer);
+> > > > > + addr =3D buffer - xs->pool->addrs;
+> > > > > +
+> > > > > + for (copied =3D 0, i =3D 0; copied < len; i++) {
+> > > > > +         page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> > > > > +
+> > > > > +         get_page(page);
+> > > > > +
+> > > > > +         copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
+> > > > > +
+> > > > > +         skb_fill_page_desc(skb, i, page, offset, copy);
+> > > > > +
+> > > > > +         copied +=3D copy;
+> > > > > +         addr +=3D copy;
+> > > > > +         offset =3D 0;
+> > > > > + }
+> > > > > +
+> > > > > + skb->len +=3D len;
+> > > > > + skb->data_len +=3D len;
+> > > >
+> > > > > + skb->truesize +=3D len;
+> > > >
+> > > > This is not the truesize, unfortunately.
+> > > >
+> > > > We need to account for the number of pages, not number of bytes.
+> > >
+> > > The easiest solution is:
+> > >
+> > >       skb->truesize +=3D PAGE_SIZE * i;
+> > >
+> > > i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
+> >
+> > Oops, pls ignore this. I forgot that XSK buffers are not
+> > "one per page".
+> > We need to count the number of pages manually and then do
+> >
+> >         skb->truesize +=3D PAGE_SIZE * npages;
+> >
+> > Right.
+>=20
+> There are two possible packet buffer (chunks) sizes in a umem, 2K and
+> 4K on a system with a PAGE_SIZE of 4K. If I remember correctly, and
+> please correct me if wrong, truesize is used for memory accounting.
+> But in this code, no kernel memory has been allocated (apart from the
+> skb). The page is just a part of the umem that has been already
+> allocated beforehand and by user-space in this case. So what should
+> truesize be in this case? Do we add 0, chunk_size * i, or the
+> complicated case of counting exactly how many 4K pages that are used
+> when the chunk_size is 2K, as two chunks could occupy the same page,
+> or just the upper bound of PAGE_SIZE * i that is likely a good
+> approximation in most cases? Just note that there might be other uses
+> of truesize that I am unaware of that could impact this choice.
 
-What does the date really help?  In staging, we apply everything on top
-of staging-next and if it doesn't apply then we don't investigate, we
-just say "doesn't apply.  resend if needed".
+Truesize is "what amount of memory does this skb occupy with all its
+fragments, linear space and struct sk_buff itself". The closest it
+will be to the actual value, the better.
+In this case, I think adding of chunk_size * i would be enough.
 
-We may as well just say [PATCH linux-next].  No one is ever going to
-look up the date if it doesn't apply to the latest linux-next.
+(PAGE_SIZE * i can be overwhelming when chunk_size is 2K, especially
+for setups with PAGE_SIZE > SZ_4K)
 
-regards,
-dan carpenter
+> > > > > +
+> > > > > + refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > > > > +
+> > > > > + return skb;
+> > > > > +}
+> > > > > +
+> > >
+> > > Al
+> >
+> > Thanks,
+> > Al
+
+Al
+
