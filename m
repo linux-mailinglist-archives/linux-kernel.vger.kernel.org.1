@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C621330060C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802E3300612
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbhAVOvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:51:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50410 "EHLO mail.kernel.org"
+        id S1728942AbhAVOwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:52:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728664AbhAVOuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:50:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9B3C23444;
-        Fri, 22 Jan 2021 14:49:34 +0000 (UTC)
+        id S1728888AbhAVOup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:50:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4DDB239EF;
+        Fri, 22 Jan 2021 14:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611326975;
-        bh=yv1cXnquJ7xKTzg9wrnPvggtL9hbHc6eRB67CpvdF2U=;
+        s=k20201202; t=1611327005;
+        bh=7A7B5OQ5Ao/GDDIKhsc6LXdXg8ZyvC1zrtW2QnGTv/U=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=lA7FwLo8ukz+p/C4QIlTT2KMW7k0r0Zy8yLGyz8vIZfh0cNN7ZsFYybCvjB0LbVvN
-         teSXd8hfXkjSmgnlwB1pKjrFTgfhEHYXvc2wjX5Me2/w+DuU14ZSa2cyfL0HwKEoZc
-         v+izevaYvvLJhwcM0BNa/6p6wZjpbkS1C09sSVgtrHatR2QvEZ2IQeg0NM4oDG807B
-         2USV22NPPAzjEThat6KEZw6qNErsj03hCWdd1fJL83mJbOpC9umGSe/2QvAqvjNPH0
-         c8EH9uYsnbO0jB1J46Fmd1Y1pHISXh4HpnO8Vnk+5tYTifyuWxoSBfz1mJsKp4pvav
-         I6IErX6dFTOZg==
+        b=UwNiX0LfqphibQhPpnPBQ40XupO2rWF6LNnEK7QidCQqnSvmhfOovGy24UyI/ol49
+         cJ+8Eia3vSamM3XzA7fL2wd+lZiPVrKtdFb5dYvWMWjqW3MWZwNbTDAviuSPm+U1eY
+         hfwCQ7t7h79oOw5e71pXiFBMhLn0I8bPKAtcVr57e5LlCqzVyUdCWvmSSw9oLAt1U+
+         xZ3m1GJKdcuIZmjQi17fn8q0NoN4WYU8543/99JqZjZaqQ4+lWhgo5APUJ5Tyl98Ns
+         MJWO8en21cdKgk/zfEpGArFkDFk2W9d96ERwe1/plX6KqhEhx5I/0oWipAzLl7jytM
+         xEAZnXKps7UIA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210122132042.10306-1-broonie@kernel.org>
-References: <20210122132042.10306-1-broonie@kernel.org>
-Subject: Re: [PATCH] regulator: Fix lockdep warning resolving supplies
-Message-Id: <161132693560.45400.5805860404255875218.b4-ty@kernel.org>
-Date:   Fri, 22 Jan 2021 14:48:55 +0000
+To:     corentin <corentin.noel56@gmail.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210122113052.40429-1-corentin.noel56@gmail.com>
+References: <20210122113052.40429-1-corentin.noel56@gmail.com>
+Subject: Re: [PATCH] drivers: spi: spi-au1550: quoted string break
+Message-Id: <161132696016.45468.11384338482499943212.b4-ty@kernel.org>
+Date:   Fri, 22 Jan 2021 14:49:20 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,26 +38,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 13:20:42 +0000, Mark Brown wrote:
-> With commit eaa7995c529b54 (regulator: core: avoid
-> regulator_resolve_supply() race condition) we started holding the rdev
-> lock while resolving supplies, an operation that requires holding the
-> regulator_list_mutex. This results in lockdep warnings since in other
-> places we take the list mutex then the mutex on an individual rdev.
+On Fri, 22 Jan 2021 12:30:52 +0100, corentin wrote:
 > 
-> Since the goal is to make sure that we don't call set_supply() twice
-> rather than a concern about the cost of resolution pull the rdev lock
-> and check for duplicate resolution down to immediately before we do the
-> set_supply() and drop it again once the allocation is done.
+
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: Fix lockdep warning resolving supplies
-      commit: 14a71d509ac809dcf56d7e3ca376b15d17bd0ddd
+[1/1] drivers: spi: spi-au1550: quoted string break
+      commit: 3ae04d823d293857eec7c6d435fe748f468b85a1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
