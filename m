@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B486C300D7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A7A300D6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731050AbhAVUNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:13:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34950 "EHLO mail.kernel.org"
+        id S1728808AbhAVUKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:10:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728052AbhAVOLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:11:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E889B239EF;
-        Fri, 22 Jan 2021 14:09:35 +0000 (UTC)
+        id S1728100AbhAVOMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:12:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FF7823A9C;
+        Fri, 22 Jan 2021 14:09:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324576;
-        bh=K5UVOAFSVMpxnx58cB+TImbkULMojURm5Eon9UXNVrI=;
+        s=korg; t=1611324595;
+        bh=bg1MGApZXy1snbKFE985TK9dD1gMRCuiC9DNpBwFJYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KW9eEIbpSd+9QFstRgkZ/U/83R23qB+IqfpqIFHdtNLMsCmfPjbcsOwecuBE3v4dI
-         luVKCMpQiy6jCkFN4bmiH+CRChlwfnOrxcQ0Hh9bf35dsUjpWwzcxxXQimP6BatbEd
-         /Rg5q/gdON5OOxuHySqtCU7h8C4zNJ7mRPsVayc4=
+        b=W0iA9lQ/B61ueMY2R9I5webCrQmrtNNRX8SCM1XDCKc/ph/edskeikyLk7w1vDmbA
+         rEaHZKdr44Orq5puA5VKU3yZs5d0BYnK4FM3xncf54faJq00LzFZxlWppr8XuX6vb8
+         q0IvTNheSFL0xRpEuFXKIYpAtB3sa+g1F5yDZWjU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/31] misdn: dsp: select CONFIG_BITREVERSE
-Date:   Fri, 22 Jan 2021 15:08:22 +0100
-Message-Id: <20210122135732.210359401@linuxfoundation.org>
+Subject: [PATCH 4.4 09/31] net: ethernet: fs_enet: Add missing MODULE_LICENSE
+Date:   Fri, 22 Jan 2021 15:08:23 +0100
+Message-Id: <20210122135732.251832508@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -40,35 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-[ Upstream commit 51049bd903a81307f751babe15a1df8d197884e8 ]
+[ Upstream commit 445c6198fe7be03b7d38e66fe8d4b3187bc251d4 ]
 
-Without this, we run into a link error
+Since commit 1d6cd3929360 ("modpost: turn missing MODULE_LICENSE()
+into error") the ppc32_allmodconfig build fails with:
 
-arm-linux-gnueabi-ld: drivers/isdn/mISDN/dsp_audio.o: in function `dsp_audio_generate_law_tables':
-(.text+0x30c): undefined reference to `byte_rev_table'
-arm-linux-gnueabi-ld: drivers/isdn/mISDN/dsp_audio.o:(.text+0x5e4): more undefined references to `byte_rev_table' follow
+  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-fec.o
+  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-bitbang.o
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Add the missing MODULE_LICENSEs to fix the build. Both files include a
+copyright header indicating they are GPL v2.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/mISDN/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c | 1 +
+ drivers/net/ethernet/freescale/fs_enet/mii-fec.c     | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/isdn/mISDN/Kconfig b/drivers/isdn/mISDN/Kconfig
-index c0730d5c734d6..fb61181a5c4f7 100644
---- a/drivers/isdn/mISDN/Kconfig
-+++ b/drivers/isdn/mISDN/Kconfig
-@@ -12,6 +12,7 @@ if MISDN != n
- config MISDN_DSP
- 	tristate "Digital Audio Processing of transparent data"
- 	depends on MISDN
-+	select BITREVERSE
- 	help
- 	  Enable support for digital audio processing capability.
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
+index 68a428de0bc0e..cfae74d8e6590 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
+@@ -231,3 +231,4 @@ static struct platform_driver fs_enet_bb_mdio_driver = {
+ };
  
+ module_platform_driver(fs_enet_bb_mdio_driver);
++MODULE_LICENSE("GPL");
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
+index 2be383e6d2585..3b6232a6a56d6 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
+@@ -232,3 +232,4 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
+ };
+ 
+ module_platform_driver(fs_enet_fec_mdio_driver);
++MODULE_LICENSE("GPL");
 -- 
 2.27.0
 
