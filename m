@@ -2,119 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B6B2FFCB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E572FFCCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbhAVG27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbhAVG1n (ORCPT
+        id S1727006AbhAVGaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:30:16 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:59275 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726977AbhAVG3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:27:43 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B0DC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:27:03 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q131so3056705pfq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:27:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=svgrB85wDJvp1wFsJQnCVp+ank0Arsi8GO3FERYAPGc=;
-        b=ux0UjAuQYmGVBrb8Ye8qm1tpjApuGIEbLNzDKfWG+sREKtOBhs9wc69kCk2XcGEVUh
-         u4H3V16lDaQ13d/AsqE4nHLxmPe4u06EH1Ukvg1m+2aWKGTgxgUMmm0h9Dyvq3nJb8ZP
-         wCFeHZ709a0RsxBpawIx7FvwlQZ8KLhnixCtMwH2xgNME8aSrvH+oC4TzP1Dr5/Q2t3Y
-         N7tUbU7RSFbJcNRFLbM6VehvtjO8Sb5j3WRpjKSVSc63nhcKQUoNQNIRXe6oINWi8Mz6
-         tP5tfq11q/Tl8+KmTKFLM8pkvPvi50GMr6qKyC077jMTvm/URFFLSlHH/sqZHxmEpnqa
-         qNmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=svgrB85wDJvp1wFsJQnCVp+ank0Arsi8GO3FERYAPGc=;
-        b=rfWbwaXBT5tJ0Umi/JKMeNzTjbkhOEKz6GdkWU5570Sfheh3VZsdR1DkMBFyePT7PS
-         NDI4wFZs2yDrWvsMRfFz0d8/lqeqZTECDn+EL9Bvbtvw09+fHGbVX6czl9FGlVnqHqC9
-         FPnzvcbUmAWt6Hc/iEOufGpWICBIs795fTHL4QusUZ8bprcRstVKndNrWgoysWxt1neK
-         Xku9cmejBIwLxO4KHcZlsDeG7bGNoGPnd/UPexnbqQDAfrD4UBhlywWdJZxGzJggjCIM
-         R3MiJHOBU/dcoSazsu4okiUmr/ewiCRzp2ad+u4DblTxBfvEtg+o0mFmyhx/sFFOqF5W
-         qSAw==
-X-Gm-Message-State: AOAM530It6UHZVgmmBa64L5kMklivN9mzXGCm+H4cKlxqu1+yW6a2B1Z
-        xCq4iSr8Md/pH4FNNHY2/v250A==
-X-Google-Smtp-Source: ABdhPJyYey8B/wZZECCKK/6z6M0ZdDm5dsyDljIPXQKsuXilPAqgZAz+8Uqbev9+vKmCz1YIcKVNQg==
-X-Received: by 2002:a17:90a:f2d2:: with SMTP id gt18mr3578692pjb.102.1611296822502;
-        Thu, 21 Jan 2021 22:27:02 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id q2sm6678851pfj.32.2021.01.21.22.27.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 22:27:01 -0800 (PST)
-Date:   Fri, 22 Jan 2021 11:56:59 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 11/13] devfreq: tegra30: Migrate to dev_pm_opp_set_opp()
-Message-ID: <20210122062659.qss3hef4kltfgciu@vireshk-i7>
-References: <cover.1611227342.git.viresh.kumar@linaro.org>
- <3345fd49f7987d022f4f61edb6c44f230f7354c4.1611227342.git.viresh.kumar@linaro.org>
- <71451eb2-46b2-1ea0-efcc-0811568159a4@gmail.com>
+        Fri, 22 Jan 2021 01:29:25 -0500
+X-UUID: 9d6240ae4fc242a597856c57dd3fbfba-20210122
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=a0rTMIFWNhk4fs2TtcDCGY9yzd82v4FlQ9IFV80sxHw=;
+        b=rGS4MfrO6UxPnX9KpApF9R8LGFPhVVtwNTFRr3AZY6vuI7yaO0+K5c5qaojB5n68agLAlCMr3dP2U8LDuNT6flT/zJQ0jy+0IhsjYRtSmVsXjke98EKvCLga+/7Rs5xucozUBenT740KfjpGLAiF+N7rT9jn98S/eRd9drhrmug=;
+X-UUID: 9d6240ae4fc242a597856c57dd3fbfba-20210122
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <yz.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 580443827; Fri, 22 Jan 2021 14:28:33 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 22 Jan 2021 14:28:31 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 22 Jan 2021 14:28:31 +0800
+Message-ID: <1611296911.30262.5.camel@mtksdccf07>
+Subject: Re: [PATCH v3 1/2] dt-bindings: nvmem: mediatek: add support for
+ MediaTek mt8192 SoC
+From:   mtk23264 <Yz.Wu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Fri, 22 Jan 2021 14:28:31 +0800
+In-Reply-To: <20210103162540.GA3983563@robh.at.kernel.org>
+References: <20201221061018.18503-1-Yz.Wu@mediatek.com>
+         <20201221061018.18503-2-Yz.Wu@mediatek.com>
+         <20210103162540.GA3983563@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <71451eb2-46b2-1ea0-efcc-0811568159a4@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-01-21, 00:36, Dmitry Osipenko wrote:
-> 21.01.2021 14:17, Viresh Kumar пишет:
-> > dev_pm_opp_set_bw() is getting removed and dev_pm_opp_set_opp() should
-> > be used instead. Migrate to the new API.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  drivers/devfreq/tegra30-devfreq.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> > index 117cad7968ab..d2477d7d1f66 100644
-> > --- a/drivers/devfreq/tegra30-devfreq.c
-> > +++ b/drivers/devfreq/tegra30-devfreq.c
-> > @@ -647,7 +647,7 @@ static int tegra_devfreq_target(struct device *dev, unsigned long *freq,
-> >  		return PTR_ERR(opp);
-> >  	}
-> >  
-> > -	ret = dev_pm_opp_set_bw(dev, opp);
-> > +	ret = dev_pm_opp_set_opp(dev, opp);
-> >  	dev_pm_opp_put(opp);
-> >  
-> >  	return ret;
-> > 
-> 
-> This patch introduces a very serious change that needs to be fixed.
-> 
-> Now dev_pm_opp_set_opp() changes both clock rate and bandwidth, this is
-> unacceptable for this driver because it shall not touch the clock rate.
-> 
-> I think dev_pm_opp_set_bw() can't be removed.
+T24gU3VuLCAyMDIxLTAxLTAzIGF0IDA5OjI1IC0wNzAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gTW9uLCBEZWMgMjEsIDIwMjAgYXQgMDI6MTA6MTlQTSArMDgwMCwgWXouV3VAbWVkaWF0ZWsu
+Y29tIHdyb3RlOg0KPiA+IEZyb206IFJ5YW4gV3UgPFl6Lld1QG1lZGlhdGVrLmNvbT4NCj4gPiAN
+Cj4gPiBUaGlzIHVwZGF0ZXMgZHQtYmluZGluZyBkb2N1bWVudGF0aW9uIGZvciBNZWRpYVRlayBt
+dDgxOTINCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBSeWFuIFd1IDxZei5XdUBtZWRpYXRlay5j
+b20+DQo+ID4gLS0tDQo+ID4gVGhpcyBwYXRjaCBpcyBiYXNlZCBvbiB2NS4xMC1yYzcuDQo+ID4g
+LS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9tdGstZWZ1
+c2UudHh0IHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPiA+IA0K
+PiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZtZW0v
+bXRrLWVmdXNlLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9udm1lbS9t
+dGstZWZ1c2UudHh0DQo+ID4gaW5kZXggMDY2OGM0NWExNTZkLi5lMmYwYzBmMzRkMTAgMTAwNjQ0
+DQo+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL252bWVtL210ay1l
+ZnVzZS50eHQNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbnZt
+ZW0vbXRrLWVmdXNlLnR4dA0KPiA+IEBAIC03LDYgKzcsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
+Og0KPiA+ICAJICAgICAgIm1lZGlhdGVrLG10NzYyMi1lZnVzZSIsICJtZWRpYXRlayxlZnVzZSI6
+IGZvciBNVDc2MjINCj4gPiAgCSAgICAgICJtZWRpYXRlayxtdDc2MjMtZWZ1c2UiLCAibWVkaWF0
+ZWssZWZ1c2UiOiBmb3IgTVQ3NjIzDQo+ID4gIAkgICAgICAibWVkaWF0ZWssbXQ4MTczLWVmdXNl
+IiBvciAibWVkaWF0ZWssZWZ1c2UiOiBmb3IgTVQ4MTczDQo+ID4gKwkgICAgICAibWVkaWF0ZWss
+bXQ4MTkyLWVmdXNlIiBvciAibWVkaWF0ZWssZWZ1c2UiOiBmb3IgTVQ4MTkyDQo+IA0KPiBObywg
+Im1lZGlhdGVrLGVmdXNlIiBieSBpdHNlbGYgaXMgb25seSBmb3IgTVQ4MTczLg0KSXMgaXQgc2hv
+dWxkIGJlIG1vZGlmeSBmcm9tICJtZWRpYXRlayxtdDgxOTItZWZ1c2UiIG9yICJtZWRpYXRlayxl
+ZnVzZSINCnRvICJtZWRpYXRlayxtdDgxOTItZWZ1c2UiLCAibWVkaWF0ZWssZWZ1c2UiID8NCg0K
+UmVnYXJkcywNCll6DQo+IA0KPiA+ICAtIHJlZzogU2hvdWxkIGNvbnRhaW4gcmVnaXN0ZXJzIGxv
+Y2F0aW9uIGFuZCBsZW5ndGgNCj4gPiAgDQo+ID4gID0gRGF0YSBjZWxscyA9DQo+ID4gLS0gDQo+
+ID4gMi4xOC4wDQo+ID4gDQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gTGludXgtbWVk
+aWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
 
-I am wondering here on what would be a better solution, do what you
-said or introduce another helper like dev_pm_opp_clear_clk(), which
-will make sure the OPP core doesn't play with device's clk.
-
--- 
-viresh
