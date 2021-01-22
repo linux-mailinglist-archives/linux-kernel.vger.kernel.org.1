@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06609300601
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FF030056D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728917AbhAVOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:50:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40268 "EHLO mail.kernel.org"
+        id S1728779AbhAVO3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:29:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728663AbhAVOYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:24:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0AA423BC8;
-        Fri, 22 Jan 2021 14:19:17 +0000 (UTC)
+        id S1728492AbhAVOYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:24:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AADA23B7F;
+        Fri, 22 Jan 2021 14:17:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325158;
-        bh=+NRpAcm+CY3/ykx1B3hMigUma5W6PcGJUlLnxpxQx0g=;
+        s=korg; t=1611325068;
+        bh=CnK54VVmj9CQnTdkY4M0XHyFmyMt4Oe32pQge64ot8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KQbu+Ff7I5cmk/PrbrCEWQs/Sh3r1BqqpqxVpXTikswMAQzPOCAJm9C8FlV8FJjsy
-         YHPOaKPYyT4BUOndjoSFT94kXKDleT2u+MVAhRKWo7v7qATLJ8hljaB7POpNqux46/
-         XB21Lqj1Q2hylX1XITds4grU5MgVItrtJuq2T6gU=
+        b=k4LJxxkfCA4hRXLLtKTXvyStii8UDgMynTDq0jEWg+erBbImlMy0BRkdqqTT00wKk
+         XeJicqGzeTEdX68x5pVJqrpGVCDBD9lehWzkcvg5q7vqUBN8YEMxwKEkqxB4vaN6R7
+         y3Y6inB2EsvgZKjMuUl/ewousm+rjtdg8p187ayQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>,
+        stable@vger.kernel.org,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 19/43] net: mvpp2: Remove Pause and Asym_Pause support
-Date:   Fri, 22 Jan 2021 15:12:35 +0100
-Message-Id: <20210122135736.436658536@linuxfoundation.org>
+Subject: [PATCH 5.4 20/33] rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
+Date:   Fri, 22 Jan 2021 15:12:36 +0100
+Message-Id: <20210122135734.399344627@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135735.652681690@linuxfoundation.org>
-References: <20210122135735.652681690@linuxfoundation.org>
+In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
+References: <20210122135733.565501039@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
 
-[ Upstream commit 6f83802a1a06e74eafbdbc9b52c05516d3083d02 ]
+[ Upstream commit e56b3d94d939f52d46209b9e1b6700c5bfff3123 ]
 
-Packet Processor hardware not connected to MAC flow control unit and
-cannot support TX flow control.
-This patch disable flow control support.
+MSFT ActiveSync implementation requires that the size of the response for
+incoming query is to be provided in the request input length. Failure to
+set the input size proper results in failed request transfer, where the
+ActiveSync counterpart reports the NDIS_STATUS_INVALID_LENGTH (0xC0010014L)
+error.
 
-Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Link: https://lore.kernel.org/r/1610306582-16641-1-git-send-email-stefanc@marvell.com
+Set the input size for OID_GEN_PHYSICAL_MEDIUM query to the expected size
+of the response in order for the ActiveSync to properly respond to the
+request.
+
+Fixes: 039ee17d1baa ("rndis_host: Add RNDIS physical medium checking into generic_rndis_bind()")
+Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Link: https://lore.kernel.org/r/20210108095839.3335-1-andrey.zhizhikin@leica-geosystems.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/usb/rndis_host.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -5874,8 +5874,6 @@ static void mvpp2_phylink_validate(struc
- 
- 	phylink_set(mask, Autoneg);
- 	phylink_set_port_modes(mask);
--	phylink_set(mask, Pause);
--	phylink_set(mask, Asym_Pause);
- 
- 	switch (state->interface) {
- 	case PHY_INTERFACE_MODE_10GBASER:
+--- a/drivers/net/usb/rndis_host.c
++++ b/drivers/net/usb/rndis_host.c
+@@ -387,7 +387,7 @@ generic_rndis_bind(struct usbnet *dev, s
+ 	reply_len = sizeof *phym;
+ 	retval = rndis_query(dev, intf, u.buf,
+ 			     RNDIS_OID_GEN_PHYSICAL_MEDIUM,
+-			     0, (void **) &phym, &reply_len);
++			     reply_len, (void **)&phym, &reply_len);
+ 	if (retval != 0 || !phym) {
+ 		/* OID is optional so don't fail here. */
+ 		phym_unspec = cpu_to_le32(RNDIS_PHYSICAL_MEDIUM_UNSPECIFIED);
 
 
