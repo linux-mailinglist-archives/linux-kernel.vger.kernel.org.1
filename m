@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE43300A01
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E09300A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:51:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbhAVRmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:42:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51218 "EHLO mail.kernel.org"
+        id S1729385AbhAVRmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:42:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729850AbhAVReC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:34:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E19B23A79;
-        Fri, 22 Jan 2021 17:33:21 +0000 (UTC)
+        id S1729473AbhAVRjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:39:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACA7023A68;
+        Fri, 22 Jan 2021 17:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611336801;
-        bh=Zz7/sBdhG8IGiogtBKk0mTY8NegdDfBFJuOqnDNcMLA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RuJ+Df5lfmrPNDJ51PkcEYxRr+jpqXQweQhIQPESSUJFK0m1FLcTJcs5Q7UA7sZnF
-         XK3A8YbaQIIAYHnH3igiGNR77G9IqJFjs1mARPv4qLPjSPXGN0QolPVyxGJ9WEv/u8
-         Y/d9zwQtM+OKDg0GvUpb52T12cai/I+pyL/1NLce+tvUsGWlHPv+pPWCFpbhhgjqFO
-         CAfQgtPaeed/fEFusGweDk+j3JPGtmdm5Vma2BXVOFOV0KOg+EZDAu3aDH14bf9Lqz
-         zBMx1SGbfXMLA13aAyZqRImtyFqsubrdcHxpfC3+eBRet3kWN+UrTzHxNAzq14f1cD
-         MpQYrozyRdepQ==
-Date:   Fri, 22 Jan 2021 09:33:20 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] bridge: Use PTR_ERR_OR_ZERO instead if(IS_ERR(...)) +
- PTR_ERR
-Message-ID: <20210122093320.6fbb5f11@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1611307933-115887-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1611307933-115887-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        s=k20201202; t=1611337104;
+        bh=ge6tFCsU5h0tS9yUo8/3zw0PVb/UhI5wMta1OpY7wJM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RdHV/9mKBWfKxkyGt65UDS6nh7Gm9zzC1uQDDgz/6Pz7OaUPM9Q4WCyNK2PK/C8PQ
+         3NwtLe6z1bbfmkR+ujUgNpLDHoedMnaDDKFwvp0On8N7ftz4fs9cdC8U3K1ANnH9iF
+         ZPdj5xV4FgGXlRK5CRpnAOKHVG00PHS7o2PpR+Kx3sokVMJ7rNobRgs7g6Oy/VSlnt
+         4s+pke/pNHhdVr6HmuxgVtM8hR53oySrrNI9UvWOP6vGCft+97Ke6q18/MYG3t8+tZ
+         yMAhXRcFoKATyn68lVD3MU6NXocopg8y4uhy1MzbXPHRinVlZiSnT4vTBkakYYnvQf
+         ICjAiRvM+ylIA==
+Date:   Fri, 22 Jan 2021 19:38:21 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        haitao.huang@intel.com, Kai Huang <kai.huang@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH] mm: Optimizing error condition detection in
+ do_mprotect_pkey()
+Message-ID: <YAsNja81xnhvRGsL@kernel.org>
+References: <20210118133310.98375-1-tianjia.zhang@linux.alibaba.com>
+ <YAg+QHhczqtTZt4Z@kernel.org>
+ <20210121144627.64a60437fe97786596f389d0@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121144627.64a60437fe97786596f389d0@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 17:32:13 +0800 Jiapeng Zhong wrote:
-> coccicheck suggested using PTR_ERR_OR_ZERO() and looking at the code.
+On Thu, Jan 21, 2021 at 02:46:27PM -0800, Andrew Morton wrote:
+> On Wed, 20 Jan 2021 16:29:20 +0200 Jarkko Sakkinen <jarkko@kernel.org> wrote:
 > 
-> Fix the following coccicheck warnings:
+> > 
+> > 
+> > On Mon, Jan 18, 2021 at 09:33:10PM +0800, Tianjia Zhang wrote:
+> > > Obviously, the error variable detection of the if statement is
+> > > for the mprotect callback function, so it is also put into the
+> > > scope of calling callbck.
+> > > 
+> > > Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
+> > > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> > 
+> > No fixes tag, no description what this commit does. Nothing
+> > makes sense to me.
 > 
-> ./net/bridge/br_multicast.c:1295:7-13: WARNING: PTR_ERR_OR_ZERO can be
-> used.
-> 
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+> It's a little cleanup.  Makes the flow at this site consistent with the
+> other places where this function handles errors.  I added a bit to the
+> changelog mentioning this.
 
-You need to CC netdev
+Alright, I see. I'm just used to getting feedback to my own patches
+that "imperative form" of expression should be rigidly used. That's the
+main reason I gave the feedback.
+
+/Jarkko
