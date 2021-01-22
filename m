@@ -2,101 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A762FFACB
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 103212FFAE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbhAVDDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 22:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbhAVDDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:03:33 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F50BC061756;
-        Thu, 21 Jan 2021 19:02:47 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id a1so2015487qvd.13;
-        Thu, 21 Jan 2021 19:02:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OehH2QKmRJNHAmt3gOc5mz6jP/YImBd8NtE4WLbUWic=;
-        b=dDSOhBnvs+xcEGhCJpIO/hGokDo6IikafhOUy3pbnXOIjcYBnj8E3MSho8eqqG7tAg
-         n00B6moEXSff0t8/BiAzsmO8xpu5JVIr2d5IoFd+Dq2Efr1j6xSP9tj2Xf14eEptPgJc
-         DQ/4AsI7n/FhehiVE6p1F3Iz5MNvH7HE1e1T26lWDiFuXMrDfIe7rLOCmtBhLXSU4b10
-         Fa/pFJofaxwnjeh63hcpU8DQEZgZ1cGKnMNH6Q9ysS0bw4QLjll57wUQKawrBfcxmvVz
-         MicMCM2CNKrQhqbxQDt9pTyJ+Lw2SDHyiSL+k74iseE+2Wwl2Wul/w9o9d604BFrp0Dc
-         2SXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OehH2QKmRJNHAmt3gOc5mz6jP/YImBd8NtE4WLbUWic=;
-        b=GnvOc19NewKBHvfVlOaiIVR+bN4LjvB6WrpcWFUj6HVCtOt7GeL7dv4B/9GkEbv6M/
-         pF6bFOW1Rnxz9ZQnygLBLgTuZXEy/k65aeiSqrvdQjC94AD47JI5t/RBfKIR+VVgRIVx
-         CiW6tfSUyehnHdPxRc5ba4txjsXn5LEo0qXKYUpxky/AGfhB8WffaHjCMrrtU5MCzOQa
-         Cb5BXLVDLneajrJEPP6Tuiej68e+xWcVpCbkznsebeaSKtp7qYbTMqBz6yEXQ3eTwRVp
-         VNffGQ6lX6ruOAVtjhAoBVMMCyfT3Kc6fL2AkFqhRNorcR1P9maS2IDUocbGrL4yUM+k
-         AJlA==
-X-Gm-Message-State: AOAM531FT+9WqdJEl/OYILI1J1LudvChSNBlaa2zdtBGpB0f/MZvCzRA
-        aV3B5ncwjRpfHTHRH4USETI=
-X-Google-Smtp-Source: ABdhPJxXSSJhACYtd7M1tbXNfZ6g3yBXjudqdIZj5JaP+kx404qqQI6uXEDIkNVT1mcee3gq6pmqpQ==
-X-Received: by 2002:a0c:fe04:: with SMTP id x4mr2783856qvr.13.1611284566681;
-        Thu, 21 Jan 2021 19:02:46 -0800 (PST)
-Received: from localhost.localdomain ([45.32.7.59])
-        by smtp.gmail.com with ESMTPSA id y17sm5123721qki.48.2021.01.21.19.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 19:02:46 -0800 (PST)
-From:   Su Yanjun <suyanjun218@gmail.com>
-To:     mkl@pengutronix.de, manivannan.sadhasivam@linaro.org,
-        thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
-        kuba@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Su Yanjun <suyanjun218@gmail.com>
-Subject: [PATCH v1] can: mcp251xfd: use regmap_bulk_write for compatibility
-Date:   Fri, 22 Jan 2021 11:02:14 +0800
-Message-Id: <20210122030214.166334-1-suyanjun218@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726751AbhAVDMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 22:12:01 -0500
+Received: from mga03.intel.com ([134.134.136.65]:38417 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726686AbhAVDLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 22:11:36 -0500
+IronPort-SDR: 2g0Z16XYoDnWg/p87VPFrpzrHQiIP3O2ROWqhu/SC6F3dAcmJekk2vRiVBANNJngfyQ9+Bvmq9
+ wTqY2M91vS5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="179468188"
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="179468188"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 19:09:48 -0800
+IronPort-SDR: 6xXFYzadlx0d2qzhFbTaiU+Ff2drMYjF4V1wclQFvJ4+xKpTdMBm+3yGyYT12ShpACU3Y/jxMS
+ ECby4xqpbs6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,365,1602572400"; 
+   d="scan'208";a="385587602"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by orsmga008.jf.intel.com with ESMTP; 21 Jan 2021 19:09:45 -0800
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] x86/perf: Use static_call for x86_pmu.guest_get_msrs
+Date:   Fri, 22 Jan 2021 11:03:24 +0800
+Message-Id: <20210122030324.2754492-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently i use mcp2518fd on 4.x kernel which multiple write is not
-backported, regmap_raw_write will cause old kernel crash because the
-tx buffer in driver is smaller then 2K. Use regmap_bulk_write instead
-for compatibility.
+Clean up that CONFIG_RETPOLINE crud and replace the
+indirect call x86_pmu.guest_get_msrs with static_call().
 
-Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/events/core.c            | 20 ++++++++++++++++++++
+ arch/x86/events/intel/core.c      | 20 --------------------
+ arch/x86/include/asm/perf_event.h |  5 -----
+ 3 files changed, 20 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 3dde52669343..ab8aad0a7594 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -932,6 +932,7 @@ static int mcp251xfd_chip_ecc_init(struct mcp251xfd_priv *priv)
- 	void *ram;
- 	u32 val = 0;
- 	int err;
-+	int val_bytes = regmap_get_val_bytes(priv->map_reg);
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index e37de298a495..cf0a52c80408 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -81,6 +81,8 @@ DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
+ DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
+ DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
  
- 	ecc->ecc_stat = 0;
++DEFINE_STATIC_CALL_NULL(x86_pmu_guest_get_msrs,  *x86_pmu.guest_get_msrs);
++
+ u64 __read_mostly hw_cache_event_ids
+ 				[PERF_COUNT_HW_CACHE_MAX]
+ 				[PERF_COUNT_HW_CACHE_OP_MAX]
+@@ -665,6 +667,12 @@ void x86_pmu_disable_all(void)
+ 	}
+ }
  
-@@ -947,8 +948,8 @@ static int mcp251xfd_chip_ecc_init(struct mcp251xfd_priv *priv)
- 	if (!ram)
- 		return -ENOMEM;
++struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
++{
++	return static_call(x86_pmu_guest_get_msrs)(nr);
++}
++EXPORT_SYMBOL_GPL(perf_guest_get_msrs);
++
+ /*
+  * There may be PMI landing after enabled=0. The PMI hitting could be before or
+  * after disable_all.
+@@ -1923,6 +1931,8 @@ static void x86_pmu_static_call_update(void)
  
--	err = regmap_raw_write(priv->map_reg, MCP251XFD_RAM_START, ram,
--			       MCP251XFD_RAM_SIZE);
-+	err = regmap_bulk_write(priv->map_reg, MCP251XFD_RAM_START, ram,
-+			       MCP251XFD_RAM_SIZE / val_bytes);
- 	kfree(ram);
+ 	static_call_update(x86_pmu_drain_pebs, x86_pmu.drain_pebs);
+ 	static_call_update(x86_pmu_pebs_aliases, x86_pmu.pebs_aliases);
++
++	static_call_update(x86_pmu_guest_get_msrs, x86_pmu.guest_get_msrs);
+ }
  
- 	return err;
+ static void _x86_pmu_read(struct perf_event *event)
+@@ -1930,6 +1940,13 @@ static void _x86_pmu_read(struct perf_event *event)
+ 	x86_perf_event_update(event);
+ }
+ 
++static inline struct perf_guest_switch_msr *
++perf_guest_get_msrs_nop(int *nr)
++{
++	*nr = 0;
++	return NULL;
++}
++
+ static int __init init_hw_perf_events(void)
+ {
+ 	struct x86_pmu_quirk *quirk;
+@@ -2001,6 +2018,9 @@ static int __init init_hw_perf_events(void)
+ 	if (!x86_pmu.read)
+ 		x86_pmu.read = _x86_pmu_read;
+ 
++	if (!x86_pmu.guest_get_msrs)
++		x86_pmu.guest_get_msrs = perf_guest_get_msrs_nop;
++
+ 	x86_pmu_static_call_update();
+ 
+ 	/*
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index d4569bfa83e3..93adf53cce5f 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3680,26 +3680,6 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_RETPOLINE
+-static struct perf_guest_switch_msr *core_guest_get_msrs(int *nr);
+-static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr);
+-#endif
+-
+-struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+-{
+-#ifdef CONFIG_RETPOLINE
+-	if (x86_pmu.guest_get_msrs == intel_guest_get_msrs)
+-		return intel_guest_get_msrs(nr);
+-	else if (x86_pmu.guest_get_msrs == core_guest_get_msrs)
+-		return core_guest_get_msrs(nr);
+-#endif
+-	if (x86_pmu.guest_get_msrs)
+-		return x86_pmu.guest_get_msrs(nr);
+-	*nr = 0;
+-	return NULL;
+-}
+-EXPORT_SYMBOL_GPL(perf_guest_get_msrs);
+-
+ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index b9a7fd0a27e2..fac31b4cd61c 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -483,11 +483,6 @@ static inline void perf_check_microcode(void) { }
+ extern struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr);
+ extern int x86_perf_get_lbr(struct x86_pmu_lbr *lbr);
+ #else
+-static inline struct perf_guest_switch_msr *perf_guest_get_msrs(int *nr)
+-{
+-	*nr = 0;
+-	return NULL;
+-}
+ static inline int x86_perf_get_lbr(struct x86_pmu_lbr *lbr)
+ {
+ 	return -1;
 -- 
-2.25.1
+2.29.2
 
