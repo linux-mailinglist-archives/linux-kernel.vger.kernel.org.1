@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DAB2FFED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5682FFEE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbhAVI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:57:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727115AbhAVI4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:56:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4204B236F9;
-        Fri, 22 Jan 2021 08:56:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611305767;
-        bh=pRam4RRPk7bs5HWbgv9qL+rMAeIAaAefaxRUheReTZo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K1QGFF76BVarGNqAwldxrfiPLejxKX/t045GjiiK/++/pCGekQo2AHiZ12pAEoYX8
-         ZfqWd9+Ams/9lBo3+bgbOtVzfZLV+mJ09ET0aMSu2URsT7PFWsyM2rEVGXExn1q073
-         RvZOlnVs4Ya0TSA4g98PgBAkzBb69jlZ6GLuvNu5aY1VtQzwoBmHF3bVVHPAnsXRYd
-         CqB+UWfIsXG2I7HZv1/wyCx4+mH62VVjKWCMvIPbRdaKxpfRZTmbYj3ye7c1kYRQcS
-         j5CFWohxfJ1ZAyi+OCtfzATVABNoxvqEWOKGFnoci1+hERr7Nk99xzBQ7WpWGvHyzu
-         f7GlDQhuGeO2Q==
-Date:   Fri, 22 Jan 2021 09:56:04 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Barry Song <baohua@kernel.org>
-Subject: Re: [PATCH 1/3] i2c: remove sirf bus driver
-Message-ID: <20210122085604.GC858@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Barry Song <baohua@kernel.org>
-References: <20210120132834.2375048-1-arnd@kernel.org>
- <20210120132834.2375048-2-arnd@kernel.org>
+        id S1727271AbhAVI71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727139AbhAVI6F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:58:05 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8276C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:57:24 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id v19so3263929pgj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Om1fWmk45UJnPODoi3J7JRR5hgr9TDBF5Ojj+VBLP+Q=;
+        b=DQdwse1o8A4TFLSTf635UiaPyi6CNnDBdu5E/VRgybpjhBuPc82DnqYHZjg9t92Pzc
+         UCF9pC7g/PGDlbtLtmLOdTiS8Tdhquzw4+i/E8QkV/k3FnXrSAHcDrBhxbByYv6RW/Xk
+         rh1ZriX32mO6dzrqx8Bn4boIowsGWzV61/SfbmR07pY85OSd8cbypVBtAU7uRE71SPWP
+         ZGvAgVm7e6EB80Mb9g20xsmyaq+xclF6iYsiqEgyJCVldiHH+6Ll4/6flPjuNvpwgBKy
+         bYAQbRWKnEvkPf4yITKKlicI0Y8rb331KxOYB/Oq+WD6M3bsMFD9cDI0DmfkQoFKLUvq
+         YVDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Om1fWmk45UJnPODoi3J7JRR5hgr9TDBF5Ojj+VBLP+Q=;
+        b=OiVsn0H4dbh0Fkdhs7e+GphEnd3F8qs62IseV5W9EAlndTOhv1HD+j2ucp5mx2yPwZ
+         oqkIgGpAr8Sq5Hs6ZbXkZVHJtvaSTCZrqxpNlwoDxulnWzVVOsH1ynBiD4gA+nN6NC0F
+         FWC2nZ+hCIfZEEjwp8ovRdMi3/mdmkS36h2FEm7p+nLV8dwLQBFLMsnAYnTbOC3yte1+
+         5K9vmQio0Ng45YT9tGcHPwR2C9k6FNqcY8CQdr/zO0f+a2VCe38+uEuVp1g7TizTfeg7
+         /gKAV4RGjBx1gbWU6I49tSM8iWd5DFyWSkd8dCewyYA/21exVO/kc6l2yoYsKbNjvtkc
+         OZiA==
+X-Gm-Message-State: AOAM532pA7xRmMP5OSDa49KQUw8XTc3jNt/AvRXta+dEqPcVpwTuDSAT
+        TY3m9dlsoV85pLQgMn170MChRbo602TlPhwisV2kPg==
+X-Google-Smtp-Source: ABdhPJz+NkTbQB3eSzWRE6o4dt43ME127orJ75xc5hTZL4LE30MLU3ITXQSmDnFKbpmkkVpVgOnCehiaM5NJZfbh6HM=
+X-Received: by 2002:a62:8895:0:b029:19e:92ec:6886 with SMTP id
+ l143-20020a6288950000b029019e92ec6886mr3763217pfd.12.1611305844294; Fri, 22
+ Jan 2021 00:57:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YD3LsXFS42OYHhNZ"
-Content-Disposition: inline
-In-Reply-To: <20210120132834.2375048-2-arnd@kernel.org>
+References: <20210121202855.17400-1-tiwai@suse.de>
+In-Reply-To: <20210121202855.17400-1-tiwai@suse.de>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 22 Jan 2021 09:57:13 +0100
+Message-ID: <CAG3jFyu5RWvbxkiLHXtijGuXChBoKy-kPv38qk-_h9ir8u=ybg@mail.gmail.com>
+Subject: Re: [PATCH] media: pwc: Fix the URB buffer allocation
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for the patch, it all looks good to me.
 
---YD3LsXFS42OYHhNZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Feel free to add my r-b:
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-On Wed, Jan 20, 2021 at 02:28:32PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The CSR SiRF prima2/atlas platforms are getting removed, so this driver
-> is no longer needed.
->=20
-> Cc: Barry Song <baohua@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Applied to for-next, thanks!
-
-
---YD3LsXFS42OYHhNZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAKkyQACgkQFA3kzBSg
-KbZmEQ/+OuZ9iAIlgmhtK+JeGO5Dv4dmlGVhEbQBOrihaBUROjM+z8ZhCoOn7d6Y
-I2ERvIMrNUqMUG/dgo8aE1z3MKeUKbHCVcoNJt/CsvdkGgrCz+krJW+9bThQ3eiz
-oc5+8jKIif6JlpSYVmp2+x9oE1BIzQY0sFEDO55Kb9bcwR1O6i5/grc40g2mg3Hc
-voDjjA8orelvtM5DhucCIMtX1/hgHkme0V1ujbmLt1tYoGXSw6AoF2z3rMlNeijL
-lfGlaFmfRuXgksXHX9IQ9M9V5TElhy2V33yqzj/barqo7UDUNIO9PJEoQGHE5PNL
-yXUNFoDnmz/YufmrH0Dadnqk///fm4sbj9suqZHd49vySdEgCm6lPNOWCy7VX3tf
-LZi5sVH5Bnof/gdiz4R7ajbD4Ehnit+kPHMLmJp6ToAtmFmmbQHHkAmrJAB4m3So
-Ilm7mMLXQqDlNYU8/MtqAP2ezDjZklKFqmIEdzl67fU2Z7F/9wDuqYHJweWcmrYT
-bDR3ca1Bnw1WdwySRrjHgwtggrNu5X6XHT1rsQ16LWFAXVJvDtVVlGMWjeBga3AN
-f+RX2EC6ARaYrffs/4SL7JnkscFRdON8Nkj0hE9zL0sKBhN1PYIJh8rTJ9E6DJ5F
-Z7Tt2eQBMuCqLpGtTN9WhegirSL5FfamXA2wDEiGI/h9ZseTCtM=
-=eOmQ
------END PGP SIGNATURE-----
-
---YD3LsXFS42OYHhNZ--
+On Thu, 21 Jan 2021 at 21:34, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> The URB buffer allocation of pwc driver involves with the
+> dma_map_single(), and it needs to pass the right device.  Currently it
+> passes usb_device.dev, but it's no real device that manages the DMA.
+> Since the passed device has no DMA mask set up, now the pwc driver
+> hits the WARN_ON_ONCE() check in dma_map_page_attrs() (that was
+> introduced in 5.10), resulting in an error at URB allocations.
+> Eventually this ended up with the black output.
+>
+> This patch fixes the bug by passing the proper device, the bus
+> controller, to make the URB allocation and map working again.
+>
+> BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1181133
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  drivers/media/usb/pwc/pwc-if.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/usb/pwc/pwc-if.c b/drivers/media/usb/pwc/pwc-if.c
+> index 61869636ec61..d771160bb168 100644
+> --- a/drivers/media/usb/pwc/pwc-if.c
+> +++ b/drivers/media/usb/pwc/pwc-if.c
+> @@ -461,7 +461,7 @@ static int pwc_isoc_init(struct pwc_device *pdev)
+>                 urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
+>                 urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
+>                 urb->transfer_buffer_length = ISO_BUFFER_SIZE;
+> -               urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
+> +               urb->transfer_buffer = pwc_alloc_urb_buffer(udev->bus->controller,
+>                                                             urb->transfer_buffer_length,
+>                                                             &urb->transfer_dma);
+>                 if (urb->transfer_buffer == NULL) {
+> @@ -524,7 +524,7 @@ static void pwc_iso_free(struct pwc_device *pdev)
+>                 if (urb) {
+>                         PWC_DEBUG_MEMORY("Freeing URB\n");
+>                         if (urb->transfer_buffer)
+> -                               pwc_free_urb_buffer(&urb->dev->dev,
+> +                               pwc_free_urb_buffer(urb->dev->bus->controller,
+>                                                     urb->transfer_buffer_length,
+>                                                     urb->transfer_buffer,
+>                                                     urb->transfer_dma);
+> --
+> 2.26.2
+>
