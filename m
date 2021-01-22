@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5C83004CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CAC3004CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbhAVOEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:04:55 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:36816 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728086AbhAVOBd (ORCPT
+        id S1727802AbhAVOEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:04:33 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:35799 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728099AbhAVOBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:33 -0500
-Received: by mail-ot1-f47.google.com with SMTP id v21so5126506otj.3;
-        Fri, 22 Jan 2021 06:01:17 -0800 (PST)
+        Fri, 22 Jan 2021 09:01:40 -0500
+Received: by mail-oi1-f180.google.com with SMTP id w8so6074034oie.2;
+        Fri, 22 Jan 2021 06:01:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=J/tUZzvykoZkd9JJt583sreD3ebEWjT4q0KMk8iAjqs=;
-        b=Kjc73uMaGJexrOckRL21e/BN2964KNcur3G+WcffjVJYY9CsxqG5y3QEZl+WwmPslZ
-         S6kkA8v63pvh6eFqJyL1eH9WJXL5pJ92XriDAg1ssvGfjW6wgarm/hOh240w+TR3QrD6
-         Y3LY7DGks6IJJqPl3lBqPXvLcS2XBqQijDmJj6fXrC5BYgErOy2G9spGX8Y2pf0RrVcw
-         Tvwu8yTX1mBN76PJ9TxfgyOhEE6dt3U27Hdt2j07zd1bEvhjwO/KgPdcwUr7hIL/PqDH
-         AgaFd+SeTSpVbmcpN8ncvGZJLrToRDZR5LXL4kIfvERwpDVB3d+cxV7kWSbQASa8SakW
-         HcqQ==
-X-Gm-Message-State: AOAM533IQW12rdEmvScMQuIFffXHATI5/T7pd1aZXnFy+ONWTEUKiJT+
-        334PfX4YRiAvvG2dkOSwJcB2msXZwg==
-X-Google-Smtp-Source: ABdhPJzhQuF9hbFB1akXwm17GIM4g4G+p+4YUHPYtMeU07fuzkJuP792ZqPdxjpJE/sSEs8J9neF2g==
-X-Received: by 2002:a05:6830:1614:: with SMTP id g20mr3330366otr.77.1611324052392;
-        Fri, 22 Jan 2021 06:00:52 -0800 (PST)
+        bh=EUaxXtMWBR0BSS8k6na/vc+HlfNaGeb+7ZCL4OicyZo=;
+        b=tcNcQFTa9eTkeefyMNo0nbaKZoEjRJl04HKsP9c03B8EaIIhh7+o0lSd3fh+rp4AN4
+         Jtz23oimntuw3KWgeWKWoBCPL6Cuap7wqy2H8d4CLaCzrH7SAY0ANJP62VfeR5yxVFZr
+         G5yGlyhAtWMU0ZdF8oGBAs7vZBd17llLUDi3GesY7HKu4oqXxOSaPvyvEa305vM5vmjm
+         C6yL5/6Wk4LZZvg0Ggdpx2S1AT7fmDZBWdtVPov5R9tsg1q02iQ9+ekxEFFak/glbmYV
+         v8g01Yd9oSabaRaDyvgEwWnMsX3RgWd38z8eliAXl3LGkFl7m5bW2eoaIc47uUHDSp1t
+         hwHQ==
+X-Gm-Message-State: AOAM531ZvPVExek1+izjzKzDoT6ox6ahcrY3kDVkczqw7KBJw3PBjVxT
+        PGncIKO4VrdCRAWqX0zSFA==
+X-Google-Smtp-Source: ABdhPJzuup2G8I4By0nwY5GjTeCgXxvfBNcb5i/dqcjgAbP+KwX1KNzEuKUqEobX9LeiIvN8oDTXpw==
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr3361372oia.54.1611324054240;
+        Fri, 22 Jan 2021 06:00:54 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s123sm566256oos.3.2021.01.22.06.00.51
+        by smtp.gmail.com with ESMTPSA id p4sm1719630oib.24.2021.01.22.06.00.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:00:51 -0800 (PST)
-Received: (nullmailer pid 674371 invoked by uid 1000);
+        Fri, 22 Jan 2021 06:00:53 -0800 (PST)
+Received: (nullmailer pid 674375 invoked by uid 1000);
         Fri, 22 Jan 2021 14:00:45 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-In-Reply-To: <20210121171747.3161543-2-vkoul@kernel.org>
-References: <20210121171747.3161543-1-vkoul@kernel.org> <20210121171747.3161543-2-vkoul@kernel.org>
-Subject: Re: [PATCH v5 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl bindings
+To:     gabriel.fernandez@foss.st.com
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210122105101.27374-14-gabriel.fernandez@foss.st.com>
+References: <20210122105101.27374-1-gabriel.fernandez@foss.st.com> <20210122105101.27374-14-gabriel.fernandez@foss.st.com>
+Subject: Re: [PATCH 13/14] dt-bindings: clock: stm32mp1 new compatible for secure rcc
 Date:   Fri, 22 Jan 2021 08:00:45 -0600
-Message-Id: <1611324045.680277.674370.nullmailer@robh.at.kernel.org>
+Message-Id: <1611324045.701742.674374.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 22:47:46 +0530, Vinod Koul wrote:
-> Add device tree binding Documentation details for Qualcomm SM8350
-> pinctrl driver.
+On Fri, 22 Jan 2021 11:51:00 +0100, gabriel.fernandez@foss.st.com wrote:
+> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 > 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Introduce new compatible string "st,stm32mp1-rcc-secure" for
+> stm32mp1 clock driver when the device is configured with RCC
+> security support hardened.
+> 
+> Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 > ---
->  .../bindings/pinctrl/qcom,sm8350-pinctrl.yaml | 146 ++++++++++++++++++
->  1 file changed, 146 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.yaml
+>  Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -69,15 +77,12 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/pinctrl/qcom,tlmm-common.yaml'
-xargs: dt-doc-validate: exited with status 255; aborting
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/pinctrl/qcom,tlmm-common.yaml'
-make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/pinctrl/qcom,sm8350-pinctrl.example.dt.yaml] Error 255
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1370: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.example.dt.yaml: rcc@50000000: compatible:1: 'st,stm32mp1-rcc' was expected
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.example.dt.yaml: rcc@50000000: compatible: ['st,stm32mp1-rcc-secure', 'syscon'] is too short
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/st,stm32mp1-rcc.yaml
 
-See https://patchwork.ozlabs.org/patch/1429976
+See https://patchwork.ozlabs.org/patch/1430316
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
