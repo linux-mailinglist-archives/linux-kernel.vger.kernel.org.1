@@ -2,393 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2B130017C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FCA30017A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbhAVL0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:26:32 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:35103 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728268AbhAVLYG (ORCPT
+        id S1727273AbhAVL0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:26:00 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:57763 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728133AbhAVLUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:24:06 -0500
-X-UUID: fe811c0e40b6453497b76bd4b2f51ae3-20210122
-X-UUID: fe811c0e40b6453497b76bd4b2f51ae3-20210122
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <hsin-hsiung.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1220637426; Fri, 22 Jan 2021 19:19:58 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 22 Jan 2021 19:19:43 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 22 Jan 2021 19:19:43 +0800
-From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Fei Shao <fshao@chromium.org>
-CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Yuchen Huang <yuchen.huang@mediatek.com>,
-        Ran Bi <ran.bi@mediatek.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Wen Su <wen.su@mediatek.com>
-Subject: [PATCH v5 8/8] arm64: dts: mt6359: add PMIC MT6359 related nodes
-Date:   Fri, 22 Jan 2021 19:19:41 +0800
-Message-ID: <1611314381-19517-9-git-send-email-hsin-hsiung.wang@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-In-Reply-To: <1611314381-19517-1-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1611314381-19517-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+        Fri, 22 Jan 2021 06:20:50 -0500
+Date:   Fri, 22 Jan 2021 11:19:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611314395; bh=p7+8XjPhSmAbABVYbt84wqNdvpY3y5DtUEPQrJtgE7A=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=dsE44vL5poHC9QkDbiBO1M2JWyJqpO+Sou0Y3OUxPWZ4Kh4DtIUwsTHoq5cgKX+jt
+         aHXOMkom6SoN1wG5FPsVAOgzdGG5DgKVszVdSugwA0/4CiG0hVqVOXncT42uSeueNi
+         cIwFiAUIsXBqBzyDwxgKXA/fuuv4gUE5jgIJh66ddvvSLzErwlfXg4f2CCabHeWv3j
+         13yHj2ogdozKAo8DDThnD/iVsqsGse3TX1LhcIQULOa4cpk/A2IRHb3+9IMEATuvg4
+         I1zRH9KfpDV42DJL1Yn/bv0kvHQgWFQcGDrqIqV+hnyawhQEFWvOCvMHaBad5+0aB3
+         esFB+ZMeXkC3Q==
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Meir Lichtinger <meirl@mellanox.com>,
+        Aya Levin <ayal@mellanox.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next 2/2] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
+Message-ID: <20210122111919.1973-1-alobakin@pm.me>
+In-Reply-To: <CA+FuTSeZu6Z0eQ20Fwhr6DmraV1a90vMb1LQcwLxesD04LXGgw@mail.gmail.com>
+References: <20210118193122.87271-1-alobakin@pm.me> <20210118193232.87583-1-alobakin@pm.me> <20210118193232.87583-2-alobakin@pm.me> <CA+FuTSeZu6Z0eQ20Fwhr6DmraV1a90vMb1LQcwLxesD04LXGgw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Su <wen.su@mediatek.com>
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date: Thu, 21 Jan 2021 21:47:47 -0500
 
-add PMIC MT6359 related nodes which is for MT6779 platform
+> On Mon, Jan 18, 2021 at 2:33 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
+> > not only added a support for fraglisted UDP GRO, but also tweaked
+> > some logics the way that non-fraglisted UDP GRO started to work for
+> > forwarding too.
+> > Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
+> > list of software-backed types") added GSO UDP L4 to the list of
+> > software GSO to allow virtual netdevs to forward them as is up to
+> > the real drivers.
+> >
+> > Tests showed that currently forwarding and NATing of plain UDP GRO
+> > packets are performed fully correctly, regardless if the target
+> > netdevice has a support for hardware/driver GSO UDP L4 or not.
+> > Plain UDP GRO forwarding even shows better performance than fraglisted
+> > UDP GRO in some cases due to not wasting one skbuff_head per every
+> > segment.
+>=20
+> That is surprising. The choice for fraglist based forwarding was made
+> on the assumption that it is cheaper if software segmentation is needed.
+>=20
+> Do you have a more specific definition of the relevant cases?
 
-Signed-off-by: Wen Su <wen.su@mediatek.com>
-Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
----
-changes since v4:
-- add pmic MT6359 support in the MT8192 evb dts.
----
- arch/arm64/boot/dts/mediatek/mt6359.dtsi    | 298 ++++++++++++++++++++
- arch/arm64/boot/dts/mediatek/mt8192-evb.dts |   1 +
- 2 files changed, 299 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt6359.dtsi
+"Classic" UDP GRO shows better performance when forwarding to a NIC
+that supports GSO UDP L4 (i.e. no software segmentation occurs), like
+the one that I test kernel on.
+I don't have much info about performance without UDP GSO offload
+as I usually test NAT, and fralisted UDP GRO currently fails on
+this [0].
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6359.dtsi b/arch/arm64/boot/dts/mediatek/mt6359.dtsi
-new file mode 100644
-index 000000000000..4bd85e33a4c9
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt6359.dtsi
-@@ -0,0 +1,298 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2020 MediaTek Inc.
-+ */
-+
-+&pwrap {
-+	pmic: pmic {
-+		compatible = "mediatek,mt6359";
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+
-+		mt6359codec: mt6359codec {
-+		};
-+
-+		mt6359regulator: regulators {
-+			mt6359_vs1_buck_reg: buck_vs1 {
-+				regulator-name = "vs1";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <2200000>;
-+				regulator-enable-ramp-delay = <0>;
-+				regulator-always-on;
-+			};
-+			mt6359_vgpu11_buck_reg: buck_vgpu11 {
-+				regulator-name = "vgpu11";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1193750>;
-+				regulator-ramp-delay = <5000>;
-+				regulator-enable-ramp-delay = <200>;
-+				regulator-allowed-modes = <0 1 2>;
-+			};
-+			mt6359_vmodem_buck_reg: buck_vmodem {
-+				regulator-name = "vmodem";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-ramp-delay = <10760>;
-+				regulator-enable-ramp-delay = <200>;
-+			};
-+			mt6359_vpu_buck_reg: buck_vpu {
-+				regulator-name = "vpu";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1193750>;
-+				regulator-ramp-delay = <5000>;
-+				regulator-enable-ramp-delay = <200>;
-+				regulator-allowed-modes = <0 1 2>;
-+			};
-+			mt6359_vcore_buck_reg: buck_vcore {
-+				regulator-name = "vcore";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1300000>;
-+				regulator-ramp-delay = <5000>;
-+				regulator-enable-ramp-delay = <200>;
-+				regulator-allowed-modes = <0 1 2>;
-+			};
-+			mt6359_vs2_buck_reg: buck_vs2 {
-+				regulator-name = "vs2";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <1600000>;
-+				regulator-enable-ramp-delay = <0>;
-+				regulator-always-on;
-+			};
-+			mt6359_vpa_buck_reg: buck_vpa {
-+				regulator-name = "vpa";
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <3650000>;
-+				regulator-enable-ramp-delay = <300>;
-+			};
-+			mt6359_vproc2_buck_reg: buck_vproc2 {
-+				regulator-name = "vproc2";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1193750>;
-+				regulator-ramp-delay = <7500>;
-+				regulator-enable-ramp-delay = <200>;
-+				regulator-allowed-modes = <0 1 2>;
-+			};
-+			mt6359_vproc1_buck_reg: buck_vproc1 {
-+				regulator-name = "vproc1";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1193750>;
-+				regulator-ramp-delay = <7500>;
-+				regulator-enable-ramp-delay = <200>;
-+				regulator-allowed-modes = <0 1 2>;
-+			};
-+			mt6359_vcore_sshub_buck_reg: buck_vcore_sshub {
-+				regulator-name = "vcore_sshub";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1193750>;
-+			};
-+			mt6359_vgpu11_sshub_buck_reg: buck_vgpu11_sshub {
-+				regulator-name = "vgpu11_sshub";
-+				regulator-min-microvolt = <400000>;
-+				regulator-max-microvolt = <1193750>;
-+			};
-+			mt6359_vaud18_ldo_reg: ldo_vaud18 {
-+				regulator-name = "vaud18";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-enable-ramp-delay = <240>;
-+			};
-+			mt6359_vsim1_ldo_reg: ldo_vsim1 {
-+				regulator-name = "vsim1";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <3100000>;
-+			};
-+			mt6359_vibr_ldo_reg: ldo_vibr {
-+				regulator-name = "vibr";
-+				regulator-min-microvolt = <1200000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+			mt6359_vrf12_ldo_reg: ldo_vrf12 {
-+				regulator-name = "vrf12";
-+				regulator-min-microvolt = <1100000>;
-+				regulator-max-microvolt = <1300000>;
-+			};
-+			mt6359_vusb_ldo_reg: ldo_vusb {
-+				regulator-name = "vusb";
-+				regulator-min-microvolt = <3000000>;
-+				regulator-max-microvolt = <3000000>;
-+				regulator-enable-ramp-delay = <960>;
-+				regulator-always-on;
-+			};
-+			mt6359_vsram_proc2_ldo_reg: ldo_vsram_proc2 {
-+				regulator-name = "vsram_proc2";
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1293750>;
-+				regulator-ramp-delay = <7500>;
-+				regulator-enable-ramp-delay = <240>;
-+				regulator-always-on;
-+			};
-+			mt6359_vio18_ldo_reg: ldo_vio18 {
-+				regulator-name = "vio18";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <1900000>;
-+				regulator-enable-ramp-delay = <960>;
-+				regulator-always-on;
-+			};
-+			mt6359_vcamio_ldo_reg: ldo_vcamio {
-+				regulator-name = "vcamio";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <1900000>;
-+			};
-+			mt6359_vcn18_ldo_reg: ldo_vcn18 {
-+				regulator-name = "vcn18";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-enable-ramp-delay = <240>;
-+			};
-+			mt6359_vfe28_ldo_reg: ldo_vfe28 {
-+				regulator-name = "vfe28";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <2800000>;
-+				regulator-enable-ramp-delay = <120>;
-+			};
-+			mt6359_vcn13_ldo_reg: ldo_vcn13 {
-+				regulator-name = "vcn13";
-+				regulator-min-microvolt = <900000>;
-+				regulator-max-microvolt = <1300000>;
-+			};
-+			mt6359_vcn33_1_bt_ldo_reg: ldo_vcn33_1_bt {
-+				regulator-name = "vcn33_1_bt";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <3500000>;
-+			};
-+			mt6359_vcn33_1_wifi_ldo_reg: ldo_vcn33_1_wifi {
-+				regulator-name = "vcn33_1_wifi";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <3500000>;
-+			};
-+			mt6359_vaux18_ldo_reg: ldo_vaux18 {
-+				regulator-name = "vaux18";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-enable-ramp-delay = <240>;
-+				regulator-always-on;
-+			};
-+			mt6359_vsram_others_ldo_reg: ldo_vsram_others {
-+				regulator-name = "vsram_others";
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1293750>;
-+				regulator-ramp-delay = <5000>;
-+				regulator-enable-ramp-delay = <240>;
-+			};
-+			mt6359_vefuse_ldo_reg: ldo_vefuse {
-+				regulator-name = "vefuse";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <2000000>;
-+			};
-+			mt6359_vxo22_ldo_reg: ldo_vxo22 {
-+				regulator-name = "vxo22";
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <2200000>;
-+				regulator-always-on;
-+			};
-+			mt6359_vrfck_ldo_reg: ldo_vrfck {
-+				regulator-name = "vrfck";
-+				regulator-min-microvolt = <1500000>;
-+				regulator-max-microvolt = <1700000>;
-+			};
-+			mt6359_vrfck_1_ldo_reg: ldo_vrfck_1 {
-+				regulator-name = "vrfck";
-+				regulator-min-microvolt = <1240000>;
-+				regulator-max-microvolt = <1600000>;
-+			};
-+			mt6359_vbif28_ldo_reg: ldo_vbif28 {
-+				regulator-name = "vbif28";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <2800000>;
-+				regulator-enable-ramp-delay = <240>;
-+			};
-+			mt6359_vio28_ldo_reg: ldo_vio28 {
-+				regulator-name = "vio28";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-always-on;
-+			};
-+			mt6359_vemc_ldo_reg: ldo_vemc {
-+				regulator-name = "vemc";
-+				regulator-min-microvolt = <2900000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+			mt6359_vemc_1_ldo_reg: ldo_vemc_1 {
-+				regulator-name = "vemc";
-+				regulator-min-microvolt = <2500000>;
-+				regulator-max-microvolt = <3300000>;
-+			};
-+			mt6359_vcn33_2_bt_ldo_reg: ldo_vcn33_2_bt {
-+				regulator-name = "vcn33_2_bt";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <3500000>;
-+			};
-+			mt6359_vcn33_2_wifi_ldo_reg: ldo_vcn33_2_wifi {
-+				regulator-name = "vcn33_2_wifi";
-+				regulator-min-microvolt = <2800000>;
-+				regulator-max-microvolt = <3500000>;
-+			};
-+			mt6359_va12_ldo_reg: ldo_va12 {
-+				regulator-name = "va12";
-+				regulator-min-microvolt = <1200000>;
-+				regulator-max-microvolt = <1300000>;
-+				regulator-always-on;
-+			};
-+			mt6359_va09_ldo_reg: ldo_va09 {
-+				regulator-name = "va09";
-+				regulator-min-microvolt = <800000>;
-+				regulator-max-microvolt = <1200000>;
-+			};
-+			mt6359_vrf18_ldo_reg: ldo_vrf18 {
-+				regulator-name = "vrf18";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <1810000>;
-+			};
-+			mt6359_vsram_md_ldo_reg: ldo_vsram_md {
-+				regulator-name = "vsram_md";
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1293750>;
-+				regulator-ramp-delay = <10760>;
-+				regulator-enable-ramp-delay = <240>;
-+			};
-+			mt6359_vufs_ldo_reg: ldo_vufs {
-+				regulator-name = "vufs";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <1900000>;
-+			};
-+			mt6359_vm18_ldo_reg: ldo_vm18 {
-+				regulator-name = "vm18";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <1900000>;
-+				regulator-always-on;
-+			};
-+			mt6359_vbbck_ldo_reg: ldo_vbbck {
-+				regulator-name = "vbbck";
-+				regulator-min-microvolt = <1100000>;
-+				regulator-max-microvolt = <1200000>;
-+			};
-+			mt6359_vsram_proc1_ldo_reg: ldo_vsram_proc1 {
-+				regulator-name = "vsram_proc1";
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1293750>;
-+				regulator-ramp-delay = <7500>;
-+				regulator-enable-ramp-delay = <240>;
-+				regulator-always-on;
-+			};
-+			mt6359_vsim2_ldo_reg: ldo_vsim2 {
-+				regulator-name = "vsim2";
-+				regulator-min-microvolt = <1700000>;
-+				regulator-max-microvolt = <3100000>;
-+			};
-+			mt6359_vsram_others_sshub_ldo: ldo_vsram_others_sshub {
-+				regulator-name = "vsram_others_sshub";
-+				regulator-min-microvolt = <500000>;
-+				regulator-max-microvolt = <1293750>;
-+			};
-+		};
-+
-+		mt6359rtc: mt6359rtc {
-+			compatible = "mediatek,mt6358-rtc";
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-index 0205837fa698..808be492e970 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-@@ -5,6 +5,7 @@
-  */
- /dts-v1/;
- #include "mt8192.dtsi"
-+#include "mt6359.dtsi"
- 
- / {
- 	model = "MediaTek MT8192 evaluation board";
--- 
-2.18.0
+> There currently is no option to enable GRO for forwarding, without
+> fraglist if to a device with h/w udp segmentation offload. This would
+> add that option too.
+
+Yes, that's exactly what I want. I want to maximize UDP
+forwarding/NATing performance when NIC is capable of UDP GSO offload,
+as I said above, non-fraglisted UDP GRO is better for that case.
+
+> Though under admin control, which may make it a rarely exercised option.
+> Assuming most hosts to have single or homogeneous NICs, the OS should
+> be able to choose the preferred option in most cases (e.g.,: use fraglist
+> unless all devices support h/w gro).
+
+I though about some sort of auto-selection, but at the moment of
+receiving we can't know which interface this skb will be forwarded
+to.
+Also, as Paolo Abeni said in a comment to v2, UDP GRO may cause
+sensible delays, which may be inacceptable in some environments.
+That's why we have to use a sockopt and netdev features to explicitly
+enable UDP GRO.
+
+Regarding all this, I introduced NETIF_F_UDP_GRO to have the
+following chose:
+ - both NETIF_F_UDP_GRO and NETIF_F_GRO_FRAGLIST is off - no UDP GRO;
+ - NETIF_F_UDP_GRO is on, NETIF_F_GRO_FRAGLIST is off - classic GRO;
+ - both NETIF_F_UDP_GRO and NETIF_F_GRO_FRAGLIST is on - fraglisted
+   UDP GRO.
+
+> > Add the last element and allow to form plain UDP GRO packets if
+> > there is no socket -> we are on forwarding path, and the new
+> > NETIF_F_GRO_UDP is enabled on a receiving netdevice.
+> > Note that fraglisted UDP GRO now also depends on this feature, as
+>=20
+> That may cause a regression for applications that currently enable
+> that device feature.
+
+Thought about this one too. Not sure if it would be better to leave
+it as it is for now or how it's done in this series. The problem
+that we may have in future is that in some day we may get fraglisted
+TCP GRO, and then NETIF_F_GRO_FRAGLIST will affect both TCP and UDP,
+which is not desirable as for me. So I decided to guard this possible
+case.
+
+> > NETIF_F_GRO_FRAGLIST isn't tied to any particular L4 protocol.
+> >
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  net/ipv4/udp_offload.c | 16 +++++++++++-----
+> >  1 file changed, 11 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > index ff39e94781bf..781a035de5a9 100644
+> > --- a/net/ipv4/udp_offload.c
+> > +++ b/net/ipv4/udp_offload.c
+> > @@ -454,13 +454,19 @@ struct sk_buff *udp_gro_receive(struct list_head =
+*head, struct sk_buff *skb,
+> >         struct sk_buff *p;
+> >         struct udphdr *uh2;
+> >         unsigned int off =3D skb_gro_offset(skb);
+> > -       int flush =3D 1;
+> > +       int flist =3D 0, flush =3D 1;
+> > +       bool gro_by_feat =3D false;
+>=20
+> What is this variable shorthand for? By feature? Perhaps
+> gro_forwarding is more descriptive.
+
+Yes, I chose "by feature" because fraglisted GRO also starts to
+work for local traffic if enabled, so "gro_forwarding" would be
+inaccurate naming.
+
+> >
+> > -       NAPI_GRO_CB(skb)->is_flist =3D 0;
+> > -       if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
+> > -               NAPI_GRO_CB(skb)->is_flist =3D sk ? !udp_sk(sk)->gro_en=
+abled: 1;
+
+I mean this. is_flist gets enabled if socket GRO option is disabled.
+
+> > +       if (skb->dev->features & NETIF_F_GRO_UDP) {
+> > +               if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
+> > +                       flist =3D !sk || !udp_sk(sk)->gro_enabled;
+> >
+> > -       if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_fli=
+st) {
+>=20
+> I would almost rename NETIF_F_GRO_FRAGLIST to NETIF_F_UDP_GRO_FWD.
+> Then this could be a !NETIF_F_UDP_GRO_FWD_FRAGLIST toggle on top of
+> that. If it wasn't for this fraglist option also enabling UDP GRO to
+> local sockets if set.
+>=20
+> That is, if the performance difference is significant enough to
+> require supporting both types of forwarding, under admin control.
+>=20
+> Perhaps the simplest alternative is to add the new feature without
+> making fraglist dependent on it:
+>=20
+>   if ((sk && udp_sk(sk)->gro_enabled) ||
+>       (skb->dev->features & NETIF_F_GRO_FRAGLIST) ||
+>       (!sk && skb->dev->features & NETIF_F_GRO_UDP_FWD))
+
+Yep, this will be the exact code if we end up with that
+NETIF_F_GRO_FRAGLIST should not depends on new netdev feature.
+But again, I wanted to protect TCP GRO if fraglisted TCP GRO will
+ever land the kernel. May be it's too much for the feature that
+currently doesn't exists even as a draft or plan, not sure.
+
+So, I'd stick to this variant (NETIF_F_UDP_GRO_FWD for plain,
+NETIF_F_GRO_FRAGLIST without changes for fraglisted) if preferred.
+
+> > +               gro_by_feat =3D !sk || flist;
+> > +       }
+> > +
+> > +       NAPI_GRO_CB(skb)->is_flist =3D flist;
+> > +
+> > +       if (gro_by_feat || (sk && udp_sk(sk)->gro_enabled)) {
+> >                 pp =3D call_gro_receive(udp_gro_receive_segment, head, =
+skb);
+> >                 return pp;
+> >         }
+> > --
+> > 2.30.0
+
+[0] https://lore.kernel.org/netdev/1611235479-39399-1-git-send-email-dseok.=
+yi@samsung.com
+
+Thanks,
+Al
 
