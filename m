@@ -2,286 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017FA30000D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FB7300019
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:23:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727635AbhAVKTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:19:10 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:60709 "EHLO pegase1.c-s.fr"
+        id S1727517AbhAVKW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:22:29 -0500
+Received: from mga05.intel.com ([192.55.52.43]:36660 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727390AbhAVKJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:09:14 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DMZdY3rBkz9vBnS;
-        Fri, 22 Jan 2021 11:05:37 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id sZ2PAgaNq3IA; Fri, 22 Jan 2021 11:05:37 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DMZdY2lprz9vBml;
-        Fri, 22 Jan 2021 11:05:37 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96B888B818;
-        Fri, 22 Jan 2021 11:05:38 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id TKUXSiuhpCba; Fri, 22 Jan 2021 11:05:38 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E3268B817;
-        Fri, 22 Jan 2021 11:05:38 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 251AD66AAE; Fri, 22 Jan 2021 10:05:38 +0000 (UTC)
-Message-Id: <663a615fc7e962ca8740898112512806ae0eeb73.1611309841.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1611309841.git.christophe.leroy@csgroup.eu>
-References: <cover.1611309841.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 14/14] powerpc/32: Use fast instructions to change MSR
- EE/RI when available
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 22 Jan 2021 10:05:38 +0000 (UTC)
+        id S1727825AbhAVKJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:09:00 -0500
+IronPort-SDR: Oei/IflOQRDhkV1ZlAF8GqrAhptQ62GpPQu+UVAb9UNwdJKqNxdO8ILn8onfJKB+EYyMQQuepB
+ 3xCnmvlL/Nsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="264244104"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="264244104"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 02:05:52 -0800
+IronPort-SDR: GTVcV40CII561+g1c4ZQEaXgUOCdiGelZbxh/WWOVbfil8fndYoLNlP0ch3/or33rw5JoYOFYX
+ F08IjTXyVxVg==
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="427923843"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 02:05:47 -0800
+Received: by lahna (sSMTP sendmail emulation); Fri, 22 Jan 2021 12:05:45 +0200
+Date:   Fri, 22 Jan 2021 12:05:45 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        linux-pci@vger.kernel.org, matthias.bgg@gmail.com,
+        lambert.wang@mediatek.com, linux-mediatek@lists.infradead.org,
+        haijun.liu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH v2] PCI: Re-enable downstream port LTR if it was
+ previously enabled
+Message-ID: <20210122100545.GL1988617@lahna.fi.intel.com>
+References: <20210121223139.GA2698934@bjorn-Precision-5520>
+ <1611298991.5980.42.camel@mcddlt001>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1611298991.5980.42.camel@mcddlt001>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Booke and 40x have wrtee and wrteei to quickly change MSR EE.
+Hi,
 
-8xx has registers SPRN_NRI, SPRN_EID and SPRN_EIE for changing
-MSR EE and RI.
+On Fri, Jan 22, 2021 at 03:03:11PM +0800, Mingchuang Qiao wrote:
+> On Thu, 2021-01-21 at 16:31 -0600, Bjorn Helgaas wrote:
+> > [+cc Alex and Mingchuang et al from
+> > https://lore.kernel.org/r/20210112072739.31624-1-mingchuang.qiao@mediatek.com]
+> > 
+> > On Tue, Jan 19, 2021 at 04:14:10PM +0300, Mika Westerberg wrote:
+> > > PCIe r5.0, sec 7.5.3.16 says that the downstream ports must reset the
+> > > LTR enable bit if the link goes down (port goes DL_Down status). Now, if
+> > > we had LTR previously enabled and the PCIe endpoint gets hot-removed and
+> > > then hot-added back the ->ltr_path of the downstream port is still set
+> > > but the port now does not have the LTR enable bit set anymore.
+> > > 
+> > > For this reason check if the bridge upstream had LTR enabled previously
+> > > and re-enable it before enabling LTR for the endpoint.
+> > > 
+> > > Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+> > > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> > 
+> > I think this and Mingchuang's patch, which is essentially identical,
+> > are right and solves the problem for hot-remove/hot-add.  In that
+> > scenario we call pci_configure_ltr() on the hot-added device, and
+> > with this patch, we'll re-enable LTR on the bridge leading to the new
+> > device before enabling LTR on the new device itself.
+> > 
+> > But don't we have a similar problem if we simply do a Fundamental
+> > Reset on a device?  I think the reset path will restore the device's
+> > state, including PCI_EXP_DEVCTL2, but it doesn't do anything with the
+> > upstream bridge, does it?
+> > 
+> 
+> Yes. I think the same problem exists under such scenario, and that’s the
+> issue my patch intends to resolve.
+> I also prepared a v2 patch for review(update the patch description).
+> Shall I submit the v2 patch for review?
 
-Use them in syscall and exception handler when possible.
+I looked at your patch and indeed it is essentially doing the same as
+this one. So let's forget this patch and go forward with yours :)
 
-On an 8xx, it reduces the null_syscall test by 6 cycles (Two
-instances are changed in this patch, meaning we win 3 cycles
-per place).
+Would you like to expand your patch to handle the reset case too that
+Bjorn desribes below?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/hw_irq.h | 46 +++++++++++++++++++++++++++++++
- arch/powerpc/kernel/entry_32.S    | 26 ++++++-----------
- arch/powerpc/kernel/head_32.h     | 13 +++++----
- arch/powerpc/kernel/head_booke.h  |  9 ++----
- 4 files changed, 66 insertions(+), 28 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
-index 0363734ff56e..899aa457e143 100644
---- a/arch/powerpc/include/asm/hw_irq.h
-+++ b/arch/powerpc/include/asm/hw_irq.h
-@@ -368,6 +368,52 @@ static inline void may_hard_irq_enable(void) { }
- 
- #define ARCH_IRQ_INIT_FLAGS	IRQ_NOREQUEST
- 
-+#else	/* __ASSEMBLY__ */
-+
-+.macro __hard_irq_enable tmp
-+#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
-+	wrteei	1
-+#elif defined(CONFIG_PPC_8xx)
-+	mtspr	SPRN_EIE, r2	/* RI=1, EE=1 */
-+#else
-+	LOAD_REG_IMMEDIATE(\tmp, MSR_KERNEL | MSR_EE)
-+	mtmsr   \tmp
-+#endif
-+.endm
-+
-+.macro __hard_irq_disable tmp
-+#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
-+	wrteei	0
-+#elif defined(CONFIG_PPC_8xx)
-+	mtspr	SPRN_EID, r2	/* RI=1, EE=0 */
-+#else
-+	LOAD_REG_IMMEDIATE(\tmp, MSR_KERNEL)
-+	mtmsr   \tmp
-+#endif
-+.endm
-+
-+.macro __hard_EE_RI_disable tmp
-+#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
-+	wrteei	0
-+#elif defined(CONFIG_PPC_8xx)
-+	mtspr	SPRN_NRI, r2	/* RI=0, EE=0 */
-+#else
-+	LOAD_REG_IMMEDIATE(\tmp, MSR_KERNEL & ~MSR_RI)
-+	mtmsr   \tmp
-+#endif
-+.endm
-+
-+.macro __hard_RI_enable tmp
-+#if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
-+	/* nop */
-+#elif defined(CONFIG_PPC_8xx)
-+	mtspr	SPRN_EID, r2	/* RI=1, EE=0 */
-+#else
-+	LOAD_REG_IMMEDIATE(\tmp, MSR_KERNEL)
-+	mtmsr   \tmp
-+#endif
-+.endm
-+
- #endif  /* __ASSEMBLY__ */
- #endif	/* __KERNEL__ */
- #endif	/* _ASM_POWERPC_HW_IRQ_H */
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 6e70c6fdfe8a..a9c3974cb95d 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -303,8 +303,7 @@ trace_syscall_entry_irq_off:
- 	bl	trace_hardirqs_on
- 
- 	/* Now enable for real */
--	LOAD_REG_IMMEDIATE(r10, MSR_KERNEL | MSR_EE)
--	mtmsr	r10
-+	__hard_irq_enable r10
- 
- 	REST_GPR(0, r1)
- 	REST_4GPRS(3, r1)
-@@ -373,9 +372,8 @@ ret_from_syscall:
- #endif
- 	mr	r6,r3
- 	/* disable interrupts so current_thread_info()->flags can't change */
--	LOAD_REG_IMMEDIATE(r10,MSR_KERNEL)	/* doesn't include MSR_EE */
-+	__hard_irq_disable r10
- 	/* Note: We don't bother telling lockdep about it */
--	mtmsr	r10
- 	lwz	r9,TI_FLAGS(r2)
- 	li	r8,-MAX_ERRNO
- 	andi.	r0,r9,(_TIF_SYSCALL_DOTRACE|_TIF_SINGLESTEP|_TIF_USER_WORK_MASK|_TIF_PERSYSCALL_MASK)
-@@ -529,8 +527,7 @@ syscall_exit_work:
- 	/* Re-enable interrupts. There is no need to trace that with
- 	 * lockdep as we are supposed to have IRQs on at this point
- 	 */
--	ori	r10,r10,MSR_EE
--	mtmsr	r10
-+	__hard_irq_enable r10
- 
- 	/* Save NVGPRS if they're not saved already */
- 	lwz	r4,_TRAP(r1)
-@@ -812,8 +809,7 @@ ret_from_except:
- 	 * can't change between when we test it and when we return
- 	 * from the interrupt. */
- 	/* Note: We don't bother telling lockdep about it */
--	LOAD_REG_IMMEDIATE(r10,MSR_KERNEL)
--	mtmsr	r10		/* disable interrupts */
-+	__hard_irq_disable r10
- 
- 	lwz	r3,_MSR(r1)	/* Returning to user mode? */
- 	andi.	r0,r3,MSR_PR
-@@ -971,8 +967,8 @@ END_FTR_SECTION_IFSET(CPU_FTR_NEED_PAIRED_STWCX)
- 	 * can restart the exception exit path at the label
- 	 * exc_exit_restart below.  -- paulus
- 	 */
--	LOAD_REG_IMMEDIATE(r10,MSR_KERNEL & ~MSR_RI)
--	mtmsr	r10		/* clear the RI bit */
-+	__hard_EE_RI_disable r10
-+
- 	.globl exc_exit_restart
- exc_exit_restart:
- 	lwz	r12,_NIP(r1)
-@@ -1206,26 +1202,22 @@ do_work:			/* r10 contains MSR_KERNEL here */
- do_resched:			/* r10 contains MSR_KERNEL here */
- #ifdef CONFIG_TRACE_IRQFLAGS
- 	bl	trace_hardirqs_on
--	mfmsr	r10
- #endif
--	ori	r10,r10,MSR_EE
--	mtmsr	r10		/* hard-enable interrupts */
-+	__hard_irq_enable r10
- 	bl	schedule
- recheck:
- 	/* Note: And we don't tell it we are disabling them again
- 	 * neither. Those disable/enable cycles used to peek at
- 	 * TI_FLAGS aren't advertised.
- 	 */
--	LOAD_REG_IMMEDIATE(r10,MSR_KERNEL)
--	mtmsr	r10		/* disable interrupts */
-+	__hard_irq_disable r10
- 	lwz	r9,TI_FLAGS(r2)
- 	andi.	r0,r9,_TIF_NEED_RESCHED
- 	bne-	do_resched
- 	andi.	r0,r9,_TIF_USER_WORK_MASK
- 	beq	restore_user
- do_user_signal:			/* r10 contains MSR_KERNEL here */
--	ori	r10,r10,MSR_EE
--	mtmsr	r10		/* hard-enable interrupts */
-+	__hard_irq_enable r10
- 	/* save r13-r31 in the exception frame, if not already done */
- 	lwz	r3,_TRAP(r1)
- 	andi.	r0,r3,1
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 98ed5b928642..69fded26c024 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -3,6 +3,7 @@
- #define __HEAD_32_H__
- 
- #include <asm/ptrace.h>	/* for STACK_FRAME_REGS_MARKER */
-+#include <asm/hw_irq.h>
- 
- /*
-  * Exception entry code.  This code runs with address translation
-@@ -89,10 +90,8 @@
- 	lwz	r12, SRR0(r12)
- #ifdef CONFIG_40x
- 	rlwinm	r9,r9,0,14,12		/* clear MSR_WE (necessary?) */
--#else
--	li	r10, MSR_KERNEL		/* can take exceptions */
--	mtmsr	r10			/* (except for mach check in rtas) */
- #endif
-+	__hard_RI_enable r10
- 	stw	r0,GPR0(r11)
- 	lis	r10,STACK_FRAME_REGS_MARKER@ha /* exception frame marker */
- 	addi	r10,r10,STACK_FRAME_REGS_MARKER@l
-@@ -173,12 +172,16 @@
- 	 * otherwise we might risk taking an interrupt before we tell lockdep
- 	 * they are enabled.
- 	 */
-+#ifdef CONFIG_40x
-+	wrtee	r9
-+#else
- 	LOAD_REG_IMMEDIATE(r10, MSR_KERNEL)
- 	rlwimi	r10, r9, 0, MSR_EE
-+	mtmsr	r10
-+#endif
- #else
--	LOAD_REG_IMMEDIATE(r10, MSR_KERNEL | MSR_EE)
-+	__hard_irq_enable r10
- #endif
--	mtmsr	r10
- 	b	transfer_to_syscall		/* jump to handler */
- 99:	b	ret_from_kernel_syscall
- .endm
-diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
-index 2e3cb1cc42fb..f9da3ea9e7aa 100644
---- a/arch/powerpc/kernel/head_booke.h
-+++ b/arch/powerpc/kernel/head_booke.h
-@@ -5,6 +5,7 @@
- #include <asm/ptrace.h>	/* for STACK_FRAME_REGS_MARKER */
- #include <asm/kvm_asm.h>
- #include <asm/kvm_booke_hv_asm.h>
-+#include <asm/hw_irq.h>
- 
- #ifdef __ASSEMBLY__
- 
-@@ -163,14 +164,10 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
- 	 * otherwise we might risk taking an interrupt before we tell lockdep
- 	 * they are enabled.
- 	 */
--	lis	r10, MSR_KERNEL@h
--	ori	r10, r10, MSR_KERNEL@l
--	rlwimi	r10, r9, 0, MSR_EE
-+	wrtee	r9
- #else
--	lis	r10, (MSR_KERNEL | MSR_EE)@h
--	ori	r10, r10, (MSR_KERNEL | MSR_EE)@l
-+	__hard_irq_enable r10
- #endif
--	mtmsr	r10
- 	b	transfer_to_syscall	/* jump to handler */
- 99:	b	ret_from_kernel_syscall
- .endm
--- 
-2.25.0
-
+> > So if a bridge and a device below it both have LTR enabled, can't we
+> > have the following:
+> > 
+> >   - bridge LTR enabled
+> >   - device LTR enabled
+> >   - reset device, e.g., via Secondary Bus Reset
+> >   - link goes down, bridge disables LTR
+> >   - link comes back up, LTR disabled in both bridge and device
+> >   - restore device state, including LTR enable
+> >   - device sends LTR message
+> >   - bridge reports Unsupported Request
