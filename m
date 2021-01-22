@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EFC3006C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4533006DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729239AbhAVPK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:10:26 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:43545 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729186AbhAVPIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:08:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611328115; x=1642864115;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6zu8MlMShN9Ib9rDU4wIv0fx6cyy6xyXMOXpTz5PFEQ=;
-  b=iJrkWAws+oBTguO6bSNj1B3z9uPxexZAo6XgQfepDISDjEtioQ//2T0Y
-   fVxezuP+z7ZvYUIY1bdyQdhnjbygFgnzbPIuBXMsrCx9rYdJ5oQLVBkva
-   As/ze5PPB9fec3FhkJrzRskrb5nOfdNxrQwiDxkYOLrn4jjyy7yNHdWpa
-   BydbqT97T72eLwr+pPVfbEfqgJsGez07YHgrtZDJIk/hbBmud4FzVXzHE
-   FZUxeQDeZj+KXIwJlvQtojEmMbzwieQhmuWnGh9PFOVRmp9J2+tgpvbQr
-   cwvZoyjnvSBYzYKxj41rpM1lVbCDpI+29AYIH7jZr6Fn3hWYEemaiATVc
-   Q==;
-IronPort-SDR: UITEgIWuFfaOvui8+35ei3Utu8w+I4pODl0GKLshpB51f2xC1SdkL02OuLKfSFL7q7VvssOHP5
- l+0MymSte3q05g5DHZiDXX1Sf2FQvZSMEIUmZHFNFr1T1BetmNDKrE9p4UxdrQzkokjLL6xtcf
- MfZy7eLWoJNt5EHPW1EeyhvigfqIk5dBeZ6jiIWluHoqra2NClzUEDLm0haQpVLynnglA7Xrzp
- aH0SL1GP6BXYqV7ZzZSLfqdAb92bEd5PAJtMs3n3U1nC7OGX+47jRa9HWqv97qJu4dI4FNWZuT
- DT0=
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="41376057"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jan 2021 08:07:19 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 22 Jan 2021 08:07:19 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 22 Jan 2021 08:07:17 -0700
-Message-ID: <2c7474cf57964935cebd75083229cdee14064a79.camel@microchip.com>
-Subject: Re: [PATCH v12 2/4] phy: Add ethernet serdes configuration option
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-Date:   Fri, 22 Jan 2021 16:07:16 +0100
-In-Reply-To: <92a943cc-b332-4ac6-42a8-bb3cdae13bc0@ti.com>
-References: <20210107091924.1569575-1-steen.hegelund@microchip.com>
-         <20210107091924.1569575-3-steen.hegelund@microchip.com>
-         <92a943cc-b332-4ac6-42a8-bb3cdae13bc0@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 
+        id S1729156AbhAVPNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:13:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47790 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728606AbhAVPIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:08:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A61923AA1;
+        Fri, 22 Jan 2021 15:08:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611328083;
+        bh=ye4fDbpuVVem7KdwZzwys4Ap+1pmYfc4KCLpV60+vr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WDgeuQvf3hyJYzJA2i5YLOFJZrqS8QP/cesINt//TvaoWwVewnLnxsT8EZwVH69FY
+         YQUFaA8B/3g30fkbj+Qjp2U/ROUW3eIbGWAKp/IIRZDMGIeBOcg3f/vvaoUOxdh/Wc
+         9Ks6YaJgyPfhokd/MmkYPZ7M2v29Ei++ln2sQTWw=
+Date:   Fri, 22 Jan 2021 16:08:00 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
+Message-ID: <YArqULK9c1Cnt5gM@kroah.com>
+References: <20210122135735.176469491@linuxfoundation.org>
+ <CA+G9fYso4QNbRWdrQiiOiMb5RUr8VtM3AkKEGLasgN+KsPSvDw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYso4QNbRWdrQiiOiMb5RUr8VtM3AkKEGLasgN+KsPSvDw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon and Vinod,
+On Fri, Jan 22, 2021 at 08:32:46PM +0530, Naresh Kamboju wrote:
+> On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 4.14.217 release.
+> > There are 50 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> arm64 clang-10 builds breaks due to this patch on
+>    - stable-rc 4.14
+>    - stable-rc 4.9
+>    - stable-rc 4.4
+> 
+> > Will Deacon <will@kernel.org>
+> >     compiler.h: Raise minimum version of GCC to 5.1 for arm64
+> 
+> arm64 (defconfig) with clang-10 - FAILED
 
-On Fri, 2021-01-15 at 21:22 +0530, Kishon Vijay Abraham I wrote:
-> > 
-> > 
+How is a clang build breaking on a "check what version of gcc is being
+used" change?
 
-I was just wanted to know if there are any outstanding items that you
-would like me to handle, or you think that the driver is acceptable as
-it is now?
+What is the error message?
 
-BR
-Steen
+thanks,
 
-
-
-
+greg k-h
