@@ -2,208 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8F42FFE62
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6B62FFEA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727198AbhAVIkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:40:42 -0500
-Received: from mail-dm6nam11on2044.outbound.protection.outlook.com ([40.107.223.44]:62368
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727039AbhAVIiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:38:21 -0500
+        id S1726509AbhAVIst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:48:49 -0500
+Received: from esa5.fujitsucc.c3s2.iphmx.com ([68.232.159.76]:5887 "EHLO
+        esa5.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727021AbhAVIry (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 03:47:54 -0500
+X-Greylist: delayed 471 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 03:47:52 EST
+IronPort-SDR: PjNQOwFQ7W2pGZ3kFzeWPIEwS3/hhIBZ9j5NDQ3uAKUJDMCWS7nmdVVXJ/oLHDqQ7jyg7biyf4
+ 8RdxPDNvQHalW8+M2zJAac37oFFder1an8c22bIY/L7/gDWWLu7IzlYFRpZbmmgHsADpDoIKKo
+ L7gM0O8BsbTzZANIg5SV8DjwunhR1Le4VgPzRpaHy8ngMMtcV9t0uI/HG8EC5/YN7GjYM1oxtV
+ MApSDY4zBk/lUi85YDCuh+3JDpJvZzJQT+7+e6LWA5OM8AUpf8wsYQaKoNTLsU0NwtpgLiz7az
+ 0pc=
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="24882845"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602514800"; 
+   d="scan'208";a="24882845"
+Received: from mail-ty1jpn01lp2053.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.53])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 17:37:17 +0900
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aTEDVYcvpuyoLPnYOdhcnFnLOSJIBlG2qhute9zt4P3bBYJr6kDP6j7RW3qUjcWTGKWt7l6f5o1sSG0ht2Sq6nO8NvoCBJGrIp3eO0RHPjx1GkGO6RuPe300rbsozFo+ZqPXOjO8vn8b0bRm7+k0yqtZWedbwIJdPld5Tp0XCiOTOJtkcdwDegTUHazOD4B91+9oEwEWn9O8LMWwqdIyFXynageuJSzUpmbkFiKwQOWr4aUvXatNiddRDaBXlbaR8zIgrJp24NDo34r5rPH1plDSK7Hur93DZ46k54ZheUPU0qefOjlainjXVPXQqBdX5aeCNI0c6kn4ElnjDYEEQA==
+ b=VYiwvv0Rvsihz37NOP/Sqj9hYwV5svWrnWxxjCqT43nrTLxZ/5QceU8rMOOicFyeOaXnxarzYbx1q+Fmo96SASlGysCnVhN7t4Yq9mAI7zsGisEo2GZfApRpNTtr/ZWfGfThzOWL3Lep/eSjo/XnX9IdVdRG4VGbX+qEWmaLAwYB36tjwYfvaV30h8zkxTW/oJBIAgmG7yzRb4A4aBnUY+o+DN3k2RnFtKmQVqoCttZmnPPBkCW0Hqc6cyJpVBZDqTlZIeElhPhdNo+PAXwbld83GHiHw7Iml1in1SIREKMcnV7QzOMSg0IHWvU+NsmpsYwas1bKcGlG2x82mIsYzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PH9fGYIDXNLiqHn6Gp0ro6cYfBPzUWcF0Pa54/wWwWU=;
- b=EH4zOEQ8Xuami3rBI3rCZA4oTxLNpgAT7GTyulJnByOmDiQTv6/1RtT+8WO6JOITQDj6ogqz6/6u07C150ec8S2Q7YFYzfodxT00yDrUoJB3uhl/CJnpDsEIZJeQYQMZpSweHPFFekpWLLOg0fcyBmY8W9pZ1goYK42tZvAznPCI98WM1tC9cDP9epztbaF1YXUW4LhWs72TJL7PSoWq2p3456Uw4GeXPmYEkrsqgFPf4SU0DmQaPN0u8Ee1DGmKYy4fFsWUajsuclh1gt4BSn7TXAqsyn54cYSbi6eaCOUiHpRAKiIKyKVdp4Z7cYMAM3S+Hbssr3NYxpgKlJhqkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
- smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
- header.from=xilinx.com; dkim=none (message not signed); arc=none
+ bh=B8g1pigL/VUUNvDT7SXR4gVM5K0JCNbFoymnl+9mRmo=;
+ b=gP93ByaMesNUWJcITneG/vZbS/MrMEf8bNjQvM+ByqySKaOrzmf25UyjwAdAbM+kd+4ZOTPhLys/7Q8KMg5XI868LBrSCjd+7jLwte8GxwCNhUAbeLELkEFiFcPvV+slnLUlL599zuwifEcGHYhUNmvEHs3ZoVUpZSHq61qHYiB4Y2QS7V6fYetr9TdaFHMlD7yUAHdCO1wBuXNsOt7vEcW/B6blAivfsgzAVY2GlBfa/ZqfBplfREgcjrh/SYhQEE83HuGUcmQFBmr8Eh1qcvt/S9JvIawxQ0bO2FwinXVcv+nzrFAe5Cep1OS9/vsst0PHTHJaByDIMiXiY0OrSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PH9fGYIDXNLiqHn6Gp0ro6cYfBPzUWcF0Pa54/wWwWU=;
- b=bKnqlfhmVmifpOpPMIoZVinp6JQBLjwsD7+4uu2Ttf2MYvHRMllgmQZRg8rUC1ZyV99ASyD52py0rPwq5dEkNHr+/uPf6xHpvZ+yeqIE7/Y+7tzmd16P5av6J5Z3+DgcWCX7U4KezrAAYu2GoHpBHKauBERyZAF4Bse/paDPNyI=
-Received: from CY4PR13CA0002.namprd13.prod.outlook.com (2603:10b6:903:32::12)
- by SN6PR02MB5679.namprd02.prod.outlook.com (2603:10b6:805:ee::15) with
+ bh=B8g1pigL/VUUNvDT7SXR4gVM5K0JCNbFoymnl+9mRmo=;
+ b=hKGEA2bR2Zg2WNi5H8G1ZbsWalDNPp8xuJiJx6Nf3dmjHEOwenztXZXCbixJqgjdUVXLF2ZELzTEHpI83QA9VNR/EyAauaq+SPbljUWeBVJqYSO38PgKjA2PyccMQ/cpYqiWpyoSdoCDVL7dAptPk3Xo+NjMaspGuehBuT991KY=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSBPR01MB3496.jpnprd01.prod.outlook.com (2603:1096:604:46::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Fri, 22 Jan
- 2021 08:37:23 +0000
-Received: from CY1NAM02FT049.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:32:cafe::84) by CY4PR13CA0002.outlook.office365.com
- (2603:10b6:903:32::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6 via Frontend
- Transport; Fri, 22 Jan 2021 08:37:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT049.mail.protection.outlook.com (10.152.75.83) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3784.12 via Frontend Transport; Fri, 22 Jan 2021 08:37:22 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Fri, 22 Jan 2021 00:37:07 -0800
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Fri, 22 Jan 2021 00:37:07 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org,
- robh+dt@kernel.org,
- krzk@kernel.org,
- monstr@monstr.eu,
- linux-kernel@vger.kernel.org,
- laurent.pinchart@ideasonboard.com
-Received: from [172.30.17.109] (port=47594)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1l2rwI-0006e9-N1; Fri, 22 Jan 2021 00:37:06 -0800
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michal Simek <michal.simek@xilinx.com>
-CC:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-        <git@xilinx.com>, Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <cover.1611232558.git.michal.simek@xilinx.com>
- <9769d4d103b6eb75e3324825117f6832a746004e.1611232558.git.michal.simek@xilinx.com>
- <YAoCMqq/hpY0Jz6A@pendragon.ideasonboard.com>
- <80b7a167-86ad-3012-b080-b380e7013f18@xilinx.com>
- <YAqC4WigXbw6ihqE@pendragon.ideasonboard.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 3/3] arm64: dts: zynqmp: Wire up the DisplayPort subsystem
-Message-ID: <d59354ef-5648-4b91-85dd-c19f871b8289@xilinx.com>
-Date:   Fri, 22 Jan 2021 09:37:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <YAqC4WigXbw6ihqE@pendragon.ideasonboard.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Fri, 22 Jan
+ 2021 08:37:12 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::340a:689c:36e1:fedd]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::340a:689c:36e1:fedd%7]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
+ 08:37:12 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     'John Garry' <john.garry@huawei.com>
+CC:     "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 3/3] perf vendor events: Add Fujitsu A64FX V1.2 pmu
+ event
+Thread-Topic: [PATCH v2 3/3] perf vendor events: Add Fujitsu A64FX V1.2 pmu
+ event
+Thread-Index: AQHW7+ShaO8SfWqmV0W2c0KaDfSTBaoyWX8AgADbuSA=
+Date:   Fri, 22 Jan 2021 08:37:11 +0000
+Message-ID: <OSBPR01MB4600A7B761F965C443D92DCFF7A00@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <20210121105425.2695843-1-nakamura.shun@jp.fujitsu.com>
+ <20210121105425.2695843-4-nakamura.shun@jp.fujitsu.com>
+ <a0f7c814-5c56-4e17-1198-a611d19f57d5@huawei.com>
+In-Reply-To: <a0f7c814-5c56-4e17-1198-a611d19f57d5@huawei.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-shieldmailcheckermailid: 9a0af97bf94340abbf49af54959ef156
+x-securitypolicycheck: OK by SHieldMailChecker v2.6.3
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [218.44.52.182]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 10597f8c-0323-4526-ff45-08d8beb0e9de
+x-ms-traffictypediagnostic: OSBPR01MB3496:
+x-microsoft-antispam-prvs: <OSBPR01MB3496A373D2A70BF8177DFE89F7A00@OSBPR01MB3496.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VLtp/01eTV29nmmx5nKsykpbZcqp1Ec3acw3jwiZyAVMc9mjKEGqWJPZtldQpVu7EIJB9BSKI20cPT8A0eEUaCIgVMLWTLfU5JU/Ko+OGv7H6bsray/wX4DqaBQuERCRLcqvs+pZSRjN0AeV/Qu0CFx8zu0vtVR+Zdp4vInMUhs/ck+1IeZ315SufwHFWwqy+CudX/zH/zv5tDkXkXBdDJw2nzRZ5E2jeDJi4TkpwniL7j9iAgJv3pLzZ+jfsKxOyy5SDqIOpUqqZ+8tLCLxb9b+TNECyBBnXfWvVtbe9J9kIGfrYzD0bax8ACHeaO9RD6t39xdF1TwicIkKHLzf4iEYKg42h0ZE3YICafN0ES4IQ8pBY7Pzt1j7nv/ZR3ySoVDg0RFQbdt9MaApRthdTUgdwHos7+mRT4bV2B9SseQPgd/Y8lxQxc95f1b41onTSrzIVimCE2FXnlDzq9SgEayJfRnnbUS8JbuV9SLM2oOtG48BqQ68nqevyamMT4+rkUGrwi3KvyhM0rLYrVL1/Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(39860400002)(396003)(966005)(66446008)(66556008)(66476007)(66946007)(52536014)(478600001)(5660300002)(316002)(4326008)(54906003)(76116006)(64756008)(53546011)(71200400001)(86362001)(9686003)(55016002)(26005)(186003)(6916009)(7696005)(83380400001)(6506007)(2906002)(85182001)(33656002)(8676002)(8936002)(777600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?QnhyakJWNEUzOThGQitmaG9PWGhHUDZkaFZFaGM3eklhdWluN2VKWUt0bHdT?=
+ =?utf-8?B?RVQ1Vjl6YUdlWVBjZjZqTm1NWXNvd05aTFRFOFlYQ2hYQnM4VjRTWDNjTTRD?=
+ =?utf-8?B?OHBqenMrRUtkbzhUdmZsejZkTWZ1NmJqa0xPZS9jSXA3eGFsQVJJZXQrdGpR?=
+ =?utf-8?B?U1NZZXZjSkViNG5hcmNJa3I1dGxBamo5Q2NrWS9GUldMS1NPbGxFSUk2QmFB?=
+ =?utf-8?B?ZWFoelc3dXg0d3d0Q1NiaFBJU1BQUGNHWnJ1M0hIb1JZOWsxSjg5YW54ZEF3?=
+ =?utf-8?B?Qis2dUFyYjREeWJteVdmVVM0Z1FDRFFMYU9IcFdOMy9Nb2hRY2VaT0wzTzFF?=
+ =?utf-8?B?S245Wk95TEJoMW05cU9wNXlkSTRCbVpuc25XNW5SMjN0WXhnVFhYeXhpNDFU?=
+ =?utf-8?B?eE14UERYSlBHVk5nVCs1Wm43cVUrQ2o5aHh4L01veUl6VjBNR3NoOXljVnhC?=
+ =?utf-8?B?UEwvYkxHLzI0cStmamNlZ3dLQWV0OGhmdkNwalN5V01wWmMyZFova1lwUGZx?=
+ =?utf-8?B?czQyWlg0bmZpVEhRYlpYWkVwNVRwT3hLbnVqczZ5SFpmRzlZa0x5RWhmYWpq?=
+ =?utf-8?B?V0pLa1crSHphWjllSlRpR1dEYUdjNW04ejd4TmVxZEI0TUIwbmVQSXNST0s1?=
+ =?utf-8?B?RW5PNDlsZFZhUS8rc2c3amJGeGxtaEQvYXUyL2JxUFlYSGZNWWl6MzFJdGpl?=
+ =?utf-8?B?dFVsNmtBNGZKQzhEUzhyZlpkQ1F2cVJuaVdoVzVQdFp6MGhWaVNzVEpCY2Vh?=
+ =?utf-8?B?YnN2RTZESERndzhmeFJYenZjNmYvdXp4UGtHblpySGJmS3o1Q0VsNlVIT1gy?=
+ =?utf-8?B?bDM4c29ycFZwY2I2RitwbGNrYkdwUVA3ZGhpUURrR1I4N0tuNU1IeEljZmIw?=
+ =?utf-8?B?RWJ0ZmNGRWFlMEFVRlVtRE5GVEl4b3B5RFRBOGludmdidHFBTUZXTEx2cFJr?=
+ =?utf-8?B?dlhoMFBUMWsyMytkWC9pQXdJZW1ERFExQTNKazZzTzM0Y1RNV2JKSTczeHlX?=
+ =?utf-8?B?b2lkdnhOZ3VpaSt1V3ZsUks2blB2MGV6a2dmSnRUc2hERFNjTVdkRmwxYXNu?=
+ =?utf-8?B?d0I0OFcxd2hHcnZ6eitnQ1A2ekhGKzIrVEJVOG5jQUhvMW5pSktrUG5qSU05?=
+ =?utf-8?B?enFNc0VJc1J1T3dhMnBwRC9KYnZqaWpxWUVyWWVkLzd5MTJveVJkRk5Ib3VQ?=
+ =?utf-8?B?Q3loaFl6MVpFSkxaUnQyRThJd3pwK0tHbXMzM3hNK25meVZlNk1FRjlIMXZp?=
+ =?utf-8?B?akVTTnBJNUo2eEVDbWVBY2kwRTRha0NuN0FjdXl0dmZOQnhMTnk4a0VNZjYr?=
+ =?utf-8?Q?FpfudQnM9mPLQ=3D?=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a5573ade-4ba5-4907-9085-08d8beb0f069
-X-MS-TrafficTypeDiagnostic: SN6PR02MB5679:
-X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-X-Microsoft-Antispam-PRVS: <SN6PR02MB56798D081B838DBB4B324A1EC6A09@SN6PR02MB5679.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: st4C4ccXK8ZVqu8xRZSiM/hu1zcRGKrbHHd0NNDuyg5W8F+HEcReE8han8tMwhxV9e3ZG1CsHB8qZ2axyxwuYCxW0GhCezROEwQQTWCr5Azk0xFKM9cXKE27/jCvAI/WRpRrdFWEsCWnwAXa5gsRM/oUNen3BxGbFESMqUzvrZH5L4HTcPY/SKFqDg0/mW5wLoYUyFWM3IeX0Pn250LnNf+Ry6z2b29BmvwC2u3T/1ZYiINciSyPROMP6Wftn+ezG8NilRnRYMcB8kiNkJuuN2YoPrfwzrVsDIAg6EZtLOIjgBsPqmnnEvF1ll16rCqV50DSkll4OTvOZomKA4cK2HRwS8m+WI9RXPbQTXdsqVz3KhEuPa7zv/qxvAmU6IBoq6Q3gcLHGviS92e4wrHENUiFQIpaq7KkOoO2V9qX5u/ezHOIH1+aKflVPpdHwVKPCI6mv8JprrBRr6hwSVuHPQ74Pf0J0JzvbGYmaPGUfqcZ7OMtjcGJHajYcR6aw/rbPb3hwQ4UtzPjZUvr7z/Hcw==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(46966006)(4326008)(36906005)(2906002)(7636003)(82310400003)(47076005)(8936002)(31696002)(316002)(478600001)(6666004)(36756003)(31686004)(83380400001)(356005)(44832011)(9786002)(5660300002)(82740400003)(70206006)(426003)(54906003)(26005)(70586007)(336012)(186003)(2616005)(53546011)(8676002)(110136005)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 08:37:22.9257
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10597f8c-0323-4526-ff45-08d8beb0e9de
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:37:11.9152
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5573ade-4ba5-4907-9085-08d8beb0f069
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT049.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5679
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ss5Cr0bN9doOwxaIW/YLieKLpZWJbjbRw3vqtUgAybhf2JD1MoxXdhoRgMVu6AhUX7N0okVL3W/xtS6a5/DrERvSy6LPBdtR9C0tXFZtxLw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB3496
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On 1/22/21 8:46 AM, Laurent Pinchart wrote:
-> Hi Michal,
-> 
-> On Fri, Jan 22, 2021 at 08:19:15AM +0100, Michal Simek wrote:
->> On 1/21/21 11:37 PM, Laurent Pinchart wrote:
->>> On Thu, Jan 21, 2021 at 01:36:07PM +0100, Michal Simek wrote:
->>>> From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->>>>
->>>> Enable the dpsub device and wire it up to the PS-GTR PHY lanes routed to
->>>> the DisplayPort connector.
->>>>
->>>> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->>>> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
->>>> ---
->>>>
->>>> Wire all the boards
->>>>
->>>> ---
->>>>  .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    | 31 +++++++++++++++++++
->>>>  .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    | 10 ++++++
->>>>  .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    | 11 +++++++
->>>>  .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    | 11 +++++++
->>>>  .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    | 11 +++++++
->>>>  .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    | 11 +++++++
->>>>  6 files changed, 85 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
->>>> index 71ebcaadb7c8..a53598c3624b 100644
->>>> --- a/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
->>>> +++ b/arch/arm64/boot/dts/xilinx/zynqmp-zcu100-revC.dts
->>>> @@ -15,6 +15,7 @@
->>>>  #include <dt-bindings/input/input.h>
->>>>  #include <dt-bindings/interrupt-controller/irq.h>
->>>>  #include <dt-bindings/gpio/gpio.h>
->>>> +#include <dt-bindings/phy/phy.h>
->>>>  
->>>>  / {
->>>>  	model = "ZynqMP ZCU100 RevC";
->>>> @@ -108,6 +109,18 @@ ina226 {
->>>>  		compatible = "iio-hwmon";
->>>>  		io-channels = <&u35 0>, <&u35 1>, <&u35 2>, <&u35 3>;
->>>>  	};
->>>> +
->>>> +	si5335a_0: clk26 {
->>>> +		compatible = "fixed-clock";
->>>> +		#clock-cells = <0>;
->>>> +		clock-frequency = <26000000>;
->>>> +	};
->>>> +
->>>> +	si5335a_1: clk27 {
->>>> +		compatible = "fixed-clock";
->>>> +		#clock-cells = <0>;
->>>> +		clock-frequency = <27000000>;
->>>> +	};
->>>
->>> This is fine as a workaround for now, but I'm still wondering how we'll
->>> solve this properly. We can declare the SI5335A in DT without wiring the
->>> output that provides the clock to the PS, otherwise it will be disabled
->>> as part of the boot process.
->>
->> All these clock chips are preprogrammed to certain rate and enabled by
->> default. It means there doesn't need to be any SW handling to enable it.
->> When driver for these clock chips comes we can change this that's why I
->> used labels which are saying which output it is.
-> 
-> Unless I'm mistaken, on the ZCU106 board, the chip is an SI5341B, which
-> has a driver already. I tried to declare it in DT, but the PS_REF_CLK
-> then got disabled at the end of boot, and the system wasn't happy about
-> it :-)
-
-In series before si5341 chips are enabled as the part of sata
-enablement. Maybe you missed always-on parameter.
-
-si5341_9: out@9 {
-	/* refclk9 used for PS_REF_CLK 33.3 MHz */
-	reg = <9>;
-	always-on;
-};
-
-I just retest it and I can't see any issue. Sata
-I see DP driver probed but I can't see anything on 4k monitor but maybe
-there should be something to setup (I use fs from 2015).
-
-thanks,
-Michal
-
-
+SGkgSm9obg0KDQo+IEkgdGhpbmsgdGhhdCB3ZSBuZWVkIHRvIHRoZSBzYW1lIGhlcmUgYXMgdGhl
+IElNUERFRiByZWNvbW1lbmRlZCBldmVudHMgLSBhZGQgYQ0KPiBjb21tb24gSlNPTiB0byByZWR1
+Y2UgdGhlIGR1cGxpY2F0aW9uLg0KPiANCj4gSSBoYWQgZG9uZSB3b3JrIG9uIHRoaXMgZm9yIGN1
+cnJlbnQgQ1BVcywgYnV0IG5ldmVyIGdvdCBpdCBmaW5pc2hlZC4gTGV0IG1lIGNoZWNrDQo+IHRo
+ZSBzdGF0dXMuDQoNCklmIHlvdSBsZXQgbWUga25vdyB0aGUgcmVzdWx0LCBJIHdpbGwgcmVzZW5k
+IHRoZSBwYXRjaCBhY2NvcmRpbmcgdG8gdGhlIHBvbGljeS4NCg0KQmVzdCBSZWdhcmRzDQoNCj4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBHYXJyeSA8am9obi5nYXJy
+eUBodWF3ZWkuY29tPg0KPiBTZW50OiBGcmlkYXksIEphbnVhcnkgMjIsIDIwMjEgMjo0MSBBTQ0K
+PiBUbzogTmFrYW11cmEsIFNodW5zdWtlL+S4readkSDkv4rku4sgPG5ha2FtdXJhLnNodW5AZnVq
+aXRzdS5jb20+DQo+IENjOiB3aWxsQGtlcm5lbC5vcmc7IG1hdGhpZXUucG9pcmllckBsaW5hcm8u
+b3JnOyBsZW8ueWFuQGxpbmFyby5vcmc7DQo+IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFk
+ZWFkLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BB
+VENIIHYyIDMvM10gcGVyZiB2ZW5kb3IgZXZlbnRzOiBBZGQgRnVqaXRzdSBBNjRGWCBWMS4yIHBt
+dQ0KPiBldmVudA0KPiANCj4gT24gMjEvMDEvMjAyMSAxMDo1NCwgU2h1bnN1a2UgTmFrYW11cmEg
+d3JvdGU6DQo+ID4gKyAgew0KPiA+ICsgICAgIlB1YmxpY0Rlc2NyaXB0aW9uIjogIlRoaXMgZXZl
+bnQgY291bnRzIGVhY2ggY29ycmVjdGlvbiB0byB0aGUgcHJlZGljdGVkDQo+IHByb2dyYW0gZmxv
+dyB0aGF0IG9jY3VycyBiZWNhdXNlIG9mIGEgbWlzcHJlZGljdGlvbiBmcm9tLCBvciBubyBwcmVk
+aWN0aW9uIGZyb20sDQo+IHRoZSBicmFuY2ggcHJlZGljdGlvbiByZXNvdXJjZXMgYW5kIHRoYXQg
+cmVsYXRlcyB0byBpbnN0cnVjdGlvbnMgdGhhdCB0aGUgYnJhbmNoDQo+IHByZWRpY3Rpb24gcmVz
+b3VyY2VzIGFyZSBjYXBhYmxlIG9mIHByZWRpY3RpbmcuIiwNCj4gPiArICAgICJFdmVudENvZGUi
+OiAiMHgxMCIsDQo+ID4gKyAgICAiRXZlbnROYW1lIjogIkJSX01JU19QUkVEIiwNCj4gDQo+IEkg
+dGhpbmsgdGhhdCB3ZSBuZWVkIHRvIHRoZSBzYW1lIGhlcmUgYXMgdGhlIElNUERFRiByZWNvbW1l
+bmRlZCBldmVudHMgLSBhZGQgYQ0KPiBjb21tb24gSlNPTiB0byByZWR1Y2UgdGhlIGR1cGxpY2F0
+aW9uLg0KPiANCj4gSSBoYWQgZG9uZSB3b3JrIG9uIHRoaXMgZm9yIGN1cnJlbnQgQ1BVcywgYnV0
+IG5ldmVyIGdvdCBpdCBmaW5pc2hlZC4gTGV0IG1lIGNoZWNrDQo+IHRoZSBzdGF0dXMuDQo+IA0K
+PiBDaGVlcnMsDQo+IEpvaG4NCj4gDQo+IFBzLCBhcm0gaGF2ZSBwdXQgSlNPTnMgaGVyZSBmb3Ig
+dGhlaXIgY29yZXM6DQo+IA0KPiBodHRwczovL2dpdGh1Yi5jb20vQVJNLXNvZnR3YXJlL2RhdGEv
+dHJlZS9tYXN0ZXIvcG11DQo+IA0KPiBCdXQgdW5mb3J0dW5hdGVseSB0aGUgc2NoZW1hIGRvZXMg
+bm90IHN1aXQgcGVyZi4NCj4gDQo+IEkgcmFpc2VkIGFuIGlzc3VlLCBidXQgbm8gcmVzcG9uc2Uu
+DQo+IA0KPiBJJ20ganVzdCB3b25kZXJpbmcgaWYgeW91IGhhbmQgY29waWVkIHRoZSBKU09OIGRh
+dGEuDQo+IA0KPiANCj4gPiArICAgICJCcmllZkRlc2NyaXB0aW9uIjogIlRoaXMgZXZlbnQgY291
+bnRzIGVhY2ggY29ycmVjdGlvbiB0byB0aGUgcHJlZGljdGVkDQo+IHByb2dyYW0gZmxvdyB0aGF0
+IG9jY3VycyBiZWNhdXNlIG9mIGEgbWlzcHJlZGljdGlvbiBmcm9tLCBvciBubyBwcmVkaWN0aW9u
+IGZyb20sDQo+IHRoZSBicmFuY2ggcHJlZGljdGlvbiByZXNvdXJjZXMgYW5kIHRoYXQgcmVsYXRl
+cyB0byBpbnN0cnVjdGlvbnMgdGhhdCB0aGUgYnJhbmNoDQo+IHByZWRpY3Rpb24gcmVzb3VyY2Vz
+IGFyZSBjYXBhYmxlIG9mIHByZWRpY3RpbmcuIg0KPiA+ICsgIH0sDQoNCg==
