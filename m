@@ -2,184 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439AF2FF978
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 588592FF97F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbhAVAaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:30:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
+        id S1725827AbhAVAdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:33:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbhAVAaF (ORCPT
+        with ESMTP id S1726222AbhAVAda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:30:05 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38B3C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:29:24 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id d81so7872109iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:29:24 -0800 (PST)
+        Thu, 21 Jan 2021 19:33:30 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77B0C06174A;
+        Thu, 21 Jan 2021 16:32:49 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id d22so4687895edy.1;
+        Thu, 21 Jan 2021 16:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GB8i5pInAwJJUs19Bi7qWAcYC3XfY0IQENGFmY0L3nk=;
-        b=kfZd/nmNsn61WOvdrjLBdpklObq470VuXRCXuKTW25YX3MATeQLG7SvoUl/uqwvPO2
-         rAadILPic1Qe64bK1lwW6OeWJQIxBhAUliaC3pHQGyAKaorG14+eJvxvnSbfOtssTM2j
-         Wm41MH4t+eOT4wpOT21AleTiuYNXyHyXmmDSqlRMSRPwi1ftA0j/vFCpKc3T3ERua8fN
-         1gjiyNfFpE2gVpglWfwvhE/hdlbucluQ/oHizAttnMlugcWqKwCZt7dE3wXMjdiRRkQN
-         FE6Wu6t6GYrQNyzjKa6jOd7gNC9JJxaODM4nfI6ZQfgqLCeqCSpnzt/lpZFlnVW5MfTe
-         JXoQ==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nIwDL815WbM3BXQJbXvq/f398/RbftQTQcC+LW4e8Cw=;
+        b=Lf/QJ4FCE4pP1A+ZNAiTRm3qOKQYC01QPyQkp2uTVS6NmtGP++27MYD9iyJe+aOVKS
+         46nqbLOgI7Cj8J/vlpRXGknrWIjebEM4jnRHe/7/OjiHUchWuyB367+MhbeQBzwlccVG
+         KmQjfOuDr5nABogQoKLmROIDJjX7KdGxnPwR5omDwIV9wwPK8U0qtR1fgSYSkkS/Tnq8
+         rdsp+jEy4lFlhAv8N5R4MOoe/rfWNU2YbrY1UAVnhpBxXsctWEuCP7rFWJZbMwGAPOEL
+         uHF8P/s33TgiJDeSENFPdma629195dAJErOrWrI+OYJbgE44QNyWfpdX3tDCTXyZUuJ1
+         ZnkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GB8i5pInAwJJUs19Bi7qWAcYC3XfY0IQENGFmY0L3nk=;
-        b=J15C3mVa4Z1dckILk2804np6r3QVaEucjSDisnw/nspxxgGNFLTb9tmTzn/tkp74tI
-         rQOEIxjnj2WR8f5mIYNTHh30fmci3VpbB64ZbQmvxSHzXdKkuBNoxPQldFozaQiifiWC
-         DY7/P2btARIBpKWczBzjnu1jiAi52+gMbZdwKLwo1rPKZVSiX0TPn9wSX6C8LjQBngUP
-         7K25ppShh4hFCoM9L2lg28Y3HLiuOlFFRU55JEA6DRvtLtAYYlsA5lgIhiMUs0oSzBxt
-         CaO+Jev0lDtj6ucGOHBjWYQ73s/J1yL/zeSAN2MghGFysB5Tk89U9BK8qyn4qK8+uWEu
-         hhYQ==
-X-Gm-Message-State: AOAM531kxfUrKV/yFMJ8CMSOrtttDQwd6U/Ktl1I2TQVRPOn939hDwba
-        vCkawZt+esEnE/tSqSSrcg/A9ZephI+K6zlzLNM=
-X-Google-Smtp-Source: ABdhPJxn+v3shqiIM+1yTKE9mVGNdfoPMM5WI4lZx2sQMRNGviotd0AYWcYM2byqFYro0hfTDLk/KEbuljh6f4W0XwY=
-X-Received: by 2002:a6b:7501:: with SMTP id l1mr1586762ioh.92.1611275364347;
- Thu, 21 Jan 2021 16:29:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20210121223355.59780-1-paul.gortmaker@windriver.com> <20210121223355.59780-4-paul.gortmaker@windriver.com>
-In-Reply-To: <20210121223355.59780-4-paul.gortmaker@windriver.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Thu, 21 Jan 2021 16:29:13 -0800
-Message-ID: <CAAH8bW8GYYsHy7c8KD3EL+a1mR+wCrj7WFS+Gp5=4CJbz7GpgA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nIwDL815WbM3BXQJbXvq/f398/RbftQTQcC+LW4e8Cw=;
+        b=apI8gj9x071p2B9DKhCRbta8mq5OCuJT/TDDurQSlrAuW2Oqd4R3Jji+oKwVUzZn64
+         JDTs9i8DOZHGP2GBxblKt80vEGErEJo/oaNEVleHKHFDFECqC/Lx6Ubg9nCPTWbGW+VN
+         gAowPVInVWDWLow9v0vGgF4I4MB++UoSWu4zpdmSyk12tlBV+qF8yF6aMAr8JUQvoebg
+         LLkbdZgA9v+9aXn7oBbzm5QVS2NbUvTfGC2z0hiVscRvh0WPyRtKlXrI3Sh3ePXURxUH
+         04mMuQo4UpJWyov9ALFaYmEAiKr+NJEMGkHOickmPfSJ6Md56pAQj8s26eDnyWgWIUfO
+         rUpA==
+X-Gm-Message-State: AOAM530qPg2NV101ugSOrowvDaS43GBTjIGztdL2hbISXUAX5Qh0QXpt
+        LAaqp5Yo0ppdDJylFxBy0G4=
+X-Google-Smtp-Source: ABdhPJw6BtROVfbIpW3jwgJ0vxfvIel4gFG+i8lZ6Iv6vOsXZ5CnXZOBuOk7KGKa4Z9ACOdCw1Ovpw==
+X-Received: by 2002:a05:6402:104e:: with SMTP id e14mr1334004edu.316.1611275568372;
+        Thu, 21 Jan 2021 16:32:48 -0800 (PST)
+Received: from localhost.localdomain (ip-109-40-66-206.web.vodafone.de. [109.40.66.206])
+        by smtp.gmail.com with ESMTPSA id f17sm3741870edu.25.2021.01.21.16.32.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 16:32:47 -0800 (PST)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Briana Oursler <briana.oursler@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Davide Caratti <dcaratti@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH RFC v2] tools: Factor Clang, LLC and LLVM utils definitions
+Date:   Fri, 22 Jan 2021 01:32:25 +0100
+Message-Id: <20210122003235.77246-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 2:34 PM Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> While this is done for all bitmaps, the original use case in mind was
-> for CPU masks and cpulist_parse().  Credit to Yury who suggested to
-> push it down from CPU subsys to bitmap - it simplified things a lot.
+When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
 
-Can you convert your credit to Suggested-by or Reviewed-by? :)
+While looking into the source code I found duplicate assignments
+in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
 
-> It seems that a common configuration is to use the 1st couple cores
-> for housekeeping tasks, and or driving a busy peripheral that generates
-> a lot of interrupts, or something similar.
->
-> This tends to leave the remaining ones to form a pool of similarly
-> configured cores to take on the real workload of interest to the user.
->
-> So on machine A - with 32 cores, it could be 0-3 for "system" and then
-> 4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
-> setting up the worker pool of CPUs.
->
-> But then newer machine B is added, and it has 48 cores, and so while
-> the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
->
-> Deployment would be easier if we could just simply replace 31 and 47
-> with "N" and let the system substitute in the actual number at boot;
-> a number that it knows better than we do.
->
-> No need to have custom boot args per node, no need to do a trial boot
-> in order to snoop /proc/cpuinfo and/or /sys/devices/system/cpu - no
-> more fencepost errors of using 32 and 48 instead of 31 and 47.
->
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  .../admin-guide/kernel-parameters.rst          |  4 ++++
->  lib/bitmap.c                                   | 18 +++++++++++++-----
->  2 files changed, 17 insertions(+), 5 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 5e080080b058..668f0b69fb4f 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -68,6 +68,10 @@ For example one can add to the command line following parameter:
->
->  where the final item represents CPUs 100,101,125,126,150,151,...
->
-> +The value "N" can be used as the end of a range, to represent the numerically
-> +last CPU on the system, i.e "foo_cpus=16-N" would be equivalent to "16-31" on
-> +a 32 core system.
-> +
->  The following convenience aliases are also accepted and used:
->
->          foo_cpus=all
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index a1010646fbe5..d498ea9d526b 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -571,7 +571,7 @@ static const char *bitmap_find_region_reverse(const char *start, const char *end
->         return end;
->  }
->
-> -static const char *bitmap_parse_region(const char *str, struct region *r)
-> +static const char *bitmap_parse_region(const char *str, struct region *r, int nmaskbits)
->  {
+Move the Clang, LLC and/or LLVM utils definitions to
+tools/scripts/Makefile.include file and add missing
+includes where needed.
+Honestly, I was inspired by commit c8a950d0d3b9
+("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
 
-in bitmap_parselist() you can store nmaskbits in the struct region, and avoid
-passing nmaskbits as a parameter.
+I tested with bpftool and perf on Debian/testing AMD64 and
+LLVM/Clang v11.1.0-rc1.
 
->         str = bitmap_getnum(str, &r->start);
->         if (IS_ERR(str))
-> @@ -583,9 +583,15 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
->         if (*str != '-')
->                 return ERR_PTR(-EINVAL);
->
-> -       str = bitmap_getnum(str + 1, &r->end);
-> -       if (IS_ERR(str))
-> -               return str;
-> +       str++;
-> +       if (*str == 'N') {
-> +               r->end = nmaskbits - 1;
-> +               str++;
-> +       } else {
-> +               str = bitmap_getnum(str, &r->end);
-> +               if (IS_ERR(str))
-> +                       return str;
-> +       }
+Build instructions:
 
-Indeed it's much simpler. But I don't like that you increase the nesting level.
-Can you keep bitmap_parse_region() a single-tab style function?
+[ make and make-options ]
+MAKE="make V=1"
+MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
+MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
 
-What about group size? Are you going to support N there, like "0-N:5/N"?
-What about "N-N"? Is it legal? Maybe hide new logic in bitmap_getnum()?
+[ clean-up ]
+$MAKE $MAKE_OPTS -C tools/ clean
 
-I would also like to see tests covering new functionality. As a user of "N",
-I want to be 100% sure that this "N" is a full equivalent of NR_CPUS, including
-error codes that the parser returns. Otherwise it will be hard to maintain the
-transition.
+[ bpftool ]
+$MAKE $MAKE_OPTS -C tools/bpf/bpftool/
 
->         if (end_of_region(*str))
->                 goto no_pattern;
-> @@ -628,6 +634,8 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
->   * Syntax: range:used_size/group_size
->   * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
->   * Optionally the self-descriptive "all" or "none" can be used.
-> + * The value 'N' can be used as the end of a range to indicate the maximum
-> + * allowed value; i.e (nmaskbits - 1).
->   *
->   * Returns: 0 on success, -errno on invalid input strings. Error values:
->   *
-> @@ -656,7 +664,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->                 if (buf == NULL)
->                         return 0;
->
-> -               buf = bitmap_parse_region(buf, &r);
-> +               buf = bitmap_parse_region(buf, &r, nmaskbits);
->                 if (IS_ERR(buf))
->                         return PTR_ERR(buf);
->
-> --
-> 2.17.1
->
+[ perf ]
+PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
+
+I was careful with respecting the user's wish to override custom compiler,
+linker, GNU/binutils and/or LLVM utils settings.
+
+Some personal notes:
+1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
+2. This patch is on top of Linux v5.11-rc4.
+
+I hope to get some feedback from especially Linux-bpf folks.
+
+Acked-by: Jiri Olsa <jolsa@redhat.com> # tools/build and tools/perf
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+Changelog RFC v1->v2:
+- Add Jiri's ACK
+- Adapt to fit Linux v5.11-rc4
+
+ tools/bpf/bpftool/Makefile                  | 2 --
+ tools/bpf/runqslower/Makefile               | 3 ---
+ tools/build/feature/Makefile                | 4 ++--
+ tools/perf/Makefile.perf                    | 1 -
+ tools/scripts/Makefile.include              | 7 +++++++
+ tools/testing/selftests/bpf/Makefile        | 3 +--
+ tools/testing/selftests/tc-testing/Makefile | 3 +--
+ 7 files changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index f897cb5fb12d..71c14efa6e91 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -75,8 +75,6 @@ endif
+ 
+ INSTALL ?= install
+ RM ?= rm -f
+-CLANG ?= clang
+-LLVM_STRIP ?= llvm-strip
+ 
+ FEATURE_USER = .bpftool
+ FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib libcap \
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index 4d5ca54fcd4c..9d9fb6209be1 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -3,9 +3,6 @@ include ../../scripts/Makefile.include
+ 
+ OUTPUT ?= $(abspath .output)/
+ 
+-CLANG ?= clang
+-LLC ?= llc
+-LLVM_STRIP ?= llvm-strip
+ BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
+ DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bpftool
+ BPFTOOL ?= $(DEFAULT_BPFTOOL)
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 89ba522e377d..3e55edb3ea54 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -1,4 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../scripts/Makefile.include
++
+ FILES=                                          \
+          test-all.bin                           \
+          test-backtrace.bin                     \
+@@ -76,8 +78,6 @@ FILES=                                          \
+ FILES := $(addprefix $(OUTPUT),$(FILES))
+ 
+ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+-LLVM_CONFIG ?= llvm-config
+-CLANG ?= clang
+ 
+ all: $(FILES)
+ 
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 62f3deb1d3a8..f4df7534026d 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -176,7 +176,6 @@ endef
+ LD += $(EXTRA_LDFLAGS)
+ 
+ PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+-LLVM_CONFIG ?= llvm-config
+ 
+ RM      = rm -f
+ LN      = ln -f
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 1358e89cdf7d..4255e71f72b7 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -69,6 +69,13 @@ HOSTCC  ?= gcc
+ HOSTLD  ?= ld
+ endif
+ 
++# Some tools require Clang, LLC and/or LLVM utils
++CLANG		?= clang
++LLC		?= llc
++LLVM_CONFIG	?= llvm-config
++LLVM_OBJCOPY	?= llvm-objcopy
++LLVM_STRIP	?= llvm-strip
++
+ ifeq ($(CC_NO_CLANG), 1)
+ EXTRA_WARNINGS += -Wstrict-aliasing=3
+ endif
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index c51df6b91bef..952e2bc5f3bc 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ include ../../../../scripts/Kbuild.include
+ include ../../../scripts/Makefile.arch
++include ../../../scripts/Makefile.include
+ 
+ CXX ?= $(CROSS_COMPILE)g++
+ 
+@@ -18,8 +19,6 @@ ifneq ($(wildcard $(GENHDR)),)
+   GENFLAGS := -DHAVE_GENHDR
+ endif
+ 
+-CLANG		?= clang
+-LLVM_OBJCOPY	?= llvm-objcopy
+ BPF_GCC		?= $(shell command -v bpf-gcc;)
+ SAN_CFLAGS	?=
+ CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) $(SAN_CFLAGS)		\
+diff --git a/tools/testing/selftests/tc-testing/Makefile b/tools/testing/selftests/tc-testing/Makefile
+index 91fee5c43274..4d639279f41e 100644
+--- a/tools/testing/selftests/tc-testing/Makefile
++++ b/tools/testing/selftests/tc-testing/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../../scripts/Makefile.include
+ 
+ top_srcdir = $(abspath ../../../..)
+ APIDIR := $(top_scrdir)/include/uapi
+@@ -7,8 +8,6 @@ TEST_GEN_FILES = action.o
+ KSFT_KHDR_INSTALL := 1
+ include ../lib.mk
+ 
+-CLANG ?= clang
+-LLC   ?= llc
+ PROBE := $(shell $(LLC) -march=bpf -mcpu=probe -filetype=null /dev/null 2>&1)
+ 
+ ifeq ($(PROBE),)
+-- 
+2.30.0
+
