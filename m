@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4D2300ACE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F075D300B31
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbhAVPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:46:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39308 "EHLO mail.kernel.org"
+        id S1728613AbhAVS0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:26:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728589AbhAVOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:23:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0158923B7C;
-        Fri, 22 Jan 2021 14:17:41 +0000 (UTC)
+        id S1728575AbhAVOXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8975C239EE;
+        Fri, 22 Jan 2021 14:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325062;
-        bh=EObke+J1RsHKcbk4dvp1s8i82tHpd7T+q7jt78/dGoU=;
+        s=korg; t=1611325036;
+        bh=LUdd2E/cGjfP4Rbh63w81R58a6kR9vtbz624oz/ZfNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D67s9HAWirYh6xWDfOr9gKJzeTv9y15P/RN+aMHTNAw+Qo+a7sGQyMSU1fXDcczsH
-         eOHO7ymJ167gTcGPBk8ZkiwyPOx/iSTVxiOEPcDcciLS0BH8Znvp8twpKDPKDERRVg
-         pmyiavgIsdjb099D3KmMhrphYMlLmo9Bp5Xi1fqQ=
+        b=anK0qsIqFN3HWRsvX8ez8YKFhPBmWRg6gl/eBXBtKz4P7C0i+cAI5qZOm2Zxbd1Hz
+         Ya+JsRmjPQyPzAHKuW2lJDIfkrsN5L1+mtZNmU8tw+WYv/Or40oXjICpB1aWyNjY5x
+         VliWaOHwyzF4ZL6pY209jNtX6aAn5qHJV09zHlC4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        stable@vger.kernel.org, David Wu <david.wu@rock-chips.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 18/33] mlxsw: core: Increase critical threshold for ASIC thermal zone
-Date:   Fri, 22 Jan 2021 15:12:34 +0100
-Message-Id: <20210122135734.322039388@linuxfoundation.org>
+Subject: [PATCH 5.4 25/33] net: stmmac: Fixed mtu channged by cache aligned
+Date:   Fri, 22 Jan 2021 15:12:41 +0100
+Message-Id: <20210122135734.597944250@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
 References: <20210122135733.565501039@linuxfoundation.org>
@@ -40,43 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: David Wu <david.wu@rock-chips.com>
 
-[ Upstream commit b06ca3d5a43ca2dd806f7688a17e8e7e0619a80a ]
+[ Upstream commit 5b55299eed78538cc4746e50ee97103a1643249c ]
 
-Increase critical threshold for ASIC thermal zone from 110C to 140C
-according to the system hardware requirements. All the supported ASICs
-(Spectrum-1, Spectrum-2, Spectrum-3) could be still operational with ASIC
-temperature below 140C. With the old critical threshold value system
-can perform unjustified shutdown.
+Since the original mtu is not used when the mtu is updated,
+the mtu is aligned with cache, this will get an incorrect.
+For example, if you want to configure the mtu to be 1500,
+but mtu 1536 is configured in fact.
 
-All the systems equipped with the above ASICs implement thermal
-protection mechanism at firmware level and firmware could decide to
-perform system thermal shutdown in case the temperature is below 140C.
-So with the new threshold system will not meltdown, while thermal
-operating range will be aligned with hardware abilities.
-
-Fixes: 41e760841d26 ("mlxsw: core: Replace thermal temperature trips with defines")
-Fixes: a50c1e35650b ("mlxsw: core: Implement thermal zone")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
+Fixed: eaf4fac478077 ("net: stmmac: Do not accept invalid MTU values")
+Signed-off-by: David Wu <david.wu@rock-chips.com>
+Link: https://lore.kernel.org/r/20210113034109.27865-1-david.wu@rock-chips.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/core_thermal.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/core_thermal.c
-@@ -19,7 +19,7 @@
- #define MLXSW_THERMAL_ASIC_TEMP_NORM	75000	/* 75C */
- #define MLXSW_THERMAL_ASIC_TEMP_HIGH	85000	/* 85C */
- #define MLXSW_THERMAL_ASIC_TEMP_HOT	105000	/* 105C */
--#define MLXSW_THERMAL_ASIC_TEMP_CRIT	110000	/* 110C */
-+#define MLXSW_THERMAL_ASIC_TEMP_CRIT	140000	/* 140C */
- #define MLXSW_THERMAL_HYSTERESIS_TEMP	5000	/* 5C */
- #define MLXSW_THERMAL_MODULE_TEMP_SHIFT	(MLXSW_THERMAL_HYSTERESIS_TEMP * 2)
- #define MLXSW_THERMAL_ZONE_MAX_NAME	16
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3739,6 +3739,7 @@ static int stmmac_change_mtu(struct net_
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
+ 	int txfifosz = priv->plat->tx_fifo_size;
++	const int mtu = new_mtu;
+ 
+ 	if (txfifosz == 0)
+ 		txfifosz = priv->dma_cap.tx_fifo_size;
+@@ -3756,7 +3757,7 @@ static int stmmac_change_mtu(struct net_
+ 	if ((txfifosz < new_mtu) || (new_mtu > BUF_SIZE_16KiB))
+ 		return -EINVAL;
+ 
+-	dev->mtu = new_mtu;
++	dev->mtu = mtu;
+ 
+ 	netdev_update_features(dev);
+ 
 
 
