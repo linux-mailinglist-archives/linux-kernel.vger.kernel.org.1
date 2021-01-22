@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDB2300119
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA84530011F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbhAVLAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:00:49 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:12418 "EHLO
+        id S1728152AbhAVLDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:03:16 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35698 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727628AbhAVKwU (ORCPT
+        by vger.kernel.org with ESMTP id S1727635AbhAVKwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:52:20 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MAmG84002482;
+        Fri, 22 Jan 2021 05:52:21 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MAlUls011302;
         Fri, 22 Jan 2021 11:51:21 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=vD3EHGbLxSS3YdjyiN4P/XEtIcwWhHbeghamkCuYDFE=;
- b=GEUvKPU/1XwRjiQmBsLk9FFhceuz4DNLsxYnguryd0REfL4ibyzsjY45KM2anEpCme39
- 2M36ZnvtwVnlnU4UbsI3j7U+5NqNmbOuBGclgy7sxtYl92fyXtEV2AKCV61F+z93VIDX
- uVnIr+WiCHabf44TKwVUH8e/xVXsQlCdGLNTv9WlKvmwcTqx7vzwIay7TtKSyMS1VVlG
- FgGN0NCqCfEYx5TDb6I/VPV5z4F8s2jNNxESxuh1Ik+DR2p/l9444SBJ8g0NMRpgjCeI
- NwYBHW5egYcID9b3tF7CnlQ3boGXY09TwTrJjV+J5s5Kel4broDvINp2vC3G/PKZwkR4 jQ== 
+ bh=VolS5deDcvTnZ8ENVJ/LfA/YXPUaY5XcnNz2nP415Go=;
+ b=7EDlauTgctsKDWyJktmjlmYyfnUFTwOOjjQnhS8mod9oT/rRi14zKbtFJ+amnUgxL/f5
+ /RVxKbw/Iv9QSCb9ZTcRl2doRSVivTEdmqJxFgh4Y+6uRth5FtzPj/3iTopFDRI0jVDy
+ +cg4XYwyshCE9wFBtfLZzg/A1ZdMz67Y2VoZk5kauZkvY7KF1XDlOcB1iBC2pMptbe3+
+ NEkFmex81hPy3ZKQV0WjiuEkRwvFESZNIBnvnWyJH1BLbwA2d1McIcLGuf49aswEGLwy
+ GbZ3deoF7DiasceWGEHUMcD31r/qdyTmJJ2nUalZCCSv7Ta4iGLu0LoVVyfOT14CfyxW dg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3668pqhdue-1
+        by mx07-00178001.pphosted.com with ESMTP id 3668pe1e1p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 22 Jan 2021 11:51:21 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8884F100034;
-        Fri, 22 Jan 2021 11:51:20 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4842110002A;
+        Fri, 22 Jan 2021 11:51:21 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 79E0822DBCA;
-        Fri, 22 Jan 2021 11:51:20 +0100 (CET)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 34E7122DBCA;
+        Fri, 22 Jan 2021 11:51:21 +0100 (CET)
 Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
  with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan 2021 11:51:20
  +0100
@@ -50,16 +50,16 @@ CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 02/14] clk: stm32mp1: merge 'ck_hse_rtc' and 'ck_rtc' into one clock
-Date:   Fri, 22 Jan 2021 11:50:49 +0100
-Message-ID: <20210122105101.27374-3-gabriel.fernandez@foss.st.com>
+Subject: [PATCH 03/14] clk: stm32mp1: remove intermediate pll clocks
+Date:   Fri, 22 Jan 2021 11:50:50 +0100
+Message-ID: <20210122105101.27374-4-gabriel.fernandez@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210122105101.27374-1-gabriel.fernandez@foss.st.com>
 References: <20210122105101.27374-1-gabriel.fernandez@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-22_06:2021-01-21,2021-01-22 signatures=0
@@ -69,99 +69,154 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-'ck_rtc' has multiple clocks as input (ck_hsi, ck_lsi, and ck_hse).
-A divider is available only on the specific rtc input for ck_hse.
-This Merge will facilitate to have a more coherent clock tree
-in no trusted / trusted world.
+This patch is to prepare STM32MP1 clocks in trusted mode.
+Integrate the mux clock into pll clock will facilitate to have a more
+coherent clock tree in no trusted / trusted mode.
 
 Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 ---
- drivers/clk/clk-stm32mp1.c | 49 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 43 insertions(+), 6 deletions(-)
+ drivers/clk/clk-stm32mp1.c | 65 ++++++++++++++++++++++++--------------
+ 1 file changed, 42 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
-index 35d5aee8f9b0..0e1d4427a8df 100644
+index 0e1d4427a8df..ee6968a2ad57 100644
 --- a/drivers/clk/clk-stm32mp1.c
 +++ b/drivers/clk/clk-stm32mp1.c
-@@ -245,7 +245,7 @@ static const char * const dsi_src[] = {
+@@ -731,6 +731,7 @@ struct stm32_pll_obj {
+ 	spinlock_t *lock;
+ 	void __iomem *reg;
+ 	struct clk_hw hw;
++	struct clk_mux mux;
  };
  
- static const char * const rtc_src[] = {
--	"off", "ck_lse", "ck_lsi", "ck_hse_rtc"
-+	"off", "ck_lse", "ck_lsi", "ck_hse"
- };
+ #define to_pll(_hw) container_of(_hw, struct stm32_pll_obj, hw)
+@@ -745,6 +746,8 @@ struct stm32_pll_obj {
+ #define FRAC_MASK	0x1FFF
+ #define FRAC_SHIFT	3
+ #define FRACLE		BIT(16)
++#define PLL_MUX_SHIFT	0
++#define PLL_MUX_MASK	3
  
- static const char * const mco1_src[] = {
-@@ -1031,6 +1031,42 @@ static struct clk_hw *clk_register_cktim(struct device *dev, const char *name,
- 	return hw;
+ static int __pll_is_enabled(struct clk_hw *hw)
+ {
+@@ -856,16 +859,29 @@ static int pll_is_enabled(struct clk_hw *hw)
+ 	return ret;
  }
  
-+/* The divider of RTC clock concerns only ck_hse clock */
-+#define HSE_RTC 3
-+
-+static unsigned long clk_divider_rtc_recalc_rate(struct clk_hw *hw,
-+						 unsigned long parent_rate)
++static u8 pll_get_parent(struct clk_hw *hw)
 +{
-+	if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
-+		return clk_divider_ops.recalc_rate(hw, parent_rate);
++	struct stm32_pll_obj *clk_elem = to_pll(hw);
++	struct clk_hw *mux_hw = &clk_elem->mux.hw;
 +
-+	return parent_rate;
++	__clk_hw_set_clk(mux_hw, hw);
++
++	return clk_mux_ops.get_parent(mux_hw);
 +}
 +
-+static long clk_divider_rtc_round_rate(struct clk_hw *hw, unsigned long rate,
-+				       unsigned long *prate)
-+{
-+	if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
-+		return clk_divider_ops.round_rate(hw, rate, prate);
+ static const struct clk_ops pll_ops = {
+ 	.enable		= pll_enable,
+ 	.disable	= pll_disable,
+ 	.recalc_rate	= pll_recalc_rate,
+ 	.is_enabled	= pll_is_enabled,
++	.get_parent	= pll_get_parent,
+ };
+ 
+ static struct clk_hw *clk_register_pll(struct device *dev, const char *name,
+-				       const char *parent_name,
++				       const char * const *parent_names,
++				       int num_parents,
+ 				       void __iomem *reg,
++				       void __iomem *mux_reg,
+ 				       unsigned long flags,
+ 				       spinlock_t *lock)
+ {
+@@ -881,8 +897,15 @@ static struct clk_hw *clk_register_pll(struct device *dev, const char *name,
+ 	init.name = name;
+ 	init.ops = &pll_ops;
+ 	init.flags = flags;
+-	init.parent_names = &parent_name;
+-	init.num_parents = 1;
++	init.parent_names = parent_names;
++	init.num_parents = num_parents;
 +
-+	return *prate;
-+}
-+
-+static int clk_divider_rtc_set_rate(struct clk_hw *hw, unsigned long rate,
-+				    unsigned long parent_rate)
-+{
-+	if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
-+		return clk_divider_ops.set_rate(hw, rate, parent_rate);
-+
-+	return parent_rate;
-+}
-+
-+static const struct clk_ops rtc_div_clk_ops = {
-+	.recalc_rate	= clk_divider_rtc_recalc_rate,
-+	.round_rate	= clk_divider_rtc_round_rate,
-+	.set_rate	= clk_divider_rtc_set_rate,
-+};
-+
++	element->mux.lock = lock;
++	element->mux.reg =  mux_reg;
++	element->mux.shift = PLL_MUX_SHIFT;
++	element->mux.mask =  PLL_MUX_MASK;
++	element->mux.flags =  CLK_MUX_READ_ONLY;
++	element->mux.reg =  mux_reg;
+ 
+ 	element->hw.init = &init;
+ 	element->reg = reg;
+@@ -1069,6 +1092,7 @@ static const struct clk_ops rtc_div_clk_ops = {
+ 
  struct stm32_pll_cfg {
  	u32 offset;
++	u32 muxoff;
  };
-@@ -1243,6 +1279,10 @@ _clk_stm32_register_composite(struct device *dev,
- 	_STM32_DIV(_div_offset, _div_shift, _div_width,\
- 		   _div_flags, _div_table, NULL)\
  
-+#define _DIV_RTC(_div_offset, _div_shift, _div_width, _div_flags, _div_table)\
-+	_STM32_DIV(_div_offset, _div_shift, _div_width,\
-+		   _div_flags, _div_table, &rtc_div_clk_ops)
-+
- #define _STM32_MUX(_offset, _shift, _width, _mux_flags, _mmux, _ops)\
- 	.mux = &(struct stm32_mux_cfg) {\
- 		&(struct mux_cfg) {\
-@@ -1965,13 +2005,10 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
- 		  _DIV(RCC_ETHCKSELR, 4, 4, 0, NULL)),
+ static struct clk_hw *_clk_register_pll(struct device *dev,
+@@ -1078,8 +1102,11 @@ static struct clk_hw *_clk_register_pll(struct device *dev,
+ {
+ 	struct stm32_pll_cfg *stm_pll_cfg = cfg->cfg;
  
- 	/* RTC clock */
--	DIV(NO_ID, "ck_hse_rtc", "ck_hse", 0, RCC_RTCDIVR, 0, 6, 0),
+-	return clk_register_pll(dev, cfg->name, cfg->parent_name,
+-				base + stm_pll_cfg->offset, cfg->flags, lock);
++	return clk_register_pll(dev, cfg->name, cfg->parent_names,
++				cfg->num_parents,
++				base + stm_pll_cfg->offset,
++				base + stm_pll_cfg->muxoff,
++				cfg->flags, lock);
+ }
+ 
+ struct stm32_cktim_cfg {
+@@ -1189,14 +1216,16 @@ _clk_stm32_register_composite(struct device *dev,
+ 	.func		= _clk_hw_register_mux,\
+ }
+ 
+-#define PLL(_id, _name, _parent, _flags, _offset)\
++#define PLL(_id, _name, _parents, _flags, _offset_p, _offset_mux)\
+ {\
+ 	.id		= _id,\
+ 	.name		= _name,\
+-	.parent_name	= _parent,\
+-	.flags		= _flags,\
++	.parent_names	= _parents,\
++	.num_parents	= ARRAY_SIZE(_parents),\
++	.flags		= CLK_IGNORE_UNUSED | (_flags),\
+ 	.cfg		=  &(struct stm32_pll_cfg) {\
+-		.offset = _offset,\
++		.offset = _offset_p,\
++		.muxoff = _offset_mux,\
+ 	},\
+ 	.func		= _clk_register_pll,\
+ }
+@@ -1712,21 +1741,11 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+ 
+ 	FIXED_FACTOR(CK_HSE_DIV2, "clk-hse-div2", "ck_hse", 0, 1, 2),
+ 
+-	/* ref clock pll */
+-	MUX(NO_ID, "ref1", ref12_parents, CLK_OPS_PARENT_ENABLE, RCC_RCK12SELR,
+-	    0, 2, CLK_MUX_READ_ONLY),
 -
--	COMPOSITE(RTC, "ck_rtc", rtc_src, CLK_OPS_PARENT_ENABLE |
--		   CLK_SET_RATE_PARENT,
-+	COMPOSITE(RTC, "ck_rtc", rtc_src, CLK_OPS_PARENT_ENABLE,
- 		  _GATE(RCC_BDCR, 20, 0),
- 		  _MUX(RCC_BDCR, 16, 2, 0),
--		  _NO_DIV),
-+		  _DIV_RTC(RCC_RTCDIVR, 0, 6, 0, NULL)),
+-	MUX(NO_ID, "ref3", ref3_parents, CLK_OPS_PARENT_ENABLE, RCC_RCK3SELR,
+-	    0, 2, CLK_MUX_READ_ONLY),
+-
+-	MUX(NO_ID, "ref4", ref4_parents, CLK_OPS_PARENT_ENABLE, RCC_RCK4SELR,
+-	    0, 2, CLK_MUX_READ_ONLY),
+-
+ 	/* PLLs */
+-	PLL(PLL1, "pll1", "ref1", CLK_IGNORE_UNUSED, RCC_PLL1CR),
+-	PLL(PLL2, "pll2", "ref1", CLK_IGNORE_UNUSED, RCC_PLL2CR),
+-	PLL(PLL3, "pll3", "ref3", CLK_IGNORE_UNUSED, RCC_PLL3CR),
+-	PLL(PLL4, "pll4", "ref4", CLK_IGNORE_UNUSED, RCC_PLL4CR),
++	PLL(PLL1, "pll1", ref12_parents, 0, RCC_PLL1CR, RCC_RCK12SELR),
++	PLL(PLL2, "pll2", ref12_parents, 0, RCC_PLL2CR, RCC_RCK12SELR),
++	PLL(PLL3, "pll3", ref3_parents, 0, RCC_PLL3CR, RCC_RCK3SELR),
++	PLL(PLL4, "pll4", ref4_parents, 0, RCC_PLL4CR, RCC_RCK4SELR),
  
- 	/* MCO clocks */
- 	COMPOSITE(CK_MCO1, "ck_mco1", mco1_src, CLK_OPS_PARENT_ENABLE |
+ 	/* ODF */
+ 	COMPOSITE(PLL1_P, "pll1_p", PARENT("pll1"), 0,
 -- 
 2.17.1
 
