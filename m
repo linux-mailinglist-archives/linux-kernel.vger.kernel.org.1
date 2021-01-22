@@ -2,314 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADD7300A90
+	by mail.lfdr.de (Postfix) with ESMTP id 86CA7300A91
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729513AbhAVSBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:01:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729289AbhAVRxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:53:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E19B323AC0;
-        Fri, 22 Jan 2021 17:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611337886;
-        bh=ydxEs9Whkod0VN9TjVjM1PoZcIsQiU4uGTvxkHheazk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nO2QSxL9s3oYk4QBFS1ryuUZu9th3PcMqBCTfHZLteqwvagUcEgvm6n3f2gW0TtSO
-         VnJMqwPCg5f/kvQ+1+tqYujtKTYKzVYPxF+6+pU9lfI1xLqzgMKdj31f2E0qaOPQW3
-         PhQYVCaoCRiZR8ACqZnsdZo6UplQjwcBWe2qfb/TFku/pVPy7tQzBi96MsD4Sw2ZeB
-         OBTRXLRxh1U2htRpfjzb5At9E4gNDM+q+Y5ykSoFU5Fe7WQ35M/Rg3O4cbybrKVywl
-         crcEf0Ya+KuwFdjWOhIEe8XKfQvfHO+R9dZvWF04v+b3Jn3YpPf04oL9/lA3mCdg4W
-         P5j82NN2QGCrw==
-From:   Jeff Layton <jlayton@kernel.org>
-To:     ceph-devel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        willy@infradead.org, linux-cachefs@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 6/6] ceph: convert ceph_readpages to ceph_readahead
-Date:   Fri, 22 Jan 2021 12:51:18 -0500
-Message-Id: <20210122175119.364381-7-jlayton@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210122175119.364381-1-jlayton@kernel.org>
-References: <20210122175119.364381-1-jlayton@kernel.org>
+        id S1729985AbhAVSCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:02:02 -0500
+Received: from smtprelay0128.hostedemail.com ([216.40.44.128]:45542 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729648AbhAVRw4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 12:52:56 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E70EE1801F770;
+        Fri, 22 Jan 2021 17:52:09 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2691:2693:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:5007:6119:7652:7903:8784:8957:9025:9163:10004:10400:10848:11232:11658:11914:12043:12297:12660:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14181:14659:14721:14819:21080:21451:21611:21627:21972:21987:30054:30060:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: chess82_4508c6f2756d
+X-Filterd-Recvd-Size: 2880
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 22 Jan 2021 17:52:08 +0000 (UTC)
+Message-ID: <59dfd27e4b5cfe183a8cd64ed930c6dfd3c0aa20.camel@perches.com>
+Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang
+ line
+From:   Joe Perches <joe@perches.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Finn Behrens <me@kloenk.de>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 22 Jan 2021 09:52:06 -0800
+In-Reply-To: <CAK7LNAQM5zYu3J-zP1AFPSKqiFL0rmnud9WyNFDNMmg3Dgw00w@mail.gmail.com>
+References: <20210121170736.2266-1-scott.branden@broadcom.com>
+         <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
+         <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com>
+         <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
+         <CAK7LNARL570EgjijCMY_CF91frwtTeatyhYcnD8-s08aiduFnQ@mail.gmail.com>
+         <64d3d8cb83e09d03927dba998a09e8b37e06dece.camel@perches.com>
+         <CAK7LNAQM5zYu3J-zP1AFPSKqiFL0rmnud9WyNFDNMmg3Dgw00w@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert ceph_readpages to ceph_readahead and make it use
-netfs_readahead. With this we can rip out a lot of the old
-readpage/readpages infrastructure.
+On Sat, 2021-01-23 at 02:16 +0900, Masahiro Yamada wrote:
+> On Sat, Jan 23, 2021 at 12:51 AM Joe Perches <joe@perches.com> wrote:
+> > 
+> > On Fri, 2021-01-22 at 07:06 +0900, Masahiro Yamada wrote:
+> > > I use Ubuntu, where /usr/bin/python is a symlink
+> > > to /usr/bin/python3.
+> > 
+> > Odd, here:
+> > 
+> > $ lsb_release -a
+> > No LSB modules are available.
+> > Distributor ID: Ubuntu
+> > Description:    Ubuntu 20.10
+> > Release:        20.10
+> > Codename:       groovy
+> > 
+> > $ ls /usr/bin/python -la
+> > lrwxrwxrwx 1 root root 7 Apr 15  2020 /usr/bin/python -> python2
+> 
+> Hmm, presumably I changed the symlink path by myself
+> although I do not remember...  Sorry for confusion.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/ceph/addr.c | 229 ++++++++-----------------------------------------
- 1 file changed, 34 insertions(+), 195 deletions(-)
+Or maybe it's because my system has only been upgraded since
+about Ubuntu 8.04... Maybe it's time for a fresh reinstall..
 
-diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-index b3b58285a997..d671c0cb1893 100644
---- a/fs/ceph/addr.c
-+++ b/fs/ceph/addr.c
-@@ -321,214 +321,53 @@ static int ceph_readpage(struct file *filp, struct page *page)
- 	return netfs_readpage(filp, page, &ceph_readpage_netfs_ops, NULL);
- }
- 
--/*
-- * Finish an async read(ahead) op.
-- */
--static void finish_read(struct ceph_osd_request *req)
-+static void ceph_readahead_cleanup(struct address_space *mapping, void *priv)
- {
--	struct inode *inode = req->r_inode;
--	struct ceph_fs_client *fsc = ceph_inode_to_client(inode);
--	struct ceph_osd_data *osd_data;
--	int rc = req->r_result <= 0 ? req->r_result : 0;
--	int bytes = req->r_result >= 0 ? req->r_result : 0;
--	int num_pages;
--	int i;
--
--	dout("finish_read %p req %p rc %d bytes %d\n", inode, req, rc, bytes);
--	if (rc == -EBLOCKLISTED)
--		ceph_inode_to_client(inode)->blocklisted = true;
--
--	/* unlock all pages, zeroing any data we didn't read */
--	osd_data = osd_req_op_extent_osd_data(req, 0);
--	BUG_ON(osd_data->type != CEPH_OSD_DATA_TYPE_PAGES);
--	num_pages = calc_pages_for((u64)osd_data->alignment,
--					(u64)osd_data->length);
--	for (i = 0; i < num_pages; i++) {
--		struct page *page = osd_data->pages[i];
--
--		if (rc < 0 && rc != -ENOENT)
--			goto unlock;
--		if (bytes < (int)PAGE_SIZE) {
--			/* zero (remainder of) page */
--			int s = bytes < 0 ? 0 : bytes;
--			zero_user_segment(page, s, PAGE_SIZE);
--		}
-- 		dout("finish_read %p uptodate %p idx %lu\n", inode, page,
--		     page->index);
--		flush_dcache_page(page);
--		SetPageUptodate(page);
--unlock:
--		unlock_page(page);
--		put_page(page);
--		bytes -= PAGE_SIZE;
--	}
--
--	ceph_update_read_latency(&fsc->mdsc->metric, req->r_start_latency,
--				 req->r_end_latency, rc);
--
--	kfree(osd_data->pages);
--}
--
--/*
-- * start an async read(ahead) operation.  return nr_pages we submitted
-- * a read for on success, or negative error code.
-- */
--static int start_read(struct inode *inode, struct ceph_rw_context *rw_ctx,
--		      struct list_head *page_list, int max)
--{
--	struct ceph_osd_client *osdc =
--		&ceph_inode_to_client(inode)->client->osdc;
-+	struct inode *inode = mapping->host;
- 	struct ceph_inode_info *ci = ceph_inode(inode);
--	struct page *page = lru_to_page(page_list);
--	struct ceph_vino vino;
--	struct ceph_osd_request *req;
--	u64 off;
--	u64 len;
--	int i;
--	struct page **pages;
--	pgoff_t next_index;
--	int nr_pages = 0;
--	int got = 0;
--	int ret = 0;
--
--	if (!rw_ctx) {
--		/* caller of readpages does not hold buffer and read caps
--		 * (fadvise, madvise and readahead cases) */
--		int want = CEPH_CAP_FILE_CACHE;
--		ret = ceph_try_get_caps(inode, CEPH_CAP_FILE_RD, want,
--					true, &got);
--		if (ret < 0) {
--			dout("start_read %p, error getting cap\n", inode);
--		} else if (!(got & want)) {
--			dout("start_read %p, no cache cap\n", inode);
--			ret = 0;
--		}
--		if (ret <= 0) {
--			if (got)
--				ceph_put_cap_refs(ci, got);
--			while (!list_empty(page_list)) {
--				page = lru_to_page(page_list);
--				list_del(&page->lru);
--				put_page(page);
--			}
--			return ret;
--		}
--	}
--
--	off = (u64) page_offset(page);
--
--	/* count pages */
--	next_index = page->index;
--	list_for_each_entry_reverse(page, page_list, lru) {
--		if (page->index != next_index)
--			break;
--		nr_pages++;
--		next_index++;
--		if (max && nr_pages == max)
--			break;
--	}
--	len = nr_pages << PAGE_SHIFT;
--	dout("start_read %p nr_pages %d is %lld~%lld\n", inode, nr_pages,
--	     off, len);
--	vino = ceph_vino(inode);
--	req = ceph_osdc_new_request(osdc, &ci->i_layout, vino, off, &len,
--				    0, 1, CEPH_OSD_OP_READ,
--				    CEPH_OSD_FLAG_READ, NULL,
--				    ci->i_truncate_seq, ci->i_truncate_size,
--				    false);
--	if (IS_ERR(req)) {
--		ret = PTR_ERR(req);
--		goto out;
--	}
--
--	/* build page vector */
--	nr_pages = calc_pages_for(0, len);
--	pages = kmalloc_array(nr_pages, sizeof(*pages), GFP_KERNEL);
--	if (!pages) {
--		ret = -ENOMEM;
--		goto out_put;
--	}
--	for (i = 0; i < nr_pages; ++i) {
--		page = list_entry(page_list->prev, struct page, lru);
--		BUG_ON(PageLocked(page));
--		list_del(&page->lru);
--
-- 		dout("start_read %p adding %p idx %lu\n", inode, page,
--		     page->index);
--		if (add_to_page_cache_lru(page, &inode->i_data, page->index,
--					  GFP_KERNEL)) {
--			put_page(page);
--			dout("start_read %p add_to_page_cache failed %p\n",
--			     inode, page);
--			nr_pages = i;
--			if (nr_pages > 0) {
--				len = nr_pages << PAGE_SHIFT;
--				osd_req_op_extent_update(req, 0, len);
--				break;
--			}
--			goto out_pages;
--		}
--		pages[i] = page;
--	}
--	osd_req_op_extent_osd_data_pages(req, 0, pages, len, 0, false, false);
--	req->r_callback = finish_read;
--	req->r_inode = inode;
--
--	dout("start_read %p starting %p %lld~%lld\n", inode, req, off, len);
--	ret = ceph_osdc_start_request(osdc, req, false);
--	if (ret < 0)
--		goto out_pages;
--	ceph_osdc_put_request(req);
-+	int got = (int)(uintptr_t)priv;
- 
--	/* After adding locked pages to page cache, the inode holds cache cap.
--	 * So we can drop our cap refs. */
- 	if (got)
- 		ceph_put_cap_refs(ci, got);
--
--	return nr_pages;
--
--out_pages:
--	for (i = 0; i < nr_pages; ++i)
--		unlock_page(pages[i]);
--	ceph_put_page_vector(pages, nr_pages, false);
--out_put:
--	ceph_osdc_put_request(req);
--out:
--	if (got)
--		ceph_put_cap_refs(ci, got);
--	return ret;
- }
-+const struct netfs_read_request_ops ceph_readahead_netfs_ops = {
-+	.init_rreq		= ceph_init_rreq,
-+	.is_cache_enabled	= ceph_is_cache_enabled,
-+	.begin_cache_operation	= ceph_begin_cache_operation,
-+	.issue_op		= ceph_netfs_issue_op,
-+	.clamp_length		= ceph_netfs_clamp_length,
-+	.cleanup		= ceph_readahead_cleanup,
-+};
- 
--
--/*
-- * Read multiple pages.  Leave pages we don't read + unlock in page_list;
-- * the caller (VM) cleans them up.
-- */
--static int ceph_readpages(struct file *file, struct address_space *mapping,
--			  struct list_head *page_list, unsigned nr_pages)
-+static void ceph_readahead(struct readahead_control *ractl)
- {
--	struct inode *inode = file_inode(file);
--	struct ceph_fs_client *fsc = ceph_inode_to_client(inode);
--	struct ceph_file_info *fi = file->private_data;
-+	struct inode *inode = file_inode(ractl->file);
-+	struct ceph_file_info *fi = ractl->file->private_data;
- 	struct ceph_rw_context *rw_ctx;
--	int rc = 0;
--	int max = 0;
-+	int got = 0;
-+	int ret = 0;
- 
- 	if (ceph_inode(inode)->i_inline_version != CEPH_INLINE_NONE)
--		return -EINVAL;
-+		return;
- 
- 	rw_ctx = ceph_find_rw_context(fi);
--	max = fsc->mount_options->rsize >> PAGE_SHIFT;
--	dout("readpages %p file %p ctx %p nr_pages %d max %d\n",
--	     inode, file, rw_ctx, nr_pages, max);
--	while (!list_empty(page_list)) {
--		rc = start_read(inode, rw_ctx, page_list, max);
--		if (rc < 0)
--			goto out;
-+	if (!rw_ctx) {
-+		/*
-+		 * readahead callers do not necessarily hold Fcb caps
-+		 * (e.g. fadvise, madvise).
-+		 */
-+		int want = CEPH_CAP_FILE_CACHE;
-+
-+		ret = ceph_try_get_caps(inode, CEPH_CAP_FILE_RD, want, true, &got);
-+		if (ret < 0)
-+			dout("start_read %p, error getting cap\n", inode);
-+		else if (!(got & want))
-+			dout("start_read %p, no cache cap\n", inode);
-+
-+		if (ret <= 0)
-+			return;
- 	}
--out:
--	dout("readpages %p file %p ret %d\n", inode, file, rc);
--	return rc;
-+	netfs_readahead(ractl, &ceph_readahead_netfs_ops, (void *)(uintptr_t)got);
- }
- 
- struct ceph_writeback_ctl
-@@ -1481,7 +1320,7 @@ static ssize_t ceph_direct_io(struct kiocb *iocb, struct iov_iter *iter)
- 
- const struct address_space_operations ceph_aops = {
- 	.readpage = ceph_readpage,
--	.readpages = ceph_readpages,
-+	.readahead = ceph_readahead,
- 	.writepage = ceph_writepage,
- 	.writepages = ceph_writepages_start,
- 	.write_begin = ceph_write_begin,
--- 
-2.29.2
+I believe that Ubuntu now only installs python3 since 18.04
+
+https://wiki.ubuntu.com/BionicBeaver/ReleaseNotes
+
+Other base system changes since 16.04 LTS
+
+    The gpg binary is provided by gnupg2
+
+    For new installs, a swap file will be used by default instead of a swap partition.
+
+    Python 2 is no longer installed by default. Python 3 has been updated to 3.6. This is the last LTS release to include Python 2 in main.
+
+
 
