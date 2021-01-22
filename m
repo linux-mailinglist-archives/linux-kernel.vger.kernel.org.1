@@ -2,240 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFE4300ED7
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43319300ED9
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbhAVVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:24:02 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31932 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728447AbhAVVXU (ORCPT
+        id S1728600AbhAVVYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729912AbhAVVWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:23:20 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10ML3dWI122496;
-        Fri, 22 Jan 2021 16:21:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=S5rl+RAwXzFz1RjASTeFHDc25EU36YcXkFw6cL1UDFU=;
- b=iQZfXinqAmZClMHbrCe+XdvDJcnMh2dSxJlgK27gxKo51KiX3lERJZFUvbeL9v3DKYRl
- Vi90yG86IBHD9jl3ChntQ1u6z2XqBx+IWzaAszH0Z1WUn2X9ruKy7zffzM+dk4AICIei
- wB7mUKtI3Tyvo5quYwAgsZRY4Cn06bGT5f6kNYo6qic/Jafu7hrdojRrnok+/B/mrCR5
- Ydj5gBBayH/SijQHEtYGm6So4ph1H10orWnb52by6cxB3WklSlrSZBgHSeo3suJ13nKh
- T+lryWHzRs+PLWd3y6FYM2svOhOEL69nBBPZBpNOX7CY9u0yrNHWbBAE0yA4lhsicq6J VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36856n22tj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 16:21:45 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10ML5Zc8132007;
-        Fri, 22 Jan 2021 16:21:45 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36856n22t2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 16:21:44 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10MLH2BC003632;
-        Fri, 22 Jan 2021 21:21:42 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 367k0s8y0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 22 Jan 2021 21:21:42 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10MLLXMh23855480
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 22 Jan 2021 21:21:33 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C1FBAE053;
-        Fri, 22 Jan 2021 21:21:40 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8CD2AE051;
-        Fri, 22 Jan 2021 21:21:39 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 22 Jan 2021 21:21:39 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-References: <20210114170412.4819-1-john.ogness@linutronix.de>
-Date:   Fri, 22 Jan 2021 22:21:39 +0100
-In-Reply-To: <20210114170412.4819-1-john.ogness@linutronix.de> (John Ogness's
-        message of "Thu, 14 Jan 2021 18:10:12 +0106")
-Message-ID: <yt9dk0s48y70.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Fri, 22 Jan 2021 16:22:53 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9DC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:22:12 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id ke15so9628434ejc.12
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:22:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ZpwXDPRrMrG5nsJXK8HMrl7bi6IV+vRYsbaXoE2tqY=;
+        b=lZuPRHZEXAezgQ76taZ/agsBU25kwwcY9lyg2EtyfvoJHVOZ3vvVR3eR4EeKx90h6K
+         zn2dr/C2AnSzZ2+G1xGa0swpRwTAqdbeK6u73WfulF44/+0f8HENjJi8B0BTh01d10xo
+         OVhypm+yLlM2In+CsxdH28fPom7hs2S8V35SeL9edEX7LHZSXDd9t39FcJvMkE3KE06b
+         V8Ie59p8ccJgfKkLyZICpwTQUSS6IsttXPqwUsFFKFZQh9mZHmsD2Bb67K2BgASC5YfB
+         khnumZMq+sMrMW+7tY2pThKqogMGfb51Yve0DdfM25NtkyIbSBSseoNt8HwouhmjKHAP
+         Le8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ZpwXDPRrMrG5nsJXK8HMrl7bi6IV+vRYsbaXoE2tqY=;
+        b=DcbBg/EMQfpTTrBBPj4iDaoA7NePhWTuUMs+8VUzvtl7Hu1rY9L+XWDYk9IOAJcfbQ
+         aGSfQDDlu5za8aR7Xz6bzHlvdRm/oNUVMZ+WWMtJ7JybNW7OkUsqTDfMVNbEgd6MxfDc
+         HEmWqxA/9RpkWD6D99/AlJhum8HDmUokrHSDdlp4SdczjAz4xKDOMK8a3LkcO2AQd4A7
+         RB54EkwhIPsW26g5oafXogNc7xRo87G7OVlnAWYwSVjncqPMyo2xcCUedOCvEL0NafUB
+         3JEo7Q+aHjpcIfxSHZfDHJphYjxla8Vzv/yedroTniG0T9q6BpU1lyyOJABS8wQUYLFT
+         QM2g==
+X-Gm-Message-State: AOAM533aEjbU4BXeBq+fVhmP53nvwkXwyJ0PpFG3C9kRz6s9HUpUppmE
+        0XQkI0wDzNNOtBPysJv+ygxRenSIIdKINY4MKZMJ
+X-Google-Smtp-Source: ABdhPJxeM0w+zCva5SzWNsJdr60Poc+lbb+f+yqTkMpHZLu9kUx1HlkP0Jlm0bnhywXbrJ5OXJG3H3V3f4+ehob+NUw=
+X-Received: by 2002:a17:907:932:: with SMTP id au18mr4188903ejc.91.1611350531019;
+ Fri, 22 Jan 2021 13:22:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-22_15:2021-01-22,2021-01-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 spamscore=0 clxscore=1011 mlxscore=0 mlxlogscore=764
- suspectscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101220109
+References: <20210121200150.2448-1-nramas@linux.microsoft.com>
+In-Reply-To: <20210121200150.2448-1-nramas@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 22 Jan 2021 16:21:59 -0500
+Message-ID: <CAHC9VhT13nhaHY3kJZ6ni4rjUffSG-hD5vOfK-q2KfsVFOtaCg@mail.gmail.com>
+Subject: Re: [PATCH] selinux: measure state and policy capabilities
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Ogness <john.ogness@linutronix.de> writes:
-
-> Before commit b6cf8b3f3312 ("printk: add lockless ringbuffer"),
-> msg_print_text() would only write up to size-1 bytes into the
-> provided buffer. Some callers expect this behavior and append
-> a terminator to returned string. In particular:
+On Thu, Jan 21, 2021 at 3:02 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
 >
-> arch/powerpc/xmon/xmon.c:dump_log_buf()
-> arch/um/kernel/kmsg_dump.c:kmsg_dumper_stdout()
+> SELinux stores the configuration state and the policy capabilities
+> in kernel memory.  Changes to this data at runtime would have an impact
+> on the security guarantees provided by SELinux.  Measuring SELinux
+> configuration state and policy capabilities through IMA subsystem
+> provides a tamper-resistant way for an attestation service to remotely
+> validate the runtime state.
 >
-> msg_print_text() has been replaced by record_print_text(), which
-> currently fills the full size of the buffer. This causes a
-> buffer overflow for the above callers.
+> Measure the configuration state and policy capabilities by calling
+> the IMA hook ima_measure_critical_data().
 >
-> Change record_print_text() so that it will only use size-1 bytes
-> for text data. Also, for paranoia sakes, add a terminator after
-> the text data.
+> To enable SELinux data measurement, the following steps are required:
 >
-> And finally, document this behavior so that it is clear that only
-> size-1 bytes are used and a terminator is added.
+>  1, Add "ima_policy=critical_data" to the kernel command line arguments
+>     to enable measuring SELinux data at boot time.
+>     For example,
+>       BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
 >
-> Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+>  2, Add the following rule to /etc/ima/ima-policy
+>        measure func=CRITICAL_DATA label=selinux
+>
+> Sample measurement of SELinux state and policy capabilities:
+>
+> 10 2122...65d8 ima-buf sha256:13c2...1292 selinux-state 696e...303b
+>
+> To verify the measurement check the following:
+>
+> Execute the following command to extract the measured data
+> from the IMA log for SELinux configuration (selinux-state).
+>
+>   grep "selinux-state" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6 | xxd -r -p
+>
+> The output should be a list of key-value pairs. For example,
+>  initialized=1;enabled=1;enforcing=0;checkreqprot=1;network_peer_controls=1;open_perms=1;extended_socket_class=1;always_check_network=0;cgroup_seclabel=1;nnp_nosuid_transition=1;genfs_seclabel_symlinks=0;
+>
+> To verify the measured data with the current SELinux state:
+>
+>  => enabled should be set to 1 if /sys/fs/selinux folder exists,
+>     0 otherwise
+>
+> For other entries, compare the integer value in the files
+>  => /sys/fs/selinux/enforce
+>  => /sys/fs/selinux/checkreqprot
+> And, each of the policy capabilities files under
+>  => /sys/fs/selinux/policy_capabilities
+>
+> Note that the actual verification would be against an expected state
+> and done on a system other than the measured system, typically
+> requiring "initialized=1; enabled=1;enforcing=1;checkreqprot=0;" for
+> a secure state and then whatever policy capabilities are actually set
+> in the expected policy (which can be extracted from the policy itself
+> via seinfo, for example).
+>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
 > ---
-> [..]
+> This patch is based on
+> commit e58bb688f2e4 "Merge branch 'measure-critical-data' into next-integrity"
+> in "next-integrity-testing" branch
+>
+>  security/selinux/hooks.c     |  5 +++
+>  security/selinux/ima.c       | 68 ++++++++++++++++++++++++++++++++++++
+>  security/selinux/selinuxfs.c | 10 ++++++
+>  3 files changed, 83 insertions(+)
+>
+> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> index 644b17ec9e63..879a0d90615d 100644
+> --- a/security/selinux/hooks.c
+> +++ b/security/selinux/hooks.c
+> @@ -103,6 +103,7 @@
+>  #include "netlabel.h"
+>  #include "audit.h"
+>  #include "avc_ss.h"
+> +#include "ima.h"
+>
+>  struct selinux_state selinux_state;
+>
+> @@ -7407,6 +7408,10 @@ int selinux_disable(struct selinux_state *state)
+>
+>         selinux_mark_disabled(state);
+>
+> +       mutex_lock(&state->policy_mutex);
+> +       selinux_ima_measure_state(state);
+> +       mutex_unlock(&state->policy_mutex);
 
-I'm seeing crashes on s390x with this patch while running the glibc
-testsuite. The glibc test suite triggers a few FPU exceptions which
-are printed to the kernel log by default. Looking at the crash dump,
-i see that the console_drivers pointer seems to be overwritten while
-printing that (user space) warning:
+I'm not sure if this affects your decision to include this action in
+the measurements, but this function is hopefully going away in the not
+too distant future as we do away with support for disabling SELinux at
+runtime.
 
-crash> print *console_drivers
-$1 = {
-  name = "\247\071\377\373\354!\004\214\000\331\300\345\000\033\353_", 
-  write = 0xa7190001eb119078, 
-  read = 0xe6e320b0050090, 
-  device = 0xa51e0010a7210001, 
-  unblank = 0xa7291000b9e28012, 
-  setup = 0xe320f0a00004e320, 
-  exit = 0x208e0094eb112000, 
-  match = 0xcec1c006e017f, 
-  flags = -4984, 
-  index = 133, 
-  cflag = 8143136, 
-  data = 0x800458108004ec12, 
-  next = 0x5007eaf000000
-}
+FWIW, I'm not sure it's overly useful anyway; you only get here if you
+never had any SELinux policy/state configured and you decide to
+disable SELinux instead of loading a policy.  However, I've got no
+objection to this code.
 
-crash> x/16i console_drivers
-   0x79009700:  lghi    %r3,-5
-   0x79009704:  aghik   %r2,%r1,1164
-   0x7900970a:  brasl   %r14,0x79386dc8
-   0x79009710:  lghi    %r1,1
-   0x79009714:  laog    %r1,%r1,120(%r9)
-   0x7900971a:  llgc    %r2,5(%r11)
-   0x79009720:  llilh   %r1,16
-   0x79009724:  tmll    %r2,1
-   0x79009728:  lghi    %r2,4096
-   0x7900972c:  locgre  %r1,%r2
-   0x79009730:  lg      %r2,160(%r15)
-   0x79009736:  llc     %r2,142(%r2)
-   0x7900973c:  srlg    %r1,%r1,0(%r2)
-   0x79009742:  clij    %r1,1,12,0x7900981e
-   0x79009748:  cgij    %r8,0,8,0x79009852
-   0x7900974e:  la      %r2,4(%r8)
+> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
+> index 03715893ff97..e65d462d2d30 100644
+> --- a/security/selinux/ima.c
+> +++ b/security/selinux/ima.c
+> @@ -12,6 +12,60 @@
+>  #include "security.h"
+>  #include "ima.h"
+>
+> +/*
+> + * read_selinux_state - Read selinux configuration settings
+> + *
+> + * @state_str: Return the configuration settings.
+> + * @state_str_len: Size of the configuration settings string
+> + * @state: selinux_state
+> + *
+> + * Return 0 on success, error code on failure
+> + */
 
-crash> sym 0x79009700
-79009700 (t) iomap_finish_ioend+192
-/usr/src/debug/kernel-5.10.fc33/linux-5.11.0-20210122.rc4.git0.9f29bd8b2e71.300.fc33.s390x/./include/linux/pagemap.h:
-59
+Yes, naming is hard, but let's try to be a bit more consistent within
+a single file.  The existing function is prefixed with "selinux_ima_"
+perhaps we can do something similar here?
+"selinux_ima_collect_state()" or something similar perhaps?
 
-So somehow the pointer for console_drivers changes.
+Perhaps instead of returning zero on success you could return the
+length of the generated string?  It's not a big deal, but it saves an
+argument for whatever that is worth these days.  I also might pass the
+state as the first argument and the generated string pointer as the
+second argument, but that is pretty nit-picky.
 
-I can't provide the normal kernel crash output as printk is no longer
-working, but in crash the backtrace looks like this:
-crash> bt
-PID: 859915  TASK: dad24000          CPU: 9   COMMAND: "ld.so.1"
- LOWCORE INFO:
-  -psw      : 0x0002000180000000 0x0000000078c8400e
-  -function : stop_run at 78c8400e
-  -prefix   : 0x0041e000
-  -cpu timer: 0x7ffff953a957e166
-  -clock cmp: 0xd92876863ac66b00
-  -general registers:
-     0xf0f0f0f000000000 0x0000000078c8400e
-     0x0000000079984830 0x0000000079984830
-     0x0000000079ac62c0 0x0000000000000002
-     0x0000000000000038 000000000000000000
-     0x000000007a19157e 000000000000000000
-     0x00000000fffffffa 000000000000000000
-     0x00000000dad24000 000000000000000000
-     0x0000000078c8416e 0x00000380033136f0
-  -access registers:
-     0x7d5b4da0 0xa2a795c0 0000000000 0000000000
-     0000000000 0000000000 0000000000 0000000000
-     0000000000 0000000000 0000000000 0000000000
-     0000000000 0000000000 0000000000 0000000000
-  -control registers:
-     0x00a0000014966a10 0x000000007a15c007
-     0x000000000001d0a0 000000000000000000
-     0x000000000000ffff 0x000000000001d080
-     0x000000003b000000 0x00000001f29b81c7
-     0x0000000000008000 000000000000000000
-     000000000000000000 000000000000000000
-     000000000000000000 0x000000007a15c007
-     0x00000000db000000 0x000000000001d0c0
-  -floating point registers:
-     0x5faaaaabeb67f92f 0x0007fffffffffff8
-     0x40400000eb67f000 000000000000000000
-     0x0000000000000007 0x0000006400000000
-     0x000002aa2a63f028 0x000000000963cf85
-     0x000000002a642c60 000000000000000000
-     0x7f85516ceb67f222 0x000003ffeb67f528
-     0x000003ffeb67f230 0x0000000100000000
-     0x000003ffeb67f21d 0x000002aa28d2d970
+> +static int read_selinux_state(char **state_str, int *state_str_len,
+> +                             struct selinux_state *state)
+> +{
+> +       char *buf;
+> +       int i, buf_len, curr;
+> +       bool initialized = selinux_initialized(state);
+> +       bool enabled = !selinux_disabled(state);
+> +       bool enforcing = enforcing_enabled(state);
+> +       bool checkreqprot = checkreqprot_get(state);
+> +
+> +       buf_len = snprintf(NULL, 0, "%s=%d;%s=%d;%s=%d;%s=%d;",
+> +                          "initialized", initialized,
+> +                          "enabled", enabled,
+> +                          "enforcing", enforcing,
+> +                          "checkreqprot", checkreqprot);
+> +
+> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
+> +               buf_len += snprintf(NULL, 0, "%s=%d;",
+> +                                   selinux_policycap_names[i],
+> +                                   state->policycap[i]);
+> +       }
+> +       ++buf_len;
 
- #0 [38003313710] stop_run at 78c8400e
- #1 [38003313728] atomic_notifier_call_chain at 78ced536
- #2 [38003313778] panic at 7974aeca
- #3 [38003313818] die at 78c897ea
- #4 [38003313880] do_no_context at 78c9b230
- #5 [380033138b8] pgm_check_handler at 7976438c
- PSW:  0404c00180000000 0000000078d304ba (kmsg_dump_rewind+290)
- GPRS: 0000000000000020 0000000000000000 0000000000000000 00000000ffffec88 
-       000000000000000e 00000000793f4800 0000000000000224 0000000000000000 
-       0000000000000000 0000000000000000 0000000000000224 0005007eaf000000 
-       00000000dad24000 0000000000000000 0000038003313a68 0000038003313a18 
- #0 [38003313a68] console_unlock at 78d3158e
- #1 [38003313b48] vprintk_emit at 78d32f50
- #2 [38003313ba8] vprintk_default at 78d32f9e
- #3 [38003313c00] printk at 7974bfae
- #4 [38003313c90] show_code at 78c8588e
- #5 [38003313de0] show_registers at 7974a26e
- #6 [38003313e70] show_regs at 78c8961e
- #7 [38003313ea0] pgm_check_handler at 7976438c
- PSW:  0705300080000000 000000007d7983b2 (user space)
- GPRS: 0000000000000000 000000007d798360 0000000000000010 000003ff00000004 
-       000000007f854dd0 000000007d7e9788 000003ff00401b30 000000007f854ff8 
-       000003ff00000000 000003ff7d5b4da0 000003ff00000000 000003ff00000010 
-       000003ff004022c6 000003ff004024b0 0000000080401796 000000007f854de8
+With all of the variables you are measuring being booleans, it seems
+like using snprintf() is a bit overkill, no?  What about a series of
+strlen() calls with additional constants for the booleans and extra
+bits?  For example:
 
-kmsg_dump_rewind+290 is:
+  buf_len = 1; // '\0';
+  buf_len += strlen("foo") + 3; // "foo=0;"
+  buf_len += strlen("bar") + 3; // "bar=0;"
 
-              if (!(con->flags & CON_ENABLED))
-                        continue;
+Not that it matters a lot here, but the above must be more efficient
+than calling snprintf().
 
-in kernel/printk/printk.c:1845
+> +       buf = kzalloc(buf_len, GFP_KERNEL);
+> +       if (!buf)
+> +               return -ENOMEM;
+> +
+> +       curr = scnprintf(buf, buf_len, "%s=%d;%s=%d;%s=%d;%s=%d;",
+> +                        "initialized", initialized,
+> +                        "enabled", enabled,
+> +                        "enforcing", enforcing,
+> +                        "checkreqprot", checkreqprot);
+> +
+> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
+> +               curr += scnprintf((buf + curr), (buf_len - curr), "%s=%d;",
+> +                                 selinux_policycap_names[i],
+> +                                 state->policycap[i]);
+> +       }
 
-I haven't dived into whether our show_code() is doing something wrong
-which was covered in the past or whether that's because of the patch
-above but wanted to make you aware of that in case you have an idea.
-Otherwise i have to dig into the code.
+Similarly, you could probably replace all of this with
+strcat()/strlcat() calls since you don't have to render an integer
+into a string.
 
-Thanks
-Sven
+> +       *state_str = buf;
+> +       *state_str_len = curr;
+> +
+> +       return 0;
+> +}
+> +
+>  /*
+>   * selinux_ima_measure_state - Measure hash of the SELinux policy
+>   *
+> @@ -21,10 +75,24 @@
+>   */
+>  void selinux_ima_measure_state(struct selinux_state *state)
+>  {
+> +       char *state_str = NULL;
+> +       int state_str_len;
+>         void *policy = NULL;
+>         size_t policy_len;
+>         int rc = 0;
+>
+> +       rc = read_selinux_state(&state_str, &state_str_len, state);
+> +       if (rc) {
+> +               pr_err("SELinux: %s: failed to read state %d.\n",
+> +                       __func__, rc);
+> +               return;
+> +       }
+> +
+> +       ima_measure_critical_data("selinux", "selinux-state",
+> +                                 state_str, state_str_len, false);
+> +
+> +       kfree(state_str);
+> +
+>         /*
+>          * Measure SELinux policy only after initialization is completed.
+>          */
+> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+> index 4bde570d56a2..8b561e1c2caa 100644
+> --- a/security/selinux/selinuxfs.c
+> +++ b/security/selinux/selinuxfs.c
+> @@ -41,6 +41,7 @@
+>  #include "security.h"
+>  #include "objsec.h"
+>  #include "conditional.h"
+> +#include "ima.h"
+>
+>  enum sel_inos {
+>         SEL_ROOT_INO = 2,
+> @@ -182,6 +183,10 @@ static ssize_t sel_write_enforce(struct file *file, const char __user *buf,
+>                 selinux_status_update_setenforce(state, new_value);
+>                 if (!new_value)
+>                         call_blocking_lsm_notifier(LSM_POLICY_CHANGE, NULL);
+> +
+> +               mutex_lock(&state->policy_mutex);
+> +               selinux_ima_measure_state(state);
+> +               mutex_unlock(&state->policy_mutex);
+>         }
+>         length = count;
+>  out:
+> @@ -762,6 +767,11 @@ static ssize_t sel_write_checkreqprot(struct file *file, const char __user *buf,
+>
+>         checkreqprot_set(fsi->state, (new_value ? 1 : 0));
+>         length = count;
+> +
+> +       mutex_lock(&fsi->state->policy_mutex);
+> +       selinux_ima_measure_state(fsi->state);
+> +       mutex_unlock(&fsi->state->policy_mutex);
+> +
+
+The lock-measure-unlock pattern appears enough that I wonder if we
+should move the lock/unlock into selinux_ima_measure_state() and
+create a new function, selinux_ima_measure_state_unlocked(), to cover
+the existing case in selinux_notify_policy_change().  It would have
+the advantage of not requiring a pointless lock/unlock in the case
+where CONFIG_IMA=n.
+
+-- 
+paul moore
+www.paul-moore.com
