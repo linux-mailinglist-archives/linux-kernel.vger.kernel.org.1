@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7D5300715
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEC030071F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729036AbhAVPW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:22:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729048AbhAVPVh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:21:37 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABD3C06178B
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:20:56 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id c2so6700868edr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aOloNP8QP0eRjNYGwI2LuME4o0nuHEoMMVeWM2V/lRc=;
-        b=sbzgT+ujzjH+zt+7L+xw6IGAcMB2kX9DI9x++kTzcsyjl+GM3mBuDar3l4WnCAT9Dh
-         pgHkdgeP5bEntfbsBTm5TaIwq/wvsdYYHMAY34UNH5be4lg0Gciz0RV2sRZ/DQqoDmMC
-         iQJREvUhqSkXVO6aN3Sl9HAZYe92Z10HZo8S+nniNKTK8RZaVYGf/6j1JlarKS5boZLo
-         W+ggNQ+GVjazd/gpWGm3av8Ua36af3Ult+gnlfxjvnnUEa7qAzSqKbOxeXozmNeDZRH6
-         vZWJtzWLgJ4Yh9kgvlID6jHYbPFZE9SFkZc+X9VBppAiuYmHEDuPHhVJvAoKBWmtwcWU
-         3jKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aOloNP8QP0eRjNYGwI2LuME4o0nuHEoMMVeWM2V/lRc=;
-        b=ksIwB6QaCYk2F/MNiXzawGfCxtsNsztxHHi1OYHd9+ZhunXRkcUBXUo9PxkE03/9MA
-         9mLqW/hB7mSnfneLHclvKkBQcXCFjEXHeJl8sA53ZaP+O5gZ2P0Ymj9QcrqeEyQBMbKp
-         B8dQrve1rBJXbhrgsI6r5C6nUy+AgoDWO2OnT4aD1Dlo1bFXvvs7/wjZQNNe1kVO7D7z
-         MwWdisCF6cV/cfQijFtwzG0OzzrLDRFyBiBNecAFFIoanWNONZUbK60qX84/QO7YJaHf
-         ea0E4KgpzikiDAwUZBlfrgXfJ/EbU9ofBqKLlD2g6mVtrPoCPwUPnV6uB0XMeSm9cHWx
-         W3yw==
-X-Gm-Message-State: AOAM532od2sTZVP1jJYOhhq/1zW+aixELvKxtxsd66N/sjG0UCRbBqJH
-        Mfc2iqtVu6psMqSQhY4OhaE2CPEa7VfYcio0PQ5xPw==
-X-Google-Smtp-Source: ABdhPJwlRzpjVufr2v/TA6LbcxJQDXB6wj/lxcM/6k8GjjcGI86de739kHP+7V+WQ9LzcUy/SOnHNJoLFtW38dsCrrE=
-X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr27470edd.52.1611328855234;
- Fri, 22 Jan 2021 07:20:55 -0800 (PST)
+        id S1728700AbhAVPY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:24:27 -0500
+Received: from mga09.intel.com ([134.134.136.24]:34794 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729130AbhAVPV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:21:59 -0500
+IronPort-SDR: hxDloowpHx2dVHJyR0WRNDek2ithWwkNcLSZ6u+rQdmNxLje60jeAPuZA63j3Wj6Xedci/jXpp
+ DoyNrc1LjyQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="179603048"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="179603048"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:21:10 -0800
+IronPort-SDR: houAtDeADSmmcQbQWowfw/7Ijefe89LxGOc9gRjLNXgmOmPoa4inxl58NBuD8nLYiCezx2bJ04
+ e2d6BENtCOOw==
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="385793960"
+Received: from blaschkj-mobl.ger.corp.intel.com (HELO localhost) ([10.252.44.247])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:21:05 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ramalingam C <ramalingam.c@intel.com>,
+        Anshuman Gupta <anshuman.gupta@intel.com>,
+        Uma Shankar <uma.shankar@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/i915/hdcp: Fix return of value in uninitialized variable ret
+In-Reply-To: <20210122150957.209779-1-colin.king@canonical.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210122150957.209779-1-colin.king@canonical.com>
+Date:   Fri, 22 Jan 2021 17:21:02 +0200
+Message-ID: <87y2glj8v5.fsf@intel.com>
 MIME-Version: 1.0
-References: <20210122135735.176469491@linuxfoundation.org>
-In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 Jan 2021 20:50:43 +0530
-Message-ID: <CA+G9fYus+rnoxpZqhn35fMz4ZPQvYjkKFKSCsOhFtrHzbu1pZw@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/50] 4.14.217-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-mips@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 19:45, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Fri, 22 Jan 2021, Colin King <colin.king@canonical.com> wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 >
-> This is the start of the stable review cycle for the 4.14.217 release.
-> There are 50 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Currently when there are other connectors on the port using HDCP the
+> function _intel_hdcp_disable returns a garbage uninitialized value in
+> variable ret.  I believe the intention is to return 0, so return this
+> literal value instead of the value in ret.
 >
-> Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-> Anything received after that time might be too late.
+> Addresses-Coverity: ("Uninitialized scalar return")
+> Fixes: 899c8762f981 ("drm/i915/hdcp: Configure HDCP2.2 MST steram encryption status")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Thanks, but there's already a fix in progress:
+
+http://lore.kernel.org/r/20210119064655.1605-3-anshuman.gupta@intel.com
+
+BR,
+Jani.
+
+
+> ---
+>  drivers/gpu/drm/i915/display/intel_hdcp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.217-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
-
-MIPS: cavium_octeon_defconfig and nlm_xlp_defconfig builds breaks
-due to this patch on 4.14, 4.9 and 4.4
-
-> Al Viro <viro@zeniv.linux.org.uk>
->     MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-
-Build error:
-arch/mips/kernel/binfmt_elfo32.c:116:
-/arch/mips/kernel/../../../fs/binfmt_elf.c: In function 'fill_siginfo_note':
-/arch/mips/kernel/../../../fs/binfmt_elf.c:1575:23: error: passing
-argument 1 of 'copy_siginfo_to_user' from incompatible pointer type
-[-Werror=incompatible-pointer-types]
-  copy_siginfo_to_user((user_siginfo_t __user *) csigdata, siginfo);
-                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-MIPS build failed
-    * gcc-10-cavium_octeon_defconfig - FAILED
-    * gcc-10-nlm_xlp_defconfig - FAILED
-    * gcc-8-cavium_octeon_defconfig - FAILED
-    * gcc-8-nlm_xlp_defconfig - FAILED
-    * gcc-9-cavium_octeon_defconfig - FAILED
-    * gcc-9-nlm_xlp_defconfig - FAILED
-
-Build log link,
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/980489009#L162
-
+> diff --git a/drivers/gpu/drm/i915/display/intel_hdcp.c b/drivers/gpu/drm/i915/display/intel_hdcp.c
+> index db8dff2eeb0a..a0e7b0bf892b 100644
+> --- a/drivers/gpu/drm/i915/display/intel_hdcp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_hdcp.c
+> @@ -883,7 +883,7 @@ static int _intel_hdcp_disable(struct intel_connector *connector)
+>  	 * until it disabled HDCP encryption for all connectors in MST topology.
+>  	 */
+>  	if (dig_port->num_hdcp_streams > 0)
+> -		return ret;
+> +		return 0;
+>  
+>  	hdcp->hdcp_encrypted = false;
+>  	intel_de_write(dev_priv, HDCP_CONF(dev_priv, cpu_transcoder, port), 0);
 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+Jani Nikula, Intel Open Source Graphics Center
