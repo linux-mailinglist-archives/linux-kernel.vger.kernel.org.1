@@ -2,98 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64263005AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CB23005AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbhAVOkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:40:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:50962 "EHLO foss.arm.com"
+        id S1728822AbhAVOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:39:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728857AbhAVOjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:39:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AFD9C139F;
-        Fri, 22 Jan 2021 06:38:20 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E88153F66E;
-        Fri, 22 Jan 2021 06:38:18 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH v3 2/2] kasan: Add explicit preconditions to kasan_report()
-Date:   Fri, 22 Jan 2021 14:37:48 +0000
-Message-Id: <20210122143748.50089-3-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122143748.50089-1-vincenzo.frascino@arm.com>
-References: <20210122143748.50089-1-vincenzo.frascino@arm.com>
+        id S1728658AbhAVOil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:38:41 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4927A23444;
+        Fri, 22 Jan 2021 14:38:00 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 09:37:58 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Gaurav Kohli <gkohli@codeaurora.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Denis Efremov <efremov@linux.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+Message-ID: <20210122093758.320bb4f9@gandalf.local.home>
+In-Reply-To: <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+        <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+        <20210121140951.2a554a5e@gandalf.local.home>
+        <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
+        <20210121153732.43d7b96b@gandalf.local.home>
+        <YAqwD/ivTgVJ7aap@kroah.com>
+        <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the introduction of KASAN_HW_TAGS, kasan_report() dereferences
-the address passed as a parameter.
+On Fri, 22 Jan 2021 16:55:29 +0530
+Gaurav Kohli <gkohli@codeaurora.org> wrote:
 
-Add a comment to make sure that the preconditions to the function are
-explicitly clarified.
+> >> That could possibly work.  
+> 
+> Yes, this will work, As i have tested similar patch for internal testing 
+> for kernel branches like 5.4/4.19.
 
-Note: An invalid address (e.g. NULL) passed to the function when,
-KASAN_HW_TAGS is enabled, leads to a kernel panic.
+Can you or Denis send a proper patch for Greg to backport? I'll review it,
+test it and give my ack to it, so Greg can take it without issue.
 
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Leon Romanovsky <leonro@mellanox.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- include/linux/kasan.h | 7 +++++++
- mm/kasan/kasan.h      | 2 +-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+Thanks!
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index fe1ae73ff8b5..0aea9e2a2a01 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -333,6 +333,13 @@ static inline void *kasan_reset_tag(const void *addr)
- 	return (void *)arch_kasan_reset_tag(addr);
- }
- 
-+/**
-+ * kasan_report - print a report about a bad memory access detected by KASAN
-+ * @addr: address of the bad access
-+ * @size: size of the bad access
-+ * @is_write: whether the bad access is a write or a read
-+ * @ip: instruction pointer for the accessibility check or the bad access itself
-+ */
- bool kasan_report(unsigned long addr, size_t size,
- 		bool is_write, unsigned long ip);
- 
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index cc4d9e1d49b1..8c706e7652f2 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -209,7 +209,7 @@ bool check_memory_region(unsigned long addr, size_t size, bool write,
- 
- static inline bool addr_has_metadata(const void *addr)
- {
--	return true;
-+	return (is_vmalloc_addr(addr) || virt_addr_valid(addr));
- }
- 
- #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
--- 
-2.30.0
+-- Steve
 
+
+> 
+> > 
+> > Ok, so what can I do here?  Can someone resend this as a backport to the
+> > other stable kernels in this way so that I can queue it up?
+> > 
