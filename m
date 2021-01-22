@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AAE300B28
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54753300B26
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730054AbhAVSYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:24:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
+        id S1729998AbhAVSYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:24:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728582AbhAVOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728583AbhAVOXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 09:23:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41B9523A56;
-        Fri, 22 Jan 2021 14:17:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2037223A7A;
+        Fri, 22 Jan 2021 14:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325043;
-        bh=rPGWp0uZ3k/mwcKTuBc9nh9FPZsHTbJNzxLEIW/fUmo=;
+        s=korg; t=1611325046;
+        bh=vN3jV6eWtMx4XExwl7nIVv/YMc1xOgfY/VweDoxuuxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OGtzbyH+plWT7caabb4eJ6LqiLMYWHAgZbWu07jV6RIXTwoUaf1FyD4HS5AmHQxgv
-         fU3XrGpWev7zHpvWrh+cs7as4bUfX1rLGdDAKQD77C1Mod36PvijCuii6Qnlrb6l1j
-         0l9Xxjo4iIRb/G9+MU1mNUOtf9+2eMgdjWZAqx/c=
+        b=mldD8uyl9+Fc5IQw92/h5i0oc5B0zO9VneCexhGBgywxsi5ROx2WcBwHZrgdsnUf7
+         +VbGXJGJv8otcNdIELOTb8zQm0j9dWsYt+ffDsBWvq+aRJPBJKVaqrR0Do/P4M3H6H
+         +x43rc2jRLPJf4EwFz1pJibYdQXfYHuMhob2tUqo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 28/33] rxrpc: Fix handling of an unsupported token type in rxrpc_read()
-Date:   Fri, 22 Jan 2021 15:12:44 +0100
-Message-Id: <20210122135734.711305392@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Subject: [PATCH 5.4 29/33] net, sctp, filter: remap copy_from_user failure error
+Date:   Fri, 22 Jan 2021 15:12:45 +0100
+Message-Id: <20210122135734.750091426@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
 References: <20210122135733.565501039@linuxfoundation.org>
@@ -40,60 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit d52e419ac8b50c8bef41b398ed13528e75d7ad48 ]
+[ no upstream commit ]
 
-Clang static analysis reports the following:
+Fix a potential kernel address leakage for the prerequisite where there is
+a BPF program attached to the cgroup/setsockopt hook. The latter can only
+be attached under root, however, if the attached program returns 1 to then
+run the related kernel handler, an unprivileged program could probe for
+kernel addresses that way. The reason this is possible is that we're under
+set_fs(KERNEL_DS) when running the kernel setsockopt handler. Aside from
+old cBPF there is also SCTP's struct sctp_getaddrs_old which contains
+pointers in the uapi struct that further need copy_from_user() inside the
+handler. In the normal case this would just return -EFAULT, but under a
+temporary KERNEL_DS setting the memory would be copied and we'd end up at
+a different error code, that is, -EINVAL, for both cases given subsequent
+validations fail, which then allows the app to distinguish and make use of
+this fact for probing the address space. In case of later kernel versions
+this issue won't work anymore thanks to Christoph Hellwig's work that got
+rid of the various temporary set_fs() address space overrides altogether.
+One potential option for 5.4 as the only affected stable kernel with the
+least complexity would be to remap those affected -EFAULT copy_from_user()
+error codes with -EINVAL such that they cannot be probed anymore. Risk of
+breakage should be rather low for this particular error case.
 
-net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefined
-                toksize = toksizes[tok++];
-                        ^ ~~~~~~~~~~~~~~~
-
-rxrpc_read() contains two consecutive loops.  The first loop calculates the
-token sizes and stores the results in toksizes[] and the second one uses
-the array.  When there is an error in identifying the token in the first
-loop, the token is skipped, no change is made to the toksizes[] array.
-When the same error happens in the second loop, the token is not skipped.
-This will cause the toksizes[] array to be out of step and will overrun
-past the calculated sizes.
-
-Fix this by making both loops log a message and return an error in this
-case.  This should only happen if a new token type is incompletely
-implemented, so it should normally be impossible to trigger this.
-
-Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()")
-Reported-by: Tom Rix <trix@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Reported-by: Ryota Shiga (Flatt Security)
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rxrpc/key.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/core/filter.c |    2 +-
+ net/sctp/socket.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -1110,7 +1110,7 @@ static long rxrpc_read(const struct key
- 		default: /* we have a ticket we can't encode */
- 			pr_err("Unsupported key token type (%u)\n",
- 			       token->security_index);
--			continue;
-+			return -ENOPKG;
- 		}
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -1475,7 +1475,7 @@ struct bpf_prog *__get_filter(struct soc
  
- 		_debug("token[%u]: toksize=%u", ntoks, toksize);
-@@ -1225,7 +1225,9 @@ static long rxrpc_read(const struct key
- 			break;
+ 	if (copy_from_user(prog->insns, fprog->filter, fsize)) {
+ 		__bpf_prog_free(prog);
+-		return ERR_PTR(-EFAULT);
++		return ERR_PTR(-EINVAL);
+ 	}
  
- 		default:
--			break;
-+			pr_err("Unsupported key token type (%u)\n",
-+			       token->security_index);
-+			return -ENOPKG;
- 		}
+ 	prog->len = fprog->len;
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -1319,7 +1319,7 @@ static int __sctp_setsockopt_connectx(st
  
- 		ASSERTCMP((unsigned long)xdr - (unsigned long)oldxdr, ==,
+ 	kaddrs = memdup_user(addrs, addrs_size);
+ 	if (IS_ERR(kaddrs))
+-		return PTR_ERR(kaddrs);
++		return PTR_ERR(kaddrs) == -EFAULT ? -EINVAL : PTR_ERR(kaddrs);
+ 
+ 	/* Allow security module to validate connectx addresses. */
+ 	err = security_sctp_bind_connect(sk, SCTP_SOCKOPT_CONNECTX,
 
 
