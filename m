@@ -2,202 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691232FF973
+	by mail.lfdr.de (Postfix) with ESMTP id D67D22FF974
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbhAVA0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40154 "EHLO
+        id S1726546AbhAVA0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbhAVA0W (ORCPT
+        with ESMTP id S1726361AbhAVA0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:26:22 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79829C06174A;
-        Thu, 21 Jan 2021 16:25:42 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id q129so7866099iod.0;
-        Thu, 21 Jan 2021 16:25:42 -0800 (PST)
+        Thu, 21 Jan 2021 19:26:24 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B2AC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:25:43 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id b8so2278661plx.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:25:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ykOiitFyiN0YSC/lJm0MiGgBb0JXAdtJs/AnjN6QPxY=;
-        b=QDG0JJplOoNQz84k3mYR476kQh5U3VxQVzKvtt1e8CSfdDU8M8xdbIuGJjcZXrNbNC
-         lcmBx6MWm8ACOAF38UaCM0rT4//qt8cBuoS1xm1X1P3lngLnpJkcvTBbZBrjhmYfhhvZ
-         +DnawjDsJC0prF+exWXZexUH/WsmtUz9/xjVXxoO/XDC+sMpahwchcDb1nMJ2sLzWhN1
-         DHUDnHgm1p0HAexyYuRHLyzsQsfBt5ZpaqwkewmCA60fsHURrjAhbJPqcyJBBV0DDi24
-         sgSmuySVd8NFBRSNt3fRdKlZICvGbnyrgaamfofcoQm94m9dkgfBbHYmSc3ADcHm9TDl
-         Fx0g==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5feskpk9GlzD7Krs5v/HKhRDKnwIPDPivS/lanzBAu8=;
+        b=hl6Jw4vmpQjaXAX/JGgeAWIcC5xSkAe4iH8/Oq28KL9jWUt/n37wxuZxYDDpPTA+eW
+         PsWIcvFoP6Un8KVQtQ9UD/pkF0GPrUMhfpQ4ULGeiETqIElv+plirQRWA0g5trgEGHrX
+         NTyzbH09c3KzViq5XkX0YDghgqBZOSUDow3+ZH7HS7k9OaKmM0ifJ9oLGmYpZ4bpsvlm
+         ys3GeSuXziChU5mbXifVCmw+SQ5qOke4X+ESS31YjXHS4g59vcvkDdDM5mBvEAl+qMka
+         VjmvmNmOtlYo7mIIchEKuy/j5lt+H54n/OY8VUtUGA2m14J2Ps+JR8v8WftjIUUzUi89
+         3tjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ykOiitFyiN0YSC/lJm0MiGgBb0JXAdtJs/AnjN6QPxY=;
-        b=CBqDKjjDjEQnfzFc7R6V9TvJXPEo6IYppZjEB7JbM9DcdXzlVZ8tXwcZXBPwQ0tzd4
-         UIwccIR4GgvKdsdPzPZTw5syOjQ30Ka3FfgyrURDIyjRSF5Wv3JwD6W+mATGHUu7z6I6
-         rHhhW3It/sRhyjfdfUJCzJla3cmSYUNMYczEPM4Z5Sjp+MeIuPHFJvJmatE0RWBU6LWh
-         tdDlITWQfwuBvLAPdLZA7IQNiSrNPlxVG984JScnvQvNh1KUiiZEUxbGKq3w2XjadggS
-         aTPcmvp8w47fLfUQkOPiNN/kJvAj6QvCV0Re5dRPnZSumj+8y4sFNS2ek77h+3DEIX+b
-         CSnQ==
-X-Gm-Message-State: AOAM532Q62iHmFyoiXfHCdyNK15u4mo9B64rxAAcgQooNcrC8vIqQUxP
-        kWMWzb4gbugtmThMfD5POUFKitK9DL9gDZ5MGmw=
-X-Google-Smtp-Source: ABdhPJwA9IQtExG+5RlQWaPI0YodAZOnsMrpJLghO7Nv6S4fYgKHUyyRllGljUmIxkyy2DcFr61UVjM4KqztO1BDJcc=
-X-Received: by 2002:a6b:6a0e:: with SMTP id x14mr1540463iog.57.1611275141850;
- Thu, 21 Jan 2021 16:25:41 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5feskpk9GlzD7Krs5v/HKhRDKnwIPDPivS/lanzBAu8=;
+        b=D82cDztHDFWKDdPMqj73VDfh0kqKKotXf4ogs8l1R8l+ezZyn5l9j3an1qoVClM4kn
+         BoW4CyOjc+rS9vFMTEMxoPR9FervSGzEH8dViB0NA91aeSyRX9+PFvTQ5Q4buIqrGjwc
+         Ml7diKvH0iMB2ScSO/mMrqDPFPIgcB31D5OSpzF8XRsRiJiubby9/H80sC3UCe+QgNld
+         LoTiZCY/boIvQi6H8OdwxPr1BOtOV740IVYw1jg3pj++YiSBPOvUCC1kqHBAIontbjNe
+         UoAj6XOBs3Zy7mqbtzE1WPIfLsCUGFQ/PByS+GpiprNQalPAZDzRUWsgKHgn2owrh6nI
+         D8/A==
+X-Gm-Message-State: AOAM533ede5Lp7omGdU+FI8vVOBrau36t3B14nwtv3gsHAZyRvCIh1vB
+        lv5oyNAZPOBYM0NbTaWNyKA=
+X-Google-Smtp-Source: ABdhPJyQpkaTg2NUQKEh3ir6tqEkIVpk64iPS4Wy12YP3fR7uOZTTp0aLxHKc4M7LwM+Do28dqd09Q==
+X-Received: by 2002:a17:902:14f:b029:de:c703:3045 with SMTP id 73-20020a170902014fb02900dec7033045mr2362002plb.14.1611275143384;
+        Thu, 21 Jan 2021 16:25:43 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:2144:1799:e940:1da6])
+        by smtp.gmail.com with ESMTPSA id c23sm7103668pgc.72.2021.01.21.16.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 16:25:42 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 21 Jan 2021 16:25:40 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     vjitta@codeaurora.org
+Cc:     glider@google.com, akpm@linux-foundation.org,
+        dan.j.williams@intel.com, broonie@kernel.org, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, ylal@codeaurora.org,
+        vinmenon@codeaurora.org
+Subject: Re: [PATCH v5 2/2] lib: stackdepot: Add support to disable stack
+ depot
+Message-ID: <YAobhDFEJKa26OwH@google.com>
+References: <1610963802-11042-1-git-send-email-vjitta@codeaurora.org>
+ <1610963802-11042-2-git-send-email-vjitta@codeaurora.org>
 MIME-Version: 1.0
-References: <20210116095413.72820-1-sedat.dilek@gmail.com> <20210120223546.GF1798087@krava>
- <CAEf4Bza2W061YpxtUx9ZKQUtE0-tS6gf4yg2Le_2g4kyi3FhnQ@mail.gmail.com>
- <CA+icZUUGKn4DiBGN8Tq3yrh0NH2Fqboaigwm4Q3yceDJVe9dAA@mail.gmail.com> <CA+icZUX_DsEi+k5kpko5fxrG2+-oL8H4gVRq93fXHjN6ny9K=Q@mail.gmail.com>
-In-Reply-To: <CA+icZUX_DsEi+k5kpko5fxrG2+-oL8H4gVRq93fXHjN6ny9K=Q@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 22 Jan 2021 01:25:30 +0100
-Message-ID: <CA+icZUW11s-rmu+hw4ue44cn4FDBLoJWSrZ78qpdfk-CSYHYHQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] tools: Factor Clang, LLC and LLVM utils definitions
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Yulia Kartseva <hex@fb.com>, Andrey Ignatov <rdna@fb.com>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        Stephane Eranian <eranian@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Briana Oursler <briana.oursler@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610963802-11042-2-git-send-email-vjitta@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 1:21 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Jan 22, 2021 at 1:12 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Fri, Jan 22, 2021 at 1:04 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Jan 20, 2021 at 2:36 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Sat, Jan 16, 2021 at 10:54:04AM +0100, Sedat Dilek wrote:
-> > > > > When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
-> > > > >
-> > > > > While looking into the source code I found duplicate assignments
-> > > > > in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
-> > > > >
-> > > > > Move the Clang, LLC and/or LLVM utils definitions to
-> > > > > tools/scripts/Makefile.include file and add missing
-> > > > > includes where needed.
-> > > > > Honestly, I was inspired by commit c8a950d0d3b9
-> > > > > ("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
-> > > > >
-> > > > > I tested with bpftool and perf on Debian/testing AMD64 and
-> > > > > LLVM/Clang v11.1.0-rc1.
-> > > > >
-> > > > > Build instructions:
-> > > > >
-> > > > > [ make and make-options ]
-> > > > > MAKE="make V=1"
-> > > > > MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
-> > > > > MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
-> > > > >
-> > > > > [ clean-up ]
-> > > > > $MAKE $MAKE_OPTS -C tools/ clean
-> > > > >
-> > > > > [ bpftool ]
-> > > > > $MAKE $MAKE_OPTS -C tools/bpf/bpftool/
-> > > > >
-> > > > > [ perf ]
-> > > > > PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
-> > > > >
-> > > > > I was careful with respecting the user's wish to override custom compiler,
-> > > > > linker, GNU/binutils and/or LLVM utils settings.
-> > > > >
-> > > > > Some personal notes:
-> > > > > 1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
-> > > > > 2. This patch is on top of Linux v5.11-rc3.
-> > > > >
-> > > > > I hope to get some feedback from especially Linux-bpf folks.
-> > > > >
-> > > > > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > > > > ---
-> > > > >  tools/bpf/bpftool/Makefile                  | 2 --
-> > > > >  tools/bpf/runqslower/Makefile               | 3 ---
-> > > > >  tools/build/feature/Makefile                | 4 ++--
-> > > > >  tools/perf/Makefile.perf                    | 1 -
-> > > >
-> > > > for tools/build and tools/perf
-> > > >
-> > > > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > > >
-> > >
-> > > It's pretty straightforward and looks good for bpftool and runqslower,
-> > > but I couldn't apply directly to test due to merge conflicts.
-> > >
-> > > Also, which tree this should go through, given it touches multiple
-> > > parts under tools/?
-> > >
-> >
-> > Sorry, for the conflicts.
-> > AFAICS I should do this again against Linux v5.11-rc4 vanilla?
-> > Is this OK to you?
-> >
->
-> I re-checked:
-> This patch was on top of Linux v5.11-rc3 and applies cleanly against
-> Linux v5.11-rc.
->
+On Mon, Jan 18, 2021 at 03:26:42PM +0530, vjitta@codeaurora.org wrote:
+> From: Vijayanand Jitta <vjitta@codeaurora.org>
+> 
+> Add a kernel parameter stack_depot_disable to disable
+> stack depot. So that stack hash table doesn't consume
+> any memory when stack depot is disabled.
 
-Bullshit.
+The usecase is CONFIG_PAGE_OWNER without page_owner=on.
+Without this patch, stackdepot will consume the memory
+for the hashtable. By default, it's 8M which is never trivial.
 
-I will send out a v2 against Linux v5.11-rc4 - was on the wrong local
-Git branch.
+With this option, in CONFIG_PAGE_OWNER configured system,
+page_owner=off, stack_depot_disable in kernel command line,
+we could save the wasted memory for the hashtable.
 
-- Sedat -
+> 
+> Signed-off-by: Vinayak Menon <vinmenon@codeaurora.org>
+> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
 
-> Please let me know if I should adapt to a different Git tree.
->
-> - Sedat -
->
-> > Good hint, cannot say through which tree this should go through.
-> >
-> > - Sedat -
-> >
-> > > > jirka
-> > > >
-> > > > >  tools/scripts/Makefile.include              | 7 +++++++
-> > > > >  tools/testing/selftests/bpf/Makefile        | 3 +--
-> > > > >  tools/testing/selftests/tc-testing/Makefile | 3 +--
-> > > > >  7 files changed, 11 insertions(+), 12 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > > > > index f897cb5fb12d..71c14efa6e91 100644
-> > > > > --- a/tools/bpf/bpftool/Makefile
-> > > > > +++ b/tools/bpf/bpftool/Makefile
-> > > >
-> > > > SNIP
-> > > >
+Please also update kernel-parameters.txt.
+
+> ---
+>  include/linux/stackdepot.h |  1 +
+>  init/main.c                |  2 ++
+>  lib/stackdepot.c           | 33 +++++++++++++++++++++++++++++----
+>  3 files changed, 32 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+> index 24d49c7..eafd9aa 100644
+> --- a/include/linux/stackdepot.h
+> +++ b/include/linux/stackdepot.h
+> @@ -21,4 +21,5 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+>  
+>  unsigned int filter_irq_stacks(unsigned long *entries, unsigned int nr_entries);
+>  
+> +int stack_depot_init(void);
+>  #endif
+> diff --git a/init/main.c b/init/main.c
+> index 32b2a8a..8fcf9bb 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -98,6 +98,7 @@
+>  #include <linux/mem_encrypt.h>
+>  #include <linux/kcsan.h>
+>  #include <linux/init_syscalls.h>
+> +#include <linux/stackdepot.h>
+>  
+>  #include <asm/io.h>
+>  #include <asm/bugs.h>
+> @@ -827,6 +828,7 @@ static void __init mm_init(void)
+>  	page_ext_init_flatmem();
+>  	init_debug_pagealloc();
+>  	report_meminit();
+> +	stack_depot_init();
+>  	mem_init();
+>  	kmem_cache_init();
+>  	kmemleak_init();
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index dff8521..d20e6fd 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -31,6 +31,8 @@
+>  #include <linux/stackdepot.h>
+>  #include <linux/string.h>
+>  #include <linux/types.h>
+> +#include <linux/vmalloc.h>
+
+Why do we need vmalloc?
+
+Otherwise, looks good to me.
+Thank you!
