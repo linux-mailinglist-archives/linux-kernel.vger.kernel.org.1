@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E8B300C03
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB851300BD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730577AbhAVS4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:56:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37508 "EHLO mail.kernel.org"
+        id S1730239AbhAVSv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:51:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728486AbhAVOVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:21:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5007A23A9F;
-        Fri, 22 Jan 2021 14:14:46 +0000 (UTC)
+        id S1728539AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CB3323ACA;
+        Fri, 22 Jan 2021 14:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324886;
-        bh=JUbV4WDWYeuFOG5RUQMedKAYuLqR5xDajD+MGa6Gdsc=;
+        s=korg; t=1611324976;
+        bh=T1i6jgrBUKTaP3yAda/qISxZv6nd9DUKl2JCwHSKDfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLkV0r+SRH4ZdhBxzbDKpSKmTwEvnGS/do83XVKgzLN0WPFg9YRE+vi3u83pR2Qfv
-         6WfCTvxl3wt52f52UDHmy6RzJc7MRUebBxhf5kBi9n4/JsWr9hCffD1S5ihTPopGKc
-         SK1euS/Yoh/wgXWYqVNkx5imI0/eMfVYejm2tV10=
+        b=0Yb7jYlIH/H5k/+Q9gLobLdff2pIRYuEAieTftdwpCVlH4ewXww5gfNH1Lp0j8jkH
+         +DFwSJYnIonIEGhzcVQ0AlVLYlXAsN1fdGCYi4d1L7sh3nzGKvw352K3NOUGub3FIs
+         hSAztH3e1tQd6DkqGt7P3LJ473MpbVB3Img4atp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 44/50] rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+Subject: [PATCH 4.19 07/22] netxen_nic: fix MSI/MSI-x interrupts
 Date:   Fri, 22 Jan 2021 15:12:25 +0100
-Message-Id: <20210122135736.979280475@linuxfoundation.org>
+Message-Id: <20210122135732.211512850@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
-References: <20210122135735.176469491@linuxfoundation.org>
+In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
+References: <20210122135731.921636245@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Manish Chopra <manishc@marvell.com>
 
-[ Upstream commit d52e419ac8b50c8bef41b398ed13528e75d7ad48 ]
+[ Upstream commit a2bc221b972db91e4be1970e776e98f16aa87904 ]
 
-Clang static analysis reports the following:
+For all PCI functions on the netxen_nic adapter, interrupt
+mode (INTx or MSI) configuration is dependent on what has
+been configured by the PCI function zero in the shared
+interrupt register, as these adapters do not support mixed
+mode interrupts among the functions of a given adapter.
 
-net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefined
-                toksize = toksizes[tok++];
-                        ^ ~~~~~~~~~~~~~~~
+Logic for setting MSI/MSI-x interrupt mode in the shared interrupt
+register based on PCI function id zero check is not appropriate for
+all family of netxen adapters, as for some of the netxen family
+adapters PCI function zero is not really meant to be probed/loaded
+in the host but rather just act as a management function on the device,
+which caused all the other PCI functions on the adapter to always use
+legacy interrupt (INTx) mode instead of choosing MSI/MSI-x interrupt mode.
 
-rxrpc_read() contains two consecutive loops.  The first loop calculates the
-token sizes and stores the results in toksizes[] and the second one uses
-the array.  When there is an error in identifying the token in the first
-loop, the token is skipped, no change is made to the toksizes[] array.
-When the same error happens in the second loop, the token is not skipped.
-This will cause the toksizes[] array to be out of step and will overrun
-past the calculated sizes.
+This patch replaces that check with port number so that for all
+type of adapters driver attempts for MSI/MSI-x interrupt modes.
 
-Fix this by making both loops log a message and return an error in this
-case.  This should only happen if a new token type is incompletely
-implemented, so it should normally be impossible to trigger this.
-
-Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()")
-Reported-by: Tom Rix <trix@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Link: https://lore.kernel.org/r/161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk
+Fixes: b37eb210c076 ("netxen_nic: Avoid mixed mode interrupts")
+Signed-off-by: Manish Chopra <manishc@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Link: https://lore.kernel.org/r/20210107101520.6735-1-manishc@marvell.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/rxrpc/key.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -1112,7 +1112,7 @@ static long rxrpc_read(const struct key
- 		default: /* we have a ticket we can't encode */
- 			pr_err("Unsupported key token type (%u)\n",
- 			       token->security_index);
--			continue;
-+			return -ENOPKG;
- 		}
+--- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
++++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c
+@@ -580,11 +580,6 @@ static const struct net_device_ops netxe
+ 	.ndo_set_features = netxen_set_features,
+ };
  
- 		_debug("token[%u]: toksize=%u", ntoks, toksize);
-@@ -1227,7 +1227,9 @@ static long rxrpc_read(const struct key
- 			break;
+-static inline bool netxen_function_zero(struct pci_dev *pdev)
+-{
+-	return (PCI_FUNC(pdev->devfn) == 0) ? true : false;
+-}
+-
+ static inline void netxen_set_interrupt_mode(struct netxen_adapter *adapter,
+ 					     u32 mode)
+ {
+@@ -680,7 +675,7 @@ static int netxen_setup_intr(struct netx
+ 	netxen_initialize_interrupt_registers(adapter);
+ 	netxen_set_msix_bit(pdev, 0);
  
- 		default:
--			break;
-+			pr_err("Unsupported key token type (%u)\n",
-+			       token->security_index);
-+			return -ENOPKG;
- 		}
- 
- 		ASSERTCMP((unsigned long)xdr - (unsigned long)oldxdr, ==,
+-	if (netxen_function_zero(pdev)) {
++	if (adapter->portnum == 0) {
+ 		if (!netxen_setup_msi_interrupts(adapter, num_msix))
+ 			netxen_set_interrupt_mode(adapter, NETXEN_MSI_MODE);
+ 		else
 
 
