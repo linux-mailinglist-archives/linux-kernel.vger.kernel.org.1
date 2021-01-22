@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECA9300044
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463D1300042
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbhAVK23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:28:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727883AbhAVKVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:21:49 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0D1C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:21:07 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id g15so3466605pjd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:21:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=XoFMW3OnfJNPPFldVSvQQaSFejRFNATBngl33Eh4QXM=;
-        b=ZSWzskGWJQHTWK8xCE0MwgJkMnc94cSw/xSZAitSkx1ocOp67NrLdmveru5Jfn5jJr
-         AFQn+XTyax+ZDbHMFjPyaCHwhO9euQMT8ZoQ2dnOHNu51obRl8NO+pQ+XGYGMOtp1kVW
-         2/UUEQhJ9nrY0FuV0NDAqXBYBxDkWc/0HFLYHatQD6VnqJKIgpBVV02nsIVPY5I6Fjcl
-         YqEyeZBDTn4B9uftmeR0SNIwjNXlUgZKkJ+9pHP7/Fa4SyDVHXXRuVpCzhx95mAPmAoA
-         zD+qQ/8VdloWls+4lRhfzcxZiX+GuTS4WcV0XAQk+dMGGV3aDupkjx9Qo51hgWkhn0Xr
-         ibJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XoFMW3OnfJNPPFldVSvQQaSFejRFNATBngl33Eh4QXM=;
-        b=UYgw3hnsORrtKJQ8a+cPGgYwk1PIuxYycZ0Q84QZCdyxf+gdUJHKrV2D8BQTeJG4Vt
-         1sz7kyBXdsLAZ4th+P9/1Cs2ca5vWXFKQwC0cQS1dll/zoZ7hlR0yByTN2p2scnnPwR3
-         BwMRQ/dEQZfc2d6xjYft1u8JdiVmDTPKLaTI+398w1OX+X36hbc1MlDnehLJsh9usOPo
-         5qPXqJHJlb80UmpRXNIGoGCyNOSuCUSk2Qv5oQU2weCN+HcldnuzM0ZvJoEVJcsUPdEb
-         xs+yjmPHqYkKNNDP1lCCA0F9i9zd/bvqU+KZig4CHvz7+AtuzI+xTK3CwwxSFBjuQUDa
-         qJXw==
-X-Gm-Message-State: AOAM532EXcYxI129+VSPIbAWZ9WZEOl/Bo33NxsDWT5gDvKXFYIWQvO2
-        2+5APLkL4zk5Zvr2axIcv11UyQ==
-X-Google-Smtp-Source: ABdhPJzRoAHA3V2OMWAaOdw8coCyBE2IHrTcMy8kprKt4kCmC5DwgsnYIdx2PH4Lqtn4pdxX8zUBjA==
-X-Received: by 2002:a17:902:bc41:b029:de:1ec2:dac1 with SMTP id t1-20020a170902bc41b02900de1ec2dac1mr4244934plz.9.1611310866648;
-        Fri, 22 Jan 2021 02:21:06 -0800 (PST)
-Received: from localhost.localdomain ([122.173.53.31])
-        by smtp.gmail.com with ESMTPSA id ne6sm8487557pjb.44.2021.01.22.02.21.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 02:21:05 -0800 (PST)
-From:   Sumit Garg <sumit.garg@linaro.org>
-To:     kgdb-bugreport@lists.sourceforge.net
-Cc:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v2] kdb: Make memory allocations more robust
-Date:   Fri, 22 Jan 2021 15:50:50 +0530
-Message-Id: <1611310850-3339-1-git-send-email-sumit.garg@linaro.org>
-X-Mailer: git-send-email 2.7.4
+        id S1727740AbhAVK2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:28:06 -0500
+Received: from mga05.intel.com ([192.55.52.43]:37529 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727907AbhAVKV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:21:59 -0500
+IronPort-SDR: ZKhIgKbTA5XlUFrEReOTC5a0QMK+8r4JTxCNm+lD/5KIYxD6XsFRTxLcUhtgLCRBxcVMNGJHLw
+ il5gINJNKPZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="264245478"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="264245478"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 02:20:14 -0800
+IronPort-SDR: cy94oec0NER4g5RXDyf0t6yYcdKMnrdxi4RgSqnlKco9AI/cS/eLuts1/5i6sL5pvNA8QVLq2p
+ T/+LGOIZeBGQ==
+X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
+   d="scan'208";a="351781528"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 02:20:10 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l2tZ2-008kBR-F5; Fri, 22 Jan 2021 12:21:12 +0200
+Date:   Fri, 22 Jan 2021 12:21:12 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "zhaowei1102@thundersoft.com" <zhaowei1102@thundersoft.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kerneldev <kerneldev@karsmulder.nl>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joe Perches <joe@perches.com>,
+        gpiccoli <gpiccoli@canonical.com>, aquini <aquini@redhat.com>,
+        gustavoars <gustavoars@kernel.org>, ojeda <ojeda@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        guohanjun <guohanjun@huawei.com>,
+        mchehab+huawei <mchehab+huawei@kernel.org>
+Subject: Re: Re: [PATCH v2 0/2] Make it possible to reserve memory on 64bit
+ platform
+Message-ID: <YAqnGNEkUmTcWzoC@smile.fi.intel.com>
+References: <1610793673-64008-1-git-send-email-zhaowei1102@thundersoft.com>
+ <CAPcyv4hGu3r=m+7Wkf3a94G=ZM4cQB87pt0ThadoUrk8cY7ovw@mail.gmail.com>
+ <202101181151049299923@thundersoft.com>
+ <15269a61-3b16-4c07-2486-6940c559261e@redhat.com>
+ <202101221536190259795@thundersoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202101221536190259795@thundersoft.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kdb uses in_interrupt() to determine whether it's library
-code has been called from the kgdb trap handler or from a saner calling
-context such as driver init. This approach is broken because
-in_interrupt() alone isn't able to determine kgdb trap handler entry via
-normal task context such as [1].
+On Fri, Jan 22, 2021 at 03:36:19PM +0800, zhaowei1102@thundersoft.com wrote:
+> On 18.01.21 04:51, zhaowei1102@thundersoft.com wrote:
+> > >     On Sat, Jan 16, 2021 at 2:43 AM Wesley Zhao
+> > >     <zhaowei1102@thundersoft.com> wrote:
 
-We can improve this by adding check for in_dbg_master() instead which
-explicitly determines if we are running in debugger context.
+> > Dan's point is that you should look into using "memmap=" instead of
+> > "reserve=".
+> Oh~，sorry miss understand，i can try this， thanks！！
 
-[1] $ echo g > /proc/sysrq-trigger
+And AFAICS you don't need to alter cmdline.c. But if you are going to, don't
+forget test cases (and FYI: I have few patches pending against it here [1]).
 
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
----
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/andy/linux-gpio-intel.git/log/?h=for-next
 
-Changes in v2:
-- Get rid of redundant in_atomic() check.
-
- kernel/debug/kdb/kdb_private.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index 7a4a181..344eb0d 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -231,7 +231,7 @@ extern struct task_struct *kdb_curr_task(int);
- 
- #define kdb_task_has_cpu(p) (task_curr(p))
- 
--#define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
-+#define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
- 
- extern void *debug_kmalloc(size_t size, gfp_t flags);
- extern void debug_kfree(void *);
 -- 
-2.7.4
+With Best Regards,
+Andy Shevchenko
+
 
