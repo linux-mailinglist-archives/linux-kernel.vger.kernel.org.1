@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E307A30052B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB373004F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbhAVOTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:19:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34332 "EHLO mail.kernel.org"
+        id S1728296AbhAVOKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:10:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:49524 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728062AbhAVOLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:11:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48AAB23A7D;
-        Fri, 22 Jan 2021 14:09:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324573;
-        bh=SlH2NzCoujiSem3sba2v272mEhlltaaiVc1Vd3kqLS0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vFi0oEN5xQL905XI2SYGytcVNE8/rR18S75cYVroNb67bkiwRStS/7ui8ckTys6nK
-         osrItJbiSIrYgplWvBt8orTR6KMn39dJlETB4ZZfOrNAF7xepeSNAKP1kwGmPLRkS3
-         JFPvYUN9CMURFec5GXdhpEJ004RzSWbswnp/H02k=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 25/31] rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
-Date:   Fri, 22 Jan 2021 15:08:39 +0100
-Message-Id: <20210122135732.874271091@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
-References: <20210122135731.873346566@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728286AbhAVOGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:06:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C5B211B3;
+        Fri, 22 Jan 2021 06:05:40 -0800 (PST)
+Received: from [10.37.8.28] (unknown [10.37.8.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A90C3F66E;
+        Fri, 22 Jan 2021 06:05:38 -0800 (PST)
+Subject: Re: [PATCH v6 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <36b73b67-178b-4871-16ce-e35e02f2fa67@arm.com>
+Date:   Fri, 22 Jan 2021 14:09:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+On 1/22/21 1:59 PM, Vincenzo Frascino wrote:
+> This patchset implements the asynchronous mode support for ARMv8.5-A
+> Memory Tagging Extension (MTE), which is a debugging feature that allows
+> to detect with the help of the architecture the C and C++ programmatic
+> memory errors like buffer overflow, use-after-free, use-after-return, etc.
+> 
+> MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+> (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+> subset of its address space that is multiple of a 16 bytes granule. MTE
+> is based on a lock-key mechanism where the lock is the tag associated to
+> the physical memory and the key is the tag associated to the virtual
+> address.
+> When MTE is enabled and tags are set for ranges of address space of a task,
+> the PE will compare the tag related to the physical memory with the tag
+> related to the virtual address (tag check operation). Access to the memory
+> is granted only if the two tags match. In case of mismatch the PE will raise
+> an exception.
+> 
+> The exception can be handled synchronously or asynchronously. When the
+> asynchronous mode is enabled:
+>   - Upon fault the PE updates the TFSR_EL1 register.
+>   - The kernel detects the change during one of the following:
+>     - Context switching
+>     - Return to user/EL0
+>     - Kernel entry from EL1
+>     - Kernel exit to EL1
+>   - If the register has been updated by the PE the kernel clears it and
+>     reports the error.
+> 
+> The series is based on linux-next/akpm.
+> 
+> To simplify the testing a tree with the new patches on top has been made
+> available at [1].
+> 
+> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
 
-[ Upstream commit e56b3d94d939f52d46209b9e1b6700c5bfff3123 ]
+Please ignore this series, I missed a fix. I will re-post it shortly. Sorry for
+the inconvenience.
 
-MSFT ActiveSync implementation requires that the size of the response for
-incoming query is to be provided in the request input length. Failure to
-set the input size proper results in failed request transfer, where the
-ActiveSync counterpart reports the NDIS_STATUS_INVALID_LENGTH (0xC0010014L)
-error.
-
-Set the input size for OID_GEN_PHYSICAL_MEDIUM query to the expected size
-of the response in order for the ActiveSync to properly respond to the
-request.
-
-Fixes: 039ee17d1baa ("rndis_host: Add RNDIS physical medium checking into generic_rndis_bind()")
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Link: https://lore.kernel.org/r/20210108095839.3335-1-andrey.zhizhikin@leica-geosystems.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/usb/rndis_host.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/net/usb/rndis_host.c
-+++ b/drivers/net/usb/rndis_host.c
-@@ -398,7 +398,7 @@ generic_rndis_bind(struct usbnet *dev, s
- 	reply_len = sizeof *phym;
- 	retval = rndis_query(dev, intf, u.buf,
- 			     RNDIS_OID_GEN_PHYSICAL_MEDIUM,
--			     0, (void **) &phym, &reply_len);
-+			     reply_len, (void **)&phym, &reply_len);
- 	if (retval != 0 || !phym) {
- 		/* OID is optional so don't fail here. */
- 		phym_unspec = cpu_to_le32(RNDIS_PHYSICAL_MEDIUM_UNSPECIFIED);
-
-
+Thanks!
