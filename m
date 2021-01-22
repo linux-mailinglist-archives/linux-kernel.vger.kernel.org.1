@@ -2,142 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA773003CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 299963003CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbhAVNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727854AbhAVNFp (ORCPT
+        id S1727649AbhAVNIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:08:50 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47304 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727297AbhAVNGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:05:45 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1621C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:04:47 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id q12so7392140lfo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:04:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rsNBH9oRgbkYhUxKkvYv7L5/XwHmQEBGpccRIWTXPhU=;
-        b=WOFAYTJeuB5gDcuLrWr4HVs34OST+NF+82cRELdhETbbyfkghpubWq60mkPIGB4JpQ
-         xcTxohmbVg3RUgI7/cRIVItHB0QL+ZTKtc4UsT3TFhg7ht14W4o/WuGny47FY8D4297R
-         dhIpKQ6mqMqIArt1wQW07YQGexaEqSHTkeKevQHMY/0TDJSwQTtM1a8plpI5KK8keF2g
-         Rm7dW8R7eswUdRLaEvuHfgbXKe0UMlBu/qnupIUN28ujNgA0GRL+9ErGf91zDWJwVYBw
-         NzZ8ll/r886MVa+0cR0BLF+StaH1M80/AG7q0/5ZxbiXsLVxRgRfgZdvg9YRO5Lghb1L
-         gSRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rsNBH9oRgbkYhUxKkvYv7L5/XwHmQEBGpccRIWTXPhU=;
-        b=lKrEaYuey4L9mLdC3nIDjjj/oh2XnZHy0rZtSRy4dC/KwceaQEy2iUdT8B12zKE51Z
-         lBH5kiBGs9r0y/ZgmY5aO9Di+cQK6i9A82isfPfp9o1rH7oDJE0tj8x6nOazzdxAPeIw
-         GoiwHqOMUay3or1N7wEx90Q6hEo1Gu5oCNEl7ZuJgEG6Ao5TtacAYL6mH5CJ1ZjJAOI1
-         fCiBGeukuYbnlVwhJgpfg2QBEEab9GDW6bvFmlBGmYA4GqLNOnH3jkhzhMOUZHKHDRK8
-         9EKZx4ArcRZgISbn99lXrdMjXCU9IgU7h+YJk3VMWcNUWEytnkUof78cbRzI8Si8RNtQ
-         Hvyg==
-X-Gm-Message-State: AOAM531gICqaJODC+zzwwa/VlXak4GBRBCY6wz07+5+MnrglzkCaz9Jp
-        lJFDZG2XwWgLVJ3X+AUpgPgyiAcr48A+42DtqKJpXg==
-X-Google-Smtp-Source: ABdhPJzNrpK+vKc+gG7Btbu9G51Y0RBZRPCu+sS444qxKNezqNf9d3bY4yPRAUHvvFSNVM754j/LuuWhlxID+lOOGvQ=
-X-Received: by 2002:a19:6557:: with SMTP id c23mr2062855lfj.157.1611320686252;
- Fri, 22 Jan 2021 05:04:46 -0800 (PST)
+        Fri, 22 Jan 2021 08:06:23 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MCvbnC029248;
+        Fri, 22 Jan 2021 14:05:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=nPpz1WrwyqWQrfwOg/BonJwTKWbHkY3gUQZtdcp4cIo=;
+ b=WwSeDM1kTPW9sCLx5UoIS44MqWuCIAgDJbzau3DQlq4ADEogUHeU9B2tZEOrXQxuPmKs
+ zW97ZTXcxBV74rXlq9bBNQXxKlqU2oFOQ3n5saqRG391A1t1Sh93BtkFFyWGJCAesSlg
+ 0SxI+DM2lA6PY2R3VG6ZicRKGmOXIB90uQc8qUF5Aw3SF0xiNmKEoWhDzwRN1hiLjttJ
+ 74GRfUUcK3mYrGpOgkyqB1s2k9zIWXZHHaMCWSiyWu/GUsHhe7k0qtW65rqJGRxA7Gz9
+ 1VnA/+607W5gx06/SFFd+jLAVGj5N0Lz/X5VgNxAMyBIl0iiOuCDs7GRKJd1X80m/3YT 0w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3668pe27sn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 22 Jan 2021 14:05:30 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5967210002A;
+        Fri, 22 Jan 2021 14:05:29 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3FA9A23BD33;
+        Fri, 22 Jan 2021 14:05:29 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan
+ 2021 14:05:28 +0100
+Subject: Re: [PATCH v2 04/16] rpmsg: ctrl: implement the ioctl function to
+ create device
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+ <20201222105726.16906-5-arnaud.pouliquen@foss.st.com>
+ <20210121235258.GG611676@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <1b76bf93-9647-c658-b4dd-1b10264a1189@foss.st.com>
+Date:   Fri, 22 Jan 2021 14:05:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210116011412.3211292-1-saravanak@google.com>
- <CACRpkdbrkNKdjMk4fmQkfSLNS_O3=Ve0u_ktBGLaP7fWaNMrqA@mail.gmail.com> <CAGETcx8Jp_wCyoLXeMxe+vaqjPO_urHnzS7Vfi=tbKPTKk5v=Q@mail.gmail.com>
-In-Reply-To: <CAGETcx8Jp_wCyoLXeMxe+vaqjPO_urHnzS7Vfi=tbKPTKk5v=Q@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 22 Jan 2021 14:04:35 +0100
-Message-ID: <CACRpkdZEMiQnjvgnCdKMw=09S5ZBNfTHv3+YWS_zCHAX4CgNow@mail.gmail.com>
-Subject: Re: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210121235258.GG611676@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-22_09:2021-01-21,2021-01-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 8:43 PM Saravana Kannan <saravanak@google.com> wrote:
+Hi Mathieu,
 
-> > They may still have "ports" or "banks" of GPIO that make sense
-> > to separate into logical nodes and this is most often why they
-> > do this.
-> >
-> > I bet there are some other oddities as well.
->
-> Ah, thanks for the context. But couldn't they just skip the
-> "compatible" property in the DT if these individual nodes aren't
-> considered separate devices? It's too late for existing DT device
-> bindings, but maybe in the future we can ask them to skip the
-> "compatible" property if they don't consider the sub nodes to be
-> distinct devices?
+On 1/22/21 12:52 AM, Mathieu Poirier wrote:
+> On Tue, Dec 22, 2020 at 11:57:14AM +0100, Arnaud Pouliquen wrote:
+>> Implement the ioctl function that parses the list of
+>> rpmsg drivers registered to create an associated device.
+>> To be ISO user API, in a first step, the driver_override
+>> is only allowed for the RPMsg raw service, supported by the
+>> rpmsg_char driver.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> ---
+>>  drivers/rpmsg/rpmsg_ctrl.c | 43 ++++++++++++++++++++++++++++++++++++--
+>>  1 file changed, 41 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+>> index 065e2e304019..8381b5b2b794 100644
+>> --- a/drivers/rpmsg/rpmsg_ctrl.c
+>> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+>> @@ -56,12 +56,51 @@ static int rpmsg_ctrl_dev_open(struct inode *inode, struct file *filp)
+>>  	return 0;
+>>  }
+>>  
+>> +static const char *rpmsg_ctrl_get_drv_name(u32 service)
+>> +{
+>> +	struct rpmsg_ctl_info *drv_info;
+>> +
+>> +	list_for_each_entry(drv_info, &rpmsg_drv_list, node) {
+>> +		if (drv_info->ctrl->service == service)
+>> +			return drv_info->ctrl->drv_name;
+>> +	}
+>> +
+> 
+> I'm unsure about the above... To me this looks like what the .match() function
+> of a bus would do.  And when I read Bjorn's comment he brought up the
+> auxiliary_bus.  I don't know about the auxiliary_bus but it is worth looking
+> into.  Registering with a bus would streamline a lot of the code in this
+> patchset.
 
-That makes sense and has been done in other cases.
+As answered Bjorn, we already have the RPMsg bus to manage the rpmsg devices.
+Look like duplication from my POV, except if the IOCTL does not manage channel
+but only endpoint.
 
-> > > This patch works around this problem and avoids all the code churn by
-> > > simply creating a stub driver to bind to the gpio_device. Since the
-> > > gpio_device already points to the GPIO device tree node, this allows all
-> > > the consumers to continue probing when the driver follows case 2.
-> >
-> > That makes sense.
-> >
-> > > If/when all the old drivers are refactored, we can revert this patch.
-> >
-> > I have a bad feeling about this.
-> >
-> > This type of hacks tend to stay around forever.
-> >
-> > That said I'm not sure this is entirely wrong either, maybe this
-> > is business as usual and *should* stay around forever. Haven't
-> > made my mind up about that.
->
-> Considering your comment about why some (not all) of these nodes
-> aren't considered separate devices, looks like this has to stay this
-> way forever? I can drop this line in the commit text.
+In my design I considered that the rpmsg_ctrl creates a channel associated to a
+rpmsg_device such as the RPMsg ns_announcement.
 
-Yep looks like so. I think this patch is sound.
+Based on this assumption, if we implement the auxiliary_bus (or other) for the
+rpmsg_ctrl a RPMsg driver will have to manage the probe by rpmsg_bus and by the
+auxillary bus. The probe from the auxiliary bus would lead to the creation of an
+RPMsg device on the rpmsg_bus, so a duplication with cross dependencies and
+would probably make tricky the remove part.
 
-> > You need to put code into drivers/gpio/gpiolib-of.c with stubs
-> > for the !OF case in drivers/gpio/gpiolib-of.h so that systems
-> > not using device tree can avoid this code path.
->
-> It's not clear in the diff due to lack of sufficient context lines,
-> but this piece of code is already inside a #ifdef CONFIG_OF_GPIO.
->
-> To cover the case where CONFIG_OF_GPIO is enabled but we get here for
-> non-DT devices, I just need to add a !fwnode check here. Then stuff
-> will automatically NOP out for non-DT devices. Since the
-> gdev->dev.of_node is set a few lines above, I think gdev->dev.fwnode
-> should also be set close to it (which is what the next few lines do).
-> I'll add this additional check to v3.
+That said, I think the design depends on the functionality that should be
+implemented in the rpmsg_ctrl. Here is an alternative approach based on the
+auxiliary bus, which I'm starting to think about:
 
-I dunno about that. If you add more than a few lines of DT-specific
-code, I prefer that you put that into gpiolib-of.c to keep things
-separate, or we will get a mess with more and more hardware
-descriptions.
+The current approach of the rpmsg_char driver is to use the IOCTRL interface to
+instantiate a cdev with an endpoint (the RPMsg device is associated with the
+ioctl dev). This would correspond to the use of an auxiliary bus to manage local
+endpoint creations.
 
-Things that are agnostic fwnode is fine to have in generic code,
-it should be used the same by pretty much anything.
+We could therefore consider an RPMsg name service based on an RPmsg device. This
+RPMsg device would register a kind of "RPMsg service endpoint" driver on the
+auxiliary rpmsg_ioctl bus.
+The rpmsg_ctrl will be used to instantiate the endpoints for this RPMsg device.
+on user application request the rpmsg_ctrl will call the appropriate auxiliary
+device to create an endpoint.
 
-A matter of taste I suppose, so no strong opinion.
+If we consider that one objective of this series is to allow application to
+initiate the communication with the remote processor, so to be able to initiate
+the service (ns announcement sent to the remote processor).
+This implies that:
+-either the RPMsg device has been probed first by a remote ns announcement or by
+a Linux kernel driver using the "driver_override", to register an auxiliary
+device. In this case an endpoint will be created associated to the RPMsg service
+- or create a RPMsg device on first ioctl endpoint creation request, if it does
+not exist (that could trig a NS announcement to remote processor).
 
-> > As discussed in other messages I don't know if this message
-> > is aligned with the device tree ontology. The DT people should
-> > speak about that.
->
-> Considering what you said earlier, I'll just drop this message.
+But I'm not sure that this approach would work with QCOM RPMsg backends...
 
-Thanks.
+> 
+> I'm out of time for today - I will continue tomorrow.
 
-Yours,
-Linus Walleij
+It seems to me that the main point to step forward is to clarify the global
+design and features of the rpmsg-ctrl.
+Depending on the decision taken, this series could be trashed and rewritten from
+a blank page...To not lost to much time on the series don't hesitate to limit
+the review to the minimum.
+
+Thanks,
+Arnaud
+
+> 
+> Thanks,
+> Mathieu
+> 
+>> +	return NULL;
+>> +}
+>> +
+>>  static long rpmsg_ctrl_dev_ioctl(struct file *fp, unsigned int cmd,
+>>  				 unsigned long arg)
+>>  {
+>>  	struct rpmsg_ctrl_dev *ctrldev = fp->private_data;
+>> -
+>> -	dev_info(&ctrldev->dev, "Control not yet implemented\n");
+>> +	void __user *argp = (void __user *)arg;
+>> +	struct rpmsg_channel_info chinfo;
+>> +	struct rpmsg_endpoint_info eptinfo;
+>> +	struct rpmsg_device *newch;
+>> +
+>> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
+>> +		return -EINVAL;
+>> +
+>> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
+>> +		return -EFAULT;
+>> +
+>> +	/*
+>> +	 * In a frst step only the rpmsg_raw service is supported.
+>> +	 * The override is foorced to RPMSG_RAW_SERVICE
+>> +	 */
+>> +	chinfo.driver_override = rpmsg_ctrl_get_drv_name(RPMSG_RAW_SERVICE);
+>> +	if (!chinfo.driver_override)
+>> +		return -ENODEV;
+>> +
+>> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
+>> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
+>> +	chinfo.src = eptinfo.src;
+>> +	chinfo.dst = eptinfo.dst;
+>> +
+>> +	newch = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
+>> +	if (!newch) {
+>> +		dev_err(&ctrldev->dev, "rpmsg_create_channel failed\n");
+>> +		return -ENXIO;
+>> +	}
+>>  
+>>  	return 0;
+>>  };
+>> -- 
+>> 2.17.1
+>>
