@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B78300520
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766D7300513
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbhAVOQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:16:36 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51656 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbhAVOKQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:10:16 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10ME8IVL110496;
-        Fri, 22 Jan 2021 08:08:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611324498;
-        bh=w4XabDkfYqLlpKtLwnIUmLYMQ/z5aYMl+m+dHwL0v8k=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=u3V0pMykhDgUZEJa1Dcxg7xSweOtPYaboOkgMlSYxfAinatt5Oumasnh9sDmrscyD
-         uJRTD05gzPBqiXEEVQaNGdciyLVlGgxgDeRxc8nVP+Gx1pPXXVVZodT449HRngtfSP
-         dv6EFYD+Akzg0V91ILj+8qnfcnpgdsY38Uib4G1A=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10ME8I6e072597
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 22 Jan 2021 08:08:18 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 22
- Jan 2021 08:08:18 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 22 Jan 2021 08:08:18 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10ME8BrS073625;
-        Fri, 22 Jan 2021 08:08:13 -0600
-Subject: Re: [PATCH v9 17/17] Documentation: PCI: Add userguide for PCI
- endpoint NTB function
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-ntb@googlegroups.com>
-References: <20210119181852.GA2495234@bjorn-Precision-5520>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <809ab02c-8cc2-86ea-0524-b9350d38c684@ti.com>
-Date:   Fri, 22 Jan 2021 19:38:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728425AbhAVOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:15:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728357AbhAVOJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:09:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3275C239EF;
+        Fri, 22 Jan 2021 14:08:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611324528;
+        bh=SkvZ9HElmZdDf4LvWdw77bsuBek48sUGW1huLkuucsQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JQOQhLeW0MLTU/IcK0/DnnsAR2TPg/XUUvbm34JU2mtYzZ11yE2nnMJd/6M4FmJs5
+         KW1cE9qQONF0NbdJgsexYddJwU2TepNSaRaA/fQ5wU5cb+pcgWtiVoRJBhnmrgV+fx
+         uoFioQyrnl5eIeuoT5qmGDDiKeBh83acH2cIum7w=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.4 01/31] ASoC: dapm: remove widget from dirty list on free
+Date:   Fri, 22 Jan 2021 15:08:15 +0100
+Message-Id: <20210122135731.928499096@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
+References: <20210122135731.873346566@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-In-Reply-To: <20210119181852.GA2495234@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+From: Thomas Hebb <tommyhebb@gmail.com>
 
-On 20/01/21 12:04 am, Bjorn Helgaas wrote:
-> On Mon, Jan 04, 2021 at 08:59:09PM +0530, Kishon Vijay Abraham I wrote:
->> Add documentation to help users use pci-epf-ntb function driver and
->> existing host side NTB infrastructure for NTB functionality.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
->> ---
->>  Documentation/PCI/endpoint/index.rst         |   1 +
->>  Documentation/PCI/endpoint/pci-ntb-howto.rst | 160 +++++++++++++++++++
->>  2 files changed, 161 insertions(+)
->>  create mode 100644 Documentation/PCI/endpoint/pci-ntb-howto.rst
->>
->> diff --git a/Documentation/PCI/endpoint/index.rst b/Documentation/PCI/endpoint/index.rst
->> index 9cb6e5f3c4d5..38ea1f604b6d 100644
->> --- a/Documentation/PCI/endpoint/index.rst
->> +++ b/Documentation/PCI/endpoint/index.rst
->> @@ -12,6 +12,7 @@ PCI Endpoint Framework
->>     pci-test-function
->>     pci-test-howto
->>     pci-ntb-function
->> +   pci-ntb-howto
->>  
->>     function/binding/pci-test
->>     function/binding/pci-ntb
->> diff --git a/Documentation/PCI/endpoint/pci-ntb-howto.rst b/Documentation/PCI/endpoint/pci-ntb-howto.rst
->> new file mode 100644
->> index 000000000000..b6e1073c9a39
->> --- /dev/null
->> +++ b/Documentation/PCI/endpoint/pci-ntb-howto.rst
->> @@ -0,0 +1,160 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +===================================================================
->> +PCI Non-Transparent Bridge (NTB) Endpoint Function (EPF) User Guide
->> +===================================================================
->> +
->> +:Author: Kishon Vijay Abraham I <kishon@ti.com>
->> +
->> +This document is a guide to help users use pci-epf-ntb function driver
->> +and ntb_hw_epf host driver for NTB functionality. The list of steps to
->> +be followed in the host side and EP side is given below. For the hardware
->> +configuration and internals of NTB using configurable endpoints see
->> +Documentation/PCI/endpoint/pci-ntb-function.rst
->> +
->> +Endpoint Device
->> +===============
->> +
->> +Endpoint Controller Devices
->> +---------------------------
->> +
->> +For implementing NTB functionality at least two endpoint controller devices
->> +are required.
->> +To find the list of endpoint controller devices in the system::
-> 
-> Is the above one paragraph or two?  Reflow or add blank line as
-> appropriate.
+commit 5c6679b5cb120f07652418524ab186ac47680b49 upstream.
 
-I'll add blank line above.
+A widget's "dirty" list_head, much like its "list" list_head, eventually
+chains back to a list_head on the snd_soc_card itself. This means that
+the list can stick around even after the widget (or all widgets) have
+been freed. Currently, however, widgets that are in the dirty list when
+freed remain there, corrupting the entire list and leading to memory
+errors and undefined behavior when the list is next accessed or
+modified.
 
-Thanks
-Kishon
+I encountered this issue when a component failed to probe relatively
+late in snd_soc_bind_card(), causing it to bail out and call
+soc_cleanup_card_resources(), which eventually called
+snd_soc_dapm_free() with widgets that were still dirty from when they'd
+been added.
+
+Fixes: db432b414e20 ("ASoC: Do DAPM power checks only for widgets changed since last run")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/f8b5f031d50122bf1a9bfc9cae046badf4a7a31a.1607822410.git.tommyhebb@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ sound/soc/soc-dapm.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2316,6 +2316,7 @@ void snd_soc_dapm_free_widget(struct snd
+ 	enum snd_soc_dapm_direction dir;
+ 
+ 	list_del(&w->list);
++	list_del(&w->dirty);
+ 	/*
+ 	 * remove source and sink paths associated to this widget.
+ 	 * While removing the path, remove reference to it from both
+
+
