@@ -2,96 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3853004B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BD83004BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbhAVOBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:01:13 -0500
-Received: from foss.arm.com ([217.140.110.172]:49218 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727958AbhAVOA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:00:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5DD671595;
-        Fri, 22 Jan 2021 06:00:10 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B132B3F66E;
-        Fri, 22 Jan 2021 06:00:08 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v6 3/4] kasan: Add report for async mode
-Date:   Fri, 22 Jan 2021 13:59:54 +0000
-Message-Id: <20210122135955.30237-4-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
-References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728134AbhAVOCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:02:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55490 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728116AbhAVOBy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:01:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611324028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=65zblkXRNcqXjUu30/0eBPVZ8NrtZSSKQfb2vGn4/YE=;
+        b=Z+CQvFQ1dwDHvXW1dwvHWqEsaWnXOu5kCdY0cykHCGqTm42eYVbvjMXHVm01sTPTAU7Yiv
+        Qkyq7Nn4Kje4PjvI3kNUFYzf2Y01r12g6XnLVBGDXELpgdn9NvZeIP0uD0LloeVcrLCHBQ
+        KvxKzOKZQXrn69zM4Y5T78OINzb1qD4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-tJEo--m7Nhua4HahaGa8CQ-1; Fri, 22 Jan 2021 09:00:24 -0500
+X-MC-Unique: tJEo--m7Nhua4HahaGa8CQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2297110054FF;
+        Fri, 22 Jan 2021 14:00:23 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ADE3519C59;
+        Fri, 22 Jan 2021 14:00:17 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
+        david@redhat.com, bhe@redhat.com, lkp@intel.com
+Subject: [PATCH v5 4/5] mm: simplify parameter of setup_usemap()
+Date:   Fri, 22 Jan 2021 21:59:55 +0800
+Message-Id: <20210122135956.5946-5-bhe@redhat.com>
+In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
+References: <20210122135956.5946-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN provides an asynchronous mode of execution.
+Parameter 'zone' has got needed information, let's remove other
+unnecessary parameters.
 
-Add reporting functionality for this mode.
-
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/kasan.h |  2 ++
- mm/kasan/report.c     | 11 +++++++++++
- 2 files changed, 13 insertions(+)
+ mm/page_alloc.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index bb862d1f0e15..b0a1d9dfa85c 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
- bool kasan_report(unsigned long addr, size_t size,
- 		bool is_write, unsigned long ip);
- 
-+void kasan_report_async(void);
-+
- #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
- 
- static inline void *kasan_reset_tag(const void *addr)
-diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-index 234f35a84f19..2fd6845a95e9 100644
---- a/mm/kasan/report.c
-+++ b/mm/kasan/report.c
-@@ -358,6 +358,17 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
- 	end_report(&flags);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index cbb67d9c1b2a..69cf19baac12 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6761,25 +6761,22 @@ static unsigned long __init usemap_size(unsigned long zone_start_pfn, unsigned l
+ 	return usemapsize / 8;
  }
  
-+void kasan_report_async(void)
-+{
-+	unsigned long flags;
-+
-+	start_report(&flags);
-+	pr_err("BUG: KASAN: invalid-access\n");
-+	pr_err("Asynchronous mode enabled: no access details available\n");
-+	dump_stack();
-+	end_report(&flags);
-+}
-+
- static void __kasan_report(unsigned long addr, size_t size, bool is_write,
- 				unsigned long ip)
+-static void __ref setup_usemap(struct pglist_data *pgdat,
+-				struct zone *zone,
+-				unsigned long zone_start_pfn,
+-				unsigned long zonesize)
++static void __ref setup_usemap(struct zone *zone)
  {
+-	unsigned long usemapsize = usemap_size(zone_start_pfn, zonesize);
++	unsigned long usemapsize = usemap_size(zone->zone_start_pfn,
++					       zone->spanned_pages);
+ 	zone->pageblock_flags = NULL;
+ 	if (usemapsize) {
+ 		zone->pageblock_flags =
+ 			memblock_alloc_node(usemapsize, SMP_CACHE_BYTES,
+-					    pgdat->node_id);
++					    zone_to_nid(zone));
+ 		if (!zone->pageblock_flags)
+ 			panic("Failed to allocate %ld bytes for zone %s pageblock flags on node %d\n",
+-			      usemapsize, zone->name, pgdat->node_id);
++			      usemapsize, zone->name, zone_to_nid(zone));
+ 	}
+ }
+ #else
+-static inline void setup_usemap(struct pglist_data *pgdat, struct zone *zone,
+-				unsigned long zone_start_pfn, unsigned long zonesize) {}
++static inline void setup_usemap(struct zone *zone) {}
+ #endif /* CONFIG_SPARSEMEM */
+ 
+ #ifdef CONFIG_HUGETLB_PAGE_SIZE_VARIABLE
+@@ -6974,7 +6971,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ 			continue;
+ 
+ 		set_pageblock_order();
+-		setup_usemap(pgdat, zone, zone_start_pfn, size);
++		setup_usemap(zone);
+ 		init_currently_empty_zone(zone, zone_start_pfn, size);
+ 		memmap_init_zone(zone);
+ 	}
 -- 
-2.30.0
+2.17.2
 
