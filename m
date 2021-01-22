@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143083000C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FE83000C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbhAVKw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:52:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727207AbhAVKvb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:51:31 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750BEC061793
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:51:02 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id v19so3423542pgj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 02:51:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PYJHN29z38YJQy9+aRfXhxK7SVaDLVhX0WgONtRAors=;
-        b=AP04QnPEq4omjlVd+XdVlwgJ67Xem0dBgHqNS1NMAk3e7DwbaWW8RgDO+sQnmk2ARX
-         GXttGe+eUwii441N+kRqjfw+Nmtm3EQLerO+0c3mptkNBWOXHKMF2BiY6Dc3zrv+16U5
-         cMfFkO8sy/tywJhIyqwV1UyWjPk9fF04TYurPsgJvwhAcHHFX+0WOq6p1VB6b6taJiED
-         ARoPTT0Wtw5Skh++d6MVcWawwTedLM3WJHGiN3m/nL5/aTrGOi/2hUrJP7GSOhAGK54w
-         jjpV3CYIJGNLPoW/HXSoC8PjvTYpgOxPzxT2B+qXt0gXHkKojMdMEaMsfok103U3xGpH
-         j7JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PYJHN29z38YJQy9+aRfXhxK7SVaDLVhX0WgONtRAors=;
-        b=BJyb7sj82XuXpLuZwSxnJffeHnaQAoTm4Qd/Fe1ILJsI4al32pw5/3nSe5Mh9cz0eY
-         sYyMuQTPlEEf3Y0CVUrzrHKsj2FgWrcNC5LiPMEuGiRzh/s+eef74uUIBSw7/2crM9zA
-         PoBlIwIFYIZykiLK1AiL8sC1Dhigvr3GtofreSRt59wp40UMQYbqfjA0+edrapPKm22W
-         /o6na4SiwbjA8hhd0xtcvwE1KXhJ5UqQJJkR4ZqGEMbUc0Z6ygwMFflYxC/Uw0O/fx6a
-         XLvUvZ+zXJ9syShSRzASQonxoET1Zqof7L/kIPcrcm455S70SNValAQUkdBnRBbSH1nb
-         oX7g==
-X-Gm-Message-State: AOAM530cpfw6hjLNPgO2GXK0y3ZVB330xp4DI5PFkRHOtmgD9u0dJxhf
-        p7Vxc4spTfEOPb1CaQ/jd1oKOQ==
-X-Google-Smtp-Source: ABdhPJzMDKgsXcHTNjkAK8idSBD+8LqnsqtyCcKAjRIZ3d6iRLMd2Qg5S5AlRQCOi9Jhpq7agsAiTg==
-X-Received: by 2002:a63:574c:: with SMTP id h12mr4116854pgm.79.1611312661973;
-        Fri, 22 Jan 2021 02:51:01 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id s9sm1776905pfd.38.2021.01.22.02.51.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 02:51:01 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH V6 1/6] scripts: dtc: Fetch fdtoverlay.c from external DTC project
-Date:   Fri, 22 Jan 2021 16:20:31 +0530
-Message-Id: <41f7158a707f20980e71a8d254c1d7aed84ad371.1611312122.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1611312122.git.viresh.kumar@linaro.org>
-References: <cover.1611312122.git.viresh.kumar@linaro.org>
+        id S1727670AbhAVKxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:53:16 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:60772 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727466AbhAVKvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:51:38 -0500
+Received: from zn.tnic (p200300ec2f0c15009cec292803b5869f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:1500:9cec:2928:3b5:869f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 218F61EC038E;
+        Fri, 22 Jan 2021 11:50:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611312640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ANmG7SPY4D/B2yi0Pz6cCX7HbLTLX/WnobNHKajpG84=;
+        b=mEdhOxZclbejvk070HcKTwvoP30O0/f1HrxRheV1SjmAtV5/U0wqVGJ7RJw6bSEpPPga+/
+        dqTJ+YLrjdOLPSob3ro6zc064zpoeM1BbUALQzKO7OYnNHBWcmiEn2rb5WTgLNG+BRWulT
+        5kfIt+yqjc4QmuGMmjO3Yll1vDQOLok=
+Date:   Fri, 22 Jan 2021 11:50:34 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
+Message-ID: <20210122105034.GF4867@zn.tnic>
+References: <20210122101124.GE4867@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210122101124.GE4867@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We will start building overlays for platforms soon in the kernel and
-would need fdtoverlay tool going forward. Lets start fetching it.
+On Fri, Jan 22, 2021 at 11:11:24AM +0100, Borislav Petkov wrote:
+> Hi,
+> 
+> this triggers is on 5.11-rc3 + tip/x86/urgent (shouldn't matter tho),
+> 32-bit kernel:
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- scripts/dtc/update-dtc-source.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This looks like a multiple wireless drivers issue, this is on another
+32-bit machine with ath5k this time:
 
-diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
-index bc704e2a6a4a..32ff17ffd089 100755
---- a/scripts/dtc/update-dtc-source.sh
-+++ b/scripts/dtc/update-dtc-source.sh
-@@ -37,6 +37,7 @@ DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c
- LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
- 		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
- 		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
-+FDTOVERLAY_SOURCE=fdtoverlay.c
- 
- get_last_dtc_version() {
- 	git log --oneline scripts/dtc/ | grep 'upstream' | head -1 | sed -e 's/^.* \(.*\)/\1/'
-@@ -54,7 +55,7 @@ dtc_log=$(git log --oneline ${last_dtc_ver}..)
- 
- # Copy the files into the Linux tree
- cd $DTC_LINUX_PATH
--for f in $DTC_SOURCE; do
-+for f in $DTC_SOURCE $FDTOVERLAY_SOURCE; do
- 	cp ${DTC_UPSTREAM_PATH}/${f} ${f}
- 	git add ${f}
- done
+[   23.810222] ath5k 0000:03:00.0: can't disable ASPM; OS doesn't have ASPM control
+[   23.847597] ath5k 0000:03:00.0: registered as 'phy0'
+[   24.504999] ath: EEPROM regdomain: 0x65
+[   24.516125] ath: EEPROM indicates we should expect a direct regpair map
+[   24.527286] ath: Country alpha2 being used: 00
+[   24.535435] ath: Regpair used: 0x65
+
+[   24.551461] =============================
+[   24.561941] WARNING: suspicious RCU usage
+[   24.572030] 5.11.0-rc3+ #1 Not tainted
+[   24.580276] -----------------------------
+[   24.590764] net/wireless/reg.c:144 suspicious rcu_dereference_check() usage!
+[   24.601730] 
+               other info that might help us debug this:
+
+[   24.625866] 
+               rcu_scheduler_active = 2, debug_locks = 1
+[   24.640870] 1 lock held by systemd-udevd/1134:
+[   24.648773]  #0: c333e160 (&dev->mutex){....}-{3:3}, at: device_driver_attach+0x36/0xb0
+[   24.656906] 
+               stack backtrace:
+[   24.671108] CPU: 0 PID: 1134 Comm: systemd-udevd Not tainted 5.11.0-rc3+ #1
+[   24.671762] Hardware name: Acer AOA150/, BIOS v0.3309 10/06/2008
+[   24.671762] Call Trace:
+[   24.671762]  dump_stack+0x6d/0x8b
+[   24.671762]  lockdep_rcu_suspicious+0xbb/0xc4
+[   24.671762]  get_wiphy_regdom+0x5d/0x60 [cfg80211]
+[   24.671762]  wiphy_apply_custom_regulatory+0xa0/0xe0 [cfg80211]
+[   24.716225]  ath_regd_init.cold+0x7f/0xb0b [ath]
+[   24.716225]  ? ath5k_ioread32+0x20/0x20 [ath5k]
+[   24.716225]  ath5k_init_ah+0x953/0xbb0 [ath5k]
+[   24.716225]  ath5k_pci_probe.cold+0x8f/0x10a [ath5k]
+[   24.716225]  pci_device_probe+0x9c/0x110
+[   24.716225]  really_probe+0xc6/0x300
+[   24.716225]  driver_probe_device+0x49/0xa0
+[   24.716225]  device_driver_attach+0xa9/0xb0
+[   24.716225]  __driver_attach+0x46/0xb0
+[   24.728122]  ? device_driver_attach+0xb0/0xb0
+[   24.728122]  bus_for_each_dev+0x51/0x90
+[   24.728122]  driver_attach+0x19/0x20
+[   24.728122]  ? device_driver_attach+0xb0/0xb0
+[   24.728122]  bus_add_driver+0xf0/0x1b0
+[   24.728122]  driver_register+0x7c/0xd0
+[   24.728122]  ? 0xf80af000
+[   24.728122]  __pci_register_driver+0x52/0x60
+[   24.728122]  ath5k_pci_driver_init+0x1c/0x1000 [ath5k]
+[   24.728122]  do_one_initcall+0x5c/0x2e0
+[   24.728122]  ? rcu_read_lock_sched_held+0x41/0x80
+[   24.728122]  ? trace_kmalloc+0x53/0xe0
+[   24.728122]  ? kmem_cache_alloc_trace+0xc8/0x170
+[   24.728122]  ? do_init_module+0x21/0x250
+[   24.774047]  do_init_module+0x50/0x250
+[   24.774047]  load_module+0x2509/0x27b0
+[   24.774047]  __ia32_sys_finit_module+0x85/0xb0
+[   24.774047]  __do_fast_syscall_32+0x54/0x90
+[   24.774047]  do_fast_syscall_32+0x29/0x60
+[   24.774047]  do_SYSENTER_32+0x15/0x20
+[   24.774047]  entry_SYSENTER_32+0x9f/0xf2
+[   24.774047] EIP: 0xb7fc1549
+[   24.774047] Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90 8d 76
+[   24.774047] EAX: ffffffda EBX: 00000010 ECX: b7da3bdd EDX: 00000000
+[   24.774047] ESI: 01e757b0 EDI: 01e66420 EBP: 01e69590 ESP: bfc16fec
+[   24.774047] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000296
+[   24.891505] ieee80211 phy0: Selected rate control algorithm 'minstrel_ht'
+[   24.913211] ath5k: phy0: Atheros AR2425 chip found (MAC: 0xe2, PHY: 0x70)
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
