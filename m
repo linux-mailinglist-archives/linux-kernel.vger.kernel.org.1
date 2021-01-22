@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C5C3010DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4595B3010DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728359AbhAVXUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 18:20:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728042AbhAVXUc (ORCPT
+        id S1728479AbhAVXUs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Jan 2021 18:20:48 -0500
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:44615 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728236AbhAVXUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 18:20:32 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7752C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 15:19:51 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id r189so7886053oih.4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 15:19:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rrEawmDhNbvC3ZRUyuDABJFIFtqmVIBXaZAG0SlGvVg=;
-        b=kxD7UEa8PuSzjCxBMEbiSxHtWTdN+ivDj9bSFtvqip0S81TJ2+lX5RWSX95+hDn3aZ
-         y5NEX6TAzs9Wpn6HoOPjV5tKJKwVT8lSazcG/ADK70BHaW+51D6d+eoBrMDX3OT0wN0C
-         AVAdA6kzegrZl6qpWOStS6EcvE1jYO41qCAzEI384o5TQj+xslBm6r19k7TZfllB/89k
-         L1cFHW7O7LAcWj2+ETQNnyVEKXO0CgqBOI6bHWSKjgs7rdQm1gL8DPznllOZjOMdG3nK
-         led5SRVfrHOxMzpfxi02sJOt+86MBLmI3Z2h0baK7jbkUDbnh/xqLAcu6T1vQ9UVjAHV
-         bAQA==
+        Fri, 22 Jan 2021 18:20:36 -0500
+Received: by mail-wr1-f42.google.com with SMTP id d16so5917369wro.11;
+        Fri, 22 Jan 2021 15:20:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rrEawmDhNbvC3ZRUyuDABJFIFtqmVIBXaZAG0SlGvVg=;
-        b=keIT/07KBLN7v3/fAdZXzUqP3ZI74Cz7IhaGHmCG6XqVBWVoxfDenK9TJoKak744wq
-         GkqBbVJMqd4iwGsXwDZlFoRsOnKtlpfLq7D5S/9HBJNkovnhgnE5naR+yrUx4T+j8eGF
-         lw1dcKEsX7Rz5R2hWYj6UDQWbE6OdRxewthWnDbDvwyGTXFm7xtNhKGBxmuNDDz98bnZ
-         6LjVrbDyv+dE07FNkdFQoCuog905n9HwQu6knS/Y1h+ZM/gpa/ksOZ/HSh+sfG/gFKho
-         uyosZNBuqGhjboIJNjivChA9XcSxcrc2oyEQJXB1f/T3iZ204e2atWjnoUwHmUH/Qhex
-         7dSw==
-X-Gm-Message-State: AOAM530u67rUyflwifQajwWRAe0u6xwBeouXFJl0uF/xcvPka0V9N7d4
-        nWXfn0QOnn7cnJ8XRgaP6gexuA==
-X-Google-Smtp-Source: ABdhPJyu+cUAY9TnRrBqDllGidzhQE9q/TrcaqMSMZFrIvNzemiGzngm8TzqmPB8i2CUVCtoNJE/0w==
-X-Received: by 2002:aca:dd08:: with SMTP id u8mr4782911oig.85.1611357590959;
-        Fri, 22 Jan 2021 15:19:50 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x188sm1172940oif.46.2021.01.22.15.19.50
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=MOvI7mYKXT9PCD0Z4zY1t63wved2jlUYxuWT8ZQLYcI=;
+        b=DPZDYfN4GEcNBjwg2yqpsY0NvJoxfogAPTJxWzkVYVUtkWoZTU8vmKoVxYqCtCh3g4
+         Iumg8d2+qEbUXXrWXCFThFAho6blIUprpSMQjkVPcxify85jlLZjN0SGBS5zotlPUd8m
+         4glREQTFAZ7rflaAz2pbfNilqNS8/C0r/lOjcbNhtJV6+8CyUKGYuld5SxMb1uTD78dF
+         +3psvLqnA/1UnABexGVIKK/KJ2UrG0FOnc5yrewCvHJ55po29ICdInh++xeTY1ocX+zV
+         caaERLWxza2ptSMwUvFTqWuq0c2wR+gLelJbBTHlXSBCwiAZtSvDuVkJVWVWN9Rs9sgf
+         VHxQ==
+X-Gm-Message-State: AOAM5320FDp1GSRUl3QqOkamLB6v0klBq9vkwKPX32pRFxue/EkeIbMU
+        z9nioQ1dqHty6pnMd4E3bpI=
+X-Google-Smtp-Source: ABdhPJyJdiEEYQhlsNZjc9NNHN/p9Y9xMjWGbin0H3nSt8NfCiqHxmUGH4pFakDZdejaDpQbYc7ang==
+X-Received: by 2002:adf:9e47:: with SMTP id v7mr6518473wre.185.1611357592872;
+        Fri, 22 Jan 2021 15:19:52 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id d5sm11535245wrs.21.2021.01.22.15.19.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 15:19:50 -0800 (PST)
-Date:   Fri, 22 Jan 2021 17:19:48 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Pan Bian <bianpan2016@163.com>, Andy Gross <agross@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bus: qcom: Put child node before return
-Message-ID: <YAtdlKe7q4JskefR@builder.lan>
-References: <20210121114907.109267-1-bianpan2016@163.com>
- <CACRpkdZzVY=AKFhW-hEmCAHmdMgVF8=hQeE8a8W=2W0h44eQVg@mail.gmail.com>
+        Fri, 22 Jan 2021 15:19:51 -0800 (PST)
+Date:   Sat, 23 Jan 2021 00:19:50 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] memory: tegra: Check whether reset is already asserted
+Message-ID: <20210122231950.znm7s3zukn63q46m@kozik-lap>
+References: <20210119235210.13006-1-digetx@gmail.com>
+ <20210122214005.bfsznpaga2rhl3ow@kozik-lap>
+ <20cc8401-1934-6e4f-8e66-3216b86681fa@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CACRpkdZzVY=AKFhW-hEmCAHmdMgVF8=hQeE8a8W=2W0h44eQVg@mail.gmail.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20cc8401-1934-6e4f-8e66-3216b86681fa@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 22 Jan 16:47 CST 2021, Linus Walleij wrote:
+On Sat, Jan 23, 2021 at 12:58:12AM +0300, Dmitry Osipenko wrote:
+> 23.01.2021 00:40, Krzysztof Kozlowski пишет:
+> > On Wed, Jan 20, 2021 at 02:52:10AM +0300, Dmitry Osipenko wrote:
+> >> Check whether memory client reset is already asserted in order to prevent
+> >> DMA-flush error on trying to re-assert an already asserted reset.
+> >>
+> >> This becomes a problem once PMC GENPD is enabled to use memory resets
+> >> since GENPD will get a error and fail to toggle power domain. PMC GENPDs
+> >> can't be toggled safely without holding memory reset on Tegra and we're
+> >> about to fix this.
+> >>
+> >> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> >> Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
+> > 
+> > Don't add your own Tested-by. Author has to test it.  However this is a
+> > v1 and already three other people added tests. Where are the emails?
+> 
+> The test results were given on #tegra irc.
+> 
+> Author doesn't have to test, from time to time I'm helping people who
+> can't make a patch with fixing obvious bugs for the h/w that I don't
+> have access to.
 
-> On Thu, Jan 21, 2021 at 12:49 PM Pan Bian <bianpan2016@163.com> wrote:
-> 
-> > Put child node before return to fix potential reference count leak.
-> > Generally, the reference count of child is incremented and decremented
-> > automatically in the macro for_each_available_child_of_node() and should
-> > be decremented manually if the loop is broken in loop body.
-> >
-> > Fixes: 335a12754808 ("bus: qcom: add EBI2 driver")
-> > Signed-off-by: Pan Bian <bianpan2016@163.com>
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Please submit this patch for inclusion through the ARM SoC tree.
-> 
+By default, author's patches are assumed to be tested, otherwise we
+would be putting own Tested-by in most of the cases (ideally: in all).
+Just because you do not see author's Tested-by everywhere it does not
+mean that author did not test it...
 
-Any objections to me picking it in the Qualcomm tree? Or that's what you
-indirectly meant?
+Testing is also a requirement:
+https://elixir.bootlin.com/linux/latest/source/Documentation/process/5.Posting.rst#L35
 
-Regards,
-Bjorn
+Therefore if your non-trivial patches are not tested, please also
+mention it with RFT or after '---'.
+
+> 
+> Anyways, I'll make v2 with myself removed if you prefer that, thanks.
+
+I applied it without your tested-by. If the tested platform is anyhow
+relevant, just mention it in the commit msg.
+
+Best regards,
+Krzysztof
+
