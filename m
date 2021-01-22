@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2908230087E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E1A30087D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbhAVQUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:20:46 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:11136 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729541AbhAVQQD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:16:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611332162; x=1642868162;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=akfaX8ej4mNSDSiYlmg4n0T8nIbvD+geiuHI63vtcuQ=;
-  b=SdWvlCEmZoVR43NfU1CXxOk6kNwL4av6ykjOnDwGod/3DRzz+N+wAiwt
-   HS4JVzohxVdwHgCCJAgcb8mvhS7Zl22Zl+LrKLNMKb4iLJGIuT8Je8Psk
-   /piP0vvAsZhSvjShdvZgCfaogyaPZO4lXcT0TnBxibG+GG6y8d0XBl3Pc
-   NCnBpoyub89B8etGFFJgDWB6fV6ZIHV1jD4OjlyRGcm8BR3jEzfwkpQQd
-   TXImEGnxrEaddUFruv0pbk/YFn+hCmvBE6I8HGbgcEIr81QkG0WAX22Pz
-   OqxfWhpiyfIDSaknCwp+FdqdL0b2RmZAylxsTvIry9NWCOrumgS3//O/g
-   w==;
-IronPort-SDR: PGarIi6QTG+I9LIhdvquCOGfspA7sPtUx5742TLHSw1axWQdKUAD9BtXK8cFbV0FxBkNLlmAyR
- ptd2SH4h1l/FrlGrSlrxAYP0HqkQ1JZn0+BHBnl0smH6oOUM6ebMyiLyQBnHXXhlx8ifA2oOUj
- GGN5IrRM3GCtD0jLYS5CQicGmwP0iCRG0ySdulAo5VFOC7LUEGIPw0hsNlNHwxy60QjQwUVWpB
- 3qV93A7Y6FpalYIjFY7VUzHVfKU6W6lZhe+qVdLdLl7z+nrXGrBEMnj+M3EtFs7/vX76QjEGd7
- ogI=
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="101063226"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jan 2021 09:14:44 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 22 Jan 2021 09:14:34 -0700
-Received: from [10.171.246.92] (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 22 Jan 2021 09:14:32 -0700
-Subject: Re: [GIT PULL] ARM: at91: soc for 5.12
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        arm-soc <arm@kernel.org>, SoC Team <soc@kernel.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-References: <20210122143536.168833-1-nicolas.ferre@microchip.com>
- <CAK8P3a0s5UPvCzQrcYmPPDYgT+YyZ3vc=fF0GEwpqROR+Zio-g@mail.gmail.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <715938cd-d898-5d12-cc11-d79cf27c5430@microchip.com>
-Date:   Fri, 22 Jan 2021 17:14:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729386AbhAVQUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:20:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729529AbhAVQQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:16:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 212F323A9A;
+        Fri, 22 Jan 2021 16:16:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611332175;
+        bh=1mxjcxDniCvxUAxOKwFFiFDSqjzi1cRxOC70wCic4U8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RV8swPyrj87Hi1E6siSqigY+H2F5XcJyThGBd6izulfSy9C5yRwimeFbPQM8/i2b9
+         D+bnyOlZyiiXgqg971lLkHQmQC2FfEgSXamgU/8K9TBMRdB4D+9L+1pvd/Bp1wT3LK
+         nrFKDOfKP4uq/DvNNzOKupL6t8EAkQzi7Y17i8OEyQnaeXN5Q9OeabBs7ArbRbWoue
+         COZnO+Ry3YSFvDg0KTOmker1sbC7FNn0xCUA+Y+o+XQ/E7AGWtcwxD/BIqZA4eTG+r
+         KhbM30sR1/Mf1F1NUl8S28vAiTtpErS9LQWYj5s+IZ5c7au/d4f8iQe4JLmA/5t8mF
+         QkbMM/5m2EN4w==
+Received: by mail-ed1-f41.google.com with SMTP id g24so7151753edw.9;
+        Fri, 22 Jan 2021 08:16:15 -0800 (PST)
+X-Gm-Message-State: AOAM532U56c4IZtvW2YK1R1QTKcM4Z0PxzMZZR47x0ViMWnTTT56sFWY
+        xdtZm4qlgkcGnFy2AxML8DNIWYLxwRDLUJV9iQ==
+X-Google-Smtp-Source: ABdhPJx6fXlF/B/n7s/fyNDQXIXcJX5/Z04VOxgaGoEnSITfzIvWEnsCH6iJJ3U9OQ4bKHEb1Q5UjuIjgQI6HG3gfuI=
+X-Received: by 2002:a50:e78b:: with SMTP id b11mr3761778edn.165.1611332173622;
+ Fri, 22 Jan 2021 08:16:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0s5UPvCzQrcYmPPDYgT+YyZ3vc=fF0GEwpqROR+Zio-g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1609380663.git.xji@analogixsemi.com> <d13442f84fefccc992d6c5e48ac1e6129882af31.1609380663.git.xji@analogixsemi.com>
+ <20210111221435.GA3138373@robh.at.kernel.org> <20210112085737.GC5827@pc-user>
+In-Reply-To: <20210112085737.GC5827@pc-user>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 22 Jan 2021 10:16:02 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ1B6JzpdgtP=ZNtWasjW5R0rYyUGV3RTDxT1LPa1rz5w@mail.gmail.com>
+Message-ID: <CAL_JsqJ1B6JzpdgtP=ZNtWasjW5R0rYyUGV3RTDxT1LPa1rz5w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag and
+ swing setting
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/01/2021 at 16:25, Arnd Bergmann wrote:
-> On Fri, Jan 22, 2021 at 3:35 PM <nicolas.ferre@microchip.com> wrote:
->>
->> From: Nicolas Ferre <nicolas.ferre@microchip.com>
->>
->> Arnd, Olof,
->>
->> I'm taking back the lead on sending the pull-requests for AT91 and hope that I
->> didn't loose the knowledge in the meantime. Tell me if there's something I'm
->> missing. Thanks a lot to Alexandre who kept our flow steady and very
->> predictable during all those years!
->>
->> Here are the first SoC changes for 5.12 which contain a single patch for multi
->> platform kernels.
->>
->> I plan to send another pull-request for the SoC changes related to new sama7g5
->> that Claudiu sent to the mainling-list recently. I'll let it mature in
->> linux-next by the beginning of next week and will send another pull-request by
->> mid-next-week.
->> Tell me if you see a problem with this approach.
-> 
-> This all looks good to me, but I think I'd rather take the 'soc' pull request
-> into the v5.11 bugfixes, as this may already affect users on other machines.
-> 
-> I would also suggest adding a 'Cc: stable@vger.kernel.org' tag. If you like,
-> I can just cherry-pick that patch into the fixes branch and add it there.
+On Tue, Jan 12, 2021 at 2:57 AM Xin Ji <xji@analogixsemi.com> wrote:
+>
+> Hi Rob Herring, thanks for the comments.
+>
+> On Mon, Jan 11, 2021 at 04:14:35PM -0600, Rob Herring wrote:
+> > On Thu, Dec 31, 2020 at 10:21:12AM +0800, Xin Ji wrote:
+> > > Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
+> > > swing setting for adjusting DP tx PHY swing
+> > >
+> > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > > ---
+> > >  .../bindings/display/bridge/analogix,anx7625.yaml  | 25 ++++++++++++++++++++--
+> > >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > index 60585a4..4eb0ea3 100644
+> > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > @@ -34,6 +34,16 @@ properties:
+> > >      description: used for reset chip control, RESET_N pin B7.
+> > >      maxItems: 1
+> > >
+> > > +  analogix,swing-setting:
+> > > +    type: uint8-array
+> >
+> > Humm, this should have be rejected by the meta-schema.
+> We needs define an array to adjust DP tx PHY swing, the developer hopes these
+> settings are changeable, so I moved the register data to DT. Can you
+> give me some suggestion if it is rejected by the meta-schema?
+> >
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> >
+> > This is how types are defined other than boolean or nodes (object).
+> >
+> > > +    description: an array of swing register setting for DP tx PHY
+> > > +
+> > > +  analogix,mipi-dpi-in:
+> > > +    type: int
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    description: indicate the MIPI rx signal type is DPI or DSI
+> >
+> > Why does this need to be in DT, you should be able to determine this
+> > based on what you are connected to.
+> As the anx7625 can receive MIPI DSI and DPI data (depends on hardware
+> implement, we have a project which have two anx7625, one is DSI input,
+> the other is DPI input), we needs to let driver know what kind of MIPI
+> rx signal input. And there is no other way to tell driver the MIPI rx
+> signal type, we needs define this flag.
 
-Oh yes, that'd be good, indeed.
+That's only true if what's driving the output is a single h/w block
+that can drive either. But typically you have 2 blocks: an LCD
+controller driving parallel signals and a DSI controller in front of
+it doing parallel to DSI conversion. The anx7625 would be connected to
+the LCD controller or DSI controller via the graph binding depending
+on the h/w connection.
 
-You can add the following tag:
-Cc: stable@vger.kernel.org #4.12+
+However, if you do need this, then let's extend video-interfaces.yaml
+'bus-type' to include DSI (it already has parallel).
 
-Best regards,
--- 
-Nicolas Ferre
+Rob
