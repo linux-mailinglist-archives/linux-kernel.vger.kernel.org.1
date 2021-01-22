@@ -2,324 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43319300ED9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C21300EE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728600AbhAVVYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:24:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        id S1729708AbhAVV03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729912AbhAVVWx (ORCPT
+        with ESMTP id S1729270AbhAVVZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:22:53 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9DC061788
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:22:12 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id ke15so9628434ejc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:22:12 -0800 (PST)
+        Fri, 22 Jan 2021 16:25:58 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C15C0613D6;
+        Fri, 22 Jan 2021 13:25:17 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id g1so8173280edu.4;
+        Fri, 22 Jan 2021 13:25:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ZpwXDPRrMrG5nsJXK8HMrl7bi6IV+vRYsbaXoE2tqY=;
-        b=lZuPRHZEXAezgQ76taZ/agsBU25kwwcY9lyg2EtyfvoJHVOZ3vvVR3eR4EeKx90h6K
-         zn2dr/C2AnSzZ2+G1xGa0swpRwTAqdbeK6u73WfulF44/+0f8HENjJi8B0BTh01d10xo
-         OVhypm+yLlM2In+CsxdH28fPom7hs2S8V35SeL9edEX7LHZSXDd9t39FcJvMkE3KE06b
-         V8Ie59p8ccJgfKkLyZICpwTQUSS6IsttXPqwUsFFKFZQh9mZHmsD2Bb67K2BgASC5YfB
-         khnumZMq+sMrMW+7tY2pThKqogMGfb51Yve0DdfM25NtkyIbSBSseoNt8HwouhmjKHAP
-         Le8g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TdBClChG74PdzxlB6jNRbLR1P/Chu7Exwe8kc5GSg3c=;
+        b=DSjYSf6swflJPfJ0qDwV9T3GZRyOMC7UAIxnEyigiaJVPFjgLXOvt/eVRSayftV6NW
+         ga1Ml4rflc41djbqoqu3aSeQZUJIRWEp8OjL5cL4czXhqWM3fl57JqhjNf6ZTkFPUZ3R
+         6jvDnxju+gmtPlFaob89BgM5bO40j+0GBOKFzWXzESX8xbekNHjU6UtcpcI1usitc2gc
+         PQG99FAmy/7WR1UwpkSLgyemNiEtvMknMCHU6diN21rokOpRmPxIldLcf8hatjRLRbfg
+         +SKp1DJD8A2Z/i/K7yZFWdSGrFxvVkzCKCqo0fEOIIHolGkqucB9snkT5xgp/+yZbUYN
+         hfvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ZpwXDPRrMrG5nsJXK8HMrl7bi6IV+vRYsbaXoE2tqY=;
-        b=DcbBg/EMQfpTTrBBPj4iDaoA7NePhWTuUMs+8VUzvtl7Hu1rY9L+XWDYk9IOAJcfbQ
-         aGSfQDDlu5za8aR7Xz6bzHlvdRm/oNUVMZ+WWMtJ7JybNW7OkUsqTDfMVNbEgd6MxfDc
-         HEmWqxA/9RpkWD6D99/AlJhum8HDmUokrHSDdlp4SdczjAz4xKDOMK8a3LkcO2AQd4A7
-         RB54EkwhIPsW26g5oafXogNc7xRo87G7OVlnAWYwSVjncqPMyo2xcCUedOCvEL0NafUB
-         3JEo7Q+aHjpcIfxSHZfDHJphYjxla8Vzv/yedroTniG0T9q6BpU1lyyOJABS8wQUYLFT
-         QM2g==
-X-Gm-Message-State: AOAM533aEjbU4BXeBq+fVhmP53nvwkXwyJ0PpFG3C9kRz6s9HUpUppmE
-        0XQkI0wDzNNOtBPysJv+ygxRenSIIdKINY4MKZMJ
-X-Google-Smtp-Source: ABdhPJxeM0w+zCva5SzWNsJdr60Poc+lbb+f+yqTkMpHZLu9kUx1HlkP0Jlm0bnhywXbrJ5OXJG3H3V3f4+ehob+NUw=
-X-Received: by 2002:a17:907:932:: with SMTP id au18mr4188903ejc.91.1611350531019;
- Fri, 22 Jan 2021 13:22:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TdBClChG74PdzxlB6jNRbLR1P/Chu7Exwe8kc5GSg3c=;
+        b=U8q4GpHodi5UqBAd6JkNDujKQPel2c4ztgB3ELs1Cbt+/dfsamlbPLjKbPq7VVlWWd
+         Q4ClDsPJ0v9HykGALmddiRmCBwG9OVF2z8rY4FWVJlg6Vt/k/AUEXzF+Ft46oHT8B4CY
+         BTfYY69LBnvko+0vXpA+31Q6W2QreIj6KmgPbM78qGh+jDnJTTSC/ky72EsZ6YxS9ECW
+         qE81gCz+rJZez4hN09R/r+6jQ/x7GwTpuxUq42ryqHbHBGzAFN+AH7gE406j6xp6qeaf
+         F5Y9lDunpsPqlDYYyuGFRvVdw8F+FXA7Tfb7oNORll2wBcwaiZEuJ7zX/LfkO/E4TGRC
+         aIIg==
+X-Gm-Message-State: AOAM53082Rb5O+humbqbvcg0FC+Dp1o6pKS0IGO3rHOKOtespxjfLjHN
+        q7LNPaAwsJ1sTNZVsLcCLl8=
+X-Google-Smtp-Source: ABdhPJxUQ/u2TsSOrwXyEKR5Rmydb9CD9fAXXQBnAknBQ8aNZCOzhmGYsVdAGzPy89saO7SegDFwqg==
+X-Received: by 2002:a50:8004:: with SMTP id 4mr4638043eda.155.1611350716567;
+        Fri, 22 Jan 2021 13:25:16 -0800 (PST)
+Received: from localhost.localdomain (a-tm1-24.tin.it. [212.216.206.55])
+        by smtp.gmail.com with ESMTPSA id c14sm6538889edr.46.2021.01.22.13.25.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 13:25:15 -0800 (PST)
+From:   Elia Devito <eliadevito@gmail.com>
+Cc:     Elia Devito <eliadevito@gmail.com>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: Ignore battery for Elan touchscreen on HP Spectre X360 15-df0xxx
+Date:   Fri, 22 Jan 2021 22:24:37 +0100
+Message-Id: <20210122212438.4122-1-eliadevito@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210121200150.2448-1-nramas@linux.microsoft.com>
-In-Reply-To: <20210121200150.2448-1-nramas@linux.microsoft.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 22 Jan 2021 16:21:59 -0500
-Message-ID: <CAHC9VhT13nhaHY3kJZ6ni4rjUffSG-hD5vOfK-q2KfsVFOtaCg@mail.gmail.com>
-Subject: Re: [PATCH] selinux: measure state and policy capabilities
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, sashal@kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 3:02 PM Lakshmi Ramasubramanian
-<nramas@linux.microsoft.com> wrote:
->
-> SELinux stores the configuration state and the policy capabilities
-> in kernel memory.  Changes to this data at runtime would have an impact
-> on the security guarantees provided by SELinux.  Measuring SELinux
-> configuration state and policy capabilities through IMA subsystem
-> provides a tamper-resistant way for an attestation service to remotely
-> validate the runtime state.
->
-> Measure the configuration state and policy capabilities by calling
-> the IMA hook ima_measure_critical_data().
->
-> To enable SELinux data measurement, the following steps are required:
->
->  1, Add "ima_policy=critical_data" to the kernel command line arguments
->     to enable measuring SELinux data at boot time.
->     For example,
->       BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
->
->  2, Add the following rule to /etc/ima/ima-policy
->        measure func=CRITICAL_DATA label=selinux
->
-> Sample measurement of SELinux state and policy capabilities:
->
-> 10 2122...65d8 ima-buf sha256:13c2...1292 selinux-state 696e...303b
->
-> To verify the measurement check the following:
->
-> Execute the following command to extract the measured data
-> from the IMA log for SELinux configuration (selinux-state).
->
->   grep "selinux-state" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6 | xxd -r -p
->
-> The output should be a list of key-value pairs. For example,
->  initialized=1;enabled=1;enforcing=0;checkreqprot=1;network_peer_controls=1;open_perms=1;extended_socket_class=1;always_check_network=0;cgroup_seclabel=1;nnp_nosuid_transition=1;genfs_seclabel_symlinks=0;
->
-> To verify the measured data with the current SELinux state:
->
->  => enabled should be set to 1 if /sys/fs/selinux folder exists,
->     0 otherwise
->
-> For other entries, compare the integer value in the files
->  => /sys/fs/selinux/enforce
->  => /sys/fs/selinux/checkreqprot
-> And, each of the policy capabilities files under
->  => /sys/fs/selinux/policy_capabilities
->
-> Note that the actual verification would be against an expected state
-> and done on a system other than the measured system, typically
-> requiring "initialized=1; enabled=1;enforcing=1;checkreqprot=0;" for
-> a secure state and then whatever policy capabilities are actually set
-> in the expected policy (which can be extracted from the policy itself
-> via seinfo, for example).
->
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> ---
-> This patch is based on
-> commit e58bb688f2e4 "Merge branch 'measure-critical-data' into next-integrity"
-> in "next-integrity-testing" branch
->
->  security/selinux/hooks.c     |  5 +++
->  security/selinux/ima.c       | 68 ++++++++++++++++++++++++++++++++++++
->  security/selinux/selinuxfs.c | 10 ++++++
->  3 files changed, 83 insertions(+)
->
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index 644b17ec9e63..879a0d90615d 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -103,6 +103,7 @@
->  #include "netlabel.h"
->  #include "audit.h"
->  #include "avc_ss.h"
-> +#include "ima.h"
->
->  struct selinux_state selinux_state;
->
-> @@ -7407,6 +7408,10 @@ int selinux_disable(struct selinux_state *state)
->
->         selinux_mark_disabled(state);
->
-> +       mutex_lock(&state->policy_mutex);
-> +       selinux_ima_measure_state(state);
-> +       mutex_unlock(&state->policy_mutex);
+Battery status is reported for the HP Spectre X360 Convertible 15-df0xxx
+even if it does not have a battery. Prevent it to always report the
+battery as low.
 
-I'm not sure if this affects your decision to include this action in
-the measurements, but this function is hopefully going away in the not
-too distant future as we do away with support for disabling SELinux at
-runtime.
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
+---
+ drivers/hid/hid-ids.h   | 1 +
+ drivers/hid/hid-input.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-FWIW, I'm not sure it's overly useful anyway; you only get here if you
-never had any SELinux policy/state configured and you decide to
-disable SELinux instead of loading a policy.  However, I've got no
-objection to this code.
-
-> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
-> index 03715893ff97..e65d462d2d30 100644
-> --- a/security/selinux/ima.c
-> +++ b/security/selinux/ima.c
-> @@ -12,6 +12,60 @@
->  #include "security.h"
->  #include "ima.h"
->
-> +/*
-> + * read_selinux_state - Read selinux configuration settings
-> + *
-> + * @state_str: Return the configuration settings.
-> + * @state_str_len: Size of the configuration settings string
-> + * @state: selinux_state
-> + *
-> + * Return 0 on success, error code on failure
-> + */
-
-Yes, naming is hard, but let's try to be a bit more consistent within
-a single file.  The existing function is prefixed with "selinux_ima_"
-perhaps we can do something similar here?
-"selinux_ima_collect_state()" or something similar perhaps?
-
-Perhaps instead of returning zero on success you could return the
-length of the generated string?  It's not a big deal, but it saves an
-argument for whatever that is worth these days.  I also might pass the
-state as the first argument and the generated string pointer as the
-second argument, but that is pretty nit-picky.
-
-> +static int read_selinux_state(char **state_str, int *state_str_len,
-> +                             struct selinux_state *state)
-> +{
-> +       char *buf;
-> +       int i, buf_len, curr;
-> +       bool initialized = selinux_initialized(state);
-> +       bool enabled = !selinux_disabled(state);
-> +       bool enforcing = enforcing_enabled(state);
-> +       bool checkreqprot = checkreqprot_get(state);
-> +
-> +       buf_len = snprintf(NULL, 0, "%s=%d;%s=%d;%s=%d;%s=%d;",
-> +                          "initialized", initialized,
-> +                          "enabled", enabled,
-> +                          "enforcing", enforcing,
-> +                          "checkreqprot", checkreqprot);
-> +
-> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
-> +               buf_len += snprintf(NULL, 0, "%s=%d;",
-> +                                   selinux_policycap_names[i],
-> +                                   state->policycap[i]);
-> +       }
-> +       ++buf_len;
-
-With all of the variables you are measuring being booleans, it seems
-like using snprintf() is a bit overkill, no?  What about a series of
-strlen() calls with additional constants for the booleans and extra
-bits?  For example:
-
-  buf_len = 1; // '\0';
-  buf_len += strlen("foo") + 3; // "foo=0;"
-  buf_len += strlen("bar") + 3; // "bar=0;"
-
-Not that it matters a lot here, but the above must be more efficient
-than calling snprintf().
-
-> +       buf = kzalloc(buf_len, GFP_KERNEL);
-> +       if (!buf)
-> +               return -ENOMEM;
-> +
-> +       curr = scnprintf(buf, buf_len, "%s=%d;%s=%d;%s=%d;%s=%d;",
-> +                        "initialized", initialized,
-> +                        "enabled", enabled,
-> +                        "enforcing", enforcing,
-> +                        "checkreqprot", checkreqprot);
-> +
-> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
-> +               curr += scnprintf((buf + curr), (buf_len - curr), "%s=%d;",
-> +                                 selinux_policycap_names[i],
-> +                                 state->policycap[i]);
-> +       }
-
-Similarly, you could probably replace all of this with
-strcat()/strlcat() calls since you don't have to render an integer
-into a string.
-
-> +       *state_str = buf;
-> +       *state_str_len = curr;
-> +
-> +       return 0;
-> +}
-> +
->  /*
->   * selinux_ima_measure_state - Measure hash of the SELinux policy
->   *
-> @@ -21,10 +75,24 @@
->   */
->  void selinux_ima_measure_state(struct selinux_state *state)
->  {
-> +       char *state_str = NULL;
-> +       int state_str_len;
->         void *policy = NULL;
->         size_t policy_len;
->         int rc = 0;
->
-> +       rc = read_selinux_state(&state_str, &state_str_len, state);
-> +       if (rc) {
-> +               pr_err("SELinux: %s: failed to read state %d.\n",
-> +                       __func__, rc);
-> +               return;
-> +       }
-> +
-> +       ima_measure_critical_data("selinux", "selinux-state",
-> +                                 state_str, state_str_len, false);
-> +
-> +       kfree(state_str);
-> +
->         /*
->          * Measure SELinux policy only after initialization is completed.
->          */
-> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
-> index 4bde570d56a2..8b561e1c2caa 100644
-> --- a/security/selinux/selinuxfs.c
-> +++ b/security/selinux/selinuxfs.c
-> @@ -41,6 +41,7 @@
->  #include "security.h"
->  #include "objsec.h"
->  #include "conditional.h"
-> +#include "ima.h"
->
->  enum sel_inos {
->         SEL_ROOT_INO = 2,
-> @@ -182,6 +183,10 @@ static ssize_t sel_write_enforce(struct file *file, const char __user *buf,
->                 selinux_status_update_setenforce(state, new_value);
->                 if (!new_value)
->                         call_blocking_lsm_notifier(LSM_POLICY_CHANGE, NULL);
-> +
-> +               mutex_lock(&state->policy_mutex);
-> +               selinux_ima_measure_state(state);
-> +               mutex_unlock(&state->policy_mutex);
->         }
->         length = count;
->  out:
-> @@ -762,6 +767,11 @@ static ssize_t sel_write_checkreqprot(struct file *file, const char __user *buf,
->
->         checkreqprot_set(fsi->state, (new_value ? 1 : 0));
->         length = count;
-> +
-> +       mutex_lock(&fsi->state->policy_mutex);
-> +       selinux_ima_measure_state(fsi->state);
-> +       mutex_unlock(&fsi->state->policy_mutex);
-> +
-
-The lock-measure-unlock pattern appears enough that I wonder if we
-should move the lock/unlock into selinux_ima_measure_state() and
-create a new function, selinux_ima_measure_state_unlocked(), to cover
-the existing case in selinux_notify_policy_change().  It would have
-the advantage of not requiring a pointless lock/unlock in the case
-where CONFIG_IMA=n.
-
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 5ba0aa1d2335..899449ced29e 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -389,6 +389,7 @@
+ #define USB_DEVICE_ID_TOSHIBA_CLICK_L9W	0x0401
+ #define USB_DEVICE_ID_HP_X2		0x074d
+ #define USB_DEVICE_ID_HP_X2_10_COVER	0x0755
++#define I2C_DEVICE_ID_HP_SPECTRE_X360_15	0x2817
+ #define USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN	0x2706
+ 
+ #define USB_VENDOR_ID_ELECOM		0x056e
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index f23027d2795b..8ed7f468bd95 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -324,6 +324,8 @@ static const struct hid_device_id hid_battery_quirks[] = {
+ 	  HID_BATTERY_QUIRK_IGNORE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_ELAN, USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN),
+ 	  HID_BATTERY_QUIRK_IGNORE },
++	{ HID_I2C_DEVICE(USB_VENDOR_ID_ELAN, I2C_DEVICE_ID_HP_SPECTRE_X360_15),
++	  HID_BATTERY_QUIRK_IGNORE },
+ 	{}
+ };
+ 
 -- 
-paul moore
-www.paul-moore.com
+2.29.2
+
