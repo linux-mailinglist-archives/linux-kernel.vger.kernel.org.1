@@ -2,99 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18388300F55
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2C3300F72
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730329AbhAVVyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728411AbhAVVxj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:53:39 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A4AC06174A;
-        Fri, 22 Jan 2021 13:52:53 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id e6so4749450pjj.1;
-        Fri, 22 Jan 2021 13:52:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XOLrhjmC6rVAyRgBoStXhP1O5SrIITRCLdMBS4GnOjw=;
-        b=HL9YDTTMTFQ1M79KDKrjqtQEQEk4Z+hl8oxK7gcqeCGHYVKlZI76Zt0YmjOu/fx5nT
-         XTeFVUbuHVfRB4itSsezJkmDA4gPlrlQUo0vrRVY/H5Wro5DRCPcuZDsJS1wB9L5x0GQ
-         sewnUeWQyuQyB01UBZk3zBb0Mu6X0/XvFNwj3iPNFzaQZ6MlWQ6KsBXlc5W/vPY24bYF
-         TAs0vwtOEMQ5DybacbrM1To1pHHbvquGu7L5KVdJ1d3SHgI6CbN3vmUR7SPSxJMOhTMn
-         R5e5snPTTWe3U02lYsdmpKwEBwGr/Fs/au6GgeNavLMmivY8eRIOWaZLY/Bnj+BvfPT9
-         Alow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XOLrhjmC6rVAyRgBoStXhP1O5SrIITRCLdMBS4GnOjw=;
-        b=Qj9WNcbkGfbadgeVS4SHddzmk0WFjda4mFu3uH7pAqngAxBDhL7+5kzc7+kTe/qnfL
-         aZGYvL6Q40c1Dv3vH6mLwCrNqvxSgctl4//6R5KHab3kzM0FA+5bQ/BBoxLj+HLsacm1
-         fe5EbOS68K4V40uac1kfh5IXq9QJjuENUKcoTpr2KKix3xPglw6Psnk+sx2AJ7BZLU7L
-         OcEnyi4LMK3YF1DqMeiR1qTG0vtrnGUuaOQhH+8wpJiyuClvZgHeRHYnYbNumU8bDrEM
-         glWCPdqX6gtvogtLUzUcdwU1s1NOsIWTeeJEm9iaf1yqYYLrY6yUInGGhhamlODb/BkV
-         MhZQ==
-X-Gm-Message-State: AOAM533QJUxrz+CH2/b9Bq1rE6hglEpQFvPV+LD9XIEsmVfmnSAnKujz
-        3uWQ87xgbpXi9nIRcJt9L7lrpdTpfs0=
-X-Google-Smtp-Source: ABdhPJxD11rUWI5xGSGGel5IJuEUgdIOdgJd7sPLvnblZgxE4Zh55ELJTfqxZrBzkoaZnv/Gmpkd8w==
-X-Received: by 2002:a17:90a:a608:: with SMTP id c8mr7587846pjq.61.1611352372305;
-        Fri, 22 Jan 2021 13:52:52 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 78sm5978550pfx.127.2021.01.22.13.52.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 13:52:51 -0800 (PST)
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-To:     Sergej Bauer <sbauer@blackbox.su>, netdev@vger.kernel.org
-Cc:     andrew@lunn.ch, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        id S1730751AbhAVV4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:56:32 -0500
+Received: from mga01.intel.com ([192.55.52.88]:50183 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730000AbhAVVzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 16:55:41 -0500
+IronPort-SDR: 9q3S4emmk4xclOw/YXm/yZII8Ovg/ah2F38SDUKp0EqM6nryCd3wUb4PA09QOpFP4aklCGwW0H
+ duX7C1HTlQhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="198274442"
+X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
+   d="scan'208";a="198274442"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 13:54:55 -0800
+IronPort-SDR: QgzfLeU+SScNpiuZ2ShHor3Mk1anNcKXZI/IncTCR7ogj4sTRd8kBKfwZPHV0PQyfLDml4sqvL
+ fM8zo+rax78Q==
+X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
+   d="scan'208";a="400976899"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.79.184]) ([10.212.79.184])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 13:54:54 -0800
+Subject: Re: [PATCH v17 08/26] x86/mm: Introduce _PAGE_COW
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Randy Dunlap' <rdunlap@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210122214247.6536-1-sbauer@blackbox.su>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ecc54ce2-cbda-d801-1127-e1c15aa22654@gmail.com>
-Date:   Fri, 22 Jan 2021 13:52:48 -0800
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-9-yu-cheng.yu@intel.com>
+ <20210121184405.GE32060@zn.tnic>
+ <b4d4bec7-504e-2443-4cf3-0801b179000f@intel.com>
+ <cd9d04ab66d144b7942b5030d9813115@AcuMS.aculab.com>
+ <9344cd90-1818-a716-91d2-2b85df01347b@infradead.org>
+ <b6eda0f414f34634b4e1aca80c4b5d5d@AcuMS.aculab.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <1b9cd39a-fe66-d237-b847-2b62ff1477e7@intel.com>
+Date:   Fri, 22 Jan 2021 13:54:53 -0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210122214247.6536-1-sbauer@blackbox.su>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <b6eda0f414f34634b4e1aca80c4b5d5d@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/22/2021 1:42 PM, Sergej Bauer wrote:
-> From: sbauer@blackbox.su
+On 1/21/2021 2:32 PM, David Laight wrote:
+> From: Randy Dunlap
+>> Sent: 21 January 2021 22:19
+>>
+>> On 1/21/21 2:16 PM, David Laight wrote:
+>>> From: Yu, Yu-cheng
+>>>>
+>>>> On 1/21/2021 10:44 AM, Borislav Petkov wrote:
+>>>>> On Tue, Dec 29, 2020 at 01:30:35PM -0800, Yu-cheng Yu wrote:
+>>>> [...]
+>>>>>> @@ -343,6 +349,16 @@ static inline pte_t pte_mkold(pte_t pte)
+>>>>>>
+>>>>>>    static inline pte_t pte_wrprotect(pte_t pte)
+>>>>>>    {
+>>>>>> +	/*
+>>>>>> +	 * Blindly clearing _PAGE_RW might accidentally create
+>>>>>> +	 * a shadow stack PTE (RW=0, Dirty=1).  Move the hardware
+>>>>>> +	 * dirty value to the software bit.
+>>>>>> +	 */
+>>>>>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+>>>>>> +		pte.pte |= (pte.pte & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
+>>>>>
+>>>>> Why the unreadable shifting when you can simply do:
+>>>>>
+>>>>>                   if (pte.pte & _PAGE_DIRTY)
+>>>>>                           pte.pte |= _PAGE_COW;
+>>>>>
+>>>
+>>>>> ?
+>>>>
+>>>> It clears _PAGE_DIRTY and sets _PAGE_COW.  That is,
+>>>>
+>>>> if (pte.pte & _PAGE_DIRTY) {
+>>>> 	pte.pte &= ~_PAGE_DIRTY;
+>>>> 	pte.pte |= _PAGE_COW;
+>>>> }
+>>>>
+>>>> So, shifting makes resulting code more efficient.
+>>>
+>>> Does the compiler manage to do one shift?
+>>>
+>>> How can it clear anything?
+>>
+>> It could shift it off either end since there are both << and >>.
 > 
-> v1->v2:
-> 	switch to using of fixed_phy as was suggested by Andrew and Florian
-> 	also features-related parts are removed
+> It is still:
+> 	pte.pte |= xxxxxxx;
 > 
-> Previous versions can be found at:
-> v1:
-> initial version
-> 	https://lkml.org/lkml/2020/9/17/1272
+>>> There is only an |= against the target.
+>>>
+>>> Something horrid with ^= might set and clear.
 > 
-> Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
+> It could be 4 instructions:
+> 	is_dirty = pte.pte & PAGE_DIRTY;
+> 	pte.pte &= ~PAGE_DIRTY; // or pte.pte ^= is_dirty
+> 	is_cow = is_dirty << (BIT_COW - BIT_DIRTY); // or equivalent >>
+> 	pte.pte |= is_cow;
+> provided you've a three operand form for one of the first two instructions.
+> Something like ARM might manage to merge the last two as well.
+> But the register dependency chain length may matter more than
+> the number of instructions.
+> The above is likely to be three long.
 
-You are not explaining why you need this and why you are second guessing
-the fixed PHY MII emulation that already exists. You really need to do a
-better job at describing your changes and why the emulation offered by
-swphy.c is not enough for your use case.
--- 
-Florian
+I see what you are saying.  The patch is like...
+
+	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+		pte.pte |= (pte.pte & _PAGE_DIRTY) >> _PAGE_BIT_DIRTY << _PAGE_BIT_COW;
+		pte = pte_clear_flags(pte, _PAGE_DIRTY);
+	}
+
+It is not necessary to do the shifting.  I will make it, simply,
+
+if (pte.pte & _PAGE_DIRTY) {
+	pte.pte &= ~PAGE_DIRTY;
+	pte.pte |= _PAGE_COW;
+}
+
+Thanks for your comments.
+
+--
+Yu-cheng
