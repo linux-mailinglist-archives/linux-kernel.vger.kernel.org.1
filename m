@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EBB300EF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AD2300EFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728007AbhAVVcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        id S1730217AbhAVVet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729224AbhAVVbU (ORCPT
+        with ESMTP id S1729228AbhAVVbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 16:31:20 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB05C061793
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:29:34 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id 188so5073741qkh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:29:34 -0800 (PST)
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67159C061794
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:29:36 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id i82so5056852qke.19
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:29:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=7ooyFXBx1fIP/mZWl+q42UsYzUb6W7T7o6Qp5Bwm9hw=;
-        b=XsWnNNT3bc6NKjNDXbJftwz4CzNpoXWdn06wSFhE9hrt040cUk7xfYmqbrN5GIVZWi
-         i86OXfhFvdsu6DVlgJxXEVtz+etIe2fK6hDTiOU2ZNuVWwA6OVjCJOjxR8tzuhJS3kMb
-         xZwUld/tGUOekzt3iwU/YmDZXAE2VD1ZGIdEXGjiLDvRYKyG82TgkmUDJCd+0S5ZqW4I
-         70Z21Wp0GtmlzoRgbtQ1fXtAA9OaXyTuH1/uVDuqRWkKJd6Ql1sD6VTsoQGCNiMog+Ep
-         B8d7aXwnk2MzbdVwMN6cCOQf9v6PYZL7IZEHfyC48t2yNf6yIQ+9ABBB60mxOeVc55Bm
-         f3sg==
+        bh=OYrPoV3fYQ8WDakv98owhD+ljPpsL42VYOxvmhLHcYg=;
+        b=kUzsor1Pm3Mgn8ZxMLrofWfTqQiPvG/90LXq+jSwELmpUS1Sfl5+eWSzdsb9iWRIEy
+         40KRghuc2ukseAMkHUzebpIVndXMKR/1p+MTMUFE0tvuQgUbLNFevKRoVgKRV56qwX8O
+         YAxPe5fnyMQ7CdBHCLQAdKcZWdZaMLf5vE+xqiAZTPMHbvWamjfXhdnNiXPScwKC9wOH
+         NmXQiDpPwtKGuvoAVDFyJcbbLhdlhZC+8SLftcPp8m9JpB8GkKUFWaJAXRIt2EBMJ3Cx
+         UnVkyXcMKuXqdp1K8aNj33h9ICRBsRpfH5YmaKFTGyoOo3NBp3dcgrAK5HAQUVXKJLJw
+         0Smg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=7ooyFXBx1fIP/mZWl+q42UsYzUb6W7T7o6Qp5Bwm9hw=;
-        b=L4tVqFTctYHi6iHRGnRzK3+xkrEETHIvq+/02NbfvLxpSdeAlOTga2sCyGnYPQgt2m
-         jCkhpfnbl0SZAZkeqHRCYPS2ZK26FAxAhf4S5VLLltQW8qKwb06/ZxtALsADeFe6gb7o
-         hz7TcH5jcWtQ3rauQ1VSS6KaiPgMyHxoYNvYyOK7tFwoE45yX98toyPZXgcXHLCDJHEm
-         xuUvkNNyTUnFP9VJGItH5E2qbyr/RukZ724ExQ31x1Lc9JX1n5neU1PIhlWD/azX207p
-         mTiyAwFmVxaeDj29MlWeV7TGlyyFy5PRgZiH86yAF6+eA19zOLkKxj0nQjbtxMvzmNc3
-         CyMw==
-X-Gm-Message-State: AOAM530agBNNpGrByN9wFSB/y10WFcfwPhdk1wdhlnGaGzKEdvNCEedf
-        8y/pQBI+6XqE/Zn/IYe/VKLxOQtc5TT5j3HdzPvG
-X-Google-Smtp-Source: ABdhPJxb/hwoxHIo8QflV3z+18lopvVFKCpUYIsbtpY3zEzFE4r6BQtxe0nvXRYR/UfBzES127pXZs6ua8xttRg5W3aC
+        bh=OYrPoV3fYQ8WDakv98owhD+ljPpsL42VYOxvmhLHcYg=;
+        b=qN/SvqItzfx7xykKAYm8g5So3mZQNOdAAw7Ni6kMBL2kx7zM2KaBukbqJW/DnneuGL
+         cyDeKyEGzldjDhWGrlvAXeTeDFKUOaaeH12Woi36i2Rsiurnk5OJjeCvtto9mICl1D1b
+         B5oWYzcWBPWz9POEJn/KFOu8P9Wnr3cSjr7BlG9cJvwFpTFiQd9rR5OkpVQhYR0dvg/T
+         lpVJ2Anb8yvrjBmnbgExr63Wgk1cDmOT9m9XYNGCd/2CrOFhC6OjDYN0SVHz+2NAUmCi
+         DEFj50gPU2UAwEjMrlfNgJ/9lL0zwBhAULjy/g6Ef2HYMe5TVxnxkaas5os65kOjLelw
+         4wqQ==
+X-Gm-Message-State: AOAM532Ek/XornSda8kBwjoqV39rx0ARrCTgvM+jbczjKkIcRHmfJ6PH
+        iz0eKuEAcuiRXCVIEZHpHT//LL/bR2jOL75tM0mq
+X-Google-Smtp-Source: ABdhPJwJhAUfP+pfuxpquEI/D/OlazsYWIwPmxul8In0Z3P8YxKxC+jbkPF9CW06C4W0GAaPQg439JotJdt4FkTROktt
 Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
 X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
- (user=axelrasmussen job=sendgmr) by 2002:a0c:9d9a:: with SMTP id
- s26mr6613401qvd.9.1611350973499; Fri, 22 Jan 2021 13:29:33 -0800 (PST)
-Date:   Fri, 22 Jan 2021 13:29:19 -0800
+ (user=axelrasmussen job=sendgmr) by 2002:a05:6214:a03:: with SMTP id
+ dw3mr1414980qvb.24.1611350975439; Fri, 22 Jan 2021 13:29:35 -0800 (PST)
+Date:   Fri, 22 Jan 2021 13:29:20 -0800
 In-Reply-To: <20210122212926.3457593-1-axelrasmussen@google.com>
-Message-Id: <20210122212926.3457593-3-axelrasmussen@google.com>
+Message-Id: <20210122212926.3457593-4-axelrasmussen@google.com>
 Mime-Version: 1.0
 References: <20210122212926.3457593-1-axelrasmussen@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v2 2/9] hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled
+Subject: [PATCH v2 3/9] mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h
 From:   Axel Rasmussen <axelrasmussen@google.com>
 To:     Alexander Viro <viro@zeniv.linux.org.uk>,
         Alexey Dobriyan <adobriyan@gmail.com>,
@@ -91,131 +91,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Xu <peterx@redhat.com>
 
-Huge pmd sharing could bring problem to userfaultfd.  The thing is that
-userfaultfd is running its logic based on the special bits on page table
-entries, however the huge pmd sharing could potentially share page table
-entries for different address ranges.  That could cause issues on either:
-
-  - When sharing huge pmd page tables for an uffd write protected range, the
-    newly mapped huge pmd range will also be write protected unexpectedly, or,
-
-  - When we try to write protect a range of huge pmd shared range, we'll first
-    do huge_pmd_unshare() in hugetlb_change_protection(), however that also
-    means the UFFDIO_WRITEPROTECT could be silently skipped for the shared
-    region, which could lead to data loss.
-
-Since at it, a few other things are done altogether:
-
-  - Move want_pmd_share() from mm/hugetlb.c into linux/hugetlb.h, because
-    that's definitely something that arch code would like to use too
-
-  - ARM64 currently directly check against CONFIG_ARCH_WANT_HUGE_PMD_SHARE when
-    trying to share huge pmd.  Switch to the want_pmd_share() helper.
+Prepare for it to be called outside of mm/hugetlb.c.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 ---
- arch/arm64/mm/hugetlbpage.c   |  3 +--
- include/linux/hugetlb.h       | 15 +++++++++++++++
- include/linux/userfaultfd_k.h |  9 +++++++++
- mm/hugetlb.c                  |  5 ++---
- 4 files changed, 27 insertions(+), 5 deletions(-)
+ include/linux/hugetlb.h | 8 ++++++++
+ mm/hugetlb.c            | 8 --------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 5b32ec888698..1a8ce0facfe8 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -284,8 +284,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 		 */
- 		ptep = pte_alloc_map(mm, pmdp, addr);
- 	} else if (sz == PMD_SIZE) {
--		if (IS_ENABLED(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) &&
--		    pud_none(READ_ONCE(*pudp)))
-+		if (want_pmd_share(vma) && pud_none(READ_ONCE(*pudp)))
- 			ptep = huge_pmd_share(mm, addr, pudp);
- 		else
- 			ptep = (pte_t *)pmd_alloc(mm, pudp, addr);
 diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 1e0abb609976..4508136c8376 100644
+index 4508136c8376..f94a35296618 100644
 --- a/include/linux/hugetlb.h
 +++ b/include/linux/hugetlb.h
-@@ -11,6 +11,7 @@
- #include <linux/kref.h>
- #include <linux/pgtable.h>
- #include <linux/gfp.h>
-+#include <linux/userfaultfd_k.h>
- 
- struct ctl_table;
- struct user_struct;
-@@ -947,4 +948,18 @@ static inline __init void hugetlb_cma_check(void)
- }
+@@ -962,4 +962,12 @@ static inline bool want_pmd_share(struct vm_area_struct *vma)
  #endif
+ }
  
-+static inline bool want_pmd_share(struct vm_area_struct *vma)
-+{
-+#ifdef CONFIG_USERFAULTFD
-+	if (uffd_disable_huge_pmd_share(vma))
-+		return false;
++#ifndef __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
++/*
++ * ARCHes with special requirements for evicting HUGETLB backing TLB entries can
++ * implement this.
++ */
++#define flush_hugetlb_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
 +#endif
-+
-+#ifdef CONFIG_ARCH_WANT_HUGE_PMD_SHARE
-+	return true;
-+#else
-+	return false;
-+#endif
-+}
 +
  #endif /* _LINUX_HUGETLB_H */
-diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-index a8e5f3ea9bb2..c63ccdae3eab 100644
---- a/include/linux/userfaultfd_k.h
-+++ b/include/linux/userfaultfd_k.h
-@@ -52,6 +52,15 @@ static inline bool is_mergeable_vm_userfaultfd_ctx(struct vm_area_struct *vma,
- 	return vma->vm_userfaultfd_ctx.ctx == vm_ctx.ctx;
- }
- 
-+/*
-+ * Never enable huge pmd sharing on uffd-wp registered vmas, because uffd-wp
-+ * protect information is per pgtable entry.
-+ */
-+static inline bool uffd_disable_huge_pmd_share(struct vm_area_struct *vma)
-+{
-+	return vma->vm_flags & VM_UFFD_WP;
-+}
-+
- static inline bool userfaultfd_missing(struct vm_area_struct *vma)
- {
- 	return vma->vm_flags & VM_UFFD_MISSING;
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 07b23c81b1db..d46f50a99ff1 100644
+index d46f50a99ff1..30a087dda57d 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -5371,7 +5371,7 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
- 	*addr = ALIGN(*addr, HPAGE_SIZE * PTRS_PER_PTE) - HPAGE_SIZE;
- 	return 1;
+@@ -4924,14 +4924,6 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	return i ? i : err;
  }
--#define want_pmd_share()	(1)
-+
- #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
- pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud)
- {
-@@ -5388,7 +5388,6 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- 				unsigned long *start, unsigned long *end)
- {
- }
--#define want_pmd_share()	(0)
- #endif /* CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
  
- #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
-@@ -5410,7 +5409,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			pte = (pte_t *)pud;
- 		} else {
- 			BUG_ON(sz != PMD_SIZE);
--			if (want_pmd_share() && pud_none(*pud))
-+			if (want_pmd_share(vma) && pud_none(*pud))
- 				pte = huge_pmd_share(mm, addr, pud);
- 			else
- 				pte = (pte_t *)pmd_alloc(mm, pud, addr);
+-#ifndef __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
+-/*
+- * ARCHes with special requirements for evicting HUGETLB backing TLB entries can
+- * implement this.
+- */
+-#define flush_hugetlb_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
+-#endif
+-
+ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+ 		unsigned long address, unsigned long end, pgprot_t newprot)
+ {
 -- 
 2.30.0.280.ga3ce27912f-goog
 
