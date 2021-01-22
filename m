@@ -2,449 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD55300C94
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A9E300C93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730477AbhAVTZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:25:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728511AbhAVS5g (ORCPT
+        id S1730455AbhAVTZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:25:44 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2255 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729389AbhAVS6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:57:36 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC01C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:56:56 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id q205so7051740oig.13
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iPbrs6uc7m2Ax/IA6kfEf0cb7RYlqD2geOBz+EuCH/k=;
-        b=DXJWaJj7WUk1CAC4nNzvfEcLjreMgB/gQrL3/FUs1099GUvg+yCm24CqM30RoHSDi5
-         3Lk4oBmy1wlK1+zvVkHdgXSU4ceT1O1aqj7g92fi5k2ofw/VCz23djhYR4TPOZgHHNSw
-         UAX7vqo2/sMNLxd6phrEJe22wHvbXOWpSfebGC4LKxqm4bHDFxTseg/bM4E2kR8a1m+G
-         kqStFaEmQFm5IYomLFehlpaOzrNqHlueo0mJQb5xxMLYDDCnk+3C0BFLJzOj7dHfEQ3B
-         d29LfA69QVSjFOl5DsH1Ft8kfrZKL64H3LfJcFfGjKre67VSNaQHvJwRNC+O8AgEGh5L
-         JLnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iPbrs6uc7m2Ax/IA6kfEf0cb7RYlqD2geOBz+EuCH/k=;
-        b=Sk1n0w+WqXosy2iEBgYz0yqejAa380NuZt9b76OuFjIWG7kclSttRea+xI/Ic0VHFz
-         4ZIin8J49YdHwejaQSJrFHVnLJyUvK58TgD9mXktJk7iepV71Okza4qdB8AgsBKOrSuA
-         KEdvf3gQ/k3yUmt7Zxe8rouiPio2S68ipXHyN6n6zMa/VYKBk1jayRESoGPMTmwMSCup
-         F+qNb4ZA9tkbmSFYSPlA9zqRfPfUv5TG52ZONzo7Uuz3MwrtFuV6dFk8DfFQZJh7c5jK
-         /noZhiYOe88Ab8I8WvtSprOpX/wZQQm+SNQiHAXgzMAEFY6eu/xm3SJvMqR79aV5R6Fi
-         eQeQ==
-X-Gm-Message-State: AOAM531/YTg8elZIHXtml/bSvwfVN7Ai3il4TSD+6jNocLAl2QtlHBhr
-        NpJohJEfTwiMG2r5R8tf9BEPixT7QNWSoA==
-X-Google-Smtp-Source: ABdhPJx3/qHZKazpQRCeWmsyg12EnkHLxO1lGldNIM08HTrp1b/TMz0ROiqysW18zhtdngOhp2VJfA==
-X-Received: by 2002:aca:3554:: with SMTP id c81mr4252305oia.23.1611341815743;
-        Fri, 22 Jan 2021 10:56:55 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 68sm1826004otr.16.2021.01.22.10.56.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 10:56:54 -0800 (PST)
-Date:   Fri, 22 Jan 2021 12:56:53 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     Andy Gross <agross@kernel.org>, robh+dt@kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH v2 4/4] arm: dts: add 8devices Habanero DVK
-Message-ID: <YAsf9aZ8mXU8vLZK@builder.lan>
-References: <20200909195640.3127341-1-robert.marko@sartura.hr>
- <20200909195640.3127341-5-robert.marko@sartura.hr>
- <CA+HBbNEkmYMi5KutwrBVh3uqzjdEmHrbJnPbH43C9B-Kq1MBNA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Fri, 22 Jan 2021 13:58:19 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B600b20170001>; Fri, 22 Jan 2021 10:57:27 -0800
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Jan
+ 2021 18:57:21 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
+ by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 22 Jan 2021 18:57:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FZN4AqDMxAGH6RPDzE9w2HYOBAVlh1aNnDgaejNK5+dw4lE5F9u2V6W1hBj0gva7ZcPUVpAiIf2i4AmI2ach3xwsp1YXcsMPmHF6WCxldpzjs0rrpvlV8WNynJaqqejb5vpgkXN7oDR9h5QTdlmYEWzeaBf8BGAJ7PimtD+Tx82H0Qf29gXZo2hz+10AgcOUp0V7ePrAXwGF0HC1AN9cjgYCeryyDKjXvnddhJ/KjpgBZAn43LPOVfSuCyzALxjNjRR0fInxWX7XUYXD72fJjAk0Y5KObYzQcXHD1iXldB2rnxKt2pI6d7oH0xk+eW2DwFnsMyQgziLu/FcxubXWWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1sf5dhX/C5DT4ULabu3uJ8qk3toVopqtGgKx32Qm2tw=;
+ b=G/RlXyAClQ/7nnJ7zTZKDUl6Eot4ACRR1+oSpZsWbCK+yuUtn0FKB285oTChWeQHn/HBhkrTVwXxTA5d20x632KNQbYKwAx7UVxJM0rHwtgD71VAP5+TT/vtW2uJhWQAH5BbC0VO3xRCTSIPaA6DL16NVIVg+Xlbj+/Ee6Fhhmv+ZCJU/o9WdvCE4nY739SRPhgSVUdNCFnPtedAeJkWyBBwNKTBbOjuQpmJkyy24NnfDL45RMnLenu2ryObOcB7hUvSWJAmGi8SrKr/QzaQFqBtLCiyMVfC8McnLUoAOYH4M/VGW6IpmTHpvESW+mo7mLwbLHJCYS2C7uxwfngjag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3929.namprd12.prod.outlook.com (2603:10b6:5:148::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Fri, 22 Jan
+ 2021 18:57:19 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.011; Fri, 22 Jan 2021
+ 18:57:19 +0000
+Date:   Fri, 22 Jan 2021 14:57:18 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Intel <ibsupport@intel.com>, Leon Romanovsky <leon@kernel.org>,
+        Lijun Ou <oulijun@huawei.com>, <linux-rdma@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Nenglong Zhao <zhaonenglong@hisilicon.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Wei Hu <xavier.huwei@huawei.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: Re: [PATCH 00/30] [Set 2] Rid W=1 warnings from Infiniband
+Message-ID: <20210122185718.GA1331430@nvidia.com>
+References: <20210121094519.2044049-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CA+HBbNEkmYMi5KutwrBVh3uqzjdEmHrbJnPbH43C9B-Kq1MBNA@mail.gmail.com>
+In-Reply-To: <20210121094519.2044049-1-lee.jones@linaro.org>
+X-ClientProxiedBy: MN2PR17CA0035.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::48) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR17CA0035.namprd17.prod.outlook.com (2603:10b6:208:15e::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Fri, 22 Jan 2021 18:57:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l31cU-005bMf-0l; Fri, 22 Jan 2021 14:57:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1611341848; bh=1sf5dhX/C5DT4ULabu3uJ8qk3toVopqtGgKx32Qm2tw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=YbBAnVfT9YiU6TcCE1LZ1CNNyFtOE7fA/1NAes+hYDFJzr+b4v23+d+FOQOp3WPuf
+         Vc6h7jsIhkW6JfCc/Wz04HPfOtlFSclzmHmCuBar/7Ti9TRUyy4UicVSS8vBsb3+tZ
+         /ll2gh+3PKWe2Wc4wo4YvsNzx3wo/CKAsvjkUo+EZn7Nx623UfrpSsyJNQM9TkB6XV
+         YFQcYZYYWyH7yEmNxIUyXCWJwukJ4LbfVsFRyqH45XRt7uLZbVC7SQFI5PRjX+23sy
+         1HvWH+WpqQZKGue8IgMfhEiKzMG+w1AtFAlHrJFRCdfTPru33Hb7xe97tLOsrgFSUI
+         RIkJA5j5Mq/Kg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 02 Oct 12:41 CDT 2020, Robert Marko wrote:
-
-> On Wed, Sep 9, 2020 at 9:56 PM Robert Marko <robert.marko@sartura.hr> wrote:
-> >
-> > 8devices Habanero DVK is a dual-band SoM development kit based on Qualcomm
-> > IPQ4019 + QCA8075 platform.
-> >
-> > Specs are:
-> > CPU: QCA IPQ4019
-> > RAM: DDR3L 512MB
-> > Storage: 32MB SPI-NOR and optional Parallel SLC NAND(Some boards ship with it and some without)
-> > WLAN1: 2.4 GHz built into IPQ4019 (802.11n) 2x2
-> > WLAN2: 5 GHz built into IPO4019 (802.11ac Wawe-2) 2x2
-> > Ethernet: 5x Gbit LAN (QCA 8075)
-> > USB: 1x USB 2.0 and 1x USB 3.0 (Both built into IPQ4019)
-> > MicroSD slot (Uses SD controller built into IPQ4019)
-> > SDIO3.0/EMMC slot (Uses the same SD controller)
-> > Mini PCI-E Gen 2.0 slot (Built into IPQ4019)
-> > 5x LEDs (4 GPIO controllable)
-> > 2x Pushbutton (1 is connected to GPIO, other to SoC reset)
-> > LCD ZIF socket (Uses the LCD controller built into IPQ4019 which has no driver support)
-> > 1x UART 115200 rate on J18
-> >
-> > 2x breakout development headers
-> > 12V DC Jack for power
-> > DIP switch for bootstrap configuration
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> > ---
-> > Changes since v1:
-> > * Drop include that does not exist
-> >
-> >  arch/arm/boot/dts/Makefile                    |   1 +
-> >  .../boot/dts/qcom-ipq4019-habanero-dvk.dts    | 304 ++++++++++++++++++
-> >  2 files changed, 305 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-> >
-> > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> > index 246d82fc5fcd..004262e0d699 100644
-> > --- a/arch/arm/boot/dts/Makefile
-> > +++ b/arch/arm/boot/dts/Makefile
-> > @@ -898,6 +898,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
-> >         qcom-ipq4019-ap.dk04.1-c3.dtb \
-> >         qcom-ipq4019-ap.dk07.1-c1.dtb \
-> >         qcom-ipq4019-ap.dk07.1-c2.dtb \
-> > +       qcom-ipq4019-habanero-dvk.dtb \
-> >         qcom-ipq8064-ap148.dtb \
-> >         qcom-ipq8064-rb3011.dtb \
-> >         qcom-msm8660-surf.dtb \
-> > diff --git a/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-> > new file mode 100644
-> > index 000000000000..fe054adda0a7
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
-> > @@ -0,0 +1,304 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> > +/* Copyright (c) 2019, Robert Marko <robimarko@gmail.com> */
-> > +
-> > +#include "qcom-ipq4019.dtsi"
-> > +#include <dt-bindings/gpio/gpio.h>
-> > +#include <dt-bindings/input/input.h>
-> > +
-> > +/ {
-> > +       model = "8devices Habanero DVK";
-> > +       compatible = "8dev,habanero-dvk";
-> > +
-> > +       keys {
-> > +               compatible = "gpio-keys";
-> > +
-> > +               reset {
-> > +                       label = "reset";
-> > +                       gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-> > +                       linux,code = <KEY_RESTART>;
-> > +               };
-> > +       };
-> > +
-> > +       leds {
-> > +               compatible = "gpio-leds";
-> > +
-> > +               led_status: status {
-> > +                       label = "habanero-dvk:green:status";
-> > +                       gpios = <&tlmm 37 GPIO_ACTIVE_HIGH>;
-> > +                       panic-indicator;
-> > +               };
-> > +
-> > +               led_upgrade: upgrade {
-> > +                       label = "habanero-dvk:green:upgrade";
-> > +                       gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
-> > +               };
-> > +
-> > +               wlan2g {
-> > +                       label = "habanero-dvk:green:wlan2g";
-> > +                       gpios = <&tlmm 46 GPIO_ACTIVE_HIGH>;
-> > +                       linux,default-trigger = "phy0tpt";
-> > +               };
-> > +
-> > +               wlan5g {
-> > +                       label = "habanero-dvk:green:wlan5g";
-> > +                       gpios = <&tlmm 48 GPIO_ACTIVE_HIGH>;
-> > +                       linux,default-trigger = "phy1tpt";
-> > +               };
-> > +       };
-> > +};
-> > +
-> > +&vqmmc {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&sdhci {
-> > +       status = "okay";
-> > +
-> > +       pinctrl-0 = <&sd_pins>;
-> > +       pinctrl-names = "default";
-> > +       cd-gpios = <&tlmm 22 GPIO_ACTIVE_LOW>;
-> > +       vqmmc-supply = <&vqmmc>;
-> > +};
-> > +
-> > +&qpic_bam {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&tlmm {
-> > +       mdio_pins: mdio_pinmux {
-> > +               mux_1 {
-> > +                       pins = "gpio6";
-> > +                       function = "mdio";
-> > +                       bias-pull-up;
-> > +               };
-> > +
-> > +               mux_2 {
-> > +                       pins = "gpio7";
-> > +                       function = "mdc";
-> > +                       bias-pull-up;
-> > +               };
-> > +       };
-> > +
-> > +       serial_pins: serial_pinmux {
-> > +               mux {
-> > +                       pins = "gpio16", "gpio17";
-> > +                       function = "blsp_uart0";
-> > +                       bias-disable;
-> > +               };
-> > +       };
-> > +
-> > +       spi_0_pins: spi_0_pinmux {
-> > +               pinmux {
-> > +                       function = "blsp_spi0";
-> > +                       pins = "gpio13", "gpio14", "gpio15";
-> > +                       drive-strength = <12>;
-> > +                       bias-disable;
-> > +               };
-> > +
-> > +               pinmux_cs {
-> > +                       function = "gpio";
-> > +                       pins = "gpio12";
-> > +                       drive-strength = <2>;
-> > +                       bias-disable;
-> > +                       output-high;
-> > +               };
-> > +       };
-> > +
-> > +       nand_pins: nand_pins {
-> > +               pullups {
-> > +                       pins =  "gpio52", "gpio53", "gpio58", "gpio59";
-> > +                       function = "qpic";
-> > +                       bias-pull-up;
-> > +               };
-> > +
-> > +               pulldowns {
-> > +                       pins = "gpio54", "gpio55", "gpio56", "gpio57",
-> > +                               "gpio60", "gpio62", "gpio63", "gpio64",
-> > +                               "gpio65", "gpio66", "gpio67", "gpio68",
-> > +                               "gpio69";
-> > +                       function = "qpic";
-> > +                       bias-pull-down;
-> > +               };
-> > +       };
-> > +
-> > +       sd_pins: sd_pins {
-> > +               pinmux {
-> > +                       function = "sdio";
-> > +                       pins = "gpio23", "gpio24", "gpio25", "gpio26",
-> > +                               "gpio28", "gpio29", "gpio30", "gpio31";
-> > +                       drive-strength = <10>;
-> > +               };
-> > +
-> > +               pinmux_sd_clk {
-> > +                       function = "sdio";
-> > +                       pins = "gpio27";
-> > +                       drive-strength = <16>;
-> > +               };
-> > +
-> > +               pinmux_sd7 {
-> > +                       function = "sdio";
-> > +                       pins = "gpio32";
-> > +                       drive-strength = <10>;
-> > +                       bias-disable;
-> > +               };
-> > +       };
-> > +};
-> > +
-> > +&watchdog {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&prng {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&blsp_dma {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&blsp1_spi1 {
-> > +       status = "okay";
-> > +
-> > +       pinctrl-0 = <&spi_0_pins>;
-> > +       pinctrl-names = "default";
-> > +       cs-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
-> > +
-> > +       flash@0 {
-> > +               compatible = "jedec,spi-nor";
-> > +               spi-max-frequency = <24000000>;
-> > +               reg = <0>;
-> > +
-> > +               partitions {
-> > +                       compatible = "fixed-partitions";
-> > +                       #address-cells = <1>;
-> > +                       #size-cells = <1>;
-> > +
-> > +                       partition@0 {
-> > +                               label = "SBL1";
-> > +                               reg = <0x00000000 0x00040000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@40000 {
-> > +                               label = "MIBIB";
-> > +                               reg = <0x00040000 0x00020000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@60000 {
-> > +                               label = "QSEE";
-> > +                               reg = <0x00060000 0x00060000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@c0000 {
-> > +                               label = "CDT";
-> > +                               reg = <0x000c0000 0x00010000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@d0000 {
-> > +                               label = "DDRPARAMS";
-> > +                               reg = <0x000d0000 0x00010000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@e0000 {
-> > +                               label = "APPSBLENV"; /* uboot env */
-> > +                               reg = <0x000e0000 0x00010000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@f0000 {
-> > +                               label = "APPSBL"; /* uboot */
-> > +                               reg = <0x000f0000 0x00080000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@170000 {
-> > +                               label = "ART";
-> > +                               reg = <0x00170000 0x00010000>;
-> > +                               read-only;
-> > +                       };
-> > +                       partition@180000 {
-> > +                               label = "cfg";
-> > +                               reg = <0x00180000 0x00040000>;
-> > +                       };
-> > +                       partition@1c0000 {
-> > +                               label = "firmware";
-> > +                               compatible = "denx,fit";
-> > +                               reg = <0x001c0000 0x01e40000>;
-> > +                       };
-> > +               };
-> > +       };
-> > +};
-> > +
-> > +/* Some DVK boards ship without NAND */
-> > +&nand {
-> > +       status = "okay";
-> > +
-> > +       pinctrl-0 = <&nand_pins>;
-> > +       pinctrl-names = "default";
-> > +};
-> > +
-> > +&blsp1_uart1 {
-> > +       status = "okay";
-> > +
-> > +       pinctrl-0 = <&serial_pins>;
-> > +       pinctrl-names = "default";
-> > +};
-> > +
-> > +&cryptobam {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&crypto {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&mdio {
-> > +       status = "okay";
-> > +
-> > +       pinctrl-0 = <&mdio_pins>;
-> > +       pinctrl-names = "default";
-> > +};
-> > +
-> > +&pcie0 {
-> > +       status = "okay";
-> > +
-> > +       perst-gpio = <&tlmm 38 GPIO_ACTIVE_LOW>;
-> > +       wake-gpio = <&tlmm 50 GPIO_ACTIVE_LOW>;
-> > +
-> > +       /* Free slot for use */
-> > +       bridge@0,0 {
-> > +               reg = <0x00000000 0 0 0 0>;
-> > +               #address-cells = <3>;
-> > +               #size-cells = <2>;
-> > +               ranges;
-> > +       };
-> > +};
-> > +
-> > +&wifi0 {
-> > +       status = "okay";
-> > +
-> > +       qcom,ath10k-calibration-variant = "8devices-Habanero";
-> > +};
-> > +
-> > +&wifi1 {
-> > +       status = "okay";
-> > +
-> > +       qcom,ath10k-calibration-variant = "8devices-Habanero";
-> > +};
-> > +
-> > +&usb3_ss_phy {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&usb3_hs_phy {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&usb3 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&usb2_hs_phy {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&usb2 {
-> > +       status = "okay";
-> > +};
-> > --
-> > 2.26.2
-> >
+On Thu, Jan 21, 2021 at 09:44:49AM +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 > 
-> Hi,
-> Is there an issue with the patch preventing the review?
+> This is set 2 of 3 (hopefully) sets required to fully clean-up.
 > 
+> Lee Jones (30):
+>   RDMA/hw/mlx5/odp: Fix formatting and add missing descriptions in
+>     'pagefault_data_segments()'
+>   RDMA/hw/mlx5/qp: Demote non-conformant kernel-doc header
+>   RDMA/hw/efa/efa_com: Stop using param description notation for
+>     non-params
+>   RDMA/hw/hns/hns_roce_hw_v1: Fix doc-rot issue relating to 'rereset'
+>   RDMA/hw/hns/hns_roce_mr: Add missing description for 'hr_dev' param
+>   RDMA/hw/qib/qib_driver: Fix misspelling in 'ppd's param description
+>   RDMA/sw/rdmavt/vt: Fix formatting issue and update description for
+>     'context'
+>   RDMA/hw/qib/qib_eeprom: Fix misspelling of 'buff' in
+>     'qib_eeprom_{read,write}()'
+>   RDMA/hw/qib/qib_mad: Fix a few misspellings and supply missing
+>     descriptions
+>   RDMA/hw/qib/qib_intr: Fix a bunch of formatting issues
+>   RDMA/hw/qib/qib_pcie: Demote obvious kernel-doc abuse
+>   RDMA/hw/qib/qib_qp: Fix some issues in worthy kernel-doc headers and
+>     demote another
+>   RDMA/sw/rdmavt/cq: Demote hardly complete kernel-doc header
+>   RDMA/hw/qib/qib_rc: Fix some worthy kernel-docs demote hardly complete
+>     one
+>   RDMA/hw/hfi1/chip: Fix a bunch of kernel-doc formatting and spelling
+>     issues
+>   RDMA/hw/qib/qib_twsi: Provide description for missing param 'last'
+>   RDMA/hw/qib/qib_tx: Provide description for
+>     'qib_chg_pioavailkernel()'s 'rcd' param
+>   RDMA/hw/qib/qib_uc: Provide description for missing 'flags' param
+>   RDMA/hw/qib/qib_ud: Provide description for 'qib_make_ud_req's 'flags'
+>     param
+>   RDMA/sw/rdmavt/mad: Fix 'rvt_process_mad()'s documentation header
+>   RDMA/hw/qib/qib_user_pages: Demote non-conformant documentation header
+>   RDMA/sw/rdmavt/mcast: Demote incomplete kernel-doc header
+>   RDMA/hw/hfi1/exp_rcv: Fix some kernel-doc formatting issues
+>   RDMA/hw/qib/qib_iba7220: Fix some kernel-doc issues
+>   RDMA/hw/hfi1/file_ops: Fix' manage_rcvq()'s 'arg' param
+>   RDMA/sw/rdmavt/mr: Fix some issues related to formatting and missing
+>     descriptions
+>   RDMA/hw/qib/qib_iba7322: Fix a bunch of copy/paste issues
+>   RDMA/hw/qib/qib_verbs: Repair some formatting problems
+>   RDMA/hw/qib/qib_iba6120: Fix some repeated (copy/paste) kernel-doc
+>     issues
+>   RDMA/sw/rdmavt/qp: Fix a bunch of kernel-doc misdemeanours
 
-Found this in my inbox and I don't know why I never replied to you,
-perhaps because kernel test robot says it doesn't build...
+Applied to for-next, thanks
 
-I tried to apply it now but there's no "vqmmc" so it doesn't build :/
-
-
-If you're still interested in this I'd be happy to merge it if you can
-fix up the vqmmc - and if respinning it I would appreciate if you could
-sort the nodes alphabetically.
-
-Regards,
-Bjorn
+Jason
