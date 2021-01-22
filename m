@@ -2,158 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEC63004C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186BF3004B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbhAVODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:03:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26023 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728105AbhAVOBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:01:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611324017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=gZ0kuny/4vXnHAZ+SQngBWZYX1bmNy8D9hmZSrLvnP4=;
-        b=bNVecQHE/ogO+R8Cy9GA1UXJJC3a2dguGy+X0GMhre+RVTjCg49J+XFxkrYGn35ASWr0+q
-        lcdevXSRopu6GUTzShiXVsari0l2ZvqIy6fDQePDQoR9OTvTmZ+0Bad0yhFP9SsBw7E0Tf
-        6n9nM2inoy9ETzdZn7+owaTwrUVkzOU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-ppN7XxXPM7K8iVpoHAxzcA-1; Fri, 22 Jan 2021 09:00:15 -0500
-X-MC-Unique: ppN7XxXPM7K8iVpoHAxzcA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A12A5806661;
-        Fri, 22 Jan 2021 14:00:13 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-114.pek2.redhat.com [10.72.12.114])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3463219C59;
-        Fri, 22 Jan 2021 14:00:10 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, rppt@kernel.org,
-        david@redhat.com, bhe@redhat.com, lkp@intel.com
-Subject: [PATCH v5 2/5] mm: rename memmap_init() and memmap_init_zone()
-Date:   Fri, 22 Jan 2021 21:59:53 +0800
-Message-Id: <20210122135956.5946-3-bhe@redhat.com>
-In-Reply-To: <20210122135956.5946-1-bhe@redhat.com>
-References: <20210122135956.5946-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S1728062AbhAVOBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:01:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:49206 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727883AbhAVOAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:00:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B86A1509;
+        Fri, 22 Jan 2021 06:00:08 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF3A33F66E;
+        Fri, 22 Jan 2021 06:00:06 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH v6 2/4] kasan: Add KASAN mode kernel parameter
+Date:   Fri, 22 Jan 2021 13:59:53 +0000
+Message-Id: <20210122135955.30237-3-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+References: <20210122135955.30237-1-vincenzo.frascino@arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current memmap_init_zone() only handles memory region inside one zone,
-actually memmap_init() does the memmap init of one zone. So rename both of
-them accordingly.
+Architectures supported by KASAN_HW_TAGS can provide a sync or async mode
+of execution. On an MTE enabled arm64 hw for example this can be identified
+with the synchronous or asynchronous tagging mode of execution.
+In synchronous mode, an exception is triggered if a tag check fault occurs.
+In asynchronous mode, if a tag check fault occurs, the TFSR_EL1 register is
+updated asynchronously. The kernel checks the corresponding bits
+periodically.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
+KASAN requires a specific kernel command line parameter to make use of this
+hw features.
+
+Add KASAN HW execution mode kernel command line parameter.
+
+Note: This patch adds the kasan.mode kernel parameter and the
+sync/async kernel command line options to enable the described features.
+
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/ia64/mm/init.c | 6 +++---
- include/linux/mm.h  | 4 ++--
- mm/memory_hotplug.c | 2 +-
- mm/page_alloc.c     | 8 ++++----
- 4 files changed, 10 insertions(+), 10 deletions(-)
+ Documentation/dev-tools/kasan.rst |  9 +++++++++
+ lib/test_kasan.c                  |  2 +-
+ mm/kasan/hw_tags.c                | 32 ++++++++++++++++++++++++++++++-
+ mm/kasan/kasan.h                  |  6 ++++--
+ 4 files changed, 45 insertions(+), 4 deletions(-)
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index e76386a3479e..c8e68e92beb3 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -535,18 +535,18 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 		    / sizeof(struct page));
+diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+index e022b7506e37..e3dca4d1f2a7 100644
+--- a/Documentation/dev-tools/kasan.rst
++++ b/Documentation/dev-tools/kasan.rst
+@@ -161,6 +161,15 @@ particular KASAN features.
  
- 	if (map_start < map_end)
--		memmap_init_zone((unsigned long)(map_end - map_start),
-+		memmap_init_range((unsigned long)(map_end - map_start),
- 				 args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	return 0;
+ - ``kasan=off`` or ``=on`` controls whether KASAN is enabled (default: ``on``).
+ 
++- ``kasan.mode=sync`` or ``=async`` controls whether KASAN is configured in
++  synchronous or asynchronous mode of execution (default: ``sync``).
++  Synchronous mode: a bad access is detected immediately when a tag
++  check fault occurs.
++  Asynchronous mode: a bad access detection is delayed. When a tag check
++  fault occurs, the information is stored in hardware (in the TFSR_EL1
++  register for arm64). The kernel periodically checks the hardware and
++  only reports tag faults during these checks.
++
+ - ``kasan.stacktrace=off`` or ``=on`` disables or enables alloc and free stack
+   traces collection (default: ``on`` for ``CONFIG_DEBUG_KERNEL=y``, otherwise
+   ``off``).
+diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+index d16ec9e66806..7285dcf9fcc1 100644
+--- a/lib/test_kasan.c
++++ b/lib/test_kasan.c
+@@ -97,7 +97,7 @@ static void kasan_test_exit(struct kunit *test)
+ 			READ_ONCE(fail_data.report_found));	\
+ 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {			\
+ 		if (READ_ONCE(fail_data.report_found))		\
+-			hw_enable_tagging();			\
++			hw_enable_tagging_sync();		\
+ 		migrate_enable();				\
+ 	}							\
+ } while (0)
+diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+index e529428e7a11..308a879a3798 100644
+--- a/mm/kasan/hw_tags.c
++++ b/mm/kasan/hw_tags.c
+@@ -25,6 +25,12 @@ enum kasan_arg {
+ 	KASAN_ARG_ON,
+ };
+ 
++enum kasan_arg_mode {
++	KASAN_ARG_MODE_DEFAULT,
++	KASAN_ARG_MODE_SYNC,
++	KASAN_ARG_MODE_ASYNC,
++};
++
+ enum kasan_arg_stacktrace {
+ 	KASAN_ARG_STACKTRACE_DEFAULT,
+ 	KASAN_ARG_STACKTRACE_OFF,
+@@ -38,6 +44,7 @@ enum kasan_arg_fault {
+ };
+ 
+ static enum kasan_arg kasan_arg __ro_after_init;
++static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
+ static enum kasan_arg_stacktrace kasan_arg_stacktrace __ro_after_init;
+ static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+ 
+@@ -68,6 +75,21 @@ static int __init early_kasan_flag(char *arg)
+ }
+ early_param("kasan", early_kasan_flag);
+ 
++/* kasan.mode=sync/async */
++static int __init early_kasan_mode(char *arg)
++{
++	/* If arg is not set the default mode is sync */
++	if ((!arg) || !strcmp(arg, "sync"))
++		kasan_arg_mode = KASAN_ARG_MODE_SYNC;
++	else if (!strcmp(arg, "async"))
++		kasan_arg_mode = KASAN_ARG_MODE_ASYNC;
++	else
++		return -EINVAL;
++
++	return 0;
++}
++early_param("kasan.mode", early_kasan_mode);
++
+ /* kasan.stacktrace=off/on */
+ static int __init early_kasan_flag_stacktrace(char *arg)
+ {
+@@ -115,7 +137,15 @@ void kasan_init_hw_tags_cpu(void)
+ 		return;
+ 
+ 	hw_init_tags(KASAN_TAG_MAX);
+-	hw_enable_tagging();
++
++	/*
++	 * Enable async mode only when explicitly requested through
++	 * the command line.
++	 */
++	if (kasan_arg_mode == KASAN_ARG_MODE_ASYNC)
++		hw_enable_tagging_async();
++	else
++		hw_enable_tagging_sync();
  }
  
- void __meminit
--memmap_init (unsigned long size, int nid, unsigned long zone,
-+memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 	     unsigned long start_pfn)
- {
- 	if (!vmem_map) {
--		memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
-+		memmap_init_range(size, nid, zone, start_pfn, start_pfn + size,
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	} else {
- 		struct page *start;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 3d82b4f7cabc..2395dc212221 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2398,10 +2398,10 @@ extern int __meminit early_pfn_to_nid(unsigned long pfn);
+ /* kasan_init_hw_tags() is called once on boot CPU. */
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 07ef7fc742ad..3923d9744105 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -294,7 +294,8 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ #define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
  #endif
  
- extern void set_dma_reserve(unsigned long new_dma_reserve);
--extern void memmap_init_zone(unsigned long, int, unsigned long,
-+extern void memmap_init_range(unsigned long, int, unsigned long,
- 		unsigned long, unsigned long, enum meminit_context,
- 		struct vmem_altmap *, int migratetype);
--extern void memmap_init(unsigned long size, int nid,
-+extern void memmap_init_zone(unsigned long size, int nid,
- 		unsigned long zone, unsigned long range_start_pfn);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index f9d57b9be8c7..ddcb1cd24c60 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -713,7 +713,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
- 	 * expects the zone spans the pfn range. All the pages in the range
- 	 * are reserved so nobody should be touching them so we should be safe
- 	 */
--	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
-+	memmap_init_range(nr_pages, nid, zone_idx(zone), start_pfn, 0,
- 			 MEMINIT_HOTPLUG, altmap, migratetype);
+-#define hw_enable_tagging()			arch_enable_tagging()
++#define hw_enable_tagging_sync()		arch_enable_tagging_sync()
++#define hw_enable_tagging_async()		arch_enable_tagging_async()
+ #define hw_init_tags(max_tag)			arch_init_tags(max_tag)
+ #define hw_set_tagging_report_once(state)	arch_set_tagging_report_once(state)
+ #define hw_get_random_tag()			arch_get_random_tag()
+@@ -303,7 +304,8 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
  
- 	set_zone_contiguous(zone);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 44ec5594798d..42a1d2d2a87d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6117,7 +6117,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * (usually MIGRATE_MOVABLE). Besides setting the migratetype, no related
-  * zone stats (e.g., nr_isolate_pageblock) are touched.
-  */
--void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
-+void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone,
- 		unsigned long start_pfn, unsigned long zone_end_pfn,
- 		enum meminit_context context,
- 		struct vmem_altmap *altmap, int migratetype)
-@@ -6254,7 +6254,7 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
+ #else /* CONFIG_KASAN_HW_TAGS */
  
--void __meminit __weak memmap_init(unsigned long size, int nid,
-+void __meminit __weak memmap_init_zone(unsigned long size, int nid,
- 				  unsigned long zone,
- 				  unsigned long range_start_pfn)
- {
-@@ -6268,7 +6268,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
+-#define hw_enable_tagging()
++#define hw_enable_tagging_sync()
++#define hw_enable_tagging_async()
+ #define hw_set_tagging_report_once(state)
  
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
--			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
-+			memmap_init_range(size, nid, zone, start_pfn, range_end_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 	}
-@@ -6978,7 +6978,7 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
- 		set_pageblock_order();
- 		setup_usemap(pgdat, zone, zone_start_pfn, size);
- 		init_currently_empty_zone(zone, zone_start_pfn, size);
--		memmap_init(size, nid, j, zone_start_pfn);
-+		memmap_init_zone(size, nid, j, zone_start_pfn);
- 	}
- }
- 
+ #endif /* CONFIG_KASAN_HW_TAGS */
 -- 
-2.17.2
+2.30.0
 
