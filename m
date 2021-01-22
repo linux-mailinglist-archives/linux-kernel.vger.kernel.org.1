@@ -2,125 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2D0300C9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB426300C84
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730186AbhAVTYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:24:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
+        id S1730140AbhAVTYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730712AbhAVTE6 (ORCPT
+        with ESMTP id S1728479AbhAVTFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:04:58 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCEFC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:04:17 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id e15so3609116vsa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:04:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GFbt9Q9FleVVeCUdG8Si9d40jYAPeifwLGkQip6/tp8=;
-        b=bwkqMmtPpa0+udzg9ETiNx73TRyndCyCrlakaQuOQthA2L6u5Glut8WN0ctvVCZioq
-         TVN/8anvwUYb7z5zcqkACTfECL8PLOxixSmHvOdoNmLOsMQETDnhQVmXgRcPUJ/VS9Lj
-         3wI8/WchMgWlIT0ZTvUgWaLO3iyoiSVdUeeYk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GFbt9Q9FleVVeCUdG8Si9d40jYAPeifwLGkQip6/tp8=;
-        b=bQ5N8tLX4Z4+eNt+GGkN76JcxUtIu3YJeDLH1HudBAM3ogAkPbG3UMyXyayUoDpwk1
-         eD663GUflgl7dKLvOsHs+NuW/GTMxeK1E8kqV2F1652dc5FU9YaJ8ACKWH8DMkjlHtfd
-         fJv4n3eaqkzQcxm4Tmue+787BSM0hIdrQ1HDZy3JyjJ9iVPe8DfIgv23PyYZaOxeuILO
-         OoCvBqazKA9saIumVPcBezilrd3IIFvPieZ9Xd3+1RyvNH8XXpt//yvTz446PY5/4NCN
-         0qRk17ouLpd5O4+j0Xc0JzqvBYRug/KEaBGNVJTGTEgULSlMeK3mKSKHLEONP5gQ4gpT
-         ThWg==
-X-Gm-Message-State: AOAM530V5ZqXskHF2ltr02pvrirnUOgOmmkPMgRsZGtar6RY2vvUXMq0
-        3/9xSxaD0xjSLt4j/C9y2nh25NPxoYPgjw==
-X-Google-Smtp-Source: ABdhPJxCa43CFGNnKPBLtZVv4ITnrt1AZ8aZeiKs/1jzZwp22ivlNAyMMm0sXebQgYx7XgSUAqx8tg==
-X-Received: by 2002:a67:6943:: with SMTP id e64mr29995vsc.10.1611342256726;
-        Fri, 22 Jan 2021 11:04:16 -0800 (PST)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id q197sm1329576vkq.53.2021.01.22.11.04.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 11:04:15 -0800 (PST)
-Received: by mail-vs1-f43.google.com with SMTP id f22so3590608vsk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:04:14 -0800 (PST)
-X-Received: by 2002:a67:ed09:: with SMTP id l9mr237347vsp.4.1611342254067;
- Fri, 22 Jan 2021 11:04:14 -0800 (PST)
+        Fri, 22 Jan 2021 14:05:41 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCB0C0617A7
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:04:50 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1l31jk-0003zG-BI; Fri, 22 Jan 2021 20:04:48 +0100
+Subject: Re: [PATCH 2/2] dm crypt: support using trusted keys
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, kernel@pengutronix.de,
+        =?UTF-8?Q?Jan_L=c3=bcbbe?= <jlu@pengutronix.de>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        Dmitry Baryshkov <dbaryshkov@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+References: <20210122084321.24012-1-a.fatoum@pengutronix.de>
+ <20210122084321.24012-2-a.fatoum@pengutronix.de>
+ <YAsT/N8CHHNTZcj3@kernel.org> <YAsW8DAt3vc68rLA@kernel.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <5d44e50e-4309-830b-79f6-f5d888b1ef69@pengutronix.de>
+Date:   Fri, 22 Jan 2021 20:04:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201203202737.7c4wrifqafszyd5y@google.com> <20201208054646.2913063-1-maskray@google.com>
- <CAD=FV=WWSniXCaC+vAKRa1fCZB4_dbaejwq+NCF56aZFYE-Xsg@mail.gmail.com> <CAKwvOdkFpqEDvJ5b9wpwEhnOdh-YJ8GxCc33JcHXqNRDnO=RfQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdkFpqEDvJ5b9wpwEhnOdh-YJ8GxCc33JcHXqNRDnO=RfQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 22 Jan 2021 11:04:02 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XUuo3OaDVOnFiczUTeyKt1moX7nQ+XEX_HiDpv2f3k8A@mail.gmail.com>
-Message-ID: <CAD=FV=XUuo3OaDVOnFiczUTeyKt1moX7nQ+XEX_HiDpv2f3k8A@mail.gmail.com>
-Subject: Re: [PATCH v2] firmware_loader: Align .builtin_fw to 8
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YAsW8DAt3vc68rLA@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello Jarkko,
 
-On Tue, Jan 5, 2021 at 11:20 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Tue, Jan 5, 2021 at 9:45 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, Dec 7, 2020 at 9:49 PM Fangrui Song <maskray@google.com> wrote:
-> > >
-> > > arm64 references the start address of .builtin_fw (__start_builtin_fw)
-> > > with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
-> > > relocations. The compiler is allowed to emit the
-> > > R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
-> > > include/linux/firmware.h is 8-byte aligned.
-> > >
-> > > The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
-> > > multiple of 8, which may not be the case if .builtin_fw is empty.
-> > > Unconditionally align .builtin_fw to fix the linker error. 32-bit
-> > > architectures could use ALIGN(4) but that would add unnecessary
-> > > complexity, so just use ALIGN(8).
-> > >
-> > > Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1204
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Fangrui Song <maskray@google.com>
-> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > ---
-> > > Change in v2:
-> > > * Use output section alignment instead of inappropriate ALIGN_FUNCTION()
-> > > ---
-> > >  include/asm-generic/vmlinux.lds.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > Tested-by: Douglas Anderson <dianders@chromium.org>
-> >
-> > For whatever reason this is hitting developers on Chrome OS a whole
-> > lot suddenly.  Any chance it could be landed?  Which tree should it go
-> > through?
->
-> Andrew,
-> Would you mind picking up this patch for us, please?
-> https://lore.kernel.org/lkml/20201208054646.2913063-1-maskray@google.com/
+On 22.01.21 19:18, Jarkko Sakkinen wrote:
+> On Fri, Jan 22, 2021 at 08:05:51PM +0200, Jarkko Sakkinen wrote:
+>> On Fri, Jan 22, 2021 at 09:43:21AM +0100, Ahmad Fatoum wrote:
+>>> Commit 27f5411a718c ("dm crypt: support using encrypted keys") extended
+>>> dm-crypt to allow use of "encrypted" keys along with "user" and "logon".
+>>>
+>>> Along the same lines, teach dm-crypt to support "trusted" keys as well.
+>>>
+>>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>>> ---
+>>
+>> Is it possible to test run this with tmpfs? Would be a good test
+>> target for Sumit's ARM-TEE trusted keys patches.
 
-I just synced today and I'm still hitting this error when building
-mainline.  Perhaps Andrew is busy and someone else can pick it up?
-It'd be nice to get this into v5.11
+I tested these on top of Sumit's patches with TPM and a CAAM blobifier
+backend, I am preparing. The system I am developing these patches against
+doesn't have a TEE.  Steps to test these changes:
 
--Doug
+#!/bin/sh
+
+DEV=/dev/loop0
+ALGO=aes-cbc-essiv:sha256
+KEYNAME=kmk
+BLOCKS=20
+
+fallocate -l $((BLOCKS*512)) /tmp/loop0.img
+losetup -P $DEV /tmp/loop0.img
+mount -o remount,rw /
+KEY="$(keyctl add trusted $KEYNAME 'new 32' @s)"
+keyctl pipe $KEY >$HOME/kmk.blob
+
+TABLE="0 $BLOCKS crypt $ALGO :32:trusted:$KEYNAME 0 $DEV 0 1 allow_discards"
+echo $TABLE | dmsetup create mydev
+echo $TABLE | dmsetup load mydev
+dd if=/dev/zero of=/dev/mapper/mydev
+echo "It works!" 1<> /dev/mapper/mydev
+cryptsetup close mydev
+
+reboot
+
+DEV=/dev/loop0
+ALGO=aes-cbc-essiv:sha256
+KEYNAME=kmk
+BLOCKS=20
+
+losetup -P $DEV $HOME/loop0.img
+keyctl add trusted $KEYNAME "load $(cat $HOME/kmk.blob)" @s
+TABLE="0 $BLOCKS crypt $ALGO :32:trusted:$KEYNAME 0 $DEV 0 1 allow_discards"
+echo $TABLE | dmsetup create mydev
+echo $TABLE | dmsetup load mydev
+
+# should print that It works!
+hexdump -C /dev/mapper/mydev
+
+>> https://lore.kernel.org/linux-integrity/1604419306-26105-1-git-send-email-sumit.garg@linaro.org/
+> 
+> Also, I would hold merging *this* patch up until we are able to
+> test TEE trusted keys with TEE trusted keys.
+
+Which blocks which? I tested this with TPM-Trusted keys, so it's usable
+as is. For convenient usage, it would be nice to have cryptsetup
+support for trusted and encrypted keys. I intended to look at this next week.
+
+Cheers,
+Ahmad
+
+> 
+> /Jarkko
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
