@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9DF3003F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3794C3003F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbhAVNRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:17:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36452 "EHLO
+        id S1727478AbhAVNRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727401AbhAVNRF (ORCPT
+        with ESMTP id S1727486AbhAVNRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:17:05 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4542C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:16:24 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id f2so1255586ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:16:24 -0800 (PST)
+        Fri, 22 Jan 2021 08:17:32 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D50AC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:16:51 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id v67so7494939lfa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:16:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1v2FAdAIM+FduQLY9fgZwr7tF6/Isi2KlND7ig2PLqM=;
-        b=w65sROKBqsor9zfqRpfltZ34/wM853Cw2NXBuRcrS5fYxv/d2nceN68WoCJYvFVGoh
-         krEbKtoXibVHrjj1toHnXg9oBfFeOT2V8UTDDtG84gaRlJk0VPT2XhXzHi9HKL9/Byn3
-         zTOV+lhC4xDAgmZQZczTdURgv4OnednJAug7hzkH63lMFprGrvad1FHUV1DO3N5/Y2ut
-         R1ilFeGGEuJQE251rWv1/Q1ukRwGMg1UadZSwxTDfmYucOZbuoaRajZ5K3+DU/FFOcoq
-         H+UMa41hui9M/D7u6I+yXBmO/oY31aSQyWQTRSCxtj38sDe3NqP5W6HHGOTpzA0TdSsM
-         xNxQ==
+        bh=BpHtWisCEbp39ZnGfIbZSorIiskXc7SNUksq5DeV4rs=;
+        b=WeFtWW52nBgnXySdz5t0Yk/1aiwAlTQDBSqGxiiKSx4zv/Qx0+nrPDlKFEOAEwr6w0
+         IfugZQDr6oJgX85fKBdTaZtEG7uBlgyZG2tSAJEG7lcqLYY2lMUxh8lgyiwpDAoRgDWY
+         aPD3AlGCuQ7M2hHYNPw7uCvCNut/lqE4qv20Yv75+cYkm070lJU4SPJyQiBJWH1RfWWO
+         ifXFwOPYYxFyfZ+Vz0jL67QEfTyStFM860i7OOl038AMYW2mm/iBJkdMcjUfShOpdJ58
+         ZRpoCjene/nnNNTC3ZJQmaj+SoqDE5R7hERkcXEywvgYwydqxbu6LeLGaUxkG2C7BfU2
+         0pww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1v2FAdAIM+FduQLY9fgZwr7tF6/Isi2KlND7ig2PLqM=;
-        b=CiGudiPJvpHP91n936BjwxvcyQoDN7dArAscKy8pqaivkA1vL4pfx7Rq5rp2FDl/3Z
-         +bwGC5gLWLfZTuG028xJ6aD7EY4Yjq+fQcNlMRluKt8FKwlBB+VDpEnmvzPSdITv9K8V
-         0uRKnOCfK2aFNhGaSmIczhUJcyqBUB9NKtn5okJOicJwEIQmmUajoxhG35biqtNII2Dj
-         ZS1KX9KCwDHJIUPiSXgFT5JuAVY8PYhrOyKKUenLzpE+6kVblbnSzMVzsur1miR7lnz1
-         t5xDGt8O8bBeCwOWp9bPWvXSgMWYKXpn4QdmUx0B6b6a7xgW1NmXwOuKzw6LauL6LwPb
-         lozA==
-X-Gm-Message-State: AOAM532XUmZ9B3YiidWV0tzFvEd6QuHvdYp5k4lPcwHr7sJFsv5482P7
-        Yusu6MjmJIk30ccLTuKTiIl5Wsj8WP2WQtYB7k7KxsV8twRmXQ==
-X-Google-Smtp-Source: ABdhPJxjtYcNvePVfz3PyQvJmmzO6M4fKzwNdZqKua6XH8jtTIXlHJqEXPINzkevucgcTd+1sQSvY97jqlAeG8Lnsx4=
-X-Received: by 2002:a2e:b6cc:: with SMTP id m12mr837848ljo.401.1611321383077;
- Fri, 22 Jan 2021 05:16:23 -0800 (PST)
+        bh=BpHtWisCEbp39ZnGfIbZSorIiskXc7SNUksq5DeV4rs=;
+        b=Bq3sANR8EXqH5UU86mlOSUoX05RBh8tUg5g+haDuOVDjuj80LUTTadQppCwE6CiaVO
+         5lKpo38vpBiyBe7fsGdDxTAl55caubMDCY+U6UebrV/NONXhy1tmpRfct9ZjP7gOU9r6
+         nv6lYOc2s3SX47GOQXW7mz7yIzhv9EV1joqRIXLzKRsbGD77uyhd4AYIXQj82LAUc2iu
+         e15OwRpmkZzV3NuV54QRqu2wOSQYA5gogswPyBSpeHN35DNnUpgSCFNQcYmDbFblmtKZ
+         KEE9lYm4YRbrDxTpJCEV1qjEq03NSHKClndrPz0CWHqABMr6gZY9hC5cWNbHJxVRTeX1
+         9xYw==
+X-Gm-Message-State: AOAM530f5E1vHljqTsxaDcZhPH5i1h4tLgYCWrnQgHsnkMw7Jyr4SjnY
+        ylo1gHzUpWz6ocB9M3GJBNZUroVszrLOvaQUXdnScA==
+X-Google-Smtp-Source: ABdhPJxILvWro31995fipjxTfL6ysb0E/7JxGABGecm4el8PPYbKHEX6Cowm1f03NXIwRWCZxiDkb65uAKwNw8QrEx0=
+X-Received: by 2002:a19:8bc6:: with SMTP id n189mr167491lfd.291.1611321409546;
+ Fri, 22 Jan 2021 05:16:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com> <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz> <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
- <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
-In-Reply-To: <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 22 Jan 2021 14:16:11 +0100
-Message-ID: <CAKfTPtAEFSHBR3_oK6PpH-GWhtZBV9unyBh=n5DVT36eHvo6Dg@mail.gmail.com>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
-        Michal Hocko <mhocko@kernel.org>
+References: <1611127757-52999-1-git-send-email-abaci-bugfix@linux.alibaba.com> <YAjysf3IQvxO/qsT@builder.lan>
+In-Reply-To: <YAjysf3IQvxO/qsT@builder.lan>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 22 Jan 2021 14:16:38 +0100
+Message-ID: <CACRpkdYHc+GFDHhherQm3+xm+akN+NdCz2hkAzLprb0PPC6CFA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: spmi-gpio: Assign boolean values to a bool variable
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        Andy Gross <agross@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 13:03, Vlastimil Babka <vbabka@suse.cz> wrote:
+On Thu, Jan 21, 2021 at 4:19 AM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+> On Wed 20 Jan 01:29 CST 2021, Jiapeng Zhong wrote:
 >
-> On 1/22/21 9:03 AM, Vincent Guittot wrote:
-> > On Thu, 21 Jan 2021 at 19:19, Vlastimil Babka <vbabka@suse.cz> wrote:
-> >>
-> >> On 1/21/21 11:01 AM, Christoph Lameter wrote:
-> >> > On Thu, 21 Jan 2021, Bharata B Rao wrote:
-> >> >
-> >> >> > The problem is that calculate_order() is called a number of times
-> >> >> > before secondaries CPUs are booted and it returns 1 instead of 224.
-> >> >> > This makes the use of num_online_cpus() irrelevant for those cases
-> >> >> >
-> >> >> > After adding in my command line "slub_min_objects=36" which equals to
-> >> >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
-> >> >> > , the regression diseapears:
-> >> >> >
-> >> >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
-> >>
-> >> I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
-> >> supposed to be a scheduler benchmark? What exactly is going on?
-> >>
+> > Fix the following coccicheck warnings:
 > >
-> > From hackbench description:
-> > Hackbench is both a benchmark and a stress test for the Linux kernel
-> > scheduler. It's  main
-> >        job  is  to  create a specified number of pairs of schedulable
-> > entities (either threads or
-> >        traditional processes) which communicate via either sockets or
-> > pipes and time how long  it
-> >        takes for each pair to send data back and forth.
->
-> Yep, so I wonder which slab entities this is stressing that much.
->
-> >> Things would be easier if we could trust *on all arches* either
-> >>
-> >> - num_present_cpus() to count what the hardware really physically has during
-> >> boot, even if not yet onlined, at the time we init slab. This would still not
-> >> handle later hotplug (probably mostly in a VM scenario, not that somebody would
-> >> bring bunch of actual new cpu boards to a running bare metal system?).
-> >>
-> >> - num_possible_cpus()/nr_cpu_ids not to be excessive (broken BIOS?) on systems
-> >> where it's not really possible to plug more CPU's. In a VM scenario we could
-> >> still have an opposite problem, where theoretically "anything is possible" but
-> >> the virtual cpus are never added later.
+> > ./drivers/pinctrl/qcom/pinctrl-ssbi-gpio.c:340:3-15: WARNING:
+> > Assignment of 0/1 to bool variable.
 > >
-> > On all the system that I have tested num_possible_cpus()/nr_cpu_ids
-> > were correctly initialized
-> >
-> > large arm64 acpi system
-> > small arm64 DT based system
-> > VM on x86 system
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
 >
-> So it's just powerpc that has this issue with too large nr_cpu_ids? Is it caused
-> by bios or the hypervisor? How does num_present_cpus() look there?
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>
+> Although we're mixing bool/int on line 417 and 637 as well, with:
+>
+>         val |= pin->disable;
+>
+> and
+>
+>         pin->disable = val & BIT(0);
+>
+> respectively. The latter could be dealt with using !!(val & BIT(0)); I
+> guess the appropriate for for the prior is:
+>
+>         if (pin->disable)
+>                 val |= BIT(0);
+>
+> If you would like to update your patch with these as well I'd be happy
+> to review this.
 
-num_present_cpus() starts to 1 until secondary cpus boot in the arm64 case
+I would opt for a respin with the above when we are anyways at it,
+no hurry as it is no regression anyway.
 
->
-> What about heuristic:
-> - num_online_cpus() > 1 - we trust that and use it
-> - otherwise nr_cpu_ids
-> Would that work? Too arbitrary?
->
->
-> >> We could also start questioning the very assumption that number of cpus should
-> >> affect slab page size in the first place. Should it? After all, each CPU will
-> >> have one or more slab pages privately cached, as we discuss in the other
-> >> thread... So why make the slab pages also larger?
-> >>
-> >> > Or the num_online_cpus needs to be up to date earlier. Why does this issue
-> >> > not occur on x86? Does x86 have an up to date num_online_cpus earlier?
-> >> >
-> >> >
-> >>
-> >
->
+Yours,
+Linus Walleij
