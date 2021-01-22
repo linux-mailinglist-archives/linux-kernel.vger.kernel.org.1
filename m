@@ -2,146 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E65E2FFDBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87242FFDC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbhAVH5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:57:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
+        id S1726981AbhAVH7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:59:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbhAVH50 (ORCPT
+        with ESMTP id S1726485AbhAVH7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:57:26 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02EDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:56:41 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o17so6296160lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:56:41 -0800 (PST)
+        Fri, 22 Jan 2021 02:59:14 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D17C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:58:34 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id q9so4014462qkn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:58:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=android.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=f2zRDUhBwnVP7tCaaBYDyBHO3WlC21+sK4f4qAGJOCI=;
-        b=ooLdJkATi6/2fEB5idp2CRg5f3UiIOidhHf3ayOHeKjzppxkT0HkFh1Qpt0+cx2scW
-         9TRsscg8UxCHBswLJk3rlH+y2AU+wqUJbRDxCcs2PU6F/Fl9Q1XghsLC0Im+Yb4S2H5I
-         n1s6qqC3k+2t6r/GL0itPdpmTPBXjXfxS1UWz908azcwM1jJHQFBYOqmnhqBUGBw0HD9
-         J0CSEqdsJAOvna2Q56Y9w9g91cBA18gOe/aXbr/RVSEVgzlWiM5lvWlFY2alEyykArkq
-         JcBiUItzm89cgvg5yLmWhiUajU/rFsvwNxy7Iv1d5gT5s08tweA4y6yqT9ErV1YVjCaw
-         x6nQ==
+         :cc;
+        bh=LlnD7Zwth8kJl753Ww9WFQKiEwV5qtL3iOD2rycD9tA=;
+        b=u4WEuEwO/1CKmHHMGX4MJ/0miWGn1+qvGeCtAWRuFR8Ia0p8WS68kV4SGcAnrMSqY5
+         sCwks3YyAFHgbzVHmMx8ByINsANRc8IXaixQD4MpAIOtKlmUEqgP01m4pVXAFj22TLam
+         j0MuCMZxld4VWgAeMWRdEV76PAYQkOLkTgUGYapklSsh2tDdCyYPTacDaGzJfqQHA0te
+         GnHSdnkqB3f6+8gLirmFLrs0HpmcwBnjCx8iimf/zTb14CuiTufLdcId4sTrcOW4My0n
+         Hv24bipUbjAmrsRuBNezwPiWb3/3GBVDW/vaj202yjjpiwp9CfFsKsGNBzXA9C/BrxD4
+         LYqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f2zRDUhBwnVP7tCaaBYDyBHO3WlC21+sK4f4qAGJOCI=;
-        b=JXbAiN+xooReFlGGyLSMMCFTUJm5qHiv0gxGOF2IHhiIBFckyXChZkKNy23wq3zgZE
-         igwDsh3OhUdYa5BVGYdvmaCNg3UuBVQDdtQxxVOGNlhp/B8LOTDijgb6K8sVTyV+4OzL
-         2r7plko2RMv7LUa53SmSPQj+KL8GI4Hg7z1uye//8Ab5szaOxqqNrQj5u9At6r8zav+m
-         3bOxnIadViOAfklhkFcBChJCEsuGRu2S9Z436ruoXP/0/zSSZwxInX5eB1LNLLZggAkI
-         9SUmzuB6riePAEASvo//Imc+/5zMeFLZXC/p7g1s5Tf6fRYeJmzPhFaLKdyqoRA/qu2k
-         Hx+w==
-X-Gm-Message-State: AOAM533ANXdxcP+hN3x31/9AWZN0ITPveaO6QhX8r4QYhiAhX88+c3sM
-        RdBuFwKceDMBICueqqhT7oNk5RpKLqjNHxQHjj7u6w==
-X-Google-Smtp-Source: ABdhPJzDdNdouQ4GUOqShkAT1c4FUePpXmAYA00uB0PATJCkEJiA7J+aoxHR1CgglxjxPNR15g3wHTQl2OKZ+YzEjxU=
-X-Received: by 2002:a19:7616:: with SMTP id c22mr25218lff.550.1611302200416;
- Thu, 21 Jan 2021 23:56:40 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=LlnD7Zwth8kJl753Ww9WFQKiEwV5qtL3iOD2rycD9tA=;
+        b=WUHzYm1/Z4FZJioIdadxk6qakoEkH/HEmddwv0Y5viDWDlCL5aA6uUxriV2Vq744Gt
+         yotLBJMH5zynMTz5cOXBDSpFpuvSdQGygovH6pQhzfhJfTCGIkxCXXJ9ol3LNs3JW916
+         IQYZeesrzwTPc3Sv0ycHw4p59jh/PRPSgjuE+n1CbdDHpqmNQNO+0QwBOw6XWNV0O8QB
+         xOQLu+SLtYfc/lyuFCMiaE3y2WwLEIIhzzZNsXXDfBoJxTgJlrnfgkmDtR10yqbCUkVQ
+         R1u5mOtUWLZo6UUR7C+AmojAil+V0hPQb86wvAIdLchbIv+4iw0YyMa+63kvyADt4q2Z
+         L8WQ==
+X-Gm-Message-State: AOAM531Lz1ai5YKImNcL+5p/a0rBOFBXG27N0b5HeCwtS4OG6CY836Cp
+        tKRvmwCeh7y5bOTpK03b/QFPE09TyL0i2qqdBUtmrb6+pA1QAPtN
+X-Google-Smtp-Source: ABdhPJzFcCeg4URy8hQIO6n6N8vcypHwKE9xDwf10IPfxm54qBxw3QFlquRMI+KZRoFUBwYtR1hIxDUtZJ28l4yfFyk=
+X-Received: by 2002:a05:620a:21db:: with SMTP id h27mr3687267qka.121.1611302312854;
+ Thu, 21 Jan 2021 23:58:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119204508.9256-1-john.stultz@linaro.org> <20210119204508.9256-2-john.stultz@linaro.org>
-In-Reply-To: <20210119204508.9256-2-john.stultz@linaro.org>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Fri, 22 Jan 2021 13:26:29 +0530
-Message-ID: <CAO_48GEYGzY8cZybwrXgfODhuoAJqi4AvwbZbWd+PiYjMqKYpw@mail.gmail.com>
-Subject: Re: [RESEND][PATCH 2/3] dma-buf: heaps: Add a WARN_ON should the
- vmap_cnt go negative
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
+References: <20210122053159.1720274-1-zzyiwei@android.com> <20210122054011.1722954-1-zzyiwei@android.com>
+In-Reply-To: <20210122054011.1722954-1-zzyiwei@android.com>
+From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
+Date:   Thu, 21 Jan 2021 23:58:22 -0800
+Message-ID: <CAKB3++bLzn5YVaR3iUTHtNYwBeG6Z27NjtWZ1q-xmjOkApAQwg@mail.gmail.com>
+Subject: Re: [PATCH v4] drm/virtio: Track total GPU memory for virtio driver
+To:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John, Suren,
-
-
-On Wed, 20 Jan 2021 at 02:15, John Stultz <john.stultz@linaro.org> wrote:
+On Thu, Jan 21, 2021 at 9:40 PM Yiwei Zhang <zzyiwei@android.com> wrote:
 >
-> We shouldn't vunmap more then we vmap, but if we do, make
-> sure we complain loudly.
-
-I was checking the general usage of vunmap in the kernel, and I
-couldn't find many instances where we need to WARN_ON for the vunmap
-count more than vmap count. Is there a specific need for this in the heaps?
-
-Best,
-Sumit.
+> On the success of virtio_gpu_object_create, add size of newly allocated
+> bo to the tracked total_mem. In drm_gem_object_funcs.free, after the gem
+> bo loses its last refcount, subtract the bo size from the tracked
+> total_mem if the original underlying memory allocation is successful.
 >
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Liam Mark <lmark@codeaurora.org>
-> Cc: Laura Abbott <labbott@kernel.org>
-> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> Cc: Hridya Valsaraju <hridya@google.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Sandeep Patil <sspatil@google.com>
-> Cc: Daniel Mentz <danielmentz@google.com>
-> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> Cc: =C3=98rjan Eide <orjan.eide@arm.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Cc: James Jones <jajones@nvidia.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Suggested-by: Suren Baghdasaryan <surenb@google.com>
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> It's more accurate to do this in device driver layer to best match when
+> the underlying resource gets allocated and destroyed during tracing.
+>
+> Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
 > ---
->  drivers/dma-buf/heaps/cma_heap.c    | 1 +
->  drivers/dma-buf/heaps/system_heap.c | 1 +
->  2 files changed, 2 insertions(+)
+>  drivers/gpu/drm/virtio/Kconfig          |  1 +
+>  drivers/gpu/drm/virtio/virtgpu_drv.h    |  2 ++
+>  drivers/gpu/drm/virtio/virtgpu_object.c | 11 +++++++++++
+>  3 files changed, 14 insertions(+)
 >
-> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma=
-_heap.c
-> index 364fc2f3e499..0c76cbc3fb11 100644
-> --- a/drivers/dma-buf/heaps/cma_heap.c
-> +++ b/drivers/dma-buf/heaps/cma_heap.c
-> @@ -232,6 +232,7 @@ static void cma_heap_vunmap(struct dma_buf *dmabuf, s=
-truct dma_buf_map *map)
->         struct cma_heap_buffer *buffer =3D dmabuf->priv;
+> diff --git a/drivers/gpu/drm/virtio/Kconfig b/drivers/gpu/drm/virtio/Kconfig
+> index b925b8b1da16..e103b7e883b1 100644
+> --- a/drivers/gpu/drm/virtio/Kconfig
+> +++ b/drivers/gpu/drm/virtio/Kconfig
+> @@ -5,6 +5,7 @@ config DRM_VIRTIO_GPU
+>         select DRM_KMS_HELPER
+>         select DRM_GEM_SHMEM_HELPER
+>         select VIRTIO_DMA_SHARED_BUFFER
+> +       select TRACE_GPU_MEM
+>         help
+>            This is the virtual GPU driver for virtio.  It can be used with
+>            QEMU based VMMs (like KVM or Xen).
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.h b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> index 6a232553c99b..c5622f9b591f 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_drv.h
+> +++ b/drivers/gpu/drm/virtio/virtgpu_drv.h
+> @@ -249,6 +249,8 @@ struct virtio_gpu_device {
+>         spinlock_t resource_export_lock;
+>         /* protects map state and host_visible_mm */
+>         spinlock_t host_visible_lock;
+> +
+> +       atomic64_t total_mem;
+>  };
 >
->         mutex_lock(&buffer->lock);
-> +       WARN_ON(buffer->vmap_cnt =3D=3D 0);
->         if (!--buffer->vmap_cnt) {
->                 vunmap(buffer->vaddr);
->                 buffer->vaddr =3D NULL;
-> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/=
-system_heap.c
-> index 405351aad2a8..2321c91891f6 100644
-> --- a/drivers/dma-buf/heaps/system_heap.c
-> +++ b/drivers/dma-buf/heaps/system_heap.c
-> @@ -273,6 +273,7 @@ static void system_heap_vunmap(struct dma_buf *dmabuf=
-, struct dma_buf_map *map)
->         struct system_heap_buffer *buffer =3D dmabuf->priv;
+>  struct virtio_gpu_fpriv {
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+> index d69a5b6da553..e2251fc41509 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_object.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+> @@ -25,12 +25,21 @@
 >
->         mutex_lock(&buffer->lock);
-> +       WARN_ON(buffer->vmap_cnt =3D=3D 0);
->         if (!--buffer->vmap_cnt) {
->                 vunmap(buffer->vaddr);
->                 buffer->vaddr =3D NULL;
+>  #include <linux/dma-mapping.h>
+>  #include <linux/moduleparam.h>
+> +#include <trace/events/gpu_mem.h>
+>
+>  #include "virtgpu_drv.h"
+>
+>  static int virtio_gpu_virglrenderer_workaround = 1;
+>  module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
+>
+> +static inline void virtio_gpu_trace_total_mem(struct virtio_gpu_device *vgdev,
+> +                                             s64 delta)
+> +{
+> +       u64 total_mem = atomic64_add_return(delta, &vgdev->total_mem);
+> +
+> +       trace_gpu_mem_total(vgdev->ddev->primary->index, 0, total_mem);
+> +}
+> +
+>  int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)
+>  {
+>         if (virtio_gpu_virglrenderer_workaround) {
+> @@ -104,6 +113,7 @@ static void virtio_gpu_free_object(struct drm_gem_object *obj)
+>         struct virtio_gpu_device *vgdev = bo->base.base.dev->dev_private;
+>
+>         if (bo->created) {
+> +               virtio_gpu_trace_total_mem(vgdev, -(obj->size));
+>                 virtio_gpu_cmd_unref_resource(vgdev, bo);
+>                 virtio_gpu_notify(vgdev);
+>                 /* completion handler calls virtio_gpu_cleanup_object() */
+> @@ -265,6 +275,7 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+>                 virtio_gpu_object_attach(vgdev, bo, ents, nents);
+>         }
+>
+> +       virtio_gpu_trace_total_mem(vgdev, shmem_obj->base.size);
+>         *bo_ptr = bo;
+>         return 0;
+>
 > --
-> 2.17.1
+> 2.30.0.280.ga3ce27912f-goog
 >
+
+Re Gerd and Daniel:
+
+I'm not sure why we want to couple this patch too much with the
+dma-bufs tracking. The tracepoint added here itself is pretty useful
+for tracking gem bo total usage in virtio gpu upon tracing. The
+original purpose for integrating this tracepoint in all Android gpu
+kernel drivers is to just track total gpu memory usage and serve the
+accurate data to game developers in a much easier way. It's something
+they can rely on for robust testing and regression monitoring.
+
+The only overlap with the dma-buf side is when we export a bo via
+prime to a dma-buf. But still, the total here is already useful for
+this particular device. Using which approach to account for the
+overlap wouldn't block this small integration from my understanding.
+
+Besides, there's no plan for adding per-process gem total tracking in
+virtio-gpu at this moment. This patch should be light enough to carry
+without worrying about tech debt I believe.
+
+Many thanks!
+Yiwei
