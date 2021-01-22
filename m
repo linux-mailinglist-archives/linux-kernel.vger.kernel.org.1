@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34C82FFA81
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1962B2FFA97
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 03:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbhAVChK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 21:37:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726758AbhAVCg0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 21:36:26 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6939FC061351
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 18:34:12 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id z22so3165754qto.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 18:34:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1kDimXzA9M9PWHfsqDnWeDFT1MG/Xxfjg/ovLBDA4+c=;
-        b=qAj/VV4Lrl8K+W4pjf254aWoi5EfYLj0YKA6oao5JlTjig5hlRgAI2cGjPgWmqZgFY
-         LFeSMCW+sd90dt/vsqN8J++wdLKvW7dEkBPw6mQmxoUPBHQNIVZAn6Fw27r4t4yIxQNe
-         RSjZfk5rT+Aj3cKCsYQbizUo9e46Hti2LqTGvOq9Ua91pCCzkPZ/llHTwO37yEaUWuNF
-         RBKzqmWDC1Nz1J5r/ma2c3wleiy1wQUFC/DE4c6NXiBW+5G2xw8/o/XoX2GssNUW/Hz8
-         DdAHRUUCb1Hwin50B48SQnzhiABzUG+RCKgxf8KCugYYs3d+uJMZKLNzBlaGaSju+SRR
-         sX0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1kDimXzA9M9PWHfsqDnWeDFT1MG/Xxfjg/ovLBDA4+c=;
-        b=ZX5s5eAvghz6N/xqL/dIhDGPD3dZ/ycvTOIwV51KhwY+e1wL08SoDH9dSUFW9iWfdn
-         UEF1V/sycQUP0C8W1DU8kiviJCexj4wEp5MPs4IgK+uZiQi8OUeW1cZH/CCYuXCSTbpG
-         +FUQxMKjoE5+3wSEEQkjIcmoWbOha+ygVL279HSU+fksDg6rHvi+sqCiwH9ZB2UKermQ
-         43Ng2AjFscrCm9KnxXtzBylEQZBXENcJBnuJJiKgoFMJkO+6GCWpyAmGf79NyUv0jHSd
-         mqj+qBG+R/tpSEPUSk56ugMF5Dm8YjLA6P6urE6EWPlCjpXGb+Iuu123vG+H56THLQkn
-         oFxA==
-X-Gm-Message-State: AOAM5319zi/E+Rs1FHHqkuaTtzPO+wI8buf4k/k3ar4XBZnEnMjU8N2z
-        JEQnvBF5T3iYojr2qNjytWzajA==
-X-Google-Smtp-Source: ABdhPJwYZGOnnyliQde+cwXundXxy/2FHbW2RABsQKlFRqW5EKcyGzrypdbPAT/yTsLipBiZRuL1Cg==
-X-Received: by 2002:aed:32a7:: with SMTP id z36mr2577143qtd.251.1611282851670;
-        Thu, 21 Jan 2021 18:34:11 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id m13sm4846025qtu.93.2021.01.21.18.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 18:34:11 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        davem@davemloft.net, kuba@kernel.org, luciano.coelho@intel.com
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-pm@vger.kernel.org, amitk@kernel.org,
-        nathan.errera@intel.com
-Subject: [PATCH v2 3/3] Documentation: driver-api: thermal: Remove thermal_notify_framework from documentation
-Date:   Thu, 21 Jan 2021 21:34:06 -0500
-Message-Id: <20210122023406.3500424-4-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210122023406.3500424-1-thara.gopinath@linaro.org>
-References: <20210122023406.3500424-1-thara.gopinath@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726175AbhAVCmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 21:42:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725956AbhAVCmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 21:42:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D940723136;
+        Fri, 22 Jan 2021 02:41:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611283299;
+        bh=9Zi26Umn4bfBl+qlAcYkpuei7dW6gvAbqBK7e0VzGY4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=XpA6id9nBiOlHVISxyGgtDGRx5eQsZj/ypIA9pAzz9Q2pkdxzaY6OgWcrYZE7PQrN
+         L1l9pSV3uDxhnY6USU9BEmSn4HU+wrJMCn28VvY2p++Q5aVeVHFwfsjDA38YTjXK0B
+         sUCRA0Bk4zAPMhVlEJLk9D8Whfei6c1eJ/FhJhQg5e/tf841tQvu/XoAKHfDxVtBHH
+         JWGq8k8/VOhE7k7NQEe1r0ZksKpE9Kzsxlkxnhnu26XkknWucgpueF0NBIWJ61olcQ
+         ueWPXw5JkCpEcJgFC+El0nUd7goBejdxgwQPlswzhzW+QkbyvG+3jyT0s81+BUHRrz
+         OkPJgWEcLc4+w==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id C6DD760591;
+        Fri, 22 Jan 2021 02:41:39 +0000 (UTC)
+Subject: Re: [GIT PULL] OpenRISC fixes for 5.11
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210122002902.GP2002709@lianli.shorne-pla.net>
+References: <20210122002902.GP2002709@lianli.shorne-pla.net>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210122002902.GP2002709@lianli.shorne-pla.net>
+X-PR-Tracked-Remote: git://github.com/openrisc/linux.git tags/for-linus
+X-PR-Tracked-Commit-Id: 031c7a8cd6fc565e90320bf08f22ee6e70f9d969
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 83d09ad4b950651a95d37697f1493c00d888d0db
+Message-Id: <161128329974.9480.4436451757364424272.pr-tracker-bot@kernel.org>
+Date:   Fri, 22 Jan 2021 02:41:39 +0000
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since thermal_notify_framework is no longer supported/implemented
-remove the entry from sysfs-api.rst.
----
- Documentation/driver-api/thermal/sysfs-api.rst | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+The pull request you sent on Fri, 22 Jan 2021 09:29:02 +0900:
 
-diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
-index e7520cb439ac..d5b6ca812873 100644
---- a/Documentation/driver-api/thermal/sysfs-api.rst
-+++ b/Documentation/driver-api/thermal/sysfs-api.rst
-@@ -743,17 +743,7 @@ This function returns the thermal_instance corresponding to a given
- {thermal_zone, cooling_device, trip_point} combination. Returns NULL
- if such an instance does not exist.
- 
--4.3. thermal_notify_framework
-------------------------------
--
--This function handles the trip events from sensor drivers. It starts
--throttling the cooling devices according to the policy configured.
--For CRITICAL and HOT trip points, this notifies the respective drivers,
--and does actual throttling for other trip points i.e ACTIVE and PASSIVE.
--The throttling policy is based on the configured platform data; if no
--platform data is provided, this uses the step_wise throttling policy.
--
--4.4. thermal_cdev_update
-+4.3. thermal_cdev_update
- ------------------------
- 
- This function serves as an arbitrator to set the state of a cooling
+> git://github.com/openrisc/linux.git tags/for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/83d09ad4b950651a95d37697f1493c00d888d0db
+
+Thank you!
+
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
