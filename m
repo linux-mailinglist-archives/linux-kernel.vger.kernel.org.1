@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03092FFE4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB03F2FFE41
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbhAVIgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        id S1726712AbhAVIfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbhAVIcJ (ORCPT
+        with ESMTP id S1727010AbhAVIcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:32:09 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB03C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:31:19 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l2rqa-0004fJ-MY; Fri, 22 Jan 2021 09:31:12 +0100
-Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:aed1:e241:8b32:9cc0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Fri, 22 Jan 2021 03:32:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21823C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:31:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l1or63vZWLAmnmjTaOxJSexcVLE8UAT7YoDDiA/iMos=; b=m0nbZBt1lHv3C2bHS9svSKWxMQ
+        C3QPGZHuZp/BwawtR4sGVGxdbIsqSqOoqxA/MlrxbEJpUWR7WjglXt+Qb1Oe1gxkGHJId9q+eYlC3
+        vF8boDyYRxPfAYyG6Djclt9pmbVP5pNStBxfDchFDfpBNpsl23MhD4SWsw20kWE2rqsgoUO2jXiIg
+        dPHWf3lqqesATffitN3A+qfBuoteVfgWQtxjS7iWAJ1L6TLaQzQMO/q7EO7sknePSDR+Wg9cLSP5a
+        xyNaNlNnSBH12A2oE4DwLHpZnUWbSO7Tl8Gci+C2N19Fy9gHQbcDnJGDA99rNGmyiM1tkaOnu8L49
+        Ql7T5/FA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l2rr0-000Vxh-F8; Fri, 22 Jan 2021 08:31:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 043E05CA589;
-        Fri, 22 Jan 2021 08:31:09 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 09:31:09 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Su Yanjun <suyanjun218@gmail.com>
-Cc:     manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
-        wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] can: mcp251xfd: replace sizeof(u32) with val_bytes in
- regmap
-Message-ID: <20210122083109.7gyxdwi2dlo3ptjj@hardanger.blackshift.org>
-References: <20210122081334.213957-1-suyanjun218@gmail.com>
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 33D383012DF;
+        Fri, 22 Jan 2021 09:31:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1B65F2D54EF7A; Fri, 22 Jan 2021 09:31:37 +0100 (CET)
+Date:   Fri, 22 Jan 2021 09:31:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, frederic@kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org, cai@lca.pw,
+        mgorman@techsingularity.net, joel@joelfernandes.org,
+        valentin.schneider@arm.com
+Subject: Re: [RFC][PATCH 4/7] smp: Optimize send_call_function_single_ipi()
+Message-ID: <YAqNacbJ5b7L/Sd2@hirez.programming.kicks-ass.net>
+References: <20200526161057.531933155@infradead.org>
+ <20200526161907.953304789@infradead.org>
+ <20200527095645.GH325280@hirez.programming.kicks-ass.net>
+ <20200527101513.GJ325303@hirez.programming.kicks-ass.net>
+ <20200527155656.GU2869@paulmck-ThinkPad-P72>
+ <20200527163543.GA706478@hirez.programming.kicks-ass.net>
+ <20200527171236.GC706495@hirez.programming.kicks-ass.net>
+ <YAmyVW1r0xQOwneB@hirez.programming.kicks-ass.net>
+ <20210122002012.GB2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5h6qemvvzzz5qhue"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122081334.213957-1-suyanjun218@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210122002012.GB2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 21, 2021 at 04:20:12PM -0800, Paul E. McKenney wrote:
 
---5h6qemvvzzz5qhue
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > ---
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 368749008ae8..2c8d4c3e341e 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -445,7 +445,7 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+> >  	/*
+> >  	 * Usually called from the tick; but also used from smp_function_call()
+> >  	 * for expedited grace periods. This latter can result in running from
+> > -	 * the idle task, instead of an actual IPI.
+> > +	 * a (usually the idle) task, instead of an actual IPI.
+> 
+> The story is growing enough hair that we should tell it only once.
+> So here just where it is called from:
+> 
+> 	/*
+> 	 * Usually called from the tick; but also used from smp_function_call()
+> 	 * for expedited grace periods.
+> 	 */
+> 
+> >  	lockdep_assert_irqs_disabled();
+> >  
+> > @@ -461,9 +461,14 @@ static int rcu_is_cpu_rrupt_from_idle(void)
+> >  		return false;
+> >  
+> >  	/*
+> > -	 * If we're not in an interrupt, we must be in the idle task!
+> > +	 * If we're not in an interrupt, we must be in task context.
+> > +	 *
+> > +	 * This will typically be the idle task through:
+> > +	 *   flush_smp_call_function_from_idle(),
+> > +	 *
+> > +	 * but can also be in CPU HotPlug through smpcfd_dying().
+> >  	 */
+> 
+> Good, but how about like this?
+> 
+> 	/*
+> 	 * If we are not in an interrupt handler, we must be in
+> 	 * smp_call_function() handler.
+> 	 *
+> 	 * Normally, smp_call_function() handlers are invoked from
+> 	 * the idle task via flush_smp_call_function_from_idle().
+> 	 * However, they can also be invoked from CPU hotplug
+> 	 * operations via smpcfd_dying().
+> 	 */
+> 
+> > -	WARN_ON_ONCE(!nesting && !is_idle_task(current));
+> > +	WARN_ON_ONCE(!nesting && !in_task(current));
+> 
+> This is used in time-critical contexts, so why not RCU_LOCKDEP_WARN()?
+> That should also allow checking more closely.  Would something like the
+> following work?
+> 
+> 	RCU_LOCKDEP_WARN(!nesting && !is_idle_task(current) && (!in_task(current) || !lockdep_cpus_write_held()));
+> 
+> Where lockdep_cpus_write_held is defined in kernel/cpu.c:
 
-On Fri, Jan 22, 2021 at 04:13:34PM +0800, Su Yanjun wrote:
-> The sizeof(u32) is hardcoded. It's better to use the config value in
-> regmap.
->=20
-> It increases the size of target object, but it's flexible when new mcp ch=
-ip
-> need other val_bytes.
->=20
-> Signed-off-by: Su Yanjun <suyanjun218@gmail.com>
-
-Applied to linux-can-next/testing.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---5h6qemvvzzz5qhue
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAKjUoACgkQqclaivrt
-76m+Cwf/QmCkqwzxOCPGlj7JWUKqIeOMCNJWBFJzqnV6mMaihyIwiPHsollFQpyE
-tmmZl2bcJ+N1zq2BfDQiK/3WksXbIgqhFg5gGhhgfA/Co4i9wq/EsgJcocKb0+Zq
-fl5R2JZKDQf8h2GN/qOP96+vUnXie8vr6cKpExlPH2Nm4cmC0ekjW0kYb33XNkvo
-E5XzfdewZBOoyxb50nFn/yvkM3GxirMlR3NhvVp4sQxugzpWCkekBcOseMiWY2Sp
-xt3sLwZfLoOblu791qIB+2uAWwJgG5V2UJWwTZMRI2eT/mDeKuIePFn9LH+w2Wgv
-6jrwq/1o8+CjBNw5CEbSdLttBQ/d+w==
-=YbTG
------END PGP SIGNATURE-----
-
---5h6qemvvzzz5qhue--
+Works for me, except s/in_task(current)/in_task()/ compiles a lot
+better.
