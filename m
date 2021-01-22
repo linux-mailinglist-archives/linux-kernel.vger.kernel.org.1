@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B953005C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D3B3005C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728881AbhAVOoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:44:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:51162 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728792AbhAVOm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:42:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB90D11B3;
-        Fri, 22 Jan 2021 06:42:07 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B9853F66E;
-        Fri, 22 Jan 2021 06:42:05 -0800 (PST)
-Subject: Re: [PATCH v2] ACPI/IORT: Do not blindly trust DMA masks from
- firmware
-To:     Moritz Fischer <mdf@kernel.org>, lorenzo.pieralisi@arm.com
-Cc:     guohanjun@huawei.com, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        moritzf@google.com, sudeep.holla@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210122012419.95010-1-mdf@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e01e2fd6-7f78-354e-374c-f93a5d1b8fd6@arm.com>
-Date:   Fri, 22 Jan 2021 14:42:05 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728871AbhAVOoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:44:12 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47264 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728811AbhAVOnH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:43:07 -0500
+Received: by mail-io1-f72.google.com with SMTP id t15so9012007ioi.14
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:42:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=fE5kJzZFX6LHuXma+wdOzaWCPrGgoY6ccmowLSXJbw8=;
+        b=RqSOkBYS5esm5G80w6wwQVG+iPyEFZhOsLLdTMliWkw+dU2aXgnCefxOtIPLdi2x0Q
+         D3+evCB6ss9rct0fONXeUum92L2OMAaMYBXZZKn9ehO9YVj7wJNW30y4Xa2GuDSK05i3
+         HiKVM+/j6I9NbQG6QL1d/bL0+uIbsMb9Pt8n5PGrg86GT8LDQE8yxiAo36BAdV1lUFa7
+         mfBysCurWGUmN7spM/ony7ESUN4mfw/zyls53cJkQcTwoLekDi1xwk4116Lt1xmR/I/l
+         TdIy6lTzE0Z/kCOKCOIwLiOnE8Ts3B1T+m0ZIPGTyHxMgEyzvlohobJy6e1Scz41ZjbJ
+         wUNA==
+X-Gm-Message-State: AOAM533zdtjO1Fmf5tt6eyHSxjnBv/Y0I+sKMjkukWvHtJOMCx4nWMZp
+        h6A9RPTk/JUwKIgJrV5FVN1ksYTuRC9vkg9RVNnL5BWcADuC
+X-Google-Smtp-Source: ABdhPJy7sTfsf/GJiCetI3voox1xPReGN1JRyYVuh7bfA3ZkebO6Ez0+j85tSElA8UsaBeIl2Xmle4DRPKaQBnwwcqRpdfQTkxhZ
 MIME-Version: 1.0
-In-Reply-To: <20210122012419.95010-1-mdf@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5d:944a:: with SMTP id x10mr3644441ior.30.1611326546207;
+ Fri, 22 Jan 2021 06:42:26 -0800 (PST)
+Date:   Fri, 22 Jan 2021 06:42:26 -0800
+In-Reply-To: <000000000000f054d005b8f87274@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000676bd105b97e329a@google.com>
+Subject: Re: WARNING in io_disable_sqo_submit
+From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, davem@davemloft.net,
+        hdanton@sina.com, io-uring@vger.kernel.org,
+        johannes.berg@intel.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-22 01:24, Moritz Fischer wrote:
-> Address issue observed on real world system with suboptimal IORT table
-> where DMA masks of PCI devices would get set to 0 as result.
-> 
-> iort_dma_setup() would query the root complex'/named component IORT
-> entry for a DMA mask, and use that over the one the device has been
-> configured with earlier.
-> 
-> Ideally we want to use the minimum mask of what the IORT contains for
-> the root complex and what the device was configured with.
-> 
-> Fixes: 5ac65e8c8941 ("ACPI/IORT: Support address size limit for root complexes")
-> Signed-off-by: Moritz Fischer <mdf@kernel.org>
-> ---
-> 
-> Changes from v1:
-> - Changed warning to FW_BUG
-> - Warn for both Named Component or Root Complex
-> - Replaced min_not_zero() with min()
-> 
-> ---
->   drivers/acpi/arm64/iort.c | 14 ++++++++++++--
->   1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-> index d4eac6d7e9fb..2494138a6905 100644
-> --- a/drivers/acpi/arm64/iort.c
-> +++ b/drivers/acpi/arm64/iort.c
-> @@ -1107,6 +1107,11 @@ static int nc_dma_get_range(struct device *dev, u64 *size)
->   
->   	ncomp = (struct acpi_iort_named_component *)node->node_data;
->   
-> +	if (!ncomp->memory_address_limit) {
-> +		pr_warn(FW_BUG "Named component missing memory address limit\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	*size = ncomp->memory_address_limit >= 64 ? U64_MAX :
->   			1ULL<<ncomp->memory_address_limit;
->   
-> @@ -1126,6 +1131,11 @@ static int rc_dma_get_range(struct device *dev, u64 *size)
->   
->   	rc = (struct acpi_iort_root_complex *)node->node_data;
->   
-> +	if (!rc->memory_address_limit) {
-> +		pr_warn(FW_BUG "Root complex missing memory address limit\n");
-> +		return -EINVAL;
-> +	}
-> +
->   	*size = rc->memory_address_limit >= 64 ? U64_MAX :
->   			1ULL<<rc->memory_address_limit;
->   
-> @@ -1173,8 +1183,8 @@ void iort_dma_setup(struct device *dev, u64 *dma_addr, u64 *dma_size)
->   		end = dmaaddr + size - 1;
->   		mask = DMA_BIT_MASK(ilog2(end) + 1);
->   		dev->bus_dma_limit = end;
-> -		dev->coherent_dma_mask = mask;
-> -		*dev->dma_mask = mask;
-> +		dev->coherent_dma_mask = min(dev->coherent_dma_mask, mask);
-> +		*dev->dma_mask = min(*dev->dma_mask, mask);
+syzbot has found a reproducer for the following issue on:
 
-Oops, I got so distracted by the "not_zero" aspect in v1 that I ended up 
-thinking purely about smaller-than-default masks, but of course this 
-*does* matter the other way round. And it is what we've always done on 
-the DT side, so at least it makes us consistent.
+HEAD commit:    9f29bd8b Merge tag 'fs_for_v5.11-rc5' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=169f4e9f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=39701af622f054a9
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1156bd20d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15ce819f500000
 
-FWIW I've already started writing up a patch to kill off this bit 
-entirely, but either way we still can't meaningfully interpret a 
-supposed DMA limit of 0 bits in a table describing DMA-capable devices, 
-so for this patch as a fix,
+The issue was bisected to:
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Oct 9 12:17:11 2020 +0000
 
-Thanks,
-Robin.
+    mac80211: always wind down STA state
 
->   	}
->   
->   	*dma_addr = dmaaddr;
-> 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b8b83b500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1078b83b500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b8b83b500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8572 at fs/io_uring.c:8917 io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
+Modules linked in:
+CPU: 1 PID: 8572 Comm: syz-executor518 Not tainted 5.11.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_disable_sqo_submit+0x13d/0x180 fs/io_uring.c:8917
+Code: e0 07 83 c0 03 38 d0 7c 04 84 d2 75 2e 83 8b 14 01 00 00 01 4c 89 e7 e8 d1 6d 25 07 5b 5d 41 5c e9 48 22 9b ff e8 43 22 9b ff <0f> 0b e9 00 ff ff ff e8 87 a1 dd ff e9 37 ff ff ff e8 4d a1 dd ff
+RSP: 0018:ffffc90001c17df0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88801c409000 RCX: 0000000000000000
+RDX: ffff8880287e8040 RSI: ffffffff81d7aa8d RDI: ffff88801c4090d0
+RBP: ffff8880198a1780 R08: 0000000000000000 R09: 0000000012c8a801
+R10: ffffffff81d7ad45 R11: 0000000000000001 R12: ffff88801c409000
+R13: ffff888012c8a801 R14: ffff88801c409040 R15: ffff88801c4090d0
+FS:  00007f60e950b700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f60e950adb8 CR3: 0000000015b41000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_uring_flush+0x28b/0x3a0 fs/io_uring.c:9134
+ filp_close+0xb4/0x170 fs/open.c:1280
+ do_dup2+0x294/0x520 fs/file.c:1024
+ ksys_dup3+0x22f/0x360 fs/file.c:1136
+ __do_sys_dup2 fs/file.c:1162 [inline]
+ __se_sys_dup2 fs/file.c:1150 [inline]
+ __x64_sys_dup2+0x71/0x3a0 fs/file.c:1150
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x447019
+Code: e8 0c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 06 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f60e950ace8 EFLAGS: 00000246 ORIG_RAX: 0000000000000021
+RAX: ffffffffffffffda RBX: 00000000006dbc38 RCX: 0000000000447019
+RDX: 0000000000447019 RSI: 0000000000000003 RDI: 0000000000000005
+RBP: 00000000006dbc30 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc3c
+R13: 00007ffc5b18d21f R14: 00007f60e950b9c0 R15: 00000000006dbc30
+
