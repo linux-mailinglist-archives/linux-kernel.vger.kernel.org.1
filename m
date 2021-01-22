@@ -2,86 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500B2300C15
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE59F300C4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbhAVTIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:08:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36980 "EHLO mail.kernel.org"
+        id S1730289AbhAVSxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:53:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728249AbhAVOTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:19:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 506A223B1B;
-        Fri, 22 Jan 2021 14:14:35 +0000 (UTC)
+        id S1728529AbhAVOWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:22:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 591AB23B32;
+        Fri, 22 Jan 2021 14:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324875;
-        bh=b+yG/pVw00cpo0X43vGxksgQ1Q6YP/0lxxsiKRBWbyQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWvaG8k5wEBNEOu1i5bMetkCBcUYSuHWuHaKRkUwsC1A5qtdb9tW3O5U4WIapbX2O
-         Qb3c+He4OK+GQd1PIgrDxNeVLtMaFmfe/E9jSX0rbEb3EtHNRYhch8jGP96dFMCO1e
-         7bxSay0VczXw1CQ2hWNyHLh3uwvDfT1/bbAq5brE=
+        s=korg; t=1611324932;
+        bh=RNCqSgvI8xYm1XbENm9mg9ix/P8SGjVd3IE4Rr9YMps=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Tyvismn05HlYr/fQ/9sKXP0njhWnUJUpmQhy0K5Mn97u8s1rNYvyhEswtCO1xOY07
+         42XEbp35nDjztGOEyIqI9vgRtlbA0mDWDDA56SQStodl0LWoNl1fdjtZ6KBGTr9Zi4
+         yS4TG3YAC/o7WDhyeMTrVYJXgWU8a27dXbGQOkzg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yoel Caspersen <yoel@kviknet.dk>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.14 32/50] netfilter: conntrack: fix reading nf_conntrack_buckets
-Date:   Fri, 22 Jan 2021 15:12:13 +0100
-Message-Id: <20210122135736.497390632@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/22] 4.19.170-rc1 review
+Date:   Fri, 22 Jan 2021 15:12:18 +0100
+Message-Id: <20210122135731.921636245@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
-References: <20210122135735.176469491@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.170-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.170-rc1
+X-KernelTest-Deadline: 2021-01-24T13:57+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+This is the start of the stable review cycle for the 4.19.170 release.
+There are 22 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit f6351c3f1c27c80535d76cac2299aec44c36291e upstream.
+Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
+Anything received after that time might be too late.
 
-The old way of changing the conntrack hashsize runtime was through changing
-the module param via file /sys/module/nf_conntrack/parameters/hashsize. This
-was extended to sysctl change in commit 3183ab8997a4 ("netfilter: conntrack:
-allow increasing bucket size via sysctl too").
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.170-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-The commit introduced second "user" variable nf_conntrack_htable_size_user
-which shadow actual variable nf_conntrack_htable_size. When hashsize is
-changed via module param this "user" variable isn't updated. This results in
-sysctl net/netfilter/nf_conntrack_buckets shows the wrong value when users
-update via the old way.
+thanks,
 
-This patch fix the issue by always updating "user" variable when reading the
-proc file. This will take care of changes to the actual variable without
-sysctl need to be aware.
+greg k-h
 
-Fixes: 3183ab8997a4 ("netfilter: conntrack: allow increasing bucket size via sysctl too")
-Reported-by: Yoel Caspersen <yoel@kviknet.dk>
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+-------------
+Pseudo-Shortlog of commits:
 
----
- net/netfilter/nf_conntrack_standalone.c |    3 +++
- 1 file changed, 3 insertions(+)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.170-rc1
 
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -537,6 +537,9 @@ nf_conntrack_hash_sysctl(struct ctl_tabl
- {
- 	int ret;
- 
-+	/* module_param hashsize could have changed value */
-+	nf_conntrack_htable_size_user = nf_conntrack_htable_size;
-+
- 	ret = proc_dointvec(table, write, buffer, lenp, ppos);
- 	if (ret < 0 || !write)
- 		return ret;
+Michael Hennerich <michael.hennerich@analog.com>
+    spi: cadence: cache reference clock rate during probe
+
+Aya Levin <ayal@nvidia.com>
+    net: ipv6: Validate GSO SKB before finish IPv6 processing
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    net: skbuff: disambiguate argument and member for skb_list_walk_safe helper
+
+Jason A. Donenfeld <Jason@zx2c4.com>
+    net: introduce skb_list_walk_safe for skb segment walking
+
+Hoang Le <hoang.h.le@dektech.com.au>
+    tipc: fix NULL deref in tipc_link_xmit()
+
+David Howells <dhowells@redhat.com>
+    rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+
+Eric Dumazet <edumazet@google.com>
+    net: avoid 32 x truesize under-estimation for tiny skbs
+
+Jakub Kicinski <kuba@kernel.org>
+    net: sit: unregister_netdevice on newlink's error path
+
+David Wu <david.wu@rock-chips.com>
+    net: stmmac: Fixed mtu channged by cache aligned
+
+Baptiste Lepers <baptiste.lepers@gmail.com>
+    rxrpc: Call state should be read with READ_ONCE() under some circumstances
+
+Petr Machata <petrm@nvidia.com>
+    net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
+
+Petr Machata <me@pmachata.org>
+    net: dcb: Validate netlink message in DCB handler
+
+Willem de Bruijn <willemb@google.com>
+    esp: avoid unneeded kmap_atomic call
+
+Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+    rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
+
+Stefan Chulski <stefanc@marvell.com>
+    net: mvpp2: Remove Pause and Asym_Pause support
+
+Manish Chopra <manishc@marvell.com>
+    netxen_nic: fix MSI/MSI-x interrupts
+
+Baptiste Lepers <baptiste.lepers@gmail.com>
+    udp: Prevent reuseport_select_sock from reading uninitialized socks
+
+J. Bruce Fields <bfields@redhat.com>
+    nfsd4: readdirplus shouldn't return parent of export
+
+Arnd Bergmann <arnd@arndb.de>
+    crypto: x86/crc32c - fix building with clang ias
+
+Mikulas Patocka <mpatocka@redhat.com>
+    dm integrity: fix flush with external metadata device
+
+Will Deacon <will@kernel.org>
+    compiler.h: Raise minimum version of GCC to 5.1 for arm64
+
+Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+    usb: ohci: Make distrust_firmware param default to false
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ arch/x86/crypto/crc32c-pcl-intel-asm_64.S          |  2 +-
+ drivers/md/dm-bufio.c                              |  6 +++
+ drivers/md/dm-integrity.c                          | 50 +++++++++++++++++++---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |  2 -
+ .../net/ethernet/qlogic/netxen/netxen_nic_main.c   |  7 +--
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  3 +-
+ drivers/net/usb/rndis_host.c                       |  2 +-
+ drivers/spi/spi-cadence.c                          |  6 ++-
+ drivers/usb/host/ohci-hcd.c                        |  2 +-
+ fs/nfsd/nfs3xdr.c                                  |  7 ++-
+ include/linux/compiler-gcc.h                       |  6 +++
+ include/linux/dm-bufio.h                           |  1 +
+ include/linux/skbuff.h                             |  5 +++
+ net/core/skbuff.c                                  |  9 +++-
+ net/core/sock_reuseport.c                          |  2 +-
+ net/dcb/dcbnl.c                                    |  2 +
+ net/ipv4/esp4.c                                    |  7 +--
+ net/ipv6/esp6.c                                    |  7 +--
+ net/ipv6/ip6_output.c                              | 40 ++++++++++++++++-
+ net/ipv6/sit.c                                     |  5 ++-
+ net/rxrpc/input.c                                  |  2 +-
+ net/rxrpc/key.c                                    |  6 ++-
+ net/tipc/link.c                                    |  9 +++-
+ 24 files changed, 148 insertions(+), 44 deletions(-)
 
 
