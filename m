@@ -2,121 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73723300770
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 892D430077B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbhAVPew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:34:52 -0500
-Received: from mga14.intel.com ([192.55.52.115]:33225 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729040AbhAVPct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:32:49 -0500
-IronPort-SDR: GBd63PaVdaHk0GBhWPWPNhfj7i8UfMeaP6GvfnB4B51q/n2ewMGf5GSF25pv3PWcYChFIyMl6J
- 8+/CcOF8VXrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="178680811"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="178680811"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 07:30:59 -0800
-IronPort-SDR: OtUq2s9zwphiU3lxtddnvRt3t/ACFbw02R1tYE41jZmmEvsUbqwn4MgNtoDpcAtImDQqvTsnXD
- jHMLwu7rQzwg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="348297792"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Jan 2021 07:30:57 -0800
-Subject: Re: [PATCH 0/4] add xhci hooks for USB offload
-To:     Howard Yen <howardyen@google.com>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210119101044.1637023-1-howardyen@google.com>
- <af91bbf1-6731-3e87-4086-de0dbba22c22@intel.com>
- <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <ca442ca7-a434-2527-9945-861dafa685cc@linux.intel.com>
-Date:   Fri, 22 Jan 2021 17:32:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728785AbhAVPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729151AbhAVPfd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:35:33 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB58DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:34:52 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id e22so11818551iog.6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 07:34:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CH89oABAyKgBOGkKlkkNpqPl4Z1JdSywlf4azBbyiuE=;
+        b=fl9bq7qm/QInr5k1dz2+w5oP4G2EPwX+IKXksi7hSG8IswQp20sX/GSgorS7tk8buk
+         cwuQxpSNkpGBvYqRgPrPrEY6DSQQlKMt/DVQIzOM+TFYNeJNrMDHDMAzr5LQkZVkX7mM
+         Qp/zHhrzb0V8lh9gn5xtGsqFapXTlf+KybDPM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CH89oABAyKgBOGkKlkkNpqPl4Z1JdSywlf4azBbyiuE=;
+        b=NaOm0GJGnFGnc8lZahPaAthgROAFylenl85EA67vt+vsJXNSzo24XmqRZZPNO65cGi
+         JbM/+p5wKFiqAI6hMOACdO0HGPBGDDglBzevaBpg5toHqnm2hpxOWxkKpHN748g/F6Oe
+         VzAprKCuxtptmhCked8W62B6JCdAayrqH8YiOwut0iFdu5g9veOJ9EtQ+6I1clwvyFNr
+         5SflPXbuozvENGp4EoREVpx25hnSs8ER8NcnpEreQhCcI60dKlGMiyHsEJAOucTXzZ4i
+         t7BKgsK0XBolsfu+0GQ8kfwRqIRjh2JIbwAxpI4jgRCeGcWnFbZPPjqZJlBi23vRV9WN
+         4rjA==
+X-Gm-Message-State: AOAM5314g0UDNlOfyx3pmaullshMUdafLwPNodWX/fgXCPPV7myKZYcg
+        a9uBpbX3fhv9Wpkme2/DfrQ6uNM8SSj12CCfl1RFgw==
+X-Google-Smtp-Source: ABdhPJzCjZF1blad+Bc2MFhE+YOoiHQOaQ81zRJfIowwIkKdTS/+fJOk3YB/VhxBDdxLMFi7LFFYNm2pS7rf9We2eM8=
+X-Received: by 2002:a6b:cc07:: with SMTP id c7mr3918493iog.122.1611329692196;
+ Fri, 22 Jan 2021 07:34:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJDAHvbTY3Z_bRg+++uLefWSvCWo_nGq+3OOQX3QHJ2w3X1SQw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-4-revest@chromium.org>
+ <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
+ <CAADnVQJqVEvwF3GJyuiazxUUknBUaZ_k7gtt-m18hbBdoVeTGg@mail.gmail.com> <CABRcYmJ1jOgV2Ug6sKxbq4ZnaGFLvGLwCPmhrAYdaRh6oY-o=g@mail.gmail.com>
+In-Reply-To: <CABRcYmJ1jOgV2Ug6sKxbq4ZnaGFLvGLwCPmhrAYdaRh6oY-o=g@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Fri, 22 Jan 2021 16:34:41 +0100
+Message-ID: <CABRcYm+cWobt9yd-2k8nx+19wCZVniLszTcQRphq1soxQG0jdg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the
+ tracing bpf_get_socket_cookie
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.1.2021 12.04, Howard Yen wrote:
-> On Tue, Jan 19, 2021 at 8:47 PM Mathias Nyman <mathias.nyman@intel.com> wrote:
->>
->> On 19.1.2021 12.10, Howard Yen wrote:
->>> To let the xhci driver support USB offload, add hooks for vendor to have
->>> customized behavior for the initialization, memory allocation, irq work, and
->>> device context synchronization. Detail is in each patch commit message.
->>
->> Is this related to the usb audio sideband capability that was added to the xHCI specification?
->> If yes, then we should probably implement the generic parts first, and then add
->> the vendor specific hooks.
->>
->> -Mathias
->>
->>
-> 
-> This is for offloading, no matter what type of offloading.
-> I made the hooks generically and can be used for usb audio on the xhci
-> which is not including the usb audio sideband capability.
-> 
+On Wed, Jan 20, 2021 at 8:06 PM Florent Revest <revest@chromium.org> wrote:
+>
+> On Wed, Jan 20, 2021 at 8:04 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Jan 20, 2021 at 9:08 AM KP Singh <kpsingh@kernel.org> wrote:
+> > >
+> > > On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
+> > > >
+> > > > This builds up on the existing socket cookie test which checks whether
+> > > > the bpf_get_socket_cookie helpers provide the same value in
+> > > > cgroup/connect6 and sockops programs for a socket created by the
+> > > > userspace part of the test.
+> > > >
+> > > > Adding a tracing program to the existing objects requires a different
+> > > > attachment strategy and different headers.
+> > > >
+> > > > Signed-off-by: Florent Revest <revest@chromium.org>
+> > >
+> > > Acked-by: KP Singh <kpsingh@kernel.org>
+> > >
+> > > (one minor note, doesn't really need fixing as a part of this though)
+> > >
+> > > > ---
+> > > >  .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
+> > > >  .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
+> > > >  2 files changed, 52 insertions(+), 13 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
+> > > > index 53d0c44e7907..e5c5e2ea1deb 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
+> > > > @@ -15,8 +15,8 @@ struct socket_cookie {
+> > > >
+> > > >  void test_socket_cookie(void)
+> > > >  {
+> > > > +       struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
+> > > >         socklen_t addr_len = sizeof(struct sockaddr_in6);
+> > > > -       struct bpf_link *set_link, *update_link;
+> > > >         int server_fd, client_fd, cgroup_fd;
+> > > >         struct socket_cookie_prog *skel;
+> > > >         __u32 cookie_expected_value;
+> > > > @@ -39,15 +39,21 @@ void test_socket_cookie(void)
+> > > >                   PTR_ERR(set_link)))
+> > > >                 goto close_cgroup_fd;
+> > > >
+> > > > -       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
+> > > > -                                                cgroup_fd);
+> > > > -       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
+> > > > -                 PTR_ERR(update_link)))
+> > > > +       update_sockops_link = bpf_program__attach_cgroup(
+> > > > +               skel->progs.update_cookie_sockops, cgroup_fd);
+> > > > +       if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
+> > > > +                 "err %ld\n", PTR_ERR(update_sockops_link)))
+> > > >                 goto free_set_link;
+> > > >
+> > > > +       update_tracing_link = bpf_program__attach(
+> > > > +               skel->progs.update_cookie_tracing);
+> > > > +       if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
+> > > > +                 "err %ld\n", PTR_ERR(update_tracing_link)))
+> > > > +               goto free_update_sockops_link;
+> > > > +
+> > > >         server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
+> > > >         if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
+> > > > -               goto free_update_link;
+> > > > +               goto free_update_tracing_link;
+> > > >
+> > > >         client_fd = connect_to_fd(server_fd, 0);
+> > > >         if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
+> > > > @@ -71,8 +77,10 @@ void test_socket_cookie(void)
+> > > >         close(client_fd);
+> > > >  close_server_fd:
+> > > >         close(server_fd);
+> > > > -free_update_link:
+> > > > -       bpf_link__destroy(update_link);
+> > > > +free_update_tracing_link:
+> > > > +       bpf_link__destroy(update_tracing_link);
+> > >
+> > > I don't think this need to block submission unless there are other
+> > > issues but the
+> > > bpf_link__destroy can just be called in a single cleanup label because
+> > > it handles null or
+> > > erroneous inputs:
+> > >
+> > > int bpf_link__destroy(struct bpf_link *link)
+> > > {
+> > >     int err = 0;
+> > >
+> > >     if (IS_ERR_OR_NULL(link))
+> > >          return 0;
+> > > [...]
+> >
+> > +1 to KP's point.
+> >
+> > Also Florent, how did you test it?
+> > This test fails in CI and in my manual run:
+> > ./test_progs -t cook
+> > libbpf: load bpf program failed: Permission denied
+> > libbpf: -- BEGIN DUMP LOG ---
+> > libbpf:
+> > ; int update_cookie_sockops(struct bpf_sock_ops *ctx)
+> > 0: (bf) r6 = r1
+> > ; if (ctx->family != AF_INET6)
+> > 1: (61) r1 = *(u32 *)(r6 +20)
+> > ; if (ctx->family != AF_INET6)
+> > 2: (56) if w1 != 0xa goto pc+21
+> >  R1_w=inv10 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
+> > ; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
+> > 3: (61) r1 = *(u32 *)(r6 +0)
+> > ; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
+> > 4: (56) if w1 != 0x3 goto pc+19
+> >  R1_w=inv3 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
+> > ; if (!ctx->sk)
+> > 5: (79) r1 = *(u64 *)(r6 +184)
+> > ; if (!ctx->sk)
+> > 6: (15) if r1 == 0x0 goto pc+17
+> >  R1_w=sock(id=0,ref_obj_id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0
+> > ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+> > 7: (79) r2 = *(u64 *)(r6 +184)
+> > ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+> > 8: (18) r1 = 0xffff888106e41400
+> > 10: (b7) r3 = 0
+> > 11: (b7) r4 = 0
+> > 12: (85) call bpf_sk_storage_get#107
+> > R2 type=sock_or_null expected=sock_common, sock, tcp_sock, xdp_sock, ptr_
+> > processed 12 insns (limit 1000000) max_states_per_insn 0 total_states
+> > 0 peak_states 0 mark_read 0
+> >
+> > libbpf: -- END LOG --
+> > libbpf: failed to load program 'update_cookie_sockops'
+> > libbpf: failed to load object 'socket_cookie_prog'
+> > libbpf: failed to load BPF skeleton 'socket_cookie_prog': -4007
+> > test_socket_cookie:FAIL:socket_cookie_prog__open_and_load skeleton
+> > open_and_load failed
+> > #95 socket_cookie:FAIL
+> > Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+>
+> Oh :| I must have missed something in the rebase, I will fix this and
+> address KP's comment then. Thanks for the review and sorry for the
+> waste of time :)
 
-Ok, before adding hooks like this I think we need to see how they are used.
-Do you have the rest of the patches that go on top of this series?
+So this is actually an interesting one I think. :) The failure was
+triggered by the combination of an LLVM update and this change:
 
-Maybe it could make sense to use overrides for the functions in struct hc_driver
-instead in some cases? There is support for that already.
+-#include <linux/bpf.h>
++#include "vmlinux.h"
 
-Thanks
--Mathias  
+With an older LLVM, this used to work.
+With a recent LLVM, the change of header causes those 3 lines to get
+compiled differently:
 
+if (!ctx->sk)
+    return 1;
+p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+
+When including linux/bpf.h
+; if (!ctx->sk)
+       5: 79 62 b8 00 00 00 00 00 r2 = *(u64 *)(r6 + 184)
+       6: 15 02 10 00 00 00 00 00 if r2 == 0 goto +16 <LBB1_6>
+; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+       7: 18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+       9: b7 03 00 00 00 00 00 00 r3 = 0
+      10: b7 04 00 00 00 00 00 00 r4 = 0
+      11: 85 00 00 00 6b 00 00 00 call 107
+      12: bf 07 00 00 00 00 00 00 r7 = r0
+
+When including vmlinux.h
+; if (!ctx->sk)
+       5: 79 61 b8 00 00 00 00 00 r1 = *(u64 *)(r6 + 184)
+       6: 15 01 11 00 00 00 00 00 if r1 == 0 goto +17 <LBB1_6>
+; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
+       7: 79 62 b8 00 00 00 00 00 r2 = *(u64 *)(r6 + 184)
+       8: 18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+      10: b7 03 00 00 00 00 00 00 r3 = 0
+      11: b7 04 00 00 00 00 00 00 r4 = 0
+      12: 85 00 00 00 6b 00 00 00 call 107
+      13: bf 07 00 00 00 00 00 00 r7 = r0
+
+Note that ctx->sk gets fetched once in the first case (l5), and twice
+in the second case (l5 and l7).
+I'm assuming that struct bpf_sock_ops gets defined with different
+attributes in vmlinux.h and causes LLVM to assume that ctx->sk could
+have changed between the time of check and the time of use so it
+yields two fetches and the verifier can't track that r2 is non null.
+
+If I save ctx->sk in a temporary variable first:
+
+struct bpf_sock *sk = ctx->sk;
+if (!sk)
+    return 1;
+p = bpf_sk_storage_get(&socket_cookies, sk, 0, 0);
+
+this loads correctly. However, Brendan pointed out that this is also a
+weak guarantee and that LLVM could still decide to compile this into
+two fetches, Brendan suggested that we save sk out of an access to a
+volatile pointer to ctx, what do you think ?
