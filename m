@@ -2,109 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4822FFE50
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29CB2FFE9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbhAVIhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:37:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26370 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727000AbhAVIg1 (ORCPT
+        id S1726205AbhAVIqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:46:42 -0500
+Received: from esa3.fujitsucc.c3s2.iphmx.com ([68.232.151.212]:26318 "EHLO
+        esa3.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726652AbhAVIqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:36:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611304500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rVitVAJl3hHbeQ/YCugHZFgFD5Qd1FjfqKbNs20MdNY=;
-        b=YjzGCtrfMw5J0X9z3W/PIZI4GqvzWx5OgncvFueySdxyF2GDL1pbT3+G9sJzJbEXAB6neH
-        6DwbJYBM8SVp3GobgBKx18b5jYdDn2wD9XcBj9sm/Vs5jwozyMT3CZVjFiYIuOi6b5Byoo
-        IppkYEdp2QA1Hlo6gJ3HsnxIy6sbbhY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-4xCFFHO6PICB43D3JhZ8xQ-1; Fri, 22 Jan 2021 03:34:55 -0500
-X-MC-Unique: 4xCFFHO6PICB43D3JhZ8xQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88203800D55;
-        Fri, 22 Jan 2021 08:34:53 +0000 (UTC)
-Received: from [10.36.114.142] (ovpn-114-142.ams2.redhat.com [10.36.114.142])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D4A8E5D9E8;
-        Fri, 22 Jan 2021 08:34:50 +0000 (UTC)
-Subject: Re: [PATCH V3 0/3] mm/memory_hotplug: Pre-validate the address range
- with platform
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1610975582-12646-1-git-send-email-anshuman.khandual@arm.com>
- <d57036a1-de12-2d32-be65-daaa3dc5b772@redhat.com>
- <20210119134016.GA23408@linux> <8df4e1e1-1ddd-398e-c9a6-17a67d8a95bc@arm.com>
- <1c8c204d-1f96-d3aa-1b7b-ec4cc7b1b79b@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c37de2d0-28a1-4f7d-f944-cfd7d81c334d@redhat.com>
-Date:   Fri, 22 Jan 2021 09:34:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 22 Jan 2021 03:46:04 -0500
+X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 03:46:01 EST
+IronPort-SDR: f/eg88RkLeSrim/VTdboKpiSt93OrSdoTLN/jN84RJ+3nD+adpL0GXhjt36uP2tTRpuOUMzeo5
+ 7VjTFtnBvOdot1eghhUXRDFCmT+T5v6oLJKxKlrT6T1ny7y9qV1Pw1gZWT//g0rB7NmeF01DCY
+ pNLXGLLX0cKuysbjV/56Ej/4iY3dZsnSVM3V7GJAxZsEcKyVyaK1TpOeyNPOaaE0p8ehq7ziuz
+ +bRg6nTo5mgwCNyg1Rh9xQ7/iow6eAOfVywbkeK9mcFYZ2OAmLwY3aizVKgOD3J0cgPgs1pRGq
+ PRw=
+X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="32917906"
+X-IronPort-AV: E=Sophos;i="5.79,366,1602514800"; 
+   d="scan'208";a="32917906"
+Received: from mail-ty1jpn01lp2059.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.59])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 17:35:54 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KE9uHnmHDldLsQhCoUkCHeJz+/MERXhsgzxFXYW4EdMDGMOijwST/S6dsZr1AuvbaShdtUkjIgGnlN9OuPnntXQHxLKc3Hu7oRswqHLq+wXfs3CQdonWTyPfHHcXbG5VKofnI3EalpRYIkEMA4Rsq/E+xkos+qbiN8IiOcb+OQuFP5BnLHHqgLSA6EvqdfdC9YadOXy4N5FErrRm8AaLfUVSY1SY8DTB9mUGW5X/Q1VkzDtZ6fuqqaHPkV4iAL9aggQHdF+ZZv1fpw5IKSMQGCkUC+o0wkdLbj0N0mNIBs+p3DegVPHgNBMp4ldwgutysmSQd2zma8e1gUWYCZJRoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qIGJZp6GQ/RkrF0ho4CMneGbtb1u8xVykB/x4EpMwUk=;
+ b=K6KIgoRgVAGGN1c71z48pCO7I0hV6mgeoSlS8b79iw5opplMpaijGltJPvTg/sjC5jYHHDmaRH5E/CrzXQcQbaoueR+rVI9dRUYgX96Eio/ExZAl7sIUc83jQj+MlmkvCipDlJCX7QNHDKIh8TXqOtDnSjjghR7JaV695eP45wPFqw0Xh7jjz0x+2WJRhcwu6PJC8XlSLWFXvrgH3b/imyR6yHRdA/9ok7P452KIqoDKQya9MxPLWvI+APqS93vsk99m9TH/VVnHnh2tBwteOXbAVMbiBGZUVSEtyyX26qgJuZ1vjRziUAlzU4H7wPE71cAoiY1CCCbs/YvtZeCB5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qIGJZp6GQ/RkrF0ho4CMneGbtb1u8xVykB/x4EpMwUk=;
+ b=hotJZPBOgzuQJ1DDZEuPtxgv4NNmQOb87LOAO/ZTCDqcgfyWvDRM7FuT4Djtg1IIKQ7q+2jnozMKO8L+O8Pw96DFZPwJa2zz4XFkkMqAKuTW4LV/c9uk6Q42UlnQpbdGkMLOvKIu6aea7YAHn7TSTezM6H095D58AXIIiK7HMlI=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OS0PR01MB5425.jpnprd01.prod.outlook.com (2603:1096:604:af::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Fri, 22 Jan
+ 2021 08:35:52 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::340a:689c:36e1:fedd]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::340a:689c:36e1:fedd%7]) with mapi id 15.20.3784.013; Fri, 22 Jan 2021
+ 08:35:52 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     'John Garry' <john.garry@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>
+CC:     "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZVA
+ events
+Thread-Topic: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZVA
+ events
+Thread-Index: AQHW7+SfZlbnwAdjkk2qmbTsu5bGU6ox9FMAgABlzYCAANpbYA==
+Date:   Fri, 22 Jan 2021 08:35:52 +0000
+Message-ID: <OSBPR01MB4600DCC22FFE8BA6A6BB2897F7A00@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <20210121105425.2695843-1-nakamura.shun@jp.fujitsu.com>
+ <20210121105425.2695843-2-nakamura.shun@jp.fujitsu.com>
+ <b00bf252-e31f-b0eb-d0aa-0a62bcaee22e@hisilicon.com>
+ <0be33a5d-98a1-d2e1-704e-83334063888d@huawei.com>
+In-Reply-To: <0be33a5d-98a1-d2e1-704e-83334063888d@huawei.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-shieldmailcheckermailid: e65b491330dc4890a689f3b62a2fd220
+x-securitypolicycheck: OK by SHieldMailChecker v2.6.3
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [218.44.52.182]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fa8c7cc3-60b4-45c1-8312-08d8beb0ba48
+x-ms-traffictypediagnostic: OS0PR01MB5425:
+x-microsoft-antispam-prvs: <OS0PR01MB5425582E591E2499E9815F54F7A00@OS0PR01MB5425.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7L1F2WnlC2/4O8W44fd4c8sZQ0GB6CXkvYVpcyAfw35OYZ96kYKkatQH7UwRI2culNTC3IA0FHkm+Yx8aIeTugLpK8ziD6I4RziCOwTYHwYhBFVZoFq0elxS5I3yCuUMNAsJbdyheKMSmgfkVQqmEpM41Jge9GkSJHp70j0rN+0y4IcTKTg4Jzto6K7SlCheqQuG3kg1ZpJDQmd//rv7P4PPLoCts8iynmpG1wMoNDmmEe3NPJZpFTxIBSkIJ07g2NUcQlI/vDLj7MeYzPmTMLIQrDJ4cWSyi64hM7lp+Cj6X9Z4NwZDLXQ//KAqeO/CJIWWEVL3qm0h1x5EI1as6smK3ppvt8ZIvWtsM+GY000tQOHZkxM9Y2zC8Ucp6p6cvcUvRfanLs5sch1C/ty+qRta7Lm/AA2j4aMoJGjOzMoCZWnCvNC3Gx9PioZyaDfW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39860400002)(53546011)(26005)(83380400001)(6506007)(66946007)(76116006)(66476007)(64756008)(66446008)(85182001)(66556008)(86362001)(8936002)(4326008)(186003)(55016002)(9686003)(110136005)(54906003)(2906002)(316002)(71200400001)(52536014)(7696005)(8676002)(478600001)(33656002)(5660300002)(777600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?WkpBdE82WTlTT2JpWmx5YkxKVW1OL3N3N0tuaWt1SGYxbG1nTGppUkhi?=
+ =?iso-2022-jp?B?MEFISkdRVG8vaVFFWlRZY2JtNTc0M016enFOQWlNMEhSY3c5aUxyaWZq?=
+ =?iso-2022-jp?B?R1grNzJlb0tFMmJSOW5OMjNGNFl2ZDRyU3BaWGp3R0IzZ0Z6U2RjRUtK?=
+ =?iso-2022-jp?B?RW1nTUI1amhJTmNGaE5UM2IzVGdEamZrNWwrRm9veERUdUIzWTRUNEtL?=
+ =?iso-2022-jp?B?UTRCdXBhd0pvUjJRQTdNRk5OUmJMOVlNYUFRWUdMUkJMcGxrWThKaHBv?=
+ =?iso-2022-jp?B?L1k1bktjajB1YmNzQm5YVlVLYzZKM1BDYmEwdjY5TmxncnpTZjBYV05t?=
+ =?iso-2022-jp?B?U1RUYS9Xb0NoSmpHeTJrWVBiK0YvQlZ1OVgxMTU5dGxmVDFZK2FVR1o3?=
+ =?iso-2022-jp?B?ZXRFTFBxU3R3RFZZWXVEaE1oY05YaEllYjNSbHJsNTdWek1TK25LaWNC?=
+ =?iso-2022-jp?B?alByTUkzaFFyb2JwY0lPblFVRGJSMVBXWWdKdVRPRzhSeEt1KzBlNnM5?=
+ =?iso-2022-jp?B?b2pZR0xPVm5OTmxmS09STEw0dVMvMXN2RHV1a0kvakE1WHJ1TXhzb2Vp?=
+ =?iso-2022-jp?B?ZVpFc3A4TS8zSEJ5K0c4NjR4U2pta3VOSS9ybE5wZ09zYjFvMFIyM040?=
+ =?iso-2022-jp?B?TnpyQzd4VnBXYzlya0xMVytHN2NoUUxrYmt3NEt1ckx4bEhueUZqRzRr?=
+ =?iso-2022-jp?B?cE9VRGxFZE9ER2krMDN6UnFnSXRNbG1KM2FVYUZWeWR3MnNZTnQzOFlj?=
+ =?iso-2022-jp?B?NlpSRFRkT0Noc3p4OFJNSm9hTWI5SDY2TWlRWGxOclRUeC8zWkIyOSs2?=
+ =?iso-2022-jp?B?TmcraDdqRTNYUEM1ZmZ5ellySnFkckEycE9UbXh1NVY0eUxGUGlrQUUv?=
+ =?iso-2022-jp?B?ZCt4ek1laXJla0pWbXlvcERobU9uVHFnZTBQQzhKSWRlM1NnQjgwU20w?=
+ =?iso-2022-jp?B?dEU4a3p0UkJ6SUM5aWxJRUZILzkwQXBuTkdlRW1sMG5IcmlkUFkyNlNE?=
+ =?iso-2022-jp?B?eDAvTzJ1dENmMXcxMG1TR1oybjVOK0JvWDZzMEZMTHA0RzBNMzJudTlP?=
+ =?iso-2022-jp?B?RXhMdzVYWldmK1dmMHQ3d1pnY1ZlZnNiUDFPQXNpV2VTdGlVZHlLVEo0?=
+ =?iso-2022-jp?B?NjAxZXEzMlczcUhQb2ZmRjc3bG9telZvcDNjajlReng0Sm5ySmtZSXRL?=
+ =?iso-2022-jp?B?NStqS1MyV1llcmtGNTh0MmdNOWZGMWpGWnhQRDhveGs2czZPVCtJd1N0?=
+ =?iso-2022-jp?B?cVNZZkczOG9veUhoMFUzdE1PbVVUVU9oZk5PMTZIZjUyTG5PSGxpNjla?=
+ =?iso-2022-jp?B?cVhyeVdkb25UaThnd2ZvSUJQeEdGR25uWlh3SVBwVWpyOHlTbGk1Y3Qv?=
+ =?iso-2022-jp?B?UmgwbHMzbXdaR3I5NWVIUm5PdW9DenlMRXcrNWJIdmhVZWVtdz0=?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1c8c204d-1f96-d3aa-1b7b-ec4cc7b1b79b@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa8c7cc3-60b4-45c1-8312-08d8beb0ba48
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 08:35:52.0931
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PqRPeKCc4Z1IA+W3w4tuIb5UQDg74YPrB0Mu4GxPR5VZg+quUWscTaIodeN7/lC6b+D6mxwSa5V3jLA3UIPpg6V5lsTDsMhtUSwr88pfC9Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0PR01MB5425
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.01.21 07:04, Anshuman Khandual wrote:
-> 
-> On 1/20/21 2:07 PM, Anshuman Khandual wrote:
->>
->>
->> On 1/19/21 7:10 PM, Oscar Salvador wrote:
->>> On Tue, Jan 19, 2021 at 02:33:03PM +0100, David Hildenbrand wrote:
->>>> Minor thing, we should make up our mind if we want to call stuff
->>>> internally "memhp_" or "mhp". I prefer the latter, because it is shorter.
->>>
->>> I would rather use the latter as well. I used that in [1].
->>
->> Okay, will change all that is 'memhp' as 'mhp' instead.
->>
->>> MEMHP_MERGE_RESOURCE should be renamed if we agree on that.
->>>
->>> [1] https://patchwork.kernel.org/project/linux-mm/cover/20201217130758.11565-1-osalvador@suse.de/
->>>
-> 
-> While replacing 'memhp' as 'mhp' in this series, noticed there are
-> some more 'memhp' scattered around the code from earlier. A mix of
-> both 'memhp' and 'mhp' might not be a good idea. Hence should we
-> just change these remaining 'memhp' as 'mhp' as well and possibly
-> also MEMHP_MERGE_RESOURCE as suggested earlier, in a subsequent
+Hi,  John, Shaokun
 
-As mentioned in another thread to Oscar, I already have a cleanup patch
-for that one lying around, part of a bigger series. Might just send that
-one out separately earlier.
+> > =1B$B:_=1B(B 2021/1/21 18:54, Shunsuke Nakamura =1B$B<LF;=1B(B:
+> >> Adds L1 data cache refill prefetch, L2 data cache refill prefetch,
+> >> and DCZVA instruction events.
+> >
+> > A silly question, Does Arm define these events? I checked Arm ARM
+> > document(DDI0487Fc) that these event numbers are reserved. Or maybe I
+> > miss something.
+>=20
+> For events which are reserved (see k3-1), like 0x9f, prob should not be p=
+utting in
+> this file, but rather the CPU JSON.
 
-> clean up patch ? Would there be a problem with memhp_default_state
-> being a command line parameter ?
+I missed the reservation area for ARM recommended events.
+I will fix the patch as you pointed out.
 
-Yes, that one we should not change, to not break existing cmdlines
-without good reason. We could change the
-memhp_default_online_type/memhp_online_type_from_str/... thingies, though.
+Best Regards
 
-Feel free to send a patch, thanks!
-
--- 
-Thanks,
-
-David / dhildenb
+> -----Original Message-----
+> From: John Garry <john.garry@huawei.com>
+> Sent: Friday, January 22, 2021 2:44 AM
+> To: Shaokun Zhang <zhangshaokun@hisilicon.com>; Nakamura, Shunsuke/=1B$BC=
+fB<=1B(B
+> =1B$B=3DS2p=1B(B <nakamura.shun@fujitsu.com>
+> Cc: mathieu.poirier@linaro.org; linux-kernel@vger.kernel.org;
+> leo.yan@linaro.org; will@kernel.org; linux-arm-kernel@lists.infradead.org
+> Subject: Re: [PATCH v2 1/3] perf vendor events: Add cache refill and DCZV=
+A
+> events
+>=20
+> On 21/01/2021 11:39, Shaokun Zhang wrote:
+> > Hi,
+> >
+> > =1B$B:_=1B(B 2021/1/21 18:54, Shunsuke Nakamura =1B$B<LF;=1B(B:
+> >> Adds L1 data cache refill prefetch, L2 data cache refill prefetch,
+> >> and DCZVA instruction events.
+> >
+> > A silly question, Does Arm define these events? I checked Arm ARM
+> > document(DDI0487Fc) that these event numbers are reserved. Or maybe I
+> > miss something.
+>=20
+> For events which are reserved (see k3-1), like 0x9f, prob should not be p=
+utting in
+> this file, but rather the CPU JSON.
+>=20
+> Cheers,
+> John
+>=20
+> >
+> >>
+> >> Signed-off-by: Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+> >> ---
+> >>   .../perf/pmu-events/arch/arm64/armv8-recommended.json  | 18
+> ++++++++++++++++++
+> >>   1 file changed, 18 insertions(+)
+> >>
+> >> diff --git a/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
+> >> b/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
+> >> index d0a1986..ee0e67d 100644
+> >> --- a/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
+> >> +++ b/tools/perf/pmu-events/arch/arm64/armv8-recommended.json
+> >> @@ -54,6 +54,12 @@
+> >>           "BriefDescription": "L1D cache invalidate"
+> >>       },
+> >>       {
+> >> +        "PublicDescription": "This event counts L1D_CACHE_REFILL
+> caused by software or hardware prefetch.",
+> >> +        "EventCode": "0x49",
+> >> +        "EventName": "L1D_CACHE_REFILL_PRF",
+> >> +        "BriefDescription": "This event counts L1D_CACHE_REFILL cause=
+d
+> by software or hardware prefetch."
+> >> +    },
+> >> +    {
+> >>           "PublicDescription": "Attributable Level 1 data TLB refill, =
+read",
+> >>           "EventCode": "0x4C",
+> >>           "EventName": "L1D_TLB_REFILL_RD", @@ -120,6 +126,12 @@
+> >>           "BriefDescription": "L2D cache invalidate"
+> >>       },
+> >>       {
+> >> +        "PublicDescription": "This event counts L2D_CACHE_REFILL
+> caused by software or hardware prefetch.",
+> >> +        "EventCode": "0x59",
+> >> +        "EventName": "L2D_CACHE_REFILL_PRF",
+> >> +        "BriefDescription": "This event counts L2D_CACHE_REFILL cause=
+d
+> by software or hardware prefetch."
+> >> +    },
+> >> +    {
+> >>           "PublicDescription": "Attributable Level 2 data or unified T=
+LB refill,
+> read",
+> >>           "EventCode": "0x5c",
+> >>           "EventName": "L2D_TLB_REFILL_RD", @@ -408,6 +420,12 @@
+> >>           "BriefDescription": "Release consistency operation speculati=
+vely
+> executed, Store-Release"
+> >>      },
+> >>      {
+> >> +         "PublicDescription": "This event counts architecturally exec=
+uted
+> zero blocking operations due to the 'DC ZVA' instruction.",
+> >> +         "EventCode": "0x9f",
+> >> +         "EventName": "DCZVA_SPEC",
+> >> +         "BriefDescription": "This event counts architecturally execu=
+ted
+> zero blocking operations due to the 'DC ZVA' instruction."
+> >> +   },
+> >> +   {
+> >>           "PublicDescription": "Attributable Level 3 data or unified c=
+ache
+> access, read",
+> >>           "EventCode": "0xa0",
+> >>           "EventName": "L3D_CACHE_RD",
+> >>
+> > .
+> >
 
