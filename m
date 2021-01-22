@@ -2,265 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29783010CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F25301090
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbhAVXQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 18:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729615AbhAVTgo (ORCPT
+        id S1728225AbhAVXDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 18:03:23 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:56876 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729037AbhAVXBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:36:44 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6111BC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:36:04 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id t16so4629644qvk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:36:04 -0800 (PST)
+        Fri, 22 Jan 2021 18:01:01 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MMt2f1046469;
+        Fri, 22 Jan 2021 22:59:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=oQaCgFr07ErL9O4RN7K+jvz+UJndRmk2E1Tydv/RO5A=;
+ b=klwpE54CCpcZiLNZyl/yZIZY4JbUwqoKRUyxSv0qRtdGwFVuExUpof/cQXGCZBAbD8DP
+ +rvFOW/sMJUGNXeKdVIAin8RWYJXER/Bph6n1dv8Bvbg4TRcxEdgMvKq50IlgHqx5WK+
+ Ta32cIX5h+bZbtPn+o9G3gPEPxmpQWGUyEp3RbSBo/004Mq7Ma9vujU6KSjOTz+BMr7V
+ zgGD4smOVys91hu9cvX4MsKSi/cF8Vgdj/ZCpi2ZvFaqFZLJNchhaxezWDvg+Nbtx0Bx
+ tjZ7hwgyswZU/3ZOcjyVEPw5imnnhBIETNZ6HNJEUIs2QrrtKT51FssbrOw+97YasgMF 1A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 3668qn6j2h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Jan 2021 22:59:55 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10MMxrpg103184;
+        Fri, 22 Jan 2021 22:59:54 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2175.outbound.protection.outlook.com [104.47.58.175])
+        by userp3030.oracle.com with ESMTP id 3668rhjuse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 22 Jan 2021 22:59:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bdhG3XYkR+Hx/ot9r6c86kiN5pT7JkACLblPIzFgRB+KkbdBP0jjkjWUzGQBLZsBES7r93x1KgNYUJPSRWUD8VECLPH296RVV/+p9cA4Vm61Cd04iJC1/HA031sPCvb27yt2iB1DtJbqe0qMQ0koLE8XkgbhBFpX8fv1tmIojzuu8rR9cXL1tJaOnktLZICnCt6lYPTbCH+/ahu8XlK4manDC4V61Tdh+IkDMkzfUDCj5XzMxkL8YnZgwkP+EOWcxSais4Vea0iemvxAfNFLla5W1gOjXMZOckssjlJdHNUM/XNuxnAXSngwjla+70OqHRC/UWe0jpNJvtnclOcGng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oQaCgFr07ErL9O4RN7K+jvz+UJndRmk2E1Tydv/RO5A=;
+ b=Fo89Nxp7ua7oOWTotdeKdasEw63bemk7Sfd8qGopzrUn5NXi2V47ED1HXR2NlQUS9ZN2J30xhP7OuMJrpvidubT3IsyzJPGloqVxMLQ84ZKpoWYzLWdjj9ixACOfsCMB4Mrk8t40nlNNpdrftaklcrxRZur5fQbhq9DeVFUDxFKX8yMNNymN/7nv4pQ4BeA8S/6nwjzHl8XyYSn9CjLvJSOkkLWVBg6rFy+8/T24JK6lmNqhPdwZkWVsF5c/jDwQLCHn51+PHHDG8LIRoagpH6OjQj8ODpG6L41Yfd+tEOASist85lyHpejoP9PbxEjLUNMB0PxV4hKAJmjMNS27vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=vwTBSNbfDWaRQPctDpLH0p2BBFqK5xvzdDkItx0sEjE=;
-        b=BfId1GG2WGMLSADd0/pPePH3uUoFgLZTw2aBQY+Zoo5IvDtvHVjdAcmG46tpvd/6/V
-         ZPU297w7pkhSWBZQs0O+myQ9dKay+bMSZ6FKDz4EcFTVQNBKIBZF6GJ87zP8G9vpcNXJ
-         DEfb7h+T1WzdAmlFcSjXv4VEX4KzCiPzAal2jMxEDU6s0suN9SyFWydxVA707eOandvw
-         WEpx3sDzf/S1FHKDI331926Ktw8QYz4FTCc7z87XVlxsD4MiKInad0VQR1aDJkkuF5hI
-         2jG0zV6c2L237xv86wXu/QaMAB/Ftckz4oLTsPPi9DpxXf5FXEkHfjZA4qMMZ5+s3u+T
-         3rxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=vwTBSNbfDWaRQPctDpLH0p2BBFqK5xvzdDkItx0sEjE=;
-        b=R9px4PEItneL47791jUzzsQQD/HLiyHC+AHVxciowHKmSfZF3LHwZD5Ls1+26y3rDl
-         rMDTOaUVueYI1cVFU3GvGoubXxg1Ozcq8AltU6N5kX7vPKUlKIPBF/W4k+IAomss8fH8
-         ah8XDPld3jHkkzeaTziCNQuZq6H/hKoQtUWpxk/ZO+PL/K0KEra+VfQR3i6R7cpJFHdY
-         JYUSNBkRsCa7e8HiqCQHHArsMnhmhupnLl67FVdg54MEGco0cNLs6TQmxLefRk4mhwxX
-         lW/NOWn5+FoaaqY5H2jNkxNW7q9xw57jgUdEmoWr2Y86v1jDX3x4fH5onm/I2dd1jkF/
-         2aIw==
-X-Gm-Message-State: AOAM533iABZvkYGJTKW5X2od5+YSxFzVZNWzNUEjKMeOkcLvXxm38tUD
-        EO4wLjFlOwsd/zDqDfw+OU19VWh8FY/9khc=
-X-Google-Smtp-Source: ABdhPJwzmFKtUiRcrdNfqvADrggST/N6MEKw6afOFsLGM/MIWbIPB02S7WBxJAIeiMYXWQRRi8X5QbM8SmoPV/g=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a05:6214:a94:: with SMTP id
- ev20mr6034383qvb.56.1611344163438; Fri, 22 Jan 2021 11:36:03 -0800 (PST)
-Date:   Fri, 22 Jan 2021 11:35:59 -0800
-Message-Id: <20210122193600.1415639-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-From:   Saravana Kannan <saravanak@google.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        kernel-team@android.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oQaCgFr07ErL9O4RN7K+jvz+UJndRmk2E1Tydv/RO5A=;
+ b=xIKV6N2nvqrZpVvT3QPe2z/r6jIp2tv/L1ux7QIzTy9BMBswwMiL7jQTgMex1kMJxCxqF8RjclW/0dkMN7cECvisklMqxPPUAF4gwhEQKWgoFcmyXzouIqT+uVOY7ILdgwR8s5pGvfMMZtCqUvrLEnvj9cgBgKjWF6Dqx31FNlY=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2823.namprd10.prod.outlook.com (2603:10b6:a03:87::15)
+ by SJ0PR10MB4736.namprd10.prod.outlook.com (2603:10b6:a03:2d6::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Fri, 22 Jan
+ 2021 22:59:40 +0000
+Received: from BYAPR10MB2823.namprd10.prod.outlook.com
+ ([fe80::adef:30b8:ee4e:c772]) by BYAPR10MB2823.namprd10.prod.outlook.com
+ ([fe80::adef:30b8:ee4e:c772%3]) with mapi id 15.20.3763.014; Fri, 22 Jan 2021
+ 22:59:40 +0000
+From:   Stephen Brennan <stephen.s.brennan@oracle.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Stephen Brennan <stephen.s.brennan@oracle.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH v5] proc: Allow pid_revalidate() during LOOKUP_RCU
+Date:   Fri, 22 Jan 2021 14:59:25 -0800
+Message-Id: <20210122225925.152845-1-stephen.s.brennan@oracle.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [2606:b400:8301:1041::19]
+X-ClientProxiedBy: DM5PR21CA0062.namprd21.prod.outlook.com
+ (2603:10b6:3:129::24) To BYAPR10MB2823.namprd10.prod.outlook.com
+ (2603:10b6:a03:87::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2606:b400:8301:1041::19) by DM5PR21CA0062.namprd21.prod.outlook.com (2603:10b6:3:129::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.6 via Frontend Transport; Fri, 22 Jan 2021 22:59:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fb15d148-8317-4375-2acf-08d8bf29664e
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4736:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4736253D790D09FA7B5358E3DBA09@SJ0PR10MB4736.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ScVXhR/da4R1jzBkb1aKX/bVOIr6VB3dFC55MDL5asnAHzs7jx7GgX2FIkfvGaD1p5EmDcpGKpBCoNVAC/6Oa1pyhEIjO+wC6RM0BOU2j75QS/gaVD2ADv3ta2xafVb5JB0u3Ux+H2EFBjuUoVPzASDMaHzIJuCVs17iNISLewYiI+Kj+v/lUBENO0+HbQzRszFw+9eDVQlEYdEdKvu6ACMkTHusUMOC53b+2KIfdloN6H+4sqP5v8Z9egxVau0HfCZencTmgyobA0gUbSfpA1nbQSrNcoTxaDmMrsaJgRfVTHWzmsoYbsCNRz27NO/haN4qxFYEH4TwcrbuBas8G4/dXQl6bHyRP+sFlWAfR1DNfMcVHyunpwoF3xAlo719pzReZvTcU+bb/m19wQnvC3MX+lbn7W8qkhdDVOWFC/Aei43IN80FPwrLvPuVsMQT0QUlkAbtJODbDueq/DMpEA9xptB3SwUsHV3M13XA/d6FP/4rqP4pSER99Vod6x/9MZumpKA05JcnTkgLQFZwAsVo5ioz1Ts2Mvz/t1Ujzujw8+7l1qfwhVEAJ/WAnkWuOK4BTEWg2j2S6vKCN4YYm7ah27ZIb9Y8zkC5seGR+kyRx9N86RXcVEc8/RSRr0cJbIizjZwyTkfql0HhYWCIBNu2ss3AgE2Fyl8qM5UsH2+xX1SSi95CgfTIKAOfKOba2fDrGlCQOJ/BwXsaNzIcWoULl/UoFoOO+x5/XpK+Vc5CrDUmjHXXQbn/1OSr7RXoqF1UheryGy57P24XCPyD4Yrc6HWd20J7kmERroC6aSKX67c4Oj3Q2nUryOvr1jyO05h7x4oe9WnvwYhZxFsQjZE1dW/MKsU2lYnDvLlB2fXz9xlCKscyZTTurxKvv6+L36ATTIzR9BcAsz/pilYv7g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:BYAPR10MB2823.namprd10.prod.outlook.com;PTR:;CAT:OSPM;SFS:(366004)(136003)(39860400002)(396003)(376002)(346002)(66556008)(186003)(66476007)(36756003)(16526019)(478600001)(2616005)(103116003)(6666004)(86362001)(7416002)(1076003)(66946007)(6486002)(2906002)(6916009)(8936002)(316002)(83380400001)(54906003)(4326008)(8676002)(52116002)(5660300002)(6496006)(23200700001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GZUcjLCVY64VMDTeSOrk3T+OK7Y9YB+OFVVQPu4vyGBRghAQZjoPExRoEazi?=
+ =?us-ascii?Q?0L56XLIu2F0fCD4BgM+7T6BE2m6M0rP5tK+ntX2wZyeJ7buF/Pzs235K/Q2Z?=
+ =?us-ascii?Q?mwvU16/VGccBYtl2ZcUcbho96TbURggBLRWpcS+6zpFyLjHuYZaw84wz1OpL?=
+ =?us-ascii?Q?AnuA1KZ9+8PJMUMUi4UXRPNwWvgNgwg1MXRcN21ioK0B/hhcywZh60LBdfqs?=
+ =?us-ascii?Q?E/7umnO3sAs+nH5XALDbZov4m+u7yuD/mTSvUee/vzmWtahx0Cv67bY9+7Hm?=
+ =?us-ascii?Q?4k0LaqDrfq444A5CwMcgZ7zJyUbjhWe2fchvr1BJAzhK92Xg3UNCYJ7o7e1n?=
+ =?us-ascii?Q?Q/lof4s8u1FBdPccPN3wbwEXgWzyBQtpWrF96G0/mbqrw4d7TLI+1bR6+uYT?=
+ =?us-ascii?Q?XREcRZq3VD8P0O/PNZgxwZDujHAw5TQeEauG9bjGY72PK/eE6A8kD8a7IaCt?=
+ =?us-ascii?Q?OJEhuveEeMCB/e8n1qSqCHNxkkN7jQeIyGDk9d+30mJzrmSPcSjEaVt2iOkF?=
+ =?us-ascii?Q?32X4/YfHw4+0RMxruxoHTwcRzUHEW5mP5hk5kTEPKYZalmA289Ld7A4uoTaf?=
+ =?us-ascii?Q?t1qfoAOp/WrbsrCKUszr9vVETS4u4LM4HOGqCOBm34pI+0YjkK0IwZV0AvH+?=
+ =?us-ascii?Q?tuNfWShXIbTX8v+ASt1MA8phP5SudI966woHPq4MfI7l9blFvKoyvaASnldx?=
+ =?us-ascii?Q?0byxpfEeiwy+mOerifPueehw05jGpjDCem4b/0kaC+N4T48NkhEwnwka9h+n?=
+ =?us-ascii?Q?heJ7e3PB/E8bq+Tt1dOUEgA96wseimidmqKRbfyzPxAPUOXG5T7owznyE5qJ?=
+ =?us-ascii?Q?Ju7bvWr8zeRUdxwL5NvP9DlmBkNDB6uyK8RcCkVQQcdC9c10TAA73TYdXfmw?=
+ =?us-ascii?Q?0Uxkseyjbdup8iYJczhGY3zWde3XZkVR6yQVVpakflcNAQcuSvIIPQ2TUAyk?=
+ =?us-ascii?Q?0ckvkeL4yCftzGKfPvqJ+ml0dwKGweFUHBgldgUqxByb/lE/ljFQ7IArNE9e?=
+ =?us-ascii?Q?EqER3e6PbTJDx0NIJjnyLm+I0OM6lsPSrU/fcal/CEJHBhgdONlDw+80t8Vx?=
+ =?us-ascii?Q?DLXOQoz9w5+zW3foSxFDvuPQJUfF0Q=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb15d148-8317-4375-2acf-08d8bf29664e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2823.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jan 2021 22:59:40.5927
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ya2K5TzOyB1LcdrrrCv63hjUS0sxHzfHjn9JwvJpxq2v3ss/5DC5XqEdA39W3+ZlXcReUB1+7fos6Cv69hyR5ZvsvvbPlDbmipbgzSSY3Eo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4736
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ suspectscore=0 phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101220119
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
+ adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ phishscore=0 clxscore=1011 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101220118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple instances of GPIO device tree nodes of the form:
+The pid_revalidate() function drops from RCU into REF lookup mode. When
+many threads are resolving paths within /proc in parallel, this can
+result in heavy spinlock contention on d_lockref as each thread tries to
+grab a reference to the /proc dentry (and drop it shortly thereafter).
 
-foo {
-	compatible = "acme,foo";
-	...
+Investigation indicates that it is not necessary to drop RCU in
+pid_revalidate(), as no RCU data is modified and the function never
+sleeps. So, remove the LOOKUP_RCU check.
 
-	gpio0: gpio0@xxxxxxxx {
-		compatible = "acme,bar";
-		...
-		gpio-controller;
-	};
-
-	gpio1: gpio1@xxxxxxxx {
-		compatible = "acme,bar";
-		...
-		gpio-controller;
-	};
-
-	...
-}
-
-bazz {
-	my-gpios = <&gpio0 ...>;
-}
-
-Case 1: The driver for "foo" populates struct device for these gpio*
-nodes and then probes them using a driver that binds with "acme,bar".
-This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
-This lines up with how DT nodes with the "compatible" property are
-typically converted to struct devices and then registered with driver
-core to probe them. This also allows the gpio* devices to hook into all
-the driver core capabilities like runtime PM, probe deferral,
-suspend/resume ordering, device links, etc.
-
-Case 2: The driver for "foo" doesn't populate struct devices for these
-gpio* nodes before registering them with gpiolib. Instead it just loops
-through its child nodes and directly registers the gpio* nodes with
-gpiolib.
-
-Drivers that follow case 2 cause problems with fw_devlink=on. This is
-because fw_devlink will prevent bazz from probing until there's a struct
-device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
-supplier). Once the struct device is available, fw_devlink will create a
-device link with gpio0 device as the supplier and bazz device as the
-consumer. After this point, since the gpio0 device will never bind to a
-driver, the device link will prevent bazz device from ever probing.
-
-Finding and refactoring all the instances of drivers that follow case 2
-will cause a lot of code churn and it is not something that can be done
-in one shot. In some instances it might not even be possible to refactor
-them cleanly. Examples of such instances are [1] [2].
-
-This patch works around this problem and avoids all the code churn by
-simply setting the fwnode of the gpio_device and creating a stub driver
-to bind to the gpio_device. This allows all the consumers to continue
-probing when the driver follows case 2.
-
-[1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
-[2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc: Kever Yang <kever.yang@rock-chips.com>
-Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Stephen Brennan <stephen.s.brennan@oracle.com>
 ---
-v1 -> v2:
-- Fixed up compilation errors that were introduced accidentally
-- Fixed a missing put_device()
 
-v2 -> v3:
-- Changed chip_warn() to pr_warn()
-- Changed some variable names
+When running running ~100 parallel instances of "TZ=/etc/localtime ps -fe
+>/dev/null" on a 100CPU machine, the %sys utilization reaches 90%, and perf
+shows the following code path as being responsible for heavy contention on
+the d_lockref spinlock:
 
-v3 -> v4:
-- Dropped the warning since it's not always valid
-- This simplifies the code a lot
-- Added comments and fixed up commit text
+      walk_component()
+        lookup_fast()
+          d_revalidate()
+            pid_revalidate() // returns -ECHILD
+          unlazy_child()
+            lockref_get_not_dead(&nd->path.dentry->d_lockref) <-- contention
 
-v4 -> v5:
-- Fixed the code to not mess up non-DT cases.
-- Moved code into gpiolib-of.c
+By applying this patch, %sys utilization falls to around 60% under the same
+workload. Although this particular workload is a bit contrived, we have
+seen some monitoring scripts which produced similarly high %sys time due to
+this contention.
 
- drivers/gpio/gpiolib-of.c | 11 +++++++++++
- drivers/gpio/gpiolib-of.h |  5 +++++
- drivers/gpio/gpiolib.c    | 38 +++++++++++++++++++++++++++++++-------
- 3 files changed, 47 insertions(+), 7 deletions(-)
+As a result this patch, several procfs methods which were only called in
+ref-walk mode could now be called from RCU mode. To ensure that this patch
+is safe, I audited all the inode get_link and permission() implementations,
+as well as dentry d_revalidate() implementations, in fs/proc. These methods
+are called in the following ways:
 
-diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
-index b4a71119a4b0..baf0153b7bca 100644
---- a/drivers/gpio/gpiolib-of.c
-+++ b/drivers/gpio/gpiolib-of.c
-@@ -1039,3 +1039,14 @@ void of_gpiochip_remove(struct gpio_chip *chip)
+* get_link() receives a NULL dentry pointer when called in RCU mode.
+* permission() receives MAY_NOT_BLOCK in the mode parameter when called
+  from RCU.
+* d_revalidate() receives LOOKUP_RCU in flags.
+
+There were generally three groups I found. Group (1) are functions which
+contain a check at the top of the function and return -ECHILD, and so
+appear to be trivially RCU safe (although this is by dropping out of RCU
+completely). Group (2) are functions which have no explicit check, but
+on my audit, I was confident that there were no sleeping function calls,
+and thus were RCU safe as is. However, I would appreciate any additional
+review if possible. Group (3) are functions which might be be unsafe for some
+reason or another.
+
+Group (1):
+ proc_ns_get_link()
+ proc_pid_get_link()
+ map_files_d_revalidate()
+ proc_misc_d_revalidate()
+ tid_fd_revalidate()
+
+Group (2):
+ proc_get_link()
+ proc_self_get_link()
+ proc_thread_self_get_link()
+ proc_fd_permission()
+
+Group (3):
+ pid_revalidate()            -- addressed by my patch
+ proc_pid_permission()       -- addressed by commits by Al
+ proc_map_files_get_link()   -- calls capable() which could audit
+
+I believe proc_map_files_get_link() is safe despite calling into the audit
+framework, however I'm not confident and so I did not include it in Group 2.
+proc_pid_permission() calls into the audit code, and is not safe with
+LSM_AUDIT_DATA_DENTRY or LSM_AUDIT_DATA_INODE. Al's commits[1] address
+these issues. This patch is tested and stable on the workload described
+at the beginning of this cover letter, on a system with selinux enabled.
+
+[1]: 23d8f5b684fc ("make dump_common_audit_data() safe to be called from
+     RCU pathwalk") and 2 previous
+
+Changes in v5:
+- Al's commits are now in linux-next, resolving proc_pid_permission() issue.
+- Add NULL check after d_inode_rcu(dentry), because inode may become NULL if
+  we do not hold a reference.
+Changes in v4:
+- Simplify by unconditionally calling pid_update_inode() from pid_revalidate,
+  and removing the LOOKUP_RCU check.
+Changes in v3:
+- Rather than call pid_update_inode() with flags, create
+  proc_inode_needs_update() to determine whether the call can be skipped.
+- Restore the call to the security hook (see next patch).
+Changes in v2:
+- Remove get_pid_task_rcu_user() and get_proc_task_rcu(), since they were
+  unnecessary.
+- Remove the call to security_task_to_inode().
+
+ fs/proc/base.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index ebea9501afb8..3e105bd05801 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -1830,19 +1830,21 @@ static int pid_revalidate(struct dentry *dentry, unsigned int flags)
  {
- 	of_node_put(chip->of_node);
- }
-+
-+void of_gpio_dev_init(struct gpio_chip *gc, struct gpio_device *gdev)
-+{
-+	/* If the gpiochip has an assigned OF node this takes precedence */
-+	if (gc->of_node)
-+		gdev->dev.of_node = gc->of_node;
-+	else
-+		gc->of_node = gdev->dev.of_node;
-+	if (gdev->dev.of_node)
-+		gdev->dev.fwnode = of_fwnode_handle(gdev->dev.of_node);
-+}
-diff --git a/drivers/gpio/gpiolib-of.h b/drivers/gpio/gpiolib-of.h
-index ed26664f1537..8af2bc899aab 100644
---- a/drivers/gpio/gpiolib-of.h
-+++ b/drivers/gpio/gpiolib-of.h
-@@ -15,6 +15,7 @@ int of_gpiochip_add(struct gpio_chip *gc);
- void of_gpiochip_remove(struct gpio_chip *gc);
- int of_gpio_get_count(struct device *dev, const char *con_id);
- bool of_gpio_need_valid_mask(const struct gpio_chip *gc);
-+void of_gpio_dev_init(struct gpio_chip *gc, struct gpio_device *gdev);
- #else
- static inline struct gpio_desc *of_find_gpio(struct device *dev,
- 					     const char *con_id,
-@@ -33,6 +34,10 @@ static inline bool of_gpio_need_valid_mask(const struct gpio_chip *gc)
- {
- 	return false;
- }
-+static inline void of_gpio_dev_init(struct gpio_chip *gc,
-+				    struct gpio_device *gdev)
-+{
-+}
- #endif /* CONFIG_OF_GPIO */
+ 	struct inode *inode;
+ 	struct task_struct *task;
++	int ret = 0;
  
- extern struct notifier_block gpio_of_notifier;
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index b02cc2abd3b6..70fb15ae5d36 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -590,13 +590,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 		gdev->dev.of_node = gc->parent->of_node;
+-	if (flags & LOOKUP_RCU)
+-		return -ECHILD;
+-
+-	inode = d_inode(dentry);
+-	task = get_proc_task(inode);
++	rcu_read_lock();
++	inode = d_inode_rcu(dentry);
++	if (!inode)
++		goto out;
++	task = pid_task(proc_pid(inode), PIDTYPE_PID);
+ 
+ 	if (task) {
+ 		pid_update_inode(task, inode);
+-		put_task_struct(task);
+-		return 1;
++		ret = 1;
  	}
- 
--#ifdef CONFIG_OF_GPIO
--	/* If the gpiochip has an assigned OF node this takes precedence */
--	if (gc->of_node)
--		gdev->dev.of_node = gc->of_node;
--	else
--		gc->of_node = gdev->dev.of_node;
--#endif
-+	of_gpio_dev_init(gc, gdev);
- 
- 	gdev->id = ida_alloc(&gpio_ida, GFP_KERNEL);
- 	if (gdev->id < 0) {
-@@ -4202,6 +4196,29 @@ void gpiod_put_array(struct gpio_descs *descs)
+-	return 0;
++out:
++	rcu_read_unlock();
++	return ret;
  }
- EXPORT_SYMBOL_GPL(gpiod_put_array);
  
-+static int gpio_stub_drv_probe(struct device *dev)
-+{
-+	/*
-+	 * The DT node of some GPIO chips have a "compatible" property, but
-+	 * never have a struct device added and probed by a driver to register
-+	 * the GPIO chip with gpiolib. In such cases, fw_devlink=on will cause
-+	 * the consumers of the GPIO chip to get probe deferred forever because
-+	 * they will be waiting for a device associated with the GPIO chip
-+	 * firmware node to get added and bound to a driver.
-+	 *
-+	 * To allow these consumers to probe, we associate the struct
-+	 * gpio_device of the GPIO chip with the firmware node and then simply
-+	 * bind it to this stub driver.
-+	 */
-+	return 0;
-+}
-+
-+static struct device_driver gpio_stub_drv = {
-+	.name = "gpio_stub_drv",
-+	.bus = &gpio_bus_type,
-+	.probe = gpio_stub_drv_probe,
-+};
-+
- static int __init gpiolib_dev_init(void)
- {
- 	int ret;
-@@ -4213,9 +4230,16 @@ static int __init gpiolib_dev_init(void)
- 		return ret;
- 	}
- 
-+	if (driver_register(&gpio_stub_drv) < 0) {
-+		pr_err("gpiolib: could not register GPIO stub driver\n");
-+		bus_unregister(&gpio_bus_type);
-+		return ret;
-+	}
-+
- 	ret = alloc_chrdev_region(&gpio_devt, 0, GPIO_DEV_MAX, GPIOCHIP_NAME);
- 	if (ret < 0) {
- 		pr_err("gpiolib: failed to allocate char dev region\n");
-+		driver_unregister(&gpio_stub_drv);
- 		bus_unregister(&gpio_bus_type);
- 		return ret;
- 	}
+ static inline bool proc_inode_is_dead(struct inode *inode)
 -- 
-2.30.0.280.ga3ce27912f-goog
+2.27.0
 
