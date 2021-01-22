@@ -2,184 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434BE2FFB06
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C10D2FFB20
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbhAVD0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 22:26:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbhAVD0k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:26:40 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5F6C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 19:25:59 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id p18so2744853pgm.11
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 19:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Gsjy534BQS56SU6SeFB/WjmC/NWzmnXhGpzGJe7xB60=;
-        b=SG2JTRlpXpM4jYWnQLSpXSQqE1+M9/S0sKrdBaso1OszGUCKVrQPawHx1rQXdi28e/
-         QvnG3RO7Y6iSNHtt7uaomykbpXiMdzyQJuvCqTRaj1qwFwwbcM/eMz2Q6pSeJmWeEna8
-         LGe8DTS2wY1zx8ShTQSiqiJYutZx42G2Jo9R0WrJynYvRfrfTtIAIQrx/x9NVCJ9FrAZ
-         p3COnS7W/dv8Y6AIxI2qybJGS3SM0C3lM6JOGNHG/JVTZBEr6LI1zdMjPqAKvgSKsjYg
-         +nNccJ4jfcIyegU+I8KMgRhIx2B7LkAQPvWcy4t26jkVv8jPrdmrmtpcj6KKH0dQ0DUS
-         UbwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Gsjy534BQS56SU6SeFB/WjmC/NWzmnXhGpzGJe7xB60=;
-        b=SW1ZNXLDiMv2s4cUuAfywJ3wONZpaAo59ZOPzgickfHZmiNGa4s0ZUCtkVfTsbZ0SS
-         YcWBtM6qUMaXugbkFYhD8j4fxAZhKdfgF1YV8a3SbLyuezol90pb7nuTo8geAJ8etnka
-         IxEgm9/sob8nY8n5sGBcuKdoNJ6WDP++Xtkvhd+1ZYzBWC8hVKkh3JvPkm9uOcVG8+ZE
-         gizCC9/SjXYG3ZKXuDfL6AgRXe2nvWCiPlzFqufeaRLZJaZMYRLIBcJePTpYdKcFckgK
-         Du+6gzC1P0N/WqGKv2G2tkYYFxswMN2NGar+Qke+zg0jN52qIHy8ayYSyr3Z8e9q1bCf
-         oVdQ==
-X-Gm-Message-State: AOAM5318mpq61ImJELmK3nKHsV2TCBJorci65kNjOLViuemGtoRvvucx
-        QnXdTg2UiWAqf9t3GHijL/P5LlqLEzXPBw==
-X-Google-Smtp-Source: ABdhPJzv+pZUIoh5eVCAREqwtrXilW4g0JNeb6u7OH+Lq191AYyMZ4OmtpuMycM9Wqk4ungdHbcaxw==
-X-Received: by 2002:a62:ddcf:0:b029:1b7:baca:6c71 with SMTP id w198-20020a62ddcf0000b02901b7baca6c71mr2734869pff.43.1611285958914;
-        Thu, 21 Jan 2021 19:25:58 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id c11sm7153264pjv.3.2021.01.21.19.25.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 19:25:58 -0800 (PST)
-Date:   Thu, 21 Jan 2021 19:25:58 -0800 (PST)
-X-Google-Original-Date: Thu, 21 Jan 2021 19:23:53 PST (-0800)
-Subject:     Re: [PATCH v3] riscv: add BUILTIN_DTB support for MMU-enabled targets
-In-Reply-To: <20210115234947.44014-1-vitaly.wool@konsulko.com>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        anup@brainfault.org, Damien Le Moal <Damien.LeMoal@wdc.com>,
-        devicetree@vger.kernel.org, vitaly.wool@konsulko.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     vitaly.wool@konsulko.com
-Message-ID: <mhng-44310bfb-e106-449b-830c-78b5e140fadb@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1726581AbhAVDde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 22:33:34 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:30085 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726296AbhAVDdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 22:33:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611286378; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Yo6hdkp/knS7f7SvcKF1u2WZQ3qjT6GjvT7DGNBizLw=; b=VHXGcw8moq3E1SbEIytElGWz1z+JHCMFvLZQScOIxZqNMExymuCYwlu8f4LpIfYa7taynTr/
+ L/SFYT1OdvYc3tNBGQzq1BEVLhQDopiYLq9MW309p90z6Zn7kKSyypzeFV+pnLWPVeczpAUE
+ etZ1kLr0u2qvpVdmaW5WGMLTw10=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 600a4740ad4c9e395b979989 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Jan 2021 03:32:16
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 82EDBC433CA; Fri, 22 Jan 2021 03:32:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.7.112] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7EECCC433C6;
+        Fri, 22 Jan 2021 03:32:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7EECCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: usb: dwc3: gadget: skip pullup and set_speed after suspend
+To:     eg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        "supporter:USB SUBSYSTEM open list:DESIGNWARE USB3 DRD IP DRIVER" 
+        <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <CGME20210120035123epcas2p2048f6d9896bd21f19d939a56fe0b6610@epcas2p2.samsung.com>
+ <1611113968-102424-1-git-send-email-dh10.jung@samsung.com>
+ <fbde7781-8eef-ab3a-a339-8a2f61ca83be@synopsys.com>
+ <20210121064956.GA69382@ubuntu>
+ <6c6429da-5d27-2d6a-9bcf-3606810e71a6@codeaurora.org>
+ <20210121081333.GA2977@ubuntu>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <c8e2d476-e7a2-64ba-2fcd-eb94b32691ac@codeaurora.org>
+Date:   Thu, 21 Jan 2021 19:32:13 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210121081333.GA2977@ubuntu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 15:49:48 PST (-0800), vitaly.wool@konsulko.com wrote:
-> Sometimes, especially in a production system we may not want to
-> use a "smart bootloader" like u-boot to load kernel, ramdisk and
-> device tree from a filesystem on eMMC, but rather load the kernel
-> from a NAND partition and just run it as soon as we can, and in
-> this case it is convenient to have device tree compiled into the
-> kernel binary. Since this case is not limited to MMU-less systems,
-> let's support it for these which have MMU enabled too.
->
-> While at it, provide __dtb_start as a parameter to setup_vm() in
-> BUILTIN_DTB case, so we don't have to duplicate BUILTIN_DTB specific
-> processing in MMU-enabled and MMU-disabled versions of setup_vm().
->
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> ---
-> Changes from v2:
-> * folded "RISC-V: simplify BUILTIN_DTB processing" patch
-> [http://lists.infradead.org/pipermail/linux-riscv/2021-January/004153.html]
-> Changes from v1:
-> * no direct initial_boot_params assignment
-> * skips the temporary mapping for DT if BUILTIN_DTB=y
->
->  arch/riscv/Kconfig       |  1 -
->  arch/riscv/kernel/head.S |  4 ++++
->  arch/riscv/mm/init.c     | 19 +++++++++++++------
->  3 files changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 2ef05ef921b5..444a1ed1e847 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -445,7 +445,6 @@ endmenu
->
->  config BUILTIN_DTB
->  	def_bool n
-> -	depends on RISCV_M_MODE
->  	depends on OF
->
->  menu "Power management options"
-> diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-> index 16e9941900c4..f5a9bad86e58 100644
-> --- a/arch/riscv/kernel/head.S
-> +++ b/arch/riscv/kernel/head.S
-> @@ -260,7 +260,11 @@ clear_bss_done:
->
->  	/* Initialize page tables and relocate to virtual addresses */
->  	la sp, init_thread_union + THREAD_SIZE
-> +#ifdef CONFIG_BUILTIN_DTB
-> +	la a0, __dtb_start
-> +#else
->  	mv a0, s1
-> +#endif /* CONFIG_BUILTIN_DTB */
->  	call setup_vm
->  #ifdef CONFIG_MMU
->  	la a0, early_pg_dir
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 30b61f2c6b87..45faad7c4291 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -192,10 +192,13 @@ void __init setup_bootmem(void)
->  #endif /* CONFIG_BLK_DEV_INITRD */
->
->  	/*
-> -	 * Avoid using early_init_fdt_reserve_self() since __pa() does
-> +	 * If DTB is built in, no need to reserve its memblock.
-> +	 * Otherwise, do reserve it but avoid using
-> +	 * early_init_fdt_reserve_self() since __pa() does
->  	 * not work for DTB pointers that are fixmap addresses
->  	 */
-> -	memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> +	if (!IS_ENABLED(CONFIG_BUILTIN_DTB))
-> +		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
->
->  	early_init_fdt_scan_reserved_mem();
->  	dma_contiguous_reserve(dma32_phys_limit);
-> @@ -499,6 +502,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	/* Setup early PMD for DTB */
->  	create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA,
->  			   (uintptr_t)early_dtb_pmd, PGDIR_SIZE, PAGE_TABLE);
-> +#ifndef CONFIG_BUILTIN_DTB
->  	/* Create two consecutive PMD mappings for FDT early scan */
->  	pa = dtb_pa & ~(PMD_SIZE - 1);
->  	create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA,
-> @@ -506,7 +510,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	create_pmd_mapping(early_dtb_pmd, DTB_EARLY_BASE_VA + PMD_SIZE,
->  			   pa + PMD_SIZE, PMD_SIZE, PAGE_KERNEL);
->  	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PMD_SIZE - 1));
-> +#else /* CONFIG_BUILTIN_DTB */
-> +	dtb_early_va = __va(dtb_pa);
-> +#endif /* CONFIG_BUILTIN_DTB */
->  #else
-> +#ifndef CONFIG_BUILTIN_DTB
->  	/* Create two consecutive PGD mappings for FDT early scan */
->  	pa = dtb_pa & ~(PGDIR_SIZE - 1);
->  	create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA,
-> @@ -514,6 +522,9 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	create_pgd_mapping(early_pg_dir, DTB_EARLY_BASE_VA + PGDIR_SIZE,
->  			   pa + PGDIR_SIZE, PGDIR_SIZE, PAGE_KERNEL);
->  	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
-> +#else /* CONFIG_BUILTIN_DTB */
-> +	dtb_early_va = __va(dtb_pa);
-> +#endif /* CONFIG_BUILTIN_DTB */
->  #endif
->  	dtb_early_pa = dtb_pa;
->
-> @@ -604,11 +615,7 @@ static void __init setup_vm_final(void)
->  #else
->  asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  {
-> -#ifdef CONFIG_BUILTIN_DTB
-> -	dtb_early_va = (void *) __dtb_start;
-> -#else
->  	dtb_early_va = (void *)dtb_pa;
-> -#endif
->  	dtb_early_pa = dtb_pa;
->  }
 
-Thanks, this is on for-next.
+
+On 1/21/2021 12:13 AM, Jung Daehwan wrote:
+> On Wed, Jan 20, 2021 at 11:44:05PM -0800, Wesley Cheng wrote:
+>>
+>>
+>> On 1/20/2021 10:49 PM, Jung Daehwan wrote:
+>>> Hi,
+>>>
+>>> On Thu, Jan 21, 2021 at 01:00:32AM +0000, Thinh Nguyen wrote:
+>>>> Hi,
+>>>>
+>>>> Daehwan Jung wrote:
+>>>>> Sometimes dwc3_gadget_pullup and dwc3_gadget_set_speed are called after
+>>>>> entering suspend. That's why it needs to check whether suspend
+>>>>>
+>>>>> 1. dwc3 sends disconnect uevent and turn off. (suspend)
+>>>>> 2. Platform side causes pullup or set_speed(e.g., adbd closes ffs node)
+>>>>> 3. It causes unexpected behavior like ITMON error.
+>>>>>
+>>>>> Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
+>>>>> ---
+>>>>>  drivers/usb/dwc3/gadget.c | 6 ++++++
+>>>>>  1 file changed, 6 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>>>> index ee44321..d7d4202 100644
+>>>>> --- a/drivers/usb/dwc3/gadget.c
+>>>>> +++ b/drivers/usb/dwc3/gadget.c
+>>>>> @@ -2093,6 +2093,9 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>>>>  	unsigned long		flags;
+>>>>>  	int			ret;
+>>>>>  
+>>>>> +	if (pm_runtime_suspended(dwc->dev))
+>>>>> +		return 0;
+>>>>> +
+>>>>>  	is_on = !!is_on;
+>>>>>  
+>>>>>  	/*
+>>>>> @@ -2403,6 +2406,9 @@ static void dwc3_gadget_set_speed(struct usb_gadget *g,
+>>>>>  	unsigned long		flags;
+>>>>>  	u32			reg;
+>>>>>  
+>>>>> +	if (pm_runtime_suspended(dwc->dev))
+>>>>> +		return;
+>>>>> +
+>>>>>  	spin_lock_irqsave(&dwc->lock, flags);
+>>>>>  	reg = dwc3_readl(dwc->regs, DWC3_DCFG);
+>>>>>  	reg &= ~(DWC3_DCFG_SPEED_MASK);
+>>>>
+>>>> This is already addressed in Wesley Cheng's patches. Can you try the
+>>>> latest changes of DWC3 in Greg's usb-next branch?
+>>>>
+>>>> Thanks,
+>>>> Thinh
+>>>
+>>> I checked Wesly Cheng's pathces but it's not same.
+>>> What I want to do for this patch is to avoid pullup from platform side.
+>>> (android in my case)
+>>>
+>>> It's possible that platform side tries to pullup by UDC_Store after usb is already disconnected.
+>>> It can finally run controller and enable irq.
+>>>
+>>> I think we have to avoid it and other possible things related to platform side.
+>>>
+>>>
+>>
+>> Hi Daehwan,
+>>
+>> I think what you're trying to do is to avoid the unnecessary runtime
+>> resume if the cable is disconnected and userspace attempts to
+>> bind/unbind the UDC.
+>>
+>> I'm not exactly sure what patches you've pulled in, but assuming you
+>> didn't pull in any of the recent suspend changes:
+>>
+>> usb: dwc3: gadget: Allow runtime suspend if UDC unbinded
+>> usb: dwc3: gadget: Preserve UDC max speed setting
+>>
+>> Please consider the following scenario:
+>> 1.  USB connected
+>> 2.  UDC unbinded
+>> 3.  DWC3 will continue to stay in runtime active, since dwc->connected =
+>> true
+>>
+>> In this scenario, we should allow the DWC3 to enter runtime suspend,
+>> since runstop has been disabled.
+>>
+>> If you have pulled in the above changes, and adding your changes on top
+>> of it, then consider the following:
+>> 1.  USB connected
+>> 2.  UDC unbinded
+>> 3.  DWC enters runtime suspend (due to the above changes)
+>> 4.  UDC binded
+>>
+>> The check for pm_runtime_suspended() will block step#4 from re-enabling
+>> the runstop bit even if the USB cable is connected.
+>>
+>> Thanks
+>> Wesley Cheng
+>>
+>> -- 
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+>> a Linux Foundation Collaborative Project
+>>
+> 
+> Hi Wesley
+> 
+> The check for runtime_suspended() will block re-enabling the runstop bit as
+> you said after pulling your patches in.
+> 
+> UDC is contolled by userspace and it's possible UDC can be binded
+> unexpectedly. That's why I think it needs to handle it even if the
+> problem is from userspace.
+> 
+> Below is an example in my environment.
+> 
+> 1. USB disconnected
+> 2. UDC unbinded
+> 3. DWC enters runtime suspend
+> 4. UDC binded unexpectedly
+> 5. Gadget start and enable irq
+> 
+Hi Daehwan,
+
+If this is an unexpected event where userspace initiates the UDC bind
+sequence, then after the above sequence occurs, the DWC3 device should
+still be able to re-enter runtime suspend after the autosuspend timer
+expires.  Since the cable is disconnected, the dwc->connected flag would
+still be false.  Is this not happening in your situation?
+
+I'm just trying to understand what issue you're seeing other than the
+momentary transition from runtime suspend (due to cable disconnect)
+-->runtime resume (due to unexpected UDC bind) --> runtime  suspend (due
+to nothing connected).
+
+Thanks
+Wesley Cheng
+
+> 
+> Line 9823: [   36.024428][ T2889] dwc3 10e00000.dwc3: Turn off gadget dwc3-gadget
+> Line 9827: [   36.024572][ T2889] __dwc3_gadget_stop called
+> Line 9828: [   36.025083][ T2603] android_work: sent uevent USB_STATE=DISCONNECTED
+> Line 9842: [   36.200896][  T554] usb_gadget_disconnect
+> Line 9843: [   36.200916][  T554] dwc3_gadget_pullup : 0
+> Line 9844: [   36.201165][  T554] dwc3_gadget_pullup: get_sync fail
+> Line 9845: [   36.201197][  T554] dwc3_gadget_stop called
+> Line 9846: [   36.201250][  T451] android_work: did not send uevent (0 0 0000000000000000)
+> Line 9849: [   36.202343][    T1] init: processing action (sys.usb.config=adb && sys.usb.configfs=1..
+> Line 9851: [   36.203622][    T1] dwc3_gadget_start called
+> Line 9852: [   36.204079][    T1] usb_gadget_connect
+> Line 9853: [   36.204086][    T1] dwc3_gadget_pullup : 1
+> Line 9854: [   36.204091][    T1] __dwc3_gadget_start called
+> 
+> Best Regrars,
+> Jung Daehwan
+> 
+> 
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
