@@ -2,349 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3021300198
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF013001C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727155AbhAVLbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728375AbhAVL3L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:29:11 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DE6C0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 03:27:03 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l2uae-0000Ww-Im; Fri, 22 Jan 2021 12:26:56 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l2uae-0007dO-2n; Fri, 22 Jan 2021 12:26:56 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH v3 2/2] counter: add GPIO based pulse counters
-Date:   Fri, 22 Jan 2021 12:24:34 +0100
-Message-Id: <20210122112434.27886-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122112434.27886-1-o.rempel@pengutronix.de>
-References: <20210122112434.27886-1-o.rempel@pengutronix.de>
+        id S1727384AbhAVLkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:40:04 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:58348 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728238AbhAVL0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:26:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611314770; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Wb7HhulwY9fAL/m3pmVgVR2RQUXwnxKpifYKsmCSYVw=; b=ZeBktD/cSrYxH54yaOxJB7wWQ316puoqHFzqhdJyzt8pJDVznIPNEHdxdYfF+JUkMvN38+dt
+ iS0UC9CAqjGIkGAYQRaGPFgh96pYsv95OE6jtzM15QTdOhwHy1lENeZ3vTmjrKTej1EsA2RK
+ Zj54lI2Mrl1ozoSEVDeAJLL43pY=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 600ab6302c36b2106d150339 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Jan 2021 11:25:36
+ GMT
+Sender: gkohli=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DB61EC433C6; Fri, 22 Jan 2021 11:25:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.4] (unknown [106.212.224.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E27C7C433CA;
+        Fri, 22 Jan 2021 11:25:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E27C7C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
+        Julia Lawall <julia.lawall@inria.fr>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+ <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+ <20210121140951.2a554a5e@gandalf.local.home>
+ <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
+ <20210121153732.43d7b96b@gandalf.local.home> <YAqwD/ivTgVJ7aap@kroah.com>
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+Message-ID: <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
+Date:   Fri, 22 Jan 2021 16:55:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <YAqwD/ivTgVJ7aap@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add simple GPIO base pulse counter. This device is used to measure
-rotation speed of some agricultural devices, so no high frequency on the
-counter pin is expected.
 
-The maximal measurement frequency depends on the CPU and system load. On
-the idle iMX6S I was able to measure up to 20kHz without count drops.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/counter/Kconfig          |   9 ++
- drivers/counter/Makefile         |   1 +
- drivers/counter/gpio-pulse-cnt.c | 244 +++++++++++++++++++++++++++++++
- 3 files changed, 254 insertions(+)
- create mode 100644 drivers/counter/gpio-pulse-cnt.c
+On 1/22/2021 4:29 PM, Greg KH wrote:
+> On Thu, Jan 21, 2021 at 03:37:32PM -0500, Steven Rostedt wrote:
+>> On Thu, 21 Jan 2021 23:15:22 +0300
+>> Denis Efremov <efremov@linux.com> wrote:
+>>
+>>> On 1/21/21 10:09 PM, Steven Rostedt wrote:
+>>>> On Thu, 21 Jan 2021 17:30:40 +0300
+>>>> Denis Efremov <efremov@linux.com> wrote:
+>>>>    
+>>>>> Hi,
+>>>>>
+>>>>> This patch (CVE-2020-27825) was tagged with
+>>>>> Fixes: b23d7a5f4a07a ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
+>>>>>
+>>>>> I'm not an expert here but it seems like b23d7a5f4a07a only refactored
+>>>>> ring_buffer_reset_cpu() by introducing reset_disabled_cpu_buffer() without
+>>>>> significant changes. Hence, mutex_lock(&buffer->mutex)/mutex_unlock(&buffer->mutex)
+>>>>> can be backported further than b23d7a5f4a07a~ and to all LTS kernels. Is
+>>>>> b23d7a5f4a07a the actual cause of the bug?
+>>>>>   
+>>>>
+>>>> Ug, that looks to be a mistake. Looking back at the thread about this:
+>>>>
+>>>>    https://lore.kernel.org/linux-arm-msm/20200915141304.41fa7c30@gandalf.local.home/
+>>>
+>>> I see from the link that it was planned to backport the patch to LTS kernels:
+>>>
+>>>> Actually we are seeing issue in older kernel like 4.19/4.14/5.4 and there below patch was not
+>>>> present in stable branches:
+>>>> Commit b23d7a5f4a07 ("ring-buffer: speed up buffer resets by avoiding synchronize_rcu for each CPU")
+>>>
+>>> The point is that it's not backported yet. Maybe because of Fixes tag. I've discovered
+>>> this while trying to formalize CVE-2020-27825 bug in cvehound
+>>> https://github.com/evdenis/cvehound/blob/master/cvehound/cve/CVE-2020-27825.cocci
+>>>
+>>> I think that the backport to the 4.4+ should be something like:
+>>>
+>>> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+>>> index 547a3a5ac57b..2171b377bbc1 100644
+>>> --- a/kernel/trace/ring_buffer.c
+>>> +++ b/kernel/trace/ring_buffer.c
+>>> @@ -4295,6 +4295,8 @@ void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu)
+>>>   	if (!cpumask_test_cpu(cpu, buffer->cpumask))
+>>>   		return;
+>>>   
+>>> +	mutex_lock(&buffer->mutex);
+>>> +
+>>>   	atomic_inc(&buffer->resize_disabled);
+>>>   	atomic_inc(&cpu_buffer->record_disabled);
+>>>   
+>>> @@ -4317,6 +4319,8 @@ void ring_buffer_reset_cpu(struct ring_buffer *buffer, int cpu)
+>>>   
+>>>   	atomic_dec(&cpu_buffer->record_disabled);
+>>>   	atomic_dec(&buffer->resize_disabled);
+>>> +
+>>> +	mutex_unlock(&buffer->mutex);
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(ring_buffer_reset_cpu);
+>>>   
+>>
+>> That could possibly work.
 
-diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
-index 2de53ab0dd25..9ad1d9d49dd1 100644
---- a/drivers/counter/Kconfig
-+++ b/drivers/counter/Kconfig
-@@ -29,6 +29,15 @@ config 104_QUAD_8
- 	  The base port addresses for the devices may be configured via the base
- 	  array module parameter.
- 
-+config GPIO_PULSE_CNT
-+	tristate "GPIO pulse counter driver"
-+	depends on GPIOLIB
-+	help
-+	  Select this option to enable GPIO pulse counter driver.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called gpio-pulse-cnt.
-+
- config STM32_TIMER_CNT
- 	tristate "STM32 Timer encoder counter driver"
- 	depends on MFD_STM32_TIMERS || COMPILE_TEST
-diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
-index 0a393f71e481..6a5c3fc6f2a0 100644
---- a/drivers/counter/Makefile
-+++ b/drivers/counter/Makefile
-@@ -6,6 +6,7 @@
- obj-$(CONFIG_COUNTER) += counter.o
- 
- obj-$(CONFIG_104_QUAD_8)	+= 104-quad-8.o
-+obj-$(CONFIG_GPIO_PULSE_CNT)	+= gpio-pulse-cnt.o
- obj-$(CONFIG_STM32_TIMER_CNT)	+= stm32-timer-cnt.o
- obj-$(CONFIG_STM32_LPTIMER_CNT)	+= stm32-lptimer-cnt.o
- obj-$(CONFIG_TI_EQEP)		+= ti-eqep.o
-diff --git a/drivers/counter/gpio-pulse-cnt.c b/drivers/counter/gpio-pulse-cnt.c
-new file mode 100644
-index 000000000000..9454345c77ad
---- /dev/null
-+++ b/drivers/counter/gpio-pulse-cnt.c
-@@ -0,0 +1,244 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
-+ */
-+
-+#include <linux/counter.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+
-+#define GPIO_PULSE_NAME		"gpio-pulse-counter"
-+
-+struct gpio_pulse_priv {
-+	struct counter_device counter;
-+	struct gpio_desc *gpio;
-+	int irq;
-+	bool enabled;
-+	atomic_t count;
-+};
-+
-+static irqreturn_t gpio_pulse_irq_isr(int irq, void *dev_id)
-+{
-+	struct gpio_pulse_priv *priv = dev_id;
-+
-+	if (!priv->enabled)
-+		return IRQ_NONE;
-+
-+	atomic_inc(&priv->count);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static ssize_t gpio_pulse_count_enable_read(struct counter_device *counter,
-+					    struct counter_count *count,
-+					    void *private, char *buf)
-+{
-+	struct gpio_pulse_priv *priv = counter->priv;
-+
-+	return sysfs_emit(buf, "%d\n", priv->enabled);
-+}
-+
-+static ssize_t gpio_pulse_count_enable_write(struct counter_device *counter,
-+					     struct counter_count *count,
-+					     void *private,
-+					     const char *buf, size_t len)
-+{
-+	struct gpio_pulse_priv *priv = counter->priv;
-+	bool enable;
-+	ssize_t ret;
-+
-+	ret = kstrtobool(buf, &enable);
-+	if (ret)
-+		return ret;
-+
-+	if (priv->enabled == enable)
-+		return len;
-+
-+	priv->enabled = enable;
-+
-+	if (enable)
-+		enable_irq(priv->irq);
-+	else
-+		disable_irq(priv->irq);
-+
-+	return len;
-+}
-+
-+static const struct counter_count_ext gpio_pulse_count_ext[] = {
-+	{
-+		.name = "enable",
-+		.read = gpio_pulse_count_enable_read,
-+		.write = gpio_pulse_count_enable_write,
-+	},
-+};
-+
-+static enum counter_synapse_action gpio_pulse_synapse_actions[] = {
-+	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-+};
-+
-+static int gpio_pulse_action_get(struct counter_device *counter,
-+			    struct counter_count *count,
-+			    struct counter_synapse *synapse,
-+			    size_t *action)
-+{
-+	*action = COUNTER_SYNAPSE_ACTION_RISING_EDGE;
-+
-+	return 0;
-+}
-+
-+static int gpio_pulse_count_read(struct counter_device *counter,
-+				 struct counter_count *count,
-+				 unsigned long *val)
-+{
-+	struct gpio_pulse_priv *priv = counter->priv;
-+
-+	*val = atomic_read(&priv->count);
-+
-+	return 0;
-+}
-+
-+static int gpio_pulse_count_write(struct counter_device *counter,
-+				  struct counter_count *count,
-+				  const unsigned long val)
-+{
-+	struct gpio_pulse_priv *priv = counter->priv;
-+
-+	atomic_set(&priv->count, val);
-+
-+	return 0;
-+}
-+
-+static int gpio_pulse_count_function_get(struct counter_device *counter,
-+					 struct counter_count *count,
-+					 size_t *function)
-+{
-+	*function = COUNTER_COUNT_FUNCTION_INCREASE;
-+
-+	return 0;
-+}
-+
-+static int gpio_pulse_count_signal_read(struct counter_device *counter,
-+					struct counter_signal *signal,
-+					enum counter_signal_value *val)
-+{
-+	struct gpio_pulse_priv *priv = counter->priv;
-+	int ret;
-+
-+	ret = gpiod_get_value(priv->gpio);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = ret ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
-+
-+	return 0;
-+}
-+
-+static const struct counter_ops gpio_pulse_cnt_ops = {
-+	.action_get = gpio_pulse_action_get,
-+	.count_read = gpio_pulse_count_read,
-+	.count_write = gpio_pulse_count_write,
-+	.function_get = gpio_pulse_count_function_get,
-+	.signal_read  = gpio_pulse_count_signal_read,
-+};
-+
-+static struct counter_signal gpio_pulse_signals[] = {
-+	{
-+		.id = 0,
-+		.name = "Channel 0 signal",
-+	},
-+};
-+
-+static struct counter_synapse gpio_pulse_count_synapses[] = {
-+	{
-+		.actions_list = gpio_pulse_synapse_actions,
-+		.num_actions = ARRAY_SIZE(gpio_pulse_synapse_actions),
-+		.signal = &gpio_pulse_signals[0]
-+	},
-+};
-+
-+static enum counter_count_function gpio_pulse_count_functions[] = {
-+	COUNTER_COUNT_FUNCTION_INCREASE,
-+};
-+
-+static struct counter_count gpio_pulse_counts[] = {
-+	{
-+		.id = 0,
-+		.name = "Channel 1 Count",
-+		.functions_list = gpio_pulse_count_functions,
-+		.num_functions = ARRAY_SIZE(gpio_pulse_count_functions),
-+		.synapses = gpio_pulse_count_synapses,
-+		.num_synapses = ARRAY_SIZE(gpio_pulse_count_synapses),
-+		.ext = gpio_pulse_count_ext,
-+		.num_ext = ARRAY_SIZE(gpio_pulse_count_ext),
-+	},
-+};
-+
-+static int gpio_pulse_cnt_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct gpio_pulse_priv *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	if (gpiod_count(dev, NULL) != 1) {
-+		dev_err(dev, "Error, need exactly 1 gpio for device\n");
-+		return -EINVAL;
-+	}
-+
-+	priv->gpio = devm_gpiod_get(dev, NULL, GPIOD_IN);
-+	if (IS_ERR(priv->gpio))
-+		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get gpio\n");
-+
-+	priv->irq = gpiod_to_irq(priv->gpio);
-+	if (priv->irq < 0) {
-+		dev_err(dev, "failed to map GPIO to IRQ: %d\n", priv->irq);
-+		return priv->irq;
-+	}
-+
-+	priv->counter.name = dev_name(dev);
-+	priv->counter.parent = dev;
-+	priv->counter.ops = &gpio_pulse_cnt_ops;
-+	priv->counter.counts = gpio_pulse_counts;
-+	priv->counter.num_counts = ARRAY_SIZE(gpio_pulse_counts);
-+	priv->counter.signals = gpio_pulse_signals;
-+	priv->counter.num_signals = ARRAY_SIZE(gpio_pulse_signals);
-+	priv->counter.priv = priv;
-+
-+	ret = devm_request_irq(dev, priv->irq, gpio_pulse_irq_isr,
-+			       IRQF_TRIGGER_RISING | IRQF_NO_THREAD,
-+			       GPIO_PULSE_NAME, priv);
-+	if (ret)
-+		return ret;
-+
-+	disable_irq(priv->irq);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return devm_counter_register(dev, &priv->counter);
-+}
-+
-+static const struct of_device_id gpio_pulse_cnt_of_match[] = {
-+	{ .compatible = "virtual,gpio-pulse-counter", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gpio_pulse_cnt_of_match);
-+
-+static struct platform_driver gpio_pulse_cnt_driver = {
-+	.probe = gpio_pulse_cnt_probe,
-+	.driver = {
-+		.name = GPIO_PULSE_NAME,
-+		.of_match_table = gpio_pulse_cnt_of_match,
-+	},
-+};
-+module_platform_driver(gpio_pulse_cnt_driver);
-+
-+MODULE_ALIAS("platform:gpio-pulse-counter");
-+MODULE_AUTHOR("Oleksij Rempel <o.rempel@pengutronix.de>");
-+MODULE_DESCRIPTION("GPIO pulse counter driver");
-+MODULE_LICENSE("GPL v2");
+Yes, this will work, As i have tested similar patch for internal testing 
+for kernel branches like 5.4/4.19.
+
+> 
+> Ok, so what can I do here?  Can someone resend this as a backport to the
+> other stable kernels in this way so that I can queue it up?
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
 -- 
-2.30.0
-
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
