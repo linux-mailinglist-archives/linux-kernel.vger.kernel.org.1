@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2C22FFE76
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2452FFEAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:50:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbhAVIom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S1726662AbhAVIuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727155AbhAVImI (ORCPT
+        with ESMTP id S1727085AbhAVIo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:42:08 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF2C06178B;
-        Fri, 22 Jan 2021 00:41:25 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id 36so4406749otp.2;
-        Fri, 22 Jan 2021 00:41:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=QH7Qc5EQ7iifT7PzYgbghVIv9P26i6FsrQ+fd6jlx2w=;
-        b=r0BzrOD/8aKlJe4I292/JfGk8q+SEssSkkTBjumXnHMUhfyk5+ElKGazW+Tf4a66Hc
-         rofMyEvAyKln95BGEZ31pSk03oLXw10PASDJ+VIsYqG43y/ZehZp7no4u5RJO30DA0CK
-         5PgmEh0q8cImXoISKljnAjHjh27u/T4hoBGDQW2qZp4repP04uAUnchAYQ+yyycq1Qi+
-         9DswLI66Rk7AMSqeQ6qGqElV3gzjUytCHKwmtuHiMAOar9yt+ERF0Rg+t0DosYf2NH64
-         HLO0bsppV/w1W/G0aQc19l0Z/tnE2Ovusaof49jm54X2FMiXHOj3CC7wAj5BJKL3RXwW
-         MXLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=QH7Qc5EQ7iifT7PzYgbghVIv9P26i6FsrQ+fd6jlx2w=;
-        b=qADU/nnCd54XHLLFl17lc/TByJ4wh14/ECnHwuHBls9ACaHxl/AbidquHHKMDRUsNn
-         gkRZm1giYau3AG2CtDOfJj2BOzP7gLo42NIjaW013Ho4e5NVDVjvR9SNOhhfk14rTSSK
-         dWkvjLF5ruV+DSIWJ9G+EeNCrrnwQ84tMce+ViXCyRtrZhUrgtF3JoqtF+errivqyeid
-         aQEf9MGQKFlkvYVbTKdun8SU87ipZRz47rISjEAWsBgcLSvMdBuOeKMf+iBJF3Pz9mNz
-         YaWo9fpnKgHWkcIbbuSD0dUU7SRwSzyPLNIz5duB13LYjh00NV3/pwDZBG3B1teMnDVL
-         MeuQ==
-X-Gm-Message-State: AOAM533EMrEL0uvsawEoDjE7hE8w2OxVQAhNDo7bD3TGjMmf9BqzMQoN
-        /j0jJVdJeAlTYMa9C8YJ6PqWPDk1rLowG5Jo3jtCRYJlGJ0=
-X-Google-Smtp-Source: ABdhPJxDgUWr1yNvwGw8O1L6XDuuZb4Ue2CL9xlpxJHgUOwefeqwKx21mVzvCC65O1WSjAwp6M2ZPcLK4p7JVNMp6CQ=
-X-Received: by 2002:a9d:5e0f:: with SMTP id d15mr2540660oti.308.1611304885285;
- Fri, 22 Jan 2021 00:41:25 -0800 (PST)
+        Fri, 22 Jan 2021 03:44:28 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3E7C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:43:48 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l2s2c-0005xf-A2; Fri, 22 Jan 2021 09:43:38 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l2s2b-0006GM-Kx; Fri, 22 Jan 2021 09:43:37 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     kernel@pengutronix.de, Arnd Bergmann <arnd@arndb.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Dmitry Baryshkov <dbaryshkov@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dm crypt: replaced #if defined with IS_ENABLED
+Date:   Fri, 22 Jan 2021 09:43:20 +0100
+Message-Id: <20210122084321.24012-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <159827188271.306468.16962617119460123110.stgit@warthog.procyon.org.uk>
- <159827190508.306468.12755090833140558156.stgit@warthog.procyon.org.uk>
- <CAKgNAkho1WSOsxvCYQOs7vDxpfyeJ9JGdTL-Y0UEZtO3jVfmKw@mail.gmail.com>
- <667616.1599063270@warthog.procyon.org.uk> <CAKgNAkhjDB9bvQ0h5b13fkbhuP9tYrkBQe7w1cbeOH8gM--D0g@mail.gmail.com>
- <CAKgNAkh9h3aA1hiYownT2O=xg5JmZwmJUCvQ1Z4f85MTq-26Fw@mail.gmail.com> <CAKgNAkju-65h1bKBUJQf-k=TCZeFmD9Nf4ZgZ9Mm_TQ1rQA6MA@mail.gmail.com>
-In-Reply-To: <CAKgNAkju-65h1bKBUJQf-k=TCZeFmD9Nf4ZgZ9Mm_TQ1rQA6MA@mail.gmail.com>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Fri, 22 Jan 2021 09:41:14 +0100
-Message-ID: <CAKgNAkg78pHD90CuUaDtAhnwGqOwMU0SrZFny_fYXpDNSzovNA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] Add manpage for fsopen(2) and fsmount(2)
-To:     David Howells <dhowells@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+IS_ENABLED(CONFIG_ENCRYPTED_KEYS) is true whether the option is built-in
+or a module, so use it instead of #if defined checking for each
+separately.
 
-Ping!
+The other #if was to avoid a static function defined, but unused
+warning. As we now always build the callsite when the function
+is defined, we can remove that first #if guard.
 
-Thanks,
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+Cc: Dmitry Baryshkov <dbaryshkov@gmail.com>
+---
+ drivers/md/dm-crypt.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Michael
-
-On Fri, 16 Oct 2020 at 08:50, Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hi David,
->
-> Another ping for these five patches please!
->
-> Cheers,
->
-> Michael
->
-> On Fri, 11 Sep 2020 at 14:44, Michael Kerrisk (man-pages)
-> <mtk.manpages@gmail.com> wrote:
-> >
-> > Hi David,
-> >
-> > A ping for these five patches please!
-> >
-> > Cheers,
-> >
-> > Michael
-> >
-> > On Wed, 2 Sep 2020 at 22:14, Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-> > >
-> > > On Wed, 2 Sep 2020 at 18:14, David Howells <dhowells@redhat.com> wrote:
-> > > >
-> > > > Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
-> > > >
-> > > > > The term "filesystem configuration context" is introduced, but never
-> > > > > really explained. I think it would be very helpful to have a sentence
-> > > > > or three that explains this concept at the start of the page.
-> > > >
-> > > > Does that need a .7 manpage?
-> > >
-> > > I was hoping a sentence or a paragraph in this page might suffice. Do
-> > > you think more is required?
-> > >
-> > > Cheers,
-> > >
-> > > Michael
-> > >
-> > > --
-> > > Michael Kerrisk
-> > > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> > > Linux/UNIX System Programming Training: http://man7.org/training/
-> >
-> >
-> >
-> > --
-> > Michael Kerrisk
-> > Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> > Linux/UNIX System Programming Training: http://man7.org/training/
->
->
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
-
-
-
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 8c874710f0bc..7eeb9248eda5 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -2436,7 +2436,6 @@ static int set_key_user(struct crypt_config *cc, struct key *key)
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_ENCRYPTED_KEYS) || defined(CONFIG_ENCRYPTED_KEYS_MODULE)
+ static int set_key_encrypted(struct crypt_config *cc, struct key *key)
+ {
+ 	const struct encrypted_key_payload *ekp;
+@@ -2452,7 +2451,6 @@ static int set_key_encrypted(struct crypt_config *cc, struct key *key)
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_ENCRYPTED_KEYS */
+ 
+ static int crypt_set_keyring_key(struct crypt_config *cc, const char *key_string)
+ {
+@@ -2482,11 +2480,10 @@ static int crypt_set_keyring_key(struct crypt_config *cc, const char *key_string
+ 	} else if (!strncmp(key_string, "user:", key_desc - key_string + 1)) {
+ 		type = &key_type_user;
+ 		set_key = set_key_user;
+-#if defined(CONFIG_ENCRYPTED_KEYS) || defined(CONFIG_ENCRYPTED_KEYS_MODULE)
+-	} else if (!strncmp(key_string, "encrypted:", key_desc - key_string + 1)) {
++	} else if (IS_ENABLED(CONFIG_ENCRYPTED_KEYS) &&
++		   !strncmp(key_string, "encrypted:", key_desc - key_string + 1)) {
+ 		type = &key_type_encrypted;
+ 		set_key = set_key_encrypted;
+-#endif
+ 	} else {
+ 		return -EINVAL;
+ 	}
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+2.30.0
+
