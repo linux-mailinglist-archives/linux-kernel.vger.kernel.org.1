@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E706D30037E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFA4300384
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbhAVMxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:53:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbhAVMwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:52:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2654B23106;
-        Fri, 22 Jan 2021 12:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611319920;
-        bh=5pQT64VGfC0BZiVj3AnsJWDMHD/kNYTSmMy2Cl/LF9w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oZ0AkwDXFz07pR68nelC5uawYbTkXiiODQ93aJ36v2oGSxq/oJGDuYQCo7D1WCxMA
-         tAzb6/ZRdrTBQNdje/3X2hm5YvW7rUyEGWBttU7GPGMmmvXViwazc/4kWAnPlOLbzT
-         NjPOxDmiV9LWmqMdVSo1z4obvkMMXRQ026rl3lBIh7U/5T5j3yQxNUrEC70QDvMnpf
-         9ZQ7RHIDxvdz/mVk5nFzepjXwMzxo2OF3kWECwavmp/OUSH7z9RwicMMRI9IHyVb5W
-         NE5aB9Zzp062oUMCyimirxYOWheqBwO48IdE7qAiSbatp+T9J9sREFKwiLSBEfjpOB
-         FJM06GVGAqsrw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9439840513; Fri, 22 Jan 2021 09:51:57 -0300 (-03)
-Date:   Fri, 22 Jan 2021 09:51:57 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 1/8] perf arm-spe: Enable sample type PERF_SAMPLE_DATA_SRC
-Message-ID: <20210122125157.GG356537@kernel.org>
-References: <20210119144658.793-1-james.clark@arm.com>
+        id S1727527AbhAVMyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:54:37 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:41018 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbhAVMyI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:54:08 -0500
+Received: from 1.general.khfeng.us.vpn ([10.172.68.174] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1l2vw8-0005pv-5u; Fri, 22 Jan 2021 12:53:13 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     rjw@rjwysocki.net
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org (open list:ACPI),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ACPI / device_sysfs: Prefer "compatible" modalias
+Date:   Fri, 22 Jan 2021 20:53:02 +0800
+Message-Id: <20210122125302.991591-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119144658.793-1-james.clark@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jan 19, 2021 at 04:46:51PM +0200, James Clark escreveu:
-> From: Leo Yan <leo.yan@linaro.org>
-> 
-> This patch is to enable sample type PERF_SAMPLE_DATA_SRC for Arm SPE in
-> the perf data, when output the tracing data, it tells tools that it
-> contains data source in the memory event.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: James Clark <james.clark@arm.com>
+Commit 8765c5ba1949 ("ACPI / scan: Rework modalias creation when
+"compatible" is present") may create two "MODALIAS=" in uevent file if
+conditions are met.
 
-I see two Signed-off-by, ok, any Reviewed-by?
+This breaks systemd-udevd, which assumes each "key" in uevent file is
+unique. The internal implementation of systemd-udevd overwrites the
+first MODALIAS with the second one, so its kmod rule doesn't load driver
+for the first MODALIAS.
 
-- Arnaldo
+So if both ACPI modalias and OF modalias are present, use the latter
+one to ensure there's only one MODALIAS.
 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Al Grant <al.grant@arm.com>
-> Cc: Andre Przywara <andre.przywara@arm.com>
-> Cc: Wei Li <liwei391@huawei.com>
-> Cc: Tan Xiaojun <tanxiaojun@huawei.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/util/arm-spe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> index 8901a1656a41..b134516e890b 100644
-> --- a/tools/perf/util/arm-spe.c
-> +++ b/tools/perf/util/arm-spe.c
-> @@ -803,7 +803,7 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
->  	attr.type = PERF_TYPE_HARDWARE;
->  	attr.sample_type = evsel->core.attr.sample_type & PERF_SAMPLE_MASK;
->  	attr.sample_type |= PERF_SAMPLE_IP | PERF_SAMPLE_TID |
-> -		PERF_SAMPLE_PERIOD;
-> +			    PERF_SAMPLE_PERIOD | PERF_SAMPLE_DATA_SRC;
->  	if (spe->timeless_decoding)
->  		attr.sample_type &= ~(u64)PERF_SAMPLE_TIME;
->  	else
-> -- 
-> 2.28.0
-> 
+Reference: https://github.com/systemd/systemd/pull/18163
+Cc: AceLan Kao <acelan.kao@canonical.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fixes: 8765c5ba1949 ("ACPI / scan: Rework modalias creation when "compatible" is present")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/acpi/device_sysfs.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index 96869f1538b9..bfca116482b8 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -251,20 +251,12 @@ int __acpi_device_uevent_modalias(struct acpi_device *adev,
+ 	if (add_uevent_var(env, "MODALIAS="))
+ 		return -ENOMEM;
+ 
+-	len = create_pnp_modalias(adev, &env->buf[env->buflen - 1],
+-				  sizeof(env->buf) - env->buflen);
+-	if (len < 0)
+-		return len;
+-
+-	env->buflen += len;
+-	if (!adev->data.of_compatible)
+-		return 0;
+-
+-	if (len > 0 && add_uevent_var(env, "MODALIAS="))
+-		return -ENOMEM;
+-
+-	len = create_of_modalias(adev, &env->buf[env->buflen - 1],
+-				 sizeof(env->buf) - env->buflen);
++	if (adev->data.of_compatible)
++		len = create_of_modalias(adev, &env->buf[env->buflen - 1],
++					 sizeof(env->buf) - env->buflen);
++	else
++		len = create_pnp_modalias(adev, &env->buf[env->buflen - 1],
++					  sizeof(env->buf) - env->buflen);
+ 	if (len < 0)
+ 		return len;
+ 
 -- 
+2.29.2
 
-- Arnaldo
