@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1924300BD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7E6300C00
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730153AbhAVSvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:51:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38774 "EHLO mail.kernel.org"
+        id S1730539AbhAVSzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:55:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728543AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 504D023B53;
-        Fri, 22 Jan 2021 14:16:26 +0000 (UTC)
+        id S1728498AbhAVOVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:21:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29CED23A5F;
+        Fri, 22 Jan 2021 14:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324986;
-        bh=99pWozPUTAovepm9asQ1gDQbcAldCs2aL9E+joD8nIw=;
+        s=korg; t=1611324900;
+        bh=ZciTB6FWHI9zq64pvYDzXcvbJiwxaYhPzpBQedfizis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qGP+fLUWCDzjwE166Hj5nJem4CHQSQ94+hCDVVch36BHACvylMkbeo17hvydt8mP4
-         mJ2bVfcTHMDgc4eCf+kz3+q7Ds3q6EyooaeLGnFMsXyrSwzLYknbVxLFqxTuUQeHlS
-         X8Hf4nfX03mAeCGdWkW3gpixeP0n/0SON9EC8Aic=
+        b=zeReXRyiBMxuejlTtUV15sDknCOQ3qXdEPqX0zfczzrXLWGttCG9ZgCCMii/XtGJc
+         QGe49qV7RS0PaNU6ka1BYlTarFGoXeXR+mbAzcoBS4YT8B73yvk5D7X5Y4/sZABVGs
+         UoYAp2FsYuZKdKYpGtt2gkty8A1PDWl6qtHvhPXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Machata <me@pmachata.org>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 11/22] net: dcb: Validate netlink message in DCB handler
-Date:   Fri, 22 Jan 2021 15:12:29 +0100
-Message-Id: <20210122135732.367238798@linuxfoundation.org>
+Subject: [PATCH 4.14 49/50] net: ipv6: Validate GSO SKB before finish IPv6 processing
+Date:   Fri, 22 Jan 2021 15:12:30 +0100
+Message-Id: <20210122135737.181631561@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-References: <20210122135731.921636245@linuxfoundation.org>
+In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
+References: <20210122135735.176469491@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <me@pmachata.org>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
+[ Upstream commit b210de4f8c97d57de051e805686248ec4c6cfc52 ]
 
-DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
-messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
-the CAP_NET_ADMIN capability.
+There are cases where GSO segment's length exceeds the egress MTU:
+ - Forwarding of a TCP GRO skb, when DF flag is not set.
+ - Forwarding of an skb that arrived on a virtualisation interface
+   (virtio-net/vhost/tap) with TSO/GSO size set by other network
+   stack.
+ - Local GSO skb transmitted on an NETIF_F_TSO tunnel stacked over an
+   interface with a smaller MTU.
+ - Arriving GRO skb (or GSO skb in a virtualised environment) that is
+   bridged to a NETIF_F_TSO tunnel stacked over an interface with an
+   insufficient MTU.
 
-However, the operation to be performed is not decided from the DCB message
-type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
-reading DCB objects, the corresponding SET and DEL commands are used for
-manipulation.
+If so:
+ - Consume the SKB and its segments.
+ - Issue an ICMP packet with 'Packet Too Big' message containing the
+   MTU, allowing the source host to reduce its Path MTU appropriately.
 
-The assumption is that set-like commands will be sent via an RTM_SETDCB
-message, and get-like ones via RTM_GETDCB. However, this assumption is not
-enforced.
+Note: These cases are handled in the same manner in IPv4 output finish.
+This patch aligns the behavior of IPv6 and the one of IPv4.
 
-It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
-capability by sending the corresponding command in an RTM_GETDCB message.
-That is a bug. Fix it by validating the type of the request message against
-the type used for the response.
-
-Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
-Signed-off-by: Petr Machata <me@pmachata.org>
-Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
+Fixes: 9e50849054a4 ("netfilter: ipv6: move POSTROUTING invocation before fragmentation")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://lore.kernel.org/r/1610027418-30438-1-git-send-email-ayal@nvidia.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dcb/dcbnl.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv6/ip6_output.c |   40 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
 
---- a/net/dcb/dcbnl.c
-+++ b/net/dcb/dcbnl.c
-@@ -1756,6 +1756,8 @@ static int dcb_doit(struct sk_buff *skb,
- 	fn = &reply_funcs[dcb->cmd];
- 	if (!fn->cb)
- 		return -EOPNOTSUPP;
-+	if (fn->type != nlh->nlmsg_type)
-+		return -EPERM;
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -128,8 +128,42 @@ static int ip6_finish_output2(struct net
+ 	return -EINVAL;
+ }
  
- 	if (!tb[DCB_ATTR_IFNAME])
- 		return -EINVAL;
++static int
++ip6_finish_output_gso_slowpath_drop(struct net *net, struct sock *sk,
++				    struct sk_buff *skb, unsigned int mtu)
++{
++	struct sk_buff *segs, *nskb;
++	netdev_features_t features;
++	int ret = 0;
++
++	/* Please see corresponding comment in ip_finish_output_gso
++	 * describing the cases where GSO segment length exceeds the
++	 * egress MTU.
++	 */
++	features = netif_skb_features(skb);
++	segs = skb_gso_segment(skb, features & ~NETIF_F_GSO_MASK);
++	if (IS_ERR_OR_NULL(segs)) {
++		kfree_skb(skb);
++		return -ENOMEM;
++	}
++
++	consume_skb(skb);
++
++	skb_list_walk_safe(segs, segs, nskb) {
++		int err;
++
++		skb_mark_not_on_list(segs);
++		err = ip6_fragment(net, sk, segs, ip6_finish_output2);
++		if (err && ret == 0)
++			ret = err;
++	}
++
++	return ret;
++}
++
+ static int ip6_finish_output(struct net *net, struct sock *sk, struct sk_buff *skb)
+ {
++	unsigned int mtu;
+ 	int ret;
+ 
+ 	ret = BPF_CGROUP_RUN_PROG_INET_EGRESS(sk, skb);
+@@ -146,7 +180,11 @@ static int ip6_finish_output(struct net
+ 	}
+ #endif
+ 
+-	if ((skb->len > ip6_skb_dst_mtu(skb) && !skb_is_gso(skb)) ||
++	mtu = ip6_skb_dst_mtu(skb);
++	if (skb_is_gso(skb) && !skb_gso_validate_mtu(skb, mtu))
++		return ip6_finish_output_gso_slowpath_drop(net, sk, skb, mtu);
++
++	if ((skb->len > mtu && !skb_is_gso(skb)) ||
+ 	    dst_allfrag(skb_dst(skb)) ||
+ 	    (IP6CB(skb)->frag_max_size && skb->len > IP6CB(skb)->frag_max_size))
+ 		return ip6_fragment(net, sk, skb, ip6_finish_output2);
 
 
