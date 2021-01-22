@@ -2,142 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E863010F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C10F3010FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbhAVXYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 18:24:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728270AbhAVXYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 18:24:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0971923B51;
-        Fri, 22 Jan 2021 23:23:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611357820;
-        bh=gBpq+x+WrBcMxLANHAJZem6iOs03mqvdVd0gvK3+OyI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=QOsTrl7lxfr1poYM95xiUaJij33Pip75daCvAm+iZOO8v3sYwJbm8LsRit9VjiJNV
-         WL83gM6kvXnS7LIYkKWu/T4D43d52jY3rhLgzVuRZJ028lyCm0QdEVz+VyF0TrApct
-         1iM2ihJcofHiUv0/jOtX59GaZS1O0rElYmQAYfqs2B71ci4+xlt4yrykgM9bzX9t2h
-         ef6KP4+baiDX5W9wx7Roq1hjuAh21P/xp4V+jQ7TZoVa3ieoR+uAnIalRd/bF8opfW
-         YLWm+HbyL2c+/bref1hEprUEXhpuYFLY9Mwd1+JE45oCHk9pbEgRUruwNEeMyZp9Hl
-         RvjOrAbRcuk2Q==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DA940352267C; Fri, 22 Jan 2021 15:23:39 -0800 (PST)
-Date:   Fri, 22 Jan 2021 15:23:39 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, rcu@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: rcu-torture: Internal error: Oops: 96000006
-Message-ID: <20210122232339.GI2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
- <20210121185521.GQ2743@paulmck-ThinkPad-P72>
- <20210121213110.GB23234@willie-the-truck>
- <20210121214314.GW2743@paulmck-ThinkPad-P72>
- <CA+G9fYvZ5oE2bAkZqTYE87N0ONWoo2Q6VZBXihu4NQ_+C07qgA@mail.gmail.com>
- <20210122153704.GG2743@paulmck-ThinkPad-P72>
- <CA+G9fYt=waJnq7N=109eapXZkz-xNWg91Yno6fKXmovvFUVpsQ@mail.gmail.com>
+        id S1728435AbhAVX32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 18:29:28 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56220 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728164AbhAVX3T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 18:29:19 -0500
+Received: from rapha-Virtual-Machine.mshome.net (unknown [131.107.160.57])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A2CE220B7192;
+        Fri, 22 Jan 2021 15:28:38 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A2CE220B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611358118;
+        bh=gR+E6J/KWkeDvBUKGVIOIRFzbUvo3l+XqkwRbUylShY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cJpz6cfjkhbrFP40Q2e7ZBMISQNOUwwTdJqxZWE5qiTfeSLhLc4AoN3Rtz6iiJcnM
+         zn+sR4ZBgqxiAvHmqtaMPkEJjJT88/tWHOzbmza6W/vOQ6RYteObtD5TADHxAiZsXB
+         T+iEmNGYAndBv4cV20T1RCiVLwPGBDG7t5VMh1Rs=
+From:   Raphael Gianotti <raphgi@linux.microsoft.com>
+To:     zohar@linux.ibm.com
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tusharsu@linux.microsoft.com, nramas@linux.microsoft.com,
+        tyhicks@linux.microsoft.com
+Subject: [PATCH v2] IMA: Measure kernel version in early boot
+Date:   Fri, 22 Jan 2021 15:28:27 -0800
+Message-Id: <20210122232827.12840-1-raphgi@linux.microsoft.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYt=waJnq7N=109eapXZkz-xNWg91Yno6fKXmovvFUVpsQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 09:16:38PM +0530, Naresh Kamboju wrote:
-> On Fri, 22 Jan 2021 at 21:07, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, Jan 22, 2021 at 03:21:07PM +0530, Naresh Kamboju wrote:
-> > > On Fri, 22 Jan 2021 at 03:13, Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > >
-> > > > On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
-> > > > > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
-> > > > > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
-> > > > > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
-> > > > > > > the following kernel crash noticed. This started happening from Linux next
-> > > > > > > next-20210111 tag to next-20210121.
-> > > > > > >
-> > > > > > > metadata:
-> > > > > > >   git branch: master
-> > > > > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-> > > > > > >   git describe: next-20210111
-> > > > > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
-> > > > > > >
-> > > > > > > output log:
-> > > > > > >
-> > > > > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
-> > > > > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
-> > > > > > > = ffff8000091ab8e0
-> > > > > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
-> > > > > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
-> > > > > > > virtual address 0000000000000008
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
-> > > > > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
-> > > > > > like your configuration rejects NULL as an invalid virtual address,
-> > > > > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
-> > > > > > are not allowed to dereference a ZERO_SIZE_PTR?
-> > > > > >
-> > > > > > Adding the ARM64 guys on CC for their thoughts.
-> > > > >
-> > > > > Spooky timing, there was a thread _today_ about that:
-> > > > >
-> > > > > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
-> > > >
-> > > > Very good, then my workaround (shown below for Naresh's ease of testing)
-> > > > is only a short-term workaround.  Yay!  ;-)
-> > >
-> > > Paul, thanks for your (short-term workaround) patch.
-> > >
-> > > I have applied your patch and tested rcu-torture test on qemu_arm64 and
-> > > the reported issues has been fixed.
-> >
-> > May I add your Tested-by?
-> 
-> Yes.  Please add Reported-by and Tested-by.
+The integrity of a kernel can be verified by the boot loader on cold
+boot, and during kexec, by the current running kernel, before it is
+loaded. However, it is still possible that the new kernel being
+loaded is older than the current kernel, and/or has known
+vulnerabilities. Therefore, it is imperative that an attestation
+service be able to verify the version of the kernel being loaded on
+the client, from cold boot and subsequent kexec system calls,
+ensuring that only kernels with versions known to be good are loaded.
 
-Very good!  I have added:
+Measure the kernel version using ima_measure_critical_data() early on
+in the boot sequence, reducing the chances of known kernel
+vulnerabilities being exploited. With IMA being part of the kernel,
+this overall approach makes the measurement itself more trustworthy.
 
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+To enable measuring the kernel version "ima_policy=critical_data"
+needs to be added to the kernel command line arguments.
+For example,
+	BOOT_IMAGE=/boot/vmlinuz-5.11.0-rc3+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset ima_policy=critical_data
 
-Because I folded the workaround into the first commit in the series,
-instead of adding your Reported-by, I added the following to that commit:
+If runtime measurement of the kernel version is ever needed, the
+following should be added to /etc/ima/ima-policy:
 
-[ paulmck: Explicitly check for small pointers per Naresh Kamboju. ]
+	measure func=CRITICAL_DATA label=kernel_version
 
-> > And before I forget again, good to see the rcutorture testing on a
-> > non-x86 platform!
-> 
-> We are running rcutorture tests on arm, arm64, i386 and x86_64.
+To extract the measured data after boot, the following command can be used:
 
-Nice!!!
+        grep -m 1 "kernel_version" \
+        /sys/kernel/security/integrity/ima/ascii_runtime_measurements
 
-Some ARMv8 people are getting bogus (but harmless) error messages
-because parts of rcutorture think that all the world is an x86.
-I am looking at a fix, but need to work out what the system is.
-To that end, coul you please run the following on the arm, arm64,
-and i386 systems and tell me what the output is?
+Sample output from the command above:
 
-	gcc -dumpmachine
+	10 a8297d408e9d5155728b619761d0dd4cedf5ef5f ima-buf
+	sha256:5660e19945be0119bc19cbbf8d9c33a09935ab5d30dad48aa11f879c67d70988
+	kernel_version 352e31312e302d7263332d31363138372d676564623634666537383234342d6469727479
 
-> Happy to test !
+The above corresponds to the following (decoded) version string:
 
-And thank you very much for your testing efforts!!!
+	5.11.0-rc3-16187-gedb64fe78244-dirty
 
-							Thanx, Paul
+This patch is based on
+commit e58bb688f2e4 "Merge branch 'measure-critical-data' into next-integrity"
+in "next-integrity-testing" branch
+
+Change Log v2:
+	- Changed the measurement to align with the latest version of
+	  ima_measure_critical_data(), without the need for queueing
+	- Scoped the measurement to only measure the kernel version,
+	  found in UTS_RELEASE, instead of the entire linux_banner
+	  string
+
+Signed-off-by: Raphael Gianotti <raphgi@linux.microsoft.com>
+---
+ security/integrity/ima/ima_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+index 6a429846f90a..0a33f570725c 100644
+--- a/security/integrity/ima/ima_main.c
++++ b/security/integrity/ima/ima_main.c
+@@ -26,6 +26,7 @@
+ #include <linux/ima.h>
+ #include <linux/iversion.h>
+ #include <linux/fs.h>
++#include <generated/utsrelease.h>
+ 
+ #include "ima.h"
+ 
+@@ -994,8 +995,11 @@ static int __init init_ima(void)
+ 	if (error)
+ 		pr_warn("Couldn't register LSM notifier, error %d\n", error);
+ 
+-	if (!error)
++	if (!error) {
+ 		ima_update_policy_flag();
++		ima_measure_critical_data("kernel_version", "kernel_version",
++					  UTS_RELEASE, strlen(UTS_RELEASE), false);
++	}
+ 
+ 	return error;
+ }
+-- 
+2.28.0
+
