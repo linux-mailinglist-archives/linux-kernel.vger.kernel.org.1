@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1217B300590
+	by mail.lfdr.de (Postfix) with ESMTP id 7F454300591
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbhAVOfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:35:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        id S1728703AbhAVOfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:35:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728739AbhAVObk (ORCPT
+        with ESMTP id S1728391AbhAVOcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:31:40 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85207C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:31:00 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id s15so3255913plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 06:31:00 -0800 (PST)
+        Fri, 22 Jan 2021 09:32:13 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 394CEC061786;
+        Fri, 22 Jan 2021 06:31:33 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id h7so7796178lfc.6;
+        Fri, 22 Jan 2021 06:31:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=16Oq6hPfzYZOD2QSyxynAI/FEQLP+ZGXA1M3xH+bIqU=;
-        b=uM5MCnfMgg3zSLWTyrtzBr/G3pvddXBY97152WnUTtXPdz2WvCDHVjBSQZvAlc7H/8
-         A2EdlJPisiWHWYhBim2xikw+7GHCESkDCxg2gazoSN99GkH5+nGCYU9ESeFpC8uFzxPT
-         M2U/awVJYzK9D1KoB7nHqP0NUiHRlFAAPj3+12yed0wdY2PjnAO8IClM/5F0p+I3h+4i
-         8joO3UVEJGBAeiMJb/6kujZzegz94gPbNAjyBefjChsnLzhlujqEfDrwH7nH0tbbhmNb
-         U/Wu3vkVeRbDIJJmQtCky7xg/4EfVYNMig3taFxyA8PyFYBp4MscsomhUB7FDhTHYlmO
-         TB9w==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=lORbjL7NcGT/PStpr8zM4Wz5Tzho57XEv/tw4+222nQ=;
+        b=lYghFhdW3WyhRY0OQX6QvLVjSyF/tw8v9KGOVngfSJysoGEvuM8wKoMVUn2dtZ+SUM
+         5D5Ym0q/o9kQsqjzLUbHt6AEDgUVPznvX5Rc71IxP7MzdAKaiFMes1ELCfY0c0g7Ffln
+         UWHFNr+W/NprXS8P40SUEHCAhEc/szw1VaWoCqOVSqDac9aulHPnCMX12Qr/xttajWCH
+         vxkadgJ2JfEu1lwgubXOI76ASxmdvMahOqCcQAPZIriynCZ8kO3ojqRGz103CQk7zIWF
+         GqnjIChdtuBqAmEctexUCTbzyRw8kqNKp1DETXQXSo2uyfEcjojZc7CV4yqITM1gB2tt
+         RBEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=16Oq6hPfzYZOD2QSyxynAI/FEQLP+ZGXA1M3xH+bIqU=;
-        b=pUI4cGqxNE+KetPABSOL3FEQTXROzYtG7XeoLIPZiaE5DYrllnOPGAe/RlyYzrooV7
-         F2G3m6E8tSAYXTSGXegs2r/dJV6/DoH+zhGui2+v0r8PpKRjduNolP1SlmqS+os2HZ4V
-         CNkGBReGlCfwaE+Dm1W3PTaDSKbiz+OEcfg7eOSZFMv7VL+MikTVAmCwcKip+VPFdEtP
-         2nHkgLSd5S4yRnUKESBFBdaXhOqfzIRUhCzInYyEvweVu9w4A2Fk8b4A3PXtV0lzQHmb
-         pOH72pY07Rlxu1sKy+IfvrnnlsOoddZ++qNxs55fKdSwTz0u3RDjdutDQexrrOcJy7hd
-         pYCQ==
-X-Gm-Message-State: AOAM532HixU4B9pgCSoco0BVu4KSpmnJj7C3i0d7IFQkZEs5Ei+HInlW
-        tgPnCVAjResBNAgAXo2rP+Bo+g==
-X-Google-Smtp-Source: ABdhPJy992uyk/UUaI8AYSj1lvx5f7pPzprAAT6xcNbEGxC7l7N+halNfhBizULxbJbvCfQhIHYjWw==
-X-Received: by 2002:a17:90a:6809:: with SMTP id p9mr5591523pjj.112.1611325859427;
-        Fri, 22 Jan 2021 06:30:59 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id kr9sm9836616pjb.0.2021.01.22.06.30.54
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=lORbjL7NcGT/PStpr8zM4Wz5Tzho57XEv/tw4+222nQ=;
+        b=F2BNt69IS+1XM80qMPH7j9ZR8/OABwm5ft3qW1K8oWYkvjLuMPiIXNq6Wc3GjK/h8c
+         uPoq1RTTvUGwAF+62X22hCAMf3h2hqIC4khesy5ExdU7/yCvXV4kBgmoSWs7f0NMehAY
+         ZRjU90UwcClLG7DQ4rHvMNcvo0k/VirILctq6ydyYqYUhtKJN9pS1e6/fS0g+qeq++ta
+         EIOUJl0Uua2jPtrkTVUUfZiPO0XMihesU8bvXR7n3CI2WUusNJys0PZp7re3KeOOzlWl
+         aHg8qva025uzrtTOXzKp5hPbqBHk3KCdZB0WCc1bLPQpWThLVNYEkb48dIrrteVqdYkz
+         nSHg==
+X-Gm-Message-State: AOAM530gLNEu42+XHga4yXpUt4243RcUtTBOdko9HwuJLvibukM+AhQg
+        5dJa6m91Pb8EMHcABeHITfsOkYqVYsD0ng==
+X-Google-Smtp-Source: ABdhPJzdYb0VJp3v8CYf26OiQ1krmECtdYGgsHXEaBOQ9XwNH2Ul05edaphTwfyTSJUYqgMy7TOONA==
+X-Received: by 2002:a05:6512:398a:: with SMTP id j10mr1199536lfu.167.1611325891745;
+        Fri, 22 Jan 2021 06:31:31 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id f23sm905859lfc.63.2021.01.22.06.31.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 06:30:58 -0800 (PST)
-Date:   Fri, 22 Jan 2021 22:30:52 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 1/8] perf arm-spe: Enable sample type PERF_SAMPLE_DATA_SRC
-Message-ID: <20210122143052.GD4976@leoy-ThinkPad-X240s>
-References: <20210119144658.793-1-james.clark@arm.com>
- <20210122125157.GG356537@kernel.org>
+        Fri, 22 Jan 2021 06:31:31 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 22 Jan 2021 15:31:29 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= rcu: Release
+ per-cpu krcp page cache when CPU going offline
+Message-ID: <20210122143129.GB1873@pc638.lan>
+References: <20210121064949.16164-1-qiang.zhang@windriver.com>
+ <20210121185615.GR2743@paulmck-ThinkPad-P72>
+ <20210121202635.GB2454@pc638.lan>
+ <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210122125157.GG356537@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
-
-On Fri, Jan 22, 2021 at 09:51:57AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Jan 19, 2021 at 04:46:51PM +0200, James Clark escreveu:
-> > From: Leo Yan <leo.yan@linaro.org>
-> > 
-> > This patch is to enable sample type PERF_SAMPLE_DATA_SRC for Arm SPE in
-> > the perf data, when output the tracing data, it tells tools that it
-> > contains data source in the memory event.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > Signed-off-by: James Clark <james.clark@arm.com>
+On Fri, Jan 22, 2021 at 01:44:36AM +0000, Zhang, Qiang wrote:
 > 
-> I see two Signed-off-by, ok, any Reviewed-by?
+> 
+> ________________________________________
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年1月22日 4:26
+> 收件人: Zhang, Qiang
+> 抄送: Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org; urezki@gmail.com
+> 主题: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> >Hello, Qiang,
+> 
+> > On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> > > From: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > > If CPUs go offline, the corresponding krcp's page cache can
+> > > not be use util the CPU come back online, or maybe the CPU
+> > > will never go online again, this commit therefore free krcp's
+> > > page cache when CPUs go offline.
+> > >
+> > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> >
+> >Do you consider it as an issue? We have 5 pages per CPU, that is 20480 bytes.
+> >
+> 
+> Hello Rezki 
+> 
+> In a multi CPUs system, more than one CPUs may be offline, there are more than 5 pages,  and these offline CPUs may never go online again  or  in the process of CPUs online, there are errors, which lead to the failure of online, these scenarios will lead to the per-cpu krc page cache will never be released.
+> 
+Thanks for your answer. I was thinking more about if you knew some platforms
+which suffer from such extra page usage when CPU goes offline. Any issues
+your platforms or devices run into because of that.
 
-I had no confidence for some changes in the patch series, since James
-is more easier to reach out hardware persons, so James kindly took over
-and refined the patches (Thanks a lot!).
+So i understand that if CPU goes offline the 5 pages associated with it are
+unused until it goes online back.
 
-I hope Al could take a look for the patches, and myself also will give
-a review and test for this series.
-
-P.s. @James, I think some patches have been refactored, so it's good
-to add "Co-developed-by:" tag or changing the author name for you.
-Will comment on this when I review patches.
-
-Thanks,
-Leo
+--
+Vlad Rezki
