@@ -2,143 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3FE2FF93B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5292FF954
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 01:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbhAVAIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 19:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
+        id S1726414AbhAVASh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 19:18:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726507AbhAVAIR (ORCPT
+        with ESMTP id S1725827AbhAVASe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 19:08:17 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67149C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:07:37 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id n2so7750896iom.7
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:07:37 -0800 (PST)
+        Thu, 21 Jan 2021 19:18:34 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EE2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:17:53 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id j12so2540218pfj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 16:17:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BHvuFB1KCoODk+mj+wsDxFsayadGPjSCuZ+52mFNqc0=;
-        b=DN4uwSyPYoat11U4NiQe3O12PWP13mshNGZwj3ahSU5PP5LnamyQpCpNnQUNle5+X1
-         51Lv8QE9vadWLlt+Uh43gwjDaoR57l7bMZ9RHXQocKoMTuRxkftWqK0DDGLdK16pwyYe
-         KouCylXP2Js9FW5+ix3fzP0jCUokPOS0Ygj1lsIjUvmDXSy78yENhQWoCGSk/8jzf1uw
-         IxmaPIoSDCk1WXs0gpvpoqMMm9xX2Vau8O6WxUI0Vi+Y1AcW5w90r6z7JcgMoUTiocpU
-         X44l30FoOI8Tf+XJcz/dAAmVCvz8K3VjFn+h9Ayd0uw8mVJUxsmmw7plk/SYD+rEe0mX
-         kJYQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5B43/qTnJag/KIuHZ95pu4xZZ/OP+ZGwvSqErVBVefQ=;
+        b=QPjyDabZlAqIUgik+G/LpiVQmoi31M4CpAZoE2IA6GPPirbHjXtU7aKqvxbLBidRmA
+         X8uNXVrpHa3HmQZyYcFrK/DCD4va75v9VXF8Z+iakiKkBkW8utaus/QNohUtlnoB7CqM
+         X9y9wErEa6Krei2ahz3jgJ2I4KZtueLITUWcE62XKDK6rQ72GLHzIXgfAsXbrBJx6jdC
+         4RBtQtvMVXM07Ax+1Cq0xOT7+ijzCi1PiQF9Z/FeLuACVRh1MjEfm513NELriKgFLIzh
+         i0sz16Pn/3b18CZk+oBe+VBpdTGKsS5dUzWtJUldptfuB1fPjchyCfRwm2o2r+s7fOHo
+         KZxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BHvuFB1KCoODk+mj+wsDxFsayadGPjSCuZ+52mFNqc0=;
-        b=Gv4xa7gz1zylU/GQmc5mqXNdEZzESVEEQ/WqDseXsyA3DGjWmWMq5Twr6LTEDrwEtE
-         O1Hk5AN5aNhsOTE0f4jhXpN1kXpMFMk6mgb+AxSrVKjDpn3mLIQD8F8i72KR/kpnH/LX
-         eEO8RaCVMXUavjRhSuH3YbcrVXzN5s7Sa4sFpH5jrgWixRHpQFyoyXJKvS81iFT4sJ+v
-         cPzyy4C8Zp5aHOswM858ZK1vh/qDfGemq6Uu2A1a29xahFgEtPeG/5JQAxU75OvzqOD9
-         qKzCyJRZ4XW62yvrMMb05m89L2YgCjPHdSADDOIODg88gdVPJW08AHrMlY+ytYOm9ycv
-         jF7Q==
-X-Gm-Message-State: AOAM532mTuPbQbztZ89ktjwWMhF78vD7E3MjTkkGMjE3PfLKkE2cBeN3
-        X8UJZUVoItzF+MnvuF/7e0lESyneE5VTnNGGy0xhYOcWT8ylxA==
-X-Google-Smtp-Source: ABdhPJyvQc/gG6jdm0GvA119E8QNGFQnWR80EzlWqy5FMtqvtzVSf3iGTYFLaH0Nyd3Fz113aHJpVGvXKiI/Wzjp6qo=
-X-Received: by 2002:a6b:8f58:: with SMTP id r85mr1552830iod.132.1611274056746;
- Thu, 21 Jan 2021 16:07:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5B43/qTnJag/KIuHZ95pu4xZZ/OP+ZGwvSqErVBVefQ=;
+        b=Z3MAuIujlre0spQvxqVq+b0sxQBcKSnB9VB4G6GVACA8qv99vqOwmDMH8M08JtZ8iR
+         4nXh3aNEUEXhjPXPXD467kT8THnq+x6xl5VetStKiHEI1VePb5OX9FgQgqQPEPUOL7DS
+         9BKY9WPHrceawl1FzEzy7lPKaOix7OTDUC10OgVYu2NDExentoMmx2O4htaPK+NGY1iG
+         2eYM3AKRVQ5YQRbnoJ3aLiFEKyv746dkv/81Xkg2ayBGJ/ykIQxxiYzg0XD364uNsUIl
+         xg26N1ITmASHokFTfgZANCrhR6K6xOT/06qcC51vpVF4eSqEj7ZgoVZpxqOQOlLBTvcp
+         vwUg==
+X-Gm-Message-State: AOAM530kD1JjocRkXDHFKrfiTeLFRfuW5UTiHlUM+aIjcXJCS3wxtX+n
+        Hu3TG5tldSzWMLJoAeSatB42SwlZvBJvCeNR
+X-Google-Smtp-Source: ABdhPJydRKLqTCDaLvIm8kGXTNIwe4IM9ORH+KwOrymEZBE3GpK9Hup8VDhosOp/Npme++92MRbpow==
+X-Received: by 2002:a17:902:6903:b029:da:f458:798c with SMTP id j3-20020a1709026903b02900daf458798cmr2274211plk.68.1611274167248;
+        Thu, 21 Jan 2021 16:09:27 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id y11sm4796323pfo.121.2021.01.21.16.09.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 16:09:26 -0800 (PST)
+Date:   Thu, 21 Jan 2021 16:09:22 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
+        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAoXsluM+J9ICy99@google.com>
+References: <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+ <YAIUwGUPDmYfUm/a@google.com>
+ <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
+ <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+ <YAfYL7V6E4/P83Mg@google.com>
+ <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+ <YAi6RcbxTSMmNssw@google.com>
+ <YAi9qNqiBjGvXMoI@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <20210121223355.59780-1-paul.gortmaker@windriver.com> <20210121223355.59780-2-paul.gortmaker@windriver.com>
-In-Reply-To: <20210121223355.59780-2-paul.gortmaker@windriver.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Thu, 21 Jan 2021 16:07:25 -0800
-Message-ID: <CAAH8bW8KKXnMqs-NEeB90emUz6o2Q1FLutYEAmG3cAwv0rwEhg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] lib: add "all" and "none" as valid ranges to bitmap_parselist()
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAi9qNqiBjGvXMoI@mtj.duckdns.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 2:34 PM Paul Gortmaker
-<paul.gortmaker@windriver.com> wrote:
->
-> The use of "all" was originally RCU specific - I'd pushed it down to
-> being used for any CPU lists -- then Yuri suggested pushing it down
-> further to be used by any bitmap, which is done here.
->
-> As a trivial one line extension, we also accept the inverse "none"
-> as a valid alias.
->
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.rst | 11 +++++++++++
->  lib/bitmap.c                                    |  9 +++++++++
->  2 files changed, 20 insertions(+)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 682ab28b5c94..5e080080b058 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -68,7 +68,18 @@ For example one can add to the command line following parameter:
->
->  where the final item represents CPUs 100,101,125,126,150,151,...
->
-> +The following convenience aliases are also accepted and used:
->
-> +        foo_cpus=all
-> +
-> +will provide an full/all-set cpu mask for the associated boot argument.
-> +
-> +        foo_cpus=none
-> +
-> +will provide an empty/cleared cpu mask for the associated boot argument.
-> +
-> +Note that "all" and "none" are not necessarily valid/sensible input values
-> +for each available boot parameter expecting a CPU list.
+On Wed, Jan 20, 2021 at 06:32:56PM -0500, Tejun Heo wrote:
+> I don't know how many times I have to repeat the same point to get it
+> across. For any question about actual abstraction, you haven't provided any
+> kind of actual research or analysis and just keep pushing the same thing
+> over and over again. Maybe the situation is such that it makes sense to
+> change the rule but that needs substantial justifications. I've been asking
+> to see whether there are such justifications but all I've been getting are
+> empty answers. Until such discussions take place, please consider the series
+> nacked and please excuse if I don't respond promptly in this thread.
 
-My question from v1 is still there: what about the line like
-"none,all", ok ",all,"
-or similar? If it's not legal, it should be mentioned in the comment,
-if it is legal,
-the corresponding code should go to bitmap_parse_region(), just like for "N".
+I am sorry Tejun that you felt your feedback and questions are being ignored
+or not answered properly by me. It was not my intent. Let me try again.
 
-My personal preference is the latter option.
+I am not able to come up with an abstraction for underlying the hardware
+like we have for memory, cpu, and io with their respective cgroup
+controllers, because each vendor is solving VM security issue in
+different ways. For example:
 
->  This document may not be entirely up to date and comprehensive. The command
->  "modinfo -p ${modulename}" shows a current list of all parameters of a loadable
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 75006c4036e9..a1010646fbe5 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -627,6 +627,7 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
->   * From each group will be used only defined amount of bits.
->   * Syntax: range:used_size/group_size
->   * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
-> + * Optionally the self-descriptive "all" or "none" can be used.
->   *
->   * Returns: 0 on success, -errno on invalid input strings. Error values:
->   *
-> @@ -640,8 +641,16 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->         struct region r;
->         long ret;
->
-> +       if (!strcmp(buf, "all")) {
-> +               bitmap_fill(maskp, nmaskbits);
-> +               return 0;
-> +       }
-> +
->         bitmap_zero(maskp, nmaskbits);
->
-> +       if (!strcmp(buf, "none"))
-> +               return 0;
-> +
->         while (buf) {
->                 buf = bitmap_find_region(buf);
->                 if (buf == NULL)
-> --
-> 2.17.1
->
+s390 is using Ultravisor (UV) to disable access to the VMs memory from
+the host.  All KVM interaction with their Protected Virtual Machines
+(PVM) are handled through UV APIs. Here an encrypted guest image is
+loaded first which is decrypted by UV and then UV disallows access to
+PVMs memory and register state from KVM or other PVMs. PVMs are assigned
+IDs known as secure execution IDs (SEID).  These IDs are not scarce
+resource on the host.
+
+AMD is encrypting runtime memory of a VM using an hardware AES engine in
+the memory controller and keys are managed by an Arm based coprocessor
+inside the CPU, for encryption and decryption of the data flow between
+CPU and memory.  Their offering is known as Secure Encrypted
+Virtualization (SEV). There are also two more enhanced offerings SEV-ES,
+(memory + guest register state encryption), SEV-SNP (SEV-ES + memory
+integrity protection + TCB rollback) in later generation of CPUs. At any
+time only a limited number of IDs can be used simultaneously in the
+processor. Initially only SEV IDs we available on the CPUs but in the
+later generations of CPUs with the addition of SEV-ES, IDs were divided
+in two groups SEV ASIDs for SEV guests, and SEV-ES ASIDs for SEV-ES and
+SEV-SNP VMs. SEV firmware doesn't allow SEV ASIDs to launch SEV-ES and
+SEV-SNP VMs. Ideally, I think its better to use SEV-SNP as it provides
+highest protection but support in vmm and guest kernels are not there
+yet. Also, old HW will not be able to run SEV-ES or SEV-SNP as they can
+only run SEV ASIDs. I dont have data in terms of drawbacks running VM on
+SEV-SNP in terms of speed and cost but I think it will be dependent on
+workloads.
+
+Intel has come up with Trusted Domain Extension (TDX) for their secure
+VMs offering. They allow a VM to use multiple keys for private pages and
+for pages shared with other VMs. Overall, this is called as Multi-Key
+Total Memory Encryption (MKTME). A fixed number of encryption keys are
+supported in MKTME engine. During execution these keys are identified
+using KeyIDs which are present in upper bits of platform physical
+addresses.
+
+Only limited form of abstraction present here is that all are providing
+a way to have secure VMs and processes, either through single key
+encryption, multiple key encryptions or access denial.
+
+A common abstraction of different underlying security behavior/approach
+can mislead users in giving impression that all secure VMs/processes are
+same. In my opinion, this kind of thing can work when we talk about
+memory, cpu, etc, but for security related stuff will do more harm to
+the end user than the benefit of simplicity of abstraction. The name of
+the underlying feature also tells what kind of security guarantees a
+user can expect on the platform for a VM and what kind is used.
+
+Taking a step back, in the current scenario, we have some global shared
+resources which are limited for SEV, SEV-ES, and TDX. There is also a
+need for tracking and controlling on all 4 features for now. This is a
+case for some kind of cgroup behavior to limit and control an aggregate
+of processes using these system resources. After all, "cgroup is a
+mechanism to organize processes hierarchically and distribute system
+resources along the hierarchy in a controlled and configurable manner."
+
+We are using SEV in KVM and outside KVM also for other products on
+horizon. As cgroups are commonly used in many infrastructures for
+resource control, scheduling, and tracking, this patch is helping us in
+allocating jobs in the infrastructure along with memory, cpu and other
+constraints in a coherent way.
+
+If you feel encryption id cgroup is not good for long term or a
+too specific use case then may be there should be a common cgroup which
+can be a home for this kind and other kind of future resources where
+there is need to limit a global resource allocation but are not abstract
+or cannot be abstracted as the other existing cgroups. My current patch
+is very generic and with few modifications, it can provide subsystems,
+having valid requirements, a capability to use their own simple cgroup
+interfaces with minimal code duplication and get robustness of generic
+cgroup for free. Here, SEV will be the first user of this generic
+cgroup. Need for this is clearly there.
+
+Thanks Vipin
