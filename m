@@ -2,122 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5603B3008A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15303008AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbhAVQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:27:19 -0500
-Received: from mga12.intel.com ([192.55.52.136]:40752 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729375AbhAVQYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:24:13 -0500
-IronPort-SDR: OqFOsM55xEFkAnDjVFuulwUhNk8aSw33ialNwX/GtkjcExfdunTE1bmfp5iFI65wu/7XXO8Vz5
- VlWNWIYzFNsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="158647360"
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="158647360"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 08:23:32 -0800
-IronPort-SDR: zH6cmzMCzs2f3MLaQCT+ofDfO04zG8dDAVZwC3WO5cL9ERgr1FmFxFEg2RiK8Guzp2ejipaZNP
- jJv9ZIW3dCKQ==
-X-IronPort-AV: E=Sophos;i="5.79,367,1602572400"; 
-   d="scan'208";a="400719709"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 08:23:27 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1l2zEa-0097Gd-FZ; Fri, 22 Jan 2021 18:24:28 +0200
-Date:   Fri, 22 Jan 2021 18:24:28 +0200
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>, linux.cj@gmail.com,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: Re: [net-next PATCH v4 09/15] device property: Introduce
- fwnode_get_id()
-Message-ID: <YAr8PFRcR8gNZz95@smile.fi.intel.com>
-References: <20210122154300.7628-1-calvin.johnson@oss.nxp.com>
- <20210122154300.7628-10-calvin.johnson@oss.nxp.com>
+        id S1729758AbhAVQ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:28:39 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:60849 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1729698AbhAVQZ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:25:28 -0500
+Received: (qmail 45724 invoked by uid 1000); 22 Jan 2021 11:24:47 -0500
+Date:   Fri, 22 Jan 2021 11:24:47 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peter.chen@nxp.com, jackp@codeaurora.org
+Subject: Re: [PATCH v6 1/4] usb: gadget: udc: core: Introduce check_config to
+ verify USB configuration
+Message-ID: <20210122162447.GC43566@rowland.harvard.edu>
+References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
+ <1611288100-31118-2-git-send-email-wcheng@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122154300.7628-10-calvin.johnson@oss.nxp.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1611288100-31118-2-git-send-email-wcheng@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 09:12:54PM +0530, Calvin Johnson wrote:
-> Using fwnode_get_id(), get the reg property value for DT node
-> or get the _ADR object value for ACPI node.
-
-...
-
-> +/**
-> + * fwnode_get_id - Get the id of a fwnode.
-> + * @fwnode: firmware node
-> + * @id: id of the fwnode
-> + *
-> + * This function provides the id of a fwnode which can be either
-> + * DT or ACPI node. For ACPI, "reg" property value, if present will
-> + * be provided or else _ADR value will be provided.
-> + * Returns 0 on success or a negative errno.
-> + */
-> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
-> +{
-
-> +#ifdef CONFIG_ACPI
-> +	unsigned long long adr;
-> +	acpi_status status;
-> +#endif
-
-Instead you may do...
-
-> +	int ret;
-> +
-> +	ret = fwnode_property_read_u32(fwnode, "reg", id);
-> +	if (ret) {
-> +#ifdef CONFIG_ACPI
-
-...it here like
-
-		unsigned long long adr;
-		acpi_status status;
-
-> +		status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
-> +					       METHOD_NAME__ADR, NULL, &adr);
-> +		if (ACPI_FAILURE(status))
-> +			return -EINVAL;
-> +		*id = (u32)adr;
-> +#else
-> +		return ret;
-> +#endif
-> +	}
-> +	return 0;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
+On Thu, Jan 21, 2021 at 08:01:37PM -0800, Wesley Cheng wrote:
+> Some UDCs may have constraints on how many high bandwidth endpoints it can
+> support in a certain configuration.  This API allows for the composite
+> driver to pass down the total number of endpoints to the UDC so it can verify
+> it has the required resources to support the configuration.
+> 
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
 
 
+> --- a/include/linux/usb/gadget.h
+> +++ b/include/linux/usb/gadget.h
+> @@ -328,6 +328,7 @@ struct usb_gadget_ops {
+>  	struct usb_ep *(*match_ep)(struct usb_gadget *,
+>  			struct usb_endpoint_descriptor *,
+>  			struct usb_ss_ep_comp_descriptor *);
+> +	int	(*check_config)(struct usb_gadget *gadget, unsigned long ep_map);
+>  };
+>  
+>  /**
+> @@ -607,6 +608,7 @@ int usb_gadget_connect(struct usb_gadget *gadget);
+>  int usb_gadget_disconnect(struct usb_gadget *gadget);
+>  int usb_gadget_deactivate(struct usb_gadget *gadget);
+>  int usb_gadget_activate(struct usb_gadget *gadget);
+> +int usb_gadget_check_config(struct usb_gadget *gadget, unsigned long ep_map);
+>  #else
+>  static inline int usb_gadget_frame_number(struct usb_gadget *gadget)
+>  { return 0; }
+
+Don't you also need an entry for the case where CONFIG_USB_GADGET isn't 
+enabled?
+
+Alan Stern
