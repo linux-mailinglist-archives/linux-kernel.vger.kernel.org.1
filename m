@@ -2,213 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689C62FFB60
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F091A2FFB6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 04:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbhAVDrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 22:47:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726030AbhAVDrg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 22:47:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611287168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EJZXLJK0hCUS1Rd2sy1TEx3934IszRbfzHGeQ+DiU4w=;
-        b=SLE3m7hsHXkPNGX0Iv7pynUh2ToXoi6ySed1zqu5LnvDf+3vV6s1acuQ8c+cWEpP9oZlaf
-        q59aGO9gcO4Q6HXyIRzy15QJ4bjhKH3AJUhlz+UQ48TeFzst6gXbCuZaC8XSAaSZmIiaRH
-        hSV6R9ezfW4H4TyX2LvRa0baj4J3nsw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-NxeNyzXzPHm8VbG_FgrgnQ-1; Thu, 21 Jan 2021 22:46:06 -0500
-X-MC-Unique: NxeNyzXzPHm8VbG_FgrgnQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96B15180A092;
-        Fri, 22 Jan 2021 03:46:04 +0000 (UTC)
-Received: from T590 (ovpn-13-11.pek2.redhat.com [10.72.13.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E57BB6267F;
-        Fri, 22 Jan 2021 03:45:52 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 11:45:47 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     Johannes.Thumshirn@wdc.com, axboe@kernel.dk, damien.lemoal@wdc.com,
-        asml.silence@gmail.com, patchwork-bot@kernel.org, osandov@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, mj0123.lee@samsung.com,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v2] bio: limit bio max size.
-Message-ID: <20210122034547.GC509982@T590>
-References: <CGME20210121011324epcas1p3a213069e873fd324a7ce3188558f0782@epcas1p3.samsung.com>
- <20210121005803.26052-1-nanich.lee@samsung.com>
+        id S1726673AbhAVDuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 22:50:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbhAVDuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 21 Jan 2021 22:50:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E6E722CAE;
+        Fri, 22 Jan 2021 03:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611287371;
+        bh=v1e8o/XSf2bWk8/tO8FsBM5XYcWWiB9nGGDBSiBEqXI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LNKmgcSj7qMKiUNikr/DJRb8kiFMEdafqMMI01XeTLVvskndnNqydXdg3QY2YcnWx
+         Ei3LtF6dz7d8bIVlOzxxcWidhtUnoMS7Wp5p0TWfiiKmZjZrph55d8gNdf4Kq0TzkG
+         zQQLdvooy5Um7m4ZN35mHBNtpuX6XUGofiIHr1LyG48qlcup4Mp72AL1amxuHDGCXj
+         a+YIJ4cKzOhIpUEa9NKDP1ZMH0wLGBF8fSGqPlWMKC7buK4qlKyOVe6i947dRw0995
+         YbaQFTRZSs/ds08S2UkC9vskpIjqLHWtZu3BTWdVffsAWFrtLxKJHkE81yg0tSwqpr
+         HiGRx72xFu9Nw==
+Date:   Thu, 21 Jan 2021 19:49:29 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     =?UTF-8?B?TcOlbnMgUnVsbGfDpXJk?= <mans@mansr.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next] net: remove aurora nb8800 driver
+Message-ID: <20210121194929.13ce1a20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <yw1x8s8mz90t.fsf@mansr.com>
+References: <20210120150703.1629527-1-arnd@kernel.org>
+        <yw1x8s8mz90t.fsf@mansr.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121005803.26052-1-nanich.lee@samsung.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 09:58:03AM +0900, Changheun Lee wrote:
-> bio size can grow up to 4GB when muli-page bvec is enabled.
-> but sometimes it would lead to inefficient behaviors.
-> in case of large chunk direct I/O, - 32MB chunk read in user space -
-> all pages for 32MB would be merged to a bio structure if memory address is
-> continued phsycally. it makes some delay to submit until merge complete.
-> bio max size should be limited as a proper size.
-> 
-> When 32MB chunk read with direct I/O option is coming from userspace,
-> kernel behavior is below now. it's timeline.
+On Thu, 21 Jan 2021 13:58:42 +0000 M=C3=A5ns Rullg=C3=A5rd wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The tango4 platform is getting removed, and this driver has no
+> > other known users, so it can be removed.
+> >
+> > Cc: Marc Gonzalez <marc.w.gonzalez@free.fr>
+> > Cc: Mans Rullgard <mans@mansr.com>
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de> =20
+>=20
+> Acked-by: Mans Rullgard <mans@mansr.com>
 
-IMO, the issue should only exist on sync direct IO and writeback.
-Not sure if writeback cares this small delay because user data
-has been written to page cache already.
-
-Wrt. your big direct IO case, as I suggested, you may reduce the
-submission delay a lot by applying THP.
-
-Or you can just hardcode the limit in case of sync dio.
-
-> 
->  | bio merge for 32MB. total 8,192 pages are merged.
->  | total elapsed time is over 2ms.
->  |------------------ ... ----------------------->|
->                                                  | 8,192 pages merged a bio.
->                                                  | at this time, first bio submit is done.
->                                                  | 1 bio is split to 32 read request and issue.
->                                                  |--------------->
->                                                   |--------------->
->                                                    |--------------->
->                                                               ......
->                                                                    |--------------->
->                                                                     |--------------->|
->                           total 19ms elapsed to complete 32MB read done from device. |
-> 
-> If bio max size is limited with 1MB, behavior is changed below.
-> 
->  | bio merge for 1MB. 256 pages are merged for each bio.
->  | total 32 bio will be made.
->  | total elapsed time is over 2ms. it's same.
->  | but, first bio submit timing is fast. about 100us.
->  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
->       | 256 pages merged a bio.
->       | at this time, first bio submit is done.
->       | and 1 read request is issued for 1 bio.
->       |--------------->
->            |--------------->
->                 |--------------->
->                                       ......
->                                                  |--------------->
->                                                   |--------------->|
->         total 17ms elapsed to complete 32MB read done from device. |
-> 
-> As a result, read request issue timing is faster if bio max size is limited.
-> Current kernel behavior with multipage bvec, super large bio can be created.
-> And it lead to delay first I/O request issue.
-> 
-> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> 
-> ---
->  block/bio.c               | 17 ++++++++++++++++-
->  include/linux/bio.h       | 13 +++----------
->  include/linux/blk_types.h |  1 +
->  3 files changed, 20 insertions(+), 11 deletions(-)
-> 
-> diff --git a/block/bio.c b/block/bio.c
-> index 1f2cc1fbe283..027503c2e2e7 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -284,9 +284,24 @@ void bio_init(struct bio *bio, struct bio_vec *table,
->  
->  	bio->bi_io_vec = table;
->  	bio->bi_max_vecs = max_vecs;
-> +	bio->bi_max_size = UINT_MAX;
->  }
->  EXPORT_SYMBOL(bio_init);
->  
-> +void bio_set_dev(struct bio *bio, struct block_device *bdev)
-> +{
-> +	if (bio->bi_disk != bdev->bd_disk)
-> +		bio_clear_flag(bio, BIO_THROTTLED);
-> +
-> +	bio->bi_disk = bdev->bd_disk;
-> +	bio->bi_partno = bdev->bd_partno;
-> +	bio->bi_max_size = blk_queue_get_max_sectors(bio->bi_disk->queue,
-> +			bio_op(bio)) << SECTOR_SHIFT;
-> +
-> +	bio_associate_blkg(bio);
-> +}
-> +EXPORT_SYMBOL(bio_set_dev);
-> +
->  /**
->   * bio_reset - reinitialize a bio
->   * @bio:	bio to reset
-> @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
->  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
->  
->  		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> +			if (bio->bi_iter.bi_size > bio->bi_max_size - len)
->  				*same_page = false;
->  				return false;
->  			}
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index 1edda614f7ce..b9803e80c259 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
->  	if (bio->bi_vcnt >= bio->bi_max_vecs)
->  		return true;
->  
-> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
-> +	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
->  		return true;
->  
->  	return false;
-> @@ -482,20 +482,13 @@ extern struct bio_vec *bvec_alloc(gfp_t, int, unsigned long *, mempool_t *);
->  extern void bvec_free(mempool_t *, struct bio_vec *, unsigned int);
->  extern unsigned int bvec_nr_vecs(unsigned short idx);
->  extern const char *bio_devname(struct bio *bio, char *buffer);
-> -
-> -#define bio_set_dev(bio, bdev) 			\
-> -do {						\
-> -	if ((bio)->bi_disk != (bdev)->bd_disk)	\
-> -		bio_clear_flag(bio, BIO_THROTTLED);\
-> -	(bio)->bi_disk = (bdev)->bd_disk;	\
-> -	(bio)->bi_partno = (bdev)->bd_partno;	\
-> -	bio_associate_blkg(bio);		\
-> -} while (0)
-> +extern void bio_set_dev(struct bio *bio, struct block_device *bdev);
->  
->  #define bio_copy_dev(dst, src)			\
->  do {						\
->  	(dst)->bi_disk = (src)->bi_disk;	\
->  	(dst)->bi_partno = (src)->bi_partno;	\
-> +	(dst)->bi_max_size = (src)->bi_max_size;\
->  	bio_clone_blkg_association(dst, src);	\
->  } while (0)
->  
-> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> index 866f74261b3b..e5dd5b7d8fc1 100644
-> --- a/include/linux/blk_types.h
-> +++ b/include/linux/blk_types.h
-> @@ -270,6 +270,7 @@ struct bio {
->  	 */
->  
->  	unsigned short		bi_max_vecs;	/* max bvl_vecs we can hold */
-> +	unsigned int		bi_max_size;	/* max data size we can hold */
-
-People don't like to extend bio which can be fit in two cachelines
-exactly, and adding one 'int' will make it cross 3 cache lines.
-
-
-Thanks,
-Ming
-
+Applied, thanks!
