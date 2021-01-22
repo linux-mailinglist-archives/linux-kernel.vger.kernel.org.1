@@ -2,145 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBB52FFD58
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B58C2FFD5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 08:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbhAVH1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 02:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        id S1727072AbhAVH11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 02:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbhAVH1K (ORCPT
+        with ESMTP id S1727035AbhAVH1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 02:27:10 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DDCC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:26:30 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id my11so6005652pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:26:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3YIYX5mk10bt+Xc3y97u3QBxeKBRZH93iPJqF2Cceik=;
-        b=SiUkFCl/s9Z+xgmkDrVdAKhO/6CI7nxwZspcptlzaJMYzvgkwcdAPgGv0YvbkVxEaP
-         j9B7Be+lWsmUAn+B8CBLhvCoA68TTkai842aA2tajU6ued41V+Q2A+ZaQMjGmyQtaE4g
-         DFg99s0Y5k6PrN9VJVUWRUkDpy2zgRClhziwXQSTF7nMSm4y5cSbaTu9bZHWODZrTcw0
-         aYFPWFLM/LYOZGwyZ6/OVzahQWtcJJLzjNLBOybutIYjjCm+mm5qp1kJZcgsVFl9ld/5
-         b+GZu8U7IRoKAkTHpCymeUjOlyZ2jZjbfF1DQEDEZPMZrxL53EaQyLXwKWe2Y2j9F2fQ
-         JuyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3YIYX5mk10bt+Xc3y97u3QBxeKBRZH93iPJqF2Cceik=;
-        b=QcBJem9gcXOBWkge34f6fYc5dxnauuy+wqHCrXo3Gn2bxSM5a8SmFWM+tTnybbiotM
-         gPc/LzKjcKsUs1efKqDZ1mHAcKbmjw5Ui2ShJxYCr+RXWKEooUN9qYFV9aF3BRyOXgOd
-         FObZwp3OOK3IcXC7hrL1KH6BfpamHOxvWayRBIA+6I9aEfeqlitrNeFpHH8yVbkYcohJ
-         gdDDfdZa633/Jxa3uGibScS201uvOrrjZtQxUlS6ab9qQFC1+NQvPb6z77mGtRsXYRmL
-         mXwsoq8FBxdKruyXPh6xkVqvbQFezn0SBwaGeDPpIsFt3fn5EhHnpNrHlL1h/lUH8gD+
-         5/KA==
-X-Gm-Message-State: AOAM530hWo+jxOr0UBu9mcgBILLAKcWr+M5Ci8J/GzVc1u3FOqLGouCp
-        DvRQSVUNXfMPYCO001f8LWf9Jw==
-X-Google-Smtp-Source: ABdhPJwl6UdKA4DSSvlOS2zeZ+4/K+JiUYVV6IE4QR9L9k79kEF/WlpDJci0JCXicG66p1XFVkHI1Q==
-X-Received: by 2002:a17:902:67:b029:de:c5e0:87ca with SMTP id 94-20020a1709020067b02900dec5e087camr3733334pla.64.1611300389507;
-        Thu, 21 Jan 2021 23:26:29 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id i26sm7929902pfq.219.2021.01.21.23.26.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 21 Jan 2021 23:26:28 -0800 (PST)
-Date:   Fri, 22 Jan 2021 12:56:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] opp: Make _set_opp_custom() work without
- regulators
-Message-ID: <20210122072626.mlbthef43hjldnyr@vireshk-i7>
-References: <20210120222649.28149-1-digetx@gmail.com>
- <20210120222649.28149-5-digetx@gmail.com>
+        Fri, 22 Jan 2021 02:27:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8636C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 23:26:43 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l2qq4-0006bj-4g; Fri, 22 Jan 2021 08:26:36 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:aed1:e241:8b32:9cc0] (unknown [IPv6:2a03:f580:87bc:d400:aed1:e241:8b32:9cc0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 3AEE05CA4F1;
+        Fri, 22 Jan 2021 07:26:34 +0000 (UTC)
+To:     Su Yanjun <suyanjun218@gmail.com>,
+        manivannan.sadhasivam@linaro.org, thomas.kopp@microchip.com,
+        wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        lgirdwood@gmail.com, broonie@kernel.org
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210122030214.166334-1-suyanjun218@gmail.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH v1] can: mcp251xfd: use regmap_bulk_write for
+ compatibility
+Message-ID: <7007275e-a271-8160-729b-67e4d579dfe2@pengutronix.de>
+Date:   Fri, 22 Jan 2021 08:26:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120222649.28149-5-digetx@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210122030214.166334-1-suyanjun218@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="JqAFCNcLepDxQuiQEg2w1MyCLwdxcSq6B"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-21, 01:26, Dmitry Osipenko wrote:
-> Check whether OPP table has regulators in _set_opp_custom() and set up
-> dev_pm_set_opp_data accordingly. Now _set_opp_custom() works properly,
-> i.e. it doesn't crash if OPP table doesn't have assigned regulators.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c | 26 +++++++++++++++++---------
->  1 file changed, 17 insertions(+), 9 deletions(-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--JqAFCNcLepDxQuiQEg2w1MyCLwdxcSq6B
+Content-Type: multipart/mixed; boundary="xOnKsZEu3EoQCXgzv2UK6pcoBQzUNpUgy";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Su Yanjun <suyanjun218@gmail.com>, manivannan.sadhasivam@linaro.org,
+ thomas.kopp@microchip.com, wg@grandegger.com, davem@davemloft.net,
+ kuba@kernel.org, lgirdwood@gmail.com, broonie@kernel.org
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <7007275e-a271-8160-729b-67e4d579dfe2@pengutronix.de>
+Subject: Re: [PATCH v1] can: mcp251xfd: use regmap_bulk_write for
+ compatibility
+References: <20210122030214.166334-1-suyanjun218@gmail.com>
+In-Reply-To: <20210122030214.166334-1-suyanjun218@gmail.com>
 
-I have applied this instead:
+--xOnKsZEu3EoQCXgzv2UK6pcoBQzUNpUgy
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 32d653774adc..805fc2602808 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -828,24 +828,31 @@ static int _set_opp_custom(const struct opp_table *opp_table,
-                           struct dev_pm_opp_supply *old_supply,
-                           struct dev_pm_opp_supply *new_supply)
- {
--       struct dev_pm_set_opp_data *data;
-+       struct dev_pm_set_opp_data *data = opp_table->set_opp_data;
-        int size;
- 
--       data = opp_table->set_opp_data;
-+       /*
-+        * We support this only if dev_pm_opp_set_regulators() was called
-+        * earlier.
-+        */
-+       if (opp_table->sod_supplies) {
-+               size = sizeof(*old_supply) * opp_table->regulator_count;
-+               if (!old_supply)
-+                       memset(data->old_opp.supplies, 0, size);
-+               else
-+                       memcpy(data->old_opp.supplies, old_supply, size);
-+
-+               memcpy(data->new_opp.supplies, new_supply, size);
-+               data->regulator_count = opp_table->regulator_count;
-+       } else {
-+               data->regulator_count = 0;
-+       }
-+
-        data->regulators = opp_table->regulators;
--       data->regulator_count = opp_table->regulator_count;
-        data->clk = opp_table->clk;
-        data->dev = dev;
--
-        data->old_opp.rate = old_freq;
--       size = sizeof(*old_supply) * opp_table->regulator_count;
--       if (!old_supply)
--               memset(data->old_opp.supplies, 0, size);
--       else
--               memcpy(data->old_opp.supplies, old_supply, size);
--
-        data->new_opp.rate = freq;
--       memcpy(data->new_opp.supplies, new_supply, size);
- 
-        return opp_table->set_opp(data);
- }
+On 1/22/21 4:02 AM, Su Yanjun wrote:
+> Recently i use mcp2518fd on 4.x kernel which multiple write is not
+> backported, regmap_raw_write will cause old kernel crash because the
+> tx buffer in driver is smaller then 2K. Use regmap_bulk_write instead
+> for compatibility.
+
+Hmmm, this patch will never be backported to any 4.x kernel, as the drive=
+r is
+not available on these kernels. You have to carry patches for these kerne=
+ls
+anyway, so I think I'll not take that patch. Sorry. Drop me a note if you=
+ are
+interested in updating your kernel to a recent v5.11 kernel.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
--- 
-viresh
+--xOnKsZEu3EoQCXgzv2UK6pcoBQzUNpUgy--
+
+--JqAFCNcLepDxQuiQEg2w1MyCLwdxcSq6B
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAKfiYACgkQqclaivrt
+76lNsAf/RID0x67zSmVj2QoEMW3Dy8ksMpCzboa/GbeB9Vq1Mpg4YXeeA6//88J5
+GmtGBxxbrJMDMpUs5c4fer7JPJKetEM0FCDxAuR2KCVetVaGvyFtthaOKuB3zWfu
+D2d3nwf4F+vmhzjs9S8LVXKXK+kcjfKgtVYnW56EQEYrSOImQuF4c3PJZYh6JHZq
+apSle4AtsfjawLTV6nJGVPQZre0nPYftIKbcTBeIHe+Q6ljfzGacBnho9+jM0Za8
+CQUoUkmBqS4tZ8gOpr8CxB0CVKM54Y8K+Y0kVzmpKVA5FP/QQIngk25ClaHdlvf2
+A8C8HzhwDBVurFW99zkMYymuPoNEEA==
+=vFGj
+-----END PGP SIGNATURE-----
+
+--JqAFCNcLepDxQuiQEg2w1MyCLwdxcSq6B--
