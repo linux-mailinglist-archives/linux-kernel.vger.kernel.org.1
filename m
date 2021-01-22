@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF58300D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1736300D61
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730920AbhAVULJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:11:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34410 "EHLO mail.kernel.org"
+        id S1730942AbhAVUIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:08:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728310AbhAVOMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:12:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDF8D23A3A;
-        Fri, 22 Jan 2021 14:09:38 +0000 (UTC)
+        id S1728336AbhAVONF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:13:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8469823A7E;
+        Fri, 22 Jan 2021 14:09:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324579;
-        bh=2RKH7J2muvcXmbRmaqoRBmJKzIh0qBhj7XPySiMHxCI=;
+        s=korg; t=1611324582;
+        bh=l4uhUfK/fERdFRPkg3NBFd2pXWcHnquqyXpcbHEmcUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WGYMh9eRPou6QwKz7y2XrmxfGnublF571lihgssYiP6BOQzOMPfpwQmx+XBLt9q8G
-         dg+0YoUX3pIxC9Imoy8HJmMh4ABlz+zaJqXrtZ7jYe8Kp6TRjx1nK6UAR6USVkCpAJ
-         gfqqSzPdUa4wSVNidNpwlnOqcplpCE5jmkM+F1W4=
+        b=chCYmhL016tyaGdlg6sbNO0NZGRGRi9EIQV55lLPlx1paGzaU3rvhH/xMK0riF7Md
+         +0j5fjTDmbwTfN2ScKM+mnFyYraIcSpUJuPqPZdVUO8VWXGoEADtiTjuIJg9n6KrO2
+         4c65D1oL290l8iuLa/LS2A7pLkEM6cz4GBcjNdKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Machata <me@pmachata.org>,
+        stable@vger.kernel.org, Petr Machata <petrm@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 26/31] net: dcb: Validate netlink message in DCB handler
-Date:   Fri, 22 Jan 2021 15:08:40 +0100
-Message-Id: <20210122135732.914805427@linuxfoundation.org>
+Subject: [PATCH 4.4 27/31] net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
+Date:   Fri, 22 Jan 2021 15:08:41 +0100
+Message-Id: <20210122135732.952886908@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135731.873346566@linuxfoundation.org>
 References: <20210122135731.873346566@linuxfoundation.org>
@@ -39,47 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <me@pmachata.org>
+From: Petr Machata <petrm@nvidia.com>
 
-[ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
+[ Upstream commit df85bc140a4d6cbaa78d8e9c35154e1a2f0622c7 ]
 
-DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
-messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
-the CAP_NET_ADMIN capability.
+In commit 826f328e2b7e ("net: dcb: Validate netlink message in DCB
+handler"), Linux started rejecting RTM_GETDCB netlink messages if they
+contained a set-like DCB_CMD_ command.
 
-However, the operation to be performed is not decided from the DCB message
-type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
-reading DCB objects, the corresponding SET and DEL commands are used for
-manipulation.
+The reason was that privileges were only verified for RTM_SETDCB messages,
+but the value that determined the action to be taken is the command, not
+the message type. And validation of message type against the DCB command
+was the obvious missing piece.
 
-The assumption is that set-like commands will be sent via an RTM_SETDCB
-message, and get-like ones via RTM_GETDCB. However, this assumption is not
-enforced.
+Unfortunately it turns out that mlnx_qos, a somewhat widely deployed tool
+for configuration of DCB, accesses the DCB set-like APIs through
+RTM_GETDCB.
 
-It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
-capability by sending the corresponding command in an RTM_GETDCB message.
-That is a bug. Fix it by validating the type of the request message against
-the type used for the response.
+Therefore do not bounce the discrepancy between message type and command.
+Instead, in addition to validating privileges based on the actual message
+type, validate them also based on the expected message type. This closes
+the loophole of allowing DCB configuration on non-admin accounts, while
+maintaining backward compatibility.
 
 Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
-Signed-off-by: Petr Machata <me@pmachata.org>
-Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
+Fixes: 826f328e2b7e ("net: dcb: Validate netlink message in DCB handler")
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Link: https://lore.kernel.org/r/a3edcfda0825f2aa2591801c5232f2bbf2d8a554.1610384801.git.me@pmachata.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dcb/dcbnl.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/dcb/dcbnl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/net/dcb/dcbnl.c
 +++ b/net/dcb/dcbnl.c
-@@ -1725,6 +1725,8 @@ static int dcb_doit(struct sk_buff *skb,
+@@ -1725,7 +1725,7 @@ static int dcb_doit(struct sk_buff *skb,
  	fn = &reply_funcs[dcb->cmd];
  	if (!fn->cb)
  		return -EOPNOTSUPP;
-+	if (fn->type != nlh->nlmsg_type)
-+		return -EPERM;
+-	if (fn->type != nlh->nlmsg_type)
++	if (fn->type == RTM_SETDCB && !netlink_capable(skb, CAP_NET_ADMIN))
+ 		return -EPERM;
  
  	if (!tb[DCB_ATTR_IFNAME])
- 		return -EINVAL;
 
 
