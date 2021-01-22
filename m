@@ -2,110 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3472D300A6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:59:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DFD300A20
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbhAVRyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:54:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
+        id S1729500AbhAVRrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729271AbhAVRmZ (ORCPT
+        with ESMTP id S1727486AbhAVRoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:42:25 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9D0C061788;
-        Fri, 22 Jan 2021 09:41:40 -0800 (PST)
-Date:   Fri, 22 Jan 2021 17:41:36 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611337296;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i9BcL50rm8i5DNQgULkOCBpJrrpITPsfg3U2i/kOcEA=;
-        b=yz8tOfGlNdAr0Dv36lemlm0n/Q/UBsitU+zS6zcWmHyvSM4sjmVpr+Wegq3MDIQZDg1Hhs
-        Xmb1vYYpHit0/X7pxWPzIoR3b8d5Ha3+Z9NL1rZpb/SJjAHTNoiAQoLbK3co7JV6GIVrmR
-        qcHsFHcPhv9xUve46bNQbytFvJlihLbB/oguFbQPC7R/OPu32e98sxU9Pr80QGXRBpzmE1
-        a0nMG+M3c4fidruABGNAr2yHLI7ht4WTVcLaND8n84Ate6LdVOfl2KPYgF+re4Om8OpWd0
-        bXDXsN00wMAJWLsFNr84tx0cSafGY5DSvIwPR98VF0d/QPcGcxAKU2dbsD2JRg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611337296;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i9BcL50rm8i5DNQgULkOCBpJrrpITPsfg3U2i/kOcEA=;
-        b=oflT5tJChUehbrKcRoFq4wHMW8yD/COt8A80W07aSgrYOJITBX8r7e/lIwuMcE47wJYYdR
-        NALNN7ISzRLXDmCQ==
-From:   "tip-bot2 for Lai Jiangshan" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] workqueue: Use cpu_possible_mask instead of
- cpu_active_mask to break affinity
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210111152638.2417-4-jiangshanlai@gmail.com>
-References: <20210111152638.2417-4-jiangshanlai@gmail.com>
+        Fri, 22 Jan 2021 12:44:14 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E368C06174A;
+        Fri, 22 Jan 2021 09:43:32 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id g10so5886904wrx.1;
+        Fri, 22 Jan 2021 09:43:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u8ZUkCJ1JxdMy0LwNAxnwHhQ0MXIil1QP/v4uET+MVU=;
+        b=Fa8RCGef019NDY5WlGmdeA2ganP7YvqPXtJfHiYzptfK1EKCxVoAnuPzS0bKMYHmGM
+         70pSdF6YIeWJnbpelZPvL4RsERtZ0b0ZOCfSCzZ0oadrKAbpCcjVeMe3sWBbN+kQsuXv
+         Kyux8Iwu6Y+5FWge905817u5eqWXF2aYQGAblcaEGFkDoXIY69tqWq7D+LX2yd00/ibI
+         Xl3tFf22t4QwNIVKxshOxq9mX9d1UZzw29sVqkUfGf9GRSyf29v9n8iwkXRvuccxcOEM
+         5IBzTHbfRKqogFrH6LCNIUJrU2AtHp827yegb3pQ65p37c8K6GREa8LnSZ/pOXbLCErD
+         8w0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u8ZUkCJ1JxdMy0LwNAxnwHhQ0MXIil1QP/v4uET+MVU=;
+        b=OLOsPyEZnjROuqpXyPy4rMnyivXTMcE1HXB01VctXRZO8ePWyUcY1qPXuVTcEsvGRw
+         zXI7JZuy27+R+1eO4Z+PL7nUrdps0mAtkEEqfYBHIdVnoR4Gjn/87c19Bi8pINWChKFG
+         2/RoT6Zoslui7ZC1H8A7e2DKdNvK4/EsvcY1p2mRSac4LX/R/BQOUgoBDT8nwHTBFKa7
+         NfqqhuAM3cky9bW/ResRFrmtg2XFrjM9qn2lZqjGWzrSSus1C+Ivk4A9jqPX19G0QF1K
+         SOUxFgDxX00NeEBEhblSC4f0lAZV/KpfzBUmubjNzTgRDdypPQOgxDCLwrmQluAWAKzE
+         Jz4Q==
+X-Gm-Message-State: AOAM531lNiO1TfOaXq+b4/I1VjeIyju6h2pHUK6rBqVhwU94G9JeMuGP
+        4aNmVnXLR06LAoVZlO57/TU=
+X-Google-Smtp-Source: ABdhPJweNj14pbEU2BwwObKVqsptYVvnWZcPx0AfnybiPUC/CHlE58pthykuoB7ebzubCgLlmFTvjA==
+X-Received: by 2002:a5d:47ae:: with SMTP id 14mr5494747wrb.378.1611337410762;
+        Fri, 22 Jan 2021 09:43:30 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id 192sm13543776wme.27.2021.01.22.09.43.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 09:43:30 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v4] regulator: Make regulator_sync_voltage() usable by coupled regulators
+Date:   Fri, 22 Jan 2021 20:43:11 +0300
+Message-Id: <20210122174311.28230-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Message-ID: <161133729644.414.3800664867137502999.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Make regulator_sync_voltage() to re-balance voltage state of a coupled
+regulators instead of changing the voltage directly.
 
-Commit-ID:     547a77d02f8cfb345631ce23b5b548d27afa0fc4
-Gitweb:        https://git.kernel.org/tip/547a77d02f8cfb345631ce23b5b548d27afa0fc4
-Author:        Lai Jiangshan <laijs@linux.alibaba.com>
-AuthorDate:    Mon, 11 Jan 2021 23:26:33 +08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 22 Jan 2021 15:09:41 +01:00
-
-workqueue: Use cpu_possible_mask instead of cpu_active_mask to break affinity
-
-The scheduler won't break affinity for us any more, and we should
-"emulate" the same behavior when the scheduler breaks affinity for
-us.  The behavior is "changing the cpumask to cpu_possible_mask".
-
-And there might be some other CPUs online later while the worker is
-still running with the pending work items.  The worker should be allowed
-to use the later online CPUs as before and process the work items ASAP.
-If we use cpu_active_mask here, we can't achieve this goal but
-using cpu_possible_mask can.
-
-Fixes: 06249738a41a ("workqueue: Manually break affinity on hotplug")
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210111152638.2417-4-jiangshanlai@gmail.com
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 9880b6c..1646331 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -4920,7 +4920,7 @@ static void unbind_workers(int cpu)
- 		raw_spin_unlock_irq(&pool->lock);
+Changelog:
+
+v4: - Now not using goto in the code, like it was suggested by Mark Brown
+      in a review comment to v3.
+
+v3: - This patch is factored out from [1] to ease merging of the patches
+      that will use the regulator_sync_voltage(). The goal is to get this
+      change merged into 5.12, it will remove dependency for the Tegra Core
+      power domain driver which will target 5.13.
+
+      [1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=221130
+
+ drivers/regulator/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 3ae5ccd9277d..8e197b785a31 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -4148,7 +4148,11 @@ int regulator_sync_voltage(struct regulator *regulator)
+ 	if (ret < 0)
+ 		goto out;
  
- 		for_each_pool_worker(worker, pool)
--			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
-+			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
+-	ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
++	/* balance only, if regulator is coupled */
++	if (rdev->coupling_desc.n_coupled > 1)
++		ret = regulator_balance_voltage(rdev, PM_SUSPEND_ON);
++	else
++		ret = _regulator_do_set_voltage(rdev, min_uV, max_uV);
  
- 		mutex_unlock(&wq_pool_attach_mutex);
- 
+ out:
+ 	regulator_unlock(rdev);
+-- 
+2.29.2
+
