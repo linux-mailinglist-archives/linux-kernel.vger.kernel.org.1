@@ -2,104 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638D6300388
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4FD030038D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 13:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbhAVMzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 07:55:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:46288 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727533AbhAVMyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:54:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BD7511B3;
-        Fri, 22 Jan 2021 04:53:41 -0800 (PST)
-Received: from [10.57.39.58] (unknown [10.57.39.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2AF2D3F66E;
-        Fri, 22 Jan 2021 04:53:18 -0800 (PST)
-Subject: Re: [PATCH v2 1/3] iommu/arm-smmu: Add support for driver IOMMU fault
- handlers
-To:     Will Deacon <will@kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201124191600.2051751-1-jcrouse@codeaurora.org>
- <20201124191600.2051751-2-jcrouse@codeaurora.org>
- <20210122124125.GA24102@willie-the-truck>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <8ba2f53d-abbf-af7f-07f6-48ad7f383a37@arm.com>
-Date:   Fri, 22 Jan 2021 12:53:17 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727444AbhAVM4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 07:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbhAVM4G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:56:06 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCE0C0613D6;
+        Fri, 22 Jan 2021 04:55:25 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id u11so3103377plg.13;
+        Fri, 22 Jan 2021 04:55:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+hdkdzhBLRYgvWLyAgaaAF1+dexomSUfv4h9wGuekbc=;
+        b=tMV/YSv1dbJYrEpAOaynp5dVr1c8ueO2IIrqtQcGDG9BWEx4DG5STuNJWMatx7zHi5
+         L9bilSa+SvFBsYb4wp9oZL6Zqq67IX3HCeXwB1NtZAdzF4SeZZzmKKlx2TeYuFXH869s
+         NRZfa6DX/ywvSxXEZHOLqh5QDEQe3YO6rgRXHqJIUf+8h3LhPuv6tAl4Qbj+BQ5Xftwa
+         PYc/1Qczo5z6+b4NCvnFcXoj5IcCPCiakSTJVTRzjry26TZASmlZ0aaH6tTiuAyqhe3n
+         2wV6DVJwEhd1zQzqmy8iqw1N6BPgXzhYDCsTdV7qMiXKNQ7ougUvYjFzbs6SaZyN77h/
+         hqaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+hdkdzhBLRYgvWLyAgaaAF1+dexomSUfv4h9wGuekbc=;
+        b=Mr/dPJHM/z5ukssj6cVU6eXp4OLxt/9V8M+aXgUsrPm1ywxWOkSMB26e0c4/zwiCzZ
+         CRFnGm6Tv4DitJ3f/YC3rgm3AKO0luSbCyTFjgf9iTkAC1D0HcqUT+BGKZKy5iVwi6wL
+         95AusTWRMLVc8IYv83szo4bzT2brwzlGR9MtAdIb9rbtd6dpkbcvEXdKiuGRWR0S7iCv
+         e4g4gYUebDLdgzM9iH2EB033VzMqqJbdHfaBmw4c/iEsOq5OCdEbR6SqZcNjqCPvZHMv
+         4pV7aR12d+tijUwbQgh6vQZ4aTKyPfFp/YnyfmDTJgEZY9Yfm2B61UZkl5oKaFWzO+wI
+         0SDA==
+X-Gm-Message-State: AOAM530P1IGCNX3abI8PC/82iB6V62EoOYcUvLICRb/qiKmgSMRSe1Vb
+        297xXIlJUYXW4uVmrmrKJ6zOATG62y0sYbdq4/Q=
+X-Google-Smtp-Source: ABdhPJyOekGA0LTNcRJjA2yeAIY9CqxHGGM13WOOAvnMcVkaKCdDGsGKzeBmxKPyWKCdJpUJfseyHlMFXlYcwvO8gRE=
+X-Received: by 2002:a17:90a:14e2:: with SMTP id k89mr5085872pja.168.1611320125462;
+ Fri, 22 Jan 2021 04:55:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210122124125.GA24102@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <cover.1611236588.git.xuanzhuo@linux.alibaba.com>
+ <340f1dfa40416dd966a56e08507daba82d633088.1611236588.git.xuanzhuo@linux.alibaba.com>
+ <dcee4592-9fa9-adbb-55ca-58a962076e7a@gmail.com> <20210122114729.1758-1-alobakin@pm.me>
+ <20210122115519.2183-1-alobakin@pm.me> <CAJ8uoz0ve9iRmz6zkCTaBMMjckFrD0df43-uVreXVf_wM3mZ1A@mail.gmail.com>
+ <20210122123909.3603-1-alobakin@pm.me>
+In-Reply-To: <20210122123909.3603-1-alobakin@pm.me>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 22 Jan 2021 13:55:14 +0100
+Message-ID: <CAJ8uoz0uW6DbXrKLNYAQf3UU1foCD6tyHf0tgEyJko0mk14bqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-22 12:41, Will Deacon wrote:
-> On Tue, Nov 24, 2020 at 12:15:58PM -0700, Jordan Crouse wrote:
->> Call report_iommu_fault() to allow upper-level drivers to register their
->> own fault handlers.
->>
->> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
->> ---
->>
->>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 16 +++++++++++++---
->>   1 file changed, 13 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> index 0f28a8614da3..7fd18bbda8f5 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> @@ -427,6 +427,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
->>   	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->>   	struct arm_smmu_device *smmu = smmu_domain->smmu;
->>   	int idx = smmu_domain->cfg.cbndx;
->> +	int ret;
->>   
->>   	fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
->>   	if (!(fsr & ARM_SMMU_FSR_FAULT))
->> @@ -436,11 +437,20 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
->>   	iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
->>   	cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
->>   
->> -	dev_err_ratelimited(smmu->dev,
->> -	"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
->> +	ret = report_iommu_fault(domain, dev, iova,
->> +		fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
->> +
->> +	if (ret == -ENOSYS)
->> +		dev_err_ratelimited(smmu->dev,
->> +		"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
->>   			    fsr, iova, fsynr, cbfrsynra, idx);
->>   
->> -	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
->> +	/*
->> +	 * If the iommu fault returns an error (except -ENOSYS) then assume that
->> +	 * they will handle resuming on their own
->> +	 */
->> +	if (!ret || ret == -ENOSYS)
->> +		arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
-> 
-> Hmm, I don't grok this part. If the fault handler returned an error and
-> we don't clear the FSR, won't we just re-take the irq immediately?
+On Fri, Jan 22, 2021 at 1:39 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> From: Magnus Karlsson <magnus.karlsson@gmail.com>
+> Date: Fri, 22 Jan 2021 13:18:47 +0100
+>
+> > On Fri, Jan 22, 2021 at 12:57 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> > >
+> > > From: Alexander Lobakin <alobakin@pm.me>
+> > > Date: Fri, 22 Jan 2021 11:47:45 +0000
+> > >
+> > > > From: Eric Dumazet <eric.dumazet@gmail.com>
+> > > > Date: Thu, 21 Jan 2021 16:41:33 +0100
+> > > >
+> > > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > > > > > This patch is used to construct skb based on page to save memory copy
+> > > > > > overhead.
+> > > > > >
+> > > > > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+> > > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+> > > > > > directly construct skb. If this feature is not supported, it is still
+> > > > > > necessary to copy data to construct skb.
+> > > > > >
+> > > > > > ---------------- Performance Testing ------------
+> > > > > >
+> > > > > > The test environment is Aliyun ECS server.
+> > > > > > Test cmd:
+> > > > > > ```
+> > > > > > xdpsock -i eth0 -t  -S -s <msg size>
+> > > > > > ```
+> > > > > >
+> > > > > > Test result data:
+> > > > > >
+> > > > > > size    64      512     1024    1500
+> > > > > > copy    1916747 1775988 1600203 1440054
+> > > > > > page    1974058 1953655 1945463 1904478
+> > > > > > percent 3.0%    10.0%   21.58%  32.3%
+> > > > > >
+> > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > > > > > ---
+> > > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++----------
+> > > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
+> > > > > >
+> > > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > > index 4a83117..38af7f1 100644
+> > > > > > --- a/net/xdp/xsk.c
+> > > > > > +++ b/net/xdp/xsk.c
+> > > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+> > > > > >   sock_wfree(skb);
+> > > > > >  }
+> > > > > >
+> > > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> > > > > > +                                       struct xdp_desc *desc)
+> > > > > > +{
+> > > > > > + u32 len, offset, copy, copied;
+> > > > > > + struct sk_buff *skb;
+> > > > > > + struct page *page;
+> > > > > > + void *buffer;
+> > > > > > + int err, i;
+> > > > > > + u64 addr;
+> > > > > > +
+> > > > > > + skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > > > > > + if (unlikely(!skb))
+> > > > > > +         return ERR_PTR(err);
+> > > > > > +
+> > > > > > + addr = desc->addr;
+> > > > > > + len = desc->len;
+> > > > > > +
+> > > > > > + buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> > > > > > + offset = offset_in_page(buffer);
+> > > > > > + addr = buffer - xs->pool->addrs;
+> > > > > > +
+> > > > > > + for (copied = 0, i = 0; copied < len; i++) {
+> > > > > > +         page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> > > > > > +
+> > > > > > +         get_page(page);
+> > > > > > +
+> > > > > > +         copy = min_t(u32, PAGE_SIZE - offset, len - copied);
+> > > > > > +
+> > > > > > +         skb_fill_page_desc(skb, i, page, offset, copy);
+> > > > > > +
+> > > > > > +         copied += copy;
+> > > > > > +         addr += copy;
+> > > > > > +         offset = 0;
+> > > > > > + }
+> > > > > > +
+> > > > > > + skb->len += len;
+> > > > > > + skb->data_len += len;
+> > > > >
+> > > > > > + skb->truesize += len;
+> > > > >
+> > > > > This is not the truesize, unfortunately.
+> > > > >
+> > > > > We need to account for the number of pages, not number of bytes.
+> > > >
+> > > > The easiest solution is:
+> > > >
+> > > >       skb->truesize += PAGE_SIZE * i;
+> > > >
+> > > > i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
+> > >
+> > > Oops, pls ignore this. I forgot that XSK buffers are not
+> > > "one per page".
+> > > We need to count the number of pages manually and then do
+> > >
+> > >         skb->truesize += PAGE_SIZE * npages;
+> > >
+> > > Right.
+> >
+> > There are two possible packet buffer (chunks) sizes in a umem, 2K and
+> > 4K on a system with a PAGE_SIZE of 4K. If I remember correctly, and
+> > please correct me if wrong, truesize is used for memory accounting.
+> > But in this code, no kernel memory has been allocated (apart from the
+> > skb). The page is just a part of the umem that has been already
+> > allocated beforehand and by user-space in this case. So what should
+> > truesize be in this case? Do we add 0, chunk_size * i, or the
+> > complicated case of counting exactly how many 4K pages that are used
+> > when the chunk_size is 2K, as two chunks could occupy the same page,
+> > or just the upper bound of PAGE_SIZE * i that is likely a good
+> > approximation in most cases? Just note that there might be other uses
+> > of truesize that I am unaware of that could impact this choice.
+>
+> Truesize is "what amount of memory does this skb occupy with all its
+> fragments, linear space and struct sk_buff itself". The closest it
+> will be to the actual value, the better.
+> In this case, I think adding of chunk_size * i would be enough.
 
-If we don't touch the FSR at all, yes. Even if we clear the fault 
-indicator bits, the interrupt *might* remain asserted until a stalled 
-transaction is actually resolved - that's that lovely IMP-DEF corner.
+Sounds like a good approximation to me.
 
-Robin.
+> (PAGE_SIZE * i can be overwhelming when chunk_size is 2K, especially
+> for setups with PAGE_SIZE > SZ_4K)
 
-> I think
-> it would be better to do this unconditionally, and print the "Unhandled
-> context fault" message for any non-zero value of ret.
-> 
-> Will
-> 
+You are right. That would be quite horrible on a system with a page size of 64K.
+
+> > > > > > +
+> > > > > > + refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > > > > > +
+> > > > > > + return skb;
+> > > > > > +}
+> > > > > > +
+> > > >
+> > > > Al
+> > >
+> > > Thanks,
+> > > Al
+>
+> Al
+>
