@@ -2,112 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3003003DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7F93003E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727272AbhAVNLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
+        id S1727814AbhAVNMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:12:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727476AbhAVNKm (ORCPT
+        with ESMTP id S1727517AbhAVNLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:10:42 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2A4C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:10:02 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id v67so7467378lfa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:10:02 -0800 (PST)
+        Fri, 22 Jan 2021 08:11:45 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88977C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:11:05 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d16so4357556wro.11
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:11:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=raspberrypi.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jM6zpCES+0HLn8XlUNi032+O57IMQ4RlIhY5sPMlY+Q=;
-        b=sF5zAjDT56BXiHUey17OUSfQJ66O9gcNB/c6sn5CjzVA/TG8uudCB1ttxC7JwOpY3K
-         qIB1A5e7fuCatdIf+5BL5DYq0UuC+ftUgAIEvi3YC5xTK9SBTvWSgrFOBn0lRFms7Xws
-         9YSdzTRVxlR3bmUlTGBzpMETm64mfRVCQkQ2LEL/+zTbIQSLC1MxJyX0y0/Mku+Uwr+g
-         Po0AbrD406ZbDdueebjDmUt49f7PZoFwWFK/6oIhfRGB6J3GePuH//HPXFcypYtsnNGg
-         teRWxa9ynMonmK9sWmd+YcmJci32W7kQOXEDs5ju0ygcEo5dtXPSYY9zqvnhGp+PNLCC
-         bk/g==
+        bh=DlbQDTL9lgcBTkGtGPLxxHcpZqtYZlnjZgESPzNd3dk=;
+        b=cvMBoOPbyHYvHuRZJUbkoYI6wQr+uFNzsP8Byd3bREwnZWQckWn9O3O9z4rbqAAxCG
+         DG3FeAiintfRZo3klDvSndwOAEafZQxbQ6F7WTtmJLwIjp23HpS2osdES8yLkzS7vjV6
+         UFHfZEM1Tl/ujKCCd90L4Fvd8mcPz+6eD9YuVeQeeyy5kKVDD5s9ci+fdJWlKEnj3xZT
+         +DIpvikohimdbEO+qam8p2fIhaYzFI74vUqDLd6LPr+MTmSUopRwDXWhCG9LGLIXMe0h
+         c87V5IsAQiLZ3HVsOMhJD/IRXutd5+uq5eEb87yD52RiAU+XGsa7yCtbSSCADFUNHOg2
+         7HuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jM6zpCES+0HLn8XlUNi032+O57IMQ4RlIhY5sPMlY+Q=;
-        b=lzk+/HQJKlfb7jwhUk4fU+m4QaQTx6fRFJ3U24+WAPTpsyXnraOg7wdy/PhEnA08Cl
-         4o676zm4WHDxvuMFuOO2QVdh0Bk0nrYlG2takuYhs2FPvoPrJfMUIPFBHx2LfxxYLh7Q
-         zkZJgalCpTdZR/yCnfeUbxENbtiQoMWQpdSJTD55SfVaZyIMe4JD/tN/YU3en+X1bn8C
-         fulIeCgLds9FOwQFCEwI3lNYf7uedPReaOeOtLx2rNMwaKt7Tdtwm3frXExdam+kSow7
-         x4R1n8/cJH6oQ0vaVxo4QdpInqpgze03fzpOHoti6hsXAsa/sfp+Fl3/hadqfOJ6g/pI
-         twkA==
-X-Gm-Message-State: AOAM533poTVGXy6Y0EFUrUjU0ox+ao113rliIvhAaPKkw+ueD33YmawS
-        D/fEDAw3srOdq4GX+TFYsfklWjcWZlF1MbudF98QcA==
-X-Google-Smtp-Source: ABdhPJxHLxFQGKxSHSjonKXZfD+TP3Iizcnks53UjMPVH/itFaqhB5xo0zcrd/h+EYj3WPQIojePEaOg0ILdmqpfLcI=
-X-Received: by 2002:a05:6512:38c1:: with SMTP id p1mr2197526lft.193.1611321000384;
- Fri, 22 Jan 2021 05:10:00 -0800 (PST)
+        bh=DlbQDTL9lgcBTkGtGPLxxHcpZqtYZlnjZgESPzNd3dk=;
+        b=hvdAmWcZXFV8D8HsBOo7sNdon/24hxAVf634vxem5yG5jdq/mSBMyEPONoR0UViI0T
+         7S+ADUbsngaH2kWquvtX2ixd8llrkHTIj48LHKo+LURTbc4qhCcockSD4v+XnVC1DTgx
+         uRI1/viiLkOlMbjRe8wNedXJ2j8HOxxGqTonIo6m2tf5C+pylvubqrMWaAtHZkEJY0II
+         3tbirjoUwtM6yxZVB1TcDXrJ5HAW09MWm2AT+BcDZJiQm3VOviMdXTZzUG/Y5Nads+jH
+         KaR2ru1HJHSgImJYLzHBPoKJiC3BbMtDhW2x6uvYLzZwdbAPndaVR87UgmNYLNzGDYs2
+         zrUA==
+X-Gm-Message-State: AOAM531C5DiYlbOm4BS+eeR9GZmLfiXglhcJ0SOVnlfGi6V+8JXycoth
+        AY2QuSe0iuJeTeHYASiSZUv3zWv8MfA77aMXJIOZWQ==
+X-Google-Smtp-Source: ABdhPJzM9x7gbuptc/+Kd7a/slbXsAMEIvUb+yNdZCSX3L+dSiV9l/Kk/Q81u61D3jOMDh403qjkCGqTrzJC12ovbLY=
+X-Received: by 2002:a05:6000:1082:: with SMTP id y2mr4331942wrw.27.1611321064346;
+ Fri, 22 Jan 2021 05:11:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com> <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz> <CAG48ez0gutKNuRj4E22tkv8mQKo-6TExGMxvpHCtUz8sFonb3A@mail.gmail.com>
-In-Reply-To: <CAG48ez0gutKNuRj4E22tkv8mQKo-6TExGMxvpHCtUz8sFonb3A@mail.gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 22 Jan 2021 14:09:33 +0100
-Message-ID: <CAG48ez3YavBAO1nQquca6W-RvH4yy2B7oiY4jWn96B_aaA_gVw@mail.gmail.com>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Michal Hocko <mhocko@kernel.org>
+References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-11-maxime@cerno.tech>
+In-Reply-To: <20210111142309.193441-11-maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 22 Jan 2021 13:10:49 +0000
+Message-ID: <CAPY8ntCdxn3=A19VVsxnrPppk0O7eyzxa3bwFWQj1QEXnQ_GWA@mail.gmail.com>
+Subject: Re: [PATCH v2 10/15] drm/vc4: hdmi: Support BCM2711 CEC interrupt setup
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 2:05 PM Jann Horn <jannh@google.com> wrote:
-> On Thu, Jan 21, 2021 at 7:19 PM Vlastimil Babka <vbabka@suse.cz> wrote:
-> > On 1/21/21 11:01 AM, Christoph Lameter wrote:
-> > > On Thu, 21 Jan 2021, Bharata B Rao wrote:
-> > >
-> > >> > The problem is that calculate_order() is called a number of times
-> > >> > before secondaries CPUs are booted and it returns 1 instead of 224.
-> > >> > This makes the use of num_online_cpus() irrelevant for those cases
-> > >> >
-> > >> > After adding in my command line "slub_min_objects=36" which equals to
-> > >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
-> > >> > , the regression diseapears:
-> > >> >
-> > >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
-> >
-> > I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
-> > supposed to be a scheduler benchmark? What exactly is going on?
->
-> Uuuh, I think powerpc doesn't have cmpxchg_double?
->
-> "vgrep cmpxchg_double arch/" just spits out arm64, s390 and x86? And
-> <https://liblfds.org/mediawiki/index.php?title=Article:CAS_and_LL/SC_Implementation_Details_by_Processor_family>
-> says under "POWERPC": "no DW LL/SC"
->
-> So powerpc is probably hitting the page-bitlock-based implementation
-> all the time for stuff like __slub_free()? Do you have detailed
-> profiling results from "perf top" or something like that?
->
-> (I actually have some WIP patches and a design document for getting
-> rid of cmpxchg_double in struct page that I hacked together in the
-> last couple days; I'm currently in the process of sending them over to
-> some other folks in the company who hopefully have cycles to
-> review/polish/benchmark them so that they can be upstreamed, assuming
-> that those folks think they're important enough. I don't have the
-> cycles for it...)
+Hi Maxime
 
-(The stuff I have in mind will only work on 64-bit though. We are
-talking about PPC64 here, right?)
+On Mon, 11 Jan 2021 at 14:23, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> The HDMI controller found in the BCM2711 has an external interrupt
+> controller for the CEC and hotplug interrupt shared between the two
+> instances.
+>
+> Let's add a variant flag to register a single interrupt handler and
+> deals with the interrupt handler setup, or two interrupt handlers
+> relying on an external irqchip.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+Looks good
+
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 42 ++++++++++++++++++++++++++--------
+>  drivers/gpu/drm/vc4/vc4_hdmi.h |  7 ++++++
+>  2 files changed, 39 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 12ca5f3084af..d116ecfd8cf7 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1605,9 +1605,11 @@ static int vc4_hdmi_cec_adap_enable(struct cec_adapter *adap, bool enable)
+>                            ((3600 / usecs) << VC4_HDMI_CEC_CNT_TO_3600_US_SHIFT) |
+>                            ((3500 / usecs) << VC4_HDMI_CEC_CNT_TO_3500_US_SHIFT));
+>
+> -               HDMI_WRITE(HDMI_CEC_CPU_MASK_CLEAR, VC4_HDMI_CPU_CEC);
+> +               if (!vc4_hdmi->variant->external_irq_controller)
+> +                       HDMI_WRITE(HDMI_CEC_CPU_MASK_CLEAR, VC4_HDMI_CPU_CEC);
+>         } else {
+> -               HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, VC4_HDMI_CPU_CEC);
+> +               if (!vc4_hdmi->variant->external_irq_controller)
+> +                       HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, VC4_HDMI_CPU_CEC);
+>                 HDMI_WRITE(HDMI_CEC_CNTRL_5, val |
+>                            VC4_HDMI_CEC_TX_SW_RESET | VC4_HDMI_CEC_RX_SW_RESET);
+>         }
+> @@ -1682,8 +1684,6 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+>         cec_fill_conn_info_from_drm(&conn_info, &vc4_hdmi->connector);
+>         cec_s_conn_info(vc4_hdmi->cec_adap, &conn_info);
+>
+> -       HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, 0xffffffff);
+> -
+>         value = HDMI_READ(HDMI_CEC_CNTRL_1);
+>         /* Set the logical address to Unregistered */
+>         value |= VC4_HDMI_CEC_ADDR_MASK;
+> @@ -1691,12 +1691,32 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+>
+>         vc4_hdmi_cec_update_clk_div(vc4_hdmi);
+>
+> -       ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
+> -                                       vc4_cec_irq_handler,
+> -                                       vc4_cec_irq_handler_thread, 0,
+> -                                       "vc4 hdmi cec", vc4_hdmi);
+> -       if (ret)
+> -               goto err_delete_cec_adap;
+> +       if (vc4_hdmi->variant->external_irq_controller) {
+> +               ret = devm_request_threaded_irq(&pdev->dev,
+> +                                               platform_get_irq_byname(pdev, "cec-rx"),
+> +                                               vc4_cec_irq_handler_rx_bare,
+> +                                               vc4_cec_irq_handler_rx_thread, 0,
+> +                                               "vc4 hdmi cec rx", vc4_hdmi);
+> +               if (ret)
+> +                       goto err_delete_cec_adap;
+> +
+> +               ret = devm_request_threaded_irq(&pdev->dev,
+> +                                               platform_get_irq_byname(pdev, "cec-tx"),
+> +                                               vc4_cec_irq_handler_tx_bare,
+> +                                               vc4_cec_irq_handler_tx_thread, 0,
+> +                                               "vc4 hdmi cec tx", vc4_hdmi);
+> +               if (ret)
+> +                       goto err_delete_cec_adap;
+> +       } else {
+> +               HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, 0xffffffff);
+> +
+> +               ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
+> +                                               vc4_cec_irq_handler,
+> +                                               vc4_cec_irq_handler_thread, 0,
+> +                                               "vc4 hdmi cec", vc4_hdmi);
+> +               if (ret)
+> +                       goto err_delete_cec_adap;
+> +       }
+>
+>         ret = cec_register_adapter(vc4_hdmi->cec_adap, &pdev->dev);
+>         if (ret < 0)
+> @@ -2095,6 +2115,7 @@ static const struct vc4_hdmi_variant bcm2711_hdmi0_variant = {
+>                 PHY_LANE_CK,
+>         },
+>         .unsupported_odd_h_timings      = true,
+> +       .external_irq_controller        = true,
+>
+>         .init_resources         = vc5_hdmi_init_resources,
+>         .csc_setup              = vc5_hdmi_csc_setup,
+> @@ -2121,6 +2142,7 @@ static const struct vc4_hdmi_variant bcm2711_hdmi1_variant = {
+>                 PHY_LANE_2,
+>         },
+>         .unsupported_odd_h_timings      = true,
+> +       .external_irq_controller        = true,
+>
+>         .init_resources         = vc5_hdmi_init_resources,
+>         .csc_setup              = vc5_hdmi_csc_setup,
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 6966db1a0957..d71f6ed321bf 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -64,6 +64,13 @@ struct vc4_hdmi_variant {
+>         /* The BCM2711 cannot deal with odd horizontal pixel timings */
+>         bool unsupported_odd_h_timings;
+>
+> +       /*
+> +        * The BCM2711 CEC/hotplug IRQ controller is shared between the
+> +        * two HDMI controllers, and we have a proper irqchip driver for
+> +        * it.
+> +        */
+> +       bool external_irq_controller;
+> +
+>         /* Callback to get the resources (memory region, interrupts,
+>          * clocks, etc) for that variant.
+>          */
+> --
+> 2.29.2
+>
