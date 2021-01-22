@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B172A300BD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA9A300BFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbhAVSvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:51:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
+        id S1730466AbhAVSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:54:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728541AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B59EA23AFA;
-        Fri, 22 Jan 2021 14:16:20 +0000 (UTC)
+        id S1728489AbhAVOVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:21:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A683023A54;
+        Fri, 22 Jan 2021 14:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324981;
-        bh=mftDS0J7aHH7/Et1vD2QTUl/RtnPlcnWMuhPHi8vAbI=;
+        s=korg; t=1611324895;
+        bh=cGQfnrgoeCJEnL0TN9QJGquA+MO91nPl+N9O1fCN5cI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MWsk3kulg/Pw7OJ11elIWoYjI9msE7zO29rKT2SjElDge5yT6cbtMZveUKOahV2Rz
-         FqOwVvdPnq+ZQVHpHW72CyFNHDC1Pu+Usfy8cbrC7mYl1uWxrtmg7G+yfHJq6PDscr
-         GXefFDXx7b/fmUZZ3RryW8gIucAFL/J7lnrgAZkk=
+        b=R3QPDCL+zi7Fu5eACvNUnXPJqTdp3zCH6ClGDfHvvh53tKAKztk2D2S2SmdLKUs7X
+         2thepnJW/X+BJgvKK1tA363ws7WMVJE5Ye6AeOwR4pwGszrN2UQXwLkonfoztsFNFN
+         zg4OkVW32qyl5d6YUpFbWREVJd/wGgL23+hWSHfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 09/22] rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
-Date:   Fri, 22 Jan 2021 15:12:27 +0100
-Message-Id: <20210122135732.290297064@linuxfoundation.org>
+        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 47/50] net: introduce skb_list_walk_safe for skb segment walking
+Date:   Fri, 22 Jan 2021 15:12:28 +0100
+Message-Id: <20210122135737.099337340@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-References: <20210122135731.921636245@linuxfoundation.org>
+In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
+References: <20210122135735.176469491@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-[ Upstream commit e56b3d94d939f52d46209b9e1b6700c5bfff3123 ]
+commit dcfea72e79b0aa7a057c8f6024169d86a1bbc84b upstream.
 
-MSFT ActiveSync implementation requires that the size of the response for
-incoming query is to be provided in the request input length. Failure to
-set the input size proper results in failed request transfer, where the
-ActiveSync counterpart reports the NDIS_STATUS_INVALID_LENGTH (0xC0010014L)
-error.
+As part of the continual effort to remove direct usage of skb->next and
+skb->prev, this patch adds a helper for iterating through the
+singly-linked variant of skb lists, which are used for lists of GSO
+packet. The name "skb_list_..." has been chosen to match the existing
+function, "kfree_skb_list, which also operates on these singly-linked
+lists, and the "..._walk_safe" part is the same idiom as elsewhere in
+the kernel.
 
-Set the input size for OID_GEN_PHYSICAL_MEDIUM query to the expected size
-of the response in order for the ActiveSync to properly respond to the
-request.
+This patch removes the helper from wireguard and puts it into
+linux/skbuff.h, while making it a bit more robust for general usage. In
+particular, parenthesis are added around the macro argument usage, and it
+now accounts for trying to iterate through an already-null skb pointer,
+which will simply run the iteration zero times. This latter enhancement
+means it can be used to replace both do { ... } while and while (...)
+open-coded idioms.
 
-Fixes: 039ee17d1baa ("rndis_host: Add RNDIS physical medium checking into generic_rndis_bind()")
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Link: https://lore.kernel.org/r/20210108095839.3335-1-andrey.zhizhikin@leica-geosystems.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This should take care of these three possible usages, which match all
+current methods of iterations.
+
+skb_list_walk_safe(segs, skb, next) { ... }
+skb_list_walk_safe(skb, skb, next) { ... }
+skb_list_walk_safe(segs, skb, segs) { ... }
+
+Gcc appears to generate efficient code for each of these.
+
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+[ Just the skbuff.h changes for backporting - gregkh]
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/rndis_host.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/skbuff.h |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/usb/rndis_host.c
-+++ b/drivers/net/usb/rndis_host.c
-@@ -399,7 +399,7 @@ generic_rndis_bind(struct usbnet *dev, s
- 	reply_len = sizeof *phym;
- 	retval = rndis_query(dev, intf, u.buf,
- 			     RNDIS_OID_GEN_PHYSICAL_MEDIUM,
--			     0, (void **) &phym, &reply_len);
-+			     reply_len, (void **)&phym, &reply_len);
- 	if (retval != 0 || !phym) {
- 		/* OID is optional so don't fail here. */
- 		phym_unspec = cpu_to_le32(RNDIS_PHYSICAL_MEDIUM_UNSPECIFIED);
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -1340,6 +1340,11 @@ static inline void skb_mark_not_on_list(
+ 	skb->next = NULL;
+ }
+ 
++/* Iterate through singly-linked GSO fragments of an skb. */
++#define skb_list_walk_safe(first, skb, next)                                   \
++	for ((skb) = (first), (next) = (skb) ? (skb)->next : NULL; (skb);      \
++	     (skb) = (next), (next) = (skb) ? (skb)->next : NULL)
++
+ static inline void skb_list_del_init(struct sk_buff *skb)
+ {
+ 	__list_del_entry(&skb->list);
 
 
