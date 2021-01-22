@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7243300BB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D19F300B43
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730105AbhAVSnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:43:47 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:25459 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729752AbhAVSV0 (ORCPT
+        id S1729007AbhAVSbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729073AbhAVSZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 13:21:26 -0500
-Date:   Fri, 22 Jan 2021 18:20:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611339608; bh=3Se3t8/e965C8Ew1Ejqh+IdWYEkkWugaOHxVVDEiiPE=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=lm7E5XbFhVahxNDM4EjEp66omOhsJsLnftvpFpzO+JnkLwyBXrTHVZqRG8ZgFI8UT
-         kfE7BAjn/WXX2yaY8Hoamrmv9Ir3N2re77CAcCND3ltetwXajlJet0gYr1hONOeXXC
-         DHhPIixmweZZ6j+Q10ULPz+29e6Qj5vMfgJhHkBlPSWt+L4C1Y+/L0NgkEOpiPLMTS
-         cgrv3IN7X9dLtvSO+uyvD0DvpjAv+dP3fmKFJgBxBc1t4FLExx2PDiTAhwbwt4EMbc
-         PArgUgGwSJRvw+i7lMmsSs24MjWsE+d9jnKcb8OlkiEB+hNvHwCBBqY8/UZW7cx+s5
-         1X21JE2IDAukw==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Meir Lichtinger <meirl@mellanox.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v4 net-next 2/2] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
-Message-ID: <20210122181909.36340-3-alobakin@pm.me>
-In-Reply-To: <20210122181909.36340-1-alobakin@pm.me>
-References: <20210122181909.36340-1-alobakin@pm.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Fri, 22 Jan 2021 13:25:06 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953DCC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:22:12 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id g3so8997951ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:22:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=HMx5WULUEpo/GvYQe+DCnONeXIBdpeEzpvbY3sfaTEo=;
+        b=DwcEicKGOYG979Ms2/RsOcxdbOz+6kqfBTvMCmL8ufwGuQ/rK5qyX7QuTJCk4wvbsO
+         i9J//LKcBcsVEQ8c93Ni1iHpIwhrM20bEd+ISp8s36j4xB0AuBDW9L9frbr0XNiLwdun
+         t/6c1S0CH+y4E6nlDlHafdV440DEKfHG48iCc3jvdEY51H1tpHbCVbj7bDtPYe+uv1Yh
+         taOgih7Ix7utI2mosWqZIBhJTP3d8fujK/K6gDHBbIJiIkAA2IOT1xe2/3gW2npwkdrh
+         GSeuU329T4e7WAYw0VgZwKfAVBzPxhTBitw+Tdk0hLrWj1+7rJF3VRw18XGyhiuv8+Cv
+         dN+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=HMx5WULUEpo/GvYQe+DCnONeXIBdpeEzpvbY3sfaTEo=;
+        b=Ze9SXNi7oNQhMlkRLULdYS0d59qAsZNvVA991Y101UHnCg2v65KSSV9yLyKitk5SUc
+         Xnvh2eJuKr70iEpbVng3eiPFfzArHhNqTBu8WgL0iqO7cHhdsfq7yEg3Mqq8TyKzLojC
+         qQZWtGSW0qGb4nSpOpSHyG8Kv1B3KTNkty6WcGm2yeMlwtgMz+amJ+i0Wyh0SotsmDQL
+         PVZjLoNrSkzAHs/YnbChIvUVbAQE5WL4MefJnG3imKd8UkIC84WI9Ray2mhRxJzFf+1K
+         s6TPv9Cb+Tdy17ycc/rcOv1DVsM6A8kaOJ/HOZfznlz2R23/+iYFu+TI/ktLSOlzavDc
+         LygA==
+X-Gm-Message-State: AOAM5321aW5eip1tcC7bN0uQgZkI/fuzkL3deQDf1OMT4JEyQ7RoQSeH
+        fd713HbikgV1DIYThnS6cJxlaw==
+X-Google-Smtp-Source: ABdhPJympufxTHr/CGIxRKqJYH6dIPcW3Ml2RciAkM8LEv9zc6ESKWuYW7wxKbZwNgkP1pWqgIEfDg==
+X-Received: by 2002:a17:906:af41:: with SMTP id ly1mr110739ejb.491.1611339731290;
+        Fri, 22 Jan 2021 10:22:11 -0800 (PST)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id w18sm4942368ejq.59.2021.01.22.10.22.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Jan 2021 10:22:10 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH BUGFIX/IMPROVEMENT 0/6] block, bfq: first bath of fixes
+ and improvements
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20210122181948.35660-1-paolo.valente@linaro.org>
+Date:   Fri, 22 Jan 2021 19:22:08 +0100
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Message-Id: <721F90B0-837A-4EBE-90CA-35C88C2A57D3@linaro.org>
+References: <20210122181948.35660-1-paolo.valente@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9fd1ff5d2ac7 ("udp: Support UDP fraglist GRO/GSO.") actually
-not only added a support for fraglisted UDP GRO, but also tweaked
-some logics the way that non-fraglisted UDP GRO started to work for
-forwarding too.
-Commit 2e4ef10f5850 ("net: add GSO UDP L4 and GSO fraglists to the
-list of software-backed types") added GSO UDP L4 to the list of
-software GSO to allow virtual netdevs to forward them as is up to
-the real drivers.
 
-Tests showed that currently forwarding and NATing of plain UDP GRO
-packets are performed fully correctly, regardless if the target
-netdevice has a support for hardware/driver GSO UDP L4 or not.
-Add the last element and allow to form plain UDP GRO packets if
-we are on forwarding path, and the new NETIF_F_GRO_UDP_FWD is
-enabled on a receiving netdevice.
 
-If both NETIF_F_GRO_FRAGLIST and NETIF_F_GRO_UDP_FWD are set,
-fraglisted GRO takes precedence. This keeps the current behaviour
-and is generally more optimal for now, as the number of NICs with
-hardware USO offload is relatively small.
+> Il giorno 22 gen 2021, alle ore 19:19, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>=20
+> Hi,
+>=20
+> about nine months ago, Jan (Kara, SUSE) reported a throughput
+> regression with BFQ. That was the beginning of a fruitful dev&testing
+> collaboration, which led to 18 new commits. Part are fixes, part are
+> actual performance improvements.
+>=20
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/ipv4/udp_offload.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The cover letter was not complete, sorry. Here is the missing piece:
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 1168d186cc43..41249705d9e9 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -460,7 +460,8 @@ struct sk_buff *udp_gro_receive(struct list_head *head,=
- struct sk_buff *skb,
- =09if (skb->dev->features & NETIF_F_GRO_FRAGLIST)
- =09=09NAPI_GRO_CB(skb)->is_flist =3D sk ? !udp_sk(sk)->gro_enabled: 1;
-=20
--=09if ((sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) {
-+=09if ((!sk && (skb->dev->features & NETIF_F_GRO_UDP_FWD)) ||
-+=09    (sk && udp_sk(sk)->gro_enabled) || NAPI_GRO_CB(skb)->is_flist) {
- =09=09pp =3D call_gro_receive(udp_gro_receive_segment, head, skb);
- =09=09return pp;
- =09}
---=20
-2.30.0
+Given the high number of commits, and the size of a few of them, I've
+opted for splitting their submission into three batches. This is the
+first batch.
 
+Thanks,
+Paolo
+
+> Jia Cheng Hu (1):
+>  block, bfq: set next_rq to waker_bfqq->next_rq in waker injection
+>=20
+> Paolo Valente (5):
+>  block, bfq: use half slice_idle as a threshold to check short ttime
+>  block, bfq: increase time window for waker detection
+>  block, bfq: do not raise non-default weights
+>  block, bfq: avoid spurious switches to soft_rt of interactive queues
+>  block, bfq: do not expire a queue when it is the only busy one
+>=20
+> block/bfq-iosched.c | 100 +++++++++++++++++++++++++++++++-------------
+> 1 file changed, 70 insertions(+), 30 deletions(-)
+>=20
+> --
+> 2.20.1
 
