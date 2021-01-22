@@ -2,122 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AE4300E6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A03300E76
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbhAVVBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        id S1730220AbhAVVFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:05:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730945AbhAVU6V (ORCPT
+        with ESMTP id S1730961AbhAVU7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:58:21 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990C1C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:57:40 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id h7so9418475lfc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:57:40 -0800 (PST)
+        Fri, 22 Jan 2021 15:59:41 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D37C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:59:01 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id p185so6737605ybg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:59:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=raLUB36sAztka1/6R5PBGfhEeAA3qlJwdT1ML+wmZec=;
-        b=RAEZ3z6s46P3K6log9ncGo5mPucJj4c+Pt0UwiwW5usuPVFmkT+WBnj4BRttVa0gtp
-         ymlzxD4dKC/6WUWyuFs4iqMob6tcX649pXk4T/anBFDEwTuP7AgwhAErH/tWWtRvj914
-         af0q/4zvYWlCDwB418HXJXh4cWpi/GCtxvc2cfZG9x13roRXjNRX+VAl4AwX9Ox5yw8N
-         2KyKpdMfanRFromoDxJTVayLX5IYzlmMxbJVGgUtykfmS2A7xg0lTHI/VsiHtcn8dv6t
-         vQ1npJMvhEAvBq/KzaJWYbd2pV1cIziwPWiuGuKtsIshMtqcArY2CDwzP3+YfTBOAdKH
-         3UJw==
+        bh=tFBOhDhZE+sffz0l6h3gmZcjhk5QjifXRo2nY423Z8U=;
+        b=EltnYhbWOukF5okpdXiW9OaK/D6IEMnbuoQC70nY4erIGhZ1kOk/vJ9OLSs8Kgwsud
+         /DhiwEtqJy12ahGMvuwb+wuqRQNgbnmHhSjEUe9vXI/YTfajEz8EdAhHg+6J5TXycfvZ
+         TG3X/m4WjMQ7ncBnEPPVSJD9zhH23Yg9le/dNQ9SOzLDk+jMT5qCZA0AUoLZ63uOZy0C
+         84ZCmYx7FRbx5aZeFEHes29O+KC7v7piqEnqKgyXCnPUNkul58/qakvGk0hffEyyo98d
+         7mFdEsVFFgfsJxZfcxFJtZVoTwy0nt+71QPASazRu3magI4PS6kM1f4YrBb0ure9a2Zx
+         a1lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=raLUB36sAztka1/6R5PBGfhEeAA3qlJwdT1ML+wmZec=;
-        b=ropuS9TdN/WuUFhF/BqZG8eMMcIejk9S7pldfNWQpQGT34pl2h/WQPBEkgXKOQpCam
-         L/+1v2LDcsXMK9YPZKVSzdOBeb6Oap4CWomz4c7+t/sETgVodmBLJISWapDMG6dNUN92
-         IKpUBu0RvzLShlWO2DwTZk9sMkuVry0mNXjwFRf1hXSkIl9aLRQgAtkzlpyQrdYmV3rF
-         qK2XhvKxjcz2+BrxKbTRGN6gSlCBCFurkgZo2NvA/M/XZyuMOXq4RYAVWg5EC2tUfKio
-         1uSUVdP60flcQJZ4dx7YUYbgPyRsPrP+9bdR4fPAffxTvQmyPwdQNyIKJvpnZ+hgYpD7
-         TKpw==
-X-Gm-Message-State: AOAM533eTf+8MI7NKvTpzxSHwm/ywha9ST7XEdHuYfALPoSaJBrpZ11D
-        8s0kHKgVABl2Z+yS8hQ2kwofu0zZEZEv62xZJ9kQ8A==
-X-Google-Smtp-Source: ABdhPJywRDc2EvPPp6qpBaLo5mECSzVgRlE93fimb5EjNJTJL99ytIrFKEDhRnuwHxHdjaIGo7gFdXjafKbE49P4J4A=
-X-Received: by 2002:a19:644b:: with SMTP id b11mr622766lfj.358.1611349058801;
- Fri, 22 Jan 2021 12:57:38 -0800 (PST)
+        bh=tFBOhDhZE+sffz0l6h3gmZcjhk5QjifXRo2nY423Z8U=;
+        b=oEPudsODsFdw/2cVCGfdyBX4O9sAi5AL96HGNictD8kJmpAidTqIde9hJnDWSaONA8
+         YApuNYgHlAJch0WEvDZacEX8Gspx5sRNfCl4uG56x8eY06FA8vcDGDn192k3KAKAfTxP
+         VYZLEBKgv3ypckWSQsla7iJ0LhuUkAx5f18PXihG87MQrt42lJ7gBLbyTEzi/Vv0bJJ8
+         wQI0eUewk5YcnhmihAA0q+IJQZWtPhA54PTmagoBnZhg/BPk/yfbaXPcCCiLD642j4ZK
+         pK4gmei20qyYfcx5TSKTWW+HCZ58gu7rONDwtTSF6KGA9XmuPHK1FkjC9TCcPCdy1FOp
+         3HRg==
+X-Gm-Message-State: AOAM533hzk3FCVSNUV0ypL0pJSaIF62FvdSYGeMNTPspqP3QTmtI2X3c
+        2KR6nsp5QwrJPLDkRxJGOv7RjP2ZUzvLw5WOVPIP1w==
+X-Google-Smtp-Source: ABdhPJxz6BmL17ilwDtkmTNCHLH83w6r5IBrNYbPHVFz4VMv0KgX+SH2FrNiRHxMyDNAIkSS99ID76Oyojyirckz9B0=
+X-Received: by 2002:a25:3345:: with SMTP id z66mr9201005ybz.466.1611349140491;
+ Fri, 22 Jan 2021 12:59:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122184341.292461-1-hannes@cmpxchg.org>
-In-Reply-To: <20210122184341.292461-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 22 Jan 2021 12:57:26 -0800
-Message-ID: <CALvZod5QWBgKzoKbAUgtwU4YwXAQtu1MS_=o_zhyFDCXam4yNA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm: memcontrol: avoid workload stalls when
- lowering memory.high"
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Tejun Heo <tj@kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
+References: <20210112134054.342-1-calvin.johnson@oss.nxp.com>
+ <20210112134054.342-10-calvin.johnson@oss.nxp.com> <CAGETcx-7JVz=QLCMWicHqoagWYjeBXdFJmSv1v6MQhtPt2RS=Q@mail.gmail.com>
+ <20210112180343.GI4077@smile.fi.intel.com> <CAJZ5v0iW0jJUcXtiQtLOakkSejZCJD=hTFLL4mvoAN3ZTB+1Tw@mail.gmail.com>
+ <CAHp75VcJS10KMA5amUc36PFgj0FLddj1fXD4dUtuAchrVhhzPg@mail.gmail.com>
+ <CAJZ5v0ga5RqwFzbBqSChJ7=gBBM-7dWNQPz6bqvqsNAkWZJ=vQ@mail.gmail.com>
+ <CAGETcx8DP8J53ntxX2VCSnbMfq1qki7gD-md+NC_jVfOkTam3g@mail.gmail.com> <CAJZ5v0gUCUxJX9sGJiZ+zTVYrc3rjuUO2B2fx+O6PewbG7F8aw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gUCUxJX9sGJiZ+zTVYrc3rjuUO2B2fx+O6PewbG7F8aw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 22 Jan 2021 12:58:24 -0800
+Message-ID: <CAGETcx-904Cr11nVW6PC=OqWnwM-ZC-DdEUa8+7JmhsH3UOqHw@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        Grant Likely <grant.likely@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 10:43 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Fri, Jan 22, 2021 at 8:34 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
 >
-> This reverts commit 536d3bf261a2fc3b05b3e91e7eef7383443015cf, as it
-> can cause writers to memory.high to get stuck in the kernel forever,
-> performing page reclaim and consuming excessive amounts of CPU cycles.
+> On Wed, Jan 20, 2021 at 9:01 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Wed, Jan 20, 2021 at 11:15 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > >
+> > > On Wed, Jan 20, 2021 at 7:51 PM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
+> > > >
+> > > > On Wed, Jan 20, 2021 at 8:18 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > > > > On Tue, Jan 12, 2021 at 7:02 PM Andy Shevchenko
+> > > > > <andy.shevchenko@gmail.com> wrote:
+> > > > > > On Tue, Jan 12, 2021 at 09:30:31AM -0800, Saravana Kannan wrote:
+> > > > > > > On Tue, Jan 12, 2021 at 5:42 AM Calvin Johnson
+> > > > > > > <calvin.johnson@oss.nxp.com> wrote:
+> > > >
+> > > > ...
+> > > >
+> > > > > > > > +       ret = fwnode_property_read_u32(fwnode, "reg", id);
+> > > > > > > > +       if (!(ret && is_acpi_node(fwnode)))
+> > > > > > > > +               return ret;
+> > > > > > > > +
+> > > > > > > > +#ifdef CONFIG_ACPI
+> > > > > > > > +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
+> > > > > > > > +                                      METHOD_NAME__ADR, NULL, &adr);
+> > > > > > > > +       if (ACPI_FAILURE(status))
+> > > > > > > > +               return -EINVAL;
+> > > > > > > > +       *id = (u32)adr;
+> > > > > > > > +#endif
+> > > > > > > > +       return 0;
+> > > >
+> > > > > > > Also ACPI and DT
+> > > > > > > aren't mutually exclusive if I'm not mistaken.
+> > > > > >
+> > > > > > That's why we try 'reg' property for both cases first.
+> > > > > >
+> > > > > > is_acpi_fwnode() conditional is that what I don't like though.
+> > > > >
+> > > > > I'm not sure what you mean here, care to elaborate?
+> > > >
+> > > > I meant is_acpi_node(fwnode) in the conditional.
+> > > >
+> > > > I think it's redundant and we can simple do something like this:
+> > > >
+> > > >   if (ret) {
+> > > > #ifdef ACPI
+> > > >     ...
+> > > > #else
+> > > >     return ret;
+> > > > #endif
+> > > >   }
+> > > >   return 0;
+> > > >
+> > > > --
+> > >
+> > > Right, that should work.  And I'd prefer it too.
+> >
+> > Rafael,
+> >
+> > I'd rather this new function be an ops instead of a bunch of #ifdef or
+> > if (acpi) checks. Thoughts?
 >
-> Before the patch, a write to memory.high would first put the new limit
-> in place for the workload, and then reclaim the requested delta. After
-> the patch, the kernel tries to reclaim the delta before putting the
-> new limit into place, in order to not overwhelm the workload with a
-> sudden, large excess over the limit. However, if reclaim is actively
-> racing with new allocations from the uncurbed workload, it can keep
-> the write() working inside the kernel indefinitely.
+> Well, it looks more like a helper function than like an op and I'm not
+> even sure how many potential users of it will expect that _ADR should
+> be evaluated in the absence of the "reg" property.
 >
-> This is causing problems in Facebook production. A privileged
-> system-level daemon that adjusts memory.high for various workloads
-> running on a host can get unexpectedly stuck in the kernel and
-> essentially turn into a sort of involuntary kswapd for one of the
-> workloads. We've observed that daemon busy-spin in a write() for
-> minutes at a time, neglecting its other duties on the system, and
-> expending privileged system resources on behalf of a workload.
->
-> To remedy this, we have first considered changing the reclaim logic to
-> break out after a couple of loops - whether the workload has converged
-> to the new limit or not - and bound the write() call this way.
-> However, the root cause that inspired the sequence change in the first
-> place has been fixed through other means, and so a revert back to the
-> proven limit-setting sequence, also used by memory.max, is preferable.
->
-> The sequence was changed to avoid extreme latencies in the workload
-> when the limit was lowered: the sudden, large excess created by the
-> limit lowering would erroneously trigger the penalty sleeping code
-> that is meant to throttle excessive growth from below. Allocating
-> threads could end up sleeping long after the write() had already
-> reclaimed the delta for which they were being punished.
->
-> However, erroneous throttling also caused problems in other scenarios
-> at around the same time. This resulted in commit b3ff92916af3 ("mm,
-> memcg: reclaim more aggressively before high allocator throttling"),
-> included in the same release as the offending commit. When allocating
-> threads now encounter large excess caused by a racing write() to
-> memory.high, instead of entering punitive sleeps, they will simply be
-> tasked with helping reclaim down the excess, and will be held no
-> longer than it takes to accomplish that. This is in line with regular
-> limit enforcement - i.e. if the workload allocates up against or over
-> an otherwise unchanged limit from below.
->
-> With the patch breaking userspace, and the root cause addressed by
-> other means already, revert it again.
->
-> Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Reported-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> It's just that the "reg" property happens to be kind of an _ADR
+> equivalent in this particular binding AFAICS.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+I agree it is not clear how useful this helper function is going to be.
+
+But in general, to me, any time the wrapper/helper functions in
+drivers/base/property.c need to do something like this:
+
+if (ACPI)
+   ACPI specific code
+if (OF)
+   OF specific code
+
+I think the code should be pushed to the fwnode ops. That's one of the
+main point of fwnode. So that firmware specific stuff is done by
+firmware specific code. Also, when adding support for new firmware,
+it's pretty clear what support the firmware needs to implement.
+Instead of having to go fix up a bunch of code all over the place.
+
+So fwnode_ops->get_id() would be the OP ACPI and OF would implement.
+And then we can have a wrapper in drivers/base/property.c.
+
+-Saravana
