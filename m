@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C63D300926
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B90300923
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbhAVRAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:00:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33013 "EHLO
+        id S1729471AbhAVQ71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:59:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35549 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729148AbhAVQnF (ORCPT
+        by vger.kernel.org with ESMTP id S1729303AbhAVQnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:43:05 -0500
+        Fri, 22 Jan 2021 11:43:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611333695;
+        s=mimecast20190719; t=1611333712;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N0VojRzSy490aBML4/rZV75ApQCa+iSFPYiEu/SMJlM=;
-        b=dZsPMz/D35/7CkcgvbcGn2KIaMa0QrHONqIEvB6SSX9yaUfq+xZ3fZRFpVdshfplBtatrp
-        dC+wXAxc6EdlMCqDywt5pD3ukyXwf6vqtseDnhHGwFPtijewnsWVX4d4iNXOx8k9IPz+Rp
-        r4XVWNWGk8Hm5EvfJPWRWOXIbw8B/VI=
+        bh=q6w3bi1VSaEW/f8A1/1lkclMfS3GjoBKCES77U3cUT0=;
+        b=dbio28GOfermBUZtwHCVstDaPkPgQXVjA6sXIFU00G01GiBNalyO8DM5BvXtC70rVqlH7t
+        ruQzi+QiCbdS5DDiLp378IXrypokB9E2BVxzJ1X5UfiDWbJiUjcDYo5TaVdV7sZgwlpOvk
+        4H306P7ws6Lt0cYE3aGIYeWkcwDJRwY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-n8kVeyW8P9SWJhJz6QWvYA-1; Fri, 22 Jan 2021 11:41:31 -0500
-X-MC-Unique: n8kVeyW8P9SWJhJz6QWvYA-1
+ us-mta-588-0FrXAAjxM9Wp9MXw-n46iw-1; Fri, 22 Jan 2021 11:41:48 -0500
+X-MC-Unique: 0FrXAAjxM9Wp9MXw-n46iw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B04510054FF;
-        Fri, 22 Jan 2021 16:41:29 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B783710054FF;
+        Fri, 22 Jan 2021 16:41:46 +0000 (UTC)
 Received: from x1.localdomain (ovpn-112-174.ams2.redhat.com [10.36.112.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5787260916;
-        Fri, 22 Jan 2021 16:41:27 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 60C5A6EF59;
+        Fri, 22 Jan 2021 16:41:44 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -46,9 +46,9 @@ Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
         alsa-devel@alsa-project.org
-Subject: [PATCH v3 06/13] ASoC/extcon: arizona: Move arizona jack code to sound/soc/codecs/arizona-jack.c
-Date:   Fri, 22 Jan 2021 17:41:00 +0100
-Message-Id: <20210122164107.361939-7-hdegoede@redhat.com>
+Subject: [PATCH v3 12/13] ASoC: arizona: Make the wm5102, wm5110, wm8997 and wm8998 drivers use the new jack library
+Date:   Fri, 22 Jan 2021 17:41:06 +0100
+Message-Id: <20210122164107.361939-13-hdegoede@redhat.com>
 In-Reply-To: <20210122164107.361939-1-hdegoede@redhat.com>
 References: <20210122164107.361939-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -58,84 +58,218 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The jack handling for arizona codecs is being refactored so that it is
-done directly by the codec drivers, instead of having an extcon-driver
-bind to a separate "arizona-extcon" child-device for this.
+Make all arizona codec drivers for which drivers/mfd/arizona-core.c used
+to instantiate a "arizona-extcon" child-device use the new arizona-jack.c
+library for jack-detection.
 
-drivers/mfd/arizona-core.c has already been updated to no longer
-instantiate an "arizona-extcon" child-device for the arizona codecs.
-
-This means that the "arizona-extcon" driver is no longer useful
-(there are no longer any devices for it to bind to).
-
-This commit drops the extcon Kconfig / Makefile bits and moves
-drivers/extcon/extcon-arizona.c to sound/soc/codecs/arizona-jack.c .
-
-This is a preparation patch for converting the arizona extcon-driver into
-a helper library for letting the arizona codec-drivers directly report jack
-state through the standard sound/soc/soc-jack.c functions.
+This has been tested on a Lenovo Yoga Tablet 2 1051L with a WM5102 codec.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-Changes in v3:
-- Fold the 2 separate patches to add a copy of extcon-arizona.c as
-  sound/soc/codecs/arizona-jack.c and the follow up patch to remove the
-  extcon driver into 1 patch simply moving the extcon driver code.
----
- MAINTAINERS                                               | 1 -
- drivers/extcon/Kconfig                                    | 8 --------
- drivers/extcon/Makefile                                   | 1 -
- .../extcon-arizona.c => sound/soc/codecs/arizona-jack.c   | 0
- 4 files changed, 10 deletions(-)
- rename drivers/extcon/extcon-arizona.c => sound/soc/codecs/arizona-jack.c (100%)
+ sound/soc/codecs/wm5102.c | 12 +++++++++++-
+ sound/soc/codecs/wm5110.c | 12 +++++++++++-
+ sound/soc/codecs/wm8997.c | 14 ++++++++++++--
+ sound/soc/codecs/wm8998.c |  9 +++++++++
+ 4 files changed, 43 insertions(+), 4 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 036a03c794de..270661fcdb78 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19249,7 +19249,6 @@ F:	Documentation/devicetree/bindings/sound/wlf,arizona.yaml
- F:	Documentation/hwmon/wm83??.rst
- F:	arch/arm/mach-s3c/mach-crag6410*
- F:	drivers/clk/clk-wm83*.c
--F:	drivers/extcon/extcon-arizona.c
- F:	drivers/gpio/gpio-*wm*.c
- F:	drivers/gpio/gpio-arizona.c
- F:	drivers/hwmon/wm83??-hwmon.c
-diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
-index af58ebca2bf6..e3db936becfd 100644
---- a/drivers/extcon/Kconfig
-+++ b/drivers/extcon/Kconfig
-@@ -21,14 +21,6 @@ config EXTCON_ADC_JACK
- 	help
- 	  Say Y here to enable extcon device driver based on ADC values.
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index 70d353b63fe0..b77595fb3ea8 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -2004,6 +2004,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm5102 = {
+ 	.remove			= wm5102_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm5102_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.name			= DRV_NAME,
+ 	.compress_ops		= &wm5102_compress_ops,
+ 	.controls		= wm5102_snd_controls,
+@@ -2057,6 +2058,11 @@ static int wm5102_probe(struct platform_device *pdev)
+ 	if (ret != 0)
+ 		return ret;
  
--config EXTCON_ARIZONA
--	tristate "Wolfson Arizona EXTCON support"
--	depends on MFD_ARIZONA && INPUT && SND_SOC
--	help
--	  Say Y here to enable support for external accessory detection
--	  with Wolfson Arizona devices. These are audio CODECs with
--	  advanced audio accessory detection support.
--
- config EXTCON_AXP288
- 	tristate "X-Power AXP288 EXTCON support"
- 	depends on MFD_AXP20X && USB_SUPPORT && X86 && ACPI
-diff --git a/drivers/extcon/Makefile b/drivers/extcon/Makefile
-index fe10a1b7d18b..1b390d934ca9 100644
---- a/drivers/extcon/Makefile
-+++ b/drivers/extcon/Makefile
-@@ -6,7 +6,6 @@
- obj-$(CONFIG_EXTCON)		+= extcon-core.o
- extcon-core-objs		+= extcon.o devres.o
- obj-$(CONFIG_EXTCON_ADC_JACK)	+= extcon-adc-jack.o
--obj-$(CONFIG_EXTCON_ARIZONA)	+= extcon-arizona.o
- obj-$(CONFIG_EXTCON_AXP288)	+= extcon-axp288.o
- obj-$(CONFIG_EXTCON_FSA9480)	+= extcon-fsa9480.o
- obj-$(CONFIG_EXTCON_GPIO)	+= extcon-gpio.o
-diff --git a/drivers/extcon/extcon-arizona.c b/sound/soc/codecs/arizona-jack.c
-similarity index 100%
-rename from drivers/extcon/extcon-arizona.c
-rename to sound/soc/codecs/arizona-jack.c
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm5102->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm5102->fll); i++)
+ 		wm5102->fll[i].vco_mult = 1;
+ 
+@@ -2089,7 +2095,7 @@ static int wm5102_probe(struct platform_device *pdev)
+ 				  wm5102);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Failed to request DSP IRQ: %d\n", ret);
+-		return ret;
++		goto err_jack_codec_dev;
+ 	}
+ 
+ 	ret = arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 1);
+@@ -2123,6 +2129,8 @@ static int wm5102_probe(struct platform_device *pdev)
+ err_dsp_irq:
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5102);
++err_jack_codec_dev:
++	arizona_jack_codec_dev_remove(&wm5102->core);
+ 
+ 	return ret;
+ }
+@@ -2141,6 +2149,8 @@ static int wm5102_remove(struct platform_device *pdev)
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5102);
+ 
++	arizona_jack_codec_dev_remove(&wm5102->core);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 4238929b2375..ef22051a3599 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2370,6 +2370,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm5110 = {
+ 	.remove			= wm5110_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm5110_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.name			= DRV_NAME,
+ 	.compress_ops		= &wm5110_compress_ops,
+ 	.controls		= wm5110_snd_controls,
+@@ -2424,6 +2425,11 @@ static int wm5110_probe(struct platform_device *pdev)
+ 			return ret;
+ 	}
+ 
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm5110->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm5110->fll); i++)
+ 		wm5110->fll[i].vco_mult = 3;
+ 
+@@ -2456,7 +2462,7 @@ static int wm5110_probe(struct platform_device *pdev)
+ 				  wm5110);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Failed to request DSP IRQ: %d\n", ret);
+-		return ret;
++		goto err_jack_codec_dev;
+ 	}
+ 
+ 	ret = arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 1);
+@@ -2490,6 +2496,8 @@ static int wm5110_probe(struct platform_device *pdev)
+ err_dsp_irq:
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
++err_jack_codec_dev:
++	arizona_jack_codec_dev_remove(&wm5110->core);
+ 
+ 	return ret;
+ }
+@@ -2510,6 +2518,8 @@ static int wm5110_remove(struct platform_device *pdev)
+ 	arizona_set_irq_wake(arizona, ARIZONA_IRQ_DSP_IRQ1, 0);
+ 	arizona_free_irq(arizona, ARIZONA_IRQ_DSP_IRQ1, wm5110);
+ 
++	arizona_jack_codec_dev_remove(&wm5110->core);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
+index 229f2986cd96..4f5a848960e0 100644
+--- a/sound/soc/codecs/wm8997.c
++++ b/sound/soc/codecs/wm8997.c
+@@ -1096,6 +1096,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8997 = {
+ 	.remove			= wm8997_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm8997_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.controls		= wm8997_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(wm8997_snd_controls),
+ 	.dapm_widgets		= wm8997_dapm_widgets,
+@@ -1132,6 +1133,11 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ 	arizona_init_dvfs(&wm8997->core);
+ 
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm8997->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8997->fll); i++)
+ 		wm8997->fll[i].vco_mult = 1;
+ 
+@@ -1163,10 +1169,10 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ 	ret = arizona_init_vol_limit(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_jack_codec_dev;
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_jack_codec_dev;
+ 
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &soc_component_dev_wm8997,
+@@ -1181,6 +1187,8 @@ static int wm8997_probe(struct platform_device *pdev)
+ 
+ err_spk_irqs:
+ 	arizona_free_spk_irqs(arizona);
++err_jack_codec_dev:
++	arizona_jack_codec_dev_remove(&wm8997->core);
+ 
+ 	return ret;
+ }
+@@ -1194,6 +1202,8 @@ static int wm8997_remove(struct platform_device *pdev)
+ 
+ 	arizona_free_spk_irqs(arizona);
+ 
++	arizona_jack_codec_dev_remove(&wm8997->core);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 5413254295b7..f74af1c46933 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -1316,6 +1316,7 @@ static const struct snd_soc_component_driver soc_component_dev_wm8998 = {
+ 	.remove			= wm8998_component_remove,
+ 	.set_sysclk		= arizona_set_sysclk,
+ 	.set_pll		= wm8998_set_fll,
++	.set_jack		= arizona_jack_set_jack,
+ 	.controls		= wm8998_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(wm8998_snd_controls),
+ 	.dapm_widgets		= wm8998_dapm_widgets,
+@@ -1350,6 +1351,11 @@ static int wm8998_probe(struct platform_device *pdev)
+ 	wm8998->core.arizona = arizona;
+ 	wm8998->core.num_inputs = 3;	/* IN1L, IN1R, IN2 */
+ 
++	/* This may return -EPROBE_DEFER, so do this early on */
++	ret = arizona_jack_codec_dev_probe(&wm8998->core, &pdev->dev);
++	if (ret)
++		return ret;
++
+ 	for (i = 0; i < ARRAY_SIZE(wm8998->fll); i++)
+ 		wm8998->fll[i].vco_mult = 1;
+ 
+@@ -1392,6 +1398,7 @@ static int wm8998_probe(struct platform_device *pdev)
+ 	arizona_free_spk_irqs(arizona);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
++	arizona_jack_codec_dev_remove(&wm8998->core);
+ 
+ 	return ret;
+ }
+@@ -1405,6 +1412,8 @@ static int wm8998_remove(struct platform_device *pdev)
+ 
+ 	arizona_free_spk_irqs(arizona);
+ 
++	arizona_jack_codec_dev_remove(&wm8998->core);
++
+ 	return 0;
+ }
+ 
 -- 
 2.28.0
 
