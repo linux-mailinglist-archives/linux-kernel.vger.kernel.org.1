@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CF630083C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6420300840
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 17:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbhAVQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 11:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729246AbhAVQG4 (ORCPT
+        id S1729465AbhAVQIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 11:08:49 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:34940 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729463AbhAVQHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:06:56 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E8FC061786;
-        Fri, 22 Jan 2021 08:06:16 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id h16so7137693edt.7;
-        Fri, 22 Jan 2021 08:06:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kkODdF815DQqaUMAqusF0BeWMesmAfyR8ldEcgWvCuE=;
-        b=UPieOxfqjkoQqyLGY45+TFgjpFPDuWKjE4bjmPAH1Y8inP1cw61IJIZu6jP2EIczuz
-         NF+G19ax5NpoA/ezJ9liWItvtP1W47Ddi14GiZYD7ckI7Z+ragNF5cnXHl9zv22c1bN+
-         7/a5Z0N10tPo6Cb7+kSbKNJvt6rALrwsPAmwRqmb/0fp5DUhDcJIR1vl80oQUkYZHG/F
-         jAu4HBjZiHvc3qI2gEjU6L40BnJIvXg3bPSPXNtqBuM7ZXkL8Nk3Jwfrlt7+S1mwn9Xi
-         qQxMvjBS1WW0O42hWUlQD+VkE9ePuPNWtbXGBzmkSXwud6THtcT8j1VJCA7c8rs55wbi
-         PR+w==
+        Fri, 22 Jan 2021 11:07:31 -0500
+Received: by mail-ot1-f53.google.com with SMTP id 36so5549938otp.2;
+        Fri, 22 Jan 2021 08:07:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kkODdF815DQqaUMAqusF0BeWMesmAfyR8ldEcgWvCuE=;
-        b=hOjJkoTc+3CDdtgcYC+MLa3oA7nye3cyWAA8Sy+hklVGI7qWKve4t8AJ7Kee0UTEnt
-         6KQfDzNk9c9w6j/ZicbM9j4Lw+t44mCsfzcG8FBR1oW3Llg3liZpc0lgZ0hvGozeA6kS
-         bSE62YZKJWu22HL3kJ9KgFL6W4fdfGz0Ufa8j6x3w74yx6yJCVItP1SVkPf3wwMgTJJt
-         0Pg+e++nQ6a4zD+29jOAEXiZM/Q0KUdmwsAtR5PPphhfhh1QE/Xbwsk7zeGRqzHY+oCI
-         wqLbzAC0HhmM1JFy4yMHXcH54uQqxzyPbK9QSpBqMZW4V/+5VXo77jcSefcMiqljU0OD
-         0UtA==
-X-Gm-Message-State: AOAM531xxj71bVlRgiqEHzTyUL0opxYKlVBI7bL43XMplYfi1d2XSVw+
-        2Mcdhr1uYw9cLhT16suXjP6hGwnQ0qc=
-X-Google-Smtp-Source: ABdhPJxjzOMhqEHkjoZ7Pj311JbBxWdMwPb/bOfqnqbxWfum8CYeJY+ma3ZQROq9SV147jVeeVRLZg==
-X-Received: by 2002:a05:6402:32c:: with SMTP id q12mr3780058edw.145.1611331575162;
-        Fri, 22 Jan 2021 08:06:15 -0800 (PST)
-Received: from kwango.local (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
-        by smtp.gmail.com with ESMTPSA id f6sm5555117edv.83.2021.01.22.08.06.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XsEWssMCPfLIPwZeIDg292psce+OBhutMUuJWbGwGBg=;
+        b=l4TagOEVLPJzBWjNIPDwuUc3gkVWlmZRXAqFGevK0qcAdhrMXgYnIvDhcYcQwmpb79
+         sYK7cx0F+9nmboGzjJ7ZekoqRjMhdNrH6PpLGM6MaeiC8VWuqKIe+lXXdx/b/gx5w2i2
+         pCHoSCYrBGhOG5+zGWeCYWULwB/4xSOQ7ZesF67I/0Dsdo0IhK5LIVeasEhcW8h9HpBH
+         bOb+u8NS/szxLXLtXLuqgAHMvX/5Fe8F8AqddcWFySo/I2l0kuZVx2560bu34XUNylN/
+         uQx6GJzvob6zgKt8vjrtywuz9wi+vC4EFOcLhXG+BZiMiajUjs4ElCtUWIB7AnqG/kp4
+         t6zg==
+X-Gm-Message-State: AOAM530ILGIqF7qGUndahAgwPWtZtFwAXtFUPmTXTuR+Au/X/pkdn9r1
+        0TOrj1vUDV20P3yvTOUM8Q==
+X-Google-Smtp-Source: ABdhPJyc9igyMeLfK7ygeNj0+UjaZn/4fYN1oUjwoJ0z7bd92UkR5kJYgaRjyUNo2ZDVg+SkLKEIAA==
+X-Received: by 2002:a05:6830:1f02:: with SMTP id u2mr3931925otg.124.1611331605445;
+        Fri, 22 Jan 2021 08:06:45 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t65sm1746041oie.25.2021.01.22.08.06.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 08:06:14 -0800 (PST)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fixes for 5.11-rc5
-Date:   Fri, 22 Jan 2021 17:06:05 +0100
-Message-Id: <20210122160605.5939-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.19.2
+        Fri, 22 Jan 2021 08:06:44 -0800 (PST)
+Received: (nullmailer pid 882044 invoked by uid 1000);
+        Fri, 22 Jan 2021 16:06:43 -0000
+Date:   Fri, 22 Jan 2021 10:06:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, od@zcrc.me,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings/phy: ingenic: Add compatibles for??
+ JZ4760(B) SoCs
+Message-ID: <20210122160643.GA865022@robh.at.kernel.org>
+References: <20210120115945.29046-1-paul@crapouillou.net>
+ <CAL_JsqLS-oFn4kGm7GeU+W2BvVeon9k9+gzVojypcJCJLwbaEQ@mail.gmail.com>
+ <SIBCNQ.SZL9QXM6XX3N2@crapouillou.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <SIBCNQ.SZL9QXM6XX3N2@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Jan 22, 2021 at 02:42:28PM +0000, Paul Cercueil wrote:
+> Hi Rob,
+> 
+> Le ven. 22 janv. 2021 à 8:35, Rob Herring <robh+dt@kernel.org> a écrit :
+> > On Wed, Jan 20, 2021 at 5:59 AM Paul Cercueil <paul@crapouillou.net>
+> > wrote:
+> > > 
+> > >  Add the ingenic,jz4760-phy and ingenic,jz4760b-phy compatible
+> > > strings,
+> > >  and make the ingenic,jz4770-phy compatible string require
+> > >  ingenic,jz4760-phy as a fallback, since both work the same, and the
+> > >  JZ4760 SoC is older.
+> > > 
+> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  ---
+> > >   .../bindings/phy/ingenic,phy-usb.yaml         | 22
+> > > ++++++++++++-------
+> > >   1 file changed, 14 insertions(+), 8 deletions(-)
+> > > 
+> > >  diff --git
+> > > a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> > > b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> > >  index 0fd93d71fe5a..3c65dfcf352b 100644
+> > >  --- a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> > >  +++ b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+> > >  @@ -15,13 +15,19 @@ properties:
+> > >       pattern: '^usb-phy@.*'
+> > > 
+> > >     compatible:
+> > >  -    enum:
+> > >  -      - ingenic,jz4770-phy
+> > >  -      - ingenic,jz4775-phy
+> > >  -      - ingenic,jz4780-phy
+> > >  -      - ingenic,x1000-phy
+> > >  -      - ingenic,x1830-phy
+> > >  -      - ingenic,x2000-phy
+> > >  +    oneOf:
+> > >  +      - enum:
+> > >  +        - ingenic,jz4760-phy
+> > 
+> > This should be 2 more spaces indentation. Indent is always 2 more than
+> > the above keyword and ignores '-'.
+> 
+> Pretty confusing. But alright.
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+TBC, either way is functional and these are the 2 main styles, so we 
+picked one. In some sequences, it's easy to miss a '-' where a space 
+would also be valid. For example:
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+items:
+- items:
+    enum: ...
 
-are available in the Git repository at:
+vs:
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-5.11-rc5
+items:
+  items:
+    enum: ...
 
-for you to fetch changes up to 9d5ae6f3c50a6f718b6d4be3c7b0828966e01b05:
+Both are valid (as items can be a list or sub-schema).
 
-  libceph: fix "Boolean result is used in bitwise operation" warning (2021-01-21 16:49:59 +0100)
-
-----------------------------------------------------------------
-A patch to zero out sensitive cryptographic data and two minor cleanups
-prompted by the fact that a bunch of code was moved in this cycle.
-
-----------------------------------------------------------------
-Ilya Dryomov (3):
-      libceph: zero out session key and connection secret
-      libceph, ceph: disambiguate ceph_connection_operations handlers
-      libceph: fix "Boolean result is used in bitwise operation" warning
-
- fs/ceph/mds_client.c    | 34 ++++++++++++++---------------
- net/ceph/auth_x.c       | 57 +++++++++++++++++++++++++++++--------------------
- net/ceph/crypto.c       |  3 ++-
- net/ceph/messenger_v1.c |  2 +-
- net/ceph/messenger_v2.c | 45 +++++++++++++++++++++-----------------
- net/ceph/mon_client.c   | 14 ++++++------
- net/ceph/osd_client.c   | 40 +++++++++++++++++-----------------
- 7 files changed, 107 insertions(+), 88 deletions(-)
+Rob
