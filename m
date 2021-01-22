@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B808300D63
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57BA300D46
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 21:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbhAVUJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 15:09:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
+        id S1730885AbhAVUEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 15:04:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728335AbhAVONC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:13:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE1D423AA1;
-        Fri, 22 Jan 2021 14:10:42 +0000 (UTC)
+        id S1728281AbhAVOOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:14:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA0CD23AFC;
+        Fri, 22 Jan 2021 14:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324643;
-        bh=iazpQqPdvUDs+5y6oaxLwzLJvNuU+4OrYyemM8u2Lpw=;
+        s=korg; t=1611324675;
+        bh=fV0iDRVrMGtQYDtd/ql9LA/wBJZHRY4wKgd9k3vp0dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WolP3msfdXxfzz3tkfWU2LzZrSdEwNaODjemP2x891OMY+pktUOquE70pPKiJXbCu
-         Jc1otf4Pqti4RldooBXCugXalUx78FqtOwwvbO72M67tXXxdhAV8JXIR6d3coU6Bcd
-         Wsjj7XsiywPC/d6cwCR55nopOi87RNw5UR661J54=
+        b=bh20kNRUT8bo220S9zjALPo1BpIkRuKwuVASRZLYw8ogkLIZjvOLbPIdfTGUhfRMx
+         gp4UCap+EFP7Qxs5WPtvp+fbRdD7nkDv9lHoanAzmaRsrrNfByzVGrOTDdcq3CZ1At
+         rvSGNdYvYPtQwmtq0O+M3fpDeKoVmfSstn2BLg7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Hebb <tommyhebb@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 01/35] ASoC: dapm: remove widget from dirty list on free
-Date:   Fri, 22 Jan 2021 15:10:03 +0100
-Message-Id: <20210122135732.420157332@linuxfoundation.org>
+        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@kernel.org
+Subject: [PATCH 4.9 03/35] MIPS: Fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
+Date:   Fri, 22 Jan 2021 15:10:05 +0100
+Message-Id: <20210122135732.489413612@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135732.357969201@linuxfoundation.org>
 References: <20210122135732.357969201@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,45 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Hebb <tommyhebb@gmail.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 5c6679b5cb120f07652418524ab186ac47680b49 upstream.
+commit 698222457465ce343443be81c5512edda86e5914 upstream.
 
-A widget's "dirty" list_head, much like its "list" list_head, eventually
-chains back to a list_head on the snd_soc_card itself. This means that
-the list can stick around even after the widget (or all widgets) have
-been freed. Currently, however, widgets that are in the dirty list when
-freed remain there, corrupting the entire list and leading to memory
-errors and undefined behavior when the list is next accessed or
-modified.
+Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
+had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
+coredumps; unfortunately, compat on mips (which does not go through the
+usual compat_binfmt_elf.c) had not been noticed.
 
-I encountered this issue when a component failed to probe relatively
-late in snd_soc_bind_card(), causing it to bail out and call
-soc_cleanup_card_resources(), which eventually called
-snd_soc_dapm_free() with widgets that were still dirty from when they'd
-been added.
+As the result, both N32 and O32 coredumps on 64bit mips kernels
+have those sections malformed enough to confuse the living hell out of
+all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
 
-Fixes: db432b414e20 ("ASoC: Do DAPM power checks only for widgets changed since last run")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/f8b5f031d50122bf1a9bfc9cae046badf4a7a31a.1607822410.git.tommyhebb@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Longer term solution is to make both O32 and N32 compat use the
+regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
+solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
+those patches have done in fs/compat_binfmt_elf.c
+
+Cc: stable@kernel.org # v3.7+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-dapm.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/binfmt_elfn32.c |    7 +++++++
+ arch/mips/kernel/binfmt_elfo32.c |    7 +++++++
+ 2 files changed, 14 insertions(+)
 
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2349,6 +2349,7 @@ void snd_soc_dapm_free_widget(struct snd
- 	enum snd_soc_dapm_direction dir;
+--- a/arch/mips/kernel/binfmt_elfn32.c
++++ b/arch/mips/kernel/binfmt_elfn32.c
+@@ -110,4 +110,11 @@ cputime_to_compat_timeval(const cputime_
+ 	value->tv_sec = jiffies / HZ;
+ }
  
- 	list_del(&w->list);
-+	list_del(&w->dirty);
- 	/*
- 	 * remove source and sink paths associated to this widget.
- 	 * While removing the path, remove reference to it from both
++/*
++ * Some data types as stored in coredump.
++ */
++#define user_long_t             compat_long_t
++#define user_siginfo_t          compat_siginfo_t
++#define copy_siginfo_to_external        copy_siginfo_to_external32
++
+ #include "../../../fs/binfmt_elf.c"
+--- a/arch/mips/kernel/binfmt_elfo32.c
++++ b/arch/mips/kernel/binfmt_elfo32.c
+@@ -113,4 +113,11 @@ cputime_to_compat_timeval(const cputime_
+ 	value->tv_sec = jiffies / HZ;
+ }
+ 
++/*
++ * Some data types as stored in coredump.
++ */
++#define user_long_t             compat_long_t
++#define user_siginfo_t          compat_siginfo_t
++#define copy_siginfo_to_external        copy_siginfo_to_external32
++
+ #include "../../../fs/binfmt_elf.c"
 
 
