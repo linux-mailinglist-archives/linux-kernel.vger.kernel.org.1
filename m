@@ -2,79 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB3730040B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222E9300415
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbhAVNVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:21:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727820AbhAVNVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:21:22 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562A2C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:20:42 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id f2so1270518ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:20:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0ytvqF/ZqeSdIbyUwKUH9eT2gg+DzZJwumCDEIik8VE=;
-        b=vTHteLhf3Hc4M8GUMorykIr4Fz8V7IhlXaOyz/Jl2vc8CI3f4b9YSoLVdUimaykGab
-         zdaUNTg2TPxiSyNXl9LR+gCD9OUqmJkZ19NKD1obMt1T2554FBeKW3aCkJwJPl1KeTEC
-         Lyq7yFbl5a5lQtEnT+PuHFOhTdn8umLYSlyuvyczo3gZYfA6TmcFXkMXP14U31WqgdqQ
-         vyA/dZkU8gL2XpwJfA9IrL7+dpdeDjafr+pHKRS40xl9PqWKg6ZEHymCOZmUFORVtFoL
-         xJ07KMfj5Xx8pCwXE680tiDtIMVs+F28zYlQEC7WNjSlKHNswp5D90xKpDNOXJG+ZaJk
-         lEAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0ytvqF/ZqeSdIbyUwKUH9eT2gg+DzZJwumCDEIik8VE=;
-        b=ThJ4IwRHKtYqhfE0KzwNHBZBQpHGb8axzBR5YP8Ip29PioPzlsFZzeRsfKQ/8QK5HR
-         Zi1fQzNbZr1bb3QxFA1MOtDe4il1PfaXALOnvtB4eF9/hRclzuHwO99C3xtcgKLr5Tsj
-         xpqX2XUH3TbeCKdb3do6lBZ5pVtXAYaIqAnhB1JEbX5m34FG7FXmxy7B6g3bwMH37YD2
-         WTite8C8s7mqpNf0UAq5ddheDLWZFKnm5WLh88WRPpZw/R+MA0Elt3ZnzdtnGJDGtChT
-         4+VEBvccSuEZybGKy2pnVRw+FmNGfM+P5s9PO7KhLkbLzUYtNZQAmHvhJhi+5CuzBkj2
-         AP5Q==
-X-Gm-Message-State: AOAM530jbhY4j3Wfy6hD9Yng3/sYM8zKVM/+eYmxEunAifmvt+B2IVmJ
-        kDXLRNy1lgFZNEl5xk7etw0C80yj+DJ4133pWddj0w==
-X-Google-Smtp-Source: ABdhPJz2obQCjwabSzHHW28CA6Zz2X57g2dz9ds/UhMqC/vA4Af8AKjfdgsI4a+HItN2SazQGOStl6xwxxDpujPiGIA=
-X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr782769ljj.326.1611321640829;
- Fri, 22 Jan 2021 05:20:40 -0800 (PST)
+        id S1727626AbhAVNYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:24:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727272AbhAVNXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:23:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2250B23437;
+        Fri, 22 Jan 2021 13:23:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611321788;
+        bh=O0kXBh406ZqWp6u3rL1NVk2dxAuNH47Sw0WDHc0KUFQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=JYST3S5mhCIGE7b2UZ27X46rkQjaf1Cpy7aP80iN9cGxKchBZcc1VfkekFKjIfmxV
+         J6wR67CDasF4axPvmqoWqG6AYt0YhLPKvI2UXRFgvUFHzWU55gqiaIc7LBD/elHpAE
+         +CC/MrzHxzAl2NlYTxOAI2aSC8uh71ZdfvOwnjI3VYlN338vVTt4hYHoPEo+Gvnscb
+         uVDzqXhckZme6G9sdglEV4vqfWG2p4ojTtE1DmEz4zScC1tGttTpE+Et2XdfFmdPSS
+         bbv2Gku8hjo7p3dvTzMD4N+p9rWXikd/I8DV/KjF6AaSdgj4Z9kH0vItaxS/RhouhP
+         XJgOnxQosvmCA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] regulator: Fix lockdep warning resolving supplies
+Date:   Fri, 22 Jan 2021 13:20:42 +0000
+Message-Id: <20210122132042.10306-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210120050342.320704-1-drew@beagleboard.org>
-In-Reply-To: <20210120050342.320704-1-drew@beagleboard.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 22 Jan 2021 14:20:30 +0100
-Message-ID: <CACRpkdYnKcMyqj00_uVxhHVUva1W12Pd2sjmVbwXVz-Jy8xrBA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: clarify #pinctrl-cells for pinctrl-single,pins
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Emmanuel Vadot <manu@bidouilliste.com>,
-        Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 6:04 AM Drew Fustini <drew@beagleboard.org> wrote:
+With commit eaa7995c529b54 (regulator: core: avoid
+regulator_resolve_supply() race condition) we started holding the rdev
+lock while resolving supplies, an operation that requires holding the
+regulator_list_mutex. This results in lockdep warnings since in other
+places we take the list mutex then the mutex on an individual rdev.
 
-> Document that #pinctrl-cells can be 1 or 2 for pinctrl-single,pins
->
-> Fixes: 27c90e5e48d0 ("ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2")
-> Reported-by: Emmanuel Vadot <manu@bidouilliste.com>
-> Link: https://lore.kernel.org/linux-gpio/20210115190201.9273b637a7f967e7e55bc740@bidouilliste.com/
-> Cc: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+Since the goal is to make sure that we don't call set_supply() twice
+rather than a concern about the cost of resolution pull the rdev lock
+and check for duplicate resolution down to immediately before we do the
+set_supply() and drop it again once the allocation is done.
 
-Patch applied!
+Fixes: eaa7995c529b54 (regulator: core: avoid regulator_resolve_supply() race condition)
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ drivers/regulator/core.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 3ae5ccd9277d..3b73634d50ff 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1823,17 +1823,6 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 	if (rdev->supply)
+ 		return 0;
+ 
+-	/*
+-	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
+-	 * between rdev->supply null check and setting rdev->supply in
+-	 * set_supply() from concurrent tasks.
+-	 */
+-	regulator_lock(rdev);
+-
+-	/* Supply just resolved by a concurrent task? */
+-	if (rdev->supply)
+-		goto out;
+-
+ 	r = regulator_dev_lookup(dev, rdev->supply_name);
+ 	if (IS_ERR(r)) {
+ 		ret = PTR_ERR(r);
+@@ -1885,12 +1874,29 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 		goto out;
+ 	}
+ 
++	/*
++	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
++	 * between rdev->supply null check and setting rdev->supply in
++	 * set_supply() from concurrent tasks.
++	 */
++	regulator_lock(rdev);
++
++	/* Supply just resolved by a concurrent task? */
++	if (rdev->supply) {
++		regulator_unlock(rdev);
++		put_device(&r->dev);
++		goto out;
++	}
++
+ 	ret = set_supply(rdev, r);
+ 	if (ret < 0) {
++		regulator_unlock(rdev);
+ 		put_device(&r->dev);
+ 		goto out;
+ 	}
+ 
++	regulator_unlock(rdev);
++
+ 	/*
+ 	 * In set_machine_constraints() we may have turned this regulator on
+ 	 * but we couldn't propagate to the supply if it hadn't been resolved
+@@ -1906,7 +1912,6 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 	}
+ 
+ out:
+-	regulator_unlock(rdev);
+ 	return ret;
+ }
+ 
+-- 
+2.20.1
+
