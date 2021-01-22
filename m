@@ -2,166 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F472FF9E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F3D2FF9E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbhAVBXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 20:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbhAVBXH (ORCPT
+        id S1726057AbhAVBYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 20:24:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37438 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725863AbhAVBYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:23:07 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F57CC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:22:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Message-ID:From:CC:To:Subject:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
-        Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=nsfHN4ruMgctb+T/nWfwgWtc4d+dx9Cp+YY+RpU/dvk=; b=tjZvK6kIQJkVoUh0XH5KaPSzs4
-        8lr3MIgIr75RIY4aA23wlTr3OM76gWx1LXz10+q2hpKQdXr6ktfXV3qzhbeh4r4LH8otlwsyyJpjn
-        UdBiPxQtBG/6d/PrKlA52hMEi8SdcOX3ErqodvY1/ZbBV83IkZ6IHdxY4MK9t0H5HFbjL7Ckp4vQq
-        QS1d79EtonYd0+OZhRASIc7t1W4sKH/rch/pro1+wo9CaREke+CCiIweeTPBLC3oAD45lmEzubspX
-        wpGfFntPlb9c2xs01lmYLfKSrJ0PrVzgLSNtkqVhf7ZFIi0oO64Z0EShmUC+pNFoGuNyhuYVrQGnB
-        NjscAPdA==;
-Received: from [2601:1c0:6280:3f0:c52a:3cbc:74:978c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l2l9X-0001A2-Tf; Fri, 22 Jan 2021 01:22:21 +0000
-Date:   Thu, 21 Jan 2021 17:22:10 -0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <875z3prcwg.fsf@mpe.ellerman.id.au>
-References: <CAAH8bW8-6Dp29fe6rrnA4eL1vo+mu0HuAVJ-5yjbwxDSvaHdeQ@mail.gmail.com> <6c442012-3bef-321b-bbc3-09c54608661f@infradead.org> <875z3prcwg.fsf@mpe.ellerman.id.au>
+        Thu, 21 Jan 2021 20:24:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611278598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SJoWL2veJ5k/D7xEL6G5+QjIu4GFUmt+PwMfZPwuV6Y=;
+        b=SSqEl+Hc485o/7oY4Lbn9lUTA8oENiijWsxEF0qTHs7L5YhefnUetOFHINPOL4viEnR/0o
+        CYzA5AuIkYEaS6nBoZRaotQHaXCZodxXoc0J/OvkzI/BcYiTgiFUnDbv+C9fy9FO9NsN54
+        dfghHH9gZEgH9LOIdeShIqR/5htaPmk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-CGjKzgi4OAeR7HI75U9w6g-1; Thu, 21 Jan 2021 20:23:16 -0500
+X-MC-Unique: CGjKzgi4OAeR7HI75U9w6g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 901BC8145E1;
+        Fri, 22 Jan 2021 01:23:12 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-255.pek2.redhat.com [10.72.12.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 847B760BF3;
+        Fri, 22 Jan 2021 01:22:58 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 09:22:54 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     john.p.donnelly@oracle.com
+Cc:     Guilherme Piccoli <gpiccoli@canonical.com>,
+        Kairui Song <kasong@redhat.com>,
+        Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Will Deacon <will@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, Baoquan He <bhe@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# v4 . 16+" <stable@vger.kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Diego Elio =?iso-8859-1?Q?Petten=F2?= <flameeyes@flameeyes.com>,
+        Olof Johansson <olof@lixom.net>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 1/1] kernel/crash_core.c - Add crashkernel=auto for x86
+ and ARM
+Message-ID: <20210122012254.GA3174@dhcp-128-65.nay.redhat.com>
+References: <20201118232431.21832-1-saeed.mirzamohammadi@oracle.com>
+ <CACPcB9e8p5Ayw15aOe5ZNPOa7MF3+pzPdcaZgTc_E_TZYkgD6Q@mail.gmail.com>
+ <AC36B9BC-654C-4FC1-8EA3-94B986639F1E@oracle.com>
+ <CACPcB9d7kU1TYaF-g2GH16Wg=hrQu71sGDoC8uMFFMc6oW_duQ@mail.gmail.com>
+ <CAHD1Q_yB1B4gu7EDqbZJ5dxAAkr-dVKa9yRDK-tE3oLeTTmLJQ@mail.gmail.com>
+ <20201123034705.GA5908@dhcp-128-65.nay.redhat.com>
+ <d6b5b7f3-ba38-be61-d3fe-975c3343a79d@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] powerpc: fix AKEBONO build failures
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Yury Norov <yury.norov@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-CC:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8AC16666-0EBD-4E2B-84AB-880DAF3A04EE@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d6b5b7f3-ba38-be61-d3fe-975c3343a79d@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On January 21, 2021 5:14:23 PM PST, Michael Ellerman <mpe@ellerman=2Eid=2Ea=
-u> wrote:
->Randy Dunlap <rdunlap@infradead=2Eorg> writes:
->> On 1/20/21 1:29 PM, Yury Norov wrote:
->>> Hi all,
->>>=20
->>> I found the power pc build broken on today's
->>> linux-next (647060f3b592)=2E
->>
->> Darn, I was building linux-5=2E11-rc4=2E
->>
->> I'll try linux-next after I send this=2E
->>
->> ---
->> From: Randy Dunlap <rdunlap@infradead=2Eorg>
->>
->> Fulfill AKEBONO Kconfig requirements=2E
->>
->> Fixes these Kconfig warnings (and more) and fixes the subsequent
->> build errors:
->>
->> WARNING: unmet direct dependencies detected for NETDEVICES
->>   Depends on [n]: NET [=3Dn]
->>   Selected by [y]:
->>   - AKEBONO [=3Dy] && PPC_47x [=3Dy]
->>
->> WARNING: unmet direct dependencies detected for MMC_SDHCI
->>   Depends on [n]: MMC [=3Dn] && HAS_DMA [=3Dy]
->>   Selected by [y]:
->>   - AKEBONO [=3Dy] && PPC_47x [=3Dy]
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead=2Eorg>
->> Cc: Michael Ellerman <mpe@ellerman=2Eid=2Eau>
->> Cc: Benjamin Herrenschmidt <benh@kernel=2Ecrashing=2Eorg>
->> Cc: Paul Mackerras <paulus@samba=2Eorg>
->> Cc: linuxppc-dev@lists=2Eozlabs=2Eorg
->> Cc: Yury Norov <yury=2Enorov@gmail=2Ecom>
->> ---
->>  arch/powerpc/platforms/44x/Kconfig |    2 ++
->>  1 file changed, 2 insertions(+)
->>
->> --- lnx-511-rc4=2Eorig/arch/powerpc/platforms/44x/Kconfig
->> +++ lnx-511-rc4/arch/powerpc/platforms/44x/Kconfig
->> @@ -206,6 +206,7 @@ config AKEBONO
->>  	select PPC4xx_HSTA_MSI
->>  	select I2C
->>  	select I2C_IBM_IIC
->> +	select NET
->>  	select NETDEVICES
->>  	select ETHERNET
->>  	select NET_VENDOR_IBM
->
->I think the problem here is too much use of select, for things that
->should instead be in the defconfig=2E
->
->The patch below results in the same result for make
->44x/akebono_defconfig=2E Does it fix the original issue?
->
->We don't need to add ETHERNET or NET_VENDOR_IBM to the defconfig
->because
->they're both default y=2E
->
->cheers
->
->
->diff --git a/arch/powerpc/configs/44x/akebono_defconfig
->b/arch/powerpc/configs/44x/akebono_defconfig
->index 3894ba8f8ffc=2E=2E6b08a85f4ce6 100644
->--- a/arch/powerpc/configs/44x/akebono_defconfig
->+++ b/arch/powerpc/configs/44x/akebono_defconfig
->@@ -21,6 +21,7 @@ CONFIG_IRQ_ALL_CPUS=3Dy
-> # CONFIG_COMPACTION is not set
-> # CONFIG_SUSPEND is not set
-> CONFIG_NET=3Dy
->+CONFIG_NETDEVICES=3Dy
-> CONFIG_PACKET=3Dy
-> CONFIG_UNIX=3Dy
-> CONFIG_INET=3Dy
->@@ -98,6 +99,8 @@ CONFIG_USB_OHCI_HCD=3Dy
-> # CONFIG_USB_OHCI_HCD_PCI is not set
-> CONFIG_USB_STORAGE=3Dy
-> CONFIG_MMC=3Dy
->+CONFIG_MMC_SDHCI=3Dy
->+CONFIG_MMC_SDHCI_PLTFM=3Dy
-> CONFIG_RTC_CLASS=3Dy
-> CONFIG_RTC_DRV_M41T80=3Dy
-> CONFIG_EXT2_FS=3Dy
->diff --git a/arch/powerpc/platforms/44x/Kconfig
->b/arch/powerpc/platforms/44x/Kconfig
->index 78ac6d67a935=2E=2E509b329c112f 100644
->--- a/arch/powerpc/platforms/44x/Kconfig
->+++ b/arch/powerpc/platforms/44x/Kconfig
->@@ -206,15 +206,10 @@ config AKEBONO
->        select PPC4xx_HSTA_MSI
->        select I2C
->        select I2C_IBM_IIC
->-       select NETDEVICES
->-       select ETHERNET
->-       select NET_VENDOR_IBM
->        select IBM_EMAC_EMAC4 if IBM_EMAC
->        select USB if USB_SUPPORT
->        select USB_OHCI_HCD_PLATFORM if USB_OHCI_HCD
->        select USB_EHCI_HCD_PLATFORM if USB_EHCI_HCD
->-       select MMC_SDHCI
->-       select MMC_SDHCI_PLTFM
->        select ATA
->        select SATA_AHCI_PLATFORM
->        help
+Hi John,
 
-Sure=2E I thought that lots of what was already there
-should be in the defconfig=2E I  was just going with the flow=2E=20
+On 01/21/21 at 09:32am, john.p.donnelly@oracle.com wrote:
+> On 11/22/20 9:47 PM, Dave Young wrote:
+> > Hi Guilherme,
+> > On 11/22/20 at 12:32pm, Guilherme Piccoli wrote:
+> > > Hi Dave and Kairui, thanks for your responses! OK, if that makes sense
+> > > to you I'm fine with it. I'd just recommend to test recent kernels in
+> > > multiple distros with the minimum "range" to see if 64M is enough for
+> > > crashkernel, maybe we'd need to bump that.
+> > 
+> > Giving the different kernel configs and the different userspace
+> > initramfs setup it is hard to get an uniform value for all distributions,
+> > but we can have an interface/kconfig-option for them to provide a value like this patch
+> > is doing. And it could be improved like Kairui said about some known
+> > kernel added extra values later, probably some more improvements if
+> > doable.
+> > 
+> > Thanks
+> > Dave
+> > 
+> 
+> Hi.
+> 
+> Are we going to move forward with implementing this for X86 and Arm ?
+> 
+> If other platform maintainers want to include this CONFIG option in their
+> configuration settings they have a starting point.
 
-Thanks for fixing it=2E=20
+I would expect this become arch independent.
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Saeed, Kairui, would any of you like to update the patch?
+
+> 
+> Thank you,
+> 
+> John.
+> 
+> ( I am not currently on many of the included dist lists  in this email, so
+> hopefully key contributors are included in this exchange )
+> 
+
+Thanks
+Dave
+
