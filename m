@@ -2,238 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DF72FFF8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB412FFF93
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbhAVJvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727620AbhAVJrK (ORCPT
+        id S1727802AbhAVJxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:53:49 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11850 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727418AbhAVJsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:47:10 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAF1C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:46:25 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id c6so5848417ede.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 01:46:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=HjgV2PK/NA+pQ8cTfpiwH9HQAhJSvB08Q16GX5X3zfA=;
-        b=by/sVS1It0deAY0BLbNdRSfPNB6zDWFTbe0d/GdsR736L2aLnyAHGJLh2YDDme2PwY
-         IWjGWmZfSUUJLx6x33cWmVGFnaFF8NdjEAfl3KulaX2BZ6y3QGSQcriBcwdMDhfNavwo
-         YVTiU3HsaaYUWTPrisnsQVlILY7rOMNv1FfKeLhjI21QRn1vMPkF/cRjIeagRCAuOIR5
-         C/JtUyOq5gyX3gWEnOupLVZXJKYP/gpyr+w68gBGVbnm7m2zVamsEGQAPJWlwPqVVUFT
-         iaGgCxf3xXGQwjd3c9Msmm9RPa3aa2nRk6IwK1oDfhJnTaXBBhlqSAwf0kmmh5AvxPH7
-         kghA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=HjgV2PK/NA+pQ8cTfpiwH9HQAhJSvB08Q16GX5X3zfA=;
-        b=BU1m6dmuUNIdc7e1vFVUFztMwgUvKU77jSAtLHF/zs25OYRZcj5nX8GcxMuX4N1iXa
-         fBIrMiMm/KtZCPjAceyRmaC3UbAKBzmZPY9gvNf2R+xHLUlZUFI93oyvf0qW5iArqgaW
-         ZFylcrlvEKQ+RF/QoLQxQ6gUg7BmQJMUIAhew0Aj9g3Kb6ZG6DTyJuhq85StPKENL3IZ
-         r3O3EKz2FAxP6QGzpk5iHZq13wg/Oa2dIo6z+RAmM40kIXSNwna5S39cCxLTJqsFPvEv
-         J70kKoE9fRa9J7u8iMdcGPR3g/SHliHmcoEsnE7VG7t6PmwzlFpT0sAg3XG7clzUSd4G
-         CZ+w==
-X-Gm-Message-State: AOAM530CGq5GpAKlExgpaumpE5gKcRs3ZTNihxO+DPal3+V2IvUDW5WK
-        uT+IYt8nurmi42xGCuGitfQOvg==
-X-Google-Smtp-Source: ABdhPJyWPYjrXePNQsgVj7nkGHRu9jiSq5tWZ5YgAF1jy2Q67EKJiWmPbctdCsS4INcXQ2grqJBmKA==
-X-Received: by 2002:a05:6402:402:: with SMTP id q2mr2595315edv.116.1611308783863;
-        Fri, 22 Jan 2021 01:46:23 -0800 (PST)
-Received: from [192.168.0.13] ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id gt18sm3960119ejb.104.2021.01.22.01.46.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 01:46:23 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH] bfq: don't check active group if bfq.weight is not
- changed
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <20210114122426.603813-1-yukuai3@huawei.com>
-Date:   Fri, 22 Jan 2021 10:46:21 +0100
-Cc:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk,
-        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <44BDF727-92DA-4678-A026-A1CF53A655BF@linaro.org>
-References: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
- <20210114122426.603813-1-yukuai3@huawei.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Fri, 22 Jan 2021 04:48:00 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DMZC55QNzz7X9v;
+        Fri, 22 Jan 2021 17:46:09 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 22 Jan 2021 17:47:11 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v3] f2fs: compress: support compress level
+Date:   Fri, 22 Jan 2021 17:46:43 +0800
+Message-ID: <20210122094643.47558-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Expand 'compress_algorithm' mount option to accept parameter as format of
+<algorithm>:<level>, by this way, it gives a way to allow user to do more
+specified config on lz4 and zstd compression level, then f2fs compression
+can provide higher compress ratio.
 
+In order to set compress level for lz4 algorithm, it needs to set
+CONFIG_LZ4HC_COMPRESS and CONFIG_F2FS_FS_LZ4HC config to enable lz4hc
+compress algorithm.
 
-> Il giorno 14 gen 2021, alle ore 13:24, Yu Kuai <yukuai3@huawei.com> ha =
-scritto:
->=20
-> Now the group scheduling in BFQ depends on the check of active group,
-> but in most cases group scheduling is not used and the checking
-> of active group will cause bfq_asymmetric_scenario() and its caller
-> bfq_better_to_idle() to always return true, so the throughput
-> will be impacted if the workload doesn't need idle (e.g. random rw)
->=20
-> To fix that, adding check in bfq_io_set_weight_legacy() and
-> bfq_pd_init() to check whether or not group scheduling is used
-> (a non-default weight is used). If not, there is no need
-> to check active group.
->=20
+CR and performance number on lz4/lz4hc algorithm:
 
-Hi,
-I do like the goal you want to attain.  Still, I see a problem with
-your proposal.  Consider two groups, say A and B.  Suppose that both
-have the same, default weight.  Yet, group A generates large I/O
-requests, while group B generates small requests.  With your change,
-idling would not be performed.  This would cause group A to steal
-bandwidth to group B, in proportion to how large its requests are
-compared with those of group B.
+dd if=enwik9 of=compressed_file conv=fsync
 
-As a possible solution, maybe we would need also a varied_rq_size
-flag, similar to the varied_weights flag?
+Original blocks:	244382
 
-Thoughts?
+			lz4			lz4hc-9
+compressed blocks	170647			163270
+compress ratio		69.8%			66.8%
+speed			16.4207 s, 60.9 MB/s	26.7299 s, 37.4 MB/s
 
-Thanks for your contribution,
-Paolo
+compress ratio = after / before
 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
-> block/bfq-cgroup.c  | 14 ++++++++++++--
-> block/bfq-iosched.c |  8 +++-----
-> block/bfq-iosched.h | 19 +++++++++++++++++++
-> 3 files changed, 34 insertions(+), 7 deletions(-)
->=20
-> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> index b791e2041e49..b4ac42c4bd9f 100644
-> --- a/block/bfq-cgroup.c
-> +++ b/block/bfq-cgroup.c
-> @@ -505,12 +505,18 @@ static struct blkcg_policy_data =
-*bfq_cpd_alloc(gfp_t gfp)
-> 	return &bgd->pd;
-> }
->=20
-> +static inline int bfq_dft_weight(void)
-> +{
-> +	return cgroup_subsys_on_dfl(io_cgrp_subsys) ?
-> +	       CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
-> +
-> +}
-> +
-> static void bfq_cpd_init(struct blkcg_policy_data *cpd)
-> {
-> 	struct bfq_group_data *d =3D cpd_to_bfqgd(cpd);
->=20
-> -	d->weight =3D cgroup_subsys_on_dfl(io_cgrp_subsys) ?
-> -		CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
-> +	d->weight =3D bfq_dft_weight();
-> }
->=20
-> static void bfq_cpd_free(struct blkcg_policy_data *cpd)
-> @@ -554,6 +560,9 @@ static void bfq_pd_init(struct blkg_policy_data =
-*pd)
-> 	bfqg->bfqd =3D bfqd;
-> 	bfqg->active_entities =3D 0;
-> 	bfqg->rq_pos_tree =3D RB_ROOT;
-> +
-> +	if (entity->new_weight !=3D bfq_dft_weight())
-> +		bfqd_enable_active_group_check(bfqd);
-> }
->=20
-> static void bfq_pd_free(struct blkg_policy_data *pd)
-> @@ -1013,6 +1022,7 @@ static void bfq_group_set_weight(struct =
-bfq_group *bfqg, u64 weight, u64 dev_wei
-> 		 */
-> 		smp_wmb();
-> 		bfqg->entity.prio_changed =3D 1;
-> +		bfqd_enable_active_group_check(bfqg->bfqd);
-> 	}
-> }
->=20
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index 9e4eb0fc1c16..1b695de1df95 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -699,11 +699,8 @@ static bool bfq_asymmetric_scenario(struct =
-bfq_data *bfqd,
-> 		(bfqd->busy_queues[0] && bfqd->busy_queues[2]) ||
-> 		(bfqd->busy_queues[1] && bfqd->busy_queues[2]);
->=20
-> -	return varied_queue_weights || multiple_classes_busy
-> -#ifdef CONFIG_BFQ_GROUP_IOSCHED
-> -	       || bfqd->num_groups_with_pending_reqs > 0
-> -#endif
-> -		;
-> +	return varied_queue_weights || multiple_classes_busy ||
-> +	       bfqd_has_active_group(bfqd);
-> }
->=20
-> /*
-> @@ -6472,6 +6469,7 @@ static int bfq_init_queue(struct request_queue =
-*q, struct elevator_type *e)
->=20
-> 	bfqd->queue_weights_tree =3D RB_ROOT_CACHED;
-> 	bfqd->num_groups_with_pending_reqs =3D 0;
-> +	bfqd->check_active_group =3D false;
->=20
-> 	INIT_LIST_HEAD(&bfqd->active_list);
-> 	INIT_LIST_HEAD(&bfqd->idle_list);
-> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-> index 703895224562..216509013012 100644
-> --- a/block/bfq-iosched.h
-> +++ b/block/bfq-iosched.h
-> @@ -524,6 +524,8 @@ struct bfq_data {
->=20
-> 	/* true if the device is non rotational and performs queueing */
-> 	bool nonrot_with_queueing;
-> +	/* true if need to check num_groups_with_pending_reqs */
-> +	bool check_active_group;
->=20
-> 	/*
-> 	 * Maximum number of requests in driver in the last
-> @@ -1066,6 +1068,17 @@ static inline void bfq_pid_to_str(int pid, char =
-*str, int len)
-> }
->=20
-> #ifdef CONFIG_BFQ_GROUP_IOSCHED
-> +static inline void bfqd_enable_active_group_check(struct bfq_data =
-*bfqd)
-> +{
-> +	cmpxchg_relaxed(&bfqd->check_active_group, false, true);
-> +}
-> +
-> +static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
-> +{
-> +	return bfqd->check_active_group &&
-> +	       bfqd->num_groups_with_pending_reqs > 0;
-> +}
-> +
-> struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
->=20
-> #define bfq_log_bfqq(bfqd, bfqq, fmt, args...)	do {			=
-\
-> @@ -1085,6 +1098,12 @@ struct bfq_group *bfqq_group(struct bfq_queue =
-*bfqq);
-> } while (0)
->=20
-> #else /* CONFIG_BFQ_GROUP_IOSCHED */
-> +static inline void bfqd_enable_active_group_check(struct bfq_data =
-*bfqd) {}
-> +
-> +static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
-> +{
-> +	return false;
-> +}
->=20
-> #define bfq_log_bfqq(bfqd, bfqq, fmt, args...) do {	\
-> 	char pid_str[MAX_PID_STR_LENGTH];	\
-> --=20
-> 2.25.4
->=20
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+- fix compile warning: unused function 'f2fs_compress_set_level'
+- fix to reset F2FS_OPTION().compress_level to zero in some cases
+ Documentation/filesystems/f2fs.rst |  5 ++
+ fs/f2fs/Kconfig                    | 10 ++++
+ fs/f2fs/compress.c                 | 41 +++++++++++++-
+ fs/f2fs/f2fs.h                     |  9 +++
+ fs/f2fs/super.c                    | 89 +++++++++++++++++++++++++++++-
+ include/linux/f2fs_fs.h            |  3 +
+ 6 files changed, 152 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index dae15c96e659..5eff4009e77e 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -249,6 +249,11 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 This space is reclaimed once checkpoint=enable.
+ compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+ 			 "lz4", "zstd" and "lzo-rle" algorithm.
++compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
++			 "lz4" and "zstd" support compress level config.
++			 algorithm	level range
++			 lz4		3 - 16
++			 zstd		1 - 22
+ compress_log_size=%u	 Support configuring compress cluster size, the size will
+ 			 be 4KB * (1 << %u), 16KB is minimum size, also it's
+ 			 default size.
+diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+index d13c5c6a9787..63c1fc1a0e3b 100644
+--- a/fs/f2fs/Kconfig
++++ b/fs/f2fs/Kconfig
+@@ -119,6 +119,16 @@ config F2FS_FS_LZ4
+ 	help
+ 	  Support LZ4 compress algorithm, if unsure, say Y.
+ 
++config F2FS_FS_LZ4HC
++	bool "LZ4HC compression support"
++	depends on F2FS_FS_COMPRESSION
++	depends on F2FS_FS_LZ4
++	select LZ4HC_COMPRESS
++	default y
++	help
++	  Support LZ4HC compress algorithm, LZ4HC has compatible on-disk
++	  layout with LZ4, if unsure, say Y.
++
+ config F2FS_FS_ZSTD
+ 	bool "ZSTD compression support"
+ 	depends on F2FS_FS_COMPRESSION
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index 4bcbacfe3325..a345a41e2119 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -252,8 +252,14 @@ static const struct f2fs_compress_ops f2fs_lzo_ops = {
+ #ifdef CONFIG_F2FS_FS_LZ4
+ static int lz4_init_compress_ctx(struct compress_ctx *cc)
+ {
+-	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+-				LZ4_MEM_COMPRESS, GFP_NOFS);
++	unsigned int size = LZ4_MEM_COMPRESS;
++
++#ifdef CONFIG_F2FS_FS_LZ4HC
++	if (F2FS_I(cc->inode)->i_compress_flag >> COMPRESS_LEVEL_OFFSET)
++		size = LZ4HC_MEM_COMPRESS;
++#endif
++
++	cc->private = f2fs_kvmalloc(F2FS_I_SB(cc->inode), size, GFP_NOFS);
+ 	if (!cc->private)
+ 		return -ENOMEM;
+ 
+@@ -272,10 +278,34 @@ static void lz4_destroy_compress_ctx(struct compress_ctx *cc)
+ 	cc->private = NULL;
+ }
+ 
++#ifdef CONFIG_F2FS_FS_LZ4HC
++static int lz4hc_compress_pages(struct compress_ctx *cc)
++{
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++	int len;
++
++	if (level)
++		len = LZ4_compress_HC(cc->rbuf, cc->cbuf->cdata, cc->rlen,
++					cc->clen, level, cc->private);
++	else
++		len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
++						cc->clen, cc->private);
++	if (!len)
++		return -EAGAIN;
++
++	cc->clen = len;
++	return 0;
++}
++#endif
++
+ static int lz4_compress_pages(struct compress_ctx *cc)
+ {
+ 	int len;
+ 
++#ifdef CONFIG_F2FS_FS_LZ4HC
++	return lz4hc_compress_pages(cc);
++#endif
+ 	len = LZ4_compress_default(cc->rbuf, cc->cbuf->cdata, cc->rlen,
+ 						cc->clen, cc->private);
+ 	if (!len)
+@@ -325,8 +355,13 @@ static int zstd_init_compress_ctx(struct compress_ctx *cc)
+ 	ZSTD_CStream *stream;
+ 	void *workspace;
+ 	unsigned int workspace_size;
++	unsigned char level = F2FS_I(cc->inode)->i_compress_flag >>
++						COMPRESS_LEVEL_OFFSET;
++
++	if (!level)
++		level = F2FS_ZSTD_DEFAULT_CLEVEL;
+ 
+-	params = ZSTD_getParams(F2FS_ZSTD_DEFAULT_CLEVEL, cc->rlen, 0);
++	params = ZSTD_getParams(level, cc->rlen, 0);
+ 	workspace_size = ZSTD_CStreamWorkspaceBound(params.cParams);
+ 
+ 	workspace = f2fs_kvmalloc(F2FS_I_SB(cc->inode),
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index bb11759191dc..36012181c17f 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -146,6 +146,7 @@ struct f2fs_mount_info {
+ 	/* For compression */
+ 	unsigned char compress_algorithm;	/* algorithm type */
+ 	unsigned char compress_log_size;	/* cluster log size */
++	unsigned char compress_level;		/* compress level */
+ 	bool compress_chksum;			/* compressed data chksum */
+ 	unsigned char compress_ext_cnt;		/* extension count */
+ 	int compress_mode;			/* compression mode */
+@@ -735,6 +736,7 @@ struct f2fs_inode_info {
+ 	atomic_t i_compr_blocks;		/* # of compressed blocks */
+ 	unsigned char i_compress_algorithm;	/* algorithm type */
+ 	unsigned char i_log_cluster_size;	/* log of cluster size */
++	unsigned char i_compress_level;		/* compress level (lz4hc,zstd) */
+ 	unsigned short i_compress_flag;		/* compress flag */
+ 	unsigned int i_cluster_size;		/* cluster size */
+ };
+@@ -1310,6 +1312,8 @@ struct compress_data {
+ 
+ #define F2FS_COMPRESSED_PAGE_MAGIC	0xF5F2C000
+ 
++#define	COMPRESS_LEVEL_OFFSET	8
++
+ /* compress context */
+ struct compress_ctx {
+ 	struct inode *inode;		/* inode the context belong to */
+@@ -3934,6 +3938,11 @@ static inline void set_compress_context(struct inode *inode)
+ 				1 << COMPRESS_CHKSUM : 0;
+ 	F2FS_I(inode)->i_cluster_size =
+ 			1 << F2FS_I(inode)->i_log_cluster_size;
++	if (F2FS_I(inode)->i_compress_algorithm == COMPRESS_LZ4 &&
++			F2FS_OPTION(sbi).compress_level)
++		F2FS_I(inode)->i_compress_flag |=
++				F2FS_OPTION(sbi).compress_level <<
++				COMPRESS_LEVEL_OFFSET;
+ 	F2FS_I(inode)->i_flags |= F2FS_COMPR_FL;
+ 	set_inode_flag(inode, FI_COMPRESSED_FILE);
+ 	stat_inc_compr_inode(inode);
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index a275bd312ae5..c8be27a9eed6 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -25,6 +25,8 @@
+ #include <linux/quota.h>
+ #include <linux/unicode.h>
+ #include <linux/part_stat.h>
++#include <linux/zstd.h>
++#include <linux/lz4.h>
+ 
+ #include "f2fs.h"
+ #include "node.h"
+@@ -464,6 +466,74 @@ static int f2fs_set_test_dummy_encryption(struct super_block *sb,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_F2FS_FS_COMPRESSION
++#ifdef CONFIG_F2FS_FS_LZ4
++static int f2fs_set_lz4hc_level(struct f2fs_sb_info *sbi, const char *str)
++{
++#ifdef CONFIG_F2FS_FS_LZ4HC
++	unsigned int level;
++#endif
++
++	if (strlen(str) == 3) {
++		F2FS_OPTION(sbi).compress_level = 0;
++		return 0;
++	}
++
++#ifdef CONFIG_F2FS_FS_LZ4HC
++	str += 3;
++
++	if (str[0] != ':') {
++		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
++		return -EINVAL;
++	}
++	if (kstrtouint(str + 1, 10, &level))
++		return -EINVAL;
++
++	if (level < LZ4HC_MIN_CLEVEL || level > LZ4HC_MAX_CLEVEL) {
++		f2fs_info(sbi, "invalid lz4hc compress level: %d", level);
++		return -EINVAL;
++	}
++
++	F2FS_OPTION(sbi).compress_level = level;
++	return 0;
++#else
++	f2fs_info(sbi, "kernel doesn't support lz4hc compression");
++	return -EINVAL;
++#endif
++}
++#endif
++
++#ifdef CONFIG_F2FS_FS_ZSTD
++static int f2fs_set_zstd_level(struct f2fs_sb_info *sbi, const char *str)
++{
++	unsigned int level;
++	int len = 4;
++
++	if (strlen(str) == len) {
++		F2FS_OPTION(sbi).compress_level = 0;
++		return 0;
++	}
++
++	str += len;
++
++	if (str[0] != ':') {
++		f2fs_info(sbi, "wrong format, e.g. <alg_name>:<compr_level>");
++		return -EINVAL;
++	}
++	if (kstrtouint(str + 1, 10, &level))
++		return -EINVAL;
++
++	if (!level || level > ZSTD_maxCLevel()) {
++		f2fs_info(sbi, "invalid zstd compress level: %d", level);
++		return -EINVAL;
++	}
++
++	F2FS_OPTION(sbi).compress_level = level;
++	return 0;
++}
++#endif
++#endif
++
+ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ {
+ 	struct f2fs_sb_info *sbi = F2FS_SB(sb);
+@@ -883,20 +953,31 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 				return -ENOMEM;
+ 			if (!strcmp(name, "lzo")) {
+ #ifdef CONFIG_F2FS_FS_LZO
++				F2FS_OPTION(sbi).compress_level = 0;
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZO;
+ #else
+ 				f2fs_info(sbi, "kernel doesn't support lzo compression");
+ #endif
+-			} else if (!strcmp(name, "lz4")) {
++			} else if (!strncmp(name, "lz4", 3)) {
+ #ifdef CONFIG_F2FS_FS_LZ4
++				ret = f2fs_set_lz4hc_level(sbi, name);
++				if (ret) {
++					kfree(name);
++					return -EINVAL;
++				}
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZ4;
+ #else
+ 				f2fs_info(sbi, "kernel doesn't support lz4 compression");
+ #endif
+-			} else if (!strcmp(name, "zstd")) {
++			} else if (!strncmp(name, "zstd", 4)) {
+ #ifdef CONFIG_F2FS_FS_ZSTD
++				ret = f2fs_set_zstd_level(sbi, name);
++				if (ret) {
++					kfree(name);
++					return -EINVAL;
++				}
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_ZSTD;
+ #else
+@@ -904,6 +985,7 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ #endif
+ 			} else if (!strcmp(name, "lzo-rle")) {
+ #ifdef CONFIG_F2FS_FS_LZORLE
++				F2FS_OPTION(sbi).compress_level = 0;
+ 				F2FS_OPTION(sbi).compress_algorithm =
+ 								COMPRESS_LZORLE;
+ #else
+@@ -1555,6 +1637,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
+ 	}
+ 	seq_printf(seq, ",compress_algorithm=%s", algtype);
+ 
++	if (F2FS_OPTION(sbi).compress_level)
++		seq_printf(seq, ":%d", F2FS_OPTION(sbi).compress_level);
++
+ 	seq_printf(seq, ",compress_log_size=%u",
+ 			F2FS_OPTION(sbi).compress_log_size);
+ 
+diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+index 7dc2a06cf19a..c6cc0a566ef5 100644
+--- a/include/linux/f2fs_fs.h
++++ b/include/linux/f2fs_fs.h
+@@ -274,6 +274,9 @@ struct f2fs_inode {
+ 			__u8 i_compress_algorithm;	/* compress algorithm */
+ 			__u8 i_log_cluster_size;	/* log of cluster size */
+ 			__le16 i_compress_flag;		/* compress flag */
++						/* 0 bit: chksum flag
++						 * [10,15] bits: compress level
++						 */
+ 			__le32 i_extra_end[0];	/* for attribute size calculation */
+ 		} __packed;
+ 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+-- 
+2.29.2
 
