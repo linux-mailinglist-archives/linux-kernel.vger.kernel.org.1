@@ -2,187 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623F22FFCF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4602FFCE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 07:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbhAVGuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 01:50:08 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43065 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbhAVGt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 01:49:57 -0500
-Received: by ozlabs.org (Postfix, from userid 1007)
-        id 4DMVGz2TNGz9sVF; Fri, 22 Jan 2021 17:49:15 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=gibson.dropbear.id.au; s=201602; t=1611298155;
-        bh=oQR2S4ROGJ/SaMWvZTeUe6GZ+oSDsT/AQoYniKUVQZc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9eBv5tgJMz7YuomxAo5VrRMT4+M67ZLPz9Z+u2qab/N5f29uTDXdbaFaNPTuvVdr
-         MHBasgVyKS7MxTYUY2Apik9qKvgGpVQP7qoff/8JliSuj1DTQNHnlwq6BX5XoJXIck
-         lFLAl/Fdm1JaEhLbY9/y4oTtGNx7ERxxuZiDSFYc=
-Date:   Fri, 22 Jan 2021 17:34:55 +1100
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH V4 0/3] scripts: dtc: Build fdtoverlay
-Message-ID: <20210122063455.GE4400@yekko.fritz.box>
-References: <cover.1610431620.git.viresh.kumar@linaro.org>
- <74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com>
- <20210120051740.yph4v7zldvs7szdz@vireshk-i7>
+        id S1726187AbhAVGga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 01:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhAVGgV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 01:36:21 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B576C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:35:41 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id lw17so5944022pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 22:35:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HPyaonqF0tGLyXo/u2EMILf4fitFyye50DOEUQlkLEk=;
+        b=JnCSEXTgBNJufHKaw/ohOzw/Yt/PcsJ1NnhY9hJygd43XzW03hVyeSa0sssRTqwTlJ
+         XzhhUFW+OOzJx5SH+CKGpam/bzFvl3E1oKZM5nJnEvDh/BbdRccaKgrPE1awHYa+KW3K
+         8hVP6I+V8GDWeiCA76AxzDp3NtyhtBFpgp+Skm3IAyy5ssIEYMmy2EFm7ABqx6bxbFZG
+         NTTD8WGcXzUNcDQz7rPbj+GiZuCS3YKkoBtUolVruaDlRD6rqMZPOp5R/ea3hibW4dMQ
+         /5RiGji5VnOtiQOvi+rAtg2QlVvZ/xlbTdZut+Q+KId+Bt8Dw8UyhHkyHD8/z3BXZIfN
+         IpbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HPyaonqF0tGLyXo/u2EMILf4fitFyye50DOEUQlkLEk=;
+        b=THxwalx7Lhxdgk3Tmy9nxr6TjqZk4Ct6pMsMg5eNjDWdSkr0awGTq2veo2N00pHJ/s
+         otwW6a0EXnlXbKCMV8CI96elzvHpcFW2KwhWyi1xJ59lfHG8sxBljvf3Wh2hayBHhDwf
+         81OtUldSmGu6ifY27fcqVH11LwpIlp4F83uAr0z211favCAlzBolMjWSuAa0OM6L2H6J
+         30CrKY87mJUEonPJgJzFcgUfnve+dg4RDmzwWMPOwsXNNoqc9KFG22O/GJKyGjqlo8O6
+         VE4JW+n5SCJC7/j49mp7rsZ9/z+TZLshBoXAj4cL36dFybmx9wYeXuGsGmiKu4pzX6iP
+         P/pA==
+X-Gm-Message-State: AOAM532nmTpjre2n3LIav2KnRNJ8i0/M314d7Zqm1HKwznHV6Li8/Avt
+        yx1AefpML+bjsmBezGEc7o2RFA==
+X-Google-Smtp-Source: ABdhPJwvyfYhpRzdFl4PQlADwxIgc5snRZ0sIzTp+rK1IKPS7NKetqrwH/8HilFnHr0ln6fVhIuNgw==
+X-Received: by 2002:a17:90a:2ec7:: with SMTP id h7mr3590825pjs.200.1611297340455;
+        Thu, 21 Jan 2021 22:35:40 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id 16sm7901894pjc.28.2021.01.21.22.35.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 21 Jan 2021 22:35:39 -0800 (PST)
+Date:   Fri, 22 Jan 2021 12:05:37 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3] soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+Message-ID: <20210122063537.7yd7ww47gl2rdsdu@vireshk-i7>
+References: <20210121190117.25235-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RpqchZ26BWispMcB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210120051740.yph4v7zldvs7szdz@vireshk-i7>
+In-Reply-To: <20210121190117.25235-1-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21-01-21, 22:01, Dmitry Osipenko wrote:
+> Add common helper which initializes OPP table for Tegra SoC core devices.
+> 
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> [tested on some other non-upstreamed-yet T20/30/114 devices as well]
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+> 
+> Changelog:
+> 
+> v3: - This patch is factored out from [1] to ease merging of the patches
+>       that will use the new helper. The goal is to get this new helper
+>       into 5.12, this should remove dependency on this patch for a several
+>       patchsets of a different subsystems (DRM, media, memory, etc) that
+>       will target 5.13.
+> 
+>       @Thierry/Jon, please review and apply this patch for 5.12!
 
---RpqchZ26BWispMcB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is not how stuff works in kernel Dmitry, every commit in the
+kernel tree should build(at least)/boot fine. Your patch can only be
+applied once your base tree has all the patches on which your work is
+based of, otherwise this will lead to build failure (stuff like git
+bisect breaks with that). It would be better if you take this patch in
+5.13, or after 5.12-rc2 once all other stuff lands.
 
-On Wed, Jan 20, 2021 at 10:47:40AM +0530, Viresh Kumar wrote:
-> +David.
->=20
-> On 19-01-21, 11:12, Frank Rowand wrote:
-> > On 1/12/21 2:28 AM, Viresh Kumar wrote:
-> > > We will start building overlays for platforms soon in the kernel and
-> > > would need fdtoverlay tool going forward. Lets start fetching and
-> > > building it.
-> > >=20
-> > > While at it, also remove fdtdump.c file, which isn't used by the kern=
-el.
-> > >=20
-> > > V4:
-> > > - Don't fetch and build fdtdump.c
-> > > - Remove fdtdump.c
-> > >=20
-> > > Viresh Kumar (3):
-> > >   scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
-> > >   scripts: dtc: Build fdtoverlay tool
-> > >   scripts: dtc: Remove the unused fdtdump.c file
-> > >=20
-> > >  scripts/dtc/Makefile             |   6 +-
-> > >  scripts/dtc/fdtdump.c            | 163 -----------------------------=
---
-> > >  scripts/dtc/update-dtc-source.sh |   6 +-
-> > >  3 files changed, 8 insertions(+), 167 deletions(-)
-> > >  delete mode 100644 scripts/dtc/fdtdump.c
-> > >=20
-> >=20
-> > My first inclination was to accept fdtoverlay, as is, from the upstream
-> > project.
-> >=20
-> > But my experiences debugging use of fdtoverlay against the existing
-> > unittest overlay files has me very wary of accepting fdtoverlay in
-> > it's current form.
-> >=20
-> > As an exmple, adding an overlay that fails to reply results in the
-> > following build messages:
-> >=20
-> >    linux--5.11-rc> make zImage
-> >    make[1]: Entering directory '/local/frowand_nobackup/src/git_linus/b=
-uild/dragon_linus_5.11-rc'
-> >      GEN     Makefile
-> >      CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scrip=
-ts/checksyscalls.sh
-> >      CALL    /local/frowand_nobackup/src/git_linus/linux--5.11-rc/scrip=
-ts/atomic/check-atomics.sh
-> >      CHK     include/generated/compile.h
-> >      FDTOVERLAY drivers/of/unittest-data/static_test.dtb
-> >=20
-> >    Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTF=
-OUND
-> >    make[4]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/d=
-rivers/of/unittest-data/Makefile:96: drivers/of/unittest-data/static_test.d=
-tb] Error 1
-> >    make[3]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/s=
-cripts/Makefile.build:496: drivers/of/unittest-data] Error 2
-> >    make[2]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/s=
-cripts/Makefile.build:496: drivers/of] Error 2
-> >    make[1]: *** [/local/frowand_nobackup/src/git_linus/linux--5.11-rc/M=
-akefile:1805: drivers] Error 2
-> >    make[1]: Leaving directory '/local/frowand_nobackup/src/git_linus/bu=
-ild/dragon_linus_5.11-rc'
-> >    make: *** [Makefile:185: __sub-make] Error 2
-> >=20
-> >=20
-> > The specific error message (copied from above) is:
-> >=20
-> >    Failed to apply 'drivers/of/unittest-data/overlay.dtb': FDT_ERR_NOTF=
-OUND
-> >=20
-> > which is cryptic and does not even point to the location in the overlay=
- that
-> > is problematic.  If you look at the source of fdtoverlay / libfdt, you =
-will
-> > find that FDT_ERR_NOTFOUND may be generated in one of many places.
-> >=20
-> > I do _not_ want to do a full review of fdtoverlay, but I think that it =
-is
-> > reasonable to request enhancing fdtoverlay in the parent project to gen=
-erate
-> > usable error messages before enabling fdtoverlay in the Linux kernel tr=
-ee.
-
-That's... actually much harder than it sounds.  fdtoverlay is
-basically a trivial wrapper around the fdt_overlay_apply() function in
-libfdt.  Matching the conventions of the rest of the library, really
-it's only way to report errors is a single error code.
-
-Returning richer errors is not an easy problem in a C library,
-especially one designed to be usable in embedded systems, without an
-allocator or much else available.
-
-Of course it would be possible to write a friendly command line tool
-specifically for applying overlays, which could give better errors.
-fdtoverlay as it stands isn't really that - it was pretty much written
-just to invoke fdt_overlay_apply() in testcases.
-
-> > fdtoverlay in it's current form adds a potential maintenance burden to =
-me
-> > (as the overlay maintainer).  I now have the experience of how difficul=
-t it
-> > was to debug the use of fdtoverlay in the context of the proposed patch=
- to
-> > use it with the devicetree unittest overlay .dtb files.
-> >=20
-> > -Frank
->=20
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---RpqchZ26BWispMcB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmAKcg8ACgkQbDjKyiDZ
-s5K7OQ/+IyVyWMa/f4/HD38/TgC7EzN+DMeEtHZK8A1z93dhGsJ2GTyOkU0Cx1yI
-PsrLdCR5lxoo3zJkMys+Qe0gvPvfM++K3AQZ7UD70GmIgfE24RpbwUbbiZLJHTOR
-e/bjllZjyc2PNcWjgbJNhCOop9uwg+Ff5iBfj/Opk4Kmms5U3ng5utRhXSf3y9yq
-hUXQC1B3u3/C20qKAIM3DqAaLqChkK2BqQDm8dWQgcnWln3LtCrVUjyH2N+g3Pl3
-8P8RofdUKJC5GhyMlPyZaFVsOZqp07K47A6nmzFyk7LuH8MnsJLpCsCtrO7hbL0S
-t3LhqNd+EjsT2+xGNfSDTmi1gQwgpD5DHHGhcuXkr7NxcdbWbaLj+OMeuf44/c2q
-q4h+ucL/Fc0gRSdme/xMcHSM/mPcHa20kaHrt9a6z/XKu5HnHka14fmMV4DssCqX
-gIITEXmtIfxAXOhH3C0lTyWDxzw5Y/ez+KckKkDF25M/HL8t0WDJPa7MFQmGAnvl
-f/GP9oFDakGtTtNcUXpXTfq4pKwPrDRQNq4teZKrjzjthZNoZYwqb+p6Rwn24NYb
-jnIw9Xr7JVjR5iXoG2GL5+HhpLD9bouhdurfZMi9zeSU09UXuhze6wJZ0NdSuFqj
-ngGc6yHLqoPfNCsHBKfhDkBXEh5WLiHsNqtZKs+xo3ZbehNWQhc=
-=NJeB
------END PGP SIGNATURE-----
-
---RpqchZ26BWispMcB--
+-- 
+viresh
