@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCA62FF9FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:31:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03CB2FFA00
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 02:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbhAVBan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 21 Jan 2021 20:30:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbhAVBaf (ORCPT
+        id S1726166AbhAVBfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 21 Jan 2021 20:35:09 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:42205 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725275AbhAVBfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:30:35 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8491C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:29:52 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id o20so2671873pfu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 21 Jan 2021 17:29:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xevnePlqkoJPc/gVx/RFwj12UYNRMR5SpPrBczxYlwU=;
-        b=FAaMN6AyqXOw4wBmmhNtwxoT6KGu6JihNZn+M+CLJmuNa/lpE8D88XnxfKOLemwyHz
-         TI5aKcgt1SVzfkXaJs/3nWef0FXiHqTH70dPrea3jrhHlNnnI5380+pLqgQN+d8AFjGz
-         ZyIHY70PZX052b4pCrh19ltUyBOszpEr5+ocfkRMZ/mV1a6Cx2MyXMG1wDEFkfm2rLvn
-         8LsP51l5ke7HdGwWcRlanQ2FPrAPNyt1E2l664oclu4QV/nAhkkJBkVav18vjoZa4jk9
-         dXZNVYxEWXhgxwuZrbF7yZIlGYcqVVbkbQg0J3Ck36wlk07OaYx+GO5Ry5J0kB7ngJ5g
-         XQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xevnePlqkoJPc/gVx/RFwj12UYNRMR5SpPrBczxYlwU=;
-        b=AEj88+c/+jsYQ2wSqie8CReOvp3/SEZwVJH7qoZCNONxh754RrhBssT9CYo+tW5jLJ
-         poTiF4KA7aHnffXB5bgniB1YVQNgy2bmxKhrN6CKfx1tbG+J2kXy4At2z2w2W2Ap2r+0
-         lF7PgX00JOW2miQBzdxW8NPGZURTKDNq8yybVmi2qMBLLR/0XJa2DNw4G6WJmjQQq9yQ
-         kxsBULrgfGqY0HDXSqB6Z6uw6M4ANrYvrt3/3FjaZjuLNpbQ7szuLsV5NjsVBSaUdnMP
-         BVHgPjKCFgIbFg9TMM+PfwHi503Ro7qfi/lrqJ6CAuDwQnTAbH0YcmXbIZvKU+UBZzI0
-         mMrg==
-X-Gm-Message-State: AOAM530fnkGix7FSIF+SCyV8xE1kIao+U1cZIMXXi0I2a6yDTwOUquDx
-        vOFYvAs9HIDSR+auz9V/GEk/3yiAOvJXhdMzMxgfJg==
-X-Google-Smtp-Source: ABdhPJxkOo4l83vnl92ZQpYM5r+6B7BNXCAyHRCfWpPglFoyIk3UZ0hV69WA4xzR5J+LTI0hFIEBeIyGLnH/r3vR7dM=
-X-Received: by 2002:a62:838d:0:b029:1ba:9b85:2eac with SMTP id
- h135-20020a62838d0000b02901ba9b852eacmr2251542pfe.36.1611278991948; Thu, 21
- Jan 2021 17:29:51 -0800 (PST)
+        Thu, 21 Jan 2021 20:35:04 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id EF2C21834;
+        Thu, 21 Jan 2021 20:33:56 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 21 Jan 2021 20:33:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=W
+        gcBGgOaSIyMT8TligKY0WdxImQrH4d4UDt8M5c2E80=; b=iOfCLLqy7jE+oy9Tm
+        FhfVVQfpKpWcSK5kRV4YW2x3A6HGerEFT6Lm4uCiAsS1p5O1T31cJCcA0w97bu1a
+        03cvxRmRrSKfwXguipyfGGIrp1YlG9B0uZqI4184M4qu5o4iR2oAJ0lI1XNBmTgc
+        ERSRe1OgMM3IKmuTFcHb2Ppd0Jn404LYOx/mjkRYDny7xRt+Atscbujt/b1r0zjj
+        WPpEPXdSKpC6ibr5zkt1FBAPiir1ovgojgDsG253y/FnhXdijk90hwZhgQUkomss
+        qgXmJ5mP7kDgewqIfOIBUStwTna5igjlVOoOrGYMoC99nGJSgV2h8IuSgfBUptl+
+        cTBfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=WgcBGgOaSIyMT8TligKY0WdxImQrH4d4UDt8M5c2E
+        80=; b=He/s5kEOHVPgcWaZuL6C9CEhWl1jI8cXbha1jjRgZzRJ3WyFrj0Y6usCM
+        AhAW8bnScpLo1EQ69fyBXLifIuPqicPB1x7aeqSFRN270OVTixblui1JC/9mKYzP
+        Fu9ghPkNCwOR0BpMyeTJrqAK5OYhDAvxpwVIyT/ZaxKc+qILCIBmkPg+rNOjHPUJ
+        /sbbNaMpPzhFjhb9vVRC5DNcFW4D+0w3oaEpRlQP8ZHBD2scGvcCqeJyCSYwDCO2
+        Lf0Qs4prMo3tFQvWOsaRfCbvVTca9H1RHqFuaaRnb0OpCYVQGACE4bZ1ZifsXsU4
+        +egMyZw82O4RsFoBLUJmfPlsvNnjg==
+X-ME-Sender: <xms:gysKYP3aAfG0q6b0zB9_cZbIXVocCZzmKZtrozwNhkvB--LBTHdCMA>
+    <xme:gysKYOGnu9e6BD2vQIVY23fcLr9Ki-71Qr_f-sfbKIPI8_82nncjfu-HNJQW1pqba
+    zKmF3qN5g6oTQ8sjg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehgdefiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvfhfhuffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpefurghmuhgv
+    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvvddttdefhefgieektdeuvdduhfeileevieeujeehuefggedvueei
+    tdduleffieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeejtddrudefhe
+    drudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:gysKYP74hkzMl0CGu0a3FwwX5FQKwBN80obSbH-6FdsKkHZtudmG0g>
+    <xmx:gysKYE2kN-yYa-1GnUHbXYyeqdPEJw6QevJdTM585aP1b5BgzjFN5w>
+    <xmx:gysKYCHnjQqIgLzbKcziJtl1_McZVPeWHAOFP1EfEmdjpjJCC4NSYw>
+    <xmx:hCsKYF3sUqLRBTmAIINE7sazIHMmBPl9sf0ySDYQktS1Ik1BPSMQOQ>
+Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 01AEE1080059;
+        Thu, 21 Jan 2021 20:33:54 -0500 (EST)
+To:     Marc Zyngier <maz@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>
+Cc:     Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20210118055040.21910-1-samuel@sholland.org>
+ <161126112131.135928.7664552660827790510.b4-ty@kernel.org>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v5 00/10] sunxi: Support IRQ wakeup from deep sleep
+Message-ID: <08e9bc97-c18d-9b8f-28be-3892d77730bf@sholland.org>
+Date:   Thu, 21 Jan 2021 19:33:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20210116094357.3620352-1-morbo@google.com> <20210121082451.2240540-1-morbo@google.com>
-In-Reply-To: <20210121082451.2240540-1-morbo@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 21 Jan 2021 17:29:40 -0800
-Message-ID: <CAKwvOdn+tEFcFaDPmbubigf2gqoc+NT=uwvoqNi3-enQjHqTRw@mail.gmail.com>
-Subject: Re: [PATCH v6] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161126112131.135928.7664552660827790510.b4-ty@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:24 AM Bill Wendling <morbo@google.com> wrote:
->
-> From: Sami Tolvanen <samitolvanen@google.com>
->
-> Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> profile, the kernel is instrumented with PGO counters, a representative
-> workload is run, and the raw profile data is collected from
-> /sys/kernel/debug/pgo/profraw.
->
-> The raw profile data must be processed by clang's "llvm-profdata" tool
-> before it can be used during recompilation:
->
->   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
->   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
->
-> Multiple raw profiles may be merged during this step.
->
-> The data can now be used by the compiler:
->
->   $ make LLVM=1 KCFLAGS=-fprofile-use=vmlinux.profdata ...
->
-> This initial submission is restricted to x86, as that's the platform we
-> know works. This restriction can be lifted once other platforms have
-> been verified to work with PGO.
->
-> Note that this method of profiling the kernel is clang-native, unlike
-> the clang support in kernel/gcov.
->
-> [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
->
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Co-developed-by: Bill Wendling <morbo@google.com>
-> Signed-off-by: Bill Wendling <morbo@google.com>
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> v2: - Added "__llvm_profile_instrument_memop" based on Nathan Chancellor's
->       testing.
->     - Corrected documentation, re PGO flags when using LTO, based on Fangrui
->       Song's comments.
-> v3: - Added change log section based on Sedat Dilek's comments.
-> v4: - Remove non-x86 Makfile changes and se "hweight64" instead of using our
->       own popcount implementation, based on Nick Desaulniers's comment.
-> v5: - Correct padding calculation, discovered by Nathan Chancellor.
-> v6: - Add better documentation about the locking scheme and other things.
->     - Rename macros to better match the same macros in LLVM's source code.
+On 1/21/21 2:35 PM, Marc Zyngier wrote:
+> On Sun, 17 Jan 2021 23:50:30 -0600, Samuel Holland wrote:
+>> Allwinner sun6i/sun8i/sun50i SoCs (A31 and newer) have two interrupt
+>> controllers: GIC and R_INTC. GIC does not support wakeup. R_INTC handles
+>> the external NMI pin, and provides 32+ IRQs to the ARISC. The first 16
+>> of these correspond 1:1 to a block of GIC IRQs starting with the NMI.
+>> The last 13-16 multiplex the first (up to) 128 GIC SPIs.
+>>
+>> This series replaces the existing chained irqchip driver that could only
+>> control the NMI, with a stacked irqchip driver that also provides wakeup
+>> capability for those multiplexed SPI IRQs. The idea is to preconfigure
+>> the ARISC's IRQ controller, and then the ARISC firmware knows to wake up
+>> as soon as it receives an IRQ. It can also decide how deep it can
+>> suspend based on the enabled wakeup IRQs.
+>>
+>> [...]
+> 
+> Applied to irq/irqchip-5.12, thanks!
+> 
+> [01/10] dt-bindings: irq: sun6i-r: Split the binding from sun7i-nmi
+>         commit: ad6b47cdef760410311f41876b21eb0c6fda4717
+> [02/10] dt-bindings: irq: sun6i-r: Add a compatible for the H3
+>         commit: 6436eb4417094ea3308b33d8392fc02a1068dc78
+> [03/10] irqchip/sun6i-r: Use a stacked irqchip driver
+>         commit: 4e34614636b31747b190488240a95647c227021f
+> [04/10] irqchip/sun6i-r: Add wakeup support
+>         commit: 7ab365f6cd6de1e2b0cb1e1e3873dbf68e6f1003
+> 
+> Please route the dts patches via the soc tree. Also, I had to
+> manually fix the first patch as it wouldn't apply on top of
+> 5.11-rc4 (which tree has it been diffed against?). Please
+> check that the resolution is correct.
 
-This is a major win for readability and comparing it against LLVM's
-compiler-rt implementation! Thank you for doing that.  It looks like
-it addresses most of my concerns.  I'm not against following up on
-little details in subsequent patches on top.  However Sedat is right
-about the small issue that v6 doesn't compile.  If you were to roll
-his fixup into a v7 I'd be happy to sign off on it at this point.
--- 
-Thanks,
-~Nick Desaulniers
+This series was based on sunxi/for-next, which contains commit
+752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation
+for the V3s NMI")[1].
+
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux.git/commit/?h=sunxi/for-next&id=752b0aac99c7e0b179875cdfa102d378ccb794a2
+
+> Cheers,
+> 
+> 	M.
+> 
+
