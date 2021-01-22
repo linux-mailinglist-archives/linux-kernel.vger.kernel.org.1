@@ -2,408 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5CD300AA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A36B300AD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 19:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729484AbhAVR0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S1728965AbhAVRYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728911AbhAVRM5 (ORCPT
+        with ESMTP id S1729826AbhAVRNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 12:12:57 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68121C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 09:12:17 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id r189so6726567oih.4
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 09:12:17 -0800 (PST)
+        Fri, 22 Jan 2021 12:13:36 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B0CC061793;
+        Fri, 22 Jan 2021 09:12:52 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id n6so7373197edt.10;
+        Fri, 22 Jan 2021 09:12:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hzsoQpB731t5m6gkhI0N9zWunnu+kCmRxUePB+FtpOI=;
-        b=Yx700cyo/8decCJdounTtQp3Zpfypbq5L8484mcY0rIX7DoNV1A/GoLbMii6+ZrD7r
-         zgxrCqbTgUrQKN4l56Hetze76SxhAtkTou4KqIdBZvdIQDmmdnkIyOGMxeej3XRuGgXG
-         /kiGQ5bG3qOwuZpJqL2J2wPtMW3yGw2U/z25dIMiCWwqrPWU0K/7quiORw3OGWo5mAMe
-         PnPYkzWEeHku/3cBbwlj9ICMwRvCDPINCZG3DirZPg/qoWa+zEg8HPSMk8Nx86fRsm0M
-         OO7g3UeAOrVr/0CBtpcFeW3OOnb7qsYaHfR8vwCzBxPtuMYbvYsEOwlzmUip16rdtQLu
-         GocQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=roMb/tyW1M9NQnpXqSRx9W00sUX6gkBYwKxG+CPcXzI=;
+        b=fLRYxC7AMQdGJXu08Ng+pctI1fQayyxI5Mz88cRgUvTT/OSddQ/AcIiNEH9kw33TK/
+         +UfJwsrO5GROpkmcYFqrBFeu+8xbk9a0lE590S+wqWy0ChKCnv3u/Ewvw/IdjYmm7dpj
+         9HNXAamxY3/Q3fK3qIW0wddC/Xq0omP6MDZNhkcIwWaLaSt+Pkb4s6n4YSdRW7mhfImo
+         30LZS8vS+Ar59oX9n4anGZYzdDSdaQiMsN0yprVzaYQuHrGc/VEebcmVMNAhqrEtKRsi
+         amjz1dgF6fo8UbyCN35YZwIq/I7w3kN5IKib6y7yJStE28dqo0OK0QwkdySp3CrhfsFn
+         5EZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hzsoQpB731t5m6gkhI0N9zWunnu+kCmRxUePB+FtpOI=;
-        b=LZycyOJ7mek3o0TRCWVZlvTxT+o8r/mIZSvIgUwoNGdA5gyQSnwXhejpvfNtAMj5qJ
-         ft9PXQ1VxP+PHDiB0KqVJsv71mMQ74HcYFYu+FLY/0OBi9v7+9hBwAk3jQjdh5oEpus5
-         H6ZgXnzUWj9uWkki7YH+00FSMlbzUPlazgwhTMD62hP5/IyEtUMuDtIqVGfzRxxkpfYI
-         HgzLpae1Mlg1rdBr/eVM3eRI9oQ+dnNUANilWut5Y90wP4YgMxKuBQGhzHWBDY71kFM3
-         UFTxpMEgSIv/sFpQdU28NEeOxHT19scBRJX15bNuBR0xxH386lkPkf9nSu8OeKhcoldY
-         CyQA==
-X-Gm-Message-State: AOAM533X76rpNCNVHkyJowBaVMPU/6QNPwh57sUt/9QGJ3AxczgJ1frX
-        HEqH0yVDAuuSbbvE5eDl96/ZWQ==
-X-Google-Smtp-Source: ABdhPJzfFiRh468S0u8ErTjjLAnYpQA22g2WrjE36ZwkfWSARXbCrdvFNszueHL7TfxMZExV1j6UPw==
-X-Received: by 2002:aca:4d93:: with SMTP id a141mr3814846oib.107.1611335536630;
-        Fri, 22 Jan 2021 09:12:16 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c18sm470854oov.20.2021.01.22.09.12.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 09:12:16 -0800 (PST)
-Date:   Fri, 22 Jan 2021 11:12:14 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
-        jackp@codeaurora.org
-Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
- requirements
-Message-ID: <YAsHbj/mITeiY5Cq@builder.lan>
-References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
- <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=roMb/tyW1M9NQnpXqSRx9W00sUX6gkBYwKxG+CPcXzI=;
+        b=k+tT3/L4NyLBrOrlQUikEEfGqPbGOiOQxDN05xfDZlL2YaAiqGFv+Rq9a6yGDs4Z4d
+         kyDM4t5aV0lOOUqtl9PUxuPYwx3rBgSa0R+IO2Pr8cDVKWQz2M2UtsSgd4rDmvoAAGur
+         /GlJATFURituWS+EZzu9/bIO+srLQpf85cNoSyhOjoyjpyOB9RrDuMZLQozg1hmhEyPI
+         CNmJFf29qbv99P+CQxe/z2T6LRM49iki6jp5N3THHQ5hXevmOwjQP+ktMXri8OfLlQWA
+         JWcM/B7RCVu5FFeEzXx/PdHKLenyPsWqZyjWcP99XLl+SJwvw68de/hRQ6s5E1R1sdIh
+         bnMQ==
+X-Gm-Message-State: AOAM533bO3p+Xj7nLdQ6AVLuSKMMZkkueh4KNXPkcbKwrTSD9zEr0gGr
+        /YJr6SfYgT4PSFLsCc4lxu3g4DArE1s=
+X-Google-Smtp-Source: ABdhPJwRQf20pEeRaLSU0zk5VFjq9xuFDxAISiKNGEbg4TZWmEW3jx8FO8sHyg3W/Zz7tgjMVG8XnQ==
+X-Received: by 2002:aa7:d98a:: with SMTP id u10mr3972073eds.275.1611335571524;
+        Fri, 22 Jan 2021 09:12:51 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id t21sm5927429edv.82.2021.01.22.09.12.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Jan 2021 09:12:51 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: rockchip: fix ranges property format for rk3399 pcie node
+Date:   Fri, 22 Jan 2021 18:12:43 +0100
+Message-Id: <20210122171243.16138-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
+A test with the command below gives for example this error:
+/arch/arm64/boot/dts/rockchip/rk3399-evb.dt.yaml: pcie@f8000000:
+ranges: 'oneOf' conditional failed, one must be fixed:
 
-> Some devices have USB compositions which may require multiple endpoints
-> that support EP bursting.  HW defined TX FIFO sizes may not always be
-> sufficient for these compositions.  By utilizing flexible TX FIFO
-> allocation, this allows for endpoints to request the required FIFO depth to
-> achieve higher bandwidth.  With some higher bMaxBurst configurations, using
-> a larger TX FIFO size results in better TX throughput.
-> 
-> By introducing the check_config() callback, the resizing logic can fetch
-> the maximum number of endpoints used in the USB composition (can contain
-> multiple configurations), which helps ensure that the resizing logic can
-> fulfill the configuration(s), or return an error to the gadget layer
-> otherwise during bind time.
-> 
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> ---
->  drivers/usb/dwc3/core.c   |   2 +
->  drivers/usb/dwc3/core.h   |   8 ++
->  drivers/usb/dwc3/ep0.c    |   2 +
->  drivers/usb/dwc3/gadget.c | 194 ++++++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 206 insertions(+)
-> 
-> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> index 6969196..e7fa6af 100644
-> --- a/drivers/usb/dwc3/core.c
-> +++ b/drivers/usb/dwc3/core.c
-> @@ -1284,6 +1284,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->  				&tx_thr_num_pkt_prd);
->  	device_property_read_u8(dev, "snps,tx-max-burst-prd",
->  				&tx_max_burst_prd);
-> +	dwc->needs_fifo_resize = device_property_read_bool(dev,
-> +							   "tx-fifo-resize");
+The pcie ranges property is an array. The dt-check expects that
+each array item is wrapped with angle brackets, so fix that ranges
+property format for the rk3399 pcie node.
 
-Under what circumstances should we specify this? And in particular are
-there scenarios (in the Qualcomm platforms) where this must not be set?
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=~/.local/lib/python3.5/site-packages/dtschema/
+schemas/pci/pci-bus.yaml
 
-In particular, the composition can be changed in runtime, so should we
-set this for all Qualcomm platforms?
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And if that's the case, can we not just set it from the qcom driver?
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 15f8b212c..28459d194 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -259,8 +259,8 @@
+ 		       <&pcie_phy 2>, <&pcie_phy 3>;
+ 		phy-names = "pcie-phy-0", "pcie-phy-1",
+ 			    "pcie-phy-2", "pcie-phy-3";
+-		ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000
+-			  0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0 0x100000>;
++		ranges = <0x83000000 0x0 0xfa000000 0x0 0xfa000000 0x0 0x1e00000>,
++			 <0x81000000 0x0 0xfbe00000 0x0 0xfbe00000 0x0 0x100000>;
+ 		resets = <&cru SRST_PCIE_CORE>, <&cru SRST_PCIE_MGMT>,
+ 			 <&cru SRST_PCIE_MGMT_STICKY>, <&cru SRST_PCIE_PIPE>,
+ 			 <&cru SRST_PCIE_PM>, <&cru SRST_P_PCIE>,
+-- 
+2.11.0
 
-Regards,
-Bjorn
-
->  
->  	dwc->disable_scramble_quirk = device_property_read_bool(dev,
->  				"snps,disable_scramble_quirk");
-> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-> index eec1cf4..983b2fd4 100644
-> --- a/drivers/usb/dwc3/core.h
-> +++ b/drivers/usb/dwc3/core.h
-> @@ -1223,6 +1223,7 @@ struct dwc3 {
->  	unsigned		is_utmi_l1_suspend:1;
->  	unsigned		is_fpga:1;
->  	unsigned		pending_events:1;
-> +	unsigned		needs_fifo_resize:1;
->  	unsigned		pullups_connected:1;
->  	unsigned		setup_packet_pending:1;
->  	unsigned		three_stage_setup:1;
-> @@ -1257,6 +1258,10 @@ struct dwc3 {
->  	unsigned		dis_split_quirk:1;
->  
->  	u16			imod_interval;
-> +
-> +	int			max_cfg_eps;
-> +	int			last_fifo_depth;
-> +	int			num_ep_resized;
->  };
->  
->  #define INCRX_BURST_MODE 0
-> @@ -1471,6 +1476,7 @@ int dwc3_send_gadget_ep_cmd(struct dwc3_ep *dep, unsigned int cmd,
->  		struct dwc3_gadget_ep_cmd_params *params);
->  int dwc3_send_gadget_generic_command(struct dwc3 *dwc, unsigned int cmd,
->  		u32 param);
-> +void dwc3_gadget_clear_tx_fifos(struct dwc3 *dwc);
->  #else
->  static inline int dwc3_gadget_init(struct dwc3 *dwc)
->  { return 0; }
-> @@ -1490,6 +1496,8 @@ static inline int dwc3_send_gadget_ep_cmd(struct dwc3_ep *dep, unsigned int cmd,
->  static inline int dwc3_send_gadget_generic_command(struct dwc3 *dwc,
->  		int cmd, u32 param)
->  { return 0; }
-> +static inline void dwc3_gadget_clear_tx_fifos(struct dwc3 *dwc)
-> +{ }
->  #endif
->  
->  #if IS_ENABLED(CONFIG_USB_DWC3_DUAL_ROLE)
-> diff --git a/drivers/usb/dwc3/ep0.c b/drivers/usb/dwc3/ep0.c
-> index 8b668ef..4f216bd 100644
-> --- a/drivers/usb/dwc3/ep0.c
-> +++ b/drivers/usb/dwc3/ep0.c
-> @@ -616,6 +616,8 @@ static int dwc3_ep0_set_config(struct dwc3 *dwc, struct usb_ctrlrequest *ctrl)
->  		return -EINVAL;
->  
->  	case USB_STATE_ADDRESS:
-> +		dwc3_gadget_clear_tx_fifos(dwc);
-> +
->  		ret = dwc3_ep0_delegate_req(dwc, ctrl);
->  		/* if the cfg matches and the cfg is non zero */
->  		if (cfg && (!ret || (ret == USB_GADGET_DELAYED_STATUS))) {
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 86f257f..26f9d64 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -615,6 +615,161 @@ static int dwc3_gadget_set_ep_config(struct dwc3_ep *dep, unsigned int action)
->  static void dwc3_stop_active_transfer(struct dwc3_ep *dep, bool force,
->  		bool interrupt);
->  
-> +static int dwc3_gadget_calc_tx_fifo_size(struct dwc3 *dwc, int mult)
-> +{
-> +	int max_packet = 1024;
-> +	int fifo_size;
-> +	int mdwidth;
-> +
-> +	mdwidth = DWC3_MDWIDTH(dwc->hwparams.hwparams0);
-> +	/* MDWIDTH is represented in bits, we need it in bytes */
-> +	mdwidth >>= 3;
-> +
-> +	fifo_size = mult * ((max_packet + mdwidth) / mdwidth) + 1;
-> +	return fifo_size;
-> +}
-> +
-> +void dwc3_gadget_clear_tx_fifos(struct dwc3 *dwc)
-> +{
-> +	struct dwc3_ep *dep;
-> +	int fifo_depth;
-> +	int size;
-> +	int num;
-> +
-> +	if (!dwc->needs_fifo_resize)
-> +		return;
-> +
-> +	/* Read ep0IN related TXFIFO size */
-> +	dep = dwc->eps[1];
-> +	size = dwc3_readl(dwc->regs, DWC3_GTXFIFOSIZ(0));
-> +	if (DWC3_IP_IS(DWC31))
-> +		fifo_depth = DWC31_GTXFIFOSIZ_TXFDEP(size);
-> +	else
-> +		fifo_depth = DWC3_GTXFIFOSIZ_TXFDEP(size);
-> +
-> +	dwc->last_fifo_depth = fifo_depth;
-> +	/* Clear existing TXFIFO for all IN eps except ep0 */
-> +	for (num = 3; num < min_t(int, dwc->num_eps, DWC3_ENDPOINTS_NUM);
-> +	     num += 2) {
-> +		dep = dwc->eps[num];
-> +		/* Don't change TXFRAMNUM on usb31 version */
-> +		size = DWC3_IP_IS(DWC31) ?
-> +			dwc3_readl(dwc->regs, DWC3_GTXFIFOSIZ(num >> 1)) &
-> +				   DWC31_GTXFIFOSIZ_TXFRAMNUM : 0;
-> +
-> +		dwc3_writel(dwc->regs, DWC3_GTXFIFOSIZ(num >> 1), size);
-> +	}
-> +	dwc->num_ep_resized = 0;
-> +}
-> +
-> +/*
-> + * dwc3_gadget_resize_tx_fifos - reallocate fifo spaces for current use-case
-> + * @dwc: pointer to our context structure
-> + *
-> + * This function will a best effort FIFO allocation in order
-> + * to improve FIFO usage and throughput, while still allowing
-> + * us to enable as many endpoints as possible.
-> + *
-> + * Keep in mind that this operation will be highly dependent
-> + * on the configured size for RAM1 - which contains TxFifo -,
-> + * the amount of endpoints enabled on coreConsultant tool, and
-> + * the width of the Master Bus.
-> + *
-> + * In general, FIFO depths are represented with the following equation:
-> + *
-> + * fifo_size = mult * ((max_packet + mdwidth)/mdwidth + 1) + 1
-> + *
-> + * Conversions can be done to the equation to derive the number of packets that
-> + * will fit to a particular FIFO size value.
-> + */
-> +static int dwc3_gadget_resize_tx_fifos(struct dwc3_ep *dep)
-> +{
-> +	struct dwc3 *dwc = dep->dwc;
-> +	int fifo_0_start;
-> +	int ram1_depth;
-> +	int fifo_size;
-> +	int min_depth;
-> +	int num_in_ep;
-> +	int remaining;
-> +	int mult = 1;
-> +	int fifo;
-> +	int tmp;
-> +
-> +	if (!dwc->needs_fifo_resize)
-> +		return 0;
-> +
-> +	/* resize IN endpoints except ep0 */
-> +	if (!usb_endpoint_dir_in(dep->endpoint.desc) || dep->number <= 1)
-> +		return 0;
-> +
-> +	ram1_depth = DWC3_RAM1_DEPTH(dwc->hwparams.hwparams7);
-> +
-> +	if ((dep->endpoint.maxburst > 1 &&
-> +	     usb_endpoint_xfer_bulk(dep->endpoint.desc)) ||
-> +	    usb_endpoint_xfer_isoc(dep->endpoint.desc))
-> +		mult = 3;
-> +
-> +	if (dep->endpoint.maxburst > 6 &&
-> +	    usb_endpoint_xfer_bulk(dep->endpoint.desc) && DWC3_IP_IS(DWC31))
-> +		mult = 6;
-> +
-> +	/* FIFO size for a single buffer */
-> +	fifo = dwc3_gadget_calc_tx_fifo_size(dwc, 1);
-> +
-> +	/* Calculate the number of remaining EPs w/o any FIFO */
-> +	num_in_ep = dwc->max_cfg_eps;
-> +	num_in_ep -= dwc->num_ep_resized;
-> +
-> +	/* Reserve at least one FIFO for the number of IN EPs */
-> +	min_depth = num_in_ep * (fifo + 1);
-> +	remaining = ram1_depth - min_depth - dwc->last_fifo_depth;
-> +
-> +	/*
-> +	 * We've already reserved 1 FIFO per EP, so check what we can fit in
-> +	 * addition to it.  If there is not enough remaining space, allocate
-> +	 * all the remaining space to the EP.
-> +	 */
-> +	fifo_size = (mult - 1) * fifo;
-> +	if (remaining < fifo_size) {
-> +		if (remaining > 0)
-> +			fifo_size = remaining;
-> +		else
-> +			fifo_size = 0;
-> +	}
-> +
-> +	fifo_size += fifo;
-> +	/* Last increment according to the TX FIFO size equation */
-> +	fifo_size++;
-> +
-> +	/* Check if TXFIFOs start at non-zero addr */
-> +	tmp = dwc3_readl(dwc->regs, DWC3_GTXFIFOSIZ(0));
-> +	fifo_0_start = DWC3_GTXFIFOSIZ_TXFSTADDR(tmp);
-> +
-> +	fifo_size |= (fifo_0_start + (dwc->last_fifo_depth << 16));
-> +	if (DWC3_IP_IS(DWC31))
-> +		dwc->last_fifo_depth += DWC31_GTXFIFOSIZ_TXFDEP(fifo_size);
-> +	else
-> +		dwc->last_fifo_depth += DWC3_GTXFIFOSIZ_TXFDEP(fifo_size);
-> +
-> +	/* Check fifo size allocation doesn't exceed available RAM size. */
-> +	if (dwc->last_fifo_depth >= ram1_depth) {
-> +		dev_err(dwc->dev, "Fifosize(%d) > RAM size(%d) %s depth:%d\n",
-> +			dwc->last_fifo_depth, ram1_depth,
-> +			dep->endpoint.name, fifo_size);
-> +		if (DWC3_IP_IS(DWC31))
-> +			fifo_size = DWC31_GTXFIFOSIZ_TXFDEP(fifo_size);
-> +		else
-> +			fifo_size = DWC3_GTXFIFOSIZ_TXFDEP(fifo_size);
-> +		dwc->last_fifo_depth -= fifo_size;
-> +		return -ENOMEM;
-> +	}
-> +
-> +	dwc3_writel(dwc->regs, DWC3_GTXFIFOSIZ(dep->number >> 1), fifo_size);
-> +	dwc->num_ep_resized++;
-> +
-> +	return 0;
-> +}
-> +
->  /**
->   * __dwc3_gadget_ep_enable - initializes a hw endpoint
->   * @dep: endpoint to be initialized
-> @@ -632,6 +787,10 @@ static int __dwc3_gadget_ep_enable(struct dwc3_ep *dep, unsigned int action)
->  	int			ret;
->  
->  	if (!(dep->flags & DWC3_EP_ENABLED)) {
-> +		ret = dwc3_gadget_resize_tx_fifos(dep);
-> +		if (ret)
-> +			return ret;
-> +
->  		ret = dwc3_gadget_start_config(dep);
->  		if (ret)
->  			return ret;
-> @@ -2418,6 +2577,7 @@ static int dwc3_gadget_stop(struct usb_gadget *g)
->  
->  	spin_lock_irqsave(&dwc->lock, flags);
->  	dwc->gadget_driver	= NULL;
-> +	dwc->max_cfg_eps = 0;
->  	spin_unlock_irqrestore(&dwc->lock, flags);
->  
->  	free_irq(dwc->irq_gadget, dwc->ev_buf);
-> @@ -2485,6 +2645,39 @@ static int dwc3_gadget_vbus_draw(struct usb_gadget *g, unsigned int mA)
->  	return 0;
->  }
->  
-> +static int dwc3_gadget_check_config(struct usb_gadget *g, unsigned long ep_map)
-> +{
-> +	struct dwc3 *dwc = gadget_to_dwc(g);
-> +	unsigned long in_ep_map;
-> +	int fifo_size = 0;
-> +	int ram1_depth;
-> +	int ep_num;
-> +
-> +	if (!dwc->needs_fifo_resize)
-> +		return 0;
-> +
-> +	/* Only interested in the IN endpoints */
-> +	in_ep_map = ep_map >> 16;
-> +	ep_num = hweight_long(in_ep_map);
-> +
-> +	if (ep_num <= dwc->max_cfg_eps)
-> +		return 0;
-> +
-> +	/* Update the max number of eps in the composition */
-> +	dwc->max_cfg_eps = ep_num;
-> +
-> +	fifo_size = dwc3_gadget_calc_tx_fifo_size(dwc, dwc->max_cfg_eps);
-> +	/* Based on the equation, increment by one for every ep */
-> +	fifo_size += dwc->max_cfg_eps;
-> +
-> +	/* Check if we can fit a single fifo per endpoint */
-> +	ram1_depth = DWC3_RAM1_DEPTH(dwc->hwparams.hwparams7);
-> +	if (fifo_size > ram1_depth)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->  static const struct usb_gadget_ops dwc3_gadget_ops = {
->  	.get_frame		= dwc3_gadget_get_frame,
->  	.wakeup			= dwc3_gadget_wakeup,
-> @@ -2495,6 +2688,7 @@ static const struct usb_gadget_ops dwc3_gadget_ops = {
->  	.udc_set_speed		= dwc3_gadget_set_speed,
->  	.get_config_params	= dwc3_gadget_config_params,
->  	.vbus_draw		= dwc3_gadget_vbus_draw,
-> +	.check_config		= dwc3_gadget_check_config,
->  };
->  
->  /* -------------------------------------------------------------------------- */
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
