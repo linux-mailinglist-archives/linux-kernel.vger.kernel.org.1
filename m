@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F5030015B
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C7F30015E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbhAVLUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:20:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727722AbhAVLOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:14:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9A752246B;
-        Fri, 22 Jan 2021 11:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611314004;
-        bh=qKaCrMSE3znTlxna118B4y/k0MOaw8ankwk0D2+SXQ8=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=llYcg9itg23JAsDCeIqdGYyxPEo5HgCT4RdQmnUFBA5MVHQ/S/i6pfDgF29sf8JOo
-         e14YJUHO+KVoU/rW8UKt9tZe7mAo5EkNjCLqp42Mp21D+9haLizwcU1Yvi3vz1qh3O
-         oxbMFmiMLL0f0FdcgtAO5Po+1TD0WbL8zIGSC8Ksf2t3003gAIAR13ge0e4JXhFeSX
-         ehSIq6JHblCjuhm0k9dpBaisBIwzI+KcGSK6KDqjcgqj+m0KEmM9VNwuVyyiQWfblw
-         7VG9P8iC2aR2Thdciscfr33/ewYyPLmQv8J2aGIa+X5IhJmHVUuO/cn5D40WdB/z73
-         pwFezGuVl9FqQ==
-Date:   Fri, 22 Jan 2021 12:13:20 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Denis Efremov <efremov@linux.com>, Jens Axboe <axboe@kernel.dk>
-cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Wim Osterholt <wim@djo.tudelft.nl>,
-        Kurt Garloff <kurt@garloff.de>
-Subject: [PATCH] floppy: reintroduce O_NDELAY fix
-In-Reply-To: <nycvar.YFH.7.76.2101211603590.5622@cbobk.fhfr.pm>
-Message-ID: <nycvar.YFH.7.76.2101221209060.5622@cbobk.fhfr.pm>
-References: <20160610230255.GA27770@djo.tudelft.nl> <alpine.LNX.2.00.1606131414420.6874@cbobk.fhfr.pm> <20160614184308.GA6188@djo.tudelft.nl> <alpine.LNX.2.00.1606150906320.6874@cbobk.fhfr.pm> <20160615132040.GZ14480@ZenIV.linux.org.uk>
- <alpine.LNX.2.00.1606151610420.6874@cbobk.fhfr.pm> <20160615224722.GA9545@djo.tudelft.nl> <alpine.LNX.2.00.1606160946000.6874@cbobk.fhfr.pm> <alpine.LNX.2.00.1606301317290.6874@cbobk.fhfr.pm> <9c713fa8-9da1-47b5-0d5d-92f4cd13493a@kernel.dk>
- <nycvar.YFH.7.76.2101191649190.5622@cbobk.fhfr.pm> <5cb57175-7f0b-5536-925d-337241bcda93@linux.com> <nycvar.YFH.7.76.2101211122290.5622@cbobk.fhfr.pm> <nycvar.YFH.7.76.2101211543230.5622@cbobk.fhfr.pm> <e503292b-5f51-eac5-771f-e35991d1084c@linux.com>
- <nycvar.YFH.7.76.2101211603590.5622@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1728075AbhAVLVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:21:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727671AbhAVLRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:17:01 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69FFC0613D6;
+        Fri, 22 Jan 2021 03:16:17 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id c128so3992871wme.2;
+        Fri, 22 Jan 2021 03:16:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=VZLx/PblJd6MezWoeQ4GsUV4rI21p1au0Wz2+FJg3/Q=;
+        b=dTCXUoPDVQAxKr7QSSOZrhclx2dJ9Z4Kx+saJmKVCKm+BejIayWHEFuwdENdfw4TSi
+         gaIDxUuNrftFL71ss4xTKY7E6LqZegNfgu0NqdZCVQUJELOBLFnMJWx5LfWg+3+CUryi
+         30CAXQqGpWTQ6ChI6OuufZ9vrBb3SLyiwKqkLgB74TpT23U9nR6uDYh0EQxhQhb45O+b
+         6qTpiwXTxQBXnYTyV5KYXXXqvyo4hILLKFdZwt/UIjGz7IEqHc9V/pY8DSZql2CwFnfh
+         /sM7V4FZ/Nw5K/nGxAKpQW/owlL4lJg4wT88EGM8OtqDZowpO8qeTqMi+3di0jCtrX8D
+         O/hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=VZLx/PblJd6MezWoeQ4GsUV4rI21p1au0Wz2+FJg3/Q=;
+        b=piI6+pjH5QtRkjWk2wNSfKUXMJx1wkKqNoj5DpUBaNeJpOxXcgl0v6vIOWHxApik5E
+         XPuHTBGf25EzeFFzTHw7zzTmZ0i1nlkd/G/gMRESS5Q6EIdMmPewWysT0KqGYQBpHrFL
+         GMjn3Rjv1+WxJYgX7hWvu2j9vipgJY6Oe2aJVVWSXuiF3C61FJttvxxX5RevgzEVtsid
+         mCoutSaIIfGtkj2VF1czt7yQi3VBLCLs2KSMyUyjn1GbWyUlpGor8pb+YZ5fXHdoP1q2
+         JKXrivtUQiom3e6XynLYeK4oDlDrFypvZs6VZLJjUTKWAvCzdOtQi8+9bPhWADnReZHa
+         YRbg==
+X-Gm-Message-State: AOAM531uSwjnXELFoVbg6rt71BBOHSgHKtW2cijyHFymD6FpbsqyIq9p
+        PVu0y6G8HYTCkX8LwJxwCng=
+X-Google-Smtp-Source: ABdhPJz8/MaE6nni4CXTndtsyWaxV2OGHflQZJxSd+FMQer7kgkXcf9NtRaiKp+CYyEttSwZESC6aA==
+X-Received: by 2002:a7b:cbd5:: with SMTP id n21mr3600591wmi.5.1611314176509;
+        Fri, 22 Jan 2021 03:16:16 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d97:4900:808e:47fd:6ea4:7fa2])
+        by smtp.gmail.com with ESMTPSA id x128sm11556111wmb.29.2021.01.22.03.16.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 03:16:15 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     Alasdair Kergon <agk@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH for device-mapper/for-next] dm integrity: follow ReST formatting
+Date:   Fri, 22 Jan 2021 12:16:06 +0100
+Message-Id: <20210122111606.24999-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+Commit 61b8b2a834bf ("dm integrity: introduce the "fix_hmac" argument")
+adds some new part to dm-integrity.rst, but this causes make htmldocs warn:
 
-This issue was originally fixed in 09954bad4 ("floppy: refactor open() 
-flags handling").
+  dm-integrity.rst:192: WARNING: Unexpected indentation.
+  dm-integrity.rst:193: WARNING: Block quote ends without a blank line; \
+    unexpected unindent.
 
-The fix as a side-effect, however, introduce issue for open(O_ACCMODE) 
-that is being used for ioctl-only open. I wrote a fix for that, but 
-instead of it being merged, full revert of 09954bad4 was performed, 
-re-introducing the O_NDELAY / O_NONBLOCK issue, and it strikes again.
+Make dm-integrity.rst follow ReST formatting.
 
-This is a forward-port of the original fix to current codebase; the 
-original submission had the changelog below:
-
-====
-Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
-side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
-this is being used setfdprm userspace for ioctl-only open().
-
-Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE) 
-modes, while still keeping the original O_NDELAY bug fixed.
-
-Cc: stable@vger.kernel.org
-Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
-Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
-Reported-and-tested-by: Kurt Garloff <kurt@garloff.de>
-Fixes: 09954bad4 ("floppy: refactor open() flags handling")
-Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/block/floppy.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+Mike, please pick this quick documentation fix in your for-next branch.
 
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index dfe1dfc901cc..0b71292d9d5a 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -4121,23 +4121,23 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
- 	if (fdc_state[FDC(drive)].rawcmd == 1)
- 		fdc_state[FDC(drive)].rawcmd = 2;
+ Documentation/admin-guide/device-mapper/dm-integrity.rst | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/admin-guide/device-mapper/dm-integrity.rst b/Documentation/admin-guide/device-mapper/dm-integrity.rst
+index 39a9fdc9f6ab..ef762857da95 100644
+--- a/Documentation/admin-guide/device-mapper/dm-integrity.rst
++++ b/Documentation/admin-guide/device-mapper/dm-integrity.rst
+@@ -188,6 +188,7 @@ fix_padding
  
--	if (!(mode & FMODE_NDELAY)) {
--		if (mode & (FMODE_READ|FMODE_WRITE)) {
--			drive_state[drive].last_checked = 0;
--			clear_bit(FD_OPEN_SHOULD_FAIL_BIT,
--				  &drive_state[drive].flags);
--			if (bdev_check_media_change(bdev))
--				floppy_revalidate(bdev->bd_disk);
--			if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
--				goto out;
--			if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
--				goto out;
--		}
--		res = -EROFS;
--		if ((mode & FMODE_WRITE) &&
--		    !test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
-+	if (mode & (FMODE_READ|FMODE_WRITE)) {
-+		drive_state[drive].last_checked = 0;
-+		clear_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags);
-+		if (bdev_check_media_change(bdev))
-+			floppy_revalidate(bdev->bd_disk);
-+		if (test_bit(FD_DISK_CHANGED_BIT, &drive_state[drive].flags))
-+			goto out;
-+		if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags))
- 			goto out;
- 	}
+ fix_hmac
+ 	Improve security of internal_hash and journal_mac:
 +
-+	res = -EROFS;
-+
-+	if ((mode & FMODE_WRITE) &&
-+			!test_bit(FD_DISK_WRITABLE_BIT, &drive_state[drive].flags))
-+		goto out;
-+
- 	mutex_unlock(&open_lock);
- 	mutex_unlock(&floppy_mutex);
- 	return 0;
-
+ 	- the section number is mixed to the mac, so that an attacker can't
+ 	  copy sectors from one journal section to another journal section
+ 	- the superblock is protected by journal_mac
 -- 
-Jiri Kosina
-SUSE Labs
+2.17.1
 
