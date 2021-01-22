@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEC030094D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:11:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361CB300949
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 18:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbhAVRKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 12:10:38 -0500
-Received: from foss.arm.com ([217.140.110.172]:55614 "EHLO foss.arm.com"
+        id S1729816AbhAVRJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 12:09:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:55662 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729620AbhAVQUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729544AbhAVQUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 11:20:41 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F99911D4;
-        Fri, 22 Jan 2021 08:19:44 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E47BD139F;
+        Fri, 22 Jan 2021 08:19:48 -0800 (PST)
 Received: from e125528.arm.com (unknown [10.57.9.161])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A681C3F719;
-        Fri, 22 Jan 2021 08:19:38 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 79D3B3F719;
+        Fri, 22 Jan 2021 08:19:44 -0800 (PST)
 From:   Alexandre Truong <alexandre.truong@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Cc:     Alexandre Truong <alexandre.truong@arm.com>,
@@ -40,19 +40,21 @@ Cc:     Alexandre Truong <alexandre.truong@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Al Grant <al.grant@arm.com>, James Clark <james.clark@arm.com>,
         Wilco Dijkstra <wilco.dijkstra@arm.com>
-Subject: [PATCH 1/4] perf tools: record aarch64 registers automatically
-Date:   Fri, 22 Jan 2021 16:18:51 +0000
-Message-Id: <20210122161854.5289-1-alexandre.truong@arm.com>
+Subject: [PATCH 2/4] perf tools: add a mechanism to inject stack frames
+Date:   Fri, 22 Jan 2021 16:18:52 +0000
+Message-Id: <20210122161854.5289-2-alexandre.truong@arm.com>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20210122161854.5289-1-alexandre.truong@arm.com>
+References: <20210122161854.5289-1-alexandre.truong@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On arm64, automatically record all the registers if the frame pointer
-mode is on. They will be used to do a dwarf unwind to find the caller
-of the leaf frame if the frame pointer was omitted.
+Add a mechanism for platforms to inject stack frames for the leaf
+frame caller if there is enough information to determine a frame
+is missing from dwarf or other post processing mechanisms.
 
 Signed-off-by: Alexandre Truong <alexandre.truong@arm.com>
 Cc: John Garry <john.garry@huawei.com>
@@ -77,62 +79,57 @@ Cc: Al Grant <al.grant@arm.com>
 Cc: James Clark <james.clark@arm.com>
 Cc: Wilco Dijkstra <wilco.dijkstra@arm.com>
 ---
- tools/perf/arch/arm64/util/machine.c | 5 +++++
- tools/perf/builtin-record.c          | 7 +++++++
- tools/perf/util/callchain.h          | 2 ++
- 3 files changed, 14 insertions(+)
+ tools/perf/util/machine.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
-index d41b27e781d3..6ba1d356a20c 100644
---- a/tools/perf/arch/arm64/util/machine.c
-+++ b/tools/perf/arch/arm64/util/machine.c
-@@ -25,3 +25,8 @@ void arch__symbols__fixup_end(struct symbol *p, struct symbol *c)
- 		p->end = c->start;
- 	pr_debug4("%s sym:%s end:%#lx\n", __func__, p->name, p->end);
- }
-+
-+void arch__add_leaf_frame_record_opts(struct record_opts *opts)
-+{
-+	opts->sample_user_regs = arch__user_reg_mask();
-+}
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 7bb10e9863bd..a5161f54b838 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -2243,6 +2243,10 @@ static int record__parse_mmap_pages(const struct option *opt,
- 	return ret;
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 522ea3236bcc..40082d70eec1 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -2671,6 +2671,12 @@ static int find_prev_cpumode(struct ip_callchain *chain, struct thread *thread,
+ 	return err;
  }
  
-+void __weak arch__add_leaf_frame_record_opts(struct record_opts *opts __maybe_unused)
++static u64 get_leaf_frame_caller(struct perf_sample *sample __maybe_unused,
++		struct thread *thread __maybe_unused)
 +{
++	return 0;
 +}
 +
- static int parse_control_option(const struct option *opt,
- 				const char *str,
- 				int unset __maybe_unused)
-@@ -2810,6 +2814,9 @@ int cmd_record(int argc, const char **argv)
- 	/* Enable ignoring missing threads when -u/-p option is defined. */
- 	rec->opts.ignore_missing_thread = rec->opts.target.uid != UINT_MAX || rec->opts.target.pid;
+ static int thread__resolve_callchain_sample(struct thread *thread,
+ 					    struct callchain_cursor *cursor,
+ 					    struct evsel *evsel,
+@@ -2687,6 +2693,8 @@ static int thread__resolve_callchain_sample(struct thread *thread,
+ 	int i, j, err, nr_entries;
+ 	int skip_idx = -1;
+ 	int first_call = 0;
++	u64 leaf_frame_caller;
++	int pos;
  
-+	if (callchain_param.enabled && callchain_param.record_mode == CALLCHAIN_FP)
-+		arch__add_leaf_frame_record_opts(&rec->opts);
-+
- 	err = -ENOMEM;
- 	if (evlist__create_maps(rec->evlist, &rec->opts.target) < 0)
- 		usage_with_options(record_usage, record_options);
-diff --git a/tools/perf/util/callchain.h b/tools/perf/util/callchain.h
-index 5824134f983b..77fba053c677 100644
---- a/tools/perf/util/callchain.h
-+++ b/tools/perf/util/callchain.h
-@@ -280,6 +280,8 @@ static inline int arch_skip_callchain_idx(struct thread *thread __maybe_unused,
- }
- #endif
+ 	if (chain)
+ 		chain_nr = chain->nr;
+@@ -2811,6 +2819,21 @@ static int thread__resolve_callchain_sample(struct thread *thread,
+ 			continue;
+ 		}
  
-+void arch__add_leaf_frame_record_opts(struct record_opts *opts);
++		pos = callchain_param.order == ORDER_CALLEE ? 2 : chain_nr - 2;
 +
- char *callchain_list__sym_name(struct callchain_list *cl,
- 			       char *bf, size_t bfsize, bool show_dso);
- char *callchain_node__scnprintf_value(struct callchain_node *node,
++		if (i == pos) {
++			leaf_frame_caller = get_leaf_frame_caller(sample, thread);
++
++			if (leaf_frame_caller && leaf_frame_caller != ip) {
++
++				err = add_callchain_ip(thread, cursor, parent,
++					       root_al, &cpumode, leaf_frame_caller,
++					       false, NULL, NULL, 0);
++				if (err)
++					return (err < 0) ? err : 0;
++			}
++		}
++
+ 		err = add_callchain_ip(thread, cursor, parent,
+ 				       root_al, &cpumode, ip,
+ 				       false, NULL, NULL, 0);
 -- 
 2.23.0
 
