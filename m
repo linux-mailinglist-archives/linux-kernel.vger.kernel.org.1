@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62453300165
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C5430018E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728138AbhAVLWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbhAVLUC (ORCPT
+        id S1728357AbhAVL2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:28:31 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35117 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728048AbhAVLV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:20:02 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73634C06174A;
-        Fri, 22 Jan 2021 03:19:00 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id n25so3507577pgb.0;
-        Fri, 22 Jan 2021 03:19:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=JGKZWLmZIaXZ0doM/i8zUq2DXA6jM2XCESou+2RqdlA=;
-        b=U9yV8Yulx/4LOhdsH7ynYOJKlnHwgwg2gMNl2QmmOTdT2tXgaaTXyhz8Tsml3tOEI5
-         NqIdEY5+dNecnL9gupHRda8nYiv+OW4nvNKnLT6Dq+X3ZkLGC8/E+0VZYGhY1dbkhYEN
-         VOsxBgysdG2KezeTn7tT6XkKT0lIR7UGv+iJaLJUzp0ndVsuKPFtp/5rucVWHFJIqMBG
-         lCJZhDO2/4aGnckrimgPqZqRgz4+ApEwe+G0Pc/n+0YXPtsinnrnRi9iiummaI1pV/s1
-         AUT0pvOzYe7nCUBVWVV9nBoPqpWoxqK0oZN3V53Nba+h/xg4a9H0inJ1LY1LNddb1SlQ
-         HU7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=JGKZWLmZIaXZ0doM/i8zUq2DXA6jM2XCESou+2RqdlA=;
-        b=Uy+OiqCguEqGGA6OmoSPB8by08QGMss3ylT5bAEmJYUj5+5PT+WO6B/PUG8CYhaLtq
-         //mtkyef0vAgCvd1Zh4798EYdIhGM2CjLu2iza0XxVpx221YGhw4oBftRRYp6YdPX/I7
-         8kcUDNNPkkosKukmUEWG8bPssiF94GN2oX95eH2217E0RSc+nxJvZ7uTVTnlepPyMmZ5
-         Z5MyEe7K+zLoV50PSh5JCDER6lC35wd9qEgaG+Xy2t6pNJ+8ZZRET8ZJGATbM1/5iSNb
-         IH+0eq8ftEOKX5mWon6KMrg+Wt0YI15fY50f+HB4+5zerdoS8l+ZlrW4jB3RWCeEbFE1
-         F0Pg==
-X-Gm-Message-State: AOAM5320ebavQrORY7BrGU43Ohcat2DPslHBvV3GZXxWBL5E2StEoMbK
-        +HRWPvDDAAY1J1Z6S1zIGaM=
-X-Google-Smtp-Source: ABdhPJxt5WMLt8cj+0AiYX17C2BZ/R9+T6CBaCic2Kf+mk6e10AqboFT0NLkQr2VDIJKC+o4k9vfog==
-X-Received: by 2002:a63:794a:: with SMTP id u71mr4170608pgc.91.1611314340094;
-        Fri, 22 Jan 2021 03:19:00 -0800 (PST)
-Received: from localhost.localdomain ([125.227.22.95])
-        by smtp.gmail.com with ESMTPSA id b11sm9521965pjg.27.2021.01.22.03.18.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Jan 2021 03:18:59 -0800 (PST)
-From:   Stephen Zhang <stephenzhangzsd@gmail.com>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Zhang <stephenzhangzsd@gmail.com>
-Subject: [PATCH] KVM: x86/mmu: improve robustness of some functions
-Date:   Fri, 22 Jan 2021 19:18:43 +0800
-Message-Id: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 22 Jan 2021 06:21:57 -0500
+X-UUID: a03df52d909c42729b107e477ea4e8ba-20210122
+X-UUID: a03df52d909c42729b107e477ea4e8ba-20210122
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1913097264; Fri, 22 Jan 2021 19:19:44 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 22 Jan 2021 19:19:42 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 22 Jan 2021 19:19:42 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Fei Shao <fshao@chromium.org>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        Ran Bi <ran.bi@mediatek.com>,
+        Eddie Huang <eddie.huang@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v5 0/8] Add Support for MediaTek PMIC MT6359
+Date:   Fri, 22 Jan 2021 19:19:33 +0800
+Message-ID: <1611314381-19517-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 9B3B14E8725B026A335FF13643ED848CFCC793FF1CA556C859B7CBF5EB4720E62000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the name of this function changes, you can easily
-forget to modify the code in the corresponding place.
-In fact, such errors already exist in spte_write_protect
- and spte_clear_dirty.
+This patchset includes refactoring interrupt and adding support to MT6359 PMIC.
+MT6359 is the primary PMIC for MT6779 and probably other SOCs.
+The series[1] sent by Wen will continue to upstream in this patchset afterwards.
 
-Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
----
- arch/x86/kvm/mmu/mmu.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=306579
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6d16481..09462c3d 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -844,17 +844,17 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
- 	int i, count = 0;
- 
- 	if (!rmap_head->val) {
--		rmap_printk("pte_list_add: %p %llx 0->1\n", spte, *spte);
-+		rmap_printk("%s: %p %llx 0->1\n", __func__, spte, *spte);
- 		rmap_head->val = (unsigned long)spte;
- 	} else if (!(rmap_head->val & 1)) {
--		rmap_printk("pte_list_add: %p %llx 1->many\n", spte, *spte);
-+		rmap_printk("%s: %p %llx 1->many\n", __func__, spte, *spte);
- 		desc = mmu_alloc_pte_list_desc(vcpu);
- 		desc->sptes[0] = (u64 *)rmap_head->val;
- 		desc->sptes[1] = spte;
- 		rmap_head->val = (unsigned long)desc | 1;
- 		++count;
- 	} else {
--		rmap_printk("pte_list_add: %p %llx many->many\n", spte, *spte);
-+		rmap_printk("%s: %p %llx many->many\n",	__func__, spte, *spte);
- 		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
- 		while (desc->sptes[PTE_LIST_EXT-1]) {
- 			count += PTE_LIST_EXT;
-@@ -1115,7 +1115,7 @@ static bool spte_write_protect(u64 *sptep, bool pt_protect)
- 	      !(pt_protect && spte_can_locklessly_be_made_writable(spte)))
- 		return false;
- 
--	rmap_printk("rmap_write_protect: spte %p %llx\n", sptep, *sptep);
-+	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
- 
- 	if (pt_protect)
- 		spte &= ~SPTE_MMU_WRITEABLE;
-@@ -1142,7 +1142,7 @@ static bool spte_clear_dirty(u64 *sptep)
- {
- 	u64 spte = *sptep;
- 
--	rmap_printk("rmap_clear_dirty: spte %p %llx\n", sptep, *sptep);
-+	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
- 
- 	MMU_WARN_ON(!spte_ad_enabled(spte));
- 	spte &= ~shadow_dirty_mask;
-@@ -1184,7 +1184,7 @@ static bool spte_set_dirty(u64 *sptep)
- {
- 	u64 spte = *sptep;
- 
--	rmap_printk("rmap_set_dirty: spte %p %llx\n", sptep, *sptep);
-+	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
- 
- 	/*
- 	 * Similar to the !kvm_x86_ops.slot_disable_log_dirty case,
-@@ -1363,8 +1363,8 @@ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 
- restart:
- 	for_each_rmap_spte(rmap_head, &iter, sptep) {
--		rmap_printk("kvm_set_pte_rmapp: spte %p %llx gfn %llx (%d)\n",
--			    sptep, *sptep, gfn, level);
-+		rmap_printk("%s: spte %p %llx gfn %llx (%d)\n",
-+			      __func__, sptep, *sptep, gfn, level);
- 
- 		need_flush = 1;
- 
+changes since v4:
+- fix yamllint errors in dt-binding document.
+- remove unused compatible name of mt6359-regulator in mfd driver.
+- update the name of regulator node in the dts.
+- merge the patch about enable time of ldo into the mt6359 regulator patch.
+- use the device of mfd driver for the regulator_config.
+- add the regulators_node support.
+- add pmic MT6359 support in the MT8192 evb dts.
+
+Hsin-Hsiung Wang (6):
+  mfd: mt6358: refine interrupt code
+  rtc: mt6397: refine RTC_TC_MTH
+  dt-bindings: mfd: Add compatible for the MediaTek MT6359 PMIC
+  dt-bindings: regulator: Add document for MT6359 regulator
+  mfd: Add support for the MediaTek MT6359 PMIC
+  regulator: mt6359: Add support for MT6359P regulator
+
+Wen Su (2):
+  regulator: mt6359: Add support for MT6359 regulator
+  arm64: dts: mt6359: add PMIC MT6359 related nodes
+
+ .../devicetree/bindings/mfd/mt6397.txt        |    1 +
+ .../bindings/regulator/mt6359-regulator.yaml  |  169 +++
+ arch/arm64/boot/dts/mediatek/mt6359.dtsi      |  298 +++++
+ arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |    1 +
+ drivers/mfd/mt6358-irq.c                      |   89 +-
+ drivers/mfd/mt6397-core.c                     |   26 +
+ drivers/regulator/Kconfig                     |    9 +
+ drivers/regulator/Makefile                    |    1 +
+ drivers/regulator/mt6359-regulator.c          | 1036 +++++++++++++++++
+ drivers/rtc/rtc-mt6397.c                      |    2 +-
+ include/linux/mfd/mt6358/core.h               |    8 +-
+ include/linux/mfd/mt6359/core.h               |  133 +++
+ include/linux/mfd/mt6359/registers.h          |  529 +++++++++
+ include/linux/mfd/mt6359p/registers.h         |  249 ++++
+ include/linux/mfd/mt6397/core.h               |    1 +
+ include/linux/mfd/mt6397/rtc.h                |    1 +
+ include/linux/regulator/mt6359-regulator.h    |   59 +
+ 17 files changed, 2579 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+ create mode 100644 arch/arm64/boot/dts/mediatek/mt6359.dtsi
+ create mode 100644 drivers/regulator/mt6359-regulator.c
+ create mode 100644 include/linux/mfd/mt6359/core.h
+ create mode 100644 include/linux/mfd/mt6359/registers.h
+ create mode 100644 include/linux/mfd/mt6359p/registers.h
+ create mode 100644 include/linux/regulator/mt6359-regulator.h
+
 -- 
-1.8.3.1
+2.18.0
 
