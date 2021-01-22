@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72849300567
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF839300568
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728720AbhAVO2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:28:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40014 "EHLO mail.kernel.org"
+        id S1728765AbhAVO2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:28:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728623AbhAVOXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:23:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D2DF23B83;
-        Fri, 22 Jan 2021 14:17:50 +0000 (UTC)
+        id S1728631AbhAVOXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9882623B85;
+        Fri, 22 Jan 2021 14:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325071;
-        bh=W8/1ggZ/RTjMxiMDdKObgvwI7zkkrqnLBJDBnr2wTUQ=;
+        s=korg; t=1611325076;
+        bh=Zxd3XrZdI3lZ0UThgxzxspuFym+5t4SDkMF9B5JveT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F8foH6NN5XbXJhu3Tf73jEjeV06LgBx3mCdGJC9nBAuWwmNcNaHgjXH6VoYNM87/n
-         QWJ7N3UO5AosYFf+ogD2kZDYSbj5aXUyWj2ZkC6qLkJfdV1hF4fIfBmwKbq+TGYOGd
-         CG3yqHJcCkuvSt6HH+7IMXxLKgW749j44V5CfVdg=
+        b=NENtkAbf/QdJ9dSqKRH0qo3hgyVHx/O7yM0g6a2uDb4nC6I5zdeMcvZhJE65/HKep
+         favT1isCJPJQT0InL2sk/SccZXVBgPmjIjMUewINC8ECcfQpeKIzN+N9VvPMgA8fcM
+         CkuBzrohDNeceQffvOyDDuy3bF5I+YyMwUR2/lyA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Petr Machata <petrm@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 21/33] esp: avoid unneeded kmap_atomic call
-Date:   Fri, 22 Jan 2021 15:12:37 +0100
-Message-Id: <20210122135734.441605268@linuxfoundation.org>
+Subject: [PATCH 5.4 23/33] net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
+Date:   Fri, 22 Jan 2021 15:12:39 +0100
+Message-Id: <20210122135734.516133166@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
 References: <20210122135733.565501039@linuxfoundation.org>
@@ -40,87 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemb@google.com>
+From: Petr Machata <petrm@nvidia.com>
 
-[ Upstream commit 9bd6b629c39e3fa9e14243a6d8820492be1a5b2e ]
+[ Upstream commit df85bc140a4d6cbaa78d8e9c35154e1a2f0622c7 ]
 
-esp(6)_output_head uses skb_page_frag_refill to allocate a buffer for
-the esp trailer.
+In commit 826f328e2b7e ("net: dcb: Validate netlink message in DCB
+handler"), Linux started rejecting RTM_GETDCB netlink messages if they
+contained a set-like DCB_CMD_ command.
 
-It accesses the page with kmap_atomic to handle highmem. But
-skb_page_frag_refill can return compound pages, of which
-kmap_atomic only maps the first underlying page.
+The reason was that privileges were only verified for RTM_SETDCB messages,
+but the value that determined the action to be taken is the command, not
+the message type. And validation of message type against the DCB command
+was the obvious missing piece.
 
-skb_page_frag_refill does not return highmem, because flag
-__GFP_HIGHMEM is not set. ESP uses it in the same manner as TCP.
-That also does not call kmap_atomic, but directly uses page_address,
-in skb_copy_to_page_nocache. Do the same for ESP.
+Unfortunately it turns out that mlnx_qos, a somewhat widely deployed tool
+for configuration of DCB, accesses the DCB set-like APIs through
+RTM_GETDCB.
 
-This issue has become easier to trigger with recent kmap local
-debugging feature CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP.
+Therefore do not bounce the discrepancy between message type and command.
+Instead, in addition to validating privileges based on the actual message
+type, validate them also based on the expected message type. This closes
+the loophole of allowing DCB configuration on non-admin accounts, while
+maintaining backward compatibility.
 
-Fixes: cac2661c53f3 ("esp4: Avoid skb_cow_data whenever possible")
-Fixes: 03e2a30f6a27 ("esp6: Avoid skb_cow_data whenever possible")
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
+Fixes: 826f328e2b7e ("net: dcb: Validate netlink message in DCB handler")
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Link: https://lore.kernel.org/r/a3edcfda0825f2aa2591801c5232f2bbf2d8a554.1610384801.git.me@pmachata.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/esp4.c |    7 +------
- net/ipv6/esp6.c |    7 +------
- 2 files changed, 2 insertions(+), 12 deletions(-)
+ net/dcb/dcbnl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -272,7 +272,6 @@ static int esp_output_udp_encap(struct x
- int esp_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
- {
- 	u8 *tail;
--	u8 *vaddr;
- 	int nfrags;
- 	int esph_offset;
- 	struct page *page;
-@@ -314,14 +313,10 @@ int esp_output_head(struct xfrm_state *x
- 			page = pfrag->page;
- 			get_page(page);
+--- a/net/dcb/dcbnl.c
++++ b/net/dcb/dcbnl.c
+@@ -1765,7 +1765,7 @@ static int dcb_doit(struct sk_buff *skb,
+ 	fn = &reply_funcs[dcb->cmd];
+ 	if (!fn->cb)
+ 		return -EOPNOTSUPP;
+-	if (fn->type != nlh->nlmsg_type)
++	if (fn->type == RTM_SETDCB && !netlink_capable(skb, CAP_NET_ADMIN))
+ 		return -EPERM;
  
--			vaddr = kmap_atomic(page);
--
--			tail = vaddr + pfrag->offset;
-+			tail = page_address(page) + pfrag->offset;
- 
- 			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
- 
--			kunmap_atomic(vaddr);
--
- 			nfrags = skb_shinfo(skb)->nr_frags;
- 
- 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -226,7 +226,6 @@ static void esp_output_fill_trailer(u8 *
- int esp6_output_head(struct xfrm_state *x, struct sk_buff *skb, struct esp_info *esp)
- {
- 	u8 *tail;
--	u8 *vaddr;
- 	int nfrags;
- 	struct page *page;
- 	struct sk_buff *trailer;
-@@ -259,14 +258,10 @@ int esp6_output_head(struct xfrm_state *
- 			page = pfrag->page;
- 			get_page(page);
- 
--			vaddr = kmap_atomic(page);
--
--			tail = vaddr + pfrag->offset;
-+			tail = page_address(page) + pfrag->offset;
- 
- 			esp_output_fill_trailer(tail, esp->tfclen, esp->plen, esp->proto);
- 
--			kunmap_atomic(vaddr);
--
- 			nfrags = skb_shinfo(skb)->nr_frags;
- 
- 			__skb_fill_page_desc(skb, nfrags, page, pfrag->offset,
+ 	if (!tb[DCB_ATTR_IFNAME])
 
 
