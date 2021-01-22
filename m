@@ -2,92 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F753003D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3003003DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbhAVNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        id S1727272AbhAVNLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:11:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbhAVNIx (ORCPT
+        with ESMTP id S1727476AbhAVNKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:08:53 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F4B3C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:08:13 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id j3so6437212ljb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:08:13 -0800 (PST)
+        Fri, 22 Jan 2021 08:10:42 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2A4C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:10:02 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id v67so7467378lfa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:10:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pqbgbuupJ6YRo4yM4nlPb/XZOmzm//nHXWr+3gjw64c=;
-        b=Ajt8rKN2KW1S1sLsIadPmAQEP+1A0NTg/t19H0R8JX0CPQvyuQLA0QynFcjja5exJl
-         u0O+PWNzII6aok5wdVdeCeDIcFSMVNbJzqhYcFv/z7BKi3Ls1mSeg+A4aUWrTOdAG5aQ
-         2QBWkwz6+6TxmuqS7/wjIV0Gcfk4cr9F6Za7i8PZGEt0KzumyGUwjMCXM2qpxUwv0iua
-         IL+hbMQf5rHN7R6I72yXF7/p3V0hVntkCe429mmQsOXGGQaJl4+xvQJUAAj9anGDD6t/
-         4Jm3J46fyodYOkQem3Akgahdtcn5waV8YPJrvdnSZjUQevfLPpiLau9NG+RI5hov1y+8
-         pMdw==
+        bh=jM6zpCES+0HLn8XlUNi032+O57IMQ4RlIhY5sPMlY+Q=;
+        b=sF5zAjDT56BXiHUey17OUSfQJ66O9gcNB/c6sn5CjzVA/TG8uudCB1ttxC7JwOpY3K
+         qIB1A5e7fuCatdIf+5BL5DYq0UuC+ftUgAIEvi3YC5xTK9SBTvWSgrFOBn0lRFms7Xws
+         9YSdzTRVxlR3bmUlTGBzpMETm64mfRVCQkQ2LEL/+zTbIQSLC1MxJyX0y0/Mku+Uwr+g
+         Po0AbrD406ZbDdueebjDmUt49f7PZoFwWFK/6oIhfRGB6J3GePuH//HPXFcypYtsnNGg
+         teRWxa9ynMonmK9sWmd+YcmJci32W7kQOXEDs5ju0ygcEo5dtXPSYY9zqvnhGp+PNLCC
+         bk/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pqbgbuupJ6YRo4yM4nlPb/XZOmzm//nHXWr+3gjw64c=;
-        b=J4HNt0sG3eutc7nIuPXrO/zZQ/19iUncQLdr7dYUFoO+K9TAJKofXDm8VZovziJ5Jy
-         jqZxcD4Vtq9q3O122cROkXORJ5WCipqzNpUn4iKdvS9/j8asnuKf1V9jrfekV2Q8qQl8
-         TfuWOAjlxcY2nCycw80xcxRgXKacVvpLXelUdOUdtfmm/Q8rHKB4DpHAFqLh59cWbt+0
-         g9K3GhcY8wgdMhvBywUdIN1FShtQQeM97jexdLpDA8g6rS1Af9R3aov+u6KpI54CnbAs
-         AKiJ1puO2UUGuN8AdZIQe0ZetRrzpEYJdKoWtK1FLwHw3LXbNcyJG9ENi3rSSevwmQOM
-         zQvA==
-X-Gm-Message-State: AOAM530Cr3AIrV2vGAwW3TBY4+oa3CKD5YUTEfoYG8v3A58URVygOGwo
-        X7eFhCjjLS4pTYZHy3tPTzcvJUK9wmquVY3zBSx/sA==
-X-Google-Smtp-Source: ABdhPJwK6aDRKF8coJzfBbb01pE6jH1d1hiwvfPbp93jmF30rLIOwCNMyRrSNUDDnN3vCDDzqsJyZdfQ4iNf5kMJPr8=
-X-Received: by 2002:a2e:88c1:: with SMTP id a1mr647295ljk.74.1611320891999;
- Fri, 22 Jan 2021 05:08:11 -0800 (PST)
+        bh=jM6zpCES+0HLn8XlUNi032+O57IMQ4RlIhY5sPMlY+Q=;
+        b=lzk+/HQJKlfb7jwhUk4fU+m4QaQTx6fRFJ3U24+WAPTpsyXnraOg7wdy/PhEnA08Cl
+         4o676zm4WHDxvuMFuOO2QVdh0Bk0nrYlG2takuYhs2FPvoPrJfMUIPFBHx2LfxxYLh7Q
+         zkZJgalCpTdZR/yCnfeUbxENbtiQoMWQpdSJTD55SfVaZyIMe4JD/tN/YU3en+X1bn8C
+         fulIeCgLds9FOwQFCEwI3lNYf7uedPReaOeOtLx2rNMwaKt7Tdtwm3frXExdam+kSow7
+         x4R1n8/cJH6oQ0vaVxo4QdpInqpgze03fzpOHoti6hsXAsa/sfp+Fl3/hadqfOJ6g/pI
+         twkA==
+X-Gm-Message-State: AOAM533poTVGXy6Y0EFUrUjU0ox+ao113rliIvhAaPKkw+ueD33YmawS
+        D/fEDAw3srOdq4GX+TFYsfklWjcWZlF1MbudF98QcA==
+X-Google-Smtp-Source: ABdhPJxHLxFQGKxSHSjonKXZfD+TP3Iizcnks53UjMPVH/itFaqhB5xo0zcrd/h+EYj3WPQIojePEaOg0ILdmqpfLcI=
+X-Received: by 2002:a05:6512:38c1:: with SMTP id p1mr2197526lft.193.1611321000384;
+ Fri, 22 Jan 2021 05:10:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121223756.1112199-1-saravanak@google.com> <CAHp75VcrsVcUWaaE8JZHGDMyX9MKYONoVo+9-rzT7rvnkH5xSg@mail.gmail.com>
-In-Reply-To: <CAHp75VcrsVcUWaaE8JZHGDMyX9MKYONoVo+9-rzT7rvnkH5xSg@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 22 Jan 2021 14:08:00 +0100
-Message-ID: <CACRpkdYbxrJsaGVskzBjMp05P4NkP5bkReH3TjXJWivG0rFcVw@mail.gmail.com>
-Subject: Re: [PATCH v4] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201118082759.1413056-1-bharata@linux.ibm.com>
+ <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
+ <20210121053003.GB2587010@in.ibm.com> <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
+ <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz> <CAG48ez0gutKNuRj4E22tkv8mQKo-6TExGMxvpHCtUz8sFonb3A@mail.gmail.com>
+In-Reply-To: <CAG48ez0gutKNuRj4E22tkv8mQKo-6TExGMxvpHCtUz8sFonb3A@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 22 Jan 2021 14:09:33 +0100
+Message-ID: <CAG48ez3YavBAO1nQquca6W-RvH4yy2B7oiY4jWn96B_aaA_gVw@mail.gmail.com>
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        aneesh.kumar@linux.ibm.com, Michal Hocko <mhocko@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 10:55 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Fri, Jan 22, 2021 at 12:40 AM Saravana Kannan <saravanak@google.com> wrote:
-
-> > @@ -596,6 +596,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
-> >                 gdev->dev.of_node = gc->of_node;
-> >         else
-> >                 gc->of_node = gdev->dev.of_node;
-> > +       gdev->dev.fwnode = of_fwnode_handle(gdev->dev.of_node);
+On Fri, Jan 22, 2021 at 2:05 PM Jann Horn <jannh@google.com> wrote:
+> On Thu, Jan 21, 2021 at 7:19 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+> > On 1/21/21 11:01 AM, Christoph Lameter wrote:
+> > > On Thu, 21 Jan 2021, Bharata B Rao wrote:
+> > >
+> > >> > The problem is that calculate_order() is called a number of times
+> > >> > before secondaries CPUs are booted and it returns 1 instead of 224.
+> > >> > This makes the use of num_online_cpus() irrelevant for those cases
+> > >> >
+> > >> > After adding in my command line "slub_min_objects=36" which equals to
+> > >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
+> > >> > , the regression diseapears:
+> > >> >
+> > >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
+> >
+> > I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
+> > supposed to be a scheduler benchmark? What exactly is going on?
 >
-> This looks like a complete breakage on ACPI enabled systems.
+> Uuuh, I think powerpc doesn't have cmpxchg_double?
+>
+> "vgrep cmpxchg_double arch/" just spits out arm64, s390 and x86? And
+> <https://liblfds.org/mediawiki/index.php?title=Article:CAS_and_LL/SC_Implementation_Details_by_Processor_family>
+> says under "POWERPC": "no DW LL/SC"
+>
+> So powerpc is probably hitting the page-bitlock-based implementation
+> all the time for stuff like __slub_free()? Do you have detailed
+> profiling results from "perf top" or something like that?
+>
+> (I actually have some WIP patches and a design document for getting
+> rid of cmpxchg_double in struct page that I hacked together in the
+> last couple days; I'm currently in the process of sending them over to
+> some other folks in the company who hopefully have cycles to
+> review/polish/benchmark them so that they can be upstreamed, assuming
+> that those folks think they're important enough. I don't have the
+> cycles for it...)
 
-This looks broken to me too, if OF functions are compiled out
-this happens:
-
-include/linux/of.h:#define of_fwnode_handle(node) NULL
-
-And if there is a valid fwnode in the device it gets overwritten
-with NULL.
-
-This is partly why I want the DT code to be in its own file.
-
-Yours,
-Linus Walleij
+(The stuff I have in mind will only work on 64-bit though. We are
+talking about PPC64 here, right?)
