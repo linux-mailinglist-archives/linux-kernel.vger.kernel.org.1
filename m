@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433E0300C05
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8D8300C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbhAVS6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 13:58:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37758 "EHLO mail.kernel.org"
+        id S1730587AbhAVS7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:59:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728481AbhAVOSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:18:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 902B223A80;
-        Fri, 22 Jan 2021 14:14:00 +0000 (UTC)
+        id S1728497AbhAVOTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:19:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EF3E23A81;
+        Fri, 22 Jan 2021 14:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324841;
-        bh=RDkRbcXx8V1I6np2hRV+dag2NKdprJnYdmNhGMMx09o=;
+        s=korg; t=1611324843;
+        bh=dqGUvUBkEm7zi2253iOe4HOAdThnyzo+tphPO9YCnLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vrWYfEq4AyhnvyHcNqSeO7OOBLUqB0ytjeqF1xVoX0Xu+59UC1kDJzt44ipDhY+7i
-         CW9TXs2hqVmPQ101uPsi9b7flQjtX4Rst/liMzRNWt5duKag7dWN3oXxO4FHK1gGa9
-         BcYOtHG2Q602MbRz1bOomurthbfjpSQQC5BCgs3E=
+        b=dRjKir+mS8UZnGQlNC8ddTx04Zu/SPO415bENlxPdILQEyX7kwy6ejTpvaO9PDmUa
+         V6Nkfa3LFotfiK6RjJBNRJ4m6D/cKiiBYv+9XIE6XsMPC0yvJupTqCMxC/Cfmfv5+4
+         5qzL5Js6rlJjxDNLEkkCedgeKk+Mw3ErzLZVVkfs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 4.14 26/50] RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
-Date:   Fri, 22 Jan 2021 15:12:07 +0100
-Message-Id: <20210122135736.255731028@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 27/50] mm, slub: consider rest of partial list if acquire_slab() fails
+Date:   Fri, 22 Jan 2021 15:12:08 +0100
+Message-Id: <20210122135736.291270624@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
 References: <20210122135735.176469491@linuxfoundation.org>
@@ -40,42 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Jann Horn <jannh@google.com>
 
-commit a306aba9c8d869b1fdfc8ad9237f1ed718ea55e6 upstream.
+commit 8ff60eb052eeba95cfb3efe16b08c9199f8121cf upstream.
 
-If usnic_ib_qp_grp_create() fails at the first call, dev_list
-will not be freed on error, which leads to memleak.
+acquire_slab() fails if there is contention on the freelist of the page
+(probably because some other CPU is concurrently freeing an object from
+the page).  In that case, it might make sense to look for a different page
+(since there might be more remote frees to the page from other CPUs, and
+we don't want contention on struct page).
 
-Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
-Link: https://lore.kernel.org/r/20201226074248.2893-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+However, the current code accidentally stops looking at the partial list
+completely in that case.  Especially on kernels without CONFIG_NUMA set,
+this means that get_partial() fails and new_slab_objects() falls back to
+new_slab(), allocating new pages.  This could lead to an unnecessary
+increase in memory fragmentation.
+
+Link: https://lkml.kernel.org/r/20201228130853.1871516-1-jannh@google.com
+Fixes: 7ced37197196 ("slub: Acquire_slab() avoid loop")
+Signed-off-by: Jann Horn <jannh@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Christoph Lameter <cl@linux.com>
+Cc: Pekka Enberg <penberg@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c |    3 +++
- 1 file changed, 3 insertions(+)
+ mm/slub.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
-@@ -188,6 +188,7 @@ find_free_vf_and_create_qp_grp(struct us
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1846,7 +1846,7 @@ static void *get_partial_node(struct kme
  
- 		}
- 		usnic_uiom_free_dev_list(dev_list);
-+		dev_list = NULL;
- 	}
+ 		t = acquire_slab(s, n, page, object == NULL, &objects);
+ 		if (!t)
+-			break;
++			continue; /* cmpxchg raced */
  
- 	/* Try to find resources on an unused vf */
-@@ -212,6 +213,8 @@ find_free_vf_and_create_qp_grp(struct us
- qp_grp_check:
- 	if (IS_ERR_OR_NULL(qp_grp)) {
- 		usnic_err("Failed to allocate qp_grp\n");
-+		if (usnic_ib_share_vf)
-+			usnic_uiom_free_dev_list(dev_list);
- 		return ERR_PTR(qp_grp ? PTR_ERR(qp_grp) : -ENOMEM);
- 	}
- 	return qp_grp;
+ 		available += objects;
+ 		if (!object) {
 
 
