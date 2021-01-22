@@ -2,79 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FB42FFF9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8012FFFA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbhAVJ5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:57:23 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:42344 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726513AbhAVJ4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:56:41 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10M9ti7N3019722, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10M9ti7N3019722
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 22 Jan 2021 17:55:44 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 22 Jan 2021 17:55:44 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 22 Jan 2021 17:55:44 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee]) by
- RTEXMBS01.realtek.com.tw ([fe80::5d07:e256:a2a2:81ee%5]) with mapi id
- 15.01.2106.006; Fri, 22 Jan 2021 17:55:44 +0800
-From:   =?big5?B?p2Sp/rzhIFJpY2t5?= <ricky_wu@realtek.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "vaibhavgupta40@gmail.com" <vaibhavgupta40@gmail.com>,
+        id S1727610AbhAVJ7Y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 22 Jan 2021 04:59:24 -0500
+Received: from mail-eopbgr1310122.outbound.protection.outlook.com ([40.107.131.122]:13154
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727420AbhAVJ5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:57:35 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B9kaLh4B+sh63sNs9FAMu3CG9j5LBxjIxGNYspvJGZ8gNgD/3WVotG2cF3FhU4OVzUQ3JAsLyCJNobeBr7bkQUiYa9qqICsnnQzYaZn9+fw8SJfOOvb3haR8P2U0utMt/zo892kfsW9Jb03CvYEn0HNuynE5voE+uW39NTNvAq49t/bVJu2evgKRUzgXGa7PxS7oG1t5Vh2SxBM0DiDY4rr0wt3EPBN+PBiXA3TLPXMqvYh1p9qK1hazkrZqyYvck9YB90zgk3FwwRKm2Dd+qwHH+H1+vO/wBQM50mUAvVO13PKK3H2PP320XFwV7w/FJmPkZgVc0Jkkonrd7/VD5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hwLtaw9iQlc4tE2ieiUjoVKkienBlysf8Y0mMvys1ms=;
+ b=HRe07ySW6cuW93l+NEe2dGLUvTzxLq5+CwahxYJxP8VpxZQhXiTQHJ8Wv8OaYudbmeqLD4jADtZht1sKoPQOEL4YCtvypY5ekhA6wqLSDgySHNhAy6+GNp6uA6VA2nuyGE7n9ijlX5K/qbf0jyShkvi69NOuZPlrIajTX7pe5b1Oh1i8Nxx5iO1NHoYyk1Mj3MsBVBiAfo7QeIgViWeV4bcQIEYc6ZxEhWaNvsmVwRm72WO3d1nGaPLZiCa7OVd2ckavRJOL8yerbMt/Y4ZcdsXTDnA9rAaGTcPL1fNNffkQLTNgkJSjMf5ml+PKz0/aIszRvuV8dQ5A4CZDxwQaeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
+ by HK2PR06MB3459.apcprd06.prod.outlook.com (2603:1096:202:39::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Fri, 22 Jan
+ 2021 09:55:57 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::394c:29f2:cb4c:55ed]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::394c:29f2:cb4c:55ed%3]) with mapi id 15.20.3763.014; Fri, 22 Jan 2021
+ 09:55:57 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Corey Minyard <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v4] Fixes: misc: rtsx: init value of aspm_enabled
-Thread-Topic: [PATCH v4] Fixes: misc: rtsx: init value of aspm_enabled
-Thread-Index: AQHW8JdG6LTWRBWsI02tcgPbuCBziaoyybOAgACITkA=
-Date:   Fri, 22 Jan 2021 09:55:44 +0000
-Message-ID: <c55d960dd9424914b48638afcdfb81d1@realtek.com>
-References: <20210122081906.19100-1-ricky_wu@realtek.com>
- <YAqMkU4fR5z6aG1Z@kroah.com>
-In-Reply-To: <YAqMkU4fR5z6aG1Z@kroah.com>
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>,
+        Cyril Bur <cyrilbur@gmail.com>,
+        Robert Lippert <rlippert@google.com>
+Subject: RE: [PATCH v5 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+Thread-Topic: [PATCH v5 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+Thread-Index: AQHW6ndv3XSOmnDNxEWbiHxcjxf3tKov/heAgAN0hCA=
+Date:   Fri, 22 Jan 2021 09:55:56 +0000
+Message-ID: <HK0PR06MB3779C3106D2FC593B5E5243F91A00@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
+ <20210114131622.8951-4-chiawei_wang@aspeedtech.com>
+ <c8421730-f8a6-46a7-9e2c-9107eb979276@www.fastmail.com>
+In-Reply-To: <c8421730-f8a6-46a7-9e2c-9107eb979276@www.fastmail.com>
 Accept-Language: zh-TW, en-US
 Content-Language: zh-TW
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.88.99]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: faa2e7c5-7079-4c48-cae9-08d8bebbea65
+x-ms-traffictypediagnostic: HK2PR06MB3459:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR06MB3459D6C7AE3D00D31717FFC991A00@HK2PR06MB3459.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /VERJCm6Z3PHr3R0hDIMkREPvDSsKqrnEZE+FMRMrVYKOdDq9QcwANZ4M61miSKKytjvSFMU9qmgiNGmC4LLReLkZOzrXLDiHux2azuD2cvI1L2RaJMJw4Pj1OYeaw3AScW7wOnPRMOsJykj9ckJbvctdMUg0kv1yw5+EhPAlte1bTsAu6M8jcBqnPv15CcHmGKBj9L2/W7DAJI8pNzrDKwzcdDOucmLhWeIH1o4INAGShuHyQkkTPL8ggcex4E9lkHQHNzH4LaPGZt8ZyyUP0GWboi9yAZ0WOiFqc7z9A3LQ8oMCcIQDsJYw6TkkRCU96AWvQEILhBd97Px+lJZOJngdwvjQuLsZvmAfnxsLUiq09jPik9TaEkXgiiwlkAL8kkvP6RPp6D73uL+vdKsPdZielzAnnfo9EYT+yEX1y0O64w4/e3AZ5qiu/MWVZ4u
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(396003)(39850400004)(8676002)(83380400001)(66476007)(2906002)(7696005)(5660300002)(86362001)(55016002)(52536014)(9686003)(921005)(186003)(316002)(64756008)(7416002)(54906003)(55236004)(4744005)(110136005)(6506007)(66556008)(66946007)(66446008)(71200400001)(4326008)(53546011)(33656002)(26005)(76116006)(8936002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?mJPbbDQ7iFYiYCjYc1nZM1/XaqTo7lZmBN2hRva0uQyudG+xLGN63ELsfq81?=
+ =?us-ascii?Q?XZhQtO9Pl/FTPuLqZ6Vu0LCseBjR/AE+MtHM9p8BvsoJojwr3qnOu8wzE6EA?=
+ =?us-ascii?Q?5B62HoXroDbgPZEzFJg6xn8KL7slfeQWYwfLtLoFEn0EAwl9F36qFD3L64B3?=
+ =?us-ascii?Q?gTorcKPaNr/Yztet251neSD7n28RhPQdcsVxH7MMZhrOx7oGgXM7Qwn2/2uu?=
+ =?us-ascii?Q?cxIGxc2PFoHvxVMHyCHXphCdDafo0vjWxFrTP735Nh9GT4QS4VRJeDJoAFj2?=
+ =?us-ascii?Q?NvBKRvccGUqqI1vFG2o3aqK6m2IsqB0eWzdFyLMf6rEOZ6kFrr/pMeNS5Xxx?=
+ =?us-ascii?Q?8RC7ZD9W3U1Q0rYt1pufq8hea/ikHTvZrm3wxig3r39mjanB+xMnACUMIe+R?=
+ =?us-ascii?Q?OrNZpmFPbAh54Kik5/qmHJDd+kO7E4MqChS5LXavXVXVNPE1zLvSJV/xG2cl?=
+ =?us-ascii?Q?mD3m01xn/YR7PFyAQi/NRbrvBKFXF0cpeBOuSjGmTiEk4M3OjwO5Z7BTi6UT?=
+ =?us-ascii?Q?LA2k8GwCmTrQ+jeXsD2TUJYSeGoY/QSQVqKGcDB43whhG6ftPZ+z8fevwQ4d?=
+ =?us-ascii?Q?CxVsPfz+pcDgtLyirMqn2HBb211J7rgw330iaJBKRjY15fc8Sts8+FpjzCJG?=
+ =?us-ascii?Q?j1lYwxLxiqnEHZpSer069iazXfhCvV9mMRIcq5eWsAYKab/GpxAxMeiu8wIT?=
+ =?us-ascii?Q?dNdPRf8LX1XLRXyEwEHgjah3cAINlbMDerbJnZoVlMN4nQDjTtyVoUo2LOow?=
+ =?us-ascii?Q?AFTrpIUm5uSBwIu0RDVehRtI9LR5fS1/JeJ/kTH0GLjUjpyRKtdDNiATpTZz?=
+ =?us-ascii?Q?MubcoiU+LYBtjbwnAaClRlUXEisEe1RSK8kJI8A5sHh+6choRfSL+3LgQ/JC?=
+ =?us-ascii?Q?xds5ojXcb/L7U0byNQAzeozum/CslKawOS2vehP+YF+ce//1NpT5+g4sr9uV?=
+ =?us-ascii?Q?rvpB/cJsBXYT0giYRT6hXchFRGoKwReizuN2fnnUyJg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: faa2e7c5-7079-4c48-cae9-08d8bebbea65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2021 09:55:57.2517
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yFpaTYPXYTUFMKnjyzuJUQv6yB+Z+sASNpf36zbph8APx1WYjg/essqhFAuDwle1to+mtYpbLmRmmK3hrIalJE//gwQm4MjUAa6GpiZ8cuY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3459
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBHcmVnIEtIIDxncmVna2hAbGlu
-dXhmb3VuZGF0aW9uLm9yZz4NCj4gU2VudDogRnJpZGF5LCBKYW51YXJ5IDIyLCAyMDIxIDQ6Mjgg
-UE0NCj4gVG86IKdkqf684SBSaWNreSA8cmlja3lfd3VAcmVhbHRlay5jb20+DQo+IENjOiBhcm5k
-QGFybmRiLmRlOyBiaGVsZ2Fhc0Bnb29nbGUuY29tOyB2YWliaGF2Z3VwdGE0MEBnbWFpbC5jb207
-DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcN
-Cj4gU3ViamVjdDogUmU6IFtQQVRDSCB2NF0gRml4ZXM6IG1pc2M6IHJ0c3g6IGluaXQgdmFsdWUg
-b2YgYXNwbV9lbmFibGVkDQo+IA0KPiBPbiBGcmksIEphbiAyMiwgMjAyMSBhdCAwNDoxOTowNlBN
-ICswODAwLCByaWNreV93dUByZWFsdGVrLmNvbSB3cm90ZToNCj4gPiBGcm9tOiBSaWNreSBXdSA8
-cmlja3lfd3VAcmVhbHRlay5jb20+DQo+ID4NCj4gPiBtYWtlIHN1cmUgQVNQTSBzdGF0ZSBzeW5j
-IHdpdGggcGNyLT5hc3BtX2VuYWJsZWQgaW5pdCB2YWx1ZQ0KPiA+IHBjci0+YXNwbV9lbmFibGVk
-DQo+ID4NCj4gPiBDYzogc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiA+IFNpZ25lZC1vZmYtYnk6
-IFJpY2t5IFd1IDxyaWNreV93dUByZWFsdGVrLmNvbT4NCj4gPiAtLS0NCj4gPg0KPiA+IHYyOiBm
-aXhlZCBjb25kaXRpb25zIGluIHYxIGlmLXN0YXRlbWVudA0KPiA+IHYzOiBnaXZlIGRlc2NyaXB0
-aW9uIGZvciB2MSBhbmQgdjINCj4gPiB2NDogbW92ZSB2ZXJzaW9uIGNoYW5nZSBiZWxvdyAtLS0N
-Cj4gDQo+IFdoYXQgY29tbWl0IGlkIGRvZXMgdGhpcyBmaXg/ICBIb3cgZmFyIGJhY2sgc2hvdWxk
-IHRoZSBzdGFibGUgYmFja3BvcnRpbmcgZ28/DQo+IFRoYXQncyB3aGF0IHdlIHVzZSB0aGUgRml4
-ZXM6IGxpbmUgZm9yLg0KPiANCkkgdGhpbmsgSSBtaXN1bmRlcnN0YW5kaW5nIHlvdQ0KRml4IGNv
-bW1pdCBpZDogIGQ5MjgwNjFjMzE0M2RlMzZjMTc2NTBjZTdiNjA3NjBmZWZiODMzNmMNClNvIEkg
-bmVlZCB0byBoYXZlIHY1IGFuZCBhZGQgIkZpeGVzOiIgdGFnIGxpa2UgYmVsb3cgaW4gdGhlIHNp
-Z25lZCBvZmYgYnkgYXJlYT8NCg0KIkZpeGVzOiBkOTI4MDYxYzMxNDNkZTM2YzE3NjUwY2U3YjYw
-NzYwZmVmYjgzMzZjIg0KDQp0aGFua3MgDQoNClJpY2t5DQo+IA0KPiAtLS0tLS1QbGVhc2UgY29u
-c2lkZXIgdGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
+Hi Corey,
+
+Could you help to review this patch to kcs_bmc_aspeed.c?
+It mainly fixes the register layout/offsets of Aspeed LPC controller.
+
+Thanks,
+Chiawei
+
+> -----Original Message-----
+> From: Andrew Jeffery <andrew@aj.id.au>
+> Sent: Wednesday, January 20, 2021 1:03 PM
+> Subject: Re: [PATCH v5 3/5] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+> 
+> 
+> 
+> On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
+> > Add check against LPC device v2 compatible string to ensure that the
+> > fixed device tree layout is adopted.
+> > The LPC register offsets are also fixed accordingly.
+> >
+> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> > Acked-by: Haiyue Wang <haiyue.wang@linux.intel.com>
+> 
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+
+Thanks for the review.
