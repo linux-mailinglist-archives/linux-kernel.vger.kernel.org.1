@@ -2,202 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD04830040D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BD0300411
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbhAVNWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:22:41 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11572 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727209AbhAVNWK (ORCPT
+        id S1727883AbhAVNXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:23:20 -0500
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:52940 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727748AbhAVNWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:22:10 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DMfxr0wvjzMMSF;
-        Fri, 22 Jan 2021 21:20:00 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Fri, 22 Jan 2021
- 21:21:21 +0800
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yang Yingliang <yangyingliang@huawei.com>
-References: <20201126034230.777-1-thunder.leizhen@huawei.com>
- <20210122125132.GB24102@willie-the-truck>
- <34a9c164-389d-30cd-11a3-8796eb7bca93@arm.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <ad8cb736-6760-8aab-b11e-f296ec12301b@huawei.com>
-Date:   Fri, 22 Jan 2021 21:21:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 22 Jan 2021 08:22:25 -0500
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10MDD3FR025324;
+        Fri, 22 Jan 2021 07:21:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=Fr/ADTXUXb7ofXRfa5Zu7AU+FL4k+Px8FrLcUcJg+54=;
+ b=K77Mnw9x/nkLI+/QLfCNE/QbkVOr/aRnr2lYnkdyFAg43EVeY5SG4k6FGhB1uHGd7w+Q
+ QdkbzgzSZjcEo0puhWTkz8/iOLTzUQlnKN74QRq9qXPRiOG2SYUj4lriM8EiHOYeAZnY
+ EblRdqb3EuXl2fkvXykkaD3RmS/xFuPRQiq86+HC7xeniJag7LYbyhVTWu9tGkXLvtWf
+ nZWeXlUGHzH/Xbg7rs/rqG3bfBhfdzrCohklg5EgEENyEWfhKRn7AEZc4JEJCh3IqKpU
+ 1BjWiTgQ/+LW+5SqqaTJCZrNiaRFJTkqPJLHHpWGNihcuf8hhc+YjKmPFTwcHkZfkuyA hw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 36692rbp7d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 22 Jan 2021 07:21:29 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 22 Jan
+ 2021 13:21:27 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 22 Jan 2021 13:21:27 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8AD1A45;
+        Fri, 22 Jan 2021 13:21:21 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 13:21:21 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v2 08/12] ASoC: arizona-jack: convert into a helper
+ library for codec drivers
+Message-ID: <20210122132121.GJ106851@ediswmail.ad.cirrus.com>
+References: <20210117160555.78376-1-hdegoede@redhat.com>
+ <20210117160555.78376-9-hdegoede@redhat.com>
+ <CAHp75VeSqVYWE9o-6JwY+pmjU7nfBJwZvaSk0v-ngjeGMMxQAQ@mail.gmail.com>
+ <e902dc43-42d1-c90b-98df-d054a72a5558@opensource.cirrus.com>
+ <5c1f181f-f074-397d-cdba-d37ab58f9a2b@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <34a9c164-389d-30cd-11a3-8796eb7bca93@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <5c1f181f-f074-397d-cdba-d37ab58f9a2b@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101220072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 21, 2021 at 05:55:00PM +0100, Hans de Goede wrote:
+> On 1/19/21 10:51 AM, Richard Fitzgerald wrote:
+> > On 18/01/2021 17:24, Andy Shevchenko wrote:
+> >> On Sun, Jan 17, 2021 at 6:06 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> 1. Keep the code as is, live with the debugfs error. This might be
+> best for now, as I don't want to grow the scope of this series too much.
+> I will go with this for the next version of this series (unless
+> I receive feedback otherwise before I get around to posting the next
+> version).
 
+Thinking about this more, I seem to remember this is something
+that has been discussed before, having the need to have
+situations where a driver and the framework are both managing the
+regulator at once on the same device.
 
-On 2021/1/22 21:00, Robin Murphy wrote:
-> On 2021-01-22 12:51, Will Deacon wrote:
->> On Thu, Nov 26, 2020 at 11:42:30AM +0800, Zhen Lei wrote:
->>> When changing from a set of pages/smaller blocks to a larger block for an
->>> address, the software should follow the sequence of BBML processing.
->>>
->>> When changing from a block to a set of pages/smaller blocks for an
->>> address, there's no need to use nT bit. If an address in the large block
->>> is accessed before page table switching, the TLB caches the large block
->>> mapping. After the page table is switched and before TLB invalidation
->>> finished, new access requests are still based on large block mapping.
->>> After the block or page is invalidated, the system reads the small block
->>> or page mapping from the memory; If the address in the large block is not
->>> accessed before page table switching, the TLB has no cache. After the
->>> page table is switched, a new access is initiated to read the small block
->>> or page mapping from the memory.
->>>
->>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>> ---
->>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  2 +
->>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 +
->>>   drivers/iommu/io-pgtable-arm.c              | 46 ++++++++++++++++-----
->>>   include/linux/io-pgtable.h                  |  1 +
->>>   4 files changed, 40 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> index e634bbe60573..14a1a11565fb 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> @@ -1977,6 +1977,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
->>>           .coherent_walk    = smmu->features & ARM_SMMU_FEAT_COHERENCY,
->>>           .tlb        = &arm_smmu_flush_ops,
->>>           .iommu_dev    = smmu->dev,
->>> +        .bbml        = smmu->bbml,
->>>       };
->>>         if (smmu_domain->non_strict)
->>> @@ -3291,6 +3292,7 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
->>>         /* IDR3 */
->>>       reg = readl_relaxed(smmu->base + ARM_SMMU_IDR3);
->>> +    smmu->bbml = FIELD_GET(IDR3_BBML, reg);
->>>       if (FIELD_GET(IDR3_RIL, reg))
->>>           smmu->features |= ARM_SMMU_FEAT_RANGE_INV;
->>>   diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> index d4b7f40ccb02..aa7eb460fa09 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> @@ -51,6 +51,7 @@
->>>   #define IDR1_SIDSIZE            GENMASK(5, 0)
->>>     #define ARM_SMMU_IDR3            0xc
->>> +#define IDR3_BBML            GENMASK(12, 11)
->>>   #define IDR3_RIL            (1 << 10)
->>>     #define ARM_SMMU_IDR5            0x14
->>> @@ -617,6 +618,7 @@ struct arm_smmu_device {
->>>         int                gerr_irq;
->>>       int                combined_irq;
->>> +    int                bbml;
->>>         unsigned long            ias; /* IPA */
->>>       unsigned long            oas; /* PA */
->>> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
->>> index a7a9bc08dcd1..341581337ad0 100644
->>> --- a/drivers/iommu/io-pgtable-arm.c
->>> +++ b/drivers/iommu/io-pgtable-arm.c
->>> @@ -72,6 +72,7 @@
->>>     #define ARM_LPAE_PTE_NSTABLE        (((arm_lpae_iopte)1) << 63)
->>>   #define ARM_LPAE_PTE_XN            (((arm_lpae_iopte)3) << 53)
->>> +#define ARM_LPAE_PTE_nT            (((arm_lpae_iopte)1) << 16)
->>>   #define ARM_LPAE_PTE_AF            (((arm_lpae_iopte)1) << 10)
->>>   #define ARM_LPAE_PTE_SH_NS        (((arm_lpae_iopte)0) << 8)
->>>   #define ARM_LPAE_PTE_SH_OS        (((arm_lpae_iopte)2) << 8)
->>> @@ -255,7 +256,7 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
->>>     static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->>>                   phys_addr_t paddr, arm_lpae_iopte prot,
->>> -                int lvl, arm_lpae_iopte *ptep)
->>> +                int lvl, arm_lpae_iopte *ptep, arm_lpae_iopte nT)
->>>   {
->>>       arm_lpae_iopte pte = prot;
->>>   @@ -265,37 +266,60 @@ static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->>>           pte |= ARM_LPAE_PTE_TYPE_BLOCK;
->>>         pte |= paddr_to_iopte(paddr, data);
->>> +    pte |= nT;
->>>         __arm_lpae_set_pte(ptep, pte, &data->iop.cfg);
->>>   }
->>>   +static void __arm_lpae_free_pgtable(struct arm_lpae_io_pgtable *data, int lvl,
->>> +                    arm_lpae_iopte *ptep);
->>>   static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->>>                    unsigned long iova, phys_addr_t paddr,
->>>                    arm_lpae_iopte prot, int lvl,
->>>                    arm_lpae_iopte *ptep)
->>>   {
->>>       arm_lpae_iopte pte = *ptep;
->>> +    struct io_pgtable_cfg *cfg = &data->iop.cfg;
->>>         if (iopte_leaf(pte, lvl, data->iop.fmt)) {
->>>           /* We require an unmap first */
->>>           WARN_ON(!selftest_running);
->>>           return -EEXIST;
->>>       } else if (iopte_type(pte, lvl) == ARM_LPAE_PTE_TYPE_TABLE) {
->>> -        /*
->>> -         * We need to unmap and free the old table before
->>> -         * overwriting it with a block entry.
->>> -         */
->>>           arm_lpae_iopte *tblp;
->>> +        struct io_pgtable *iop = &data->iop;
->>>           size_t sz = ARM_LPAE_BLOCK_SIZE(lvl, data);
->>>   -        tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
->>> -        if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
->>> -            WARN_ON(1);
->>> -            return -EINVAL;
->>> +        switch (cfg->bbml) {
->>> +        case 0:
->>> +            /*
->>> +             * We need to unmap and free the old table before
->>> +             * overwriting it with a block entry.
->>> +             */
->>> +            tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
->>> +            if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
->>> +                WARN_ON(1);
->>> +                return -EINVAL;
->>> +            }
->>> +            break;
->>> +        case 1:
->>> +            __arm_lpae_init_pte(data, paddr, prot, lvl, ptep, ARM_LPAE_PTE_nT);
->>> +
->>> +            io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
->>> +            tblp = iopte_deref(pte, data);
->>> +            __arm_lpae_free_pgtable(data, lvl + 1, tblp);
->>> +            break;
->>> +        case 2:
->>> +            __arm_lpae_init_pte(data, paddr, prot, lvl, ptep, 0);
->>> +
->>> +            io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
->>> +            tblp = iopte_deref(pte, data);
->>> +            __arm_lpae_free_pgtable(data, lvl + 1, tblp);
->>> +            return 0;
->>
->> Sorry, but I really don't understand what you're trying to do here. The old
->> code uses BBM for the table -> block path so we don't need anything extra
->> here. The dodgy case is when we unmap part of a block, and end up installing
->> a table via arm_lpae_split_blk_unmap(). We can't use BBM there because there
->> could be ongoing DMA to parts of the block mapping that we want to remain in
->> place.
->>
->> Are you seeing a problem in practice?
-> 
-> Right, I was under the assumption that we could ignore BBML because we should never have a legitimate reason to split blocks. I'm certainly not keen on piling any more complexity into split_blk_unmap, because the IOMMU API clearly doesn't have a well-defined behaviour for that case anyway - some other drivers will just unmap the entire block, and IIRC there was a hint somewhere in VFIO that it might actually expect that behaviour.
+I wonder if this commit was related to that:
 
-I'm going home. I'll answer you two tomorrow.
+commit ff268b56ce8c ("regulator: core: Don't spew backtraces on duplicate sysfs")
 
-> 
-> Robin.
-> 
-> .
-> 
+Apologies I don't have as much time as I normally would to look
+into such issues at the moment, due to various internal company
+things going on.
 
+I do suspect that this option is the way to go though and if
+there are issues of duplicates being created by the regulator
+core those probably need to be resolved in there. But that can
+probably be done separate from this series.
+
+Thanks,
+Charles
