@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671EB300ED0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE11A300ECC
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730289AbhAVVVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:21:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S1729353AbhAVVVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729710AbhAVU0A (ORCPT
+        with ESMTP id S1729778AbhAVU0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:26:00 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B0DC061221
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:22:17 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id i82so6543784yba.18
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:22:17 -0800 (PST)
+        Fri, 22 Jan 2021 15:26:06 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CDFC0611C1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:22:24 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id u14so6593802ybu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 12:22:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=35f31jPrbe/qFsWIcvakk7ysCD9lwX+ABE7eqvtZ0wc=;
-        b=EWHkszKWjWp3VUR8JHd2bWBdtPZxXe/SOOX7kxabAidsStvU1/xEwp9KDG5vFAgPFl
-         Wt/ht2xY/BXbfaQ/rk85jEnnJNBK6EQ8gsF0eIaODn9xfAyO1pHM9tnAASXTqdJjhJDA
-         ftehr1/dLRiddhGjvjT5EVEVpvqiVx3up7Cmg8Xjp5wt7cBH8t52JMX/ZR9wGYqCRGSL
-         BfIK/0eMfzDgik5WmClDfni1br/Kmtn5C5Ayuhu2PQi2ptNvwCC9wqZdABnXcsGeb2eQ
-         OdHsTMcGr1rgoNK2SigZ2LblU3cTKUfnmPaHnwSXBwF4Fn4BuNxUB23XsVhunQIMkXnv
-         WcKA==
+        bh=ehdULWTO7EegFXRAR9N52T5SfWTOsL20pH6ob+5mEtA=;
+        b=ncns3vkljJeRg+++B9bI09LSTPIN7Q50r6Q7c3MG3mj6tTLQaNCbLE7wM8xKTNclNM
+         Xb7K5tzwyTXa4bffG5EKhNkSaXz30tPX9tCoPNbuQ/hMkGdSr7CfpXYWs+efUuAj8cfh
+         fqpXgp5EaS838qONnFeoLOuKl6380AywdBxmcehdaKJkRWwU3iRgBx0O3QwZPFFGP3no
+         j0Ws4IvPqfGHisE28k+OQm6EgqgwuOp1shbTTLVEVzv7c9UGmdqyzY8s9SL+fidtXZyj
+         PFM6jOmCk5X32S6qiHLRJP5DqpHQY5Fil30Nvx3NUdObX4SZL+37j5IqYdVW2VLqTVWF
+         y1zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=35f31jPrbe/qFsWIcvakk7ysCD9lwX+ABE7eqvtZ0wc=;
-        b=CwpbmItKTH8LS4jthktTBNYR52r4rh9hC1zFoYJHDlc1TbpsnbT9VetHVWiA+Yg+Nu
-         12iC7ySYeXkhpwrJemlt807VCQ5jiEr/jGyxZADiG6i7EBCTYZpm6C79OWZ1t5xdV5t5
-         eW9uD/ypmd+9RE5+J2QXbmB0OkQotUo8PR7iUSBOku2YyOwiXejru3XdKE0rIh0qRT8R
-         S6ZG2zGvXeF9s38cHTBr0XLDALksz6ecFskpNPklcvPt2sB3ddNaiRsAo81GCInqQkPX
-         3VWaItZoltEmxB/Hlna3xPJbrvnaAumsoQhpabq8TzRjBuEBj0TumKycI3m3y9CGzkil
-         YzGA==
-X-Gm-Message-State: AOAM5324NK3gMmwkGg6dAtFtRiz+P/uz3d0q5UM7aINEP0C/iJlvXv0m
-        nUdZBZAiJxGm9h0Sz2nYr8G2Plf+OsI=
-X-Google-Smtp-Source: ABdhPJyvI0r5XWvCIMMizQISLztTQ6kWCu2dC6ZjFbTiwMUFQCYT/DIFQ9DjhRKNzNOAl16xqAKhwgIhgFY=
+        bh=ehdULWTO7EegFXRAR9N52T5SfWTOsL20pH6ob+5mEtA=;
+        b=GLuDwH0uznBZ9T4OuXWVLgP6T/VMfdS9Hf3h6d2zR+VJYfn7FyTVRBORJW/mG/u1BA
+         v9xcBkcRGDjgZwOXlvdrFnrA3Tq2F6GO7R/qElEtNTEOoe+hXGgVQoKfgGFWCnv5sVfy
+         yDOX1LmN/JGEBclVhkeJUjizL1wqW2bGReN/Zbahg8kNzgb5ybKikREPL8zmWJZL4+6p
+         8stZZ5pFtmIfWfpusSeOpVkJ7YTJ5ToOpTEPPvYpXUszCA9Wppey7K0m5DBva7HMX/nW
+         WH1pNQduwSCAGns6TPsv7AR75xK/pw7w/EnaL1eOhmLBJUJTXvGYWHiyyR4jGg2yH5ys
+         yJgQ==
+X-Gm-Message-State: AOAM530kOk0907lyladqtl2EflcVRI9W9AzwzfYunk8qdz88k5bdyVgV
+        lCtS9KrZiGSDFCLrxz+a0pILvzjcQAc=
+X-Google-Smtp-Source: ABdhPJzLhnyCrRs/Bk9YHCsNQ28pCnNpi0SPWgybuUOEstJduRVYRC0Mk+Qb4Qf5/pmV72gNAwVxTE51u/Y=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:df4b:: with SMTP id w72mr9151292ybg.174.1611346936569;
- Fri, 22 Jan 2021 12:22:16 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:db87:: with SMTP id g129mr3270161ybf.518.1611346943739;
+ Fri, 22 Jan 2021 12:22:23 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 22 Jan 2021 12:21:41 -0800
+Date:   Fri, 22 Jan 2021 12:21:44 -0800
 In-Reply-To: <20210122202144.2756381-1-seanjc@google.com>
-Message-Id: <20210122202144.2756381-11-seanjc@google.com>
+Message-Id: <20210122202144.2756381-14-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210122202144.2756381-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v3 10/13] KVM: SVM: Move SEV VMCB tracking allocation to sev.c
+Subject: [PATCH v3 13/13] KVM: SVM: Skip SEV cache flush if no ASIDs have been used
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -72,98 +72,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the allocation of the SEV VMCB array to sev.c to help pave the way
-toward encapsulating SEV enabling wholly within sev.c.
+Skip SEV's expensive WBINVD and DF_FLUSH if there are no SEV ASIDs
+waiting to be reclaimed, e.g. if SEV was never used.  This "fixes" an
+issue where the DF_FLUSH fails during hardware teardown if the original
+SEV_INIT failed.  Ideally, SEV wouldn't be marked as enabled in KVM if
+SEV_INIT fails, but that's a problem for another day.
 
-No functional change intended.
-
-Reviewed by: Tom Lendacky <thomas.lendacky@amd.com>
-Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/sev.c | 12 ++++++++++++
- arch/x86/kvm/svm/svm.c | 16 ++++++++--------
- arch/x86/kvm/svm/svm.h |  1 +
- 3 files changed, 21 insertions(+), 8 deletions(-)
+ arch/x86/kvm/svm/sev.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 0c69de022614..55a47a34a0ef 100644
+index 73da2af1e25d..0a4715e60b88 100644
 --- a/arch/x86/kvm/svm/sev.c
 +++ b/arch/x86/kvm/svm/sev.c
-@@ -1331,6 +1331,18 @@ void sev_hardware_teardown(void)
- 	sev_flush_asids();
- }
+@@ -56,9 +56,14 @@ struct enc_region {
+ 	unsigned long size;
+ };
  
-+int sev_cpu_init(struct svm_cpu_data *sd)
-+{
-+	if (!svm_sev_enabled())
-+		return 0;
-+
-+	sd->sev_vmcbs = kcalloc(max_sev_asid + 1, sizeof(void *), GFP_KERNEL);
-+	if (!sd->sev_vmcbs)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- /*
-  * Pages used by hardware to hold guest encrypted state must be flushed before
-  * returning them to the system.
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 751785b156ab..89b95fb87a0c 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -552,22 +552,22 @@ static void svm_cpu_uninit(int cpu)
- static int svm_cpu_init(int cpu)
+-static int sev_flush_asids(void)
++static int sev_flush_asids(int min_asid, int max_asid)
  {
- 	struct svm_cpu_data *sd;
-+	int ret;
+-	int ret, error = 0;
++	int ret, pos, error = 0;
++
++	/* Check if there are any ASIDs to reclaim before performing a flush */
++	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
++	if (pos >= max_asid)
++		return -EBUSY;
  
- 	sd = kzalloc(sizeof(struct svm_cpu_data), GFP_KERNEL);
- 	if (!sd)
- 		return -ENOMEM;
- 	sd->cpu = cpu;
- 	sd->save_area = alloc_page(GFP_KERNEL);
--	if (!sd->save_area)
-+	if (!sd->save_area) {
-+		ret = -ENOMEM;
- 		goto free_cpu_data;
-+	}
- 	clear_page(page_address(sd->save_area));
+ 	/*
+ 	 * DEACTIVATE will clear the WBINVD indicator causing DF_FLUSH to fail,
+@@ -80,14 +85,7 @@ static int sev_flush_asids(void)
+ /* Must be called with the sev_bitmap_lock held */
+ static bool __sev_recycle_asids(int min_asid, int max_asid)
+ {
+-	int pos;
+-
+-	/* Check if there are any ASIDs to reclaim before performing a flush */
+-	pos = find_next_bit(sev_reclaim_asid_bitmap, max_sev_asid, min_asid);
+-	if (pos >= max_asid)
+-		return false;
+-
+-	if (sev_flush_asids())
++	if (sev_flush_asids(min_asid, max_asid))
+ 		return false;
  
--	if (svm_sev_enabled()) {
--		sd->sev_vmcbs = kcalloc(max_sev_asid + 1, sizeof(void *),
--					GFP_KERNEL);
--		if (!sd->sev_vmcbs)
--			goto free_save_area;
--	}
-+	ret = sev_cpu_init(sd);
-+	if (ret)
-+		goto free_save_area;
+ 	/* The flush process will flush all reclaimable SEV and SEV-ES ASIDs */
+@@ -1324,10 +1322,11 @@ void sev_hardware_teardown(void)
+ 	if (!sev_enabled)
+ 		return;
  
- 	per_cpu(svm_data, cpu) = sd;
- 
-@@ -577,7 +577,7 @@ static int svm_cpu_init(int cpu)
- 	__free_page(sd->save_area);
- free_cpu_data:
- 	kfree(sd);
--	return -ENOMEM;
-+	return ret;
- 
++	/* No need to take sev_bitmap_lock, all VMs have been destroyed. */
++	sev_flush_asids(0, max_sev_asid);
++
+ 	bitmap_free(sev_asid_bitmap);
+ 	bitmap_free(sev_reclaim_asid_bitmap);
+-
+-	sev_flush_asids();
  }
  
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 8e169835f52a..4eb4bab0ca3e 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -583,6 +583,7 @@ int svm_unregister_enc_region(struct kvm *kvm,
- void pre_sev_run(struct vcpu_svm *svm, int cpu);
- void __init sev_hardware_setup(void);
- void sev_hardware_teardown(void);
-+int sev_cpu_init(struct svm_cpu_data *sd);
- void sev_free_vcpu(struct kvm_vcpu *vcpu);
- int sev_handle_vmgexit(struct vcpu_svm *svm);
- int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
+ int sev_cpu_init(struct svm_cpu_data *sd)
 -- 
 2.30.0.280.ga3ce27912f-goog
 
