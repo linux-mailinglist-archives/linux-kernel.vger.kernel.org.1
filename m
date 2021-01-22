@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8D7300661
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B2530056B
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 15:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729051AbhAVO6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 09:58:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39602 "EHLO mail.kernel.org"
+        id S1728771AbhAVO27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 09:28:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728638AbhAVOXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:23:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54A0123B01;
-        Fri, 22 Jan 2021 14:18:43 +0000 (UTC)
+        id S1728322AbhAVOXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:23:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02A2523B04;
+        Fri, 22 Jan 2021 14:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611325123;
-        bh=19OZUo+5WqaAeqWUCa5yZCv1TB9qkBNMllD/YndVSYg=;
+        s=korg; t=1611325086;
+        bh=lZZi3zTbVDlWhX8pOGBIxdy2FlKVgpO/y8yhoXFbqbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gMnKqCWPj0xydl7CpHcueCpPn3+k+bFe+w8bx5dku7PcwmBkkAy7MKGOOkNRqXXv0
-         mJlArmqsABmJtvvJroR9tdWZDyVlquOXUuFljiNx00deWhq8BNF1QySuFlu4JXTYpu
-         Y4dLMODPB27u0yLcMAG5yyh0prwta+WxiZUaCF9o=
+        b=D6DwR/6eOJUlMeUQFBEjx10W6G4eufuaw3Y8Py8k7xnStn03yoaJpi4H7z6vFl9O3
+         67qmx5sQ8Srn36O+PVBN5/ef8Vy8nsfzphfv4u4CiOpT94crf6moDsiyUgeFWCtDPi
+         tV26dApps61ACSc6U0EmTdN6texm57thlRnpvotM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Gilad Reti <gilad.reti@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH 5.10 09/43] bpf: Support PTR_TO_MEM{,_OR_NULL} register spilling
-Date:   Fri, 22 Jan 2021 15:12:25 +0100
-Message-Id: <20210122135736.032085194@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mircea Cirjaliu <mcirjaliu@bitdefender.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Mauricio Vasquez <mauriciovasquezbernal@gmail.com>
+Subject: [PATCH 5.10 10/43] bpf: Fix helper bpf_map_peek_elem_proto pointing to wrong callback
+Date:   Fri, 22 Jan 2021 15:12:26 +0100
+Message-Id: <20210122135736.063338583@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210122135735.652681690@linuxfoundation.org>
 References: <20210122135735.652681690@linuxfoundation.org>
@@ -41,38 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gilad Reti <gilad.reti@gmail.com>
+From: Mircea Cirjaliu <mcirjaliu@bitdefender.com>
 
-commit 744ea4e3885eccb6d332a06fae9eb7420a622c0f upstream.
+commit 301a33d51880619d0c5a581b5a48d3a5248fa84b upstream.
 
-Add support for pointer to mem register spilling, to allow the verifier
-to track pointers to valid memory addresses. Such pointers are returned
-for example by a successful call of the bpf_ringbuf_reserve helper.
+I assume this was obtained by copy/paste. Point it to bpf_map_peek_elem()
+instead of bpf_map_pop_elem(). In practice it may have been less likely
+hit when under JIT given shielded via 84430d4232c3 ("bpf, verifier: avoid
+retpoline for map push/pop/peek operation").
 
-The patch was partially contributed by CyberArk Software, Inc.
-
-Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support for it")
-Suggested-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: KP Singh <kpsingh@kernel.org>
-Link: https://lore.kernel.org/bpf/20210113053810.13518-1-gilad.reti@gmail.com
+Fixes: f1a2e44a3aec ("bpf: add queue and stack maps")
+Signed-off-by: Mircea Cirjaliu <mcirjaliu@bitdefender.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Mauricio Vasquez <mauriciovasquezbernal@gmail.com>
+Link: https://lore.kernel.org/bpf/AM7PR02MB6082663DFDCCE8DA7A6DD6B1BBA30@AM7PR02MB6082.eurprd02.prod.outlook.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/bpf/verifier.c |    2 ++
- 1 file changed, 2 insertions(+)
+ kernel/bpf/helpers.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2214,6 +2214,8 @@ static bool is_spillable_regtype(enum bp
- 	case PTR_TO_RDWR_BUF:
- 	case PTR_TO_RDWR_BUF_OR_NULL:
- 	case PTR_TO_PERCPU_BTF_ID:
-+	case PTR_TO_MEM:
-+	case PTR_TO_MEM_OR_NULL:
- 		return true;
- 	default:
- 		return false;
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -108,7 +108,7 @@ BPF_CALL_2(bpf_map_peek_elem, struct bpf
+ }
+ 
+ const struct bpf_func_proto bpf_map_peek_elem_proto = {
+-	.func		= bpf_map_pop_elem,
++	.func		= bpf_map_peek_elem,
+ 	.gpl_only	= false,
+ 	.ret_type	= RET_INTEGER,
+ 	.arg1_type	= ARG_CONST_MAP_PTR,
 
 
