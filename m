@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A754230042D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CF530041A
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbhAVN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:28:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53778 "EHLO mail.kernel.org"
+        id S1727256AbhAVNZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:25:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:47516 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727723AbhAVN1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:27:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C9C23437;
-        Fri, 22 Jan 2021 13:27:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611322022;
-        bh=TFRhEbqOYGrPg5oqvZVpaacX5O5OSugUVOmvFlNjpHU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WES5Cm1GzYFPymGEhfK8FTVVWR1u6M1vvW13aa9LwGcq3rhxId09iMjJocQDvk8hm
-         iG1Sbab84JE57V4aIaKSycb5d1IxgqWLfDlpqcsYdlYW/r+3CFkyg5EZZPoi8pryad
-         tfK1K/MHOVDOaiLC9aTyHscXWl+zhxwPiHHL0wBewy5GBjh8bQz84GgHpRSxOtNzgY
-         /cz2yHVcmYMua4UV/bCQjZlA74eHzcPoyB3QGRvbfP/ssHCB/ADoBi3hcX1BkEEJIQ
-         PX67b5+eXPGAwDZCS+35ypd0ENmdD27/qMkRwvBLLpU9w4GJyV02QzzSWzQqLVkKVE
-         f6GtWRRs8geow==
-Date:   Fri, 22 Jan 2021 13:26:57 +0000
-From:   Will Deacon <will@kernel.org>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
-Message-ID: <20210122132657.GF24102@willie-the-truck>
-References: <20201126034230.777-1-thunder.leizhen@huawei.com>
- <20210122125132.GB24102@willie-the-truck>
- <34a9c164-389d-30cd-11a3-8796eb7bca93@arm.com>
- <ad8cb736-6760-8aab-b11e-f296ec12301b@huawei.com>
+        id S1727960AbhAVNYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:24:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4320711B3;
+        Fri, 22 Jan 2021 05:23:27 -0800 (PST)
+Received: from [10.37.8.28] (unknown [10.37.8.28])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA7743F66E;
+        Fri, 22 Jan 2021 05:23:24 -0800 (PST)
+Subject: Re: [PATCH v5 3/6] kasan: Add report for async mode
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20210121163943.9889-1-vincenzo.frascino@arm.com>
+ <20210121163943.9889-4-vincenzo.frascino@arm.com>
+ <20210122131933.GD8567@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <6ccde9db-98cd-5a56-b93d-0b79f4df56a7@arm.com>
+Date:   Fri, 22 Jan 2021 13:27:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ad8cb736-6760-8aab-b11e-f296ec12301b@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210122131933.GD8567@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 09:21:20PM +0800, Leizhen (ThunderTown) wrote:
-> On 2021/1/22 21:00, Robin Murphy wrote:
-> > On 2021-01-22 12:51, Will Deacon wrote:
-> >> On Thu, Nov 26, 2020 at 11:42:30AM +0800, Zhen Lei wrote:
-> >>>   -        tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
-> >>> -        if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
-> >>> -            WARN_ON(1);
-> >>> -            return -EINVAL;
-> >>> +        switch (cfg->bbml) {
-> >>> +        case 0:
-> >>> +            /*
-> >>> +             * We need to unmap and free the old table before
-> >>> +             * overwriting it with a block entry.
-> >>> +             */
-> >>> +            tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
-> >>> +            if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
-> >>> +                WARN_ON(1);
-> >>> +                return -EINVAL;
-> >>> +            }
-> >>> +            break;
-> >>> +        case 1:
-> >>> +            __arm_lpae_init_pte(data, paddr, prot, lvl, ptep, ARM_LPAE_PTE_nT);
-> >>> +
-> >>> +            io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
-> >>> +            tblp = iopte_deref(pte, data);
-> >>> +            __arm_lpae_free_pgtable(data, lvl + 1, tblp);
-> >>> +            break;
-> >>> +        case 2:
-> >>> +            __arm_lpae_init_pte(data, paddr, prot, lvl, ptep, 0);
-> >>> +
-> >>> +            io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
-> >>> +            tblp = iopte_deref(pte, data);
-> >>> +            __arm_lpae_free_pgtable(data, lvl + 1, tblp);
-> >>> +            return 0;
-> >>
-> >> Sorry, but I really don't understand what you're trying to do here. The old
-> >> code uses BBM for the table -> block path so we don't need anything extra
-> >> here. The dodgy case is when we unmap part of a block, and end up installing
-> >> a table via arm_lpae_split_blk_unmap(). We can't use BBM there because there
-> >> could be ongoing DMA to parts of the block mapping that we want to remain in
-> >> place.
-> >>
-> >> Are you seeing a problem in practice?
-> > 
-> > Right, I was under the assumption that we could ignore BBML because we
-> > should never have a legitimate reason to split blocks. I'm certainly not
-> > keen on piling any more complexity into split_blk_unmap, because the
-> > IOMMU API clearly doesn't have a well-defined behaviour for that case
-> > anyway - some other drivers will just unmap the entire block, and IIRC
-> > there was a hint somewhere in VFIO that it might actually expect that
-> > behaviour.
+
+
+On 1/22/21 1:19 PM, Catalin Marinas wrote:
+> On Thu, Jan 21, 2021 at 04:39:40PM +0000, Vincenzo Frascino wrote:
+>> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+>> index bb862d1f0e15..b0a1d9dfa85c 100644
+>> --- a/include/linux/kasan.h
+>> +++ b/include/linux/kasan.h
+>> @@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
+>>  bool kasan_report(unsigned long addr, size_t size,
+>>  		bool is_write, unsigned long ip);
+>>  
+>> +void kasan_report_async(void);
+>> +
+>>  #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
+>>  
+>>  static inline void *kasan_reset_tag(const void *addr)
+>> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+>> index 234f35a84f19..2fd6845a95e9 100644
+>> --- a/mm/kasan/report.c
+>> +++ b/mm/kasan/report.c
+>> @@ -358,6 +358,17 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
+>>  	end_report(&flags);
+>>  }
+>>  
+>> +void kasan_report_async(void)
+>> +{
+>> +	unsigned long flags;
+>> +
+>> +	start_report(&flags);
+>> +	pr_err("BUG: KASAN: invalid-access\n");
+>> +	pr_err("Asynchronous mode enabled: no access details available\n");
+>> +	dump_stack();
+>> +	end_report(&flags);
+>> +}
 > 
-> I'm going home. I'll answer you two tomorrow.
+> I think the kernel test robot complains that with KASAN_SW_TAGS and
+> HW_TAGS disabled, the kasan_report_async() prototype is no longer
+> visible but you still have the non-static function definition here. So
+> either move kasan_report_async() out of this #ifdef or add the #ifdef
+> around the function definition.
+>
 
-It can wait until Monday! Have a good weekend :)
+I think adding #ifdef around the function would be the best way in this case,
+for consistency with the header.
 
-Will
+> It looks like the original kasan_report() prototype is declared in two
+> places (second one in mm/kasan/kasan.h). I'd remove the latter and try
+> to have a consistent approach for kasan_report() and
+> kasan_report_async().
+> 
+
+Ok, I will remove it.
+
+-- 
+Regards,
+Vincenzo
