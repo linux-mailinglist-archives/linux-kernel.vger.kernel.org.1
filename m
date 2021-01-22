@@ -2,103 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C818301015
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 666B4301047
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbhAVWgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:36:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729631AbhAVWgC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:36:02 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBFDC061788
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:35:21 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id m22so9717548lfg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 14:35:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TVHHWido/EH2Vt59qdy1Zby/ZP47wr14BUSPLPmA0j4=;
-        b=vRtzT2R7AO6c4k2leJdr9LSRmXNc6Xyl/1AF/P7bdVFSKXBE97fAh73Oss8ZhECx99
-         tUmbI1ES3YH2WefY9ABfgwQpDa6Yk2uICzg9wT2S8oBIb7MsV5E4Ohx26IanqF6f/8lY
-         ZZKGvs+Fjlfs3zVa8b6/TjZam2qMpcoJEO1oIlZRiY37NWIfIp8j89KenGVwyuV45bIB
-         4oFqn+/7bkNaGaniA5pcfuPjBIej3sTakGYOkVyxozrrICb83JvbcP71N/2iYpi6nNjW
-         4oEk04IiHcpIffCzEs3r5v0MJvgPra/+0VbZxFschKo/9/xGNdHScf9vQ6WQWusHo/NJ
-         Do3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TVHHWido/EH2Vt59qdy1Zby/ZP47wr14BUSPLPmA0j4=;
-        b=uT3tVw5On0DwfjjaV6V0uDHjXUc1WR0xoiC5vt29XWwVl9tzadQsy0WMJpzpaGDX0M
-         oEPtn2k2RWupu8jHpVSFVGaopUd0ODvNLgUH1/98r/T9nwrhAuTvuFL6xYvuaOhX4mxn
-         M+QEl5g4x9F25jpK9KN3u3jDh85Zf8HtZtqIF6LmRw85eOCcKbaba9zcDwEA8Yjx1T9c
-         JGHUOERhB/ZzXwBZVtlMk2LN/gMEynkXowXbMuViMXrFtTpSJ1k/G/9zutyRSZyJa3Od
-         ZbmiCi/Srk16YDa9DUE55rHYLMU/8A0eNobxJAMkIVKQLS0FPCewssc+ylE3+QlCB3BX
-         O2Ow==
-X-Gm-Message-State: AOAM530dlTZuPNjA56mXmFdqaPonzZ2HqZPtiVSZNzxzP3zrA/Dmp+MO
-        ruuKYFMiWTE2ZPBTmyoKr/VaNIVKXe2w0vQbciVsrw==
-X-Google-Smtp-Source: ABdhPJy1BnxeBPTkzgt4QScOHWd/QI0f84MDBJMyCAHwV8LfTy+jZGVeA/xcg+uD8cA806qlu/XHkmck+4PXwcqcImg=
-X-Received: by 2002:a19:48d0:: with SMTP id v199mr2069375lfa.535.1611354919948;
- Fri, 22 Jan 2021 14:35:19 -0800 (PST)
+        id S1728549AbhAVWrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:47:11 -0500
+Received: from rere.qmqm.pl ([91.227.64.183]:36765 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728047AbhAVWqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 17:46:02 -0500
+X-Greylist: delayed 465 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Jan 2021 17:45:58 EST
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4DMvK04gZNz67;
+        Fri, 22 Jan 2021 23:37:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1611355044; bh=jBEHC8YwgXFlj7D2xiylOBOLQweQ/xz01AF0u5HJYgc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sOnJMs7aWGVRqB43r7lK7L+xxGHSI0L4Azh1+laK91AAUZ4W3ntHePfjxKPQ3qSKv
+         9brAZZ39Q5L7HFO//yEtamPkPZr9UFvP27QUPSqrhowRjyWg1JAxdMPzWa2x7/O0bB
+         z1YO7nHf/Pj3woUjbrpD0ISvCpEN4Xk7vlGCqfFVRpo8Kz/saSiHlcM1mswfAR3iiz
+         w4Tuz0kqGlKZMZuKLl2k3WmikWmdM5B9InjrST5guVsUKEpWMTY0af8IRhc91Ku9Fh
+         SygDQCc2uLbnrFpADj4Dxa18mKSIHzVIf/aSWelnoIqLrwXdwZOB8DcQbhOVKZlXcg
+         4FgbkQbYk0Dfw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Fri, 22 Jan 2021 23:37:18 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 2/4] input: elants: support old touch report
+ format
+Message-ID: <20210122223718.GE17048@qmqm.qmqm.pl>
+References: <cover.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <a5c0b6b300fadf9425781285351b46c6dbb4f618.1607669375.git.mirq-linux@rere.qmqm.pl>
+ <X9Mf5G6yvIEAoh2C@google.com>
+ <20201211160917.GA23095@qmqm.qmqm.pl>
+ <3d872d19-a0b2-ed83-4b08-5c9a4755c2fe@gmail.com>
+ <20201211170401.GA31605@qmqm.qmqm.pl>
+ <X9O/F0M4rU6cBdRi@google.com>
+ <79cf6571-4239-e98e-6001-70a4bf8b0fe5@gmail.com>
+ <4c443c59-a7f8-bf16-cc0b-0e542c0d127f@gmail.com>
 MIME-Version: 1.0
-References: <20210119204508.9256-1-john.stultz@linaro.org> <20210119204508.9256-2-john.stultz@linaro.org>
- <CAO_48GEYGzY8cZybwrXgfODhuoAJqi4AvwbZbWd+PiYjMqKYpw@mail.gmail.com> <CAJuCfpGRkM+h16SJp7gJOaAhy+gFw1-++WP8kavOjRj3MHcpBQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpGRkM+h16SJp7gJOaAhy+gFw1-++WP8kavOjRj3MHcpBQ@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 22 Jan 2021 14:35:07 -0800
-Message-ID: <CALAqxLW-Z3-Zcwkeuard5vfU_bAZkRRsAo2fX=3Wwp2-yURiuA@mail.gmail.com>
-Subject: Re: [RESEND][PATCH 2/3] dma-buf: heaps: Add a WARN_ON should the
- vmap_cnt go negative
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c443c59-a7f8-bf16-cc0b-0e542c0d127f@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 2:21 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> On Thu, Jan 21, 2021 at 11:56 PM Sumit Semwal <sumit.semwal@linaro.org> wrote:
-> > On Wed, 20 Jan 2021 at 02:15, John Stultz <john.stultz@linaro.org> wrote:
-> > >
-> > > We shouldn't vunmap more then we vmap, but if we do, make
-> > > sure we complain loudly.
-> >
-> > I was checking the general usage of vunmap in the kernel, and I
-> > couldn't find many instances where we need to WARN_ON for the vunmap
-> > count more than vmap count. Is there a specific need for this in the heaps?
->
-> Hi Sumit,
-> My worry was that buffer->vmap_cnt could silently go negative. But if
-> this warning is not consistent with other places we do refcounted
-> vmap/vunmap then feel free to ignore my suggestion.
->
+On Fri, Jan 22, 2021 at 11:10:52PM +0300, Dmitry Osipenko wrote:
+> 08.01.2021 01:06, Dmitry Osipenko пишет:
+> > 11.12.2020 21:48, Dmitry Torokhov пишет:
+> >> On Fri, Dec 11, 2020 at 06:04:01PM +0100, Michał Mirosław wrote:
+> >>> On Fri, Dec 11, 2020 at 07:39:33PM +0300, Dmitry Osipenko wrote:
+> >>>> 11.12.2020 19:09, Michał Mirosław пишет:
+> >>>>> On Thu, Dec 10, 2020 at 11:29:40PM -0800, Dmitry Torokhov wrote:
+> >>>>>> Hi Michał,
+> >>>>>> On Fri, Dec 11, 2020 at 07:53:56AM +0100, Michał Mirosław wrote:
+> >>>>>>> @@ -998,17 +1011,18 @@ static irqreturn_t elants_i2c_irq(int irq, void *_dev)
+> >>>>>>>  			}
+> >>>>>>>  
+> >>>>>>>  			report_len = ts->buf[FW_HDR_LENGTH] / report_count;
+> >>>>>>> -			if (report_len != PACKET_SIZE) {
+> >>>>>>> +			if (report_len != PACKET_SIZE &&
+> >>>>>>> +			    report_len != PACKET_SIZE_OLD) {
+> >>>>>>>  				dev_err(&client->dev,
+> >>>>>>> -					"mismatching report length: %*ph\n",
+> >>>>>>> +					"unsupported report length: %*ph\n",
+> >>>>>>>  					HEADER_SIZE, ts->buf);
+> >>>>>> Do I understand this correctly that the old packets are only observed on
+> >>>>>> EKTF3624? If so can we expand the check so that we only accept packets
+> >>>>>> with "old" size when we know we are dealing with this device?
+> >>>>>
+> >>>>> We only have EKTF3624 and can't be sure there are no other chips needing this.
+> >>>>
+> >>>> In practice this older packet format should be seen only on 3624, but
+> >>>> nevertheless we could make it more explicit by adding the extra chip_id
+> >>>> checks.
+> >>>>
+> >>>> It won't be difficult to change it in the future if will be needed.
+> >>>>
+> >>>> I think the main point that Dmitry Torokhov conveys here is that we
+> >>>> should minimize the possible impact on the current EKT3500 code since we
+> >>>> don't have definitive answers regarding the firmware differences among
+> >>>> the hardware variants.
+> >>>
+> >>> The only possible impact here is that older firmware instead of breaking
+> >>> would suddenly work. Maybe we can accept such a risk?
+> >>
+> >> These are not controllers we'll randomly find in devices: Windows boxes
+> >> use I2C HID, Chrome devices use "new" firmware, so that leaves random
+> >> ARM where someone needs to consciously add proper compatible before the
+> >> driver will engage with the controller.
+> >>
+> >> I would prefer we were conservative and not accept potentially invalid
+> >> data.
+> >>
+> >> Thanks.
+> >>
+> > 
+> > Michał, will you be able to make v9 with all the review comments addressed?
+> > 
+> 
+> I'll make a v9 over this weekend.
+> 
+> Michał, please let me know if you already started to work on this or
+> have any objections.
 
-Yea,
- My sense is that it didn't seem like it would hurt, and if the
-warning happened to be tripped, it would be good to catch.
+Hi,
 
-However, if you are skeptical, feel free to drop that patch from this
-series for now (it shouldn't impact the following patches).
+Sorry for staying quiet so long. I have to revive my Transformer before
+I can test anything, so please go ahead.
 
-thanks
--john
+Best Regards
+Michał Mirosław
