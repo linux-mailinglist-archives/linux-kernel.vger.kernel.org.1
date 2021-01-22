@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9B0300C14
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B86300C4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbhAVTH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:07:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39962 "EHLO mail.kernel.org"
+        id S1730519AbhAVSze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 13:55:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728538AbhAVOWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 09:22:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BAA723AF8;
-        Fri, 22 Jan 2021 14:16:18 +0000 (UTC)
+        id S1728459AbhAVOVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 09:21:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE7AD23AA3;
+        Fri, 22 Jan 2021 14:14:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611324978;
-        bh=QbgaV8qTx959Oh2XOlCMlZHRt+0U8dHoNXiXXyuFuOM=;
+        s=korg; t=1611324889;
+        bh=stopOueBLpDCRcNtvxkdz0c/fQruL3SUtd4aoCm04qo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D/ikN2jCqi9ZYk2hZiVIqY5ptQfN7IPowAu228m6HsduxGllu1ZTVLcqIctZheNYN
-         bzFL7iNurkRy1WKtm1OPrLfGrWFw6Iil1CH58eByyE4+ZX97UGGfcGgaPpYy0ZNu9t
-         zBqwfY5ZXdUvEjPeu9qucgCwb6Bi1Qxs7eXcnW6E=
+        b=acbgc9a+GhuGOlNHcc+cEucImPdW6s44CuQWr49WncQyE3/fSbNJJVqwfIODsqUE2
+         a6reQbAMRgveoZewBlc0TTBkigfrr1yR3TbhpGTN69AJsKddPuTO8s8Gki5NqJctna
+         w2NOSc9tGx35GxCvgNw3wEIijHtWN6vaIEx+bed8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Chulski <stefanc@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 08/22] net: mvpp2: Remove Pause and Asym_Pause support
+Subject: [PATCH 4.14 45/50] tipc: fix NULL deref in tipc_link_xmit()
 Date:   Fri, 22 Jan 2021 15:12:26 +0100
-Message-Id: <20210122135732.249256333@linuxfoundation.org>
+Message-Id: <20210122135737.025525695@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-References: <20210122135731.921636245@linuxfoundation.org>
+In-Reply-To: <20210122135735.176469491@linuxfoundation.org>
+References: <20210122135735.176469491@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit 6f83802a1a06e74eafbdbc9b52c05516d3083d02 ]
+[ Upstream commit b77413446408fdd256599daf00d5be72b5f3e7c6 ]
 
-Packet Processor hardware not connected to MAC flow control unit and
-cannot support TX flow control.
-This patch disable flow control support.
+The buffer list can have zero skb as following path:
+tipc_named_node_up()->tipc_node_xmit()->tipc_link_xmit(), so
+we need to check the list before casting an &sk_buff.
 
-Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Link: https://lore.kernel.org/r/1610306582-16641-1-git-send-email-stefanc@marvell.com
+Fault report:
+ [] tipc: Bulk publication failure
+ [] general protection fault, probably for non-canonical [#1] PREEMPT [...]
+ [] KASAN: null-ptr-deref in range [0x00000000000000c8-0x00000000000000cf]
+ [] CPU: 0 PID: 0 Comm: swapper/0 Kdump: loaded Not tainted 5.10.0-rc4+ #2
+ [] Hardware name: Bochs ..., BIOS Bochs 01/01/2011
+ [] RIP: 0010:tipc_link_xmit+0xc1/0x2180
+ [] Code: 24 b8 00 00 00 00 4d 39 ec 4c 0f 44 e8 e8 d7 0a 10 f9 48 [...]
+ [] RSP: 0018:ffffc90000006ea0 EFLAGS: 00010202
+ [] RAX: dffffc0000000000 RBX: ffff8880224da000 RCX: 1ffff11003d3cc0d
+ [] RDX: 0000000000000019 RSI: ffffffff886007b9 RDI: 00000000000000c8
+ [] RBP: ffffc90000007018 R08: 0000000000000001 R09: fffff52000000ded
+ [] R10: 0000000000000003 R11: fffff52000000dec R12: ffffc90000007148
+ [] R13: 0000000000000000 R14: 0000000000000000 R15: ffffc90000007018
+ [] FS:  0000000000000000(0000) GS:ffff888037400000(0000) knlGS:000[...]
+ [] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [] CR2: 00007fffd2db5000 CR3: 000000002b08f000 CR4: 00000000000006f0
+
+Fixes: af9b028e270fd ("tipc: make media xmit call outside node spinlock context")
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Link: https://lore.kernel.org/r/20210108071337.3598-1-hoang.h.le@dektech.com.au
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |    2 --
- 1 file changed, 2 deletions(-)
+ net/tipc/link.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -4266,8 +4266,6 @@ static void mvpp2_phylink_validate(struc
+--- a/net/tipc/link.c
++++ b/net/tipc/link.c
+@@ -882,9 +882,7 @@ void tipc_link_reset(struct tipc_link *l
+ int tipc_link_xmit(struct tipc_link *l, struct sk_buff_head *list,
+ 		   struct sk_buff_head *xmitq)
+ {
+-	struct tipc_msg *hdr = buf_msg(skb_peek(list));
+ 	unsigned int maxwin = l->window;
+-	int imp = msg_importance(hdr);
+ 	unsigned int mtu = l->mtu;
+ 	u16 ack = l->rcv_nxt - 1;
+ 	u16 seqno = l->snd_nxt;
+@@ -893,13 +891,20 @@ int tipc_link_xmit(struct tipc_link *l,
+ 	struct sk_buff_head *backlogq = &l->backlogq;
+ 	struct sk_buff *skb, *_skb, **tskb;
+ 	int pkt_cnt = skb_queue_len(list);
++	struct tipc_msg *hdr;
+ 	int rc = 0;
++	int imp;
  
- 	phylink_set(mask, Autoneg);
- 	phylink_set_port_modes(mask);
--	phylink_set(mask, Pause);
--	phylink_set(mask, Asym_Pause);
++	if (pkt_cnt <= 0)
++		return 0;
++
++	hdr = buf_msg(skb_peek(list));
+ 	if (unlikely(msg_size(hdr) > mtu)) {
+ 		skb_queue_purge(list);
+ 		return -EMSGSIZE;
+ 	}
  
- 	switch (state->interface) {
- 	case PHY_INTERFACE_MODE_10GKR:
++	imp = msg_importance(hdr);
+ 	/* Allow oversubscription of one data msg per source at congestion */
+ 	if (unlikely(l->backlog[imp].len >= l->backlog[imp].limit)) {
+ 		if (imp == TIPC_SYSTEM_IMPORTANCE) {
 
 
