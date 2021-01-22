@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912DE300403
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22224300404
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 14:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbhAVNUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 08:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbhAVNUA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 08:20:00 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851D1C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:19:19 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id a8so7474312lfi.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 05:19:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hv8fAqotf/e/86aGAMKjDJpUZge+GjX7fvkC+0Ap6w4=;
-        b=hAWzGtiCuspzhiOlOZbxkrrxE5+KHD+JugOHPkukc3HV9Tlgrz8gUyvM2ptxd/HL3L
-         cHqGhE9fNB2FA3EgrJllReFLu+dZBnUPsPUdnWASi4bdgd5MH2+H41pq+FHQnGksH3P7
-         8uY+mPRc69cuPlStb2SBkbBrbh7SgKi1lcpwaBlubykOHKvJ5VWVJ2XKfoxIdoflqLMS
-         q5t/sMegcuqP+lnzMTVyUg6SxEUxZ1A+2hJqORSlsnaPfYhkrFsm9civoTsVt4egy90L
-         sXnDnplopMoMXk1CDRGHXgD0zB7AnbsEgV8aMjA4UV0QXn8zx6zIFf6CbcSsi0D0nmP4
-         jxkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hv8fAqotf/e/86aGAMKjDJpUZge+GjX7fvkC+0Ap6w4=;
-        b=qah7G6Ynt+DkZqI+1w8V7SdA7/SzZjxeUKO3Io4NoKsRN1QDYUB0ANKhKQK2X+9HDs
-         dhEOFr0II+DCKzhZ22Z0fp1NaMIpjZ8yjEbLTU73gBpND13XX1ughpSMSnEvl9WwrNcO
-         oFdiOiH9g6CDLuMi0z6brkOKRNNRhB3CKVB3CX8/5L07ybpfn6PHU6Zv89QH0R5teLFn
-         4p5bSPN7MAdcol/DM+aKsOfXm2XO7mgSbeAtLTE5B/Iwh9P7fNd7Qti7xK5kKv6c68Dg
-         kFkl6+bY0+GxtH1MygOsPS38uu6vrGw3tbPy5b3Qy4wwoBp3EZr4/QrKLAN2Hw3idMN/
-         jbqw==
-X-Gm-Message-State: AOAM5335cCDfTjmXapWLcx5DNVDvmqwfcc/x9PryCaRPR24paCGlC78F
-        hNQz7O0UB3Kno89jNbDfqXjkwUjcTbwIRRMPtFUAYuL9pd7fngEH
-X-Google-Smtp-Source: ABdhPJyyv+WZR6Jf2S5Vr6K7fvRzhXfD//kfIL52IN/NkmKrRq/fTu8WrTzWu0uc5YD52qBOqankWLsE3IChC1V+L2w=
-X-Received: by 2002:a19:8bc6:: with SMTP id n189mr171828lfd.291.1611321558110;
- Fri, 22 Jan 2021 05:19:18 -0800 (PST)
+        id S1727517AbhAVNU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 08:20:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727381AbhAVNUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 08:20:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC1AB23428;
+        Fri, 22 Jan 2021 13:19:36 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 13:19:34 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH v5 3/6] kasan: Add report for async mode
+Message-ID: <20210122131933.GD8567@gaia>
+References: <20210121163943.9889-1-vincenzo.frascino@arm.com>
+ <20210121163943.9889-4-vincenzo.frascino@arm.com>
 MIME-Version: 1.0
-References: <20210121062547.27173-1-manivannan.sadhasivam@linaro.org>
-In-Reply-To: <20210121062547.27173-1-manivannan.sadhasivam@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 22 Jan 2021 14:19:07 +0100
-Message-ID: <CACRpkdYDB883r7RRa-i1T_aWvDW1n3c_LvScigQVnt5TsPbPCg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: actions: Add the platform dependency to drivers
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121163943.9889-4-vincenzo.frascino@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 7:26 AM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
+On Thu, Jan 21, 2021 at 04:39:40PM +0000, Vincenzo Frascino wrote:
+> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+> index bb862d1f0e15..b0a1d9dfa85c 100644
+> --- a/include/linux/kasan.h
+> +++ b/include/linux/kasan.h
+> @@ -351,6 +351,8 @@ static inline void *kasan_reset_tag(const void *addr)
+>  bool kasan_report(unsigned long addr, size_t size,
+>  		bool is_write, unsigned long ip);
+>  
+> +void kasan_report_async(void);
+> +
+>  #else /* CONFIG_KASAN_SW_TAGS || CONFIG_KASAN_HW_TAGS */
+>  
+>  static inline void *kasan_reset_tag(const void *addr)
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 234f35a84f19..2fd6845a95e9 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -358,6 +358,17 @@ void kasan_report_invalid_free(void *object, unsigned long ip)
+>  	end_report(&flags);
+>  }
+>  
+> +void kasan_report_async(void)
+> +{
+> +	unsigned long flags;
+> +
+> +	start_report(&flags);
+> +	pr_err("BUG: KASAN: invalid-access\n");
+> +	pr_err("Asynchronous mode enabled: no access details available\n");
+> +	dump_stack();
+> +	end_report(&flags);
+> +}
 
-> The Actions Semi pinctrl drivers are a mix of both ARM32 and ARM64
-> platforms. So let's add the correct platform dependency to avoid them
-> being selected on the other.
->
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+I think the kernel test robot complains that with KASAN_SW_TAGS and
+HW_TAGS disabled, the kasan_report_async() prototype is no longer
+visible but you still have the non-static function definition here. So
+either move kasan_report_async() out of this #ifdef or add the #ifdef
+around the function definition.
 
-Are you not opting out of build tests when you do this?
+It looks like the original kasan_report() prototype is declared in two
+places (second one in mm/kasan/kasan.h). I'd remove the latter and try
+to have a consistent approach for kasan_report() and
+kasan_report_async().
 
-What about:
-
-depends on ARM64 || COMPILE_TEST
-(etc)
-?
-
-Yours,
-Linus Walleij
-
-Yours,
-Linus Walleij
+-- 
+Catalin
