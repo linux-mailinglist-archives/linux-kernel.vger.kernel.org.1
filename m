@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEF1300F86
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24D1300F88
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730305AbhAVV7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        id S1730593AbhAVV7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:59:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730913AbhAVUIb (ORCPT
+        with ESMTP id S1729576AbhAVV6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:08:31 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9159C06174A;
-        Fri, 22 Jan 2021 12:07:50 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id a8so9227602lfi.8;
-        Fri, 22 Jan 2021 12:07:50 -0800 (PST)
+        Fri, 22 Jan 2021 16:58:55 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20FE8C06174A;
+        Fri, 22 Jan 2021 13:58:15 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id u11so8182962ljo.13;
+        Fri, 22 Jan 2021 13:58:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Hh/SElQhpazfhLNsM2pfo+ND9UxMdLTk8ICaiFOA8oo=;
-        b=kw+Nn1ocjUoHyDWrvc943QBL0+WO2rixQyuoDLdIZqfZChRixaK9EavU/IXYeE3mtx
-         67xL8qtHAal7goK8OxGbJ8NDQZFQwhnQm4ucUTuQrK3seC3ysPD1kCdUGompYE1lN41I
-         S8NZh5k/YgpSDdBPx/ZA5tYpPpl+4zuEW0DIkZ51OR8tn2ZvF7AmMfpRZo0wQEhr7e8M
-         mhzEIh8cqbWcBjUgVlakfwKk7qg5ihEzCh5e+MTd1yyQVzi/olYQJQ7F7eDsWm447DAF
-         h0x0ZyFCqfdJV6okuJLAgmjBLQz6VunAf7iHicjIkM5sNVYOrOTe/fZqVjXplXxAN6yf
-         7N1Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XmVwcl5zov3KR+vEhZu6TM/lbJHaayiWVAvDfTYcGJg=;
+        b=Jfp3zu+DNoQBWUPlvlhJpjwwkHiJMuyg/x3E1zTiq7E5c8b9N2+Ekj/UynidTve9k9
+         qBWVzvzk46qU3mXkydK9Dza/CR0p/CXE0y9LGZsfkM+yT+jFqoNZGvn4sE4d0O+i62uZ
+         M0+A//Nm1Zx/ow9vdUMnD+DdDfM1RljSFLKQ4fo+faBPmid02wsTVMLQqOJ+uM9X3y7E
+         rkSPBQEftvA+TwjjpayNpITUpotZaqIKuCp+KBMPBlJpc7Hv9J+Sgyx5VEd13xUd5Owa
+         PNfYTEqtQpM5VhmqBPiE2cU7KkBlvvVwxssAcVSTdXUxOLO1WsKyxo2yCSR8jMEHpqex
+         jYWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Hh/SElQhpazfhLNsM2pfo+ND9UxMdLTk8ICaiFOA8oo=;
-        b=OLcynLez1/NalByLT9i3aSkBAiEYNAOX0kl8Pv/SAv4GNFUWRvJHjmoYwN7ecfT4KI
-         u/t59heHyYwjAqgt0Eg2WO8oQzhC3b1CcflevRx0wq8kln/ZRputm854TUqz0n+L76r9
-         GSAH9MO4o3WXSGJVs5t4zm8nFP9Ob8ydN7FdA8dz5QJ+HBDxiBlxqumkXU5/P7XZthKB
-         2afdNOk0l97Bw6AmLYiJ98nzyVQv8CfrrzjmmqKEY+R15czMLfBYQ+0RGMJswWdEZy9J
-         f0u1qBhgrPsnqe0Qxc80ppWhPDpVsQJKhWMtwi8qbZ/dr2jf7oYuevz/zHTGWt5//5sp
-         QZfg==
-X-Gm-Message-State: AOAM530NkVDVH+Pfn9c2uLcvTtSE5AqBLZRfMRDp3Qp+3coAg1fPCwGX
-        10QgW519YSconUEL0RnbaO9aDCtfg2A=
-X-Google-Smtp-Source: ABdhPJxsjwDjQKJCIYQKEu3vze9yfAtPHtRA28cKiQyCwFgRZe0Gd3Ux9hP3tBGwzJb36EHsIqUesA==
-X-Received: by 2002:a05:6512:312b:: with SMTP id p11mr131881lfd.446.1611346069420;
-        Fri, 22 Jan 2021 12:07:49 -0800 (PST)
-Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.gmail.com with ESMTPSA id u6sm994589lfk.127.2021.01.22.12.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 12:07:48 -0800 (PST)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Nick Dyer <nick@shmanahar.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        bh=XmVwcl5zov3KR+vEhZu6TM/lbJHaayiWVAvDfTYcGJg=;
+        b=HOyTJt6rzt869CHAqMdZtOjtFHpUK8NWyBBRUvyGlLk1miFfe1hNuCdrAFVnXqeduL
+         B6dp+s+kVBFl3F0hxhhLjwAcbyFkzgb8EHrYy1xYciV28ExMvmeztUc2y+miRHS36o+4
+         irBZ2xMjCWQb4kEVag3X8V+S3uVMVEBs3Qd6S4rDrW00SRP12uOEfgDPOt5eqm2BNPju
+         lJVoYMGK/gZQcJyRO2wvm0I3lHF7d+snDqHYF5V0Ozmvh4Xo+VvwohJvQwW5J33IVP1S
+         48PsW+87EjlwFRGrrFNj5l+2Ea0MKdX8tL8Z4Y9AAK3zAJyUiO3JAca3+RO9MrmociD6
+         fClQ==
+X-Gm-Message-State: AOAM532wnCb6/dk9V0r7n/3SGh3wSwS0G/BMYsDaOSi6NAlesjhBJkxo
+        jAqlNx/9B16zwaDaShb2ZdU3iqfEua4=
+X-Google-Smtp-Source: ABdhPJzL0Qff0MnWj81jjM+rLajUyTVkI7773FXMWioYjSYTCDNefT6rCEUD5xq63TjsiKXX8t52Zg==
+X-Received: by 2002:a2e:9d8b:: with SMTP id c11mr209129ljj.470.1611352693430;
+        Fri, 22 Jan 2021 13:58:13 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id t2sm484560lfk.28.2021.01.22.13.58.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jan 2021 13:58:12 -0800 (PST)
+Subject: Re: [PATCH v1] memory: tegra: Check whether reset is already asserted
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/3] Support wakeup methods of Atmel maXTouch controllers
-Date:   Fri, 22 Jan 2021 23:06:56 +0300
-Message-Id: <20210122200659.7404-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.29.2
+References: <20210119235210.13006-1-digetx@gmail.com>
+ <20210122214005.bfsznpaga2rhl3ow@kozik-lap>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <20cc8401-1934-6e4f-8e66-3216b86681fa@gmail.com>
+Date:   Sat, 23 Jan 2021 00:58:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <20210122214005.bfsznpaga2rhl3ow@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Atmel maXTouch controllers, like mXT1386 and mXT3432S1 for example,
-have a WAKE line that needs to be asserted in order to wake controller
-from a deep sleep, otherwise it will be unusable. This series implements
-support for the wakeup methods in accordance to the mXT1386 datasheet [1],
-see page 29 (chapter "5.8 WAKE Line").
+23.01.2021 00:40, Krzysztof Kozlowski пишет:
+> On Wed, Jan 20, 2021 at 02:52:10AM +0300, Dmitry Osipenko wrote:
+>> Check whether memory client reset is already asserted in order to prevent
+>> DMA-flush error on trying to re-assert an already asserted reset.
+>>
+>> This becomes a problem once PMC GENPD is enabled to use memory resets
+>> since GENPD will get a error and fail to toggle power domain. PMC GENPDs
+>> can't be toggled safely without holding memory reset on Tegra and we're
+>> about to fix this.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>> Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
+> 
+> Don't add your own Tested-by. Author has to test it.  However this is a
+> v1 and already three other people added tests. Where are the emails?
 
-The mXT1386 is a widely used controller found on many older Android tablet
-devices. Touchscreen on Acer A500 tablet now works properly after this
-series.
+The test results were given on #tegra irc.
 
-This patchset is a continuation of the work originally started by
-Jiada Wang [2].
+Author doesn't have to test, from time to time I'm helping people who
+can't make a patch with fixing obvious bugs for the h/w that I don't
+have access to.
 
-[1] https://ww1.microchip.com/downloads/en/DeviceDoc/mXT1386_1vx_Datasheet_LX.pdf
-[2] https://patchwork.kernel.org/project/linux-input/list/?series=357875
-
-Changelog:
-
-v4: - Improved commit message of the DT binding patch. No code changes.
-
-v3: - Added "default: 0" to the atmel,wakeup-method property in the binding.
-
-    - Added r-b from Linus Walleij to the binding patch.
-
-    - The wake-GPIO is now toggled on touchscreen's start/stop in order to
-      allow it to sleep during suspend. Suggested by Linus Walleij.
-
-v2: - Fixed copy-paste bug in the code.
-
-Dmitry Osipenko (3):
-  dt-bindings: input: atmel_mxt_ts: Document atmel,wakeup-method and
-    WAKE line GPIO
-  Input: atmel_mxt_ts - support wakeup methods
-  ARM: tegra: acer-a500: Add atmel,wakeup-method property
-
- .../bindings/input/atmel,maxtouch.yaml        | 29 +++++++
- .../boot/dts/tegra20-acer-a500-picasso.dts    |  3 +
- drivers/input/touchscreen/atmel_mxt_ts.c      | 78 +++++++++++++++++++
- include/dt-bindings/input/atmel-maxtouch.h    | 10 +++
- 4 files changed, 120 insertions(+)
- create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
-
--- 
-2.29.2
-
+Anyways, I'll make v2 with myself removed if you prefer that, thanks.
