@@ -2,89 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2213010C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A75301099
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729758AbhAVThj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:37:39 -0500
-Received: from vps.thesusis.net ([34.202.238.73]:50570 "EHLO vps.thesusis.net"
+        id S1730780AbhAVTjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:39:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730624AbhAVT1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:27:23 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by vps.thesusis.net (Postfix) with ESMTP id 8D16F29A9E;
-        Fri, 22 Jan 2021 14:26:40 -0500 (EST)
-Received: from vps.thesusis.net ([127.0.0.1])
-        by localhost (vps.thesusis.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8wXz7EfBN6Kj; Fri, 22 Jan 2021 14:26:40 -0500 (EST)
-Received: by vps.thesusis.net (Postfix, from userid 1000)
-        id 387A529A9D; Fri, 22 Jan 2021 14:26:40 -0500 (EST)
-References: <20200916205434.GA10389@duo.ucw.cz> <87czyf5jjp.fsf@vps.thesusis.net> <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com> <CAKMK7uEGXOC_ci=Drm=Hz+xPGdcoxv8YZ-gcOckoPmu2XijiSA@mail.gmail.com> <CAMuHMdVzCjVim4A3eAZzztqUyjb6a2bjmSkgxUnaugQFv42qag@mail.gmail.com>
-User-agent: mu4e 1.5.7; emacs 26.3
-From:   Phillip Susi <phill@thesusis.net>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        id S1730631AbhAVT20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 14:28:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96EFD23AF8;
+        Fri, 22 Jan 2021 19:27:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611343664;
+        bh=kFNnYuWFfaff4kSnuH47UjTnPiizLDg/mNMwPFIhGTM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bV4hOK6u/cF7GPBpwKGoWBpojgOj+ogtuxSRA5pHaf2cgRN8w8vKOvjTt3L6cvqo6
+         8yIQjT+cygqZIHbw2S7Zr/c02xO7YanBfhzz9Ke0+QUIsqK/bjRPnon4LudQSN+cT4
+         rFjzZhYWoRev2TlzvCrJSYHePRzVas5IAfn9/2+aekQ47wVFPYB0VIRI1u+utHH+xZ
+         +Z8cFKYh77oij/MZ4v0JRvoRcDfbISDOEmjX2HIZcN5TlLyKAF3N6uwhMaWBO185UZ
+         J7dkOsthQmkya7oh7RUxilvhFhQ/t4jqeE3RtwO82CuJ7NrAq4OPVUM+N0NgcfW8YS
+         CUImWuXg9S/TA==
+Date:   Fri, 22 Jan 2021 19:27:39 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc\@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
-Date:   Fri, 22 Jan 2021 13:55:04 -0500
-In-reply-to: <CAMuHMdVzCjVim4A3eAZzztqUyjb6a2bjmSkgxUnaugQFv42qag@mail.gmail.com>
-Message-ID: <87k0s4ai33.fsf@vps.thesusis.net>
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v4 8/8] mm: Mark anonymous struct field of 'struct
+ vm_fault' as 'const'
+Message-ID: <20210122192739.GC25471@willie-the-truck>
+References: <20210120173612.20913-1-will@kernel.org>
+ <20210120173612.20913-9-will@kernel.org>
+ <CAKwvOd=B+tMi7-82Q8hEYnQ+BzkLDygOhMh6cQ2L+3SaL+F4tQ@mail.gmail.com>
+ <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com>
+ <20210121131101.GD22123@willie-the-truck>
+ <CAKwvOdnmHH+sCqzdaAt_LYms_KULx5VpzmQZjSOy_Qyj0+hbgQ@mail.gmail.com>
+ <20210121212832.GA23234@willie-the-truck>
+ <CAKwvOdkYwZHdPj=UGmc2da_3iM7_EN22Vhj7vO2rJ_CAkLEPTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkYwZHdPj=UGmc2da_3iM7_EN22Vhj7vO2rJ_CAkLEPTg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hey Nick,
 
-Geert Uytterhoeven writes:
+On Fri, Jan 22, 2021 at 11:10:50AM -0800, Nick Desaulniers wrote:
+> On Thu, Jan 21, 2021 at 1:28 PM Will Deacon <will@kernel.org> wrote:
+> > On Thu, Jan 21, 2021 at 11:24:36AM -0800, Nick Desaulniers wrote:
+> > > On Thu, Jan 21, 2021 at 5:11 AM Will Deacon <will@kernel.org> wrote:
+> > Sure, but here we are cleaning up this stuff, so I think review only gets
+> > you so far. To me:
+> >
+> >         const struct {
+> >                 int     foo;
+> >                 long    bar;
+> >         };
+> >
+> > clearly says "don't modify fields of this struct", whereas:
+> >
+> >         struct {
+> >                 const int       foo;
+> >                 const long      bar;
+> >         };
+> >
+> > says "don't modify foo or bar, but add whatever you like on the end" and
+> > that's the slippery slope.
+> 
+> "but you could add additional non-const members on the end" for sure.
+> Though going back to
+> 
+> >> What's to stop a new non-const field from getting added outside the
+> > > const qualified anonymous struct?
+> 
+> my point with that is that the const anonymous struct is within a
+> non-const anonymous struct.
+> 
+> struct vm_fault {
+>   const {
+>     struct vm_area_struct *vma;
+>     gfp_t gfp_mask;
+>     pgoff_t pgoff;
+>     unsigned long address;
+>     // Your point is about new member additions here, IIUC
+>   };
+>   // My point: what's to stop someone from adding a new non-const member here?
+>   unsigned int flags;
+>   pmd_t *pmd;
+>   pud_t *pud;
+>   ...
+>   // or here?
+> };
+> 
+> The const anonymous struct will help prevent additions of non-const
+> members to the anonymous struct, sure; but if someone really wanted a
+> new non-const member in a `struct vm_fault` instance they're just
+> going to go around the const anonymous struct.  Or is there something
+> more I'm missing about the order of the members of struct vm_fault?
 
-Judging from some of the comments in the code, it looks like you were
-one of the original authors of fbcon?  I haven't been able to find any
-of these sczbot crash reports, and am not sure how fuzzing syscalls
-would really affect this code ( it's not really handling a buch of
-ioctls or otherwise taking arguments from user space ) , but I am a bit
-confused as to why the softback was implemented the way that it was.
+All I was trying to say is that, given a struct with a mixture of const and
+non-const members, I would be less hesitant to remove 'const' from one of
+the members if it helped me get something else done. Having the 'const' on
+the struct itself, however, would deter me because at that point its clear
+that you're not supposed to be modifying this stuff. That's the difference
+between the "Your point" and "My point" lines above.
 
-vgacon simply copies the main buffer to vram in ->set_origin() and then
-changes the pointers to operate out of the much larger vram while that
-virtual terminal is active.  If I understand it correctly, it looks like
-fbcon instead opts to operate out of the main buffer but rescue lines as
-they are scrolled off and relocate them to the softback buffer.  This
-seems to be rather more convoluted.
+But honestly, I can't say I particularly enjoy arguing about these
+idiosyncracies; I'd just rather wait for the dust to settle with clang
+before we add code to deal with that outcome.
 
-I'm thinking of re-implementing scrollback more like the way vgacon does
-it: allocate a big "vram" buffer and operate out of that.  Obviously
-->scroll() and ->scrolldelta() have to actually repaint the screen rather
-than simply change the pointer register, but that should be about the
-only difference.
+> > So then we end up with the eye-sore of:
+> >
+> >         const struct {
+> >                 const int       foo;
+> >                 const long      bar;
+> >         };
+> >
+> > and maybe that's the right answer, but I'm just saying we should wait for
+> > clang to make up its mind first. It's not like this is a functional problem,
+> > and there are enough GCC users around that we're not exactly in a hurry.
+> 
+> Yeah, I mean I'm happy to whip something up for Clang, even though I
+> suspect it will get shot down in code review until there's more
+> guidance from standards bodies.  It doesn't hurt to try, and at least
+> have a patch "waiting in the wings" should we hear back from WG14 that
+> favors GCC's behavior.  Who knows, maybe the guidance will be that
+> WG21 should revisit this behavior for C++ to avoid divergence with C
+> (as g++ and gcc currently do).
 
-I have also noticed that there was some code to use hardware panning of
-the video buffer rather than having to do a block bitblt to scroll the
-contents of the screen, but that it was disabled because virtually no
-video drivers actually implemented it?  That seems like a shame, but if
-it is so, then there's no sense carrying the dead code so I think I'll
-clean that up now.
+I mean, a warning doesn't seem controversial to me, especially as opinions
+certainly seem to be divided about what the right behaviour should be here.
 
-Now that I look at it again, everything is simply always redrawn now
-instead of even doing a simple bitblt.  Daniel, you mentioned that
-almost nobody supports hardware acceleration, but even without any
-specific hardware support, surely even if bitblt() is implemented just
-as a memcpy(), it has to be faster than redrawing all of the characters
-doesn't it?  Getting rid of the panning if it isn't generally supported
-I can see, but I don't understand killing bitblt even if most devices
-don't accelerate it.
-
-In addition, I noticed that ->screen_pos() was changed to just return
-vc_origin+offset.  fbcon is the only console driver to implement
-->screenpos() and if not implemented, vt defaults to using
-vc_visible_origin+offset, so it looks like this function isn't needed at
-all anymore and ->screen_pos() can be removed from struct consw.
-
-Does this make sense or am I talking crazy?
+Will
