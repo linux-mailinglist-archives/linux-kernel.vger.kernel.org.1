@@ -2,117 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D48300C83
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B87D300C87
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730116AbhAVTYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:24:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729954AbhAVTFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:05:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCB2023AC1;
-        Fri, 22 Jan 2021 19:05:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611342308;
-        bh=+qH3gg6Meer9DE4CWsvTMl0NEy6N7sOI6C6cFplb2Ok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UAhzpczDkGt+4Q3wMOMG4ZZXBOvrjUmqZqNB6yHgubCMaaFUJ6/FOXNv20BtOGbEL
-         y+0kx3bop4iL/FKIG8N8x6obiAHhfyoeT2tZwJkqqiMHoV3Ll5eanEyHXSq61pADAo
-         KuCY+6gOu7i7M+fEjba1vK0mXIcdQFNTowLMDJ2h3KdJDBgGUZAyd0pY8nUG9Iaota
-         bsOyCWRnhpVW/I2fYed0GkkovQdB2bQ5IzATRdp2a8isQwbRqwA50nvq+AtGfCzZ4g
-         gCHP89gVZ0e6MmQ0GnM4WiYyK3n6kurG0uNXOXYFvnWOjXbiNt/EOJg3yhrdYXOZgU
-         Vko9JDUN8/sgA==
-Date:   Fri, 22 Jan 2021 19:05:01 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>, yj.chiang@mediatek.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>, rppt@kernel.org,
-        tyhicks@linux.microsoft.com, Robin Murphy <robin.murphy@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        gustavoars@kernel.org, Lecopzer Chen <lecopzer@gmail.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: Re: [PATCH v2 0/4] arm64: kasan: support CONFIG_KASAN_VMALLOC
-Message-ID: <20210122190501.GA25471@willie-the-truck>
-References: <20210109103252.812517-1-lecopzer@gmail.com>
- <CAAeHK+z3oYx4WqX7Xor7gD=eqYkzW0UBS4h4is00HnfNnNkpDA@mail.gmail.com>
+        id S1730242AbhAVTYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729543AbhAVTNt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 14:13:49 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C194CC0613D6;
+        Fri, 22 Jan 2021 11:13:09 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id q6so1664748ooo.8;
+        Fri, 22 Jan 2021 11:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=D/lSjSk7J5m6AHoucCYZNXORDMKdSvYqMceGCBgaJYE=;
+        b=mIHu+C/K8nooWwtwDwe/e6+nxCG1bOHOsXQ1H9v/jnxnqXWBgdOjYGY1ooD++rrx77
+         52cqDCkWfFwH4dxehwpfUpFXXGUqt8NWOiIdmAiUuq0Cm2BW5hX/AhsYA5iRDXw3+Su+
+         mxbTcEc7QND/elGKfMnQUZkVdMxQ9Um/g/ZRUAPMHdPTS5fWepM73yfODcThRjxE+jgS
+         kKz5K9ef7ko+pY/3LTNfx5B4izBiIjyf3rp0eteMrYUg0YFt18TSYUi5ZKAFA03D3MtF
+         NrgYVUb69H4WVD8LiQS3oyhHvLK22tHxfP+a1kN0cRD+Vp+UIb0KUuHbgMmsPF7RXF7C
+         U5dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=D/lSjSk7J5m6AHoucCYZNXORDMKdSvYqMceGCBgaJYE=;
+        b=nXrnAN37i0w9P+LEMeP33ZtdyO9MAXSlZdUV8CBd9gI9kK9VrQC00sD9AnLU5IszR2
+         7JkeD9bf7Pj/rxz4Sae+wjGyFCKcuZFWSIXae5arXYALHCNz2JMr2o65ptVV8sd54/8R
+         B4Du3bzfsxDNNFC5rPDFh/WSLH7/RVsgw5tqKC8qDyHFQSuI7USoctzX2RNlvFRDMjFy
+         +V30ro0+Amt5YtVMAyZcZgiB0o+CvWUkk87eXBGRYhvfSOhPy7/gf0lI4qhkPHU5YZDL
+         BmuT6t+K6H1pSufU36dPDgJWGxpnj+aCHeImE6y6wALy09we2031T3WiAa0gnn1+73Dy
+         BO5Q==
+X-Gm-Message-State: AOAM532xX7Oxa1eyB/pSQhk1vMg0sMPa+LN6xvc68E+I+7WbvtZxl2QU
+        tSziG5m3GxCI5gypAYbvyF0=
+X-Google-Smtp-Source: ABdhPJz2amLxxGlTqM6m5dPlVewfBbm+4vMI/BflGGEfNh/NDHbdfCBSkIsy2hqLK557mAFBIl3f1w==
+X-Received: by 2002:a4a:e294:: with SMTP id k20mr4881858oot.82.1611342789240;
+        Fri, 22 Jan 2021 11:13:09 -0800 (PST)
+Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
+        by smtp.gmail.com with ESMTPSA id z14sm1753636oot.5.2021.01.22.11.13.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 11:13:08 -0800 (PST)
+Date:   Fri, 22 Jan 2021 11:13:06 -0800
+From:   Enke Chen <enkechen2020@gmail.com>
+To:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neal Cardwell <ncardwell@google.com>, enkechen2020@gmail.com
+Subject: [PATCH net] tcp: make TCP_USER_TIMEOUT accurate for zero window
+ probes
+Message-ID: <20210122191306.GA99540@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAeHK+z3oYx4WqX7Xor7gD=eqYkzW0UBS4h4is00HnfNnNkpDA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:44:14PM +0100, Andrey Konovalov wrote:
-> On Sat, Jan 9, 2021 at 11:33 AM Lecopzer Chen <lecopzer@gmail.com> wrote:
-> >
-> > Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
-> > ("kasan: support backing vmalloc space with real shadow memory")
-> >
-> > Acroding to how x86 ported it [1], they early allocated p4d and pgd,
-> > but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
-> > by not to populate the vmalloc area except for kimg address.
-> >
-> > Test environment:
-> >     4G and 8G Qemu virt,
-> >     39-bit VA + 4k PAGE_SIZE with 3-level page table,
-> >     test by lib/test_kasan.ko and lib/test_kasan_module.ko
-> >
-> > It also works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL
-> > and randomize module region inside vmalloc area.
-> >
-> >
-> > [1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
-> >
-> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> > Acked-by: Andrey Konovalov <andreyknvl@google.com>
-> > Tested-by: Andrey Konovalov <andreyknvl@google.com>
-> >
-> >
-> > v2 -> v1
-> >         1. kasan_init.c tweak indent
-> >         2. change Kconfig depends only on HAVE_ARCH_KASAN
-> >         3. support randomized module region.
-> >
-> > v1:
-> > https://lore.kernel.org/lkml/20210103171137.153834-1-lecopzer@gmail.com/
-> >
-> > Lecopzer Chen (4):
-> >   arm64: kasan: don't populate vmalloc area for CONFIG_KASAN_VMALLOC
-> >   arm64: kasan: abstract _text and _end to KERNEL_START/END
-> >   arm64: Kconfig: support CONFIG_KASAN_VMALLOC
-> >   arm64: kaslr: support randomized module area with KASAN_VMALLOC
-> >
-> >  arch/arm64/Kconfig         |  1 +
-> >  arch/arm64/kernel/kaslr.c  | 18 ++++++++++--------
-> >  arch/arm64/kernel/module.c | 16 +++++++++-------
-> >  arch/arm64/mm/kasan_init.c | 29 +++++++++++++++++++++--------
-> >  4 files changed, 41 insertions(+), 23 deletions(-)
-> >
-> > --
-> > 2.25.1
-> >
-> 
-> Hi Will,
-> 
-> Could you PTAL at the arm64 changes?
+From: Enke Chen <enchen@paloaltonetworks.com>
 
-Sorry, wanted to get to this today but I ran out of time in the end. On the
-list for next week!
+The TCP_USER_TIMEOUT is checked by the 0-window probe timer. As the
+timer has backoff with a max interval of about two minutes, the
+actual timeout for TCP_USER_TIMEOUT can be off by up to two minutes.
 
-Will
+In this patch the TCP_USER_TIMEOUT is made more accurate by taking it
+into account when computing the timer value for the 0-window probes.
+
+This patch is similar to the one that made TCP_USER_TIMEOUT accurate for
+RTOs in commit b701a99e431d ("tcp: Add tcp_clamp_rto_to_user_timeout()
+helper to improve accuracy").
+
+Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+Reviewed-by: Neal Cardwell <ncardwell@google.com>
+---
+ include/net/tcp.h     |  1 +
+ net/ipv4/tcp_input.c  |  4 ++--
+ net/ipv4/tcp_output.c |  2 ++
+ net/ipv4/tcp_timer.c  | 18 ++++++++++++++++++
+ 4 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 78d13c88720f..ca7e2c6cc663 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -630,6 +630,7 @@ static inline void tcp_clear_xmit_timers(struct sock *sk)
+ 
+ unsigned int tcp_sync_mss(struct sock *sk, u32 pmtu);
+ unsigned int tcp_current_mss(struct sock *sk);
++u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when);
+ 
+ /* Bound MSS / TSO packet size with the half of the window */
+ static inline int tcp_bound_to_half_wnd(struct tcp_sock *tp, int pktsize)
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index bafcab75f425..4923cdbea95a 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -3392,8 +3392,8 @@ static void tcp_ack_probe(struct sock *sk)
+ 	} else {
+ 		unsigned long when = tcp_probe0_when(sk, TCP_RTO_MAX);
+ 
+-		tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0,
+-				     when, TCP_RTO_MAX);
++		when = tcp_clamp_probe0_to_user_timeout(sk, when);
++		tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, when, TCP_RTO_MAX);
+ 	}
+ }
+ 
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index ab458697881e..8478cf749821 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -4099,6 +4099,8 @@ void tcp_send_probe0(struct sock *sk)
+ 		 */
+ 		timeout = TCP_RESOURCE_PROBE_INTERVAL;
+ 	}
++
++	timeout = tcp_clamp_probe0_to_user_timeout(sk, timeout);
+ 	tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, timeout, TCP_RTO_MAX);
+ }
+ 
+diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+index 454732ecc8f3..90722e30ad90 100644
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -40,6 +40,24 @@ static u32 tcp_clamp_rto_to_user_timeout(const struct sock *sk)
+ 	return min_t(u32, icsk->icsk_rto, msecs_to_jiffies(remaining));
+ }
+ 
++u32 tcp_clamp_probe0_to_user_timeout(const struct sock *sk, u32 when)
++{
++	struct inet_connection_sock *icsk = inet_csk(sk);
++	u32 remaining;
++	s32 elapsed;
++
++	if (!icsk->icsk_user_timeout || !icsk->icsk_probes_tstamp)
++		return when;
++
++	elapsed = tcp_jiffies32 - icsk->icsk_probes_tstamp;
++	if (unlikely(elapsed < 0))
++		elapsed = 0;
++	remaining = msecs_to_jiffies(icsk->icsk_user_timeout) - elapsed;
++	remaining = max_t(u32, remaining, TCP_TIMEOUT_MIN);
++
++	return min_t(u32, remaining, when);
++}
++
+ /**
+  *  tcp_write_err() - close socket and save error info
+  *  @sk:  The socket the error has appeared on.
+-- 
+2.29.2
+
