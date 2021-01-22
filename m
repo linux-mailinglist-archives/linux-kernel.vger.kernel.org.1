@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2407B3007E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0E03007DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 16:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbhAVPzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 10:55:45 -0500
-Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:50860 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729232AbhAVPvr (ORCPT
+        id S1728828AbhAVPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 10:54:30 -0500
+Received: from pb-smtp20.pobox.com ([173.228.157.52]:56517 "EHLO
+        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729320AbhAVPxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:51:47 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 0BD8B837F24A;
-        Fri, 22 Jan 2021 15:50:58 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3653:3867:3871:4250:4321:5007:6119:7652:7903:9163:10004:10400:10848:11232:11658:11914:12297:12679:12740:12760:12895:13019:13069:13206:13211:13229:13311:13357:13439:14659:14721:14819:21080:21451:21627:21987:30054:30060:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: land10_2911aa62756d
-X-Filterd-Recvd-Size: 1852
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 22 Jan 2021 15:50:56 +0000 (UTC)
-Message-ID: <64d3d8cb83e09d03927dba998a09e8b37e06dece.camel@perches.com>
-Subject: Re: [PATCH] diffconfig: use python3 instead of python in Shebang
- line
-From:   Joe Perches <joe@perches.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Finn Behrens <me@kloenk.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Philippe Ombredanne <pombredanne@nexb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
+        Fri, 22 Jan 2021 10:53:10 -0500
+Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id A38F010D513;
+        Fri, 22 Jan 2021 10:52:23 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=MfFlB8YVNmsXMB87ZaCNvKMewDs=; b=mK6dLI
+        X6Q0l3QtcOkMNRVQ9uG+ofrigzP3If1SBjzKFz00SZ1AHGIYLz/FHv1ZFeJRJd1e
+        m5GClbAw0sUkFqgyxnpxdikv8igacgUP8DNCQ/sAi1EBSKpc207P55Kq+dKLdXWx
+        APS2gDbkz92WEopkH7G3mI6hvfKW198B1Eokg=
+Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp20.pobox.com (Postfix) with ESMTP id 9ABE810D511;
+        Fri, 22 Jan 2021 10:52:23 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=9+ePAXFz3kh960y4E+FfoxuOJpYSg1dyLt9kq3gKshY=; b=KTGN9aV7tM9NaBqBbuP1oITDG3WCnFcg5KVe+Lqs/kaxR/WklGrwm2gjM5BQfaVhLF+V0p9tzeieOnriZXX1mrS4gpnyUbkMHpciqE8Zj7kE6w9m6km5psD0XTQLvXvGJ/81BkBw4j9og3Sskn6iNioXLsLZyTbyQabGtNlieGM=
+Received: from yoda.home (unknown [24.203.50.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 9753410D50F;
+        Fri, 22 Jan 2021 10:52:20 -0500 (EST)
+        (envelope-from nico@fluxnic.net)
+Received: from xanadu.home (xanadu.home [192.168.2.2])
+        by yoda.home (Postfix) with ESMTPSA id D1E3E2DA0140;
+        Fri, 22 Jan 2021 10:52:18 -0500 (EST)
+Date:   Fri, 22 Jan 2021 10:52:18 -0500 (EST)
+From:   Nicolas Pitre <nico@fluxnic.net>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 22 Jan 2021 07:50:54 -0800
-In-Reply-To: <CAK7LNARL570EgjijCMY_CF91frwtTeatyhYcnD8-s08aiduFnQ@mail.gmail.com>
-References: <20210121170736.2266-1-scott.branden@broadcom.com>
-         <CAK7LNAQEvej1_UrS6s1+vwdei8cK1UW8b5erYc-6Ggu25oC0cg@mail.gmail.com>
-         <CAHp75Vf=Ba+e8PDsvi8eDiuNDvC6Pfx3RsRAkaOZvD26Z2pnQA@mail.gmail.com>
-         <CAHp75VcLi8hjYaDXrfAjbj+Kw_FRef=xnKiXr_Kv+YUToEjHTQ@mail.gmail.com>
-         <CAK7LNARL570EgjijCMY_CF91frwtTeatyhYcnD8-s08aiduFnQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] PM / clk: make PM clock layer compatible with clocks
+ that must sleep
+In-Reply-To: <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
+Message-ID: <66o22n46-n7p6-3p8r-3ssp-rs8oo28n87nq@syhkavp.arg>
+References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz> <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com> <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com> <CA+G9fYvh0iSyEDQs7+0CX82FLPDCg5UmAt+1JuPsndmfmYF3kw@mail.gmail.com>
+ <CAJZ5v0hFjpGp2GbV1Evi+BbUF7Am4ETY4Cm8VzTrvTJ=7=oyPQ@mail.gmail.com> <84r6s34s-opq7-9358-o45n-27s17084012@onlyvoer.pbz> <CAJZ5v0jUxonxp0q80Kdcbax+WMmh-NZ_h=KQG-HcfFdE1hr4VA@mail.gmail.com>
+ <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+X-Pobox-Relay-ID: CF9E62EE-5CC9-11EB-AF42-E43E2BB96649-78420484!pb-smtp20.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-22 at 07:06 +0900, Masahiro Yamada wrote:
-> I use Ubuntu, where /usr/bin/python is a symlink
-> to /usr/bin/python3.
+On Fri, 22 Jan 2021, Rafael J. Wysocki wrote:
 
-Odd, here:
+> > > +/**
+> > > + * pm_clk_list_unlock - counterpart to pm_clk_list_lock().
+> > > + * @psd: the same pm_subsys_data instance previously passed to
+> > > + *      pm_clk_list_lock().
+> > > + */
+> > > +static void pm_clk_list_unlock(struct pm_subsys_data *psd)
+> 
+> Locking annotations for sparse were missing here and above, so I've
+> added them by hand.
 
-$ lsb_release -a
-No LSB modules are available.
-Distributor ID:	Ubuntu
-Description:	Ubuntu 20.10
-Release:	20.10
-Codename:	groovy
+Thanks.
 
-$ ls /usr/bin/python -la
-lrwxrwxrwx 1 root root 7 Apr 15  2020 /usr/bin/python -> python2
+> Please double check the result in my linux-next branch (just pushed).
+
+There are still the following warnings:
+
+drivers/base/power/clock_ops.c:52:13: warning: context imbalance in 'pm_clk_list_lock' - wrong count at exit
+drivers/base/power/clock_ops.c:64:13: warning: context imbalance in 'pm_clk_list_unlock' - wrong count at exit
+
+I guess this can be silenced (still need to investigate how those 
+annotations work).
+
+But I'm more worried about these:
+
+drivers/base/power/clock_ops.c:86:12: warning: context imbalance in 'pm_clk_op_lock' - different lock contexts for basic block
+drivers/base/power/clock_ops.c:131:39: warning: context imbalance in 'pm_clk_op_unlock' - unexpected unlock
+
+Those are special locking helpers indeed and I don't know if that can be 
+dealt with.
 
 
-
+Nicolas
