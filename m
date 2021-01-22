@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53CD30111D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46991301112
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 00:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbhAVXr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 18:47:28 -0500
-Received: from mga11.intel.com ([192.55.52.93]:9641 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725911AbhAVXrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 18:47:11 -0500
-IronPort-SDR: rw8z84Tv85/pLEBdxahibf68Z35f8bBk0zmnp9VdBOGpIB/LRxpIpRU/kxLY2dI77tiFpfhswF
- YekXF3C0Htdg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="176016034"
-X-IronPort-AV: E=Sophos;i="5.79,368,1602572400"; 
-   d="scan'208";a="176016034"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 15:46:29 -0800
-IronPort-SDR: 2+eePPLZ2snFipedv5SjeCegN51ErgC+iQKh1xPp9pxaDUCOXm0NlgOKNwBxHP2n9hAB5/5Ev7
- dIpBsJeatnDg==
-X-IronPort-AV: E=Sophos;i="5.79,368,1602572400"; 
-   d="scan'208";a="367627950"
-Received: from rpedgeco-mobl3.amr.corp.intel.com (HELO localhost.intel.com) ([10.212.122.167])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 15:46:28 -0800
-From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
-To:     akpm@linux-foundation.org
-Cc:     hch@lst.de, dja@axtens.net, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org,
-        linmiaohe@huawei.com, Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: [PATCH v2] mm/vmalloc: Separate put pages and flush VM flags
-Date:   Fri, 22 Jan 2021 15:37:06 -0800
-Message-Id: <20210122233706.9304-1-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725911AbhAVXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 18:40:12 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:45097 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725274AbhAVXkL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 18:40:11 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 77B203EEDE;
+        Sat, 23 Jan 2021 00:39:13 +0100 (CET)
+Subject: Re: [PATCH v2 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO
+ Expander
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+References: <20210111182928.587285-1-angelogioacchino.delregno@somainline.org>
+ <CACRpkdZp3oqj4VeUZEPu=POwAdf-7R3NzNoN9XehtEi_R_fgkw@mail.gmail.com>
+ <1e34145b-a04a-1cbb-7fbc-87c69b8dcfd7@somainline.org>
+ <CACRpkdacfa6usOZtc+A=ZxEpB1ij_gAKX2PLMOaX0mY_0qHp6A@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <f9cc7046-1855-cbe5-51ed-ab5f76716805@somainline.org>
+Date:   Sat, 23 Jan 2021 00:39:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdacfa6usOZtc+A=ZxEpB1ij_gAKX2PLMOaX0mY_0qHp6A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When VM_MAP_PUT_PAGES was added, it was defined with the same value as
-VM_FLUSH_RESET_PERMS. This doesn't seem like it will cause any big
-functional problems other than some excess flushing for VM_MAP_PUT_PAGES
-allocations.
+Il 22/01/21 10:59, Linus Walleij ha scritto:
+> On Mon, Jan 18, 2021 at 3:38 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@somainline.org> wrote:
+> 
+>> By the way, this is really LEVEL irq, not EDGE... To avoid any
+>> misunderstanding, I think that the best way to show you what I
+>> am seeing is to just copy-paste the relevant piece from the
+>> datasheet for this hardware (it's not a confidential datasheet
+>> and freely found on the internet).
+>>
+>> Check this out:
+>> " External MCU is required acknowledge by INTN pin. INTN is open-drain
+>> out-
+>> put, low-level active, and need external pull-up resistor.
+> 
+> This talks about what polarity (active low) the pin from the expander
+> to the SoC/CPU is. It has nothing to do with the line into the
+> expander.
+> 
+>> When AW9523B detect port change, any input state from high-level to
+>> low-level or from
+>>    low-level to high-level will generate interrupt after
+>> 8us internal deglitch. "
+>>
+>> ...but since the datasheet is sometimes unclear about "things" (I am
+>> mostly sure that they have translated it to english from chinese), I
+>> have actually checked whether the INTN pin was pushed LOW when one of
+>> the inputs goes from HIGH to LOW.. and.. it does... and as you imagine
+>> yeah.. it's slow.. and yes, as slow as you can imagine. :)
+>>
+>> So, in short, this chip is raising an interrupt when any input changes
+>> state, regardless of the change being LOW->HIGH or HIGH->LOW.
+> 
+> This means that the expander only supports
+> IRQ_TYPE_EDGE_BOTH and nothing else.
+> 
+> "port change" above means edges.
+> 
+> Augment your driver to only accept this type.
+> 
+> The consumers better request IRQ_TYPE_EDGE_BOTH
+> (from a device tree for example) and consumers better
+> handle the fact that they get interrupts on both rising
+> and falling edge as well, else they may need special
+> code to handle it. This is not a very nice feature of
+> the expander, it would be more helpful to users to
+> get interrupts on only rising or only falling edges, but
+> as written, it will generate interrupts on both transitions.
+> 
+> Yours,
+> Linus Walleij
+> 
 
-Redefine VM_MAP_PUT_PAGES to have its own value. Also, rearrange things
-so flags are less likely to be missed in the future.
+I see the reading mistake now... oh wow, that was... sad, from me.
+I will fix this ASAP and will send back a v3.
 
-Fixes: b944afc9d64d ("mm: add a VM_MAP_PUT_PAGES flag for vmap")
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
+Thank you!
 
-[v2]
-Changed comment format like suggested by Matthew and listed him as Suggested-by.
-Dropped Reviewed-bys because all of the comment changes are different.
-
- include/linux/vmalloc.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 80c0181c411d..cedcda6593f6 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -24,7 +24,8 @@ struct notifier_block;		/* in notifier.h */
- #define VM_UNINITIALIZED	0x00000020	/* vm_struct is not fully initialized */
- #define VM_NO_GUARD		0x00000040      /* don't add guard page */
- #define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
--#define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfree */
-+#define VM_FLUSH_RESET_PERMS	0x00000100	/* reset direct map and flush TLB on unmap, can't be freed in atomic context */
-+#define VM_MAP_PUT_PAGES	0x00000200	/* put pages and free array in vfree */
- 
- /*
-  * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALLOC.
-@@ -37,12 +38,6 @@ struct notifier_block;		/* in notifier.h */
-  * determine which allocations need the module shadow freed.
-  */
- 
--/*
-- * Memory with VM_FLUSH_RESET_PERMS cannot be freed in an interrupt or with
-- * vfree_atomic().
-- */
--#define VM_FLUSH_RESET_PERMS	0x00000100      /* Reset direct map and flush TLB on unmap */
--
- /* bits [20..32] reserved for arch specific ioremap internals */
- 
- /*
--- 
-2.20.1
-
+- Angelo
