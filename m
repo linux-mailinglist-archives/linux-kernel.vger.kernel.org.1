@@ -2,470 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68422FFF63
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037F42FFF3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbhAVJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:42:11 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:62872 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727428AbhAVJUm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:20:42 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l2sPM-00043n-EB; Fri, 22 Jan 2021 10:07:08 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l2sPL-0005xf-Ir; Fri, 22 Jan 2021 10:07:07 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id F300F240041;
-        Fri, 22 Jan 2021 10:07:06 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 7DE7E240040;
-        Fri, 22 Jan 2021 10:07:06 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id D32EF2293D;
-        Fri, 22 Jan 2021 10:07:05 +0100 (CET)
+        id S1727200AbhAVJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:32:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726951AbhAVJKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 04:10:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69725239D4;
+        Fri, 22 Jan 2021 09:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611306461;
+        bh=nV3I3ct6uOXZdsO/zAKfYmcrv4KNXm6gHX/iiv9UjrQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sYf3PzMCN3IkVyPRGtRZ0mFh/GfcyzepIlbb8ZQltNttPYuxIS2c86dvo2IiVHtYp
+         Q+7SiTXu3Q1qkF4TgXOQPxX/a2Co/tACASDhAjYQyrwCISzoANRK6zfVtL6tVP62qR
+         VSuEDT1VWcoLW0/S+SB7l2cnxK3RlEzD3MdiUz4RHUit3bAU6kl8O068qy6oxDjPZ+
+         uXstxzunYM5+xhpZqcHzVzRuPJEonVwfsahme4d0x9xaF/wSIOtWvdQBAwkJREw7/J
+         ELbT44JxOwU/kLiEKc07cGrgl7zV3uH1NeNl66Ux/8XfieyPgsOu+TIcgHJVrf11i8
+         lQoQGc/CT5rBw==
+Date:   Fri, 22 Jan 2021 10:07:37 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Youling Tang <tangyouling@loongson.cn>
+Cc:     Seth Heasley <seth.heasley@intel.com>,
+        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] i2c: ismt: Use dma_set_mask_and_coherent
+Message-ID: <20210122090737.GG858@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Seth Heasley <seth.heasley@intel.com>,
+        Neil Horman <nhorman@tuxdriver.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1606978252-26169-1-git-send-email-tangyouling@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 22 Jan 2021 10:07:05 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v5] net: lapb: Add locking to the lapb module
-Organization: TDT AG
-In-Reply-To: <20210121002129.93754-1-xie.he.0141@gmail.com>
-References: <20210121002129.93754-1-xie.he.0141@gmail.com>
-Message-ID: <b42575d44fb7f5c1253635a19c3e21e2@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1611306428-000072E1-D532176F/0/0
-X-purgate-type: clean
-X-purgate: clean
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qxfKREH7IwbezJ+T"
+Content-Disposition: inline
+In-Reply-To: <1606978252-26169-1-git-send-email-tangyouling@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-21 01:21, Xie He wrote:
-> In the lapb module, the timers may run concurrently with other code in
-> this module, and there is currently no locking to prevent the code from
-> racing on "struct lapb_cb". This patch adds locking to prevent racing.
-> 
-> 1. Add "spinlock_t lock" to "struct lapb_cb"; Add "spin_lock_bh" and
-> "spin_unlock_bh" to APIs, timer functions and notifier functions.
-> 
-> 2. Add "bool t1timer_stop, t2timer_stop" to "struct lapb_cb" to make us
-> able to ask running timers to abort; Modify "lapb_stop_t1timer" and
-> "lapb_stop_t2timer" to make them able to abort running timers;
-> Modify "lapb_t2timer_expiry" and "lapb_t1timer_expiry" to make them
-> abort after they are stopped by "lapb_stop_t1timer", 
-> "lapb_stop_t2timer",
-> and "lapb_start_t1timer", "lapb_start_t2timer".
-> 
-> 3. Let lapb_unregister wait for other API functions and running timers
-> to stop.
-> 
-> 4. The lapb_device_event function calls lapb_disconnect_request. In
-> order to avoid trying to hold the lock twice, add a new function named
-> "__lapb_disconnect_request" which assumes the lock is held, and make
-> it called by lapb_disconnect_request and lapb_device_event.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
 
+--qxfKREH7IwbezJ+T
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't have the opportunity to test this at the moment, but code looks
-reasonable so far. Have you tested this at runtime?
+On Thu, Dec 03, 2020 at 02:50:52PM +0800, Youling Tang wrote:
+> 'pci_set_dma_mask()' + 'pci_set_consistent_dma_mask()' can be replaced by
+> an equivalent 'dma_set_mask_and_coherent()' which is much less verbose.
+>=20
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+
+Seth, Neil, are you OK with this patch?
 
 > ---
-> 
-> Change from v4:
-> Make lapb_unregister wait for other refs to "lapb" to drop, to ensure
-> that other LAPB API calls have all finished.
-> 
-> Change from v3:
-> In lapb_unregister make sure the self-restarting t1timer has really 
-> been
-> stopped.
-> 
-> Change from v2:
-> Create a new __lapb_disconnect_request function to reduce redundant 
-> code.
-> 
-> Change from v1:
-> Broke long lines to keep the line lengths within 80 characters.
-> 
-> ---
->  include/net/lapb.h    |  2 ++
->  net/lapb/lapb_iface.c | 70 +++++++++++++++++++++++++++++++++----------
->  net/lapb/lapb_timer.c | 30 ++++++++++++++++---
->  3 files changed, 82 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/net/lapb.h b/include/net/lapb.h
-> index ccc3d1f020b0..eee73442a1ba 100644
-> --- a/include/net/lapb.h
-> +++ b/include/net/lapb.h
-> @@ -92,6 +92,7 @@ struct lapb_cb {
->  	unsigned short		n2, n2count;
->  	unsigned short		t1, t2;
->  	struct timer_list	t1timer, t2timer;
-> +	bool			t1timer_stop, t2timer_stop;
-> 
->  	/* Internal control information */
->  	struct sk_buff_head	write_queue;
-> @@ -103,6 +104,7 @@ struct lapb_cb {
->  	struct lapb_frame	frmr_data;
->  	unsigned char		frmr_type;
-> 
-> +	spinlock_t		lock;
->  	refcount_t		refcnt;
->  };
-> 
-> diff --git a/net/lapb/lapb_iface.c b/net/lapb/lapb_iface.c
-> index 40961889e9c0..b028dfc438ce 100644
-> --- a/net/lapb/lapb_iface.c
-> +++ b/net/lapb/lapb_iface.c
-> @@ -122,6 +122,8 @@ static struct lapb_cb *lapb_create_cb(void)
-> 
->  	timer_setup(&lapb->t1timer, NULL, 0);
->  	timer_setup(&lapb->t2timer, NULL, 0);
-> +	lapb->t1timer_stop = true;
-> +	lapb->t2timer_stop = true;
-> 
->  	lapb->t1      = LAPB_DEFAULT_T1;
->  	lapb->t2      = LAPB_DEFAULT_T2;
-> @@ -129,6 +131,8 @@ static struct lapb_cb *lapb_create_cb(void)
->  	lapb->mode    = LAPB_DEFAULT_MODE;
->  	lapb->window  = LAPB_DEFAULT_WINDOW;
->  	lapb->state   = LAPB_STATE_0;
-> +
-> +	spin_lock_init(&lapb->lock);
->  	refcount_set(&lapb->refcnt, 1);
->  out:
->  	return lapb;
-> @@ -178,11 +182,23 @@ int lapb_unregister(struct net_device *dev)
->  		goto out;
->  	lapb_put(lapb);
-> 
-> +	/* Wait for other refs to "lapb" to drop */
-> +	while (refcount_read(&lapb->refcnt) > 2)
-> +		;
-> +
-> +	spin_lock_bh(&lapb->lock);
-> +
->  	lapb_stop_t1timer(lapb);
->  	lapb_stop_t2timer(lapb);
-> 
->  	lapb_clear_queues(lapb);
-> 
-> +	spin_unlock_bh(&lapb->lock);
-> +
-> +	/* Wait for running timers to stop */
-> +	del_timer_sync(&lapb->t1timer);
-> +	del_timer_sync(&lapb->t2timer);
-> +
->  	__lapb_remove_cb(lapb);
-> 
->  	lapb_put(lapb);
-> @@ -201,6 +217,8 @@ int lapb_getparms(struct net_device *dev, struct
-> lapb_parms_struct *parms)
->  	if (!lapb)
->  		goto out;
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +
->  	parms->t1      = lapb->t1 / HZ;
->  	parms->t2      = lapb->t2 / HZ;
->  	parms->n2      = lapb->n2;
-> @@ -219,6 +237,7 @@ int lapb_getparms(struct net_device *dev, struct
-> lapb_parms_struct *parms)
->  	else
->  		parms->t2timer = (lapb->t2timer.expires - jiffies) / HZ;
-> 
-> +	spin_unlock_bh(&lapb->lock);
->  	lapb_put(lapb);
->  	rc = LAPB_OK;
->  out:
-> @@ -234,6 +253,8 @@ int lapb_setparms(struct net_device *dev, struct
-> lapb_parms_struct *parms)
->  	if (!lapb)
->  		goto out;
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +
->  	rc = LAPB_INVALUE;
->  	if (parms->t1 < 1 || parms->t2 < 1 || parms->n2 < 1)
->  		goto out_put;
-> @@ -256,6 +277,7 @@ int lapb_setparms(struct net_device *dev, struct
-> lapb_parms_struct *parms)
-> 
->  	rc = LAPB_OK;
->  out_put:
-> +	spin_unlock_bh(&lapb->lock);
->  	lapb_put(lapb);
->  out:
->  	return rc;
-> @@ -270,6 +292,8 @@ int lapb_connect_request(struct net_device *dev)
->  	if (!lapb)
->  		goto out;
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +
->  	rc = LAPB_OK;
->  	if (lapb->state == LAPB_STATE_1)
->  		goto out_put;
-> @@ -285,24 +309,18 @@ int lapb_connect_request(struct net_device *dev)
-> 
->  	rc = LAPB_OK;
->  out_put:
-> +	spin_unlock_bh(&lapb->lock);
->  	lapb_put(lapb);
->  out:
->  	return rc;
->  }
->  EXPORT_SYMBOL(lapb_connect_request);
-> 
-> -int lapb_disconnect_request(struct net_device *dev)
-> +static int __lapb_disconnect_request(struct lapb_cb *lapb)
->  {
-> -	struct lapb_cb *lapb = lapb_devtostruct(dev);
-> -	int rc = LAPB_BADTOKEN;
-> -
-> -	if (!lapb)
-> -		goto out;
-> -
->  	switch (lapb->state) {
->  	case LAPB_STATE_0:
-> -		rc = LAPB_NOTCONNECTED;
-> -		goto out_put;
-> +		return LAPB_NOTCONNECTED;
-> 
->  	case LAPB_STATE_1:
->  		lapb_dbg(1, "(%p) S1 TX DISC(1)\n", lapb->dev);
-> @@ -310,12 +328,10 @@ int lapb_disconnect_request(struct net_device 
-> *dev)
->  		lapb_send_control(lapb, LAPB_DISC, LAPB_POLLON, LAPB_COMMAND);
->  		lapb->state = LAPB_STATE_0;
->  		lapb_start_t1timer(lapb);
-> -		rc = LAPB_NOTCONNECTED;
-> -		goto out_put;
-> +		return LAPB_NOTCONNECTED;
-> 
->  	case LAPB_STATE_2:
-> -		rc = LAPB_OK;
-> -		goto out_put;
-> +		return LAPB_OK;
+>=20
+> v3: Fix build errors of incompatible pointer types.
+>=20
+>  drivers/i2c/busses/i2c-ismt.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/i2c/busses/i2c-ismt.c b/drivers/i2c/busses/i2c-ismt.c
+> index a35a27c..88f6039 100644
+> --- a/drivers/i2c/busses/i2c-ismt.c
+> +++ b/drivers/i2c/busses/i2c-ismt.c
+> @@ -903,16 +903,12 @@ ismt_probe(struct pci_dev *pdev, const struct pci_d=
+evice_id *id)
+>  		return -ENODEV;
 >  	}
-> 
->  	lapb_clear_queues(lapb);
-> @@ -328,8 +344,22 @@ int lapb_disconnect_request(struct net_device 
-> *dev)
->  	lapb_dbg(1, "(%p) S3 DISC(1)\n", lapb->dev);
->  	lapb_dbg(0, "(%p) S3 -> S2\n", lapb->dev);
-> 
-> -	rc = LAPB_OK;
-> -out_put:
-> +	return LAPB_OK;
-> +}
-> +
-> +int lapb_disconnect_request(struct net_device *dev)
-> +{
-> +	struct lapb_cb *lapb = lapb_devtostruct(dev);
-> +	int rc = LAPB_BADTOKEN;
-> +
-> +	if (!lapb)
-> +		goto out;
-> +
-> +	spin_lock_bh(&lapb->lock);
-> +
-> +	rc = __lapb_disconnect_request(lapb);
-> +
-> +	spin_unlock_bh(&lapb->lock);
->  	lapb_put(lapb);
->  out:
->  	return rc;
-> @@ -344,6 +374,8 @@ int lapb_data_request(struct net_device *dev,
-> struct sk_buff *skb)
->  	if (!lapb)
->  		goto out;
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +
->  	rc = LAPB_NOTCONNECTED;
->  	if (lapb->state != LAPB_STATE_3 && lapb->state != LAPB_STATE_4)
->  		goto out_put;
-> @@ -352,6 +384,7 @@ int lapb_data_request(struct net_device *dev,
-> struct sk_buff *skb)
->  	lapb_kick(lapb);
->  	rc = LAPB_OK;
->  out_put:
-> +	spin_unlock_bh(&lapb->lock);
->  	lapb_put(lapb);
->  out:
->  	return rc;
-> @@ -364,7 +397,9 @@ int lapb_data_received(struct net_device *dev,
-> struct sk_buff *skb)
->  	int rc = LAPB_BADTOKEN;
-> 
->  	if (lapb) {
-> +		spin_lock_bh(&lapb->lock);
->  		lapb_data_input(lapb, skb);
-> +		spin_unlock_bh(&lapb->lock);
->  		lapb_put(lapb);
->  		rc = LAPB_OK;
->  	}
-> @@ -435,6 +470,8 @@ static int lapb_device_event(struct notifier_block
-> *this, unsigned long event,
->  	if (!lapb)
->  		return NOTIFY_DONE;
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +
->  	switch (event) {
->  	case NETDEV_UP:
->  		lapb_dbg(0, "(%p) Interface up: %s\n", dev, dev->name);
-> @@ -454,7 +491,7 @@ static int lapb_device_event(struct notifier_block
-> *this, unsigned long event,
->  		break;
->  	case NETDEV_GOING_DOWN:
->  		if (netif_carrier_ok(dev))
-> -			lapb_disconnect_request(dev);
-> +			__lapb_disconnect_request(lapb);
->  		break;
->  	case NETDEV_DOWN:
->  		lapb_dbg(0, "(%p) Interface down: %s\n", dev, dev->name);
-> @@ -489,6 +526,7 @@ static int lapb_device_event(struct notifier_block
-> *this, unsigned long event,
->  		break;
->  	}
-> 
-> +	spin_unlock_bh(&lapb->lock);
->  	lapb_put(lapb);
->  	return NOTIFY_DONE;
->  }
-> diff --git a/net/lapb/lapb_timer.c b/net/lapb/lapb_timer.c
-> index baa247fe4ed0..0230b272b7d1 100644
-> --- a/net/lapb/lapb_timer.c
-> +++ b/net/lapb/lapb_timer.c
-> @@ -40,6 +40,7 @@ void lapb_start_t1timer(struct lapb_cb *lapb)
->  	lapb->t1timer.function = lapb_t1timer_expiry;
->  	lapb->t1timer.expires  = jiffies + lapb->t1;
-> 
-> +	lapb->t1timer_stop = false;
->  	add_timer(&lapb->t1timer);
->  }
-> 
-> @@ -50,16 +51,19 @@ void lapb_start_t2timer(struct lapb_cb *lapb)
->  	lapb->t2timer.function = lapb_t2timer_expiry;
->  	lapb->t2timer.expires  = jiffies + lapb->t2;
-> 
-> +	lapb->t2timer_stop = false;
->  	add_timer(&lapb->t2timer);
->  }
-> 
->  void lapb_stop_t1timer(struct lapb_cb *lapb)
->  {
-> +	lapb->t1timer_stop = true;
->  	del_timer(&lapb->t1timer);
->  }
-> 
->  void lapb_stop_t2timer(struct lapb_cb *lapb)
->  {
-> +	lapb->t2timer_stop = true;
->  	del_timer(&lapb->t2timer);
->  }
-> 
-> @@ -72,16 +76,31 @@ static void lapb_t2timer_expiry(struct timer_list 
-> *t)
->  {
->  	struct lapb_cb *lapb = from_timer(lapb, t, t2timer);
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +	if (timer_pending(&lapb->t2timer)) /* A new timer has been set up */
-> +		goto out;
-> +	if (lapb->t2timer_stop) /* The timer has been stopped */
-> +		goto out;
-> +
->  	if (lapb->condition & LAPB_ACK_PENDING_CONDITION) {
->  		lapb->condition &= ~LAPB_ACK_PENDING_CONDITION;
->  		lapb_timeout_response(lapb);
->  	}
-> +
-> +out:
-> +	spin_unlock_bh(&lapb->lock);
->  }
-> 
->  static void lapb_t1timer_expiry(struct timer_list *t)
->  {
->  	struct lapb_cb *lapb = from_timer(lapb, t, t1timer);
-> 
-> +	spin_lock_bh(&lapb->lock);
-> +	if (timer_pending(&lapb->t1timer)) /* A new timer has been set up */
-> +		goto out;
-> +	if (lapb->t1timer_stop) /* The timer has been stopped */
-> +		goto out;
-> +
->  	switch (lapb->state) {
-> 
->  		/*
-> @@ -108,7 +127,7 @@ static void lapb_t1timer_expiry(struct timer_list 
-> *t)
->  				lapb->state = LAPB_STATE_0;
->  				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
->  				lapb_dbg(0, "(%p) S1 -> S0\n", lapb->dev);
-> -				return;
-> +				goto out;
->  			} else {
->  				lapb->n2count++;
->  				if (lapb->mode & LAPB_EXTENDED) {
-> @@ -132,7 +151,7 @@ static void lapb_t1timer_expiry(struct timer_list 
-> *t)
->  				lapb->state = LAPB_STATE_0;
->  				lapb_disconnect_confirmation(lapb, LAPB_TIMEDOUT);
->  				lapb_dbg(0, "(%p) S2 -> S0\n", lapb->dev);
-> -				return;
-> +				goto out;
->  			} else {
->  				lapb->n2count++;
->  				lapb_dbg(1, "(%p) S2 TX DISC(1)\n", lapb->dev);
-> @@ -150,7 +169,7 @@ static void lapb_t1timer_expiry(struct timer_list 
-> *t)
->  				lapb_stop_t2timer(lapb);
->  				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
->  				lapb_dbg(0, "(%p) S3 -> S0\n", lapb->dev);
-> -				return;
-> +				goto out;
->  			} else {
->  				lapb->n2count++;
->  				lapb_requeue_frames(lapb);
-> @@ -167,7 +186,7 @@ static void lapb_t1timer_expiry(struct timer_list 
-> *t)
->  				lapb->state = LAPB_STATE_0;
->  				lapb_disconnect_indication(lapb, LAPB_TIMEDOUT);
->  				lapb_dbg(0, "(%p) S4 -> S0\n", lapb->dev);
-> -				return;
-> +				goto out;
->  			} else {
->  				lapb->n2count++;
->  				lapb_transmit_frmr(lapb);
-> @@ -176,4 +195,7 @@ static void lapb_t1timer_expiry(struct timer_list 
-> *t)
->  	}
-> 
->  	lapb_start_t1timer(lapb);
-> +
-> +out:
-> +	spin_unlock_bh(&lapb->lock);
->  }
+> =20
+> -	if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(64)) !=3D 0) ||
+> -	    (pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64)) !=3D 0)) {
+> -		if ((pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) !=3D 0) ||
+> -		    (pci_set_consistent_dma_mask(pdev,
+> -						 DMA_BIT_MASK(32)) !=3D 0)) {
+> -			dev_err(&pdev->dev, "pci_set_dma_mask fail %p\n",
+> +	if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64)) !=3D 0)
+> +		if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32)) !=3D 0) {
+> +			dev_err(&pdev->dev, "dma_set_mask_and_coherent fail %p\n",
+>  				pdev);
+>  			return -ENODEV;
+>  		}
+> -	}
+> =20
+>  	err =3D ismt_dev_init(priv);
+>  	if (err)
+> --=20
+> 2.1.0
+>=20
+
+--qxfKREH7IwbezJ+T
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAKldkACgkQFA3kzBSg
+Kbb6hxAApGjfA14lG697L3sDX0kkV97wifgK3SOXUJuV+JgidPBfeQ6RG6oU5N07
+u+Dfp9SD30HIoG0SxMQYRta6L+JgSZIOPdYqwCGrewCNoFT4qZK2B4P+mMMeGpaC
+XX9br17j5XL5/EKkPTl2M0+1Zhs1+nA612LhrpCAOyUxcdLtvbEMjIkzRt8BXv8w
+S8jzYaEk8NB+uFzW5JQb1GBAGri+VWk4SWOhm9e1HTtVvqcf2z4B/ekC1uGI0lXM
+bRfLe5gnZ2+fy6411IvBaU8yJ8VFtOyQzswsMgerBJ6MYuwd9UtTfhpv74H9Dkjq
+sUWjQLvwwKke8utghJKWiWHmeRQNC+Ihes9RjbFyujGWYrU0vMs2k82iyFElHrUq
+vA9HQYkyuHUVmjT06iVIb8N8zPs+B8DQtLvC567roxYdY5kHRBCbgZDCegPVc3VJ
+IIQLwEt4U4RpQHv0CqDVEp5cQnv+lWtcRkYFwZItw2F4+KTB0Ch+kEtYKZUqv+/k
+nPCltlnpGkDSWloexme5twrs0poKW9GRJipQQezV8bP0kcv5JTitd0vEzLIl6mKf
+gaBs/5qX5p7+ziXmGcMARMzNmPvVUCw7OmzLGddjnEKulECMa1GgdUQ8+6I3oVXT
+moJE/m5qJ1v3DzErmoJtgofD06MeBw4bVYEAsnnpvXR8CUsZDZw=
+=Due/
+-----END PGP SIGNATURE-----
+
+--qxfKREH7IwbezJ+T--
