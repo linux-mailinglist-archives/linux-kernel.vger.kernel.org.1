@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A965C30005D
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38265300069
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727426AbhAVK0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:26:11 -0500
-Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:36813 "EHLO
-        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727847AbhAVKPt (ORCPT
+        id S1727659AbhAVK1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:27:22 -0500
+Received: from mail-qv1-f41.google.com ([209.85.219.41]:39763 "EHLO
+        mail-qv1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727836AbhAVKUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:15:49 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id 6CC7E1C75DF
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 10:14:53 +0000 (GMT)
-Received: (qmail 13926 invoked from network); 22 Jan 2021 10:14:53 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 22 Jan 2021 10:14:53 -0000
-Date:   Fri, 22 Jan 2021 10:14:51 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/5] Scan for an idle sibling in a single pass
-Message-ID: <20210122101451.GV3592@techsingularity.net>
-References: <20210119112211.3196-1-mgorman@techsingularity.net>
- <CAKfTPtAsuY4aN6J2C+KCOpyJDULd6yEBZ_8zTLWRXwhakCq8oQ@mail.gmail.com>
- <20210119120220.GS3592@techsingularity.net>
- <CAKfTPtAWcVu5y_L93h47WHS1wkUZh=EPxyMDi5vSeNvx14Y_kQ@mail.gmail.com>
+        Fri, 22 Jan 2021 05:20:54 -0500
+Received: by mail-qv1-f41.google.com with SMTP id s6so2374895qvn.6;
+        Fri, 22 Jan 2021 02:20:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9pnqYb3QY61gSashZ9AL/GOEj/gUcQuFqNmSe3PAmso=;
+        b=KCTXPDWs6Z0j9G3taXNjX75PQG1HEXUzbxXgvapQYoMf92XhAJb2zS5Tn1RaOLuNMi
+         azNa+e0LyyEYU2WWHnzmHwbSjsmQvWmzicpRG4gPkS6sWHtYP1PhRaJUTPsCI7NeaWnj
+         zZDHlVThBrlGRHow934AOivjhZw6KWFkx2wv+FXc32bIO1v4zRDgyn/OUzfbzQ5s830Y
+         Sb0s1mnSFoK/SI2z65HLwVpwxiaKr+2/nqoEUU0cJTCmasdUQSVbA6E6ltXKUmW4KKW0
+         BI/uDTeO1m8s1YRCvvqtwMB3uS5NU3c9oWX7/tNmVB6rXgIy30+q+1d1cuslvGL+x2dN
+         EsVQ==
+X-Gm-Message-State: AOAM533xlZkG2LCzU9iYQoJJ14zt8x4nFDy4Iv2WMu9uoacXkVjiK+mZ
+        r4gw4Fp4r6iS6dwHK9E6oxobxyDd9ufjrxAPI5BZVfIr
+X-Google-Smtp-Source: ABdhPJx0RyalLmfJx4OSUU4CPsArtw7xqkS3xCQi6kO7AZPnIGmmsalY8GT8lFuXxsRd2HAFLC+6yhORZmUCnWK2kdM=
+X-Received: by 2002:a05:6214:2b2:: with SMTP id m18mr3612576qvv.40.1611310813549;
+ Fri, 22 Jan 2021 02:20:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAWcVu5y_L93h47WHS1wkUZh=EPxyMDi5vSeNvx14Y_kQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210121100619.5653-1-wsa+renesas@sang-engineering.com> <20210121100619.5653-4-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210121100619.5653-4-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 22 Jan 2021 11:20:02 +0100
+Message-ID: <CAMuHMdW6DnUAPimPh16omG1ZwhYDPAQA9wTKFnsvtixu8SF_dA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] arm64: dts: renesas: r8a779a0: Add Ethernet-AVB support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Tho Vu <tho.vu.wh@renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 10:30:52AM +0100, Vincent Guittot wrote:
-> Hi Mel,
-> 
-> On Tue, 19 Jan 2021 at 13:02, Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Tue, Jan 19, 2021 at 12:33:04PM +0100, Vincent Guittot wrote:
-> > > On Tue, 19 Jan 2021 at 12:22, Mel Gorman <mgorman@techsingularity.net> wrote:
-> > > >
-> > > > Changelog since v2
-> > > > o Remove unnecessary parameters
-> > > > o Update nr during scan only when scanning for cpus
-> > >
-> > > Hi Mel,
-> > >
-> > > I haven't looked at your previous version mainly because I'm chasing a
-> > > performance regression on v5.11-rcx which prevents me from testing the
-> > > impact of your patchset on my !SMT2 system.
-> > > Will do this as soon as this problem is fixed
-> > >
-> >
-> > Thanks, that would be appreciated as I do not have access to a !SMT2
-> > system to do my own evaluation.
-> 
-> I have been able to run tests with your patchset on both large arm64
-> SMT4 system and small arm64 !SMT system and patch 3 is still a source
-> of regression on both. Decreasing min number of loops to 2 instead of
-> 4 and scaling it with smt weight doesn't seem to be a good option as
-> regressions disappear when I remove them as I tested with the patch
-> below
-> 
-> hackbench -l 2560 -g 1 on 8 cores arm64
-> v5.11-rc4 : 1.355 (+/- 7.96)
-> + sis improvement : 1.923 (+/- 25%)
-> + the patch below : 1.332 (+/- 4.95)
-> 
-> hackbench -l 2560 -g 256 on 8 cores arm64
-> v5.11-rc4 : 2.116 (+/- 4.62%)
-> + sis improvement : 2.216 (+/- 3.84%)
-> + the patch below : 2.113 (+/- 3.01%)
-> 
-> So starting with a min of 2 loops instead of 4 currently and scaling
-> nr loop with smt weight doesn't seem to be a good option and we should
-> remove it for now
-> 
+On Thu, Jan 21, 2021 at 11:06 AM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> From: Tho Vu <tho.vu.wh@renesas.com>
+>
+> Define the generic parts of Ethernet-AVB device nodes. Only AVB0 was
+> tested because it was the only port with a PHY on current hardware.
+>
+> Signed-off-by: Tho Vu <tho.vu.wh@renesas.com>
+> [wsa: double checked, rebased, added "internal-delay" properties]
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+> Change since v1:
+> * added internal-delay properties
 
-Ok
+Will queue in renesas-devel for v5.12.
 
-Note that this is essentially reverting the patch. As you remove "nr *=
-sched_smt_weight", the scan is no longer proportional to cores, it's
-proportial to logical CPUs and the rest of the patch and changelog becomes
-meaningless. On that basis, I'll queue tests over the weekend that remove
-this patch entirely and keep the CPU scan as a single pass.
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Mel Gorman
-SUSE Labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
