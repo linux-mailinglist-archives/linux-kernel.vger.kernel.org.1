@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D00A2FFE64
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071D42FFE68
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 09:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727206AbhAVIlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 03:41:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+        id S1727119AbhAVIlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 03:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727134AbhAVIiW (ORCPT
+        with ESMTP id S1727139AbhAVIiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 03:38:22 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1A9C0612F2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:46 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id m21so3115182qtp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:46 -0800 (PST)
+        Fri, 22 Jan 2021 03:38:24 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76112C06121E
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:50 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id k33so4802373ybj.14
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 00:36:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=eLvtJocY85Q1bwr17/2UGrvESZ56o3W43X2Kdejgj9o=;
-        b=G5a53b5u8em5s3gT/VvcAD/ntcjXwuVNBydErW7i0yvi7eY6ud3lfb+kd+99Omwgmf
-         eVdmeaD+W4BWhL7h9xlC6tcek9HvpM9yq3uO4UcBI77MfyuxPgCPmMubU3kt2+CaL/is
-         eCo6feHb+sF2M7X65Zs/49BXmhlnIX32Q7uwTdNKQiEw/5r+GnByUHBponF7pKjCKLxO
-         /YDRMYFkC19B2yBiOLkcA0v3LhfnfZLqCSmE0bp5qGK4IDDLNVvk71v+aRnc1WRRRyJ3
-         Ij24vpG81bD9ZEl7FIM/mzdb6gWxsbD005UsAsDvr1mETgljzfFocji4zsUOOoSiPjXh
-         GHKQ==
+        bh=GoHtCD9i/HlVEXFt8+h29d4MxhFf0tqQCKDbQQUvONI=;
+        b=KscSHaebmBoTdf9LwsLcKwhJu7p25PKadVGRGPcdgMhNa9uYGj7f/lLucOa+aWC3fl
+         vY/l29jJ2pyHn+IKkRioQHrLpmAt6Ea7xkTDEZK9Clys1KSCa3zmr7Z46lY5JOzQjS0W
+         G+hy/sOMiPKuu2orYQ/nD43LyI6ISciPMmbT480i/NB5wDM4TmHir8yzP2G1CByCZuW4
+         xrBKBGDtiX9OG8Q2DXXXbXInZh3ASShQXvuzGAZb0xsU1SCnhxn3I7/P5vfpdjINWoMx
+         l7kK4DflvVo+jHoRNcw4vtUx6veHPPqt4QKZ2CyxDLIXtwD3DPIaa0FuMBh5YX+EZLVb
+         zUUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=eLvtJocY85Q1bwr17/2UGrvESZ56o3W43X2Kdejgj9o=;
-        b=DD2lJn4F885CKEwKOB19NfnkIxO6czsDPSyCn9t36gz1oc0a54Rt7zxw+0tfizD81U
-         ojoMcwbtP6ux/oHvWMjuzKlpa2h1X75CquZeUFPPwWWwsCMyumdTed9a/VmdtvNHTLJ7
-         PTtA6tLxXGPw04CLqog5d/fqqpsjgXgFl00VPB/zN88cn4FwKK/hpCCYe+oDJnxKcKrv
-         dlKH+NM4BgkBMa7LhYcIM3dp+xRCX9x8vGa8TWj3YLtPpf4ZZJtVhe2DvOvhUKdw7AQB
-         WjjxXK3r+fOKwr6W6eXUFnSpW7TqPRHx6VF/5ue7/Rlba4LGTQPn90uJvzgVu6RrQB2G
-         CDnQ==
-X-Gm-Message-State: AOAM531yrDOjyaiz4zi8JKwp+yRq+7CkxaD9lL9dYX56KvRUPa2O1J/r
-        7HgPW911X83o9vRgEEQhEmuW+zur2TbV
-X-Google-Smtp-Source: ABdhPJwhwSIq3ExuDBju+z8w8VpPKUMF5wntIGuxSOEYnDA6f07l8owOvrSzVM4fqTN4n4LQ1J302iBqqH5R
+        bh=GoHtCD9i/HlVEXFt8+h29d4MxhFf0tqQCKDbQQUvONI=;
+        b=m95v6vz+FPOBimT8lp6nvyB/utKaqZetJj4fdWVusqVRj6RpXkxgw+gZ20/kNgolTx
+         O0qV7AiA5I7erwRGtZWRe36n5vHzWaOaA/Lq1uGOB7zYODy+iuxTUCC3b6CmqwKyYrmg
+         jG2OGo6GORwIUfg0P6i3udE5BWgn7OMYirhB/PccVC+cK5UEWdSmoIPHUNDQ+2GEslvX
+         orqr9upGEiKCLIMy6XCU9t+xqa2PZ1P9vvMCYTkzTnLfCIIV+xHR44vjBugPXwbJlMNW
+         Qrf3m4tDx9fVH4RyoEVpf2MVpNsTAmxmt4Hfg20t3Zw+JrVHcq0uSojs8d6/72bPxZ42
+         W/lA==
+X-Gm-Message-State: AOAM5302Cj8qxv3zKQie74cMFIx9+8gUt+q0k28qAG7UOT/bQizf9eSl
+        a8umLWBJGdKaEPEeidcYnep4cv58BOoE
+X-Google-Smtp-Source: ABdhPJzP0Z89akTyWApS8norA15HXkqT/+ByEX6DtZyJArvEPRt0i/XUcHRgwH9a05Z+gb46wHGl2o9KZvdp
 Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
 X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:b:f693:9fff:fef4:2347])
- (user=apusaka job=sendgmr) by 2002:a0c:f991:: with SMTP id
- t17mr3618102qvn.6.1611304605953; Fri, 22 Jan 2021 00:36:45 -0800 (PST)
-Date:   Fri, 22 Jan 2021 16:36:15 +0800
+ (user=apusaka job=sendgmr) by 2002:a25:41c9:: with SMTP id
+ o192mr5005552yba.100.1611304609718; Fri, 22 Jan 2021 00:36:49 -0800 (PST)
+Date:   Fri, 22 Jan 2021 16:36:16 +0800
 In-Reply-To: <20210122083617.3163489-1-apusaka@google.com>
-Message-Id: <20210122163457.v6.5.I96e97067afe1635dbda036b881ba2a01f37cd343@changeid>
+Message-Id: <20210122163457.v6.6.If655289cea81baf9226583a39f703ddc53817a51@changeid>
 Mime-Version: 1.0
 References: <20210122083617.3163489-1-apusaka@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v6 5/7] Bluetooth: advmon offload MSFT handle filter enablement
+Subject: [PATCH v6 6/7] Bluetooth: advmon offload MSFT interleave scanning integration
 From:   Archie Pusaka <apusaka@google.com>
 To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
         Marcel Holtmann <marcel@holtmann.org>
 Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
         Archie Pusaka <apusaka@chromium.org>,
         Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
@@ -72,152 +71,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Archie Pusaka <apusaka@chromium.org>
 
-Implements the feature to disable/enable the filter used for
-advertising monitor on MSFT controller, effectively have the same
-effect as "remove all monitors" and "add all previously removed
-monitors".
-
-This feature would be needed when suspending, where we would not want
-to get packets from anything outside the allowlist. Note that the
-integration with the suspending part is not included in this patch.
+When MSFT extension is supported, we don't have to interleave the scan
+as we could just do allowlist scan.
 
 Signed-off-by: Archie Pusaka <apusaka@chromium.org>
 Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-Reviewed-by: Yun-Hao Chung <howardchung@google.com>
 
 ---
 
-(no changes since v1)
+Changes in v6:
+* New patch "advmon offload MSFT interleave scanning integration"
 
- net/bluetooth/msft.c | 67 ++++++++++++++++++++++++++++++++++++++++++++
- net/bluetooth/msft.h |  6 ++++
- 2 files changed, 73 insertions(+)
+ net/bluetooth/hci_request.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
-index d25c6936daa4..b2ef654b1d3d 100644
---- a/net/bluetooth/msft.c
-+++ b/net/bluetooth/msft.c
-@@ -69,6 +69,17 @@ struct msft_rp_le_cancel_monitor_advertisement {
- 	__u8 sub_opcode;
- } __packed;
- 
-+#define MSFT_OP_LE_SET_ADVERTISEMENT_FILTER_ENABLE	0x05
-+struct msft_cp_le_set_advertisement_filter_enable {
-+	__u8 sub_opcode;
-+	__u8 enable;
-+} __packed;
-+
-+struct msft_rp_le_set_advertisement_filter_enable {
-+	__u8 status;
-+	__u8 sub_opcode;
-+} __packed;
-+
- struct msft_monitor_advertisement_handle_data {
- 	__u8  msft_handle;
- 	__u16 mgmt_handle;
-@@ -83,6 +94,7 @@ struct msft_data {
- 	__u16 pending_add_handle;
- 	__u16 pending_remove_handle;
- 	__u8 reregistering;
-+	__u8 filter_enabled;
- };
- 
- static int __msft_add_monitor_pattern(struct hci_dev *hdev,
-@@ -190,6 +202,7 @@ void msft_do_open(struct hci_dev *hdev)
- 
- 	if (msft_monitor_supported(hdev)) {
- 		msft->reregistering = true;
-+		msft_set_filter_enable(hdev, true);
- 		reregister_monitor_on_restart(hdev, 0);
- 	}
- }
-@@ -395,6 +408,40 @@ static void msft_le_cancel_monitor_advertisement_cb(struct hci_dev *hdev,
- 	hci_remove_adv_monitor_complete(hdev, status);
- }
- 
-+static void msft_le_set_advertisement_filter_enable_cb(struct hci_dev *hdev,
-+						       u8 status, u16 opcode,
-+						       struct sk_buff *skb)
-+{
-+	struct msft_cp_le_set_advertisement_filter_enable *cp;
-+	struct msft_rp_le_set_advertisement_filter_enable *rp;
-+	struct msft_data *msft = hdev->msft_data;
-+
-+	rp = (struct msft_rp_le_set_advertisement_filter_enable *)skb->data;
-+	if (skb->len < sizeof(*rp))
-+		return;
-+
-+	/* Error 0x0C would be returned if the filter enabled status is
-+	 * already set to whatever we were trying to set.
-+	 * Although the default state should be disabled, some controller set
-+	 * the initial value to enabled. Because there is no way to know the
-+	 * actual initial value before sending this command, here we also treat
-+	 * error 0x0C as success.
-+	 */
-+	if (status != 0x00 && status != 0x0C)
-+		return;
-+
-+	hci_dev_lock(hdev);
-+
-+	cp = hci_sent_cmd_data(hdev, hdev->msft_opcode);
-+	msft->filter_enabled = cp->enable;
-+
-+	if (status == 0x0C)
-+		bt_dev_warn(hdev, "MSFT filter_enable is already %s",
-+			    cp->enable ? "on" : "off");
-+
-+	hci_dev_unlock(hdev);
-+}
-+
- static bool msft_monitor_rssi_valid(struct adv_monitor *monitor)
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 5aa7bd5030a2..d29a44d77b4e 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -404,13 +404,18 @@ static void cancel_interleave_scan(struct hci_dev *hdev)
+  */
+ static bool __hci_update_interleaved_scan(struct hci_dev *hdev)
  {
- 	struct adv_rssi_thresholds *r = &monitor->rssi;
-@@ -531,3 +578,23 @@ int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
+-	/* If there is at least one ADV monitors and one pending LE connection
+-	 * or one device to be scanned for, we should alternate between
+-	 * allowlist scan and one without any filters to save power.
++	/* Do interleaved scan only if all of the following are true:
++	 * - There is at least one ADV monitor
++	 * - At least one pending LE connection or one device to be scanned for
++	 * - Monitor offloading is not supported
++	 * If so, we should alternate between allowlist scan and one without
++	 * any filters to save power.
+ 	 */
+ 	bool use_interleaving = hci_is_adv_monitoring(hdev) &&
+ 				!(list_empty(&hdev->pend_le_conns) &&
+-				  list_empty(&hdev->pend_le_reports));
++				  list_empty(&hdev->pend_le_reports)) &&
++				hci_get_adv_monitor_offload_ext(hdev) ==
++				    HCI_ADV_MONITOR_EXT_NONE;
+ 	bool is_interleaving = is_interleave_scanning(hdev);
  
- 	return err;
- }
-+
-+int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
-+{
-+	struct msft_cp_le_set_advertisement_filter_enable cp;
-+	struct hci_request req;
-+	struct msft_data *msft = hdev->msft_data;
-+	int err;
-+
-+	if (!msft)
-+		return -EOPNOTSUPP;
-+
-+	cp.sub_opcode = MSFT_OP_LE_SET_ADVERTISEMENT_FILTER_ENABLE;
-+	cp.enable = enable;
-+
-+	hci_req_init(&req, hdev);
-+	hci_req_add(&req, hdev->msft_opcode, sizeof(cp), &cp);
-+	err = hci_req_run_skb(&req, msft_le_set_advertisement_filter_enable_cb);
-+
-+	return err;
-+}
-diff --git a/net/bluetooth/msft.h b/net/bluetooth/msft.h
-index 6f126a1f1688..f8e4d3a6d641 100644
---- a/net/bluetooth/msft.h
-+++ b/net/bluetooth/msft.h
-@@ -20,6 +20,7 @@ __u64 msft_get_features(struct hci_dev *hdev);
- int msft_add_monitor_pattern(struct hci_dev *hdev, struct adv_monitor *monitor);
- int msft_remove_monitor(struct hci_dev *hdev, struct adv_monitor *monitor,
- 			u16 handle);
-+int msft_set_filter_enable(struct hci_dev *hdev, bool enable);
+ 	if (use_interleaving && !is_interleaving) {
+@@ -899,14 +904,11 @@ static u8 update_white_list(struct hci_request *req)
  
- #else
+ 	/* Use the allowlist unless the following conditions are all true:
+ 	 * - We are not currently suspending
+-	 * - There are 1 or more ADV monitors registered
++	 * - There are 1 or more ADV monitors registered and it's not offloaded
+ 	 * - Interleaved scanning is not currently using the allowlist
+-	 *
+-	 * Once the controller offloading of advertisement monitor is in place,
+-	 * the above condition should include the support of MSFT extension
+-	 * support.
+ 	 */
+ 	if (!idr_is_empty(&hdev->adv_monitors_idr) && !hdev->suspended &&
++	    hci_get_adv_monitor_offload_ext(hdev) == HCI_ADV_MONITOR_EXT_NONE &&
+ 	    hdev->interleave_scan_state != INTERLEAVE_SCAN_ALLOWLIST)
+ 		return 0x00;
  
-@@ -45,4 +46,9 @@ static inline int msft_remove_monitor(struct hci_dev *hdev,
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int msft_set_filter_enable(struct hci_dev *hdev, bool enable)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
- #endif
 -- 
 2.30.0.280.ga3ce27912f-goog
 
