@@ -2,118 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045DD300FAD
+	by mail.lfdr.de (Postfix) with ESMTP id 7228A300FAE
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 23:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730905AbhAVWMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 17:12:16 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:55214 "EHLO vps0.lunn.ch"
+        id S1730308AbhAVWMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 17:12:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729912AbhAVWJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 17:09:19 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l34b5-0029Gh-PB; Fri, 22 Jan 2021 23:08:03 +0100
-Date:   Fri, 22 Jan 2021 23:08:03 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sergej Bauer <sbauer@blackbox.su>
-Cc:     netdev@vger.kernel.org, f.fainelli@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-Message-ID: <YAtMw5Yk1QYp28rJ@lunn.ch>
-References: <20210122214247.6536-1-sbauer@blackbox.su>
+        id S1730791AbhAVWMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 17:12:08 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 025DA23B09;
+        Fri, 22 Jan 2021 22:11:26 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 17:11:25 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/3] tracing: Use in_serving_softirq() to deduct softirq
+ status.
+Message-ID: <20210122171125.3b18c3bd@gandalf.local.home>
+In-Reply-To: <20210112230057.2374308-3-bigeasy@linutronix.de>
+References: <20210112230057.2374308-1-bigeasy@linutronix.de>
+        <20210112230057.2374308-3-bigeasy@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122214247.6536-1-sbauer@blackbox.su>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 12:42:41AM +0300, Sergej Bauer wrote:
-> From: sbauer@blackbox.su
-> 
-> v1->v2:
-> 	switch to using of fixed_phy as was suggested by Andrew and Florian
-> 	also features-related parts are removed
+On Wed, 13 Jan 2021 00:00:56 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-This is not using fixed_phy, at least not in the normal way.
+> Use in_serving_softirq() macro which works on PREEMPT_RT. On !PREEMPT_RT
+> the compiler (gcc-10 / clang-11) is smart enough to optimize the
+> in_serving_softirq() related read of the preemption counter away.
+> The only difference I noticed by using in_serving_softirq() on
+> !PREEMPT_RT is that gcc-10 implemented tracing_gen_ctx_flags() as
+> reading FLAG, jmp _tracing_gen_ctx_flags(). Without in_serving_softirq()
+> it inlined _tracing_gen_ctx_flags() into tracing_gen_ctx_flags().
 
-Take a look at bgmac_phy_connect_direct() for example. Call
-fixed_phy_register(), and then phy_connect_direct() with the
-phydev. End of story. Done.
+If we inline it normally (as described in my first patch reply), there may
+be no difference.
 
-> +int lan743x_set_link_ksettings(struct net_device *netdev,
-> +			       const struct ethtool_link_ksettings *cmd)
-> +{
-> +	if (!netdev->phydev)
-> +		return -ENETDOWN;
-> +
-> +	return phy_is_pseudo_fixed_link(netdev->phydev) ?
-> +			lan743x_set_virtual_link_ksettings(netdev, cmd)
-> +			: phy_ethtool_set_link_ksettings(netdev, cmd);
-> +}
-
-There should not be any need to do something different. The whole
-point of fixed_phy is it looks like a PHY. So calling
-phy_ethtool_set_link_ksettings() should work, nothing special needed.
-
-> @@ -1000,8 +1005,10 @@ static void lan743x_phy_close(struct lan743x_adapter *adapter)
->  	struct net_device *netdev = adapter->netdev;
->  
->  	phy_stop(netdev->phydev);
-> -	phy_disconnect(netdev->phydev);
-> -	netdev->phydev = NULL;
-> +	if (phy_is_pseudo_fixed_link(netdev->phydev))
-> +		lan743x_virtual_phy_disconnect(netdev->phydev);
-> +	else
-> +		phy_disconnect(netdev->phydev);
-
-phy_disconnect() should work. You might want to call
-fixed_phy_unregister() afterwards, so you do not leak memory.
-
-> +		if (phy_is_pseudo_fixed_link(phydev)) {
-> +			ret = phy_connect_direct(netdev, phydev,
-> +						 lan743x_virtual_phy_status_change,
-> +						 PHY_INTERFACE_MODE_MII);
-> +		} else {
-> +			ret = phy_connect_direct(netdev, phydev,
-> +						 lan743x_phy_link_status_change,
-
-There should not be any need for a special link change
-callback. lan743x_phy_link_status_change() should work fine, the MAC
-should have no idea it is using a fixed_phy.
-
-> +						 PHY_INTERFACE_MODE_GMII);
-> +		}
-> +
->  		if (ret)
->  			goto return_error;
->  	}
-> @@ -1031,6 +1049,15 @@ static int lan743x_phy_open(struct lan743x_adapter *adapter)
->  	/* MAC doesn't support 1000T Half */
->  	phy_remove_link_mode(phydev, ETHTOOL_LINK_MODE_1000baseT_Half_BIT);
->  
-> +	if (phy_is_pseudo_fixed_link(phydev)) {
-> +		phy_remove_link_mode(phydev, ETHTOOL_LINK_MODE_TP_BIT);
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_10baseT_Full_BIT,
-> +				 phydev->supported);
-> +		linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-> +				 phydev->supported);
-> +		phy_advertise_supported(phydev);
-> +	}
-
-The fixed PHY driver will set these bits depending on the speed it has
-been configured for. No need to change them. The MAC should also not
-care if it is TP, AUI, Fibre or smoke signals.
-
-     Andrew
+-- Steve
