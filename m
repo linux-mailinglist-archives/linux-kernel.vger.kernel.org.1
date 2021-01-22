@@ -2,84 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DC4300C1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B422300C1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 20:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728613AbhAVTMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 14:12:23 -0500
-Received: from smtprelay0010.hostedemail.com ([216.40.44.10]:55932 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728962AbhAVTLG (ORCPT
+        id S1728936AbhAVTNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 14:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728254AbhAVTLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 14:11:06 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 62056100E7B40;
-        Fri, 22 Jan 2021 19:10:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1719:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2691:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:6226:7652:9025:10010:10400:10450:10455:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12740:12760:12895:13069:13161:13208:13229:13255:13311:13357:13439:14181:14659:14721:19904:19999:21067:21080:21451:21627:21660:30029:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: slip91_5f17ab72756e
-X-Filterd-Recvd-Size: 2290
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 22 Jan 2021 19:10:11 +0000 (UTC)
-Message-ID: <27366417ad75e0300d4647f776ca61bb1b132507.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: add warning for avoiding .L prefix symbols
- in assembly files
-From:   Joe Perches <joe@perches.com>
-To:     Aditya <yashsri421@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
-        broonie@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux@googlegroups.com
-Date:   Fri, 22 Jan 2021 11:10:10 -0800
-In-Reply-To: <98d40817-1f80-c772-eb9e-a6c3c04625b3@gmail.com>
-References: <20210120072547.10221-1-yashsri421@gmail.com>
-         <e5c5f8495fbdd063f4272f02a259bbf28b199bdd.camel@perches.com>
-         <14707ab9-1872-4f8c-3ed8-e77b663c3adb@gmail.com>
-         <fb1b511d71761c99a9bece803f508b674fce9962.camel@perches.com>
-         <98d40817-1f80-c772-eb9e-a6c3c04625b3@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 22 Jan 2021 14:11:43 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3108CC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:11:02 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id g15so4519086pjd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 11:11:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O2ZB3udNCNHbkRemCu0DDwTLSpUFiqLQJxKRr0v+cOo=;
+        b=ses9w6o7aiBd7blGwonVHgFbhSzEl6eTcbM/L+9Qtyi6O/vbP2jN12jBcn5McioGmO
+         rwbdjfEhfPbSJRRPNUHCJ4P2cc85qzX0CJ370UxGejFEJQ22OMfOuTbvazPGhLkqnvnq
+         +5o9Tadz2rAADWu/Fsu0veqlNRKXgXe8mF/yPY5uS177uSmgh9I9Ry3zUZ3uaH7vHCu1
+         UCr69z53p8Vq1/Vej4su1g7pVBYeFMBa5wE68fwZdsEF/D5avzzf1wdGE1xNIpQxZXfH
+         grmjueZLtivFR9L+oamWPaCcphjm84vm/vdCJlJLuLFLrkR22yEk/s8Mme3wots37Yti
+         spDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O2ZB3udNCNHbkRemCu0DDwTLSpUFiqLQJxKRr0v+cOo=;
+        b=CE8UoHOqax4psnRelr3vhQxryp9FolzKcZFGtJRaZrs0TIXODUPRR9Cvf4VQ5BSsmu
+         BFUGO2XIWetMl6Hs4L/VTV0Ri8TbKsv/6tWI0RBSnt/FnVVBZK6dyoiYKE+Oa/KOJXFF
+         UXtF6UMj7R7RDqg+8ls6WEbjpub/C9jCO/yENzBkPYytRbbYS/zk1OJwvb3l05CdRCPS
+         g0SO2D5E/BG1e8P27BCLQ9e82EX1vvM5ghSb+3SeQJGmxexjx46lC7RaRPDXse8GGc1S
+         XUq1uKjISljmmrG9laTMSDsHBM2dm6y2DUt8ha6c7w0yQRQHFMrpoBgr2ov2Qs5YBPy3
+         M/7A==
+X-Gm-Message-State: AOAM530K3F7DMIYayKua5E5BNAOJEPa9dUIg2B5v+6cNycSEe41ESZQJ
+        set1g04xiB7u/9bzbiA5bl36DYi4AsUa94lPg1GBDv/+0bND6A==
+X-Google-Smtp-Source: ABdhPJzamJj7j9mtm+zwf/YTjuFIE6wBidb5TwLHbw7zfJYraZgGdvFI1QBxklpX5PAgO681Pq9f1DYgF9PZUe93Yak=
+X-Received: by 2002:a17:90a:31c3:: with SMTP id j3mr6947403pjf.25.1611342661472;
+ Fri, 22 Jan 2021 11:11:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210120173612.20913-1-will@kernel.org> <20210120173612.20913-9-will@kernel.org>
+ <CAKwvOd=B+tMi7-82Q8hEYnQ+BzkLDygOhMh6cQ2L+3SaL+F4tQ@mail.gmail.com>
+ <CAHk-=wiOecmzTXoc6hbTmYdBCyhkmOpAHeMVXmJ_DEGgjPfZ5Q@mail.gmail.com>
+ <20210121131101.GD22123@willie-the-truck> <CAKwvOdnmHH+sCqzdaAt_LYms_KULx5VpzmQZjSOy_Qyj0+hbgQ@mail.gmail.com>
+ <20210121212832.GA23234@willie-the-truck>
+In-Reply-To: <20210121212832.GA23234@willie-the-truck>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 22 Jan 2021 11:10:50 -0800
+Message-ID: <CAKwvOdkYwZHdPj=UGmc2da_3iM7_EN22Vhj7vO2rJ_CAkLEPTg@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] mm: Mark anonymous struct field of 'struct
+ vm_fault' as 'const'
+To:     Will Deacon <will@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-22 at 18:48 +0530, Aditya wrote:
-> On 21/1/21 12:13 am, Joe Perches wrote:
-> > I believe the test should be:
-> > 
-> > 	if ($realfile =~ /\.S$/ &&
-> > 	    $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
-> 
-> Joe, with this regex, we won't be able to match
-> "jmp  .L_restore
-> SYM_FUNC_END(\name)"
+On Thu, Jan 21, 2021 at 1:28 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Thu, Jan 21, 2021 at 11:24:36AM -0800, Nick Desaulniers wrote:
+> > On Thu, Jan 21, 2021 at 5:11 AM Will Deacon <will@kernel.org> wrote:
+> > >
+> > > On Wed, Jan 20, 2021 at 11:02:06AM -0800, Linus Torvalds wrote:
+> > > > On Wed, Jan 20, 2021 at 10:27 AM Nick Desaulniers
+> > > > <ndesaulniers@google.com> wrote:
+> > > > >
+> > > > > Is there a difference between: [ const unnamed struct and individual const members ]
+> > > >
+> > > > Semantically? No.
+> > > >
+> > > > Syntactically the "group the const members together" is a lot cleaner,
+> > > > imho. Not just from a "just a single const" standpoint, but from a
+> > > > "code as documentation" standpoint.
+> > > >
+> > > > But I guess to avoid the clang issue, we could do the "mark individual
+> > > > fields" thing.
+> > >
+> > > I'd prefer to wait until the bug against LLVM has been resolved before we
+> > > try to work around anything. Although I couldn't find any other examples
+> > > like this in the kernel, requiring all of the member fields to be marked as
+> > > 'const' still feels pretty fragile to me; it's only a matter of time before
+> > > new non-const fields get added, at which point the temptation for developers
+> > > to remove 'const' from other fields when it gets in the way is pretty high.
+> >
+> > What's to stop a new non-const field from getting added outside the
+> > const qualified anonymous struct?
+> > What's to stop someone from removing const from the anonymous struct?
+> > What's to stop a number of callers from manipulating the structure
+> > temporarily before restoring it when returning by casting away the
+> > const?
+> >
+> > Code review.
+>
+> Sure, but here we are cleaning up this stuff, so I think review only gets
+> you so far. To me:
+>
+>         const struct {
+>                 int     foo;
+>                 long    bar;
+>         };
+>
+> clearly says "don't modify fields of this struct", whereas:
+>
+>         struct {
+>                 const int       foo;
+>                 const long      bar;
+>         };
+>
+> says "don't modify foo or bar, but add whatever you like on the end" and
+> that's the slippery slope.
 
-I think that's not an issue.
+"but you could add additional non-const members on the end" for sure.
+Though going back to
 
-> which was replaced in this patch in the discussion:
-> https://groups.google.com/g/clang-built-linux/c/-drkmLgu-cU/m/phKe-Tb6CgAJ
-> 
-> Here, "jmp  .L_restore" was also replaced to fix the error.
+>> What's to stop a new non-const field from getting added outside the
+> > const qualified anonymous struct?
 
-Notice that this line was also replaced in the same patch:
+my point with that is that the const anonymous struct is within a
+non-const anonymous struct.
 
- #ifdef CONFIG_PREEMPTION
--SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
-+SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
+struct vm_fault {
+  const {
+    struct vm_area_struct *vma;
+    gfp_t gfp_mask;
+    pgoff_t pgoff;
+    unsigned long address;
+    // Your point is about new member additions here, IIUC
+  };
+  // My point: what's to stop someone from adding a new non-const member here?
+  unsigned int flags;
+  pmd_t *pmd;
+  pud_t *pud;
+  ...
+  // or here?
+};
 
+The const anonymous struct will help prevent additions of non-const
+members to the anonymous struct, sure; but if someone really wanted a
+new non-const member in a `struct vm_fault` instance they're just
+going to go around the const anonymous struct.  Or is there something
+more I'm missing about the order of the members of struct vm_fault?
 
-> However, if this
-> regex(/^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) is
-> correct, maybe we don't need to check for $file as we are now checking
-> for just one line.
-> 
-> What do you think?
+> So then we end up with the eye-sore of:
+>
+>         const struct {
+>                 const int       foo;
+>                 const long      bar;
+>         };
+>
+> and maybe that's the right answer, but I'm just saying we should wait for
+> clang to make up its mind first. It's not like this is a functional problem,
+> and there are enough GCC users around that we're not exactly in a hurry.
 
-The test I wrote was complete, did not use $file and emits a
-warning on the use of CODE_SYM_START_LOCAL_NOALIGN(.L_restore)
-
-I think it's sufficient.
-
+Yeah, I mean I'm happy to whip something up for Clang, even though I
+suspect it will get shot down in code review until there's more
+guidance from standards bodies.  It doesn't hurt to try, and at least
+have a patch "waiting in the wings" should we hear back from WG14 that
+favors GCC's behavior.  Who knows, maybe the guidance will be that
+WG21 should revisit this behavior for C++ to avoid divergence with C
+(as g++ and gcc currently do).
+-- 
+Thanks,
+~Nick Desaulniers
