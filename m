@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C39A2FFFBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EA530002C
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 11:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbhAVKFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 05:05:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:39154 "EHLO foss.arm.com"
+        id S1727937AbhAVKXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 05:23:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:39226 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727795AbhAVKBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:01:40 -0500
+        id S1727123AbhAVKDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:03:38 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2733311D4;
-        Fri, 22 Jan 2021 02:00:49 -0800 (PST)
-Received: from [10.57.9.64] (unknown [10.57.9.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 124DC3F719;
-        Fri, 22 Jan 2021 02:00:46 -0800 (PST)
-Subject: Re: [PATCH] drm/panfrost: Add governor data with pre-defined
- thresholds
-To:     Steven Price <steven.price@arm.com>
-Cc:     linux-kernel@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh@kernel.org, tomeu.vizoso@collabora.com,
-        alyssa.rosenzweig@collabora.com, dri-devel@lists.freedesktop.org,
-        daniel.lezcano@linaro.org
-References: <20210121170445.19761-1-lukasz.luba@arm.com>
- <c5ad1148-0494-aaed-581a-c13ed94e42e8@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <38c4dc94-0613-33f9-e4e4-e42d451aed9b@arm.com>
-Date:   Fri, 22 Jan 2021 10:00:44 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF1AF139F;
+        Fri, 22 Jan 2021 02:02:52 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.42])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A3493F719;
+        Fri, 22 Jan 2021 02:02:47 -0800 (PST)
+Date:   Fri, 22 Jan 2021 10:02:30 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>, vincenzo.frascino@arm.com
+Cc:     Will Deacon <will@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: rcu-torture: Internal error: Oops: 96000006
+Message-ID: <20210122095925.GA29124@C02TD0UTHF1T.local>
+References: <CA+G9fYvV5SZ47M-XpABya11okgR7BJQk-3dDuFWzgVmGN3Lurg@mail.gmail.com>
+ <20210121185521.GQ2743@paulmck-ThinkPad-P72>
+ <20210121213110.GB23234@willie-the-truck>
+ <20210121214314.GW2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <c5ad1148-0494-aaed-581a-c13ed94e42e8@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121214314.GW2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/22/21 8:21 AM, Steven Price wrote:
-> On 21/01/2021 17:04, Lukasz Luba wrote:
->> The simple_ondemand devfreq governor uses two thresholds to decide about
->> the frequency change: upthreshold, downdifferential. These two tunable
->> change the behavior of the governor decision, e.g. how fast to increase
->> the frequency or how rapidly limit the frequency. This patch adds needed
->> governor data with thresholds values gathered experimentally in different
->> workloads.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->> Hi all,
->>
->> This patch aims to improve the panfrost performance in various workloads,
->> (benchmarks, games). The simple_ondemand devfreq governor supports
->> tunables to tweak the behaviour of the internal algorithm. The default
->> values for these two thresholds (90 and 5) do not work well with 
->> panfrost.
->> These new settings should provide good performance, short latency for
->> rising the frequency due to rapid workload change and decent freq slow
->> down when the load is decaying. Based on frequency change statistics,
->> gathered during experiments, all frequencies are used, depending on
->> the load. This provides some power savings (statistically). The highest
->> frequency is also used when needed.
->>
->> Example glmark2 results:
->> 1. freq fixed to max: 153
->> 2. these new thresholds values (w/ patch): 151
->> 3. default governor values (w/o patch): 114
+On Thu, Jan 21, 2021 at 01:43:14PM -0800, Paul E. McKenney wrote:
+> On Thu, Jan 21, 2021 at 09:31:10PM +0000, Will Deacon wrote:
+> > On Thu, Jan 21, 2021 at 10:55:21AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Jan 21, 2021 at 10:37:21PM +0530, Naresh Kamboju wrote:
+> > > > While running rcu-torture test on qemu_arm64 and arm64 Juno-r2 device
+> > > > the following kernel crash noticed. This started happening from Linux next
+> > > > next-20210111 tag to next-20210121.
+> > > > 
+> > > > metadata:
+> > > >   git branch: master
+> > > >   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+> > > >   git describe: next-20210111
+> > > >   kernel-config: https://builds.tuxbuild.com/1muTTn7AfqcWvH5x2Alxifn7EUH/config
+> > > > 
+> > > > output log:
+> > > > 
+> > > > [  621.538050] mem_dump_obj() slab test: rcu_torture_stats =
+> > > > ffff0000c0a3ac40, &rhp = ffff800012debe40, rhp = ffff0000c8cba000, &z
+> > > > = ffff8000091ab8e0
+> > > > [  621.546662] mem_dump_obj(ZERO_SIZE_PTR):
+> > > > [  621.546696] Unable to handle kernel NULL pointer dereference at
+> > > > virtual address 0000000000000008
+> > 
+> > [...]
+> > 
+> > > Huh.  I am relying on virt_addr_valid() rejecting NULL pointers and
+> > > things like ZERO_SIZE_PTR, which is defined as ((void *)16).  It looks
+> > > like your configuration rejects NULL as an invalid virtual address,
+> > > but does not reject ZERO_SIZE_PTR.  Is this the intent, given that you
+> > > are not allowed to dereference a ZERO_SIZE_PTR?
+> > > 
+> > > Adding the ARM64 guys on CC for their thoughts.
+> > 
+> > Spooky timing, there was a thread _today_ about that:
+> > 
+> > https://lore.kernel.org/r/ecbc7651-82c4-6518-d4a9-dbdbdf833b5b@arm.com
 > 
-> It would be good to state which platform this is on as this obviously 
-> can vary depending on the OPPs available.
+> Very good, then my workaround (shown below for Naresh's ease of testing)
+> is only a short-term workaround.  Yay!  ;-)
 
-Sorry about that. It was Rock Pi 4B and I have mesa 20.2.4.
+Hopefully, though we might need to check other architectures beyond
+arm64, ppc, and x86, to be certain!
 
-> 
-> Of course the real fix here would be to improve the utilisation of the 
-> GPU[1] so we actually hit the 90% threshold more easily (AFAICT kbase 
-> uses the default 90/5 thresholds), but this seems like a reasonable 
-> change for now.
+Is there any other latent use of virt_addr_valid() that needs this
+semantic? If so we'll probably want to backport the changes to arm64's
+implementation, at least for v5.10.
 
-Agree, improving the scheduler would be the best option. I'll have a
-look at that patch and why it got this 10% lower performance. Maybe
-I would find something during testing.
+Vincenzo, would you mind taking a look?
 
-> 
-> Reviewed-by: Steven Price <steven.price@arm.com>
-
-Thank you for the review. I guess this patch would go through drm tree?
-
-Regards,
-Lukasz
-
-> 
-> Thanks,
-> 
-> Steve
-> 
-> [1] When I get some time I need to rework the "queue jobs on the 
-> hardware"[2] patch I posted ages ago. Last time it actually caused a 
-> performance regression though...
-> 
-> [2] https://lore.kernel.org/r/20190816093107.30518-2-steven.price%40arm.com
-> 
+Thanks,
+Mark.
