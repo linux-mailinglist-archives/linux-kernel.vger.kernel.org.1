@@ -2,58 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2162FFF66
+	by mail.lfdr.de (Postfix) with ESMTP id BE8132FFF67
 	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 10:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbhAVJnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 04:43:14 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:57302 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726488AbhAVJYn (ORCPT
+        id S1727718AbhAVJnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 04:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727128AbhAVJZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 04:24:43 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMW2N.v_1611307426;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMW2N.v_1611307426)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 22 Jan 2021 17:23:56 +0800
-From:   Yang Li <abaci-bugfix@linux.alibaba.com>
-To:     mchehab@kernel.org
-Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] scsi: megaraid_sas: remove redundant NULL check
-Date:   Fri, 22 Jan 2021 17:23:44 +0800
-Message-Id: <1611307424-109090-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 22 Jan 2021 04:25:38 -0500
+Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75267C061786;
+        Fri, 22 Jan 2021 01:24:58 -0800 (PST)
+Received: by antares.kleine-koenig.org (Postfix, from userid 1000)
+        id 0B0FDAD996C; Fri, 22 Jan 2021 10:24:56 +0100 (CET)
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] watchdog: pcwd: drop always-false if from remove callback
+Date:   Fri, 22 Jan 2021 10:24:47 +0100
+Message-Id: <20210122092449.426097-2-uwe@kleine-koenig.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210122092449.426097-1-uwe@kleine-koenig.org>
+References: <20210122092449.426097-1-uwe@kleine-koenig.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warnings reported by coccicheck:
-./drivers/scsi/megaraid/megaraid_sas_fusion.c:3924:3-8: WARNING: NULL
-check before some freeing functions is not needed.
+If pcwd_isa_probe() succeeded pcwd_private.io_addr cannot be NULL. (And
+if pcwd_isa_probe() failed, pcwd_isa_remove() isn't called.)
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_fusion.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/watchdog/pcwd.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index fd60728..38fc946 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -3920,8 +3920,7 @@ static irqreturn_t megasas_isr_fusion(int irq, void *devp)
- {
- 	unsigned int i;
- 	for (i = 0; i < instance->drv_buf_alloc; i++) {
--		if (instance->crash_buf[i])
--			vfree(instance->crash_buf[i]);
-+		vfree(instance->crash_buf[i]);
- 	}
- 	instance->drv_buf_index = 0;
- 	instance->drv_buf_alloc = 0;
+diff --git a/drivers/watchdog/pcwd.c b/drivers/watchdog/pcwd.c
+index e86fa7f8351d..b95cd38f3ceb 100644
+--- a/drivers/watchdog/pcwd.c
++++ b/drivers/watchdog/pcwd.c
+@@ -956,9 +956,6 @@ static int pcwd_isa_remove(struct device *dev, unsigned int id)
+ 	if (debug >= DEBUG)
+ 		pr_debug("pcwd_isa_remove id=%d\n", id);
+ 
+-	if (!pcwd_private.io_addr)
+-		return 1;
+-
+ 	/*  Disable the board  */
+ 	if (!nowayout)
+ 		pcwd_stop();
 -- 
-1.8.3.1
+2.29.2
 
