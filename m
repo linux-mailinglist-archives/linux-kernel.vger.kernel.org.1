@@ -2,145 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A595300196
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9243001A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 12:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbhAVL34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 06:29:56 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:14590 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728159AbhAVL1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:27:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611314838; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=EcxNP+TLzuN0BO2fcJ/dlWRSp4kMBjsiagD6HdDAIt4=; b=GE0atcx/7Dpm+qFPXC4QdmchqqyG/01jWB8JqfyaoWC1yZY1mJdaFJK+itJ/DBYG2oEvq1Ga
- RmZ/sCZ76OVjbRLrV4wRWBNcy9ml1AYJ/bGOU7verANqoRHhgQyy3ITR3evkrQORvym1WzUB
- s9kEGDdu5q0Gz9RNnK1cBKYIDsQ=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 600ab665fb02735e8cd34949 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 22 Jan 2021 11:26:29
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B64F7C43466; Fri, 22 Jan 2021 11:26:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.29.24] (unknown [49.37.157.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 835D6C433C6;
-        Fri, 22 Jan 2021 11:26:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 835D6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH] ASoC: qcom: Fix number of HDMI RDMA channels on sc7180
-To:     Mark Brown <broonie@kernel.org>, Stephen Boyd <swboyd@chromium.org>
-Cc:     alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        linux-kernel@vger.kernel.org,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Patrick Lai <plai@codeaurora.org>
-References: <20210115203329.846824-1-swboyd@chromium.org>
- <161125795422.35635.5979635189908672108.b4-ty@kernel.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <89cc3dfb-35da-3498-b126-b440c91f9a45@codeaurora.org>
-Date:   Fri, 22 Jan 2021 16:56:21 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728120AbhAVLcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 06:32:33 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2400 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728253AbhAVL3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:29:47 -0500
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DMcMN4x7wz67fb2;
+        Fri, 22 Jan 2021 19:23:28 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 22 Jan 2021 12:29:03 +0100
+Received: from localhost (10.47.73.222) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 22 Jan
+ 2021 11:28:58 +0000
+Date:   Fri, 22 Jan 2021 11:28:16 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Vishal Verma" <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        "Bjorn Helgaas" <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        <daniel.lll@alibaba-inc.com>
+Subject: Re: [RFC PATCH v3 13/16] cxl/mem: Create concept of enabled
+ commands
+Message-ID: <20210122112816.00004c75@Huawei.com>
+In-Reply-To: <20210121184041.r7x7tofhu2qqneus@intel.com>
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+        <20210111225121.820014-15-ben.widawsky@intel.com>
+        <20210114172531.0000347a@Huawei.com>
+        <20210121184041.r7x7tofhu2qqneus@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <161125795422.35635.5979635189908672108.b4-ty@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Originating-IP: [10.47.73.222]
+X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark and Boyd,
+On Thu, 21 Jan 2021 10:40:41 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-Thanks for your time on this issue.
+> On 21-01-14 17:25:31, Jonathan Cameron wrote:
+> > On Mon, 11 Jan 2021 14:51:18 -0800
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
+> >   
+> > > CXL devices must implement the Device Command Interface (described in
+> > > 8.2.9 of the CXL 2.0 spec). While the driver already maintains a list of
+> > > commands it supports, there is still a need to be able to distinguish
+> > > between commands that the driver knows about from commands that may not
+> > > be supported by the hardware. No such commands currently are defined in
+> > > the driver.
+> > > 
+> > > The implementation leaves the statically defined table of commands and
+> > > supplements it with a bitmap to determine commands that are enabled.
+> > > 
+> > > ---
+> > > 
+> > > There are multiple approaches that can be taken, but this is nice for a
+> > > few reasons.
+> > > 
+> > > Here are some of the other solutions:
+> > > 
+> > > Create a per instance table with only the supported commands.
+> > > 1. Having a fixed command id -> command mapping is much easier to manage
+> > >    for development and debugging.
+> > > 2. Dealing with dynamic memory allocation for the table adds unnecessary
+> > >    complexity.
+> > > 3. Most tables for device types are likely to be quite similar.
+> > > 4. Makes it difficult to implement helper macros like cxl_for_each_cmd()
+> > > 
+> > > If the per instance table did preserve ids, #1 above can be addressed.
+> > > However, as "enable" is currently the only mutable state for the
+> > > commands, it would yield a lot of overhead for not much gain.
+> > > Additionally, the other issues remain.
+> > > 
+> > > If "enable" remains the only mutable state, I believe this to be the
+> > > best solution. Once the number of mutable elements in a command grows,
+> > > it probably makes sense to move to per device instance state with a
+> > > fixed command ID mapping.  
+> > Agreed with the logic.   
+> > 
+> > However, patch wise, should either drop the --- above or move this below the
+> > --- after your sign off.  Otherwise you run the risk of git dropping your
+> > sign off and resulting complaints from anyone run validation scripts
+> > of the kernel tree that check for that.
+> >   
+> > > 
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > > ---
+> > >  drivers/cxl/cxl.h |  4 ++++
+> > >  drivers/cxl/mem.c | 38 +++++++++++++++++++++++++++++++++++++-
+> > >  2 files changed, 41 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > > index 537ac4d8e6bd..963ba30cb200 100644
+> > > --- a/drivers/cxl/cxl.h
+> > > +++ b/drivers/cxl/cxl.h
+> > > @@ -17,6 +17,9 @@
+> > >  
+> > >  #define CXL_GET_FIELD(word, field) FIELD_GET(field##_MASK, word)
+> > >  
+> > > +/* XXX: Arbitrary max */
+> > > +#define CXL_MAX_COMMANDS 32  
+> > 
+> > If going this way, probably want a build time check that you don't
+> > go beyond this value for a given command set.  I haven't actually
+> > thought about how to construct that but should be easy enough.
+> >   
+> 
+> I think BUILD_BUG_ON of ARRAY_SIZE mem_commands is sufficient. Let me know if
+> you want anything more.
 
-In my opinion, It 's better not to apply this patch.
+That is fine.
 
-I will post patch with changing size in sc7180.dtsi file.
-
-
-On 1/22/2021 1:09 AM, Mark Brown wrote:
-> On Fri, 15 Jan 2021 12:33:29 -0800, Stephen Boyd wrote:
->> Suspending/resuming with an HDMI dongle attached leads to crashes from
->> an audio regmap.
->>
->>   Unable to handle kernel paging request at virtual address ffffffc018068000
->>   Mem abort info:
->>     ESR = 0x96000047
->>     EC = 0x25: DABT (current EL), IL = 32 bits
->>     SET = 0, FnV = 0
->>     EA = 0, S1PTW = 0
->>   Data abort info:
->>     ISV = 0, ISS = 0x00000047
->>     CM = 0, WnR = 1
->>   swapper pgtable: 4k pages, 39-bit VAs, pgdp=0000000081b12000
->>   [ffffffc018068000] pgd=0000000275d14003, pud=0000000275d14003, pmd=000000026365d003, pte=0000000000000000
->>   Internal error: Oops: 96000047 [#1] PREEMPT SMP
->>   Call trace:
->>    regmap_mmio_write32le+0x2c/0x40
->>    regmap_mmio_write+0x48/0x6c
->>    _regmap_bus_reg_write+0x34/0x44
->>    _regmap_write+0x100/0x150
->>    regcache_default_sync+0xc0/0x138
->>    regcache_sync+0x188/0x26c
->>    lpass_platform_pcmops_resume+0x48/0x54 [snd_soc_lpass_platform]
->>    snd_soc_component_resume+0x28/0x40
->>    soc_resume_deferred+0x6c/0x178
->>    process_one_work+0x208/0x3c8
->>    worker_thread+0x23c/0x3e8
->>    kthread+0x144/0x178
->>    ret_from_fork+0x10/0x18
->>   Code: d503201f d50332bf f94002a8 8b344108 (b9000113)
->>
->> [...]
-> Applied to
->
->     https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
->
-> Thanks!
->
-> [1/1] ASoC: qcom: Fix number of HDMI RDMA channels on sc7180
->        commit: 7dfe20ee92f681ab1342015254ddb77a18f40cdb
->
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
->
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
->
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
->
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
->
-> Thanks,
-> Mark
-
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
+> > > +
+> > >  /* Device  (CXL 2.0 - 8.2.8.3) */
+> > >  #define CXLDEV_CAP_ARRAY_REG 0x0
+> > >  #define CXLDEV_CAP_ARRAY_CAP_ID 0
+> > > @@ -88,6 +91,7 @@ struct cxl_mem {
+> > >  	} ram;
+> > >  
+> > >  	char firmware_version[0x10];
+> > > +	DECLARE_BITMAP(enabled_cmds, CXL_MAX_COMMANDS);
+> > >  
+> > >  	/* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
+> > >  	struct {
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > index a824cfd4342a..20b26fa2c466 100644
+> > > --- a/drivers/cxl/mem.c
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -114,6 +114,8 @@ static struct {
+> > >   *    would typically be used for deprecated commands.
+> > >   *  * %CXL_CMD_FLAG_MANDATORY: Hardware must support this command. This flag is
+> > >   *    only used internally by the driver for sanity checking.
+> > > + *  * %CXL_CMD_INTERNAL_FLAG_PSEUDO: This is a pseudo command which doesn't have
+> > > + *    a direct mapping to hardware. They are implicitly always enabled.
+> > >   *
+> > >   * The cxl_mem_command is the driver's internal representation of commands that
+> > >   * are supported by the driver. Some of these commands may not be supported by
+> > > @@ -129,6 +131,7 @@ struct cxl_mem_command {
+> > >  #define CXL_CMD_INTERNAL_FLAG_NONE 0
+> > >  #define CXL_CMD_INTERNAL_FLAG_HIDDEN BIT(0)
+> > >  #define CXL_CMD_INTERNAL_FLAG_MANDATORY BIT(1)
+> > > +#define CXL_CMD_INTERNAL_FLAG_PSEUDO BIT(2)
+> > >  };
+> > >  
+> > >  /*
+> > > @@ -140,7 +143,7 @@ struct cxl_mem_command {
+> > >  static struct cxl_mem_command mem_commands[] = {
+> > >  	CXL_CMD(INVALID, KERNEL, 0, 0, HIDDEN),
+> > >  	CXL_CMD(IDENTIFY, NONE, 0, 0x43, MANDATORY),
+> > > -	CXL_CMD(RAW, NONE, ~0, ~0, MANDATORY),
+> > > +	CXL_CMD(RAW, NONE, ~0, ~0, PSEUDO),
+> > >  };
+> > >  
+> > >  #define cxl_for_each_cmd(cmd)                                                  \
+> > > @@ -618,6 +621,10 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
+> > >  	c = &mem_commands[send_cmd->id];
+> > >  	info = &c->info;
+> > >  
+> > > +	/* Check that the command is enabled for hardware */
+> > > +	if (!test_bit(cxl_cmd_index(c), cxlm->enabled_cmds))
+> > > +		return -ENOTTY;
+> > > +
+> > >  	if (info->flags & CXL_MEM_COMMAND_FLAG_KERNEL)
+> > >  		return -EPERM;
+> > >  
+> > > @@ -1029,6 +1036,31 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+> > >  	return rc;
+> > >  }
+> > >  
+> > > +/**
+> > > + * cxl_mem_enumerate_cmds() - Enumerate commands for a device.
+> > > + * @cxlm: The device.
+> > > + *
+> > > + * Returns 0 if enumerate completed successfully.
+> > > + *
+> > > + * CXL devices have optional support for certain commands. This function will
+> > > + * determine the set of supported commands for the hardware and update the
+> > > + * enabled_cmds bitmap in the @cxlm.
+> > > + */
+> > > +static int cxl_mem_enumerate_cmds(struct cxl_mem *cxlm)
+> > > +{
+> > > +	struct cxl_mem_command *c;
+> > > +
+> > > +	/* All commands are considered enabled for now (except INVALID). */
+> > > +	cxl_for_each_cmd(c) {
+> > > +		if (c->flags & CXL_CMD_INTERNAL_FLAG_HIDDEN)
+> > > +			continue;
+> > > +
+> > > +		set_bit(cxl_cmd_index(c), cxlm->enabled_cmds);
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > >  /**
+> > >   * cxl_mem_identify() - Send the IDENTIFY command to the device.
+> > >   * @cxlm: The device to identify.
+> > > @@ -1147,6 +1179,10 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > >  	if (rc)
+> > >  		goto err;
+> > >  
+> > > +	rc = cxl_mem_enumerate_cmds(cxlm);
+> > > +	if (rc)
+> > > +		return rc;
+> > > +
+> > >  	rc = cxl_mem_identify(cxlm);
+> > >  	if (rc)
+> > >  		goto err;  
+> >   
 
