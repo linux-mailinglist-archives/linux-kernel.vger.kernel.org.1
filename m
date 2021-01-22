@@ -2,279 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82469300EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:30:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4178300F7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 22 Jan 2021 22:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbhAVVaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 16:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        id S1729495AbhAVV7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 16:59:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728531AbhAVVaN (ORCPT
+        with ESMTP id S1730918AbhAVUIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 16:30:13 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C540C061788
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:29:32 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id s7so6797419ybj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 13:29:32 -0800 (PST)
+        Fri, 22 Jan 2021 15:08:32 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D88C0613D6;
+        Fri, 22 Jan 2021 12:07:52 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id p13so7954528ljg.2;
+        Fri, 22 Jan 2021 12:07:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6s+1w+iSWuIMPYQhTZynfz7B74f6xr3biYX9AQwoU3Q=;
-        b=G/ZC0tFAm5IjFV9yvvagTIbvg67U4W60GxD/D+Fio5zLm/Ay9yjVZZuDgfBlwJR9/y
-         24m75d1YQWKOwxMkEi4iaauryHgcdHeO6sceRtDcRsWDyC/x47tvXKemfl0yLWU2HJIc
-         xO3osOEUbI9p3sgVnaqkBDHvi9TfG4dqWL7gbTYfy8v+wMhI889enFZ69f0J8mJTX/Jo
-         1eftLwa0GAUHjdyK8HptvGnUP1hDk+fhH2Fz2m+H/Ijct/tk2yq+O7R2kkuh7rI792KJ
-         eAKnZMRSO5rVcB6e8wqw0i6Z7fryzqPl8zmBCAQrfw9qbiWeEbev+7UZJJXj1XZSHy1W
-         JNqA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/Q9Reap3GWCAihxatXXr3FfVYUJhLMEM+4qTRCJHb9Q=;
+        b=EbYQVnYZe4+A4cZVNvsovFd+Uj5FB5Xx8OMwr0ixsUNq6fSZ6bNtgtrkD3lWMls0so
+         NW6aDSVA7UUPlHXJTi0FDP108Il2GhkrJvERU02VfGPGY/EU8OikhVdnLW9rjeyw5iZr
+         slVuzONZOgaLJEtm0hTBbJIysddZkBZuxk6T3i4auNRUV9CZxDzjajozm+TZ10FPZp9r
+         gErWpgszLu4EZTM8EJulC3F2ySreOf/tc8s9PJTOivYhO4tLRArx7Uepr/WhWHaFdBI+
+         SDf8pqs4xXzgrRWqcacgcCzoTL/UWe0iCGUaxQUC+dB2L87dhTBR+0UBg+ZaYtsWl6Pb
+         hl4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6s+1w+iSWuIMPYQhTZynfz7B74f6xr3biYX9AQwoU3Q=;
-        b=YLA/27VYom1dEgIR5MHU4BIxWrju/AmpcA/8tEichoGMo/DjQjXZvUuW8LJE8A/F/2
-         JuCvFBJMLijkCMVoWS75oPeL28bOy5hfYSGJmum7ag02lhcHayDsQq02G0zr2BuOcQZy
-         ax3QKdi+qfNRZ+kAWYCrrrrbzH+KzTY3t36sFoSrMFKzGpvJgvep0Kknw1v3QO7XENYT
-         xmOGXikGN16HWz21aEjUv3zdGHdGICzMY6CcZ8GA48wb1+tB2gqelMFfTnfUgqLrRee3
-         Cbo1K3hSgAQxeAh/tOAItTT9L9CQ3XHEaFR0PlCE/uxNnccha2ANmad6o4VLtzR8G0mD
-         dJNQ==
-X-Gm-Message-State: AOAM533zF+8Oi24NQJbZ0aORVfB7Nx3Z7tbsy1nP/iokpRcmFYCRVXFx
-        z6YhN6K1PXvFZ4B9vlsNlSOQwnlbytd8Q4iEP0Oc
-X-Google-Smtp-Source: ABdhPJx4LPPxX3/hzJMaQYBUA6TLp66t5kFj519+Sx46obC9GoKuH4xtkaSgyNs+XHgZUS+u1eBfnnVd9boL5jBQLlFc
-Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
-X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
- (user=axelrasmussen job=sendgmr) by 2002:a25:9d01:: with SMTP id
- i1mr8803022ybp.359.1611350971666; Fri, 22 Jan 2021 13:29:31 -0800 (PST)
-Date:   Fri, 22 Jan 2021 13:29:18 -0800
-In-Reply-To: <20210122212926.3457593-1-axelrasmussen@google.com>
-Message-Id: <20210122212926.3457593-2-axelrasmussen@google.com>
-Mime-Version: 1.0
-References: <20210122212926.3457593-1-axelrasmussen@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH v2 1/9] hugetlb: Pass vma into huge_pte_alloc()
-From:   Axel Rasmussen <axelrasmussen@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, Adam Ruprecht <ruprecht@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/Q9Reap3GWCAihxatXXr3FfVYUJhLMEM+4qTRCJHb9Q=;
+        b=P0jOrHPVJfkomMtdkWb9MrvvZpKqstoEt3r27WlnrtPvn0uASjaV9qr5jJATDbdX9j
+         dfnOtN7DIfgc778ezU0FDEs8EBFBvB7WiDrFsfbr/uSHl4T20OQcDnRZI90cFguxnBKO
+         6NyIzs4aDyQETvqakEPInF3/ixeX/4PYESxWwyt9DwBjL4rvx9VfvtUciZNHBj3+V9Yf
+         /8ravBD1d5n5JbSVVj+JCpQ11VAPHu0fKITWMzVdQfmsUB97CAoK0wuq+3zCCU+uXVN+
+         fexUZnA4yzn3d06rxdrF8Qo6+1NOGJ/reOlNMGOA+M9ST/li/IQCv9HlXEgJDZw0szSj
+         XfZw==
+X-Gm-Message-State: AOAM531ch/4HV5qFTG/1DBug521/cKJH8NfqKS19jnyUTQ38eLLfQvZY
+        Rl6gtyZNt+yU+rt8ETMgJPk=
+X-Google-Smtp-Source: ABdhPJwwc8pKbByXTk7VYPWfy3Qn6WAYf7oG0/n7cLmvx4xCmuxZysQOwKgv8fORvnxUx6ZMupmXgw==
+X-Received: by 2002:a2e:9214:: with SMTP id k20mr1643215ljg.45.1611346070383;
+        Fri, 22 Jan 2021 12:07:50 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id u6sm994589lfk.127.2021.01.22.12.07.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 12:07:49 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nick Dyer <nick@shmanahar.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/3] dt-bindings: input: atmel_mxt_ts: Document atmel,wakeup-method and WAKE line GPIO
+Date:   Fri, 22 Jan 2021 23:06:57 +0300
+Message-Id: <20210122200659.7404-2-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210122200659.7404-1-digetx@gmail.com>
+References: <20210122200659.7404-1-digetx@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Xu <peterx@redhat.com>
+Some Atmel touchscreen controllers have a WAKE line that needs to be
+asserted low in order to wake up controller from a deep sleep. Document
+the wakeup methods and the new GPIO properties.
 
-It is a preparation work to be able to behave differently in the per
-architecture huge_pte_alloc() according to different VMA attributes.
-
-Signed-off-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm64/mm/hugetlbpage.c   | 2 +-
- arch/ia64/mm/hugetlbpage.c    | 3 ++-
- arch/mips/mm/hugetlbpage.c    | 4 ++--
- arch/parisc/mm/hugetlbpage.c  | 2 +-
- arch/powerpc/mm/hugetlbpage.c | 3 ++-
- arch/s390/mm/hugetlbpage.c    | 2 +-
- arch/sh/mm/hugetlbpage.c      | 2 +-
- arch/sparc/mm/hugetlbpage.c   | 2 +-
- include/linux/hugetlb.h       | 2 +-
- mm/hugetlb.c                  | 6 +++---
- mm/userfaultfd.c              | 2 +-
- 11 files changed, 16 insertions(+), 14 deletions(-)
+ .../bindings/input/atmel,maxtouch.yaml        | 29 +++++++++++++++++++
+ include/dt-bindings/input/atmel-maxtouch.h    | 10 +++++++
+ 2 files changed, 39 insertions(+)
+ create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
 
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 55ecf6de9ff7..5b32ec888698 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -252,7 +252,7 @@ void set_huge_swap_pte_at(struct mm_struct *mm, unsigned long addr,
- 		set_pte(ptep, pte);
- }
+diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+index 8c6418f76e94..e6b03a1e7c30 100644
+--- a/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
++++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.yaml
+@@ -39,6 +39,13 @@ properties:
+       (active low). The line must be flagged with
+       GPIO_ACTIVE_LOW.
  
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 		      unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgdp;
-diff --git a/arch/ia64/mm/hugetlbpage.c b/arch/ia64/mm/hugetlbpage.c
-index b331f94d20ac..f993cb36c062 100644
---- a/arch/ia64/mm/hugetlbpage.c
-+++ b/arch/ia64/mm/hugetlbpage.c
-@@ -25,7 +25,8 @@ unsigned int hpage_shift = HPAGE_SHIFT_DEFAULT;
- EXPORT_SYMBOL(hpage_shift);
++  wake-gpios:
++    maxItems: 1
++    description:
++      Optional GPIO specifier for the touchscreen's wake pin
++      (active low). The line must be flagged with
++      GPIO_ACTIVE_LOW.
++
+   linux,gpio-keymap:
+     $ref: /schemas/types.yaml#/definitions/uint32-array
+     description: |
+@@ -53,6 +60,26 @@ properties:
+       or experiment to determine which bit corresponds to which input. Use
+       KEY_RESERVED for unused padding values.
  
- pte_t *
--huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz)
-+huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
-+	       unsigned long addr, unsigned long sz)
- {
- 	unsigned long taddr = htlbpage_to_page(addr);
- 	pgd_t *pgd;
-diff --git a/arch/mips/mm/hugetlbpage.c b/arch/mips/mm/hugetlbpage.c
-index b9f76f433617..871a100fb361 100644
---- a/arch/mips/mm/hugetlbpage.c
-+++ b/arch/mips/mm/hugetlbpage.c
-@@ -21,8 +21,8 @@
- #include <asm/tlb.h>
- #include <asm/tlbflush.h>
++  atmel,wakeup-method:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: |
++      The WAKE line is an active-low input that is used to wake up the touch
++      controller from deep-sleep mode before communication with the controller
++      could be started. This optional feature used to minimize current
++      consumption when the controller is in deep sleep mode. This feature is
++      relevant only to some controller families, like mXT1386 controller for
++      example.
++
++      The WAKE pin can be connected in one of the following ways:
++       1) left permanently low
++       2) connected to the I2C-compatible SCL pin
++       3) connected to a GPIO pin on the host
++    enum:
++      - 0 # ATMEL_MXT_WAKEUP_NONE
++      - 1 # ATMEL_MXT_WAKEUP_I2C_SCL
++      - 2 # ATMEL_MXT_WAKEUP_GPIO
++    default: 0
++
+ required:
+   - compatible
+   - reg
+@@ -63,6 +90,7 @@ additionalProperties: false
+ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/input/atmel-maxtouch.h>
+     #include <dt-bindings/gpio/gpio.h>
+     i2c {
+       #address-cells = <1>;
+@@ -75,6 +103,7 @@ examples:
+         reset-gpios = <&gpio 27 GPIO_ACTIVE_LOW>;
+         vdda-supply = <&ab8500_ldo_aux2_reg>;
+         vdd-supply = <&ab8500_ldo_aux5_reg>;
++        atmel,wakeup-method = <ATMEL_MXT_WAKEUP_I2C_SCL>;
+       };
+     };
  
--pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr,
--		      unsigned long sz)
-+pte_t *huge_pte_alloc(struct mm_struct *mm, structt vm_area_struct *vma,
-+		      unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgd;
- 	p4d_t *p4d;
-diff --git a/arch/parisc/mm/hugetlbpage.c b/arch/parisc/mm/hugetlbpage.c
-index d7ba014a7fbb..e141441bfa64 100644
---- a/arch/parisc/mm/hugetlbpage.c
-+++ b/arch/parisc/mm/hugetlbpage.c
-@@ -44,7 +44,7 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
- }
- 
- 
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgd;
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index 8b3cc4d688e8..d57276b8791c 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -106,7 +106,8 @@ static int __hugepte_alloc(struct mm_struct *mm, hugepd_t *hpdp,
-  * At this point we do the placement change only for BOOK3S 64. This would
-  * possibly work on other subarchs.
-  */
--pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz)
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
-+		      unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pg;
- 	p4d_t *p4;
-diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
-index 3b5a4d25ca9b..da36d13ffc16 100644
---- a/arch/s390/mm/hugetlbpage.c
-+++ b/arch/s390/mm/hugetlbpage.c
-@@ -189,7 +189,7 @@ pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
- 	return pte;
- }
- 
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgdp;
-diff --git a/arch/sh/mm/hugetlbpage.c b/arch/sh/mm/hugetlbpage.c
-index 220d7bc43d2b..999ab5916e69 100644
---- a/arch/sh/mm/hugetlbpage.c
-+++ b/arch/sh/mm/hugetlbpage.c
-@@ -21,7 +21,7 @@
- #include <asm/tlbflush.h>
- #include <asm/cacheflush.h>
- 
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgd;
-diff --git a/arch/sparc/mm/hugetlbpage.c b/arch/sparc/mm/hugetlbpage.c
-index ad4b42f04988..04d8790f6c32 100644
---- a/arch/sparc/mm/hugetlbpage.c
-+++ b/arch/sparc/mm/hugetlbpage.c
-@@ -279,7 +279,7 @@ unsigned long pud_leaf_size(pud_t pud) { return 1UL << tte_to_shift(*(pte_t *)&p
- unsigned long pmd_leaf_size(pmd_t pmd) { return 1UL << tte_to_shift(*(pte_t *)&pmd); }
- unsigned long pte_leaf_size(pte_t pte) { return 1UL << tte_to_shift(pte); }
- 
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgd;
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index ebca2ef02212..1e0abb609976 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -161,7 +161,7 @@ extern struct list_head huge_boot_pages;
- 
- /* arch callbacks */
- 
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			unsigned long addr, unsigned long sz);
- pte_t *huge_pte_offset(struct mm_struct *mm,
- 		       unsigned long addr, unsigned long sz);
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 18f6ee317900..07b23c81b1db 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3766,7 +3766,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 		src_pte = huge_pte_offset(src, addr, sz);
- 		if (!src_pte)
- 			continue;
--		dst_pte = huge_pte_alloc(dst, addr, sz);
-+		dst_pte = huge_pte_alloc(dst, vma, addr, sz);
- 		if (!dst_pte) {
- 			ret = -ENOMEM;
- 			break;
-@@ -4503,7 +4503,7 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
- 	 */
- 	mapping = vma->vm_file->f_mapping;
- 	i_mmap_lock_read(mapping);
--	ptep = huge_pte_alloc(mm, haddr, huge_page_size(h));
-+	ptep = huge_pte_alloc(mm, vma, haddr, huge_page_size(h));
- 	if (!ptep) {
- 		i_mmap_unlock_read(mapping);
- 		return VM_FAULT_OOM;
-@@ -5392,7 +5392,7 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
- #endif /* CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
- 
- #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
--pte_t *huge_pte_alloc(struct mm_struct *mm,
-+pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
- 			unsigned long addr, unsigned long sz)
- {
- 	pgd_t *pgd;
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index 7423808640ef..b2ce61c1b50d 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -290,7 +290,7 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
- 		mutex_lock(&hugetlb_fault_mutex_table[hash]);
- 
- 		err = -ENOMEM;
--		dst_pte = huge_pte_alloc(dst_mm, dst_addr, vma_hpagesize);
-+		dst_pte = huge_pte_alloc(dst_mm, dst_vma, dst_addr, vma_hpagesize);
- 		if (!dst_pte) {
- 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
- 			i_mmap_unlock_read(mapping);
+diff --git a/include/dt-bindings/input/atmel-maxtouch.h b/include/dt-bindings/input/atmel-maxtouch.h
+new file mode 100644
+index 000000000000..7345ab32224d
+--- /dev/null
++++ b/include/dt-bindings/input/atmel-maxtouch.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++
++#ifndef _DT_BINDINGS_ATMEL_MAXTOUCH_H
++#define _DT_BINDINGS_ATMEL_MAXTOUCH_H
++
++#define ATMEL_MXT_WAKEUP_NONE		0
++#define ATMEL_MXT_WAKEUP_I2C_SCL	1
++#define ATMEL_MXT_WAKEUP_GPIO		2
++
++#endif /* _DT_BINDINGS_ATMEL_MAXTOUCH_H */
 -- 
-2.30.0.280.ga3ce27912f-goog
+2.29.2
 
