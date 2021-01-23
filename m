@@ -2,117 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584973012B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8593012B5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbhAWDjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 22:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbhAWDjR (ORCPT
+        id S1726598AbhAWDkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 22:40:08 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:60468 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbhAWDkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 22:39:17 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF27BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 19:38:36 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id n25so5176917pgb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 19:38:36 -0800 (PST)
+        Fri, 22 Jan 2021 22:40:04 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N3VJ3E177904;
+        Sat, 23 Jan 2021 03:39:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=Pxvui5V9X3KmMMWabTqOXAmELsCNvxjGffRF6QXH35o=;
+ b=YtGjYzSzGKLjnb/z5PsOadk/pui2v+6c2BiQIcv4QcQG85IVwz75tZBvkuNUguD50Dgc
+ BW1Aevnqa7HMo0pvv1w51iWew0WmheXUkSZkm8Q3ciABBINXkLkd66QsilEbsNtCIgUi
+ igs0GsegUJWLxAOG6+k2iOLboVpr0EaC43eMLhfC2WNlTi+MayewZHAWQa9GI8gDF6T4
+ +TAcBqaTm9UwndhbNO45d8f8XacjtEORSwNxlV6NNIvBxAKv/GLhVIAnYAMorvxMiFBH
+ S5KwNXDu1+35LytsQYQG9WuEV9+f/a3cPFzSlN2sj/X0FaEODwiMUDqw6Do2oe/P57ir kw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 368brk81by-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 03:39:07 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N3UrGG175532;
+        Sat, 23 Jan 2021 03:39:06 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by aserp3030.oracle.com with ESMTP id 3689u8uad6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 03:39:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CRD15QEwVW7UMPJNZscOk7CDXne2+f6N0+5kgY8zlk3nf1F9uNVOVeJf9IEUtDEObztX1rLQ9RAStzlabFl+d580f8wSfvthnb+/AxtFAPwHNO6Ub3GWILv9063HVRGW4QUm15Sn+IeYQm3fxFPNp0Qlq8sdpVzA+CS30e0i/KyJKRK5wqlxv3Fkm5IpgIf8ndhwnx7lm2P2jrN6opqdzNzbFBKjPHdcPbpHBgtKk7zzDAXoN27KeURLufSkKGWwgy7pWP5eoSvDLc/F/wunVKdXQU6WI062uU7S1HVq94v2Zd7r+1svr4FVHjnLSPz8/ZC1HrAQ5fDOdxO/+1g/iQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pxvui5V9X3KmMMWabTqOXAmELsCNvxjGffRF6QXH35o=;
+ b=mroUMzEzZVzN2W0digdquhdvx2dJ0H2yvyGcIwilq3WAAn0+7GCqoYr47/B6pul8vXy3zGLo382ndnlE6Xvz6vAijtBdZ+ecaKFTQLQ9Zyupy3tnFOfOEcVliPY6NGABz2k/ldndWTVnntaSzbzOUXFrEWxmH1PgeYqSTBE55TWATPNc9PR51N0M5iCUbtsJ1wyIyA2KUvdAdTk+0DYLMktArD3Y5Vz/6evyLLwPSwsM1A5ONtEQxYqdqViGW3IUwxnkj3v7U0EPG6tPU9zVYHoGXlbQZG7gUpMe7MLG8tOnwr4E4zuYc3ddCFkR0uvJ2CXCo7Y06EL3Vq++NlXDIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=rgE+B9Mrz90Zoy2CynzPCLRveYysdlsrC4gZsCIAkuM=;
-        b=1tPPgjLYT4ZzQn5b/I2jMEKDvzLt8mGpKGecfT7x9A2WpilOduevn+l3oBiBquY/1L
-         ihcAacWIxk5kPJXqiu0MvHCm34IbE2JQzUZbSfEBU/TpWu9g3L1tZEWpxMPzlSdi+/wL
-         JkvV5KsdmaocZSKZl931LEzkMjuIDVn40aS21M1XH9ZQ7FbC5JWcFKMuOdK9znG6xgoU
-         /Uzdx+DVsqpmarHy7Edg5Bagd9t8m1AsbNNoDULQ3fHbMyV3+QiyJy/Y4m0YeMIEcOfT
-         s5YPFSCj3jxG/pzsc/J3YPtiHcAczsJyShEdmiJfcJHIIFA7JSS45TNfjR5+6eWqIFNc
-         4DvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=rgE+B9Mrz90Zoy2CynzPCLRveYysdlsrC4gZsCIAkuM=;
-        b=USNUQHx7ug5ULHjp4i96J3yixuaDMNUV0+ENZpVQw0ZSwt9M+xHpQ3N914h0mKWnsl
-         q4ulkj41q5O5hl7SRI6V4WI93iILPop+LCmnt6KmyJCBRYGUmoRD3rcOL3QuRD15yvPr
-         4mpeAFmOq8WKAwFT5TiFU5U1yUbaCBPtoT0HLzmBbEbMgXG8I/1ft8d4YhSz7wXbpaez
-         q0F0IZCrlnjYN6ApKgw0pM+LiJ2/8subkEvmCqR8nkr3DVeqRSGgp1+ybeJWfK5wTg5s
-         nlPCh52BMKUHVm53kbloQ5EZ6oLcOccq4YorOEALNxCtAuC6rCGD8lkQ00XgNAtrJrmz
-         jgYg==
-X-Gm-Message-State: AOAM530fAhhqb/+nsZ5r157Y7aV/6JhmWCu9UvxKgrlMzeW7JOe60nqh
-        tophCs5gXJ63Urtvlm6dn0+S1A==
-X-Google-Smtp-Source: ABdhPJwdsmSCYteHe2T3KocLJ0IwQOD8NOx/8uEh3HWRw4w4ash8wQScLA8ymNyhTaMaP8FamxMMtw==
-X-Received: by 2002:a65:6484:: with SMTP id e4mr7846939pgv.401.1611373116212;
-        Fri, 22 Jan 2021 19:38:36 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 68sm10045654pfe.33.2021.01.22.19.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 19:38:35 -0800 (PST)
-Subject: [PATCH] RISC-V: probes: Treat the instruction stream as host-endian
-Date:   Fri, 22 Jan 2021 19:34:29 -0800
-Message-Id: <20210123033429.2072716-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pxvui5V9X3KmMMWabTqOXAmELsCNvxjGffRF6QXH35o=;
+ b=GlCe5Y8Utp+PVOW77F+SFXTaOk0fP9yAoe3yBRvhSQYsZ7C2tvJ6/3F51wJSOy3V8usajlwOCwR8MJHEJ6xbP3H/TGF84sFd2aQmLfe9Unr/mAVjQrWzpeMRKiwUkP8rNsd23rWaHnDmpgY7NPmE65PRwAxWeHwtPYhHPZp5+kk=
+Authentication-Results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4550.namprd10.prod.outlook.com (2603:10b6:510:34::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Sat, 23 Jan
+ 2021 03:39:02 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.016; Sat, 23 Jan 2021
+ 03:39:02 +0000
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Changheun Lee <nanich.lee@samsung.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
+        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "michael.christie@oracle.com" <michael.christie@oracle.com>,
+        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
+        "oneukum@suse.com" <oneukum@suse.com>,
+        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
+        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
+        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>,
+        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>
+Subject: Re: [PATCH 1/1] scsi: sd: use max_xfer_blocks for set rw_max if
+ max_xfer_blocks is available
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq15z3o9vod.fsf@ca-mkp.ca.oracle.com>
+References: <BL0PR04MB65144693C61F2192038FA5C0E7A20@BL0PR04MB6514.namprd04.prod.outlook.com>
+        <CGME20210122072413epcas1p2d7bd97c9eae97b9b77d13e2c4a2f02f2@epcas1p2.samsung.com>
+        <20210122070851.16105-1-nanich.lee@samsung.com>
+        <BL0PR04MB6514C248B950F5FDB77B96EAE7A00@BL0PR04MB6514.namprd04.prod.outlook.com>
+Date:   Fri, 22 Jan 2021 22:38:58 -0500
+In-Reply-To: <BL0PR04MB6514C248B950F5FDB77B96EAE7A00@BL0PR04MB6514.namprd04.prod.outlook.com>
+        (Damien Le Moal's message of "Fri, 22 Jan 2021 07:44:00 +0000")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: CH0PR04CA0115.namprd04.prod.outlook.com
+ (2603:10b6:610:75::30) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
-        penberg@kernel.org, guoren@linux.alibaba.com, me@packi.ch,
-        mhiramat@kernel.org, mingo@kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
-        kernel test robot <lkp@intel.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:         linux-riscv@lists.infradead.org
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by CH0PR04CA0115.namprd04.prod.outlook.com (2603:10b6:610:75::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Sat, 23 Jan 2021 03:39:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 75d1cb44-4a3b-4c84-a92e-08d8bf506d71
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4550:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4550E756EFA0AE3ED5D33C4B8EBF9@PH0PR10MB4550.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CxIT/N6332HSDAQ6bLAb1ADRLGjSjZaSsjfMEOB28XPxhpsSl3WY9e3KnReHtMb5KKFx9qAiJfoiwiQbPRH8xzFWyn8ykFsDHeEF9zOMJG6ZcribLTgyzEQUPX3nL1VmhOijwKWA9cCqep5DCwtHqI2W9RywcGh4SfoQci3o/V0BhWBzhvTlKjF6acIkk4zuwwUGAkghr19OmU3OstJU6lc5xuvhdKzWGzYS7r9kA4HVZ/TOaVzvQFmmEynKjm5BDgMxdkFd3o6+pOQdArVtuEQ2XZiVp75zPuP9BeCyDwpo0ANQaM5DcAmpsN1ZmpIHFbkuCJleSIRcnhH5gbgR59RnVayqqnnttm7qxab1UFkCsMhDFS8P1SsDjirItOBdhAdSezHd44yfeLWoNpYFCw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(366004)(136003)(39860400002)(4744005)(8936002)(956004)(6916009)(8676002)(7416002)(2906002)(16526019)(186003)(26005)(83380400001)(52116002)(54906003)(5660300002)(316002)(7696005)(36916002)(86362001)(66556008)(66476007)(66946007)(478600001)(6666004)(55016002)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?F2ifCSq0ddXPzDGbG8w9bMiSMd1Vr60F2WPxRBMJfLdKPux6PEwo4s7ymmrg?=
+ =?us-ascii?Q?TZU3JNeZtjQUaLy6kNwMVqBL4oxC60P7K3sRWoQxSN0XkIm2uE6y690gCD07?=
+ =?us-ascii?Q?GIXyESQSHLiidKlEzCNtzpR7YdXLrzKwumZWTddpJuBIGRxkhfBOk60NmwLp?=
+ =?us-ascii?Q?da+RFCLjGulFo4lHXu3sywUVlEGY/2Eau/DW8YZJFZsbXooOewFAqsdeofEA?=
+ =?us-ascii?Q?ZXZUFGo7JBftPvAIUHaxUSiW/9RF71HcdEjXYJXW5fk3ECEOE6BtunIRa96h?=
+ =?us-ascii?Q?HRisRxZfeCImgKS+pq/TW5EbwKQJ9yRxO3Ust+cC6idOgZ3BQEjrjtia1Kzm?=
+ =?us-ascii?Q?l4M98sWNJe8aHO7r+t4+A7n475ZxgpQpBHnwzYL1U3Vo5MtQFrfTi5H1SnnU?=
+ =?us-ascii?Q?caLy1ep+XinexdMdkbNWD75pL/jZWsTzlDw+vRMsyo02qGIHqOttdy85Lmd/?=
+ =?us-ascii?Q?4NAKAuLP1nfKV6KGom33zIIyTQGDTWbbOlMEtTKL/lsu9+EEyJV/Gzah3JmJ?=
+ =?us-ascii?Q?2d4Q6vuWWL2kUWT+G0AqxMUsi3J6BPV6Bo2awUEle40aw716N3K2c/Hv2juE?=
+ =?us-ascii?Q?o+aOIqEykCPyVvICnZIPNIJaDTxCp1dCRp8LpbYaVw5n9CVcM9ZPUKuUoLUH?=
+ =?us-ascii?Q?FQhjz4uj6GUOEG9Q+CLtVQHT3ptrmMnV33Kf+k3CJUA1lwywaZ0CMTuMc9WB?=
+ =?us-ascii?Q?hX4Fe3cH3kbUQjdeQO3RP4ZQfTuoNTlskkIYlxLWRslljJOHlObVVrkyXXIk?=
+ =?us-ascii?Q?9f7l14u2kEUW14y64nAyeDon9fnuipYpESQEibn5Lwzts63xG9vPFFQjLvcA?=
+ =?us-ascii?Q?SRetG3WA5cyW3QDs1AwUuqySZ3UEt4NwbesK6QGeGccmm2sxtA86cgd7A1LC?=
+ =?us-ascii?Q?eC9WEvF8RaFb1Ls0FJNFdNrqxLWf/uu3vlRGr0XiYqAM4lknIQOqyVmwPexm?=
+ =?us-ascii?Q?gX4Hl6+T0YRKoVRDginAJOi5f+kyVOdOHb1h32j60uNFEgYy413pjWDC2L3x?=
+ =?us-ascii?Q?9Aw0hvNyl5DLQUGQiaYL1Hkp+L0r/O8/L99U9wxwpZDyGoSRlFMB0IHmu1jy?=
+ =?us-ascii?Q?Enr9Xksf?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75d1cb44-4a3b-4c84-a92e-08d8bf506d71
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2021 03:39:02.8395
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +YuCVYioUVSG74w/8dcYSDpmq13ixmqSJ85P7hkH4gVdk8ac3o7Zt3GdS2vLcgY/8OSjeYGyg71eZaRvrRB6afykce3I0rxopV/rgmFiyQ0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4550
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101230019
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101230019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Neither of these are actually correct: the instruction stream is defined
-(for versions of the ISA manual newer than 2.2) as a stream of 16-bit
-little-endian parcels, which is different than just being little-endian.
-In theory we should represent this as a type, but we don't have any
-concrete plans for the big endian stuff so it doesn't seem worth the
-time -- we've got variants of this all over the place.
+Damien,
 
-Instead I'm just dropping the unnecessary type conversion, which is a
-NOP on LE systems but causes an sparse error as the types are all mixed
-up.
+>> How about set larger valid value between sdkp->max_xfer_blocks,
+>> and sdkp->opt_xfer_blocks to rw_max?
+>
+> Again, if your device reports an opt_xfer_blocks value that is too
+> small for its own good, that is a problem with this device.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/riscv/kernel/probes/decode-insn.c | 2 +-
- arch/riscv/kernel/probes/kprobes.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Correct. It is very much intentional that we do not default to issuing
+the largest commands supported by the physical hardware.
 
-diff --git a/arch/riscv/kernel/probes/decode-insn.c b/arch/riscv/kernel/probes/decode-insn.c
-index 0876c304ca77..0ed043acc882 100644
---- a/arch/riscv/kernel/probes/decode-insn.c
-+++ b/arch/riscv/kernel/probes/decode-insn.c
-@@ -16,7 +16,7 @@
- enum probe_insn __kprobes
- riscv_probe_decode_insn(probe_opcode_t *addr, struct arch_probe_insn *api)
- {
--	probe_opcode_t insn = le32_to_cpu(*addr);
-+	probe_opcode_t insn = *addr;
- 
- 	/*
- 	 * Reject instructions list:
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index e60893bd87db..a2ec18662fee 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -57,7 +57,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
- 	}
- 
- 	/* copy instruction */
--	p->opcode = le32_to_cpu(*p->addr);
-+	p->opcode = *p->addr;
- 
- 	/* decode instruction */
- 	switch (riscv_probe_decode_insn(p->addr, &p->ainsn.api)) {
+If the device is not reporting an optimal transfer size, and the block
+layer default is too small, the solution is to adjust max_sectors_kb in
+sysfs (by adding a udev rule, for instance).
+
 -- 
-2.30.0.280.ga3ce27912f-goog
-
+Martin K. Petersen	Oracle Linux Engineering
