@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F5C3018B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 23:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ADF3018B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 23:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbhAWWln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 17:41:43 -0500
-Received: from audible.transient.net ([24.143.126.66]:37096 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725922AbhAWWll (ORCPT
+        id S1726344AbhAWWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 17:43:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725922AbhAWWnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 17:41:41 -0500
-Received: (qmail 8376 invoked from network); 23 Jan 2021 22:40:59 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 23 Jan 2021 22:40:59 -0000
-Received: (nullmailer pid 2881 invoked by uid 1000);
-        Sat, 23 Jan 2021 22:40:59 -0000
-Date:   Sat, 23 Jan 2021 22:40:59 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: bisected regression in v5.11-rc1 snd-usb-audio
-Message-ID: <YAyl+6XZHRjzDUcP@audible.transient.net>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
-        linux-kernel@vger.kernel.org
-References: <YAqIJHzE3UG51G/U@audible.transient.net>
- <s5hzh118ioz.wl-tiwai@suse.de>
- <YAqjBLt3eLG5GY/4@audible.transient.net>
- <s5him7p89oe.wl-tiwai@suse.de>
- <YAwDkhRVkrEna8pV@audible.transient.net>
- <s5hwnw36d0k.wl-tiwai@suse.de>
+        Sat, 23 Jan 2021 17:43:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611441745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qupc3tQLbCS2NvC0uQtSj9ojSf/ORyYBsb/uXYHlqFM=;
+        b=NMjPrS0m+on02YvOP3KpJ5i9dNlHVSovwWZj+0HmXm7gQpVFxVLiCq0Nz3+o9+t3uJc0o3
+        +zLUMLnwDiL+0SJbme0A3r2dQQvtPNBz1mCTT8wsu6kWMhi5tEAta+1b3dkuEIehiuXdNw
+        VXpcAKQuyVVgKGu8rOOSgdzEUoO+5HQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-vE3e5NSJPhGv14_ZMK67hQ-1; Sat, 23 Jan 2021 17:42:20 -0500
+X-MC-Unique: vE3e5NSJPhGv14_ZMK67hQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6F04A801817;
+        Sat, 23 Jan 2021 22:42:18 +0000 (UTC)
+Received: from krava (unknown [10.40.192.55])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BF7355D723;
+        Sat, 23 Jan 2021 22:42:14 +0000 (UTC)
+Date:   Sat, 23 Jan 2021 23:42:13 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com,
+        Itaru Kitayama <itaru.kitayama@gmail.com>
+Subject: Re: [PATCH v5 4/9] libperf: Add evsel mmap support
+Message-ID: <20210123224213.GA138414@krava>
+References: <20210114020605.3943992-1-robh@kernel.org>
+ <20210114020605.3943992-5-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s5hwnw36d0k.wl-tiwai@suse.de>
+In-Reply-To: <20210114020605.3943992-5-robh@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Takashi Iwai wrote:
-> On Sat, 23 Jan 2021 12:08:02 +0100,
-> Jamie Heilman wrote:
-> > 
-> > > If the problem is still seen with the very latest Linus tree and the
-> > > previous patch, please enable the dyndbg, e.g. pass dydbg=+p option to
-> > > snd-usb-audio module, i.e. reload like
-> > >    modprobe snd-usb-audio dydbg=+p
-> > > or boot with
-> > >    snd_usb_audio.dyndbg=+p
-> > > boot option, retest, and give the kernel messages.
-> > 
-> > OK, updated to 5.11.0-rc4-00202-gfe75a21824e7, repatched & rebuilt with:
-> > CONFIG_SND_DEBUG=y
-> > CONFIG_SND_CTL_VALIDATION=y
-> > CONFIG_DYNAMIC_DEBUG=y
-> > CONFIG_DYNAMIC_DEBUG_CORE=y
-> > 
-> > and added dyndbg=+p to my snd-usb-audio options, dmesg after an
-> > attempted aplay execution is attached.
-> (snip)
-> > [  108.941521] WARNING: CPU: 0 PID: 2776 at sound/core/pcm_lib.c:1148 snd_pcm_hw_rule_add+0xd3/0x160 [snd_pcm]
+On Wed, Jan 13, 2021 at 08:06:00PM -0600, Rob Herring wrote:
+> In order to support usersapce access, an event must be mmapped. While
+> there's already mmap support for evlist, the usecase is a bit different
+> than the self monitoring with userspace access. So let's add a new
+> perf_evsel__mmap() function to mmap an evsel. This allows implementing
+> userspace access as a fastpath for perf_evsel__read().
 > 
-> OK, this must be the culprit of the weird behavior.
-> I totally overlooked that the max dependencies are three because of
-> the terminator.
+> The mmapped address is returned by perf_evsel__mmap_base() which
+> primarily for users/tests to check if userspace access is enabled.
 > 
-> Could you try the patch below in addition?
-
-Yep, this works now, thanks!  FWIW, here's what the debug output looks
-like when its working, and I start jack now:
-
-usb 1-1.1.2: 1:1: found sync_ep=0x81, iface=1, alt=1, implicit_fb=0
-usb 1-1.1.2: 1:1: add audio endpoint 0x1
-usb 1-1.1.2: Creating new data endpoint #1
-usb 1-1.1.2: Creating new sync endpoint #81
-usb 1-1.1.2: 1:1 Set sample rate 192000, clock 40
-usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Switch] ch = 2, val = 0/1/1
-usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Switch] ch = 1, val = 0/1/1
-usb 1-1.1.2: RANGE setting not yet supported
-usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Volume] ch = 2, val = -32512/0/256
-usb 1-1.1.2: RANGE setting not yet supported
-usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Volume] ch = 1, val = -32512/0/256
-usb 1-1.1.2: Open EP 0x1, iface=1:1, idx=0
-usb 1-1.1.2:   channels=2, rate=96000, format=S32_LE, period_bytes=8192, periods=3, implicit_fb=0
-usb 1-1.1.2: Open EP 0x81, iface=1:1, idx=1
-usb 1-1.1.2:   channels=2, rate=96000, format=S32_LE, period_bytes=8192, periods=3, implicit_fb=0
-usb 1-1.1.2: Setting usb interface 1:0 for EP 0x1
-usb 1-1.1.2: 1:1 Set sample rate 96000, clock 40
-usb 1-1.1.2: Setting params for data EP 0x1, pipe 0x8600
-usb 1-1.1.2: Set up 12 URBS, ret=0
-usb 1-1.1.2: Setting usb interface 1:1 for EP 0x1
-usb 1-1.1.2: Setting params for sync EP 0x81, pipe 0x8680
-usb 1-1.1.2: Set up 4 URBS, ret=0
-usb 1-1.1.2: Starting data EP 0x1 (running 0)
-usb 1-1.1.2: 12 URBs submitted for EP 0x1
-usb 1-1.1.2: Starting sync EP 0x81 (running 0)
-usb 1-1.1.2: 4 URBs submitted for EP 0x81
-usb 1-1.1.2: 1:1 Start Playback PCM
-
-
-> --- a/include/sound/pcm.h
-> +++ b/include/sound/pcm.h
-> @@ -229,7 +229,7 @@ typedef int (*snd_pcm_hw_rule_func_t)(struct snd_pcm_hw_params *params,
->  struct snd_pcm_hw_rule {
->  	unsigned int cond;
->  	int var;
-> -	int deps[4];
-> +	int deps[5];
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v5:
+>  - Create an mmap for every underlying event opened. Due to this, we
+>    need a different way to get the mmap ptr, so perf_evsel__mmap_base()
+>    is introduced.
+> v4:
+>  - Change perf_evsel__mmap size to pages instead of bytes
+> v3:
+>  - New patch split out from user access patch
+> ---
+>  tools/lib/perf/Documentation/libperf.txt |  2 +
+>  tools/lib/perf/evsel.c                   | 47 +++++++++++++++++++++++-
+>  tools/lib/perf/include/internal/evsel.h  |  2 +
+>  tools/lib/perf/include/perf/evsel.h      |  2 +
+>  tools/lib/perf/libperf.map               |  2 +
+>  5 files changed, 53 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+> index 0c74c30ed23a..a2c73df191ca 100644
+> --- a/tools/lib/perf/Documentation/libperf.txt
+> +++ b/tools/lib/perf/Documentation/libperf.txt
+> @@ -136,6 +136,8 @@ SYNOPSIS
+>                         struct perf_thread_map *threads);
+>    void perf_evsel__close(struct perf_evsel *evsel);
+>    void perf_evsel__close_cpu(struct perf_evsel *evsel, int cpu);
+> +  int perf_evsel__mmap(struct perf_evsel *evsel, int pages);
+> +  void *perf_evsel__mmap_base(struct perf_evsel *evsel, int cpu, int thread);
+>    int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+>                         struct perf_counts_values *count);
+>    int perf_evsel__enable(struct perf_evsel *evsel);
+> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> index 4dc06289f4c7..0b5bdf4badae 100644
+> --- a/tools/lib/perf/evsel.c
+> +++ b/tools/lib/perf/evsel.c
+> @@ -11,10 +11,12 @@
+>  #include <stdlib.h>
+>  #include <internal/xyarray.h>
+>  #include <internal/cpumap.h>
+> +#include <internal/mmap.h>
+>  #include <internal/threadmap.h>
+>  #include <internal/lib.h>
+>  #include <linux/string.h>
+>  #include <sys/ioctl.h>
+> +#include <sys/mman.h>
 >  
->  	snd_pcm_hw_rule_func_t func;
->  	void *private;
+>  void perf_evsel__init(struct perf_evsel *evsel, struct perf_event_attr *attr)
+>  {
+> @@ -37,11 +39,17 @@ void perf_evsel__delete(struct perf_evsel *evsel)
+>  	free(evsel);
+>  }
+>  
+> -#define FD(e, x, y) (*(int *) xyarray__entry(e->fd, x, y))
+> +struct evsel_fd {
+> +	int fd;
+> +	struct perf_mmap mmap;
+> +};
 
--- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+nice shortcut ;-) but 'struct perf_mmap' is too big for that
+
+I think it's better to add new 'evsel::mmap' xyarray to hold it,
+add perf_evsel__alloc_mmap to allocate it and call it from
+perf_evsel__mmap the same way as we callperf_evsel__alloc_fd
+from perf_evsel__open
+
+thanks,
+jirka
+
