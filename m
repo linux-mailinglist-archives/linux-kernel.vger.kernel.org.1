@@ -2,268 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D5B30176A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725B230176E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbhAWRxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:53:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39526 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbhAWRxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:53:49 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14175AD18;
-        Sat, 23 Jan 2021 17:53:07 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 18:52:59 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v13 03/12] mm: hugetlb: free the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <20210123175259.GA3555@localhost.localdomain>
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-4-songmuchun@bytedance.com>
+        id S1726230AbhAWR4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbhAWR4H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 12:56:07 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2A2C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 09:55:27 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id r12so12178885ejb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 09:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ij8616FxgPL0g+EkHhBWQEtOFDxuaD1ectYgMChxWv8=;
+        b=IYvk8JYfAiIZsz1p5pnAZJvCu20jExS7U36BT8xniNQS+M6g9nH5cvlrrDOFUxwjqQ
+         TI2/Bzh1CoLRp6E2RWngCEkd93s+2uMFMBzm0pK33Yd2CtjTi2eH1dB2Lkw8nAn4t7jQ
+         y9iXU0ajvp/gO8Wz0pPMEACKzmBsRHrutpZ589R2IYiQSb8N3uBA5FDoJq8xUT3fVqMR
+         FBTUiXF4OsiXlleCRgq498rqH/di1Oe3/QhRY3x5p3G7HMqG6rqxDBU70LhbGPdS6NRm
+         tuV8BUXpGlzcgAzGhI/T2fEfQEu7R0+CniZJThOr1ZKqFaef9/R0MuEkm2gRKt1YcUIj
+         315g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ij8616FxgPL0g+EkHhBWQEtOFDxuaD1ectYgMChxWv8=;
+        b=hyQ8AACv5mUP7US6Qu4HnWEwkUdPXwm1ClYqP0WGh3UrH4STGTED2EWq/k/WxBgFHJ
+         e4CjE++4ICfMnL6b3UMonxsjly0BufacRYcKQBsMXgKl5J846I7r4jNlIVfXmlGjeIdS
+         wtVl6lq8dCt9KsOLOpmwAbD/hWaYa9dMXZDP4fzypV+0QvNNtMHdIWfdWFmyOjkRyH4T
+         eWmxyv3VtIBReTErvKoygV3fdRIflylMI0JNmEgS8wCgA7Z0WPLyXYoUuPoQZbsrDK4x
+         wTgTZxtuVjSZE9hh0jZESZ5KJHD63tEPGd3olZ2be1dEHEVod0p5PboF4KnaVBe+EiVG
+         VXiQ==
+X-Gm-Message-State: AOAM533kIRYfw/dC5dNMSxC4tu90nCWiE6T3WkNRaOeuFa+8et14Zb97
+        puUdSAQBLop3UwJMGEpLA/E=
+X-Google-Smtp-Source: ABdhPJyiwn6KLj157j2Gw/tskSBHxP7SjC40GnblLEzrz9M/fouI0xJR6lE9P0c5FvZeaH4K8KUHzQ==
+X-Received: by 2002:a17:906:589:: with SMTP id 9mr2152961ejn.229.1611424525856;
+        Sat, 23 Jan 2021 09:55:25 -0800 (PST)
+Received: from stitch.. ([2a01:4262:1ab:c:de4:866f:76c3:151d])
+        by smtp.gmail.com with ESMTPSA id j23sm7533690edv.45.2021.01.23.09.55.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 09:55:25 -0800 (PST)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <esmil@mailme.dk>
+To:     intel-gfx@lists.freedesktop.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/i915/gt: use new tasklet API for execution list
+Date:   Sat, 23 Jan 2021 18:55:02 +0100
+Message-Id: <20210123175502.6154-1-esmil@mailme.dk>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210117151053.24600-4-songmuchun@bytedance.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 11:10:44PM +0800, Muchun Song wrote:
-> Every HugeTLB has more than one struct page structure. We __know__ that
-> we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
-> to store metadata associated with each HugeTLB.
-> 
-> There are a lot of struct page structures associated with each HugeTLB
-> page. For tail pages, the value of compound_head is the same. So we can
-> reuse first page of tail page structures. We map the virtual addresses
-> of the remaining pages of tail page structures to the first tail page
-> struct, and then free these page frames. Therefore, we need to reserve
-> two pages as vmemmap areas.
-> 
-> When we allocate a HugeTLB page from the buddy, we can free some vmemmap
-> pages associated with each HugeTLB page. It is more appropriate to do it
-> in the prep_new_huge_page().
-> 
-> The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
-> pages associated with a HugeTLB page can be freed, returns zero for
-> now, which means the feature is disabled. We will enable it once all
-> the infrastructure is there.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+From: Emil Renner Berthing <kernel@esmil.dk>
 
-Overall looks good to me.
-A few nits below, plus what Mike has already said.
+This converts the driver to use the new tasklet API introduced in
+commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
 
-I was playing the other day (just for un) to see how hard would be to adapt
-this to ppc64 but did not have the time :-)
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 
-> --- /dev/null
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -0,0 +1,211 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Free some vmemmap pages of HugeTLB
-> + *
-> + * Copyright (c) 2020, Bytedance. All rights reserved.
-> + *
-> + *     Author: Muchun Song <songmuchun@bytedance.com>
-> + *
-> + * The struct page structures (page structs) are used to describe a physical
-> + * page frame. By default, there is a one-to-one mapping from a page frame to
-> + * it's corresponding page struct.
-> + *
-> + * The HugeTLB pages consist of multiple base page size pages and is supported
-"HugeTLB pages ..."
+---
+Tested on my Dell XPS 13 9300.
 
-> + * When the system boot up, every HugeTLB page has more than one struct page
-> + * structs whose size is (unit: pages):
-              ^^^^ which?
-> + *
-> + *    struct_size = HugeTLB_Size / PAGE_SIZE * sizeof(struct page) / PAGE_SIZE
-> + *
-> + * Where HugeTLB_Size is the size of the HugeTLB page. We know that the size
-> + * of the HugeTLB page is always n times PAGE_SIZE. So we can get the following
-> + * relationship.
-> + *
-> + *    HugeTLB_Size = n * PAGE_SIZE
-> + *
-> + * Then,
-> + *
-> + *    struct_size = n * PAGE_SIZE / PAGE_SIZE * sizeof(struct page) / PAGE_SIZE
-> + *                = n * sizeof(struct page) / PAGE_SIZE
-> + *
-> + * We can use huge mapping at the pud/pmd level for the HugeTLB page.
-> + *
-> + * For the HugeTLB page of the pmd level mapping, then
-> + *
-> + *    struct_size = n * sizeof(struct page) / PAGE_SIZE
-> + *                = PAGE_SIZE / sizeof(pte_t) * sizeof(struct page) / PAGE_SIZE
-> + *                = sizeof(struct page) / sizeof(pte_t)
-> + *                = 64 / 8
-> + *                = 8 (pages)
-> + *
-> + * Where n is how many pte entries which one page can contains. So the value of
-> + * n is (PAGE_SIZE / sizeof(pte_t)).
-> + *
-> + * This optimization only supports 64-bit system, so the value of sizeof(pte_t)
-> + * is 8. And this optimization also applicable only when the size of struct page
-> + * is a power of two. In most cases, the size of struct page is 64 (e.g. x86-64
-> + * and arm64). So if we use pmd level mapping for a HugeTLB page, the size of
-> + * struct page structs of it is 8 pages whose size depends on the size of the
-> + * base page.
-> + *
-> + * For the HugeTLB page of the pud level mapping, then
-> + *
-> + *    struct_size = PAGE_SIZE / sizeof(pmd_t) * struct_size(pmd)
-> + *                = PAGE_SIZE / 8 * 8 (pages)
-> + *                = PAGE_SIZE (pages)
+ drivers/gpu/drm/i915/gt/intel_engine_cs.c     |  4 +--
+ drivers/gpu/drm/i915/gt/intel_lrc.c           | 27 +++++++++----------
+ drivers/gpu/drm/i915/gt/selftest_lrc.c        |  4 +--
+ .../gpu/drm/i915/gt/uc/intel_guc_submission.c |  6 ++---
+ 4 files changed, 19 insertions(+), 22 deletions(-)
 
-I would try to condense above information and focus on what are the
-key points you want people to get.
-E.g: A 2MB HugeTLB page on x86_64 consists in 8 page frames while 1GB
-HugeTLB page consists in 4096.
-If you do not want to be that specific you can always write down the
-formula, and maybe put the X86_64 example at the end.
-But as I said, I would try to make it more brief.
-
-Maybe others disagree though.
-
-
-> + *
-> + * Where the struct_size(pmd) is the size of the struct page structs of a
-> + * HugeTLB page of the pmd level mapping.
-
-[...]
-
-> +void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> +{
-> +	unsigned long vmemmap_addr = (unsigned long)head;
-> +	unsigned long vmemmap_end, vmemmap_reuse;
-> +
-> +	if (!free_vmemmap_pages_per_hpage(h))
-> +		return;
-> +
-> +	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> +	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> +	vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> +
-
-I would like to see a comment there explaining why those variables get
-they value they do.
-
-> +/**
-> + * vmemmap_remap_walk - walk vmemmap page table
-> + *
-> + * @remap_pte:		called for each non-empty PTE (lowest-level) entry.
-> + * @reuse_page:		the page which is reused for the tail vmemmap pages.
-> + * @reuse_addr:		the virtual address of the @reuse_page page.
-> + * @vmemmap_pages:	the list head of the vmemmap pages that can be freed.
-
-Let us align the tabs there.
-
-> +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
-> +			      unsigned long end,
-> +			      struct vmemmap_remap_walk *walk)
-> +{
-> +	pte_t *pte;
-> +
-> +	pte = pte_offset_kernel(pmd, addr);
-> +
-> +	/*
-> +	 * The reuse_page is found 'first' in table walk before we start
-> +	 * remapping (which is calling @walk->remap_pte).
-> +	 */
-> +	if (walk->reuse_addr == addr) {
-> +		BUG_ON(pte_none(*pte));
-
-If it is found first, would not be
-
-        if (!walk->reuse_page) {
-                BUG_ON(walk->reuse_addr != addr)
-                ...
-        }
-
-more intuitive?
-
-
-> +static void vmemmap_remap_range(unsigned long start, unsigned long end,
-> +				struct vmemmap_remap_walk *walk)
-> +{
-> +	unsigned long addr = start;
-> +	unsigned long next;
-> +	pgd_t *pgd;
-> +
-> +	VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
-> +	VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
-> +
-> +	pgd = pgd_offset_k(addr);
-> +	do {
-> +		BUG_ON(pgd_none(*pgd));
-> +
-> +		next = pgd_addr_end(addr, end);
-> +		vmemmap_p4d_range(pgd, addr, next, walk);
-> +	} while (pgd++, addr = next, addr != end);
-> +
-> +	/*
-> +	 * We do not change the mapping of the vmemmap virtual address range
-> +	 * [@start, @start + PAGE_SIZE) which is belong to the reuse range.
-                                        "which belongs to"
-
-> +	 * So we not need to flush the TLB.
-> +	 */
-> +	flush_tlb_kernel_range(start - PAGE_SIZE, end);
-
-you already commented on on this one.
-
-> +/**
-> + * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
-> + *			to the page which @reuse is mapped, then free vmemmap
-> + *			pages.
-> + * @start:	start address of the vmemmap virtual address range.
-
-Well, it is the start address of the range we want to remap.
-Reading it made me think that it is really the __start__ address
-of the vmemmap range.
-
-> +void vmemmap_remap_free(unsigned long start, unsigned long end,
-> +			unsigned long reuse)
-> +{
-> +	LIST_HEAD(vmemmap_pages);
-> +	struct vmemmap_remap_walk walk = {
-> +		.remap_pte	= vmemmap_remap_pte,
-> +		.reuse_addr	= reuse,
-> +		.vmemmap_pages	= &vmemmap_pages,
-> +	};
-> +
-> +	/*
-> +	 * In order to make remapping routine most efficient for the huge pages,
-> +	 * the routine of vmemmap page table walking has the following rules
-> +	 * (see more details from the vmemmap_pte_range()):
-> +	 *
-> +	 * - The @reuse address is part of the range that we are walking.
-> +	 * - The @reuse address is the first in the complete range.
-> +	 *
-> +	 * So we need to make sure that @start and @reuse meet the above rules.
-
-You say that "reuse" and "start" need to meet some  rules, but in the
-paragraph above you only seem to point "reuse" rules?
-
-
+diff --git a/drivers/gpu/drm/i915/gt/intel_engine_cs.c b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
+index 0b31670343f5..a97a80ca0ba7 100644
+--- a/drivers/gpu/drm/i915/gt/intel_engine_cs.c
++++ b/drivers/gpu/drm/i915/gt/intel_engine_cs.c
+@@ -1193,7 +1193,7 @@ void intel_engine_flush_submission(struct intel_engine_cs *engine)
+ {
+ 	struct tasklet_struct *t = &engine->execlists.tasklet;
+ 
+-	if (!t->func)
++	if (!t->callback)
+ 		return;
+ 
+ 	/* Synchronise and wait for the tasklet on another CPU */
+@@ -1204,7 +1204,7 @@ void intel_engine_flush_submission(struct intel_engine_cs *engine)
+ 	if (tasklet_trylock(t)) {
+ 		/* Must wait for any GPU reset in progress. */
+ 		if (__tasklet_is_enabled(t))
+-			t->func(t->data);
++			t->callback(t);
+ 		tasklet_unlock(t);
+ 	}
+ 	local_bh_enable();
+diff --git a/drivers/gpu/drm/i915/gt/intel_lrc.c b/drivers/gpu/drm/i915/gt/intel_lrc.c
+index 26c7d0a50585..20aa0ec09507 100644
+--- a/drivers/gpu/drm/i915/gt/intel_lrc.c
++++ b/drivers/gpu/drm/i915/gt/intel_lrc.c
+@@ -3194,9 +3194,9 @@ static bool preempt_timeout(const struct intel_engine_cs *const engine)
+  * Check the unread Context Status Buffers and manage the submission of new
+  * contexts to the ELSP accordingly.
+  */
+-static void execlists_submission_tasklet(unsigned long data)
++static void execlists_submission_tasklet(struct tasklet_struct *t)
+ {
+-	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
++	struct intel_engine_cs * const engine = from_tasklet(engine, t, execlists.tasklet);
+ 	bool timeout = preempt_timeout(engine);
+ 
+ 	process_csb(engine);
+@@ -4401,9 +4401,9 @@ static void execlists_reset_rewind(struct intel_engine_cs *engine, bool stalled)
+ 	spin_unlock_irqrestore(&engine->active.lock, flags);
+ }
+ 
+-static void nop_submission_tasklet(unsigned long data)
++static void nop_submission_tasklet(struct tasklet_struct *t)
+ {
+-	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
++	struct intel_engine_cs * const engine = from_tasklet(engine, t, execlists.tasklet);
+ 
+ 	/* The driver is wedged; don't process any more events. */
+ 	WRITE_ONCE(engine->execlists.queue_priority_hint, INT_MIN);
+@@ -4487,7 +4487,7 @@ static void execlists_reset_cancel(struct intel_engine_cs *engine)
+ 	execlists->queue = RB_ROOT_CACHED;
+ 
+ 	GEM_BUG_ON(__tasklet_is_enabled(&execlists->tasklet));
+-	execlists->tasklet.func = nop_submission_tasklet;
++	execlists->tasklet.callback = nop_submission_tasklet;
+ 
+ 	spin_unlock_irqrestore(&engine->active.lock, flags);
+ }
+@@ -4503,7 +4503,7 @@ static void execlists_reset_finish(struct intel_engine_cs *engine)
+ 	 */
+ 	GEM_BUG_ON(!reset_in_progress(execlists));
+ 	if (!RB_EMPTY_ROOT(&execlists->queue.rb_root))
+-		execlists->tasklet.func(execlists->tasklet.data);
++		execlists->tasklet.callback(&execlists->tasklet);
+ 
+ 	if (__tasklet_enable(&execlists->tasklet))
+ 		/* And kick in case we missed a new request submission. */
+@@ -5093,7 +5093,7 @@ void intel_execlists_set_default_submission(struct intel_engine_cs *engine)
+ {
+ 	engine->submit_request = execlists_submit_request;
+ 	engine->schedule = i915_schedule;
+-	engine->execlists.tasklet.func = execlists_submission_tasklet;
++	engine->execlists.tasklet.callback = execlists_submission_tasklet;
+ 
+ 	engine->reset.prepare = execlists_reset_prepare;
+ 	engine->reset.rewind = execlists_reset_rewind;
+@@ -5220,8 +5220,7 @@ int intel_execlists_submission_setup(struct intel_engine_cs *engine)
+ 	struct intel_uncore *uncore = engine->uncore;
+ 	u32 base = engine->mmio_base;
+ 
+-	tasklet_init(&engine->execlists.tasklet,
+-		     execlists_submission_tasklet, (unsigned long)engine);
++	tasklet_setup(&engine->execlists.tasklet, execlists_submission_tasklet);
+ 	timer_setup(&engine->execlists.timer, execlists_timeslice, 0);
+ 	timer_setup(&engine->execlists.preempt, execlists_preempt, 0);
+ 
+@@ -5670,9 +5669,9 @@ static intel_engine_mask_t virtual_submission_mask(struct virtual_engine *ve)
+ 	return mask;
+ }
+ 
+-static void virtual_submission_tasklet(unsigned long data)
++static void virtual_submission_tasklet(struct tasklet_struct *t)
+ {
+-	struct virtual_engine * const ve = (struct virtual_engine *)data;
++	struct virtual_engine * const ve = from_tasklet(ve, t, base.execlists.tasklet);
+ 	const int prio = READ_ONCE(ve->base.execlists.queue_priority_hint);
+ 	intel_engine_mask_t mask;
+ 	unsigned int n;
+@@ -5883,9 +5882,7 @@ intel_execlists_create_virtual(struct intel_engine_cs **siblings,
+ 
+ 	INIT_LIST_HEAD(virtual_queue(ve));
+ 	ve->base.execlists.queue_priority_hint = INT_MIN;
+-	tasklet_init(&ve->base.execlists.tasklet,
+-		     virtual_submission_tasklet,
+-		     (unsigned long)ve);
++	tasklet_setup(&ve->base.execlists.tasklet, virtual_submission_tasklet);
+ 
+ 	intel_context_init(&ve->context, &ve->base);
+ 
+@@ -5913,7 +5910,7 @@ intel_execlists_create_virtual(struct intel_engine_cs **siblings,
+ 		 * layering if we handle cloning of the requests and
+ 		 * submitting a copy into each backend.
+ 		 */
+-		if (sibling->execlists.tasklet.func !=
++		if (sibling->execlists.tasklet.callback !=
+ 		    execlists_submission_tasklet) {
+ 			err = -ENODEV;
+ 			goto err_put;
+diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+index 95d41c01d0e0..8594ff72456e 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
++++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+@@ -631,7 +631,7 @@ static int live_hold_reset(void *arg)
+ 		}
+ 		tasklet_disable(&engine->execlists.tasklet);
+ 
+-		engine->execlists.tasklet.func(engine->execlists.tasklet.data);
++		engine->execlists.tasklet.callback(&engine->execlists.tasklet);
+ 		GEM_BUG_ON(execlists_active(&engine->execlists) != rq);
+ 
+ 		i915_request_get(rq);
+@@ -4577,7 +4577,7 @@ static int reset_virtual_engine(struct intel_gt *gt,
+ 	}
+ 	tasklet_disable(&engine->execlists.tasklet);
+ 
+-	engine->execlists.tasklet.func(engine->execlists.tasklet.data);
++	engine->execlists.tasklet.callback(&engine->execlists.tasklet);
+ 	GEM_BUG_ON(execlists_active(&engine->execlists) != rq);
+ 
+ 	/* Fake a preemption event; failed of course */
+diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+index fdfeb4b9b0f5..a52ce82f23e2 100644
+--- a/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
++++ b/drivers/gpu/drm/i915/gt/uc/intel_guc_submission.c
+@@ -344,9 +344,9 @@ static void __guc_dequeue(struct intel_engine_cs *engine)
+ 	execlists->active = execlists->inflight;
+ }
+ 
+-static void guc_submission_tasklet(unsigned long data)
++static void guc_submission_tasklet(struct tasklet_struct *t)
+ {
+-	struct intel_engine_cs * const engine = (struct intel_engine_cs *)data;
++	struct intel_engine_cs * const engine = from_tasklet(engine, t, execlists.tasklet);
+ 	struct intel_engine_execlists * const execlists = &engine->execlists;
+ 	struct i915_request **port, *rq;
+ 	unsigned long flags;
+@@ -591,7 +591,7 @@ static void guc_set_default_submission(struct intel_engine_cs *engine)
+ 	 */
+ 	intel_execlists_set_default_submission(engine);
+ 
+-	engine->execlists.tasklet.func = guc_submission_tasklet;
++	engine->execlists.tasklet.callback = guc_submission_tasklet;
+ 
+ 	/* do not use execlists park/unpark */
+ 	engine->park = engine->unpark = NULL;
 -- 
-Oscar Salvador
-SUSE L3
+2.30.0
+
