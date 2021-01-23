@@ -2,97 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B06301330
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 06:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6510B301334
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 06:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbhAWFMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 00:12:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbhAWFL6 (ORCPT
+        id S1726617AbhAWFRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 00:17:14 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23558 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725287AbhAWFRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 00:11:58 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A441C06174A;
-        Fri, 22 Jan 2021 21:11:18 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id m5so5158985pjv.5;
-        Fri, 22 Jan 2021 21:11:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BgyIeh58D93pJvM3haaFS5xnKvaiUdCpe+YJAVdakLQ=;
-        b=bFdHJ27IhGNVLvmyN7ew8pAZGxWjXBtPFmfo7ptvfCZw6K5RMXA9fL+qKm0aLCB2W5
-         1xaGw2Zz5RfOPfoyfU2zPK7aK2oclqFb5wbvrF3v433/I3Hz5JY8ZQjEuQrnXxZMTSI0
-         0cC3u74hDYyusIMYuTUzqy9hCuEv34TuaMwivVc8NQjPiRxuDwCZ9Pkexq4h3tUd+iEM
-         KGSCpx6QicH8KQgkzkAK0AwPO5/F94bDTXHBgJA7iimDuhKdz6qCSOLRyXDvcMuyYQR0
-         HqoFngNyNpOIelzl8t7GfFIS4d9slZL1iFTNZSBwcXEsbJY/vJtH4OsF0XGfUPp5lngY
-         iOjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BgyIeh58D93pJvM3haaFS5xnKvaiUdCpe+YJAVdakLQ=;
-        b=RphAEv8ab6/t7aFpBn4Wt6oOu4n6RJ1eqrP3zk7I8ROfmT3/VQQ/39SWnjqM1HK2Qp
-         fVqy9FUsDxFy791IHW3jrRDWf/f69ZFVfrX/2Cl3cUfakv4cjOFP9vjms+llLA9Db9OU
-         eeo/TjRIboDKe5cBxJOqa+37hwkxrvFVEyFVTVkB6n4rXN3/6YGXqRj+bCcWZDxTekMx
-         cixFrTU/oD5LX8qpzLvyRvV+jNOeD5EV27NTf70bOklhx3Mn8mib1ceh0h26bsRdOCDn
-         ArAaQOonGOUMIwuksM+ep5z4O5j4HNl5R9gtuh4a46J662D0OT18HSnSSqnwd2X7VEci
-         pEOg==
-X-Gm-Message-State: AOAM533KWVUMS3hDpu9NQ4bLhHWq7RzDuAk7HdCyJCmjQo/5j5jVrg3X
-        sKOxaZq3WtP+cXPcf09Gw9g=
-X-Google-Smtp-Source: ABdhPJwtP0WP4mmJVtoCC8zK1lggz413w13RIGL4R0CuHAbwCbDf/dPIYt+cQpA3gnCEUbPLKozogg==
-X-Received: by 2002:a17:90a:380c:: with SMTP id w12mr9165252pjb.117.1611378678042;
-        Fri, 22 Jan 2021 21:11:18 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.76])
-        by smtp.gmail.com with ESMTPSA id q9sm10155791pgb.82.2021.01.22.21.11.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 21:11:17 -0800 (PST)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     oneukum@suse.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dongliang Mu <mudongliangabcd@gmail.com>
-Subject: [PATCH] usbnet: fix the indentation of one code snippet
-Date:   Sat, 23 Jan 2021 13:11:02 +0800
-Message-Id: <20210123051102.1091541-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 23 Jan 2021 00:17:09 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10N52MWO156466;
+        Sat, 23 Jan 2021 00:16:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=ZQsy86RAvRtqIUQoqjMh4KCy18QmyIQIKPpcv3T6VTE=;
+ b=iX/feD1P2IOnJhwWikIozd/eSCuBek8BoVLUs83rT2Hc7zyrPaYWWrgxuB6rH7WeGIkt
+ 9iZfS2RL9lkoZophr+4R4pTp0If9UqdK4tpoRAVhl7xtNApkkHxr1bSUuTuSQyxGHfCi
+ ygHTBg6QqU0VPuG+KjoX7eri8i1jtsxzTgP2yANiW8XlAX4Mdj+Ob9Ts5FagFnnzfdaU
+ tYWZSQJIjGWvLd8OSyTPn3sPRhNgJNB5Ko6t2U6Z05PHYk3nF4ujf+uFaTvkj1VZnLXs
+ Ub5UrB7mPDhU/dK19j1lLgx5Afo0OQG/oQjw3DJr/O5WHOQQ70lLwMnK9VXkQqN2heLX 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 368d2sge0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Jan 2021 00:16:16 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10N5FDsQ004640;
+        Sat, 23 Jan 2021 00:16:16 -0500
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 368d2sge0a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Jan 2021 00:16:15 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10N5Caix030027;
+        Sat, 23 Jan 2021 05:16:14 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 368be88118-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Jan 2021 05:16:14 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10N5GBf142860842
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 05:16:11 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD7BA52050;
+        Sat, 23 Jan 2021 05:16:11 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.85.74.106])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 71C4652052;
+        Sat, 23 Jan 2021 05:16:09 +0000 (GMT)
+Date:   Sat, 23 Jan 2021 10:46:07 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Christoph Lameter <cl@linux.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+Message-ID: <20210123051607.GC2587010@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20201118082759.1413056-1-bharata@linux.ibm.com>
+ <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
+ <20210121053003.GB2587010@in.ibm.com>
+ <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
+ <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
+ <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
+ <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-23_01:2021-01-22,2021-01-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1011 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
+ spamscore=0 adultscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101230023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Every line of code should start with tab (8 characters)
+On Fri, Jan 22, 2021 at 01:03:57PM +0100, Vlastimil Babka wrote:
+> On 1/22/21 9:03 AM, Vincent Guittot wrote:
+> > On Thu, 21 Jan 2021 at 19:19, Vlastimil Babka <vbabka@suse.cz> wrote:
+> >>
+> >> On 1/21/21 11:01 AM, Christoph Lameter wrote:
+> >> > On Thu, 21 Jan 2021, Bharata B Rao wrote:
+> >> >
+> >> >> > The problem is that calculate_order() is called a number of times
+> >> >> > before secondaries CPUs are booted and it returns 1 instead of 224.
+> >> >> > This makes the use of num_online_cpus() irrelevant for those cases
+> >> >> >
+> >> >> > After adding in my command line "slub_min_objects=36" which equals to
+> >> >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
+> >> >> > , the regression diseapears:
+> >> >> >
+> >> >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
+> >>
+> >> I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
+> >> supposed to be a scheduler benchmark? What exactly is going on?
+> >>
+> > 
+> > From hackbench description:
+> > Hackbench is both a benchmark and a stress test for the Linux kernel
+> > scheduler. It's  main
+> >        job  is  to  create a specified number of pairs of schedulable
+> > entities (either threads or
+> >        traditional processes) which communicate via either sockets or
+> > pipes and time how long  it
+> >        takes for each pair to send data back and forth.
+> 
+> Yep, so I wonder which slab entities this is stressing that much.
+> 
+> >> Things would be easier if we could trust *on all arches* either
+> >>
+> >> - num_present_cpus() to count what the hardware really physically has during
+> >> boot, even if not yet onlined, at the time we init slab. This would still not
+> >> handle later hotplug (probably mostly in a VM scenario, not that somebody would
+> >> bring bunch of actual new cpu boards to a running bare metal system?).
+> >>
+> >> - num_possible_cpus()/nr_cpu_ids not to be excessive (broken BIOS?) on systems
+> >> where it's not really possible to plug more CPU's. In a VM scenario we could
+> >> still have an opposite problem, where theoretically "anything is possible" but
+> >> the virtual cpus are never added later.
+> > 
+> > On all the system that I have tested num_possible_cpus()/nr_cpu_ids
+> > were correctly initialized
+> > 
+> > large arm64 acpi system
+> > small arm64 DT based system
+> > VM on x86 system
+> 
+> So it's just powerpc that has this issue with too large nr_cpu_ids? Is it caused
+> by bios or the hypervisor? How does num_present_cpus() look there?
 
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
- drivers/net/usb/usbnet.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+PowerPC PowerNV Host: (160 cpus)
+num_online_cpus 1 num_present_cpus 160 num_possible_cpus 160 nr_cpu_ids 160 
 
-diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
-index 1447da1d5729..305c5f7b9a9b 100644
---- a/drivers/net/usb/usbnet.c
-+++ b/drivers/net/usb/usbnet.c
-@@ -1964,12 +1964,12 @@ static int __usbnet_read_cmd(struct usbnet *dev, u8 cmd, u8 reqtype,
- 			      cmd, reqtype, value, index, buf, size,
- 			      USB_CTRL_GET_TIMEOUT);
- 	if (err > 0 && err <= size) {
--        if (data)
--            memcpy(data, buf, err);
--        else
--            netdev_dbg(dev->net,
--                "Huh? Data requested but thrown away.\n");
--    }
-+		if (data)
-+			memcpy(data, buf, err);
-+		else
-+			netdev_dbg(dev->net,
-+				   "Huh? Data requested but thrown away.\n");
-+	}
- 	kfree(buf);
- out:
- 	return err;
--- 
-2.25.1
+PowerPC pseries KVM guest: (-smp 16,maxcpus=160)
+num_online_cpus 1 num_present_cpus 16 num_possible_cpus 160 nr_cpu_ids 160 
 
+That's what I see on powerpc, hence I thought num_present_cpus() could
+be the correct one to use in slub page order calculation.
+
+> 
+> What about heuristic:
+> - num_online_cpus() > 1 - we trust that and use it
+> - otherwise nr_cpu_ids
+> Would that work? Too arbitrary?
+
+Looking at the following snippet from include/linux/cpumask.h, it
+appears that num_present_cpus() should be reasonable compromise
+between online and possible/nr_cpus_ids to use here.
+
+/*
+ * The following particular system cpumasks and operations manage
+ * possible, present, active and online cpus.
+ *
+ *     cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
+ *     cpu_present_mask - has bit 'cpu' set iff cpu is populated
+ *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
+ *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
+ *
+ *  If !CONFIG_HOTPLUG_CPU, present == possible, and active == online.
+ *
+ *  The cpu_possible_mask is fixed at boot time, as the set of CPU id's
+ *  that it is possible might ever be plugged in at anytime during the
+ *  life of that system boot.  The cpu_present_mask is dynamic(*),
+ *  representing which CPUs are currently plugged in.  And
+ *  cpu_online_mask is the dynamic subset of cpu_present_mask,
+ *  indicating those CPUs available for scheduling.
+ *
+ *  If HOTPLUG is enabled, then cpu_possible_mask is forced to have
+ *  all NR_CPUS bits set, otherwise it is just the set of CPUs that
+ *  ACPI reports present at boot.
+ *
+ *  If HOTPLUG is enabled, then cpu_present_mask varies dynamically,
+ *  depending on what ACPI reports as currently plugged in, otherwise
+ *  cpu_present_mask is just a copy of cpu_possible_mask.
+ *
+ *  (*) Well, cpu_present_mask is dynamic in the hotplug case.  If not
+ *      hotplug, it's a copy of cpu_possible_mask, hence fixed at boot.
+ */
+
+So for host systems, present is (usually) equal to possible and for
+guest systems present should indicate the CPUs found to be present
+at boottime. The intention of my original patch was to use this
+metric in slub page order calculation rather than nr_cpus_ids
+or num_cpus_possible() which could be high on guest systems that
+typically support CPU hotplug.
+
+Regards,
+Bharata.
