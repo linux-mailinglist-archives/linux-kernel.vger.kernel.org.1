@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D70130184E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 21:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7BE301863
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 21:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbhAWUP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 15:15:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46008 "EHLO mail.kernel.org"
+        id S1726308AbhAWUlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 15:41:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726334AbhAWUPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 15:15:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0B4422B43;
-        Sat, 23 Jan 2021 20:14:39 +0000 (UTC)
+        id S1726021AbhAWUlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 15:41:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA3C122C7C;
+        Sat, 23 Jan 2021 20:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611432880;
-        bh=yQY0ZU2W2juvyghuv5Vg/gZ0L6Ph7tHiMt2JkJaDxCY=;
+        s=k20201202; t=1611434432;
+        bh=RMqVof+qgq8rEi1YabhKRw6lnIKaudnxh4wvZ8tY8xQ=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NGnhRS1LHV9ZXAS3NU3TmBBsI9FON0NGL696DoqjsKUFgT3AhyyeewRe1H7RDtGh1
-         sKUGPFmqn4OvDH3y2dixCPUEsbl5XzAxHVlCilK0ZpkctId7lUFU9djN8uTnG8ndlC
-         BkTvym8JDUC+tJ8ke7AjahaqtQrIsTH4ItDRqRlqb5ld3gRs/JqzNjU9mEgF2r2Ir9
-         e9SrUWQXzMIf4/4qF0QmhCDCuozVQJsBB4Seng2QkikCP19Of4kog2kJ3ylx4Davdz
-         ufWzUUI08UD2ntBQr4Jkd/j/0gx9VaITvlF7RUJyTad9Aem9n2mfglvufXygbdcD0x
-         MfYkhsjqYJeqQ==
-Date:   Sat, 23 Jan 2021 12:14:39 -0800
+        b=IQo+FQPtFFIc8EwJiwECyHYh2+xynFfDzjfYURVfUdCuAUzdjizMhca061mKKRdIR
+         JY0bKWjWqJ/DO4DVa3qcZGGXKGaDCrFilMlplm4SJ22IdYQWFj75PLJ+SXJQPrwfbH
+         ySwhN8YpaCdofmBcSHcmfeRViAR52pt9/e5JTJPfJnzRkP83+i8iGKmkmj0YCzvT47
+         PdFfMOoDOeKMS63mqXXxraFDs/fTJUo69dqjKq0Cl9omfyCm0+P1PVRmHwJGxDXjbM
+         eRJ2yka4HZDYlaShPlTXxoNfnXbpy+WgYaH1RXs2aSvxfzqng55TCxBnbWVkdZBJts
+         WxhLonltJi2MQ==
+Date:   Sat, 23 Jan 2021 12:40:31 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ido Schimmel <idosch@idosch.org>
-Cc:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Message-ID: <20210123121439.4290b002@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210123160348.GB2799851@shredder.lan>
-References: <AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
-        <20210123160348.GB2799851@shredder.lan>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     netdev@vger.kernel.org,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 0/2] fix and move definitions of MRP data
+ structures
+Message-ID: <20210123124031.29cba9e1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210121204037.61390-1-rasmus.villemoes@prevas.dk>
+References: <20210121204037.61390-1-rasmus.villemoes@prevas.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -44,8 +43,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021 18:03:48 +0200 Ido Schimmel wrote:
-> 	[DEVLINK_ATTR_STATS_RX_DROPPED]
+On Thu, 21 Jan 2021 21:40:35 +0100 Rasmus Villemoes wrote:
+> v2: update commit log of the patch to include comments on 32 bit
+> alignment; include second patch moving the structs out of uapi.
 
-nit: maybe discarded? dropped sounds like may have been due to an
-overflow or something
+Applied, thanks!
