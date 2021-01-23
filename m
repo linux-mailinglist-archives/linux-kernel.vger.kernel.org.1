@@ -2,155 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CB83018C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 23:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7509B3018CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 00:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbhAWW6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 17:58:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53859 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725922AbhAWW6p (ORCPT
+        id S1726379AbhAWXAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 18:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbhAWXAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 17:58:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611442638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I7DiM1PMMZUbKLzzyeuhp5mkrIQ9sFxziT9tgeKybWs=;
-        b=SzpUti86M8YHc5fpcpsGoce1/w02rsdGCJftieGhUNOYwWBma+KmRTvALvuN5F0Qw3Ahjc
-        tnKq8CkeTQQLUMCdoitNhGtHFerx0+n9Iz7ksDbZRaLggrM52LLotQrDip9Im4Z5UvTLqC
-        ni90qyT7fk1coDdWzQjbnzsU2QkINhA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-199-9Z_z7JqZNVKjAS6UbCS7GA-1; Sat, 23 Jan 2021 17:57:14 -0500
-X-MC-Unique: 9Z_z7JqZNVKjAS6UbCS7GA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 936A0180A086;
-        Sat, 23 Jan 2021 22:57:12 +0000 (UTC)
-Received: from krava (unknown [10.40.192.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DA355D9CC;
-        Sat, 23 Jan 2021 22:57:10 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 23:57:09 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com
-Subject: Re: [PATCH v7] perf stat: Fix wrong skipping for per-die aggregation
-Message-ID: <20210123225709.GB138414@krava>
-References: <20210118040521.31003-1-yao.jin@linux.intel.com>
- <20210120220735.GE1798087@krava>
- <dd75cc3f-9440-c33b-cea3-529134c33e80@linux.intel.com>
+        Sat, 23 Jan 2021 18:00:14 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C317CC0613D6
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 14:59:33 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id jx18so655979pjb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 14:59:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XEmc28AGxg8G814HFx/ez3FIOIJ36RQOCl9rPqWgvnQ=;
+        b=W4/1YIH5h1nwo0TQjLRQxWuhCqmWOmBpjcEApaJH7uj/3OwkPDFgVJw1I/zlOUvcJb
+         KcKdWIT31OiX5BRomKzZVwrc2DGvjqmTzir9gKKP2oF7qxSIHrkr1iFvz2oY4G9txrSU
+         zXbJWwWqYLma08LREe/nEyFp4fyJ6dkHkrC3kMaKauWs1HMmCcHtFaO0jFqeP8zEzmcb
+         TlVnqkGVN2NPe4cJnyNGr2KsuysC9cDsqqIytYasLLXXICc9ahrXy6EDNFBgF1W46LsF
+         a+QLYR5GdTOkwyj3I7rj004Oxb45fjcFqgU0UH9hFti1oZ1PkYN4MFP55HLQlblxsMUL
+         3xKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XEmc28AGxg8G814HFx/ez3FIOIJ36RQOCl9rPqWgvnQ=;
+        b=jxHcfyNBFp8QuldFP0dG/yIANhLuFuEasUyd/KcHDSm9iVkEcxpfxziDcDzlJaL9m+
+         /fH5bgSWld9qJuelfedKmjzKXoF2CcbAcyCKQsV4fYkXC3e/kwy1V6ZA6vZmWeotI3gT
+         5w01JPmDzoyF2KX0pboGgb5/Ai0NhWbQEvgRNTLiNeQ1zvzjyFC3vioyqWCP7IuJexud
+         D3+XPdF54jxiEdJ9YjeFRGLqpSCJ2haxR7gcloRuTvWcEENTjfgFSItpIgPp7x1G99cW
+         Sm0mgudwm0wNJ+bBCJdTleo6obxHplKqTHRGnUeOqPPW+H85v3y6G/FT1EQpDC2rGrmI
+         PiDg==
+X-Gm-Message-State: AOAM530eIPcVi/psOFjo9B2i3S1VpsA7aLR7P+wplioS79c/TarVeO4S
+        QVSViQYIv+D9Xff2sH2AoLuJhA==
+X-Google-Smtp-Source: ABdhPJwG/hyh/aI3nS1B02oCINgwBdGDzEKx4NdActW7UaoHoTBHvT62TjXIs9ZQdEA0bRmcdt0R6Q==
+X-Received: by 2002:a17:90a:f998:: with SMTP id cq24mr13543739pjb.6.1611442772450;
+        Sat, 23 Jan 2021 14:59:32 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id l14sm13144826pjy.15.2021.01.23.14.59.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 14:59:31 -0800 (PST)
+Date:   Sat, 23 Jan 2021 14:59:28 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, arjan@linux.intel.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, rick.p.edgecombe@intel.com,
+        live-patching@vger.kernel.org, Hongjiu Lu <hongjiu.lu@intel.com>,
+        joe.lawrence@redhat.com
+Subject: Re: [PATCH v4 00/10] Function Granular KASLR
+Message-ID: <20210123225928.z5hkmaw6qjs2gu5g@google.com>
+References: <20200717170008.5949-1-kristen@linux.intel.com>
+ <alpine.LSU.2.21.2007221122110.10163@pobox.suse.cz>
+ <202007220738.72F26D2480@keescook>
+ <20200722160730.cfhcj4eisglnzolr@treble>
+ <202007221241.EBC2215A@keescook>
+ <301c7fb7d22ad6ef97856b421873e32c2239d412.camel@linux.intel.com>
+ <20200722213313.aetl3h5rkub6ktmw@treble>
+ <46c49dec078cb8625a9c3a3cd1310a4de7ec760b.camel@linux.intel.com>
+ <alpine.LSU.2.21.2008281216031.29208@pobox.suse.cz>
+ <20200828192413.p6rctr42xtuh2c2e@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dd75cc3f-9440-c33b-cea3-529134c33e80@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200828192413.p6rctr42xtuh2c2e@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:21:36PM +0800, Jin, Yao wrote:
+On 2020-08-28, Josh Poimboeuf wrote:
+>On Fri, Aug 28, 2020 at 12:21:13PM +0200, Miroslav Benes wrote:
+>> > Hi there! I was trying to find a super easy way to address this, so I
+>> > thought the best thing would be if there were a compiler or linker
+>> > switch to just eliminate any duplicate symbols at compile time for
+>> > vmlinux. I filed this question on the binutils bugzilla looking to see
+>> > if there were existing flags that might do this, but H.J. Lu went ahead
+>> > and created a new one "-z unique", that seems to do what we would need
+>> > it to do.
+>> >
+>> > https://sourceware.org/bugzilla/show_bug.cgi?id=26391
+>> >
+>> > When I use this option, it renames any duplicate symbols with an
+>> > extension - for example duplicatefunc.1 or duplicatefunc.2. You could
+>> > either match on the full unique name of the specific binary you are
+>> > trying to patch, or you match the base name and use the extension to
+>> > determine original position. Do you think this solution would work?
+>>
+>> Yes, I think so (thanks, Joe, for testing!).
+>>
+>> It looks cleaner to me than the options above, but it may just be a matter
+>> of taste. Anyway, I'd go with full name matching, because -z unique-symbol
+>> would allow us to remove sympos altogether, which is appealing.
+>>
+>> > If
+>> > so, I can modify livepatch to refuse to patch on duplicated symbols if
+>> > CONFIG_FG_KASLR and when this option is merged into the tool chain I
+>> > can add it to KBUILD_LDFLAGS when CONFIG_FG_KASLR and livepatching
+>> > should work in all cases.
+>>
+>> Ok.
+>>
+>> Josh, Petr, would this work for you too?
+>
+>Sounds good to me.  Kristen, thanks for finding a solution!
 
-sNIP
+(I am not subscribed. I came here via https://sourceware.org/bugzilla/show_bug.cgi?id=26391 (ld -z unique-symbol))
 
-> mask = hashmap__new(pkg_id_hash, pkg_id_equal, NULL);
-> d = cpu_map__get_die(cpus, cpu, NULL).die;
-> key = (size_t)d << KEY_SHIFT | s;	/* s is socket id */
-> if (hashmap__find(mask, (void *)key, NULL))
-> 	*skip = true;
-> else
-> 	ret = hashmap__add(mask, (void *)key, (void *)1);
-> 
-> If we use 'unsigned long' to replace 'size_t', it reports the build error for 32 bits:
-> 
-> stat.c:320:23: warning: passing argument 1 of ‘hashmap__new’ from
-> incompatible pointer type [-Wincompatible-pointer-types]
->    mask = hashmap__new(pkg_id_hash, pkg_id_equal, NULL);
->                        ^~~~~~~~~~~
-> In file included from stat.c:16:
-> hashmap.h:75:17: note: expected ‘hashmap_hash_fn’ {aka ‘unsigned int
-> (*)(const void *, void *)’} but argument is of type ‘long unsigned int
-> (*)(const void *, void *)’
-> 
-> If we use "unsigned int", it's not good for 64 bits. So I still use 'size_t' in this patch.
-> 
-> Any comments for this idea (using conditional compilation)?
+> This works great after randomization because it always receives the
+> current address at runtime rather than relying on any kind of
+> buildtime address. The issue with with the live-patching code's
+> algorithm for resolving duplicate symbol names. If they request a
+> symbol by name from the kernel and there are 3 symbols with the same
+> name, they use the symbol's position in the built binary image to
+> select the correct symbol.
 
-isn't it simpler to allocate the key then? like below
-(just compile tested)
+If a.o, b.o and c.o define local symbol 'foo'.
+By position, do you mean that
 
-jirka
+* the live-patching code uses something like (findall("foo")[0], findall("foo")[1], findall("foo")[2]) ?
+* shuffling a.o/b.o/c.o will make the returned triple different
 
+Local symbols are not required to be unique. Instead of patching the toolchain,
+have you thought about making the live-patching code smarter?
+(Depend on the duplicates, such a linker option can increase the link time/binary size considerably
+AND I don't know in what other cases such an option will be useful)
 
----
-diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-index 5aba8fa92386..195fda142c98 100644
---- a/tools/perf/util/stat.c
-+++ b/tools/perf/util/stat.c
-@@ -276,19 +276,31 @@ void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
- 
- static void zero_per_pkg(struct evsel *counter)
- {
--	if (counter->per_pkg_mask)
-+	struct hashmap_entry *cur;
-+	size_t bkt;
-+
-+	if (counter->per_pkg_mask) {
-+		hashmap__for_each_entry(counter->per_pkg_mask, cur, bkt)
-+			free((char *)cur->key);
-+
- 		hashmap__clear(counter->per_pkg_mask);
-+	}
- }
- 
--static size_t pkg_id_hash(const void *key, void *ctx __maybe_unused)
-+static size_t pkg_id_hash(const void *__key, void *ctx __maybe_unused)
- {
--	return (size_t)key & 0xffff;
-+	uint64_t *key = (uint64_t*) __key;
-+
-+	return *key & 0xffffffff;
- }
- 
--static bool pkg_id_equal(const void *key1, const void *key2,
-+static bool pkg_id_equal(const void *__key1, const void *__key2,
- 			 void *ctx __maybe_unused)
- {
--	return (size_t)key1 == (size_t)key2;
-+	uint64_t *key1 = (uint64_t*) __key1;
-+	uint64_t *key2 = (uint64_t*) __key2;
-+
-+	return *key1 == *key2;
- }
- 
- static int check_per_pkg(struct evsel *counter,
-@@ -297,7 +309,7 @@ static int check_per_pkg(struct evsel *counter,
- 	struct hashmap *mask = counter->per_pkg_mask;
- 	struct perf_cpu_map *cpus = evsel__cpus(counter);
- 	int s, d, ret = 0;
--	size_t key;
-+	uint64_t *key;
- 
- 	*skip = false;
- 
-@@ -338,7 +350,11 @@ static int check_per_pkg(struct evsel *counter,
- 	if (d < 0)
- 		return -1;
- 
--	key = (size_t)d << 16 | s;
-+	key = malloc(sizeof(*key));
-+	if (!key)
-+		return -ENOMEM;
-+
-+	*key = (size_t)d << 32 | s;
- 	if (hashmap__find(mask, (void *)key, NULL))
- 		*skip = true;
- 	else
+For the following example, 
 
+https://sourceware.org/bugzilla/show_bug.cgi?id=26822
+
+   # RUN: split-file %s %t
+   # RUN: gcc -c %t/a.s -o %t/a.o
+   # RUN: gcc -c %t/b.s -o %t/b.o
+   # RUN: gcc -c %t/c.s -o %t/c.o
+   # RUN: ld-new %t/a.o %t/b.o %t/c.o -z unique-symbol -o %t.exe
+   
+   #--- a.s
+   a: a.1: a.2: nop
+   #--- b.s
+   a: nop
+   #--- c.s
+   a: nop
+
+readelf -Ws output:
+
+Symbol table '.symtab' contains 13 entries:
+    Num:    Value          Size Type    Bind   Vis      Ndx Name
+      0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND 
+      1: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS a.o
+      2: 0000000000401000     0 NOTYPE  LOCAL  DEFAULT    1 a
+      3: 0000000000401000     0 NOTYPE  LOCAL  DEFAULT    1 a.1
+      4: 0000000000401000     0 NOTYPE  LOCAL  DEFAULT    1 a.2
+      5: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS b.o
+      6: 0000000000401001     0 NOTYPE  LOCAL  DEFAULT    1 a.1
+      7: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS c.o
+      8: 0000000000401002     0 NOTYPE  LOCAL  DEFAULT    1 a.2
+      9: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT  UND _start
+     10: 0000000000402000     0 NOTYPE  GLOBAL DEFAULT    1 __bss_start
+     11: 0000000000402000     0 NOTYPE  GLOBAL DEFAULT    1 _edata
+     12: 0000000000402000     0 NOTYPE  GLOBAL DEFAULT    1 _end
+
+Note that you have STT_FILE SHN_ABS symbols.
+If the compiler does not produce them, they will be synthesized by GNU ld.
+
+   https://sourceware.org/bugzilla/show_bug.cgi?id=26822
+   ld.bfd copies non-STT_SECTION local symbols from input object files.  If an
+   object file does not have STT_FILE symbols (no .file directive) but has
+   non-STT_SECTION local symbols, ld.bfd synthesizes a STT_FILE symbol
+
+The filenames are usually base names, so "a.o" and "a.o" in two directories will
+be indistinguishable.  The live-patching code can possibly work around this by
+not changing the relative order of the two "a.o".
