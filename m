@@ -2,137 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D1E3014ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 12:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F0D3014F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 13:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbhAWL7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 06:59:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50007 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726781AbhAWL7F (ORCPT
+        id S1726731AbhAWMCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 07:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbhAWMCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 06:59:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611403056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2y/kKmoTB9zchXCiBT1BMXEPgDpr8Q0dNowjFc5DkvU=;
-        b=deQV0ZdWQqJC+8jX4BhWdmMRXA9PXXWMAjsFWnNCG9cptFx6q7x2Mh1SNW0oFkZQbfICS3
-        3BuRT+upUa64RDjItdKPdgZatzh+zPn6IJlQdXBltMfFEjOvVgA0eqoDwAbDpOYGy6o97y
-        CXK5ZT+MBx3vlnWNsGu6zsQNP5J0PDc=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-98-sVv1wwJEPoyHcCWQp_7cpQ-1; Sat, 23 Jan 2021 06:57:34 -0500
-X-MC-Unique: sVv1wwJEPoyHcCWQp_7cpQ-1
-Received: by mail-ej1-f70.google.com with SMTP id rl8so2945571ejb.8
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 03:57:33 -0800 (PST)
+        Sat, 23 Jan 2021 07:02:13 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C85DC06174A;
+        Sat, 23 Jan 2021 04:01:33 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id w14so5557216pfi.2;
+        Sat, 23 Jan 2021 04:01:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xF36MGLCsxggSjMA46WhSwB7+yR8lPhJZ7ontH36Elw=;
+        b=Ka0jclfRVsjyUo+y1gk+OLNt9D4t5tfTc3fZiQBG8fPlw70Yro4M+Kh2hw5A6bW/PZ
+         o6MFfsXM/YxcjJCn5EVidhUK58rWyTTDbphFm+Z5OxYs6uCtBT12kjmugS5lGsRRx+oJ
+         GKO96b0dbKhlFwmEpQECnsIwOZoApYaYBi3bm+RBmHQLezJkKLm+0aGzsESvnK8l+th0
+         QU/zjVH6eu866jHsh/Q5jeuHVk89bjL7vbxjpaiEjlrvIjfJJeBFKfwk4VXEA+q0SDmX
+         xAozk5YmIoIjP7PtRhoq7I6s7dYoobqxkRaUWZNMAPDELVIT0ylVQFZjJPxrtLyu11hI
+         kFJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2y/kKmoTB9zchXCiBT1BMXEPgDpr8Q0dNowjFc5DkvU=;
-        b=NMflWVlN+JseKjQ1DzTZ9cjxJVLp//4XVzq9SKumusT2CdF/kGZg1vX1YPa9eV8A1X
-         GZwx0Pk4VpmdhIEdyPDbmz3QqbM8mc7q0MdiSjJzBC34P5VHNvOVYmSr9EQjUHwhkotC
-         2YsBjd6BTwRq8Jqmjsn5ZEcAiyZrbQi0VXWgXzef7XjzyKqI1Mb7a0p1t7KXIJmCvFIn
-         Y8csW7blP43I+OUvUmIRNHjPpNGfJ6yBbkpYqGE3/o6dd0T/YpEN8jrnkOvE/mIquCMx
-         mYqfMRIXTEardKVABVY20tHKZWhGBYRN/AwFU+3GiYZkxRRZ1eaibPGkEONG2uoUml7g
-         WpDg==
-X-Gm-Message-State: AOAM531b13wOe1R5425eHTltStd2eU1E2KQBclcwsz23gz34MzD3P9II
-        z5I8m5jEsTVV3QZO6ed6UoUhnPaGhtMscRl82T7kOVspnRX7+r9INTuCOn4pfAdXVVRJvsr2Lcc
-        qkjaHBGsUTTuDPxSgvGiZoaUk4lWMY7SpPxdzxoLCtZJX3SdI5WLWwSjJhcSj8ZPj939WdXsOIP
-        zh
-X-Received: by 2002:a17:906:d0c1:: with SMTP id bq1mr500712ejb.202.1611403052719;
-        Sat, 23 Jan 2021 03:57:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwM0j0OEhNogsZ5Yo7RzHOoi69GUvLI5qTKgtm8Q5Ez7f0Oj+CW0kBqtgQ8dvMyNBK8EYC/jQ==
-X-Received: by 2002:a17:906:d0c1:: with SMTP id bq1mr500698ejb.202.1611403052522;
-        Sat, 23 Jan 2021 03:57:32 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id z13sm7167891edc.73.2021.01.23.03.57.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Jan 2021 03:57:31 -0800 (PST)
-Subject: Re: [PATCH] regulator: core: Avoid debugfs: Directory ... already
- present! error
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xF36MGLCsxggSjMA46WhSwB7+yR8lPhJZ7ontH36Elw=;
+        b=jyJP5jtQTRiCiPo21Rf09ej0pczROQ1kgwwGaY3/uDP0pZRthFACK6eGql8y0BFdso
+         XXF6MJ7+fFk6DUUsN0XEt/Ix1PZtNOI4MTP1ZALbaV0DbO75tEPCm79/bzUi96jpAj1C
+         d5YZJCOhb9T+2rpjMCaG60g/SmmAU5J9ETqSs/yIvZAnf5r0UKO/69N2VfTIVDxd7EaE
+         uRExDsDETga49IzyQwvTg9ed9Aik0NQxm5LdcHVnP7X0B0dYbjpEUgudZausi5tVSu//
+         l0DM9dneG5C3sBfZ8otFtyv5rl4jjAR1QW0L4/vlPf73XsGbRhhLlhCYb6m/6YLSUFDB
+         b2Tw==
+X-Gm-Message-State: AOAM531hR8CoQ8XScOf7WvofaMIByvvV90CvbInapjnolu39NcArSab5
+        y1Ws3TytL46EBe3M6LZZYMg=
+X-Google-Smtp-Source: ABdhPJzlrv8dMPwFpuqdTLoQy2fa0t3pDjeflodref341ex2xHqxzjm3SpQf5A8ee1l6jfOtg0dugQ==
+X-Received: by 2002:a63:4c09:: with SMTP id z9mr582817pga.260.1611403291961;
+        Sat, 23 Jan 2021 04:01:31 -0800 (PST)
+Received: from VM-0-6-centos.localdomain ([119.28.90.140])
+        by smtp.gmail.com with ESMTPSA id x19sm11854648pfp.207.2021.01.23.04.01.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Jan 2021 04:01:30 -0800 (PST)
+From:   Chunguang Xu <brookxu.cn@gmail.com>
+X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com
+Cc:     harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210122183250.370571-1-hdegoede@redhat.com>
- <20210123102941.GK106851@ediswmail.ad.cirrus.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <7a35e23c-700a-9a58-8f18-3e093db20ce5@redhat.com>
-Date:   Sat, 23 Jan 2021 12:57:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210123102941.GK106851@ediswmail.ad.cirrus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Subject: [RFC PATCH v2 0/4] make jbd2 debug switch per device
+Date:   Sat, 23 Jan 2021 20:00:42 +0800
+Message-Id: <cover.1611402263.git.brookxu@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On a multi-disk machine, because jbd2 debugging switch is global, this
+confuses the logs of multiple disks. It is not easy to distinguish the
+logs of each disk and the amount of generated logs is very large. Maybe
+a separate debugging switch for each disk would be better, so that we
+can easily distinguish the logs of a certain disk. 
 
-On 1/23/21 11:29 AM, Charles Keepax wrote:
-> On Fri, Jan 22, 2021 at 07:32:50PM +0100, Hans de Goede wrote:
->> Sometimes regulator_get() gets called twice for the same supply on the
->> same device. This may happen e.g. when a framework / library is used
->> which uses the regulator; and the driver itself also needs to enable
->> the regulator in some cases where the framework will not enable it.
->>
->> Commit ff268b56ce8c ("regulator: core: Don't spew backtraces on
->> duplicate sysfs") already takes care of the backtrace which would
->> trigger when creating a duplicate consumer symlink under
->> /sys/class/regulator/regulator.%d in this scenario.
->>
->> Commit c33d442328f5 ("debugfs: make error message a bit more verbose")
->> causes a new error to get logged in this scenario:
->>
->> [   26.938425] debugfs: Directory 'wm5102-codec-MICVDD' with parent 'spi-WM510204:00-MICVDD' already present!
->>
->> There is no _nowarn variant of debugfs_create_dir(), but we can detect
->> and avoid this problem by checking the return value of the earlier
->> sysfs_create_link_nowarn() call.
->>
->> Add a check for the earlier sysfs_create_link_nowarn() failing with
->> -EEXIST and skip the debugfs_create_dir() call in that case, avoiding
->> this error getting logged.
->>
->> Fixes: c33d442328f5 ("debugfs: make error message a bit more verbose")
->> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
->> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->> ---
-> 
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> 
-> Thanks,
-> Charles
-> 
->> -	int err;
->> +	int err = 0;
->>  
->> @@ -1663,8 +1663,8 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
->>  
->> -	regulator->debugfs = debugfs_create_dir(supply_name,
->> -						rdev->debugfs);
->> +	if (err != -EEXIST)
->> +		regulator->debugfs = debugfs_create_dir(supply_name, rdev->debugfs);
-> 
-> There is a slight oddity here in that if this regulator has
-> no struct device we will still get the warning. However, I
-> am totally not clear on when/why a regulator might not have a
-> dev, and am fairly sure it isn't common. So my vote would be
-> to cross that bridge if we ever come to it.
+We can enable jbd2 debugging of a device in the following ways:
+echo X > /proc/fs/jbd2/sdX/jbd2_debug
 
-Yes, I expect the combination of having 2 consumers which both get the
-regulator with a NULL device pointer to be very rare and hopefully
-it does not happen at all.
+But there is a small disadvantage here. Because the debugging switch is
+placed in the journal_t object, the log before the object is initialized
+will be lost. However, usually this will not have much impact on
+debugging.
 
-Regards,
+Chunguang Xu (4):
+  jbd2: make jdb2_debug module parameter per device
+  jbd2: introduce some new log interfaces
+  jbd2: replace jbd_debug with the new log interface
+  ext4: replace jbd_debug with the new log interface
 
-Hans
+ fs/ext4/balloc.c      |   2 +-
+ fs/ext4/ext4_jbd2.c   |   3 +-
+ fs/ext4/fast_commit.c |  64 +++++++++++++-----------
+ fs/ext4/indirect.c    |   4 +-
+ fs/ext4/inode.c       |   3 +-
+ fs/ext4/namei.c       |  10 ++--
+ fs/ext4/super.c       |  16 +++---
+ fs/jbd2/checkpoint.c  |   6 +--
+ fs/jbd2/commit.c      |  36 ++++++-------
+ fs/jbd2/journal.c     | 114 +++++++++++++++++++++++++++++-------------
+ fs/jbd2/recovery.c    |  59 +++++++++++-----------
+ fs/jbd2/revoke.c      |   8 +--
+ fs/jbd2/transaction.c |  35 ++++++-------
+ include/linux/jbd2.h  |  66 +++++++++++++++++-------
+ 14 files changed, 258 insertions(+), 168 deletions(-)
+
+-- 
+2.30.0
 
