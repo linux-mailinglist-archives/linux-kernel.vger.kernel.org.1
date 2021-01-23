@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EB43015D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9157F3015DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726032AbhAWO1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:27:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35350 "EHLO mail.kernel.org"
+        id S1726134AbhAWO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:29:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbhAWO10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:27:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 614B022DFA;
-        Sat, 23 Jan 2021 14:26:41 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 14:26:39 +0000
+        id S1726127AbhAWO2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:28:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA3B22EBE;
+        Sat, 23 Jan 2021 14:28:09 +0000 (UTC)
+Date:   Sat, 23 Jan 2021 14:28:07 +0000
 From:   Catalin Marinas <catalin.marinas@arm.com>
 To:     Marc Zyngier <maz@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
@@ -30,31 +30,27 @@ Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: Re: [PATCH v4 20/21] arm64: Defer enabling pointer authentication on
- boot core
-Message-ID: <YAwyH8Ya4oqFKlC0@Catalins-MacBook-Air.local>
+Subject: Re: [PATCH v4 21/21] arm64: cpufeatures: Allow disabling of Pointer
+ Auth from the command-line
+Message-ID: <YAwydxY68TULznr1@Catalins-MacBook-Air.local>
 References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-21-maz@kernel.org>
+ <20210118094533.2874082-22-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-21-maz@kernel.org>
+In-Reply-To: <20210118094533.2874082-22-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:32AM +0000, Marc Zyngier wrote:
-> From: Srinivas Ramana <sramana@codeaurora.org>
+On Mon, Jan 18, 2021 at 09:45:33AM +0000, Marc Zyngier wrote:
+> In order to be able to disable Pointer Authentication  at runtime,
+> whether it is for testing purposes, or to work around HW issues,
+> let's add support for overriding the ID_AA64ISAR1_EL1.{GPI,GPA,API,APA}
+> fields.
 > 
-> Defer enabling pointer authentication on boot core until
-> after its required to be enabled by cpufeature framework.
-> This will help in controlling the feature dynamically
-> with a boot parameter.
+> This is further mapped on the arm64.nopauth command-line alias.
 > 
-> Signed-off-by: Ajay Patil <pajay@qti.qualcomm.com>
-> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-> Signed-off-by: Srinivas Ramana <sramana@codeaurora.org>
 > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Link: https://lore.kernel.org/r/1610152163-16554-2-git-send-email-sramana@codeaurora.org
 
 Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
