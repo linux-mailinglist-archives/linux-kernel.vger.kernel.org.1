@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329E23011F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 359303011F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbhAWBST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 20:18:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
+        id S1726071AbhAWBSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:18:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726532AbhAWBRs (ORCPT
+        with ESMTP id S1726580AbhAWBRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:17:48 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E73DC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:17:08 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id a7so227240qkb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:17:08 -0800 (PST)
+        Fri, 22 Jan 2021 20:17:50 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388E9C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:17:10 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id 143so7084279qke.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:17:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IaMkqmTttjbetPQ20RK5ozAGqawwXlCoh0MYCZptj3I=;
-        b=MAAgQ3G7gFHcbWuKbJpWrlFG1wwE40EZ9ukhl9w3UFqYj7/Xxi1/K6gnpAHxXuH+5G
-         PX9hsugMj/aJCd2he8LzClFHYQd6PfrZYyO9zVEl8vhqgY+WFjHM+OEHtAXIshE1NcxP
-         HHHmGmCq5OuCJwumNAhhNM9cr7VYZwimowf3o=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7rbpUAatvw7ig66Jq89S+FocysWUeQC2At8lxkex9us=;
+        b=pYexIY2pTEphRVJ8ZwPY47RGKMfceTKez6idyXsbSOFYXk1B7U+aHA1LL4iFv8akZL
+         pvN+WQz8i28qOv/2RaDKzF2b8OBbtL67KX4vKbS3SlQVAukvvzWi4S+Wav4iaJeJb05T
+         jw5qGQ8qtxribnbAincX0b8WyCB4zjS7OaC04=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IaMkqmTttjbetPQ20RK5ozAGqawwXlCoh0MYCZptj3I=;
-        b=bAlkFTdfnhUnwSZA3H5XVvYbfT7ZKPZ8QNYdd5Yra2H6lteSlcEe2RNEbeNdW/IADm
-         qeCcIMYHMCLXmXc5nWdpr1/cjVN7ypqTuWG0uIKSLiitZ5sC0lr51GxzhTVnv93qGMTk
-         yGHauXvfjbgChPAuLYI5u5Kmol5fXuNv5K9Tahi6rwO7AII5y9s8ckCHcfyMozNGPHHH
-         fU9NfLRi3VcEnuh6YdmDKnsGjZ09aV6z82dWpWRuys4MRkV9aMK+rq8WXBLkmhsFU412
-         CEZY74IPB9iHpaqfc7FQrAbT0B6ocgpGoKHY0c3gNllcxv3YLKA0Iej9v2ZMAtwoTDRd
-         vVVQ==
-X-Gm-Message-State: AOAM5337KvVVb8A078hT8lNjgul8ushb8e/vTMxIA2tBDxLTcpUdrNpT
-        zr/qkcLPCuUdMBARXWuXmgNYpw==
-X-Google-Smtp-Source: ABdhPJwzoFS7nwSIZWLmlRK27FPK8hvGtFhurDr54DbA+rH+7AiAeyOZiXv20gIxTlnVhCvbN4Kliw==
-X-Received: by 2002:a37:49d6:: with SMTP id w205mr3340840qka.322.1611364627638;
-        Fri, 22 Jan 2021 17:17:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7rbpUAatvw7ig66Jq89S+FocysWUeQC2At8lxkex9us=;
+        b=KUOVAvfneNIdayLb3PPcEtTunsYeJqUjA5aGmMdfUaehjFoj9Wk9SKd5yJL3qe9iu9
+         Fy1l0Oz+8lDGkYwDI99y0140gtUSkQEjPuCsh8L/2+rvneUw7p/FXt6zExWB7YC6xJT6
+         N3QguERDnHWrmTVnKFUKdhWf63745RXTgqLX+7Kw/tgeCe5DoztA9hvwaDFXFSyZV51A
+         sOFDz/UT+CA4fhAk666YY4FsF80PZhSWCIEzXXGA0JtAFMXmgX1PQbd3IASLdiSdkoVH
+         TwMu3V/BZ11NdPNcgCEpt4NEyEKlJctggZdPVeooZO+Uif0kr/bzJiM/6XoLa+WkUs5c
+         BkhA==
+X-Gm-Message-State: AOAM5339+m8Z2xju4Jz1zjQpwNEdcekP3VGhQj7F4sJ1wT/JgrVIOBe1
+        0tV31Z4V6H6xUUZU1D21fi6uKA==
+X-Google-Smtp-Source: ABdhPJzAwKOEocSzJSuvsCeXNRiOLUOFtX2FH4kqo1FcokxtyyXg2kvY8zY7gQfUD7/AQiZKuoJ6bA==
+X-Received: by 2002:a37:78c4:: with SMTP id t187mr7406134qkc.139.1611364629422;
+        Fri, 22 Jan 2021 17:17:09 -0800 (PST)
 Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id x15sm2516840qtr.72.2021.01.22.17.17.05
+        by smtp.gmail.com with ESMTPSA id x15sm2516840qtr.72.2021.01.22.17.17.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 17:17:07 -0800 (PST)
+        Fri, 22 Jan 2021 17:17:08 -0800 (PST)
 From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
 To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>,
@@ -74,204 +74,232 @@ Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
         Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
         chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
         Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH v10 0/5] Core scheduling remaining patches
-Date:   Fri, 22 Jan 2021 20:16:59 -0500
-Message-Id: <20210123011704.1901835-1-joel@joelfernandes.org>
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+Subject: [PATCH v10 1/5] sched: migration changes for core scheduling
+Date:   Fri, 22 Jan 2021 20:17:00 -0500
+Message-Id: <20210123011704.1901835-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+In-Reply-To: <20210123011704.1901835-1-joel@joelfernandes.org>
+References: <20210123011704.1901835-1-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Core-Scheduling
-===============
-Enclosed is series v10 of core scheduling.
-Many of the core patches in v9 were picked up in Peter's queue tree. This
-series contains the remaining patches (interface, docs).
+From: Aubrey Li <aubrey.li@intel.com>
 
-v9 series is here: https://lwn.net/Articles/837595/
+ - Don't migrate if there is a cookie mismatch
+     Load balance tries to move task from busiest CPU to the
+     destination CPU. When core scheduling is enabled, if the
+     task's cookie does not match with the destination CPU's
+     core cookie, this task will be skipped by this CPU. This
+     mitigates the forced idle time on the destination CPU.
 
-Introduction of feature
-=======================
-Core scheduling is a feature that allows only trusted tasks to run
-concurrently on cpus sharing compute resources (eg: hyperthreads on a
-core). The goal is to mitigate the core-level side-channel attacks
-without requiring to disable SMT (which has a significant impact on
-performance in some situations). Core scheduling (as of v7) mitigates
-user-space to user-space attacks and user to kernel attack when one of
-the siblings enters the kernel via interrupts or system call.
+ - Select cookie matched idle CPU
+     In the fast path of task wakeup, select the first cookie matched
+     idle CPU instead of the first idle CPU.
 
-By default, the feature doesn't change any of the current scheduler
-behavior. The user decides which tasks can run simultaneously on the
-same core (for now by having them in the same tagged cgroup). When a tag
-is enabled in a cgroup and a task from that cgroup is running on a
-hardware thread, the scheduler ensures that only idle or trusted tasks
-run on the other sibling(s). Besides security concerns, this feature can
-also be beneficial for RT and performance applications where we want to
-control how tasks make use of SMT dynamically.
+ - Find cookie matched idlest CPU
+     In the slow path of task wakeup, find the idlest CPU whose core
+     cookie matches with task's cookie
 
-Both a CGroup and Per-task interface via prctl(2) are provided for configuring
-core sharing. More details are provided in documentation patch.  Kselftests are
-provided to verify the correctness/rules of the interface.
+ - Don't migrate task if cookie not match
+     For the NUMA load balance, don't migrate task to the CPU whose
+     core cookie does not match with task's cookie
 
-Testing
-=======
-ChromeOS testing shows 300% improvement in keypress latency on a Google
-docs key press with Google hangout test (the maximum latency drops from 150ms
-to 50ms for keypresses).
+Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Vineeth Remanan Pillai <viremana@linux.microsoft.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/sched/fair.c  | 33 +++++++++++++++++---
+ kernel/sched/sched.h | 72 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 101 insertions(+), 4 deletions(-)
 
-Vineeth tested sysbench on v9 series and does not see any regressions.
-Hong and Aubrey tested v9 and see results similar to v8. There is a known issue
-with uperf that does regress. This appears to be because of ksoftirq heavily
-contending with other tasks on the core. The consensus is this can be improved
-in the future.
-
-Changes in v10
-==============
-- migration code changes from Aubrey.
-- interface changes from Josh and Chris.
-- dropped kernel protection changes for now (have to rework them for mainline).
-
-Changes in v9
-=============
-- Note that the vruntime snapshot change is written in 2 patches to show the
-  progression of the idea and prevent merge conflicts:
-    sched/fair: Snapshot the min_vruntime of CPUs on force idle
-    sched: Improve snapshotting of min_vruntime for CGroups
-  Same with the RT priority inversion change:
-    sched: Fix priority inversion of cookied task with sibling
-    sched: Improve snapshotting of min_vruntime for CGroups
-- Disable coresched on certain AMD HW.
-
-Changes in v8
-=============
-- New interface/API implementation
-  - Joel
-- Revised kernel protection patch
-  - Joel
-- Revised Hotplug fixes
-  - Joel
-- Minor bug fixes and address review comments
-  - Vineeth
-
-Changes in v7
-=============
-- Kernel protection from untrusted usermode tasks
-  - Joel, Vineeth
-- Fix for hotplug crashes and hangs
-  - Joel, Vineeth
-
-Changes in v6
-=============
-- Documentation
-  - Joel
-- Pause siblings on entering nmi/irq/softirq
-  - Joel, Vineeth
-- Fix for RCU crash
-  - Joel
-- Fix for a crash in pick_next_task
-  - Yu Chen, Vineeth
-- Minor re-write of core-wide vruntime comparison
-  - Aaron Lu
-- Cleanup: Address Review comments
-- Cleanup: Remove hotplug support (for now)
-- Build fixes: 32 bit, SMT=n, AUTOGROUP=n etc
-  - Joel, Vineeth
-
-Changes in v5
-=============
-- Fixes for cgroup/process tagging during corner cases like cgroup
-  destroy, task moving across cgroups etc
-  - Tim Chen
-- Coresched aware task migrations
-  - Aubrey Li
-- Other minor stability fixes.
-
-Changes in v4
-=============
-- Implement a core wide min_vruntime for vruntime comparison of tasks
-  across cpus in a core.
-  - Aaron Lu
-- Fixes a typo bug in setting the forced_idle cpu.
-  - Aaron Lu
-
-Changes in v3
-=============
-- Fixes the issue of sibling picking up an incompatible task
-  - Aaron Lu
-  - Vineeth Pillai
-  - Julien Desfossez
-- Fixes the issue of starving threads due to forced idle
-  - Peter Zijlstra
-- Fixes the refcounting issue when deleting a cgroup with tag
-  - Julien Desfossez
-- Fixes a crash during cpu offline/online with coresched enabled
-  - Vineeth Pillai
-- Fixes a comparison logic issue in sched_core_find
-  - Aaron Lu
-
-Changes in v2
-=============
-- Fixes for couple of NULL pointer dereference crashes
-  - Subhra Mazumdar
-  - Tim Chen
-- Improves priority comparison logic for process in different cpus
-  - Peter Zijlstra
-  - Aaron Lu
-- Fixes a hard lockup in rq locking
-  - Vineeth Pillai
-  - Julien Desfossez
-- Fixes a performance issue seen on IO heavy workloads
-  - Vineeth Pillai
-  - Julien Desfossez
-- Fix for 32bit build
-  - Aubrey Li
-
-Future work
-===========
-- Load balancing/Migration fixes for core scheduling.
-  With v6, Load balancing is partially coresched aware, but has some
-  issues w.r.t process/taskgroup weights:
-  https://lwn.net/ml/linux-kernel/20200225034438.GA617271@z...
-
-Aubrey Li (1):
-sched: migration changes for core scheduling
-
-Joel Fernandes (Google) (3):
-kselftest: Add tests for core-sched interface
-Documentation: Add core scheduling documentation
-sched: Debug bits...
-
-Peter Zijlstra (1):
-sched: CGroup tagging interface for core scheduling
-
-.../admin-guide/hw-vuln/core-scheduling.rst   | 263 +++++++
-Documentation/admin-guide/hw-vuln/index.rst   |   1 +
-include/linux/sched.h                         |  10 +
-include/uapi/linux/prctl.h                    |   6 +
-kernel/fork.c                                 |   1 +
-kernel/sched/Makefile                         |   1 +
-kernel/sched/core.c                           | 171 ++++-
-kernel/sched/coretag.c                        | 669 ++++++++++++++++
-kernel/sched/debug.c                          |   4 +
-kernel/sched/fair.c                           |  42 +-
-kernel/sched/sched.h                          | 130 +++-
-kernel/sys.c                                  |   7 +
-tools/include/uapi/linux/prctl.h              |   6 +
-tools/testing/selftests/sched/.gitignore      |   1 +
-tools/testing/selftests/sched/Makefile        |  14 +
-tools/testing/selftests/sched/config          |   1 +
-.../testing/selftests/sched/test_coresched.c  | 716 ++++++++++++++++++
-17 files changed, 2018 insertions(+), 25 deletions(-)
-create mode 100644 Documentation/admin-guide/hw-vuln/core-scheduling.rst
-create mode 100644 kernel/sched/coretag.c
-create mode 100644 tools/testing/selftests/sched/.gitignore
-create mode 100644 tools/testing/selftests/sched/Makefile
-create mode 100644 tools/testing/selftests/sched/config
-create mode 100644 tools/testing/selftests/sched/test_coresched.c
-
---
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d7f90765f7fd..fddd7c44bbf3 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1921,6 +1921,13 @@ static void task_numa_find_cpu(struct task_numa_env *env,
+ 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
+ 			continue;
+ 
++		/*
++		 * Skip this cpu if source task's cookie does not match
++		 * with CPU's core cookie.
++		 */
++		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
++			continue;
++
+ 		env->dst_cpu = cpu;
+ 		if (task_numa_compare(env, taskimp, groupimp, maymove))
+ 			break;
+@@ -5867,11 +5874,15 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
+ 
+ 	/* Traverse only the allowed CPUs */
+ 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
++		struct rq *rq = cpu_rq(i);
++
++		if (!sched_core_cookie_match(rq, p))
++			continue;
++
+ 		if (sched_idle_cpu(i))
+ 			return i;
+ 
+ 		if (available_idle_cpu(i)) {
+-			struct rq *rq = cpu_rq(i);
+ 			struct cpuidle_state *idle = idle_get_state(rq);
+ 			if (idle && idle->exit_latency < min_exit_latency) {
+ 				/*
+@@ -6129,7 +6140,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+ 		if (!--nr)
+ 			return -1;
+-		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
++
++		if ((available_idle_cpu(cpu) || sched_idle_cpu(cpu)) &&
++		    sched_cpu_cookie_match(cpu_rq(cpu), p))
+ 			break;
+ 	}
+ 
+@@ -7530,8 +7543,9 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 	 * We do not migrate tasks that are:
+ 	 * 1) throttled_lb_pair, or
+ 	 * 2) cannot be migrated to this CPU due to cpus_ptr, or
+-	 * 3) running (obviously), or
+-	 * 4) are cache-hot on their current CPU.
++	 * 3) task's cookie does not match with this CPU's core cookie
++	 * 4) running (obviously), or
++	 * 5) are cache-hot on their current CPU.
+ 	 */
+ 	if (throttled_lb_pair(task_group(p), env->src_cpu, env->dst_cpu))
+ 		return 0;
+@@ -7566,6 +7580,13 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
+ 		return 0;
+ 	}
+ 
++	/*
++	 * Don't migrate task if the task's cookie does not match
++	 * with the destination CPU's core cookie.
++	 */
++	if (!sched_core_cookie_match(cpu_rq(env->dst_cpu), p))
++		return 0;
++
+ 	/* Record that we found atleast one task that could run on dst_cpu */
+ 	env->flags &= ~LBF_ALL_PINNED;
+ 
+@@ -8792,6 +8813,10 @@ find_idlest_group(struct sched_domain *sd, struct task_struct *p, int this_cpu)
+ 					p->cpus_ptr))
+ 			continue;
+ 
++		/* Skip over this group if no cookie matched */
++		if (!sched_group_cookie_match(cpu_rq(this_cpu), p, group))
++			continue;
++
+ 		local_group = cpumask_test_cpu(this_cpu,
+ 					       sched_group_span(group));
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 3efcbc779a75..d6efb1ffc08c 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1122,6 +1122,7 @@ static inline bool is_migration_disabled(struct task_struct *p)
+ 
+ #ifdef CONFIG_SCHED_CORE
+ DECLARE_STATIC_KEY_FALSE(__sched_core_enabled);
++static inline struct cpumask *sched_group_span(struct sched_group *sg);
+ 
+ static inline bool sched_core_enabled(struct rq *rq)
+ {
+@@ -1138,6 +1139,61 @@ static inline raw_spinlock_t *rq_lockp(struct rq *rq)
+ 
+ bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
+ 
++/*
++ * Helpers to check if the CPU's core cookie matches with the task's cookie
++ * when core scheduling is enabled.
++ * A special case is that the task's cookie always matches with CPU's core
++ * cookie if the CPU is in an idle core.
++ */
++static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
++	if (!sched_core_enabled(rq))
++		return true;
++
++	return rq->core->core_cookie == p->core_cookie;
++}
++
++static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	bool idle_core = true;
++	int cpu;
++
++	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
++	if (!sched_core_enabled(rq))
++		return true;
++
++	for_each_cpu(cpu, cpu_smt_mask(cpu_of(rq))) {
++		if (!available_idle_cpu(cpu)) {
++			idle_core = false;
++			break;
++		}
++	}
++
++	/*
++	 * A CPU in an idle core is always the best choice for tasks with
++	 * cookies.
++	 */
++	return idle_core || rq->core->core_cookie == p->core_cookie;
++}
++
++static inline bool sched_group_cookie_match(struct rq *rq,
++					    struct task_struct *p,
++					    struct sched_group *group)
++{
++	int cpu;
++
++	/* Ignore cookie match if core scheduler is not enabled on the CPU. */
++	if (!sched_core_enabled(rq))
++		return true;
++
++	for_each_cpu_and(cpu, sched_group_span(group), p->cpus_ptr) {
++		if (sched_core_cookie_match(rq, p))
++			return true;
++	}
++	return false;
++}
++
+ extern void queue_core_balance(struct rq *rq);
+ 
+ bool cfs_prio_less(struct task_struct *a, struct task_struct *b, bool fi);
+@@ -1158,6 +1214,22 @@ static inline void queue_core_balance(struct rq *rq)
+ {
+ }
+ 
++static inline bool sched_cpu_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	return true;
++}
++
++static inline bool sched_core_cookie_match(struct rq *rq, struct task_struct *p)
++{
++	return true;
++}
++
++static inline bool sched_group_cookie_match(struct rq *rq,
++					    struct task_struct *p,
++					    struct sched_group *group)
++{
++	return true;
++}
+ #endif /* CONFIG_SCHED_CORE */
+ 
+ #ifdef CONFIG_SCHED_SMT
+-- 
 2.30.0.280.ga3ce27912f-goog
 
