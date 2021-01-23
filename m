@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE313301740
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489AE301744
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbhAWRce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:32:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        id S1726274AbhAWRd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbhAWRcb (ORCPT
+        with ESMTP id S1725899AbhAWRdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:32:31 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE11EC06174A;
-        Sat, 23 Jan 2021 09:31:50 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id i20so8467477otl.7;
-        Sat, 23 Jan 2021 09:31:50 -0800 (PST)
+        Sat, 23 Jan 2021 12:33:18 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B2DC06174A;
+        Sat, 23 Jan 2021 09:32:38 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id n6so10259361edt.10;
+        Sat, 23 Jan 2021 09:32:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=swznRfItuviAIzsJbhWlXVhBycUJMTNWt2mYcrBuhf8=;
-        b=tcAKmq+00rDiaxhDHYmMvTAhQszIVB3F8G5W/UESzMfEDCkU8tCG02Vzrf0F+lizh9
-         3n8dADfM8Qfzava+O0Yy0EULopAqgQ2/NicZzlbitAmKlaC3S+YaI9ZkCdj29ZXOhaCo
-         v9AuUJIqeJU/pmto79k95GI3+Fl2DzjzGUlzfZKHHO/f0+QD3DoRIpinG/dB/F8F2gku
-         t3zIDfVAoyp81skwsTDhCnz5Bq2CvfxD9MWOAfyliEahHEmdkTdzAeSFh+cI4ncMQkRi
-         CAqox1/zcwDVqA5TjrXwjd6f9e2kSEMEJCRuaZ52iMCVlwJBRvvoHih18dV8ZnTtcIVI
-         3PUw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FdwjG+/goCAlHzUdu2se/N1hjJwHSvoGioV6fhKxFvw=;
+        b=TquSW4rasw3h0DG7ldt2v9LIDMEVP7FnVrKmY3JpW2l7cGIrL0fZzLIFdL9tmn1r0b
+         ea/15STiQI1/TFkSxFDfgvwJSwaZ9G3HqM6BersUYj2UC+C7Cn3s3Ypq0GvFdrJuIVbo
+         6jfKcIml1jMR8nKWwWRJ0tWU5MZ/StD786IUjDd4jm/JM2tPAE83lRxHHVqxHJBck709
+         ArIDCQJ0IHqc62GRXZcLa/TfNqZu2Gjdubps0y+IfPXUzzIppyI4xFzuuAXd79aLopRZ
+         dXS1ypJr7vbeANpPHPN7WSsJD6lHWXoHxsXfk080dWOLb7uL8CLFGSL9nTTWTp2OGgQF
+         6oCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=swznRfItuviAIzsJbhWlXVhBycUJMTNWt2mYcrBuhf8=;
-        b=Ukvr+H8xDq7o2aogIQRmk/RPbqJu7OWzJ1+snv1E5ffFBKj18BsZPu031GWRm7WXT1
-         A1fqPdDuSPX3aMR9ZbhO/KhrPcKVyJDQHi0ARaRh2fLIGySSwBt6MhEeA7SXuq3U4pHI
-         0LQcYLV3H+Y3QvBdGF8oo9XK8Ey9KZCPTn3UyiZaRFHQnBWdgqCrdM72dNqVYYzYlLRq
-         MLVxlB7eAOeTd+jszY635e+vCI5s2W81J4vmwmwVswRyOckWQ3OHmIbpWOAS02jhaxW/
-         KRCv8hFzJ9smtUHa/+Hje2bCNewaD/Ti1VvNqAEMSxuEf1NByywP2BLOh8jJv+NQr4Oy
-         l28w==
-X-Gm-Message-State: AOAM530gkp80HY41WcTYCZdOYdBL+yja3v7Z0SmyV92ioo8pQdvD4IDS
-        lXw0xlXPCFm347sJEgZA498=
-X-Google-Smtp-Source: ABdhPJzmc4mAdCKeF0Hkd5dDgHnKUqlBSIpIsjrFWLxfgXd6dzG+Z1y5ty1OELGfaZclTfEXI5HDXg==
-X-Received: by 2002:a9d:61d0:: with SMTP id h16mr7106743otk.1.1611423110181;
-        Sat, 23 Jan 2021 09:31:50 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j11sm2469492otl.18.2021.01.23.09.31.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 23 Jan 2021 09:31:49 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 23 Jan 2021 09:31:48 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH v3 17/21] dt-bindings: watchdog: sun4i: Add H616
- compatible string
-Message-ID: <20210123173148.GA57180@roeck-us.net>
-References: <20210118020848.11721-1-andre.przywara@arm.com>
- <20210118020848.11721-18-andre.przywara@arm.com>
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=FdwjG+/goCAlHzUdu2se/N1hjJwHSvoGioV6fhKxFvw=;
+        b=TsObhYcKsRa9v8g6cV2AW3UKh1KXCLneoG/aaJo7o6dEqupep/PLd4aBf5mcc9oCwO
+         ThkO21mdMVPcQld6YGGedAxw7JFjgkAg65cTdZO/PcATZXFRyGW2v+jHm9ChezgalCaw
+         5RMK02FXWXOCzmOUv+cT17CihIHp9CxhHZTgDY+ejaopGTpenUOjwmX7kTH6BIEsRFlG
+         Td+sgpFhWg9YX+ksjjzzGTtfOoxPfpLDNwdO4nMEYQ4EB1amDioHX4G6yOUuK+exkXy1
+         8H1qtT2wPwppGrrcAIor8eMfh4C8rAeRHyAMLdV8dJtkLT2T3MMrgZnV646w0WloFq9Y
+         5sbA==
+X-Gm-Message-State: AOAM530uJAWi3zRYJUwszo0yBHTXz7+yLaNgEt2hc/UXnid2Gasr/hKB
+        ytukYtvpwP85XasyQZr0zpEh0PF0qcM=
+X-Google-Smtp-Source: ABdhPJzDHazHz5O841+SNuHM1hVyNdm45DFR1cYgZRSyYN8o2W8+26jQRKYUeBvRUS1WXxuFiqH/fA==
+X-Received: by 2002:a05:6402:220e:: with SMTP id cq14mr1685198edb.240.1611423157054;
+        Sat, 23 Jan 2021 09:32:37 -0800 (PST)
+Received: from stitch.. ([2a01:4262:1ab:c:de4:866f:76c3:151d])
+        by smtp.gmail.com with ESMTPSA id e19sm7528116eds.79.2021.01.23.09.32.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 09:32:36 -0800 (PST)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <esmil@mailme.dk>
+To:     linux-usb@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Oliver Neukum <oneukum@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] net: usbnet: convert to new tasklet API
+Date:   Sat, 23 Jan 2021 18:32:19 +0100
+Message-Id: <20210123173221.5855-1-esmil@mailme.dk>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118020848.11721-18-andre.przywara@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 02:08:44AM +0000, Andre Przywara wrote:
-> Use enums to group all compatible devices together on the way.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
+From: Emil Renner Berthing <kernel@esmil.dk>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+This converts the usbnet driver to use the new tasklet API introduced in
+commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
 
-> ---
->  .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml   | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> index 5ac607de8be4..9aa3c313c49f 100644
-> --- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> @@ -19,13 +19,11 @@ properties:
->        - const: allwinner,sun4i-a10-wdt
->        - const: allwinner,sun6i-a31-wdt
->        - items:
-> -          - const: allwinner,sun50i-a64-wdt
-> -          - const: allwinner,sun6i-a31-wdt
-> -      - items:
-> -          - const: allwinner,sun50i-a100-wdt
-> -          - const: allwinner,sun6i-a31-wdt
-> -      - items:
-> -          - const: allwinner,sun50i-h6-wdt
-> +          - enum:
-> +              - allwinner,sun50i-a64-wdt
-> +              - allwinner,sun50i-a100-wdt
-> +              - allwinner,sun50i-h6-wdt
-> +              - allwinner,sun50i-h616-wdt
->            - const: allwinner,sun6i-a31-wdt
->        - items:
->            - const: allwinner,suniv-f1c100s-wdt
+It is split into two commits for ease of reviewing.
+
+Emil Renner Berthing (2):
+  net: usbnet: use tasklet_init
+  net: usbnet: use new tasklet API
+
+ drivers/net/usb/usbnet.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+-- 
+2.30.0
+
