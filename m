@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058C7301898
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC85301896
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbhAWVlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 16:41:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56884 "EHLO mail.kernel.org"
+        id S1726449AbhAWVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 16:41:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726367AbhAWVku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725765AbhAWVku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 23 Jan 2021 16:40:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id DBAC5225A9;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E415C225AB;
         Sat, 23 Jan 2021 21:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611438009;
-        bh=SNlJdZcc6Aud/IzxpHGsU9+qqBlCX3OrB/t9yNERZdk=;
+        bh=ONvjq+UjX4anQ1tPM9isMfz7qcgIk0uLz88ecngJZf0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bC7qx1FYz943EKhQIunds/WHCSznIYeuIZ7DUED/+Rk1KwgF6v6Q2MkojtJMY3qGa
-         iZMo7Qn+GhRdAFgPkuVj/cVhdgk8DL2zhJAgUtIsPeL0q3aaRMHnZQMEb897hf9WLM
-         ojeIVyGaiBLy7nXWX8Y+g5ICLNCAZjXD6WjQGjkghgkcc3rAidtFmCBokSAh3gwQ30
-         nPerlAiYku5toyp7SDEN7iJScEV4QrVSfsyKjdDikGWGCX64Hy8JSBNkydnkeBk8vq
-         5RGLpApyJzNezn18LAStHD8zZ5KmdGxzm9CyjOXTqmcVy1VJKo8ICDpeawE2Dcka7u
-         ML02MUmfmVIWw==
+        b=uzgt6R+Pa0OhnhH96TA6ztSy8BcSYr7JYHSp8b4CS2ulDljCBzzgT58ACs/XySiC3
+         ppAqpU6PTKLs+IGM6luXuL1AbuZb/05Hz67Q+M6YyJ5AVEfR0x5eeu6FjpQEfHphVE
+         po+5hEaT8Q8lHqNw5wle4mvBBL+vPHWl0Rij+M/BSxAfWsnu+KodYP271Kq5ochmwf
+         rLqYGVqCM4qn3WmGKzP7i8wA2uZ6ANlBK/cTntAClXZOmGP1TODr7EqEuqw4qQO8p+
+         xQG7DwRw/WVWAEH9AuFAhO83xLvy/l/VA3XLA9uSGjp3/5wvWqfIwidr0wFqNVe5HD
+         Sm6Q40HdDonpw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CC23F652E1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D6837652E7;
         Sat, 23 Jan 2021 21:40:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] doc: networking: ip-sysctl: Document conf/all/disable_ipv6
- and conf/default/disable_ipv6
+Subject: Re: [PATCH] NFC: fix resource leak when target index is invalid
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161143800982.9404.6249176590747440979.git-patchwork-notify@kernel.org>
+Message-Id: <161143800987.9404.16584498835961654532.git-patchwork-notify@kernel.org>
 Date:   Sat, 23 Jan 2021 21:40:09 +0000
-References: <20210121150244.20483-1-pali@kernel.org>
-In-Reply-To: <20210121150244.20483-1-pali@kernel.org>
-To:     =?utf-8?b?UGFsaSBSb2jDoXIgPHBhbGlAa2VybmVsLm9yZz4=?=@ci.codeaurora.org
-Cc:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+References: <20210121152748.98409-1-bianpan2016@163.com>
+In-Reply-To: <20210121152748.98409-1-bianpan2016@163.com>
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, mkl@pengutronix.de,
+        ieatmuttonchuan@gmail.com, sameo@linux.intel.com,
+        linville@tuxdriver.com, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,18 +48,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Thu, 21 Jan 2021 16:02:44 +0100 you wrote:
-> This patch adds documentation for sysctl conf/all/disable_ipv6 and
-> conf/default/disable_ipv6 settings which is currently missing.
+On Thu, 21 Jan 2021 07:27:48 -0800 you wrote:
+> Goto to the label put_dev instead of the label error to fix potential
+> resource leak on path that the target index is invalid.
 > 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Fixes: c4fbb6515a4d ("NFC: The core part should generate the target index")
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
 > ---
->  Documentation/networking/ip-sysctl.rst | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  net/nfc/rawsock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - doc: networking: ip-sysctl: Document conf/all/disable_ipv6 and conf/default/disable_ipv6
-    https://git.kernel.org/netdev/net/c/fc024c5c07aa
+  - NFC: fix resource leak when target index is invalid
+    https://git.kernel.org/netdev/net/c/3a30537cee23
 
 You are awesome, thank you!
 --
