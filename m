@@ -2,353 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8A43011C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608353011DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAWApg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 19:45:36 -0500
-Received: from audible.transient.net ([24.143.126.66]:37082 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726007AbhAWAp3 (ORCPT
+        id S1726327AbhAWBGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbhAWBFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 19:45:29 -0500
-Received: (qmail 18715 invoked from network); 23 Jan 2021 00:44:48 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 23 Jan 2021 00:44:48 -0000
-Received: (nullmailer pid 2945 invoked by uid 1000);
-        Sat, 23 Jan 2021 00:44:48 -0000
-Date:   Sat, 23 Jan 2021 00:44:48 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Karol Herbst <kherbst@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
-Message-ID: <YAtxgP6YJJwcotuA@audible.transient.net>
-Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-References: <X+WV8OiQzTIfLdgW@audible.transient.net>
- <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
- <X/NO9kAlCd/k8Di2@audible.transient.net>
- <X/NT0iN9KlSXQJJ7@audible.transient.net>
- <X/UsBWwFR+V0hIOS@audible.transient.net>
- <CACO55ttrFCOzREQxi3+SSaCSsAP1bEUBEt78ajkRGQQU1xYxtw@mail.gmail.com>
- <YAjn9jR+d2zRfNjb@audible.transient.net>
- <CACO55tu+5vv3dU3+O=DGDo9EdcyqFtpF4WR-VNj5eo89WMSfpw@mail.gmail.com>
- <YAtMEGJxlRklqYw8@audible.transient.net>
+        Fri, 22 Jan 2021 20:05:50 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC38C0613D6;
+        Fri, 22 Jan 2021 17:05:13 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4DMybT2gT5z9sVF; Sat, 23 Jan 2021 12:05:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1611363909;
+        bh=cw4MJLoL4iCYdM34JKiLrZohbnz8a07QlIEgA33G1Lg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E3WJV5yCmEgsdFeCJX2WLmNnOkWru83EjhgZ6mIX6OUppMEX9ltVeFDhUDFcF29s2
+         xgQTAXCZh3P7iCW8ALyRUDswiY0tlWOSh1NMdIfrBLW6vp9Udjo2dIV8wnLFyfBraD
+         noIXHdxx6i3IKcINyJIv0yugH/26KkU2kNSQ8VFc=
+Date:   Sat, 23 Jan 2021 11:35:18 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>, devicetree@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH V6 2/6] scripts: dtc: Build fdtoverlay tool
+Message-ID: <20210123003518.GG4400@yekko.fritz.box>
+References: <cover.1611312122.git.viresh.kumar@linaro.org>
+ <2dfec4acb1bfbab08b431908ace0a77cc3279434.1611312122.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UKNXkkdQCYZ6W5l3"
 Content-Disposition: inline
-In-Reply-To: <YAtMEGJxlRklqYw8@audible.transient.net>
+In-Reply-To: <2dfec4acb1bfbab08b431908ace0a77cc3279434.1611312122.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jamie Heilman wrote:
-> Karol Herbst wrote:
-> > fyi, there is a patch which solves a maybe related issue on your GPU,
-> > mind giving it a try before we dig further?
-> > https://gitlab.freedesktop.org/drm/nouveau/-/issues/14#note_767791
-> 
-> So, I tried that.  Turns out, I can still trigger a problem.  Is it
-> the same problem?  Maybe?  I also tried applying the patch from 
-> 
-> ca386aa7155a ("drm/nouveau/kms/nv50-gp1xx: add WAR for EVO push buffer HW bug")
-> to 5.8.0-rc6-01516-g0a96099691c8 and very interestingly, it changed
-> the mode of failure to same thing I saw with 5.10.9 patched with the patch
-> from that bug report.  In both cases I get this in the log:
-> 
-> kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-> kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-> kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-> kern.err: nouveau 0000:01:00.0: Xorg[2243]: nv50cal_space: -16
-> ...
-> and so on
-> 
-> In one incident my monitor would't even wake up anymore after this.
-> 
-> 
-> I'm trying to repo it now on an unpatched 5.8.0-rc6-01515-gae09163ac27c
-> right now, as running glxgears does seem to help reproduce problems
-> faster which is nice, I'm just not entirely sure it's the same set of
-> problems; hopefully that version is free from issues, but we'll
-> see...
 
-Ugh, well I can crash 5.8.0-rc6-01515-gae09163ac27c and 5.8.18 in
-basically the same way running glxgears and a xset dpms force off
-loop.  So I'm starting to think it's not the same thing, and that
-problem has been latent from before I started having periodic issues.
+--UKNXkkdQCYZ6W5l3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I should note that my exact testing technique for the above was to run
-4 copies of glxgears and the xset force dpms off loop at the same
-time.  Really looks more like it triggers a resource starvation issue
-maybe.  The crash is also worse, particularly if I don't do anything
-about it right away as my workstation eventually falls off the network
-and I'm forced to power cycle it; the crashes I was chasing after
-wouldn't do quite that much violence, normally I could still log in,
-rebuild a kernel, and shut things down cleanly.
+On Fri, Jan 22, 2021 at 04:20:32PM +0530, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need fdtoverlay going forward. Lets start building it.
+>=20
+> The fdtoverlay program applies (or merges) one or more overlay dtb
 
-More than one bug here I suspect.
+Saying "merges" here is probably misleading, since as I mentioned
+elsewhere fdtoverlay can *not* merge overlays, only apply them to a
+base tree.
 
-> > On Thu, Jan 21, 2021 at 3:33 AM Jamie Heilman
-> > <jamie@audible.transient.net> wrote:
-> > >
-> > > Karol Herbst wrote:
-> > > > On Wed, Jan 6, 2021 at 4:25 AM Jamie Heilman
-> > > > <jamie@audible.transient.net> wrote:
-> > > > >
-> > > > > Jamie Heilman wrote:
-> > > > > > Jamie Heilman wrote:
-> > > > > > > Karol Herbst wrote:
-> > > > > > > > do you think you'd be able to do a kernel bisect in order to pinpoint
-> > > > > > > > the actual commit causing it? Thanks
-> > > > > > >
-> > > > > > > No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
-> > > > > > > be a problem but as I can't and as it can take weeks for the problem
-> > > > > > > to occur there's essentially no chance.  I know it regressed roughly
-> > > > > > > in 5.8-rc1 only because that's what I was running when the first event
-> > > > > > > occured.
-> > > > > >
-> > > > > > er, 5.9.0-rc1 rather
-> > > > >
-> > > > > Actually ... I've found a way to reproduce this in hours intead of
-> > > > > weeks, so I think I may be able to bisect it after all, it's something
-> > > > > of a brute force approach and its probably doing horrible things to
-> > > > > the backlight in my poor old monitor, but just running this:
-> > > > >
-> > > > > #!/bin/sh
-> > > > > sleep 5
-> > > > > while ! dmesg | tail | grep -q nouveau
-> > > > > do
-> > > > >     xset dpms force off
-> > > > >     sleep 65
-> > > > >     xdotool mousemove 1024 1024 mousemove restore
-> > > > >     sleep 10
-> > > > > done
-> > > > >
-> > > > > Does manage to trip the issue sooner than it would otherwise happen
-> > > > > with natural usage.  Given that this is my primary workstation and I
-> > > > > sort of need it functional during waking hours, it'll take me a bit,
-> > > > > but I'll update folks when I have the error more dialed in.
-> > > > >
-> > > >
-> > > > huh interesting. Kind of feels like a random thing still. But I think
-> > > > in general you'd spend way too much time on this if you can't
-> > > > reproduce within seconds/minutes and then it might not point out the
-> > > > actual issue, because randomly the issue didn't appear and stuff.
-> > > >
-> > > > maybe you can tune it to have shorter pauses or something? I'd really
-> > > > try to bring down the time per cycle.
-> > >
-> > > Well I'm confident enough, at this point, to say this bisects to
-> > > 0a96099691c8 ("drm/nouveau/kms/nv50-: implement proper push buffer control logic")
-> > >
-> > > Now... I wish I could say the bisection was straightforward and
-> > > simple, but it wasn't thanks to still not having a reproducer really
-> > > dialed in.  The above script doesn't work unless I've got some normal
-> > > usage around it.  It certainly triggers the issue sooner than it
-> > > otherwise would, but by itself it isn't enough.  I modified it
-> > > somewhat in the hopes of capturing the rough idea of how many
-> > > itterations it would take to trigger the problem by using:
-> > >
-> > > #!/bin/sh
-> > > I=0
-> > > trap 'echo;echo $I' 0
-> > > trap 'exit' INT
-> > > sleep 5
-> > > while ! dmesg | tail | grep -q nouveau
-> > > do
-> > >     I=$(($I + 1))
-> > >     xset dpms force off
-> > >     sleep 32
-> > >     xdotool mousemove 1 12 mousemove restore
-> > >     sleep 28
-> > > done
-> > >
-> > > but ultimately that didn't really pan out the way I'd hoped.  I don't
-> > > think the itterations have all that much to do with the condition in
-> > > the end.  I wanted to try applying ca386aa7155a
-> > > ("drm/nouveau/kms/nv50-gp1xx: add WAR for EVO push buffer HW bug") on
-> > > top of the first bad commit becuase I sort of felt like when I was
-> > > running -rc versions that things got a bit less chaotic after that
-> > > commit landed, but it was just a gut feeling and I wanted to see if I
-> > > could support it with metrics---but no, I can't really get consistent
-> > > metrics even without that commit so I gave up, and decided to report
-> > > what I've got so far.
-> > >
-> > >
-> > >
-> > > > > I'm using git bisect start -- drivers/gpu/drm include/drm include/video
-> > > > > in an effort to make this go a bit quicker, let me know if you think
-> > > > > that's a bad idea or I should add other paths.
-> > > > >
-> > > > > > > > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
-> > > > > > > > <jamie@audible.transient.net> wrote:
-> > > > > > > > >
-> > > > > > > > > Something between v5.8 and v5.9 has resulted in periodically losing video.
-> > > > > > > > > Unfortunately, I can't reliably reproduce it, it seems to happen every
-> > > > > > > > > once in a long while---I can go weeks without an occurance, but it
-> > > > > > > > > always seems to happen after my workstation has been idle long enough
-> > > > > > > > > to screen blank and put the monitor to sleep.  I'm using a single
-> > > > > > > > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
-> > > > > > > > > Debian sid).  I don't really do anything fancy, xterms, a browser or
-> > > > > > > > > two, play the occasional video, but like I said, I can't reliably
-> > > > > > > > > reproduce this.  I've had it happen about 11 times since August.
-> > > > > > > > >
-> > > > > > > > > lspci -vv output is:
-> > > > > > > > >
-> > > > > > > > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
-> > > > > > > > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
-> > > > > > > > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-> > > > > > > > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> > > > > > > > >         Latency: 0, Cache Line Size: 64 bytes
-> > > > > > > > >         Interrupt: pin A routed to IRQ 28
-> > > > > > > > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
-> > > > > > > > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
-> > > > > > > > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
-> > > > > > > > >         Region 5: I/O ports at dc80 [size=128]
-> > > > > > > > >         Expansion ROM at 000c0000 [disabled] [size=128K]
-> > > > > > > > >         Capabilities: [60] Power Management version 2
-> > > > > > > > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> > > > > > > > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> > > > > > > > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
-> > > > > > > > >                 Address: 00000000fee01004  Data: 4023
-> > > > > > > > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
-> > > > > > > > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
-> > > > > > > > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
-> > > > > > > > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
-> > > > > > > > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
-> > > > > > > > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
-> > > > > > > > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-> > > > > > > > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
-> > > > > > > > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-> > > > > > > > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-> > > > > > > > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-> > > > > > > > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
-> > > > > > > > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-> > > > > > > > >         Capabilities: [100 v1] Virtual Channel
-> > > > > > > > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
-> > > > > > > > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
-> > > > > > > > >                 Ctrl:   ArbSelect=Fixed
-> > > > > > > > >                 Status: InProgress-
-> > > > > > > > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-> > > > > > > > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-> > > > > > > > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
-> > > > > > > > >                         Status: NegoPending- InProgress-
-> > > > > > > > >         Capabilities: [128 v1] Power Budgeting <?>
-> > > > > > > > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
-> > > > > > > > >         Kernel driver in use: nouveau
-> > > > > > > > >
-> > > > > > > > > The last time this happened, this is what got logged:
-> > > > > > > > >
-> > > > > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > > > > > > > nouveau 0000:01:00.0: disp: Base 1:
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > > > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > > > > > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > > > > > > > nouveau 0000:01:00.0: disp: Base 1:
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > > > > > > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > > > > > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > > > > > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > > > > > > > nouveau 0000:01:00.0: DRM: core notifier timeout
-> > > > > > > > > nouveau 0000:01:00.0: DRM: base-0: timeout
-> > > > > > > > >
-> > > > > > > > > I've got logs of all of this, if they help I can collect them.  The
-> > > > > > > > > timeout message are consistent the error messages a little less so.
-> > > > > > > > >
-> > > > > > > > > If there's more debugging I can do when this happens, I'd love to know
-> > > > > > > > > what it is.
-> > > > > > > > >
-> > > > > > > > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
-> > > > > > > > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
-> > > > > > > > >
-> > > > > > > > > --
-> > > > > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > > > > > > _______________________________________________
-> > > > > > > > > Nouveau mailing list
-> > > > > > > > > Nouveau@lists.freedesktop.org
-> > > > > > > > > https://lists.freedesktop.org/mailman/listinfo/nouveau
-> > > > > > > > >
-> > > > > > > >
-> > > > > > >
-> > > > > > > --
-> > > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > > >
-> > > > > > --
-> > > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > >
-> > > > > --
-> > > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > >
-> > > >
-> > >
-> > > --
-> > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > >
-> > 
-> 
-> -- 
-> Jamie Heilman                     http://audible.transient.net/~jamie/
+> blobs to a base dtb blob. The kernel build system would later use
+> fdtoverlay to generate the overlaid blobs based on platform specific
+> configurations.
+>=20
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  scripts/dtc/Makefile | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+> index 4852bf44e913..5f19386a49eb 100644
+> --- a/scripts/dtc/Makefile
+> +++ b/scripts/dtc/Makefile
+> @@ -1,13 +1,17 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # scripts/dtc makefile
+> =20
+> -hostprogs-always-$(CONFIG_DTC)		+=3D dtc
+> +hostprogs-always-$(CONFIG_DTC)		+=3D dtc fdtoverlay
+>  hostprogs-always-$(CHECK_DT_BINDING)	+=3D dtc
+> =20
+>  dtc-objs	:=3D dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
+>  		   srcpos.o checks.o util.o
+>  dtc-objs	+=3D dtc-lexer.lex.o dtc-parser.tab.o
+> =20
+> +libfdt-objs	:=3D fdt.o fdt_ro.o fdt_wip.o fdt_sw.o fdt_rw.o fdt_strerror=
+=2Eo fdt_empty_tree.o fdt_addresses.o fdt_overlay.o
+> +libfdt		=3D $(addprefix libfdt/,$(libfdt-objs))
+> +fdtoverlay-objs	:=3D $(libfdt) fdtoverlay.o util.o
+> +
+>  # Source files need to get at the userspace version of libfdt_env.h to c=
+ompile
+>  HOST_EXTRACFLAGS +=3D -I $(srctree)/$(src)/libfdt
+> =20
 
--- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--UKNXkkdQCYZ6W5l3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmALb0QACgkQbDjKyiDZ
+s5L25hAAzgErhIoUSWmqgWOJ/RWsxTyC1cH+mViBKq1puH2Uyezry9uiouop3tMo
+upioTF0UnWcchq2AQCdEEa2XcnrFKNg/pVM3/qS4lqY2X0fZQN3gNwH6rh2/AzP4
+TPjFv7ITQUtVuJtthzVXV7jnvRX1r2TyniP3NDI6nokopMjZYHyzxaz6d305wnjY
+m6vCID+g7im9gDzNacN3vLU9l1Z863Fss03PXIKyBOkzTjm6i8V1sxAnUAHKS9Mp
+7BE/YHz5ulHfw7iUIXMmVXJV1V4464qlRD+kt03AjcvrtIgQP59v54Pxo/EUjM/c
+j0H8GyVUsP3XODKMDyI8Dv/dChsYmfVFIuk1QpHNLeeLwh6pLmpAJO5aqiuzYcMi
+Z3O/CPyXXGYOO5kAyJZ6fkVP/BtaRe8IOyhQ92V0QllPIu8mKG9O/JVm5Uu+2qTY
+ZAOrZHhQTjFhPJkq33N6BVV6+DcdLrPzChCzxtsx4jg2gGSI2FZVsMzbbFtrdZRP
+C6DhhTjx/wP6/S32YdQdUje4/K3ocPH1Yr3xRYUgJAamwLApENhnKpQYIZV0/vfh
+uLulef1EV1Fb13vxdku4sVKE3Fsrs4ytIFo54W/0TzsIcmD/rVQPH7hiF5c9tGib
+TtaEgvRpI0Q10HTL+UApmHvtiT9JX6yAxDXE0QfIlBb4gl3lJ1w=
+=J/iO
+-----END PGP SIGNATURE-----
+
+--UKNXkkdQCYZ6W5l3--
