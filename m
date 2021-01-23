@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BB8301729
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1909230172A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbhAWRVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:21:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbhAWRVI (ORCPT
+        id S1726226AbhAWRV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:21:59 -0500
+Received: from smtprelay0076.hostedemail.com ([216.40.44.76]:58820 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726094AbhAWRVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:21:08 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6DEC06174A;
-        Sat, 23 Jan 2021 09:20:28 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id j8so2239128oon.3;
-        Sat, 23 Jan 2021 09:20:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aa2zhNGEVZtl6VmccV5UFZrKiIyp17kWyCqdcVHVHY0=;
-        b=fFgA0NUqXaku8+W69UNv8VLzwja6322eL+nb1CEUI8rHNjci1SrnWagoUhhKcYNVzR
-         kut4i68WxVLtWiQDlN1ki+KXEph7jxbi1jGXmqveBXRMNWN1QG6HlmCkvUWoKxmxaDXb
-         LlAorBsUsFHMI381z3B2NojUO7WQg4UnVcNH2lTCHZroJo9/VzDYq5LjTqkKzQA2JVfC
-         vuTuSimWUwOr0HQ/u1vL2Jz9vhtPSQcv6gKuBDRCZ5nIEEWgJzOoQ/l1HRauvhjSdonD
-         nQ5z68gV44lLI6TWOZzm2p5R2osgY7PhZJgEm/IBogzIQvyarRhUxa9xMGsW5pDT3S9i
-         ipug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aa2zhNGEVZtl6VmccV5UFZrKiIyp17kWyCqdcVHVHY0=;
-        b=NjYeioXpbaCR8SphrWomUKFnnRvBUuZdJCkLs7ugDqerjkF1COWb3oN/ECE8dSXPjd
-         UgVbQcweSsW+YPsvDhScYAfRK+jwtshGKWTszNw/iXfHEITs5xz7VCE4KnhhLuD+qs/y
-         4IgXy/xc87Taq6L+farvwHdA6OsLJulUurPZ67Z4jX1T3krY2zdzpw5pYUbqGDxr8iQA
-         C4shBUnmlt5hX3jbtfrLbTS7JCVRzz77z6c/aKVqf/8zGGYk0lPJGNIS9pEP9UPsBwTc
-         Pbeb28Lej72zeg7z4YMp3LTLasYeV4uKXNGAv+JkX4HcIE6vern7NDYMNa25OWED8Qc5
-         otLg==
-X-Gm-Message-State: AOAM533qayWiag7qCS7kK/aDoRgsmnfeEsQM+ntO8hs13a8/che96G9a
-        uyIjLe+axqs4CDfZnLbon2spKJSc+uA=
-X-Google-Smtp-Source: ABdhPJxIrr1yJazmxH5j1L9GZit8rfkCVzkbmVq+v2Wd1FaMruoXoZN6zhL3sJEScO+XSeyhTeRZ9A==
-X-Received: by 2002:a4a:901a:: with SMTP id i26mr7575583oog.42.1611422427977;
-        Sat, 23 Jan 2021 09:20:27 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i126sm2399054oif.22.2021.01.23.09.20.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 23 Jan 2021 09:20:27 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 23 Jan 2021 09:20:26 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        Sat, 23 Jan 2021 12:21:47 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 95799837F24F;
+        Sat, 23 Jan 2021 17:21:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1719:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:7514:7652:7875:7903:8784:9025:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12895:12986:13255:13439:13845:13894:14181:14659:14721:21080:21324:21433:21451:21627:21660:21939:30012:30030:30054:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: sheet19_41034fd27576
+X-Filterd-Recvd-Size: 3077
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 23 Jan 2021 17:21:04 +0000 (UTC)
+Message-ID: <d5eacb78bd354d26725c34d887a75bf1e8f27a04.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: add warning for avoiding .L prefix
+ symbols in assembly files
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] dt-bindings: watchdog: renesas,wdt: add r8a779a0
- (V3U) support
-Message-ID: <20210123172026.GA56070@roeck-us.net>
-References: <20201218173731.12839-1-wsa+renesas@sang-engineering.com>
- <20201218173731.12839-2-wsa+renesas@sang-engineering.com>
+Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
+        broonie@kernel.org, ndesaulniers@google.com, jpoimboe@redhat.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        clang-built-linux@googlegroups.com
+Date:   Sat, 23 Jan 2021 09:21:02 -0800
+In-Reply-To: <20210123151405.26267-1-yashsri421@gmail.com>
+References: <bd560a8e-7949-933a-e4a9-508cb42c2570@gmail.com>
+         <20210123151405.26267-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218173731.12839-2-wsa+renesas@sang-engineering.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 06:37:26PM +0100, Wolfram Sang wrote:
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Acked-by: Rob Herring <robh@kernel.org>
+On Sat, 2021-01-23 at 20:44 +0530, Aditya Srivastava wrote:
+> objtool requires that all code must be contained in an ELF symbol.
+> Symbol names that have a '.L' prefix do not emit symbol table entries, as
+> they have special meaning for the assembler.
+> 
+> '.L' prefixed symbols can be used within a code region, but should be
+> avoided for denoting a range of code via 'SYM_*_START/END' annotations.
+> 
+> Add a new check to emit a warning on finding the usage of '.L' symbols
+> for '.S' files in arch/x86/entry/* and arch/x86/lib/*, if it denotes
+> range of code via SYM_*_START/END annotation pair.
+> 
+> Suggested-by: Mark Brown <broonie@kernel.org>
+> Link: https://groups.google.com/g/clang-built-linux/c/-drkmLgu-cU/m/4staOlf-CgAJ
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Please do not use groups.google.com links, or if you must, please
+use links that are readable.
 
+For instance, this is a better link as it shows the context without
+struggling with the poor interface:
+
+https://groups.google.com/g/clang-built-linux/c/E-naBMt_1SM
+
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 > ---
+> * Applies perfectly on next-20210122
 > 
-> Please apply it to the watchdog-tree.
+> Changes in v2:
+> - Reduce the check to only SYM_*_START/END lines
+> - Reduce the check for only .S files in arch/x86/entry/* and arch/x86/lib/* as suggested by Josh and Nick
+
+I think that's unnecessary.
+
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3590,6 +3590,13 @@ sub process {
+>  			}
+>  		}
+>  
 > 
->  Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> index 6933005b52bd..ab66d3f0c476 100644
-> --- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> @@ -50,6 +50,7 @@ properties:
->                - renesas,r8a77980-wdt     # R-Car V3H
->                - renesas,r8a77990-wdt     # R-Car E3
->                - renesas,r8a77995-wdt     # R-Car D3
-> +              - renesas,r8a779a0-wdt     # R-Car V3U
->            - const: renesas,rcar-gen3-wdt # R-Car Gen3 and RZ/G2
->  
->    reg:
+> +# check for .L prefix local symbols in .S files
+> +		if ($realfile =~ m@^arch/x86/(?:entry|lib)/.*\.S$@ &&
+
+Using /.S$/ should be enough
+
+> +		    $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
+
+This might need to be
+
++		    $line =~ /^\+\s*(?:[A-Z]+_)?SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
+
+> +			WARN("AVOID_L_PREFIX",
+> +			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
+> +		}
+> +
+
+
