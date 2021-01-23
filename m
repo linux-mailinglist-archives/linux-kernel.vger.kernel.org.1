@@ -2,202 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE5430147F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 190DF301487
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbhAWKVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 05:21:44 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11579 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbhAWKVc (ORCPT
+        id S1726660AbhAWKal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 05:30:41 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62450 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbhAWKag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 05:21:32 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DNBtd3nSrzMNKZ;
-        Sat, 23 Jan 2021 18:19:05 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
- 18:20:24 +0800
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yang Yingliang <yangyingliang@huawei.com>
-References: <20201126034230.777-1-thunder.leizhen@huawei.com>
- <20210122125132.GB24102@willie-the-truck>
- <34a9c164-389d-30cd-11a3-8796eb7bca93@arm.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <3985308c-87be-fa12-0760-55e5ab29c47d@huawei.com>
-Date:   Sat, 23 Jan 2021 18:20:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Sat, 23 Jan 2021 05:30:36 -0500
+Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10NATWoY066298;
+        Sat, 23 Jan 2021 19:29:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
+ Sat, 23 Jan 2021 19:29:32 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10NATWWg066295
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 23 Jan 2021 19:29:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: BUG: MAX_LOCKDEP_KEYS too low!
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>
+References: <c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru>
+ <CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com>
+ <6af41136-4344-73da-f821-e831674be473@i-love.sakura.ne.jp>
+ <70d427e8-7281-0aae-c524-813d73eca2d7@ozlabs.ru>
+ <CACT4Y+bqidtwh1HUFFoyyKyVy0jnwrzhVBgqmU+T9sN1yPMO=g@mail.gmail.com>
+ <eb71cc37-afbd-5446-6305-8c7abcc6e91f@i-love.sakura.ne.jp>
+ <6eaafbd8-1c10-75df-75ae-9afa0861f69b@i-love.sakura.ne.jp>
+ <20210123060145.18356-1-hdanton@sina.com>
+ <8b1fff6b-1acc-4582-0abe-86f948ac4b4a@ozlabs.ru>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <0bfad7f4-550a-0645-d24b-940e399e9c2c@i-love.sakura.ne.jp>
+Date:   Sat, 23 Jan 2021 19:29:30 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <34a9c164-389d-30cd-11a3-8796eb7bca93@arm.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <8b1fff6b-1acc-4582-0abe-86f948ac4b4a@ozlabs.ru>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/1/22 21:00, Robin Murphy wrote:
-> On 2021-01-22 12:51, Will Deacon wrote:
->> On Thu, Nov 26, 2020 at 11:42:30AM +0800, Zhen Lei wrote:
->>> When changing from a set of pages/smaller blocks to a larger block for an
->>> address, the software should follow the sequence of BBML processing.
->>>
->>> When changing from a block to a set of pages/smaller blocks for an
->>> address, there's no need to use nT bit. If an address in the large block
->>> is accessed before page table switching, the TLB caches the large block
->>> mapping. After the page table is switched and before TLB invalidation
->>> finished, new access requests are still based on large block mapping.
->>> After the block or page is invalidated, the system reads the small block
->>> or page mapping from the memory; If the address in the large block is not
->>> accessed before page table switching, the TLB has no cache. After the
->>> page table is switched, a new access is initiated to read the small block
->>> or page mapping from the memory.
->>>
->>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->>> ---
->>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  2 +
->>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 +
->>>   drivers/iommu/io-pgtable-arm.c              | 46 ++++++++++++++++-----
->>>   include/linux/io-pgtable.h                  |  1 +
->>>   4 files changed, 40 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> index e634bbe60573..14a1a11565fb 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> @@ -1977,6 +1977,7 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain,
->>>           .coherent_walk    = smmu->features & ARM_SMMU_FEAT_COHERENCY,
->>>           .tlb        = &arm_smmu_flush_ops,
->>>           .iommu_dev    = smmu->dev,
->>> +        .bbml        = smmu->bbml,
->>>       };
->>>         if (smmu_domain->non_strict)
->>> @@ -3291,6 +3292,7 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
->>>         /* IDR3 */
->>>       reg = readl_relaxed(smmu->base + ARM_SMMU_IDR3);
->>> +    smmu->bbml = FIELD_GET(IDR3_BBML, reg);
->>>       if (FIELD_GET(IDR3_RIL, reg))
->>>           smmu->features |= ARM_SMMU_FEAT_RANGE_INV;
->>>   diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> index d4b7f40ccb02..aa7eb460fa09 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
->>> @@ -51,6 +51,7 @@
->>>   #define IDR1_SIDSIZE            GENMASK(5, 0)
->>>     #define ARM_SMMU_IDR3            0xc
->>> +#define IDR3_BBML            GENMASK(12, 11)
->>>   #define IDR3_RIL            (1 << 10)
->>>     #define ARM_SMMU_IDR5            0x14
->>> @@ -617,6 +618,7 @@ struct arm_smmu_device {
->>>         int                gerr_irq;
->>>       int                combined_irq;
->>> +    int                bbml;
->>>         unsigned long            ias; /* IPA */
->>>       unsigned long            oas; /* PA */
->>> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
->>> index a7a9bc08dcd1..341581337ad0 100644
->>> --- a/drivers/iommu/io-pgtable-arm.c
->>> +++ b/drivers/iommu/io-pgtable-arm.c
->>> @@ -72,6 +72,7 @@
->>>     #define ARM_LPAE_PTE_NSTABLE        (((arm_lpae_iopte)1) << 63)
->>>   #define ARM_LPAE_PTE_XN            (((arm_lpae_iopte)3) << 53)
->>> +#define ARM_LPAE_PTE_nT            (((arm_lpae_iopte)1) << 16)
->>>   #define ARM_LPAE_PTE_AF            (((arm_lpae_iopte)1) << 10)
->>>   #define ARM_LPAE_PTE_SH_NS        (((arm_lpae_iopte)0) << 8)
->>>   #define ARM_LPAE_PTE_SH_OS        (((arm_lpae_iopte)2) << 8)
->>> @@ -255,7 +256,7 @@ static size_t __arm_lpae_unmap(struct arm_lpae_io_pgtable *data,
->>>     static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->>>                   phys_addr_t paddr, arm_lpae_iopte prot,
->>> -                int lvl, arm_lpae_iopte *ptep)
->>> +                int lvl, arm_lpae_iopte *ptep, arm_lpae_iopte nT)
->>>   {
->>>       arm_lpae_iopte pte = prot;
->>>   @@ -265,37 +266,60 @@ static void __arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->>>           pte |= ARM_LPAE_PTE_TYPE_BLOCK;
->>>         pte |= paddr_to_iopte(paddr, data);
->>> +    pte |= nT;
->>>         __arm_lpae_set_pte(ptep, pte, &data->iop.cfg);
->>>   }
->>>   +static void __arm_lpae_free_pgtable(struct arm_lpae_io_pgtable *data, int lvl,
->>> +                    arm_lpae_iopte *ptep);
->>>   static int arm_lpae_init_pte(struct arm_lpae_io_pgtable *data,
->>>                    unsigned long iova, phys_addr_t paddr,
->>>                    arm_lpae_iopte prot, int lvl,
->>>                    arm_lpae_iopte *ptep)
->>>   {
->>>       arm_lpae_iopte pte = *ptep;
->>> +    struct io_pgtable_cfg *cfg = &data->iop.cfg;
->>>         if (iopte_leaf(pte, lvl, data->iop.fmt)) {
->>>           /* We require an unmap first */
->>>           WARN_ON(!selftest_running);
->>>           return -EEXIST;
->>>       } else if (iopte_type(pte, lvl) == ARM_LPAE_PTE_TYPE_TABLE) {
->>> -        /*
->>> -         * We need to unmap and free the old table before
->>> -         * overwriting it with a block entry.
->>> -         */
->>>           arm_lpae_iopte *tblp;
->>> +        struct io_pgtable *iop = &data->iop;
->>>           size_t sz = ARM_LPAE_BLOCK_SIZE(lvl, data);
->>>   -        tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
->>> -        if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
->>> -            WARN_ON(1);
->>> -            return -EINVAL;
->>> +        switch (cfg->bbml) {
->>> +        case 0:
->>> +            /*
->>> +             * We need to unmap and free the old table before
->>> +             * overwriting it with a block entry.
->>> +             */
->>> +            tblp = ptep - ARM_LPAE_LVL_IDX(iova, lvl, data);
->>> +            if (__arm_lpae_unmap(data, NULL, iova, sz, lvl, tblp) != sz) {
->>> +                WARN_ON(1);
->>> +                return -EINVAL;
->>> +            }
->>> +            break;
->>> +        case 1:
->>> +            __arm_lpae_init_pte(data, paddr, prot, lvl, ptep, ARM_LPAE_PTE_nT);
->>> +
->>> +            io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
->>> +            tblp = iopte_deref(pte, data);
->>> +            __arm_lpae_free_pgtable(data, lvl + 1, tblp);
->>> +            break;
->>> +        case 2:
->>> +            __arm_lpae_init_pte(data, paddr, prot, lvl, ptep, 0);
->>> +
->>> +            io_pgtable_tlb_flush_walk(iop, iova, sz, ARM_LPAE_GRANULE(data));
->>> +            tblp = iopte_deref(pte, data);
->>> +            __arm_lpae_free_pgtable(data, lvl + 1, tblp);
->>> +            return 0;
->>
->> Sorry, but I really don't understand what you're trying to do here. The old
->> code uses BBM for the table -> block path so we don't need anything extra
->> here. The dodgy case is when we unmap part of a block, and end up installing
->> a table via arm_lpae_split_blk_unmap(). We can't use BBM there because there
->> could be ongoing DMA to parts of the block mapping that we want to remain in
->> place.
->>
->> Are you seeing a problem in practice?
+On 2021/01/23 15:35, Alexey Kardashevskiy wrote:
+> this behaves quite different but still produces the message (i have show_workqueue_state() right after the bug message):
 > 
-> Right, I was under the assumption that we could ignore BBML because we should never have a legitimate reason to split blocks. I'm certainly not keen on piling any more complexity into split_blk_unmap, because the IOMMU API clearly doesn't have a well-defined behaviour for that case anyway - some other drivers will just unmap the entire block, and IIRC there was a hint somewhere in VFIO that it might actually expect that behaviour.
-
-KVM has this usage scenario.
-
 > 
-> Robin.
+> [   85.803991] BUG: MAX_LOCKDEP_KEYS too low!
+> [   85.804338] turning off the locking correctness validator.
+> [   85.804474] Showing busy workqueues and worker pools:
+> [   85.804620] workqueue events_unbound: flags=0x2
+> [   85.804764]   pwq 16: cpus=0-7 flags=0x4 nice=0 active=1/512 refcnt=3
+> [   85.804965]     in-flight: 81:bpf_map_free_deferred
+> [   85.805229] workqueue events_power_efficient: flags=0x80
+> [   85.805357]   pwq 4: cpus=2 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+> [   85.805558]     in-flight: 57:gc_worker
+> [   85.805877] pool 4: cpus=2 node=0 flags=0x0 nice=0 hung=0s workers=3 idle: 82 24
+> [   85.806147] pool 16: cpus=0-7 flags=0x4 nice=0 hung=69s workers=3 idle: 7 251
+> ^C[  100.129747] maxlockdep (5104) used greatest stack depth: 8032 bytes left
 > 
-> .
+> root@le-dbg:~# grep "lock-classes" /proc/lockdep_stats
+>  lock-classes:                         8192 [max: 8192]
 > 
 
+Right. Hillf's patch can reduce number of active workqueue's worker threads, for
+only one worker thread can call bpf_map_free_deferred() (which is nice because
+it avoids bloat of active= and refcnt= fields). But Hillf's patch is not for
+fixing the cause of "BUG: MAX_LOCKDEP_KEYS too low!" message.
+
+Like Dmitry mentioned, bpf syscall allows producing work items faster than
+bpf_map_free_deferred() can consume. (And a similar problem is observed for
+network namespaces.) Unless there is a bug that prevents bpf_map_free_deferred()
+ from completing, the classical solution is to put pressure on producers (i.e.
+slow down bpf syscall side) in a way that consumers (i.e. __bpf_map_put())
+will not schedule thousands of backlog "struct bpf_map" works.
