@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D49301481
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE7A30146F
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbhAWKZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 05:25:45 -0500
-Received: from m12-14.163.com ([220.181.12.14]:38467 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725769AbhAWKZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 05:25:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=D0k6r2pWCL9eDP5sNC
-        MqI8cXd/GSdRb5LMudyN7noj4=; b=U8eoqfOdZ2Er5W0OqZFBN8s2z+dVStjtKr
-        5O0t//0CjjaFzOXIjlfuKkTfco7u5NYdkRz2qG8aSzXlte4KCEzPV0DLwBFQnjQY
-        IlLx4xsDd+tp2DDQ1H8kjEM49w5MaF7E57e21Kd2/ewv7X0R5sdcwlQNJGeOgi5i
-        vUbwa41vw=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.101])
-        by smtp10 (Coremail) with SMTP id DsCowAB3QNzJ1AtglIvNhQ--.50233S2;
-        Sat, 23 Jan 2021 15:48:26 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc/ftp: fix typo issue
-Date:   Sat, 23 Jan 2021 15:48:35 +0800
-Message-Id: <20210123074835.9448-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowAB3QNzJ1AtglIvNhQ--.50233S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWxZF1ktF17GryrXF1rCrg_yoWxKFXEkr
-        sYqr47uw4Fgr1Yyry5CFy3ZF4rtr4xWrs3G3Z0gFWayr9rAF4xZa4UCryfJr1fGa1jyFnx
-        Wwn5X34rAr47WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5V5lUUUUUU==
-X-Originating-IP: [119.137.55.101]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiEQojsV7+2iq6OgAAsZ
+        id S1726740AbhAWKGH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 23 Jan 2021 05:06:07 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:43934 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbhAWKGF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 05:06:05 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id B54DA6074007;
+        Sat, 23 Jan 2021 11:05:22 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id iF0YWO0cr0Iq; Sat, 23 Jan 2021 11:05:21 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0006C625DE06;
+        Sat, 23 Jan 2021 11:05:20 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Artg8sMjyD81; Sat, 23 Jan 2021 11:05:20 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id CF7986074007;
+        Sat, 23 Jan 2021 11:05:20 +0100 (CET)
+Date:   Sat, 23 Jan 2021 11:05:20 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     chengzhihao1 <chengzhihao1@huawei.com>
+Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
+        david <david@sigma-star.at>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Message-ID: <311070065.273732.1611396320672.JavaMail.zimbra@nod.at>
+In-Reply-To: <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com>
+References: <20210122212229.17072-1-richard@nod.at> <20210122212229.17072-4-richard@nod.at> <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com>
+Subject: Re: [PATCH 3/4] ubifs: Update directory size when creating
+ whiteouts
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Update directory size when creating whiteouts
+Thread-Index: lBYr5nCGsjlO2WH9TnqNoD/UEPd7gA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+----- Ursprüngliche Mail -----
+> Von: "chengzhihao1" <chengzhihao1@huawei.com>
+> An: "richard" <richard@nod.at>, "linux-mtd" <linux-mtd@lists.infradead.org>
+> CC: "david" <david@sigma-star.at>, "linux-kernel" <linux-kernel@vger.kernel.org>, "stable" <stable@vger.kernel.org>
+> Gesendet: Samstag, 23. Januar 2021 03:45:15
+> Betreff: Re: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
 
-change 'paquet' to 'packet'
+> 在 2021/1/23 5:22, Richard Weinberger 写道:
+>> Although whiteouts are unlinked files they will get re-linked later,
+> I just want to make sure, is this where the count is increased?
+> do_rename -> inc_nlink(whiteout)
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/fdp/i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Exactly. The logic is a little wicked, I agree.
+Let me think again whether there isn't a better way to address 
+the problem.
 
-diff --git a/drivers/nfc/fdp/i2c.c b/drivers/nfc/fdp/i2c.c
-index ad0abb1..adaa1a7 100644
---- a/drivers/nfc/fdp/i2c.c
-+++ b/drivers/nfc/fdp/i2c.c
-@@ -155,7 +155,7 @@ static int fdp_nci_i2c_read(struct fdp_i2c_phy *phy, struct sk_buff **skb)
- 
- 		/*
- 		 * LRC check failed. This may due to transmission error or
--		 * desynchronization between driver and FDP. Drop the paquet
-+		 * desynchronization between driver and FDP. Drop the packet
- 		 * and force resynchronization
- 		 */
- 		if (lrc) {
--- 
-1.9.1
+Thanks,
+//richard
 
-
+P.s: Thanks a lot for reviewing!
