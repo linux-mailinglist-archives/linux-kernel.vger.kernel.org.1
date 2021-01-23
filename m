@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D926F301467
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D49301481
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbhAWJ5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 04:57:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbhAWJ5O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 04:57:14 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A8CC06174A;
-        Sat, 23 Jan 2021 01:56:33 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 866E53E;
-        Sat, 23 Jan 2021 10:56:30 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611395790;
-        bh=n7EJVx3lMyXfgyiJsOkqtGDIrkjrA1Zltz1NkLhlxg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jhRbNSVuzTO1A0p+xl9vOtrw90Lk7Z8JSKYPdDorAnYq7DF+11h4eDxYPih8RcmCN
-         XaL7YNrHUdzyXwHqh6whAKs/bxcXNtwP37kW84pSOSZAiBU30p1bBqigc19jGkCHL8
-         50uTYhpjgSxp2QUncIkzPvZM5zZ/ic1AEF80lf7g=
-Date:   Sat, 23 Jan 2021 11:56:11 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        hans.verkuil@cisco.com, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: doc: pixfmt-yuv: Fix 4:4:4 subsampling info
-Message-ID: <YAvyu6AvEmZy6WRq@pendragon.ideasonboard.com>
-References: <20210122182723.327438-1-helen.koike@collabora.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210122182723.327438-1-helen.koike@collabora.com>
+        id S1726335AbhAWKZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 05:25:45 -0500
+Received: from m12-14.163.com ([220.181.12.14]:38467 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbhAWKZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 05:25:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=D0k6r2pWCL9eDP5sNC
+        MqI8cXd/GSdRb5LMudyN7noj4=; b=U8eoqfOdZ2Er5W0OqZFBN8s2z+dVStjtKr
+        5O0t//0CjjaFzOXIjlfuKkTfco7u5NYdkRz2qG8aSzXlte4KCEzPV0DLwBFQnjQY
+        IlLx4xsDd+tp2DDQ1H8kjEM49w5MaF7E57e21Kd2/ewv7X0R5sdcwlQNJGeOgi5i
+        vUbwa41vw=
+Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.101])
+        by smtp10 (Coremail) with SMTP id DsCowAB3QNzJ1AtglIvNhQ--.50233S2;
+        Sat, 23 Jan 2021 15:48:26 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] nfc/ftp: fix typo issue
+Date:   Sat, 23 Jan 2021 15:48:35 +0800
+Message-Id: <20210123074835.9448-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DsCowAB3QNzJ1AtglIvNhQ--.50233S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWxZF1ktF17GryrXF1rCrg_yoWxKFXEkr
+        sYqr47uw4Fgr1Yyry5CFy3ZF4rtr4xWrs3G3Z0gFWayr9rAF4xZa4UCryfJr1fGa1jyFnx
+        Wwn5X34rAr47WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5V5lUUUUUU==
+X-Originating-IP: [119.137.55.101]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiEQojsV7+2iq6OgAAsZ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Helen,
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-Thank you for the patch.
+change 'paquet' to 'packet'
 
-On Fri, Jan 22, 2021 at 03:27:23PM -0300, Helen Koike wrote:
-> YUV 4:4:4 is not subsampled, fix this in the docs.
-> 
-> Fixes: da785536e007 ("media: doc: pixfmt-yuv: Move all semi-planar YUV formats to common file")
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> ---
->  Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> index 7d4d39201a3f..bcb4ef24c334 100644
-> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> @@ -396,8 +396,8 @@ number of lines as the luma plane.
->  NV24 and NV42
->  -------------
->  
-> -Semi-planar YUV 4:4:4 formats. The chroma plane is subsampled by 2 in the
-> -horizontal direction. Chroma lines contain half the number of pixels and the
-> +Semi-planar YUV 4:4:4 formats. No sub-sampling.
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/fdp/i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-"The chroma plane is not subsampled." ?
-
-> +Chroma lines contain the same number of pixels and the
->  same number of bytes as luma lines, and the chroma plane contains the same
->  number of lines as the luma plane.
-
-That's not quite right, the chroma lines contain twice the number of
-pixels and bytes, as there's one Cb and one Cr value in the chroma line
-for each Y value in the luma line.
-
-
-Maybe the text could be reflowed ?
-
+diff --git a/drivers/nfc/fdp/i2c.c b/drivers/nfc/fdp/i2c.c
+index ad0abb1..adaa1a7 100644
+--- a/drivers/nfc/fdp/i2c.c
++++ b/drivers/nfc/fdp/i2c.c
+@@ -155,7 +155,7 @@ static int fdp_nci_i2c_read(struct fdp_i2c_phy *phy, struct sk_buff **skb)
+ 
+ 		/*
+ 		 * LRC check failed. This may due to transmission error or
+-		 * desynchronization between driver and FDP. Drop the paquet
++		 * desynchronization between driver and FDP. Drop the packet
+ 		 * and force resynchronization
+ 		 */
+ 		if (lrc) {
 -- 
-Regards,
+1.9.1
 
-Laurent Pinchart
+
