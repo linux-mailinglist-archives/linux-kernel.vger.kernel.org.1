@@ -2,65 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D380D30177E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 19:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EF5301784
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 19:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbhAWSJD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 23 Jan 2021 13:09:03 -0500
-Received: from wnbcorp.com ([175.126.38.143]:59868 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725932AbhAWSI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 13:08:59 -0500
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GGAqvF030916;
-        Sun, 17 Jan 2021 01:16:42 +0900
-Message-Id: <202101161616.10GGAqvF030916@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S1726236AbhAWSKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 13:10:35 -0500
+Received: from m12-17.163.com ([220.181.12.17]:38700 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725922AbhAWSKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 13:10:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dZlog
+        IuW7sctk2awWW/go12ku17levD4zYwiADbhmZU=; b=euI2BNUuqnaEbV0HNIUq4
+        gwWTHbeguMepe2L2W/hCZdKXyScNHF2Y1ESh7osAqL31mj9rqaFRiY///oxTNU1J
+        BTGQqqskD/GfBBiGMzRxl6Qbg/aASMDIiAwGIDI+dVzHEdZXyVa9y8EKjqLS/OLN
+        kTzZULOSOSXrt2NmayFgDQ=
+Received: from yangjunlin.ccdomain.com (unknown [119.137.55.101])
+        by smtp13 (Coremail) with SMTP id EcCowAAX5VxV9wtg1YothQ--.15504S2;
+        Sat, 23 Jan 2021 18:15:50 +0800 (CST)
+From:   angkery <angkery@163.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: [PATCH] usb: typec: tcpci_maxim: remove redundant assignment
+Date:   Sat, 23 Jan 2021 18:14:10 +0800
+Message-Id: <20210123101410.1354-1-angkery@163.com>
+X-Mailer: git-send-email 2.24.0.windows.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Sat, 16 Jan 2021 17:17:00 +0100
-Reply-To: johnsonwilson389@gmail.com
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowAAX5VxV9wtg1YothQ--.15504S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1DtFy7GF4ftry5Gr1xZrb_yoWfZrcEk3
+        WxWFs2vr109F9Yqr1UtayfZ3sYyrWkWFsa9F4vqwn0ywn8Cr9Fgryqyr15Ar9rWF4jqryD
+        Wrn8Wr4SkFZ8CjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUe3rc3UUUUU==
+X-Originating-IP: [119.137.55.101]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBHgMjI13l-YQ6DwAAsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+From: Junlin Yang <yangjunlin@yulong.com>
 
-Sir/Madam,
+PTR_ERR(chip->tcpci) has been used as a return value,
+it is not necessary to assign it to ret, so remove it.
 
-CONGRATULATIONS!!!
+Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+---
+ drivers/usb/typec/tcpm/tcpci_maxim.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
+diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+index 3192663..7f54f51a 100644
+--- a/drivers/usb/typec/tcpm/tcpci_maxim.c
++++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+@@ -461,7 +461,6 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+ 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+ 	if (IS_ERR(chip->tcpci)) {
+ 		dev_err(&client->dev, "TCPCI port registration failed");
+-		ret = PTR_ERR(chip->tcpci);
+ 		return PTR_ERR(chip->tcpci);
+ 	}
+ 	chip->port = tcpci_get_tcpm_port(chip->tcpci);
+-- 
+1.9.1
 
 
