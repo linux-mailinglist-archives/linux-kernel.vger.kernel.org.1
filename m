@@ -2,121 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D8E30174C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C53301754
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbhAWRfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:35:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33856 "EHLO
+        id S1725550AbhAWRiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbhAWReu (ORCPT
+        with ESMTP id S1725932AbhAWRiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:34:50 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8AEC06174A;
-        Sat, 23 Jan 2021 09:34:03 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id w8so9954522oie.2;
-        Sat, 23 Jan 2021 09:34:03 -0800 (PST)
+        Sat, 23 Jan 2021 12:38:08 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6E8C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 09:37:28 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id w14so5887242pfi.2
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 09:37:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=b4K5CQtBVamoURmPksyutnNAiwTza805g1N0hR+Tyog=;
-        b=WQYZi8e2c26NusVxkq8YszXgFKXZagnXWL/hrebvsPdwtnEWVQ1M/E4/GOEXR4qVf6
-         Z2Z+PSdS8+iOVVtKvMAMSQ/0eDulMqXe8VMyGs+4wprWhBRklgUk9uXfYmaR6asAmAfi
-         ShAfzmZIYjVqe8A+im1PWkHd2SD+JnQg5k/BD0nklKzCrAOElud5UCu8o9sFR4vxcIpW
-         LRDBou3xD3Hk4yheYKzxk3oRb4LsSYlT5xPxUU9PnxnL3QxZt6U61U0TvDSrDguuyyCd
-         I/f73pEYb3pvGwCW7eMcnBzwhLKLgcFWqxWnNmC6iQvXH2T+eU0vMug7J+ha8SQnXdpz
-         AJ5g==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zyXonzKaM8k6OOnkDrxM5pAHWQEmapPZdcJnRLpZOUY=;
+        b=1LTdiGYKSeYUIoLVn2hyU/Aq/Ef1TzWLSzSD+FI3sw9U60YDuJtu7JswiavSVAD2FR
+         /wx1dUpnFU0P9teymLn8RbM+6wPArUxVrpJAPyj/jwbC2ndC3SpT9hNPRiYKROFvr3eh
+         jo39gcx0X///m5tIIj2w+vq9yqm47ecbGqOjENWReEygvWp0ejCcUTiBXs6s8NrnVjTj
+         wW0ngs+NBKLdPx/bgkZuDVOp8VdXKJ/YqylCYbsv37ZaJns9BPK33g90be2br47t+mjt
+         iDORfZdudab53iEvgWcrL9UwiAl7jKSW5+SHajADgP23KGzNjnnTvN9VZI6CElBFs/L6
+         8b7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b4K5CQtBVamoURmPksyutnNAiwTza805g1N0hR+Tyog=;
-        b=Je/l7md4KCvPSQ1uECSEcfurCAcrS8VmVLN3c0UdNj+SFNk3tcWmFCbVa8eH4kOu65
-         W8gY08iP7fOKZKKTqJzVsgNQe8fmVRoOu6uYAewhi3aocrc22XYNz893hXd5ZNL8j371
-         6xk74JP8jLyBSJfT8ybHlWuMCQ0Uci5rmlPOHB72Z0iJzPPBYiyKBO046juwiznTwm0n
-         W1829vHSsUTMhJy02dfUVggi2dEGDDOvCxdJI00qAQdI9Rz28LgsDfZMGkwtiJV5JUNX
-         00Jgoq+gQs2e05RIIMw/mG2CYeAA+YzE/2qD3GaHm88HxCarofoFq1YgclU/s8NYesib
-         6YgQ==
-X-Gm-Message-State: AOAM532LeHR4PVHJQxHnHUQpJn3R2V+UqeS7dh2ILE+xuaZ40ST65Jh4
-        gOzQgF/hwHxl2zUwiW7J7mY=
-X-Google-Smtp-Source: ABdhPJw9dgIKA1nn4BG+mGoYH+i220V0pOWwagtjlRLUeq9o1Y/h3LU06D2rFztt1BTRLUBRLYkt6A==
-X-Received: by 2002:a05:6808:2d2:: with SMTP id a18mr6771655oid.139.1611423242888;
-        Sat, 23 Jan 2021 09:34:02 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i9sm2460576oii.34.2021.01.23.09.34.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 23 Jan 2021 09:34:02 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 23 Jan 2021 09:34:01 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, robh+dt@kernel.org, wim@linux-watchdog.org,
-        jamie@jamieiles.com, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 1/8] dt-binding: watchdog: add more Rockchip compatibles
- to snps,dw-wdt.yaml
-Message-ID: <20210123173401.GA57343@roeck-us.net>
-References: <20201218120534.13788-1-jbx6244@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zyXonzKaM8k6OOnkDrxM5pAHWQEmapPZdcJnRLpZOUY=;
+        b=RgEkX2rECHSY7/zxEO7AhFm671auJT/AfAsXjbw5B9NFhwnaTGfq0qK6v2NAxKUUzy
+         i3PqtwDbaiKgmZC+cKqWwL4NjgCITviz/A/Gon+1+d7HcRtEwuM31m5NEpLvZPHnhOhI
+         7766/14TmY6Liad1AOFkn1mxrZnWKHZuh1ZwSa2MgVCNy+O4rP80AfZaOvh6q7ajDSfO
+         mPYbU9vX2Gi1GiDFyHfruI5XzgEZhqP3+ZR6OoMNsiUKFJgfDnT8SzrxsMulEQYWufVo
+         7gvpsCREnV8ndPG41Apdk3I9e+3bYBscYyWJEslvRX8Wx4ldE/d/4VfmThozzZfvwcjD
+         5NDw==
+X-Gm-Message-State: AOAM530yd/1YOA1JE4CIbi+/omQ3jGoAiovB5jskWoKzrrw01/DJRn8/
+        B6dPSK8PeHe0wKziJEl6XU3Me7bFWa57KQ==
+X-Google-Smtp-Source: ABdhPJxRf5qjlvC4skWicX7l2XytqhLPOkLd7uFj0eop1zrDNaLQPmktHwtTCqnRJB5DzSvImpcCcw==
+X-Received: by 2002:a63:5b1a:: with SMTP id p26mr10584754pgb.76.1611423447701;
+        Sat, 23 Jan 2021 09:37:27 -0800 (PST)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id r14sm12893895pgi.27.2021.01.23.09.37.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Jan 2021 09:37:26 -0800 (PST)
+Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
+To:     Lennert Buytenhek <buytenh@wantstofly.org>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20210123114152.GA120281@wantstofly.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <b5b978ee-1a56-ead7-43bc-83ae2398b160@kernel.dk>
+Date:   Sat, 23 Jan 2021 10:37:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201218120534.13788-1-jbx6244@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210123114152.GA120281@wantstofly.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 01:05:27PM +0100, Johan Jonker wrote:
-> The watchdog compatible strings are suppose to be SoC orientated.
-> In the more recently added Rockchip SoC dtsi files only
-> the fallback string "snps,dw-wdt" is used, so add the following
-> compatible strings:
+On 1/23/21 4:41 AM, Lennert Buytenhek wrote:
+> IORING_OP_GETDENTS64 behaves like getdents64(2) and takes the same
+> arguments.
 > 
-> "rockchip,px30-wdt", "snps,dw-wdt"
-> "rockchip,rk3228-wdt", "snps,dw-wdt"
-> "rockchip,rk3308-wdt", "snps,dw-wdt"
-> "rockchip,rk3328-wdt", "snps,dw-wdt"
-> "rockchip,rk3399-wdt", "snps,dw-wdt"
-> "rockchip,rv1108-wdt", "snps,dw-wdt"
-> 
-> make ARCH=arm dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> 
-> make ARCH=arm64 dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 > ---
->  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+> This seems to work OK, but I'd appreciate a review from someone more
+> familiar with io_uring internals than I am, as I'm not entirely sure
+> I did everything quite right.
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> index f7ee9229c..b58596b18 100644
-> --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> @@ -18,10 +18,16 @@ properties:
->        - const: snps,dw-wdt
->        - items:
->            - enum:
-> +              - rockchip,px30-wdt
->                - rockchip,rk3066-wdt
->                - rockchip,rk3188-wdt
-> +              - rockchip,rk3228-wdt
->                - rockchip,rk3288-wdt
-> +              - rockchip,rk3308-wdt
-> +              - rockchip,rk3328-wdt
->                - rockchip,rk3368-wdt
-> +              - rockchip,rk3399-wdt
-> +              - rockchip,rv1108-wdt
->            - const: snps,dw-wdt
->  
->    reg:
+> A dumb test program for IORING_OP_GETDENTS64 is available here:
+> 
+> 	https://krautbox.wantstofly.org/~buytenh/uringfind.c
+> 
+> This does more or less what find(1) does: it scans recursively through
+> a directory tree and prints the names of all directories and files it
+> encounters along the way -- but then using io_uring.  (The uring version
+> prints the names of encountered files and directories in an order that's
+> determined by SQE completion order, which is somewhat nondeterministic
+> and likely to differ between runs.)
+> 
+> On a directory tree with 14-odd million files in it that's on a
+> six-drive (spinning disk) btrfs raid, find(1) takes:
+> 
+> 	# echo 3 > /proc/sys/vm/drop_caches 
+> 	# time find /mnt/repo > /dev/null
+> 
+> 	real    24m7.815s
+> 	user    0m15.015s
+> 	sys     0m48.340s
+> 	#
+> 
+> And the io_uring version takes:
+> 
+> 	# echo 3 > /proc/sys/vm/drop_caches 
+> 	# time ./uringfind /mnt/repo > /dev/null
+> 
+> 	real    10m29.064s
+> 	user    0m4.347s
+> 	sys     0m1.677s
+> 	#
+> 
+> These timings are repeatable and consistent to within a few seconds.
+> 
+> (btrfs seems to be sending most metadata reads to the same drive in the
+> array during this test, even though this filesystem is using the raid1c4
+> profile for metadata, so I suspect that more drive-level parallelism can
+> be extracted with some btrfs tweaks.)
+> 
+> The fully cached case also shows some speedup for the io_uring version:
+> 
+> 	# time find /mnt/repo > /dev/null
+> 
+> 	real    0m5.223s
+> 	user    0m1.926s
+> 	sys     0m3.268s
+> 	#
+> 
+> vs:
+> 
+> 	# time ./uringfind /mnt/repo > /dev/null
+> 
+> 	real    0m3.604s
+> 	user    0m2.417s
+> 	sys     0m0.793s
+> 	#
+> 
+> That said, the point of this patch isn't primarily to enable
+> lightning-fast find(1) or du(1), but more to complete the set of
+> filesystem I/O primitives available via io_uring, so that applications
+> can do all of their filesystem I/O using the same mechanism, without
+> having to manually punt some of their work out to worker threads -- and
+> indeed, an object storage backend server that I wrote a while ago can
+> run with a pure io_uring based event loop with this patch.
+
+The results look nice for sure. Once concern is that io_uring generally
+guarantees that any state passed in is stable once submit is done. For
+the below implementation, that doesn't hold as the linux_dirent64 isn't
+used until later in the process. That means if you do:
+
+submit_getdents64(ring)
+{
+	struct linux_dirent64 dent;
+	struct io_uring_sqe *sqe;
+
+	sqe = io_uring_get_sqe(ring);
+	io_uring_prep_getdents64(sqe, ..., &dent);
+	io_uring_submit(ring);
+}
+
+other_func(ring)
+{
+	struct io_uring_cqe *cqe;
+
+	submit_getdents64(ring);
+	io_uring_wait_cqe(ring, &cqe);
+	
+}
+
+then the kernel side might get garbage by the time the sqe is actually
+submitted. This is true because you don't use it inline, only from the
+out-of-line async context. Usually this is solved by having the prep
+side copy in the necessary state, eg see io_openat2_prep() for how we
+make filename and open_how stable by copying them into kernel memory.
+That ensures that if/when these operations need to go async and finish
+out-of-line, the contents are stable and there's no requirement for the
+application to keep them valid once submission is done.
+
+Not sure how best to solve that, since the vfs side relies heavily on
+linux_dirent64 being a user pointer...
+
+Outside of that, implementation looks straight forward.
+
+-- 
+Jens Axboe
+
