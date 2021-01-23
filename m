@@ -2,83 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31B33015A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 449A03015AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbhAWOIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:08:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33512 "EHLO mail.kernel.org"
+        id S1725880AbhAWOKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:10:52 -0500
+Received: from aposti.net ([89.234.176.197]:60806 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725889AbhAWOIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:08:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2961022B51;
-        Sat, 23 Jan 2021 14:07:56 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 14:07:53 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 14/21] arm64: Honor VHE being disabled from the
- command-line
-Message-ID: <YAwtuZZpTwwoMqrk@Catalins-MacBook-Air.local>
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-15-maz@kernel.org>
+        id S1725440AbhAWOKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:10:50 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     od@zcrc.me, Christophe Branchereau <cbranchereau@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/3] dt-bindings: sound/ingenic: Add compatible strings for JZ4760(B) SoC
+Date:   Sat, 23 Jan 2021 14:09:56 +0000
+Message-Id: <20210123140958.12895-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-15-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:26AM +0000, Marc Zyngier wrote:
-> diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-> index 59820f9b8522..bbab2148a2a2 100644
-> --- a/arch/arm64/kernel/hyp-stub.S
-> +++ b/arch/arm64/kernel/hyp-stub.S
-> @@ -77,13 +77,24 @@ SYM_CODE_END(el1_sync)
->  SYM_CODE_START_LOCAL(mutate_to_vhe)
->  	// Sanity check: MMU *must* be off
->  	mrs	x0, sctlr_el2
-> -	tbnz	x0, #0, 1f
-> +	tbnz	x0, #0, 2f
->  
->  	// Needs to be VHE capable, obviously
->  	mrs	x0, id_aa64mmfr1_el1
->  	ubfx	x0, x0, #ID_AA64MMFR1_VHE_SHIFT, #4
-> -	cbz	x0, 1f
-> +	cbz	x0, 2f
->  
-> +	// Check whether VHE is disabled from the command line
-> +	adr_l	x1, id_aa64mmfr1_val
-> +	ldr	x0, [x1]
-> +	adr_l	x1, id_aa64mmfr1_mask
-> +	ldr	x1, [x1]
-> +	ubfx	x0, x0, #ID_AA64MMFR1_VHE_SHIFT, #4
-> +	ubfx	x1, x1, #ID_AA64MMFR1_VHE_SHIFT, #4
-> +	cbz	x1, 1f
-> +	and	x0, x0, x1
-> +	cbz	x0, 2f
-> +1:
+Add the ingenic,jz4760b-codec and ingenic,jz4760-codec compatible
+strings.
 
-I can see the advantage here in separate id_aa64mmfr1_val/mask but we
-could use some asm offsets here and keep the pointer indirection simpler
-in C code. You'd just need something like 'adr_l mmfr1_ovrd + VAL_OFFSET'.
+In the process, convert the previous compatible strings to use an enum
+instead.
 
-Anyway, if you have a strong preference for the current approach, leave
-it as is.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ .../devicetree/bindings/sound/ingenic,codec.yaml      | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/ingenic,codec.yaml b/Documentation/devicetree/bindings/sound/ingenic,codec.yaml
+index eb4be86464bb..97d5f3819b27 100644
+--- a/Documentation/devicetree/bindings/sound/ingenic,codec.yaml
++++ b/Documentation/devicetree/bindings/sound/ingenic,codec.yaml
+@@ -15,9 +15,14 @@ properties:
+ 
+   compatible:
+     oneOf:
+-      - const: ingenic,jz4770-codec
+-      - const: ingenic,jz4725b-codec
+-      - const: ingenic,jz4740-codec
++      - enum:
++          - ingenic,jz4770-codec
++          - ingenic,jz4760-codec
++          - ingenic,jz4725b-codec
++          - ingenic,jz4740-codec
++      - items:
++          - const: ingenic,jz4760b-codec
++          - const: ingenic,jz4760-codec
+ 
+   reg:
+     maxItems: 1
 -- 
-Catalin
+2.29.2
+
