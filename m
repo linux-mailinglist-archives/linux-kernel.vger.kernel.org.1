@@ -2,164 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA32301384
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 07:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9402B301388
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 07:12:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbhAWGKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 01:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbhAWGKM (ORCPT
+        id S1726656AbhAWGLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 01:11:47 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11485 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbhAWGLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 01:10:12 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6EEC06174A;
-        Fri, 22 Jan 2021 22:09:32 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id h192so8675990oib.1;
-        Fri, 22 Jan 2021 22:09:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/mjmVI5gF3/N0cEnj1sHAD/0LAdxcCppsyC3PEGIIMY=;
-        b=FtSdM/UmqHH/Te7JtIIR+Ni35pVa8buSkobOaLI76OyI0y0fO/WJev6jOCOWok/Pi3
-         /2SHMxBHruarJ/jMoEk4ujSwqLXZ7202LKQ2fRdweOSBU3SFEGYQV6Rd45jMfgNUiBMa
-         cer8VJiRrvM4NhRxnsMXSr1SoPXshwhLjTXO3IttlF5bFKvmEruorQrbdqCZdr3YaD54
-         jqBdOSO6Qsldi5lcUdliOSkU9Gtj+hhqz4WJwDwnrHz6hiJEAFxjqUKNobhqQgPvJl0B
-         7nWtpGsP3EzmTiIDIN4nzgSxLFxMK7pT057TE3tVM4Q8GDG3S1SFZvtDy84OTKseD37g
-         EDmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/mjmVI5gF3/N0cEnj1sHAD/0LAdxcCppsyC3PEGIIMY=;
-        b=UY+RwaQ0DDKLQ8x+NB+QOt1d2YzHzH5ba6iVEzoFxx5gNduoGJagwllv7ufB0CJRqt
-         xEya33ksdx6AVuKCvoKfpn82y0Pj6goPMInusMkS0V5wqtD9CmDOFAA6xRJASc8qzS4B
-         5ApHE7NLWa2wrgOQxR9v566PQaR6ZKQYlFGm7LcGBbVqfs2g/gY59WTSdCYKCw6q3wT3
-         LgEtLWIkSPqB3ERN8y/YcTMw5va1EaQWxzwPkKPK8hEKKtQBxfDBKVZPRFWErnEuJR+m
-         BSeWIS55CdnQ80i2hVBb8M9kHgxWcU3EHVPWWhHsueQMFHSXN7l9H5DGd6KRtGjufSbT
-         Y/JQ==
-X-Gm-Message-State: AOAM532aXZ988JNwM9/sXvwbUk0fBgrsJNEYvnTlaAA5bYpEWKZX3qhk
-        RAXoQDuZaJXlBo5mjfb0syWP5u3ysaQ=
-X-Google-Smtp-Source: ABdhPJzeXpQlC4Y4xJ1MTrbaIqxWqJEvjFpuzoSQ89HzCZvNxYIwfHIjrNog3bMVCkNWMjZpXMxmBA==
-X-Received: by 2002:aca:911:: with SMTP id 17mr5463867oij.162.1611382171408;
-        Fri, 22 Jan 2021 22:09:31 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l70sm2190717oih.56.2021.01.22.22.09.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 22:09:30 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 5/6] hwmon: (lm70) Avoid undefined reference to match
- table
-To:     Stephen Boyd <swboyd@chromium.org>, Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-hwmon@vger.kernel.org
-References: <20210123034428.2841052-1-swboyd@chromium.org>
- <20210123034428.2841052-6-swboyd@chromium.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <ef06de66-5f8b-29a6-083d-dc8a0fcf3eb8@roeck-us.net>
-Date:   Fri, 22 Jan 2021 22:09:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 23 Jan 2021 01:11:23 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DN5LR3k7tzj6VZ;
+        Sat, 23 Jan 2021 14:09:19 +0800 (CST)
+Received: from [10.67.103.6] (10.67.103.6) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
+ 14:10:21 +0800
+Subject: Re: question about bonding mode 4
+To:     Jiri Pirko <jiri@resnulli.us>, Jay Vosburgh <j.vosburgh@gmail.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <20201228101145.GC3565223@nanopsycho.orion>
+ <20210107235813.GB29828@redhat.com>
+ <20210108131256.GG3565223@nanopsycho.orion>
+ <ef692814-fdea-ea59-6b52-93630b5b5570@huawei.com>
+CC:     "lipeng (Y)" <lipeng321@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, <netdev@vger.kernel.org>,
+        <linuxarm@openeuler.org>, Salil Mehta <salil.mehta@huawei.com>
+From:   moyufeng <moyufeng@huawei.com>
+Message-ID: <52630cba-cc60-a024-8dd0-8319e5245044@huawei.com>
+Date:   Sat, 23 Jan 2021 14:10:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210123034428.2841052-6-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <ef692814-fdea-ea59-6b52-93630b5b5570@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/22/21 7:44 PM, Stephen Boyd wrote:
-> We're going to remove of_match_ptr() from the definition of
-> of_match_device() when CONFIG_OF=n. This way we can always be certain
-> that of_match_device() acts the same when CONFIG_OF is set and when it
-> isn't. Add of_match_ptr() here so that this doesn't break when that
-> change is made to the of_match_device() API.
-> 
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> Acked-by: Guenter Roeck <linux@roeck-us.net>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Jean Delvare <jdelvare@suse.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: <linux-hwmon@vger.kernel.org>
-> ---
-> 
-> Please ack so Rob can apply.
-> 
+Ping...
+Any comments? Thanks!
 
-This patch already has my Acked-by: above.
-
-Guenter
-
->  drivers/hwmon/lm70.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 2021/1/15 10:02, moyufeng wrote:
+> Hi Team,
 > 
-> diff --git a/drivers/hwmon/lm70.c b/drivers/hwmon/lm70.c
-> index ae2b84263a44..e3153ae80634 100644
-> --- a/drivers/hwmon/lm70.c
-> +++ b/drivers/hwmon/lm70.c
-> @@ -178,7 +178,7 @@ static int lm70_probe(struct spi_device *spi)
->  	struct lm70 *p_lm70;
->  	int chip;
->  
-> -	of_match = of_match_device(lm70_of_ids, &spi->dev);
-> +	of_match = of_match_device(of_match_ptr(lm70_of_ids), &spi->dev);
->  	if (of_match)
->  		chip = (int)(uintptr_t)of_match->data;
->  	else {
+> I have a question about bonding. During testing bonding mode 4
+> scenarios, I find that there is a very low probability that
+> the pointer is null. The following information is displayed:
 > 
-
+> [99359.795934] bond0: (slave eth13.2001): Port 2 did not find a suitable aggregator
+> [99359.796960] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
+> [99359.798127] Mem abort info:
+> [99359.798526]   ESR = 0x96000004
+> [99359.798938]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [99359.799673]   SET = 0, FnV = 0
+> [99359.800106]   EA = 0, S1PTW = 0
+> [99359.800554] Data abort info:
+> [99359.800952]   ISV = 0, ISS = 0x00000004
+> [99359.801522]   CM = 0, WnR = 0
+> [99359.801970] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000c64e6000
+> [99359.802876] [0000000000000020] pgd=0000000000000000
+> [99359.803555] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [99359.804369] Modules linked in: bonding hns3(-) hclgevf hnae3 [last unloaded: bonding]
+> [99359.805494] CPU: 1 PID: 951 Comm: kworker/u10:2 Not tainted 5.7.0-rc4+ #1
+> [99359.806455] Hardware name: linux,dummy-virt (DT)
+> [99359.807107] Workqueue: bond0 bond_3ad_state_machine_handler [bonding]
+> [99359.808056] pstate: 60c00005 (nZCv daif +PAN +UAO)
+> [99359.808722] pc : bond_3ad_state_machine_handler+0x7fc/0xdb8 [bonding]
+> [99359.809652] lr : bond_3ad_state_machine_handler+0x7f4/0xdb8 [bonding]
+> [99359.810535] sp : ffff80001882bd20
+> [99359.811012] x29: ffff80001882bd20 x28: ffff000085939a38
+> [99359.811791] x27: ffff00008649bb68 x26: 00000000aaaaaaab
+> [99359.812871] x25: ffff800009401000 x24: ffff800009408de4
+> [99359.814049] x23: ffff80001882bd98 x22: ffff00008649b880
+> [99359.815210] x21: 0000000000000000 x20: ffff000085939a00
+> [99359.816401] x19: ffff00008649b880 x18: ffff800012572988
+> [99359.817637] x17: 0000000000000000 x16: 0000000000000000
+> [99359.818870] x15: ffff80009882b987 x14: 726f746167657267
+> [99359.820090] x13: 676120656c626174 x12: 697573206120646e
+> [99359.821374] x11: 696620746f6e2064 x10: 696420322074726f
+> [99359.822659] x9 : 50203a2931303032 x8 : 0000000000081391
+> [99359.823891] x7 : ffff8000108e3ad0 x6 : ffff8000128858bb
+> [99359.825109] x5 : 0000000000000000 x4 : 0000000000000000
+> [99359.826262] x3 : 00000000ffffffff x2 : 906b329bb5362a00
+> [99359.827394] x1 : 906b329bb5362a00 x0 : 0000000000000000
+> [99359.828540] Call trace:
+> [99359.829071]  bond_3ad_state_machine_handler+0x7fc/0xdb8 [bonding]
+> [99359.830367]  process_one_work+0x15c/0x4a0
+> [99359.831216]  worker_thread+0x50/0x478
+> [99359.832022]  kthread+0x130/0x160
+> [99359.832716]  ret_from_fork+0x10/0x18
+> [99359.833487] Code: 910c0021 95f704bb f9403f80 b5ffe300 (f9401000)
+> [99359.834742] ---[ end trace c7a8e02914afc4e0 ]---
+> [99359.835817] Kernel panic - not syncing: Fatal exception in interrupt
+> [99359.837334] SMP: stopping secondary CPUs
+> [99359.838277] Kernel Offset: disabled
+> [99359.839086] CPU features: 0x080002,22208218
+> [99359.840053] Memory Limit: none
+> [99359.840783] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+> 
+> The test procedure is as follows:
+> 1. Configure bonding and set it to mode 4.
+>     echo "4" > /sys/class/net/bond0/bonding/mode
+>     ifconfig bond0 up
+> 
+> 2. Configure two VLANs and add them to the bonding in step 1.
+>     vconfig add eth0 2001
+>     vconfig add eth1 2001
+>     ifenslave bond0 eth0.2001 eth1.2001
+> 
+> 3. Unload the network device driver and bonding driver.
+>     rmmod hns3
+>     rmmod hclge
+>     rmmod hnae3
+>     rmmod bonding.ko
+> 
+> 4. Repeat the preceding steps for a long time.
+> 
+> By checking the logic in ad_port_selection_logic(), I find that
+> if enter the branch "Port %d did not find a suitable aggregator",
+> the value of port->aggregator will be NULL, causing the problem.
+> 
+> So I'd like to ask what circumstances will be involved in this
+> branch, and what should be done in this case?
+> 
+> 
+> The detailed code analysis is as follows:
+> 
+> static void ad_port_selection_logic(struct port *port, bool *update_slave_arr)
+> {
+> [...]
+> 	/* if the port is connected to other aggregator, detach it */
+> 	if (port->aggregator) {
+> 		/* detach the port from its former aggregator */
+> 		temp_aggregator = port->aggregator;
+> 		for (curr_port = temp_aggregator->lag_ports; curr_port;
+> 		     last_port = curr_port,
+> 		     curr_port = curr_port->next_port_in_aggregator) {
+> 			if (curr_port == port) {
+> 				temp_aggregator->num_of_ports--;
+> 				/* if it is the first port attached to the
+> 				 * aggregator
+> 				 */
+> 				if (!last_port) {
+> 					temp_aggregator->lag_ports =
+> 						port->next_port_in_aggregator;
+> 				} else {
+> 					/* not the first port attached to the
+> 					 * aggregator
+> 					 */
+> 					last_port->next_port_in_aggregator =
+> 						port->next_port_in_aggregator;
+> 				}
+> 
+> 				/* clear the port's relations to this
+> 				 * aggregator
+> 				 */
+> 				port->aggregator = NULL;
+> 
+> ----analysis: set port->aggregator NULL at the beginning of ad_port_selection_logic().
+> 
+> 				port->next_port_in_aggregator = NULL;
+> 				port->actor_port_aggregator_identifier = 0;
+> 
+> 				slave_dbg(bond->dev, port->slave->dev, "Port %d left LAG %d\n",
+> 					  port->actor_port_number,
+> 					  temp_aggregator->aggregator_identifier);
+> 				/* if the aggregator is empty, clear its
+> 				 * parameters, and set it ready to be attached
+> 				 */
+> 				if (!temp_aggregator->lag_ports)
+> 					ad_clear_agg(temp_aggregator);
+> 				break;
+> 			}
+> 		}
+> 		if (!curr_port) {
+> 			/* meaning: the port was related to an aggregator
+> 			 * but was not on the aggregator port list
+> 			 */
+> 			net_warn_ratelimited("%s: (slave %s): Warning: Port %d was related to aggregator %d but was not on its port list\n",
+> 					     port->slave->bond->dev->name,
+> 					     port->slave->dev->name,
+> 					     port->actor_port_number,
+> 					     port->aggregator->aggregator_identifier);
+> 		}
+> 	}
+> 	/* search on all aggregators for a suitable aggregator for this port */
+> 	bond_for_each_slave(bond, slave, iter) {
+> 		aggregator = &(SLAVE_AD_INFO(slave)->aggregator);
+> 		/* keep a free aggregator for later use(if needed) */
+> 		if (!aggregator->lag_ports) {
+> 			if (!free_aggregator)
+> 				free_aggregator = aggregator;
+> 
+> ----analysis: Save free_aggregator if found a free aggregator. But in this case, no free aggregator is available.
+> 
+> 			continue;
+> 		}
+> 		/* check if current aggregator suits us */
+> 		if (((aggregator->actor_oper_aggregator_key == port->actor_oper_port_key) && /* if all parameters match AND */
+> 		     MAC_ADDRESS_EQUAL(&(aggregator->partner_system), &(port->partner_oper.system)) &&
+> 		     (aggregator->partner_system_priority == port->partner_oper.system_priority) &&
+> 		     (aggregator->partner_oper_aggregator_key == port->partner_oper.key)
+> 		    ) &&
+> 		    ((!MAC_ADDRESS_EQUAL(&(port->partner_oper.system), &(null_mac_addr)) && /* partner answers */
+> 		      !aggregator->is_individual)  /* but is not individual OR */
+> 		    )
+> 		   ) {
+> 			/* attach to the founded aggregator */
+> 			port->aggregator = aggregator;
+> 
+> ----analysis: If a proper aggregator is found, port->aggregator is assigned here.
+> 
+> 			port->actor_port_aggregator_identifier =
+> 				port->aggregator->aggregator_identifier;
+> 			port->next_port_in_aggregator = aggregator->lag_ports;
+> 			port->aggregator->num_of_ports++;
+> 			aggregator->lag_ports = port;
+> 			slave_dbg(bond->dev, slave->dev, "Port %d joined LAG %d (existing LAG)\n",
+> 				  port->actor_port_number,
+> 				  port->aggregator->aggregator_identifier);
+> 
+> 			/* mark this port as selected */
+> 			port->sm_vars |= AD_PORT_SELECTED;
+> 			found = 1;
+> 
+> ----analysis: Set found to 1 if port->aggregator is assigned.
+> 
+> 			break;
+> 		}
+> 	}
+> 	/* the port couldn't find an aggregator - attach it to a new
+> 	 * aggregator
+> 	 */
+> 	if (!found) {
+> 		if (free_aggregator) {
+> 			/* assign port a new aggregator */
+> 			port->aggregator = free_aggregator;
+> 
+> ----analysis: No proper free_aggregator is found. Therefore, port->aggregator cannot be assigned here.
+> 
+> 			port->actor_port_aggregator_identifier =
+> 				port->aggregator->aggregator_identifier;
+> 
+> 			/* update the new aggregator's parameters
+> 			 * if port was responsed from the end-user
+> 			 */
+> 			if (port->actor_oper_port_key & AD_DUPLEX_KEY_MASKS)
+> 				/* if port is full duplex */
+> 				port->aggregator->is_individual = false;
+> 			else
+> 				port->aggregator->is_individual = true;
+> 
+> 			port->aggregator->actor_admin_aggregator_key =
+> 				port->actor_admin_port_key;
+> 			port->aggregator->actor_oper_aggregator_key =
+> 				port->actor_oper_port_key;
+> 			port->aggregator->partner_system =
+> 				port->partner_oper.system;
+> 			port->aggregator->partner_system_priority =
+> 				port->partner_oper.system_priority;
+> 			port->aggregator->partner_oper_aggregator_key = port->partner_oper.key;
+> 			port->aggregator->receive_state = 1;
+> 			port->aggregator->transmit_state = 1;
+> 			port->aggregator->lag_ports = port;
+> 			port->aggregator->num_of_ports++;
+> 
+> 			/* mark this port as selected */
+> 			port->sm_vars |= AD_PORT_SELECTED;
+> 
+> 			slave_dbg(bond->dev, port->slave->dev, "Port %d joined LAG %d (new LAG)\n",
+> 				  port->actor_port_number,
+> 				  port->aggregator->aggregator_identifier);
+> 		} else {
+> 			slave_err(bond->dev, port->slave->dev,
+> 				  "Port %d did not find a suitable aggregator\n",
+> 				  port->actor_port_number);
+> 
+> ----analysis: The fault scenario goes to this branch, and port->aggregator remains NULL.
+> 
+> 		}
+> 	}
+> 	/* if all aggregator's ports are READY_N == TRUE, set ready=TRUE
+> 	 * in all aggregator's ports, else set ready=FALSE in all
+> 	 * aggregator's ports
+> 	 */
+> 	__set_agg_ports_ready(port->aggregator,
+> 			      __agg_ports_are_ready(port->aggregator));
+> 
+> ----analysis: port->aggregator is still NULL, which causes problem.
+> 
+> 
+> 	aggregator = __get_first_agg(port);
+> 	ad_agg_selection_logic(aggregator, update_slave_arr);
+> 
+> 	if (!port->aggregator->is_active)
+> 		port->actor_oper_port_state &= ~LACP_STATE_SYNCHRONIZATION;
+> }
+> 
+> 
+> Thanks.
+> .
+> 
