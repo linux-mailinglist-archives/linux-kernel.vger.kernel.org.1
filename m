@@ -2,118 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2823018F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 00:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDD33018F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 00:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbhAWXjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 18:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbhAWXjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 18:39:01 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFEAC061788
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 15:38:21 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id n19so999654ooj.11
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 15:38:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Rlm8XFphD/t2Gle5s8Hwr/AAQgG7hLV82Tqn2NZu6Qg=;
-        b=XJqrNgty2eyGWWlLQczKmvOzhfipC+EHiAo88rz+txoH8wuDzBLSGWl+e9Pzvco27P
-         7YWaj3kJ5CbLthO2hM0+G+/lilTXKAObwW1iIhC7VsNFpj0BP4EVpBJe7enRXx8+PZ1k
-         Ws8N6osNrrudSSRCQg/9W0JZeTDTIW43M3l6XZLXpIGEBVArhZuWvWfWTTCQmhkOG0SJ
-         GCrqwF6QgK6a/iGq5SYjew922q9HsjmshqoKEfQ9MbAHiCjr22Pe2CeIq68bBeHXClte
-         xd+r0s6feiHuiGP/XH2PnNzqSUjfQuw6Ecz86UYKfp0xWxk0g2jjgqUAx9Cz9I/pXwz4
-         sxjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Rlm8XFphD/t2Gle5s8Hwr/AAQgG7hLV82Tqn2NZu6Qg=;
-        b=XnXFFWzPZ1t2eC9QnF/GHrxf6FbEpr7me2YehgDAYvTUt+UGrlk2oSUevzNXHO69qY
-         OhBQihKqkxHQc9SpX+MhSDFNp46vzwTStzaKExgrymmicoFTUnB+2wX2xBbCES3uSwJz
-         n+BETWlDWsacipKAosjMjFo0IAiw8pkV81MAWRLSsxORue0QadOol4bQkVEJpKkLyIla
-         b6zb5upQjZckZLSneko2L/xQGfucZv22YcCohh4dHij2BxBIhtdH5Z/arytwRjD9Z74z
-         PXcibSDNjw4q7joLH95iwAr0fahy9OJ0DyLOiPQLi2MMRztDrfPz8aG4CYZnrUHu7mWj
-         eOww==
-X-Gm-Message-State: AOAM5306rgTw8O0oGCc8AxRexS02sksBg+sNfuuW1PYzvkxbBnc111KH
-        7G1X2ylI5cp668tQWFPslPnutw==
-X-Google-Smtp-Source: ABdhPJzGCIfzd8HXcNQwj27/oNpGJb66WYTWgBcl8ogRLmWoXxHlkgNqiRzMdypcuJ2Yb//kU6U1YA==
-X-Received: by 2002:a4a:81:: with SMTP id 123mr8283884ooh.46.1611445100271;
-        Sat, 23 Jan 2021 15:38:20 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t16sm2583775otq.17.2021.01.23.15.38.18
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 23 Jan 2021 15:38:19 -0800 (PST)
-Date:   Sat, 23 Jan 2021 15:37:30 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Thierry Reding <treding@nvidia.com>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-pm@vger.kernel.org
-Subject: Re: Infinite recursion in device_reorder_to_tail() due to circular
- device links
-In-Reply-To: <X/3kveeVrb35qsvb@kroah.com>
-Message-ID: <alpine.LSU.2.11.2101231524290.1540@eggly.anvils>
-References: <X/ycQpu7NIGI969v@gerhold.net> <CAJZ5v0gAsZ45O8mv-gz0UvbyxnKA6fQBYvambBYEH6OSk3-m3g@mail.gmail.com> <X/3kveeVrb35qsvb@kroah.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1726438AbhAWXin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 18:38:43 -0500
+Received: from foss.arm.com ([217.140.110.172]:34244 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726386AbhAWXim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 18:38:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD3841474;
+        Sat, 23 Jan 2021 15:37:56 -0800 (PST)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A16A53F719;
+        Sat, 23 Jan 2021 15:37:55 -0800 (PST)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
+Subject: [PATCH 0/2] Fix BUG: Invalid wait context in hrtimer_interrupt()
+Date:   Sat, 23 Jan 2021 23:37:39 +0000
+Message-Id: <20210123233741.3614408-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021, Greg Kroah-Hartman wrote:
-> On Tue, Jan 12, 2021 at 03:32:04PM +0100, Rafael J. Wysocki wrote:
-> > On Mon, Jan 11, 2021 at 7:46 PM Stephan Gerhold <stephan@gerhold.net> wrote:
-> > >
-> > > Hi,
-> > >
-> > > since 5.11-rc1 I get kernel crashes with infinite recursion in
-> > > device_reorder_to_tail() in some situations... It's a bit complicated to
-> > > explain so I want to apologize in advance for the long mail. :)
-> > >
-> > >   Kernel panic - not syncing: kernel stack overflow
-> > >   CPU: 1 PID: 33 Comm: kworker/1:1 Not tainted 5.11.0-rc3 #1
-> > >   Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> > >   Call trace:
-> > >    ...
-> > >    device_reorder_to_tail+0x4c/0xf0
-> > >    device_reorder_to_tail+0x98/0xf0
-> > >    device_reorder_to_tail+0x60/0xf0
-> > >    device_reorder_to_tail+0x60/0xf0
-> > >    device_reorder_to_tail+0x60/0xf0
-> > >    ...
-> > >
-> > > The crash happens only in 5.11 with commit 5b6164d3465f ("driver core:
-> > > Reorder devices on successful probe"). It stops happening when I revert
-> > > this commit.
-> > 
-> > Thanks for the report!
-> > 
-> > Greg, please revert commit 5b6164d3465f, it clearly is not an
-> > improvement, at least at this point.
-> 
-> Now reverted, thanks.
-> 
-> greg k-h
+I hit a pr_warn() inside hrtimer_interrupt() which lead to a BUG: Invalid wait
+context splat.
 
-I think that there has been a misunderstanding here: although
-5b6164d3465f ("driver core: Reorder devices on successful probe")
-has been reverted from linux-next (thank you), it has not yet been
-reverted from 5.11-rc, and still causing problems there (in my case,
-not the infinite recursion Stephan reported in this thread, but the
-ThinkPad rmi4 suspend failure that I reported in another thread).
+The problem wasn't reproducible but I think the cause is obvious, printk can't
+be called from interrupt context.
 
-Thanks,
-Hugh
+AFAICU printk_deferred() is safe from NMI, so I assumed it is safe to be called
+from hrtimer_interrupt() too. Adding a pr_warn_once() inside
+hrtimer_interrupt() in a location where it is always hit produces the BUG
+splat. Replacing it with pr_warn_deferred_once() generates the printk warning
+without any splat.
+
+I added a new pr_*_deferred_once() variants to avoid open coding; but the name
+ended not much shorter and I'm not sure if the wrappers are a win overall.
+Since I've already done it, I'm sticking to it in this post. But will be happy
+to drop it and just open code the printk_deferred_once(KERN_WARN, ...) in
+hrtimer_interrupt() instead.
+
+Thanks
+
+Qais Yousef (2):
+  printk: Add new pr_*_deferred_once() variants
+  hrtimer: Use pr_warn_deferred_once() in hrtimer_interrupt()
+
+ include/linux/printk.h | 24 ++++++++++++++++++++++++
+ kernel/time/hrtimer.c  |  3 ++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
+
+-- 
+2.25.1
+
