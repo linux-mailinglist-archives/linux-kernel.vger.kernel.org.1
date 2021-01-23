@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F3F3011DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481DA3011EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbhAWBNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 20:13:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725274AbhAWBNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:13:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA1D523A7D;
-        Sat, 23 Jan 2021 01:12:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611364345;
-        bh=uPvzidVHRy4/UWt19cxIFD/VdW/vjghzVAz62Fn815U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ws48govYua3q3SZcjGeSh9J5n+qcYQgKtT/KeZ+ooNa9cz/7vxSJ0ju0jq0ZCSE1j
-         VcB5bjaS5xCBQqDxGV2Qn1PaG60Aen8L4f/JgGiYep01Yuar9jy3RuyJkkx3Ffsn8B
-         RdKJko1WgBhPh+MvnDR6OSenKtgzwsyTs/aPc+xHOhEYYdCxB3uw1Vqz/vgUBCspbR
-         cQVjEEHdvTSORnQTELfSvBzisNXkcgrVpng+dqTgwimCR63IGv0TTyxK0SUHVc7ZGo
-         tLcJ7EkfFXdWIfFT6XaUyuKbViFK7NkpyfmuyTT3NzLQhzYa4UO41CG6eeIhJrTXgX
-         dOVFaowmZNdow==
-Date:   Fri, 22 Jan 2021 17:12:23 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Message-ID: <20210122171223.1f7b55b7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
-References: <AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+        id S1726503AbhAWBQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbhAWBQK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 20:16:10 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBCFC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:15:25 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id rv9so10212685ejb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aZHWC0QZZA37dcKrvB+jA2eMe/FYFoxrvp88RR54inU=;
+        b=a2niozalS5x3ybbQChS+nPD+2ab6W0/kt0PFw46W1AX+wreKDIEfNPpr5Zj9lOcF+q
+         nC2/oUSgvc976KUmJSIeLtrOQjtRqmloROV2AypxhQg+hwFAFMtW2xLiauW44AEUUBiF
+         hqXn3dj4jQ5kvRsie+iEc1dnVD+pn3+DuO9fCEdZWEo81leY7mAk4Cx6Moxuh8V+XrmI
+         XxgfHHGW3RJazwFFiCy2xfbua/KA4gLR/tjJ0mIGxAyexDL649yOZ+ArNgq88o25sLpw
+         DdCK0x9a0chUuwCzclGE21GM+/fZ31LlbfIZ4ABbK16Qx/3fLiJRXvJuyzFIiBeOl8hu
+         JbqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aZHWC0QZZA37dcKrvB+jA2eMe/FYFoxrvp88RR54inU=;
+        b=jy83UWUHoWaGK3A4Mvp1+ZUp+rEg0quJQDXGYjivFqicR0s5neMdSXjfIw/rcVj0iq
+         RhJNmCb3k0RZsT6x83aExvkHuuxJTphJD0F8//kUMCR2iJ0L08r9hUKY7hvXtnI+0snW
+         oIiRLJ8XQ1ekzxCYawEGK5la8nQSvYHc8krzJ2Q5r4Ds3OQZqFG62OM1xfTCaF9iw4XI
+         8380FPMCQyfXei+COOlJesvYPXs2/aLe+TJxL7BmQbXbxG1A76jQpAxjkEPE4QcqwWaL
+         1eiLhpZVYUnml+llHtenYuzn6o0wym+NxHHNODRqm8BPfChjfqDher25iA5/py8Csldp
+         ZE6g==
+X-Gm-Message-State: AOAM530Q9Old2a5mcaPPkE9c2BQykqiInL/F2jFWc2YcbFKS2Pg/F1x9
+        1iii0HKpKOvPgkmwNcmBAyd6JSLPDa7OVQQxIJJS+A==
+X-Google-Smtp-Source: ABdhPJwcM5QQPYi/sgWHIWgDz4u3w27IDZzkKokmBVapf4JwhJZ/P1/Dbfiwu5YNNk0+Bg+9VIWUvMUFFqXOuhMG3RE=
+X-Received: by 2002:a17:906:eb95:: with SMTP id mh21mr4823614ejb.175.1611364524697;
+ Fri, 22 Jan 2021 17:15:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20200326032420.27220-1-pasha.tatashin@soleen.com>
+ <20200326032420.27220-11-pasha.tatashin@soleen.com> <e6faa23d-27a8-838a-33ef-2a6ad8a5c746@arm.com>
+In-Reply-To: <e6faa23d-27a8-838a-33ef-2a6ad8a5c746@arm.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 22 Jan 2021 20:14:49 -0500
+Message-ID: <CA+CK2bDJeYPzGyVkRJu2AOkvV8SJ=ea3jbAZtho8_VA416kZ4A@mail.gmail.com>
+Subject: Re: [PATCH v9 10/18] arm64: kexec: cpu_soft_restart change argument types
+To:     James Morse <james.morse@arm.com>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 08:36:01 +0000 Oleksandr Mazur wrote:
-> On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:
-> > On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote: =20
-> > > Add new trap action HARD_DROP, which can be used by the
-> > > drivers to register traps, where it's impossible to get
-> > > packet reported to the devlink subsystem by the device
-> > > driver, because it's impossible to retrieve dropped packet
-> > > from the device itself.
-> > > In order to use this action, driver must also register
-> > > additional devlink operation - callback that is used
-> > > to retrieve number of packets that have been dropped by
-> > > the device.=C2=A0  =20
-> >=20
-> > Are these global statistics about number of packets the hardware dropped
-> > for a specific reason or are these per-port statistics?
-> >=20
-> > It's a creative use of devlink-trap interface, but I think it makes
-> > sense. Better to re-use an existing interface than creating yet another
-> > one. =20
->=20
-> > Not sure if I agree, if we can't trap why is it a trap?
-> > It's just a counter. =20
->=20
-> It's just another ACTION for trap item. Action however can be
-> switched, e.g. from HARD_DROP to MIRROR.
->=20
-> The thing is to be able to configure specific trap to be dropped, and
-> provide a way for the device to report back how many packets have
-> been dropped. If device is able to report the packet itself, then
-> devlink would be in charge of counting. If not, there should be a way
-> to retrieve these statistics from the devlink.
+On Wed, Apr 29, 2020 at 1:01 PM James Morse <james.morse@arm.com> wrote:
+>
+> Hi Pavel,
+>
+> On 26/03/2020 03:24, Pavel Tatashin wrote:
+> > Change argument types from unsigned long to a more descriptive
+> > phys_addr_t.
+>
+> For 'entry', which is a physical addresses, sure...
+>
+> > diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
+> > index ed50e9587ad8..38cbd4068019 100644
+> > --- a/arch/arm64/kernel/cpu-reset.h
+> > +++ b/arch/arm64/kernel/cpu-reset.h
+> > @@ -10,17 +10,17 @@
+> >
+> >  #include <asm/virt.h>
+> >
+> > -void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
+> > -     unsigned long arg0, unsigned long arg1, unsigned long arg2);
+>
+> > +void __cpu_soft_restart(phys_addr_t el2_switch, phys_addr_t entry,
+> > +                     phys_addr_t arg0, phys_addr_t arg1, phys_addr_t arg2);
+>
+> This looks weird because its re-using the hyp-stub API, because it might call the hyp-stub
+> from the idmap. entry is passed in, so this isn't tied to kexec. Without tying it to
+> kexec, how do you know arg2 is a physical address?
+> I think it tried to be re-usable because 32bit has more users for this.
 
-Sure, but the action is drop. The statistics on the trap are orthogonal
-to the action.
+I will drop this patch. It was intended as a cleanup from suggestions
+in earlier versions of this series, but I see it is not really needed.
+
+Thank you,
+Pasha
