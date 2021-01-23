@@ -2,332 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967353016D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 17:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2535C3016D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 17:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbhAWQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 11:30:27 -0500
-Received: from 6.mo3.mail-out.ovh.net ([188.165.43.173]:37427 "EHLO
-        6.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbhAWQaZ (ORCPT
+        id S1726103AbhAWQe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 11:34:56 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:24107 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbhAWQex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 11:30:25 -0500
-X-Greylist: delayed 1041 seconds by postgrey-1.27 at vger.kernel.org; Sat, 23 Jan 2021 11:30:22 EST
-Received: from player773.ha.ovh.net (unknown [10.108.54.230])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 639C527780C
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 17:12:18 +0100 (CET)
-Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
-        (Authenticated sender: steve@sk2.org)
-        by player773.ha.ovh.net (Postfix) with ESMTPSA id 384441A6A971F;
-        Sat, 23 Jan 2021 16:12:11 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-104R0055055b986-e009-4e24-949d-5c0c4a8a094c,
-                    7B2D8D7625DC74679C0ED8449AAD640B3E3DF2E6) smtp.auth=steve@sk2.org
-X-OVh-ClientIp: 82.65.25.201
-From:   Stephen Kitt <steve@sk2.org>
-To:     linux-man@vger.kernel.org,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        linux-kernel@vger.kernel.org, Stephen Kitt <steve@sk2.org>
-Subject: [PATCH v6] close_range.2: new page documenting close_range(2)
-Date:   Sat, 23 Jan 2021 17:11:54 +0100
-Message-Id: <20210123161154.29332-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        Sat, 23 Jan 2021 11:34:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611419669; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=oT7MRBChsv+idL281B/pS9tqQFqOqOFuyvZzg95aFI0=; b=aWihURE5AzSoTItDlDMwbcb7U19tlCwah4lfXg0ZZIQUkIeS4/NabWbp0/gqoJ0PARV3XPRA
+ Vl1Lm1LLsQd/cvsuxj0ZCdhK0a4aLHeGTcNgn6FP31d99QPgk+7IB+kXZP05Sl409aB06JR+
+ 42zwcp9EIhg/5XwrvKAoSHWzx9E=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 600c4ff6fb02735e8cf5561d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Jan 2021 16:33:58
+ GMT
+Sender: gkohli=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F1A0DC43461; Sat, 23 Jan 2021 16:33:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.4] (unknown [136.185.226.226])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gkohli)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EC1ACC433ED;
+        Sat, 23 Jan 2021 16:33:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EC1ACC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+To:     Denis Efremov <efremov@linux.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
+        Julia Lawall <julia.lawall@inria.fr>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+ <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+ <20210121140951.2a554a5e@gandalf.local.home>
+ <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
+ <20210121153732.43d7b96b@gandalf.local.home> <YAqwD/ivTgVJ7aap@kroah.com>
+ <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
+ <20210122093758.320bb4f9@gandalf.local.home>
+ <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+Message-ID: <46d1f82b-1eb4-a828-c79c-e6556eccf9d5@codeaurora.org>
+Date:   Sat, 23 Jan 2021 22:03:27 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 5395875306788637970
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudekgdeklecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepteegudfgleekieekteeggeetveefueefteeugfduieeitdfhhedtfeefkedvfeefnecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejjeefrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+In-Reply-To: <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents close_range(2) based on information in
-278a5fbaed89dacd04e9d052f4594ffd0e0585de,
-60997c3d45d9a67daf01c56d805ae4fec37e0bd8, and
-582f1fb6b721facf04848d2ca57f34468da1813e.
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
-V6: bit mask, close-on-exec flag language improvements
-    another close(2) reference
-    only include one example program
-    ensure the example code doesn't wrap
 
-V5: clarification of the open/close_range/execve sequence
+On 1/23/2021 4:19 PM, Denis Efremov wrote:
+> 
+> 
+> On 1/22/21 5:37 PM, Steven Rostedt wrote:
+>> On Fri, 22 Jan 2021 16:55:29 +0530
+>> Gaurav Kohli <gkohli@codeaurora.org> wrote:
+>>
+>>>>> That could possibly work.
+>>>
+>>> Yes, this will work, As i have tested similar patch for internal testing
+>>> for kernel branches like 5.4/4.19.
+>>
+>> Can you or Denis send a proper patch for Greg to backport? I'll review it,
+>> test it and give my ack to it, so Greg can take it without issue.
+>>
+> 
+> I can prepare the patch, but it will be compile-tested only from my side. Honestly,
+> I think it's better when the patch and its backports have the same author and
+> commit message. And I can't test the fix by myself as I don't know how to reproduce
+> conditions for the bug. I think it's better if Gaurav will prepare this backport,
+> unless he have reasons for me to do it or maybe just don't have enough time nowadays.
+> Gaurav, if you want to somehow mention me you add my Reported-by:
+> 
+> Thanks,
+> Denis
+> 
 
-V4: sort flags alphabetically
-    move commit references inside the corresponding section
-    more semantic newlines
-    unformat numeric constants
-    more formatting for function references
-    escape C backslashes
-    C99 loop indices
+Sure I will do, I have never posted on backport branches. Let me check 
+and post it.
 
-V3: fix synopsis overflow
-    copy notes from membarrier.2 re the lack of wrapper
-    semantic newlines
-    drop non-standard "USE CASES" section heading
-    add code example
-
-V2: unsigned int to match the kernel declarations
-    groff and grammar tweaks
-    CLOSE_RANGE_UNSHARE unshares *and* closes
-    Explain that EMFILE and ENOMEM can occur with C_R_U
-    "Conforming to" phrasing
-    Detailed explanation of CLOSE_RANGE_UNSHARE
-    Reading /proc isn't common
-
- man2/close_range.2 | 236 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 236 insertions(+)
- create mode 100644 man2/close_range.2
-
-diff --git a/man2/close_range.2 b/man2/close_range.2
-new file mode 100644
-index 000000000..5abb73990
---- /dev/null
-+++ b/man2/close_range.2
-@@ -0,0 +1,236 @@
-+.\" Copyright (c) 2020 Stephen Kitt <steve@sk2.org>
-+.\"
-+.\" %%%LICENSE_START(VERBATIM)
-+.\" Permission is granted to make and distribute verbatim copies of this
-+.\" manual provided the copyright notice and this permission notice are
-+.\" preserved on all copies.
-+.\"
-+.\" Permission is granted to copy and distribute modified versions of this
-+.\" manual under the conditions for verbatim copying, provided that the
-+.\" entire resulting derived work is distributed under the terms of a
-+.\" permission notice identical to this one.
-+.\"
-+.\" Since the Linux kernel and libraries are constantly changing, this
-+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
-+.\" responsibility for errors or omissions, or for damages resulting from
-+.\" the use of the information contained herein.  The author(s) may not
-+.\" have taken the same level of care in the production of this manual,
-+.\" which is licensed free of charge, as they might when working
-+.\" professionally.
-+.\"
-+.\" Formatted or processed versions of this manual, if unaccompanied by
-+.\" the source, must acknowledge the copyright and authors of this work.
-+.\" %%%LICENSE_END
-+.\"
-+.TH CLOSE_RANGE 2 2020-12-08 "Linux" "Linux Programmer's Manual"
-+.SH NAME
-+close_range \- close all file descriptors in a given range
-+.SH SYNOPSIS
-+.nf
-+.B #include <linux/close_range.h>
-+.PP
-+.BI "int close_range(unsigned int " first ", unsigned int " last ,
-+.BI "                unsigned int " flags );
-+.fi
-+.PP
-+.IR Note :
-+There is no glibc wrapper for this system call; see NOTES.
-+.SH DESCRIPTION
-+The
-+.BR close_range ()
-+system call closes all open file descriptors from
-+.I first
-+to
-+.I last
-+(included).
-+.PP
-+Errors closing a given file descriptor are currently ignored.
-+.PP
-+.I flags
-+is a bit mask containing 0 or more of the following:
-+.TP
-+.BR CLOSE_RANGE_CLOEXEC " (since Linux 5.11)"
-+sets the file descriptor's close-on-exec flag instead of
-+immediately closing the file descriptors.
-+.TP
-+.B CLOSE_RANGE_UNSHARE
-+unshares the range of file descriptors from any other processes,
-+before closing them,
-+avoiding races with other threads sharing the file descriptor table.
-+.SH RETURN VALUE
-+On success,
-+.BR close_range ()
-+returns 0.
-+On error, \-1 is returned and
-+.I errno
-+is set to indicate the cause of the error.
-+.SH ERRORS
-+.TP
-+.B EINVAL
-+.I flags
-+is not valid, or
-+.I first
-+is greater than
-+.IR last .
-+.PP
-+The following can occur with
-+.B CLOSE_RANGE_UNSHARE
-+(when constructing the new descriptor table):
-+.TP
-+.B EMFILE
-+The per-process limit on the number of open file descriptors has been reached
-+(see the description of
-+.B RLIMIT_NOFILE
-+in
-+.BR getrlimit (2)).
-+.TP
-+.B ENOMEM
-+Insufficient kernel memory was available.
-+.SH VERSIONS
-+.BR close_range ()
-+first appeared in Linux 5.9.
-+.SH CONFORMING TO
-+.BR close_range ()
-+is a nonstandard function that is also present on FreeBSD.
-+.SH NOTES
-+Glibc does not provide a wrapper for this system call; call it using
-+.BR syscall (2).
-+.SS Closing all open file descriptors
-+.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
-+To avoid blindly closing file descriptors
-+in the range of possible file descriptors,
-+this is sometimes implemented (on Linux)
-+by listing open file descriptors in
-+.I /proc/self/fd/
-+and calling
-+.BR close (2)
-+on each one.
-+.BR close_range ()
-+can take care of this without requiring
-+.I /proc
-+and within a single system call,
-+which provides significant performance benefits.
-+.SS Closing file descriptors before exec
-+.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
-+File descriptors can be closed safely using
-+.PP
-+.in +4n
-+.EX
-+/* we don't want anything past stderr here */
-+close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
-+execve(....);
-+.EE
-+.in
-+.PP
-+.B CLOSE_RANGE_UNSHARE
-+is conceptually equivalent to
-+.PP
-+.in +4n
-+.EX
-+unshare(CLONE_FILES);
-+close_range(first, last, 0);
-+.EE
-+.in
-+.PP
-+but can be more efficient:
-+if the unshared range extends past
-+the current maximum number of file descriptors allocated
-+in the caller's file descriptor table
-+(the common case when
-+.I last
-+is ~0U),
-+the kernel will unshare a new file descriptor table for the caller up to
-+.IR first .
-+This avoids subsequent
-+.BR close (2)
-+calls entirely;
-+the whole operation is complete once the table is unshared.
-+.SS Closing files on \fBexec\fP
-+.\" 582f1fb6b721facf04848d2ca57f34468da1813e
-+This is particularly useful in cases where multiple
-+.RB pre- exec
-+setup steps risk conflicting with each other.
-+For example, setting up a
-+.BR seccomp (2)
-+profile can conflict with a
-+.BR close_range ()
-+call:
-+if the file descriptors are closed before the
-+.BR seccomp (2)
-+profile is set up,
-+the profile setup can't use them itself,
-+or control their closure;
-+if the file descriptors are closed afterwards,
-+the seccomp profile can't block the
-+.BR close_range ()
-+call or any fallbacks.
-+Using
-+.B CLOSE_RANGE_CLOEXEC
-+avoids this:
-+the descriptors can be marked before the
-+.BR seccomp (2)
-+profile is set up,
-+and the profile can control access to
-+.BR close_range ()
-+without affecting the calling process.
-+.SH EXAMPLES
-+The following program executes the command given on its command-line,
-+after opening the files listed after the command and then using
-+.BR close_range ()
-+to close them:
-+.PP
-+.in +4n
-+.EX
-+/* close_range.c */
-+
-+#include <fcntl.h>
-+#include <linux/close_range.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/stat.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+int
-+main(int argc, char *argv[])
-+{
-+    char *newargv[] = { NULL };
-+    char *newenviron[] = { NULL };
-+
-+    if (argc < 3) {
-+        fprintf(stderr, "Usage: %s <command> <file>...\en", argv[0]);
-+        exit(EXIT_FAILURE);
-+    }
-+
-+    for (int i = 2; i < argc; i++) {
-+        if (open(argv[i], O_RDONLY) == -1) {
-+            perror(argv[i]);
-+            exit(EXIT_FAILURE);
-+        }
-+    }
-+
-+    if (syscall(__NR_close_range, 3, ~0U, 0) == -1) {
-+        perror("close_range");
-+        exit(EXIT_FAILURE);
-+    }
-+
-+    execve(argv[1], newargv, newenviron);
-+    perror("execve");
-+    exit(EXIT_FAILURE);
-+}
-+.EE
-+.in
-+.PP
-+Running any program with the above, with files to open:
-+.PP
-+.in +4n
-+.EX
-+.RB "$" " ./close_range " <program> " /dev/null /dev/zero"
-+.EE
-+.in
-+.PP
-+and inspecting the open files in the resulting process will show that
-+the files have indeed been closed.
-+.SH SEE ALSO
-+.BR close (2)
-
-base-commit: fb0d03d11cec04da7720a80a1373605d81fbb432
 -- 
-2.20.1
-
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project.
