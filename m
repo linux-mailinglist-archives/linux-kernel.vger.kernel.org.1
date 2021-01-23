@@ -2,204 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D76A3013DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 09:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746E93013DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 09:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbhAWIGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 03:06:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbhAWIFT (ORCPT
+        id S1726955AbhAWIH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 03:07:56 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:42250 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbhAWIHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 03:05:19 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D1CC0613D6;
-        Sat, 23 Jan 2021 00:04:39 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id y19so16129679iov.2;
-        Sat, 23 Jan 2021 00:04:39 -0800 (PST)
+        Sat, 23 Jan 2021 03:07:49 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N82a1E163131;
+        Sat, 23 Jan 2021 08:07:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=llzIADoeB26bjAHBPE/Oyqk0bSJd6IFuUBZT7dJQ/k4=;
+ b=hr8a9Z9sNANp0tCBh6Qef0EuZykgYTJI1HnUDMGYxmAHbydjaw9qu73jP2s5tdYVxueJ
+ zrUbrgkdMrkJbjgH3bAOsRiUaH7p78axntHunzeDwEBfr52DGOGzvmfNbczb1g9/BgLz
+ XTgK1U51XHFsvGEBTB4tw8w3JzT72zm9cKvGZEbygSmGDNg+3SmdrG+qIszpASMeXbtA
+ 7TlnXwcfN64HvjZtMfp3j44217cIrDEdhYleFB3hGtiy5AudDpUcc+xFBXtMHi3IbbUK
+ Xmj1WNYrJVzAoXcA/RwvixhqitNU9wkv0ShtYxD3HXi1hHWZGbtrNGN/H2iRcJLEhvwu Mw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 3689aa8hch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 08:07:02 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N80rxC155890;
+        Sat, 23 Jan 2021 08:07:02 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2052.outbound.protection.outlook.com [104.47.46.52])
+        by aserp3030.oracle.com with ESMTP id 3689u9022h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 08:07:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z42n7R608MdB4vZmuGcTno3XLlNH0vZ8yYuJfJNf2edl0SCK0CuFO6qopALj70aS2BQa+d0tTqX7ouSyxTp28amoZP6g+AET8AY0gRAFnMGf2GvsLgZjgcwhAhNvax1BqujYhlqEREkx//6rErdliP/RCYRM4deFg4uA9Qan9yienN4X2lk1ydyijt+R6k2lV9PB4vSiXz12dTB7D+1dmMlr4v7Z2l6CiaQW+jI90qz+cp8g40wF1lxjTaPHygcA2QFGNNYYubhSL2iw0HplHEERElBZr1BRKShhrWD/WwvmRjhUjkxAp2Vfc76MNGabWaLlsVb+SWyCbMz8VDa3oA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=llzIADoeB26bjAHBPE/Oyqk0bSJd6IFuUBZT7dJQ/k4=;
+ b=TmS7LeWWvUmc9odKLc7I5HMh2Nuk2yd3Dn0CWjd7F1alE8FU/93ohl5+rqqi4gaJlamsW1eaI9L1XcsBlS3CHKPtcmTf5mDMU/5i7mDP4PbRHv9Z+SOXe6NOJ/lQruZ/m37AxtdfeLZ/eElof0oj57n8HUwCtGdzgeKQZt4rguyHzo25PbF2aOn37FolNPlcoQwKKd8jvlPhU2SrYxQ51KfX1YqKPPucskbE6VMO93m5Iy4uztCsDNsnUJiIDunpd+5sMhkwoj427s6rf8K+OJtDp6+11NKUz1wS/2zj5BIF7tAxU5oDH0ks9In55zn6FP/3vRWzSwQK9j1JxQbC6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TBTlIdIvYUiPYakesEMFgdk0tMLS0w4p19XOCt6zOMg=;
-        b=rnjaIvUuIL6LOgjxA3qOaFvZSIQE1YxiG7F9VypURp+e9TS/8sFoPo6MdZKWtxZ1vR
-         xu1Z2I7gV1PQdeYOUA6CJQ/tJOgqq2ONpJ2/rl1tQP1N0ZMlUmsitDkhSnn/TibjLUcj
-         BGht61dn+X5O8GMv8ndM1bFHTsW70znFBukfkPJlxzyauyBq5vX0+akJWtJPkLWehvNt
-         9P6NqmtJvUiZm4n6o1O5zoev+7b4e5pItMogwQ2v615djGKTrNO42a6s4ZZCt0bWMd4O
-         cQmkiHCdcltjNo+8WEkXpIMCuUuslDfi2XGM4Fy9IuqImGAatHvKGhNOBJz+XN01ezcy
-         +NDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TBTlIdIvYUiPYakesEMFgdk0tMLS0w4p19XOCt6zOMg=;
-        b=j8rZYkV8thRM1rGWlZ0p1btrl4jqNlrCav0SnAr6a44cUKK1KDeXsUWmrd/ZQjCoSK
-         vb4g9dCtfEZRS8KEEnaY4rzrUg9myD0nnC0XfVg9RSkJPwC/5grTL3n825wkGi9G5q5g
-         UjE84bYYTj6i62/YRbq/nIBFFYLoeFPFnX2rMn27PLyqGjVNCaXhJYkN6WCbmqcwJB98
-         TapRTU7WZe3frWWmxFzzzWacqh2odT2NNTxXX62+0BQ7xULMlyS2iu0yNN6lwLeb2DlE
-         /4+/3ATVAXAK/HYOQn+pBZemnrAhsgbz4ANAqHG9TJtZ9gSqGh+SFgPUYJ5av/YCGeA9
-         +UQw==
-X-Gm-Message-State: AOAM530qvM/nMtPw51z/Z7QwSA3D/f1j6sZU/9LHu9pz9Fgt+XoIVPaI
-        pqdCx0MfTEY4hxI7L7IdrH0ZX8YbQ0mShuhLbOc=
-X-Google-Smtp-Source: ABdhPJzdhBKQDFyQBIYgvZtmapH2u901GGnBij0WMkrtT0Kt8Q9iUugjS1f/dSspdy6lepUuNfEkRuIJeJf6E7f5tYY=
-X-Received: by 2002:a5d:8909:: with SMTP id b9mr6120475ion.175.1611389078594;
- Sat, 23 Jan 2021 00:04:38 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=llzIADoeB26bjAHBPE/Oyqk0bSJd6IFuUBZT7dJQ/k4=;
+ b=FaHWBDHmas81kPUI+thxrHOmWfrsrYAy3Yvx1hbGnNSIxIDzGEGpYwWWNIABRCQ+WvRcYakbMV9UYzdzghlw/07RdnS/DSbU4zfdIwoki5+CJ9tnZt6D/4wVllYUdg1IAInoAKYbvnDH0HKSESYE6hTVp79DumgAHvonUKquZEE=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
+ by BYAPR10MB3445.namprd10.prod.outlook.com (2603:10b6:a03:81::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Sat, 23 Jan
+ 2021 08:07:00 +0000
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::644d:92e4:7b5d:f8c1]) by BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::644d:92e4:7b5d:f8c1%5]) with mapi id 15.20.3784.016; Sat, 23 Jan 2021
+ 08:06:59 +0000
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        pbonzini@redhat.com, stefanha@redhat.com, joe.jin@oracle.com,
+        aruna.ramakrishna@oracle.com
+Subject: [PATCH v2 1/1] vhost scsi: alloc vhost_scsi with kvzalloc() to avoid delay
+Date:   Sat, 23 Jan 2021 00:08:53 -0800
+Message-Id: <20210123080853.4214-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.16]
+X-ClientProxiedBy: BY5PR03CA0012.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::22) To BYAPR10MB2663.namprd10.prod.outlook.com
+ (2603:10b6:a02:a9::20)
 MIME-Version: 1.0
-References: <20210121065643.342-1-alistair@alistair23.me> <20210121065643.342-7-alistair@alistair23.me>
- <20210122153231.qqiuwltvzzg52phg@pengutronix.de>
-In-Reply-To: <20210122153231.qqiuwltvzzg52phg@pengutronix.de>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Sat, 23 Jan 2021 00:04:12 -0800
-Message-ID: <CAKmqyKPey8xSfWPuiwR__h-tQBBZ+WjtbC1aO8umSzpBWC=xkw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] arch/arm: reMarkable2: Enable wacom_i2c
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (138.3.200.16) by BY5PR03CA0012.namprd03.prod.outlook.com (2603:10b6:a03:1e0::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Sat, 23 Jan 2021 08:06:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a1e8f6f0-e7e0-4900-f053-08d8bf75dc0e
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3445:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR10MB3445C5F804893F9EA8821934F0BF9@BYAPR10MB3445.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:635;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6Hgtt9xmblV3c+dlmiiote90Yzuq3FoqXtf2kBCcIhJZUiuU65xyQ4NgIP/Gttl2/UZZGvyskA+Il2+AaVL7rO6KeDcxvSQs0So4+ivHtZoGed2fHasFWw6fsJFB6EY8arnPvvH2I1u845OEiVb3o5nEAwnwMwFAvxWQAJWjlq4NVciuLJSKrB67pwP3Jzwx2dsmu7N+644LBsZ+VVetRSKnK5e1j8tNY8xaK4nQXBt5haMDcJUYEN0j+hJ9cMaGp+39J4L7H1oi3d3C8XBTqJykquk3dsQDkqnW+JvA1HK5FDqLnXpqYKHHzxxpqzNgsYOyoxH84CYA7R50CtDfJXNzKviwsh65Lf7TgV5shrILMssr7gfgdcuQR/ArtjVPmKBPOMPEf0LpXsFLrYx62L8iGTPoRNJIFcubfE+g1zVbDo+Kh9SNj5w6BHH6L4COyBbw+uHBvzqhEw0GixuZzr9pjWug51+VL0CiUGRwbWn7Isup/2c+ESVWi2gJ6StJEirUk8zm4q1K2LE4geKpd615pRILGjNBPvJJeAwawMVLEej++8FFrqytmDOut04bQ3JlJuifInQIEK1A41pEQQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39860400002)(366004)(136003)(6486002)(83380400001)(44832011)(2906002)(1076003)(316002)(52116002)(4326008)(69590400011)(8676002)(956004)(6666004)(478600001)(66946007)(107886003)(5660300002)(66556008)(186003)(66476007)(26005)(6506007)(36756003)(86362001)(2616005)(8936002)(16526019)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+DOKApOjMVe4gBtY594LU4WXkPDebK75hAkpFHBwq8o+pIACKzjWnClTtdc5?=
+ =?us-ascii?Q?TO1q3u//8XRFmP9I0fYSkIolFJjD+qt55dk9hw/w2KBecVGow3bdpA4yIk+q?=
+ =?us-ascii?Q?jXgFtAHs7PEYkHQfcUVjvhtI+sH8b/DIrJ0J7f3ba09afvRTub9hBuoSsaRs?=
+ =?us-ascii?Q?YMPZW3c/hvlmXYeIhEgqxMxQZhwkxRbu+WR2uy/5sSSCNHZ0J0NMFKlBYHm1?=
+ =?us-ascii?Q?BIwRdywDz6bljsBnCaPczQmhGikmzw/FFrknhrFMGRBcjk+OiVk+JO9KQFv/?=
+ =?us-ascii?Q?WwpCvNY7upEXAqVo6OoRzRJS12i56XzHU2nGxIPgUFDT6aEoWRZLEUe3FK96?=
+ =?us-ascii?Q?xRPN7reG6r3tT4pUW5dhjsoFVcKxiPSW/Mf+Tlw4evYULAAOhrqmR+BBKoR7?=
+ =?us-ascii?Q?zF/BBacKppvvrB8IZfGZiPPYqmpgVOCtxoleoT5aLZFps6hFgQsgYpKUWZd7?=
+ =?us-ascii?Q?ci2dyAQ6SrqXiGJ9SbCo5gwrsz4NhpO0Ul0OJeFsP7vAhksRZBlMI/4v239x?=
+ =?us-ascii?Q?0FW9qnd28BC51GdxJsRi5D5r9OBOuyrt3MTx/FMtu6H/HQyFDLS367K60AfM?=
+ =?us-ascii?Q?j4o6vjsFnXbtJu/WqzjB6voEhWWsUg1rLhMNXvL3DKvpLbdumLrCYE0SB4CQ?=
+ =?us-ascii?Q?0gaixfa1LYegE8aKLkFRvvQFCvy0jtJwTikvz6yAmaMPlQ+2VPsvQzgI0I0H?=
+ =?us-ascii?Q?87UZhGGRhkFzxcgj/a5bgobLX2eneG3cV7POghU/VHXQsCeFabgDco3fZSiW?=
+ =?us-ascii?Q?R+kJqQR3qVaAV8Rp1Jtrb5YbR84OX+OJoHS4aJxQaL5AjKKRuSazbCCurrl6?=
+ =?us-ascii?Q?2yOOGNy7bkGROAyRT1zuB5MHzwk92NdRLJM8pXCgflUR2Ppgkonv5LKhKVUi?=
+ =?us-ascii?Q?cXAw50KL2p+9S8lugohFX1Zq1aSs7nQjhdPTLTIl99a2GhF/93RaBSFmd136?=
+ =?us-ascii?Q?d5ROPk6QxLw/8zNp0jYDWS25EXUFL2z4dl/Ris/1imITBDJbM3vqYovvOgPQ?=
+ =?us-ascii?Q?JS/8?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1e8f6f0-e7e0-4900-f053-08d8bf75dc0e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2021 08:06:59.8539
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LDLTZd+7YWNr64zbVxKAXuzDTCO900wUMIVVRQZXV0rmGpK/BHQeW0b+uGN72lfqOmGmeoprH0U9J+B56DxzdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3445
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=785
+ adultscore=0 suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101230043
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=907 clxscore=1015 phishscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101230043
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 7:32 AM Marco Felsch <m.felsch@pengutronix.de> wrote:
->
-> Hi,
->
-> thanks for the patch.
->
-> On 21-01-20 22:56, Alistair Francis wrote:
-> > Enable the wacom_i2c touchscreen for the reMarkable2.
-> >
-> > Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> > ---
-> >  arch/arm/boot/dts/imx7d-remarkable2.dts | 41 +++++++++++++++++++++++++
-> >  arch/arm/configs/imx_v6_v7_defconfig    |  1 +
->
-> Those two changes should be splitted and the dts patch should be named:
-> "ARM: dts: imx7d: remarkable2: add wacom digitizer device".
->
-> >  2 files changed, 42 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > index fba55a0e028a..8052d884a5e5 100644
-> > --- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > +++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-> > @@ -150,6 +150,30 @@ &dma_apbh {
-> >       status = "disabled";
-> >  };
-> >
-> > +&i2c1 {
-> > +     clock-frequency = <400000>;
-> > +     pinctrl-names = "default", "sleep";
-> > +     pinctrl-0 = <&pinctrl_i2c1>;
-> > +     pinctrl-1 = <&pinctrl_i2c1>;
->
-> No need to specify the sleep state if both are using the same pinctrl
-> config.
->
-> > +     status = "okay";
-> > +
-> > +     digitizer: wacom-i2c@9 {
->
-> this should be:
->         wacom_digitizer: digitizer@9 {
->
-> > +             pinctrl-names = "default", "sleep";
-> > +             pinctrl-0 = <&pinctrl_wacom>;
-> > +             pinctrl-1 = <&pinctrl_wacom>;
->
-> Same here, sleep and default refer to the same state.
->
-> > +             compatible = "wacom,wacom-i2c";
-> > +             reg = <0x09>;
->
-> compatible and reg are always the first to properties.
->
-> > +             interrupt-parent = <&gpio1>;
-> > +             interrupts = <1 2>;
->
-> Please use defines.
+The size of 'struct vhost_scsi' is order-10 (~2.3MB). It may take long time
+delay by kzalloc() to compact memory pages by retrying multiple times when
+there is a lack of high-order pages. As a result, there is latency to
+create a VM (with vhost-scsi) or to hotadd vhost-scsi-based storage.
 
-I have addressed all your comments.
+The prior commit 595cb754983d ("vhost/scsi: use vmalloc for order-10
+allocation") prefers to fallback only when really needed, while this patch
+allocates with kvzalloc() with __GFP_NORETRY implicitly set to avoid
+retrying memory pages compact for multiple times.
 
->
-> > +             flip-tilt-x;
-> > +             flip-tilt-y;
-> > +             flip-pos-x;
-> > +             flip-pos-y;
-> > +             flip-distance;
-> > +             vdd-supply = <&reg_digitizer>;
->
-> Where is this regulator added?
+The __GFP_NORETRY is implicitly set if the size to allocate is more than
+PAGE_SZIE and when __GFP_RETRY_MAYFAIL is not explicitly set.
 
-It's already in the DT, it will be added with the initial commit
-(which is currently on the list).
+Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+Cc: Joe Jin <joe.jin@oracle.com>
+Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+---
+Changed since v1:
+  - To combine kzalloc() and vzalloc() as kvzalloc()
+    (suggested by Jason Wang)
 
-Alistair
+ drivers/vhost/scsi.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
->
-> > +     };
-> > +};
-> > +
-> >  &sdma {
-> >       status = "okay";
-> >  };
-> > @@ -221,6 +245,16 @@ &wdog1 {
-> >  };
-> >
-> >  &iomuxc_lpsr {
-> > +     pinctrl_wacom: wacomgrp {
-> > +             fsl,pins = <
-> > +                     /*MX7D_PAD_LPSR_GPIO1_IO00__GPIO1_IO0   0x00000074 /* WACOM RESET */
-> > +                     MX7D_PAD_LPSR_GPIO1_IO01__GPIO1_IO1     0x00000034 /* WACOM INT */
-> > +                     MX7D_PAD_LPSR_GPIO1_IO04__GPIO1_IO4     0x00000074 /* PDCTB */
-> > +                     /*MX7D_PAD_LPSR_GPIO1_IO05__GPIO1_IO5   0x00000014 /* FWE */
-> > +                     /*MX7D_PAD_LPSR_GPIO1_IO06__GPIO1_IO6   0x00000014 /* WACOM PWR ENABLE */
-> > +             >;
-> > +     };
->
-> Pls, sort this alphabetical.
->
-> > +
-> >       pinctrl_digitizer_reg: digitizerreggrp {
-> >               fsl,pins = <
-> >                       /* DIGITIZER_PWR_EN */
-> > @@ -236,6 +270,13 @@ MX7D_PAD_SAI1_RX_SYNC__GPIO6_IO16        0x59
-> >               >;
-> >       };
-> >
-> > +     pinctrl_i2c1: i2c1grp {
-> > +             fsl,pins = <
-> > +                     MX7D_PAD_I2C1_SDA__I2C1_SDA             0x4000007f
-> > +                     MX7D_PAD_I2C1_SCL__I2C1_SCL             0x4000007f
-> > +             >;
-> > +     };
-> > +
-> >       pinctrl_uart1: uart1grp {
-> >               fsl,pins = <
-> >                       MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX    0x79
-> > diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-> > index fa9229616106..2fc8dc6a8b0a 100644
-> > --- a/arch/arm/configs/imx_v6_v7_defconfig
-> > +++ b/arch/arm/configs/imx_v6_v7_defconfig
-> > @@ -167,6 +167,7 @@ CONFIG_TOUCHSCREEN_DA9052=y
-> >  CONFIG_TOUCHSCREEN_EGALAX=y
-> >  CONFIG_TOUCHSCREEN_GOODIX=y
-> >  CONFIG_TOUCHSCREEN_ILI210X=y
-> > +CONFIG_TOUCHSCREEN_WACOM_I2C=y
-> >  CONFIG_TOUCHSCREEN_MAX11801=y
-> >  CONFIG_TOUCHSCREEN_IMX6UL_TSC=y
-> >  CONFIG_TOUCHSCREEN_EDT_FT5X06=y
-> > --
-> > 2.29.2
-> >
-> >
-> >
->
-> --
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
+index 4ce9f00ae10e..5de21ad4bd05 100644
+--- a/drivers/vhost/scsi.c
++++ b/drivers/vhost/scsi.c
+@@ -1814,12 +1814,9 @@ static int vhost_scsi_open(struct inode *inode, struct file *f)
+ 	struct vhost_virtqueue **vqs;
+ 	int r = -ENOMEM, i;
+ 
+-	vs = kzalloc(sizeof(*vs), GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL);
+-	if (!vs) {
+-		vs = vzalloc(sizeof(*vs));
+-		if (!vs)
+-			goto err_vs;
+-	}
++	vs = kvzalloc(sizeof(*vs), GFP_KERNEL);
++	if (!vs)
++		goto err_vs;
+ 
+ 	vqs = kmalloc_array(VHOST_SCSI_MAX_VQ, sizeof(*vqs), GFP_KERNEL);
+ 	if (!vqs)
+-- 
+2.17.1
+
