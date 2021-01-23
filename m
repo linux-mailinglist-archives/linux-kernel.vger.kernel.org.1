@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08FE3012D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ED63012CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:48:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbhAWDrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 22:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54302 "EHLO
+        id S1726868AbhAWDqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 22:46:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726569AbhAWDqK (ORCPT
+        with ESMTP id S1726763AbhAWDqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 22:46:10 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE7EC0612F2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 19:44:37 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id g15so5101587pjd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 19:44:37 -0800 (PST)
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E3EC06121F
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 19:44:38 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id n10so5139923pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 19:44:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=o4yYwzF4tROKFYt2eOzFnYYTnlg9EWxAh+XeSEeStnQ=;
-        b=FePE0Rh/xSu8xWi5GgPl3W+kOB5bPHlW3vcnaWDD+ytBGmUhW1JH1xWeFygj4Lr9rK
-         iGCNc9AgVKYmVL8T70diPUyowZlE99uqQjdOjRyDDnAFXqPsucDLpkDCb4IuOZ0fKbEH
-         mFQbZStlFu37UytUjY/iMsBFh0gs+NMEt449A=
+        bh=TAGPmP9BOJXhZhPf5GwqBeoScIfskZqY/J81LHEeHtk=;
+        b=NZZ6yFVmNa7MxufUctRDhrA/2kE4i5M/O2laQqAIdRTg+v0WaUoejxIkipX2gg/JO8
+         o4NiObGkeDm7IDiHhRPngZP9FP/mimImdZ6hYrEQoilLtad2G5wBGpPWs6AAojVqSYre
+         SZkFzokfE9dqhMRMw1Z0pgZ/GD7gWAqAQIxs4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=o4yYwzF4tROKFYt2eOzFnYYTnlg9EWxAh+XeSEeStnQ=;
-        b=XRxi9f+7l9c0zBKO32cgQuX+g9oiydhlFva/6wU45/sTbKx1wCN+HKeN01KP8rXSv0
-         3+KhK15gYfw8QVXt3x/ClbhNUOIOqXipVVecIJ0V+4s1LA2cw2cO214z6KTkhk1BB9gf
-         MmtcwRHlsWX9VB6Y2xIdSPLMGtFyUKdif29FLaBNoncmj+gFw/UdkkCrpNVpKfNgCkeU
-         Hisa2yj3zr6kbz5ae/vPwBYfWDWiNUpzzHJdFKqKMlySeHzZABVdfupJYjoVD9ecPIDc
-         Pr/9EmOjE+f/PB4Zlfh5i0BAKlCGFpb2ifCSJVc2O+wFOZDoF+mHMSMJm0nJ5RrJIJfI
-         lNAA==
-X-Gm-Message-State: AOAM532isq6opeHT3exnoQ25nXiMKykZAR96jnNg947Gfnkz9R0tZ65k
-        n/1gPtqmMF0LjClcHEAnepY3eQ==
-X-Google-Smtp-Source: ABdhPJy66Yaa72bvz+TFvlVdOgWBeTJN96CJ6WmyZF4u0Sj7I332lxEwedbni49rsxMH4tn0yV97NA==
-X-Received: by 2002:a17:902:d909:b029:df:52b4:8147 with SMTP id c9-20020a170902d909b02900df52b48147mr2722252plz.33.1611373476696;
-        Fri, 22 Jan 2021 19:44:36 -0800 (PST)
+        bh=TAGPmP9BOJXhZhPf5GwqBeoScIfskZqY/J81LHEeHtk=;
+        b=eSWtwC3QeFxBijBaNFcsr0wpHed5ZCb8F3lFZRi+V0VBhrCfcV21Si0hL+1viNgz3V
+         rbmA7OXQTs/COv8aunkajPFC6OM6A0pyUQ+Nnu5uoV4O3RZUeyPzUFBmvhZ8N6+Wn2gJ
+         2ANDeCeJbDfSd8JIup86l+a3y+8hYDcjeLZMVdl4saUmwrmbF9dIOUYcHVtyvOON1IAR
+         w0xIezZRa0TFKtXPt3C91xv0xTTKGTcWKDnkT3U/ZTDunTmYgF+XQnGMkFtTPZ677sAp
+         aYOACxoo3pFLtcRA46HIUWgizCZKklwSlh/P8qrbf1I/vogqPGuP5I4cxlz37nG6SWCY
+         chVA==
+X-Gm-Message-State: AOAM530dTMBGAag793RlFql0br3F6gNxTTI4KDMWmGpj9kJV5v+a+8nI
+        0254RCJo86UXMTQuOJpfAYSMEw==
+X-Google-Smtp-Source: ABdhPJzNLWbZDFfZmckPJlA5EOwk5QhhmGGjNE24UUnWdo/NgVHUBCoGkQOdXUeI7A/hJLgkWOm5nQ==
+X-Received: by 2002:a05:6a00:1385:b029:1be:ac19:3a9d with SMTP id t5-20020a056a001385b02901beac193a9dmr1557962pfg.65.1611373478208;
+        Fri, 22 Jan 2021 19:44:38 -0800 (PST)
 Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id gf23sm10480343pjb.42.2021.01.22.19.44.35
+        by smtp.gmail.com with ESMTPSA id gf23sm10480343pjb.42.2021.01.22.19.44.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 19:44:36 -0800 (PST)
+        Fri, 22 Jan 2021 19:44:37 -0800 (PST)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Rob Herring <robh@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Arnd Bergmann <arnd@arndb.de>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
+        Richard Leitner <richard.leitner@skidata.com>,
         Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
-        linux-serial@vger.kernel.org
-Subject: [PATCH v2 3/6] serial: stm32: Use of_device_get_match_data()
-Date:   Fri, 22 Jan 2021 19:44:25 -0800
-Message-Id: <20210123034428.2841052-4-swboyd@chromium.org>
+        linux-usb@vger.kernel.org
+Subject: [PATCH v2 4/6] usb: usb251xb: Use of_device_get_match_data()
+Date:   Fri, 22 Jan 2021 19:44:26 -0800
+Message-Id: <20210123034428.2841052-5-swboyd@chromium.org>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 In-Reply-To: <20210123034428.2841052-1-swboyd@chromium.org>
 References: <20210123034428.2841052-1-swboyd@chromium.org>
@@ -69,316 +67,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver casts away the constness of struct stm32_usart_info that is
-pointed to by the of match table. Use of_device_get_match_data() instead
-of of_match_device() here and push the const throughout the code so that
-we don't cast away const. This nicely avoids referencing the match table
-when it is undefined with configurations where CONFIG_OF=n and fixes the
-const issues.
+Use the more modern API here instead of using of_match_device() and
+avoid casting away const from the returned pointer by pushing the const
+type through to the users. This nicely avoids referencing the match
+table when it is undefined with configurations where CONFIG_OF=n and
+avoids const issues.
 
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Richard Leitner <richard.leitner@skidata.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jslaby@suse.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
 Cc: Rob Herring <robh+dt@kernel.org>
 Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: <linux-serial@vger.kernel.org>
+Cc: <linux-usb@vger.kernel.org>
 ---
 
 Please ack so Rob can apply.
 
- drivers/tty/serial/stm32-usart.c | 71 +++++++++++++++-----------------
- drivers/tty/serial/stm32-usart.h |  2 +-
- 2 files changed, 35 insertions(+), 38 deletions(-)
+ drivers/usb/misc/usb251xb.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index f4de32d3f2af..99f04db73830 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -99,8 +99,8 @@ static int stm32_config_rs485(struct uart_port *port,
- 			      struct serial_rs485 *rs485conf)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	struct stm32_usart_config *cfg = &stm32_port->info->cfg;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
- 	u32 usartdiv, baud, cr1, cr3;
- 	bool over8;
- 
-@@ -166,7 +166,7 @@ static int stm32_pending_rx(struct uart_port *port, u32 *sr, int *last_res,
- 			    bool threaded)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	enum dma_status status;
- 	struct dma_tx_state state;
- 
-@@ -191,7 +191,7 @@ static unsigned long stm32_get_char(struct uart_port *port, u32 *sr,
- 				    int *last_res)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	unsigned long c;
- 
- 	if (stm32_port->rx_ch) {
-@@ -211,7 +211,7 @@ static void stm32_receive_chars(struct uart_port *port, bool threaded)
- {
- 	struct tty_port *tport = &port->state->port;
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	unsigned long c;
- 	u32 sr;
- 	char flag;
-@@ -282,7 +282,7 @@ static void stm32_tx_dma_complete(void *arg)
- {
- 	struct uart_port *port = arg;
- 	struct stm32_port *stm32port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
- 
- 	stm32_clr_bits(port, ofs->cr3, USART_CR3_DMAT);
- 	stm32port->tx_dma_busy = false;
-@@ -294,7 +294,7 @@ static void stm32_tx_dma_complete(void *arg)
- static void stm32_tx_interrupt_enable(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
- 	/*
- 	 * Enables TX FIFO threashold irq when FIFO is enabled,
-@@ -309,7 +309,7 @@ static void stm32_tx_interrupt_enable(struct uart_port *port)
- static void stm32_tx_interrupt_disable(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
- 	if (stm32_port->fifoen)
- 		stm32_clr_bits(port, ofs->cr3, USART_CR3_TXFTIE);
-@@ -320,7 +320,7 @@ static void stm32_tx_interrupt_disable(struct uart_port *port)
- static void stm32_transmit_chars_pio(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	struct circ_buf *xmit = &port->state->xmit;
- 
- 	if (stm32_port->tx_dma_busy) {
-@@ -347,7 +347,7 @@ static void stm32_transmit_chars_pio(struct uart_port *port)
- static void stm32_transmit_chars_dma(struct uart_port *port)
- {
- 	struct stm32_port *stm32port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
- 	struct circ_buf *xmit = &port->state->xmit;
- 	struct dma_async_tx_descriptor *desc = NULL;
- 	unsigned int count, i;
-@@ -407,7 +407,7 @@ static void stm32_transmit_chars_dma(struct uart_port *port)
- static void stm32_transmit_chars(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	struct circ_buf *xmit = &port->state->xmit;
- 
- 	if (port->x_char) {
-@@ -447,7 +447,7 @@ static irqreturn_t stm32_interrupt(int irq, void *ptr)
- {
- 	struct uart_port *port = ptr;
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	u32 sr;
- 
- 	spin_lock(&port->lock);
-@@ -494,7 +494,7 @@ static irqreturn_t stm32_threaded_interrupt(int irq, void *ptr)
- static unsigned int stm32_tx_empty(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
- 	return readl_relaxed(port->membase + ofs->isr) & USART_SR_TXE;
+diff --git a/drivers/usb/misc/usb251xb.c b/drivers/usb/misc/usb251xb.c
+index 29fe5771c21b..507deef1f709 100644
+--- a/drivers/usb/misc/usb251xb.c
++++ b/drivers/usb/misc/usb251xb.c
+@@ -396,7 +396,7 @@ static void usb251xb_get_ports_field(struct usb251xb *hub,
  }
-@@ -502,7 +502,7 @@ static unsigned int stm32_tx_empty(struct uart_port *port)
- static void stm32_set_mctrl(struct uart_port *port, unsigned int mctrl)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
  
- 	if ((mctrl & TIOCM_RTS) && (port->status & UPSTAT_AUTORTS))
- 		stm32_set_bits(port, ofs->cr3, USART_CR3_RTSE);
-@@ -579,7 +579,7 @@ static void stm32_start_tx(struct uart_port *port)
- static void stm32_throttle(struct uart_port *port)
+ static int usb251xb_get_ofdata(struct usb251xb *hub,
+-			       struct usb251xb_data *data)
++			       const struct usb251xb_data *data)
  {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&port->lock, flags);
-@@ -594,7 +594,7 @@ static void stm32_throttle(struct uart_port *port)
- static void stm32_unthrottle(struct uart_port *port)
+ 	struct device *dev = hub->dev;
+ 	struct device_node *np = dev->of_node;
+@@ -630,7 +630,7 @@ static const struct of_device_id usb251xb_of_match[] = {
+ MODULE_DEVICE_TABLE(of, usb251xb_of_match);
+ #else /* CONFIG_OF */
+ static int usb251xb_get_ofdata(struct usb251xb *hub,
+-			       struct usb251xb_data *data)
++			       const struct usb251xb_data *data)
  {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&port->lock, flags);
-@@ -609,7 +609,7 @@ static void stm32_unthrottle(struct uart_port *port)
- static void stm32_stop_rx(struct uart_port *port)
+ 	return 0;
+ }
+@@ -647,13 +647,11 @@ static int usb251xb_probe(struct usb251xb *hub)
  {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
- 	stm32_clr_bits(port, ofs->cr1, stm32_port->cr1_irq);
- 	if (stm32_port->cr3_irq)
-@@ -625,7 +625,7 @@ static void stm32_break_ctl(struct uart_port *port, int break_state)
- static int stm32_startup(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 	const char *name = to_platform_device(port->dev)->name;
- 	u32 val;
- 	int ret;
-@@ -661,8 +661,8 @@ static int stm32_startup(struct uart_port *port)
- static void stm32_shutdown(struct uart_port *port)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	struct stm32_usart_config *cfg = &stm32_port->info->cfg;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
- 	u32 val, isr;
- 	int ret;
- 
-@@ -721,8 +721,8 @@ static void stm32_set_termios(struct uart_port *port, struct ktermios *termios,
- 			    struct ktermios *old)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	struct stm32_usart_config *cfg = &stm32_port->info->cfg;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
- 	struct serial_rs485 *rs485conf = &port->rs485;
- 	unsigned int baud, bits;
- 	u32 usartdiv, mantissa, fraction, oversampling;
-@@ -921,8 +921,8 @@ static void stm32_pm(struct uart_port *port, unsigned int state,
- {
- 	struct stm32_port *stm32port = container_of(port,
- 			struct stm32_port, port);
--	struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
--	struct stm32_usart_config *cfg = &stm32port->info->cfg;
-+	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
-+	const struct stm32_usart_config *cfg = &stm32port->info->cfg;
- 	unsigned long flags = 0;
- 
- 	switch (state) {
-@@ -1081,7 +1081,7 @@ MODULE_DEVICE_TABLE(of, stm32_match);
- static int stm32_of_dma_rx_probe(struct stm32_port *stm32port,
- 				 struct platform_device *pdev)
- {
--	struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
- 	struct uart_port *port = &stm32port->port;
- 	struct device *dev = &pdev->dev;
- 	struct dma_slave_config config;
-@@ -1152,7 +1152,7 @@ static int stm32_of_dma_rx_probe(struct stm32_port *stm32port,
- static int stm32_of_dma_tx_probe(struct stm32_port *stm32port,
- 				 struct platform_device *pdev)
- {
--	struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32port->info->ofs;
- 	struct uart_port *port = &stm32port->port;
- 	struct device *dev = &pdev->dev;
- 	struct dma_slave_config config;
-@@ -1202,7 +1202,6 @@ static int stm32_of_dma_tx_probe(struct stm32_port *stm32port,
- 
- static int stm32_serial_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *match;
- 	struct stm32_port *stm32port;
- 	int ret;
- 
-@@ -1210,10 +1209,8 @@ static int stm32_serial_probe(struct platform_device *pdev)
- 	if (!stm32port)
- 		return -ENODEV;
- 
--	match = of_match_device(stm32_match, &pdev->dev);
--	if (match && match->data)
--		stm32port->info = (struct stm32_usart_info *)match->data;
--	else
-+	stm32port->info = of_device_get_match_data(&pdev->dev);
-+	if (!stm32port->info)
- 		return -EINVAL;
- 
- 	ret = stm32_init_port(stm32port, pdev);
-@@ -1272,7 +1269,7 @@ static int stm32_serial_remove(struct platform_device *pdev)
- {
- 	struct uart_port *port = platform_get_drvdata(pdev);
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+ 	struct device *dev = hub->dev;
+ 	struct device_node *np = dev->of_node;
+-	const struct of_device_id *of_id = of_match_device(usb251xb_of_match,
+-							   dev);
++	const struct usb251xb_data *usb_data = of_device_get_match_data(dev);
  	int err;
  
- 	pm_runtime_get_sync(&pdev->dev);
-@@ -1317,7 +1314,7 @@ static int stm32_serial_remove(struct platform_device *pdev)
- static void stm32_console_putchar(struct uart_port *port, int ch)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
- 
- 	while (!(readl_relaxed(port->membase + ofs->isr) & USART_SR_TXE))
- 		cpu_relax();
-@@ -1329,8 +1326,8 @@ static void stm32_console_write(struct console *co, const char *s, unsigned cnt)
- {
- 	struct uart_port *port = &stm32_ports[co->index].port;
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	struct stm32_usart_config *cfg = &stm32_port->info->cfg;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
- 	unsigned long flags;
- 	u32 old_cr1, new_cr1;
- 	int locked = 1;
-@@ -1416,8 +1413,8 @@ static void __maybe_unused stm32_serial_enable_wakeup(struct uart_port *port,
- 						      bool enable)
- {
- 	struct stm32_port *stm32_port = to_stm32_port(port);
--	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
--	struct stm32_usart_config *cfg = &stm32_port->info->cfg;
-+	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+	const struct stm32_usart_config *cfg = &stm32_port->info->cfg;
- 	u32 val;
- 
- 	if (stm32_port->wakeirq <= 0)
-diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
-index d4c916e78d40..cb4f327c46db 100644
---- a/drivers/tty/serial/stm32-usart.h
-+++ b/drivers/tty/serial/stm32-usart.h
-@@ -259,7 +259,7 @@ struct stm32_usart_info stm32h7_info = {
- struct stm32_port {
- 	struct uart_port port;
- 	struct clk *clk;
--	struct stm32_usart_info *info;
-+	const struct stm32_usart_info *info;
- 	struct dma_chan *rx_ch;  /* dma rx channel            */
- 	dma_addr_t rx_dma_buf;   /* dma rx buffer bus address */
- 	unsigned char *rx_buf;   /* dma rx buffer cpu address */
+-	if (np && of_id) {
+-		err = usb251xb_get_ofdata(hub,
+-					  (struct usb251xb_data *)of_id->data);
++	if (np && usb_data) {
++		err = usb251xb_get_ofdata(hub, usb_data);
+ 		if (err) {
+ 			dev_err(dev, "failed to get ofdata: %d\n", err);
+ 			return err;
 -- 
 https://chromeos.dev
 
