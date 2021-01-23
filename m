@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4982F30125F
+	by mail.lfdr.de (Postfix) with ESMTP id B6C7C301260
 	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 03:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbhAWCqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 21:46:07 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11182 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbhAWCqF (ORCPT
+        id S1726587AbhAWCqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 21:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbhAWCqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 21:46:05 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DN0nQ0059zl7Zc;
-        Sat, 23 Jan 2021 10:43:53 +0800 (CST)
-Received: from [10.174.176.185] (10.174.176.185) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 23 Jan 2021 10:45:16 +0800
-Subject: Re: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
-To:     Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>
-CC:     <david@sigma-star.at>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20210122212229.17072-1-richard@nod.at>
- <20210122212229.17072-4-richard@nod.at>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com>
-Date:   Sat, 23 Jan 2021 10:45:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 22 Jan 2021 21:46:18 -0500
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3800FC06174A;
+        Fri, 22 Jan 2021 18:45:38 -0800 (PST)
+Received: by mail-oo1-xc34.google.com with SMTP id y72so1381447ooa.5;
+        Fri, 22 Jan 2021 18:45:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ac67bof6xx2niPfUiSINB6obuW30Yl6gKBcDMoWsLps=;
+        b=TWN6/5tuWN09KxgXYis9xL/sf/taqvDK0zdsYvN+n1dExITRtPFMkOIm3wSZAY8TWm
+         Y5xa2UWBCL6g504k79tvABTp8lmJDBqAMf5UfNJSvVJwN2QvrvDrXKcpcDCY2zmdT8Bd
+         iyPk9Xk1E95TdaLSUH7yS1ffetKZ03d0BVZ0TP/TdrxoLBRWDNP7UvNFjXeMQiMGHNFZ
+         1naUo7A0Xkr4d487BrJ4MlbL5gJngwW5AMu+pUkqSzpn4Vr9Q8O6bP3sm/4ID+8pyimO
+         R2rABPoAxRAjVX+xAAKaqRyWNTLRtgKjCBB76QtZwaEtWZTQW/CogItTLQz7D+SJ4DIz
+         A6lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ac67bof6xx2niPfUiSINB6obuW30Yl6gKBcDMoWsLps=;
+        b=EyizBKiENBDc5nJrapPkHceGXn83b6JVDrToEXMiGedEC96pdnjGSJ2xbOkaGYno7/
+         NcqYNjaHDLcBs1osLu0BVDsIfYC+diGOjNexcE8Ce7AbicWnOT4oVuotlCqW43YBMjIq
+         4Bbt9w5OtvXUXBCNpkAwYOgT5Dp6Lc38mZK2OYNoTnWHRVtg46Av9p177bmblrAohS0t
+         cjByGRpr7ReHCeuMNuKtG3SCDpuxO8ol9NG9F2rmYBwRyMDdrs+ROct+IdrafxLFP4tD
+         YuSY4UsQ6QXIFEJBKP5+tLTZrMcXSvKC9QkB6OlWl0cVgh5b5UVLZn3APzPGD8wCo9hs
+         5rYw==
+X-Gm-Message-State: AOAM531fpAan+3GpevpseVT6xxNu968VtlwFuqq+QruqQJ2Wkj+xcb4W
+        VPy+6yjHUt4DT6sTiziiZDVAYBpoBOw=
+X-Google-Smtp-Source: ABdhPJxPTWoTqktvaTj7Ftm4EJGhuIkXezC57/bN1fUjiFaBslTZobb454ArpI9WqLZ1GseWOKbR4g==
+X-Received: by 2002:a4a:e9f2:: with SMTP id w18mr5917373ooc.88.1611369937632;
+        Fri, 22 Jan 2021 18:45:37 -0800 (PST)
+Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
+        by smtp.gmail.com with ESMTPSA id h203sm2109175oib.11.2021.01.22.18.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 18:45:37 -0800 (PST)
+Date:   Fri, 22 Jan 2021 18:45:34 -0800
+From:   Enke Chen <enkechen2020@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neal Cardwell <ncardwell@google.com>, enkechen2020@gmail.com
+Subject: Re: [PATCH net] tcp: make TCP_USER_TIMEOUT accurate for zero window
+ probes
+Message-ID: <20210123024534.GB100578@localhost.localdomain>
+References: <20210122191306.GA99540@localhost.localdomain>
+ <20210122174325.269ac329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210123022823.GA100578@localhost.localdomain>
+ <20210122183424.59c716a1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210122212229.17072-4-richard@nod.at>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.185]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122183424.59c716a1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2021/1/23 5:22, Richard Weinberger Ð´µÀ:
-> Although whiteouts are unlinked files they will get re-linked later,
-I just want to make sure, is this where the count is increased?
-do_rename -> inc_nlink(whiteout)
-> therefore the size of the parent directory needs to be updated too.
+Hi, Jakub:
+
+On Fri, Jan 22, 2021 at 06:34:24PM -0800, Jakub Kicinski wrote:
+> On Fri, 22 Jan 2021 18:28:23 -0800 Enke Chen wrote:
+> > Hi, Jakub:
+> > 
+> > In terms of backporting, this patch should go together with:
+> > 
+> >     9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 9e0a1fff8db5 ("ubifs: Implement RENAME_WHITEOUT")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->   fs/ubifs/dir.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> As in it:
 > 
-> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-> index 8a34e0118ee9..b5d523e5854f 100644
-> --- a/fs/ubifs/dir.c
-> +++ b/fs/ubifs/dir.c
-> @@ -361,6 +361,7 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
->   	struct ubifs_budget_req ino_req = { .dirtied_ino = 1 };
->   	struct ubifs_inode *ui, *dir_ui = ubifs_inode(dir);
->   	int err, instantiated = 0;
-> +	int sz_change = 0;
->   	struct fscrypt_name nm;
->   
->   	/*
-> @@ -411,6 +412,8 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
->   		mark_inode_dirty(inode);
->   		drop_nlink(inode);
->   		*whiteout = inode;
-> +		sz_change = CALC_DENT_SIZE(fname_len(&nm));
-> +		dir->i_size += sz_change;
->   	} else {
->   		d_tmpfile(dentry, inode);
->   	}
-> @@ -430,6 +433,7 @@ static int do_tmpfile(struct inode *dir, struct dentry *dentry,
->   	return 0;
->   
->   out_cancel:
-Does this need a judgment? Like this,
-if (whiteout)
-     dir->i_size -= sz_change;
-> +	dir->i_size -= sz_change;
->   	mutex_unlock(&dir_ui->ui_mutex);
->   out_inode:
->   	make_bad_inode(inode);
+> Fixes: 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
 > 
+> or does it further fix the same issue, so:
+> 
+> Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+>
+> ?
+
+Let me clarify:
+
+1) 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
+
+   fixes the bug and makes it work.
+
+2) The current patch makes the TCP_USER_TIMEOUT accurate for 0-window probes.
+   It's independent.
+
+With 1) and 2), the known issues with TCP_USER_TIMEOUT for 0-window probes
+would be resolved.
+
+Thanks.   -- Enke
+
+
 
