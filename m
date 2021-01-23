@@ -2,144 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A516930126D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 03:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 999B9301277
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbhAWCve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 21:51:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726344AbhAWCvO (ORCPT
+        id S1726512AbhAWDBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 22:01:46 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:48608 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbhAWDBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 21:51:14 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1758C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 18:50:33 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id e22so15342307iom.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 18:50:33 -0800 (PST)
+        Fri, 22 Jan 2021 22:01:44 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N2tUjm007559;
+        Sat, 23 Jan 2021 02:55:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=hgqWpibu4eyZ4chrb36RWtnUcr6Pdfr8qp9o3/ifno8=;
+ b=cUWIbMR9JxBQuNRduha1bVLOKQqTfr7k2cIs9kt+KKTY3d8pnGaZ2+JnwOL1sMVz/B9P
+ v+RFA89OUVXl8FzQOb7S1QsM9LR/5xxcRwjVDJs/OEoE1xycJkn2Et8KeNvBgK188K4a
+ XNE+k7p03JyhD57I4Bfy59OqanO2+sk7ZKpuqIdWmwDnWpNQ6MUYyGx9cBESU28ay2v2
+ YXyQGzEkhI6cWGk64gdHub4/aZowq6dKVpXnZK/gB6k31WXW4g9l3o4BG3VwtDV7DWbp
+ XwMXqYsfR4Clfv7juu+8+taBgyOv1KislOgSqaN/TfR+3W/Jor8Dnw5F6uv8u5ZqPqXK eg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 368b7qg0dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 02:55:58 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N2srwR094404;
+        Sat, 23 Jan 2021 02:55:58 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
+        by aserp3030.oracle.com with ESMTP id 3689u8thdv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 02:55:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nm5EhnEqiDkWif7+3q5pXPr3UH4c5PMuNchzmYTPdgSm8GEjg73xDLspp8VtN3e62Nw7rJFkWIrnVBe8pJ7EwwcYLczHjt9SPBCYxt/PJmFIImj3b1E0Xxx6d8C4GYmqk5W5V1V5/ggT7EwRDGOLwMBcAa4UToLlXs8efwa6IfRtcfKygiedyBmnc2f4OwaXlVqZAZ6E8wn4O/1chkfPKKVRRQErJbv3uImyQZCqTxLgx3LJI/D5JlzagX0xgLyXD0os4El6hRHJ6a3BmVXTk8iS/Ml6n8NA3CSzuXP/l2NDEo373hqORYyVgtaPkvnDRcR+oqZlJEjShfbxX7g2MA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgqWpibu4eyZ4chrb36RWtnUcr6Pdfr8qp9o3/ifno8=;
+ b=ocGxU+HfXL5jI49AiZxxb5dy/7eDNQRT8qS1AwCkWNAAvsXsAZxOJ3fLG/GLGUdy35vdC/mhSHv1xWizMPaJoM1bMQu4Gt8dzpNp9CodKeXfdGyIGw7C1t4i116V8w6M0oD5H9PAmENE+L+x49ZMkUhn3FyKFiqSdgO2bBVZx1VfMu3cIMAgPexCuwLh6LN6uQSf4ygQ/ZQbl2mAtqkr+0Pwig6WREFmuOo5IRGkxz/XOlD2DV1dIkoRbvQAN8SsisQNKh9S9DUcANrfsQ7O/s9pF3fpPQwgBOffYljkqh9lxraUkaQRdfNMXNXKj/HQnlHE+B/frNcq4YoOZwo6Xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=/woc6EL8jvqhcMt0g673arBuUVAjXUttmH8btu3PCdo=;
-        b=DYp8gZV0X0zQcDWLtW2FrBHeGrUIMnrFSaSGFzH7ECNNywMYrQnz/cplyZLXkkwdW7
-         lGinjJYto2neWOMYCGdXJ0id7ThsGhB0nyMSqoNJBq9L5PuST5ltXAvN9fz+uK5KyDim
-         orEJWbpA2Yyx1YfzV+9JEiVWXWDXLxsM4VUrKq+GQpFOl8u5nIHrxwnttqDEghAn71Su
-         RnfPN80z08lbI92cUw49yqmWfIvrNgoOX5WgknZqPb4DmtwmiLjdBti1fpHrcsrGQ1ta
-         sDKWS1t9/iKzd0LbiC+9RAGuXucMjlW4j/3fzJPWLi187QFrBrtmFuz9PPCG+CKbgWbz
-         ByXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=/woc6EL8jvqhcMt0g673arBuUVAjXUttmH8btu3PCdo=;
-        b=VBGc+sOLvhrrapGh3q6fgHl8K1Wexa6sExRM5dBeTStWi7UbX36iPbyTqjiDUJYzMU
-         qdkLFlDV8njb0OJIcb7+32oLp1v44mBR/JCD4NCQUIGO0DxyWi12O53p4iqnprzjpCqX
-         Imuq72yiHdRPdRpE4Bq38JwGnRzns5PBB740TKMhfqc34urtFl/9qnJPS3BG5YuG+n2p
-         FgciigqrebYmpI/CGEGWUZ4L1i1Ndstsy9X9C5QMkJMKbfYUZD+asvxAgag2jiQ8bNS+
-         DXMK2x3wBJ7ZsaG+j51TSmc3Nl5ULKHXIgyBEaSYGqXToEf6Q3pmyl8nFYEvRwZ3atKM
-         5Ccw==
-X-Gm-Message-State: AOAM5302Lgy10K7snB83aXXAhqxBTI1p5Xg7D3sKfMgv5u7bL7KxYGPm
-        e0fWvL2XZsU/eWlryBwB4SY/y/bq31jYg2M7FEk=
-X-Google-Smtp-Source: ABdhPJw09T+KI9qBQYhXvvaYnzjqMO3xkQA4YlDuEy19+E9hES5mawhyybxbNFmqV4h54YT22MDFkQ6HSSKnxP0hVus=
-X-Received: by 2002:a5e:970c:: with SMTP id w12mr2455196ioj.171.1611370233360;
- Fri, 22 Jan 2021 18:50:33 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hgqWpibu4eyZ4chrb36RWtnUcr6Pdfr8qp9o3/ifno8=;
+ b=HEiRk2Dcw6eJD1+5RhMhc9wna1rbTRUpbNXrHXfIA606RqyUWoUiPyHaBuqH2/8cuO1/pWT1IQLSr+t1oCbjG4QvP8ryZ4q/ThtuHW3MaO4PjB5DvwZGbItKuMlaj2VGOE2IBpqVxEDwebyubiZV7nrRFjeCiqT+kj1FxF+i2xI=
+Authentication-Results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none
+ header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4792.namprd10.prod.outlook.com (2603:10b6:510:3d::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Sat, 23 Jan
+ 2021 02:55:56 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.016; Sat, 23 Jan 2021
+ 02:55:56 +0000
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: mpt3sas: style: Simplify bool comparison
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1bldgbbv5.fsf@ca-mkp.ca.oracle.com>
+References: <1610355253-25960-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Date:   Fri, 22 Jan 2021 21:55:52 -0500
+In-Reply-To: <1610355253-25960-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        (YANG LI's message of "Mon, 11 Jan 2021 16:54:13 +0800")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: CH0PR04CA0105.namprd04.prod.outlook.com
+ (2603:10b6:610:75::20) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <cover.1611263461.git.jpoimboe@redhat.com> <CA+icZUU6QBeahDWpgYPjkf_OmRC+4T4SAnCg=iObNq9+CGT6jA@mail.gmail.com>
- <20210122154158.lylubqugmcxehugg@treble> <CABCJKueaW1BEEBKLQzyp77VwTL+bE4x=kOLV3TWmc1s6-r3PeQ@mail.gmail.com>
- <CAKwvOdkcoCFKD63xtQzRdFikDk-GUUfUG5EEKiCTA3cueEZQNA@mail.gmail.com>
- <20210123022609.n7xsj2a4potoijz7@treble> <CA+icZUX9mYAFE6aFdmGS+rnJbeBMMMeVBrSs_pC6ragzXCjT7w@mail.gmail.com>
- <20210123024634.qu62tyq3nkqusken@treble>
-In-Reply-To: <20210123024634.qu62tyq3nkqusken@treble>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 23 Jan 2021 03:50:21 +0100
-Message-ID: <CA+icZUVSiL5tCTjNaCjuRwF7U5Z6OcXMVoODhNfzuLePN+1SFA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/20] objtool: vmlinux.o and CLANG LTO support
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Fangrui Song <maskray@google.com>,
-        Peter Collingbourne <pcc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by CH0PR04CA0105.namprd04.prod.outlook.com (2603:10b6:610:75::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Sat, 23 Jan 2021 02:55:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 51f75adf-d12c-427f-ee88-08d8bf4a67a6
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4792:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4792548B8AD3FAAD0DB628B18EBF9@PH0PR10MB4792.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i28bvF1f4ONCedLBwM4R14gX+SHL6Agc6DGDQfvKmDoKkeGbIhqPVGCEQ4OEEZE7Nz2N0ucmDpJFXu9N4evgJI3l0sjdIJbB+YltDJTbe5E8kZgNfqE2QrtJIjC5Uwtg12ynbWTjClGdEyKiTdd/bkEChRiHAaNOpSC4aMRJYnDfNhB4HgTfVOTTDnLf2cFgSRUuIk5kJOs/5y+SBYY3cKaa/Z8E+bpP5jTOiQvfWZNjXa0w/8m3AIX/NolDMs3xCklmHh9kTrbqXpUd+rFJDZbnCbt7R7as22IDtuBZvK0xVdtC3+9FBB3rIUg5cmA1Yzy0SBbfikhwpfWNj+GQf7LKrXrRwqEYgJcjQH/smj3V3hV52RUXM4RhfXebbFD6z0ZXJDkokbzSSa9IiOnqV56C7VH9EuKueyr7Vqk4vlvCqPNZvQVsMx4yL+8DjWig
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(366004)(136003)(376002)(26005)(8936002)(186003)(4326008)(6666004)(956004)(52116002)(7696005)(8676002)(36916002)(16526019)(316002)(66476007)(5660300002)(6916009)(66556008)(66946007)(55016002)(86362001)(478600001)(558084003)(83380400001)(2906002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?0Qu3pDo6TjGByZ17gZqrqrTdeGIzkL4qBC5j7odSTQNvYR2ouiwjfmZgFtO+?=
+ =?us-ascii?Q?80FzbTh/ZQe3arD27HsMyfyZR04BZGLpDnFiVUBEBhyWxn8/jHvMzYCQedjI?=
+ =?us-ascii?Q?a39S1QmSuMFXf8M2bUvyAIdu5UzXb3/LxT2xqNKtNKlXdEcl9OZZpffhv2sB?=
+ =?us-ascii?Q?991Ss0DSsAAD0INGOH03xyt4VI19/ZjCwK5o3gr4mdGff1vcyRZDn8scNJaE?=
+ =?us-ascii?Q?/bGiQ1zW8vHmLMh3dwjjIpaQSQv4LWUeLMZHPL4WUgnRUd9Pq1/+xYpRskSB?=
+ =?us-ascii?Q?vGCcN/J8k1moCEH6w7ZyR1y5ShgNOiJOsi6zqsnijT8rrS0ksKfIoYmP46Zn?=
+ =?us-ascii?Q?BXXEJcNICrZSRVkd6FEXb77A3aPB8DhS9ytcCKUAuM5EpSa0R1GQX+JCMwNI?=
+ =?us-ascii?Q?SJVaiUBH4z2TEhtroXpKYTqsKqBAgHZXcbYM7s8GNE+1F4pdRGhqhAbwz+0O?=
+ =?us-ascii?Q?o6TL0qBp9HXywF4mEadwq9GQN0kuFfJUK8XZXIPOKyi3r9zZD9WNt8m9ip7v?=
+ =?us-ascii?Q?OSjC/GZhFl7sMTRtiL9bCR3MnpQ1Db/eXEwCN2zWN3kRk44tWZThUJ8i+i39?=
+ =?us-ascii?Q?HFvnxjnmwSnzcVhl5evK4voA7H4p+Wvs+i1IhqAb1bShYTKjr6gO/U/v6L7h?=
+ =?us-ascii?Q?wIZlSq2/RW1cU+8WIWZsDwmBoyclUW0zTVJt4vZi4/v+5/9bAIAc2mdIj0+k?=
+ =?us-ascii?Q?QhdnNi76dBHYrLi6wpj+q6tWgFwTPayf/Tf3cDNs+cT4vj1Dn2vdmIsvFpGq?=
+ =?us-ascii?Q?UcFv22T5AucLl6dZOsCbL8QVo/IJpQPQO9DxT+6xhrTKUZYlPiiDsO6c6KYq?=
+ =?us-ascii?Q?Si4w/AMEWn8XOisNCWXE2aCT7lkIM7P1jSbsWojRjh/+ivrGC/BmbvvfLJ+e?=
+ =?us-ascii?Q?GLj7BKNTK6D1N4SeSYUfSMjbtzh7tScC3Yu/HPQDfg5q8XXptgAizmOIIXZh?=
+ =?us-ascii?Q?BoT255rpLtpzCuFljpP9vBnMemSS2kW3AHOmxZptDwBSf4bzWflJgMphhxsB?=
+ =?us-ascii?Q?mrgpPZXDQW/bbnkQIIfHLF5B6uCtPKt8B/FtmxX4hT8ubr28IavimVdAGq2k?=
+ =?us-ascii?Q?HpT+cmKE?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51f75adf-d12c-427f-ee88-08d8bf4a67a6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2021 02:55:56.2205
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FojAY4Ft8y376tFkyYSHByry4Wm0zi4FwrIOPBdlZCYJnS8pnJQzAoVVCWgUnRmTCKyGK5tqhsnTpjjBK66clQ5p5XOa2k6JKCkj988KBRI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4792
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 phishscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101230016
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101230016
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 3:46 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Sat, Jan 23, 2021 at 03:31:20AM +0100, Sedat Dilek wrote:
-> > On Sat, Jan 23, 2021 at 3:26 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > On Fri, Jan 22, 2021 at 05:32:43PM -0800, Nick Desaulniers wrote:
-> > > > > In this specific case, find_func_by_offset returns NULL for
-> > > > > .text..L.cfi.jumptable.43 at addend 0x8, because Clang doesn't emit
-> > > > > jump table symbols for static functions:
-> > > > >
-> > > > > 0000000000000000 <__typeid__ZTSFjmiE_global_addr>:
-> > > > >    0:   e9 00 00 00 00          jmpq   5 <__typeid__ZTSFjmiE_global_addr+0x5>
-> > > > >                         1: R_X86_64_PLT32       io_serial_in-0x4
-> > > > >    5:   cc                      int3
-> > > > >    6:   cc                      int3
-> > > > >    7:   cc                      int3
-> > > > >    8:   e9 00 00 00 00          jmpq   d <__typeid__ZTSFjmiE_global_addr+0xd>
-> > > > >                         9: R_X86_64_PLT32       mem32_serial_in-0x4
-> > > > >    d:   cc                      int3
-> > > > >    e:   cc                      int3
-> > > > >    f:   cc                      int3
-> > > > >
-> > > > > Nick, do you remember if there were plans to change this?
-> > > >
-> > > > Do you have a link to any previous discussion to help jog my mind; I
-> > > > don't really remember this one.
-> > > >
-> > > > Is it that `__typeid__ZTSFjmiE_global_addr` is the synthesized jump
-> > > > table, and yet there is no `__typeid__ZTSFjmiE_global_addr` entry in
-> > > > the symbol table?
-> > >
-> > > I think he means there's not a 'mem32_serial_in.cfi_jt' symbol at
-> > > '__typeid__ZTSFjmiE_global_addr+8'.  Probably more aggressive symbol
-> > > pruning from the assembler.
-> > >
-> > > It's fine though.  I just need to rewrite the CFI support a bit.
-> > >
-> > > But that can come later.  For now I'll just drop the two CFI-related
-> > > patches from this set so I can merge the others next week.
-> > >
-> >
-> > Two CFI-related patches?
-> >
-> > What's the other than "objtool: Add CONFIG_CFI_CLANG support"?
->
-> I was referring to patches 10 and 11:
->
->   objtool: Move unsuffixed symbol conversion to a helper function
->   objtool: Add CONFIG_CFI_CLANG support
->
 
-OK, thanks.
+Yang,
 
-I will test with a revert of these two patches in another scenario
-where I have problems with Clang's IAS but not with GNU AS.
+> Fix the following coccicheck warning:
+> ./drivers/scsi/mpt3sas/mpt3sas_base.c:2424:5-20: WARNING: Comparison of
+> 0/1 to bool variable
 
-- Sedat -
+Applied to 5.12/scsi-staging, thanks!
 
-> You can just drop those patches from your testing (and don't test with
-> CFI).
->
-> > Do you plan (or offer) a v3 of objtool-vmlinux?
->
-> Not unless there are any more comments.
->
-> --
-> Josh
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210123024634.qu62tyq3nkqusken%40treble.
+-- 
+Martin K. Petersen	Oracle Linux Engineering
