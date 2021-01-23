@@ -2,133 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDF6301396
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 07:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D4630139A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 07:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbhAWG1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 01:27:47 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:40837 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725298AbhAWG1g (ORCPT
+        id S1726309AbhAWGe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 01:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbhAWGeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 01:27:36 -0500
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 80D835C0083;
-        Sat, 23 Jan 2021 01:26:29 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sat, 23 Jan 2021 01:26:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=U
-        z8v846aA9eOU/XvvproYzUdaenbuCP7/Eyc2BOJtnA=; b=fDhKFD/C4QCWPQSvj
-        yPezBFdQrsCgTT2lWS8uWaqW6IsXVVTnSzWC9/edS7J8JD049oneIYiV+X5ztSTa
-        qxSlPaGIdWhf1DFBtVZhNSfitVrdUDm6y7XzJ6hJEa3wO42AVvh0hncoMPsNO5Ml
-        FbJHQ0M758PtXVPyenjn01gpsILjVMJSEremE2nDHr5C8sYqak/ZS7LLUn7Z4P+t
-        W8sGxYBpyv4h0PdFcY00D88FEVw7SuSEmkHossJ67L8/oh+9b7aUj7kvzJulMazF
-        z/dc5LBBI0hNskqLWSR5EH/Cu3k9k2HIlQI7nYl/GoC7Gvsblv/dPDPMUrgD3o2c
-        7C8SQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=Uz8v846aA9eOU/XvvproYzUdaenbuCP7/Eyc2BOJt
-        nA=; b=nUVNdlRAtH0t9inZtYXzFtxT/8X8UwJqROXqMX4D2E25TsM8NNPIcBGPc
-        wweYTkKsFxE/r6A4ufixPawRJ9gZxozhap4I0CQNDu4SQofhHbFVLvt4RAA9B8Lu
-        toy4IPlEXWfBJdOzWkFTH99VAI6vG9T83iR6W/YfTYZLCOgjhQTMgtlfWTeWmWWE
-        k1iDu87TKdOxO+9XHAjySwh378ar5ju9tUMUdCYYTjapszPQuBL8eecx8o5LIsb+
-        o/ZmBQ5saSjCGjOTtXDEjYE/gd93YuSRUsatI3wfmmKTh8ssys4MTwlaN3NPY0jc
-        QVq5vPfjUXZKGSsjeaDZJF1z/VO7g==
-X-ME-Sender: <xms:k8ELYJML65koE-7K-ekWTecBOkkASwd9y1h1mBco_6qybIBETpoGzw>
-    <xme:k8ELYL8b9CJAAFvCKhjK_geZVhP2-2e1OIqaB4R-E7oT0heRQ1F47kThjUyg2oIop
-    4ADA616JqOOA_aYqg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejgdelgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefvfhfhuffkffgfgggjtgfgsehtkeertddtfeehnecuhfhrohhmpefurghmuhgv
-    lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
-    frrghtthgvrhhnpeehjeeghfdufeefteelieeggfehteevieetueffhefhffekuedvffev
-    ffevtedufeenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
-    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
-    ugdrohhrgh
-X-ME-Proxy: <xmx:k8ELYITCUWBmNUSqRBjumnoEAiykKr4FOf0Y8p-YVa-Kg-95L-E2TQ>
-    <xmx:k8ELYFvWJYajeULLyZvb7VKsOlsi_woPVIRw3-dC5PolISpLUEqd1w>
-    <xmx:k8ELYBfL2d7HKN--uDrLmbVMCbFa2vmKtY1Q5OetXDS0QI0qgchGSw>
-    <xmx:lcELYLsTKO0wx46ZScD2CqjoEYGvJkDAhualqPzi2R3E2_b5O7eBqg>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 790D8108005B;
-        Sat, 23 Jan 2021 01:26:27 -0500 (EST)
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20210118055040.21910-1-samuel@sholland.org>
- <161126112131.135928.7664552660827790510.b4-ty@kernel.org>
- <08e9bc97-c18d-9b8f-28be-3892d77730bf@sholland.org>
- <20210122104705.bo2x22ef56hdj26q@gilmour>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v5 00/10] sunxi: Support IRQ wakeup from deep sleep
-Message-ID: <52b9c9bb-ff75-d1e6-e198-0d388d1c6d73@sholland.org>
-Date:   Sat, 23 Jan 2021 00:26:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Sat, 23 Jan 2021 01:34:15 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03C0C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 22:33:34 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id g12so10787641ejf.8
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 22:33:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=L7CLb3c0UsXHddwXEsGKiQSv57N6epKTUZHL2rInCbM=;
+        b=CHzFWZqKKV6JoPyVxVy3zGwg0IT4S84JQHoO7kIfPYsYxby3wdnwDXjfF6fAh9rGiE
+         yVNTY2j5tU9Ot4VAGIqvGmj82C8gauhZOHFDPuLngq68oEB1YvJVnKZegU5p2PtoEdh0
+         KxquURGQBw+5DL0iAUkEM8dtOSq5c2Xev/zL9hDSJ08uGisWVssbkFinXsyt6Ct2BfjX
+         rt5s7JBVynQYhJsvKa2ubYK11bEzTpdlYeeOTAuDcogjaAVqAlkAWOVB3rsiuAT28Ts2
+         IuZtNCim1sDea3WokC/iudyRZ6ACt2zzkko8LmDL9kqzBfq333GO8abmjKvOP0PgdD+Q
+         OQWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L7CLb3c0UsXHddwXEsGKiQSv57N6epKTUZHL2rInCbM=;
+        b=haw6xu7WIaE1YM6bJMXSZSGF58Dwu13+Xo6Dff6U/ioDDINRsmcxeuG6aoAaFpezqY
+         mWeLcEODYpr0E9SVM4XFm4yCinIhMoPKswPSHWS0+pQnTmeaK31gybxDOwKIHfIcX4oR
+         7Z1Z3aPNgb7XpcbeWiT6eaYQAKS0df4mimYxDxCzR3hC3TGje2RM1Jp3dlBTggXxA298
+         kTIKkm1f6X9UGWKa32FRzXhNAijMZXpGvircjq3WuI1+F5kgQYOjhxKMF0RmbHgcvO22
+         Vrqjw0Fr40wAxEQIm+zziuTcgaFTruKu3uGXequbUN6DdnI5QypnWUtEDEvuI0yPrwfx
+         PzhQ==
+X-Gm-Message-State: AOAM530c0LHjsIXagA7vhDdWlTblVjpFsIkMqBXbSZk5cvejPryMURl8
+        aw+aYzrH0VyxEZMVKTzbwEIb8BK2SkjlOLc2g5DC/XKC5WJlF8i4
+X-Google-Smtp-Source: ABdhPJyhOaOmhi2Qtm9GkCBdC3vInfwJywk8xja/JJJIdGc4mozG3LWjV/W4YT1Kmm1iaNoAtR7nM64ol0WN6sR84dM=
+X-Received: by 2002:a17:906:4443:: with SMTP id i3mr4983441ejp.133.1611383613120;
+ Fri, 22 Jan 2021 22:33:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210122104705.bo2x22ef56hdj26q@gilmour>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210122160828.128883527@linuxfoundation.org>
+In-Reply-To: <20210122160828.128883527@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 23 Jan 2021 12:03:22 +0530
+Message-ID: <CA+G9fYu41fj0V_Toc6jadedX4--NG=BHKS3D5dZ45tR-0twnPQ@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/48] 4.14.217-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/22/21 4:47 AM, Maxime Ripard wrote:
-> On Thu, Jan 21, 2021 at 07:33:54PM -0600, Samuel Holland wrote:
->> On 1/21/21 2:35 PM, Marc Zyngier wrote:
->>> On Sun, 17 Jan 2021 23:50:30 -0600, Samuel Holland wrote:
->>>> Allwinner sun6i/sun8i/sun50i SoCs (A31 and newer) have two interrupt
->>>> controllers: GIC and R_INTC. GIC does not support wakeup. R_INTC handles
->>>> the external NMI pin, and provides 32+ IRQs to the ARISC. The first 16
->>>> of these correspond 1:1 to a block of GIC IRQs starting with the NMI.
->>>> The last 13-16 multiplex the first (up to) 128 GIC SPIs.
->>>>
->>>> This series replaces the existing chained irqchip driver that could only
->>>> control the NMI, with a stacked irqchip driver that also provides wakeup
->>>> capability for those multiplexed SPI IRQs. The idea is to preconfigure
->>>> the ARISC's IRQ controller, and then the ARISC firmware knows to wake up
->>>> as soon as it receives an IRQ. It can also decide how deep it can
->>>> suspend based on the enabled wakeup IRQs.
->>>>
->>>> [...]
->>>
->>> Applied to irq/irqchip-5.12, thanks!
->>>
->>> [01/10] dt-bindings: irq: sun6i-r: Split the binding from sun7i-nmi
->>>         commit: ad6b47cdef760410311f41876b21eb0c6fda4717
->>> [02/10] dt-bindings: irq: sun6i-r: Add a compatible for the H3
->>>         commit: 6436eb4417094ea3308b33d8392fc02a1068dc78
->>> [03/10] irqchip/sun6i-r: Use a stacked irqchip driver
->>>         commit: 4e34614636b31747b190488240a95647c227021f
->>> [04/10] irqchip/sun6i-r: Add wakeup support
->>>         commit: 7ab365f6cd6de1e2b0cb1e1e3873dbf68e6f1003
->>>
->>> Please route the dts patches via the soc tree. Also, I had to
->>> manually fix the first patch as it wouldn't apply on top of
->>> 5.11-rc4 (which tree has it been diffed against?). Please
->>> check that the resolution is correct.
->>
->> This series was based on sunxi/for-next, which contains commit
->> 752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation
->> for the V3s NMI")[1].
-> 
-> I assume merging the DT bits alone would break things? If so, I guess we
-> can wait for 5.12 to be released before merging it
+On Fri, 22 Jan 2021 at 21:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.217 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 24 Jan 2021 16:08:17 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.217-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Patch 5 does not depend on the new driver, so it could be merged at any
-time. Yes, the remaining patches would break things if merged without
-the driver.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Cheers,
-Samuel
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.14.217-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: 10fddc03bd61fb44e84e0fd3550f78e950cbe2a2
+git describe: v4.14.216-49-g10fddc03bd61
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.216-49-g10fddc03bd61
+
+
+No regressions (compared to build v4.14.216)
+
+No fixes (compared to build v4.14.216)
+
+Ran 39231 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* perf
+* fwts
+* ltp-containers-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* ltp-open-posix-tests
+* network-basic-tests
+* kvm-unit-tests
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
