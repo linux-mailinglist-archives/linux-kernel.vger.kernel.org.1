@@ -2,170 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7C83011D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B4A3011D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:05:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbhAWBCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 20:02:52 -0500
-Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:50914 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725842AbhAWBCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:02:23 -0500
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id B837982100;
-        Sat, 23 Jan 2021 04:01:53 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1611363713; bh=myjVRTj0hYQ3C1Pas3KTHSpLIBYbubJF7/c2yKRmhgo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ek7+aYHo6WCklcG1f1doU+ihHWS7uxV+2GDEhfKPu0qFsIPUQHiaCCODChfuTMHdW
-         DL/LDl9HmTUIbo3ur/WaVOImDm8+Nl2ASS8pcuf4+MzcUulycV/n51QMWzhCq/TfG6
-         AHxKoj0OUx5qgtvr0XGtqDZPzE3S6A7fzUI8MeAbfnz0Vv+N6fyZkQItR7ji1aYEt5
-         7OMPwTXdcrOLgvbGe+a3XmpLiitfrNDj0siVtg6Z8DJ1KLLE5wFqRxruzPcwxZMAzz
-         CLNnEKMcjpqerxEq29/ENiQ0L1I76EH8NDgQGC0PZ1o7vzWkob9U2ntmNxwz61pmJS
-         wBe8u9HYOj65Q==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-Date:   Sat, 23 Jan 2021 04:01:01 +0300
-Message-ID: <4496952.bab7Homqhv@metabook>
-In-Reply-To: <5306ffe6-112c-83c9-826a-9bacd661691b@gmail.com>
-References: <20210122214247.6536-1-sbauer@blackbox.su> <3174210.ndmClRx9B8@metabook> <5306ffe6-112c-83c9-826a-9bacd661691b@gmail.com>
+        id S1726306AbhAWBD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbhAWBCe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 20:02:34 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D40C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:01:58 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id hs11so10242118ejc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:01:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PHDV0F8C9xV1vp1h4qwpCoKFhZYLm088KEHP1thlvVw=;
+        b=RioQLWr8ugo0DlsJFFgTZ1skKROqX3tElaG7qVKsO1ExATj1jaapKuyc8wa4MtUXmc
+         4GWcvQe0O9w3B4WSwmgsrwlcwrG9seP2gqB7lkI1Am+SfLSjrzODjd71vCyxb7CLwy9+
+         4Iv4YXUPKTWpcPDNV/rNLYeNqSEBuZ48ChE6bV/oEkxfBjzthdflfC43U+yjNaiOlmbx
+         ZX3lPPpccT2+4g6VJAGTnDxGdfN4Uoz7pQt0KKvBjysqjnkNUDAxqknD22gL9n5g/uaE
+         CQluVWVHzL0r1iwlfTPUp6U35jakRKixlLujrqlxnOSb6x6TbjbWReoYvXxYvaP5I/Ir
+         9tcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PHDV0F8C9xV1vp1h4qwpCoKFhZYLm088KEHP1thlvVw=;
+        b=jP0pYH5NxnIRxnZjslYC+BAWCQB+BwqB48skGmHPAXlcxEx0iE50qJfXoq/Kss2bvT
+         fh2QQFjSsYkI+k1eGXCE2COqB7DHLgM/9B4k6Xv0VeY6SIszcgqdVK7h5C4qzwYGMSgE
+         kZCA5FDBh2hBb2d/1HCPZSeyf/VfW2kogg7cCsLGZhS26rlPdCHCVdh9fpijo2dY/AV1
+         pUbGZatRUQaqbcOzYAcdH8SS3uyuLRiRebGP/xdEzV0Yfd1960fGfAhPk+aq9F4NW+aD
+         +6LbAphM82ddwyEc7DW7+XSAJI1lpReU1F62EEtwqnU9mOnUrH3fmQxmA/UkSjPboQAd
+         ++6Q==
+X-Gm-Message-State: AOAM5304AGczm+pYGJcWV35h942o2ouDuV8C+Dz2TU/8ceeME6mEfS1T
+        NZ4Eb+M4eJYLGyQbqSbENeNE4VzGn/ON0lSLJ5CmZA==
+X-Google-Smtp-Source: ABdhPJyDwoCJc13K0qCHh6qwD51iPWaoNHnrbKE5Ph4azKcwJVRrPO628EHxEm5a3QaN3e8sAxa2eLt6Zs5v1ZMDiuo=
+X-Received: by 2002:a17:907:96a5:: with SMTP id hd37mr996462ejc.541.1611363717599;
+ Fri, 22 Jan 2021 17:01:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20200326032420.27220-1-pasha.tatashin@soleen.com>
+ <20200326032420.27220-9-pasha.tatashin@soleen.com> <ea2b39d7-d496-d9ac-23c9-c279ec29f5d5@arm.com>
+In-Reply-To: <ea2b39d7-d496-d9ac-23c9-c279ec29f5d5@arm.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 22 Jan 2021 20:01:21 -0500
+Message-ID: <CA+CK2bAsC-ZBPh-CPhmdjdwtLshHcPOsnEu_NzJ38pvPh0YPPQ@mail.gmail.com>
+Subject: Re: [PATCH v9 08/18] arm64: kexec: move relocation function setup
+To:     James Morse <james.morse@arm.com>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, January 23, 2021 3:01:47 AM MSK Florian Fainelli wrote:
-> On 1/22/2021 3:58 PM, Sergej Bauer wrote:
-> > On Saturday, January 23, 2021 2:23:25 AM MSK Andrew Lunn wrote:
-> >>>>> @@ -1000,8 +1005,10 @@ static void lan743x_phy_close(struct
-> >>>>> lan743x_adapter *adapter)>
-> >>>>> 
-> >>>>>  	struct net_device *netdev = adapter->netdev;
-> >>>>>  	
-> >>>>>  	phy_stop(netdev->phydev);
-> >>>>> 
-> >>>>> -	phy_disconnect(netdev->phydev);
-> >>>>> -	netdev->phydev = NULL;
-> >>>>> +	if (phy_is_pseudo_fixed_link(netdev->phydev))
-> >>>>> +		lan743x_virtual_phy_disconnect(netdev->phydev);
-> >>>>> +	else
-> >>>>> +		phy_disconnect(netdev->phydev);
-> >>>> 
-> >>>> phy_disconnect() should work. You might want to call
-> >> 
-> >> There are drivers which call phy_disconnect() on a fixed_link. e.g.
-> >> 
-> >> https://elixir.bootlin.com/linux/v5.11-rc4/source/drivers/net/usb/lan78xx
-> >> .c# L3555.
-> >> 
-> >> 
-> >> It could be your missing call to fixed_phy_unregister() is leaving
-> >> behind bad state.
-> > 
-> > lan743x_virtual_phy_disconnect removes sysfs-links and calls
-> > fixed_phy_unregister()
-> > and the reason was phydev in sysfs.
-> > 
-> >>> It was to make ethtool show full set of supported speeds and MII only in
-> >>> supported ports (without TP and the no any ports in the bare card).
-> >> 
-> >> But fixed link does not support the full set of speed. It is fixed. It
-> >> supports only one speed it is configured with.
-> > 
-> > That's why I "re-implemented the fixed PHY driver" as Florian said.
-> > The goal of virtual phy was to make an illusion of real device working in
-> > loopback mode. So I could use ethtool and ioctl's to switch speed of
-> > device.> 
-> >> And by setting it
-> >> wrongly, you are going to allow the user to do odd things, like use
-> >> ethtool force the link speed to a speed which is not actually
-> >> supported.
-> > 
-> > I have lan743x only and in loopback mode it allows to use speeds
-> > 10/100/1000MBps
-> > in full-duplex mode only. But the highest speed I have achived was
-> > something near
-> > 752Mbps...
-> > And I can switch speed on the fly, without reloading the module.
-> > 
-> > May by I should limit the list of acceptable devices?
-> 
-> It is not clear what your use case is so maybe start with explaining it
-> and we can help you define something that may be acceptable for upstream
-> inclusion.
-it migth be helpful for developers work on userspace networking tools with
-PHY-less lan743x (the interface even could not be brought up)
-of course, there nothing much to do without TP port but the difference is
-representative.
+On Wed, Apr 29, 2020 at 1:01 PM James Morse <james.morse@arm.com> wrote:
+>
+> Hi Pavel,
+>
+> On 26/03/2020 03:24, Pavel Tatashin wrote:
+> > Currently, kernel relocation function is configured in machine_kexec()
+> > at the time of kexec reboot by using control_code_page.
+> >
+> > This operation, however, is more logical to be done during kexec_load,
+> > and thus remove from reboot time. Move, setup of this function to
+> > newly added machine_kexec_post_load().
+>
+> This would avoid the need to special-case the cache maintenance, so its a good cleanup...
 
-sbauer@metamini ~$ sudo ethtool eth7
-Settings for eth7:
-Cannot get device settings: No such device
-        Supports Wake-on: pumbag
-        Wake-on: d
-        Current message level: 0x00000137 (311)
-                               drv probe link ifdown ifup tx_queued
-        Link detected: no
-sbauer@metamini ~$ sudo ifup eth7
-sbauer@metamini ~$ sudo ethtool eth7
-Settings for eth7:
-        Supported ports: [ MII ]
-        Supported link modes:   10baseT/Full 
-                                100baseT/Full 
-                                1000baseT/Full 
-        Supported pause frame use: Symmetric Receive-only
-        Supports auto-negotiation: Yes
-        Supported FEC modes: Not reported
-        Advertised link modes:  10baseT/Full 
-                                100baseT/Full 
-                                1000baseT/Full 
-        Advertised pause frame use: Symmetric Receive-only
-        Advertised auto-negotiation: Yes
-        Advertised FEC modes: Not reported
-        Speed: 1000Mb/s
-        Duplex: Full
-        Port: MII
-        PHYAD: 0
-        Transceiver: internal
-        Auto-negotiation: on
-        Supports Wake-on: pumbag
-        Wake-on: d
-        Current message level: 0x00000137 (311)
-                               drv probe link ifdown ifup tx_queued
-        Link detected: yes
-sbauer@metamini ~$ sudo mii-tool -vv eth7
-Using SIOCGMIIPHY=0x8947
-eth7: negotiated 1000baseT-FD, link ok
-  registers for MII PHY 0: 
-    5140 512d 7431 0011 4140 4140 000d 0000
-    0000 0200 7800 0000 0000 0000 0000 2000
-    0000 0000 0000 0000 0000 0000 0000 0000
-    0000 0000 0000 0000 0000 0000 0000 0000
-  product info: vendor 1d:0c:40, model 1 rev 1
-  basic mode:   loopback, autonegotiation enabled
-  basic status: autonegotiation complete, link ok
-  capabilities: 1000baseT-FD 100baseTx-FD 10baseT-FD
-  advertising:  1000baseT-FD 100baseTx-FD 10baseT-FD
-  link partner: 1000baseT-FD 100baseTx-FD 10baseT-FD
+Yes, the computation should be moved from kexec-reboot to kexec-load
+when possible.
 
-							   Regards,
-							       Sergej.
+>
+>
+> > Because once MMU is enabled, kexec control page will contain more than
+> > relocation kernel, but also vector table, add pointer to the actual
+> > function within this page arch.kern_reloc. Currently, it equals to the
+> > beginning of page, we will add offsets later, when vector table is
+> > added.
+>
+> If the vector table always comes second, wouldn't this be extra work to hold the value 0?
+> You can control the layout of this relocation code, as it has to be written in assembly.
+> I don't get why this would be necessary.
+>
+>
+> > diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+> > index ae1bad0156cd..ec71a153cc2d 100644
+> > --- a/arch/arm64/kernel/machine_kexec.c
+> > +++ b/arch/arm64/kernel/machine_kexec.c
+> > @@ -58,6 +59,17 @@ void machine_kexec_cleanup(struct kimage *kimage)
+> >       /* Empty routine needed to avoid build errors. */
+> >  }
+> >
+> > +int machine_kexec_post_load(struct kimage *kimage)
+> > +{
+> > +     void *reloc_code = page_to_virt(kimage->control_code_page);
+> > +
+> > +     memcpy(reloc_code, arm64_relocate_new_kernel,
+> > +            arm64_relocate_new_kernel_size);
+> > +     kimage->arch.kern_reloc = __pa(reloc_code);
+>
+> Could we move the two cache maintenance calls for this area in here too. Keeping it next
+> to the modification makes it clearer why it is required.
 
+Yes, I moved it.
 
+>
+> In this case we can use flush_icache_range() instead of its __variant because this now
+> happens much earlier.
 
+True.
+
+>
+>
+> > +     return 0;
+> > +}
+>
+> Regardless,
+> Reviewed-by: James Morse <james.morse@arm.com>
+
+Thank you for your review.
+
+Pasha
+
+>
+>
+> Thanks,
+>
+> James
