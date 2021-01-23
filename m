@@ -2,109 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481DA3011EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329E23011F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbhAWBQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 20:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
+        id S1726607AbhAWBST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbhAWBQK (ORCPT
+        with ESMTP id S1726532AbhAWBRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:16:10 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBCFC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:15:25 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id rv9so10212685ejb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:15:25 -0800 (PST)
+        Fri, 22 Jan 2021 20:17:48 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E73DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:17:08 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id a7so227240qkb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:17:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aZHWC0QZZA37dcKrvB+jA2eMe/FYFoxrvp88RR54inU=;
-        b=a2niozalS5x3ybbQChS+nPD+2ab6W0/kt0PFw46W1AX+wreKDIEfNPpr5Zj9lOcF+q
-         nC2/oUSgvc976KUmJSIeLtrOQjtRqmloROV2AypxhQg+hwFAFMtW2xLiauW44AEUUBiF
-         hqXn3dj4jQ5kvRsie+iEc1dnVD+pn3+DuO9fCEdZWEo81leY7mAk4Cx6Moxuh8V+XrmI
-         XxgfHHGW3RJazwFFiCy2xfbua/KA4gLR/tjJ0mIGxAyexDL649yOZ+ArNgq88o25sLpw
-         DdCK0x9a0chUuwCzclGE21GM+/fZ31LlbfIZ4ABbK16Qx/3fLiJRXvJuyzFIiBeOl8hu
-         JbqQ==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IaMkqmTttjbetPQ20RK5ozAGqawwXlCoh0MYCZptj3I=;
+        b=MAAgQ3G7gFHcbWuKbJpWrlFG1wwE40EZ9ukhl9w3UFqYj7/Xxi1/K6gnpAHxXuH+5G
+         PX9hsugMj/aJCd2he8LzClFHYQd6PfrZYyO9zVEl8vhqgY+WFjHM+OEHtAXIshE1NcxP
+         HHHmGmCq5OuCJwumNAhhNM9cr7VYZwimowf3o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aZHWC0QZZA37dcKrvB+jA2eMe/FYFoxrvp88RR54inU=;
-        b=jy83UWUHoWaGK3A4Mvp1+ZUp+rEg0quJQDXGYjivFqicR0s5neMdSXjfIw/rcVj0iq
-         RhJNmCb3k0RZsT6x83aExvkHuuxJTphJD0F8//kUMCR2iJ0L08r9hUKY7hvXtnI+0snW
-         oIiRLJ8XQ1ekzxCYawEGK5la8nQSvYHc8krzJ2Q5r4Ds3OQZqFG62OM1xfTCaF9iw4XI
-         8380FPMCQyfXei+COOlJesvYPXs2/aLe+TJxL7BmQbXbxG1A76jQpAxjkEPE4QcqwWaL
-         1eiLhpZVYUnml+llHtenYuzn6o0wym+NxHHNODRqm8BPfChjfqDher25iA5/py8Csldp
-         ZE6g==
-X-Gm-Message-State: AOAM530Q9Old2a5mcaPPkE9c2BQykqiInL/F2jFWc2YcbFKS2Pg/F1x9
-        1iii0HKpKOvPgkmwNcmBAyd6JSLPDa7OVQQxIJJS+A==
-X-Google-Smtp-Source: ABdhPJwcM5QQPYi/sgWHIWgDz4u3w27IDZzkKokmBVapf4JwhJZ/P1/Dbfiwu5YNNk0+Bg+9VIWUvMUFFqXOuhMG3RE=
-X-Received: by 2002:a17:906:eb95:: with SMTP id mh21mr4823614ejb.175.1611364524697;
- Fri, 22 Jan 2021 17:15:24 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IaMkqmTttjbetPQ20RK5ozAGqawwXlCoh0MYCZptj3I=;
+        b=bAlkFTdfnhUnwSZA3H5XVvYbfT7ZKPZ8QNYdd5Yra2H6lteSlcEe2RNEbeNdW/IADm
+         qeCcIMYHMCLXmXc5nWdpr1/cjVN7ypqTuWG0uIKSLiitZ5sC0lr51GxzhTVnv93qGMTk
+         yGHauXvfjbgChPAuLYI5u5Kmol5fXuNv5K9Tahi6rwO7AII5y9s8ckCHcfyMozNGPHHH
+         fU9NfLRi3VcEnuh6YdmDKnsGjZ09aV6z82dWpWRuys4MRkV9aMK+rq8WXBLkmhsFU412
+         CEZY74IPB9iHpaqfc7FQrAbT0B6ocgpGoKHY0c3gNllcxv3YLKA0Iej9v2ZMAtwoTDRd
+         vVVQ==
+X-Gm-Message-State: AOAM5337KvVVb8A078hT8lNjgul8ushb8e/vTMxIA2tBDxLTcpUdrNpT
+        zr/qkcLPCuUdMBARXWuXmgNYpw==
+X-Google-Smtp-Source: ABdhPJwzoFS7nwSIZWLmlRK27FPK8hvGtFhurDr54DbA+rH+7AiAeyOZiXv20gIxTlnVhCvbN4Kliw==
+X-Received: by 2002:a37:49d6:: with SMTP id w205mr3340840qka.322.1611364627638;
+        Fri, 22 Jan 2021 17:17:07 -0800 (PST)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id x15sm2516840qtr.72.2021.01.22.17.17.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 17:17:07 -0800 (PST)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, torvalds@linux-foundation.org,
+        fweisbec@gmail.com, keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joel@joelfernandes.org,
+        vineeth@bitbyteword.org, Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Ben Segall <bsegall@google.com>,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH v10 0/5] Core scheduling remaining patches
+Date:   Fri, 22 Jan 2021 20:16:59 -0500
+Message-Id: <20210123011704.1901835-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-References: <20200326032420.27220-1-pasha.tatashin@soleen.com>
- <20200326032420.27220-11-pasha.tatashin@soleen.com> <e6faa23d-27a8-838a-33ef-2a6ad8a5c746@arm.com>
-In-Reply-To: <e6faa23d-27a8-838a-33ef-2a6ad8a5c746@arm.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Fri, 22 Jan 2021 20:14:49 -0500
-Message-ID: <CA+CK2bDJeYPzGyVkRJu2AOkvV8SJ=ea3jbAZtho8_VA416kZ4A@mail.gmail.com>
-Subject: Re: [PATCH v9 10/18] arm64: kexec: cpu_soft_restart change argument types
-To:     James Morse <james.morse@arm.com>
-Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bhupesh Sharma <bhsharma@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
-        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Selin Dag <selindag@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 1:01 PM James Morse <james.morse@arm.com> wrote:
->
-> Hi Pavel,
->
-> On 26/03/2020 03:24, Pavel Tatashin wrote:
-> > Change argument types from unsigned long to a more descriptive
-> > phys_addr_t.
->
-> For 'entry', which is a physical addresses, sure...
->
-> > diff --git a/arch/arm64/kernel/cpu-reset.h b/arch/arm64/kernel/cpu-reset.h
-> > index ed50e9587ad8..38cbd4068019 100644
-> > --- a/arch/arm64/kernel/cpu-reset.h
-> > +++ b/arch/arm64/kernel/cpu-reset.h
-> > @@ -10,17 +10,17 @@
-> >
-> >  #include <asm/virt.h>
-> >
-> > -void __cpu_soft_restart(unsigned long el2_switch, unsigned long entry,
-> > -     unsigned long arg0, unsigned long arg1, unsigned long arg2);
->
-> > +void __cpu_soft_restart(phys_addr_t el2_switch, phys_addr_t entry,
-> > +                     phys_addr_t arg0, phys_addr_t arg1, phys_addr_t arg2);
->
-> This looks weird because its re-using the hyp-stub API, because it might call the hyp-stub
-> from the idmap. entry is passed in, so this isn't tied to kexec. Without tying it to
-> kexec, how do you know arg2 is a physical address?
-> I think it tried to be re-usable because 32bit has more users for this.
+Core-Scheduling
+===============
+Enclosed is series v10 of core scheduling.
+Many of the core patches in v9 were picked up in Peter's queue tree. This
+series contains the remaining patches (interface, docs).
 
-I will drop this patch. It was intended as a cleanup from suggestions
-in earlier versions of this series, but I see it is not really needed.
+v9 series is here: https://lwn.net/Articles/837595/
 
-Thank you,
-Pasha
+Introduction of feature
+=======================
+Core scheduling is a feature that allows only trusted tasks to run
+concurrently on cpus sharing compute resources (eg: hyperthreads on a
+core). The goal is to mitigate the core-level side-channel attacks
+without requiring to disable SMT (which has a significant impact on
+performance in some situations). Core scheduling (as of v7) mitigates
+user-space to user-space attacks and user to kernel attack when one of
+the siblings enters the kernel via interrupts or system call.
+
+By default, the feature doesn't change any of the current scheduler
+behavior. The user decides which tasks can run simultaneously on the
+same core (for now by having them in the same tagged cgroup). When a tag
+is enabled in a cgroup and a task from that cgroup is running on a
+hardware thread, the scheduler ensures that only idle or trusted tasks
+run on the other sibling(s). Besides security concerns, this feature can
+also be beneficial for RT and performance applications where we want to
+control how tasks make use of SMT dynamically.
+
+Both a CGroup and Per-task interface via prctl(2) are provided for configuring
+core sharing. More details are provided in documentation patch.  Kselftests are
+provided to verify the correctness/rules of the interface.
+
+Testing
+=======
+ChromeOS testing shows 300% improvement in keypress latency on a Google
+docs key press with Google hangout test (the maximum latency drops from 150ms
+to 50ms for keypresses).
+
+Vineeth tested sysbench on v9 series and does not see any regressions.
+Hong and Aubrey tested v9 and see results similar to v8. There is a known issue
+with uperf that does regress. This appears to be because of ksoftirq heavily
+contending with other tasks on the core. The consensus is this can be improved
+in the future.
+
+Changes in v10
+==============
+- migration code changes from Aubrey.
+- interface changes from Josh and Chris.
+- dropped kernel protection changes for now (have to rework them for mainline).
+
+Changes in v9
+=============
+- Note that the vruntime snapshot change is written in 2 patches to show the
+  progression of the idea and prevent merge conflicts:
+    sched/fair: Snapshot the min_vruntime of CPUs on force idle
+    sched: Improve snapshotting of min_vruntime for CGroups
+  Same with the RT priority inversion change:
+    sched: Fix priority inversion of cookied task with sibling
+    sched: Improve snapshotting of min_vruntime for CGroups
+- Disable coresched on certain AMD HW.
+
+Changes in v8
+=============
+- New interface/API implementation
+  - Joel
+- Revised kernel protection patch
+  - Joel
+- Revised Hotplug fixes
+  - Joel
+- Minor bug fixes and address review comments
+  - Vineeth
+
+Changes in v7
+=============
+- Kernel protection from untrusted usermode tasks
+  - Joel, Vineeth
+- Fix for hotplug crashes and hangs
+  - Joel, Vineeth
+
+Changes in v6
+=============
+- Documentation
+  - Joel
+- Pause siblings on entering nmi/irq/softirq
+  - Joel, Vineeth
+- Fix for RCU crash
+  - Joel
+- Fix for a crash in pick_next_task
+  - Yu Chen, Vineeth
+- Minor re-write of core-wide vruntime comparison
+  - Aaron Lu
+- Cleanup: Address Review comments
+- Cleanup: Remove hotplug support (for now)
+- Build fixes: 32 bit, SMT=n, AUTOGROUP=n etc
+  - Joel, Vineeth
+
+Changes in v5
+=============
+- Fixes for cgroup/process tagging during corner cases like cgroup
+  destroy, task moving across cgroups etc
+  - Tim Chen
+- Coresched aware task migrations
+  - Aubrey Li
+- Other minor stability fixes.
+
+Changes in v4
+=============
+- Implement a core wide min_vruntime for vruntime comparison of tasks
+  across cpus in a core.
+  - Aaron Lu
+- Fixes a typo bug in setting the forced_idle cpu.
+  - Aaron Lu
+
+Changes in v3
+=============
+- Fixes the issue of sibling picking up an incompatible task
+  - Aaron Lu
+  - Vineeth Pillai
+  - Julien Desfossez
+- Fixes the issue of starving threads due to forced idle
+  - Peter Zijlstra
+- Fixes the refcounting issue when deleting a cgroup with tag
+  - Julien Desfossez
+- Fixes a crash during cpu offline/online with coresched enabled
+  - Vineeth Pillai
+- Fixes a comparison logic issue in sched_core_find
+  - Aaron Lu
+
+Changes in v2
+=============
+- Fixes for couple of NULL pointer dereference crashes
+  - Subhra Mazumdar
+  - Tim Chen
+- Improves priority comparison logic for process in different cpus
+  - Peter Zijlstra
+  - Aaron Lu
+- Fixes a hard lockup in rq locking
+  - Vineeth Pillai
+  - Julien Desfossez
+- Fixes a performance issue seen on IO heavy workloads
+  - Vineeth Pillai
+  - Julien Desfossez
+- Fix for 32bit build
+  - Aubrey Li
+
+Future work
+===========
+- Load balancing/Migration fixes for core scheduling.
+  With v6, Load balancing is partially coresched aware, but has some
+  issues w.r.t process/taskgroup weights:
+  https://lwn.net/ml/linux-kernel/20200225034438.GA617271@z...
+
+Aubrey Li (1):
+sched: migration changes for core scheduling
+
+Joel Fernandes (Google) (3):
+kselftest: Add tests for core-sched interface
+Documentation: Add core scheduling documentation
+sched: Debug bits...
+
+Peter Zijlstra (1):
+sched: CGroup tagging interface for core scheduling
+
+.../admin-guide/hw-vuln/core-scheduling.rst   | 263 +++++++
+Documentation/admin-guide/hw-vuln/index.rst   |   1 +
+include/linux/sched.h                         |  10 +
+include/uapi/linux/prctl.h                    |   6 +
+kernel/fork.c                                 |   1 +
+kernel/sched/Makefile                         |   1 +
+kernel/sched/core.c                           | 171 ++++-
+kernel/sched/coretag.c                        | 669 ++++++++++++++++
+kernel/sched/debug.c                          |   4 +
+kernel/sched/fair.c                           |  42 +-
+kernel/sched/sched.h                          | 130 +++-
+kernel/sys.c                                  |   7 +
+tools/include/uapi/linux/prctl.h              |   6 +
+tools/testing/selftests/sched/.gitignore      |   1 +
+tools/testing/selftests/sched/Makefile        |  14 +
+tools/testing/selftests/sched/config          |   1 +
+.../testing/selftests/sched/test_coresched.c  | 716 ++++++++++++++++++
+17 files changed, 2018 insertions(+), 25 deletions(-)
+create mode 100644 Documentation/admin-guide/hw-vuln/core-scheduling.rst
+create mode 100644 kernel/sched/coretag.c
+create mode 100644 tools/testing/selftests/sched/.gitignore
+create mode 100644 tools/testing/selftests/sched/Makefile
+create mode 100644 tools/testing/selftests/sched/config
+create mode 100644 tools/testing/selftests/sched/test_coresched.c
+
+--
+2.30.0.280.ga3ce27912f-goog
+
