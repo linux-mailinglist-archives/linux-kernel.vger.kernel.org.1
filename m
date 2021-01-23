@@ -2,128 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239C23013ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 09:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40EA301415
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbhAWIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 03:35:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbhAWIfw (ORCPT
+        id S1726709AbhAWJBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 04:01:07 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:39240 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726588AbhAWJBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 03:35:52 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCE5C06174A;
-        Sat, 23 Jan 2021 00:35:11 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id q1so16195096ion.8;
-        Sat, 23 Jan 2021 00:35:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S6S1XUbpw3sWz7PK1At9O27hDXZ4W5lBRqtANOwgjMg=;
-        b=s+5D3eXqnSvljv1ptw/fN2geCT5dzJJXlUh/4TKf71d8gh+skSUSU9iXCastD8SNsv
-         dsVtMvYRBSawQzzFURmXpL22zwRqTyvP7qf0QeQpPY7tUmec5VIwohyENlObvnhC56Zd
-         5Mmt/fUl/EyH1Nx78oohQuxyj8lYXfp83yI5oxQqV+ZLdmkePcAFTtm9qGzWlcR3bkuu
-         Rn7d6mWkNGXpzhtbQ4wl9PtBv11vqW0eyih/p5ZiufHMdSozRUOjJHJQ1y6/+3+BRJzP
-         V8SusR6Y6NBghdSeiFe7UdWz3DxpdNRHU1BxXQ/Xw8Z0h4bMn2X4Kc18P6EXai6ST/gu
-         VDdA==
+        Sat, 23 Jan 2021 04:01:01 -0500
+Received: by mail-io1-f72.google.com with SMTP id i143so12501094ioa.6
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 01:00:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S6S1XUbpw3sWz7PK1At9O27hDXZ4W5lBRqtANOwgjMg=;
-        b=O3qGUviSJJ3mHLIorptCQMfKRiIcUxibsxDiL4JXZNvmAD26x/ziawBf8G0WJ2Xq+E
-         HIvhSCx1T/lgnsWpSPRJkXUU5FRvPGAvFEN4jVgSd8Nvg38LNMa00/MinTZHEmkOGscs
-         SG7xd4rm1DL2m0nx7rWxs2mYm2lJcOeCGG0kzu9H8ekNyqZFsFBBn/QVHX+QQ/ksaNEE
-         OFyzFnrctl7+xSf2NaBu4BpyOLzUDMhba3PD8Bbl1i1tPCimmgyzkKjK3fYvRH56aI+m
-         XSy5MSMJqt6lOcRiwsWsnT6+R+tujTjOnGGgADDcz5xJ32E05TX1NSuvjUP8EAJxcMRT
-         YPxw==
-X-Gm-Message-State: AOAM531nF0DFyEjPX0JmLRWsvyZDrelH3Dj+M3V2pIU86y7PNf7sktXK
-        5cPYxD6NaZOOiJLk+hSZiM2zZO+lpFHlKc0K1sg=
-X-Google-Smtp-Source: ABdhPJz2LKVhsK2qEpXCGfrtqDhLtJuXz1SLCCaVUUJbnxp4DfeTSjRNi8D06Ro2Jg9XkjMLPxgPw2zS/ncDdOEpZnU=
-X-Received: by 2002:a6b:7d42:: with SMTP id d2mr6124418ioq.176.1611390910963;
- Sat, 23 Jan 2021 00:35:10 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bTBjzUD8RkwnNT4aK1lofX8Qcsy5NjDNHN/mHhMhUF4=;
+        b=eHIJ1XtpGuCMBA27smcRtPF/uNl5zxmsn53IA0WTxLP+DwHnv9MbawDPi3aSqJBKgV
+         IOvvXpV22fZSicNeghfyPIQX4q32OHv/fz9C1evdvfVIdIZRnmbznoIqrya28+K//6+a
+         vTBL19J5Xs4BPhYs9IiINZRth1IhD+eM+ctaqYY4IO39HGVDXOTbYCSuHmFzIBHSTrho
+         0ewxSsaGfoKnOXKYoffd/C2ctoDZ09gcZwSVi8azHAhor0z3w5Vjlltq3kC550g/DLsa
+         WKAmGIxJYTcr4CwwYNXA5vVxoM+gPX327scRuuKABl/vEStfSFNkYnQ0g7FVR5pk9DQp
+         iiTw==
+X-Gm-Message-State: AOAM532cuRNcv3kTjsQP2sY4f32sU/8A9fGKMPrM6m2aM6QgS/WP1DWy
+        qgsmhU6iyL2gp+fdYg3iHt4GeNagg+SIO0BcAtPiWh+O2SXH
+X-Google-Smtp-Source: ABdhPJwE7O0Cl3savSxSMdwLcKqEeCRPK/XSULk8kvwQ9QYBmduR/d6Pi81krbgY+7S6Bp3TS8lE/+7GIfbDhC2JHiZNKuPErp2x
 MIME-Version: 1.0
-References: <20210117042539.1609-1-alistair@alistair23.me> <20210117042539.1609-4-alistair@alistair23.me>
- <20210118123158.GE4455@sirena.org.uk> <CAKmqyKMyXk_OjTKD24Qxn4QXJ4FwP4yDQqtmTsxAJMJzy34PcA@mail.gmail.com>
- <20210122133718.GB6391@sirena.org.uk>
-In-Reply-To: <20210122133718.GB6391@sirena.org.uk>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Sat, 23 Jan 2021 00:34:44 -0800
-Message-ID: <CAKmqyKPsVkUDts=X1sLMyc7hWs_E=1hW6ydzPDXMDMNVWa1u0A@mail.gmail.com>
-Subject: Re: [PATCH 4/6] regulator: Initial commit of sy7636a
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Alistair Francis <alistair@alistair23.me>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a6b:681a:: with SMTP id d26mr1998641ioc.144.1611392419610;
+ Sat, 23 Jan 2021 01:00:19 -0800 (PST)
+Date:   Sat, 23 Jan 2021 01:00:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c3c84605b98d88f9@google.com>
+Subject: BUG: unable to handle kernel paging request in bpf_trace_run7
+From:   syzbot <syzbot+71ce453661898ec7a122@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 5:37 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Jan 21, 2021 at 10:24:10PM -0800, Alistair Francis wrote:
-> > On Mon, Jan 18, 2021 at 4:32 AM Mark Brown <broonie@kernel.org> wrote:
-> > > On Sat, Jan 16, 2021 at 08:25:37PM -0800, Alistair Francis wrote:
->
-> > > > +static int get_vcom_voltage_op(struct regulator_dev *rdev)
-> > > > +{
-> > > > +     int ret = get_vcom_voltage_mv(rdev->regmap);
-> > > > +
->
-> > > Why is this get_vcom_voltage_mv() function not in the regulator driver,
-> > > and why is it not just inline here?  It also needs namespacing.
->
-> > I'm not sure what you mean, can you please explain?
->
-> This is a wrapper for a function that has exactly one caller but is not
-> only a separate function but also in the MFD header, part of a separate
-> driver.  This seems at best pointless.
+Hello,
 
-Ah I see. I think I have fixed this.
+syzbot found the following issue on:
 
->
-> > > Why do you need this delay here, and what purpose is this lock intended
->
-> > The delay is to allow a power ramp up, I have added a comment.
->
-> Use the standard ramp_delay, don't open code it.
->
-> > > > +static int sy7636a_regulator_suspend(struct device *dev)
-> > > > +{
-> > > > +     int ret;
-> > > > +     struct sy7636a *sy7636a = dev_get_drvdata(dev->parent);
-> > > > +
-> > > > +     ret = get_vcom_voltage_mv(sy7636a->regmap);
-> > > > +
-> > > > +     if (ret > 0)
-> > > > +             sy7636a->vcom = (unsigned int)ret;
-> > > > +
-> > > > +     return 0;
-> > > > +}
->
-> > > What's going on here, and if you are going to store this value over
-> > > suspend why not store it in a variable of the correct type?  In general
->
-> > It is part of the vendor's kernel, they specifically added it to
-> > ensure vcom is set on resume.
->
-> "I copied this from the vendor" isn't really a great explanation...  If
-> the device is likely to get completely powered off and loosing settings
-> then presumably the entire register map, not just this one value, needs
-> to be saved and restored instead of just this one value.  If that is the
-> case it's probably best to use a register cache and just resync it on
-> resume.
+HEAD commit:    7d68e382 bpf: Permit size-0 datasec
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17a5a184d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
+dashboard link: https://syzkaller.appspot.com/bug?extid=71ce453661898ec7a122
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Good point.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I don't have a good answer so I have removed the suspend/resume part.
-I'll have to investigate in the future if/why this is required.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+71ce453661898ec7a122@syzkaller.appspotmail.com
 
-Alistair
+BUG: unable to handle page fault for address: ffffc90000cc0030
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 10000067 
+P4D 10000067 
+PUD 101ab067 
+PMD 10a9e067 
+PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8498 Comm: syz-executor.3 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
+RIP: 0010:bpf_trace_run7+0x174/0x420 kernel/trace/bpf_trace.c:2130
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 14 0b f7 ff e8 af 33 7e 07 31 ff 89 c3 89 c6 e8 84 12
+RSP: 0018:ffffc900019cf300 EFLAGS: 00010282
+
+RAX: 0000000000000000 RBX: ffffc90000cc0000 RCX: ffffffff817bd211
+RDX: 0000000000000000 RSI: ffffc90000cc0038 RDI: ffffc900019cf328
+RBP: 1ffff92000339e61 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff817bd17f R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002f78940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000cc0030 CR3: 00000000533d3000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+Call Trace:
+ __bpf_trace_percpu_alloc_percpu+0x1dc/0x220 include/trace/events/percpu.h:10
+ trace_percpu_alloc_percpu include/trace/events/percpu.h:10 [inline]
+ pcpu_alloc+0xba6/0x16f0 mm/percpu.c:1844
+ xt_percpu_counter_alloc+0x131/0x1a0 net/netfilter/x_tables.c:1820
+ find_check_entry.constprop.0+0xab/0x9a0 net/ipv4/netfilter/ip_tables.c:527
+ translate_table+0xc26/0x16a0 net/ipv4/netfilter/ip_tables.c:717
+ do_replace net/ipv4/netfilter/ip_tables.c:1135 [inline]
+ do_ipt_set_ctl+0x553/0xb50 net/ipv4/netfilter/ip_tables.c:1627
+ nf_setsockopt+0x83/0xe0 net/netfilter/nf_sockopt.c:101
+ ip_setsockopt+0x3c3/0x3a20 net/ipv4/ip_sockglue.c:1435
+ tcp_setsockopt+0x136/0x2440 net/ipv4/tcp.c:3597
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2115
+ __do_sys_setsockopt net/socket.c:2126 [inline]
+ __se_sys_setsockopt net/socket.c:2123 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2123
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x460d4a
+Code: 49 89 ca b8 37 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ca 88 fb ff c3 66 0f 1f 84 00 00 00 00 00 49 89 ca b8 36 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa 88 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fff6bb05e38 EFLAGS: 00000202 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00007fff6bb05e60 RCX: 0000000000460d4a
+RDX: 0000000000000040 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 000000000074ee60 R08: 00000000000002d8 R09: 0000000000004000
+R10: 000000000074cd00 R11: 0000000000000202 R12: 00007fff6bb05ec0
+R13: 0000000000000003 R14: 000000000074cca0 R15: 0000000000000000
+Modules linked in:
+CR2: ffffc90000cc0030
+---[ end trace 16413316cc5dacf7 ]---
+RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
+RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
+RIP: 0010:bpf_trace_run7+0x174/0x420 kernel/trace/bpf_trace.c:2130
+Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 14 0b f7 ff e8 af 33 7e 07 31 ff 89 c3 89 c6 e8 84 12
+RSP: 0018:ffffc900019cf300 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffffc90000cc0000 RCX: ffffffff817bd211
+RDX: 0000000000000000 RSI: ffffc90000cc0038 RDI: ffffc900019cf328
+RBP: 1ffff92000339e61 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff817bd17f R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
+FS:  0000000002f78940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90000cc0030 CR3: 00000000533d3000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
