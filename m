@@ -2,56 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCD33015BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4CC3015C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725854AbhAWOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:16:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34472 "EHLO mail.kernel.org"
+        id S1725769AbhAWOTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:19:17 -0500
+Received: from aposti.net ([89.234.176.197]:32836 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbhAWOQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:16:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD1B22B51;
-        Sat, 23 Jan 2021 14:15:41 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 14:15:39 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 16/21] arm64: Make kvm-arm.mode={nvhe,protected} an
- alias of id_aa64mmfr1.vh=0
-Message-ID: <YAwvi9zEXZxbo9iK@Catalins-MacBook-Air.local>
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-17-maz@kernel.org>
+        id S1725268AbhAWOTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:19:15 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
+        od@zcrc.me, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH v2 1/2] dt-bindings/phy: ingenic: Add compatibles for JZ4760(B) SoCs
+Date:   Sat, 23 Jan 2021 14:18:24 +0000
+Message-Id: <20210123141825.15481-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-17-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:28AM +0000, Marc Zyngier wrote:
-> Admitedly, passing id_aa64mmfr1.vh=0 on the command-line isn't
-> that easy to understand, and it is likely that users would much
-> prefer write "kvm-arm.mode=nvhe", or "...=protected".
-> 
-> So here you go. This has the added advantage that we can now
-> always honor the "kvm-arm.mode=protected" option, even when
-> booting on a VHE system.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+Add the ingenic,jz4760-phy and ingenic,jz4760b-phy compatible strings,
+and make the ingenic,jz4770-phy compatible string require
+ingenic,jz4760-phy as a fallback, since both work the same, and the
+JZ4760 SoC is older.
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+
+Notes:
+    v2: Fix indentation
+
+ .../bindings/phy/ingenic,phy-usb.yaml         | 22 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+index 0fd93d71fe5a..d59c697ed81e 100644
+--- a/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
++++ b/Documentation/devicetree/bindings/phy/ingenic,phy-usb.yaml
+@@ -15,13 +15,19 @@ properties:
+     pattern: '^usb-phy@.*'
+ 
+   compatible:
+-    enum:
+-      - ingenic,jz4770-phy
+-      - ingenic,jz4775-phy
+-      - ingenic,jz4780-phy
+-      - ingenic,x1000-phy
+-      - ingenic,x1830-phy
+-      - ingenic,x2000-phy
++    oneOf:
++      - enum:
++          - ingenic,jz4760-phy
++          - ingenic,jz4775-phy
++          - ingenic,jz4780-phy
++          - ingenic,x1000-phy
++          - ingenic,x1830-phy
++          - ingenic,x2000-phy
++      - items:
++          - enum:
++              - ingenic,jz4760b-phy
++              - ingenic,jz4770-phy
++          - const: ingenic,jz4760-phy
+ 
+   reg:
+     maxItems: 1
+@@ -48,7 +54,7 @@ examples:
+   - |
+     #include <dt-bindings/clock/jz4770-cgu.h>
+     otg_phy: usb-phy@3c {
+-      compatible = "ingenic,jz4770-phy";
++      compatible = "ingenic,jz4770-phy", "ingenic,jz4760-phy";
+       reg = <0x3c 0x10>;
+ 
+       vcc-supply = <&vcc>;
+-- 
+2.29.2
+
