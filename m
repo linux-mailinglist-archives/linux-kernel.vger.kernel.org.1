@@ -2,267 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AB23014B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1C83014C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbhAWKtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 05:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbhAWKsS (ORCPT
+        id S1727208AbhAWKwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 05:52:42 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:43889 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbhAWKul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 05:48:18 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA6AC061797;
-        Sat, 23 Jan 2021 02:47:19 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id q20so5474447pfu.8;
-        Sat, 23 Jan 2021 02:47:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qBbuWWuvn/SG2w43vbI4VPqGlPTRg3jqDlvja9eltTs=;
-        b=S6QzKFI0ju282I9hPcwJFwav3mGuMy6pQ+qAxMSTLYAUWPWFwrN4JvfDIq1ce6qBVY
-         3KKiSezNyY+5LN5h1frn/jQgR7smKbdH1pAlSQoYcKLTRbP0OowLeQKFwV975yNdzDTY
-         WzS8aL+sWU9md0CO+0q+tXErE7ln2DJc0vP71v6k1lhjvZL9/qcafjWsel5xD76d10Tz
-         k3r5RbqMWYy/jqeDH85l5LpFmNwbWa2sQdRu4X+IPtGane7QctN82Nq679PFJb1CAhLQ
-         xcUueitVOGF0PmxdtfYY4EwAGgfjq4GC9afUEC2r9OYIo+gziCumnzqSxbZ4zrWgtDje
-         Ciug==
+        Sat, 23 Jan 2021 05:50:41 -0500
+Received: by mail-lf1-f50.google.com with SMTP id q8so11094034lfm.10;
+        Sat, 23 Jan 2021 02:50:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qBbuWWuvn/SG2w43vbI4VPqGlPTRg3jqDlvja9eltTs=;
-        b=NKE+RFJynbT4uw9zMnljN2HhJtHeNeLfb1UcIzCDQgp0BRb+x9AJqX2AnblwIa8y60
-         MbOwMo3TYPfoKzhlPVojavbBFWxGkb5nBijpTF6NagEjtFQdTcXolDup5BkU0OVOzcPD
-         uzxYybMm4rgRku6U2urzeSxnMX8F57qztA09IeOnNTnY5FEuguLVyJuTnOMvpysjq+Sj
-         u7PUkcJg3b0Wi7EethDCK7c9cm42yZG6LFJmhhHMD8dvpnfzl8eiKTflIvP+5Lmiu/8X
-         58k3tPWmR0eXThIP57njmoLa9s9bssaVr+8nqQlkJgtBEpKIt42pdokPyPJ7hC+jk5xb
-         Qxzg==
-X-Gm-Message-State: AOAM530EbKR8zwAr6Eh6Ube8xSuQp6mRJLHxU1Dg/6TeGnMY6id8x/kl
-        snNYZOOAMi3yqvD3QhJ4isA=
-X-Google-Smtp-Source: ABdhPJw6Z8JTi/+AeY7zYtjKUoE2tmR12os+pkrUF8O/m8TRLSNRv7rsxrB0hdoSBjr8Qgv+EhdQ/w==
-X-Received: by 2002:a62:8c85:0:b029:1bd:5441:6cb8 with SMTP id m127-20020a628c850000b02901bd54416cb8mr1423072pfd.29.1611398838973;
-        Sat, 23 Jan 2021 02:47:18 -0800 (PST)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id k5sm6334035pfi.31.2021.01.23.02.47.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 02:47:18 -0800 (PST)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     devel@driverdev.osuosl.org
-Cc:     Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 8/8] staging: qlge: add documentation for debugging qlge
-Date:   Sat, 23 Jan 2021 18:46:13 +0800
-Message-Id: <20210123104613.38359-9-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210123104613.38359-1-coiby.xu@gmail.com>
-References: <20210123104613.38359-1-coiby.xu@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zVtzOXy111hZzS7DNzuLSWnU2lMa2r2x+PxOQ/YVca4=;
+        b=toBczwKmvAWsCyMH/Wqi9eFuqf8aih+4vl9SeX9GEbESN438nF/43uMBXvA0paWD2R
+         bAYtn8RZxmdk2VN0lWoU8bOmczakc2dBAkBcX8cK/LBUQmdXzOuHR+U+Rx8FeYrM8Ed/
+         iOSxzCPquWXIE89x2SetMg4bZ1K8C+2+xzxtgtcZV1q0FPh4RuF4uJCI1C7pb0Pa1fys
+         7nZ+2SxiLRHHd1jW0p/KPZvTvqh7SGzVSRQ9tnwGJUZkCOjZWcCyes5o4UxCdg4eZSOj
+         TvwCVQNLIwZ2iYRHaXYD+Jrjjq32mqN6Hwfl8TmFXsBuhuUUQN9a65vzt/z30dFw2wmg
+         BEUg==
+X-Gm-Message-State: AOAM530ZwaJgAQcOwv+c3qgcIpDlzx8J4/619lqByf3Kk/ssamhsN5Sk
+        SX8jwyPz4CiP1TaQsQRHPzI9jeS+VP2pCQ==
+X-Google-Smtp-Source: ABdhPJyXEOeG9lIeGkea26EE+UeWSQqKD72haCcpKdT05oKuTqAeMd9qirinCSiyHuv/X3vaHGkbyw==
+X-Received: by 2002:a05:6512:70d:: with SMTP id b13mr240174lfs.639.1611398999440;
+        Sat, 23 Jan 2021 02:49:59 -0800 (PST)
+Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id j15sm1162793lfb.13.2021.01.23.02.49.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Jan 2021 02:49:58 -0800 (PST)
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Gaurav Kohli <gkohli@codeaurora.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
+        Julia Lawall <julia.lawall@inria.fr>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+ <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+ <20210121140951.2a554a5e@gandalf.local.home>
+ <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
+ <20210121153732.43d7b96b@gandalf.local.home> <YAqwD/ivTgVJ7aap@kroah.com>
+ <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
+ <20210122093758.320bb4f9@gandalf.local.home>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
+Date:   Sat, 23 Jan 2021 13:49:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210122093758.320bb4f9@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instructions and examples on kernel data structures dumping and
-coredump.
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- .../networking/device_drivers/index.rst       |   1 +
- .../device_drivers/qlogic/index.rst           |  18 +++
- .../networking/device_drivers/qlogic/qlge.rst | 118 ++++++++++++++++++
- MAINTAINERS                                   |   6 +
- 4 files changed, 143 insertions(+)
- create mode 100644 Documentation/networking/device_drivers/qlogic/index.rst
- create mode 100644 Documentation/networking/device_drivers/qlogic/qlge.rst
 
-diff --git a/Documentation/networking/device_drivers/index.rst b/Documentation/networking/device_drivers/index.rst
-index a3113ffd7a16..d8279de7bf25 100644
---- a/Documentation/networking/device_drivers/index.rst
-+++ b/Documentation/networking/device_drivers/index.rst
-@@ -15,6 +15,7 @@ Contents:
-    ethernet/index
-    fddi/index
-    hamradio/index
-+   qlogic/index
-    wan/index
-    wifi/index
- 
-diff --git a/Documentation/networking/device_drivers/qlogic/index.rst b/Documentation/networking/device_drivers/qlogic/index.rst
-new file mode 100644
-index 000000000000..ad05b04286e4
---- /dev/null
-+++ b/Documentation/networking/device_drivers/qlogic/index.rst
-@@ -0,0 +1,18 @@
-+.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+
-+QLogic QLGE Device Drivers
-+===============================================
-+
-+Contents:
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   qlge
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
-diff --git a/Documentation/networking/device_drivers/qlogic/qlge.rst b/Documentation/networking/device_drivers/qlogic/qlge.rst
-new file mode 100644
-index 000000000000..0b888253d152
---- /dev/null
-+++ b/Documentation/networking/device_drivers/qlogic/qlge.rst
-@@ -0,0 +1,118 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=======================================
-+QLogic QLGE 10Gb Ethernet device driver
-+=======================================
-+
-+This driver use drgn and devlink for debugging.
-+
-+Dump kernel data structures in drgn
-+-----------------------------------
-+
-+To dump kernel data structures, the following Python script can be used
-+in drgn:
-+
-+.. code-block:: python
-+
-+	def align(x, a):
-+	    """the alignment a should be a power of 2
-+	    """
-+	    mask = a - 1
-+	    return (x+ mask) & ~mask
-+
-+	def struct_size(struct_type):
-+	    struct_str = "struct {}".format(struct_type)
-+	    return sizeof(Object(prog, struct_str, address=0x0))
-+
-+	def netdev_priv(netdevice):
-+	    NETDEV_ALIGN = 32
-+	    return netdevice.value_() + align(struct_size("net_device"), NETDEV_ALIGN)
-+
-+	name = 'xxx'
-+	qlge_device = None
-+	netdevices = prog['init_net'].dev_base_head.address_of_()
-+	for netdevice in list_for_each_entry("struct net_device", netdevices, "dev_list"):
-+	    if netdevice.name.string_().decode('ascii') == name:
-+	        print(netdevice.name)
-+
-+	ql_adapter = Object(prog, "struct ql_adapter", address=netdev_priv(qlge_device))
-+
-+The struct ql_adapter will be printed in drgn as follows,
-+
-+    >>> ql_adapter
-+    (struct ql_adapter){
-+            .ricb = (struct ricb){
-+                    .base_cq = (u8)0,
-+                    .flags = (u8)120,
-+                    .mask = (__le16)26637,
-+                    .hash_cq_id = (u8 [1024]){ 172, 142, 255, 255 },
-+                    .ipv6_hash_key = (__le32 [10]){},
-+                    .ipv4_hash_key = (__le32 [4]){},
-+            },
-+            .flags = (unsigned long)0,
-+            .wol = (u32)0,
-+            .nic_stats = (struct nic_stats){
-+                    .tx_pkts = (u64)0,
-+                    .tx_bytes = (u64)0,
-+                    .tx_mcast_pkts = (u64)0,
-+                    .tx_bcast_pkts = (u64)0,
-+                    .tx_ucast_pkts = (u64)0,
-+                    .tx_ctl_pkts = (u64)0,
-+                    .tx_pause_pkts = (u64)0,
-+                    ...
-+            },
-+            .active_vlans = (unsigned long [64]){
-+                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 52780853100545, 18446744073709551615,
-+                    18446619461681283072, 0, 42949673024, 2147483647,
-+            },
-+            .rx_ring = (struct rx_ring [17]){
-+                    {
-+                            .cqicb = (struct cqicb){
-+                                    .msix_vect = (u8)0,
-+                                    .reserved1 = (u8)0,
-+                                    .reserved2 = (u8)0,
-+                                    .flags = (u8)0,
-+                                    .len = (__le16)0,
-+                                    .rid = (__le16)0,
-+                                    ...
-+                            },
-+                            .cq_base = (void *)0x0,
-+                            .cq_base_dma = (dma_addr_t)0,
-+                    }
-+                    ...
-+            }
-+    }
-+
-+coredump via devlink
-+--------------------
-+
-+
-+And the coredump obtained via devlink in json format looks like,
-+
-+.. code:: shell
-+
-+	$ devlink health dump show DEVICE reporter coredump -p -j
-+	{
-+	    "Core Registers": {
-+	        "segment": 1,
-+	        "values": [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ]
-+	    },
-+	    "Test Logic Regs": {
-+	        "segment": 2,
-+	        "values": [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ]
-+	    },
-+	    "RMII Registers": {
-+	        "segment": 3,
-+	        "values": [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ]
-+	    },
-+	    ...
-+	    "Sem Registers": {
-+	        "segment": 50,
-+	        "values": [ 0,0,0,0 ]
-+	    }
-+	}
-+
-+When the module parameter qlge_force_coredump is set to be true, the MPI
-+RISC reset before coredumping. So coredumping will much longer since
-+devlink tool has to wait for 5 secs for the resetting to be
-+finished.
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 79b400c97059..b8ab9340670b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14606,6 +14606,12 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/staging/qlge/
- 
-+QLOGIC QLGE 10Gb ETHERNET DRIVER
-+M:	Coiby Xu <coiby.xu@gmail.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/networking/device_drivers/qlogic/qlge.rst
-+
- QM1D1B0004 MEDIA DRIVER
- M:	Akihiro Tsukada <tskd08@gmail.com>
- L:	linux-media@vger.kernel.org
--- 
-2.29.2
+On 1/22/21 5:37 PM, Steven Rostedt wrote:
+> On Fri, 22 Jan 2021 16:55:29 +0530
+> Gaurav Kohli <gkohli@codeaurora.org> wrote:
+> 
+>>>> That could possibly work.  
+>>
+>> Yes, this will work, As i have tested similar patch for internal testing 
+>> for kernel branches like 5.4/4.19.
+> 
+> Can you or Denis send a proper patch for Greg to backport? I'll review it,
+> test it and give my ack to it, so Greg can take it without issue.
+> 
+
+I can prepare the patch, but it will be compile-tested only from my side. Honestly,
+I think it's better when the patch and its backports have the same author and
+commit message. And I can't test the fix by myself as I don't know how to reproduce
+conditions for the bug. I think it's better if Gaurav will prepare this backport,
+unless he have reasons for me to do it or maybe just don't have enough time nowadays.
+Gaurav, if you want to somehow mention me you add my Reported-by:
+
+Thanks,
+Denis
 
