@@ -2,196 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7206E301431
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD263301432
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbhAWJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 04:32:14 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11134 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbhAWJcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 04:32:12 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DN9pM11FVz15ws4;
-        Sat, 23 Jan 2021 17:30:19 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
- 17:31:17 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <almasrymina@google.com>, <rientjes@google.com>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH RFC] hugetlb_cgroup: fix unbalanced css_put for shared mappings
-Date:   Sat, 23 Jan 2021 04:31:11 -0500
-Message-ID: <20210123093111.60785-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1726829AbhAWJdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 04:33:03 -0500
+Received: from mail-co1nam11on2051.outbound.protection.outlook.com ([40.107.220.51]:15136
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725940AbhAWJcw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 04:32:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oW4daVxWcf+QfrL9ol3A6WtMnEyxxTpsLYsRb5QRRpcnR7DmxGxvPZOTUwyT8M0OQVLkIrXfyLVxCTZNgk4qxQ8GWAFqWeEP3SFrB16hCCOcP+WalYXntz7JP/STh/tkWr4DeEToFggWdrdhMJHC7032IMyS5ak8nYVugF7/PpBxvLnEM9MreqjIMtKeWO43OUzUNhqIHYQfl91qOfCIwji8hxrMNVHR9R81VQdFRLWdwVua+0teY70VhpnwlTm2R9gOKqSG+yMBxtauVD2xYtQQ702CBA/40D/tR3Ecu+BUGNRM7h8NnbP924wct7x/WKMGSNIyVpdtTz6HdUEiMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SwAxFbN2GBpZaQfUam5ZdL9WZsZcCK0hafHIVk6FEB0=;
+ b=LOHb6SYBrpAYDH+9EIaUW4Pbkkn27p6R5eyN6xqn3D3I3YwPda96QzfC9tGWW8BkphReQXmoLdbB6FSYr3GIhowkJO67qyLJhLNSTrJpAtFdIQmu/LdNz+avIns7uRD7nOq7ofhgxK3TsGxi/9mdxjBDyrCWFHSgEuthl/zMxrnwJVTa4HV4caJtlQg7mnKlwk7dk2gd22lWNe8nVJmedtXw1HCFjoF6EcYo9wBjojAAOkWSr/TCiiT1PljLfm2K9CuRLS6FXgnYjdz7BKMLagpK+ZTrIyQm1WqfHwFDOnqY8Ms9+iKu8KQeKlPglJo99W6gSuDStcmomSTwR/4k3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SwAxFbN2GBpZaQfUam5ZdL9WZsZcCK0hafHIVk6FEB0=;
+ b=VUu1l4yaG1oM2iGcDmx7G20fChb1AbL1UNHua96WCm8YExQSCsXvNH9vuT0Ew8UiKpRgTMmFAxLqs9P75hAR6brVc2lLZA/164ElqpFo/5jRon0LicYK+TbY/swXROhk6NF3xcnWiUXNxN/IoPNWYmxmaFGKJwbjbToFLt386TY=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by SJ0PR11MB4864.namprd11.prod.outlook.com (2603:10b6:a03:2d4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Sat, 23 Jan
+ 2021 09:31:30 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::94a4:4e15:ab64:5006%5]) with mapi id 15.20.3763.014; Sat, 23 Jan 2021
+ 09:31:30 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIIDMvM10ga3ZmcmVlX3JjdTogdXNlIG1pZ3JhdGVfZGlz?=
+ =?gb2312?Q?able/enable()?=
+Thread-Topic: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
+Thread-Index: AQHW70jTxon3D/CQOEadHLsdcTdvhao00RgB
+Date:   Sat, 23 Jan 2021 09:31:30 +0000
+Message-ID: <BYAPR11MB263252B1BD73A38DD8C0AF4EFFBF0@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20210120162148.1973-1-urezki@gmail.com>,<20210120162148.1973-3-urezki@gmail.com>
+In-Reply-To: <20210120162148.1973-3-urezki@gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [106.39.148.97]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 16968858-db5e-4231-6186-08d8bf81aa5d
+x-ms-traffictypediagnostic: SJ0PR11MB4864:
+x-microsoft-antispam-prvs: <SJ0PR11MB4864DD13B1BEF5AF91A570EDFFBF9@SJ0PR11MB4864.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 92CEQLTUfkz0jr2BxdmCzZ4vxA7OAeUFrPN8Sw9R7BiNDCPfQOLhBw+4YUESJ1okc3/apE445B/GlXerJdyFk4wxYBdYZ3hsYbzFDno/ns/hdu0D35z9Yxop2VJ9cTZ/78c3zDhUNKL8oXDrjnZKYJy6tyHQAPKT/eJg6RNIJ7OAHEYUIe2KdBHAlyzK9/vHucPnFvca4m4zu573iafn7hzXzXi/UI5iVKPJ4knIWdABGF2IQOpuSWzIboYnnorml+bBlDmHnPAMqaJn61ypMjK69x4ga9ukwVaN9rr/G9uEhS/lx64tPbgdIFDVziT8SXXciFSdpkVWOxofyfvrDbfez7Xx57JLOGnfaUa2vmWPvt94MOlk38yW+uL8RCVn2ZmDt9zCHv0+Tj6ZIcCxHg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(396003)(136003)(39850400004)(76116006)(91956017)(66446008)(52536014)(7416002)(66556008)(64756008)(7696005)(5660300002)(66946007)(66476007)(86362001)(83380400001)(71200400001)(54906003)(8936002)(110136005)(2906002)(4326008)(33656002)(478600001)(224303003)(9686003)(316002)(6506007)(186003)(26005)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?VVNWVlpuVmtnTStiVm5zRkdJUXhua2JFY3FOTENQdyt2WEU1Ykx2TlpvL0xw?=
+ =?gb2312?B?dlgwNXpHc0JkSFFJb2t0aVNRVHBaOG12NmdrdWZWbTJEeEJBS2VBcFNxaE9H?=
+ =?gb2312?B?K2JqY2J3TTZONElGL3N5cTBwelRuTWlVSE9hWk9DU0pkdm00NHprL0YvNllo?=
+ =?gb2312?B?RGlySUdZYzdxMXNwNlZjZHY4V1JOWllXMExvSzFKOGExZ0ZKaDRaVU41Y2pC?=
+ =?gb2312?B?MythNkVuVWk1cGxFczFpd3MwQWVGVlJxYnJmOVRneFNibmpZcjh4cGRDZ05N?=
+ =?gb2312?B?Y3I5dnBoTjFuUmFMQWFhdktsV2E0ek9uanVXaHVIdTNGZ3BJcG1kOUFvWExl?=
+ =?gb2312?B?eHFDZ3FjVHVoQXJnT0o0OStmN3NxTHNGMDA0Q2FrZ0VpZlNYSDljdHU0VitC?=
+ =?gb2312?B?Mi8vV3hZM1lNQzd4Yjk5YkZ6TmJYSW13TUFXVkNzRklmd1RYTGlkeWZPeFNU?=
+ =?gb2312?B?c2k4bjVIQVE0VExRbmkzRVhBUG0rUGcyaDh1WVp4TzNMS2tBOHhFR0hLYVBw?=
+ =?gb2312?B?d2d0VzB0T1NNanBRNlRDcHIvL1E5RlpZaURSZ0srYTgza0pZQSswRnlBS25h?=
+ =?gb2312?B?VWhXNjRkTnp2VW85UjErU3hFZzY2S0N5Uk9BSWoyRE1SNkVRMGFvMHQ3eE9X?=
+ =?gb2312?B?QTZvSXJFSmgyZzhJa21rcS9xTU5uU2twYkhZbGtOcSs5Q29ibWU4eU1ZSEpE?=
+ =?gb2312?B?a3FkNWtuWS96Y2g0dzNpSmR0YVdaSjhHNkdkRDJZTzRKMFB1L1NwNzBZeHNN?=
+ =?gb2312?B?R0Z4ak5HdHljY00yWlJzVXJRbTNHcDhyZ0JRV3JyaUFna3hMNXFLUEFOcGda?=
+ =?gb2312?B?elJVMDQ2WHdkMHpjZ29CdUVrZ3lmZHZuQUQrUnJXL1hGY3lpWElpSHRibDkw?=
+ =?gb2312?B?U21UcGtMcmptSXJ1N3kyTFB1WFNnQks0V0w4dVo2ZWo0MXByMjZrUzZybGsw?=
+ =?gb2312?B?Rnh4Ym43UnN2eXJVUk04WnBXYTVTdlAvaVdKT1d4QytjYi9SeFZPZ1NKK2hC?=
+ =?gb2312?B?ZDljdkRnMG1WT0FlSUZuL3VTc0lFWU9Dang4b1lGNE5jZ0xlZm5HUVE2bkVm?=
+ =?gb2312?B?K2dXVldEc3cwNTdXWnE5QXB2NEg0ZEFGZGt3aXRjeGhFWE5rNGdEOXo3TWh1?=
+ =?gb2312?B?UHFrN2M3dlBqYTlrZm9HYmx1d0JpaWxzUzl4eWRLNFBtQTE3SEhvdm9DMGsw?=
+ =?gb2312?B?WHcvTVZyc0dpSTlaWE54dHJjeEZXTWZMZndjVEZGd1ZHTFN6amYvR0IyM0pK?=
+ =?gb2312?B?TGJza25RWUZhZzg2bFFqbFVoK0R6VlRDQldvRHljM3l2RlpvbXYrUlIzYWZ3?=
+ =?gb2312?Q?Fgxf7f1fmqQpE=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16968858-db5e-4231-6186-08d8bf81aa5d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2021 09:31:30.1928
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RKO/u/tnxp7Zi2AatfmVYOeEBJ96txuIvDC/L2AGVvThoUskBiFdx38U0ZxOtZOIyIbNg6A/PXGrIcd5gNZZYyfuewfjLDcgiZy29n2zYds=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4864
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation of hugetlb_cgroup for shared mappings could have
-different behavior. Consider the following two scenarios:
-
-1.Assume initial css reference count of hugetlb_cgroup is 1:
-  1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
-count is 2 associated with 1 file_region.
-  1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
-count is 3 associated with 2 file_region.
-  1.3 coalesce_file_region will coalesce these two file_regions into one.
-So css reference count is 3 associated with 1 file_region now.
-
-2.Assume initial css reference count of hugetlb_cgroup is 1 again:
-  2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
-count is 2 associated with 1 file_region.
-
-Therefore, we might have one file_region while holding one or more css
-reference counts. This inconsistency could lead to unbalanced css_put().
-If we do css_put one by one (i.g. hole punch case), scenario 2 would put
-one more css reference. If we do css_put all together (i.g. truncate case),
-scenario 1 will leak one css reference.
-
-In order to fix this, we have to make sure that one file_region may hold
-and must hold one css reference. So in coalesce_file_region case, we should
-release one css reference before coalescence. Also only put css reference
-when the entire file_region is removed.
-
-Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: stable@kernel.org
----
- include/linux/hugetlb_cgroup.h |  6 ++++--
- mm/hugetlb.c                   | 18 ++++++++++++++----
- mm/hugetlb_cgroup.c            | 10 ++++++++--
- 3 files changed, 26 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
-index 2ad6e92f124a..7610efcd96bd 100644
---- a/include/linux/hugetlb_cgroup.h
-+++ b/include/linux/hugetlb_cgroup.h
-@@ -138,7 +138,8 @@ extern void hugetlb_cgroup_uncharge_counter(struct resv_map *resv,
- 
- extern void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
- 						struct file_region *rg,
--						unsigned long nr_pages);
-+						unsigned long nr_pages,
-+						bool region_del);
- 
- extern void hugetlb_cgroup_file_init(void) __init;
- extern void hugetlb_cgroup_migrate(struct page *oldhpage,
-@@ -147,7 +148,8 @@ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
- #else
- static inline void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
- 						       struct file_region *rg,
--						       unsigned long nr_pages)
-+						       unsigned long nr_pages,
-+						       bool region_del)
- {
- }
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a6bad1f686c5..777bc0e45bf3 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -298,6 +298,14 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
- #endif
- }
- 
-+static void put_uncharge_info(struct file_region *rg)
-+{
-+#ifdef CONFIG_CGROUP_HUGETLB
-+	if (rg->css)
-+		css_put(rg->css);
-+#endif
-+}
-+
- static bool has_same_uncharge_info(struct file_region *rg,
- 				   struct file_region *org)
- {
-@@ -321,6 +329,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
- 		prg->to = rg->to;
- 
- 		list_del(&rg->link);
-+		put_uncharge_info(rg);
- 		kfree(rg);
- 
- 		rg = prg;
-@@ -332,6 +341,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
- 		nrg->from = rg->from;
- 
- 		list_del(&rg->link);
-+		put_uncharge_info(rg);
- 		kfree(rg);
- 	}
- }
-@@ -664,7 +674,7 @@ static long region_del(struct resv_map *resv, long f, long t)
- 
- 			del += t - f;
- 			hugetlb_cgroup_uncharge_file_region(
--				resv, rg, t - f);
-+				resv, rg, t - f, false);
- 
- 			/* New entry for end of split region */
- 			nrg->from = t;
-@@ -685,7 +695,7 @@ static long region_del(struct resv_map *resv, long f, long t)
- 		if (f <= rg->from && t >= rg->to) { /* Remove entire region */
- 			del += rg->to - rg->from;
- 			hugetlb_cgroup_uncharge_file_region(resv, rg,
--							    rg->to - rg->from);
-+							    rg->to - rg->from, true);
- 			list_del(&rg->link);
- 			kfree(rg);
- 			continue;
-@@ -693,13 +703,13 @@ static long region_del(struct resv_map *resv, long f, long t)
- 
- 		if (f <= rg->from) {	/* Trim beginning of region */
- 			hugetlb_cgroup_uncharge_file_region(resv, rg,
--							    t - rg->from);
-+							    t - rg->from, false);
- 
- 			del += t - rg->from;
- 			rg->from = t;
- 		} else {		/* Trim end of region */
- 			hugetlb_cgroup_uncharge_file_region(resv, rg,
--							    rg->to - f);
-+							    rg->to - f, false);
- 
- 			del += rg->to - f;
- 			rg->to = f;
-diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-index 9182848dda3e..8909e075d441 100644
---- a/mm/hugetlb_cgroup.c
-+++ b/mm/hugetlb_cgroup.c
-@@ -391,7 +391,8 @@ void hugetlb_cgroup_uncharge_counter(struct resv_map *resv, unsigned long start,
- 
- void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
- 					 struct file_region *rg,
--					 unsigned long nr_pages)
-+					 unsigned long nr_pages,
-+					 bool region_del)
- {
- 	if (hugetlb_cgroup_disabled() || !resv || !rg || !nr_pages)
- 		return;
-@@ -400,7 +401,12 @@ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
- 	    !resv->reservation_counter) {
- 		page_counter_uncharge(rg->reservation_counter,
- 				      nr_pages * resv->pages_per_hpage);
--		css_put(rg->css);
-+		/*
-+		 * Only do css_put(rg->css) when we delete the entire region
-+		 * because one file_region only holds one rg->css reference.
-+		 */
-+		if (region_del)
-+			css_put(rg->css);
- 	}
- }
- 
--- 
-2.19.1
-
+Cgo+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+t6K8/sjLOiBVbGFk
+emlzbGF1IFJlemtpIChTb255KSA8dXJlemtpQGdtYWlsLmNvbT4KPreiy83KsbzkOiAyMDIxxOox
+1MIyMcjVIDA6MjEKPsrVvP7IyzogTEtNTDsgUkNVOyBQYXVsIEUgLiBNY0tlbm5leTsgTWljaGFl
+bCBFbGxlcm1hbgo+s63LzTogQW5kcmV3IE1vcnRvbjsgRGFuaWVsIEF4dGVuczsgRnJlZGVyaWMg
+V2Vpc2JlY2tlcjsgTmVlcmFqID5VcGFkaHlheTsgSm9lbCBGZXJuYW5kZXM7IFBldGVyIFppamxz
+dHJhOyBNaWNoYWwgSG9ja287IFRob21hcyA+R2xlaXhuZXI7IFRoZW9kb3JlIFkgLiBUcydvOyBT
+ZWJhc3RpYW4gQW5kcnplaiBTaWV3aW9yOyBVbGFkemlzbGF1ID5SZXpraTsgT2xla3NpeSBBdnJh
+bWNoZW5rbwo+1vfM4jogW1BBVENIIDMvM10ga3ZmcmVlX3JjdTogdXNlIG1pZ3JhdGVfZGlzYWJs
+ZS9lbmFibGUoKQo+Cj5TaW5jZSB0aGUgcGFnZSBpcyBvYnRhaW5lZCBpbiBhIGZ1bGx5IHByZWVt
+cHRpYmxlIGNvbnRleHQsIGRyb3BwaW5nCj50aGUgbG9jayBjYW4gbGVhZCB0byBtaWdyYXRpb24g
+b250byBhbm90aGVyIENQVS4gQXMgYSByZXN1bHQgYSBwcmV2Lgo+Ym5vZGUgb2YgdGhhdCBDUFUg
+bWF5IGJlIHVuZGVydXRpbGlzZWQsIGJlY2F1c2UgYSBkZWNpc2lvbiBoYXMgYmVlbgo+bWFkZSBm
+b3IgYSBDUFUgdGhhdCB3YXMgcnVuIG91dCBvZiBmcmVlIHNsb3RzIHRvIHN0b3JlIGEgcG9pbnRl
+ci4KPgo+bWlncmF0ZV9kaXNhYmxlL2VuYWJsZSgpIGFyZSBub3cgaW5kZXBlbmRlbnQgb2YgUlQs
+IHVzZSBpdCBpbiBvcmRlcgo+dG8gcHJldmVudCBhbnkgbWlncmF0aW9uIGR1cmluZyBhIHBhZ2Ug
+cmVxdWVzdCBmb3IgYSBzcGVjaWZpYyBDUFUgaXQKPmlzIHJlcXVlc3RlZCBmb3IuCgoKSGVsbG8g
+UmV6a2kKClRoZSBjcml0aWNhbCBtaWdyYXRlX2Rpc2FibGUvZW5hYmxlKCkgYXJlYSBpcyBub3Qg
+YWxsb3dlZCB0byBibG9jaywgdW5kZXIgUlQgYW5kIG5vbiBSVC4gIApUaGVyZSBpcyBzdWNoIGEg
+ZGVzY3JpcHRpb24gaW4gcHJlZW1wdC5oIAoKCiogTm90ZXMgb24gdGhlIGltcGxlbWVudGF0aW9u
+LgogKgogKiBUaGUgaW1wbGVtZW50YXRpb24gaXMgcGFydGljdWxhcmx5IHRyaWNreSBzaW5jZSBl
+eGlzdGluZyBjb2RlIHBhdHRlcm5zCiAqIGRpY3RhdGUgbmVpdGhlciBtaWdyYXRlX2Rpc2FibGUo
+KSBub3IgbWlncmF0ZV9lbmFibGUoKSBpcyBhbGxvd2VkIHRvIGJsb2NrLgogKiBUaGlzIG1lYW5z
+IHRoYXQgaXQgY2Fubm90IHVzZSBjcHVzX3JlYWRfbG9jaygpIHRvIHNlcmlhbGl6ZSBhZ2FpbnN0
+IGhvdHBsdWcsCiAqIG5vciBjYW4gaXQgZWFzaWx5IG1pZ3JhdGUgaXRzZWxmIGludG8gYSBwZW5k
+aW5nIGFmZmluaXR5IG1hc2sgY2hhbmdlIG9uCiAqIG1pZ3JhdGVfZW5hYmxlKCkuCgoKSG93IGFi
+b3V0IHRoZSBmb2xsb3dpbmcgY2hhbmdlczoKCmRpZmYgLS1naXQgYS9rZXJuZWwvcmN1L3RyZWUu
+YyBiL2tlcm5lbC9yY3UvdHJlZS5jCmluZGV4IGU3YTIyNmFiZmYwZC4uMmFhMTk1MzdhYzdjIDEw
+MDY0NAotLS0gYS9rZXJuZWwvcmN1L3RyZWUuYworKysgYi9rZXJuZWwvcmN1L3RyZWUuYwpAQCAt
+MzQ4OCwxMiArMzQ4OCwxMCBAQCBhZGRfcHRyX3RvX2J1bGtfa3JjX2xvY2soc3RydWN0IGtmcmVl
+X3JjdV9jcHUgKiprcmNwLAogICAgICAgICAgICAgICAgICAgICAgICAoKmtyY3ApLT5ia3ZoZWFk
+W2lkeF0tPm5yX3JlY29yZHMgPT0gS1ZGUkVFX0JVTEtfTUFYX0VOVFIpIHsKICAgICAgICAgICAg
+ICAgIGJub2RlID0gZ2V0X2NhY2hlZF9ibm9kZSgqa3JjcCk7CiAgICAgICAgICAgICAgICBpZiAo
+IWJub2RlICYmIGNhbl9hbGxvYykgewotICAgICAgICAgICAgICAgICAgICAgICBtaWdyYXRlX2Rp
+c2FibGUoKTsKICAgICAgICAgICAgICAgICAgICAgICAga3JjX3RoaXNfY3B1X3VubG9jaygqa3Jj
+cCwgKmZsYWdzKTsKICAgICAgICAgICAgICAgICAgICAgICAgYm5vZGUgPSAoc3RydWN0IGt2ZnJl
+ZV9yY3VfYnVsa19kYXRhICopCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgX19nZXRf
+ZnJlZV9wYWdlKEdGUF9LRVJORUwgfCBfX0dGUF9SRVRSWV9NQVlGQUlMIHwgX19HRlBfTk9NRU1B
+TExPQyB8IF9fR0ZQX05PV0FSTik7Ci0gICAgICAgICAgICAgICAgICAgICAgICprcmNwID0ga3Jj
+X3RoaXNfY3B1X2xvY2soZmxhZ3MpOwotICAgICAgICAgICAgICAgICAgICAgICBtaWdyYXRlX2Vu
+YWJsZSgpOworICAgICAgICAgICAgICAgICAgICAgICByYXdfc3Bpbl9sb2NrX2lycXNhdmUoJigq
+a3JjcCktPmxvY2ssICpmbGFncyk7CiAgICAgICAgICAgICAgICB9CiAKICAgICAgICAgICAgICAg
+IGlmICghYm5vZGUpCgoKVGhhbmtzClFpYW5nCgoKCj4KPlNpZ25lZC1vZmYtYnk6IFVsYWR6aXNs
+YXUgUmV6a2kgKFNvbnkpIDx1cmV6a2lAZ21haWwuY29tPgo+LS0tCj4ga2VybmVsL3JjdS90cmVl
+LmMgfCAyICsrCj4xIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4KPmRpZmYgLS1naXQg
+YS9rZXJuZWwvcmN1L3RyZWUuYyBiL2tlcm5lbC9yY3UvdHJlZS5jCj5pbmRleCA0NTQ4MDk1MTRj
+OTEuLmNhZDM2MDc0MzY2ZCAxMDA2NDQKPi0tLSBhL2tlcm5lbC9yY3UvdHJlZS5jCj4rKysgYi9r
+ZXJuZWwvcmN1L3RyZWUuYwo+QEAgLTM0ODksMTAgKzM0ODksMTIgQEAgYWRkX3B0cl90b19idWxr
+X2tyY19sb2NrKHN0cnVjdCA+a2ZyZWVfcmN1X2NwdSAqKmtyY3AsCj4gICAgICAgICAgICAgICAg
+ICAgICAgICAoKmtyY3ApLT5ia3ZoZWFkW2lkeF0tPm5yX3JlY29yZHMgPT0gPktWRlJFRV9CVUxL
+X01BWF9FTlRSKSB7Cj4gICAgICAgICAgICAgICAgYm5vZGUgPSBnZXRfY2FjaGVkX2Jub2RlKCpr
+cmNwKTsKPiAgICAgICAgICAgICAgICBpZiAoIWJub2RlICYmIGNhbl9hbGxvYykgewo+KyAgICAg
+ICAgICAgICAgICAgICAgICAgbWlncmF0ZV9kaXNhYmxlKCk7Cj4gICAgICAgICAgICAgICAgICAg
+ICAgICBrcmNfdGhpc19jcHVfdW5sb2NrKCprcmNwLCAqZmxhZ3MpOwo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgYm5vZGUgPSAoc3RydWN0IGt2ZnJlZV9yY3VfYnVsa19kYXRhICopCj4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIF9fZ2V0X2ZyZWVfcGFnZShHRlBfS0VSTkVMIHwgPl9f
+R0ZQX1JFVFJZX01BWUZBSUwgfCBfX0dGUF9OT01FTUFMTE9DIHwgX19HRlBfTk9XQVJOKTsKPiAg
+ICAgICAgICAgICAgICAgICAgICAgKmtyY3AgPSBrcmNfdGhpc19jcHVfbG9jayhmbGFncyk7Cj4r
+ICAgICAgICAgICAgICAgICAgICAgICBtaWdyYXRlX2VuYWJsZSgpOwo+ICAgICAgICAgICAgICAg
+IH0KPgo+ICAgICAgICAgICAgICAgIGlmICghYm5vZGUpCj4tLQo+Mi4yMC4xCgo=
