@@ -2,209 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F80301796
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 19:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3960A30179A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 19:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbhAWSXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 13:23:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbhAWSXP (ORCPT
+        id S1725899AbhAWSYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 13:24:49 -0500
+Received: from smtprelay0212.hostedemail.com ([216.40.44.212]:59854 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726057AbhAWSYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 13:23:15 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD6AC0613D6
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 10:22:32 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id lw17so7713854pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 10:22:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Om8lBnTeC8/y59N0vdmo+IqmU216IV5ocYAsBqf2YOw=;
-        b=mY0id1iWYZ3tQP4kJz1DOCYcOfFgzQPtJKmBljhuMT2RsPVeEjmS3FspRxfLa1kS0p
-         /Ih7rfNmBSC3D2nBzKmEkpZFyOlzrOtrSLbeZnl3iAp4I2jqWpx1DH1f4WSNQ/W67NdG
-         F8J1qBUdUTaVjyttcEGawEjpIZr6LQZ7MyXbV4yMUHiSkMZbfp6MeXWytOvjP8VRW+MB
-         IaibktyFls7IO6qF9tydGJ3EsXyc3NrXtMNhHib1ePR3j6tzN7DcHJ4bEDyh41KeV/iy
-         Jf3zNqVAeB13aTZ4Xu7vE+9PtlAJ064MXpW+LIBGOUTOlh35sScxDEcXQeYWm+hdVJMc
-         Wuww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Om8lBnTeC8/y59N0vdmo+IqmU216IV5ocYAsBqf2YOw=;
-        b=Ydb0260zfFsWP5TbhUAB38wTW+aHr71zfsHe9jsGFwgaDxGf313HRwJnPluggKgzTx
-         CtVpCvbTxowfhmf3owd/wXLlgJMlWuBx9T1QJBT04W6fjBG6l+FcMHD15xLQXlE2y/cO
-         Z5jY0HmeA0SUGMVGJJkt4ITcSbVmfNpxU4xZakQC3G4f9aEwn+87RKuQruLg3NBzggl3
-         zwaMyBucGcot6hFb7cZe/Kd6p9OEDnDcwwl0NiDfC//eOHCBnZg0pVeTXlDjKrThNvvt
-         ulPxQrI1xVxUvI3GtnQrRigXndkz4khyC32o5IcvwnS0YCv3mR2ZAXivXnvDJ7jndJin
-         6AzA==
-X-Gm-Message-State: AOAM533mMN5NeR26UhL9fiCH1crZrkr9QPRy21qZ7+8Xsr4mbCE3clCT
-        BsivVmRfiLX1j4ctwdvHQsuWRw==
-X-Google-Smtp-Source: ABdhPJxxQqYh+q9DyqJ90Eb00WPmVpcYv+/3ChKV1cwG81HHwntzkxGk1KNdiR2dA1n351A8raHfvw==
-X-Received: by 2002:a17:902:b986:b029:df:e5d6:cd71 with SMTP id i6-20020a170902b986b02900dfe5d6cd71mr2306377pls.42.1611426151621;
-        Sat, 23 Jan 2021 10:22:31 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id g17sm12360210pfk.184.2021.01.23.10.22.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Jan 2021 10:22:31 -0800 (PST)
-Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
-To:     Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20210123114152.GA120281@wantstofly.org>
- <b5b978ee-1a56-ead7-43bc-83ae2398b160@kernel.dk>
- <20210123181636.GA121842@wantstofly.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fe842ed5-bcef-b40b-f06e-4a33abf16160@kernel.dk>
-Date:   Sat, 23 Jan 2021 11:22:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 23 Jan 2021 13:24:46 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id AD8488123E2B;
+        Sat, 23 Jan 2021 18:24:04 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 5404A180A8151;
+        Sat, 23 Jan 2021 18:23:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3151:3353:3865:3867:3871:3872:4321:5007:6119:7576:7652:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12895:12986:13439:13894:13972:14093:14097:14181:14659:14721:21080:21433:21451:21600:21627:21990:30046:30054:30076:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rain26_55114d727576
+X-Filterd-Recvd-Size: 3920
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 23 Jan 2021 18:23:20 +0000 (UTC)
+Message-ID: <f2f9cb12ad9d1bdadec799452f0be08a6967e5f4.camel@perches.com>
+Subject: Re: [PATCH] usb: typec: tcpci_maxim: remove redundant assignment
+From:   Joe Perches <joe@perches.com>
+To:     angkery <angkery@163.com>, linux@roeck-us.net,
+        heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Date:   Sat, 23 Jan 2021 10:23:19 -0800
+In-Reply-To: <20210123101410.1354-1-angkery@163.com>
+References: <20210123101410.1354-1-angkery@163.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20210123181636.GA121842@wantstofly.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/23/21 11:16 AM, Lennert Buytenhek wrote:
-> On Sat, Jan 23, 2021 at 10:37:25AM -0700, Jens Axboe wrote:
+> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+On Sat, 2021-01-23 at 18:14 +0800, angkery wrote:
+> From: Junlin Yang <yangjunlin@yulong.com>
 > 
->>> IORING_OP_GETDENTS64 behaves like getdents64(2) and takes the same
->>> arguments.
->>>
->>> Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
->>> ---
->>> This seems to work OK, but I'd appreciate a review from someone more
->>> familiar with io_uring internals than I am, as I'm not entirely sure
->>> I did everything quite right.
->>>
->>> A dumb test program for IORING_OP_GETDENTS64 is available here:
->>>
->>> 	https://krautbox.wantstofly.org/~buytenh/uringfind.c
->>>
->>> This does more or less what find(1) does: it scans recursively through
->>> a directory tree and prints the names of all directories and files it
->>> encounters along the way -- but then using io_uring.  (The uring version
->>> prints the names of encountered files and directories in an order that's
->>> determined by SQE completion order, which is somewhat nondeterministic
->>> and likely to differ between runs.)
->>>
->>> On a directory tree with 14-odd million files in it that's on a
->>> six-drive (spinning disk) btrfs raid, find(1) takes:
->>>
->>> 	# echo 3 > /proc/sys/vm/drop_caches 
->>> 	# time find /mnt/repo > /dev/null
->>>
->>> 	real    24m7.815s
->>> 	user    0m15.015s
->>> 	sys     0m48.340s
->>> 	#
->>>
->>> And the io_uring version takes:
->>>
->>> 	# echo 3 > /proc/sys/vm/drop_caches 
->>> 	# time ./uringfind /mnt/repo > /dev/null
->>>
->>> 	real    10m29.064s
->>> 	user    0m4.347s
->>> 	sys     0m1.677s
->>> 	#
->>>
->>> These timings are repeatable and consistent to within a few seconds.
->>>
->>> (btrfs seems to be sending most metadata reads to the same drive in the
->>> array during this test, even though this filesystem is using the raid1c4
->>> profile for metadata, so I suspect that more drive-level parallelism can
->>> be extracted with some btrfs tweaks.)
->>>
->>> The fully cached case also shows some speedup for the io_uring version:
->>>
->>> 	# time find /mnt/repo > /dev/null
->>>
->>> 	real    0m5.223s
->>> 	user    0m1.926s
->>> 	sys     0m3.268s
->>> 	#
->>>
->>> vs:
->>>
->>> 	# time ./uringfind /mnt/repo > /dev/null
->>>
->>> 	real    0m3.604s
->>> 	user    0m2.417s
->>> 	sys     0m0.793s
->>> 	#
->>>
->>> That said, the point of this patch isn't primarily to enable
->>> lightning-fast find(1) or du(1), but more to complete the set of
->>> filesystem I/O primitives available via io_uring, so that applications
->>> can do all of their filesystem I/O using the same mechanism, without
->>> having to manually punt some of their work out to worker threads -- and
->>> indeed, an object storage backend server that I wrote a while ago can
->>> run with a pure io_uring based event loop with this patch.
->>
->> The results look nice for sure.
-> 
-> Thanks!  And thank you for having a look.
-> 
-> 
->> Once concern is that io_uring generally
->> guarantees that any state passed in is stable once submit is done. For
->> the below implementation, that doesn't hold as the linux_dirent64 isn't
->> used until later in the process. That means if you do:
->>
->> submit_getdents64(ring)
->> {
->> 	struct linux_dirent64 dent;
->> 	struct io_uring_sqe *sqe;
->>
->> 	sqe = io_uring_get_sqe(ring);
->> 	io_uring_prep_getdents64(sqe, ..., &dent);
->> 	io_uring_submit(ring);
->> }
->>
->> other_func(ring)
->> {
->> 	struct io_uring_cqe *cqe;
->>
->> 	submit_getdents64(ring);
->> 	io_uring_wait_cqe(ring, &cqe);
->> 	
->> }
->>
->> then the kernel side might get garbage by the time the sqe is actually
->> submitted. This is true because you don't use it inline, only from the
->> out-of-line async context. Usually this is solved by having the prep
->> side copy in the necessary state, eg see io_openat2_prep() for how we
->> make filename and open_how stable by copying them into kernel memory.
->> That ensures that if/when these operations need to go async and finish
->> out-of-line, the contents are stable and there's no requirement for the
->> application to keep them valid once submission is done.
->>
->> Not sure how best to solve that, since the vfs side relies heavily on
->> linux_dirent64 being a user pointer...
-> 
-> No data is passed into the kernel on a getdents64(2) call via user
-> memory, i.e. getdents64(2) only ever writes into the supplied
-> linux_dirent64 user pointer, it never reads from it.  The only things
-> that we need to keep stable here are the linux_dirent64 pointer itself
-> and the 'count' argument and those are both passed in via the SQE, and
-> we READ_ONCE() them from the SQE in the prep function.  I think that's
-> probably the source of confusion here?
+> PTR_ERR(chip->tcpci) has been used as a return value,
+> it is not necessary to assign it to ret, so remove it.
+[]
+[]
+> @@ -461,7 +461,6 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+>  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+>  	if (IS_ERR(chip->tcpci)) {
+>  		dev_err(&client->dev, "TCPCI port registration failed");
 
-Good point, in fact even if we did read from it as well, the fact that
-we write to it already means that it must be stable until completion
-on the application side anyway. So I guess there's no issue here!
+could add terminating '\n' to the formats where missed too.
 
-For the "real" patch, I'd split the vfs prep side into a separate one,
-and then have patch 2 be the io_uring side only. Then we'll need a
-test case that can be added to liburing as well (and necessary changes
-on the liburing side, like op code and prep helper).
+> -		ret = PTR_ERR(chip->tcpci);
+>  		return PTR_ERR(chip->tcpci);
+>  	}
+>  	chip->port = tcpci_get_tcpm_port(chip->tcpci);
+---
+diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+index 319266329b42..a51cd1682170 100644
+--- a/drivers/usb/typec/tcpm/tcpci_maxim.c
++++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+@@ -158,7 +158,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ 	 */
+ 	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, 2);
+ 	if (ret < 0) {
+-		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d", ret);
++		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d\n", ret);
+ 		return;
+ 	}
+ 
+@@ -167,13 +167,13 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ 
+ 	if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
+ 		max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
+-		dev_err(chip->dev, "%s", count ==  0 ? "error: count is 0" :
++		dev_err(chip->dev, "%s\n", count ==  0 ? "error: count is 0" :
+ 			"error frame_type is not SOP");
+ 		return;
+ 	}
+ 
+ 	if (count > sizeof(struct pd_message) || count + 1 > TCPC_RECEIVE_BUFFER_LEN) {
+-		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d", count);
++		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d\n", count);
+ 		return;
+ 	}
+ 
+@@ -184,7 +184,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ 	count += 1;
+ 	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, count);
+ 	if (ret < 0) {
+-		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d", ret);
++		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d\n", ret);
+ 		return;
+ 	}
+ 
+@@ -317,7 +317,7 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
+ 			return ret;
+ 
+ 		if (reg_status & TCPC_SINK_FAST_ROLE_SWAP) {
+-			dev_info(chip->dev, "FRS Signal");
++			dev_info(chip->dev, "FRS Signal\n");
+ 			tcpm_sink_frs(chip->port);
+ 		}
+ 	}
+@@ -460,7 +460,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+ 	max_tcpci_init_regs(chip);
+ 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+ 	if (IS_ERR(chip->tcpci)) {
+-		dev_err(&client->dev, "TCPCI port registration failed");
++		dev_err(&client->dev, "TCPCI port registration failed\n");
+ 		ret = PTR_ERR(chip->tcpci);
+ 		return PTR_ERR(chip->tcpci);
+ 	}
 
--- 
-Jens Axboe
 
