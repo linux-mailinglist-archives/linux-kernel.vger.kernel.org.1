@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1782B3015B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCD33015BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbhAWONS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:13:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34028 "EHLO mail.kernel.org"
+        id S1725854AbhAWOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:16:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbhAWONP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:13:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F7822B51;
-        Sat, 23 Jan 2021 14:12:31 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 14:12:29 +0000
+        id S1725775AbhAWOQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:16:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FD1B22B51;
+        Sat, 23 Jan 2021 14:15:41 +0000 (UTC)
+Date:   Sat, 23 Jan 2021 14:15:39 +0000
 From:   Catalin Marinas <catalin.marinas@arm.com>
 To:     Marc Zyngier <maz@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
@@ -30,37 +30,28 @@ Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: Re: [PATCH v4 15/21] arm64: Add an aliasing facility for the idreg
- override
-Message-ID: <YAwuzSZ302C4knhb@Catalins-MacBook-Air.local>
+Subject: Re: [PATCH v4 16/21] arm64: Make kvm-arm.mode={nvhe,protected} an
+ alias of id_aa64mmfr1.vh=0
+Message-ID: <YAwvi9zEXZxbo9iK@Catalins-MacBook-Air.local>
 References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-16-maz@kernel.org>
+ <20210118094533.2874082-17-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-16-maz@kernel.org>
+In-Reply-To: <20210118094533.2874082-17-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:27AM +0000, Marc Zyngier wrote:
-> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-> index 75d9845f489b..16bc8b3b93ae 100644
-> --- a/arch/arm64/kernel/idreg-override.c
-> +++ b/arch/arm64/kernel/idreg-override.c
-> @@ -37,6 +37,12 @@ static const struct reg_desc * const regs[] __initdata = {
->  	&mmfr1,
->  };
->  
-> +static const struct {
-> +	const char * const	alias;
-> +	const char * const	feature;
-> +} aliases[] __initdata = {
-> +};
+On Mon, Jan 18, 2021 at 09:45:28AM +0000, Marc Zyngier wrote:
+> Admitedly, passing id_aa64mmfr1.vh=0 on the command-line isn't
+> that easy to understand, and it is likely that users would much
+> prefer write "kvm-arm.mode=nvhe", or "...=protected".
+> 
+> So here you go. This has the added advantage that we can now
+> always honor the "kvm-arm.mode=protected" option, even when
+> booting on a VHE system.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-As before, do we need the second 'const' for alias and feature? The
-aliases array is already a const.
-
-Otherwise,
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
