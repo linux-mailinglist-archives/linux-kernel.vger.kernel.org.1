@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278F0301460
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4AC301461
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbhAWJy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 04:54:56 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53754 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbhAWJyu (ORCPT
+        id S1726918AbhAWJzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 04:55:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbhAWJzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 04:54:50 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id A9A021C0B77; Sat, 23 Jan 2021 10:53:52 +0100 (CET)
-Date:   Sat, 23 Jan 2021 10:53:51 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/22] 4.19.170-rc1 review
-Message-ID: <20210123095351.GB6686@amd>
-References: <20210122135731.921636245@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
-Content-Disposition: inline
-In-Reply-To: <20210122135731.921636245@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Sat, 23 Jan 2021 04:55:05 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDA6C06174A;
+        Sat, 23 Jan 2021 01:54:25 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id m5so5414627pjv.5;
+        Sat, 23 Jan 2021 01:54:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2zaKFy4Ti6zlMHdCbJBd9eRKJbtUauUBtadJDj+E3v8=;
+        b=pd5e++T5Cdjjg3yC4Jj2OMaJ9ugN9p3O7CPkSXUlaIDw3yCMbnH43OH5XVULn9zl40
+         htGFWwcSL/ltLyKfiukVtwd33dXP4VYWJe2QMu1NbqSNGxDrhTwUnp7E8r0bnXVpuTWP
+         dKeN58/HXzZTljDdnP611pACjAson6AFGJZj0/1bcFN7D05JyEFGFm93H0cAOkAfYQ1J
+         jyQowiydBZgkJbcoVZC8t5+ei5AwCxnmQzsNHSf6MvN9SJIiUc9QuMEyJ7euHtSAuHOc
+         CgdmB40iXCIF6hBRR8k+k9ADSIqUXyCzXAlu0fKB2IT8o6qO83aiJVUsYCt/fVVHHKBO
+         wlqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2zaKFy4Ti6zlMHdCbJBd9eRKJbtUauUBtadJDj+E3v8=;
+        b=j4/iPiRlyxSOQgerROgJNYU7lpHXO1AHybqO0MTSHXWPfST38ArV9/NyPjlmoAZnPE
+         ybirN7aIwRGJ+q1TMEVRnteyJsiOqCcPtCr+D8mG1072s1KRLVSYihkxd1euHn5ef8Bh
+         0TkELe0d4cQ+f4m5UV7T/CWs4PrXglCrdHGp7PasaR+nC58E9R5TtBbfdbdBXBUGZL+E
+         6sgokTKAbFqPm5TFKEZ8Wh1EwPFiMIIr6xLbtv436zuymIGPcxtEi4M4W0B0Zn/afWI/
+         gSXFdumHGhvmPUKmGMcXSnVVFVqIbQiuJB0mgLJn8MtsMvIS+aYGxTE7K0sOPjGB1bIW
+         Le4A==
+X-Gm-Message-State: AOAM5316ns0FA6aQOUmUjiCOjPrUzOq0vXZCBWPNYb68m4imTUViCHnl
+        ZrLAMjwb5JjT8aHNlQKj2HY=
+X-Google-Smtp-Source: ABdhPJxeUh8DI8HSPg1I6oxyeOWFkd6UQo7q5x+lfJGK1AZ9ce9n71FS/Dvaohdy+1vq9dDawpB+BQ==
+X-Received: by 2002:a17:90a:e297:: with SMTP id d23mr10298856pjz.42.1611395665096;
+        Sat, 23 Jan 2021 01:54:25 -0800 (PST)
+Received: from localhost.localdomain ([125.227.22.95])
+        by smtp.gmail.com with ESMTPSA id c5sm11978857pjo.4.2021.01.23.01.54.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Jan 2021 01:54:24 -0800 (PST)
+From:   Stephen Zhang <stephenzhangzsd@gmail.com>
+To:     dave@stgolabs.net, paulmck@kernel.org, josh@joshtriplett.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        jiangshanlai@gmail.com, joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Zhang <stephenzhangzsd@gmail.com>
+Subject: [PATCH] rcutorture: replace the function name with %s
+Date:   Sat, 23 Jan 2021 17:54:17 +0800
+Message-Id: <1611395657-6645-1-git-send-email-stephenzhangzsd@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Better to replace the function name with %s in case of changes.
 
---nVMJ2NtxeReIH9PS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
+---
+ kernel/rcu/rcutorture.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Hi!
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 2440f89..e561641 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2016,8 +2016,8 @@ static int rcu_torture_stall(void *args)
+ 			local_irq_disable();
+ 		else if (!stall_cpu_block)
+ 			preempt_disable();
+-		pr_alert("rcu_torture_stall start on CPU %d.\n",
+-			 raw_smp_processor_id());
++		pr_alert("%s start on CPU %d.\n",
++			  __func__, raw_smp_processor_id());
+ 		while (ULONG_CMP_LT((unsigned long)ktime_get_seconds(),
+ 				    stop_at))
+ 			if (stall_cpu_block)
+@@ -2028,7 +2028,7 @@ static int rcu_torture_stall(void *args)
+ 			preempt_enable();
+ 		cur_ops->readunlock(idx);
+ 	}
+-	pr_alert("rcu_torture_stall end.\n");
++	pr_alert("%s end.\n", __func__);
+ 	torture_shutdown_absorb("rcu_torture_stall");
+ 	while (!kthread_should_stop())
+ 		schedule_timeout_interruptible(10 * HZ);
+-- 
+1.8.3.1
 
-> This is the start of the stable review cycle for the 4.19.170 release.
-> There are 22 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-> Anything received after that time might be too late.
-
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-							=09
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---nVMJ2NtxeReIH9PS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAL8i8ACgkQMOfwapXb+vJcqACeI2kzN6gerqs/3RjWY6nolR/G
-Bh4An1pRY0uHhlZWmP8momNqx3eM29zl
-=6Z/B
------END PGP SIGNATURE-----
-
---nVMJ2NtxeReIH9PS--
