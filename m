@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9157F3015DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086F13015E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbhAWO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:29:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35550 "EHLO mail.kernel.org"
+        id S1726147AbhAWObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:31:02 -0500
+Received: from aposti.net ([89.234.176.197]:34542 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726127AbhAWO2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:28:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BA3B22EBE;
-        Sat, 23 Jan 2021 14:28:09 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 14:28:07 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 21/21] arm64: cpufeatures: Allow disabling of Pointer
- Auth from the command-line
-Message-ID: <YAwydxY68TULznr1@Catalins-MacBook-Air.local>
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-22-maz@kernel.org>
+        id S1725899AbhAWOaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:30:52 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH] remoteproc: ingenic: Add module parameter 'auto_boot'
+Date:   Sat, 23 Jan 2021 14:29:56 +0000
+Message-Id: <20210123142956.17865-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210118094533.2874082-22-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 09:45:33AM +0000, Marc Zyngier wrote:
-> In order to be able to disable Pointer Authentication  at runtime,
-> whether it is for testing purposes, or to work around HW issues,
-> let's add support for overriding the ID_AA64ISAR1_EL1.{GPI,GPA,API,APA}
-> fields.
-> 
-> This is further mapped on the arm64.nopauth command-line alias.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+Add a 'auto_boot' module parameter that instructs the remoteproc driver
+whether or not it should auto-boot the remote processor, which will
+default to "false", since the VPU in Ingenic SoCs does not really have
+any predetermined function.
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/remoteproc/ingenic_rproc.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/remoteproc/ingenic_rproc.c b/drivers/remoteproc/ingenic_rproc.c
+index 26e19e6143b7..e2618c36eaab 100644
+--- a/drivers/remoteproc/ingenic_rproc.c
++++ b/drivers/remoteproc/ingenic_rproc.c
+@@ -27,6 +27,11 @@
+ #define AUX_CTRL_NMI		BIT(1)
+ #define AUX_CTRL_SW_RESET	BIT(0)
+ 
++static bool auto_boot;
++module_param(auto_boot, bool, 0400);
++MODULE_PARM_DESC(auto_boot,
++		 "Auto-boot the remote processor [default=false]");
++
+ struct vpu_mem_map {
+ 	const char *name;
+ 	unsigned int da;
+@@ -172,6 +177,8 @@ static int ingenic_rproc_probe(struct platform_device *pdev)
+ 	if (!rproc)
+ 		return -ENOMEM;
+ 
++	rproc->auto_boot = auto_boot;
++
+ 	vpu = rproc->priv;
+ 	vpu->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, vpu);
+-- 
+2.29.2
+
