@@ -2,109 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2535C3016D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 17:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1613016DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 17:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbhAWQe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 11:34:56 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:24107 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725550AbhAWQex (ORCPT
+        id S1726182AbhAWQgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 11:36:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726159AbhAWQgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 11:34:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611419669; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=oT7MRBChsv+idL281B/pS9tqQFqOqOFuyvZzg95aFI0=; b=aWihURE5AzSoTItDlDMwbcb7U19tlCwah4lfXg0ZZIQUkIeS4/NabWbp0/gqoJ0PARV3XPRA
- Vl1Lm1LLsQd/cvsuxj0ZCdhK0a4aLHeGTcNgn6FP31d99QPgk+7IB+kXZP05Sl409aB06JR+
- 42zwcp9EIhg/5XwrvKAoSHWzx9E=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 600c4ff6fb02735e8cf5561d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 23 Jan 2021 16:33:58
- GMT
-Sender: gkohli=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F1A0DC43461; Sat, 23 Jan 2021 16:33:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.4] (unknown [136.185.226.226])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: gkohli)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EC1ACC433ED;
-        Sat, 23 Jan 2021 16:33:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EC1ACC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=gkohli@codeaurora.org
-Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
-To:     Denis Efremov <efremov@linux.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
-        Julia Lawall <julia.lawall@inria.fr>
-References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
- <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
- <20210121140951.2a554a5e@gandalf.local.home>
- <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
- <20210121153732.43d7b96b@gandalf.local.home> <YAqwD/ivTgVJ7aap@kroah.com>
- <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
- <20210122093758.320bb4f9@gandalf.local.home>
- <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-Message-ID: <46d1f82b-1eb4-a828-c79c-e6556eccf9d5@codeaurora.org>
-Date:   Sat, 23 Jan 2021 22:03:27 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sat, 23 Jan 2021 11:36:17 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB9BC0613D6;
+        Sat, 23 Jan 2021 08:35:36 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id p21so6779800lfu.11;
+        Sat, 23 Jan 2021 08:35:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RdS8PzD7Ibjy6mHF6U6e866r37t0ObE5ee8FBFWPC9o=;
+        b=n1oK2wPmc1zKJb5temOL8TvyDObS4K6TbF/uNveszGj58KnxQ8qkJQWgHGcE04I3Po
+         zkmDcN+8OFVBBCCvoZbw+weeXu+xBHEL961YnDu1RKSpwy26/gWmltgOBTBsCGxhHRSd
+         p6roLj+8Uvk5JYIougyZFPFzHolpXPbyifYM+HMihlleYJ8XIV/XvNLPuGDEISais4sw
+         U85ppclVzLMH2g8bXqeTBwDCe/djUeJatZcrnyazXlu0e9DLMjtOXif++d1p5XBPK4/G
+         ft4PDyDcCNW4BsjNQ4TSlwFyRgQoqqM3SxbUJT15bJOww9+PNGKiqWWjt2RTehJX027T
+         gYwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RdS8PzD7Ibjy6mHF6U6e866r37t0ObE5ee8FBFWPC9o=;
+        b=nKxpDKlwa23wWSU2uK2uRkVsOBsnkH58R7P0CUD4M81Z4CfA8UtLOfB4BvrqUt8miQ
+         Ojp4EMbCMXvCrFYUhUekjo3p3uZ6aftqk3EqZrRbWZmwqMcdQB7Xuxg4YwKJ+N9k2r8C
+         iwk4iQH1fmo6A4nPRG7Z7Az5gr7gm9SmxBiirVw6ftVhK8dlK+dlZMNycICVAJfpFPsb
+         xB9F1/ODYhsisTG0If45Oznjmulp9i7W3adVlYRB+8Ek2qky5vpCovvRC65frpdch1UY
+         1q0tWZkijtOIJgoLyjkZS3dhqPiMte+0x8S/+sZsKsfmxU1zwSw44tFV8azHwfedfA+E
+         w/rA==
+X-Gm-Message-State: AOAM531yp6GqMxzcXahhG0aK4bfdQxzTryR6e+Wtu6KYsZ8jjJm5zZ3e
+        BHc95tapOwZx4AKo9WSzMWo=
+X-Google-Smtp-Source: ABdhPJxmBRw6XZAG+XWdhpK/dfFEU+9wpJLG3Cm/6r4knxc/zjJn8/WAFf+TkI5uWnN/lkCZnNQ0Ug==
+X-Received: by 2002:ac2:59ce:: with SMTP id x14mr135834lfn.545.1611419734536;
+        Sat, 23 Jan 2021 08:35:34 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id r26sm78594lfi.295.2021.01.23.08.35.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 08:35:33 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] reset: Add devm_reset_control_get_optional_exclusive_released()
+Date:   Sat, 23 Jan 2021 19:34:45 +0300
+Message-Id: <20210123163445.24474-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+NVIDIA Tegra DRM and media drivers will need a resource-managed-optional
+variant of reset_control_get_exclusive_released() in order to switch away
+from a legacy Tegra-specific PD API to a GENPD API without much hassle.
+Add the new reset helper to the reset API.
 
+Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
+Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-On 1/23/2021 4:19 PM, Denis Efremov wrote:
-> 
-> 
-> On 1/22/21 5:37 PM, Steven Rostedt wrote:
->> On Fri, 22 Jan 2021 16:55:29 +0530
->> Gaurav Kohli <gkohli@codeaurora.org> wrote:
->>
->>>>> That could possibly work.
->>>
->>> Yes, this will work, As i have tested similar patch for internal testing
->>> for kernel branches like 5.4/4.19.
->>
->> Can you or Denis send a proper patch for Greg to backport? I'll review it,
->> test it and give my ack to it, so Greg can take it without issue.
->>
-> 
-> I can prepare the patch, but it will be compile-tested only from my side. Honestly,
-> I think it's better when the patch and its backports have the same author and
-> commit message. And I can't test the fix by myself as I don't know how to reproduce
-> conditions for the bug. I think it's better if Gaurav will prepare this backport,
-> unless he have reasons for me to do it or maybe just don't have enough time nowadays.
-> Gaurav, if you want to somehow mention me you add my Reported-by:
-> 
-> Thanks,
-> Denis
-> 
+Hello Philipp,
 
-Sure I will do, I have never posted on backport branches. Let me check 
-and post it.
+This patch is a prerequisite for a power domain enablement using
+GENPD API on NVIDIA Tegra20/30 SoCs. The hardware resets are acquired
+by a Tegra PMC (Power Management Controller) driver until device is
+RPM-resumed if GENPD API is used, and thus, device drivers need to
+request resets in a released state. The resets are also optional,
+depending on hardware and DTB versions. This is why we will need the
+new helper. Will be awesome if you could pick up this patch for v5.12,
+this will help to avoid inter-subsystem dependencies for the driver
+patches that will target v5.13. Thanks in advance!
 
+ include/linux/reset.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/include/linux/reset.h b/include/linux/reset.h
+index 439fec7112a9..b9109efa2a5c 100644
+--- a/include/linux/reset.h
++++ b/include/linux/reset.h
+@@ -362,6 +362,25 @@ __must_check devm_reset_control_get_exclusive_released(struct device *dev,
+ 	return __devm_reset_control_get(dev, id, 0, false, false, false);
+ }
+ 
++/**
++ * devm_reset_control_get_optional_exclusive_released - resource managed
++ *                                                      reset_control_get_optional_exclusive_released()
++ * @dev: device to be reset by the controller
++ * @id: reset line name
++ *
++ * Managed-and-optional variant of reset_control_get_exclusive_released(). For
++ * reset controllers returned from this function, reset_control_put() is called
++ * automatically on driver detach.
++ *
++ * See reset_control_get_exclusive_released() for more information.
++ */
++static inline struct reset_control *
++__must_check devm_reset_control_get_optional_exclusive_released(struct device *dev,
++								const char *id)
++{
++	return __devm_reset_control_get(dev, id, 0, false, true, false);
++}
++
+ /**
+  * devm_reset_control_get_shared - resource managed reset_control_get_shared()
+  * @dev: device to be reset by the controller
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+2.29.2
+
