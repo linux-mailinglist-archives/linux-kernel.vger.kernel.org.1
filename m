@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F418D3013E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 09:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9AA3013EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 09:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbhAWI1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 03:27:41 -0500
-Received: from m12-11.163.com ([220.181.12.11]:34286 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725940AbhAWI1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 03:27:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=xCn6p9NJsojGDEOK0g
-        fOq+HkZhp0fhqQy2JmR2QKavs=; b=OCnBLxei5NPW0LcSnM4fFbcyAngSJ1/Ga1
-        Lj7CTjYKuhSqJnzvmmKNnsjcLIqdInnPxb3XudKQ+he7mfDokrpQFk/jaJ5qzUq/
-        sq34n7ToUFRuK5rd9vj1aQlelvZeLgkfXDfjwW4ODskMspGZGYO7wCSB5YvryjZY
-        ZyoPnJQQI=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowAAXFZ2E3Qtgrj7KKA--.11235S2;
-        Sat, 23 Jan 2021 16:25:41 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     mgreer@animalcreek.com, linux-nfc@lists.01.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc: fix typo
-Date:   Sat, 23 Jan 2021 16:25:50 +0800
-Message-Id: <20210123082550.3748-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: C8CowAAXFZ2E3Qtgrj7KKA--.11235S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7Cw4DArW7tr1UXrWxCrg_yoWxKwbE9r
-        1kXrW7Xr97ur1jkr1UC3Z0vFyFy3W5WF9a9Fsa9FWSkryFyF47uw18uF1fXw15JrW5JFnr
-        uwnFg34Syw13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYylk3UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiRQUjsVl906sOlAAAsU
+        id S1726309AbhAWIfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 03:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbhAWIew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 03:34:52 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CB0C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 00:34:10 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id w18so5369909pfu.9
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 00:34:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xDOkp1Lj/6RkXiLeExopeEGisiCPpjXDMNcBiNnj1b8=;
+        b=GgJQz0ZrDFeLLaRo33VdCvSQOSlkTt9azfPEGqVEjbiaMpSMFihPnir1J2hOc/WL0g
+         3mi/v1bh/VQ1y8PJmlw1JiS9508YeGN1FrUv5/siYb3LWGTuLLiuBXKkUd0Mn+gv6veY
+         BmrnheLfg243AAP5yCz8i9NNqJA7szBJamBathyTQC4rTzwJECesdRNa3NOWkceARlSl
+         XnYFlJNLSQoy+a7O/CqYaPnmQxpmtTbZYdogKIhDn4YsaT0cOOQ5+Rh3HytPOiUqeR+m
+         SLAJb8ZR7y2Iv5jZ8j6t7/pIglLv3Th5ny5smph8LjAdK39hx4C85XVka8pn9kg+Cxvw
+         pwzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xDOkp1Lj/6RkXiLeExopeEGisiCPpjXDMNcBiNnj1b8=;
+        b=W+gnRzYtQ2p4NaoyPEYGahkj7bZzh7wOTgWgt2YCuyPfkzLRMoI51dA1Tx0z6f8vKz
+         sI3ckgVkJi9xJUsR+CMKJmFuUu6OINt52QxDlxeEELZOBONPXVGJsF4S+nHOyxkwNrwD
+         YWuThyqnUL2U6Pshach0r1hXZGpzIAOEvRsFM30C7gwe+Of9gbRK0tWVAKBcS19lBKbK
+         69dvldAl//55ATu5KQ+qqwz+mZOgNwVpYKeCyOrhgGhLKMEutVgZIFsvcNN/PVzknAce
+         BOMWELvwFBkyFlv/G5s+/BgpeRpgnuAcSVocA4KNQTLVAmpHYtxuwM/p2cK4cWD60EBy
+         rc2A==
+X-Gm-Message-State: AOAM533C3QoeHAtsmJSNgKm15CnX7Uf0tVLz/+amguX/KUR22dVw2PHS
+        D23qJQVGbKUKxiLDKDxHFjQ=
+X-Google-Smtp-Source: ABdhPJylgIKa6DoE8mtBsaKpYpqflZmpWikuiXLC+vm598TmFESNEWOx4mp6BSQvqSqeEmOk/Jt2HA==
+X-Received: by 2002:a63:5924:: with SMTP id n36mr799076pgb.9.1611390850348;
+        Sat, 23 Jan 2021 00:34:10 -0800 (PST)
+Received: from localhost.localdomain ([125.227.22.95])
+        by smtp.gmail.com with ESMTPSA id v11sm11628989pju.40.2021.01.23.00.34.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Jan 2021 00:34:10 -0800 (PST)
+From:   Stephen Zhang <stephenzhangzsd@gmail.com>
+To:     dave@stgolabs.net, paulmck@kernel.org, josh@joshtriplett.org
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Zhang <stephenzhangzsd@gmail.com>
+Subject: [PATCH] torture: replace the function name with %s
+Date:   Sat, 23 Jan 2021 16:34:01 +0800
+Message-Id: <1611390841-5460-1-git-send-email-stephenzhangzsd@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+Better to replace the function name with %s.
 
-change 'regster' to 'register'
-
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
 ---
- drivers/nfc/trf7970a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/torture.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
-index c70f62fe..3397802 100644
---- a/drivers/nfc/trf7970a.c
-+++ b/drivers/nfc/trf7970a.c
-@@ -169,7 +169,7 @@
- 
- /* Bits determining whether its a direct command or register R/W,
-  * whether to use a continuous SPI transaction or not, and the actual
-- * direct cmd opcode or regster address.
-+ * direct cmd opcode or register address.
-  */
- #define TRF7970A_CMD_BIT_CTRL			BIT(7)
- #define TRF7970A_CMD_BIT_RW			BIT(6)
+diff --git a/kernel/torture.c b/kernel/torture.c
+index 01e336f..0a315c3 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -816,9 +816,9 @@ bool torture_init_begin(char *ttype, int v)
+ {
+ 	mutex_lock(&fullstop_mutex);
+ 	if (torture_type != NULL) {
+-		pr_alert("torture_init_begin: Refusing %s init: %s running.\n",
+-			 ttype, torture_type);
+-		pr_alert("torture_init_begin: One torture test at a time!\n");
++		pr_alert("%s: Refusing %s init: %s running.\n",
++			  __func__, ttype, torture_type);
++		pr_alert("%s: One torture test at a time!\n", __func__);
+ 		mutex_unlock(&fullstop_mutex);
+ 		return false;
+ 	}
 -- 
-1.9.1
+1.8.3.1
 
