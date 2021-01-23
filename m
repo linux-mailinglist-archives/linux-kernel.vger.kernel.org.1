@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A08230188B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D92301890
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbhAWVbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 16:31:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55380 "EHLO mail.kernel.org"
+        id S1726347AbhAWVje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 16:39:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbhAWVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 16:30:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 74C4722CB9;
-        Sat, 23 Jan 2021 21:30:10 +0000 (UTC)
+        id S1725922AbhAWVjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 16:39:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD0522583;
+        Sat, 23 Jan 2021 21:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611437410;
-        bh=xWxjFL8KQ0wPPz2ZDkC580KuJTjd8N1tFJVySZm7f80=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Sa9PpMQxUv97Be3bt6LRbPwvMf6jYgSqgbo4LeVjDjB696aSpxzp3ChAT0cWBMwmh
-         xMJT14M55AkCPzp5Ss3uFgCCY5Oxw8jaMXJ+EqsvaDbKOartwLqgmRMg7V2vCTbdf1
-         Jx2EwKqmw68ofLGP1qFzsic8wXfzmNino1z4xHpvm8PV5Pasi+U2Pma6kPXbsUkHNZ
-         PBbzZurmsxOSgEZyOpLa0V7Fm4B4ixDB/fgF8l4Pafnfo0HtQW8Xa3DYzFv5mL8o4Z
-         cQer+8RraN2i7l3qioqexyHy7ccDqm9nl8Ni8uSRO+/VM3WUCMXBsUFx+yj3E0l0TL
-         Ly4NpDrbggBeg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 64F21652E4;
-        Sat, 23 Jan 2021 21:30:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1611437925;
+        bh=HEXaqUtnerr6Ap4ddBjLCnqAyRczjm/eQSlW5doVBZU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GcRt3U9kS3lQrqcMygQdnmgvmX5hTg/j+KBCUz4B99mRsZgULgJDxqjXYdCDhCLuo
+         JiSqm6B8bcAZ/1Rcnaw2gqkKgilnJeWzPr6r+0/CDMY9MOo3CnSErrI6T98huHM8d+
+         3Vl7N4faJz2JJazahstafHBygGAjH+ZwaS6A2jPIOcuXXSDOwHThtj+eId1Kk0FPy2
+         hVhIMA6aA+WHCOGUWMkRzUD8+OPQHzNm8wmQMz/GyJoxVDv0dOofJdakvTF+o6nmoH
+         UsCX54vvglCiAWUJH8pdJi1AAfI9Jlbb3pPf5XMm2c9hhc/ta/056gw2SdazasZXp7
+         IViEL8xWWiPQQ==
+Date:   Sat, 23 Jan 2021 13:38:43 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Brandon Streiff <brandon.streiff@ni.com>,
+        Olof Johansson <olof@lixom.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net 2/4] net: mvpp2: Remove unneeded Kconfig dependency.
+Message-ID: <20210123133843.71f6214d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210123211400.GA6270@hoboy.vegasvil.org>
+References: <cover.1611198584.git.richardcochran@gmail.com>
+        <1069fecd4b7e13485839e1c66696c5a6c70f6144.1611198584.git.richardcochran@gmail.com>
+        <20210121102753.GO1551@shell.armlinux.org.uk>
+        <20210121150802.GB20321@hoboy.vegasvil.org>
+        <20210122181444.66f9417d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210123132626.GA22662@hoboy.vegasvil.org>
+        <20210123121227.16384ff5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210123211400.GA6270@hoboy.vegasvil.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: dsa: bcm_sf2: put device node before return
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161143741040.6169.4592145285251122406.git-patchwork-notify@kernel.org>
-Date:   Sat, 23 Jan 2021 21:30:10 +0000
-References: <20210121123343.26330-1-bianpan2016@163.com>
-In-Reply-To: <20210121123343.26330-1-bianpan2016@163.com>
-To:     Pan Bian <bianpan2016@163.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Thu, 21 Jan 2021 04:33:43 -0800 you wrote:
-> Put the device node dn before return error code on failure path.
+On Sat, 23 Jan 2021 13:14:00 -0800 Richard Cochran wrote:
+> On Sat, Jan 23, 2021 at 12:12:27PM -0800, Jakub Kicinski wrote:
+> > I see. The only thing I'm worried about then is the churn in patch 3.
+> > This would land in Linus's tree shortly before rc6, kinda late to be
+> > taking chances in the name of minor optimizations :S  
 > 
-> Fixes: 461cd1b03e32 ("net: dsa: bcm_sf2: Register our slave MDIO bus")
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
-> ---
->  drivers/net/dsa/bcm_sf2.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> ;^)
+> 
+> Yeah, by all means, avoid ARM churn... I remember Bad Things there...
+> 
+> Maybe you could take #1 and #2 for net-next?
 
-Here is the summary with links:
-  - net: dsa: bcm_sf2: put device node before return
-    https://git.kernel.org/netdev/net/c/cf3c46631e16
+Done, thanks!
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> I should probably submit 3-4 throught the SoC tree anyhow.
