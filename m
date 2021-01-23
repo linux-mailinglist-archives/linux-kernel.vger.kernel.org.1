@@ -2,93 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EE730130C
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 05:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA8B301311
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 05:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbhAWE0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 23:26:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbhAWE0n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 23:26:43 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5D4C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 20:25:57 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 30so5200380pgr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 20:25:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HsTH23mTsBXTUCD9PYfUtYW7PMHmRqFx/62RuOOhwWE=;
-        b=H6dbeZ4IKz/jHoKDvrRiNfcm29zDT322Qo6oWUxEEYCW69JaisrCzd7yp0BoucfsJ9
-         F335oNUhCJqnoOVi7YlS4/Oi7j8PDv8z/66Vor3rN4jGeJfA1U9TY68j0Vhs+8LvwWZn
-         7QAeoeY/Ix0tYM+FjfwhN1QzjaO9yT2zezKDVTLKQXtnPDI4e5Cw2S3RfYALs2GvfD0Q
-         rfUjRbD/etRvr3wALx9OxzZXJTfwjNNwSLs6fe/CbHQD99TSZyiZnKl5E+Uyz0VHV+yA
-         ofwzsjwwtLzuNyfoIHw7wwVo1yv7sQXyRKSW5N7i9aJqMtY/bErm4iJArNCtv2XtUrDN
-         Sv+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=HsTH23mTsBXTUCD9PYfUtYW7PMHmRqFx/62RuOOhwWE=;
-        b=MXYSDO7TwbxnjghaVgQP4rTaVU6Co733YmFEM4Y8LH3foUYWemx2MOxtqHuP6TN3IU
-         n1q78iJBzP7DE+scEPakxah+T74UAYcannvjPRf3SZkYZwYdnN8U1fpQvyZ9Awb5X7F6
-         u9musNDEsUliT8ZJ87I2q4N/XNTZkaOeLedATPPHhfDHbUjkPVjCwAf1jBeC6DBlPJiF
-         i1NFSO8R22jLKmBQOhXk/4s/x3JnERR8dcVW94nOqJ38IDRysNDEFMw0lHXu1Pcl1fg2
-         HrsKKknsmdYBJBTcSQkxyOKys1OLse5xQF9/x1QYdgGB01H8qi+pTdcDPz4dQpqGum0d
-         GMGA==
-X-Gm-Message-State: AOAM5328VqamWeXkSI6cmhcRwgzsEsOSaQl467fCShrieJmx8DRtEzBR
-        Wvh+v/xmm5VtR2p9OuAwjfnwwA==
-X-Google-Smtp-Source: ABdhPJzGTiXE96kFTsRM8zJTqDWKPdMLEh8GQ+kyr14hxbw338i0lgZa4y87kwM3dSETJtrxDp8LLA==
-X-Received: by 2002:a63:e24f:: with SMTP id y15mr7821856pgj.366.1611375956854;
-        Fri, 22 Jan 2021 20:25:56 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id t2sm10844097pga.45.2021.01.22.20.25.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 20:25:55 -0800 (PST)
-Date:   Fri, 22 Jan 2021 20:25:55 -0800 (PST)
-X-Google-Original-Date: Fri, 22 Jan 2021 20:16:14 PST (-0800)
-Subject:     Re: [PATCH] arch/riscv:fix typo in a comment in arch/riscv/kernel/image-vars.h
-In-Reply-To: <20210121015513.2258-1-tangchunyou@163.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ardb@kernel.org, anup@brainfault.org,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zhangwen@yulong.com, tangchunyou@yulong.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     tangchunyou@163.com
-Message-ID: <mhng-11923d80-18d3-4d0a-a0f8-8ca93ee307a1@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1726673AbhAWEai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 23:30:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbhAWEag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 23:30:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 997E023601;
+        Sat, 23 Jan 2021 04:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611376195;
+        bh=hLHo7mfSPRIbnQWSc9flUm38ftt5VN8HqJYp0ZQpb8A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lJTIM0C45DNI9UY2KJoxVp84qoIaFptWxM2AZ97dktFLrHc0OzpOErrkZKiPSCgr7
+         1g7I0qeu/Kj1eKQnzFeTHuYjTEZxcIfVeF2BW4u/NBY205ajcEWy6RojCPHkRxBSuV
+         Z5KH0Kdc6QiNS4ULUwuApGmrtWYJ2QuFqk9CauVkCjVK4l/VeeYqqsC7rl1iwxLg7h
+         8qxK94OEM4BCzSn7rZ6aogQkxa5tsYex63cpER6s0Voaa8SHv32JXcyRMh6QWu6pA9
+         W0IK93SzTVkpZF90ahmv6xjxOJhNqeBWJzIeQo7YXhhUiPwv64GoC5h/drS95f4r9o
+         HZhRYEOnTg6cg==
+Date:   Fri, 22 Jan 2021 20:29:53 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hariprasad Kelam <hkelam@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <lcherian@marvell.com>, <gakula@marvell.com>, <jerinj@marvell.com>,
+        <sbhatta@marvell.com>, Christina Jacob <cjacob@marvell.com>
+Subject: Re: [net-next PATCH 3/7] octeontx2-pf: ethtool fec mode support
+Message-ID: <20210122202953.59f806c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1611215609-92301-4-git-send-email-hkelam@marvell.com>
+References: <1611215609-92301-1-git-send-email-hkelam@marvell.com>
+        <1611215609-92301-4-git-send-email-hkelam@marvell.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 17:55:13 PST (-0800), tangchunyou@163.com wrote:
-> From: tangchunyou <tangchunyou@yulong.com>
->
-> "kerne" -> "kernel"
->
-> Signed-off-by: WenZhang <zhangwen@yulong.com>
+On Thu, 21 Jan 2021 13:23:25 +0530 Hariprasad Kelam wrote:
+> From: Christina Jacob <cjacob@marvell.com>
+> 
+> Add ethtool support to configure fec modes baser/rs and
+> support to fecth FEC stats from CGX as well PHY.
+> 
+> Configure fec mode
+> 	- ethtool --set-fec eth0 encoding rs/baser/off/auto
+> Query fec mode
+> 	- ethtool --show-fec eth0
+> 
+> Signed-off-by: Christina Jacob <cjacob@marvell.com>
+> Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+> Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
 > ---
->  arch/riscv/kernel/image-vars.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kernel/image-vars.h b/arch/riscv/kernel/image-vars.h
-> index 8c212ef..71a76a6 100644
-> --- a/arch/riscv/kernel/image-vars.h
-> +++ b/arch/riscv/kernel/image-vars.h
-> @@ -3,7 +3,7 @@
->   * Copyright (C) 2020 Western Digital Corporation or its affiliates.
->   * Linker script variables to be set after section resolution, as
->   * ld.lld does not like variables assigned before SECTIONS is processed.
-> - * Based on arch/arm64/kerne/image-vars.h
-> + * Based on arch/arm64/kernel/image-vars.h
->   */
->  #ifndef __RISCV_KERNEL_IMAGE_VARS_H
->  #define __RISCV_KERNEL_IMAGE_VARS_H
+>  .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  23 +++
+>  .../ethernet/marvell/octeontx2/nic/otx2_common.h   |   6 +
+>  .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  | 174 ++++++++++++++++++++-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   3 +
+>  4 files changed, 204 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> index bdfa2e2..d09119b 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> @@ -60,6 +60,22 @@ void otx2_update_lmac_stats(struct otx2_nic *pfvf)
+>  	mutex_unlock(&pfvf->mbox.lock);
+>  }
+>  
+> +void otx2_update_lmac_fec_stats(struct otx2_nic *pfvf)
+> +{
+> +	struct msg_req *req;
+> +
+> +	if (!netif_running(pfvf->netdev))
+> +		return;
+> +	mutex_lock(&pfvf->mbox.lock);
+> +	req = otx2_mbox_alloc_msg_cgx_fec_stats(&pfvf->mbox);
+> +	if (!req) {
+> +		mutex_unlock(&pfvf->mbox.lock);
+> +		return;
+> +	}
+> +	otx2_sync_mbox_msg(&pfvf->mbox);
+> +	mutex_unlock(&pfvf->mbox.lock);
+> +}
+> +
+>  int otx2_update_rq_stats(struct otx2_nic *pfvf, int qidx)
+>  {
+>  	struct otx2_rcv_queue *rq = &pfvf->qset.rq[qidx];
+> @@ -1491,6 +1507,13 @@ void mbox_handler_cgx_stats(struct otx2_nic *pfvf,
+>  		pfvf->hw.cgx_tx_stats[id] = rsp->tx_stats[id];
+>  }
+>  
+> +void mbox_handler_cgx_fec_stats(struct otx2_nic *pfvf,
+> +				struct cgx_fec_stats_rsp *rsp)
+> +{
+> +		pfvf->hw.cgx_fec_corr_blks += rsp->fec_corr_blks;
+> +		pfvf->hw.cgx_fec_uncorr_blks += rsp->fec_uncorr_blks;
 
-Thanks, this is on for-next.
+double indented
+
+> +}
+> +
+>  void mbox_handler_nix_txsch_alloc(struct otx2_nic *pf,
+>  				  struct nix_txsch_alloc_rsp *rsp)
+>  {
+
+> @@ -183,12 +210,42 @@ static void otx2_get_ethtool_stats(struct net_device *netdev,
+>  	for (stat = 0; stat < CGX_TX_STATS_COUNT; stat++)
+>  		*(data++) = pfvf->hw.cgx_tx_stats[stat];
+>  	*(data++) = pfvf->reset_count;
+> +
+> +	if (pfvf->linfo.fec == OTX2_FEC_NONE)
+> +		return;
+
+Don't hide the stats based on configuration.
+Getting number of stats and requesting them are two different syscalls.
+
+> +	fec_corr_blks = pfvf->hw.cgx_fec_corr_blks;
+> +	fec_uncorr_blks = pfvf->hw.cgx_fec_uncorr_blks;
+> +
+> +	rsp = otx2_get_fwdata(pfvf);
+> +	if (!IS_ERR(rsp) && rsp->fwdata.phy.misc.has_fec_stats &&
+> +	    !otx2_get_phy_fec_stats(pfvf)) {
+> +		/* Fetch fwdata again because it's been recently populated with
+> +		 * latest PHY FEC stats.
+> +		 */
+> +		rsp = otx2_get_fwdata(pfvf);
+> +		if (!IS_ERR(rsp)) {
+> +			struct fec_stats_s *p = &rsp->fwdata.phy.fec_stats;
+> +
+> +			if (pfvf->linfo.fec == OTX2_FEC_BASER) {
+> +				fec_corr_blks   = p->brfec_corr_blks;
+> +				fec_uncorr_blks = p->brfec_uncorr_blks;
+> +			} else {
+> +				fec_corr_blks   = p->rsfec_corr_cws;
+> +				fec_uncorr_blks = p->rsfec_uncorr_cws;
+> +			}
+> +		}
+> +	}
+> +
+> +	*(data++) = fec_corr_blks;
+> +	*(data++) = fec_uncorr_blks;
+>  }
+
+> +static int otx2_get_fecparam(struct net_device *netdev,
+> +			     struct ethtool_fecparam *fecparam)
+> +{
+> +	struct otx2_nic *pfvf = netdev_priv(netdev);
+> +	struct cgx_fw_data *rsp;
+> +	int fec[] = {
+
+const
+
+> +		ETHTOOL_FEC_OFF,
+> +		ETHTOOL_FEC_BASER,
+> +		ETHTOOL_FEC_RS,
+> +		ETHTOOL_FEC_BASER | ETHTOOL_FEC_RS};
+> +#define FEC_MAX_INDEX 3
+> +	if (pfvf->linfo.fec < FEC_MAX_INDEX)
+> +		fecparam->active_fec = fec[pfvf->linfo.fec];
+> +
+> +	rsp = otx2_get_fwdata(pfvf);
+> +	if (IS_ERR(rsp))
+> +		return PTR_ERR(rsp);
+> +
+> +	if (rsp->fwdata.supported_fec <= FEC_MAX_INDEX) {
+> +		if (!rsp->fwdata.supported_fec)
+> +			fecparam->fec = ETHTOOL_FEC_NONE;
+> +		else
+> +			fecparam->fec = fec[rsp->fwdata.supported_fec];
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int otx2_set_fecparam(struct net_device *netdev,
+> +			     struct ethtool_fecparam *fecparam)
+> +{
+> +	struct otx2_nic *pfvf = netdev_priv(netdev);
+> +	struct mbox *mbox = &pfvf->mbox;
+> +	struct fec_mode *req, *rsp;
+> +	int err = 0, fec = 0;
+> +
+> +	switch (fecparam->fec) {
+> +	case ETHTOOL_FEC_OFF:
+> +		fec = OTX2_FEC_NONE;
+> +		break;
+> +	case ETHTOOL_FEC_RS:
+> +		fec = OTX2_FEC_RS;
+> +		break;
+> +	case ETHTOOL_FEC_BASER:
+> +		fec = OTX2_FEC_BASER;
+> +		break;
+> +	default:
+> +		fec = OTX2_FEC_NONE;
+
+IIRC fecparam->fec is a bitmask, you can't assume other than one bit
+set is NONE.
+
+> +		break;
+> +	}
+> +
+> +	if (fec == pfvf->linfo.fec)
+> +		return 0;
+> +
+> +	mutex_lock(&mbox->lock);
+> +	req = otx2_mbox_alloc_msg_cgx_set_fec_param(&pfvf->mbox);
+> +	if (!req) {
+> +		err = -EAGAIN;
+
+Why -EAGAIN? When does msg allocation fail?
+
+> +		goto end;
+> +	}
+> +	req->fec = fec;
+> +	err = otx2_sync_mbox_msg(&pfvf->mbox);
+> +	if (err)
+> +		goto end;
+> +
+> +	rsp = (struct fec_mode *)otx2_mbox_get_rsp(&pfvf->mbox.mbox,
+> +						   0, &req->hdr);
+> +	if (rsp->fec >= 0) {
+> +		pfvf->linfo.fec = rsp->fec;
+> +		pfvf->hw.cgx_fec_corr_blks = 0;
+> +		pfvf->hw.cgx_fec_uncorr_blks = 0;
+
+Are you clearing stats every time FEC changes?
+
+> +
+
+spurious new line
+
+> +	} else {
+> +		err = rsp->fec;
+> +	}
+> +
+> +end:	mutex_unlock(&mbox->lock);
+
+label on a separate line
+
+> +	return err;
+> +}
