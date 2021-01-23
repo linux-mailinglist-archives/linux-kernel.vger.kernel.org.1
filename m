@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1909230172A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE7330172E
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbhAWRV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:21:59 -0500
-Received: from smtprelay0076.hostedemail.com ([216.40.44.76]:58820 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726094AbhAWRVr (ORCPT
+        id S1726070AbhAWR0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725550AbhAWR0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:21:47 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 95799837F24F;
-        Sat, 23 Jan 2021 17:21:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1719:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:7514:7652:7875:7903:8784:9025:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12895:12986:13255:13439:13845:13894:14181:14659:14721:21080:21324:21433:21451:21627:21660:21939:30012:30030:30054:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: sheet19_41034fd27576
-X-Filterd-Recvd-Size: 3077
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 23 Jan 2021 17:21:04 +0000 (UTC)
-Message-ID: <d5eacb78bd354d26725c34d887a75bf1e8f27a04.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: add warning for avoiding .L prefix
- symbols in assembly files
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>,
+        Sat, 23 Jan 2021 12:26:52 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60BFC06174A;
+        Sat, 23 Jan 2021 09:26:11 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id x137so8660746oix.11;
+        Sat, 23 Jan 2021 09:26:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Fx0dTn/ibDFiP8TXms9D2tHALPZMdynL/f0uPDryXjQ=;
+        b=q5Zlsg1WoDKF5HigG82e/pxLTxUY6SJY+9HDrFuC9EAcR27LgiqN4L5gqWDv67r+7B
+         lcusl8aod6r5lP4D/9u5QK5/mfkRTLNSlSRRfkdIW+oz5t2fthyhoJkpsXb9LYGa7B3P
+         y+ecpbPvH2FhB12mTmwcIEkZ0vRwh8ehwJF3Vwv5tb8b4shDNE1JClE2oaJEP5pRSSEI
+         yZl4gN8eSzzbyKYSXPzHtxhd2z0Ej5RDcJplMV1GZd6KBpmHZ9XP+hzvLiRyEWkEDCS7
+         gtUnpImvb4M4qrEue9TCqQfZWS6ju4UiovQQX7HWp3DenYTwnTthqgio+SdOZ5bxuu/3
+         69Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Fx0dTn/ibDFiP8TXms9D2tHALPZMdynL/f0uPDryXjQ=;
+        b=Pl7tuOGrdxLxlWCd6oNJDDB57sZXjhhgWBoagFyWSeGJibPO8fQnNyP5M12Yr7Clsl
+         yQ8NO4gK0agsPwR6sFYNMnekwOry25mBx134FWXwf5ERbA2NRT2DBAKodymKIb7IEuKO
+         h7Fam875nDwsaRhJCLfXRmJQR4YBQ2Km/9L4D1NlNmBwIYYFubv87DnJZvGbMtDxYD3x
+         BXyw37JvWmyZ5C+/WwwcDi4nsgqKOV9Bli1Yw3nrNF6iV317/HK0lmuFFOABThazI+5E
+         p6YF2YUejFVn+KNPAWge31JrVZY9kWQku2eSIuO/cTJ9V2AQ8SNdf9coUGXa6jSOI5Eh
+         NbdA==
+X-Gm-Message-State: AOAM533gV5VlGLfTR7kzC+nvyBzwSpRG84p+HkLHXFqPCbE9otYcnimw
+        DH1i4MGtUEMFmf8mzk+zxSs=
+X-Google-Smtp-Source: ABdhPJz0OColhLeibwBoqtOA1S5cGh5GSWRV0MQuxWn9FfPLDub0hWFKifywOTmLY7ifgl0YMS6mFQ==
+X-Received: by 2002:aca:5bd4:: with SMTP id p203mr6873838oib.108.1611422771134;
+        Sat, 23 Jan 2021 09:26:11 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g13sm2392998otr.74.2021.01.23.09.26.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 23 Jan 2021 09:26:10 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 23 Jan 2021 09:26:09 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
-        broonie@kernel.org, ndesaulniers@google.com, jpoimboe@redhat.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux@googlegroups.com
-Date:   Sat, 23 Jan 2021 09:21:02 -0800
-In-Reply-To: <20210123151405.26267-1-yashsri421@gmail.com>
-References: <bd560a8e-7949-933a-e4a9-508cb42c2570@gmail.com>
-         <20210123151405.26267-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+Subject: Re: [PATCH] watchdog: stop wdd when watchdog hw running in
+ reboot_notifier
+Message-ID: <20210123172609.GA56545@roeck-us.net>
+References: <20210114082651.17162-1-qiang.zhao@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210114082651.17162-1-qiang.zhao@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-01-23 at 20:44 +0530, Aditya Srivastava wrote:
-> objtool requires that all code must be contained in an ELF symbol.
-> Symbol names that have a '.L' prefix do not emit symbol table entries, as
-> they have special meaning for the assembler.
+On Thu, Jan 14, 2021 at 04:26:51PM +0800, Qiang Zhao wrote:
+> From: Zhao Qiang <qiang.zhao@nxp.com>
 > 
-> '.L' prefixed symbols can be used within a code region, but should be
-> avoided for denoting a range of code via 'SYM_*_START/END' annotations.
+> In watchdog_reboot_notifier, wdd should be stopped when the device
+> is in hw_running state
 > 
-> Add a new check to emit a warning on finding the usage of '.L' symbols
-> for '.S' files in arch/x86/entry/* and arch/x86/lib/*, if it denotes
-> range of code via SYM_*_START/END annotation pair.
-> 
-> Suggested-by: Mark Brown <broonie@kernel.org>
-> Link: https://groups.google.com/g/clang-built-linux/c/-drkmLgu-cU/m/4staOlf-CgAJ
+> Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
 
-Please do not use groups.google.com links, or if you must, please
-use links that are readable.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-For instance, this is a better link as it shows the context without
-struggling with the poor interface:
-
-https://groups.google.com/g/clang-built-linux/c/E-naBMt_1SM
-
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 > ---
-> * Applies perfectly on next-20210122
+>  drivers/watchdog/watchdog_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Changes in v2:
-> - Reduce the check to only SYM_*_START/END lines
-> - Reduce the check for only .S files in arch/x86/entry/* and arch/x86/lib/* as suggested by Josh and Nick
-
-I think that's unnecessary.
-
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3590,6 +3590,13 @@ sub process {
->  			}
->  		}
->  
-> 
-> +# check for .L prefix local symbols in .S files
-> +		if ($realfile =~ m@^arch/x86/(?:entry|lib)/.*\.S$@ &&
-
-Using /.S$/ should be enough
-
-> +		    $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
-
-This might need to be
-
-+		    $line =~ /^\+\s*(?:[A-Z]+_)?SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
-
-> +			WARN("AVOID_L_PREFIX",
-> +			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
-> +		}
-> +
-
-
+> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> index 861daf4..ec670cc 100644
+> --- a/drivers/watchdog/watchdog_core.c
+> +++ b/drivers/watchdog/watchdog_core.c
+> @@ -154,7 +154,7 @@ static int watchdog_reboot_notifier(struct notifier_block *nb,
+>  
+>  	wdd = container_of(nb, struct watchdog_device, reboot_nb);
+>  	if (code == SYS_DOWN || code == SYS_HALT) {
+> -		if (watchdog_active(wdd)) {
+> +		if (watchdog_active(wdd) || watchdog_hw_running(wdd)) {
+>  			int ret;
+>  
+>  			ret = wdd->ops->stop(wdd);
