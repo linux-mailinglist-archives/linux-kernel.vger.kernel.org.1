@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BA4F3013A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 08:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D877D3013A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 08:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbhAWG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 01:59:14 -0500
-Received: from m12-16.163.com ([220.181.12.16]:39476 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbhAWG7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 01:59:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=KraP/
-        NX5seaXvKYciU17/aNwpDeyDWQLEp1Gly+AH84=; b=j6pl/uUOtXaWEGwKjK7QR
-        w53gqQYhmrMVheiwGUuAME8zprgeJBkWT1nKsgQZeCkQPRhoaWkNtHSoWvbZQqCf
-        U43Wb4wOXeaHsicuVydXerRpip+XSzDUAMsgEVL1iMHYgna/XYMaK/+5XWsU+H/3
-        wSdRGUSEp+EuIXoRKUwY/0=
-Received: from liumingyu.ccdomain.com (unknown [119.137.55.101])
-        by smtp12 (Coremail) with SMTP id EMCowACnqk71yAtgyNv1YQ--.54774S2;
-        Sat, 23 Jan 2021 14:57:58 +0800 (CST)
-From:   liumingyu <liu_mingyu@163.com>
-To:     dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liumingyu <liumingyu@yulong.com>
-Subject: [PATCH] Input: ti_am335x_tsc - fix spelling mistake
-Date:   Sat, 23 Jan 2021 14:58:03 +0800
-Message-Id: <20210123065803.128-1-liu_mingyu@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S1726560AbhAWHGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 02:06:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11132 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbhAWHGj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 02:06:39 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DN6ZJ3J36z15dTM;
+        Sat, 23 Jan 2021 15:04:40 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
+ 15:05:43 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/page_owner: Use helper function zone_end_pfn() to get end_pfn
+Date:   Sat, 23 Jan 2021 02:05:38 -0500
+Message-ID: <20210123070538.5861-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowACnqk71yAtgyNv1YQ--.54774S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWUAr1xWF1UAr1kuw45Jrb_yoW3GFbEkr
-        10qwn2gr1qyrWqk34Dtwn3Z34ktF18urWkAw1kKrW3try2vrnrJa98Wa1UAF4UKw17C34D
-        Xr4agFySkan7WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU87DG7UUUUU==
-X-Originating-IP: [119.137.55.101]
-X-CM-SenderInfo: 5olxsz5lqj53i6rwjhhfrp/1tbiQxYjmlc7St7UzAAAsM
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: liumingyu <liumingyu@yulong.com>
+Commit 108bcc96ef70 ("mm: add & use zone_end_pfn() and zone_spans_pfn()")
+introduced the helper zone_end_pfn() to calculate the zone end pfn. But
+pagetypeinfo_showmixedcount_print forgot to use it. And the initialization
+of local variable pfn is duplicated, remove one.
 
-fix typo "postion" -> "position"
-
-Signed-off-by: liumingyu <liumingyu@yulong.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- drivers/input/touchscreen/ti_am335x_tsc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/page_owner.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/ti_am335x_tsc.c b/drivers/input/touchscreen/ti_am335x_tsc.c
-index 83e6855..d77555e 100644
---- a/drivers/input/touchscreen/ti_am335x_tsc.c
-+++ b/drivers/input/touchscreen/ti_am335x_tsc.c
-@@ -310,7 +310,7 @@ static irqreturn_t titsc_irq(int irq, void *dev)
- 			/*
- 			 * Calculate pressure using formula
- 			 * Resistance(touch) = x plate resistance *
--			 * x postion/4096 * ((z2 / z1) - 1)
-+			 * x position/4096 * ((z2 / z1) - 1)
- 			 */
- 			z = z1 - z2;
- 			z *= x;
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index af464bb7fbe7..d15c7c4994f5 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -263,8 +263,8 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
+ 	struct page *page;
+ 	struct page_ext *page_ext;
+ 	struct page_owner *page_owner;
+-	unsigned long pfn = zone->zone_start_pfn, block_end_pfn;
+-	unsigned long end_pfn = pfn + zone->spanned_pages;
++	unsigned long pfn, block_end_pfn;
++	unsigned long end_pfn = zone_end_pfn(zone);
+ 	unsigned long count[MIGRATE_TYPES] = { 0, };
+ 	int pageblock_mt, page_mt;
+ 	int i;
 -- 
-1.9.1
-
+2.19.1
 
