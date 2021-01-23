@@ -2,184 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDB4301373
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 06:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2317301377
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 07:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725940AbhAWF6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 00:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
+        id S1726673AbhAWF7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 00:59:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbhAWF6r (ORCPT
+        with ESMTP id S1725730AbhAWF73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 00:58:47 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3FCC0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 21:58:07 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id 6so10744246ejz.5
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 21:58:07 -0800 (PST)
+        Sat, 23 Jan 2021 00:59:29 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87CFC06174A;
+        Fri, 22 Jan 2021 21:58:48 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id i141so7714572yba.0;
+        Fri, 22 Jan 2021 21:58:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1DRHwewnrHRhl2lTMgBYeG2ca3eHenJpXDrlJ4uCygE=;
-        b=ajxyEalxfr67m7gO/vv1gh8bsVk5fDqZohI8cFqpSD54xQ5coLDgigZ+vMla4mdV39
-         sh81EDmtWCnoaOjnzk4XAGfNcgeW8sr0q+J58RGiwtQmVD+qeFXYgAzLPaa83t2JYO03
-         qEhMJTSpZ15gOQIi+eGG5yzHVThODbyAx7NbmLMcvCAILt2aAD6w0NzN6SOy9YfhLq7z
-         8uB7j2/feMDrIFdRZAleVyZm5ZrwjRcSOtjPQ265dCjIm9Isms4Umkf/7OLWxTvrS3eU
-         n3LVw3g46AAQqUGH2s7+gjXpWaFqidD5MFC6W9C5VNZECFjonTEa0SEMfhotPW5ln2Fh
-         HfNA==
+         :content-transfer-encoding;
+        bh=oide6CHNT8SKIJYSTcFoPxC8WbuXvbV+vIaGxgnvUBU=;
+        b=J8zuf6vYdLp05gY6IMWEpt+KibwAC1MZhtV1T7MsUl8Yc+/AQo0pUEB+2IvqhEqhjY
+         9zHfj90Mc9Avqnb85pjc/DRbhaHtzLUfT4BjJYBEflZyxYp8Ky+eShj42h821tqHE9WS
+         JdY59HIEoHsyNLLAAN+PbI1mqVHAQtmfBcm+abt0e055FyeXJiSiVaF0RE7Gw0vF7PRr
+         zilruEErZYpCozYfSkQraV8CN3Xuw1CIOQ+q7nezs41WBDqgRsIyy+aKDz7xrHFBDQkr
+         E0haGehZQDIKVJpzlDVyqBCKMPP8LG1snHjXDtqSNxS6pBhDpSGcxuZU9uWXsmfhqB0v
+         N+zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1DRHwewnrHRhl2lTMgBYeG2ca3eHenJpXDrlJ4uCygE=;
-        b=DPzBT5Qe9PpgneRwxU/6Uo3jCi72BfmgUB2bAK7mh2HqPezThdWANmapJ7ArRwuXso
-         JjkiLIkg7F19w/fcZ+RacJEoWMBkvJm+WTsUI9zKcSusffBuE3xmiSBxXhgsfbd0vBx/
-         kCRriTniOeEp2PJMIu/3qiEY3XNTR5TrO3eBuxwOUng3aMpi3JdI945zG5tVFEMFPo/H
-         wqm3NY1fn3ptCQX7igdG9OxoAuqIUjNARPW1dUI5kkIyEsrzJM8+25nKcSm6Buhx785o
-         pzAppdyFoF2vRnh+eGxxBY22lu36xzsYGg1gXMTlM8YQICLgrpQ8nvZMFMnD5Cqtujun
-         ciQg==
-X-Gm-Message-State: AOAM532TjujcqPKZUnVIDpRixrWVADs4n+sE6IAYkfN2IcZ3w/Iyazn2
-        m93QOYOoERSYPrOCrdp3SxFBWmEAqbwnIm3Dx6gVSg==
-X-Google-Smtp-Source: ABdhPJxB8GYrzCyR0qFlfQfw+LoLPdvUX377pLWuE6GmrEm5pKqcSgKJp8qNV+WwyjqVwurocX7tOpVUmHOPEMndm5Y=
-X-Received: by 2002:a17:906:4443:: with SMTP id i3mr4922157ejp.133.1611381485916;
- Fri, 22 Jan 2021 21:58:05 -0800 (PST)
+         :message-id:subject:to:content-transfer-encoding;
+        bh=oide6CHNT8SKIJYSTcFoPxC8WbuXvbV+vIaGxgnvUBU=;
+        b=iJsD8i6XELmswH6QIHum2vhxWvAyl7Qg0zx6LLYIRQ7TYLjVs0n5boDrt9FrZ5Wx75
+         rS//2IZR4Uj9So4InlfzyqJLDw3E2VIPUD5aK4/ZVJDQLctpkLzo77eHjtYh7v4tPEpY
+         vBJGe4RwveAB+PHV1qjhyV2UEV22UZAWodoSZPIHyIX7rbnf7k3lElab1VIezUN9iV/7
+         nQC6Nc6bRNvHdWguIrQ923B5eNjYNuiTyQbAnPJq6eP+fu4qZfzDBIKktUyHaZP7jaOt
+         h6yQlIP9MviWY+kVHYBgAXinyMlh00wT/x4auR2b2pmMYdBH8M71jBNyAXmSvr2RQ6dW
+         mG1w==
+X-Gm-Message-State: AOAM5329nIJc5jNYp2hxZONcjvqUuNn5NGtKnD8k8LGbPaxE5/R9eVpX
+        ORkZMw4h4liuXiBw8GiNrFzmu4jpUAYKN+4Um+Wn18AbMVTeXWXL
+X-Google-Smtp-Source: ABdhPJx/qP4zLOV5+rSPgDsQ66/Dt0+7RXWlllLHYNymUKp0xBwQ1PqgSO/QSzzu9vI6UKHV2phjzCAHcdyHyfeLD/I=
+X-Received: by 2002:a25:688c:: with SMTP id d134mr11842671ybc.477.1611381527772;
+ Fri, 22 Jan 2021 21:58:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122135733.565501039@linuxfoundation.org>
-In-Reply-To: <20210122135733.565501039@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 23 Jan 2021 11:27:54 +0530
-Message-ID: <CA+G9fYtr3QveGHTdx9qrLS6W=AfF+vU_nxuE-SnChued5ruWbQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/33] 5.4.92-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+References: <CAD-N9QUdXFhTqZXpjg02Ya7viR8WmkORbU7pwNTquNg8k_kzMg@mail.gmail.com>
+In-Reply-To: <CAD-N9QUdXFhTqZXpjg02Ya7viR8WmkORbU7pwNTquNg8k_kzMg@mail.gmail.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Sat, 23 Jan 2021 13:58:21 +0800
+Message-ID: <CAD-N9QUrKZXQtT6of0jQpMvOt9g0AXc1Mwa4Df1pUjUJqWVfww@mail.gmail.com>
+Subject: Re: Duplicate crash reports related with smsc75xx/smsc95xx and root
+ cause analysis
+To:     davem@davemloft.net, kuba@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        steve.glendinning@shawell.net, UNGLinuxDriver@microchip.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 at 19:47, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Sat, Jan 23, 2021 at 1:40 PM =E6=85=95=E5=86=AC=E4=BA=AE <mudongliangabc=
+d@gmail.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.4.92 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Dear kernel developers,
 >
-> Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
-> Anything received after that time might be too late.
+> I found that on the syzbot dashboard, =E2=80=9CKMSAN: uninit-value in
+> smsc75xx_read_eeprom (2)=E2=80=9D [1],
+> "KMSAN: uninit-value in smsc95xx_read_eeprom (2)" [2], "KMSAN:
+> uninit-value in smsc75xx_bind" [3],
+> "KMSAN: uninit-value in smsc95xx_reset" [4], "KMSAN: uninit-value in
+> smsc95xx_wait_eeprom (2)" [5]
+> should share the same root cause.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.92-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
+> ## Root Cause Analysis && Different behaviors
 >
-> thanks,
+> The root cause of these crash reports resides in the
+> "__smsc75xx_read_reg/__smsc95xx_read_reg". Take __smsc95xx_read_reg as
+> an example,
 >
-> greg k-h
+> -------------------------------------------------------------------------=
+----------------------------------------
+> static int __must_check __smsc95xx_read_reg(struct usbnet *dev, u32 index=
+,
+>                                             u32 *data, int in_pm)
+> {
+>         u32 buf;
+>         int ret;
+>         int (*fn)(struct usbnet *, u8, u8, u16, u16, void *, u16);
+>
+>         BUG_ON(!dev);
+>
+>         if (!in_pm)
+>                 fn =3D usbnet_read_cmd;
+>         else
+>                 fn =3D usbnet_read_cmd_nopm;
+>
+>         ret =3D fn(dev, USB_VENDOR_REQUEST_READ_REGISTER, USB_DIR_IN
+>                  | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+>                  0, index, &buf, 4);
+>         if (unlikely(ret < 0)) {
+>                 netdev_warn(dev->net, "Failed to read reg index 0x%08x: %=
+d\n",
+>                             index, ret);
+>                 return ret;
+>         }
+>
+>         le32_to_cpus(&buf);
+>         *data =3D buf;
+>
+>         return ret;
+> }
+>
+>
+> static int __must_check smsc95xx_eeprom_confirm_not_busy(struct usbnet *d=
+ev)
+> {
+>         unsigned long start_time =3D jiffies;
+>         u32 val;
+>         int ret;
+>
+>         do {
+>                 ret =3D smsc95xx_read_reg(dev, E2P_CMD, &val);
+>                 if (ret < 0) {
+>                         netdev_warn(dev->net, "Error reading E2P_CMD\n");
+>                         return ret;
+>                 }
+>
+>                 if (!(val & E2P_CMD_BUSY_))
+>                         return 0;
+>         ......
+> }
+> -------------------------------------------------------------------------=
+----------------------------------------
+>
+> In a special situation, local variable "buf" is not initialized with
+> "fn" function invocation. And the ret is bigger than zero, and buf is
+> assigned to "*data". In its parent function -
+> smsc95xx_eeprom_confirm_not_busy, KMSAN reports "uninit-value" when
+> accessing variable "val".
+> Note, due to the lack of testing environment, I don't know the
+> concrete reason for the uninitialization of "buf" local variable.
+>
+> The reason for such different crash behaviors is that the event -
+> "buf" is not initialized is random when
+> "__smsc75xx_read_reg/__smsc95xx_read_reg" is invoked.
+>
+> ## Patch
+>
+> diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+> index 4353b370249f..a8e500d92285 100644
+> --- a/drivers/net/usb/smsc75xx.c
+> +++ b/drivers/net/usb/smsc75xx.c
+> @@ -76,7 +76,7 @@ static int smsc75xx_phy_gig_workaround(struct usbnet *d=
+ev);
+>  static int __must_check __smsc75xx_read_reg(struct usbnet *dev, u32 inde=
+x,
+>                                             u32 *data, int in_pm)
+>  {
+> -       u32 buf;
+> +       u32 buf =3D 0;
+>         int ret;
+>         int (*fn)(struct usbnet *, u8, u8, u16, u16, void *, u16);
+>
+> diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
+> index 4c8ee1cff4d4..dae3be723e0c 100644
+> --- a/drivers/net/usb/smsc95xx.c
+> +++ b/drivers/net/usb/smsc95xx.c
+> @@ -70,7 +70,7 @@ MODULE_PARM_DESC(turbo_mode, "Enable multiple frames
+> per Rx transaction");
+>  static int __must_check __smsc95xx_read_reg(struct usbnet *dev, u32 inde=
+x,
+>                                             u32 *data, int in_pm)
+>  {
+> -       u32 buf;
+> +       u32 buf =3D 0;
+>         int ret;
+>         int (*fn)(struct usbnet *, u8, u8, u16, u16, void *, u16);
+>
+> If you can have any issues with this statement or our information is
+> useful to you, please let us know. Thanks very much.
+>
+> [1] =E2=80=9CKMSAN: uninit-value in smsc75xx_read_eeprom (2)=E2=80=9D - u=
+rl
+> [2] =E2=80=9CKMSAN: uninit-value in smsc95xx_read_eeprom (2)=E2=80=9D - U=
+RL
+> [3] "KMSAN: uninit-value in smsc75xx_bind" -
+> [4] "KMSAN: uninit-value in smsc95xx_reset" -
+> [5] "KMSAN: uninit-value in smsc95xx_wait_eeprom (2)" -
 
+Add links for all five bug reports:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+[1] =E2=80=9CKMSAN: uninit-value in smsc75xx_read_eeprom (2)=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3D2fb4e465ed593338d043227e7617cbdfaa03=
+ba01
+[2] =E2=80=9CKMSAN: uninit-value in smsc95xx_read_eeprom (2)=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3D0629febb76ae17ff78874aa68991e542506b=
+1351
+[3] "KMSAN: uninit-value in smsc75xx_bind" -
+https://syzkaller.appspot.com/bug?id=3D45ee70ca00699d61239bbf9ebc790e33f83a=
+dd6a
+[4] "KMSAN: uninit-value in smsc95xx_reset" -
+https://syzkaller.appspot.com/bug?id=3Dde07a0d125f8f1716eacb7e2ee4ceca251b2=
+1511
+[5] "KMSAN: uninit-value in smsc95xx_wait_eeprom (2)" -
+https://syzkaller.appspot.com/bug?id=3Db4eb76261b208b986ad7683e686c6be4200a=
+7109
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.92-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: eb6c2292de97c5c4e51d98767b4c7acaef0522ec
-git describe: v5.4.91-34-geb6c2292de97
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.91-34-geb6c2292de97
-
-
-No regressions (compared to build v5.4.91)
-
-
-No fixes (compared to build v5.4.91)
-
-Ran 53090 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* fwts
-* kvm-unit-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+>
+> --
+> My best regards to you.
+>
+>      No System Is Safe!
+>      Dongliang Mu
