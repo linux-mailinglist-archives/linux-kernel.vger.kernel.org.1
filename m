@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE7A30146F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F19B301470
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbhAWKGH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 23 Jan 2021 05:06:07 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:43934 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbhAWKGF (ORCPT
+        id S1726896AbhAWKGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 05:06:51 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11578 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbhAWKGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 05:06:05 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id B54DA6074007;
-        Sat, 23 Jan 2021 11:05:22 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id iF0YWO0cr0Iq; Sat, 23 Jan 2021 11:05:21 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 0006C625DE06;
-        Sat, 23 Jan 2021 11:05:20 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Artg8sMjyD81; Sat, 23 Jan 2021 11:05:20 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id CF7986074007;
-        Sat, 23 Jan 2021 11:05:20 +0100 (CET)
-Date:   Sat, 23 Jan 2021 11:05:20 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     chengzhihao1 <chengzhihao1@huawei.com>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        david <david@sigma-star.at>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Message-ID: <311070065.273732.1611396320672.JavaMail.zimbra@nod.at>
-In-Reply-To: <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com>
-References: <20210122212229.17072-1-richard@nod.at> <20210122212229.17072-4-richard@nod.at> <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com>
-Subject: Re: [PATCH 3/4] ubifs: Update directory size when creating
- whiteouts
+        Sat, 23 Jan 2021 05:06:49 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DNBYy48pszMNFw;
+        Sat, 23 Jan 2021 18:04:38 +0800 (CST)
+Received: from huawei.com (10.175.127.234) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
+ 18:05:57 +0800
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+To:     <rjw@rjwysocki.net>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <hushiyuan@huawei.com>, <hewenliang4@huawei.com>,
+        <caihongda@huawei.com>, <yeyunfeng@huawei.com>
+Subject: [PATCH 1/2] powercap/intel_rapl: Use topology interface in rapl_add_package()
+Date:   Sat, 23 Jan 2021 05:06:07 -0500
+Message-ID: <20210123100608.2349629-1-yeyunfeng@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: Update directory size when creating whiteouts
-Thread-Index: lBYr5nCGsjlO2WH9TnqNoD/UEPd7gA==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.234]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "chengzhihao1" <chengzhihao1@huawei.com>
-> An: "richard" <richard@nod.at>, "linux-mtd" <linux-mtd@lists.infradead.org>
-> CC: "david" <david@sigma-star.at>, "linux-kernel" <linux-kernel@vger.kernel.org>, "stable" <stable@vger.kernel.org>
-> Gesendet: Samstag, 23. Januar 2021 03:45:15
-> Betreff: Re: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
+It's not a good way to access phys_proc_id and cpu_die_id directly.
+So using topology_physical_package_id(cpu) and topology_die_id(cpu)
+instead.
 
-> 在 2021/1/23 5:22, Richard Weinberger 写道:
->> Although whiteouts are unlinked files they will get re-linked later,
-> I just want to make sure, is this where the count is increased?
-> do_rename -> inc_nlink(whiteout)
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+---
+ drivers/powercap/intel_rapl_common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Exactly. The logic is a little wicked, I agree.
-Let me think again whether there isn't a better way to address 
-the problem.
+diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
+index c9e57237d778..5f3d39b8212a 100644
+--- a/drivers/powercap/intel_rapl_common.c
++++ b/drivers/powercap/intel_rapl_common.c
+@@ -1309,7 +1309,6 @@ struct rapl_package *rapl_add_package(int cpu, struct rapl_if_priv *priv)
+ {
+ 	int id = topology_logical_die_id(cpu);
+ 	struct rapl_package *rp;
+-	struct cpuinfo_x86 *c = &cpu_data(cpu);
+ 	int ret;
+ 
+ 	if (!rapl_defaults)
+@@ -1326,10 +1325,11 @@ struct rapl_package *rapl_add_package(int cpu, struct rapl_if_priv *priv)
+ 
+ 	if (topology_max_die_per_package() > 1)
+ 		snprintf(rp->name, PACKAGE_DOMAIN_NAME_LENGTH,
+-			 "package-%d-die-%d", c->phys_proc_id, c->cpu_die_id);
++			 "package-%d-die-%d",
++			 topology_physical_package_id(cpu), topology_die_id(cpu));
+ 	else
+ 		snprintf(rp->name, PACKAGE_DOMAIN_NAME_LENGTH, "package-%d",
+-			 c->phys_proc_id);
++			 topology_physical_package_id(cpu));
+ 
+ 	/* check if the package contains valid domains */
+ 	if (rapl_detect_domains(rp, cpu) || rapl_defaults->check_unit(rp, cpu)) {
+-- 
+2.27.0
 
-Thanks,
-//richard
-
-P.s: Thanks a lot for reviewing!
