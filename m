@@ -2,139 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A32030115D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D58301161
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbhAWAFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 19:05:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
+        id S1726046AbhAWAHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 19:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbhAWACc (ORCPT
+        with ESMTP id S1726167AbhAWAES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 19:02:32 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F870C06174A;
-        Fri, 22 Jan 2021 16:01:52 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id n7so4917864pgg.2;
-        Fri, 22 Jan 2021 16:01:52 -0800 (PST)
+        Fri, 22 Jan 2021 19:04:18 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB3EC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:03:38 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v187so7157363ybv.21
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:03:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=r0zcK5OGmywiWXQCPpHyBJ5jwx8Q3v3tj2k5NoX1R4Q=;
-        b=U737ERJNYiWCeT5giCEIOY1SeZ/4Mw/RzSJX0+E6pRRZvMwJV8V+vLwGzKo9mvQbsJ
-         QkrhuxfT3OKODEe6eoyfd4FJew1ACBjtrxP/NJPtdzZvidzzVOg2UgBXM1GGmB12rvk1
-         aSwWTiYyWJQMD9JP13QWxYPhePUUhp+CoT9BFtkzHk2XnwtEXgvwP15yv4FGjsSqCmRA
-         WO31bLDYCWubuzApTfw4q8kRDWAAgX4T78lNMdw8aXGbRvxTyDhZSH3WaT8RVcKBZtSx
-         VK2bQKct3ajsQrNSGLvY60/cA0pRv8ZSSZrpX1uTNEctIRBjhteqcI/xvvhLKQsnC18P
-         GhgA==
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=huNlIJ7Yg75JoKdNsl5GEWjhm3+dWcG2HYvnr3aNRuc=;
+        b=szY1n9iTsc/aaqj41mQ3HmYUSlKuHHupuib3xZUD9DyiOSeFw9sORxon7bApTIvxJh
+         71u7D2GJgBezhMnEzszrGWnoBMGD1E31yIi9LVNx827d7m39p0QnOQkvpmbNlafQHvTR
+         93J/KA/AgoHEodiIxjn7NDyopvVg3vUWXBpkIrJ4iPjm5/S1Kij/inN52V9hzcnusg3t
+         HAeUJdM24uelQ9qAl2c7LQMBKHevbSxAfYIg25qx3lcTruPUSeBVVB35Nlp7cj6ZIjUb
+         CZVIQ8Ny9WEhJwMyCdVbclIHI/RJgH8nztNZ1pngqDit3NdiAJgzI5bINot/OyjRAG2c
+         h63w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r0zcK5OGmywiWXQCPpHyBJ5jwx8Q3v3tj2k5NoX1R4Q=;
-        b=OQcuG8qfDkGKzgIp6vLTKAbqD1AKtWyKdi/A/nd5WVy/1j7o9Vu8NIzXIwG2Jahy+w
-         yJUYO+HVVGZ+4wPg5P6k+ibi8feUNE0CcEn8BYJ7UVDkqQsxIFJbqVc8aSgf8cGtmz9u
-         EVrjnahD7mIPWkFSNl6JM+APvFX8k1+JudeX5NvdHMZEdXPblCGswRaNBnzCe3JWASDJ
-         R2R5K+tYxGn0WQan7oYJPx1SlQ4XtHrzrlq9Mxh/kVn5HYme418JUJvT3b0fS9627N8B
-         uS6m92d7+dtlBOwi2Dz7j68IloHpnmdKZm517ouSg0CCBv0WXhPUoRmEcKNkrc5/3nib
-         f+SA==
-X-Gm-Message-State: AOAM533bRfbveL3wLUoZqnwrsbSgKt0b+owkvpKN3HJx3lCFUcOR3ZiQ
-        1sRuyUPeKch8azSwj5FKFyBcpHN1pig=
-X-Google-Smtp-Source: ABdhPJxfA9Pq32dZsQYHANNjveL0UbSMEAjfsLAaAiTyhuv6PA+IBKth7yRvQCFWe8eSHo0cmbho6Q==
-X-Received: by 2002:a63:db03:: with SMTP id e3mr7069054pgg.225.1611360111166;
-        Fri, 22 Jan 2021 16:01:51 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a9sm10077912pfn.178.2021.01.22.16.01.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Jan 2021 16:01:50 -0800 (PST)
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-To:     Sergej Bauer <sbauer@blackbox.su>, Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=huNlIJ7Yg75JoKdNsl5GEWjhm3+dWcG2HYvnr3aNRuc=;
+        b=ktTDV8IO/qt4jYi/qkVoMM7tqmhT6cn5wnlkgyW/lzkuRlq0UIdKOJ53gnfm4BwpvD
+         ZgUiMrqEvjCLUvwM54bI5IakD9eyRw+lF2n72sqt8l4Fd+71ZySB1ZvJQzXRbrQmLNkM
+         l6vUBMFD5HbET8j1oVkZT1lD+EPXNxmRKK4TYpbYwAbovPAwHj6RMTpwtdDcwGrplu9w
+         MjTiufbrcTFDBiY2eUJ0haUgG8D7+sLPdrQeO2Rvm5aWbX1XL+Ln2ZPkP6ZIZvmKQGSO
+         yGiLcaAa8uA8z4340iQhhq5oQHr0bzKzvLlnDFIQ5ddRRUu96MwUc/zVRxJ4HnQ1dvB+
+         2oKg==
+X-Gm-Message-State: AOAM532XltmEpB6CxPGxo/LqfH5ijsnBFauW0l3eI50s/eX7lZdwD+r1
+        O5S90MwGHelVQurCM7bSixi1aV5IgWM=
+X-Google-Smtp-Source: ABdhPJylkXbvRZTR5m0tqnFQUTNKRv6PkJ+Bi3QAo5kYyYoKj4yHKAnYaQAQfnzzkicXxVRPZCGtEBzpC8c=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+ (user=seanjc job=sendgmr) by 2002:a25:2388:: with SMTP id j130mr10249555ybj.301.1611360217905;
+ Fri, 22 Jan 2021 16:03:37 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 22 Jan 2021 16:03:32 -0800
+Message-Id: <20210123000334.3123628-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH 0/2] KVM: x86: Minor steal time cleanups
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210122214247.6536-1-sbauer@blackbox.su>
- <21783568.4JFRnjC3Rk@metabook> <YAtebdG1Q0dxxkdC@lunn.ch>
- <3174210.ndmClRx9B8@metabook>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <5306ffe6-112c-83c9-826a-9bacd661691b@gmail.com>
-Date:   Fri, 22 Jan 2021 16:01:47 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <3174210.ndmClRx9B8@metabook>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cleanups and a minor optimization to kvm_steal_time_set_preempted() that
+were made possible by the switch to using a cache gfn->pfn translation.
 
+Sean Christopherson (2):
+  KVM: x86: Remove obsolete disabling of page faults in
+    kvm_arch_vcpu_put()
+  KVM: x86: Take KVM's SRCU lock only if steal time update is needed
 
-On 1/22/2021 3:58 PM, Sergej Bauer wrote:
-> On Saturday, January 23, 2021 2:23:25 AM MSK Andrew Lunn wrote:
->>>>> @@ -1000,8 +1005,10 @@ static void lan743x_phy_close(struct
->>>>> lan743x_adapter *adapter)>
->>>>>
->>>>>  	struct net_device *netdev = adapter->netdev;
->>>>>  	
->>>>>  	phy_stop(netdev->phydev);
->>>>>
->>>>> -	phy_disconnect(netdev->phydev);
->>>>> -	netdev->phydev = NULL;
->>>>> +	if (phy_is_pseudo_fixed_link(netdev->phydev))
->>>>> +		lan743x_virtual_phy_disconnect(netdev->phydev);
->>>>> +	else
->>>>> +		phy_disconnect(netdev->phydev);
->>>>
->>>> phy_disconnect() should work. You might want to call
->>
->> There are drivers which call phy_disconnect() on a fixed_link. e.g.
->>
->> https://elixir.bootlin.com/linux/v5.11-rc4/source/drivers/net/usb/lan78xx.c#
->> L3555.
->>
-> 
->> It could be your missing call to fixed_phy_unregister() is leaving
->> behind bad state.
->>
-> lan743x_virtual_phy_disconnect removes sysfs-links and calls 
-> fixed_phy_unregister()
-> and the reason was phydev in sysfs.
-> 
->>> It was to make ethtool show full set of supported speeds and MII only in
->>> supported ports (without TP and the no any ports in the bare card).
->>
->> But fixed link does not support the full set of speed. It is fixed. It
->> supports only one speed it is configured with.
-> That's why I "re-implemented the fixed PHY driver" as Florian said.
-> The goal of virtual phy was to make an illusion of real device working in
-> loopback mode. So I could use ethtool and ioctl's to switch speed of device.
-> 
->> And by setting it
->> wrongly, you are going to allow the user to do odd things, like use
->> ethtool force the link speed to a speed which is not actually
->> supported.
-> I have lan743x only and in loopback mode it allows to use speeds 
-> 10/100/1000MBps
-> in full-duplex mode only. But the highest speed I have achived was something 
-> near
-> 752Mbps...
-> And I can switch speed on the fly, without reloading the module.
-> 
-> May by I should limit the list of acceptable devices?
+ arch/x86/kvm/x86.c | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
 
-It is not clear what your use case is so maybe start with explaining it
-and we can help you define something that may be acceptable for upstream
-inclusion.
 -- 
-Florian
+2.30.0.280.ga3ce27912f-goog
+
