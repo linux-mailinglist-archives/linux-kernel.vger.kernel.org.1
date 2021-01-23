@@ -2,144 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40EA301415
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E038301418
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbhAWJBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 04:01:07 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:39240 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbhAWJBB (ORCPT
+        id S1726613AbhAWJN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 04:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbhAWJML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 04:01:01 -0500
-Received: by mail-io1-f72.google.com with SMTP id i143so12501094ioa.6
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 01:00:45 -0800 (PST)
+        Sat, 23 Jan 2021 04:12:11 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBB1C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 01:11:31 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id 11so5411037pfu.4
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 01:11:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xz2PbVIxBwK7kshC7Ju1wrOt7DLM4YPE97Z1qOQFS+Y=;
+        b=gZcAjMwnk8BHCdasr7Y53F2ocrJaro8jHE38e9q4Uw4iqf7SwttCYAHj9wOsdOW0Yc
+         NyViWFX/gEDgTeOQNn/7dsopiZs30/ULyyb/KLL9UMXiEFIaumD/eVkqpGo9amHqo1ez
+         fjQ+tEcodOVJAP2+Hu1UuZnNT5mU+bPtpjNex1LwZJN/LUhheGXfKhP0KeTfwZj7+GfG
+         cpfcu5q3/mf8G+hB7Q7eoYFSvmPaI3NNMPkjb3BevOl3losRTXY8dkvoSH81g3dkgxVC
+         /mRe2VUHOi4yuBvLrL2smMgzqdjSVeLWOmq19GwsKmOH+Ya07tkUvO38BW181gmILqUR
+         yA5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bTBjzUD8RkwnNT4aK1lofX8Qcsy5NjDNHN/mHhMhUF4=;
-        b=eHIJ1XtpGuCMBA27smcRtPF/uNl5zxmsn53IA0WTxLP+DwHnv9MbawDPi3aSqJBKgV
-         IOvvXpV22fZSicNeghfyPIQX4q32OHv/fz9C1evdvfVIdIZRnmbznoIqrya28+K//6+a
-         vTBL19J5Xs4BPhYs9IiINZRth1IhD+eM+ctaqYY4IO39HGVDXOTbYCSuHmFzIBHSTrho
-         0ewxSsaGfoKnOXKYoffd/C2ctoDZ09gcZwSVi8azHAhor0z3w5Vjlltq3kC550g/DLsa
-         WKAmGIxJYTcr4CwwYNXA5vVxoM+gPX327scRuuKABl/vEStfSFNkYnQ0g7FVR5pk9DQp
-         iiTw==
-X-Gm-Message-State: AOAM532cuRNcv3kTjsQP2sY4f32sU/8A9fGKMPrM6m2aM6QgS/WP1DWy
-        qgsmhU6iyL2gp+fdYg3iHt4GeNagg+SIO0BcAtPiWh+O2SXH
-X-Google-Smtp-Source: ABdhPJwE7O0Cl3savSxSMdwLcKqEeCRPK/XSULk8kvwQ9QYBmduR/d6Pi81krbgY+7S6Bp3TS8lE/+7GIfbDhC2JHiZNKuPErp2x
-MIME-Version: 1.0
-X-Received: by 2002:a6b:681a:: with SMTP id d26mr1998641ioc.144.1611392419610;
- Sat, 23 Jan 2021 01:00:19 -0800 (PST)
-Date:   Sat, 23 Jan 2021 01:00:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3c84605b98d88f9@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_trace_run7
-From:   syzbot <syzbot+71ce453661898ec7a122@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xz2PbVIxBwK7kshC7Ju1wrOt7DLM4YPE97Z1qOQFS+Y=;
+        b=quxk9y7Vrp3JcaI/UwwRgSHaKlfelJNKowhWxujeP5MahTDYLbnjmORcjVpPnaJqx2
+         kBtF/3zUbyahgPWgayP7OotrJwsoSNrjEJDBvoZAMQtJV6XcwMbAVpIV/OLXEHacQvCJ
+         JBh8DQiVtGQLNEpyhWJbQiFl5dVeVxJPhV3w+DzbTCfkY6Y85XgJ7eYHC8d3ItZTIg9I
+         uv4pGzhloc+LpJ0vL399sFNPEKrpWAJuYp7Pixf+Dcjpuw6vWdI10eqqFZtPEQFkTkGd
+         2nEzV7M7qYAs/Ev0ua83gb67Ks6wtZDduwzxALQVu6VVgn25P9hubSX6QUSTllLkNIkb
+         2R5A==
+X-Gm-Message-State: AOAM530k51f4/TvKxrUDWXvWWgBHtfnBAMUdbbXVNMnqiCkmtcUZKzQX
+        wrXuhgCG1oUdeoD5myjQGA0=
+X-Google-Smtp-Source: ABdhPJyMMN+16Up9em57LDl+ZEK1K0ZEn+r4ZB48NPvIsfqP5bfe1icjciG0lm/tyQW9Pkj20WrEXg==
+X-Received: by 2002:a63:dc06:: with SMTP id s6mr8841146pgg.358.1611393090746;
+        Sat, 23 Jan 2021 01:11:30 -0800 (PST)
+Received: from localhost.localdomain ([125.227.22.95])
+        by smtp.gmail.com with ESMTPSA id l13sm11864506pjh.2.2021.01.23.01.11.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 23 Jan 2021 01:11:30 -0800 (PST)
+From:   Stephen Zhang <stephenzhangzsd@gmail.com>
+To:     maz@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Zhang <stephenzhangzsd@gmail.com>
+Subject: [PATCH] genirq/irqdomain: Fix debugging information in irq_create_mapping_affinity()
+Date:   Sat, 23 Jan 2021 17:11:23 +0800
+Message-Id: <1611393083-6037-1-git-send-email-stephenzhangzsd@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Replace the function name with __func__ in case of changes.
 
-syzbot found the following issue on:
-
-HEAD commit:    7d68e382 bpf: Permit size-0 datasec
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a5a184d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
-dashboard link: https://syzkaller.appspot.com/bug?extid=71ce453661898ec7a122
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+71ce453661898ec7a122@syzkaller.appspotmail.com
-
-BUG: unable to handle page fault for address: ffffc90000cc0030
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 10000067 
-P4D 10000067 
-PUD 101ab067 
-PMD 10a9e067 
-PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8498 Comm: syz-executor.3 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
-RIP: 0010:bpf_trace_run7+0x174/0x420 kernel/trace/bpf_trace.c:2130
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 14 0b f7 ff e8 af 33 7e 07 31 ff 89 c3 89 c6 e8 84 12
-RSP: 0018:ffffc900019cf300 EFLAGS: 00010282
-
-RAX: 0000000000000000 RBX: ffffc90000cc0000 RCX: ffffffff817bd211
-RDX: 0000000000000000 RSI: ffffc90000cc0038 RDI: ffffc900019cf328
-RBP: 1ffff92000339e61 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff817bd17f R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002f78940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000cc0030 CR3: 00000000533d3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-Call Trace:
- __bpf_trace_percpu_alloc_percpu+0x1dc/0x220 include/trace/events/percpu.h:10
- trace_percpu_alloc_percpu include/trace/events/percpu.h:10 [inline]
- pcpu_alloc+0xba6/0x16f0 mm/percpu.c:1844
- xt_percpu_counter_alloc+0x131/0x1a0 net/netfilter/x_tables.c:1820
- find_check_entry.constprop.0+0xab/0x9a0 net/ipv4/netfilter/ip_tables.c:527
- translate_table+0xc26/0x16a0 net/ipv4/netfilter/ip_tables.c:717
- do_replace net/ipv4/netfilter/ip_tables.c:1135 [inline]
- do_ipt_set_ctl+0x553/0xb50 net/ipv4/netfilter/ip_tables.c:1627
- nf_setsockopt+0x83/0xe0 net/netfilter/nf_sockopt.c:101
- ip_setsockopt+0x3c3/0x3a20 net/ipv4/ip_sockglue.c:1435
- tcp_setsockopt+0x136/0x2440 net/ipv4/tcp.c:3597
- __sys_setsockopt+0x2db/0x610 net/socket.c:2115
- __do_sys_setsockopt net/socket.c:2126 [inline]
- __se_sys_setsockopt net/socket.c:2123 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2123
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x460d4a
-Code: 49 89 ca b8 37 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ca 88 fb ff c3 66 0f 1f 84 00 00 00 00 00 49 89 ca b8 36 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa 88 fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007fff6bb05e38 EFLAGS: 00000202 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 00007fff6bb05e60 RCX: 0000000000460d4a
-RDX: 0000000000000040 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 000000000074ee60 R08: 00000000000002d8 R09: 0000000000004000
-R10: 000000000074cd00 R11: 0000000000000202 R12: 00007fff6bb05ec0
-R13: 0000000000000003 R14: 000000000074cca0 R15: 0000000000000000
-Modules linked in:
-CR2: ffffc90000cc0030
----[ end trace 16413316cc5dacf7 ]---
-RIP: 0010:bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
-RIP: 0010:bpf_trace_run7+0x174/0x420 kernel/trace/bpf_trace.c:2130
-Code: f7 ff 48 8d 7b 30 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 02 00 00 48 8d 73 38 48 8d 7c 24 28 <ff> 53 30 e8 14 0b f7 ff e8 af 33 7e 07 31 ff 89 c3 89 c6 e8 84 12
-RSP: 0018:ffffc900019cf300 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffc90000cc0000 RCX: ffffffff817bd211
-RDX: 0000000000000000 RSI: ffffc90000cc0038 RDI: ffffc900019cf328
-RBP: 1ffff92000339e61 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff817bd17f R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000001000 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000000002f78940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc90000cc0030 CR3: 00000000533d3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-
-
+Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/irq/irqdomain.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 6aacd34..2cad63e 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -661,7 +661,7 @@ unsigned int irq_create_mapping_affinity(struct irq_domain *domain,
+ 	struct device_node *of_node;
+ 	int virq;
+ 
+-	pr_debug("irq_create_mapping(0x%p, 0x%lx)\n", domain, hwirq);
++	pr_debug("%s(0x%p, 0x%lx)\n",  __func__, domain, hwirq);
+ 
+ 	/* Look for default domain if nececssary */
+ 	if (domain == NULL)
+-- 
+1.8.3.1
+
