@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E038301418
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D2D30141C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbhAWJN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 04:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbhAWJML (ORCPT
+        id S1726702AbhAWJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 04:18:04 -0500
+Received: from conuserg-09.nifty.com ([210.131.2.76]:19812 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725940AbhAWJRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 04:12:11 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBB1C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 01:11:31 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id 11so5411037pfu.4
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 01:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=xz2PbVIxBwK7kshC7Ju1wrOt7DLM4YPE97Z1qOQFS+Y=;
-        b=gZcAjMwnk8BHCdasr7Y53F2ocrJaro8jHE38e9q4Uw4iqf7SwttCYAHj9wOsdOW0Yc
-         NyViWFX/gEDgTeOQNn/7dsopiZs30/ULyyb/KLL9UMXiEFIaumD/eVkqpGo9amHqo1ez
-         fjQ+tEcodOVJAP2+Hu1UuZnNT5mU+bPtpjNex1LwZJN/LUhheGXfKhP0KeTfwZj7+GfG
-         cpfcu5q3/mf8G+hB7Q7eoYFSvmPaI3NNMPkjb3BevOl3losRTXY8dkvoSH81g3dkgxVC
-         /mRe2VUHOi4yuBvLrL2smMgzqdjSVeLWOmq19GwsKmOH+Ya07tkUvO38BW181gmILqUR
-         yA5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=xz2PbVIxBwK7kshC7Ju1wrOt7DLM4YPE97Z1qOQFS+Y=;
-        b=quxk9y7Vrp3JcaI/UwwRgSHaKlfelJNKowhWxujeP5MahTDYLbnjmORcjVpPnaJqx2
-         kBtF/3zUbyahgPWgayP7OotrJwsoSNrjEJDBvoZAMQtJV6XcwMbAVpIV/OLXEHacQvCJ
-         JBh8DQiVtGQLNEpyhWJbQiFl5dVeVxJPhV3w+DzbTCfkY6Y85XgJ7eYHC8d3ItZTIg9I
-         uv4pGzhloc+LpJ0vL399sFNPEKrpWAJuYp7Pixf+Dcjpuw6vWdI10eqqFZtPEQFkTkGd
-         2nEzV7M7qYAs/Ev0ua83gb67Ks6wtZDduwzxALQVu6VVgn25P9hubSX6QUSTllLkNIkb
-         2R5A==
-X-Gm-Message-State: AOAM530k51f4/TvKxrUDWXvWWgBHtfnBAMUdbbXVNMnqiCkmtcUZKzQX
-        wrXuhgCG1oUdeoD5myjQGA0=
-X-Google-Smtp-Source: ABdhPJyMMN+16Up9em57LDl+ZEK1K0ZEn+r4ZB48NPvIsfqP5bfe1icjciG0lm/tyQW9Pkj20WrEXg==
-X-Received: by 2002:a63:dc06:: with SMTP id s6mr8841146pgg.358.1611393090746;
-        Sat, 23 Jan 2021 01:11:30 -0800 (PST)
-Received: from localhost.localdomain ([125.227.22.95])
-        by smtp.gmail.com with ESMTPSA id l13sm11864506pjh.2.2021.01.23.01.11.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 23 Jan 2021 01:11:30 -0800 (PST)
-From:   Stephen Zhang <stephenzhangzsd@gmail.com>
-To:     maz@kernel.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org,
-        Stephen Zhang <stephenzhangzsd@gmail.com>
-Subject: [PATCH] genirq/irqdomain: Fix debugging information in irq_create_mapping_affinity()
-Date:   Sat, 23 Jan 2021 17:11:23 +0800
-Message-Id: <1611393083-6037-1-git-send-email-stephenzhangzsd@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 23 Jan 2021 04:17:50 -0500
+Received: from grover.flets-west.jp (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 10N9Gc91025435;
+        Sat, 23 Jan 2021 18:16:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 10N9Gc91025435
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611393399;
+        bh=4QzM4sK7KqvcXh/+cLML9tHqLm9oGeg6Bz4m8PgGXAM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rmPx44zE6Z6uf53vqGc7Z7Jq59f+BLO+Unw0lxa2fTrO2m2oRqsK7qf0sDHkAYJNn
+         dX6wy0tb8CNcyD4BY/5b5Ul8W+pT9Xpw5BiYGBb6b5E1jDmSZ8FHsoH1dFLg4HiBYQ
+         fAOUemk/M7vx3udwPawKDL9lqS6bj+7auIauY5STTmCnBoSbgYV4gErWR1N1KERL+o
+         gOVGffu+ZKVRjxm7EJ7iuuOC2f8eP9+/jbTkm+psIBpelDOb5uoSLsYnk5Kn1hR+W8
+         oeOTHp+S3byP3gJcC+wMiAw+qDOSiEisbjMQOdUst5iO/LjGYNU0Lnewr6SRQT6Aax
+         rXKFA1li9sDAA==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Philipp Rudo <prudo@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: simplify GCC_PLUGINS enablement in dummy-tools/gcc
+Date:   Sat, 23 Jan 2021 18:16:30 +0900
+Message-Id: <20210123091631.716794-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the function name with __func__ in case of changes.
+With commit 1e860048c53e ("gcc-plugins: simplify GCC plugin-dev
+capability test") applied, this check can be way simpler because
+now scripts/gcc-plugins/Kconfig only checks plugin-version.h
 
-Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- kernel/irq/irqdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 6aacd34..2cad63e 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -661,7 +661,7 @@ unsigned int irq_create_mapping_affinity(struct irq_domain *domain,
- 	struct device_node *of_node;
- 	int virq;
+ scripts/dummy-tools/gcc | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+index 33487e99d83e..5c113cad5601 100755
+--- a/scripts/dummy-tools/gcc
++++ b/scripts/dummy-tools/gcc
+@@ -75,16 +75,12 @@ if arg_contain -S "$@"; then
+ 	fi
+ fi
  
--	pr_debug("irq_create_mapping(0x%p, 0x%lx)\n", domain, hwirq);
-+	pr_debug("%s(0x%p, 0x%lx)\n",  __func__, domain, hwirq);
+-# For scripts/gcc-plugin.sh
++# To set GCC_PLUGINS
+ if arg_contain -print-file-name=plugin "$@"; then
+ 	plugin_dir=$(mktemp -d)
  
- 	/* Look for default domain if nececssary */
- 	if (domain == NULL)
+-	sed -n 's/.*#include "\(.*\)"/\1/p' $(dirname $0)/../gcc-plugins/gcc-common.h |
+-	while read header
+-	do
+-		mkdir -p $plugin_dir/include/$(dirname $header)
+-		touch $plugin_dir/include/$header
+-	done
++	mkdir -p $plugin_dir/include
++	touch $plugin_dir/include/plugin-version.h
+ 
+ 	echo $plugin_dir
+ 	exit 0
 -- 
-1.8.3.1
+2.27.0
 
