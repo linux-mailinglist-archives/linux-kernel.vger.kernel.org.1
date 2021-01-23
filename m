@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FB23015C4
+	by mail.lfdr.de (Postfix) with ESMTP id 9513E3015C6
 	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725779AbhAWOUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:20:06 -0500
-Received: from aposti.net ([89.234.176.197]:32860 "EHLO aposti.net"
+        id S1726007AbhAWOUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:20:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbhAWOUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:20:03 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
-        od@zcrc.me, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 2/2] phy: ingenic: Add support for the JZ4760(B)
-Date:   Sat, 23 Jan 2021 14:18:25 +0000
-Message-Id: <20210123141825.15481-2-paul@crapouillou.net>
-In-Reply-To: <20210123141825.15481-1-paul@crapouillou.net>
-References: <20210123141825.15481-1-paul@crapouillou.net>
+        id S1725798AbhAWOUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:20:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA3F722D5A;
+        Sat, 23 Jan 2021 14:19:55 +0000 (UTC)
+Date:   Sat, 23 Jan 2021 14:19:53 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 18/21] arm64: Move "nokaslr" over to the early
+ cpufeature infrastructure
+Message-ID: <YAwwiRF4QnIoPS20@Catalins-MacBook-Air.local>
+References: <20210118094533.2874082-1-maz@kernel.org>
+ <20210118094533.2874082-19-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118094533.2874082-19-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the JZ4760 and JZ4760B SoCs, which behave exactly as the
-(newer) JZ4770 SoC.
+On Mon, Jan 18, 2021 at 09:45:30AM +0000, Marc Zyngier wrote:
+> Given that the early cpufeature infrastructure has borrowed quite
+> a lot of code from the kaslr implementation, let's reimplement
+> the matching of the "nokaslr" option with it.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  arch/arm64/kernel/idreg-override.c | 17 ++++++++++++++
+>  arch/arm64/kernel/kaslr.c          | 37 +++---------------------------
+>  2 files changed, 20 insertions(+), 34 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+> index 1db54878b2c4..143fe7b8e3ce 100644
+> --- a/arch/arm64/kernel/idreg-override.c
+> +++ b/arch/arm64/kernel/idreg-override.c
+> @@ -33,8 +33,24 @@ static const struct reg_desc mmfr1 __initdata = {
+>  	},
+>  };
+>  
+> +extern u64 kaslr_feature_val;
+> +extern u64 kaslr_feature_mask;
+> +
+> +static const struct reg_desc kaslr __initdata = {
+> +	.name		= "kaslr",
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
+We might as well rename this ftr_override or something more generic as
+we no longer describe registers here. Otherwise:
 
-Notes:
-    v2: No change
-
- drivers/phy/ingenic/phy-ingenic-usb.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/phy/ingenic/phy-ingenic-usb.c b/drivers/phy/ingenic/phy-ingenic-usb.c
-index ea127b177f46..42902a0278cc 100644
---- a/drivers/phy/ingenic/phy-ingenic-usb.c
-+++ b/drivers/phy/ingenic/phy-ingenic-usb.c
-@@ -201,7 +201,7 @@ static const struct phy_ops ingenic_usb_phy_ops = {
- 	.owner		= THIS_MODULE,
- };
- 
--static void jz4770_usb_phy_init(struct phy *phy)
-+static void jz4760_usb_phy_init(struct phy *phy)
- {
- 	struct ingenic_usb_phy *priv = phy_get_drvdata(phy);
- 	u32 reg;
-@@ -288,8 +288,8 @@ static void x2000_usb_phy_init(struct phy *phy)
- 	writel(reg, priv->base + REG_USBPCR_OFFSET);
- }
- 
--static const struct ingenic_soc_info jz4770_soc_info = {
--	.usb_phy_init = jz4770_usb_phy_init,
-+static const struct ingenic_soc_info jz4760_soc_info = {
-+	.usb_phy_init = jz4760_usb_phy_init,
- };
- 
- static const struct ingenic_soc_info jz4775_soc_info = {
-@@ -363,7 +363,8 @@ static int ingenic_usb_phy_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id ingenic_usb_phy_of_matches[] = {
--	{ .compatible = "ingenic,jz4770-phy", .data = &jz4770_soc_info },
-+	{ .compatible = "ingenic,jz4760-phy", .data = &jz4760_soc_info },
-+	{ .compatible = "ingenic,jz4770-phy", .data = &jz4760_soc_info },
- 	{ .compatible = "ingenic,jz4775-phy", .data = &jz4775_soc_info },
- 	{ .compatible = "ingenic,jz4780-phy", .data = &jz4780_soc_info },
- 	{ .compatible = "ingenic,x1000-phy", .data = &x1000_soc_info },
--- 
-2.29.2
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
