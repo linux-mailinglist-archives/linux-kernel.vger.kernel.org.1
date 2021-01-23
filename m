@@ -2,124 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69BB3014DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 12:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF933014DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 12:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726693AbhAWLWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 06:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        id S1726720AbhAWL1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 06:27:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbhAWLWP (ORCPT
+        with ESMTP id S1726379AbhAWL1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 06:22:15 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FB1C06174A;
-        Sat, 23 Jan 2021 03:21:34 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id 6so11369584ejz.5;
-        Sat, 23 Jan 2021 03:21:34 -0800 (PST)
+        Sat, 23 Jan 2021 06:27:19 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B699AC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 03:26:33 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id h15so2274130pli.8
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 03:26:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version;
-        bh=tCJVoQC4xBY3BGtp3Oi80kGjpZ26JA6I+lIE3EpCRh0=;
-        b=hytw3ianpw4z4IdU1YPAg0GhJMxNxjd110yTuneOWwxJVJgn/u/pVLYBbA9IDChGFY
-         n+/EsGqL5uVQAq4K+H29xyPc1NSJBTpSxx8gxnorZ9paSAxRjT8sr9Vvi9hrGZJfJCaD
-         /9kEUj8uh+Wy+S0F9BCsvlyhpzo+ywNfZvppRQFllw7eK41yzQPJ/0+t8OJOfR7y8aGe
-         fsziO0cikKu5iR9boDrBab3Z4vEIfbjCTBo8XuqRNkDg6pIEs77UsyW5aTdVYG+j6n9B
-         8Y7fXo/Pz/UByPlTEfiDe9U5ZX1I2siZjr09MOhwvx5NSiq0hV9cLCiQfMuCpjvFPSDm
-         nd8g==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Es16ji9JzCk0d8FX+7ONZxGIUMkfIN2YI8ed9LzZPjQ=;
+        b=Tl2UyA+OlrO678IteKY8M7hcIf3MpCi9FIqc1Uw3wCuaOfPQIZkHgPF2bJgKBE241Q
+         L8U4RiEcAb58/FP+5NNHDOJ8Jgz6JsNDKckptdqbvr2Xx5QwVlS4gjV3CrM/xPEuYyKg
+         vnyP8J43+pdFO1JiQO3Lns/A5jAc0sz8gycd1JAKF16Gov0vsj/2RTKbFwypzs581qQ6
+         /HlaUL77mrybzam/kBfuwwAiR40pgEhCks0BqvNdxa+TFZGi75EZgh02K6dHUED5dW+x
+         vjtc4diuAZnkuZJgrGph1Xt2F927L/8n4ZoltATDzFlCeib0JUCzanLjkIof7afKbyNS
+         FwYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
-        bh=tCJVoQC4xBY3BGtp3Oi80kGjpZ26JA6I+lIE3EpCRh0=;
-        b=Qak0ABrONvP0oHhyv1cfrR0+CMB6eeuxFYT/s90Q7Ahg6oqHXLnTNas689Pq+c3rQC
-         DcJokuxWlIKpvsEfC232woR2A6eMLMfxc+fFtM8S0LCg6C7n+Eoc5+xZM/7EYyJSFhkx
-         xTCbNq7R4ZhB2lP+3WGc5OtzLPrgHb1kVeXZutBJudAn/PzQB1/HFgYaKMaWzRML0Ybu
-         VIjvUOCJrPg0Pj3Mv/TiffhGGcBhKx8Z8RmvXSU/3fNkjIc30rAye1tfTfqOxLWtwyJg
-         VGjBfuESTcT64PlNUh/cJc5h0b/8QHftl4rdy2teGRmQNVJAVIvskkhmI6wjODmIOt1l
-         ZFYA==
-X-Gm-Message-State: AOAM532c098OczLT+GOm6l21Q0oe270PZHKQT9i9BRL6UsKF+grOpZcb
-        zQ05M/IOWYJj5FD1eEKUq4DoEaHWUOJNjQ==
-X-Google-Smtp-Source: ABdhPJxncUjn1LRbw7PboCskFi9l+SgUcnUBCQtRag/N1CjcyStamRSkapMhdaUtcSe34VBEDO4Wyw==
-X-Received: by 2002:a17:906:19c3:: with SMTP id h3mr408122ejd.429.1611400893038;
-        Sat, 23 Jan 2021 03:21:33 -0800 (PST)
-Received: from localhost (cpc158799-hari22-2-0-cust25.20-2.cable.virginm.net. [82.3.12.26])
-        by smtp.gmail.com with ESMTPSA id a11sm7064797edt.26.2021.01.23.03.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 03:21:32 -0800 (PST)
-Date:   Sat, 23 Jan 2021 03:21:32 -0800 (PST)
-X-Google-Original-Date: Sat, 23 Jan 2021 10:56:48 +0000
- From 3920487b3156cc2f90ebbb7d018c9f3f34637d62 Mon Sep 17 00:00:00 2001
-From:   Yuxuan Shui <yshuiv7@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     krisman@collabora.com, linux-arch@vger.kernel.org,
-        kernel@collabora.com, yshuiv7@gmail.com
-Subject: [PATCH] ptrace: restore the previous single step reporting behavior
-Message-ID: <877do3gaq9.fsf@m5Zedd9JOGzJrf0>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Es16ji9JzCk0d8FX+7ONZxGIUMkfIN2YI8ed9LzZPjQ=;
+        b=UOgub4FDNonzn672CW8wRd9xd31K5V0ZlcYcTwky65vM1FYallYiJFySFfP8EN0r56
+         eD6eGoIeTPO2a6Qy/KoDuMN/E1luV15+IyYnh8IpwuaGe1B/4kaAwPoSSmkB7OUZtt39
+         3Eul6zLBAD7g7JkzG7ZNmB59IvtjWtL5S5ESq96QKiKpG86dPULjQDN6yXuA1ip3zWbs
+         wLsWXLYn1L6B+Qm8HmXxsuw1/CWqKC+a7w2tJTLL9srZAM1HbUf5KeY5WvKgyiNIw+jY
+         OKXTkx+YcpNrPwJ7pxEo7vHHvxjGydcBX8nzvlhSDamDHhbSwcL5r0HD8KFhizXTR768
+         TikQ==
+X-Gm-Message-State: AOAM5308Dm55meYU3WdK7wbs0cjxfLHQewGyMvkvw5JzpErUWPzjZRFJ
+        YWFh5DMkbcBLhWVMvUeB+iKFng==
+X-Google-Smtp-Source: ABdhPJy9Zq8XLh+z521xpbJtrVd96M4GTB+BO0OhrMkyBmi1THVYwPLFzKZE84wOKLQxNIP1Pk+8Wg==
+X-Received: by 2002:a17:902:a512:b029:db:cf4c:336b with SMTP id s18-20020a170902a512b02900dbcf4c336bmr1610087plq.17.1611401193188;
+        Sat, 23 Jan 2021 03:26:33 -0800 (PST)
+Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id h4sm8400693pfo.187.2021.01.23.03.26.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Jan 2021 03:26:32 -0800 (PST)
+Subject: Re: BUG: MAX_LOCKDEP_KEYS too low!
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Hillf Danton <hdanton@sina.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>
+References: <c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru>
+ <CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com>
+ <6af41136-4344-73da-f821-e831674be473@i-love.sakura.ne.jp>
+ <70d427e8-7281-0aae-c524-813d73eca2d7@ozlabs.ru>
+ <CACT4Y+bqidtwh1HUFFoyyKyVy0jnwrzhVBgqmU+T9sN1yPMO=g@mail.gmail.com>
+ <eb71cc37-afbd-5446-6305-8c7abcc6e91f@i-love.sakura.ne.jp>
+ <6eaafbd8-1c10-75df-75ae-9afa0861f69b@i-love.sakura.ne.jp>
+ <20210123060145.18356-1-hdanton@sina.com>
+ <8b1fff6b-1acc-4582-0abe-86f948ac4b4a@ozlabs.ru>
+ <0bfad7f4-550a-0645-d24b-940e399e9c2c@i-love.sakura.ne.jp>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <dc1e9f3a-b40f-8db3-bce3-07c3c12af8ea@ozlabs.ru>
+Date:   Sat, 23 Jan 2021 22:26:28 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <0bfad7f4-550a-0645-d24b-940e399e9c2c@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-Commit 64eb35f701f04b30706e21d1b02636b5d31a37d2 changed when single step
-is reported.
-
-Specifically, the report_single_step is changed so that single steps are
-only reported when both SYSCALL_EMU and _TIF_SINGLESTEP are set, while
-previously they are reported when _TIF_SINGLESTEP is set without
-_TIF_SYSCALL_EMU being set.
-
-This behavior change breaks rr [1]
-
-This commit restores the old behavior.
-
-[1]: https://github.com/rr-debugger/rr/issues/2793
-
-Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
-=2D--
- kernel/entry/common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 90533f34ea99c..ad3b17fcde782 100644
-=2D-- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -220,7 +220,7 @@ static inline bool rep:ort_single_step(unsigned long wo=
-rk)
-  */
- static inline bool report_single_step(unsigned long work)
- {
-=2D	if (!(work & SYSCALL_WORK_SYSCALL_EMU))
-+	if (!!(work & SYSCALL_WORK_SYSCALL_EMU))
- 		return false;
-=20
- 	return !!(current_thread_info()->flags & _TIF_SINGLESTEP);
-=2D-=20
-2.30.0
 
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+On 23/01/2021 21:29, Tetsuo Handa wrote:
+> On 2021/01/23 15:35, Alexey Kardashevskiy wrote:
+>> this behaves quite different but still produces the message (i have show_workqueue_state() right after the bug message):
+>>
+>>
+>> [   85.803991] BUG: MAX_LOCKDEP_KEYS too low!
+>> [   85.804338] turning off the locking correctness validator.
+>> [   85.804474] Showing busy workqueues and worker pools:
+>> [   85.804620] workqueue events_unbound: flags=0x2
+>> [   85.804764]   pwq 16: cpus=0-7 flags=0x4 nice=0 active=1/512 refcnt=3
+>> [   85.804965]     in-flight: 81:bpf_map_free_deferred
+>> [   85.805229] workqueue events_power_efficient: flags=0x80
+>> [   85.805357]   pwq 4: cpus=2 node=0 flags=0x0 nice=0 active=1/256 refcnt=2
+>> [   85.805558]     in-flight: 57:gc_worker
+>> [   85.805877] pool 4: cpus=2 node=0 flags=0x0 nice=0 hung=0s workers=3 idle: 82 24
+>> [   85.806147] pool 16: cpus=0-7 flags=0x4 nice=0 hung=69s workers=3 idle: 7 251
+>> ^C[  100.129747] maxlockdep (5104) used greatest stack depth: 8032 bytes left
+>>
+>> root@le-dbg:~# grep "lock-classes" /proc/lockdep_stats
+>>   lock-classes:                         8192 [max: 8192]
+>>
+> 
+> Right. Hillf's patch can reduce number of active workqueue's worker threads, for
+> only one worker thread can call bpf_map_free_deferred() (which is nice because
+> it avoids bloat of active= and refcnt= fields). But Hillf's patch is not for
+> fixing the cause of "BUG: MAX_LOCKDEP_KEYS too low!" message.
+> 
+> Like Dmitry mentioned, bpf syscall allows producing work items faster than
+> bpf_map_free_deferred() can consume. (And a similar problem is observed for
+> network namespaces.) Unless there is a bug that prevents bpf_map_free_deferred()
+>   from completing, the classical solution is to put pressure on producers (i.e.
+> slow down bpf syscall side) in a way that consumers (i.e. __bpf_map_put())
+> will not schedule thousands of backlog "struct bpf_map" works.
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEL6EJkr0WlitWahBy06RAW+bMF/QFAmAMBrMACgkQ06RAW+bM
-F/SE6w/+LKNStNWKuVgglb2MGrIdELiwmsxyXVsjKQVZ0+9qnYtrWzq+l+tXzbaH
-erPZaiQiDBaUw98qlv+d6/Bhkj8iJgMP9NghCjw24BaIfYSoyDYA+YiKRp941m4s
-pRGfNon3pdAN3Z7K2a6ZNUqSALB0zFsOdqaS95kV9iU/h07ISiRjneYXuUzFDMkL
-/5J4zWj3Ut0P3/2HU3u7JekplTa/EKPKXF8CuBzFygQ5yaFl5mRiAUZP+LDzbJXq
-8xdy7FhLBI6Aj5Yz7XDSde5aLYp62LhQi9WSv6SCCAYrntH7UqwrsLRpATv84HlF
-8heFxZw5wYSZSgo7iWxHURZ7FXiZIxdyoRuS4ZzT9NfwlW5yjbgZZoQHmUEkbRdM
-neSBSvh/7w3vwvNIkxhX2Ga+VH+9X3zS6WlJOGpSq2+HnzBsDsFFld7lvsmxKV7L
-RmSXFoJfQ5KsDJlASoWk7IsNr+1ch9uSZxAzz5345pETZLzdxvwY+G9D6BtSqw47
-dm0id9NRGAsn59npB53IxGN/f+u3bH+nODBkZB8FLa+FBxHa52PBkJ5BWrpV/kpU
-0wP8dHKHnWZa2DxwpLBdV6QjtQD3X9NhjWRlEAvQwltpL04jqQp5tVeFW2Nu0Dtd
-WgiT+4zVvwbPecZ8DhbBEubzA3PQ597utf3zTPQOxrTpTg4Msl4=
-=OVRe
------END PGP SIGNATURE-----
---=-=-=--
+Should not the first 8192 from "grep lock-classes /proc/lockdep_stats" 
+decrease after time (it does not), or once it has failed, it is permanent?
+
+
+
+
+-- 
+Alexey
