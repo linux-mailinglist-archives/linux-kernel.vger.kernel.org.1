@@ -2,118 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E563012F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 05:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFFA3012FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 05:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbhAWENW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 23:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726535AbhAWENM (ORCPT
+        id S1726628AbhAWEXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 23:23:13 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:56784 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbhAWEXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 23:13:12 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71856C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 20:12:32 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id i5so5209512pgo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 20:12:32 -0800 (PST)
+        Fri, 22 Jan 2021 23:23:07 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N4EnW7060761;
+        Sat, 23 Jan 2021 04:22:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=2XQ5ibGjlFG6tT6sQlFi1gOQl6fKv49nWngsnQj+15I=;
+ b=Q4XeLqKM3dmSzxRdmee+g7prm0peyfCZTnOSy60K08yqiGt1noplF10PyKjGSOWQ6cfr
+ lQ96DV7yCi0yFKTrRaRrk2rdX39E2gt789pAuPMNifwEk0Tg8Trrv/7yaGE+/fwyuJ87
+ jwaig6Y+rms7NugTyjgyAHI7vXDoQWk5hb7Z/JKLoFYsWrkJZphsEMvvIXsin/SkM40v
+ EufMfy+udWB4GIpANqVgiHbJ/RHBqYwsATWazAUuswIXIrRj2KKKE5LMsZL650Ac/KaP
+ gsgX32qlfUKEhDaN1JJXatS1y5XQSAdTvh3bksID1kKA5/QK37QrQVA/BmMny9+4pZOU bg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 368brk82x9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 04:22:19 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N4L2Yb192996;
+        Sat, 23 Jan 2021 04:22:18 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by userp3020.oracle.com with ESMTP id 368b4gswys-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 04:22:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=is3Vie11IVc2CUXBXDsk54lPeLIY9LveAyXZwZDiyaG15M/3sSbKdtF68B6F61/MWxim6fCarVLAXtDhV0lIo3J9JOun3NlHVY7x5Xz/3bwddb25o1oq1au2bMEcsouCxE4ngi/bvGXNhYS1k57/CxZ5W3RjFoNAQFh08z7Yl8Jk4/Y6qWHPPlX4gsfMHaUiVGqfw6fqt9QJ10qfHWuU/KOPvpDzjjdAgf3NSERNr1Xdu9Regiz65yQSpWPJwMr6Xy42fdoF1OZsGZM+fgXdATkcwnOooomjRky/wrGSM1bY77OxKkeeGXIms3vHzZ2yF2yuoOCCjGFY8fn+Mp7QWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2XQ5ibGjlFG6tT6sQlFi1gOQl6fKv49nWngsnQj+15I=;
+ b=l1AN8NuhESrpS04lwJO2jMPBJu8FTP/w7hGWvmq9i336/O/Xj8O7krKCG2ckb6ygukDQWUwAK2CpF8e1AIPu8bnTiHDvev/fBL0cGywctaHomYf46YITiM4biXDOEi0hXpWNI8EneZq7Z+vYJeTdkG5In9gWbeaAmKokTQhsM/Kmq32PiVc3oTjC3Bxjp7PjbLCbawFZWOv0+nb49VD1e+hkV7x++cNA+ghAKvHe4PjveAGq64d6pPeSeGLJOICfY104tLNVnYji34MOVRCEb7uhDrKOyGZP7wEM24MyeD8C5vyxYrjqp7YcFW5vUDTfieWbKhGWWGi2q4QKDdOq6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rfxqzONqLpenH9bMcTSEoRtSy4r+OTMclT611uQQPw0=;
-        b=VYOj8q7y3B1Ci/zXV0TKKQdP+Hr4DW7yRsr1E+oiVJMPmFipjS5UZ8xLl2xoHoz/6B
-         jkpCwgPiLIZPoGfOi1wN88wt16jBRvoyvro7VvrIPcH4RTJznQoHQmoB2t8HyrxAaJdZ
-         HBhFM+SE5uT3rPuNDZ63XGBOHfrbXdGCrMh+WmJzIou1s39XhI+QRXq2zuC7lcQ0WAEq
-         +J2EBBfVHpHbKs6R2YJuQHl6VFRabnTwOH35OE4IYc02CQ9CIGb17Ob6QmJQaoizK2CX
-         qmyOJqbeCl8AsonG5sk05tyhobY+J8YKqRp8zWdSTNaaYU7FnZoryWgNkEnc2zVWMeFD
-         MIhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=rfxqzONqLpenH9bMcTSEoRtSy4r+OTMclT611uQQPw0=;
-        b=WohnhP2MmSokDUnbJvEFZ4uPolBYNSK9kSu1fNzdjYrABSoeYMzSulnWYP7zZfJTY+
-         kH135Q+6ugWXuZyGIdxP9jAL0s67ARfT9ljNP6Cta1Iqf1AKwOh2+2gsI3ESR+3Lpv5P
-         2MJ3w1A560BkLgiUwj5E3KRdg76WhBuhOQNY3g9MP6ntAoOoY4nIdPRSQr7UeYwL+BbZ
-         rkestqYRpQ35bvlT8gJbkN4utGSWb04xS9vHipnxbCoxkj9Y9KXbTrx1je/teHWbBZy/
-         JpiR1bLEFYN6xrftErt7nzQYDvJTLqGPu8DWOc+CgTT3astjVDETsmwJTSz9b2jCb3OE
-         KEfQ==
-X-Gm-Message-State: AOAM533b/pyHIk236UKqCC2ktJmQNtTnO3Hs4cxP8Fgwv4Uimkqsjplm
-        nJxZr8fnpdBbZAR1NGnGkA4J3A==
-X-Google-Smtp-Source: ABdhPJz23uPwWexptJVrp5X0oeJBb+aQPxkhO88fX4JWNnDnVCTuobkNxuBQWZrcK1ekbZ/uQmCkcQ==
-X-Received: by 2002:a62:2aca:0:b029:1bb:4349:f889 with SMTP id q193-20020a622aca0000b02901bb4349f889mr8177532pfq.26.1611375151785;
-        Fri, 22 Jan 2021 20:12:31 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id f15sm10628173pja.24.2021.01.22.20.12.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 20:12:30 -0800 (PST)
-Date:   Fri, 22 Jan 2021 20:12:30 -0800 (PST)
-X-Google-Original-Date: Fri, 22 Jan 2021 20:12:28 PST (-0800)
-Subject:     Re: [PATCH v15 03/11] riscv/Kconfig: make direct map manipulation options depend on MMU
-In-Reply-To: <20210120180612.1058-4-rppt@kernel.org>
-CC:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        luto@kernel.org, Arnd Bergmann <arnd@arndb.de>, bp@alien8.de,
-        catalin.marinas@arm.com, cl@linux.com, dan.j.williams@intel.com,
-        dave.hansen@linux.intel.com, david@redhat.com,
-        elena.reshetova@intel.com, hpa@zytor.com, mingo@redhat.com,
-        jejb@linux.ibm.com, kirill@shutemov.name, willy@infradead.org,
-        mark.rutland@arm.com, rppt@linux.ibm.com, rppt@kernel.org,
-        mtk.manpages@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        peterz@infradead.org, rick.p.edgecombe@intel.com, guro@fb.com,
-        shakeelb@google.com, shuah@kernel.org, tglx@linutronix.de,
-        tycho@tycho.ws, will@kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, lkp@intel.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     rppt@kernel.org
-Message-ID: <mhng-5cbc9b30-ac9a-4748-bf12-8f0de4c89f79@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2XQ5ibGjlFG6tT6sQlFi1gOQl6fKv49nWngsnQj+15I=;
+ b=YSRFs6pT1CGFxECz13P4xwjWjtS4rCO+W+AkQkgHTmt32F9bvY89y6YhTJ1hwtaUEYt55pG+qTwBhp0J5pd+GhjlQoTdp6oAbE2jNhbMyhGcVwW835C+vrUv1K7RcwBTTVGAmf/tZp4C1rT+n8v58PW+uJuXIiHU/Mawixrw3Ho=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4439.namprd10.prod.outlook.com (2603:10b6:510:41::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Sat, 23 Jan
+ 2021 04:22:17 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3784.016; Sat, 23 Jan 2021
+ 04:22:17 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     jejb@linux.ibm.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jinpu.wang@cloud.ionos.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: pm80xx: switch from 'pci_' to 'dma_' API
+Date:   Fri, 22 Jan 2021 23:22:04 -0500
+Message-Id: <161136635065.28733.5978048378954329099.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210117132445.562552-1-christophe.jaillet@wanadoo.fr>
+References: <20210117132445.562552-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [138.3.200.9]
+X-ClientProxiedBy: DM5PR12CA0019.namprd12.prod.outlook.com (2603:10b6:4:1::29)
+ To PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.mkp.ca.oracle.com (138.3.200.9) by DM5PR12CA0019.namprd12.prod.outlook.com (2603:10b6:4:1::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.14 via Frontend Transport; Sat, 23 Jan 2021 04:22:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b364cc32-76a9-468c-9a17-08d8bf5677ed
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4439:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4439937F3F50DBB8071102198EBF9@PH0PR10MB4439.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vffsha8yeqlppyShlPqEzAiTU5KYzLsgevdRE/72TFg9KvY+lkIgYl5DM3m1kvqAG975HH0xJ80EcajtZfpODOhgSsKKwHHB/FjfuCI3hEgBecSiJIxBEk2HYNnKY5UHkYKLQ1nFzjFdKU7jI+Tpqo22wRfMev8rcpe2dYcNXOMGGbyRsTB3Z9gsleP5AJM8+IFrm5ZI2ANPIH7StotWgch1HGc1EirJKHQVVkiwcXeiRuZiCcrGnrIkQcJEHaXf4ZTrpPUI8NBAX6hjIkgZTT5zpNS4HIOGWcCGKIdQEIJDjsHjvDf4hmpuljv1zwFYyLii7qOmEMtqsc+FiQT89DViJ1B73//2UqEIgoRtRYsS6X4y4dsOT9wrYg1HKajI9gccoK/y23yIiBZS6gXWCpoAIE1cMiHhd7aFdDnDtOD99DwjvpUE9yPXfE1Af94jZvi/4lDU/pepb2ybBUTURw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(136003)(376002)(346002)(52116002)(6486002)(7696005)(2616005)(186003)(316002)(4326008)(5660300002)(8676002)(478600001)(956004)(16526019)(4744005)(86362001)(103116003)(966005)(66946007)(2906002)(66556008)(26005)(8936002)(66476007)(36756003)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZVB6NVdlYzZ0ZjlDdVFWNEN5akM0S1picndibCtqTGV5WnJHWDZYOHRjbDV5?=
+ =?utf-8?B?T2JzaUFjNEhaUC9GeGxmL2N6YUtOTHFKdnltRHErdGNkTHhGakluSG1LcUFy?=
+ =?utf-8?B?WmFqaXhBR0ZHb2k1V2w1Q0hibzJQcjlvaEtwaGZzQ05CQ3JBNVp1aFRRNVVi?=
+ =?utf-8?B?L2xmWlY5Sm1RUGlxajdnMXMwd2dyMm10L1VsV1dEaGZ1RUVmUnhCRE9iKzI4?=
+ =?utf-8?B?cCtRRGhhSForNjdhM2krZWJnNVhEdjV4bnJpaDJ4RW5waGhqbitYc3U3aVdS?=
+ =?utf-8?B?Mk5Tb0tNck4yRlNJdlR4dW1ZcGxiMXE2dmxmYTcyL3F2bDUzeTNQN0JmQytp?=
+ =?utf-8?B?dmNPZW5sYld3R01jd3d2TnF3a01OSlhYTGRmY2lNbEx0ajcvRlgwM2ZZME1R?=
+ =?utf-8?B?Ujc0QjR1dFJLNTY3UWN1RGhzRjB3VmZBcDJiR1lKS1lrbWxlckNPTmtIV09i?=
+ =?utf-8?B?TXhNa2o5Zkl0Qk5INU9rbVRvOVg3K1cyUkltTGV6TEREYlJVVWVUTy85UFpk?=
+ =?utf-8?B?R3BZQ1BMc09VVDdvcnJJOVI3MGVBOGhRQkNVck1nSkUybmdxbDBIWkkzM2JR?=
+ =?utf-8?B?ZWo4SFBVOEc1LzlKZkxseHdFVEJpa29Ga3VpTCt1RU9EUEtENEY4YjBZaDlY?=
+ =?utf-8?B?ZlhqWkM1Y3hDZHQwQzZWSlBNRWRPbHgzSGdsR2oveXRiUDYyb2czZUhGMldD?=
+ =?utf-8?B?ZWNiZmxWMjRQM1hBY0I1aGVqNUhNSVZHcGl3eG5nVjN6MitZbVZTS3JoUEZP?=
+ =?utf-8?B?R2FFSGtIVUtWZDJCTHlIVlJRYUpTMlN2RDFUM3hieHVrWFhqa0pSUzUrZEo4?=
+ =?utf-8?B?Y3B5UmdPMVhWQXlxbWFRSnBoTnYzOUNGZklXdGpUSlo1RnFXVFhSdzNYR2xq?=
+ =?utf-8?B?bTBCYldVcDVFSUJrdlBUSGIzemdPR1hSZmM4a3o4aFc1ZnI4OGd1TGI3ektJ?=
+ =?utf-8?B?dEJDQzd2M3R0TzFoQXhIQ0FUVmMwZlg1aFh0bTFaeXlaMUxrTEdZM2owSU4v?=
+ =?utf-8?B?aGF2dXE2cUJCYTczSzdvcXJVNGxLRnlBcTF3bFJlNW1sWlV5WWxER21EOWdY?=
+ =?utf-8?B?cFF6Z0xJcGdKbDdEdkxTNThRUEVTNElwQ2NFWEtsNWlZRVEvTFd4cFJWZmts?=
+ =?utf-8?B?YUhjQzFRdXY5U2x6TExJSTVEbThPZDF4dXp2N2dUVDN2VGR3Nk1RUVlPck0y?=
+ =?utf-8?B?UGlCYThkeWxSZkp1M2VmaW1ZSVRuK2lxSFRtSFcwK3Q0RWdHTUE5enpkMlhQ?=
+ =?utf-8?B?Nm8rd0Z6MWVRcFk4YWUrVThORStoQTAvbVdaQnlCQUlldXBQc0x4eGNRRlBj?=
+ =?utf-8?B?ek9QSmFIb2dOd1cvSkRVVnJWci94S2doa0R0bmhybkpmZDZhbmQrZnp0RWtX?=
+ =?utf-8?B?MndhU25NUFh6MGFWSnJ1SmpjY05rOXlxWUVnVDlZZjIyOEZVYmtLcExCZWdD?=
+ =?utf-8?Q?C+wGpA89?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b364cc32-76a9-468c-9a17-08d8bf5677ed
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jan 2021 04:22:17.5776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m9Ey3Oq+/wPv0ZqpaNeLl5GuiXuz6fqnQIfuiRjdGIqbO+T0i2e01l8zXz5Azp5rmKCv5ysqm4Q+WefvIJ4gcHYEvTM6nP6mxIVNUUpWmeY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4439
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101230022
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101230021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 10:06:04 PST (-0800), rppt@kernel.org wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> ARCH_HAS_SET_DIRECT_MAP and ARCH_HAS_SET_MEMORY configuration options have
-> no meaning when CONFIG_MMU is disabled and there is no point to enable them
-> for the nommu case.
->
-> Add an explicit dependency on MMU for these options.
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  arch/riscv/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index d82303dcc6b6..d35ce19ab1fa 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -25,8 +25,8 @@ config RISCV
->  	select ARCH_HAS_KCOV
->  	select ARCH_HAS_MMIOWB
->  	select ARCH_HAS_PTE_SPECIAL
-> -	select ARCH_HAS_SET_DIRECT_MAP
-> -	select ARCH_HAS_SET_MEMORY
-> +	select ARCH_HAS_SET_DIRECT_MAP if MMU
-> +	select ARCH_HAS_SET_MEMORY if MMU
->  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
->  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
->  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+On Sun, 17 Jan 2021 14:24:45 +0100, Christophe JAILLET wrote:
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> The wrappers in include/linux/pci-dma-compat.h should go away.
+> 
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
+> 
+> When memory is allocated in 'pm8001_init_ccb_tag()' GFP_KERNEL can be used
+> because this function already uses this flag a few lines above.
+> 
+> [...]
 
-LMK if you want this to go in via the RISC-V tree, otherwise I'm going to
-assume it's going in along with the rest of these.  FWIW I see these in other
-architectures without the MMU guard.
+Applied to 5.12/scsi-queue, thanks!
 
-Thanks!
+[1/1] scsi: pm80xx: switch from 'pci_' to 'dma_' API
+      https://git.kernel.org/mkp/scsi/c/8e60a7deca3d
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
