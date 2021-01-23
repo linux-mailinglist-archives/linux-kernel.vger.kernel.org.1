@@ -2,107 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D506B301428
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7206E301431
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 10:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbhAWJXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 04:23:06 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:41332 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbhAWJWH (ORCPT
+        id S1726731AbhAWJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 04:32:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11134 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbhAWJcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 04:22:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N9J5jq111878;
-        Sat, 23 Jan 2021 09:21:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Dteca2DTJ/B6Y4PJ3HpK/3HkLckJdMVpe5yJfeyUSXQ=;
- b=IuTJuHM4XxMVMLad4MfzUE5s6yjg/Y8brW8kDEr/nwzIr3kSi7+rTGqrr1A3ZW8ABDuI
- tqkfaRqI+Df/6EQ7aPr5T+3NzkuWRcGMzXXCDY6waaA2WOzOi1Salkg0RJqSs/Cu6vZ6
- ZIG6s3q/Rw6XXWqIc93pwJlhwtBfAa9MWCgpgZ4+Ws9LbdY3A69N9C+AFiX5piXs1S8w
- qA1L1S9IoX4gciqgGZ4NeHZFoG1cDbwGSV5E37CnEwnxqPzTCR6haIMWwCH9dk1Wjtle
- 84MW+iOHgAhfAphPIC834jc3kFHjc1ze/jLsYVx20H92NJ2S90tM2yHQ/QY1qw5AvuyE iA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 3689aa8scp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 23 Jan 2021 09:21:11 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10N9KC5N071471;
-        Sat, 23 Jan 2021 09:21:09 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 368bm0xwyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 23 Jan 2021 09:21:08 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10N9L18T024281;
-        Sat, 23 Jan 2021 09:21:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 23 Jan 2021 01:21:00 -0800
-Date:   Sat, 23 Jan 2021 12:20:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust to clang-version.sh removal
-Message-ID: <20210123092051.GT2696@kadam>
-References: <20210121160115.4676-1-lukas.bulwahn@gmail.com>
- <CA+icZUV3p+yQYXn=iVseNNQwUSvoMwztLxNDOFpdFb731kDOJg@mail.gmail.com>
- <20210122123354.GR2696@kadam>
- <CA+icZUXxJnhXwiFAJ+f23xWLq-t6ZmF6X_wJPNaEoCVqjP4N=A@mail.gmail.com>
+        Sat, 23 Jan 2021 04:32:12 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DN9pM11FVz15ws4;
+        Sat, 23 Jan 2021 17:30:19 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
+ 17:31:17 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <almasrymina@google.com>, <rientjes@google.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH RFC] hugetlb_cgroup: fix unbalanced css_put for shared mappings
+Date:   Sat, 23 Jan 2021 04:31:11 -0500
+Message-ID: <20210123093111.60785-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXxJnhXwiFAJ+f23xWLq-t6ZmF6X_wJPNaEoCVqjP4N=A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101230053
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9872 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 phishscore=0 bulkscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101230053
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In networking then they want you to say which tree it applies to, but
-it's not as simple as saying "net" vs "net-next".  If it's a bugfix then
-you should write that against "net" but if it's a clean up or a fix to a
-recent change then it should be written against "net-next".
+The current implementation of hugetlb_cgroup for shared mappings could have
+different behavior. Consider the following two scenarios:
 
-Also linux-next is not necessarily the same thing as net-next.
-Networking patches should be written against either net or net-next, not
-linux-next.
+1.Assume initial css reference count of hugetlb_cgroup is 1:
+  1.1 Call hugetlb_reserve_pages with from = 1, to = 2. So css reference
+count is 2 associated with 1 file_region.
+  1.2 Call hugetlb_reserve_pages with from = 2, to = 3. So css reference
+count is 3 associated with 2 file_region.
+  1.3 coalesce_file_region will coalesce these two file_regions into one.
+So css reference count is 3 associated with 1 file_region now.
 
-BPF tried to implement similar rules to they're not big enough to impose
-their own rules.  It's quite a big headache to try to figure out which
-tree to use if you're like me and have no clue about bpf.
+2.Assume initial css reference count of hugetlb_cgroup is 1 again:
+  2.1 Call hugetlb_reserve_pages with from = 1, to = 3. So css reference
+count is 2 associated with 1 file_region.
 
-Anyway, the point of the net vs net-next is that devs are supposed to
-figure out the exact tree and they're supposed to only write net-next if
-it doesn't apply to net.
+Therefore, we might have one file_region while holding one or more css
+reference counts. This inconsistency could lead to unbalanced css_put().
+If we do css_put one by one (i.g. hole punch case), scenario 2 would put
+one more css reference. If we do css_put all together (i.g. truncate case),
+scenario 1 will leak one css reference.
 
-It's not clear to me the value of putting linux-next in the subject.
-Doesn't everyone develop against the latest devel tree?  Certainly I
-can't imagine any maintainers doing extra work to try figure out the
-date of the linux-next release.  Surely, they just say "Doesn't apply to
-foo-tree.  Resend if necessary."  That's the fastest and easiest
-response when patches don't apply.
+In order to fix this, we have to make sure that one file_region may hold
+and must hold one css reference. So in coalesce_file_region case, we should
+release one css reference before coalescence. Also only put css reference
+when the entire file_region is removed.
 
-regards,
-dan carpente
+Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: stable@kernel.org
+---
+ include/linux/hugetlb_cgroup.h |  6 ++++--
+ mm/hugetlb.c                   | 18 ++++++++++++++----
+ mm/hugetlb_cgroup.c            | 10 ++++++++--
+ 3 files changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
+index 2ad6e92f124a..7610efcd96bd 100644
+--- a/include/linux/hugetlb_cgroup.h
++++ b/include/linux/hugetlb_cgroup.h
+@@ -138,7 +138,8 @@ extern void hugetlb_cgroup_uncharge_counter(struct resv_map *resv,
+ 
+ extern void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 						struct file_region *rg,
+-						unsigned long nr_pages);
++						unsigned long nr_pages,
++						bool region_del);
+ 
+ extern void hugetlb_cgroup_file_init(void) __init;
+ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
+@@ -147,7 +148,8 @@ extern void hugetlb_cgroup_migrate(struct page *oldhpage,
+ #else
+ static inline void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 						       struct file_region *rg,
+-						       unsigned long nr_pages)
++						       unsigned long nr_pages,
++						       bool region_del)
+ {
+ }
+ 
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index a6bad1f686c5..777bc0e45bf3 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -298,6 +298,14 @@ static void record_hugetlb_cgroup_uncharge_info(struct hugetlb_cgroup *h_cg,
+ #endif
+ }
+ 
++static void put_uncharge_info(struct file_region *rg)
++{
++#ifdef CONFIG_CGROUP_HUGETLB
++	if (rg->css)
++		css_put(rg->css);
++#endif
++}
++
+ static bool has_same_uncharge_info(struct file_region *rg,
+ 				   struct file_region *org)
+ {
+@@ -321,6 +329,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
+ 		prg->to = rg->to;
+ 
+ 		list_del(&rg->link);
++		put_uncharge_info(rg);
+ 		kfree(rg);
+ 
+ 		rg = prg;
+@@ -332,6 +341,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
+ 		nrg->from = rg->from;
+ 
+ 		list_del(&rg->link);
++		put_uncharge_info(rg);
+ 		kfree(rg);
+ 	}
+ }
+@@ -664,7 +674,7 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 
+ 			del += t - f;
+ 			hugetlb_cgroup_uncharge_file_region(
+-				resv, rg, t - f);
++				resv, rg, t - f, false);
+ 
+ 			/* New entry for end of split region */
+ 			nrg->from = t;
+@@ -685,7 +695,7 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 		if (f <= rg->from && t >= rg->to) { /* Remove entire region */
+ 			del += rg->to - rg->from;
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+-							    rg->to - rg->from);
++							    rg->to - rg->from, true);
+ 			list_del(&rg->link);
+ 			kfree(rg);
+ 			continue;
+@@ -693,13 +703,13 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 
+ 		if (f <= rg->from) {	/* Trim beginning of region */
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+-							    t - rg->from);
++							    t - rg->from, false);
+ 
+ 			del += t - rg->from;
+ 			rg->from = t;
+ 		} else {		/* Trim end of region */
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+-							    rg->to - f);
++							    rg->to - f, false);
+ 
+ 			del += rg->to - f;
+ 			rg->to = f;
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index 9182848dda3e..8909e075d441 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -391,7 +391,8 @@ void hugetlb_cgroup_uncharge_counter(struct resv_map *resv, unsigned long start,
+ 
+ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 					 struct file_region *rg,
+-					 unsigned long nr_pages)
++					 unsigned long nr_pages,
++					 bool region_del)
+ {
+ 	if (hugetlb_cgroup_disabled() || !resv || !rg || !nr_pages)
+ 		return;
+@@ -400,7 +401,12 @@ void hugetlb_cgroup_uncharge_file_region(struct resv_map *resv,
+ 	    !resv->reservation_counter) {
+ 		page_counter_uncharge(rg->reservation_counter,
+ 				      nr_pages * resv->pages_per_hpage);
+-		css_put(rg->css);
++		/*
++		 * Only do css_put(rg->css) when we delete the entire region
++		 * because one file_region only holds one rg->css reference.
++		 */
++		if (region_del)
++			css_put(rg->css);
+ 	}
+ }
+ 
+-- 
+2.19.1
+
