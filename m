@@ -2,108 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DB930173A
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE313301740
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbhAWRbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:31:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbhAWRat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:30:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A65122B2C;
-        Sat, 23 Jan 2021 17:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611423002;
-        bh=SijsJP6XJDLyDad0Q+qEK6H9AacK/MX9V42CKBdylI4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q2u7KgC2op0dGZ3WO8eRaOoijTsNKexbNmbYvC1eLBoZd5lc5QFMJ1zQfc6CVBZXX
-         7JFTKG/7knqMy8FQmCnMD86RaKzM5jdnN+9wCcvl8ntgyV/wp38CKS8sUaM3HgO9wR
-         bsqKmAIhEpwgm3lo3x7h8n/b08JA8nEfx6rv5I0fDKUV7nyXcp93ELf9TP3lZsxHoC
-         yL19S1m67U99DLf7S8mQSe/JLfm7CEKRqgYXGjSyc622DMF6J1ldHtvYl5cYi/Y/iK
-         TgTtdFtYn0OwXBsnHnriYMK5+eDuK+UwDzFOhJB/kkqiPTpM2BYZOds82v/le7cK+h
-         d1rgktc3OIeLA==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 4D6153C0C95; Sat, 23 Jan 2021 18:30:00 +0100 (CET)
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, Pavel Machek <pavel@ucw.cz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCHv1] ASoC: cpcap: fix microphone timeslot mask
-Date:   Sat, 23 Jan 2021 18:29:45 +0100
-Message-Id: <20210123172945.3958622-1-sre@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <YAqOSg2z24NpjKDh@mwanda>
-References: <YAqOSg2z24NpjKDh@mwanda>
+        id S1726229AbhAWRce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:32:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbhAWRcb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 12:32:31 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE11EC06174A;
+        Sat, 23 Jan 2021 09:31:50 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id i20so8467477otl.7;
+        Sat, 23 Jan 2021 09:31:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=swznRfItuviAIzsJbhWlXVhBycUJMTNWt2mYcrBuhf8=;
+        b=tcAKmq+00rDiaxhDHYmMvTAhQszIVB3F8G5W/UESzMfEDCkU8tCG02Vzrf0F+lizh9
+         3n8dADfM8Qfzava+O0Yy0EULopAqgQ2/NicZzlbitAmKlaC3S+YaI9ZkCdj29ZXOhaCo
+         v9AuUJIqeJU/pmto79k95GI3+Fl2DzjzGUlzfZKHHO/f0+QD3DoRIpinG/dB/F8F2gku
+         t3zIDfVAoyp81skwsTDhCnz5Bq2CvfxD9MWOAfyliEahHEmdkTdzAeSFh+cI4ncMQkRi
+         CAqox1/zcwDVqA5TjrXwjd6f9e2kSEMEJCRuaZ52iMCVlwJBRvvoHih18dV8ZnTtcIVI
+         3PUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=swznRfItuviAIzsJbhWlXVhBycUJMTNWt2mYcrBuhf8=;
+        b=Ukvr+H8xDq7o2aogIQRmk/RPbqJu7OWzJ1+snv1E5ffFBKj18BsZPu031GWRm7WXT1
+         A1fqPdDuSPX3aMR9ZbhO/KhrPcKVyJDQHi0ARaRh2fLIGySSwBt6MhEeA7SXuq3U4pHI
+         0LQcYLV3H+Y3QvBdGF8oo9XK8Ey9KZCPTn3UyiZaRFHQnBWdgqCrdM72dNqVYYzYlLRq
+         MLVxlB7eAOeTd+jszY635e+vCI5s2W81J4vmwmwVswRyOckWQ3OHmIbpWOAS02jhaxW/
+         KRCv8hFzJ9smtUHa/+Hje2bCNewaD/Ti1VvNqAEMSxuEf1NByywP2BLOh8jJv+NQr4Oy
+         l28w==
+X-Gm-Message-State: AOAM530gkp80HY41WcTYCZdOYdBL+yja3v7Z0SmyV92ioo8pQdvD4IDS
+        lXw0xlXPCFm347sJEgZA498=
+X-Google-Smtp-Source: ABdhPJzmc4mAdCKeF0Hkd5dDgHnKUqlBSIpIsjrFWLxfgXd6dzG+Z1y5ty1OELGfaZclTfEXI5HDXg==
+X-Received: by 2002:a9d:61d0:: with SMTP id h16mr7106743otk.1.1611423110181;
+        Sat, 23 Jan 2021 09:31:50 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j11sm2469492otl.18.2021.01.23.09.31.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 23 Jan 2021 09:31:49 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 23 Jan 2021 09:31:48 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v3 17/21] dt-bindings: watchdog: sun4i: Add H616
+ compatible string
+Message-ID: <20210123173148.GA57180@roeck-us.net>
+References: <20210118020848.11721-1-andre.przywara@arm.com>
+ <20210118020848.11721-18-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118020848.11721-18-andre.przywara@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The correct mask is 0x1f8 (Bit 3-8), but due to missing BIT() 0xf (Bit
-0-3) was set instead. This means setting of CPCAP_BIT_MIC1_RX_TIMESLOT0
-(Bit 3) still worked (part of both masks). On the other hand the code
-does not properly clear the other MIC timeslot bits. I think this
-is not a problem, since they are probably initialized to 0 and not
-touched by the driver anywhere else. But the mask also contains some
-wrong bits, that will be cleared. Bit 0 (CPCAP_BIT_SMB_CDC) should be
-safe, since the driver enforces it to be 0 anyways.
+On Mon, Jan 18, 2021 at 02:08:44AM +0000, Andre Przywara wrote:
+> Use enums to group all compatible devices together on the way.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Bit 1-2 are CPCAP_BIT_FS_INV and CPCAP_BIT_CLK_INV. This means enabling
-audio recording forces the codec into SND_SOC_DAIFMT_NB_NF mode, which
-is obviously bad.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-The bug probably remained undetected, because there are not many use
-cases for routing microphone to the CPU on platforms using cpcap and
-user base is small. I do remember having some issues with bad sound
-quality when testing voice recording back when I wrote the driver.
-It probably was this bug.
-
-Fixes: f6cdf2d3445d ("ASoC: cpcap: new codec")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Sebastian Reichel <sre@kernel.org>
----
-Hi,
-
-This is compile tested only, since I currently do not have
-my Droid 4 ready for running some tests. Maybe Tony, Pavel or
-Merlijn can give it a go using e.g. arecord.
-
-Thanks,
-
--- Sebastian
----
- sound/soc/codecs/cpcap.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/cpcap.c b/sound/soc/codecs/cpcap.c
-index e266d993ab2a..05bbacd0d174 100644
---- a/sound/soc/codecs/cpcap.c
-+++ b/sound/soc/codecs/cpcap.c
-@@ -1273,12 +1273,12 @@ static int cpcap_voice_hw_params(struct snd_pcm_substream *substream,
- 
- 	if (direction == SNDRV_PCM_STREAM_CAPTURE) {
- 		mask = 0x0000;
--		mask |= CPCAP_BIT_MIC1_RX_TIMESLOT0;
--		mask |= CPCAP_BIT_MIC1_RX_TIMESLOT1;
--		mask |= CPCAP_BIT_MIC1_RX_TIMESLOT2;
--		mask |= CPCAP_BIT_MIC2_TIMESLOT0;
--		mask |= CPCAP_BIT_MIC2_TIMESLOT1;
--		mask |= CPCAP_BIT_MIC2_TIMESLOT2;
-+		mask |= BIT(CPCAP_BIT_MIC1_RX_TIMESLOT0);
-+		mask |= BIT(CPCAP_BIT_MIC1_RX_TIMESLOT1);
-+		mask |= BIT(CPCAP_BIT_MIC1_RX_TIMESLOT2);
-+		mask |= BIT(CPCAP_BIT_MIC2_TIMESLOT0);
-+		mask |= BIT(CPCAP_BIT_MIC2_TIMESLOT1);
-+		mask |= BIT(CPCAP_BIT_MIC2_TIMESLOT2);
- 		val = 0x0000;
- 		if (channels >= 2)
- 			val = BIT(CPCAP_BIT_MIC1_RX_TIMESLOT0);
--- 
-2.29.2
-
+> ---
+>  .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml   | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+> index 5ac607de8be4..9aa3c313c49f 100644
+> --- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+> @@ -19,13 +19,11 @@ properties:
+>        - const: allwinner,sun4i-a10-wdt
+>        - const: allwinner,sun6i-a31-wdt
+>        - items:
+> -          - const: allwinner,sun50i-a64-wdt
+> -          - const: allwinner,sun6i-a31-wdt
+> -      - items:
+> -          - const: allwinner,sun50i-a100-wdt
+> -          - const: allwinner,sun6i-a31-wdt
+> -      - items:
+> -          - const: allwinner,sun50i-h6-wdt
+> +          - enum:
+> +              - allwinner,sun50i-a64-wdt
+> +              - allwinner,sun50i-a100-wdt
+> +              - allwinner,sun50i-h6-wdt
+> +              - allwinner,sun50i-h616-wdt
+>            - const: allwinner,sun6i-a31-wdt
+>        - items:
+>            - const: allwinner,suniv-f1c100s-wdt
