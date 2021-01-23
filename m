@@ -2,131 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858EB3011BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFB73011BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726123AbhAWAa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 19:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        id S1726222AbhAWAg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 19:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbhAWAas (ORCPT
+        with ESMTP id S1725842AbhAWAgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 19:30:48 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B110EC06178B
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:30:07 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id c9so7151621ybs.8
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:30:07 -0800 (PST)
+        Fri, 22 Jan 2021 19:36:25 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B92C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:35:45 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id s11so8576236edd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:35:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=GW5YgzmGZ90upPWUw8yjcOOBzEGRL5zFdW5P2QKbWu4=;
-        b=tVUg5jswvPuQC6WLS2bahbJifQc0hGtBAb1LmgRccRV33457farwPSINVvib3TUjNi
-         LlJ0bpNcj8sohxrwtMs/cbdj6Mk1c4u3rMNn5Uxj6QNUF2Hu0Ug6ucuBWJ8BUSh7ike0
-         o2Lhp6eaLCYULh6qJFr7vxuGZcjGzmrVgs0Ku3kNZVqs9JIyJkJt9jzuQZYwxnFOgZDR
-         tmYC6NYkH3RV7g+ipQOzlKuRs9Sqenj3hKd7pHRQFdNrB+L4uaqRoA3g3lwwO2lGe3Mj
-         SIYjRngC2F/h20GcR1NuJhS3enFn95NrjPUsYheaLAeDKuetdk4y/cGdZjEeqQWQMl/A
-         0hMQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jKriZlsSDwDLtrvuS7JPodDHbZ5HjWBpExZmVExyvSs=;
+        b=JHInQcPKISPhjzL2Lb26o0L1L0IJr7VawH+94lMdfU+FNHDsQjFTAkXOukMR2gUOVZ
+         DF0iQshXuJ6QzUTNBmuAXDqqryeiXEhbw+IvUcUtqJmnYqVB2V2VdbdCbFfogiXhEnes
+         IwvCzEfw9eY1b8NoG7yxvHJaFITAD+Hu1hh1drDNGPc5+Ui0HPRTxsGs6xEIIoOzEnzV
+         uW3YljoP2C+iRw1vqOPqzOacNtOyQoxWI+9Z6ZivCGUvPUSbgi34FMm2awEN20DULGPx
+         ItoBpdr5UXpBq0B9MURbPDXR/3p6472apAzoC2FYIYifpn2iLuHO4RayNpIoI+iZO9tX
+         YH4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=GW5YgzmGZ90upPWUw8yjcOOBzEGRL5zFdW5P2QKbWu4=;
-        b=Bd+TxT4WU++OXt/N6EZJJzc5HsMGvXNIc7KZJ7kgh2C1qFUfjJf523iV9wniO0cpqm
-         p3xO9dgrTVKSywTEaP1DRYsIFuPqgLhuKyDmjlv4S1yVinwQNWW8c0vZMbh9Q/HChlra
-         1wknCqv4Qkz3C/AmR7vKP7mwCM1VU4oDVzCbr741pYV+MYNr9RsaBI74GF9w/Nj44nCP
-         ierMCx5o7mJb9v6hQESJh4q2YhXUOGrasVsuN/VKEM9/zxZqRW1zR8wHpjdwSOAw4Xni
-         JS+EKbO3FIyZ0YU9hykZm8DvUDLiqEbiiZ/lahn+kWsyvG0d5ZRBnxcJF2oxfzdoAdPs
-         fcVw==
-X-Gm-Message-State: AOAM530JIv2uvoJGgb4cJP1PoI/01x7jKwJh0Kzctr7JriZHF6/MJxFJ
-        nVJ7ANVZRgzr8ys+QNjrO4yOIdz4gJM=
-X-Google-Smtp-Source: ABdhPJyHyggUdYU/8G77pM1XxhCYkioicj73SgejqjhelE57ftM7XlgvkXTSZukL22UjRALAuYESbIsbyDc=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:5054:: with SMTP id e81mr10442630ybb.131.1611361806991;
- Fri, 22 Jan 2021 16:30:06 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 22 Jan 2021 16:30:03 -0800
-Message-Id: <20210123003003.3137525-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH] KVM: x86/mmu: Use boolean returns for (S)PTE accessors
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jKriZlsSDwDLtrvuS7JPodDHbZ5HjWBpExZmVExyvSs=;
+        b=Qd7UkngktBX4C+OAq9N1QvU0Qaf0Fh9kQaMP7FY7pfK4/ERhwhLJgSI1rCE++J4n0U
+         xjeJHCezhuBbh+bRRV0nHuue9yWxaKk+8IOaIw0rH6XIuXHVADzTvEV9kHePrN+RWqJv
+         GYml030b3h23s43mM0sJJdLxRFQz+GG/jB7DLOkOVFrJ51Zb59FsG8I2lFhCgBFL6ZWf
+         SMd3E16O6EsBR6TroKxD77cJcGXdHef8bo4PF3UMVbn9SNg8hkP9LY++uhWz8OMtJ63i
+         spjQ8wHtGmvhDasHJn5A4alElrYbSxsLzqgG+MPflhvm9TdKfeKmoElJWOGzK5UZXix3
+         fhkQ==
+X-Gm-Message-State: AOAM5332C8dpT66hBSOj8F1qXH90YWeQWPEcQNcSxjLDc45zB8hGNrqs
+        o13ePjsjOE1ySGHrgHQn6wV0KU1nTb1uqNTZVHz7lQ==
+X-Google-Smtp-Source: ABdhPJzgAnFPMJXD87lWu7NwW9XxgA0xtR1GGer/YVjam0yyb3ILvC28MrWvLVVkeiZcxW0cwVal5DvGg4MclvOTYxU=
+X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr669502edd.341.1611362144184;
+ Fri, 22 Jan 2021 16:35:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20200326032420.27220-1-pasha.tatashin@soleen.com>
+ <20200326032420.27220-8-pasha.tatashin@soleen.com> <b79b0b58-5f8e-913b-3913-b95551ef7ce1@arm.com>
+In-Reply-To: <b79b0b58-5f8e-913b-3913-b95551ef7ce1@arm.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 22 Jan 2021 19:35:08 -0500
+Message-ID: <CA+CK2bD0amaPDJgoYn2-VK_LbzCkJBa_oMBgVsDTfbZvUw=3QA@mail.gmail.com>
+Subject: Re: [PATCH v9 07/18] arm64: trans_pgd: hibernate: idmap the single
+ page that holds the copy page routines
+To:     James Morse <james.morse@arm.com>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return a 'bool' instead of an 'int' for various PTE accessors that are
-boolean in nature, e.g. is_shadow_present_pte().  Returning an int is
-goofy and potentially dangerous, e.g. if a flag being checked is moved
-into the upper 32 bits of a SPTE, then the compiler may silently squash
-the entire check since casting to an int is guaranteed to yield a
-return value of '0'.
+On Wed, Apr 29, 2020 at 1:01 PM James Morse <james.morse@arm.com> wrote:
+>
+> Hi Pavel,
+>
+> On 26/03/2020 03:24, Pavel Tatashin wrote:
+> > From: James Morse <james.morse@arm.com>
+> >
+> > To resume from hibernate, the contents of memory are restored from
+> > the swap image. This may overwrite any page, including the running
+> > kernel and its page tables.
+> >
+> > Hibernate copies the code it uses to do the restore into a single
+> > page that it knows won't be overwritten, and maps it with page tables
+> > built from pages that won't be overwritten.
+> >
+> > Today the address it uses for this mapping is arbitrary, but to allow
+> > kexec to reuse this code, it needs to be idmapped. To idmap the page
+> > we must avoid the kernel helpers that have VA_BITS baked in.
+> >
+> > Convert create_single_mapping() to take a single PA, and idmap it.
+> > The page tables are built in the reverse order to normal using
+> > pfn_pte() to stir in any bits between 52:48. T0SZ is always increased
+> > to cover 48bits, or 52 if the copy code has bits 52:48 in its PA.
+> >
+> > Pasha: The original patch from James
+> > inux-arm-kernel/20200115143322.214247-4-james.morse@arm.com
+>
+> -EBROKENLINK
+>
+> The convention is to use a 'Link:' tag in the signed-off area.
+> e.g. 5a3577039cbe
 
-Opportunistically refactor is_last_spte() so that it naturally returns
-a bool value instead of letting it implicitly cast 0/1 to false/true.
+OK Fixed.
 
-No functional change intended.
+>
+> > Adopted it to trans_pgd, so it can be commonly used by both Kexec
+> > and Hibernate. Some minor clean-ups.
+>
+> Please describe your changes just before your SoB. This means each author sign's off on
+> the stuff above their SoB, and its obvious who made which changes.
+>
+> Search for 'Lucky K Maintainer' in process/submitting-patches.rst for an example.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu.h      |  2 +-
- arch/x86/kvm/mmu/spte.h | 12 ++++--------
- 2 files changed, 5 insertions(+), 9 deletions(-)
+OK, Fixed.
+eed the maximum T0SZ.
+> > + *
+> > + * Returns 0 on success, and -ENOMEM on failure.
+> > + * On success trans_ttbr0 contains page table with idmapped page, t0sz is set to
+>
+> > + * maxumum T0SZ for this page.
+>
+> maxumum
+>
 
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 581925e476d6..f61e18dad2f3 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -145,7 +145,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-  *
-  * TODO: introduce APIs to split these two cases.
-  */
--static inline int is_writable_pte(unsigned long pte)
-+static inline bool is_writable_pte(unsigned long pte)
- {
- 	return pte & PT_WRITABLE_MASK;
- }
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 2b3a30bd38b0..398fd1bb13a7 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -185,23 +185,19 @@ static inline bool is_access_track_spte(u64 spte)
- 	return !spte_ad_enabled(spte) && (spte & shadow_acc_track_mask) == 0;
- }
- 
--static inline int is_shadow_present_pte(u64 pte)
-+static inline bool is_shadow_present_pte(u64 pte)
- {
- 	return (pte != 0) && !is_mmio_spte(pte);
- }
- 
--static inline int is_large_pte(u64 pte)
-+static inline bool is_large_pte(u64 pte)
- {
- 	return pte & PT_PAGE_SIZE_MASK;
- }
- 
--static inline int is_last_spte(u64 pte, int level)
-+static inline bool is_last_spte(u64 pte, int level)
- {
--	if (level == PG_LEVEL_4K)
--		return 1;
--	if (is_large_pte(pte))
--		return 1;
--	return 0;
-+	return (level == PG_LEVEL_4K) || is_large_pte(pte);
- }
- 
- static inline bool is_executable_pte(u64 spte)
--- 
-2.30.0.280.ga3ce27912f-goog
-
+Ok.
