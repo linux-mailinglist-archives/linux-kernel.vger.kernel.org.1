@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9E630171B
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CFF301723
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbhAWRQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        id S1726163AbhAWRUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbhAWRQT (ORCPT
+        with ESMTP id S1725883AbhAWRUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:16:19 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FECEC06174A;
-        Sat, 23 Jan 2021 09:15:39 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id w8so9912604oie.2;
-        Sat, 23 Jan 2021 09:15:39 -0800 (PST)
+        Sat, 23 Jan 2021 12:20:01 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AFDC06174A;
+        Sat, 23 Jan 2021 09:19:21 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id h192so9916999oib.1;
+        Sat, 23 Jan 2021 09:19:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=7SIz1JmNnwDFUjSTMhnENtc8aHZxznwTy6tSnMCh7fI=;
-        b=Egtvj3+jQuKuSuErJ0hLRSio540Vdb3d/1lwON8uvVtCsnMqqCoviMycCn0R91DgiX
-         e/D8pf4SXx8/JB60LA925do3YKcGS4CP/u4OW+I6h3tmxEwPqFziw6dzTumBDFaD6K9s
-         Z1MYFqGQYCBoezETQgFfQH2Amh2KYIzelQMBjOzh977W58W6XpEW44skNkl9Ve4ZETYB
-         sYjOBM0DOBTJI2W99odsPLCjaBAAJqwI2dENnSmfZltanCJOrqElB5SUUFrbePVB/By0
-         O0Y/ljTkjSFY1ioIF8w0Tab9G5kfSweSNKT2arkCS/Hos7xvboK2vt1jLgZZ5Uv7PaDo
-         t5yw==
+        bh=eoXaediOkXdklGakOAPGeoS0a6EYsoWmC4XNPGLVnsQ=;
+        b=iiLJsh9Vs+6i29YkylgpZ2a2nqeR6YtYZx5vzykhuJVpbIg+pXnWj+0tyaFztxsmxW
+         CpOTzdZFgRhvnGbjPEANRd0TPNJtOw9lkxa35umyHhW4eIlFdV8Pvff6l88clcUgkhgs
+         IJ1egs9gAxqNR3KJwdndCpgk9vIv3H3cOmB0lMfvHgPq1WBxUX6KyHzDTjmi8cj6MVwq
+         oojiIckd4YUWnPkQ4NHT/6uGRwTlCIWoq6cE9d1RePjfizoVFIXGR/AMnLW7wlM9mDpj
+         EQIvJh7JTlxVcGrtvxZA/GxXNxvCDL4HaEFhyM0vvtFc60Vh+RGV80Q6yLpbct7Q6EsR
+         egvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7SIz1JmNnwDFUjSTMhnENtc8aHZxznwTy6tSnMCh7fI=;
-        b=OI4SMAklSCmZGAl88Mw1uLkT03qoM4KSEBjFhht9KQMCX5VZdWCdKr/FTXlI0siHEH
-         5DOq+lZT7ZFAAeejYL42+jygdXiS3aaySktbfh61yJ4QQUWmbFME4jRGBAzMvPX1F3/4
-         14qYkcJlW0tcXqdfOg18IE3hKFaf+cQY0xUm2tfuPByTrmnbthStAVF38MZzL3NdS+mo
-         0saIOFYBXH0kxrPJiKeOL02ODpRfNdZGgV+HW5NQ2aSU6+c+Nrrasz6zyDl53BOSDNri
-         EMJg2iQxcJJ8b3zOwVA05kb2+ceOFeCTyOVOBPD4rbQMa9UZTbXup5Rkh7VBLUqXnzZf
-         JjJQ==
-X-Gm-Message-State: AOAM5338Cam/icoqnL5fFbqg00vFPx1vM+3IE4jQWEJezRX6jyho/VjP
-        MeqpSWA1PptHwnxWCTGKW4BegBNlN+k=
-X-Google-Smtp-Source: ABdhPJxZEVxk0HSstfTgZ03TKu/l9h2RFiMju0o1xBbAogtUWwOhGMr6MvX8lKKnKOSj0G9S+bSEIQ==
-X-Received: by 2002:aca:d643:: with SMTP id n64mr6643551oig.151.1611422138666;
-        Sat, 23 Jan 2021 09:15:38 -0800 (PST)
+        bh=eoXaediOkXdklGakOAPGeoS0a6EYsoWmC4XNPGLVnsQ=;
+        b=uJQS8YCzSV9etokCBBsL6Ib+Mq3oS0LzoYAJI6qVGKYvZ/L7D4CBQ8jC51MyMIh0ey
+         aegSgBKah0Ui4KYntQ+t431niWE6HMRQtiY4utua/3X9wCt+rEMLlziOBm/Xqim3QzRB
+         EVyzWRvU6WB6oTtm5+35D4zLMI8e6MRXGqGywWj+pme8oBM2gqYNOvxI6Rh5a2dLt2hZ
+         g6oDS63lmlRtt2Euo8aIWGukXJOTre6ww8dyrVZY+REsUbPHtT/GDdpf7fWlyqM+6A0Z
+         FAJbJPRa/cVbKW+D3wrE7tNg1Fkvg2s1xomgprMIw90Xfeq4QUy739H09yq+8kILwngQ
+         PcGA==
+X-Gm-Message-State: AOAM533Ou+6IbIB00uLyBNflTTtl37/Hujg3HZmsihQmHuBYfSK5egdc
+        /MOMQG9tYxYdZpB3qatpyH4=
+X-Google-Smtp-Source: ABdhPJyalZ3hy1ASEPtojtE5ejZDWaAKtp3JQx7AQWUbUSx3M08uIoU+AjRxbxKtfCKrQiL81Z3uhw==
+X-Received: by 2002:aca:3306:: with SMTP id z6mr6479372oiz.141.1611422360902;
+        Sat, 23 Jan 2021 09:19:20 -0800 (PST)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j8sm2411963oie.47.2021.01.23.09.15.37
+        by smtp.gmail.com with ESMTPSA id t2sm2446588otj.47.2021.01.23.09.19.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 23 Jan 2021 09:15:38 -0800 (PST)
+        Sat, 23 Jan 2021 09:19:20 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 23 Jan 2021 09:15:36 -0800
+Date:   Sat, 23 Jan 2021 09:19:18 -0800
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     trix@redhat.com
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: it8712f_wdt: remove definition of DEBUG
-Message-ID: <20210123171536.GA55320@roeck-us.net>
-References: <20210115153237.131357-1-trix@redhat.com>
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Cc:     jerry.hoemann@hpe.com, wim@linux-watchdog.org,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog/hpwdt: Assign boolean values to a bool variable
+Message-ID: <20210123171918.GA55938@roeck-us.net>
+References: <1611128890-79204-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115153237.131357-1-trix@redhat.com>
+In-Reply-To: <1611128890-79204-1-git-send-email-abaci-bugfix@linux.alibaba.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 07:32:37AM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Wed, Jan 20, 2021 at 03:48:10PM +0800, Jiapeng Zhong wrote:
+> Fix the following coccicheck warnings:
 > 
-> Defining DEBUG should only be done in development.
-> So remove DEBUG.
+>  ./drivers/watchdog/hpwdt.c:345:2-12: WARNING: Assignment of
+> 0/1 to bool variable.
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> ./drivers/watchdog/hpwdt.c:126:2-12: WARNING: Assignment of
+> 0/1 to bool variable.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+> Reviewed-by: Jerry Hoemann <jerry.hoemann@hpe.com>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
 Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
 > ---
->  drivers/watchdog/it8712f_wdt.c | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/watchdog/hpwdt.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/watchdog/it8712f_wdt.c b/drivers/watchdog/it8712f_wdt.c
-> index 9b89d2f09568..3ce6a58bd81e 100644
-> --- a/drivers/watchdog/it8712f_wdt.c
-> +++ b/drivers/watchdog/it8712f_wdt.c
-> @@ -31,7 +31,6 @@
->  #include <linux/io.h>
->  #include <linux/ioport.h>
+> diff --git a/drivers/watchdog/hpwdt.c b/drivers/watchdog/hpwdt.c
+> index cbd1498..22ddba3 100644
+> --- a/drivers/watchdog/hpwdt.c
+> +++ b/drivers/watchdog/hpwdt.c
+> @@ -123,7 +123,7 @@ static int hpwdt_settimeout(struct watchdog_device *wdd, unsigned int val)
+>  	if (val <= wdd->pretimeout) {
+>  		dev_dbg(wdd->parent, "pretimeout < timeout. Setting to zero\n");
+>  		wdd->pretimeout = 0;
+> -		pretimeout = 0;
+> +		pretimeout = false;
+>  		if (watchdog_active(wdd))
+>  			hpwdt_start(wdd);
+>  	}
+> @@ -336,13 +336,13 @@ static int hpwdt_init_one(struct pci_dev *dev,
+>  	watchdog_init_timeout(&hpwdt_dev, soft_margin, NULL);
 >  
-> -#define DEBUG
->  #define NAME "it8712f_wdt"
+>  	if (is_kdump_kernel()) {
+> -		pretimeout = 0;
+> +		pretimeout = false;
+>  		kdumptimeout = 0;
+>  	}
 >  
->  MODULE_AUTHOR("Jorge Boncompte - DTI2 <jorge@dti2.net>");
+>  	if (pretimeout && hpwdt_dev.timeout <= PRETIMEOUT_SEC) {
+>  		dev_warn(&dev->dev, "timeout <= pretimeout. Setting pretimeout to zero\n");
+> -		pretimeout = 0;
+> +		pretimeout = false;
+>  	}
+>  	hpwdt_dev.pretimeout = pretimeout ? PRETIMEOUT_SEC : 0;
+>  	kdumptimeout = min(kdumptimeout, HPWDT_MAX_TIMER);
