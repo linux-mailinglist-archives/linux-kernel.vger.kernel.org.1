@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A333301250
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 03:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B5F301254
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 03:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbhAWCfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 21:35:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726374AbhAWCfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 21:35:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D78B423B2F;
-        Sat, 23 Jan 2021 02:34:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611369265;
-        bh=Tn3Ljt78OWX/vk/E7IdSDzroXqvkM/ec13V1UWGX98Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hZRdWVy+mwTJISPfd2P4Rih+Fh36oTCu/XAF17zixDcY+oX5zuUWVVRV2wNuUORv+
-         EMKn0/tQ/MB6Pn+WzIqorqQwZWAb33Yx4qWInwPAj1sCc5IJw0NrgQGJgrfUWck2qk
-         E1dRIzUmWtcZhIMrRJekO5Zh0TfpCwIG38x5t8BxJamIfkDR7IhLGRWm4bMsRy0hnj
-         MAJrHSh2hLLcXEJsA71ofvVf62GFFKfpNo3AshFDlkbev/lOkHx1eBL4FY29V7N5Z5
-         eNlAoLvYm65Q1ZSfo53xyZH/eLZwDM626K9Qs6gYL4pZARhp04lWqohlvpS2YfV9Mv
-         +UF1WsgaOoFdQ==
-Date:   Fri, 22 Jan 2021 18:34:24 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Enke Chen <enkechen2020@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neal Cardwell <ncardwell@google.com>
-Subject: Re: [PATCH net] tcp: make TCP_USER_TIMEOUT accurate for zero window
- probes
-Message-ID: <20210122183424.59c716a1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210123022823.GA100578@localhost.localdomain>
-References: <20210122191306.GA99540@localhost.localdomain>
-        <20210122174325.269ac329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210123022823.GA100578@localhost.localdomain>
+        id S1726529AbhAWChG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 21:37:06 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11484 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726563AbhAWCgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 21:36:46 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DN0b06Kblzj9Gr;
+        Sat, 23 Jan 2021 10:34:52 +0800 (CST)
+Received: from [10.174.176.185] (10.174.176.185) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 23 Jan 2021 10:35:57 +0800
+Subject: Re: [PATCH 1/4] ubifs: Correctly set inode size in ubifs_link()
+To:     Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>
+CC:     <david@sigma-star.at>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20210122212229.17072-1-richard@nod.at>
+ <20210122212229.17072-2-richard@nod.at>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <91b23161-db4a-4d64-db30-e42e2eaade1e@huawei.com>
+Date:   Sat, 23 Jan 2021 10:35:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210122212229.17072-2-richard@nod.at>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.185]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 18:28:23 -0800 Enke Chen wrote:
-> Hi, Jakub:
+ÔÚ 2021/1/23 5:22, Richard Weinberger Ð´µÀ:
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 9a6b8660425a..04912dedca48 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -693,7 +693,7 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+>   	struct inode *inode = d_inode(old_dentry);
+>   	struct ubifs_inode *ui = ubifs_inode(inode);
+>   	struct ubifs_inode *dir_ui = ubifs_inode(dir);
+> -	int err, sz_change = CALC_DENT_SIZE(dentry->d_name.len);
+> +	int err, sz_change;
+>   	struct ubifs_budget_req req = { .new_dent = 1, .dirtied_ino = 2,
+>   				.dirtied_ino_d = ALIGN(ui->data_len, 8) };
+>   	struct fscrypt_name nm;
+> @@ -731,6 +731,8 @@ static int ubifs_link(struct dentry *old_dentry, struct inode *dir,
+>   	if (inode->i_nlink == 0)
+>   		ubifs_delete_orphan(c, inode->i_ino);
+>   
+> +	sz_change = CALC_DENT_SIZE(fname_len(&nm));
+> +
+>   	inc_nlink(inode);
+>   	ihold(inode);
+>   	inode->i_ctime = current_time(inode);
 > 
-> In terms of backporting, this patch should go together with:
-> 
->     9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
 
-As in it:
-
-Fixes: 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
-
-or does it further fix the same issue, so:
-
-Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
-
-?
