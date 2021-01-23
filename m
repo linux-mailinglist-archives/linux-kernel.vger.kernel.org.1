@@ -2,173 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E15330155D
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 14:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D79830155A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 14:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725880AbhAWNOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 08:14:41 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:45761 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725766AbhAWNOh (ORCPT
+        id S1725779AbhAWNN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 08:13:57 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:52037 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbhAWNN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 08:14:37 -0500
-Received: from localhost.localdomain (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 10NDBvPP016300;
-        Sat, 23 Jan 2021 22:11:58 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 10NDBvPP016300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611407519;
-        bh=Q7tcC4mt1Zp1/28EOjcXN8NS6DZeIM4iUSeIYyg4BP0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JBOL6/Ut1OXSMkNuqOkuP1mw3zKhyYpeOsl332jaZ2dhz6MaQF+1skS5IKyR0w3dX
-         sIggrNvWoGTSm6rD3ezdHYmpCLST+iBpJQ9NvPhEyGXCWSuw2Fet2mUJVsjX6v5a+h
-         eAQSQXm2nij2HCQhm6KCtdntWVb54GJBXngu7xr6d95uHe8bQ2xCMLuPyCgmssFVY/
-         3Lb1QDjBR8QLkbkiS3Er7V/eDG0BmkYk1euTzsw9GUPU6Txfot+YAIS2ujyU5BNQxG
-         DOJjOpP18RbwqOf0HgoVxoJ294CYSfJugE6ppoFBxZyLH6z4PJ5d7DxnICwXx1TqSq
-         6sJeFFc7dRxmw==
-X-Nifty-SrcIP: [126.26.94.251]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Robert Karszniewicz <r.karszniewicz@phytec.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-doc@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH] doc: gcc-plugins: drop more stale information
-Date:   Sat, 23 Jan 2021 22:11:52 +0900
-Message-Id: <20210123131152.734504-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Sat, 23 Jan 2021 08:13:56 -0500
+Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10NDCq9j031838;
+        Sat, 23 Jan 2021 22:12:52 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
+ Sat, 23 Jan 2021 22:12:52 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10NDCql2031834
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 23 Jan 2021 22:12:52 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: BUG: MAX_LOCKDEP_KEYS too low!
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Hillf Danton <hdanton@sina.com>
+References: <c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru>
+ <CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com>
+ <6af41136-4344-73da-f821-e831674be473@i-love.sakura.ne.jp>
+ <70d427e8-7281-0aae-c524-813d73eca2d7@ozlabs.ru>
+ <CACT4Y+bqidtwh1HUFFoyyKyVy0jnwrzhVBgqmU+T9sN1yPMO=g@mail.gmail.com>
+ <eb71cc37-afbd-5446-6305-8c7abcc6e91f@i-love.sakura.ne.jp>
+ <6eaafbd8-1c10-75df-75ae-9afa0861f69b@i-love.sakura.ne.jp>
+ <20210123060145.18356-1-hdanton@sina.com>
+ <8b1fff6b-1acc-4582-0abe-86f948ac4b4a@ozlabs.ru>
+ <0bfad7f4-550a-0645-d24b-940e399e9c2c@i-love.sakura.ne.jp>
+ <dc1e9f3a-b40f-8db3-bce3-07c3c12af8ea@ozlabs.ru>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <2f15f5ec-a3b0-1d64-0517-3e06da8f27bb@i-love.sakura.ne.jp>
+Date:   Sat, 23 Jan 2021 22:12:50 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <dc1e9f3a-b40f-8db3-bce3-07c3c12af8ea@ozlabs.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[1] Drop the version information
+On 2021/01/23 20:26, Alexey Kardashevskiy wrote:
+> Should not the first 8192 from "grep lock-classes /proc/lockdep_stats" decrease
+> after time (it does not), or once it has failed, it is permanent?
 
-The range of the supported GCC versions are always changing. The
-current minimal GCC version is 4.9, and commit 1e860048c53e
-("gcc-plugins: simplify GCC plugin-dev capability test") removed the
-old code accordingly. We do not mention specific version ranges like
-"all gcc versions from 4.5 to 6.0" since we often forget to update the
-documentation when the minimal compiler version is raised.
-
-[2] Drop the C compiler statements
-
-Since commit 77342a02ff6e ("gcc-plugins: drop support for GCC <= 4.7")
-the GCC plugin infrastructure only supports g++.
-
-[3] Drop supported architectures
-
-As of v5.11-rc4, the infrastructure supports more architectures;
-arm, arm64, mips, powerpc, riscv, s390, um, and x86. (just grep
-"select HAVE_GCC_PLUGINS") Again, we often forget to update this
-document when a new architecture is supported. Let's just say
-"only some architectures".
-
-[4] Update the apt-get example
-
-We are discussing to bump the minimal version to GCC 5. Change the
-package example to gcc-10-plugin-dev while we are here.
-
-[5] Update the build target
-
-Since commit ce2fd53a10c7 ("kbuild: descend into scripts/gcc-plugins/
-via scripts/Makefile"), "make gcc-plugins" is not supported.
-"make scripts" builds all the enabled plugins, including some other
-tools.
-
-[6] Update the steps for adding a new plugin
-
-At first, all CONFIG options for GCC plugins were located in arch/Kconfig.
-After commit 45332b1bdfdc ("gcc-plugins: split out Kconfig entries to
-scripts/gcc-plugins/Kconfig"), scripts/gcc-plugins/Kconfig became the
-central place to collect plugin CONFIG options. In my understanding,
-this requirement no longer exists because commit 9f671e58159a ("security:
-Create "kernel hardening" config area") moved some of plugin CONFIG
-options to another file. Find an appropriate place to add the new CONFIG.
-I do not understand what was intended by the $(src)/ prefix. Remove it.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Documentation/kbuild/gcc-plugins.rst | 30 ++++++++++++----------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/kbuild/gcc-plugins.rst b/Documentation/kbuild/gcc-plugins.rst
-index 63379d0150e3..7ea16f93db06 100644
---- a/Documentation/kbuild/gcc-plugins.rst
-+++ b/Documentation/kbuild/gcc-plugins.rst
-@@ -11,16 +11,13 @@ compiler [1]_. They are useful for runtime instrumentation and static analysis.
- We can analyse, change and add further code during compilation via
- callbacks [2]_, GIMPLE [3]_, IPA [4]_ and RTL passes [5]_.
- 
--The GCC plugin infrastructure of the kernel supports all gcc versions from
--4.5 to 6.0, building out-of-tree modules, cross-compilation and building in a
--separate directory.
--Plugin source files have to be compilable by both a C and a C++ compiler as well
--because gcc versions 4.5 and 4.6 are compiled by a C compiler,
--gcc-4.7 can be compiled by a C or a C++ compiler,
--and versions 4.8+ can only be compiled by a C++ compiler.
-+The GCC plugin infrastructure of the kernel supports building out-of-tree
-+modules, cross-compilation and building in a separate directory.
-+Plugin source files have to be compilable by a C++ compiler.
- 
--Currently the GCC plugin infrastructure supports only the x86, arm, arm64 and
--powerpc architectures.
-+Currently the GCC plugin infrastructure supports only some architectures.
-+Grep "select HAVE_GCC_PLUGINS" to find out which architectures support
-+GCC plugins.
- 
- This infrastructure was ported from grsecurity [6]_ and PaX [7]_.
- 
-@@ -53,8 +50,7 @@ $(src)/scripts/gcc-plugins/gcc-generate-simple_ipa-pass.h,
- $(src)/scripts/gcc-plugins/gcc-generate-rtl-pass.h**
- 
- 	These headers automatically generate the registration structures for
--	GIMPLE, SIMPLE_IPA, IPA and RTL passes. They support all gcc versions
--	from 4.5 to 6.0.
-+	GIMPLE, SIMPLE_IPA, IPA and RTL passes.
- 	They should be preferred to creating the structures by hand.
- 
- 
-@@ -62,9 +58,9 @@ Usage
- =====
- 
- You must install the gcc plugin headers for your gcc version,
--e.g., on Ubuntu for gcc-4.9::
-+e.g., on Ubuntu for gcc-10::
- 
--	apt-get install gcc-4.9-plugin-dev
-+	apt-get install gcc-10-plugin-dev
- 
- Or on Fedora::
- 
-@@ -76,7 +72,7 @@ Enable a GCC plugin based feature in the kernel config::
- 
- To compile only the plugin(s)::
- 
--	make gcc-plugins
-+	make scripts
- 
- or just run the kernel make and compile the whole kernel with
- the cyclomatic complexity GCC plugin.
-@@ -85,7 +81,7 @@ the cyclomatic complexity GCC plugin.
- 4. How to add a new GCC plugin
- ==============================
- 
--The GCC plugins are in $(src)/scripts/gcc-plugins/. You can use a file or a directory
--here. It must be added to $(src)/scripts/gcc-plugins/Makefile,
--$(src)/scripts/Makefile.gcc-plugins and $(src)/arch/Kconfig.
-+The GCC plugins are in scripts/gcc-plugins/. You can use a file or a directory
-+here. It must be added to /scripts/gcc-plugins/Makefile,
-+scripts/Makefile.gcc-plugins and a relevant Kconfig file.
- See the cyc_complexity_plugin.c (CONFIG_GCC_PLUGIN_CYC_COMPLEXITY) GCC plugin.
--- 
-2.27.0
+Since lockdep_unregister_key() becomes a no-op because graph_lock() returns 0
+due to debug_locks being changed from 1 to 0 by __debug_locks_off() from
+debug_locks_off() from debug_locks_off_graph_unlock(), lock-classes value in
+/proc/lockdep_stats will not decrease after "BUG: MAX_LOCKDEP_KEYS too low!"
+is printed.
 
