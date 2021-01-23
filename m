@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A728301748
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D8E30174C
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 18:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726290AbhAWRdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 12:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S1726314AbhAWRfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 12:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726232AbhAWRdX (ORCPT
+        with ESMTP id S1726309AbhAWReu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 12:33:23 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BD7C061788;
-        Sat, 23 Jan 2021 09:32:42 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id kg20so11694123ejc.4;
-        Sat, 23 Jan 2021 09:32:42 -0800 (PST)
+        Sat, 23 Jan 2021 12:34:50 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8AEC06174A;
+        Sat, 23 Jan 2021 09:34:03 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id w8so9954522oie.2;
+        Sat, 23 Jan 2021 09:34:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8uPnzNnV4HKAWjbVOjlMDzt9NKZMgpM4gy8WEBWy5EI=;
-        b=kvinLGSmLypbvCVFZbq/COJAG4aJel7Fmhc9E2tjYNrQVi7triPQvzel7bipffGmNt
-         7SKMZdvVavuSQbnSpYBR2+ZJIRlboD1Ke89zq+9UJgv9tLfgj2Ok6rxy+CrbE5PXPFiO
-         cm0VMcdOQeeMD5fifThPCTwJ8PyEvMNnO6E3gtJXogin6eKTRIOu3/8bim967HKy+sxa
-         2MFb7Ouoq9NqU+gfYCALA9mxgwYXJRIzY6QVpky49qJyBrR65x0B6csT/K7urzkc175Q
-         bqKRXkuqAWpACz7bZ5dPQL2cxob+dYTehrfCENEwUDk8TXZXEUKxpJlR6x+I06bIIsjR
-         fk3w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=b4K5CQtBVamoURmPksyutnNAiwTza805g1N0hR+Tyog=;
+        b=WQYZi8e2c26NusVxkq8YszXgFKXZagnXWL/hrebvsPdwtnEWVQ1M/E4/GOEXR4qVf6
+         Z2Z+PSdS8+iOVVtKvMAMSQ/0eDulMqXe8VMyGs+4wprWhBRklgUk9uXfYmaR6asAmAfi
+         ShAfzmZIYjVqe8A+im1PWkHd2SD+JnQg5k/BD0nklKzCrAOElud5UCu8o9sFR4vxcIpW
+         LRDBou3xD3Hk4yheYKzxk3oRb4LsSYlT5xPxUU9PnxnL3QxZt6U61U0TvDSrDguuyyCd
+         I/f73pEYb3pvGwCW7eMcnBzwhLKLgcFWqxWnNmC6iQvXH2T+eU0vMug7J+ha8SQnXdpz
+         AJ5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8uPnzNnV4HKAWjbVOjlMDzt9NKZMgpM4gy8WEBWy5EI=;
-        b=egNtt4UBS5Pj8gdKocDBbjJ4kec423AWRwmLdE58l+HUAooTmDBhRHjarT3s2uB0im
-         YHofS1TZnC71eydEhmlH90UT8NhXkMT/yix2U4EQ+gzoFGRJ8baeivJsrCc8acImjVdq
-         zJXf5DSJd9qeH1+q37YEHCQSS37oVKg6o5FIjhYa04+BIe6ATUnpKDnoXeMUYixrpt4Y
-         LZ4tjR3LWp5YI0WmhK0KsMQJRYHLD44Xqdz7sMB35t2XH2nGB2SWiqo9EXxWIw3WwnBl
-         x+mhCsoaqlyZZUqvfMNCbH8FHalL59m7c4bHXXprVXm7W0dsEoe/2WOwmcHYR56qbG5z
-         ar0Q==
-X-Gm-Message-State: AOAM532LaxPVL9H1pU48Gn5I2cJfJ+HrN1CP/N3W6qK3e46bN8mtYIl8
-        JxdCqJc77RgW50iqNtCsK3m1Gsr4+y8=
-X-Google-Smtp-Source: ABdhPJy1VYbIaVyf1LKMUOEmxoS0nBwtyKwfDnHPAGBNfgIO+n49H90cbBbIMXwmtbBRLh5wV6zvxQ==
-X-Received: by 2002:a17:906:7e49:: with SMTP id z9mr1013876ejr.447.1611423161252;
-        Sat, 23 Jan 2021 09:32:41 -0800 (PST)
-Received: from localhost.localdomain ([2a02:a03f:b7fe:f700:31ee:7e10:5e3d:6832])
-        by smtp.gmail.com with ESMTPSA id i18sm7436835edr.2.2021.01.23.09.32.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 09:32:40 -0800 (PST)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] sh: fix sparse annotation in SH's __get_user_check()
-Date:   Sat, 23 Jan 2021 18:32:37 +0100
-Message-Id: <20210123173237.91670-1-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=b4K5CQtBVamoURmPksyutnNAiwTza805g1N0hR+Tyog=;
+        b=Je/l7md4KCvPSQ1uECSEcfurCAcrS8VmVLN3c0UdNj+SFNk3tcWmFCbVa8eH4kOu65
+         W8gY08iP7fOKZKKTqJzVsgNQe8fmVRoOu6uYAewhi3aocrc22XYNz893hXd5ZNL8j371
+         6xk74JP8jLyBSJfT8ybHlWuMCQ0Uci5rmlPOHB72Z0iJzPPBYiyKBO046juwiznTwm0n
+         W1829vHSsUTMhJy02dfUVggi2dEGDDOvCxdJI00qAQdI9Rz28LgsDfZMGkwtiJV5JUNX
+         00Jgoq+gQs2e05RIIMw/mG2CYeAA+YzE/2qD3GaHm88HxCarofoFq1YgclU/s8NYesib
+         6YgQ==
+X-Gm-Message-State: AOAM532LeHR4PVHJQxHnHUQpJn3R2V+UqeS7dh2ILE+xuaZ40ST65Jh4
+        gOzQgF/hwHxl2zUwiW7J7mY=
+X-Google-Smtp-Source: ABdhPJw9dgIKA1nn4BG+mGoYH+i220V0pOWwagtjlRLUeq9o1Y/h3LU06D2rFztt1BTRLUBRLYkt6A==
+X-Received: by 2002:a05:6808:2d2:: with SMTP id a18mr6771655oid.139.1611423242888;
+        Sat, 23 Jan 2021 09:34:02 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i9sm2460576oii.34.2021.01.23.09.34.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 23 Jan 2021 09:34:02 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 23 Jan 2021 09:34:01 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, robh+dt@kernel.org, wim@linux-watchdog.org,
+        jamie@jamieiles.com, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 1/8] dt-binding: watchdog: add more Rockchip compatibles
+ to snps,dw-wdt.yaml
+Message-ID: <20210123173401.GA57343@roeck-us.net>
+References: <20201218120534.13788-1-jbx6244@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218120534.13788-1-jbx6244@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer in get_user() and friends is supposed to be a __user pointer.
-But in SH's implementation of __get_user_check(), the pointer is
-assigned to a local variable __gu_addr which is lacking the __user
-annotation. As consequence, a warning is issued for every of its uses.
+On Fri, Dec 18, 2020 at 01:05:27PM +0100, Johan Jonker wrote:
+> The watchdog compatible strings are suppose to be SoC orientated.
+> In the more recently added Rockchip SoC dtsi files only
+> the fallback string "snps,dw-wdt" is used, so add the following
+> compatible strings:
+> 
+> "rockchip,px30-wdt", "snps,dw-wdt"
+> "rockchip,rk3228-wdt", "snps,dw-wdt"
+> "rockchip,rk3308-wdt", "snps,dw-wdt"
+> "rockchip,rk3328-wdt", "snps,dw-wdt"
+> "rockchip,rk3399-wdt", "snps,dw-wdt"
+> "rockchip,rv1108-wdt", "snps,dw-wdt"
+> 
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> 
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 
-So, add the missing __user annotation (this remove ~700 warnings when
-using defconfig).
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Link: https://lore.kernel.org/r/202101141753.ropIZ9nh-lkp@intel.com
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- arch/sh/include/asm/uaccess.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/sh/include/asm/uaccess.h b/arch/sh/include/asm/uaccess.h
-index 73f3b48d4a34..e2623fe2ac09 100644
---- a/arch/sh/include/asm/uaccess.h
-+++ b/arch/sh/include/asm/uaccess.h
-@@ -68,7 +68,7 @@ struct __large_struct { unsigned long buf[100]; };
- ({									\
- 	long __gu_err = -EFAULT;					\
- 	unsigned long __gu_val = 0;					\
--	const __typeof__(*(ptr)) *__gu_addr = (ptr);			\
-+	const __typeof__(*(ptr)) __user *__gu_addr = (ptr);		\
- 	if (likely(access_ok(__gu_addr, (size))))		\
- 		__get_user_size(__gu_val, __gu_addr, (size), __gu_err);	\
- 	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-
-base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
--- 
-2.30.0
-
+> ---
+>  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> index f7ee9229c..b58596b18 100644
+> --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> @@ -18,10 +18,16 @@ properties:
+>        - const: snps,dw-wdt
+>        - items:
+>            - enum:
+> +              - rockchip,px30-wdt
+>                - rockchip,rk3066-wdt
+>                - rockchip,rk3188-wdt
+> +              - rockchip,rk3228-wdt
+>                - rockchip,rk3288-wdt
+> +              - rockchip,rk3308-wdt
+> +              - rockchip,rk3328-wdt
+>                - rockchip,rk3368-wdt
+> +              - rockchip,rk3399-wdt
+> +              - rockchip,rv1108-wdt
+>            - const: snps,dw-wdt
+>  
+>    reg:
