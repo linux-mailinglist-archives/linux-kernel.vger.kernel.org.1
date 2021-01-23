@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773B930183F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 21:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D03B301847
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 21:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbhAWUKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 15:10:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726480AbhAWUGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 15:06:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5B69722D50;
-        Sat, 23 Jan 2021 20:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611432341;
-        bh=3ZTywdWdqrGsz5Rn8KHjIVQ7QhRug7vMT37OCc3/rw8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=tjQxDrts9pWIqpF77NOHrfWh55dbxoUXWhfHU5Cn5EnEMchoK85BvCvKqBKoCUwjk
-         I/m7pdyIEmU1Z95pwvF7tINlqlQWPecdyB9uLJIkRWrNtzbNbEgkHdc7J1UHKIJsJz
-         gbTbZYDu6CWjL5DKlb8Dc6rMc2HecjT3AN7D7SC7zapsbD1WfaidK7vL94b72eKjiO
-         +qKhb1e1Nr87Xf8SAYWPmZ8bAZ67UXWoiLCFnP0GDEKxn++eev80mDsoJA7UF+dZlF
-         sFk62dawnrO2l3xzmX9oEtwlbjbLBrdiunQ4RmqHqeJ1imQEqfZX9RSo3ZLkML+rmi
-         tVi/9XLR075pA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 452E2652E4;
-        Sat, 23 Jan 2021 20:05:41 +0000 (UTC)
-Subject: Re: [GIT PULL] KUnit update for Linux 5.11-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <137b3eea-4bfe-9026-e647-1861bc62ccf9@linuxfoundation.org>
-References: <137b3eea-4bfe-9026-e647-1861bc62ccf9@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <137b3eea-4bfe-9026-e647-1861bc62ccf9@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-fixes-5.11-rc5
-X-PR-Tracked-Commit-Id: 2b8fdbbf1c616300312f71fe5b21fe8f03129950
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 929b979611f5d2a264a2c1b9fe84baa975828522
-Message-Id: <161143234119.8668.3268381626699589378.pr-tracker-bot@kernel.org>
-Date:   Sat, 23 Jan 2021 20:05:41 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1726547AbhAWULw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 15:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbhAWULT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 15:11:19 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20425C0613D6;
+        Sat, 23 Jan 2021 12:10:39 -0800 (PST)
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611432634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=snbBb8jbhWawsw2GQsoMHEAKGubaOMjN8g5bGgFLep8=;
+        b=b6HbygbiVP2lcXA+lKmy7IiN+6FqeUJFUkgeR5UelMv2N8aINVYMIQ1tcLOoHrvmv3ePTT
+        n61hiRZhsU+Jyy4YJs35a16Hc+W8wzgRoHhYKEBn3FRgrgwa3LODg074Tc+6p6cwgbPphb
+        8OKYLYwLwiqp6yDPk7ZS9VH0r1e1iVGElLKoTsVd5939d8eOxoHzIcxj50F72PUfI2Iqdj
+        I3kWF89xRZf3Ydl4RTtqjVXRpIwF7dtl/EeB2/cA1OWP1+SUVaCzcobhxTn3kq3N2uRwVT
+        Um3G8+5ZuxMFbXlG6JXNUXhoSO9raFovDkJSVCaaZWfOCU981ilwa+lJFx+xSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611432634;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=snbBb8jbhWawsw2GQsoMHEAKGubaOMjN8g5bGgFLep8=;
+        b=jdIEwID/4bQ3nmAPbaZAtu9xC+D1aOSxyJaF/RtW1fqRhdcS97ZAwgx+WYKCfdSVq1i24b
+        jFlK7OZgy37YMDDQ==
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH v3 0/3] blk-mq: Don't complete in IRQ, use llist_head
+Date:   Sat, 23 Jan 2021 21:10:24 +0100
+Message-Id: <20210123201027.3262800-1-bigeasy@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 22 Jan 2021 17:43:04 -0700:
+Patch 2+3 were applied and then dropped by Jens due to a NOHZ+softirq
+related warning [0]. Turns out a successful wakeup via
+set_nr_if_polling() will not process any softirqs and the CPU may go
+back to idle. This is addressed by patch #1.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-fixes-5.11-rc5
+smpcfd_dying_cpu() will also invoke SMP-functions calls via
+flush_smp_call_function_queue() but the block layer shouldn't queue
+anything because the CPU isn't online anymore.
+The two caller of flush_smp_call_function_from_idle() look fine with
+opening interrupts from within do_softirq().
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/929b979611f5d2a264a2c1b9fe84baa975828522
+[0] https://lkml.kernel.org/r/1ee4b31b-350e-a9f5-4349-cfb34b89829a@kernel.dk
 
-Thank you!
+Sebastian
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
