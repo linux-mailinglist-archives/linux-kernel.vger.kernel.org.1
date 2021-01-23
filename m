@@ -2,98 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948FD30187F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D8D301881
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbhAWVOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 16:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbhAWVOp (ORCPT
+        id S1726251AbhAWVUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 16:20:04 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13456 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725765AbhAWVUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 16:14:45 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AED3C0613D6;
-        Sat, 23 Jan 2021 13:14:05 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id j12so5964240pjy.5;
-        Sat, 23 Jan 2021 13:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xrDzudvDNG2fzllxzF5s0DnJ66F4Ddj8oXL2djg9H1c=;
-        b=cZ+4u7WYxh/96OX0BUO92HsWyJVgXXnIPSqw082exCGUF/+rczi6n8WtbeK61dsk5r
-         xMG8ByEt+KGhAxogkLFp3dqXo4/KqRTmcu+YI9504r5aeeKBJOFp0WpKaemElkvaBYCF
-         tmc0iGGts71BVp7ggt3uF0J2bHoYXi2EO6N93UOFFbA9uiBVpeabkHzGRVYBmKLGMedp
-         yN9sIJOQ630sxFcOgAchSq/8LzRyukApKs2Y5fs3fP88kOFERTRX0h0wltxtEt5a2n+J
-         6i1+fdvNP8SaK9FIgNZqfXAR+rhMFZ9QHv/dzXQDSANm0tMQFr7HhcOJ9SL8Jh0gy61Q
-         T9Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xrDzudvDNG2fzllxzF5s0DnJ66F4Ddj8oXL2djg9H1c=;
-        b=nqgGfa6BiFWHvzmvlFKD1qPOkklnMYHDa/296VQfYwhl1t0EoaagnFZVqev/mh/CiH
-         1U6x3wkYQLk8TGozZGmuc8/xNMas7OSWQ0xuxxoHg45BnP2ypkSNeoyKHp/1soIAodQf
-         x0y2SAVUyIMJAu7WVQt0nwSrKJfiy+IvdrXK2SUkRPJVYitklDCh1JweSN/GdgaDiJdi
-         eNsvUmjnQJxTOTUIsaYETIya+yF9JkGrUMaCXofkmcAnioa9lOe+wdaq6L/irhlbowxV
-         7eL+xR+XFF8t0tFw27H0U5BCanRQkQSslslaZLQwN8rfhaCNjqebEsNUCgHzfjYvtOl+
-         l+qA==
-X-Gm-Message-State: AOAM531OhrV0HFbT778tqVCBCB/zaOySK5nuA1fW4ZuyzoQFRXUWiFhE
-        eiAGf/6pP/YWhzuhCUOZeWXOGmiD+tY=
-X-Google-Smtp-Source: ABdhPJycLRNBdDKA7LXwJHiYsOYDEQMTgcKYBKgsirezYlVlVJgraCQBohQuBIPSE5J4ydZZ+cam0Q==
-X-Received: by 2002:a17:90a:de09:: with SMTP id m9mr1714639pjv.117.1611436444466;
-        Sat, 23 Jan 2021 13:14:04 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id f71sm12551835pfa.138.2021.01.23.13.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 13:14:03 -0800 (PST)
-Date:   Sat, 23 Jan 2021 13:14:00 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Brandon Streiff <brandon.streiff@ni.com>,
-        Olof Johansson <olof@lixom.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net 2/4] net: mvpp2: Remove unneeded Kconfig dependency.
-Message-ID: <20210123211400.GA6270@hoboy.vegasvil.org>
-References: <cover.1611198584.git.richardcochran@gmail.com>
- <1069fecd4b7e13485839e1c66696c5a6c70f6144.1611198584.git.richardcochran@gmail.com>
- <20210121102753.GO1551@shell.armlinux.org.uk>
- <20210121150802.GB20321@hoboy.vegasvil.org>
- <20210122181444.66f9417d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210123132626.GA22662@hoboy.vegasvil.org>
- <20210123121227.16384ff5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Sat, 23 Jan 2021 16:20:03 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10NL16Yr051574;
+        Sat, 23 Jan 2021 16:18:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=V/uZh7grFtRpvKoy4oKbOWx5irOBO5xdSuC7+n4228Q=;
+ b=d/xw0qkSfvjT/edXqoxnZ2oEz+G+yyR89qFgZnbOZSJjRZl5akbP30xfUR1XonrZOsOZ
+ WZCV39j60Rp8W/k6Djn5GmsQkE3FQKJ3CKtaXLeAwheacQP7JzQeX4cTV20ShJjUZMRd
+ C1/Tqv2aodhLy0ITk4/WJPFYKN3qDegGNOAqms6AM24hUWjkEMEdvckXPoYnZhgA3MHS
+ qsMKj/5tHZnr5OorOEuRB3kLggQl2lGgEMmmFpzPfUqzeJdn16YvnIeQNKhBDkfmIMQv
+ a8xAQrDMxTpY49OiwrRg9C7+igLeOkbMjrg3WqJpX/pLscTg/RQZhqY/iXPZ7iPwS+95 sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 368seva0t0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Jan 2021 16:18:42 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10NL17Nd051686;
+        Sat, 23 Jan 2021 16:18:42 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 368seva0sm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Jan 2021 16:18:41 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10NLH7FP029153;
+        Sat, 23 Jan 2021 21:18:40 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 368b2h0h40-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 23 Jan 2021 21:18:40 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10NLIVJo36176194
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 23 Jan 2021 21:18:31 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A3C9A4051;
+        Sat, 23 Jan 2021 21:18:38 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3F42A404D;
+        Sat, 23 Jan 2021 21:18:37 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 23 Jan 2021 21:18:37 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
+References: <20210114170412.4819-1-john.ogness@linutronix.de>
+        <yt9dk0s48y70.fsf@linux.ibm.com>
+        <87v9bomtd0.fsf@jogness.linutronix.de>
+Date:   Sat, 23 Jan 2021 22:18:37 +0100
+In-Reply-To: <87v9bomtd0.fsf@jogness.linutronix.de> (John Ogness's message of
+        "Sat, 23 Jan 2021 00:48:19 +0106")
+Message-ID: <yt9deeibe4ia.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123121227.16384ff5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-23_12:2021-01-22,2021-01-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
+ spamscore=0 impostorscore=0 clxscore=1015 bulkscore=0 phishscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101230119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 12:12:27PM -0800, Jakub Kicinski wrote:
-> I see. The only thing I'm worried about then is the churn in patch 3.
-> This would land in Linus's tree shortly before rc6, kinda late to be
-> taking chances in the name of minor optimizations :S
+John Ogness <john.ogness@linutronix.de> writes:
 
-;^)
+> On 2021-01-22, Sven Schnelle <svens@linux.ibm.com> wrote:
+>>
+>> So somehow the pointer for console_drivers changes.
+>>
+>> I can't provide the normal kernel crash output as printk is no longer
+>> working,
+>
+> I don't understand what you mean here. The crash tool can dump the
+> printk buffer.
+>
+> I would be curious to see what the messages look like. It would also be
+> helpful to know the last message you saw on the console.
+>
 
-Yeah, by all means, avoid ARM churn... I remember Bad Things there...
+The last message is:
 
-Maybe you could take #1 and #2 for net-next?
+[ 1845.640466] User process fault: interruption code 0007 ilc:2 in libm.so[7d78c000+a3000]
+[ 1845.640474] CPU: 9 PID: 859915 Comm: ld.so.1 Not tainted 5.11.0-20210122.rc4.git0.9f29bd8b2e71.300.fc33.s390x+git #1
+[ 1845.640476] Hardware name: IBM 8561 T01 703 (LPAR)
+[ 1845.640478] User PSW : 0705300080000000 000000007d7983b2
+[ 1845.640480]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:1 AS:0 CC:3 PM:0 RI:0 EA:1
+[ 1845.640483] User GPRS: 0000000000000000 000000007d798360 0000000000000010 000003ff00000004
+[ 1845.640485]            000000007f854dd0 000000007d7e9788 000003ff00401b30 000000007f854ff8
+[ 1845.640487]            000003ff00000000 000003ff7d5b4da0 000003ff00000000 000003ff00000010
+[ 1845.640489]            000003ff004022c6 000003ff004024b0 0000000080401796 000000007f854de8
 
-I should probably submit 3-4 throught the SoC tree anyhow.
+That's also what's written to the console. Please note the the output
+above is expected. It's only reporting that a user space program
+performed an invalid FPU operation. The kernel crash is neither written
+to the console nor the dmesg buffer.
 
-Thanks,
-Richard
+>> kmsg_dump_rewind+290 is:
+>>
+>>               if (!(con->flags & CON_ENABLED))
+>>                         continue;
+>>
+>> in kernel/printk/printk.c:1845
+>>
+>> I haven't dived into whether our show_code() is doing something wrong
+>> which was covered in the past or whether that's because of the patch
+>> above but wanted to make you aware of that in case you have an idea.
+>> Otherwise i have to dig into the code.
+>
+> Unless we are dealing with very long printk messages that normally get
+> truncated (800+ characters) this patch simply adds a string
+> terminator. I do not see how that could possibly cause this kind of
+> damage.
+>
+> When this triggers, there is nothing happening with consoles registering
+> or deregistering, right?
+
+That's correct. No registering/unregistering taking place.
+
+> The string terminator (kernel/printk/printk.c:1402) is only added for
+> paranoia. If you comment that out, this patch will have no effect (for
+> "normal" length lines). I would be curious if that somehow makes a
+> difference for you.
+
+I was able to reproduce it in a virtual machine where i have a few more
+ways to debug. What i got was:
+
+01:  -> 00000000001B8814"  MVI     92001000 >> 000000000163F1CD     CC 2
+
+That's a watchpoint telling me that the code at 0x1b8814 wants to store
+one byte to 0x163f1cd, which is the second byte of console_drivers.
+
+gdb tells me about 0x1b8814:
+
+(gdb) list *(0x1b8814)
+0x1b8814 is in record_print_text (/home/svens/ibmgit/linux/kernel/printk/printk.c:1402).
+1397		 * If a buffer was provided, it will be terminated. Space for the
+1398		 * string terminator is guaranteed to be available. The terminator is
+1399		 * not counted in the return value.
+1400		 */
+1401		if (buf_size > 0)
+1402			text[len] = 0;
+1403	
+1404		return len;
+1405	}
+1406
+
+In s390 assembly, this is the store:
+
+   0x00000000001b8810 <+0x130>:	la	%r1,0(%r7,%r9)
+   0x00000000001b8814 <+0x134>:	mvi	0(%r1),0
+
+The cpu registers at the time of write:
+
+01: GRG  0 =  0000000000000020  000000000163F1CD
+01: GRG  2 =  0000000000000042  000003E000623A98
+01: GRG  4 =  000000000000000E  000000000087BB70
+01: GRG  6 =  0000000000000400  *0000000000000224*
+01: GRG  8 =  000000000000000F  *000000000163EFA9*
+01: GRG 10 =  0000000000000033  0000000000000000
+01: GRG 12 =  00000000809AE000  000003E000623A98
+01: GRG 14 =  00000000001B884C  000003E0006239E8
+
+So r9 is 000000000163EFA9 - seems to be the start of the current message:
+
+0163EFA9:  *[   24.069514]            000000007d7af3c2: b30d0002..debr.%f0,%f2.debr.%f0,%f2
+
+while r7 is the offset, and that one is way to big:
+
+0000000000000224
+
+If you add that to 0163EFA9, you'll see that we're outside of the buffer
+and overwriting space after, which is console_drivers.
+
+The message it's trying to print is rather long, so the 0x224 could be
+the size of the whole line:
+
+This is not from the same crash, but this is how the message looks like
+it's trying to print:
+
+[   23.960773] User Code: 000000007d7af3ba: 78005000            le      %f0,0(%r5) 
+[   23.960773]            000000007d7af3be: 78205004            le      %f2,4(%r5) 
+[   23.960773]           #000000007d7af3c2: b30d0002            debr    %f0,%f2 
+[   23.960773]           >000000007d7af3c6: a7280000            lhi     %r2,0 
+[   23.960773]            000000007d7af3ca: 07fe                bcr     15,%r14 
+[   23.960773]            000000007d7af3cc: 0707                bcr     0,%r7 
+[   23.960773]            000000007d7af3ce: 0707                bcr     0,%r7 
+[   23.960773]            000000007d7af3d0: c050000289ec        larl    %r5,000000007d8007a8 
+
+I'm pretty sure it's related to the way how the s390 disassembler
+prints the buffer, it uses several pr_cont() calls, and it's crashing in the
+last pr_cont("\n") (in arch/s390/kernel/dis.c - show_code());
+
+I'm trying to get the content of the log buffer and other state, if
+there's anything else i can provide let me know.
 
