@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0FA301630
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 16:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEE7301638
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 16:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725892AbhAWPO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 10:14:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbhAWPO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 10:14:57 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756CDC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 07:14:17 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id j12so5625032pjy.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 07:14:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=KTy8n+bNEd4gKJ9+t7A4mZcH7giU4TFs0RUo2PYg5Ec=;
-        b=UxxNr3YpD9YBVQbYAyjJjJWFfl+beyLmtL53wnThX2tbCnVaexxDvLKMv6nX97vmJL
-         dPrh7fERj0dUfCbxnppUwbQfCO6Kdh9kDvwP+OXKmSuJ55WDFAylPN/SHjrDemghyf0P
-         kLgnLv5MfpVi+Mi6wQPkEzB4qjcWl0gxTR1ogA3cty2EWv/AwrijGuKHwQLs5YlAkr2m
-         hcmKF1PNzz416Ws9iouT9MsRuMHeHoe4PqeywmqbhTpfTuk7/ilJcRPl3j2XHxNMZAI3
-         CT6RmsAKG1oZ6xmPlnhZGPCbRoAiS2gtP3c1hncP5z3bhJzq3vIpQN2/SJZNB5lcECvV
-         04QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=KTy8n+bNEd4gKJ9+t7A4mZcH7giU4TFs0RUo2PYg5Ec=;
-        b=VELL1nSYFnIyCkoDqh4pLMms/HhjY98PrTtAHDUOnuoZODV0G86HATilOQm0v6hjYH
-         U1i3hveQKNcvgK3p+sP4UvUPQ4CgozUv039u+l0QYCXrvrH1WqoiyWJxnzZipmNT5zFq
-         I6b0jSNgM2OebmZGHgOQMIT+Vgj41IeUNuyXYHQ/xAeuWOBn4E12YfsT/TeDEjosdd84
-         kNKDXyk7ubIfpr+ire/zotG/qTjOPjeH7ZifnjgdIUg+PboQiKPq4EKQS6+cYo8Olx4S
-         ymbk3oCLa5nWO8ntFqcFyXuirft54/OAXqFeykvJeHXqaoEkKo7AE7Tcfl1Tvhm5sqY3
-         EJlg==
-X-Gm-Message-State: AOAM531/iTeb2qYVYL5J1Alx+tEmLm2AgZ8BczfeHl2KPTJhNlIE3nOq
-        IBsdULlIbvS+aW/Tx63hUILqkyjZMYDk9w==
-X-Google-Smtp-Source: ABdhPJyawreUvgM30jreQ3mbYFF9icNJijFyxamoBHb0+gQwNeZEpJp5E9zZHs0h9YmWiQeItodIrg==
-X-Received: by 2002:a17:902:7043:b029:df:cabc:cc97 with SMTP id h3-20020a1709027043b02900dfcabccc97mr1429590plt.4.1611414856478;
-        Sat, 23 Jan 2021 07:14:16 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:600d:a089:8c2b:8940:3286:eb08])
-        by smtp.googlemail.com with ESMTPSA id 3sm12107301pfw.204.2021.01.23.07.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 07:14:15 -0800 (PST)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        dwaipayanray1@gmail.com, broonie@kernel.org, joe@perches.com,
-        ndesaulniers@google.com, jpoimboe@redhat.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v2] checkpatch: add warning for avoiding .L prefix symbols in assembly files
-Date:   Sat, 23 Jan 2021 20:44:05 +0530
-Message-Id: <20210123151405.26267-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <bd560a8e-7949-933a-e4a9-508cb42c2570@gmail.com>
-References: <bd560a8e-7949-933a-e4a9-508cb42c2570@gmail.com>
+        id S1725972AbhAWPVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 10:21:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725550AbhAWPU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 10:20:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E492523340;
+        Sat, 23 Jan 2021 15:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611415217;
+        bh=Wz42J4kL/jAVbjmGOGJRfBzPdK4recIHdMtSn/EEkYE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kZ7UULDnmYqUabrszx6ZNq0lSeTuMbAOkv28/N6AWdcs6n9cQWjek+K8z5tfJigVs
+         5sSkSDBiBaNCW588y8XsAnKV/o16m9/3pZaueDYNbPcJZk2Ovn8ajFCSUtRGficT9h
+         Y77mIq2yleq3GTCqntmRNeWdmPYEPDCOy0nLDF40=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.253
+Date:   Sat, 23 Jan 2021 16:20:13 +0100
+Message-Id: <161141521313185@kroah.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-objtool requires that all code must be contained in an ELF symbol.
-Symbol names that have a '.L' prefix do not emit symbol table entries, as
-they have special meaning for the assembler.
+I'm announcing the release of the 4.4.253 kernel.
 
-'.L' prefixed symbols can be used within a code region, but should be
-avoided for denoting a range of code via 'SYM_*_START/END' annotations.
+All users of the 4.4 kernel series must upgrade.
 
-Add a new check to emit a warning on finding the usage of '.L' symbols
-for '.S' files in arch/x86/entry/* and arch/x86/lib/*, if it denotes
-range of code via SYM_*_START/END annotation pair.
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Suggested-by: Mark Brown <broonie@kernel.org>
-Link: https://groups.google.com/g/clang-built-linux/c/-drkmLgu-cU/m/4staOlf-CgAJ
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-* Applies perfectly on next-20210122
+thanks,
 
-Changes in v2:
-- Reduce the check to only SYM_*_START/END lines
-- Reduce the check for only .S files in arch/x86/entry/* and arch/x86/lib/* as suggested by Josh and Nick
-- Modify commit message
+greg k-h
 
- scripts/checkpatch.pl | 7 +++++++
- 1 file changed, 7 insertions(+)
+------------
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7030c4d6d126..e36cdf96dfe3 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3590,6 +3590,13 @@ sub process {
- 			}
- 		}
- 
-+# check for .L prefix local symbols in .S files
-+		if ($realfile =~ m@^arch/x86/(?:entry|lib)/.*\.S$@ &&
-+		    $line =~ /^\+\s*SYM_[A-Z]+_(?:START|END)(?:_[A-Z_]+)?\s*\(\s*\.L/) {
-+			WARN("AVOID_L_PREFIX",
-+			     "Avoid using '.L' prefixed local symbol names for denoting a range of code via 'SYM_*_START/END' annotations; see Documentation/asm-annotations.rst\n" . $herecurr);
-+		}
-+
- # check we are in a valid source file C or perl if not then ignore this hunk
- 		next if ($realfile !~ /\.(h|c|pl|dtsi|dts)$/);
- 
--- 
-2.17.1
+ Makefile                                             |    2 +-
+ arch/arc/Makefile                                    |    1 +
+ arch/arc/include/asm/page.h                          |    1 +
+ arch/arm/boot/dts/picoxcell-pc3x2.dtsi               |    4 ++++
+ drivers/iio/industrialio-buffer.c                    |    6 +++---
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c         |    3 +++
+ drivers/input/ff-core.c                              |   13 ++++++++++---
+ drivers/input/misc/uinput.c                          |   18 ++++++++++++++++++
+ drivers/isdn/mISDN/Kconfig                           |    1 +
+ drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c |    1 +
+ drivers/net/ethernet/freescale/fs_enet/mii-fec.c     |    1 +
+ drivers/net/ethernet/freescale/ucc_geth.h            |    9 ++++++++-
+ drivers/net/ethernet/qlogic/netxen/netxen_nic_main.c |    7 +------
+ drivers/net/usb/cdc_ncm.c                            |    8 ++++++--
+ drivers/net/usb/rndis_host.c                         |    2 +-
+ drivers/spi/spi-cadence.c                            |    6 ++++--
+ drivers/usb/host/ohci-hcd.c                          |    2 +-
+ fs/ext4/ioctl.c                                      |    3 +++
+ fs/ext4/namei.c                                      |   16 +++++++++-------
+ fs/nfs/internal.h                                    |   12 +++++++-----
+ fs/nfsd/nfs3xdr.c                                    |    7 ++++++-
+ include/linux/acpi.h                                 |    7 +++++++
+ include/linux/input.h                                |    1 +
+ mm/hugetlb.c                                         |    2 +-
+ mm/slub.c                                            |    2 +-
+ net/core/skbuff.c                                    |    9 +++++++--
+ net/dcb/dcbnl.c                                      |    2 ++
+ net/ipv6/sit.c                                       |    5 ++++-
+ net/rxrpc/ar-key.c                                   |    6 ++++--
+ net/sunrpc/addr.c                                    |    2 +-
+ security/lsm_audit.c                                 |    7 +++++--
+ sound/soc/soc-dapm.c                                 |    1 +
+ 32 files changed, 124 insertions(+), 43 deletions(-)
+
+Al Viro (1):
+      dump_common_audit_data(): fix racy accesses to ->d_name
+
+Andrey Zhizhikin (1):
+      rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
+
+Arnd Bergmann (2):
+      misdn: dsp: select CONFIG_BITREVERSE
+      ARM: picoxcell: fix missing interrupt-parent properties
+
+David Howells (1):
+      rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+
+Dinghao Liu (1):
+      RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
+
+Dmitry Torokhov (1):
+      Input: uinput - avoid FF flush when destroying device
+
+Eric Dumazet (1):
+      net: avoid 32 x truesize under-estimation for tiny skbs
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.253
+
+Hamish Martin (1):
+      usb: ohci: Make distrust_firmware param default to false
+
+J. Bruce Fields (1):
+      nfsd4: readdirplus shouldn't return parent of export
+
+Jakub Kicinski (1):
+      net: sit: unregister_netdevice on newlink's error path
+
+Jan Kara (1):
+      ext4: fix superblock checksum failure when setting password salt
+
+Jann Horn (1):
+      mm, slub: consider rest of partial list if acquire_slab() fails
+
+Jouni K. Seppänen (1):
+      net: cdc_ncm: correct overhead in delayed_ndp_size
+
+Manish Chopra (1):
+      netxen_nic: fix MSI/MSI-x interrupts
+
+Masahiro Yamada (1):
+      ARC: build: add boot_targets to PHONY
+
+Miaohe Lin (1):
+      mm/hugetlb: fix potential missing huge page size info
+
+Michael Ellerman (1):
+      net: ethernet: fs_enet: Add missing MODULE_LICENSE
+
+Michael Hennerich (1):
+      spi: cadence: cache reference clock rate during probe
+
+Nuno Sá (1):
+      iio: buffer: Fix demux update
+
+Petr Machata (2):
+      net: dcb: Validate netlink message in DCB handler
+      net: dcb: Accept RTM_GETDCB messages carrying set-like DCB commands
+
+Randy Dunlap (1):
+      arch/arc: add copy_user_page() to <asm/page.h> to fix build error on ARC
+
+Rasmus Villemoes (1):
+      ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
+
+Shawn Guo (1):
+      ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
+
+Thomas Hebb (1):
+      ASoC: dapm: remove widget from dirty list on free
+
+Trond Myklebust (1):
+      NFS: nfs_igrab_and_active must first reference the superblock
+
+j.nixdorf@avm.de (1):
+      net: sunrpc: interpret the return value of kstrtou32 correctly
+
+yangerkun (1):
+      ext4: fix bug for rename with RENAME_WHITEOUT
 
