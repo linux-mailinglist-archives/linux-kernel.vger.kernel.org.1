@@ -2,217 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8508630118F
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512BB301193
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 01:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726614AbhAWATE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 19:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726754AbhAWASk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 19:18:40 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA772C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:17:56 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id s7so7189152ybj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 16:17:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=j2yVLSeKVflthIG8vtivuEcuH5FNLO2jKklVbyIHSEo=;
-        b=RQKykWkfNrzebKlEf7vc0c2jTc87fR03Qa7ac2jOOXolc7+hOLWIc2n0BYqjXSvns8
-         Bcik0sPBVZO8G7Pgy6WelJSbnUhx5+/MITfj10+rvFRTJgRJY8gwi7m1a8T1c4tJdWQS
-         Ihe+BXo3bpr4vpXKvy5vOrE+wKBfhcZK4JDxTrwaFsrAyYQq/sM+WPLGDfCLP6kZiytv
-         oACsgVJySnR7sRfz+oGjhHLBNTO3HXSz0SwBxUUEkixTLNey89HgFQqiIr/pBd+BcLO5
-         XWKX78CpIkb9qbzYmwKt9sKMNXUKKh60Hk5U8wGdyk+Gl8KR2si2NlAS+agdJUovw9NC
-         QpDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=j2yVLSeKVflthIG8vtivuEcuH5FNLO2jKklVbyIHSEo=;
-        b=Ye20qM8MBgZtHge7XlsW0XbkrE8cl/TRnkKY8Lj9di435+4eA/Lp5NEK4OTEjqETUG
-         OllJiHvUJS1E3D8bNB8muZjQYVIeYETRUz8pOxST2Y29W2roncJIWWSGeCqcLBC3mDVz
-         TLhMLPcckMGO8xKdQ4d7SplDoTSIkfCXSKcigEAJ47zUjrRbMZ2kVKIQ9ZqkL1WaGZSG
-         oSQyD3YsFFpg2Sq2Hit1biWqi5go1gszkORWc0BRf0w0Z7v9QUhEZGpDdVSJAXkDNLBx
-         7Zbcwby28oYykkqNIea7YRVU6C5x9z/i/zd5AqBYoJYpj4P2kP8b3Pd+kYGdQeDxQyAj
-         8Xcw==
-X-Gm-Message-State: AOAM532kBVZEq4uW5IZ0sdhoAAGWbT9Ptf+V21RyV6FeL5Cf4X8gsKBX
-        1hwj46IOtpu585YAanA9MRr8PCKdDaFcow==
-X-Google-Smtp-Source: ABdhPJzg8rUAIWjiNNGyMxTdBOYfHprxuYZqATRBJRECUUTYZhJwKn9jqJwNrj0ocvjRaM/+vQZ3sRS2o2rehg==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:2941:: with SMTP id
- p62mr5891729ybp.26.1611361076091; Fri, 22 Jan 2021 16:17:56 -0800 (PST)
-Date:   Fri, 22 Jan 2021 16:17:43 -0800
-Message-Id: <20210123001743.1379894-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH] kunit: make kunit_tool accept optional path to .kunitconfig fragment
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+        id S1726859AbhAWAU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 19:20:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbhAWATB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 19:19:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB56323B04;
+        Sat, 23 Jan 2021 00:18:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611361099;
+        bh=3fmahJcDJaiPzSHyzDHOPcnKdSO+Wsnj9uOP966Bbtk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=liFiRlK1dmu7SXiI7+zgcSv/0yuHKqgSkFQIcahP1Q6k0Na+kN4l3HJahI80wfh/C
+         B+jh36ZoQ/LzBZI5yGsYn3rBEttkJCUg3vqTHOGeglGYuiN7b4ZRiaWMaCagAzjDxs
+         E0Jnn2mA5Q4DQZwJ8momS8CaNrxpDgMryWBoALPY2tuRZFl9s/UDH9t2H9rkU5mIle
+         ZlwaH2eYrT3yiVSHjwb2wi7Wa1ycrE9YwgktV6SsSPUacLZ1JQL5VVqKtjEtuafC1v
+         P+e6YUTPpt+F2aUTG5TDMg+NdIvuXw4bbvNSQOH3DaF40bvOOLOdLxnRdNxL3bdYHq
+         dztwobXituTLA==
+Received: by mail-ej1-f49.google.com with SMTP id g12so10129542ejf.8;
+        Fri, 22 Jan 2021 16:18:18 -0800 (PST)
+X-Gm-Message-State: AOAM533fVQuPijfb3dni942wx38Npe1tGgQ0srET5l6dDAMWar3IjFk+
+        gXKr0HOni/sO9Q1lOMKYMp6cEBQqf/LjAUxndg==
+X-Google-Smtp-Source: ABdhPJwyuj40njyUKw3kugLNeH9sj5thS1bwHoAiyYKNnx7M1JVZ8MSIu28ADwY+9e5tY75fquHTE72s0CjW6QlAy/I=
+X-Received: by 2002:a17:906:ada:: with SMTP id z26mr102199ejf.127.1611361097488;
+ Fri, 22 Jan 2021 16:18:17 -0800 (PST)
+MIME-Version: 1.0
+References: <20210122120323.4337-1-chunfeng.yun@mediatek.com> <20210122120323.4337-4-chunfeng.yun@mediatek.com>
+In-Reply-To: <20210122120323.4337-4-chunfeng.yun@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 23 Jan 2021 08:18:06 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_84OF71QK6M5JT1M5YAFKED_xWVpx8B8t859OsVxE0cfQ@mail.gmail.com>
+Message-ID: <CAAOTY_84OF71QK6M5JT1M5YAFKED_xWVpx8B8t859OsVxE0cfQ@mail.gmail.com>
+Subject: Re: [PATCH next v2 04/17] dt-bindings: phy: mediatek: dsi-phy: add
+ optional clock-names
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        DTML <devicetree@vger.kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Min Guo <min.guo@mediatek.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently running tests via KUnit tool means tweaking a .kunitconfig
-file, which you'd keep around locally and never commit.
-This changes makes it so users can pass in a path to a kunitconfig.
+Hi, Chunfeng:
 
-One of the imagined use cases is having kunitconfig fragments in-tree
-to formalize interesting sets of tests for features/subsystems, e.g.
-  $ ./tools/testing/kunit/kunit.py run fs/ext4/kunitconfig
+Chunfeng Yun <chunfeng.yun@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=882=
+2=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=888:04=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Add an optional "clock-names" property, it's not used to get the clock,
+> but some DTS files (e.g. mt8183) provide it.
 
-For now, this hypothetical fs/ext4/kunitconfig would contain
-  CONFIG_KUNIT=y
-  CONFIG_EXT4_FS=y
-  CONFIG_EXT4_KUNIT_TESTS=y
+I think the logic is that we define property in binding document
+first, and then write it in device tree. If a property does not exist
+in binding document, we should not write it in device tree. So let's
+drop this patch and remove clock-names in mt8183.dtsi.
 
-At the moment, it's not hard to manually whip up this file, but as more
-and more tests get added, this will get tedious.
+Regards,
+Chun-Kuang.
 
-It also opens the door to documenting how to run all the tests relevant
-to a specific subsystem or feature as a simple one-liner.
-
-This can be seen as an analogue to tools/testing/selftests/*/config
-But in the case of KUnit, the tests live in the same directory as the
-code-under-test, so it feels more natural to allow the kunitconfig
-fragments to live anywhere. (Though, people could create a separate
-directory if wanted; this patch imposes no restrictions on the path).
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit.py           |  9 ++++++---
- tools/testing/kunit/kunit_kernel.py    | 12 ++++++++----
- tools/testing/kunit/kunit_tool_test.py | 25 +++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index e808a47c839b..3204a23bd16e 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -188,6 +188,9 @@ def add_build_opts(parser) -> None:
- 			    help='As in the make command, "Specifies  the number of '
- 			    'jobs (commands) to run simultaneously."',
- 			    type=int, default=8, metavar='jobs')
-+	parser.add_argument('kunitconfig',
-+			     help='Path to Kconfig fragment that enables KUnit tests',
-+			     type=str, nargs='?', metavar='kunitconfig')
- 
- def add_exec_opts(parser) -> None:
- 	parser.add_argument('--timeout',
-@@ -256,7 +259,7 @@ def main(argv, linux=None):
- 			os.mkdir(cli_args.build_dir)
- 
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
- 
- 		request = KunitRequest(cli_args.raw_output,
- 				       cli_args.timeout,
-@@ -274,7 +277,7 @@ def main(argv, linux=None):
- 			os.mkdir(cli_args.build_dir)
- 
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
- 
- 		request = KunitConfigRequest(cli_args.build_dir,
- 					     cli_args.make_options)
-@@ -286,7 +289,7 @@ def main(argv, linux=None):
- 			sys.exit(1)
- 	elif cli_args.subcommand == 'build':
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
- 
- 		request = KunitBuildRequest(cli_args.jobs,
- 					    cli_args.build_dir,
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 2076a5a2d060..0b461663e7d9 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -123,7 +123,7 @@ def get_outfile_path(build_dir) -> str:
- class LinuxSourceTree(object):
- 	"""Represents a Linux kernel source tree with KUnit tests."""
- 
--	def __init__(self, build_dir: str, load_config=True, defconfig=DEFAULT_KUNITCONFIG_PATH) -> None:
-+	def __init__(self, build_dir: str, load_config=True, kunitconfig_path='') -> None:
- 		signal.signal(signal.SIGINT, self.signal_handler)
- 
- 		self._ops = LinuxSourceTreeOperations()
-@@ -131,9 +131,13 @@ class LinuxSourceTree(object):
- 		if not load_config:
- 			return
- 
--		kunitconfig_path = get_kunitconfig_path(build_dir)
--		if not os.path.exists(kunitconfig_path):
--			shutil.copyfile(defconfig, kunitconfig_path)
-+		if kunitconfig_path:
-+			if not os.path.exists(kunitconfig_path):
-+				raise ConfigError(f'Specified kunitconfig ({kunitconfig_path}) does not exist')
-+		else:
-+			kunitconfig_path = get_kunitconfig_path(build_dir)
-+			if not os.path.exists(kunitconfig_path):
-+				shutil.copyfile(DEFAULT_KUNITCONFIG_PATH, kunitconfig_path)
- 
- 		self._kconfig = kunit_config.Kconfig()
- 		self._kconfig.read_from_file(kunitconfig_path)
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index b593f4448e83..533fe41b5123 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -12,6 +12,7 @@ from unittest import mock
- import tempfile, shutil # Handling test_tmpdir
- 
- import json
-+import signal
- import os
- 
- import kunit_config
-@@ -250,6 +251,23 @@ class KUnitParserTest(unittest.TestCase):
- 				result.status)
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
- 
-+class LinuxSourceTreeTest(unittest.TestCase):
-+
-+	def setUp(self):
-+		mock.patch.object(signal, 'signal').start()
-+		self.addCleanup(mock.patch.stopall)
-+
-+	def test_invalid_kunitconfig(self):
-+		with self.assertRaisesRegex(kunit_kernel.ConfigError, 'nonexistent.* does not exist'):
-+			kunit_kernel.LinuxSourceTree('', kunitconfig_path='/nonexistent_file')
-+
-+	def test_valid_kunitconfig(self):
-+		with tempfile.NamedTemporaryFile('wt') as kunitconfig:
-+			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
-+
-+	# TODO: add more test cases.
-+
-+
- class KUnitJsonTest(unittest.TestCase):
- 
- 	def _json_for(self, log_file):
-@@ -399,5 +417,12 @@ class KUnitMainTest(unittest.TestCase):
- 		self.linux_source_mock.run_kernel.assert_called_once_with(build_dir=build_dir, timeout=300)
- 		self.print_mock.assert_any_call(StrContains('Testing complete.'))
- 
-+	@mock.patch.object(kunit_kernel, 'LinuxSourceTree')
-+	def test_run_kunitconfig(self, mock_linux_init):
-+		mock_linux_init.return_value = self.linux_source_mock
-+		kunit.main(['run', 'mykunitconfig'])
-+		# Just verify that we parsed and initialized it correctly here.
-+		mock_linux_init.assert_called_once_with('.kunit', kunitconfig_path='mykunitconfig')
-+
- if __name__ == '__main__':
- 	unittest.main()
-
-base-commit: 2b8fdbbf1c616300312f71fe5b21fe8f03129950
--- 
-2.30.0.280.ga3ce27912f-goog
-
+>
+> Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+> v2: new patch separated from [3/15] suggested by CK
+> ---
+>  Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml =
+b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> index 6e4d795f9b02..af6e554c5b69 100644
+> --- a/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/mediatek,dsi-phy.yaml
+> @@ -35,6 +35,10 @@ properties:
+>      items:
+>        - description: PLL reference clock
+>
+> +  clock-names:
+> +    items:
+> +      - const: ref
+> +
+>    clock-output-names:
+>      maxItems: 1
+>
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
