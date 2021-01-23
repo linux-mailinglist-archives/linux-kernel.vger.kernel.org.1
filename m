@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B1A301883
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A19C301889
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbhAWVU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 16:20:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54054 "EHLO mail.kernel.org"
+        id S1726333AbhAWVa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 16:30:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725765AbhAWVUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 16:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 46A4B22CAF;
-        Sat, 23 Jan 2021 21:20:10 +0000 (UTC)
+        id S1726197AbhAWVau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 16:30:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 69F6B22CB3;
+        Sat, 23 Jan 2021 21:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611436810;
-        bh=17lHtOZOZprY9WJIOivNcmGQ3BZnmW29XOtqM+i6Q6c=;
+        s=k20201202; t=1611437410;
+        bh=mIwCz3e5wggyiLievM406wxYGfd92Z0fEGQcLOf1fcs=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CQSo/yKwIak1RJxDwrjWsjyQXqPojFYczoJyUdEGwJ7WNICHzVpd+lN06utl0dSDC
-         nxfpRsQebVX9phVvW1uoMrwqRvGR3Tom1sPe/Aud39c4gYSWBCVEvg8OjgPI/qPWiV
-         W3njWS6KI1OOsslZFEOtafljMSvf4TWD5uexI1iPkpZJsKqeDV/eo7nNmf4NCSuQ+T
-         g0IQ1t1c2NkWH5V1VvpPkk5G2E7e069sGVYZX8gcPeagNs0c2iQC1fnjnDXLOevHQG
-         1+fxIjmBiHg20lYDbrYMjvkWp3D8iqzjS6DoiMNqNAdz3U4iKiYH0HVE1IwrhVjKo/
-         XbWmgF/RUjioQ==
+        b=KOW9R/FwmfT61FTbgYMupdV2OlqTJxt+ci5gFizTR1mutAABx+cWYDUEa0HYKZatL
+         HU4Ovt3rzYQRSc2SeZpcQdBuPi9pf8MT08mSOQk1bt3wHJ9Br6CUJpwn2NgT0B6N5p
+         LEFu/kqogxYHMyQ4Q9n3eKnDetvbk0mdj0hMmzGLzWozBvsSi9S05op1HNtN8HX9Os
+         F8Zl2dRys9nfQwWLI3TjNbONnCVPrp6k6P/Pf9JL7u+hxpLbpm0518l8z6ehZBvy+r
+         2JvNrbHd0I1SaOU/BbdlHAV/aFX32AzbJD95qWygHxkE84dOVpbstl+823H5Lx2qzn
+         sLM+xPPtEVrdA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 375C7652E6;
-        Sat, 23 Jan 2021 21:20:10 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5B2F6652E6;
+        Sat, 23 Jan 2021 21:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/5] net: ipa: NAPI poll updates
+Subject: Re: [PATCH] chtls: Fix potential resource leak
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161143681022.3146.11842157448605316831.git-patchwork-notify@kernel.org>
-Date:   Sat, 23 Jan 2021 21:20:10 +0000
-References: <20210121114821.26495-1-elder@linaro.org>
-In-Reply-To: <20210121114821.26495-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
+Message-Id: <161143741036.6169.15421270286833058037.git-patchwork-notify@kernel.org>
+Date:   Sat, 23 Jan 2021 21:30:10 +0000
+References: <20210121145738.51091-1-bianpan2016@163.com>
+In-Reply-To: <20210121145738.51091-1-bianpan2016@163.com>
+To:     Pan Bian <bianpan2016@163.com>
+Cc:     ayush.sawal@chelsio.com, vinay.yadav@chelsio.com,
+        rohitm@chelsio.com, kuba@kernel.org, davem@davemloft.net,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -46,30 +45,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Thu, 21 Jan 2021 05:48:16 -0600 you wrote:
-> Version 1 of this series inadvertently dropped the "static" that
-> limits the scope of gsi_channel_update().  Version 2 fixes this
-> (in patch 3).
+On Thu, 21 Jan 2021 06:57:38 -0800 you wrote:
+> The dst entry should be released if no neighbour is found. Goto label
+> free_dst to fix the issue. Besides, the check of ndev against NULL is
+> redundant.
 > 
-> While reviewing the IPA NAPI polling code in detail I found two
-> problems.  This series fixes those, and implements a few other
-> improvements to this part of the code.
-> 
-> [...]
+> Signed-off-by: Pan Bian <bianpan2016@163.com>
+> ---
+>  .../net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c    | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 
 Here is the summary with links:
-  - [net-next,v2,1/5] net: ipa: count actual work done in gsi_channel_poll()
-    https://git.kernel.org/netdev/net-next/c/c80c4a1ea47f
-  - [net-next,v2,2/5] net: ipa: heed napi_complete() return value
-    https://git.kernel.org/netdev/net-next/c/148604e7eafb
-  - [net-next,v2,3/5] net: ipa: have gsi_channel_update() return a value
-    https://git.kernel.org/netdev/net-next/c/223f5b34b409
-  - [net-next,v2,4/5] net: ipa: repurpose gsi_irq_ieob_disable()
-    https://git.kernel.org/netdev/net-next/c/5725593e6f18
-  - [net-next,v2,5/5] net: ipa: disable IEOB interrupts before clearing
-    https://git.kernel.org/netdev/net-next/c/7bd9785f683a
+  - chtls: Fix potential resource leak
+    https://git.kernel.org/netdev/net/c/b6011966ac6f
 
 You are awesome, thank you!
 --
