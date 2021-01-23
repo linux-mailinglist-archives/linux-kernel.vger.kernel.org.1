@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCB030189E
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 22:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F5C3018B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 23:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbhAWVto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 16:49:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbhAWVtl (ORCPT
+        id S1726298AbhAWWln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 17:41:43 -0500
+Received: from audible.transient.net ([24.143.126.66]:37096 "HELO
+        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725922AbhAWWll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 16:49:41 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3042CC0613D6
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 13:49:01 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id 6so12679001ejz.5
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 13:49:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=v/sWbS8R88OmqB0d4LX195kx65OR1XndiT5q/NMqDNU=;
-        b=RNEL9CL7093KMxayaYtEhKDkWCQOpI+a2Agb/a31s5f/fYaZcdh1mPScrRoAvPAcfh
-         lPXd1yUTaXUwwWvHOwJyY5Lq7gWaZ3fFmq+QiJz+rKJ3aRuf0oSpd3g7Arqyg9Cd8VfJ
-         +7Ul6xC+1Qj5AhaLN/z3or4lmj3JR1lvZSNV9XP3CvJQcTlhkPBuCQWK8gVpx3e0SEmu
-         LDU9xVZAgcYnWsz2piG5iWeaRRmy5CLbZjp+3u1bV8bgFBHEK4OmbCFCca4iAG9a0dea
-         KtTiB1CpWHHESv/i/SK8w6bt1IKR0n3e84FK7NiR4ozfqVacb6fFeFpMxglYFj5TYJKG
-         zFGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=v/sWbS8R88OmqB0d4LX195kx65OR1XndiT5q/NMqDNU=;
-        b=roeughmmjI8Vjsd3izSBlz5ko2vfsleZMPf50Gsr84nKPB1FqnfkZpTN5Ahg5e4aAi
-         /zKoBa+pOx3Z69UCksaqc/cvSsGScO6Zp6qRz+rdR7eSpVAtu+ZT9gaAEk2NlDbsGwTo
-         NoLtsx9XUOej0Z5T41UkIh1ONsAENlu2m/qVgRcwlZfdu97DVx0rPV3lMBIpgaLTTb+x
-         d3Kf4vdfs4LvEWPRkeSl7epHB/S8TmXkjnKYxcTLyMnsFdmOBCsHT2D5Mw7ccmpLH0RL
-         ZHF11PCU2yF3jPOMEOP6B1kLz+40rk5B7hq4B4LwrzT6MWCk3vMT30Du8owihBstVlZS
-         QulQ==
-X-Gm-Message-State: AOAM533ePzVP69B0zknCpuxuE/0AylShvum7YypLFjI+7KBLzwZqt03G
-        l3SVbkqKJYqoxzc7x5pfWV/0axtMiCy3aw==
-X-Google-Smtp-Source: ABdhPJweH+SQxxCgIN3eS58dVrFfaXWEIKYQB2bgNwoWGSE0/QHRJwKbI071VVuyTJUrxB05MdMoYA==
-X-Received: by 2002:a17:906:dfce:: with SMTP id jt14mr244779ejc.435.1611438539816;
-        Sat, 23 Jan 2021 13:48:59 -0800 (PST)
-Received: from stitch.. ([2a01:4262:1ab:c:d5f7:30cf:b95b:92d7])
-        by smtp.gmail.com with ESMTPSA id o4sm1480345edw.78.2021.01.23.13.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 13:48:59 -0800 (PST)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     linux-kernel@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH] vt: keyboard, use new API for keyboard_tasklet
-Date:   Sat, 23 Jan 2021 22:47:39 +0100
-Message-Id: <20210123214739.2042-1-kernel@esmil.dk>
-X-Mailer: git-send-email 2.30.0
+        Sat, 23 Jan 2021 17:41:41 -0500
+Received: (qmail 8376 invoked from network); 23 Jan 2021 22:40:59 -0000
+Received: from cucamonga.audible.transient.net (192.168.2.5)
+  by canarsie.audible.transient.net with QMQP; 23 Jan 2021 22:40:59 -0000
+Received: (nullmailer pid 2881 invoked by uid 1000);
+        Sat, 23 Jan 2021 22:40:59 -0000
+Date:   Sat, 23 Jan 2021 22:40:59 +0000
+From:   Jamie Heilman <jamie@audible.transient.net>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: bisected regression in v5.11-rc1 snd-usb-audio
+Message-ID: <YAyl+6XZHRjzDUcP@audible.transient.net>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
+        linux-kernel@vger.kernel.org
+References: <YAqIJHzE3UG51G/U@audible.transient.net>
+ <s5hzh118ioz.wl-tiwai@suse.de>
+ <YAqjBLt3eLG5GY/4@audible.transient.net>
+ <s5him7p89oe.wl-tiwai@suse.de>
+ <YAwDkhRVkrEna8pV@audible.transient.net>
+ <s5hwnw36d0k.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hwnw36d0k.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This converts the keyboard_tasklet to use the new API in
-commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+Takashi Iwai wrote:
+> On Sat, 23 Jan 2021 12:08:02 +0100,
+> Jamie Heilman wrote:
+> > 
+> > > If the problem is still seen with the very latest Linus tree and the
+> > > previous patch, please enable the dyndbg, e.g. pass dydbg=+p option to
+> > > snd-usb-audio module, i.e. reload like
+> > >    modprobe snd-usb-audio dydbg=+p
+> > > or boot with
+> > >    snd_usb_audio.dyndbg=+p
+> > > boot option, retest, and give the kernel messages.
+> > 
+> > OK, updated to 5.11.0-rc4-00202-gfe75a21824e7, repatched & rebuilt with:
+> > CONFIG_SND_DEBUG=y
+> > CONFIG_SND_CTL_VALIDATION=y
+> > CONFIG_DYNAMIC_DEBUG=y
+> > CONFIG_DYNAMIC_DEBUG_CORE=y
+> > 
+> > and added dyndbg=+p to my snd-usb-audio options, dmesg after an
+> > attempted aplay execution is attached.
+> (snip)
+> > [  108.941521] WARNING: CPU: 0 PID: 2776 at sound/core/pcm_lib.c:1148 snd_pcm_hw_rule_add+0xd3/0x160 [snd_pcm]
+> 
+> OK, this must be the culprit of the weird behavior.
+> I totally overlooked that the max dependencies are three because of
+> the terminator.
+> 
+> Could you try the patch below in addition?
 
-The new API changes the argument passed to the callback function, but
-fortunately the argument isn't used so it is straight forward to use
-DECLARE_TASKLET_DISABLED() rather than DECLARE_TASKLET_DISABLED_OLD().
+Yep, this works now, thanks!  FWIW, here's what the debug output looks
+like when its working, and I start jack now:
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
----
- drivers/tty/vt/keyboard.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+usb 1-1.1.2: 1:1: found sync_ep=0x81, iface=1, alt=1, implicit_fb=0
+usb 1-1.1.2: 1:1: add audio endpoint 0x1
+usb 1-1.1.2: Creating new data endpoint #1
+usb 1-1.1.2: Creating new sync endpoint #81
+usb 1-1.1.2: 1:1 Set sample rate 192000, clock 40
+usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Switch] ch = 2, val = 0/1/1
+usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Switch] ch = 1, val = 0/1/1
+usb 1-1.1.2: RANGE setting not yet supported
+usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Volume] ch = 2, val = -32512/0/256
+usb 1-1.1.2: RANGE setting not yet supported
+usb 1-1.1.2: [10] FU [M2Tech Audio 2.0 Output Playback Volume] ch = 1, val = -32512/0/256
+usb 1-1.1.2: Open EP 0x1, iface=1:1, idx=0
+usb 1-1.1.2:   channels=2, rate=96000, format=S32_LE, period_bytes=8192, periods=3, implicit_fb=0
+usb 1-1.1.2: Open EP 0x81, iface=1:1, idx=1
+usb 1-1.1.2:   channels=2, rate=96000, format=S32_LE, period_bytes=8192, periods=3, implicit_fb=0
+usb 1-1.1.2: Setting usb interface 1:0 for EP 0x1
+usb 1-1.1.2: 1:1 Set sample rate 96000, clock 40
+usb 1-1.1.2: Setting params for data EP 0x1, pipe 0x8600
+usb 1-1.1.2: Set up 12 URBS, ret=0
+usb 1-1.1.2: Setting usb interface 1:1 for EP 0x1
+usb 1-1.1.2: Setting params for sync EP 0x81, pipe 0x8680
+usb 1-1.1.2: Set up 4 URBS, ret=0
+usb 1-1.1.2: Starting data EP 0x1 (running 0)
+usb 1-1.1.2: 12 URBs submitted for EP 0x1
+usb 1-1.1.2: Starting sync EP 0x81 (running 0)
+usb 1-1.1.2: 4 URBs submitted for EP 0x81
+usb 1-1.1.2: 1:1 Start Playback PCM
 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index 52922d21a49f..6c85f024bec4 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -1233,7 +1233,7 @@ void vt_kbd_con_stop(int console)
-  * handle the scenario when keyboard handler is not registered yet
-  * but we already getting updates from the VT to update led state.
-  */
--static void kbd_bh(unsigned long dummy)
-+static void kbd_bh(struct tasklet_struct *unused)
- {
- 	unsigned int leds;
- 	unsigned long flags;
-@@ -1249,7 +1249,7 @@ static void kbd_bh(unsigned long dummy)
- 	}
- }
- 
--DECLARE_TASKLET_DISABLED_OLD(keyboard_tasklet, kbd_bh);
-+DECLARE_TASKLET_DISABLED(keyboard_tasklet, kbd_bh);
- 
- #if defined(CONFIG_X86) || defined(CONFIG_IA64) || defined(CONFIG_ALPHA) ||\
-     defined(CONFIG_MIPS) || defined(CONFIG_PPC) || defined(CONFIG_SPARC) ||\
+
+> --- a/include/sound/pcm.h
+> +++ b/include/sound/pcm.h
+> @@ -229,7 +229,7 @@ typedef int (*snd_pcm_hw_rule_func_t)(struct snd_pcm_hw_params *params,
+>  struct snd_pcm_hw_rule {
+>  	unsigned int cond;
+>  	int var;
+> -	int deps[4];
+> +	int deps[5];
+>  
+>  	snd_pcm_hw_rule_func_t func;
+>  	void *private;
+
 -- 
-2.30.0
-
+Jamie Heilman                     http://audible.transient.net/~jamie/
