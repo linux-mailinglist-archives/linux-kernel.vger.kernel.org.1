@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B51223012A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 123C73012AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbhAWDbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 22:31:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47352 "EHLO mail.kernel.org"
+        id S1726614AbhAWDbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 22:31:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbhAWDax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726604AbhAWDax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 22 Jan 2021 22:30:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3723123B1B;
-        Sat, 23 Jan 2021 03:30:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 944A223B75;
+        Sat, 23 Jan 2021 03:30:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611372610;
-        bh=z9jdhsea+Q6TgBR+mLjLHfv29yeMzHEfdFldrFyLry0=;
+        s=k20201202; t=1611372611;
+        bh=h8imnSSMK6GPti2kX5PXnRTUJyvsiNnjOMjDfeXr1pM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MTWrxmY/SCEETCzrILIUEO7PP4Tua7haMKyVASPFnesIVv1NMHf3nvadFD+/aRPBR
-         11166n7rld+G65Btfy36wHbqlOaEEun6SD2YNeEG70kaFZJFHlc0zkQFAcNfynI74r
-         tvIyd0EfRmff7s0DmI+3i1gvnhQCyct0ENfm93jrnA8eivaPdlWVsMKdXNv0oXvLvZ
-         /WU/cYMnxn4roPXog9eomb4QpQvZ0+O54TzaQ0BEN84nsN1W9U3I1U/DOPSt2ZTDjW
-         hVWlJrVPpgl8/E8Gofk0QJJ6P7E8ScgKmPm2tnRagPz21TKbNgqaW1TPA7MOfSRTVb
-         HwzxIDayR+ZMA==
+        b=HPZHulUvpWsceQW7DZn0wLIAFkdvRsYXyhpfzHNzNO7PMGYfBRcwStSOniEc9icHS
+         DG/i5nQn/wp0Frf3Nr0Vld1N9w4MWpvi3VwKpm7y0l1Jan/RT+CygC/906O82meKBT
+         k/aNRi9AMwwtYkOlircv1yU/w3Tofw2y4ig0gEF/PsV1/G5nvEuF4gF7+1nyOO7gAU
+         71ySXmZn2yw6hTwBSv8QWHigOaJqMYvvuc6mPvBF9dWQ9kflHwLibB2Xw26GX+dr0Z
+         5NHm/4ZSowEh/XOrwST9wLmNUKXnMlE7FlsyGAI52j4M4qwy6ZMSIxM7yVJU2vFKSG
+         mPlqQd7ieAi8A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2936861E44;
-        Sat, 23 Jan 2021 03:30:10 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 88B0E652DD;
+        Sat, 23 Jan 2021 03:30:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: fec: put child node on error path
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev queues
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161137261016.31547.3601501374256728793.git-patchwork-notify@kernel.org>
-Date:   Sat, 23 Jan 2021 03:30:10 +0000
-References: <20210120122037.83897-1-bianpan2016@163.com>
-In-Reply-To: <20210120122037.83897-1-bianpan2016@163.com>
-To:     Pan Bian <bianpan2016@163.com>
-Cc:     fugang.duan@nxp.com, davem@davemloft.net, kuba@kernel.org,
-        f.fainelli@gmail.com, andrew@lunn.ch, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Message-Id: <161137261155.31547.7512862793674483948.git-patchwork-notify@kernel.org>
+Date:   Sat, 23 Jan 2021 03:30:11 +0000
+References: <20210120212759.81548-1-ivan@cloudflare.com>
+In-Reply-To: <20210120212759.81548-1-ivan@cloudflare.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 20 Jan 2021 04:20:37 -0800 you wrote:
-> Also decrement the reference count of child device on error path.
+On Wed, 20 Jan 2021 13:27:59 -0800 you wrote:
+> Without this change the driver tries to allocate too many queues,
+> breaching the number of available msi-x interrupts on machines
+> with many logical cpus and default adapter settings:
 > 
-> Fixes: 3e782985cb3c ("net: ethernet: fec: Allow configuration of MDIO bus speed")
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
-> ---
->  drivers/net/ethernet/freescale/fec_main.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
+> 
+> Which in turn triggers EINVAL on XDP processing:
+> 
+> [...]
 
 Here is the summary with links:
-  - net: fec: put child node on error path
-    https://git.kernel.org/netdev/net/c/0607a2cddb60
+  - [net-next] sfc: reduce the number of requested xdp ev queues
+    https://git.kernel.org/netdev/net-next/c/e26ca4b53582
 
 You are awesome, thank you!
 --
