@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75C2301596
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 14:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1FE30159A
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbhAWN63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 08:58:29 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:53229 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbhAWN62 (ORCPT
+        id S1725864AbhAWN7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 08:59:09 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:58387 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725768AbhAWN7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 08:58:28 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A1BAFC0004;
-        Sat, 23 Jan 2021 13:57:44 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Subject: Re: [PATCH 0/3] rtc: remove obsolete drivers
-Date:   Sat, 23 Jan 2021 14:57:44 +0100
-Message-Id: <161141025561.1573837.15965671549699329228.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210120154158.1860736-1-arnd@kernel.org>
-References: <20210120154158.1860736-1-arnd@kernel.org>
+        Sat, 23 Jan 2021 08:59:06 -0500
+X-Greylist: delayed 541 seconds by postgrey-1.27 at vger.kernel.org; Sat, 23 Jan 2021 08:59:05 EST
+Received: from envy.fritz.box ([82.207.207.243]) by mrelayeu.kundenserver.de
+ (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N3sye-1m34oN3Gym-00zkYA; Sat, 23 Jan 2021 14:47:24 +0100
+From:   mail@richard-neumann.de
+To:     nehal-bakulchandra.shah@amd.com, sandeep.singh@amd.com,
+        mail@richard-neumann.de, corbet@lwn.net, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 3/8] Updated Kconfig
+Date:   Sat, 23 Jan 2021 14:47:11 +0100
+Message-Id: <20210123134716.13414-4-mail@richard-neumann.de>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210123134716.13414-1-mail@richard-neumann.de>
+References: <20210123134716.13414-1-mail@richard-neumann.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:GdMeFbIzUse4dSlYy6m3FcbqQFJbM6N08tCsCRce8WLtGsbGdha
+ +e8TANBZ4dihmqNWM0AaEwNPUczzAToS064LTVe48fTLDO7KdUppGmLfo5rqT2EAT6w2XCa
+ +wnpXW5V9G/C/6XH/3LAGJZY4ONwkS2kEQuX0rbQuvY4pVSpoz38yCOSBNZyIi1wgKwjghJ
+ qQn/4gNI31QGgMgcIla6w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fnEKrpxDjVg=:KyCdM9w3HKPg6EQ8ttJd5k
+ O5ztI1HkCnETK5qip/wbUzXLI1ECG/Jqd1BDOeuJ80nzG8rz7CWVmZQYsnEb0BQDW3Z8pV/l+
+ Ph5Yeb4QWKFJ83GKLnOUYAkFwygQ3nOk1hmsxk+g9dLeiXtXgcCWOoGcic3H/DN+ElK+P8qYN
+ d7uIAfTVu9hdtoD7hTKi8KW0KM6SgdlZmb+UV9yTxF3KOjSZogRpIghhWZHm+D6VMSrwvqmWq
+ G09LHWGEZBbs9t5wAyps8T+9uLJxRyYAetBaQTkTPn/kilHd/i2wWxygFKo/7apn70SHHX6Qn
+ CA9ankA6Wj/tCXo6QVOiv9DBbsBYZ/5/8EplYngl6yUu9UM9CWplXqRF31ZqFj6VQJ3qeqwnQ
+ g8nD+fjPyqDSpLz+cPiIajZ+yb0W+Ea2g/jkuGbiNsteg5c7rq8cl0jVFoymxThlTCTlHwYh7
+ aUyU2tv2pA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 16:41:55 +0100, Arnd Bergmann wrote:
-> A few Arm platforms are getting removed in v5.12, this removes
-> the corresponding rtc drivers.
-> 
-> Link: https://lore.kernel.org/linux-arm-kernel/20210120124812.2800027-1-arnd@kernel.org/T/
-> 
-> 
-> Arnd Bergmann (3):
->   rtc: remove sirfsoc driver
->   rtc: remove ste coh901 driver
->   rtc: remove ste ab3100 driver
-> 
-> [...]
+From: Richard Neumann <mail@richard-neumann.de>
 
-Applied, thanks!
+Updated Kconfig file for the AMD SFH driver.
 
-[1/3] rtc: remove sirfsoc driver
-      commit: 9d0735519f99948c5b5c22426b682ced7f7af9be
-[2/3] rtc: remove ste coh901 driver
-      commit: dd2d3b40039d0278f25a21aa3e50955a01a92a62
-[3/3] rtc: remove ste ab3100 driver
-      commit: 2f58f5eea8c60052100ff325688f2d987bde572b
+Signed-off-by: Richard Neumann <mail@richard-neumann.de>
+---
+ drivers/hid/amd-sfh-hid/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
+diff --git a/drivers/hid/amd-sfh-hid/Kconfig b/drivers/hid/amd-sfh-hid/Kconfig
+index db069a83e9a2..7ebb96827a05 100644
+--- a/drivers/hid/amd-sfh-hid/Kconfig
++++ b/drivers/hid/amd-sfh-hid/Kconfig
+@@ -12,7 +12,7 @@ config AMD_SFH_HID
+ 	  This driver will enable sensors functionality on AMD platforms
+ 	  starting from 17h family of RYZEN parts.
+ 
+-	  This driver can also be built as a module. If so, the module will
+-	  be called amd-sfh.
++	  This driver can also be built as a module. If so, the modules will
++	  be called amd-sfh-pci and amd-sf-hid.
+ 	  Say Y or M here if you want to support AMD SFH. If unsure, say N.
+ endmenu
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+2.30.0
+
