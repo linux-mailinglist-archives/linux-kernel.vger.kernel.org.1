@@ -2,147 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7623018FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 00:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C26E301902
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 00:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbhAWXwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 18:52:12 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:33487 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725943AbhAWXwG (ORCPT
+        id S1726396AbhAWX47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 18:56:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbhAWX45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 18:52:06 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id ED7D71410;
-        Sat, 23 Jan 2021 18:50:57 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sat, 23 Jan 2021 18:50:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=c
-        PlFxpNv2oNB0vFGCOsPAhamOFNd5t/o49o2BsP4y5M=; b=Eqq2fgHAQLx2WN2Qh
-        BUBfOLsXNRsjiD81ckiHWIHXny6MamjqOTveIjbbSXgV9YU7zKkLAcY80uwhNTZd
-        GKnedgB0mfJyuJJJpMx3DI2sm5aJnJZ6sLXICAvJzTmed2O6MNzSGZMWq5EpJM+W
-        2wvCXHZKJqhffiHEpF1qTKXDP/M+Bs2QAWtKvwpG6n7jlnvHhYp42D7Uc/OMd1sC
-        Q3QG5tr2xRRxyMSMCVu7rep2sswKQmFVbYu/4AT2XxlXxkU2OtcMv2kNifNKBL6T
-        6nwPhBoL5K+rYRAABfOomu0pPMNanfFPLpuZsvmaHaWL2wDYZMPUdkgM4MiE5b2E
-        a68FQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=cPlFxpNv2oNB0vFGCOsPAhamOFNd5t/o49o2BsP4y
-        5M=; b=D/bq/D2H4z8EJSVIVnLzqA2MMt67K8MlnTYeKZIRrx8Ixbs6LXWyISkaQ
-        PdP/6gNZXt4OP4zZ4RTl3uqcFj9JEaBLdudEwLQK5LVrmHxZMnSej2TEb4Jc3KAe
-        bsDkKPO9q/Dpoo5H/+6Z/87t5IEKcjhY0b+i1fQJNiXVwVzZF1r8fOpAluUT4t1w
-        w1JB1ba3avpnn9+k7pcjrpmelgFTeOgk88KqtwO7Ci1ReNIZqO16VsHPSBUcJ2t4
-        +4osGBbo14K5dKKuCsoQMH+X9S33pjI05IcMZCDZD2FWCYi6nLdxVzm6SkPTxSUa
-        F1dTLLvW4fvmCZT8PWmf7TC1yiqjg==
-X-ME-Sender: <xms:YLYMYPzeZGReVQfFn6uD-0wxPEnV3BIMz98RTITGL7fuo7He2W_jyw>
-    <xme:YLYMYHR1j790K4etFPiW5ltklUPODGADt9oFOczItFPU5gz3d4PJ5yR9D-elovtWN
-    ab2S0vlnayw6ebk2g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelgddufecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpeetnhgurhgv
-    shcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtffrrg
-    htthgvrhhnpeejheeivdevffeijeffheegfeejveffteeviedugeegtdehffdvffekudek
-    tdehjeenucfkphepieejrdduiedtrddvudejrddvhedtnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvghssegrnhgrrhgriigvlhdr
-    uggv
-X-ME-Proxy: <xmx:YbYMYJWS60lmxMrR-uZLxSbOJYvYwM51lbh31Y_LnuiMDDv73QASmA>
-    <xmx:YbYMYJizPrte_tTV_ltHBaga8ILHAuRYDF3VAL8z2jvKstL52o41jQ>
-    <xmx:YbYMYBDMcKs1kUUbyTgPu_vcsx66P6v681Su9_1aoJ-_KX_LiCJNFw>
-    <xmx:YbYMYANHqEGQxyYQ3EwFjXuyZjkdQ9Jz-ZaLUA3v862JVcAhWWpLnw>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D5A101080059;
-        Sat, 23 Jan 2021 18:50:56 -0500 (EST)
-Date:   Sat, 23 Jan 2021 15:50:55 -0800
-From:   Andres Freund <andres@anarazel.de>
-To:     Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
-Message-ID: <20210123235055.azmz5jm2lwyujygc@alap3.anarazel.de>
-References: <20210123114152.GA120281@wantstofly.org>
+        Sat, 23 Jan 2021 18:56:57 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC39C0613D6;
+        Sat, 23 Jan 2021 15:56:16 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id h7so12747733lfc.6;
+        Sat, 23 Jan 2021 15:56:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=T9IQA43+iHU7clo6ySQk47UiflrToIRPUItvcZy5xwQ=;
+        b=nbnEqrQRTfaMjj5a2wOeEPazP7sDVMGZCgcLFhyAuufpTqepvGrF0Fq3GbtAXHqgyL
+         AFMEEBIfJ4wqMooL9WB2UhT5BL6fHTpiJ0UGcjjY8eSTE32G5qogKNLc6yPnlNvIXPpm
+         YMCSsEPjmJpDQCaliT0t1M1IMdDUhuIN+ro+ESJq+N7bYY3Xlca1zHLTzrdjXzA5g7RG
+         uV5RYOa1/Xpz8Ssvz3/V0/D7vvOkK0za21CmifZzVaJtmDMUO3qa203pNtoNOllPQEtR
+         qRZG39S4RaTJeCk5vAvlgRaikqHQStPk8bPCzWy+DWQEnErrJxjvEX9+C4h1OkG54TYF
+         ERQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=T9IQA43+iHU7clo6ySQk47UiflrToIRPUItvcZy5xwQ=;
+        b=n5kLVDHWEc2RbaFCKKZMbwjf+kt1LFJ8cvgNDtDhFKouxIQA6VY9DZhO+D+DsL0gQA
+         VORtYRAgMo+c1cxXeOFbJENw8CRVhyngQ44nehcjRx1sV3e+Dcav2pL0lsyMIDv0eCub
+         r1B84wAUBWeJwNCvoPB/6Sjdu7T+rhViPA/J15C3uUKimvG+3WI70biD/hQQmu4biS5H
+         ngG/R4RNj9TfB9LIwKEd31Zkn8s9Ohf7w189W2P0h3qVll4d1UXyMuNQEIiM+91G+Zd8
+         iQkN1CgI/iHj1w5LA0tiRIZooW1XzGc9p4aDHanvbv+7rlGulPOhCF/aOl6UeqXyZ8l5
+         3z8A==
+X-Gm-Message-State: AOAM530vF0Q5IKLMcBZ8gY+s+KtqQ5S2b2+WuLzOE7qj+tPrjyMG9fAZ
+        hB7fFQTHmwW/D5MUdDsgFrUM/rnMMLA=
+X-Google-Smtp-Source: ABdhPJz41cCn8Y/V/v3MtOfBG/dT0MaGDym/74GGUaVDEnBChug3GcVuAPvzrBpgoqgQccgTn1eDBg==
+X-Received: by 2002:ac2:51c9:: with SMTP id u9mr340219lfm.276.1611446174611;
+        Sat, 23 Jan 2021 15:56:14 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id o5sm1484944lji.133.2021.01.23.15.56.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 23 Jan 2021 15:56:13 -0800 (PST)
+Subject: Re: [PATCH v1 0/3] Support building gpio-tegra driver as loadable
+ module
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210122185543.16554-1-digetx@gmail.com>
+ <CACRpkdZTyBuz240iYuvi91k3dLKKXX=4DNxFEBP7mSNB58XtDw@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <24d46928-8c57-acba-f9cf-49afbe4c983c@gmail.com>
+Date:   Sun, 24 Jan 2021 02:56:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <CACRpkdZTyBuz240iYuvi91k3dLKKXX=4DNxFEBP7mSNB58XtDw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210123114152.GA120281@wantstofly.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+24.01.2021 01:50, Linus Walleij пишет:
+> On Fri, Jan 22, 2021 at 7:59 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> 
+>> This small series adds modularization support to the gpio-tegra driver,
+>> i.e. driver now could be built as a loadable kernel module.
+>>
+>> Dmitry Osipenko (3):
+>>   gpio: tegra: Use debugfs_create_devm_seqfile()
+>>   gpio: tegra: Clean up whitespaces in tegra_gpio_driver
+>>   gpio: tegra: Support building driver as a loadable module
+> 
+> As these three patches clearly make the kernel look better after
+> than before:
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> However when we are doing this I would strongly encourage you
+> to also make a patch implementing remove() so you can insmod
+> rmmod the module at runtime.
 
-On 2021-01-23 13:41:52 +0200, Lennert Buytenhek wrote:
-> IORING_OP_GETDENTS64 behaves like getdents64(2) and takes the same
-> arguments.
-
-I've wished for this before, this would be awesome.
-
-
-> One open question is whether IORING_OP_GETDENTS64 should be more like
-> pread(2)�and allow passing in a starting offset to read from the
-> directory from.  (This would require some more surgery in fs/readdir.c.)
-
-That would imo be preferrable from my end - using the fd's position
-means that the fd cannot be shared between threads etc.
-
-It's also not clear to me that right now you'd necessarily get correct
-results if multiple IORING_OP_GETDENTS64 for the same fd get processed
-in different workers.  Looking at iterate_dir(), it looks to me that the
-locking around the file position would end up being insufficient on
-filesystems that implement iterate_shared?
-
-int iterate_dir(struct file *file, struct dir_context *ctx)
-{
-	struct inode *inode = file_inode(file);
-	bool shared = false;
-	int res = -ENOTDIR;
-	if (file->f_op->iterate_shared)
-		shared = true;
-	else if (!file->f_op->iterate)
-		goto out;
-
-	res = security_file_permission(file, MAY_READ);
-	if (res)
-		goto out;
-
-	if (shared)
-		res = down_read_killable(&inode->i_rwsem);
-	else
-		res = down_write_killable(&inode->i_rwsem);
-	if (res)
-		goto out;
-
-	res = -ENOENT;
-	if (!IS_DEADDIR(inode)) {
-		ctx->pos = file->f_pos;
-		if (shared)
-			res = file->f_op->iterate_shared(file, ctx);
-		else
-			res = file->f_op->iterate(file, ctx);
-		file->f_pos = ctx->pos;
-		fsnotify_access(file);
-		file_accessed(file);
-	}
-	if (shared)
-		inode_unlock_shared(inode);
-	else
-		inode_unlock(inode);
-out:
-	return res;
-}
-
-As there's only a shared lock, seems like both would end up with the
-same ctx->pos and end up updating f_pos to the same offset (assuming the
-same count).
-
-Am I missing something?
-
-Greetings,
-
-Andres Freund
+The remove() is optional for drivers, it doesn't prevent the rmmod.
