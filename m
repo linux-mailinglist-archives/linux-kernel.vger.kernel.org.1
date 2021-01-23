@@ -2,141 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FFC301200
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FE43011FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbhAWB3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 20:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbhAWB32 (ORCPT
+        id S1726121AbhAWBY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:24:59 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11852 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbhAWBYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:29:28 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF08C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:28:47 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id f2so3434460ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 17:28:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=yfeJphQ0sDWpVDHO4BIQKQejXBdG4Gl17zoealRBPD8=;
-        b=gICXjdQzjIZupISrGhW4/NffiZvV7rNuGnLKX3VcHrhEpbrHDK/isnFulFOw7k6YmD
-         M9YIjj3XVYpfO4CkPcLVWyiOP9hLzmB6VWBRedDhebfMjgquqYTtSpCnHe5AQXimqFIL
-         X9l59yHd5nBiHqKPsk1xeWUYHFCyXbvnZZE6Mqi2uqhYzK8sUaWxNuVv5g5Sxf307mu5
-         lQ0Rk5bCFgv4OUYAmpYychz0y+xM8PB8DIN+hgym5WN97YX7TOTWwaqzGMyqMB+jpjLx
-         Kvq3YB5cwJgKZQrOw8tKKyRvgCdGbE65gwEHZNCQNvHkFbfIwnb/mJq6u6DgfPBYkyJE
-         qenA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=yfeJphQ0sDWpVDHO4BIQKQejXBdG4Gl17zoealRBPD8=;
-        b=B3d/d2vV069Y0dtFq0UlHUHFhmhaVqYQzOCVy3rKG+7/+OQOT4HQK9PmOJUFy4FwXH
-         xIX0ZIzBLr1PyT1P+Z/6RtRV61yL/yZPjrmytDoHga1Fj0Hm/pwMtFV5hOXhOpbpNu4W
-         CjKdKiEWaXL44zJbHBjI5swIhWIsSAEfgEgOk4Hpdr3l2DMarBV/hYk74JY5GUgXi2tI
-         nTCOqM372uR5KmxKq1LeT6Gtivw//xC65BxbxeMwVI8ml3S8qtPacve7I3QIQ0lPzF9t
-         LteNAp1WKbZeXJayrotEscwAO0PtuG+ZIRoUHY/LPq7bhqX92LIeZ48Lf/I4sDcTZhda
-         wGtA==
-X-Gm-Message-State: AOAM531wzcwSXPWStXgMrRGIJeutFWwdP4wPlvuw3MbGF8O0M7cL2EBT
-        y9rtppe2LZJCgrXNiRlGhh57LisyG3r2ttlTr7Ixs+wVnoE=
-X-Google-Smtp-Source: ABdhPJyIUZEiyrDDDxLY28EF6rN61DxLuQL+7PTZS/r3UdjtMlSsCnW0o7RtD5J7teKoSreixvqjk4ot1Cqj4bHK16E=
-X-Received: by 2002:a05:651c:10e:: with SMTP id a14mr1388108ljb.128.1611365325426;
- Fri, 22 Jan 2021 17:28:45 -0800 (PST)
+        Fri, 22 Jan 2021 20:24:54 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DMz041rlnz7W7l;
+        Sat, 23 Jan 2021 09:23:00 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
+ 09:23:59 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] =?UTF-8?q?drm/nouveau:=20remove=20set=20but=20not=20used?= =?UTF-8?q?=20variable=20=E2=80=98pdev=E2=80=99=20in=20nouveau=5Fbios=5Fin?= =?UTF-8?q?it?=
+Date:   Sat, 23 Jan 2021 09:30:14 +0800
+Message-ID: <20210123013014.3815870-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201217230612.32397-1-john.stultz@linaro.org>
- <20201217230612.32397-2-john.stultz@linaro.org> <X9y+YZujWBTHMuH3@phenom.ffwll.local>
- <CALAqxLVtYVGSSYtFmMK6oM9JSEmY4RAXra89sECL2Z4YGPic0Q@mail.gmail.com> <X+Ec+xVhyIUa7IsJ@phenom.ffwll.local>
-In-Reply-To: <X+Ec+xVhyIUa7IsJ@phenom.ffwll.local>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 22 Jan 2021 17:28:32 -0800
-Message-ID: <CALAqxLWdq9pKpFLzXmV60LQHpu8BgckDuX1HX5hY4jspHvLK5Q@mail.gmail.com>
-Subject: Re: [RFC][PATCH 2/3] dma-buf: system_heap: Add pagepool support to
- system heap
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sandeep Patil <sspatil@google.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Daniel Mentz <danielmentz@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 2:09 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Dec 18, 2020 at 05:16:56PM -0800, John Stultz wrote:
-> > On Fri, Dec 18, 2020 at 6:36 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > On Thu, Dec 17, 2020 at 11:06:11PM +0000, John Stultz wrote:
-> > > > Reuse/abuse the pagepool code from the network code to speed
-> > > > up allocation performance.
-> > > >
-> > > > This is similar to the ION pagepool usage, but tries to
-> > > > utilize generic code instead of a custom implementation.
-> > >
-> > > We also have one of these in ttm. I think we should have at most one of
-> > > these for the gpu ecosystem overall, maybe as a helper that can be plugged
-> > > into all the places.
-> > >
-> > > Or I'm kinda missing something, which could be since I only glanced at
-> > > yours for a bit. But it's also called page pool for buffer allocations,
-> > > and I don't think there's that many ways to implement that really :-)
-> >
-> > Yea, when I was looking around the ttm one didn't seem quite as
-> > generic as the networking one, which more easily fit in here.
->
-> Oops, I didn't look that closely and didn't realize you're reusing the one
-> from net/core/.
->
-> > The main benefit for the system heap is not so much the pool itself
-> > (the normal page allocator is pretty good), as it being able to defer
-> > the free and zero the pages in a background thread, so the pool is
-> > effectively filled with pre-zeroed pages.
-> >
-> > But I'll take another look at the ttm implementation and see if it can
-> > be re-used or the shared code refactored and pulled out somehow.
->
-> I think moving the page_pool from net into lib and using it in ttm might
-> also be an option. Lack of shrinker in the networking one might be a bit a
-> problem.
+Fix follow warning:
+drivers/gpu/drm/nouveau/nouveau_bios.c:2086:18: warning: variable ‘pdev’ set but not used [-Wunused-but-set-variable]
+  struct pci_dev *pdev;
+                  ^~~~
 
-Yea. I've been looking at this, to see how to abstract out a generic
-pool implementation, but each pool implementation has been tweaked for
-the specific use cases, so a general abstraction is a bit tough right
-off.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_bios.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-For example the ttm pool's handling allocations both from alloc_pages
-and dma_alloc in a pool, where the net page pool only uses alloc_pages
-(but can pre map via dma_map_attr).
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
+index 7cc683b8dc7a..e8c445eb1100 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bios.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
+@@ -2083,13 +2083,11 @@ nouveau_bios_init(struct drm_device *dev)
+ {
+ 	struct nouveau_drm *drm = nouveau_drm(dev);
+ 	struct nvbios *bios = &drm->vbios;
+-	struct pci_dev *pdev;
+ 	int ret;
+ 
+ 	/* only relevant for PCI devices */
+ 	if (!dev_is_pci(dev->dev))
+ 		return 0;
+-	pdev = to_pci_dev(dev->dev);
+ 
+ 	if (!NVInitVBIOS(dev))
+ 		return -ENODEV;
+-- 
+2.25.4
 
-And as you mentioned, the networking page pool is statically sized
-where the ttm pool is dynamic and shrinker controlled.
-
-Further, as the ttm pool is utilized for keeping pools of pages set
-for specific cache types, it makes it difficult to abstract that out
-as we have to be able to reset the caching (set_pages_wb()) when
-shrinking, so that would also have to be pushed down into the pool
-attributes as well.
-
-So far, in my attempts to share an abstraction for both the net
-page_pool and the ttm page pool, it seems to make the code complexity
-worse on both sides -  so while I'm interested in continuing to try to
-find a way to share code here, I'm not sure it makes sense to hold up
-this series (which is already re-using an existing implementation and
-provide a performance bump in microbenchmarks) for the
-grand-unified-page-pool. Efforts to refactor the ttm pool and net page
-pool can continue on indepently, and I'd be happy to move the system
-heap to whatever that ends up being.
-
-thanks
--john
