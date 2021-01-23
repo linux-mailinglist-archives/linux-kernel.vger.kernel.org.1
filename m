@@ -2,69 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FE43011FB
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF8A301209
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 02:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbhAWBY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 20:24:59 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11852 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725881AbhAWBYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:24:54 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DMz041rlnz7W7l;
-        Sat, 23 Jan 2021 09:23:00 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Sat, 23 Jan 2021
- 09:23:59 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <bskeggs@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] =?UTF-8?q?drm/nouveau:=20remove=20set=20but=20not=20used?= =?UTF-8?q?=20variable=20=E2=80=98pdev=E2=80=99=20in=20nouveau=5Fbios=5Fin?= =?UTF-8?q?it?=
-Date:   Sat, 23 Jan 2021 09:30:14 +0800
-Message-ID: <20210123013014.3815870-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1726308AbhAWBdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 20:33:37 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:55582 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725881AbhAWBdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 22 Jan 2021 20:33:32 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l37n4-002B2R-3T; Sat, 23 Jan 2021 02:32:38 +0100
+Date:   Sat, 23 Jan 2021 02:32:38 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sergej Bauer <sbauer@blackbox.su>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Simon Horman <simon.horman@netronome.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
+Message-ID: <YAt8trmR1FjGnCeF@lunn.ch>
+References: <20210122214247.6536-1-sbauer@blackbox.su>
+ <3174210.ndmClRx9B8@metabook>
+ <5306ffe6-112c-83c9-826a-9bacd661691b@gmail.com>
+ <4496952.bab7Homqhv@metabook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4496952.bab7Homqhv@metabook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix follow warning:
-drivers/gpu/drm/nouveau/nouveau_bios.c:2086:18: warning: variable ‘pdev’ set but not used [-Wunused-but-set-variable]
-  struct pci_dev *pdev;
-                  ^~~~
+> it migth be helpful for developers work on userspace networking tools with
+> PHY-less lan743x
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- drivers/gpu/drm/nouveau/nouveau_bios.c | 2 --
- 1 file changed, 2 deletions(-)
+(the interface even could not be brought up)
+> of course, there nothing much to do without TP port but the difference is
+> representative.
+> 
+> sbauer@metamini ~$ sudo ethtool eth7
+> Settings for eth7:
+> Cannot get device settings: No such device
+>         Supports Wake-on: pumbag
+>         Wake-on: d
+>         Current message level: 0x00000137 (311)
+>                                drv probe link ifdown ifup tx_queued
+>         Link detected: no
+> sbauer@metamini ~$ sudo ifup eth7
+> sbauer@metamini ~$ sudo ethtool eth7
+> Settings for eth7:
+>         Supported ports: [ MII ]
+>         Supported link modes:   10baseT/Full 
+>                                 100baseT/Full 
+>                                 1000baseT/Full 
+>         Supported pause frame use: Symmetric Receive-only
+>         Supports auto-negotiation: Yes
+>         Supported FEC modes: Not reported
+>         Advertised link modes:  10baseT/Full 
+>                                 100baseT/Full 
+>                                 1000baseT/Full 
+>         Advertised pause frame use: Symmetric Receive-only
+>         Advertised auto-negotiation: Yes
+>         Advertised FEC modes: Not reported
+>         Speed: 1000Mb/s
+>         Duplex: Full
+>         Port: MII
+>         PHYAD: 0
+>         Transceiver: internal
+>         Auto-negotiation: on
+>         Supports Wake-on: pumbag
+>         Wake-on: d
+>         Current message level: 0x00000137 (311)
+>                                drv probe link ifdown ifup tx_queued
+>         Link detected: yes
+> sbauer@metamini ~$ sudo mii-tool -vv eth7
+> Using SIOCGMIIPHY=0x8947
+> eth7: negotiated 1000baseT-FD, link ok
+>   registers for MII PHY 0: 
+>     5140 512d 7431 0011 4140 4140 000d 0000
+>     0000 0200 7800 0000 0000 0000 0000 2000
+>     0000 0000 0000 0000 0000 0000 0000 0000
+>     0000 0000 0000 0000 0000 0000 0000 0000
+>   product info: vendor 1d:0c:40, model 1 rev 1
+>   basic mode:   loopback, autonegotiation enabled
+>   basic status: autonegotiation complete, link ok
+>   capabilities: 1000baseT-FD 100baseTx-FD 10baseT-FD
+>   advertising:  1000baseT-FD 100baseTx-FD 10baseT-FD
+>   link partner: 1000baseT-FD 100baseTx-FD 10baseT-FD
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
-index 7cc683b8dc7a..e8c445eb1100 100644
---- a/drivers/gpu/drm/nouveau/nouveau_bios.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
-@@ -2083,13 +2083,11 @@ nouveau_bios_init(struct drm_device *dev)
- {
- 	struct nouveau_drm *drm = nouveau_drm(dev);
- 	struct nvbios *bios = &drm->vbios;
--	struct pci_dev *pdev;
- 	int ret;
- 
- 	/* only relevant for PCI devices */
- 	if (!dev_is_pci(dev->dev))
- 		return 0;
--	pdev = to_pci_dev(dev->dev);
- 
- 	if (!NVInitVBIOS(dev))
- 		return -ENODEV;
--- 
-2.25.4
+You have not shown anything i cannot do with the ethernet interfaces i
+have in my laptop. And since ethtool is pretty standardized, what
+lan743x offers should be pretty much the same as any 1G Ethernet MAC
+using most 1G PHYs.
 
+      Andrew
