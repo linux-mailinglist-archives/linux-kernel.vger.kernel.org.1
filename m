@@ -2,93 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4063012A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E242F3012BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 04:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbhAWD2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 22 Jan 2021 22:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        id S1726702AbhAWDl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 22 Jan 2021 22:41:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726597AbhAWD21 (ORCPT
+        with ESMTP id S1726689AbhAWDly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 22 Jan 2021 22:28:27 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E9DC06174A;
-        Fri, 22 Jan 2021 19:27:47 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 30so5139912pgr.6;
-        Fri, 22 Jan 2021 19:27:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y63ezxhE9y61i4ONjRBHzW6xiIvx1qUMUf4Z/Rhvgp0=;
-        b=JBiEK2Sr+NPccQrh4kmyjqK1PO9wHEgrQeEE1SIDCJkGCSZ0yraYOoJsGQvf5NVxe7
-         fwhUE4d6jUG3uUncgwndLpglX9gftVNiw9JC9M6L0e+sCbAinWsYPyXzeUR2IVFuZQXS
-         VZpd+pJvaFJGVKrFt1narbL5mIm8dTgAovCEQFFahaVQygOGmCMqnnpO3d1GZRf+rUjh
-         fazrMXNvZJpK51CIkwvg7iUhkoR3vc1Ykod3mbklZCIiwkyrUnpF6AGXpk1z3iOEEPzP
-         WF3/vYGsqaYM02CU5SpXtLltlsZgTuiCxl6Zsg1pS56X1xWMUmoG35ycGBu/TolaHQ5H
-         9XKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y63ezxhE9y61i4ONjRBHzW6xiIvx1qUMUf4Z/Rhvgp0=;
-        b=HXB1emMJz41O5KkikdE5m+W9hDtnqM+Yu1lC/I5b0v/r421MDPpk4j8yMg/EMdkEtP
-         gbzluP2ZBjp4r+wQPnlDflnPR2BCvRri84LiBVzEI5YVDLJZ0+geawx/EsdGlnhpEp0F
-         OUWkx5r6O2Z5mbTBBJwQ5Eke6DlKOvrHYC0gL84+K83zIKNWnH56g29uJZwdbfx6sn92
-         qcnHrJNF+RA+KveAqopJkdY1jpWfXe3EHdmdgFHwGAV8rRKwYpSFZv+am5urEhes6ed9
-         xCWq/rDUbT2sqoPw8RqaAjq5Q1VoCE0TBnuzsZUWvqZmYq6o8euaPDjadUVtoCDw40hw
-         k//Q==
-X-Gm-Message-State: AOAM533QvY7uOJgXcU6ubjSTTjxOVTYcix1sI8FM/BALjrxqzPN6MZlp
-        PJO9lTKvJVBjBouylvFWONnQ7kMBeu8Uhgqedf8=
-X-Google-Smtp-Source: ABdhPJxvXtRwLuJMLaToEnLo+EFA8YdlaLpxjwRJMr3vlzSIF/5tghE/vDuJ4l0UgbBtQ89IuFYIjiyp1P1GOPZ9cgw=
-X-Received: by 2002:a63:2265:: with SMTP id t37mr387298pgm.336.1611372466644;
- Fri, 22 Jan 2021 19:27:46 -0800 (PST)
+        Fri, 22 Jan 2021 22:41:54 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDADC061786;
+        Fri, 22 Jan 2021 19:41:13 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4DN23V0cSmz9sT6; Sat, 23 Jan 2021 14:41:09 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1611373270;
+        bh=0Bk8PAXdPpGaUR83uiG5snZucbQTwM70iFqUMjlN/4I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VaMFHhgk1Cw90cPZ14YakAtzUQXp5NcsM8znT/von49UPvC119XmIbHtLNu4msQp+
+         uiKC/4qEbVNBqrj1a7d2ULZxX6FxEAZ6SIJdkHeCv6RbToEBPmLylZ32EbLGof3Xtj
+         U+3YMTO2BK+A5ZEJqZ5k1w8e99gn8kzbSMsfUUuc=
+Date:   Sat, 23 Jan 2021 14:07:09 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>, devicetree@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: Re: [PATCH V6 5/6] of: unittest: Create overlay_common.dtsi and
+ testcases_common.dtsi
+Message-ID: <20210123030709.GI4400@yekko.fritz.box>
+References: <cover.1611312122.git.viresh.kumar@linaro.org>
+ <94180731aa4a17e4834458a979de7de782dc73d4.1611312122.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru>
- <CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com>
- <6af41136-4344-73da-f821-e831674be473@i-love.sakura.ne.jp>
- <70d427e8-7281-0aae-c524-813d73eca2d7@ozlabs.ru> <CACT4Y+bqidtwh1HUFFoyyKyVy0jnwrzhVBgqmU+T9sN1yPMO=g@mail.gmail.com>
- <eb71cc37-afbd-5446-6305-8c7abcc6e91f@i-love.sakura.ne.jp>
- <6eaafbd8-1c10-75df-75ae-9afa0861f69b@i-love.sakura.ne.jp>
- <e4767b84-05a4-07c0-811b-b3a08cad2f43@ozlabs.ru> <b9e41542-5c93-9d37-d99d-acde6fb01fa1@i-love.sakura.ne.jp>
-In-Reply-To: <b9e41542-5c93-9d37-d99d-acde6fb01fa1@i-love.sakura.ne.jp>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Fri, 22 Jan 2021 19:27:35 -0800
-Message-ID: <CAM_iQpU3P03+2QL2iDbVQSyqwHb6DXi96eXNEm3kDgFWjqAKHg@mail.gmail.com>
-Subject: Re: BPF: unbounded bpf_map_free_deferred problem
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BghK6+krpKHjj+jk"
+Content-Disposition: inline
+In-Reply-To: <94180731aa4a17e4834458a979de7de782dc73d4.1611312122.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 4:42 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> Hello, BPF developers.
->
-> Alexey Kardashevskiy is reporting that system_wq gets stuck due to flooding of
-> unbounded bpf_map_free_deferred work. Use of WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_UNBOUND
-> workqueue did not solve this problem. Is it possible that a refcount leak somewhere
-> preventing bpf_map_free_deferred from completing? Please see
-> https://lkml.kernel.org/r/CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com .
->
 
-Which map does the reproducer create? And where exactly do
-those work block on?
+--BghK6+krpKHjj+jk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Different map->ops->map_free() waits for different reasons,
-for example, htab_map_free() waits for flying htab_elem_free_rcu().
-I can't immediately see how they could wait for each other, if this
-is what you meant above.
+On Fri, Jan 22, 2021 at 04:20:35PM +0530, Viresh Kumar wrote:
+> In order to build-test the same unit-test files using fdtoverlay tool,
+> move the device nodes from the existing overlay_base.dts and
+> testcases_common.dts files to .dtsi files. The .dts files now include
+> the new .dtsi files, resulting in exactly the same behavior as earlier.
+>=20
+> The .dtsi files can now be reused for compile time tests using
+> fdtoverlay (will be done in a later patch).
+>=20
+> This is required because the base files passed to fdtoverlay tool
+> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
+> tag).
+>=20
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+>  drivers/of/unittest-data/testcases.dts        | 17 +---
+>  .../of/unittest-data/testcases_common.dtsi    | 18 ++++
+>  4 files changed, 111 insertions(+), 105 deletions(-)
+>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+>=20
+> diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unitt=
+est-data/overlay_base.dts
+> index 99ab9d12d00b..ab9014589c5d 100644
+> --- a/drivers/of/unittest-data/overlay_base.dts
+> +++ b/drivers/of/unittest-data/overlay_base.dts
+> @@ -2,92 +2,4 @@
+>  /dts-v1/;
+>  /plugin/;
 
-Thanks.
+This still makes no sense to me.  Is this data intended as a base
+tree, or as an overlay?  If it's an overlay, what are the constraints
+on the base tree it's supposed to apply to.
+
+This patch is treating it as both in different places, but that's such
+a bizarre usecase it needs detailed justification.  It really looks
+like the unittest stuff is doing some very bogus stuff that should be
+fixed first, before trying to do this on top.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--BghK6+krpKHjj+jk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmALktgACgkQbDjKyiDZ
+s5JdTw//ZayM/f75OV69BKFAZfSz1pYOPBRJivYgbz4BiSb4QAFUQx8xR8a6JaYD
+YM8Kuj5rg4rC/8W3Cf2oqQhpHaf7gmrYMAFUQrtRL7vekEUcwFGWvBk7YSPMzyNv
+rFhr3uJAVBSLCc5oJ7Sd3qMRHdPsrSZgI6I+X5q3zA1y8pjkFrY5PMvCp5HM4yRF
+xvwwXHiruV8ncmr1F/xTp8lEwZ49DE54kIhi/y4YIEbOBu26++81Hyc0S7QRA8yz
+xgxjDdibGDl9DhfJvH2zhKENT2zlfp2dHB44UZYk7JKFYhErYK7dlrjgMw2bTKW+
+hjsbZ92QwyKsk6RwtNSf5wQoGlJV5qhg5D1DRjRIlXxcDTVOE7k9/WnxQAESooWw
+AAerOd1Gjf9HnylcQmcWJyVuv4wy/xcQJla05NSqzD7RwXBQvF4dVckcMiU93uG9
+reEkGVd8TUU57asM24lAjIrxHmabIYyT3ei8cdelqgzvgFX9srWAYXWRzj+3uYv6
+ASS/KLRec7ViDv8pQPUZTlh+uqm3JQbV8J/kxyrgdOmO3rZu9RYlvWUW3inSFAve
+cizdm5S6ZKiewlh7UhnQrwy0kWlienuwCY4Da2FpRdXvylyr9IY+8ornL5knWXGi
+8BoKLSzbMCviwyi0FDITRgFkMKNNkc1ZEppe0IaN5N4Y2ZnKjNU=
+=4p5B
+-----END PGP SIGNATURE-----
+
+--BghK6+krpKHjj+jk--
