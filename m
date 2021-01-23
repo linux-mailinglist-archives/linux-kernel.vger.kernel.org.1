@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1C83014C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 11:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEE23014D4
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 12:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbhAWKwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 05:52:42 -0500
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:43889 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726379AbhAWKul (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 05:50:41 -0500
-Received: by mail-lf1-f50.google.com with SMTP id q8so11094034lfm.10;
-        Sat, 23 Jan 2021 02:50:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zVtzOXy111hZzS7DNzuLSWnU2lMa2r2x+PxOQ/YVca4=;
-        b=toBczwKmvAWsCyMH/Wqi9eFuqf8aih+4vl9SeX9GEbESN438nF/43uMBXvA0paWD2R
-         bAYtn8RZxmdk2VN0lWoU8bOmczakc2dBAkBcX8cK/LBUQmdXzOuHR+U+Rx8FeYrM8Ed/
-         iOSxzCPquWXIE89x2SetMg4bZ1K8C+2+xzxtgtcZV1q0FPh4RuF4uJCI1C7pb0Pa1fys
-         7nZ+2SxiLRHHd1jW0p/KPZvTvqh7SGzVSRQ9tnwGJUZkCOjZWcCyes5o4UxCdg4eZSOj
-         TvwCVQNLIwZ2iYRHaXYD+Jrjjq32mqN6Hwfl8TmFXsBuhuUUQN9a65vzt/z30dFw2wmg
-         BEUg==
-X-Gm-Message-State: AOAM530ZwaJgAQcOwv+c3qgcIpDlzx8J4/619lqByf3Kk/ssamhsN5Sk
-        SX8jwyPz4CiP1TaQsQRHPzI9jeS+VP2pCQ==
-X-Google-Smtp-Source: ABdhPJyXEOeG9lIeGkea26EE+UeWSQqKD72haCcpKdT05oKuTqAeMd9qirinCSiyHuv/X3vaHGkbyw==
-X-Received: by 2002:a05:6512:70d:: with SMTP id b13mr240174lfs.639.1611398999440;
-        Sat, 23 Jan 2021 02:49:59 -0800 (PST)
-Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id j15sm1162793lfb.13.2021.01.23.02.49.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Jan 2021 02:49:58 -0800 (PST)
-Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Gaurav Kohli <gkohli@codeaurora.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, stable@vger.kernel.org,
-        Julia Lawall <julia.lawall@inria.fr>
-References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
- <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
- <20210121140951.2a554a5e@gandalf.local.home>
- <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
- <20210121153732.43d7b96b@gandalf.local.home> <YAqwD/ivTgVJ7aap@kroah.com>
- <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
- <20210122093758.320bb4f9@gandalf.local.home>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
-Date:   Sat, 23 Jan 2021 13:49:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726819AbhAWLBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 06:01:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59428 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726637AbhAWLBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 06:01:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C54F233FC;
+        Sat, 23 Jan 2021 11:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611399663;
+        bh=HKE6o3YvB1B4tteaWRG6KFCwQvpwQVukHCQUNVVJeeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HKYTq7yJigGOEK8nATV4Dx0NmxniF8qJvpM8DaATKPfSpcwbXynIkCA3n3qe4gShc
+         P58WaSyJhlAC3agVkClm43lT0PT5xZ4J7SJtjlWxMDPo7Z7TJ5vikccGijHyX6Qk3T
+         csEAYzaE2dNiGaDYQSUa2ZRjDbWeimlY9AxOUezkEDzB+tFxoT4KWyZ3/mHJ42y/5p
+         pqq7kjj0H57u727QxLS0KIbNm35ZWU+0trHV9uXECzkWMwPCcm0Vf+ufzHv9e+UsoG
+         s6KF8VZU223mQTNtDCDxNRjB/Glv/5nT7EoghwQyPT8tKfrFHn5E34OlgLb+jD+RQt
+         FTlyibQtHA2wA==
+Date:   Sat, 23 Jan 2021 13:00:41 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        luto@kernel.org, Arnd Bergmann <arnd@arndb.de>, bp@alien8.de,
+        catalin.marinas@arm.com, cl@linux.com, dan.j.williams@intel.com,
+        dave.hansen@linux.intel.com, david@redhat.com,
+        elena.reshetova@intel.com, hpa@zytor.com, mingo@redhat.com,
+        jejb@linux.ibm.com, kirill@shutemov.name, willy@infradead.org,
+        mark.rutland@arm.com, rppt@linux.ibm.com, mtk.manpages@gmail.com,
+        Paul Walmsley <paul.walmsley@sifive.com>, peterz@infradead.org,
+        rick.p.edgecombe@intel.com, guro@fb.com, shakeelb@google.com,
+        shuah@kernel.org, tglx@linutronix.de, tycho@tycho.ws,
+        will@kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, lkp@intel.com
+Subject: Re: [PATCH v15 03/11] riscv/Kconfig: make direct map manipulation
+ options depend on MMU
+Message-ID: <20210123110041.GE6332@kernel.org>
+References: <20210120180612.1058-4-rppt@kernel.org>
+ <mhng-5cbc9b30-ac9a-4748-bf12-8f0de4c89f79@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-In-Reply-To: <20210122093758.320bb4f9@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-5cbc9b30-ac9a-4748-bf12-8f0de4c89f79@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/22/21 5:37 PM, Steven Rostedt wrote:
-> On Fri, 22 Jan 2021 16:55:29 +0530
-> Gaurav Kohli <gkohli@codeaurora.org> wrote:
+On Fri, Jan 22, 2021 at 08:12:30PM -0800, Palmer Dabbelt wrote:
+> On Wed, 20 Jan 2021 10:06:04 PST (-0800), rppt@kernel.org wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > ARCH_HAS_SET_DIRECT_MAP and ARCH_HAS_SET_MEMORY configuration options have
+> > no meaning when CONFIG_MMU is disabled and there is no point to enable them
+> > for the nommu case.
+> > 
+> > Add an explicit dependency on MMU for these options.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > ---
+> >  arch/riscv/Kconfig | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index d82303dcc6b6..d35ce19ab1fa 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -25,8 +25,8 @@ config RISCV
+> >  	select ARCH_HAS_KCOV
+> >  	select ARCH_HAS_MMIOWB
+> >  	select ARCH_HAS_PTE_SPECIAL
+> > -	select ARCH_HAS_SET_DIRECT_MAP
+> > -	select ARCH_HAS_SET_MEMORY
+> > +	select ARCH_HAS_SET_DIRECT_MAP if MMU
+> > +	select ARCH_HAS_SET_MEMORY if MMU
+> >  	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
+> >  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+> >  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
 > 
->>>> That could possibly work.  
->>
->> Yes, this will work, As i have tested similar patch for internal testing 
->> for kernel branches like 5.4/4.19.
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 > 
-> Can you or Denis send a proper patch for Greg to backport? I'll review it,
-> test it and give my ack to it, so Greg can take it without issue.
-> 
+> LMK if you want this to go in via the RISC-V tree, otherwise I'm going to
+> assume it's going in along with the rest of these.  FWIW I see these in other
+> architectures without the MMU guard.
 
-I can prepare the patch, but it will be compile-tested only from my side. Honestly,
-I think it's better when the patch and its backports have the same author and
-commit message. And I can't test the fix by myself as I don't know how to reproduce
-conditions for the bug. I think it's better if Gaurav will prepare this backport,
-unless he have reasons for me to do it or maybe just don't have enough time nowadays.
-Gaurav, if you want to somehow mention me you add my Reported-by:
+Except arm, they all always have MMU=y and arm selects only
+ARCH_HAS_SET_MEMORY and has empty stubs for those when MMU=n.
 
-Thanks,
-Denis
+Indeed I might have been over zealous adding ARCH_HAS_SET_MEMORY dependency
+on MMU, as riscv also has these stubs, but I thought that making this
+explicit is a nice thing.
+ 
+> Thanks!
 
+-- 
+Sincerely yours,
+Mike.
