@@ -2,128 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318E23013AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 08:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED633013B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 08:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbhAWHUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 02:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43860 "EHLO
+        id S1726699AbhAWHVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 02:21:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726306AbhAWHUN (ORCPT
+        with ESMTP id S1726664AbhAWHVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 02:20:13 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDD2C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 23:19:33 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id a20so2246384pjs.1
-        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 23:19:33 -0800 (PST)
+        Sat, 23 Jan 2021 02:21:17 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAA1C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 23:20:37 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id kg20so10398796ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 22 Jan 2021 23:20:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RiZZvwwyb49yURnSjcY0X14bt1OOhPEh7Q9ZLRAbppo=;
-        b=sfTx+w7Ky5+LoSBCX4toBY4WMmFidBHo6vNYmD2yT3IB/q6R7L0lmk4vRNoMacXrS5
-         nYo8EmtLYA3e0K+QhamFclIdZid4uMLXb1hI2PvBfQnPhtl9Iy8CezuWSXeZbolfb6Rh
-         7sENDnvBnlu9iFlDLdnxtAm043puL67MYHsUR1+W1BDwZFWvG4cDKg+7qDHLcnwqeCCS
-         tcnvmE8kfrvTzyL3vWlxs0aNDJRdKPJY9mGYLB3DGXAV52vMA+6SHaKDNo1HcRspIFkv
-         njQlfItLHMyWhgacE7sWzKgqYiWhbi+WuVcQsGgNGVCDxQRLu+ylyeMG5norNR0bgc5G
-         3a8A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KBT4hSRvsCHJY8mmdL+j2n7s1QEKLTs3BtDbKDLdqIc=;
+        b=QF4A+pJFGOL2lDMM6IuqUT+UcPYIwLGI2VlPGTJt/GN7pIHAxMwvoPpmE0uq1Q68w9
+         XcCP41/nH6WNt9wBA1sWVzyb+0Qav1bf0J3zW8Rjc06UNz+Vmmb5atAzcMZwQQb63kSV
+         FLw4jtwCQ6uRxpu2z1CvsDpk2N1sNfgoVhAk4P4YmVFTHfB2UCIvVF/o8dPl7Z/adGXl
+         L0kau/ZDY1Up3l3dJNSvcCK9FBFzDJxaoVoA6zuMve3OM/mmtd5cvZ5gmTk8ifPGxk85
+         dvfHqWaE4QNSc2lzzaMwP/tWsCPic4cIfoxKsnSBkvWHsd3wdXYI1JU9M4mISgoIrlT4
+         Inpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RiZZvwwyb49yURnSjcY0X14bt1OOhPEh7Q9ZLRAbppo=;
-        b=kMqXn42wD8wCQPbPIpO4n+qyls5tBfU9auM85F6Md9D0Nbkz62Cvb/c91FBi9xwGO4
-         jcHZycgVnEII5l1IKkkA1438J+5DeI0brrHm737xXdPdfbl/nbZQhkx1p8kEPfkOk0+9
-         Ic0w5on/txEtx5GJqRD/PLu3F7fGU3uwlB06riDci67qMo2/mTzwPO2xkAvpzSPL/VYq
-         Y8RzfrDKYZzQF+4pZ43R4F2paUwKiF3ABChuD49IQiQZxssLoOkd6w/F8m6er7ZoFzCJ
-         RvbzbPPdOvcOY70fWvr3eIH1XFPFEPeRQVZMDBYtFDMZgMx5cWejL/WtOb60AgtdLitw
-         sExg==
-X-Gm-Message-State: AOAM531JnTE/FF8rw7ZZND2ZK8Mt6XRD6KJXE5Z0EU35SfFdTaU1OB4D
-        g5MafyZvzm9fH55Lwq1us4uK5Q==
-X-Google-Smtp-Source: ABdhPJzRf4OR0O4j4MVOHVNlecGUVQ8m3Ufn11l8XPw3WRtQKtG0P34UJ9Vel+HMs5aKNSjKy7Dmdg==
-X-Received: by 2002:a17:902:7b96:b029:de:7ae6:b8db with SMTP id w22-20020a1709027b96b02900de7ae6b8dbmr8914440pll.0.1611386372534;
-        Fri, 22 Jan 2021 23:19:32 -0800 (PST)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id b7sm10607315pff.96.2021.01.22.23.19.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 22 Jan 2021 23:19:31 -0800 (PST)
-Date:   Sat, 23 Jan 2021 15:19:25 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, vkoul@kernel.org,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: dma: qcom: bam_dma: Manage clocks when
- controlled_remotely is set
-Message-ID: <20210123071924.GF2479@dragon>
-References: <20210122025251.3501362-1-thara.gopinath@linaro.org>
- <20210122051013.GE2479@dragon>
- <d1f1724c-39f1-7b6e-8cd4-638a44608d9c@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KBT4hSRvsCHJY8mmdL+j2n7s1QEKLTs3BtDbKDLdqIc=;
+        b=aALYU/b5UTtXBTRhFmaCOKquK5Nx4oufrUFIXa2iYLpLtqYzUeUxrYXDZ4gd7PaOK+
+         CNjLDv3v3tKAJpt3awP4is0zJecqRKYVt+r7oy5OQsFTUOqMCzIXuoH/PlWwxrJ9oOzE
+         o0QI2UanwuMjVO3JOWzLPoC8E9gB7EM5AMblJ+/A5v57PMuX97O7+XOvUSiGic6STn7M
+         jBnflTTJ41KBq9RVYyDf/k+7yzEJoR0fpB9IvTmYzPiaDlMfN9iaj1scnDHuyLhKC+BU
+         m2pOIkq9UigF0G4s7dlecc5dzkGZ/P8BruyAxhuFtE/C+4A5dx65/s5kaUMLsQ/uM8KB
+         hjoA==
+X-Gm-Message-State: AOAM533VVGsBNh7OteD84Up9RBvVxu0t8P4e0ed9sdghXTrSxcDihMeb
+        rK0k6YegElobn9qml8fl8D/fjItmudw0RvF0M4StkQ==
+X-Google-Smtp-Source: ABdhPJy7mTgzQym7e0g/rncsYR/6l58MyHL170z1qPA5TvXC2az/7FPqxMp9btySD06BqLfRw71X3C+hg/zS4WUUK9o=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr400252eju.375.1611386435860;
+ Fri, 22 Jan 2021 23:20:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d1f1724c-39f1-7b6e-8cd4-638a44608d9c@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210122135735.652681690@linuxfoundation.org> <CA+G9fYun4MY72zD1SUPRktJdbXsotqi0G-a=cvdAk-8kOo_dwQ@mail.gmail.com>
+In-Reply-To: <CA+G9fYun4MY72zD1SUPRktJdbXsotqi0G-a=cvdAk-8kOo_dwQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 23 Jan 2021 12:50:24 +0530
+Message-ID: <CA+G9fYu-oJMYJxStRiG88xUyb2qNgH64q370b0CTcBW4j3ZtnA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/43] 5.10.10-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 10:44:09AM -0500, Thara Gopinath wrote:
-> Hi Shawn,
-> 
-> Thanks for the review
-> 
-> On 1/22/21 12:10 AM, Shawn Guo wrote:
-> > On Thu, Jan 21, 2021 at 09:52:51PM -0500, Thara Gopinath wrote:
-> > > When bam dma is "controlled remotely", thus far clocks were not controlled
-> > > from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
-> > > driver and not doing any clock management in suspend/resume hooks.
-> > > 
-> > > With introduction of crypto engine bam dma, the clock is a rpmh resource
-> > > that can be controlled from both Linux and TZ/remote side.  Now bam dma
-> > > clock is getting enabled during probe even though the bam dma can be
-> > > "controlled remotely". But due to clocks not being handled properly,
-> > > bam_suspend generates a unbalanced clk_unprepare warning during system
-> > > suspend.
-> > > 
-> > > To fix the above issue and to enable proper clock-management, this patch
-> > > enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
-> > > the clock node is present irrespective of controlled_remotely property.
-> > 
-> > Shouldn't the following probe code need some update?  Now we have both
-> > controlled_remotely and clocks handle for cryptobam node.  For example,
-> > if devm_clk_get() returns -EPROBE_DEFER, we do not want to continue with
-> > bamclk forcing to be NULL, right?
-> 
-> We still will have to set bdev->bamclk to NULL in certain scenarios. For eg
-> slimbus bam dma is controlled-remotely and the clocks are handled by the
-> remote s/w. Linux does not handle the clocks at all and  there is no clock
-> specified in the dt node.This is the norm for the devices that are also
-> controlled by remote s/w. Crypto bam dma is a special case where the clock
-> is actually a rpmh resource and hence can be independently handled from both
-> remote side and Linux by voting. In this case, the dma is controlled
-> remotely but clock can be turned off and on in Linux. Hence the need for
-> this patch.
+On Sat, 23 Jan 2021 at 11:14, Naresh Kamboju <naresh.kamboju@linaro.org> wr=
+ote:
+>
+> On Fri, 22 Jan 2021 at 19:49, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.10.10 release.
+> > There are 43 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Sun, 24 Jan 2021 13:57:23 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
+h-5.10.10-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Results from Linaro=E2=80=99s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 
-So is it correct to say that clock is mandatory for !controlled-remotely
-BAM, while it's optional for controlled-remotely one.  If yes, maybe we
-can do something like below to make the code a bit easier to read?
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-	if (controlled-remotely)
-		bdev->bamclk = devm_clk_get_optional();
-	else
-		bdev->bamclk = devm_clk_get();
-		
-> Yes, the probe code needs updating to handle -EPROBE_DEFER (esp if the clock
-> driver is built in as a module) I am not sure if the clock framework handles
-> -EPROBE_DEFER properly either. So that
-> might need updating too. This is a separate activity and not part of this
-> patch.
-
-As the patch breaks the assumption that for controlled-remotely BAM
-there is no clock to be managed, the probe code becomes buggy right
-away.
-
-Shawn
+>
+> Summary
+> ------------------------------------------------------------------------
+>
+> kernel: 5.10.10-rc1
+> git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-st=
+able-rc.git
+> git branch: linux-5.10.y
+> git commit: 402284178c914c87fd7b41bc9bd93f2772c43904
+> git describe: v5.10.9-44-g402284178c91
+> Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.=
+10.y/build/v5.10.9-44-g402284178c91
+>
+>
+> No regressions (compared to build v5.10.9)
+>
+>
+> No fixes (compared to build v5.10.9)
+>
+> Ran 55124 total tests in the following environments and test suites.
+>
+> Environments
+> --------------
+> - dragonboard-410c
+> - hi6220-hikey
+> - i386
+> - juno-r2
+> - juno-r2-compat
+> - juno-r2-kasan
+> - nxp-ls2088
+> - qemu-arm-clang
+> - qemu-arm64-clang
+> - qemu-arm64-kasan
+> - qemu-i386-clang
+> - qemu-x86_64-clang
+> - qemu-x86_64-kasan
+> - qemu-x86_64-kcsan
+> - qemu_arm
+> - qemu_arm64
+> - qemu_arm64-compat
+> - qemu_i386
+> - qemu_x86_64
+> - qemu_x86_64-compat
+> - x15
+> - x86
+> - x86-kasan
+>
+> Test Suites
+> -----------
+> * build
+> * igt-gpu-tools
+> * install-android-platform-tools-r2600
+> * libhugetlbfs
+> * linux-log-parser
+> * ltp-commands-tests
+> * ltp-containers-tests
+> * ltp-cve-tests
+> * ltp-dio-tests
+> * ltp-fcntl-locktests-tests
+> * ltp-filecaps-tests
+> * ltp-fs-tests
+> * ltp-fs_bind-tests
+> * ltp-fs_perms_simple-tests
+> * ltp-fsx-tests
+> * ltp-hugetlb-tests
+> * ltp-io-tests
+> * ltp-ipc-tests
+> * ltp-math-tests
+> * ltp-mm-tests
+> * ltp-sched-tests
+> * ltp-tracing-tests
+> * fwts
+> * kselftest
+> * ltp-cap_bounds-tests
+> * ltp-cpuhotplug-tests
+> * ltp-crypto-tests
+> * ltp-nptl-tests
+> * ltp-pty-tests
+> * ltp-securebits-tests
+> * ltp-syscalls-tests
+> * network-basic-tests
+> * perf
+> * ltp-controllers-tests
+> * ltp-open-posix-tests
+> * v4l2-compliance
+> * kvm-unit-tests
+> * kunit
+> * rcutorture
+> * kselftest-vsyscall-mode-native
+> * kselftest-vsyscall-mode-none
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
