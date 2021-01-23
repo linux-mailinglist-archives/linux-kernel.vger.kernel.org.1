@@ -2,115 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EF53015DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EB43015D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 23 Jan 2021 15:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbhAWO2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 09:28:53 -0500
-Received: from aposti.net ([89.234.176.197]:33882 "EHLO aposti.net"
+        id S1726032AbhAWO1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 09:27:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726021AbhAWO2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 09:28:33 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Bin Liu <b-liu@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Tony Lindgren <tony@atomide.com>, od@zcrc.me,
-        linux-mips@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [RE-RESEND PATCH 4/4] usb: musb: jz4740: Add missing CR to error strings
-Date:   Sat, 23 Jan 2021 14:25:02 +0000
-Message-Id: <20210123142502.16980-4-paul@crapouillou.net>
-In-Reply-To: <20210123142502.16980-1-paul@crapouillou.net>
-References: <20210123142502.16980-1-paul@crapouillou.net>
+        id S1725268AbhAWO10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 09:27:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 614B022DFA;
+        Sat, 23 Jan 2021 14:26:41 +0000 (UTC)
+Date:   Sat, 23 Jan 2021 14:26:39 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 20/21] arm64: Defer enabling pointer authentication on
+ boot core
+Message-ID: <YAwyH8Ya4oqFKlC0@Catalins-MacBook-Air.local>
+References: <20210118094533.2874082-1-maz@kernel.org>
+ <20210118094533.2874082-21-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118094533.2874082-21-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you pass a string that is not terminated with a carriage return to
-dev_err(), it will eventually be printed with a carriage return, but
-not right away, since the kernel will wait for a pr_cont().
+On Mon, Jan 18, 2021 at 09:45:32AM +0000, Marc Zyngier wrote:
+> From: Srinivas Ramana <sramana@codeaurora.org>
+> 
+> Defer enabling pointer authentication on boot core until
+> after its required to be enabled by cpufeature framework.
+> This will help in controlling the feature dynamically
+> with a boot parameter.
+> 
+> Signed-off-by: Ajay Patil <pajay@qti.qualcomm.com>
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
+> Signed-off-by: Srinivas Ramana <sramana@codeaurora.org>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link: https://lore.kernel.org/r/1610152163-16554-2-git-send-email-sramana@codeaurora.org
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/usb/musb/jz4740.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/usb/musb/jz4740.c b/drivers/usb/musb/jz4740.c
-index c4fe1f4cd17a..5b7d576bf6ee 100644
---- a/drivers/usb/musb/jz4740.c
-+++ b/drivers/usb/musb/jz4740.c
-@@ -116,13 +116,13 @@ static int jz4740_musb_init(struct musb *musb)
- 	if (IS_ERR(musb->xceiv)) {
- 		err = PTR_ERR(musb->xceiv);
- 		if (err != -EPROBE_DEFER)
--			dev_err(dev, "No transceiver configured: %d", err);
-+			dev_err(dev, "No transceiver configured: %d\n", err);
- 		return err;
- 	}
- 
- 	glue->role_sw = usb_role_switch_register(dev, &role_sw_desc);
- 	if (IS_ERR(glue->role_sw)) {
--		dev_err(dev, "Failed to register USB role switch");
-+		dev_err(dev, "Failed to register USB role switch\n");
- 		return PTR_ERR(glue->role_sw);
- 	}
- 
-@@ -205,26 +205,26 @@ static int jz4740_probe(struct platform_device *pdev)
- 
- 	pdata = of_device_get_match_data(dev);
- 	if (!pdata) {
--		dev_err(dev, "missing platform data");
-+		dev_err(dev, "missing platform data\n");
- 		return -EINVAL;
- 	}
- 
- 	musb = platform_device_alloc("musb-hdrc", PLATFORM_DEVID_AUTO);
- 	if (!musb) {
--		dev_err(dev, "failed to allocate musb device");
-+		dev_err(dev, "failed to allocate musb device\n");
- 		return -ENOMEM;
- 	}
- 
- 	clk = devm_clk_get(dev, "udc");
- 	if (IS_ERR(clk)) {
--		dev_err(dev, "failed to get clock");
-+		dev_err(dev, "failed to get clock\n");
- 		ret = PTR_ERR(clk);
- 		goto err_platform_device_put;
- 	}
- 
- 	ret = clk_prepare_enable(clk);
- 	if (ret) {
--		dev_err(dev, "failed to enable clock");
-+		dev_err(dev, "failed to enable clock\n");
- 		goto err_platform_device_put;
- 	}
- 
-@@ -240,19 +240,19 @@ static int jz4740_probe(struct platform_device *pdev)
- 	ret = platform_device_add_resources(musb, pdev->resource,
- 					    pdev->num_resources);
- 	if (ret) {
--		dev_err(dev, "failed to add resources");
-+		dev_err(dev, "failed to add resources\n");
- 		goto err_clk_disable;
- 	}
- 
- 	ret = platform_device_add_data(musb, pdata, sizeof(*pdata));
- 	if (ret) {
--		dev_err(dev, "failed to add platform_data");
-+		dev_err(dev, "failed to add platform_data\n");
- 		goto err_clk_disable;
- 	}
- 
- 	ret = platform_device_add(musb);
- 	if (ret) {
--		dev_err(dev, "failed to register musb device");
-+		dev_err(dev, "failed to register musb device\n");
- 		goto err_clk_disable;
- 	}
- 
--- 
-2.29.2
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
