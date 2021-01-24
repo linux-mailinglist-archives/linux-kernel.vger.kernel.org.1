@@ -2,105 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9732F301BFA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41A2301C02
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbhAXNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 08:02:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726613AbhAXNCY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:02:24 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE132C061574;
-        Sun, 24 Jan 2021 05:01:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=LkH5qtRnU0iy5lt0nigH+EyN1YwVx2DVm3xBix/OpoA=; b=VdjAm8cQVlU77Br2sk+F9PfK3
-        dx2cWRsl7YGTNYCCmZ/ZbdjhoE2celGZs/xXI/1NdevLLJbS8Tp/3TTPo+MWOA1jsgQCI1S2Ta55D
-        LS+oszUcQztYM5KnYR813N+FN0Ocypg6DsnnjOpnDgqP624ySLM9fP2rQTGaGFc4kRikRWXMmr/Zj
-        4JG9G34weZI7HZ/VPrCEU06QyJRtFsMurR0OoMFSJUBd4BdBqVcvEw1PkRxPZH0c4aglbyOk07kzF
-        cKGYZ5DFi1PQmnz7i3EIto6VoGWRJZa4U6hzvLNEJjUpEfqoD9NM3sFQ09Dr6L76SeUMuJH8FRvf6
-        l8XA5it9A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52126)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l3f1Q-0002Om-Mi; Sun, 24 Jan 2021 13:01:41 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l3f1M-0001jN-AC; Sun, 24 Jan 2021 13:01:37 +0000
-Date:   Sun, 24 Jan 2021 13:01:36 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        andrew@lunn.ch, atenart@kernel.org
-Subject: Re: [PATCH v2 RFC net-next 09/18] net: mvpp2: add FCA RXQ non
- occupied descriptor threshold
-Message-ID: <20210124130134.GY1551@shell.armlinux.org.uk>
-References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
- <1611488647-12478-10-git-send-email-stefanc@marvell.com>
+        id S1726758AbhAXNMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 08:12:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726456AbhAXNMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 08:12:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B634522ADC;
+        Sun, 24 Jan 2021 13:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611493883;
+        bh=eQ88PvupuioCNW7tkGGhAMMpSfJ8kHhHjNZWNJQTuKw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AlFpSiGSBozQ1MSnPObM9Ji5GyJORj9/cG24SRXZQddU5koRJpijMM2GVd2W6rHdr
+         DogO261pf3bQq0RkFLVv3K7Nxvh2X89x5w0mVlg8KSCQ3TG4F4kTq81fQC7AWS2Gnc
+         VjVq5FuP3AVjQC0BT13xl2JonigKb4CKXu9lJ4jHFDzT+ky91muj093De5cZ8VuYgk
+         mVLR/uRFFeWf6cIXYKEAXVzT6ksxHrvLo8L2VmSSaGn8KToz2trRIgtlka2RckkXtW
+         9sLEYdvWUjFhJX2L1uXNddorp0drsQpZh3y74X0eIFlhhWl1XWccHXiB8FiUZd7g2s
+         6zKbaUAhve/4A==
+Date:   Sun, 24 Jan 2021 08:11:21 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org
+Subject: Re: [PATCH AUTOSEL 5.10 26/45] x86/xen: Fix xen_hvm_smp_init() when
+ vector callback not available
+Message-ID: <20210124131121.GG4035784@sasha-vm>
+References: <20210120012602.769683-1-sashal@kernel.org>
+ <20210120012602.769683-26-sashal@kernel.org>
+ <86c0baa1-f8c5-2580-6ee9-efc7043c2bf5@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1611488647-12478-10-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <86c0baa1-f8c5-2580-6ee9-efc7043c2bf5@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 01:43:58PM +0200, stefanc@marvell.com wrote:
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> index 9d69752..0f5069f 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -1154,6 +1154,9 @@ static void mvpp2_interrupts_mask(void *arg)
->  	mvpp2_thread_write(port->priv,
->  			   mvpp2_cpu_to_thread(port->priv, smp_processor_id()),
->  			   MVPP2_ISR_RX_TX_MASK_REG(port->id), 0);
-> +	mvpp2_thread_write(port->priv,
-> +			   mvpp2_cpu_to_thread(port->priv, smp_processor_id()),
-> +			   MVPP2_ISR_RX_ERR_CAUSE_REG(port->id), 0);
+On Tue, Jan 19, 2021 at 08:35:04PM -0500, Boris Ostrovsky wrote:
+>
+>On 1/19/21 8:25 PM, Sasha Levin wrote:
+>> From: David Woodhouse <dwmw@amazon.co.uk>
+>>
+>> [ Upstream commit 3d7746bea92530e8695258a3cf3ddec7a135edd6 ]
+>
+>
+>Sasha, you will also want https://lore.kernel.org/lkml/20210115191123.27572-1-rdunlap@infradead.org/, it is sitting in Xen staging tree.
 
-I wonder if this should be refactored:
-
-	u32 thread = mvpp2_cpu_to_thread(port->priv, smp_processor_id());
-
-	mvpp2_thread_write(port->priv, thread,
-			   MVPP2_ISR_RX_TX_MASK_REG(port->id), 0);
-	mvpp2_thread_write(port->priv, thread,
-			   MVPP2_ISR_RX_ERR_CAUSE_REG(port->id), 0);
-
-to avoid having to recompute mvpp2_cpu_to_thread() for each write?
-
-However, looking deeper...
-
-static void mvpp2_interrupts_mask(void *arg)
-{
-	struct mvpp2_port *port = arg;
-	u32 thread;
-	int cpu;
-
-	cpu = smp_processor_id();
-	if (cpu > port->priv->nthreads)
-		return
-
-	thread = mvpp2_cpu_to_thread(port->priv, cpu);
-	...
-
-and I wonder about that condition - "cpu > port->priv->nthreads". If
-cpu == port->priv->nthreads, then mvpp2_cpu_to_thread() will return
-zero, just like the cpu=0 case. This leads me to suspect that this
-comparison off by one.
+I'll grab it too, thanks!
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+Sasha
