@@ -2,103 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC98301F8B
+	by mail.lfdr.de (Postfix) with ESMTP id CB664301F8C
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 00:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbhAXXU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 18:20:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbhAXXUs (ORCPT
+        id S1726630AbhAXXVu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 Jan 2021 18:21:50 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:46922 "EHLO
+        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbhAXXVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 18:20:48 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E830DC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 15:20:07 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id l12so10597943ljc.3
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 15:20:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tT/n9x6Id31H9nlSVajbbewbA+QGS9a48tgqL7XH9i8=;
-        b=yH9cMFbfha4n4EyOsu8yVuWvg3Gf0Y58m84MQT+zY5RjguDUNGAHxf55+l2/JNEYQh
-         J/aE2ay6IopDpOBJAJL1QTFFMCvseFiGGvA8sk4UwI15HOGLOKNRKFVUh467nrFoRdY3
-         eDspU2ovc4Vrnh1jzrUqu6LeHAMm4uKFHc4yQX9rf+PLCAueIvJUmiSYXP9Z+XNffYi0
-         4r9uXB3lhxVfEGNyiglGVlKFjujJHbCsGgs89rkE5s+Wn5uMNEQLyFUaj/L5Ze3VnWTI
-         jEHdbQARRJrZZUajUlKLeC2z0KD8IUJzinxJIBwYXkkusoKBeR/zu0HJDbBDRLmUFljV
-         Ggjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tT/n9x6Id31H9nlSVajbbewbA+QGS9a48tgqL7XH9i8=;
-        b=UMbB532RlI2ZgATwumJOdginn8opwnFTojjnfdadGi3KisawAcICbMLLPmoLgZH3Ks
-         wpEjAAE5ffjQrCU59mdiDEIC1hVtcXo7jARpa3L4DJ0DMEfAHYn+gj1zgAI9qktgm2QR
-         /COXJ776ejU9BHTtEv3xM5MJ1wXI3YE0eWMicQtScBP+WobJYO0EJRMfYjY+c+ydATNg
-         2g8ASqQn4MbHwE/iIU3sXzqpIFSIeYHE2kdTHzfH4nAvOo0ibRe3a0YvPvG6hF5lJLTh
-         7BkdIQZrrbxkUkJj5E+V02XIXm2mFESSH9fjRV815soYHsKikokD+Gswp0T9Rkh0Q7/7
-         At/w==
-X-Gm-Message-State: AOAM533V5uYjxwqPArpDZWjHR/Cku2f4zZEWKpYvobT5EM6G07S+6JO1
-        EJScF3FPTePspHOfrxfZf4ewdBlRUpYI2CBmtL1YsQ==
-X-Google-Smtp-Source: ABdhPJx+rTG1fVqtxNEzsYuTm6ZHfxLc38QVvlyryf6915amIoApS2QGwuk7lea+p8O1JQ+yH+S5/K0t2ufq59yXlcI=
-X-Received: by 2002:a2e:894d:: with SMTP id b13mr1063908ljk.438.1611530406509;
- Sun, 24 Jan 2021 15:20:06 -0800 (PST)
+        Sun, 24 Jan 2021 18:21:44 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lilium.sigma-star.at (Postfix) with ESMTP id 62F111809AD3C;
+        Mon, 25 Jan 2021 00:21:00 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id En2gXzSTGuNe; Mon, 25 Jan 2021 00:20:59 +0100 (CET)
+Received: from lilium.sigma-star.at ([127.0.0.1])
+        by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ft1g1MTWLLqg; Mon, 25 Jan 2021 00:20:59 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     miklos@szeredi.hu
+Cc:     miquel.raynal@bootlin.com, vigneshr@ti.com,
+        boris.brezillon@collabora.com, rminnich@google.com,
+        sven@narfation.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, fuse-devel@lists.sourceforge.net,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 0/8] MUSE: Userspace backed MTD v3
+Date:   Mon, 25 Jan 2021 00:19:59 +0100
+Message-Id: <20210124232007.21639-1-richard@nod.at>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210120063019.1989081-1-paweldembicki@gmail.com> <20210121224505.nwfipzncw2h5d3rw@skbuf>
-In-Reply-To: <20210121224505.nwfipzncw2h5d3rw@skbuf>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Jan 2021 00:19:55 +0100
-Message-ID: <CACRpkdb4n5g6vtZ7sHyPXGJXDYAm=kPPrc9TE6+zjCPB+aQsgw@mail.gmail.com>
-Subject: Re: [PATCH] dsa: vsc73xx: add support for vlan filtering
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Pawel Dembicki <paweldembicki@gmail.com>,
-        netdev <netdev@vger.kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:45 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> On Wed, Jan 20, 2021 at 07:30:18AM +0100, Pawel Dembicki wrote:
+I'm happy to announce the first non-RFC version of this patch set.
+Over the xmas holidays I found some time to experiment with various userspace
+implementations of MTDs and gave the kernel side more fine-tuning.
 
-> > This patch adds support for vlan filtering in vsc73xx driver.
-> >
-> > After vlan filtering enable, CPU_PORT is configured as trunk, without
-> > non-tagged frames. This allows to avoid problems with transmit untagged
-> > frames because vsc73xx is DSA_TAG_PROTO_NONE.
-> >
-> > Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
->
-> What are the issues that are preventing you from getting rid of
-> DSA_TAG_PROTO_NONE? Not saying that making the driver VLAN aware is a
-> bad idea, but maybe also adding a tagging driver should really be the
-> path going forward.
+Rationale:
+----------
 
-This is due to the internal architecture of the switch, while it does
-have an internal tagging format, this is stripped off before letting
-it exit through the CPU port, and tagged on by the hardware
-whenever the CPU transmits something. So these tags are
-invisible to the CPU.
+When working with flash devices a common task is emulating them to run various
+tests or inspect dumps from real hardware. To achieve that we have plenty of
+emulators in the MTD subsystem: mtdram, block2mtd, nandsim.
 
-Itr would be neat if there was some bit in the switch we could
-flick and then  the internal tagging format would come out on
-the CPU port, but sadly this does not exist.
+Each of them implements an ad-hoc MTD and have various drawbacks.
+Over the last years some developers tried to extend them but these attempts
+often got rejected because they added just more adhoc feature instead of
+addressing overall problems.
 
-The vendors idea is that the switch should be programmed
-internally as it contains an 8051 processor that can indeed see
-the internal tags. This makes a lot of sense when the chips are
-used for a hardware switch, i.e. a box with several ethernet ports
-on it. Sadly it is not very well adopted for the usecase of smart
-operating system like linux hogging into the CPU port and
-using it as a managed switch. :/
+MUSE is a novel approach to address the need of advanced MTD emulators.
+Advanced means in this context supporting different (vendor specific) image
+formats, different ways for fault injection (fuzzing) and recoding/replaying
+IOs to emulate power cuts.
 
-We currently have the 8051 processor in the switch disabled.
+The core goal of MUSE is having the complexity on the userspace side and
+only a small MTD driver in kernelspace.
+While playing with different approaches I realized that FUSE offers everything
+we need. So MUSE is a little like CUSE except that it does not implement a
+bare character device but an MTD.
 
-Yours,
-Linus Walleij
+Notes:
+------
+
+- OOB support is currently limited. Currently MUSE has no support for processing
+  in- and out-band in the same MTD operation. It is good enough to make JFFS2
+  happy. This limitation is because FUSE has no support more than one variable
+  length buffer in a FUSE request.
+  At least I didn’t find a good way to pass more than one buffer to a request.
+  Maybe FUSE folks can correct me. :-)
+
+- Every MTD read/write operation maps 1:1 to a MUSE_READ/WRITE opcode.
+  Since FUSE requests are not cheap, the amount of read/written bytes in a MTD
+  operation as a huge impact on the performance. Especially when NOR style MTDs
+  are implemented in userspace a large writebufsize should be requested to gain
+  good write performance.
+  On the other hand, MTD operations with lengths larger than writesize are *not*
+  split up into multiple MUSE_READ/WRITE requests. This means that userspace
+  has to split them manually when doing power-cut emulation.
+
+- MUSE is not super fast. On my i5 workstation nandsim is almost twice as fast
+  as a NAND flash in userspace. But MUSE is still magnitudes faster than any
+  real world MTD out there. So it is good enough for the use cases I have in
+  mind.
+
+Changelog:
+----------
+
+Changes since v2 (RFC):
+- OOB support
+- MUSE_READ/WRITE opcodes are no longer a min IO MTD unit
+- MTD partitions support via mtdparts string
+- More code cleanup
+- Code rebased to 5.11-rc4
+
+Changes since v1 (RFC):
+- Rewrote IO path, fuse_direct_io() is no longer used.
+  Instead of cheating fuse_direct_io() use custom ops to implement
+  reading and writing. That way MUSE no longer needs a dummy file object
+  nor a fuse file object.
+  In MTD all IO is synchronous and operations on kernel buffers, this
+  makes IO processing simple for MUSE.
+- Support for bad blocks.
+- No more (ab)use of FUSE ops such as FUSE_FSYNC.
+- Major code cleanup.
+
+This series can also be found at:
+git://git.kernel.org/pub/scm/linux/kernel/git/rw/misc.git muse_v3
+
+Richard Weinberger (8):
+  fuse: Export fuse_simple_request
+  fuse: Export IO helpers
+  fuse: Make cuse_parse_one a common helper
+  mtd: Add MTD_MUSE flag
+  mtd: Allow passing a custom cmdline to cmdline line parser
+  fuse: Add MUSE specific defines FUSE interface
+  fuse: Implement MUSE - MTD in userspace
+  MAINTAINERS: Add entry for MUSE
+
+ Documentation/ABI/testing/sysfs-class-mtd |    8 +
+ MAINTAINERS                               |    7 +
+ drivers/mtd/parsers/cmdlinepart.c         |   73 +-
+ fs/fuse/Kconfig                           |   15 +
+ fs/fuse/Makefile                          |    2 +
+ fs/fuse/cuse.c                            |   58 +-
+ fs/fuse/dev.c                             |    1 +
+ fs/fuse/file.c                            |   16 +-
+ fs/fuse/fuse_i.h                          |   18 +
+ fs/fuse/helper.c                          |   70 ++
+ fs/fuse/muse.c                            | 1086 +++++++++++++++++++++
+ include/linux/mtd/partitions.h            |    2 +
+ include/uapi/linux/fuse.h                 |   76 ++
+ include/uapi/mtd/mtd-abi.h                |    1 +
+ 14 files changed, 1346 insertions(+), 87 deletions(-)
+ create mode 100644 fs/fuse/helper.c
+ create mode 100644 fs/fuse/muse.c
+
+-- 
+2.26.2
+
