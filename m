@@ -2,101 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED564301F04
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 22:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB8B301F06
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 22:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbhAXVwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 16:52:19 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:24516 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhAXVwP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 16:52:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611524961;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Subject:Sender;
-        bh=NSnGwwqn9sdPtkfoFA8tFRtFDL/birwrCnYk8NJrUB4=;
-        b=hr2pt92cWBv0ZHnyCVwblXzqlJtwGiz41JFpTxG9UAd+HF3cHOsEEVRQouX1xLQywy
-        qSHDqREvtSEWeO85I3z4s5hwBRRlNWPxBKF1st5s3hQM18a56MGfEM5fkH9TjYUtegpy
-        lxd/6sS2ik9a6VYXNfWpr2AJlAEfaepProdZ2oY1rvKfi1Ul+ugqh2RJ8WyWtqYEccfM
-        BQP7O6ODK6jxhvpazxyQjUZ9o2QT8g/QMjdxyP2lBLLjXc3Uwcoefcuf72tnldrdQsL0
-        uCeFrDkqCnmPGCbYWgjY4P5IqvErg/OmQo96XH+0jjpkBJ5gaBcgVD3vbyFzY9FIlvLV
-        jgpg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IczBa4o="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id R0a218x0OLnGiXN
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 24 Jan 2021 22:49:16 +0100 (CET)
-Date:   Sun, 24 Jan 2021 22:49:12 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        id S1726512AbhAXV42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 16:56:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725968AbhAXV41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 16:56:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D241A222BB;
+        Sun, 24 Jan 2021 21:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611525346;
+        bh=U4Uo88QRVqikkKZmCBVV+LbP8bI5j8J9J0WP1Q++NRI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Ls2qQN4hKoyOfPd+YSfbQSL0I8JUARIXjszyRkotgf+nICLMI0TK5apG1dA9kGMaI
+         ByFavTfw91Tn5W2nnOTV0rD5PKiRKuHa61F7Dn1Mz41RMSnKGH3YYECkP/bN7r1LZY
+         7Y6kaplMIk/FsNYH/04LE3RuRDZ1zxKfdZrb4SHo1Ita3V0xXr3rkpn5DSCh0y/zhI
+         arh7SVCzZKJ12IKAZyPEeYHQrOj1ki0Agojg9y++UYmhfeeFhvdTTaCaRx/jIbvBRn
+         H3GpSKO9z7GZNKamc42193iSamJJwDmBoEt0Aj43athihHwEh2r9xYdqhhbywTsp4X
+         tNhci3StXNpFg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B97F4652E1;
+        Sun, 24 Jan 2021 21:55:46 +0000 (UTC)
+Subject: Re: Re: [GIT PULL] arch/sh updates for 5.11
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210124203936.GU23432@brightrain.aerifal.cx>
+References: <20210124203936.GU23432@brightrain.aerifal.cx>
+X-PR-Tracked-List-Id: <linux-sh.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210124203936.GU23432@brightrain.aerifal.cx>
+X-PR-Tracked-Remote: git://git.libc.org/linux-sh tags/sh-for-5.11
+X-PR-Tracked-Commit-Id: b89bc060b53e7054e5c8ca11feea4bc884d83611
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 228a65d4544af5086bd167dcc5a0cb4fae2c42b4
+Message-Id: <161152534667.9853.728051871636165433.pr-tracker-bot@kernel.org>
+Date:   Sun, 24 Jan 2021 21:55:46 +0000
+To:     Rich Felker <dalias@libc.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
         linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Add initial support for BQ Aquaris X5
-Message-ID: <YA3rTAx2vfOXPCMq@gerhold.net>
-References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
- <20210124210119.GA27676@amd>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124210119.GA27676@amd>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+The pull request you sent on Sun, 24 Jan 2021 15:39:38 -0500:
 
-On Sun, Jan 24, 2021 at 10:01:19PM +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > Aquaris X5 (Longcheer L8910) is a smartphone released by BQ in 2015.
-> > 
-> > As part of msm8916-mainline project, this series aims to bring initial
-> > mainline support for it.
-> 
-> Good to see another phone being supported. Can I ask you to cc:
-> phone-devel@vger.kernel.org with phone stuff?
-> 
-> > Features added:
-> >  - SDHCI (internal and external storage)
-> >  - USB Device Mode
-> >  - UART
-> >  - Regulators
-> >  - WiFi/BT
-> >  - Volume buttons
-> >  - Vibrator
-> >  - Touchkeys backlight
-> >  - Accelerometer and gyroscope sensor
-> >  - Magnetometer sensor
-> 
-> How close are you to having useful phone calls?
-> 
+> git://git.libc.org/linux-sh tags/sh-for-5.11
 
-You can do phone calls (with audio) and you can use mobile data, if you
-have the patches for that. :) I'm trying to find time to finish up the
-drivers needed for that, but I've been a bit short on time lately.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/228a65d4544af5086bd167dcc5a0cb4fae2c42b4
 
-Actually we have come pretty far with MSM8916-based smartphones.
-Most functionality is (somewhat) working at this point, the primary
-open task is optimizing suspend/power consumption. Battery/charging
-and camera is also tricky but works somewhat on some of the devices.
+Thank you!
 
-Most of the functionality is packaged in postmarketOS [1] and you can
-find a list of the devices in the postmarketOS wiki [2]. Especially
-the ones in the "community" category are quite similar in terms of
-working functionality.
-
-Stephan
-
-[1]: https://postmarketos.org
-[2]: https://wiki.postmarketos.org/wiki/Qualcomm_Snapdragon_410/412_(MSM8916)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
