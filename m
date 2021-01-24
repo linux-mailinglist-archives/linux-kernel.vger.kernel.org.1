@@ -2,109 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3369301AC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 10:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B4D301AD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 10:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbhAXJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 04:00:59 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60168 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726699AbhAXJAx (ORCPT
+        id S1726597AbhAXJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 04:28:06 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:60594 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbhAXJ16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 04:00:53 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10O8iAVY107321;
-        Sun, 24 Jan 2021 03:59:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=SNe1zLUkHXj8kWpkclhOdG1Gzk31KCtk7YBH5dFvtqs=;
- b=eNR1ep01KhBQwDtpa62r9w8ScGoGj1jL1LWHF6AlMclKBT8KTFpfffBedseBDXkhC/nX
- 36lr1uv5H+T1DT/bZNXPqJmf10GsqghbjGzmc+KtwVNSsKhlP46jMXQVzKYFHiYs0ygG
- LLS4nGthNaDVS04RwdVcTSNrA6mVJUpELdo1iTXW+E3Ivz0pV1XM6KZZDElVsYGwp0rj
- PD0Ak3GX2Lh2PycxzhnTGHc84lyPwogZOcrlFUGCrOngmXOk0M8MV/S0qhe9DIVyMSJY
- K+HWN+tfrDYcJg8CgER5khUxzHySHKHriUsj6Mm/9iErDBms3CUfailUMZtMPSzEXtxc 2Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3695n086ng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Jan 2021 03:59:32 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10O8iO8u107455;
-        Sun, 24 Jan 2021 03:59:32 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3695n086n5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Jan 2021 03:59:31 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10O8wAFg021584;
-        Sun, 24 Jan 2021 08:59:29 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 368b2h8f3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 24 Jan 2021 08:59:29 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10O8xKh731850898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 24 Jan 2021 08:59:20 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3FE80A405C;
-        Sun, 24 Jan 2021 08:59:27 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF7DBA4054;
-        Sun, 24 Jan 2021 08:59:26 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sun, 24 Jan 2021 08:59:26 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: fix buffer overflow potential for print_text()
-References: <20210114170412.4819-1-john.ogness@linutronix.de>
-        <yt9dk0s48y70.fsf@linux.ibm.com>
-        <87v9bomtd0.fsf@jogness.linutronix.de>
-        <yt9deeibe4ia.fsf@linux.ibm.com> <yt9d8s8je3gc.fsf@linux.ibm.com>
-        <87k0s2n45n.fsf@jogness.linutronix.de>
-Date:   Sun, 24 Jan 2021 09:59:21 +0100
-In-Reply-To: <87k0s2n45n.fsf@jogness.linutronix.de> (John Ogness's message of
-        "Sun, 24 Jan 2021 09:19:40 +0106")
-Message-ID: <yt9d1reayal2.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Sun, 24 Jan 2021 04:27:58 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F151C1C0B7F; Sun, 24 Jan 2021 10:27:13 +0100 (CET)
+Date:   Sun, 24 Jan 2021 10:27:13 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     broonie@kernel.org, aaro.koskinen@iki.fi, spinal.by@gmail.com,
+        jarkko.nikula@bitmer.com, merlijn@wizzup.org, pavel@ucw.cz,
+        peter.ujfalusi@ti.com, sre@kernel.org, tony@atomide.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        phone-devel@vger.kernel.org
+Subject: [PATCH] ASoC: ti: Allocate dais dynamically for TDM and audio graph
+ card
+Message-ID: <20210124092713.GA22195@amd>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-24_02:2021-01-22,2021-01-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 mlxlogscore=961 phishscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 impostorscore=0 bulkscore=0
- spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101240058
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Ogness <john.ogness@linutronix.de> writes:
 
-> Hi Sven,
->
-> Thanks for the outstanding analysis!
->
-> On 2021-01-23, Sven Schnelle <svens@linux.ibm.com> wrote:
->>> 1401		if (buf_size > 0)
->>> 1402			text[len] = 0;
->>
->> I don't think i have really understood how all the printk magic works,
->> but using r->text_buf[len] seems to be the correct place to put the
->> zero byte in that case?
->
-> Yes, you are correct! @text is pointing to the beginning of the
-> currently processed line, not the beginning of the buffer.
->
-> I will submit a patch to fix our recent fix (unless you would like to do
-> that).
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please go ahead, thank you!
+=46rom: Tony Lindgren <tony@atomide.com>
+
+We can have multiple connections on a single McBSP instance configured
+with audio graph card when using TDM (Time Division Multiplexing). Let's
+allow that by configuring dais dynamically.
+
+See Documentation/devicetree/bindings/sound/audio-graph-card.txt and
+Documentation/devicetree/bindings/graph.txt for more details for
+multiple endpoints.
+
+I've tested this with droid4 where cpcap pmic and modem voice are both
+both wired to mcbsp3. I've also tested this on droid4 both with and
+without the pending modem audio codec driver that is waiting for n_gsm
+serdev dependencies to clear.
+
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
+Cc: Arthur D. <spinal.by@gmail.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Sebastian Reichel <sre@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+---
+ sound/soc/ti/omap-mcbsp-priv.h |  2 ++
+ sound/soc/ti/omap-mcbsp.c      | 76 +++++++++++++++++++++++++++++---------=
+----
+ 2 files changed, 55 insertions(+), 23 deletions(-)
+
+diff --git a/sound/soc/ti/omap-mcbsp-priv.h b/sound/soc/ti/omap-mcbsp-priv.h
+index 7865cda4bf0a..9464f5d35822 100644
+--- a/sound/soc/ti/omap-mcbsp-priv.h
++++ b/sound/soc/ti/omap-mcbsp-priv.h
+@@ -262,6 +262,8 @@ struct omap_mcbsp {
+ 	struct omap_mcbsp_platform_data *pdata;
+ 	struct omap_mcbsp_st_data *st_data;
+ 	struct omap_mcbsp_reg_cfg cfg_regs;
++	struct snd_soc_dai_driver *dais;
++	int dai_count;
+ 	struct snd_dmaengine_dai_dma_data dma_data[2];
+ 	unsigned int dma_req[2];
+ 	int dma_op_mode;
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 6025b30bbe77..189a6461b671 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -14,6 +14,7 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/of_graph.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -1299,23 +1300,53 @@ static int omap_mcbsp_remove(struct snd_soc_dai *da=
+i)
+ 	return 0;
+ }
+=20
+-static struct snd_soc_dai_driver omap_mcbsp_dai =3D {
+-	.probe =3D omap_mcbsp_probe,
+-	.remove =3D omap_mcbsp_remove,
+-	.playback =3D {
+-		.channels_min =3D 1,
+-		.channels_max =3D 16,
+-		.rates =3D OMAP_MCBSP_RATES,
+-		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+-	},
+-	.capture =3D {
+-		.channels_min =3D 1,
+-		.channels_max =3D 16,
+-		.rates =3D OMAP_MCBSP_RATES,
+-		.formats =3D SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
+-	},
+-	.ops =3D &mcbsp_dai_ops,
+-};
++static int omap_mcbsp_init_dais(struct omap_mcbsp *mcbsp)
++{
++	struct device_node *np =3D mcbsp->dev->of_node;
++	int i;
++
++	if (np)
++		mcbsp->dai_count =3D of_graph_get_endpoint_count(np);
++
++	if (!mcbsp->dai_count)
++		mcbsp->dai_count =3D 1;
++
++	mcbsp->dais =3D devm_kcalloc(mcbsp->dev, mcbsp->dai_count,
++				   sizeof(*mcbsp->dais), GFP_KERNEL);
++	if (!mcbsp->dais)
++		return -ENOMEM;
++
++	for (i =3D 0; i < mcbsp->dai_count; i++) {
++		struct snd_soc_dai_driver *dai =3D &mcbsp->dais[i];
++
++		dai->name =3D devm_kasprintf(mcbsp->dev, GFP_KERNEL, "%s-dai%i",
++					   dev_name(mcbsp->dev), i);
++
++		if (i =3D=3D 0) {
++			dai->probe =3D omap_mcbsp_probe;
++			dai->remove =3D omap_mcbsp_remove;
++			dai->ops =3D &mcbsp_dai_ops;
++		}
++		dai->playback.channels_min =3D 1;
++		dai->playback.channels_max =3D 16;
++		dai->playback.rates =3D OMAP_MCBSP_RATES;
++		if (mcbsp->pdata->reg_size =3D=3D 2)
++			dai->playback.formats =3D SNDRV_PCM_FMTBIT_S16_LE;
++		else
++			dai->playback.formats =3D SNDRV_PCM_FMTBIT_S16_LE |
++						SNDRV_PCM_FMTBIT_S32_LE;
++		dai->capture.channels_min =3D 1;
++		dai->capture.channels_max =3D 16;
++		dai->capture.rates =3D OMAP_MCBSP_RATES;
++		if (mcbsp->pdata->reg_size =3D=3D 2)
++			dai->capture.formats =3D SNDRV_PCM_FMTBIT_S16_LE;
++		else
++			dai->capture.formats =3D SNDRV_PCM_FMTBIT_S16_LE |
++					       SNDRV_PCM_FMTBIT_S32_LE;
++	}
++
++	return 0;
++}
+=20
+ static const struct snd_soc_component_driver omap_mcbsp_component =3D {
+ 	.name		=3D "omap-mcbsp",
+@@ -1404,18 +1435,17 @@ static int asoc_mcbsp_probe(struct platform_device =
+*pdev)
+ 	mcbsp->dev =3D &pdev->dev;
+ 	platform_set_drvdata(pdev, mcbsp);
+=20
+-	ret =3D omap_mcbsp_init(pdev);
++	ret =3D omap_mcbsp_init_dais(mcbsp);
+ 	if (ret)
+ 		return ret;
+=20
+-	if (mcbsp->pdata->reg_size =3D=3D 2) {
+-		omap_mcbsp_dai.playback.formats =3D SNDRV_PCM_FMTBIT_S16_LE;
+-		omap_mcbsp_dai.capture.formats =3D SNDRV_PCM_FMTBIT_S16_LE;
+-	}
++	ret =3D omap_mcbsp_init(pdev);
++	if (ret)
++		return ret;
+=20
+ 	ret =3D devm_snd_soc_register_component(&pdev->dev,
+ 					      &omap_mcbsp_component,
+-					      &omap_mcbsp_dai, 1);
++					      mcbsp->dais, mcbsp->dai_count);
+ 	if (ret)
+ 		return ret;
+=20
+--=20
+2.11.0
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmANPXAACgkQMOfwapXb+vLfrgCeNvSRS9g22zGEyaBrP8dM+pds
+zs8Ani6OgW/IB2/CcypeT+4Dp1n+GCMc
+=zxjB
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
