@@ -2,186 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66946301C57
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D26D4301C61
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725842AbhAXNua convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 24 Jan 2021 08:50:30 -0500
-Received: from aposti.net ([89.234.176.197]:51952 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbhAXNu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:50:26 -0500
-Date:   Sun, 24 Jan 2021 13:49:32 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [BACKPORT 5.4 PATCH] pinctrl: ingenic: Fix JZ4760 support
-To:     gregkh <gregkh@linuxfoundation.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        stable <stable@vger.kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me
-Message-Id: <KEYFNQ.YUG2S0J7JWMP2@crapouillou.net>
-In-Reply-To: <20210124134704.202931-1-paul@crapouillou.net>
-References: <1611494593252195@kroah.com>
-        <20210124134704.202931-1-paul@crapouillou.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+        id S1726007AbhAXN45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 08:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725967AbhAXN4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 08:56:48 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC1DC061573;
+        Sun, 24 Jan 2021 05:56:08 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id 6so9642235wri.3;
+        Sun, 24 Jan 2021 05:56:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KNL0RhbK+W8NeBfpITYNBDAjPTJqvGFS1T1JmSYruYo=;
+        b=KbZEvzSPU6FOihK9ffQPg+ZIcM5kv5t4eZwep3dHr+oaiS2dDRp8yA46ecoVsRLewZ
+         hxxFiQdRMm9O0gqLjwMo3vpnPF4L5qLS0LTvLwRTq2irXCavRO6dBWnvq8kwRq0seoE/
+         G2yqEWZeiWYnzHdAQ9W8rRaOUmP7iMqcE3azNqSa6WmLUhwQw1NgRLr3ChG8ODLioX9r
+         ZMq77Bcq//VfCk1T34PyOD94IPVHKZG1Y06Ei7rrVtn8iCo9EjGmku8pBfY8N5Bli52l
+         hxrsXzkHf7dQR4IfPaJHukDpzNykqq7AoJQ/A907w6/vo1GiWGLQ9LDORc9EuawfMG0f
+         9bEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KNL0RhbK+W8NeBfpITYNBDAjPTJqvGFS1T1JmSYruYo=;
+        b=aiMPZOC6SYQnifUCobFLnWTTn9yBQAiNyVwwyVmjraAjTyHCPOfwV+ILvYfv0Ier0r
+         JsmyN2dIwnZAR6jKiPmHIgc7Dpd1RLZINnWWTnmF/ic2nfL8CfRT6OJTWOLohgJUngvo
+         UGPwV01hJn3hWiSBUU1ge5+2pnHVo0u6tAFUc1H3QBXeG/Pw1QYcDrbQTuNcvmCS5S93
+         a1d3QWaWkYLOp+oNL0zMc1zb9jaXH1S8QiuV17kftJ8Iwm+FZ1jI/3BMp8YkSJpLrRAc
+         pWOD+kisu/n7N8pTE2U09PcX24X9iISjDrR+mjXLfYtuKLh8wZuWZoKNm62kTGE91IjZ
+         SKMA==
+X-Gm-Message-State: AOAM533FIW/qMACHcEMe7fyiXPC20GsVIQepaCavUPwIVchHUZkWv847
+        sYiYbYi4XKDwEy0eOTRbr6A09hq7RyKt/A==
+X-Google-Smtp-Source: ABdhPJwNJ28Jxl5Wfw5GdESB3FDq0P9NkunrCZYLE8frY9DicwOUKkjWtnF69c5p8AmkJXuwSFdBow==
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr5961424wru.268.1611496566384;
+        Sun, 24 Jan 2021 05:56:06 -0800 (PST)
+Received: from jonathan-N53SV.station ([151.81.101.204])
+        by smtp.googlemail.com with ESMTPSA id a27sm19658409wrc.94.2021.01.24.05.56.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 05:56:05 -0800 (PST)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 0/3] Add initial support for BQ Aquaris X5
+Date:   Sun, 24 Jan 2021 14:54:04 +0100
+Message-Id: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Aquaris X5 (Longcheer L8910) is a smartphone released by BQ in 2015.
 
+As part of msm8916-mainline project, this series aims to bring initial
+mainline support for it.
 
-Le dim. 24 janv. 2021 à 13:47, Paul Cercueil <paul@crapouillou.net> a 
-écrit :
-> - JZ4760 and JZ4760B have a similar register layout as the JZ4740, and
->   don't use the new register layout, which was introduced with the
->   JZ4770 SoC and not the JZ4760 or JZ4760B SoCs.
-> 
-> - The JZ4740 code path only expected two function modes to be
->   configurable for each pin, and wouldn't work with more than two. Fix
->   it for the JZ4760, which has four configurable function modes.
+Features added:
+ - SDHCI (internal and external storage)
+ - USB Device Mode
+ - UART
+ - Regulators
+ - WiFi/BT
+ - Volume buttons
+ - Vibrator
+ - Touchkeys backlight
+ - Accelerometer and gyroscope sensor
+ - Magnetometer sensor
 
-Forgot to add the original commit ID: 
-9a85c09a3f507b925d75cb0c7c8f364467038052
+Jonathan Albrieux (3):
+  arm64: dts: qcom: Add device tree for BQ Aquaris X5 (Longcheer L8910)
+  arm64: dts: qcom: msm8916: Add blsp_i2c3
+  arm64: dts: qcom: msm8916-longcheer-l8910: Add imu/magnetometer
 
-Cheers,
--Paul
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../boot/dts/qcom/msm8916-longcheer-l8910.dts | 267 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/msm8916-pins.dtsi    |  16 ++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi         |  15 +
+ 4 files changed, 299 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
 
-> Fixes: 0257595a5cf4 ("pinctrl: Ingenic: Add pinctrl driver for JZ4760 
-> and JZ4760B.")
-> Cc: <stable@vger.kernel.org> # 5.3
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/pinctrl/pinctrl-ingenic.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index 8bd0a078bfc4..61e7d938d4c5 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -1378,7 +1378,7 @@ static inline bool 
-> ingenic_gpio_get_value(struct ingenic_gpio_chip *jzgc,
->  static void ingenic_gpio_set_value(struct ingenic_gpio_chip *jzgc,
->  				   u8 offset, int value)
->  {
-> -	if (jzgc->jzpc->version >= ID_JZ4760)
-> +	if (jzgc->jzpc->version >= ID_JZ4770)
->  		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_PAT0, offset, !!value);
->  	else
->  		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, offset, !!value);
-> @@ -1389,7 +1389,7 @@ static void irq_set_type(struct 
-> ingenic_gpio_chip *jzgc,
->  {
->  	u8 reg1, reg2;
-> 
-> -	if (jzgc->jzpc->version >= ID_JZ4760) {
-> +	if (jzgc->jzpc->version >= ID_JZ4770) {
->  		reg1 = JZ4760_GPIO_PAT1;
->  		reg2 = JZ4760_GPIO_PAT0;
->  	} else {
-> @@ -1464,7 +1464,7 @@ static void ingenic_gpio_irq_enable(struct 
-> irq_data *irqd)
->  	struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
->  	int irq = irqd->hwirq;
-> 
-> -	if (jzgc->jzpc->version >= ID_JZ4760)
-> +	if (jzgc->jzpc->version >= ID_JZ4770)
->  		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, true);
->  	else
->  		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, true);
-> @@ -1480,7 +1480,7 @@ static void ingenic_gpio_irq_disable(struct 
-> irq_data *irqd)
-> 
->  	ingenic_gpio_irq_mask(irqd);
-> 
-> -	if (jzgc->jzpc->version >= ID_JZ4760)
-> +	if (jzgc->jzpc->version >= ID_JZ4770)
->  		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, false);
->  	else
->  		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, false);
-> @@ -1505,7 +1505,7 @@ static void ingenic_gpio_irq_ack(struct 
-> irq_data *irqd)
->  			irq_set_type(jzgc, irq, IRQ_TYPE_LEVEL_HIGH);
->  	}
-> 
-> -	if (jzgc->jzpc->version >= ID_JZ4760)
-> +	if (jzgc->jzpc->version >= ID_JZ4770)
->  		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_FLAG, irq, false);
->  	else
->  		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, irq, true);
-> @@ -1562,7 +1562,7 @@ static void ingenic_gpio_irq_handler(struct 
-> irq_desc *desc)
-> 
->  	chained_irq_enter(irq_chip, desc);
-> 
-> -	if (jzgc->jzpc->version >= ID_JZ4760)
-> +	if (jzgc->jzpc->version >= ID_JZ4770)
->  		flag = ingenic_gpio_read_reg(jzgc, JZ4760_GPIO_FLAG);
->  	else
->  		flag = ingenic_gpio_read_reg(jzgc, JZ4740_GPIO_FLAG);
-> @@ -1643,7 +1643,7 @@ static int ingenic_gpio_get_direction(struct 
-> gpio_chip *gc, unsigned int offset)
->  	struct ingenic_pinctrl *jzpc = jzgc->jzpc;
->  	unsigned int pin = gc->base + offset;
-> 
-> -	if (jzpc->version >= ID_JZ4760)
-> +	if (jzpc->version >= ID_JZ4770)
->  		return ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_INT) ||
->  			ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PAT1);
-> 
-> @@ -1676,7 +1676,7 @@ static int ingenic_pinmux_set_pin_fn(struct 
-> ingenic_pinctrl *jzpc,
->  		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
->  		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT0, func & 0x1);
->  		ingenic_shadow_config_pin_load(jzpc, pin);
-> -	} else if (jzpc->version >= ID_JZ4760) {
-> +	} else if (jzpc->version >= ID_JZ4770) {
->  		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
->  		ingenic_config_pin(jzpc, pin, GPIO_MSK, false);
->  		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
-> @@ -1684,7 +1684,7 @@ static int ingenic_pinmux_set_pin_fn(struct 
-> ingenic_pinctrl *jzpc,
->  	} else {
->  		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_FUNC, true);
->  		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_TRIG, func & 0x2);
-> -		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func > 0);
-> +		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func & 0x1);
->  	}
-> 
->  	return 0;
-> @@ -1734,7 +1734,7 @@ static int 
-> ingenic_pinmux_gpio_set_direction(struct pinctrl_dev *pctldev,
->  		ingenic_shadow_config_pin(jzpc, pin, GPIO_MSK, true);
->  		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
->  		ingenic_shadow_config_pin_load(jzpc, pin);
-> -	} else if (jzpc->version >= ID_JZ4760) {
-> +	} else if (jzpc->version >= ID_JZ4770) {
->  		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
->  		ingenic_config_pin(jzpc, pin, GPIO_MSK, true);
->  		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
-> @@ -1764,7 +1764,7 @@ static int ingenic_pinconf_get(struct 
-> pinctrl_dev *pctldev,
->  	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
->  	bool pull;
-> 
-> -	if (jzpc->version >= ID_JZ4760)
-> +	if (jzpc->version >= ID_JZ4770)
->  		pull = !ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PEN);
->  	else
->  		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-> @@ -1796,7 +1796,7 @@ static int ingenic_pinconf_get(struct 
-> pinctrl_dev *pctldev,
->  static void ingenic_set_bias(struct ingenic_pinctrl *jzpc,
->  		unsigned int pin, bool enabled)
->  {
-> -	if (jzpc->version >= ID_JZ4760)
-> +	if (jzpc->version >= ID_JZ4770)
->  		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PEN, !enabled);
->  	else
->  		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_PULL_DIS, !enabled);
-> --
-> 2.29.2
-> 
-
+-- 
+2.17.1
 
