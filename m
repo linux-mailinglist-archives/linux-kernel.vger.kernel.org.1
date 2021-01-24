@@ -2,87 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83870301D1B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84FC301D22
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbhAXPPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:15:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbhAXPPI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:15:08 -0500
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BBAC0613D6;
-        Sun, 24 Jan 2021 07:14:13 -0800 (PST)
-Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        id S1726230AbhAXPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:23:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725880AbhAXPXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 10:23:00 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E28E53EB8B;
-        Sun, 24 Jan 2021 16:14:10 +0100 (CET)
-Subject: Re: [PATCH 4/4] ARM: dts: qcom: msm8974-klte: Mark essential
- regulators
-To:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Samuel Pascua <pascua.samuel.14@gmail.com>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-References: <20210124135610.1779295-1-iskren.chernev@gmail.com>
- <20210124135610.1779295-4-iskren.chernev@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <c35f0541-dd72-8e1c-fd70-49740dae31c0@somainline.org>
-Date:   Sun, 24 Jan 2021 16:14:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mail.kernel.org (Postfix) with ESMTPSA id E953B22DFA;
+        Sun, 24 Jan 2021 15:22:16 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 15:22:12 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: stm32-adc: enable timestamping for non-DMA
+ usage
+Message-ID: <20210124152212.5bc39e57@archlinux>
+In-Reply-To: <20210122113355.32384-1-a.fatoum@pengutronix.de>
+References: <20210122113355.32384-1-a.fatoum@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210124135610.1779295-4-iskren.chernev@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 22 Jan 2021 12:33:55 +0100
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-On 24.01.2021 14:56, Iskren Chernev wrote:
-> s1 and l12 regulators are used for the memory and cache on the Samsung
-> S5 (klte). If they are turned off the phone shuts down. So mark them as
-> always-on to prevent that from happening.
->
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> Tested-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
+> For non-DMA usage, we have an easy way to associate a timestamp with a
+> sample: iio_pollfunc_store_time stores a timestamp in the primary
+> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+> to push out the buffer along with the timestamp.
+> 
+> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+> Do this.
+> 
+> For DMA, it's not as easy, because we don't push the buffers out of
+> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+> a tasklet scheduled after a DMA completion.
+> 
+> Preferably, the DMA controller would copy us the timestamp into that buffer
+> as well. Until this is implemented, restrict timestamping support to
+> only PIO. For low-frequency sampling, PIO is probably good enough.
+> 
+> Cc: Holger Assmann <has@pengutronix.de>
+> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+
+This patch itself is fine, but it will expose a potential bug.
+
+The buffer passed to iio_push_to_buffers_with_timestamp needs to be suitably
+aligned to take an 8 byte timestamp and large enough to do so.
+ Currently, in this driver it isn't.
+	u16			buffer[STM32_ADC_MAX_SQ];
+Appears to be the same length as the channel count, and isn't 8 byte
+aligned. (add __aligned(8) to fix that)
+
+Could you add that fix to this patch as well?
+
+Thanks,
+
+Jonathan
+
+
 > ---
->  arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-> index 19c96b47a5dbd..27323403aa71d 100644
-> --- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-> +++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-> @@ -30,6 +30,7 @@ pma8084-regulators {
->  					pma8084_s1: s1 {
->  						regulator-min-microvolt = <675000>;
->  						regulator-max-microvolt = <1050000>;
-> +						regulator-always-on;
->  					};
+> v1 -> v2:
+>   - Added comment about timestamping being PIO only (Fabrice)
+>   - Added missing DMA resource clean up in error path (Fabrice)
+>   - Added Fabrice's Acked-by
+> ---
+>  drivers/iio/adc/stm32-adc.c | 35 +++++++++++++++++++++++++++++------
+>  1 file changed, 29 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index c067c994dae2..885bb514503c 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+>  	}
+>  }
 >  
->  					pma8084_s2: s2 {
-> @@ -115,6 +116,7 @@ pma8084_l11: l11 {
->  					pma8084_l12: l12 {
->  						regulator-min-microvolt = <1800000>;
->  						regulator-max-microvolt = <1800000>;
-> +						regulator-always-on;
->  					};
+> -static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+> +static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  {
+>  	struct device_node *node = indio_dev->dev.of_node;
+>  	struct stm32_adc *adc = iio_priv(indio_dev);
+> @@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+>  		return -EINVAL;
+>  	}
 >  
->  					pma8084_l13: l13 {
-
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-
-
-Konrad
+> +	if (timestamping)
+> +		num_channels++;
+> +
+>  	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+>  				sizeof(struct iio_chan_spec), GFP_KERNEL);
+>  	if (!channels)
+> @@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+>  		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+>  	}
+>  
+> +	if (timestamping) {
+> +		struct iio_chan_spec *timestamp = &channels[scan_index];
+> +
+> +		timestamp->type = IIO_TIMESTAMP;
+> +		timestamp->channel = -1;
+> +		timestamp->scan_index = scan_index;
+> +		timestamp->scan_type.sign = 's';
+> +		timestamp->scan_type.realbits = 64;
+> +		timestamp->scan_type.storagebits = 64;
+> +
+> +		scan_index++;
+> +	}
+> +
+>  	indio_dev->num_channels = scan_index;
+>  	indio_dev->channels = channels;
+>  
+> @@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	irqreturn_t (*handler)(int irq, void *p) = NULL;
+>  	struct stm32_adc *adc;
+> +	bool timestamping = false;
+>  	int ret;
+>  
+>  	if (!pdev->dev.of_node)
+> @@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = stm32_adc_chan_of_init(indio_dev);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	ret = stm32_adc_dma_request(dev, indio_dev);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	if (!adc->dma_chan)
+> +	if (!adc->dma_chan) {
+> +		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
+> +		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
+> +		 * runs in the IRQ thread to push out buffer along with timestamp.
+> +		 */
+>  		handler = &stm32_adc_trigger_handler;
+> +		timestamping = true;
+> +	}
+> +
+> +	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
+> +	if (ret < 0)
+> +		goto err_dma_disable;
+>  
+>  	ret = iio_triggered_buffer_setup(indio_dev,
+>  					 &iio_pollfunc_store_time, handler,
 
