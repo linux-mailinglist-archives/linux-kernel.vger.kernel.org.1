@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD600301CAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB607301CB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbhAXOZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 09:25:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55052 "EHLO mail.kernel.org"
+        id S1726181AbhAXOaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 09:30:10 -0500
+Received: from mout.gmx.net ([212.227.17.22]:41489 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725775AbhAXOZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 09:25:39 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3CE822DBF;
-        Sun, 24 Jan 2021 14:24:57 +0000 (UTC)
-Date:   Sun, 24 Jan 2021 14:24:52 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org, trivial@kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH] iio: st_sensors: fix typo in comment
-Message-ID: <20210124142452.4739795b@archlinux>
-In-Reply-To: <20210121153945.5499-1-a.fatoum@pengutronix.de>
-References: <20210121153945.5499-1-a.fatoum@pengutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1725775AbhAXOaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 09:30:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611498490;
+        bh=pITkN1jgrIZQEV8bcGYzV8N4n5kUC2tLoNrCLsr0djs=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=EkGAPm6/g/3gHakZ8mHi0o40mOBFw1hFH28nZMVoBgiaHBB4VY9KdSEyw3l8a27uB
+         dHkzXuXhMIjcMP6b50qHAYTuAndYQN1pxfT2DYX+lnVyXublaABwDNrggLesYTkb6C
+         mgUTDM18wnlaU/YT6aaqnuAFT9RYTGA4q+TkE1yo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.141.229]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MybGX-1lvGOC3fQ5-00z1pJ; Sun, 24
+ Jan 2021 15:28:09 +0100
+Date:   Sun, 24 Jan 2021 15:28:06 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-parisc@vger.kernel.org
+Subject: [PATCH] crypto: xor - avoid division by zero crash
+Message-ID: <20210124142806.GA29180@ls3530.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:DqwH9uOTMV7uLE4HrG7t8H7vZ8mnUgJG9TgF8O/uBkVq33Oig7h
+ xA92BwWn9hMlzvR40u/4PSaXykiiAcMal3xCT8PJqgQbWLXf5gWn7qLBaDraDiJkbLJGFIh
+ YE6FaENZ8bIDH5PvdFbmdbAIxU8UnQFQDqwwuUMcnwkBe49QFdVis3a7xRRBysbMHhofwOy
+ 1+kwsUkB8mRx1yzCPiCtg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fTdOwco2k5w=:fuG85PIE8hH1F8oVJHqoKf
+ GgBteGdexlWiw+Rdq1rItp47ncCO+31vJJwPjJzR6TdVtGvxkJNg7htcyv7eGCSA6deNCH/TA
+ xflnjxOhkL1eNrHoTV9FBU655PDVIu2XGO0zjZ43IOEvs6JQHk5UNcueseH4lBo0y4gGIVy7n
+ sS6gepmmYssXxWtLkzC/whchTB7Ni4K6hx3aQ7XS92j/U3As/rqcGVJ3VPE+quyQZvoiz9V5j
+ HfRYBkK/neOz2idJknVEqQdFOpDeVDKXas+7tR+PS9VBrkbdXvVlBiEaxD955loIDnpDhikyb
+ kcbr7QMfuQWN5ojl9Squ4vFyU7aqsHC2Rx7cm7N5uY/EJ8rk2PK0EUDfkiZtuUPUEgHW5ZR15
+ d9k+hsVy6UXw9MOnp+3G1E9XIRgcXON70LBemmg+FHcbJ7QDAmDybgEG4lJpNAd/pk18/D1hy
+ IciEQk4UDQh8h81tdaSOw7kjV0QPYSkgeFFNMSwiLw8l5uIJlxhs7GK/AS9l4mtGV4i7iR1Lv
+ 6RlaMpGvAt3AHHmV/mTsOeUXeFXwGcRv0wl4PeZrEnFDyV2Ys6VCi/BiqxdOssp9RTo2xHV5t
+ RrnnGfBy9N+6wkNHu0FXTmDSitf0lOcEZo8ToG2PYZI3sVaEVDys2Z6d5DN1PKBto9R72bvhV
+ 4gHcUIPjw9AFl+dx6g1LDy8u16H/b/tWxMkCDQsWN4W7Ee1h3oc39HInA1NuUMuH2VjotmQiZ
+ 31KW/20QrNGfFSL72KLR1RlnvwN1CksHTJLQEXNjyGQLsRtgUBN04CLTlTTBEv09PjKLrUCvA
+ vtRVb4wcUC9Oa10jSPujlzjbpByasIGRA4HPsB/T+oBI2E2fzUQhvuifiS/cg3csDmuDbPSx2
+ Pkm+R202HWQ14/N2NpQg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 16:39:44 +0100
-Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+On some of my parisc machines, this patch c055e3eae0f1 ("crypto: xor -
+use ktime for template benchmarking") triggers a dividy-by-zero
+exception because "min" becomes zero, which then leads to a kernel
+crash.
 
-> s/timetamping/timestamping/
-> 
-> Cc: trivial@kernel.org
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Applied,
+It's not clear yet, why I see the issue only on some machines. At least
+on those the measured time to run the xor speed tests becomes zero
+nanoseconds. Maybe it's because gcc-10 optimizes the speed test out, or
+because of some other changes in the time keeping routines.
 
-Thanks,
+In either case, the kernel should not crash.
 
-Jonathan
+This patch adds a workaround by reporting such cases with a kernel
+warning and continues as if the xor tests would have run in 1 ns.
 
-> ---
->  drivers/iio/common/st_sensors/st_sensors_buffer.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/common/st_sensors/st_sensors_buffer.c b/drivers/iio/common/st_sensors/st_sensors_buffer.c
-> index eee30130ae23..802f9ae04cf4 100644
-> --- a/drivers/iio/common/st_sensors/st_sensors_buffer.c
-> +++ b/drivers/iio/common/st_sensors/st_sensors_buffer.c
-> @@ -57,7 +57,7 @@ irqreturn_t st_sensors_trigger_handler(int irq, void *p)
->  	s64 timestamp;
->  
->  	/*
-> -	 * If we do timetamping here, do it before reading the values, because
-> +	 * If we do timestamping here, do it before reading the values, because
->  	 * once we've read the values, new interrupts can occur (when using
->  	 * the hardware trigger) and the hw_timestamp may get updated.
->  	 * By storing it in a local variable first, we are safe.
+Signed-off-by: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org # 5.10+
 
+---
+
+diff --git a/crypto/xor.c b/crypto/xor.c
+index eacbf4f93990..3639341bac7e 100644
+--- a/crypto/xor.c
++++ b/crypto/xor.c
+@@ -100,6 +100,8 @@ do_xor_speed(struct xor_block_template *tmpl, void *b1, void *b2)
+ 			mb();
+ 		}
+ 		diff = ktime_sub(ktime_get(), start);
++		if (WARN_ON(diff == 0))
++			diff = 1;
+ 		if (diff < min)
+ 			min = diff;
+ 	}
