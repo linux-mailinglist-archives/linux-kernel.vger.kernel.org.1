@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31CF301C19
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BE5301C2E
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbhAXNS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 08:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbhAXNS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:18:56 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE45C061573;
-        Sun, 24 Jan 2021 05:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=tp8I5qxyZLfJni0H826iBCyyCGmDjvJSbWV9cluqpf0=; b=iMevhbVGRkdpHGiY7ZiFsbNj5
-        w7Eb9e06DWPXmyzHtdCiF7kiKVPHkBMuc1/AetEexKzpObH65O/GEX0wpMvDslgxZs+uP5FSbLYfl
-        jN5L1zfoLX/dYyRr0nYrYSiUNQcObude3zx6yGzJ6diMgY95m+6gWX9kBKmk5wGs4AijUFfpkxVUp
-        O11UfwmurLTLcz/csutD3nlbVjXpHr0ubwNRIOwBYNwcvYY5vAFv7ZMqTGYsNG19P16mgV3URIF31
-        H+W5a10AHnNFX6VYWjhHGK/ieyt5xV1h4B31SK3XEcoP3hOQyk+uWwDIvlEGivsSb9ElPoEpeNGA2
-        QEOAPJtKA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52128)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l3fHR-0002PD-Ni; Sun, 24 Jan 2021 13:18:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l3fHP-0001kQ-3P; Sun, 24 Jan 2021 13:18:11 +0000
-Date:   Sun, 24 Jan 2021 13:18:11 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        andrew@lunn.ch, atenart@kernel.org
-Subject: Re: [PATCH v2 RFC net-next 04/18] net: mvpp2: add PPv23 version
- definition
-Message-ID: <20210124131810.GZ1551@shell.armlinux.org.uk>
-References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
- <1611488647-12478-5-git-send-email-stefanc@marvell.com>
+        id S1726921AbhAXNYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 08:24:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725788AbhAXNYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 08:24:30 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CEE722511;
+        Sun, 24 Jan 2021 13:23:47 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 13:23:44 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Dan Robertson <dan@dlrobertson.com>,
+        =?UTF-8?B?R2HDq3RhbiBBbmRyw6k=?= <rvlander@gaetanandre.eu>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 2/2] iio: accel: Add support for the Bosch-Sensortec
+ BMI088
+Message-ID: <20210124132344.7181bd06@archlinux>
+In-Reply-To: <CACRpkdZTJbAFK0j8U84pyW6za-SGJqGWnvertj8sXxc8Ou8VeA@mail.gmail.com>
+References: <20210119124622.9490-1-mike.looijmans@topic.nl>
+        <20210119124622.9490-2-mike.looijmans@topic.nl>
+        <CACRpkdbFgskpPUoVK7bU1EyChEvD4e9WHhvcUJh4e1UUO2WFdA@mail.gmail.com>
+        <20210123153511.1802a15a@archlinux>
+        <CACRpkdZTJbAFK0j8U84pyW6za-SGJqGWnvertj8sXxc8Ou8VeA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611488647-12478-5-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 01:43:53PM +0200, stefanc@marvell.com wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
+On Sun, 24 Jan 2021 00:21:13 +0100
+Linus Walleij <linus.walleij@linaro.org> wrote:
+
+> On Sat, Jan 23, 2021 at 4:35 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> > [Me]  
+> > > Next, I think it is better to let suspend/resume, i.e. system PM
+> > > reuse runtime PM since you're implementing that. This is why
+> > > we invented PM runtime force resume and force suspend.  
+> >
+> > Here the driver is turning more off for full suspend than in the
+> > runtime path.  If that results in significant extra delay then
+> > it's not appropriate to have that in the runtime suspend path.  
 > 
-> This patch add PPv23 version definition.
-> PPv23 is new packet processor in CP115.
-> Everything that supported by PPv22, also supported by PPv23.
-> No functional changes in this stage.
+> I see the point.
 > 
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 24 ++++++++++++--------
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 17 +++++++++-----
->  2 files changed, 25 insertions(+), 16 deletions(-)
+> The resume path calls bmi088_accel_enable() which incurs
+> a 5ms delay.
 > 
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> index aec9179..89b3ede 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-> @@ -60,6 +60,9 @@
->  /* Top Registers */
->  #define MVPP2_MH_REG(port)			(0x5040 + 4 * (port))
->  #define MVPP2_DSA_EXTENDED			BIT(5)
-> +#define MVPP2_VER_ID_REG			0x50b0
-> +#define MVPP2_VER_PP22				0x10
-> +#define MVPP2_VER_PP23				0x11
+> The runtime resume path incurs a 1 ms delay.
+> 
+> The runtime autosuspend kicks in after 2 ms.
+> 
+> > Maybe the simplification of not doing the deeper power saving
+> > mode is worth the extra power cost or extra delay, but
+> > I'm not yet convinced.  
+> 
+> I would personally set the autosuspend to ~20ms and just use
+> one path and take a hit of 5 ms whenever we go down between
+> measures if it is a system that is for human interaction, but for
+> control systems this more complex set-up may be better for
+> response latencies.
+> 
+> The current approach may be better tuned to perfection and
+> we are all perfectionists :D
+> 
+> I'm just worrying a little about bugs and maintainability.
+Fully understood.  Though for things like this I like to leave
+it at the discretion of the driver author as fairly safe they
+are a user of the device.  
 
-Looking at the Armada 8040 docs, it seems this register exists on
-PPv2.1 as well, and holds the value zero there.
+May well make sense to go with the longer times as you
+suggest though!  Over to you Mike :)
 
-I wonder whether we should instead read it's value directly into
-hw_version, and test against these values, rather than inventing our
-own verison enum.
+Jonathan
 
-I've also been wondering whether your != MVPP21 comparisons should
-instead be >= MVPP22.
+> 
+> Yours,
+> Linus Walleij
 
-Any thoughts?
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
