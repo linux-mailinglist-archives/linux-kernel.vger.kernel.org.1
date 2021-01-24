@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C5E3301D01
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8D6301D0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbhAXPLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:11:16 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:57201 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbhAXPJ6 (ORCPT
+        id S1726021AbhAXPNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:13:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29030 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726444AbhAXPLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:09:58 -0500
-Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 6A56D3EBD9;
-        Sun, 24 Jan 2021 16:09:13 +0100 (CET)
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: msm8916: Add blsp_i2c3
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
- <20210124135409.5473-3-jonathan.albrieux@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <b35ff524-bf5a-4a22-cd5a-14ac7ab3a900@somainline.org>
-Date:   Sun, 24 Jan 2021 16:09:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 24 Jan 2021 10:11:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611500972;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=AkBGm8p0fa4rt1PI1coAbw65Fn4m5HoJaXKXxd+BTEc=;
+        b=b9fAFLXMSOkPd9Xjijt04qDItG38VWRCGZoz7rFR/j3YEOHaQJOUWIh6T3E1vb2oOjKWBt
+        Fl6SJOfZ3RPaH8f5R8avTPkXahCbFqKQDRzlJz14TDQnK/4nNC2hLePsVTWYp10wyN3Vdb
+        Vx1yZjZ+7PghLsSDq47GneHKFE18Y70=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-RgcbBGE_OReGCBNEG6dHrA-1; Sun, 24 Jan 2021 10:09:30 -0500
+X-MC-Unique: RgcbBGE_OReGCBNEG6dHrA-1
+Received: by mail-qv1-f72.google.com with SMTP id h1so7621995qvr.7
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 07:09:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AkBGm8p0fa4rt1PI1coAbw65Fn4m5HoJaXKXxd+BTEc=;
+        b=fJwDTRA+0ylXRdP62dj9xJcE0LcGT2pjqo2rucncXb2JKM/sp77sehWnixsCIv4jPn
+         do+DYyYy6iDVbZHZp1tGyZG/IflhvW9suR1O/rMyalQlmETsJ7632sMEidtHbdreryXH
+         fLQKoMGa3b0n6cvUPGkSE84hDj70v6m3JjJI4jWGUvGstfGzF46qTBvCNa322clIPXs8
+         ie/2dSxT65K37uaO8iCPrsC6J5sDgEkweLAKSwIiaqkE10O4UqCpgtCvOOrOSf/iVbrs
+         Xg37b9QYtjIdA3H9y29a4ybGYnVLUlXe3tD+J0tZPe1zbwFeBN3g7AB40YaEbSP/l77y
+         STqw==
+X-Gm-Message-State: AOAM5320OwBkv6V9scvE3B99U5qJhDdyxrl6ETUa9FC1zDx6VLHwk2wV
+        T3hrBdGInEgc9I1uHyPPh5d0ibBpPXBGi7hzlnPzwXdr5bvV1DXuvJ52Q6dbP+eX3FyRXnHJHsx
+        7GutfsH1vGrRvHjx4SFg1uZdj
+X-Received: by 2002:ac8:1184:: with SMTP id d4mr83455qtj.103.1611500970477;
+        Sun, 24 Jan 2021 07:09:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzYBBg29MiCtXTRNQOAOd6nYAfAuayesoZV2Aq69NRiMptaO6XUCaf/fW9Xmoeh1PweXRp35Q==
+X-Received: by 2002:ac8:1184:: with SMTP id d4mr83442qtj.103.1611500970318;
+        Sun, 24 Jan 2021 07:09:30 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v12sm2556362qkg.63.2021.01.24.07.09.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 07:09:29 -0800 (PST)
+From:   trix@redhat.com
+To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        kuba@kernel.org, socketcan@hartkopp.net, colin.king@canonical.com
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] can: mcba_usb: remove h from printk format specifier
+Date:   Sun, 24 Jan 2021 07:09:16 -0800
+Message-Id: <20210124150916.1920434-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210124135409.5473-3-jonathan.albrieux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tom Rix <trix@redhat.com>
 
-On 24.01.2021 14:54, Jonathan Albrieux wrote:
-> MSM8916 has another I2C QUP controller that can be enabled on
-> GPIO 10 and 11.
->
-> Add blsp_i2c3 to msm8916.dtsi and disable it by default.
->
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> ---
->  arch/arm64/boot/dts/qcom/msm8916-pins.dtsi | 16 ++++++++++++++++
->  arch/arm64/boot/dts/qcom/msm8916.dtsi      | 15 +++++++++++++++
->  2 files changed, 31 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-> index 4dc437f13fa5..7dedb91b9930 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-> @@ -220,6 +220,22 @@
->  		bias-disable;
->  	};
->  
-> +	i2c3_default: i2c3-default {
-> +		pins = "gpio10", "gpio11";
-> +		function = "blsp_i2c3";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
-> +	i2c3_sleep: i2c3-sleep {
-> +		pins = "gpio10", "gpio11";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
->  	i2c4_default: i2c4-default {
->  		pins = "gpio14", "gpio15";
->  		function = "blsp_i2c4";
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> index 402e891a84ab..1045d7e518f3 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> @@ -1528,6 +1528,21 @@
->  			status = "disabled";
->  		};
->  
-> +		blsp_i2c3: i2c@78b7000 {
-> +			compatible = "qcom,i2c-qup-v2.2.1";
-> +			reg = <0x078b7000 0x500>;
-> +			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&gcc GCC_BLSP1_AHB_CLK>,
-> +				 <&gcc GCC_BLSP1_QUP3_I2C_APPS_CLK>;
-> +			clock-names = "iface", "core";
-> +			pinctrl-names = "default", "sleep";
-> +			pinctrl-0 = <&i2c3_default>;
-> +			pinctrl-1 = <&i2c3_sleep>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			status = "disabled";
-> +		};
-> +
->  		blsp_spi3: spi@78b7000 {
->  			compatible = "qcom,spi-qup-v2.2.1";
->  			reg = <0x078b7000 0x500>;
->
+This change fixes the checkpatch warning described in this commit
+commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
+  unnecessary %h[xudi] and %hh[xudi]")
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Standard integer promotion is already done and %hx and %hhx is useless
+so do not encourage the use of %hh[xudi] or %h[xudi].
 
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/net/can/usb/mcba_usb.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Things to consider for the future:
-
-
-* DMA on I2C
-
-* Merging in the -pins.dtsi to 8916.dtsi?
-
-
-Konrad
-
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index df54eb7d4b36..dc79c050f5f7 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -466,7 +466,7 @@ static void mcba_usb_process_ka_usb(struct mcba_priv *priv,
+ 				    struct mcba_usb_msg_ka_usb *msg)
+ {
+ 	if (unlikely(priv->usb_ka_first_pass)) {
+-		netdev_info(priv->netdev, "PIC USB version %hhu.%hhu\n",
++		netdev_info(priv->netdev, "PIC USB version %u.%u\n",
+ 			    msg->soft_ver_major, msg->soft_ver_minor);
+ 
+ 		priv->usb_ka_first_pass = false;
+@@ -492,7 +492,7 @@ static void mcba_usb_process_ka_can(struct mcba_priv *priv,
+ 				    struct mcba_usb_msg_ka_can *msg)
+ {
+ 	if (unlikely(priv->can_ka_first_pass)) {
+-		netdev_info(priv->netdev, "PIC CAN version %hhu.%hhu\n",
++		netdev_info(priv->netdev, "PIC CAN version %u.%u\n",
+ 			    msg->soft_ver_major, msg->soft_ver_minor);
+ 
+ 		priv->can_ka_first_pass = false;
+@@ -554,7 +554,7 @@ static void mcba_usb_process_rx(struct mcba_priv *priv,
+ 		break;
+ 
+ 	default:
+-		netdev_warn(priv->netdev, "Unsupported msg (0x%hhX)",
++		netdev_warn(priv->netdev, "Unsupported msg (0x%X)",
+ 			    msg->cmd_id);
+ 		break;
+ 	}
+-- 
+2.27.0
 
