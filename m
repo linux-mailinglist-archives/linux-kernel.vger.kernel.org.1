@@ -2,160 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9302301F6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBC3301F42
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbhAXWt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 17:49:58 -0500
-Received: from rome.phoronix.com ([192.211.48.82]:61956 "EHLO
-        rome.phoronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbhAXWtp (ORCPT
+        id S1726571AbhAXWcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 17:32:55 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:34988 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbhAXWcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 17:49:45 -0500
-X-Greylist: delayed 1071 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 Jan 2021 17:49:44 EST
-Received: from c-73-176-63-28.hsd1.il.comcast.net ([73.176.63.28]:52254 helo=[192.168.86.21])
-        by rome.phoronix.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <Michael@phoronix.com>)
-        id 1l3nuP-0002JK-MX; Sun, 24 Jan 2021 17:31:01 -0500
-Subject: Re: [PATCH v2 0/1] AMD EPYC: fix schedutil perf regression
- (freq-invariance)
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jon Grimm <Jon.Grimm@amd.com>,
-        Nathan Fontenot <Nathan.Fontenot@amd.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>,
-        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-References: <20210122204038.3238-1-ggherdovich@suse.cz>
-From:   Michael Larabel <Michael@phoronix.com>
-Message-ID: <a5071cb5-6a5b-d2e4-ff06-fa7810b8127c@phoronix.com>
-Date:   Sun, 24 Jan 2021 16:30:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 24 Jan 2021 17:32:50 -0500
+Received: by mail-ot1-f44.google.com with SMTP id 36so11007624otp.2;
+        Sun, 24 Jan 2021 14:32:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=m6wHg4CcRH88zHTgFz/tvg+1KvfQYJ5bN5Bm8kD7yRg=;
+        b=Jxm0dmZ4MCBfpbGVqI3++HssjvqNHUtoUrvwnEMmmZqViLVjbrv/X0x2l/BNSWzOrE
+         Hrh/kpC8DSge+3n02BnJQBhh/A2bEzFV9MVy+2MAxqbgqbP87x4N4K4LKa/61+T1ATJP
+         ZFzWfUPL+DSDMT1WRuMNXKv/2y6MwjGDYhO3jDc8+Hjy350pwiPSVXbZIWAoAwefcFqA
+         TIiBFF4txgyhuFZ8kmWauQWn5/rByOvANA46AvlK6mwdicJmNzFKqWnm06KK3cVby7f9
+         tZBCxv5ghhJMjo2iZTpyzBCrrJHwUhIfu1Y5tSeKdGazzFM+kUlg9T9QM7yc/bm3oItU
+         dgWA==
+X-Gm-Message-State: AOAM533txCDrSP1mpMeQ3S9+OYJCyYURtUdSwEkCcJCafouRycVLNU1b
+        rNOziCQY/XEGhS2DEoe12A==
+X-Google-Smtp-Source: ABdhPJz9WA7Y/UPNnKKLntkH/tFcind9g1csMhNYkPPBXbcW+heCsZ0Y6nK7bCtXl9o3899XN/yFzg==
+X-Received: by 2002:a9d:67d5:: with SMTP id c21mr2912287otn.247.1611527529363;
+        Sun, 24 Jan 2021 14:32:09 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a52sm3185158otc.46.2021.01.24.14.32.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 14:32:08 -0800 (PST)
+Received: (nullmailer pid 2737276 invoked by uid 1000);
+        Sun, 24 Jan 2021 22:32:06 -0000
+Date:   Sun, 24 Jan 2021 16:32:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     tzimmermann@suse.de, shawnguo@kernel.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
+        s.hauer@pengutronix.de, guido.gunther@puri.sm,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        laurentiu.palcu@oss.nxp.com, devicetree@vger.kernel.org,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 1/6] dt-bindings: display: imx: Add i.MX8qxp/qm DPU
+ binding
+Message-ID: <20210124223206.GA2737091@robh.at.kernel.org>
+References: <1611213263-7245-1-git-send-email-victor.liu@nxp.com>
+ <1611213263-7245-2-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20210122204038.3238-1-ggherdovich@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - rome.phoronix.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - phoronix.com
-X-Get-Message-Sender-Via: rome.phoronix.com: authenticated_id: michael@phoronix.com
-X-Authenticated-Sender: rome.phoronix.com: michael@phoronix.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611213263-7245-2-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- From ongoing tests of this patch, it still certainly shows to address 
-most of the Linux 5.11 performance regression previously encountered 
-when using Schedutil. Additionally, for a number of workloads where not 
-seeing a regression from 5.10 to 5.11 Git is still showing even better 
-performance with this patch. The power monitoring on the AMD EPYC server 
-is showing higher power spikes but the average power consumption rate is 
-roughly comparable to that of Linux 5.11 Git, which is higher than 5.10 
-by just about 3%.
+On Thu, 21 Jan 2021 15:14:18 +0800, Liu Ying wrote:
+> This patch adds bindings for i.MX8qxp/qm Display Processing Unit.
+> 
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v5->v6:
+> * Use graph schema. So, drop Rob's R-b tag as review is needed.
+> 
+> v4->v5:
+> * No change.
+> 
+> v3->v4:
+> * Improve compatible property by using enum instead of oneOf+const. (Rob)
+> * Add Rob's R-b tag.
+> 
+> v2->v3:
+> * No change.
+> 
+> v1->v2:
+> * Fix yamllint warnings.
+> * Require bypass0 and bypass1 clocks for both i.MX8qxp and i.MX8qm, as the
+>   display controller subsystem spec does say that they exist.
+> * Use new dt binding way to add clocks in the example.
+> * Trivial tweaks for the example.
+> 
+>  .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 387 +++++++++++++++++++++
+>  1 file changed, 387 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+> 
 
-So this patch still seems to be working out well and indeed taking care 
-of some wide losses seen otherwise on Linux 5.11 when using Schedutil on 
-AMD Zen2/Zen3. Still have some other tests running but so far no 
-unexpected results.
-
-Michael
-
-
-AMD EPYC 7F72 2P
-
-On an EPYC 7F72 2P server[1] across 147 test cases I am finding the 
-patched Linux 5.11 kernel to be just over 1% faster than 5.10 stable 
-compared to the unpatched 5.11 Git being just behind 5.10. For the 
-workloads on that server where Linux 5.11 is slower with Schedutil, the 
-patch indeed is largely addressing that regression and also providing 
-other improvements.
-
-During that testing, the amd_energy interface was monitored. Linux 5.11 
-with Schedutil AMD freq invariance did show on average 10 Watts (~3.7%) 
-higher power consumption on average than Linux 5.10 with Schedutil. But 
-with this patch, that average is still basically the same. The peak 
-power consumption during any of the tests was higher at 530~549 Watts 
-compared to 501 Watts with Linux 5.10. Overall the performance is 
-looking good but given amd_energy still not working for consumer models, 
-I don't have much power data to share at the moment.
-
-Ryzen 9 5950X
-
-Expanding on the prior testing with the 5950X, I ran some follow-up 
-tests[2]. Of 221 test cases there, the current Linux 5.11 Git 
-performance came around 2% slower on a geo mean basis than Linux 5.10 
-while the patched performance pulls it to ~2.5% faster than 5.10. There 
-still are some cases where Linux 5.10 is faster, but overall at least 
-the patched Linux 5.11 performance doesn't show nearly as many 
-regressions. In a number of test cases, the Linux 5.11 patched 
-performance is outright better than Linux 5.10 even where 5.11 
-(un-patched) hadn't regressed or by that much.
-
-Ryzen 5 4500U
-
-For something at the lower end of the spectrum I also ran a number of 
-tests on a Ryzen 5 4500U notebook[3]. Linux 5.11 (unpatched) doesn't see 
-as many regressions as on the larger systems but still the patched 
-performance did help in a number of tests, particularly around 
-graphics/gaming. In the heavier multi-core core tests are still a number 
-of cases where Linux 5.10 is faster than patched/unpatched 5.11. The 
-patched kernel in those 90 tests came out to being about 4% faster than 
-5.10.
-
-(Result highlights below, results with little change set to hidden by 
-default.)
-[1] 
-https://openbenchmarking.org/result/2101248-HA-AMDEPYC7F52&grs&hlc=1&hnr=1&hlc=1
-[2] https://openbenchmarking.org/result/2101242-HA-RYZEN959530&grs&hlc=1
-[3] 
-https://openbenchmarking.org/result/2101232-PTS-RENOIRLI89&grs&hnr=1&hlc=1
-
-
-On 1/22/21 2:40 PM, Giovanni Gherdovich wrote:
-> Michael Larabel from Phoronix.com graciously tested v1, see results at:
->
-> AMD EPYC 7702 -
-> https://openbenchmarking.org/result/2101210-PTS-LINUX51178
->
-> AMD Ryzen 9 5950X -
-> https://openbenchmarking.org/result/2101212-HA-RYZEN959566
->
-> The reported regression is recovered, and some workloads even report an
-> improvement over the v5.10 results.
->
-> Thanks Michael for the feedback!
->
->
-> v1 at https://lore.kernel.org/lkml/20210121003223.20257-1-ggherdovich@suse.cz/
->
-> Changes wrt v1:
->
-> - move code around so that it builds for non-x86 architectures too
->
-> Giovanni Gherdovich (1):
->    x86,sched: On AMD EPYC set freq_max = max_boost in schedutil invariant
->      formula
->
->   drivers/cpufreq/acpi-cpufreq.c   | 64 +++++++++++++++++++++++++++++++-
->   drivers/cpufreq/cpufreq.c        |  3 ++
->   include/linux/cpufreq.h          |  5 +++
->   kernel/sched/cpufreq_schedutil.c |  8 +++-
->   4 files changed, 76 insertions(+), 4 deletions(-)
->
+Reviewed-by: Rob Herring <robh@kernel.org>
