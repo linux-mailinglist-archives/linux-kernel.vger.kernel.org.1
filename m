@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F649301B9D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 12:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDBD301BAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbhAXLyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 06:54:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbhAXLxW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 06:53:22 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC39C0613D6
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 03:52:41 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id q6so2600460ooo.8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 03:52:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pu6Zr2Jo68blbhpXwzl9uRs7KbDV3skHPD8u3gz3sVI=;
-        b=hLK0CiEKpK6Efjx+XUatItsaWE/mRmo/IWq/x6fk1BFPF2i7i2bt6e2DFk6OygAPzE
-         skDu0spVWAOL2kvuzdgaIX2Qzsskv8asVzkubHi6iX0Ny6xxFzxJjd3ejJAIKNpcdQmB
-         l2s+Xraztpfd/HTF6ODoGotgqxTnd9XN8vvHZVJfZ2UjfoOC1hS7U8dgydDpnwXWPG3Z
-         KVKPhLqebfmRllhbj66PsU7MRJ0MA6C01kJ1uNo0VpBNMHDFWjksnk6joesUdAeLg94o
-         8DWm9RaNOF0kKvdzaOGdAbgJGAVRkvQey/hZo8Xq3kMC+AYT1hayxKGLfKPk03C3pgXo
-         G36w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pu6Zr2Jo68blbhpXwzl9uRs7KbDV3skHPD8u3gz3sVI=;
-        b=GlmXpIGRFMW45t2VObziVP4h2WQjcBcUJW+BlWyY4TPXDEzEBuUklXBDN1GDzqgyfh
-         g88VsKKzUse7D8TTbVAmFI6/i2LLZ8ce1Q2jHooS/aqvS/cAcCv7A9mCy90xlzeBkuYV
-         cvxVQxoYe5MqTp/qyy4sO6X7S2BLHqTdWqUD0NUclAPzGqDTeVYwBDlmzVmfqAccRvfn
-         XaNF2MnKkZfbLPrXMr+K+Cc2cNguF/v6SqtUkSMPXA/l0PKzqa/AhHvfLjuqXRbuc18C
-         K10BKffairwSbWeBKaZvttc/VtYBzjpi0ahSKrCntvi8keu19uIFQD884TOHkzeaJF9A
-         5oZw==
-X-Gm-Message-State: AOAM53014NPELQ13hHI9tIHLstY1wCAW636ymQAQ2ny+TE6dJ8/Wf5l/
-        zBR82ymU1poiNkHgHeRgSe9JI2AKi7nOg8XO6lvETg==
-X-Google-Smtp-Source: ABdhPJwt8xWKLlXxiJG8fjcBaxoKGZnK9ey4WRGE+AXDo7swV/wzVlPEyFF7MT2HJelv6cWoDDRUCoFqXQlbsX91d4E=
-X-Received: by 2002:a4a:7353:: with SMTP id e19mr9268056oof.55.1611489161343;
- Sun, 24 Jan 2021 03:52:41 -0800 (PST)
+        id S1727032AbhAXL7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 06:59:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726806AbhAXL5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 06:57:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96B5E22C9D;
+        Sun, 24 Jan 2021 11:56:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611489397;
+        bh=kuc0ga0EMCsk0uQBO3oWOefHYQSTrNoAokvBZacsueQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LVAevWYvvOlnI5vgZ6fBr0dCE5INW3EeFyp7Bx6ze05EqyFUB87yEDt3ZoB+S2aaf
+         696mJTZLPzBlOxN7YZewtkac5OKL/b/w+kIGP9dfQCLSUSiQDguIU1265iOJwXgVQ3
+         TbK+mcF+5zGKrpR2WmX7c+vn4Fpuy9Lihe9PlVlw=
+Date:   Sun, 24 Jan 2021 12:56:34 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Thokala, Srikanth" <srikanth.thokala@intel.com>
+Cc:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "bp@suse.de" <bp@suse.de>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "leonard.crestez@nxp.com" <leonard.crestez@nxp.com>,
+        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "peng.fan@nxp.com" <peng.fan@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+Subject: Re: [PATCH v2 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver for
+ Local Host
+Message-ID: <YA1gclRd4HRNrmhM@kroah.com>
+References: <20210108212600.36850-1-mgross@linux.intel.com>
+ <20210108212600.36850-10-mgross@linux.intel.com>
+ <YAhvJ2MxqnX2g0nS@kroah.com>
+ <MWHPR11MB14061D584C7CC0CE3AD58F1A85BE9@MWHPR11MB1406.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
- <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com> <CAADnVQJLN0sFyKdAmc6Pikv8Ww9OocnK_VXMG=ZLSMONHkqe4Q@mail.gmail.com>
-In-Reply-To: <CAADnVQJLN0sFyKdAmc6Pikv8Ww9OocnK_VXMG=ZLSMONHkqe4Q@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Sun, 24 Jan 2021 13:52:29 +0200
-Message-ID: <CAOEp5OeV0y5-vw3Kufe_=rszOu8QPsHPrFjtn-fAM_TJtBTuhA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Willem de Bruijn <willemb@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB14061D584C7CC0CE3AD58F1A85BE9@MWHPR11MB1406.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 8:45 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jan 12, 2021 at 12:55 PM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
-> > <yuri.benditovich@daynix.com> wrote:
-> > >
-> > > On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-> > > <yuri.benditovich@daynix.com> wrote:
-> > > >
-> > > > This program type can set skb hash value. It will be useful
-> > > > when the tun will support hash reporting feature if virtio-net.
-> > > >
-> > > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > > > ---
-> > > >  drivers/net/tun.c | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > > > index 7959b5c2d11f..455f7afc1f36 100644
-> > > > --- a/drivers/net/tun.c
-> > > > +++ b/drivers/net/tun.c
-> > > > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> > > >                 prog = NULL;
-> > > >         } else {
-> > > >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > > > +               if (IS_ERR(prog))
-> > > > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
-> > > >                 if (IS_ERR(prog))
-> > > >                         return PTR_ERR(prog);
-> > > >         }
-> > >
-> > > Comment from Alexei Starovoitov:
-> > > Patches 1 and 2 are missing for me, so I couldn't review properly,
-> > > but this diff looks odd.
-> > > It allows sched_cls prog type to attach to tun.
-> > > That means everything that sched_cls progs can do will be done from tun hook?
-> >
-> > We do not have an intention to modify the packet in this steering eBPF.
->
-> The intent is irrelevant. Using SCHED_CLS here will let users modify the packet
-> and some users will do so. Hence the tun code has to support it.
->
-> > There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
-> > that the eBPF needs to make possible to deliver the hash to the guest
-> > VM - it is 'bpf_set_hash'
-> >
-> > Does it mean that we need to define a new eBPF type for socket filter
-> > operations + set_hash?
-> >
-> > Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
-> > index and 8-bit of hash type.
-> > But it is able to return only 32-bit integer, so in this set of
-> > patches the eBPF returns
-> > queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
->
-> bpf prog can only return a 32-bit integer. That's true.
-> But the prog can use helpers to set any number of bits and variables.
-> bpf_set_hash_v2() with hash, queue and index arguments could fit this purpose,
-> but if you allow it for SCHED_CLS type,
+On Sun, Jan 24, 2021 at 11:48:29AM +0000, Thokala, Srikanth wrote:
+> > > +{
+> > > +	struct pci_epf_bar *epf_bar;
+> > > +	bool bar_fixed_64bit;
+> > > +	int ret, i;
+> > > +
+> > > +	for (i = BAR_0; i <= BAR_5; i++) {
+> > > +		epf_bar = &epf->bar[i];
+> > > +		bar_fixed_64bit = !!(epc_features->bar_fixed_64bit & (1 <<
+> > i));
+> > > +		if (bar_fixed_64bit)
+> > > +			epf_bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
+> > > +		if (epc_features->bar_fixed_size[i])
+> > > +			epf_bar->size = epc_features->bar_fixed_size[i];
+> > > +
+> > > +		if (i == BAR_2) {
+> > > +			ret = intel_xpcie_check_bar(epf, epf_bar, BAR_2,
+> > > +						    BAR2_MIN_SIZE,
+> > > +						    epc_features->reserved_bar);
+> > > +			if (ret)
+> > > +				return ret;
+> > > +		}
+> > > +
+> > > +		if (i == BAR_4) {
+> > > +			ret = intel_xpcie_check_bar(epf, epf_bar, BAR_4,
+> > > +						    BAR4_MIN_SIZE,
+> > > +						    epc_features->reserved_bar);
+> > > +			if (ret)
+> > > +				return ret;
+> > > +		}
+> > 
+> > Why do you need to check all of this?  Where is the data coming from
+> > that could be incorrect?
+> 
+> PCI BAR attributes, as inputs, are coming from the PCIe controller driver
+> through PCIe End Point Framework.  These checks are required to compare the 
+> configuration this driver is expecting to the configuration coming from
+> the PCIe controller driver.
 
-Do I understand correctly that this means:
-1. Creation of new helper like
-https://lists.linuxfoundation.org/pipermail/bridge/2020-July/013036.html
-2. Validation on tun side that the BPF uses only limited subset of
-helpers available for SCHED_CLS
+So why do you not trust that information coming from the caller?
+Shouldn't it always be correct as it already is validated by that
+in-kernel caller?  Don't check for things you don't have to check for
+because you control the code that calls this stuff.
 
-> tc side of the code should be ready to deal with that too and this extended
-> helper should be meaningful for both tc and tun.
->
-> In general if the purpose of the prog is to compute three values they better be
-> grouped together. Returned two of them via ORed 32-bit integer and
-> returning 32-bit via bpf_set_hash is an awkward api.
+thanks,
+
+greg k-h
