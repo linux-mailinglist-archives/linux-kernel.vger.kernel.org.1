@@ -2,113 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0463301DDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0148301DD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbhAXRRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 12:17:25 -0500
-Received: from m12-11.163.com ([220.181.12.11]:41407 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725550AbhAXRRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 12:17:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=nnGPu
-        W3JEtFab1luo5EYdxjZ4kiRtOiGmSD4yFmXKAA=; b=Mzq+TGyCMbLcMCIO5ampQ
-        uut9pTl3xDi6447z3+ahq+ayirrbySwaQNkugztT+HFGg1WVyq9u2VX5x35qedlz
-        RUol0PagvC8QWZlytJrra7ZmMz9GZC3qfLMKx2GQSPX1mu2zlZpxwFCcqu2usPdd
-        5wn6pboSq/BEDFo+CxZuLo=
-Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowAAn3Ku1hg1g_NCWKQ--.25582S2;
-        Sun, 24 Jan 2021 22:39:50 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH v3 2/2] usb: typec: tcpci_maxim: add terminating newlines to logging
-Date:   Sun, 24 Jan 2021 22:39:47 +0800
-Message-Id: <20210124143947.1688-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S1726339AbhAXRF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 12:05:26 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:45846 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726175AbhAXRFY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 12:05:24 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 59C4020B7192;
+        Sun, 24 Jan 2021 09:04:41 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 59C4020B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1611507881;
+        bh=jcB5R+Z7AHCeSKNHbj/OIxNmhum9d165W8I2w6xnYAI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=JEKrZpP0OmFSwu4PabCWXgM4f5bJBFm/qlr0x5IxxwklrUJGtUay6ucsezODWuEby
+         P932IxeOttRV5WbwbUKra9ZzB4KkVUB7vOLm/LZ5DyfxJyJvHIqhxBvJZDyNAhD+RA
+         4EldaKwnsRwwnc/uU982cDJkDLwmnAG7umROxO8Y=
+Subject: Re: [PATCH] selinux: measure state and policy capabilities
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        tusharsu@linux.microsoft.com, tyhicks@linux.microsoft.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, sashal@kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210121200150.2448-1-nramas@linux.microsoft.com>
+ <CAHC9VhT13nhaHY3kJZ6ni4rjUffSG-hD5vOfK-q2KfsVFOtaCg@mail.gmail.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <c61e3ea5-7412-7e39-4d71-945f906d68a3@linux.microsoft.com>
+Date:   Sun, 24 Jan 2021 09:04:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowAAn3Ku1hg1g_NCWKQ--.25582S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAr4fXF17Cr4fWry8ZF4Dtwb_yoW5GF43p3
-        W5AFW7AFZ5G39Ig345AFs5ZFn09r4fK3yxZ3y8K340q3WYqrs8ta1UJF1jqF1rArWkJ343
-        A3yjqFy8uF40qFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bVsqAUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBCRckI13l+ACCGAAAsD
+In-Reply-To: <CAHC9VhT13nhaHY3kJZ6ni4rjUffSG-hD5vOfK-q2KfsVFOtaCg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On 1/22/21 1:21 PM, Paul Moore wrote:
 
-Add terminating '\n' to the formats where missed.
+Hi Paul,
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
-v3:Modify it again and submit it separately from patch 1.
+Thanks for reviewing the changes.
 
- drivers/usb/typec/tcpm/tcpci_maxim.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+...
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 7f54f51a..5d7463c 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -158,7 +158,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
- 	 */
- 	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, 2);
- 	if (ret < 0) {
--		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d", ret);
-+		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d\n", ret);
- 		return;
- 	}
- 
-@@ -167,13 +167,13 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
- 
- 	if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
- 		max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
--		dev_err(chip->dev, "%s", count ==  0 ? "error: count is 0" :
-+		dev_err(chip->dev, "%s\n", count ==  0 ? "error: count is 0" :
- 			"error frame_type is not SOP");
- 		return;
- 	}
- 
- 	if (count > sizeof(struct pd_message) || count + 1 > TCPC_RECEIVE_BUFFER_LEN) {
--		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d", count);
-+		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d\n", count);
- 		return;
- 	}
- 
-@@ -184,7 +184,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
- 	count += 1;
- 	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, count);
- 	if (ret < 0) {
--		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d", ret);
-+		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d\n", ret);
- 		return;
- 	}
- 
-@@ -317,7 +317,7 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
- 			return ret;
- 
- 		if (reg_status & TCPC_SINK_FAST_ROLE_SWAP) {
--			dev_info(chip->dev, "FRS Signal");
-+			dev_info(chip->dev, "FRS Signal\n");
- 			tcpm_sink_frs(chip->port);
- 		}
- 	}
-@@ -460,7 +460,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
- 	if (IS_ERR(chip->tcpci)) {
--		dev_err(&client->dev, "TCPCI port registration failed");
-+		dev_err(&client->dev, "TCPCI port registration failed\n");
- 		return PTR_ERR(chip->tcpci);
- 	}
- 	chip->port = tcpci_get_tcpm_port(chip->tcpci);
--- 
-1.9.1
+>>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+>> ---
+>> This patch is based on
+>> commit e58bb688f2e4 "Merge branch 'measure-critical-data' into next-integrity"
+>> in "next-integrity-testing" branch
+>>
+>>   security/selinux/hooks.c     |  5 +++
+>>   security/selinux/ima.c       | 68 ++++++++++++++++++++++++++++++++++++
+>>   security/selinux/selinuxfs.c | 10 ++++++
+>>   3 files changed, 83 insertions(+)
+>>
+>> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+>> index 644b17ec9e63..879a0d90615d 100644
+>> --- a/security/selinux/hooks.c
+>> +++ b/security/selinux/hooks.c
+>> @@ -103,6 +103,7 @@
+>>   #include "netlabel.h"
+>>   #include "audit.h"
+>>   #include "avc_ss.h"
+>> +#include "ima.h"
+>>
+>>   struct selinux_state selinux_state;
+>>
+>> @@ -7407,6 +7408,10 @@ int selinux_disable(struct selinux_state *state)
+>>
+>>          selinux_mark_disabled(state);
+>>
+>> +       mutex_lock(&state->policy_mutex);
+>> +       selinux_ima_measure_state(state);
+>> +       mutex_unlock(&state->policy_mutex);
+> 
+> I'm not sure if this affects your decision to include this action in
+> the measurements, but this function is hopefully going away in the not
+> too distant future as we do away with support for disabling SELinux at
+> runtime.
+> 
+> FWIW, I'm not sure it's overly useful anyway; you only get here if you
+> never had any SELinux policy/state configured and you decide to
+> disable SELinux instead of loading a policy.  However, I've got no
+> objection to this code.
+If support for disabling SELinux at runtime will be removed, then I 
+don't see a reason to trigger a measurement here. I'll remove this 
+measurement.
 
+> 
+>> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
+>> index 03715893ff97..e65d462d2d30 100644
+>> --- a/security/selinux/ima.c
+>> +++ b/security/selinux/ima.c
+>> @@ -12,6 +12,60 @@
+>>   #include "security.h"
+>>   #include "ima.h"
+>>
+>> +/*
+>> + * read_selinux_state - Read selinux configuration settings
+>> + *
+>> + * @state_str: Return the configuration settings.
+>> + * @state_str_len: Size of the configuration settings string
+>> + * @state: selinux_state
+>> + *
+>> + * Return 0 on success, error code on failure
+>> + */
+> 
+> Yes, naming is hard, but let's try to be a bit more consistent within
+> a single file.  The existing function is prefixed with "selinux_ima_"
+> perhaps we can do something similar here?
+> "selinux_ima_collect_state()" or something similar perhaps?
+
+Sure - will rename the function to "selinux_ima_collect_state()"
+
+> 
+> Perhaps instead of returning zero on success you could return the
+> length of the generated string?  It's not a big deal, but it saves an
+> argument for whatever that is worth these days.  I also might pass the
+> state as the first argument and the generated string pointer as the
+> second argument, but that is pretty nit-picky.
+Sure - will make this change.
+
+> 
+>> +static int read_selinux_state(char **state_str, int *state_str_len,
+>> +                             struct selinux_state *state)
+>> +{
+>> +       char *buf;
+>> +       int i, buf_len, curr;
+>> +       bool initialized = selinux_initialized(state);
+>> +       bool enabled = !selinux_disabled(state);
+>> +       bool enforcing = enforcing_enabled(state);
+>> +       bool checkreqprot = checkreqprot_get(state);
+>> +
+>> +       buf_len = snprintf(NULL, 0, "%s=%d;%s=%d;%s=%d;%s=%d;",
+>> +                          "initialized", initialized,
+>> +                          "enabled", enabled,
+>> +                          "enforcing", enforcing,
+>> +                          "checkreqprot", checkreqprot);
+>> +
+>> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
+>> +               buf_len += snprintf(NULL, 0, "%s=%d;",
+>> +                                   selinux_policycap_names[i],
+>> +                                   state->policycap[i]);
+>> +       }
+>> +       ++buf_len;
+> 
+> With all of the variables you are measuring being booleans, it seems
+> like using snprintf() is a bit overkill, no?  What about a series of
+> strlen() calls with additional constants for the booleans and extra
+> bits?  For example:
+> 
+>    buf_len = 1; // '\0';
+>    buf_len += strlen("foo") + 3; // "foo=0;"
+>    buf_len += strlen("bar") + 3; // "bar=0;"
+> 
+> Not that it matters a lot here, but the above must be more efficient
+> than calling snprintf().
+
+You are right - using strlen/strcat would be more efficient here. But I 
+feel it is safer to use snprintf() rather than computing the length of 
+each measured entity and concatenating it to the destination buffer.
+
+I'll try strlen/strcat approach.
+
+> 
+>> +       buf = kzalloc(buf_len, GFP_KERNEL);
+>> +       if (!buf)
+>> +               return -ENOMEM;
+>> +
+>> +       curr = scnprintf(buf, buf_len, "%s=%d;%s=%d;%s=%d;%s=%d;",
+>> +                        "initialized", initialized,
+>> +                        "enabled", enabled,
+>> +                        "enforcing", enforcing,
+>> +                        "checkreqprot", checkreqprot);
+>> +
+>> +       for (i = 0; i < __POLICYDB_CAPABILITY_MAX; i++) {
+>> +               curr += scnprintf((buf + curr), (buf_len - curr), "%s=%d;",
+>> +                                 selinux_policycap_names[i],
+>> +                                 state->policycap[i]);
+>> +       }
+> 
+> Similarly, you could probably replace all of this with
+> strcat()/strlcat() calls since you don't have to render an integer
+> into a string.
+Sure - I'll give this a try.
+
+> 
+>> +       *state_str = buf;
+>> +       *state_str_len = curr;
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>   /*
+>>    * selinux_ima_measure_state - Measure hash of the SELinux policy
+>>    *
+>> @@ -21,10 +75,24 @@
+>>    */
+>>   void selinux_ima_measure_state(struct selinux_state *state)
+>>   {
+>> +       char *state_str = NULL;
+>> +       int state_str_len;
+>>          void *policy = NULL;
+>>          size_t policy_len;
+>>          int rc = 0;
+>>
+>> +       rc = read_selinux_state(&state_str, &state_str_len, state);
+>> +       if (rc) {
+>> +               pr_err("SELinux: %s: failed to read state %d.\n",
+>> +                       __func__, rc);
+>> +               return;
+>> +       }
+>> +
+>> +       ima_measure_critical_data("selinux", "selinux-state",
+>> +                                 state_str, state_str_len, false);
+>> +
+>> +       kfree(state_str);
+>> +
+>>          /*
+>>           * Measure SELinux policy only after initialization is completed.
+>>           */
+>> diff --git a/security/selinux/selinuxfs.c b/security/selinux/selinuxfs.c
+>> index 4bde570d56a2..8b561e1c2caa 100644
+>> --- a/security/selinux/selinuxfs.c
+>> +++ b/security/selinux/selinuxfs.c
+>> @@ -41,6 +41,7 @@
+>>   #include "security.h"
+>>   #include "objsec.h"
+>>   #include "conditional.h"
+>> +#include "ima.h"
+>>
+>>   enum sel_inos {
+>>          SEL_ROOT_INO = 2,
+>> @@ -182,6 +183,10 @@ static ssize_t sel_write_enforce(struct file *file, const char __user *buf,
+>>                  selinux_status_update_setenforce(state, new_value);
+>>                  if (!new_value)
+>>                          call_blocking_lsm_notifier(LSM_POLICY_CHANGE, NULL);
+>> +
+>> +               mutex_lock(&state->policy_mutex);
+>> +               selinux_ima_measure_state(state);
+>> +               mutex_unlock(&state->policy_mutex);
+>>          }
+>>          length = count;
+>>   out:
+>> @@ -762,6 +767,11 @@ static ssize_t sel_write_checkreqprot(struct file *file, const char __user *buf,
+>>
+>>          checkreqprot_set(fsi->state, (new_value ? 1 : 0));
+>>          length = count;
+>> +
+>> +       mutex_lock(&fsi->state->policy_mutex);
+>> +       selinux_ima_measure_state(fsi->state);
+>> +       mutex_unlock(&fsi->state->policy_mutex);
+>> +
+> 
+> The lock-measure-unlock pattern appears enough that I wonder if we
+> should move the lock/unlock into selinux_ima_measure_state() and
+> create a new function, selinux_ima_measure_state_unlocked(), to cover
+> the existing case in selinux_notify_policy_change().  It would have
+> the advantage of not requiring a pointless lock/unlock in the case
+> where CONFIG_IMA=n.
+> 
+
+Agreed.
+
+thanks,
+  -lakshmi
