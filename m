@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F47301C9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:12:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0950B301CAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbhAXOMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 09:12:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbhAXOMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 09:12:06 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E84C061573;
-        Sun, 24 Jan 2021 06:11:26 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id x21so21172047iog.10;
-        Sun, 24 Jan 2021 06:11:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0Ao/yarVyR+Aon04nX87tyRiOiK8ZlEZS4G8Yy79d54=;
-        b=TBkJ6nomCk8/2cv7rEzXhkIJHSRYlN/B20umDI5FBypSXY4LiVPvMYkZ78nB0graug
-         gySN6qtT5tUkrEvc6+TXZP+uf8C6cziH+LvxTvGjYKvAJ5T/3X7OkFwMVs4dxtFZ/z5K
-         OgXcxITHmq15P9yHxa8MBf8MAT8zpKYkt+Aw//x97N6VRwmDjJElxZ+jYmCinRwCsEup
-         chv3TFU2MILu2qa3ld8TSXvqHYeZ75983Br0qd0yD64NSLXkt0ShGnq0/dx9VFfGxEJR
-         zgAVgvSAeNvbJrbbZZ0lZrsALbx10cfXv/YqMvWBQbX4V5+h5oGxhe5G2jiv+eJGRzN8
-         j0lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0Ao/yarVyR+Aon04nX87tyRiOiK8ZlEZS4G8Yy79d54=;
-        b=BtLavFlaMx5D5zwNCoaCsOuDPLtI9FUVSvqnbv66LNGGzAW/ELC/lS6wI1uZBsZV5e
-         L+GH1cqUOPgIAO7Hg3bHc0utMgC49X7KY1zFgpM6q1k/W4GAlDdB6yHtGp2bpOI+dWUp
-         gSDvq5oq99RYMf8qwGVIfXp2f9HtHOKL6p/cu4fAnuAGEUMu+5AxVN2+G4NPvpICi+lB
-         YR/wf3AEcfCoyvHMSn+sNtoKfJAoyvI+CYe9yKIj8IMcWAtfI67VAHm5VJ7prqUlW7eN
-         HNtzMfbot6T1+HRiiw4i8xrm1pRy/IuFvTRKYWcpvjHnsAT6GacLK8E6yExYmLyE8WjU
-         m0iw==
-X-Gm-Message-State: AOAM5311b8ZUlaYzfzIVMCP+rVQk2Fv90GiA0HugCdTohbyWkruV5YlG
-        x2FFvgHfgj5cTi7yJ0oYcF3NRnQbtXKPqR6GpCA=
-X-Google-Smtp-Source: ABdhPJznuyJvRo9LDknc7bU5INTQtX0KgDxkRL8UdxQK31cnGO7u+mTblUQvNbV7yrqjpB4rl6bFUja0JrQyw/1zljo=
-X-Received: by 2002:a6b:8d0f:: with SMTP id p15mr4436364iod.56.1611497485689;
- Sun, 24 Jan 2021 06:11:25 -0800 (PST)
+        id S1726066AbhAXOYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 09:24:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725798AbhAXOYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 09:24:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D024022DD6;
+        Sun, 24 Jan 2021 14:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611498220;
+        bh=w3LktGO5GhLAKj20sLAzzJMy0NlHamRw+imEYmCWFUc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VS7Aprw4DNx24sXalJjZttWCq5BrR6rwR8rCxJNelqJy6yKfkksPyBPHTG4v4OY21
+         nLwFptB4kXcqukN5BJLn+h0tSyG4GLkZEDNrM8wjldaR++jpjKEPu5XKYbJdT3qdCQ
+         ExSWOtu1P7IeUif95WQPWwocqfNiuYMj4S1RQIkhQA9r1njnpHw0v1zwTrx4goawNX
+         5B/Zdz4+ncilK0ePjWQWywuB91uubTpxn6OdkmCGEktQizNRNTnHSITvOjnyAbxWVn
+         c09ZqkPzkZ6x1sw/A+oEx27VA4EhVL9N29SoCrLCjKwP3dLyeR8Cy/PE8fNomUfOt0
+         6ZWN0AF6uN0Ew==
+Received: by mail-oi1-f169.google.com with SMTP id r189so11880403oih.4;
+        Sun, 24 Jan 2021 06:23:40 -0800 (PST)
+X-Gm-Message-State: AOAM533uHkybIcXAxh6i6+hMoa5cM+p5Dte3ulljt7L+muKaXJKQKJmj
+        4czfkIX+ATh584umhnCSzlCiGs2ZM2bZj33VHNI=
+X-Google-Smtp-Source: ABdhPJxg04nR569EgwplfBK5Sd/JJqMrk35AzDkNNlAK0Z3fKmlOyeOIgvtZBH76mN3A8aoRywylJMO+bXpOJKHZnhE=
+X-Received: by 2002:aca:d98a:: with SMTP id q132mr31351oig.33.1611498220139;
+ Sun, 24 Jan 2021 06:23:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20200907131613.12703-1-joro@8bytes.org> <20200907131613.12703-46-joro@8bytes.org>
-In-Reply-To: <20200907131613.12703-46-joro@8bytes.org>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Sun, 24 Jan 2021 22:11:14 +0800
-Message-ID: <CAJhGHyCMMCY9bZauzrSeQr_62SpJgZQEQy9P7Rh28HXJtF5O5A@mail.gmail.com>
-Subject: Re: [PATCH v7 45/72] x86/entry/64: Add entry code for #VC handler
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
+References: <1772794.tdWV9SEqCh@positron.chronox.de>
+In-Reply-To: <1772794.tdWV9SEqCh@positron.chronox.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 24 Jan 2021 15:23:29 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXE=46vk15Ovs8qS96JZRi2xDHHe=QqC=WKbZ-+gx4DL4Q@mail.gmail.com>
+Message-ID: <CAMj1kXE=46vk15Ovs8qS96JZRi2xDHHe=QqC=WKbZ-+gx4DL4Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] Add KDF implementations to crypto API
+To:     =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        David Howells <dhowells@redhat.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        keyrings@vger.kernel.org, simo@redhat.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +
-> +       /*
-> +        * No need to switch back to the IST stack. The current stack is either
-> +        * identical to the stack in the IRET frame or the VC fall-back stack,
-> +        * so it is definitly mapped even with PTI enabled.
-> +        */
-> +       jmp     paranoid_exit
-> +
+On Sun, 24 Jan 2021 at 15:10, Stephan M=C3=BCller <smueller@chronox.de> wro=
+te:
+>
+> Hi,
+>
+> The key derviation functions are considered to be a cryptographic
+> operation. As cryptographic operations are provided via the kernel
+> crypto API, this patch set consolidates the KDF implementations into the
+> crypto API.
+>
+> The KDF implementations are provided as service functions. Yet, the
+> interface to the two provided KDFs are identical with the goal to allow
+> them to be transformed into a crypto API template eventually.
 >
 
-Hello
+Why? There are typically two reasons to use the crypto API abstractions:
+- the algorithm is not known at compile time, so we need the runtime
+dispatch that the crypto API implements,
+- the algorithm may be implemented by a h/w accelerator which is
+discovered at runtime via the driver stack
 
-I know we don't enable PTI on AMD, but the above comment doesn't align to the
-next code.
+In other cases, a library API is much more suitable, even in the case
+where we may provide arch-specific accelerated implementations of such
+an algorithm.
 
-We assume PTI is enabled as the comments said "even with PTI enabled".
 
-When #VC happens after entry_SYSCALL_64 but before it switches to the
-kernel CR3.  vc_switch_off_ist() will switch the stack to the kernel stack
-and paranoid_exit can't work when it switches to user CR3 on the kernel stack.
 
-The comment above lost information that the current stack is possible to be
-the kernel stack which is mapped not user CR3.
-
-Maybe I missed something.
-
-Thanks
-Lai
-
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *regs)
-> +{
-> +       unsigned long sp, *stack;
-> +       struct stack_info info;
-> +       struct pt_regs *regs_ret;
-> +
-> +       /*
-> +        * In the SYSCALL entry path the RSP value comes from user-space - don't
-> +        * trust it and switch to the current kernel stack
-> +        */
-> +       if (regs->ip >= (unsigned long)entry_SYSCALL_64 &&
-> +           regs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack) {
-> +               sp = this_cpu_read(cpu_current_top_of_stack);
-> +               goto sync;
-> +       }
+> The KDFs execute a power-on self test with test vectors from commonly
+> known sources.
+>
+> Tbe SP800-108 KDF implementation is used to replace the implementation
+> in the keys subsystem. The implementation was verified using the
+> keyutils command line test code provided in
+> tests/keyctl/dh_compute/valid. All tests show that the expected values
+> are calculated with the new code.
+>
+> The HKDF addition is used to replace the implementation in the filesystem
+> crypto extension. This code was tested by using an EXT4 encrypted file
+> system that was created and contains files written to by the current
+> implementation. Using the new implementation a successful read of the
+> existing files was possible and new files / directories were created
+> and read successfully. These newly added file system objects could be
+> successfully read using the current code. Yet if there is a test suite
+> to validate whether the invokcation of the HKDF calculates the same
+> result as the existing implementation, I would be happy to validate
+> the implementation accordingly.
+>
+> Changes v2:
+>
+> * change HKDF function names
+> * change HKDF/SP800-108 KDF extract / seed function prototype
+> * ensure clearing of memory of destination buffer in KDF implementation
+>   if KDF operation fails
+> * security DH: split the removal of dead code into separate patch
+>
+> Stephan Mueller (7):
+>   crypto: Add key derivation self-test support code
+>   crypto: add SP800-108 counter key derivation function
+>   crypto: add RFC5869 HKDF
+>   security: DH - remove dead code for zero padding
+>   security: DH - use KDF implementation from crypto API
+>   fs: use HKDF implementation from kernel crypto API
+>   fs: HKDF - remove duplicate memory clearing
+>
+>  crypto/Kconfig                         |  14 ++
+>  crypto/Makefile                        |   6 +
+>  crypto/hkdf.c                          | 199 +++++++++++++++++++++++++
+>  crypto/kdf_sp800108.c                  | 149 ++++++++++++++++++
+>  fs/crypto/Kconfig                      |   2 +-
+>  fs/crypto/hkdf.c                       | 103 +++----------
+>  include/crypto/hkdf.h                  |  48 ++++++
+>  include/crypto/internal/kdf_selftest.h |  71 +++++++++
+>  include/crypto/kdf_sp800108.h          |  61 ++++++++
+>  security/keys/Kconfig                  |   2 +-
+>  security/keys/dh.c                     | 118 ++-------------
+>  11 files changed, 586 insertions(+), 187 deletions(-)
+>  create mode 100644 crypto/hkdf.c
+>  create mode 100644 crypto/kdf_sp800108.c
+>  create mode 100644 include/crypto/hkdf.h
+>  create mode 100644 include/crypto/internal/kdf_selftest.h
+>  create mode 100644 include/crypto/kdf_sp800108.h
+>
+> --
+> 2.26.2
+>
+>
+>
+>
