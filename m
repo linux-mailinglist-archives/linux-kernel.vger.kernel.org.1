@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953AB30192E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 03:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A7F301930
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 03:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbhAXCKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 21:10:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726433AbhAXCJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 21:09:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FA3B229F0;
-        Sun, 24 Jan 2021 02:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611454154;
-        bh=NoOjEaGp85QcxUqBSDOe0ipjgea3PrHuHrnXFNVCOGo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JupcgCB/e52p8vQoWbH826PMyiDiMnQ6vnNe1BbDf2dY+wnkR5tkKG2eCWovj16mg
-         v9GqEW/1Lme9ZLgF+wRxV8qLFFFeMQyby0X3GdKKz03k2DKYNO7IKusRjn0EVhYInL
-         RV/vFF0dvv2I1+m5dCnTh4jMCeap8kD7LytqMOAs=
-Date:   Sat, 23 Jan 2021 18:09:11 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     rppt@kernel.org, guro@fb.com, iamjoonsoo.kim@lge.com,
-        Ram Pai <linuxram@us.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        mhocko@kernel.org, riel@surriel.com
-Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations
- with kernel_end
-Message-Id: <20210123180911.aafa8404a3a7a30779713456@linux-foundation.org>
-In-Reply-To: <20210122043714.266075-1-bauerman@linux.ibm.com>
-References: <20201220064959.GB392325@kernel.org>
-        <20210122043714.266075-1-bauerman@linux.ibm.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726484AbhAXCSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 21:18:14 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37493 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726398AbhAXCSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 21:18:11 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 2520EF8E;
+        Sat, 23 Jan 2021 21:17:25 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sat, 23 Jan 2021 21:17:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=UpklQmUEUO/zX5MgAoQulqE9tZs
+        7EOOqxGs/86z89og=; b=GV0EKv0vPpQMEDwOvUwal9LDy6Mt6QYVEuqOb4k3WaS
+        2S0gnkWkWt8ENvP+wrf1mqmVUfe8ysndh5eHBBg8DaBshxKtC9j4tO4is4GzMoQc
+        Hjcs/2ywKppXM8j21nFy0O302g0a30ZhyKTQCDBslKgfs2itMX6eUVXAuhJ2fOC4
+        JhQzap8ia6pFQoeEDnP+8+nW1ZGL7gIMK8OpUlErpN8gwkfJ50tOIWOpHeArg+2R
+        K5AjoszGn9SwYFHf2EsLovTa0JdCTkDxObgfmkN+Ik7URrP9HnomuexsC9n06SRj
+        BFlFpeVTTK/8+fTtpsFbjcZn1JtlNmGHQCqhEIuJu5Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=UpklQm
+        UEUO/zX5MgAoQulqE9tZs7EOOqxGs/86z89og=; b=FVhn7fuFxdpqFNR3osD85d
+        zuIHmQcsHBlWIAV8yyESWKT4cNTphfQI89P2eDxrj3vnZNu+vpYJib4jVRIi28tw
+        DdPqQjgZE/N4C0gHdqN28DX2ZLE1yW2XeV2rY2+OtLzcmK+8q2yyUDkyhL6HhytA
+        Bsq8KbuBqaLw2ocOYCfOAyBQ31tiyPrlgHLCaf/KRMYeZi8V1DudjWIW0GXFKGL6
+        mdVEaGZzA3jA3TH6fcXbDucYG4JVUCEaUScHWebkJ8Tq098R/+I37UCL6n0V+/dI
+        h/oq/iaSep2mBMSIlPcoKl0p5U3YwsZSJGO2dbzBCEXuCoHfv4tRo9mwqM74zj8w
+        ==
+X-ME-Sender: <xms:tNgMYMPivXYlkcdlG4m2uiWI-n65HuqU0i0VDDKs5byMbX1mfHM-dg>
+    <xme:tNgMYC_bTpY0y1_JokZwR6xJeqHGbZ-q9V_1uUIs1PPyVUjzWMOw125lID1p2lJ4k
+    tw4B2mvYAtBtsdghw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelgdegfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
+    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
+    htvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeffhfeu
+    ffdunecukfhppeeijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdgu
+    vg
+X-ME-Proxy: <xmx:tNgMYDTlM6ETztvWtoD6NnHxWWnsVgpNOHWeLc7XRFg_QE0uZUgL2w>
+    <xmx:tNgMYEu72OtuoqJhmzOgHdCT0amkvhpJDKjXGHH1lqFp3mrc72F6xg>
+    <xmx:tNgMYEfl9BJ8eUBtQnPaeX43DfyYwvu0ZN9pHLMpjNsOZWWXgU4ndg>
+    <xmx:tNgMYD6Oi2CNkmwPOljOl0R4l5sx7LDI3lU5329Asg38u53f9qtwAA>
+Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DF26D240057;
+        Sat, 23 Jan 2021 21:17:23 -0500 (EST)
+Date:   Sat, 23 Jan 2021 18:17:22 -0800
+From:   Andres Freund <andres@anarazel.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Lennert Buytenhek <buytenh@wantstofly.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
+Message-ID: <20210124021722.j4v7xrn4licf2aif@alap3.anarazel.de>
+References: <20210123114152.GA120281@wantstofly.org>
+ <20210123235055.azmz5jm2lwyujygc@alap3.anarazel.de>
+ <20210124015905.GH740243@zeniv-ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210124015905.GH740243@zeniv-ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 01:37:14 -0300 Thiago Jung Bauermann <bauerman@linux.ibm.com> wrote:
+Hi,
 
-> Mike Rapoport <rppt@kernel.org> writes:
+On 2021-01-24 01:59:05 +0000, Al Viro wrote:
+> On Sat, Jan 23, 2021 at 03:50:55PM -0800, Andres Freund wrote:
 > 
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > As there's only a shared lock, seems like both would end up with the
+> > same ctx->pos and end up updating f_pos to the same offset (assuming the
+> > same count).
 > > 
-> > Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Am I missing something?
 > 
-> I've seen a couple of spurious triggers of the WARN_ONCE() removed by this
-> patch. This happens on some ppc64le bare metal (powernv) server machines with
-> CONFIG_SWIOTLB=y and crashkernel=4G, as described in a candidate patch I posted
-> to solve this issue in a different way:
-> 
-> https://lore.kernel.org/linuxppc-dev/20201218062103.76102-1-bauerman@linux.ibm.com/
-> 
-> Since this patch solves that problem, is it possible to include it in the next
-> feasible v5.11-rcX, with the following tag?
+> This:
+>         f = fdget_pos(fd);
+>         if (!f.file)
+>                 return -EBADF;
+> in the callers.
 
-We could do this, if we're confident that this patch doesn't depend on
-[1/2] "mm: cma: allocate cma areas bottom-up"?  I think it is...
+Ah. Thanks for the explainer, userspace guy here ;). I hadn't realized
+that fdget_pos acquired a lock around the position...
 
-> Fixes: 8fabc623238e ("powerpc: Ensure that swiotlb buffer is allocated from low memory")
+Regards,
 
-I added that.
-
-
+Andres
