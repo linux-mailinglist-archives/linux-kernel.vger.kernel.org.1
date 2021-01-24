@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215863019A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 06:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DF9301A30
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 07:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726408AbhAXFVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 00:21:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbhAXFUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 00:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 219B722C9F;
-        Sun, 24 Jan 2021 05:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611465610;
-        bh=XQAyljCTeoPLjH7R46uB+f6nJPk3HdHW+6ZH781W++Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=R53ehTbif+Scu4y8QK7LOz/rVtxdGZVhCJq6wDuVX2F4A2yjbWGlZG6yreuFwGjLJ
-         0E+iL4XeGuGKYNvR9hXqQ5Y9J8XstlMN154ipitqHe2YMw8KttjiT07TMESsH97enO
-         aVXuNRKPRDTxmsJqpr2oQWAseInSOi78ra7K6PKCr7b2SK0bi0OdDbyJTaaQI/flg5
-         ilFg6euqOLwwyGiekHJifwuBC0TX4n/srpiuX28t7pkgjiPkGIztxWlrBfVzhFMPmR
-         qNyiYR+V5W851YGvWWSIvmgnmWheM9+MgcjAmkcWKckJT/FiOD9a/yhVqf2dE6jFQW
-         eNN5EeNM0pGUQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1236D652F4;
-        Sun, 24 Jan 2021 05:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726510AbhAXGaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 01:30:07 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:50047 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726092AbhAXGaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 01:30:04 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UMfz8v3_1611469747;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UMfz8v3_1611469747)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 24 Jan 2021 14:29:08 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v3 0/5] Some optimizations related to sgx
+Date:   Sun, 24 Jan 2021 14:29:02 +0800
+Message-Id: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 net-next 0/2] udp: allow forwarding of plain
- (non-fraglisted) UDP GRO packets
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161146561006.2035.8336075906979964296.git-patchwork-notify@kernel.org>
-Date:   Sun, 24 Jan 2021 05:20:10 +0000
-References: <20210122181909.36340-1-alobakin@pm.me>
-In-Reply-To: <20210122181909.36340-1-alobakin@pm.me>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     davem@davemloft.net, kuba@kernel.org, yoshfuji@linux-ipv6.org,
-        willemb@google.com, steffen.klassert@secunet.com,
-        alexander.duyck@gmail.com, pabeni@redhat.com,
-        irusskikh@marvell.com, mchehab+huawei@kernel.org,
-        linmiaohe@huawei.com, atenart@kernel.org, mkubecek@suse.cz,
-        andrew@lunn.ch, meirl@mellanox.com, ayal@mellanox.com,
-        f.fainelli@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+This is an optimization of a set of sgx-related codes, each of which
+is independent of the patch. Because the second and third patches have
+conflicting dependencies, these patches are put together.
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+---
+v3 changes:
+  * split free_cnt count and spin lock optimization into two patches
 
-On Fri, 22 Jan 2021 18:19:36 +0000 you wrote:
-> This series allows to form UDP GRO packets in cases without sockets
-> (for forwarding). To not change the current datapath, this is
-> performed only when the new corresponding netdev feature is enabled
-> via Ethtool (and fraglisted GRO is disabled).
-> Prior to this point, only fraglisted UDP GRO was available. Plain UDP
-> GRO shows better forwarding performance when a target NIC is capable
-> of GSO UDP offload.
-> 
-> [...]
+v2 changes:
+  * review suggested changes
 
-Here is the summary with links:
-  - [v4,net-next,1/2] net: introduce a netdev feature for UDP GRO forwarding
-    https://git.kernel.org/netdev/net-next/c/6f1c0ea133a6
-  - [v4,net-next,2/2] udp: allow forwarding of plain (non-fraglisted) UDP GRO packets
-    https://git.kernel.org/netdev/net-next/c/36707061d6ba
+Tianjia Zhang (5):
+  selftests/x86: Simplify the code to get vdso base address in sgx
+  x86/sgx: Optimize the locking range in sgx_sanitize_section()
+  x86/sgx: Optimize the free_cnt count in sgx_epc_section
+  x86/sgx: Allows ioctl PROVISION to execute before CREATE
+  x86/sgx: Remove redundant if conditions in sgx_encl_create
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ arch/x86/kernel/cpu/sgx/driver.c   |  1 +
+ arch/x86/kernel/cpu/sgx/ioctl.c    |  9 +++++----
+ arch/x86/kernel/cpu/sgx/main.c     | 13 +++++--------
+ tools/testing/selftests/sgx/main.c | 24 ++++--------------------
+ 4 files changed, 15 insertions(+), 32 deletions(-)
 
+-- 
+2.19.1.3.ge56e4f7
 
