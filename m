@@ -2,97 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E8130195F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 04:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485CD301972
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 05:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbhAXDhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 22:37:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726398AbhAXDhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 22:37:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C12AE22583;
-        Sun, 24 Jan 2021 03:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611459386;
-        bh=akMV4ADvawbd5xbEeRfWHTqtAQ9OXS7p8jk2hktPLqM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kA65blENSwCIRyopmG7/qZQr2tV13FW31+h8vPKRA0+GyXp762UMUwlkBXRLGlY8I
-         poh8M0V0iUgCKZsQIyHZef5IOLYytkFGSx38X45TxgN1Gq2/UOPm4+bgWuCn8gT6l2
-         Mda78BAlNfdyXIoBKg+KyRy0jKqA18QHnK2e08jX19AjcCm04qBW2TquPIEyJGG9c5
-         bRAJfQgPAfK1Yj5lfQozmhjEIzhA9ECATg6hUXK/vcbbqtciEzbxWVlhHs5H2wx7R0
-         NPVZr+GJEy7Y2RvXYL7WAbuiOHmPS99cvfe7O//Jk5AF6m7R7FUnSkXzbAsrMpvDCK
-         Trahv4lHBQzog==
-Date:   Sat, 23 Jan 2021 19:36:24 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Enke Chen <enkechen2020@gmail.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] tcp: make TCP_USER_TIMEOUT accurate for zero window
- probes
-Message-ID: <20210123193624.6111b292@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210124005643.GH129261@localhost.localdomain>
-References: <20210122191306.GA99540@localhost.localdomain>
-        <20210122174325.269ac329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210123022823.GA100578@localhost.localdomain>
-        <20210122183424.59c716a1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20210123024534.GB100578@localhost.localdomain>
-        <CADVnQy=zzrFf=sF+oMwjm+Pp-VJ-veC93poVp0XUPFKRoiGRUQ@mail.gmail.com>
-        <20210124005643.GH129261@localhost.localdomain>
+        id S1726463AbhAXEIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 23:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbhAXEIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 23:08:53 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03289C0613D6
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 20:08:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Lh9eOrCOK7bXOzdecd6q2dREsDMbVoNPQCAm58V7l6Y=; b=lFpoumH943oCQgcXSCsz6hp9Vg
+        A8tXsciyoS3o/ZjeYJBZT3wxlqR+eKL9W2vX+yOhsMIUz9F83RmCkjlMlxwU1GYzaHe8mZg42jCfC
+        8o21uJxrNQWLI4UB6qU1kUNvP8xwsOG7rJr/TQS32mMJaDalZBXCDl0OuBrk5JB6S632Vn5IKfntJ
+        FvrNqXtnqTAYqbR5LfpD2YDa6E7JrGZEtX/vwH2uJgsuoS6lUqDljt5rVJkf7364eKYLtLlw+8fk+
+        /2nXegCxdGvZH7QgtD6DGEr6LX3hOa1qGXo6mCe7dp1gBgqlQ14iAezJ7DmDuKl7CyygxjC5FmJJj
+        1FoC36PQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3Wfw-002abG-77; Sun, 24 Jan 2021 04:07:14 +0000
+Date:   Sun, 24 Jan 2021 04:06:56 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Stephen Zhang <stephenzhangzsd@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/memfd: replace strcpy() by strscpy()
+Message-ID: <20210124040656.GB308988@casper.infradead.org>
+References: <1611455017-2210-1-git-send-email-stephenzhangzsd@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611455017-2210-1-git-send-email-stephenzhangzsd@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021 16:56:43 -0800 Enke Chen wrote:
-> On Sat, Jan 23, 2021 at 07:19:13PM -0500, Neal Cardwell wrote:
-> > On Fri, Jan 22, 2021 at 9:45 PM Enke Chen <enkechen2020@gmail.com> wrote:  
-> > > On Fri, Jan 22, 2021 at 06:34:24PM -0800, Jakub Kicinski wrote:  
-> > > > On Fri, 22 Jan 2021 18:28:23 -0800 Enke Chen wrote:  
-> > > > > In terms of backporting, this patch should go together with:
-> > > > >
-> > > > >     9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window  
-> > > >
-> > > > As in it:
-> > > >
-> > > > Fixes: 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
-> > > >
-> > > > or does it further fix the same issue, so:
-> > > >
-> > > > Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
-> > > >
-> > > > ?  
-> > >
-> > > Let me clarify:
-> > >
-> > > 1) 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
-> > >
-> > >    fixes the bug and makes it work.
-> > >
-> > > 2) The current patch makes the TCP_USER_TIMEOUT accurate for 0-window probes.
-> > >    It's independent.  
-> > 
-> > Patch (2) ("tcp: make TCP_USER_TIMEOUT accurate for zero window
-> > probes") is indeed conceptually independent of (1) but its
-> > implementation depends on the icsk_probes_tstamp field defined in (1),
-> > so AFAICT (2) cannot be backported further back than (1).
-> > 
-> > Patch (1) fixes a bug in 5.1:
-> >     Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
-> > 
-> > So probably (1) and (2) should be backported as a pair, and only back
-> > as far as 5.1. (That covers 2 LTS kernels, 5.4 and 5.10, so hopefully
-> > that is good enough.)
-> 
-> What you described is more accurate, and is correct.
+On Sun, Jan 24, 2021 at 10:23:37AM +0800, Stephen Zhang wrote:
+> -	strcpy(name, MFD_NAME_PREFIX);
+> +	strscpy(name, MFD_NAME_PREFIX, len + MFD_NAME_PREFIX_LEN);
 
-That makes it clear.
-
-I added a Fixes tag, reworded the message slightly and applied, thanks!
+This is silly.  Use memcpy() if you must remove strcpy.
