@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6CA301E7D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 20:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7CF301E78
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 20:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbhAXThE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 14:37:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
+        id S1726535AbhAXTfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 14:35:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726424AbhAXTea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726164AbhAXTea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 24 Jan 2021 14:34:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B6AA422D50;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 928F522CF6;
         Sun, 24 Jan 2021 19:33:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611516829;
-        bh=C+y+pezuZ00Ku1JY1auVzje+lmNnVWZFVE/+kO/3Lbs=;
+        bh=wr/Uj5CLiy/BVQDda3Y7RLMIWK2TZi5VzMcrpucAc8Y=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gy8cnYo449QVCPOZ4eFVpgmP2LdR7sfrHDU14IWIyejR9OjWdy4Jtxk7csLa0o4zz
-         AteLOcYsf3vtvSnCs27cgbqn4E9lFR/K7+aIUgOgz3rciUJN7MdyQE8wXwE3mYRPKz
-         CczyXsDeffLj0JC6wk7RubwSvfpgLeOifyQg4UcNanY1gJ1VQLfvy2HZ7AmLhYqLOb
-         rSbaY22e1iW3PxqHWYOkNZkOUOgJxgEZ1McIM9hDaUTXGM24pxBcYFyphXjWBIA9fj
-         tynraL+jZWpAVIpORPft7dIqxf/+EL5NN2PAbWK7KziQaCaBLbtYDR7uA8oALiD+Mc
-         FmCXUVgNYWC0Q==
+        b=G9QanLynN7zMnacDf7lAq4h76+MpGsUWh6lNuKQauO3FRtgxkaPlNLoi4H7G+Tlt3
+         vtyW5d36Gg0UxKkI3qTgtzeY+/Njvo/L0u0r4bQFoRWD2pH0o72BoJ2sVlT3NwRne2
+         g/U0h3tp0A9Fx/aaEtJkO8U5rrpT0AurU9uEF4qWhm127TTjET0fuKqY2M6mzaerzc
+         9Q/WFGPDoZfdl5bXyY3TbHy6mDR2165lLdZXRbL98pnd0DtNmn8x2rOjkf5CoHPPUg
+         z9Nat+99Sytu4rSuMNj7zuEuqAXoI9ZxmTLP9kuT9cYrXJw/p61++d7zyDNw63EaSq
+         ihejEnmQSCvFA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B2208652F1;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 78FF1652E1;
         Sun, 24 Jan 2021 19:33:49 +0000 (UTC)
-Subject: Re: [GIT PULL] USB driver fixes for 5.11-rc5
+Subject: Re: [GIT PULL] TTY / Serial fixes for 5.11-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YA1urjFySDgiW7QE@kroah.com>
-References: <YA1urjFySDgiW7QE@kroah.com>
-X-PR-Tracked-List-Id: <linux-usb.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YA1urjFySDgiW7QE@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.11-rc5
-X-PR-Tracked-Commit-Id: ef02684c4e67d8c35ac83083564135bc7b1d3445
+In-Reply-To: <YA1uxr1Gy9UiHd1/@kroah.com>
+References: <YA1uxr1Gy9UiHd1/@kroah.com>
+X-PR-Tracked-List-Id: <linux-serial.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YA1uxr1Gy9UiHd1/@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.11-rc5
+X-PR-Tracked-Commit-Id: 17749851eb9ca2298e7c3b81aae4228961b36f28
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8f3bfd2181ecb920e5f51e2a16c1ef65d6f50a5f
-Message-Id: <161151682972.23923.7258555399781067077.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 4da81fa2108aa46249768bfb04cea7c534fafdda
+Message-Id: <161151682941.23923.8946666872762685830.pr-tracker-bot@kernel.org>
 Date:   Sun, 24 Jan 2021 19:33:49 +0000
 To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 24 Jan 2021 13:57:18 +0100:
+The pull request you sent on Sun, 24 Jan 2021 13:57:42 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.11-rc5
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.11-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8f3bfd2181ecb920e5f51e2a16c1ef65d6f50a5f
+https://git.kernel.org/torvalds/c/4da81fa2108aa46249768bfb04cea7c534fafdda
 
 Thank you!
 
