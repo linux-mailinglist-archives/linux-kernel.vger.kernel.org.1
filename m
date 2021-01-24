@@ -2,154 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B25301BB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65FD301BBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbhAXMDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:03:08 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:43664 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726808AbhAXMB7 (ORCPT
+        id S1726673AbhAXMFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbhAXMFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 07:01:59 -0500
-Received: by mail-io1-f71.google.com with SMTP id d8so911630ion.10
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 04:01:42 -0800 (PST)
+        Sun, 24 Jan 2021 07:05:35 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8BEC061573;
+        Sun, 24 Jan 2021 04:04:55 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id q20so6744822pfu.8;
+        Sun, 24 Jan 2021 04:04:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=PDAPpKGJ0bTpmZBGx4ylhGlHNA52pbsxkqqZU/p/cQE=;
+        b=N1+Ohqsxn1BBliytIL9FWntOw4uoZXJpJmq3olgCDZcMrsdKpIjBtCdm6Q1jifEvmr
+         kKRew8+LLCRezG16J/ebB8KtQ7KiCQNFkVwXeQHonGKnLwdx3pnJMlwxY2i71MIQnrvP
+         N7GzBDYqlDwotX3C5JSVYTSqBH27RoWQJCvMG1YSJ3wyEYf7e7HaRXmXDBYUFxJqIhwS
+         DxWX5BCxSNBYX9fXe2SdS/Mr0od6c3/i0ZtOT4HHqZjK/UdnhKU6ngpKD+oQLnfiNCbl
+         pxAyJlUgQ66A38zjsN/RzOC23VxklUz+MxZ8XqfVIleSePqQl3Kc32R5kKbWcavSe14h
+         rbWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vpWaUODVjexSZHkJhlfiwbb9m6p+9vhL1cMPROdA9U0=;
-        b=hzFGJIvDDVXzfmrgFupmbYh9PY/p7xyGu9Rfg+HYOIHC3EAw1wFpoYGrQ+egT2zGGU
-         1WsB61ZyVCHrwqOiIGw/yPPzMDPHSURD+UHD3UOXb2wwTipaswTGlri/wVUpLNIDx1Os
-         V9k1VluTIgH5bl9uTQHWh/XYVhfErAdpWTEqGkpzQHBUG1Ac4J1UlOMCXijUyKOss8he
-         C9qukVWV4vWeCD9MGckp7WiNBOpZQYWZeKHqaC/bLmJTv3OXlWz25awgVAmtd3HTfxIJ
-         lEePL1ALsZ8/3dreFyO6NSmWsestVTX6EHcia/oRYSUdJiqluKyCNiUbgJVPpHcjxJ3A
-         VytA==
-X-Gm-Message-State: AOAM533JLJXtoBW24GNtdo3Gs2WNMExW/1ETwqppHupdsVwEAHclfvIL
-        v5pK9pd2w1+o3VZov2cBod13CbBg+s850/2s//RSHK9Y9Q4T
-X-Google-Smtp-Source: ABdhPJyP7nbbbpx23zKG6jR5Mvr+mb/SLkH35WEBzA+E+8wdNH2SmCHXQ8OO4YpRkZ5bhpQplFcKjYvTZMWBWMfzx5lOCJILtHeG
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=PDAPpKGJ0bTpmZBGx4ylhGlHNA52pbsxkqqZU/p/cQE=;
+        b=EbBwJ9JDp9xBZgA8f7CwYdsMyRXhncwB0ZroeWWf381YzzuIg0IE0jKWi1Sxv5hgB6
+         MVMFqC/swajei3gGE3s3IOkNEVr7a6aUFdf4Li7v4QIjvAYDh+3dIl+6mOThSyaR46ng
+         bSadM7J9IF72+O8lRdW8JpVGTXcWg+ItXRkmxnv6D4NkyZquIj42ctgGvVmklhzUnFW2
+         NvDahOCRRjvo3RvF/hHz9Gbo9lybVCOe84KTF1N5RW92HzVPykFs22WZOsdzV26zPSWx
+         aXqiweKISU99TJaEDmlYYpkwsfoHhkTgOS9OAN/n/KleRXN1eSkOCJhzIhYgYPvx7uXh
+         Pqlg==
+X-Gm-Message-State: AOAM5301LZE2GMATMaFP4gIG0Td8OWBVKSBw0XA1mjwzhiRxqDnBmKfU
+        hgWR66CzHF52O4D+DyaCrug=
+X-Google-Smtp-Source: ABdhPJw0uJzRaMZJamLkCUg0NzjWJZ3f8wx59FYHNHPFfq58pfs7SdkANYAREpz+MFCRwlu/xnW1ig==
+X-Received: by 2002:aa7:978e:0:b029:1bd:f965:66dd with SMTP id o14-20020aa7978e0000b02901bdf96566ddmr1977761pfp.46.1611489894337;
+        Sun, 24 Jan 2021 04:04:54 -0800 (PST)
+Received: from localhost ([124.170.13.62])
+        by smtp.gmail.com with ESMTPSA id 78sm10076194pfx.127.2021.01.24.04.04.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 04:04:53 -0800 (PST)
+Date:   Sun, 24 Jan 2021 22:04:47 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v10 04/12] mm/ioremap: rename ioremap_*_range to
+ vmap_*_range
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Ding Tianhong <dingtianhong@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        Zefan Li <lizefan@huawei.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+        <20210124082230.2118861-5-npiggin@gmail.com>
+        <20210124113636.GD694255@infradead.org>
+In-Reply-To: <20210124113636.GD694255@infradead.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca81:: with SMTP id t1mr1117830ilo.139.1611489677023;
- Sun, 24 Jan 2021 04:01:17 -0800 (PST)
-Date:   Sun, 24 Jan 2021 04:01:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c21dd605b9a42d3f@google.com>
-Subject: kernel BUG in split_huge_page_to_list
-From:   syzbot <syzbot+9b83ff893245a25c320e@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, lixinhai.lxh@gmail.com, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1611489705.hu96tutmbn.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Excerpts from Christoph Hellwig's message of January 24, 2021 9:36 pm:
+> On Sun, Jan 24, 2021 at 06:22:22PM +1000, Nicholas Piggin wrote:
+>> This will be used as a generic kernel virtual mapping function, so
+>> re-name it in preparation.
+>=20
+> The new name looks ok, but shouldn't it also move to vmalloc.c with
+> the more generic name and purpose?
+>=20
 
-syzbot found the following issue on:
+Yes, I moved it in a later patch to make reviewing easier. Rename in=20
+this one then the move patch is cut and paste.
 
-HEAD commit:    647060f3 Add linux-next specific files for 20210120
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f0353f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8f8a72b7e5067002
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b83ff893245a25c320e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143d7e3b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17652feb500000
-
-The issue was bisected to:
-
-commit fbdbae3da30a149a55a5f1883bbbe17a27660e05
-Author: Li Xinhai <lixinhai.lxh@gmail.com>
-Date:   Tue Jan 19 21:54:00 2021 +0000
-
-    mm: mremap: unlink anon_vmas when mremap with MREMAP_DONTUNMAP success
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16cad100d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15cad100d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11cad100d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9b83ff893245a25c320e@syzkaller.appspotmail.com
-Fixes: fbdbae3da30a ("mm: mremap: unlink anon_vmas when mremap with MREMAP_DONTUNMAP success")
-
-head:00000000091c6650 order:9 compound_mapcount:0 compound_pincount:0
-memcg:ffff888010d0a000
-anon flags: 0xfff0000009001d(locked|uptodate|dirty|lru|head|swapbacked)
-raw: 00fff0000009001d ffffea0000bc51c8 ffff888010201800 ffff88802575d801
-raw: 0000000000020e00 0000000000000000 000001fc00000000 ffff888010d0a000
-page dumped because: VM_BUG_ON_PAGE(!unmap_success)
-------------[ cut here ]------------
-kernel BUG at mm/huge_memory.c:2351!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8483 Comm: syz-executor525 Not tainted 5.11.0-rc4-next-20210120-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:unmap_page mm/huge_memory.c:2351 [inline]
-RIP: 0010:split_huge_page_to_list+0x1f02/0x43b0 mm/huge_memory.c:2720
-Code: ef e8 82 46 ea ff 0f 0b e8 ab 69 b9 ff 4c 8d 73 ff e9 56 ea ff ff e8 9d 69 b9 ff 48 c7 c6 40 69 57 89 48 89 ef e8 5e 46 ea ff <0f> 0b e8 87 69 b9 ff 4c 8d 75 ff e9 28 e9 ff ff e8 79 69 b9 ff 49
-RSP: 0018:ffffc9000168f7a0 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801e2d5400 RSI: ffffffff88bcc6c7 RDI: fffff520002d1e8e
-RBP: ffffea0000ca8000 R08: 0000000000000033 R09: 0000000000000000
-R10: ffffffff815b136e R11: 0000000000000000 R12: ffff888010d0ae60
-R13: ffffea0000ca8000 R14: 000000000000018c R15: 0000000000000000
-FS:  000000000154e880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcc655666c0 CR3: 0000000012e9a000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- split_huge_page include/linux/huge_mm.h:187 [inline]
- madvise_free_pte_range+0x736/0x1ee0 mm/madvise.c:633
- walk_pmd_range mm/pagewalk.c:89 [inline]
- walk_pud_range mm/pagewalk.c:160 [inline]
- walk_p4d_range mm/pagewalk.c:193 [inline]
- walk_pgd_range mm/pagewalk.c:229 [inline]
- __walk_page_range+0xe20/0x1ea0 mm/pagewalk.c:331
- walk_page_range+0x20d/0x400 mm/pagewalk.c:427
- madvise_free_single_vma+0x383/0x550 mm/madvise.c:731
- madvise_dontneed_free mm/madvise.c:819 [inline]
- madvise_vma mm/madvise.c:936 [inline]
- do_madvise.part.0+0x4e4/0x1ed0 mm/madvise.c:1132
- do_madvise mm/madvise.c:1158 [inline]
- __do_sys_madvise mm/madvise.c:1158 [inline]
- __se_sys_madvise mm/madvise.c:1156 [inline]
- __x64_sys_madvise+0x113/0x150 mm/madvise.c:1156
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440219
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc51b58b98 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440219
-RDX: 0000000000000008 RSI: 0000000000c00000 RDI: 0000000020400000
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000020ffc000 R11: 0000000000000246 R12: 0000000000401a20
-R13: 0000000000401ab0 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 7812a13de61fd12e ]---
-RIP: 0010:unmap_page mm/huge_memory.c:2351 [inline]
-RIP: 0010:split_huge_page_to_list+0x1f02/0x43b0 mm/huge_memory.c:2720
-Code: ef e8 82 46 ea ff 0f 0b e8 ab 69 b9 ff 4c 8d 73 ff e9 56 ea ff ff e8 9d 69 b9 ff 48 c7 c6 40 69 57 89 48 89 ef e8 5e 46 ea ff <0f> 0b e8 87 69 b9 ff 4c 8d 75 ff e9 28 e9 ff ff e8 79 69 b9 ff 49
-RSP: 0018:ffffc9000168f7a0 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801e2d5400 RSI: ffffffff88bcc6c7 RDI: fffff520002d1e8e
-RBP: ffffea0000ca8000 R08: 0000000000000033 R09: 0000000000000000
-R10: ffffffff815b136e R11: 0000000000000000 R12: ffff888010d0ae60
-R13: ffffea0000ca8000 R14: 000000000000018c R15: 0000000000000000
-FS:  000000000154e880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcc655666c0 CR3: 0000000012e9a000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks,
+Nick
