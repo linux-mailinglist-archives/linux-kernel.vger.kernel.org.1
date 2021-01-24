@@ -2,41 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A36301953
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 04:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4836E30195B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 04:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbhAXDWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 22:22:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
+        id S1726523AbhAXD1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 22:27:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbhAXDWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 22:22:30 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5142822D0A;
-        Sun, 24 Jan 2021 03:21:49 +0000 (UTC)
-Date:   Sat, 23 Jan 2021 22:21:47 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Gaurav Kohli <gkohli@codeaurora.org>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>
-Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
-Message-ID: <20210123222147.1e2d5626@oasis.local.home>
-In-Reply-To: <46d1f82b-1eb4-a828-c79c-e6556eccf9d5@codeaurora.org>
-References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
-        <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
-        <20210121140951.2a554a5e@gandalf.local.home>
-        <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
-        <20210121153732.43d7b96b@gandalf.local.home>
-        <YAqwD/ivTgVJ7aap@kroah.com>
-        <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
-        <20210122093758.320bb4f9@gandalf.local.home>
-        <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
-        <46d1f82b-1eb4-a828-c79c-e6556eccf9d5@codeaurora.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726375AbhAXD1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 22:27:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90CB322D0A;
+        Sun, 24 Jan 2021 03:26:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611458786;
+        bh=+OOJlwiRevgXr+hw4L13I8DH0AsYtPCQi4EnGrYc5gM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bVGwaYitrqgUvCcJOYsC1tYWpRN4CdN8TKkLfKjCod6DpsRvHkz9rkU0B2RwfiXI+
+         ykwg5qHnGPOQX1tgAB+8o4iM45MnLB+TdCkS2+sv78yWG6MERZJlSYR97VNWMCR/Zs
+         RCkvsvEudcMYMX+e590qz7nEXQI+2OS4IAxsmec3F2bhuRTdGUg2fn7jQulwK02UEv
+         oFv9qXKf01OlO4Ngw5lEEE1RC20WZqz8Kn7iLiUISwG2UVWLTfPAVPiVrC8Pmzib/X
+         ddIA07xY0XV6QGGQJJvWN1/hjwNQre4zccWHcvs34vgirLYDPUPlxLTvibKFy0k0B0
+         hNjc++Sv/eDGA==
+Date:   Sat, 23 Jan 2021 19:26:24 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Laura Garcia Liebana <nevola@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH nf-next v4 1/5] net: sched: Micro-optimize egress
+ handling
+Message-ID: <20210123192624.4cee3b7d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <a2a8af1622dff2bfd51d446aa8da2c1d2f6f543c.1611304190.git.lukas@wunner.de>
+References: <cover.1611304190.git.lukas@wunner.de>
+        <a2a8af1622dff2bfd51d446aa8da2c1d2f6f543c.1611304190.git.lukas@wunner.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -44,21 +50,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021 22:03:27 +0530
-Gaurav Kohli <gkohli@codeaurora.org> wrote:
-
-
-> Sure I will do, I have never posted on backport branches. Let me check 
-> and post it.
+On Fri, 22 Jan 2021 09:47:01 +0100 Lukas Wunner wrote:
+> sch_handle_egress() returns either the skb or NULL to signal to its
+> caller __dev_queue_xmit() whether a packet should continue to be
+> processed.
 > 
+> The skb is always non-NULL, otherwise __dev_queue_xmit() would hit a
+> NULL pointer deref right at its top.
+> 
+> But the compiler doesn't know that.  So if sch_handle_egress() signals
+> success by returning the skb, the "if (!skb) goto out;" statement
+> results in a gratuitous NULL pointer check in the Assembler output.
 
-Basically you take your original patch that was in mainline (as the
-subject and commit message), and make it work as if you were doing the
-same exact fix for the stable release.
+Which exact compiler are we talking about it? Did you report this?
+As Eric pointed the compiler should be able to figure this out quite
+easily.
 
-Send it to me (and Cc everyone else), and I'll give it a test too.
-
-Thanks!
-
--- Steve
+> Avoid by telling the compiler that __dev_queue_xmit() is never passed a
+> NULL skb.  This also eliminates another gratuitous NULL pointer check in
+> __dev_queue_xmit()
+>   qdisc_pkt_len_init()
+>     skb_header_pointer()
+>       __skb_header_pointer()
+> 
+> The speedup is barely measurable:
+> Before: 1877 1875 1878 1874 1882 1873 Mb/sec
+> After:  1877 1877 1880 1883 1888 1886 Mb/sec
+> 
+> However we're about to add a netfilter egress hook to __dev_queue_xmit()
+> and without the micro-optimization, it will result in a performance
+> degradation which is indeed measurable:
+> With netfilter hook:               1853 1852 1850 1848 1849 1851 Mb/sec
+> With netfilter hook + micro-optim: 1874 1877 1881 1875 1876 1876 Mb/sec
+> 
+> The performance degradation is caused by a JNE instruction ("if (skb)")
+> being flipped to a JE instruction ("if (!skb)") once the netfilter hook
+> is added.  The micro-optimization removes the test and jump instructions
+> altogether.
+> 
+> Measurements were performed on a Core i7-3615QM.  Reproducer:
+> ip link add dev foo type dummy
+> ip link set dev foo up
+> tc qdisc add dev foo clsact
+> tc filter add dev foo egress bpf da bytecode '1,6 0 0 0,'
+> modprobe pktgen
+> echo "add_device foo" > /proc/net/pktgen/kpktgend_3
+> samples/pktgen/pktgen_bench_xmit_mode_queue_xmit.sh -i foo -n 400000000 -m "11:11:11:11:11:11" -d 1.1.1.1
+> 
+> Signed-off-by: Lukas Wunner <lukas@wunner.de>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Thomas Graf <tgraf@suug.ch>
+> ---
+>  net/core/dev.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 7afbb642e203..4c16b9932823 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4072,6 +4072,7 @@ struct netdev_queue *netdev_core_pick_tx(struct net_device *dev,
+>   *      the BH enable code must have IRQs enabled so that it will not deadlock.
+>   *          --BLG
+>   */
+> +__attribute__((nonnull(1)))
+>  static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+>  {
+>  	struct net_device *dev = skb->dev;
 
