@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B6F301BEA
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DCB301BED
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbhAXMpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbhAXMp0 (ORCPT
+        id S1726624AbhAXMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:52:32 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:39149 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbhAXMwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 07:45:26 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11134C061573;
-        Sun, 24 Jan 2021 04:44:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=OUUmvGFFed3VF14x9AJZnsLh0I+LDXrMD5jb+zPJRz0=; b=xq+pQ4eIJ1iYDiD4QywJhngTn
-        T2FNSpaJ4jvc98MGhfEgtvw0f3aAqWPntU5wzIdHmupUppykY8mNGANNza3Z8+WT/xlFZz9Wrl8Hw
-        uEBMGhiBZXm+5WERwbBttfo0Fecb06i/x8isYs3U+f1ogv/ihB0wOr4A8m9D02k2Sr+TI5jpz2G/c
-        upQ77klFMnz+xg2xueFsUrcXU+tjzgBeIHXmfFBZfN3rgpiB7+OinnbLtzIzx4D91DV7kr2B4JPyH
-        CRhfS27wU9vrJkeUupaDikzdP7dU4egFSco9GmwLiUdiU8KIvs1jnAtL+AdIzl/DGAeIghp7PLCAA
-        fnid3ilkA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52112)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l3el2-0002Ns-5z; Sun, 24 Jan 2021 12:44:44 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l3el1-0001iZ-DV; Sun, 24 Jan 2021 12:44:43 +0000
-Date:   Sun, 24 Jan 2021 12:44:43 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        andrew@lunn.ch, atenart@kernel.org
-Subject: Re: [PATCH v2 RFC net-next 03/18] net: mvpp2: add CM3 SRAM memory map
-Message-ID: <20210124124443.GX1551@shell.armlinux.org.uk>
-References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
- <1611488647-12478-4-git-send-email-stefanc@marvell.com>
+        Sun, 24 Jan 2021 07:52:30 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1l3err-0004jk-4O; Sun, 24 Jan 2021 12:51:47 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] misc fixes for v5.11-rc5
+Date:   Sun, 24 Jan 2021 13:51:22 +0100
+Message-Id: <20210124125121.3969248-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611488647-12478-4-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 01:43:52PM +0200, stefanc@marvell.com wrote:
-> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
-> +		if (!priv->sram_pool) {
-> +			if (!defer_once) {
-> +				defer_once = true;
-> +				/* Try defer once */
-> +				return -EPROBE_DEFER;
-> +			}
-> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
-> +			return -ENOMEM;
-> +		}
-> +		priv->cm3_base = (void __iomem *)gen_pool_alloc(priv->sram_pool,
-> +								MSS_SRAM_SIZE);
-> +		if (!priv->cm3_base)
-> +			return -ENOMEM;
+Hi Linus,
 
-This probably could do with a comment indicating that it is reliant on
-this allocation happening at offset zero into the SRAM. The only reason
-that is guaranteed _at the moment_ is because the SRAM mapping is 0x800
-bytes in size, and you are requesting 0x800 bytes in this allocation,
-so allocating the full size.
+Here are some fixes for v5.11-rc5 that should hopefully be fairly
+uncontroversial. I've had them sitting around for a bit but only got around
+sending them now after concluding the idmapped mounts stuff. Sorry for the
+delay.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+/* Summary */
+- Jann reported sparse complaints because of a missing __user annotation in a
+  helper we added way back when we added pidfd_send_signal() to avoid compat
+  syscall handling. This contains a fix for this.
+- Yanfei replaces a reference in a comment to the _do_fork() helper I removed a
+  while ago with a reference to the new kernel_clone() replacement.
+- Alexander Guril added a simple coding style fix.
+
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/for-linus-2021-01-24
+
+for you to fetch changes up to cb5021ca622fe83923e0789f99fe7227cbcd3f68:
+
+  kthread: remove comments about old _do_fork() helper (2021-01-11 15:11:56 +0100)
+
+/* Testing */
+The patches have been sitting in -next for a while. No build failures or
+warnings were observed. All old and new tests are passing.
+
+/* Conflicts */
+At the time of creating this PR no merge conflicts were reported from
+linux-next and no merge conflict with e1ae4b0be158 ("Merge branch 'mtd/fixes'
+of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux") when pulling the
+tag.
+
+Please consider pulling these changes from the signed for-linus-2021-01-24 tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+for-linus-2021-01-24
+
+----------------------------------------------------------------
+Alexander Guril (1):
+      Kernel: fork.c: Fix coding style: Do not use {} around single-line statements
+
+Jann Horn (1):
+      signal: Add missing __user annotation to copy_siginfo_from_user_any
+
+Yanfei Xu (1):
+      kthread: remove comments about old _do_fork() helper
+
+ include/trace/events/sched.h | 2 +-
+ kernel/fork.c                | 6 ++----
+ kernel/kthread.c             | 2 +-
+ kernel/signal.c              | 3 ++-
+ 4 files changed, 6 insertions(+), 7 deletions(-)
