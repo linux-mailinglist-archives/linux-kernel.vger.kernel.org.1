@@ -2,147 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77109301F5C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9302301F6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbhAXWp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 17:45:57 -0500
-Received: from mout.gmx.net ([212.227.17.22]:43761 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726688AbhAXWpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 17:45:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611528196;
-        bh=sg3yBbp50vfrYLkKAlXRA+RR1vEiKn1pGAikI0/PYIU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=SmZraJ6POwAcOMCHuw+hHwm2dKtjPP8/eHrBwgbng3FZZbl0KMNN5VIHQ/vEO/AJW
-         pTSrlPTf8brOAqkBDbIExGEcGKblMGccjeb/Ww1AHClPT9vmyXrZKLdQlvkybhbwn4
-         Fm4GMHkuqc84F6ggdn3LWA7KnDS2oxdGWBeyRB5Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.209]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MdNcG-1lcrrw0y2K-00ZO2Q; Sun, 24
- Jan 2021 23:43:16 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v9 7/7] ARM: dts: imx50-kobo-aura: Add Netronix embedded controller
-Date:   Sun, 24 Jan 2021 22:41:27 +0100
-Message-Id: <20210124214127.3631530-8-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+        id S1726780AbhAXWt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 17:49:58 -0500
+Received: from rome.phoronix.com ([192.211.48.82]:61956 "EHLO
+        rome.phoronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726663AbhAXWtp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 17:49:45 -0500
+X-Greylist: delayed 1071 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 Jan 2021 17:49:44 EST
+Received: from c-73-176-63-28.hsd1.il.comcast.net ([73.176.63.28]:52254 helo=[192.168.86.21])
+        by rome.phoronix.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <Michael@phoronix.com>)
+        id 1l3nuP-0002JK-MX; Sun, 24 Jan 2021 17:31:01 -0500
+Subject: Re: [PATCH v2 0/1] AMD EPYC: fix schedutil perf regression
+ (freq-invariance)
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+References: <20210122204038.3238-1-ggherdovich@suse.cz>
+From:   Michael Larabel <Michael@phoronix.com>
+Message-ID: <a5071cb5-6a5b-d2e4-ff06-fa7810b8127c@phoronix.com>
+Date:   Sun, 24 Jan 2021 16:30:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0Sy4IOcIVDcvHo+UWdq+IOx1Cv41T9tOawPNDQyq0hxHhOWhB00
- +DdNuhs4FPEOKxVGKz+ki5FPiKl4K/EZaDmAF/n9psmSmYjX9vwRmNf338yTmLdoeJetDOj
- kj4cOfyGGnvQZ+W762oMkfx8/cjgrc1DjPz9NqCeTHmvNqrMrAkfj5gweHQGdHpoPrOy3an
- pJhaBFQd/fuzw97036VPg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gNgS/8uAUow=:xyhyjNnOaXX0RGp7ZKeEzB
- U+goVGK2xu2XcM2RfXhLVRQ0Iu3SLWsFJKuTiZRJR1P1hovwVWc4gzlt4e5CoOqWMa2NRILMA
- rwiVZ608I0pmcNw+7bN9DMY5fQPOlowVoSXzsuheDew/JpYuLXTGcyGugxNyArYBRy9GAo6br
- WHqHwfBWTVb2209DJ37KPE6bFNcoLAWTV9rWrK1sqzRlWuSz82mA7BzIX1KR8z/0e5WXwM9Jx
- m+tTZgMDIMI4bz1j1iG/RJYMJRLDu0S2iTM3OGlY2Jgr7U/dpyWnwhbY8KcNy8EHe0cjAvGn1
- pbuo2FJ5t7bHvwfvNJg8VYO926OktfQNh+oS1N86ryRtFATr1vpbRaepFw1aByHxQBn6hobun
- 7xAoHqrP/P9wK/9mp3yn/2fH0lYFTsQ2GI0i3RDxyvvKpkOCqu+80d4d3WWgmtOKYI2EZwK6b
- MZ5sHGNKd7MruJJ8bHw/F2KflMm0XEG1WuFhSwrhpFHddZSz3UakOu1Y6Az9r4p1zGDwG1z4z
- HYKwpuqacW5o1klizXZeLY7glrQh8pabdNk4z5xfqLGyu+x8lAs46r5ymG2uRAqD7M3ngaRuU
- Ltmx421O3QsXMhhUX85TJKxigVBMpENqyNnT0tCXyJ8WnBTvGnFouAn2IAt/suvE2oQk+2irQ
- yLUiXE/MsQItUayTdKP12F+6T7JNfIE+fnLlvdan6XlFm9T6x2Dzktn0QKUh8dVtNJ2TLZwjM
- c6Ewk4aWOAvNvY1wEx1RCPDgGboC4AVvIWwuEZ0PwkZELl0Rf9B4orXJbIbcB8BiolIsisi1I
- rXZagP3muLh0Sm0WX54goXqGRvLDDWPcBccmgIFT/+Yg+j/BT1upowy9L62nwYcN2XOxrC/rn
- Wyt9JYHsrKi2LIvgitrw==
+In-Reply-To: <20210122204038.3238-1-ggherdovich@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - rome.phoronix.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - phoronix.com
+X-Get-Message-Sender-Via: rome.phoronix.com: authenticated_id: michael@phoronix.com
+X-Authenticated-Sender: rome.phoronix.com: michael@phoronix.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the Netronix EC on the Kobo Aura ebook reader.
+ From ongoing tests of this patch, it still certainly shows to address 
+most of the Linux 5.11 performance regression previously encountered 
+when using Schedutil. Additionally, for a number of workloads where not 
+seeing a regression from 5.10 to 5.11 Git is still showing even better 
+performance with this patch. The power monitoring on the AMD EPYC server 
+is showing higher power spikes but the average power consumption rate is 
+roughly comparable to that of Linux 5.11 Git, which is higher than 5.10 
+by just about 3%.
 
-Several features are still missing:
- - Frontlight/backlight. The vendor kernel drives the frontlight LED
-   using the PWM output of the EC and an additional boost pin that
-   increases the brightness.
- - Battery monitoring
- - Interrupts for RTC alarm and low-battery events
+So this patch still seems to be working out well and indeed taking care 
+of some wide losses seen otherwise on Linux 5.11 when using Schedutil on 
+AMD Zen2/Zen3. Still have some other tests running but so far no 
+unexpected results.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
-v5-v9:
-- no changes
+Michael
 
-v4:
-- https://lore.kernel.org/lkml/20201123000913.1506944-1-j.neuschaefer@gmx.=
-net/
-- Add 'grp' suffix to pinctrl node
 
-v3:
-- Remove interrupt-controller property from embedded-controller node
-- subnodes of embedded-controller node in to the main node
+AMD EPYC 7F72 2P
 
-v2:
-- Fix pwm-cells property (should be 2, not 1)
-=2D--
- arch/arm/boot/dts/imx50-kobo-aura.dts | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+On an EPYC 7F72 2P server[1] across 147 test cases I am finding the 
+patched Linux 5.11 kernel to be just over 1% faster than 5.10 stable 
+compared to the unpatched 5.11 Git being just behind 5.10. For the 
+workloads on that server where Linux 5.11 is slower with Schedutil, the 
+patch indeed is largely addressing that regression and also providing 
+other improvements.
 
-diff --git a/arch/arm/boot/dts/imx50-kobo-aura.dts b/arch/arm/boot/dts/imx=
-50-kobo-aura.dts
-index 97cfd970fe742..82ce8c43be867 100644
-=2D-- a/arch/arm/boot/dts/imx50-kobo-aura.dts
-+++ b/arch/arm/boot/dts/imx50-kobo-aura.dts
-@@ -143,10 +143,24 @@ &i2c3 {
- 	pinctrl-0 =3D <&pinctrl_i2c3>;
- 	status =3D "okay";
+During that testing, the amd_energy interface was monitored. Linux 5.11 
+with Schedutil AMD freq invariance did show on average 10 Watts (~3.7%) 
+higher power consumption on average than Linux 5.10 with Schedutil. But 
+with this patch, that average is still basically the same. The peak 
+power consumption during any of the tests was higher at 530~549 Watts 
+compared to 501 Watts with Linux 5.10. Overall the performance is 
+looking good but given amd_energy still not working for consumer models, 
+I don't have much power data to share at the moment.
 
--	/* TODO: embedded controller at 0x43 */
-+	embedded-controller@43 {
-+		pinctrl-names =3D "default";
-+		pinctrl-0 =3D <&pinctrl_ec>;
-+		compatible =3D "netronix,ntxec";
-+		reg =3D <0x43>;
-+		system-power-controller;
-+		interrupts-extended =3D <&gpio4 11 IRQ_TYPE_EDGE_FALLING>;
-+		#pwm-cells =3D <2>;
-+	};
- };
+Ryzen 9 5950X
 
- &iomuxc {
-+	pinctrl_ec: ecgrp {
-+		fsl,pins =3D <
-+			MX50_PAD_CSPI_SS0__GPIO4_11		0x0	/* INT */
-+		>;
-+	};
-+
- 	pinctrl_gpiokeys: gpiokeysgrp {
- 		fsl,pins =3D <
- 			MX50_PAD_CSPI_MISO__GPIO4_10		0x0
-=2D-
-2.29.2
+Expanding on the prior testing with the 5950X, I ran some follow-up 
+tests[2]. Of 221 test cases there, the current Linux 5.11 Git 
+performance came around 2% slower on a geo mean basis than Linux 5.10 
+while the patched performance pulls it to ~2.5% faster than 5.10. There 
+still are some cases where Linux 5.10 is faster, but overall at least 
+the patched Linux 5.11 performance doesn't show nearly as many 
+regressions. In a number of test cases, the Linux 5.11 patched 
+performance is outright better than Linux 5.10 even where 5.11 
+(un-patched) hadn't regressed or by that much.
 
+Ryzen 5 4500U
+
+For something at the lower end of the spectrum I also ran a number of 
+tests on a Ryzen 5 4500U notebook[3]. Linux 5.11 (unpatched) doesn't see 
+as many regressions as on the larger systems but still the patched 
+performance did help in a number of tests, particularly around 
+graphics/gaming. In the heavier multi-core core tests are still a number 
+of cases where Linux 5.10 is faster than patched/unpatched 5.11. The 
+patched kernel in those 90 tests came out to being about 4% faster than 
+5.10.
+
+(Result highlights below, results with little change set to hidden by 
+default.)
+[1] 
+https://openbenchmarking.org/result/2101248-HA-AMDEPYC7F52&grs&hlc=1&hnr=1&hlc=1
+[2] https://openbenchmarking.org/result/2101242-HA-RYZEN959530&grs&hlc=1
+[3] 
+https://openbenchmarking.org/result/2101232-PTS-RENOIRLI89&grs&hnr=1&hlc=1
+
+
+On 1/22/21 2:40 PM, Giovanni Gherdovich wrote:
+> Michael Larabel from Phoronix.com graciously tested v1, see results at:
+>
+> AMD EPYC 7702 -
+> https://openbenchmarking.org/result/2101210-PTS-LINUX51178
+>
+> AMD Ryzen 9 5950X -
+> https://openbenchmarking.org/result/2101212-HA-RYZEN959566
+>
+> The reported regression is recovered, and some workloads even report an
+> improvement over the v5.10 results.
+>
+> Thanks Michael for the feedback!
+>
+>
+> v1 at https://lore.kernel.org/lkml/20210121003223.20257-1-ggherdovich@suse.cz/
+>
+> Changes wrt v1:
+>
+> - move code around so that it builds for non-x86 architectures too
+>
+> Giovanni Gherdovich (1):
+>    x86,sched: On AMD EPYC set freq_max = max_boost in schedutil invariant
+>      formula
+>
+>   drivers/cpufreq/acpi-cpufreq.c   | 64 +++++++++++++++++++++++++++++++-
+>   drivers/cpufreq/cpufreq.c        |  3 ++
+>   include/linux/cpufreq.h          |  5 +++
+>   kernel/sched/cpufreq_schedutil.c |  8 +++-
+>   4 files changed, 76 insertions(+), 4 deletions(-)
+>
