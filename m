@@ -2,364 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA0D301D63
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 17:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA9A301D6B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 17:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbhAXQGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 11:06:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbhAXQGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 11:06:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5E442087D;
-        Sun, 24 Jan 2021 16:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611504323;
-        bh=MGbe+b4Vv+evYTzJSd/xU7zthJ2iaogjpr54wxqHEws=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bUVDO+GOG0jfL2gQwy2xPyYqjcitcuB9tkUdDwLUM0xRBbd5Y6NUUVaX88pEpSuFu
-         DV9XoIY+VkokbJY2sB9AElN3f27uxXYjfhElARwV8214NpWjYGDBnwrGytLDzRKszX
-         mQ492c5qmIIRqhqRVuo4UmV7dF2NA3ZC+QjOCC3pGsUoAovr7X3zlHmCjk3vs7AvMR
-         WwSMVcx+5K9hHjwEbNvbIuSu1itva7U/2YB1gkVj3WcZYmxL3yLfn/c7aw7aJKPsWA
-         JvaKCV8DRsFO2OxNChCfObT87+xje0xB8Nv6T/p6VzFKrch9wpDHf6wZhxRMIoaQsI
-         Y0i1TGgxtfAqw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH] habanalabs: add new mem ioctl op for mapping hw blocks
-Date:   Sun, 24 Jan 2021 18:05:17 +0200
-Message-Id: <20210124160517.2251-1-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726396AbhAXQPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 11:15:49 -0500
+Received: from mail-mw2nam10on2104.outbound.protection.outlook.com ([40.107.94.104]:13088
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725268AbhAXQPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 11:15:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pnf29PYDBXAObPg12rWLOxVKkHLvFlUfB0mRangUDS1Tz49blsNR7CYK/jHmDHFwV/pAX7yRPNDNZFPur4OKwpVkcU4Th8FXISC+pP4r6GZ05Xz90WSXGkS+YvPSaRfObEVJWTTZVRNIrv1O0XOAo72RcBb2vuv10VfeFs33T5XFbRAwRefprJACMZP8xivVYcqobtlRZZnEqsbjH1evupnIHe4gav2BUheD6yNF3QHM9WdjBYdDj41ISU469+adkqqoDj9PiTgg5LiuG2wGULiB4vJ3pOcznVlqdfteY7NFi6dKdxbfoCfWuIJnN/Vf2fUgl1Nw8j1gt9vGfhquOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N6kaM3w5vMJvVuegHx0ENVTzpA5s2k6LrcBEwVm5Mlo=;
+ b=LQQ7JiBthGFimfKeFlbvYZ76b/VtYCOGBDChvzaqftW8GrfOfyspC4qT1zKoVaHU33oh2F/32TP2ubhLwSa+kcVqNz3PYTgaNyGHz/zISJaDjO+iahfeYjlgOYIvKDAgIQEfLltE0zT9pMeIk/AGW9MpXsoew3dOXZBqVKdi4giSmKDbpqFW8L8ZEeDEPp079MHFcqZWgkUifMSOp9u40QqWZEGpcFC7QUPnZMdT40jwiPw3kbACHeVswGCYDLx3HvG4cgNWWPbIcqFSfuUYSYIUAlfd17GzOMclKDlp2Y753byTqeBgMxCDweZUJk0cD2GG+Yb05xY13RhUy5bmaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N6kaM3w5vMJvVuegHx0ENVTzpA5s2k6LrcBEwVm5Mlo=;
+ b=ewGwE1S2YttbCB3WjnMELD7OWBTx2om/XXtatIQ8p91mNd1yxaWN09oG5WI2DatDm11NVoRUO8U/0P/VR5fzI14bkgOovsYMOes3W0dNzu4VFDTG3KCFm0akjlhzWPbXE3voXJFeVLZUNrjf0DDqO55vspHDddJmvmtoLyqVpzQ=
+Received: from (2603:10b6:301:7c::11) by
+ MWHPR21MB0766.namprd21.prod.outlook.com (2603:10b6:300:76::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.3; Sun, 24 Jan 2021 16:14:53 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3825.003; Sun, 24 Jan 2021
+ 16:14:53 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Juergen Gross <jgross@suse.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        vkuznets <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: RE: [PATCH v4 07/15] x86/paravirt: switch time pvops functions to use
+ static_call()
+Thread-Topic: [PATCH v4 07/15] x86/paravirt: switch time pvops functions to
+ use static_call()
+Thread-Index: AQHW72lBoCJK4XcIc0e5K1+SYrbIiqo29YsA
+Date:   Sun, 24 Jan 2021 16:14:52 +0000
+Message-ID: <MWHPR21MB15930A0BC65D8A3F31C13F49D7BE9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210120135555.32594-1-jgross@suse.com>
+ <20210120135555.32594-8-jgross@suse.com>
+In-Reply-To: <20210120135555.32594-8-jgross@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-24T16:14:50Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=819a5dc4-1861-402f-a4b0-8109384682ad;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [66.75.126.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: abac4818-1089-42f7-3a44-08d8c0832efa
+x-ms-traffictypediagnostic: MWHPR21MB0766:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MWHPR21MB076658EA4DDC06E93557023FD7BE9@MWHPR21MB0766.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1188+vCYRZjxXPC7Ti8SBtXV6yPsJ893MHnL7vTaiDZcKuDnC9u6ocOuPA27EpZ2OjuZ8r+PDsNHspT3Vzhe5AtGEXWBf3vrxhZ+p7RNa0gChnB3gjXB5p3PFkkwLsYhvCMBg2o5oDqwnr5gXb9bD/hAcSgcYyOnsQd5eTge45swpHxlHzEEOOCGmWxMKhj6QlFuKtfFBQu83gRc4+LoxIo9u/sR5swz7Wwa0EudacSuo9WSzv9R9tJTO0lmAT/MLOK2yQLfZomYSKbqdUYfyK8mX+5lujqBItELY7B+8pZ71Cu5kwdxr0JkYwh3rexpRjf6kK0+qer97CuE0dnaw+TTcMnUdBD/uq4vRrAElXiLO9G9RelNlwBllm0KUFNfIF/vhSLpfgej8tpLLKNVKK1gyKoNfMcUXBifKbOeoPLxLBIc6LtlJdQA5h5/tTUuwNlKFrRBkN4GMKmE0wXyghMc9yopH78J39DGV6ypnrWz+NiScz7vtadlGWh1Ghw1lFdP4CaH+9QIIJbCniaSrw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(366004)(136003)(39860400002)(8676002)(8936002)(10290500003)(86362001)(83380400001)(76116006)(66476007)(66946007)(66556008)(64756008)(316002)(66446008)(7696005)(54906003)(26005)(186003)(8990500004)(5660300002)(4326008)(110136005)(71200400001)(7416002)(9686003)(6506007)(52536014)(2906002)(82950400001)(55016002)(82960400001)(33656002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kz/zFCJOu4H9XEpVGhuyuo467KMOSNWslf305XmQ4FJ/tpNt32FQSs1zJa1D?=
+ =?us-ascii?Q?5MysFF/ynK4NaO5eusgIi/dJFaNlPd0z2xya1bZLlAB/Cx9V2NvjB+Ch7ntZ?=
+ =?us-ascii?Q?O+Yc8B3I0Ga9hzcpTeAhgb9yxma1ye/GLP2VXKLijH6q8o/1/NV58jPVYVyS?=
+ =?us-ascii?Q?kpErNEN+LUp0xrpujwkG84QSr1SAsuRB94BKjAycIFfXV0qzbnE0v5hBrDMT?=
+ =?us-ascii?Q?vNXQa1v8YuXasMypTjNponwsuttc7H0ToK8c0JOGDXXNlTW+M32UhmtuO39L?=
+ =?us-ascii?Q?AUBtCBZe1DnZednan8tJ8Kbp1lpvMSiE5AGQONkeBDM122AlMuROJSZH2yZ2?=
+ =?us-ascii?Q?GS0+kZIyQCkF8sZTJW1CH/69JZtVJeSQzLjP3fnORPeh3zi3ZFUmAxz68+V/?=
+ =?us-ascii?Q?z4UrsxyPcRiUiY06QyLy5JV8nX+fmGcDeA7htgKlLE6waXwP4N8tXEidg/9L?=
+ =?us-ascii?Q?vz6LGingVD9yvswJ+6Gmpx0VlS+uP41DvBUofGwTxpIJOza/kQIPqyf48DWb?=
+ =?us-ascii?Q?5UFNFdYPFFcCA+FymkZA4McibR51GMnsDuMkA9kkVZPcEshdQOiCPxw95RDG?=
+ =?us-ascii?Q?jUVz5zKXwCRWXNzza7idtVzWta8tVKSDWQmnv/rJDPyYdrn5iR2TpJsOhNl0?=
+ =?us-ascii?Q?qQRWC55jsWZXIScyb3fylHJqAdeukLQ3EfIwpYBTPs8CfrfRe8YtMBeDNEN0?=
+ =?us-ascii?Q?Hkh2XzSafosFtxk8y2yoZS11vIMuOOEMoy6sqDBQJWNGoIyt5Oy5yWJVzoIb?=
+ =?us-ascii?Q?1T5yWhduBWAxYdsoOCkyYMDjMiPLCj3EtPdMsxezJII1GNesyk+9Arx1g4sP?=
+ =?us-ascii?Q?d7qeWmgz9LglUb/PcUG8v3SrCW7LZpUZwSLRwrbee8LsSwHHT4hwAmqvDN4I?=
+ =?us-ascii?Q?B+5F1q8V5ZiEkdKP022dPwBLWMnXt/dKQ912VwhIAiWIzwELwVahwvYvqQF9?=
+ =?us-ascii?Q?EcZFJn8cl/2AmZkGBbF6aPSxjoC5wmNBSJ/hEyfrFZ3pwdO3X1SFeeTuLlOG?=
+ =?us-ascii?Q?F9WJl3RxRR49m3yBbf3Ig4KH4Jd68Bm85cthOOCbUiy4j4Soinn9E5WRloKJ?=
+ =?us-ascii?Q?LddEMjJK?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: abac4818-1089-42f7-3a44-08d8c0832efa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2021 16:14:52.8508
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xztFFZkAgufhIpsxNn9jfAwjKZDnihx8Hd1SovgteFrbj6RTL0YsgqffhEus7e7DkQPdHpJmj/Is8hNS/YABtAQMvY5JCgJVygxYlz+2mIs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0766
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Juergen Gross <jgross@suse.com> Sent: Wednesday, January 20, 2021 5:5=
+6 AM
+>=20
+> The time pvops functions are the only ones left which might be
+> used in 32-bit mode and which return a 64-bit value.
+>=20
+> Switch them to use the static_call() mechanism instead of pvops, as
+> this allows quite some simplification of the pvops implementation.
+>=20
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+> V4:
+> - drop paravirt_time.h again
+> - don't move Hyper-V code (Michael Kelley)
+> ---
+>  arch/x86/Kconfig                      |  1 +
+>  arch/x86/include/asm/mshyperv.h       |  2 +-
+>  arch/x86/include/asm/paravirt.h       | 17 ++++++++++++++---
+>  arch/x86/include/asm/paravirt_types.h |  6 ------
+>  arch/x86/kernel/cpu/vmware.c          |  5 +++--
+>  arch/x86/kernel/kvm.c                 |  2 +-
+>  arch/x86/kernel/kvmclock.c            |  2 +-
+>  arch/x86/kernel/paravirt.c            | 16 ++++++++++++----
+>  arch/x86/kernel/tsc.c                 |  2 +-
+>  arch/x86/xen/time.c                   | 11 ++++-------
+>  drivers/clocksource/hyperv_timer.c    |  5 +++--
+>  drivers/xen/time.c                    |  2 +-
+>  12 files changed, 42 insertions(+), 29 deletions(-)
+>=20
 
-For future ASIC support the driver allows user to map certain regions
-in the device's configuration space for direct access from userspace.
+[snip]
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
----
- drivers/misc/habanalabs/common/device.c     |  3 +
- drivers/misc/habanalabs/common/habanalabs.h | 16 +++-
- drivers/misc/habanalabs/common/memory.c     | 93 ++++++++++++++++++++-
- drivers/misc/habanalabs/gaudi/gaudi.c       | 15 +++-
- drivers/misc/habanalabs/goya/goya.c         | 15 +++-
- include/uapi/misc/habanalabs.h              | 18 +++-
- 6 files changed, 150 insertions(+), 10 deletions(-)
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyp=
+erv.h
+> index 30f76b966857..b4ee331d29a7 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -63,7 +63,7 @@ typedef int (*hyperv_fill_flush_list_func)(
+>  static __always_inline void hv_setup_sched_clock(void *sched_clock)
+>  {
+>  #ifdef CONFIG_PARAVIRT
+> -	pv_ops.time.sched_clock =3D sched_clock;
+> +	paravirt_set_sched_clock(sched_clock);
+>  #endif
+>  }
+>=20
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index a438279b8691..0926cfb256ef 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -142,6 +142,9 @@ static int hl_mmap(struct file *filp, struct vm_area_struct *vma)
- 	switch (vm_pgoff & HL_MMAP_TYPE_MASK) {
- 	case HL_MMAP_TYPE_CB:
- 		return hl_cb_mmap(hpriv, vma);
-+
-+	case HL_MMAP_TYPE_BLOCK:
-+		return hl_hw_block_mmap(hpriv, vma);
- 	}
- 
- 	return -EINVAL;
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index 4129e4e6a7b5..e105612ed577 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -28,17 +28,18 @@
- #define HL_NAME				"habanalabs"
- 
- /* Use upper bits of mmap offset to store habana driver specific information.
-- * bits[63:62] - Encode mmap type
-+ * bits[63:61] - Encode mmap type
-  * bits[45:0]  - mmap offset value
-  *
-  * NOTE: struct vm_area_struct.vm_pgoff uses offset in pages. Hence, these
-  *  defines are w.r.t to PAGE_SIZE
-  */
--#define HL_MMAP_TYPE_SHIFT		(62 - PAGE_SHIFT)
--#define HL_MMAP_TYPE_MASK		(0x3ull << HL_MMAP_TYPE_SHIFT)
-+#define HL_MMAP_TYPE_SHIFT		(61 - PAGE_SHIFT)
-+#define HL_MMAP_TYPE_MASK		(0x7ull << HL_MMAP_TYPE_SHIFT)
-+#define HL_MMAP_TYPE_BLOCK		(0x4ull << HL_MMAP_TYPE_SHIFT)
- #define HL_MMAP_TYPE_CB			(0x2ull << HL_MMAP_TYPE_SHIFT)
- 
--#define HL_MMAP_OFFSET_VALUE_MASK	(0x3FFFFFFFFFFFull >> PAGE_SHIFT)
-+#define HL_MMAP_OFFSET_VALUE_MASK	(0x1FFFFFFFFFFFull >> PAGE_SHIFT)
- #define HL_MMAP_OFFSET_VALUE_GET(off)	(off & HL_MMAP_OFFSET_VALUE_MASK)
- 
- #define HL_PENDING_RESET_PER_SEC	10
-@@ -856,6 +857,8 @@ enum div_select_defs {
-  * @descramble_addr: Routine to de-scramble the address prior of
-  *                  showing it to users.
-  * @ack_protection_bits_errors: ack and dump all security violations
-+ * @get_hw_block_id: retrieve a HW block id to be used by the user to mmap it.
-+ * @hw_block_mmap: mmap a HW block with a given id.
-  */
- struct hl_asic_funcs {
- 	int (*early_init)(struct hl_device *hdev);
-@@ -968,6 +971,10 @@ struct hl_asic_funcs {
- 	u64 (*scramble_addr)(struct hl_device *hdev, u64 addr);
- 	u64 (*descramble_addr)(struct hl_device *hdev, u64 addr);
- 	void (*ack_protection_bits_errors)(struct hl_device *hdev);
-+	int (*get_hw_block_id)(struct hl_device *hdev, u64 block_addr,
-+			u32 *block_id);
-+	int (*hw_block_mmap)(struct hl_device *hdev, struct vm_area_struct *vma,
-+			u32 block_id, u32 block_size);
- };
- 
- 
-@@ -2167,6 +2174,7 @@ int hl_cb_create(struct hl_device *hdev, struct hl_cb_mgr *mgr,
- 			bool map_cb, u64 *handle);
- int hl_cb_destroy(struct hl_device *hdev, struct hl_cb_mgr *mgr, u64 cb_handle);
- int hl_cb_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma);
-+int hl_hw_block_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma);
- struct hl_cb *hl_cb_get(struct hl_device *hdev,	struct hl_cb_mgr *mgr,
- 			u32 handle);
- void hl_cb_put(struct hl_cb *cb);
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index 36de0d05d3a2..7171e8820a2d 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -1289,11 +1289,88 @@ static int unmap_device_va(struct hl_ctx *ctx, struct hl_mem_in *args,
- 	return rc;
- }
- 
-+static int map_block(struct hl_device *hdev, u64 address, u64 *handle)
-+{
-+	u32 block_id = 0;
-+	int rc;
-+
-+	rc = hdev->asic_funcs->get_hw_block_id(hdev, address, &block_id);
-+
-+	*handle = block_id | HL_MMAP_TYPE_BLOCK;
-+	*handle <<= PAGE_SHIFT;
-+
-+	return rc;
-+}
-+
-+static void hw_block_vm_close(struct vm_area_struct *vma)
-+{
-+	struct hl_ctx *ctx = (struct hl_ctx *) vma->vm_private_data;
-+
-+	hl_ctx_put(ctx);
-+	vma->vm_private_data = NULL;
-+}
-+
-+static const struct vm_operations_struct hw_block_vm_ops = {
-+	.close = hw_block_vm_close
-+};
-+
-+/**
-+ * hl_hw_block_mmap() - mmap a hw block to user.
-+ * @hpriv: pointer to the private data of the fd
-+ * @vma: pointer to vm_area_struct of the process
-+ *
-+ * Driver increments context reference for every HW block mapped in order
-+ * to prevent user from closing FD without unmapping first
-+ */
-+int hl_hw_block_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma)
-+{
-+	struct hl_device *hdev = hpriv->hdev;
-+	u32 block_id, block_size;
-+	int rc;
-+
-+	/* We use the page offset to hold the block id and thus we need to clear
-+	 * it before doing the mmap itself
-+	 */
-+	block_id = vma->vm_pgoff;
-+	vma->vm_pgoff = 0;
-+
-+	/* Driver only allows mapping of a complete HW block */
-+	block_size = vma->vm_end - vma->vm_start;
-+
-+#ifdef _HAS_TYPE_ARG_IN_ACCESS_OK
-+	if (!access_ok(VERIFY_WRITE,
-+		(void __user *) (uintptr_t) vma->vm_start, block_size)) {
-+#else
-+	if (!access_ok((void __user *) (uintptr_t) vma->vm_start, block_size)) {
-+#endif
-+		dev_err(hdev->dev,
-+			"user pointer is invalid - 0x%lx\n",
-+			vma->vm_start);
-+
-+		return -EINVAL;
-+	}
-+
-+	vma->vm_ops = &hw_block_vm_ops;
-+	vma->vm_private_data = hpriv->ctx;
-+
-+	hl_ctx_get(hdev, hpriv->ctx);
-+
-+	rc = hdev->asic_funcs->hw_block_mmap(hdev, vma, block_id, block_size);
-+	if (rc) {
-+		hl_ctx_put(hpriv->ctx);
-+		return rc;
-+	}
-+
-+	vma->vm_pgoff = block_id;
-+
-+	return 0;
-+}
-+
- static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
- {
- 	struct hl_device *hdev = hpriv->hdev;
- 	struct hl_ctx *ctx = hpriv->ctx;
--	u64 device_addr = 0;
-+	u64 block_handle, device_addr = 0;
- 	u32 handle = 0;
- 	int rc;
- 
-@@ -1337,6 +1414,12 @@ static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
- 		rc = 0;
- 		break;
- 
-+	case HL_MEM_OP_MAP_BLOCK:
-+		rc = map_block(hdev, args->in.map_block.block_addr,
-+							&block_handle);
-+		args->out.handle = block_handle;
-+		break;
-+
- 	default:
- 		dev_err(hdev->dev, "Unknown opcode for memory IOCTL\n");
- 		rc = -ENOTTY;
-@@ -1353,7 +1436,7 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
- 	union hl_mem_args *args = data;
- 	struct hl_device *hdev = hpriv->hdev;
- 	struct hl_ctx *ctx = hpriv->ctx;
--	u64 device_addr = 0;
-+	u64 block_handle, device_addr = 0;
- 	u32 handle = 0;
- 	int rc;
- 
-@@ -1439,6 +1522,12 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
- 		rc = unmap_device_va(ctx, &args->in, false);
- 		break;
- 
-+	case HL_MEM_OP_MAP_BLOCK:
-+		rc = map_block(hdev, args->in.map_block.block_addr,
-+							&block_handle);
-+		args->out.handle = block_handle;
-+		break;
-+
- 	default:
- 		dev_err(hdev->dev, "Unknown opcode for memory IOCTL\n");
- 		rc = -ENOTTY;
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index b49e10394ed4..d02c8fb86332 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -8471,6 +8471,17 @@ static u64 gaudi_get_device_time(struct hl_device *hdev)
- 	return device_time | RREG32(mmPSOC_TIMESTAMP_CNTCVL);
- }
- 
-+int gaudi_get_hw_block_id(struct hl_device *hdev, u64 block_addr, u32 *block_id)
-+{
-+	return -EPERM;
-+}
-+
-+int gaudi_block_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
-+			u32 block_id, u32 block_size)
-+{
-+	return -EPERM;
-+}
-+
- static const struct hl_asic_funcs gaudi_funcs = {
- 	.early_init = gaudi_early_init,
- 	.early_fini = gaudi_early_fini,
-@@ -8550,7 +8561,9 @@ static const struct hl_asic_funcs gaudi_funcs = {
- 	.collective_wait_create_jobs = gaudi_collective_wait_create_jobs,
- 	.scramble_addr = hl_mmu_scramble_addr,
- 	.descramble_addr = hl_mmu_descramble_addr,
--	.ack_protection_bits_errors = gaudi_ack_protection_bits_errors
-+	.ack_protection_bits_errors = gaudi_ack_protection_bits_errors,
-+	.get_hw_block_id = gaudi_get_hw_block_id,
-+	.hw_block_mmap = gaudi_block_mmap
- };
- 
- /**
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index db951d622ad5..13f31f5d413d 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -5382,6 +5382,17 @@ static void goya_ctx_fini(struct hl_ctx *ctx)
- 
- }
- 
-+int goya_get_hw_block_id(struct hl_device *hdev, u64 block_addr, u32 *block_id)
-+{
-+	return -EPERM;
-+}
-+
-+int goya_block_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
-+			u32 block_id, u32 block_size)
-+{
-+	return -EPERM;
-+}
-+
- static const struct hl_asic_funcs goya_funcs = {
- 	.early_init = goya_early_init,
- 	.early_fini = goya_early_fini,
-@@ -5461,7 +5472,9 @@ static const struct hl_asic_funcs goya_funcs = {
- 	.collective_wait_create_jobs = goya_collective_wait_create_jobs,
- 	.scramble_addr = hl_mmu_scramble_addr,
- 	.descramble_addr = hl_mmu_descramble_addr,
--	.ack_protection_bits_errors = goya_ack_protection_bits_errors
-+	.ack_protection_bits_errors = goya_ack_protection_bits_errors,
-+	.get_hw_block_id = goya_get_hw_block_id,
-+	.hw_block_mmap = goya_block_mmap
- };
- 
- /*
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index 866355a53188..b1c09eba8ac2 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -718,6 +718,8 @@ union hl_wait_cs_args {
- #define HL_MEM_OP_MAP			2
- /* Opcode to unmap previously mapped host and device memory */
- #define HL_MEM_OP_UNMAP			3
-+/* Opcode to map a hw block */
-+#define HL_MEM_OP_MAP_BLOCK		4
- 
- /* Memory flags */
- #define HL_MEM_CONTIGUOUS	0x1
-@@ -772,6 +774,17 @@ struct hl_mem_in {
- 			__u64 mem_size;
- 		} map_host;
- 
-+		/* HL_MEM_OP_MAP_BLOCK - map a hw block */
-+		struct {
-+			/*
-+			 * HW block address to map, a handle will be returned
-+			 * to the user and will be used to mmap the relevant
-+			 * block. Only addresses from configuration space are
-+			 * allowed.
-+			 */
-+			__u64 block_addr;
-+		} map_block;
-+
- 		/* HL_MEM_OP_UNMAP - unmap host memory */
- 		struct {
- 			/* Virtual address returned from HL_MEM_OP_MAP */
-@@ -798,8 +811,9 @@ struct hl_mem_out {
- 		__u64 device_virt_addr;
- 
- 		/*
--		 * Used for HL_MEM_OP_ALLOC. This is the assigned
--		 * handle for the allocated memory
-+		 * Used for HL_MEM_OP_ALLOC and HL_MEM_OP_MAP_BLOCK.
-+		 * This is the assigned handle for the allocated memory
-+		 * or mapped block
- 		 */
- 		__u64 handle;
- 	};
--- 
-2.25.1
+This looks fine.
 
+[snip]
+
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyp=
+erv_timer.c
+> index ba04cb381cd3..bf3bf20bc6bd 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/sched_clock.h>
+>  #include <linux/mm.h>
+>  #include <linux/cpuhotplug.h>
+> +#include <linux/static_call.h>
+>  #include <clocksource/hyperv_timer.h>
+>  #include <asm/hyperv-tlfs.h>
+>  #include <asm/mshyperv.h>
+> @@ -445,7 +446,7 @@ static bool __init hv_init_tsc_clocksource(void)
+>  	clocksource_register_hz(&hyperv_cs_tsc, NSEC_PER_SEC/100);
+>=20
+>  	hv_sched_clock_offset =3D hv_read_reference_counter();
+> -	hv_setup_sched_clock(read_hv_sched_clock_tsc);
+> +	paravirt_set_sched_clock(read_hv_sched_clock_tsc);
+>=20
+>  	return true;
+>  }
+> @@ -470,6 +471,6 @@ void __init hv_init_clocksource(void)
+>  	clocksource_register_hz(&hyperv_cs_msr, NSEC_PER_SEC/100);
+>=20
+>  	hv_sched_clock_offset =3D hv_read_reference_counter();
+> -	hv_setup_sched_clock(read_hv_sched_clock_msr);
+> +	static_call_update(pv_sched_clock, read_hv_sched_clock_msr);
+>  }
+>  EXPORT_SYMBOL_GPL(hv_init_clocksource);
+
+The changes to hyperv_timer.c aren't needed and shouldn't be
+there, so as to preserve hyperv_timer.c as architecture neutral.  With
+your update to hv_setup_sched_clock() in mshyperv.h, the original
+code works correctly.  While there are two call sites for
+hv_setup_sched_clock(), only one is called.  And once the sched clock
+function is set, it is never changed or overridden.
+
+Michael
