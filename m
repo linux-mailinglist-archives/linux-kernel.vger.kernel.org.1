@@ -2,115 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC11301EA8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 21:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A4A301EBC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 21:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbhAXUP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 15:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbhAXUPY (ORCPT
+        id S1726181AbhAXU2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 15:28:13 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37948 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbhAXU2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 15:15:24 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B17CC061573;
-        Sun, 24 Jan 2021 12:14:44 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id l14so3243717qvp.2;
-        Sun, 24 Jan 2021 12:14:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OSqM/+hDSvLrv13lOWN3p2jAOoGEE3+xx2u807DxGhI=;
-        b=b3lztcn5pSshC/3esauyTw+hxCipPz+MJyymarpFLFxQhyqJRiK0Q5Glo6b7KifBk8
-         f55+fm+KG4Hp913zv0oxXC3KyC8LgnsIjloAmXIq2wCyIablTcUrwIraJ0h7O9EXSpR0
-         Wr6V8hzjL1U+31FiHwpqqh9bYJltn8zh8jssuRfjJAJQt0YuMFT5W6AaXSuyjnn3hOmo
-         En0Au3qkMCJkc0EiQC+yEBuoFYSTDpZ/vyPsK+ggc778kKLn06Q3hahskXu2svqNBRqk
-         XJTWw7Y7JCmJ5tXoaphmclJk8oREYPAkefDB7jWG4XjJ/yDeVkTTonLaKvi8HS6QexBn
-         Y0OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OSqM/+hDSvLrv13lOWN3p2jAOoGEE3+xx2u807DxGhI=;
-        b=Mt9zkDhaQrqirTUg9JC0/AnZhBsS+/KNUJWcfVuIwKp4T6yNtnRAi/+GLLmhjEcaje
-         oPIGBFHdYpyJu1jG2zjE12BByEN7r6B0UWW2OjO5YUk0H943mXmo+IPBS/UOiuqnGsTK
-         aewJtarg85Y8ojIBxX/3RoUeeuKNO99Fv7hrN9j1lbRvC9xsU3pCpVrfeIyJT8c5z6Ir
-         8/2NHd58ndxxK1zCr0IgI50FpP8DbJFHOIcFBR0NhQV05LiDZETfvr+WaoWbjYb7kroG
-         1qcOzO2hJRm85SbqbGNo/3a4/qt/NUiZiojBcK0LrEV7mQEdJLx8FnDtA0tOqCz3MzF1
-         j2FQ==
-X-Gm-Message-State: AOAM533xXzKlw3BjQrm5Enx3urNvvLVmqrARytGVu5UNIqn8jt7kbv9a
-        qCVGFlTLLDre4rDSVS74PfBbkh+AhRqdPJdKvla8+WV/XWU=
-X-Google-Smtp-Source: ABdhPJxVOToYv0HkdS45AHJioCJ8pGX18Nrco3AhpQ3fAv/W1LW+yvun2Ke603zBouNanpWWNdyQ/PX8p+H6laXhHYQ=
-X-Received: by 2002:a0c:9e5e:: with SMTP id z30mr4524736qve.56.1611519283494;
- Sun, 24 Jan 2021 12:14:43 -0800 (PST)
+        Sun, 24 Jan 2021 15:28:11 -0500
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611520049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7EolLNJ81oKX0Hu1psCaLPJ70xwpXFEr+Tx05n3Sagc=;
+        b=V2wa8pzz7CUNisTIOgYQ+sEw2PdqCByY5Zi8yg4Qu8hxWz++sJ0qlv5OtZ+7VrjkxWwM/k
+        iWwvuu4mH2wWnHBV2TpUbfYKWYVWIOafTut1Kns0zQCaLUfVx35pn9U/Zl1KcIcltHVgpy
+        6cgq+z7dGOeRr6iI8wfIdAK8j8RVc28i1NracpTIL1F0Puu1NpSioX1+CNrKbfeekIlHZr
+        6+qvEwJ9dPMM64HhZOBvT2QDB2ffTCPGj9rcakz/NqnksstDwbGMLfGXRVyblbUKiltAgb
+        ydY6uzi3GWlFDDdNBNLelP0Fbo05BBDwqrMdmoU1OhyPbAab8qnw54mpoHSRiQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611520049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7EolLNJ81oKX0Hu1psCaLPJ70xwpXFEr+Tx05n3Sagc=;
+        b=gKIpoKT2PIshlLY07/L27Dg87nLYveyrLGJj8242qjtXFGRl1D1oCcs0h7AOziheTLD90t
+        g3VM2Bs1J18IVZBg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] printk: fix string termination for record_print_text()
+Date:   Sun, 24 Jan 2021 21:33:28 +0106
+Message-Id: <20210124202728.4718-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-References: <20210124073955.728797-1-christophe.jaillet@wanadoo.fr> <fe72d1d2-8222-5cda-74ff-9327725f196a@web.de>
-In-Reply-To: <fe72d1d2-8222-5cda-74ff-9327725f196a@web.de>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Sun, 24 Jan 2021 21:14:32 +0100
-Message-ID: <CAFLxGvzFDPBGY1uoB7vqJreOSfs9N2PGMDTbQ24PYBWBRVR4oQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: Fix an error handling path in 'ebu_dma_start()'
-To:     Christophe Jaillet <christophe.jaillet@wanadoo.fr>
-Cc:     linux-mtd@lists.infradead.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Richard Weinberger <richard@nod.at>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 9:13 PM Markus Elfring <Markus.Elfring@web.de> wrot=
-e:
->
-> > If 'dmaengine_prep_slave_single()' fails, we must undo a previous
-> > 'dma_map_single()' call, as already done in all the other error handlin=
-g
-> > paths of this function.
->
-> Would you ever like to use an imperative wording for the change descripti=
-on?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/process/submitting-patches.rst?id=3Dfdbc80bdc4365078a0f7d65631=
-171cb80e3ffd6e#n89
->
->
-> =E2=80=A6
-> > +++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-> > @@ -318,8 +318,10 @@ static int ebu_dma_start(struct ebu_nand_controlle=
-r *ebu_host, u32 dir,
-> >       }
-> >
-> >       tx =3D dmaengine_prep_slave_single(chan, buf_dma, len, dir, flags=
-);
-> > -     if (!tx)
-> > -             return -ENXIO;
-> > +     if (!tx) {
-> > +             ret =3D -ENXIO;
-> > +             goto err_unmap;
-> > +     }
-> >
-> >       tx->callback =3D callback;
-> =E2=80=A6
->
-> By the way:
-> Can it be nicer to achieve the statement =E2=80=9Cret =3D -EIO;=E2=80=9D =
-by a jump for
-> a target like =E2=80=9Ce_io=E2=80=9D so that less exception handling code=
- would be duplicated
-> for this function implementation?
+Commit f0e386ee0c0b ("printk: fix buffer overflow potential for
+print_text()") added string termination in record_print_text().
+However it used the wrong base pointer for adding the terminator.
+This led to a 0-byte being written somewhere beyond the buffer.
 
-Please feel free to ignore Markus.
+Use the correct base pointer when adding the terminator.
 
-https://lore.kernel.org/lkml/X+x3pIanr18Ep4ga@kroah.com/
+Fixes: f0e386ee0c0b ("printk: fix buffer overflow potential for print_text()")
+Reported-by: Sven Schnelle <svens@linux.ibm.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Thanks,
-//richard
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 6639a0cfe0ac..5a95c688621f 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1398,7 +1398,7 @@ static size_t record_print_text(struct printk_record *r, bool syslog,
+ 	 * not counted in the return value.
+ 	 */
+ 	if (buf_size > 0)
+-		text[len] = 0;
++		r->text_buf[len] = 0;
+ 
+ 	return len;
+ }
+-- 
+2.20.1
+
