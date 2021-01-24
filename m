@@ -2,472 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF9B301E0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56F3301E17
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbhAXSMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 13:12:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58076 "EHLO mail.kernel.org"
+        id S1726103AbhAXSSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 13:18:52 -0500
+Received: from mga02.intel.com ([134.134.136.20]:13247 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbhAXSMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 13:12:15 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 843452168B;
-        Sun, 24 Jan 2021 18:11:31 +0000 (UTC)
-Date:   Sun, 24 Jan 2021 18:11:26 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2 03/12][RESEND] iio: buffer: rework buffer &
- scan_elements dir creation
-Message-ID: <20210124181126.07c100a5@archlinux>
-In-Reply-To: <20210122162529.84978-4-alexandru.ardelean@analog.com>
-References: <20210122162529.84978-1-alexandru.ardelean@analog.com>
-        <20210122162529.84978-4-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1725863AbhAXSSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 13:18:51 -0500
+IronPort-SDR: rkkmhsh1K1u+rF19u+VKgStqMydGo/Kj1PAUKX9CMObRkWKqgQY975p04i63FD22LqlR9IdKzr
+ H8y0S5DXlZMQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="166730665"
+X-IronPort-AV: E=Sophos;i="5.79,371,1602572400"; 
+   d="scan'208";a="166730665"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 10:18:09 -0800
+IronPort-SDR: DoGUHzuWxofCafxhqaYVvblJjpsGpiklY7RtuNxJhI8NCGkWCcSl34uvT9SPqgycvjT6IrhBjz
+ vi0sTYdsl5+w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,371,1602572400"; 
+   d="scan'208";a="401862499"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Jan 2021 10:18:09 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 24 Jan 2021 10:18:09 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 24 Jan 2021 10:18:08 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Sun, 24 Jan 2021 10:18:08 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UDvLb1jNXIgRUiKWciQ+o83T/otrjl/4wCHXClb3/2gu3teNGWY8NBbITGbEnlfEES4JJpV5tpybd7WwMjLwShOAgGuuhzfa17SPaVz/muyhCd/pNVQnSkuimDMAXJ9leh3zkuWG9E34bD8j6L8cUxQDdzTh93TooWmy84oEBrO0b5i2xdaxQfiiiVDtkHmzBLTkwfxtUVUindaSC7bpY8kgOkwiP6GdQ1oJNhhprv3dDA02vFIWXcHppe2AmNY+ofWwbtUmyqkYHPGRAG/Bpy6hJ7JL7C8DAN/+Tq0420gwQjTiTBNAcI6K7j6b18NaXRE1NE5weCHRkOWuneOqVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ykAxWgI6D6K2AqfJGgtrD8o1TSHMnbGkQJNyBsVspNM=;
+ b=hCFrwDn1321yh/fTPLl2UZKjqE312x+eRtnN52Ka3Fy6GHJ0+0Xy9EKZqoUZnYH+ENYm7xjd9QNT4A3b9fs6wu8FhmHfIDutGDLGJIHKe78egD2mzgq/tqo/tNTvCss03jzfe7bEKxiAFG6s3BlvK2X9jiHQ15E2ZILidZCc/dDMeIRVf4v6Y6vcJkbFi2H9eEYD5LtAmayRRgGGA05LEQxKOyVGBYdJ19fcEcthTTogvLPeq1bTqPsVnsEYrS2kC76EVzHBp6EbIYOqMiGxYibXMWLETFus550OJEUnMjmttO3Bv8wsVyv56EdQ3vJ1wqVes+LUx9YSJz3wbSp6xg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ykAxWgI6D6K2AqfJGgtrD8o1TSHMnbGkQJNyBsVspNM=;
+ b=P9Jx2ETT6w7Le6wr1EtYTVMPRHsLckf/dSEioPBOoP8obFMpx1XeD1Vj124yZLNRkqUTwtsg8ZTckQhyh8ps7wDeIZNEkp7jJjIk3UNu/6vXbOz6+RYTka/bdemuDK3BNyGVqWkDmhP4z2N8b9W93zD4eSMDtIGE4ygz4rguMAU=
+Received: from MWHPR11MB1406.namprd11.prod.outlook.com (2603:10b6:300:23::18)
+ by CO1PR11MB5108.namprd11.prod.outlook.com (2603:10b6:303:92::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Sun, 24 Jan
+ 2021 18:18:06 +0000
+Received: from MWHPR11MB1406.namprd11.prod.outlook.com
+ ([fe80::89f0:cbc3:d9c2:6e7a]) by MWHPR11MB1406.namprd11.prod.outlook.com
+ ([fe80::89f0:cbc3:d9c2:6e7a%7]) with mapi id 15.20.3784.017; Sun, 24 Jan 2021
+ 18:18:06 +0000
+From:   "Thokala, Srikanth" <srikanth.thokala@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "bp@suse.de" <bp@suse.de>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "leonard.crestez@nxp.com" <leonard.crestez@nxp.com>,
+        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "peng.fan@nxp.com" <peng.fan@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+Subject: RE: [PATCH v2 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver for
+ Local Host
+Thread-Topic: [PATCH v2 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver for
+ Local Host
+Thread-Index: AQHW5gUs6vFsn5nCsUuTx5ZeA9F45qow34mAgAIzIbCAA7E3AIAAahWQ
+Date:   Sun, 24 Jan 2021 18:18:06 +0000
+Message-ID: <MWHPR11MB140692C814867EC209F14E0185BE9@MWHPR11MB1406.namprd11.prod.outlook.com>
+References: <20210108212600.36850-1-mgross@linux.intel.com>
+ <20210108212600.36850-10-mgross@linux.intel.com> <YAhvJ2MxqnX2g0nS@kroah.com>
+ <MWHPR11MB14061D584C7CC0CE3AD58F1A85BE9@MWHPR11MB1406.namprd11.prod.outlook.com>
+ <YA1gclRd4HRNrmhM@kroah.com>
+In-Reply-To: <YA1gclRd4HRNrmhM@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=intel.com;
+x-originating-ip: [122.167.96.157]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8aabbd08-f575-451e-a8a3-08d8c09465b8
+x-ms-traffictypediagnostic: CO1PR11MB5108:
+x-microsoft-antispam-prvs: <CO1PR11MB510899CA697DF21570B7BB4685BE9@CO1PR11MB5108.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8STo7bOwgeNqJlcO3gaHMbEvrRqxJW6XfiX37g2thRzlic3BpKP8rs6pR8eg7QCz2vwve6O+a1k/+0Xgq8zNL4oPXlrt10xQsuM/eXP0mAoNUkSfpISpJYsPp4b92uu/DNyMaRov8Q96p9vgAOYUGEYkKD3Sqn0+s1Aok2I7ugeXEz+XgmQ/h2+VI3AEK/2EcNr6zDACtlGxTPtVqQGn2YNCBOG5AFwkmDttySRjr1W4j+tEdNIBAaDVTaDOt5vv/hgS9wiacX/UCmTtY1bCfchsURzu9GKoc6Pal0Kq9JTlzcJx02lg/ACGJC4U60ZV7dDmFK6UlREeAa15S653oFhyebuwYP9jugAg5nLQ7kEQQVd5g8POb8GLVMf2qT7IEm+MlG3rEYktkpkw3MHV2g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1406.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(376002)(396003)(39860400002)(71200400001)(7696005)(4326008)(478600001)(316002)(8676002)(33656002)(186003)(55016002)(26005)(5660300002)(66946007)(6916009)(53546011)(7416002)(6506007)(66446008)(52536014)(66556008)(9686003)(66476007)(8936002)(83380400001)(2906002)(54906003)(64756008)(76116006)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yNNka0exEF9WlL93iKlazYewe88BFPfxO1V2ZAEn5lFhqRs1sYe6RolvRqiL?=
+ =?us-ascii?Q?GW+tPyg1w/y0FIfwO1AZ8GzX+vMwZ1J7Eyf1V2mMPsY/+g06wspqT2uIr0d6?=
+ =?us-ascii?Q?h+PrvRdQiKT751RTaDiDU9iOSYn2BEDYxg82nIV4KmDvc34NOI0ClTNggXAE?=
+ =?us-ascii?Q?E2hw161TYICbCzlbiIELM9LhKpwouA2G5OQlXIoCL41nbLkCjqybpa8DNCRn?=
+ =?us-ascii?Q?UYcW0uCG0pO2HMmmasXEm+9Ap7w9iwfhDSDtoWShTDDEDlpPJT/oZjgU8O/9?=
+ =?us-ascii?Q?uaBSySQcrr2DXw0ag3mKVsdVnJIATL1mC8xZrlB7x0ddbvg3mDZzCsUoTxyT?=
+ =?us-ascii?Q?C5uQ+FmewcfEhGfCT28PGfdmItQqhs5t16JAYmlnJeISsBnAzWEAPHq4vaGu?=
+ =?us-ascii?Q?yK2CIKAK9kMoXiC1Ssa29lM396LjRUTbsmz0jlPJzw00+v/ekFhYtTU3oMb3?=
+ =?us-ascii?Q?H/NkqQfGZS5cWDPqQQLN6mniTgG30qMm8yg1tY1gPDf8zdwk4XEgEm6o/aHG?=
+ =?us-ascii?Q?JmMTlzwx5lJYkMnqFyuYVKpwuFp8WgG+Uk472zW1HevZCPjt1HA5p0lkK4yr?=
+ =?us-ascii?Q?wUz4ZmStyKlA9KRyV9ujQ+tbdpDHuOxE7Yy/Xc7e+WGT9NrS9ll50lREfo7s?=
+ =?us-ascii?Q?qrxsZLBmyHrFhnn17hx0hftVn1IldkRZ8fdjmM3742CM/q2/urb4M6VgXPUH?=
+ =?us-ascii?Q?WLrlUqiA7Rot8YiB4MLdSz7SrrxuAyHeB27/pVy3IejrSxeBzvBCO0reiRZt?=
+ =?us-ascii?Q?oJI2BaHUc3WxI2qtVe/8yV1mWegPlkVg1319CY6fR3ygehxaoQMVfRYbXOk4?=
+ =?us-ascii?Q?Qm0TiCCV9Hu5UeCqaLmOMiooZE3eV/HhTdoJaLq28nUgGlGRtfohmj5FmRC1?=
+ =?us-ascii?Q?252Ez2M4C/2DPtaUbUT3CjeVGiwepWzsMZJhXZm4LKLvoo1p78DJadYtyERu?=
+ =?us-ascii?Q?f2jarNrk1ZbJ+cgCjhidVlrO1eWziqxnu8S2O42yTQM=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1406.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8aabbd08-f575-451e-a8a3-08d8c09465b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jan 2021 18:18:06.5179
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: h8SoHYwntC5beOQuUqarGvfiQljNLY+Xj/cL5nua31zMU0uN+Wvbj07KpvWjdPzDqjg77PmVFPpHb9yaihVHX+c9DGLaSS9X5dkMRpC+cso=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5108
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 18:25:20 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Hi Greg,
 
-> When adding more than one IIO buffer per IIO device, we will need to create
-> a buffer & scan_elements directory for each buffer.
-> We also want to move the 'scan_elements' to be a sub-directory of the
-> 'buffer' folder.
-> 
-> The format we want to reach is, for a iio:device0 folder, for 2 buffers
-> [for example], we have a 'buffer0' and a 'buffer1' subfolder, and each with
-> it's own 'scan_elements' subfolder.
-> 
-> So, for example:
->    iio:device0/buffer0
->       scan_elements/
-> 
->    iio:device0/buffer1
->       scan_elements/
-> 
-> The other attributes under 'bufferX' would remain unchanged.
-> 
-> However, we would also need to symlink back to the old 'buffer' &
-> 'scan_elements' folders, to keep backwards compatibility.
-> 
-> Doing all these, require that we maintain the kobjects for each 'bufferX'
-> and 'scan_elements' so that we can symlink them back. We also need to
-> implement the sysfs_ops for these folders.
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> -----Original Message-----
+> From: Greg KH <gregkh@linuxfoundation.org>
+> Sent: Sunday, January 24, 2021 5:27 PM
+> To: Thokala, Srikanth <srikanth.thokala@intel.com>
+> Cc: mgross@linux.intel.com; markgross@kernel.org; arnd@arndb.de;
+> bp@suse.de; damien.lemoal@wdc.com; dragan.cvetic@xilinx.com;
+> corbet@lwn.net; leonard.crestez@nxp.com; palmerdabbelt@google.com;
+> paul.walmsley@sifive.com; peng.fan@nxp.com; robh+dt@kernel.org;
+> shawnguo@kernel.org; jassisinghbrar@gmail.com; linux-
+> kernel@vger.kernel.org; Derek Kiernan <derek.kiernan@xilinx.com>
+> Subject: Re: [PATCH v2 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver
+> for Local Host
+>=20
+> On Sun, Jan 24, 2021 at 11:48:29AM +0000, Thokala, Srikanth wrote:
+> > > > +{
+> > > > +	struct pci_epf_bar *epf_bar;
+> > > > +	bool bar_fixed_64bit;
+> > > > +	int ret, i;
+> > > > +
+> > > > +	for (i =3D BAR_0; i <=3D BAR_5; i++) {
+> > > > +		epf_bar =3D &epf->bar[i];
+> > > > +		bar_fixed_64bit =3D !!(epc_features->bar_fixed_64bit & (1
+> <<
+> > > i));
+> > > > +		if (bar_fixed_64bit)
+> > > > +			epf_bar->flags |=3D PCI_BASE_ADDRESS_MEM_TYPE_64;
+> > > > +		if (epc_features->bar_fixed_size[i])
+> > > > +			epf_bar->size =3D epc_features->bar_fixed_size[i];
+> > > > +
+> > > > +		if (i =3D=3D BAR_2) {
+> > > > +			ret =3D intel_xpcie_check_bar(epf, epf_bar, BAR_2,
+> > > > +						    BAR2_MIN_SIZE,
+> > > > +						    epc_features->reserved_bar);
+> > > > +			if (ret)
+> > > > +				return ret;
+> > > > +		}
+> > > > +
+> > > > +		if (i =3D=3D BAR_4) {
+> > > > +			ret =3D intel_xpcie_check_bar(epf, epf_bar, BAR_4,
+> > > > +						    BAR4_MIN_SIZE,
+> > > > +						    epc_features->reserved_bar);
+> > > > +			if (ret)
+> > > > +				return ret;
+> > > > +		}
+> > >
+> > > Why do you need to check all of this?  Where is the data coming from
+> > > that could be incorrect?
+> >
+> > PCI BAR attributes, as inputs, are coming from the PCIe controller
+> driver
+> > through PCIe End Point Framework.  These checks are required to compare
+> the
+> > configuration this driver is expecting to the configuration coming from
+> > the PCIe controller driver.
+>=20
+> So why do you not trust that information coming from the caller?
+> Shouldn't it always be correct as it already is validated by that
+> in-kernel caller?  Don't check for things you don't have to check for
+> because you control the code that calls this stuff.
 
-+CC GregKH and Rafael W for feedback on various things inline.
+Sure, I agree to your point.
+I will fix it in my next version.
 
-It might be that this is the neatest solution that we can come up with but
-more eyes would be good!
+Thanks!
+Srikanth
 
-Whilst I think this looks fine, I'm less confident than I'd like to be.
-
-Jonathan
-
-> ---
->  drivers/iio/industrialio-buffer.c | 195 +++++++++++++++++++++++++++---
->  drivers/iio/industrialio-core.c   |  24 ++--
->  include/linux/iio/buffer_impl.h   |  14 ++-
->  include/linux/iio/iio.h           |   2 +-
->  4 files changed, 200 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 0412c4fda4c1..0f470d902790 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1175,8 +1175,6 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
->  	return (ret < 0) ? ret : len;
->  }
->  
-> -static const char * const iio_scan_elements_group_name = "scan_elements";
-> -
->  static ssize_t iio_buffer_show_watermark(struct device *dev,
->  					 struct device_attribute *attr,
->  					 char *buf)
-> @@ -1252,6 +1250,124 @@ static struct attribute *iio_buffer_attrs[] = {
->  	&dev_attr_data_available.attr,
->  };
->  
-> +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
-> +
-> +static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
-> +					struct attribute *attr,
-> +					char *buf)
-> +{
-> +	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
-> +	struct device_attribute *dattr;
-> +
-> +	dattr = to_dev_attr(attr);
-> +
-> +	return dattr->show(&buffer->indio_dev->dev, dattr, buf);
-> +}
-> +
-> +static ssize_t iio_buffer_dir_attr_store(struct kobject *kobj,
-> +					 struct attribute *attr,
-> +					 const char *buf,
-> +					 size_t len)
-> +{
-> +	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
-> +	struct device_attribute *dattr;
-> +
-> +	dattr = to_dev_attr(attr);
-> +
-> +	return dattr->store(&buffer->indio_dev->dev, dattr, buf, len);
-> +}
-> +
-> +static const struct sysfs_ops iio_buffer_dir_sysfs_ops = {
-> +	.show = iio_buffer_dir_attr_show,
-> +	.store = iio_buffer_dir_attr_store,
-> +};
-> +
-> +static struct kobj_type iio_buffer_dir_ktype = {
-> +	.sysfs_ops = &iio_buffer_dir_sysfs_ops,
-> +};
-> +
-> +static ssize_t iio_scan_el_dir_attr_show(struct kobject *kobj,
-> +					 struct attribute *attr,
-> +					 char *buf)
-> +{
-> +	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
-> +	struct device_attribute *dattr = to_dev_attr(attr);
-> +
-> +	return dattr->show(&buffer->indio_dev->dev, dattr, buf);
-> +}
-> +
-> +static ssize_t iio_scan_el_dir_attr_store(struct kobject *kobj,
-> +					  struct attribute *attr,
-> +					  const char *buf,
-> +					  size_t len)
-> +{
-> +	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, scan_el_dir);
-> +	struct device_attribute *dattr = to_dev_attr(attr);
-> +
-> +	return dattr->store(&buffer->indio_dev->dev, dattr, buf, len);
-> +}
-> +
-> +static const struct sysfs_ops iio_scan_el_dir_sysfs_ops = {
-> +	.show = iio_scan_el_dir_attr_show,
-> +	.store = iio_scan_el_dir_attr_store,
-> +};
-> +
-> +static struct kobj_type iio_scan_el_dir_ktype = {
-> +	.sysfs_ops = &iio_scan_el_dir_sysfs_ops,
-> +};
-> +
-> +/*
-> + * These iio_sysfs_{add,del}_attrs() are essentially re-implementations of
-> + * sysfs_create_files() & sysfs_remove_files(), but they are meant to get
-> + * around the const-pointer mismatch situation with using them.
-> + *
-> + * sysfs_{create,remove}_files() uses 'const struct attribute * const *ptr',
-> + * while these are happy with just 'struct attribute **ptr'
-> + */
-
-Then to my mind the question becomes why sysfs_create_files() etc requires
-the second level of const.  If there is justification for that relaxation here
-we should make it more generally.
-
-> +static int iio_sysfs_add_attrs(struct kobject *kobj, struct attribute **ptr)
-> +{
-> +	int err = 0;
-> +	int i;
-> +
-> +	for (i = 0; ptr[i] && !err; i++)
-> +		err = sysfs_create_file(kobj, ptr[i]);
-> +	if (err)
-> +		while (--i >= 0)
-> +			sysfs_remove_file(kobj, ptr[i]);
-> +	return err;
-> +}
-> +
-> +static void iio_sysfs_del_attrs(struct kobject *kobj, struct attribute **ptr)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; ptr[i]; i++)
-> +		sysfs_remove_file(kobj, ptr[i]);
-> +}
-> +
-> +/**
-> + * __iio_buffer_alloc_sysfs_and_mask() - Allocate sysfs attributes to an attached buffer
-> + * @buffer: the buffer object for which the sysfs attributes are created for
-> + * @indio_dev: the iio device to which the iio buffer belongs to
-> + *
-> + * Return 0, or negative for error.
-> + *
-> + * This function must be called for each single buffer. The sysfs attributes for that
-> + * buffer will be created, and the IIO device object will be the parent kobject of that
-> + * the kobjects created here.
-> + * Because we need to redirect sysfs attribute to it's IIO buffer object, we need to
-> + * implement our own sysfs_ops, and each IIO buffer will keep a kobject for the
-> + * 'bufferX' directory and one for the 'scan_elements' directory.
-> + * And in order to do this, this function must be called after the IIO device object
-> + * has been added via device_add(). This fundamentally changes how sysfs attributes
-> + * were created before (with one single IIO buffer per IIO device), where the
-> + * sysfs attributes for the buffer were mapped as attribute groups on the IIO device
-> + * groups object list.
-
-Been a while, so I can't recall the exact reasons this can cause problems.
-I've +CC Greg and Rafael for comments.
-
-For their reference, the aim of this set is undo an old restriction on IIO that devices
-only had one buffer.  To do that we need to keep a iio:deviceX/buffer0 directory
-also exposed as iio:deviceX/buffer/* and
-iio:deviceX/buffer0/scan_elements/ as iio:deviceX/scan_elements.
-to maintain backwards compatibility.
-
-
-> + * Using kobjects directly for the 'bufferX' and 'scan_elements' directories allows
-> + * us to symlink them back to keep backwards compatibility for the old sysfs interface
-> + * for IIO buffers while also allowing us to support multiple IIO buffers per one
-> + * IIO device.
-> + */
->  static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  					     struct iio_dev *indio_dev)
->  {
-> @@ -1282,12 +1398,16 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  		memcpy(&attr[ARRAY_SIZE(iio_buffer_attrs)], buffer->attrs,
->  		       sizeof(struct attribute *) * attrcount);
->  
-> -	attr[attrcount + ARRAY_SIZE(iio_buffer_attrs)] = NULL;
-> +	buffer->buffer_attrs = attr;
->  
-> -	buffer->buffer_group.name = "buffer";
-> -	buffer->buffer_group.attrs = attr;
-> +	ret = kobject_init_and_add(&buffer->buffer_dir, &iio_buffer_dir_ktype,
-> +				   &indio_dev->dev.kobj, "buffer");
-> +	if (ret)
-> +		goto error_buffer_free_attrs;
->  
-
-Do we potentially want kobject_uevent calls for these?
-(based on looking at similar code in edac).
-
-> -	indio_dev->groups[indio_dev->groupcounter++] = &buffer->buffer_group;
-> +	ret = iio_sysfs_add_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
-> +	if (ret)
-> +		goto error_buffer_kobject_put;
->  
->  	attrcount = 0;
->  	INIT_LIST_HEAD(&buffer->scan_el_dev_attr_list);
-> @@ -1317,32 +1437,57 @@ static int __iio_buffer_alloc_sysfs_and_mask(struct iio_buffer *buffer,
->  		}
->  	}
->  
-> -	buffer->scan_el_group.name = iio_scan_elements_group_name;
-> -
-> -	buffer->scan_el_group.attrs = kcalloc(attrcount + 1,
-> -					      sizeof(buffer->scan_el_group.attrs[0]),
-> -					      GFP_KERNEL);
-> -	if (buffer->scan_el_group.attrs == NULL) {
-> +	buffer->scan_el_attrs = kcalloc(attrcount + 1,
-> +					sizeof(buffer->scan_el_attrs[0]),
-> +					GFP_KERNEL);
-> +	if (buffer->scan_el_attrs == NULL) {
->  		ret = -ENOMEM;
->  		goto error_free_scan_mask;
->  	}
-> -	attrn = 0;
->  
-> +	ret = kobject_init_and_add(&buffer->scan_el_dir, &iio_scan_el_dir_ktype,
-> +				   &indio_dev->dev.kobj, "scan_elements");
-> +	if (ret)
-> +		goto error_free_scan_attrs;
-> +
-> +	attrn = 0;
->  	list_for_each_entry(p, &buffer->scan_el_dev_attr_list, l)
-> -		buffer->scan_el_group.attrs[attrn++] = &p->dev_attr.attr;
-> -	indio_dev->groups[indio_dev->groupcounter++] = &buffer->scan_el_group;
-> +		buffer->scan_el_attrs[attrn++] = &p->dev_attr.attr;
-> +
-> +	ret = iio_sysfs_add_attrs(&buffer->scan_el_dir, buffer->scan_el_attrs);
-> +	if (ret)
-> +		goto error_scan_kobject_put;
->  
->  	return 0;
->  
-> +error_scan_kobject_put:
-> +	kobject_put(&buffer->scan_el_dir);
-> +error_free_scan_attrs:
-> +	kfree(buffer->scan_el_attrs);
->  error_free_scan_mask:
->  	bitmap_free(buffer->scan_mask);
->  error_cleanup_dynamic:
-> +	iio_sysfs_del_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
->  	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> -	kfree(buffer->buffer_group.attrs);
-> +error_buffer_kobject_put:
-> +	kobject_put(&buffer->buffer_dir);
-> +error_buffer_free_attrs:
-> +	kfree(buffer->buffer_attrs);
->  
->  	return ret;
->  }
->  
-> +/**
-> + * iio_buffer_alloc_sysfs_and_mask() - Allocate sysfs attributes to attached buffers
-> + * @indio_dev: the iio device for which to create the buffer sysfs attributes
-> + *
-> + * Return 0, or negative for error.
-> + *
-> + * If the IIO device has no buffer attached, no sysfs attributes will be created.
-> + * This function must be called after the IIO device object has been created and
-> + * registered with device_add(). See __iio_buffer_alloc_sysfs_and_mask() for more
-> + * details.
-> + */
->  int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  {
->  	struct iio_buffer *buffer = indio_dev->buffer;
-> @@ -1364,14 +1509,28 @@ int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
->  	return __iio_buffer_alloc_sysfs_and_mask(buffer, indio_dev);
->  }
->  
-> +/**
-> + * __iio_buffer_free_sysfs_and_mask() - Free sysfs objects for a single IIO buffer
-> + * @buffer: the iio buffer for which to destroy the objects
-> + */
->  static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
->  {
-> +	iio_sysfs_del_attrs(&buffer->scan_el_dir, buffer->scan_el_attrs);
-> +	kobject_put(&buffer->scan_el_dir);
-> +	kfree(buffer->scan_el_attrs);
->  	bitmap_free(buffer->scan_mask);
-> -	kfree(buffer->buffer_group.attrs);
-> -	kfree(buffer->scan_el_group.attrs);
-> +	iio_sysfs_del_attrs(&buffer->buffer_dir, buffer->buffer_attrs);
->  	iio_free_chan_devattr_list(&buffer->scan_el_dev_attr_list);
-> +	kobject_put(&buffer->buffer_dir);
-> +	kfree(buffer->buffer_attrs);
->  }
->  
-> +/**
-> + * iio_buffer_free_sysfs_and_mask() - Free sysfs objects for all IIO buffers
-> + * @indio_dev: the iio device for which to destroy the objects
-> + *
-> + * If the IIO device has no buffer attached, nothing will be done.
-> + */
->  void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
->  {
->  	struct iio_buffer *buffer = indio_dev->buffer;
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 0a6fd299a978..95d66745f118 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1817,18 +1817,11 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->  
->  	iio_device_register_debugfs(indio_dev);
->  
-> -	ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
-> -	if (ret) {
-> -		dev_err(indio_dev->dev.parent,
-> -			"Failed to create buffer sysfs interfaces\n");
-> -		goto error_unreg_debugfs;
-> -	}
-> -
->  	ret = iio_device_register_sysfs(indio_dev);
->  	if (ret) {
->  		dev_err(indio_dev->dev.parent,
->  			"Failed to register sysfs interfaces\n");
-> -		goto error_buffer_free_sysfs;
-> +		goto error_unreg_debugfs;
->  	}
->  	ret = iio_device_register_eventset(indio_dev);
->  	if (ret) {
-> @@ -1857,14 +1850,21 @@ int __iio_device_register(struct iio_dev *indio_dev, struct module *this_mod)
->  	if (ret < 0)
->  		goto error_unreg_eventset;
->  
-> +	ret = iio_buffer_alloc_sysfs_and_mask(indio_dev);
-> +	if (ret) {
-> +		dev_err(indio_dev->dev.parent,
-> +			"Failed to create buffer sysfs interfaces\n");
-> +		goto error_device_del;
-> +	}
-> +
->  	return 0;
->  
-> +error_device_del:
-> +	cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
->  error_unreg_eventset:
->  	iio_device_unregister_eventset(indio_dev);
->  error_free_sysfs:
->  	iio_device_unregister_sysfs(indio_dev);
-> -error_buffer_free_sysfs:
-> -	iio_buffer_free_sysfs_and_mask(indio_dev);
->  error_unreg_debugfs:
->  	iio_device_unregister_debugfs(indio_dev);
->  	return ret;
-> @@ -1880,6 +1880,8 @@ void iio_device_unregister(struct iio_dev *indio_dev)
->  	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
->  	struct iio_ioctl_handler *h, *t;
->  
-> +	iio_buffer_free_sysfs_and_mask(indio_dev);
-> +
->  	cdev_device_del(&indio_dev->chrdev, &indio_dev->dev);
->  
->  	mutex_lock(&indio_dev->info_exist_lock);
-> @@ -1897,8 +1899,6 @@ void iio_device_unregister(struct iio_dev *indio_dev)
->  	iio_buffer_wakeup_poll(indio_dev);
->  
->  	mutex_unlock(&indio_dev->info_exist_lock);
-> -
-> -	iio_buffer_free_sysfs_and_mask(indio_dev);
->  }
->  EXPORT_SYMBOL(iio_device_unregister);
->  
-> diff --git a/include/linux/iio/buffer_impl.h b/include/linux/iio/buffer_impl.h
-> index 67d73d465e02..77e169e51434 100644
-> --- a/include/linux/iio/buffer_impl.h
-> +++ b/include/linux/iio/buffer_impl.h
-> @@ -103,14 +103,20 @@ struct iio_buffer {
->  	/* @scan_el_dev_attr_list: List of scan element related attributes. */
->  	struct list_head scan_el_dev_attr_list;
->  
-> -	/* @buffer_group: Attributes of the buffer group. */
-> -	struct attribute_group buffer_group;
-> +	/* @buffer_dir: kobject for the 'buffer' directory of this buffer */
-> +	struct kobject buffer_dir;
-> +
-> +	/* @buffer_attrs: Attributes of the buffer group. */
-> +	struct attribute **buffer_attrs;
-> +
-> +	/* @scan_el_dir: kobject for the 'scan_elements' directory of this buffer */
-> +	struct kobject scan_el_dir;
->  
->  	/*
-> -	 * @scan_el_group: Attribute group for those attributes not
-> +	 * @scan_el_attrs: Array of attributes for those attributes not
->  	 * created from the iio_chan_info array.
->  	 */
-> -	struct attribute_group scan_el_group;
-> +	struct attribute **scan_el_attrs;
->  
->  	/* @attrs: Standard attributes of the buffer. */
->  	const struct attribute **attrs;
-> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-> index e4a9822e6495..59b317dc45b8 100644
-> --- a/include/linux/iio/iio.h
-> +++ b/include/linux/iio/iio.h
-> @@ -556,7 +556,7 @@ struct iio_dev {
->  	struct mutex			info_exist_lock;
->  	const struct iio_buffer_setup_ops	*setup_ops;
->  	struct cdev			chrdev;
-> -#define IIO_MAX_GROUPS 6
-> +#define IIO_MAX_GROUPS 4
->  	const struct attribute_group	*groups[IIO_MAX_GROUPS + 1];
->  	int				groupcounter;
->  
-
+>=20
+> thanks,
+>=20
+> greg k-h
