@@ -2,124 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BE3301C4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6B2301C53
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 14:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbhAXNmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 08:42:11 -0500
-Received: from mout.gmx.net ([212.227.17.21]:39869 "EHLO mout.gmx.net"
+        id S1726092AbhAXNsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 08:48:09 -0500
+Received: from aposti.net ([89.234.176.197]:51890 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbhAXNmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:42:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611495617;
-        bh=7wAgiPv/ohlfCwMg9tisuTy2ke21tmeR7vAqXMCF//k=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:References:Date:In-Reply-To;
-        b=SChrum711pKVBIjmSlABNs+x2hOuQJFGu990dPVjstBuVa3XJhnZgdXnFJJwOJsKR
-         48xVIWtv1ypWU1OBVXDCPMcKBXxtZplzkjN+b4QaZOPIZ/1oL5o+krXFmxaQ9k3Xeu
-         ewIYOY1aBDHuH1Y9/wfX43rujVJE4Ibn9ISsDr+E=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from strobe-jhalfs ([178.6.215.244]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MrhQC-1lp3bx2ZLY-00nimQ; Sun, 24
- Jan 2021 14:40:17 +0100
-From:   Stephen Berman <stephen.berman@gmx.net>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH] ACPI: thermal: Do not call acpi_thermal_check() directly
-References: <3391226.KRKnzuvfpg@kreacher>
-        <CAJZ5v0gB4B_Os0VQv-F2SdVcJ8_rUdjic6rOEjOd=ZWhGzdLdQ@mail.gmail.com>
-        <87tur9vscw.fsf@rub.de>
-        <CAJZ5v0gQCxcxiFTtZ3Ea6gbY=WFt5oD4fq7vpQqvkJKqbg1=rA@mail.gmail.com>
-Date:   Sun, 24 Jan 2021 14:40:15 +0100
-In-Reply-To: <CAJZ5v0gQCxcxiFTtZ3Ea6gbY=WFt5oD4fq7vpQqvkJKqbg1=rA@mail.gmail.com>
-        (Rafael J. Wysocki's message of "Fri, 22 Jan 2021 17:42:59 +0100")
-Message-ID: <87y2gi78sg.fsf@gmx.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        id S1725842AbhAXNsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 08:48:01 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     gregkh <gregkh@linuxfoundation.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        stable <stable@vger.kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, od@zcrc.me,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [BACKPORT 5.4 PATCH] pinctrl: ingenic: Fix JZ4760 support
+Date:   Sun, 24 Jan 2021 13:47:04 +0000
+Message-Id: <20210124134704.202931-1-paul@crapouillou.net>
+In-Reply-To: <1611494593252195@kroah.com>
+References: <1611494593252195@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Provags-ID: V03:K1:buJeilmTKkwZrrO4ttbUapuQh6eQwztsRUMLtUVAxpJ7r+EanX0
- 1ie17qHLsRcTkwBCrP13Eh6MOH1zr3/Uguc1MpV3S6hICB7bc6/4N5G/3qFYACstrDJM4ak
- nQguyIggxCv3X5OyZbDM1SdgbcORYjRLQnLb1fGPjVlilR/otie3ILtrYM/TDbOXxIpiZfZ
- 214V32hsDkjFqiiQZltOw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TE7LdZBVTR8=:W4v244fL6cpGzG85dTMdb4
- st5RoCG0bXU+eovNx0TvvZX9s6F3sqrTReeqh//bwz0MVf7MyqPKMyknW4c4agFRZVzEvqux/
- dP8tFfBCFaVwFppRRxlH28Euqkj1BBRU4BHSs7J2aY8YcBm/FQDauQDvPFoh/G40LwctyHK/1
- KsX/ndF0MenmY0EDolzH2UIwSuFfCCx7ERiUCl02rk2R2YTh/TVRNTah7RC5TBtNOhU3K3atP
- KLZXlVsSKc+nPeG9jyAsjZFuiMpixz6ncsv3etY2csflm6jJY0Ux7XYOWlFmvEb4XfxoSHpKu
- ygvKRnu2msIKZtC8yUPkCtQVCze3WTokN8QWVGjWzMI0I+UU5QasN7kCk7l/xETzFaRqwQyPC
- vKdVuZeB9NemYlXYVHPn15s+9+aprFW6K5aVCdUA06tyug4WtNv7F26+nrkFehZjw4eATUqVd
- giKD3YlThrU8uxADkg/1lZs71Co49zfk3BET7mLnXTCSuwg75oQV7DkswWLn5PxzHP9e7ozca
- w4hUxEuKCIc00qHhpUofa4xr44mqjUQ1friZbF2lQJGOiyqY8HfOkp6V0iTpiX828GYmVQe+i
- XNHuxyuaoL3hDrTH/YERlNYc0wUUsXNB5HfqKtJ7C6L5+XlFNaMfkUb8J5W4zNe/a8nVB3Nz8
- dE2h9CaBFdhbBmZ7hkFjIVXSHPapo5jcJEkcnrGSisbKOKAItsRHMqU0eCyVZe2eK9ne1DcZU
- h9Lux2CnPyNod/fbTwUWJPpy94a2oqwcbR9BcfJlOUlh0wsL5x4RS1q6jNHkyBm/1hhpwAIGt
- BKmay67h2LkGU55CuDc/ZuFCNH3MFftqKWtNTgNpCZMSQd3B8a2Km+y4yCNv8Pc6gaodfzh4o
- nZqyyAvAgO2XaadH/qWg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 17:42:59 +0100 "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+- JZ4760 and JZ4760B have a similar register layout as the JZ4740, and
+  don't use the new register layout, which was introduced with the
+  JZ4770 SoC and not the JZ4760 or JZ4760B SoCs.
 
-> On Fri, Jan 22, 2021 at 5:39 PM Stephen Berman <stephen.berman@gmx.net> wrote:
->>
->> On Fri, 22 Jan 2021 17:23:36 +0100 "Rafael J. Wysocki" <rafael@kernel.org> wrote:
->>
->> > On Thu, Jan 14, 2021 at 7:35 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->> >>
->> >> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> >>
->> >> Calling acpi_thermal_check() from acpi_thermal_notify() directly
->> >> is problematic if _TMP triggers Notify () on the thermal zone for
->> >> which it has been evaluated (which happens on some systems), because
->> >> it causes a new acpi_thermal_notify() invocation to be queued up
->> >> every time and if that takes place too often, an indefinite number of
->> >> pending work items may accumulate in kacpi_notify_wq over time.
->> >>
->> >> Besides, it is not really useful to queue up a new invocation of
->> >> acpi_thermal_check() if one of them is pending already.
->> >>
->> >> For these reasons, rework acpi_thermal_notify() to queue up a thermal
->> >> check instead of calling acpi_thermal_check() directly and only allow
->> >> one thermal check to be pending at a time.  Moreover, only allow one
->> >> acpi_thermal_check_fn() instance at a time to run
->> >> thermal_zone_device_update() for one thermal zone and make it return
->> >> early if it sees other instances running for the same thermal zone.
->> >>
->> >> While at it, fold acpi_thermal_check() into acpi_thermal_check_fn(),
->> >> as it is only called from there after the other changes made here.
->> >>
->> >> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208877
->> >> Reported-by: Stephen Berman <stephen.berman@gmx.net>
->> >> Diagnosed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> >> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->> >
->> > Well, it's been over a week since this was posted.
->> >
->> > Does anyone have any comments?
->>
->> Sorry, I haven't been able to make time to test the patch yet, but I'll
->> try to do so this weekend.  Is it just the patch below that I should
->> apply, ignoring the previous patches you sent?
->
-> Yes.
->
->> And can I apply it to the current mainline kernel?
->
-> Yes, it should be applicable to the current mainline (at least as of 5.11-rc4).
->
-> Thanks!
+- The JZ4740 code path only expected two function modes to be
+  configurable for each pin, and wouldn't work with more than two. Fix
+  it for the JZ4760, which has four configurable function modes.
 
-I've now updated my local repo to 5.11.0-rc4+, installed your patch,
-rebuilt and installed the kernel, rebooted (without adding
-'thermal.tzp=300' to the kernel command line), did some normal activity,
-then ran 'shutdown -h now', and the machine did just that.  So your
-patch seems to have fixed the problem I reported.  Many thanks!
+Fixes: 0257595a5cf4 ("pinctrl: Ingenic: Add pinctrl driver for JZ4760 and JZ4760B.")
+Cc: <stable@vger.kernel.org> # 5.3
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/pinctrl/pinctrl-ingenic.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-Steve Berman
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index 8bd0a078bfc4..61e7d938d4c5 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -1378,7 +1378,7 @@ static inline bool ingenic_gpio_get_value(struct ingenic_gpio_chip *jzgc,
+ static void ingenic_gpio_set_value(struct ingenic_gpio_chip *jzgc,
+ 				   u8 offset, int value)
+ {
+-	if (jzgc->jzpc->version >= ID_JZ4760)
++	if (jzgc->jzpc->version >= ID_JZ4770)
+ 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_PAT0, offset, !!value);
+ 	else
+ 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, offset, !!value);
+@@ -1389,7 +1389,7 @@ static void irq_set_type(struct ingenic_gpio_chip *jzgc,
+ {
+ 	u8 reg1, reg2;
+ 
+-	if (jzgc->jzpc->version >= ID_JZ4760) {
++	if (jzgc->jzpc->version >= ID_JZ4770) {
+ 		reg1 = JZ4760_GPIO_PAT1;
+ 		reg2 = JZ4760_GPIO_PAT0;
+ 	} else {
+@@ -1464,7 +1464,7 @@ static void ingenic_gpio_irq_enable(struct irq_data *irqd)
+ 	struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
+ 	int irq = irqd->hwirq;
+ 
+-	if (jzgc->jzpc->version >= ID_JZ4760)
++	if (jzgc->jzpc->version >= ID_JZ4770)
+ 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, true);
+ 	else
+ 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, true);
+@@ -1480,7 +1480,7 @@ static void ingenic_gpio_irq_disable(struct irq_data *irqd)
+ 
+ 	ingenic_gpio_irq_mask(irqd);
+ 
+-	if (jzgc->jzpc->version >= ID_JZ4760)
++	if (jzgc->jzpc->version >= ID_JZ4770)
+ 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, false);
+ 	else
+ 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, false);
+@@ -1505,7 +1505,7 @@ static void ingenic_gpio_irq_ack(struct irq_data *irqd)
+ 			irq_set_type(jzgc, irq, IRQ_TYPE_LEVEL_HIGH);
+ 	}
+ 
+-	if (jzgc->jzpc->version >= ID_JZ4760)
++	if (jzgc->jzpc->version >= ID_JZ4770)
+ 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_FLAG, irq, false);
+ 	else
+ 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, irq, true);
+@@ -1562,7 +1562,7 @@ static void ingenic_gpio_irq_handler(struct irq_desc *desc)
+ 
+ 	chained_irq_enter(irq_chip, desc);
+ 
+-	if (jzgc->jzpc->version >= ID_JZ4760)
++	if (jzgc->jzpc->version >= ID_JZ4770)
+ 		flag = ingenic_gpio_read_reg(jzgc, JZ4760_GPIO_FLAG);
+ 	else
+ 		flag = ingenic_gpio_read_reg(jzgc, JZ4740_GPIO_FLAG);
+@@ -1643,7 +1643,7 @@ static int ingenic_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
+ 	struct ingenic_pinctrl *jzpc = jzgc->jzpc;
+ 	unsigned int pin = gc->base + offset;
+ 
+-	if (jzpc->version >= ID_JZ4760)
++	if (jzpc->version >= ID_JZ4770)
+ 		return ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_INT) ||
+ 			ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PAT1);
+ 
+@@ -1676,7 +1676,7 @@ static int ingenic_pinmux_set_pin_fn(struct ingenic_pinctrl *jzpc,
+ 		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
+ 		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT0, func & 0x1);
+ 		ingenic_shadow_config_pin_load(jzpc, pin);
+-	} else if (jzpc->version >= ID_JZ4760) {
++	} else if (jzpc->version >= ID_JZ4770) {
+ 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
+ 		ingenic_config_pin(jzpc, pin, GPIO_MSK, false);
+ 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
+@@ -1684,7 +1684,7 @@ static int ingenic_pinmux_set_pin_fn(struct ingenic_pinctrl *jzpc,
+ 	} else {
+ 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_FUNC, true);
+ 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_TRIG, func & 0x2);
+-		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func > 0);
++		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func & 0x1);
+ 	}
+ 
+ 	return 0;
+@@ -1734,7 +1734,7 @@ static int ingenic_pinmux_gpio_set_direction(struct pinctrl_dev *pctldev,
+ 		ingenic_shadow_config_pin(jzpc, pin, GPIO_MSK, true);
+ 		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
+ 		ingenic_shadow_config_pin_load(jzpc, pin);
+-	} else if (jzpc->version >= ID_JZ4760) {
++	} else if (jzpc->version >= ID_JZ4770) {
+ 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
+ 		ingenic_config_pin(jzpc, pin, GPIO_MSK, true);
+ 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
+@@ -1764,7 +1764,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
+ 	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
+ 	bool pull;
+ 
+-	if (jzpc->version >= ID_JZ4760)
++	if (jzpc->version >= ID_JZ4770)
+ 		pull = !ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PEN);
+ 	else
+ 		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
+@@ -1796,7 +1796,7 @@ static int ingenic_pinconf_get(struct pinctrl_dev *pctldev,
+ static void ingenic_set_bias(struct ingenic_pinctrl *jzpc,
+ 		unsigned int pin, bool enabled)
+ {
+-	if (jzpc->version >= ID_JZ4760)
++	if (jzpc->version >= ID_JZ4770)
+ 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PEN, !enabled);
+ 	else
+ 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_PULL_DIS, !enabled);
+-- 
+2.29.2
+
