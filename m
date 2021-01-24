@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51955301CF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2023301CFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbhAXPJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
+        id S1726469AbhAXPK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbhAXPJ1 (ORCPT
+        with ESMTP id S1726362AbhAXPJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:09:27 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F467C061756;
-        Sun, 24 Jan 2021 07:08:47 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id i9so2038863wmq.1;
-        Sun, 24 Jan 2021 07:08:47 -0800 (PST)
+        Sun, 24 Jan 2021 10:09:28 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A52CC0613D6;
+        Sun, 24 Jan 2021 07:08:48 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 190so8417183wmz.0;
+        Sun, 24 Jan 2021 07:08:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
         bh=Ag6006OGpj/LnO01jq+OCQKPnWe8b0yCa7D0tLaFvmM=;
-        b=TOCbp+BDx6RM11NVVijlGdB35BiNyQxSxKuDKWkhO4WEpH3e+pxel1Z0G43APR36c5
-         FXI5cWN/NA2C6IVh7v2ZvfVhmZ61uRMyH/GfACuVvHYezD7CyyDQ+AygdmyFCY97VKHj
-         C6obY5CUJ+TcZzpJq1LqpBFr+CdWSj9KdVZ7id2Jp7tiTghHREuuAARBrjIl2S2nJoWn
-         GI0OVLsAl2+9mIQoBy2VmJawA/EDIZ3+mZzbYWvVMQAvGKkxglRhJyC85WFtkmI7zqdm
-         qu/rx45j3AHNxRBb16aZsTLfQIaET4uwba7iqFTsrT5OUVT+pk2MGkWg6Lx1Z+M/xyos
-         7p1g==
+        b=bPwf4qkir49pVBSitB1Do8De4PPdvI6685ybt24v+l9t1TtNQfcEsur0Je7nsRbi0N
+         ILXUQ3ulIGpUzLhgKy+WPEFxCwLT1b6v4C8+l1/VXFl0IqYsJdIHammgIPqadmYW9NtO
+         HivSY1nzRSUp7N0BcM8VfZ8eg5dmexoVdKQKWJQmQlBpBIcivKzh42OS0QnUxrX/Vegs
+         ey6kH0lP32cZNTosC0JaosIuX7CuaddjOd0C+Cf3cgx4Ve+2WkL9N0GyNMXGq0/Z4o7G
+         Glr3CLkxnMFeexWx9pqZ0REXGXhnqQIPOWvLHzrzu2yFUYA2vnPuiX5MHNENvyXvPGI1
+         ngCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=Ag6006OGpj/LnO01jq+OCQKPnWe8b0yCa7D0tLaFvmM=;
-        b=CLyxZ/BJAODeWmhDefl3ziGQC6jcKLsCu9+0uKZF6wP3JxH/ffVvemkzm2fe3mVpRS
-         jVH2WzVwFW17/sa52A+Oie0oF8gcphC2ADi3ieMJCBAtj4OYip2NPoDgZBTdkY+PgBkE
-         Oj0sLnu7k+D7wdDoS0xhLiMBP4o4K3C86thUT6WAjew4YC4RoHqc4iX521SvsiJhU9Fy
-         PKYxY/b059TJNHizRysT06BGGQKj1P3XdYe7uEUQD6v5QckVUh7xvjcjlvLzdoe67MuE
-         RKzwWEkiyGpXIIq4pF9IDuQpLJNt0Sd3p4tkNguGjyInsrh5uX9Embvjii0Aiq8VNrgj
-         xDEQ==
-X-Gm-Message-State: AOAM530cJkOtfD7CT9u7TSGRY8Ow666i5raEezmrLaKFWi9Yi9xbPzWf
-        5uxRAHAFT/HaY16qWbXm+es=
-X-Google-Smtp-Source: ABdhPJzfpNHEnuZxE5BgO0IyKRgf4NPq8SLJLxIo76XFtcaIsh3V8uoLikb9aNFH7f9QrXt1pMxxzQ==
-X-Received: by 2002:a1c:8095:: with SMTP id b143mr478249wmd.71.1611500926117;
+        b=UnD7KX2kBJ24AicfKnRfSc0ysRn6goFXHIDBwZkOnUVZYD7AGoSDWDtfTkIzjH7eZ3
+         Gw5o+g+yZY4jjLtyTBqWYG/gAZnPmGPktohR36RwnuuHG/s2BcjBlznRuVH33NlhfCdg
+         DuBmFVdtF7bUi9PXYsdMXCx+MMq7EKOKFn6ecY2BuQ/CkmJjT53R5yo+/QMEYkPZHmI8
+         e3YD66sVZCWSLHvHo6tE+x+6htYkKYpDv9Kpno1Y809pVzmyvoIFA8QpgJwsAtEQPYZY
+         DjH1HCno3MCJoQmRQf/gNKD7B2z28TyVywScFIR7c8/0jNk5ludyu+6xr/i6BEehADkM
+         WrBQ==
+X-Gm-Message-State: AOAM531VfdsWTai5rYd/7W+m0C/99jBgIix6vQER+fjPjNy5qKtn051B
+        6gwJExPaOEB1TpfmgS+r13Y=
+X-Google-Smtp-Source: ABdhPJzayFhOgFZntgiAOE/EY618MX5PY+t/LDNbQv/eVErJ+86mON1JNnZWa3lXxDa4I2nqJiaAeg==
+X-Received: by 2002:a1c:2501:: with SMTP id l1mr12006281wml.41.1611500926916;
         Sun, 24 Jan 2021 07:08:46 -0800 (PST)
 Received: from adgra-XPS-15-9570.home (2a01cb0008bd2700e58e9e649f9020b2.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:e58e:9e64:9f90:20b2])
-        by smtp.gmail.com with ESMTPSA id m18sm244608wrx.17.2021.01.24.07.08.45
+        by smtp.gmail.com with ESMTPSA id m18sm244608wrx.17.2021.01.24.07.08.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 07:08:45 -0800 (PST)
+        Sun, 24 Jan 2021 07:08:46 -0800 (PST)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
         a.hajda@samsung.com, narmstrong@baylibre.com,
@@ -56,8 +56,8 @@ Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Adrien Grassein <adrien.grassein@gmail.com>
 Subject: [PATCH 1/2] dt-bindings: display: bridge: Add documentation for LT8912
-Date:   Sun, 24 Jan 2021 16:08:33 +0100
-Message-Id: <20210124150835.1522899-2-adrien.grassein@gmail.com>
+Date:   Sun, 24 Jan 2021 16:08:34 +0100
+Message-Id: <20210124150835.1522899-3-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210124150835.1522899-1-adrien.grassein@gmail.com>
 References: <20210124150835.1522899-1-adrien.grassein@gmail.com>
