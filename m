@@ -2,492 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3E5301EFF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 22:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175B7301EEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 22:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbhAXVpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 16:45:15 -0500
-Received: from mout.gmx.net ([212.227.17.20]:45491 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbhAXVpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 16:45:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1611524577;
-        bh=UamOdNgRGVV/uboW9jyAUWhLl1ArbkW+JjF1Y0Qm0aM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=RKkX/7E42DWevbDSXRM78S3ys19s6yL9GA8GzdmmW31n4WGOM/uLYANUi+AO5pi+R
-         +1lCeJEcx+/SJMoMKan1o9dDDEfoDcCAb6B9h7sDqh2Z1AFtBjv6wISFX3lthI2LKs
-         ge78iSFPBZyAStCIVfSjEIRblFp4oO64vvUu0f54=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.209]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1ML9yc-1lLsF03lVS-00IGsL; Sun, 24
- Jan 2021 22:42:57 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v9 3/7] mfd: Add base driver for Netronix embedded controller
-Date:   Sun, 24 Jan 2021 22:41:23 +0100
-Message-Id: <20210124214127.3631530-4-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+        id S1726390AbhAXVml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 16:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbhAXVmi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 16:42:38 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FF4C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 13:41:57 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id p72so22688062iod.12
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 13:41:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m6lwV28GijY7rTHRfDpxxrCaKS6WvW3gX681i6ru1Cg=;
+        b=ENb5DAuDy3PaY65g0ICGXitGeIT4QgOzh32R1huFEo2KSm44etc2scNVyyWh+tyO1x
+         CAprWKugAF/cZEj/sunHXxim9E4t2u3iMqj3fg0AGXVW103YHEx6kxdtl3CAXUyTHfNg
+         2K+yFMQhY4lSTODW27qp24BGuSlyQd4SaGGws=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m6lwV28GijY7rTHRfDpxxrCaKS6WvW3gX681i6ru1Cg=;
+        b=grqGfgFAM1YVrCUVnAsiV/nZ0PNiVN5Kkc3O4B6Klrzg6JGaHntXU1YN6K0PRN2AV0
+         F1HerbE/jLXMi0Mrxf4rX2WL1YCA1NBS6S1kyLLLrBUXY6G/NBUFBcwXdy4+bxWOtgiP
+         IMPYydfOsCjDZsD7rdXaVzgUS7UC8KCh7EO7VrfQ3lWRGDKpWj2WqTNx2/BFZN/jsr1e
+         jCQ3kW7Vk9+ZAkDNGcdF4fYPVqcm/pm+A1TBoN8NObcIWTUBY73pHXL93AYajHKuwjhQ
+         q9vg3izz42jBdoFUmen45fiiUY0EJVSVFmG1R7drRnXgud0//y0dXkb0aUixNgovU1tx
+         e0Ig==
+X-Gm-Message-State: AOAM531CDlBbjVuql4rr2zexUgjhINcCMJvvAHljm65H8ADV0+e52315
+        TnRZvVqqHLZyechu56pvF6zSqsvfMdBsqVPWi4Ep1A==
+X-Google-Smtp-Source: ABdhPJyXZzYDTIAIcHUr/KEtq1hGjuPn7nnyCg8uzJBbdtGTivrruVd5illo+njcpht4Pjb4sTJ+xRHwKQEszNvBCx4=
+X-Received: by 2002:a02:5ec1:: with SMTP id h184mr808921jab.133.1611524516497;
+ Sun, 24 Jan 2021 13:41:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CbfDTXZHWxJSDM0JvBsM8/8x/VNHI34Bmcn1fT8SFWPhveKoNrM
- MOjtF5/FyWoVY4Xulfc7WVoc6oYxsLp/SpAvQcUhce60nE5uTs3U05VysC1xeKrfvS8j3zy
- lfcNZq3Ai5tkkjoyAKTADVDo3G+pYjkc2yPMEtVGu8wHIt/R8PNayVJECNNxnwCo+0Udjx7
- ukKmWFJzk0eHMd9U5YzLQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:2wfrs9Vo6Ic=:MOINVYLRn15sKjwOzMbNKS
- Q/4+2UJ82AOKSPIyGRGD+90hrdXqYaSBEB5SZKpU7VsXG4DMGUzUoNF3k+gfm/gbgj46JHwFI
- J8dWJxQKPKV8VglZ+S0KpHdbQkRM8/yZEGvapC5Ug0I9s5Px30ZpOemU4+P5qm1Af3+TlGHKL
- Nzy4dGEhkjd3TjRb052B5MjZ7gRNa8uFEZkEMwoFEyeVRR5qDMJk+QMFeuxVa+TgsNSwJDHw2
- ugh62P/OepM0rS/Zay8hlAFk+lGxqm3CRPwaFgjXFKWqwrC0AhqXGEvjXoTeW3CLKQrKoTxoL
- ckvXFVWLv2MLllkWu+zeSUmk9Irg1OR1N22AYhqIMtenX6yTYg7qaubvZ/CnPw425BExLWIt+
- E1PIfg73PK4Tzrsr4HqzP7wuPKckaJYSRb5K0KzHe29JqCKQhl5fLw06jWu6PkLs4osPt2z+k
- YVnDdw6/uwhsAgdUW54pnrBZyEB+Pio16afEuQqsp1EcEEuNsFkD6XV6JguOfRbUQ/C2d8NT+
- JDuSaMXZu3qzconJ98aQsxAoiIQr84V6SU0mWTq+U2c3HS6BwuOlRPlEsdD4e953BPZCI9Qmj
- Iy8FORAHJ5r29ipO8UmnBMc4UGLC7bXqCdXp7wpmXBRfo1rOucVPQE4IQrVsCJJRgtgmUlFts
- F/hNAmSR2RILAKCf97rHhnROwuiMpcNSw8ZS6ALKtpL4UXTdFnoe390WSbsQIblHK3CdUkUn3
- lXE2TwAMM1jD0nPaGUBYWtXWLhHyKXjeQbs9Lu/xLgUn0oa9sArpFdJkxD4jJ9BTcvBBpoz95
- U1GkrcWH5Ycf80OG6046s+SZ8cFaxRP8zl0BOoWVvU6WyTqlWSYObnTey1dUucjnx6kNtucHt
- /JfXmetz+8Bl76eQOKvw==
+References: <20210122225443.186184-1-swboyd@chromium.org> <20210122225443.186184-4-swboyd@chromium.org>
+ <20210124173820.4528b9c9@archlinux>
+In-Reply-To: <20210124173820.4528b9c9@archlinux>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Sun, 24 Jan 2021 13:41:44 -0800
+Message-ID: <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Netronix embedded controller is a microcontroller found in some
-e-book readers designed by the original design manufacturer Netronix,
-Inc. It contains RTC, battery monitoring, system power management, and
-PWM functionality.
-
-This driver implements register access and version detection.
-
-Third-party hardware documentation is available at:
-
-  https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-contr=
-oller
-
-The EC supports interrupts, but the driver doesn't make use of them so
-far.
-
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-=2D--
-v9:
-- Fix return value after regmap failure (bug found by kernel test robot <l=
-kp@intel.com>)
-
-v8:
-- https://lore.kernel.org/lkml/20210116194826.3866540-4-j.neuschaefer@gmx.=
-net/
-- Add missing MODULE_DEVICE_TABLE
-- Add module metadata (author, description, license)
-
-v7:
-- Add #define for version number (suggested by Lee Jones).
-
-v6:
-- Add Lee Jones' ACK
-
-v5:
-- no changes
-
-v4:
-- include asm/unaligned.h after linux/*
-- Use put_unaligned_be16 instead of open-coded big-endian packing
-- Clarify that 0x90=3D0xff00 causes an error in downstream kernel too
-- Add commas after non-sentinel positions
-- ntxec.h: declare structs device and regmap
-- Replace WARN_ON usage and add comments to explain errors
-- Replace dev_alert with dev_warn when the result isn't handled
-- Change subdevice registration error message to dev_err
-- Declare ntxec_reg8 as returning __be16
-- Restructure version detection code
-- Spell out ODM
-
-v3:
-- Add (EC) to CONFIG_MFD_NTXEC prompt
-- Relicense as GPLv2 or later
-- Add email address to copyright line
-- remove empty lines in ntxec_poweroff and ntxec_restart functions
-- Split long lines
-- Remove 'Install ... handler' comments
-- Make naming of struct i2c_client parameter consistent
-- Remove struct ntxec_info
-- Rework 'depends on' lines in Kconfig, hard-depend on I2C, select REGMAP_=
-I2C and
-  MFD_CORE
-- Register subdevices via mfd_cells
-- Move 8-bit register conversion to ntxec.h
-
-v2:
-- Add a description of the device to the patch text
-- Unify spelling as 'Netronix embedded controller'.
-  'Netronix' is the proper name of the manufacturer, but 'embedded control=
-ler'
-  is just a label that I have assigned to the device.
-- Switch to regmap, avoid regmap use in poweroff and reboot handlers.
-  Inspired by cf84dc0bb40f4 ("mfd: rn5t618: Make restart handler atomic sa=
-fe")
-- Use a list of known-working firmware versions instead of checking for a
-  known-incompatible version
-- Prefix registers with NTXEC_REG_
-- Define register values as constants
-- Various style cleanups as suggested by Lee Jones
-- Don't align =3D signs in struct initializers [Uwe Kleine-K=C3=B6nig]
-- Don't use dev_dbg for an error message
-- Explain sleep in poweroff handler
-- Remove (struct ntxec).client
-- Switch to .probe_new in i2c driver
-- Add .remove callback
-- Make CONFIG_MFD_NTXEC a tristate option
-=2D--
- drivers/mfd/Kconfig       |  11 ++
- drivers/mfd/Makefile      |   1 +
- drivers/mfd/ntxec.c       | 221 ++++++++++++++++++++++++++++++++++++++
- include/linux/mfd/ntxec.h |  37 +++++++
- 4 files changed, 270 insertions(+)
- create mode 100644 drivers/mfd/ntxec.c
- create mode 100644 include/linux/mfd/ntxec.h
-
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index bdfce7b156216..4280bcd47ec7d 100644
-=2D-- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -976,6 +976,17 @@ config MFD_VIPERBOARD
- 	  You need to select the mfd cell drivers separately.
- 	  The drivers do not support all features the board exposes.
-
-+config MFD_NTXEC
-+	tristate "Netronix embedded controller (EC)"
-+	depends on OF || COMPILE_TEST
-+	depends on I2C
-+	select REGMAP_I2C
-+	select MFD_CORE
-+	help
-+	  Say yes here if you want to support the embedded controller found in
-+	  certain e-book readers designed by the original design manufacturer
-+	  Netronix.
-+
- config MFD_RETU
- 	tristate "Nokia Retu and Tahvo multi-function device"
- 	select MFD_CORE
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 14fdb188af022..948a3bf8e3e57 100644
-=2D-- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -219,6 +219,7 @@ obj-$(CONFIG_MFD_INTEL_PMC_BXT)	+=3D intel_pmc_bxt.o
- obj-$(CONFIG_MFD_INTEL_PMT)	+=3D intel_pmt.o
- obj-$(CONFIG_MFD_PALMAS)	+=3D palmas.o
- obj-$(CONFIG_MFD_VIPERBOARD)    +=3D viperboard.o
-+obj-$(CONFIG_MFD_NTXEC)		+=3D ntxec.o
- obj-$(CONFIG_MFD_RC5T583)	+=3D rc5t583.o rc5t583-irq.o
- obj-$(CONFIG_MFD_RK808)		+=3D rk808.o
- obj-$(CONFIG_MFD_RN5T618)	+=3D rn5t618.o
-diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-new file mode 100644
-index 0000000000000..957de2b035290
-=2D-- /dev/null
-+++ b/drivers/mfd/ntxec.c
-@@ -0,0 +1,221 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * The Netronix embedded controller is a microcontroller found in some
-+ * e-book readers designed by the original design manufacturer Netronix, =
-Inc.
-+ * It contains RTC, battery monitoring, system power management, and PWM
-+ * functionality.
-+ *
-+ * This driver implements register access, version detection, and system
-+ * power-off/reset.
-+ *
-+ * Copyright 2020 Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/errno.h>
-+#include <linux/i2c.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/ntxec.h>
-+#include <linux/module.h>
-+#include <linux/pm.h>
-+#include <linux/reboot.h>
-+#include <linux/regmap.h>
-+#include <linux/types.h>
-+#include <asm/unaligned.h>
-+
-+#define NTXEC_REG_VERSION	0x00
-+#define NTXEC_REG_POWEROFF	0x50
-+#define NTXEC_REG_POWERKEEP	0x70
-+#define NTXEC_REG_RESET		0x90
-+
-+#define NTXEC_POWEROFF_VALUE	0x0100
-+#define NTXEC_POWERKEEP_VALUE	0x0800
-+#define NTXEC_RESET_VALUE	0xff00
-+
-+static struct i2c_client *poweroff_restart_client;
-+
-+static void ntxec_poweroff(void)
-+{
-+	int res;
-+	u8 buf[3] =3D { NTXEC_REG_POWEROFF };
-+	struct i2c_msg msgs[] =3D {
-+		{
-+			.addr =3D poweroff_restart_client->addr,
-+			.flags =3D 0,
-+			.len =3D sizeof(buf),
-+			.buf =3D buf,
-+		},
-+	};
-+
-+	put_unaligned_be16(NTXEC_POWEROFF_VALUE, buf + 1);
-+
-+	res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(=
-msgs));
-+	if (res < 0)
-+		dev_warn(&poweroff_restart_client->dev,
-+			 "Failed to power off (err =3D %d)\n", res);
-+
-+	/*
-+	 * The time from the register write until the host CPU is powered off
-+	 * has been observed to be about 2.5 to 3 seconds. Sleep long enough to
-+	 * safely avoid returning from the poweroff handler.
-+	 */
-+	msleep(5000);
-+}
-+
-+static int ntxec_restart(struct notifier_block *nb,
-+			 unsigned long action, void *data)
-+{
-+	int res;
-+	u8 buf[3] =3D { NTXEC_REG_RESET };
-+	/*
-+	 * NOTE: The lower half of the reset value is not sent, because sending
-+	 * it causes an I2C error. (The reset handler in the downstream driver
-+	 * does send the full two-byte value, but doesn't check the result).
-+	 */
-+	struct i2c_msg msgs[] =3D {
-+		{
-+			.addr =3D poweroff_restart_client->addr,
-+			.flags =3D 0,
-+			.len =3D sizeof(buf) - 1,
-+			.buf =3D buf,
-+		},
-+	};
-+
-+	put_unaligned_be16(NTXEC_RESET_VALUE, buf + 1);
-+
-+	res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(=
-msgs));
-+	if (res < 0)
-+		dev_warn(&poweroff_restart_client->dev,
-+			 "Failed to restart (err =3D %d)\n", res);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block ntxec_restart_handler =3D {
-+	.notifier_call =3D ntxec_restart,
-+	.priority =3D 128,
-+};
-+
-+static const struct regmap_config regmap_config =3D {
-+	.name =3D "ntxec",
-+	.reg_bits =3D 8,
-+	.val_bits =3D 16,
-+	.cache_type =3D REGCACHE_NONE,
-+	.val_format_endian =3D REGMAP_ENDIAN_BIG,
-+};
-+
-+static const struct mfd_cell ntxec_subdevices[] =3D {
-+	{ .name =3D "ntxec-rtc" },
-+	{ .name =3D "ntxec-pwm" },
-+};
-+
-+static int ntxec_probe(struct i2c_client *client)
-+{
-+	struct ntxec *ec;
-+	unsigned int version;
-+	int res;
-+
-+	ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-+	if (!ec)
-+		return -ENOMEM;
-+
-+	ec->dev =3D &client->dev;
-+
-+	ec->regmap =3D devm_regmap_init_i2c(client, &regmap_config);
-+	if (IS_ERR(ec->regmap)) {
-+		dev_err(ec->dev, "Failed to set up regmap for device\n");
-+		return PTR_ERR(ec->regmap);
-+	}
-+
-+	/* Determine the firmware version */
-+	res =3D regmap_read(ec->regmap, NTXEC_REG_VERSION, &version);
-+	if (res < 0) {
-+		dev_err(ec->dev, "Failed to read firmware version number\n");
-+		return res;
-+	}
-+
-+	/* Bail out if we encounter an unknown firmware version */
-+	switch (version) {
-+	case NTXEC_VERSION_KOBO_AURA:
-+		break;
-+	default:
-+		dev_err(ec->dev,
-+			"Netronix embedded controller version %04x is not supported.\n",
-+			version);
-+		return -ENODEV;
-+	}
-+
-+	dev_info(ec->dev,
-+		 "Netronix embedded controller version %04x detected.\n", version);
-+
-+	if (of_device_is_system_power_controller(ec->dev->of_node)) {
-+		/*
-+		 * Set the 'powerkeep' bit. This is necessary on some boards
-+		 * in order to keep the system running.
-+		 */
-+		res =3D regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
-+				   NTXEC_POWERKEEP_VALUE);
-+		if (res < 0)
-+			return res;
-+
-+		if (poweroff_restart_client)
-+			/*
-+			 * Another instance of the driver already took
-+			 * poweroff/restart duties.
-+			 */
-+			dev_err(ec->dev, "poweroff_restart_client already assigned\n");
-+		else
-+			poweroff_restart_client =3D client;
-+
-+		if (pm_power_off)
-+			/* Another driver already registered a poweroff handler. */
-+			dev_err(ec->dev, "pm_power_off already assigned\n");
-+		else
-+			pm_power_off =3D ntxec_poweroff;
-+
-+		res =3D register_restart_handler(&ntxec_restart_handler);
-+		if (res)
-+			dev_err(ec->dev,
-+				"Failed to register restart handler: %d\n", res);
-+	}
-+
-+	i2c_set_clientdata(client, ec);
-+
-+	res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevi=
-ces,
-+				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
-+	if (res)
-+		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
-+
-+	return res;
-+}
-+
-+static int ntxec_remove(struct i2c_client *client)
-+{
-+	if (client =3D=3D poweroff_restart_client) {
-+		poweroff_restart_client =3D NULL;
-+		pm_power_off =3D NULL;
-+		unregister_restart_handler(&ntxec_restart_handler);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_ntxec_match_table[] =3D {
-+	{ .compatible =3D "netronix,ntxec", },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_ntxec_match_table);
-+
-+static struct i2c_driver ntxec_driver =3D {
-+	.driver =3D {
-+		.name =3D "ntxec",
-+		.of_match_table =3D of_ntxec_match_table,
-+	},
-+	.probe_new =3D ntxec_probe,
-+	.remove =3D ntxec_remove,
-+};
-+module_i2c_driver(ntxec_driver);
-+
-+MODULE_AUTHOR("Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>");
-+MODULE_DESCRIPTION("Core driver for Netronix EC");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-new file mode 100644
-index 0000000000000..361204d125f1a
-=2D-- /dev/null
-+++ b/include/linux/mfd/ntxec.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright 2020 Jonathan Neusch=C3=A4fer
-+ *
-+ * Register access and version information for the Netronix embedded
-+ * controller.
-+ */
-+
-+#ifndef NTXEC_H
-+#define NTXEC_H
-+
-+#include <linux/types.h>
-+
-+struct device;
-+struct regmap;
-+
-+struct ntxec {
-+	struct device *dev;
-+	struct regmap *regmap;
-+};
-+
-+/*
-+ * Some registers, such as the battery status register (0x41), are in
-+ * big-endian, but others only have eight significant bits, which are in =
-the
-+ * first byte transmitted over I2C (the MSB of the big-endian value).
-+ * This convenience function converts an 8-bit value to 16-bit for use in=
- the
-+ * second kind of register.
-+ */
-+static inline __be16 ntxec_reg8(u8 value)
-+{
-+	return value << 8;
-+}
-+
-+/* Known firmware versions */
-+#define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
-+
-+#endif
-=2D-
-2.29.2
-
+On Sun, Jan 24, 2021 at 9:38 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Fri, 22 Jan 2021 14:54:43 -0800
+> Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> > Add support for a ChromeOS EC proximity driver that exposes a "front"
+> > proximity sensor via the IIO subsystem. The EC decides when front
+> > proximity is near and sets an MKBP switch 'EC_MKBP_FRONT_PROXIMITY' to
+> > notify the kernel of proximity. Similarly, when proximity detects
+> > something far away it sets the switch bit to 0. For now this driver
+> > exposes a single sensor, but it could be expanded in the future via more
+> > MKBP bits if desired.
+> >
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Benson Leung <bleung@chromium.org>
+> > Cc: Guenter Roeck <groeck@chromium.org>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>
+> Hi Stephen,
+>
+> Looks more or less fine to me.  My main concern is potential confusion
+> in naming with the cros_ec_prox_light driver that we already have.
+>
+> A few other minor bits and bobs inline.
+>
+> thanks,
+>
+> Jonathan
+>
+>
+> > ---
+> >  drivers/iio/proximity/Kconfig             |  11 +
+> >  drivers/iio/proximity/Makefile            |   1 +
+> >  drivers/iio/proximity/cros_ec_proximity.c | 252 ++++++++++++++++++++++
+> >  3 files changed, 264 insertions(+)
+> >  create mode 100644 drivers/iio/proximity/cros_ec_proximity.c
+> >
+> > diff --git a/drivers/iio/proximity/Kconfig b/drivers/iio/proximity/Kconfig
+> > index 12672a0e89ed..35a04e9ede7d 100644
+> > --- a/drivers/iio/proximity/Kconfig
+> > +++ b/drivers/iio/proximity/Kconfig
+> > @@ -21,6 +21,17 @@ endmenu
+> >
+> >  menu "Proximity and distance sensors"
+> >
+> > +config CROS_EC_PROXIMITY
+> > +     tristate "ChromeOS EC MKBP Proximity sensor"
+> > +     depends on CROS_EC
+> > +     help
+> > +       Say Y here to enable the proximity sensor implemented via the ChromeOS EC MKBP
+> > +       switches protocol. You must enable one bus option (CROS_EC_I2C or CROS_EC_SPI)
+> > +       to use this.
+> > +
+> > +       To compile this driver as a module, choose M here: the
+> > +       module will be called cros_ec_prox.
+> > +
+> >  config ISL29501
+> >       tristate "Intersil ISL29501 Time Of Flight sensor"
+> >       depends on I2C
+> > diff --git a/drivers/iio/proximity/Makefile b/drivers/iio/proximity/Makefile
+> > index 9c1aca1a8b79..b1330dd8e212 100644
+> > --- a/drivers/iio/proximity/Makefile
+> > +++ b/drivers/iio/proximity/Makefile
+> > @@ -5,6 +5,7 @@
+> >
+> >  # When adding new entries keep the list in alphabetical order
+> >  obj-$(CONFIG_AS3935)         += as3935.o
+> > +obj-$(CONFIG_CROS_EC_PROXIMITY)      += cros_ec_proximity.o
+> >  obj-$(CONFIG_ISL29501)               += isl29501.o
+> >  obj-$(CONFIG_LIDAR_LITE_V2)  += pulsedlight-lidar-lite-v2.o
+> >  obj-$(CONFIG_MB1232)         += mb1232.o
+> > diff --git a/drivers/iio/proximity/cros_ec_proximity.c b/drivers/iio/proximity/cros_ec_proximity.c
+> > new file mode 100644
+> > index 000000000000..a3aef911e3cc
+> > --- /dev/null
+> > +++ b/drivers/iio/proximity/cros_ec_proximity.c
+> > @@ -0,0 +1,252 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Driver for cros-ec proximity sensor exposed through MKBP switch
+> > + *
+> > + * Copyright 2021 Google LLC.
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/kernel.h>
+>
+> Slight preference for alphabetical order though keeping specific
+> sections separate as done here is fine.
+>
+> > +#include <linux/notifier.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/types.h>
+> > +
+> > +#include <linux/platform_data/cros_ec_commands.h>
+> > +#include <linux/platform_data/cros_ec_proto.h>
+> > +
+> > +#include <linux/iio/events.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/sysfs.h>
+> > +
+> > +#include <asm/unaligned.h>
+> > +
+> > +struct cros_ec_proximity_data {
+> > +     struct cros_ec_device *ec;
+> > +     struct iio_dev *indio_dev;
+> > +     struct mutex lock;
+> > +     struct notifier_block notifier;
+> > +     bool enabled;
+> > +};
+> > +
+> > +static const struct iio_event_spec cros_ec_prox_events[] = {
+> > +     {
+> > +             .type = IIO_EV_TYPE_THRESH,
+> > +             .dir = IIO_EV_DIR_EITHER,
+> > +             .mask_separate = BIT(IIO_EV_INFO_ENABLE),
+> > +     },
+> > +};
+> > +
+> > +static const struct iio_chan_spec cros_ec_prox_chan_spec[] = {
+> > +     {
+> > +             .type = IIO_PROXIMITY,
+> > +             .info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
+> > +             .event_spec = cros_ec_prox_events,
+> > +             .num_event_specs = ARRAY_SIZE(cros_ec_prox_events),
+> > +     },
+> > +};
+> > +
+> > +static int cros_ec_proximity_parse_state(const void *data)
+> > +{
+> > +     u32 switches = get_unaligned_le32(data);
+> > +
+> > +     return !!(switches & BIT(EC_MKBP_FRONT_PROXIMITY));
+> > +}
+> > +
+> > +static int cros_ec_proximity_query(struct cros_ec_device *ec_dev, int *state)
+> > +{
+> > +     struct ec_params_mkbp_info *params;
+> > +     struct cros_ec_command *msg;
+> > +     int ret;
+> > +
+> > +     msg = kzalloc(sizeof(*msg) + max(sizeof(u32), sizeof(*params)),
+> > +                   GFP_KERNEL);
+>
+> Given this is known at build time, perhaps better to add it to the
+> iio_priv() accessed structure and avoid having to handle allocations
+> separately.
+As Jonathan said, it can be preallocated in iio private structure. We
+can also use the stack, given the response size is known beforehand.
+See cros_ec_cec_set_log_addr() or cros_ec_pwm_get_duty() for example.
+>
+> > +     if (!msg)
+> > +             return -ENOMEM;
+> > +
+> > +     msg->command = EC_CMD_MKBP_INFO;
+> > +     msg->version = 1;
+> > +     msg->outsize = sizeof(*params);
+> > +     msg->insize = sizeof(u32);
+> > +     params = (struct ec_params_mkbp_info *)msg->data;
+> > +     params->info_type = EC_MKBP_INFO_CURRENT;
+> > +     params->event_type = EC_MKBP_EVENT_SWITCH;
+> > +
+> > +     ret = cros_ec_cmd_xfer_status(ec_dev, msg);
+> > +     if (ret >= 0) {
+> > +             if (ret != sizeof(u32)) {
+> > +                     dev_warn(ec_dev->dev, "wrong result size: %d != %zu\n",
+> > +                              ret, sizeof(u32));
+> > +                     ret = -EPROTO;
+> > +             } else {
+> > +                     *state = cros_ec_proximity_parse_state(msg->data);
+> > +                     ret = 0;
+> If you move the allocation as suggested above, this can become
+>
+> if (ret < 0)
+>         return ret;
+>
+> if (ret != sizeof(u32)) {
+>         ...
+>         return -EPROTO;
+> }
+>
+> *state = cros_..
+> return 0;
+>
+> Which will be neater and not as deeply nested.
+>
+> > +             }
+> > +     }
+> > +
+> > +     kfree(msg);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int cros_ec_proximity_notify(struct notifier_block *nb,
+> > +                          unsigned long queued_during_suspend, void *_ec)
+> > +{
+> > +     struct cros_ec_proximity_data *data;
+> > +     struct cros_ec_device *ec = _ec;
+> > +     u8 event_type = ec->event_data.event_type & EC_MKBP_EVENT_TYPE_MASK;
+> > +     void *switches = &ec->event_data.data.switches;
+> > +     struct iio_dev *indio_dev;
+> > +     s64 timestamp;
+> > +     int state, dir;
+> > +     u64 ev;
+> > +
+> > +     if (event_type == EC_MKBP_EVENT_SWITCH) {
+> > +             data = container_of(nb, struct cros_ec_proximity_data, notifier);
+> > +             indio_dev = data->indio_dev;
+> > +
+> > +             mutex_lock(&data->lock);
+> > +             if (data->enabled) {
+> > +                     timestamp = iio_get_time_ns(indio_dev);
+For Android, given the timestamp must be time it happens, not reported
+[https://source.android.com/devices/sensors/sensors-hal2] """The
+timestamp must be accurate and correspond to the time at which the
+event physically happened, not the time it was reported.""", consider
+using ec_dev->last_event_time and apply a delta if the iio clock base
+is different from CLOCK_BOOTTIME.
+> > +                     state = cros_ec_proximity_parse_state(switches);
+> > +                     dir = state ? IIO_EV_DIR_FALLING : IIO_EV_DIR_RISING;
+> > +
+> > +                     ev = IIO_UNMOD_EVENT_CODE(IIO_PROXIMITY, 0,
+> > +                                               IIO_EV_TYPE_THRESH, dir);
+> > +                     iio_push_event(indio_dev, ev, timestamp);
+> > +             }
+> > +             mutex_unlock(&data->lock);
+> > +     }
+> > +
+> > +     return NOTIFY_OK;
+> > +}
+> > +
+> > +static int cros_ec_proximity_read_raw(struct iio_dev *indio_dev,
+> > +                        const struct iio_chan_spec *chan, int *val,
+> > +                        int *val2, long mask)
+> > +{
+> > +     struct cros_ec_proximity_data *data = iio_priv(indio_dev);
+> > +     struct cros_ec_device *ec = data->ec;
+> > +     int ret;
+> > +
+> > +     if (chan->type != IIO_PROXIMITY)
+> > +             return -EINVAL;
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_RAW:
+> > +             ret = iio_device_claim_direct_mode(indio_dev);
+>
+> Normally we only introduce these protections when adding the ability
+> to change the state from direct to buffered (which these prevent).
+> This driver doesn't yet support any other modes so I don't think
+> there is any benefit in having these.
+>
+> If the aim is more local protection then should use a local lock
+> as the semantics fo these functions might change in future.
+>
+>
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             ret = cros_ec_proximity_query(ec, val);
+> > +             iio_device_release_direct_mode(indio_dev);
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             return IIO_VAL_INT;
+> > +     }
+> > +
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static int cros_ec_proximity_read_event_config(struct iio_dev *indio_dev,
+> > +                                 const struct iio_chan_spec *chan,
+> > +                                 enum iio_event_type type,
+> > +                                 enum iio_event_direction dir)
+> > +{
+> > +     struct cros_ec_proximity_data *data = iio_priv(indio_dev);
+> > +
+> > +     return data->enabled;
+> > +}
+> > +
+> > +static int cros_ec_proximity_write_event_config(struct iio_dev *indio_dev,
+> > +                                  const struct iio_chan_spec *chan,
+> > +                                  enum iio_event_type type,
+> > +                                  enum iio_event_direction dir, int state)
+> > +{
+> > +     struct cros_ec_proximity_data *data = iio_priv(indio_dev);
+> > +
+> > +     mutex_lock(&data->lock);
+> > +     data->enabled = state;
+> > +     mutex_unlock(&data->lock);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct iio_info cros_ec_proximity_info = {
+> > +     .read_raw = cros_ec_proximity_read_raw,
+> > +     .read_event_config = cros_ec_proximity_read_event_config,
+> > +     .write_event_config = cros_ec_proximity_write_event_config,
+> > +};
+> > +
+> > +static int cros_ec_proximity_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev = &pdev->dev;
+> > +     struct cros_ec_device *ec = dev_get_drvdata(dev->parent);
+> > +     struct iio_dev *indio_dev;
+> > +     struct cros_ec_proximity_data *data;
+> > +     int ret;
+> > +
+> > +     indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
+> > +     if (!indio_dev)
+> > +             return -ENOMEM;
+> > +
+> > +     data = iio_priv(indio_dev);
+> > +     data->ec = ec;
+> > +     data->indio_dev = indio_dev;
+> > +     mutex_init(&data->lock);
+> > +     platform_set_drvdata(pdev, data);
+> > +
+> > +     indio_dev->name = "cros_ec_proximity";
+Define a constant CROS_EC_[MKBP_]PROXIMITY_DRIVER_NAME and use it here
+and in struct platform_driver cros_ec_proximity_driver.
+> > +     indio_dev->dev.parent = dev;
+Not needed, done by iio_device_alloc(), called by devm_iio_device_alloc().
+> > +     indio_dev->info = &cros_ec_proximity_info;
+> > +     indio_dev->modes = INDIO_DIRECT_MODE;
+> > +     indio_dev->channels = cros_ec_prox_chan_spec;
+> > +     indio_dev->num_channels = ARRAY_SIZE(cros_ec_prox_chan_spec);
+> > +
+> > +     ret = devm_iio_device_register(dev, indio_dev);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     data->notifier.notifier_call = cros_ec_proximity_notify;
+> > +     ret = blocking_notifier_chain_register(&ec->event_notifier,
+> > +                                            &data->notifier);
+> > +     if (ret)
+> > +             dev_err(dev, "cannot register notifier: %d\n", ret);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int cros_ec_proximity_remove(struct platform_device *pdev)
+> > +{
+> > +     struct cros_ec_proximity_data *data = platform_get_drvdata(pdev);
+> > +     struct cros_ec_device *ec = data->ec;
+> > +
+> > +     blocking_notifier_chain_unregister(&ec->event_notifier,
+> > +                                        &data->notifier);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +#ifdef CONFIG_OF
+>
+> As a general rule, we are trying to clear out protections on CONFIG_OF etc
+> and use of of_match_ptr() on the basis they don't really gain us anything
+> and prevent use of some other firmware types.  Here I guess you know what
+> your firmware looks like, but I'm still keen to drop it in the interests
+> of there being fewer places to copy it from.
+>
+> It may be a good idea to give this a more specific name as well given
+> we already have cros-ec-prox as a platform device id from
+> the cros_ec_light_prox driver.
+>
+>
+> > +static const struct of_device_id cros_ec_proximity_of_match[] = {
+> > +     { .compatible = "google,cros-ec-proximity" },
+> > +     {}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
+> > +#endif
+> > +
+> > +static struct platform_driver cros_ec_proximity_driver = {
+> > +     .driver = {
+> > +             .name = "cros-ec-proximity",
+> > +             .of_match_table = of_match_ptr(cros_ec_proximity_of_match),
+Add a ACPI match table to match.
+> > +     },
+> > +     .probe = cros_ec_proximity_probe,
+> > +     .remove = cros_ec_proximity_remove,
+> > +};
+> > +module_platform_driver(cros_ec_proximity_driver);
+> > +
+> > +MODULE_LICENSE("GPL v2");
+> > +MODULE_DESCRIPTION("ChromeOS EC MKBP proximity sensor driver");
+>
