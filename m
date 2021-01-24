@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66667301AB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 09:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B009301AB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 09:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbhAXIrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 03:47:09 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:52833 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726592AbhAXIq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 03:46:28 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id DE93E5C00E7;
-        Sun, 24 Jan 2021 03:45:17 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sun, 24 Jan 2021 03:45:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=tQc55K
-        YVSxLgWJmYupooMPn2+fiI0zkIa6CSiAZLPjc=; b=E3FDju3v3+T+8QNo5kRZij
-        abi9lfWg+uIRA+dzynXZE5nBzOLrzxkgARa8ZE4UoYnELtlojIj0+d73LHm+AE1b
-        O2ZJjhQ529xaU9T08+phcN9TwslH6GdCc3ZpBViLDGKMw7orSYdjqKXmqsTEDHYx
-        Aj2pfEfHkPi6/eKwTiTuEreLNohPBj0AbWMtqDeGMIn9fm0hAcXl9tREVoB02NEf
-        gUKofWq+Qz5TRUsBgmG/HcuT/AdBYRoyEmS+VsAhlok5OFeqksolpTeyjFyhKiYe
-        EwzcoBAyRZsKbfwYPftlFSGrMyT0Vjs4tf4UGHeszJH/1Ft4yUY83dcQEpKH8WxA
-        ==
-X-ME-Sender: <xms:nTMNYK51eRTvWkLzSTlNgsc9lYR4fUGDvywpTwW4JDyStvT_r8rjrg>
-    <xme:nTMNYD6Lz39EMUDPwPksINIlW56FH6KL8TiNSaDrvjHbPefIb5bB1YHOUWoOHjPof
-    qxPAW10iYPO8PQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtgddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:nTMNYJdVAPsX5E2wxMCQtI2-LP-CKRUWvNXjbF8AaN2yG0WLVj8oVQ>
-    <xmx:nTMNYHKHIUr_y7i_LD5xdo9uk788cYo3c8eu0xOL76-JFPRH2ZQLQQ>
-    <xmx:nTMNYOLbUqUqpELMIXUIDTKNWXmky6dVJ_reYEhOpzp78BiYGy0Pnw>
-    <xmx:nTMNYFXDtKh5oEc7_QqSndqvBN2INwXJQ4LQ_RH8nB3oqPjV0_txtw>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 30C92108005B;
-        Sun, 24 Jan 2021 03:45:16 -0500 (EST)
-Date:   Sun, 24 Jan 2021 10:45:14 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Message-ID: <20210124084514.GB2819717@shredder.lan>
-References: <AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
- <20210123160348.GB2799851@shredder.lan>
- <20210123121439.4290b002@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123121439.4290b002@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1726601AbhAXIxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 03:53:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726475AbhAXIxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 03:53:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8679922C9C;
+        Sun, 24 Jan 2021 08:52:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611478355;
+        bh=qVIlX4cfrXPy6SQJxk30/kV8i1VqSnT07Ku9RAUEOgI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Qnx44mgihT/jVhLlqT9NjQJKYm5TLkGj4UZk8XWe9s/UWW4WQ5mZKaW6xq5lJgYzY
+         nZJxJPMUgRAclr9JkZPn/H+Qhmg3IqN9xjebFg2cu1R5O459YKNWb2ah+fREFohz10
+         rzjV+4UsER/sOa/Mk53mLcp8oioZEsD6cEChYa9cx8SzRGHgHz0cp8vjuuKOJ+9tdy
+         wiTFt+an3E37RHCAiAeaMmFtqNvHhxgzVKzzV2A1hFn0c2WRwFwgNZRjDD1hMW+qrp
+         3hS+SA+Ya7DFAYe4dN1ojFvLKPKdJQ1rTbL/7LQpvGdkHjm6W562PG/bDqG0LxCL/i
+         nBY4WESaxQe7g==
+Date:   Sun, 24 Jan 2021 17:52:31 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jianlin Lv <Jianlin.Lv@arm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oleg@redhat.com" <oleg@redhat.com>
+Subject: Re: [PATCH v2] tracing: precise log info for kretprobe addr err
+Message-Id: <20210124175231.fed85eccade5dbe0240b5c3b@kernel.org>
+In-Reply-To: <AM6PR08MB3589CB4AB4EC3ADBBB45144C98BF0@AM6PR08MB3589.eurprd08.prod.outlook.com>
+References: <20210120155644.64721-1-Jianlin.Lv@arm.com>
+        <20210120112004.4b9ff1df@gandalf.local.home>
+        <20210121112847.63d2a06d72979634f25de9cd@kernel.org>
+        <AM6PR08MB3589CB4AB4EC3ADBBB45144C98BF0@AM6PR08MB3589.eurprd08.prod.outlook.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 12:14:39PM -0800, Jakub Kicinski wrote:
-> On Sat, 23 Jan 2021 18:03:48 +0200 Ido Schimmel wrote:
-> > 	[DEVLINK_ATTR_STATS_RX_DROPPED]
-> 
-> nit: maybe discarded? dropped sounds like may have been due to an
-> overflow or something
+Hi Jianlin,
 
-Well, it's an existing attribute which is why I suggested using it.
+On Sat, 23 Jan 2021 14:21:48 +0000
+Jianlin Lv <Jianlin.Lv@arm.com> wrote:
+
+> Regarding the UPROBES, I read the code of trace_uprobe_create() and  found a place for improvement.
+> 
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 3cf7128e1ad3..8c81f04d7755 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -567,16 +567,18 @@ static int trace_uprobe_create(int argc, const char **argv)
+>         if (!filename)
+>                 return -ENOMEM;
+> 
+> +       trace_probe_log_init("trace_uprobe", argc, argv);
+> +       trace_probe_log_set_index(1);   /* filename is the 2nd argument */
+> +
+>         /* Find the last occurrence, in case the path contains ':' too. */
+>         arg = strrchr(filename, ':');
+>         if (!arg || !isdigit(arg[1])) {
+> +               trace_probe_log_err(arg + 1 - filename, BAD_UPROBE_OFFS);
+>                 kfree(filename);
+> -               return -ECANCELED;
+> +               ret = -EINVAL;
+> +               goto out;
+
+Sorry, it's not a bug, but an expected behavior, because this is checking
+routine which identify the passed command is mine (uprobe event definition)
+or others (e.g. kprobe event definition).
+
+Note that the dyn_event_operations::create operator will be used from
+dyn_event, which passes the command string from TRACEFS/dynamic_events
+to each create operator and check the return is -ECANCELED.
+The -ECANCELED is not an error, it means "it is not mine, but maybe others."
+See create_dyn_event(int argc, char **argv) in kernel/trace/trace_dynevent.c.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
