@@ -2,146 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2911530193D
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 03:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A36301953
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 04:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbhAXCzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 21:55:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbhAXCzM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 21:55:12 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDB7C0613D6
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 18:54:32 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id x6so9751269ybr.1
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 18:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TbF3Lbs9wpNVllm6ynkRXy8qTf3NddpOylwzWmHrUp0=;
-        b=rzIW9DL2YyNS6cO4zCkvKWTJYxqf1OJVsJp7/Fd9wkR1+gybMnazGjMskGej1BV2bM
-         0Wzf0JfoZB6zbsckVB0KY2dAKu+dh6xKj5ET4mEDbDyro+ihxMHz2jN/6tzLii+2Hpsj
-         09NdjeRmjmQjJDknDSjjuEmLBKJQq/NvIRYd8hKg7slQQ7Zlq4yzdPN4FPeftvhtnFZL
-         QXSj4gn4/+rh0nT2kyxkZP+mj1jgjEm46iJ+M55gxzjD/iEHHRL552hDfbStFpEZMTJ7
-         ++gLJm4BlwWx+iRrn/ayXa7TlPYsSB1aPZcEogWwu4h99i5YQ9kdbgToXEWdR4JtLXni
-         jNmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TbF3Lbs9wpNVllm6ynkRXy8qTf3NddpOylwzWmHrUp0=;
-        b=fc8loCPKeYu0T5bfv5oef0bSTIxrzx2IuJ/FtOHJswgSJGYm9HlY/PTilygi1aEIds
-         duOOIM1x2vcktjIyVcabdC5AwtVEv1MvQsrqgBhy212+aHHgyRoRM//gB6s/WD3jpYkB
-         wIBw5g66mosN951TsX34dzfD+pOkW8ydFXmNYssiPTpaIYDH00Bw1nheuzdiiAFBzO0m
-         zgKQJDdl3XNDil4P33ScLu6iK1nMrL8Gw0ilj/anh/9BCzfGaaEj1/nqO80eK5ynlCW0
-         wqCTd8FZVpW49tvqdZlvAIkaT8DQMsou5d5b28y8xn9ZMPWtLdUwGLflPyq52KdYA7yy
-         ZJ4A==
-X-Gm-Message-State: AOAM530mJNnHjo+6XIXbmmhxcLf59eggQLP0G+QmAX721MfGrAt8soOt
-        10H9gpouvryyVvq7DCyYrQte9SgjN9Y+kN4OLlyJvQ==
-X-Google-Smtp-Source: ABdhPJwJyE7+dnHnHwE09l1Za1YV9FJgMaarOUGTaiHQxGp3MFpju5eV5HEGJ45JzdYfvMFRNKVYdgAF0rlAMVJyBu0=
-X-Received: by 2002:a25:dfcb:: with SMTP id w194mr15547389ybg.346.1611456871043;
- Sat, 23 Jan 2021 18:54:31 -0800 (PST)
+        id S1726448AbhAXDWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 22:22:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbhAXDWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 23 Jan 2021 22:22:30 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5142822D0A;
+        Sun, 24 Jan 2021 03:21:49 +0000 (UTC)
+Date:   Sat, 23 Jan 2021 22:21:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Gaurav Kohli <gkohli@codeaurora.org>
+Cc:     Denis Efremov <efremov@linux.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        stable@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCH v1] trace: Fix race in trace_open and buffer resize call
+Message-ID: <20210123222147.1e2d5626@oasis.local.home>
+In-Reply-To: <46d1f82b-1eb4-a828-c79c-e6556eccf9d5@codeaurora.org>
+References: <1601976833-24377-1-git-send-email-gkohli@codeaurora.org>
+        <f06efd7b-c7b5-85c9-1a0e-6bb865111ede@linux.com>
+        <20210121140951.2a554a5e@gandalf.local.home>
+        <021b1b38-47ce-bc8b-3867-99160cc85523@linux.com>
+        <20210121153732.43d7b96b@gandalf.local.home>
+        <YAqwD/ivTgVJ7aap@kroah.com>
+        <8e17ad41-b62b-5d39-82ef-3ee6ea9f4278@codeaurora.org>
+        <20210122093758.320bb4f9@gandalf.local.home>
+        <5959315a-507a-00df-031a-e60d45c1f7ab@linux.com>
+        <46d1f82b-1eb4-a828-c79c-e6556eccf9d5@codeaurora.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210122193600.1415639-1-saravanak@google.com> <CACRpkdYtToLVxyMxC=24AoGVk89c9FyQt899OTz9Jx8yJeu+mw@mail.gmail.com>
-In-Reply-To: <CACRpkdYtToLVxyMxC=24AoGVk89c9FyQt899OTz9Jx8yJeu+mw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Sat, 23 Jan 2021 18:53:55 -0800
-Message-ID: <CAGETcx8Zozoe2BuP+zmJhQkJ6V0gJ1mtf5907BifEExw8s-zvQ@mail.gmail.com>
-Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 2:52 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Fri, Jan 22, 2021 at 8:36 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> > There are multiple instances of GPIO device tree nodes of the form:
-> >
-> > foo {
-> >         compatible = "acme,foo";
-> >         ...
-> >
-> >         gpio0: gpio0@xxxxxxxx {
-> >                 compatible = "acme,bar";
-> >                 ...
-> >                 gpio-controller;
-> >         };
-> >
-> >         gpio1: gpio1@xxxxxxxx {
-> >                 compatible = "acme,bar";
-> >                 ...
-> >                 gpio-controller;
-> >         };
-> >
-> >         ...
-> > }
-> >
-> > bazz {
-> >         my-gpios = <&gpio0 ...>;
-> > }
-> >
-> > Case 1: The driver for "foo" populates struct device for these gpio*
-> > nodes and then probes them using a driver that binds with "acme,bar".
-> > This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
-> > This lines up with how DT nodes with the "compatible" property are
-> > typically converted to struct devices and then registered with driver
-> > core to probe them. This also allows the gpio* devices to hook into all
-> > the driver core capabilities like runtime PM, probe deferral,
-> > suspend/resume ordering, device links, etc.
-> >
-> > Case 2: The driver for "foo" doesn't populate struct devices for these
-> > gpio* nodes before registering them with gpiolib. Instead it just loops
-> > through its child nodes and directly registers the gpio* nodes with
-> > gpiolib.
-> >
-> > Drivers that follow case 2 cause problems with fw_devlink=on. This is
-> > because fw_devlink will prevent bazz from probing until there's a struct
-> > device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
-> > supplier). Once the struct device is available, fw_devlink will create a
-> > device link with gpio0 device as the supplier and bazz device as the
-> > consumer. After this point, since the gpio0 device will never bind to a
-> > driver, the device link will prevent bazz device from ever probing.
-> >
-> > Finding and refactoring all the instances of drivers that follow case 2
-> > will cause a lot of code churn and it is not something that can be done
-> > in one shot. In some instances it might not even be possible to refactor
-> > them cleanly. Examples of such instances are [1] [2].
-> >
-> > This patch works around this problem and avoids all the code churn by
-> > simply setting the fwnode of the gpio_device and creating a stub driver
-> > to bind to the gpio_device. This allows all the consumers to continue
-> > probing when the driver follows case 2.
-> >
-> > [1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
-> > [2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
-> > Cc: Marc Zyngier <maz@kernel.org>
-> > Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> > Cc: Kever Yang <kever.yang@rock-chips.com>
-> > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
->
-> This v5 version is a beauty!
+On Sat, 23 Jan 2021 22:03:27 +0530
+Gaurav Kohli <gkohli@codeaurora.org> wrote:
 
-Lol, thanks.
 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Sure I will do, I have never posted on backport branches. Let me check 
+> and post it.
+> 
 
- Considering the "Fixes" is only in driver-core-next, should this go
-through driver-core?
+Basically you take your original patch that was in mainline (as the
+subject and commit message), and make it work as if you were doing the
+same exact fix for the stable release.
 
--Saravana
+Send it to me (and Cc everyone else), and I'll give it a test too.
+
+Thanks!
+
+-- Steve
+
