@@ -2,191 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5D4301F07
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 22:58:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1052F301F0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhAXV5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 16:57:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S1726386AbhAXWF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 17:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbhAXV5p (ORCPT
+        with ESMTP id S1725969AbhAXWFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 16:57:45 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5484C061573;
-        Sun, 24 Jan 2021 13:57:04 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id b10so12980754ljp.6;
-        Sun, 24 Jan 2021 13:57:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=H1QjR+82mKDdAM86lvxkKFOo5eIQalM15456HEa3zXU=;
-        b=EX/rH/YXa0X+MfaGnvWF2TkH75FKf754jpygjpYfUnJrZz27OTzRNpjtKJf7TQ+mTJ
-         6uB8rsBjh0QTkL/VsmYO6oja5VtXJubK/upS5SVi5/20+o3YIxN71YlvDIlw7qnivZtX
-         CTnus3PUA5LkarYWif8p6jGl30MWYyXxEkYn4+mkiOMJGUzKBCRXaF36y1UHQD28GneN
-         iFp708M7GJ48PcyDzxUZoIsKtsg/QRouRfl6TGS4lUPuyU7enmRDLSiQH2+M9sekbcyP
-         ebraIbdPEjrX7vxJVdrmR2luWw2fjxcOHrBqzvEnLxN575KbfyTBn3L3aI2/+ej40tWk
-         vfRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=H1QjR+82mKDdAM86lvxkKFOo5eIQalM15456HEa3zXU=;
-        b=CuDzxrHZCOEfqbkYAUMrs+uIUX5kuFncu/0NgK1N7eyaBmprOFSeDdSF9Wu5GP3ufb
-         wSXLwTNiu+xQxIqLhszZteLR7mHydm+BOE2aGIaHfLqihjj/y2qShNT2JYyLJblkMBl4
-         kK7tS03HXaBKJi5mmknndkQkxP2GKmoJhCKitLs/TOV7yx59W8kUEuLVm4MBW2i6CtK7
-         hDH/BKcaGMfD8PCS3JuNHca0Qzj0Tsu/pzwzYaXgb4k2TFabgbqqMvZEcZzA5ulHea2Q
-         hlhLOFfNCYn9VhCaUnNIOy2ow8zQV9UIXvmMUEAK+xKfIIIIz+VUdnEb44it836qSYIM
-         phxQ==
-X-Gm-Message-State: AOAM5309IptRadeQPrsbgLAOdL822d1xQJtZm/TGe/znCkSh2FhiqJ53
-        mgjSpVZp9O+0aOHzoMoHE14=
-X-Google-Smtp-Source: ABdhPJzbhpkY3Ytv5SNvU1bgMcQGrhZdvh6qfNvb0Rq8bkTvFflFiR7in5VeG8hSW/7lzsfUgMPiJg==
-X-Received: by 2002:a05:651c:28d:: with SMTP id b13mr498080ljo.75.1611525422950;
-        Sun, 24 Jan 2021 13:57:02 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id y20sm1114655ljh.124.2021.01.24.13.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 13:57:02 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sun, 24 Jan 2021 22:57:00 +0100
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH 3/3] kvfree_rcu: use
- migrate_disable/enable()
-Message-ID: <20210124215700.GB1076@pc636>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120162148.1973-3-urezki@gmail.com>
- <BYAPR11MB263252B1BD73A38DD8C0AF4EFFBF0@BYAPR11MB2632.namprd11.prod.outlook.com>
+        Sun, 24 Jan 2021 17:05:55 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A52FC061573;
+        Sun, 24 Jan 2021 14:05:15 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DP6Vt1j3Jz9sCq;
+        Mon, 25 Jan 2021 09:05:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611525911;
+        bh=CFIrasHilaHp06mroWfObRWrqU+zW/23eT/ZGyW5vsQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qeguLS4sLEquSp2e9AFe3tejzgk7xRNxXU2lJcXsxmWvNi4Gm2NcAtRkimpbCDehx
+         vpGI/ILMVmQLKFRDK3NlEhtn0YcRXRyW39kVLkaKCkio4Ck6XM1V9jiKky666/83HM
+         PDMSTOEA7nxfj1qVv7qrATso+Wh1y6G8tr0vK+g9dLs0s9kL5e5MGsdRv29Nmuf7VO
+         vTTRX6ijlFB3CmK1FiCiYzi0Kv0ngacsKM0FJQS4QS0E+RCYcpFU/KZHYRHh/1irPD
+         SIG0yVJ+XVbHpFRMKHEfu9BkRGF4WGor/AP630f62KgJs2Da4LOZuxlrsdzUPvTQNB
+         BiWbz5TBqm4lw==
+Date:   Mon, 25 Jan 2021 09:05:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the openrisc tree with Linus' tree
+Message-ID: <20210125090506.35337fa2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB263252B1BD73A38DD8C0AF4EFFBF0@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/GvgoFc4q3A+zIU0FsE=e7Z_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Zhang.
+--Sig_/GvgoFc4q3A+zIU0FsE=e7Z_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> >________________________________________
-> >发件人: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> >发送时间: 2021年1月21日 0:21
-> >收件人: LKML; RCU; Paul E . McKenney; Michael Ellerman
-> >抄送: Andrew Morton; Daniel Axtens; Frederic Weisbecker; Neeraj >Upadhyay; Joel Fernandes; Peter Zijlstra; Michal Hocko; Thomas >Gleixner; Theodore Y . Ts'o; Sebastian Andrzej Siewior; Uladzislau >Rezki; Oleksiy Avramchenko
-> >主题: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-> >
-> >Since the page is obtained in a fully preemptible context, dropping
-> >the lock can lead to migration onto another CPU. As a result a prev.
-> >bnode of that CPU may be underutilised, because a decision has been
-> >made for a CPU that was run out of free slots to store a pointer.
-> >
-> >migrate_disable/enable() are now independent of RT, use it in order
-> >to prevent any migration during a page request for a specific CPU it
-> >is requested for.
-> 
-> 
-> Hello Rezki
-> 
-> The critical migrate_disable/enable() area is not allowed to block, under RT and non RT.  
-> There is such a description in preempt.h 
-> 
-> 
-> * Notes on the implementation.
->  *
->  * The implementation is particularly tricky since existing code patterns
->  * dictate neither migrate_disable() nor migrate_enable() is allowed to block.
->  * This means that it cannot use cpus_read_lock() to serialize against hotplug,
->  * nor can it easily migrate itself into a pending affinity mask change on
->  * migrate_enable().
-> 
-How i interpret it is migrate_enable()/migrate_disable() are not allowed to
-use any blocking primitives, such as rwsem/mutexes/etc. in order to mark a
-current context as non-migratable.
+Hi all,
 
-void migrate_disable(void)
-{
- struct task_struct *p = current;
+Today's linux-next merge of the openrisc tree got a conflict in:
 
- if (p->migration_disabled) {
-  p->migration_disabled++;
-  return;
- }
+  drivers/soc/litex/litex_soc_ctrl.c
 
- preempt_disable();
- this_rq()->nr_pinned++;
- p->migration_disabled = 1;
- preempt_enable();
-}
+between commit:
 
-It does nothing that prevents you from doing schedule() or even wait for any
-event(mutex slow path behaviour), when the process is removed from the run-queue.
-I mean after the migrate_disable() is invoked. Or i miss something?
+  e6dc077b7dff ("soc: litex: Fix compile warning when device tree is not co=
+nfigured")
 
->
-> How about the following changes:
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index e7a226abff0d..2aa19537ac7c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3488,12 +3488,10 @@ add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->                         (*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
->                 bnode = get_cached_bnode(*krcp);
->                 if (!bnode && can_alloc) {
-> -                       migrate_disable();
->                         krc_this_cpu_unlock(*krcp, *flags);
->                         bnode = (struct kvfree_rcu_bulk_data *)
->                                 __get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-> -                       *krcp = krc_this_cpu_lock(flags);
-> -                       migrate_enable();
-> +                       raw_spin_lock_irqsave(&(*krcp)->lock, *flags);
->
-Hm.. Taking the former lock can lead to a pointer leaking, i mean a CPU associated
-with "krcp" might go offline during a page request process, so a queuing occurs on
-off-lined CPU. Apat of that, acquiring a former lock still does not solve:
+from Linus' tree and commit:
 
-- CPU1 in process of page allocation;
-- CPU1 gets migrated to CPU2;
-- another task running on CPU1 also allocate a page;
-- both bnodes are added to krcp associated with CPU1.
+  3706f9f76a4f ("drivers/soc/litex: Add restart handler")
 
-I agree that such scenario probably will never happen or i would say, can be
-considered as a corner case. We can drop the:
+from the openrisc tree.
 
-[PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-and live with: an allocated bnode can be queued to another CPU, so its prev.
-"bnode" can be underutilized. What is also can be considered as a corner case.
-According to my tests, it is hard to achieve:
+--=20
+Cheers,
+Stephen Rothwell
 
-Running kvfree_rcu() simultaneously in a tight loop, 1 000 000 allocations/freeing:
+diff --cc drivers/soc/litex/litex_soc_ctrl.c
+index 9b0766384570,a7dd5be9fd5b..000000000000
+--- a/drivers/soc/litex/litex_soc_ctrl.c
++++ b/drivers/soc/litex/litex_soc_ctrl.c
+@@@ -138,9 -71,19 +71,20 @@@ static int litex_check_csr_access(void=20
+ =20
+  struct litex_soc_ctrl_device {
+  	void __iomem *base;
++ 	struct notifier_block reset_nb;
+  };
+ =20
++ static int litex_reset_handler(struct notifier_block *this, unsigned long=
+ mode,
++ 			       void *cmd)
++ {
++ 	struct litex_soc_ctrl_device *soc_ctrl_dev =3D
++ 		container_of(this, struct litex_soc_ctrl_device, reset_nb);
++=20
++ 	litex_write32(soc_ctrl_dev->base + RESET_REG_OFF, RESET_REG_VALUE);
++ 	return NOTIFY_DONE;
++ }
++=20
+ +#ifdef CONFIG_OF
+  static const struct of_device_id litex_soc_ctrl_of_match[] =3D {
+  	{.compatible =3D "litex,soc-controller"},
+  	{},
 
-- 64 CPUs and 64 threads showed 1 migration;
-- 64 CPUs and 128 threads showed 0 migrations;
-- 64 CPUs and 32 threads showed 0 migration. 
+--Sig_/GvgoFc4q3A+zIU0FsE=e7Z_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Thoughts?
+-----BEGIN PGP SIGNATURE-----
 
-Thank you for your comments!
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAN7xIACgkQAVBC80lX
+0GzIgwgAlCPGqjyURgCzRiUnovoqc/ldma2LktTgPsgSVNxLFvstMyuI3bMfqN+4
+MgGG9JGNjhSqX+jBD0tXPSWNt2s+knTwnZVDWvo3eCEs+UXhWclLnNrszHs3JP9q
+vxuDrxkUoJwdgm2ShB+ClF8dUiDcIEXVBDyBffSEdqSs6JElQdMIvCScKGJ7yf2L
+CVO3Gojm04cNjYOYVzuLJF5Mb2PKy/Q+4EaD8TiEg4JZ+ABdLq+wT8JHsP9aKr0N
+TA01suGmS5v+QRkYsKzo7STyGn4FX7zQ+nOeVeizF5xbOzx+7dZcir9IJ7drojg3
+l2srytkeENcWGC0lNJKG6l+yuOF9SA==
+=TAFP
+-----END PGP SIGNATURE-----
 
---
-Vlad Rezki
+--Sig_/GvgoFc4q3A+zIU0FsE=e7Z_--
