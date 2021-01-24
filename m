@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C2630193B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 03:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2911530193D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 03:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbhAXCrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 21:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
+        id S1726404AbhAXCzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 21:55:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbhAXCrI (ORCPT
+        with ESMTP id S1725943AbhAXCzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 21:47:08 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96959C0613D6;
-        Sat, 23 Jan 2021 18:46:28 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id q131so6324060pfq.10;
-        Sat, 23 Jan 2021 18:46:28 -0800 (PST)
+        Sat, 23 Jan 2021 21:55:12 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDB7C0613D6
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 18:54:32 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id x6so9751269ybr.1
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 18:54:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qs2mQcU2COK335MLG5RGIc7dYMuUjvOD828GI3A2dtg=;
-        b=IZwZ5EWRvdvJR+GaMSUdD8Xt+tfqumzbrthV1A+eO8EGcRQkgHwFe+O5/dJB7u8vDB
-         oqLh2YFGpB8e+LZJP+Jp9bIKN/W4nEnBAZXOINVVY6pztXGaErJ0e2AvWmA0oQNSMIrB
-         0ZLtrkH/9tvN59k4NcVnWdmzZgSjKTs2UGnbVVwgbSGFP/jauTBy+rYHpOen+ZKoNxvM
-         r/khnxECKQvGxCKQBQUGlzbyXIBVJ7NfGireL/G9rxuC0VKT1Vb0/FdsnYNVg+nTDx1R
-         eQ7qeHiVsqXlI8SAQxXVTnKAVKM77Y79hRT0Hqvca+o7pyWMwRcGutrgo6h+DFq53cJ3
-         +g2A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TbF3Lbs9wpNVllm6ynkRXy8qTf3NddpOylwzWmHrUp0=;
+        b=rzIW9DL2YyNS6cO4zCkvKWTJYxqf1OJVsJp7/Fd9wkR1+gybMnazGjMskGej1BV2bM
+         0Wzf0JfoZB6zbsckVB0KY2dAKu+dh6xKj5ET4mEDbDyro+ihxMHz2jN/6tzLii+2Hpsj
+         09NdjeRmjmQjJDknDSjjuEmLBKJQq/NvIRYd8hKg7slQQ7Zlq4yzdPN4FPeftvhtnFZL
+         QXSj4gn4/+rh0nT2kyxkZP+mj1jgjEm46iJ+M55gxzjD/iEHHRL552hDfbStFpEZMTJ7
+         ++gLJm4BlwWx+iRrn/ayXa7TlPYsSB1aPZcEogWwu4h99i5YQ9kdbgToXEWdR4JtLXni
+         jNmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qs2mQcU2COK335MLG5RGIc7dYMuUjvOD828GI3A2dtg=;
-        b=eL7AplptJW8F8nwkqscYHQLKEqjyj2MtZU4oAF3Do9QGqWumJwRqOznAqxUw3+1rV/
-         h5vv2Uan6g1A919zL4X1spPLL0ZhtY3zkYMcUeSyztOM90QJ5Rckd6nvb3Kqxxp6t3TH
-         g9neGGcOC/ZgN+mZuqFt0Bg1EjXImxaifu6ZRONps4ZsgiTK6sNJM1Y1vWAwBzCNzrkU
-         ehHKX9bMSs3H6P8jHwz/sVMEMTYf7ty5uX+jUqp13/LXYPnw4ao53iLWoGw58UOBvJQE
-         sTh7ZOdGRTUNjALAxjMs9EpcczHHorUmA38TaGxRnectNui7lqxObtgtw1Lys68Z/862
-         jo5A==
-X-Gm-Message-State: AOAM530vIZAR3kAVVv5Eehjp66bjImVHBTI4YYaKcypHzn82mieJcA1+
-        PVyNXkZs6RslWCRguSFAdWId3+wBrCIxcqE/
-X-Google-Smtp-Source: ABdhPJy9FlB8UlsgUfh2jQTQ7Nw+hL2QUpn+eHHxgP3CzttG6WkTZS7XcAUlEcr1UM/UYD6pDcH6GQ==
-X-Received: by 2002:a63:db05:: with SMTP id e5mr3151742pgg.104.1611456387859;
-        Sat, 23 Jan 2021 18:46:27 -0800 (PST)
-Received: from glados.. ([2601:647:6000:3e5b::a27])
-        by smtp.gmail.com with ESMTPSA id k64sm12650333pfd.75.2021.01.23.18.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jan 2021 18:46:27 -0800 (PST)
-From:   Thomas Hebb <tommyhebb@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Hebb <tommyhebb@gmail.com>, stable@vger.kernel.org,
-        Bob Hepple <bob.hepple@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        linux-hwmon@vger.kernel.org
-Subject: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control blacklist
-Date:   Sat, 23 Jan 2021 18:46:08 -0800
-Message-Id: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TbF3Lbs9wpNVllm6ynkRXy8qTf3NddpOylwzWmHrUp0=;
+        b=fc8loCPKeYu0T5bfv5oef0bSTIxrzx2IuJ/FtOHJswgSJGYm9HlY/PTilygi1aEIds
+         duOOIM1x2vcktjIyVcabdC5AwtVEv1MvQsrqgBhy212+aHHgyRoRM//gB6s/WD3jpYkB
+         wIBw5g66mosN951TsX34dzfD+pOkW8ydFXmNYssiPTpaIYDH00Bw1nheuzdiiAFBzO0m
+         zgKQJDdl3XNDil4P33ScLu6iK1nMrL8Gw0ilj/anh/9BCzfGaaEj1/nqO80eK5ynlCW0
+         wqCTd8FZVpW49tvqdZlvAIkaT8DQMsou5d5b28y8xn9ZMPWtLdUwGLflPyq52KdYA7yy
+         ZJ4A==
+X-Gm-Message-State: AOAM530mJNnHjo+6XIXbmmhxcLf59eggQLP0G+QmAX721MfGrAt8soOt
+        10H9gpouvryyVvq7DCyYrQte9SgjN9Y+kN4OLlyJvQ==
+X-Google-Smtp-Source: ABdhPJwJyE7+dnHnHwE09l1Za1YV9FJgMaarOUGTaiHQxGp3MFpju5eV5HEGJ45JzdYfvMFRNKVYdgAF0rlAMVJyBu0=
+X-Received: by 2002:a25:dfcb:: with SMTP id w194mr15547389ybg.346.1611456871043;
+ Sat, 23 Jan 2021 18:54:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210122193600.1415639-1-saravanak@google.com> <CACRpkdYtToLVxyMxC=24AoGVk89c9FyQt899OTz9Jx8yJeu+mw@mail.gmail.com>
+In-Reply-To: <CACRpkdYtToLVxyMxC=24AoGVk89c9FyQt899OTz9Jx8yJeu+mw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Sat, 23 Jan 2021 18:53:55 -0800
+Message-ID: <CAGETcx8Zozoe2BuP+zmJhQkJ6V0gJ1mtf5907BifEExw8s-zvQ@mail.gmail.com>
+Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has been reported[0] that the Dell XPS 15 L502X exhibits similar
-freezing behavior to the other systems[1] on this blacklist. The issue
-was exposed by a prior change of mine to automatically load
-dell_smm_hwmon on a wider set of XPS models. To fix the regression, add
-this model to the blacklist.
+On Sat, Jan 23, 2021 at 2:52 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Fri, Jan 22, 2021 at 8:36 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> > There are multiple instances of GPIO device tree nodes of the form:
+> >
+> > foo {
+> >         compatible = "acme,foo";
+> >         ...
+> >
+> >         gpio0: gpio0@xxxxxxxx {
+> >                 compatible = "acme,bar";
+> >                 ...
+> >                 gpio-controller;
+> >         };
+> >
+> >         gpio1: gpio1@xxxxxxxx {
+> >                 compatible = "acme,bar";
+> >                 ...
+> >                 gpio-controller;
+> >         };
+> >
+> >         ...
+> > }
+> >
+> > bazz {
+> >         my-gpios = <&gpio0 ...>;
+> > }
+> >
+> > Case 1: The driver for "foo" populates struct device for these gpio*
+> > nodes and then probes them using a driver that binds with "acme,bar".
+> > This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
+> > This lines up with how DT nodes with the "compatible" property are
+> > typically converted to struct devices and then registered with driver
+> > core to probe them. This also allows the gpio* devices to hook into all
+> > the driver core capabilities like runtime PM, probe deferral,
+> > suspend/resume ordering, device links, etc.
+> >
+> > Case 2: The driver for "foo" doesn't populate struct devices for these
+> > gpio* nodes before registering them with gpiolib. Instead it just loops
+> > through its child nodes and directly registers the gpio* nodes with
+> > gpiolib.
+> >
+> > Drivers that follow case 2 cause problems with fw_devlink=on. This is
+> > because fw_devlink will prevent bazz from probing until there's a struct
+> > device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
+> > supplier). Once the struct device is available, fw_devlink will create a
+> > device link with gpio0 device as the supplier and bazz device as the
+> > consumer. After this point, since the gpio0 device will never bind to a
+> > driver, the device link will prevent bazz device from ever probing.
+> >
+> > Finding and refactoring all the instances of drivers that follow case 2
+> > will cause a lot of code churn and it is not something that can be done
+> > in one shot. In some instances it might not even be possible to refactor
+> > them cleanly. Examples of such instances are [1] [2].
+> >
+> > This patch works around this problem and avoids all the code churn by
+> > simply setting the fwnode of the gpio_device and creating a stub driver
+> > to bind to the gpio_device. This allows all the consumers to continue
+> > probing when the driver follows case 2.
+> >
+> > [1] - https://lore.kernel.org/lkml/20201014191235.7f71fcb4@xhacker.debian/
+> > [2] - https://lore.kernel.org/lkml/e28e1f38d87c12a3c714a6573beba6e1@kernel.org/
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+> > Cc: Kever Yang <kever.yang@rock-chips.com>
+> > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+>
+> This v5 version is a beauty!
 
-[0] https://bugzilla.kernel.org/show_bug.cgi?id=211081
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=195751
+Lol, thanks.
 
-Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all XPS models")
-Cc: stable@vger.kernel.org
-Reported-by: Bob Hepple <bob.hepple@gmail.com>
-Tested-by: Bob Hepple <bob.hepple@gmail.com>
-Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
----
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
- drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Considering the "Fixes" is only in driver-core-next, should this go
+through driver-core?
 
-diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-index ec448f5f2dc3..73b9db9e3aab 100644
---- a/drivers/hwmon/dell-smm-hwmon.c
-+++ b/drivers/hwmon/dell-smm-hwmon.c
-@@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_fan_support_dmi_table[] __initdata = {
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 9333"),
- 		},
- 	},
-+	{
-+		.ident = "Dell XPS 15 L502X",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell System XPS L502X"),
-+		},
-+	},
- 	{ }
- };
- 
--- 
-2.30.0
-
+-Saravana
