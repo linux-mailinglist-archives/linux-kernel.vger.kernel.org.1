@@ -2,105 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98761301A3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 07:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E057A301A3F
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 07:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbhAXGhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 01:37:36 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44124 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726532AbhAXGhd (ORCPT
+        id S1726092AbhAXGtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 01:49:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbhAXGto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 01:37:33 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UMf9zfj_1611470187;
-Received: from 30.25.221.71(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UMf9zfj_1611470187)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 24 Jan 2021 14:36:28 +0800
-Subject: Re: [PATCH] x86/sgx: Allows ioctl PROVISION to execute before CREATE
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, haitao.huang@intel.com,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20210118133335.98907-1-tianjia.zhang@linux.alibaba.com>
- <YAc7h3zQR06eWPhZ@google.com>
- <5037ee56-0211-f16c-3ea0-86cf8146b7f8@linux.alibaba.com>
- <YAiwA/oQkOVuTO+7@kernel.org> <YAiwrDrAsxHVowhV@kernel.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <b8e338e7-2436-dbc6-8bc5-bdfc43aed225@linux.alibaba.com>
-Date:   Sun, 24 Jan 2021 14:36:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Sun, 24 Jan 2021 01:49:44 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529BAC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 22:49:04 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id z21so6809097pgj.4
+        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 22:49:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Ou29vBChwtGGpt5awRgoNwT4J6UK005g3gZPSo0SPQ=;
+        b=HTMkogxYpRgXOSj6V7yS6/nZscXDdTdTA8ldDiwjUcp7cOI2oT0U1OVAhR8D961Hx6
+         4A3+QEHRoi4l2/iM0FvPial7LpoonVi77pRl+uSsoAFA68YpJTDx0iDNlMoUx8CoRlGc
+         rMNgOBfgfZZ3yEQU21DdkeXtYiIr8ihECDP8iEQkggsQiP5gXpQpO8FjVuoCnQESrqcM
+         m62DooRdER78VTurUcgiXxKn+w/BBBk+dRwElEVDKNUk4pnmnxsybpIqnfoSipRIxzTy
+         DGzYDamA7V9r94QdLHbUxyIUp2qFut7MiLR2e9XtspkZG2bOw2knwChe/eoqpT6/oPaR
+         MHAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Ou29vBChwtGGpt5awRgoNwT4J6UK005g3gZPSo0SPQ=;
+        b=WtaXgG0r811BcuE98z5PiGjDgRicfQYmP6QYGgoq5ao+y66op7yMEWkbyPjxPbB3AD
+         mLSsiXHA6xfH5SI3Dxga4T2bD/7ekHp+orzm/O/G1n6NK1ywDApSxR4JwW10tXjnojML
+         0QfSjnm7Ss1cn4FcHyItHZFhX+fWJJO0W/As4pcFSXtn24BW5HuoJySoyJ5Rlh0aj7Km
+         RdtUBU1P4ppzoZ1wZFlIs7Smjs7kmzafwC/Iqllwwe/FvC2VABYdlmK4b9YsLqxcnz7l
+         2IYKOpRa1gD8L+Ukw/lzlk+tXH8xfy7pVFuALXzzBiNQ02Kx3B7bJv2tpNQR+OuvIefh
+         pVdA==
+X-Gm-Message-State: AOAM5303v7MAUxQSS6DrroqnLVNoRqGwHAd9gjKDtZfQXb2s/H9WqqNz
+        nq6RicLEA3vhwPKtzRAM11t9D3R5bfMJVJJiCybj1A==
+X-Google-Smtp-Source: ABdhPJxi59YWCADRapudyosxFSteIZm49SBGLQ8YwpUWvHs1qWbcqO1PempR2Xr96mZXXpOV711EIrLYuCDLJKkjLv4=
+X-Received: by 2002:a62:2984:0:b029:1b4:72bd:f2bf with SMTP id
+ p126-20020a6229840000b02901b472bdf2bfmr2722138pfp.59.1611470943571; Sat, 23
+ Jan 2021 22:49:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAiwrDrAsxHVowhV@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-4-songmuchun@bytedance.com> <20210123175259.GA3555@localhost.localdomain>
+In-Reply-To: <20210123175259.GA3555@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sun, 24 Jan 2021 14:48:27 +0800
+Message-ID: <CAMZfGtXsEGQM+g6V9mMYZDA7XECS7S6fTiM_Pab5Uq-1Eu979Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 03/12] mm: hugetlb: free the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 24, 2021 at 1:53 AM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> X-Gm-Spam: 0
+> X-Gm-Phishy: 0
+>
+> On Sun, Jan 17, 2021 at 11:10:44PM +0800, Muchun Song wrote:
+> > Every HugeTLB has more than one struct page structure. We __know__ that
+> > we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
+> > to store metadata associated with each HugeTLB.
+> >
+> > There are a lot of struct page structures associated with each HugeTLB
+> > page. For tail pages, the value of compound_head is the same. So we can
+> > reuse first page of tail page structures. We map the virtual addresses
+> > of the remaining pages of tail page structures to the first tail page
+> > struct, and then free these page frames. Therefore, we need to reserve
+> > two pages as vmemmap areas.
+> >
+> > When we allocate a HugeTLB page from the buddy, we can free some vmemmap
+> > pages associated with each HugeTLB page. It is more appropriate to do it
+> > in the prep_new_huge_page().
+> >
+> > The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
+> > pages associated with a HugeTLB page can be freed, returns zero for
+> > now, which means the feature is disabled. We will enable it once all
+> > the infrastructure is there.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Overall looks good to me.
+> A few nits below, plus what Mike has already said.
+>
+> I was playing the other day (just for un) to see how hard would be to adapt
+> this to ppc64 but did not have the time :-)
 
+I have no idea about ppc64. But for aarch64, it is easy to adapt
+this to aarch64 (I have finished this part of the work). Is the size
+of the struct page 64 bytes for ppc64? If so, I think that it also
+easy.
 
-On 1/21/21 6:37 AM, Jarkko Sakkinen wrote:
-> On Thu, Jan 21, 2021 at 12:34:49AM +0200, Jarkko Sakkinen wrote:
->> On Wed, Jan 20, 2021 at 11:57:18AM +0800, Tianjia Zhang wrote:
->>> Hi,
->>>
->>> On 1/20/21 4:05 AM, Sean Christopherson wrote:
->>>> On Mon, Jan 18, 2021, Tianjia Zhang wrote:
->>>>> In function sgx_encl_create(), the logic of directly assigning
->>>>> value to attributes_mask determines that the call to
->>>>> SGX_IOC_ENCLAVE_PROVISION must be after the command of
->>>>> SGX_IOC_ENCLAVE_CREATE. If change this assignment statement to
->>>>> or operation, the PROVISION command can be executed earlier and
->>>>> more flexibly.
->>>>>
->>>>> Reported-by: Jia Zhang <zhang.jia@linux.alibaba.com>
->>>>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->>>>> ---
->>>>>    arch/x86/kernel/cpu/sgx/ioctl.c | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
->>>>> index f45957c05f69..0ca3fc238bc2 100644
->>>>> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
->>>>> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
->>>>> @@ -108,7 +108,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
->>>>>    	encl->base = secs->base;
->>>>>    	encl->size = secs->size;
->>>>>    	encl->attributes = secs->attributes;
->>>>> -	encl->attributes_mask = SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
->>>>> +	encl->attributes_mask |= SGX_ATTR_DEBUG | SGX_ATTR_MODE64BIT | SGX_ATTR_KSS;
->>>>
->>>> Alternatively, move the existing code to sgx_open()?  Initializing the field
->>>> when the encl object is allocated feels more correct.
->>>>
->>>
->>>
->>> This seems like a good idea. Thanks for your suggestion. I have sent v2
->>> patch, include the next two patches.
->>
->> Did you ask from Sean about suggested-by's? Now it looks like
->> that doing these patches were originally proposed by Sean.
-> 
-> Please do not add tags from people *unauthentically*. I do not
-> see anything from Sean to any of the patches that would suggest
-> adding those tags. You are basically just stamping that to all
-> patches, which he has given a code review. Can you stop doing
-> this?
-> 
-> /Jarkko
-> 
+>
+> > --- /dev/null
+> > +++ b/mm/hugetlb_vmemmap.c
+> > @@ -0,0 +1,211 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Free some vmemmap pages of HugeTLB
+> > + *
+> > + * Copyright (c) 2020, Bytedance. All rights reserved.
+> > + *
+> > + *     Author: Muchun Song <songmuchun@bytedance.com>
+> > + *
+> > + * The struct page structures (page structs) are used to describe a physical
+> > + * page frame. By default, there is a one-to-one mapping from a page frame to
+> > + * it's corresponding page struct.
+> > + *
+> > + * The HugeTLB pages consist of multiple base page size pages and is supported
+> "HugeTLB pages ..."
 
-I am very sorry for the trouble caused to you, I have made improvements 
-in the new patch, thanks for your suggestions.
+Thanks.
 
-Best regards,
-Tianjia
+>
+> > + * When the system boot up, every HugeTLB page has more than one struct page
+> > + * structs whose size is (unit: pages):
+>               ^^^^ which?
+
+I am not a native English. Thanks for pointing this out.
+
+> > + *
+> > + *    struct_size = HugeTLB_Size / PAGE_SIZE * sizeof(struct page) / PAGE_SIZE
+> > + *
+> > + * Where HugeTLB_Size is the size of the HugeTLB page. We know that the size
+> > + * of the HugeTLB page is always n times PAGE_SIZE. So we can get the following
+> > + * relationship.
+> > + *
+> > + *    HugeTLB_Size = n * PAGE_SIZE
+> > + *
+> > + * Then,
+> > + *
+> > + *    struct_size = n * PAGE_SIZE / PAGE_SIZE * sizeof(struct page) / PAGE_SIZE
+> > + *                = n * sizeof(struct page) / PAGE_SIZE
+> > + *
+> > + * We can use huge mapping at the pud/pmd level for the HugeTLB page.
+> > + *
+> > + * For the HugeTLB page of the pmd level mapping, then
+> > + *
+> > + *    struct_size = n * sizeof(struct page) / PAGE_SIZE
+> > + *                = PAGE_SIZE / sizeof(pte_t) * sizeof(struct page) / PAGE_SIZE
+> > + *                = sizeof(struct page) / sizeof(pte_t)
+> > + *                = 64 / 8
+> > + *                = 8 (pages)
+> > + *
+> > + * Where n is how many pte entries which one page can contains. So the value of
+> > + * n is (PAGE_SIZE / sizeof(pte_t)).
+> > + *
+> > + * This optimization only supports 64-bit system, so the value of sizeof(pte_t)
+> > + * is 8. And this optimization also applicable only when the size of struct page
+> > + * is a power of two. In most cases, the size of struct page is 64 (e.g. x86-64
+> > + * and arm64). So if we use pmd level mapping for a HugeTLB page, the size of
+> > + * struct page structs of it is 8 pages whose size depends on the size of the
+> > + * base page.
+> > + *
+> > + * For the HugeTLB page of the pud level mapping, then
+> > + *
+> > + *    struct_size = PAGE_SIZE / sizeof(pmd_t) * struct_size(pmd)
+> > + *                = PAGE_SIZE / 8 * 8 (pages)
+> > + *                = PAGE_SIZE (pages)
+>
+> I would try to condense above information and focus on what are the
+> key points you want people to get.
+> E.g: A 2MB HugeTLB page on x86_64 consists in 8 page frames while 1GB
+> HugeTLB page consists in 4096.
+> If you do not want to be that specific you can always write down the
+> formula, and maybe put the X86_64 example at the end.
+> But as I said, I would try to make it more brief.
+>
+> Maybe others disagree though.
+
+I want to make the formula more general. Because the PAGE_SIZE
+can be different on arm64. But you are right, I should make it brief
+and easy to understand. I will add some examples at the end of the
+formula. Thanks.
+
+>
+>
+> > + *
+> > + * Where the struct_size(pmd) is the size of the struct page structs of a
+> > + * HugeTLB page of the pmd level mapping.
+>
+> [...]
+>
+> > +void free_huge_page_vmemmap(struct hstate *h, struct page *head)
+> > +{
+> > +     unsigned long vmemmap_addr = (unsigned long)head;
+> > +     unsigned long vmemmap_end, vmemmap_reuse;
+> > +
+> > +     if (!free_vmemmap_pages_per_hpage(h))
+> > +             return;
+> > +
+> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
+> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
+> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
+> > +
+>
+> I would like to see a comment there explaining why those variables get
+> they value they do.
+
+OK. Will add a comment here.
+
+>
+> > +/**
+> > + * vmemmap_remap_walk - walk vmemmap page table
+> > + *
+> > + * @remap_pte:               called for each non-empty PTE (lowest-level) entry.
+> > + * @reuse_page:              the page which is reused for the tail vmemmap pages.
+> > + * @reuse_addr:              the virtual address of the @reuse_page page.
+> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
+>
+> Let us align the tabs there.
+
+It is already aligned. :)
+
+>
+> > +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+> > +                           unsigned long end,
+> > +                           struct vmemmap_remap_walk *walk)
+> > +{
+> > +     pte_t *pte;
+> > +
+> > +     pte = pte_offset_kernel(pmd, addr);
+> > +
+> > +     /*
+> > +      * The reuse_page is found 'first' in table walk before we start
+> > +      * remapping (which is calling @walk->remap_pte).
+> > +      */
+> > +     if (walk->reuse_addr == addr) {
+> > +             BUG_ON(pte_none(*pte));
+>
+> If it is found first, would not be
+>
+>         if (!walk->reuse_page) {
+>                 BUG_ON(walk->reuse_addr != addr)
+>                 ...
+>         }
+>
+> more intuitive?
+
+Good. More intuitive. Thanks.
+
+>
+>
+> > +static void vmemmap_remap_range(unsigned long start, unsigned long end,
+> > +                             struct vmemmap_remap_walk *walk)
+> > +{
+> > +     unsigned long addr = start;
+> > +     unsigned long next;
+> > +     pgd_t *pgd;
+> > +
+> > +     VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
+> > +     VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
+> > +
+> > +     pgd = pgd_offset_k(addr);
+> > +     do {
+> > +             BUG_ON(pgd_none(*pgd));
+> > +
+> > +             next = pgd_addr_end(addr, end);
+> > +             vmemmap_p4d_range(pgd, addr, next, walk);
+> > +     } while (pgd++, addr = next, addr != end);
+> > +
+> > +     /*
+> > +      * We do not change the mapping of the vmemmap virtual address range
+> > +      * [@start, @start + PAGE_SIZE) which is belong to the reuse range.
+>                                         "which belongs to"
+
+Thanks. Will fix it.
+
+>
+> > +      * So we not need to flush the TLB.
+> > +      */
+> > +     flush_tlb_kernel_range(start - PAGE_SIZE, end);
+>
+> you already commented on on this one.
+
+Yeah, will fix it.
+
+>
+> > +/**
+> > + * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
+> > + *                   to the page which @reuse is mapped, then free vmemmap
+> > + *                   pages.
+> > + * @start:   start address of the vmemmap virtual address range.
+>
+> Well, it is the start address of the range we want to remap.
+> Reading it made me think that it is really the __start__ address
+> of the vmemmap range.
+
+Sorry for confusing. I will fix it. Thanks.
+
+>
+> > +void vmemmap_remap_free(unsigned long start, unsigned long end,
+> > +                     unsigned long reuse)
+> > +{
+> > +     LIST_HEAD(vmemmap_pages);
+> > +     struct vmemmap_remap_walk walk = {
+> > +             .remap_pte      = vmemmap_remap_pte,
+> > +             .reuse_addr     = reuse,
+> > +             .vmemmap_pages  = &vmemmap_pages,
+> > +     };
+> > +
+> > +     /*
+> > +      * In order to make remapping routine most efficient for the huge pages,
+> > +      * the routine of vmemmap page table walking has the following rules
+> > +      * (see more details from the vmemmap_pte_range()):
+> > +      *
+> > +      * - The @reuse address is part of the range that we are walking.
+> > +      * - The @reuse address is the first in the complete range.
+> > +      *
+> > +      * So we need to make sure that @start and @reuse meet the above rules.
+>
+> You say that "reuse" and "start" need to meet some  rules, but in the
+> paragraph above you only seem to point "reuse" rules?
+
+OK. I should make the comment more clear. I will update it
+and point out the relationship between @start and @reuse.
+
+Thanks a lot.
+
+>
+>
+> --
+> Oscar Salvador
+> SUSE L3
