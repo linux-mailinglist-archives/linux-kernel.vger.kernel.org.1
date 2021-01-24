@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A3530190F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 01:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310BA30191A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 01:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbhAXAWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 19:22:30 -0500
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21354 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbhAXAW2 (ORCPT
+        id S1726443AbhAXA5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 19:57:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbhAXA51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 19:22:28 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1611447700; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=a1lEF8i8arpFPvQ/zu5SqUeLfiKMfwTJT+PJbQLnD0NjsfcY0F2AS3FlV4C5wZKgdyOsBKZv1HNf7DrhaN7e3u/uT13yJrOSC0eAJv0WAokfQI5mMhsmn1MBEBXQOIYBVvT2T3thnhLXRHJgodpFvTurPfL2CXNBYuAP/RsSNgc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1611447700; h=Content-Type:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=XcMH2Ny66m7Kbn41p5/5n9zui7vrj7HcB4U6PlXOG2o=; 
-        b=QMnzIg0CUl0B6jlMHBTezQF4fa2V7zbbVPh2P+ydpwP9RDso5oaAmj3SUTro8yVZ0urwIiR7NVdNzIYA7YaFGzRvXA0zhziOEtAlGg1kjBsk+coE8V1ChT4lOESx1zgn15JO7cVKIcJQyscdy5MMo7KamTnsQQkSv7eSLKuSowU=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=jeremyfiggins.com;
-        spf=pass  smtp.mailfrom=jeremy@jeremyfiggins.com;
-        dmarc=pass header.from=<kernel@jeremyfiggins.com> header.from=<kernel@jeremyfiggins.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1611447700;
-        s=zoho; d=jeremyfiggins.com; i=kernel@jeremyfiggins.com;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        bh=XcMH2Ny66m7Kbn41p5/5n9zui7vrj7HcB4U6PlXOG2o=;
-        b=VZrGqO7GE6P9CpzY6M0lXmueaiHCtTxuh0OANq63ixQdzM5asdxR+rZBn9QE3KTM
-        uubRVx0b7Xz625hSEge9aT36XIK1DKVlaM3KdLlVudTRjYcLLoSOoW2qwaxkw8xygLF
-        KFDVvypS2rBlKyS5qdWxVZVItciUBEDLjbLvhIgQ=
-Received: from watson (cpe-173-174-84-94.austin.res.rr.com [173.174.84.94]) by mx.zohomail.com
-        with SMTPS id 1611447699061331.70404183235314; Sat, 23 Jan 2021 16:21:39 -0800 (PST)
-Date:   Sat, 23 Jan 2021 18:21:36 -0600
-From:   Jeremy Figgins <kernel@jeremyfiggins.com>
-To:     zaitcev@redhat.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stern@rowland.harvard.edu
-Subject: [PATCH] USB: usblp: don't call usb_set_interface if there's a single
- alt
-Message-ID: <YAy9kJhM/rG8EQXC@watson>
+        Sat, 23 Jan 2021 19:57:27 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E10C0613D6;
+        Sat, 23 Jan 2021 16:56:46 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id e70so9138550ote.11;
+        Sat, 23 Jan 2021 16:56:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ATDIY55l2JJ11zJUFF3j0PCD3Y+gkHpjt5XKQXHEqNI=;
+        b=WLHd4BzDdm1eWNZN1sJAAGjFmG9ZpLkSBRtwazWnYjsJlM3MAW3BpvX8vdM1VCT2qQ
+         /Nh3ZkFhyX+4UheCRBqXJoVW+XQGavwKPy2GMcXm0VMf6jsSd6wZW0jv9nbNIymiLSoF
+         27BHEKI8t60d27iAeMGwGOraLw/1B/SZVdVSksMEI46xOoESev6/OXgWwkn5mm0OQfPo
+         KgN3XblxiIjanAgDhysP8G225x9mcc5saq30ISgnoLNGFN2XcwL1vQcLeiExDwRRoBay
+         Er+8VnFPJcncT7RyJpDz85/sJ48j6BqzCFrXEGRrx7tC9BPEWwsBXkrx2OlbCgldzXSu
+         Ikxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ATDIY55l2JJ11zJUFF3j0PCD3Y+gkHpjt5XKQXHEqNI=;
+        b=lBNeGJM2Gzo9nlPRDLeRttYzOPbryFYtzHS1rNwpoIw3GXO3FiChHig94ICgTs0hMg
+         0oUTu1FHVJLBXVa/3dSqQOKytZmdUiCQJT9GwREucuei4SGN4kif38WwK0dLF11fJ5cs
+         fdeeo041HgYuVFB1N2ubvJIVm6hCLuKk+vZwiLOtNPH8OM8VNnjWz1Vt6C4nB7IIZIX9
+         yyqKBmbjlj1h81Q/b81/W4zogHJeRcnK2lnkULkdDyu1SVvPf1wOeMC9PVGqbPS6XbAK
+         dExVDSJeBwC2DT80Ge2jtgZBnHyGEJlQade0cdA+6FEphQ4GGNqmyAXZTXpx6TDHYDIc
+         fgNQ==
+X-Gm-Message-State: AOAM531uwuVvVpq+YrPjXOft9IX85Z64CXcquSKeKsC3oPMtbn9ivouJ
+        3fb4C4Tx5h7dYTQ1UtQBqtU=
+X-Google-Smtp-Source: ABdhPJwuOU8UDUDHfzG1wCmlglu3xPAh3KStY39bJ1fZI7RNYugSFPicaXL8Y+CRBEb5wPf/lnlLrA==
+X-Received: by 2002:a05:6830:355:: with SMTP id h21mr7927560ote.355.1611449806235;
+        Sat, 23 Jan 2021 16:56:46 -0800 (PST)
+Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
+        by smtp.gmail.com with ESMTPSA id z20sm1616532oth.55.2021.01.23.16.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 16:56:45 -0800 (PST)
+Date:   Sat, 23 Jan 2021 16:56:43 -0800
+From:   Enke Chen <enkechen2020@gmail.com>
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, enkechen2020@gmail.com
+Subject: Re: [PATCH net] tcp: make TCP_USER_TIMEOUT accurate for zero window
+ probes
+Message-ID: <20210124005643.GH129261@localhost.localdomain>
+References: <20210122191306.GA99540@localhost.localdomain>
+ <20210122174325.269ac329@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210123022823.GA100578@localhost.localdomain>
+ <20210122183424.59c716a1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210123024534.GB100578@localhost.localdomain>
+ <CADVnQy=zzrFf=sF+oMwjm+Pp-VJ-veC93poVp0XUPFKRoiGRUQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-ZohoMailClient: External
+In-Reply-To: <CADVnQy=zzrFf=sF+oMwjm+Pp-VJ-veC93poVp0XUPFKRoiGRUQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices, such as the Winbond Electronics Corp. Virtual Com Port
-(Vendor=0416, ProdId=5011), lockup when usb_set_interface() or
-usb_clear_halt() are called. This device has only a single
-altsetting, so it should not be necessary to call usb_set_interface().
+Hi, Neal:
 
-Signed-off-by: Jeremy Figgins <kernel@jeremyfiggins.com>
----
-An alternative fix was submitted previously as:
+What you described is more accurate, and is correct.
 
-USB: usblp: add USBLP_QUIRK_NO_SETF_INTF flag
+Thanks.  -- Enke
 
-and this superscedes that patch. This is a different approach, so
-I submitted it as a new patch, rather than adding a v2 to the first
-one; I hope that was the correct thing to do in this case.
-
- drivers/usb/class/usblp.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/usb/class/usblp.c b/drivers/usb/class/usblp.c
-index 134dc2005ce9..c9f6e9758288 100644
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -1329,14 +1329,17 @@ static int usblp_set_protocol(struct usblp *usblp, int protocol)
- 	if (protocol < USBLP_FIRST_PROTOCOL || protocol > USBLP_LAST_PROTOCOL)
- 		return -EINVAL;
- 
--	alts = usblp->protocol[protocol].alt_setting;
--	if (alts < 0)
--		return -EINVAL;
--	r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
--	if (r < 0) {
--		printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
--			alts, usblp->ifnum);
--		return r;
-+	/* Don't unnecessarily set the interface if there's a single alt. */
-+	if (usblp->intf->num_altsetting > 1) {
-+		alts = usblp->protocol[protocol].alt_setting;
-+		if (alts < 0)
-+			return -EINVAL;
-+		r = usb_set_interface(usblp->dev, usblp->ifnum, alts);
-+		if (r < 0) {
-+			printk(KERN_ERR "usblp: can't set desired altsetting %d on interface %d\n",
-+				alts, usblp->ifnum);
-+			return r;
-+		}
- 	}
- 
- 	usblp->bidir = (usblp->protocol[protocol].epread != NULL);
--- 
-2.29.0
-
+On Sat, Jan 23, 2021 at 07:19:13PM -0500, Neal Cardwell wrote:
+> On Fri, Jan 22, 2021 at 9:45 PM Enke Chen <enkechen2020@gmail.com> wrote:
+> >
+> > Hi, Jakub:
+> >
+> > On Fri, Jan 22, 2021 at 06:34:24PM -0800, Jakub Kicinski wrote:
+> > > On Fri, 22 Jan 2021 18:28:23 -0800 Enke Chen wrote:
+> > > > Hi, Jakub:
+> > > >
+> > > > In terms of backporting, this patch should go together with:
+> > > >
+> > > >     9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
+> > >
+> > > As in it:
+> > >
+> > > Fixes: 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
+> > >
+> > > or does it further fix the same issue, so:
+> > >
+> > > Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+> > >
+> > > ?
+> >
+> > Let me clarify:
+> >
+> > 1) 9d9b1ee0b2d1 tcp: fix TCP_USER_TIMEOUT with zero window
+> >
+> >    fixes the bug and makes it work.
+> >
+> > 2) The current patch makes the TCP_USER_TIMEOUT accurate for 0-window probes.
+> >    It's independent.
+> 
+> Patch (2) ("tcp: make TCP_USER_TIMEOUT accurate for zero window
+> probes") is indeed conceptually independent of (1) but its
+> implementation depends on the icsk_probes_tstamp field defined in (1),
+> so AFAICT (2) cannot be backported further back than (1).
+> 
+> Patch (1) fixes a bug in 5.1:
+>     Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+> 
+> So probably (1) and (2) should be backported as a pair, and only back
+> as far as 5.1. (That covers 2 LTS kernels, 5.4 and 5.10, so hopefully
+> that is good enough.)
+> 
+> neal
