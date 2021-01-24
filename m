@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A83301F8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 00:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB54301F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 00:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbhAXXWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 18:22:02 -0500
-Received: from lilium.sigma-star.at ([109.75.188.150]:46984 "EHLO
+        id S1726497AbhAXXWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 18:22:19 -0500
+Received: from lilium.sigma-star.at ([109.75.188.150]:47008 "EHLO
         lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726601AbhAXXVr (ORCPT
+        with ESMTP id S1726608AbhAXXVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 18:21:47 -0500
+        Sun, 24 Jan 2021 18:21:48 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by lilium.sigma-star.at (Postfix) with ESMTP id 2AF42181D91AC;
+        by lilium.sigma-star.at (Postfix) with ESMTP id B9D28181D91B1;
         Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
         by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id G1T-RcRj43zU; Mon, 25 Jan 2021 00:21:00 +0100 (CET)
+        with ESMTP id SeyKoaZyWjtH; Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 Received: from lilium.sigma-star.at ([127.0.0.1])
         by localhost (lilium.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 86Bd4mavDEFC; Mon, 25 Jan 2021 00:21:00 +0100 (CET)
+        with ESMTP id pvJY0DbAgGiB; Mon, 25 Jan 2021 00:21:01 +0100 (CET)
 From:   Richard Weinberger <richard@nod.at>
 To:     miklos@szeredi.hu
 Cc:     miquel.raynal@bootlin.com, vigneshr@ti.com,
@@ -28,9 +28,9 @@ Cc:     miquel.raynal@bootlin.com, vigneshr@ti.com,
         sven@narfation.org, linux-kernel@vger.kernel.org,
         linux-mtd@lists.infradead.org, fuse-devel@lists.sourceforge.net,
         Richard Weinberger <richard@nod.at>
-Subject: [PATCH 2/8] fuse: Export IO helpers
-Date:   Mon, 25 Jan 2021 00:20:01 +0100
-Message-Id: <20210124232007.21639-3-richard@nod.at>
+Subject: [PATCH 3/8] fuse: Make cuse_parse_one a common helper
+Date:   Mon, 25 Jan 2021 00:20:02 +0100
+Message-Id: <20210124232007.21639-4-richard@nod.at>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210124232007.21639-1-richard@nod.at>
 References: <20210124232007.21639-1-richard@nod.at>
@@ -40,103 +40,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MUSE will use this functions in its IO path,
-so export them.
+This function will be used by MUSE too, let's share it.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/fuse/file.c   | 16 +++-------------
- fs/fuse/fuse_i.h | 16 ++++++++++++++++
- 2 files changed, 19 insertions(+), 13 deletions(-)
+ fs/fuse/Kconfig  |  4 +++
+ fs/fuse/Makefile |  1 +
+ fs/fuse/cuse.c   | 58 +--------------------------------------
+ fs/fuse/fuse_i.h |  2 ++
+ fs/fuse/helper.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 78 insertions(+), 57 deletions(-)
+ create mode 100644 fs/fuse/helper.c
 
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 8cccecb55fb8..d41660b7f5bc 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -20,8 +20,8 @@
- #include <linux/uio.h>
- #include <linux/fs.h>
+diff --git a/fs/fuse/Kconfig b/fs/fuse/Kconfig
+index 40ce9a1c12e5..9c8cc1e7b3a5 100644
+--- a/fs/fuse/Kconfig
++++ b/fs/fuse/Kconfig
+@@ -18,9 +18,13 @@ config FUSE_FS
+ 	  If you want to develop a userspace FS, or if you want to use
+ 	  a filesystem based on FUSE, answer Y or M.
 =20
--static struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
--				      struct fuse_page_desc **desc)
-+struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
-+			       struct fuse_page_desc **desc)
- {
- 	struct page **pages;
++config FUSE_HELPER
++	def_bool n
++
+ config CUSE
+ 	tristate "Character device in Userspace support"
+ 	depends on FUSE_FS
++	select FUSE_HELPER
+ 	help
+ 	  This FUSE extension allows character devices to be
+ 	  implemented in userspace.
+diff --git a/fs/fuse/Makefile b/fs/fuse/Makefile
+index 8c7021fb2cd4..7a5768cce6be 100644
+--- a/fs/fuse/Makefile
++++ b/fs/fuse/Makefile
+@@ -9,5 +9,6 @@ obj-$(CONFIG_VIRTIO_FS) +=3D virtiofs.o
 =20
-@@ -31,6 +31,7 @@ static struct page **fuse_pages_alloc(unsigned int npag=
-es, gfp_t flags,
+ fuse-y :=3D dev.o dir.o file.o inode.o control.o xattr.o acl.o readdir.o
+ fuse-$(CONFIG_FUSE_DAX) +=3D dax.o
++fuse-$(CONFIG_FUSE_HELPER) +=3D helper.o
 =20
- 	return pages;
- }
-+EXPORT_SYMBOL_GPL(fuse_pages_alloc);
+ virtiofs-y :=3D virtio_fs.o
+diff --git a/fs/fuse/cuse.c b/fs/fuse/cuse.c
+index 45082269e698..fe8515844064 100644
+--- a/fs/fuse/cuse.c
++++ b/fs/fuse/cuse.c
+@@ -199,62 +199,6 @@ struct cuse_devinfo {
+ 	const char		*name;
+ };
 =20
- static int fuse_send_open(struct fuse_mount *fm, u64 nodeid, struct file=
- *file,
- 			  int opcode, struct fuse_open_out *outargp)
-@@ -1356,17 +1357,6 @@ static inline void fuse_page_descs_length_init(str=
-uct fuse_page_desc *descs,
- 		descs[i].length =3D PAGE_SIZE - descs[i].offset;
- }
-=20
--static inline unsigned long fuse_get_user_addr(const struct iov_iter *ii=
+-/**
+- * cuse_parse_one - parse one key=3Dvalue pair
+- * @pp: i/o parameter for the current position
+- * @end: points to one past the end of the packed string
+- * @keyp: out parameter for key
+- * @valp: out parameter for value
+- *
+- * *@pp points to packed strings - "key0=3Dval0\0key1=3Dval1\0" which en=
+ds
+- * at @end - 1.  This function parses one pair and set *@keyp to the
+- * start of the key and *@valp to the start of the value.  Note that
+- * the original string is modified such that the key string is
+- * terminated with '\0'.  *@pp is updated to point to the next string.
+- *
+- * RETURNS:
+- * 1 on successful parse, 0 on EOF, -errno on failure.
+- */
+-static int cuse_parse_one(char **pp, char *end, char **keyp, char **valp=
 )
 -{
--	return (unsigned long)ii->iov->iov_base + ii->iov_offset;
+-	char *p =3D *pp;
+-	char *key, *val;
+-
+-	while (p < end && *p =3D=3D '\0')
+-		p++;
+-	if (p =3D=3D end)
+-		return 0;
+-
+-	if (end[-1] !=3D '\0') {
+-		pr_err("info not properly terminated\n");
+-		return -EINVAL;
+-	}
+-
+-	key =3D val =3D p;
+-	p +=3D strlen(p);
+-
+-	if (valp) {
+-		strsep(&val, "=3D");
+-		if (!val)
+-			val =3D key + strlen(key);
+-		key =3D strstrip(key);
+-		val =3D strstrip(val);
+-	} else
+-		key =3D strstrip(key);
+-
+-	if (!strlen(key)) {
+-		pr_err("zero length info key specified\n");
+-		return -EINVAL;
+-	}
+-
+-	*pp =3D p;
+-	*keyp =3D key;
+-	if (valp)
+-		*valp =3D val;
+-
+-	return 1;
 -}
 -
--static inline size_t fuse_get_frag_size(const struct iov_iter *ii,
--					size_t max_size)
--{
--	return min(iov_iter_single_seg_count(ii), max_size);
--}
--
- static int fuse_get_user_pages(struct fuse_args_pages *ap, struct iov_it=
-er *ii,
- 			       size_t *nbytesp, int write,
- 			       unsigned int max_pages)
+ /**
+  * cuse_parse_dev_info - parse device info
+  * @p: device info string
+@@ -275,7 +219,7 @@ static int cuse_parse_devinfo(char *p, size_t len, st=
+ruct cuse_devinfo *devinfo)
+ 	int rc;
+=20
+ 	while (true) {
+-		rc =3D cuse_parse_one(&p, end, &key, &val);
++		rc =3D fuse_kv_parse_one(&p, end, &key, &val);
+ 		if (rc < 0)
+ 			return rc;
+ 		if (!rc)
 diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 7c4b8cb93f9f..8c56a3fd2c4e 100644
+index 8c56a3fd2c4e..555856b0d998 100644
 --- a/fs/fuse/fuse_i.h
 +++ b/fs/fuse/fuse_i.h
-@@ -31,6 +31,7 @@
- #include <linux/pid_namespace.h>
- #include <linux/refcount.h>
- #include <linux/user_namespace.h>
-+#include <linux/uio.h>
+@@ -1228,5 +1228,7 @@ void fuse_dax_cancel_work(struct fuse_conn *fc);
+ /* file.c */
+ struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
+ 			       struct fuse_page_desc **desc);
++/* helper.c */
++int fuse_kv_parse_one(char **pp, char *end, char **keyp, char **valp);
 =20
- /** Default max number of pages that can be used in a single read reques=
-t */
- #define FUSE_DEFAULT_MAX_PAGES_PER_REQ 32
-@@ -871,6 +872,17 @@ static inline bool fuse_is_bad(struct inode *inode)
- 	return unlikely(test_bit(FUSE_I_BAD, &get_fuse_inode(inode)->state));
- }
-=20
-+static inline unsigned long fuse_get_user_addr(const struct iov_iter *ii=
-)
-+{
-+	return (unsigned long)ii->iov->iov_base + ii->iov_offset;
-+}
-+
-+static inline size_t fuse_get_frag_size(const struct iov_iter *ii,
-+					size_t max_size)
-+{
-+	return min(iov_iter_single_seg_count(ii), max_size);
-+}
-+
- /** Device operations */
- extern const struct file_operations fuse_dev_operations;
-=20
-@@ -1213,4 +1225,8 @@ void fuse_dax_inode_cleanup(struct inode *inode);
- bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_ali=
-gnment);
- void fuse_dax_cancel_work(struct fuse_conn *fc);
-=20
-+/* file.c */
-+struct page **fuse_pages_alloc(unsigned int npages, gfp_t flags,
-+			       struct fuse_page_desc **desc);
-+
  #endif /* _FS_FUSE_I_H */
+diff --git a/fs/fuse/helper.c b/fs/fuse/helper.c
+new file mode 100644
+index 000000000000..0c828daf8e8a
+--- /dev/null
++++ b/fs/fuse/helper.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Helper functions used by CUSE and MUSE
++ *
++ * Copyright (C) 2008-2009  SUSE Linux Products GmbH
++ * Copyright (C) 2008-2009  Tejun Heo <tj@kernel.org>
++ *
++ */
++
++#include <linux/string.h>
++#include <linux/module.h>
++
++#include "fuse_i.h"
++
++/**
++ * fuse_kv_parse_one - parse one key=3Dvalue pair
++ * @pp: i/o parameter for the current position
++ * @end: points to one past the end of the packed string
++ * @keyp: out parameter for key
++ * @valp: out parameter for value
++ *
++ * *@pp points to packed strings - "key0=3Dval0\0key1=3Dval1\0" which en=
+ds
++ * at @end - 1.  This function parses one pair and set *@keyp to the
++ * start of the key and *@valp to the start of the value.  Note that
++ * the original string is modified such that the key string is
++ * terminated with '\0'.  *@pp is updated to point to the next string.
++ *
++ * RETURNS:
++ * 1 on successful parse, 0 on EOF, -errno on failure.
++ */
++int fuse_kv_parse_one(char **pp, char *end, char **keyp, char **valp)
++{
++	char *p =3D *pp;
++	char *key, *val;
++
++	while (p < end && *p =3D=3D '\0')
++		p++;
++	if (p =3D=3D end)
++		return 0;
++
++	if (end[-1] !=3D '\0') {
++		pr_err("info not properly terminated\n");
++		return -EINVAL;
++	}
++
++	key =3D val =3D p;
++	p +=3D strlen(p);
++
++	if (valp) {
++		strsep(&val, "=3D");
++		if (!val)
++			val =3D key + strlen(key);
++		key =3D strstrip(key);
++		val =3D strstrip(val);
++	} else
++		key =3D strstrip(key);
++
++	if (!strlen(key)) {
++		pr_err("zero length info key specified\n");
++		return -EINVAL;
++	}
++
++	*pp =3D p;
++	*keyp =3D key;
++	if (valp)
++		*valp =3D val;
++
++	return 1;
++}
++EXPORT_SYMBOL_GPL(fuse_kv_parse_one);
 --=20
 2.26.2
 
