@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E795C301E34
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558F3301E3D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbhAXSmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 13:42:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
+        id S1726493AbhAXSo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 13:44:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbhAXSmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 13:42:04 -0500
+        id S1726007AbhAXSo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 13:44:56 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40E8A22C9F;
-        Sun, 24 Jan 2021 18:41:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E98CE222BB;
+        Sun, 24 Jan 2021 18:44:14 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l3kK9-009lag-3K; Sun, 24 Jan 2021 18:41:21 +0000
-Date:   Sun, 24 Jan 2021 18:41:19 +0000
-Message-ID: <87tur6jhyo.wl-maz@kernel.org>
+        id 1l3kMu-009lbm-U9; Sun, 24 Jan 2021 18:44:13 +0000
+Date:   Sun, 24 Jan 2021 18:44:11 +0000
+Message-ID: <87sg6qjhtw.wl-maz@kernel.org>
 From:   Marc Zyngier <maz@kernel.org>
 To:     David Brazdil <dbrazdil@google.com>
 Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
@@ -40,11 +40,11 @@ Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: Re: [PATCH v4 18/21] arm64: Move "nokaslr" over to the early cpufeature infrastructure
-In-Reply-To: <20210118144636.kysdvnmcdm7it5zp@google.com>
+Subject: Re: [PATCH v4 04/21] arm64: Provide an 'upgrade to VHE' stub hypercall
+In-Reply-To: <20210118112516.6a7lnrtbjvey4iiv@google.com>
 References: <20210118094533.2874082-1-maz@kernel.org>
-        <20210118094533.2874082-19-maz@kernel.org>
-        <20210118144636.kysdvnmcdm7it5zp@google.com>
+        <20210118094533.2874082-5-maz@kernel.org>
+        <20210118112516.6a7lnrtbjvey4iiv@google.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
  (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -58,35 +58,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 18 Jan 2021 14:46:36 +0000,
+On Mon, 18 Jan 2021 11:25:16 +0000,
 David Brazdil <dbrazdil@google.com> wrote:
 > 
-> On Mon, Jan 18, 2021 at 09:45:30AM +0000, Marc Zyngier wrote:
-> > Given that the early cpufeature infrastructure has borrowed quite
-> > a lot of code from the kaslr implementation, let's reimplement
-> > the matching of the "nokaslr" option with it.
+> On Mon, Jan 18, 2021 at 09:45:16AM +0000, Marc Zyngier wrote:
+> > As we are about to change the way a VHE system boots, let's
+> > provide the core helper, in the form of a stub hypercall that
+> > enables VHE and replicates the full EL1 context at EL2, thanks
+> > to EL1 and VHE-EL2 being extremely similar.
+> > 
+> > On exception return, the kernel carries on at EL2. Fancy!
+> > 
+> > Nothing calls this new hypercall yet, so no functional change.
 > > 
 > > Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Acked-by: David Brazdil <dbrazdil@google.com>
-
-[...]
-
-> > @@ -126,7 +95,7 @@ u64 __init kaslr_early_init(void)
-> >  	 * Check if 'nokaslr' appears on the command line, and
-> >  	 * return 0 if that is the case.
-> >  	 */
-> > -	if (is_kaslr_disabled_cmdline(fdt)) {
-> > +	if (kaslr_feature_val & kaslr_feature_mask & 0xf) {
+> > ---
+> >  arch/arm64/include/asm/virt.h |  7 +++-
+> >  arch/arm64/kernel/hyp-stub.S  | 67 +++++++++++++++++++++++++++++++++--
+> >  2 files changed, 71 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
+> > index ee6a48df89d9..7379f35ae2c6 100644
+> > --- a/arch/arm64/include/asm/virt.h
+> > +++ b/arch/arm64/include/asm/virt.h
+> > @@ -35,8 +35,13 @@
+> >   */
+> >  #define HVC_RESET_VECTORS 2
+> >  
+> > +/*
+> > + * HVC_VHE_RESTART - Upgrade the CPU from EL1 to EL2, if possible
+> > + */
+> > +#define HVC_VHE_RESTART	3
+> > +
+> >  /* Max number of HYP stub hypercalls */
+> > -#define HVC_STUB_HCALL_NR 3
+> > +#define HVC_STUB_HCALL_NR 4
+> >  
+> >  /* Error returned when an invalid stub number is passed into x0 */
+> >  #define HVC_STUB_ERR	0xbadca11
+> > diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> > index 160f5881a0b7..fb12398b5c28 100644
+> > --- a/arch/arm64/kernel/hyp-stub.S
+> > +++ b/arch/arm64/kernel/hyp-stub.S
+> > @@ -8,9 +8,9 @@
+> >  
+> >  #include <linux/init.h>
+> >  #include <linux/linkage.h>
+> > -#include <linux/irqchip/arm-gic-v3.h>
+> >  
+> >  #include <asm/assembler.h>
+> > +#include <asm/el2_setup.h>
+> >  #include <asm/kvm_arm.h>
+> >  #include <asm/kvm_asm.h>
+> >  #include <asm/ptrace.h>
+> > @@ -47,10 +47,13 @@ SYM_CODE_END(__hyp_stub_vectors)
+> >  
+> >  SYM_CODE_START_LOCAL(el1_sync)
+> >  	cmp	x0, #HVC_SET_VECTORS
+> > -	b.ne	2f
+> > +	b.ne	1f
+> >  	msr	vbar_el2, x1
+> >  	b	9f
+> >  
+> > +1:	cmp	x0, #HVC_VHE_RESTART
+> > +	b.eq	mutate_to_vhe
+> > +
+> >  2:	cmp	x0, #HVC_SOFT_RESTART
+> >  	b.ne	3f
+> >  	mov	x0, x2
+> > @@ -70,6 +73,66 @@ SYM_CODE_START_LOCAL(el1_sync)
+> >  	eret
+> >  SYM_CODE_END(el1_sync)
+> >  
+> > +// nVHE? No way! Give me the real thing!
+> > +SYM_CODE_START_LOCAL(mutate_to_vhe)
+> > +	// Sanity check: MMU *must* be off
+> > +	mrs	x0, sctlr_el2
+> > +	tbnz	x0, #0, 1f
+> > +
+> > +	// Needs to be VHE capable, obviously
+> > +	mrs	x0, id_aa64mmfr1_el1
+> > +	ubfx	x0, x0, #ID_AA64MMFR1_VHE_SHIFT, #4
+> > +	cbz	x0, 1f
 > 
-> nit: Isn't the 0xf redundant here? You don't re-mask for VH either.
+> nit: There is a HVC_STUB_ERR that you could return if these sanity
+> checks fail.  The documentation also states that it should be
+> returned on error.
 
-Actually, I do. See the two back to back ubfx that extract both the
-mask and the feature. The "& 0xf" here serves the same purpose.
-
-Is it redundant? At the moment, quite possibly. But since we have
-space for 16 "features", this is an indication that we are only using
-the first one. I expect that eventually, we'll use it for other
-things.
+Good point. I've now added it, but how the error can be handled is
+still up in the air. For now, I've decided to let the kernel continue
+its (probably doomed) course.
 
 Thanks,
 
