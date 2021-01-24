@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E89301CC5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3FC301CC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbhAXOhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 09:37:11 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.100]:20005 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbhAXOhI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 09:37:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611498843;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
-        Subject:Sender;
-        bh=xyuBJ9z5Y2O0KqbpsKjLYim6gTS3ckKJAVrCOhui480=;
-        b=dlG97Q+Ac+JbXGCfVHCVnKWpfN1MAIBwgdOXnwx6A32/i3VbvhLQTNPzfZoVHHoSct
-        M1dHFP+g8XnzDI3g6eet00ndoPU863UcxJC7J4omeQ5syrlI8Dp4eSZHJKWEFcpl7t+6
-        gB6sZhJWwvISTFIznk7ayAB5D+YqEd6CPZEbjTA02+xI6sV2yeK3wxaAFcZrLxzrRIwe
-        F/ueoKUe0nrMF9kqgUZE6p1bUFiTRJo4ePN9HD+zr5Ik8BU/OiNpLzieb5LVB1JwtRRR
-        b2Kirt1GkFufXlelUPWlLkqQWH+p6XCdGLxBMlPlD5THaa1XRUS3phn/gECQny9U2utQ
-        ZgBQ==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZI/ScIzb9"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id Z04c46x0OEY2eqT
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 24 Jan 2021 15:34:02 +0100 (CET)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        David Howells <dhowells@redhat.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        keyrings@vger.kernel.org, simo@redhat.com
-Subject: Re: [PATCH v2 0/7] Add KDF implementations to crypto API
-Date:   Sun, 24 Jan 2021 15:34:02 +0100
-Message-ID: <4083606.ejJDZkT8p0@positron.chronox.de>
-In-Reply-To: <CAMj1kXE=46vk15Ovs8qS96JZRi2xDHHe=QqC=WKbZ-+gx4DL4Q@mail.gmail.com>
-References: <1772794.tdWV9SEqCh@positron.chronox.de> <CAMj1kXE=46vk15Ovs8qS96JZRi2xDHHe=QqC=WKbZ-+gx4DL4Q@mail.gmail.com>
+        id S1726247AbhAXOfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 09:35:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbhAXOew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 09:34:52 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C028622CF6;
+        Sun, 24 Jan 2021 14:34:09 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 14:34:04 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: counter: add gpio-pulse-counter
+ binding
+Message-ID: <20210124143404.4a029d62@archlinux>
+In-Reply-To: <20210122112434.27886-2-o.rempel@pengutronix.de>
+References: <20210122112434.27886-1-o.rempel@pengutronix.de>
+        <20210122112434.27886-2-o.rempel@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, 24. Januar 2021, 15:23:29 CET schrieb Ard Biesheuvel:
+On Fri, 22 Jan 2021 12:24:33 +0100
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-Hi Ard,
+> Add binding for GPIO based pulse counter node
+> 
+This does make me wonder a bit on whether we are going to soon need
+a  provider / consumer interface for the counter subsystem.
 
-> On Sun, 24 Jan 2021 at 15:10, Stephan M=FCller <smueller@chronox.de> wrot=
-e:
-> > Hi,
-> >=20
-> > The key derviation functions are considered to be a cryptographic
-> > operation. As cryptographic operations are provided via the kernel
-> > crypto API, this patch set consolidates the KDF implementations into the
-> > crypto API.
-> >=20
-> > The KDF implementations are provided as service functions. Yet, the
-> > interface to the two provided KDFs are identical with the goal to allow
-> > them to be transformed into a crypto API template eventually.
->=20
-> Why? There are typically two reasons to use the crypto API abstractions:
-> - the algorithm is not known at compile time, so we need the runtime
-> dispatch that the crypto API implements,
-> - the algorithm may be implemented by a h/w accelerator which is
-> discovered at runtime via the driver stack
->=20
-> In other cases, a library API is much more suitable, even in the case
-> where we may provide arch-specific accelerated implementations of such
-> an algorithm.
+Afterall, this pulse is coming from something and I doubt it will
+be long before we want to describe that 'something' plus it may
+have additional controls etc.
 
-In case your "why" refers to why I stated that the KDF implementations are=
-=20
-similar to eventually consolidate them into a template eventually:
+Anyhow, that's a question for another day.  A few minor things inline.
 
-A KDF is conceptually a logic on top of a (hash) algorithm like a block=20
-chaining mode on top of a block cipher or a deterministic RNG on top of an=
-=20
-underlying cipher.
-
-So, conceptually with the kernel crypto API, we would have a KDF template t=
-hat=20
-can be used like hkdf(sha256) or hkdf(sha256-avx2).
-
-The behavior of a KDF is identical to a deterministic RNG. Thus, a long tim=
-e=20
-ago, I had a patch developed that adds a very small addition to the existin=
-g=20
-RNG API to allow the KDFs to be used. See [1]. Yet, that was not desired at=
-=20
-the time due to different reasons.
-
-Yet, the crypto API as it stands today knows of templates and basic=20
-algorithms. Having a separate library API providing a crypto algorithm is n=
-ew=20
-to the crypto API. You see that with the test manager which works well with=
-=20
-the templates / algorithms but does not provide any helpers for some "libra=
-ry=20
-APIs".
+Jonathan
 
 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  .../bindings/counter/gpio-pulse-counter.yaml  | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/counter/gpio-pulse-counter.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/counter/gpio-pulse-counter.yaml b/Documentation/devicetree/bindings/counter/gpio-pulse-counter.yaml
+> new file mode 100644
+> index 000000000000..dfa93956f15c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/counter/gpio-pulse-counter.yaml
+> @@ -0,0 +1,39 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/counter/gpio-pulse-counter.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: GPIO base pulse counter
 
-In case your "why" refers to whether I am not using a template to begin wit=
-h:
+Whilst it's moderately obvious I think a short description here
+would be useful. 
 
-Some time back I provided the patch using a template (see [1] for example).=
- At=20
-that time, Herbert wanted to have a service API instead.
 
-[1] http://www.chronox.de/kdf.html
+> +
+> +maintainers:
+> +  - Oleksij Rempel <o.rempel@pengutronix.de>
+> +
+> +properties:
+> +  compatible:
+> +    const: virtual,gpio-pulse-counter
+> +
+> +  gpios:
+> +    maxItems: 1
+> +
+> +required:
+> +  - gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    counter-0 {
+> +        compatible = "virtual,gpio-pulse-counter";
+> +        gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
+> +    };
+> +
+> +    counter-1 {
+> +        compatible = "virtual,gpio-pulse-counter";
+> +        gpios = <&gpio 1 GPIO_ACTIVE_HIGH>;
+> +    };
 
-Ciao
-Stephan
+The second example doesn't tell us anything new, so I'd drop
+it and just have counter-0
 
+
+
+> +
+> +...
 
