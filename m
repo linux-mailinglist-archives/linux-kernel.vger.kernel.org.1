@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE019301E1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FFC301E1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726181AbhAXSY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 13:24:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
+        id S1726168AbhAXS10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 13:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725918AbhAXSYZ (ORCPT
+        with ESMTP id S1725921AbhAXS1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 13:24:25 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8A3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 10:23:44 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id i17so12606698ljn.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 10:23:44 -0800 (PST)
+        Sun, 24 Jan 2021 13:27:21 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF9CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 10:26:41 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id b10so12567138ljp.6
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 10:26:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TH9aJiZaZ+U+nPTcu3CY+tkY0xvrtG7s1l2Zo+h8cO4=;
-        b=Ka9shkHHgV9WEq7pX8AAVnON0DFW0zXg4MklWvptRvP+GZYF+EIwZgZemzu5wAxTdI
-         qF0/BbH/YJ31KGKjPlwU5bcsaHOsBJOrbsXQAidUK4vs3mAIHIfp+q7pPZ3mQsZG5RdG
-         7TK5O2QaChw0U7n6t9rOsmEMkPXzD57X/IhB+eOBCyqBRIFaIEFYFu498DCKDrDtjoD4
-         EW++y28r2yQBF9l9t26Ami1yxLUGtIAhYwxRwys5is6oXF4AN6XGwa2DdrhCEtVHjtQD
-         Lc1MTjaDJ0V2E5wsqkk7Evq31oF+/l/c3VkBXdqPLPAZMMVexA4HJmkVTfgqkTkCyxc8
-         os1g==
+        bh=6XXqxxdF8pEH6i4M+pBK93Z9NpVMNWCsTEbZ/h58ER0=;
+        b=Qqc/mvyUXMkjP5et3r4aF/o4FRzc/Px/SL7nJmmcZnw692Fr9KuCRLXgZ3o/BLR3cD
+         tTRbpO7VIGjagbCJVV/xT3k+5RNQX+b2xxVqfHFOkc6J0H4P9wI9ECWWIkGDkTwXcRsz
+         kLY+Bh/WAgFwfKJNqGD18GEmln+N4ZcL1rsqY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TH9aJiZaZ+U+nPTcu3CY+tkY0xvrtG7s1l2Zo+h8cO4=;
-        b=XXZy39ET7tnCFb/v6DoEcf7pTP4jsG0cfZEFb68GAhsHflenW/6xiTPAgpo6MbCvNv
-         5WUOMLvRVeIrcrB6emCk/CyYPmTkQHnDUlIYvt6RhoWskAQBWEY0Z6MaOc1h9gImwMFJ
-         GnhS7vJQfvOawYjRDjq6xQudFi/7Elq5a5XV3/4z66ShoDqPZWcekXLiqvzN0D98TwF+
-         JwyQrenic5VNVurvM+HYBwMjP3lfCiXHFg8qD9iITAkqpnH7qEnra4UFl1d07E6B8qyF
-         x6xoL5UyFSPb7zhIQKivESzlxf5i1bSR7dHPZJ/Q4X9ErwodwjoPbXr1my/4CdRdo+AD
-         6nqw==
-X-Gm-Message-State: AOAM531zVz3u8Z3lQ64Vj4fNFi+1SzYN4VW22hudO2HZn2ghwP56KK2p
-        gGoN/1jtJk3wqISMBqsXXbSecF2IFrixAowYtTI=
-X-Google-Smtp-Source: ABdhPJyA16J8LV8cCCPSvM5OAhYSU5/W39HzjLKpUXDGhkruBIKzwDjo45yCUZPzQjPtNOdMwhodtc1+pBzaHRr2LNA=
-X-Received: by 2002:a2e:b5d8:: with SMTP id g24mr250307ljn.50.1611512622979;
- Sun, 24 Jan 2021 10:23:42 -0800 (PST)
+        bh=6XXqxxdF8pEH6i4M+pBK93Z9NpVMNWCsTEbZ/h58ER0=;
+        b=pe61x3X8dLLslZ89BjItpX+hSI4SrJRi7sDtsdBWLCwO2fDnHQtCy9simUDmckHnsf
+         /R+z5LnUnAHHKKHz3sCOfp13D6d2mcXrxJzOVkHAAqS4a27OWAHbudb60JKq71Amly3C
+         gcZb8NRV1NvLlcJLcKzW0LhBYi8qf/lUTyOeaC7GlfBnLRdW9tsuX5aJ6PWEOqjNdQ1T
+         lKPQ4IO5jN5NJy4AGurROpv3+dfgZJdgMMcipKmHP7ap0+UxHri2DY2TwQ3vYqSfNFDF
+         D5S4s7aV7xWBQrAosLMlKtGlVO0MOVRmC2R4IjqhmZ8W3fmn6oA/yS0NxLR8Jaz3Yn2G
+         ZEWw==
+X-Gm-Message-State: AOAM530hpLEoDncdEKjTN+sDoBdgZajMSYWk6RAQ6WM3SahykAqUcaV7
+        aLWHfG8EF+yxDqvTs0f/rdMPjcsLQkCXCA==
+X-Google-Smtp-Source: ABdhPJzijCZe816s4XA3cpAcUVQpWaIiAe9oWHezaQHXc/zX2PcNtbiKEv3MAGOkpHgdJQOalV637A==
+X-Received: by 2002:a2e:390d:: with SMTP id g13mr769224lja.23.1611512799419;
+        Sun, 24 Jan 2021 10:26:39 -0800 (PST)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id g17sm1562365lfb.30.2021.01.24.10.26.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Jan 2021 10:26:38 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id f11so12550138ljm.8
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 10:26:38 -0800 (PST)
+X-Received: by 2002:a2e:720d:: with SMTP id n13mr394301ljc.220.1611512798033;
+ Sun, 24 Jan 2021 10:26:38 -0800 (PST)
 MIME-Version: 1.0
-References: <CABXGCsMvRzY_JHH4cPtxQ3nsYrsEJFgD0Wh5Aimx+iGB8GnY3g@mail.gmail.com>
- <20210124111047.13404-1-hdanton@sina.com>
-In-Reply-To: <20210124111047.13404-1-hdanton@sina.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Sun, 24 Jan 2021 23:23:31 +0500
-Message-ID: <CABXGCsMY5eEefYLvnqtws8MRAqHOaDW9JwfsCPnLZydLDQqyuA@mail.gmail.com>
-Subject: Re: BUG: KASAN: use-after-free in __list_add_valid+0x81/0xa0 (5.11-rc4)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>, paulmck@linux.vnet.ibm.com
+References: <20210124123049.GE2493@zn.tnic>
+In-Reply-To: <20210124123049.GE2493@zn.tnic>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 24 Jan 2021 10:26:22 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh2XRSWkUVbXH23e0ghCjhWV1VbMJ+EGRPQ6ynjRLm05A@mail.gmail.com>
+Message-ID: <CAHk-=wh2XRSWkUVbXH23e0ghCjhWV1VbMJ+EGRPQ6ynjRLm05A@mail.gmail.com>
+Subject: Re: [GIT PULL] irq/urgent for v5.11-rc5
+To:     Borislav Petkov <bp@suse.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Jan 2021 at 16:11, Hillf Danton <hdanton@sina.com> wrote:
+On Sun, Jan 24, 2021 at 4:30 AM Borislav Petkov <bp@suse.de> wrote:
 >
-> If it is supposed due to the race between pool->stale_lock and
-> pool->lock that are both protecting the buddy list_head then adding
-> another one can be a cure.  The diff below is not for any test.
+> Thomas Gleixner (2):
+>       genirq: Export irq_check_status_bit()
 
-Thanks for looking at the issue.
-Why the proposed patch not intended for testing?
-It is not the final (optimal) variant?
+Thanks, this was one of the pending things I was thinking I'd have to
+do manually if I didn't get a fix for rc5..
 
-
--- 
-Best Regards,
-Mike Gavrilov.
+            Linus
