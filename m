@@ -2,77 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEDF301BC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 257B0301BC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbhAXMQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:16:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49098 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726668AbhAXMQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 07:16:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5137AAC45;
-        Sun, 24 Jan 2021 12:15:46 +0000 (UTC)
-Date:   Sun, 24 Jan 2021 13:15:39 +0100
-From:   Borislav Petkov <bp@suse.de>
+        id S1726737AbhAXMQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:16:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726695AbhAXMQh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 07:16:37 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C6FC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 04:15:57 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DNsQx5SSgz9sVr;
+        Sun, 24 Jan 2021 23:15:53 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1611490553;
+        bh=5I29EgT4xN799chPfGNVThEwYnGxWyw8FVeDGXWCQDw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eu+/sMz+m6sIQIi8QHPBaEi0FnEGB5nH+yj8q2mVjgvsonfEM5SVowDd3b4TvMlLo
+         /oCBGN0byNTACb8YPMpcnJV48HAHnpY4VS2KWgue93yqX6qELN8m20PLMDnmN5PH69
+         SDU3M4wl2W3q8sXtXkUsQKDvVJdTk+fhbD53bZrw/75vJUwmH2PxegecIj8h20ccsl
+         ovlmqPB25TaaV3IvrlGpA2xkkPFUsi7uNOWjyoGSN7XjnLmAqvAbJAC1s9rcTH9OeA
+         Iw1HBvYdSSGL3pIYHBhcGeVY6u1Kkr/L78zaOeiIk862ghmPukfGM0qO68IZJ47p30
+         JGz0Lxq3WFVKg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] objtool/urgent for v5.11-rc5
-Message-ID: <20210124121539.GD2493@zn.tnic>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        npiggin@gmail.com, sandipan@linux.ibm.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-5 tag
+Date:   Sun, 24 Jan 2021 23:15:52 +1100
+Message-ID: <87tur6pm2v.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 Hi Linus,
 
-please pull three urgent objtool fixes resulting from recent toolchain
-changes.
+Please pull some more powerpc fixes for 5.11:
 
-Thx.
+The following changes since commit 41131a5e54ae7ba5a2bb8d7b30d1818b3f5b13d2:
 
----
+  powerpc/vdso: Fix clock_gettime_fallback for vdso32 (2021-01-14 15:56:44 +1100)
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+are available in the git repository at:
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-5
 
-are available in the Git repository at:
+for you to fetch changes up to 08685be7761d69914f08c3d6211c543a385a5b9c:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/objtool_urgent_for_v5.11_rc5
+  powerpc/64s: fix scv entry fallback flush vs interrupt (2021-01-20 15:58:19 +1100)
 
-for you to fetch changes up to 1d489151e9f9d1647110277ff77282fe4d96d09b:
+- ------------------------------------------------------------------
+powerpc fixes for 5.11 #5
 
-  objtool: Don't fail on missing symbol table (2021-01-21 15:49:58 -0600)
+Fix a bad interaction between the scv handling and the fallback L1D flush, which
+could lead to user register corruption. Only affects people using scv (~no one)
+on machines with old firmware that are missing the L1D flush.
 
-----------------------------------------------------------------
- - Adjust objtool to handle a recent binutils change to not generate unused
- symbols anymore.
+Two small selftest fixes.
 
- - Revert the fail-the-build-on-fatal-errors objtool strategy for now due to the
- ever-increasing matrix of supported toolchains/plugins and them causing too
- many such fatal errors currently.
+Thanks to Eirik Fuller, Libor Pechacek, Nicholas Piggin, Sandipan Das, Tulio
+Magno Quites Machado Filho.
 
- - Do not add empty symbols to objdump's rbtree to accommodate clang removing
- section symbols.
+- ------------------------------------------------------------------
+Michael Ellerman (1):
+      selftests/powerpc: Only test lwm/stmw on big endian
 
-----------------------------------------------------------------
-Josh Poimboeuf (3):
-      objtool: Don't add empty symbols to the rbtree
-      objtool: Don't fail the kernel build on fatal errors
-      objtool: Don't fail on missing symbol table
+Nicholas Piggin (1):
+      powerpc/64s: fix scv entry fallback flush vs interrupt
 
- tools/objtool/check.c | 14 +++++---------
- tools/objtool/elf.c   | 14 ++++++++++++--
- 2 files changed, 17 insertions(+), 11 deletions(-)
+Sandipan Das (1):
+      selftests/powerpc: Fix exit status of pkey tests
 
--- 
-Regards/Gruss,
-    Boris.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+ arch/powerpc/include/asm/exception-64s.h                      | 13 +++++++++++
+ arch/powerpc/include/asm/feature-fixups.h                     | 10 ++++++++
+ arch/powerpc/kernel/entry_64.S                                |  2 +-
+ arch/powerpc/kernel/exceptions-64s.S                          | 19 ++++++++++++++++
+ arch/powerpc/kernel/vmlinux.lds.S                             |  7 ++++++
+ arch/powerpc/lib/feature-fixups.c                             | 24 +++++++++++++++++---
+ tools/testing/selftests/powerpc/alignment/alignment_handler.c |  5 +++-
+ tools/testing/selftests/powerpc/mm/pkey_exec_prot.c           |  2 +-
+ tools/testing/selftests/powerpc/mm/pkey_siginfo.c             |  2 +-
+ 9 files changed, 77 insertions(+), 7 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmANYaoACgkQUevqPMjh
+pYDyFRAAqwsxxbbCe+AlggURQi7nap5JL4qHV0bEYPR34IEIPs9blDOb5ECQNbNt
+fbxDK9y3ij5ceETsdzM6d3gkocBo/O8JMa9scfmHNFpQLWQk013MUg3YJQnycDkE
+vpmaXPMdkcZv82VXdYe4DonhlS3FBTpbL1jPVZn6KIJGpiWfuS7vgptLeBqtMMZz
+Mz4lAkzMKbSw/NmKe+Iq3Rc8zsw4C6gXPIhkNsD32s5U+lVMKLpFpxtwhxcGFxDy
+sTUBWXJn+mW4+XJVNHQOvLN3gTPNgEcg2xoKkQiwB5/y+GKgPco24Ep6bUalYfNG
+dViUAEgzpyhwTfkBxwwV8bpxSaw9HAQRjVC18QJ7sLM+ogHEJm7ejipAOmAfAzuf
++BwQgkSZ2I/peJJDNvVjC3vRIDl29LEA73ZORcp4ynDP/cKuhgvaYBTPCVCzcc0r
++bPXFEfS0OofLBkLekHIdSRfCLQjmQF/TB3CVkDAlDKjiMwTJk/khTn0+0RD6DRK
+i/iBkCXjOBuizXkIzRUAit6YMMoO6Yt/nuyrPhDetBFpMPmZgAuLZCs1UI+qUR/L
+lS4jOSUQnZqLXsDJqT7uUIdaWZPODdV1U8XEl1+C9xAZ5A4Juy9fFr2K91OtBa2e
+/45tUCpDCmtt5aXZXWgwghJeQteBI0Ng5U4NH0asH2W8oVDFyRM=
+=f+xY
+-----END PGP SIGNATURE-----
