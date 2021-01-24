@@ -2,102 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D67A301DF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C49F301DFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbhAXRkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 12:40:01 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:48055 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725842AbhAXRjw (ORCPT
+        id S1726292AbhAXRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 12:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbhAXRnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 12:39:52 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 246F15C00A3;
-        Sun, 24 Jan 2021 12:38:44 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 24 Jan 2021 12:38:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=hFuytUMxrsRHZuxgi8tWvmAayIS
-        GiEYy95yz/w2iQA8=; b=dB/LVoCdGWgV/gr8Lh/mvCMv+nsBPtNmXFSA/GB6JJy
-        lT7YpdlwdQhco9EqJbTf8vqOLYeEk7qVPGWaFh3Mi7PycJ1z//gkORPZumUl4QFO
-        U/v7EO0TJTwiMSOt/8FRYwZbRjXQZmrGfYLYOlNunGAX7PZ5lQ4vndtBVkN/tiV6
-        xDFHXEzCUAxnFu9uQIWfgwJVDEIgxoxRRcVYAqwg+YsN5Qk4yOwLwUfOxjNgqWF2
-        N3UOl6DQHNBwz9R3qdtIEDbNEaRtU4oII9YVnIhoVoA5L1avYehr6Ib/tPWRoQvQ
-        HX5DeFFFPuDP2+RPfl0qLWHrCMNIUmRgnRneRoRx7Hw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=hFuytU
-        MxrsRHZuxgi8tWvmAayISGiEYy95yz/w2iQA8=; b=mzPsFzVYsGMBPui//S75rj
-        /QOg5LQeiblERR9EziJ7PfxR4aaxOZppEwCZ9Q3gab/81bdwVtKchKi8MJP5smVu
-        vP1IRP2w3VQGCCfE2ffdBa8OY8CM2KfgM6gO68kH/lF4A/7ljzpWC0P2viDodwaB
-        bvbaIPSoPv2qsj3egczzkSiFBXS9TM/oRMxhMPo1cP6D7vgs8eTRDYIo9ZHw0xQO
-        Mz41q7VHe/84YXhxDhJcgbXYyiGAEnQKmHsERocgIdmQW3JgNcCDBd1ckF0ouI3+
-        sCoWc34iOeR7hYKku6bBz796SZMzyWInD0OlrAueOT66AgQBvbePtih6BDWQd2xQ
-        ==
-X-ME-Sender: <xms:o7ANYANBx_A9U5HB7kUv3bBYoYonzeSsn1kB9prNTZ4as13oB3qTHQ>
-    <xme:o7ANYG98-VmjJmS5VheXk8qHSCVBOg1lLZzbzXRiI88FhrBrMOfXJ1DjcRseifgKw
-    rBLXut8s6Txkd0jsA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddugddutdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujghosehttd
-    ertddttddvnecuhfhrohhmpeforghrkhcuifhrvggvrhcuoehmghhrvggvrhesrghnihhm
-    rghltghrvggvkhdrtghomheqnecuggftrfgrthhtvghrnhepieeugfdutdefiedtvdffte
-    dufedvjeehgfevveefudfgjeffgeeiteetjedufffhnecukfhppeeikedrvddrkedvrddu
-    jedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    hgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhm
-X-ME-Proxy: <xmx:o7ANYHQNumQjNlqXBQeK52yAE-yv1SDiLCY5pbImWydo6VMMzpw3ow>
-    <xmx:o7ANYIteIU9yOHjbQE_8J81KrAzLIoiaNiwuv_B2S3PEKLraaIlAxA>
-    <xmx:o7ANYIfnjZpsofmgNMw0O7a-qFKWXXcXZFfp5fHcNa_yPeYskENjKw>
-    <xmx:pLANYH5C7Zst5GUtT4dH1tSzU4wvDefVcNpPJtYxnP6paeldc5InVg>
-Received: from blue.animalcreek.com (ip68-2-82-171.ph.ph.cox.net [68.2.82.171])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E39B224005B;
-        Sun, 24 Jan 2021 12:38:42 -0500 (EST)
-Received: by blue.animalcreek.com (Postfix, from userid 1000)
-        id 61F451360081; Sun, 24 Jan 2021 10:38:42 -0700 (MST)
-Date:   Sun, 24 Jan 2021 10:38:42 -0700
-From:   Mark Greer <mgreer@animalcreek.com>
-To:     samirweng1979 <samirweng1979@163.com>
-Cc:     mgreer@animalcreek.com, linux-wireless@vger.kernel.org,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: Re: [PATCH] nfc: fix typo
-Message-ID: <20210124173842.GC31737@animalcreek.com>
-References: <20210123052618.2448-1-samirweng1979@163.com>
+        Sun, 24 Jan 2021 12:43:33 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A1EC061573;
+        Sun, 24 Jan 2021 09:42:53 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id u11so12440862ljo.13;
+        Sun, 24 Jan 2021 09:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=huKUEf/T+Pt85OuxeEgIzQUXu/vH0w4ojEpai0/V1ZM=;
+        b=NSmRghhj2w8K5ygxT20aPO1jxmsmrPDF+dho9pDVeLAsd3QYWg7+vuQuqJ432fzWJz
+         cTWFne1qy0xqXx1tdXjFxtvvfqyKubItaT9RPtsBM7PCNUu9ZpQ70hzdW+WizpD4lguH
+         s/GfpFsRo+6I249cqPkxFyjuETMSWFcTNa09QqBk0X3WrD8GfH7sEkZo45ypYRP3OmXx
+         DzArd4kOgouLfgF2QFrciTPSnrOuSi00Ne/nDXLmqilGkXQMoCRitbA3JdSGVKz0ndYV
+         EoEbtWWUo/9lrV0dRPdFH+udT+pQb6saX79TaQehWajwc+P4uirUdl7BMay0swbzv3F8
+         PGPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=huKUEf/T+Pt85OuxeEgIzQUXu/vH0w4ojEpai0/V1ZM=;
+        b=SjCxBApwfjgVSnkUC1wpeB1YXJpWc3B54E2wp7SQMCg3z/7f8ZUnN3CA4wBrfzG+2u
+         +48Fkcouk0jf8OYTODhYRskAR+dGrXvLNrOBGvzrv3ZXDnUFMmMG1oPdhEQAOuAau3r7
+         laS2AKPmpS5dneyBvXb7rMCuMkHEz+W2NCovLo5hCTUgQp91l1VkgkPkOV7s0qA9Rzci
+         3BPy0M+/vgzcOFtU0fY3p9Qz8Jqucif+Up66UVrPobEzRZz1OXYaXHC7gHeJzi5OBO/M
+         mtAOSy4SYq+Oegc8/R6wCDlTN4CTzT1nAxyssWH+KC6W79V20pLSMaN5mFJBX6Pojaip
+         q5nQ==
+X-Gm-Message-State: AOAM530Euj6Mdm22+6ybRd5az5YHZIt/DBe9tHrmqLlvjEhFHdAqgyo7
+        MNN9qT3No+4yOUZ5PjKKLJ8=
+X-Google-Smtp-Source: ABdhPJyjcg4QFB+CVn74y0uDhiPHc2wFCm/yHSFtJYpe12NxS1vZtBsh422yCtcR7mBbR6xSQ08cHQ==
+X-Received: by 2002:a2e:760a:: with SMTP id r10mr538157ljc.11.1611510171462;
+        Sun, 24 Jan 2021 09:42:51 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c10sm1455058lfs.75.2021.01.24.09.42.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 09:42:50 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sun, 24 Jan 2021 18:42:48 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IFtQQVRD?= =?utf-8?Q?H?=
+ =?utf-8?Q?=5D?= rcu: Release per-cpu krcp page cache when CPU going offline
+Message-ID: <20210124174248.GA1076@pc636>
+References: <20210121064949.16164-1-qiang.zhang@windriver.com>
+ <20210121185615.GR2743@paulmck-ThinkPad-P72>
+ <20210121202635.GB2454@pc638.lan>
+ <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20210122143129.GB1873@pc638.lan>
+ <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210123052618.2448-1-samirweng1979@163.com>
-Organization: Animal Creek Technologies, Inc.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 01:26:18PM +0800, samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
+On Sun, Jan 24, 2021 at 02:21:07AM +0000, Zhang, Qiang wrote:
 > 
-> change 'regster' to 'register'
 > 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
-> ---
->  drivers/nfc/trf7970a.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> ________________________________________
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年1月22日 22:31
+> 收件人: Zhang, Qiang
+> 抄送: Uladzislau Rezki; Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: 回复: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
 > 
-> diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
-> index c70f62fe..3397802 100644
-> --- a/drivers/nfc/trf7970a.c
-> +++ b/drivers/nfc/trf7970a.c
-> @@ -169,7 +169,7 @@
+> On Fri, Jan 22, 2021 at 01:44:36AM +0000, Zhang, Qiang wrote:
+> >
+> >
+> > ________________________________________
+> > 发件人: Uladzislau Rezki <urezki@gmail.com>
+> > 发送时间: 2021年1月22日 4:26
+> > 收件人: Zhang, Qiang
+> > 抄送: Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org; urezki@gmail.com
+> > 主题: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> > >Hello, Qiang,
+> >
+> > > On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> > > > From: Zqiang <qiang.zhang@windriver.com>
+> > > >
+> > > > If CPUs go offline, the corresponding krcp's page cache can
+> > > > not be use util the CPU come back online, or maybe the CPU
+> > > > will never go online again, this commit therefore free krcp's
+> > > > page cache when CPUs go offline.
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > >Do you consider it as an issue? We have 5 pages per CPU, that is 20480 bytes.
+> > >
+> >
+> > Hello Rezki
+> >
+> > In a multi CPUs system, more than one CPUs may be offline, there are more than 5 pages,  and these offline CPUs may never go online again  or  in the process of CPUs online, there are errors, which lead to the failure of online, these scenarios will lead to the per-cpu krc page cache will never be released.
+> >
+> >Thanks for your answer. I was thinking more about if you knew some >platforms
+> >which suffer from such extra page usage when CPU goes offline. Any >issues
+> >your platforms or devices run into because of that.
+> >
+> >So i understand that if CPU goes offline the 5 pages associated with it >are
+> >unused until it goes online back.
+> 
+>  I agree with you, But I still want to talk about what I think
+> 
+>  My understanding is that when the CPU is offline,  the pages is not 
+>  accessible,  beacuse we don't know when this CPU will 
+>  go online again, so we best to return these page to the buddy system,
+>  when the CPU goes online again, we can allocate page from the buddy 
+>  system to fill krcp's page cache.  maybe you may think that this memory 
+>  is small and don't need to. 
 >  
->  /* Bits determining whether its a direct command or register R/W,
->   * whether to use a continuous SPI transaction or not, and the actual
-> - * direct cmd opcode or regster address.
-> + * direct cmd opcode or register address.
->   */
->  #define TRF7970A_CMD_BIT_CTRL			BIT(7)
->  #define TRF7970A_CMD_BIT_RW			BIT(6)
+Exactly. I think that 5 pages are not that important(small amount of memory),
+so it is not worth to build the logic around it in order to return them back
+to the page allocator when CPU goes offline, even forever. This is how i see it.
 
-Acked-by: Mark Greer <mgreer@animalcreek.com>
+If you are aware about some specific systems where it is critical, please
+let's as know.
+
+--
+Vlad Rezki
