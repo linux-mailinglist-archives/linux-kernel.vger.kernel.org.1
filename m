@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E511A301D16
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83870301D1B
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbhAXPO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:14:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726324AbhAXPNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:13:31 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726530AbhAXPPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbhAXPPI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 10:15:08 -0500
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BBAC0613D6;
+        Sun, 24 Jan 2021 07:14:13 -0800 (PST)
+Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40A9822B43;
-        Sun, 24 Jan 2021 15:12:47 +0000 (UTC)
-Date:   Sun, 24 Jan 2021 15:12:42 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     <linux-iio@vger.kernel.org>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] iio:adc:ti-ads124s08: Fix packet read from the ADC
-Message-ID: <20210124151242.285ce9c6@archlinux>
-In-Reply-To: <20210121191431.12057-2-dmurphy@ti.com>
-References: <20210121191431.12057-1-dmurphy@ti.com>
-        <20210121191431.12057-2-dmurphy@ti.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E28E53EB8B;
+        Sun, 24 Jan 2021 16:14:10 +0100 (CET)
+Subject: Re: [PATCH 4/4] ARM: dts: qcom: msm8974-klte: Mark essential
+ regulators
+To:     Iskren Chernev <iskren.chernev@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Samuel Pascua <pascua.samuel.14@gmail.com>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>
+References: <20210124135610.1779295-1-iskren.chernev@gmail.com>
+ <20210124135610.1779295-4-iskren.chernev@gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <c35f0541-dd72-8e1c-fd70-49740dae31c0@somainline.org>
+Date:   Sun, 24 Jan 2021 16:14:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210124135610.1779295-4-iskren.chernev@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 13:14:31 -0600
-Dan Murphy <dmurphy@ti.com> wrote:
 
-> Fix the spi_transfer array in the reading of the data from the ADC.
-> 
-> Fixes: ("e717f8c6dfec iio: adc: Add the TI ads124s08 ADC code")
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-
-I'm not really following the changes below..
-
+On 24.01.2021 14:56, Iskren Chernev wrote:
+> s1 and l12 regulators are used for the memory and cache on the Samsung
+> S5 (klte). If they are turned off the phone shuts down. So mark them as
+> always-on to prevent that from happening.
+>
+> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> Tested-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
 > ---
->  drivers/iio/adc/ti-ads124s08.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ti-ads124s08.c b/drivers/iio/adc/ti-ads124s08.c
-> index f05d4e0e1c9d..023d81c7e8da 100644
-> --- a/drivers/iio/adc/ti-ads124s08.c
-> +++ b/drivers/iio/adc/ti-ads124s08.c
-> @@ -201,12 +201,10 @@ static int ads124s_read(struct iio_dev *indio_dev, unsigned int chan)
->  	struct spi_transfer t[] = {
->  		{
->  			.tx_buf = &priv->data[0],
-> -			.len = 4,
-> -			.cs_change = 1,
-
-We should still need to provide a length for this transfer.
-
->  		}, {
-> -			.tx_buf = &priv->data[1],
->  			.rx_buf = &priv->data[1],
->  			.len = 4,
-> +			.cs_change = 1,
-
-That's unusual... cs_change being set on the last transfer means
-the opposite of what it does for earlier transfers.
-
-https://elixir.bootlin.com/linux/latest/source/include/linux/spi/spi.h#L905
-
-Or is the intent here to provide a performance hint that the device doesn't
-care if the cs line goes inactive before stating a new set of transfers?
-If so add a comment to say that perhaps.
-
->  		},
->  	};
+>  arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+> index 19c96b47a5dbd..27323403aa71d 100644
+> --- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+> +++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
+> @@ -30,6 +30,7 @@ pma8084-regulators {
+>  					pma8084_s1: s1 {
+>  						regulator-min-microvolt = <675000>;
+>  						regulator-max-microvolt = <1050000>;
+> +						regulator-always-on;
+>  					};
 >  
+>  					pma8084_s2: s2 {
+> @@ -115,6 +116,7 @@ pma8084_l11: l11 {
+>  					pma8084_l12: l12 {
+>  						regulator-min-microvolt = <1800000>;
+>  						regulator-max-microvolt = <1800000>;
+> +						regulator-always-on;
+>  					};
+>  
+>  					pma8084_l13: l13 {
+
+
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+
+
+Konrad
 
