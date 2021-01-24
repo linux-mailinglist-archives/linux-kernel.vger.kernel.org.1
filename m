@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1052F301F0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 741E6301F0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 23:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbhAXWF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 17:05:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbhAXWFz (ORCPT
+        id S1726530AbhAXWIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 17:08:05 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:40123 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725969AbhAXWIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 17:05:55 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A52FC061573;
-        Sun, 24 Jan 2021 14:05:15 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DP6Vt1j3Jz9sCq;
-        Mon, 25 Jan 2021 09:05:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611525911;
-        bh=CFIrasHilaHp06mroWfObRWrqU+zW/23eT/ZGyW5vsQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qeguLS4sLEquSp2e9AFe3tejzgk7xRNxXU2lJcXsxmWvNi4Gm2NcAtRkimpbCDehx
-         vpGI/ILMVmQLKFRDK3NlEhtn0YcRXRyW39kVLkaKCkio4Ck6XM1V9jiKky666/83HM
-         PDMSTOEA7nxfj1qVv7qrATso+Wh1y6G8tr0vK+g9dLs0s9kL5e5MGsdRv29Nmuf7VO
-         vTTRX6ijlFB3CmK1FiCiYzi0Kv0ngacsKM0FJQS4QS0E+RCYcpFU/KZHYRHh/1irPD
-         SIG0yVJ+XVbHpFRMKHEfu9BkRGF4WGor/AP630f62KgJs2Da4LOZuxlrsdzUPvTQNB
-         BiWbz5TBqm4lw==
-Date:   Mon, 25 Jan 2021 09:05:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the openrisc tree with Linus' tree
-Message-ID: <20210125090506.35337fa2@canb.auug.org.au>
+        Sun, 24 Jan 2021 17:08:02 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1l3nXS-000sYY-Lu; Sun, 24 Jan 2021 23:07:18 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1l3nXS-001YZX-2I; Sun, 24 Jan 2021 23:07:18 +0100
+Subject: Re: Pending patches for linux-sh
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Rich Felker <dalias@libc.org>
+Cc:     Rob Landley <rob@landley.net>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
+Message-ID: <f14d4205-2031-7727-e013-7f75d17d4656@physik.fu-berlin.de>
+Date:   Sun, 24 Jan 2021 23:07:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GvgoFc4q3A+zIU0FsE=e7Z_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <133f8171-09ec-39b3-0660-de780cd879d6@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GvgoFc4q3A+zIU0FsE=e7Z_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Rich!
 
-Hi all,
+The following patches are still missing after the 5.11 SH pull:
 
-Today's linux-next merge of the openrisc tree got a conflict in:
+> - [PATCH] [sh] fix trivial misannotations
+> - https://marc.info/?l=linux-kernel&m=160945707001399&w=2
+> 
+> - [PATCH] sh: check return code of request_irq
+> - https://marc.info/?l=linux-kernel&m=160867050030140&w=2
+> 
+> - [PATCH] sh: boards: Fix the cacography in irq.c
+> - https://marc.info/?l=linux-sh&m=160578410511403&w=2
+> 
+> - [PATCH 1/2] sh: boot: add intermediate vmlinux.bin* to targets instead of extra-y
+> - https://marc.info/?l=linux-kernel&m=161088234517301&w=2
+> 
+> - [PATCH 2/2] sh: boot: avoid unneeded rebuilds under arch/sh/boot/compressed/
+> - https://marc.info/?l=linux-kernel&m=161088245817344&w=2
+>
+> - [PATCH] maple: fix wrong return value of maple_bus_init().
+> - https://marc.info/?l=linux-kernel&m=160635878212678&w=2
+> 
+> - [PATCH] sh: kdump: add some attribute to function
+> - https://marc.info/?l=linux-kernel&m=160758311622653&w=2
+> 
+> - [PATCH] sh: kernel: traps: remove unused variable
+> - https://marc.info/?l=linux-kernel&m=160760435528709&w=2
 
-  drivers/soc/litex/litex_soc_ctrl.c
+Shall they go in for 5.12?
 
-between commit:
+They all look fine to me as they're either trivial fixes or I verified that they
+don't cause any regression on my SH-7785LCR system.
 
-  e6dc077b7dff ("soc: litex: Fix compile warning when device tree is not co=
-nfigured")
+Adrian
 
-from Linus' tree and commit:
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
-  3706f9f76a4f ("drivers/soc/litex: Add restart handler")
-
-from the openrisc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/soc/litex/litex_soc_ctrl.c
-index 9b0766384570,a7dd5be9fd5b..000000000000
---- a/drivers/soc/litex/litex_soc_ctrl.c
-+++ b/drivers/soc/litex/litex_soc_ctrl.c
-@@@ -138,9 -71,19 +71,20 @@@ static int litex_check_csr_access(void=20
- =20
-  struct litex_soc_ctrl_device {
-  	void __iomem *base;
-+ 	struct notifier_block reset_nb;
-  };
- =20
-+ static int litex_reset_handler(struct notifier_block *this, unsigned long=
- mode,
-+ 			       void *cmd)
-+ {
-+ 	struct litex_soc_ctrl_device *soc_ctrl_dev =3D
-+ 		container_of(this, struct litex_soc_ctrl_device, reset_nb);
-+=20
-+ 	litex_write32(soc_ctrl_dev->base + RESET_REG_OFF, RESET_REG_VALUE);
-+ 	return NOTIFY_DONE;
-+ }
-+=20
- +#ifdef CONFIG_OF
-  static const struct of_device_id litex_soc_ctrl_of_match[] =3D {
-  	{.compatible =3D "litex,soc-controller"},
-  	{},
-
---Sig_/GvgoFc4q3A+zIU0FsE=e7Z_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAN7xIACgkQAVBC80lX
-0GzIgwgAlCPGqjyURgCzRiUnovoqc/ldma2LktTgPsgSVNxLFvstMyuI3bMfqN+4
-MgGG9JGNjhSqX+jBD0tXPSWNt2s+knTwnZVDWvo3eCEs+UXhWclLnNrszHs3JP9q
-vxuDrxkUoJwdgm2ShB+ClF8dUiDcIEXVBDyBffSEdqSs6JElQdMIvCScKGJ7yf2L
-CVO3Gojm04cNjYOYVzuLJF5Mb2PKy/Q+4EaD8TiEg4JZ+ABdLq+wT8JHsP9aKr0N
-TA01suGmS5v+QRkYsKzo7STyGn4FX7zQ+nOeVeizF5xbOzx+7dZcir9IJ7drojg3
-l2srytkeENcWGC0lNJKG6l+yuOF9SA==
-=TAFP
------END PGP SIGNATURE-----
-
---Sig_/GvgoFc4q3A+zIU0FsE=e7Z_--
