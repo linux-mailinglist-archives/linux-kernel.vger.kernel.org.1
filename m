@@ -2,137 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A045301ED0
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 21:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C10301ED7
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 22:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbhAXUwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 15:52:09 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:41556 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726351AbhAXUwB (ORCPT
+        id S1726370AbhAXVCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 16:02:06 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:40398 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbhAXVCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 15:52:01 -0500
-Received: by mail-io1-f69.google.com with SMTP id w4so1402421iod.8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 12:51:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ZJ6MDO/iuzaljFh/B5+xqAkcCIehSw4ZcwbEnFaGiCE=;
-        b=ouigK49/5i5BaW8GJB7VaTwpRivAGt9duqegRdEZWVUeH1IG1ngg8JySLPOG5S68Wi
-         3GBk1GdxTfHyzHVkWoowuBzrufOiX9OjfEvg7hKoQpnbPCyrfEMj6GSeH1t4ee3MWNTu
-         ZBdoFfxmal7nsE+ex0x6C7r/JJtmmb+tapHsx9TEOWvUWPMFbrdypgTLRofFxB9+FkQa
-         1icICUJj8lxwU+QCCUSslIGcLbiYPdKiItP7ku/MhGSD4p6WHJ9GY4J/y11Ncw9TcpZk
-         wPeQX2CbUch7ZtaL3DcaUzvYAw97BYCkx0H9Bd8K78L/Cng+GdXIAsMpYJNm3NmpBkMZ
-         nlng==
-X-Gm-Message-State: AOAM532yXuO1IX9baOxPS6m1C2Qg2AihBmjOjhijK47qNUdAidIayvIb
-        1rbflShDb0ff2V9ZDlYIh9tiDovNXBT+CZmyx6Pyq7PsvQH5
-X-Google-Smtp-Source: ABdhPJzJDX1QNEk1NkwKiL09v9N0EbJGuvZSqSgdVNROGFGzMCyNoumRUD++R7w+w4eGQpLnOjCq6JCxceSUSPYWthYxdJZwcDwL
+        Sun, 24 Jan 2021 16:02:05 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 083D91C0B78; Sun, 24 Jan 2021 22:01:22 +0100 (CET)
+Date:   Sun, 24 Jan 2021 22:01:19 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 0/3] Add initial support for BQ Aquaris X5
+Message-ID: <20210124210119.GA27676@amd>
+References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c52:: with SMTP id x18mr15034iov.5.1611521480018;
- Sun, 24 Jan 2021 12:51:20 -0800 (PST)
-Date:   Sun, 24 Jan 2021 12:51:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005d4f3205b9ab95f4@google.com>
-Subject: WARNING in pskb_expand_head
-From:   syzbot <syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com>
-To:     alexanderduyck@fb.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        edumazet@google.com, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
+Content-Disposition: inline
+In-Reply-To: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--k+w/mQv8wyuph6w0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    7d68e382 bpf: Permit size-0 datasec
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=132567e7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
-dashboard link: https://syzkaller.appspot.com/bug?extid=a1c17e56a8a62294c714
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ae23af500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13856bc7500000
+Hi!
 
-The issue was bisected to:
+> Aquaris X5 (Longcheer L8910) is a smartphone released by BQ in 2015.
+>=20
+> As part of msm8916-mainline project, this series aims to bring initial
+> mainline support for it.
 
-commit 3226b158e67cfaa677fd180152bfb28989cb2fac
-Author: Eric Dumazet <edumazet@google.com>
-Date:   Wed Jan 13 16:18:19 2021 +0000
+Good to see another phone being supported. Can I ask you to cc:
+phone-devel@vger.kernel.org with phone stuff?
 
-    net: avoid 32 x truesize under-estimation for tiny skbs
+> Features added:
+>  - SDHCI (internal and external storage)
+>  - USB Device Mode
+>  - UART
+>  - Regulators
+>  - WiFi/BT
+>  - Volume buttons
+>  - Vibrator
+>  - Touchkeys backlight
+>  - Accelerometer and gyroscope sensor
+>  - Magnetometer sensor
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151a3027500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=171a3027500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=131a3027500000
+How close are you to having useful phone calls?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com
-Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
 
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8703 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
-Modules linked in:
-CPU: 1 PID: 8703 Comm: syz-executor857 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
-Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
-RSP: 0018:ffffc90001ecf910 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 1ffff920003d9f26 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000060a20
-RBP: 0000000000020a20 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff86f1be3c R11: 0000000000000000 R12: 0000000000000012
-R13: 0000000020010300 R14: 0000000000060a20 R15: 0000000000000000
-FS:  0000000001148880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000006d5090 CR3: 000000001d414000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __alloc_pages include/linux/gfp.h:511 [inline]
- __alloc_pages_node include/linux/gfp.h:524 [inline]
- alloc_pages_node include/linux/gfp.h:538 [inline]
- kmalloc_large_node+0x60/0x110 mm/slub.c:3984
- __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4481
- __kmalloc_reserve net/core/skbuff.c:150 [inline]
- pskb_expand_head+0xae9/0x1050 net/core/skbuff.c:1632
- __skb_grow include/linux/skbuff.h:2748 [inline]
- tun_napi_alloc_frags drivers/net/tun.c:1377 [inline]
- tun_get_user+0x1f52/0x3690 drivers/net/tun.c:1730
- tun_chr_write_iter+0xe1/0x1d0 drivers/net/tun.c:1926
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4440a9
-Code: e8 6c 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fffdb5a8e08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004440a9
-RDX: 000000002001016f RSI: 0000000020000380 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
+--k+w/mQv8wyuph6w0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+iEYEARECAAYFAmAN4B8ACgkQMOfwapXb+vIurwCeOfoclWc/hFFQWSYk07t8rR/u
+ayUAn0XmgWYPge4Wvj+GmsM5cvHfLXtC
+=XoDv
+-----END PGP SIGNATURE-----
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--k+w/mQv8wyuph6w0--
