@@ -2,54 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790A9301D15
+	by mail.lfdr.de (Postfix) with ESMTP id E511A301D16
 	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbhAXPOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:14:21 -0500
-Received: from relay06.th.seeweb.it ([5.144.164.167]:60485 "EHLO
-        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbhAXPNi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:13:38 -0500
-Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        id S1725860AbhAXPO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:14:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34580 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726324AbhAXPNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 10:13:31 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 0F0A93EB8B;
-        Sun, 24 Jan 2021 16:12:36 +0100 (CET)
-Subject: Re: [PATCH 1/3] arm64: dts: qcom: Add device tree for BQ Aquaris X5
- (Longcheer L8910)
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
- <20210124135409.5473-2-jonathan.albrieux@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <cb299b22-f00f-c8fd-648e-6f34c34b0967@somainline.org>
-Date:   Sun, 24 Jan 2021 16:12:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 40A9822B43;
+        Sun, 24 Jan 2021 15:12:47 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 15:12:42 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     <linux-iio@vger.kernel.org>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] iio:adc:ti-ads124s08: Fix packet read from the ADC
+Message-ID: <20210124151242.285ce9c6@archlinux>
+In-Reply-To: <20210121191431.12057-2-dmurphy@ti.com>
+References: <20210121191431.12057-1-dmurphy@ti.com>
+        <20210121191431.12057-2-dmurphy@ti.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210124135409.5473-2-jonathan.albrieux@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sorting on smd_rpm_regulators & msmgpio seems off.. unless it's the new thing to put it at the end?
+On Thu, 21 Jan 2021 13:14:31 -0600
+Dan Murphy <dmurphy@ti.com> wrote:
 
-Also, did you forget the copyright header or is that on purpose?
+> Fix the spi_transfer array in the reading of the data from the ADC.
+> 
+> Fixes: ("e717f8c6dfec iio: adc: Add the TI ads124s08 ADC code")
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
 
+I'm not really following the changes below..
 
-Otherwise, LGTM
+> ---
+>  drivers/iio/adc/ti-ads124s08.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ti-ads124s08.c b/drivers/iio/adc/ti-ads124s08.c
+> index f05d4e0e1c9d..023d81c7e8da 100644
+> --- a/drivers/iio/adc/ti-ads124s08.c
+> +++ b/drivers/iio/adc/ti-ads124s08.c
+> @@ -201,12 +201,10 @@ static int ads124s_read(struct iio_dev *indio_dev, unsigned int chan)
+>  	struct spi_transfer t[] = {
+>  		{
+>  			.tx_buf = &priv->data[0],
+> -			.len = 4,
+> -			.cs_change = 1,
 
+We should still need to provide a length for this transfer.
 
-Konrad
+>  		}, {
+> -			.tx_buf = &priv->data[1],
+>  			.rx_buf = &priv->data[1],
+>  			.len = 4,
+> +			.cs_change = 1,
+
+That's unusual... cs_change being set on the last transfer means
+the opposite of what it does for earlier transfers.
+
+https://elixir.bootlin.com/linux/latest/source/include/linux/spi/spi.h#L905
+
+Or is the intent here to provide a performance hint that the device doesn't
+care if the cs line goes inactive before stating a new set of transfers?
+If so add a comment to say that perhaps.
+
+>  		},
+>  	};
+>  
 
