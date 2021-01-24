@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65FD301BBE
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479BF301BC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbhAXMFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S1726655AbhAXMP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbhAXMFf (ORCPT
+        with ESMTP id S1726367AbhAXMP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 07:05:35 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8BEC061573;
-        Sun, 24 Jan 2021 04:04:55 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id q20so6744822pfu.8;
-        Sun, 24 Jan 2021 04:04:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=PDAPpKGJ0bTpmZBGx4ylhGlHNA52pbsxkqqZU/p/cQE=;
-        b=N1+Ohqsxn1BBliytIL9FWntOw4uoZXJpJmq3olgCDZcMrsdKpIjBtCdm6Q1jifEvmr
-         kKRew8+LLCRezG16J/ebB8KtQ7KiCQNFkVwXeQHonGKnLwdx3pnJMlwxY2i71MIQnrvP
-         N7GzBDYqlDwotX3C5JSVYTSqBH27RoWQJCvMG1YSJ3wyEYf7e7HaRXmXDBYUFxJqIhwS
-         DxWX5BCxSNBYX9fXe2SdS/Mr0od6c3/i0ZtOT4HHqZjK/UdnhKU6ngpKD+oQLnfiNCbl
-         pxAyJlUgQ66A38zjsN/RzOC23VxklUz+MxZ8XqfVIleSePqQl3Kc32R5kKbWcavSe14h
-         rbWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=PDAPpKGJ0bTpmZBGx4ylhGlHNA52pbsxkqqZU/p/cQE=;
-        b=EbBwJ9JDp9xBZgA8f7CwYdsMyRXhncwB0ZroeWWf381YzzuIg0IE0jKWi1Sxv5hgB6
-         MVMFqC/swajei3gGE3s3IOkNEVr7a6aUFdf4Li7v4QIjvAYDh+3dIl+6mOThSyaR46ng
-         bSadM7J9IF72+O8lRdW8JpVGTXcWg+ItXRkmxnv6D4NkyZquIj42ctgGvVmklhzUnFW2
-         NvDahOCRRjvo3RvF/hHz9Gbo9lybVCOe84KTF1N5RW92HzVPykFs22WZOsdzV26zPSWx
-         aXqiweKISU99TJaEDmlYYpkwsfoHhkTgOS9OAN/n/KleRXN1eSkOCJhzIhYgYPvx7uXh
-         Pqlg==
-X-Gm-Message-State: AOAM5301LZE2GMATMaFP4gIG0Td8OWBVKSBw0XA1mjwzhiRxqDnBmKfU
-        hgWR66CzHF52O4D+DyaCrug=
-X-Google-Smtp-Source: ABdhPJw0uJzRaMZJamLkCUg0NzjWJZ3f8wx59FYHNHPFfq58pfs7SdkANYAREpz+MFCRwlu/xnW1ig==
-X-Received: by 2002:aa7:978e:0:b029:1bd:f965:66dd with SMTP id o14-20020aa7978e0000b02901bdf96566ddmr1977761pfp.46.1611489894337;
-        Sun, 24 Jan 2021 04:04:54 -0800 (PST)
-Received: from localhost ([124.170.13.62])
-        by smtp.gmail.com with ESMTPSA id 78sm10076194pfx.127.2021.01.24.04.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 04:04:53 -0800 (PST)
-Date:   Sun, 24 Jan 2021 22:04:47 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v10 04/12] mm/ioremap: rename ioremap_*_range to
- vmap_*_range
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Ding Tianhong <dingtianhong@huawei.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        Zefan Li <lizefan@huawei.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210124082230.2118861-1-npiggin@gmail.com>
-        <20210124082230.2118861-5-npiggin@gmail.com>
-        <20210124113636.GD694255@infradead.org>
-In-Reply-To: <20210124113636.GD694255@infradead.org>
+        Sun, 24 Jan 2021 07:15:56 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C8EC061573;
+        Sun, 24 Jan 2021 04:15:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=itM1lqV8tTHXEiK1QO41a9srXnhnnvUeRYPjU5TfuJc=; b=lL225nziKixbbt0My9wJIoP3J
+        hqVdkg+j5tmJroD+8T/XOGtR27pYmYZYxtiPjEsFtaVFVaGG1JN1LNPsn/h4de+lppTVT1jT2Nfxz
+        WN/wi0Z0v6DTLAN0Ym7z4FZJ/vR6/SNqrqb4fq0ioaxYoa2eUcwlVXoFj2AyRj0puBvH+bz74DCXv
+        Q6x2tHWs3e9CS6qJZkyMkTVgnKvpl1E8T9qs/Uma8WevL6sVdmjmGj0mdDWiUVwqMNdS8WLGQ3fIs
+        iymSbidGw4Sv2TekPw4eipj8CxhydheDEPpKyr2xtzBZbrrmPsP8yOBucWDnbXnFwFLnoG9wnlesm
+        OWEPdL9Gw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52096)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l3eI2-0002L9-Oi; Sun, 24 Jan 2021 12:14:46 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l3eHz-0001gD-GU; Sun, 24 Jan 2021 12:14:43 +0000
+Date:   Sun, 24 Jan 2021 12:14:43 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
+        andrew@lunn.ch, atenart@kernel.org
+Subject: Re: [PATCH v2 RFC net-next 08/18] net: mvpp2: add FCA periodic timer
+ configurations
+Message-ID: <20210124121443.GU1551@shell.armlinux.org.uk>
+References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
+ <1611488647-12478-9-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Message-Id: <1611489705.hu96tutmbn.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611488647-12478-9-git-send-email-stefanc@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christoph Hellwig's message of January 24, 2021 9:36 pm:
-> On Sun, Jan 24, 2021 at 06:22:22PM +1000, Nicholas Piggin wrote:
->> This will be used as a generic kernel virtual mapping function, so
->> re-name it in preparation.
->=20
-> The new name looks ok, but shouldn't it also move to vmalloc.c with
-> the more generic name and purpose?
->=20
+On Sun, Jan 24, 2021 at 01:43:57PM +0200, stefanc@marvell.com wrote:
+> +/* Set Flow Control timer x140 faster than pause quanta to ensure that link
+> + * partner won't send taffic if port in XOFF mode.
 
-Yes, I moved it in a later patch to make reviewing easier. Rename in=20
-this one then the move patch is cut and paste.
+Can you explain more why 140 times faster is desirable here? Why 140
+times and not, say, 10 times faster? Where does this figure come from,
+and what is the reasoning? Is there a switch that requires it?
 
-Thanks,
-Nick
+Also, spelling "traffic".
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
