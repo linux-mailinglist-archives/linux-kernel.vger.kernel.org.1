@@ -2,111 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B79301CCC
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE506301CC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbhAXOjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 09:39:22 -0500
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.102]:9571 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726160AbhAXOjS (ORCPT
+        id S1726222AbhAXOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 09:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhAXOhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 09:39:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611498974;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:
-        Subject:Sender;
-        bh=djudYJy4uCamF9BzVNn1GVJzDuSOcjWUTDquOv2MIAg=;
-        b=sJK3VgK9gIIlDsEQaGs1M22T+lu7W4ec6DIucOL17q0b8MWOFcRtYDfv7mnzL/50sP
-        oABJ2bCanz/1Ws4DZMqkzZqn0YqSw/0QIhkfVwEZQXGHeUvEOyxnzJZlu2HZYrKlXkDy
-        YXw5rQHjD2plhMoPwxy4sLvMLdz+6B8qQiclc/Z74r/zHDOYpf3R9ahRe5/lLtvRT0DT
-        0Iq4iIY3i78J7hOwJhCVME5gU6fr+zqPqsyk/RHSVNrQ3uL9QynaUv/AJl1Sdxgv8aBj
-        0wUPu3uWlQ//U+EktRI5vseziNPEOhQdjgkOV89bp51727aDAUoO7WYjy8TxSXRwHdsU
-        OZwg==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZI/ScIzb9"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id Z04c46x0OEaDesY
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 24 Jan 2021 15:36:13 +0100 (CET)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        David Howells <dhowells@redhat.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        linux-fscrypt@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        keyrings@vger.kernel.org, simo@redhat.com
-Subject: Re: [PATCH v2 0/7] Add KDF implementations to crypto API
-Date:   Sun, 24 Jan 2021 15:36:13 +0100
-Message-ID: <3522419.MHq7AAxBmi@positron.chronox.de>
-In-Reply-To: <CAMj1kXG5EyTT9ha2C7e1UELknshofUWFGVhKvzXHbptvvvuY=Q@mail.gmail.com>
-References: <1772794.tdWV9SEqCh@positron.chronox.de> <CAMj1kXE=46vk15Ovs8qS96JZRi2xDHHe=QqC=WKbZ-+gx4DL4Q@mail.gmail.com> <CAMj1kXG5EyTT9ha2C7e1UELknshofUWFGVhKvzXHbptvvvuY=Q@mail.gmail.com>
+        Sun, 24 Jan 2021 09:37:12 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF83FC061573;
+        Sun, 24 Jan 2021 06:36:31 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id p13so12140101ljg.2;
+        Sun, 24 Jan 2021 06:36:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QodqNORzQEI0jZ3UgHKwlmsPP97FPNXiQY+I3Yhqyzc=;
+        b=cr1C87z+wHnirM5Hf+2ePCj88USmE/RbjorXTfK0nVriB7GF9cbjnmuOcS737pAFHj
+         ISYbaZGQsFchiAjS6vJjgXUKrWl6KZmYvFWmaZZeVAFwNzsmDOfxW8tsj5xSk0DSuu4q
+         JlP8y+e6DyaPzCnfumo33j1TrGddibYXDDipIQy3vR074rY2NfAiEaSXBawc27TWDoA/
+         Rfw3/XyzNqhpuDkwmGEbLyfKyE5zdIXHj8Sxl0XYgsP0YYx2NXq5R4XOeME/0Crg2rQi
+         +akuE75Dv2J+2XcEemV+2DTGMCHgywIAKfoWlPHnOsXmkd6gBfldc5GmPuU0BrrCjPvA
+         hNOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QodqNORzQEI0jZ3UgHKwlmsPP97FPNXiQY+I3Yhqyzc=;
+        b=lqD43ccQNAJI1/UR0CrM7SJvBHC34ThQhOWNU7d8HF2oP5S3QrP2+GB3h1BsepFPnr
+         YB9e/KcpsyjNJEnFt2BXyXH6zRbjAmzf9gAmUi+p8qyi+EmWu7wmMLbK1Og1kXxmSQgW
+         /pV3Bl7KQXKTHKcaVpYkSiQ7IoTuUT24dVpNBYmfcfz895OToM5mHNLwQpg8FI1rl1RM
+         ESyVG3YHXqBbYZmgFt3P4/Y9IS9QHfTECQRi9AZfh5H2Bj5+G34j1tmb1Zg1A3p8JJf7
+         gnPlaXlSLmAA+TOgHfC58zh8/tn503b820K2TTAk/cqvxxGrJxEgHSXc5u9W5duBictY
+         ZX/A==
+X-Gm-Message-State: AOAM5314CTc4Bwhn3z+3XqeoSFe3PJn1ar0G+QH4L0RRiBNb8fV8VYuJ
+        hTOAN1o61NBBoEQcAgZjGEb/ZFTrrTH0sEwY
+X-Google-Smtp-Source: ABdhPJxN17o2BHCp3cSgIPJMZPvckAl06RS5IVaXwqac7KRhgkS07PnxxvchDs7IAB/lG/rfdvjCHw==
+X-Received: by 2002:a2e:b6cc:: with SMTP id m12mr428444ljo.401.1611498990449;
+        Sun, 24 Jan 2021 06:36:30 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.238])
+        by smtp.googlemail.com with ESMTPSA id u11sm43899ljj.45.2021.01.24.06.36.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 06:36:29 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     casey@schaufler-ca.com
+Cc:     jmorris@namei.org, serge@hallyn.com, andreyknvl@google.com,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Subject: [PATCH] smackfs: restrict bytes count in smackfs write functions
+Date:   Sun, 24 Jan 2021 20:36:27 +0600
+Message-Id: <20210124143627.582115-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sonntag, 24. Januar 2021, 15:32:59 CET schrieb Ard Biesheuvel:
+syzbot found WARNINGs in several smackfs write operations where
+bytes count is passed to memdup_user_nul which exceeds
+GFP MAX_ORDER. Check count size if bigger SMK_LONGLABEL,
+for smk_write_syslog if bigger than PAGE_SIZE - 1.
 
-Hi Ard,
+Reported-by: syzbot+a71a442385a0b2815497@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+---
+ security/smack/smackfs.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> On Sun, 24 Jan 2021 at 15:23, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > On Sun, 24 Jan 2021 at 15:10, Stephan M=FCller <smueller@chronox.de> wr=
-ote:
-> > > Hi,
-> > >=20
-> > > The key derviation functions are considered to be a cryptographic
-> > > operation. As cryptographic operations are provided via the kernel
-> > > crypto API, this patch set consolidates the KDF implementations into =
-the
-> > > crypto API.
-> > >=20
-> > > The KDF implementations are provided as service functions. Yet, the
-> > > interface to the two provided KDFs are identical with the goal to all=
-ow
-> > > them to be transformed into a crypto API template eventually.
-> >=20
-> > Why? There are typically two reasons to use the crypto API abstractions:
-> > - the algorithm is not known at compile time, so we need the runtime
-> > dispatch that the crypto API implements,
-> > - the algorithm may be implemented by a h/w accelerator which is
-> > discovered at runtime via the driver stack
-> >=20
-> > In other cases, a library API is much more suitable, even in the case
-> > where we may provide arch-specific accelerated implementations of such
-> > an algorithm.
->=20
-> Hmm, apologies if I got the wrong end of the stick here - this prose
-> and the naming of some of the crypto_hkdf_xxx routines and function
-> pointers in the test code made me think that this is more than it
-> actually is.
->=20
-> What we are talking about are basically library wrappers around shash
-> instances to perform HKDF, right?
-
-Sorry, our emails just crossed each other.
-
-Yes, you are absolutely correct. The KDF implementations are wrappers aroun=
-d=20
-the SHASH API. Conceptually the provided API is what templates actually sho=
-uld=20
-do.
-
-As mentioned in the other email, however, adding a template was and is not=
-=20
-considered appropriate at the time. Yet, I would like to keep the path open=
- to=20
-transform the KDF implementations into a template.
-
-Ciao
-Stephan
-
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 5d44b7d258ef..88678c6f1b8c 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -1167,7 +1167,7 @@ static ssize_t smk_write_net4addr(struct file *file, const char __user *buf,
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > SMK_LONGLABEL)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -1427,7 +1427,7 @@ static ssize_t smk_write_net6addr(struct file *file, const char __user *buf,
+ 		return -EPERM;
+ 	if (*ppos != 0)
+ 		return -EINVAL;
+-	if (count < SMK_NETLBLADDRMIN)
++	if (count < SMK_NETLBLADDRMIN || count > SMK_LONGLABEL)
+ 		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+@@ -2647,6 +2647,8 @@ static ssize_t smk_write_syslog(struct file *file, const char __user *buf,
+ 
+ 	if (!smack_privileged(CAP_MAC_ADMIN))
+ 		return -EPERM;
++	if (count > PAGE_SIZE - 1)
++		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+@@ -2744,6 +2746,8 @@ static ssize_t smk_write_relabel_self(struct file *file, const char __user *buf,
+ 	 */
+ 	if (*ppos != 0)
+ 		return -EINVAL;
++	if (count > SMK_LONGLABEL)
++		return -EINVAL;
+ 
+ 	data = memdup_user_nul(buf, count);
+ 	if (IS_ERR(data))
+-- 
+2.25.1
 
