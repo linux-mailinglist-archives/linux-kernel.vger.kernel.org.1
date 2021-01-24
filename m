@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191B4301AD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 10:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB685301ADA
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 10:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbhAXJbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 04:31:12 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:38151 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbhAXJbC (ORCPT
+        id S1726686AbhAXJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 04:33:54 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:26612 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbhAXJdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 04:31:02 -0500
-Received: by mail-io1-f70.google.com with SMTP id k7so15027989ioj.5
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 01:30:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=y0rMgdAK3f0M1Gx662xEmfXBbgux3dr6bEK3pA6/yMY=;
-        b=S7Wo/yXOGTDReeOU69jnWxHEvGt/zjagqjSoQjEr+9u0qdaM9dx4caEnEsLx2UQD0p
-         fgpZ4OW8Ez+WlYQK8gbQQVIotW0iCvr7zp/PWfdzfs60h0tnXgKz9/sHMLnSpyrixJTc
-         Fsmso0BYCesGgjdMC9Q4UQsLMLDpJfgZkIcddFlEw8rTfiedRYVGVE+k4xoC6imUbv2L
-         XxMVS5eylX5doMq50XaGS7bbT8HxgssVhzPgnhFM9XFHXX9/0No9NbpVVXFjCVkjTHy5
-         BbBx/1ZwbK6OPJ+hxv2i4R0THmvTS4CA/p23phqEm1H6oYxOWmA/pR9qugcHnk/HjGWW
-         8ghQ==
-X-Gm-Message-State: AOAM532xoH/AuSZCXr1RkJfWl9vpc8ujYA+2HpjDsZN8aDxCojqkyZNH
-        1gjyzPhXba5hXiZ1XRO/QGTDoJFuEUGJi8FqmMKOSPYL4ejb
-X-Google-Smtp-Source: ABdhPJy7R/AOQ/1Y5hhK0KLYXWjBwAjI7Zk8IQ4eVqCecojrmS6hUGPhQrrH3IKP6yufh0o/vL/bHcVD3XEIyWV24eEJmML1/+6n
-MIME-Version: 1.0
-X-Received: by 2002:a92:cda6:: with SMTP id g6mr1015443ild.274.1611480621360;
- Sun, 24 Jan 2021 01:30:21 -0800 (PST)
-Date:   Sun, 24 Jan 2021 01:30:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ffac1205b9a2112f@google.com>
-Subject: UBSAN: shift-out-of-bounds in load_balance
-From:   syzbot <syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 24 Jan 2021 04:33:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611480654;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:From:
+        Subject:Sender;
+        bh=mCVy4eLrRJbdl2dHa1XDLejA8ESNtl7mbhYMqlTsyYA=;
+        b=IbBKGBcMu7Pti+N7FeZBy5IBVkflQheuu/RQN9ZFdA/rJ9H4lqnT95ScTc38FFCRnc
+        BjaJOXLEiuaP8fFM4Ree+oVPLTnsQ69wXRhDGFWxhZACY5U2W8bVninZmvCHOwK+i8sQ
+        MRyrhYkMcqdpIw9ZXd+ds5DDHw+9hBAThHmWDYlRO3qgPSQM7bPWfzKJHAw5gWQfLzF8
+        cppgyF+o3UwY38zXvSIVlFk++KyvcBDGOecoqNbp/Lsu0ww5dZUjRWJigEmDGbcjxLzr
+        Sr6yu6a1S8IliKsktsaCZD2F0VH6F9DJ4zKz0N6waYkGigxH40+oop831vhcwUAHo7kz
+        tf/w==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlaVXA0IcxE="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id m056b3x0O9UpGIF
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Sun, 24 Jan 2021 10:30:51 +0100 (CET)
+Subject: Re: [PATCH v3 4/4] drm/ingenic: Fix non-OSD mode
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=us-ascii
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20210124085552.29146-5-paul@crapouillou.net>
+Date:   Sun, 24 Jan 2021 10:30:50 +0100
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        od@zcrc.me, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        stable@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <30F302B6-04A1-472B-B026-009F7665E39C@goldelico.com>
+References: <20210124085552.29146-1-paul@crapouillou.net> <20210124085552.29146-5-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Paul,
+we observed the same issue on the jz4730 (which is almost identical
+to the jz4740 wrt. LCDC) and our solution [1] was simpler.
 
-syzbot found the following issue on:
+It leaves the hwdesc f0 and f1 as they are and just takes f1 for really
+programming the first DMA descriptor if there is no OSD.
 
-HEAD commit:    bc085f8f Add linux-next specific files for 20210121
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10b71a2cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1224bbf217b0bec8
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7581744d5fd27c9fbe1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+We have tested on jz4730 and jz4780.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Maybe you want to consider that. Then I can officially post it.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com
+[1] =
+https://github.com/goldelico/letux-kernel/commit/3be1de5fdabf2cc1c17f198de=
+d3328cc6e4b9844
 
-================================================================================
-UBSAN: shift-out-of-bounds in kernel/sched/fair.c:7741:14
-shift exponent 86 is too large for 64-bit type 'long unsigned int'
-CPU: 1 PID: 13261 Comm: kworker/u4:13 Not tainted 5.11.0-rc4-next-20210121-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: krdsd rds_tcp_accept_worker
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- detach_tasks kernel/sched/fair.c:7741 [inline]
- load_balance.cold+0x1d/0x2e kernel/sched/fair.c:9670
- rebalance_domains+0x5cc/0xdb0 kernel/sched/fair.c:10058
- __do_softirq+0x2bc/0xa29 kernel/softirq.c:343
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- do_softirq kernel/softirq.c:246 [inline]
- do_softirq+0xb5/0xe0 kernel/softirq.c:233
- __local_bh_enable_ip+0xf4/0x110 kernel/softirq.c:196
- local_bh_enable include/linux/bottom_half.h:32 [inline]
- rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
- ip_finish_output2+0x88b/0x21b0 net/ipv4/ip_output.c:231
- __ip_finish_output net/ipv4/ip_output.c:308 [inline]
- __ip_finish_output+0x396/0x640 net/ipv4/ip_output.c:290
- ip_finish_output+0x35/0x200 net/ipv4/ip_output.c:318
- NF_HOOK_COND include/linux/netfilter.h:290 [inline]
- ip_output+0x196/0x310 net/ipv4/ip_output.c:432
- dst_output include/net/dst.h:441 [inline]
- ip_local_out net/ipv4/ip_output.c:126 [inline]
- __ip_queue_xmit+0x8e9/0x1a00 net/ipv4/ip_output.c:532
- __tcp_transmit_skb+0x188c/0x38f0 net/ipv4/tcp_output.c:1405
- tcp_transmit_skb net/ipv4/tcp_output.c:1423 [inline]
- tcp_write_xmit+0xde7/0x6140 net/ipv4/tcp_output.c:2689
- __tcp_push_pending_frames+0xaa/0x390 net/ipv4/tcp_output.c:2869
- tcp_send_fin+0x117/0xbb0 net/ipv4/tcp_output.c:3426
- tcp_shutdown net/ipv4/tcp.c:2636 [inline]
- tcp_shutdown+0x127/0x170 net/ipv4/tcp.c:2621
- inet_shutdown+0x1a8/0x430 net/ipv4/af_inet.c:890
- rds_tcp_accept_one+0x5e0/0xc10 net/rds/tcp_listen.c:214
- rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:515
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-================================================================================
+> Am 24.01.2021 um 09:55 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Even though the JZ4740 did not have the OSD mode, it had (according to
+> the documentation) two DMA channels, but there is absolutely no
+> information about how to select the second DMA channel.
+>=20
+> Make the ingenic-drm driver work in non-OSD mode by using the
+> foreground0 plane (which is bound to the DMA0 channel) as the primary
+> plane, instead of the foreground1 plane, which is the primary plane
+> when in OSD mode.
+>=20
+> Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
+> Cc: <stable@vger.kernel.org> # v5.8+
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> ---
+> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
+> 1 file changed, 7 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
+b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index b23011c1c5d9..59ce43862e16 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -554,7 +554,7 @@ static void ingenic_drm_plane_atomic_update(struct =
+drm_plane *plane,
+> 		height =3D state->src_h >> 16;
+> 		cpp =3D state->fb->format->cpp[0];
+>=20
+> -		if (priv->soc_info->has_osd && plane->type =3D=3D =
+DRM_PLANE_TYPE_OVERLAY)
+> +		if (!priv->soc_info->has_osd || plane->type =3D=3D =
+DRM_PLANE_TYPE_OVERLAY)
+> 			hwdesc =3D &priv->dma_hwdescs->hwdesc_f0;
+> 		else
+> 			hwdesc =3D &priv->dma_hwdescs->hwdesc_f1;
 
+we just replace this with
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+                if (priv->soc_info->has_osd && plane->type !=3D =
+DRM_PLANE_TYPE_OVERLAY)
+                        hwdesc =3D &priv->dma_hwdescs->hwdesc_f1;
+                else
+                        hwdesc =3D &priv->dma_hwdescs->hwdesc_f0;
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+and the remainder can stay as is.
+
+> @@ -826,6 +826,7 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+> 	const struct jz_soc_info *soc_info;
+> 	struct ingenic_drm *priv;
+> 	struct clk *parent_clk;
+> +	struct drm_plane *primary;
+> 	struct drm_bridge *bridge;
+> 	struct drm_panel *panel;
+> 	struct drm_encoder *encoder;
+> @@ -940,9 +941,11 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+> 	if (soc_info->has_osd)
+> 		priv->ipu_plane =3D drm_plane_from_index(drm, 0);
+>=20
+> -	drm_plane_helper_add(&priv->f1, =
+&ingenic_drm_plane_helper_funcs);
+> +	primary =3D priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
+>=20
+> -	ret =3D drm_universal_plane_init(drm, &priv->f1, 1,
+> +	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
+> +
+> +	ret =3D drm_universal_plane_init(drm, primary, 1,
+> 				       &ingenic_drm_primary_plane_funcs,
+> 				       priv->soc_info->formats_f1,
+> 				       priv->soc_info->num_formats_f1,
+> @@ -954,7 +957,7 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+>=20
+> 	drm_crtc_helper_add(&priv->crtc, =
+&ingenic_drm_crtc_helper_funcs);
+>=20
+> -	ret =3D drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
+> +	ret =3D drm_crtc_init_with_planes(drm, &priv->crtc, primary,
+> 					NULL, &ingenic_drm_crtc_funcs, =
+NULL);
+> 	if (ret) {
+> 		dev_err(dev, "Failed to init CRTC: %i\n", ret);
+> --=20
+> 2.29.2
+>=20
+
+BR and thanks,
+Nikolaus
+
