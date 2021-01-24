@@ -2,114 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CB5301BCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB605301BD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbhAXMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:23:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        id S1726763AbhAXM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726583AbhAXMXJ (ORCPT
+        with ESMTP id S1726530AbhAXM2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 07:23:09 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5D7C061573;
-        Sun, 24 Jan 2021 04:22:29 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id 31so5885095plb.10;
-        Sun, 24 Jan 2021 04:22:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=CRaVGlQqRX3eurTgpUbO4LACsIgYJz7bYMhi3+skM5w=;
-        b=bKuMIpY94qcNZor5JJbg9y1rkV+5c8vEcy8sNNmZrJUwLgNFSRZhf+all1fV932huz
-         wST13It32l8icQp15BnImsizqjvbJQLYNhoL7x7ZRkgBgcOfNuR8Oy0kVPUtgd1ORKS6
-         JEyqT1VlF3ILsaDXQZtPvomWZNaQJnlMIURLJq0oMoqXmWEnsJ9AEU7HJ5sPiJoq/dOm
-         vwEBo/rNNqQJZ9HFhwjQUVLozjNpoyus8kim5gwC4+mChA5Y9Kan3xIm7TjU2jav6WrC
-         5DV23rzG1YktYfARiBniJtFxlEvfZYmXbYjVn2fO51jteM+KsG+O3Dr62VcXSAjmPccp
-         gqtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=CRaVGlQqRX3eurTgpUbO4LACsIgYJz7bYMhi3+skM5w=;
-        b=G/j8l49aPOXHpQ2f5K8vAdK+CUdPKepE9/lsSvs2D2B4hjOQZ8iR2dOW30pz+zgTQ0
-         uiBxb1zftOBr8/THW0IwihAcselRFESMlOq30tyFMeUDgS5WDKQAkgsSoY+/bbl1dNrA
-         IRCJGmFb14UlIBr00PXY6VeFB81OsBEfNlAE4X637BNHkZOfL2rWEz+dyhfFUuMS0T2f
-         yGdUSILh6njkjWnnlg/IrUhOHM8V6k8+fToXZMbbFmT6XoivcJkY5dh4XLlMtXMDVRCP
-         g+y2uYXRmbb3l99ERILBSxg4uXILH0n1VsSYJ+z9JoizCMk1wJKaLBrJO38BBviI9/di
-         ks7Q==
-X-Gm-Message-State: AOAM531fmM+RnULb6XG/u6J7/HxB2ZWvqOly1YimIiPSq83cbdOOU7fo
-        u8AakT8NmJsDOWBddZpsT6A=
-X-Google-Smtp-Source: ABdhPJy/cCBq2SaALYuvfokncGx1EYWoF3TIXnlyNQ1FvlbAreoJvYPu98Y/UK3bgTxLg0uNGqM4cA==
-X-Received: by 2002:a17:90a:de97:: with SMTP id n23mr7464729pjv.216.1611490949139;
-        Sun, 24 Jan 2021 04:22:29 -0800 (PST)
-Received: from localhost ([124.170.13.62])
-        by smtp.gmail.com with ESMTPSA id 5sm13830020pff.125.2021.01.24.04.22.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 04:22:28 -0800 (PST)
-Date:   Sun, 24 Jan 2021 22:22:22 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v10 05/12] mm: HUGE_VMAP arch support cleanup
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Ding Tianhong <dingtianhong@huawei.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20210124082230.2118861-1-npiggin@gmail.com>
-        <20210124082230.2118861-6-npiggin@gmail.com>
-        <20210124114008.GE694255@infradead.org>
-In-Reply-To: <20210124114008.GE694255@infradead.org>
+        Sun, 24 Jan 2021 07:28:53 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9D8C061573;
+        Sun, 24 Jan 2021 04:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=sT12+RzTF8KSMshcxHPAvGj98cH2WKbMubgiyuYJnWU=; b=fugzomg6SS7kEINiDz5Z2P46m
+        nWlnL7DWe3+PgStvZ9p3efLx4p+TrfFMv78o+eYm3wkW3owa0UVTNXZgFKI+AEBKryXF8q3eV70tQ
+        MjE/IIOIaFBmTQc3CdK40tw/CF7wd8V5XMcUGVwn0SJWmo8kveiGNzKA7L7hQ6GE01hFpGWkEwywd
+        07JyWs+4IOjQRtTzRFL3QpfRJ7vYU1GWrg+uq3tn8LJFdPpB5QbQQmskg3bos8NJkyzNYGZNCcprv
+        jdcEY0AnWiOmNvSAfge4A7+Gw/1pBEFByRpPKJdYifIZLDppAqlOSYZBGQiZb4hCaGPAkiusuKR3K
+        UoBh6uO3g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52100)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l3eV0-0002Mp-TJ; Sun, 24 Jan 2021 12:28:10 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l3eV0-0001gU-21; Sun, 24 Jan 2021 12:28:10 +0000
+Date:   Sun, 24 Jan 2021 12:28:10 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
+        andrew@lunn.ch, atenart@kernel.org
+Subject: Re: [PATCH v2 RFC net-next 03/18] net: mvpp2: add CM3 SRAM memory map
+Message-ID: <20210124122809.GV1551@shell.armlinux.org.uk>
+References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
+ <1611488647-12478-4-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Message-Id: <1611489959.87u9aj91nf.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611488647-12478-4-git-send-email-stefanc@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christoph Hellwig's message of January 24, 2021 9:40 pm:
->> diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/v=
-malloc.h
->> index 2ca708ab9b20..597b40405319 100644
->> --- a/arch/arm64/include/asm/vmalloc.h
->> +++ b/arch/arm64/include/asm/vmalloc.h
->> @@ -1,4 +1,12 @@
->>  #ifndef _ASM_ARM64_VMALLOC_H
->>  #define _ASM_ARM64_VMALLOC_H
->> =20
->> +#include <asm/page.h>
->> +
->> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
->> +bool arch_vmap_p4d_supported(pgprot_t prot);
->> +bool arch_vmap_pud_supported(pgprot_t prot);
->> +bool arch_vmap_pmd_supported(pgprot_t prot);
->> +#endif
->=20
-> Shouldn't the be inlines or macros?  Also it would be useful
-> if the architectures would not have to override all functions
-> but just those that are it actually implements?
+On Sun, Jan 24, 2021 at 01:43:52PM +0200, stefanc@marvell.com wrote:
+> +static int mvpp2_get_sram(struct platform_device *pdev,
+> +			  struct mvpp2 *priv)
+> +{
+> +	struct device_node *dn = pdev->dev.of_node;
+> +	static bool defer_once;
+> +	struct resource *res;
+> +
+> +	if (has_acpi_companion(&pdev->dev)) {
+> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+> +		if (!res) {
+> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
+> +			return 0;
+> +		}
+> +		priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
+> +		if (IS_ERR(priv->cm3_base))
+> +			return PTR_ERR(priv->cm3_base);
+> +	} else {
+> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
+> +		if (!priv->sram_pool) {
+> +			if (!defer_once) {
+> +				defer_once = true;
+> +				/* Try defer once */
+> +				return -EPROBE_DEFER;
+> +			}
+> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
+> +			return -ENOMEM;
+> +		}
 
-It gets better in the next patches. I did it this way again to avoid=20
-moving a lot of code at the same time as changing name / prototype
-slightly.
+Above, priv->sram_pool will only be non-NULL if the pool has been
+initialised.
 
-I didn't see individual generic fallbacks being all that useful really=20
-at this scale. I don't mind keeping the explicit false.
+> +err_cm3:
+> +	if (!has_acpi_companion(&pdev->dev) && priv->cm3_base)
+> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
+> +			      MSS_SRAM_SIZE);
 
-> Also lots of > 80 char lines in the patch.
+So wouldn't:
+	if (priv->sram_pool && priv->cm3_base)
 
-Yeah there's a few, I can reduce those.
+be more appropriate here?
 
-Thanks,
-Nick
+> +	if (!has_acpi_companion(&pdev->dev) && priv->cm3_base) {
+> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
+> +			      MSS_SRAM_SIZE);
+> +		gen_pool_destroy(priv->sram_pool);
+> +	}
+
+Same here.
+
+Why is it correct to call gen_pool_destroy() in the remove path but not
+the error path? I think you want to drop this - the pool is created and
+destroyed by the SRAM driver, users of it should not be destroying it.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
