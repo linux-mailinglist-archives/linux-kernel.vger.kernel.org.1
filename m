@@ -2,354 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E057A301A3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 07:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9248D301A43
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 07:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbhAXGtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 01:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
+        id S1726532AbhAXGxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 01:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbhAXGto (ORCPT
+        with ESMTP id S1725808AbhAXGxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 01:49:44 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529BAC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 22:49:04 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id z21so6809097pgj.4
-        for <linux-kernel@vger.kernel.org>; Sat, 23 Jan 2021 22:49:04 -0800 (PST)
+        Sun, 24 Jan 2021 01:53:21 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC95BC061573;
+        Sat, 23 Jan 2021 22:52:40 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id j12so6375402pjy.5;
+        Sat, 23 Jan 2021 22:52:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Ou29vBChwtGGpt5awRgoNwT4J6UK005g3gZPSo0SPQ=;
-        b=HTMkogxYpRgXOSj6V7yS6/nZscXDdTdTA8ldDiwjUcp7cOI2oT0U1OVAhR8D961Hx6
-         4A3+QEHRoi4l2/iM0FvPial7LpoonVi77pRl+uSsoAFA68YpJTDx0iDNlMoUx8CoRlGc
-         rMNgOBfgfZZ3yEQU21DdkeXtYiIr8ihECDP8iEQkggsQiP5gXpQpO8FjVuoCnQESrqcM
-         m62DooRdER78VTurUcgiXxKn+w/BBBk+dRwElEVDKNUk4pnmnxsybpIqnfoSipRIxzTy
-         DGzYDamA7V9r94QdLHbUxyIUp2qFut7MiLR2e9XtspkZG2bOw2knwChe/eoqpT6/oPaR
-         MHAw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pyjJjIjAwqBAqBYpe34f4z3YvzgZOMNZpkQlTpZrZjo=;
+        b=amjcQpwaeLj47+mpTvIPl2m2jIFuGy2mpjtYqeJrGqQj8Ms03hkUPOtOoOfoX94uCo
+         o9lG2QGUhsCoHTTzhy3saZ+Y2ItPWGttLcWUq6D2FAWOapo0XcOHulC3OOWhYlpSNwZv
+         6dCb3cHbtos8Z735z0/lnqrn5MMSmqzBpCs+KvZZ2et7Okh+wbCkhNFe+eXGAiykVTDw
+         4X1Gfm1vpa0icO0kdJNHo2TJpDRAhsTgQhwv/zAKi0AGVg5zb/m0gnWY0XuL/68ZXa+a
+         HulmH4xJbHb6Ozj+Pq02UEczJVwcVI1F8/U7Q6wByfbjnd5oCx4okTlWw15qLlWGpN86
+         wRkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Ou29vBChwtGGpt5awRgoNwT4J6UK005g3gZPSo0SPQ=;
-        b=WtaXgG0r811BcuE98z5PiGjDgRicfQYmP6QYGgoq5ao+y66op7yMEWkbyPjxPbB3AD
-         mLSsiXHA6xfH5SI3Dxga4T2bD/7ekHp+orzm/O/G1n6NK1ywDApSxR4JwW10tXjnojML
-         0QfSjnm7Ss1cn4FcHyItHZFhX+fWJJO0W/As4pcFSXtn24BW5HuoJySoyJ5Rlh0aj7Km
-         RdtUBU1P4ppzoZ1wZFlIs7Smjs7kmzafwC/Iqllwwe/FvC2VABYdlmK4b9YsLqxcnz7l
-         2IYKOpRa1gD8L+Ukw/lzlk+tXH8xfy7pVFuALXzzBiNQ02Kx3B7bJv2tpNQR+OuvIefh
-         pVdA==
-X-Gm-Message-State: AOAM5303v7MAUxQSS6DrroqnLVNoRqGwHAd9gjKDtZfQXb2s/H9WqqNz
-        nq6RicLEA3vhwPKtzRAM11t9D3R5bfMJVJJiCybj1A==
-X-Google-Smtp-Source: ABdhPJxi59YWCADRapudyosxFSteIZm49SBGLQ8YwpUWvHs1qWbcqO1PempR2Xr96mZXXpOV711EIrLYuCDLJKkjLv4=
-X-Received: by 2002:a62:2984:0:b029:1b4:72bd:f2bf with SMTP id
- p126-20020a6229840000b02901b472bdf2bfmr2722138pfp.59.1611470943571; Sat, 23
- Jan 2021 22:49:03 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pyjJjIjAwqBAqBYpe34f4z3YvzgZOMNZpkQlTpZrZjo=;
+        b=r37ln5IPfVTy4/3c7PkcdBeRV7XZCUCtX9gGeVqbJi7w7jsbg6nhr++p1+98b7DOLY
+         S0Ojc3MQ3yYPuiu4gQmZffPLBb9/5FF0wsHQ+o7Cb0/QDyBXe0Ah2E57o1DqW2E2p5k6
+         5vfwl+kfbt8s3rfbAzmXZrBcGQzDLGX6vMLabD1MLKlpPfBrU5fY8QJuBKz11B+fX71U
+         0cEj9KUMEd47MyH+m5Z9HhcK2qBNNkWyVUjrXhG566zB+K95Zlgb+DOGs+6yYIq654Cs
+         QC6xcWEufqreff+jzGLuvTNSK5+U3lnw/ACV80jHiH5MuDaEjc4uDJe4VbDvQ+KZU8mx
+         ZT0Q==
+X-Gm-Message-State: AOAM5303ZK3KnMbRkGQ0KHQ+btcLQfB/nOR2AWuaIVOUpMRUkX03aM2r
+        aloxxvJ8MlfgeqiXgXDExGI=
+X-Google-Smtp-Source: ABdhPJyxkV+O/+aWYQ10BwEq4a29+MEs/T0dQE+y09aAvRy0RqIED6p/FYfCfJQKuynTReotktv6Og==
+X-Received: by 2002:a17:90a:5a03:: with SMTP id b3mr2385204pjd.1.1611471160359;
+        Sat, 23 Jan 2021 22:52:40 -0800 (PST)
+Received: from shinobu (113x33x126x33.ap113.ftth.ucom.ne.jp. [113.33.126.33])
+        by smtp.gmail.com with ESMTPSA id f15sm14172870pja.24.2021.01.23.22.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jan 2021 22:52:39 -0800 (PST)
+Date:   Sun, 24 Jan 2021 15:52:31 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     jic23@kernel.org, mchehab+huawei@kernel.org,
+        lukas.bulwahn@gmail.com, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        alexandre.torgue@st.com, fabrice.gasnier@st.com,
+        olivier.moysan@st.com, linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] counter: stm32-lptimer-cnt: remove iio counter abi
+Message-ID: <YA0ZL2g/qX7tigJa@shinobu>
+References: <1611327803-882-1-git-send-email-fabrice.gasnier@foss.st.com>
 MIME-Version: 1.0
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-4-songmuchun@bytedance.com> <20210123175259.GA3555@localhost.localdomain>
-In-Reply-To: <20210123175259.GA3555@localhost.localdomain>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 24 Jan 2021 14:48:27 +0800
-Message-ID: <CAMZfGtXsEGQM+g6V9mMYZDA7XECS7S6fTiM_Pab5Uq-1Eu979Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 03/12] mm: hugetlb: free the vmemmap
- pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ifstk+I27HDRTTHT"
+Content-Disposition: inline
+In-Reply-To: <1611327803-882-1-git-send-email-fabrice.gasnier@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 1:53 AM Oscar Salvador <osalvador@suse.de> wrote:
->
-> X-Gm-Spam: 0
-> X-Gm-Phishy: 0
->
-> On Sun, Jan 17, 2021 at 11:10:44PM +0800, Muchun Song wrote:
-> > Every HugeTLB has more than one struct page structure. We __know__ that
-> > we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
-> > to store metadata associated with each HugeTLB.
-> >
-> > There are a lot of struct page structures associated with each HugeTLB
-> > page. For tail pages, the value of compound_head is the same. So we can
-> > reuse first page of tail page structures. We map the virtual addresses
-> > of the remaining pages of tail page structures to the first tail page
-> > struct, and then free these page frames. Therefore, we need to reserve
-> > two pages as vmemmap areas.
-> >
-> > When we allocate a HugeTLB page from the buddy, we can free some vmemmap
-> > pages associated with each HugeTLB page. It is more appropriate to do it
-> > in the prep_new_huge_page().
-> >
-> > The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
-> > pages associated with a HugeTLB page can be freed, returns zero for
-> > now, which means the feature is disabled. We will enable it once all
-> > the infrastructure is there.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> Overall looks good to me.
-> A few nits below, plus what Mike has already said.
->
-> I was playing the other day (just for un) to see how hard would be to adapt
-> this to ppc64 but did not have the time :-)
 
-I have no idea about ppc64. But for aarch64, it is easy to adapt
-this to aarch64 (I have finished this part of the work). Is the size
-of the struct page 64 bytes for ppc64? If so, I think that it also
-easy.
+--Ifstk+I27HDRTTHT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> > --- /dev/null
-> > +++ b/mm/hugetlb_vmemmap.c
-> > @@ -0,0 +1,211 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Free some vmemmap pages of HugeTLB
-> > + *
-> > + * Copyright (c) 2020, Bytedance. All rights reserved.
-> > + *
-> > + *     Author: Muchun Song <songmuchun@bytedance.com>
-> > + *
-> > + * The struct page structures (page structs) are used to describe a physical
-> > + * page frame. By default, there is a one-to-one mapping from a page frame to
-> > + * it's corresponding page struct.
-> > + *
-> > + * The HugeTLB pages consist of multiple base page size pages and is supported
-> "HugeTLB pages ..."
+On Fri, Jan 22, 2021 at 04:03:23PM +0100, Fabrice Gasnier wrote:
+> Currently, the STM32 LP Timer counter driver registers into both IIO and
+> counter subsystems, which is redundant.
+>=20
+> Remove the IIO counter ABI and IIO registration from the STM32 LP Timer
+> counter driver since it's been superseded by the Counter subsystem
+> as discussed in [1].
+>=20
+> Keep only the counter subsystem related part.
+> Move a part of the ABI documentation into a driver comment.
+>=20
+> This also removes a duplicate ABI warning
+> $ scripts/get_abi.pl validate
+> ...
+> /sys/bus/iio/devices/iio:deviceX/in_count0_preset is defined 2 times:
+>   ./Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:100
+>   ./Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:0
+>=20
+> [1] https://lkml.org/lkml/2021/1/19/347
+>=20
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-Thanks.
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 
->
-> > + * When the system boot up, every HugeTLB page has more than one struct page
-> > + * structs whose size is (unit: pages):
->               ^^^^ which?
+I'll also submit a patchset removing the IIO code from the 104-quad-8
+driver and the rest of the IIO counter ABI documentation.
 
-I am not a native English. Thanks for pointing this out.
+William Breathitt Gray
 
-> > + *
-> > + *    struct_size = HugeTLB_Size / PAGE_SIZE * sizeof(struct page) / PAGE_SIZE
-> > + *
-> > + * Where HugeTLB_Size is the size of the HugeTLB page. We know that the size
-> > + * of the HugeTLB page is always n times PAGE_SIZE. So we can get the following
-> > + * relationship.
-> > + *
-> > + *    HugeTLB_Size = n * PAGE_SIZE
-> > + *
-> > + * Then,
-> > + *
-> > + *    struct_size = n * PAGE_SIZE / PAGE_SIZE * sizeof(struct page) / PAGE_SIZE
-> > + *                = n * sizeof(struct page) / PAGE_SIZE
-> > + *
-> > + * We can use huge mapping at the pud/pmd level for the HugeTLB page.
-> > + *
-> > + * For the HugeTLB page of the pmd level mapping, then
-> > + *
-> > + *    struct_size = n * sizeof(struct page) / PAGE_SIZE
-> > + *                = PAGE_SIZE / sizeof(pte_t) * sizeof(struct page) / PAGE_SIZE
-> > + *                = sizeof(struct page) / sizeof(pte_t)
-> > + *                = 64 / 8
-> > + *                = 8 (pages)
-> > + *
-> > + * Where n is how many pte entries which one page can contains. So the value of
-> > + * n is (PAGE_SIZE / sizeof(pte_t)).
-> > + *
-> > + * This optimization only supports 64-bit system, so the value of sizeof(pte_t)
-> > + * is 8. And this optimization also applicable only when the size of struct page
-> > + * is a power of two. In most cases, the size of struct page is 64 (e.g. x86-64
-> > + * and arm64). So if we use pmd level mapping for a HugeTLB page, the size of
-> > + * struct page structs of it is 8 pages whose size depends on the size of the
-> > + * base page.
-> > + *
-> > + * For the HugeTLB page of the pud level mapping, then
-> > + *
-> > + *    struct_size = PAGE_SIZE / sizeof(pmd_t) * struct_size(pmd)
-> > + *                = PAGE_SIZE / 8 * 8 (pages)
-> > + *                = PAGE_SIZE (pages)
->
-> I would try to condense above information and focus on what are the
-> key points you want people to get.
-> E.g: A 2MB HugeTLB page on x86_64 consists in 8 page frames while 1GB
-> HugeTLB page consists in 4096.
-> If you do not want to be that specific you can always write down the
-> formula, and maybe put the X86_64 example at the end.
-> But as I said, I would try to make it more brief.
->
-> Maybe others disagree though.
+--Ifstk+I27HDRTTHT
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I want to make the formula more general. Because the PAGE_SIZE
-can be different on arm64. But you are right, I should make it brief
-and easy to understand. I will add some examples at the end of the
-formula. Thanks.
+-----BEGIN PGP SIGNATURE-----
 
->
->
-> > + *
-> > + * Where the struct_size(pmd) is the size of the struct page structs of a
-> > + * HugeTLB page of the pmd level mapping.
->
-> [...]
->
-> > +void free_huge_page_vmemmap(struct hstate *h, struct page *head)
-> > +{
-> > +     unsigned long vmemmap_addr = (unsigned long)head;
-> > +     unsigned long vmemmap_end, vmemmap_reuse;
-> > +
-> > +     if (!free_vmemmap_pages_per_hpage(h))
-> > +             return;
-> > +
-> > +     vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> > +     vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> > +     vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> > +
->
-> I would like to see a comment there explaining why those variables get
-> they value they do.
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmANGRkACgkQhvpINdm7
+VJJ4Iw//fPBOTOQrrg//Y+6Qf3vPDPUfv4B2MY4bu5RIja9Hw6jqw1OWFxsYLFeX
+TYm4Hl3K7RSsPfeWFcCgFdp/IvSK0CMH+nHuIPcwKxsE+E0cm4ExztexpmZUR5kD
+znjePAQzo9H2kYJEmQ26Vb718AzdkaWVWOVX736TT7ecZOMKngyJg2tZ6qK+9uI2
+KMRoJPzqfl1O3lVAWiCMI91fNggTxinxZyKKTMq15GTirPn2ZRbX8i9Nxxepskf0
+QHdze2Gz+lgwDJxOLfzohpF64DG7NcMSYvMbg9EsXTBc5gL72Fmfk2wgHhx/aeUP
+5byMCFTXfAZOQWaQN4CugKhcLy8Bxv/JAXH+BEqFeIt0PoJhPvJ0X62zTBmzswXS
+8jvGq8OTGwvFisJxyx4vZk8ODxWkVNwch7ItXc8/oj6NdgDfYaYUQpEKHYEvggvn
+73jVfSPFxAfouk5p8Lo2aFVokJ9lRn/rl/mW6Bwq0DS3nJ8vawX/PQfGx1y3MV/o
+cKE7kdq8ZPjXnijG8heeehweI6eRFuV/bcnFvN3GxlIv/hkCWdhZ0b67ZEiUz4uE
+yCp/WjCBBoQbkAwvf5Q+VWuycmFHVBRJ48I+PLOGKykeJO4C2Z5eQwEAnhaGcD9O
+VJ85gCrUdvzODq0fhpFWY3fXT4Xm1b0FMWtY8w2rshsQ6GToxzY=
+=WMsJ
+-----END PGP SIGNATURE-----
 
-OK. Will add a comment here.
-
->
-> > +/**
-> > + * vmemmap_remap_walk - walk vmemmap page table
-> > + *
-> > + * @remap_pte:               called for each non-empty PTE (lowest-level) entry.
-> > + * @reuse_page:              the page which is reused for the tail vmemmap pages.
-> > + * @reuse_addr:              the virtual address of the @reuse_page page.
-> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
->
-> Let us align the tabs there.
-
-It is already aligned. :)
-
->
-> > +static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
-> > +                           unsigned long end,
-> > +                           struct vmemmap_remap_walk *walk)
-> > +{
-> > +     pte_t *pte;
-> > +
-> > +     pte = pte_offset_kernel(pmd, addr);
-> > +
-> > +     /*
-> > +      * The reuse_page is found 'first' in table walk before we start
-> > +      * remapping (which is calling @walk->remap_pte).
-> > +      */
-> > +     if (walk->reuse_addr == addr) {
-> > +             BUG_ON(pte_none(*pte));
->
-> If it is found first, would not be
->
->         if (!walk->reuse_page) {
->                 BUG_ON(walk->reuse_addr != addr)
->                 ...
->         }
->
-> more intuitive?
-
-Good. More intuitive. Thanks.
-
->
->
-> > +static void vmemmap_remap_range(unsigned long start, unsigned long end,
-> > +                             struct vmemmap_remap_walk *walk)
-> > +{
-> > +     unsigned long addr = start;
-> > +     unsigned long next;
-> > +     pgd_t *pgd;
-> > +
-> > +     VM_BUG_ON(!IS_ALIGNED(start, PAGE_SIZE));
-> > +     VM_BUG_ON(!IS_ALIGNED(end, PAGE_SIZE));
-> > +
-> > +     pgd = pgd_offset_k(addr);
-> > +     do {
-> > +             BUG_ON(pgd_none(*pgd));
-> > +
-> > +             next = pgd_addr_end(addr, end);
-> > +             vmemmap_p4d_range(pgd, addr, next, walk);
-> > +     } while (pgd++, addr = next, addr != end);
-> > +
-> > +     /*
-> > +      * We do not change the mapping of the vmemmap virtual address range
-> > +      * [@start, @start + PAGE_SIZE) which is belong to the reuse range.
->                                         "which belongs to"
-
-Thanks. Will fix it.
-
->
-> > +      * So we not need to flush the TLB.
-> > +      */
-> > +     flush_tlb_kernel_range(start - PAGE_SIZE, end);
->
-> you already commented on on this one.
-
-Yeah, will fix it.
-
->
-> > +/**
-> > + * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
-> > + *                   to the page which @reuse is mapped, then free vmemmap
-> > + *                   pages.
-> > + * @start:   start address of the vmemmap virtual address range.
->
-> Well, it is the start address of the range we want to remap.
-> Reading it made me think that it is really the __start__ address
-> of the vmemmap range.
-
-Sorry for confusing. I will fix it. Thanks.
-
->
-> > +void vmemmap_remap_free(unsigned long start, unsigned long end,
-> > +                     unsigned long reuse)
-> > +{
-> > +     LIST_HEAD(vmemmap_pages);
-> > +     struct vmemmap_remap_walk walk = {
-> > +             .remap_pte      = vmemmap_remap_pte,
-> > +             .reuse_addr     = reuse,
-> > +             .vmemmap_pages  = &vmemmap_pages,
-> > +     };
-> > +
-> > +     /*
-> > +      * In order to make remapping routine most efficient for the huge pages,
-> > +      * the routine of vmemmap page table walking has the following rules
-> > +      * (see more details from the vmemmap_pte_range()):
-> > +      *
-> > +      * - The @reuse address is part of the range that we are walking.
-> > +      * - The @reuse address is the first in the complete range.
-> > +      *
-> > +      * So we need to make sure that @start and @reuse meet the above rules.
->
-> You say that "reuse" and "start" need to meet some  rules, but in the
-> paragraph above you only seem to point "reuse" rules?
-
-OK. I should make the comment more clear. I will update it
-and point out the relationship between @start and @reuse.
-
-Thanks a lot.
-
->
->
-> --
-> Oscar Salvador
-> SUSE L3
+--Ifstk+I27HDRTTHT--
