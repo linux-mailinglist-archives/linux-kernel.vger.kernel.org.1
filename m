@@ -2,183 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F4C301E04
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40B9301E0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 19:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbhAXRv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 12:51:29 -0500
-Received: from mga05.intel.com ([192.55.52.43]:7443 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725863AbhAXRvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 12:51:25 -0500
-IronPort-SDR: 6B/RRu3wJvQOhOG+ly6iZvgLKgOVENBwOOpIqv84UF+HgRIucmF4o5CK/Ukk5pXrNoEr61hPvi
- IZjOuurV3zOg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="264450958"
-X-IronPort-AV: E=Sophos;i="5.79,371,1602572400"; 
-   d="scan'208";a="264450958"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 09:50:43 -0800
-IronPort-SDR: fXa8gU5KE8qsgolCPH9r9pwLqjgarZkUYP+x0Cabmhfrb4Fy7fagCULhsfj4o6IVIwUegbY/J0
- cMpimOr1W0pQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,371,1602572400"; 
-   d="scan'208";a="405779120"
-Received: from lkp-server01.sh.intel.com (HELO 27c4e0a4b6d9) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 24 Jan 2021 09:50:42 -0800
-Received: from kbuild by 27c4e0a4b6d9 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l3jX7-0000Nx-G0; Sun, 24 Jan 2021 17:50:41 +0000
-Date:   Mon, 25 Jan 2021 01:49:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 1cc6489ba1d1751aab22971d266ec6878d385146
-Message-ID: <600db33c.1zg47f2R1Z0l+iXz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726181AbhAXSIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 13:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725855AbhAXSHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 13:07:49 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E60FC061573;
+        Sun, 24 Jan 2021 10:07:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=HhUOvfM5GjLoCSC9whTRSyY37b8Gp9Xbo3KKD5Qng4w=; b=Nwh9j/1vJ8QEsuvNwtNUS53AZP
+        B38LmqvapqV8SptCubayYSP2OuIeQ6MxXiDON/5O+8kXCwiVcpe43dZc9MafsKTosxTt9DBbrnDSM
+        k2oHopY0jVBsKwZQ3ueHF6jKmUEbIaZETsuminnNe59InN6H+eEiBI2auMvEIraO54KQTTWw5ILo0
+        nhM/B0Bzp0377P4emjTM7b5LkEkIdxWQMVx8T65tE8ZkEe5k6f3aU1q89hxXo29vUTdj0S6/5GYgV
+        GgG7i+3dL4Pz1ET9P5wB7pBkc/KF+QI2uf757Nh/mhsWiiyBgu/aAb9UipGTkbARES+uas+If+78v
+        kxfsuXhA==;
+Received: from [2601:1c0:6280:3f0::7650]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l3jmD-0005We-6p; Sun, 24 Jan 2021 18:06:18 +0000
+Subject: Re: [PATCH v10 11/12] mm/vmalloc: Hugepage vmalloc mappings
+To:     Christoph Hellwig <hch@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-12-npiggin@gmail.com>
+ <20210124150729.GC733865@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a420ccc5-91de-78e3-4276-7bca3e97b88b@infradead.org>
+Date:   Sun, 24 Jan 2021 10:06:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20210124150729.GC733865@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 1cc6489ba1d1751aab22971d266ec6878d385146  rcutorture: Use "all" and "N" in "nohz_full" and "rcu_nocbs"
+On 1/24/21 7:07 AM, Christoph Hellwig wrote:
+>> +config HAVE_ARCH_HUGE_VMALLOC
+>> +	depends on HAVE_ARCH_HUGE_VMAP
+>> +	bool
+>> +	help
+>> +	  Archs that select this would be capable of PMD-sized vmaps (i.e.,
+>> +	  arch_vmap_pmd_supported() returns true), and they must make no
+>> +	  assumptions that vmalloc memory is mapped with PAGE_SIZE ptes. The
+>> +	  VM_NOHUGE flag can be used to prohibit arch-specific allocations from
+>> +	  using hugepages to help with this (e.g., modules may require it).
+> help texts don't make sense for options that aren't user visible.
 
-elapsed time: 733m
+It's good that the Kconfig symbol is documented and it's better here
+than having to dig thru git commit logs IMO.
 
-configs tested: 121
-configs skipped: 3
+It could be done as "# Arhcs that select" style comments instead
+of Kconfig help text.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        mvebu_v5_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                      ppc40x_defconfig
-sh                              ul2_defconfig
-mips                       lemote2f_defconfig
-arm                            lart_defconfig
-mips                        omega2p_defconfig
-powerpc                    gamecube_defconfig
-sh                            migor_defconfig
-powerpc                      ppc44x_defconfig
-mips                         tb0219_defconfig
-powerpc                      pcm030_defconfig
-powerpc                       ebony_defconfig
-sh                             espt_defconfig
-sparc64                             defconfig
-arc                              allyesconfig
-sh                         apsh4a3a_defconfig
-powerpc                      cm5200_defconfig
-sparc                       sparc32_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                    vt8500_v6_v7_defconfig
-sh                                  defconfig
-sh                           se7712_defconfig
-arm                        neponset_defconfig
-mips                         db1xxx_defconfig
-arm                             mxs_defconfig
-powerpc                  storcenter_defconfig
-mips                      pistachio_defconfig
-arm                          lpd270_defconfig
-nios2                            alldefconfig
-arm                          pcm027_defconfig
-mips                       capcella_defconfig
-mips                          ath25_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                          simpad_defconfig
-arm                         shannon_defconfig
-powerpc                        fsp2_defconfig
-arm                         s5pv210_defconfig
-arc                           tb10x_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                   lite5200b_defconfig
-arm                           stm32_defconfig
-arm                        realview_defconfig
-powerpc                     sbc8548_defconfig
-alpha                               defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                        vexpress_defconfig
-arm                        oxnas_v6_defconfig
-mips                           ci20_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210124
-i386                 randconfig-a002-20210124
-i386                 randconfig-a004-20210124
-i386                 randconfig-a006-20210124
-i386                 randconfig-a005-20210124
-i386                 randconfig-a003-20210124
-x86_64               randconfig-a012-20210124
-x86_64               randconfig-a016-20210124
-x86_64               randconfig-a015-20210124
-x86_64               randconfig-a011-20210124
-x86_64               randconfig-a013-20210124
-x86_64               randconfig-a014-20210124
-i386                 randconfig-a013-20210124
-i386                 randconfig-a012-20210124
-i386                 randconfig-a014-20210124
-i386                 randconfig-a016-20210124
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+-- 
+~Randy
 
-clang tested configs:
-x86_64               randconfig-a003-20210124
-x86_64               randconfig-a002-20210124
-x86_64               randconfig-a001-20210124
-x86_64               randconfig-a005-20210124
-x86_64               randconfig-a006-20210124
-x86_64               randconfig-a004-20210124
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
