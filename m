@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80339301DE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7056E301DFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 18:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726091AbhAXR2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 12:28:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51768 "EHLO mail.kernel.org"
+        id S1726316AbhAXRkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 12:40:33 -0500
+Received: from mail.z3ntu.xyz ([128.199.32.197]:51414 "EHLO mail.z3ntu.xyz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725968AbhAXR2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 12:28:43 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE6DB22CA2;
-        Sun, 24 Jan 2021 17:28:00 +0000 (UTC)
-Date:   Sun, 24 Jan 2021 17:27:56 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/3] dt-bindings: iio: Add cros ec proximity yaml doc
-Message-ID: <20210124172756.69ef7c5a@archlinux>
-In-Reply-To: <20210122225443.186184-3-swboyd@chromium.org>
-References: <20210122225443.186184-1-swboyd@chromium.org>
-        <20210122225443.186184-3-swboyd@chromium.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1725842AbhAXRkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 12:40:23 -0500
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sun, 24 Jan 2021 12:40:21 EST
+Received: by mail.z3ntu.xyz (Postfix, from userid 182)
+        id EAB30C5AAF; Sun, 24 Jan 2021 17:31:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1611509498; bh=geOoglpDjIHmaj5SOU2auJVopCpCCq0/MBKAXre5Feg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Bwn2m9PbUuVkRkkSMiFqzOjXfTpa99gUrE4/kzj3QmHoocdKxmiZeJK8lbqoYWqUM
+         ltHcB/J29t9ZKDGKtMuCaUK/89HnE6zGJUcRMYdlgf1Ew7UckfK22iLz0nFcWlyf3F
+         teJ+4aMrrmS9f5uW4DwK5aBKbnsMkHuSSz7LimSo=
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on arch-vps
+X-Spam-Level: 
+X-Spam-Status: No, score=0.9 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.4
+Received: from g550jk.localnet (80-110-106-213.cgn.dynamic.surfer.at [80.110.106.213])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 02D11C5AA3;
+        Sun, 24 Jan 2021 17:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1611509495; bh=geOoglpDjIHmaj5SOU2auJVopCpCCq0/MBKAXre5Feg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=YgPkPqxHVHGbn+w5HuiLvEweOP+UvL5L80T/9qT2lGSxIzwhlH0OWvlOUMhq2qM4x
+         F1UmgQCSyBIaE1kuu6XJ+Imv+ce0TDE4fyhzRwd9emzW/uLLB3yyFyrqEiOI4XmtgQ
+         8Zqb6elJm9coadJ+0joyPWJemuP5wLjEMQMsthEM=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     Iskren Chernev <iskren.chernev@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Samuel Pascua <pascua.samuel.14@gmail.com>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH 3/4] ARM: dts: qcom: msm8974-klte: add support for display
+Date:   Sun, 24 Jan 2021 18:31:34 +0100
+Message-ID: <6632821.dtBD41K2ms@g550jk>
+In-Reply-To: <282b07a1-2e39-2dbe-dd7b-eed2ae9e25fb@somainline.org>
+References: <20210124135610.1779295-1-iskren.chernev@gmail.com> <20210124135610.1779295-3-iskren.chernev@gmail.com> <282b07a1-2e39-2dbe-dd7b-eed2ae9e25fb@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 14:54:42 -0800
-Stephen Boyd <swboyd@chromium.org> wrote:
+Hi Konrad,
 
-> Some cros ECs support a front proximity MKBP event via
-> 'EC_MKBP_FRONT_PROXIMITY'. Add a DT binding to document this feature via
-> a node that is a child of the main cros_ec device node. Devices that
-> have this ability will describe this in firmware.
-> 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: <devicetree@vger.kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  .../proximity/google,cros-ec-proximity.yaml   | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/proximity/google,cros-ec-proximity.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-proximity.yaml b/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-proximity.yaml
-> new file mode 100644
-> index 000000000000..c0a34bdfe4fd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/proximity/google,cros-ec-proximity.yaml
-> @@ -0,0 +1,37 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/iio/proximity/google,cros-ec-proximity.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ChromeOS EC MKBP Proximity Sensor
-> +
-> +maintainers:
-> +  - Stephen Boyd <swboyd@chromium.org>
-> +  - Benson Leung <bleung@chromium.org>
-> +  - Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> +
-> +description: |
-> +  Google's ChromeOS EC sometimes has the ability to detect user proximity.
-> +  This is implemented on the EC as near/far logic and exposed to the OS
-> +  via an MKBP switch bit.
-> +
-> +properties:
-> +  compatible:
-> +    const: google,cros-ec-proximity
-> +
-> +  label:
-> +    description: Name for proximity sensor
-> +
-> +required:
-> +  - compatible
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    proximity {
+On Sonntag, 24. J=E4nner 2021 16:04:13 CET Konrad Dybcio wrote:
+> > +	mdss@fd900000 {
+> > +		status =3D "ok";
+> > +
+> > +		mdp@fd900000 {
+> > +			status =3D "ok";
+> > +		};
+> > +
+> > +		dsi@fd922800 {
+> > +			status =3D "ok";
+> > +
+> > +			vdda-supply =3D <&pma8084_l2>;
+> > +			vdd-supply =3D <&pma8084_l22>;
+> > +			vddio-supply =3D <&pma8084_l12>;
+> > +
+> > +			#address-cells =3D <1>;
+> > +			#size-cells =3D <0>;
+> > +
+> > +			ports {
+> > +				port@1 {
+> > +					endpoint {
+> > +						remote-
+endpoint =3D <&panel_in>;
+> > +						data-lanes=20
+=3D <0 1 2 3>;
+> > +					};
+> > +				};
+> > +			};
+> > +
+> > +			panel: panel@0 {
+> > +				reg =3D <0>;
+> > +				compatible =3D "samsung,s6e3fa2";
+> > +
+> > +				pinctrl-names =3D "default";
+> > +				pinctrl-0 =3D <&panel_pin>;
+> > +
+> > +				port {
+> > +					panel_in: endpoint {
+> > +						remote-
+endpoint =3D <&dsi0_out>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +
+> > +		dsi-phy@fd922a00 {
+> > +			status =3D "ok";
+> > +
+> > +			vddio-supply =3D <&pma8084_l12>;
+> > +		};
+> > +	};
+> >=20
+> >  };
+>=20
+> Please use &label here. If there's none, add them in msm8974.dtsi.
+>=20
 
-Can we at least have the example making it clear this is a child of the
-cros_ec device?
+All msm8974 dts(i) files use this style. Deviating from it for this doesn't=
+=20
+make sense. And yes msm8974 should probably be converted to the newer label=
+=20
+style (as was done with msm8916 a while ago).
 
-> +        compatible = "google,cros-ec-proximity";
-> +        label = "proximity-wifi-lte";
-> +    };
+>=20
+> Konrad
+
+Regards
+Luca
+
 
