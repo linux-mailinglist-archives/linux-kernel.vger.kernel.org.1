@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB605301BD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E37F301BDE
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbhAXM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbhAXM2x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 07:28:53 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9D8C061573;
-        Sun, 24 Jan 2021 04:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=sT12+RzTF8KSMshcxHPAvGj98cH2WKbMubgiyuYJnWU=; b=fugzomg6SS7kEINiDz5Z2P46m
-        nWlnL7DWe3+PgStvZ9p3efLx4p+TrfFMv78o+eYm3wkW3owa0UVTNXZgFKI+AEBKryXF8q3eV70tQ
-        MjE/IIOIaFBmTQc3CdK40tw/CF7wd8V5XMcUGVwn0SJWmo8kveiGNzKA7L7hQ6GE01hFpGWkEwywd
-        07JyWs+4IOjQRtTzRFL3QpfRJ7vYU1GWrg+uq3tn8LJFdPpB5QbQQmskg3bos8NJkyzNYGZNCcprv
-        jdcEY0AnWiOmNvSAfge4A7+Gw/1pBEFByRpPKJdYifIZLDppAqlOSYZBGQiZb4hCaGPAkiusuKR3K
-        UoBh6uO3g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52100)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l3eV0-0002Mp-TJ; Sun, 24 Jan 2021 12:28:10 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l3eV0-0001gU-21; Sun, 24 Jan 2021 12:28:10 +0000
-Date:   Sun, 24 Jan 2021 12:28:10 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     stefanc@marvell.com
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
-        andrew@lunn.ch, atenart@kernel.org
-Subject: Re: [PATCH v2 RFC net-next 03/18] net: mvpp2: add CM3 SRAM memory map
-Message-ID: <20210124122809.GV1551@shell.armlinux.org.uk>
-References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
- <1611488647-12478-4-git-send-email-stefanc@marvell.com>
+        id S1726849AbhAXMbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:31:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52212 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726613AbhAXMbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 07:31:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 426B3ACC6;
+        Sun, 24 Jan 2021 12:30:56 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 13:30:49 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] irq/urgent for v5.11-rc5
+Message-ID: <20210124123049.GE2493@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1611488647-12478-4-git-send-email-stefanc@marvell.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 01:43:52PM +0200, stefanc@marvell.com wrote:
-> +static int mvpp2_get_sram(struct platform_device *pdev,
-> +			  struct mvpp2 *priv)
-> +{
-> +	struct device_node *dn = pdev->dev.of_node;
-> +	static bool defer_once;
-> +	struct resource *res;
-> +
-> +	if (has_acpi_companion(&pdev->dev)) {
-> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
-> +		if (!res) {
-> +			dev_warn(&pdev->dev, "ACPI is too old, Flow control not supported\n");
-> +			return 0;
-> +		}
-> +		priv->cm3_base = devm_ioremap_resource(&pdev->dev, res);
-> +		if (IS_ERR(priv->cm3_base))
-> +			return PTR_ERR(priv->cm3_base);
-> +	} else {
-> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
-> +		if (!priv->sram_pool) {
-> +			if (!defer_once) {
-> +				defer_once = true;
-> +				/* Try defer once */
-> +				return -EPROBE_DEFER;
-> +			}
-> +			dev_warn(&pdev->dev, "DT is too old, Flow control not supported\n");
-> +			return -ENOMEM;
-> +		}
+Hi Linus,
 
-Above, priv->sram_pool will only be non-NULL if the pool has been
-initialised.
+please pull the pile of urgent irq{,chip} fixes for v5.11.
 
-> +err_cm3:
-> +	if (!has_acpi_companion(&pdev->dev) && priv->cm3_base)
-> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
-> +			      MSS_SRAM_SIZE);
+Thx.
 
-So wouldn't:
-	if (priv->sram_pool && priv->cm3_base)
+---
 
-be more appropriate here?
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
 
-> +	if (!has_acpi_companion(&pdev->dev) && priv->cm3_base) {
-> +		gen_pool_free(priv->sram_pool, (unsigned long)priv->cm3_base,
-> +			      MSS_SRAM_SIZE);
-> +		gen_pool_destroy(priv->sram_pool);
-> +	}
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
 
-Same here.
+are available in the Git repository at:
 
-Why is it correct to call gen_pool_destroy() in the remove path but not
-the error path? I think you want to drop this - the pool is created and
-destroyed by the SRAM driver, users of it should not be destroying it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/irq_urgent_for_v5.11_rc5
+
+for you to fetch changes up to ce09ccc50208c04a1b03abfd530b5d6314258fd0:
+
+  genirq: Export irq_check_status_bit() (2021-01-13 15:48:05 +0100)
+
+----------------------------------------------------------------
+ - Fix a kernel panic in mips-cpu due to invalid irq domain hierarchy.
+
+ - Fix to not lose IPIs on bcm2836.
+
+ - Fix for a bogus marking of ITS devices as shared due to unitialized
+   stack variable.
+
+ - Clear a phantom interrupt on qcom-pdc to unblock suspend.
+
+ - Small cleanups, warning and build fixes.
+
+----------------------------------------------------------------
+Huacai Chen (1):
+      irqchip/loongson-liointc: Fix build warnings
+
+John Garry (1):
+      driver core: platform: Add extra error check in devm_platform_get_irqs_affinity()
+
+Marc Zyngier (1):
+      irqchip/bcm2836: Fix IPI acknowledgement after conversion to handle_percpu_devid_irq
+
+Mathias Kresin (1):
+      irqchip/mips-cpu: Set IPI domain parent chip
+
+Suman Anna (1):
+      irqchip/pruss: Simplify the TI_PRUSS_INTC Kconfig
+
+Thomas Gleixner (2):
+      Merge tag 'irqchip-fixes-5.11-1' of git://git.kernel.org/.../maz/arm-platforms into irq/urgent
+      genirq: Export irq_check_status_bit()
+
+Zenghui Yu (1):
+      genirq/msi: Initialize msi_alloc_info before calling msi_domain_prepare_irqs()
+
+Zheng Yongjun (1):
+      irqchip/irq-sl28cpld: Convert comma to semicolon
+
+ drivers/base/platform.c                | 2 ++
+ drivers/irqchip/Kconfig                | 5 +++--
+ drivers/irqchip/irq-bcm2836.c          | 4 ++--
+ drivers/irqchip/irq-loongson-liointc.c | 4 ++--
+ drivers/irqchip/irq-mips-cpu.c         | 7 +++++++
+ drivers/irqchip/irq-sl28cpld.c         | 2 +-
+ kernel/irq/manage.c                    | 1 +
+ kernel/irq/msi.c                       | 2 +-
+ 8 files changed, 19 insertions(+), 8 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
