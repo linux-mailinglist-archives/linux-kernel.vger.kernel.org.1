@@ -2,167 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDE8301BAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48776301BB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 13:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbhAXMAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 07:00:11 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:30656 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726740AbhAXLsA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 06:48:00 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10OBhL06023895;
-        Sun, 24 Jan 2021 03:45:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=6T3952UQuODQXz0xa6uIr5s9L2g45t5jpmvWkLaVxiM=;
- b=JQ60KXKVuPLdrJ7y8v33QygXw+fZf26ZkRIFTYfjsaGymJ/vrtlCzuIPqMRlqtX4DJP4
- 7E+jLgtrK2QB+x5ekQljiY+1fTh9zN8hi+gfB2bRyDUMKgJR6xiZG6qwnTCBnLApBdSU
- NO92Fd5EKE7Pd7fVgROTzZnClezOaxvzFfVIe49pZvhh3ASXpHDUhAirVmB76dTdl2dv
- GnDsLw8VFCbFMJ39QUaiEiaKH9FHvZyS3I1wJ60MpPQDPchEL0ohAMvmeY4ppmqDxfRM
- vVHtL+yDinkl9VsL4cFaRa7oUktdFv4B22y6TcPbqlQjLRfdWRd/QJnMGnMWbRwdx62x Eg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 368m6u9stj-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 24 Jan 2021 03:45:13 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 24 Jan
- 2021 03:45:11 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 24 Jan 2021 03:45:11 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 38BB73F7041;
-        Sun, 24 Jan 2021 03:45:08 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v2 RFC net-next 08/18] net: mvpp2: add FCA periodic timer configurations
-Date:   Sun, 24 Jan 2021 13:43:57 +0200
-Message-ID: <1611488647-12478-9-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
-References: <1611488647-12478-1-git-send-email-stefanc@marvell.com>
+        id S1726760AbhAXMBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 07:01:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42368 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726814AbhAXL7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 06:59:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DCC54AD0B;
+        Sun, 24 Jan 2021 11:58:25 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 12:58:19 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sched/urgent for v5.11-rc5
+Message-ID: <20210124115819.GC2493@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-24_04:2021-01-22,2021-01-24 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+Hi Linus,
 
-Flow Control periodic timer would be used if port in
-XOFF to transmit periodic XOFF frames.
+please pull the sched/urgent fixes for v5.11.
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Thx.
+
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 13 +++++-
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 45 ++++++++++++++++++++
- 2 files changed, 57 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index cac9885..0861c0b 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -596,6 +596,15 @@
- #define     MVPP22_MPCS_CLK_RESET_DIV_RATIO(n)	((n) << 4)
- #define     MVPP22_MPCS_CLK_RESET_DIV_SET	BIT(11)
- 
-+/* FCA registers. PPv2.2 and PPv2.3 */
-+#define MVPP22_FCA_BASE(port)			(0x7600 + (port) * 0x1000)
-+#define MVPP22_FCA_REG_SIZE			16
-+#define MVPP22_FCA_REG_MASK			0xFFFF
-+#define MVPP22_FCA_CONTROL_REG			0x0
-+#define MVPP22_FCA_ENABLE_PERIODIC		BIT(11)
-+#define MVPP22_PERIODIC_COUNTER_LSB_REG		(0x110)
-+#define MVPP22_PERIODIC_COUNTER_MSB_REG		(0x114)
-+
- /* XPCS registers. PPv2.2 and PPv2.3 */
- #define MVPP22_XPCS_BASE(port)			(0x7400 + (port) * 0x1000)
- #define MVPP22_XPCS_CFG0			0x0
-@@ -752,7 +761,9 @@
- 		((kb) * 1024 - MVPP2_TX_FIFO_THRESHOLD_MIN)
- 
- /* MSS Flow control */
--#define MSS_SRAM_SIZE	0x800
-+#define MSS_SRAM_SIZE		0x800
-+#define FC_QUANTA		0xFFFF
-+#define FC_CLK_DIVIDER		0x140
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 7143909..9d69752 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1293,6 +1293,49 @@ static void mvpp22_gop_init_10gkr(struct mvpp2_port *port)
- 	writel(val, mpcs + MVPP22_MPCS_CLK_RESET);
- }
- 
-+static void mvpp22_gop_fca_enable_periodic(struct mvpp2_port *port, bool en)
-+{
-+	struct mvpp2 *priv = port->priv;
-+	void __iomem *fca = priv->iface_base + MVPP22_FCA_BASE(port->gop_id);
-+	u32 val;
-+
-+	val = readl(fca + MVPP22_FCA_CONTROL_REG);
-+	val &= ~MVPP22_FCA_ENABLE_PERIODIC;
-+	if (en)
-+		val |= MVPP22_FCA_ENABLE_PERIODIC;
-+	writel(val, fca + MVPP22_FCA_CONTROL_REG);
-+}
-+
-+static void mvpp22_gop_fca_set_timer(struct mvpp2_port *port, u32 timer)
-+{
-+	struct mvpp2 *priv = port->priv;
-+	void __iomem *fca = priv->iface_base + MVPP22_FCA_BASE(port->gop_id);
-+	u32 lsb, msb;
-+
-+	lsb = timer & MVPP22_FCA_REG_MASK;
-+	msb = timer >> MVPP22_FCA_REG_SIZE;
-+
-+	writel(lsb, fca + MVPP22_PERIODIC_COUNTER_LSB_REG);
-+	writel(msb, fca + MVPP22_PERIODIC_COUNTER_MSB_REG);
-+}
-+
-+/* Set Flow Control timer x140 faster than pause quanta to ensure that link
-+ * partner won't send taffic if port in XOFF mode.
-+ */
-+static void mvpp22_gop_fca_set_periodic_timer(struct mvpp2_port *port)
-+{
-+	u32 timer;
-+
-+	timer = (port->priv->tclk / (USEC_PER_SEC * FC_CLK_DIVIDER))
-+		* FC_QUANTA;
-+
-+	mvpp22_gop_fca_enable_periodic(port, false);
-+
-+	mvpp22_gop_fca_set_timer(port, timer);
-+
-+	mvpp22_gop_fca_enable_periodic(port, true);
-+}
-+
- static int mvpp22_gop_init(struct mvpp2_port *port)
- {
- 	struct mvpp2 *priv = port->priv;
-@@ -1337,6 +1380,8 @@ static int mvpp22_gop_init(struct mvpp2_port *port)
- 	val |= GENCONF_SOFT_RESET1_GOP;
- 	regmap_write(priv->sysctrl_base, GENCONF_SOFT_RESET1, val);
- 
-+	mvpp22_gop_fca_set_periodic_timer(port);
-+
- unsupported_conf:
- 	return 0;
- 
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v5.11_rc5
+
+for you to fetch changes up to 741ba80f6f9a4702089c122129f22df9774b3e64:
+
+  sched: Relax the set_cpus_allowed_ptr() semantics (2021-01-22 15:09:44 +0100)
+
+----------------------------------------------------------------
+ - Correct the marking of kthreads which are supposed to run on a specific,
+ single CPU vs such which are affine to only one CPU, mark per-cpu workqueue
+ threads as such and make sure that marking "survives" CPU hotplug. Fix CPU
+ hotplug issues with such kthreads.
+
+ - A fix to not push away tasks on CPUs coming online.
+
+ - Have workqueue CPU hotplug code use cpu_possible_mask when breaking affinity
+   on CPU offlining so that pending workers can finish on newly arrived onlined
+   CPUs too.
+
+ - Dump tasks which haven't vacated a CPU which is currently being unplugged.
+
+ - Register a special scale invariance callback which gets called on resume
+ from RAM to read out APERF/MPERF after resume and thus make the schedutil
+ scaling governor more precise.
+
+----------------------------------------------------------------
+Lai Jiangshan (1):
+      workqueue: Use cpu_possible_mask instead of cpu_active_mask to break affinity
+
+Peter Zijlstra (7):
+      sched: Don't run cpu-online with balance_push() enabled
+      kthread: Extract KTHREAD_IS_PER_CPU
+      workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
+      workqueue: Restrict affinity change to rescuer
+      sched: Prepare to use balance_push in ttwu()
+      sched: Fix CPU hotplug / tighten is_per_cpu_kthread()
+      sched: Relax the set_cpus_allowed_ptr() semantics
+
+Rafael J. Wysocki (1):
+      x86: PM: Register syscore_ops for scale invariance
+
+Valentin Schneider (1):
+      sched/core: Print out straggler tasks in sched_cpu_dying()
+
+ arch/x86/kernel/smpboot.c |  19 ++++++++
+ include/linux/kthread.h   |   3 ++
+ kernel/kthread.c          |  27 ++++++++++-
+ kernel/sched/core.c       | 111 ++++++++++++++++++++++++++++++++++++----------
+ kernel/sched/sched.h      |   1 +
+ kernel/smpboot.c          |   1 +
+ kernel/workqueue.c        |  22 +++++----
+ 7 files changed, 151 insertions(+), 33 deletions(-)
+
 -- 
-1.9.1
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
