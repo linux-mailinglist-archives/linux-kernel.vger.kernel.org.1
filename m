@@ -2,133 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB41301B62
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 12:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C48AB301B65
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 12:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbhAXLUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 06:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S1726560AbhAXLdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 06:33:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726451AbhAXLU1 (ORCPT
+        with ESMTP id S1726367AbhAXLdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 06:20:27 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18975C061573;
-        Sun, 24 Jan 2021 03:19:46 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so6720701pfm.6;
-        Sun, 24 Jan 2021 03:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3mlNxluoOUFXyf7eipu0PmfQvN2acVkWiu4QSIwRsEA=;
-        b=qy8p0e/Cgsi1dPzfQhUxQ8EMrTzh33+d4fxEXhoPAd6u+fMPZmpSbQDRhllQM5OaQN
-         7hObRxVho+ndfpKPChb5gxJQ6r01CX/o2dSwQi5ldwVj+6Rbcf+Ko+wOikJIL3dgOcFL
-         acCVyCDlo4f4+fGj+u1n9iAao9YM9sSKUpQaGr8jth9MOaifh5EATGgqFGiO2nAqbQhg
-         vNeTUxvp6KqRkH+TrbSJA/uqga64OOUYDYe3wKYGULWzvRkAwcJPAU2yYXpmy0xGzS9K
-         VzJqvKKpot+R06fNyDiC184YneCT7igRhbA3Wu61ktotgVFDztScASDTrxRr1H4PclUn
-         W7Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3mlNxluoOUFXyf7eipu0PmfQvN2acVkWiu4QSIwRsEA=;
-        b=RNElWX8vXtCvMbdg4b0XPj+4L7HPoRPmpr+1kJKFu2QohKy+cl4lGoDNETU1CGaxnI
-         ZczYP6GT1V+Upwoi/k3uG2iRxEGkTzrwUQMrBzs+tHt1jlCTN8b3PLAkw5F0q3XJaX8M
-         BLukI/OgDWKaslGec+RSIM3t0XVHfG9xw/URTGOGT3Mty0lPixoaYJrx9MeH/6L0X8/c
-         vsnorDlMozc8bvhlldCqhRlqSd9HWeBlwRgHQozi49Y8DoLgkZ+uvWk+fh1t6IOaGtg9
-         QhudXss6cOLPhV4iwSEH4jtN/15Y5FKfuqE+rNKlRbHjBJA/hNj7OLoFMkOU04TPLf4+
-         hbgA==
-X-Gm-Message-State: AOAM533Hz1gAwGDiEmdwmOk8hRxAWZlmZLkaRAo8/gJg5dQebnCDieWF
-        DdCFZybZdRejavBJxB21PkaGRPlwU42xdHxKOhQ=
-X-Google-Smtp-Source: ABdhPJwvX0ybp1SFh54EN0MagOI0gutIt5ypVXFQl8EgTllirWPShn/3w9bm1Q4uExmAD3b9BD0/mMR4PVLdvxvmDsI=
-X-Received: by 2002:a62:52d6:0:b029:1c0:aed7:c88 with SMTP id
- g205-20020a6252d60000b02901c0aed70c88mr383427pfb.76.1611487185651; Sun, 24
- Jan 2021 03:19:45 -0800 (PST)
+        Sun, 24 Jan 2021 06:33:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C67FC061573;
+        Sun, 24 Jan 2021 03:32:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Mqa32asZZp18V8r6vs5C2A7h2wwBEtaIVqomz3yUGRQ=; b=qk0PisdW5PxD45qYqKoEnTKmPp
+        WGAn2tGrYEtYqZX8q3ah10/j0LWTe7sSPmfEdXvB3YKoYQ0vxAe7okj1TOJRunIoR+6fUu2WF28MC
+        0bL9lqlRSvq0StcMloP9NdW/uEOT3Jp0xT9dKU7nQucG42BYoSJz9VhYEZFwmZ3aTNPMBkr2yrd0A
+        qxU9gyj6ymumpsfwl4hKJeqOR7IYpzWiqfTGj1GL/PMQyhGKgdRMscNKersh3RXZa4v4Dtuh1ZuDJ
+        Jegr4m4bq4urBmJht4IP+XpPMAVwgO8whUdwl8n3wRPWOoBQGcjdJET4eWP/p4IHpsuXCBst5RQLm
+        nWNb4tCA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3dcN-002udt-CX; Sun, 24 Jan 2021 11:31:46 +0000
+Date:   Sun, 24 Jan 2021 11:31:43 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>
+Subject: Re: [PATCH v10 01/12] mm/vmalloc: fix vmalloc_to_page for huge vmap
+ mappings
+Message-ID: <20210124113143.GA694255@infradead.org>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-2-npiggin@gmail.com>
 MIME-Version: 1.0
-References: <20210121002129.93754-1-xie.he.0141@gmail.com> <b42575d44fb7f5c1253635a19c3e21e2@dev.tdt.de>
- <20210123204507.35c895db@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210123204507.35c895db@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Sun, 24 Jan 2021 03:19:35 -0800
-Message-ID: <CAJht_ENQ2aN2vvWzLDGUUk-7Yv_=UUJmOrbC3M9J=j5uET-pAQ@mail.gmail.com>
-Subject: Re: [PATCH net v5] net: lapb: Add locking to the lapb module
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210124082230.2118861-2-npiggin@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 8:45 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> > > @@ -178,11 +182,23 @@ int lapb_unregister(struct net_device *dev)
-> > >             goto out;
-> > >     lapb_put(lapb);
-> > >
-> > > +   /* Wait for other refs to "lapb" to drop */
-> > > +   while (refcount_read(&lapb->refcnt) > 2)
-> > > +           ;
->
-> Tight loop like this is a little scary, perhaps add a small
-> usleep_range() here?
+On Sun, Jan 24, 2021 at 06:22:19PM +1000, Nicholas Piggin wrote:
+> vmalloc_to_page returns NULL for addresses mapped by larger pages[*].
+> Whether or not a vmap is huge depends on the architecture details,
+> alignments, boot options, etc., which the caller can not be expected
+> to know. Therefore HUGE_VMAP is a regression for vmalloc_to_page.
+> 
+> This change teaches vmalloc_to_page about larger pages, and returns
+> the struct page that corresponds to the offset within the large page.
+> This makes the API agnostic to mapping implementation details.
 
-OK, sure. I'll add a usleep_range(1, 10) here.
+Maybe enable instead of fix would be better in the subject line?
 
-> > > -int lapb_disconnect_request(struct net_device *dev)
-> > > +static int __lapb_disconnect_request(struct lapb_cb *lapb)
-> > >  {
-> > > -   struct lapb_cb *lapb = lapb_devtostruct(dev);
-> > > -   int rc = LAPB_BADTOKEN;
-> > > -
-> > > -   if (!lapb)
-> > > -           goto out;
-> > > -
-> > >     switch (lapb->state) {
-> > >     case LAPB_STATE_0:
-> > > -           rc = LAPB_NOTCONNECTED;
-> > > -           goto out_put;
-> > > +           return LAPB_NOTCONNECTED;
-> > >
-> > >     case LAPB_STATE_1:
-> > >             lapb_dbg(1, "(%p) S1 TX DISC(1)\n", lapb->dev);
-> > > @@ -310,12 +328,10 @@ int lapb_disconnect_request(struct net_device
-> > > *dev)
-> > >             lapb_send_control(lapb, LAPB_DISC, LAPB_POLLON, LAPB_COMMAND);
-> > >             lapb->state = LAPB_STATE_0;
-> > >             lapb_start_t1timer(lapb);
-> > > -           rc = LAPB_NOTCONNECTED;
-> > > -           goto out_put;
-> > > +           return LAPB_NOTCONNECTED;
-> > >
-> > >     case LAPB_STATE_2:
-> > > -           rc = LAPB_OK;
-> > > -           goto out_put;
-> > > +           return LAPB_OK;
-> > >     }
-> > >
-> > >     lapb_clear_queues(lapb);
-> > > @@ -328,8 +344,22 @@ int lapb_disconnect_request(struct net_device
-> > > *dev)
-> > >     lapb_dbg(1, "(%p) S3 DISC(1)\n", lapb->dev);
-> > >     lapb_dbg(0, "(%p) S3 -> S2\n", lapb->dev);
-> > >
-> > > -   rc = LAPB_OK;
-> > > -out_put:
-> > > +   return LAPB_OK;
-> > > +}
->
-> Since this is a fix for net, I'd advise against converting the goto
-> into direct returns (as much as I generally like such conversion).
+Otherwise this looks good:
 
-This part is actually splitting "lapb_disconnect_request" into two
-functions - a "__lapb_disconnect_request" without locking, and a
-"lapb_disconnect_request" which provides the locking and calls
-"__lapb_disconnect_request". The splitting is necessary for
-"lapb_device_event" to directly call "__lapb_disconnect_request" with
-the lock already held. After the splitting, the "out_put" tag would
-actually be in the caller function so there's nowhere we can "goto".
+Reviewed-by: Christoph Hellwig <hch@lst.de>
