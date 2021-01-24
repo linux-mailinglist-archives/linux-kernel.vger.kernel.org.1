@@ -2,127 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CBD301E9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 21:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC11301EA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 21:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbhAXUHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 15:07:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S1726247AbhAXUP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 15:15:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhAXUHt (ORCPT
+        with ESMTP id S1725948AbhAXUPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 15:07:49 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A64C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 12:07:08 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id 63so10780766oty.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 12:07:08 -0800 (PST)
+        Sun, 24 Jan 2021 15:15:24 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B17CC061573;
+        Sun, 24 Jan 2021 12:14:44 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id l14so3243717qvp.2;
+        Sun, 24 Jan 2021 12:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=+wHtxvtC1jI/nW4txRp0ZVFK13xVD/e5tlgnnpJhrT4=;
-        b=B/QLKbHQOWdsoFbigku1iPJMvRLlLy+1TmxPksBRa+/6POLJXMaf5d5r6YsgrPiEoo
-         7EIQUKkWyEyYrAofrEJUMo5LgTxq9C5ggTi2ZUdomWqah2G2pILJ7/ZzL2SkQHFdnrnU
-         KmJX5+7ArMjRrsVwmpma1f6kpwEADEHM5cZ8vJ2cubwQNRuO9FzRld5NVoZmLl1bx64/
-         4+LvkXd1VFbh979akhsraEnpq25toxFpyGxoDBY2u5lI3qKDo1HcpCV6JHSMffFXw0AI
-         ePvFODKlkCcezc/DrDPL8f1RU+Pn8RU3taLT+iHvlOl4kmH9hcTIBx9Y1iNSMzxrK1/Q
-         RiMA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OSqM/+hDSvLrv13lOWN3p2jAOoGEE3+xx2u807DxGhI=;
+        b=b3lztcn5pSshC/3esauyTw+hxCipPz+MJyymarpFLFxQhyqJRiK0Q5Glo6b7KifBk8
+         f55+fm+KG4Hp913zv0oxXC3KyC8LgnsIjloAmXIq2wCyIablTcUrwIraJ0h7O9EXSpR0
+         Wr6V8hzjL1U+31FiHwpqqh9bYJltn8zh8jssuRfjJAJQt0YuMFT5W6AaXSuyjnn3hOmo
+         En0Au3qkMCJkc0EiQC+yEBuoFYSTDpZ/vyPsK+ggc778kKLn06Q3hahskXu2svqNBRqk
+         XJTWw7Y7JCmJ5tXoaphmclJk8oREYPAkefDB7jWG4XjJ/yDeVkTTonLaKvi8HS6QexBn
+         Y0OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=+wHtxvtC1jI/nW4txRp0ZVFK13xVD/e5tlgnnpJhrT4=;
-        b=BPDTdsjJ/Y86afpV9SxaIq5U9wZHtO98vXB5EUOEtH3R9rsHdMaLdZ0LX2FRqQIcwz
-         BHlIkz/yeCXWsn6SfLTkpLrGE+GIznTyh+kXQupYUYoQOqMJDwn0ozDzzUzBLnXBa7fn
-         KTDeHcnJ680qK7+E9H+rw/CvFSdfFXN249BxawNiXwgp142WdQ6lr83FpGVjC9aGhqg3
-         LmLPVWLgqG9rsAIuud0vAwpRksY2D04hgOHPeADVXAaLyFlxljWjkshbEsEhvcJpnhpv
-         ef0X62XvClk4YF/K4qpHCvP2EXkfSbBdEIZUa5/SRwIqdT8dl8g1C7DzVW/lu6vbWIPi
-         CbXg==
-X-Gm-Message-State: AOAM532kxN7OQrRGnAgt0JNRIE5Ph7tpggwHXbaxdldJ9EPPiyAncxIR
-        Py0TLFnLw0BRVMwVSANav8QZRQ==
-X-Google-Smtp-Source: ABdhPJwkjeguUQQq8ExODbw+xBALYdofTAdvUgePeXABnj2QpaJq5Qo/5Rp/MaDPboyRQtCXP5fbNw==
-X-Received: by 2002:a05:6830:2152:: with SMTP id r18mr10445402otd.296.1611518827927;
-        Sun, 24 Jan 2021 12:07:07 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k15sm3058068otp.10.2021.01.24.12.07.06
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sun, 24 Jan 2021 12:07:07 -0800 (PST)
-Date:   Sun, 24 Jan 2021 12:06:54 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>, Thierry Reding <treding@nvidia.com>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-pm@vger.kernel.org
-Subject: Re: Infinite recursion in device_reorder_to_tail() due to circular
- device links
-In-Reply-To: <YA0sOFj6VjQ8LUL2@kroah.com>
-Message-ID: <alpine.LSU.2.11.2101241205190.2585@eggly.anvils>
-References: <X/ycQpu7NIGI969v@gerhold.net> <CAJZ5v0gAsZ45O8mv-gz0UvbyxnKA6fQBYvambBYEH6OSk3-m3g@mail.gmail.com> <X/3kveeVrb35qsvb@kroah.com> <alpine.LSU.2.11.2101231524290.1540@eggly.anvils> <YA0sOFj6VjQ8LUL2@kroah.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OSqM/+hDSvLrv13lOWN3p2jAOoGEE3+xx2u807DxGhI=;
+        b=Mt9zkDhaQrqirTUg9JC0/AnZhBsS+/KNUJWcfVuIwKp4T6yNtnRAi/+GLLmhjEcaje
+         oPIGBFHdYpyJu1jG2zjE12BByEN7r6B0UWW2OjO5YUk0H943mXmo+IPBS/UOiuqnGsTK
+         aewJtarg85Y8ojIBxX/3RoUeeuKNO99Fv7hrN9j1lbRvC9xsU3pCpVrfeIyJT8c5z6Ir
+         8/2NHd58ndxxK1zCr0IgI50FpP8DbJFHOIcFBR0NhQV05LiDZETfvr+WaoWbjYb7kroG
+         1qcOzO2hJRm85SbqbGNo/3a4/qt/NUiZiojBcK0LrEV7mQEdJLx8FnDtA0tOqCz3MzF1
+         j2FQ==
+X-Gm-Message-State: AOAM533xXzKlw3BjQrm5Enx3urNvvLVmqrARytGVu5UNIqn8jt7kbv9a
+        qCVGFlTLLDre4rDSVS74PfBbkh+AhRqdPJdKvla8+WV/XWU=
+X-Google-Smtp-Source: ABdhPJxVOToYv0HkdS45AHJioCJ8pGX18Nrco3AhpQ3fAv/W1LW+yvun2Ke603zBouNanpWWNdyQ/PX8p+H6laXhHYQ=
+X-Received: by 2002:a0c:9e5e:: with SMTP id z30mr4524736qve.56.1611519283494;
+ Sun, 24 Jan 2021 12:14:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210124073955.728797-1-christophe.jaillet@wanadoo.fr> <fe72d1d2-8222-5cda-74ff-9327725f196a@web.de>
+In-Reply-To: <fe72d1d2-8222-5cda-74ff-9327725f196a@web.de>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Sun, 24 Jan 2021 21:14:32 +0100
+Message-ID: <CAFLxGvzFDPBGY1uoB7vqJreOSfs9N2PGMDTbQ24PYBWBRVR4oQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: Fix an error handling path in 'ebu_dma_start()'
+To:     Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+Cc:     linux-mtd@lists.infradead.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Richard Weinberger <richard@nod.at>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 24 Jan 2021, Greg Kroah-Hartman wrote:
-> On Sat, Jan 23, 2021 at 03:37:30PM -0800, Hugh Dickins wrote:
-> > On Tue, 12 Jan 2021, Greg Kroah-Hartman wrote:
-> > > On Tue, Jan 12, 2021 at 03:32:04PM +0100, Rafael J. Wysocki wrote:
-> > > > On Mon, Jan 11, 2021 at 7:46 PM Stephan Gerhold <stephan@gerhold.net> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > since 5.11-rc1 I get kernel crashes with infinite recursion in
-> > > > > device_reorder_to_tail() in some situations... It's a bit complicated to
-> > > > > explain so I want to apologize in advance for the long mail. :)
-> > > > >
-> > > > >   Kernel panic - not syncing: kernel stack overflow
-> > > > >   CPU: 1 PID: 33 Comm: kworker/1:1 Not tainted 5.11.0-rc3 #1
-> > > > >   Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
-> > > > >   Call trace:
-> > > > >    ...
-> > > > >    device_reorder_to_tail+0x4c/0xf0
-> > > > >    device_reorder_to_tail+0x98/0xf0
-> > > > >    device_reorder_to_tail+0x60/0xf0
-> > > > >    device_reorder_to_tail+0x60/0xf0
-> > > > >    device_reorder_to_tail+0x60/0xf0
-> > > > >    ...
-> > > > >
-> > > > > The crash happens only in 5.11 with commit 5b6164d3465f ("driver core:
-> > > > > Reorder devices on successful probe"). It stops happening when I revert
-> > > > > this commit.
-> > > > 
-> > > > Thanks for the report!
-> > > > 
-> > > > Greg, please revert commit 5b6164d3465f, it clearly is not an
-> > > > improvement, at least at this point.
-> > > 
-> > > Now reverted, thanks.
-> > > 
-> > > greg k-h
-> > 
-> > I think that there has been a misunderstanding here: although
-> > 5b6164d3465f ("driver core: Reorder devices on successful probe")
-> > has been reverted from linux-next (thank you), it has not yet been
-> > reverted from 5.11-rc, and still causing problems there (in my case,
-> > not the infinite recursion Stephan reported in this thread, but the
-> > ThinkPad rmi4 suspend failure that I reported in another thread).
-> 
-> It will be sent to Linus in a few hours, thanks, so should show up in
-> 5.11-rc5.  I had other patches to go along with this to send him at the
-> same time :)
+On Sun, Jan 24, 2021 at 9:13 PM Markus Elfring <Markus.Elfring@web.de> wrot=
+e:
+>
+> > If 'dmaengine_prep_slave_single()' fails, we must undo a previous
+> > 'dma_map_single()' call, as already done in all the other error handlin=
+g
+> > paths of this function.
+>
+> Would you ever like to use an imperative wording for the change descripti=
+on?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?id=3Dfdbc80bdc4365078a0f7d65631=
+171cb80e3ffd6e#n89
+>
+>
+> =E2=80=A6
+> > +++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+> > @@ -318,8 +318,10 @@ static int ebu_dma_start(struct ebu_nand_controlle=
+r *ebu_host, u32 dir,
+> >       }
+> >
+> >       tx =3D dmaengine_prep_slave_single(chan, buf_dma, len, dir, flags=
+);
+> > -     if (!tx)
+> > -             return -ENXIO;
+> > +     if (!tx) {
+> > +             ret =3D -ENXIO;
+> > +             goto err_unmap;
+> > +     }
+> >
+> >       tx->callback =3D callback;
+> =E2=80=A6
+>
+> By the way:
+> Can it be nicer to achieve the statement =E2=80=9Cret =3D -EIO;=E2=80=9D =
+by a jump for
+> a target like =E2=80=9Ce_io=E2=80=9D so that less exception handling code=
+ would be duplicated
+> for this function implementation?
 
-And indeed it's now in, thanks Greg: I'm sorry for being importunate,
-the misunderstanding was mine.
+Please feel free to ignore Markus.
 
-Hugh
+https://lore.kernel.org/lkml/X+x3pIanr18Ep4ga@kroah.com/
+
+--=20
+Thanks,
+//richard
