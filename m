@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF07A30199F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 06:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678F83019A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 06:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbhAXFM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 00:12:29 -0500
-Received: from mga17.intel.com ([192.55.52.151]:19611 "EHLO mga17.intel.com"
+        id S1726527AbhAXFNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 00:13:36 -0500
+Received: from mga03.intel.com ([134.134.136.65]:32291 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbhAXFM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 00:12:27 -0500
-IronPort-SDR: 1IwuacZENtChNkYeCkiUvisWvTIN/cSvtKx3kApfP16D2nmC/BHaZjoivN0oSnOTApQ4Ufzf39
- Vs0CHqKcbJxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9873"; a="159373032"
+        id S1726435AbhAXFN3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 00:13:29 -0500
+IronPort-SDR: vfTGvKugndwWitljSUoUnqhgkYEfdi+lXn9ZfvjMlrQ5hC5fADjmlIoF8luxZysPnTj3vmKNps
+ AuHLM32pD9Eg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9873"; a="179677426"
 X-IronPort-AV: E=Sophos;i="5.79,370,1602572400"; 
-   d="scan'208";a="159373032"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2021 21:11:47 -0800
-IronPort-SDR: gAf2JX2AAGSGwa1yXpY7itucz5TwTSX5bIucKz+3n/bC3ogcR24m5M69m66a9olLDGSI69Hpsw
- PVPgMkgSKCdg==
+   d="scan'208";a="179677426"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2021 21:12:48 -0800
+IronPort-SDR: jlScjw4cGOUFQNXmygpKii58OPCWOnkxKyjHntCSyiRUxFR+k40Fgeib5a2qC+5PjR+Ffu7NOd
+ e78NeLgRLpQw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,370,1602572400"; 
-   d="scan'208";a="355677980"
+   d="scan'208";a="352441122"
 Received: from lkp-server01.sh.intel.com (HELO 27c4e0a4b6d9) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 23 Jan 2021 21:11:45 -0800
+  by orsmga003.jf.intel.com with ESMTP; 23 Jan 2021 21:12:47 -0800
 Received: from kbuild by 27c4e0a4b6d9 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1l3Xgf-00002y-2v; Sun, 24 Jan 2021 05:11:45 +0000
-Date:   Sun, 24 Jan 2021 13:11:07 +0800
+        id 1l3Xhe-00003X-JG; Sun, 24 Jan 2021 05:12:46 +0000
+Date:   Sun, 24 Jan 2021 13:11:55 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 6e1239c13953f3c2a76e70031f74ddca9ae57cd3
-Message-ID: <600d016b.FKVB3GpREA3VO3nB%lkp@intel.com>
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 8ece53ef7f428ee3f8eab936268b1a3fe2725e6b
+Message-ID: <600d019b.PhUMmu5TbujIb7bW%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,10 +43,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 6e1239c13953f3c2a76e70031f74ddca9ae57cd3  x86/cpu: Add another Alder Lake CPU to the Intel family
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: 8ece53ef7f428ee3f8eab936268b1a3fe2725e6b  x86/vm86/32: Remove VM86_SCREEN_BITMAP support
 
-elapsed time: 3272m
+i386-tinyconfig vmlinux size:
+
+====================================================================================================================
+ TOTAL  TEXT  init.text  check_iommu_entries()                                                                      
+====================================================================================================================
+     0     0          0                      0  4af0e6e39b7e x86/mm: Remove duplicate definition of _PAGE_PAT_LARGE 
+    +1     0          0                      0  11aa1415d8bd x86/entry: Remove now unused do_IRQ() declaration      
+   -76   -76        -76                    -76  b86cb29287be x86: Remove definition of DEBUG                        
+    +1     0          0                      0  8ece53ef7f42 x86/vm86/32: Remove VM86_SCREEN_BITMAP support         
+   -74   -76        -76                    -76  5c8fe583cce5..8ece53ef7f42 (ALL COMMITS)                            
+====================================================================================================================
+
+elapsed time: 3273m
 
 configs tested: 78
 configs skipped: 71
