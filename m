@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4EA301C72
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF4E301C9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 15:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726236AbhAXN6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 08:58:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbhAXN5j (ORCPT
+        id S1726182AbhAXOLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 09:11:31 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:18552 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726160AbhAXOKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 08:57:39 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8312EC06178B;
-        Sun, 24 Jan 2021 05:56:52 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id by1so14239249ejc.0;
-        Sun, 24 Jan 2021 05:56:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aTj+3LRHlPTMkRPTqwqbdcRuQaEmUjPAcJHSK59V7eE=;
-        b=TgIPmOlIH01hQEsYLswEntf3+gTcgZv0o43D6l8n6fjBzRsxFtebQN4mutAT2ZHwW+
-         coLaDTGkQE8YRFX8xcQwCA6Jf83L1nrgnvp/G5UY/nF87hC2cUddRDMxSA1es0qtYJys
-         laSM/3ov9ihJj6ulsPig+YCLqcgxHqMY7MP0t/lj+UKdGPj1j8K4Wz/TBx7p9e4fOq4A
-         Zapj2UDbISzXTprXn2nWqYKVXRn3PEBI9aBsDnwyc9d+mkAigGRFDXjZrdxjD948ZkiY
-         SNAWEXxyT3xyPRj9pCpTaxQTXTkEkqToUFAiE98IS1o8Aum1zaZX8s22BYN7WL0lNzW4
-         BiAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aTj+3LRHlPTMkRPTqwqbdcRuQaEmUjPAcJHSK59V7eE=;
-        b=Xec8DEMRqnDpSknsjBqfQcre13yJc+z+soU+yyERPvsTJ91FkjveS6jZegF1gjgrdU
-         IrwRiVw32A0++2gCjL6GBpOAEa1uW1llLQUD1iHlXaZTRrViW/uPhoBVmGg/Nu/9Z/H9
-         0v3Dxjl4uk7HNeOAqNqYvPuw8Mn+T4IKk53DqjwHowdXRn7oqvtnfhw+bzn3G+cIcbkc
-         4Q3tfYtQUlPtJVTRD63Ta9gqwbUxKIkNwlnz5L6+d0xVF+sbcIvNRGb0TVN7uW+2zono
-         S0JtuyJdyClFvOsnnTFRWcwb+AOVJKqzkoJonWZuozsl8WMZNvFI+BQzCNnEN0z00l5E
-         Ob2A==
-X-Gm-Message-State: AOAM533pnX1tIYCdNjVrVkJFeyKJ6wPzAnRtm9jrG5l+1S3eaYhJNUCI
-        1d/7dRZCwBGqpyOpG5ybaHY=
-X-Google-Smtp-Source: ABdhPJzlSsvl6ptXhJwb/5k0iM8/bKA8Bici88RxgfbYGtIFRg6cWhKVTw3+eR0aTA9/4F3ol2glGQ==
-X-Received: by 2002:a17:906:1741:: with SMTP id d1mr773792eje.182.1611496611284;
-        Sun, 24 Jan 2021 05:56:51 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id k27sm6965635eje.67.2021.01.24.05.56.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Jan 2021 05:56:50 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Samuel Pascua <pascua.samuel.14@gmail.com>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: [PATCH 4/4] ARM: dts: qcom: msm8974-klte: Mark essential regulators
-Date:   Sun, 24 Jan 2021 15:56:10 +0200
-Message-Id: <20210124135610.1779295-4-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210124135610.1779295-1-iskren.chernev@gmail.com>
-References: <20210124135610.1779295-1-iskren.chernev@gmail.com>
+        Sun, 24 Jan 2021 09:10:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611497208;
+        s=strato-dkim-0002; d=chronox.de;
+        h=Message-ID:Date:Subject:Cc:To:From:From:Subject:Sender;
+        bh=kD8GXYJD7ne6R4TTKn1bkqiMktIc67naKuk3V4KmkGQ=;
+        b=rKxsCcbDsx8r0ELNMQf1n5B3j+esMZgzC0W7FX0UjSgcgth7aU9NBMVQGTe1H7gykp
+        JVXaej1zwuBQ4aNW9HhfYbX9k/LKWHPzuHDxFuUDFdzBr07PGcFmcPB10nuh4cRsnBAo
+        FGJiZtfly+IZ9IDK5T409UgcSA559dFGaeVD+jGQpCuYbzeEljJjbiIvArGT5kHxZ9/u
+        TzkBoc1e4uua1MutLxb16tshVgv5dE26nEwmBH1Nj9xfWldbbk8/WC9jBAX7GmEGMBgk
+        YtPGw5DjyB53RInjJUzVxAkj/ksFPIZG+QEIk5iMeg5HsVSH3CA+kyXJM+yFgPc25gEr
+        1YGg==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPZI/ScIzb9"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id Z04c46x0OE6meic
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 24 Jan 2021 15:06:48 +0100 (CET)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     herbert@gondor.apana.org.au
+Cc:     ebiggers@kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
+        mathew.j.martineau@linux.intel.com, dhowells@redhat.com,
+        linux-crypto@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+        simo@redhat.com
+Subject: [PATCH v2 0/7] Add KDF implementations to crypto API
+Date:   Sun, 24 Jan 2021 15:01:12 +0100
+Message-ID: <1772794.tdWV9SEqCh@positron.chronox.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s1 and l12 regulators are used for the memory and cache on the Samsung
-S5 (klte). If they are turned off the phone shuts down. So mark them as
-always-on to prevent that from happening.
+Hi,
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-Tested-by: Alexey Minnekhanov <alexeymin@postmarketos.org>
----
- arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts | 2 ++
- 1 file changed, 2 insertions(+)
+The key derviation functions are considered to be a cryptographic
+operation. As cryptographic operations are provided via the kernel
+crypto API, this patch set consolidates the KDF implementations into the
+crypto API.
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-index 19c96b47a5dbd..27323403aa71d 100644
---- a/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-samsung-klte.dts
-@@ -30,6 +30,7 @@ pma8084-regulators {
- 					pma8084_s1: s1 {
- 						regulator-min-microvolt = <675000>;
- 						regulator-max-microvolt = <1050000>;
-+						regulator-always-on;
- 					};
- 
- 					pma8084_s2: s2 {
-@@ -115,6 +116,7 @@ pma8084_l11: l11 {
- 					pma8084_l12: l12 {
- 						regulator-min-microvolt = <1800000>;
- 						regulator-max-microvolt = <1800000>;
-+						regulator-always-on;
- 					};
- 
- 					pma8084_l13: l13 {
+The KDF implementations are provided as service functions. Yet, the
+interface to the two provided KDFs are identical with the goal to allow
+them to be transformed into a crypto API template eventually.
+
+The KDFs execute a power-on self test with test vectors from commonly
+known sources.
+
+Tbe SP800-108 KDF implementation is used to replace the implementation
+in the keys subsystem. The implementation was verified using the
+keyutils command line test code provided in
+tests/keyctl/dh_compute/valid. All tests show that the expected values
+are calculated with the new code.
+
+The HKDF addition is used to replace the implementation in the filesystem
+crypto extension. This code was tested by using an EXT4 encrypted file
+system that was created and contains files written to by the current
+implementation. Using the new implementation a successful read of the
+existing files was possible and new files / directories were created
+and read successfully. These newly added file system objects could be
+successfully read using the current code. Yet if there is a test suite
+to validate whether the invokcation of the HKDF calculates the same
+result as the existing implementation, I would be happy to validate
+the implementation accordingly.
+
+Changes v2:
+
+* change HKDF function names
+* change HKDF/SP800-108 KDF extract / seed function prototype
+* ensure clearing of memory of destination buffer in KDF implementation
+  if KDF operation fails
+* security DH: split the removal of dead code into separate patch
+
+Stephan Mueller (7):
+  crypto: Add key derivation self-test support code
+  crypto: add SP800-108 counter key derivation function
+  crypto: add RFC5869 HKDF
+  security: DH - remove dead code for zero padding
+  security: DH - use KDF implementation from crypto API
+  fs: use HKDF implementation from kernel crypto API
+  fs: HKDF - remove duplicate memory clearing
+
+ crypto/Kconfig                         |  14 ++
+ crypto/Makefile                        |   6 +
+ crypto/hkdf.c                          | 199 +++++++++++++++++++++++++
+ crypto/kdf_sp800108.c                  | 149 ++++++++++++++++++
+ fs/crypto/Kconfig                      |   2 +-
+ fs/crypto/hkdf.c                       | 103 +++----------
+ include/crypto/hkdf.h                  |  48 ++++++
+ include/crypto/internal/kdf_selftest.h |  71 +++++++++
+ include/crypto/kdf_sp800108.h          |  61 ++++++++
+ security/keys/Kconfig                  |   2 +-
+ security/keys/dh.c                     | 118 ++-------------
+ 11 files changed, 586 insertions(+), 187 deletions(-)
+ create mode 100644 crypto/hkdf.c
+ create mode 100644 crypto/kdf_sp800108.c
+ create mode 100644 include/crypto/hkdf.h
+ create mode 100644 include/crypto/internal/kdf_selftest.h
+ create mode 100644 include/crypto/kdf_sp800108.h
+
 -- 
-2.30.0
+2.26.2
+
+
+
 
