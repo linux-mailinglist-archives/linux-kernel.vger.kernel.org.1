@@ -2,114 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8D6301D0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CDD301D02
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbhAXPNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:13:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29030 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726444AbhAXPLC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:11:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611500972;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AkBGm8p0fa4rt1PI1coAbw65Fn4m5HoJaXKXxd+BTEc=;
-        b=b9fAFLXMSOkPd9Xjijt04qDItG38VWRCGZoz7rFR/j3YEOHaQJOUWIh6T3E1vb2oOjKWBt
-        Fl6SJOfZ3RPaH8f5R8avTPkXahCbFqKQDRzlJz14TDQnK/4nNC2hLePsVTWYp10wyN3Vdb
-        Vx1yZjZ+7PghLsSDq47GneHKFE18Y70=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-RgcbBGE_OReGCBNEG6dHrA-1; Sun, 24 Jan 2021 10:09:30 -0500
-X-MC-Unique: RgcbBGE_OReGCBNEG6dHrA-1
-Received: by mail-qv1-f72.google.com with SMTP id h1so7621995qvr.7
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 07:09:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AkBGm8p0fa4rt1PI1coAbw65Fn4m5HoJaXKXxd+BTEc=;
-        b=fJwDTRA+0ylXRdP62dj9xJcE0LcGT2pjqo2rucncXb2JKM/sp77sehWnixsCIv4jPn
-         do+DYyYy6iDVbZHZp1tGyZG/IflhvW9suR1O/rMyalQlmETsJ7632sMEidtHbdreryXH
-         fLQKoMGa3b0n6cvUPGkSE84hDj70v6m3JjJI4jWGUvGstfGzF46qTBvCNa322clIPXs8
-         ie/2dSxT65K37uaO8iCPrsC6J5sDgEkweLAKSwIiaqkE10O4UqCpgtCvOOrOSf/iVbrs
-         Xg37b9QYtjIdA3H9y29a4ybGYnVLUlXe3tD+J0tZPe1zbwFeBN3g7AB40YaEbSP/l77y
-         STqw==
-X-Gm-Message-State: AOAM5320OwBkv6V9scvE3B99U5qJhDdyxrl6ETUa9FC1zDx6VLHwk2wV
-        T3hrBdGInEgc9I1uHyPPh5d0ibBpPXBGi7hzlnPzwXdr5bvV1DXuvJ52Q6dbP+eX3FyRXnHJHsx
-        7GutfsH1vGrRvHjx4SFg1uZdj
-X-Received: by 2002:ac8:1184:: with SMTP id d4mr83455qtj.103.1611500970477;
-        Sun, 24 Jan 2021 07:09:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzYBBg29MiCtXTRNQOAOd6nYAfAuayesoZV2Aq69NRiMptaO6XUCaf/fW9Xmoeh1PweXRp35Q==
-X-Received: by 2002:ac8:1184:: with SMTP id d4mr83442qtj.103.1611500970318;
-        Sun, 24 Jan 2021 07:09:30 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v12sm2556362qkg.63.2021.01.24.07.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 07:09:29 -0800 (PST)
-From:   trix@redhat.com
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, socketcan@hartkopp.net, colin.king@canonical.com
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] can: mcba_usb: remove h from printk format specifier
-Date:   Sun, 24 Jan 2021 07:09:16 -0800
-Message-Id: <20210124150916.1920434-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726497AbhAXPL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:11:28 -0500
+Received: from mx.socionext.com ([202.248.49.38]:26502 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726434AbhAXPK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 10:10:29 -0500
+Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 25 Jan 2021 00:09:43 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 8F52F2059027;
+        Mon, 25 Jan 2021 00:09:43 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Mon, 25 Jan 2021 00:09:43 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id CE604B1D40;
+        Mon, 25 Jan 2021 00:09:42 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v2 0/3] PCI: endpoint: Add endpoint restart management support
+Date:   Mon, 25 Jan 2021 00:09:34 +0900
+Message-Id: <1611500977-24816-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Add new functions to manage recovery of configuration for endpoint controller
+and restart the controller when asserting bus-reset from root complex (RC).
 
-This change fixes the checkpatch warning described in this commit
-commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
-  unnecessary %h[xudi] and %hh[xudi]")
+This feature is only available if bus-reset (PERST#) line is physically
+routed between RC and endpoint, and the signal from RC also resets
+the endpoint controller.
 
-Standard integer promotion is already done and %hx and %hhx is useless
-so do not encourage the use of %hh[xudi] or %h[xudi].
+This series is only for UniPhier PCIe endpoint controller at this point.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/can/usb/mcba_usb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Changes since v1:
+- Update the patches to rebase onto the latest tree 
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index df54eb7d4b36..dc79c050f5f7 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -466,7 +466,7 @@ static void mcba_usb_process_ka_usb(struct mcba_priv *priv,
- 				    struct mcba_usb_msg_ka_usb *msg)
- {
- 	if (unlikely(priv->usb_ka_first_pass)) {
--		netdev_info(priv->netdev, "PIC USB version %hhu.%hhu\n",
-+		netdev_info(priv->netdev, "PIC USB version %u.%u\n",
- 			    msg->soft_ver_major, msg->soft_ver_minor);
- 
- 		priv->usb_ka_first_pass = false;
-@@ -492,7 +492,7 @@ static void mcba_usb_process_ka_can(struct mcba_priv *priv,
- 				    struct mcba_usb_msg_ka_can *msg)
- {
- 	if (unlikely(priv->can_ka_first_pass)) {
--		netdev_info(priv->netdev, "PIC CAN version %hhu.%hhu\n",
-+		netdev_info(priv->netdev, "PIC CAN version %u.%u\n",
- 			    msg->soft_ver_major, msg->soft_ver_minor);
- 
- 		priv->can_ka_first_pass = false;
-@@ -554,7 +554,7 @@ static void mcba_usb_process_rx(struct mcba_priv *priv,
- 		break;
- 
- 	default:
--		netdev_warn(priv->netdev, "Unsupported msg (0x%hhX)",
-+		netdev_warn(priv->netdev, "Unsupported msg (0x%X)",
- 			    msg->cmd_id);
- 		break;
- 	}
+Kunihiko Hayashi (3):
+  PCI: endpoint: Add 'started' to pci_epc to set whether the controller
+    is started
+  PCI: endpoint: Add endpoint restart management
+  PCI: uniphier-ep: Add EPC restart management support
+
+ drivers/pci/controller/dwc/Kconfig            |   1 +
+ drivers/pci/controller/dwc/pcie-uniphier-ep.c |  44 +++++++++-
+ drivers/pci/endpoint/Kconfig                  |   9 ++
+ drivers/pci/endpoint/Makefile                 |   1 +
+ drivers/pci/endpoint/pci-epc-core.c           |   2 +
+ drivers/pci/endpoint/pci-epc-restart.c        | 114 ++++++++++++++++++++++++++
+ include/linux/pci-epc.h                       |  22 +++++
+ 7 files changed, 192 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/pci/endpoint/pci-epc-restart.c
+
 -- 
-2.27.0
+2.7.4
 
