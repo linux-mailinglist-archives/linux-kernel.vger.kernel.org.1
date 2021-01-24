@@ -2,97 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701933018FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 00:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713B5301905
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 01:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAWX5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 23 Jan 2021 18:57:33 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:34823 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725922AbhAWX52 (ORCPT
+        id S1726355AbhAXAHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 23 Jan 2021 19:07:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23353 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725932AbhAXAHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 23 Jan 2021 18:57:28 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 3970910CD;
-        Sat, 23 Jan 2021 18:56:22 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sat, 23 Jan 2021 18:56:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=UT6tfV6bEEz8r3S/32kxem/nbH3
-        RlnEic0UnIicmAIY=; b=CkjvFhOTlqH4gUoVCA//mwrg1k/RmnP11lgnDldasaf
-        HAx1ZCdUN/Y9lmJ3kr9NxVoI22gZP0Yd+lgNE46PtWQ7hnVHJr4hpPDP4bWkVxL3
-        dOcNlHsbpRP11nxLOsZA+9E63GjEyuN8QHD/F8ercW0RX9gr2dpcY33NGJ7ICk33
-        KP2KAYEOczgalzNY4/DLZVYYOShG/kgZgpdWQ3MxAg14ck0auf4OlJYZFZp+8lYy
-        4txnuSmwDnIyJ3zjgfRziCXF98yTLuw3LTM7/P/pALqlkYt6ie2TGR4cLzLB18Ro
-        ihazt6+OQ1CPMiarMY9jDkdwt+Vyvw/k2jM43ONJ8Fg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=UT6tfV
-        6bEEz8r3S/32kxem/nbH3RlnEic0UnIicmAIY=; b=pGLrZKoXlp5t0/GGK4dRO5
-        duY3+5oiRagEx66YJqNPg2n/4SChndGfcKrSNOa+3bmnAF1tU6DBM/imBwQj7149
-        X31f8al0eNupLusHa48ABwNJTBCxaUYCv0T/4Udy7xQVuApMu10xPdccgKarepLn
-        jJOr+tUx2IfVMB89QzxxwrAH5ET/kEJb/8QnOg2pKXQ7e8Duds7WbOuNZsous1aP
-        WpjsSxmFN+IzSuIvoW6Gckgivz3YOusZIMv0+WfhNpY54pyb/U+1N0H0PYG504vx
-        EkNbACpI9uLJmuRjqy/fOtPqt4c3z+zAyClEHTZs2IVSG0ut+I3aULcxoN/WctfA
-        ==
-X-ME-Sender: <xms:pbcMYOxDeUpMna95IOQ1D64xPwVOlKzIcwvSZ1oLMo3Nnl3jNMOWfA>
-    <xme:pbcMYKQPLjbOR2sccG-d6iC4JJRcVREEo9F56ln3FZJ6kET90LxIwSA1dMrVNe-Kw
-    MD9lbQzCClIY0831Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelgddugecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
-    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
-    htvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeffhfeu
-    ffdunecukfhppeeijedrudeitddrvddujedrvdehtdenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghlrdgu
-    vg
-X-ME-Proxy: <xmx:pbcMYAVZOg5qY80aORyA0WCemviFt9BTx_vBSq6IXQ9cqAyDeRbC1g>
-    <xmx:pbcMYEjRUSZkjfDonPMVqShWRW6C6J4sDSC_1kXDwB5pkIY5kDOnRA>
-    <xmx:pbcMYACQgG2I-6Md9ZO8_ObyOc1sIzEtdAKGSWvf9thlJSSbpShH-A>
-    <xmx:pbcMYDPKyg39UfdkBSorrmMh9vwQs7R3Fzx9QgyvtIl26NL7PIyIww>
-Received: from intern.anarazel.de (c-67-160-217-250.hsd1.ca.comcast.net [67.160.217.250])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4BE26108005B;
-        Sat, 23 Jan 2021 18:56:21 -0500 (EST)
-Date:   Sat, 23 Jan 2021 15:56:20 -0800
-From:   Andres Freund <andres@anarazel.de>
-To:     Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH] io_uring: add support for IORING_OP_GETDENTS64
-Message-ID: <20210123235620.ue4n3p5wbuafs35b@alap3.anarazel.de>
-References: <20210123114152.GA120281@wantstofly.org>
- <20210123235055.azmz5jm2lwyujygc@alap3.anarazel.de>
+        Sat, 23 Jan 2021 19:07:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611446739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0zeO9jgxTSyiJSDmbRWmL8FPQld5X/dLvYotSElL8o4=;
+        b=BEh86JJrC4rO2J5n+r2XsqQDUHldmZtmGCY0A2EwdK5AUUq+CylgwbCe86jGZiu4qFYNJJ
+        EILdanJn1hJla8ZZ/Kn8E5tE8plun69F93+Zla+SgPMC2lNbxIIq1qfOpMTOCouK8sj339
+        XQUNC6bWtMCIkSjHPsVOJxPyXdqecBE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-CiH7exTBPE27zlcW22yLyQ-1; Sat, 23 Jan 2021 19:05:35 -0500
+X-MC-Unique: CiH7exTBPE27zlcW22yLyQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 513F759;
+        Sun, 24 Jan 2021 00:05:32 +0000 (UTC)
+Received: from krava (unknown [10.40.192.55])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 895599CA0;
+        Sun, 24 Jan 2021 00:05:27 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 01:05:26 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexandre Truong <alexandre.truong@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Al Grant <al.grant@arm.com>, James Clark <james.clark@arm.com>,
+        Wilco Dijkstra <wilco.dijkstra@arm.com>
+Subject: Re: [PATCH 4/4] perf tools: determine if LR is the return address
+Message-ID: <20210124000526.GE138414@krava>
+References: <20210122161854.5289-1-alexandre.truong@arm.com>
+ <20210122161854.5289-4-alexandre.truong@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210123235055.azmz5jm2lwyujygc@alap3.anarazel.de>
+In-Reply-To: <20210122161854.5289-4-alexandre.truong@arm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 2021-01-23 15:50:55 -0800, Andres Freund wrote:
-> It's also not clear to me that right now you'd necessarily get correct
-> results if multiple IORING_OP_GETDENTS64 for the same fd get processed
-> in different workers.  Looking at iterate_dir(), it looks to me that the
-> locking around the file position would end up being insufficient on
-> filesystems that implement iterate_shared?
-> [...]
-> As there's only a shared lock, seems like both would end up with the
-> same ctx->pos and end up updating f_pos to the same offset (assuming the
-> same count).
+On Fri, Jan 22, 2021 at 04:18:54PM +0000, Alexandre Truong wrote:
+> On arm64 and frame pointer mode (e.g: perf record --callgraph fp),
+> use dwarf unwind info to check if the link register is the return
+> address in order to inject it to the frame pointer stack.
 > 
-> Am I missing something?
+> Write the following application:
+> 
+> 	int a = 10;
+> 
+> 	void f2(void)
+> 	{
+> 		for (int i = 0; i < 1000000; i++)
+> 			a *= a;
+> 	}
+> 
+> 	void f1()
+> 	{
+> 		f2();
+> 	}
+> 
+> 	int main (void)
+> 	{
+> 		f1();
+> 		return 0;
+> 	}
+> 
+> with the following compilation flags:
+> 	gcc -g -fno-omit-frame-pointer -fno-inline -O1
+> 
+> The compiler omits the frame pointer for f2 on arm. This is a problem
+> with any leaf call, for example an application with many different
+> calls to malloc() would always omit the calling frame, even if it
+> can be determined.
+> 
+> 	./perf record --call-graph fp ./a.out
+> 	./perf report
+> 
+> currently gives the following stack:
+> 
+> 0xffffea52f361
+> _start
+> __libc_start_main
+> main
+> f2
 
-A minimal and brute force approach to this would be to use
-io_op_def.hash_reg_file, but brrr, that doesn't seem like a great way
-forward.
+reproduced on x86 as well
 
-Greetings,
+> +static bool get_leaf_frame_caller_enabled(struct perf_sample *sample)
+> +{
+> +	return callchain_param.record_mode != CALLCHAIN_FP || !sample->user_regs.regs
+> +		|| sample->user_regs.mask != PERF_REGS_MASK;
+> +}
+> +
+> +static int add_entry(struct unwind_entry *entry, void *arg)
+> +{
+> +	struct entries *entries = arg;
+> +
+> +	entries->stack[entries->i++] = entry->ip;
+> +	return 0;
+> +}
+> +
+> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread)
+> +{
+> +	u64 leaf_frame;
+> +	struct entries entries = {{0, 0}, 0};
+> +
+> +	if (get_leaf_frame_caller_enabled(sample))
 
-Andres Freund
+the name suggest you'd want to continue if it's true
+
+> +		return 0;
+> +
+> +	unwind__get_entries(add_entry, &entries, thread, sample, 2);
+
+I'm scratching my head how this unwinds anything, you enabled just
+registers, not the stack right? so the unwind code would do just
+IP -> LR + 1 shift?
+
+thanks,
+jirka
+
+> +	leaf_frame = callchain_param.order == ORDER_CALLER ?
+> +		entries.stack[0] : entries.stack[1];
+> +
+> +	if (leaf_frame + 1 == sample->user_regs.regs[PERF_REG_ARM64_LR])
+> +		return sample->user_regs.regs[PERF_REG_ARM64_LR];
+> +	return 0;
+> +}
+
+SNIP
+
