@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0049F301CEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4158B301CF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbhAXPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55544 "EHLO
+        id S1726351AbhAXPJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:09:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbhAXPID (ORCPT
+        with ESMTP id S1726324AbhAXPJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:08:03 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B83C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 07:07:22 -0800 (PST)
-Received: from [192.168.1.101] (abaf224.neoplus.adsl.tpnet.pl [83.6.169.224])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id AE0EE3EC75;
-        Sun, 24 Jan 2021 16:07:20 +0100 (CET)
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: msm8916-longcheer-l8910: Add
- imu/magnetometer
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
- <20210124135409.5473-4-jonathan.albrieux@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <e5a65871-08bb-7da9-c298-921395ebf1f8@somainline.org>
-Date:   Sun, 24 Jan 2021 16:07:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 24 Jan 2021 10:09:02 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996B6C061574;
+        Sun, 24 Jan 2021 07:08:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dqC43SexXCFMHHthuyPfm6btpOzYB4LGWqFz9yXsqsE=; b=BaxCQ4JETgnTSdx5ZJfhAASEhz
+        esJxRvOHbYrbto7O+p7uVv9HyRKOsua3l0BNbionSzcJZYiFYGlrrsKktY3c1b+BZT6Jvi4bMVnRh
+        YMM5aTMq54Usa7gYS+B5up/PU+FCWP3uGZdJvgC/xWqtrcQP4J8ijpnrxV6i9kRC8XIps5RoOeeP7
+        xH3mTPg9YiPd6SrCb0IQ1Y/ggPND+C8Nd3UP3F4wna0oB6yS4GH2gtr7whM8eUD+xOYQmfHa6lvGt
+        ZqumIqBYwteZOy+D5Nbx7ifw1DVDCsylJstsUAgx/MVfCAuQO1amZqC/E6lkCNtIT42NvJUAofeaS
+        M/wnOpuA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3gzB-0035uS-SZ; Sun, 24 Jan 2021 15:07:31 +0000
+Date:   Sun, 24 Jan 2021 15:07:29 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>
+Subject: Re: [PATCH v10 11/12] mm/vmalloc: Hugepage vmalloc mappings
+Message-ID: <20210124150729.GC733865@infradead.org>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-12-npiggin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210124135409.5473-4-jonathan.albrieux@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210124082230.2118861-12-npiggin@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> +&blsp_i2c3 {
-> +	status = "okay";
-> +
-> +	imu@68 {
-> +		compatible = "bosch,bmi160";
-> +		reg = <0x68>;
-> +
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l6>;
-> +
-> +		mount-matrix = "0", "1", "0",
-> +			      "-1", "0", "0",
-> +			       "0", "0", "1";
-> +	};
-> +
-> +	magnetometer@d {
-> +		compatible = "asahi-kasei,ak09911";
-> +		reg = <0x0d>;
-> +
-> +		vdd-supply = <&pm8916_l17>;
-> +		vid-supply = <&pm8916_l6>;
-> +
-> +		reset-gpios = <&msmgpio 111 GPIO_ACTIVE_LOW>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&mag_reset_default>;
-> +	};
-> +};
-
-Please sort I2C devices by their address.
-
-
->  	};
+On Sun, Jan 24, 2021 at 06:22:29PM +1000, Nicholas Piggin wrote:
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 24862d15f3a3..f87feb616184 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -724,6 +724,16 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+>  config HAVE_ARCH_HUGE_VMAP
+>  	bool
 >  
-> +	mag_reset_default: mag-reset-default {
-> +		pins = "gpio111";
-> +		function = "gpio";
+> +config HAVE_ARCH_HUGE_VMALLOC
+> +	depends on HAVE_ARCH_HUGE_VMAP
+> +	bool
+> +	help
+> +	  Archs that select this would be capable of PMD-sized vmaps (i.e.,
+> +	  arch_vmap_pmd_supported() returns true), and they must make no
+> +	  assumptions that vmalloc memory is mapped with PAGE_SIZE ptes. The
+> +	  VM_NOHUGE flag can be used to prohibit arch-specific allocations from
+> +	  using hugepages to help with this (e.g., modules may require it).
+
+help texts don't make sense for options that aren't user visible.
+
+More importantly, is there any good reason to keep the option and not
+just go the extra step and enable huge page vmalloc for arm64 and x86
+as well?
+
+> +static inline bool is_vm_area_hugepages(const void *addr)
+> +{
+> +	/*
+> +	 * This may not 100% tell if the area is mapped with > PAGE_SIZE
+> +	 * page table entries, if for some reason the architecture indicates
+> +	 * larger sizes are available but decides not to use them, nothing
+> +	 * prevents that. This only indicates the size of the physical page
+> +	 * allocated in the vmalloc layer.
+> +	 */
+> +	return (find_vm_area(addr)->page_order > 0);
+
+No need for the braces here.
+
+>  }
+>  
+> +static int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+> +		pgprot_t prot, struct page **pages, unsigned int page_shift)
+> +{
+> +	unsigned int i, nr = (end - addr) >> PAGE_SHIFT;
 > +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
+> +	WARN_ON(page_shift < PAGE_SHIFT);
 > +
+> +	if (page_shift == PAGE_SHIFT)
+> +		return vmap_small_pages_range_noflush(addr, end, prot, pages);
 
-Please add this after gpio110 to keep it sorted gpio-number-wise.
+This begs for a IS_ENABLED check to disable the hugepage code for
+architectures that don't need it.
 
+> +int map_kernel_range_noflush(unsigned long addr, unsigned long size,
+> +			     pgprot_t prot, struct page **pages)
+> +{
+> +	return vmap_pages_range_noflush(addr, addr + size, prot, pages, PAGE_SHIFT);
+> +}
 
-Konrad
+Please just kill off map_kernel_range_noflush and map_kernel_range
+off entirely in favor of the vmap versions.
 
+> +	for (i = 0; i < area->nr_pages; i += 1U << area->page_order) {
+
+Maybe using a helper that takes the vm_area_struct and either returns
+area->page_order or always 0 based on IS_ENABLED?
