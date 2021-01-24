@@ -2,124 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E93D301D5C
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 16:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B87301D61
+	for <lists+linux-kernel@lfdr.de>; Sun, 24 Jan 2021 17:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbhAXPzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 10:55:47 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:33832 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726302AbhAXPzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 10:55:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611503567;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Subject:Sender;
-        bh=hXjBU9JyESKm7fyW04/N/0toB1V1shGmq3XnBTE9hFY=;
-        b=KQYbo+ylFJ8NSvGQKh4dxhRydyJIMgwERaJOadLigjESh0kzcbSu92I4ow3Xdu6IDK
-        ikUpxkhBGOMZvvPoNpnhQS9xVemifPWgXg0S2Mq/Z3jaAlElBpbNsH5LVUXoiiYOawPV
-        +TK48UtXj5YJKtyoCX8feXtx6OijgyYPk1JhGLQ9BPxTmRpTLz1vbD1XFaw0X8EcOM2X
-        VTpsMXRLfF1fmDQ0ONHSczU+r+pFIpdZ6ywAw1noTfttIUBl7Aw4d3Mn6HNRK4K9f1p1
-        2ynf6/pVs+M8zNNDkpexR+zViS12W3ZdUpnaPjgcfnjC1x6/yLDAGWxhmHU9sKUNhGWI
-        IeLQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IczBa4o="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id R0a218x0OFqggSU
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 24 Jan 2021 16:52:42 +0100 (CET)
-Date:   Sun, 24 Jan 2021 16:52:40 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: msm8916: Add blsp_i2c3
-Message-ID: <YA2XyLbrEzN3tvJr@gerhold.net>
-References: <20210124135409.5473-1-jonathan.albrieux@gmail.com>
- <20210124135409.5473-3-jonathan.albrieux@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124135409.5473-3-jonathan.albrieux@gmail.com>
+        id S1726232AbhAXP7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 10:59:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725798AbhAXP7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 10:59:51 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CDCB225A9;
+        Sun, 24 Jan 2021 15:59:10 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l3hnA-009kUq-H1; Sun, 24 Jan 2021 15:59:08 +0000
+Date:   Sun, 24 Jan 2021 15:59:07 +0000
+Message-ID: <87wnw2jph0.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v4 14/21] arm64: Honor VHE being disabled from the command-line
+In-Reply-To: <YAwtuZZpTwwoMqrk@Catalins-MacBook-Air.local>
+References: <20210118094533.2874082-1-maz@kernel.org>
+        <20210118094533.2874082-15-maz@kernel.org>
+        <YAwtuZZpTwwoMqrk@Catalins-MacBook-Air.local>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 02:54:06PM +0100, Jonathan Albrieux wrote:
-> MSM8916 has another I2C QUP controller that can be enabled on
-> GPIO 10 and 11.
+On Sat, 23 Jan 2021 14:07:53 +0000,
+Catalin Marinas <catalin.marinas@arm.com> wrote:
 > 
-> Add blsp_i2c3 to msm8916.dtsi and disable it by default.
+> On Mon, Jan 18, 2021 at 09:45:26AM +0000, Marc Zyngier wrote:
+> > diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+> > index 59820f9b8522..bbab2148a2a2 100644
+> > --- a/arch/arm64/kernel/hyp-stub.S
+> > +++ b/arch/arm64/kernel/hyp-stub.S
+> > @@ -77,13 +77,24 @@ SYM_CODE_END(el1_sync)
+> >  SYM_CODE_START_LOCAL(mutate_to_vhe)
+> >  	// Sanity check: MMU *must* be off
+> >  	mrs	x0, sctlr_el2
+> > -	tbnz	x0, #0, 1f
+> > +	tbnz	x0, #0, 2f
+> >  
+> >  	// Needs to be VHE capable, obviously
+> >  	mrs	x0, id_aa64mmfr1_el1
+> >  	ubfx	x0, x0, #ID_AA64MMFR1_VHE_SHIFT, #4
+> > -	cbz	x0, 1f
+> > +	cbz	x0, 2f
+> >  
+> > +	// Check whether VHE is disabled from the command line
+> > +	adr_l	x1, id_aa64mmfr1_val
+> > +	ldr	x0, [x1]
+> > +	adr_l	x1, id_aa64mmfr1_mask
+> > +	ldr	x1, [x1]
+> > +	ubfx	x0, x0, #ID_AA64MMFR1_VHE_SHIFT, #4
+> > +	ubfx	x1, x1, #ID_AA64MMFR1_VHE_SHIFT, #4
+> > +	cbz	x1, 1f
+> > +	and	x0, x0, x1
+> > +	cbz	x0, 2f
+> > +1:
 > 
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> I can see the advantage here in separate id_aa64mmfr1_val/mask but we
+> could use some asm offsets here and keep the pointer indirection simpler
+> in C code. You'd just need something like 'adr_l mmfr1_ovrd + VAL_OFFSET'.
+> 
+> Anyway, if you have a strong preference for the current approach, leave
+> it as is.
 
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+I've now moved over to a structure containing both val/mask, meaning
+that we only need to keep a single pointer around in the various
+feature descriptors. It certainly looks better.
 
-> ---
->  arch/arm64/boot/dts/qcom/msm8916-pins.dtsi | 16 ++++++++++++++++
->  arch/arm64/boot/dts/qcom/msm8916.dtsi      | 15 +++++++++++++++
->  2 files changed, 31 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-> index 4dc437f13fa5..7dedb91b9930 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-> @@ -220,6 +220,22 @@
->  		bias-disable;
->  	};
->  
-> +	i2c3_default: i2c3-default {
-> +		pins = "gpio10", "gpio11";
-> +		function = "blsp_i2c3";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
-> +	i2c3_sleep: i2c3-sleep {
-> +		pins = "gpio10", "gpio11";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
->  	i2c4_default: i2c4-default {
->  		pins = "gpio14", "gpio15";
->  		function = "blsp_i2c4";
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> index 402e891a84ab..1045d7e518f3 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> @@ -1528,6 +1528,21 @@
->  			status = "disabled";
->  		};
->  
-> +		blsp_i2c3: i2c@78b7000 {
-> +			compatible = "qcom,i2c-qup-v2.2.1";
-> +			reg = <0x078b7000 0x500>;
-> +			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&gcc GCC_BLSP1_AHB_CLK>,
-> +				 <&gcc GCC_BLSP1_QUP3_I2C_APPS_CLK>;
-> +			clock-names = "iface", "core";
-> +			pinctrl-names = "default", "sleep";
-> +			pinctrl-0 = <&i2c3_default>;
-> +			pinctrl-1 = <&i2c3_sleep>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			status = "disabled";
-> +		};
-> +
->  		blsp_spi3: spi@78b7000 {
->  			compatible = "qcom,spi-qup-v2.2.1";
->  			reg = <0x078b7000 0x500>;
-> -- 
-> 2.17.1
-> 
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
