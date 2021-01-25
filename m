@@ -2,249 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67932303611
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7FD3035A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbhAZF6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728133AbhAYMmZ (ORCPT
+        id S1732575AbhAZFtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:49:33 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11153 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727940AbhAYMTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:42:25 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8730C061220;
-        Mon, 25 Jan 2021 03:40:46 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id i187so6954457lfd.4;
-        Mon, 25 Jan 2021 03:40:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:cc:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PMgg2luzI+jv/8tT/PbY1/txpikMhuVrg+F0w7+xUaQ=;
-        b=fUDbEVemeYrdAIYNi6hwdm3B4+Co85z3n6IkM5VeTKlGMjNLRRrS6MxejkUpPtP0uN
-         NGu1ONUNIYs/uQOSPmvT+R9BjxTsdBCW4VC9sC7dU1Et6jWw2S29258ck3wjZrJNI6S4
-         mJa0DIZTesmHECHOguXWpmO6FTUw4CYrp+JIP8RlfuoIONqkJ6ylIAo7eUH0XMxg41oM
-         qV+jU/nJAbInpcnVomm0oGILMw7rQwu98lbB4iigx2DAH3Xu+kr22Cz0d8F7BHVQ9bt0
-         1mNhoddFsLV0t9wmz9k2LgUNBt+n78tXcxUAcLDuB0gB3EKA77gSi6C//JvMCeHF6W88
-         oFdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:cc:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PMgg2luzI+jv/8tT/PbY1/txpikMhuVrg+F0w7+xUaQ=;
-        b=kQ5xLdKuDwg9Tx/3twovUOlxRq0UX/rZxakcMMbGczG70jNQFUxGgeQ0UhFxmAMj80
-         2KD54qC+61YB7q9NIO1cEfqsyVwFij3tahc4TN0Ur3JLXoX6setmVoJUqMRAzb7QOSSx
-         KzXutKGmIFeVcRCf2uvjd+fowYzKFJ6fsnMi342EnuNANHgyRMs00F0qSOKVDhfb7qnM
-         OJWJXDBMrn4T0qnWrfmyhFeydghLRyMKbz2qHxeX31NrnfJZEIjG3f/TCZJQ76cWOVGj
-         O2FwRZc7S3JcpGW7OeqNL49RD94Lfpys+Vu3gC/DclyHVEJ4up6CEmfFvntztbMcZWUx
-         Dljw==
-X-Gm-Message-State: AOAM5313wQwXqVCJjFOgVOP47M+qV6Tl0XNb+pA5LzvGUA3W6V5CfJ5f
-        IQ/sV8KamK5qkg1UYCTMww4=
-X-Google-Smtp-Source: ABdhPJy87Gc29+0wrax5LB9cFZHchKa03iCgfQ6KNpN7/FtekfRdihhuzTE08d+w+CzGYxAECdcs+g==
-X-Received: by 2002:ac2:57c9:: with SMTP id k9mr67155lfo.165.1611574845303;
-        Mon, 25 Jan 2021 03:40:45 -0800 (PST)
-Received: from [10.0.0.42] (91-157-86-155.elisa-laajakaista.fi. [91.157.86.155])
-        by smtp.gmail.com with ESMTPSA id s22sm1605927ljh.102.2021.01.25.03.40.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 03:40:44 -0800 (PST)
-To:     Pavel Machek <pavel@ucw.cz>, broonie@kernel.org,
-        aaro.koskinen@iki.fi, spinal.by@gmail.com,
-        jarkko.nikula@bitmer.com, merlijn@wizzup.org, sre@kernel.org,
-        tony@atomide.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, phone-devel@vger.kernel.org
-References: <20210124092713.GA22195@amd>
-Cc:     kuninori.morimoto.gx@renesas.com
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH] ASoC: ti: Allocate dais dynamically for TDM and audio
- graph card
-Message-ID: <2a9e7655-3d32-feb5-080c-8928a96f417e@gmail.com>
-Date:   Mon, 25 Jan 2021 13:43:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 25 Jan 2021 07:19:31 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DPSxv2Stlz15yFc;
+        Mon, 25 Jan 2021 19:56:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 19:57:24 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <kjain@linux.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <james.clark@arm.com>, <nakamura.shun@jp.fujitsu.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 2/4] perf vendor events arm64: Add common and uarch event JSON
+Date:   Mon, 25 Jan 2021 19:53:18 +0800
+Message-ID: <1611575600-2440-3-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
+References: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210124092713.GA22195@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Add a common and microarch JSON, which can be referenced from CPU JSONs.
 
-On 1/24/21 11:27 AM, Pavel Machek wrote:
-> From: Tony Lindgren <tony@atomide.com>
-> 
-> We can have multiple connections on a single McBSP instance configured
-> with audio graph card when using TDM (Time Division Multiplexing). Let's
-> allow that by configuring dais dynamically.
+For now, brief and public description are as event brief event
+description from the ARMv8 ARM [0], D7-11.
 
-Still we have _one_ DAI per McBSP. TDM slots are not DAIs.
+The list of events is not complete, as not all events will be referenced
+yet.
 
-> See Documentation/devicetree/bindings/sound/audio-graph-card.txt and
-> Documentation/devicetree/bindings/graph.txt for more details for
-> multiple endpoints.
+Reference document is at the following:
+[0] https://documentation-service.arm.com/static/5fa3bd1eb209f547eebd4141?token=
 
-Documentation/devicetree/bindings/sound/audio-graph-card.yaml
-Documentation/devicetree/bindings/sound/audio-graph.yaml
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ .../arm64/armv8-common-and-microarch.json     | 248 ++++++++++++++++++
+ 1 file changed, 248 insertions(+)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
 
-However the schemas does not provide too much insight (the txts were a 
-bit more verbose).
-
-> I've tested this with droid4 where cpcap pmic and modem voice are both
-> both wired to mcbsp3. I've also tested this on droid4 both with and
-> without the pending modem audio codec driver that is waiting for n_gsm
-> serdev dependencies to clear.
- >
-> Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-> Cc: Arthur D. <spinal.by@gmail.com>
-> Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-> Cc: Merlijn Wajer <merlijn@wizzup.org>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Pavel Machek <pavel@ucw.cz>
-> 
-> ---
->   sound/soc/ti/omap-mcbsp-priv.h |  2 ++
->   sound/soc/ti/omap-mcbsp.c      | 76 +++++++++++++++++++++++++++++-------------
->   2 files changed, 55 insertions(+), 23 deletions(-)
-> 
-> diff --git a/sound/soc/ti/omap-mcbsp-priv.h b/sound/soc/ti/omap-mcbsp-priv.h
-> index 7865cda4bf0a..9464f5d35822 100644
-> --- a/sound/soc/ti/omap-mcbsp-priv.h
-> +++ b/sound/soc/ti/omap-mcbsp-priv.h
-> @@ -262,6 +262,8 @@ struct omap_mcbsp {
->   	struct omap_mcbsp_platform_data *pdata;
->   	struct omap_mcbsp_st_data *st_data;
->   	struct omap_mcbsp_reg_cfg cfg_regs;
-> +	struct snd_soc_dai_driver *dais;
-> +	int dai_count;
->   	struct snd_dmaengine_dai_dma_data dma_data[2];
->   	unsigned int dma_req[2];
->   	int dma_op_mode;
-> diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-> index 6025b30bbe77..189a6461b671 100644
-> --- a/sound/soc/ti/omap-mcbsp.c
-> +++ b/sound/soc/ti/omap-mcbsp.c
-> @@ -14,6 +14,7 @@
->   #include <linux/pm_runtime.h>
->   #include <linux/of.h>
->   #include <linux/of_device.h>
-> +#include <linux/of_graph.h>
->   #include <sound/core.h>
->   #include <sound/pcm.h>
->   #include <sound/pcm_params.h>
-> @@ -1299,23 +1300,53 @@ static int omap_mcbsp_remove(struct snd_soc_dai *dai)
->   	return 0;
->   }
->   
-> -static struct snd_soc_dai_driver omap_mcbsp_dai = {
-> -	.probe = omap_mcbsp_probe,
-> -	.remove = omap_mcbsp_remove,
-> -	.playback = {
-> -		.channels_min = 1,
-> -		.channels_max = 16,
-> -		.rates = OMAP_MCBSP_RATES,
-> -		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> -	},
-> -	.capture = {
-> -		.channels_min = 1,
-> -		.channels_max = 16,
-> -		.rates = OMAP_MCBSP_RATES,
-> -		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-> -	},
-> -	.ops = &mcbsp_dai_ops,
-> -};
-> +static int omap_mcbsp_init_dais(struct omap_mcbsp *mcbsp)
-> +{
-> +	struct device_node *np = mcbsp->dev->of_node;
-> +	int i;
-> +
-> +	if (np)
-> +		mcbsp->dai_count = of_graph_get_endpoint_count(np);
-> +
-> +	if (!mcbsp->dai_count)
-> +		mcbsp->dai_count = 1;
-> +
-> +	mcbsp->dais = devm_kcalloc(mcbsp->dev, mcbsp->dai_count,
-> +				   sizeof(*mcbsp->dais), GFP_KERNEL);
-> +	if (!mcbsp->dais)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < mcbsp->dai_count; i++) {
-> +		struct snd_soc_dai_driver *dai = &mcbsp->dais[i];
-> +
-> +		dai->name = devm_kasprintf(mcbsp->dev, GFP_KERNEL, "%s-dai%i",
-> +					   dev_name(mcbsp->dev), i);
-> +
-> +		if (i == 0) {
-> +			dai->probe = omap_mcbsp_probe;
-> +			dai->remove = omap_mcbsp_remove;
-> +			dai->ops = &mcbsp_dai_ops;
-> +		}
-
-You are effectively creating extra dummy-dais (no ops), but naming them 
-as McBSP.
-The dummy-dais will only work if the real dai is in use and the dai link 
-which contains the real dai must be configured (TDM slots, format, 
-channels) to accomodate the link which contains the dummy-dai.
-
-The idea did not aged well for me ;)
-It still looks and sounds like a hack to model the TDM slots on a single 
-DAI as multiple DAIs just to satisfy a generic binding which is not 
-aimed to satisfy the droid4 setup (which is far from anything simple).
-
-> +		dai->playback.channels_min = 1;
-> +		dai->playback.channels_max = 16;
-> +		dai->playback.rates = OMAP_MCBSP_RATES;
-> +		if (mcbsp->pdata->reg_size == 2)
-> +			dai->playback.formats = SNDRV_PCM_FMTBIT_S16_LE;
-> +		else
-> +			dai->playback.formats = SNDRV_PCM_FMTBIT_S16_LE |
-> +						SNDRV_PCM_FMTBIT_S32_LE;
-> +		dai->capture.channels_min = 1;
-> +		dai->capture.channels_max = 16;
-> +		dai->capture.rates = OMAP_MCBSP_RATES;
-> +		if (mcbsp->pdata->reg_size == 2)
-> +			dai->capture.formats = SNDRV_PCM_FMTBIT_S16_LE;
-> +		else
-> +			dai->capture.formats = SNDRV_PCM_FMTBIT_S16_LE |
-> +					       SNDRV_PCM_FMTBIT_S32_LE;
-> +	}
-> +
-> +	return 0;
-> +}
->   
->   static const struct snd_soc_component_driver omap_mcbsp_component = {
->   	.name		= "omap-mcbsp",
-> @@ -1404,18 +1435,17 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
->   	mcbsp->dev = &pdev->dev;
->   	platform_set_drvdata(pdev, mcbsp);
->   
-> -	ret = omap_mcbsp_init(pdev);
-> +	ret = omap_mcbsp_init_dais(mcbsp);
->   	if (ret)
->   		return ret;
->   
-> -	if (mcbsp->pdata->reg_size == 2) {
-> -		omap_mcbsp_dai.playback.formats = SNDRV_PCM_FMTBIT_S16_LE;
-> -		omap_mcbsp_dai.capture.formats = SNDRV_PCM_FMTBIT_S16_LE;
-> -	}
-> +	ret = omap_mcbsp_init(pdev);
-> +	if (ret)
-> +		return ret;
->   
->   	ret = devm_snd_soc_register_component(&pdev->dev,
->   					      &omap_mcbsp_component,
-> -					      &omap_mcbsp_dai, 1);
-> +					      mcbsp->dais, mcbsp->dai_count);
->   	if (ret)
->   		return ret;
->   
-> 
-
+diff --git a/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+new file mode 100644
+index 000000000000..430a023ccf6a
+--- /dev/null
++++ b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+@@ -0,0 +1,248 @@
++[
++    {
++        "PublicDescription": "Instruction architecturally executed, Condition code check pass, software increment",
++        "EventCode": "0x00",
++        "EventName": "SW_INCR",
++        "BriefDescription": "Instruction architecturally executed, Condition code check pass, software increment"
++    },
++    {
++        "PublicDescription": "Level 1 instruction cache refill",
++        "EventCode": "0x01",
++        "EventName": "L1I_CACHE_REFILL",
++        "BriefDescription": "Level 1 instruction cache refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 instruction TLB refill",
++        "EventCode": "0x02",
++        "EventName": "L1I_TLB_REFILL",
++        "BriefDescription": "Attributable Level 1 instruction TLB refill"
++    },
++    {
++        "PublicDescription": "Level 1 data cache refill",
++        "EventCode": "0x03",
++        "EventName": "L1D_CACHE_REFILL",
++        "BriefDescription": "Level 1 data cache refill"
++    },
++    {
++        "PublicDescription": "Level 1 data cache access",
++        "EventCode": "0x04",
++        "EventName": "L1D_CACHE",
++        "BriefDescription": "Level 1 data cache access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 data TLB refill",
++        "EventCode": "0x05",
++        "EventName": "L1D_TLB_REFILL",
++        "BriefDescription": "Attributable Level 1 data TLB refill"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed",
++        "EventCode": "0x08",
++        "EventName": "INST_RETIRED",
++        "BriefDescription": "Instruction architecturally executed"
++    },
++    {
++        "PublicDescription": "Exception taken",
++        "EventCode": "0x09",
++        "EventName": "EXC_TAKEN",
++        "BriefDescription": "Exception taken"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, condition check pass, exception return",
++        "EventCode": "0x0a",
++        "EventName": "EXC_RETURN",
++        "BriefDescription": "Instruction architecturally executed, condition check pass, exception return"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, condition code check pass, write to CONTEXTIDR",
++        "EventCode": "0x0b",
++        "EventName": "CID_WRITE_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, condition code check pass, write to CONTEXTIDR"
++    },
++    {
++        "PublicDescription": "Mispredicted or not predicted branch speculatively executed",
++        "EventCode": "0x10",
++        "EventName": "BR_MIS_PRED",
++        "BriefDescription": "Mispredicted or not predicted branch speculatively executed"
++    },
++    {
++        "PublicDescription": "Cycle",
++        "EventCode": "0x11",
++        "EventName": "CPU_CYCLES",
++        "BriefDescription": "Cycle"
++    },
++    {
++        "PublicDescription": "Predictable branch speculatively executed",
++        "EventCode": "0x12",
++        "EventName": "BR_PRED",
++        "BriefDescription": "Predictable branch speculatively executed"
++    },
++    {
++        "PublicDescription": "Data memory access",
++        "EventCode": "0x13",
++        "EventName": "MEM_ACCESS",
++        "BriefDescription": "Data memory access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 instruction cache access",
++        "EventCode": "0x14",
++        "EventName": "L1I_CACHE",
++        "BriefDescription": "Attributable Level 1 instruction cache access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 data cache write-back",
++        "EventCode": "0x15",
++        "EventName": "L1D_CACHE_WB",
++        "BriefDescription": "Attributable Level 1 data cache write-back"
++    },
++    {
++        "PublicDescription": "Level 2 data cache access",
++        "EventCode": "0x16",
++        "EventName": "L2D_CACHE",
++        "BriefDescription": "Level 2 data cache access"
++    },
++    {
++        "PublicDescription": "Level 2 data refill",
++        "EventCode": "0x17",
++        "EventName": "L2D_CACHE_REFILL",
++        "BriefDescription": "Level 2 data refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data cache write-back",
++        "EventCode": "0x18",
++        "EventName": "L2D_CACHE_WB",
++        "BriefDescription": "Attributable Level 2 data cache write-back"
++    },
++    {
++        "PublicDescription": "Attributable Bus access",
++        "EventCode": "0x19",
++        "EventName": "BUS_ACCESS",
++        "BriefDescription": "Attributable Bus access",
++    },
++    {
++        "PublicDescription": "Local memory error",
++        "EventCode": "0x1a",
++        "EventName": "MEMORY_ERROR",
++        "BriefDescription": "Local memory error"
++    },
++    {
++        "PublicDescription": "Operation speculatively executed",
++        "EventCode": "0x1b",
++        "EventName": "INST_SPEC",
++        "BriefDescription": "Operation speculatively executed"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, Condition code check pass, write to TTBR",
++        "EventCode": "0x1c",
++        "EventName": "TTBR_WRITE_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, Condition code check pass, write to TTBR"
++    },
++    {
++        "PublicDescription": "Bus cycle"
++        "EventCode": "0x1D",
++        "EventName": "BUS_CYCLES",
++        "BriefDescription": "Bus cycle"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data cache allocation without refill",
++        "EventCode": "0x20",
++        "EventName": "L2D_CACHE_ALLOCATE",
++        "BriefDescription": "Attributable Level 2 data cache allocation without refill"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, branch",
++        "EventCode": "0x21",
++        "EventName": "BR_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, branch"
++    },
++    {
++        "PublicDescription": "Instruction architecturally executed, mispredicted branch",
++        "EventCode": "0x22",
++        "EventName": "BR_MIS_PRED_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, mispredicted branch"
++    },
++    {
++        "PublicDescription": "No operation issued because of the frontend",
++        "EventCode": "0x23",
++        "EventName": "STALL_FRONTEND",
++        "BriefDescription": "No operation issued because of the frontend"
++    },
++    {
++        "PublicDescription": "No operation issued due to the backend",
++        "EventCode": "0x24",
++        "EventName": "STALL_BACKEND",
++        "BriefDescription": "No operation issued due to the backend"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 data or unified TLB access",
++        "EventCode": "0x25",
++        "EventName": "L1D_TLB",
++        "BriefDescription": "Attributable Level 1 data or unified TLB access"
++    },
++    {
++        "PublicDescription": "Attributable Level 1 instruction TLB access",
++        "EventCode": "0x26",
++        "EventName": "L1I_TLB",
++        "BriefDescription": "Attributable Level 1 instruction TLB access"
++    },
++    {
++        "PublicDescription": "Attributable Level 3 data cache allocation without refill",
++        "EventCode": "0x29",
++        "EventName": "L3D_CACHE_ALLOCATE",
++        "BriefDescription": "Attributable Level 3 data cache allocation without refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 3 data cache refill",
++        "EventCode": "0x2A",
++        "EventName": "L3D_CACHE_REFILL",
++        "BriefDescription": "Attributable Level 3 data cache refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 3 data cache access",
++        "EventCode": "0x2B",
++        "EventName": "L3D_CACHE",
++        "BriefDescription": "Attributable Level 3 data cache access"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data TLB refill",
++        "EventCode": "0x2D",
++        "EventName": "L2D_TLB_REFILL",
++        "BriefDescription": "Attributable Level 2 data TLB refill"
++    },
++    {
++        "PublicDescription": "Attributable Level 2 data or unified TLB access",
++        "EventCode": "0x2F",
++        "EventName": "L2D_TLB",
++        "BriefDescription": "Attributable Level 2 data or unified TLB access"
++    },
++    {
++        "PublicDescription": "Access to another socket in a multi-socket system",
++        "EventCode": "0x31",
++        "EventName": "REMOTE_ACCESS",
++        "BriefDescription": "Access to another socket in a multi-socket system"
++    },
++    {
++        "PublicDescription": "Access to data TLB causes a translation table walk",
++        "EventCode": "0x34",
++        "EventName": "DTLB_WALK",
++        "BriefDescription": "Access to data TLB causes a translation table walk"
++    },
++    {
++        "PublicDescription": "Access to instruction TLB that causes a translation table walk",
++        "EventCode": "0x35",
++        "EventName": "ITLB_WALK",
++        "BriefDescription": "Access to instruction TLB that causes a translation table walk"
++    },
++    {
++        "PublicDescription": "Attributable Last level cache memory read"
++        "EventCode": "0x36",
++        "EventName": "LL_CACHE_RD",
++        "BriefDescription": "Attributable Last level cache memory read"
++    },
++    {
++        "PublicDescription": "Last level cache miss, read"
++        "EventCode": "0x37",
++        "EventName": "LL_CACHE_MISS_RD",
++        "BriefDescription": "Last level cache miss, read"
++    },
++]
 -- 
-Péter
+2.26.2
+
