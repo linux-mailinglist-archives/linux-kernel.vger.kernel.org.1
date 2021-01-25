@@ -2,32 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4137303837
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB28F30383A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390176AbhAZIlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:41:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58354 "EHLO mail.kernel.org"
+        id S2390194AbhAZImQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:42:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729091AbhAYSn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729215AbhAYSn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:43:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26036221E7;
-        Mon, 25 Jan 2021 18:43:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E463206FA;
+        Mon, 25 Jan 2021 18:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600211;
-        bh=8qjc12+8t4VmYze5MIc4+8pyhNwjypWHYI9nnXL0MW0=;
+        s=korg; t=1611600214;
+        bh=NalgFaZxeCG4MOFTWsJoR7g3pn9r0ZIB6BPUDqTqA8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XUJ01FVpBiiKzHEvNYqeAWdi0NpV+5q2pPX3BwCG4oGLoco8EO1m+twASrzQCgqxW
-         66T/3/ZWbQe3rec/hQQKzuh94ez3gUdO3OV2CFPKmofsV3XCchDYhBffe6xMh4/uAo
-         9z7jU0D/g1aAAjzBEhax02qmoWYLROje6u95LrDY=
+        b=mJFktSacsAkhJ6xfrOaVYoOzA4H8vib+raC+gsUC2UQ266j40eRhLKvCMqHHL0xvW
+         4cZ7JtQ6mwEZSYhuBj4k4ONHEjjc9gkRDZQrXXdDAIfuxXRq28nxYU7fjKxythUY6a
+         +edD3yN4kyRgRTxi/Z8BdaYsSFB0nYTvhS1mXWI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 5.4 15/86] drm/atomic: put state on error path
-Date:   Mon, 25 Jan 2021 19:38:57 +0100
-Message-Id: <20210125183201.685178526@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Vetter <daniel.vetter@intel.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 5.4 16/86] drm/syncobj: Fix use-after-free
+Date:   Mon, 25 Jan 2021 19:38:58 +0100
+Message-Id: <20210125183201.728770789@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -39,33 +46,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-commit 43b67309b6b2a3c08396cc9b3f83f21aa529d273 upstream.
+commit a37eef63bc9e16e06361b539e528058146af80ab upstream.
 
-Put the state before returning error code.
+While reviewing Christian's annotation patch I noticed that we have a
+user-after-free for the WAIT_FOR_SUBMIT case: We drop the syncobj
+reference before we've completed the waiting.
 
-Fixes: 44596b8c4750 ("drm/atomic: Unify conflicting encoder handling.")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210119121127.84127-1-bianpan2016@163.com
+Of course usually there's nothing bad happening here since userspace
+keeps the reference, but we can't rely on userspace to play nice here!
+
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Fixes: bc9c80fe01a2 ("drm/syncobj: use the timeline point in drm_syncobj_find_fence v4")
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Cc: Christian König <christian.koenig@amd.com>
+Cc: Lionel Landwerlin <lionel.g.landwerlin@intel.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+Cc: <stable@vger.kernel.org> # v5.2+
+Link: https://patchwork.freedesktop.org/patch/msgid/20210119130318.615145-1-daniel.vetter@ffwll.ch
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/drm_atomic_helper.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_syncobj.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/drm_atomic_helper.c
-+++ b/drivers/gpu/drm/drm_atomic_helper.c
-@@ -2948,7 +2948,7 @@ int drm_atomic_helper_set_config(struct
+--- a/drivers/gpu/drm/drm_syncobj.c
++++ b/drivers/gpu/drm/drm_syncobj.c
+@@ -326,19 +326,18 @@ int drm_syncobj_find_fence(struct drm_fi
+ 		return -ENOENT;
  
- 	ret = handle_conflicting_encoders(state, true);
- 	if (ret)
+ 	*fence = drm_syncobj_fence_get(syncobj);
+-	drm_syncobj_put(syncobj);
+ 
+ 	if (*fence) {
+ 		ret = dma_fence_chain_find_seqno(fence, point);
+ 		if (!ret)
+-			return 0;
++			goto out;
+ 		dma_fence_put(*fence);
+ 	} else {
+ 		ret = -EINVAL;
+ 	}
+ 
+ 	if (!(flags & DRM_SYNCOBJ_WAIT_FLAGS_WAIT_FOR_SUBMIT))
 -		return ret;
-+		goto fail;
++		goto out;
  
- 	ret = drm_atomic_commit(state);
+ 	memset(&wait, 0, sizeof(wait));
+ 	wait.task = current;
+@@ -370,6 +369,9 @@ int drm_syncobj_find_fence(struct drm_fi
+ 	if (wait.node.next)
+ 		drm_syncobj_remove_wait(syncobj, &wait);
  
++out:
++	drm_syncobj_put(syncobj);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL(drm_syncobj_find_fence);
 
 
