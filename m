@@ -2,64 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E653049F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6E5304999
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732129AbhAZFUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:20:31 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:60303 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727111AbhAYJsv (ORCPT
+        id S1726597AbhAZFZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:25:51 -0500
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:42317 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726743AbhAYKAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:48:51 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UMpfQ7-_1611568047;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMpfQ7-_1611568047)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 25 Jan 2021 17:47:54 +0800
-From:   Yang Li <abaci-bugfix@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, rajur@chelsio.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yang Li <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH 4/4] cxgb4: remove redundant NULL check
-Date:   Mon, 25 Jan 2021 17:47:25 +0800
-Message-Id: <1611568045-121839-4-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1611568045-121839-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1611568045-121839-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        Mon, 25 Jan 2021 05:00:19 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 3yWVlSvJWiWRg3yWYlfjeh; Mon, 25 Jan 2021 10:51:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1611568268; bh=wrk8BKpLgBpPNHd1tb+sYL44XtjDBRa45AyPT1wW64s=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Jn3mt0HhgXor55LXLpuNlJKmav0gxvQ4xyNio3n5rNMNS0A9gD4U6fMUYJN5/3pdO
+         +PMrDHxGeQ5CeQbqOBbe8TEemMefOAqZHw70lTOwgTsBBDbShlysx/hXRQczPSXPPF
+         tDR3OTbNKK+xD0BEM2oMuLRJVOtxs1rsAPAuxp83IBXcs0YF6vQIUEy+BcvT2Vvq9H
+         mBh/9r7vEuIxmFZcg+t/YXS3fwXoPhcAOYxgJwbd45gCdujOxQFGKY3tA2u05CgUBm
+         sobGY1rHK/YXZEO1nTAck4PMunYSF3yrWUizj99hqIxPgL8frumsb2EMz4WQKu0Y9c
+         IJgXvbkNZP75Q==
+Subject: Re: [PATCH v2 2/3] media/radio: Make radio_isa_common_remove() return
+ void
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210122092449.426097-1-uwe@kleine-koenig.org>
+ <20210122092449.426097-3-uwe@kleine-koenig.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <6b63a9cc-6b67-ff2a-b6f7-01a1e2b043ef@xs4all.nl>
+Date:   Mon, 25 Jan 2021 10:51:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210122092449.426097-3-uwe@kleine-koenig.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfOJCl0dUPu9rmM2SOym+WapbhiLzwdq924BtMGODJV2TcVRfNeBl9XQ/Jzp+EXpFLFlG+OnKdS4LupZR/tmMLca3UWdxIKaltDT4Bqtm+HCLA4ebrCfw
+ ivJL/M10g+1FYBaNT5QAW5QnwoQBzLprDRkbt0Gpm2797GXq1plWVAzf2aD7N5NZlcMrivBSphFtCdg61bX5ncFgTSQQe7K4hjkP6nM33iRhgD2gzX4Ez4Qb
+ h9VXbXO0uJkQ+DuZ+x0QLedsT8ZhD1Ez2NmWL6m+AwQN7vRZy5KqlpO1Qa2eBm2rgQRcAuNYYKGBEh9oSGpkjqt7BAiK5dBq9EThPIqlmFE=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix below warnings reported by coccicheck:
- ./drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c:533:2-8: WARNING:
-NULL check before some freeing functions is not needed.
+On 22/01/2021 10:24, Uwe Kleine-König wrote:
+> Instead of an unconditional return 0, return no value. One of the two
+> callers ignored the return value already before.
+> 
+> This simplifies the next patch.
+> 
+> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-index dede025..97a811f 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32.c
-@@ -525,12 +525,10 @@ struct cxgb4_tc_u32_table *cxgb4_init_tc_u32(struct adapter *adap)
- 	for (i = 0; i < t->size; i++) {
- 		struct cxgb4_link *link = &t->table[i];
- 
--		if (link->tid_map)
--			kvfree(link->tid_map);
-+		kvfree(link->tid_map);
- 	}
- 
--	if (t)
--		kvfree(t);
-+	kvfree(t);
- 
- 	return NULL;
- }
--- 
-1.8.3.1
+Thanks!
+
+	Hans
+
+> ---
+>  drivers/media/radio/radio-isa.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/radio/radio-isa.c b/drivers/media/radio/radio-isa.c
+> index ad2ac16ff12d..527f4c3b0ca4 100644
+> --- a/drivers/media/radio/radio-isa.c
+> +++ b/drivers/media/radio/radio-isa.c
+> @@ -273,8 +273,8 @@ static int radio_isa_common_probe(struct radio_isa_card *isa,
+>  	return res;
+>  }
+>  
+> -static int radio_isa_common_remove(struct radio_isa_card *isa,
+> -				   unsigned region_size)
+> +static void radio_isa_common_remove(struct radio_isa_card *isa,
+> +				    unsigned region_size)
+>  {
+>  	const struct radio_isa_ops *ops = isa->drv->ops;
+>  
+> @@ -285,7 +285,6 @@ static int radio_isa_common_remove(struct radio_isa_card *isa,
+>  	release_region(isa->io, region_size);
+>  	v4l2_info(&isa->v4l2_dev, "Removed radio card %s\n", isa->drv->card);
+>  	kfree(isa);
+> -	return 0;
+>  }
+>  
+>  int radio_isa_probe(struct device *pdev, unsigned int dev)
+> @@ -342,7 +341,9 @@ int radio_isa_remove(struct device *pdev, unsigned int dev)
+>  {
+>  	struct radio_isa_card *isa = dev_get_drvdata(pdev);
+>  
+> -	return radio_isa_common_remove(isa, isa->drv->region_size);
+> +	radio_isa_common_remove(isa, isa->drv->region_size);
+> +
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(radio_isa_remove);
+>  
+> 
 
