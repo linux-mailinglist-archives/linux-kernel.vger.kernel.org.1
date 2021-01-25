@@ -2,199 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3814E303596
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F8930359F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:48:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbhAZFrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:47:17 -0500
-Received: from foss.arm.com ([217.140.110.172]:46534 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727848AbhAYMSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:18:48 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DB8A11FB;
-        Mon, 25 Jan 2021 04:00:13 -0800 (PST)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8D0B3F66E;
-        Mon, 25 Jan 2021 04:00:10 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:59:32 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v3 18/21] dt-bindings: allwinner: Add H616 compatible
- strings
-Message-ID: <20210125115932.6b9f148d@slackpad.fritz.box>
-In-Reply-To: <c21019af-a6e4-4a06-5307-23b227d25934@sholland.org>
-References: <20210118020848.11721-1-andre.przywara@arm.com>
-        <20210118020848.11721-19-andre.przywara@arm.com>
-        <c21019af-a6e4-4a06-5307-23b227d25934@sholland.org>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S1730017AbhAZFsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727942AbhAYMT3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:19:29 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B417DC061788;
+        Mon, 25 Jan 2021 04:18:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=W1U508PbLkgwTccNSwME/R6sQRgPyIR7/FJo2A8YTu8=; b=ajM4lt9pcZxmzaCaNYOQ5tgX52
+        nUbHhja1AXzBoo5MXH9nHEEE+EG15rpAKQIUw5iYjfCYXN9+fYcI9x41Ak645sUE0npOUrwInm3VM
+        /Z047ws1ViAH8/08pF9hTVOOEVztOEGInatExkFLUqfw2iJqoUzriwkQmooewCffLV7rRcLE+b/qn
+        1EbKy8ItUKDTMEVqjNNDmU+lvBaQNrUDwpn4TxyKNnoJdthDIdW6O8o3UOkASatebnVxqd5/EdTeW
+        OKxVkMzZn8GPn6LXQTXUhD8z3QANFXIUl+ddG5cgN0nKvIFVMTM0e8EV4Qv/DUc8ifcYrUgMzVnPX
+        2yJi1z8g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l40oq-0006P0-RS; Mon, 25 Jan 2021 12:18:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36ABE3010C8;
+        Mon, 25 Jan 2021 13:18:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1FD962B069EF9; Mon, 25 Jan 2021 13:18:04 +0100 (CET)
+Date:   Mon, 25 Jan 2021 13:18:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Xu, Like" <like.xu@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
+ via DS
+Message-ID: <YA62/DV7reRvVyYk@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <YACXQwBPI8OFV1T+@google.com>
+ <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
+ <YAHXlWmeR9p6JZm2@google.com>
+ <20210115182700.byczztx3vjhsq3p3@two.firstfloor.org>
+ <YAHkOiQsxMfOMYvp@google.com>
+ <YAqhPPkexq+dQ5KD@hirez.programming.kicks-ass.net>
+ <eb30d86f-6492-d6e3-3a24-f58c724f68fd@linux.intel.com>
+ <YA6nxuM5Stlolk5x@hirez.programming.kicks-ass.net>
+ <076a5c7b-de2e-daf9-e6c0-5a42fb38aaa3@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <076a5c7b-de2e-daf9-e6c0-5a42fb38aaa3@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021 22:28:47 -0600
-Samuel Holland <samuel@sholland.org> wrote:
+On Mon, Jan 25, 2021 at 08:07:06PM +0800, Xu, Like wrote:
 
-Hi,
+> So under the premise that counter cross-mapping is allowed,
+> how can hypercall help fix it ?
 
-
-> On 1/17/21 8:08 PM, Andre Przywara wrote:
-> > Add simple "allwinner,sun50i-h616-xxx" compatible names to existing
-> > bindings, and pair them with an existing fallback compatible string,
-> > as the devices are compatible.
-> > This covers I2C, infrared, RTC and SPI.
-> > 
-> > Use enums to group all compatible devices together.
-> > 
-> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
-> > ---
-> >  .../bindings/i2c/marvell,mv64xxx-i2c.yaml     | 21 +++++++------------
-> >  .../media/allwinner,sun4i-a10-ir.yaml         | 16 ++++++--------
-> >  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml |  3 +++
-> >  .../bindings/spi/allwinner,sun6i-a31-spi.yaml |  1 +
-> >  4 files changed, 17 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml b/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
-> > index 5b5ae402f97a..eb72dd571def 100644
-> > --- a/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
-> > +++ b/Documentation/devicetree/bindings/i2c/marvell,mv64xxx-i2c.yaml
-> > @@ -18,21 +18,14 @@ properties:
-> >            - const: allwinner,sun4i-a10-i2c
-> >        - const: allwinner,sun6i-a31-i2c
-> >        - items:
-> > -          - const: allwinner,sun8i-a23-i2c
-> > +          - enum:
-> > +              - allwinner,sun8i-a23-i2c
-> > +              - allwinner,sun8i-a83t-i2c
-> > +              - allwinner,sun50i-a64-i2c
-> > +              - allwinner,sun50i-a100-i2c
-> > +              - allwinner,sun50i-h6-i2c
-> > +              - allwinner,sun50i-h616-i2c
-> >            - const: allwinner,sun6i-a31-i2c
-> > -      - items:
-> > -          - const: allwinner,sun8i-a83t-i2c
-> > -          - const: allwinner,sun6i-a31-i2c
-> > -      - items:
-> > -          - const: allwinner,sun50i-a64-i2c
-> > -          - const: allwinner,sun6i-a31-i2c
-> > -      - items:
-> > -          - const: allwinner,sun50i-a100-i2c
-> > -          - const: allwinner,sun6i-a31-i2c
-> > -      - items:
-> > -          - const: allwinner,sun50i-h6-i2c
-> > -          - const: allwinner,sun6i-a31-i2c
-> > -
-> >        - const: marvell,mv64xxx-i2c
-> >        - const: marvell,mv78230-i2c
-> >        - const: marvell,mv78230-a0-i2c
-> > diff --git a/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml b/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml
-> > index 5fa19d4aeaf3..6d8395d6bca0 100644
-> > --- a/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml
-> > +++ b/Documentation/devicetree/bindings/media/allwinner,sun4i-a10-ir.yaml
-> > @@ -20,16 +20,12 @@ properties:
-> >        - const: allwinner,sun5i-a13-ir
-> >        - const: allwinner,sun6i-a31-ir
-> >        - items:
-> > -          - const: allwinner,sun8i-a83t-ir
-> > -          - const: allwinner,sun6i-a31-ir
-> > -      - items:
-> > -          - const: allwinner,sun8i-r40-ir
-> > -          - const: allwinner,sun6i-a31-ir
-> > -      - items:
-> > -          - const: allwinner,sun50i-a64-ir
-> > -          - const: allwinner,sun6i-a31-ir
-> > -      - items:
-> > -          - const: allwinner,sun50i-h6-ir
-> > +          - enum:
-> > +              - allwinner,sun8i-a83t-ir
-> > +              - allwinner,sun8i-r40-ir
-> > +              - allwinner,sun50i-a64-ir
-> > +              - allwinner,sun50i-h6-ir
-> > +              - allwinner,sun50i-h616-ir
-> >            - const: allwinner,sun6i-a31-ir
-> >  
-> >    reg:
-> > diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> > index 37c2a601c3fa..97928efd2bc9 100644
-> > --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> > +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> > @@ -26,6 +26,9 @@ properties:
-> >            - const: allwinner,sun50i-a64-rtc
-> >            - const: allwinner,sun8i-h3-rtc
-> >        - const: allwinner,sun50i-h6-rtc
-> > +      - items:
-> > +          - const: allwinner,sun50i-h616-rtc
-> > +          - const: allwinner,sun50i-h6-rtc  
-> 
-> Since H6, the RTC manages the 24 MHz DCXO, so it provides a fourth clock
-> output. If this is easy to change later, then it is fine for now, but
-> maybe it is better to get the H616 binding correct from the beginning?
-
-So you mean that RTC register +0x160 controls the system HOSC clock,
-so the main input clock for all the PLLs and other clocks? And by
-clearing bit 1 in there we can stop this?
-
-And if that is the case, do you suggest that we should model this in
-the DT, so that the fixed-clock "<&osc24M>" should be replaced with
-"<&rtc 3>"?
-
-So from a "the DT describes the hardware" point of view that would
-probably the right way, but not sure if Linux is happy about that. At
-the very least that would mean to extend the RTC driver to export a
-fourth clock, and all devices would now depend on the RTC (also for
-probing!). And Linux can realistically never turn that clock off
-anyway (without grinding to a halt), so this register is more useful
-for ARISC firmware?
-
-So I am somewhat undecided: changing this for the H6 would make newer
-DTs unusable on older kernels, without anything we really gain. When
-we really want this, we should indeed use the opportunity to
-introduce this at least for the H616 from day one, to avoid this
-situation here.
-But this requires more changes than just the binding, doesn't it?
-
-Cheers,
-Andre
-  
-> 
-> >    reg:
-> >      maxItems: 1
-> > diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-> > index 7866a655d81c..908248260afa 100644
-> > --- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-> > +++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-> > @@ -25,6 +25,7 @@ properties:
-> >            - enum:
-> >                - allwinner,sun8i-r40-spi
-> >                - allwinner,sun50i-h6-spi
-> > +              - allwinner,sun50i-h616-spi
-> >            - const: allwinner,sun8i-h3-spi
-> >  
-> >    reg:
-> >   
-> 
-
+Hypercall or otherwise exposing the mapping, will let the guest fix it
+up when it already touches the data. Which avoids the host from having
+to access the guest memory and is faster, no?
