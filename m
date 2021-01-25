@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AC0303750
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736CF30370E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732542AbhAZH1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32958 "EHLO
+        id S2388430AbhAZHG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:06:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730294AbhAYPpG (ORCPT
+        with ESMTP id S1730208AbhAYPmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:45:06 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3846C06121C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:18:57 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id w14so8559773pfi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:18:57 -0800 (PST)
+        Mon, 25 Jan 2021 10:42:12 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C795C0611BC;
+        Mon, 25 Jan 2021 07:27:33 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id v67so18347799lfa.0;
+        Mon, 25 Jan 2021 07:27:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MBPqVt45ITLJCzWFHUcX7mkPIKQDJQ44GECVzhqpWDs=;
-        b=G3e6OVQKtf9PYFBBqnu0AOCvBcNEwC9QfRFNv8xdM/x+24O80RY6a6VjcakPrZGva2
-         j91axmEy5T3xSWpNjPc50h9VLNVUyCGhCMMOeztEC9nRebK9mkBf4eodCu9x/fFclHwV
-         aaMyehgVVy8e5suSbAvWIVyCujylV6zlox9mkwSoJIvHUdPRjkWh7cIem6r8IXHnlsiC
-         fDMnY0yu+KrV675abtw29Zs/fxNa30ZXITPw/RDaZsuJhyo00M0gDviTwHJxUs1S8Qea
-         +waYdVHu2NtwrfHCPVk9YJYa/Yxm3VIsbObYn60XZXlGwlCWC0gmVDhXahraDDBxjsKV
-         ro/A==
+        bh=UoWqLYFxEb3nF4ce0Tbsv2hSrI7OApPalzEh2y4l+cg=;
+        b=apX8fpQRgXrDIIQdjhUlTMXanMxM8vUDXIXSQxsrotsPIpCU3fVl8nY1YSQaDejIuV
+         dMgju/qSlputc6pRNtgKBzQxzNpw4j9gADNtjJHru12juCIpeM8mif1GHz2d0r/2k16o
+         aSR7B67E5usnCWLnTai1SHUwssmY+SFCBsktn2XmcUibTdzawm4AHdcZ/mq1ZYxmQwvb
+         qfUNzewXuyTQMasbbW02FnhTG71BJB5ta2ayJHvm+eYvOxS8NSUQKUikYW+vBWlcNs1a
+         fUKPSWRLzYwNO2Q7MVbX90QA18Fe7TsS8XixZVhjR7DOjzoEljVqH9PhXu06e64suN7K
+         HTnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=MBPqVt45ITLJCzWFHUcX7mkPIKQDJQ44GECVzhqpWDs=;
-        b=GKCXvjtkJdtUofjmAYGmIeNfngr9FfZ1lHj/aexhvBz6N4SQkObHuhWwUrvsBddwn6
-         zPcGku94nOzoqP3fYZuQJBu03ZRR/39vtC72S0NbOdu1FYLyXR6JtlfRmh/6faJq5kdR
-         cg4izSKkoaGOqo2jKWlMsjTian+u+awZc92hOFVCBRv6NtpaBoSqHDJz8bSuDfgD7m3E
-         pbcWYT3ncw3y4buK5E3s2tNxV/yUHhdAWmd00Vv6kzQDfkUpYjgcQL6+sPq+q4Dzz1fT
-         jAXuCz0em6US5KpAzdseRiQhNjatQ+CU/TUF/jdGyUcFfy4ZXGwV8xahketspY8dWMkx
-         I9/g==
-X-Gm-Message-State: AOAM531Hx0bvZ/YFjLWglO4i/GG4XyWoOoQYBfpSdmxzLFeGYDObMsDb
-        VcoDDgiLxLS56FvQYk0/6g7zCg==
-X-Google-Smtp-Source: ABdhPJzkgcc5IscHt+KOy83sg2XBvPAbFM956SP/fqdTFGtzqO73x70J+0XMfjEVsP8hhFlhwHdQoQ==
-X-Received: by 2002:a62:ed09:0:b029:1bb:3ffc:b7f9 with SMTP id u9-20020a62ed090000b02901bb3ffcb7f9mr923337pfh.52.1611587937426;
-        Mon, 25 Jan 2021 07:18:57 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id b67sm16883015pfa.140.2021.01.25.07.18.56
+        bh=UoWqLYFxEb3nF4ce0Tbsv2hSrI7OApPalzEh2y4l+cg=;
+        b=ggfRmOi77Yyc9zwHYRL9QaMiHTFruu+L0f/ZYz5TTk6te4RGs4r1HTKO9/6U8hYx2k
+         R2sNaKrkjw2wfg+GGk/bNdpxR2+dNUDMWEUMAndAdjseDbGFJncDtUxVzHwgdWOJQQPe
+         NjO2Jph5ik4IJOKJYF9gyufRCOv+enegKtaSAaaw5ojnA+Y8maxF71gYymcL3u0P3Vzz
+         nni+eu40feiDXsZb7W12Z68p1SYn82yrPsFnYEtQpfMqJcVYp1qBuA0wl9Xm3kg24JnR
+         XBjPCxi9VISJUy/HLlrccw/kh3olR0XkVP9FCTU2HnF4HhN6mWkYLXjyBGRGC0kegF3G
+         /tDw==
+X-Gm-Message-State: AOAM531xYLKVWwhu2QXVJ+fjzm+fnLavjU9YfykFlmcaep1JWzcMPMuA
+        dm46jDu+AVRkXkPAjl01HXsSZQ+C9BE=
+X-Google-Smtp-Source: ABdhPJzDcoM6wlnR4aq1O5cH1RDetElITIqHpJu7IarP73ywYIe7RT+4sbqdWBMZvwGLKk3tZuJ6Fg==
+X-Received: by 2002:a19:d83:: with SMTP id 125mr460486lfn.651.1611588451591;
+        Mon, 25 Jan 2021 07:27:31 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id x2sm1928237ljd.63.2021.01.25.07.27.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 07:18:56 -0800 (PST)
-Subject: Re: linux-next: Signed-off-by missing for commit in the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210125204329.22a4964c@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8a6c48de-7136-97b1-1013-4b707afb5d06@kernel.dk>
-Date:   Mon, 25 Jan 2021 08:18:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 25 Jan 2021 07:27:31 -0800 (PST)
+Subject: Re: [PATCH v3 2/6] ALSA: hda/tegra: Reset hardware
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210120003154.26749-1-digetx@gmail.com>
+ <20210120003154.26749-3-digetx@gmail.com> <s5h35yp3uzn.wl-tiwai@suse.de>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <7535a927-5246-4ccf-63fe-f8ded9eb6c52@gmail.com>
+Date:   Mon, 25 Jan 2021 18:27:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20210125204329.22a4964c@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <s5h35yp3uzn.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 2:43 AM, Stephen Rothwell wrote:
-> Hi all,
+25.01.2021 18:18, Takashi Iwai пишет:
+> On Wed, 20 Jan 2021 01:31:50 +0100,
+> Dmitry Osipenko wrote:
+>>
+>> Reset hardware on RPM-resume in order to bring it into a predictable
+>> state.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30 audio works
+>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30 boot-tested
+>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # TK1 boot-tested
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > 
-> Commits
+> Currently we have neither dependency nor reverse-selection of
+> CONFIG_RESET_CONTROLLER.  It wouldn't be a problem for builds, but
+> you'll get a runtime error from
+> devm_reset_control_array_get_exclusive() always when
+> CONFIG_RESET_CONTROLLER=n.
 > 
->   36962a1e4186 ("io_uring: create common fixed_rsrc_data allocation routines")
->   5bc97865b3b6 ("io_uring: create common fixed_rsrc_ref_node handling routines")
->   b2315a2cda1f ("io_uring: generalize io_queue_rsrc_removal")
->   a63c1259317d ("io_uring: rename file related variables to rsrc")
-> 
-> are missing a Signed-off-by from their author.
+> I guess it must be a corner case, but just to be sure.
 
-Fixed up, thanks.
+The CONFIG_RESET_CONTROLLER=y at least for ARM32 Tegra builds.
 
--- 
-Jens Axboe
+https://elixir.bootlin.com/linux/v5.11-rc5/source/arch/arm/mach-tegra/Kconfig#L15
 
+Not sure about ARM64.
