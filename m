@@ -2,96 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37390302792
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42311302764
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730267AbhAYQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:14:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58244 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729862AbhAYQO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:14:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611589185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zKS/Is5s9cc0mzPuWsCvSSGfuL7/tBg1PVAllAYqfSU=;
-        b=TDxYHXSkfZ2OFjnCSFKr3cLU1pTXjeRqsX+yoD/GrbAWpwcu/BRne7P8UJJeilurf6S61l
-        jIZ9y62a+zX2hG3utViE7U7uzmd6K61dhRsEZgt+4HXB0X8O1jTnhROVRP78seKgn3eOxI
-        3SHfPblJ7Slvp9x+xkZcQMwER+1afQk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2AD06ADD8;
-        Mon, 25 Jan 2021 15:39:45 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 16:39:43 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210125153943.GN827@dhcp22.suse.cz>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210125132236.GJ827@dhcp22.suse.cz>
- <20210125143150.GA2282@pc638.lan>
+        id S1729007AbhAYQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:00:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728627AbhAYPyd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:54:33 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682A1C0613D6;
+        Mon, 25 Jan 2021 07:53:46 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id s15so7840650plr.9;
+        Mon, 25 Jan 2021 07:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=soQv/oWN+cjpfz5dkFYcYLTA8n5I/JCS6Ll0z44P+AY=;
+        b=lc9p7Tb8EIl/bTbFEWJ38/Vb0W1iCCfMwApHwja51EcV+j/yoA19HM/rUIXN9HhMRp
+         n08RYACUu02iJgdeqQqcY28H5A7kdKqKnC8WhZHU+aMNTzS4VFXFXlHnWJKfrVFfakOa
+         5XmmTMLD31c5lpONE2MlQMcR2z5Hef/1FEg2bIEVDdj2+KJHOAVgCeiZwoFhwLBKBoqe
+         NwedY/RmRvwOnvNjugyC8N8rRa812OWhdKF7K11HOUbGahURRh8qIOgm+6qdTY23bgp+
+         dOBQN6YLzNvmof52hcJDcdsl73XpSruOwgjCDqn0+zYSxEA0mR0TLgN26rzjL6Mt+ebW
+         0saA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=soQv/oWN+cjpfz5dkFYcYLTA8n5I/JCS6Ll0z44P+AY=;
+        b=jcvGqEG2ohaRiRbZGn+l9hSydgv1SHH9eYBFtbjRKVzfR0RA16Zalb6SthFD5QIHuO
+         T2AIzz6A8doSkNW8OR6TZejuOY957MOup6AJG6/LYuag8cmAu5GwZLVWTyQgyl4jHVFy
+         GeltkMWGIFL8pBfhoyb2jYl5ybJ190+CEfnzqWF/n6PgilvCZ0SopJPWnfEEKU62NDUt
+         cI3Yw6Ivx3KxKqVrXtI4VPhkd0hs/6JAApi19Z8+DHduWMUbCLwX0xuMA5ToJoLXYSB6
+         uobtIvsD6z6+h4PQHfvvgxzLQqcBtnO3udFExfSWbhDb7AOTOLhabYvQ80wxzyU3M9U1
+         dWyA==
+X-Gm-Message-State: AOAM530dnfpfU+TfoPjxbz8izLokoMmsEQQTSUc/osP4DSZVCXRT7gqm
+        GNotbsTo3vOg1FCQM5oWNq2r9DkLY1z5mQ4E
+X-Google-Smtp-Source: ABdhPJytrmJs5TcORY1Dgr3sO8h/TLy+IXV7HdrKWlztG6OTHCiGJVPnqjtUtGH98AVeOr9LQdzeSA==
+X-Received: by 2002:a17:90a:e547:: with SMTP id ei7mr898226pjb.34.1611590025578;
+        Mon, 25 Jan 2021 07:53:45 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.48])
+        by smtp.gmail.com with ESMTPSA id 16sm19461373pjc.28.2021.01.25.07.53.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 07:53:45 -0800 (PST)
+Subject: Re: [RFC PATCH v2 2/4] jbd2: introduce some new log interfaces
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+        harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1611402263.git.brookxu@tencent.com>
+ <f19b925451351040a7e831bb1c96f062421c8ce8.1611402263.git.brookxu@tencent.com>
+ <20210125145448.GG1175@quack2.suse.cz>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <81586eb0-921c-9fd2-96ef-2fa249ef3b85@gmail.com>
+Date:   Mon, 25 Jan 2021 23:53:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125143150.GA2282@pc638.lan>
+In-Reply-To: <20210125145448.GG1175@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
-> > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
-> > > For a single argument we can directly request a page from a caller
-> > > context when a "carry page block" is run out of free spots. Instead
-> > > of hitting a slow path we can request an extra page by demand and
-> > > proceed with a fast path.
-> > > 
-> > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> > > and that its fallback is the relatively high latency synchronize_rcu().
-> > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> > > to allow limited sleeping within the memory allocator.
-> > 
-> > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
-> > way to allocate without triggering the OOM killer. Is this really what
-> > you need/want? Is __GFP_NORETRY too weak?
-> > 
-> Hm... We agreed to proceed with limited lightwait memory direct reclaim.
-> Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
-> point: https://www.spinics.net/lists/rcu/msg02856.html
+
+Jan Kara wrote on 2021/1/25 22:54:
+> On Sat 23-01-21 20:00:44, Chunguang Xu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> Compared to directly using numbers to indicate levels, using abstract
+>> error, warn, notice, info, debug to indicate levels may be more
+>> convenient for code reading and writing. Similar to other kernel
+>> modules, some basic log interfaces are introduced.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 > 
-> <snip>
->     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
->     further decisions based on instrumentation of the success rates of
->     these opportunistic allocations.
-> <snip>
+> One more thing I've noticed when reading this patch:
+> 
+>> +
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +/*
+>> + * Define JBD2_EXPENSIVE_CHECKING to enable more expensive internal
+>> + * consistency checks.  By default we don't do this unless
+>> + * CONFIG_JBD2_DEBUG is on.
+>> + */
+>> +#define JBD2_EXPENSIVE_CHECKING
+>> +extern ushort jbd2_journal_enable_debug;
+>> +void jbd2_log(int level, journal_t *j, const char *file, const char *func,
+>> +		      unsigned int line, const char *fmt, ...);
+>> +
+>> +#define JBD2_ERR	1	/* error conditions */
+>> +#define JBD2_WARN	2	/* warning conditions */
+>> +#define JBD2_NOTICE	3	/* normal but significant condition */
+>> +#define JBD2_INFO	4	/* informational */
+>> +#define JBD2_DEBUG	5	/* debug-level messages */
+> 
+> This is actually not true. All the jbd_debug() messages are really debug
+> messages, not errors, not warnings. It is just a different level of detail.
+> Honestly, these days, I'd rather discard all the levels, use pr_debug()
+> function to print these messages inside jdb2_debug() and defer to
+> CONFIG_DYNAMIC_DEBUG framework for configuration of which messages are
+> interesting for a particular debug session.
 
-I completely agree with Johannes here.
+From a certain point, this is indeed, maybe the changes here are not necessary.
+Thanks.
 
-> but for some reason, i can't find a tail or head of it, we introduced
-> __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
-> What we would like to avoid.
-
-Not that I object to this use but I think it would be much better to use
-it based on actual data. Going along with it right away might become a
-future burden to make any changes in this aspect later on due to lack of 
-exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
-try as hard as it can get without being really disruptive (like OOM
-killing something). And your wording didn't really give me that
-impression.
-
--- 
-Michal Hocko
-SUSE Labs
+> 								Honza
+> 
+>> +
+>> +#define jbd2_err(j, fmt, a...)						\
+>> +	jbd2_log(JBD2_ERR, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+>> +
+>> +#define jbd2_warn(j, fmt, a...)						\
+>> +	jbd2_log(JBD2_WARN, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+>> +
+>> +#define jbd2_notice(j, fmt, a...)					\
+>> +	jbd2_log(JBD2_NOTICE, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+>> +
+>> +#define jbd2_info(j, fmt, a...)						\
+>> +	jbd2_log(JBD2_INFO, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+>> +
+>> +#define jbd2_debug(j, fmt, a...)					\
+>> +	jbd2_log(JBD2_DEBUG, j, __FILE__, __func__, __LINE__, (fmt), ##a)
+>> +
+>> +#else
+>> +
+>> +#define jbd2_err(j, fmt, a...)
+>> +#define jbd2_warn(j, fmt, a...)
+>> +#define jbd2_notice(j, fmt, a...)
+>> +#define jbd2_info(j, fmt, a...)
+>> +#define jbd2_debug(j, fmt, a...)
+>> +
+>> +#endif
+>>  #endif
+>>  
+>>  /*
+>> -- 
+>> 2.30.0
+>>
