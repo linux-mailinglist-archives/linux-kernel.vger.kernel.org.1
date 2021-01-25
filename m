@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E023026CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F583026BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729946AbhAYPSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:18:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729747AbhAYOv2 (ORCPT
+        id S1729955AbhAYPM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:12:28 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:40376 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729816AbhAYOwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:51:28 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E36C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:50:47 -0800 (PST)
-Received: from zn.tnic (p200300ec2f09db0095810f165069682a.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:db00:9581:f16:5069:682a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4D2A31EC0572;
-        Mon, 25 Jan 2021 15:50:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611586246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+TCaFbdg4KelXLn9SPKHyv4vN7y4Nq66S6xqaowPGy8=;
-        b=ps+f1Wg2SvNQilg3jVkxCSoTCcvpurycqzelh9QttRfqxWuJvvPaD8eZlj+9rQucikvV5u
-        p7xFwjuO+HAHgbmfAvcTqBsA+fd2tyS0eGSI9G9Zo3fNin8TJwXTQG8Us7mQig5hNKfi3u
-        amJy0ribj2w6PnIixh7Q1qOO2slcUIk=
-Date:   Mon, 25 Jan 2021 15:50:41 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH 1/2] x86/setup: consolidate early memory reservations
-Message-ID: <20210125145041.GD23070@zn.tnic>
-References: <20210115083255.12744-1-rppt@kernel.org>
- <20210115083255.12744-2-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210115083255.12744-2-rppt@kernel.org>
+        Mon, 25 Jan 2021 09:52:21 -0500
+Received: by mail-oi1-f180.google.com with SMTP id p5so14979735oif.7;
+        Mon, 25 Jan 2021 06:52:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=wNTAmKC0zu5iO9mM7sxm7NcDuEttIlxDD2+2CiOrQPM=;
+        b=SrkGvNrG9reWAhp55jTFTk17exV2FMr44MkibQdjdXt5YDm6brr4jgybXih448Une7
+         Q3NT09wG0Tbc52V/zf3cSjwN8DJvSATMDOi5e7FYhNrT6q5BSnFbXGY5qBgOwp4DaiIB
+         ItWhe16+LydmFxJVkXw/R2U3Ag6gOD1XC3uYHwJ9S0QQz6TQH4THeqYb+LD72TKCEE1a
+         t1+AC3Noqw/Ofj5mSc0WghQw9kZ1eIJGhdVof9qiw5Lr61n0EaqkUxNrjBm8NJ+vZ49f
+         bQuKNWDrUj1gzY+Hv77w5zrcWtMwlniSxHLnS04HcClN2d8Bqa9wcgleqKZRtbdHTorf
+         M6uA==
+X-Gm-Message-State: AOAM532iYM3lC5uWi+1z1ykYep1Ij6QSmYgoswpkRJB6njIvyCnyDET2
+        9tV+Q9vBuvF3/jyFTbGJxcTDo+k17Q==
+X-Google-Smtp-Source: ABdhPJy3JbZEiAsAKDW30PEDE5gz4huf/K7EbGR5/y5uPiRGW74tdF3GYJ6R424CRyK9UhjP03yQNQ==
+X-Received: by 2002:aca:d643:: with SMTP id n64mr318001oig.151.1611586299897;
+        Mon, 25 Jan 2021 06:51:39 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l11sm608502otf.59.2021.01.25.06.51.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 06:51:38 -0800 (PST)
+Received: (nullmailer pid 327908 invoked by uid 1000);
+        Mon, 25 Jan 2021 14:51:35 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sheng Pan <span@analogixsemi.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        David Airlie <airlied@linux.ie>,
+        =?utf-8?q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>
+In-Reply-To: <75e29d7386df2ebca4a8e3f0b91c8370a4a8f74f.1611572143.git.xji@analogixsemi.com>
+References: <cover.1611572142.git.xji@analogixsemi.com> <75e29d7386df2ebca4a8e3f0b91c8370a4a8f74f.1611572143.git.xji@analogixsemi.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings:drm/bridge:anx7625:add HDCP support flag and swing reg
+Date:   Mon, 25 Jan 2021 08:51:35 -0600
+Message-Id: <1611586295.672940.327907.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:32:54AM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, 25 Jan 2021 19:12:21 +0800, Xin Ji wrote:
+> Add 'bus-type' and 'data-lanes' define for port0, add HDCP support
+> flag and DP tx lane0 and lane1 swing register array define.
 > 
-> The early reservations of memory areas used by the firmware, bootloader,
-> kernel text and data are spread over setup_arch(). Moreover, some of them
-> happen *after* memblock allocations, e.g trim_platform_memory_ranges() and
-> trim_low_memory_range() are called after reserve_real_mode() that allocates
-> memory.
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  .../bindings/display/bridge/analogix,anx7625.yaml  | 57 ++++++++++++++++++++--
+>  1 file changed, 54 insertions(+), 3 deletions(-)
 > 
-> We did not observe corruption of these memory regions because memblock
 
-Make that "We" impersonal, passive voice pls.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-> always allocates memory either from the end of memory (in top-down mode) or
-> above the kernel image (in bottom-up mode). However, the bottom up mode is
-> going to be updated to span the entire memory [1] to avoid limitations
-> caused by KASLR.
-> 
-> Consolidate early memory reservations in a dedicated function to improve
-> robustness against future changes. Having the early reservations in one
-> place also makes it clearer what memory must be reserved before we allow
-> memblock allocations.
+yamllint warnings/errors:
 
-Would it make sense to have a check with a WARN or so to catch early
-reservations which get added after memblock allocations have been
-allowed? To catch people who don't pay attention...
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.example.dt.yaml: encoder@58: ports: '#address-cells', '#size-cells' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.example.dt.yaml: encoder@58: ports:port@1:endpoint: Additional properties are not allowed ('remote-endpoint' was unexpected)
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
 
--- 
-Regards/Gruss,
-    Boris.
+See https://patchwork.ozlabs.org/patch/1431199
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
