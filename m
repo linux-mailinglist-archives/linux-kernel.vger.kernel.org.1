@@ -2,101 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FC5302F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDADB302F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732365AbhAYWc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732247AbhAYWaz (ORCPT
+        id S1732842AbhAYWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:36:50 -0500
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:37959 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731266AbhAYWf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:30:55 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B80AC061574;
-        Mon, 25 Jan 2021 14:30:13 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id v24so20142583lfr.7;
-        Mon, 25 Jan 2021 14:30:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rxY/cwcH63wwBbkE8btXXsh21z/0kjVIZCNuqfMz3/4=;
-        b=qxCej7SzAiCQdvPATKYMNOGdV7IIXUiPMn8ED38Zt0ZfSFMIfpegV4KtvFt58hV/lK
-         kaDYJO3W3PJlf2mgDe26H+mLuukbCiwlqj4Iun2IVnvFHSF7HDsP/nY7rgGud4SQctBM
-         nzIjbXuPD36FeU4HCvl+DUw/6qGPQAeNsuxIQLnNuq0OTltomw70IJu7aR4AgCS2uuXk
-         3vBCRmM810kp0gz9Y5c0eqTmbgFUpLNRqzm4s5E5c3/+/WRD4ARxfcFf4H51nVzzrydx
-         kIbo74eedznfaiBgW1Hvhg0IzsLXftpemIhv1fj7D0kIySaf7INaKrvTZNFzG8zsskVV
-         6Emg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rxY/cwcH63wwBbkE8btXXsh21z/0kjVIZCNuqfMz3/4=;
-        b=SKxI5JAOyx0zi0d3cTMQNWSl/3qsBK1eATbjuR2fLz2dzxrYCQpdhqP3jEBl/E5QaD
-         J1FIhQmXDYl+cxrWntu5CfapGu/o7AThwn26TLMzxdS+wB0JpmpkgweMUYmuab9P4WKk
-         cAKGE4i45LEcr+VVwd6A5IEZoOXMUTOA4oxD6QFkL1vpuEHPKOmOVcZf8k9Uafy8wS90
-         4qKPgFiCP2iz3qtp8IFdWaM0Xr8FGu4BeyHMClOszzIKczyGUpDxgrQFpeuOBBacBD12
-         +lLQP8fZZEGi32PrTpIsGITavi837N/HFxSkrSxxvSOlbo4Fcn0oRGHczgP5bjcInOLt
-         crYQ==
-X-Gm-Message-State: AOAM532GRdv1kGIgDpkeqykGInyr09PgaL3Z4yk9DdCJp2pcTqfM2Nlk
-        +bg5zMAt6JrqZqB4bU1PSCdlyB9aDz0=
-X-Google-Smtp-Source: ABdhPJy13OxQx+97hLxd3JsEAUsHm6w84F53K4AmVcNaDns+BhRgWvgU32MKMRYASIKcfHlZ1ecfyA==
-X-Received: by 2002:a19:495d:: with SMTP id l29mr1171580lfj.465.1611613811513;
-        Mon, 25 Jan 2021 14:30:11 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id x29sm2149941lfn.166.2021.01.25.14.30.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 14:30:10 -0800 (PST)
-Subject: Re: [PATCH v4 2/4] opp: Add dev_pm_opp_sync_regulators()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20210120222649.28149-1-digetx@gmail.com>
- <20210120222649.28149-3-digetx@gmail.com>
-Message-ID: <42abee3f-ce18-7930-b584-17ae69bdc498@gmail.com>
-Date:   Tue, 26 Jan 2021 01:30:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 25 Jan 2021 17:35:58 -0500
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 25 Jan 2021 14:34:59 -0800
+Received: from htb-1n-eng-dhcp122.eng.vmware.com (unknown [10.20.114.3])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 1580C2020A;
+        Mon, 25 Jan 2021 14:35:01 -0800 (PST)
+Received: by htb-1n-eng-dhcp122.eng.vmware.com (Postfix, from userid 0)
+        id 0D032A9FB6; Mon, 25 Jan 2021 14:35:01 -0800 (PST)
+From:   Ronak Doshi <doshir@vmware.com>
+To:     <netdev@vger.kernel.org>
+CC:     Ronak Doshi <doshir@vmware.com>, Petr Vandrovec <petr@vmware.com>,
+        "maintainer:VMWARE VMXNET3 ETHERNET DRIVER" <pv-drivers@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 net-next] Remove buf_info from device accessible structures
+Date:   Mon, 25 Jan 2021 14:34:56 -0800
+Message-ID: <20210125223456.25043-1-doshir@vmware.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210120222649.28149-3-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: doshir@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.01.2021 01:26, Dmitry Osipenko пишет:
-> Extend OPP API with dev_pm_opp_sync_regulators() function, which syncs
-> voltage state of regulators.
-> 
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/opp/core.c     | 41 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/pm_opp.h |  6 ++++++
->  2 files changed, 47 insertions(+)
+vmxnet3: Remove buf_info from device accessible structures
 
-Hello Viresh,
+buf_info structures in RX & TX queues are private driver data that
+do not need to be visible to the device.  Although there is physical
+address and length in the queue descriptor that points to these
+structures, their layout is not standardized, and device never looks
+at them.
 
-This is the last patch that is left unmerged from this series. We will
-need it for implementation of the PD driver for NVIDIA Tegra20/30 SoCs.
-Please consider applying it, thanks in advance!
+So lets allocate these structures in non-DMA-able memory, and fill
+physical address as all-ones and length as zero in the queue
+descriptor.
+
+That should alleviate worries brought by Martin Radev in
+https://lists.osuosl.org/pipermail/intel-wired-lan/Week-of-Mon-20210104/022829.html
+that malicious vmxnet3 device could subvert SVM/TDX guarantees.
+
+Signed-off-by: Petr Vandrovec <petr@vmware.com>
+Signed-off-by: Ronak Doshi <doshir@vmware.com>
+---
+Changes in v2:
+ - Use kcalloc_node()
+ - Remove log for memory allocation failure
+Changes in v3:
+ - Do not pass __GFP_ZERO to kcalloc
+---
+ drivers/net/vmxnet3/vmxnet3_drv.c | 37 ++++++++++++-------------------------
+ drivers/net/vmxnet3/vmxnet3_int.h |  2 --
+ 2 files changed, 12 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
+index 336504b7531d..419e81b21d9b 100644
+--- a/drivers/net/vmxnet3/vmxnet3_drv.c
++++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+@@ -452,9 +452,7 @@ vmxnet3_tq_destroy(struct vmxnet3_tx_queue *tq,
+ 		tq->comp_ring.base = NULL;
+ 	}
+ 	if (tq->buf_info) {
+-		dma_free_coherent(&adapter->pdev->dev,
+-				  tq->tx_ring.size * sizeof(tq->buf_info[0]),
+-				  tq->buf_info, tq->buf_info_pa);
++		kfree(tq->buf_info);
+ 		tq->buf_info = NULL;
+ 	}
+ }
+@@ -505,8 +503,6 @@ static int
+ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
+ 		  struct vmxnet3_adapter *adapter)
+ {
+-	size_t sz;
+-
+ 	BUG_ON(tq->tx_ring.base || tq->data_ring.base ||
+ 	       tq->comp_ring.base || tq->buf_info);
+ 
+@@ -534,9 +530,9 @@ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
+ 		goto err;
+ 	}
+ 
+-	sz = tq->tx_ring.size * sizeof(tq->buf_info[0]);
+-	tq->buf_info = dma_alloc_coherent(&adapter->pdev->dev, sz,
+-					  &tq->buf_info_pa, GFP_KERNEL);
++	tq->buf_info = kcalloc_node(tq->tx_ring.size, sizeof(tq->buf_info[0]),
++				    GFP_KERNEL,
++				    dev_to_node(&adapter->pdev->dev));
+ 	if (!tq->buf_info)
+ 		goto err;
+ 
+@@ -1738,10 +1734,7 @@ static void vmxnet3_rq_destroy(struct vmxnet3_rx_queue *rq,
+ 	}
+ 
+ 	if (rq->buf_info[0]) {
+-		size_t sz = sizeof(struct vmxnet3_rx_buf_info) *
+-			(rq->rx_ring[0].size + rq->rx_ring[1].size);
+-		dma_free_coherent(&adapter->pdev->dev, sz, rq->buf_info[0],
+-				  rq->buf_info_pa);
++		kfree(rq->buf_info[0]);
+ 		rq->buf_info[0] = rq->buf_info[1] = NULL;
+ 	}
+ }
+@@ -1883,10 +1876,9 @@ vmxnet3_rq_create(struct vmxnet3_rx_queue *rq, struct vmxnet3_adapter *adapter)
+ 		goto err;
+ 	}
+ 
+-	sz = sizeof(struct vmxnet3_rx_buf_info) * (rq->rx_ring[0].size +
+-						   rq->rx_ring[1].size);
+-	bi = dma_alloc_coherent(&adapter->pdev->dev, sz, &rq->buf_info_pa,
+-				GFP_KERNEL);
++	bi = kcalloc_node(rq->rx_ring[0].size + rq->rx_ring[1].size,
++			  sizeof(rq->buf_info[0][0]), GFP_KERNEL,
++			  dev_to_node(&adapter->pdev->dev));
+ 	if (!bi)
+ 		goto err;
+ 
+@@ -2522,14 +2514,12 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
+ 		tqc->txRingBasePA   = cpu_to_le64(tq->tx_ring.basePA);
+ 		tqc->dataRingBasePA = cpu_to_le64(tq->data_ring.basePA);
+ 		tqc->compRingBasePA = cpu_to_le64(tq->comp_ring.basePA);
+-		tqc->ddPA           = cpu_to_le64(tq->buf_info_pa);
++		tqc->ddPA           = cpu_to_le64(~0ULL);
+ 		tqc->txRingSize     = cpu_to_le32(tq->tx_ring.size);
+ 		tqc->dataRingSize   = cpu_to_le32(tq->data_ring.size);
+ 		tqc->txDataRingDescSize = cpu_to_le32(tq->txdata_desc_size);
+ 		tqc->compRingSize   = cpu_to_le32(tq->comp_ring.size);
+-		tqc->ddLen          = cpu_to_le32(
+-					sizeof(struct vmxnet3_tx_buf_info) *
+-					tqc->txRingSize);
++		tqc->ddLen          = cpu_to_le32(0);
+ 		tqc->intrIdx        = tq->comp_ring.intr_idx;
+ 	}
+ 
+@@ -2541,14 +2531,11 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
+ 		rqc->rxRingBasePA[0] = cpu_to_le64(rq->rx_ring[0].basePA);
+ 		rqc->rxRingBasePA[1] = cpu_to_le64(rq->rx_ring[1].basePA);
+ 		rqc->compRingBasePA  = cpu_to_le64(rq->comp_ring.basePA);
+-		rqc->ddPA            = cpu_to_le64(rq->buf_info_pa);
++		rqc->ddPA            = cpu_to_le64(~0ULL);
+ 		rqc->rxRingSize[0]   = cpu_to_le32(rq->rx_ring[0].size);
+ 		rqc->rxRingSize[1]   = cpu_to_le32(rq->rx_ring[1].size);
+ 		rqc->compRingSize    = cpu_to_le32(rq->comp_ring.size);
+-		rqc->ddLen           = cpu_to_le32(
+-					sizeof(struct vmxnet3_rx_buf_info) *
+-					(rqc->rxRingSize[0] +
+-					 rqc->rxRingSize[1]));
++		rqc->ddLen           = cpu_to_le32(0);
+ 		rqc->intrIdx         = rq->comp_ring.intr_idx;
+ 		if (VMXNET3_VERSION_GE_3(adapter)) {
+ 			rqc->rxDataRingBasePA =
+diff --git a/drivers/net/vmxnet3/vmxnet3_int.h b/drivers/net/vmxnet3/vmxnet3_int.h
+index d958b92c9429..e910596b79cf 100644
+--- a/drivers/net/vmxnet3/vmxnet3_int.h
++++ b/drivers/net/vmxnet3/vmxnet3_int.h
+@@ -240,7 +240,6 @@ struct vmxnet3_tx_queue {
+ 	spinlock_t                      tx_lock;
+ 	struct vmxnet3_cmd_ring         tx_ring;
+ 	struct vmxnet3_tx_buf_info      *buf_info;
+-	dma_addr_t                       buf_info_pa;
+ 	struct vmxnet3_tx_data_ring     data_ring;
+ 	struct vmxnet3_comp_ring        comp_ring;
+ 	struct Vmxnet3_TxQueueCtrl      *shared;
+@@ -298,7 +297,6 @@ struct vmxnet3_rx_queue {
+ 	u32 qid2;           /* rqID in RCD for buffer from 2nd ring */
+ 	u32 dataRingQid;    /* rqID in RCD for buffer from data ring */
+ 	struct vmxnet3_rx_buf_info     *buf_info[2];
+-	dma_addr_t                      buf_info_pa;
+ 	struct Vmxnet3_RxQueueCtrl            *shared;
+ 	struct vmxnet3_rq_driver_stats  stats;
+ } __attribute__((__aligned__(SMP_CACHE_BYTES)));
+-- 
+2.11.0
+
