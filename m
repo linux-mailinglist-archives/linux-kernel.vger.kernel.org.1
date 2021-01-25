@@ -2,130 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF0B303756
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6736E303758
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389504AbhAZHai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:30:38 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:51657 "EHLO
+        id S2389537AbhAZHbA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 02:31:00 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:48839 "EHLO
         mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730380AbhAYPq3 (ORCPT
+        with ESMTP id S1730379AbhAYPq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:46:29 -0500
+        Mon, 25 Jan 2021 10:46:59 -0500
 Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 6E68DCECC8;
-        Mon, 25 Jan 2021 16:17:50 +0100 (CET)
+        by mail.holtmann.org (Postfix) with ESMTPSA id EAD99CECCA;
+        Mon, 25 Jan 2021 16:20:27 +0100 (CET)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH v3] Bluetooth: btrtl: Enable WBS for the specific Realtek
- devices
+Subject: Re: [PATCH v3] Bluetooth: Keep MSFT ext info throughout ahci_dev's
+ life cycle
 From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210122015938.964-1-max.chou@realtek.com>
-Date:   Mon, 25 Jan 2021 16:10:25 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex_lu@realsil.com.cn, hildawu@realtek.com, kidman@realtek.com,
-        abhishekpandit@chromium.org, josephsih@chromium.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <675B3B14-76DB-4748-811C-AA98848EA30E@holtmann.org>
-References: <20210122015938.964-1-max.chou@realtek.com>
-To:     Max Chou <max.chou@realtek.com>
+In-Reply-To: <20210121163801.v3.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
+Date:   Mon, 25 Jan 2021 16:13:02 +0100
+Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
+        Alain Michaud <alainm@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <070E7413-A3E3-4FEB-80BC-D3DD922DA19B@holtmann.org>
+References: <20210121163801.v3.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
+To:     Miao-chen Chou <mcchou@chromium.org>
 X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
+Hi Miao-chen,
 
-> By this change, it will enable WBS supported on the specific Realtek BT
-> devices, such as RTL8822C and RTL8852A.
-> In the future, it's able to maintain what the Realtek devices support WBS
-> here.
+> This moves msft_do_close() from hci_dev_do_close() to
+> hci_unregister_dev() to avoid clearing MSFT extension info. This also
+> avoids retrieving MSFT info upon every msft_do_open() if MSFT extension
+> has been initialized.
 > 
-> Tested-by: Hilda Wu <hildawu@realtek.com>
+> The following test steps were performed.
+> (1) boot the test device and verify the MSFT support debug log in syslog
+> (2) restart bluetoothd and verify msft_do_close() doesn't get invoked
+> 
+> Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
 > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Max Chou <max.chou@realtek.com>
-> 
+> Reviewed-by: Archie Pusaka <apusaka@chromium.org>
 > ---
-> change in v3
-> -remove the null check due to unnecessary
-> ---
-> drivers/bluetooth/btrtl.c | 29 +++++++++++++++++++++++------
-> 1 file changed, 23 insertions(+), 6 deletions(-)
+> Hi Maintainers,
 > 
-> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-> index 24f03a1f8d57..a21d6abc93c4 100644
-> --- a/drivers/bluetooth/btrtl.c
-> +++ b/drivers/bluetooth/btrtl.c
-> @@ -38,6 +38,19 @@
-> 	.hci_ver = (hciv), \
-> 	.hci_bus = (bus)
-> 
-> +enum  btrtl_chip_id {
+> This patch fixes the life cycle of MSFT HCI extension. The current
+> symmetric calls to msft_do{open,close} in hci_dev_do_{open,close} cause
+> incorrect MSFT features during bluetoothd start-up. After the kernel
+> powers on the controller to register the hci_dev, it performs
+> hci_dev_do_close() which call msft_do_close() and MSFT data gets wiped
+> out. And then during the startup of bluetoothd, Adv Monitor Manager
+> relies on reading the MSFT features from the kernel to present the
+> feature set of the controller to D-Bus clients. However, the power state
+> of the controller is off during the init of D-Bus interfaces. As a
+> result, invalid MSFT features are returned by the kernel, since it was
+> previously wiped out due to hci_dev_do_close().
 
-remove the extra space here.
-
-> +	CHIP_ID_8723A,		/* index  0 for RTL8723A*/
-> +	CHIP_ID_8723B,		/* index  1 for RTL8723B*/
-> +	CHIP_ID_8821A,		/* index  2 for RTL8821A*/
-> +	CHIP_ID_8761A,		/* index  3 for RTL8761A*/
-> +	CHIP_ID_8822B = 8,	/* index  8 for RTL8822B */
-> +	CHIP_ID_8723D,		/* index  9 for RTL8723D */
-> +	CHIP_ID_8821C,		/* index 10 for RTL8821C */
-> +	CHIP_ID_8822C = 13,	/* index 13 for RTL8822C */
-> +	CHIP_ID_8761B,		/* index 14 for RTL8761B */
-> +	CHIP_ID_8852A = 18,	/* index 18 for RTL8852A */
-> +};
-> +
-> struct id_table {
-> 	__u16 match_flags;
-> 	__u16 lmp_subver;
-> @@ -58,6 +71,7 @@ struct btrtl_device_info {
-> 	u8 *cfg_data;
-> 	int cfg_len;
-> 	bool drop_fw;
-> +	int project_id;
-> };
-> 
-> static const struct id_table ic_id_table[] = {
-> @@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
-> 
-> 	/* Find project_id in table */
-> 	for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
-> -		if (project_id == project_id_to_lmp_subver[i].id)
-> +		if (project_id == project_id_to_lmp_subver[i].id) {
-> +			btrtl_dev->project_id = project_id;
-> 			break;
-> +		}
-> 	}
-> 
-> 	if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
-> @@ -719,18 +735,19 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
-> 	 */
-> 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
-> 
-> -	if (!btrtl_dev->ic_info)
-> -		goto done;
-> -
-> 	/* Enable central-peripheral role (able to create new connections with
-> 	 * an existing connection in slave role).
-> 	 */
-> -	switch (btrtl_dev->ic_info->lmp_subver) {
-> -	case RTL_ROM_LMP_8822B:
-> +	/* Enable WBS supported for the specific Realtek devices. */
-> +	switch (btrtl_dev->project_id) {
-> +	case CHIP_ID_8822C:
-> +	case CHIP_ID_8852A:
-> 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
-> +		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
-> 		break;
-> 	default:
-> 		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
-> +		rtl_dev_dbg(hdev, "WBS supported not enabled.");
-> 		break;
-> 	}
+then just keep the values around and not wipe them. However I prefer still to keep the symmetry and re-read the value every time we init. We can make sure to release the msft_data on unregister.
 
 Regards
 
