@@ -2,194 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E663023F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8223023F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbhAYKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 05:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727647AbhAYKr6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:47:58 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42244C06174A;
-        Mon, 25 Jan 2021 02:47:12 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u11so14647981ljo.13;
-        Mon, 25 Jan 2021 02:47:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=43PJHRr7+l80ZYDB7hOC3rOmJdG1RReABy3AisRh4fg=;
-        b=XAyh9KY5g7j86h4QR6NEPrWSuHJRAeiIMTwMyGz9JXe5QcXte2sa4883HQhF/p2S4C
-         VIiBFkKTPRKdFid5tJo/1NRDnlk0ur/xIz8cNmxTJafPpLsYTHvQ+xlkv2mqULzh5peW
-         BFYK/0Bul0/4k6zlrnDvUE43VgUrtMqKGgomeGT56Jpl7Bsbm5zrurXg1nZvPSAIJb00
-         PkK2PoDJil8NHdh4pK9osiiLiBq6UeD7EGJVdYC4C1E+d0sM3QNzioB91h2wk4gF06ff
-         GWkGmK0Iok3dBFKxO/IqLwLIpsjbPok1D+vJDmS2z9jKHunE3ZQWcf5Lyc6RihH+3kSX
-         xnzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=43PJHRr7+l80ZYDB7hOC3rOmJdG1RReABy3AisRh4fg=;
-        b=gtkc6JgMAtKgYBv1oiL9fENcsx2OExFq8o6QbLD4YkwJm7LCv31F8hfmoTU9DSYyG+
-         TivKiUUsL0juA/eXYVkjaDWUbRjM3dGhyIba9aNzDHnx39+koCAA9mPweqrRKpv/xp2p
-         HP+JpF3F/LjbVNxGCkkhNTQAoCSkv31BcC7+33aNOBhmrolTUWtUzffbTA28w79F6kTK
-         nw0za8m6bpaYMApF+Dx2ycmYOYdGMov/KvmfmTnsRUoOkAWCzNJzOIAsRrLHgAXlLOQD
-         Q+p3fUgU5vwtkuW53UK2GMVjJmyIFTrBamy5vqSRRAr10Np6REMT6RCQNW7yLBLdK0uQ
-         TtHA==
-X-Gm-Message-State: AOAM531j+EMqXUPNredkLmoJERtx6cPJ4Qkw1vIds/O4jCeNYwE7XkFO
-        EYKPl+Wiz4N2yow8Ih7wgqrnjSOa7GJwmEkeA+A=
-X-Google-Smtp-Source: ABdhPJzt2gcJSi1fFWEOmw3kZrWnPL1qfZjofVBEUYQQfXMqLSd+1fY5kuHkgPkd550T2l6Tv30ByvMYI6XNGT65yvs=
-X-Received: by 2002:a2e:8416:: with SMTP id z22mr1013328ljg.347.1611571630612;
- Mon, 25 Jan 2021 02:47:10 -0800 (PST)
+        id S1727543AbhAYK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 05:56:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727683AbhAYKxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:53:43 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A049122AAC;
+        Mon, 25 Jan 2021 10:50:31 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l3zS1-009rDe-S0; Mon, 25 Jan 2021 10:50:29 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v5 05/21] arm64: Initialise as nVHE before switching to VHE
+Date:   Mon, 25 Jan 2021 10:50:03 +0000
+Message-Id: <20210125105019.2946057-6-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210125105019.2946057-1-maz@kernel.org>
+References: <20210125105019.2946057-1-maz@kernel.org>
 MIME-Version: 1.0
-References: <20210118042717.2549123-1-xiaolei.wang@windriver.com>
- <CAPDyKFq+qyuHGbduGp30AeLefN1ie9ZL2Bvm9PrPZUwmdfQeYg@mail.gmail.com>
- <PH0PR11MB507708B2E5662DC2F6E649B195A19@PH0PR11MB5077.namprd11.prod.outlook.com>
- <CAPDyKFq1TcV-GCknCFVKjVgtqQZ3vZJc3PgSzb=UrzDdKnCvZw@mail.gmail.com>
-In-Reply-To: <CAPDyKFq1TcV-GCknCFVKjVgtqQZ3vZJc3PgSzb=UrzDdKnCvZw@mail.gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 25 Jan 2021 07:46:59 -0300
-Message-ID: <CAOMZO5CFMT-OPX-3p5n6BEanPbyitz7Ng4s5PFN=k+cnsgpg7A@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Apply trim broken quirk to R1J57L
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Wang, Xiaolei" <Xiaolei.Wang@windriver.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Haibo,
+As we are aiming to be able to control whether we enable VHE or
+not, let's always drop down to EL1 first, and only then upgrade
+to VHE if at all possible.
 
-Could you please take a look?
+This means that if the kernel is booted at EL2, we always start
+with a nVHE init, drop to EL1 to initialise the the kernel, and
+only then upgrade the kernel EL to EL2 if possible (the process
+is obviously shortened for secondary CPUs).
 
-Thanks
+The resume path is handled similarly to a secondary CPU boot.
 
-On Thu, Jan 21, 2021 at 10:26 AM Ulf Hansson <ulf.hansson@linaro.org> wrote=
-:
->
-> + Fabio, Haibo
->
-> On Thu, 21 Jan 2021 at 10:54, Wang, Xiaolei <Xiaolei.Wang@windriver.com> =
-wrote:
-> >
-> > Hi
-> >
-> > >Are you sure this is an eMMC problem and not a mmc host driver issue?
-> >
-> > >Can you elaborate more what happens?
-> >
-> > When I use the mkfs.f2fs tool to format the eMMC file system on the imx=
-8qxp board,
-> > because mkfs.f2fs will use secdiscard first, when entering mmc_blk_issu=
-e_secdiscard_rq erase,
-> > once the parameters are passed into MMC_SECURE_TRIM1_ARG, this function=
- will take a long time to return .
-> > The program has not ended, has been in TASK_UNINTERRUPTIBLE state.
-> >
-> > I compared the mkfs.ext4 tool to format the file system. Because it dir=
-ectly uses mmc_blk_issue_discard_rq,
-> > this is a normal formatting phenomenon.
-> >
-> > mmc_blk_issue_secdiscard_rq and mmc_blk_issue_discard_rq are just diffe=
-rent commands and parameters sent by the host as a bus.
-> >  I did not see the description of trim in the data sheet. Could the hos=
-t driver cause this problem?
->
-> Yes, it can - and we have had issues like these before. So before
-> adding a card quirk, I think we need to make sure this isn't the case.
->
-> When using MMC_SECURE_TRIM1_ARG, it's very likely that the request
-> takes longer to complete.
->
-> The mmc host is responsible for either dealing with busy detection
-> with the help of its HW/controller - or if that can't be supported,
-> the mmc core falls back to polling the card for busy with a CMD13.
->
-> See mmc_do_erase() in /drivers/mmc/core/core.c
->
-> >
-> > Note:
-> > The host driver I use is sdhci-esdhc-imx.c
->
-> Alright, I have looped in Fabio and Haibo that knows this driver,
-> let's see if they can help.
->
-> >
-> > Thanks
-> > Xiaolei
->
-> Kind regards
-> Uffe
->
-> >
-> > -----Original Message-----
-> > From: Ulf Hansson <ulf.hansson@linaro.org>
-> > Sent: Wednesday, January 20, 2021 9:41 PM
-> > To: Wang, Xiaolei <Xiaolei.Wang@windriver.com>
-> > Cc: Pali Roh=C3=A1r <pali@kernel.org>; Lee Jones <lee.jones@linaro.org>=
-; linux-mmc@vger.kernel.org; Linux Kernel Mailing List <linux-kernel@vger.k=
-ernel.org>
-> > Subject: Re: [PATCH] mmc: core: Apply trim broken quirk to R1J57L
-> >
-> > [Please note this e-mail is from an EXTERNAL e-mail address]
-> >
-> > On Mon, 18 Jan 2021 at 05:27, Xiaolei Wang <xiaolei.wang@windriver.com>=
- wrote:
-> > >
-> > > R1J57L mmc chip hw capibility indicates that it supports trim
-> > > function, but this function does not work properly, the SDIO bus does
-> > > not respond, and the IO has been waiting so set quirks to skip trim
-> >
-> > Are you sure this is an eMMC problem and not a mmc host driver issue?
-> >
-> > Can you elaborate more what happens?
-> >
-> > Kind regards
-> > Uffe
-> >
-> > >
-> > > Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
-> > > ---
-> > >  drivers/mmc/core/quirks.h | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-> > > index d68e6e513a4f..63e02391c133 100644
-> > > --- a/drivers/mmc/core/quirks.h
-> > > +++ b/drivers/mmc/core/quirks.h
-> > > @@ -89,6 +89,8 @@ static const struct mmc_fixup __maybe_unused mmc_bl=
-k_fixups[] =3D {
-> > >                   MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
-> > >         MMC_FIXUP("VZL00M", CID_MANFID_SAMSUNG, CID_OEMID_ANY, add_qu=
-irk_mmc,
-> > >                   MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
-> > > +       MMC_FIXUP("R1J57L", CID_MANFID_MICRON, CID_OEMID_ANY, add_qui=
-rk_mmc,
-> > > +                 MMC_QUIRK_SEC_ERASE_TRIM_BROKEN),
-> > >
-> > >         /*
-> > >          *  On Some Kingston eMMCs, performing trim can result in @@
-> > > -98,6 +100,8 @@ static const struct mmc_fixup __maybe_unused mmc_blk_=
-fixups[] =3D {
-> > >                   MMC_QUIRK_TRIM_BROKEN),
-> > >         MMC_FIXUP("V10016", CID_MANFID_KINGSTON, CID_OEMID_ANY, add_q=
-uirk_mmc,
-> > >                   MMC_QUIRK_TRIM_BROKEN),
-> > > +       MMC_FIXUP("R1J57L", CID_MANFID_MICRON, CID_OEMID_ANY, add_qui=
-rk_mmc,
-> > > +                 MMC_QUIRK_TRIM_BROKEN),
-> > >
-> > >         END_FIXUP
-> > >  };
-> > > --
-> > > 2.25.1
-> > >
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: David Brazdil <dbrazdil@google.com>
+---
+ arch/arm64/kernel/head.S     | 38 ++----------------------------------
+ arch/arm64/kernel/hyp-stub.S | 24 +++++++++++++++++++++++
+ arch/arm64/kernel/sleep.S    |  1 +
+ 3 files changed, 27 insertions(+), 36 deletions(-)
+
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index 28e9735302df..07445fd976ef 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -433,6 +433,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
+ 	bl	__pi_memset
+ 	dsb	ishst				// Make zero page visible to PTW
+ 
++	bl	switch_to_vhe
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+ 	bl	kasan_early_init
+ #endif
+@@ -493,42 +494,6 @@ SYM_INNER_LABEL(init_el1, SYM_L_LOCAL)
+ 	eret
+ 
+ SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
+-#ifdef CONFIG_ARM64_VHE
+-	/*
+-	 * Check for VHE being present. x2 being non-zero indicates that we
+-	 * do have VHE, and that the kernel is intended to run at EL2.
+-	 */
+-	mrs	x2, id_aa64mmfr1_el1
+-	ubfx	x2, x2, #ID_AA64MMFR1_VHE_SHIFT, #4
+-#else
+-	mov	x2, xzr
+-#endif
+-	cbz	x2, init_el2_nvhe
+-
+-	/*
+-	 * When VHE _is_ in use, EL1 will not be used in the host and
+-	 * requires no configuration, and all non-hyp-specific EL2 setup
+-	 * will be done via the _EL1 system register aliases in __cpu_setup.
+-	 */
+-	mov_q	x0, HCR_HOST_VHE_FLAGS
+-	msr	hcr_el2, x0
+-	isb
+-
+-	init_el2_state vhe
+-
+-	isb
+-
+-	mov_q	x0, INIT_PSTATE_EL2
+-	msr	spsr_el2, x0
+-	msr	elr_el2, lr
+-	mov	w0, #BOOT_CPU_MODE_EL2
+-	eret
+-
+-SYM_INNER_LABEL(init_el2_nvhe, SYM_L_LOCAL)
+-	/*
+-	 * When VHE is not in use, early init of EL2 and EL1 needs to be
+-	 * done here.
+-	 */
+ 	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
+ 	msr	sctlr_el1, x0
+ 
+@@ -623,6 +588,7 @@ SYM_FUNC_START_LOCAL(secondary_startup)
+ 	/*
+ 	 * Common entry point for secondary CPUs.
+ 	 */
++	bl	switch_to_vhe
+ 	bl	__cpu_secondary_check52bitva
+ 	bl	__cpu_setup			// initialise processor
+ 	adrp	x1, swapper_pg_dir
+diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
+index 3f3dbbe8914d..373ed2213e1d 100644
+--- a/arch/arm64/kernel/hyp-stub.S
++++ b/arch/arm64/kernel/hyp-stub.S
+@@ -190,3 +190,27 @@ SYM_FUNC_START(__hyp_reset_vectors)
+ 	hvc	#0
+ 	ret
+ SYM_FUNC_END(__hyp_reset_vectors)
++
++/*
++ * Entry point to switch to VHE if deemed capable
++ */
++SYM_FUNC_START(switch_to_vhe)
++#ifdef CONFIG_ARM64_VHE
++	// Need to have booted at EL2
++	adr_l	x1, __boot_cpu_mode
++	ldr	w0, [x1]
++	cmp	w0, #BOOT_CPU_MODE_EL2
++	b.ne	1f
++
++	// and still be at EL1
++	mrs	x0, CurrentEL
++	cmp	x0, #CurrentEL_EL1
++	b.ne	1f
++
++	// Turn the world upside down
++	mov	x0, #HVC_VHE_RESTART
++	hvc	#0
++1:
++#endif
++	ret
++SYM_FUNC_END(switch_to_vhe)
+diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+index 6bdef7362c0e..5bfd9b87f85d 100644
+--- a/arch/arm64/kernel/sleep.S
++++ b/arch/arm64/kernel/sleep.S
+@@ -100,6 +100,7 @@ SYM_FUNC_END(__cpu_suspend_enter)
+ 	.pushsection ".idmap.text", "awx"
+ SYM_CODE_START(cpu_resume)
+ 	bl	init_kernel_el
++	bl	switch_to_vhe
+ 	bl	__cpu_setup
+ 	/* enable the MMU early - so we can access sleep_save_stash by va */
+ 	adrp	x1, swapper_pg_dir
+-- 
+2.29.2
+
