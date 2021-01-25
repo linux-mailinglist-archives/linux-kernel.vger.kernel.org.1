@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C01303782
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A21EF303785
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbhAZHxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:53:00 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:41733 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730884AbhAYQsF (ORCPT
+        id S2389548AbhAZHyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:54:41 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:55653 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730893AbhAYQsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:48:05 -0500
-Date:   Mon, 25 Jan 2021 16:46:48 +0000
+        Mon, 25 Jan 2021 11:48:16 -0500
+Date:   Mon, 25 Jan 2021 16:46:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611593212; bh=O3BWBtVtHnlCsFaJds2EaRRj5UFBxIVItFjF3RQ5foo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=fyb2kN/4x6ExKBRo9Irg/d1YeJZtuGXCH3KkYYxrwU6bfwqlp8xMWmyHoMUe9wKZ7
-         FE4ZC5fnorwlL/gi5srUrW8gfzuAUandYJdMMJtbd60j7IN3szMPX9rMu49/9ZcFnx
-         mggR925yYUco0rRp1UqPs6oBDI2aUk0GPLTSLnEIzSfFP1cdBPEwguNgJU25afaZoY
-         5lx4EVfbt3/89Iq5QNz7cj/2zToRT9N8KHsxez2Sqd2z6gQsDdV4BKPWnmuayZVa6s
-         voZckv5Kh2OQ1jTDMApFKg4MTPwxYrd2KAWmMNbjJKjcuTkrZ1xfkwA5Jay1YMuCQg
-         rZ+LjQ+WWvz5Q==
+        t=1611593227; bh=VZmsQgsGD/2KxVsDk2CgN0UPiozU/OwIb092ldM9UwI=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=QDBwMIqEu/ITPMltyup2y+v8iLaO4QNWPB6K9HIAhdhe39c9a/Wn0TTBHho5ovptq
+         RWf8zFxHjJHha5tTlwwn4J9qpQS3tZwfqjq/D1TTwvWZMQR8/8mCGuOGwIuRHtZbGH
+         BmrcrWS03XzTmRVRlJki1jbhWYyV6im+kKGM4T8V32on+fRG9oZElnS8JclK6UvQzR
+         03gspPI1DhAzE3n/nus/4HktPXehSZ7wsM1ALoyvn7/OvxYNdCVwG3NP01er+dJDcl
+         qdzAIojEWdnwIi/WNFK/hGJBZrWJQVC0Zm8DbWpmOIhPC2yIUQUIi4LIzjiH8rWjqU
+         6QwaXqYlzAQ/g==
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 From:   Alexander Lobakin <alobakin@pm.me>
@@ -47,8 +47,10 @@ Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
         linux-rdma@vger.kernel.org, linux-mm@kvack.org,
         Alexander Lobakin <alobakin@pm.me>
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next 0/3] net: constify page_is_pfmemalloc() and its users
-Message-ID: <20210125164612.243838-1-alobakin@pm.me>
+Subject: [PATCH net-next 1/3] mm: constify page_is_pfmemalloc() argument
+Message-ID: <20210125164612.243838-2-alobakin@pm.me>
+In-Reply-To: <20210125164612.243838-1-alobakin@pm.me>
+References: <20210125164612.243838-1-alobakin@pm.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -61,31 +63,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-page_is_pfmemalloc() is used mostly by networking drivers. It doesn't
-write anything to the struct page itself, so constify its argument and
-a bunch of callers and wrappers around this function in drivers.
-In Page Pool core code, it can be simply inlined instead.
+The function only tests for page->index, so its argument should be
+const.
 
-Alexander Lobakin (3):
-  mm: constify page_is_pfmemalloc() argument
-  net: constify page_is_pfmemalloc() argument at call sites
-  net: page_pool: simplify page recycling condition tests
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/linux/mm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c   |  2 +-
- drivers/net/ethernet/intel/fm10k/fm10k_main.c     |  2 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c       |  2 +-
- drivers/net/ethernet/intel/iavf/iavf_txrx.c       |  2 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c         |  2 +-
- drivers/net/ethernet/intel/igb/igb_main.c         |  2 +-
- drivers/net/ethernet/intel/igc/igc_main.c         |  2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |  2 +-
- drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   |  2 +-
- include/linux/mm.h                                |  2 +-
- include/linux/skbuff.h                            |  4 ++--
- net/core/page_pool.c                              | 14 ++++----------
- 13 files changed, 17 insertions(+), 23 deletions(-)
-
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ecdf8a8cd6ae..078633d43af9 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1584,7 +1584,7 @@ struct address_space *page_mapping_file(struct page *=
+page);
+  * ALLOC_NO_WATERMARKS and the low watermark was not
+  * met implying that the system is under some pressure.
+  */
+-static inline bool page_is_pfmemalloc(struct page *page)
++static inline bool page_is_pfmemalloc(const struct page *page)
+ {
+ =09/*
+ =09 * Page index cannot be this large so this must be
 --=20
 2.30.0
 
