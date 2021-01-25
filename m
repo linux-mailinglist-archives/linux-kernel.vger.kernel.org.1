@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016D0302C21
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A3F302C24
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732209AbhAYUAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:00:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33948 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732252AbhAYT4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:56:12 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B35720708;
-        Mon, 25 Jan 2021 19:55:31 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 14:55:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/3] tracing: Merge irqflags + preempt counter.
-Message-ID: <20210125145529.6f20ec4e@gandalf.local.home>
-In-Reply-To: <20210125195228.ydtrixn4v3hb4lmj@linutronix.de>
-References: <20210112230057.2374308-1-bigeasy@linutronix.de>
-        <20210112230057.2374308-2-bigeasy@linutronix.de>
-        <20210122170750.600b2372@gandalf.local.home>
-        <20210125140551.hlpbreks4f7ytuza@linutronix.de>
-        <20210125140323.6b1ff20c@gandalf.local.home>
-        <20210125195228.ydtrixn4v3hb4lmj@linutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1731770AbhAYUCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732229AbhAYUAK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:00:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9FFC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=3t5WYnhXF+hxAxUzh0I9aHoPaaqXPrqRLFEphVFh7pI=; b=aesDg0Jcy7RCenQLKgaxT1osHq
+        pj3+p2emEYHp4k/txnsSuL13forBYoEcCLmPft0nz9LFpjKTwipmw77Wy04Qqle9lVrFzlvTSzEZy
+        JwbVpiQUUS5aX8lpgoJ9rOvMZAX4N5Ur2VTmahzmOeUZ8nHTfmSNWUTkbgtJdWPXfrVAo4IemLALj
+        lp4OlEWnwbPw+VUOXlYhthLra3lgcsBWuJ8ES0ieNLyz+4fgFyWyUxs/q4etTp8pnrOg+TfROL9/6
+        C6QkkWhdGqb5EjdhemeDFXBjH9Qf1/yqsmpzympFaFcJNLMYDdukOv78YDikA3F4RpMvDnxL+JJua
+        DWjXvqTA==;
+Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l481F-0008Is-Qj; Mon, 25 Jan 2021 19:59:26 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Frank Haverkamp <haver@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH RESEND] genwqe: clarify repeated word
+Date:   Mon, 25 Jan 2021 11:59:20 -0800
+Message-Id: <20210125195920.25021-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 20:52:28 +0100
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+Add a hyphen between duplicated word "Window" for clarity.
 
-> On 2021-01-25 14:03:23 [-0500], Steven Rostedt wrote:
-> > 
-> > I was thinking about the inlining for two reasons. One was to consolidate
-> > the logic in the header file, as they are small functions. And two, inlined
-> > functions tend to be faster than non-inlined functions. Thus, I wasn't
-> > looking at this from a size point of view, but since this is called by all
-> > events, including function tracer, being efficient is a requirement.  
-> 
-> In the ftrace_syscall_enter() example I made, flags were not evaluated
-> three times but only once. This should do more in terms of performance
-> compare to simply inline it.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Frank Haverkamp <haver@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ include/uapi/linux/genwqe/genwqe_card.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Oh, I know. It's one of the things I like about your series. But that
-doesn't make it less of a reason to inline it ;-)
-
-> 
-> > > I can post the irqflags-merge and the inlinining as two seprate patches
-> > > and you can then decide if you merge the two patches or drop the
-> > > inlining.  
-> > 
-> > Feel free to send it as separate patches. I'd like to have the inlining.  
-> 
-> Just sent as an extra patch. In case you have a benchmark, I'm curious
-> ;)
-> 
-
-Yep, looking at it now. Thanks!
-
--- Steve
+--- linux-next-20200714.orig/include/uapi/linux/genwqe/genwqe_card.h
++++ linux-next-20200714/include/uapi/linux/genwqe/genwqe_card.h
+@@ -86,7 +86,7 @@
+  * The Physical Function's Access is from offset 0x00050000
+  * Single Shared Registers exists only at offset 0x00060000
+  *
+- * SLC: Queue Virtual Window Window for accessing into a specific VF
++ * SLC: Queue Virtual Window - Window for accessing into a specific VF
+  * queue. When accessing the 0x10000 space using the 0x50000 address
+  * segment, the value indicated here is used to specify which VF
+  * register is decoded. This register, and the 0x50000 register space
