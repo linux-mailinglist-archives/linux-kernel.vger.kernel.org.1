@@ -2,169 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755F7302BEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2393302BF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732062AbhAYTpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:45:43 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:45955 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731797AbhAYTXl (ORCPT
+        id S1732143AbhAYTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731893AbhAYT2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:23:41 -0500
-Received: by mail-oi1-f180.google.com with SMTP id g69so15181527oib.12;
-        Mon, 25 Jan 2021 11:23:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lJBccorxZ78ZbWSXWYq+VpysyyXbwoSq8AT6JmLKs/w=;
-        b=GFELKUEChVrsjtnBz2LirVUz/Ob+11YPypwjNg0g5eB8DxafYEBxa6nExHwsPEtPTs
-         76VCu/l41kzekz+/6pF2EPpF1a4l8j0LTI+Wo3dJgC6QWPbTpYDn2yJw4Ys1LJpgPNyl
-         GNARdRcyMmboY+/D7T3Yuos2PACGX4+RrgIIYN+h98ZbLto2VfUhS0ihEvqlZemJM6CS
-         f0S8sOR6PT9pSndk+8Iz68zygBwCS39zmspEU0FzQWOgxwiP/BQ/9+efY8fJfOT2VdcG
-         FEM7LEQReSm02THXFSVTM4lD4xgcbmmnac4Zd2ZJAiqaiddzBX4Mj9gXzQGGit2JF/vz
-         lunA==
-X-Gm-Message-State: AOAM533AvX4mb45rZ5WlyjagPsJQhUEl9P5Ye3xLrfRPZobC9vPp80Eh
-        3isL0HxC3YY2G2fF+BVlow==
-X-Google-Smtp-Source: ABdhPJw8oBDePZvFx7h28Zdqx/oSirBM5F51dv0HF/xFXU2wHZkKa9wVzcmO8UDMhbR280BUU3EEBQ==
-X-Received: by 2002:aca:eb49:: with SMTP id j70mr1063871oih.90.1611602574947;
-        Mon, 25 Jan 2021 11:22:54 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d127sm3363294oob.14.2021.01.25.11.22.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:22:53 -0800 (PST)
-Received: (nullmailer pid 805318 invoked by uid 1000);
-        Mon, 25 Jan 2021 19:22:53 -0000
-Date:   Mon, 25 Jan 2021 13:22:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH V2 06/11] dts: bindings: Document device tree bindings
- for ETE
-Message-ID: <20210125192253.GA791043@robh.at.kernel.org>
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
- <1610511498-4058-7-git-send-email-anshuman.khandual@arm.com>
+        Mon, 25 Jan 2021 14:28:32 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FF2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:27:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=1t/GdNTi2oOTw8D8/h34ezIij3NRN5j7ufZ5EEKo418=; b=hkr0J/fGVEB/dyOiwRHxMp3vdA
+        1btyMmB2G8h9CTaU7eoDL9FNz6Mr53fJOK9CL1hyvTRPNYwKe79UxoM4oIyDmua6x+LE5heuj349T
+        TUd9fP4idCMAmmCdqfA06x81JLYCdAWd3gNNTi1fCLs01It9h1n8xtTTuRI5omIKs+uc=;
+Received: from p200300ccff0a26001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:2600:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1l47WV-0007WI-0u; Mon, 25 Jan 2021 20:27:39 +0100
+Received: from andi by aktux with local (Exim 4.92)
+        (envelope-from <andreas@kemnade.info>)
+        id 1l47WU-0004ba-P1; Mon, 25 Jan 2021 20:27:38 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     lgirdwood@gmail.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH] regulator: core: avoid error messages for deferred probing
+Date:   Mon, 25 Jan 2021 20:27:36 +0100
+Message-Id: <20210125192736.17657-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610511498-4058-7-git-send-email-anshuman.khandual@arm.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:48:13AM +0530, Anshuman Khandual wrote:
-> From: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> Document the device tree bindings for Embedded Trace Extensions.
-> ETE can be connected to legacy coresight components and thus
-> could optionally contain a connection graph as described by
-> the CoreSight bindings.
-> 
-> Cc: devicetree@vger.kernel.org
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Rob Herring <robh@kernel.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  Documentation/devicetree/bindings/arm/ete.yaml | 71 ++++++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
-> new file mode 100644
-> index 0000000..00e6a77
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +# Copyright 2021, Arm Ltd
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: ARM Embedded Trace Extensions
-> +
-> +maintainers:
-> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
-> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
-> +
-> +description: |
-> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
-> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
-> +  architecture and has extended support for future architecture changes.
-> +  The trace generated by the ETE could be stored via legacy CoreSight
-> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
-> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
-> +  legacy CoreSight components, a node must be listed per instance, along
-> +  with any optional connection graph as per the coresight bindings.
-> +  See bindings/arm/coresight.txt.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^ete([0-9a-f]+)$"
-> +  compatible:
-> +    items:
-> +      - const: arm,embedded-trace-extension
-> +
-> +  cpu:
+Noise like this happens on boot with regulators which can be bypassed
+when the supply is not probed. That looks too alarming and confusing.
 
-We use 'cpus' in a couple of other places, let's do that here for 
-consistency.
+[    3.844092] vddpu: bypassed regulator has no supply!
+[    3.849105] vddpu: failed to get the current voltage: -EPROBE_DEFER
+[    3.855591] vddpu: supplied by DCDC1
+[    3.877211] vddsoc: bypassed regulator has no supply!
+[    3.882538] vddsoc: failed to get the current voltage: -EPROBE_DEFER
+[    3.888975] vddsoc: supplied by DCDC1
 
-> +    description: |
-> +      Handle to the cpu this ETE is bound to.
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +
-> +  out-ports:
-> +    description: |
-> +      Out put connections from the ETE to legacy CoreSight trace bus.
+Handle such issues silently.
 
-Output
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ drivers/regulator/core.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-> +    $ref: /schemas/graph.yaml#/properties/ports
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index ca03d8e70bd1..238745fc97c2 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -1168,6 +1168,9 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
+ 			current_uV = regulator_get_voltage_rdev(rdev);
+ 		}
+ 
++		if (current_uV == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++
+ 		if (current_uV < 0) {
+ 			rdev_err(rdev,
+ 				 "failed to get the current voltage: %pe\n",
+@@ -4151,9 +4154,12 @@ int regulator_get_voltage_rdev(struct regulator_dev *rdev)
+ 		if (bypassed) {
+ 			/* if bypassed the regulator must have a supply */
+ 			if (!rdev->supply) {
++				if (rdev->supply_name)
++					return -EPROBE_DEFER;
++
+ 				rdev_err(rdev,
+ 					 "bypassed regulator has no supply!\n");
+-				return -EPROBE_DEFER;
++				return -EINVAL;
+ 			}
+ 
+ 			return regulator_get_voltage_rdev(rdev->supply->rdev);
+-- 
+2.29.2
 
-You have to define what each 'port' is if there can be more than 1. If 
-there's only ever 1 then you just need 'port' though maybe all the 
-coresight bindings require 'out-ports'. And the port nodes need a $ref 
-to '/schemas/graph.yaml#/properties/port'.
-
-> +
-> +required:
-> +  - compatible
-> +  - cpu
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +
-> +# An ETE node without legacy CoreSight connections
-> +  - |
-> +    ete0 {
-> +      compatible = "arm,embedded-trace-extension";
-> +      cpu = <&cpu_0>;
-> +    };
-> +# An ETE node with legacy CoreSight connections
-> +  - |
-> +   ete1 {
-> +      compatible = "arm,embedded-trace-extension";
-> +      cpu = <&cpu_1>;
-> +
-> +      out-ports {        /* legacy coresight connection */
-> +         port {
-> +             ete1_out_port: endpoint {
-> +                remote-endpoint = <&funnel_in_port0>;
-> +             };
-> +         };
-> +      };
-> +   };
-> +
-> +...
-> -- 
-> 2.7.4
-> 
