@@ -2,539 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDAF3026FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8ED8302726
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730056AbhAYPh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:37:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:3511 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729722AbhAYPeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:34:03 -0500
-IronPort-SDR: KY/kH/OSDGe8o8s6Vosey+94vAzoJcy9eNHjbfnAnzYQh5a7m9DixL5yMPzJo2uHhpwsPsudwd
- E7dkGeSPqQZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="179823307"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="179823307"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 07:22:34 -0800
-IronPort-SDR: 8WpENlprasTwGdn1IpnJ+hSGeBtjOW2PW6rWNwPVFGu/1Qxn1yCzSif1DipU3vaw8K+C0ZPZvd
- sJeeCjxWmczA==
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="361543359"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.174])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 07:22:30 -0800
-Date:   Mon, 25 Jan 2021 16:22:27 +0100 (CET)
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
-cc:     virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
-        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH v2 3/9] ALSA: virtio: handling control messages
-In-Reply-To: <20210124165408.1122868-4-anton.yakovlev@opensynergy.com>
-Message-ID: <7436cb6-111c-4ac5-88ee-8e103ded954b@intel.com>
-References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com> <20210124165408.1122868-4-anton.yakovlev@opensynergy.com>
+        id S1730381AbhAYPqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730286AbhAYPnR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:43:17 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD46C061A28
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:31:09 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id j18so11283772wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:31:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mdI4A46c4qroocjwdQfyH91/7UZCXhXD9a0YxLO96Jo=;
+        b=kptPq9LKDMrR9Et8rpMWlECNjqXCByrsPj/IywZ5Ig9XB7cYNavZdcwtETEuBo+F2l
+         adQQy6XwuFGAXI65va2IR7TFybC6ZeJhdwA5pJ23OWvFmAejy966NGoL5so5kJ493arE
+         WIzYu1zlOSbtA5EaXA5iZPT0Jcu9DCu8R7avaGu8nEeE4gol2VdZWVIfVa0gvH3H9c15
+         AfGsXA0Z7rbr8nTPjZkVKFdE12ZFsq6JiDqFat7IntkByDPT6/eG9RCGZzjsrP9mLA4c
+         /PFJr1/modoC1kIw1pd24YnXJTFaHp4gGu5oaSLufX4zRbD+4lQ7LVTLmRTHZQNO8EMA
+         svfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mdI4A46c4qroocjwdQfyH91/7UZCXhXD9a0YxLO96Jo=;
+        b=HG34QkKUtflMRB50J2xVE9amkEcC0+uAbmbzEztzhEqB7OPFFulqTvJDjXsl2CX79+
+         76VE/W8XkW07WwU4MNbYsu0lKLLqZES7fZxzAAybZ5RXIQgTt59Uhw99xtTXaXD/zPeN
+         jSdtdzv7Ch5eYQyQrlu5UrPcJ4meHC9SoT2IGVRI8ntShT+5sj5Eur8fIbESE75WGeAp
+         qhMvlth3SzYjbZ9u1V7bNLC0/r5JeUvnK2IrxogSCUkq4Yt6xi5Ssi3mBDE8J+qGKRdr
+         QGtfaHzSpz38VK+K3ofmiXlb6SLIABJf1OX6tmSmanzyU9zGNwwJqU21t+qTT55xfUOK
+         pUEQ==
+X-Gm-Message-State: AOAM530X8PMn5NODkG0M8n2/H3VNVEwy+9+K1VfAEqyMSwRZ2mVVOGaP
+        tCJ35xwfAr4ONq08DVN8MlzZkw==
+X-Google-Smtp-Source: ABdhPJzkse146QnpWnPpXuczHTlF4K0eKu1vgyewvjI2FphkG5Vp4529kz5xdBQQks1JUHrnuLyymA==
+X-Received: by 2002:a1c:5608:: with SMTP id k8mr620175wmb.91.1611588667753;
+        Mon, 25 Jan 2021 07:31:07 -0800 (PST)
+Received: from balsini.lon.corp.google.com ([2a00:79e0:d:210:4cd4:5994:40fe:253d])
+        by smtp.gmail.com with ESMTPSA id o14sm22611965wri.48.2021.01.25.07.31.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 07:31:07 -0800 (PST)
+From:   Alessio Balsini <balsini@android.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND V12 0/8] fuse: Add support for passthrough read/write
+Date:   Mon, 25 Jan 2021 15:30:49 +0000
+Message-Id: <20210125153057.3623715-1-balsini@android.com>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think the use of (devm_)kmalloc() and friends needs some refinement in 
-several patches in the series.
+This is the 12th version of the series, rebased on top of v5.11-rc5.
+Please find the changelog at the bottom of this cover letter.
 
-On Sun, 24 Jan 2021, Anton Yakovlev wrote:
+Add support for file system passthrough read/write of files when enabled
+in userspace through the option FUSE_PASSTHROUGH.
 
-> The control queue can be used by different parts of the driver to send
-> commands to the device. Control messages can be either synchronous or
-> asynchronous. The lifetime of a message is controlled by a reference
-> count.
->
-> Introduce a module parameter to set the message completion timeout:
->  msg_timeout_ms [=1000]
->
-> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> ---
-> sound/virtio/Makefile         |   3 +-
-> sound/virtio/virtio_card.c    |  20 +++
-> sound/virtio/virtio_card.h    |   7 +
-> sound/virtio/virtio_ctl_msg.c | 293 ++++++++++++++++++++++++++++++++++
-> sound/virtio/virtio_ctl_msg.h | 122 ++++++++++++++
-> 5 files changed, 444 insertions(+), 1 deletion(-)
-> create mode 100644 sound/virtio/virtio_ctl_msg.c
-> create mode 100644 sound/virtio/virtio_ctl_msg.h
+There are file systems based on FUSE that are intended to enforce
+special policies or trigger complicated decision makings at the file
+operations level. Android, for example, uses FUSE to enforce
+fine-grained access policies that also depend on the file contents.
+Sometimes it happens that at open or create time a file is identified as
+not requiring additional checks for consequent reads/writes, thus FUSE
+would simply act as a passive bridge between the process accessing the
+FUSE file system and the lower file system. Splicing and caching help
+reduce the FUSE overhead, but there are still read/write operations
+forwarded to the userspace FUSE daemon that could be avoided.
 
-[snip]
+This series has been inspired by the original patches from Nikhilesh
+Reddy, the idea and code of which has been elaborated and improved
+thanks to the community support.
 
-> diff --git a/sound/virtio/virtio_ctl_msg.c b/sound/virtio/virtio_ctl_msg.c
-> new file mode 100644
-> index 000000000000..c1701756bc32
-> --- /dev/null
-> +++ b/sound/virtio/virtio_ctl_msg.c
-> @@ -0,0 +1,293 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Sound card driver for virtio
-> + * Copyright (C) 2020  OpenSynergy GmbH
-> + *
-> + * This program is free software; you can redistribute it and/or modify
+When the FUSE_PASSTHROUGH capability is enabled, the FUSE daemon may
+decide while handling the open/create operations, if the given file can
+be accessed in passthrough mode. This means that all the further read
+and write operations would be forwarded by the kernel directly to the
+lower file system using the VFS layer rather than to the FUSE daemon.
+All the requests other than reads or writes are still handled by the
+userspace FUSE daemon.
+This allows for improved performance on reads and writes, especially in
+the case of reads at random offsets, for which no (readahead) caching
+mechanism would help.
+Benchmarks show improved performance that is close to native file system
+access when doing massive manipulations on a single opened file,
+especially in the case of random reads, random writes and sequential
+writes. Detailed benchmarking results are presented below.
 
-Same comment about licence, and in other patches as well.
+The creation of this direct connection (passthrough) between FUSE file
+objects and file objects in the lower file system happens in a way that
+reminds of passing file descriptors via sockets:
+- a process requests the opening of a file handled by FUSE, so the
+  kernel forwards the request to the FUSE daemon;
+- the FUSE daemon opens the target file in the lower file system,
+  getting its file descriptor;
+- the FUSE daemon also decides according to its internal policies if
+  passthrough can be enabled for that file, and, if so, can perform a
+  FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl on /dev/fuse, passing the file
+  descriptor obtained at the previous step and the fuse_req unique
+  identifier;
+- the kernel translates the file descriptor to the file pointer
+  navigating through the opened files of the "current" process and
+  temporarily stores it in the associated open/create fuse_req's
+  passthrough_filp;
+- when the FUSE daemon has done with the request and it's time for the
+  kernel to close it, it checks if the passthrough_filp is available and
+in case updates the additional field in the fuse_file owned by the
+process accessing the FUSE file system.
+From now on, all the read/write operations performed by that process
+will be redirected to the corresponding lower file system file by
+creating new VFS requests.
+Since the read/write operation to the lower file system is executed with
+the current process's credentials, it might happen that it does not have
+enough privileges to succeed. For this reason, the process temporarily
+receives the same credentials as the FUSE daemon, that are reverted as
+soon as the read/write operation completes, emulating the behavior of
+the request to be performed by the FUSE daemon itself. This solution has
+been inspired by the way overlayfs handles read/write operations.
+Asynchronous IO is supported as well, handled by creating separate AIO
+requests for the lower file system that will be internally tracked by
+FUSE, that intercepts and propagates their completion through an
+internal ki_completed callback similar to the current implementation of
+overlayfs.
+Finally, also memory-mapped FUSE files are supported in this FUSE
+passthrough series as it has been noticed that when a same file with
+FUSE passthrough enabled is accessed both with standard
+read/write(-iter) operations and memory-mapped read/write operations,
+the file content might result corrupted due to an inconsistency between
+the FUSE and lower file system caches.
 
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#include <linux/moduleparam.h>
-> +#include <linux/virtio_config.h>
-> +
-> +#include "virtio_card.h"
-> +#include "virtio_ctl_msg.h"
-> +
-> +/**
-> + * virtsnd_ctl_msg_alloc_ext() - Allocate and initialize a control message.
-> + * @vdev: VirtIO parent device.
-> + * @request_size: Size of request header (pointed to by sg_request field).
-> + * @response_size: Size of response header (pointed to by sg_response field).
-> + * @sgs: Additional data to attach to the message (may be NULL).
-> + * @out_sgs: Number of scattergather elements to attach to the request header.
-> + * @in_sgs: Number of scattergather elements to attach to the response header.
-> + * @gfp: Kernel flags for memory allocation.
-> + *
-> + * The message will be automatically freed when the ref_count value is 0.
-> + *
-> + * Context: Any context. May sleep if @gfp flags permit.
-> + * Return: Allocated message on success, ERR_PTR(-errno) on failure.
-> + */
-> +struct virtio_snd_msg *virtsnd_ctl_msg_alloc_ext(struct virtio_device *vdev,
-> +						 size_t request_size,
-> +						 size_t response_size,
-> +						 struct scatterlist *sgs,
-> +						 unsigned int out_sgs,
-> +						 unsigned int in_sgs, gfp_t gfp)
-> +{
-> +	struct virtio_snd_msg *msg;
-> +	size_t msg_size =
-> +		sizeof(*msg) + (1 + out_sgs + 1 + in_sgs) * sizeof(*msg->sgs);
-> +	unsigned int i;
-> +
-> +	msg = devm_kzalloc(&vdev->dev, msg_size + request_size + response_size,
-> +			   gfp);
+The ioctl has been designed taking as a reference and trying to converge
+to the fuse2 implementation. For example, the fuse_passthrough_out data
+structure has extra fields that will allow for further extensions of the
+feature.
 
-Messages are short-lived, right? So, I think their allocation and freeing 
-has to be explicit, no need for devm_.
 
-> +	if (!msg)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	sg_init_one(&msg->sg_request, (u8 *)msg + msg_size, request_size);
-> +	sg_init_one(&msg->sg_response, (u8 *)msg + msg_size + request_size,
-> +		    response_size);
-> +
-> +	INIT_LIST_HEAD(&msg->list);
-> +	init_completion(&msg->notify);
-> +	atomic_set(&msg->ref_count, 1);
-> +
-> +	msg->sgs[msg->out_sgs++] = &msg->sg_request;
-> +	if (sgs)
-> +		for (i = 0; i < out_sgs; ++i)
-> +			msg->sgs[msg->out_sgs++] = &sgs[i];
-> +
-> +	msg->sgs[msg->out_sgs + msg->in_sgs++] = &msg->sg_response;
-> +	if (sgs)
-> +		for (i = out_sgs; i < out_sgs + in_sgs; ++i)
-> +			msg->sgs[msg->out_sgs + msg->in_sgs++] = &sgs[i];
-> +
-> +	return msg;
-> +}
-> +
-> +/**
-> + * virtsnd_ctl_msg_send() - Send an (asynchronous) control message.
-> + * @snd: VirtIO sound device.
-> + * @msg: Control message.
-> + *
-> + * If a message is failed to be enqueued, it will be deleted. If message content
-> + * is still needed, the caller must additionally to virtsnd_ctl_msg_ref/unref()
-> + * it.
-> + *
-> + * Context: Any context. Takes and releases the control queue spinlock.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +int virtsnd_ctl_msg_send(struct virtio_snd *snd, struct virtio_snd_msg *msg)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	struct virtio_snd_queue *queue = virtsnd_control_queue(snd);
-> +	struct virtio_snd_hdr *response = sg_virt(&msg->sg_response);
-> +	bool notify = false;
-> +	unsigned long flags;
-> +	int rc = -EIO;
-> +
-> +	/* Set the default status in case the message was not sent or was
-> +	 * canceled.
-> +	 */
-> +	response->code = cpu_to_virtio32(vdev, VIRTIO_SND_S_IO_ERR);
-> +
-> +	spin_lock_irqsave(&queue->lock, flags);
-> +	if (queue->vqueue) {
+    Performance on RAM block device
 
-Is it allowed for queue->vqueue to be NULL?
+What follows has been performed using a custom passthrough_hp FUSE
+daemon that enables pass-through for each file that is opened during
+both "open" and "create". Benchmarks were run on an Intel Xeon W-2135,
+64 GiB of RAM workstation, with a RAM block device used as storage
+target. More specifically, out of the system's 64 GiB of RAM, 40 GiB
+were reserved for /dev/ram0, formatted as ext4. For the FUSE and FUSE
+passthrough benchmarks, the FUSE file system was mounted on top of the
+mounted /dev/ram0 device.
+That file system has been completely filled and then cleaned up before
+running the benchmarks: this to ensure that all the /dev/ram0 space was
+reserved and not usable as page cache.
 
-> +		rc = virtqueue_add_sgs(queue->vqueue, msg->sgs, msg->out_sgs,
-> +				       msg->in_sgs, msg, GFP_ATOMIC);
-> +		if (!rc) {
-> +			notify = virtqueue_kick_prepare(queue->vqueue);
-> +			list_add_tail(&msg->list, &snd->ctl_msgs);
-> +		}
-> +	}
-> +	spin_unlock_irqrestore(&queue->lock, flags);
-> +
-> +	if (!rc) {
-> +		if (!notify || virtqueue_notify(queue->vqueue))
-> +			return 0;
-> +
-> +		spin_lock_irqsave(&queue->lock, flags);
-> +		list_del(&msg->list);
-> +		spin_unlock_irqrestore(&queue->lock, flags);
-> +	}
-> +
-> +	virtsnd_ctl_msg_unref(snd->vdev, msg);
-> +
-> +	return -EIO;
+The rationale for using a RAM block device is that SSDs may experience
+performance fluctuations, especially when dealing with accessing data
+random offsets.
+Getting rid of the discrete storage device also removes a huge component
+of slowness, highlighting the performance difference of the software
+parts (and probably the goodness of CPU caching and its coherence
+mechanisms).
 
-wouldn't "return rc" be better here?
+No special tuning has been performed, e.g., all the involved processes
+are SCHED_OTHER, ondemand is the frequency governor with no frequency
+restrictions, and turbo-boost, as well as p-state, are active. This is
+because I noticed that, for such high-level benchmarks, results
+consistency was minimally affected by these features.
 
-> +}
-> +
-> +/**
-> + * virtsnd_ctl_msg_send_sync() - Send a (synchronous) control message.
-> + * @snd: VirtIO sound device.
-> + * @msg: Control message.
-> + *
-> + * After returning from this function, the message will be deleted. If message
-> + * content is still needed, the caller must additionally to
-> + * virtsnd_ctl_msg_ref/unref() it.
-> + *
-> + * The msg_timeout_ms module parameter defines the message completion timeout.
-> + * If the message is not completed within this time, the function will return an
-> + * error.
-> + *
-> + * Context: Any context. Takes and releases the control queue spinlock.
-> + * Return: 0 on success, -errno on failure.
-> + *
-> + * The return value is a message status code (VIRTIO_SND_S_XXX) converted to an
-> + * appropriate -errno value.
-> + */
-> +int virtsnd_ctl_msg_send_sync(struct virtio_snd *snd,
-> +			      struct virtio_snd_msg *msg)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	unsigned int js = msecs_to_jiffies(msg_timeout_ms);
-> +	struct virtio_snd_hdr *response;
-> +	int rc;
-> +
-> +	virtsnd_ctl_msg_ref(vdev, msg);
-> +
-> +	rc = virtsnd_ctl_msg_send(snd, msg);
-> +	if (rc)
-> +		goto on_failure;
-> +
-> +	rc = wait_for_completion_interruptible_timeout(&msg->notify, js);
-> +	if (rc <= 0) {
-> +		if (!rc) {
-> +			struct virtio_snd_hdr *request =
-> +				sg_virt(&msg->sg_request);
-> +
-> +			dev_err(&vdev->dev,
-> +				"control message (0x%08x) timeout\n",
-> +				le32_to_cpu(request->code));
-> +			rc = -EIO;
+The source code of the updated libfuse library and passthrough_hp is
+shared at the following repository:
 
-Wouldn't -ETIMEDOUT be better here?
+  https://github.com/balsini/libfuse/tree/fuse-passthrough-v12-v5.11-rc5
 
-> +		}
-> +
-> +		goto on_failure;
-> +	}
-> +
-> +	response = sg_virt(&msg->sg_response);
-> +
-> +	switch (le32_to_cpu(response->code)) {
-> +	case VIRTIO_SND_S_OK:
-> +		rc = 0;
-> +		break;
-> +	case VIRTIO_SND_S_BAD_MSG:
-> +		rc = -EINVAL;
-> +		break;
-> +	case VIRTIO_SND_S_NOT_SUPP:
-> +		rc = -EOPNOTSUPP;
-> +		break;
-> +	case VIRTIO_SND_S_IO_ERR:
-> +		rc = -EIO;
-> +		break;
-> +	default:
-> +		rc = -EPERM;
+Two different kinds of benchmarks were done for this change, the first
+set of tests evaluates the bandwidth improvements when manipulating huge
+single files, the second set of tests verify that no performance
+regressions were introduced when handling many small files.
 
-any special reason for EPERM as a default error code? I think often EINVAL 
-is used in similar cases.
+All the caches were dropped before running every benchmark with:
 
-> +		break;
-> +	}
-> +
-> +on_failure:
+  echo 3 > /proc/sys/vm/drop_caches
 
-cosmetic: this path is also taken on success, so maybe better just call 
-the lable "exit" or similar.
+All the benchmarks were run 10 times, with 1 minute cool down between
+each run.
 
-> +	virtsnd_ctl_msg_unref(vdev, msg);
-> +
-> +	return rc;
-> +}
-> +
-> +/**
-> + * virtsnd_ctl_msg_complete() - Complete a control message.
-> + * @snd: VirtIO sound device.
-> + * @msg: Control message.
-> + *
-> + * Context: Any context.
-> + */
-> +void virtsnd_ctl_msg_complete(struct virtio_snd *snd,
-> +			      struct virtio_snd_msg *msg)
-> +{
-> +	list_del(&msg->list);
-> +	complete(&msg->notify);
-> +
-> +	virtsnd_ctl_msg_unref(snd->vdev, msg);
-> +}
-> +
-> +/**
-> + * virtsnd_ctl_query_info() - Query the item configuration from the device.
-> + * @snd: VirtIO sound device.
-> + * @command: Control request code (VIRTIO_SND_R_XXX_INFO).
-> + * @start_id: Item start identifier.
-> + * @count: Item count to query.
-> + * @size: Item information size in bytes.
-> + * @info: Buffer for storing item information.
-> + *
-> + * Context: Any context that permits to sleep.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +int virtsnd_ctl_query_info(struct virtio_snd *snd, int command, int start_id,
-> +			   int count, size_t size, void *info)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	struct virtio_snd_msg *msg;
-> +	struct virtio_snd_query_info *query;
-> +	struct scatterlist sg;
-> +
-> +	sg_init_one(&sg, info, count * size);
-> +
-> +	msg = virtsnd_ctl_msg_alloc_ext(vdev, sizeof(*query),
-> +					sizeof(struct virtio_snd_hdr), &sg, 0,
-> +					1, GFP_KERNEL);
-> +	if (IS_ERR(msg))
-> +		return PTR_ERR(msg);
-> +
-> +	query = sg_virt(&msg->sg_request);
-> +	query->hdr.code = cpu_to_virtio32(vdev, command);
-> +	query->start_id = cpu_to_virtio32(vdev, start_id);
-> +	query->count = cpu_to_virtio32(vdev, count);
-> +	query->size = cpu_to_virtio32(vdev, size);
-> +
-> +	return virtsnd_ctl_msg_send_sync(snd, msg);
-> +}
-> +
-> +/**
-> + * virtsnd_ctl_notify_cb() - Process all completed control messages.
-> + * @vqueue: Underlying control virtqueue.
-> + *
-> + * This callback function is called upon a vring interrupt request from the
-> + * device.
-> + *
-> + * Context: Interrupt context. Takes and releases the control queue spinlock.
-> + */
-> +void virtsnd_ctl_notify_cb(struct virtqueue *vqueue)
-> +{
-> +	struct virtio_snd *snd = vqueue->vdev->priv;
-> +	struct virtio_snd_queue *queue = virtsnd_control_queue(snd);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&queue->lock, flags);
-> +	while (queue->vqueue) {
-> +		virtqueue_disable_cb(queue->vqueue);
-> +
-> +		for (;;) {
-> +			struct virtio_snd_msg *msg;
-> +			u32 length;
-> +
-> +			msg = virtqueue_get_buf(queue->vqueue, &length);
-> +			if (!msg)
-> +				break;
-> +
-> +			virtsnd_ctl_msg_complete(snd, msg);
-> +		}
-> +
-> +		if (unlikely(virtqueue_is_broken(queue->vqueue)))
-> +			break;
-> +
-> +		if (virtqueue_enable_cb(queue->vqueue))
-> +			break;
-> +	}
-> +	spin_unlock_irqrestore(&queue->lock, flags);
-> +}
-> diff --git a/sound/virtio/virtio_ctl_msg.h b/sound/virtio/virtio_ctl_msg.h
-> new file mode 100644
-> index 000000000000..0f8de8f2fd2d
-> --- /dev/null
-> +++ b/sound/virtio/virtio_ctl_msg.h
-> @@ -0,0 +1,122 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * Sound card driver for virtio
-> + * Copyright (C) 2020  OpenSynergy GmbH
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#ifndef VIRTIO_SND_MSG_H
-> +#define VIRTIO_SND_MSG_H
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/virtio.h>
-> +
-> +struct virtio_snd;
-> +
-> +/**
-> + * struct virtio_snd_msg - Control message.
-> + * @sg_request: Scattergather element containing a device request (header).
-> + * @sg_response: Scattergather element containing a device response (status).
-> + * @list: Pending message list entry.
-> + * @notify: Request completed notification.
-> + * @ref_count: Reference count used to manage a message lifetime.
-> + * @out_sgs: Number of read-only sg elements in the sgs array.
-> + * @in_sgs: Number of write-only sg elements in the sgs array.
-> + * @sgs: Array of sg elements to add to the control virtqueue.
-> + */
-> +struct virtio_snd_msg {
-> +/* public: */
-> +	struct scatterlist sg_request;
-> +	struct scatterlist sg_response;
-> +/* private: internal use only */
-> +	struct list_head list;
-> +	struct completion notify;
-> +	atomic_t ref_count;
-> +	unsigned int out_sgs;
-> +	unsigned int in_sgs;
-> +	struct scatterlist *sgs[0];
-> +};
-> +
-> +/**
-> + * virtsnd_ctl_msg_ref() - Increment reference counter for the message.
-> + * @vdev: VirtIO parent device.
-> + * @msg: Control message.
-> + *
-> + * Context: Any context.
-> + */
-> +static inline void virtsnd_ctl_msg_ref(struct virtio_device *vdev,
-> +				       struct virtio_snd_msg *msg)
-> +{
-> +	atomic_inc(&msg->ref_count);
-> +}
-> +
-> +/**
-> + * virtsnd_ctl_msg_unref() - Decrement reference counter for the message.
-> + * @vdev: VirtIO parent device.
-> + * @msg: Control message.
-> + *
-> + * The message will be freed when the ref_count value is 0.
-> + *
-> + * Context: Any context.
-> + */
-> +static inline void virtsnd_ctl_msg_unref(struct virtio_device *vdev,
-> +					 struct virtio_snd_msg *msg)
-> +{
-> +	if (!atomic_dec_return(&msg->ref_count))
+The first benchmarks were done by running FIO (fio-3.24) with:
+- bs=4Ki;
+- file size: 35Gi;
+- ioengine: sync;
+- fsync_on_close=1;
+- randseed=0.
+The target file has been chosen large enough to avoid it to be entirely
+loaded into the page cache.
 
-Since you use atomic operations, this function can probably be called with 
-no additional locking right? But if so, couldn't it be preempted here 
-between the check and the call to kfree()? As was mentioned in a previous 
-review, the use of atomic operations in this series has to be very 
-carefully examined...
+Results are presented in the following table:
 
-Thanks
-Guennadi
++-----------+------------+-------------+-------------+
+|   MiB/s   |    fuse    | passthrough |   native    |
++-----------+------------+-------------+-------------+
+| read      | 471(±1.3%) | 1791(±1.0%) | 1839(±1.8%) |
+| write     | 95(±.6%)   | 1068(±.9%)  | 1322(±.8%)  |
+| randread  | 25(±1.7%)  | 860(±.8%)   | 1135(±.5%)  |
+| randwrite | 76(±3.0%)  | 813(±1.0%)  | 1005(±.7%)  |
++-----------+------------+-------------+-------------+
 
-> +		devm_kfree(&vdev->dev, msg);
-> +}
-> +
-> +struct virtio_snd_msg *virtsnd_ctl_msg_alloc_ext(struct virtio_device *vdev,
-> +						 size_t request_size,
-> +						 size_t response_size,
-> +						 struct scatterlist *sgs,
-> +						 unsigned int out_sgs,
-> +						 unsigned int in_sgs,
-> +						 gfp_t gfp);
-> +
-> +/**
-> + * virtsnd_ctl_msg_alloc() - Simplified control message allocation.
-> + * @vdev: VirtIO parent device.
-> + * @request_size: Size of request header (pointed to by sg_request field).
-> + * @response_size: Size of response header (pointed to by sg_response field).
-> + * @gfp: Kernel flags for memory allocation.
-> + *
-> + * The message will be automatically freed when the ref_count value is 0.
-> + *
-> + * Context: Any context. May sleep if @gfp flags permit.
-> + * Return: Allocated message on success, ERR_PTR(-errno) on failure.
-> + */
-> +static inline
-> +struct virtio_snd_msg *virtsnd_ctl_msg_alloc(struct virtio_device *vdev,
-> +					     size_t request_size,
-> +					     size_t response_size, gfp_t gfp)
-> +{
-> +	return virtsnd_ctl_msg_alloc_ext(vdev, request_size, response_size,
-> +					 NULL, 0, 0, gfp);
-> +}
-> +
-> +int virtsnd_ctl_msg_send(struct virtio_snd *snd, struct virtio_snd_msg *msg);
-> +
-> +int virtsnd_ctl_msg_send_sync(struct virtio_snd *snd,
-> +			      struct virtio_snd_msg *msg);
-> +
-> +void virtsnd_ctl_msg_complete(struct virtio_snd *snd,
-> +			      struct virtio_snd_msg *msg);
-> +
-> +int virtsnd_ctl_query_info(struct virtio_snd *snd, int command, int start_id,
-> +			   int count, size_t size, void *info);
-> +
-> +void virtsnd_ctl_notify_cb(struct virtqueue *vqueue);
-> +
-> +#endif /* VIRTIO_SND_MSG_H */
-> -- 
-> 2.30.0
->
->
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
->
+This table shows that FUSE, except for the sequential reads, is far
+behind FUSE passthrough and native in terms of performance. The
+extremely good FUSE performance for sequential reads is the result of a
+great read-ahead mechanism. I was able to verify that setting
+read_ahead_kb to 0 causes a terrible performance drop.
+All the results are stable, as shown by the standard deviations.
+Moreover, these numbers show the reasonable gap between passthrough and
+native, introduced by the extra traversal through the VFS layer.
+
+As long as this patch has the primary objective of improving bandwidth,
+another set of tests has been performed to see how this behaves on a
+totally different scenario that involves accessing many small files. For
+this purpose, measuring the build time of the Linux kernel has been
+chosen as an appropriate, well-known, workload. The kernel has been
+built with as many processes as the number of logical CPUs (-j
+$(nproc)), that besides being a reasonable parallelization value, is
+also enough to saturate the processor's utilization thanks to the
+additional FUSE daemon's threads, making it even harder to get closer to
+the native file system performance.
+The following table shows the total build times in the different
+configurations:
+
++------------------+--------------+-----------+
+|                  | AVG duration |  Standard |
+|                  |     (sec)    | deviation |
++------------------+--------------+-----------+
+| FUSE             |      144.566 |     0.697 |
++------------------+--------------+-----------+
+| FUSE passthrough |      133.820 |     0.341 |
++------------------+--------------+-----------+
+| Native           |      109.423 |     0.724 |
++------------------+--------------+-----------+
+
+Further testing and performance evaluations are welcome.
+
+
+    Description of the series
+
+Patch 1 generalizes the function which converts iocb flags to rw flags
+from overlayfs, so that can be used in this patch set.
+
+Patch 2 enables the 32-bit compatibility for the /dev/fuse ioctl.
+
+Patch 3 introduces the data structures, function signatures and ioctl
+required both for the communication with userspace and for the internal
+kernel use.
+
+Patch 4 introduces initialization and release functions for FUSE
+passthrough.
+
+Patch 5 enables the synchronous read and write operations for those FUSE
+files for which the passthrough functionality is enabled.
+
+Patch 6 extends the read and write operations to also support
+asynchronous IO.
+
+Patch 7 allows FUSE passthrough to target files for which the requesting
+process would not have direct access to, by temporarily performing a
+credentials switch to the credentials of the FUSE daemon that issued the
+FUSE passthrough ioctl.
+
+Patch 8 extends FUSE passthrough operations to memory-mapped FUSE files.
+
+
+    Changelog
+
+Changes in v12:
+* Revert FILESYSTEM_MAX_STACK_DEPTH checks as they were in v10
+  [Requested by Amir Goldstein]
+* Introduce passthrough support for memory-mapped FUSE files
+  [Requested by yanwu]
+
+Changes in v11:
+* Fix the FILESYSTEM_MAX_STACK_DEPTH check to allow other file systems
+  to be stacked
+* Moved file system stacking depth check at ioctl time
+* Update cover letter with correct libfuse repository to test the change
+  [Requested by Peng Tao]
+* Fix the file reference counter leak introduced in v10
+  [Requested by yanwu]
+
+Changes in v10:
+* UAPI updated: ioctl now returns an ID that will be used at open/create
+  response time to reference the passthrough file
+* Synchronous read/write_iter functions does not return silly errors
+  (fixed in aio patch)
+* FUSE daemon credentials updated at ioctl time instead of mount time
+* Updated benchmark results
+  [Requested by Miklos Szeredi]
+
+Changes in v9:
+* Switched to using VFS instead of direct lower FS file ops
+  [Attempt to address a request from Jens Axboe, Jann Horn,
+  Amir Goldstein]
+* Removal of useless included aio.h header
+  [Proposed by Jens Axboe]
+
+Changes in v8:
+* aio requests now use kmalloc/kfree, instead of kmem_cache
+* Switched to call_{read,write}_iter in AIO
+* Revisited attributes copy
+* Passthrough can only be enabled via ioctl, fixing the security issue
+  spotted by Jann
+* Use an extensible fuse_passthrough_out data structure
+  [Attempt to address a request from Nikolaus Rath, Amir Goldstein and
+Miklos Szeredi]
+
+Changes in v7:
+* Full handling of aio requests as done in overlayfs (update commit
+* message).
+* s/fget_raw/fget.
+* Open fails in case of passthrough errors, emitting warning messages.
+  [Proposed by Jann Horn]
+* Create new local kiocb, getting rid of the previously proposed ki_filp
+  swapping.
+  [Proposed by Jann Horn and Jens Axboe]
+* Code polishing.
+
+Changes in v6:
+* Port to kernel v5.8:
+  * fuse_file_{read,write}_iter changed since the v5 of this patch was
+    proposed.
+* Simplify fuse_simple_request.
+* Merge fuse_passthrough.h into fuse_i.h
+* Refactor of passthrough.c:
+  * Remove BUG_ONs.
+  * Simplified error checking and request arguments indexing.
+  * Use call_{read,write}_iter utility functions.
+  * Remove get_file and fputs during read/write: handle the extra FUSE
+    references to the lower file object when the fuse_file is
+    created/deleted.
+  [Proposed by Jann Horn]
+
+Changes in v5:
+* Fix the check when setting the passthrough file.
+  [Found when testing by Mike Shal]
+
+Changes in v3 and v4:
+* Use the fs_stack_depth to prevent further stacking and a minor fix.
+  [Proposed by Jann Horn]
+
+Changes in v2:
+* Changed the feature name to passthrough from stacked_io.
+  [Proposed by Linus Torvalds]
+
+
+Alessio Balsini (8):
+  fs: Generic function to convert iocb to rw flags
+  fuse: 32-bit user space ioctl compat for fuse device
+  fuse: Definitions and ioctl for passthrough
+  fuse: Passthrough initialization and release
+  fuse: Introduce synchronous read and write for passthrough
+  fuse: Handle asynchronous read and write in passthrough
+  fuse: Use daemon creds in passthrough mode
+  fuse: Introduce passthrough for mmap
+
+ fs/fuse/Makefile          |   1 +
+ fs/fuse/dev.c             |  41 ++++--
+ fs/fuse/dir.c             |   2 +
+ fs/fuse/file.c            |  15 +-
+ fs/fuse/fuse_i.h          |  33 +++++
+ fs/fuse/inode.c           |  22 ++-
+ fs/fuse/passthrough.c     | 280 ++++++++++++++++++++++++++++++++++++++
+ fs/overlayfs/file.c       |  23 +---
+ include/linux/fs.h        |   5 +
+ include/uapi/linux/fuse.h |  14 +-
+ 10 files changed, 401 insertions(+), 35 deletions(-)
+ create mode 100644 fs/fuse/passthrough.c
+
+-- 
+2.30.0.280.ga3ce27912f-goog
+
