@@ -2,318 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AD6302E2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B7E302E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731999AbhAYVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:43:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26189 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732825AbhAYVjL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:39:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611610664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4T/NCmOwpTvfjisoFVZVBFBrB6mhRWN9E1pl6sQ/jqc=;
-        b=Luqq31Zds39nDiiI/aWhyzxtrXRoZG5Iw2rsSVozMHMVpXbo1NTW98D9/L7k0ac0P1d8+Q
-        5p9gJzxA2++zrxO7DQtDUHXJ/iEevsyRVUpIvkedDNF+ATn1WAcO4zJLKao8eK89CExdKb
-        2PMyMTE0ppKaQdUdhnXpopTv+x0gUfc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-FTtws04MMQK32BrYsVEVWw-1; Mon, 25 Jan 2021 16:37:42 -0500
-X-MC-Unique: FTtws04MMQK32BrYsVEVWw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 453ED8030D8;
-        Mon, 25 Jan 2021 21:37:33 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 59E3F5D6DC;
-        Mon, 25 Jan 2021 21:37:30 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 32/32] NFS: Convert readpage to readahead and use
- netfs_readahead for fscache
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 25 Jan 2021 21:37:29 +0000
-Message-ID: <161161064956.2537118.3354798147866150631.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S1732855AbhAYVlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:41:36 -0500
+Received: from mout.gmx.net ([212.227.15.19]:42299 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733031AbhAYVjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:39:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611610663;
+        bh=RDYY9el5f+nsgQ6gFiy8PMqsEn4/zhbkeCpd0ZbQhCY=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ZO9XCngGlkNJbXkECUsdz7FVc620gL0w2xoVjgYHEGGJ1AqwNPYDgMTO9vkHOT4Vx
+         KV6TwmCp1HoPU7RZfaOvX+LXZyvs76f2IGdrDPJCXlPnzscZp9n1UVxmL3UKisFbcP
+         jGer6OekjFdM19HrTxTJZJmuaxbYYil5mz6PXgTg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.169.109]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MsYqv-1ls7e01qzz-00tycj; Mon, 25
+ Jan 2021 22:37:43 +0100
+Subject: Re: hppa64-linux-ld: mm/hugetlb.o(.text+0x50dc): cannot reach printk
+To:     John David Anglin <dave.anglin@bell.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-parisc@vger.kernel.org, kbuild-all@lists.01.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>
+References: <202101162230.XswE8zOX-lkp@intel.com>
+ <CAKwvOd=rrTLc510cEA84BC_zzYVQ0ifPEMhRRtU-cyYPs_E4eA@mail.gmail.com>
+ <bed0d008-c5c0-011e-6f1e-fb248f97c009@bell.net>
+ <88735d3b-1b56-bc8a-2183-1f9549626002@gmx.de>
+ <20210125204720.GA28462@ls3530.fritz.box>
+ <4bdf35de-f804-4e9d-cde9-cc6785840a60@gmx.de>
+ <627d4b69-79cf-371b-9aa7-d87f26e4f088@bell.net>
+ <3564bcea-5781-123f-564e-53289967e9e4@gmx.de>
+ <428d571c-1f68-7a59-3232-9bb362b51a5b@bell.net>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ mQINBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
+ HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
+ r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
+ CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
+ 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
+ dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
+ Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
+ GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
+ aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
+ 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABtBxIZWxnZSBEZWxs
+ ZXIgPGRlbGxlckBnbXguZGU+iQJRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
+ FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
+ uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
+ uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
+ REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
+ qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
+ iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
+ gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
+ Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
+ qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
+ 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
+ dbZgPwou7pD8MTfQhGmDJFKm2ju5Ag0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
+ rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
+ UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
+ eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
+ ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
+ dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
+ lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
+ 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
+ xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
+ wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
+ fTBRABEBAAGJAjYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
+ Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
+ l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
+ RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
+ BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
+ Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
+ XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
+ MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
+ FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
+ 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
+ ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLrgzBF3IbakWCSsGAQQB2kcP
+ AQEHQNdEF2C6q5MwiI+3akqcRJWo5mN24V3vb3guRJHo8xbFiQKtBBgBCAAgFiEERUSCKCzZ
+ ENvvPSX4Pl89BKeiRgMFAl3IbakCGwIAgQkQPl89BKeiRgN2IAQZFggAHRYhBLzpEj4a0p8H
+ wEm73vcStRCiOg9fBQJdyG2pAAoJEPcStRCiOg9fto8A/3cti96iIyCLswnSntdzdYl72SjJ
+ HnsUYypLPeKEXwCqAQDB69QCjXHPmQ/340v6jONRMH6eLuGOdIBx8D+oBp8+BGLiD/9qu5H/
+ eGe0rrmE5lLFRlnm5QqKKi4gKt2WHMEdGi7fXggOTZbuKJA9+DzPxcf9ShuQMJRQDkgzv/VD
+ V1fvOdaIMlM1EjMxIS2fyyI+9KZD7WwFYK3VIOsC7PtjOLYHSr7o7vDHNqTle7JYGEPlxuE6
+ hjMU7Ew2Ni4SBio8PILVXE+dL/BELp5JzOcMPnOnVsQtNbllIYvXRyX0qkTD6XM2Jbh+xI9P
+ xajC+ojJ/cqPYBEALVfgdh6MbA8rx3EOCYj/n8cZ/xfo+wR/zSQ+m9wIhjxI4XfbNz8oGECm
+ xeg1uqcyxfHx+N/pdg5Rvw9g+rtlfmTCj8JhNksNr0NcsNXTkaOy++4Wb9lKDAUcRma7TgMk
+ Yq21O5RINec5Jo3xeEUfApVwbueBWCtq4bljeXG93iOWMk4cYqsRVsWsDxsplHQfh5xHk2Zf
+ GAUYbm/rX36cdDBbaX2+rgvcHDTx9fOXozugEqFQv9oNg3UnXDWyEeiDLTC/0Gei/Jd/YL1p
+ XzCscCr+pggvqX7kI33AQsxo1DT19sNYLU5dJ5Qxz1+zdNkB9kK9CcTVFXMYehKueBkk5MaU
+ ou0ZH9LCDjtnOKxPuUWstxTXWzsinSpLDIpkP//4fN6asmPo2cSXMXE0iA5WsWAXcK8uZ4jD
+ c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
+Message-ID: <2d1df226-275a-26f5-2f32-d2c3e591dbc6@gmx.de>
+Date:   Mon, 25 Jan 2021 22:37:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <428d571c-1f68-7a59-3232-9bb362b51a5b@bell.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:62Ia8N38ga24tRZ0nWDpz1mwa0Kg2oqSfk+x0IiTrqTCdhRDf9G
+ YdOMwLAYHdCUpJc37w6f1aCZY9CAhUoGZz+eSKBlUnoaQRrL4w559u+cR18hn0cAeUMI3zj
+ Wn56V83PqNQXWIvp8luYEc1uZopq5f2M6aDL3ag/7ZAsVYalmCrNQURKyvCVgTNAs6BmzSM
+ 4HSqOU265IXh0/PQlF6xA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oHs7iHILS7Q=:s2WxnUovYcreJR0Qgiu5TD
+ K64AGqbzbYwy1YkY1muDN3FR+UHNHMaBuC09eQGezSN3FBesSE11tbSYegS50XZBft7OlVCAg
+ GMes+mZmhGzwOLQfBUcmz2+/mRtAGAZ8xP0fVpWh4pssPPMWPnxRz9ZR8GP4gQVy5985FijVv
+ gmo76VEt8AoBZshfNIi8JcaXeB1ELJAOFgx+YGbc2/anDdVZaVNZb/aXIeRW7v6aZtG7rx3YE
+ +N//qEnYXjOaglCVLNJpdtQ+ns4obei4vHKuLklgYgsofvX39Jq9Dx2EUjje77G+M0arbbU8x
+ viJ3fyIEW5/MbjRGkXufJvxBiCorPVknW4+XbVRbM4XyB5ujS6VQz0VJRI9Bs9M3BlThSkKAh
+ NxYT/d81AAvjOiOMQdxdEHRv4fx6zvlqD/k6Qz7o+w7fVRrzcNjjYJsbo7Dp0dAwPr9yrZQgA
+ 5BsUNWB5N7zVWRt3a1NCtQnqA8kPRboMBth1jFbjutMmmPDokEIdS9Jv+qAqkqNF+Uz/u0oTq
+ C0fz7GO+mtXuCYYKJWth2Bi3xgPRe1Yt9EsQYWfRkyU5NWFpAvTqRlo0ZqQzP6ehJMuXN3L2P
+ J0hp4o3FhKu4e+c5stF1dC5GMj+YkBt0TtZSopyjhFEkgMv8V4+EYiDOMZ0wI9HlC3SR5dLWj
+ pFe3+LmjpMbgBMgQxqJITHcPyoF2ppWuTLTMbvr8/gANaXkUygjoZcaWfVYgs1yhRG6y6FrrT
+ apYdSCTpDCzEJUlEMkLtxTJXZ7A3vIvI8oQcfryDNtkAeHJVM43rFRg4aQbqe/yZFx4cLS1w/
+ bFgU7Qn3fWU8CnowDDa68iImOVjAWXnhvzpYtJn1D0QUNRFYImTl0aAR0O/MiGCQX4ixDg0fY
+ WjukJxxnrpjzjWAcwv7Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+On 1/25/21 10:17 PM, John David Anglin wrote:
+> On 2021-01-25 4:13 p.m., Helge Deller wrote:
+>> On 1/25/21 10:08 PM, John David Anglin wrote:
+>>> I would suggest the following for this hunk:
+>>>
+>>> +=C2=A0=C2=A0=C2=A0 ldil=C2=A0=C2=A0=C2=A0 L%intr_restore, %r2
+>>> +=C2=A0=C2=A0=C2=A0 BL=C2=A0=C2=A0=C2=A0 preempt_schedule_irq
+>>> +=C2=A0=C2=A0=C2=A0 ldo=C2=A0=C2=A0=C2=A0=C2=A0 R%intr_restore(%r2), %=
+r2
+>>>
+>>> =C2=A0=C2=A0=C2=A0 ldil=C2=A0=C2=A0=C2=A0 L%intr_restore, %r1
+>>> =C2=A0=C2=A0=C2=A0 b,l=C2=A0=C2=A0=C2=A0 preempt_schedule_irq,%r2
+>>> =C2=A0=C2=A0=C2=A0 ldo=C2=A0=C2=A0=C2=A0=C2=A0 R%intr_restore(%r1), %r=
+2
+>>>
+>>> On PA 2.0 hardware that gives a 22-bit call.
+>> "BL" is already using "b,l", see #define in arch/parisc/include/asm/ass=
+embly.h
+>>
+>> The 22-bit weren't sufficient, that's why I changed it too.
+> Okay but "b,l" only provides a 22-bit branch with %r2 as link register.=
+=C2=A0
 
-The new FS-Cache API does not have a readpages equivalent function,
-and instead of fscache_read_or_alloc_pages() it implements a readahead
-function, netfs_readahead().  Call netfs_readahead() if fscache is
-enabled, and if not, utilize readahead_page() to run through the
-pages needed calling readpage_async_filler().
+Argh. Yes. Didn't know.
+We have BL,%r25 in the same file.
 
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
----
+> You also need to use %r1 in the ldil and ldo instructions.
 
- fs/nfs/file.c              |    2 +-
- fs/nfs/fscache.c           |   49 +++++++-------------------------------------
- fs/nfs/fscache.h           |   28 +++++++++----------------
- fs/nfs/read.c              |   32 ++++++++++++++---------------
- include/linux/nfs_fs.h     |    3 +--
- include/linux/nfs_iostat.h |    2 +-
- 6 files changed, 37 insertions(+), 79 deletions(-)
+Ok, will fix.
 
-diff --git a/fs/nfs/file.c b/fs/nfs/file.c
-index 63940a7a70be..ebcaa164db5f 100644
---- a/fs/nfs/file.c
-+++ b/fs/nfs/file.c
-@@ -515,7 +515,7 @@ static void nfs_swap_deactivate(struct file *file)
- 
- const struct address_space_operations nfs_file_aops = {
- 	.readpage = nfs_readpage,
--	.readpages = nfs_readpages,
-+	.readahead = nfs_readahead,
- 	.set_page_dirty = __set_page_dirty_nobuffers,
- 	.writepage = nfs_writepage,
- 	.writepages = nfs_writepages,
-diff --git a/fs/nfs/fscache.c b/fs/nfs/fscache.c
-index d3445bb1cc9c..b432bf931470 100644
---- a/fs/nfs/fscache.c
-+++ b/fs/nfs/fscache.c
-@@ -499,51 +499,18 @@ int __nfs_readpage_from_fscache(struct file *filp,
- /*
-  * Retrieve a set of pages from fscache
-  */
--int __nfs_readpages_from_fscache(struct nfs_open_context *ctx,
--				 struct inode *inode,
--				 struct address_space *mapping,
--				 struct list_head *pages,
--				 unsigned *nr_pages)
-+int __nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-+				 struct readahead_control *rac)
- {
--	unsigned npages = *nr_pages;
--	int ret;
-+	struct inode *inode = rac->mapping->host;
- 
--	dfprintk(FSCACHE, "NFS: nfs_getpages_from_fscache (0x%p/%u/0x%p)\n",
--		 nfs_i_fscache(inode), npages, inode);
--
--	ret = fscache_read_or_alloc_pages(nfs_i_fscache(inode),
--					  mapping, pages, nr_pages,
--					  nfs_readpage_from_fscache_complete,
--					  ctx,
--					  mapping_gfp_mask(mapping));
--	if (*nr_pages < npages)
--		nfs_add_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_OK,
--				      npages);
--	if (*nr_pages > 0)
--		nfs_add_fscache_stats(inode, NFSIOS_FSCACHE_PAGES_READ_FAIL,
--				      *nr_pages);
-+	dfprintk(FSCACHE, "NFS: nfs_readahead_from_fscache (0x%p/0x%p)\n",
-+		 nfs_i_fscache(inode), inode);
- 
--	switch (ret) {
--	case 0: /* read submitted to the cache for all pages */
--		BUG_ON(!list_empty(pages));
--		BUG_ON(*nr_pages != 0);
--		dfprintk(FSCACHE,
--			 "NFS: nfs_getpages_from_fscache: submitted\n");
-+	netfs_readahead(rac, &nfs_fscache_req_ops, desc);
- 
--		return ret;
--
--	case -ENOBUFS: /* some pages aren't cached and can't be */
--	case -ENODATA: /* some pages aren't cached */
--		dfprintk(FSCACHE,
--			 "NFS: nfs_getpages_from_fscache: no page: %d\n", ret);
--		return 1;
--
--	default:
--		dfprintk(FSCACHE,
--			 "NFS: nfs_getpages_from_fscache: ret  %d\n", ret);
--	}
--
--	return ret;
-+	/* FIXME: NFSIOS_NFSIOS_FSCACHE_ stats */
-+	return 0;
- }
- 
- /*
-diff --git a/fs/nfs/fscache.h b/fs/nfs/fscache.h
-index 4a76a5f31772..d095e513af12 100644
---- a/fs/nfs/fscache.h
-+++ b/fs/nfs/fscache.h
-@@ -98,11 +98,10 @@ extern int nfs_fscache_release_page(struct page *, gfp_t);
- extern int __nfs_readpage_from_fscache(struct file *filp,
- 				       struct page *page,
- 				       struct nfs_readdesc *desc);
--extern int __nfs_readpages_from_fscache(struct nfs_open_context *,
--					struct inode *, struct address_space *,
--					struct list_head *, unsigned *);
--extern void __nfs_readpage_to_fscache(struct inode *, struct page *, int);
--
-+extern int __nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-+					struct readahead_control *rac);
-+extern void __nfs_read_completion_to_fscache(struct nfs_pgio_header *hdr,
-+					     unsigned long bytes);
- /*
-  * wait for a page to complete writing to the cache
-  */
-@@ -139,15 +138,11 @@ static inline int nfs_readpage_from_fscache(struct file *filp,
- /*
-  * Retrieve a set of pages from an inode data storage object.
-  */
--static inline int nfs_readpages_from_fscache(struct nfs_open_context *ctx,
--					     struct inode *inode,
--					     struct address_space *mapping,
--					     struct list_head *pages,
--					     unsigned *nr_pages)
-+static inline int nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-+					     struct readahead_control *rac)
- {
--	if (NFS_I(inode)->fscache)
--		return __nfs_readpages_from_fscache(ctx, inode, mapping, pages,
--						    nr_pages);
-+	if (NFS_I(rac->mapping->host)->fscache)
-+		return __nfs_readahead_from_fscache(desc, rac);
- 	return -ENOBUFS;
- }
- 
-@@ -217,11 +212,8 @@ static inline int nfs_readpage_from_fscache(struct file *filp,
- {
- 	return -ENOBUFS;
- }
--static inline int nfs_readpages_from_fscache(struct nfs_open_context *ctx,
--					     struct inode *inode,
--					     struct address_space *mapping,
--					     struct list_head *pages,
--					     unsigned *nr_pages)
-+static inline int nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-+					     struct readahead_control *rac)
- {
- 	return -ENOBUFS;
- }
-diff --git a/fs/nfs/read.c b/fs/nfs/read.c
-index 7a76ab474fe0..da44ce68488c 100644
---- a/fs/nfs/read.c
-+++ b/fs/nfs/read.c
-@@ -390,50 +390,50 @@ int nfs_readpage(struct file *filp, struct page *page)
- 	return ret;
- }
- 
--int nfs_readpages(struct file *filp, struct address_space *mapping,
--		struct list_head *pages, unsigned nr_pages)
-+void nfs_readahead(struct readahead_control *rac)
- {
- 	struct nfs_readdesc desc;
--	struct inode *inode = mapping->host;
-+	struct inode *inode = rac->mapping->host;
-+	struct page *page;
- 	int ret;
- 
--	dprintk("NFS: nfs_readpages (%s/%Lu %d)\n",
--			inode->i_sb->s_id,
--			(unsigned long long)NFS_FILEID(inode),
--			nr_pages);
-+	dprintk("NFS: %s (%s/%llu %lld)\n", __func__,
-+		inode->i_sb->s_id,
-+		(unsigned long long)NFS_FILEID(inode),
-+		readahead_length(rac));
- 	nfs_inc_stats(inode, NFSIOS_VFSREADPAGES);
- 
- 	ret = -ESTALE;
- 	if (NFS_STALE(inode))
--		goto out;
-+		return;
- 
--	if (filp == NULL) {
-+	if (rac->file == NULL) {
- 		ret = -EBADF;
- 		desc.ctx = nfs_find_open_context(inode, NULL, FMODE_READ);
- 		if (desc.ctx == NULL)
--			goto out;
-+			return;
- 	} else
--		desc.ctx = get_nfs_open_context(nfs_file_open_context(filp));
-+		desc.ctx = get_nfs_open_context(nfs_file_open_context(rac->file));
- 
- 	/* attempt to read as many of the pages as possible from the cache
- 	 * - this returns -ENOBUFS immediately if the cookie is negative
- 	 */
--	ret = nfs_readpages_from_fscache(desc.ctx, inode, mapping,
--					 pages, &nr_pages);
-+	ret = nfs_readahead_from_fscache(&desc, rac);
- 	if (ret == 0)
- 		goto read_complete; /* all pages were read */
- 
- 	nfs_pageio_init_read(&desc.pgio, inode, false,
- 			     &nfs_async_read_completion_ops);
- 
--	ret = read_cache_pages(mapping, pages, readpage_async_filler, &desc);
-+	while ((page = readahead_page(rac))) {
-+		ret = readpage_async_filler(&desc, page);
-+		put_page(page);
-+	}
- 
- 	nfs_pageio_complete_read(&desc.pgio, inode);
- 
- read_complete:
- 	put_nfs_open_context(desc.ctx);
--out:
--	return ret;
- }
- 
- int __init nfs_init_readpagecache(void)
-diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
-index 3cfcf219e96b..968c79b1b09b 100644
---- a/include/linux/nfs_fs.h
-+++ b/include/linux/nfs_fs.h
-@@ -568,8 +568,7 @@ nfs_have_writebacks(struct inode *inode)
-  * linux/fs/nfs/read.c
-  */
- extern int  nfs_readpage(struct file *, struct page *);
--extern int  nfs_readpages(struct file *, struct address_space *,
--		struct list_head *, unsigned);
-+extern void nfs_readahead(struct readahead_control *rac);
- 
- /*
-  * inline functions
-diff --git a/include/linux/nfs_iostat.h b/include/linux/nfs_iostat.h
-index 027874c36c88..8baf8fb7551d 100644
---- a/include/linux/nfs_iostat.h
-+++ b/include/linux/nfs_iostat.h
-@@ -53,7 +53,7 @@
-  * NFS page counters
-  *
-  * These count the number of pages read or written via nfs_readpage(),
-- * nfs_readpages(), or their write equivalents.
-+ * nfs_readahead(), or their write equivalents.
-  *
-  * NB: When adding new byte counters, please include the measured
-  * units in the name of each byte counter to help users of this
-
-
+Helge
