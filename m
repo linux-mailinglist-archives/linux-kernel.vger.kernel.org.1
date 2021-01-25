@@ -2,180 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355D8303734
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67D4303747
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389466AbhAZHMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:12:08 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:38462 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730250AbhAYPm1 (ORCPT
+        id S2389549AbhAZHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:21:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730332AbhAYPok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:42:27 -0500
-Received: by mail-oi1-f171.google.com with SMTP id h6so13820677oie.5;
-        Mon, 25 Jan 2021 07:42:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B8cSsgK1OJbt9UtsbW56xNd3MLuKfJjKmdscWoF6SM0=;
-        b=qCN+ezisOIY5UNhCD1OUtbYkwSGgbOVMZ7PC6REmbLQNIFWDiYusQXuxrjblVGMx9Z
-         R/n6x9ntgf9OGRhi55R7wT+G3A9ruJZEkYQA93QWcXG70YT/VU08kMK4zHJDeFuX4Wwu
-         VKsrg2eIe7jhdj1Luv73RxIqowoe5296Vkqz2VmQ5OZGdFsl1QqbaW6x6q/YCAZInJoi
-         DVHFlsW1AJ9HrWGkBuohasdXB3DYfIGc/LiK8HkFq9h7c0thjN/jP1GwqhNMkoiIggQr
-         5/cQ010B9CLtzgt0soNi2DOWVfWszu6yjOpuncQYhb8SsbSIdARrQIgG4vcTRBpPOHk+
-         RJoA==
-X-Gm-Message-State: AOAM531Iz40JAN+tnDPAq3zCt4sBepqb44A1CPUusxZgftp6Fi8kRDoL
-        dIw1t+saetgfbzsyta82ow==
-X-Google-Smtp-Source: ABdhPJw7rPbq44YNT18tcIBSrVSoi2LhkyC7PmEte7IMU+tVb7Cgdi2UXZwo67k1IJ62kD5qcmagfw==
-X-Received: by 2002:aca:b4d5:: with SMTP id d204mr450168oif.165.1611589306006;
-        Mon, 25 Jan 2021 07:41:46 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a96sm3514973otb.12.2021.01.25.07.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 07:41:44 -0800 (PST)
-Received: (nullmailer pid 417209 invoked by uid 1000);
-        Mon, 25 Jan 2021 15:41:43 -0000
-Date:   Mon, 25 Jan 2021 09:41:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] dt-bindings:drm/bridge:anx7625:add HDCP support
- flag and swing reg
-Message-ID: <20210125154143.GA390777@robh.at.kernel.org>
-References: <cover.1611572142.git.xji@analogixsemi.com>
- <75e29d7386df2ebca4a8e3f0b91c8370a4a8f74f.1611572143.git.xji@analogixsemi.com>
+        Mon, 25 Jan 2021 10:44:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611589380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TwUrudT149MlYBAjlrkqwTg7VCY0+Yq9+gSFRKaR80s=;
+        b=TxT/UvEAK43OHQieTVUkcYnHR7UTgGNZnrNJxgFZr9apuHfIiWbIBZdak26JwBGmkkO2e3
+        pvl/fkrnER5Stt046wBDsUPiLolqgaT7Z/9hDPGo9N+LDeKU5o8KX4JU7Xr77ubfc5IMR9
+        2nz63zDq89ocL64y7agTiEWgNJVi+Us=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-wFt5wxUKNkKXGw7gDZYURA-1; Mon, 25 Jan 2021 10:42:58 -0500
+X-MC-Unique: wFt5wxUKNkKXGw7gDZYURA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1765809DC9;
+        Mon, 25 Jan 2021 15:42:56 +0000 (UTC)
+Received: from gondolin (ovpn-113-161.ams2.redhat.com [10.36.113.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9017D5E1A4;
+        Mon, 25 Jan 2021 15:42:54 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 16:42:52 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        schnelle@linux.ibm.com, pmorel@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] vfio-pci/zdev: Introduce the zPCI I/O vfio region
+Message-ID: <20210125164252.1d1af6cd.cohuck@redhat.com>
+In-Reply-To: <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
+References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
+        <1611086550-32765-5-git-send-email-mjrosato@linux.ibm.com>
+        <20210122164843.269f806c@omen.home.shazbot.org>
+        <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <75e29d7386df2ebca4a8e3f0b91c8370a4a8f74f.1611572143.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 07:12:21PM +0800, Xin Ji wrote:
-> Add 'bus-type' and 'data-lanes' define for port0, add HDCP support
-> flag and DP tx lane0 and lane1 swing register array define.
+On Mon, 25 Jan 2021 09:40:38 -0500
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+
+> On 1/22/21 6:48 PM, Alex Williamson wrote:
+> > On Tue, 19 Jan 2021 15:02:30 -0500
+> > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+> >   
+> >> Some s390 PCI devices (e.g. ISM) perform I/O operations that have very
+> >> specific requirements in terms of alignment as well as the patterns in
+> >> which the data is read/written. Allowing these to proceed through the
+> >> typical vfio_pci_bar_rw path will cause them to be broken in up in such a
+> >> way that these requirements can't be guaranteed. In addition, ISM devices
+> >> do not support the MIO codepaths that might be triggered on vfio I/O coming
+> >> from userspace; we must be able to ensure that these devices use the
+> >> non-MIO instructions.  To facilitate this, provide a new vfio region by
+> >> which non-MIO instructions can be passed directly to the host kernel s390
+> >> PCI layer, to be reliably issued as non-MIO instructions.
+> >>
+> >> This patch introduces the new vfio VFIO_REGION_SUBTYPE_IBM_ZPCI_IO region
+> >> and implements the ability to pass PCISTB and PCILG instructions over it,
+> >> as these are what is required for ISM devices.  
+> > 
+> > There have been various discussions about splitting vfio-pci to allow
+> > more device specific drivers rather adding duct tape and bailing wire
+> > for various device specific features to extend vfio-pci.  The latest
+> > iteration is here[1].  Is it possible that such a solution could simply
+> > provide the standard BAR region indexes, but with an implementation that
+> > works on s390, rather than creating new device specific regions to
+> > perform the same task?  Thanks,
+> > 
+> > Alex
+> > 
+> > [1]https://lore.kernel.org/lkml/20210117181534.65724-1-mgurtovoy@nvidia.com/
+> >   
 > 
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  .../bindings/display/bridge/analogix,anx7625.yaml  | 57 ++++++++++++++++++++--
->  1 file changed, 54 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> index 60585a4..3b1cbe0 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> @@ -34,23 +34,69 @@ properties:
->      description: used for reset chip control, RESET_N pin B7.
->      maxItems: 1
->  
-> +  analogix,lane0-swing:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description:
-> +      an array of swing register setting for DP tx lane0 PHY, please don't
-> +      add this property, or contact vendor.
-> +
-> +  analogix,lane1-swing:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    description:
-> +      an array of swing register setting for DP tx lane1 PHY, please don't
-> +      add this property, or contact vendor.
-> +
-> +  analogix,hdcp-support:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: indicate the DP tx HDCP support or not.
+> Thanks for the pointer, I'll have to keep an eye on this.  An approach 
+> like this could solve some issues, but I think a main issue that still 
+> remains with relying on the standard BAR region indexes (whether using 
+> the current vfio-pci driver or a device-specific driver) is that QEMU 
+> writes to said BAR memory region are happening in, at most, 8B chunks 
+> (which then, in the current general-purpose vfio-pci code get further 
+> split up into 4B iowrite operations).  The alternate approach I'm 
+> proposing here is allowing for the whole payload (4K) in a single 
+> operation, which is significantly faster.  So, I suspect even with a 
+> device specific driver we'd want this sort of a region anyhow..
 
-Sounds like a boolean.
+I'm also wondering about device specific vs architecture/platform
+specific handling.
 
-> +
->    ports:
->      type: object
-> +    additionalProperties: false
->  
->      properties:
->        port@0:
->          type: object
->          description:
-> -          Video port for MIPI DSI input.
-> +          Video port for MIPI input.
+If we're trying to support ISM devices, that's device specific
+handling; but if we're trying to add more generic things like the large
+payload support, that's not necessarily tied to a device, is it? For
+example, could a device support large payload if plugged into a z, but
+not if plugged into another machine?
 
-You're going to need to rebase this one drm-misc-next which uses the 
-graph schema now.
-
-> +
-> +        properties:
-> +          endpoint:
-> +            type: object
-> +            additionalProperties: false
-> +
-> +            # Properties described in
-> +            # Documentation/devicetree/bindings/media/video-interfaces.txt
-> +            properties:
-> +              remote-endpoint: true
-> +              bus-type: true
-> +              data-lanes: true
-> +
-> +            required:
-> +              - remote-endpoint
-> +
-> +        required:
-> +          - endpoint
->  
->        port@1:
->          type: object
->          description:
->            Video port for panel or connector.
->  
-> +        properties:
-> +          endpoint:
-> +            type: object
-> +            additionalProperties: false
-> +
-> +            required:
-> +              - remote-endpoint
-> +
-> +        required:
-> +          - endpoint
-> +
->      required:
-> -        - port@0
-> -        - port@1
-> +      - port@0
-> +      - port@1
->  
->  required:
->    - compatible
-> @@ -73,6 +119,10 @@ examples:
->              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
->              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
->  
-> +            analogix,lane0-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> +            analogix,lane1-swing = <0x14 0x54 0x64 0x74 0x29 0x7b 0x77 0x5b>;
-> +            analogix,hdcp-support = <0>;
-> +
->              ports {
->                  #address-cells = <1>;
->                  #size-cells = <0>;
-> @@ -81,6 +131,7 @@ examples:
->                      reg = <0>;
->                      anx7625_in: endpoint {
->                          remote-endpoint = <&mipi_dsi>;
-> +                        bus-type = <5>;
->                      };
->                  };
->  
-> -- 
-> 2.7.4
-> 
