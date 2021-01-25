@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B513039B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802F83039C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391795AbhAZJ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:59:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S2391750AbhAZKDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:03:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731317AbhAYSyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:54:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B576A20758;
-        Mon, 25 Jan 2021 18:53:57 +0000 (UTC)
+        id S1731217AbhAYSyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:54:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 401C320E65;
+        Mon, 25 Jan 2021 18:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600838;
-        bh=sVbDhgfyIsvJGMXVq/+9yP+CleiLoZ+m83dKE+LA8FE=;
+        s=korg; t=1611600848;
+        bh=FMECQMMtOPfi0xgDdiUBRLUER12IjMMeOsSU1oudaPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CI0mDaTd1zialWMgi5FqNlJ3Bidshc9aUouh6eau0T9ewdFOgm+aBTwAw8guxPOoW
-         9z7z9G3KqTUFU4XkOJibCPW297ixboz3Gwd4a12TV/tbFjOa6q+rchG9s0Q1g9HjOe
-         VclmFHz4JctSAibED/F/nNBFojDn7OhqCNVP5eKE=
+        b=p4pq6EPtVRj9tw9H+xDBr0crhrzIDFQYb792VttVhao9aSViC3YiFlivqnVKyYdt+
+         Jo+YRdieOimJrN3qVaMoo3fYVNrjWLPQqrnnRgPMP7OpXhxXijryUm2XH2jGJFNS4S
+         SmvY86QxbTJpUaeIaNc+MmuKSr747jPH/9NrphfI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Cong Wang <cong.wang@bytedance.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 171/199] udp: mask TOS bits in udp_v4_early_demux()
-Date:   Mon, 25 Jan 2021 19:39:53 +0100
-Message-Id: <20210125183223.415612093@linuxfoundation.org>
+Subject: [PATCH 5.10 174/199] net_sched: reject silly cell_log in qdisc_get_rtab()
+Date:   Mon, 25 Jan 2021 19:39:56 +0100
+Message-Id: <20210125183223.543879069@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,88 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 8d2b51b008c25240914984208b2ced57d1dd25a5 upstream.
+commit e4bedf48aaa5552bc1f49703abd17606e7e6e82a upstream.
 
-udp_v4_early_demux() is the only function that calls
-ip_mc_validate_source() with a TOS that hasn't been masked with
-IPTOS_RT_MASK.
+iproute2 probably never goes beyond 8 for the cell exponent,
+but stick to the max shift exponent for signed 32bit.
 
-This results in different behaviours for incoming multicast UDPv4
-packets, depending on if ip_mc_validate_source() is called from the
-early-demux path (udp_v4_early_demux) or from the regular input path
-(ip_route_input_noref).
+UBSAN reported:
+UBSAN: shift-out-of-bounds in net/sched/sch_api.c:389:22
+shift exponent 130 is too large for 32-bit type 'int'
+CPU: 1 PID: 8450 Comm: syz-executor586 Not tainted 5.11.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x183/0x22e lib/dump_stack.c:120
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+ __detect_linklayer+0x2a9/0x330 net/sched/sch_api.c:389
+ qdisc_get_rtab+0x2b5/0x410 net/sched/sch_api.c:435
+ cbq_init+0x28f/0x12c0 net/sched/sch_cbq.c:1180
+ qdisc_create+0x801/0x1470 net/sched/sch_api.c:1246
+ tc_modify_qdisc+0x9e3/0x1fc0 net/sched/sch_api.c:1662
+ rtnetlink_rcv_msg+0xb1d/0xe60 net/core/rtnetlink.c:5564
+ netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0xaa6/0xe90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x5a2/0x900 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmsg+0x319/0x400 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-ECN would normally not be used with UDP multicast packets, so the
-practical consequences should be limited on that side. However,
-IPTOS_RT_MASK is used to also masks the TOS' high order bits, to align
-with the non-early-demux path behaviour.
-
-Reproducer:
-
-  Setup two netns, connected with veth:
-  $ ip netns add ns0
-  $ ip netns add ns1
-  $ ip -netns ns0 link set dev lo up
-  $ ip -netns ns1 link set dev lo up
-  $ ip link add name veth01 netns ns0 type veth peer name veth10 netns ns1
-  $ ip -netns ns0 link set dev veth01 up
-  $ ip -netns ns1 link set dev veth10 up
-  $ ip -netns ns0 address add 192.0.2.10 peer 192.0.2.11/32 dev veth01
-  $ ip -netns ns1 address add 192.0.2.11 peer 192.0.2.10/32 dev veth10
-
-  In ns0, add route to multicast address 224.0.2.0/24 using source
-  address 198.51.100.10:
-  $ ip -netns ns0 address add 198.51.100.10/32 dev lo
-  $ ip -netns ns0 route add 224.0.2.0/24 dev veth01 src 198.51.100.10
-
-  In ns1, define route to 198.51.100.10, only for packets with TOS 4:
-  $ ip -netns ns1 route add 198.51.100.10/32 tos 4 dev veth10
-
-  Also activate rp_filter in ns1, so that incoming packets not matching
-  the above route get dropped:
-  $ ip netns exec ns1 sysctl -wq net.ipv4.conf.veth10.rp_filter=1
-
-  Now try to receive packets on 224.0.2.11:
-  $ ip netns exec ns1 socat UDP-RECVFROM:1111,ip-add-membership=224.0.2.11:veth10,ignoreeof -
-
-  In ns0, send packet to 224.0.2.11 with TOS 4 and ECT(0) (that is,
-  tos 6 for socat):
-  $ echo test0 | ip netns exec ns0 socat - UDP-DATAGRAM:224.0.2.11:1111,bind=:1111,tos=6
-
-  The "test0" message is properly received by socat in ns1, because
-  early-demux has no cached dst to use, so source address validation
-  is done by ip_route_input_mc(), which receives a TOS that has the
-  ECN bits masked.
-
-  Now send another packet to 224.0.2.11, still with TOS 4 and ECT(0):
-  $ echo test1 | ip netns exec ns0 socat - UDP-DATAGRAM:224.0.2.11:1111,bind=:1111,tos=6
-
-  The "test1" message isn't received by socat in ns1, because, now,
-  early-demux has a cached dst to use and calls ip_mc_validate_source()
-  immediately, without masking the ECN bits.
-
-Fixes: bc044e8db796 ("udp: perform source validation for mcast early demux")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Acked-by: Cong Wang <cong.wang@bytedance.com>
+Link: https://lore.kernel.org/r/20210114160637.1660597-1-eric.dumazet@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv4/udp.c |    3 ++-
+ net/sched/sch_api.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2553,7 +2553,8 @@ int udp_v4_early_demux(struct sk_buff *s
- 		 */
- 		if (!inet_sk(sk)->inet_daddr && in_dev)
- 			return ip_mc_validate_source(skb, iph->daddr,
--						     iph->saddr, iph->tos,
-+						     iph->saddr,
-+						     iph->tos & IPTOS_RT_MASK,
- 						     skb->dev, in_dev, &itag);
- 	}
- 	return 0;
+--- a/net/sched/sch_api.c
++++ b/net/sched/sch_api.c
+@@ -412,7 +412,8 @@ struct qdisc_rate_table *qdisc_get_rtab(
+ {
+ 	struct qdisc_rate_table *rtab;
+ 
+-	if (tab == NULL || r->rate == 0 || r->cell_log == 0 ||
++	if (tab == NULL || r->rate == 0 ||
++	    r->cell_log == 0 || r->cell_log >= 32 ||
+ 	    nla_len(tab) != TC_RTAB_SIZE) {
+ 		NL_SET_ERR_MSG(extack, "Invalid rate table parameters for searching");
+ 		return NULL;
 
 
