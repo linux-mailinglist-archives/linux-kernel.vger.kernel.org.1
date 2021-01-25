@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802F83039C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684F83039C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391750AbhAZKDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:03:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41090 "EHLO mail.kernel.org"
+        id S2391828AbhAZKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:04:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731217AbhAYSyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:54:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 401C320E65;
-        Mon, 25 Jan 2021 18:54:08 +0000 (UTC)
+        id S1731348AbhAYSyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:54:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9FB02100A;
+        Mon, 25 Jan 2021 18:54:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600848;
-        bh=FMECQMMtOPfi0xgDdiUBRLUER12IjMMeOsSU1oudaPM=;
+        s=korg; t=1611600851;
+        bh=37+VVziomjouwaSdoeRU8YHsmhhn22D6yU59bF/mXbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p4pq6EPtVRj9tw9H+xDBr0crhrzIDFQYb792VttVhao9aSViC3YiFlivqnVKyYdt+
-         Jo+YRdieOimJrN3qVaMoo3fYVNrjWLPQqrnnRgPMP7OpXhxXijryUm2XH2jGJFNS4S
-         SmvY86QxbTJpUaeIaNc+MmuKSr747jPH/9NrphfI=
+        b=Q3REbXdOhpiRwfXRA/wsd7CfsZwsjmI/aqwwGNO2VMWbEaleZrIwc844YQpr5KVnj
+         FS4DxoZvzPborku08CdfGNAYJGMdB4LMr1QlLyhgt3mqKIXhuVP650PRC0Fc6yJs8E
+         4vdVX/6q82nje5lDnBWe1sS1C4MKj2+9HVZdr3dk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 174/199] net_sched: reject silly cell_log in qdisc_get_rtab()
-Date:   Mon, 25 Jan 2021 19:39:56 +0100
-Message-Id: <20210125183223.543879069@linuxfoundation.org>
+Subject: [PATCH 5.10 175/199] ipv6: set multicast flag on the multicast route
+Date:   Mon, 25 Jan 2021 19:39:57 +0100
+Message-Id: <20210125183223.587285191@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,64 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Matteo Croce <mcroce@microsoft.com>
 
-commit e4bedf48aaa5552bc1f49703abd17606e7e6e82a upstream.
+commit ceed9038b2783d14e0422bdc6fd04f70580efb4c upstream.
 
-iproute2 probably never goes beyond 8 for the cell exponent,
-but stick to the max shift exponent for signed 32bit.
+The multicast route ff00::/8 is created with type RTN_UNICAST:
 
-UBSAN reported:
-UBSAN: shift-out-of-bounds in net/sched/sch_api.c:389:22
-shift exponent 130 is too large for 32-bit type 'int'
-CPU: 1 PID: 8450 Comm: syz-executor586 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x183/0x22e lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
- __detect_linklayer+0x2a9/0x330 net/sched/sch_api.c:389
- qdisc_get_rtab+0x2b5/0x410 net/sched/sch_api.c:435
- cbq_init+0x28f/0x12c0 net/sched/sch_cbq.c:1180
- qdisc_create+0x801/0x1470 net/sched/sch_api.c:1246
- tc_modify_qdisc+0x9e3/0x1fc0 net/sched/sch_api.c:1662
- rtnetlink_rcv_msg+0xb1d/0xe60 net/core/rtnetlink.c:5564
- netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0xaa6/0xe90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x5a2/0x900 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x319/0x400 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  $ ip -6 -d route
+  unicast ::1 dev lo proto kernel scope global metric 256 pref medium
+  unicast fe80::/64 dev eth0 proto kernel scope global metric 256 pref medium
+  unicast ff00::/8 dev eth0 proto kernel scope global metric 256 pref medium
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Cong Wang <cong.wang@bytedance.com>
-Link: https://lore.kernel.org/r/20210114160637.1660597-1-eric.dumazet@gmail.com
+Set the type to RTN_MULTICAST which is more appropriate.
+
+Fixes: e8478e80e5a7 ("net/ipv6: Save route type in rt6_info")
+Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sched/sch_api.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ipv6/addrconf.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -412,7 +412,8 @@ struct qdisc_rate_table *qdisc_get_rtab(
- {
- 	struct qdisc_rate_table *rtab;
- 
--	if (tab == NULL || r->rate == 0 || r->cell_log == 0 ||
-+	if (tab == NULL || r->rate == 0 ||
-+	    r->cell_log == 0 || r->cell_log >= 32 ||
- 	    nla_len(tab) != TC_RTAB_SIZE) {
- 		NL_SET_ERR_MSG(extack, "Invalid rate table parameters for searching");
- 		return NULL;
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -2466,7 +2466,7 @@ static void addrconf_add_mroute(struct n
+ 		.fc_ifindex = dev->ifindex,
+ 		.fc_dst_len = 8,
+ 		.fc_flags = RTF_UP,
+-		.fc_type = RTN_UNICAST,
++		.fc_type = RTN_MULTICAST,
+ 		.fc_nlinfo.nl_net = dev_net(dev),
+ 		.fc_protocol = RTPROT_KERNEL,
+ 	};
 
 
