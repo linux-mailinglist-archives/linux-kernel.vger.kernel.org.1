@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5A3302708
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B6630272E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730159AbhAYPkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:40:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59920 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729875AbhAYPhY (ORCPT
+        id S1730442AbhAYPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730281AbhAYPnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:37:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611588957;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0PK5xHUfwoLtHAFk0lU4eMj70hhnXpd2uUmbVV3+Syg=;
-        b=FwEZiNYfZJmm72k4d6OTRL5yl5sOATM+HZYf8WduyzL1OKdjBGj1qZjJD3XHkzDAhQDD+/
-        FYeKanyOYaA3rhLvAj0EHAqVrhsDNh1cWtACKhucfrHGB9JXCbN4QbVuVp4bpRMRcr5wGN
-        YTgqe6BjqecCeIKgHyX1gRppjD8beng=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-iaAfsTTHPpmJARjRl86SIQ-1; Mon, 25 Jan 2021 10:35:53 -0500
-X-MC-Unique: iaAfsTTHPpmJARjRl86SIQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C44B100E33E;
-        Mon, 25 Jan 2021 15:35:51 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D10F10016FA;
-        Mon, 25 Jan 2021 15:35:50 +0000 (UTC)
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-To:     Muchun Song <smuchun@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210125042441.20030-1-longman@redhat.com>
- <CAPSr9jFcuRNQ7Q_Yo9KDSbYV2=8-siL-1ckxhfVwCiG5tg-vfw@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <cd60f147-d052-1848-dd60-0bdf1c3517e7@redhat.com>
-Date:   Mon, 25 Jan 2021 10:35:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 25 Jan 2021 10:43:17 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01EE7C061222
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:39:31 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id a14so4580181edu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:39:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rra/deV4BpPfJHrSK+j1oedRvhTg8xlMYVP/CjTCdbo=;
+        b=oT2pKEpwEYuKqNalnjLTRHdVcq6t3+B3XXVLdpXKu3V4ApIJJzXxasqADy9EZXqUXh
+         n/BuUY/5ALgsbICzl3RIKCjVDYUHtIYek61hqI9KUL/2LNmRfnQ0GzO+XTL2MXbd3aK/
+         UsbqMjXr25onQ0szEsqlgipwxapnw7EPmLS3cPXyk2d8H28WIA52mQ7Yvol7ZM9ht9Zh
+         4+OwuM1jkeN51/bu6vR4JrA/Y4arNiozGdwTdv4f8cWHV411+H+g+HOBpzxam46DRzaS
+         2ThNiPt5XjxOw3h37ikX+KNHPGrNudfwkzs0vddCFZbZchOu9DDhuhN4cG8oBxIGQClP
+         mP6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rra/deV4BpPfJHrSK+j1oedRvhTg8xlMYVP/CjTCdbo=;
+        b=oBEnjs67+G/MzUsYgFpVphNdzuP3W96hx3ERoyxDlYRuJN/ivIzD9TxuH1QGPlkMlo
+         qs2hNK9nRjd+DQ26i7fLLCDduPEgi6w1EOWTqJoiTaRTeY1BramkjM8AROhQLQpdzob6
+         hnfAHKORObN6Ea73+AfZj5yJO+Ln3LiRyVpB+ze/sgel/f0y5n45cNYboy7H/JYEgIrc
+         W0kai/3trht/fxgYmVMXXkcxfUYq2pDNuJ/NxmsVF6cXmJMzV1mPHEZbCtMdJ2JiUZ6Z
+         1R0cUycqK0vBM6EyvL8lXHrHYo0Fwu8QVAUpHg3EC+jORRvZztQe7G/bA5b5izRighu+
+         CEQw==
+X-Gm-Message-State: AOAM531fuwS+M5U4GXkyO4jmrYPu2mXYFjGwbCBk3w1k/vh9jGb+bZ7J
+        YvSKzGIScg6oRNiEWGkZgMROLV4VGW+VHMi4EvtQ2w==
+X-Google-Smtp-Source: ABdhPJzFrqfAwV4lIbCCiVu+IspFq83jhqoaMG65PKSTrukGguTs7XiN5FLFH6wPnByDVaUokuQk0Sd4Y5Qva95xCmU=
+X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr934395edd.341.1611589170542;
+ Mon, 25 Jan 2021 07:39:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAPSr9jFcuRNQ7Q_Yo9KDSbYV2=8-siL-1ckxhfVwCiG5tg-vfw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
+ <20210120014333.222547-9-pasha.tatashin@soleen.com> <20210120131400.GF4605@ziepe.ca>
+ <CA+CK2bCu-uWWOxS_sPhfgzXTq-cqYFsHK_QFo7F+rStKpJJDRA@mail.gmail.com> <20210125142819.GU4605@ziepe.ca>
+In-Reply-To: <20210125142819.GU4605@ziepe.ca>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 25 Jan 2021 10:38:54 -0500
+Message-ID: <CA+CK2bBa+8dOatFgUB405yyKnSYfX-iaypzXpAhOmZN_KNBMhA@mail.gmail.com>
+Subject: Re: [PATCH v6 08/14] mm/gup: do not migrate zero page
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 3:07 AM, Muchun Song wrote:
-> On Mon, Jan 25, 2021 at 12:29 PM Waiman Long <longman@redhat.com> wrote:
->> The commit 3fea5a499d57 ("mm: memcontrol: convert page
->> cache to a new mem_cgroup_charge() API") introduced a bug in
->> __add_to_page_cache_locked() causing the following splat:
->>
->>   [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
->>   [ 1570.068333] pages's memcg:ffff8889a4116000
->>   [ 1570.068343] ------------[ cut here ]------------
->>   [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
->>   [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
->>   [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
->>   [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
->>   [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
->>     :
->>   [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
->>   [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
->>   [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
->>   [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
->>   [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
->>   [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
->>   [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
->>   [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>   [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
->>   [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>   [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>   [ 1570.068402] PKRU: 55555554
->>   [ 1570.068404] Call Trace:
->>   [ 1570.068407]  mem_cgroup_charge+0x175/0x770
->>   [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
->>   [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
->>   [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
->>   [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
->>   [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
->>   [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
->>   [ 1570.068693]  read_pages+0x5b1/0xc40
->>   [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
->>   [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
->>   [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
->>   [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
->>   [ 1570.068872]  new_sync_read+0x3af/0x610
->>   [ 1570.068901]  vfs_read+0x339/0x4b0
->>   [ 1570.068909]  ksys_read+0xf1/0x1c0
->>   [ 1570.068920]  do_syscall_64+0x33/0x40
->>   [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>   [ 1570.068930] RIP: 0033:0x7ff039135595
->>
->> Before that commit, there was a try_charge() and commit_charge()
->> in __add_to_page_cache_locked(). These 2 separated charge functions
->> were replaced by a single mem_cgroup_charge(). However, it forgot
->> to add a matching mem_cgroup_uncharge() when the xarray insertion
->> failed with the page released back to the pool. Fix this by adding a
->> mem_cgroup_uncharge() call when insertion error happens.
->>
->> Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   mm/filemap.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 5c9d564317a5..aa0e0fb04670 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -835,6 +835,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->>          XA_STATE(xas, &mapping->i_pages, offset);
->>          int huge = PageHuge(page);
->>          int error;
->> +       bool charged = false;
->>
->>          VM_BUG_ON_PAGE(!PageLocked(page), page);
->>          VM_BUG_ON_PAGE(PageSwapBacked(page), page);
->> @@ -848,6 +849,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->>                  error = mem_cgroup_charge(page, current->mm, gfp);
->>                  if (error)
->>                          goto error;
->> +               charged = true;
->>          }
->>
->>          gfp &= GFP_RECLAIM_MASK;
->> @@ -896,6 +898,8 @@ noinline int __add_to_page_cache_locked(struct page *page,
->>
->>          if (xas_error(&xas)) {
->>                  error = xas_error(&xas);
->> +               if (charged)
-> Can "if (!huge)" replace "if (charged)"?
+On Mon, Jan 25, 2021 at 9:28 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Wed, Jan 20, 2021 at 09:26:41AM -0500, Pavel Tatashin wrote:
+>
+> > I thought about this, and it would code a little cleaner. But, the
+> > reason I did not is because zero_page is perfectly pinnable, it is not
+> > pinnable only when it is in a movable zone (and it should not be in a
+> > movable zones for other reasons as well), but that is another bug that
+> > needs to be resolved, and once that bug is resolved this condition can
+> > be removed from gup migration.
+>
+> My point is you've defined the zero page to be pinnable no matter what
+> zone it is in, so is_pinnable(zero_page) == true
 
-See my reply to Mathew Wilcox.
+Sure, I will move it inside is_pinnable in the next update.
 
-Cheers,
-Longman
+Thank you,
+Pasha
 
+>
+> Jason
