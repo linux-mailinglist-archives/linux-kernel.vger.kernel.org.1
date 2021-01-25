@@ -2,360 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD8E303660
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE4430366D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727884AbhAZGRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728731AbhAYNRI (ORCPT
+        id S1732753AbhAZGVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:21:52 -0500
+Received: from faui03.informatik.uni-erlangen.de ([131.188.30.103]:59496 "EHLO
+        faui03.informatik.uni-erlangen.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728826AbhAYN2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:17:08 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF65C061574;
-        Mon, 25 Jan 2021 05:16:28 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id q131so8355902pfq.10;
-        Mon, 25 Jan 2021 05:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v7gUqTg77CyQJmc7oirUajg+klN0w28zTpZ0akGL9pQ=;
-        b=ANJjXbjJjAqWZUgHmrfBHK+iTVb7yE5ZMy1/6UoiSx9yAj83c6d9PEQnGclx8iXm5u
-         3Dj0cEAFylDej2UIvnqsIBiHcZLdAQB2wd1h3q9oa0iB4V8qwZtsHfLHk7VPQRIu2ANg
-         +WJyFo2+I7R16aZy+scoLjmk27TiGchYr+iW+tL1lN5aTfWdr3JJoFzI4ZMUVC35G3ux
-         oHVprOgpEDO5RDvnto75/PdixF8Qv37Kw3y3BREBMwR+g9p7WPetTKos1nfFcHrEhLDS
-         hwOrCwsTW/et3KEOJBU/UdHAJz04g/hCDGsLAe+ZMs2YbYT6M/SYf8puTWWEq7YjsZvE
-         OsGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v7gUqTg77CyQJmc7oirUajg+klN0w28zTpZ0akGL9pQ=;
-        b=aD6GBSxBbIF25MlU6MD9ymuvBnq1tzCetNfbI04pAhnjY9ieexCdOPSWS6M8lYKh1L
-         BquzjCKwfhWpQ6TfX14t3drqkYbAvVzh8hoXdiqffaa+y5IGpoj6/6TaN+Mga3fXY4Vm
-         O31mhVQNn8nuvaoe+dXcXp1AphtNRPZQcz9jCudcjGAaV01YxfFhgMtZoQO5GjjUSrAY
-         RBrEtwJDeLa0U4NaKnDHOcUX8e5bG7wyUBKKcPKln2S8yUH9f6fmn/RIyAbosOWrkGDC
-         wXCU0sWQtNtYAAReeenkDQqjdnAQ38vf0yGatr7kpBa/mGvqlEoV0CdGQXptoni8mG5r
-         1o+w==
-X-Gm-Message-State: AOAM530vVUnhKqNjkB2HbUQB8JKSIhzozYjlv17DPMqW2wtQPJAdFJAO
-        MkJFJh5AnLR72Seku3+P1t+S/DlUv+HHz7aB+X8=
-X-Google-Smtp-Source: ABdhPJx4oKbSxiDyNEaGROOZR+UwBmBdVfQMhSqa61xLjnhyfXuX8vPIQuu0NmJ3gR9nwQ3ucV5fuAwRJzj1zGuvhP4=
-X-Received: by 2002:a65:450d:: with SMTP id n13mr597448pgq.208.1611580587558;
- Mon, 25 Jan 2021 05:16:27 -0800 (PST)
+        Mon, 25 Jan 2021 08:28:06 -0500
+X-Greylist: delayed 543 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Jan 2021 08:28:05 EST
+Received: from ircbox.informatik.uni-erlangen.de (ircbox.informatik.uni-erlangen.de [IPv6:2001:638:a000:4130:131:188:30:49])
+        by faui03.informatik.uni-erlangen.de (Postfix) with ESMTP id CA581240B98;
+        Mon, 25 Jan 2021 14:17:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cip.cs.fau.de;
+        s=dkim2019; t=1611580682;
+        bh=kWhg0Wm0Q8NhNaaazbaZnC4s7mUOQuDxgF07Mriyms0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZtIRYaFgmyX7NdAaTcbJyto6J1FwSH/UIsK/FVxPYEM0kjUqnjtB3t1ri9tyPSDoT
+         4738EmaMOroh4SAmsIFW+cqkYQV5aa4GU5dPtT+G4Q/PU4jBI7EI2w++rZXSj5mQvQ
+         MtysbeGg/3VSMl+T1u30pisblIxkx1W+591qzfJy2/BSIdfs/6IANZlmibxTu9DiF6
+         SXShXIzvS031FkHZfuTvgj18DUNGmX1OxIx1YNK3UnoWsCI2qwStC5XYRbnrRl8V3o
+         WHBSdQ3bhu2lBZ1DZF3LCiIxXIzxWJQXOPdtiD3glXHK8Ecjiq8mnHqJeiC1b/3Rry
+         +qZ5/bf/M3JYw==
+Received: by ircbox.informatik.uni-erlangen.de (Postfix, from userid 28847)
+        id B9356401063; Mon, 25 Jan 2021 14:17:20 +0100 (CET)
+Date:   Mon, 25 Jan 2021 14:17:20 +0100
+From:   Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+To:     x86@kernel.org, Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Stefan Saecherl <stefan.saecherl@fau.de>,
+        linux-kernel@i4.cs.fau.de, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kgdb: Allow removal of early BPs
+Message-ID: <20210125131720.GA31985@stud.informatik.uni-erlangen.de>
+References: <20201214141314.5717-1-stefan.saecherl@fau.de>
+ <20201218164421.qy5ov2lyhrfi3kr6@holly.lan>
 MIME-Version: 1.0
-References: <CAJ8uoz0m9VCydXM_=OdwJNg67hY59N+3yrCP=cpPBwoc5f_+Jg@mail.gmail.com>
- <1611578136.5043845-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1611578136.5043845-1-xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 25 Jan 2021 14:16:16 +0100
-Message-ID: <CAJ8uoz30r_-6CwZcte0R_9+6BVUFcvMEW4FG-tutBtJn2FD_bw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Topel <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201218164421.qy5ov2lyhrfi3kr6@holly.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 1:43 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> On Mon, 25 Jan 2021 08:44:38 +0100, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
-> > On Mon, Jan 25, 2021 at 3:27 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> > >
-> > > On Fri, 22 Jan 2021 19:37:06 +0100, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
-> > > > On Fri, Jan 22, 2021 at 6:26 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> > > > >
-> > > > > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > Date: Fri, 22 Jan 2021 23:39:15 +0800
-> > > > >
-> > > > > > On Fri, 22 Jan 2021 13:55:14 +0100, Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
-> > > > > > > On Fri, Jan 22, 2021 at 1:39 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> > > > > > > >
-> > > > > > > > From: Magnus Karlsson <magnus.karlsson@gmail.com>
-> > > > > > > > Date: Fri, 22 Jan 2021 13:18:47 +0100
-> > > > > > > >
-> > > > > > > > > On Fri, Jan 22, 2021 at 12:57 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> > > > > > > > > >
-> > > > > > > > > > From: Alexander Lobakin <alobakin@pm.me>
-> > > > > > > > > > Date: Fri, 22 Jan 2021 11:47:45 +0000
-> > > > > > > > > >
-> > > > > > > > > > > From: Eric Dumazet <eric.dumazet@gmail.com>
-> > > > > > > > > > > Date: Thu, 21 Jan 2021 16:41:33 +0100
-> > > > > > > > > > >
-> > > > > > > > > > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
-> > > > > > > > > > > > > This patch is used to construct skb based on page to save memory copy
-> > > > > > > > > > > > > overhead.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-> > > > > > > > > > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-> > > > > > > > > > > > > directly construct skb. If this feature is not supported, it is still
-> > > > > > > > > > > > > necessary to copy data to construct skb.
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > ---------------- Performance Testing ------------
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > The test environment is Aliyun ECS server.
-> > > > > > > > > > > > > Test cmd:
-> > > > > > > > > > > > > ```
-> > > > > > > > > > > > > xdpsock -i eth0 -t  -S -s <msg size>
-> > > > > > > > > > > > > ```
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Test result data:
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > size    64      512     1024    1500
-> > > > > > > > > > > > > copy    1916747 1775988 1600203 1440054
-> > > > > > > > > > > > > page    1974058 1953655 1945463 1904478
-> > > > > > > > > > > > > percent 3.0%    10.0%   21.58%  32.3%
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > > > > > > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> > > > > > > > > > > > > ---
-> > > > > > > > > > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++----------
-> > > > > > > > > > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > > > > > > > > > > > index 4a83117..38af7f1 100644
-> > > > > > > > > > > > > --- a/net/xdp/xsk.c
-> > > > > > > > > > > > > +++ b/net/xdp/xsk.c
-> > > > > > > > > > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb)
-> > > > > > > > > > > > >   sock_wfree(skb);
-> > > > > > > > > > > > >  }
-> > > > > > > > > > > > >
-> > > > > > > > > > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> > > > > > > > > > > > > +                                       struct xdp_desc *desc)
-> > > > > > > > > > > > > +{
-> > > > > > > > > > > > > + u32 len, offset, copy, copied;
-> > > > > > > > > > > > > + struct sk_buff *skb;
-> > > > > > > > > > > > > + struct page *page;
-> > > > > > > > > > > > > + void *buffer;
-> > > > > > > > > > > > > + int err, i;
-> > > > > > > > > > > > > + u64 addr;
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> > > > > > > > > > > > > + if (unlikely(!skb))
-> > > > > > > > > > > > > +         return ERR_PTR(err);
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + addr = desc->addr;
-> > > > > > > > > > > > > + len = desc->len;
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> > > > > > > > > > > > > + offset = offset_in_page(buffer);
-> > > > > > > > > > > > > + addr = buffer - xs->pool->addrs;
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + for (copied = 0, i = 0; copied < len; i++) {
-> > > > > > > > > > > > > +         page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > +         get_page(page);
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > +         copy = min_t(u32, PAGE_SIZE - offset, len - copied);
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > +         skb_fill_page_desc(skb, i, page, offset, copy);
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > +         copied += copy;
-> > > > > > > > > > > > > +         addr += copy;
-> > > > > > > > > > > > > +         offset = 0;
-> > > > > > > > > > > > > + }
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + skb->len += len;
-> > > > > > > > > > > > > + skb->data_len += len;
-> > > > > > > > > > > >
-> > > > > > > > > > > > > + skb->truesize += len;
-> > > > > > > > > > > >
-> > > > > > > > > > > > This is not the truesize, unfortunately.
-> > > > > > > > > > > >
-> > > > > > > > > > > > We need to account for the number of pages, not number of bytes.
-> > > > > > > > > > >
-> > > > > > > > > > > The easiest solution is:
-> > > > > > > > > > >
-> > > > > > > > > > >       skb->truesize += PAGE_SIZE * i;
-> > > > > > > > > > >
-> > > > > > > > > > > i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
-> > > > > > > > > >
-> > > > > > > > > > Oops, pls ignore this. I forgot that XSK buffers are not
-> > > > > > > > > > "one per page".
-> > > > > > > > > > We need to count the number of pages manually and then do
-> > > > > > > > > >
-> > > > > > > > > >         skb->truesize += PAGE_SIZE * npages;
-> > > > > > > > > >
-> > > > > > > > > > Right.
-> > > > > > > > >
-> > > > > > > > > There are two possible packet buffer (chunks) sizes in a umem, 2K and
-> > > > > > > > > 4K on a system with a PAGE_SIZE of 4K. If I remember correctly, and
-> > > > > > > > > please correct me if wrong, truesize is used for memory accounting.
-> > > > > > > > > But in this code, no kernel memory has been allocated (apart from the
-> > > > > > > > > skb). The page is just a part of the umem that has been already
-> > > > > > > > > allocated beforehand and by user-space in this case. So what should
-> > > > > > > > > truesize be in this case? Do we add 0, chunk_size * i, or the
-> > > > > > > > > complicated case of counting exactly how many 4K pages that are used
-> > > > > > > > > when the chunk_size is 2K, as two chunks could occupy the same page,
-> > > > > > > > > or just the upper bound of PAGE_SIZE * i that is likely a good
-> > > > > > > > > approximation in most cases? Just note that there might be other uses
-> > > > > > > > > of truesize that I am unaware of that could impact this choice.
-> > > > > > > >
-> > > > > > > > Truesize is "what amount of memory does this skb occupy with all its
-> > > > > > > > fragments, linear space and struct sk_buff itself". The closest it
-> > > > > > > > will be to the actual value, the better.
-> > > > > > > > In this case, I think adding of chunk_size * i would be enough.
-> > > > > > >
-> > > > > > > Sounds like a good approximation to me.
-> > > > > > >
-> > > > > > > > (PAGE_SIZE * i can be overwhelming when chunk_size is 2K, especially
-> > > > > > > > for setups with PAGE_SIZE > SZ_4K)
-> > > > > > >
-> > > > > > > You are right. That would be quite horrible on a system with a page size of 64K.
-> > > > > >
-> > > > > > Thank you everyone, I learned it.
-> > > > > >
-> > > > > > I also think it is appropriate to add a chunk size here, and there is actually
-> > > > > > only one chunk here, so it's very simple
-> > > > > >
-> > > > > >       skb->truesize += xs->pool->chunk_size;
-> > > > >
-> > > > > umem chunks can't cross page boundaries. So if you're sure that
-> > > > > there could be only one chunk, you don't need the loop at all,
-> > > > > if I'm not missing anything.
-> > > >
-> > > > In the default mode, this is true. But in the unaligned_chunk mode
-> > > > that can be set on the umem, the chunk may cross one page boundary, so
-> > > > we need the loop and the chunk_size * i in the assignment of truesize.
-> > > > So "i" can be 1 or 2, but nothing else.
-> > >
-> > > According to my understanding, in the unaligned mode, a desc will also refer to
-> > > a chunk, although the chunk here may occupy multiple pages. And here is just a
-> > > desc constructed into a skb, skb takes the largest amount from umem is a
-> > > chunk, so what is the situation of i = 2 here? Did I miss something?
-> >
-> > A desc refers to a single packet, not a single chunk. One packet can
-> > occupy either one or two chunks in the unaligned mode and when this
-> > happens to be two, these two chunks might be on different pages. In
-> > this case, you will go through the loop twice and produce two
-> > fragments.
-> >
-> > In the aligned mode, every packet starts at the beginning of each
-> > chunk (if there is no headroom) and can only occupy a single chunk
-> > since no packet can be larger than the chunk size. In the unaligned
-> > mode, the packet can start anywhere within the chunk and might even
-> > continue into the next chunk, but never more than that since the max
-> > packet size is still the chunk size. Why unaligned mode? This provides
-> > the user-space with complete freedom on how to optimize the placement
-> > of the packets in the umem and this might lead to better overall
-> > performance. Note that if we just look at the kernel part, unaligned
-> > mode is slower than aligned, but that might not be true on the overall
-> > level.
->
-> Thank you very much, very detailed explanation.
->
-> I have a question: You said that in the case of unaligned mode, the packet
-> pointed by desc may use two consecutive chunks at the same time. How do we
-> ensure that we can apply for two consecutive chunks?
+Hi,
 
-I am not sure I understand "apply for", sorry. But in unaligned mode,
-we reject any desc that spans two chunks that are not physically
-consecutive in memory. So users of unaligned mode usually use huge
-pages to make sure that this happens rarely and that these "breaks"
-are well known to the entity in user-space that places the packets in
-the umem (i.e., do not create packets that cross huge page boundaries
-would suffice).
+I wanted to ask about the status of the patch. Let us know if there are any
+other steps we can undertake.
 
-> Back to this patch, is it okay to deal with it this way?
->
->         buffer = xsk_buff_raw_get_data(xs->pool, addr);
->
->         .....
->
->         if (pool->unaligned) {
->                 u64 l;
->
->                 l = (buffer - xs->pool->addrs) % xs->pool->chunk_size;
->                 if (xs->pool->chunk_size - l < desc->len)
->                         skb->truesize += xs->pool->chunk_size * 2;
->                 else
->                         skb->truesize += xs->pool->chunk_size;
->         } else {
->                 skb->truesize += xs->pool->chunk_size;
->         }
+Kind regards
+Lorena
 
-Why would not skb->truesize += xs->pool->chunk_size * i; work in both
-cases? The copy = min_t(u32, PAGE_SIZE - offset, len - copied);
-statement together with the loop itself should take care of the case
-when the packet spans two pages as PAGE_SIZE - offset < len it will
-loop again and copy the rest. In that case, i == 2 when you exit the
-loop.
-
-But it would be great if you could test that your code can deal with
-this. How about extending the xsk selftests with a case for unaligned
-mode? Should be quite straightforward. Just make sure you put the
-packets next to each other so that some of them will cross page
-boundaries.
-
-> Thanks.
->
-> >
-> > > Thanks.
-> > >
-> > > >
-> > > > > > In addition, I actually borrowed from the tcp code:
-> > > > > >
-> > > > > >    tcp_build_frag:
-> > > > > >    --------------
-> > > > > >
-> > > > > >       if (can_coalesce) {
-> > > > > >               skb_frag_size_add(&skb_shinfo(skb)->frags[i - 1], copy);
-> > > > > >       } else {
-> > > > > >               get_page(page);
-> > > > > >               skb_fill_page_desc(skb, i, page, offset, copy);
-> > > > > >       }
-> > > > > >
-> > > > > >       if (!(flags & MSG_NO_SHARED_FRAGS))
-> > > > > >               skb_shinfo(skb)->flags |= SKBFL_SHARED_FRAG;
-> > > > > >
-> > > > > >       skb->len += copy;
-> > > > > >       skb->data_len += copy;
-> > > > > >       skb->truesize += copy;
-> > > > > >
-> > > > > > So, here is one bug?
-> > > > >
-> > > > > skb_frag_t is an alias to struct bvec. It doesn't contain info about
-> > > > > real memory consumption, so there's no other option buf just to add
-> > > > > "copy" to truesize.
-> > > > > XSK is different in this term, as it operates with chunks of a known
-> > > > > size.
-> > > > >
-> > > > > > Thanks.
-> > > > > >
-> > > > > > >
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + refcount_add(len, &xs->sk.sk_wmem_alloc);
-> > > > > > > > > > > > > +
-> > > > > > > > > > > > > + return skb;
-> > > > > > > > > > > > > +}
-> > > > > > > > > > > > > +
-> > > > > > > > > > >
-> > > > > > > > > > > Al
-> > > > > > > > > >
-> > > > > > > > > > Thanks,
-> > > > > > > > > > Al
-> > > > > > > >
-> > > > > > > > Al
-> > > > >
+On Fri 2020-12-18 16:44:21, Daniel Thompson wrote:
+> Hi Stefan
+> 
+> On Mon, Dec 14, 2020 at 03:13:12PM +0100, Stefan Saecherl wrote:
+> > The problem is that breakpoints that are set early (e.g. via kgdbwait)
+> > cannot be deleted after boot completed (to be precise after mark_rodata_ro
+> > ran).
+> > 
+> > When setting a breakpoint early there are executable pages that are
+> > writable so the copy_to_kernel_nofault call in kgdb_arch_set_breakpoint
+> > succeeds and the breakpoint is saved as type BP_BREAKPOINT.
+> > 
+> > Later in the boot write access to these pages is restricted. So when
+> > removing the breakpoint the copy_to_kernel_nofault call in
+> > kgdb_arch_remove_breakpoint is destined to fail and the breakpoint removal
+> > fails. So after copy_to_kernel_nofault failed try to text_poke_kgdb which
+> > can work around nonwriteability.
+> > 
+> > One thing to consider when doing this is that code can go away during boot
+> > (e.g. .init.text). Previously kgdb_arch_remove_breakpoint handled this case
+> > gracefully by just having copy_to_kernel_nofault fail but if one then calls
+> > text_poke_kgdb the system dies due to the BUG_ON we moved out of
+> > __text_poke.  To avoid this __text_poke now returns an error in case of a
+> > nonpresent code page and the error is handled at call site.
+> > 
+> > Checkpatch complains about two uses of BUG_ON but the new code should not
+> > trigger BUG_ON in cases where the old didn't.
+> > 
+> > Co-developed-by: Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+> > Signed-off-by: Lorena Kretzschmar <qy15sije@cip.cs.fau.de>
+> > Signed-off-by: Stefan Saecherl <stefan.saecherl@fau.de>
+> 
+> I took this to be a gap in the kgdbtest suite so I added a couple of
+> tests that cover this area. Before this patch they failed now they
+> pass (at least they do for ARCH=x86).
+> 
+> I don't see any new failures either, so:
+> 
+> Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
+> 
+> 
+> Daniel.
+> 
+> 
+> 
+> > ---
+> >  arch/x86/kernel/alternative.c | 16 +++++++----
+> >  arch/x86/kernel/kgdb.c        | 54 ++++++++++++++++++++++++-----------
+> >  2 files changed, 48 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> > index 2400ad62f330..0f145d837885 100644
+> > --- a/arch/x86/kernel/alternative.c
+> > +++ b/arch/x86/kernel/alternative.c
+> > @@ -878,11 +878,9 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
+> >  		if (cross_page_boundary)
+> >  			pages[1] = virt_to_page(addr + PAGE_SIZE);
+> >  	}
+> > -	/*
+> > -	 * If something went wrong, crash and burn since recovery paths are not
+> > -	 * implemented.
+> > -	 */
+> > -	BUG_ON(!pages[0] || (cross_page_boundary && !pages[1]));
+> > +
+> > +	if (!pages[0] || (cross_page_boundary && !pages[1]))
+> > +		return ERR_PTR(-EFAULT);
+> >  
+> >  	/*
+> >  	 * Map the page without the global bit, as TLB flushing is done with
+> > @@ -976,7 +974,13 @@ void *text_poke(void *addr, const void *opcode, size_t len)
+> >  {
+> >  	lockdep_assert_held(&text_mutex);
+> >  
+> > -	return __text_poke(addr, opcode, len);
+> > +	addr = __text_poke(addr, opcode, len);
+> > +	/*
+> > +	 * If something went wrong, crash and burn since recovery paths are not
+> > +	 * implemented.
+> > +	 */
+> > +	BUG_ON(IS_ERR(addr));
+> > +	return addr;
+> >  }
+> >  
+> >  /**
+> > diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+> > index ff7878df96b4..e98c9c43db7c 100644
+> > --- a/arch/x86/kernel/kgdb.c
+> > +++ b/arch/x86/kernel/kgdb.c
+> > @@ -731,6 +731,7 @@ void kgdb_arch_set_pc(struct pt_regs *regs, unsigned long ip)
+> >  int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+> >  {
+> >  	int err;
+> > +	void *addr;
+> >  
+> >  	bpt->type = BP_BREAKPOINT;
+> >  	err = copy_from_kernel_nofault(bpt->saved_instr, (char *)bpt->bpt_addr,
+> > @@ -747,8 +748,14 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+> >  	 */
+> >  	if (mutex_is_locked(&text_mutex))
+> >  		return -EBUSY;
+> > -	text_poke_kgdb((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
+> > -		       BREAK_INSTR_SIZE);
+> > +
+> > +	addr = text_poke_kgdb((void *)bpt->bpt_addr, arch_kgdb_ops.gdb_bpt_instr,
+> > +				BREAK_INSTR_SIZE);
+> > +	/* This should never trigger because the above call to copy_from_kernel_nofault
+> > +	 * already succeeded.
+> > +	 */
+> > +	BUG_ON(IS_ERR(addr));
+> > +
+> >  	bpt->type = BP_POKE_BREAKPOINT;
+> >  
+> >  	return 0;
+> > @@ -756,21 +763,36 @@ int kgdb_arch_set_breakpoint(struct kgdb_bkpt *bpt)
+> >  
+> >  int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt)
+> >  {
+> > -	if (bpt->type != BP_POKE_BREAKPOINT)
+> > -		goto knl_write;
+> > -	/*
+> > -	 * It is safe to call text_poke_kgdb() because normal kernel execution
+> > -	 * is stopped on all cores, so long as the text_mutex is not locked.
+> > -	 */
+> > -	if (mutex_is_locked(&text_mutex))
+> > -		goto knl_write;
+> > -	text_poke_kgdb((void *)bpt->bpt_addr, bpt->saved_instr,
+> > -		       BREAK_INSTR_SIZE);
+> > -	return 0;
+> > +	void *addr;
+> > +	int err;
+> >  
+> > -knl_write:
+> > -	return copy_to_kernel_nofault((char *)bpt->bpt_addr,
+> > -				  (char *)bpt->saved_instr, BREAK_INSTR_SIZE);
+> > +	if (bpt->type == BP_POKE_BREAKPOINT) {
+> > +		if (mutex_is_locked(&text_mutex)) {
+> > +			err = copy_to_kernel_nofault((char *)bpt->bpt_addr,
+> > +							(char *)bpt->saved_instr,
+> > +							BREAK_INSTR_SIZE);
+> > +		} else {
+> > +			/*
+> > +			 * It is safe to call text_poke_kgdb() because normal kernel execution
+> > +			 * is stopped on all cores, so long as the text_mutex is not locked.
+> > +			 */
+> > +			addr = text_poke_kgdb((void *)bpt->bpt_addr,
+> > +							bpt->saved_instr,
+> > +							BREAK_INSTR_SIZE);
+> > +			err = PTR_ERR_OR_ZERO(addr);
+> > +		}
+> > +	} else {
+> > +		err = copy_to_kernel_nofault((char *)bpt->bpt_addr,
+> > +						(char *)bpt->saved_instr,
+> > +						BREAK_INSTR_SIZE);
+> > +		if (err == -EFAULT && !mutex_is_locked(&text_mutex)) {
+> > +			addr = text_poke_kgdb((void *)bpt->bpt_addr,
+> > +						bpt->saved_instr,
+> > +						BREAK_INSTR_SIZE);
+> > +			err = PTR_ERR_OR_ZERO(addr);
+> > +		}
+> > +	}
+> > +	return err;
+> >  }
+> >  
+> >  const struct kgdb_arch arch_kgdb_ops = {
+> > -- 
+> > 2.20.1
