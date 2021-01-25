@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4CE302D81
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E9E302D80
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732628AbhAYVW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        id S1732678AbhAYVXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732431AbhAYVWI (ORCPT
+        with ESMTP id S1732612AbhAYVW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:22:08 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F26DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:21:28 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id p185so14707088ybg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:21:28 -0800 (PST)
+        Mon, 25 Jan 2021 16:22:27 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D878C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:21:47 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id k132so14749470ybf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:21:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NfYv+sVEF3bhw1NrTL/111YRCiFQJbiGpgUEbN5Ud3g=;
-        b=vdoywtZsQ04KYGh8y4efLs3tq5e1SzosxigrGdvStf9bM1O0nvApWO3Y9rRfdxm5Q9
-         iBOofp4u7ovw3TwqeVBSowBIb7ovyCzPiLP1PNN3GZA9D1GXc1Kti6dvPtotq0FXlZ2T
-         TK8IGBt+3DaqiOfXQVW9/bsFCdOjWrPOBcWu9fkjevhJjx/K2c02T4ko67c6zo7Cb7Ww
-         x6JNUJiN8QA8CoY8UHtLRdNOyJF6ZK6DnToXZKnErTBwoKtJU9SdFOJcqF3H0h0X+gN5
-         frr5LV2Ta9aEnTEogDIVMg8476FzvkjeGSYWawvxPWvzPZl3dD56feqno43CgvXY44MG
-         AZdQ==
+        bh=W/UAxJz9Ju6jh7ahXkaUefROLXtTs6Fgq1e4ruhMD38=;
+        b=ZtwEiSRvlSkDBLBF/yBVBFHtUNKeRRCdMADF9JugdMyTTZ9Y8AH47/zN2z8EuPZcD0
+         jK63Ba2Kw9k/ctbBH7Aunj2ScIMVOpmwnwuiNC9e7Aqv4otj8U+jY0l0l48440jqhLsi
+         GOpNu9TJiExAQHSJuzANk71ap9VdO80/87VVj1VdcJDFk2+ysU/4ie3Q9CZGiY+oxy2Y
+         yJjjzONA2a5hQioagFpzyGkMEf4+hAxpS9SvSrI8o3ldsd2iiIrQQpGUprHMCOcRpwiM
+         fd1BfT5skxCwrEupALCgSp7SO8aokwiMdfBlAciQpIwkDLKBSnPhTKBJel/ydq5slHj4
+         Ta7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NfYv+sVEF3bhw1NrTL/111YRCiFQJbiGpgUEbN5Ud3g=;
-        b=gZc0s7l2AiE1kD/pxqLp2ao1n1Iht5fWZYjZxM5/ONw6m35NjcS1f5rwMSFkD2xRr4
-         F/UWoKhnlT9+vGoek3fZ+I5GmM9FiW2u/6cpg/7oV3vBLiiOy6BA36yc6LIXn8rTzEr7
-         fz9Y4MFpeOeEecDlkDKm83TKgi4Af/eahPdXJO9VUYIuZ2evnjRC0u0iQPXPejIKuE1M
-         qhGd2u5h2CvGQNb/E2vlo+lWwquAA/nROBCen0Q3p+Uhi5RmaYP38I2TQBIpZTHolYGq
-         AUSx1U3Lk8R4tmYbhPSAIsZM4jdEfCZIzQpkYutRbMX/3UQQu2PRMvmbaWqwl2VyEks6
-         xRkw==
-X-Gm-Message-State: AOAM530HTbdLDJqJeRl/0kJDbsqCBmFoj+vESjcPuOfMIhuMykYVETUI
-        Cfb8VnHvYy/E9uGpj01PCFWJAUi1jJAADp8IfyQ=
-X-Google-Smtp-Source: ABdhPJytXOelKtb1GMWyyHCYrEkRMeWpmEba0362qDSgQ5UPwB3bJFpapP9xjNvxXaS+BxK/NP1/h9h31mlppGTKZmU=
-X-Received: by 2002:a25:af8c:: with SMTP id g12mr3770009ybh.33.1611609687898;
- Mon, 25 Jan 2021 13:21:27 -0800 (PST)
+        bh=W/UAxJz9Ju6jh7ahXkaUefROLXtTs6Fgq1e4ruhMD38=;
+        b=HgF8knoCvI116OIeDI6DTd7ackhyRfapxYpXfTV/5AQ+XfNEaiDVETLOSCFbwB0/Zs
+         fLfbzof569EoPoVbOIocn6p+l5vav63UPNqpi+FcgAn6iZvQtkN5dJWWbq31RB2CG+Be
+         +A36+26vy1HPcHp4IwrQC9x4XB52YSa/jmYtgKKPFN4mTjESCywEqxWvbbvdi7XFrMUB
+         32IwlI5OgYHqA+lWKCIeO+mLqVXdpe4On04nXGcF2n3rrQLYUd63EyXwlmTUGWBsTF35
+         kjRVxjz68XDI52kcMHob0Eb7S+0sBYbFzs6ZKHt0s/A5Bay1O381hvX6fkpGfigLB7It
+         z9ag==
+X-Gm-Message-State: AOAM530K/vPef6gg/cJhz+XXUcuJ8xWLvra0nZDLZhasxUIWtlV34S1c
+        k5la3uvV9XjZSXs5uJ36uuyZ+1FpltAe3PKtXhoj7/AQ0bjTfA==
+X-Google-Smtp-Source: ABdhPJyuW5R6czEROrtHKrzzMECCabOawOV6cmyYUueIKygbrOTWt57+bH7dblJyfYfPi+AQUryVhlR4nVnAwhdt8/A=
+X-Received: by 2002:a25:d6c4:: with SMTP id n187mr3689559ybg.115.1611609706769;
+ Mon, 25 Jan 2021 13:21:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122153940.2874225-1-geert@linux-m68k.org>
-In-Reply-To: <20210122153940.2874225-1-geert@linux-m68k.org>
+References: <20210122160102.2877424-1-geert@linux-m68k.org>
+In-Reply-To: <20210122160102.2877424-1-geert@linux-m68k.org>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 25 Jan 2021 22:21:17 +0100
-Message-ID: <CANiq72mCatMxsub7HXaKzj+v2o13aNCP-9vUx_UAxPYSt_k0Lg@mail.gmail.com>
-Subject: Re: [PATCH] auxdisplay: ht16k33: Fix refresh rate handling
+Date:   Mon, 25 Jan 2021 22:21:36 +0100
+Message-ID: <CANiq72mWqnNpH+MJSB-ZGX44kWzXgj=M4qMYF1HYBrWAD2FC5Q@mail.gmail.com>
+Subject: Re: [PATCH] auxdisplay: Fix duplicate CHARLCD config symbol
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>,
+Cc:     Lars Poeschel <poeschel@lemonage.de>, Willy Tarreau <w@1wt.eu>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 4:39 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri, Jan 22, 2021 at 5:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
-> already the number of jiffies to wait.
+> A second CHARLCD config symbol was added instead of moving the existing
+> one.  Fix this by removing the old one.
 
 Applied to -next, thanks!
 
