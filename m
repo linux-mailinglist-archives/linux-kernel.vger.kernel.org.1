@@ -2,182 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42024303831
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E79330383B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbhAZIkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:40:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S2390383AbhAZIm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:42:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726980AbhAYSnu (ORCPT
+        with ESMTP id S1725862AbhAYSoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:43:50 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03398C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:42:53 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id c132so9533482pga.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:42:52 -0800 (PST)
+        Mon, 25 Jan 2021 13:44:00 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8C5C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:43:20 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id q9so13175195qkn.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:43:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6+a5l+MHwQBa21XqyxCXJOWx8+uque/2sWIhUuEvdHM=;
-        b=Uv+wHPW7kVoaHkazL1hk85E8YoDvld15GB0FzibaO90qRHEWAX1tWppViF/qg7fmbC
-         bX2AdICESTgm+vJIIL1h1k+CEOtpMqS+BUjglvWzlhA2y309VcsBnM7e6CMqXZoMsWfY
-         +BGIjF8Y9bYcosl+lPaH/1+3EDfv4lWZ4Pv4cWxC2lRqhLWx2q8K/oH9ejldcQaRdN43
-         Yue0PDP0ojXUZSVYh167hMUAvUC0p3BdjAavpqgilKhHjO5Pt0liNsEI1Jffc5Vkw8lz
-         kH3UcOe2fIK2cpNaKAafWSeOEb2fQGMSB199i9VFjaPyDbz7u7dzj4A//mdXrvVY3kik
-         NkBQ==
+        bh=e31ZKvJ3uMMh3udMHplAa9CcURwdEJCMRv6tmo/vpN4=;
+        b=VtCbhIPROig9ujvD81SBylGAjxU9uRXIMbbqmc6HskPKWA+H4uRmvJZPHy8tklzB5V
+         kuVbX/pn4uNCnXIrrpRP5eQIxmwaDuiWWqqUCAmOv53jC11M4GT+QFWdgvTxS8A8gswm
+         TZRcozFb/Ye3TmyMhRSlD/wuYTnvNAfEwgkTVO5tWdzrnsUM1oiwW+XrTVDN7DBQD7JR
+         LAWGX0I0HpZBVGGZb7hmLPs0oLaLmyssYQ8mX8+khiwZHo7c0N88SD7oDIBItZa3/Qeb
+         l2h0yUZAJ5Kl/gerlBE5vTq1UrbNHY/KP/m5lbhMOvA4ap2uViPUtFgZ6Z3NnQUpjene
+         ydAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6+a5l+MHwQBa21XqyxCXJOWx8+uque/2sWIhUuEvdHM=;
-        b=igHJEJ7ovkHrXIdUrYIgy9Xk6SJodNzZI2TdePJH3ZKTmCS1HD872nTKe7nnlSxGsZ
-         FfzeDRxfZ2o1TMeR7pJdACfEfhFPyXOARZF2otWMQSM4visExO9zhupUul0bf5P8utt3
-         LMgi2R8Ou+HO3hRPHtMP82D/GDBEx3Zx7Jgv3OEGesOC6hh98dExs+ZyCyIG485JvvM+
-         vNbbidLkHYYVsSrTBdeF5QlW6X07l+ch+L3tOQU+6acM81ZM/XzvdgNmtSjRJ2SzC312
-         k+BQKQ+wqyDg1R4rWDvpzLGV2+PnXyfw0NJ6dK7ptC7BViKgqxC0aN4KZCOx/e48rKd9
-         7kug==
-X-Gm-Message-State: AOAM531kjMJbMZtgZQ5K+9z5lCdagFyJryWPdoUYCDQam288k/2Scuw9
-        TkNuyuS9DLcY3j+nRVNkSXKnlg==
-X-Google-Smtp-Source: ABdhPJzf3X+ZF6e5T6iDOQmfoV7UwzlEJ43QgI3ZTGCEZZT+T6VTx7i8WsMJpjCqqRl+43vpYIF+qA==
-X-Received: by 2002:a63:d42:: with SMTP id 2mr1957133pgn.236.1611600172532;
-        Mon, 25 Jan 2021 10:42:52 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id np7sm96686pjb.10.2021.01.25.10.42.51
+        bh=e31ZKvJ3uMMh3udMHplAa9CcURwdEJCMRv6tmo/vpN4=;
+        b=syE+hhzcwu2L+5MHb03XcyWcILCLHrW2aDAtzTAve95LINA4XN8bjU3UgPGK1wBclr
+         uTHLY3CSJk2DwgZF3WOiHoIlGt5pFjiBmnEJkrD7VrTbdC8Vv/oKxd3L+9mrA6Gmy1zz
+         PKY8AJjg7faBPp4smJmxbGytOj/YK9I7irumFQO9K+ve2slI2Vc8CYauM3iXGlVb0f8t
+         Nxju8A/EyFwo/WkuCvLAFdoNiFoQHCrB4FxIG+UyE8/2uPgfAuV8XLM6Al37K+NZerCi
+         BkP19OFlCSSADXbEfasBwVvU2rZzv4md09UfRHo+Za/skouelmtWSHv+R8E8uj1BDDtn
+         xXgQ==
+X-Gm-Message-State: AOAM531dzCk3KLBV7X2m3iHKrGhrJRpIG2V3cGsuf7G/utF1tNpGuENn
+        Dj61DHQuhOiNOpg04KY4T1Jd8z5yj72SAg==
+X-Google-Smtp-Source: ABdhPJxM02aLqyVMXmh3HYEmGzbrn5TzvFgP36skLQRyQEsby8HCbmtSau/FNEPZn5vvWMAUKwawPA==
+X-Received: by 2002:a37:b982:: with SMTP id j124mr2201351qkf.1.1611600199783;
+        Mon, 25 Jan 2021 10:43:19 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:f735])
+        by smtp.gmail.com with ESMTPSA id 75sm7108881qta.68.2021.01.25.10.43.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:42:51 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:42:49 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, linux-kernel@vger.kernel.org,
-        jonathan.zhouwen@huawei.com, catalin.marinas@arm.com
-Subject: Re: [PATCH v7 03/28] coresight: Introduce device access abstraction
-Message-ID: <20210125184249.GB894394@xps15>
-References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
- <20210110224850.1880240-4-suzuki.poulose@arm.com>
+        Mon, 25 Jan 2021 10:43:18 -0800 (PST)
+Date:   Mon, 25 Jan 2021 13:43:17 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+Message-ID: <YA8RRQ/WYqX3nF3o@cmpxchg.org>
+References: <20210125042441.20030-1-longman@redhat.com>
+ <20210125092815.GB827@dhcp22.suse.cz>
+ <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
+ <20210125160328.GP827@dhcp22.suse.cz>
+ <20210125162506.GF308988@casper.infradead.org>
+ <20210125164118.GS827@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210110224850.1880240-4-suzuki.poulose@arm.com>
+In-Reply-To: <20210125164118.GS827@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 10:48:25PM +0000, Suzuki K Poulose wrote:
-> We are about to introduce support for sysreg access to ETMv4.4+
-> component. Since there are generic routines that access the
-> registers (e.g, CS_LOCK/UNLOCK , claim/disclaim operations, timeout)
-> and in order to preserve the logic of these operations at a
-> single place we introduce an abstraction layer for the accesses
-> to a given device.
+On Mon, Jan 25, 2021 at 05:41:18PM +0100, Michal Hocko wrote:
+> On Mon 25-01-21 16:25:06, Matthew Wilcox wrote:
+> > On Mon, Jan 25, 2021 at 05:03:28PM +0100, Michal Hocko wrote:
+> > > On Mon 25-01-21 10:57:54, Waiman Long wrote:
+> > > > On 1/25/21 4:28 AM, Michal Hocko wrote:
+> > > > > On Sun 24-01-21 23:24:41, Waiman Long wrote:
+> > > > > > The commit 3fea5a499d57 ("mm: memcontrol: convert page
+> > > > > > cache to a new mem_cgroup_charge() API") introduced a bug in
+> > > > > > __add_to_page_cache_locked() causing the following splat:
+> > > > > > 
+> > > > > >   [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
+> > > > > >   [ 1570.068333] pages's memcg:ffff8889a4116000
+> > > > > >   [ 1570.068343] ------------[ cut here ]------------
+> > > > > >   [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
+> > > > > >   [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
+> > > > > >   [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
+> > > > > >   [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
+> > > > > >   [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
+> > > > > >     :
+> > > > > >   [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
+> > > > > >   [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
+> > > > > >   [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
+> > > > > >   [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
+> > > > > >   [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
+> > > > > >   [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
+> > > > > >   [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
+> > > > > >   [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > >   [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
+> > > > > >   [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > >   [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > >   [ 1570.068402] PKRU: 55555554
+> > > > > >   [ 1570.068404] Call Trace:
+> > > > > >   [ 1570.068407]  mem_cgroup_charge+0x175/0x770
+> > > > > >   [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
+> > > > > >   [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
+> > > > > >   [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
+> > > > > >   [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
+> > > > > >   [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
+> > > > > >   [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
+> > > > > >   [ 1570.068693]  read_pages+0x5b1/0xc40
+> > > > > >   [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
+> > > > > >   [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
+> > > > > >   [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
+> > > > > >   [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
+> > > > > >   [ 1570.068872]  new_sync_read+0x3af/0x610
+> > > > > >   [ 1570.068901]  vfs_read+0x339/0x4b0
+> > > > > >   [ 1570.068909]  ksys_read+0xf1/0x1c0
+> > > > > >   [ 1570.068920]  do_syscall_64+0x33/0x40
+> > > > > >   [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > > >   [ 1570.068930] RIP: 0033:0x7ff039135595
+> > > > > > 
+> > > > > > Before that commit, there was a try_charge() and commit_charge()
+> > > > > > in __add_to_page_cache_locked(). These 2 separated charge functions
+> > > > > > were replaced by a single mem_cgroup_charge(). However, it forgot
+> > > > > > to add a matching mem_cgroup_uncharge() when the xarray insertion
+> > > > > > failed with the page released back to the pool. Fix this by adding a
+> > > > > > mem_cgroup_uncharge() call when insertion error happens.
+> > > > > > 
+> > > > > > Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
+> > > > > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > > > OK, this is indeed a subtle bug. The patch aimed at simplifying the
+> > > > > charge lifetime so that users do not really have to think about when to
+> > > > > uncharge as that happens when the page is freed. fscache somehow breaks
+> > > > > that assumption because it doesn't free up pages but it keeps some of
+> > > > > them in the cache.
+> > > > > 
+> > > > > I have tried to wrap my head around the cached object life time in
+> > > > > fscache but failed and got lost in the maze. Is this the only instance
+> > > > > of the problem? Would it make more sense to explicitly handle charges in
+> > > > > the fscache code or there are other potential users to fall into this
+> > > > > trap?
+> > > > 
+> > > > There may be other places that have similar problem. I focus on the
+> > > > filemap.c case as I have a test case that can reliably produce the bug
+> > > > splat. This patch does fix it for my test case.
+> > > 
+> > > I believe this needs a more general fix than catching a random places
+> > > which you can trigger. Would it make more sense to address this at the
+> > > fscache level and always make sure that a page returned to the pool is
+> > > always uncharged instead?
+> > 
+> > I believe you mean "page cache" -- there is a separate thing called
+> > 'fscache' which is used to cache network filesystems.
 > 
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Change since v6:
->  - Fix code indentation in coresight.h (Mathieu Poirier)
-> Change since v3
->  - Dropped csa argument to read()/write().
->  - Addressed comments on spacing and adding labels for the #if #else #endifs.
->    (Mathieu)
-> ---
->  drivers/hwtracing/coresight/coresight-catu.c  |   1 +
->  drivers/hwtracing/coresight/coresight-core.c  |  43 ++++
->  .../hwtracing/coresight/coresight-cti-core.c  |   1 +
->  drivers/hwtracing/coresight/coresight-etb10.c |   1 +
->  .../coresight/coresight-etm3x-core.c          |   1 +
->  .../coresight/coresight-etm4x-core.c          |   1 +
->  .../hwtracing/coresight/coresight-funnel.c    |   1 +
->  .../coresight/coresight-replicator.c          |   1 +
->  drivers/hwtracing/coresight/coresight-stm.c   |   1 +
->  .../hwtracing/coresight/coresight-tmc-core.c  |   1 +
->  drivers/hwtracing/coresight/coresight-tpiu.c  |   1 +
->  include/linux/coresight.h                     | 193 +++++++++++++++++-
->  12 files changed, 243 insertions(+), 3 deletions(-)
-
-[...]
-
-> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset);
-> +u32 coresight_read32(struct coresight_device *csdev, u32 offset);
-> +void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset);
-> +void coresight_relaxed_write32(struct coresight_device *csdev,
-> +			       u32 val,
-> +			       u32 offset);
-
-More stacking - I fixed it.
-
-> +u64 coresight_relaxed_read64(struct coresight_device *csdev, u32 offset);
-> +u64 coresight_read64(struct coresight_device *csdev, u32 offset);
-> +void coresight_relaxed_write64(struct coresight_device *csdev,
-> +			       u64 val, u32 offset);
-> +void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
-> +
-> +
->  #else
->  static inline struct coresight_device *
->  coresight_register(struct coresight_desc *desc) { return NULL; }
-> @@ -369,10 +512,54 @@ static inline bool coresight_loses_context_with_cpu(struct device *dev)
->  {
->  	return false;
->  }
-> -#endif
-> +
-> +static inline u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline u32 coresight_read32(struct coresight_device *csdev, u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset)
-> +{
-> +}
-> +
-> +static inline void coresight_relaxed_write32(struct coresight_device *csdev,
-> +					     u32 val, u32 offset)
-> +{
-> +}
-> +
-> +static inline u64 coresight_relaxed_read64(struct coresight_device *csdev,
-> +					   u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline u64 coresight_read64(struct coresight_device *csdev, u32 offset)
-> +{
-> +	WARN_ON_ONCE(1);
-> +	return 0;
-> +}
-> +
-> +static inline void coresight_relaxed_write64(struct coresight_device *csdev,
-> +					     u64 val, u32 offset)
-> +{
-> +}
-> +
-> +static inline void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset)
-> +{
-> +}
-> +
-> +#endif		/* IS_ENABLED(CONFIG_CORESIGHT) */
->  
->  extern int coresight_get_cpu(struct device *dev);
->  
->  struct coresight_platform_data *coresight_get_platform_data(struct device *dev);
->  
-> -#endif
-> +#endif		/* _LINUX_COREISGHT_H */
-> -- 
-> 2.24.1
+> Yes, I really had fscache in mind because it does have an "unusual" page
+> life time rules.
 > 
+> > I don't understand the memcg code at all, so I have no useful feedback
+> > on what you're saying other than this.
+> 
+> Well the memcg accounting rules after the rework should have simplified
+> the API usage for most users. You will get memory charged when it is
+> used and it will go away when the page is freed. If a page is not really
+> freed in some cases and it can be reused then it doesn't really fit into
+> this scheme automagically. I do undestand that this puts some additional
+> burden on those special cases. I am not really sure what is the right
+> way here myself but considering there might be other similar cases like
+> that I would lean towards special casing where the pool is implemented.
+> I would expect there is some state to be maintain for that purpose
+> already.
+
+FWIW, khugepaged does a similar type of page recycling, where when one
+virtual area fails to collapse, the scanner caches the physical page
+and tries to reuse it for the next area. See the mem_cgroup_uncharge()
+call in collapse_huge_page().
+
+While it's nice to be able to leave the uncharge to the free call, in
+reuse cases like this I don't think it's a problem to have a matching
+uncharge.
