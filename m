@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1EC30201C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 02:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9610302002
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 02:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbhAYB4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 20:56:00 -0500
-Received: from mga11.intel.com ([192.55.52.93]:4252 "EHLO mga11.intel.com"
+        id S1726571AbhAYBsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 20:48:47 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37243 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726700AbhAYBve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 20:51:34 -0500
-IronPort-SDR: X9oZLV5lqK8A1IUL9Rkh3OEGSsI2IROAMgZSmUhBjMCvAz1RbTLZ2c1rgmpAcajxo4HW8/dJ0z
- eBdUOe/SjDAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="176137804"
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="176137804"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 17:50:35 -0800
-IronPort-SDR: W6BjhYkfpKYa1mkIc/8WB1ifGWqITyrixXI7sVS9b5XqdLTutnsJHaKYr4VyNJUbsFSS/uaI2f
- Mp9qV416zDMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="352795916"
-Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jan 2021 17:50:33 -0800
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, jee.heng.sia@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v12 05/17] dmaengine: dw-axi-dmac: Add device_config operation
-Date:   Mon, 25 Jan 2021 09:32:43 +0800
-Message-Id: <20210125013255.25799-6-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210125013255.25799-1-jee.heng.sia@intel.com>
-References: <20210125013255.25799-1-jee.heng.sia@intel.com>
+        id S1726247AbhAYBsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 20:48:30 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPCRl6TGJz9sS8;
+        Mon, 25 Jan 2021 12:47:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611539268;
+        bh=KSEdUoDB87VxC5V6yN1WB8TD5zs3k3W0KpqUBV+/5kI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OzilgZB+ElG042b5Sh/q9Ttm90U8WIqVqy195dVOIjVv2Sw9wKd06i8V0BHWZl61L
+         AOjucamqKGc0FfJEcZtwkN2TH/BhVFQpvGW8lrhm25lVMvjBx4EkuhApJ18PXOqpxs
+         PfgEKrT2EbS1YqATdB5qRh0XOk6PfMPtWgQEpMauaU22NvDy8lfmO4cR2OCKUq2xgL
+         C5HAv4b2Mt3YPkSqhb/PofZqhWuKRSXK+M9UggLm3ftmuhBNybviXF5Dm8klQGqZh8
+         F/8t2dJOG+OOo4FbVpJZb3JG2/F8lK0uT4EnXhZv3NUAN4KAGNyJGj2B0UMkW9cAW/
+         D3GmMOV7r9YvQ==
+Date:   Mon, 25 Jan 2021 12:47:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the openrisc tree with Linus' tree
+Message-ID: <20210125124746.40e2638d@canb.auug.org.au>
+In-Reply-To: <20210125010446.GS2002709@lianli.shorne-pla.net>
+References: <20210125090506.35337fa2@canb.auug.org.au>
+        <20210125010446.GS2002709@lianli.shorne-pla.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/N9ObBHMlHl_T7XVWQHiGCRs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device_config() callback function so that the device address
-can be passed to the dma driver.
+--Sig_/N9ObBHMlHl_T7XVWQHiGCRs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-DMA clients use this interface to pass in the device address to the
-AxiDMA. Without this interface, data transfer between device to memory
-and memory to device would failed.
+Hi Stafford,
 
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Tested-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
----
- drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c | 11 +++++++++++
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h          |  1 +
- 2 files changed, 12 insertions(+)
+On Mon, 25 Jan 2021 10:04:46 +0900 Stafford Horne <shorne@gmail.com> wrote:
+>
+> Thank's I knew about this conflict but I was not sure the best way to han=
+dle, I
+> was/am going to rebase the openrisc/for-next branch onto 5.11-rc5 once re=
+leased.
+> I will resolve the conflict during the rebase so you should be able to dr=
+op the
+> conflict patch after that.
 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index 241ab7a24e2a..eaa7c4c404ca 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -559,6 +559,16 @@ dma_chan_prep_dma_memcpy(struct dma_chan *dchan, dma_addr_t dst_adr,
- 	return NULL;
- }
- 
-+static int dw_axi_dma_chan_slave_config(struct dma_chan *dchan,
-+					struct dma_slave_config *config)
-+{
-+	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
-+
-+	memcpy(&chan->config, config, sizeof(*config));
-+
-+	return 0;
-+}
-+
- static void axi_chan_dump_lli(struct axi_dma_chan *chan,
- 			      struct axi_dma_hw_desc *desc)
- {
-@@ -948,6 +958,7 @@ static int dw_probe(struct platform_device *pdev)
- 
- 	dw->dma.device_prep_dma_memcpy = dma_chan_prep_dma_memcpy;
- 	dw->dma.device_synchronize = dw_axi_dma_synchronize;
-+	dw->dma.device_config = dw_axi_dma_chan_slave_config;
- 
- 	platform_set_drvdata(pdev, chip);
- 
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index f886b2bb75de..a75b921d6b1a 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -43,6 +43,7 @@ struct axi_dma_chan {
- 	struct virt_dma_chan		vc;
- 
- 	struct axi_dma_desc		*desc;
-+	struct dma_slave_config		config;
- 	/* these other elements are all protected by vc.lock */
- 	bool				is_paused;
- };
--- 
-2.18.0
+Its a pretty trivial conflict, so I wouldn't do the rebase just for this.
 
+> The issue is I had a fix that went straight to 5.11.  Should I usually pu=
+t these
+> kind of fixes on my for-next and my fixes branches in parallel, that way =
+I can
+> resolve conflicts on for-next before hand?
+
+I notice that the version in Linus' tree was merged from a separate
+branch.  The easiest that to do is for you to merge that same branch
+into your for-next branch - that way you only get your own changes, not
+any other stuff that might be in Linus' tree.
+
+> I don't usually do that as in my mind for next is for 5.12 and fixes for =
+5.11 go
+> straight to 5.11.  Also, I don't like putting the same patch in 2 queues.=
+  But
+> if I got any advice on how to avoid this in the future it would be apprec=
+iated.
+
+Like I said, just merge your fixes branch into you for-next branch
+when/if you think the fixes are important for further development, or
+the conflicts become to great.
+
+I can also add you fixes branch to linux-next if you like (I already
+have 86 other "fixes" branches).
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/N9ObBHMlHl_T7XVWQHiGCRs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOI0IACgkQAVBC80lX
+0GzCCQf/YAKPxZ+ay2vixNCpBYtW/DiUJpY60hz+ovo+1ndm0mg/QX1NXL9Ej8ld
++TqLacmnH6WEBaDj1SxJv90+bZWCyVLw1FjN1bRyJ9kfTAhapNReXXEpoG9mbO94
+bhkE9mTDk/w75Lso1MTCNrHMhooPHojMMJZvEwJfp2CntDFRpke68zQ25itW8xUy
+9Tixk18OhrNhd5GA8kyKaGilYzY9YAJHq1mexDgCzvbUF1YCVZcRYNs1SgTd0p3E
+ZlcF0bV4+YP2WY+2Pfa6PFfb7oau8sV+kGszgz7UJeydx19msalbneYB1aEDbZF9
+HKXCGYoJozEvkFL+2QMVqw9FptGxTA==
+=YQbB
+-----END PGP SIGNATURE-----
+
+--Sig_/N9ObBHMlHl_T7XVWQHiGCRs--
