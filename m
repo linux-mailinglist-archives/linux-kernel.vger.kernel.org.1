@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7433024D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108EA3024F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727913AbhAYMRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 07:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbhAYMNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:13:19 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA3EC061222
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 04:12:37 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id gx5so17645260ejb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 04:12:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sELvWNgnEJ2MVJqszYv1Ml6/L5kE+VKrd2/mLj0kl5U=;
-        b=CCS4dJURoGOrE0h2rv0bJxwpFJJixsR6978hUFo00+DEnTFfi5sMh52x+Bv7iTQ0We
-         sYiUlZDfI5b79VtMtFsyxivWncmU7KNGNU8i8AUeJ5P8BbabR7CX84tY6xlVIkAZJ/q9
-         1BbJXzv/wyJCozVh9cAs5WmB9F1Wcf2ns2bNlWn1zmMWGr5Dh4+xKUJ8kyAi+H7f0JCp
-         STTiUICH/5w26vxtguyNsUQ4aFMzSNS5CYuuVbs1qRXDHZopMOg2RbWPtMbG55LC8iuG
-         Hfxh//dL5FqAWwi/lIu6JNxknA+fBFk9nYiTKMLpM1U68mxFxkXhlL4seeZuQvBdMMgS
-         EzBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sELvWNgnEJ2MVJqszYv1Ml6/L5kE+VKrd2/mLj0kl5U=;
-        b=GFOPhARtJte05anhiN57hOt49D+of3FS67NcM/pnk+ueRtOJEPQAr2rD5vie0j4PTf
-         nncbo5HFhl+RN4N+6m28+qkhI4IPFDz6AvZgx3SjMcUkrBOwkIK//X3yJlwsSHVbfqqb
-         JrsuZbI9hkwcmDaHqnt0t6KB2SE6RlWiIxodyjmZK+DKQdxbQBn223aCHbO6UfTBsJeO
-         db6xxGaJIXDm9kcEtFx3UcMSNePUIZmKGEpnEhtGbI4DkoB1Gf7XrCNmLNbjlwlUqocp
-         VZyHolEioy4cCVYAsarhBTKGrp9Wf5BXNYCw6yl/Z/BscjTcBWSgBXH3AVKSGm918Fqw
-         yTCg==
-X-Gm-Message-State: AOAM530wmV2dhwbwIHWAWGCuODT/r3wHweSqeYt9wXUep6oFdbWb6aYP
-        fmd6B+xmBPLkl0pls85J6zMJsg==
-X-Google-Smtp-Source: ABdhPJzqsThtQLrvLlbaEj1Eg+JDSFaICmXN85M0CcNQJa6yi+OZXuKJQ/YkVMmXd+7B4xVGeU0IJg==
-X-Received: by 2002:a17:906:b0c2:: with SMTP id bk2mr165558ejb.223.1611576756151;
-        Mon, 25 Jan 2021 04:12:36 -0800 (PST)
-Received: from localhost ([85.163.43.78])
-        by smtp.gmail.com with ESMTPSA id p21sm10330901edx.90.2021.01.25.04.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 04:12:35 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:12:34 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        netdev@vger.kernel.org, jiri@nvidia.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Message-ID: <20210125121234.GJ3565223@nanopsycho.orion>
-References: <20210121112937.30989-1-oleksandr.mazur@plvision.eu>
- <20210121122152.GA2647590@shredder.lan>
- <20210121093605.49ba26ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1728097AbhAYM3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 07:29:07 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:48345 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727887AbhAYMS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:18:56 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DPTLF5mjtz9tytf;
+        Mon, 25 Jan 2021 13:13:57 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id fjwqXeu-7KdQ; Mon, 25 Jan 2021 13:13:57 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPTLF4vfBz9tytY;
+        Mon, 25 Jan 2021 13:13:57 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 06A1A8B79B;
+        Mon, 25 Jan 2021 13:14:03 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id g4AmfjdBibuV; Mon, 25 Jan 2021 13:14:02 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B35128B75F;
+        Mon, 25 Jan 2021 13:14:02 +0100 (CET)
+Subject: Re: [PATCH v10 11/12] mm/vmalloc: Hugepage vmalloc mappings
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     Ding Tianhong <dingtianhong@huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-12-npiggin@gmail.com>
+ <933352bd-dcf3-c483-4d7a-07afe1116cf1@csgroup.eu>
+ <1611574637.k9njsi2um5.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a3b26f6e-6f33-a606-6d60-5671e5ee395f@csgroup.eu>
+Date:   Mon, 25 Jan 2021 13:13:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121093605.49ba26ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1611574637.k9njsi2um5.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thu, Jan 21, 2021 at 06:36:05PM CET, kuba@kernel.org wrote:
->On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:
->> On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote:
->> > Add new trap action HARD_DROP, which can be used by the
->> > drivers to register traps, where it's impossible to get
->> > packet reported to the devlink subsystem by the device
->> > driver, because it's impossible to retrieve dropped packet
->> > from the device itself.
->> > In order to use this action, driver must also register
->> > additional devlink operation - callback that is used
->> > to retrieve number of packets that have been dropped by
->> > the device.  
->> 
->> Are these global statistics about number of packets the hardware dropped
->> for a specific reason or are these per-port statistics?
->> 
->> It's a creative use of devlink-trap interface, but I think it makes
->> sense. Better to re-use an existing interface than creating yet another
->> one.
->
->Not sure if I agree, if we can't trap why is it a trap?
->It's just a counter.
 
-+1
+
+Le 25/01/2021 à 12:37, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of January 25, 2021 7:14 pm:
+>>
+>>
+>> Le 24/01/2021 à 09:22, Nicholas Piggin a écrit :
+>>> Support huge page vmalloc mappings. Config option HAVE_ARCH_HUGE_VMALLOC
+>>> enables support on architectures that define HAVE_ARCH_HUGE_VMAP and
+>>> supports PMD sized vmap mappings.
+>>>
+>>> vmalloc will attempt to allocate PMD-sized pages if allocating PMD size
+>>> or larger, and fall back to small pages if that was unsuccessful.
+>>>
+>>> Architectures must ensure that any arch specific vmalloc allocations
+>>> that require PAGE_SIZE mappings (e.g., module allocations vs strict
+>>> module rwx) use the VM_NOHUGE flag to inhibit larger mappings.
+>>>
+>>> When hugepage vmalloc mappings are enabled in the next patch, this
+>>> reduces TLB misses by nearly 30x on a `git diff` workload on a 2-node
+>>> POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
+>>>
+>>> This can result in more internal fragmentation and memory overhead for a
+>>> given allocation, an option nohugevmalloc is added to disable at boot.
+>>>
+>>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+>>> ---
+>>>    arch/Kconfig            |  10 +++
+>>>    include/linux/vmalloc.h |  18 ++++
+>>>    mm/page_alloc.c         |   5 +-
+>>>    mm/vmalloc.c            | 192 ++++++++++++++++++++++++++++++----------
+>>>    4 files changed, 177 insertions(+), 48 deletions(-)
+>>>
+>>
+>>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+>>> index 0377e1d059e5..eef61e0f5170 100644
+>>> --- a/mm/vmalloc.c
+>>> +++ b/mm/vmalloc.c
+>>
+>>> @@ -2691,15 +2746,18 @@ EXPORT_SYMBOL_GPL(vmap_pfn);
+>>>    #endif /* CONFIG_VMAP_PFN */
+>>>    
+>>>    static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>>> -				 pgprot_t prot, int node)
+>>> +				 pgprot_t prot, unsigned int page_shift,
+>>> +				 int node)
+>>>    {
+>>>    	const gfp_t nested_gfp = (gfp_mask & GFP_RECLAIM_MASK) | __GFP_ZERO;
+>>> -	unsigned int nr_pages = get_vm_area_size(area) >> PAGE_SHIFT;
+>>> -	unsigned long array_size;
+>>> -	unsigned int i;
+>>> +	unsigned int page_order = page_shift - PAGE_SHIFT;
+>>> +	unsigned long addr = (unsigned long)area->addr;
+>>> +	unsigned long size = get_vm_area_size(area);
+>>> +	unsigned int nr_small_pages = size >> PAGE_SHIFT;
+>>>    	struct page **pages;
+>>> +	unsigned int i;
+>>>    
+>>> -	array_size = (unsigned long)nr_pages * sizeof(struct page *);
+>>> +	array_size = (unsigned long)nr_small_pages * sizeof(struct page *);
+>>
+>> array_size() is a function in include/linux/overflow.h
+>>
+>> For some reason, it breaks the build with your series.
+> 
+> What config? I haven't seen it.
+> 
+
+Several configs I believe. I saw it this morning in 
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210124082230.2118861-13-npiggin@gmail.com/
+
+Though the reports have all disappeared now.
