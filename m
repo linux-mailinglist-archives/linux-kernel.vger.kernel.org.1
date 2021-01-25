@@ -2,94 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D813304471
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2666E304449
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbhAZGBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:01:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728015AbhAYMqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:46:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 433DE229EF;
-        Mon, 25 Jan 2021 12:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611578740;
-        bh=56tdACcGGHFZFmeBO08RKmJkzc4zo0dNrypPmbndIvE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ELK6YOHuJmo+Zj67jVaKWqSYNUu9XLe/QuKcN06FLPeeDWAVm/KtFxMcH3iXXgwh4
-         9cJVZp2/iBnjGto6GUvby/wMrYKlHbvazXwQEchiOcJ6WrRyVwiqzT1PAUlR+12F3c
-         cAKsjT5XPq4omzuUCtXLDy6mt98opSLzdPDlNfKuTMeBS9BNQmrnOPHlbXzBw/PxeQ
-         TQzQuWcFlAEFnlXDsVTD95oljHl1253XO0zMWfgnrK4+DpLKMdvw13/ctqyKxSIAk7
-         gxWnboyIFHrkbCkmSqJTLNj22GgmrAFA8nuRkiiuUaC9mtgKDOFiknfpO8xHnDRE6u
-         23ElbZ+qGaVig==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com
-Subject: [RFC 0/3] kunit vs structleak
-Date:   Mon, 25 Jan 2021 13:45:25 +0100
-Message-Id: <20210125124533.101339-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2389592AbhAZHpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729739AbhAYQCh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:02:37 -0500
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D7DC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:01:57 -0800 (PST)
+Received: by mail-vk1-xa2c.google.com with SMTP id m145so3203582vke.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C/v4OJUMnI2Hi06JUgt13GRLw3pm4pkZR5SedogE/Jw=;
+        b=PWHcK7+QLWqXN2BKaHfQlpwTEcM43EJGv/cRbgk+jH9jDlXanZdbnxgoV9LjNqVOQ/
+         OJV1i/yQ+qnaUSwe6nWNCpStNQMMiBBeYYgUIGX/uH8eCTAA8xL9FL0mv/PN2cMfjen0
+         dgJrXXkSlE6fsbtlxGYRda/UWG11WCp1Pfhf0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C/v4OJUMnI2Hi06JUgt13GRLw3pm4pkZR5SedogE/Jw=;
+        b=ZjykFWeO83TDXg+KfbhImdJiVkNa8D31YUu1RhU2+2J6R+6wUCqlYrEzAkDDcJ9DNK
+         IsKAAffcCikO5I3PubGJav58r/udyc/OFJUYuvvWh1cfkskAPK+iQ/qzQko1xvZw4aCD
+         2c+sbj9iv1B43TAnazOxTvaw3iOJykXnzT2Rdiqobqu5ksFZe+5V0LJEfBieqJ1x+vD8
+         3cVZwmlnXlAeyJVXs43JGp5edOWl3gj4Jr5Iz2B8Clqy/LJiigiDdYW+q3gb4K9I+UMG
+         TL5U/Q5zNau5i3R6qZerGUhQHLrF3hGzSq/uWnhjLIQFy3kZ41PiluzpNOiaYQjf5+DK
+         1qtQ==
+X-Gm-Message-State: AOAM530CVCWz8dzs9mw+oB6xIhr5d4snkMlWYPFd5BeCNtwRPQCDiTNA
+        i2YnF4JLFifdGkyT6ZkQuIbh6Sy7g2GLWw==
+X-Google-Smtp-Source: ABdhPJyL3IC5ok1cKwcpvwBRAVvtBJ13prEl8DpurdUEE3BM9Gpjk3E5PVbc6ESr1N06ae1H4lFf/Q==
+X-Received: by 2002:a1f:1d4a:: with SMTP id d71mr1234316vkd.12.1611590515466;
+        Mon, 25 Jan 2021 08:01:55 -0800 (PST)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id a22sm2598454vkm.0.2021.01.25.08.01.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 08:01:52 -0800 (PST)
+Received: by mail-vk1-f174.google.com with SMTP id f3so3197682vkf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:01:52 -0800 (PST)
+X-Received: by 2002:ac5:c318:: with SMTP id j24mr1121336vkk.21.1611590512183;
+ Mon, 25 Jan 2021 08:01:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1611558371-14414-1-git-send-email-sumit.garg@linaro.org>
+In-Reply-To: <1611558371-14414-1-git-send-email-sumit.garg@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 25 Jan 2021 08:01:40 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=X-rA6F_dS-f7f5WO2SZbVYrrg5A5dOrXe_6FrE=ZhqQg@mail.gmail.com>
+Message-ID: <CAD=FV=X-rA6F_dS-f7f5WO2SZbVYrrg5A5dOrXe_6FrE=ZhqQg@mail.gmail.com>
+Subject: Re: [PATCH v2] kdb: Simplify kdb commands registration
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi,
 
-I ran into a couple of problems with kunit tests taking too much stack
-space, sometimes dangerously so. These the the three instances that
-cause an increase over the warning limit of some architectures:
+On Sun, Jan 24, 2021 at 11:06 PM Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> Simplify kdb commands registration via using linked list instead of
+> static array for commands storage.
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>
+> Changes in v2:
+> - Remove redundant NULL check for "cmd_name".
+> - Incorporate misc. comment.
+>
+>  kernel/debug/kdb/kdb_main.c    | 119 ++++++++++++-----------------------------
+>  kernel/debug/kdb/kdb_private.h |   1 +
+>  2 files changed, 34 insertions(+), 86 deletions(-)
+>
+> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> index 930ac1b..a0989a0 100644
+> --- a/kernel/debug/kdb/kdb_main.c
+> +++ b/kernel/debug/kdb/kdb_main.c
+> @@ -33,6 +33,7 @@
+>  #include <linux/kallsyms.h>
+>  #include <linux/kgdb.h>
+>  #include <linux/kdb.h>
+> +#include <linux/list.h>
+>  #include <linux/notifier.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/delay.h>
+> @@ -84,15 +85,8 @@ static unsigned int kdb_continue_catastrophic =
+>  static unsigned int kdb_continue_catastrophic;
+>  #endif
+>
+> -/* kdb_commands describes the available commands. */
+> -static kdbtab_t *kdb_commands;
+> -#define KDB_BASE_CMD_MAX 50
+> -static int kdb_max_commands = KDB_BASE_CMD_MAX;
+> -static kdbtab_t kdb_base_commands[KDB_BASE_CMD_MAX];
+> -#define for_each_kdbcmd(cmd, num)                                      \
+> -       for ((cmd) = kdb_base_commands, (num) = 0;                      \
+> -            num < kdb_max_commands;                                    \
+> -            num++, num == KDB_BASE_CMD_MAX ? cmd = kdb_commands : cmd++)
+> +/* kdb_cmds_head describes the available commands. */
+> +static LIST_HEAD(kdb_cmds_head);
+>
+>  typedef struct _kdbmsg {
+>         int     km_diag;        /* kdb diagnostic */
+> @@ -921,7 +915,7 @@ int kdb_parse(const char *cmdstr)
+>         char *cp;
+>         char *cpp, quoted;
+>         kdbtab_t *tp;
+> -       int i, escaped, ignore_errors = 0, check_grep = 0;
+> +       int escaped, ignore_errors = 0, check_grep = 0;
+>
+>         /*
+>          * First tokenize the command string.
+> @@ -1011,25 +1005,18 @@ int kdb_parse(const char *cmdstr)
+>                 ++argv[0];
+>         }
+>
+> -       for_each_kdbcmd(tp, i) {
+> -               if (tp->cmd_name) {
+> -                       /*
+> -                        * If this command is allowed to be abbreviated,
+> -                        * check to see if this is it.
+> -                        */
+> -
+> -                       if (tp->cmd_minlen
+> -                        && (strlen(argv[0]) <= tp->cmd_minlen)) {
+> -                               if (strncmp(argv[0],
+> -                                           tp->cmd_name,
+> -                                           tp->cmd_minlen) == 0) {
+> -                                       break;
+> -                               }
+> -                       }
+> -
+> -                       if (strcmp(argv[0], tp->cmd_name) == 0)
+> +       list_for_each_entry(tp, &kdb_cmds_head, list_node) {
+> +               /*
+> +                * If this command is allowed to be abbreviated,
+> +                * check to see if this is it.
+> +                */
+> +               if (tp->cmd_minlen && (strlen(argv[0]) <= tp->cmd_minlen)) {
+> +                       if (strncmp(argv[0], tp->cmd_name, tp->cmd_minlen) == 0)
+>                                 break;
+>                 }
 
-lib/bitfield_kunit.c:93:1: error: the frame size of 7440 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
-drivers/base/test/property-entry-test.c:481:1: error: the frame size of 2640 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
-drivers/thunderbolt/test.c:1529:1: error: the frame size of 1176 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+The old code had the same problem, but since you're touching it you could fix?
 
-Ideally there should be a way to rewrite the kunit infrastructure
-that avoids the explosion of stack data when the structleak plugin
-is used.
+if (a) {
+  if (b)
+    break;
+}
 
-A rather drastic measure would be to use Kconfig logic to make
-the two options mutually exclusive. This would clearly work, but
-is probably not needed.
+...is the same as:
 
-As a simpler workaround, this disables the plugin for the three
-files in which the excessive stack usage was observed.
+if (a && b)
+  break;
 
-      Arnd
+In any case, this looks like quite a nice cleanup, so:
 
-Arnd Bergmann (3):
-  bitfield: build kunit tests without structleak plugin
-  drivers/base: build kunit tests without structleak plugin
-  thunderbolt: build kunit tests without structleak plugin
-
- drivers/base/test/Makefile   | 1 +
- drivers/thunderbolt/Makefile | 1 +
- lib/Makefile                 | 1 +
- 3 files changed, 3 insertions(+)
-
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Alan Maguire <alan.maguire@oracle.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Vitor Massaru Iha <vitor@massaru.org>
-Cc: linux-hardening@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: kunit-dev@googlegroups.com
-Cc: linux-kernel@vger.kernel.org
--- 
-2.29.2
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
