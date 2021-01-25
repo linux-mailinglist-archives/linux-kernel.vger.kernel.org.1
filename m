@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C5E3025AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0713E302590
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729089AbhAYNst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:48:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43740 "EHLO mx2.suse.de"
+        id S1728867AbhAYNgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:36:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729054AbhAYNoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:44:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5330DB9A3;
-        Mon, 25 Jan 2021 11:20:15 +0000 (UTC)
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Bharata B Rao <bharata@linux.ibm.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com>
- <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
- <CAKfTPtDy3Ynk2nGCTWiXjz9-4vuSHB3pGuafoTUBPFNO1ac3PA@mail.gmail.com>
- <786571e7-b9a2-4cdb-06d5-aa4a4b439b7e@suse.cz>
- <20210123051607.GC2587010@in.ibm.com>
- <CAKfTPtAjyVmS5VYvU6DBxg4-JEo5bdmWbngf-03YsY18cmWv_g@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-Message-ID: <66652406-25e4-a9e7-45a1-8ad14d2e8a36@suse.cz>
-Date:   Mon, 25 Jan 2021 12:20:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728941AbhAYNeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:34:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C9B122AEC;
+        Mon, 25 Jan 2021 11:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611574818;
+        bh=imRMguePrRlh4uW9e4XxMGfsGUxkK+bwXiHzZqO3Lfk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ip1QXuQsU9uUE/EF4n+BVfUEq61Zdw8/dP3khpaYi4AUlj1yREcXD4ZVqVlDTu+5T
+         r0DaS5VV6QN5VPKZV2efZHtJbaFEj8lRcEEpZwXV/P5T9SnYXa4kkPCE8NDIVsQFrF
+         6xCt1WXIY4ODEzX+ji14hKUArR2coftxRwlB7iKH+BnVXwMJu27EynYyb/8pL4anA3
+         h9MzorSjudFf9Me4W82DINBpwapQuffCJ/Kxhgoe2Bjb2wLKk8zpyATWUSq8yPjmMZ
+         H0pVYl2EL0CaHP9Ku4f4+r+UiAy1YvL1CWmIvKCvccTLN8nnCQ/f+DmYyJZlB36PEy
+         OC11OOTu8R7fQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joshua Aberback <joshua.aberback@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Wesley Chalmers <Wesley.Chalmers@amd.com>,
+        Jacky Liao <ziyu.liao@amd.com>,
+        Martin Leung <martin.leung@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/display: use div_s64() for 64-bit division
+Date:   Mon, 25 Jan 2021 12:39:55 +0100
+Message-Id: <20210125114012.2480845-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtAjyVmS5VYvU6DBxg4-JEo5bdmWbngf-03YsY18cmWv_g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/23/21 1:32 PM, Vincent Guittot wrote:
->> PowerPC PowerNV Host: (160 cpus)
->> num_online_cpus 1 num_present_cpus 160 num_possible_cpus 160 nr_cpu_ids 160
->>
->> PowerPC pseries KVM guest: (-smp 16,maxcpus=160)
->> num_online_cpus 1 num_present_cpus 16 num_possible_cpus 160 nr_cpu_ids 160
->>
->> That's what I see on powerpc, hence I thought num_present_cpus() could
->> be the correct one to use in slub page order calculation.
-> 
-> num_present_cpus() is set to 1 on arm64 until secondaries cpus boot
-> 
-> arm64 224cpus acpi host:
-> num_online_cpus 1 num_present_cpus 1 num_possible_cpus 224 nr_cpu_ids 224
-> arm64 8cpus DT host:
-> num_online_cpus 1 num_present_cpus 1 num_possible_cpus 8 nr_cpu_ids 8
-> arm64 8cpus qemu-system-aarch64 (-smp 8,maxcpus=256)
-> num_online_cpus 1 num_present_cpus 1 num_possible_cpus 8 nr_cpu_ids 8
+From: Arnd Bergmann <arnd@arndb.de>
 
-I would have expected num_present_cpus to be 224, 8, 8, respectively.
+The open-coded 64-bit division causes a link error on 32-bit
+machines:
 
-> Then present and online increase to num_possible_cpus once all cpus are booted
-> 
->>
->> >
->> > What about heuristic:
->> > - num_online_cpus() > 1 - we trust that and use it
->> > - otherwise nr_cpu_ids
->> > Would that work? Too arbitrary?
->>
->> Looking at the following snippet from include/linux/cpumask.h, it
->> appears that num_present_cpus() should be reasonable compromise
->> between online and possible/nr_cpus_ids to use here.
->>
->> /*
->>  * The following particular system cpumasks and operations manage
->>  * possible, present, active and online cpus.
->>  *
->>  *     cpu_possible_mask- has bit 'cpu' set iff cpu is populatable
->>  *     cpu_present_mask - has bit 'cpu' set iff cpu is populated
->>  *     cpu_online_mask  - has bit 'cpu' set iff cpu available to scheduler
->>  *     cpu_active_mask  - has bit 'cpu' set iff cpu available to migration
->>  *
->>  *  If !CONFIG_HOTPLUG_CPU, present == possible, and active == online.
->>  *
->>  *  The cpu_possible_mask is fixed at boot time, as the set of CPU id's
->>  *  that it is possible might ever be plugged in at anytime during the
->>  *  life of that system boot.  The cpu_present_mask is dynamic(*),
->>  *  representing which CPUs are currently plugged in.  And
->>  *  cpu_online_mask is the dynamic subset of cpu_present_mask,
->>  *  indicating those CPUs available for scheduling.
->>  *
->>  *  If HOTPLUG is enabled, then cpu_possible_mask is forced to have
->>  *  all NR_CPUS bits set, otherwise it is just the set of CPUs that
->>  *  ACPI reports present at boot.
->>  *
->>  *  If HOTPLUG is enabled, then cpu_present_mask varies dynamically,
->>  *  depending on what ACPI reports as currently plugged in, otherwise
->>  *  cpu_present_mask is just a copy of cpu_possible_mask.
->>  *
->>  *  (*) Well, cpu_present_mask is dynamic in the hotplug case.  If not
->>  *      hotplug, it's a copy of cpu_possible_mask, hence fixed at boot.
->>  */
->>
->> So for host systems, present is (usually) equal to possible and for
-> 
-> But "cpu_present_mask varies dynamically,  depending on what ACPI
-> reports as currently plugged in"
-> 
-> So it should varies when secondaries cpus are booted
+ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
+ERROR: modpost: "__divdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
 
-Hm, but booting the secondaries is just a software (kernel) action? They are
-already physically there, so it seems to me as if the cpu_present_mask is not
-populated correctly on arm64, and it's just a mirror of cpu_online_mask?
+Use the div_s64() to perform the division here. One of them was an
+unsigned division originally, but it looks like signed division was
+intended, so use that to consistently allow a negative delay.
+
+Fixes: ea7154d8d9fb ("drm/amd/display: Update dcn30_apply_idle_power_optimizations() code")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+index dff83c6a142a..a133e399e76d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+@@ -772,8 +772,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enable)
+ 							cursor_cache_enable ? &cursor_attr : NULL)) {
+ 				unsigned int v_total = stream->adjust.v_total_max ?
+ 						stream->adjust.v_total_max : stream->timing.v_total;
+-				unsigned int refresh_hz = (unsigned long long) stream->timing.pix_clk_100hz *
+-						100LL /	(v_total * stream->timing.h_total);
++				unsigned int refresh_hz = div_s64((unsigned long long) stream->timing.pix_clk_100hz *
++						100LL, v_total * stream->timing.h_total);
+ 
+ 				/*
+ 				 * one frame time in microsec:
+@@ -800,8 +800,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enable)
+ 				unsigned int denom = refresh_hz * 6528;
+ 				unsigned int stutter_period = dc->current_state->perf_params.stutter_period_us;
+ 
+-				tmr_delay = (((1000000LL + 2 * stutter_period * refresh_hz) *
+-						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
++				tmr_delay = div_s64(((1000000LL + 2 * stutter_period * refresh_hz) *
++						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
+ 						denom) - 64LL;
+ 
+ 				/* scale should be increased until it fits into 6 bits */
+@@ -815,8 +815,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enable)
+ 					}
+ 
+ 					denom *= 2;
+-					tmr_delay = (((1000000LL + 2 * stutter_period * refresh_hz) *
+-							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
++					tmr_delay = div_s64(((1000000LL + 2 * stutter_period * refresh_hz) *
++							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
+ 							denom) - 64LL;
+ 				}
+ 
+-- 
+2.29.2
+
