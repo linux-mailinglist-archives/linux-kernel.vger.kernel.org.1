@@ -2,166 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35FA303746
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DB230374C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389429AbhAZHU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:20:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        id S1732627AbhAZHXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:23:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730335AbhAYPoj (ORCPT
+        with ESMTP id S1730297AbhAYPpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:44:39 -0500
-X-Greylist: delayed 2400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Jan 2021 07:43:54 PST
-Received: from newton.telenet-ops.be (newton.telenet-ops.be [IPv6:2a02:1800:120:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8377FC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:43:54 -0800 (PST)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4DPXG801R1zMsLHq
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:25:36 +0100 (CET)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id M2QZ240054C55Sk012QZ6j; Mon, 25 Jan 2021 15:24:35 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l42nA-000eiU-K5; Mon, 25 Jan 2021 15:24:32 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l42nA-004P54-5j; Mon, 25 Jan 2021 15:24:32 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v2 1/4] dt-bindings: renesas,rcar-dmac: Add r8a779a0 support
-Date:   Mon, 25 Jan 2021 15:24:28 +0100
-Message-Id: <20210125142431.1049668-2-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210125142431.1049668-1-geert+renesas@glider.be>
-References: <20210125142431.1049668-1-geert+renesas@glider.be>
+        Mon, 25 Jan 2021 10:45:06 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09FC2C06178A;
+        Mon, 25 Jan 2021 07:07:11 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id d7so5278014otf.3;
+        Mon, 25 Jan 2021 07:07:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o+tF4kaBNHVUeLz+neiR9EKFSH0RfBoOkuSe1R44I6w=;
+        b=Hwq67MQmYVPMYCZWKjORrY407ayyGMAmuweF5bGKJREWfqd/R8Ho/W3mHhkxOLOlGX
+         1O5S4cg5i+y1RKR41/AMivqX7Z3HDLSHKPOOyjXA25qfSm/GSGnJbe4YAyrky3nLLOrC
+         eNd1d1HRJBKjJqbAXfaYM/8knALrtXO6suGrMIxnJ0XORv6p41Dksgh4wOQ1pFXC3gyR
+         4TPE9WNGXbowkiHp05fB9CNkTuEiXcnoLwLaQkNFcA5hNSbndfXnmiCMpy9AE5nk1TOI
+         23FkgL6bSWXk5vvS+HbTxZzShPWFwMwt8cFrZeL20/fiaBcB9Fkj+3qG0+KAH+TS1jSU
+         5JlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o+tF4kaBNHVUeLz+neiR9EKFSH0RfBoOkuSe1R44I6w=;
+        b=d3/LOTdU5OCwfRbXRTY+mZKr3URxQvdYS6W2+KANLPFtqwPcnPqjCrqwLGFgZND3Kg
+         UDUikLvl/SI3cyugZ8hKT530GvwQj9cfLHh2kzT8xvp/b8sEy0k08j6qThxvcI6lkq18
+         I9DT1YBPUq1KYflaoQLTpt/dsg+BPmhIuHNXxmTlOpM8BtaYGzua4IrLbmmUq0zOcnWP
+         sGhi4sBdA9wp1g8WKMnwDqkw6Y8/p+BSAU625UPpmVdmEIDQqB+WmP3gbaWjO8dVOqG7
+         n16IR4vvoZAmWLHXH1vZ8lYbQNA7NeBAAa742wqINf8vXCKAmf6H8Ijh+9cHnvq1cu+o
+         jM9A==
+X-Gm-Message-State: AOAM531tXeOO/xJ2vf+my+wrKE+wvfsDnziP4lh9J/IVybbaObSttE0X
+        +DOL3nDWus8XzZpoQpBRI7iOeYNo4YZKUjV5pK8=
+X-Google-Smtp-Source: ABdhPJzLpiv5vCtKZgABLpe2a/nPpQqwY8M2+LbN3ZUR6u0pvsBbsKxXgCt2lRyPmJ3UDvMbTjbKzB9PzckuZRUW6tQ=
+X-Received: by 2002:a9d:784a:: with SMTP id c10mr796878otm.132.1611587230413;
+ Mon, 25 Jan 2021 07:07:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210122150022.209454-1-colin.king@canonical.com> <20210125043623.GD610615@hr-amd>
+In-Reply-To: <20210125043623.GD610615@hr-amd>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 25 Jan 2021 10:06:58 -0500
+Message-ID: <CADnq5_PgXRv5LKO=yhx6NnYE4Et_PHa45JArAjorJ6W-GiDG2A@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amdgpu: Fix masking binary not operator on two
+ mask operations
+To:     Huang Rui <ray.huang@amd.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "Liu, Aaron" <Aaron.Liu@amd.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the compatible value for the Direct Memory Access Controller
-blocks in the Renesas R-Car V3U (R8A779A0) SoC.
+Applied.  Thanks!
 
-The most visible difference with DMAC blocks on other R-Car SoCs is the
-move of the per-channel registers to a separate register block.
+Alex
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-v2:
-  - Add Reviewed-by.
----
- .../bindings/dma/renesas,rcar-dmac.yaml       | 76 ++++++++++++-------
- 1 file changed, 48 insertions(+), 28 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-index c07eb6f2fc8d2f12..7f2a54bc732d3a19 100644
---- a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-+++ b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-@@ -14,34 +14,37 @@ allOf:
- 
- properties:
-   compatible:
--    items:
--      - enum:
--          - renesas,dmac-r8a7742  # RZ/G1H
--          - renesas,dmac-r8a7743  # RZ/G1M
--          - renesas,dmac-r8a7744  # RZ/G1N
--          - renesas,dmac-r8a7745  # RZ/G1E
--          - renesas,dmac-r8a77470 # RZ/G1C
--          - renesas,dmac-r8a774a1 # RZ/G2M
--          - renesas,dmac-r8a774b1 # RZ/G2N
--          - renesas,dmac-r8a774c0 # RZ/G2E
--          - renesas,dmac-r8a774e1 # RZ/G2H
--          - renesas,dmac-r8a7790  # R-Car H2
--          - renesas,dmac-r8a7791  # R-Car M2-W
--          - renesas,dmac-r8a7792  # R-Car V2H
--          - renesas,dmac-r8a7793  # R-Car M2-N
--          - renesas,dmac-r8a7794  # R-Car E2
--          - renesas,dmac-r8a7795  # R-Car H3
--          - renesas,dmac-r8a7796  # R-Car M3-W
--          - renesas,dmac-r8a77961 # R-Car M3-W+
--          - renesas,dmac-r8a77965 # R-Car M3-N
--          - renesas,dmac-r8a77970 # R-Car V3M
--          - renesas,dmac-r8a77980 # R-Car V3H
--          - renesas,dmac-r8a77990 # R-Car E3
--          - renesas,dmac-r8a77995 # R-Car D3
--      - const: renesas,rcar-dmac
--
--  reg:
--    maxItems: 1
-+    oneOf:
-+      - items:
-+          - enum:
-+              - renesas,dmac-r8a7742  # RZ/G1H
-+              - renesas,dmac-r8a7743  # RZ/G1M
-+              - renesas,dmac-r8a7744  # RZ/G1N
-+              - renesas,dmac-r8a7745  # RZ/G1E
-+              - renesas,dmac-r8a77470 # RZ/G1C
-+              - renesas,dmac-r8a774a1 # RZ/G2M
-+              - renesas,dmac-r8a774b1 # RZ/G2N
-+              - renesas,dmac-r8a774c0 # RZ/G2E
-+              - renesas,dmac-r8a774e1 # RZ/G2H
-+              - renesas,dmac-r8a7790  # R-Car H2
-+              - renesas,dmac-r8a7791  # R-Car M2-W
-+              - renesas,dmac-r8a7792  # R-Car V2H
-+              - renesas,dmac-r8a7793  # R-Car M2-N
-+              - renesas,dmac-r8a7794  # R-Car E2
-+              - renesas,dmac-r8a7795  # R-Car H3
-+              - renesas,dmac-r8a7796  # R-Car M3-W
-+              - renesas,dmac-r8a77961 # R-Car M3-W+
-+              - renesas,dmac-r8a77965 # R-Car M3-N
-+              - renesas,dmac-r8a77970 # R-Car V3M
-+              - renesas,dmac-r8a77980 # R-Car V3H
-+              - renesas,dmac-r8a77990 # R-Car E3
-+              - renesas,dmac-r8a77995 # R-Car D3
-+          - const: renesas,rcar-dmac
-+
-+      - items:
-+          - const: renesas,dmac-r8a779a0 # R-Car V3U
-+
-+  reg: true
- 
-   interrupts:
-     minItems: 9
-@@ -110,6 +113,23 @@ required:
-   - power-domains
-   - resets
- 
-+if:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - renesas,dmac-r8a779a0
-+then:
-+  properties:
-+    reg:
-+      items:
-+        - description: Base register block
-+        - description: Channel register block
-+else:
-+  properties:
-+    reg:
-+      maxItems: 1
-+
- additionalProperties: false
- 
- examples:
--- 
-2.25.1
-
+On Sun, Jan 24, 2021 at 11:36 PM Huang Rui <ray.huang@amd.com> wrote:
+>
+> On Fri, Jan 22, 2021 at 11:00:22PM +0800, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > Currently the ! operator is incorrectly being used to flip bits on
+> > mask values. Fix this by using the bit-wise ~ operator instead.
+> >
+> > Addresses-Coverity: ("Logical vs. bitwise operator")
+> > Fixes: 3c9a7b7d6e75 ("drm/amdgpu: update mmhub mgcg&ls for mmhub_v2_3")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>
+> Thanks.
+>
+> Reviewed-by: Huang Rui <ray.huang@amd.com>
+>
+> > ---
+> >  drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c
+> > index 1961745e89c7..ab9be5ad5a5f 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/mmhub_v2_3.c
+> > @@ -531,12 +531,12 @@ mmhub_v2_3_update_medium_grain_light_sleep(struct amdgpu_device *adev,
+> >
+> >       if (enable && (adev->cg_flags & AMD_CG_SUPPORT_MC_LS)) {
+> >               data &= ~MM_ATC_L2_CGTT_CLK_CTRL__MGLS_OVERRIDE_MASK;
+> > -             data1 &= !(DAGB0_WR_CGTT_CLK_CTRL__LS_OVERRIDE_MASK |
+> > +             data1 &= ~(DAGB0_WR_CGTT_CLK_CTRL__LS_OVERRIDE_MASK |
+> >                       DAGB0_WR_CGTT_CLK_CTRL__LS_OVERRIDE_WRITE_MASK |
+> >                       DAGB0_WR_CGTT_CLK_CTRL__LS_OVERRIDE_READ_MASK |
+> >                       DAGB0_WR_CGTT_CLK_CTRL__LS_OVERRIDE_RETURN_MASK |
+> >                       DAGB0_WR_CGTT_CLK_CTRL__LS_OVERRIDE_REGISTER_MASK);
+> > -             data2 &= !(DAGB0_RD_CGTT_CLK_CTRL__LS_OVERRIDE_MASK |
+> > +             data2 &= ~(DAGB0_RD_CGTT_CLK_CTRL__LS_OVERRIDE_MASK |
+> >                       DAGB0_RD_CGTT_CLK_CTRL__LS_OVERRIDE_WRITE_MASK |
+> >                       DAGB0_RD_CGTT_CLK_CTRL__LS_OVERRIDE_READ_MASK |
+> >                       DAGB0_RD_CGTT_CLK_CTRL__LS_OVERRIDE_RETURN_MASK |
+> > --
+> > 2.29.2
+> >
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
