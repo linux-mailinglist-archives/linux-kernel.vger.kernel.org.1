@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99267303669
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB04030361A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731807AbhAZGUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:20:47 -0500
-Received: from mail-yb1-f179.google.com ([209.85.219.179]:37022 "EHLO
-        mail-yb1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728780AbhAYNZu (ORCPT
+        id S1727345AbhAZGAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:00:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728272AbhAYMpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:25:50 -0500
-Received: by mail-yb1-f179.google.com with SMTP id z1so13282501ybr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:25:18 -0800 (PST)
+        Mon, 25 Jan 2021 07:45:06 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B787C061794;
+        Mon, 25 Jan 2021 03:27:28 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d13so1658872plg.0;
+        Mon, 25 Jan 2021 03:27:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=USqO0hVIRRmy8RPtiAMvZ6fj22xmDUfHHapspTdrP0M=;
+        b=lpKuGhfSYhzqAOztL8yd9fnExl2zUK2nnIOxIkM/H6LQxRthh4Ip03ljGo3nky8DlG
+         pKaturulK4+ccQPGZzHSEuS/GcsyO7bw/jfQrjbS18E+V79k0Csox+TmkI6Eqzyzt0mu
+         vfkA8uPv19a8X/5Yy676ViYoFxGIAGwpV5iYrIROOMa4ALSKBdvzOSudAeEptjdyky6/
+         RzlJRLGUNVAwdcoGiCyR5Z0XGbuOwvmeLqJoQiD68HTRpIQHn7MmUIUdX/lIyyL1UacJ
+         N11EbzbhuwAGBI3Jg+IYZhSqfLDS/Eaw/P9FlT25Noj9X001TG/FLWC7Lto9XTtb9iks
+         Jqqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mybA+IIkOKUfsPE8aZqJZA/LpcRLze1XRIRef0pzfVA=;
-        b=tQxod7v4JBW69hD93apD6vjttnsEATqPy5IfPz61OQSh6mgfowxYO08i4L2s+uU7lA
-         C+2geU5XZ0tjjV6Xk77qRObAqVtBBRQ5Es+zSmbIW+lLANTlHf088mik3LfsxOwKXH3w
-         mN5+0qpaqKwabf3PzKSbK2fvF+ZCIGwmx0Pc+gu8aE9TnEOGa61QQaYtnfEDxsDIRLHR
-         kA6v/n5DbXfb2RCLAnDhRT3n6dJm7PrEQPkOgrZyMKtwX5jdVdQZz7eV53OHDoA2zLmN
-         6z4CJu3XCSKGg34okhRSnPE3Csk7n1vEqO6C9nU/tHKGzbcSmJzxCdcPII2tmMMgn4Kv
-         2CkQ==
-X-Gm-Message-State: AOAM531mDKO2vBqnJbTb5CCuhhBrvaDtyVKaCS0/fG61S3Vd5tjUi25r
-        txybJP8ANFCeJSXj3A3bQPeub6Kw8Izzn8eDhh0b9/Eb
-X-Google-Smtp-Source: ABdhPJx0q+FoaFczNHxa2Z2c4WZ18GfoOBMpXH8A8XAiNI6j2FLuEoWkXwpADn/hBfSjc17vF8UFkpIzwN6IaMXJ1WM=
-X-Received: by 2002:a25:ab8d:: with SMTP id v13mr150736ybi.479.1611573942420;
- Mon, 25 Jan 2021 03:25:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20210123184237.6970-1-kernel@esmil.dk> <20210125110311.pmqddpkh2c247tmx@maple.lan>
-In-Reply-To: <20210125110311.pmqddpkh2c247tmx@maple.lan>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-Date:   Mon, 25 Jan 2021 12:25:31 +0100
-Message-ID: <CANBLGcxcpYucmFHtKydi=o_t=eaSbeEZBqY8C4xWLfjpxJkxBw@mail.gmail.com>
-Subject: Re: [PATCH] kgdb: use new API for breakpoint tasklet
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=USqO0hVIRRmy8RPtiAMvZ6fj22xmDUfHHapspTdrP0M=;
+        b=Z0IYrr1oUvwA0j+xw7FLaiviX/C+t1E3/h+brUYLimMHYpRy/KBJCwVhWcK6fmdFUc
+         ZfQUwqaV5n3pRUaGAYMTySqjqNsTCpxWtlPEnmUSlTVu9q36TzyiYKw10QITXjjqr28v
+         K0iwvTunVjwgczk6qvhYENZXdDqJoO14sCvGVHe9J4r29C37/oljTiLVfSZmd/ZM1Nkn
+         Q33mnHUcrhiWF8L75ZR69D6a6evpmuOCd74++lKfKaLK+XFe+J0Pco7LWMu9ySHgZbvE
+         gHRz4OZBG/uqTUMILNkSkKnsf3JZ1PoP5WRh2h3Ili/FNvdWZv7gUnpb1Ix+gUkrAUHy
+         Y+wA==
+X-Gm-Message-State: AOAM530Zge8xcu9ns2tJWIYQ2ORi8FZ9DZxBHiLmONtMTgFrUdV2PhpI
+        AtMsNv1T/Y+L2Md1tYLlWMk=
+X-Google-Smtp-Source: ABdhPJyyZY6f7l0Qx1et36y54Mvtzr9V7Bf1MFFKLcdOknazL4qHnVEeHpIzmrcOh++5g8h9oE79zw==
+X-Received: by 2002:a17:90a:d249:: with SMTP id o9mr13301205pjw.196.1611574047644;
+        Mon, 25 Jan 2021 03:27:27 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id mj21sm18406747pjb.12.2021.01.25.03.27.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Jan 2021 03:27:26 -0800 (PST)
+From:   chenlei0x@gmail.com
+X-Google-Original-From: lennychen@tencent.com
+To:     chenlei0x@gmail.com, axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lei Chen <lennychen@tencent.com>
+Subject: [PATCH] blk: wbt: remove unused parameter from wbt_should_throttle
+Date:   Mon, 25 Jan 2021 19:27:04 +0800
+Message-Id: <1611574024-23713-1-git-send-email-lennychen@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 12:03, Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
->
-> On Sat, Jan 23, 2021 at 07:42:37PM +0100, Emil Renner Berthing wrote:
-> > This converts the kgdb_tasklet_breakpoint to use the new API in
-> > commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
-> >
-> > The new API changes the argument passed to the callback function, but
-> > fortunately the argument isn't used so it is straight forward to use
-> > DECLARE_TASKLET() rather than DECLARE_TASKLET_OLD().
->
-> This patch overlaps with a more ambitious patch from Davidlohr.
-> Perhaps you can join in with the other thread since the discussion
-> there is unresolved. See:
-> https://lkml.org/lkml/2021/1/14/1320
+From: Lei Chen <lennychen@tencent.com>
 
-Ah, that's cool. Getting rid of tasklets is much better than merely
-trying to get rid of the old tasklet API. Please ignore this patch
-then.
+The first parameter rwb is not used for this function.
+So just remove it.
 
-/Emil
->
-> Daniel.
->
->
-> >
-> > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > ---
-> >  kernel/debug/debug_core.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-> > index af6e8b4fb359..98d44c2bb0a4 100644
-> > --- a/kernel/debug/debug_core.c
-> > +++ b/kernel/debug/debug_core.c
-> > @@ -1090,13 +1090,13 @@ static void kgdb_unregister_callbacks(void)
-> >   * such as is the case with kgdboe, where calling a breakpoint in the
-> >   * I/O driver itself would be fatal.
-> >   */
-> > -static void kgdb_tasklet_bpt(unsigned long ing)
-> > +static void kgdb_tasklet_bpt(struct tasklet_struct *unused)
-> >  {
-> >       kgdb_breakpoint();
-> >       atomic_set(&kgdb_break_tasklet_var, 0);
-> >  }
-> >
-> > -static DECLARE_TASKLET_OLD(kgdb_tasklet_breakpoint, kgdb_tasklet_bpt);
-> > +static DECLARE_TASKLET(kgdb_tasklet_breakpoint, kgdb_tasklet_bpt);
-> >
-> >  void kgdb_schedule_breakpoint(void)
-> >  {
-> > --
-> > 2.30.0
-> >
+Signed-off-by: Lei Chen <lennychen@tencent.com>
+---
+ block/blk-wbt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index 0321ca8..42aed01 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -518,7 +518,7 @@ static void __wbt_wait(struct rq_wb *rwb, enum wbt_flags wb_acct,
+ 	rq_qos_wait(rqw, &data, wbt_inflight_cb, wbt_cleanup_cb);
+ }
+ 
+-static inline bool wbt_should_throttle(struct rq_wb *rwb, struct bio *bio)
++static inline bool wbt_should_throttle(struct bio *bio)
+ {
+ 	switch (bio_op(bio)) {
+ 	case REQ_OP_WRITE:
+@@ -545,7 +545,7 @@ static enum wbt_flags bio_to_wbt_flags(struct rq_wb *rwb, struct bio *bio)
+ 
+ 	if (bio_op(bio) == REQ_OP_READ) {
+ 		flags = WBT_READ;
+-	} else if (wbt_should_throttle(rwb, bio)) {
++	} else if (wbt_should_throttle(bio)) {
+ 		if (current_is_kswapd())
+ 			flags |= WBT_KSWAPD;
+ 		if (bio_op(bio) == REQ_OP_DISCARD)
+-- 
+1.8.3.1
+
