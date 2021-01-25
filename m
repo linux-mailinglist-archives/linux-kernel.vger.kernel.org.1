@@ -2,201 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EDD302BC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5ACB302BC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731995AbhAYThi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:37:38 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:18043 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731076AbhAYTAP (ORCPT
+        id S1732025AbhAYTit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731460AbhAYTI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:00:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611601030;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-        From:Subject:Sender;
-        bh=ApNZTMIInEBgGEPOK7UkgKyGz/LWwCn7DJKKj6UZaSw=;
-        b=FgjhUANTKMfXY3t7soi9xO6/oVj8VfUO/s3u7vN4F0GHkQLzIDWz2hOb5IO9oMHrsN
-        jl3txrl3n/E6mpWFjRc3tOQ+fWsq4LQAkeFJyFqsl96hvKss9aB7RDRObJNJo/zZw1YZ
-        aBwXaC/YvifZVRdWHxrCH2gcSz0GYd8bQy9DIGty6kO+b4AvpqPq1/ib35rSYphfF6c4
-        EPpEJDED2uFY7rAZkj9bdobWeWMkDY7wwS9O7R/Fzn9HDk7apCxwMpdM3FEFcdtXWlL0
-        DjfqDNjbPVZt2+WUCn7jEO/zxgTJHUNBF8Ud8R/IU7AZfTVWscZFEQquXO4ht6zCm3vi
-        TX5g==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlaVXA4LwHo="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 47.15.1 DYNA|AUTH)
-        with ESMTPSA id Y03f19x0PIul1CV
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Mon, 25 Jan 2021 19:56:47 +0100 (CET)
-Subject: Re: [PATCH v3 4/4] drm/ingenic: Fix non-OSD mode
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=iso-8859-1
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <2F0C9F5C-7849-458B-B18E-433BA7CFBD92@goldelico.com>
-Date:   Mon, 25 Jan 2021 19:56:46 +0100
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        od@zcrc.me, ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>, stable@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F2A3A43E-C9F6-4A64-A167-AD4A20B30BD3@goldelico.com>
-References: <20210124085552.29146-1-paul@crapouillou.net> <20210124085552.29146-5-paul@crapouillou.net> <30F302B6-04A1-472B-B026-009F7665E39C@goldelico.com> <VZMFNQ.C1KORF6E5NCJ1@crapouillou.net> <2F0C9F5C-7849-458B-B18E-433BA7CFBD92@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3124)
+        Mon, 25 Jan 2021 14:08:58 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A35AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:08:16 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id c2so16548600edr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:08:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hdLQs9YhUyBlZb0691w21OoM7gQzX66C67jTFkr/mjs=;
+        b=PhrOFTqhSD76Or0F7QbEfxqm+BbqNn9iOEQYgXFGi3uCzXbCuJkk0zDu9CLjb4Jzsf
+         zqeSh0g5FZ7bMnwp1o5HMnJL7m/cdVT/mDKnzwAG/5wEQjlMnB9+sP9uhPqFmCkw80z0
+         iU7/aSx2UVj67ovkxa1RfIQ+MHYel0wPyW1HLyzMdWzY6JGwgZFIs3B8dSkcB7tSiGm1
+         R5cUo3I42gUHtEfPqI/VDiOk0j+Wsubjr68RY2aG72aFksiuefjkV0ea62QfDBG7HZer
+         Ra/p/gJIIvRMMZ8eICr2Q9PA+qnd09AZTfzC9LF2PftRdM2cpsEuriDE+V7SuGGe1RMC
+         iMUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hdLQs9YhUyBlZb0691w21OoM7gQzX66C67jTFkr/mjs=;
+        b=dHr2hrUYkij1KYNW5usaDriHyCKp4FroHwqJsBs1s5VAEJi3uCbzI88ZuwdCbIUJmD
+         Q2khbagc3Gu/wl3TyVWpyV2EuN9etNegd0+1pmcCc7wu5l+pNqetG2tcPFzZlNmu18Ih
+         80f28HI+uV+Yw6c1g649o2vBj7muXyT1gZvjZw9WZzmbpAUTPpdmBeI81QSqOow72AX/
+         qLL9uR06aHeo2f01DF4mnl/UsC7HgvWDfNhd1bV+V6LyU9M1PJkIZxTQ16HcFADGRA1f
+         NXHA/BSbZMu+vpThqfkbr4KNNrOzI3ZPH9Aa9mWywFJbXiH0mf9jGU0mYrpeoxAQZdhb
+         nudQ==
+X-Gm-Message-State: AOAM532Q96EX6C8iQHY8S7kf69Iz4FuxapfgKxR9jiaELSYnFHt/Sz4F
+        X/0d3fDNG9tootDj4+4scTWZDMOVg8zSKsjCbnK4xg==
+X-Google-Smtp-Source: ABdhPJy7Z4G9Po21L2Y3F0cRzdLntpiU/TxO1jJY1JOninMHxU5vtKQjvNzuJY5pAljmUmwR4FFdEU8DIfMQD9V/9mI=
+X-Received: by 2002:aa7:cd87:: with SMTP id x7mr1802740edv.210.1611601695344;
+ Mon, 25 Jan 2021 11:08:15 -0800 (PST)
+MIME-Version: 1.0
+References: <20200326032420.27220-1-pasha.tatashin@soleen.com>
+ <20200326032420.27220-16-pasha.tatashin@soleen.com> <e5f1ee17f8e4ac3a5f5077d85318e0ed@kernel.org>
+In-Reply-To: <e5f1ee17f8e4ac3a5f5077d85318e0ed@kernel.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Mon, 25 Jan 2021 14:07:39 -0500
+Message-ID: <CA+CK2bB=kLV7gamcpdBr0SJ1mR-JwosL8FH=AiFMUmvGc_FE6g@mail.gmail.com>
+Subject: Re: [PATCH v9 15/18] arm64: kexec: kexec EL2 vectors
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     James Morris <jmorris@namei.org>, Sasha Levin <sashal@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        James Morse <james.morse@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Mark Rutland <mark.rutland@arm.com>, steve.capper@arm.com,
+        rfontana@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Selin Dag <selindag@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+> > +.macro el1_sync_64
+> > +     br      x4                      /* Jump to new world from el2 */
+> > +     .fill 31, 4, 0                  /* Set other 31 instr to zeroes */
+> > +.endm
+>
+> The common idiom to write this is to align the beginning of the
+> macro, and not to bother about what follows:
+>
+> .macro whatever
+>          .align 7
+>          br      x4
+> .endm
+>
+> Specially given that 0 is an undefined instruction, and I really hate to
+> see
+> those in the actual text. On the contrary, .align generates NOPs.
 
-> Am 24.01.2021 um 10:47 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->=20
-> Hi Paul,
->=20
->> Am 24.01.2021 um 10:43 schrieb Paul Cercueil <paul@crapouillou.net>:
->>=20
->> Hi Nikolaus,
->>=20
->> Le dim. 24 janv. 2021 =E0 10:30, H. Nikolaus Schaller =
-<hns@goldelico.com> a =E9crit :
->>> Hi Paul,
->>> we observed the same issue on the jz4730 (which is almost identical
->>> to the jz4740 wrt. LCDC) and our solution [1] was simpler.
->>> It leaves the hwdesc f0 and f1 as they are and just takes f1 for =
-really
->>> programming the first DMA descriptor if there is no OSD.
->>=20
->> Disagreed. With your solution, it ends up using priv->f1 plane with =
-hwdesc_f0. That's very confusing.
->=20
-> It is a tradeoff between code simplicity and confusion. Indeed =
-difficult to decide. Fortunately I don't have to :)
->=20
->>=20
->>> We have tested on jz4730 and jz4780.
->>=20
->> Could I get a tested-by then? :)
->=20
-> I'll test with our tree and test both SoC in the next days and give =
-feedback.
+Fixed that.
 
-Ok, works on both devices:
+>
+> > +
+> > +.macro invalid_vector label
+> > +\label:
+> > +     b \label
+> > +     .fill 31, 4, 0                  /* Set other 31 instr to zeroes */
+> > +.endm
+> > +
+> > +/* el2 vectors - switch el2 here while we restore the memory image. */
+> > +     .align 11
+> > +ENTRY(kexec_el2_vectors)
+>
+> Please see commit 617a2f392c92 ("arm64: kvm: Annotate assembly using
+> modern
+> annoations"), and follow the same pattern.
 
-a) Skytone Alpha 400 compatible Letux 400 with not-yet-upstream jz4730 =
-and internal panel
-b) CI20 with external HDMI (tablet) and our not-yet-upstream HDMI code
+Fixed that as well.
 
-So the hwdesc handling is as ok as it was with our patch. I'll keep a =
-copy of yours in our
-tree until it arrives upstream.
-
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-
-BR and thanks,
-Nikolaus
-
-
->=20
-> BR and thanks,
-> Nikolaus
->=20
->>=20
->> Cheers,
->> -Paul
->>=20
->>> Maybe you want to consider that. Then I can officially post it.
->>> [1] =
-https://github.com/goldelico/letux-kernel/commit/3be1de5fdabf2cc1c17f198de=
-d3328cc6e4b9844
->>>> Am 24.01.2021 um 09:55 schrieb Paul Cercueil =
-<paul@crapouillou.net>:
->>>> Even though the JZ4740 did not have the OSD mode, it had (according =
-to
->>>> the documentation) two DMA channels, but there is absolutely no
->>>> information about how to select the second DMA channel.
->>>> Make the ingenic-drm driver work in non-OSD mode by using the
->>>> foreground0 plane (which is bound to the DMA0 channel) as the =
-primary
->>>> plane, instead of the foreground1 plane, which is the primary plane
->>>> when in OSD mode.
->>>> Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
->>>> Cc: <stable@vger.kernel.org> # v5.8+
->>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>>> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->>>> ---
->>>> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
->>>> 1 file changed, 7 insertions(+), 4 deletions(-)
->>>> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
-b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>> index b23011c1c5d9..59ce43862e16 100644
->>>> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>>> @@ -554,7 +554,7 @@ static void =
-ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->>>> 		height =3D state->src_h >> 16;
->>>> 		cpp =3D state->fb->format->cpp[0];
->>>> -		if (priv->soc_info->has_osd && plane->type =3D=3D =
-DRM_PLANE_TYPE_OVERLAY)
->>>> +		if (!priv->soc_info->has_osd || plane->type =3D=3D =
-DRM_PLANE_TYPE_OVERLAY)
->>>> 			hwdesc =3D &priv->dma_hwdescs->hwdesc_f0;
->>>> 		else
->>>> 			hwdesc =3D &priv->dma_hwdescs->hwdesc_f1;
->>> we just replace this with
->>>               if (priv->soc_info->has_osd && plane->type !=3D =
-DRM_PLANE_TYPE_OVERLAY)
->>>                       hwdesc =3D &priv->dma_hwdescs->hwdesc_f1;
->>>               else
->>>                       hwdesc =3D &priv->dma_hwdescs->hwdesc_f0;
->>> and the remainder can stay as is.
->>>> @@ -826,6 +826,7 @@ static int ingenic_drm_bind(struct device *dev, =
-bool has_components)
->>>> 	const struct jz_soc_info *soc_info;
->>>> 	struct ingenic_drm *priv;
->>>> 	struct clk *parent_clk;
->>>> +	struct drm_plane *primary;
->>>> 	struct drm_bridge *bridge;
->>>> 	struct drm_panel *panel;
->>>> 	struct drm_encoder *encoder;
->>>> @@ -940,9 +941,11 @@ static int ingenic_drm_bind(struct device =
-*dev, bool has_components)
->>>> 	if (soc_info->has_osd)
->>>> 		priv->ipu_plane =3D drm_plane_from_index(drm, 0);
->>>> -	drm_plane_helper_add(&priv->f1, =
-&ingenic_drm_plane_helper_funcs);
->>>> +	primary =3D priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
->>>> -	ret =3D drm_universal_plane_init(drm, &priv->f1, 1,
->>>> +	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
->>>> +
->>>> +	ret =3D drm_universal_plane_init(drm, primary, 1,
->>>> 				       &ingenic_drm_primary_plane_funcs,
->>>> 				       priv->soc_info->formats_f1,
->>>> 				       priv->soc_info->num_formats_f1,
->>>> @@ -954,7 +957,7 @@ static int ingenic_drm_bind(struct device *dev, =
-bool has_components)
->>>> 	drm_crtc_helper_add(&priv->crtc, =
-&ingenic_drm_crtc_helper_funcs);
->>>> -	ret =3D drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
->>>> +	ret =3D drm_crtc_init_with_planes(drm, &priv->crtc, primary,
->>>> 					NULL, &ingenic_drm_crtc_funcs, =
-NULL);
->>>> 	if (ret) {
->>>> 		dev_err(dev, "Failed to init CRTC: %i\n", ret);
->>>> --
->>>> 2.29.2
->>> BR and thanks,
->>> Nikolaus
->>=20
->>=20
->=20
-
+Thank you,
+Pasha
