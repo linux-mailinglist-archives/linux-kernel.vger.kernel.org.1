@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7586302985
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9303029C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730712AbhAYSFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731336AbhAYRzw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:55:52 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3321AC061A2A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:45:41 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id u11so8076714plg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:45:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dsuPhefQgichTP7XKQR2dbMq1C95W4+Nrc5ixBeFe88=;
-        b=n371yiXKR4rpFvO3dlu3vZ6fj41f1XusH9YqyJsGTZ3ivKkrPp7K2YiP3M4y1HotOi
-         Yvb2zCtjrt84f/npurbsGhraWCqbKcmWfJ9c5FSlAGy7fl7qzgOHESJDkuYHh5hWy1Xs
-         fpDEj6cWYHPlJyijsv+zFQYl89saZoLcUP8ySH5DzRZXJGnHOIFk91IRbJXYa2hC2XI/
-         VDcFibLi1BszsrRjjDjp1d3VswVCrX8wtfYIGQu1uXchIlVzWQbiRpUmqHAOIcO9ljpS
-         SCyUg/988+fi7bu7lTusz8/d89mLl434jjT14M1RUtW9bMetZJJTFRkmibRp5VF+bn3m
-         Nylg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dsuPhefQgichTP7XKQR2dbMq1C95W4+Nrc5ixBeFe88=;
-        b=ZLBLUfpNSe7v4VNBKn89KyemfDoPdR9Nlx2OiWsxqrjkKkO6Oz8HCtOMvCccwlsHqy
-         Lw77SvQIRxEIzF+CQ2IlVn8isapx7vz9J4vrd6hILeUIlL2ereNivGn9JwmAlLcwi2Zi
-         pL8mqYvDFHzfoHKwPh1xYsZmhBSpVwqTP0u56Gr3joCKhDYdi4c77qztPbGHar/v6Ivc
-         XQ7CGl1iuILYXsLj87L3OGdJX78+0I1AoULU618KpKg7k//XgEnqnp5RV8C2y2GpB2YB
-         Y+Q7s2NFrWqnOAD4SeY8rhSWYi/agZH/CPMnEjRZHxQjTG2aM+R7dgpoEk7zqvjio8t7
-         ysLg==
-X-Gm-Message-State: AOAM533/nrY5Gk7hyBaAFBuki/o8lsn7sxD4zp38Fdj/XjoKXyhdFw4C
-        hGWwSXSpqsNDJjlLTdixQ4591bUyu+25EKqMPug+AQ==
-X-Google-Smtp-Source: ABdhPJwF0/eChIPL6NG4kkphRa701CHL8KDBNEVztnfayL6Xiabbojvgo5qaXEaSDXWydeq5bneoSsvfKr2owwxCQYo=
-X-Received: by 2002:a17:902:ed94:b029:de:8844:a650 with SMTP id
- e20-20020a170902ed94b02900de8844a650mr1591452plj.56.1611596740552; Mon, 25
- Jan 2021 09:45:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125132425.28245-1-will@kernel.org> <YA7WztCb4OGA6m4S@kroah.com>
-In-Reply-To: <YA7WztCb4OGA6m4S@kroah.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 25 Jan 2021 09:45:30 -0800
-Message-ID: <CAKwvOdkjWuH5MJz-H7T95B8rOAcoBWGXi1RsKT-YXYr1-K6A5g@mail.gmail.com>
-Subject: Re: [STABLE BACKPORT v2 4.4.y, 4.9.y and 4.14.y] compiler.h: Raise
- minimum version of GCC to 5.1 for arm64
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Will Deacon <will@kernel.org>, "# 3.4.x" <stable@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
+        id S1731363AbhAYSOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:14:47 -0500
+Received: from foss.arm.com ([217.140.110.172]:54048 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731296AbhAYRyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:54:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A29DA1063;
+        Mon, 25 Jan 2021 09:53:57 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6845F3F66E;
+        Mon, 25 Jan 2021 09:53:55 -0800 (PST)
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Steven Rostedt <rostedt@goodmis.org>
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
+ <YAsjOqmo7TEeXjoj@google.com> <2cd5683f-eea3-e661-7dd0-c617c836896f@arm.com>
+ <CAKfTPtA7Fte3WWw1=-BaNX-fpfEeWicUOEgfzJsgCTcygzZTQA@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <8db5ebd3-4e5c-cd7e-e0cb-dc86c3cafb5c@arm.com>
+Date:   Mon, 25 Jan 2021 18:53:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAKfTPtA7Fte3WWw1=-BaNX-fpfEeWicUOEgfzJsgCTcygzZTQA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 6:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jan 25, 2021 at 01:24:25PM +0000, Will Deacon wrote:
-> > commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
-> >
-> > GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-> > beyond the stack pointer, resulting in memory corruption if an interrupt
-> > is taken after the stack pointer has been adjusted but before the
-> > reference has been executed. This leads to subtle, infrequent data
-> > corruption such as the EXT4 problems reported by Russell King at the
-> > link below.
-> >
-> > Life is too short for buggy compilers, so raise the minimum GCC version
-> > required by arm64 to 5.1.
-> >
-> > Reported-by: Russell King <linux@armlinux.org.uk>
-> > Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> > Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Cc: <stable@vger.kernel.org> # 4.4.y, 4.9.y and 4.14.y only
-> > Cc: Theodore Ts'o <tytso@mit.edu>
-> > Cc: Florian Weimer <fweimer@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Nathan Chancellor <natechancellor@gmail.com>
-> > Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-> > Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-> > Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> > [will: backport to 4.4.y/4.9.y/4.14.y; add __clang__ check]
+On 25/01/2021 18:30, Vincent Guittot wrote:
+> On Mon, 25 Jan 2021 at 11:45, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 22/01/2021 20:10, Joel Fernandes wrote:
+>>> Hi Vincent,
+>>>
+>>> Thanks for reply. Please see the replies below:
+>>>
+>>> On Fri, Jan 22, 2021 at 05:56:22PM +0100, Vincent Guittot wrote:
+>>>> On Fri, 22 Jan 2021 at 16:46, Joel Fernandes (Google)
+>>>> <joel@joelfernandes.org> wrote:
 
-LGTM
+[...]
 
-> > Link: https://lore.kernel.org/r/CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  include/linux/compiler-gcc.h | 6 ++++++
-> >  1 file changed, 6 insertions(+)
->
-> Thanks, now queued up, let's try this again :)
->
-> greg k-h
+>> If I understood you correctly, you want to avoid these frequent calls
+>> to update_blocked_averages() here to further avoid invoking sched_util
+>> via update_blocked_averages() -> cpufreq_update_util() (since 'decayed'
+>> is set) very often in your setup.
+> 
+> So It's not clear if the problem that joel wants to raise, is about:
+> - the running time of  update_blocked_averages
+> - the running time of the cpufreq_update_util which is called because
+> utilization has decayed during the update of blocked load
+> - the wake up latency because of newly_idle lb
 
+Pretty much so.
 
+IIRC his interest is driven by the fact that he saw much less activity
+in newly_idle lb and therefore cpufreq_update_util on a system with the
+same kernel and userspace but with less CPUs (i.e. also smaller
+frequency domains) and less cgroups (with blocked load) and started
+wondering why.
 
--- 
-Thanks,
-~Nick Desaulniers
+I assume that since he understands this environment now much better, he
+should be able to come up with better test numbers to show if there is a
+performance issue on his 2+6 DynamIQ system and if yes, where exactly in
+this code path.
