@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918FC30368C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9C030368D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbhAZG3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:29:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38582 "EHLO
+        id S1731727AbhAZG3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729213AbhAYOAl (ORCPT
+        with ESMTP id S1729219AbhAYOAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 09:00:41 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D6AC061797
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:57:31 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id h9so2386778wrr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:57:31 -0800 (PST)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF63C0617A9;
+        Mon, 25 Jan 2021 05:59:12 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id lw17so9148519pjb.0;
+        Mon, 25 Jan 2021 05:59:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=q2EuLggpk9Unx5U8zIux4+e58o6cdVDWEpWfZQyk+cU=;
-        b=tAMuTqLJ+95+XHZSZNNAs3tqEpBxE08VBSO9Iy7DEuslp07YxsmH+VK2kw0wDq1E6o
-         IzhOQAOg7ysdD+uMEhSGQYKWTZ1E6C+mUWlLDCNx1yAW9/pdBwL4HG5YAGzp434/CWHP
-         j3qvZ8z41b9F2F8arlWs0ikPqzFwMrcuplvXXjI0l4Z74dCMecRRNNOrM1B4R2x2pPX4
-         agFzYQI4AJ6GnV9iBEj+ShFnmDXLjYo14oDNW3wFw/L2gL1+EYxQxbpvH+9Gh4p4LTfP
-         IzHS7sBlCShTBNpnHOus5NpJIndkKI1I4OI7SdMH/IQAQPXgB1QtJkhGsfpfCvACdSeN
-         WApA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YCNxOPt7j32/1EIvyQ0fS2gCRu3WbYw0TNwCSoOVYOQ=;
+        b=U7kddIv9K4+RMbg8YUbJIW5e5lm0/rMWTI6cwWVYOrxXuAds2QBxe+fEAhCG+K43QG
+         e3JtUe9DA2Z1YJLJJ4gsNpcPjH1fwHxG8UXYlzK11CFKPFFuBxBONSeBvyO1e1l1gsT8
+         HxoJKpJRmlnGY+TSmVzyLfHfny1hBX7KFUY02JCfGGSND8K3eLbefYUNeM9hCWHkKcku
+         tbKwEh3oJkclB2BNOUbKQc5ANQbq9ZdWoOX1ZGETcFa/GkBa6JmVg02x19qIM8BEe7Vm
+         OdLb68RodxJPemBqUqcSOBr8j3MOqLxZTDA3Yw9HU7RWCy8XEhQ/VlCqn3ffZ3IkC16m
+         5+Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=q2EuLggpk9Unx5U8zIux4+e58o6cdVDWEpWfZQyk+cU=;
-        b=bMZzoPuiNzEC2QOvpRIb6yi8d8L/GhHpk5diB3TuiEhBiQBzY13wc1tLUqxirGKlY+
-         ztjBVLsQBS5oQTzK4fxV4KRdFbQolVG1MBcTZiUAp9fCa7/hnWypv2Ef1U0INWiPDTB0
-         nrx7XtYBQVcomEy5yPaPJPG/0FcLq7t03nihyhl/Ym5RT7cNWk+FGrcdZJwhOLSynO8v
-         DcJ/7jGJnC4o0asrUZfh+MyhBkUbJayQkYwgq2KOd2BjAfCaJVS5eL4LKZw8vOr+CXej
-         RoydZFvPNve/g3AJMx6EsK1ofhOTrQ1EIxcZDlz9Rc9qpl34kA56f0l65dfRJ6acB24v
-         0PBQ==
-X-Gm-Message-State: AOAM532767eGhaWF6mdZCXjjz2EGMKIp9SZPP5j1jZFEjpehBizPA2qx
-        1acgXBp7CQYaI4XevW09VHH7/A==
-X-Google-Smtp-Source: ABdhPJz9GQRNLQm6uMRfQ/m9HgSJ+ruVCBBpzryC2+JmyRk/X0AyMpK3eE6QLs7zauQV44Q43tBXvQ==
-X-Received: by 2002:adf:f1c3:: with SMTP id z3mr1129849wro.96.1611583048991;
-        Mon, 25 Jan 2021 05:57:28 -0800 (PST)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id n11sm25921264wra.9.2021.01.25.05.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 05:57:28 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:57:26 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v2 08/17] mfd: Add ROHM BD71815 ID
-Message-ID: <20210125135726.GY4903@dell>
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
- <001e0b5da0d68366b6d61b810468646fc8e07153.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YCNxOPt7j32/1EIvyQ0fS2gCRu3WbYw0TNwCSoOVYOQ=;
+        b=AyhPRvbgWaZbR4stDA5TQKPT3DV9+DP01tzWnU4myHXlD/6BP/q7W+gWCgiTtZIMWD
+         E3nJidJQfDsHpokL4P5d7+cF0DEJa3XgY+RPH/l1arw6DHATS8792LXWgBWySljVGBOe
+         sXK12hJFOT+gUjgJMXHxGmqocD3VEaTnPcc0YlgJ3LBhMBd6D50Av5cTgDE7uquLtFRb
+         a3IGV2SNIfntG1y8C12mBCv655sapFdMjtS4vRoR9Z1lNY+guKBC1qwL3mxRaUF3Qopr
+         I6/T2mbkwt/UwmK72KqhU27L+SaUU0nRSV633UNi9k4LUqMNr6a0U25chR/5nnn7mvI4
+         Vn7Q==
+X-Gm-Message-State: AOAM530EIJcSgv7wWFurFw02Q0sXm5XZ6nkpWfklwUxmaD/+bI1wV0ak
+        yHPfZGwuyHMXp8FQl/LhGLPa9W4tW0vbIVNj
+X-Google-Smtp-Source: ABdhPJx5FeX8a0GdQzhz6YSGSt3+jDk20i14nc7litXWkyqKlbbO1erv4O2wca+h7GOaUDMcN/xWiA==
+X-Received: by 2002:a17:902:e844:b029:de:5abb:7df1 with SMTP id t4-20020a170902e844b02900de5abb7df1mr529152plg.55.1611583152007;
+        Mon, 25 Jan 2021 05:59:12 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.48])
+        by smtp.gmail.com with ESMTPSA id a14sm4587509pfl.169.2021.01.25.05.59.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 05:59:11 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] make jbd2 debug switch per device
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1611287342.git.brookxu@tencent.com>
+ <20210125124117.GB1175@quack2.suse.cz>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <968d9c0f-153e-c187-4bc6-ab3cf7e257ca@gmail.com>
+Date:   Mon, 25 Jan 2021 21:59:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <20210125124117.GB1175@quack2.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <001e0b5da0d68366b6d61b810468646fc8e07153.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021, Matti Vaittinen wrote:
+Thanks for your reply.
 
-> Add chip ID for ROHM BD71815 and PMIC so that drivers can identify
-> this IC.
+Jan Kara wrote on 2021/1/25 20:41:
+> On Fri 22-01-21 14:43:18, Chunguang Xu wrote:
+>> On a multi-disk machine, because jbd2 debugging switch is global, this
+>> confuses the logs of multiple disks. It is not easy to distinguish the
+>> logs of each disk and the amount of generated logs is very large. Or a
+>> separate debugging switch for each disk would be better, so that you
+>> can easily distinguish the logs of a certain disk. 
+>>
+>> We can enable jbd2 debugging of a device in the following ways:
+>> echo X > /proc/fs/jbd2/sdX/jbd2_debug
+>>
+>> But there is a small disadvantage here. Because the debugging switch is
+>> placed in the journal_t object, the log before the object is initialized
+>> will be lost. However, usually this will not have much impact on
+>> debugging.
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
-> No changes since v1.
+> OK, I didn't look at the series yet but I'm wondering: How are you using
+> jbd2 debugging? I mean obviously it isn't meant for production use but
+> rather for debugging JBD2 bugs so I'm kind of wondering in which case too
+> many messages matter.
+We perform stress testing on machines in the test environment, and use scripts
+to capture journal related logs to analyze problems. There are 12 disks on this
+machine, and each disk runs different jobs. Our test kernel also adds some
+additional function-related logs. If we adjust the log level to a higher level,
+a large number of logs have nothing to do with the disk to be observed. These
+logs are generated by system agents or coordinated tasks. This makes the log
+difficul to analyze.
+ 
+> And if the problem is that there's a problem with distinguishing messages
+> from multiple filesystems, then it would be perhaps more useful to add
+> journal identification to each message similarly as we do it with ext4
+> messages (likely by using journal->j_dev) - which is very simple to do
+> after your patches 3 and 4.
+Our test kernel did this. Because it broke the log format, I was not sure whether
+it would break something, so I didn't bring this part. Even if the device information
+is added, when there are more disks and the log level is higher, there will be a
+lot of irrelevant logs, which makes it necessary to consume a lot of CPU to filter
+messages. Therefore, a device-level switch is provided to make everything simpler.
 > 
->  include/linux/mfd/rohm-generic.h | 1 +
->  1 file changed, 1 insertion(+)
-
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 								Honza
+> 
