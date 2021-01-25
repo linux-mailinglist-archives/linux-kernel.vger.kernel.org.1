@@ -2,136 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6213037B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2163037BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389771AbhAZITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbhAYSlg (ORCPT
+        id S1729947AbhAZITa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:19:30 -0500
+Received: from smtp-42a8.mail.infomaniak.ch ([84.16.66.168]:49229 "EHLO
+        smtp-42a8.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726019AbhAYSlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:41:36 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F0EC0613ED
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:40:00 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id i63so8902216pfg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:40:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=810IMXBV1/7mh3IkPVy/heX6P4WxI70MgM5s4wu77lk=;
-        b=u4B/C7BEtW7GmGqfQghiovSJn8gO99Pb5HExxzSjMZqc8cbA0s/22qK3vj85LwJ0wg
-         PHxgfkU6fg1Y0GKPRujmkXWB00lGaqM0mn34g8DjKHj/NhbH76rs2qvDBbU1w4nZuRpU
-         +3YX+gC7rUamoxyK8ByJtLqNZutVJkMyfUJpXdUsw7ujcfDCpPJsagf5gq3UJQX/Z375
-         heG7MTIvnaQvLNtg50+1k1agjJD56f8bDYxVVLhUxpCQdK5MxVMCHpLeilveMyn5YRVV
-         9OkRrDjn5Vtg9ucs65M7Vk56qf5RJsbAa5n45ocKZuGFsrX+PbA3cVDupA10Rm6ECXdk
-         crcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=810IMXBV1/7mh3IkPVy/heX6P4WxI70MgM5s4wu77lk=;
-        b=RX88WUcpywilaWSxmlVYzHtdGnkuFojs0cml7yyt9chjg6cl1ZPqM5BAnDTI0T1DTX
-         SydqmEBJqxxcmYCtmMwoZAJ3CO8frrOWBjE/AQ//MuYc/o7TtuzDX7tV9RLuQ1v0BF9Z
-         QVJZPv218//1d7Zhhiw3rDpfn7FeH1P2o28wdMKDAlJSUdYyM+PHx1pcooXUW3tRRleX
-         xk7LD4h0kNejTEQ0IDEYhZA/nGHKQCNTnS8Z5ZwQRtyFpSJNQkcQcLsTWrEqIZWLCQ//
-         pegydpn8FGUukYuEBSVBZyXiM+j/4LksT4I2V3zfyZlbeibGhMsyngfwdWphqr0bHxlA
-         d6fQ==
-X-Gm-Message-State: AOAM533Y7N1hitv7dw6iS4nph1NVx6CLLNxdT1pOmcGdi+4O4nAiWERi
-        WE0WLZgg5+a/MhPpH7x+9b4PeQ==
-X-Google-Smtp-Source: ABdhPJxajfRLmXuLMz8O2NxSLlOGCAw1FB3G6FN+5k8IuapA0+LLhqa+zHE51dDR6HVowNwr4seRrw==
-X-Received: by 2002:a63:dc06:: with SMTP id s6mr1873867pgg.358.1611599999924;
-        Mon, 25 Jan 2021 10:39:59 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id h23sm5023016pgh.64.2021.01.25.10.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:39:59 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:39:57 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, linux-kernel@vger.kernel.org,
-        jonathan.zhouwen@huawei.com, catalin.marinas@arm.com,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Tingwei Zhang <tingwei@codeaurora.org>
-Subject: Re: [PATCH v7 02/28] coresight: etm4x: Skip accessing TRCPDCR in
- save/restore
-Message-ID: <20210125183957.GA894394@xps15>
-References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
- <20210110224850.1880240-3-suzuki.poulose@arm.com>
+Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DPdwJ6l5dzMq1qY;
+        Mon, 25 Jan 2021 19:40:32 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4DPdwJ0g8hzlppyn;
+        Mon, 25 Jan 2021 19:40:31 +0100 (CET)
+Subject: Re: [patch 1/8] rtc: mc146818: Prevent reading garbage - bug
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <20201206214613.444124194@linutronix.de>
+ <20201206220541.594826678@linutronix.de>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
+Date:   Mon, 25 Jan 2021 19:40:31 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210110224850.1880240-3-suzuki.poulose@arm.com>
+In-Reply-To: <20201206220541.594826678@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 10:48:24PM +0000, Suzuki K Poulose wrote:
-> When the ETM is affected by Qualcomm errata, modifying the
-> TRCPDCR could cause the system hang. Even though this is
-> taken care of during enable/disable ETM, the ETM state
-> save/restore could still access the TRCPDCR. Make sure
-> we skip the access during the save/restore.
-> 
-> Found by code inspection.
-> 
-> Fixes: 02510a5aa78df45 ("coresight: etm4x: Add support to skip trace unit power up")
+Hi,
 
-The SHA1 should be 12 character long, something I commented on in V4.  I fixed
-it.
+After some bisecting, I found that commit 05a0302c3548 ("rtc: mc146818:
+Prevent reading garbage", this patch, introduced since v5.11-rc1) makes
+my VM hang at boot. Before this commit, I got this (and didn't notice)
+at every boot:
+rtc_cmos rtc_cmos: registered as rtc0
+rtc_cmos rtc_cmos: hctosys: unable to read the hardware clock
+rtc_cmos rtc_cmos: alarms up to one day, 114 bytes nvram
 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Cc: Tingwei Zhang <tingwei@codeaurora.org>
-> Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+I notice that this patch creates infinite loops, which my VM falls into
+(cf. below).
+
+I didn't succeed to properly fix this without a revert. I tried to set a
+maximum number of jumps, but I got pvqspinlock warnings.
+
+Regards,
+ Mickaël
+
+
+On 06/12/2020 22:46, Thomas Gleixner wrote:
+> The MC146818 driver is prone to read garbage from the RTC. There are
+> several issues all related to the update cycle of the MC146818. The chip
+> increments seconds obviously once per second and indicates that by a bit in
+> a register. The bit goes high 244us before the actual update starts. During
+> the update the readout of the time values is undefined.
+> 
+> The code just checks whether the update in progress bit (UIP) is set before
+> reading the clock. If it's set it waits arbitrary 20ms before retrying,
+> which is ample because the maximum update time is ~2ms.
+> 
+> But this check does not guarantee that the UIP bit goes high and the actual
+> update happens during the readout. So the following can happen
+> 
+>  0.997 	       UIP = False
+>    -> Interrupt/NMI/preemption
+>  0.998	       UIP -> True
+>  0.999	       Readout	<- Undefined
+> 
+> To prevent this rework the code so it checks UIP before and after the
+> readout and if set after the readout try again.
+> 
+> But that's not enough to cover the following:
+> 
+>  0.997 	       UIP = False
+>  	       Readout seconds
+>    -> NMI (or vCPU scheduled out)
+>  0.998	       UIP -> True
+>  	       update completes
+> 	       UIP -> False
+>  1.000	       Readout	minutes,....
+>  	       UIP check succeeds
+> 
+> That can make the readout wrong up to 59 seconds.
+> 
+> To prevent this, read the seconds value before the first UIP check,
+> validate it after checking UIP and after reading out the rest.
+> 
+> It's amazing that the original i386 code had this actually correct and
+> the generic implementation of the MC146818 driver got it wrong in 2002 and
+> it stayed that way until today.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
->  drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+>  drivers/rtc/rtc-mc146818-lib.c |   64 ++++++++++++++++++++++++-----------------
+>  1 file changed, 39 insertions(+), 25 deletions(-)
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 76526679b998..cce65fc0c9aa 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1373,7 +1373,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -8,41 +8,41 @@
+>  #include <linux/acpi.h>
+>  #endif
 >  
->  	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
->  
-> -	state->trcpdcr = readl(drvdata->base + TRCPDCR);
-> +	if (!drvdata->skip_power_up)
-> +		state->trcpdcr = readl(drvdata->base + TRCPDCR);
->  
->  	/* wait for TRCSTATR.IDLE to go up */
->  	if (coresight_timeout(drvdata->base, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
-> @@ -1391,9 +1392,9 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
->  	 * potentially save power on systems that respect the TRCPDCR_PU
->  	 * despite requesting software to save/restore state.
->  	 */
-> -	writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
-> -			drvdata->base + TRCPDCR);
+> -/*
+> - * Returns true if a clock update is in progress
+> - */
+> -static inline unsigned char mc146818_is_updating(void)
+> -{
+> -	unsigned char uip;
+> -	unsigned long flags;
 > -
-> +	if (!drvdata->skip_power_up)
-> +		writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
-> +				drvdata->base + TRCPDCR);
->  out:
->  	CS_LOCK(drvdata->base);
->  	return ret;
-> @@ -1488,7 +1489,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+> -	spin_lock_irqsave(&rtc_lock, flags);
+> -	uip = (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP);
+> -	spin_unlock_irqrestore(&rtc_lock, flags);
+> -	return uip;
+> -}
+> -
+>  unsigned int mc146818_get_time(struct rtc_time *time)
+>  {
+>  	unsigned char ctrl;
+>  	unsigned long flags;
+>  	unsigned char century = 0;
+> +	bool retry;
 >  
->  	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
+>  #ifdef CONFIG_MACH_DECSTATION
+>  	unsigned int real_year;
+>  #endif
 >  
-> -	writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
-> +	if (!drvdata->skip_power_up)
-> +		writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
+> +again:
+> +	spin_lock_irqsave(&rtc_lock, flags);
+>  	/*
+> -	 * read RTC once any update in progress is done. The update
+> -	 * can take just over 2ms. We wait 20ms. There is no need to
+> -	 * to poll-wait (up to 1s - eeccch) for the falling edge of RTC_UIP.
+> -	 * If you need to know *exactly* when a second has started, enable
+> -	 * periodic update complete interrupts, (via ioctl) and then
+> -	 * immediately read /dev/rtc which will block until you get the IRQ.
+> -	 * Once the read clears, read the RTC time (again via ioctl). Easy.
+> +	 * Check whether there is an update in progress during which the
+> +	 * readout is unspecified. The maximum update time is ~2ms. Poll
+> +	 * every msec for completion.
+> +	 *
+> +	 * Store the second value before checking UIP so a long lasting NMI
+> +	 * which happens to hit after the UIP check cannot make an update
+> +	 * cycle invisible.
+>  	 */
+> -	if (mc146818_is_updating())
+> -		mdelay(20);
+> +	time->tm_sec = CMOS_READ(RTC_SECONDS);
+> +
+> +	if (CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP) {
+> +		spin_unlock_irqrestore(&rtc_lock, flags);
+> +		mdelay(1);
+
+My VM loops here.
+time->tm_sec is always 255.
+
+> +		goto again;
+> +	}
+> +
+> +	/* Revalidate the above readout */
+> +	if (time->tm_sec != CMOS_READ(RTC_SECONDS)) {
+> +		spin_unlock_irqrestore(&rtc_lock, flags);
+> +		goto again;
+> +	}
 >  
->  	drvdata->state_needs_restore = false;
+>  	/*
+>  	 * Only the values that we read from the RTC are set. We leave
+> @@ -50,8 +50,6 @@ unsigned int mc146818_get_time(struct rt
+>  	 * RTC has RTC_DAY_OF_WEEK, we ignore it, as it is only updated
+>  	 * by the RTC when initially set to a non-zero value.
+>  	 */
+> -	spin_lock_irqsave(&rtc_lock, flags);
+> -	time->tm_sec = CMOS_READ(RTC_SECONDS);
+>  	time->tm_min = CMOS_READ(RTC_MINUTES);
+>  	time->tm_hour = CMOS_READ(RTC_HOURS);
+>  	time->tm_mday = CMOS_READ(RTC_DAY_OF_MONTH);
+> @@ -66,8 +64,24 @@ unsigned int mc146818_get_time(struct rt
+>  		century = CMOS_READ(acpi_gbl_FADT.century);
+>  #endif
+>  	ctrl = CMOS_READ(RTC_CONTROL);
+> +	/*
+> +	 * Check for the UIP bit again. If it is set now then
+> +	 * the above values may contain garbage.
+> +	 */
+> +	retry = CMOS_READ(RTC_FREQ_SELECT) & RTC_UIP;
+> +	/*
+> +	 * A NMI might have interrupted the above sequence so check whether
+> +	 * the seconds value has changed which indicates that the NMI took
+> +	 * longer than the UIP bit was set. Unlikely, but possible and
+> +	 * there is also virt...
+> +	 */
+> +	retry |= time->tm_sec != CMOS_READ(RTC_SECONDS);
+> +
+>  	spin_unlock_irqrestore(&rtc_lock, flags);
 >  
-> -- 
-> 2.24.1
+> +	if (retry)
+> +		goto again;
+> +
+>  	if (!(ctrl & RTC_DM_BINARY) || RTC_ALWAYS_BCD)
+>  	{
+>  		time->tm_sec = bcd2bin(time->tm_sec);
+> 
 > 
