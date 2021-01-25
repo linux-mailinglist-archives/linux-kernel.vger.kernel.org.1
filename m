@@ -2,87 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFBD302664
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA50302663
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729700AbhAYOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:41:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
+        id S1729603AbhAYOh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:37:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:48162 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729417AbhAYOhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:37:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D793E2311D;
-        Mon, 25 Jan 2021 14:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611585249;
-        bh=bxzG9qoPXd8t0Jl2EXPbV3luOXZ1glKR1qlcJC0Q3m0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WvFPQel7mDGtqBBgJMhHxxdr9hNZ0kcUPwoRA9anYtbLU4VaKbd5ntUtvSBJC/sa6
-         XQudlVYUIwAoznG8x9nr46u13PX1F/JFMBHEdth6F2905Ahk7nJ/53e7b+24edB5ru
-         wEkhCtUfZIb65a/C7shZtfVtQIs6xPz6AAdoz3hs=
-Date:   Mon, 25 Jan 2021 15:33:50 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [STABLE BACKPORT v2 4.4.y, 4.9.y and 4.14.y] compiler.h: Raise
- minimum version of GCC to 5.1 for arm64
-Message-ID: <YA7WztCb4OGA6m4S@kroah.com>
-References: <20210125132425.28245-1-will@kernel.org>
+        id S1729514AbhAYOdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:33:43 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AD53139F;
+        Mon, 25 Jan 2021 06:32:43 -0800 (PST)
+Received: from [10.37.8.33] (unknown [10.37.8.33])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26BA03F66B;
+        Mon, 25 Jan 2021 06:32:41 -0800 (PST)
+Subject: Re: [PATCH v4 1/3] arm64: Improve kernel address detection of
+ __is_lm_address()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <20210122155642.23187-1-vincenzo.frascino@arm.com>
+ <20210122155642.23187-2-vincenzo.frascino@arm.com>
+ <20210125130204.GA4565@C02TD0UTHF1T.local>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <ddc0f9e2-f63e-9c34-f0a4-067d1c5d63b8@arm.com>
+Date:   Mon, 25 Jan 2021 14:36:34 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125132425.28245-1-will@kernel.org>
+In-Reply-To: <20210125130204.GA4565@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 01:24:25PM +0000, Will Deacon wrote:
-> commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
-> 
-> GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-> beyond the stack pointer, resulting in memory corruption if an interrupt
-> is taken after the stack pointer has been adjusted but before the
-> reference has been executed. This leads to subtle, infrequent data
-> corruption such as the EXT4 problems reported by Russell King at the
-> link below.
-> 
-> Life is too short for buggy compilers, so raise the minimum GCC version
-> required by arm64 to 5.1.
-> 
-> Reported-by: Russell King <linux@armlinux.org.uk>
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: <stable@vger.kernel.org> # 4.4.y, 4.9.y and 4.14.y only
-> Cc: Theodore Ts'o <tytso@mit.edu>
-> Cc: Florian Weimer <fweimer@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-> Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> [will: backport to 4.4.y/4.9.y/4.14.y; add __clang__ check]
-> Link: https://lore.kernel.org/r/CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  include/linux/compiler-gcc.h | 6 ++++++
->  1 file changed, 6 insertions(+)
+Hi Mark,
 
-Thanks, now queued up, let's try this again :)
+On 1/25/21 1:02 PM, Mark Rutland wrote:
+> Hi Vincenzo,
+> 
+> On Fri, Jan 22, 2021 at 03:56:40PM +0000, Vincenzo Frascino wrote:
+>> Currently, the __is_lm_address() check just masks out the top 12 bits
+>> of the address, but if they are 0, it still yields a true result.
+>> This has as a side effect that virt_addr_valid() returns true even for
+>> invalid virtual addresses (e.g. 0x0).
+>>
+>> Improve the detection checking that it's actually a kernel address
+>> starting at PAGE_OFFSET.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> 
+> Looking around, it seems that there are some existing uses of
+> virt_addr_valid() that expect it to reject addresses outside of the
+> TTBR1 range. For example, check_mem_type() in drivers/tee/optee/call.c.
+> 
+> Given that, I think we need something that's easy to backport to stable.
+> 
 
-greg k-h
+I agree, I started looking at it this morning and I found cases even in the main
+allocators (slub and page_alloc) either then the one you mentioned.
+
+> This patch itself looks fine, but it's not going to backport very far,
+> so I suspect we might need to write a preparatory patch that adds an
+> explicit range check to virt_addr_valid() which can be trivially
+> backported.
+> 
+
+I checked the old releases and I agree this is not back-portable as it stands.
+I propose therefore to add a preparatory patch with the check below:
+
+#define __is_ttrb1_address(addr)	((u64)(addr) >= PAGE_OFFSET && \
+					(u64)(addr) < PAGE_END)
+
+If it works for you I am happy to take care of it and post a new version of my
+patches.
+
+Thanks!
+
+> For this patch:
+> 
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> 
+> Thanks,
+> Mark.
+> 
+>> ---
+>>  arch/arm64/include/asm/memory.h | 6 ++++--
+>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>> index 18fce223b67b..99d7e1494aaa 100644
+>> --- a/arch/arm64/include/asm/memory.h
+>> +++ b/arch/arm64/include/asm/memory.h
+>> @@ -247,9 +247,11 @@ static inline const void *__tag_set(const void *addr, u8 tag)
+>>  
+>>  
+>>  /*
+>> - * The linear kernel range starts at the bottom of the virtual address space.
+>> + * Check whether an arbitrary address is within the linear map, which
+>> + * lives in the [PAGE_OFFSET, PAGE_END) interval at the bottom of the
+>> + * kernel's TTBR1 address range.
+>>   */
+>> -#define __is_lm_address(addr)	(((u64)(addr) & ~PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+>> +#define __is_lm_address(addr)	(((u64)(addr) ^ PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET))
+>>  
+>>  #define __lm_to_phys(addr)	(((addr) & ~PAGE_OFFSET) + PHYS_OFFSET)
+>>  #define __kimg_to_phys(addr)	((addr) - kimage_voffset)
+>> -- 
+>> 2.30.0
+>>
+
+-- 
+Regards,
+Vincenzo
