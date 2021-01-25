@@ -2,148 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06091302DB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A6A302DBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732737AbhAYVaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:30:04 -0500
-Received: from mga12.intel.com ([192.55.52.136]:40418 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732639AbhAYV2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:28:45 -0500
-IronPort-SDR: qQemToLgMMZ59OKFRg4BQvDBfckkexbBzBk4PpAiPH126Dz75Y5yMs9dDGYIjhq25IYiX8ftK7
- Dg3uPJDK+Kow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="158982823"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="158982823"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 13:27:54 -0800
-IronPort-SDR: Zpt6kh4eRCAa6nhreOyas/x36owT9wmvFrJuKFK1hHDfdutyCbNqyanAiEN4kb+/4ZGudwMisH
- PLl97Bf6SEEg==
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="429441203"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.60.232]) ([10.212.60.232])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 13:27:52 -0800
-Subject: Re: [PATCH v17 11/26] x86/mm: Update ptep_set_wrprotect() and
- pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
- <20201229213053.16395-12-yu-cheng.yu@intel.com>
- <20210125182709.GC23290@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <8084836b-4990-90e8-5c9a-97a920f0239e@intel.com>
-Date:   Mon, 25 Jan 2021 13:27:51 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1732650AbhAYVaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:30:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732615AbhAYVad (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:30:33 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82FEC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:52 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id u8so16500820ior.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrNpQ7SOH+d8blqYOKjYMogMaDLbwPx+2kuPIs3yNy0=;
+        b=x4DJIRqqQXqK37TCmxkPI3seKWh5Css2rLKLSnHf6gmyL1Fl9yWUz8kC+UZRSJdAs6
+         XK8vDJjUxsgtxbCmnk9wdlGj9pv35V2OeBb9IzBIDCNiPryJuo1EAGw912WS+G4zcCKC
+         7BtYk/vBritg9FaF+WbjLhD8oL9+PpIxb7u+efGHd+shUFbp89hSeVxFPtEnm6ui6pMv
+         lVVnhtPY9OnRe/NJhDaIhNjH80KFOtFa3YJiKy7BZK3XPrl/6EBVb+dM/woBjm2L8Axi
+         wxfYW1mRUlRVJ7TXGVHk62B7CmS+UoEfGH59oZUUrT/N8rzRkizY6D1GeZsaaTEqFW2F
+         V6fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrNpQ7SOH+d8blqYOKjYMogMaDLbwPx+2kuPIs3yNy0=;
+        b=D2Tbtv08c7BSlRUSV0tdAecF4lWKfIRLPlhGeeTeZM6NZmHAx0cJOwHY9TvrmsYQjK
+         BsXGFUOufgJywc9RqOwEhlk7nbhZ9xmyvjg0B/XsrBbcsQhKAKfDTpqIhwfb4+oU3Aed
+         8YHIyYvRKCkY4WDEzVYbGY2IxQCqHpCGhgO5h/xB2KlEYQ9H3OhKKw5YwKajLkaaRn4u
+         s/i9IjLcqysO20yDA+ud/ihx+0qY6dBUExwXuqarLMXexiQu/HgEtHlyTo1P49gGBnIS
+         jXE/tUp4hIOnCtnTat4EY+iuEOPP/9GOGJImyzFXMY0tn/22H9Jj6VlBTKmzbicW5RUj
+         R37w==
+X-Gm-Message-State: AOAM530O5I0lhrJtIog6SBde3rRVsSXfVoEQ3XWOpRWD62UlQjGG34b3
+        kgMkt2HKIm1pRNc2tK35rfAc8g==
+X-Google-Smtp-Source: ABdhPJz8uvE8SMwpYe+oCni7l+kPBBLvPL2VGcJFyM51j/BFID2hIs82LKEw2GImPnfFjRXXxizvEw==
+X-Received: by 2002:a5e:c74b:: with SMTP id g11mr1938225iop.152.1611610192019;
+        Mon, 25 Jan 2021 13:29:52 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id o18sm11136241ioa.39.2021.01.25.13.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 13:29:51 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/6] net: ipa: hardware pipeline cleanup fixes
+Date:   Mon, 25 Jan 2021 15:29:41 -0600
+Message-Id: <20210125212947.17097-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20210125182709.GC23290@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/2021 10:27 AM, Borislav Petkov wrote:
-> On Tue, Dec 29, 2020 at 01:30:38PM -0800, Yu-cheng Yu wrote:
+There is a procedure currently referred to as a "tag process" that
+is performed to clear the IPA hardware pipeline--either at the time
+of a modem crash, or when suspending modem GSI channels.
 
-[...]
+One thing done in this procedure is issuing a command that sends a
+data packet originating from the AP->command TX endpoint, destined
+for the AP<-LAN RX (default) endpoint.  And although we currently
+wait for the send to complete, we do *not* wait for the packet to be
+received.  But the pipeline can't be assumed clear until we have
+actually received this packet.
 
->> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
->> index 666c25ab9564..1c84f1ba32b9 100644
->> --- a/arch/x86/include/asm/pgtable.h
->> +++ b/arch/x86/include/asm/pgtable.h
->> @@ -1226,6 +1226,32 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
->>   static inline void ptep_set_wrprotect(struct mm_struct *mm,
->>   				      unsigned long addr, pte_t *ptep)
->>   {
->> +	/*
->> +	 * Some processors can start a write, but end up seeing a read-only
->> +	 * PTE by the time they get to the Dirty bit.  In this case, they
->> +	 * will set the Dirty bit, leaving a read-only, Dirty PTE which
->> +	 * looks like a shadow stack PTE.
->> +	 *
->> +	 * However, this behavior has been improved
-> 
-> Improved how?
+This series addresses this by detecting when the pipeline-clearing
+packet has been received, and using a completion to allow a waiter
+to know when that has happened.  This uses the IPA status capability
+(which sends an extra status buffer for certain packets).  It also
+uses the ability to supply a "tag" with a packet, which will be
+delivered with the packet's status buffer.  We tag the data packet
+that's sent to clear the pipeline, and use the receipt of a status
+buffer associated with a tagged packet to determine when that packet
+has arrived.
 
-Processors supporting Shadow Stack will not set a read-only PTE's dirty 
-bit.  I will revise the comments.
+"Tag status" just desribes one aspect of this procedure, so some
+symbols are renamed to be more like "pipeline clear" so they better
+describe the larger purpose.  Finally, two functions used in this
+code don't use their arguments, so those arguments are removed.
 
->> and will not occur on
->> +	 * processors supporting Shadow Stack.  Without this guarantee, a
-> 
-> Which guarantee? That it won't happen on CPUs which support SHSTK?
-> 
+					-Alex
 
-Yes.
+Alex Elder (6):
+  net: ipa: rename "tag status" symbols
+  net: ipa: minor update to handling of packet with status
+  net: ipa: drop packet if status has valid tag
+  net: ipa: signal when tag transfer completes
+  net: ipa: don't pass tag value to ipa_cmd_ip_tag_status_add()
+  net: ipa: don't pass size to ipa_cmd_transfer_add()
 
->> +	 * transition to a non-present PTE and flush the TLB would be
-> 
-> s/flush the TLB/TLB flush/
-> 
->> +	 * needed.
->> +	 *
->> +	 * When changing a writable PTE to read-only and if the PTE has
->> +	 * _PAGE_DIRTY set, move that bit to _PAGE_COW so that the PTE is
->> +	 * not a shadow stack PTE.
->> +	 */
-> 
-> This sentence doesn't belong here as it refers to what pte_wrprotect()
-> does. You could expand the comment in pte_wrprotect() with this here as
-> it is better.
+ drivers/net/ipa/ipa.h          |  2 +
+ drivers/net/ipa/ipa_cmd.c      | 45 +++++++++++++------
+ drivers/net/ipa/ipa_cmd.h      | 24 ++++++-----
+ drivers/net/ipa/ipa_endpoint.c | 79 ++++++++++++++++++++++++++--------
+ drivers/net/ipa/ipa_main.c     |  1 +
+ 5 files changed, 109 insertions(+), 42 deletions(-)
 
-I will move this paragraph to pte_wrprotect().
+-- 
+2.20.1
 
-> 
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
->> +		pte_t old_pte, new_pte;
->> +
->> +		do {
->> +			old_pte = READ_ONCE(*ptep);
->> +			new_pte = pte_wrprotect(old_pte);
-> 
-> Maybe I'm missing something but those two can happen outside of the
-> loop, no? Or is *ptep somehow changing concurrently while the loop is
-> doing the CMPXCHG and you need to recreate it each time?
-> 
-> IOW, you can generate upfront and do the empty loop...
-
-*ptep can change concurrently.
-
-> 
->> +
->> +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
->> +
->> +		return;
->> +	}
->>   	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
->>   }
->>   
-
-[...]
