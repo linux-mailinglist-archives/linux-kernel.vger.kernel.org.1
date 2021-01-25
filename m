@@ -2,139 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B2B302219
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC5B302217
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbhAYGV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 01:21:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51724 "EHLO
+        id S1726998AbhAYGT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 01:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725960AbhAYGRf (ORCPT
+        with ESMTP id S1727063AbhAYGTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:17:35 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B49FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 22:16:21 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id f11so13864694ljm.8
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 22:16:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/zaG6O0v8k3VXbwAFUClbwHTRxDGN6NUvBuA7zlt2y8=;
-        b=Baoc6XDiAIsHiBtZhPHGxJRsI9B1ko2O4aEdadE4rddBzeeyIo+g44RIKb854Ztsu6
-         iusw3mCi9aw203TTlDC44xeCWljlllWqRC+tLT6t45DYIN6dR3Qxgy+uOO5Q3FF7dqlI
-         4hL5uek98BeTdJfSbfyODFmXXpHcehE3aZaeGG4hz3Q/HX7O7In8JVlNtOzBQPy2Ds6r
-         YG6CzAd7DcbicbR09vhE1bfjN7dZrG4S2VU7q2ivNX4WAjpAgrD/gfPTvGx+AssZnceO
-         mNpwgw7FyDDedJ8onTWIynXCsnOR2KFANoBPMtgg20YrRURDKKUCDaccVHCZcpOmIjfW
-         FOzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/zaG6O0v8k3VXbwAFUClbwHTRxDGN6NUvBuA7zlt2y8=;
-        b=GP7hIh32UaX7ITOsll8SAGrZJ3K1YYdjMjSnPcfSkHDrA+7mTcZtPp7VS1kcg9k6EA
-         884ielv/xj64+Xq0UejWiTR7M57hyQngO5581fkP5/clma5v9HSxdbMpbauKRq4OZqhK
-         vYNTKGjEjXEqoHOOiiaCWuB7xlC31VaMbDpGbSAF/YR7W25/DUQGOLoYJSam0zDiBmo0
-         hnoP+k07jJ2mwX5Wq3TIULbaVyvaULqG6V02Kfoes1X85iBS3oSRf4oKcovhzNo8FxHR
-         MlqGlqrK6gTuy/fip306ZhwXmeePBiCARm/vn/4+5Gapn/yK89A7USLKSdxwEVQ2vBQY
-         /Q/Q==
-X-Gm-Message-State: AOAM531ddiz4HUNlxayfFQzCWvENsu6OXZapjd0mHR7w9rvgcC5CuGjF
-        EHqqF827/bOGl7Lz4AV/7Gm/IbXek3k+DV9wsBlHIg==
-X-Google-Smtp-Source: ABdhPJxU5eBGkVebQnOft5RGEvcNB2PFqwkcMvG25HAd6Fb6AYc+vtOp/pdjxyo5B44kXJXNss7vBBFgDun0A1I0s+k=
-X-Received: by 2002:a2e:91d0:: with SMTP id u16mr781133ljg.480.1611555379260;
- Sun, 24 Jan 2021 22:16:19 -0800 (PST)
+        Mon, 25 Jan 2021 01:19:16 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CDFC061756;
+        Sun, 24 Jan 2021 22:18:24 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPKRw1GN2z9sVX;
+        Mon, 25 Jan 2021 17:18:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611555502;
+        bh=2Fp1oQTZ8Qcu6JEynLYpml6vy91YL0jq2UG+B1W/hGA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pRnM6Ekfq75+RgSJWhrjC6e0pEDGnJaL+tiTm/kt3u2gpOxojc20BYYCex46Q1spQ
+         RJ0jm3jOGEx3C7Fw305BuPSKB547hcBhRxBpnk9fkQAhn2HC5kJlWIhkTDUy5JQZbG
+         KUSCxQd2iJbVwGY24ELNpYfS35Mip8khf+tRzxYdeiN0aRL1r6POyON3anyxiLx0Wl
+         JOepsELXIlTTTnpbALFu3mi7y2K7roCBf5/un7lFpYY2OeSxP3jGgW/k999nX1smTF
+         fwvQ+bViZOJVKNf42hrDnh/kQx/8yVXj6nBM6LXhBSfJG98zbcFo2BRMrsTOaljS8G
+         GIFINVKcfEjLg==
+Date:   Mon, 25 Jan 2021 17:18:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Subject: linux-next: manual merge of the pidfd tree with the integrity tree
+Message-ID: <20210125171818.286f08b9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1611313556-4004-1-git-send-email-sumit.garg@linaro.org> <CAD=FV=V8HwhdhpCoiZx4XbTMWug0CAxhsnPR+5V9rB0W7QXFTQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=V8HwhdhpCoiZx4XbTMWug0CAxhsnPR+5V9rB0W7QXFTQ@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 25 Jan 2021 11:46:08 +0530
-Message-ID: <CAFA6WYNyVhEzVstXCf1SDKkKGcfCdx6+LYpA5VLWtnaGsN=_7w@mail.gmail.com>
-Subject: Re: [PATCH v3] kdb: Make memory allocations more robust
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "# 4.0+" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/k8KE2htOxDV//cDHrcpI132";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Doug for your comments.
+--Sig_/k8KE2htOxDV//cDHrcpI132
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 22 Jan 2021 at 22:55, Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Fri, Jan 22, 2021 at 3:06 AM Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > Currently kdb uses in_interrupt() to determine whether its library
-> > code has been called from the kgdb trap handler or from a saner calling
-> > context such as driver init.  This approach is broken because
-> > in_interrupt() alone isn't able to determine kgdb trap handler entry from
-> > normal task context. This can happen during normal use of basic features
-> > such as breakpoints and can also be trivially reproduced using:
-> > echo g > /proc/sysrq-trigger
->
-> I guess an alternative to your patch is to fully eliminate GFP_KDB.
-> It always strikes me as a sub-optimal design to choose between
-> GFP_ATOMIC and GFP_KERNEL like this.  Presumably others must agree
-> because otherwise I'd expect that the overall kernel would have
-> something like "GFP_AUTOMATIC"?
->
-> It doesn't feel like it'd be that hard to do something more explicit.
-> From a quick glance:
->
-> * I think kdb_defcmd() and kdb_defcmd2() are always called in response
-> to a user typing something on the kdb command line.  Those should
-> always be GFP_ATOMIC, right?
->
-> * The one call that's not in kdb_defcmd() / kdb_defcmd2() is in
-> kdb_register_flags().  That can be called either during init time or
-> from kdb_defcmd2().  It doesn't seem like it'd be hard to rename
-> kdb_register_flags() to _kdb_register_flags() and add a "gfp_t flags"
-> to the end.  Then the exported kdb_register_flags() would pass
-> GFP_KERNEL and the call from kdb_defcmd2() would pass GFP_ATOMIC:
->
+Hi all,
 
-Thanks for your suggestions. I agree with you that it's better to get
-rid of GFP_KDB. But I think we need to backport this fix to stable
-kernels as well, so IMO a minimal change like this would be better. I
-will rather push a seperate code refactoring patch to incorporate your
-suggestions.
+Today's linux-next merge of the pidfd tree got a conflict in:
 
->
-> > We can improve this by adding check for in_dbg_master() instead which
->
-> s/adding check/adding a check/
->
+  security/integrity/ima/ima_api.c
 
-Ack. If we don't have any further comments, can this be incorporated
-while applying this patch?
+between commit:
 
->
-> > explicitly determines if we are running in debugger context.
-> >
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >
-> > Changes in v3:
-> > - Refined commit description and Cc: stable@vger.kernel.org.
-> >
-> > Changes in v2:
-> > - Get rid of redundant in_atomic() check.
-> >
-> >  kernel/debug/kdb/kdb_private.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> I would leave it up to Daniel to say whether he agrees that a full
-> removal of "GFP_KDB" would be a better solution.  However, your patch
-> clearly improves the state of things, so:
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+  2b4a2474a202 ("IMA: generalize keyring specific measurement constructs")
 
-Thanks,
-Sumit
+from the integrity tree and commit:
+
+  a2d2329e30e2 ("ima: handle idmapped mounts")
+
+from the pidfd tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc security/integrity/ima/ima_api.c
+index 1dd70dc68ffd,ed410efb3597..000000000000
+--- a/security/integrity/ima/ima_api.c
++++ b/security/integrity/ima/ima_api.c
+@@@ -183,17 -184,18 +184,18 @@@ err_out
+   * Returns IMA_MEASURE, IMA_APPRAISE mask.
+   *
+   */
+- int ima_get_action(struct inode *inode, const struct cred *cred, u32 seci=
+d,
+- 		   int mask, enum ima_hooks func, int *pcr,
++ int ima_get_action(struct user_namespace *mnt_userns, struct inode *inode,
++ 		   const struct cred *cred, u32 secid, int mask,
++ 		   enum ima_hooks func, int *pcr,
+  		   struct ima_template_desc **template_desc,
+ -		   const char *keyring)
+ +		   const char *func_data)
+  {
+  	int flags =3D IMA_MEASURE | IMA_AUDIT | IMA_APPRAISE | IMA_HASH;
+ =20
+  	flags &=3D ima_policy_flag;
+ =20
+- 	return ima_match_policy(inode, cred, secid, func, mask, flags, pcr,
+- 				template_desc, func_data);
++ 	return ima_match_policy(mnt_userns, inode, cred, secid, func, mask,
+ -				flags, pcr, template_desc, keyring);
+++				flags, pcr, template_desc, func_data);
+  }
+ =20
+  /*
+
+--Sig_/k8KE2htOxDV//cDHrcpI132
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOYqoACgkQAVBC80lX
+0GwvyQf+KmAb4k0vPNayE44IS4hlsorJ1DccxO0+t0EYFbiDjmqHIsbi5dF7wZKH
+MJuoSGGkOB2F88hmfYj+6+QVRHtHBtrGOaTSjvdCO5oaGhKwa3hVRU7bohAAJW1W
+NsmYm/MV3eKMEr9385Cw9T1N62L6MQYF4a8fjAi5p7AMDnT+ahVydUP3v162ncoc
+fAyoZLQBn3oatKG6CSHNky1N6c4lf85tpC+g1Bd6pL/vsYyT4wLoKrAL7lj+Cltz
+nftNqLdw57dDWUXihbg3Och60UGcJC+PSDuJ/iMv7tm55Q3M83+Nosu9Ygf8MNy2
+5NUca5LiDuSTX4ftcLl/LRNJGxnbtQ==
+=bjV6
+-----END PGP SIGNATURE-----
+
+--Sig_/k8KE2htOxDV//cDHrcpI132--
