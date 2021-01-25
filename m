@@ -2,159 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C8A3027F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4617D3027EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730757AbhAYQd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:33:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
+        id S1730775AbhAYQdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730612AbhAYQcn (ORCPT
+        with ESMTP id S1730763AbhAYQc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:32:43 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45DAC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:32:02 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a10so18924779ejg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:32:02 -0800 (PST)
+        Mon, 25 Jan 2021 11:32:57 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B0CC06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:32:16 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id i20so13312116otl.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:32:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2RzgFx4bVzCyoVBI8IRrWv56bXh+C2simTbpmFGdt1c=;
-        b=eyunknpLzjfpE9Vh5qFqaREXOsPbYtFO6TDAKZYKCbFEv9x7t12KpcyXgVu9HeKU9f
-         orT3yRZ2aXxMYJCWeWdFYNAks6JWCZG6u3G6oXvYIwZxGXPfpHuS6sN++w8HOYzpfZNe
-         byE/VlgxRCzxHUxqW/A4mwOXw+YsJQAiY+e5kmmyeie+VaNc/WgdQMBrpNYI46kq/A5m
-         hHjXSoWuD1VxXnBppunOqxQAEhfD6SXf/547Isyv41nTQGu/9dwp9CddYsasXVzQ0m/7
-         3yNCOfxkrgG1QD/rbyz4plhF4xkyOAvJ+aPCUUITizFpRQpkLkSNd3s3wR3lTD66m2hw
-         kwAA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7wM9j0NmA+4NCioKAFo7iToU4fViUTFlRLMQnGMrXNk=;
+        b=KsGUFXVFxfjbbXtXhs0lhCDVXgarAmZ4nMCt1BNDjKBtjhVtgaRYXX7+phfMlOjjUh
+         SpNSW7SUWGZpc11eF4KT1ZT8OZCoWmlzYzs2xFQxzNzNDswA9ysPbRVVbEuHxg+FXjx0
+         1Rz+N9cl/cvoQONSrXWps4vCjks3ImqzBdh5LD8ulBjtn0wlMtijSFQ+IbY2zCZonhvD
+         NVI8R8yj+ROhiZ5wAo9sX18AYmeTtRkaixRhqF80YwlvKQgOfOQd4pF9osxBOWsh8XLE
+         X4NgTnWfOFteeI4lSFPzA96B+TxxBVPVrshFfdIljSQmOTXv0cNBgRN8ZQvq4b2QXtv4
+         T+sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2RzgFx4bVzCyoVBI8IRrWv56bXh+C2simTbpmFGdt1c=;
-        b=PYJpA5yfqh+Hf58ZsYSR5z6uirZHkS6DMZBBlnvt1vKDo51sDd6nGFIyfUiRxrPKZL
-         6NXKAErmvNidrUYMj9XwNkYedCw5dgIiwJQRTb4QbO1tmIyXrMdHp4dlBW7ZnpelX2BG
-         3ECZW5vbZfaLFwaFJr9ZZSaxVRs+a0v5WOuqu1D4RR/cvGObfdJoQf62AJW+LhejFnEH
-         KZ0IS2m8dUg5u8UPcmTd1wbVi8XBbmd9Jtbg11G/xB/5gG03cwOiBofdOrACx4Jk6Gcs
-         njwnEb+G2Xynh0SgbrFQiU8JwLZrhSa2/UiJJDYfiUwvhUJ4dvrTZqi0ywGBeOQLueBf
-         19Nw==
-X-Gm-Message-State: AOAM530lgKLfNHOKMUdCgcQ3LctwXnd5OS+dPUWxlthQVkCoEmOoOezp
-        RDo5VSa/L4YBBnAEY01sAnmLF/y2Q7kA5WIPLDu0VQ==
-X-Google-Smtp-Source: ABdhPJxXnTkeYm/9NPRPkxEwReac7Klq6zD6SARzoK1mMYze5vLOxVFjBNqRFh2wWMUp3ZfTIRmy7aCjkwmLZ/CQgWk=
-X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr867060ejb.503.1611592321246;
- Mon, 25 Jan 2021 08:32:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7wM9j0NmA+4NCioKAFo7iToU4fViUTFlRLMQnGMrXNk=;
+        b=HmBJfQsky0PlVYsmC66Gi71J5KE/eyNSZJ7UdDT4Umk47Z+XHF0lFowunLSoq37T+g
+         uOxnxPAQGlmQP3TtLY6WoJnz2C4aJWi+4zYrXHRwv0fsDBQsM6jFP16EhFVoEesoPsIM
+         bezHqQu652dX3gUfE8wPEjd65IdheFb+v7HoeMOeB+tIS9XUG34OS1CCYHH2tLIeY8tI
+         4fscyOi2ioO6vaQZzJCrcl0uVsxo+YPkdED1gnyc5axBa50gWbp9SWgWjEG66yOdqbFO
+         1QYT9eBkf2Q6HKyCp7gNjmGxHcibc5tL9Pw92RAFok6zx3WHM6f7AojaB8gvDF2oOK4f
+         oa1g==
+X-Gm-Message-State: AOAM532H6Sd2gFIyGlrCLmUf8JdEcjN2RQjdvGheY09XAAWcn163a6R6
+        qvlu64fx+UteUbXjgAiGark2JA==
+X-Google-Smtp-Source: ABdhPJweEWp9FLUDyOiNygFsnpmUpVHPjSLC6uPkcAYJUzp0nqWKZ4rzsEErke2GCAyw3KqLnS3uAg==
+X-Received: by 2002:a9d:7ccd:: with SMTP id r13mr1003348otn.253.1611592335446;
+        Mon, 25 Jan 2021 08:32:15 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id h30sm3252354ooi.12.2021.01.25.08.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 08:32:14 -0800 (PST)
+Date:   Mon, 25 Jan 2021 10:32:13 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] drivers: crypto: qce: Remover src_tbl from
+ qce_cipher_reqctx
+Message-ID: <YA7yjaz6kxxs8eTl@builder.lan>
+References: <20210120184843.3217775-1-thara.gopinath@linaro.org>
+ <20210120184843.3217775-6-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
- <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 25 Jan 2021 22:01:48 +0530
-Message-ID: <CA+G9fYv89bfbixjuudPWkBAucTYg7qhNxcV54RMEkRP5is-bnQ@mail.gmail.com>
-Subject: Re: LTP: madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
-To:     Arnd Bergmann <arnd@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
-        chrubis <chrubis@suse.cz>, Jan Stancek <jstancek@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Vorel <pvorel@suse.cz>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Joerg.Vehlow@aox-tech.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210120184843.3217775-6-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed 20 Jan 12:48 CST 2021, Thara Gopinath wrote:
 
-On Mon, 25 Jan 2021 at 20:41, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Mon, Jan 25, 2021 at 3:48 PM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > LTP syscalls madvise08 test case failed on all devices from
-> > Linux next 20210118 to till day.
-> > strace log attached to this email and link provided below.
-> >
-> > BAD: next-20210118
-> > GOOD: next-20210115
-> >
-> > This failure is easily reproducible on Linux next tag 20210118 above.
-> >
-> > tst_test.c:1250: TINFO: Timeout per run is 0h 15m 00s
-> > madvise08.c:73: TINFO: Temporary core pattern is
-> > '/scratch/ltp-2nftQzNI1K/HclFMH/dump-%p'
-> > madvise08.c:112: TINFO: Dump file should be dump-10109
-> > madvise08.c:196: TPASS: madvise(..., MADV_DONTDUMP)
-> > madvise08.c:112: TINFO: Dump file should be dump-10110
-> > madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
-> >
-> > strace log,
-> > https://lkft.validation.linaro.org/scheduler/job/2184866#L1257
->
-> Ok, so in this part of the log,
->
-> [pid   485] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_DUMPED,
-> si_pid=487, si_uid=0, si_status=SIGABRT, si_utime=0, si_stime=0} ---
-> [pid   485] write(2, \"madvise08.c:117: \33[1;34mTINFO: \33\"...,
-> 64madvise08.c:117: [1;34mTINFO: [0mDump file should be dump-487
-> ) = 64
-> [pid   485] access(\"dump-487\", F_OK)    = 0
-> [pid   485] openat(AT_FDCWD, \"dump-487\", O_RDONLY) = 3
-> [pid   485] read(3,
-> \"\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\4\0>\0\1\0\0\0\0\0\0\0\0\0\0\0\"...,
-> 1024) = 1024
-> [pid   485] read(3,
-> \"\0\320\3\0\0\0\0\0\0\340\375\24\304\177\0\0\0\0\0\0\0\0\0\0\0\20\0\0\0\0\0\0\"...,
-> 1024) = 292
-> [pid   485] read(3, \"\", 1024)           = 0
-> [pid   485] close(3)                    = 0
-> [pid   485] write(2, \"madvise08.c:208: \33[1;31mTFAIL: \33\"...,
-> 74madvise08.c:208: [1;31mTFAIL: [0mNo sequence in dump after
-> MADV_DODUMP.
->
-> it seems that the data that was requested to be dumped with MADV_DODUMP is
-> indeed completely absent.
->
-> There was exactly one commit that got merged between next-20210115 and
-> next-20120118
-> related to core dumps: 8a3cc755b138 ("coredump: don't bother with
-> do_truncate()").
-> Adding Al Viro to Cc for that.
->
-> Naresh, could you try reverting that patch?
+> src_table is unused and hence remove it from struct qce_cipher_reqctx
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  drivers/crypto/qce/cipher.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/crypto/qce/cipher.h b/drivers/crypto/qce/cipher.h
+> index cffa9fc628ff..850f257d00f3 100644
+> --- a/drivers/crypto/qce/cipher.h
+> +++ b/drivers/crypto/qce/cipher.h
+> @@ -40,7 +40,6 @@ struct qce_cipher_reqctx {
+>  	struct scatterlist result_sg;
+>  	struct sg_table dst_tbl;
+>  	struct scatterlist *dst_sg;
+> -	struct sg_table src_tbl;
 
-This suspecting commit reverted and tested and the test case PASS.
+Please also remove the associated kerneldoc entry.
 
-commit 8a3cc755b13808eba74846dfd1033fcbc21f9a65
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Sun Mar 8 09:16:37 2020 -0400
+Regards,
+Bjorn
 
-    coredump: don't bother with do_truncate()
-
-    have dump_skip() just remember how much needs to be skipped,
-    leave actual seeks/writing zeroes to the next dump_emit()
-    or the end of coredump output, whichever comes first.
-    And instead of playing with do_truncate() in the end, just
-    write one NUL at the end of the last gap (if any).
-
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-
- fs/binfmt_elf.c          |  1 -
- fs/coredump.c            | 56 +++++++++++++++++++++++++++---------------------
- include/linux/binfmts.h  |  1 +
- include/linux/coredump.h |  1 -
-
-
-Test case output link,
-https://lkft.validation.linaro.org/scheduler/job/2184975#L1369
-https://lkft.validation.linaro.org/scheduler/job/2184972#L1358
-
-- Naresh
+>  	struct scatterlist *src_sg;
+>  	unsigned int cryptlen;
+>  	struct skcipher_request fallback_req;	// keep at the end
+> -- 
+> 2.25.1
+> 
