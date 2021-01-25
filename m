@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E34303460
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CC83034C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbhAZFXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbhAYJ7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:59:07 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAF8C061352
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:58:03 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id u7so2523592ooq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:58:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gdta58PoWmtu6e7uN9H109dtWomdId8gGVo4iHeqt88=;
-        b=fV8fdKnejyryuPs55rwRZ26aKdhNIT3xcjuCTD4stVmVjK9A1Fsol8Vn6za2Nlq4Yi
-         eePY7y51sjRcXiOXpryPTdyrIiwuYHvuOYnMI1h9F50r+9PGxLXHjo3hbO+Q0ayAjV7p
-         O5HUYj2H8k+4UJNvSKkh1id4l7siWnNSYTHs3+sdQCn8RANUrulO0aIiKVCGRJunNrGU
-         K0uXdfoDc64dH8RnS3go5g00/qj2c0pHskeLOs8JskTek2FRN2M865HXrG6i7P1cZEMw
-         GAQBXl0rTZOiV96/ag9ypNwe3U+cX8u6TqSy3P/dBjOXN2j3LqmJorHHGnI0l7B6z14U
-         JoxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gdta58PoWmtu6e7uN9H109dtWomdId8gGVo4iHeqt88=;
-        b=SNCIgP1AYLU9j7GTjx33aAqG/dmjJbTP1TtGynsFLQpm54aPRT4fZ5MzYRHluvLBdZ
-         cMlulsAKq50SxgqpZpeZI7wDqEVx+6GztMLN+d7NGT3XSanawY9RT4m66aHdWglOfzfD
-         Q3yBvtQlWv4BNGok65Sma/Mk3Kgg5ubi7th2esRIGc1QqqHBiv6/rMYrAd2l/7+zY2mi
-         4T911gYPKDt+xh0X+bnFeS7WlC0rqjC5p3eBpIQyS7VDJ6s4nURXflIkRrTzvTvGWJBi
-         QLr7eg68l8gA4cdsjtxwhgNaGKdbB7NqT+F1NzBHByR3FwXWRyo46Fd+JYd2hHf8eGD+
-         WZKg==
-X-Gm-Message-State: AOAM533GhPszGGMu7awWVuKljQdA0bH9+sZwpZclBnOkH16hB6sKFVG+
-        WcfyQ+fxBGJ7RWj8Gqgzq8ssZA4yW0ILul8LU/rx/ptvOqQ=
-X-Google-Smtp-Source: ABdhPJxKwolVPl9GSYzQ72NMQqgfHvx1b/haUyn3tfYc8+iwE8PiKfqFuOXkDJKXPKI8gXh1AhAAYYknS/kMMVHXF6E=
-X-Received: by 2002:a4a:51c3:: with SMTP id s186mr8553ooa.6.1611568683019;
- Mon, 25 Jan 2021 01:58:03 -0800 (PST)
+        id S1732776AbhAZF1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:27:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727339AbhAYKLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:11:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45DBE225A9;
+        Mon, 25 Jan 2021 10:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611569365;
+        bh=/caSJlOzi9QwZYCHXZhLX4f0JgFeqHckEpX4/pNTF1c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jIb89LY/RphhYgJMIj8DSE0x9sKFQnKTMasNpMzLiZJlXQ4gXjCoPVV/0ZcO8F1db
+         +NcRsq4f8PDU95GKM8iLSQoG34eu+47I0iEcSHjVLkEpDNq1Yp7+yPx3Y/JbFw3FvS
+         9DUxaxD7MdehfLVjQGO+p8NdAJfNxwgWpnaZEKCTtUif3bXdNLWNPTQZOY/Dl/MWJe
+         5vmIaFk1+FjT5ZzJ6p4QByYbyhggwrb9iQKgpc9OABiQtf2Fgq/ApbaHemnIvdUCj6
+         DpNBjvzfK5gDyLQacny6OXy6DCx0lbwPTisgdUmg1XCUuO5oFy76mXUKMAyvCU7fah
+         MsoqWvn16iGjg==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] scsi: dt-bindings: ufs: Add sm8250, sm8350 compatible strings
+Date:   Mon, 25 Jan 2021 15:39:03 +0530
+Message-Id: <20210125100906.4004908-2-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210125100906.4004908-1-vkoul@kernel.org>
+References: <20210125100906.4004908-1-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <20210125095445.1524477-1-jens.wiklander@linaro.org>
-In-Reply-To: <20210125095445.1524477-1-jens.wiklander@linaro.org>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 25 Jan 2021 10:57:52 +0100
-Message-ID: <CAHUa44GtqJhvX7jUvKWu08J+A2EWqewzosMsez3mwGZ9gA21Uw@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: remove need_resched() before cond_resched()
-To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rouven and Sumit,
+Document "qcom,sm8250-ufshc" and "qcom,sm8350-ufshc" compatible string.
+Use of "qcom,sm8250-ufshc" is already present upstream, so add misiing
+documentation. "qcom,sm8350-ufshc" is for UFS HC found in SM8350 SoC.
 
-On Mon, Jan 25, 2021 at 10:55 AM Jens Wiklander
-<jens.wiklander@linaro.org> wrote:
->
-> Testing need_resched() before cond_resched() is not needed as an
-> equivalent test is done internally in cond_resched(). So drop the
-> need_resched() test.
->
-> Fixes: dcb3b06d9c34 ("tee: optee: replace might_sleep with cond_resched")
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> ---
->  drivers/tee/optee/call.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+---
+ Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Can you please test to see that this works in your setups too?
+diff --git a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+index 415ccdd7442d..d8fd4df81743 100644
+--- a/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
++++ b/Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
+@@ -14,6 +14,8 @@ Required properties:
+ 			    "qcom,msm8998-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
+ 			    "qcom,sdm845-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
+ 			    "qcom,sm8150-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
++			    "qcom,sm8250-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
++			    "qcom,sm8350-ufshc", "qcom,ufshc", "jedec,ufs-2.0"
+ - interrupts        : <interrupt mapping for UFS host controller IRQ>
+ - reg               : <registers mapping>
+ 
+-- 
+2.26.2
 
-Thanks,
-Jens
