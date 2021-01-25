@@ -2,58 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7310D302A7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B32D302AF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbhAYSlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727159AbhAYSki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:40:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA3AC0613D6;
-        Mon, 25 Jan 2021 10:39:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xDrM+KQwor0G/SdbRtjD80RNmodxEJyJhIdhGXlFIgE=; b=Bbshmc8Qe42MDqnwjvOxasP4nj
-        Vg4HA95P32VId9EjIS8lC5g7crddUHowjUGle9iSoJzYC9ITVWgU1+N0epXXW2BR48oQjssbHRPbp
-        S4BsVHG2ffwIqPgw6CYgJw9a93Jt0lNLUt3unazR+sWDnmp2XBNDCiYSnjS7z+CzB1rZogCgwe/16
-        jPwELbppc6pf2eqpGwPUE+lXi5BNkApxd1aqbvqu2TLG0RUOBLzsj0Esi12oQk+94SeG7WeexeSlB
-        JsW+Xj9r5Hkp6y+QeC8ho2w1svrfoBMml8PGCPDvaPRGnMExrc5NDRcihAT8RP3BAfUZiLBbHPIqa
-        RNLoe2sA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l46li-004Wji-Nv; Mon, 25 Jan 2021 18:39:33 +0000
-Date:   Mon, 25 Jan 2021 18:39:18 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     syzbot <syzbot+da4fe66aaadd3c2e2d1c@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        namjae.jeon@samsung.com, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: UBSAN: shift-out-of-bounds in exfat_fill_super
-Message-ID: <20210125183918.GH308988@casper.infradead.org>
-References: <000000000000c2865c05b9bcee02@google.com>
+        id S1727974AbhAYS5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:57:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729493AbhAYSpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:45:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E56A6224B8;
+        Mon, 25 Jan 2021 18:44:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600273;
+        bh=Xz+i1Z3mOF9fKx3oJXp8w7X6GXSJakG1pmdkXz0IVGg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ag6Fn51GFoRB3GGk1C9Egc1aV69/TOU8NFlcQhkWsFICi+LHLbeHEZBYqDx7eVMF9
+         dCy8Fxkod81eUPsoUasitApgaBSNOg9FE2yLGbglZzGXEVklvQV10o2EDFsIJqGk0g
+         Fl2qtTMckwa8Qz3MHN8b1MjVVq9DjcFI4ITW8/WM=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 37/86] drm/nouveau/bios: fix issue shadowing expansion ROMs
+Date:   Mon, 25 Jan 2021 19:39:19 +0100
+Message-Id: <20210125183202.634248463@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
+References: <20210125183201.024962206@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000c2865c05b9bcee02@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 09:33:14AM -0800, syzbot wrote:
-> UBSAN: shift-out-of-bounds in fs/exfat/super.c:471:28
-> shift exponent 4294967294 is too large for 32-bit type 'int'
+From: Ben Skeggs <bskeggs@redhat.com>
 
-This is an integer underflow:
+[ Upstream commit 402a89660e9dc880710b12773076a336c9dab3d7 ]
 
-        sbi->dentries_per_clu = 1 <<
-                (sbi->cluster_size_bits - DENTRY_SIZE_BITS);
+This issue has generally been covered up by the presence of additional
+expansion ROMs after the ones we're interested in, with header fetches
+of subsequent images loading enough of the ROM to hide the issue.
 
-I think the problem is that there is no validation of sect_per_clus_bits.
-We should check it is at least DENTRY_SIZE_BITS and probably that it's
-less than ... 16?  64?  I don't know what legitimate values are in this
-field, but I would imagine that 255 is completely unacceptable.
+Noticed on GA102, which lacks a type 0x70 image compared to TU102,.
+
+[  906.364197] nouveau 0000:09:00.0: bios: 00000000: type 00, 65024 bytes
+[  906.381205] nouveau 0000:09:00.0: bios: 0000fe00: type 03, 91648 bytes
+[  906.405213] nouveau 0000:09:00.0: bios: 00026400: type e0, 22016 bytes
+[  906.410984] nouveau 0000:09:00.0: bios: 0002ba00: type e0, 366080 bytes
+
+vs
+
+[   22.961901] nouveau 0000:09:00.0: bios: 00000000: type 00, 60416 bytes
+[   22.984174] nouveau 0000:09:00.0: bios: 0000ec00: type 03, 71168 bytes
+[   23.010446] nouveau 0000:09:00.0: bios: 00020200: type e0, 48128 bytes
+[   23.028220] nouveau 0000:09:00.0: bios: 0002be00: type e0, 140800 bytes
+[   23.080196] nouveau 0000:09:00.0: bios: 0004e400: type 70, 7168 bytes
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c
+index 7deb81b6dbac6..4b571cc6bc70f 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c
+@@ -75,7 +75,7 @@ shadow_image(struct nvkm_bios *bios, int idx, u32 offset, struct shadow *mthd)
+ 	nvkm_debug(subdev, "%08x: type %02x, %d bytes\n",
+ 		   image.base, image.type, image.size);
+ 
+-	if (!shadow_fetch(bios, mthd, image.size)) {
++	if (!shadow_fetch(bios, mthd, image.base + image.size)) {
+ 		nvkm_debug(subdev, "%08x: fetch failed\n", image.base);
+ 		return 0;
+ 	}
+-- 
+2.27.0
+
+
+
