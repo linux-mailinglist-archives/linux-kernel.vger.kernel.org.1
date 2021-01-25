@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B238303888
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF683038AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390695AbhAZJCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:02:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33932 "EHLO mail.kernel.org"
+        id S2389358AbhAZJGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:06:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730492AbhAYSrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:47:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 153B622482;
-        Mon, 25 Jan 2021 18:46:22 +0000 (UTC)
+        id S1730547AbhAYSrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:47:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91B202310C;
+        Mon, 25 Jan 2021 18:46:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600383;
-        bh=pWOdn91w4KjUPAGY7fEWq+uUAnXkiYb6vnjmdJc9Wks=;
+        s=korg; t=1611600399;
+        bh=JUWO5N09CA/rTL28Kmwloy0GeK7cGXaIy3Ic3p3UxMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PHMdg3sdK5rO9e3pWCCfGjwMvC0QNbPMNpXM2ICOo5ufbcR5Y9UQW0xYSPZpTNI7K
-         pM4BHV9mhh8JZT9BgqwowiTCtqmzpOYLMFzcg6Vu1bA99Tup8CsJEHNP1O/o4aitz7
-         2pVqILgdGyEvb37t6Dwicj717XVjoMAytd+LP+Ps=
+        b=BgwW/Kb6FGUhfxdNrxxiOL86Hzf8zgO25PF4if+7wGGD8vTUGWmFm+rnjOa6uEkSw
+         nQNB0Arn9EWCxkXUXuNIdPEL5gzG2J2q7olfiIKaVRMwBJbtA0lzQDD5zxNiBe8kYL
+         en+fO1uTpGNHFftRuLxIkM2VDgQiNuwFgd9rMbfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 73/86] lightnvm: fix memory leak when submit fails
-Date:   Mon, 25 Jan 2021 19:39:55 +0100
-Message-Id: <20210125183204.128953823@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 74/86] skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
+Date:   Mon, 25 Jan 2021 19:39:56 +0100
+Message-Id: <20210125183204.175062563@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -39,37 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Alexander Lobakin <alobakin@pm.me>
 
-commit 97784481757fba7570121a70dd37ca74a29f50a8 upstream.
+commit 66c556025d687dbdd0f748c5e1df89c977b6c02a upstream.
 
-The allocated page is not released if error occurs in
-nvm_submit_io_sync_raw(). __free_page() is moved ealier to avoid
-possible memory leak issue.
+Commit 3226b158e67c ("net: avoid 32 x truesize under-estimation for
+tiny skbs") ensured that skbs with data size lower than 1025 bytes
+will be kmalloc'ed to avoid excessive page cache fragmentation and
+memory consumption.
+However, the fix adressed only __napi_alloc_skb() (primarily for
+virtio_net and napi_get_frags()), but the issue can still be achieved
+through __netdev_alloc_skb(), which is still used by several drivers.
+Drivers often allocate a tiny skb for headers and place the rest of
+the frame to frags (so-called copybreak).
+Mirror the condition to __netdev_alloc_skb() to handle this case too.
 
-Fixes: aff3fb18f957 ("lightnvm: move bad block and chunk state logic to core")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Since v1 [0]:
+ - fix "Fixes:" tag;
+ - refine commit message (mention copybreak usecase).
+
+[0] https://lore.kernel.org/netdev/20210114235423.232737-1-alobakin@pm.me
+
+Fixes: a1c7fff7e18f ("net: netdev_alloc_skb() use build_skb()")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Link: https://lore.kernel.org/r/20210115150354.85967-1-alobakin@pm.me
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/lightnvm/core.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/core/skbuff.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/lightnvm/core.c
-+++ b/drivers/lightnvm/core.c
-@@ -849,11 +849,10 @@ static int nvm_bb_chunk_sense(struct nvm
- 	rqd.ppa_addr = generic_to_dev_addr(dev, ppa);
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -431,7 +431,11 @@ struct sk_buff *__netdev_alloc_skb(struc
  
- 	ret = nvm_submit_io_sync_raw(dev, &rqd);
-+	__free_page(page);
- 	if (ret)
- 		return ret;
+ 	len += NET_SKB_PAD;
  
--	__free_page(page);
--
- 	return rqd.error;
- }
- 
+-	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
++	/* If requested length is either too small or too big,
++	 * we use kmalloc() for skb->head allocation.
++	 */
++	if (len <= SKB_WITH_OVERHEAD(1024) ||
++	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+ 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
+ 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
+ 		if (!skb)
 
 
