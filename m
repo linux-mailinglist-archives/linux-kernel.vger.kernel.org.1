@@ -2,160 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F363020C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639C73020CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbhAYDS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:18:29 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:42707 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727024AbhAYDRk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:17:40 -0500
-X-UUID: 8f3baea1f7b840a08ffedcf7441ee9f1-20210125
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=lLKMVs8fE2vVdWsZajBheeSZ7xutmr1c+2PDYuBc2xA=;
-        b=KNxbYJs9w7tq3lEVE6nW+oWXR98auhBoBMxvnSqCKNygV8Uu8+CmyT6PoIKVzNFOtUtt6NKdwJOkIDh30WriPJFauHknPRlsDtrNvdNmY6/wlf+am1oJhjdipkcKhpMga917aboFB2XYb1CMORgz3QR+qMMTc/0qkLsqTO2vyKg=;
-X-UUID: 8f3baea1f7b840a08ffedcf7441ee9f1-20210125
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <hailong.fan@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1414889028; Mon, 25 Jan 2021 11:16:51 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
- 2021 11:16:44 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Jan 2021 11:16:43 +0800
-Message-ID: <1611544603.1248.4.camel@mhfsdcap03>
-Subject: Re: [PATCH RESEND] pinctrl: mediatek: Fix trigger type setting
- follow for unexpected interrupt
-From:   mtk15103 <hailong.fan@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Sean Wang <sean.wang@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>, <youlin.pei@mediatek.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Chen-Tsung Hsieh <chentsung@chromium.org>,
-        <gtk_pangao@mediatek.com>, Hanks Chen <hanks.chen@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>, <zhengnan.chen@mediatek.com>,
-        <hailong.fan@mediatek>
-Date:   Mon, 25 Jan 2021 11:16:43 +0800
-In-Reply-To: <CANMq1KDa_aO_wtQAZofruN7r7BuvRTNGKkmfgTf2oM7ab9425g@mail.gmail.com>
-References: <20210121075149.1310-1-hailong.fan@mediatek.com>
-         <CANMq1KBqKUofLaM+OEaTq6PSeYomNSLvn65c+Wyi1cKsLDNboQ@mail.gmail.com>
-         <1611230975.2493.17.camel@mhfsdcap03>
-         <CANMq1KCXrEGrNrOwivrchXyawzKySVzQoxA1goYC-eh-auNFCA@mail.gmail.com>
-         <1611283438.2493.23.camel@mhfsdcap03>
-         <CANMq1KDa_aO_wtQAZofruN7r7BuvRTNGKkmfgTf2oM7ab9425g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1727113AbhAYDTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:19:11 -0500
+Received: from mail-bn8nam12on2122.outbound.protection.outlook.com ([40.107.237.122]:1633
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727078AbhAYDSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 22:18:34 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YCS65KE+QhM2pKYniFHJ+QYNCwXvfwtYo0sxBlj2yLiQ/kxV7RF8QraFjpme4aIZ6cSOnHSKG3ehqdkhH5BNndocWqE7p/EJ6ZJ5JOi8RiEQ3zmulMQ4Usz97lo756zsMIKbYn05p2DCtpQQvg0skw/JbkjlhtACTYQKDcMn48hYSKljYEQN+LZYVX9ybB1jFsHY1p5nzAdDjBlI7zIAwHtQ2ewCZbHj7/59HbQDfarbRYNeSgdFwpnWxJxwH9gXt8Gj7PsS7LgRlz+6KD1S8bXqAYLf3QohzA/9rhAw2N5G8ECmToXq0A7svAyiPQf2AceXqN5Hfqr+J05QLL6VDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gi/wzaBUE598SByZGw7LmXSSBOYLYdOUD/PyH6HPmZg=;
+ b=RzwCwC919JkIibVMVlq+P9iH0fuEFb3DPq87y61mhI9rJ0hFrbFY1YNjXtsCQCceQ3ZGGauNcto0+8vFoZ/BemMY05UCPDXwqyPcBvm2WiWACqtqOpo55iaZhDJXtAThHC/+JH5xrub7P4nqNJLcmM7bVMLOLf3dUMeLdpZaFy0nZBSgHMSr4yYQWh/3X8e5lRfnj/tl6HvfATNIvq40XkYlMtO7ZWIAJEXamAsSTjGWzlPngCJbtQcB4fQJtWGQdtG0OrVGtXks67tN1uUlMkpNuRJcLbges1NdTGbeGH5wtmx2raN7xdHWYZVmubPKBlBP1FGbWnDIQuRZmuwqjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gi/wzaBUE598SByZGw7LmXSSBOYLYdOUD/PyH6HPmZg=;
+ b=Uk1dptyncPcBOMr/CBjv/KJv4vz389f1J2thyR8wL0LB4a7V0Ux74JEYkvnpp19N7lbWFx9OtFdCFYSm6pO6my16pvC5/NhS6Xvh5wO5jaudIgb1ztNk72GSSVCjUwUYB9CFAhTnYj38edPqU/oC30WsKbxNzYXmdKYGqKPQkJY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB4741.namprd04.prod.outlook.com (2603:10b6:a03:12::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Mon, 25 Jan
+ 2021 03:17:39 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132%6]) with mapi id 15.20.3763.015; Mon, 25 Jan 2021
+ 03:17:39 +0000
+Date:   Mon, 25 Jan 2021 11:17:10 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag
+ and swing setting
+Message-ID: <20210125031709.GA12296@zhaomy-pc>
+References: <cover.1609380663.git.xji@analogixsemi.com>
+ <d13442f84fefccc992d6c5e48ac1e6129882af31.1609380663.git.xji@analogixsemi.com>
+ <20210111221435.GA3138373@robh.at.kernel.org>
+ <20210112085737.GC5827@pc-user>
+ <CAL_JsqJ1B6JzpdgtP=ZNtWasjW5R0rYyUGV3RTDxT1LPa1rz5w@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJ1B6JzpdgtP=ZNtWasjW5R0rYyUGV3RTDxT1LPa1rz5w@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HK2PR0401CA0023.apcprd04.prod.outlook.com
+ (2603:1096:202:2::33) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 9A7BAF05F21477708E1562AEFAEB3544FFCDA7ABFCCC70DE90D0C7139706089C2000:8
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zhaomy-pc (61.148.116.10) by HK2PR0401CA0023.apcprd04.prod.outlook.com (2603:1096:202:2::33) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 03:17:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f0deb1d3-5f75-4caf-19c8-08d8c0dfc50c
+X-MS-TrafficTypeDiagnostic: BYAPR04MB4741:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB474167D271B9CAA3D6A2EFAFC7BD9@BYAPR04MB4741.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hKX6PAcLQG9lAEEP0dmIsIbQJv1MDy+4wMGwSKjhOCWGwMq4r2UKvdoEXw6CG6jS7X7wOZbakmnvcn9IcsnCIBX6eFVYh4Tduv+U5Fcv/33V3Zta1jXbMy8uXrWj5vJXZPlmiJI/hFcAx9npweDKUDgwsDESI6kVelKy/nQP9lbMIPVc/xcaGVzBNqS9nl3h6X4eRmmH+0KXAffJZ16Q7Wylfna/oDpHskPim3LoIvk+1XYcrYjnlt8d2zNw802xVm2HpgPlnZ0vYeYJoaf6MG5GBDysrSHjhVbKmg6k3YgJ5bOdTjNfo1f4kUzh+DuEaFmIk+w/liAL2bT86VIHFqlRj/sIHJyA82ew/DegHj8z327budbVFUPREB6toWeAWZB1MlTfPi2SpSuAuHqxur97BiqRwvqv9iQKDEnFmZDUrU5NN8k8l6xIcd32f2/F
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(39840400004)(376002)(346002)(396003)(33656002)(6496006)(52116002)(956004)(83380400001)(316002)(2906002)(8676002)(54906003)(33716001)(4326008)(478600001)(86362001)(5660300002)(1076003)(55016002)(66476007)(66556008)(26005)(16526019)(6916009)(8936002)(66946007)(9686003)(186003)(53546011)(7416002)(6666004)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vJwwbLgR37v6gbGQ9RMiIim0pYBc8OIpeXiBOV2D0Gr6UAYR/ZBJtfLLUCDv?=
+ =?us-ascii?Q?V/oxCQpaXH/czn2AzP0B2n0IdWupsOu6RGrfyAEb0r0kf2YytvvzO8zGz26C?=
+ =?us-ascii?Q?/2BWnzzWKxkQnhHoci4IF0jpdefpo9rtj5uHUeGI1tjwlpHBjV68jJIKGOdy?=
+ =?us-ascii?Q?OKCrdQzApoPyiFsNwmgEpoWlj1Hvac5VlqWF7U2pIf8WNZWl5WVqucpDJGgg?=
+ =?us-ascii?Q?U3c0Wu96i31lTQ5/VYMzHGUfdeGoQAcn+CJrXTRdRnt2FrPew4tC0kKRDY45?=
+ =?us-ascii?Q?7gPeLN//6U+oSmGZXRjfOj6kK+RiN8KsD5pKGX5pRZIlxydNpuvTuHWWJrwc?=
+ =?us-ascii?Q?BxrdYZsD8e7NVH4B2ksJoDztpospwP00xz2k16r8bY3jUxJWYiUTJTuAmU40?=
+ =?us-ascii?Q?8D3b4mbEl8eAxlSuXIe4N6VThJXRjzB2Q4LCjlI92qBUCTvUThNkrv91PDj9?=
+ =?us-ascii?Q?uyFawFl9sz6PtzpHxeqMSGDJWqwJmz73IacirDA6IkywXPQUKQvJ/t5KJA8w?=
+ =?us-ascii?Q?2eModwtEOC5rCu/hBhpe4ozgsjWFPy/V8R7N0Wc3pdXSbqggIshbpYsEfTqO?=
+ =?us-ascii?Q?wOyLSkrktFw9HT+bXrtfv9mUIEaVrpsYVwXR/Ka6wr5KclOwi3Qyt5Y9t9cV?=
+ =?us-ascii?Q?xkMBX5vZqGzi4Rdjl6SyC+jNvroNTmQU4eIUtQY4XZ0hdXpFQnukvKt+vGmC?=
+ =?us-ascii?Q?CW9l+GxHAtT1p3pbLJpuCrEano3CbWrdpQJY/yCezUkQPQH5Z1qL/lQudgf4?=
+ =?us-ascii?Q?oB/XND8jH/IvD9bUSFk3QjTEqHHVJTZujo9hOEtDJikeciBD20fI2TH71Kp7?=
+ =?us-ascii?Q?yDU97POVXdmMzQD/hObo4y6ipA/nK0ZixASC4vCCt4vEO/KvtVlbFxydGC3N?=
+ =?us-ascii?Q?GroGePAwygGA7E/yxC1kD/KxwUBu/CDqf5q/xlIWvLrbysEtR4f9VrPZrN9F?=
+ =?us-ascii?Q?75qTfv6bcePcAZPcHf9AC6afkr2zi8VraGskjYCnfxmMVXTbCD3r4r5Pgy1J?=
+ =?us-ascii?Q?vXr+YjIQ5TyXBA79G9SjrRNrrt7WijDSOH23VNnpRDET/LS4L/ME3Q5D9CuN?=
+ =?us-ascii?Q?Jh5i4/Q4?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0deb1d3-5f75-4caf-19c8-08d8c0dfc50c
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 03:17:39.2176
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6G+ByPT6h5mqaVNu26eLVhk9GItFgbyclurLVSIjDO+LPHn/xc+SpdfgEL5iK7q/syHFDCiuLY+xLsiPStEslQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4741
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTAxLTIyIGF0IDE4OjU0ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
-DQo+IE9uIEZyaSwgSmFuIDIyLCAyMDIxIGF0IDEwOjQ0IEFNIG10azE1MTAzIDxoYWlsb25nLmZh
-bkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gVGh1LCAyMDIxLTAxLTIxIGF0IDIw
-OjEzICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6DQo+ID4gPiBPbiBUaHUsIEphbiAyMSwg
-MjAyMSBhdCA4OjA5IFBNIG10azE1MTAzIDxoYWlsb25nLmZhbkBtZWRpYXRlay5jb20+IHdyb3Rl
-Og0KPiA+ID4gPg0KPiA+ID4gPiBPbiBUaHUsIDIwMjEtMDEtMjEgYXQgMTY6NTUgKzA4MDAsIE5p
-Y29sYXMgQm9pY2hhdCB3cm90ZToNCj4gPiA+ID4gPiBPbiBUaHUsIEphbiAyMSwgMjAyMSBhdCAz
-OjUyIFBNIEhhaWxvbmcgRmFuIDxoYWlsb25nLmZhbkBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+
-ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFdoZW4gZmxpcHBpbmcgdGhlIHBvbGFyaXR5IHdpbGwgYmUg
-Z2VuZXJhdGVkIGludGVycnVwdCB1bmRlciBjZXJ0YWluDQo+ID4gPiA+ID4gPiBjaXJjdW1zdGFu
-Y2VzLCBidXQgR1BJTyBleHRlcm5hbCBzaWduYWwgaGFzIG5vdCBjaGFuZ2VkLg0KPiA+ID4gPiA+
-ID4gVGhlbiwgbWFzayB0aGUgaW50ZXJydXB0IGJlZm9yZSBwb2xhcml0eSBzZXR0aW5nLCBhbmQg
-Y2xlYXIgdGhlDQo+ID4gPiA+ID4gPiB1bmV4cGVjdGVkIGludGVycnVwdCBhZnRlciB0cmlnZ2Vy
-IHR5cGUgc2V0dGluZyBjb21wbGV0ZWQuDQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gU2lnbmVk
-LW9mZi1ieTogSGFpbG9uZyBGYW4gPGhhaWxvbmcuZmFuQG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4g
-PiA+IC0tLQ0KPiA+ID4gPiA+ID4gUmVzZW5kIHNpbmNlIHNvbWUgc2VydmVyIHJlamVjdC4NCj4g
-PiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ID4gIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9tdGst
-ZWludC5jIHwgMTMgKysrKysrKysrKystLQ0KPiA+ID4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCAx
-MSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvbXRrLWVpbnQuYyBiL2RyaXZl
-cnMvcGluY3RybC9tZWRpYXRlay9tdGstZWludC5jDQo+ID4gPiA+ID4gPiBpbmRleCAyMjczNmY2
-MGMxNmMuLjNhY2RhNmJiNDAxZSAxMDA2NDQNCj4gPiA+ID4gPiA+IC0tLSBhL2RyaXZlcnMvcGlu
-Y3RybC9tZWRpYXRlay9tdGstZWludC5jDQo+ID4gPiA+ID4gPiArKysgYi9kcml2ZXJzL3BpbmN0
-cmwvbWVkaWF0ZWsvbXRrLWVpbnQuYw0KPiA+ID4gPiA+ID4gQEAgLTE1Nyw2ICsxNTcsNyBAQCBz
-dGF0aWMgdm9pZCBtdGtfZWludF9hY2soc3RydWN0IGlycV9kYXRhICpkKQ0KPiA+ID4gPiA+ID4g
-IHN0YXRpYyBpbnQgbXRrX2VpbnRfc2V0X3R5cGUoc3RydWN0IGlycV9kYXRhICpkLCB1bnNpZ25l
-ZCBpbnQgdHlwZSkNCj4gPiA+ID4gPiA+ICB7DQo+ID4gPiA+ID4gPiAgICAgICAgIHN0cnVjdCBt
-dGtfZWludCAqZWludCA9IGlycV9kYXRhX2dldF9pcnFfY2hpcF9kYXRhKGQpOw0KPiA+ID4gPiA+
-ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgdW5tYXNrOw0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gYm9v
-bD8NCj4gPiA+ID4gWWVzLHRoYW5rcy4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gICAgICAgICB1
-MzIgbWFzayA9IEJJVChkLT5od2lycSAmIDB4MWYpOw0KPiA+ID4gPiA+ID4gICAgICAgICB2b2lk
-IF9faW9tZW0gKnJlZzsNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBAQCAtMTczLDYgKzE3NCwx
-MyBAQCBzdGF0aWMgaW50IG10a19laW50X3NldF90eXBlKHN0cnVjdCBpcnFfZGF0YSAqZCwgdW5z
-aWduZWQgaW50IHR5cGUpDQo+ID4gPiA+ID4gPiAgICAgICAgIGVsc2UNCj4gPiA+ID4gPiA+ICAg
-ICAgICAgICAgICAgICBlaW50LT5kdWFsX2VkZ2VbZC0+aHdpcnFdID0gMDsNCj4gPiA+ID4gPiA+
-DQo+ID4gPiA+ID4gPiArICAgICAgIGlmICghbXRrX2VpbnRfZ2V0X21hc2soZWludCwgZC0+aHdp
-cnEpKSB7DQo+ID4gPiA+ID4gPiArICAgICAgICAgICAgICAgbXRrX2VpbnRfbWFzayhkKTsNCj4g
-PiA+ID4gPiA+ICsgICAgICAgICAgICAgICB1bm1hc2sgPSAxOw0KPiA+ID4gPiA+ID4gKyAgICAg
-ICB9IGVsc2Ugew0KPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIHVubWFzayA9IDA7DQo+ID4g
-PiA+ID4gPiArICAgICAgIH0NCj4gPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiA+ICAgICAgICAgaWYg
-KHR5cGUgJiAoSVJRX1RZUEVfTEVWRUxfTE9XIHwgSVJRX1RZUEVfRURHRV9GQUxMSU5HKSkgew0K
-PiA+ID4gPiA+ID4gICAgICAgICAgICAgICAgIHJlZyA9IG10a19laW50X2dldF9vZmZzZXQoZWlu
-dCwgZC0+aHdpcnEsIGVpbnQtPnJlZ3MtPnBvbF9jbHIpOw0KPiA+ID4gPiA+ID4gICAgICAgICAg
-ICAgICAgIHdyaXRlbChtYXNrLCByZWcpOw0KPiA+ID4gPiA+ID4gQEAgLTE4OSw4ICsxOTcsOSBA
-QCBzdGF0aWMgaW50IG10a19laW50X3NldF90eXBlKHN0cnVjdCBpcnFfZGF0YSAqZCwgdW5zaWdu
-ZWQgaW50IHR5cGUpDQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAgd3JpdGVsKG1hc2ssIHJl
-Zyk7DQo+ID4gPiA+ID4gPiAgICAgICAgIH0NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAtICAg
-ICAgIGlmIChlaW50LT5kdWFsX2VkZ2VbZC0+aHdpcnFdKQ0KPiA+ID4gPiA+ID4gLSAgICAgICAg
-ICAgICAgIG10a19laW50X2ZsaXBfZWRnZShlaW50LCBkLT5od2lycSk7DQo+ID4gPiA+ID4NCj4g
-PiA+ID4gPiBXaHkgYXJlIHlvdSBkcm9wcGluZyB0aGlzPyBBcmVuJ3Qgd2UgYXQgcmlzayB0byBt
-aXNzIHRoZSBmaXJzdCBlZGdlDQo+ID4gPiA+ID4gYWZ0ZXIgbXRrX2VpbnRfc2V0X3R5cGUgaXMg
-Y2FsbGVkPw0KPiA+ID4gPiBtdGtfZWludF91bm1hc2soKSB3aWxsIGRvIGl0Lg0KPiA+ID4gPiBJ
-ZiB1bm1hc2sgIT0gMSwgdXNlciBuZWVkIHRvIGNhbGwgbXRrX2VpbnRfdW5tYXNrKCkgdG8gZW5h
-YmxlIHRoZQ0KPiA+ID4gPiBpbnRlcnJ1cHQgYmVmb3JlIHVzZSBpdCwgdGhhbmtzLg0KPiA+ID4N
-Cj4gPiA+IE1ha2VzIHNlbnNlLCBJIGp1c3QgaGF2ZSBvbmUgbW9yZSB3b3JyeToNCj4gPiA+IGh0
-dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy9waW5j
-dHJsL21lZGlhdGVrL210ay1laW50LmMjTDEyMg0KPiA+ID4NCj4gPiA+IG10a19laW50X3VubWFz
-ayB1bm1hc2tzIHRoZSBpbnRlcnJ1cHQgX2JlZm9yZV8gdGhlIGVkZ2UgaXMgZmxpcHBlZCwNCj4g
-PiA+IGNvdWxkIHRoaXMgY2F1c2UgYSBzcHVyaW91cyBpbnRlcnJ1cHQ/IE9uIGFueSB1bm1hc2sg
-b3BlcmF0aW9uIC0tIG5vdA0KPiA+ID4ganVzdCBvbiBtdGtfZWludF9zZXRfdHlwZSAoc28gdGhp
-cyBpcyB0ZWNobmljYWxseSBhbm90aGVyIHByb2JsZW0sDQo+ID4gPiB0aGF0IHNob3VsZCBiZSBm
-aXhlZCBhcyBhIHNlcGFyYXRlIHBhdGNoKQ0KPiA+DQo+ID4gVGhpcyBzaXR1YXRpb24gd2lsbCBu
-b3QgaGFwcGVuLg0KPiA+DQo+ID4gU3B1cmlvdXMgaW50ZXJydXB0IG9jY3VyIGNvbmRpdGlvbjog
-ZWRnZSBpcnEgcG9sYXJpdHkgdmFsdWUgaXMgc2FtZSB3aXRoDQo+ID4gaW5wdXQgc2lnbmFsLg0K
-PiA+IGUuZy4NCj4gPiBEZWZhdWx0IHZhbHVlOiBHUElPIGlucHV0IGlzIGhpZ2gsIHRyaWdnZXIg
-dHlwZSBpcyBmYWxsaW5nX2VkZ2UuDQo+ID4gVXNlciB3YW50IG1vZGlmeSB0cmlnZ2VyIHR5cGUg
-aXMgcmlzaW5nX2VkZ2UgdW5kZXIgc29tZSBjZXJ0YWluDQo+ID4gY2lyY3Vtc3RhbmNlcywgaXQg
-d2lsbCBnZW5lcmF0ZSBzcHVyaW91cyBpbnRlcnJ1cHQgYnV0IGV4dGVybmFsIHNpZ25hbA0KPiA+
-IG1haW50YWluIGhpZ2guDQo+ID4gU28gd2UgbmVlZCBhY2sgaW50ZXJydXB0IGFmdGVyIHRyaWdn
-ZXJfdHlwZSBzZXR0aW5nIGlzIGNvbXBsZXRlZC4NCj4gPg0KPiA+IG10a19laW50X2ZsaXBfZWRn
-ZSBpcyBmb3IgZHVhbF9lZGdlLCB0aGUgcG9sYXJpdHkgc2V0dGluZyBiYXNlZCBvbg0KPiA+IGN1
-cnJlbnQgZ3BpbyBpbnB1dCBzaWduYWw6DQo+ID4gaWYgKGlucHV0ID09IGhpZ2gpDQo+ID4gICAg
-ICAgICBwb2xhcml0eSA9IGxvdzsgLyogZmFsbGluZ19lZGdlICovDQo+ID4gZWxzZQ0KPiA+ICAg
-ICAgICAgcG9sYXJpdHkgPSBoaWdoOyAvKiByaXNpbmdfZWRnZSAqLw0KPiA+IFRoZW4gaXQncyBu
-b3QgY2F1c2UgYSBzcHVyaW91cyBpbnRlcnJ1cHQuDQo+IA0KPiBPa2F5IGxldCBtZSB0cnkgdG8g
-bWFrZSBzdXJlIEkgZm9sbG93Og0KPiANCj4gLSBTYXkgaW50ZXJydXB0IGlzIGN1cnJlbnRseSBJ
-UlFfVFlQRV9FREdFX0ZBTExJTkcgKGFuZCBHUElPIGlzIGhpZ2ggYW5kIHN0YWJsZSkNCj4gLSBt
-dGtfZWludF9zZXRfdHlwZShkLCBJUlFfVFlQRV9FREdFX0JPVEgpDQo+IC0gbXRrX2VpbnRfbWFz
-ayhkKQ0KPiAtIChubyBtYXNrIGNoYW5nZWQsIGp1c3QgZWludC0+ZHVhbF9lZGdlKQ0KPiAtIG10
-a19laW50X2FjayhkKSAobm90IGFjdHVhbGx5IG5lZWRlZCBpbiB0aGlzIGV4YW1wbGUpDQo+IC0g
-bXRrX2VpbnRfdW5tYXNrKGQpDQo+ICAgLSBIVyByZWcgdW5tYXNrIChjYW4ndCBnZW5lcmF0ZSBh
-biBpbnRlcnJ1cHQgYXMgYW55dGhpbmcgdGhhdCB3b3VsZA0KPiBoYXZlIGhhcHBlbmVkIGlzIGFj
-a2VkIGFscmVhZHkgLS0gZXZlbiB3aXRoIGRpZmZlcmVudCBwcmV2aW91cy9uZXcNCj4gdHlwZXMg
-dGhhbiBteSBleGFtcGxlKQ0KPiAgIC0gZmxpcF9lZGdlICh3aWxsIHN3YXAgcG9sYXJpdHkgYXMg
-bmVlZGVkIGJ1dCBjYW4ndCBnZW5lcmF0ZQ0KPiBpbnRlcnJ1cHQgYXMgaXQgd29uJ3Qgc2V0IHRo
-ZSBwb2xhcml0eSB0byBiZSB0aGUgc2FtZSBhcyB0aGUgY3VycmVudA0KPiBHUElPIHN0YXRlKQ0K
-PiANCj4gT2theSwgSSB0aGluayBJJ20gY29udmluY2VkLg0KPiANCj4gUGxlYXNlIGZpeCB0aGUg
-bml0cyBhbmQgdGhlbiB5b3UgY2FuIGFkZA0KVGhhbmtzIGEgbG90IGZvciB5b3VyIGNvbW1lbnRz
-Lg0KVjIgcGF0Y2ggaGFzIGJlZW4gc2VudCB0byB5b3UsIHBsZWFzZSBoZWxwIHJldmlldyBpdCwg
-dGh4Lg0KDQo+IA0KPiBSZXZpZXdlZC1ieTogTmljb2xhcyBCb2ljaGF0IDxkcmlua2NhdEBjaHJv
-bWl1bS5vcmc+DQo+IA0KPiA+ID4gPiA+ID4gKyAgICAgICBtdGtfZWludF9hY2soZCk7DQo+ID4g
-PiA+ID4gPiArICAgICAgIGlmICh1bm1hc2sgPT0gMSkNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IEp1
-c3QgYGlmICh1bm1hc2spYA0KPiA+ID4gPiBZZXMsdGhhbmtzLg0KPiA+ID4gPiA+ID4gKyAgICAg
-ICAgICAgICAgIG10a19laW50X3VubWFzayhkKTsNCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiAg
-ICAgICAgIHJldHVybiAwOw0KPiA+ID4gPiA+ID4gIH0NCj4gPiA+ID4gPiA+IC0tDQo+ID4gPiA+
-ID4gPiAyLjE4LjANCj4gPiA+ID4NCj4gPg0KDQo=
-
+On Sat, Jan 23, 2021 at 12:16:02AM +0800, Rob Herring wrote:
+> On Tue, Jan 12, 2021 at 2:57 AM Xin Ji <xji@analogixsemi.com> wrote:
+> >
+> > Hi Rob Herring, thanks for the comments.
+> >
+> > On Mon, Jan 11, 2021 at 04:14:35PM -0600, Rob Herring wrote:
+> > > On Thu, Dec 31, 2020 at 10:21:12AM +0800, Xin Ji wrote:
+> > > > Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
+> > > > swing setting for adjusting DP tx PHY swing
+> > > >
+> > > > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > > > ---
+> > > >  .../bindings/display/bridge/analogix,anx7625.yaml  | 25 ++++++++++++++++++++--
+> > > >  1 file changed, 23 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > > index 60585a4..4eb0ea3 100644
+> > > > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > > > @@ -34,6 +34,16 @@ properties:
+> > > >      description: used for reset chip control, RESET_N pin B7.
+> > > >      maxItems: 1
+> > > >
+> > > > +  analogix,swing-setting:
+> > > > +    type: uint8-array
+> > >
+> > > Humm, this should have be rejected by the meta-schema.
+> > We needs define an array to adjust DP tx PHY swing, the developer hopes these
+> > settings are changeable, so I moved the register data to DT. Can you
+> > give me some suggestion if it is rejected by the meta-schema?
+> > >
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > >
+> > > This is how types are defined other than boolean or nodes (object).
+> > >
+> > > > +    description: an array of swing register setting for DP tx PHY
+> > > > +
+> > > > +  analogix,mipi-dpi-in:
+> > > > +    type: int
+> > > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > > +    description: indicate the MIPI rx signal type is DPI or DSI
+> > >
+> > > Why does this need to be in DT, you should be able to determine this
+> > > based on what you are connected to.
+> > As the anx7625 can receive MIPI DSI and DPI data (depends on hardware
+> > implement, we have a project which have two anx7625, one is DSI input,
+> > the other is DPI input), we needs to let driver know what kind of MIPI
+> > rx signal input. And there is no other way to tell driver the MIPI rx
+> > signal type, we needs define this flag.
+> 
+> That's only true if what's driving the output is a single h/w block
+> that can drive either. But typically you have 2 blocks: an LCD
+> controller driving parallel signals and a DSI controller in front of
+> it doing parallel to DSI conversion. The anx7625 would be connected to
+> the LCD controller or DSI controller via the graph binding depending
+> on the h/w connection.
+> 
+> However, if you do need this, then let's extend video-interfaces.yaml
+> 'bus-type' to include DSI (it already has parallel).
+> 
+> Rob
+Hi Rob, thanks, I'll add 'bus-type' in the next version.
+Thanks,
+Xin
