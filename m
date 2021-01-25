@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3730E3039F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0A33039FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404004AbhAZKPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:15:22 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:37277 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731494AbhAYT1t (ORCPT
+        id S1731383AbhAZKPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:15:45 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:45500 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731696AbhAYT1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:27:49 -0500
-Received: by mail-ot1-f49.google.com with SMTP id h14so13880513otr.4;
-        Mon, 25 Jan 2021 11:27:27 -0800 (PST)
+        Mon, 25 Jan 2021 14:27:52 -0500
+Received: by mail-oi1-f174.google.com with SMTP id g69so15194835oib.12;
+        Mon, 25 Jan 2021 11:27:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rMSnythaK4LFQsW5PlS81Mrlcsyec/gXB8IqOq/hvBs=;
-        b=mn42I6VwmE0lPX1i5cY9+Ao1a3srpFcPJOSFvUUkokJsYNikwtcoZ2O6o6PxB9XQjM
-         /okDDMkT4FOCUNxkg/OU5AY8mCMkLLPdTvs9AfEqBUqt4fp8YdFxRsH5/nucTg68ZqDb
-         KRRD2eZABtX7THuOFHem01V3tmFnXyHTkxJ4vkU8lrspqV68+XW6iF/0KRSyiL+J0F5X
-         df6JhsarFO3QfLUqnc3+DOZSuNy0W/DCP2j3zTem0b9wb7HW9iKyAAm5/UAXN5VW8Gdn
-         H/pv2jVjTmDkWWkp0sNRLIpEWEjyYEbV6fodmT+BujuekGZJ6FcRJ5Vz5CScyreNQGI3
-         JjoQ==
-X-Gm-Message-State: AOAM5315KfPbhmzaDaY1VF/5/WsZ2Tigu5PyeparLLF3yF8zSzT5O2S4
-        4yuN9X/ADzuohXKpx3oJJg==
-X-Google-Smtp-Source: ABdhPJxcdD+A3ReVkIe5LdLjsOSjCXzIQzzE8Jiep2pdwq/Met5kvdKeWTxeat3Vqk6RR1S6MfLZCg==
-X-Received: by 2002:a9d:1d43:: with SMTP id m61mr1562004otm.231.1611602822404;
-        Mon, 25 Jan 2021 11:27:02 -0800 (PST)
+        bh=4pMzj4F5sGyiw0Npjv+oCcMmAv4Qz6Br4C1Wz04rzwo=;
+        b=LnghEX2IE8W1iTTSFZXSEitjRpfmDE43B9p+tl6WeL/jqc/nRcMUCFQe6p9Isi1rmW
+         sUVGiiCQsum2/pz5xj8Gly4xUdB8BgqyhM3gEOCMoHV1EG8Cux/p6qVVK8trK7OXpYhz
+         1GLN/FWHmkePWY4cgXlkyABZSLscqwEcm9Feubr/p5pds2/58G2qmSPFUUSkFjociux0
+         TDqSWcJiu49hCaxSyN2ZfNtePmE5mNG25ccI5AVlzitkRVsilUtjR/d7OrM5YUTgcLEG
+         ZmRiM4l4udwx4VjlarO1/tEnyotfkAv804P7QVzs5Zs4h2ONEcClBk+mzRLwLikWyLtv
+         Z2Mw==
+X-Gm-Message-State: AOAM5305vJ2psmCyF/w7io1FG04fD3TOdvVcbj1avTH+96f6j0I4727N
+        CEJcnHpLwdOF+vsXby/S0A==
+X-Google-Smtp-Source: ABdhPJxAzJx2x6+i0A4uT7fsLRy+H8EdaY+p15TtbYRd+1pf2Vnetwij66uSg6hpWaWh7MJzjj8eTw==
+X-Received: by 2002:a05:6808:213:: with SMTP id l19mr1038857oie.83.1611602830875;
+        Mon, 25 Jan 2021 11:27:10 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n203sm3726310oib.4.2021.01.25.11.26.58
+        by smtp.gmail.com with ESMTPSA id t12sm1177551ooi.45.2021.01.25.11.27.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:26:59 -0800 (PST)
-Received: (nullmailer pid 812719 invoked by uid 1000);
-        Mon, 25 Jan 2021 19:26:58 -0000
-Date:   Mon, 25 Jan 2021 13:26:58 -0600
+        Mon, 25 Jan 2021 11:27:09 -0800 (PST)
+Received: (nullmailer pid 813043 invoked by uid 1000);
+        Mon, 25 Jan 2021 19:27:07 -0000
+Date:   Mon, 25 Jan 2021 13:27:07 -0600
 From:   Rob Herring <robh@kernel.org>
 To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Steven Price <steven.price@arm.com>,
+Cc:     Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Steven Price <steven.price@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>, fshao@chromium.org,
-        boris.brezillon@collabora.com, hsinyi@chromium.org,
-        hoegsberg@chromium.org, Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v10 2/4] arm64: dts: mt8183: Add node for the Mali GPU
-Message-ID: <20210125192658.GA806742@robh.at.kernel.org>
+        boris.brezillon@collabora.com, hoegsberg@chromium.org,
+        hsinyi@chromium.org, linux-mediatek@lists.infradead.org,
+        David Airlie <airlied@linux.ie>, fshao@chromium.org
+Subject: Re: [PATCH v10 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek
+ MT8183
+Message-ID: <20210125192707.GA813009@robh.at.kernel.org>
 References: <20210113060703.3122661-1-drinkcat@chromium.org>
- <20210113140546.v10.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+ <20210113140546.v10.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113140546.v10.2.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+In-Reply-To: <20210113140546.v10.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 02:07:01PM +0800, Nicolas Boichat wrote:
-> Add a basic GPU node for mt8183.
+On Wed, 13 Jan 2021 14:07:00 +0800, Nicolas Boichat wrote:
+> Define a compatible string for the Mali Bifrost GPU found in
+> Mediatek's MT8183 SoCs.
 > 
 > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
 > ---
-> The binding we use with out-of-tree Mali drivers includes more
-> clocks, this is used for devfreq: the out-of-tree driver switches
-> clk_mux to clk_sub_parent (26Mhz), adjusts clk_main_parent, then
-> switches clk_mux back to clk_main_parent:
-> (see https://chromium.googlesource.com/chromiumos/third_party/kernel/+/chromeos-4.19/drivers/gpu/arm/midgard/platform/mediatek/mali_kbase_runtime_pm.c#423)
-> clocks =
->         <&topckgen CLK_TOP_MFGPLL_CK>,
->         <&topckgen CLK_TOP_MUX_MFG>,
->         <&clk26m>,
->         <&mfgcfg CLK_MFG_BG3D>;
-> clock-names =
->         "clk_main_parent",
->         "clk_mux",
->         "clk_sub_parent",
->         "subsys_mfg_cg";
-> (based on discussions, this probably belongs in the clock core)
 > 
-> This only matters for devfreq, that is disabled anyway as we don't
-> have platform-specific code to handle >1 supplies.
-> 
-> (no changes since v6)
+> Changes in v10:
+>  - Fix the binding to make sure sram-supply property can be provided.
 > 
 > Changes in v6:
->  - Add gpu regulators to kukui dtsi as well.
->  - Power domains are now attached to spm, not scpsys
->  - Drop R-B.
+>  - Rebased, actually tested with recent mesa driver.
+>  - No change
 > 
 > Changes in v5:
->  - Rename "2d" power domain to "core2" (keep R-B again).
+>  - Rename "2d" power domain to "core2"
 > 
 > Changes in v4:
->  - Add power-domain-names to describe the 3 domains.
+>  - Add power-domain-names description
 >    (kept Alyssa's reviewed-by as the change is minor)
 > 
 > Changes in v3:
->  - No changes
+>  - No change
 > 
-> Changes in v2:
->  - Use sram instead of mali_sram as SRAM supply name.
->  - Rename mali@ to gpu@.
+>  .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
 > 
->  arch/arm64/boot/dts/mediatek/mt8183-evb.dts   |   6 +
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   6 +
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 105 ++++++++++++++++++
->  3 files changed, 117 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> index cba2d8933e79..0a8c2fad8e16 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> @@ -42,6 +42,12 @@ &auxadc {
->  	status = "okay";
->  };
->  
-> +&gpu {
-> +	supply-names = "mali", "sram";
 
-Not a documented property, nor should it be.
-
-Did you run this against dtbs_check with your schema changes?
-
-> +	mali-supply = <&mt6358_vgpu_reg>;
-> +	sram-supply = <&mt6358_vsram_gpu_reg>;
-> +};
-> +
->  &i2c0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2c_pins_0>;
+Reviewed-by: Rob Herring <robh@kernel.org>
