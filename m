@@ -2,198 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2328302768
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442CC30276A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729818AbhAYQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:02:52 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49474 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730546AbhAYP7P (ORCPT
+        id S1729918AbhAYQDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:03:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38694 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730598AbhAYP71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:59:15 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10PFYhVv143276;
-        Mon, 25 Jan 2021 15:58:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=gc+lntb553fCI2STjXWemiwyxUzjMCiFDDHdmyWyvTM=;
- b=uCGnIHiT/FIVQ8t57cIXecXUqOgp2XKZZKAg5wgvWQLf5cOTI1Vw1hrcq0oKKzfTeBVo
- cUb7ev3WbIgG4Tmr4EBsvh96k2RFQzpdCgm8tPrmpSytsjaxB3fvrL5+cYhlHVUfSSBi
- rmmX325y4ZRWa38Zw+NgpUu67A8drSpCszECI8pgBSM30K2EVV+JsH2U6MJDI3MsFQTY
- 5ak4uTIapU2U6ePQR0EUa71solStY2ngkFUPXDOlUtpIjQEoerPyBO+AEVsiNR37B/MC
- u470VAul4b3n3fANm6Ts4h6i93EXYxz5t2C8dw0+FWnUT2ymTUGJF7nCFLFtxBaPzNm5 JA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 368brkdw27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Jan 2021 15:58:23 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10PFaJqg154002;
-        Mon, 25 Jan 2021 15:56:22 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
-        by userp3030.oracle.com with ESMTP id 368wqv51up-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Jan 2021 15:56:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fl63MYf6yOvCkfte5a2h2w4kzzyy4YZRzGkUeZlaAIVaPJP0xAcS0DlK5/IjFD042gFBX1OoNrisRNIIbVAcsLxlpsOPL/YGMtF0UcJfMDIGlLwtP6epFPA3ZG4AJ9NqSFmMnqUrxWbxnOw0tdK9RNC/rnnAQpaHxcnq4cjT2RI3DAzmzTTfqVq7P2JZt9Sj3lAavbtj7KnvTqsRbBF1GnqVRXZRThVoq9RrOMYWadfM84Uyk1zA0OUmiyg0BSSXKAKzUOTwt+IW6avCoBB9JTfFNGsym9T+1K+zB69eWwxiNKe/llREnzNfvhuxeZweBAZVOepK7JOWY4gKLZcEfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gc+lntb553fCI2STjXWemiwyxUzjMCiFDDHdmyWyvTM=;
- b=i+bTUa9P9JMZtmPRGdNyKAjK3gB87gGCEKHs5UOUypNG8kQ8gjznS9RPi9AsZkH4lunRBD98fv5XhASr31Bz4RHxc4ggSeckosegvLg+59I2MNS/vfjnvQsql9pVL+5v/ytNsXULl97VCDlJXhEYmjm3Ac+qZsFQErBTs9OomXnulRbdNZGE25ONRJQIkAJD1OIB2pmNbugjEUkyFGQd+NA4e7KT5OsLkpldiYYMcVYW0edJSwuVYiMrI2eHaMLbAqmVNtxc1JAJ3O5VsXqceSV6/fj63vM3dhzs6mAm7KIS1PxaodvkGZYIvmZjYfMdb9Ah0w63R0zh/+75w4i+eA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gc+lntb553fCI2STjXWemiwyxUzjMCiFDDHdmyWyvTM=;
- b=rTFZaiReQIpVelfgqFAkglB354lzsLy1S4/sk1AOPD1IMl43l1OnIGi9OfYOFA36rcxhAp0uO0jky82a88whnjnxRDEgdmw8c4+8oP3A5HebiMwOwyMHrACB9kvX9Utmab24nr72ABIjRHove5tjSjE5qz8d7iv5NaD6Xhw6ZlY=
-Received: from BYAPR10MB3270.namprd10.prod.outlook.com (2603:10b6:a03:159::25)
- by BY5PR10MB4210.namprd10.prod.outlook.com (2603:10b6:a03:201::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Mon, 25 Jan
- 2021 15:56:20 +0000
-Received: from BYAPR10MB3270.namprd10.prod.outlook.com
- ([fe80::61fd:7c42:26e6:1e15]) by BYAPR10MB3270.namprd10.prod.outlook.com
- ([fe80::61fd:7c42:26e6:1e15%3]) with mapi id 15.20.3784.019; Mon, 25 Jan 2021
- 15:56:20 +0000
-From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
-To:     Suman Anna <s-anna@ti.com>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "ssantosh@kernel.org" <ssantosh@kernel.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "praneeth@ti.com" <praneeth@ti.com>,
-        "rogerq@kernel.org" <rogerq@kernel.org>
-Subject: Re: [External] : Re: [PATCH v2 0/5] Introduce PRU remoteproc consumer
- API
-Thread-Topic: [External] : Re: [PATCH v2 0/5] Introduce PRU remoteproc
- consumer API
-Thread-Index: AQHW8tO9Ps27yqEPsU6euCznK8m0R6o4e/IAgAADogA=
-Date:   Mon, 25 Jan 2021 15:56:20 +0000
-Message-ID: <886AD9CE-A967-4DBA-A212-A752040EE2BC@oracle.com>
-References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
- <20210106232704.GE9149@xps15> <11303a1b-5ab4-def5-77b1-c500894c9c87@ti.com>
- <20210107224448.GB43045@xps15> <75365443-57e3-e2e0-5865-f78af9d5890b@ti.com>
- <b0e32ad0-487f-9d57-7287-835eee836514@oracle.com>
- <c5252e8d-094a-dcb7-7ccb-172e58ab3413@ti.com>
-In-Reply-To: <c5252e8d-094a-dcb7-7ccb-172e58ab3413@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [138.3.200.26]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 79ca05ff-01b4-49a4-1264-08d8c149c1e7
-x-ms-traffictypediagnostic: BY5PR10MB4210:
-x-microsoft-antispam-prvs: <BY5PR10MB42102A0C361485D6998188C693BD9@BY5PR10MB4210.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S8Hj1g3JlAxyKobtWPMSisLvDUXHl7htxcSex4n3yJSsGIiVIvB+o5AyORzVA63haZDoPWjWyPYDvS4oBXZr7Bo6rJH8G2IWwS5Unxe88m2T5rYPZBg4HCyJhiCHzwmwrxIsNzomn5TiTkUR0xxgXU8yMiyvNekrBQNdfLEEADCJQ5a8WbL4oRW5IGp+PKnK56n8BJPhztzm74dUSKBtdaNQDXRLi9C2HgiZ0Qb5Y+bdE3EvE9IsgOCarKA3nHefrPGnp47L9BLfeHtxh2+6AHcdyUZmiv2Wuut+2A3MT7M68qamhWRRkNGZKGXDaAKbYJHW/wrmQnwiezOLeKiQPYVIL5VB8BwCdMVB9nmnNnKtYBc5hJrADOSGDkhZKV2dVBudBdENsjnyhynP2jPcTeOr/d+LNj/oV6+xxnu+e9kNeCx4DU/yc8rMrWRfZ9xSFQJLU1fIKD42GIrDW5K/O2UZVRz5tyMIwR/8sieJRq+SOpyG+BeODcUNNhiFEVyXV9h2dsRJflzzcumZR3qw++pU5SyAfTs/98EghHxzz7Zfie5IzsNSw7Ct5cdcV6KWi6kg8wsCu19ciegUGM5exQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3270.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39860400002)(396003)(366004)(376002)(66946007)(76116006)(91956017)(66556008)(6486002)(64756008)(66476007)(66446008)(6916009)(8676002)(36756003)(5660300002)(8936002)(26005)(4326008)(2906002)(186003)(71200400001)(54906003)(44832011)(316002)(6512007)(7416002)(86362001)(53546011)(6506007)(2616005)(33656002)(478600001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?vW7E/nhI8pYwZQ56of7dRQAaBct4gYfZfUxDUa7jl/RsIP2BRh4Hzmfm/mhS?=
- =?us-ascii?Q?+yIHfBBq8aVIZbGqtTnHLhwl7yB/VNKb8lS5YHU8rzLuMBFOg0rnIALB0vn5?=
- =?us-ascii?Q?FRa0U4rMxqJbdUuFqqkUGiYN6mhwxf1xysmm9gUVOfxHyx/UMjBPVREcvVBy?=
- =?us-ascii?Q?uxHzlCNFx4voNhnkOBuanbNGQGEysCtmm3tXVr1iDpczJfMRC/MrtM2R6BjI?=
- =?us-ascii?Q?zM1srSLNZO7OZWetYMMDZG+iRG2HDVR+QmeEUD895zHjsry0alj6wvGmnDiu?=
- =?us-ascii?Q?koKwnhEsUafr54OYOerE7Z6UVEqrSZKXXRk81XY/P2BKpplMwzP5XwxfyEtb?=
- =?us-ascii?Q?DQ/21/FiC1C2qRpnTXClH+finBXxW/ywz8Wy1Lm4JtAydz5dbAjeEf/pfsBa?=
- =?us-ascii?Q?rWtvX38OPXPydaNQ8EnDp+RZBIU9HlQCxpcykT30sjbnPgXeRxvzJcsFrkPC?=
- =?us-ascii?Q?dcbQaDtrxhTsiV7NCMXtuFMzC31p8Yo8QiU2wW7l4JfmX+ES6PEYEabPOiI/?=
- =?us-ascii?Q?iEAtwhismx06CM+PzsAwWKWenmvqXzRldJasLSuYDC4/pdr22Jy9kPM5RCuy?=
- =?us-ascii?Q?ARRDf152pTT70V3n1Y4EFVzPiya5YRM1yu+H1/cyZVlzuJ3ptOiUKhGGieEN?=
- =?us-ascii?Q?ki4eCxS4rJakQ122l+kgitZx4zByPnl+MYmmfgVX2WcFIxqITiITd/fGzJNs?=
- =?us-ascii?Q?SaOt4By/e5IC6iBl1C3jVLIVadfBuC0nYR/3JSNcvRXlFAYNNmByI1nID4Ow?=
- =?us-ascii?Q?3UpSXmROFY67UufhyJGcl4lFTplzNmgIMFAuO8WeJC45BxHLIACd0lioL4RH?=
- =?us-ascii?Q?S0kdnsI7LSJfwftb4tARPsPn3aUOywSIUFoCloJ89lTbAxduSRko9aNi+Ltj?=
- =?us-ascii?Q?rcOyXrKq76Ljyz1FMxmHaERuu+NdSuJxFKwePdrLuELOkOZoAqInjmF3faL+?=
- =?us-ascii?Q?AlwVbWH498x+sx/inbFSZDFcQGb6mHZFxZCMGN+y327lXyF+4Y+XeNjxyGbW?=
- =?us-ascii?Q?WhybyBfpaxiFvxwQ5uJiCd+3gTM8JhYQ/pDqVj/VeZegSh/ycE1mJw1LkdQC?=
- =?us-ascii?Q?5lK4fC6U?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EEEDF3124974544DB3901A1849F5358B@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Mon, 25 Jan 2021 10:59:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611590280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VREEA6nSvZNa1Ix2tMxFQSCvHSMJSTk2+BIIuymSxS0=;
+        b=P1rJlQpi+F26jGqTWdhilADQ6jg78HjtTvMuZNAb93hGQ1k+N9TGWqFVO3DUdUvBedIWt/
+        xgsOxkHhLy+wOhfDiAYoti6cBz3Y285MadXgcpUhkRdqOqT3oDgHKhArN5GIZNzKhpp0Ks
+        qWXqO4m3PhnHuiojtZaHKnHkR1czJ/M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-387-sLl2sP7YPUmGdqTx3c3MOA-1; Mon, 25 Jan 2021 10:57:58 -0500
+X-MC-Unique: sLl2sP7YPUmGdqTx3c3MOA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F23A1007464;
+        Mon, 25 Jan 2021 15:57:56 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FD5F5D6AB;
+        Mon, 25 Jan 2021 15:57:55 +0000 (UTC)
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210125042441.20030-1-longman@redhat.com>
+ <20210125092815.GB827@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
+Date:   Mon, 25 Jan 2021 10:57:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3270.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79ca05ff-01b4-49a4-1264-08d8c149c1e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 15:56:20.2315
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7pq+kv112ACaZyV9cRSNSL0AGNamLpl1j/A9KSVKlD4p2GKE8nxArnaIShqUJvoJuefWUyeqrTDmgoO0iSBZ1BL8r7Kxe6p+Myuk8s2xDbA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4210
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9874 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101250090
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9874 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
- phishscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101250090
+In-Reply-To: <20210125092815.GB827@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jan 25, 2021, at 7:43 AM, Suman Anna <s-anna@ti.com> wrote:
->=20
-> Hi Santosh,
->=20
-> On 1/24/21 10:34 PM, santosh.shilimkar@oracle.com wrote:
->> Hi Suman, Mathieu,
->>=20
->> On 1/7/21 2:49 PM, Suman Anna wrote:
->>> On 1/7/21 4:44 PM, Mathieu Poirier wrote:
->>>> On Wed, Jan 06, 2021 at 06:03:25PM -0600, Suman Anna wrote:
->>>>> Hi Mathieu,
->>>>>=20
->> [...]
->>>> I only see input from Andy and Lars in the thread you point out, nothi=
-ng from
->>>> Greg.  I have also taken a look at the patch [1] that made checkpatch =
-complain
->>>> about ENOTSUPP.  From what I see in that commit log the goal is to pre=
-vent new
->>>> additions of ENOTSUPP to the kernel.
->>>>=20
->>>> Please modify and resend, otherwise I'm sure someone will send another=
- patch to
->>>> fix it before the end of the cycle.
->>>=20
->>> Yeah ok. I will send out a v3.
->>>=20
->> I haven't seen v3 of this series yet. Please post it
->> if you would like to include it for 5.12.
->=20
-> This series is dependent on couple of patches that would have to come thr=
-ough
-> the remoteproc tree first, and I need to post the next versions of those =
-as
-> well. So, let me sort out those first. You can drop this from your queue =
-for 5.12.
->=20
-Sounds good.
+On 1/25/21 4:28 AM, Michal Hocko wrote:
+> On Sun 24-01-21 23:24:41, Waiman Long wrote:
+>> The commit 3fea5a499d57 ("mm: memcontrol: convert page
+>> cache to a new mem_cgroup_charge() API") introduced a bug in
+>> __add_to_page_cache_locked() causing the following splat:
+>>
+>>   [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
+>>   [ 1570.068333] pages's memcg:ffff8889a4116000
+>>   [ 1570.068343] ------------[ cut here ]------------
+>>   [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
+>>   [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
+>>   [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
+>>   [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
+>>   [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
+>>     :
+>>   [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
+>>   [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
+>>   [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
+>>   [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
+>>   [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
+>>   [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
+>>   [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
+>>   [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>   [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
+>>   [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>   [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>   [ 1570.068402] PKRU: 55555554
+>>   [ 1570.068404] Call Trace:
+>>   [ 1570.068407]  mem_cgroup_charge+0x175/0x770
+>>   [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
+>>   [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
+>>   [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
+>>   [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
+>>   [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
+>>   [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
+>>   [ 1570.068693]  read_pages+0x5b1/0xc40
+>>   [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
+>>   [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
+>>   [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
+>>   [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
+>>   [ 1570.068872]  new_sync_read+0x3af/0x610
+>>   [ 1570.068901]  vfs_read+0x339/0x4b0
+>>   [ 1570.068909]  ksys_read+0xf1/0x1c0
+>>   [ 1570.068920]  do_syscall_64+0x33/0x40
+>>   [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>   [ 1570.068930] RIP: 0033:0x7ff039135595
+>>
+>> Before that commit, there was a try_charge() and commit_charge()
+>> in __add_to_page_cache_locked(). These 2 separated charge functions
+>> were replaced by a single mem_cgroup_charge(). However, it forgot
+>> to add a matching mem_cgroup_uncharge() when the xarray insertion
+>> failed with the page released back to the pool. Fix this by adding a
+>> mem_cgroup_uncharge() call when insertion error happens.
+>>
+>> Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> OK, this is indeed a subtle bug. The patch aimed at simplifying the
+> charge lifetime so that users do not really have to think about when to
+> uncharge as that happens when the page is freed. fscache somehow breaks
+> that assumption because it doesn't free up pages but it keeps some of
+> them in the cache.
+>
+> I have tried to wrap my head around the cached object life time in
+> fscache but failed and got lost in the maze. Is this the only instance
+> of the problem? Would it make more sense to explicitly handle charges in
+> the fscache code or there are other potential users to fall into this
+> trap?
 
-Regards,
-Santosh
+There may be other places that have similar problem. I focus on the 
+filemap.c case as I have a test case that can reliably produce the bug 
+splat. This patch does fix it for my test case.
+
+Cheers,
+Longman
 
