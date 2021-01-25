@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF48302933
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2FB302926
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731205AbhAYRnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:43:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731004AbhAYRlF (ORCPT
+        id S1731078AbhAYRlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:41:52 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:59189 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730823AbhAYRl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:41:05 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1F9C06174A;
-        Mon, 25 Jan 2021 09:40:21 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id w14so8811508pfi.2;
-        Mon, 25 Jan 2021 09:40:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ll5CPSA8oXAVF+ATpu54RVy1Dmm80vxtyP/rheTo5bY=;
-        b=TrPHo+IIlhYXEIUGZnvVvy0gZqdTpRW2zdvLckAXnziMr3wC+urBR+OmQS8W73nnb0
-         N0vxhZJ8/8h99P+aZTdkqPzGQoVGVnDTGGoAs2tnSGyPtQOQ6naUqLpCyfOQLDQ3U7/S
-         Afcy9kRlkwOaVGteCaBQ7XKmTp5sTPwkXkzaFu62CivM4nKEJN0l6aBwf+zzA3ZNkUxX
-         Wj6Gpi0KSHnPDgqDGdITrbPhONGqTLpaZO8ilrZnPxTaabHzp8ivl6w9laSqsNPyOLPz
-         1I5D0O+xlBEOlorR1+7UfVaAxC6ZZcvj2q+KhRGt5e1gU1O3zpdmsCceM7ob5Rn7rEub
-         0Zlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ll5CPSA8oXAVF+ATpu54RVy1Dmm80vxtyP/rheTo5bY=;
-        b=lbw1AaCaB/A9IYv0HjLbXlDhBq4fcuOSqpUQbxNxTfa31RvZs5GtrpDraKMbvLCVIk
-         8BfVh6CgmvyIct0YTlV4/DfzEN5E3/NR+U8vugICNyQzk6HzI4e2myS+/bdr1xDvdv1n
-         ns5ybhchvwM0Kty0YNLKbChtf6AnbNHovUK12G7rZ8UNByY1EN9Rx3Nno6gGv1reig8f
-         kK9bU2hs+CNG+iT2GTZH49/U2DMPX0pevNvIQhRr5wknxt/lo0Y62C5qqk4TUsvDJgWI
-         ywbw8ECHrTiRoLfaonCQ80DQpGe26oCNIrSZZ4gaf/yRdxs35KMBfrCyHAAnJI++4HYt
-         hORg==
-X-Gm-Message-State: AOAM533HAEtlTU4YCRponjugJqfNSxsoB1g0ymvIx0dmMBGPaEkWkDwy
-        RXr1YBU/9lMmuKxwnRw3jWz9woEPJ60=
-X-Google-Smtp-Source: ABdhPJx/x1gICR2eqXW4n+pOoamjEIIYYGojiydYeWPyZhXE0r9WcMnr2TwUrRP7Nat2R+vlDUpYzg==
-X-Received: by 2002:a63:6d2:: with SMTP id 201mr1614834pgg.270.1611596420007;
-        Mon, 25 Jan 2021 09:40:20 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id c5sm17764227pgt.73.2021.01.25.09.40.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 09:40:19 -0800 (PST)
-Subject: Re: [PATCH] mmc: brcmstb: Fix sdhci_pltfm_suspend link error
-To:     Arnd Bergmann <arnd@kernel.org>, Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Schichan <nschichan@freebox.fr>
-Cc:     Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210125125050.102605-1-arnd@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f671f5d2-36c4-ded5-c4b9-93c5c57cc9f2@gmail.com>
-Date:   Mon, 25 Jan 2021 09:40:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.1
+        Mon, 25 Jan 2021 12:41:28 -0500
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 92EAF5C0117;
+        Mon, 25 Jan 2021 12:40:37 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Mon, 25 Jan 2021 12:40:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=a/1Zdl8q3hrc9J13uyMUxKnwgql+l/+n6v4WGL5c3
+        7I=; b=BvgBCr0wL2XfvptDg33jpQdkTVA28ZsheUyov/8+0QyMMw4ob4HiwJSqF
+        zgaqju8N9jk3G4Z2bP461zNtPDRrrgkjJaNa9KCdIJrLogpdBb62PieETVbtIlY+
+        luXTJeuxhJlNpOfQzPsoPSIY3N7g9PjeXKwBasR8zSy+KaYTdd8fWmLqm7O/flod
+        k2XsDchEjyWABk1ceLcfXzlt/w0vi+xL+2eEkNZOuqdvly2Voehmjpu937PeBabW
+        K6V5oQfKIwH7qppKbyRgzQzYN0wAZ1Jq8ofXNQcleXjhjvZc8hpltRrSc9CTeuV+
+        dAYSu5p3xcfg/JRLEPw60kAyCJwRg==
+X-ME-Sender: <xms:lAIPYDkFB5EGDVTQwdXFDORcQ_OVs70OAfYNZi8n-vUFKs4z4eypcQ>
+    <xme:lAIPYGauWOsQHWzFpgPQkDjVSXnuHSukjZAHj6-5kkgB__-yHkn4za1S08Ime6WM_
+    S8PMMIrvuM90Vo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgddutdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhepjeehtdevhfekgeefleffffeufedvhfegffejtefhkeehfefgkeevueekvdeu
+    ffevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeegrddvvdelrdduhe
+    efrdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:lAIPYN949f35eXPz85P6V_c-rv8CPxKnZa1Vj_KSHJiEKob50g6xcw>
+    <xmx:lAIPYOFQkby8WZIaYb7-0CEfE9XOTiGo71yoVmbvPOjZVAPAhueMmA>
+    <xmx:lAIPYPcmscg0e6ZvfDk958TystaM1ZeLGvbs-kAkES0y9U5vCOWw4g>
+    <xmx:lQIPYOXlg-E_WAS2tYQ255jbY6oQE0i4ieC1NipzQKOpei1tQfAfjw>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D59E81080059;
+        Mon, 25 Jan 2021 12:40:35 -0500 (EST)
+Date:   Mon, 25 Jan 2021 19:40:32 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jiri@nvidia.com" <jiri@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
+ HARD_DROP
+Message-ID: <20210125174032.GA2982684@shredder.lan>
+References: <20210121112937.30989-1-oleksandr.mazur@plvision.eu>
+ <20210121122152.GA2647590@shredder.lan>
+ <20210121093605.49ba26ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210125121234.GJ3565223@nanopsycho.orion>
+ <AM0P190MB07387522928B6730DBE1BB77E4BD0@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+ <20210125145614.GM3565223@nanopsycho.orion>
 MIME-Version: 1.0
-In-Reply-To: <20210125125050.102605-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125145614.GM3565223@nanopsycho.orion>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Nicolas,
+On Mon, Jan 25, 2021 at 03:56:14PM +0100, Jiri Pirko wrote:
+> Mon, Jan 25, 2021 at 01:24:27PM CET, oleksandr.mazur@plvision.eu wrote:
+> >Thu, Jan 21, 2021 at 06:36:05PM CET, kuba@kernel.org wrote:
+> >>On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:
+> >>> On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote:
+> >>> > Add new trap action HARD_DROP, which can be used by the
+> >>> > drivers to register traps, where it's impossible to get
+> >>> > packet reported to the devlink subsystem by the device
+> >>> > driver, because it's impossible to retrieve dropped packet
+> >>> > from the device itself.
+> >>> > In order to use this action, driver must also register
+> >>> > additional devlink operation - callback that is used
+> >>> > to retrieve number of packets that have been dropped by
+> >>> > the device.  
+> >>> 
+> >>> Are these global statistics about number of packets the hardware dropped
+> >>> for a specific reason or are these per-port statistics?
+> >>> 
+> >>> It's a creative use of devlink-trap interface, but I think it makes
+> >>> sense. Better to re-use an existing interface than creating yet another
+> >>> one.
+> >>
+> >>Not sure if I agree, if we can't trap why is it a trap?
+> >>It's just a counter.
+> >
+> >>+1
+> >Device might be unable to trap only the 'DROP' packets, and this information should be transparent for the user.
+> >
+> >I agree on the statement, that new action might be an overhead.
+> >I could continue on with the solution Ido Schimmel proposed: since no new action would be needed and no UAPI changes are required, i could simply do the dropped statistics (additional field) output added upon trap stats queiring.
+> >(In case if driver registerd callback, of course; and do so only for DROP actions)
+> 
+> It is not "a trap". You just need to count dropped packet. You don't
+> trap anything. That is why I don't think this has anything to do with
+> "trap" infra.
 
-On 1/25/2021 4:50 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> sdhci_pltfm_suspend() is only available when CONFIG_PM_SLEEP
-> support is built into the kernel, which caused a regression
-> in a recent bugfix:
-> 
-> ld.lld: error: undefined symbol: sdhci_pltfm_suspend
->>>> referenced by sdhci-brcmstb.c
->>>>               mmc/host/sdhci-brcmstb.o:(sdhci_brcmstb_shutdown) in archive drivers/built-in.a
-> 
-> Making the call conditional on the symbol fixes the link
-> error.
-> 
-> Fixes: 5b191dcba719 ("mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend")
-> Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> It would be helpful if someone could test this to ensure that the
-> driver works correctly even when CONFIG_PM_SLEEP is disabled
+From [1] I understand that it is a trap and the action can be switched,
+but when it is 'drop', the hardware can provide statistics about number
+of packets that were discarded in hardware. If this is correct, then the
+suggestion in [2] looks valid to me.
 
-Why not create stubs for sdhci_pltfm_suspend() when CONFIG_PM_SLEEP=n? I
-don't think this is going to be a functional issue given that the
-purpose of having the .shutdown() function is to save power if we cannot
-that is fine, too.
--- 
-Florian
+[1] https://lore.kernel.org/netdev/AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM/
+[2] https://lore.kernel.org/netdev/20210123160348.GB2799851@shredder.lan/
