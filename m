@@ -2,80 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254D630235F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 10:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC84E302367
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 10:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbhAYJtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 04:49:00 -0500
-Received: from mga07.intel.com ([134.134.136.100]:24038 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726877AbhAYJgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:36:14 -0500
-IronPort-SDR: Dn95e+Aoqt+2rOkCCMsRPXYcm5NRPagHtgpvX+E8hpNJd+e6viPw9snJSJ/TYEFISlOmsXRSnm
- IvnDaqKnBdBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="243773061"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="243773061"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 01:33:07 -0800
-IronPort-SDR: RxOm6rrh1dDY3i+iQcTZxCM31BRr2g7l8RmphZurkcw7VIoiXSQHW/iHKoaOZoY1JJga1/IB+z
- rWb5F7YleaNw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="471993329"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 Jan 2021 01:33:03 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 25 Jan 2021 11:33:02 +0200
-Date:   Mon, 25 Jan 2021 11:33:02 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     angkery <angkery@163.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH v3 1/2] usb: typec: tcpci_maxim: remove redundant
- assignment
-Message-ID: <20210125093302.GB1720720@kuha.fi.intel.com>
-References: <20210124143853.1630-1-angkery@163.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124143853.1630-1-angkery@163.com>
+        id S1726743AbhAYJxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 04:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbhAYJrT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:47:19 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB72AC06178A;
+        Mon, 25 Jan 2021 01:46:38 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id 6so11547161wri.3;
+        Mon, 25 Jan 2021 01:46:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=pxvcpCO85zMxQnOkjIoCHct3c15zWE1fr4RG244k1XA=;
+        b=h0/r1QifBhbXGGh8ZgHU6T9Ko3dHYzteiwtBzbfvLhXjb8H3iiSL13K4jArfYoTQEb
+         VyFpkeqcXcUIQHJUHCnafQOheslO6DqsWpb0tje5XxUIqCBFgaplWMPXLQLXRSTxkOV/
+         AVg7rUNZr9M6NYZKTS/mRK3Hw9C+SlpuZYgf5bVmEK3vElq63sxi20Hk+fP3PTNTrstn
+         j9kLuO1aAajhcCGq31GUg4xRCvn9NIEYd4uBySulEa+b0iOkgzIKrSik9W3rRnVar9me
+         QzkH2m0IBNF6i+7XncL2a7D767f8j8VnQt86aKQ+O4WpoKpgOlItm1MU3y67FOfv6dhZ
+         0D/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=pxvcpCO85zMxQnOkjIoCHct3c15zWE1fr4RG244k1XA=;
+        b=uEVorICYTIweXaFNtfqECIg22vZkFXgVBUMBX9aqOXRPBpLCNs0WeukzM3L0L2qX8L
+         7FmY3rgigaEVdcI+ql71Qh2bFr3EZvokxu0EusNUDgfp5cc1EVPRR6m+vEwDYr1+WCAA
+         KMf5pnNioTxYUEEDwU6MIbkkLlCmD1+GIEpAQB9arXrDl2+pBegH9mQQ5RTnNau9znGF
+         xDuWSaCScBnMbHxffUSMGhNpkk6B3/yE22mXUiJV4cIAK0A4z01Yy/wX5Srd5yGKDimH
+         RlwP1Ja28UityyZRB8ERYRe8lKyHOJZziOrkC9pF//Ox4fSpFm2bZ/3/l2BWc6W4+V07
+         zTpQ==
+X-Gm-Message-State: AOAM530aOWdjgQAU9JmXf0hCCOyVgnVYPVIf73GwOAT40lAmCsswWlbg
+        kmw7THvySuQjnBO96qPxd/uOXKeBWkY=
+X-Google-Smtp-Source: ABdhPJxFWFKlwhBVhM0bukT0G25UtwzZS7hWLPg4Rn+KdyzQ7/quSYlpcdj1tNvvqVpVfZnX8vZYqg==
+X-Received: by 2002:adf:f9cb:: with SMTP id w11mr771538wrr.199.1611567997100;
+        Mon, 25 Jan 2021 01:46:37 -0800 (PST)
+Received: from jonathan-N53SV.station ([151.81.101.204])
+        by smtp.googlemail.com with ESMTPSA id u5sm22154052wmg.9.2021.01.25.01.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 01:46:36 -0800 (PST)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
+        phone-devel@vger.kernel.org,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 1/3] arm64: dts: qcom: Add device tree for BQ Aquaris X5 (Longcheer L8910)
+Date:   Mon, 25 Jan 2021 10:44:30 +0100
+Message-Id: <20210125094435.7528-2-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
+References: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 10:38:53PM +0800, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
-> 
-> PTR_ERR(chip->tcpci) has been used as a return value,
-> it is not necessary to assign it to ret, so remove it.
-> 
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+BQ Aquaris X5 (Longcheer L8910) is a smartphone using the MSM8916 SoC.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Add device tree with initial support for:
 
-> ---
-> v3:remove the newline modification.
-> 
->  drivers/usb/typec/tcpm/tcpci_maxim.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> index 3192663..7f54f51a 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> @@ -461,7 +461,6 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
->  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
->  	if (IS_ERR(chip->tcpci)) {
->  		dev_err(&client->dev, "TCPCI port registration failed");
-> -		ret = PTR_ERR(chip->tcpci);
->  		return PTR_ERR(chip->tcpci);
->  	}
->  	chip->port = tcpci_get_tcpm_port(chip->tcpci);
-> -- 
-> 1.9.1
+ - SDHCI (internal and external storage)
+ - USB Device Mode
+ - UART
+ - Regulators
+ - WiFi/BT
+ - Volume buttons
+ - Vibrator
+ - Touchkeys backlight
 
-thanks,
+This device tree is based on downstream device tree from BQ and from
+Longcheer L8915 device tree.
 
+Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../boot/dts/qcom/msm8916-longcheer-l8910.dts | 230 ++++++++++++++++++
+ 2 files changed, 231 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
+
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index b5d86739f781..94b76a7ac6ba 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -6,6 +6,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-asus-z00l.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-longcheer-l8150.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-longcheer-l8910.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-samsung-a3u-eur.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-samsung-a5u-eur.dtb
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
+new file mode 100644
+index 000000000000..7d5eff922f41
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
+@@ -0,0 +1,230 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++/dts-v1/;
++
++#include "msm8916-pm8916.dtsi"
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++
++/ {
++	model = "BQ Aquaris X5 (Longcheer L8910)";
++	compatible = "longcheer,l8910", "qcom,msm8916";
++
++	aliases {
++		serial0 = &blsp1_uart2;
++	};
++
++	chosen {
++		stdout-path = "serial0";
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&gpio_keys_default>;
++
++		label = "GPIO Buttons";
++
++		volume-up {
++			label = "Volume Up";
++			gpios = <&msmgpio 107 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEUP>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led-0 {
++			gpios = <&msmgpio 17 GPIO_ACTIVE_HIGH>;
++			color = <LED_COLOR_ID_WHITE>;
++			default-state = "off";
++			function = LED_FUNCTION_KBD_BACKLIGHT;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&button_backlight_default>;
++		};
++	};
++
++	usb_id: usb-id {
++		compatible = "linux,extcon-usb-gpio";
++		id-gpio = <&msmgpio 110 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&usb_id_default>;
++	};
++};
++
++&blsp1_uart2 {
++	status = "okay";
++};
++
++&pm8916_resin {
++	status = "okay";
++	linux,code = <KEY_VOLUMEDOWN>;
++};
++
++&pm8916_vib {
++	status = "okay";
++};
++
++&pronto {
++	status = "okay";
++};
++
++&sdhc_1 {
++	status = "okay";
++
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&sdc1_clk_on &sdc1_cmd_on &sdc1_data_on>;
++	pinctrl-1 = <&sdc1_clk_off &sdc1_cmd_off &sdc1_data_off>;
++};
++
++&sdhc_2 {
++	status = "okay";
++
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_on>;
++	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
++
++	cd-gpios = <&msmgpio 38 GPIO_ACTIVE_LOW>;
++};
++
++&usb {
++	status = "okay";
++	extcon = <&usb_id>, <&usb_id>;
++};
++
++&usb_hs_phy {
++	extcon = <&usb_id>;
++};
++
++&smd_rpm_regulators {
++	vdd_l1_l2_l3-supply = <&pm8916_s3>;
++	vdd_l4_l5_l6-supply = <&pm8916_s4>;
++	vdd_l7-supply = <&pm8916_s4>;
++
++	s3 {
++		regulator-min-microvolt = <1200000>;
++		regulator-max-microvolt = <1300000>;
++	};
++
++	s4 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <2100000>;
++	};
++
++	l1 {
++		regulator-min-microvolt = <1225000>;
++		regulator-max-microvolt = <1225000>;
++	};
++
++	l2 {
++		regulator-min-microvolt = <1200000>;
++		regulator-max-microvolt = <1200000>;
++	};
++
++	l4 {
++		regulator-min-microvolt = <2050000>;
++		regulator-max-microvolt = <2050000>;
++	};
++
++	l5 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++
++	l6 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++
++	l7 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++
++	l8 {
++		regulator-min-microvolt = <2850000>;
++		regulator-max-microvolt = <2900000>;
++	};
++
++	l9 {
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	l10 {
++		regulator-min-microvolt = <2700000>;
++		regulator-max-microvolt = <2800000>;
++	};
++
++	l11 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <2950000>;
++		regulator-allow-set-load;
++		regulator-system-load = <200000>;
++	};
++
++	l12 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <2950000>;
++	};
++
++	l13 {
++		regulator-min-microvolt = <3075000>;
++		regulator-max-microvolt = <3075000>;
++	};
++
++	l14 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	l15 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	l16 {
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	l17 {
++		regulator-min-microvolt = <2850000>;
++		regulator-max-microvolt = <2850000>;
++	};
++
++	l18 {
++		regulator-min-microvolt = <2700000>;
++		regulator-max-microvolt = <2700000>;
++	};
++};
++
++&msmgpio {
++	button_backlight_default: button-backlight-default {
++		pins = "gpio17";
++		function = "gpio";
++
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	gpio_keys_default: gpio-keys-default {
++		pins = "gpio107";
++		function = "gpio";
++
++		drive-strength = <2>;
++		bias-pull-up;
++	};
++
++	usb_id_default: usb-id-default {
++		pins = "gpio110";
++		function = "gpio";
++
++		drive-strength = <8>;
++		bias-pull-up;
++	};
++};
 -- 
-heikki
+2.17.1
+
