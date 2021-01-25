@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EC4303843
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDC13037E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390431AbhAZIny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:43:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60692 "EHLO mail.kernel.org"
+        id S2390116AbhAZIaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:30:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbhAYSoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:44:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44394206B2;
-        Mon, 25 Jan 2021 18:43:51 +0000 (UTC)
+        id S1727743AbhAYSmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7C6B22DD6;
+        Mon, 25 Jan 2021 18:41:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600231;
-        bh=Zre9xN4B5sAFFPoqVTjVCV9JQ+afoyvyRaMMzf8zJyw=;
+        s=korg; t=1611600094;
+        bh=Cu0z/aHc4Cf7CcsswqVfHjZGhn6IQNokWBtr9lkD57A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EI6oFR37Y4UTUX7iPt2go/oX7skoFUzKm+83VcIcErA4R7Z5bp5+UdcO5sKqCqAnz
-         ZmHPyaaB1j2gK1P8a0jDHGWysyW5ocTyNRjcgDCYgsHcgOaZhWfw11cXRqPpzOoBTg
-         IFndeuQwC2oVD75u5PfViJD8pvSVXXzPQUbQJY8k=
+        b=bXVicpHzmZEB1f6aactGAsDF0fb0LBknXdBDVK/DCCe2sgNz5vQ47+c3JiEo82Vhq
+         Tpo2mHLf0U5y7TLfTpvtzi9myKdpGyn1zO2OyaSR30Zlsdi4OobA6AWqp3tLFGx/Rh
+         qJS/+6hJihSZg9KD9TMOi3kYqV4OR/0Bt+ga6USE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 23/86] scsi: sd: Suppress spurious errors when WRITE SAME is being disabled
-Date:   Mon, 25 Jan 2021 19:39:05 +0100
-Message-Id: <20210125183202.027814719@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.19 06/58] mmc: core: dont initialize block size from ext_csd if not present
+Date:   Mon, 25 Jan 2021 19:39:07 +0100
+Message-Id: <20210125183156.976227629@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-References: <20210125183201.024962206@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ewan D. Milne <emilne@redhat.com>
+From: Peter Collingbourne <pcc@google.com>
 
-[ Upstream commit e5cc9002caafacbaa8dab878d17a313192c3b03b ]
+commit b503087445ce7e45fabdee87ca9e460d5b5b5168 upstream.
 
-The block layer code will split a large zeroout request into multiple bios
-and if WRITE SAME is disabled because the storage device reports that it
-does not support it (or support the length used), we can get an error
-message from the block layer despite the setting of RQF_QUIET on the first
-request.  This is because more than one request may have already been
-submitted.
+If extended CSD was not available, the eMMC driver would incorrectly
+set the block size to 0, as the data_sector_size field of ext_csd
+was never initialized. This issue was exposed by commit 817046ecddbc
+("block: Align max_hw_sectors to logical blocksize") which caused
+max_sectors and max_hw_sectors to be set to 0 after setting the block
+size to 0, resulting in a kernel panic in bio_split when attempting
+to read from the device. Fix it by only reading the block size from
+ext_csd if it is available.
 
-Fix this by setting RQF_QUIET when BLK_STS_TARGET is returned to fail the
-request early, we don't need to log a message because we did not actually
-submit the command to the device, and the block layer code will handle the
-error by submitting individual write bios.
+Fixes: a5075eb94837 ("mmc: block: Allow disabling 512B sector size emulation")
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Link: https://linux-review.googlesource.com/id/If244d178da4d86b52034459438fec295b02d6e60
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210114201405.2934886-1-pcc@google.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: https://lore.kernel.org/r/20201207221021.28243-1-emilne@redhat.com
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ewan D. Milne <emilne@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/sd.c | 4 +++-
+ drivers/mmc/core/queue.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 6a2f8bacfacea..f55249766d224 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -934,8 +934,10 @@ static blk_status_t sd_setup_write_zeroes_cmnd(struct scsi_cmnd *cmd)
- 		}
- 	}
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -364,8 +364,10 @@ static void mmc_setup_queue(struct mmc_q
+ 		min(host->max_blk_count, host->max_req_size / 512));
+ 	blk_queue_max_segments(mq->queue, host->max_segs);
  
--	if (sdp->no_write_same)
-+	if (sdp->no_write_same) {
-+		rq->rq_flags |= RQF_QUIET;
- 		return BLK_STS_TARGET;
+-	if (mmc_card_mmc(card))
++	if (mmc_card_mmc(card) && card->ext_csd.data_sector_size) {
+ 		block_size = card->ext_csd.data_sector_size;
++		WARN_ON(block_size != 512 && block_size != 4096);
 +	}
  
- 	if (sdkp->ws16 || lba > 0xffffffff || nr_blocks > 0xffff)
- 		return sd_setup_write_same16_cmnd(cmd, false);
--- 
-2.27.0
-
+ 	blk_queue_logical_block_size(mq->queue, block_size);
+ 	blk_queue_max_segment_size(mq->queue,
 
 
