@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226D5302CEC
+	by mail.lfdr.de (Postfix) with ESMTP id 90002302CED
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732393AbhAYUtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:49:23 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47104 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732189AbhAYUsS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:48:18 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 61AB41C0B81; Mon, 25 Jan 2021 21:47:34 +0100 (CET)
-Date:   Mon, 25 Jan 2021 21:47:33 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/58] 4.19.171-rc1 review
-Message-ID: <20210125204733.GA5220@duo.ucw.cz>
-References: <20210125183156.702907356@linuxfoundation.org>
+        id S1732174AbhAYUuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:50:00 -0500
+Received: from mga09.intel.com ([134.134.136.24]:33913 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732309AbhAYUsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:48:21 -0500
+IronPort-SDR: tbRosZnG2pLgJHTysrEhHuSYLPbNoArc/fompC5mJhkLMQrhrC00oCWzeHM+Z0O2r5YB+bwkoG
+ xZaopvDkHhUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179944582"
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="179944582"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:47:40 -0800
+IronPort-SDR: OWPDduKFZGFtNNHisO5QDD6Qi3l1CfYWvwGxi/1KcUhp54+NFCfyw3VbDRi6PswzC5fxLu9rPt
+ JpQjE9O7leiA==
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="361672727"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:47:40 -0800
+Date:   Mon, 25 Jan 2021 20:47:33 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        David Binderman <dcb314@hotmail.com>,
+        Babu Moger <babu.moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
+Message-ID: <YA8uZYiGFzee+UHD@otcwcpicx3.sc.intel.com>
+References: <20201130202010.178373-1-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="CE+1k2dSO48ffgeK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201130202010.178373-1-fenghua.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Shuah,
 
---CE+1k2dSO48ffgeK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Nov 30, 2020 at 08:19:53PM +0000, Fenghua Yu wrote:
+> This patch set has several miscellaneous fixes to resctrl selftest tool
+> that are easily visible to user. V1 had fixes to CAT test and CMT test
+> but they were dropped in V2 because having them here made the patchset
+> humongous. So, changes to CAT test and CMT test will be posted in another
+> patchset.
+> 
+> Change Log:
+> v4:
+> - Address various comments from Shuah Khan:
+>   1. Combine a few patches e.g. a couple of fixing typos patches into one
+>      and a couple of unmounting patches into one etc.
 
-Hi!
+Just a friendly reminder. Will you push this series to the upstream?
+Maybe I miss something but I don't see this series in the linux-kselftest
+tree yet.
 
-> This is the start of the stable review cycle for the 4.19.171 release.
-> There are 58 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Thank you very much!
 
-CIP testing did not find any problems here:=20
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y=20
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-=20
-Best regards,
-								Pavel
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---CE+1k2dSO48ffgeK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYA8uZQAKCRAw5/Bqldv6
-8uw/AKDCn9C+38lK/9cDw0DGsuyMTRH6iACeNLcW5VJV1ITPxlr+yy/MXpufi5M=
-=nNNo
------END PGP SIGNATURE-----
-
---CE+1k2dSO48ffgeK--
+-Fenghua
