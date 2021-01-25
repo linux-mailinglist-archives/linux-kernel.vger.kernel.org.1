@@ -2,123 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB95304A24
+	by mail.lfdr.de (Postfix) with ESMTP id DF833304A25
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730031AbhAZFOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:14:37 -0500
-Received: from mga07.intel.com ([134.134.136.100]:24544 "EHLO mga07.intel.com"
+        id S1729117AbhAZFNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:13:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:44366 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726984AbhAYJlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727024AbhAYJlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 04:41:01 -0500
-IronPort-SDR: O1OlXT3GB1RrNMskYylZhQYus9H/fUavgr7q+X/7Q7IXvIJiw+EeZzsT2O8waly2uDXG1WwcHD
- Uzt6o+5GCF7Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="243773211"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="243773211"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 01:34:02 -0800
-IronPort-SDR: SNoZNL8KIhrD+eKpTytEij+R3D6xneGtryZekQJenjgTIeNUcFirYAzs3Ie6Y4yG+SZSjnI/I3
- kny4lbqgi5Rg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="471993591"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 Jan 2021 01:33:59 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 25 Jan 2021 11:33:59 +0200
-Date:   Mon, 25 Jan 2021 11:33:59 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     angkery <angkery@163.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH v3 2/2] usb: typec: tcpci_maxim: add terminating newlines
- to logging
-Message-ID: <20210125093359.GC1720720@kuha.fi.intel.com>
-References: <20210124143947.1688-1-angkery@163.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E0891042;
+        Mon, 25 Jan 2021 01:39:55 -0800 (PST)
+Received: from [10.57.36.35] (unknown [10.57.36.35])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B80653F66B;
+        Mon, 25 Jan 2021 01:39:50 -0800 (PST)
+Subject: Re: [PATCH 4/4] perf tools: determine if LR is the return address
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Alexandre Truong <alexandre.truong@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Al Grant <al.grant@arm.com>,
+        Wilco Dijkstra <wilco.dijkstra@arm.com>
+References: <20210122161854.5289-1-alexandre.truong@arm.com>
+ <20210122161854.5289-4-alexandre.truong@arm.com>
+ <20210124000526.GE138414@krava>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <9e2907dd-98ec-a187-a52c-0da07409b91b@arm.com>
+Date:   Mon, 25 Jan 2021 11:39:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124143947.1688-1-angkery@163.com>
+In-Reply-To: <20210124000526.GE138414@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 10:39:47PM +0800, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
-> 
-> Add terminating '\n' to the formats where missed.
-> 
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> ---
-> v3:Modify it again and submit it separately from patch 1.
+On 24/01/2021 02:05, Jiri Olsa wrote:
+> On Fri, Jan 22, 2021 at 04:18:54PM +0000, Alexandre Truong wrote:
+>> On arm64 and frame pointer mode (e.g: perf record --callgraph fp),
+>> use dwarf unwind info to check if the link register is the return
+>> address in order to inject it to the frame pointer stack.
+>>
+>> Write the following application:
+>>
+>> 	int a = 10;
+>>
+>> 	void f2(void)
+>> 	{
+>> 		for (int i = 0; i < 1000000; i++)
+>> 			a *= a;
+>> 	}
+>>
+>> 	void f1()
+>> 	{
+>> 		f2();
+>> 	}
+>>
+>> 	int main (void)
+>> 	{
+>> 		f1();
+>> 		return 0;
+>> 	}
+>>
+>> with the following compilation flags:
+>> 	gcc -g -fno-omit-frame-pointer -fno-inline -O1
+>>
+>> The compiler omits the frame pointer for f2 on arm. This is a problem
+>> with any leaf call, for example an application with many different
+>> calls to malloc() would always omit the calling frame, even if it
+>> can be determined.
+>>
+>> 	./perf record --call-graph fp ./a.out
+>> 	./perf report
+>>
+>> currently gives the following stack:
+>>
+>> 0xffffea52f361
+>> _start
+>> __libc_start_main
+>> main
+>> f2
 > 
->  drivers/usb/typec/tcpm/tcpci_maxim.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+> reproduced on x86 as well
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> index 7f54f51a..5d7463c 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> @@ -158,7 +158,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
->  	 */
->  	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, 2);
->  	if (ret < 0) {
-> -		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d", ret);
-> +		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d\n", ret);
->  		return;
->  	}
->  
-> @@ -167,13 +167,13 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
->  
->  	if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
->  		max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
-> -		dev_err(chip->dev, "%s", count ==  0 ? "error: count is 0" :
-> +		dev_err(chip->dev, "%s\n", count ==  0 ? "error: count is 0" :
->  			"error frame_type is not SOP");
->  		return;
->  	}
->  
->  	if (count > sizeof(struct pd_message) || count + 1 > TCPC_RECEIVE_BUFFER_LEN) {
-> -		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d", count);
-> +		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d\n", count);
->  		return;
->  	}
->  
-> @@ -184,7 +184,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
->  	count += 1;
->  	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, count);
->  	if (ret < 0) {
-> -		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d", ret);
-> +		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d\n", ret);
->  		return;
->  	}
->  
-> @@ -317,7 +317,7 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
->  			return ret;
->  
->  		if (reg_status & TCPC_SINK_FAST_ROLE_SWAP) {
-> -			dev_info(chip->dev, "FRS Signal");
-> +			dev_info(chip->dev, "FRS Signal\n");
->  			tcpm_sink_frs(chip->port);
->  		}
->  	}
-> @@ -460,7 +460,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
->  	max_tcpci_init_regs(chip);
->  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
->  	if (IS_ERR(chip->tcpci)) {
-> -		dev_err(&client->dev, "TCPCI port registration failed");
-> +		dev_err(&client->dev, "TCPCI port registration failed\n");
->  		return PTR_ERR(chip->tcpci);
->  	}
->  	chip->port = tcpci_get_tcpm_port(chip->tcpci);
-> -- 
-> 1.9.1
+>> +static bool get_leaf_frame_caller_enabled(struct perf_sample *sample)
+>> +{
+>> +	return callchain_param.record_mode != CALLCHAIN_FP || !sample->user_regs.regs
+>> +		|| sample->user_regs.mask != PERF_REGS_MASK;
+>> +}
+>> +
+>> +static int add_entry(struct unwind_entry *entry, void *arg)
+>> +{
+>> +	struct entries *entries = arg;
+>> +
+>> +	entries->stack[entries->i++] = entry->ip;
+>> +	return 0;
+>> +}
+>> +
+>> +u64 get_leaf_frame_caller_aarch64(struct perf_sample *sample, struct thread *thread)
+>> +{
+>> +	u64 leaf_frame;
+>> +	struct entries entries = {{0, 0}, 0};
+>> +
+>> +	if (get_leaf_frame_caller_enabled(sample))
+> 
+> the name suggest you'd want to continue if it's true
+> 
+>> +		return 0;
+>> +
+>> +	unwind__get_entries(add_entry, &entries, thread, sample, 2);
+> 
+> I'm scratching my head how this unwinds anything, you enabled just
+> registers, not the stack right? so the unwind code would do just
+> IP -> LR + 1 shift?
 
-thanks,
+I think the idea about using libunwind is that the LR might not
+be a valid return address. It could be used as a general purpose
+register, or just not used at all.
 
--- 
-heikki
+Libunwind should be able to use the dwarf present in the binary to
+unwind one frame, as long as nothing stored in the stack is needed.
+
+But now I look at the disassembly for this example, I see that f2()
+just has a single 'b' instruction, and not 'bl' so the link register
+won't be set. And also 'f1' does store a few things on the stack.
+Whether these are needed or not to unwind one frame I'm not sure.
+
+It could be that libunwind is falling back to a frame pointer unwind
+mode, which we don't want.
+
+I think it needs further investigation.
+
+
+James
+
+> 
+> thanks,
+> jirka
+> 
+>> +	leaf_frame = callchain_param.order == ORDER_CALLER ?
+>> +		entries.stack[0] : entries.stack[1];
+>> +
+>> +	if (leaf_frame + 1 == sample->user_regs.regs[PERF_REG_ARM64_LR])
+>> +		return sample->user_regs.regs[PERF_REG_ARM64_LR];
+>> +	return 0;
+>> +}
+> 
+> SNIP
+> 
