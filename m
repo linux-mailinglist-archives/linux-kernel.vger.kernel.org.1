@@ -2,52 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C677303663
+	by mail.lfdr.de (Postfix) with ESMTP id 993F3303664
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731907AbhAZGSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:18:23 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:57888 "EHLO vps0.lunn.ch"
+        id S1731958AbhAZGSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:18:30 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48444 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728665AbhAYNTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:19:21 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l41lL-002X9J-MK; Mon, 25 Jan 2021 14:18:35 +0100
-Date:   Mon, 25 Jan 2021 14:18:35 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Marek Vasut <marex@denx.de>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [5.8 regression] net: ks8851: fix link error
-Message-ID: <YA7FK3Q+KOedxW4o@lunn.ch>
-References: <20210125121937.3900988-1-arnd@kernel.org>
+        id S1728757AbhAYNVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:21:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611580783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hvyCg1tArEMURZiCaw0o7rfIdGticTsjrcjPx+/JdNc=;
+        b=A4Vm72+PELLClS/Iy715Uik0vACGATsRtA2iQMVkLUk7pB1NNEp+sD+oPc2YAwpCTCYFWo
+        S6cgCM5W61YrqU3UsTpXfJsNEmMTLpZ92x7E+4u1Hve30Vlh8wUkj93JfsZaBNc0InUmqa
+        E/9B6Y8rEAQXzzf6L5pfNetYN4lnJf8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D4325AAC6;
+        Mon, 25 Jan 2021 13:19:42 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 14:19:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     linux-man@vger.kernel.org, akpm@linux-foundation.org,
+        jannh@google.com, keescook@chromium.org, jeffv@google.com,
+        minchan@kernel.org, shakeelb@google.com, rientjes@google.com,
+        edgararriaga@google.com, timmurray@google.com, linux-mm@kvack.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/1] process_madvise.2: Add process_madvise man page
+Message-ID: <20210125131935.GI827@dhcp22.suse.cz>
+References: <20210120202337.1481402-1-surenb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125121937.3900988-1-arnd@kernel.org>
+In-Reply-To: <20210120202337.1481402-1-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 01:19:20PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> An object file cannot be built for both loadable module and built-in
-> use at the same time:
-> 
-> arm-linux-gnueabi-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
-> ks8851_common.c:(.text+0xf80): undefined reference to `__this_module'
-> 
-> Change the ks8851_common code to be a standalone module instead,
-> and use Makefile logic to ensure this is built-in if at least one
-> of its two users is.
-> 
-> Fixes: 797047f875b5 ("net: ks8851: Implement Parallel bus operations")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Wed 20-01-21 12:23:37, Suren Baghdasaryan wrote:
+[...]
+>     MADV_COLD (since Linux 5.4.1)
+>         Deactivate a given range of pages by moving them from active to
+>         inactive LRU list. This is done to accelerate the reclaim of these
+>         pages. The advice might be ignored for some pages in the range when it
+>         is not applicable.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+I do not think we want to talk about active/inactive LRU lists here.
+Wouldn't it be sufficient to say
+Deactive a given range of pages which will make them a more probable
+reclaim target should there be a memory pressure. This is a
+non-destructive operation.
 
-    Andrew
+Other than that, looks good to me from the content POV.
+
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
