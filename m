@@ -2,176 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1917B302C64
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:20:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17280302C61
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbhAYUTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:19:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
+        id S1732201AbhAYUSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732103AbhAYTvR (ORCPT
+        with ESMTP id S1732208AbhAYTvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:51:17 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C47C061A10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:48:17 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id q9so13390298qkn.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:48:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=9bnQ1cYpKSogma2d9jSskcM/kWG+ieYizroT/wf+fYw=;
-        b=SbFXkwHCcoJpnp3pSh+U+6dAEB5fNp4W6yYJzWpDQ2OxM4IV0JCl+/ZnQ3BxeLrKH7
-         dgSLcul/DjwmdcLD2+cBU2tjGAHgVmGjD7gTz2lEXgnZuAg3VfjHI3ymQ0780T3H9i8C
-         MvZSPDRaNt/VBDO7iKzpiVlorxOyMkS/LQUFkidHyCvLA6jtmtCK+svAOB2xKkgqqQck
-         Pgy4QOY3TY8GmkX4/f+cAwFmOtL0ElcJEBWKNMNCLvSqVEeDkvcz4yYez4nxTtPKzJ7f
-         YM6MyXdx9c1/4uihA1f0UOlOf6gDbN9KrKRxoHAr91DQOlPpppUCc65/yMCMEFRBCTpT
-         I1oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9bnQ1cYpKSogma2d9jSskcM/kWG+ieYizroT/wf+fYw=;
-        b=En+Myp3+hBN83LKhxal8sQ21DhdgjWE/8ajzTHRJQwBU5eRGTvZZYppIt+UtZFOH4V
-         nUZLgBwB9xXeIPmIiOf9+hP0Xq7WmC2TUO/3YvJglHHvvDq+3oPfWFg8sM2K3mRm+T/u
-         RqmdYQOXVR0jHwMtcMujBDPG0uNL6ZluGGN0C8D/mjxiZ+Ll0A7RuqYlwwbQpQDqRPzc
-         atVVNCJ88pqsGoLVLRSa+gc5JKXarpsrnYinoa2lCXj5LNyFfDKG++4STov/fy+j9e1V
-         OMJbKGhB3ndp3x2kMZJ2yhMi4KckECpo9E6LMBhpMZGaiGls7l9eSMiTG1B1DGcjxUU0
-         MBFw==
-X-Gm-Message-State: AOAM533WWyHtgKhtc388x9VZWazVW8azBAXosvv0WbWmLGI54DanfHor
-        FiCfwQdXp6rCeEy+x7sHGjimHg==
-X-Google-Smtp-Source: ABdhPJxfjv7ObuguLsaXbUEv43CLPW8iNfijHOlMaUxjKGwAIxhp+wxrf0HI6Y+/uMKENQ0ADNF3oA==
-X-Received: by 2002:a37:5d07:: with SMTP id r7mr2402284qkb.335.1611604096795;
-        Mon, 25 Jan 2021 11:48:16 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id c12sm12121569qtq.76.2021.01.25.11.48.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:48:16 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org, vbabka@suse.cz,
-        mhocko@suse.com, david@redhat.com, osalvador@suse.de,
-        dan.j.williams@intel.com, sashal@kernel.org,
-        tyhicks@linux.microsoft.com, iamjoonsoo.kim@lge.com,
-        mike.kravetz@oracle.com, rostedt@goodmis.org, mingo@redhat.com,
-        jgg@ziepe.ca, peterz@infradead.org, mgorman@suse.de,
-        willy@infradead.org, rientjes@google.com, jhubbard@nvidia.com,
-        linux-doc@vger.kernel.org, ira.weiny@intel.com,
-        linux-kselftest@vger.kernel.org, jmorris@namei.org
-Subject: [PATCH v8 14/14] selftests/vm: gup_test: test faulting in kernel, and verify pinnable pages
-Date:   Mon, 25 Jan 2021 14:47:51 -0500
-Message-Id: <20210125194751.1275316-15-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210125194751.1275316-1-pasha.tatashin@soleen.com>
-References: <20210125194751.1275316-1-pasha.tatashin@soleen.com>
+        Mon, 25 Jan 2021 14:51:24 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF94C061A2A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:48:42 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l47qf-0006N0-C0; Mon, 25 Jan 2021 20:48:29 +0100
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1l47qb-0007yC-C9; Mon, 25 Jan 2021 20:48:25 +0100
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4] iio: adc: stm32-adc: enable timestamping for non-DMA usage
+Date:   Mon, 25 Jan 2021 20:48:23 +0100
+Message-Id: <20210125194824.30549-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When pages are pinned they can be faulted in userland and migrated, and
-they can be faulted right in kernel without migration.
+For non-DMA usage, we have an easy way to associate a timestamp with a
+sample: iio_pollfunc_store_time stores a timestamp in the primary
+trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+to push out the buffer along with the timestamp.
 
-In either case, the pinned pages must end-up being pinnable (not movable).
+For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+Do this.
 
-Add a new test to gup_test, to help verify that the gup/pup
-(get_user_pages() / pin_user_pages()) behavior with respect to pinnable
-and movable pages is reasonable and correct. Specifically, provide a
-way to:
+For DMA, it's not as easy, because we don't push the buffers out of
+stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+a tasklet scheduled after a DMA completion.
 
-1) Verify that only "pinnable" pages are pinned. This is checked
-automatically for you.
+Preferably, the DMA controller would copy us the timestamp into that buffer
+as well. Until this is implemented, restrict timestamping support to
+only PIO. For low-frequency sampling, PIO is probably good enough.
 
-2) Verify that gup/pup performance is reasonable. This requires
-comparing benchmarks between doing gup/pup on pages that have been
-pre-faulted in from user space, vs. doing gup/pup on pages that are not
-faulted in until gup/pup time (via FOLL_TOUCH). This decision is
-controlled with the new -z command line option.
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Cc: Holger Assmann <has@pengutronix.de>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 ---
- mm/gup_test.c                         |  6 ++++++
- tools/testing/selftests/vm/gup_test.c | 23 +++++++++++++++++++----
- 2 files changed, 25 insertions(+), 4 deletions(-)
+v3 -> v4:
+  - descrease buffer size to correct size (Marc)
+v2 -> v3:
+  - explicitly specify alignment (Jonathan)
+  - increase buffer size to hold additional timestamp
+v1 -> v2:
+  - Added comment about timestamping being PIO only (Fabrice)
+  - Added missing DMA resource clean up in error path (Fabrice)
+  - Added Fabrice's Acked-by
+---
+ drivers/iio/adc/stm32-adc.c | 39 +++++++++++++++++++++++++++++--------
+ 1 file changed, 31 insertions(+), 8 deletions(-)
 
-diff --git a/mm/gup_test.c b/mm/gup_test.c
-index a6ed1c877679..d974dec19e1c 100644
---- a/mm/gup_test.c
-+++ b/mm/gup_test.c
-@@ -52,6 +52,12 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
+diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+index c067c994dae2..5ebbd28e45ca 100644
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -177,7 +177,7 @@ struct stm32_adc_cfg {
+  * @offset:		ADC instance register offset in ADC block
+  * @cfg:		compatible configuration data
+  * @completion:		end of single conversion completion
+- * @buffer:		data buffer
++ * @buffer:		data buffer + 8 bytes for timestamp if enabled
+  * @clk:		clock for this adc instance
+  * @irq:		interrupt for this adc instance
+  * @lock:		spinlock
+@@ -200,7 +200,7 @@ struct stm32_adc {
+ 	u32			offset;
+ 	const struct stm32_adc_cfg	*cfg;
+ 	struct completion	completion;
+-	u16			buffer[STM32_ADC_MAX_SQ];
++	u16			buffer[STM32_ADC_MAX_SQ + 4] __aligned(8);
+ 	struct clk		*clk;
+ 	int			irq;
+ 	spinlock_t		lock;		/* interrupt lock */
+@@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+ 	}
+ }
  
- 				dump_page(page, "gup_test failure");
- 				break;
-+			} else if (cmd == PIN_LONGTERM_BENCHMARK &&
-+				WARN(!is_pinnable_page(page),
-+				     "pages[%lu] is NOT pinnable but pinned\n",
-+				     i)) {
-+				dump_page(page, "gup_test failure");
-+				break;
- 			}
- 		}
- 		break;
-diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
-index 943cc2608dc2..1e662d59c502 100644
---- a/tools/testing/selftests/vm/gup_test.c
-+++ b/tools/testing/selftests/vm/gup_test.c
-@@ -13,6 +13,7 @@
- 
- /* Just the flags we need, copied from mm.h: */
- #define FOLL_WRITE	0x01	/* check pte is writable */
-+#define FOLL_TOUCH	0x02	/* mark page accessed */
- 
- static char *cmd_to_str(unsigned long cmd)
+-static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
++static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
  {
-@@ -39,11 +40,11 @@ int main(int argc, char **argv)
- 	unsigned long size = 128 * MB;
- 	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 1;
- 	unsigned long cmd = GUP_FAST_BENCHMARK;
--	int flags = MAP_PRIVATE;
-+	int flags = MAP_PRIVATE, touch = 0;
- 	char *file = "/dev/zero";
- 	char *p;
+ 	struct device_node *node = indio_dev->dev.of_node;
+ 	struct stm32_adc *adc = iio_priv(indio_dev);
+@@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+ 		return -EINVAL;
+ 	}
  
--	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHp")) != -1) {
-+	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwWSHpz")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			cmd = PIN_FAST_BENCHMARK;
-@@ -110,6 +111,10 @@ int main(int argc, char **argv)
- 		case 'H':
- 			flags |= (MAP_HUGETLB | MAP_ANONYMOUS);
- 			break;
-+		case 'z':
-+			/* fault pages in gup, do not fault in userland */
-+			touch = 1;
-+			break;
- 		default:
- 			return -1;
- 		}
-@@ -167,8 +172,18 @@ int main(int argc, char **argv)
- 	else if (thp == 0)
- 		madvise(p, size, MADV_NOHUGEPAGE);
++	if (timestamping)
++		num_channels++;
++
+ 	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+ 				sizeof(struct iio_chan_spec), GFP_KERNEL);
+ 	if (!channels)
+@@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+ 		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+ 	}
  
--	for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
--		p[0] = 0;
-+	/*
-+	 * FOLL_TOUCH, in gup_test, is used as an either/or case: either
-+	 * fault pages in from the kernel via FOLL_TOUCH, or fault them
-+	 * in here, from user space. This allows comparison of performance
-+	 * between those two cases.
-+	 */
-+	if (touch) {
-+		gup.gup_flags |= FOLL_TOUCH;
-+	} else {
-+		for (; (unsigned long)p < gup.addr + size; p += PAGE_SIZE)
-+			p[0] = 0;
++	if (timestamping) {
++		struct iio_chan_spec *timestamp = &channels[scan_index];
++
++		timestamp->type = IIO_TIMESTAMP;
++		timestamp->channel = -1;
++		timestamp->scan_index = scan_index;
++		timestamp->scan_type.sign = 's';
++		timestamp->scan_type.realbits = 64;
++		timestamp->scan_type.storagebits = 64;
++
++		scan_index++;
 +	}
++
+ 	indio_dev->num_channels = scan_index;
+ 	indio_dev->channels = channels;
  
- 	/* Only report timing information on the *_BENCHMARK commands: */
- 	if ((cmd == PIN_FAST_BENCHMARK) || (cmd == GUP_FAST_BENCHMARK) ||
+@@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	irqreturn_t (*handler)(int irq, void *p) = NULL;
+ 	struct stm32_adc *adc;
++	bool timestamping = false;
+ 	int ret;
+ 
+ 	if (!pdev->dev.of_node)
+@@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = stm32_adc_chan_of_init(indio_dev);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = stm32_adc_dma_request(dev, indio_dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (!adc->dma_chan)
++	if (!adc->dma_chan) {
++		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
++		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
++		 * runs in the IRQ thread to push out buffer along with timestamp.
++		 */
+ 		handler = &stm32_adc_trigger_handler;
++		timestamping = true;
++	}
++
++	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
++	if (ret < 0)
++		goto err_dma_disable;
+ 
+ 	ret = iio_triggered_buffer_setup(indio_dev,
+ 					 &iio_pollfunc_store_time, handler,
 -- 
-2.25.1
+2.30.0
 
