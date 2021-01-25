@@ -2,145 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0037303649
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B16B303615
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729672AbhAZGJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:09:47 -0500
-Received: from mail-dm6nam10on2132.outbound.protection.outlook.com ([40.107.93.132]:51393
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728517AbhAYM4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:56:54 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lI6SK4E3xRljlAFfWTyVhX7ESBmlgFpjBLJNGWh1KiMypPMwjO905t2jVnRv0IEY8ASo0KM+kwhOC0SUNvijmu4899No4Rl2Xa0SNl0gMstFAbXfiHoNwf9YLOUQmNSJ5uUOngkzUTrRtpEPEFeTAXrAGpuby+2mEiadD4kCoHHXOeaLoLs+e2xe31uLXQE8WevuTvVx51iDJxMGj1Ly2xKh3a2iXJ5FSKWJXCHT5UqfWkPGy8Kw3EOKDiGKVU/bsJCf4jz3n5fOROmiRFI9CdPuU5fZIfs84onYgpvJ0ooAt0uHKkQpEzQdFtemV3AdY8VAfKY3T5eEbd2law+X7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CxJSPytLTGbJfuVaYKZUvuN+jvubAhBytBbcyAoj2zg=;
- b=bX0y1lG4b8FE9VN1aJGGCoXNm6bXJ+kyfs8Nyf0R2HyTUurwVS6iuxUAfd81nNefBHrEm2Ts8NDm4vRD1DbRWFWnCxh8qfnWC0f9u7cekBrZyctJE+gpI0tUidSaWmWmervfuMsWZQYxpFScABoPo+0ma+DYTwbwcv+n4M4WQbW4A20eFKFQkykXKbAjcCGHkmpRxpbl8yjAOQ6zyC5Y2LvRabOim2tkRiE4zCWSudoc3w46XlgcmvNUarUTQ2ukkZ/yNsFXPvyn27X8NZsSdYv0mHDhLoH2zeTJHjSt1XMayjnCq/8jJCcS52w96m/FXjbt1QZaD5KVmwKdp9vjIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CxJSPytLTGbJfuVaYKZUvuN+jvubAhBytBbcyAoj2zg=;
- b=t9J+MmmjbqU3hd5Qr3KGI9Zm4gzGIQGO9vhBVY6/C8gRgJ+OjiG9kL4DVj4vBBcggA52V+fEFHcE5jnO9lOLDwIB76d7h1lCQY0VbISpqkHHaE30q6V7o4p4bRfY7tNnY3OicN8Yf3O2TPzyRlFTA9wVFtfa4lrbg9xmi5i6kIU=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB6262.namprd04.prod.outlook.com (2603:10b6:a03:e3::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
- 2021 11:14:09 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5813:96a7:b2d6:132]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5813:96a7:b2d6:132%6]) with mapi id 15.20.3763.015; Mon, 25 Jan 2021
- 11:14:09 +0000
-Date:   Mon, 25 Jan 2021 19:13:40 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH v3 2/3] drm/bridge: anx7625: fix not correct return value
-Message-ID: <b585748741a9a4c20175e7f62ecad2d86de4a161.1611572143.git.xji@analogixsemi.com>
-References: <cover.1611572142.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1611572142.git.xji@analogixsemi.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Originating-IP: [61.148.116.10]
-X-ClientProxiedBy: HKAPR04CA0005.apcprd04.prod.outlook.com
- (2603:1096:203:d0::15) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S1727097AbhAZF76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:59:58 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:38317 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728244AbhAYMoH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:44:07 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 04F86760E5;
+        Mon, 25 Jan 2021 14:14:51 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1611573291;
+        bh=2HUPv4JH8qiynIRiwyHB4OMfN5+vCErLfDy6XM+6++k=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=FQ3nYYDPb1md3d/QWc1qeq9McQ21J12GyT4YMg0E165niZO44OvTbZNXClST+8HXf
+         LPf/I/02G0wGRO7oLyNVLBOa86Uwly/q398xVLIsiqoD2oLM5x9zRB8UBfSxUUBYFm
+         8mzSR/hlXmVGqalPLh9/i64cqpI4rUei6GRejuO8=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id C2707760F6;
+        Mon, 25 Jan 2021 14:14:50 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 25
+ Jan 2021 14:14:49 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+Subject: [RFC PATCH v3 09/13] virtio/vsock: add SEQPACKET receive logic
+Date:   Mon, 25 Jan 2021 14:14:41 +0300
+Message-ID: <20210125111444.599211-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from zhaomy-pc (61.148.116.10) by HKAPR04CA0005.apcprd04.prod.outlook.com (2603:1096:203:d0::15) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 11:14:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ea6472dc-de02-4ad1-38ac-08d8c1225625
-X-MS-TrafficTypeDiagnostic: BYAPR04MB6262:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB626253E9EB2FE57C32AA0404C7BD9@BYAPR04MB6262.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:813;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Wu1NqyjrAS/vuvHwieTCtuFiy1w4qRfc3YXDWDczgOIWAB3yxLtHgeKSV8T+8BbjEIlGNEPyuY0PIIyI1yAFvIERzhvRRWJm+KIobbyx+iEyTAqxvWfyg3wgXcvUPyaYsefGYkikeCxwaagnbGcPhFp3Zoxrb1XkvKTEqDYgCefKm3WblcZDaIhxTdYQlG6WZBBzSyOUi45ipoDBNd0QgWmmQ3YQR33+O1EgvCAGNlw2BXzpNEp8LSKIKlE/Z/KvFFgvSI4e4o4AVmloaiR5hgNPxF/yeMVIoTUs2HXRmJmAE2eE8B2JbhX6WjFl6/8lX0/js2Lvwxyztvy7iif52eNioQvn0GtGp1a+P7GfALYs2JF7/MI4kdCWPAtGzGIrLNp1HROi8As5L+dqh0hg7fOs4B6/jiHpERx7ul+JpluRk0ZfzdGbfc+gsrcpUoTruE8mg1KjL4eJcexJR2GXpbVN4As3C6hsytMfCO3AvO2uhNUb2OXSQh352fL4FPZKZfinq2HQEpnXNOXsLfDhiphfGi4czdJm9Cihz0hMdW6Tmn8jYYXgp4eepk7M96oMwHKjzbPearqIZRA/rsnbyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(39850400004)(376002)(346002)(26005)(186003)(6486002)(16526019)(83380400001)(2616005)(956004)(478600001)(66946007)(4744005)(316002)(110136005)(54906003)(8676002)(8936002)(6496006)(66476007)(52116002)(4326008)(66556008)(86362001)(36756003)(7416002)(5660300002)(2906002)(6666004)(16060500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ODh3Bt1n/+sqMReuQsywQIgR6W5nnxwklUNQp5uO5jQX4mnYS1yWI5KtzjAd?=
- =?us-ascii?Q?L3oEkJJT3z5vVB2qSbQkBEalSi6X/GDVZTSGg5TRewiVgRlcY+oZV+zOvDBN?=
- =?us-ascii?Q?OhMmpBmSMdI04i1DnUnlcb564k4elGSCfDW9ZMpsPgUVpt9+VkiBUbmuHAUz?=
- =?us-ascii?Q?00WtE7YZRWvyoX6Z79Sg6AeoNsQQ+es5BIWTOnDIZeNtPVp+r3F9dniumXn3?=
- =?us-ascii?Q?+Dx3OriBw63jI7ySAL2mZF/EfEV6FU35VwgO7JMhjza64DZ+GOz3YZnUjlH8?=
- =?us-ascii?Q?N4FAbUb6W4eST31mwMeIGcD1RcLZzV7A9/o0IydxSXtZuXQWBGlEz46iB0ix?=
- =?us-ascii?Q?XRn0XDek4+7jWrv3+QyxNDtxlfrRZa5/dn4UTRVhfejkLaZXQlRmDm1PnVtj?=
- =?us-ascii?Q?CJuf6KH2JYesdNGF7VaRvdW5q+jyoDf6um+p25oFTFkFj0euRdNA2mQHNp4P?=
- =?us-ascii?Q?b7etygpAR+2SBl70wFqgWyeNPwXRGFACED7w8PIebCagKb/9FamT1/fNf2+n?=
- =?us-ascii?Q?fMZW19KI8ebg+JGvdXR3MzZdUukvgwMqgbfMc4vqNrZXvlHtfxb1jDPUTiyj?=
- =?us-ascii?Q?dYLnrxdYNUyACxizc/FIVZC2jnDL4Je61zFNOcVEd5xGiMMAY7JeyzEInmhF?=
- =?us-ascii?Q?uEd9jArDCra1Ooi/JUeUS5NGnNM+CPmlRRDr4cNMps11H4njZ2a+0l+SlZWz?=
- =?us-ascii?Q?cRyDFHjiDhn/GHwlKNlgXVXzjhz0EHI4R3lYlHGLcjDk12oyDQrRhB0G8MsK?=
- =?us-ascii?Q?ll3/5EXTmThtGPNIuaxTCpxtUoZxwmUUEg5MBnZIAJgSU68Tv62vtr3RMfbF?=
- =?us-ascii?Q?8pSPx/oL8nduqpMKRxsMoLua2ePVX3iDeoqMyywFA4puXUaXeIlviyjV2W2Y?=
- =?us-ascii?Q?DjaSsfmNM/ogBCu2S2TDvegQlxHvJP3LqhAk9TrL+ts2WE1RhPNqg6KsdYlF?=
- =?us-ascii?Q?EvOGuMFmyghnHkICiZKTHI+SK6edgv8LDnCGfk3PZTK9UsVmT6kwsbT1gwL4?=
- =?us-ascii?Q?3GjyauTmUWOkKEN7h1myN7MW7giJGVkrrJ5/IoU3tX8uHZZvYVZ8GgT1Wma7?=
- =?us-ascii?Q?JzpokN97?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea6472dc-de02-4ad1-38ac-08d8c1225625
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 11:14:09.5555
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JxewNBCuJfcAzxbhJKvZEsCamLhV2ei7FdwJnfW9Y6x2welQ2OqXNYhrXkrocDPkCqYvgJmZq7q16Mlbpux24Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB6262
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/25/2021 10:59:54
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 161363 [Jan 25 2021]
+X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;arseniy-pc.avp.ru:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/25/2021 11:02:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/25/2021 10:11:00 AM
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/25 10:04:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/25 05:31:00 #16022694
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At some time, the original code may return non zero value, force return 0
-if operation finished
+This modifies current receive logic for SEQPACKET support:
+1) Inserts 'SEQ_BEGIN' packet to socket's rx queue.
+2) Inserts 'RW' packet to socket's rx queue, but without merging with
+   buffer of last packet in queue.
+3) Performs check for packet and socket types on receive(if mismatch,
+   then reset connection).
 
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 ---
- drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/vmw_vsock/virtio_transport_common.c | 79 ++++++++++++++++++-------
+ 1 file changed, 58 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 65cc059..04536cc 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -189,10 +189,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
- 			       AP_AUX_CTRL_STATUS);
- 	if (val < 0 || (val & 0x0F)) {
- 		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
--		val = -EIO;
-+		return -EIO;
- 	}
- 
--	return val;
-+	return 0;
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index dcce35d7b462..90f9feef9d8f 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -397,6 +397,14 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+ 	return err;
  }
  
- static int anx7625_video_mute_control(struct anx7625_data *ctx,
++static u16 virtio_transport_get_type(struct sock *sk)
++{
++	if (sk->sk_type == SOCK_STREAM)
++		return VIRTIO_VSOCK_TYPE_STREAM;
++	else
++		return VIRTIO_VSOCK_TYPE_SEQPACKET;
++}
++
+ static inline void virtio_transport_del_n_free_pkt(struct virtio_vsock_pkt *pkt)
+ {
+ 	list_del(&pkt->list);
+@@ -1050,39 +1058,49 @@ virtio_transport_recv_enqueue(struct vsock_sock *vsk,
+ 			      struct virtio_vsock_pkt *pkt)
+ {
+ 	struct virtio_vsock_sock *vvs = vsk->trans;
+-	bool can_enqueue, free_pkt = false;
++	bool free_pkt = false;
+ 
+ 	pkt->len = le32_to_cpu(pkt->hdr.len);
+ 	pkt->off = 0;
+ 
+ 	spin_lock_bh(&vvs->rx_lock);
+ 
+-	can_enqueue = virtio_transport_inc_rx_pkt(vvs, pkt);
+-	if (!can_enqueue) {
++	if (!virtio_transport_inc_rx_pkt(vvs, pkt)) {
+ 		free_pkt = true;
+ 		goto out;
+ 	}
+ 
+-	/* Try to copy small packets into the buffer of last packet queued,
+-	 * to avoid wasting memory queueing the entire buffer with a small
+-	 * payload.
+-	 */
+-	if (pkt->len <= GOOD_COPY_LEN && !list_empty(&vvs->rx_queue)) {
+-		struct virtio_vsock_pkt *last_pkt;
++	switch (le16_to_cpu(pkt->hdr.type)) {
++	case VIRTIO_VSOCK_TYPE_STREAM: {
++		/* Try to copy small packets into the buffer of last packet queued,
++		 * to avoid wasting memory queueing the entire buffer with a small
++		 * payload.
++		 */
++		if (pkt->len <= GOOD_COPY_LEN && !list_empty(&vvs->rx_queue)) {
++			struct virtio_vsock_pkt *last_pkt;
+ 
+-		last_pkt = list_last_entry(&vvs->rx_queue,
+-					   struct virtio_vsock_pkt, list);
++			last_pkt = list_last_entry(&vvs->rx_queue,
++						   struct virtio_vsock_pkt, list);
+ 
+-		/* If there is space in the last packet queued, we copy the
+-		 * new packet in its buffer.
+-		 */
+-		if (pkt->len <= last_pkt->buf_len - last_pkt->len) {
+-			memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
+-			       pkt->len);
+-			last_pkt->len += pkt->len;
+-			free_pkt = true;
+-			goto out;
++			/* If there is space in the last packet queued, we copy the
++			 * new packet in its buffer.
++			 */
++			if (pkt->len <= last_pkt->buf_len - last_pkt->len) {
++				memcpy(last_pkt->buf + last_pkt->len, pkt->buf,
++				       pkt->len);
++				last_pkt->len += pkt->len;
++				free_pkt = true;
++				goto out;
++			}
+ 		}
++
++		break;
++	}
++	case VIRTIO_VSOCK_TYPE_SEQPACKET: {
++		break;
++	}
++	default:
++		goto out;
+ 	}
+ 
+ 	list_add_tail(&pkt->list, &vvs->rx_queue);
+@@ -1101,6 +1119,14 @@ virtio_transport_recv_connected(struct sock *sk,
+ 	int err = 0;
+ 
+ 	switch (le16_to_cpu(pkt->hdr.op)) {
++	case VIRTIO_VSOCK_OP_SEQ_BEGIN: {
++		struct virtio_vsock_sock *vvs = vsk->trans;
++
++		spin_lock_bh(&vvs->rx_lock);
++		list_add_tail(&pkt->list, &vvs->rx_queue);
++		spin_unlock_bh(&vvs->rx_lock);
++		return err;
++	}
+ 	case VIRTIO_VSOCK_OP_RW:
+ 		virtio_transport_recv_enqueue(vsk, pkt);
+ 		sk->sk_data_ready(sk);
+@@ -1247,6 +1273,12 @@ virtio_transport_recv_listen(struct sock *sk, struct virtio_vsock_pkt *pkt,
+ 	return 0;
+ }
+ 
++static bool virtio_transport_valid_type(u16 type)
++{
++	return (type == VIRTIO_VSOCK_TYPE_STREAM) ||
++	       (type == VIRTIO_VSOCK_TYPE_SEQPACKET);
++}
++
+ /* We are under the virtio-vsock's vsock->rx_lock or vhost-vsock's vq->mutex
+  * lock.
+  */
+@@ -1272,7 +1304,7 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 					le32_to_cpu(pkt->hdr.buf_alloc),
+ 					le32_to_cpu(pkt->hdr.fwd_cnt));
+ 
+-	if (le16_to_cpu(pkt->hdr.type) != VIRTIO_VSOCK_TYPE_STREAM) {
++	if (!virtio_transport_valid_type(le16_to_cpu(pkt->hdr.type))) {
+ 		(void)virtio_transport_reset_no_sock(t, pkt);
+ 		goto free_pkt;
+ 	}
+@@ -1289,6 +1321,11 @@ void virtio_transport_recv_pkt(struct virtio_transport *t,
+ 		}
+ 	}
+ 
++	if (virtio_transport_get_type(sk) != le16_to_cpu(pkt->hdr.type)) {
++		(void)virtio_transport_reset_no_sock(t, pkt);
++		goto free_pkt;
++	}
++
+ 	vsk = vsock_sk(sk);
+ 
+ 	space_available = virtio_transport_space_update(sk, pkt);
 -- 
-2.7.4
+2.25.1
 
