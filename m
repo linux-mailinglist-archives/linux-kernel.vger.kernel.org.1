@@ -2,137 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1711230343A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E34303460
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732054AbhAZFUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40494 "EHLO
+        id S1726507AbhAZFXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:23:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727210AbhAYJsu (ORCPT
+        with ESMTP id S1727286AbhAYJ7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:48:50 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2D2C06178A;
-        Mon, 25 Jan 2021 01:47:41 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id q7so11530038wre.13;
-        Mon, 25 Jan 2021 01:47:41 -0800 (PST)
+        Mon, 25 Jan 2021 04:59:07 -0500
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAF8C061352
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:58:03 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id u7so2523592ooq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:58:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ThFiDlyMsgJrXidZg0Gd3b2g1YMJoXR4frCyMrY3dEo=;
-        b=rFMsWq5mqWz8g4OnEwKNaaQxuUHXznbDq25XNx+77jqsrKrcEu9zY1M9EDfmexjXTq
-         7xxzwOmxxzxlz6Fc3kWRhl7Ol5U8yP/kSGfInHDosyH++Xd6+tcCwstBOq24SAI2KY61
-         Pwasj6BJYgf2/SYgT26AUxpWz2VbkMiiC148PuTF3c+Wsjh6dgNnEXLPl7aoN3gjSWDu
-         15WxIQq6g1C+9PCvqkdSVyIaEOSAG41ylsn9Zsv6AxVwxG1S9O/dQ7Bj7csYiGA55gDq
-         992VlXTs0VHAlzQRD8377LyFE+DRt5HffhnAksZ0Dk6MWYsT4p/ZFJHvImWtpJiJyZW9
-         bxOg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gdta58PoWmtu6e7uN9H109dtWomdId8gGVo4iHeqt88=;
+        b=fV8fdKnejyryuPs55rwRZ26aKdhNIT3xcjuCTD4stVmVjK9A1Fsol8Vn6za2Nlq4Yi
+         eePY7y51sjRcXiOXpryPTdyrIiwuYHvuOYnMI1h9F50r+9PGxLXHjo3hbO+Q0ayAjV7p
+         O5HUYj2H8k+4UJNvSKkh1id4l7siWnNSYTHs3+sdQCn8RANUrulO0aIiKVCGRJunNrGU
+         K0uXdfoDc64dH8RnS3go5g00/qj2c0pHskeLOs8JskTek2FRN2M865HXrG6i7P1cZEMw
+         GAQBXl0rTZOiV96/ag9ypNwe3U+cX8u6TqSy3P/dBjOXN2j3LqmJorHHGnI0l7B6z14U
+         JoxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ThFiDlyMsgJrXidZg0Gd3b2g1YMJoXR4frCyMrY3dEo=;
-        b=X9I5zQhAVAcvUQctV3MNwhdnQ7ZQEb1BAE0Bi9dhtO8wL0xXbW2qGTe6m3UL33U3Aj
-         /oc4c2KiXDsP6ze/EFUqHK8F4a/vxdjFpoyyxmNKEMdvhVZ0rBa8u4fI90ZOFw+N+t9r
-         C0X6z6UbxGe3MNocQXDOHrp0L0JUscRSYqaZUWSktGuhMFS/AzZP2kZWDu6oaOFkucEZ
-         9BDCXSJBqvgxCqZTJQBmU0Nshn2FZrTFxKXd/Zw5KhHz3mn6p4GyEVOdTrbi1dmp+M+I
-         lPUAl+Olr3Kt4+8ibrU4bcviB84szKah/ZOzoe7t7czzBeRhMAtv12Ob4AIg9Lo2eedp
-         IZ/A==
-X-Gm-Message-State: AOAM5323iYqGB26EncXrf7FjHPMCW5YLU6wDvA4mkNSjJCzB/DFkkK0Q
-        rsAv8O49mN4XKrP8R2H0EuKaFYhXLv8=
-X-Google-Smtp-Source: ABdhPJwye/iD5yC8aoVnnGkOVK2lInc+mxJqz7DsbgQJqaKDMrYISLO3Hh63kKEax6PF3L/7qEssZA==
-X-Received: by 2002:adf:902a:: with SMTP id h39mr903641wrh.147.1611568060096;
-        Mon, 25 Jan 2021 01:47:40 -0800 (PST)
-Received: from jonathan-N53SV.station ([151.81.101.204])
-        by smtp.googlemail.com with ESMTPSA id u5sm22154052wmg.9.2021.01.25.01.47.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 01:47:39 -0800 (PST)
-From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
-        phone-devel@vger.kernel.org,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: qcom: msm8916-longcheer-l8910: Add imu/magnetometer
-Date:   Mon, 25 Jan 2021 10:44:32 +0100
-Message-Id: <20210125094435.7528-4-jonathan.albrieux@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
-References: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gdta58PoWmtu6e7uN9H109dtWomdId8gGVo4iHeqt88=;
+        b=SNCIgP1AYLU9j7GTjx33aAqG/dmjJbTP1TtGynsFLQpm54aPRT4fZ5MzYRHluvLBdZ
+         cMlulsAKq50SxgqpZpeZI7wDqEVx+6GztMLN+d7NGT3XSanawY9RT4m66aHdWglOfzfD
+         Q3yBvtQlWv4BNGok65Sma/Mk3Kgg5ubi7th2esRIGc1QqqHBiv6/rMYrAd2l/7+zY2mi
+         4T911gYPKDt+xh0X+bnFeS7WlC0rqjC5p3eBpIQyS7VDJ6s4nURXflIkRrTzvTvGWJBi
+         QLr7eg68l8gA4cdsjtxwhgNaGKdbB7NqT+F1NzBHByR3FwXWRyo46Fd+JYd2hHf8eGD+
+         WZKg==
+X-Gm-Message-State: AOAM533GhPszGGMu7awWVuKljQdA0bH9+sZwpZclBnOkH16hB6sKFVG+
+        WcfyQ+fxBGJ7RWj8Gqgzq8ssZA4yW0ILul8LU/rx/ptvOqQ=
+X-Google-Smtp-Source: ABdhPJxKwolVPl9GSYzQ72NMQqgfHvx1b/haUyn3tfYc8+iwE8PiKfqFuOXkDJKXPKI8gXh1AhAAYYknS/kMMVHXF6E=
+X-Received: by 2002:a4a:51c3:: with SMTP id s186mr8553ooa.6.1611568683019;
+ Mon, 25 Jan 2021 01:58:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20210125095445.1524477-1-jens.wiklander@linaro.org>
+In-Reply-To: <20210125095445.1524477-1-jens.wiklander@linaro.org>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 25 Jan 2021 10:57:52 +0100
+Message-ID: <CAHUa44GtqJhvX7jUvKWu08J+A2EWqewzosMsez3mwGZ9gA21Uw@mail.gmail.com>
+Subject: Re: [PATCH] tee: optee: remove need_resched() before cond_resched()
+To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BQ Aquaris X5 (Longcheer L8910) has:
- - BMI160 accelerometer and gyroscope sensor
- - AK09911 magnetometer sensor
-Add them to the device tree.
+Hi Rouven and Sumit,
 
-This patch depends on patch "arm64: dts: qcom: msm8916: Add blsp_i2c3".
+On Mon, Jan 25, 2021 at 10:55 AM Jens Wiklander
+<jens.wiklander@linaro.org> wrote:
+>
+> Testing need_resched() before cond_resched() is not needed as an
+> equivalent test is done internally in cond_resched(). So drop the
+> need_resched() test.
+>
+> Fixes: dcb3b06d9c34 ("tee: optee: replace might_sleep with cond_resched")
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  drivers/tee/optee/call.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
----
- .../boot/dts/qcom/msm8916-longcheer-l8910.dts | 37 +++++++++++++++++++
- 1 file changed, 37 insertions(+)
+Can you please test to see that this works in your setups too?
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-index 7d5eff922f41..27845189ac2b 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-@@ -56,6 +56,35 @@
- 	};
- };
- 
-+&blsp_i2c3 {
-+	status = "okay";
-+
-+	magnetometer@d {
-+		compatible = "asahi-kasei,ak09911";
-+		reg = <0x0d>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vid-supply = <&pm8916_l6>;
-+
-+		reset-gpios = <&msmgpio 111 GPIO_ACTIVE_LOW>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mag_reset_default>;
-+	};
-+
-+	imu@68 {
-+		compatible = "bosch,bmi160";
-+		reg = <0x68>;
-+
-+		vdd-supply = <&pm8916_l17>;
-+		vddio-supply = <&pm8916_l6>;
-+
-+		mount-matrix = "0", "1", "0",
-+			      "-1", "0", "0",
-+			       "0", "0", "1";
-+	};
-+};
-+
- &blsp1_uart2 {
- 	status = "okay";
- };
-@@ -220,6 +249,14 @@
- 		bias-pull-up;
- 	};
- 
-+	mag_reset_default: mag-reset-default {
-+		pins = "gpio111";
-+		function = "gpio";
-+
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
- 	usb_id_default: usb-id-default {
- 		pins = "gpio110";
- 		function = "gpio";
--- 
-2.17.1
-
+Thanks,
+Jens
