@@ -2,370 +2,787 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B14302723
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B749302734
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730341AbhAYPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:45:18 -0500
-Received: from mga11.intel.com ([192.55.52.93]:20659 "EHLO mga11.intel.com"
+        id S1730507AbhAYPsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:48:39 -0500
+Received: from mga02.intel.com ([134.134.136.20]:62006 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730275AbhAYPnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:43:19 -0500
-IronPort-SDR: rcbW9u+UoVU/tUlMKAlBAqehUPJhT8l3QqMH9DtyzCAzY6IoSSRVJxb/zgCaeRgHlC9e/guwZ2
- P9G7q9MZYRfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="176233913"
+        id S1730360AbhAYPpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:45:55 -0500
+IronPort-SDR: 4JCHH+xPEyI7vCqje6cr6xSYDR3t8+zemTyV8RwczOCV7vWhbn4qYqtKozlLF6Oq/j4ulVoWCu
+ SEb5YQaheWDQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="166846756"
 X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="176233913"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 07:42:19 -0800
-IronPort-SDR: xNCFWPGDsglZOmeBNkR8ztjZ1Ar5nsLoW8dkjYiazNLzw4urnN1/d0T2XkDb4gBa3KoXQD0Qif
- zuKj2cY/yaFw==
+   d="scan'208";a="166846756"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 07:44:06 -0800
+IronPort-SDR: OcaZKZQT9OoVMEZcdPSUy98INuisAVhspDKjP1ZvrUBGXumQDGIxxPQILyhID6xZsVqeqJOYmR
+ +68/walTYqxA==
 X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="429328199"
-Received: from dwu85-mobl1.ccr.corp.intel.com ([10.255.31.159])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 07:42:17 -0800
-Message-ID: <b0e54fbb8c8b9fea38152bbf179135a6434340d7.camel@intel.com>
-Subject: Re: [PATCH v2 2/2] thermal: Move therm_throt there from x86/mce
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Date:   Mon, 25 Jan 2021 23:42:14 +0800
-In-Reply-To: <20210125130533.19938-3-bp@alien8.de>
-References: <20210125130533.19938-1-bp@alien8.de>
-         <20210125130533.19938-3-bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+   d="scan'208";a="387431647"
+Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.174])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 07:44:04 -0800
+Date:   Mon, 25 Jan 2021 16:44:01 +0100 (CET)
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+cc:     virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH v2 4/9] ALSA: virtio: build PCM devices and substream
+ hardware descriptors
+In-Reply-To: <20210124165408.1122868-5-anton.yakovlev@opensynergy.com>
+Message-ID: <6f93189c-7cfc-25c7-6b2c-ad8e21bf42c@intel.com>
+References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com> <20210124165408.1122868-5-anton.yakovlev@opensynergy.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Borislav,
 
-Thanks for the patch. CC Srinivas.
+On Sun, 24 Jan 2021, Anton Yakovlev wrote:
 
-On Mon, 2021-01-25 at 14:05 +0100, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> This functionality has nothing to do with MCE, move it to the thermal
-> framework and untangle it from MCE.
-> 
-Agreed.
-
-just one question,
-there are many overlaps between this kernel thermal throttling code and
-the x86_pkg_temp_thermal driver, is it possible to combine these two
-pieces of code altogether?
-
-thanks,
-rui
-
-
-> Have thermal_set_handler() check the build-time assigned default
-> handler
-> stub was the one used before therm_throt assigns a new one.
-> 
-
-> Requested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Like the HDA specification, the virtio sound device specification links
+> PCM substreams, jacks and PCM channel maps into functional groups. For
+> each discovered group, a PCM device is created, the number of which
+> coincides with the group number.
+>
+> Introduce the module parameters for setting the hardware buffer
+> parameters:
+>  pcm_buffer_ms [=160]
+>  pcm_periods_min [=2]
+>  pcm_periods_max [=16]
+>  pcm_period_ms_min [=10]
+>  pcm_period_ms_max [=80]
+>
+> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
 > ---
->  arch/x86/Kconfig                              |  4 ---
->  arch/x86/include/asm/irq.h                    |  4 +++
->  arch/x86/include/asm/mce.h                    | 16 ----------
->  arch/x86/include/asm/thermal.h                | 21 ++++++++++++++
->  arch/x86/kernel/cpu/intel.c                   |  3 ++
->  arch/x86/kernel/cpu/mce/Makefile              |  2 --
->  arch/x86/kernel/cpu/mce/intel.c               |  1 -
->  arch/x86/kernel/irq.c                         | 29
-> +++++++++++++++++++
->  drivers/thermal/intel/Kconfig                 |  4 +++
->  drivers/thermal/intel/Makefile                |  1 +
->  .../thermal/intel}/therm_throt.c              | 25 ++--------------
->  drivers/thermal/intel/x86_pkg_temp_thermal.c  |  3 +-
->  12 files changed, 67 insertions(+), 46 deletions(-)
->  create mode 100644 arch/x86/include/asm/thermal.h
->  rename {arch/x86/kernel/cpu/mce =>
-> drivers/thermal/intel}/therm_throt.c (97%)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 21f851179ff0..9989db3a9bf5 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1158,10 +1158,6 @@ config X86_MCE_INJECT
->  	  If you don't know what a machine check is and you don't do
-> kernel
->  	  QA it is safe to say n.
->  
-> -config X86_THERMAL_VECTOR
-> -	def_bool y
-> -	depends on X86_MCE_INTEL
-> -
->  source "arch/x86/events/Kconfig"
->  
->  config X86_LEGACY_VM86
-> diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
-> index 528c8a71fe7f..ad65fe7dceb1 100644
-> --- a/arch/x86/include/asm/irq.h
-> +++ b/arch/x86/include/asm/irq.h
-> @@ -53,4 +53,8 @@ void arch_trigger_cpumask_backtrace(const struct
-> cpumask *mask,
->  #define arch_trigger_cpumask_backtrace
-> arch_trigger_cpumask_backtrace
->  #endif
->  
-> +#ifdef CONFIG_X86_THERMAL_VECTOR
-> +void thermal_set_handler(void (*handler)(void));
-> +#endif
+> sound/virtio/Makefile      |   3 +-
+> sound/virtio/virtio_card.c |  45 ++++
+> sound/virtio/virtio_card.h |   9 +
+> sound/virtio/virtio_pcm.c  | 536 +++++++++++++++++++++++++++++++++++++
+> sound/virtio/virtio_pcm.h  |  89 ++++++
+> 5 files changed, 681 insertions(+), 1 deletion(-)
+> create mode 100644 sound/virtio/virtio_pcm.c
+> create mode 100644 sound/virtio/virtio_pcm.h
+>
+> diff --git a/sound/virtio/Makefile b/sound/virtio/Makefile
+> index dc551e637441..69162a545a41 100644
+> --- a/sound/virtio/Makefile
+> +++ b/sound/virtio/Makefile
+> @@ -4,5 +4,6 @@ obj-$(CONFIG_SND_VIRTIO) += virtio_snd.o
+>
+> virtio_snd-objs := \
+> 	virtio_card.o \
+> -	virtio_ctl_msg.o
+> +	virtio_ctl_msg.o \
+> +	virtio_pcm.o
+>
+> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+> index 955eadc2d858..39fe13b43dd1 100644
+> --- a/sound/virtio/virtio_card.c
+> +++ b/sound/virtio/virtio_card.c
+> @@ -92,6 +92,17 @@ static void virtsnd_event_notify_cb(struct virtqueue *vqueue)
+> 			if (!event)
+> 				break;
+>
+> +			switch (le32_to_cpu(event->hdr.code)) {
+> +			case VIRTIO_SND_EVT_PCM_PERIOD_ELAPSED:
+> +			case VIRTIO_SND_EVT_PCM_XRUN: {
+
+In the previous patch you had a switch-case statement complying to the 
+common kernel coding style. It isn't specified in coding-style.rst, but 
+these superfluous braces really don't seem to be good for anything - in 
+this and multiple other switch-case statements in the series.
+
+> +				virtsnd_pcm_event(snd, event);
+> +				break;
+> +			}
+> +			default: {
+> +				break;
+
+An empty default doesn't seem very useful either. So the above could've 
+just been
+
++			switch (le32_to_cpu(event->hdr.code)) {
++			case VIRTIO_SND_EVT_PCM_PERIOD_ELAPSED:
++			case VIRTIO_SND_EVT_PCM_XRUN:
++				virtsnd_pcm_event(snd, event);
++			}
+
+> +			}
+> +			}
 > +
->  #endif /* _ASM_X86_IRQ_H */
-> diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-> index def9aa5e1fa4..ddfb3cad8dff 100644
-> --- a/arch/x86/include/asm/mce.h
-> +++ b/arch/x86/include/asm/mce.h
-> @@ -288,22 +288,6 @@ extern void (*mce_threshold_vector)(void);
->  /* Deferred error interrupt handler */
->  extern void (*deferred_error_int_vector)(void);
->  
-> -/*
-> - * Thermal handler
-> - */
-> -
-> -void intel_init_thermal(struct cpuinfo_x86 *c);
-> -
-> -/* Interrupt Handler for core thermal thresholds */
-> -extern int (*platform_thermal_notify)(__u64 msr_val);
-> -
-> -/* Interrupt Handler for package thermal thresholds */
-> -extern int (*platform_thermal_package_notify)(__u64 msr_val);
-> -
-> -/* Callback support of rate control, return true, if
-> - * callback has rate control */
-> -extern bool (*platform_thermal_package_rate_control)(void);
-> -
->  /*
->   * Used by APEI to report memory error via /dev/mcelog
->   */
-> diff --git a/arch/x86/include/asm/thermal.h
-> b/arch/x86/include/asm/thermal.h
+> 			virtsnd_event_send(queue->vqueue, event, true,
+> 					   GFP_ATOMIC);
+> 		}
+> @@ -274,6 +285,16 @@ static int virtsnd_build_devs(struct virtio_snd *snd)
+> 	strscpy(snd->card->longname, "VirtIO Sound Card",
+> 		sizeof(snd->card->longname));
+>
+> +	rc = virtsnd_pcm_parse_cfg(snd);
+> +	if (rc)
+> +		return rc;
+> +
+> +	if (snd->nsubstreams) {
+> +		rc = virtsnd_pcm_build_devs(snd);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+> 	return snd_card_register(snd->card);
+> }
+>
+> @@ -302,6 +323,9 @@ static int virtsnd_validate(struct virtio_device *vdev)
+> 		return -EINVAL;
+> 	}
+>
+> +	if (virtsnd_pcm_validate(vdev))
+> +		return -EINVAL;
+> +
+> 	return 0;
+> }
+>
+> @@ -325,6 +349,7 @@ static int virtsnd_probe(struct virtio_device *vdev)
+> 	snd->vdev = vdev;
+> 	INIT_WORK(&snd->reset_work, virtsnd_reset_fn);
+> 	INIT_LIST_HEAD(&snd->ctl_msgs);
+> +	INIT_LIST_HEAD(&snd->pcm_list);
+>
+> 	vdev->priv = snd;
+>
+> @@ -359,6 +384,8 @@ static int virtsnd_probe(struct virtio_device *vdev)
+> static void virtsnd_remove(struct virtio_device *vdev)
+> {
+> 	struct virtio_snd *snd = vdev->priv;
+> +	struct virtio_pcm *pcm;
+> +	struct virtio_pcm *pcm_next;
+>
+> 	if (!snd)
+> 		return;
+> @@ -376,6 +403,24 @@ static void virtsnd_remove(struct virtio_device *vdev)
+> 	vdev->config->reset(vdev);
+> 	vdev->config->del_vqs(vdev);
+>
+> +	list_for_each_entry_safe(pcm, pcm_next, &snd->pcm_list, list) {
+> +		unsigned int i;
+> +
+> +		list_del(&pcm->list);
+> +
+> +		for (i = 0; i < ARRAY_SIZE(pcm->streams); ++i) {
+> +			struct virtio_pcm_stream *stream = &pcm->streams[i];
+> +
+> +			if (stream->substreams)
+> +				devm_kfree(&vdev->dev, stream->substreams);
+> +		}
+> +
+> +		devm_kfree(&vdev->dev, pcm);
+
+Please double-check both devm_kfree() calls above. Probably they aren't 
+needed in the .remove() method.
+
+> +	}
+> +
+> +	if (snd->substreams)
+> +		devm_kfree(&vdev->dev, snd->substreams);
+> +
+> 	devm_kfree(&vdev->dev, snd);
+>
+> 	vdev->priv = NULL;
+> diff --git a/sound/virtio/virtio_card.h b/sound/virtio/virtio_card.h
+> index 37b734a92134..be6651a6aaf8 100644
+> --- a/sound/virtio/virtio_card.h
+> +++ b/sound/virtio/virtio_card.h
+> @@ -24,6 +24,9 @@
+> #include <uapi/linux/virtio_snd.h>
+>
+> #include "virtio_ctl_msg.h"
+> +#include "virtio_pcm.h"
+> +
+> +struct virtio_pcm_substream;
+>
+> /**
+>  * struct virtio_snd_queue - Virtqueue wrapper structure.
+> @@ -43,6 +46,9 @@ struct virtio_snd_queue {
+>  * @card: ALSA sound card.
+>  * @ctl_msgs: Pending control request list.
+>  * @event_msgs: Device events.
+> + * @pcm_list: VirtIO PCM device list.
+> + * @substreams: VirtIO PCM substreams.
+> + * @nsubstreams: Number of PCM substreams.
+>  */
+> struct virtio_snd {
+> 	struct virtio_device *vdev;
+> @@ -51,6 +57,9 @@ struct virtio_snd {
+> 	struct snd_card *card;
+> 	struct list_head ctl_msgs;
+> 	struct virtio_snd_event *event_msgs;
+> +	struct list_head pcm_list;
+> +	struct virtio_pcm_substream *substreams;
+> +	unsigned int nsubstreams;
+> };
+>
+> /* Message completion timeout in milliseconds (module parameter). */
+> diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
 > new file mode 100644
-> index 000000000000..58b0e0a4af6e
+> index 000000000000..036990b7b78a
 > --- /dev/null
-> +++ b/arch/x86/include/asm/thermal.h
-> @@ -0,0 +1,21 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_THERMAL_H
-> +#define _ASM_X86_THERMAL_H
+> +++ b/sound/virtio/virtio_pcm.c
+> @@ -0,0 +1,536 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Sound card driver for virtio
+> + * Copyright (C) 2020  OpenSynergy GmbH
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
+> + */
+> +#include <linux/moduleparam.h>
+> +#include <linux/virtio_config.h>
 > +
-> +/* Interrupt Handler for package thermal thresholds */
-> +extern int (*platform_thermal_package_notify)(__u64 msr_val);
+> +#include "virtio_card.h"
 > +
-> +/* Interrupt Handler for core thermal thresholds */
-> +extern int (*platform_thermal_notify)(__u64 msr_val);
+> +static unsigned int pcm_buffer_ms = 160;
+> +module_param(pcm_buffer_ms, uint, 0644);
+> +MODULE_PARM_DESC(pcm_buffer_ms, "PCM substream buffer time in milliseconds");
 > +
-> +/* Callback support of rate control, return true, if
-> + * callback has rate control */
-> +extern bool (*platform_thermal_package_rate_control)(void);
+> +static unsigned int pcm_periods_min = 2;
+> +module_param(pcm_periods_min, uint, 0644);
+> +MODULE_PARM_DESC(pcm_periods_min, "Minimum number of PCM periods");
 > +
-> +#ifdef CONFIG_X86_THERMAL_VECTOR
-> +void intel_init_thermal(struct cpuinfo_x86 *c);
-> +#else
-> +static inline void intel_init_thermal(struct cpuinfo_x86 *c) { }
-> +#endif
+> +static unsigned int pcm_periods_max = 16;
+> +module_param(pcm_periods_max, uint, 0644);
+> +MODULE_PARM_DESC(pcm_periods_max, "Maximum number of PCM periods");
 > +
-> +#endif /* _ASM_X86_THERMAL_H */
-> diff --git a/arch/x86/kernel/cpu/intel.c
-> b/arch/x86/kernel/cpu/intel.c
-> index 59a1e3ce3f14..71221af87cb1 100644
-> --- a/arch/x86/kernel/cpu/intel.c
-> +++ b/arch/x86/kernel/cpu/intel.c
-> @@ -24,6 +24,7 @@
->  #include <asm/traps.h>
->  #include <asm/resctrl.h>
->  #include <asm/numa.h>
-> +#include <asm/thermal.h>
->  
->  #ifdef CONFIG_X86_64
->  #include <linux/topology.h>
-> @@ -719,6 +720,8 @@ static void init_intel(struct cpuinfo_x86 *c)
->  		tsx_disable();
->  
->  	split_lock_init();
+> +static unsigned int pcm_period_ms_min = 10;
+> +module_param(pcm_period_ms_min, uint, 0644);
+> +MODULE_PARM_DESC(pcm_period_ms_min, "Minimum PCM period time in milliseconds");
 > +
-> +	intel_init_thermal(c);
->  }
->  
->  #ifdef CONFIG_X86_32
-> diff --git a/arch/x86/kernel/cpu/mce/Makefile
-> b/arch/x86/kernel/cpu/mce/Makefile
-> index 9f020c994154..015856abdbb1 100644
-> --- a/arch/x86/kernel/cpu/mce/Makefile
-> +++ b/arch/x86/kernel/cpu/mce/Makefile
-> @@ -9,8 +9,6 @@ obj-$(CONFIG_X86_MCE_THRESHOLD) += threshold.o
->  mce-inject-y			:= inject.o
->  obj-$(CONFIG_X86_MCE_INJECT)	+= mce-inject.o
->  
-> -obj-$(CONFIG_X86_THERMAL_VECTOR) += therm_throt.o
-> -
->  obj-$(CONFIG_ACPI_APEI)		+= apei.o
->  
->  obj-$(CONFIG_X86_MCELOG_LEGACY)	+= dev-mcelog.o
-> diff --git a/arch/x86/kernel/cpu/mce/intel.c
-> b/arch/x86/kernel/cpu/mce/intel.c
-> index c2476fe0682e..e309476743b7 100644
-> --- a/arch/x86/kernel/cpu/mce/intel.c
-> +++ b/arch/x86/kernel/cpu/mce/intel.c
-> @@ -531,7 +531,6 @@ static void intel_imc_init(struct cpuinfo_x86 *c)
->  
->  void mce_intel_feature_init(struct cpuinfo_x86 *c)
->  {
-> -	intel_init_thermal(c);
->  	intel_init_cmci();
->  	intel_init_lmce();
->  	intel_ppin_init(c);
-> diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-> index c5dd50369e2f..523fa5266d3e 100644
-> --- a/arch/x86/kernel/irq.c
-> +++ b/arch/x86/kernel/irq.c
-> @@ -374,3 +374,32 @@ void fixup_irqs(void)
->  	}
->  }
->  #endif
+> +static unsigned int pcm_period_ms_max = 80;
+> +module_param(pcm_period_ms_max, uint, 0644);
+> +MODULE_PARM_DESC(pcm_period_ms_max, "Maximum PCM period time in milliseconds");
 > +
-> +#ifdef CONFIG_X86_THERMAL_VECTOR
-> +static void unexpected_thermal_interrupt(void)
+> +/* Map for converting VirtIO format to ALSA format. */
+> +static const unsigned int g_v2a_format_map[] = {
+> +	[VIRTIO_SND_PCM_FMT_IMA_ADPCM] = SNDRV_PCM_FORMAT_IMA_ADPCM,
+> +	[VIRTIO_SND_PCM_FMT_MU_LAW] = SNDRV_PCM_FORMAT_MU_LAW,
+> +	[VIRTIO_SND_PCM_FMT_A_LAW] = SNDRV_PCM_FORMAT_A_LAW,
+> +	[VIRTIO_SND_PCM_FMT_S8] = SNDRV_PCM_FORMAT_S8,
+> +	[VIRTIO_SND_PCM_FMT_U8] = SNDRV_PCM_FORMAT_U8,
+> +	[VIRTIO_SND_PCM_FMT_S16] = SNDRV_PCM_FORMAT_S16_LE,
+> +	[VIRTIO_SND_PCM_FMT_U16] = SNDRV_PCM_FORMAT_U16_LE,
+> +	[VIRTIO_SND_PCM_FMT_S18_3] = SNDRV_PCM_FORMAT_S18_3LE,
+> +	[VIRTIO_SND_PCM_FMT_U18_3] = SNDRV_PCM_FORMAT_U18_3LE,
+> +	[VIRTIO_SND_PCM_FMT_S20_3] = SNDRV_PCM_FORMAT_S20_3LE,
+> +	[VIRTIO_SND_PCM_FMT_U20_3] = SNDRV_PCM_FORMAT_U20_3LE,
+> +	[VIRTIO_SND_PCM_FMT_S24_3] = SNDRV_PCM_FORMAT_S24_3LE,
+> +	[VIRTIO_SND_PCM_FMT_U24_3] = SNDRV_PCM_FORMAT_U24_3LE,
+> +	[VIRTIO_SND_PCM_FMT_S20] = SNDRV_PCM_FORMAT_S20_LE,
+> +	[VIRTIO_SND_PCM_FMT_U20] = SNDRV_PCM_FORMAT_U20_LE,
+> +	[VIRTIO_SND_PCM_FMT_S24] = SNDRV_PCM_FORMAT_S24_LE,
+> +	[VIRTIO_SND_PCM_FMT_U24] = SNDRV_PCM_FORMAT_U24_LE,
+> +	[VIRTIO_SND_PCM_FMT_S32] = SNDRV_PCM_FORMAT_S32_LE,
+> +	[VIRTIO_SND_PCM_FMT_U32] = SNDRV_PCM_FORMAT_U32_LE,
+> +	[VIRTIO_SND_PCM_FMT_FLOAT] = SNDRV_PCM_FORMAT_FLOAT_LE,
+> +	[VIRTIO_SND_PCM_FMT_FLOAT64] = SNDRV_PCM_FORMAT_FLOAT64_LE,
+> +	[VIRTIO_SND_PCM_FMT_DSD_U8] = SNDRV_PCM_FORMAT_DSD_U8,
+> +	[VIRTIO_SND_PCM_FMT_DSD_U16] = SNDRV_PCM_FORMAT_DSD_U16_LE,
+> +	[VIRTIO_SND_PCM_FMT_DSD_U32] = SNDRV_PCM_FORMAT_DSD_U32_LE,
+> +	[VIRTIO_SND_PCM_FMT_IEC958_SUBFRAME] =
+> +		SNDRV_PCM_FORMAT_IEC958_SUBFRAME_LE
+> +};
+> +
+> +/* Map for converting VirtIO frame rate to ALSA frame rate. */
+> +struct virtsnd_v2a_rate {
+> +	unsigned int alsa_bit;
+> +	unsigned int rate;
+> +};
+> +
+> +static const struct virtsnd_v2a_rate g_v2a_rate_map[] = {
+> +	[VIRTIO_SND_PCM_RATE_5512] = { SNDRV_PCM_RATE_5512, 5512 },
+> +	[VIRTIO_SND_PCM_RATE_8000] = { SNDRV_PCM_RATE_8000, 8000 },
+> +	[VIRTIO_SND_PCM_RATE_11025] = { SNDRV_PCM_RATE_11025, 11025 },
+> +	[VIRTIO_SND_PCM_RATE_16000] = { SNDRV_PCM_RATE_16000, 16000 },
+> +	[VIRTIO_SND_PCM_RATE_22050] = { SNDRV_PCM_RATE_22050, 22050 },
+> +	[VIRTIO_SND_PCM_RATE_32000] = { SNDRV_PCM_RATE_32000, 32000 },
+> +	[VIRTIO_SND_PCM_RATE_44100] = { SNDRV_PCM_RATE_44100, 44100 },
+> +	[VIRTIO_SND_PCM_RATE_48000] = { SNDRV_PCM_RATE_48000, 48000 },
+> +	[VIRTIO_SND_PCM_RATE_64000] = { SNDRV_PCM_RATE_64000, 64000 },
+> +	[VIRTIO_SND_PCM_RATE_88200] = { SNDRV_PCM_RATE_88200, 88200 },
+> +	[VIRTIO_SND_PCM_RATE_96000] = { SNDRV_PCM_RATE_96000, 96000 },
+> +	[VIRTIO_SND_PCM_RATE_176400] = { SNDRV_PCM_RATE_176400, 176400 },
+> +	[VIRTIO_SND_PCM_RATE_192000] = { SNDRV_PCM_RATE_192000, 192000 }
+> +};
+> +
+> +/**
+> + * virtsnd_pcm_build_hw() - Parse substream config and build HW descriptor.
+> + * @substream: VirtIO substream.
+> + * @info: VirtIO substream information entry.
+> + *
+> + * Context: Any context.
+> + * Return: 0 on success, -EINVAL if configuration is invalid.
+> + */
+> +static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *substream,
+> +				struct virtio_snd_pcm_info *info)
 > +{
-> +	pr_err("CPU%d: Unexpected LVT thermal interrupt!\n",
-> +		smp_processor_id());
+> +	struct virtio_device *vdev = substream->snd->vdev;
+> +	unsigned int i;
+> +	u64 values;
+> +	size_t sample_max = 0;
+> +	size_t sample_min = 0;
+> +
+> +	substream->features = le32_to_cpu(info->features);
+> +
+> +	/*
+> +	 * TODO: set SNDRV_PCM_INFO_{BATCH,BLOCK_TRANSFER} if device supports
+> +	 * only message-based transport.
+> +	 */
+> +	substream->hw.info =
+> +		SNDRV_PCM_INFO_MMAP |
+> +		SNDRV_PCM_INFO_MMAP_VALID |
+> +		SNDRV_PCM_INFO_BATCH |
+> +		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> +		SNDRV_PCM_INFO_INTERLEAVED;
+> +
+> +	if (!info->channels_min || info->channels_min > info->channels_max) {
+> +		dev_err(&vdev->dev,
+> +			"SID %u: invalid channel range [%u %u]\n",
+> +			substream->sid, info->channels_min, info->channels_max);
+> +		return -EINVAL;
+> +	}
+> +
+> +	substream->hw.channels_min = info->channels_min;
+> +	substream->hw.channels_max = info->channels_max;
+> +
+> +	values = le64_to_cpu(info->formats);
+> +
+> +	substream->hw.formats = 0;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(g_v2a_format_map); ++i)
+> +		if (values & (1ULL << i)) {
+> +			unsigned int alsa_fmt = g_v2a_format_map[i];
+> +			int bytes = snd_pcm_format_physical_width(alsa_fmt) / 8;
+> +
+> +			if (!sample_min || sample_min > bytes)
+> +				sample_min = bytes;
+> +
+> +			if (sample_max < bytes)
+> +				sample_max = bytes;
+> +
+> +			substream->hw.formats |= (1ULL << alsa_fmt);
+> +		}
+> +
+> +	if (!substream->hw.formats) {
+> +		dev_err(&vdev->dev,
+> +			"SID %u: no supported PCM sample formats found\n",
+> +			substream->sid);
+> +		return -EINVAL;
+> +	}
+> +
+> +	values = le64_to_cpu(info->rates);
+> +
+> +	substream->hw.rates = 0;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(g_v2a_rate_map); ++i)
+> +		if (values & (1ULL << i)) {
+> +			if (!substream->hw.rate_min ||
+> +			    substream->hw.rate_min > g_v2a_rate_map[i].rate)
+> +				substream->hw.rate_min = g_v2a_rate_map[i].rate;
+> +
+> +			if (substream->hw.rate_max < g_v2a_rate_map[i].rate)
+> +				substream->hw.rate_max = g_v2a_rate_map[i].rate;
+> +
+> +			substream->hw.rates |= g_v2a_rate_map[i].alsa_bit;
+> +		}
+> +
+> +	if (!substream->hw.rates) {
+> +		dev_err(&vdev->dev,
+> +			"SID %u: no supported PCM frame rates found\n",
+> +			substream->sid);
+> +		return -EINVAL;
+> +	}
+> +
+> +	substream->hw.periods_min = pcm_periods_min;
+> +	substream->hw.periods_max = pcm_periods_max;
+> +
+> +	/*
+> +	 * We must ensure that there is enough space in the buffer to store
+> +	 * pcm_buffer_ms ms for the combination (Cmax, Smax, Rmax), where:
+> +	 *   Cmax = maximum supported number of channels,
+> +	 *   Smax = maximum supported sample size in bytes,
+> +	 *   Rmax = maximum supported frame rate.
+> +	 */
+> +	substream->hw.buffer_bytes_max =
+> +		sample_max * substream->hw.channels_max * pcm_buffer_ms *
+> +		(substream->hw.rate_max / MSEC_PER_SEC);
+> +
+> +	/* Align the buffer size to the page size */
+> +	substream->hw.buffer_bytes_max =
+> +		(substream->hw.buffer_bytes_max + PAGE_SIZE - 1) & -PAGE_SIZE;
+> +
+> +	/*
+> +	 * We must ensure that the minimum period size is enough to store
+> +	 * pcm_period_ms_min ms for the combination (Cmin, Smin, Rmin), where:
+> +	 *   Cmin = minimum supported number of channels,
+> +	 *   Smin = minimum supported sample size in bytes,
+> +	 *   Rmin = minimum supported frame rate.
+> +	 */
+> +	substream->hw.period_bytes_min =
+> +		sample_min * substream->hw.channels_min * pcm_period_ms_min *
+> +		(substream->hw.rate_min / MSEC_PER_SEC);
+> +
+> +	/*
+> +	 * We must ensure that the maximum period size is enough to store
+> +	 * pcm_period_ms_max ms for the combination (Cmax, Smax, Rmax).
+> +	 */
+> +	substream->hw.period_bytes_max =
+> +		sample_max * substream->hw.channels_max * pcm_period_ms_max *
+> +		(substream->hw.rate_max / MSEC_PER_SEC);
+> +
+> +	return 0;
 > +}
 > +
-> +static void (*smp_thermal_vector)(void) =
-> unexpected_thermal_interrupt;
-> +
-> +void thermal_set_handler(void (*handler)(void))
+> +/**
+> + * virtsnd_pcm_prealloc_pages() - Preallocate substream hardware buffer.
+> + * @substream: VirtIO substream.
+> + *
+> + * Context: Any context that permits to sleep.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +static int virtsnd_pcm_prealloc_pages(struct virtio_pcm_substream *substream)
 > +{
-> +	if (handler) {
-> +		WARN_ON(smp_thermal_vector !=
-> unexpected_thermal_interrupt);
-> +		smp_thermal_vector = handler;
-> +	} else {
-> +		smp_thermal_vector = unexpected_thermal_interrupt;
+> +	struct snd_pcm_substream *ksubstream = substream->substream;
+> +	size_t size = substream->hw.buffer_bytes_max;
+> +	struct device *data = snd_dma_continuous_data(GFP_KERNEL);
+> +
+> +	/*
+> +	 * We just allocate a CONTINUOUS buffer as it should work in any setup.
+> +	 *
+> +	 * If there is a need to use DEV(_XXX), then add this case here and
+> +	 * (probably) update the related source code in other places.
+> +	 */
+> +	snd_pcm_lib_preallocate_pages(ksubstream, SNDRV_DMA_TYPE_CONTINUOUS,
+> +				      data, size, size);
+> +
+> +	return 0;
+
+looks like it can be void.
+
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_find() - Find the PCM device for the specified node ID.
+> + * @snd: VirtIO sound device.
+> + * @nid: Function node ID.
+> + *
+> + * Context: Any context.
+> + * Return: a pointer to the PCM device or ERR_PTR(-ENOENT).
+> + */
+> +struct virtio_pcm *virtsnd_pcm_find(struct virtio_snd *snd, unsigned int nid)
+> +{
+> +	struct virtio_pcm *pcm;
+> +
+> +	list_for_each_entry(pcm, &snd->pcm_list, list)
+> +		if (pcm->nid == nid)
+> +			return pcm;
+> +
+> +	return ERR_PTR(-ENOENT);
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_find_or_create() - Find or create the PCM device for the
+> + *                                specified node ID.
+> + * @snd: VirtIO sound device.
+> + * @nid: Function node ID.
+> + *
+> + * Context: Any context that permits to sleep.
+> + * Return: a pointer to the PCM device or ERR_PTR(-errno).
+> + */
+> +struct virtio_pcm *virtsnd_pcm_find_or_create(struct virtio_snd *snd,
+> +					      unsigned int nid)
+> +{
+> +	struct virtio_device *vdev = snd->vdev;
+> +	struct virtio_pcm *pcm;
+> +
+> +	pcm = virtsnd_pcm_find(snd, nid);
+> +	if (!IS_ERR(pcm))
+> +		return pcm;
+> +
+> +	pcm = devm_kzalloc(&vdev->dev, sizeof(*pcm), GFP_KERNEL);
+> +	if (!pcm)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pcm->nid = nid;
+> +	list_add_tail(&pcm->list, &snd->pcm_list);
+> +
+> +	return pcm;
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_validate() - Validate if the device can be started.
+> + * @vdev: VirtIO parent device.
+> + *
+> + * Context: Any context.
+> + * Return: 0 on success, -EINVAL on failure.
+> + */
+> +int virtsnd_pcm_validate(struct virtio_device *vdev)
+> +{
+> +	if (pcm_periods_min < 2 || pcm_periods_min > pcm_periods_max) {
+> +		dev_err(&vdev->dev,
+> +			"invalid range [%u %u] of the number of PCM periods\n",
+> +			pcm_periods_min, pcm_periods_max);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!pcm_period_ms_min || pcm_period_ms_min > pcm_period_ms_max) {
+> +		dev_err(&vdev->dev,
+> +			"invalid range [%u %u] of the size of the PCM period\n",
+> +			pcm_period_ms_min, pcm_period_ms_max);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (pcm_buffer_ms < pcm_periods_min * pcm_period_ms_min) {
+> +		dev_err(&vdev->dev,
+> +			"pcm_buffer_ms(=%u) value cannot be < %u ms\n",
+> +			pcm_buffer_ms, pcm_periods_min * pcm_period_ms_min);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (pcm_period_ms_max > pcm_buffer_ms / 2) {
+> +		dev_err(&vdev->dev,
+> +			"pcm_period_ms_max(=%u) value cannot be > %u ms\n",
+> +			pcm_period_ms_max, pcm_buffer_ms / 2);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_parse_cfg() - Parse the stream configuration.
+> + * @snd: VirtIO sound device.
+> + *
+> + * This function is called during initial device initialization.
+> + *
+> + * Context: Any context that permits to sleep.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +int virtsnd_pcm_parse_cfg(struct virtio_snd *snd)
+> +{
+> +	struct virtio_device *vdev = snd->vdev;
+> +	struct virtio_snd_pcm_info *info;
+> +	unsigned int i;
+> +	int rc;
+> +
+> +	virtio_cread(vdev, struct virtio_snd_config, streams,
+> +		     &snd->nsubstreams);
+> +	if (!snd->nsubstreams)
+> +		return 0;
+> +
+> +	snd->substreams = devm_kcalloc(&vdev->dev, snd->nsubstreams,
+> +				       sizeof(*snd->substreams), GFP_KERNEL);
+> +	if (!snd->substreams)
+> +		return -ENOMEM;
+> +
+> +	info = devm_kcalloc(&vdev->dev, snd->nsubstreams, sizeof(*info),
+> +			    GFP_KERNEL);
+
+Just kmalloc() but make sure to free it in error cases below.
+
+> +	if (!info)
+> +		return -ENOMEM;
+> +
+> +	rc = virtsnd_ctl_query_info(snd, VIRTIO_SND_R_PCM_INFO, 0,
+> +				    snd->nsubstreams, sizeof(*info), info);
+> +	if (rc)
+> +		return rc;
+> +
+> +	for (i = 0; i < snd->nsubstreams; ++i) {
+> +		struct virtio_pcm_substream *substream = &snd->substreams[i];
+> +		struct virtio_pcm *pcm;
+> +
+> +		substream->snd = snd;
+> +		substream->sid = i;
+> +
+> +		rc = virtsnd_pcm_build_hw(substream, &info[i]);
+> +		if (rc)
+> +			return rc;
+> +
+> +		substream->nid = le32_to_cpu(info[i].hdr.hda_fn_nid);
+> +
+> +		pcm = virtsnd_pcm_find_or_create(snd, substream->nid);
+> +		if (IS_ERR(pcm))
+> +			return PTR_ERR(pcm);
+> +
+> +		switch (info[i].direction) {
+> +		case VIRTIO_SND_D_OUTPUT: {
+
+Same comment about braces and in other cases in the series.
+
+> +			substream->direction = SNDRV_PCM_STREAM_PLAYBACK;
+> +			break;
+> +		}
+> +		case VIRTIO_SND_D_INPUT: {
+> +			substream->direction = SNDRV_PCM_STREAM_CAPTURE;
+> +			break;
+> +		}
+> +		default: {
+> +			dev_err(&vdev->dev, "SID %u: unknown direction (%u)\n",
+> +				substream->sid, info[i].direction);
+> +			return -EINVAL;
+> +		}
+> +		}
+> +
+> +		pcm->streams[substream->direction].nsubstreams++;
+> +	}
+> +
+> +	devm_kfree(&vdev->dev, info);
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_build_devs() - Build ALSA PCM devices.
+> + * @snd: VirtIO sound device.
+> + *
+> + * Context: Any context that permits to sleep.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +int virtsnd_pcm_build_devs(struct virtio_snd *snd)
+> +{
+> +	struct virtio_device *vdev = snd->vdev;
+> +	struct virtio_pcm *pcm;
+> +	unsigned int i;
+> +	int rc;
+> +
+> +	list_for_each_entry(pcm, &snd->pcm_list, list) {
+> +		unsigned int npbs =
+> +			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].nsubstreams;
+> +		unsigned int ncps =
+> +			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].nsubstreams;
+> +
+> +		if (!npbs && !ncps)
+> +			continue;
+> +
+> +		rc = snd_pcm_new(snd->card, "virtio_snd", pcm->nid, npbs, ncps,
+> +				 &pcm->pcm);
+> +		if (rc) {
+> +			dev_err(&vdev->dev, "snd_pcm_new[%u] failed: %d\n",
+> +				pcm->nid, rc);
+> +			return rc;
+> +		}
+> +
+> +		pcm->pcm->info_flags = 0;
+> +		pcm->pcm->dev_class = SNDRV_PCM_CLASS_GENERIC;
+> +		pcm->pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
+> +		strscpy(pcm->pcm->name, "VirtIO PCM", sizeof(pcm->pcm->name));
+> +
+> +		pcm->pcm->private_data = pcm;
+> +
+> +		for (i = 0; i < ARRAY_SIZE(pcm->streams); ++i) {
+> +			struct virtio_pcm_stream *stream = &pcm->streams[i];
+> +
+> +			if (!stream->nsubstreams)
+> +				continue;
+> +
+> +			stream->substreams =
+> +				devm_kcalloc(&vdev->dev,
+> +					     stream->nsubstreams,
+> +					     sizeof(*stream->substreams),
+> +					     GFP_KERNEL);
+> +			if (!stream->substreams)
+> +				return -ENOMEM;
+> +
+> +			stream->nsubstreams = 0;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < snd->nsubstreams; ++i) {
+> +		struct virtio_pcm_substream *substream = &snd->substreams[i];
+> +		struct virtio_pcm_stream *stream;
+> +
+> +		pcm = virtsnd_pcm_find(snd, substream->nid);
+> +		if (IS_ERR(pcm))
+> +			return PTR_ERR(pcm);
+> +
+> +		stream = &pcm->streams[substream->direction];
+> +		stream->substreams[stream->nsubstreams++] = substream;
+> +	}
+> +
+> +	list_for_each_entry(pcm, &snd->pcm_list, list)
+> +		for (i = 0; i < ARRAY_SIZE(pcm->streams); ++i) {
+> +			struct virtio_pcm_stream *stream = &pcm->streams[i];
+> +			struct snd_pcm_str *kstream;
+> +			struct snd_pcm_substream *ksubstream;
+> +
+> +			if (!stream->nsubstreams)
+> +				continue;
+> +
+> +			kstream = &pcm->pcm->streams[i];
+> +			ksubstream = kstream->substream;
+> +
+> +			while (ksubstream) {
+
+cosmetic: this could be
+
+ 	for (substream = kstream->substream; ksubstream; ksubstream = ksubstream->next)
+
+> +				struct virtio_pcm_substream *substream =
+> +					stream->substreams[ksubstream->number];
+> +
+> +				substream->substream = ksubstream;
+> +				ksubstream = ksubstream->next;
+> +
+> +				rc = virtsnd_pcm_prealloc_pages(substream);
+> +				if (rc)
+> +					return rc;
+> +			}
+> +		}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+> + * @snd: VirtIO sound device.
+> + * @event: VirtIO sound event.
+> + *
+> + * Context: Interrupt context.
+> + */
+> +void virtsnd_pcm_event(struct virtio_snd *snd, struct virtio_snd_event *event)
+> +{
+> +	struct virtio_pcm_substream *substream;
+> +	unsigned int sid = le32_to_cpu(event->data);
+> +
+> +	if (sid >= snd->nsubstreams)
+> +		return;
+> +
+> +	substream = &snd->substreams[sid];
+> +
+> +	switch (le32_to_cpu(event->hdr.code)) {
+> +	case VIRTIO_SND_EVT_PCM_PERIOD_ELAPSED: {
+> +		/* TODO: deal with shmem elapsed period */
+> +		break;
+> +	}
+> +	case VIRTIO_SND_EVT_PCM_XRUN: {
+> +		break;
+> +	}
 > +	}
 > +}
-> +
-> +DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
-> +{
-> +	trace_thermal_apic_entry(THERMAL_APIC_VECTOR);
-> +	inc_irq_stat(irq_thermal_count);
-> +	smp_thermal_vector();
-> +	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
-> +	ack_APIC_irq();
-> +}
-> +#endif
-> diff --git a/drivers/thermal/intel/Kconfig
-> b/drivers/thermal/intel/Kconfig
-> index 8025b21f43fa..ce4f59213c7a 100644
-> --- a/drivers/thermal/intel/Kconfig
-> +++ b/drivers/thermal/intel/Kconfig
-> @@ -8,6 +8,10 @@ config INTEL_POWERCLAMP
->  	  enforce idle time which results in more package C-state
-> residency. The
->  	  user interface is exposed via generic thermal framework.
->  
-> +config X86_THERMAL_VECTOR
-> +	def_bool y
-> +	depends on X86 && CPU_SUP_INTEL && X86_LOCAL_APIC
-> +
->  config X86_PKG_TEMP_THERMAL
->  	tristate "X86 package temperature thermal driver"
->  	depends on X86_THERMAL_VECTOR
-> diff --git a/drivers/thermal/intel/Makefile
-> b/drivers/thermal/intel/Makefile
-> index 0d9736ced5d4..ff2ad30ef397 100644
-> --- a/drivers/thermal/intel/Makefile
-> +++ b/drivers/thermal/intel/Makefile
-> @@ -10,3 +10,4 @@ obj-$(CONFIG_INTEL_QUARK_DTS_THERMAL)	+=
-> intel_quark_dts_thermal.o
->  obj-$(CONFIG_INT340X_THERMAL)  += int340x_thermal/
->  obj-$(CONFIG_INTEL_BXT_PMIC_THERMAL) += intel_bxt_pmic_thermal.o
->  obj-$(CONFIG_INTEL_PCH_THERMAL)	+= intel_pch_thermal.o
-> +obj-$(CONFIG_X86_THERMAL_VECTOR) += therm_throt.o
-> diff --git a/arch/x86/kernel/cpu/mce/therm_throt.c
-> b/drivers/thermal/intel/therm_throt.c
-> similarity index 97%
-> rename from arch/x86/kernel/cpu/mce/therm_throt.c
-> rename to drivers/thermal/intel/therm_throt.c
-> index 5b1aa0f30655..4f12fcd0e40a 100644
-> --- a/arch/x86/kernel/cpu/mce/therm_throt.c
-> +++ b/drivers/thermal/intel/therm_throt.c
-> @@ -26,13 +26,11 @@
->  #include <linux/cpu.h>
->  
->  #include <asm/processor.h>
-> +#include <asm/thermal.h>
->  #include <asm/traps.h>
->  #include <asm/apic.h>
-> -#include <asm/mce.h>
-> +#include <asm/irq.h>
->  #include <asm/msr.h>
-> -#include <asm/trace/irq_vectors.h>
-> -
-> -#include "internal.h"
->  
->  /* How long to wait between reporting thermal events */
->  #define CHECK_INTERVAL		(300 * HZ)
-> @@ -606,23 +604,6 @@ static void intel_thermal_interrupt(void)
->  	}
->  }
->  
-> -static void unexpected_thermal_interrupt(void)
-> -{
-> -	pr_err("CPU%d: Unexpected LVT thermal interrupt!\n",
-> -		smp_processor_id());
-> -}
-> -
-> -static void (*smp_thermal_vector)(void) =
-> unexpected_thermal_interrupt;
-> -
-> -DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
-> -{
-> -	trace_thermal_apic_entry(THERMAL_APIC_VECTOR);
-> -	inc_irq_stat(irq_thermal_count);
-> -	smp_thermal_vector();
-> -	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
-> -	ack_APIC_irq();
-> -}
-> -
->  /* Thermal monitoring depends on APIC, ACPI and clock modulation */
->  static int intel_thermal_supported(struct cpuinfo_x86 *c)
->  {
-> @@ -718,7 +699,7 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
->  				| PACKAGE_THERM_INT_HIGH_ENABLE), h);
->  	}
->  
-> -	smp_thermal_vector = intel_thermal_interrupt;
-> +	thermal_set_handler(intel_thermal_interrupt);
->  
->  	rdmsr(MSR_IA32_MISC_ENABLE, l, h);
->  	wrmsr(MSR_IA32_MISC_ENABLE, l | MSR_IA32_MISC_ENABLE_TM1, h);
-> diff --git a/drivers/thermal/intel/x86_pkg_temp_thermal.c
-> b/drivers/thermal/intel/x86_pkg_temp_thermal.c
-> index b81c33202f41..090f9176ba62 100644
-> --- a/drivers/thermal/intel/x86_pkg_temp_thermal.c
-> +++ b/drivers/thermal/intel/x86_pkg_temp_thermal.c
-> @@ -17,8 +17,9 @@
->  #include <linux/pm.h>
->  #include <linux/thermal.h>
->  #include <linux/debugfs.h>
-> +
->  #include <asm/cpu_device_id.h>
-> -#include <asm/mce.h>
-> +#include <asm/thermal.h>
->  
->  /*
->  * Rate control delay: Idea is to introduce denounce effect
 
+Thanks
+Guennadi
