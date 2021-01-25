@@ -2,130 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71592303A06
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD90303A0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391905AbhAZKRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:17:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S2391910AbhAZKST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731812AbhAYTc4 (ORCPT
+        with ESMTP id S1729835AbhAYTeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:32:56 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AF3C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:32:15 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id c12so10567509qtv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:32:15 -0800 (PST)
+        Mon, 25 Jan 2021 14:34:20 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D693BC061573;
+        Mon, 25 Jan 2021 11:33:40 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id jx18so240511pjb.5;
+        Mon, 25 Jan 2021 11:33:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=VOhpnXYpKV2hDXXNcrYCS/RM+pFZU4VFPyezZuGNOE0=;
-        b=esIR2J7arBq4Gt+p9Kp5S/ncC/f9faT5SFqcL0Y92sT8pVsloAP67GKjRDWXeei5g9
-         ki+2Gr3txefIHRAFX1D6tIRKwE3EpEr8npC6DWJLMU4ZwNi6HfBab4/mW8BNWlRECr07
-         dnjjiHrxIsW8HJH7RtZrZdPUpNP/d5R+7g8c+k/fz59MOVqDt0oozJJ7wJ6OFyjjTLDp
-         E5UyyuuZ9fNjEJMA+1/+C/31DChxtosJaeQt1YY0lE33TlaeCpgr+De/ogSw63HP/5oF
-         ZAOmX1x363hRQS3NVti3PvkbBEdvWTcg6+xETNVNlPv57kAxsR9SoCiZX0dTI4BupAVa
-         ZB+g==
+        bh=YmWxybprGkUlor/mN/GWW2ybyHD5q29LT4+P3EdRmnA=;
+        b=EBNKjZuKHxW5GWIdGLvLCZ7chWb4KO0MKVIhKt3fRdJvaAs9jxM6ETrjqjFSG+hOcx
+         h5S+VpQyEwXNQ8VtntSyf/SQoUXVvLP4lUyC58rkfp3tgs9J+paSQXGcEKa52yXy7J4O
+         kP52t1kBs6KlnhOIj6WaHmbBC1YtPBk5SI8JsAOBaK2UaPtHDIWJRnLdul8swrqRHAcZ
+         AMC+FX2sapcUnJovE0Mkmu6G5Nfa+gorBVc9MhFr6aALhEtVlXPUhBsjEg9FbMWzpXCR
+         o6nmbgOPQmeO7kXntbtATshiWQQcq3s3uvWEcDnIj69e25CCDifde3FwVj+PJJZx9BRN
+         1kUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VOhpnXYpKV2hDXXNcrYCS/RM+pFZU4VFPyezZuGNOE0=;
-        b=E9hHL6rP7mGX6RbFb+ns072RJ1L1XdAoevKgXIDpzwaRObWYFgQEIdSs6qSTFkJTee
-         2MdQKz7K2u/yjsbHfvUkO+SA63PmErU39ckgb0E4cVC0fepNJX7Ms+/tEITwFjC9ybmy
-         lHVX5YTVZQ6EHlBQQckOIf5MdqpFHYaUmrLTLfzUjkTHw+iA8Ny7Rurt/hhwaeENKbk0
-         HsTC7B87VXGtDLx+JJB9darIYj8rbLipkx+Jvfw3Obs9w6MqSr7bVO43iSLr0Ub/hPDi
-         9pVw4Lq9KWQVqwEI5P3/+BPKtjvQ2aaEO8pEvOFKIsTOwZQUIEgShTGind0bV3mgeSUg
-         yz2w==
-X-Gm-Message-State: AOAM533zqFDPiRt4+/38RfPuQ4ATx25d39Qy1BVNT4W9PEE1q9K45Vax
-        gH5FxCsXJ+YKQ0Cvu4lHkuyqZg==
-X-Google-Smtp-Source: ABdhPJyJbzhJmUoMTfa/94ZpHv9VTdJpXSTGYLtpfKLbczIq4vHQ5lUpPi5DZb1PNqSbTE8+aUdzgw==
-X-Received: by 2002:aed:31c2:: with SMTP id 60mr1978366qth.218.1611603134482;
-        Mon, 25 Jan 2021 11:32:14 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:f735])
-        by smtp.gmail.com with ESMTPSA id a203sm12706672qkb.31.2021.01.25.11.32.13
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=YmWxybprGkUlor/mN/GWW2ybyHD5q29LT4+P3EdRmnA=;
+        b=gVe9ZHO1X8TW5z8BrRz6Aofs1OITyH0hgNZ+JAHNBHNfjTUsvD1blRum1GoV6n6fuX
+         kGa5AGAnAnqYNkUdHCaorqO+ZZYp1pIdIU17i5N73iwjD/sqpIgYNkMZQKzOAcC89sKQ
+         ev62Mpy+yVptBQ18PBWqr0M1Y/zAyYEC9EdoBUel6jdZ2UsT2GG9CfGezEsrGhHhSxir
+         rCnGj1dtlb+znBKAiA8ceogvITjMr69Sz2TWjFr7CQfNhPkFk5VZZIl2HTKbrkmBMiAe
+         sY/+ElODlmH+Uv/5NPtHyF8F3cEFJ5PURco1i+NqBrp11xxogDaURSH57bHXsv7xf00n
+         +A4w==
+X-Gm-Message-State: AOAM531uaQZwr3hIBGA22GTmifO8X4XJL5TIQgrxj3PpoHjoDr/EAjsC
+        x5FAJXQOZJ+WNp5A7XphMJw=
+X-Google-Smtp-Source: ABdhPJzWAbofIoJoeR7THVK7Sebi8NYFmGlVyxvi0QBQ4bvwgYBN/qHKMW2JhCbBaw0rqz/r5kDC9g==
+X-Received: by 2002:a17:90a:be10:: with SMTP id a16mr1817662pjs.78.1611603220402;
+        Mon, 25 Jan 2021 11:33:40 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:e8b4:4688:79de:94f3])
+        by smtp.gmail.com with ESMTPSA id w19sm17535415pgf.23.2021.01.25.11.33.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:32:13 -0800 (PST)
-Date:   Mon, 25 Jan 2021 14:32:12 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
+        Mon, 25 Jan 2021 11:33:38 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Mon, 25 Jan 2021 11:33:36 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-Message-ID: <YA8cvM9+wUX16l9L@cmpxchg.org>
-References: <20210125042441.20030-1-longman@redhat.com>
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
+        david@redhat.com, surenb@google.com, pullip.cho@samsung.com,
+        joaodias@google.com, hridya@google.com, john.stultz@linaro.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, hch@infradead.org, robh+dt@kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v4 2/4] mm: failfast mode with __GFP_NORETRY in
+ alloc_contig_range
+Message-ID: <YA8dEFSrHBb9muFr@google.com>
+References: <20210121175502.274391-1-minchan@kernel.org>
+ <20210121175502.274391-3-minchan@kernel.org>
+ <20210125131200.GG827@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125042441.20030-1-longman@redhat.com>
+In-Reply-To: <20210125131200.GG827@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 11:24:41PM -0500, Waiman Long wrote:
-> The commit 3fea5a499d57 ("mm: memcontrol: convert page
-> cache to a new mem_cgroup_charge() API") introduced a bug in
-> __add_to_page_cache_locked() causing the following splat:
+On Mon, Jan 25, 2021 at 02:12:00PM +0100, Michal Hocko wrote:
+> On Thu 21-01-21 09:55:00, Minchan Kim wrote:
+> > Contiguous memory allocation can be stalled due to waiting
+> > on page writeback and/or page lock which causes unpredictable
+> > delay. It's a unavoidable cost for the requestor to get *big*
+> > contiguous memory but it's expensive for *small* contiguous
+> > memory(e.g., order-4) because caller could retry the request
+> > in different range where would have easy migratable pages
+> > without stalling.
+> > 
+> > This patch introduce __GFP_NORETRY as compaction gfp_mask in
+> > alloc_contig_range so it will fail fast without blocking
+> > when it encounters pages needed waiting.
 > 
->  [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
->  [ 1570.068333] pages's memcg:ffff8889a4116000
->  [ 1570.068343] ------------[ cut here ]------------
->  [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
->  [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
->  [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
->  [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
->  [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
->    :
->  [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
->  [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
->  [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
->  [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
->  [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
->  [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
->  [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
->  [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
->  [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  [ 1570.068402] PKRU: 55555554
->  [ 1570.068404] Call Trace:
->  [ 1570.068407]  mem_cgroup_charge+0x175/0x770
->  [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
->  [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
->  [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
->  [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
->  [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
->  [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
->  [ 1570.068693]  read_pages+0x5b1/0xc40
->  [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
->  [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
->  [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
->  [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
->  [ 1570.068872]  new_sync_read+0x3af/0x610
->  [ 1570.068901]  vfs_read+0x339/0x4b0
->  [ 1570.068909]  ksys_read+0xf1/0x1c0
->  [ 1570.068920]  do_syscall_64+0x33/0x40
->  [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  [ 1570.068930] RIP: 0033:0x7ff039135595
+> I am not against controling how hard this allocator tries with gfp mask
+> but this changelog is rather void on any data and any user.
 > 
-> Before that commit, there was a try_charge() and commit_charge()
-> in __add_to_page_cache_locked(). These 2 separated charge functions
-> were replaced by a single mem_cgroup_charge(). However, it forgot
-> to add a matching mem_cgroup_uncharge() when the xarray insertion
-> failed with the page released back to the pool. Fix this by adding a
-> mem_cgroup_uncharge() call when insertion error happens.
+> It is also rather dubious to have retries when then caller says to not
+> retry.
+
+Since max_tries is 1 with ++tries, it shouldn't retry.
+
 > 
-> Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Also why didn't you consider GFP_NOWAIT semantic for non blocking mode?
 
-Thanks Waiman.
+GFP_NOWAIT seems to be low(specific) flags rather than the one I want to
+express. Even though I said only page writeback/lock in the description,
+the goal is to avoid costly operations we might find later so such
+"failfast", I thought GFP_NORETRY would be good fit.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Since this crashes the kernel, we should also add
-
-Cc: stable@vger.kernel.org # 5.8+
+> 
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > ---
+> >  mm/page_alloc.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index b031a5ae0bd5..1cdc3ee0b22e 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -8491,12 +8491,16 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+> >  	unsigned int nr_reclaimed;
+> >  	unsigned long pfn = start;
+> >  	unsigned int tries = 0;
+> > +	unsigned int max_tries = 5;
+> >  	int ret = 0;
+> >  	struct migration_target_control mtc = {
+> >  		.nid = zone_to_nid(cc->zone),
+> >  		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+> >  	};
+> >  
+> > +	if (cc->alloc_contig && cc->mode == MIGRATE_ASYNC)
+> > +		max_tries = 1;
+> > +
+> >  	migrate_prep();
+> >  
+> >  	while (pfn < end || !list_empty(&cc->migratepages)) {
+> > @@ -8513,7 +8517,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+> >  				break;
+> >  			}
+> >  			tries = 0;
+> > -		} else if (++tries == 5) {
+> > +		} else if (++tries == max_tries) {
+> >  			ret = ret < 0 ? ret : -EBUSY;
+> >  			break;
+> >  		}
+> > @@ -8564,7 +8568,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+> >  		.nr_migratepages = 0,
+> >  		.order = -1,
+> >  		.zone = page_zone(pfn_to_page(start)),
+> > -		.mode = MIGRATE_SYNC,
+> > +		.mode = gfp_mask & __GFP_NORETRY ? MIGRATE_ASYNC : MIGRATE_SYNC,
+> >  		.ignore_skip_hint = true,
+> >  		.no_set_skip_hint = true,
+> >  		.gfp_mask = current_gfp_context(gfp_mask),
+> > -- 
+> > 2.30.0.296.g2bfb1c46d8-goog
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
