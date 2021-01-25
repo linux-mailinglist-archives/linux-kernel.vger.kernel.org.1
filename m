@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D254B3027B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 812213027B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbhAYQXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:23:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33903 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730655AbhAYQW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:22:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611591658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d8rYmfLQ4//SMhY+Gkg+k76r3SnhHe3zISj6ZiBrG4Y=;
-        b=ihy6sFZp92x2XiIjRt3iskniFukXNZZJDGd2ntX9Q0jdadiEs6Xwcg83GFrSkxy/3pxM+k
-        +yrha1Y0lnH3Im/7yb0jCuctZHhyvEkXq0I0QcLfK3ReddhvKi9b5Esu02iNVE66p03jSD
-        uB9B3KY1J/n4Cf5Twm+CLbZwUPYSAPU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-CK0MpY7VNdCvcI1ywKLZEw-1; Mon, 25 Jan 2021 11:20:54 -0500
-X-MC-Unique: CK0MpY7VNdCvcI1ywKLZEw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0183107ACE4;
-        Mon, 25 Jan 2021 16:20:51 +0000 (UTC)
-Received: from gondolin (ovpn-113-161.ams2.redhat.com [10.36.113.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F2F566ACE5;
-        Mon, 25 Jan 2021 16:20:37 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 17:20:35 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210125172035.3b61b91b.cohuck@redhat.com>
-In-Reply-To: <20210122200421.GH4147@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
-        <20210122122503.4e492b96@omen.home.shazbot.org>
-        <20210122200421.GH4147@nvidia.com>
-Organization: Red Hat GmbH
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1730733AbhAYQX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:23:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730654AbhAYQWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:22:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A1A206DC;
+        Mon, 25 Jan 2021 16:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611591729;
+        bh=jjDQ2s0twTYbDW/MrsqbUCMxfOdavt2PC/vVMg9dDIY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NsuEGi6Huh4mL18fICoNaKMa9cGxpqvZIIN9rZbm1PGENLW3tj2AveO0C06m/wnEO
+         zQzx+7ND6OpTj9VknPEXKKG9Ow6715lTh5o0JPUMRxPcNmCNCw5GiB061xhmZ8e5vh
+         pz575lg8cO8sqLIvUJBQmyeXYZwCiUSpCoxKN0QS0zfuGaMnJyFq+Nt/mqCq9K7uXK
+         3JOhdp9PisjZdftOKBIPnHl/EMCrTLegOqZ5AsDtGQT4W0stm+hGjBOQhQXkUFlbFK
+         hNeXi+ibMZHQiSa9zd3QBaRzG2XbThC1kdMaTMO0zeeW3jStuhCKICAirM1Zz7lwxg
+         n/DTcKxkl8/fA==
+Message-ID: <91c81c68e183f3aaa5c982c5741710788413f0db.camel@kernel.org>
+Subject: Re: [PATCH v6 2/6] tracing: Rework synthetic event command parsing
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     axelrasmussen@google.com, mhiramat@kernel.org,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
+Date:   Mon, 25 Jan 2021 10:22:07 -0600
+In-Reply-To: <20210122160052.4b535511@gandalf.local.home>
+References: <cover.1611243025.git.zanussi@kernel.org>
+         <f3c2d2841307de0a7624a250f8f9653d435602c9.1611243025.git.zanussi@kernel.org>
+         <20210122160052.4b535511@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 16:04:21 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+Hi Steve,
 
-> On Fri, Jan 22, 2021 at 12:25:03PM -0700, Alex Williamson wrote:
-
-> > > In this way, we'll use the HW vendor driver core to manage the lifecycle
-> > > of these devices. This is reasonable since only the vendor driver knows
-> > > exactly about the status on its internal state and the capabilities of
-> > > its acceleratots, for example.  
-> > 
-> > But mdev provides that too, or the vendor could write their own vfio  
+On Fri, 2021-01-22 at 16:00 -0500, Steven Rostedt wrote:
+> On Thu, 21 Jan 2021 11:01:05 -0600
+> Tom Zanussi <zanussi@kernel.org> wrote:
 > 
-> Not really, mdev has a completely different lifecycle model that is
-> not very compatible with what is required here.
+> > @@ -1208,13 +1173,14 @@ static int __create_synth_event(int argc,
+> > const char *name, const char **argv)
+> >  	 *      where 'field' = type field_name
+> >  	 */
+> >  
+> > -	if (name[0] == '\0' || argc < 1) {
+> > +	mutex_lock(&event_mutex);
 > 
-> And writing a VFIO driver is basically what this does, just a large
-> portion of the driver is reusing code from the normal vfio-pci cases.
+> I'm curious, why is the event_mutex taken here? I'm guessing it is
+> first
+> needed for the find_synth_event() call, in which case, it can be
+> moved
+> after the is_good_name() check. I don't see why the goto out is
+> required
+> here or for the is_good_name() check.
+> 
 
-I think you cut out an important part of Alex' comment, so let me
-repost it here:
+Yes, it's for the find_synth_event() call, and yes, it should come
+after the is_good_name() check.  I'll move it and fix up the goto
+changes as a result.
 
-"But mdev provides that too, or the vendor could write their own vfio
-bus driver for the device, this doesn't really justify or delve deep
-enough to show examples beyond "TODO" remarks for a vendor driver
-actually interacting with vfio-pci-core in an extensible way.  One of
-the concerns of previous efforts was that it's trying to directly
-expose vfio-pci's implementation as an API for vendor drivers, I don't
-really see that anything has changed in that respect here."
+Thanks,
 
-I'm missing the bigger picture of how this api is supposed to work out,
-a driver with a lot of TODOs does not help much to figure out whether
-this split makes sense and is potentially useful for a number of use
-cases, or whether mdev (even with its different lifecycle model) or a
-different vfio bus driver might be a better fit for the more involved
-cases. (For example, can s390 ISM fit here?)
+Tom
+
+> -- Steve
+> 
+> > +
+> > +	if (name[0] == '\0') {
+> >  		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
+> > -		return -EINVAL;
+> > +		ret = -EINVAL;
+> > +		goto out;
+> >  	}
+> >  
+> > -	mutex_lock(&event_mutex);
+> > -
+> >  	if (!is_good_name(name)) {
+> >  		synth_err(SYNTH_ERR_BAD_NAME, errpos(name));
+> >  		ret = -EINVAL;
 
