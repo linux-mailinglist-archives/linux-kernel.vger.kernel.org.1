@@ -2,103 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE89E304A8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E27C304A7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbhAZFDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbhAYJ1o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:27:44 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF106C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:27:02 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id l9so17000153ejx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:27:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=sBSJE/VQs+urDGRZoMN/fPwNsUAQG3TV8aFrYnnJyfs=;
-        b=SP0RwF8OziTWkJh7GHLpDZWEi+ZwjKAlCiGsHzyuYHGeavvVO3SLzEefFPDqWJRbA3
-         GiK9bN7MjJ1XOP1JjiX+LfpP3hBklqscZMt/MWpZ0w/D1+icbVmCN3Mlk90DyENww+wC
-         RJkomSL/NNTSWomZaW9HcnVBpcqWX1KsqPl93VbohBrToiVGXL4efBIRo5btqkgcdgi9
-         ZwgO7vIVewjKvOCqdfld5CNk44cP4nDfrre5NONZM3Y8Lf9/q9wHngisQhMME2TmmmoK
-         bTzsD+74H0rwCdha7ipSBz8ovc7ri53AvNNz+wc17qvxrcE6o0ewYsov6r+0mB8Z+Iby
-         NJMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=sBSJE/VQs+urDGRZoMN/fPwNsUAQG3TV8aFrYnnJyfs=;
-        b=Z6hr94W/GSg6QN/j4UCMBoKXMHUNPN9ZyavM1P3wpfE/MP/+vqJwb90QD24mcl3mIn
-         vHSYUi+vttNlz3EKa/CIR2coAVuKSauFLEb9w/2jIfC68/PDkrfPCtXNOtPDOVvF++f2
-         E0a4Dfq5VZtgL6coy2aJybjD5bfNtDVKLz4bA7R4uKeS3h6nCwvVHzGLjz090dSA6AmH
-         pkRsjXkoz88zPRF7FEyRxTBfwE1IUXIUbUQ31baQD2/UNLa0ro48wwnjXeLfAvxC0PmI
-         6kLazxZb2m9/UBLgPqgmowem9pDMp2yvJeJil04xSiVT4dAcp61K3wkTA7oKAReHAos0
-         KXHA==
-X-Gm-Message-State: AOAM530I8NwMmLjRX3/sj/VD0Qfz/JK1D7m5eHb7EbKhKOe5QOAL72sh
-        uAFCBe+Zp6XCj53cgh1NFWAagr6yqBDkGQ==
-X-Google-Smtp-Source: ABdhPJyPhJFiO2hVE8X6EJHx99/oROIBk2JKEIMdnYOjDXwEqUt14UlensLuAkRozQr4pio67JhFcw==
-X-Received: by 2002:a17:906:c793:: with SMTP id cw19mr1469795ejb.246.1611566821653;
-        Mon, 25 Jan 2021 01:27:01 -0800 (PST)
-Received: from mars.fritz.box ([2a02:8070:b9d:f200:6139:400d:8db4:21a5])
-        by smtp.gmail.com with ESMTPSA id u17sm10112218edr.0.2021.01.25.01.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 01:27:01 -0800 (PST)
-Message-ID: <3753ba4c92fda75e646ccf629bb95e9d692ddbdb.camel@googlemail.com>
-Subject: [PATCH] regulator: pf8x00: set ramp_delay for bucks
-From:   Christoph Fritz <chf.fritz@googlemail.com>
-Reply-To: chf.fritz@googlemail.com
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 25 Jan 2021 10:27:00 +0100
-In-Reply-To: <1611222152.1561.5.camel@googlemail.com>
-References: <4c2e79d4fa96befdc9a6c59c3ff27b0a34f9fb56.camel@googlemail.com>
-         <1611222152.1561.5.camel@googlemail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        id S1730060AbhAZFFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:05:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52554 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726665AbhAYJ3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:29:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611566896; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9LVU9MBDgPmKro+tkJEFw+egp/WPUlx0kbZ1lKt0ri0=;
+        b=ipy2e0n1m7N0R8EfudvokDKOilZBkm0Um11HQJO2rciOwuwQ26XmZByDW+hpFLUu7Al6+d
+        lpcqzua43g5b2c9b9goESWVQqxidAQE+c/9r+M+SrQ+1wEMBU977u6g7yVNt8BVz9mIrgd
+        /jyR5tu5vN49T812X1cJ6RyeGsr/jXw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A4E7EACF4;
+        Mon, 25 Jan 2021 09:28:16 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 10:28:15 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+Message-ID: <20210125092815.GB827@dhcp22.suse.cz>
+References: <20210125042441.20030-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125042441.20030-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch sets ramp_delay for bucks to the max value given by the
-datasheet.
+On Sun 24-01-21 23:24:41, Waiman Long wrote:
+> The commit 3fea5a499d57 ("mm: memcontrol: convert page
+> cache to a new mem_cgroup_charge() API") introduced a bug in
+> __add_to_page_cache_locked() causing the following splat:
+> 
+>  [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
+>  [ 1570.068333] pages's memcg:ffff8889a4116000
+>  [ 1570.068343] ------------[ cut here ]------------
+>  [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
+>  [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
+>  [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
+>  [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
+>  [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
+>    :
+>  [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
+>  [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
+>  [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
+>  [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
+>  [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
+>  [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
+>  [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
+>  [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
+>  [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>  [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>  [ 1570.068402] PKRU: 55555554
+>  [ 1570.068404] Call Trace:
+>  [ 1570.068407]  mem_cgroup_charge+0x175/0x770
+>  [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
+>  [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
+>  [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
+>  [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
+>  [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
+>  [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
+>  [ 1570.068693]  read_pages+0x5b1/0xc40
+>  [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
+>  [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
+>  [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
+>  [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
+>  [ 1570.068872]  new_sync_read+0x3af/0x610
+>  [ 1570.068901]  vfs_read+0x339/0x4b0
+>  [ 1570.068909]  ksys_read+0xf1/0x1c0
+>  [ 1570.068920]  do_syscall_64+0x33/0x40
+>  [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>  [ 1570.068930] RIP: 0033:0x7ff039135595
+> 
+> Before that commit, there was a try_charge() and commit_charge()
+> in __add_to_page_cache_locked(). These 2 separated charge functions
+> were replaced by a single mem_cgroup_charge(). However, it forgot
+> to add a matching mem_cgroup_uncharge() when the xarray insertion
+> failed with the page released back to the pool. Fix this by adding a
+> mem_cgroup_uncharge() call when insertion error happens.
+> 
+> Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
----
- drivers/regulator/pf8x00-regulator.c | 2 ++
- 1 file changed, 2 insertions(+)
+OK, this is indeed a subtle bug. The patch aimed at simplifying the
+charge lifetime so that users do not really have to think about when to
+uncharge as that happens when the page is freed. fscache somehow breaks
+that assumption because it doesn't free up pages but it keeps some of
+them in the cache.
 
-diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
-index 1e5582d73405..edf5c88bf43e 100644
---- a/drivers/regulator/pf8x00-regulator.c
-+++ b/drivers/regulator/pf8x00-regulator.c
-@@ -351,6 +351,7 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
- 			.type = REGULATOR_VOLTAGE,		\
- 			.id = PF8X00_BUCK ## _id,		\
- 			.owner = THIS_MODULE,			\
-+			.ramp_delay = 19000,			\
- 			.linear_ranges = pf8x00_sw1_to_6_voltages, \
- 			.n_linear_ranges = \
- 				ARRAY_SIZE(pf8x00_sw1_to_6_voltages), \
-@@ -381,6 +382,7 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
- 			.type = REGULATOR_VOLTAGE,		\
- 			.id = PF8X00_BUCK7,		\
- 			.owner = THIS_MODULE,			\
-+			.ramp_delay = 19000,			\
- 			.volt_table = voltages,			\
- 			.vsel_reg = (base) + SW_RUN_VOLT,	\
- 			.vsel_mask = 0xff,			\
+I have tried to wrap my head around the cached object life time in
+fscache but failed and got lost in the maze. Is this the only instance
+of the problem? Would it make more sense to explicitly handle charges in
+the fscache code or there are other potential users to fall into this
+trap?
+
+> ---
+>  mm/filemap.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 5c9d564317a5..aa0e0fb04670 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -835,6 +835,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
+>  	XA_STATE(xas, &mapping->i_pages, offset);
+>  	int huge = PageHuge(page);
+>  	int error;
+> +	bool charged = false;
+>  
+>  	VM_BUG_ON_PAGE(!PageLocked(page), page);
+>  	VM_BUG_ON_PAGE(PageSwapBacked(page), page);
+> @@ -848,6 +849,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
+>  		error = mem_cgroup_charge(page, current->mm, gfp);
+>  		if (error)
+>  			goto error;
+> +		charged = true;
+>  	}
+>  
+>  	gfp &= GFP_RECLAIM_MASK;
+> @@ -896,6 +898,8 @@ noinline int __add_to_page_cache_locked(struct page *page,
+>  
+>  	if (xas_error(&xas)) {
+>  		error = xas_error(&xas);
+> +		if (charged)
+> +			mem_cgroup_uncharge(page);
+>  		goto error;
+>  	}
+>  
+> -- 
+> 2.18.1
+> 
+
 -- 
-2.29.2
-
-
+Michal Hocko
+SUSE Labs
