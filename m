@@ -2,221 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45635302429
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A03730242E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbhAYLRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:17:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40979 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727752AbhAYLFA (ORCPT
+        id S1727774AbhAYLUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:20:39 -0500
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:14452 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727489AbhAYLMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 06:05:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611572580;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YYrCK4S5sMWEuFTQpwhFCN56OBkg294iDAFXHwV5Xao=;
-        b=bS+0dwqkR6dkSCt7tbKIAuheKcD89hLTcq6GR2gHwWO5es0HkM1fGgsfpvrYBzI/8KIZ6P
-        O0+jMIw+YOP2TmdE23gEaWzDbzZj6g2ScNoOiDEQe2AMi2rQ+snYDPVr9vvKevCchjUFLk
-        SXEASZg4vAMzwvnPy+D1rU3R2PmvMGs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-106-H9fHBhPoPmeWcgTVHCKsog-1; Mon, 25 Jan 2021 06:02:58 -0500
-X-MC-Unique: H9fHBhPoPmeWcgTVHCKsog-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 79F89801AC3;
-        Mon, 25 Jan 2021 11:02:56 +0000 (UTC)
-Received: from [10.36.115.13] (ovpn-115-13.ams2.redhat.com [10.36.115.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD1DF1981B;
-        Mon, 25 Jan 2021 11:02:54 +0000 (UTC)
-Subject: Re: [PATCH 2/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
-        pasha.tatashin@soleen.com
-References: <20201217130758.11565-1-osalvador@suse.de>
- <20201217130758.11565-3-osalvador@suse.de>
- <21079c2d-67d0-fc59-8d7f-0795b3f8a3e3@redhat.com>
- <20210125103951.GA27851@linux> <20210125105557.GA28363@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <64b0dca6-4460-ec6c-66f6-88db24ec288f@redhat.com>
-Date:   Mon, 25 Jan 2021 12:02:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 25 Jan 2021 06:12:00 -0500
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 2C3E852170A;
+        Mon, 25 Jan 2021 14:09:53 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1611572993;
+        bh=+evlBQTjtpQnXiYbVvVD+UBl4Iu9ySd2jxnHdq45aQg=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=q0jv4H3ashr9crX3YEou+Rzj9m1dWEnReQ/oUaoJU/Fw9HHRnGRxrfxuMN8l93hgJ
+         fvkzBICDPGYVRLH4dB+tqsADqb+f2ZAyDqXBXzfxB9BScb6CUUq5R1S8ZwdUdO/Q2/
+         ko+76BmTmFI+/UKdILfJqks8EOvtBQCOrOGumQFU=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 52A4C5215D6;
+        Mon, 25 Jan 2021 14:09:52 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 25
+ Jan 2021 14:09:51 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+Subject: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET support
+Date:   Mon, 25 Jan 2021 14:09:00 +0300
+Message-ID: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210125105557.GA28363@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/25/2021 10:47:48
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 161362 [Jan 25 2021]
+X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/25/2021 10:51:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/25/2021 10:11:00 AM
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/25 10:04:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/25 05:31:00 #16022694
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.01.21 11:56, Oscar Salvador wrote:
-> On Mon, Jan 25, 2021 at 11:39:55AM +0100, Oscar Salvador wrote:
->>> Interresting, so we automatically support differeing sizeof(struct
->>> page). I guess it will be problematic in case of sizeof(struct page) !=
->>> 64, because then, we might not have multiples of 2MB for the memmap of a
->>> memory block.
->>>
->>> IIRC, it could happen that if we add two consecutive memory blocks, that
->>> the second one might reuse parts of the vmemmap residing on the first
->>> memory block. If you remove the first one, you might be in trouble.
->>>
->>> E.g., on x86-64
->>>  vmemmap_populate()->vmemmap_populate_hugepages()->vmemmap_alloc_block_buf():
->>> - Populate a huge page
->>>
->>> vmemmap_free()->remove_pagetable()...->remove_pmd_table():
->>> - memchr_inv() will leave the hugepage populated.
->>>
->>> Do we want to fence that off, maybe in mhp_supports_memmap_on_memory()?
->>> Or do we somehow want to fix that? We should never populate partial huge
->>> pages from an altmap ...
->>>
->>> But maybe I am missing something.
->>
->> No, you are not missing anything.
->>
->> I think that remove_pmd_table() should be fixed.
->> vmemmap_populate_hugepages() allocates PMD_SIZE chunk and marks the PMD as
->> PAGE_KERNEL_LARGE, so when remove_pmd_table() sees that 1) the PMD
->> is large and 2) the chunk is not aligned, the memset() should be writing
->> PAGE_INUSE for a PMD chunk.
->>
->> I do not really a see a reason why this should not happen.
->> Actually, we will be leaving pagetables behind as we never get to free
->> the PMD chunk when sizeof(struct page) is not a multiple of 2MB.
->>
->> I plan to fix remove_pmd_table(), but for now let us not allow to use this feature
->> if the size of a struct page is not 64.
->> Let us keep it simply for the time being, shall we?
-> 
-> My first intention was:
-> 
-> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> index b5a3fa4033d3..0c9756a2eb24 100644
-> --- a/arch/x86/mm/init_64.c
-> +++ b/arch/x86/mm/init_64.c
-> @@ -1044,32 +1044,14 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
->  			continue;
->  
->  		if (pmd_large(*pmd)) {
-> -			if (IS_ALIGNED(addr, PMD_SIZE) &&
-> -			    IS_ALIGNED(next, PMD_SIZE)) {
-> -				if (!direct)
-> -					free_hugepage_table(pmd_page(*pmd),
-> -							    altmap);
-> -
-> -				spin_lock(&init_mm.page_table_lock);
-> -				pmd_clear(pmd);
-> -				spin_unlock(&init_mm.page_table_lock);
-> -				pages++;
-> -			} else {
-> -				/* If here, we are freeing vmemmap pages. */
-> -				memset((void *)addr, PAGE_INUSE, next - addr);
-> -
-> -				page_addr = page_address(pmd_page(*pmd));
-> -				if (!memchr_inv(page_addr, PAGE_INUSE,
-> -						PMD_SIZE)) {
-> -					free_hugepage_table(pmd_page(*pmd),
-> -							    altmap);
-> -
-> -					spin_lock(&init_mm.page_table_lock);
-> -					pmd_clear(pmd);
-> -					spin_unlock(&init_mm.page_table_lock);
-> -				}
-> -			}
-> +			if (!direct)
-> +				free_hugepage_table(pmd_page(*pmd),
-> +						    altmap);
->  
-> +			spin_lock(&init_mm.page_table_lock);
-> +			pmd_clear(pmd);
-> +			spin_unlock(&init_mm.page_table_lock);
-> +			pages++;
->  			continue;
->  		}
-> 
-> I did not try it out yet and this might explode badly, but AFAICS, a PMD size
-> chunk is always allocated even when the section does not spand 2MB.
-> E.g: sizeof(struct page) = 56.
-> 
-> PAGES_PER_SECTION * 64 = 2097152
-> PAGES_PER_SECTION * 56 = 1835008
-> 
-> Even in the latter case, vmemmap_populate_hugepages will allocate a PMD size chunk
-> to satisfy the unaligned range.
-> So, unless I am missing something, it should not be a problem to free that 2MB in
-> remove_pmd_table when 1) the PMD is large and 2) the range is not aligned.
+	This patchset impelements support of SOCK_SEQPACKET for virtio
+transport.
+	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+do it, new packet operation was added: it marks start of record (with
+record length in header), such packet doesn't carry any data.  To send
+record, packet with start marker is sent first, then all data is sent
+as usual 'RW' packets. On receiver's side, length of record is known
+from packet with start record marker. Now as  packets of one socket
+are not reordered neither on vsock nor on vhost transport layers, such
+marker allows to restore original record on receiver's side. If user's
+buffer is smaller that record length, when all out of size data is
+dropped.
+	Maximum length of datagram is not limited as in stream socket,
+because same credit logic is used. Difference with stream socket is
+that user is not woken up until whole record is received or error
+occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+	Tests also implemented.
 
-Assume you have two consecutive memory blocks with 56 sizeof(struct page).
-The first one allocates a PMD (2097152) but only consumes 1835008, the second
-one reuses the remaining part and allocates another PMD (1835008),
-only using parts of it.
+ Arseny Krasnov (13):
+  af_vsock: prepare for SOCK_SEQPACKET support
+  af_vsock: prepare 'vsock_connectible_recvmsg()'
+  af_vsock: implement SEQPACKET rx loop
+  af_vsock: implement send logic for SOCK_SEQPACKET
+  af_vsock: rest of SEQPACKET support
+  af_vsock: update comments for stream sockets
+  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+  virtio/vsock: fetch length for SEQPACKET record
+  virtio/vsock: add SEQPACKET receive logic
+  virtio/vsock: rest of SOCK_SEQPACKET support
+  virtio/vsock: setup SEQPACKET ops for transport
+  vhost/vsock: setup SEQPACKET ops for transport
+  vsock_test: add SOCK_SEQPACKET tests
 
-Ripping out a memory block, along with the PMD in the vmemmap would
-remove parts of the vmemmap of another memory block.
+ drivers/vhost/vsock.c                   |   7 +-
+ include/linux/virtio_vsock.h            |  12 +
+ include/net/af_vsock.h                  |   6 +
+ include/uapi/linux/virtio_vsock.h       |   9 +
+ net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
+ net/vmw_vsock/virtio_transport.c        |   4 +
+ net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
+ tools/testing/vsock/util.c              |  32 +-
+ tools/testing/vsock/util.h              |   3 +
+ tools/testing/vsock/vsock_test.c        | 126 +++++
+ 10 files changed, 862 insertions(+), 175 deletions(-)
 
-You might want to take a look at:
+ TODO:
+ - Support for record integrity control. As transport could drop some
+   packets, something like "record-id" and record end marker need to
+   be implemented. Idea is that SEQ_BEGIN packet carries both record
+   length and record id, end marker(let it be SEQ_END) carries only
+   record id. To be sure that no one packet was lost, receiver checks
+   length of data between SEQ_BEGIN and SEQ_END(it must be same with
+   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
+   means that both markers were not dropped. I think that easiest way
+   to implement record id for SEQ_BEGIN is to reuse another field of
+   packet header(SEQ_BEGIN already uses 'flags' as record length).For
+   SEQ_END record id could be stored in 'flags'.
+     Another way to implement it, is to move metadata of both SEQ_END
+   and SEQ_BEGIN to payload. But this approach has problem, because
+   if we move something to payload, such payload is accounted by
+   credit logic, which fragments payload, while payload with record
+   length and id couldn't be fragmented. One way to overcome it is to
+   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
+   is to update 'stream_has_space()' function: current implementation
+   return non-zero when at least 1 byte is allowed to use,but updated
+   version will have extra argument, which is needed length. For 'RW'
+   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
+   record id) and for SEQ_END it is sizeof(record id).
 
-commit 2c114df071935762ffa88144cdab03d84beaa702
-Author: David Hildenbrand <david@redhat.com>
-Date:   Wed Jul 22 11:45:58 2020 +0200
+ - What to do, when server doesn't support SOCK_SEQPACKET. In current
+   implementation RST is replied in the same way when listening port
+   is not found. I think that current RST is enough,because case when
+   server doesn't support SEQ_PACKET is same when listener missed(e.g.
+   no listener in both cases).
 
-    s390/vmemmap: avoid memset(PAGE_UNUSED) when adding consecutive sections
-    
-    Let's avoid memset(PAGE_UNUSED) when adding consecutive sections,
-    whereby the vmemmap of a single section does not span full PMDs.
-    
-    Cc: Vasily Gorbik <gor@linux.ibm.com>
-    Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-    Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-    Signed-off-by: David Hildenbrand <david@redhat.com>
-    Message-Id: <20200722094558.9828-10-david@redhat.com>
-    Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+ v2 -> v3:
+ - patches reorganized: split for prepare and implementation patches
+ - local variables are declared in "Reverse Christmas tree" manner
+ - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
+   fields access
+ - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
+   between stream and seqpacket sockets.
+ - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
+ - af_vsock.c: 'vsock_wait_data()' refactored.
 
-commit cd5781d63eaf6dbf89532d8c7c214786b767ee16
-Author: David Hildenbrand <david@redhat.com>
-Date:   Wed Jul 22 11:45:57 2020 +0200
+ v1 -> v2:
+ - patches reordered: af_vsock.c related changes now before virtio vsock
+ - patches reorganized: more small patches, where +/- are not mixed
+ - tests for SOCK_SEQPACKET added
+ - all commit messages updated
+ - af_vsock.c: 'vsock_pre_recv_check()' inlined to
+   'vsock_connectible_recvmsg()'
+ - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
+   was not found
+ - virtio_transport_common.c: transport callback for seqpacket dequeue
+ - virtio_transport_common.c: simplified
+   'virtio_transport_recv_connected()'
+ - virtio_transport_common.c: send reset on socket and packet type
+			      mismatch.
 
-    s390/vmemmap: remember unused sub-pmd ranges
-    
-    With a memmap size of 56 bytes or 72 bytes per page, the memmap for a
-    256 MB section won't span full PMDs. As we populate single sections and
-    depopulate single sections, the depopulation step would not be able to
-    free all vmemmap pmds anymore.
-    
-    Do it similarly to x86, marking the unused memmap ranges in a special way
-    (pad it with 0xFD).
-    
-    This allows us to add/remove sections, cleaning up all allocated
-    vmemmap pages even if the memmap size is not multiple of 16 bytes per page.
-    
-    A 56 byte memmap can, for example, be created with !CONFIG_MEMCG and
-    !CONFIG_SLUB.
-    
-    Cc: Vasily Gorbik <gor@linux.ibm.com>
-    Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-    Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-    Signed-off-by: David Hildenbrand <david@redhat.com>
-    Message-Id: <20200722094558.9828-9-david@redhat.com>
-    Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-
-
-But again, the root issue I see is that we can play such games with anonymous pages, but not with
-memory residing in the altmap space.
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
