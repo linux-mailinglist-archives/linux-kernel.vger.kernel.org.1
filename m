@@ -2,283 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1B5303036
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EFE303039
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732877AbhAYXcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732691AbhAYXcS (ORCPT
+        id S1732906AbhAYXdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:33:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25040 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732913AbhAYXd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:32:18 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B82C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:31:36 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id x78so14975191ybe.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:31:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VpoHZpW45x5Q1xqNu4qe5ULC7DVnQG+weaESNwdYU/Y=;
-        b=hXf3/LrUBVDMHG7XDdbWO+b/wkhHLdYS6/7B6NVreqFYR1YvKKIzeALIhOPGtF03Z3
-         yIrdSk7KwPI46iIkfrtx1lGyajRtApaIhp8+2woRpg0AKj8ReFxcvuNE/pxVs/i8vPP5
-         wQACDgCN7EoV7bjdLF4EwqWPYz+z+SCIhSMEqFgagDvDSbcqmD8V6B4TOiDCTEI/iJT3
-         NeBQdtAuwdojR6s/Z9Ibe0iCtUtCNJ8CAC5uxnu1NcE8cAx13gJ5u2Qz4OyB2H+Ltdrn
-         4qX4XUY+sETExEuKOdw9hdia0tamutQjqOeXR6tKfDG8pm04e9jzP3p1+aVaZvM1UUuZ
-         OEPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VpoHZpW45x5Q1xqNu4qe5ULC7DVnQG+weaESNwdYU/Y=;
-        b=cyFyBlANga2OO79FtakOACrShQZ/99P9QAyWEc8LNQsmwbPOiZoOgsDLMCKqgy2pMQ
-         Yc9RHqtMXQjJJwkTsOlTO7z4sPEd4uUzHUxHQVQfi/oLw4XrjIvhDgSIGriQirqrIiLd
-         O7+10ElnHAwVCcVeZzFy0rL16h5s7h9Q5Ofdl1HDRv6dX6KW0r5QY0Lxkbidw6WVVE2J
-         NiO+THqgtH9tN/z6RCLvq8no5ELdeRExD1nQbSQHGOrNJFBQfL8wb9T2O8eG679abnRm
-         VEWfjuHhy4o1CJSyS5RUJlEWu1H6l7mIkGeUw/OBh4djhX1uAmatVgAWaicCDDdcbROO
-         mCoA==
-X-Gm-Message-State: AOAM5306isNoWAUBXf2lhTEy9TA/XLycelfjHkaNq7IQhdg4X8qKZwLz
-        JWuXkIoiXEBTLSm+/MNHJDgLkjduFZcqqH3Rfx4+Yg==
-X-Google-Smtp-Source: ABdhPJxbKvkKHRmC6H8UGlr73XJem26T2iUKVRnzq8mlzWYnmNMIDLkXKIYj6ZJGtH4WokIoMhX8ydbLfjkvPhDTaxA=
-X-Received: by 2002:a25:8b8b:: with SMTP id j11mr3936661ybl.310.1611617495239;
- Mon, 25 Jan 2021 15:31:35 -0800 (PST)
+        Mon, 25 Jan 2021 18:33:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611617519;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j42RI3rK5rRixflFMh1UUzbe7YwSLEe6oi69dQNNK2c=;
+        b=JF2Z1LbYshowPJgcDnEAgt8dJuCl5Mubrazpp4A1x6BVwSux1psqKM6iE4uuwuS4GZvwR6
+        t/ouK52u7Rs/6tEqqOXkKcn+/UY86xblDvbFGiqPIiH1JX3eBA9C/i2+iX7pnROo2QNKI2
+        UoHY/MGrkWHSooC24q+QE/gtoCakXzs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-213-zYSd0EcUM82xDSWrdCG0Uw-1; Mon, 25 Jan 2021 18:31:55 -0500
+X-MC-Unique: zYSd0EcUM82xDSWrdCG0Uw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1483806674;
+        Mon, 25 Jan 2021 23:31:53 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A68086A254;
+        Mon, 25 Jan 2021 23:31:52 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 16:31:51 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
+        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
+        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
+        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
+        <gmataev@nvidia.com>, <cjia@nvidia.com>
+Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
+Message-ID: <20210125163151.5e0aeecb@omen.home.shazbot.org>
+In-Reply-To: <20210125180440.GR4147@nvidia.com>
+References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
+        <20210122122503.4e492b96@omen.home.shazbot.org>
+        <20210122200421.GH4147@nvidia.com>
+        <20210125172035.3b61b91b.cohuck@redhat.com>
+        <20210125180440.GR4147@nvidia.com>
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <20201218031703.3053753-6-saravanak@google.com> <CAMuHMdWDAg6+utMDLunPXmVtnP+13G2s0E-Fcnkc9bkNBs-cEg@mail.gmail.com>
- <86db7747ea6d48eebbf40a5855240d14@kernel.org> <CAMuHMdUUX22D7gV-LtDJ4jcxD=TD6soWzP=gUy4EqdFFAntoGA@mail.gmail.com>
- <CAGETcx_aroLLf_U50=KgfOBL-DW+VrgvgrSNEyHAyeSxWKZTgQ@mail.gmail.com>
- <CAMuHMdVTKEy3rbdYYUKS+L1pY0y0ctMWRXNf7o+hJWyGR7L-Dg@mail.gmail.com>
- <CAGETcx-ax00kGq=u_XCaQ0phgc_iCqtqD7k2aiQ1qSLFmrQG=g@mail.gmail.com>
- <CAGETcx_dVCsLObf_APFur6jNiS_7+ymXEjDx4Sy-tBoMCSx71w@mail.gmail.com>
- <CAMuHMdUnxSW+a8Z2dRg4T61VPwJXFBeJ+myFY=xb+mQZmmF0Eg@mail.gmail.com>
- <CAMuHMdVhwdq32krAxgo3UKdVkciwnhN3sRgHrbZ6xPkTvJgh2w@mail.gmail.com>
- <CAGETcx_g60Vw1K0c5JngoLGGYUHh7PCKCsFopRv5++EpKfk6KA@mail.gmail.com> <CAMuHMdVDZogiy78CTg4p8pkAhv2MyGQiDgfnawAXQFbNta1jgg@mail.gmail.com>
-In-Reply-To: <CAMuHMdVDZogiy78CTg4p8pkAhv2MyGQiDgfnawAXQFbNta1jgg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 25 Jan 2021 15:30:58 -0800
-Message-ID: <CAGETcx-GMR1F01TeRW09=sRuA8FF088kyuCnqsP6iF5ePzXFqg@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 8:04 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Wed, Jan 20, 2021 at 6:23 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Wed, Jan 20, 2021 at 6:27 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Wed, Jan 20, 2021 at 10:40 AM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > > > On Tue, Jan 19, 2021 at 10:51 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > On Tue, Jan 19, 2021 at 10:08 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > On Tue, Jan 19, 2021 at 1:05 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > > On Mon, Jan 18, 2021 at 10:19 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > > > On Mon, Jan 18, 2021 at 11:16 AM Geert Uytterhoeven
-> > > > > > > > <geert@linux-m68k.org> wrote:
-> > > > > > > > > On Mon, Jan 18, 2021 at 6:59 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > > > > > > > > On 2021-01-18 17:39, Geert Uytterhoeven wrote:
-> > > > > > > > > > > On Fri, Dec 18, 2020 at 4:34 AM Saravana Kannan <saravanak@google.com>
-> > > > > > > > > > > wrote:
-> > > > > > > > > > >> Cyclic dependencies in some firmware was one of the last remaining
-> > > > > > > > > > >> reasons fw_devlink=on couldn't be set by default. Now that cyclic
-> > > > > > > > > > >> dependencies don't block probing, set fw_devlink=on by default.
-> > > > > > > > > > >>
-> > > > > > > > > > >> Setting fw_devlink=on by default brings a bunch of benefits
-> > > > > > > > > > >> (currently,
-> > > > > > > > > > >> only for systems with device tree firmware):
-> > > > > > > > > > >> * Significantly cuts down deferred probes.
-> > > > > > > > > > >> * Device probe is effectively attempted in graph order.
-> > > > > > > > > > >> * Makes it much easier to load drivers as modules without having to
-> > > > > > > > > > >>   worry about functional dependencies between modules (depmod is still
-> > > > > > > > > > >>   needed for symbol dependencies).
-> > > > > > > > > > >>
-> > > > > > > > > > >> If this patch prevents some devices from probing, it's very likely due
-> > > > > > > > > > >> to the system having one or more device drivers that "probe"/set up a
-> > > > > > > > > > >> device (DT node with compatible property) without creating a struct
-> > > > > > > > > > >> device for it.  If we hit such cases, the device drivers need to be
-> > > > > > > > > > >> fixed so that they populate struct devices and probe them like normal
-> > > > > > > > > > >> device drivers so that the driver core is aware of the devices and
-> > > > > > > > > > >> their
-> > > > > > > > > > >> status. See [1] for an example of such a case.
-> > > > > > > > > > >>
-> > > > > > > > > > >> [1] -
-> > > > > > > > > > >> https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
-> > > > > > > > > > >> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > > > > > >
-> > > > > > > > > > > Shimoda-san reported that next-20210111 and later fail to boot
-> > > > > > > > > > > on Renesas R-Car Gen3 platforms. No output is seen, unless earlycon
-> > > > > > > > > > > is enabled.
-> > > > > > > > > > >
-> > > > > > > > > > > I have bisected this to commit e590474768f1cc04 ("driver core: Set
-> > > > > > > > > > > fw_devlink=on by default").
->
-> > > > > You'll need to convert drivers/soc/renesas/rcar-sysc.c into a platform
-> > > > > driver. You already have a platform device created for it. So just go
-> > > > > ahead and probe it with a platform driver. See what Marek did here
-> > > > > [1].
-> > > > >
-> > > > > You probably had to implement it as an "initcall based driver"
-> > > > > because you had to play initcall chicken to make sure the PD hardware
-> > > > > was initialized before the consumers. With fw_devlink=on you won't
-> > > > > have to worry about that. As an added benefit of implementing a proper
-> > > > > platform driver, you can  actually implement runtime PM now, your
-> > > > > suspend/resume would be more robust, etc.
-> > > >
-> > > > On R-Car H1, the system controller driver needs to be active before
-> > > > secondary CPU setup, hence the early_initcall().
-> > > > platform_bus_init() is called after that, so this is gonna need a split
-> > > > initialization.  Or a dummy platform driver to make devlinks think
-> > > > everything is fine ;-)
-> >
-> > I was wondering if you could still probe the "not needed by CPU" power
-> > domains (if there are any) as devices. Using driver-core brings you
-> > good things :)
->
->  1. That would mean splitting the driver in two parts, looping over the
->     tables twice, while everything can just be done in the first pass?
->
->  2. Which "good things" do you have in mind? Making the driver modular?
->     Ignoring the dependency for secondary CPU setup on R-Car H1, this
->     driver could indeed be modular on R-Car Gen2 and Gen3, as long as
->     the boot loader would pass a ramdisk with the module to the kernel.
->     The ramdisk could not be loaded in any other way, as all I/O
->     devices are part of a PM Domain, and thus depend on the SYSC driver.
->     Note that on some (non-R-Car) SoCs, the timers may be part of a PM
->     Domain, too.
+On Mon, 25 Jan 2021 14:04:40 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-"Good things" like being able to implement runtime pm, suspend/resume
-robustness (due to device links). There were a few more benefits I had
-in mind when I wrote it, but I don't remember what it was.
+> On Mon, Jan 25, 2021 at 05:20:35PM +0100, Cornelia Huck wrote:
+> 
+> > I think you cut out an important part of Alex' comment, so let me
+> > repost it here:  
+> 
+> Yes, I've already respnded to this.
 
-The double pass itself is not that big of a deal IMHO. It probably
-adds less than a millisecond.
+Not really.  For example, how can struct vfio_pci_device be exposed
+as-is to the various drivers that may be derived from vfio-pci-core?
+As soon as such a driver starts touching those fields or performing
+operations on their own without making proper use of those fields, then
+the API is not the simple set of exported functions below, it's the
+entire mechanics of every bit of data in that structure and the
+structures it includes.  If we're making a library then we need to
+define public and private data.  We're just tossing everything here
+into the private header which is necessarily public to the derived
+drivers if they're to have any means to operate on the device.
 
->
-> > > > So basically all producer DT drivers not using a platform (or e.g. i2c)
-> > > > driver are now broken?
-> > > > Including all clock drivers using CLK_OF_DECLARE()?
-> > >
-> > > Oh, of_link_to_phandle() ignores device nodes where OF_POPULATED
-> > > is set, and of_clk_init() sets that flag.  So rcar-sysc should do so, too.
-> > > Patch sent.
-> > > >     $ git grep -L "\<[a-z0-9]*_driver\>" -- $(git grep -l
-> > > > "\.compatible\>") | wc -l
-> > > >     249
-> > > >
-> > > > (includes false positives)
-> > > >
-> > > > I doubt they'll all get fixed for v5.12, as we're already at rc4...
-> > >
-> > > Still more than 100 drivers to fix?
-> >
-> > Not fully sure what the grep is trying to catch, but fw_devlink
-> > supports devices on any bus (i2c, platform, pci, etc). So that's not a
-> > problem. It'll be a problem when a struct device is never created for
-> > a real device. Or if it's created, but never probed.
->
-> The grep tries to catch drivers using DT matching (i.e. matching ".compatible")
-> and not using a driver model driver (i.e. not matching "*_driver").
+> > I'm missing the bigger picture of how this api is supposed to work out,
+> > a driver with a lot of TODOs does not help much to figure out whether
+> > this split makes sense and is potentially useful for a number of use
+> > cases  
+> 
+> The change to vfio-pci is essentially complete, ignoring some
+> additional cleanup. I'm not sure seeing details how some mlx5 driver
+> uses it will be substantially more informative if it is useful for
+> S390, or Intel.
 
-Ah TIL about -L and -l. Thanks.
+We're supposed to be enlightened by a vendor driver that does nothing
+more than pass the opaque device_data through to the core functions,
+but in reality this is exactly the point of concern above.  At a
+minimum that vendor driver needs to look at the vdev to get the pdev,
+but then what else does it look at, consume, or modify.  Now we have
+vendor drivers misusing the core because it's not clear which fields
+are private and how public fields can be used safely, any core
+extensions potentially break vendor drivers, etc.  We're only even hand
+waving that existing device specific support could be farmed out to new
+device specific drivers without even going to the effort to prove that.
+ 
+> As far as API it is clear to see:
+> 
+> > +/* Exported functions */
+> > +struct vfio_pci_device *vfio_create_pci_device(struct pci_dev *pdev,
+> > +               const struct vfio_device_ops *vfio_pci_ops, void *dd_data);
 
-> > I'm also looking into a bunch of other options for fallback when
-> > fw_devlink=on doesn't work. Too much to explain here -- patches are
-> > easier :)
->
-> I gave it a try on all Renesas platforms I have local access to:
+Nit, dd_data is never defined or used.  The function returns a struct
+vfio_pci_device, but I'm not sure whether that's supposed to be public
+or private.  IMO, it should be private and perhaps access functions
+should be provided for fields we consider public.
 
-Thanks a lot! Really appreciate the testing and reporting.
+> > +void vfio_destroy_pci_device(struct pci_dev *pdev);  
+> 
+> Called from probe/remove of the consuming driver
+> 
+> > +int vfio_pci_core_open(void *device_data);
+> > +void vfio_pci_core_release(void *device_data);
+> > +long vfio_pci_core_ioctl(void *device_data, unsigned int cmd,
+> > +               unsigned long arg);
+> > +ssize_t vfio_pci_core_read(void *device_data, char __user *buf, size_t count,
+> > +               loff_t *ppos);
+> > +ssize_t vfio_pci_core_write(void *device_data, const char __user *buf,
+> > +               size_t count, loff_t *ppos);
+> > +int vfio_pci_core_mmap(void *device_data, struct vm_area_struct *vma);
+> > +void vfio_pci_core_request(void *device_data, unsigned int count);
+> > +int vfio_pci_core_match(void *device_data, char *buf);  
+> 
+> Called from vfio_device_ops and has the existing well defined API of
+> the matching ops.
 
->
->   - R-Car Gen2/Gen3:
->     Setting OF_POPULATED in the rcar-sysc driver[1] made my standard
->     config boot again.  Remaining issues:
->       - CONFIG_IPMMU_VMSA=n hangs: supplier fe990000.iommu not ready
->       - CONFIG_RCAR_DMAC=n hangs: supplier e7310000.dma-controller not ready
->         Note that Ethernet does not use the R-Car DMAC, so DHCP works.
->         Nevertheless, after that everything hangs, and the board does not
->         respond to pings anymore
->     Both IOMMU and DMAC dependencies are optional, hence should be dropped
->     at late boot (late_initcall?).
+All of these require using struct vfio_pci_device to do anything beyond
+the stub implementation in 3/3.
 
-Yeah, I'm looking into a good/clean way of handling optional
-suppliers. There are a bunch of corner cases I need to consider. But
-in the end, I need to have it behave as closely as possible to
-fw_devlink=permissive.
+> > +int vfio_pci_core_sriov_configure(struct pci_dev *pdev, int nr_virtfn);
+> > +pci_ers_result_t vfio_pci_core_aer_err_detected(struct pci_dev *pdev,
+> > +               pci_channel_state_t state);
+> > +  
+> 
+> Callbacks from the PCI core, API defined by the PCI subsystem.
+> 
+> Notice there is no major new API exposed from vfio-pci, nor are
+> vfio-pci internals any more exposed then they used to be.
 
->
->   - SH-Mobile AG5 and R-Mobile APE6:
->     The rmobile-sysc driver is similar to the rcar-sysc driver, and does
->     not use a platform device.
->     Still, it works, because all dependencies on the System Controller
->     become unblocked when the rmobile-reset driver binds against the
->     "renesas,sysc-rmobile" device.  Obviously it would fail if no
->     support for that driver is included in your kernel...
+They absolutely are.  These are all private, non-exported functions and
+data structures.  Here the vfio_device_ops and all the internal state
+are all laid bare.
 
-Yeah, IMHO two real drivers (not stubs) for a single device tree node
-is wrong/weird at a high level. I'd think one should be a child of the
-other. But too late to fix that DT now.
+> Except create/destroy, every single newly exported function was
+> already available via a function pointer someplace else in the
+> API. This is a key point, because it is very much NOT like the May
+> series.
 
-Does it make sense for the rmobile-sysc driver to create a new
-platform device and have the rmobule-reset bind to that instead? And
-then you can bind a stub driver to the "renesas,sysc-rmobile" device?
-I know this can be handled by whatever solution I come up with for the
-IOMMU case, but that doesn't seem right for this case. We don't have
-to decide on this now, but that's my current view.
+They were available to vfio-core, which honored that device_data was
+private.
+ 
+> Because the new driver sits before vfio_pci because it owns the
+> vfio_device_ops, it introduces nearly nothing new. The May series put
+> the new driver after vfio-pci as some internalized sub-driver and
+> exposed a whole new API, wrappers and callbacks to go along with it.
+> 
+> For instance if a new driver wants to implement some new thing under
+> ioctl, like migration, then it would do
+> 
+> static long new_driver_pci_core_ioctl(void *device_data, unsigned int cmd,
+>                unsigned long arg)
+> {
+>    switch (cmd) {
+>      case NEW_THING: return new_driver_thing();
 
->   - R-Mobile A1:
->     Also using the rmobile-sysc driver.
->     However, this is a single core Cortex-A9, i.e. it does not have an
->     ARM architectured timer (like R-Mobile APE6) or Cortex-A9 Global
->     Timer (like SH-Mobile AG5).  The timer used (TMU) is located in a PM
->     Domain controlled by the rmobile-sysc driver, and driver
->     initialization is postponed beyond the point where something relies
->     on a working timer, causing a hang.
->
->     Setting OF_POPULATED (like in my fix for the rcar-sysc driver) fixes
->     this, but prevents the rmobile-reset driver from binding against the
->     same device node, so the reset handling will have to be incorporated
->     into the rmobile-sysc driver (and will thus be registered very
->     early).
+new_driver_thing relative too what.  Now we need to decode the
+vfio-pci-core private data and parse through it to access or affect the
+device.
 
-Or you can do the "create a child device" option I suggested above.
+>      default: return vfio_pci_core_ioctl(device_data, cmd, arg);
+>    }
+> }
+> static const struct vfio_device_ops new_driver_pci_ops = {
+>    [...]
+>    .ioctl = new_driver_ioctl,
+> };
+> 
+> Simple enough, if you understand the above, then you also understand
+> what direction the mlx5 driver will go in.
+> 
+> This is also why it is clearly useful for a wide range of cases, as a
+> driver can use as much or as little of the vfio-pci-core ops as it
+> wants. The driver doesn't get to reach into vfio-pci, but it can sit
+> before it and intercept the entire uAPI. That is very powerful.
 
->   - RZ/A1 and RZ/A2:
->     These are not affected, as the timer used (OSTM) is not a platform
->     driver, but uses TIMER_OF_DECLARE().
->     Note that the RZ/A2 clock driver uses split initialization:
->       1. Early (timer) clocks are initialized from CLK_OF_DECLARE_DRIVER,
->       2. Other clocks are initialized by platform_driver_probe() from a
->          subsys_initcall.
->     If the OSTM driver would be a platform_driver, it would block on the
->     block dependency.  Setting the OF_POPULATED flag in the clock driver
->     would not work: while that flag would unblock probing of the timer
->     driver, it would also prevent the second part of the clock driver
->     initialization.
+But vfio-pci-core is actually vfio-pci and there's no way for a vendor
+derived driver to do much of anything without reaching into struct
+vfio_pci_device, so yes, it is reaching into vfio-pci.
+ 
+> > or whether mdev (even with its different lifecycle model) or a  
+> 
+> I think it is appropriate to think of mdev as only the special
+> lifecycle model, it doesn't have any other functionality.
+> 
+> mdev's lifecycle model does nothing to solve the need to libraryize
+> vfio-pci.
+> 
+> > different vfio bus driver might be a better fit for the more  
+> 
+> What is a "vfio bus driver" ? Why would we need a bus here?
 
-So this looks like it's all working fine, right? Yeah, I already took
-into account the *OF*_DECLARE macros when I wrote this and was aware
-of the split driver implementations. So hopefully this all works out
-fine.
+./Documentation/driver-api/vfio.rst
 
-> Now, back to the things I was supposed to work on this week ;-)
+We refer to drivers that bridge vfio-core to bus implementations, ex.
+vfio-pci, as "vfio bus drivers".  This is partially why we've so far
+extended vfio-pci with device specific features, as a bus specific
+driver rather than a device specific driver.
 
-Really appreciate all this testing and feedback!
+> > involved cases. (For example, can s390 ISM fit here?)  
+> 
+> Don't know what is special about ISM? What TODO do you think will help
+> answer that question?
 
--Saravana
+So far the TODOs rather mask the dirty little secrets of the extension
+rather than showing how a vendor derived driver needs to root around in
+struct vfio_pci_device to do something useful, so probably porting
+actual device specific support rather than further hand waving would be
+more helpful.  Thanks,
+
+Alex
+
