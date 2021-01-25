@@ -2,61 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A7F303794
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C4F30379B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbhAZIBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:01:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:52342 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729970AbhAYRL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:11:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 14F8C11FB;
-        Mon, 25 Jan 2021 09:10:39 -0800 (PST)
-Received: from e123427-lin.arm.com (unknown [10.57.45.18])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 212AF3F68F;
-        Mon, 25 Jan 2021 09:10:37 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Chen-Yu Tsai <wens@kernel.org>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Johan Jonker <jbx6244@gmail.com>
-Subject: Re: [PATCH v4 0/4] arm64: rockchip: Fix PCIe ep-gpios requirement and Add Nanopi M4B
-Date:   Mon, 25 Jan 2021 17:10:31 +0000
-Message-Id: <161159460063.30598.10362504498380643091.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210121162321.4538-1-wens@kernel.org>
-References: <20210121162321.4538-1-wens@kernel.org>
+        id S2389652AbhAZIEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728661AbhAYRLw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:11:52 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAA0C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:11:09 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id w124so15519303oia.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:11:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a0Iqg19k3JMRXQlA8s8jCCfzTrbVd+zw1E8fGhfYxAY=;
+        b=LrRDlaf2+TSX3mP5qfWdjxpLL+wSSYHc7gfcsGgve8bCOge7xQ2qSez8D8gV5fyAto
+         yoYPO6qVqoFvjnLdMDm3PUsSnqZ5RqWPz74AZRpcfrgPlpFdpUvsLMsw3wA6AyLCwgIj
+         6SIl7T5srv/eElFgUtnih+3+eBqlHOg5DsfVQoW7wmeBJ/5Me6+iowJ8SX4W3OCfT2Wf
+         DoRSQK6/DjT2bmoSz2TIFQmbLINqbsjFQG1ig6Tu6qJ04k7gDw4j/R7CthFFQHrbGhrM
+         sAIVLslkPKokraAiOd9QdOwNSJzyqHwOQ5wBN0cdIhVJh3SVmZWd2Drp7v3DmSkavLdU
+         ekkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a0Iqg19k3JMRXQlA8s8jCCfzTrbVd+zw1E8fGhfYxAY=;
+        b=aQfcJ1oU+mu1qjj4MwgAFkevyfaoRtYS2vtfiXZY7nRaMsgnKscom0aEOl7dJT4Fmh
+         lMTmqac+sYtfeXb5j0+hNmc++4itJQExAspcC9p49v+UH5aTPD6K9GjVOLgV0ZGx4Dwm
+         g9ZZADfRBFzTtjOV4sHSqw9WVqLB4kLshGyFjq5ijRrT7LUYjJFyHnCS6LdZKzLt/TAS
+         1XMauoI7MjOt7Ij1mdlS71V8cn4pYs1GsS1Qt12g/qqQycei6/AqF8J2aq6NRLU7enJK
+         2arUir0uAAbvxO5lLpn4wluj7+6S/DyYEvmk1UAwdYRjA2M9mPyjYEoaQxEHL0HGQKr6
+         NUXw==
+X-Gm-Message-State: AOAM531nlI/cJWvDidBSkLkgoeNs3lXEoYCY+fnRQTQFrPSjEEdK3yB7
+        vNfo1ao0RBa4/l8GMr/mklSOkbW9LfWTvw==
+X-Google-Smtp-Source: ABdhPJwl27mCw1DWsN9nRAvIc6uolsENPpbyKyfTHDnrSNSA76hNllSU127S8ADVw67sf4CMGm/PtQ==
+X-Received: by 2002:aca:ec43:: with SMTP id k64mr752340oih.13.1611594669250;
+        Mon, 25 Jan 2021 09:11:09 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 93sm1571168ots.36.2021.01.25.09.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 09:11:08 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:11:07 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] phy: qcom-qmp: Add UFS v4 registers found in SM8350
+Message-ID: <YA77q/CZnjdW5pOM@builder.lan>
+References: <20210125100906.4004908-1-vkoul@kernel.org>
+ <20210125100906.4004908-4-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125100906.4004908-4-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Jan 2021 00:23:17 +0800, Chen-Yu Tsai wrote:
-> This is v4 of my Nanopi M4B series.
-> 
-> Changes since v3 include:
-> 
->   - Directly return dev_err_probe() instead of having a separate return
->     statement
-> 
-> [...]
+On Mon 25 Jan 04:09 CST 2021, Vinod Koul wrote:
 
-Applied to pci/rockchip (dropped dts patches 3-4), thanks!
+> Add the registers for few new registers found in SM8350. Also the UFS
+> phy used in SM8350 seems to have different offsets than V4 phy, although
+> it claims it is v4 phy, so add the new offsets with SM8350 tag instead
+> of V4 tag.
+> 
 
-[1/2] PCI: rockchip: Make 'ep-gpios' DT property optional
-      https://git.kernel.org/lpieralisi/pci/c/96f760cc00
-[2/2] dt-bindings: arm: rockchip: Add FriendlyARM NanoPi M4B
-      https://git.kernel.org/lpieralisi/pci/c/b205659626
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Thanks,
-Lorenzo
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.h | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
+> index dff7be5a1cc1..bba1d5e3eb73 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
+> @@ -451,6 +451,7 @@
+>  #define QSERDES_V4_TX_RES_CODE_LANE_OFFSET_RX 		0x40
+>  #define QSERDES_V4_TX_LANE_MODE_1			0x84
+>  #define QSERDES_V4_TX_LANE_MODE_2			0x88
+> +#define QSERDES_V4_TX_LANE_MODE_3			0x8C
+>  #define QSERDES_V4_TX_RCV_DETECT_LVL_2			0x9c
+>  #define QSERDES_V4_TX_PWM_GEAR_1_DIVIDER_BAND0_1	0xd8
+>  #define QSERDES_V4_TX_PWM_GEAR_2_DIVIDER_BAND0_1	0xdC
+> @@ -459,6 +460,13 @@
+>  #define QSERDES_V4_TX_TRAN_DRVR_EMP_EN			0xb8
+>  #define QSERDES_V4_TX_PI_QEC_CTRL		0x104
+>  
+> +/* Only for SM8350 QMP V4 Phy TX offsets different from V4 */
+> +#define QSERDES_SM8350_TX_PWM_GEAR_1_DIVIDER_BAND0_1	0x178
+> +#define QSERDES_SM8350_TX_PWM_GEAR_2_DIVIDER_BAND0_1	0x17c
+> +#define QSERDES_SM8350_TX_PWM_GEAR_3_DIVIDER_BAND0_1	0x180
+> +#define QSERDES_SM8350_TX_PWM_GEAR_4_DIVIDER_BAND0_1	0x184
+> +#define QSERDES_SM8350_TX_TRAN_DRVR_EMP_EN		0xc0
+> +
+>  /* Only for QMP V4 PHY - RX registers */
+>  #define QSERDES_V4_RX_UCDR_FO_GAIN			0x008
+>  #define QSERDES_V4_RX_UCDR_SO_GAIN			0x014
+> @@ -514,6 +522,24 @@
+>  #define QSERDES_V4_RX_DCC_CTRL1				0x1bc
+>  #define QSERDES_V4_RX_VTH_CODE				0x1c4
+>  
+> +/* Only for SM8350 QMP V4 Phy RX offsets different from V4 */
+> +#define QSERDES_SM8350_RX_RX_MODE_00_LOW		0x15c
+> +#define QSERDES_SM8350_RX_RX_MODE_00_HIGH		0x160
+> +#define QSERDES_SM8350_RX_RX_MODE_00_HIGH2		0x164
+> +#define QSERDES_SM8350_RX_RX_MODE_00_HIGH3		0x168
+> +#define QSERDES_SM8350_RX_RX_MODE_00_HIGH4		0x16c
+> +#define QSERDES_SM8350_RX_RX_MODE_01_LOW		0x170
+> +#define QSERDES_SM8350_RX_RX_MODE_01_HIGH		0x174
+> +#define QSERDES_SM8350_RX_RX_MODE_01_HIGH2		0x178
+> +#define QSERDES_SM8350_RX_RX_MODE_01_HIGH3		0x17c
+> +#define QSERDES_SM8350_RX_RX_MODE_01_HIGH4		0x180
+> +#define QSERDES_SM8350_RX_RX_MODE_10_LOW		0x184
+> +#define QSERDES_SM8350_RX_RX_MODE_10_HIGH		0x188
+> +#define QSERDES_SM8350_RX_RX_MODE_10_HIGH2		0x18c
+> +#define QSERDES_SM8350_RX_RX_MODE_10_HIGH3		0x190
+> +#define QSERDES_SM8350_RX_RX_MODE_10_HIGH4		0x194
+> +#define QSERDES_SM8350_RX_DCC_CTRL1			0x1a8
+> +
+>  /* Only for QMP V4 PHY - UFS PCS registers */
+>  #define QPHY_V4_PCS_UFS_PHY_START				0x000
+>  #define QPHY_V4_PCS_UFS_POWER_DOWN_CONTROL			0x004
+> @@ -529,6 +555,7 @@
+>  #define QPHY_V4_PCS_UFS_DEBUG_BUS_CLKSEL			0x124
+>  #define QPHY_V4_PCS_UFS_LINECFG_DISABLE				0x148
+>  #define QPHY_V4_PCS_UFS_RX_MIN_HIBERN8_TIME			0x150
+> +#define QPHY_V4_PCS_UFS_RX_SIGDET_CTRL1				0x154
+>  #define QPHY_V4_PCS_UFS_RX_SIGDET_CTRL2				0x158
+>  #define QPHY_V4_PCS_UFS_TX_PWM_GEAR_BAND			0x160
+>  #define QPHY_V4_PCS_UFS_TX_HS_GEAR_BAND				0x168
+> -- 
+> 2.26.2
+> 
