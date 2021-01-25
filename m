@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BD530355C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E280A303537
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388189AbhAZFje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:39:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50744 "EHLO mail.kernel.org"
+        id S1727988AbhAZFha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:37:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727719AbhAYK6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:58:50 -0500
+        id S1727670AbhAYKxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:53:43 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED445229C4;
-        Mon, 25 Jan 2021 10:50:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7349D22ADF;
+        Mon, 25 Jan 2021 10:50:32 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l3zS1-009rDe-3k; Mon, 25 Jan 2021 10:50:29 +0000
+        id 1l3zS2-009rDe-Jh; Mon, 25 Jan 2021 10:50:30 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v5 04/21] arm64: Provide an 'upgrade to VHE' stub hypercall
-Date:   Mon, 25 Jan 2021 10:50:02 +0000
-Message-Id: <20210125105019.2946057-5-maz@kernel.org>
+Subject: [PATCH v5 06/21] arm64: Move VHE-specific SPE setup to mutate_to_vhe()
+Date:   Mon, 25 Jan 2021 10:50:04 +0000
+Message-Id: <20210125105019.2946057-7-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210125105019.2946057-1-maz@kernel.org>
 References: <20210125105019.2946057-1-maz@kernel.org>
@@ -54,147 +54,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As we are about to change the way a VHE system boots, let's
-provide the core helper, in the form of a stub hypercall that
-enables VHE and replicates the full EL1 context at EL2, thanks
-to EL1 and VHE-EL2 being extremely similar.
+There isn't much that a VHE kernel needs on top of whatever has
+been done for nVHE, so let's move the little we need to the
+VHE stub (the SPE setup), and drop the init_el2_state macro.
 
-On exception return, the kernel carries on at EL2. Fancy!
-
-Nothing calls this new hypercall yet, so no functional change.
+No expected functional change.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 Acked-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/virt.h |  7 +++-
- arch/arm64/kernel/hyp-stub.S  | 76 ++++++++++++++++++++++++++++++++++-
- 2 files changed, 80 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/hyp-stub.S | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
-index ee6a48df89d9..7379f35ae2c6 100644
---- a/arch/arm64/include/asm/virt.h
-+++ b/arch/arm64/include/asm/virt.h
-@@ -35,8 +35,13 @@
-  */
- #define HVC_RESET_VECTORS 2
- 
-+/*
-+ * HVC_VHE_RESTART - Upgrade the CPU from EL1 to EL2, if possible
-+ */
-+#define HVC_VHE_RESTART	3
-+
- /* Max number of HYP stub hypercalls */
--#define HVC_STUB_HCALL_NR 3
-+#define HVC_STUB_HCALL_NR 4
- 
- /* Error returned when an invalid stub number is passed into x0 */
- #define HVC_STUB_ERR	0xbadca11
 diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-index 160f5881a0b7..3f3dbbe8914d 100644
+index 373ed2213e1d..6b5c73cf9d52 100644
 --- a/arch/arm64/kernel/hyp-stub.S
 +++ b/arch/arm64/kernel/hyp-stub.S
-@@ -8,9 +8,9 @@
+@@ -92,9 +92,6 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+ 	msr	hcr_el2, x0
+ 	isb
  
- #include <linux/init.h>
- #include <linux/linkage.h>
--#include <linux/irqchip/arm-gic-v3.h>
+-	// Doesn't do much on VHE, but still, worth a shot
+-	init_el2_state vhe
+-
+ 	// Use the EL1 allocated stack, per-cpu offset
+ 	mrs	x0, sp_el1
+ 	mov	sp, x0
+@@ -107,6 +104,31 @@ SYM_CODE_START_LOCAL(mutate_to_vhe)
+ 	mrs_s	x0, SYS_VBAR_EL12
+ 	msr	vbar_el1, x0
  
- #include <asm/assembler.h>
-+#include <asm/el2_setup.h>
- #include <asm/kvm_arm.h>
- #include <asm/kvm_asm.h>
- #include <asm/ptrace.h>
-@@ -47,10 +47,13 @@ SYM_CODE_END(__hyp_stub_vectors)
- 
- SYM_CODE_START_LOCAL(el1_sync)
- 	cmp	x0, #HVC_SET_VECTORS
--	b.ne	2f
-+	b.ne	1f
- 	msr	vbar_el2, x1
- 	b	9f
- 
-+1:	cmp	x0, #HVC_VHE_RESTART
-+	b.eq	mutate_to_vhe
++	// Fixup SPE configuration, if supported...
++	mrs	x1, id_aa64dfr0_el1
++	ubfx	x1, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
++	mov	x2, xzr
++	cbz	x1, skip_spe
 +
- 2:	cmp	x0, #HVC_SOFT_RESTART
- 	b.ne	3f
- 	mov	x0, x2
-@@ -70,6 +73,75 @@ SYM_CODE_START_LOCAL(el1_sync)
- 	eret
- SYM_CODE_END(el1_sync)
- 
-+// nVHE? No way! Give me the real thing!
-+SYM_CODE_START_LOCAL(mutate_to_vhe)
-+	// Be prepared to fail
-+	mov_q	x0, HVC_STUB_ERR
++	// ... and not owned by EL3
++	mrs_s	x0, SYS_PMBIDR_EL1
++	and	x0, x0, #(1 << SYS_PMBIDR_EL1_P_SHIFT)
++	cbnz	x0, skip_spe
 +
-+	// Sanity check: MMU *must* be off
-+	mrs	x1, sctlr_el2
-+	tbnz	x1, #0, 1f
++	// Let the SPE driver in control of the sampling
++	mrs_s	x0, SYS_PMSCR_EL1
++	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PCT_SHIFT)
++	bic	x0, x0, #(1 << SYS_PMSCR_EL2_PA_SHIFT)
++	msr_s	SYS_PMSCR_EL1, x0
++	mov	x2, #MDCR_EL2_TPMS
 +
-+	// Needs to be VHE capable, obviously
-+	mrs	x1, id_aa64mmfr1_el1
-+	ubfx	x1, x1, #ID_AA64MMFR1_VHE_SHIFT, #4
-+	cbz	x1, 1f
++skip_spe:
++	// For VHE, use EL2 translation and disable access from EL1
++	mrs	x0, mdcr_el2
++	bic	x0, x0, #(MDCR_EL2_E2PB_MASK << MDCR_EL2_E2PB_SHIFT)
++	orr	x0, x0, x2
++	msr	mdcr_el2, x0
 +
-+	// Engage the VHE magic!
-+	mov_q	x0, HCR_HOST_VHE_FLAGS
-+	msr	hcr_el2, x0
-+	isb
-+
-+	// Doesn't do much on VHE, but still, worth a shot
-+	init_el2_state vhe
-+
-+	// Use the EL1 allocated stack, per-cpu offset
-+	mrs	x0, sp_el1
-+	mov	sp, x0
-+	mrs	x0, tpidr_el1
-+	msr	tpidr_el2, x0
-+
-+	// FP configuration, vectors
-+	mrs_s	x0, SYS_CPACR_EL12
-+	msr	cpacr_el1, x0
-+	mrs_s	x0, SYS_VBAR_EL12
-+	msr	vbar_el1, x0
-+
-+	// Transfer the MM state from EL1 to EL2
-+	mrs_s	x0, SYS_TCR_EL12
-+	msr	tcr_el1, x0
-+	mrs_s	x0, SYS_TTBR0_EL12
-+	msr	ttbr0_el1, x0
-+	mrs_s	x0, SYS_TTBR1_EL12
-+	msr	ttbr1_el1, x0
-+	mrs_s	x0, SYS_MAIR_EL12
-+	msr	mair_el1, x0
-+	isb
-+
-+	// Invalidate TLBs before enabling the MMU
-+	tlbi	vmalle1
-+	dsb	nsh
-+
-+	// Enable the EL2 S1 MMU, as set up from EL1
-+	mrs_s	x0, SYS_SCTLR_EL12
-+	set_sctlr_el1	x0
-+
-+	// Disable the EL1 S1 MMU for a good measure
-+	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
-+	msr_s	SYS_SCTLR_EL12, x0
-+
-+	// Hack the exception return to stay at EL2
-+	mrs	x0, spsr_el1
-+	and	x0, x0, #~PSR_MODE_MASK
-+	mov	x1, #PSR_MODE_EL2h
-+	orr	x0, x0, x1
-+	msr	spsr_el1, x0
-+
-+	mov	x0, xzr
-+
-+1:	eret
-+SYM_CODE_END(mutate_to_vhe)
-+
- .macro invalid_vector	label
- SYM_CODE_START_LOCAL(\label)
- 	b \label
+ 	// Transfer the MM state from EL1 to EL2
+ 	mrs_s	x0, SYS_TCR_EL12
+ 	msr	tcr_el1, x0
 -- 
 2.29.2
 
