@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB02302952
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDC730295A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731183AbhAYRvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:51:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731169AbhAYRuU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:50:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72DC922E03
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611596979;
-        bh=zuyRHftsqVWCQjq18XklCtmYkyBWLlstKHGMnVWyIhU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NtztpnmERvAG+Cu5ZQgPtvxJnbhIc0D5b2rZxAfyC7FjfqSf9U7aW+mGY/epm3Mx2
-         9HgkT+7I7QMHsq01AmYpqYRUnfNRwPAbF7neKs67HnHmdC0rbr5bxTf/+rvujufQE3
-         AbZAHOViddhFAZNq9mlwTOapAnzvJeyDc1v1GlgsDeOmFpTlrDFRMQbJA46DXiDKGX
-         W9Y1c8raPjWgA+cVc8qsqeOHlUf1+BhH7iB276EpqCGkUcknlPOR+jeDMwtgsTdy8S
-         i3yXlVRXDyXYnRz4PkPPlwVTgs/31UxDbWc5lDoGg0Y9+EGvWUuvT7hp5BzSDlA4hJ
-         LTwUDemWDExWQ==
-Received: by mail-lj1-f181.google.com with SMTP id s18so3228133ljg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:49:39 -0800 (PST)
-X-Gm-Message-State: AOAM5320Z09dT10Jneo/2EQLqqok0KO0mLIUAQaEuxg9xXGxXlC83Cy1
-        BvGVJyAyrjF6OYPdS+Rl1xTnlHCVB/bhoAfEK0bsiA==
-X-Google-Smtp-Source: ABdhPJzCKGQ60lMer0NxdTG1QVtvRZKsUtiEFk5qlpzoTCsaG5EwRDumBYPDFKvTostFYe0kM9lQRf1vMb8y2QQgCiU=
-X-Received: by 2002:a2e:2c11:: with SMTP id s17mr693442ljs.468.1611596977707;
- Mon, 25 Jan 2021 09:49:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20210122123003.46125-1-mikko.ylinen@linux.intel.com>
- <CACYkzJ6sMBvZ_ZG9++jwpQ+JQL3PL02okhD0O5Ftz4Hd7jEC3Q@mail.gmail.com>
- <CACYkzJ5i6DNxY3D3SqiO_LO2HBbA-EgPFdK8ZBcFNmTVWweucg@mail.gmail.com> <YA5rXLwy4mcgcvLx@outtakka>
-In-Reply-To: <YA5rXLwy4mcgcvLx@outtakka>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 25 Jan 2021 18:49:26 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6q53qwEvTjvNP_d5O+ytQM=jFVRQ9PV2+ie6Ah5VDnRA@mail.gmail.com>
-Message-ID: <CACYkzJ6q53qwEvTjvNP_d5O+ytQM=jFVRQ9PV2+ie6Ah5VDnRA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Drop disabled LSM hooks from the sleepable set
-To:     Mikko Ylinen <mikko.ylinen@linux.intel.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731106AbhAYRyH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 12:54:07 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:33736 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731111AbhAYRwU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:52:20 -0500
+Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 8080FCECC8;
+        Mon, 25 Jan 2021 18:58:52 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH 3/3] Bluetooth: btusb: Expose reset gpio to debugfs
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210119124258.3.I7c6ae9b637f9a77f6e6f2e4256c6a0232476be43@changeid>
+Date:   Mon, 25 Jan 2021 18:51:27 +0100
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>, michaelfsun@google.com,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <436E729B-B852-4238-AA42-6FFC2D2BE233@holtmann.org>
+References: <20210119204315.2611811-1-abhishekpandit@chromium.org>
+ <20210119124258.3.I7c6ae9b637f9a77f6e6f2e4256c6a0232476be43@changeid>
+To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 7:55 AM Mikko Ylinen
-<mikko.ylinen@linux.intel.com> wrote:
->
-> On Sat, Jan 23, 2021 at 12:50:21AM +0100, KP Singh wrote:
-> > On Fri, Jan 22, 2021 at 11:33 PM KP Singh <kpsingh@kernel.org> wrote:
-> > >
-> > > On Fri, Jan 22, 2021 at 1:32 PM Mikko Ylinen
-> > > <mikko.ylinen@linux.intel.com> wrote:
-> > > >
-> > > > Networking LSM hooks are conditionally enabled and when building the new
-> > > > sleepable BPF LSM hooks with the networking LSM hooks disabled, the
-> > > > following build error occurs:
-> > > >
-> > > > BTFIDS  vmlinux
-> > > > FAILED unresolved symbol bpf_lsm_socket_socketpair
-> > > >
+Hi Abhishek,
 
-[...]
+> If btusb has a reset gpio, expose it to userspace so we can toggle the
+> reset gpio directly. This is useful for testing and error recovery.
+> 
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> ---
+> 
+> drivers/bluetooth/btusb.c | 46 +++++++++++++++++++++++++++++++++++++++
+> 1 file changed, 46 insertions(+)
+> 
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 880e9cd4ee713..702be1871ed88 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -6,6 +6,7 @@
+>  *  Copyright (C) 2005-2008  Marcel Holtmann <marcel@holtmann.org>
+>  */
+> 
+> +#include <linux/debugfs.h>
+> #include <linux/dmi.h>
+> #include <linux/module.h>
+> #include <linux/usb.h>
+> @@ -574,6 +575,46 @@ static void btusb_toggle_gpio(struct gpio_desc *desc, unsigned int duration)
+> 	gpiod_set_value_cansleep(desc, 0);
+> }
+> 
+> +#ifdef CONFIG_DEBUG_FS
+> +static ssize_t btusb_debugfs_has_reset_gpio(struct file *file,
+> +					    char __user *user_buf,
+> +					    size_t count, loff_t *ppos)
+> +{
+> +	struct hci_dev *hdev = file->private_data;
+> +	struct btusb_data *data = hci_get_drvdata(hdev);
+> +	char buf[3];
+> +
+> +	buf[0] = data->reset_gpio ? 'Y' : 'N';
+> +	buf[1] = '\n';
+> +	buf[2] = '\0';
+> +
+> +	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+> +}
+> +
+> +static ssize_t btusb_debugfs_reset_gpio(struct file *file,
+> +					const char __user *user_buf,
+> +					size_t count, loff_t *ppos)
+> +{
+> +	struct hci_dev *hdev = file->private_data;
+> +	struct btusb_data *data = hci_get_drvdata(hdev);
+> +
+> +	if (!data->reset_gpio)
+> +		return -EOPNOTSUPP;
+> +
+> +	bt_dev_warn(hdev, "Debugfs triggering HW reset via gpio");
+> +	btusb_toggle_gpio(data->reset_gpio, data->reset_duration_ms);
+> +
+> +	return count;
+> +}
+> +
+> +static const struct file_operations reset_gpio_fops = {
+> +	.open		= simple_open,
+> +	.read		= btusb_debugfs_has_reset_gpio,
+> +	.write		= btusb_debugfs_reset_gpio,
+> +	.llseek		= default_llseek,
+> +};
+> +#endif
 
->
-> Agree, a way to get the set automatically created makes sense. But the
-> extra parameter to LSM_HOOK macro would be BPF specific, right?
->
+while I am not convinced that this is the right way, I am fine doing it temporarily. However, please lets create the debugfs file only when a reset GPIO is available and skip the read callback. Only the write one should be supported since there is no point to read the status. The pure existence of the debugfs should indicate support for a HW reset.
 
-The information about whether the hook "must not sleep" has been
-mentioned sporadically in comments and
+Regards
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/lsm_hooks.h#n920
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/lsm_hooks.h#n594
+Marcel
 
-I think it would be generally useful for the framework to actually provide this
-in the definition in the hook and then ensure (by calling
-might_sleep() for hooks
-that can sleep).
-
-- KP
-
-> -- Regards, Mikko
