@@ -2,69 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62B63028C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB433028C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729505AbhAYRYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:24:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730980AbhAYRXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:23:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A793C22B3B;
-        Mon, 25 Jan 2021 17:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611595341;
-        bh=NRxiUVpge9iTdgMnIs+QH2bpm+PmX8g8cC8kUYCHmWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mlAcewIKQnWR6zGjEZUs6WwjDAn+mbS4O9h9TjncvZxG5s3FhRz8nRNmynog0+gO3
-         w+QyZ/gEoXLEkBG5rluQSBniuyO/lG8bK6TG12pJABV5QKsvBkVyzetTfqYrWoMOpp
-         v2ka4fPaYhPpOSbpvKvMlNkh4RgxeqoF8qtbXhWglFJWsAyKw4YAYRkN4LYivLuo40
-         HDXiIc+ObdcKKXKre3UFp57M5oLY3TUr6JMB8+FOjf3H8OgIJvaeYgb8B4r0QvxJPz
-         D6qFcZLhZuUZITt0WEHpwkrhKdb7mFl7NqvJniSqxndMENs9DkWJcc/kEW2jBELYkU
-         8/PxXCvO0OJ+w==
-Date:   Mon, 25 Jan 2021 19:22:18 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        id S1730906AbhAYRYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:24:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55695 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730704AbhAYRYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:24:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611595354;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LMaj7CkNnEbxNARZFdcDZTjqCgJ7QYeYI1k3Xem58ag=;
+        b=YSLE7f+Ppb4s4qo2C1FQqpt/aZvB/ZsNLGpD64HJ3/nCNUEjveDNWrErBLRD0Ydvb1OkCP
+        J/iIilpCNVHONtNsVBgcwpvymUc88E09tXQy/93PXMfG7Ez8Refr8fHMtZw1cawuF+eq9+
+        VaDsNnWrVtZIoAa/99G4Qpoun5m1+YM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-tDhxpdm4MZS0wBXrvdqVSg-1; Mon, 25 Jan 2021 12:22:31 -0500
+X-MC-Unique: tDhxpdm4MZS0wBXrvdqVSg-1
+Received: by mail-ej1-f71.google.com with SMTP id j14so4078684eja.15
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:22:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LMaj7CkNnEbxNARZFdcDZTjqCgJ7QYeYI1k3Xem58ag=;
+        b=hIANSotzPCTZQ8OpqbA0OtV67PpZGq0JuafeoJfgDaBLKo1zXL1jLBsZtd2u3Tpfi3
+         QWlP1YstkGf+RQjuGagoFAhkuyOTMWF/CyTUqFo8HfrjET48thDFDvgA36pGa1l3VPy/
+         i0eBy2lkEo3nDI72WKRTuE6zklID5jTqIBVEwSMbBzdEoib4kKP05WjNecPQKEjWU6R+
+         fmbC040jHZ7+FARvpcAHOe3F1ow1Mpgtyqijxv0QOb+eLllFTpdShLXvD0CPe0g8bBBi
+         LQlRIERFq5vaXi6QeQb1r2r4FsL5KdY8/HTfpd/GPsMRK7y7bXVNmyh1CoWhmrLcBZuj
+         VpqQ==
+X-Gm-Message-State: AOAM533jNvlldhr/aka34AhpGni9/awuv3tfnZb1fG8/DyqTXkAForx/
+        5X2FMztzEFp0hDNuKKHdV6+uO3afcAcO12Nun1ye1L/i0HLMtLbLp6De8TmIY0twHu/KY+l+d+L
+        efKY6mHaiW3GdLNmiZc+WnGIa
+X-Received: by 2002:a17:906:5958:: with SMTP id g24mr990734ejr.377.1611595349952;
+        Mon, 25 Jan 2021 09:22:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwv5l+Mrc2U9qE+MMYwbCngwX6psPudgBFrDAPGxTNqASvvq3z5peNzORmDfO5fmo9ni1FAEg==
+X-Received: by 2002:a17:906:5958:: with SMTP id g24mr990721ejr.377.1611595349417;
+        Mon, 25 Jan 2021 09:22:29 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id zg7sm8669806ejb.31.2021.01.25.09.22.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 09:22:28 -0800 (PST)
+Subject: Re: [PATCH 0/3] KVM: x86: Revert dirty tracking for GPRs
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v3 0/5] Some optimizations related to sgx
-Message-ID: <YA7+Sl1UYnwveHfE@kernel.org>
-References: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210122235049.3107620-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a4fb32c1-808e-8f50-fcef-b95cfe41aad6@redhat.com>
+Date:   Mon, 25 Jan 2021 18:22:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20210122235049.3107620-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 02:29:02PM +0800, Tianjia Zhang wrote:
-> This is an optimization of a set of sgx-related codes, each of which
-> is independent of the patch. Because the second and third patches have
-> conflicting dependencies, these patches are put together.
+On 23/01/21 00:50, Sean Christopherson wrote:
+> This is effectively belated feedback on the SEV-ES series.  My primary
+> interest is to revert the GPR dirty/available tracking, as it's pure
+> overhead for non-SEV-ES VMs, and even for SEV-ES I suspect the dirty
+> tracking is at best lost in the noise, and possibly even a net negative.
 > 
-> ---
-> v3 changes:
->   * split free_cnt count and spin lock optimization into two patches
+> My original plan was to submit patches 1+3 as patch 1, taking a few
+> creative liberties with the GHCB spec to justify writing the GHCB GPRs
+> after every VMGEXIT.  But, since KVM is effectively writing the GHCB GPRs
+> on every VMRUN, I feel confident in saying that my interpretation of the
+> spec has already been proven correct.
 > 
-> v2 changes:
->   * review suggested changes
+> The SEV-ES changes are effectively compile tested only, but unless I've
+> overlooked a code path, patch 1 is a nop.  Patch 3 definitely needs
+> testing.
 > 
-> Tianjia Zhang (5):
->   selftests/x86: Simplify the code to get vdso base address in sgx
->   x86/sgx: Optimize the locking range in sgx_sanitize_section()
->   x86/sgx: Optimize the free_cnt count in sgx_epc_section
->   x86/sgx: Allows ioctl PROVISION to execute before CREATE
->   x86/sgx: Remove redundant if conditions in sgx_encl_create
+> Paolo, I'd really like to get patches 1 and 2 into 5.11, the code cost of
+> the dirty/available tracking is not trivial.
+> 
+> Sean Christopherson (3):
+>    KVM: SVM: Unconditionally sync GPRs to GHCB on VMRUN of SEV-ES guest
+>    KVM: x86: Revert "KVM: x86: Mark GPRs dirty when written"
+>    KVM: SVM: Sync GPRs to the GHCB only after VMGEXIT
+> 
+>   arch/x86/kvm/kvm_cache_regs.h | 51 +++++++++++++++++------------------
+>   arch/x86/kvm/svm/sev.c        | 14 +++++-----
+>   arch/x86/kvm/svm/svm.h        |  1 +
+>   3 files changed, 34 insertions(+), 32 deletions(-)
+> 
 
-I remember asking about previous patches. I don't recall of getting
-any responses to anything basically.
+Queued 1-2, thanks!  Yes, these should be in 5.11.
 
-/Jarkko
+Paolo
+
