@@ -2,96 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B95302250
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 08:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C262A30224B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 08:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbhAYHIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 02:08:12 -0500
-Received: from mga14.intel.com ([192.55.52.115]:14296 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbhAYHFN (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 02:05:13 -0500
-IronPort-SDR: c8dzb7cUqH5gaw83rIHHQvKXb3RYfwZhAgK9rK21vG0dfkBN2zlJO5h8gGj1aA4kzAW69jFwJG
- nkKSvAL+E6pQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="178897348"
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="178897348"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 23:03:07 -0800
-IronPort-SDR: mEXk7vd4GADwCCO/0I4jlRlt8+4tH1/y8TGDPqL3IG5JinDEAiuiao1X+fKB6kWG0fYihOCURC
- HCSikIMZmkeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="471907615"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Jan 2021 23:03:02 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH 2/2] perf script: Support dso filter
-Date:   Mon, 25 Jan 2021 07:27:50 +0800
-Message-Id: <20210124232750.19170-2-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210124232750.19170-1-yao.jin@linux.intel.com>
-References: <20210124232750.19170-1-yao.jin@linux.intel.com>
+        id S1727114AbhAYHDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 02:03:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbhAYGlp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 01:41:45 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B1FC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 22:41:04 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id g3so6997250plp.2
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 22:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NewSY01qkIGM9FMVRaVXfK28tOMEomXG8TL6xj/6ExU=;
+        b=dqz4SrJI2EpyL5zBD3Ud75KgTfBUcXl9CpiGOJPIxKjyVX/iYdSQdfe1ePcFBhZw7b
+         HYIhTcNlR8rvxCOXr+82MSI/2qu96+I5tHYDRCPV9hOM6sLvKudctE9rkAnTTCA1RQmE
+         jCPswFUCuBmin5UAqlev59PlZTvBSdMSyQXAVcig6fVCUeLUCjkYB4iyIUDOJeeZCkHB
+         KDQroHze9xd2oxp1s/erz77PxkrYSSwhCs9QzMqfsf74CGGMre5Jrx8LVzcKXTEpzkoY
+         KKlCLBUoGVVc3PSi3/vFNNnWsqF2XM6XiscKNyZcCoG6+cLAFdRxTdW7MkUMLy/8uHcy
+         VljQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NewSY01qkIGM9FMVRaVXfK28tOMEomXG8TL6xj/6ExU=;
+        b=VUuhVvYJSEE7vfMw4cKBITCljwiixdtnWcOWUtXCFeacZkydNmaDdTh8ZMft3LKNDN
+         J+zjUVTwf7sgiLmreslS/NMMi/F7QiSfoL+ja3jC4q0g4UaBEgZV2fIdNsHw/wYcoYIv
+         +0Y0A3HPb652RvTY+uRidhP6b3GBKUcGpyxyj4V6bpGaLtAhJi7kUr1Gt0V7bJptVA8U
+         00pFDqamJZRWItEaaY7Cch1cmQY0akazxlF3KKoFV/z//t0mwZs7l77a5BTL1HY4DFrX
+         mDFcg394OvVQfulCm/Cpj+XYoD/m7KovMzEB4gzVWY4JmNiChGKnuQw2ZB8HpttgFyZw
+         tl/g==
+X-Gm-Message-State: AOAM531p87ogawVtFDYTJLJR+Iia3Vy7eotNmfhfV7NLTGWbB2CvfYAv
+        ILk54QHbqgqsnPoMVgK1e+mSzT4hlvP9rah4avURoA==
+X-Google-Smtp-Source: ABdhPJyXPfNI8fF7mOPctMLEwfthvf6F4onGDO1Vun00hENf1CWfX3J5+p8iE/SBk36EheIPeyMlR1HL/lUpJRFfe30=
+X-Received: by 2002:a17:90a:808a:: with SMTP id c10mr6198232pjn.229.1611556864233;
+ Sun, 24 Jan 2021 22:41:04 -0800 (PST)
+MIME-Version: 1.0
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com> <6a68fde-583d-b8bb-a2c8-fbe32e03b@google.com>
+In-Reply-To: <6a68fde-583d-b8bb-a2c8-fbe32e03b@google.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 25 Jan 2021 14:40:27 +0800
+Message-ID: <CAMZfGtXpg30RhrPm836S6Tr09ynKRPG=_DXtXt9sVTTponnC-g@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
+ vmemmap pages associated with each HugeTLB page
+To:     David Rientjes <rientjes@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Other perf tool builtins have already supported dso filter.
+On Mon, Jan 25, 2021 at 8:05 AM David Rientjes <rientjes@google.com> wrote:
+>
+>
+> On Sun, 17 Jan 2021, Muchun Song wrote:
+>
+> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> > index ce4be1fa93c2..3b146d5949f3 100644
+> > --- a/mm/sparse-vmemmap.c
+> > +++ b/mm/sparse-vmemmap.c
+> > @@ -29,6 +29,7 @@
+> >  #include <linux/sched.h>
+> >  #include <linux/pgtable.h>
+> >  #include <linux/bootmem_info.h>
+> > +#include <linux/delay.h>
+> >
+> >  #include <asm/dma.h>
+> >  #include <asm/pgalloc.h>
+> > @@ -40,7 +41,8 @@
+> >   * @remap_pte:               called for each non-empty PTE (lowest-level) entry.
+> >   * @reuse_page:              the page which is reused for the tail vmemmap pages.
+> >   * @reuse_addr:              the virtual address of the @reuse_page page.
+> > - * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
+> > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed
+> > + *                   or is mapped from.
+> >   */
+> >  struct vmemmap_remap_walk {
+> >       void (*remap_pte)(pte_t *pte, unsigned long addr,
+> > @@ -50,6 +52,10 @@ struct vmemmap_remap_walk {
+> >       struct list_head *vmemmap_pages;
+> >  };
+> >
+> > +/* The gfp mask of allocating vmemmap page */
+> > +#define GFP_VMEMMAP_PAGE             \
+> > +     (GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN | __GFP_THISNODE)
+> > +
+>
+> This is unnecessary, just use the gfp mask directly in allocator.
 
-For example,
-perf report --dso, which only considers symbols in these dsos.
+Will do. Thanks.
 
-Now dso filter is supported for perf-script.
+>
+> >  static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+> >                             unsigned long end,
+> >                             struct vmemmap_remap_walk *walk)
+> > @@ -228,6 +234,75 @@ void vmemmap_remap_free(unsigned long start, unsigned long end,
+> >       free_vmemmap_page_list(&vmemmap_pages);
+> >  }
+> >
+> > +static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
+> > +                             struct vmemmap_remap_walk *walk)
+> > +{
+> > +     pgprot_t pgprot = PAGE_KERNEL;
+> > +     struct page *page;
+> > +     void *to;
+> > +
+> > +     BUG_ON(pte_page(*pte) != walk->reuse_page);
+> > +
+> > +     page = list_first_entry(walk->vmemmap_pages, struct page, lru);
+> > +     list_del(&page->lru);
+> > +     to = page_to_virt(page);
+> > +     copy_page(to, (void *)walk->reuse_addr);
+> > +
+> > +     set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
+> > +}
+> > +
+> > +static void alloc_vmemmap_page_list(struct list_head *list,
+> > +                                 unsigned long start, unsigned long end)
+> > +{
+> > +     unsigned long addr;
+> > +
+> > +     for (addr = start; addr < end; addr += PAGE_SIZE) {
+> > +             struct page *page;
+> > +             int nid = page_to_nid((const void *)addr);
+> > +
+> > +retry:
+> > +             page = alloc_pages_node(nid, GFP_VMEMMAP_PAGE, 0);
+> > +             if (unlikely(!page)) {
+> > +                     msleep(100);
+> > +                     /*
+> > +                      * We should retry infinitely, because we cannot
+> > +                      * handle allocation failures. Once we allocate
+> > +                      * vmemmap pages successfully, then we can free
+> > +                      * a HugeTLB page.
+> > +                      */
+> > +                     goto retry;
+>
+> Ugh, I don't think this will work, there's no guarantee that we'll ever
+> succeed and now we can't free a 2MB hugepage because we cannot allocate a
+> 4KB page.  We absolutely have to ensure we make forward progress here.
 
-root@kbl-ppc:~# ./perf script --dso "[kernel.kallsyms]"
-            perf 18123 [000] 6142863.075104:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
-            perf 18123 [000] 6142863.075107:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
-            perf 18123 [000] 6142863.075108:         10   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
-            perf 18123 [000] 6142863.075109:        273   cycles:  ffffffff9ca7730a native_write_msr+0xa ([kernel.kallsyms])
-            perf 18123 [000] 6142863.075110:       7684   cycles:  ffffffff9ca3c9c0 native_sched_clock+0x50 ([kernel.kallsyms])
-            perf 18123 [000] 6142863.075112:     213017   cycles:  ffffffff9d765a92 syscall_exit_to_user_mode+0x32 ([kernel.kallsyms])
-            perf 18123 [001] 6142863.075156:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
-            perf 18123 [001] 6142863.075158:          1   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
-            perf 18123 [001] 6142863.075159:         17   cycles:  ffffffff9ca77308 native_write_msr+0x8 ([kernel.kallsyms])
+This can trigger a OOM when there is no memory and kill someone to release
+some memory. Right?
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/Documentation/perf-script.txt | 3 +++
- tools/perf/builtin-script.c              | 2 ++
- 2 files changed, 5 insertions(+)
+>
+> We're going to be freeing the hugetlb page after this succeeeds, can we
+> not use part of the hugetlb page that we're freeing for this memory
+> instead?
 
-diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
-index 0ef2261baeb9..6e32b2f9b828 100644
---- a/tools/perf/Documentation/perf-script.txt
-+++ b/tools/perf/Documentation/perf-script.txt
-@@ -444,6 +444,9 @@ include::itrace.txt[]
- 	[0x4007a0, 0x0x4007a9]:
- 	perf script -S 0x4007a0 --addr-range 10
- 
-+--dsos=::
-+	Only consider symbols in these dsos.
-+
- --call-trace::
- 	Show call stream for intel_pt traces. The CPUs are interleaved, but
- 	can be filtered with -C.
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index e0feda33dbb9..f8d3d8582ea2 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -3523,6 +3523,8 @@ int cmd_script(int argc, const char **argv)
- 		     parse_output_fields),
- 	OPT_BOOLEAN('a', "all-cpus", &system_wide,
- 		    "system-wide collection from all CPUs"),
-+	OPT_STRING(0, "dsos", &symbol_conf.dso_list_str, "dso[,dso...]",
-+		   "only consider symbols in these dsos"),
- 	OPT_STRING('S', "symbols", &symbol_conf.sym_list_str, "symbol[,symbol...]",
- 		   "only consider these symbols"),
- 	OPT_INTEGER(0, "addr-range", &symbol_conf.addr_range,
--- 
-2.17.1
+It seems a good idea. We can try to allocate memory firstly, if successful,
+just use the new page to remap (it can reduce memory fragmentation).
+If not, we can use part of the hugetlb page to remap. What's your opinion
+about this?
 
+>
+> > +             }
+> > +             list_add_tail(&page->lru, list);
+> > +     }
+> > +}
+> > +
+> > +/**
+> > + * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
+> > + *                    to the page which is from the @vmemmap_pages
+> > + *                    respectively.
+> > + * @start:   start address of the vmemmap virtual address range.
+> > + * @end:     end address of the vmemmap virtual address range.
+> > + * @reuse:   reuse address.
+> > + */
+> > +void vmemmap_remap_alloc(unsigned long start, unsigned long end,
+> > +                      unsigned long reuse)
+> > +{
+> > +     LIST_HEAD(vmemmap_pages);
+> > +     struct vmemmap_remap_walk walk = {
+> > +             .remap_pte      = vmemmap_restore_pte,
+> > +             .reuse_addr     = reuse,
+> > +             .vmemmap_pages  = &vmemmap_pages,
+> > +     };
+> > +
+> > +     might_sleep();
+> > +
+> > +     /* See the comment in the vmemmap_remap_free(). */
+> > +     BUG_ON(start - reuse != PAGE_SIZE);
+> > +
+> > +     alloc_vmemmap_page_list(&vmemmap_pages, start, end);
+> > +     vmemmap_remap_range(reuse, end, &walk);
+> > +}
+> > +
+> >  /*
+> >   * Allocate a block of memory to be used to back the virtual memory map
+> >   * or to back the page tables that are used to create the mapping.
+> > --
+> > 2.11.0
+> >
+> >
