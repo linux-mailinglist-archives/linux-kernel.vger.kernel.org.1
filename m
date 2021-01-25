@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C64302B9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A26E302B79
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731984AbhAYT3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:29:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41600 "EHLO mail.kernel.org"
+        id S1731722AbhAYTWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:22:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731385AbhAYSzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:55:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E5EB207B3;
-        Mon, 25 Jan 2021 18:54:52 +0000 (UTC)
+        id S1731304AbhAYSx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:53:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D51A822482;
+        Mon, 25 Jan 2021 18:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600893;
-        bh=kA66J9R8GJIJ1MxQzUP7vADOMxUyTJOLiwqEt0ZuhEc=;
+        s=korg; t=1611600822;
+        bh=rxcBrCVXrL9+tljwdhsfBzOEJPHtMx00KvYbesaFMjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vdzgUCMe8j3Aj1cs7CwvA5ONOYcNRCsEoZhuhqxRr4ruO8crbg/ZLAwvzIHLywm+Z
-         QHz4dgG7xxXkgVIzt2bTdL04xq0b4avZXNeFnz3lXIkq6Hq//RCJTxe0Sg/8TIIPD2
-         gVstsljd12rTzcNGBw+AzQztgpC2Cv6uyydSOrVg=
+        b=VwoWO9e/VmKDejRNY7U4pGJe41aoCw3ws6609FUdGiwkqd9UNEDM1YtXn/T2pMSB/
+         ho4JvrSABOp+qpectY1TVSDEwd/T+Mf1MoP7Ri38QLuumt5pFvKLMy9Oi9JX/EanWG
+         YAcq+6VeMAfMXF6grJIdSeHU1l3ppwIgrN2zN0nw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 161/199] sh_eth: Fix power down vs. is_opened flag ordering
-Date:   Mon, 25 Jan 2021 19:39:43 +0100
-Message-Id: <20210125183222.994360061@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 165/199] lightnvm: fix memory leak when submit fails
+Date:   Mon, 25 Jan 2021 19:39:47 +0100
+Message-Id: <20210125183223.159137580@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,42 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Pan Bian <bianpan2016@163.com>
 
-commit f6a2e94b3f9d89cb40771ff746b16b5687650cbb upstream.
+commit 97784481757fba7570121a70dd37ca74a29f50a8 upstream.
 
-sh_eth_close() does a synchronous power down of the device before
-marking it closed.  Revert the order, to make sure the device is never
-marked opened while suspended.
+The allocated page is not released if error occurs in
+nvm_submit_io_sync_raw(). __free_page() is moved ealier to avoid
+possible memory leak issue.
 
-While at it, use pm_runtime_put() instead of pm_runtime_put_sync(), as
-there is no reason to do a synchronous power down.
-
-Fixes: 7fa2955ff70ce453 ("sh_eth: Fix sleeping function called from invalid context")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Link: https://lore.kernel.org/r/20210118150812.796791-1-geert+renesas@glider.be
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: aff3fb18f957 ("lightnvm: move bad block and chunk state logic to core")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/renesas/sh_eth.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/lightnvm/core.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/renesas/sh_eth.c
-+++ b/drivers/net/ethernet/renesas/sh_eth.c
-@@ -2606,10 +2606,10 @@ static int sh_eth_close(struct net_devic
- 	/* Free all the skbuffs in the Rx queue and the DMA buffer. */
- 	sh_eth_ring_free(ndev);
+--- a/drivers/lightnvm/core.c
++++ b/drivers/lightnvm/core.c
+@@ -844,11 +844,10 @@ static int nvm_bb_chunk_sense(struct nvm
+ 	rqd.ppa_addr = generic_to_dev_addr(dev, ppa);
  
--	pm_runtime_put_sync(&mdp->pdev->dev);
+ 	ret = nvm_submit_io_sync_raw(dev, &rqd);
++	__free_page(page);
+ 	if (ret)
+ 		return ret;
+ 
+-	__free_page(page);
 -
- 	mdp->is_opened = 0;
- 
-+	pm_runtime_put(&mdp->pdev->dev);
-+
- 	return 0;
+ 	return rqd.error;
  }
  
 
