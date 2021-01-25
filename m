@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14027303944
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE66303942
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391466AbhAZJo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:44:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37446 "EHLO mail.kernel.org"
+        id S2390454AbhAZJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:44:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731156AbhAYSvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731155AbhAYSvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:51:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ED402063A;
-        Mon, 25 Jan 2021 18:51:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AAB3221E3;
+        Mon, 25 Jan 2021 18:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600672;
-        bh=Htx6PgQPWCpEABjyXQR66WLslRWX+D+EPaJOlMYiHTc=;
+        s=korg; t=1611600677;
+        bh=gcSjc9HePiynWKWNm+oELqrUrl5E3Ww1X4a7nhtp5u4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJIG0PMA758w6T0q2Yn7k+ngpBXRewx0LCOlw9OF4O8gTqCkQJLp4vm/qrDcwmx/S
-         zRYMc43C6Moj2gq0MqJUpVqM53vC/Rjiunh8KSH1NaYH+1Ff7JDrMU7DHJkMfaVWE8
-         9jX4wcFRz4wsIT8ACpPitq5Y7LR2wQ7GXJSjOpBc=
+        b=DZusn6mO7Os+xr7F4SV+SdcBVlqqfH9PTOWCnR5xf9vGLM+3vhmWg9UWPvSfOXOun
+         mZBLW974OdnvTg8cfAtfGJ7/t+CSuRdIROw18omrpuWkUHHpdSZLOcOyJ6kk47ZwGa
+         lJ/f5ULfgkI99tuWmOQ+n+9nb6on4mS1AVwmw0Pw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
         Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 107/199] can: vxcan: vxcan_xmit: fix use after free bug
-Date:   Mon, 25 Jan 2021 19:38:49 +0100
-Message-Id: <20210125183220.780503837@linuxfoundation.org>
+Subject: [PATCH 5.10 108/199] can: peak_usb: fix use after free bugs
+Date:   Mon, 25 Jan 2021 19:38:50 +0100
+Message-Id: <20210125183220.817699394@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,49 +43,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-[ Upstream commit 75854cad5d80976f6ea0f0431f8cedd3bcc475cb ]
+[ Upstream commit 50aca891d7a554db0901b245167cd653d73aaa71 ]
 
-After calling netif_rx_ni(skb), dereferencing skb is unsafe.
-Especially, the canfd_frame cfd which aliases skb memory is accessed
-after the netif_rx_ni().
+After calling peak_usb_netif_rx_ni(skb), dereferencing skb is unsafe.
+Especially, the can_frame cf which aliases skb memory is accessed
+after the peak_usb_netif_rx_ni().
 
-Fixes: a8f820a380a2 ("can: add Virtual CAN Tunnel driver (vxcan)")
-Link: https://lore.kernel.org/r/20210120114137.200019-3-mailhol.vincent@wanadoo.fr
+Reordering the lines solves the issue.
+
+Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
+Link: https://lore.kernel.org/r/20210120114137.200019-4-mailhol.vincent@wanadoo.fr
 Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/vxcan.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
-index d6ba9426be4de..b1baa4ac1d537 100644
---- a/drivers/net/can/vxcan.c
-+++ b/drivers/net/can/vxcan.c
-@@ -39,6 +39,7 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct net_device *peer;
- 	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
- 	struct net_device_stats *peerstats, *srcstats = &dev->stats;
-+	u8 len;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index d29d20525588c..d565922838186 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -512,11 +512,11 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 	else
+ 		memcpy(cfd->data, rm->d, cfd->len);
  
- 	if (can_dropped_invalid_skb(dev, skb))
- 		return NETDEV_TX_OK;
-@@ -61,12 +62,13 @@ static netdev_tx_t vxcan_xmit(struct sk_buff *skb, struct net_device *dev)
- 	skb->dev        = peer;
- 	skb->ip_summed  = CHECKSUM_UNNECESSARY;
+-	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
+-
+ 	netdev->stats.rx_packets++;
+ 	netdev->stats.rx_bytes += cfd->len;
  
-+	len = cfd->len;
- 	if (netif_rx_ni(skb) == NET_RX_SUCCESS) {
- 		srcstats->tx_packets++;
--		srcstats->tx_bytes += cfd->len;
-+		srcstats->tx_bytes += len;
- 		peerstats = &peer->stats;
- 		peerstats->rx_packets++;
--		peerstats->rx_bytes += cfd->len;
-+		peerstats->rx_bytes += len;
- 	}
++	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
++
+ 	return 0;
+ }
  
- out_unlock:
+@@ -578,11 +578,11 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
+ 	if (!skb)
+ 		return -ENOMEM;
+ 
+-	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
+-
+ 	netdev->stats.rx_packets++;
+ 	netdev->stats.rx_bytes += cf->can_dlc;
+ 
++	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
