@@ -2,229 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8DD304A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47373304A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727169AbhAZFKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:10:25 -0500
-Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:36159 "EHLO
-        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726703AbhAYJcc (ORCPT
+        id S1731413AbhAZFFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:05:34 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11439 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726673AbhAYJ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:32:32 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 00B59CAFD0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:59:10 +0000 (GMT)
-Received: (qmail 12136 invoked from network); 25 Jan 2021 08:59:10 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 25 Jan 2021 08:59:10 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 4/4] sched/fair: Merge select_idle_core/cpu()
-Date:   Mon, 25 Jan 2021 08:59:09 +0000
-Message-Id: <20210125085909.4600-5-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210125085909.4600-1-mgorman@techsingularity.net>
-References: <20210125085909.4600-1-mgorman@techsingularity.net>
+        Mon, 25 Jan 2021 04:29:25 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DPP6x0jn8zjBwh;
+        Mon, 25 Jan 2021 17:03:53 +0800 (CST)
+Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.186.182) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 17:04:40 +0800
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <lushenming@huawei.com>
+Subject: [RFC PATCH v1 0/4] vfio: Add IOPF support for VFIO passthrough
+Date:   Mon, 25 Jan 2021 17:03:58 +0800
+Message-ID: <20210125090402.1429-1-lushenming@huawei.com>
+X-Mailer: git-send-email 2.27.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.186.182]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+Hi,
 
-From: Peter Zijlstra (Intel) <peterz@infradead.org>
+The static pinning and mapping problem in VFIO and possible solutions
+have been discussed a lot [1, 2]. One of the solutions is to add I/O
+page fault support for VFIO devices. Different from those relatively
+complicated software approaches such as presenting a vIOMMU that provides
+the DMA buffer information (might include para-virtualized optimizations),
+IOPF mainly depends on the hardware faulting capability, such as the PCIe
+PRI extension or Arm SMMU stall model. What's more, the IOPF support in
+the IOMMU driver is being implemented in SVA [3]. So do we consider to
+add IOPF support for VFIO passthrough based on the IOPF part of SVA at
+present?
 
-Both select_idle_core() and select_idle_cpu() do a loop over the same
-cpumask. Observe that by clearing the already visited CPUs, we can
-fold the iteration and iterate a core at a time.
+We have implemented a basic demo only for one stage of translation (GPA
+-> HPA in virtualization, note that it can be configured at either stage),
+and tested on Hisilicon Kunpeng920 board. The nested mode is more complicated
+since VFIO only handles the second stage page faults (same as the non-nested
+case), while the first stage page faults need to be further delivered to
+the guest, which is being implemented in [4] on ARM. My thought on this
+is to report the page faults to VFIO regardless of the occured stage (try
+to carry the stage information), and handle respectively according to the
+configured mode in VFIO. Or the IOMMU driver might evolve to support more...
 
-All we need to do is remember any non-idle CPU we encountered while
-scanning for an idle core. This way we'll only iterate every CPU once.
+Might TODO:
+ - Optimize the faulting path, and measure the performance (it might still
+   be a big issue).
+ - Add support for PRI.
+ - Add a MMU notifier to avoid pinning.
+ - Add support for the nested mode.
+...
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 101 ++++++++++++++++++++++++++------------------
- 1 file changed, 61 insertions(+), 40 deletions(-)
+Any comments and suggestions are very welcome. :-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index fe587350ea14..52a650aa2108 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6006,6 +6006,14 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
- 	return new_cpu;
- }
- 
-+static inline int __select_idle_cpu(int cpu)
-+{
-+	if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-+		return cpu;
-+
-+	return -1;
-+}
-+
- #ifdef CONFIG_SCHED_SMT
- DEFINE_STATIC_KEY_FALSE(sched_smt_present);
- EXPORT_SYMBOL_GPL(sched_smt_present);
-@@ -6064,48 +6072,51 @@ void __update_idle_core(struct rq *rq)
-  * there are no idle cores left in the system; tracked through
-  * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
-  */
--static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-+static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
--	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
--	int core, cpu;
-+	bool idle = true;
-+	int cpu;
- 
- 	if (!static_branch_likely(&sched_smt_present))
--		return -1;
--
--	if (!test_idle_cores(target, false))
--		return -1;
--
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+		return __select_idle_cpu(core);
- 
--	for_each_cpu_wrap(core, cpus, target) {
--		bool idle = true;
--
--		for_each_cpu(cpu, cpu_smt_mask(core)) {
--			if (!available_idle_cpu(cpu)) {
--				idle = false;
--				break;
-+	for_each_cpu(cpu, cpu_smt_mask(core)) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle = false;
-+			if (*idle_cpu == -1) {
-+				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+					*idle_cpu = cpu;
-+					break;
-+				}
-+				continue;
- 			}
-+			break;
- 		}
--
--		if (idle)
--			return core;
--
--		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-+		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-+			*idle_cpu = cpu;
- 	}
- 
--	/*
--	 * Failed to find an idle core; stop looking for one.
--	 */
--	set_idle_cores(target, 0);
-+	if (idle)
-+		return core;
- 
-+	cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	return -1;
- }
- 
- #else /* CONFIG_SCHED_SMT */
- 
--static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-+static inline void set_idle_cores(int cpu, int val)
- {
--	return -1;
-+}
-+
-+static inline bool test_idle_cores(int cpu, bool def)
-+{
-+	return def;
-+}
-+
-+static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-+{
-+	return __select_idle_cpu(core);
- }
- 
- #endif /* CONFIG_SCHED_SMT */
-@@ -6118,10 +6129,11 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-+	int i, cpu, idle_cpu = -1, nr = INT_MAX;
-+	bool smt = test_idle_cores(target, false);
-+	int this = smp_processor_id();
- 	struct sched_domain *this_sd;
- 	u64 time;
--	int this = smp_processor_id();
--	int cpu, nr = INT_MAX;
- 
- 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
- 	if (!this_sd)
-@@ -6129,7 +6141,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
- 
--	if (sched_feat(SIS_PROP)) {
-+	if (sched_feat(SIS_PROP) && !smt) {
- 		u64 avg_cost, avg_idle, span_avg;
- 
- 		/*
-@@ -6149,18 +6161,31 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	}
- 
- 	for_each_cpu_wrap(cpu, cpus, target) {
--		if (!--nr)
--			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			break;
-+		if (smt) {
-+			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-+			if ((unsigned int)i < nr_cpumask_bits)
-+				return i;
-+
-+		} else {
-+			if (!--nr)
-+				return -1;
-+			i = __select_idle_cpu(cpu);
-+			if ((unsigned int)i < nr_cpumask_bits) {
-+				idle_cpu = i;
-+				break;
-+			}
-+		}
- 	}
- 
--	if (sched_feat(SIS_PROP)) {
-+	if (smt)
-+		set_idle_cores(this, false);
-+
-+	if (sched_feat(SIS_PROP) && !smt) {
- 		time = cpu_clock(this) - time;
- 		update_avg(&this_sd->avg_scan_cost, time);
- 	}
- 
--	return cpu;
-+	return idle_cpu;
- }
- 
- /*
-@@ -6289,10 +6314,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if (!sd)
- 		return target;
- 
--	i = select_idle_core(p, sd, target);
--	if ((unsigned)i < nr_cpumask_bits)
--		return i;
--
- 	i = select_idle_cpu(p, sd, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
+Links:
+[1] Lesokhin I, et al. Page Fault Support for Network Controllers. In ASPLOS,
+    2016.
+[2] Tian K, et al. coIOMMU: A Virtual IOMMU with Cooperative DMA Buffer Tracking
+    for Efficient Memory Management in Direct I/O. In USENIX ATC, 2020.
+[3] iommu: I/O page faults for SMMUv3:
+    https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210121123623.2060416-1-jean-philippe@linaro.org/
+[4] SMMUv3 Nested Stage Setup (VFIO part):
+    https://patchwork.kernel.org/project/kvm/cover/20201116110030.32335-1-eric.auger@redhat.com/
+
+Thanks,
+Shenming
+
+
+Shenming Lu (4):
+  vfio/type1: Add a bitmap to track IOPF mapped pages
+  vfio: Add a page fault handler
+  vfio: Try to enable IOPF for VFIO devices
+  vfio: Allow to pin and map dynamically
+
+ drivers/vfio/vfio.c             |  75 ++++++++++++++++++
+ drivers/vfio/vfio_iommu_type1.c | 131 +++++++++++++++++++++++++++++++-
+ include/linux/vfio.h            |   6 ++
+ 3 files changed, 211 insertions(+), 1 deletion(-)
+
 -- 
-2.26.2
+2.19.1
 
