@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE48C303880
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71274303875
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388965AbhAZJAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:00:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34028 "EHLO mail.kernel.org"
+        id S2390599AbhAZI5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:57:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730284AbhAYSqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:46:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 079D6229C5;
-        Mon, 25 Jan 2021 18:45:37 +0000 (UTC)
+        id S1730047AbhAYSqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:46:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73F0922D58;
+        Mon, 25 Jan 2021 18:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600338;
-        bh=u+vVjMmD7rLCzkuaoKutz6a+wuv38iaSnT1zF7N/EjE=;
+        s=korg; t=1611600344;
+        bh=UKDr5wvYWa3oDVHqw81KBDA1tJIdeyCpvj3hgKXAwtg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jmbI6L/7oNDVftQRMsV5IxBGhaMRMzhzz36sJcQcdHht7P8AU+Wh4Tz0EWbeRV1cF
-         9dC8vDJousrBz111op7oo6dr/wMRS4cx7+AR0qBzraHO7yGtKioIgpUjgUvviHmO+T
-         djHTqpSY46U7yjd/uMMnvt2kmN2Bqt0ct/JBm2MY=
+        b=wclE6nT0ickn82xmdWx1+UsIsNQRF44kGciOLkhVWTUD6DuCYiyUwNW9gQ6qUGAFL
+         fMaSHcs7iVNrgLFtw7VOtihgOg/vUQUxl/8Bc7llWscWRCpl6WAyUgUXXvitUrdpKW
+         fCcKYrq9NkDwiG5aO7ht6oN85TFqjE63UvtM7FWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Subject: [PATCH 5.4 63/86] usb: bdc: Make bdc pci driver depend on BROKEN
-Date:   Mon, 25 Jan 2021 19:39:45 +0100
-Message-Id: <20210125183203.709901224@linuxfoundation.org>
+        stable@vger.kernel.org, JC Kuo <jckuo@nvidia.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.4 65/86] xhci: tegra: Delay for disabling LFPS detector
+Date:   Mon, 25 Jan 2021 19:39:47 +0100
+Message-Id: <20210125183203.792881184@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -40,36 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+From: JC Kuo <jckuo@nvidia.com>
 
-commit ef02684c4e67d8c35ac83083564135bc7b1d3445 upstream.
+commit da7e0c3c2909a3d9bf8acfe1db3cb213bd7febfb upstream.
 
-The bdc pci driver is going to be removed due to it not existing in the
-wild. This patch turns off compilation of the driver so that stable
-kernels can also pick up the change. This helps the out-of-tree
-facetimehd webcam driver as the pci id conflicts with bdc.
+Occasionally, we are seeing some SuperSpeed devices resumes right after
+being directed to U3. This commits add 500us delay to ensure LFPS
+detector is disabled before sending ACK to firmware.
 
-Cc: Al Cooper <alcooperx@gmail.com>
-Cc: <stable@vger.kernel.org>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Link: https://lore.kernel.org/r/20210118203615.13995-1-patrik.r.jakobsson@gmail.com
+[   16.099363] tegra-xusb 70090000.usb: entering ELPG
+[   16.104343] tegra-xusb 70090000.usb: 2-1 isn't suspended: 0x0c001203
+[   16.114576] tegra-xusb 70090000.usb: not all ports suspended: -16
+[   16.120789] tegra-xusb 70090000.usb: entering ELPG failed
+
+The register write passes through a few flop stages of 32KHz clock domain.
+NVIDIA ASIC designer reviewed RTL and suggests 500us delay.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: JC Kuo <jckuo@nvidia.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210115161907.2875631-3-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/bdc/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci-tegra.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/gadget/udc/bdc/Kconfig
-+++ b/drivers/usb/gadget/udc/bdc/Kconfig
-@@ -17,7 +17,7 @@ if USB_BDC_UDC
- comment "Platform Support"
- config	USB_BDC_PCI
- 	tristate "BDC support for PCIe based platforms"
--	depends on USB_PCI
-+	depends on USB_PCI && BROKEN
- 	default USB_BDC_UDC
- 	help
- 		Enable support for platforms which have BDC connected through PCIe, such as Lego3 FPGA platform.
+--- a/drivers/usb/host/xhci-tegra.c
++++ b/drivers/usb/host/xhci-tegra.c
+@@ -562,6 +562,13 @@ static void tegra_xusb_mbox_handle(struc
+ 								     enable);
+ 			if (err < 0)
+ 				break;
++
++			/*
++			 * wait 500us for LFPS detector to be disabled before
++			 * sending ACK
++			 */
++			if (!enable)
++				usleep_range(500, 1000);
+ 		}
+ 
+ 		if (err < 0) {
 
 
