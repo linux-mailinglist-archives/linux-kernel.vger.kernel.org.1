@@ -2,54 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08993036F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2CA3036DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389268AbhAZG7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:59:12 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:40572 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729984AbhAYPhC (ORCPT
+        id S1732051AbhAZGyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:54:03 -0500
+Received: from atl4mhfb03.myregisteredsite.com ([209.17.115.119]:36164 "EHLO
+        atl4mhfb03.myregisteredsite.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729897AbhAYPfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:37:02 -0500
-Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 155E1CECC5;
-        Mon, 25 Jan 2021 16:10:32 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY
- for btrtl
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210119114700.3662156-1-tientzu@chromium.org>
-Date:   Mon, 25 Jan 2021 16:03:06 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>, Hilda Wu <hildawu@realtek.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <880F0A16-7F4C-40C1-924A-2CB7B1094B3D@holtmann.org>
-References: <20210119114700.3662156-1-tientzu@chromium.org>
-To:     Claire Chang <tientzu@chromium.org>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Mon, 25 Jan 2021 10:35:41 -0500
+Received: from jax4mhob22.registeredsite.com (jax4mhob22.registeredsite.com [64.69.218.110])
+        by atl4mhfb03.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 10PF9Pqp030577
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:09:25 -0500
+Received: from mailpod.hostingplatform.com ([10.30.71.205])
+        by jax4mhob22.registeredsite.com (8.14.4/8.14.4) with ESMTP id 10PF7cc0111225
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:07:38 -0500
+Received: (qmail 3240 invoked by uid 0); 25 Jan 2021 15:07:38 -0000
+X-TCPREMOTEIP: 83.128.90.119
+X-Authenticated-UID: mike@milosoftware.com
+Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
+  by 0 with ESMTPA; 25 Jan 2021 15:07:38 -0000
+From:   Mike Looijmans <mike.looijmans@topic.nl>
+To:     linux-iio@vger.kernel.org
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 1/2] dt-bindings: iio: accel: Add bmi088 accelerometer bindings
+Date:   Mon, 25 Jan 2021 16:07:31 +0100
+Message-Id: <20210125150732.23873-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claire,
+This adds the device-tree bindings for the Bosch Sensortec BMI088 IMU,
+the accelerometer part.
 
-> Realtek Bluetooth controllers can do both LE scan and BR/EDR inquiry
-> at once, need to set HCI_QUIRK_SIMULTANEOUS_DISCOVERY quirk.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> ---
-> drivers/bluetooth/hci_h5.c | 5 +++++
-> 1 file changed, 5 insertions(+)
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
 
-patch has been applied to bluetooth-next tree.
+---
 
-Regards
+Changes in v8:
+Add spi-max-frequency: true
 
-Marcel
+Changes in v7:
+Add additionalProperties
+Change bmi088_accel to bmi088-accel
+Add interrupt-names and adjust description
+
+Changes in v6:
+I't been almost a year since the last commit, sorry...
+Fixed the yaml errors
+Add interrupt, vdd and vddio properties
+
+Changes in v5:
+submit together with driver code as patch series
+
+Changes in v2:
+convert to yaml format
+
+ .../bindings/iio/accel/bosch,bmi088.yaml      | 68 +++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+new file mode 100644
+index 000000000000..911a1ae9c83f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/accel/bosch,bmi088.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/accel/bosch,bmi088.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bosch BMI088 IMU accelerometer part
++
++maintainers:
++  - Mike Looijmans <mike.looijmans@topic.nl>
++
++description: |
++  Acceleration part of the IMU sensor with an SPI interface
++  Specifications about the sensor can be found at:
++    https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi088-ds001.pdf
++
++properties:
++  compatible:
++    enum:
++      - bosch,bmi088-accel
++
++  reg:
++    maxItems: 1
++
++  spi-max-frequency: true
++
++  vdd-supply: true
++
++  vddio-supply: true
++
++  interrupts:
++    minItems: 1
++    maxItems: 2
++    description: |
++      Type should be either IRQ_TYPE_LEVEL_HIGH or IRQ_TYPE_LEVEL_LOW.
++      Two configurable interrupt lines exist.
++
++  interrupt-names:
++    description: Specify which interrupt line is in use.
++    items:
++      enum:
++        - INT1
++        - INT2
++    minItems: 1
++    maxItems: 2
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      bmi088-accel@1 {
++        compatible = "bosch,bmi088-accel";
++        reg = <1>;
++        spi-max-frequency = <10000000>;
++        interrupt-parent = <&gpio6>;
++        interrupts = <19 IRQ_TYPE_LEVEL_LOW>;
++        interrupt-names = "INT2";
++      };
++    };
++...
+-- 
+2.17.1
 
