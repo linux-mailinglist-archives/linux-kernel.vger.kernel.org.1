@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B553020FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2508F302103
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbhAYEOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 23:14:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbhAYENz (ORCPT
+        id S1727003AbhAYEPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 23:15:51 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:52289 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726705AbhAYEPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 23:13:55 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064C8C061573;
-        Sun, 24 Jan 2021 20:13:14 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPGgW0PzCz9s24;
-        Mon, 25 Jan 2021 15:13:11 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611547991;
-        bh=0zRp2f+FnEeYPYUg0U+E8NnwFQ5VNR7q+AeuQvaXrXI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gPyCx8Bq9myqWhNRyXJZLqzN2Y9x9hWpzHQcJIeuhXjRvMqtZQKCOkKqp3v6m4Oii
-         sDXtO7NWHlypQdLJoqaH0ZnP6RebQuPMEYNeC0bdX7OZ6Qb6+61wlypjduwitPp5DT
-         7uIMNfV1I9SbN3bm7tuRWYHHAZZ/lZlINN+N7Tej08Ay22hVofwHyKVnahyMycw2Vo
-         hM9hVtIOzsOquUyUyz7W6SPEnFcnevo2Y3/QM/c3kwLv4cKDexUfcqbPsmY5AmOg68
-         Xw8SuxTQbYeWw61k6QFdintWl/0Gr6ODzJniyJg3dOMgFknULOfUDPqo9EC26Fquxy
-         8iUtIh8yr/xzQ==
-Date:   Mon, 25 Jan 2021 15:13:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the scsi-mkp tree
-Message-ID: <20210125151310.20e71400@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+hhkXc1x=fIunLL/Pg+S1Ej";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Sun, 24 Jan 2021 23:15:45 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 891225807D1;
+        Sun, 24 Jan 2021 23:14:59 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Sun, 24 Jan 2021 23:14:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=ZqoO0c07wdhPozU6W/qvvj1if9TEa77
+        alqdzsA7xV7A=; b=DCe9sARNOTcrbZtMd1LO5IaYIqpaBwZhQLB6ts1n8U22yQi
+        i+V1pZz8QfrERiS0fgbT+hNBAu5HEU4tG88023g2dFhnnZUS1jtH0yaZ/Fwm3t+v
+        aoiqffY0ko9Ref5A5mkNxuvx0U53ohyIe5zFzSKeINrJ0H7L8p9hxlHbmYps6LdQ
+        M9EAPyZppMqO8CfwahqYqyiDmsd2kgZuak9UqZmFtsCuh9DNE/eDtOj/VumiODIy
+        FlKZOcgQeK8bLo0gfJFV9mR/xYUqDpj5b/bDJGsUVqr38dQIqqvDTwr9WMa8SR6X
+        xxDeW/0IqZ07dUWKjaly4C/C8sSJieqOf7CGviw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZqoO0c
+        07wdhPozU6W/qvvj1if9TEa77alqdzsA7xV7A=; b=HQrr0ZWcWo3owkAk1X+f1C
+        C0dAqGYm204Slm2PWS+z8RSs1O8sf2QL0ZElFCp62O7H2wTR7h6JlI5RpAmUyXLv
+        8AKed3QGneuKEfA8kBsvRN6KTme/RBXRpub5FvVooc09Ut2UPmQSAjsopVKmAzQd
+        rnpTBQOp8ElbNzngvrgGizE1l4r1Mk0F6TpZeRu2HS4aS1ffqiFlG2scFewE/CeE
+        0LCyZS37f+MpRuC8jdiBeicbLEEiIFCjGUQcZY4nCeq5O8qOihC3xYaPCIauze5H
+        fbdFZ6v3uHf4ZL/Zt4kq2PFqW4bqFGHqxsL5ATxEFWDl2uPs5qB81VeNBxWBwgUw
+        ==
+X-ME-Sender: <xms:wkUOYFm16-7WoOBbCXGyeG1_CYfU6I-xPgrbk1vl6TqMK7feGaOiIw>
+    <xme:wkUOYA1JTCNZPQlUHK8dUJI9gK8NcoPMnxT1IedYwZzt-XMTHvnmiIyy6NLZ2xy06
+    xqU1mEtNC8JeoTyBg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvgdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileettedv
+    tdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grnhgurhgvfiesrghjrdhiugdrrghu
+X-ME-Proxy: <xmx:wkUOYLogeSZC9Q3AwNMxo0knJuOk1A5hIFZ52AO45GIAGLmS2LMrkQ>
+    <xmx:wkUOYFl3VfH4OYR7VoFWz_MxZtBWhqIYKsmNNkRqy9WwvesBpNnV-Q>
+    <xmx:wkUOYD2L7fqrvDqzzjN5PU_q8ets7P-CUZS2IHq-6pSlL7C7cWRGEg>
+    <xmx:w0UOYBPSbSDBeY5s_slzwPN9n9oelEGcqdAi64SCatJ7bBq-Kt5jPQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D4B48A0005D; Sun, 24 Jan 2021 23:14:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
+Mime-Version: 1.0
+Message-Id: <2ee34adb-ca7a-43f5-9101-f48909667962@www.fastmail.com>
+In-Reply-To: <20210114131622.8951-5-chiawei_wang@aspeedtech.com>
+References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
+ <20210114131622.8951-5-chiawei_wang@aspeedtech.com>
+Date:   Mon, 25 Jan 2021 14:44:37 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Corey Minyard" <minyard@acm.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Cc:     BMC-SW@aspeedtech.com, "Haiyue Wang" <haiyue.wang@linux.intel.com>,
+        "Cyril Bur" <cyrilbur@gmail.com>,
+        "Robert Lippert" <rlippert@google.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v5_4/5]_pinctrl:_aspeed-g5:_Adapt_to_new_LPC_device?=
+ =?UTF-8?Q?_tree_layout?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+hhkXc1x=fIunLL/Pg+S1Ej
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the scsi-mkp tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
+> Add check against LPC device v2 compatible string to
+> ensure that the fixed device tree layout is adopted.
+> The LPC register offsets are also fixed accordingly.
+> 
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
 
-drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
-drivers/scsi/sg.c:2908:4: error: expected '}' before 'else'
- 2908 |    else
-      |    ^~~~
-drivers/scsi/sg.c:2902:16: warning: unused variable 'cptp' [-Wunused-variab=
-le]
- 2902 |    const char *cptp =3D "pack_id=3D";
-      |                ^~~~
-drivers/scsi/sg.c:2896:5: error: label 'good' used but not defined
- 2896 |     goto good;
-      |     ^~~~
-drivers/scsi/sg.c: At top level:
-drivers/scsi/sg.c:2913:2: error: expected identifier or '(' before 'return'
- 2913 |  return NULL;
-      |  ^~~~~~
-drivers/scsi/sg.c:2914:5: error: expected '=3D', ',', ';', 'asm' or '__attr=
-ibute__' before ':' token
- 2914 | good:
-      |     ^
-drivers/scsi/sg.c:2917:2: error: expected identifier or '(' before 'return'
- 2917 |  return srp;
-      |  ^~~~~~
-drivers/scsi/sg.c:2918:1: error: expected identifier or '(' before '}' token
- 2918 | }
-      | ^
-drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
-drivers/scsi/sg.c:2912:2: error: control reaches end of non-void function [=
--Werror=3Dreturn-type]
- 2912 |  }
-      |  ^
+Using a Witherspoon (AST2500):
 
-Caused by commit
-
-  7323ad3618b6 ("scsi: sg: Replace rq array with xarray")
-
-SG_LOG() degenerates to "{}" in some configs ...
-
-I have used the scsi-mkp tree from next-20210122 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+hhkXc1x=fIunLL/Pg+S1Ej
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAORVYACgkQAVBC80lX
-0GyRZQf/X8Qlmo2KEBELDlREkqpbBC1B56zvbP0HFBm/GO90zGe1QYeyl6LFm8e+
-xlQIrxhKrJk4sza0c30ZV1uPDRNzNUwhq/YvFigt6ShprWnmYAx3Ap879t3i5hhK
-yUF3vmX9aTilOID9QdAwA/zWbmU7/bFE8WZukqRn1BB3A7YYIgAsYD635ud5TVQt
-lrEmcie4FwFrxYesEn/IEY+iLUzEDGpfgLkyQMTpL+LbxBRD9W4FV7D0MBorurqw
-WGQZAEaNUVhzPPrhmtPBTfGBRZ7mVJLgJYMcmOpXgEJ+JOqvL6WuPWlesg46z1Hn
-7EYuy6Q83zHJpc9+4N7n70jSyHKTnw==
-=2O5f
------END PGP SIGNATURE-----
-
---Sig_/+hhkXc1x=fIunLL/Pg+S1Ej--
+Tested-by: Andrew Jeffery <andrew@aj.id.au>
