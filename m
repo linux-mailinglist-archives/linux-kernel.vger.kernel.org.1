@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89921303192
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 861083031C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731709AbhAYTSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:18:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39948 "EHLO mail.kernel.org"
+        id S1729818AbhAYSpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:45:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731220AbhAYSxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D57020E65;
-        Mon, 25 Jan 2021 18:52:31 +0000 (UTC)
+        id S1727145AbhAYSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D62320665;
+        Mon, 25 Jan 2021 18:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600752;
-        bh=OHuGWLiqVjEfP/SkSGDW3//Gl3dPojRa5qulbOcmW3M=;
+        s=korg; t=1611600084;
+        bh=LzI0L2NqO0MGnBms4BkXDnOE6izfjAqWGxoMyYwO2d4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2M2YnutswuP6HrxKZp+I0oS5bd+xVixE+McfN76B5YiXch/HXhv7fxX8lufYIhaax
-         Zu/xGG/NvPoH0YhKysRWL6S+0cSJ9Kkhx1aV4WpfA8NW2hjKnMP7a8lf7cAcE58foK
-         SvzaIolS1/C2Orb5YteL8LfyrG537Qpsg3/FnwOg=
+        b=wHsHyJW3oksGY9eTbM3Y3NOGpSLd4Wk8z8qugDagZLgZyD+zH0MIqMAc24ZIEPyPC
+         LF6AJep1qDK/VzxmZgSLEuJ8yLiEvfoHxmguyrJ66kpXyyGR4FVRyBVqFJ+Kfb8CRE
+         DM2QiX6VfyNvFF8PQUO5kJ9+3JdAHPnHrQ6Ly+uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 5.10 138/199] usb: cdns3: imx: fix writing read-only memory issue
-Date:   Mon, 25 Jan 2021 19:39:20 +0100
-Message-Id: <20210125183222.041032751@linuxfoundation.org>
+        stable@vger.kernel.org, Phil Oester <kernel@linuxace.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 24/58] scsi: megaraid_sas: Fix MEGASAS_IOC_FIRMWARE regression
+Date:   Mon, 25 Jan 2021 19:39:25 +0100
+Message-Id: <20210125183157.736898314@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
-References: <20210125183216.245315437@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,99 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Chen <peter.chen@nxp.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 92cbdb923c17544684c2dd3be9f8636617898a44 upstream.
+[ Upstream commit b112036535eda34460677ea883eaecc3a45a435d ]
 
-The memory for struct clk_bulk_data should not be static which will be written
-during the clk_bulk_get. It fixed below oops when loading cdns3-imx as module.
+Phil Oester reported that a fix for a possible buffer overrun that I sent
+caused a regression that manifests in this output:
 
-[   17.272605] Unable to handle kernel write to read-only memory at virtual address ffff8000092a5398
-[   17.299730] Mem abort info:
-[   17.313542] unregister ISI channel: mxc_isi.4
-[   17.324076]   ESR = 0x9600004f
-[   17.344658]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   17.402055]   SET = 0, FnV = 0
-[   17.404321] mxs_phy 5b100000.usbphy: supply phy-3p0 not found, using dummy regulator
-[   17.405121]   EA = 0, S1PTW = 0
-[   17.405133] Data abort info:
-[   17.496231]   ISV = 0, ISS = 0x0000004f
-[   17.510871]   CM = 0, WnR = 1
-[   17.533542] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081ea5000
-[   17.545709] [ffff8000092a5398] pgd=00000008bffff003, p4d=00000008bffff003, pud=00000008bfffe003, pmd=0000000885041003, pte=006000088513b783
-[   17.573521] Internal error: Oops: 9600004f [#1] PREEMPT SMP
-[   17.579113] Modules linked in: usbmisc_imx phy_mxs_usb phy_cadence_salvo cdns3_imx(+) tcpci imx8_media_dev(C) caam error
-[   17.590044] CPU: 2 PID: 253 Comm: systemd-udevd Tainted: G         C        5.10.0-rc4-04445-g11f3c3a29d0-dirty #19
-[   17.600488] Hardware name: Freescale i.MX8QXP MEK (DT)
-[   17.605633] pstate: 20000005 (nzCv daif -PAN -UAO -TCO BTYPE=--)
-[   17.611662] pc : __clk_bulk_get+0x48/0x130
-[   17.615786] lr : clk_bulk_get+0x18/0x20
-[   17.619634] sp : ffff80001369b880
-[   17.622953] x29: ffff80001369b880 x28: 0000000000000013
-[   17.628277] x27: 0000000000000100 x26: ffff00080553b100
-[   17.633602] x25: ffff80001229b4d8 x24: 0000000000000000
-[   17.638928] x23: ffff000800665410 x22: 0000000000000005
-[   17.644275] x21: ffff8000092a5390 x20: ffff000800665400
-[   17.649605] x19: ffff000804e6f980 x18: 000000005b110000
-[   17.654946] x17: 0000000000000000 x16: 0000000000000000
-[   17.660274] x15: ffff800011989100 x14: 0000000000000000
-[   17.665599] x13: ffff800013ce1000 x12: ffff800013ca1000
-[   17.670924] x11: 000000005b110000 x10: 0000000000000000
-[   17.676249] x9 : ffff8000106c5a30 x8 : ffff000804e6fa00
-[   17.681575] x7 : 0000000000000000 x6 : 000000000000003f
-[   17.686901] x5 : 0000000000000040 x4 : ffff80001369b8b0
-[   17.692228] x3 : ffff8000092a5398 x2 : ffff8000092a5390
-[   17.697574] x1 : ffff8000092a53e8 x0 : 0000000000000004
-[   17.702905] Call trace:
-[   17.705366]  __clk_bulk_get+0x48/0x130
-[   17.709125]  clk_bulk_get+0x18/0x20
-[   17.712620]  devm_clk_bulk_get+0x58/0xb8
-[   17.716563]  cdns_imx_probe+0x84/0x1f0 [cdns3_imx]
-[   17.721363]  platform_drv_probe+0x58/0xa8
-[   17.725381]  really_probe+0xec/0x4c8
-[   17.728967]  driver_probe_device+0xf4/0x160
-[   17.733160]  device_driver_attach+0x74/0x80
-[   17.737355]  __driver_attach+0xa4/0x170
-[   17.741202]  bus_for_each_dev+0x74/0xc8
-[   17.745043]  driver_attach+0x28/0x30
-[   17.748620]  bus_add_driver+0x144/0x228
-[   17.752462]  driver_register+0x68/0x118
-[   17.756308]  __platform_driver_register+0x4c/0x58
-[   17.761022]  cdns_imx_driver_init+0x24/0x1000 [cdns3_imx]
-[   17.766434]  do_one_initcall+0x48/0x2c0
-[   17.770280]  do_init_module+0x5c/0x220
-[   17.774029]  load_module+0x210c/0x2858
-[   17.777784]  __do_sys_finit_module+0xb8/0x120
-[   17.782148]  __arm64_sys_finit_module+0x24/0x30
-[   17.786691]  el0_svc_common.constprop.0+0x70/0x168
-[   17.791497]  do_el0_svc+0x28/0x88
-[   17.794822]  el0_sync_handler+0x158/0x160
-[   17.798833]  el0_sync+0x140/0x180
-[   17.802158] Code: aa0203f5 91002043 8b205021 a90153f3 (f801047f)
+ Event Message: A PCI parity error was detected on a component at bus 0 device 5 function 0.
+ Severity: Critical
+ Message ID: PCI1308
 
-Cc: <stable@vger.kernel.org>
-Fixes: 1e056efab993 ("usb: cdns3: add NXP imx8qm glue layer")
-Signed-off-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+The original code tried to handle the sense data pointer differently when
+using 32-bit 64-bit DMA addressing, which would lead to a 32-bit dma_addr_t
+value of 0x11223344 to get stored
 
+32-bit kernel:       44 33 22 11 ?? ?? ?? ??
+64-bit LE kernel:    44 33 22 11 00 00 00 00
+64-bit BE kernel:    00 00 00 00 44 33 22 11
+
+or a 64-bit dma_addr_t value of 0x1122334455667788 to get stored as
+
+32-bit kernel:       88 77 66 55 ?? ?? ?? ??
+64-bit kernel:       88 77 66 55 44 33 22 11
+
+In my patch, I tried to ensure that the same value is used on both 32-bit
+and 64-bit kernels, and picked what seemed to be the most sensible
+combination, storing 32-bit addresses in the first four bytes (as 32-bit
+kernels already did), and 64-bit addresses in eight consecutive bytes (as
+64-bit kernels already did), but evidently this was incorrect.
+
+Always storing the dma_addr_t pointer as 64-bit little-endian,
+i.e. initializing the second four bytes to zero in case of 32-bit
+addressing, apparently solved the problem for Phil, and is consistent with
+what all 64-bit little-endian machines did before.
+
+I also checked in the history that in previous versions of the code, the
+pointer was always in the first four bytes without padding, and that
+previous attempts to fix 64-bit user space, big-endian architectures and
+64-bit DMA were clearly flawed and seem to have introduced made this worse.
+
+Link: https://lore.kernel.org/r/20210104234137.438275-1-arnd@kernel.org
+Fixes: 381d34e376e3 ("scsi: megaraid_sas: Check user-provided offsets")
+Fixes: 107a60dd71b5 ("scsi: megaraid_sas: Add support for 64bit consistent DMA")
+Fixes: 94cd65ddf4d7 ("[SCSI] megaraid_sas: addded support for big endian architecture")
+Fixes: 7b2519afa1ab ("[SCSI] megaraid_sas: fix 64 bit sense pointer truncation")
+Reported-by: Phil Oester <kernel@linuxace.com>
+Tested-by: Phil Oester <kernel@linuxace.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/cdns3/cdns3-imx.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/megaraid/megaraid_sas_base.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/cdns3/cdns3-imx.c
-+++ b/drivers/usb/cdns3/cdns3-imx.c
-@@ -184,7 +184,11 @@ static int cdns_imx_probe(struct platfor
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 83d25ee88f028..8877a21102f1d 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -7323,11 +7323,9 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
+ 			goto out;
+ 		}
+ 
++		/* always store 64 bits regardless of addressing */
+ 		sense_ptr = (void *)cmd->frame + ioc->sense_off;
+-		if (instance->consistent_mask_64bit)
+-			put_unaligned_le64(sense_handle, sense_ptr);
+-		else
+-			put_unaligned_le32(sense_handle, sense_ptr);
++		put_unaligned_le64(sense_handle, sense_ptr);
  	}
  
- 	data->num_clks = ARRAY_SIZE(imx_cdns3_core_clks);
--	data->clks = (struct clk_bulk_data *)imx_cdns3_core_clks;
-+	data->clks = devm_kmemdup(dev, imx_cdns3_core_clks,
-+				sizeof(imx_cdns3_core_clks), GFP_KERNEL);
-+	if (!data->clks)
-+		return -ENOMEM;
-+
- 	ret = devm_clk_bulk_get(dev, data->num_clks, data->clks);
- 	if (ret)
- 		return ret;
+ 	/*
+-- 
+2.27.0
+
 
 
