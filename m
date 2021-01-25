@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EE23021FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30493021F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbhAYF7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:59:17 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:4444 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727083AbhAYFxJ (ORCPT
+        id S1726819AbhAYFzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:55:52 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:44648 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727062AbhAYFyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:53:09 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 24 Jan 2021 21:52:28 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Jan 2021 21:52:26 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 25 Jan 2021 11:22:25 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 9C09621578; Mon, 25 Jan 2021 11:22:24 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v6 2/2] venus: venc: Add support for Long Term Reference (LTR) controls
-Date:   Mon, 25 Jan 2021 11:21:59 +0530
-Message-Id: <1611553919-17919-3-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611553919-17919-1-git-send-email-dikshita@codeaurora.org>
-References: <1611553919-17919-1-git-send-email-dikshita@codeaurora.org>
+        Mon, 25 Jan 2021 00:54:53 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 9AD752EA02B;
+        Mon, 25 Jan 2021 00:54:00 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id OOyMIAvLmBhD; Mon, 25 Jan 2021 00:39:59 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id E0B542EA012;
+        Mon, 25 Jan 2021 00:53:59 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210125151310.20e71400@canb.auug.org.au>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <17ccd90b-8616-1f20-ad5d-e250834c02fe@interlog.com>
+Date:   Mon, 25 Jan 2021 00:53:59 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210125151310.20e71400@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for below LTR controls in encoder:
-- V4L2_CID_MPEG_VIDEO_LTR_COUNT
-- V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX
-- V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES
+On 2021-01-24 11:13 p.m., Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the scsi-mkp tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+> 
+> drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
+> drivers/scsi/sg.c:2908:4: error: expected '}' before 'else'
+>   2908 |    else
+>        |    ^~~~
+> drivers/scsi/sg.c:2902:16: warning: unused variable 'cptp' [-Wunused-variable]
+>   2902 |    const char *cptp = "pack_id=";
+>        |                ^~~~
+> drivers/scsi/sg.c:2896:5: error: label 'good' used but not defined
+>   2896 |     goto good;
+>        |     ^~~~
+> drivers/scsi/sg.c: At top level:
+> drivers/scsi/sg.c:2913:2: error: expected identifier or '(' before 'return'
+>   2913 |  return NULL;
+>        |  ^~~~~~
+> drivers/scsi/sg.c:2914:5: error: expected '=', ',', ';', 'asm' or '__attribute__' before ':' token
+>   2914 | good:
+>        |     ^
+> drivers/scsi/sg.c:2917:2: error: expected identifier or '(' before 'return'
+>   2917 |  return srp;
+>        |  ^~~~~~
+> drivers/scsi/sg.c:2918:1: error: expected identifier or '(' before '}' token
+>   2918 | }
+>        | ^
+> drivers/scsi/sg.c: In function 'sg_find_srp_by_id':
+> drivers/scsi/sg.c:2912:2: error: control reaches end of non-void function [-Werror=return-type]
+>   2912 |  }
+>        |  ^
+> 
+> Caused by commit
+> 
+>    7323ad3618b6 ("scsi: sg: Replace rq array with xarray")
+> 
+> SG_LOG() degenerates to "{}" in some configs ...
+> 
+> I have used the scsi-mkp tree from next-20210122 for today.
+> 
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/venc_ctrls.c | 49 +++++++++++++++++++++++++-
- 1 file changed, 48 insertions(+), 1 deletion(-)
+Hi,
+I sent a new patchset to the linux-scsi list about 4 hours ago to
+fix that.
 
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 496ad4d..7d010d8 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -20,6 +20,7 @@
- #define INTRA_REFRESH_MBS_MAX	300
- #define AT_SLICE_BOUNDARY	\
- 	V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY
-+#define MAX_LTR_FRAME_COUNT 4
- 
- static int venc_calc_bpframes(u32 gop_size, u32 conseq_b, u32 *bf, u32 *pf)
- {
-@@ -72,6 +73,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	struct venc_controls *ctr = &inst->controls.enc;
- 	struct hfi_enable en = { .enable = 1 };
- 	struct hfi_bitrate brate;
-+	struct hfi_ltr_use ltr_use;
-+	struct hfi_ltr_mark ltr_mark;
-+	struct hfi_ltr_mode ltr_mode;
- 	u32 bframes;
- 	u32 ptype;
- 	int ret;
-@@ -259,6 +263,37 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE:
- 		ctr->frame_skip_mode = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-+		ptype = HFI_PROPERTY_PARAM_VENC_LTRMODE;
-+		ltr_mode.ltr_count = ctrl->val;
-+		ltr_mode.ltr_mode = HFI_LTR_MODE_MANUAL;
-+		ltr_mode.trust_mode = 1;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_mode);
-+		if (ret) {
-+			mutex_unlock(&inst->lock);
-+			return ret;
-+		}
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-+		ptype = HFI_PROPERTY_CONFIG_VENC_MARKLTRFRAME;
-+		ltr_mark.mark_frame = ctrl->val;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_mark);
-+		if (ret) {
-+			mutex_unlock(&inst->lock);
-+			return ret;
-+		}
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
-+		ptype = HFI_PROPERTY_CONFIG_VENC_USELTRFRAME;
-+		ltr_use.ref_ltr = ctrl->val;
-+		ltr_use.use_constrnt = true;
-+		ltr_use.frames = 0;
-+		ret = hfi_session_set_property(inst, ptype, &ltr_use);
-+		if (ret) {
-+			mutex_unlock(&inst->lock);
-+			return ret;
-+		}
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -274,7 +309,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 50);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 53);
- 	if (ret)
- 		return ret;
- 
-@@ -476,6 +511,18 @@ int venc_ctrl_init(struct venus_inst *inst)
- 			       (1 << V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_BUF_LIMIT)),
- 			       V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_DISABLED);
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES, 0,
-+			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_LTR_COUNT, 0,
-+			  MAX_LTR_FRAME_COUNT, 1, 0);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX, 0,
-+			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
--- 
-2.7.4
+Doug Gilbert
 
