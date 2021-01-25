@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78234302194
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451F1302198
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726610AbhAYFHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S1726772AbhAYFIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAYFHT (ORCPT
+        with ESMTP id S1726652AbhAYFIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:07:19 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08395C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 21:06:39 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id v19so8106017pgj.12
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 21:06:39 -0800 (PST)
+        Mon, 25 Jan 2021 00:08:00 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2EEC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 21:07:20 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id y205so7726268pfc.5
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 21:07:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=F+LeAZ3S+m2I2AXil2lfLUpMV0pLG8mixzK8f2VmApw=;
-        b=aT/9rd5uVrMHlG0kkM6L/ia4xQjNlHVLs7Yo1N4ieoOC/buPWE6taP44/uPWB4C4QO
-         b4Ru5GuscZDSNJZXEJiW7nIKDqISX1Hch5YioyQWLgtUxJgFCt2wFEINniJJUcfUR+QV
-         E/ALPWnPNg64mfGe/PwI4ngpWA40dORyhsKBNSsjjR9b1/mt1Fw/K9wR2onR0mtBbHck
-         RJixkzeApzAPHTz97k94LyHMkdHedYZwexLkyikaPapRTrmJbYT9NsSRRSJGLsF3eI0v
-         0ov0SQNfDeV7KWf9t8lB0gTOuX/ObgtvKeMdtzrOT+997Ci7dj4f1Thrw4XhS0sxvZhh
-         r/QQ==
+        bh=JOUhfnWWdDSn5rx6Y3alCW/0otHcbj316dnvYqN7gu4=;
+        b=tsUFnxshHE+L1KHEKNbr7GW5VWbpojZwNMWTulN94mLxAv5nmHR7FU5jkiJkbLDiE5
+         V2ApnArVL/VkkZmSeKVcldSXit/+C4iDHMVeKZHLwgfxAeD47Z84LDZQbeiT+HHmZYPg
+         vhR2WbNrS3ybuGoEaHuW03cfqBHkGveM7jl9/RmRpGuE+kaGS59pDNCGnh3xcxougmPa
+         p5iwfNjdh3OX84dG6S1nsOx92g93IwETYXENEkA23sHcgYRNnGYk0XN0GuINmTB5VT0N
+         5L72Gi8F+chKV5JbtZpv9Y3Np+0lxsXH9bDLf1Y/OnavILi1C9rC3WvB65TvMTatvJYY
+         riEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=F+LeAZ3S+m2I2AXil2lfLUpMV0pLG8mixzK8f2VmApw=;
-        b=i7BMolTumcYPU4TAWV2rClIWknuNcSOg2DXNGC08V1ESq9HO97W0WfDe4LerlVGg70
-         5xxttUb08ai8k3tLTCc68fsVWYxXvSzWDoCRahYcunQ4PBBO8CxQeDvwNOHLERwuKZfl
-         7FX8Hg019B6a2T7GiHsHAI6XcJMO1xCu3huA01U2l8u1qWEJwtrX5OcdcFG6F55XsV/c
-         DuNX0qh0NOibqaL3Gd6ejstsr0Ecc23ZwI7addjnKCRK1yQO6vlIFl96jFs+JvBSr5VO
-         jonNYqFvhTqBO65W2OQoGrf5zxnRnQoT+WLkR18K458oLC5FvhZoygKpFCifJAd14HTS
-         FW3Q==
-X-Gm-Message-State: AOAM531KTu9DXJlNlYs4Iog4ETsecp7LH1JPJSadK8iu8McG37gyE1+E
-        yi8cT83o/cndAuchZIa9nNzSs+/JHFn9kUzqCC+mfQ==
-X-Google-Smtp-Source: ABdhPJy+Le05w7oqogZ0luTwVIsG6PienApfkykZwVB3DkAUwmltvOrYL6hQhvcX2VeH0nh0dnEHd1r+rretXXAsrPE=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr319808pgf.31.1611551198624;
- Sun, 24 Jan 2021 21:06:38 -0800 (PST)
+        bh=JOUhfnWWdDSn5rx6Y3alCW/0otHcbj316dnvYqN7gu4=;
+        b=eTfNI8NQkW/emI/z+0rvPbU+R2ufj8DPI64djmCQzTVcP8L0CuFnv48gxn5vNiGsur
+         cDYfF4DNl1QopvD2CrdfJ7p8uuYJ/YtanfNro2T20k9fS/tnTIhX0t80OYGFzEayiUsc
+         Gvz70lBhY88jU5WRcaPFE9U0DK22gwCahW2pIUgq6ma0lcQNuM+Jk+6X66IXUigvvqBS
+         Vn0u+Pv2xFql0dwxXNYc1ZFRd93iGLCkLNw++kguZPWg3OlHOanWGKglY4WaKbos4Seq
+         4H2O967aq1GsQH1JnmNL+wk6S1Hmn68rYdRoHR9MoGpKysXoq1acr5ONKNJSpwBZdiO1
+         Mstg==
+X-Gm-Message-State: AOAM532ApFKe71rZ1dXXuNi0GmYUJ15NqAfcIOL+THT9/CwUZsgKlS6g
+        SP45IEl0WPz+tAnQEqAKB5ynkhuQZluzHnMW0/axZA==
+X-Google-Smtp-Source: ABdhPJyeBE3eTqrFGflPEz5F2VO+wo1F0NwBGgPBQd4npB+pBnnp/e4ggx1odd0vcPNrzmFXdQJHbZsp2DakZO11Wz8=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr327154pgf.273.1611551239885;
+ Sun, 24 Jan 2021 21:07:19 -0800 (PST)
 MIME-Version: 1.0
 References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-3-songmuchun@bytedance.com> <472a58b9-12cb-3c3-d132-13dbae5174f0@google.com>
- <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com> <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org>
-In-Reply-To: <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org>
+ <20210117151053.24600-7-songmuchun@bytedance.com> <88a384ba-8487-c66b-e7b-eb6055e3775@google.com>
+In-Reply-To: <88a384ba-8487-c66b-e7b-eb6055e3775@google.com>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 25 Jan 2021 13:06:02 +0800
-Message-ID: <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 02/12] mm: hugetlb: introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+Date:   Mon, 25 Jan 2021 13:06:44 +0800
+Message-ID: <CAMZfGtW5S42rPtOJexNv+Zf2S-J0kG8T1KpWS_ozQb2eG-YH0A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 06/12] mm: hugetlb: set the
+ PageHWPoison to the raw error page
+To:     David Rientjes <rientjes@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
         bp@alien8.de, x86@kernel.org, hpa@zytor.com,
@@ -64,7 +62,8 @@ Cc:     David Rientjes <rientjes@google.com>,
         Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
         Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
         mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
         Mina Almasry <almasrymina@google.com>,
         Matthew Wilcox <willy@infradead.org>,
         Oscar Salvador <osalvador@suse.de>,
@@ -82,97 +81,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 12:09 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Mon, Jan 25, 2021 at 8:06 AM David Rientjes <rientjes@google.com> wrote:
 >
-> On 1/24/21 8:06 PM, Muchun Song wrote:
-> > On Mon, Jan 25, 2021 at 7:58 AM David Rientjes <rientjes@google.com> wrote:
-> >>
-> >>
-> >> On Sun, 17 Jan 2021, Muchun Song wrote:
-> >>
-> >>> The HUGETLB_PAGE_FREE_VMEMMAP option is used to enable the freeing
-> >>> of unnecessary vmemmap associated with HugeTLB pages. The config
-> >>> option is introduced early so that supporting code can be written
-> >>> to depend on the option. The initial version of the code only
-> >>> provides support for x86-64.
-> >>>
-> >>> Like other code which frees vmemmap, this config option depends on
-> >>> HAVE_BOOTMEM_INFO_NODE. The routine register_page_bootmem_info() is
-> >>> used to register bootmem info. Therefore, make sure
-> >>> register_page_bootmem_info is enabled if HUGETLB_PAGE_FREE_VMEMMAP
-> >>> is defined.
-> >>>
-> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> >>> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-> >>> ---
-> >>>  arch/x86/mm/init_64.c |  2 +-
-> >>>  fs/Kconfig            | 18 ++++++++++++++++++
-> >>>  2 files changed, 19 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-> >>> index 0a45f062826e..0435bee2e172 100644
-> >>> --- a/arch/x86/mm/init_64.c
-> >>> +++ b/arch/x86/mm/init_64.c
-> >>> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
-> >>>
-> >>>  static void __init register_page_bootmem_info(void)
-> >>>  {
-> >>> -#ifdef CONFIG_NUMA
-> >>> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
-> >>>       int i;
-> >>>
-> >>>       for_each_online_node(i)
-> >>> diff --git a/fs/Kconfig b/fs/Kconfig
-> >>> index 976e8b9033c4..e7c4c2a79311 100644
-> >>> --- a/fs/Kconfig
-> >>> +++ b/fs/Kconfig
-> >>> @@ -245,6 +245,24 @@ config HUGETLBFS
-> >>>  config HUGETLB_PAGE
-> >>>       def_bool HUGETLBFS
-> >>>
-> >>> +config HUGETLB_PAGE_FREE_VMEMMAP
-> >>> +     def_bool HUGETLB_PAGE
-> >>
-> >> I'm not sure I understand the rationale for providing this help text if
-> >> this is def_bool depending on CONFIG_HUGETLB_PAGE.  Are you intending that
-> >> this is actually configurable and we want to provide guidance to the admin
-> >> on when to disable it (which it currently doesn't)?  If not, why have the
-> >> help text?
+>
+> On Sun, 17 Jan 2021, Muchun Song wrote:
+>
+> > Because we reuse the first tail vmemmap page frame and remap it
+> > with read-only, we cannot set the PageHWPosion on a tail page.
+> > So we can use the head[4].private to record the real error page
+> > index and set the raw error page PageHWPoison later.
 > >
-> > This is __not__ configurable. Seems like a comment to help others
-> > understand this option. Like Randy said.
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Reviewed-by: Oscar Salvador <osalvador@suse.de>
 >
-> Yes, it could be written with '#' (or "comment") comment syntax instead of as help text.
+> Acked-by: David Rientjes <rientjes@google.com>
 
-Got it. I will update in the next version. Thanks.
-
->
-> thanks.
->
-> >>
-> >>> +     depends on X86_64
-> >>> +     depends on SPARSEMEM_VMEMMAP
-> >>> +     depends on HAVE_BOOTMEM_INFO_NODE
-> >>> +     help
-> >>> +       The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
-> >>> +       some vmemmap pages associated with pre-allocated HugeTLB pages.
-> >>> +       For example, on X86_64 6 vmemmap pages of size 4KB each can be
-> >>> +       saved for each 2MB HugeTLB page.  4094 vmemmap pages of size 4KB
-> >>> +       each can be saved for each 1GB HugeTLB page.
-> >>> +
-> >>> +       When a HugeTLB page is allocated or freed, the vmemmap array
-> >>> +       representing the range associated with the page will need to be
-> >>> +       remapped.  When a page is allocated, vmemmap pages are freed
-> >>> +       after remapping.  When a page is freed, previously discarded
-> >>> +       vmemmap pages must be allocated before remapping.
-> >>> +
-> >>>  config MEMFD_CREATE
-> >>>       def_bool TMPFS || HUGETLBFS
-> >>>
-> >
->
->
-> --
-> ~Randy
->
+Thanks.
