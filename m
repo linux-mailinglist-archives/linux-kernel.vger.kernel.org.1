@@ -2,240 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98393302681
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371AA30269E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729813AbhAYOwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:52:17 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2797 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729627AbhAYOsX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:48:23 -0500
-Received: from dggeme717-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DPXj04mpVz13lyL;
-        Mon, 25 Jan 2021 22:45:24 +0800 (CST)
-Received: from [10.174.187.161] (10.174.187.161) by
- dggeme717-chm.china.huawei.com (10.1.199.113) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 25 Jan 2021 22:47:19 +0800
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-To:     Like Xu <like.xu@linux.intel.com>, kvm <kvm@vger.kernel.org>,
-        Wei Wang <wei.w.wang@intel.com>
-References: <EEC2A80E7137D84ABF791B01D40FA9A601EC200E@DGGEMM506-MBX.china.huawei.com>
- <584b4e9a-37e7-1f2a-0a67-42034329a9dc@linux.intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xiexiangyou <xiexiangyou@huawei.com>
-From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
-        <liuxiangdong5@huawei.com>
-Reply-To: "Fangyi (Eric)" <eric.fangyi@huawei.com>
-Message-ID: <600ED9F7.1060503@huawei.com>
-Date:   Mon, 25 Jan 2021 22:47:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
-MIME-Version: 1.0
-In-Reply-To: <584b4e9a-37e7-1f2a-0a67-42034329a9dc@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.187.161]
-X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
- dggeme717-chm.china.huawei.com (10.1.199.113)
-X-CFilter-Loop: Reflected
+        id S1729829AbhAYOxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:53:01 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:13046 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729745AbhAYOup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:50:45 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DPXmD6kwDz9v0Gt;
+        Mon, 25 Jan 2021 15:48:12 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id BIT-ayrxheUd; Mon, 25 Jan 2021 15:48:12 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPXmD5tfnz9v0Gh;
+        Mon, 25 Jan 2021 15:48:12 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4EF3D8B79E;
+        Mon, 25 Jan 2021 15:48:18 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id ZzVE4RS9--hq; Mon, 25 Jan 2021 15:48:18 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0FFC98B79B;
+        Mon, 25 Jan 2021 15:48:18 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 0566766AD8; Mon, 25 Jan 2021 14:48:17 +0000 (UTC)
+Message-Id: <0f0efde4b821684f848a644c9b8eb3cf39852382.1611585031.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v4 05/23] powerpc/64s: Make kuap_check_amr() and
+ kuap_get_and_check_amr() generic
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        msuchanek@suse.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 25 Jan 2021 14:48:17 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for replying,
+In preparation of porting powerpc32 to C syscall entry/exit,
+rename kuap_check_amr() and kuap_get_and_check_amr() as kuap_check()
+and kuap_get_and_check(), and move in the generic asm/kup.h the stub
+for when CONFIG_PPC_KUAP is not selected.
 
-On 2021/1/25 10:41, Like Xu wrote:
-> + kvm@vger.kernel.org
->
-> Hi Liuxiangdong,
->
-> On 2021/1/22 18:02, Liuxiangdong (Aven, Cloud Infrastructure Service 
-> Product Dept.) wrote:
->> Hi Like,
->>
->> Some questions about 
->> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/ 
->> <https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/> 
->>
->
-> Thanks for trying the PEBS feature in the guest,
-> and I assume you have correctly applied the QEMU patches for guest PEBS.
->
-Is there any other patch that needs to be apply? I use qemu 5.2.0. 
-(download from github on January 14th)
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/book3s/64/kup.h | 24 ++----------------------
+ arch/powerpc/include/asm/kup.h           |  9 ++++++++-
+ arch/powerpc/kernel/syscall_64.c         | 12 ++++++------
+ 3 files changed, 16 insertions(+), 29 deletions(-)
 
->> 1)Test in IceLake
->
-> In the [PATCH v3 10/17] KVM: x86/pmu: Expose CPUIDs feature bits PDCM, 
-> DS, DTES64, we only support Ice Lake with the following x86_model(s):
->
-> #define INTEL_FAM6_ICELAKE_X        0x6A
-> #define INTEL_FAM6_ICELAKE_D        0x6C
->
-> you can check the eax output of "cpuid -l 1 -1 -r",
-> for example "0x000606a4" meets this requirement.
-It's INTEL_FAM6_ICELAKE_X
-cpuid -l 1 -1 -r
-
-CPU:
-    0x00000001 0x00: eax=0x000606a6 ebx=0xb4800800 ecx=0x7ffefbf7 
-edx=0xbfebfbff
-
->>
->> HOST:
->>
->> CPU family:                      6
->>
->> Model:                           106
->>
->> Model name:                      Intel(R) Xeon(R) Platinum 8378A CPU 
->> $@ $@
->>
->> microcode: sig=0x606a6, pf=0x1, revision=0xd000122
->
-> As long as you get the latest BIOS from the provider,
-> you may check 'cat /proc/cpuinfo | grep code | uniq' with the latest one.
-OK. I'll do it later.
->
->>
->> Guest:  linux kernel 5.11.0-rc2
->
-> I assume it's the "upstream tag v5.11-rc2" which is fine.
-Yes.
->
->>
->> We can find pebs/intel_pt flag in guest cpuinfo, but there still 
->> exists error when we use perf
->
-> Just a note, intel_pt and pebs are two features and we can write
-> pebs records to intel_pt buffer with extra hardware support.
-> (by default, pebs records are written to the pebs buffer)
->
-> You may check the output of "dmesg | grep PEBS" in the guest
-> to see if the guest PEBS cpuinfo is exposed and use "perf record
-> –e cycles:pp" to see if PEBS feature actually  works in the guest.
-
-I apply only pebs patch set to linux kernel 5.11.0-rc2, test perf in 
-guest and dump stack when return -EOPNOTSUPP
-
-(1)
-# perf record -e instructions:pp
-Error:
-instructions:pp: PMU Hardware doesn't support 
-sampling/overflow-interrupts. Try 'perf stat'
-
-[  117.793266] Call Trace:
-[  117.793270]  dump_stack+0x57/0x6a
-[  117.793275]  intel_pmu_setup_lbr_filter+0x137/0x190
-[  117.793280]  intel_pmu_hw_config+0x18b/0x320
-[  117.793288]  hsw_hw_config+0xe/0xa0
-[  117.793290]  x86_pmu_event_init+0x8e/0x210
-[  117.793293]  perf_try_init_event+0x40/0x130
-[  117.793297]  perf_event_alloc.part.22+0x611/0xde0
-[  117.793299]  ? alloc_fd+0xba/0x180
-[  117.793302]  __do_sys_perf_event_open+0x1bd/0xd90
-[  117.793305]  do_syscall_64+0x33/0x40
-[  117.793308]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Do we need lbr when we use pebs?
-
-I tried to apply lbr patch 
-set(https://lore.kernel.org/kvm/911adb63-ba05-ea93-c038-1c09cff15eda@intel.com/) 
-to kernel and qemu, but there is still other problem.
-Error:
-The sys_perf_event_open() syscall returned with 22 (Invalid argument) 
-for event
-...
-
-(2)
-# perf record -e instructions:ppp
-Error:
-instructions:ppp: PMU Hardware doesn't support 
-sampling/overflow-interrupts. Try 'perf stat'
-
-[  115.188498] Call Trace:
-[  115.188503]  dump_stack+0x57/0x6a
-[  115.188509]  x86_pmu_hw_config+0x1eb/0x220
-[  115.188515]  intel_pmu_hw_config+0x13/0x320
-[  115.188519]  hsw_hw_config+0xe/0xa0
-[  115.188521]  x86_pmu_event_init+0x8e/0x210
-[  115.188524]  perf_try_init_event+0x40/0x130
-[  115.188528]  perf_event_alloc.part.22+0x611/0xde0
-[  115.188530]  ? alloc_fd+0xba/0x180
-[  115.188534]  __do_sys_perf_event_open+0x1bd/0xd90
-[  115.188538]  do_syscall_64+0x33/0x40
-[  115.188541]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-This is beacuse x86_pmu.intel_cap.pebs_format is always 0 in 
-x86_pmu_max_precise().
-
-We rdmsr MSR_IA32_PERF_CAPABILITIES(0x00000345)  from HOST, it's f4c5.
- From guest, it's 2000
-
->>
->> # perf record –e cycles:pp
->>
->> Error:
->>
->> cycles:pp: PMU Hardware doesn’t support sampling/overflow-interrupts. 
->> Try ‘perf stat’
->>
->> Could you give some advice?
->
-> If you have more specific comments or any concerns, just let me know.
->
->>
->> 2)Test in Skylake
->>
->> HOST:
->>
->> CPU family:                      6
->>
->> Model:                           85
->>
->> Model name:                      Intel(R) Xeon(R) Gold 6146 CPU @
->>
->>                                    3.20GHz
->>
->> microcode        : 0x2000064
->>
->> Guest: linux 4.18
->>
->> we cannot find intel_pt flag in guest cpuinfo because 
->> cpu_has_vmx_intel_pt() return false.
->
-> You may check vmx_pebs_supported().
-It's true.
->
->>
->> SECONDARY_EXEC_PT_USE_GPA/VM_EXIT_CLEAR_IA32_RTIT_CTL/VM_ENTRY_LOAD_IA32_RTIT_CTL 
->> are both disable.
->>
->> Is it because microcode is not supported?
->>
->> And, isthere a new macrocode which can support these bits? How can we 
->> get this?
->
-> Currently, this patch set doesn't support guest PEBS on the Skylake
-> platforms, and if we choose to support it, we will let you know.
->
-And now, we want to use pebs in skylake. If we develop based on pebs 
-patch set, do you have any suggestions?
-I think microcode requirements need to be satisfied.  Can we use 
-https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files ?
-
-> ---
-> thx,likexu
->
->>
->> Thanks,
->>
->> Liuxiangdong
->>
->
-Thanks. Liuxiangdong
+diff --git a/arch/powerpc/include/asm/book3s/64/kup.h b/arch/powerpc/include/asm/book3s/64/kup.h
+index f50f72e535aa..1507681ad4ef 100644
+--- a/arch/powerpc/include/asm/book3s/64/kup.h
++++ b/arch/powerpc/include/asm/book3s/64/kup.h
+@@ -281,7 +281,7 @@ static inline void kuap_kernel_restore(struct pt_regs *regs,
+ 	 */
+ }
+ 
+-static inline unsigned long kuap_get_and_check_amr(void)
++static inline unsigned long kuap_get_and_check(void)
+ {
+ 	if (mmu_has_feature(MMU_FTR_BOOK3S_KUAP)) {
+ 		unsigned long amr = mfspr(SPRN_AMR);
+@@ -292,27 +292,7 @@ static inline unsigned long kuap_get_and_check_amr(void)
+ 	return 0;
+ }
+ 
+-#else /* CONFIG_PPC_PKEY */
+-
+-static inline void kuap_user_restore(struct pt_regs *regs)
+-{
+-}
+-
+-static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long amr)
+-{
+-}
+-
+-static inline unsigned long kuap_get_and_check_amr(void)
+-{
+-	return 0;
+-}
+-
+-#endif /* CONFIG_PPC_PKEY */
+-
+-
+-#ifdef CONFIG_PPC_KUAP
+-
+-static inline void kuap_check_amr(void)
++static inline void kuap_check(void)
+ {
+ 	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG) && mmu_has_feature(MMU_FTR_BOOK3S_KUAP))
+ 		WARN_ON_ONCE(mfspr(SPRN_AMR) != AMR_KUAP_BLOCKED);
+diff --git a/arch/powerpc/include/asm/kup.h b/arch/powerpc/include/asm/kup.h
+index bf221a2a523e..6ef9f9cfbed0 100644
+--- a/arch/powerpc/include/asm/kup.h
++++ b/arch/powerpc/include/asm/kup.h
+@@ -66,7 +66,14 @@ bad_kuap_fault(struct pt_regs *regs, unsigned long address, bool is_write)
+ 	return false;
+ }
+ 
+-static inline void kuap_check_amr(void) { }
++static inline void kuap_check(void) { }
++static inline void kuap_user_restore(struct pt_regs *regs) { }
++static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long amr) { }
++
++static inline unsigned long kuap_get_and_check(void)
++{
++	return 0;
++}
+ 
+ /*
+  * book3s/64/kup-radix.h defines these functions for the !KUAP case to flush
+diff --git a/arch/powerpc/kernel/syscall_64.c b/arch/powerpc/kernel/syscall_64.c
+index 32f72965da26..b627a6384029 100644
+--- a/arch/powerpc/kernel/syscall_64.c
++++ b/arch/powerpc/kernel/syscall_64.c
+@@ -65,7 +65,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
+ 			isync();
+ 	} else
+ #endif
+-		kuap_check_amr();
++		kuap_check();
+ 
+ 	account_cpu_user_entry();
+ 
+@@ -181,7 +181,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+ 
+ 	CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+-	kuap_check_amr();
++	kuap_check();
+ 
+ 	regs->result = r3;
+ 
+@@ -303,7 +303,7 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
+ 	 * We don't need to restore AMR on the way back to userspace for KUAP.
+ 	 * AMR can only have been unlocked if we interrupted the kernel.
+ 	 */
+-	kuap_check_amr();
++	kuap_check();
+ 
+ 	local_irq_save(flags);
+ 
+@@ -381,7 +381,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 	unsigned long *ti_flagsp = &current_thread_info()->flags;
+ 	unsigned long flags;
+ 	unsigned long ret = 0;
+-	unsigned long amr;
++	unsigned long kuap;
+ 
+ 	if (IS_ENABLED(CONFIG_PPC_BOOK3S) && unlikely(!(regs->msr & MSR_RI)))
+ 		unrecoverable_exception(regs);
+@@ -394,7 +394,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 	if (TRAP(regs) != 0x700)
+ 		CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+-	amr = kuap_get_and_check_amr();
++	kuap = kuap_get_and_check();
+ 
+ 	if (unlikely(*ti_flagsp & _TIF_EMULATE_STACK_STORE)) {
+ 		clear_bits(_TIF_EMULATE_STACK_STORE, ti_flagsp);
+@@ -446,7 +446,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 	 * which would cause Read-After-Write stalls. Hence, we take the AMR
+ 	 * value from the check above.
+ 	 */
+-	kuap_kernel_restore(regs, amr);
++	kuap_kernel_restore(regs, kuap);
+ 
+ 	return ret;
+ }
+-- 
+2.25.0
 
