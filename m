@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F56302405
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9963C302420
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbhAYLAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:00:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
+        id S1727724AbhAYLKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:10:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727552AbhAYK5V (ORCPT
+        with ESMTP id S1727727AbhAYLDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:57:21 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA71C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:56:40 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id a12so8912290lfb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:56:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FAa9D8GkV4F84xQyRv9PO2GSsEC1f+mWHcwd4pzJViw=;
-        b=QznXVd7UDBUdKhZLgaxzZqvaA2tJ4B5xRSt8usX/fBUWs9OSWmM0vCMlufJ0fmrIF0
-         sRxeJP9rIfxb2KFJqCUHvCxMldumf+MAoDSwwGGTFtarWDUbHcKDWIK3GDyOm9dDYMjQ
-         it+axENj5w0sGU521VgJfdoNoKIT99rf6NJeNb/7hQEsqWMKAEpSil8KUEwQhByfui3R
-         pLhQ9Gz5mDXcGLW68QVM3L/IRMjv+6qumMNdzGZYkXJWDxA61kHxCK7ud4ypOK5jDFB+
-         LE9yNRoK7K8Yuputvt/TwIdFZ6IqUYEY29uxeeIv+DEKSpCrjGx7U5kI2sg9ad+MJwXl
-         Yn7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FAa9D8GkV4F84xQyRv9PO2GSsEC1f+mWHcwd4pzJViw=;
-        b=ZPMaELP1dOEm5eWt1wiMMsxNhH8pqHWVDqF+y2s4jYpUqecBcj7pNx4EkEHpLGlN9A
-         Y+o279GVnymkzwsEbInvt9aphG5whjmA98/0/gkx4Wk5a3RRtN7KBZx5p9mqKy0gDrrS
-         blnaYJJIB6OWVl+SVGVCWtBStx9cs6U8xCZyWGJEE2tQ8eyRRK4PuHc4owIasiaPi3KL
-         uTP6l/5tbAqcVlXY/RkJKP8+7QxWwTwj9j949OizvIJ91LGnEHOEuO7iD5OH4j5eplbF
-         ZTq96CUaqnP/bcW/hqPCdvA1PlSWef+ZGiy4qW00kpm/s3BwYqiJ5EA6qJUq75hcB/g+
-         lLvw==
-X-Gm-Message-State: AOAM530KBg/ihpSOJT/Fj/xRbiO42xm9QNviKI6KbfKydz6tDcAQWo+b
-        8Dzwn9bsVWwXCwGl+W+stERCeaPJYBzX9DSMRZjWlw==
-X-Google-Smtp-Source: ABdhPJx4IWnKhrvMfNNgwPe8Hp8KkOTATR8FLxHH3sIad4JgeSMONMNanrYXGB+8Cyh/5e9TB0wvsa1JZVoH6Bo0BZc=
-X-Received: by 2002:ac2:561b:: with SMTP id v27mr1514686lfd.233.1611572199471;
- Mon, 25 Jan 2021 02:56:39 -0800 (PST)
+        Mon, 25 Jan 2021 06:03:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59CCC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 03:02:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=r+KBxMybDr1usbcaCcE0TrdbPjsSTRmFRC4Jt2BrQRs=; b=OiLH56of5BgccSMXzjF2EGN2UD
+        /4bkt5n+QSXgGZbZtrySPl7T1ID/FYOMQ9iwE6t7w49GIAiN0rpkS1l6+MsoI+opT90Kfh3yPa0kS
+        xIbZAx6CUQm4wxGu1W3Hinon+rXNTp6q0cTjygtg94Vjyo5w1gSkLwk8UuG+rmYf2LiFRuVbFBwrT
+        uCNLXwgxgEBxd1QJCPtAaX31Fmc341rjxCBYWMGRnRv2NPpImQrlB++OCrrgjSJULbuHv9hAg+qzM
+        3xWmOWeVfSlZ+CA6VQ8iuGhxYghY/nRZ6ifBQrMF+de9HQwsMdqN83uwM0J0vEh7E0f0U68U9ql8y
+        qjOk9Dyw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3zd7-0046vd-70; Mon, 25 Jan 2021 11:02:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 76E0C300DB4;
+        Mon, 25 Jan 2021 12:01:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3C50F207D3C61; Mon, 25 Jan 2021 12:01:56 +0100 (CET)
+Date:   Mon, 25 Jan 2021 12:01:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        Ingo Molnar <mingo@redhat.com>, will@kernel.org,
+        mark.rutland@arm.com, mike.leach@linaro.org, al.grant@arm.com,
+        anshuman.khandual@arm.com, mathieu.poirier@linaro.org,
+        linux-arm-kernel@lists.infradead.org, jolsa@redhat.com,
+        acme@kernel.org
+Subject: Re: [RFC PATCH] perf: Handle multiple formatted AUX records
+Message-ID: <YA6lJPG7DGnlL8yh@hirez.programming.kicks-ass.net>
+References: <20210122151829.2890484-1-suzuki.poulose@arm.com>
+ <20210122151829.2890484-2-suzuki.poulose@arm.com>
+ <YA6cjdmfG8x2EggP@hirez.programming.kicks-ass.net>
+ <b30069fb-3df4-8c8a-9ee8-471c0a6d5f38@arm.com>
 MIME-Version: 1.0
-References: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
-In-Reply-To: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 25 Jan 2021 11:56:28 +0100
-Message-ID: <CAKfTPtAxnsEDL436zUypLj2XyMQyhgPvJ8q_23835sQxWzGtxw@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] sched/fair: limit load balance redo times at the
- same sched_domain level
-To:     Aubrey Li <aubrey.li@intel.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b30069fb-3df4-8c8a-9ee8-471c0a6d5f38@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 06:50, Aubrey Li <aubrey.li@intel.com> wrote:
->
-> A long-tail load balance cost is observed on the newly idle path,
-> this is caused by a race window between the first nr_running check
-> of the busiest runqueue and its nr_running recheck in detach_tasks.
->
-> Before the busiest runqueue is locked, the tasks on the busiest
-> runqueue could be pulled by other CPUs and nr_running of the busiest
-> runqueu becomes 1, this causes detach_tasks breaks with LBF_ALL_PINNED
+On Mon, Jan 25, 2021 at 10:45:06AM +0000, Suzuki K Poulose wrote:
+> On 1/25/21 10:25 AM, Peter Zijlstra wrote:
 
-We should better detect that when trying to detach task like below
+> > Since we have a whole u64, do we want to reserve a whole nibble (or
+> > maybe even a byte) for a format type? Because with a single bit like
+> > this, we'll kick ourselves when we end up with the need for a 3rd format
+> > type.
+> > 
+> 
+> Sure, makes sense. We could do:
+> 
+> #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00
+> 
+> Additionally, the values could be allocated by individual PMUs and
+> interpreted by the corresponding counterpart. That way we don't
+> have to worry about centralized allocation of the "TYPE" fields.
+> 
+> e,g:
+> 
+> #define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000
+> #define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100
+> 
+> #define PERF_AUX_FLAG_RANDOM_PMU_FORMAT_FMT1		0x0000
+> #define PERF_AUX_FLAG_RANDOM_PMU_FORMAT_FMT2		0x0100
+> 
+> 
+> What do you think ?
 
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7688,6 +7688,16 @@ static int detach_tasks(struct lb_env *env)
-
-        lockdep_assert_held(&env->src_rq->lock);
-
-+       /*
-+        * Another CPU has emptied this runqueue in the meantime.
-+        * Just return and leave the load_balance properly.
-+        */
-+       if (env->src_rq->nr_running <= 1 && !env->loop) {
-+               /* Clear the flag as we will not test any task */
-+               env->flags &= ~LBF_ALL_PINNED;
-+               return 0;
-+       }
-+
-        if (env->imbalance <= 0)
-                return 0;
-
-
-> flag set, and triggers load_balance redo at the same sched_domain level.
->
-> In order to find the new busiest sched_group and CPU, load balance will
-> recompute and update the various load statistics, which eventually leads
-> to the long-tail load balance cost.
->
-> This patch introduces a variable(sched_nr_lb_redo) to limit load balance
-> redo times, combined with sysctl_sched_nr_migrate, the max load balance
-> cost is reduced from 100+ us to 70+ us, measured on a 4s x86 system with
-> 192 logical CPUs.
->
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> ---
->  kernel/sched/fair.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ae7ceba..b59f371 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7407,6 +7407,8 @@ struct lb_env {
->         unsigned int            loop;
->         unsigned int            loop_break;
->         unsigned int            loop_max;
-> +       unsigned int            redo_cnt;
-> +       unsigned int            redo_max;
->
->         enum fbq_type           fbq_type;
->         enum migration_type     migration_type;
-> @@ -9525,6 +9527,7 @@ static int should_we_balance(struct lb_env *env)
->         return group_balance_cpu(sg) == env->dst_cpu;
->  }
->
-> +static const unsigned int sched_nr_lb_redo = 1;
->  /*
->   * Check this_cpu to ensure it is balanced within domain. Attempt to move
->   * tasks if there is an imbalance.
-> @@ -9547,6 +9550,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->                 .dst_grpmask    = sched_group_span(sd->groups),
->                 .idle           = idle,
->                 .loop_break     = sched_nr_migrate_break,
-> +               .redo_max       = sched_nr_lb_redo,
->                 .cpus           = cpus,
->                 .fbq_type       = all,
->                 .tasks          = LIST_HEAD_INIT(env.tasks),
-> @@ -9682,7 +9686,8 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->                          * destination group that is receiving any migrated
->                          * load.
->                          */
-> -                       if (!cpumask_subset(cpus, env.dst_grpmask)) {
-> +                       if (!cpumask_subset(cpus, env.dst_grpmask) &&
-> +                                       ++env.redo_cnt < env.redo_max) {
->                                 env.loop = 0;
->                                 env.loop_break = sched_nr_migrate_break;
->                                 goto redo;
-> --
-> 2.7.4
->
+Sounds good to me.
