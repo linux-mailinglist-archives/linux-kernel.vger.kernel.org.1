@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52773039BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52643039C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391194AbhAZKCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:02:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S2391844AbhAZKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:04:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731215AbhAYSys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:54:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81FC922D58;
-        Mon, 25 Jan 2021 18:54:31 +0000 (UTC)
+        id S1731349AbhAYSyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:54:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A84A520719;
+        Mon, 25 Jan 2021 18:54:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600872;
-        bh=ntd7CQ8VhYC6lNJ2wKw4CwgYPS3FNthQ+cYY2Z0YSG8=;
+        s=korg; t=1611600877;
+        bh=Iqkim9Tke3vfh6w9wCbohMg7M92Z7603lIU1bYQTz3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K77uZDbuUKbi21WQj0DyejyJJyL7XBLqfi4O1F/Q6zyiVg5qzbomzcgaN3h0EOj+3
-         Bi0ZaiXQJ3kMsMdgzSUEUN5Tqw6+/FvYcr5uYWXmOGNLyZ7S/5R3jLK11Akjny6B6u
-         a3P5D1COg6gO6wsGc/ljY4uAlfOM3FbJ1/ScJh1w=
+        b=hR/TnG8e3NKC4ksTZ38nhWZe2UIhVe6Y+PT+UXlZcNydSfoAOE/fWDdgCycJ0HAGu
+         ad2f8kATJtyFBbzZ0HU3/ebpxJ0dCTxK75d/4H1pwO6TP6V060MxLHbzsftF1jcpVG
+         blKZ6motoNCtSKjlcmnZAcG9poHIkJRsv0WVRT1I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
         Maulik Shah <mkshah@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.10 183/199] pinctrl: qcom: Allow SoCs to specify a GPIO function thats not 0
-Date:   Mon, 25 Jan 2021 19:40:05 +0100
-Message-Id: <20210125183223.904492276@linuxfoundation.org>
+Subject: [PATCH 5.10 184/199] pinctrl: qcom: No need to read-modify-write the interrupt status
+Date:   Mon, 25 Jan 2021 19:40:06 +0100
+Message-Id: <20210125183223.945998725@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -44,57 +44,88 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Douglas Anderson <dianders@chromium.org>
 
-commit a82e537807d5c85706cd4c16fd2de77a8495dc8d upstream.
+commit 4079d35fa4fca4ee0ffd66968312fc86a5e8c290 upstream.
 
-There's currently a comment in the code saying function 0 is GPIO.
-Instead of hardcoding it, let's add a member where an SoC can specify
-it.  No known SoCs use a number other than 0, but this just makes the
-code clearer.  NOTE: no SoC code needs to be updated since we can rely
-on zero-initialization.
+When the Qualcomm pinctrl driver wants to Ack an interrupt, it does a
+read-modify-write on the interrupt status register.  On some SoCs it
+makes sure that the status bit is 1 to "Ack" and on others it makes
+sure that the bit is 0 to "Ack".  Presumably the first type of
+interrupt controller is a "write 1 to clear" type register and the
+second just let you directly set the interrupt status register.
+
+As far as I can tell from scanning structure definitions, the
+interrupt status bit is always in a register by itself.  Thus with
+both types of interrupt controllers it is safe to "Ack" interrupts
+without doing a read-modify-write.  We can do a simple write.
+
+It should be noted that if the interrupt status bit _was_ ever in a
+register with other things (like maybe status bits for other GPIOs):
+a) For "write 1 clear" type controllers then read-modify-write would
+   be totally wrong because we'd accidentally end up clearing
+   interrupts we weren't looking at.
+b) For "direct set" type controllers then read-modify-write would also
+   be wrong because someone setting one of the other bits in the
+   register might accidentally clear (or set) our interrupt.
+I say this simply to show that the current read-modify-write doesn't
+provide any sort of "future proofing" of the code.  In fact (for
+"write 1 clear" controllers) the new code is slightly more "future
+proof" since it would allow more than one interrupt status bits to
+share a register.
+
+NOTE: this code fixes no bugs--it simply avoids an extra register
+read.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
 Tested-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210114191601.v7.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid
+Link: https://lore.kernel.org/r/20210114191601.v7.2.I3635de080604e1feda770591c5563bd6e63dd39d@changeid
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pinctrl/qcom/pinctrl-msm.c |    3 +--
- drivers/pinctrl/qcom/pinctrl-msm.h |    2 ++
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/pinctrl/qcom/pinctrl-msm.c |   23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
 
 --- a/drivers/pinctrl/qcom/pinctrl-msm.c
 +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -210,8 +210,7 @@ static int msm_pinmux_request_gpio(struc
- 	if (!g->nfuncs)
- 		return 0;
+@@ -791,16 +791,13 @@ static void msm_gpio_irq_clear_unmask(st
  
--	/* For now assume function 0 is GPIO because it always is */
--	return msm_pinmux_set_mux(pctldev, g->funcs[0], offset);
-+	return msm_pinmux_set_mux(pctldev, g->funcs[pctrl->soc->gpio_func], offset);
- }
+ 	raw_spin_lock_irqsave(&pctrl->lock, flags);
  
- static const struct pinmux_ops msm_pinmux_ops = {
---- a/drivers/pinctrl/qcom/pinctrl-msm.h
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.h
-@@ -118,6 +118,7 @@ struct msm_gpio_wakeirq_map {
-  * @wakeirq_dual_edge_errata: If true then GPIOs using the wakeirq_map need
-  *                            to be aware that their parent can't handle dual
-  *                            edge interrupts.
-+ * @gpio_func: Which function number is GPIO (usually 0).
-  */
- struct msm_pinctrl_soc_data {
- 	const struct pinctrl_pin_desc *pins;
-@@ -134,6 +135,7 @@ struct msm_pinctrl_soc_data {
- 	const struct msm_gpio_wakeirq_map *wakeirq_map;
- 	unsigned int nwakeirq_map;
- 	bool wakeirq_dual_edge_errata;
-+	unsigned int gpio_func;
- };
+-	if (status_clear) {
+-		/*
+-		 * clear the interrupt status bit before unmask to avoid
+-		 * any erroneous interrupts that would have got latched
+-		 * when the interrupt is not in use.
+-		 */
+-		val = msm_readl_intr_status(pctrl, g);
+-		val &= ~BIT(g->intr_status_bit);
+-		msm_writel_intr_status(val, pctrl, g);
+-	}
++	/*
++	 * clear the interrupt status bit before unmask to avoid
++	 * any erroneous interrupts that would have got latched
++	 * when the interrupt is not in use.
++	 */
++	if (status_clear)
++		msm_writel_intr_status(0, pctrl, g);
  
- extern const struct dev_pm_ops msm_pinctrl_dev_pm_ops;
+ 	val = msm_readl_intr_cfg(pctrl, g);
+ 	val |= BIT(g->intr_raw_status_bit);
+@@ -905,11 +902,7 @@ static void msm_gpio_irq_ack(struct irq_
+ 
+ 	raw_spin_lock_irqsave(&pctrl->lock, flags);
+ 
+-	val = msm_readl_intr_status(pctrl, g);
+-	if (g->intr_ack_high)
+-		val |= BIT(g->intr_status_bit);
+-	else
+-		val &= ~BIT(g->intr_status_bit);
++	val = g->intr_ack_high ? BIT(g->intr_status_bit) : 0;
+ 	msm_writel_intr_status(val, pctrl, g);
+ 
+ 	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
 
 
