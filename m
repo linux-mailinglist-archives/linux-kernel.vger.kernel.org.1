@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF743020A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406963020A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbhAYDBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:01:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:41468 "EHLO foss.arm.com"
+        id S1726866AbhAYDAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:00:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:41488 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726769AbhAYC7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 21:59:46 -0500
+        id S1726821AbhAYC7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 21:59:54 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F8D2152F;
-        Sun, 24 Jan 2021 18:59:01 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE7F8153B;
+        Sun, 24 Jan 2021 18:59:08 -0800 (PST)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.91.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 395FB3F66E;
-        Sun, 24 Jan 2021 18:58:55 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9FA003F66E;
+        Sun, 24 Jan 2021 18:59:01 -0800 (PST)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
         catalin.marinas@arm.com
@@ -28,10 +28,18 @@ Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         David Hildenbrand <david@redhat.com>,
         linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 3/4] s390/mm: Define arch_get_mappable_range()
-Date:   Mon, 25 Jan 2021 08:28:51 +0530
-Message-Id: <1611543532-18698-4-git-send-email-anshuman.khandual@arm.com>
+        linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        teawater <teawaterz@linux.alibaba.com>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: [PATCH V4 4/4] virtio-mem: check against mhp_get_pluggable_range() which memory we can hotplug
+Date:   Mon, 25 Jan 2021 08:28:52 +0530
+Message-Id: <1611543532-18698-5-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611543532-18698-1-git-send-email-anshuman.khandual@arm.com>
 References: <1611543532-18698-1-git-send-email-anshuman.khandual@arm.com>
@@ -39,72 +47,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This overrides arch_get_mappabble_range() on s390 platform which will be
-used with recently added generic framework. It modifies the existing range
-check in vmem_add_mapping() using arch_get_mappable_range(). It also adds a
-VM_BUG_ON() check that would ensure that mhp_range_allowed() has already
-been called on the hotplug path.
+From: David Hildenbrand <david@redhat.com>
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
+Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
+are more restrictions of which memory we can actually hotplug, especially
+om arm64 or s390x once we support them: we might receive something like
+-E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
+operation.
+
+So, check right when initializing the device which memory we can add,
+warning the user. Try only adding actually pluggable ranges: in the worst
+case, no memory provided by our device is pluggable.
+
+In the usual case, we expect all device memory to be pluggable, and in
+corner cases only some memory at the end of the device-managed memory
+region to not be pluggable.
+
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: catalin.marinas@arm.com
+Cc: teawater <teawaterz@linux.alibaba.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: hca@linux.ibm.com
 Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/s390/mm/init.c |  1 +
- arch/s390/mm/vmem.c | 14 +++++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/virtio/virtio_mem.c | 40 +++++++++++++++++++++++++------------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 73a163065b95..0e76b2127dc6 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -297,6 +297,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
- 	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
- 		return -EINVAL;
- 
-+	VM_BUG_ON(!mhp_range_allowed(start, size, true));
- 	rc = vmem_add_mapping(start, size);
- 	if (rc)
- 		return rc;
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index 01f3a5f58e64..82dbf9450105 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -4,6 +4,7 @@
-  *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 9fc9ec4a25f5..14c17c5c1695 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -2222,7 +2222,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
   */
- 
-+#include <linux/memory_hotplug.h>
- #include <linux/memblock.h>
- #include <linux/pfn.h>
- #include <linux/mm.h>
-@@ -532,11 +533,22 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
- 	mutex_unlock(&vmem_mutex);
- }
- 
-+struct range arch_get_mappable_range(void)
-+{
-+	struct range mhp_range;
-+
-+	mhp_range.start = 0;
-+	mhp_range.end =  VMEM_MAX_PHYS - 1;
-+	return mhp_range;
-+}
-+
- int vmem_add_mapping(unsigned long start, unsigned long size)
+ static void virtio_mem_refresh_config(struct virtio_mem *vm)
  {
-+	struct range range = arch_get_mappable_range();
- 	int ret;
+-	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
++	const struct range pluggable_range = mhp_get_pluggable_range(true);
+ 	uint64_t new_plugged_size, usable_region_size, end_addr;
  
--	if (start + size > VMEM_MAX_PHYS ||
-+	if (start < range.start ||
-+	    start + size > range.end + 1 ||
- 	    start + size < start)
- 		return -ERANGE;
+ 	/* the plugged_size is just a reflection of what _we_ did previously */
+@@ -2234,15 +2234,25 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
+ 	/* calculate the last usable memory block id */
+ 	virtio_cread_le(vm->vdev, struct virtio_mem_config,
+ 			usable_region_size, &usable_region_size);
+-	end_addr = vm->addr + usable_region_size;
+-	end_addr = min(end_addr, phys_limit);
++	end_addr = min(vm->addr + usable_region_size - 1,
++		       pluggable_range.end);
  
+-	if (vm->in_sbm)
+-		vm->sbm.last_usable_mb_id =
+-					 virtio_mem_phys_to_mb_id(end_addr) - 1;
+-	else
+-		vm->bbm.last_usable_bb_id =
+-				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
++	if (vm->in_sbm) {
++		vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr);
++		if (!IS_ALIGNED(end_addr + 1, memory_block_size_bytes()))
++			vm->sbm.last_usable_mb_id--;
++	} else {
++		vm->bbm.last_usable_bb_id = virtio_mem_phys_to_bb_id(vm,
++								     end_addr);
++		if (!IS_ALIGNED(end_addr + 1, vm->bbm.bb_size))
++			vm->bbm.last_usable_bb_id--;
++	}
++	/*
++	 * If we cannot plug any of our device memory (e.g., nothing in the
++	 * usable region is addressable), the last usable memory block id will
++	 * be smaller than the first usable memory block id. We'll stop
++	 * attempting to add memory with -ENOSPC from our main loop.
++	 */
+ 
+ 	/* see if there is a request to change the size */
+ 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
+@@ -2364,6 +2374,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
+ 
+ static int virtio_mem_init(struct virtio_mem *vm)
+ {
++	const struct range pluggable_range = mhp_get_pluggable_range(true);
+ 	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
+ 	uint64_t sb_size, addr;
+ 	uint16_t node_id;
+@@ -2405,9 +2416,10 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 	if (!IS_ALIGNED(vm->addr + vm->region_size, memory_block_size_bytes()))
+ 		dev_warn(&vm->vdev->dev,
+ 			 "The alignment of the physical end address can make some memory unusable.\n");
+-	if (vm->addr + vm->region_size > phys_limit)
++	if (vm->addr < pluggable_range.start ||
++	    vm->addr + vm->region_size - 1 > pluggable_range.end)
+ 		dev_warn(&vm->vdev->dev,
+-			 "Some memory is not addressable. This can make some memory unusable.\n");
++			 "Some device memory is not addressable/pluggable. This can make some memory unusable.\n");
+ 
+ 	/*
+ 	 * We want subblocks to span at least MAX_ORDER_NR_PAGES and
+@@ -2429,7 +2441,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 				     vm->sbm.sb_size;
+ 
+ 		/* Round up to the next full memory block */
+-		addr = vm->addr + memory_block_size_bytes() - 1;
++		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
++		       memory_block_size_bytes() - 1;
+ 		vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(addr);
+ 		vm->sbm.next_mb_id = vm->sbm.first_mb_id;
+ 	} else {
+@@ -2450,7 +2463,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 		}
+ 
+ 		/* Round up to the next aligned big block */
+-		addr = vm->addr + vm->bbm.bb_size - 1;
++		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
++		       vm->bbm.bb_size - 1;
+ 		vm->bbm.first_bb_id = virtio_mem_phys_to_bb_id(vm, addr);
+ 		vm->bbm.next_bb_id = vm->bbm.first_bb_id;
+ 	}
 -- 
 2.20.1
 
