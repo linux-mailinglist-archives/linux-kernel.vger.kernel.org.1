@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B363031BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2733A3031A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbhAYSoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:44:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
+        id S1731362AbhAYSzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:55:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727125AbhAYSm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EC0A2067B;
-        Mon, 25 Jan 2021 18:41:25 +0000 (UTC)
+        id S1729253AbhAYSor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:44:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA7220E65;
+        Mon, 25 Jan 2021 18:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600086;
-        bh=CTE8a0ckAaAcL26TQnYiCu6KMd/VKB9yCuANcjHECrQ=;
+        s=korg; t=1611600245;
+        bh=ZOvAljMvs8VIWRqWx7zqymNFNQ1t+YE93tmohaZ8N8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v1ii0kG2WVT6MLKSDEUKipLBgREN4eiBwTxAe/C8Z9vWgwT9Ft5zMtAxTFS14BiC6
-         zn/xxUzKpdKEZjmDIbpFFxeMQbSfaJGlfs4eeQ7xR8fWluKaTd1VpewAVkL6wTaZnb
-         IrRrXe/CIOSzoKzHyyiK8vFNA1Ag9CyIswO+6ia4=
+        b=sQ1gUBc7nMb9NBKwqk1puJpRTqqBs6/c9GogMEXUsfaGa8CJbZQlzIDeP6k/xXkjM
+         xf+bd851N/8pTS5yOeo5lsMDPpBtAZKrBkCSqKBgVEX91trPbc7G0ThGHfs+PRo6gj
+         2F3YB4hE6oBkhKxHggUshUXYLdosiXJXEJ4qGX1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 03/58] ALSA: hda/via: Add minimum mute flag
-Date:   Mon, 25 Jan 2021 19:39:04 +0100
-Message-Id: <20210125183156.847196586@linuxfoundation.org>
+        stable@vger.kernel.org, Seth Miller <miller.seth@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 27/86] HID: Ignore battery for Elan touchscreen on ASUS UX550
+Date:   Mon, 25 Jan 2021 19:39:09 +0100
+Message-Id: <20210125183202.196474467@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
-References: <20210125183156.702907356@linuxfoundation.org>
+In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
+References: <20210125183201.024962206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,33 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Seth Miller <miller.seth@gmail.com>
 
-commit 67ea698c3950d10925be33c21ca49ffb64e21842 upstream.
+[ Upstream commit 7c38e769d5c508939ce5dc26df72602f3c902342 ]
 
-It turned out that VIA codecs also mute the sound in the lowest mixer
-level.  Turn on the dac_min_mute flag to indicate the mute-as-minimum
-in TLV like already done in Conexant and IDT codecs.
+Battery status is being reported for the Elan touchscreen on ASUS
+UX550 laptops despite not having a batter. It always shows either 0 or
+1%.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210559
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210114072453.11379-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Seth Miller <miller.seth@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_via.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/hid-ids.h   | 1 +
+ drivers/hid/hid-input.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -126,6 +126,7 @@ static struct via_spec *via_new_spec(str
- 		spec->codec_type = VT1708S;
- 	spec->gen.indep_hp = 1;
- 	spec->gen.keep_eapd_on = 1;
-+	spec->gen.dac_min_mute = 1;
- 	spec->gen.pcm_playback_hook = via_playback_pcm_hook;
- 	spec->gen.add_stereo_mix_input = HDA_HINT_STEREO_MIX_AUTO;
- 	codec->power_save_node = 1;
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 2aa810665a78c..33183933337af 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -393,6 +393,7 @@
+ #define USB_DEVICE_ID_TOSHIBA_CLICK_L9W	0x0401
+ #define USB_DEVICE_ID_HP_X2		0x074d
+ #define USB_DEVICE_ID_HP_X2_10_COVER	0x0755
++#define USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN	0x2706
+ 
+ #define USB_VENDOR_ID_ELECOM		0x056e
+ #define USB_DEVICE_ID_ELECOM_BM084	0x0061
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index b2da8476d0d30..ec08895e7b1dc 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -322,6 +322,8 @@ static const struct hid_device_id hid_battery_quirks[] = {
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH,
+ 		USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD),
+ 	  HID_BATTERY_QUIRK_IGNORE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_ELAN, USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN),
++	  HID_BATTERY_QUIRK_IGNORE },
+ 	{}
+ };
+ 
+-- 
+2.27.0
+
 
 
