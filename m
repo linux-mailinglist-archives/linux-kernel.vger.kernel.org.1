@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3261D30363B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D48030363D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbhAZGFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40138 "EHLO mail.kernel.org"
+        id S1729650AbhAZGGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:06:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbhAYMvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:51:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D288122242;
-        Mon, 25 Jan 2021 12:50:27 +0000 (UTC)
+        id S1728416AbhAYMvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:51:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3233222F9;
+        Mon, 25 Jan 2021 12:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611579030;
-        bh=Mxhwg+UDKM8wuGIvGKD1s6VRf2UKfTSt1jkq1w6O030=;
+        s=k20201202; t=1611579055;
+        bh=UjDoBeFYelZMuB+VxEwk6WDvkWvuefpCNK4nN0+uaes=;
         h=From:To:Cc:Subject:Date:From;
-        b=H8ciKPeeEysLON81tT/e2uHWJvzVCLpZuUpTJbOFjQ/tokbNe45yK1zo/oD6z4NO/
-         0pU82f2OSww8AjuQ/kQ6UAtSVO+A+21Ty1FGgZyH5nhZIzDuZ2V0WksokAjMDPhqFc
-         32XX7awtIvVZu2bLEBZekD4A00/zxpG2tu5ECi3StnfA+zaLdgv7rDDGt8HTcj4xVw
-         SRnpZmheAnDIqdVmdIS97COHcEDe5Byj5A3nSr48wUQtjqHNmW5sfYzD0jWZNHpoBq
-         5oD1rvLbHLnwYGhnp9rye5y+H+tjWq2p9gfzslQ6RorM9gwQhLlzmd1XigRBbuB2D/
-         BqQK1XC6x7REg==
+        b=rDx1dBTsyoT3lVwZK41eQqKkTMWxKEM81hehefB75gPvh57ZdZ8X7SIxcgnPAH3n5
+         pPO/P7ND167R/ckDrI/UQ0ATv9qa4D8ice2NjybMMaU98IESGp/8BKom/v1Ak+6ffW
+         /I3FcvqJ1TW1ZmCmKTf+OdC3UXd2X4lARf7O9/Sz77cbDZcbKheL1xr+dQWV9bknCF
+         mfNuloCtfS4nkbK7t6x1c3anTzWdf+PHxzJdM76SII8Tf7zBK0Z9mNU3HX/DEYU/XM
+         Oroxs+yWaHieK8Su8qfEG8uqSDqyNueBkyj2I6hyW0sUGtlqea3sId9yhfZAAqqFED
+         7QenohHVP3owg==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: kfence: fix header inclusion
-Date:   Mon, 25 Jan 2021 13:50:20 +0100
-Message-Id: <20210125125025.102381-1-arnd@kernel.org>
+To:     Al Cooper <alcooperx@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mmc: brcmstb: Fix sdhci_pltfm_suspend link error
+Date:   Mon, 25 Jan 2021 13:50:45 +0100
+Message-Id: <20210125125050.102605-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,34 +46,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Randconfig builds started warning about a missing function declaration
-after set_memory_valid() is moved to a new file:
+sdhci_pltfm_suspend() is only available when CONFIG_PM_SLEEP
+support is built into the kernel, which caused a regression
+in a recent bugfix:
 
-In file included from mm/kfence/core.c:26:
-arch/arm64/include/asm/kfence.h:17:2: error: implicit declaration of function 'set_memory_valid' [-Werror,-Wimplicit-function-declaration]
+ld.lld: error: undefined symbol: sdhci_pltfm_suspend
+>>> referenced by sdhci-brcmstb.c
+>>>               mmc/host/sdhci-brcmstb.o:(sdhci_brcmstb_shutdown) in archive drivers/built-in.a
 
-Include the correct header again.
+Making the call conditional on the symbol fixes the link
+error.
 
-Fixes: 9e18ec3cfabd ("set_memory: allow querying whether set_direct_map_*() is actually enabled")
-Fixes: 204555ff8bd6 ("arm64, kfence: enable KFENCE for ARM64")
+Fixes: 5b191dcba719 ("mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend")
+Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
+Cc: stable@vger.kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm64/include/asm/kfence.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It would be helpful if someone could test this to ensure that the
+driver works correctly even when CONFIG_PM_SLEEP is disabled
+---
+ drivers/mmc/host/sdhci-brcmstb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
-index d061176d57ea..aa855c6a0ae6 100644
---- a/arch/arm64/include/asm/kfence.h
-+++ b/arch/arm64/include/asm/kfence.h
-@@ -8,7 +8,7 @@
- #ifndef __ASM_KFENCE_H
- #define __ASM_KFENCE_H
+diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+index f9780c65ebe9..dc9280b149db 100644
+--- a/drivers/mmc/host/sdhci-brcmstb.c
++++ b/drivers/mmc/host/sdhci-brcmstb.c
+@@ -314,7 +314,8 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
  
--#include <asm/cacheflush.h>
-+#include <asm/set_memory.h>
+ static void sdhci_brcmstb_shutdown(struct platform_device *pdev)
+ {
+-	sdhci_pltfm_suspend(&pdev->dev);
++	if (IS_ENABLED(CONFIG_PM_SLEEP))
++		sdhci_pltfm_suspend(&pdev->dev);
+ }
  
- static inline bool arch_kfence_init_pool(void) { return true; }
- 
+ MODULE_DEVICE_TABLE(of, sdhci_brcm_of_match);
 -- 
 2.29.2
 
