@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86FC302D0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF16B302CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:41:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732172AbhAYUym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:54:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
+        id S1731997AbhAYUki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:40:38 -0500
+Received: from mga04.intel.com ([192.55.52.120]:37450 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732420AbhAYUxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:53:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72BAC22513;
-        Mon, 25 Jan 2021 20:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611607961;
-        bh=HrLqwMmB9QuqNykshbTVTHa1+DOc0VDy8lIvxe0ein4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HUrhbj4NkDNkKT2HAYy1gJVIVwG9cmrdRiq/CBDD+1u9APLW3FIvcO58emXryQ5B1
-         XJ0LujBQV8y2Yhkgc0yU9o2xhseQbkp1nZ5LMN0axfTUKIFtUc3GWpRqBzbwAwf+Ut
-         0VeXc5Vl0yq7u3ViiiTq4XHR+ZlJy8jMoty2bqfp9Ya3BQLTFEjkyt4/WFCvCvx6Dl
-         0oJtZaCFc3aeoebZjIshf7uFWib6h0t9dGyVB7eUJ76WLyeVeQ+3v4OJZz3yRCpRPC
-         Pjks6Za8uWS6rW+N/hX+sPOYmfueNcjzwNA4Y+/MENuhZRVRkITGEwm0LHIiXSuClG
-         /6w2crhu2Rb6w==
-Date:   Mon, 25 Jan 2021 20:51:59 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v6 4/7] regulator: Add regulator driver for ATC260x PMICs
-Message-ID: <20210125205159.GD4510@sirena.org.uk>
-References: <cover.1611165200.git.cristian.ciocaltea@gmail.com>
- <3f48e9f8114cac0557abca88d4437849423793bb.1611165200.git.cristian.ciocaltea@gmail.com>
- <20210125192311.GC4510@sirena.org.uk>
- <20210125205048.GA1066705@BV030612LT>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
-Content-Disposition: inline
-In-Reply-To: <20210125205048.GA1066705@BV030612LT>
-X-Cookie: Drive defensively.  Buy a tank.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1732357AbhAYUij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:38:39 -0500
+IronPort-SDR: xnKOzKHeLTAjwnNVg+Z9C9lyJa2Y1QsYuaNQY9ThUG4KciJM4+1raGvpawUcfv+6jY8F4k83Ja
+ +bjT9onit5VQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="177227322"
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="177227322"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:36:44 -0800
+IronPort-SDR: MVCtqYm5vl8XbbMD+fKVdYFBpcIMRgpQPOABLUhI2XFv4WIWSzZZlKEofCsI0B651MICJHLjdT
+ AxhGBJHCBajg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="504283142"
+Received: from marshy.an.intel.com ([10.122.105.143])
+  by orsmga004.jf.intel.com with ESMTP; 25 Jan 2021 12:36:42 -0800
+From:   richard.gong@linux.intel.com
+To:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>
+Subject: [PATCHv3 0/6] [PATCHv3 0/6] Extend Intel service layer, FPGA manager and region
+Date:   Mon, 25 Jan 2021 14:56:22 -0600
+Message-Id: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Richard Gong <richard.gong@intel.com>
 
---OaZoDhBhXzo6bW1J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is 3rd submission of Intel service layer and FPGA patches.
 
-On Mon, Jan 25, 2021 at 10:50:48PM +0200, Cristian Ciocaltea wrote:
-> On Mon, Jan 25, 2021 at 07:23:11PM +0000, Mark Brown wrote:
+This submission include additional changes for Intel service layer driver
+to get the firmware version running at FPGA SoC device. Then FPGA manager
+driver, one of Intel service layer driver's client, can decide whether to
+handle the newly added bitstream authentication function based on the
+retrieved firmware version. So that we can maintain FPGA manager driver
+the back compatible.
 
-> > Please do not submit new versions of already applied patches, please
-> > submit incremental updates to the existing code.  Modifying existing
+The customer wants to verify that a FPGA bitstream can be started properly
+before saving the bitstream to the QSPI flash memory.
 
-> The patches applied to 'for-next' branches were not modified, but I have
-> (wrongly) assumed I need to keep them in the series until they are
-> eventually merged into master.
+Bitstream authentication makes sure a signed bitstream has valid signatures.
 
-> So, if I understand correctly, I should have dropped them from the patch
-> series as soon as they had been queued, and only if they need some
-> additional work, I can re-add them as incremental updates.
+The customer sends the bitstream via FPGA framework and overlay, the
+firmware will authenticate the bitstream but not program the bitstream to
+device. If the authentication passes, the bitstream will be programmed into
+QSPI flash and will be expected to boot without issues.
 
-Yes, once something is applied it shouldn't need sending again.
+Extend Intel service layer, FPGA manager and region drivers to support the
+bitstream authentication feature. 
 
---OaZoDhBhXzo6bW1J
-Content-Type: application/pgp-signature; name="signature.asc"
+Richard Gong (6):
+  firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+  firmware: stratix10-svc: extend SVC driver to get the firmware version
+  fpga: fpga-mgr: add FPGA_MGR_BITSTREM_AUTHENTICATION flag
+  fpga: of-fpga-region: add authenticate-fpga-config property
+  dt-bindings: fpga: add authenticate-fpga-config property
+  fpga: stratix10-soc: extend driver for bitstream authentication
 
------BEGIN PGP SIGNATURE-----
+ .../devicetree/bindings/fpga/fpga-region.txt       |  1 +
+ drivers/firmware/stratix10-svc.c                   | 12 ++++-
+ drivers/fpga/of-fpga-region.c                      |  3 ++
+ drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+ include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+ .../linux/firmware/intel/stratix10-svc-client.h    | 15 ++++--
+ include/linux/fpga/fpga-mgr.h                      | 13 +++--
+ 7 files changed, 109 insertions(+), 18 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAPL24ACgkQJNaLcl1U
-h9CuhQf/TXNo5eKpTUo+pUm9d26vwESEP6romcQrnmFmNyU4ZhIcsHgis10aABRt
-ye8Itsor1mzv4phDC78NaXtr+TD/wF9Fg4Yg+N83rgUIcFXPPSFD5E4UzXoFB5Mt
-Mr0zuijpaYRfNKSiXKfKzNEKZB0wGiG3YjvEbVJRvuXkhL8LCGlW0T2xZGRCodbH
-wiiT4RXVB9kHIm2mcmoQdjGQHHi9bBpgu6UWPpP2MEq6gF6CWw1/uLWg9CtXnt9l
-8OaAt70Obju+Ea1E6dKjQxAQIUTd/UOh6Rs0aQAbYrrmRDJZDbSa1IfyMF243rEm
-SrF9cful63vaauj5Nx6PODc7Rr+vjQ==
-=90r4
------END PGP SIGNATURE-----
+-- 
+2.7.4
 
---OaZoDhBhXzo6bW1J--
