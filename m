@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE19F302B33
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53803302B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730810AbhAYTLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:11:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37040 "EHLO mail.kernel.org"
+        id S1731557AbhAYTLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:11:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727163AbhAYSuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:50:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F1072063A;
-        Mon, 25 Jan 2021 18:49:23 +0000 (UTC)
+        id S1730969AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB5D9224BE;
+        Mon, 25 Jan 2021 18:50:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600564;
-        bh=sJhGEme1dz39LpSWoym7b5fWuUSGevs/wVnlhT0c6HE=;
+        s=korg; t=1611600632;
+        bh=hMs1Enxi29RFmdXP40/oB+4f2xHXZetfroIgBXwOUt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfPRXJQEtkonAX7mx+wbCRuUaqtttSbl/IjsAGK/67H7sgxgFyQqWjoz5GqAAC+wV
-         I58FMXJV5edKoyoAdLWbvFjEfFNZY6eKO72Ao0O8KQ674hZ4aSMR6Gs81+HmDSpz4a
-         QFGq2O/2tZuMJOYARXNaks6128Ey6sfk39TCWG8A=
+        b=lImcFUseqe0aa5j9EksDmo01vebxGjP0qIILmGK+sh3mCQ+DyVDOZYnMXNoK30Kir
+         /pUGjwbFW1xEDA+BSw6svE1oi8UwI+rg7JHpE2nn+yOxVZutuJpghcd6O6Pf0Mz79b
+         qXvlF0fX4eRtOMlIFliIXt3TdsnXmc9Ihry/7i1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
+        stable@vger.kernel.org,
+        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 056/199] x86/xen: Add xen_no_vector_callback option to test PCI INTX delivery
-Date:   Mon, 25 Jan 2021 19:37:58 +0100
-Message-Id: <20210125183218.627284362@linuxfoundation.org>
+Subject: [PATCH 5.10 060/199] riscv: defconfig: enable gpio support for HiFive Unleashed
+Date:   Mon, 25 Jan 2021 19:38:02 +0100
+Message-Id: <20210125183218.807945713@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,78 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 
-[ Upstream commit b36b0fe96af13460278bf9b173beced1bd15f85d ]
+[ Upstream commit 0983834a83931606a647c275e5d4165ce4e7b49f ]
 
-It's useful to be able to test non-vector event channel delivery, to make
-sure Linux will work properly on older Xen which doesn't have it.
+Ethernet phy VSC8541-01 on HiFive Unleashed has its reset line
+connected to a gpio, so enable GPIO driver's required to reset
+the phy.
 
-It's also useful for those working on Xen and Xen-compatible hypervisors,
-because there are guest kernels still in active use which use PCI INTX
-even when vector delivery is available.
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20210106153958.584169-4-dwmw2@infradead.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt |  4 ++++
- arch/x86/xen/enlighten_hvm.c                    | 11 ++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ arch/riscv/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index f6a1513dfb76c..26bfe7ae711b8 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5965,6 +5965,10 @@
- 			This option is obsoleted by the "nopv" option, which
- 			has equivalent effect for XEN platform.
- 
-+	xen_no_vector_callback
-+			[KNL,X86,XEN] Disable the vector callback for Xen
-+			event channel interrupts.
-+
- 	xen_scrub_pages=	[XEN]
- 			Boolean option to control scrubbing pages before giving them back
- 			to Xen, for use by other domains. Can be also changed at runtime
-diff --git a/arch/x86/xen/enlighten_hvm.c b/arch/x86/xen/enlighten_hvm.c
-index 9e87ab010c82b..ec50b7423a4c8 100644
---- a/arch/x86/xen/enlighten_hvm.c
-+++ b/arch/x86/xen/enlighten_hvm.c
-@@ -188,6 +188,8 @@ static int xen_cpu_dead_hvm(unsigned int cpu)
-        return 0;
- }
- 
-+static bool no_vector_callback __initdata;
-+
- static void __init xen_hvm_guest_init(void)
- {
- 	if (xen_pv_domain())
-@@ -207,7 +209,7 @@ static void __init xen_hvm_guest_init(void)
- 
- 	xen_panic_handler_init();
- 
--	if (xen_feature(XENFEAT_hvm_callback_vector))
-+	if (!no_vector_callback && xen_feature(XENFEAT_hvm_callback_vector))
- 		xen_have_vector_callback = 1;
- 
- 	xen_hvm_smp_init();
-@@ -233,6 +235,13 @@ static __init int xen_parse_nopv(char *arg)
- }
- early_param("xen_nopv", xen_parse_nopv);
- 
-+static __init int xen_parse_no_vector_callback(char *arg)
-+{
-+	no_vector_callback = true;
-+	return 0;
-+}
-+early_param("xen_no_vector_callback", xen_parse_no_vector_callback);
-+
- bool __init xen_hvm_need_lapic(void)
- {
- 	if (xen_pv_domain())
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index d222d353d86d4..8c3d1e4517031 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -64,6 +64,8 @@ CONFIG_HW_RANDOM=y
+ CONFIG_HW_RANDOM_VIRTIO=y
+ CONFIG_SPI=y
+ CONFIG_SPI_SIFIVE=y
++CONFIG_GPIOLIB=y
++CONFIG_GPIO_SIFIVE=y
+ # CONFIG_PTP_1588_CLOCK is not set
+ CONFIG_POWER_RESET=y
+ CONFIG_DRM=y
 -- 
 2.27.0
 
