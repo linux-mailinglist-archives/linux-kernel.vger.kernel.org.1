@@ -2,213 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5087C302DBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16576302DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732646AbhAYVbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732670AbhAYVae (ORCPT
+        id S1732171AbhAYVdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:33:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44576 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732647AbhAYVce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:30:34 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3587C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:53 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id z22so29588957ioh.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f5b9KtQ7d1H/fGZmXHlccfFZMdiZGMJ/JFXTwWf9F8s=;
-        b=m++7MR8AdVlVxjDtEqVpeCbjIjDCZqRIERMyyZfZibpzbkWsZYCH/PuCok20O7a8C3
-         OfF/nw6IRs1/rlp7KVa1AnFExLJ5kFamjhhAbtglLMeTTq8tNo8s+7RZyWW1lY+YrAEu
-         CUqEdJABVGfDWMymuOG9emDcX4CdHeuDWarvqz3sGB209rroawmlBBB41zdqFbPV0AG1
-         QJ2VPAgd+qx86p4l6rEFpP2rC1Fqqj0bn2F4lylPIfs5aICXOAOGHl91ovpyRZntTA8W
-         ABkycQJ+CaSYuDTt/1l2JBk/fMYRt30otCHx8XQL10KGZc6qoGpsaEAtGkiDpK0obqLL
-         5W1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f5b9KtQ7d1H/fGZmXHlccfFZMdiZGMJ/JFXTwWf9F8s=;
-        b=Lkah4QzGRyCSgph93kVzNRSwulFck3ZQ4HCoab+appcSDqFtVsU7zOMlK3elubKtv0
-         wWXM0SMMHLfWDMh8KXqRRtC52GSv4ZZtg4cr2zmhNhBFgBHTIlR81f/SE7TN1K3UZKgj
-         +6bTY3arNygMzloZm9Q9fpyGsoyJrks8PxRKEIuL6xGWzQUs8I9tOz4mDHg70qKWb5wj
-         b31CZvSVTDBc11dUtZUFFrwt+THhpV/B3eIc6Rao2rMiXXREAt94dMCXduXiYf2ypWCW
-         XSv5+s7vf/OmY3lmLMWLNRxDWadWdiQuonmkH50vCdRtqGbTpVNqXFyxHp9ZfZ2KCtSF
-         HhnA==
-X-Gm-Message-State: AOAM532b/ZzlE9YickYsx5apQeNYTKe1087VdaEmJ9WqBmVnHiGJTdrl
-        hy0DRNdw8JX+HbOzqLH2UdSECA==
-X-Google-Smtp-Source: ABdhPJzhfOb7kPEyIUoJUnlpF+ZSHhzuA6+ibNuEhsXU1bi489tjEiFWOmVLB9MGUpDdchtVATbN8w==
-X-Received: by 2002:a05:6e02:20ca:: with SMTP id 10mr338512ilq.14.1611610193125;
-        Mon, 25 Jan 2021 13:29:53 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o18sm11136241ioa.39.2021.01.25.13.29.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:29:52 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/6] net: ipa: rename "tag status" symbols
-Date:   Mon, 25 Jan 2021 15:29:42 -0600
-Message-Id: <20210125212947.17097-2-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210125212947.17097-1-elder@linaro.org>
-References: <20210125212947.17097-1-elder@linaro.org>
+        Mon, 25 Jan 2021 16:32:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611610264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=A6SKlxCDsYxb+LTCgnFQKtSg53KqZyewCqb9ymOXWxY=;
+        b=PqaEzviRoe1A7lDZhkaQijpd2O1RfsRzYoMYiEm3d+s2NyEWy+srsHkHNn5rDz4TklPsuL
+        ysX++PMM29w5h6ESMdjfkbbCA1ZsR+EfbTzRro7vOlWw73DugUWwieRfXq1D6Wp5cPWIlv
+        gIxYGJaEqC2JBC4qPrZUkuW5FLaE4ys=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-PBQQrQrpPguFBRI--bmU3w-1; Mon, 25 Jan 2021 16:31:00 -0500
+X-MC-Unique: PBQQrQrpPguFBRI--bmU3w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1ECA10054FF;
+        Mon, 25 Jan 2021 21:30:57 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D1FE10013C1;
+        Mon, 25 Jan 2021 21:30:51 +0000 (UTC)
+Subject: [PATCH 00/32] Network fs helper library & fscache kiocb API [ver #2]
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     linux-afs@lists.infradead.org,
+        Dave Wysochanski <dwysocha@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 25 Jan 2021 21:30:50 +0000
+Message-ID: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a set of functions and symbols related to performing
-"tag_process" immediate commands to clear the IPA pipeline.  The
-name is related to one of the commands issued when doing this, but
-it doesn't really convey the overall purpose of taking this action.
 
-The purpose is to take some steps to "clear out" the hardware
-pipeline, and to wait until that process completes, to ensure the
-IPA hardware is in a well-defined state.
+Here's a set of patches to do two things:
 
-Rename these symbols to use "pipeline_clear" in their names instead.
-Add some comments to explain a bit more about what's going on.
+ (1) Add a helper library to handle the new VM readahead interface.  This
+     is intended to be used unconditionally by the filesystem (whether or
+     not caching is enabled) and provides a common framework for doing
+     caching, transparent huge pages and, in the future, possibly fscrypt
+     and read bandwidth maximisation.  It also allows the netfs and the
+     cache to align, expand and slice up a read request from the VM in
+     various ways; the netfs need only provide a function to read a stretch
+     of data to the pagecache and the helper takes care of the rest.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
+ (2) Add an alternative fscache/cachfiles I/O API that uses the kiocb
+     facility to do async DIO to transfer data to/from the netfs's pages,
+     rather than using readpage with wait queue snooping on one side and
+     vfs_write() on the other.  It also uses less memory, since it doesn't
+     do buffered I/O on the backing file.
+
+     Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
+     to be read from the cache.  Whilst this is an improvement from the
+     bmap interface, it still has a problem with regard to a modern
+     extent-based filesystem inserting or removing bridging blocks of
+     zeros.  Fixing that requires a much greater overhaul.
+
+This is a step towards overhauling the fscache API.  The change is opt-in
+on the part of the network filesystem.  A netfs should not try to mix the
+old and the new API because of conflicting ways of handling pages and the
+PG_fscache page flag and because it would be mixing DIO with buffered I/O.
+Further, the helper library can't be used with the old API.
+
+This does not change any of the fscache cookie handling APIs or the way
+invalidation is done.
+
+In the near term, I intend to deprecate and remove the old I/O API
+(fscache_allocate_page{,s}(), fscache_read_or_alloc_page{,s}(),
+fscache_write_page() and fscache_uncache_page()) and eventually replace
+most of fscache/cachefiles with something simpler and easier to follow.
+
+The patchset contains five parts:
+
+ (1) Some helper patches, including provision of an ITER_XARRAY iov
+     iterator and a function to do readahead expansion.
+
+ (2) Patches to add the netfs helper library.
+
+ (3) A patch to add the fscache/cachefiles kiocb API
+
+ (4) Patches to add support in AFS for this.
+
+ (5) Patches from David Wysochanski to add support in NFS for this.
+
+Jeff Layton also has patches for Ceph for this, though they're not included
+on this branch.
+
+With this, AFS without a cache passes all expected xfstests; with a cache,
+there's an extra failure, but that's also there before these patches.
+Fixing that probably requires a greater overhaul.  Ceph and NFS also pass
+the expected tests.
+
+These patches can be found also on:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=fscache-netfs-lib
+
+
+Changes
+=======
+
+ (v2) Fix some bugs and add NFS support.
+
+David
 ---
- drivers/net/ipa/ipa_cmd.c      | 26 ++++++++++++++++++--------
- drivers/net/ipa/ipa_cmd.h      | 17 +++++++----------
- drivers/net/ipa/ipa_endpoint.c |  6 +++---
- 3 files changed, 28 insertions(+), 21 deletions(-)
+Dave Wysochanski (8):
+      NFS: Clean up nfs_readpage() and nfs_readpages()
+      NFS: In nfs_readpage() only increment NFSIOS_READPAGES when read succeeds
+      NFS: Refactor nfs_readpage() and nfs_readpage_async() to use nfs_readdesc
+      NFS: Call readpage_async_filler() from nfs_readpage_async()
+      NFS: Add nfs_pageio_complete_read() and remove nfs_readpage_async()
+      NFS: Allow internal use of read structs and functions
+      NFS: Convert to the netfs API and nfs_readpage to use netfs_readpage
+      NFS: Convert readpage to readahead and use netfs_readahead for fscache
 
-diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
-index 002e514485100..27630244512d8 100644
---- a/drivers/net/ipa/ipa_cmd.c
-+++ b/drivers/net/ipa/ipa_cmd.c
-@@ -567,33 +567,43 @@ static void ipa_cmd_transfer_add(struct gsi_trans *trans, u16 size)
- 			  direction, opcode);
- }
- 
--void ipa_cmd_tag_process_add(struct gsi_trans *trans)
-+/* Add immediate commands to a transaction to clear the hardware pipeline */
-+void ipa_cmd_pipeline_clear_add(struct gsi_trans *trans)
- {
- 	struct ipa *ipa = container_of(trans->gsi, struct ipa, gsi);
- 	struct ipa_endpoint *endpoint;
- 
--	endpoint = ipa->name_map[IPA_ENDPOINT_AP_LAN_RX];
--
-+	/* Issue a no-op register write command (mask 0 means no write) */
- 	ipa_cmd_register_write_add(trans, 0, 0, 0, true);
-+
-+	/* Send a data packet through the IPA pipeline.  The packet_init
-+	 * command says to send the next packet directly to the exception
-+	 * endpoint without any other IPA processing.  The tag_status
-+	 * command requests that status be generated on completion of
-+	 * that transfer, and that it will contain the given tag value.
-+	 * Finally, the transfer command sends a small packet of data
-+	 * (instead of a command) using the command endpoint.
-+	 */
-+	endpoint = ipa->name_map[IPA_ENDPOINT_AP_LAN_RX];
- 	ipa_cmd_ip_packet_init_add(trans, endpoint->endpoint_id);
- 	ipa_cmd_ip_tag_status_add(trans, 0xcba987654321);
- 	ipa_cmd_transfer_add(trans, 4);
- }
- 
--/* Returns the number of commands required for the tag process */
--u32 ipa_cmd_tag_process_count(void)
-+/* Returns the number of commands required to clear the pipeline */
-+u32 ipa_cmd_pipeline_clear_count(void)
- {
- 	return 4;
- }
- 
--void ipa_cmd_tag_process(struct ipa *ipa)
-+void ipa_cmd_pipeline_clear(struct ipa *ipa)
- {
--	u32 count = ipa_cmd_tag_process_count();
-+	u32 count = ipa_cmd_pipeline_clear_count();
- 	struct gsi_trans *trans;
- 
- 	trans = ipa_cmd_trans_alloc(ipa, count);
- 	if (trans) {
--		ipa_cmd_tag_process_add(trans);
-+		ipa_cmd_pipeline_clear_add(trans);
- 		gsi_trans_commit_wait(trans);
- 	} else {
- 		dev_err(&ipa->pdev->dev,
-diff --git a/drivers/net/ipa/ipa_cmd.h b/drivers/net/ipa/ipa_cmd.h
-index 4ed09c486abc1..a41a58cc2c5ac 100644
---- a/drivers/net/ipa/ipa_cmd.h
-+++ b/drivers/net/ipa/ipa_cmd.h
-@@ -157,26 +157,23 @@ void ipa_cmd_dma_shared_mem_add(struct gsi_trans *trans, u32 offset,
- 				u16 size, dma_addr_t addr, bool toward_ipa);
- 
- /**
-- * ipa_cmd_tag_process_add() - Add IPA tag process commands to a transaction
-+ * ipa_cmd_pipeline_clear_add() - Add pipeline clear commands to a transaction
-  * @trans:	GSI transaction
-  */
--void ipa_cmd_tag_process_add(struct gsi_trans *trans);
-+void ipa_cmd_pipeline_clear_add(struct gsi_trans *trans);
- 
- /**
-- * ipa_cmd_tag_process_add_count() - Number of commands in a tag process
-+ * ipa_cmd_pipeline_clear_count() - # commands required to clear pipeline
-  *
-  * Return:	The number of elements to allocate in a transaction
-- *		to hold tag process commands
-+ *		to hold commands to clear the pipeline
-  */
--u32 ipa_cmd_tag_process_count(void);
-+u32 ipa_cmd_pipeline_clear_count(void);
- 
- /**
-- * ipa_cmd_tag_process() - Perform a tag process
-- *
-- * @Return:	The number of elements to allocate in a transaction
-- *		to hold tag process commands
-+ * ipa_cmd_pipeline_clear() - Clear the hardware pipeline
-  */
--void ipa_cmd_tag_process(struct ipa *ipa);
-+void ipa_cmd_pipeline_clear(struct ipa *ipa);
- 
- /**
-  * ipa_cmd_trans_alloc() - Allocate a transaction for the command TX endpoint
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index 688a3dd40510a..39ae0dd4e0471 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -399,7 +399,7 @@ int ipa_endpoint_modem_exception_reset_all(struct ipa *ipa)
- 	 * That won't happen, and we could be more precise, but this is fine
- 	 * for now.  We need to end the transaction with a "tag process."
- 	 */
--	count = hweight32(initialized) + ipa_cmd_tag_process_count();
-+	count = hweight32(initialized) + ipa_cmd_pipeline_clear_count();
- 	trans = ipa_cmd_trans_alloc(ipa, count);
- 	if (!trans) {
- 		dev_err(&ipa->pdev->dev,
-@@ -428,7 +428,7 @@ int ipa_endpoint_modem_exception_reset_all(struct ipa *ipa)
- 		ipa_cmd_register_write_add(trans, offset, 0, ~0, false);
- 	}
- 
--	ipa_cmd_tag_process_add(trans);
-+	ipa_cmd_pipeline_clear_add(trans);
- 
- 	/* XXX This should have a 1 second timeout */
- 	gsi_trans_commit_wait(trans);
-@@ -1564,7 +1564,7 @@ void ipa_endpoint_suspend(struct ipa *ipa)
- 	if (ipa->modem_netdev)
- 		ipa_modem_suspend(ipa->modem_netdev);
- 
--	ipa_cmd_tag_process(ipa);
-+	ipa_cmd_pipeline_clear(ipa);
- 
- 	ipa_endpoint_suspend_one(ipa->name_map[IPA_ENDPOINT_AP_LAN_RX]);
- 	ipa_endpoint_suspend_one(ipa->name_map[IPA_ENDPOINT_AP_COMMAND_TX]);
--- 
-2.20.1
+David Howells (24):
+      iov_iter: Add ITER_XARRAY
+      vm: Add wait/unlock functions for PG_fscache
+      mm: Implement readahead_control pageset expansion
+      vfs: Export rw_verify_area() for use by cachefiles
+      netfs: Make a netfs helper module
+      netfs: Provide readahead and readpage netfs helpers
+      netfs: Add tracepoints
+      netfs: Gather stats
+      netfs: Add write_begin helper
+      netfs: Define an interface to talk to a cache
+      fscache, cachefiles: Add alternate API to use kiocb for read/write to cache
+      afs: Disable use of the fscache I/O routines
+      afs: Pass page into dirty region helpers to provide THP size
+      afs: Print the operation debug_id when logging an unexpected data version
+      afs: Move key to afs_read struct
+      afs: Don't truncate iter during data fetch
+      afs: Log remote unmarshalling errors
+      afs: Set up the iov_iter before calling afs_extract_data()
+      afs: Use ITER_XARRAY for writing
+      afs: Wait on PG_fscache before modifying/releasing a page
+      afs: Extract writeback extension into its own function
+      afs: Prepare for use of THPs
+      afs: Use the fs operation ops to handle FetchData completion
+      afs: Use new fscache read helper API
+
+
+ fs/Kconfig                    |    1 +
+ fs/Makefile                   |    1 +
+ fs/afs/Kconfig                |    1 +
+ fs/afs/dir.c                  |  225 ++++---
+ fs/afs/file.c                 |  472 ++++----------
+ fs/afs/fs_operation.c         |    4 +-
+ fs/afs/fsclient.c             |  108 +--
+ fs/afs/inode.c                |    7 +-
+ fs/afs/internal.h             |   57 +-
+ fs/afs/rxrpc.c                |  150 ++---
+ fs/afs/write.c                |  610 +++++++++--------
+ fs/afs/yfsclient.c            |   82 +--
+ fs/cachefiles/Makefile        |    1 +
+ fs/cachefiles/interface.c     |    5 +-
+ fs/cachefiles/internal.h      |    9 +
+ fs/cachefiles/rdwr2.c         |  412 ++++++++++++
+ fs/fscache/Kconfig            |    1 +
+ fs/fscache/Makefile           |    3 +-
+ fs/fscache/internal.h         |    3 +
+ fs/fscache/page.c             |    2 +-
+ fs/fscache/page2.c            |  116 ++++
+ fs/fscache/stats.c            |    1 +
+ fs/internal.h                 |    5 -
+ fs/netfs/Kconfig              |   23 +
+ fs/netfs/Makefile             |    5 +
+ fs/netfs/internal.h           |   97 +++
+ fs/netfs/read_helper.c        | 1155 +++++++++++++++++++++++++++++++++
+ fs/netfs/stats.c              |   59 ++
+ fs/nfs/file.c                 |    2 +-
+ fs/nfs/fscache.c              |  206 +++---
+ fs/nfs/fscache.h              |   66 +-
+ fs/nfs/internal.h             |    8 +
+ fs/nfs/pagelist.c             |    2 +
+ fs/nfs/read.c                 |  244 ++++---
+ fs/read_write.c               |    1 +
+ include/linux/fs.h            |    1 +
+ include/linux/fscache-cache.h |    4 +
+ include/linux/fscache.h       |   28 +-
+ include/linux/netfs.h         |  167 +++++
+ include/linux/nfs_fs.h        |    5 +-
+ include/linux/nfs_iostat.h    |    2 +-
+ include/linux/nfs_page.h      |    1 +
+ include/linux/nfs_xdr.h       |    1 +
+ include/linux/pagemap.h       |   16 +
+ include/net/af_rxrpc.h        |    2 +-
+ include/trace/events/afs.h    |   74 +--
+ include/trace/events/netfs.h  |  201 ++++++
+ mm/filemap.c                  |   18 +
+ mm/readahead.c                |   70 ++
+ net/rxrpc/recvmsg.c           |    9 +-
+ 50 files changed, 3457 insertions(+), 1286 deletions(-)
+ create mode 100644 fs/cachefiles/rdwr2.c
+ create mode 100644 fs/fscache/page2.c
+ create mode 100644 fs/netfs/Kconfig
+ create mode 100644 fs/netfs/Makefile
+ create mode 100644 fs/netfs/internal.h
+ create mode 100644 fs/netfs/read_helper.c
+ create mode 100644 fs/netfs/stats.c
+ create mode 100644 include/linux/netfs.h
+ create mode 100644 include/trace/events/netfs.h
+
 
