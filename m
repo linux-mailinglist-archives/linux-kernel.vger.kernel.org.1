@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02540302BAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81388302BBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731824AbhAYTdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:33:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42178 "EHLO mail.kernel.org"
+        id S1731731AbhAYTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:36:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbhAYS4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:56:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 327F8224D4;
-        Mon, 25 Jan 2021 18:55:34 +0000 (UTC)
+        id S1731222AbhAYSz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AC2C206B2;
+        Mon, 25 Jan 2021 18:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600934;
-        bh=K3yJFan1A1sSRkniTOUSLnAaPwPYG4eSsXyweajtcnc=;
+        s=korg; t=1611600913;
+        bh=6tVQUVr25ZiJks9+fnfFmWcoiU3ovUG3q9kzTo9P4yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FKz7k0dnvgwnXSr/urMl/jpIpbWOBbAGJSW+oR92EZpbBGucCFll2CyPTdgU9FDWt
-         an3YKIeBW78OZb3+Kl0fWFuzWBANU2wq1O0Zabf3gSGDtjekJAEzu4SbDJereRb4o1
-         lph8cRY1+ak8pTlmUFWY4NU/MYlMmP7Or28eR01Q=
+        b=DqDCg7B2Dzeh3z4BJk1LIcccF4ye4Fm5TS4yrBgo2tOx71LcNcrzQF8WPukGFBFYf
+         YpQpg2Vf1ChcKyvNzIN9g67lVe6iYZdWYx8wobwauSxQHrTPepAGt8O4VrCyilok+w
+         EKXvfZq7OCtt67/mPPPSJcdGw64X0nk4FHhmeMVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 5.10 187/199] x86/sev: Fix nonistr violation
-Date:   Mon, 25 Jan 2021 19:40:09 +0100
-Message-Id: <20210125183224.072086070@linuxfoundation.org>
+        stable@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 189/199] tty: fix up hung_up_tty_write() conversion
+Date:   Mon, 25 Jan 2021 19:40:11 +0100
+Message-Id: <20210125183224.153251115@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -40,35 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit a1d5c98aac33a5a0004ecf88905dcc261c52f988 upstream.
+commit 17749851eb9ca2298e7c3b81aae4228961b36f28 upstream.
 
-When the compiler fails to inline, it violates nonisntr:
+In commit "tty: implement write_iter", I left the write_iter conversion
+of the hung up tty case alone, because I incorrectly thought it didn't
+matter.
 
-  vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xc7: call to sev_es_wr_ghcb_msr() leaves .noinstr.text section
+Jiri showed me the errors of my ways, and pointed out the problems with
+that incomplete conversion.  Fix it all up.
 
-Fixes: 4ca68e023b11 ("x86/sev-es: Handle NMI State")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210106144017.532902065@infradead.org
+Reported-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/CAHk-=wh+-rGsa=xruEWdg_fJViFG8rN9bpLrfLz=_yBYh2tBhA@mail.gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/x86/kernel/sev-es.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/tty_io.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -225,7 +225,7 @@ static inline u64 sev_es_rd_ghcb_msr(voi
- 	return __rdmsr(MSR_AMD64_SEV_ES_GHCB);
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -437,8 +437,7 @@ static ssize_t hung_up_tty_read(struct f
+ 	return 0;
  }
  
--static inline void sev_es_wr_ghcb_msr(u64 val)
-+static __always_inline void sev_es_wr_ghcb_msr(u64 val)
+-static ssize_t hung_up_tty_write(struct file *file, const char __user *buf,
+-				 size_t count, loff_t *ppos)
++static ssize_t hung_up_tty_write(struct kiocb *iocb, struct iov_iter *from)
  {
- 	u32 low, high;
- 
+ 	return -EIO;
+ }
+@@ -504,7 +503,7 @@ static const struct file_operations cons
+ static const struct file_operations hung_up_tty_fops = {
+ 	.llseek		= no_llseek,
+ 	.read		= hung_up_tty_read,
+-	.write		= hung_up_tty_write,
++	.write_iter	= hung_up_tty_write,
+ 	.poll		= hung_up_tty_poll,
+ 	.unlocked_ioctl	= hung_up_tty_ioctl,
+ 	.compat_ioctl	= hung_up_tty_compat_ioctl,
+@@ -1045,7 +1044,9 @@ static ssize_t tty_write(struct kiocb *i
+ 	if (tty->ops->write_room == NULL)
+ 		tty_err(tty, "missing write_room method\n");
+ 	ld = tty_ldisc_ref_wait(tty);
+-	if (!ld || !ld->ops->write)
++	if (!ld)
++		return hung_up_tty_write(iocb, from);
++	if (!ld->ops->write)
+ 		ret = -EIO;
+ 	else
+ 		ret = do_tty_write(ld->ops->write, tty, file, from);
 
 
