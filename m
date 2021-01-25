@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED89F30323B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:54:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE74F303231
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729339AbhAYONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40310 "EHLO
+        id S1729265AbhAYOPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729255AbhAYOIq (ORCPT
+        with ESMTP id S1729258AbhAYOIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:08:46 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BB6C0613D6;
-        Mon, 25 Jan 2021 06:08:02 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4BFC6331;
-        Mon, 25 Jan 2021 15:08:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611583680;
-        bh=sjCWCuGQ91U+T/0nFlj+7MX712ur5d08TWXtqlvD9Xs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=capaosn0vDWFRiSnaj/PgDHhjjCNdRyMHGfJ1C5bC0PpylOK8672d0hQWb67KHpYr
-         uFG8Pjl3xnehIVZafMYKWi3Hhs2OtCnwXLczhIHEvOAThLd8jxYltjHhrnLqt+kY10
-         L1mxh6zCIRRAoBb6/60Onp9daHe3kYpxEO26GdR8=
-Date:   Mon, 25 Jan 2021 16:07:41 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        hans.verkuil@cisco.com, kernel@collabora.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: doc: pixfmt-yuv: Fix 4:4:4 subsampling info
-Message-ID: <YA7QrYiUjb6BD8cK@pendragon.ideasonboard.com>
-References: <20210122182723.327438-1-helen.koike@collabora.com>
- <YAvyu6AvEmZy6WRq@pendragon.ideasonboard.com>
- <7f650d51-d419-53cc-0ad1-b241a10ab801@collabora.com>
- <9468d3e1-ac8b-8de7-5632-1da9119c992e@collabora.com>
+        Mon, 25 Jan 2021 09:08:47 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AD4C061786;
+        Mon, 25 Jan 2021 06:08:06 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id a12so9774706lfb.1;
+        Mon, 25 Jan 2021 06:08:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=b70UYa8YIK0x9xv+9vYo/yu767VIPloSWRaqTr4Le5U=;
+        b=p2aWeLNxieT8woVT0Tl/UIXog/WUBwAaE+KXDvN3pVh7Tl9ZVAD+1/JiZX0bHE311l
+         WIS0Fc0dUG8GqfDKDPHM62E60VTzNwJvhZ46CsjqN/rZm3IzD0xVx2BxdNdl70xehQFp
+         n+8ebZ0qkSe5mVX0/BRW+bf4RGo5bVjD8r2D8v/1iYWgFcc5Zb+cfEz5VjMIzRNnwn+t
+         0klFZfxePE4Yjx+zVVUFn1w+f5UJmTS05THBybzYt7h7+SNQ8mK7pDQgsyS0O2QdG4vM
+         Spg8PBxWdArWbSyOxtTrtP1cUfqxJXuzbdVcJ81elQ7hGOsQ2WoVpl3Z2vZIob0F1fff
+         bWEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=b70UYa8YIK0x9xv+9vYo/yu767VIPloSWRaqTr4Le5U=;
+        b=ajqKU+lOY5i/Ac0LOz0bkepiDPCkU8gTRJLNAeUAq9y4MAYeiS7OKwzqkqr03hlJDU
+         Uul0VwaoCXtZsKn8EySqBVNxTm8rcqNI8Y8bOvdfo7UjV0rSIM3Yxg9ylbORtbeg6v8O
+         slmFxILim/TtO8Jt4HMxwbJ8ZSn2omJpPhUXn/fU+akKFGBqjqVFNhxRnHyaGu93QYdR
+         kfRLkpT6SeMb6nxO8DB7Ba0p/tLyZPTZAwRMGlHT4AI1VcmoKAFZtIA9/N/qxaPPcLhd
+         eJLcKcSBntMaawGj1RX9inCWLFu8g+7gpVhaChnyXhnmGv4nKEQuc8F6qgUPRtdlYU7j
+         dqWg==
+X-Gm-Message-State: AOAM531pVhliHwqr8Gz26EC0TIDVJx+3Vb2qscyNySlP6sfX7NPFmedJ
+        oRJyplZU9ixMfCCtdn/a9DLAGI2U9Bc=
+X-Google-Smtp-Source: ABdhPJxCtwtWXYO91eo6tYXFDoyFBpADb2MoH9I5qV4pNcyLmcqhJSYYTq9inWLbmT/uD6Wo9qmcmw==
+X-Received: by 2002:a19:c1c9:: with SMTP id r192mr351166lff.578.1611583684824;
+        Mon, 25 Jan 2021 06:08:04 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id u18sm298271ljl.57.2021.01.25.06.08.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 06:08:04 -0800 (PST)
+Subject: Re: [PATCH v1 0/3] Support building gpio-tegra driver as loadable
+ module
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210122185543.16554-1-digetx@gmail.com>
+ <CACRpkdZTyBuz240iYuvi91k3dLKKXX=4DNxFEBP7mSNB58XtDw@mail.gmail.com>
+ <24d46928-8c57-acba-f9cf-49afbe4c983c@gmail.com>
+ <CACRpkdaR9+mxXXjRADG4+qaGiqgwVRPcCAo-5nZwXXASYfs9+g@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b6075dec-c019-3701-4d3d-d3327aef17d7@gmail.com>
+Date:   Mon, 25 Jan 2021 17:08:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <CACRpkdaR9+mxXXjRADG4+qaGiqgwVRPcCAo-5nZwXXASYfs9+g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9468d3e1-ac8b-8de7-5632-1da9119c992e@collabora.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Helen,
-
-On Mon, Jan 25, 2021 at 11:02:01AM -0300, Helen Koike wrote:
-> On 1/25/21 10:57 AM, Helen Koike wrote:
-> > On 1/23/21 6:56 AM, Laurent Pinchart wrote:
-> >> On Fri, Jan 22, 2021 at 03:27:23PM -0300, Helen Koike wrote:
-> >>> YUV 4:4:4 is not subsampled, fix this in the docs.
-> >>>
-> >>> Fixes: da785536e007 ("media: doc: pixfmt-yuv: Move all semi-planar YUV formats to common file")
-> >>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> >>> ---
-> >>>  Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst | 4 ++--
-> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> >>> index 7d4d39201a3f..bcb4ef24c334 100644
-> >>> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> >>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> >>> @@ -396,8 +396,8 @@ number of lines as the luma plane.
-> >>>  NV24 and NV42
-> >>>  -------------
-> >>>  
-> >>> -Semi-planar YUV 4:4:4 formats. The chroma plane is subsampled by 2 in the
-> >>> -horizontal direction. Chroma lines contain half the number of pixels and the
-> >>> +Semi-planar YUV 4:4:4 formats. No sub-sampling.
-> >>
-> >> "The chroma plane is not subsampled." ?
-> > 
-> > Ack.
-> > 
-> >>> +Chroma lines contain the same number of pixels and the
-> >>>  same number of bytes as luma lines, and the chroma plane contains the same
-> >>>  number of lines as the luma plane.
-> >>
-> >> That's not quite right, the chroma lines contain twice the number of
-> >> pixels and bytes, as there's one Cb and one Cr value in the chroma line
-> >> for each Y value in the luma line.
+25.01.2021 01:46, Linus Walleij пишет:
+> On Sun, Jan 24, 2021 at 12:56 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>> 24.01.2021 01:50, Linus Walleij пишет:
+>>> On Fri, Jan 22, 2021 at 7:59 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>>
+>>>> This small series adds modularization support to the gpio-tegra driver,
+>>>> i.e. driver now could be built as a loadable kernel module.
+>>>>
+>>>> Dmitry Osipenko (3):
+>>>>   gpio: tegra: Use debugfs_create_devm_seqfile()
+>>>>   gpio: tegra: Clean up whitespaces in tegra_gpio_driver
+>>>>   gpio: tegra: Support building driver as a loadable module
+>>>
+>>> As these three patches clearly make the kernel look better after
+>>> than before:
+>>> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>>>
+>>> However when we are doing this I would strongly encourage you
+>>> to also make a patch implementing remove() so you can insmod
+>>> rmmod the module at runtime.
+>>
+>> The remove() is optional for drivers, it doesn't prevent the rmmod.
 > 
-> Actually, it is the same number o pixels, but twice the number o bytes.
-> Since a trio (YCbCr) compose a pixel.
-> 
-> At least this is how I understand comparing the logic of the text description
-> of NV16 YUV4:2:2.
+> Aha you mean all resources are managed (devm_*) so that
+> rmmod/insmod works fine with this driver?
 
-You're right, my bad.
+yes
 
-> >> Maybe the text could be reflowed ?
-> > 
-> > Ack.
-> > 
-> > I'll submit v2 updating the text.
+> OK then! :) the work is finished.
 
--- 
-Regards,
-
-Laurent Pinchart
+The work on the modularization indeed should be finished, thanks.
