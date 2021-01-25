@@ -2,164 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3CF302458
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:38:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7479630245E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbhAYLgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:36:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727785AbhAYLFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 06:05:39 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AFD122EBD;
-        Mon, 25 Jan 2021 10:54:09 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l3zSL-009rDe-Fq; Mon, 25 Jan 2021 10:50:50 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: [PATCH v5 21/21] arm64: cpufeatures: Allow disabling of Pointer Auth from the command-line
-Date:   Mon, 25 Jan 2021 10:50:19 +0000
-Message-Id: <20210125105019.2946057-22-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210125105019.2946057-1-maz@kernel.org>
-References: <20210125105019.2946057-1-maz@kernel.org>
+        id S1727773AbhAYLFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:05:32 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:50741 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727667AbhAYK5e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:57:34 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 81850C94;
+        Mon, 25 Jan 2021 05:56:28 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 25 Jan 2021 05:56:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=giywbTdzkGwixTIPyZn+CKrGjsS
+        8u+GMH7bvqQezP/w=; b=lj8l6n6k+m4GCen06yUSgFqcRv62lImUqGBSlMc/Qq8
+        IZENWWsttIMjDGM7xPVtxDS38KuzJQKOq+eUTQPCTWz3NYOYJDO2VVbfYs31tn/T
+        hMrtGnOjEKxGAVHyNhCwJMF/QcXfwltPSmQBdlNa1KTP43a04ofp4n3kpsbWdsBQ
+        St1K7EtVwY3B0JK74ZdSO6eivRG9D0RFjPzlaBLjmLyu9escmlN9X3XgSzs3d0tr
+        MowhUiNTx/JFpmbPeUnihd7S8SqDo5VvsWR0A6SmvtCS2OPugkJnW/YdZVmrvNXj
+        sFRGpjcmDZ2uvAJXIgCndXj9PXdi9vz5r3mfOZ9BCLw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=giywbT
+        dzkGwixTIPyZn+CKrGjsS8u+GMH7bvqQezP/w=; b=T3X6teYyRO1kXbKsCjvtiJ
+        rPcJjcWFJjsf9vStgkwd4ujyOyNPX8bjZ+Q6sdHL81FwM8yLO8zmadkscnbngnn5
+        Hv38bp0geRGuV9PJOZoGiPWUoI0Mal3lkdsJVdPQ4Utx6ZGI1/2wz9W2sHdOJB5p
+        9SkLZ2gICKgYnOIw9d3A1FCmoXTAZNeiGnDV8TNPIaPqnptxSVk/X0Xvksz69Uxg
+        tLyciOGM9S2OCHSJaAeOgLb2CZxHmgCRNThxL6Xm00lSVok7Yt3/0zN07ww3ci8t
+        4POuAQvsWodaTPgnwqnFO8xqW7DO/NyT8mRyM0QcGCxvTembvbbs9+yq/7v9Ow0A
+        ==
+X-ME-Sender: <xms:26MOYJhd_ZzUmZXGk4HUPXT8GrJSQWCUwvQEkdYrI1-wbbk1GpIKdg>
+    <xme:26MOYOCFDdpqel7llnnh9FwxRk2kSIJ4Z_fBvGG1rEiUGDMk5kufUd3lnDGuSvmAL
+    BSkexACE0t4MpJVX_A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgddulecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:26MOYJGY6Z-lFe-RLbBbHtQSb-4PuuVwayBrSgUko4R2v0ADKnfESg>
+    <xmx:26MOYOSnF55TzH8473JPEhKhHi6ByApBzJs6CIVBx-I_leEGLqycdA>
+    <xmx:26MOYGwYXUt0Yt1Qx0I0OAEasO8Wm3QgzAM0kZXu9vFAPjOLYNA_Ag>
+    <xmx:3KMOYBxIZBQr3Z7TD0aymHcctv3miIglavLdKRDG30HW2kQRXWcuuQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 165521080059;
+        Mon, 25 Jan 2021 05:56:27 -0500 (EST)
+Date:   Mon, 25 Jan 2021 11:56:26 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 00/10] sunxi: Support IRQ wakeup from deep sleep
+Message-ID: <20210125105626.fz75dxhi6f7jtcqm@gilmour>
+References: <20210118055040.21910-1-samuel@sholland.org>
+ <161126112131.135928.7664552660827790510.b4-ty@kernel.org>
+ <08e9bc97-c18d-9b8f-28be-3892d77730bf@sholland.org>
+ <20210122104705.bo2x22ef56hdj26q@gilmour>
+ <52b9c9bb-ff75-d1e6-e198-0d388d1c6d73@sholland.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="67rbkf5xfhl6dmyc"
+Content-Disposition: inline
+In-Reply-To: <52b9c9bb-ff75-d1e6-e198-0d388d1c6d73@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to disable Pointer Authentication  at runtime,
-whether it is for testing purposes, or to work around HW issues,
-let's add support for overriding the ID_AA64ISAR1_EL1.{GPI,GPA,API,APA}
-fields.
 
-This is further mapped on the arm64.nopauth command-line alias.
+--67rbkf5xfhl6dmyc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: David Brazdil <dbrazdil@google.com>
----
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- arch/arm64/include/asm/cpufeature.h             |  1 +
- arch/arm64/kernel/cpufeature.c                  |  4 +++-
- arch/arm64/kernel/idreg-override.c              | 16 ++++++++++++++++
- 4 files changed, 23 insertions(+), 1 deletion(-)
+On Sat, Jan 23, 2021 at 12:26:26AM -0600, Samuel Holland wrote:
+> On 1/22/21 4:47 AM, Maxime Ripard wrote:
+> > On Thu, Jan 21, 2021 at 07:33:54PM -0600, Samuel Holland wrote:
+> >> On 1/21/21 2:35 PM, Marc Zyngier wrote:
+> >>> On Sun, 17 Jan 2021 23:50:30 -0600, Samuel Holland wrote:
+> >>>> Allwinner sun6i/sun8i/sun50i SoCs (A31 and newer) have two interrupt
+> >>>> controllers: GIC and R_INTC. GIC does not support wakeup. R_INTC han=
+dles
+> >>>> the external NMI pin, and provides 32+ IRQs to the ARISC. The first =
+16
+> >>>> of these correspond 1:1 to a block of GIC IRQs starting with the NMI.
+> >>>> The last 13-16 multiplex the first (up to) 128 GIC SPIs.
+> >>>>
+> >>>> This series replaces the existing chained irqchip driver that could =
+only
+> >>>> control the NMI, with a stacked irqchip driver that also provides wa=
+keup
+> >>>> capability for those multiplexed SPI IRQs. The idea is to preconfigu=
+re
+> >>>> the ARISC's IRQ controller, and then the ARISC firmware knows to wak=
+e up
+> >>>> as soon as it receives an IRQ. It can also decide how deep it can
+> >>>> suspend based on the enabled wakeup IRQs.
+> >>>>
+> >>>> [...]
+> >>>
+> >>> Applied to irq/irqchip-5.12, thanks!
+> >>>
+> >>> [01/10] dt-bindings: irq: sun6i-r: Split the binding from sun7i-nmi
+> >>>         commit: ad6b47cdef760410311f41876b21eb0c6fda4717
+> >>> [02/10] dt-bindings: irq: sun6i-r: Add a compatible for the H3
+> >>>         commit: 6436eb4417094ea3308b33d8392fc02a1068dc78
+> >>> [03/10] irqchip/sun6i-r: Use a stacked irqchip driver
+> >>>         commit: 4e34614636b31747b190488240a95647c227021f
+> >>> [04/10] irqchip/sun6i-r: Add wakeup support
+> >>>         commit: 7ab365f6cd6de1e2b0cb1e1e3873dbf68e6f1003
+> >>>
+> >>> Please route the dts patches via the soc tree. Also, I had to
+> >>> manually fix the first patch as it wouldn't apply on top of
+> >>> 5.11-rc4 (which tree has it been diffed against?). Please
+> >>> check that the resolution is correct.
+> >>
+> >> This series was based on sunxi/for-next, which contains commit
+> >> 752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation
+> >> for the V3s NMI")[1].
+> >=20
+> > I assume merging the DT bits alone would break things? If so, I guess we
+> > can wait for 5.12 to be released before merging it
+>=20
+> Patch 5 does not depend on the new driver, so it could be merged at any
+> time. Yes, the remaining patches would break things if merged without
+> the driver.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7599fd0f1ad7..f9cb28a39bd0 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -376,6 +376,9 @@
- 	arm64.nobti	[ARM64] Unconditionally disable Branch Target
- 			Identification support
- 
-+	arm64.nopauth	[ARM64] Unconditionally disable Pointer Authentication
-+			support
-+
- 	ataflop=	[HW,M68k]
- 
- 	atarimouse=	[HW,MOUSE] Atari Mouse
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 4e2f2de9d0d7..ec6311903ad4 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -820,6 +820,7 @@ static inline unsigned int get_vmid_bits(u64 mmfr1)
- 
- extern struct arm64_ftr_override id_aa64mmfr1_override;
- extern struct arm64_ftr_override id_aa64pfr1_override;
-+extern struct arm64_ftr_override id_aa64isar1_override;
- 
- u32 get_kvm_ipa_limit(void);
- void dump_cpu_features(void);
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index bb99ddb212b5..954a2b7e5d45 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -559,6 +559,7 @@ static const struct arm64_ftr_bits ftr_raz[] = {
- 
- struct arm64_ftr_override id_aa64mmfr1_override;
- struct arm64_ftr_override id_aa64pfr1_override;
-+struct arm64_ftr_override id_aa64isar1_override;
- 
- static const struct __ftr_reg_entry {
- 	u32			sys_id;
-@@ -604,7 +605,8 @@ static const struct __ftr_reg_entry {
- 
- 	/* Op1 = 0, CRn = 0, CRm = 6 */
- 	ARM64_FTR_REG(SYS_ID_AA64ISAR0_EL1, ftr_id_aa64isar0),
--	ARM64_FTR_REG(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1),
-+	ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1,
-+			       &id_aa64isar1_override),
- 
- 	/* Op1 = 0, CRn = 0, CRm = 7 */
- 	ARM64_FTR_REG(SYS_ID_AA64MMFR0_EL1, ftr_id_aa64mmfr0),
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 71349b644246..d1310438d95c 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -40,6 +40,18 @@ static const struct ftr_set_desc pfr1 __initdata = {
- 	},
- };
- 
-+static const struct ftr_set_desc isar1 __initdata = {
-+	.name		= "id_aa64isar1",
-+	.override	= &id_aa64isar1_override,
-+	.fields		= {
-+	        { "gpi", ID_AA64ISAR1_GPI_SHIFT },
-+	        { "gpa", ID_AA64ISAR1_GPA_SHIFT },
-+	        { "api", ID_AA64ISAR1_API_SHIFT },
-+	        { "apa", ID_AA64ISAR1_APA_SHIFT },
-+		{}
-+	},
-+};
-+
- extern struct arm64_ftr_override kaslr_feature_override;
- 
- static const struct ftr_set_desc kaslr __initdata = {
-@@ -56,6 +68,7 @@ static const struct ftr_set_desc kaslr __initdata = {
- static const struct ftr_set_desc * const regs[] __initdata = {
- 	&mmfr1,
- 	&pfr1,
-+	&isar1,
- 	&kaslr,
- };
- 
-@@ -66,6 +79,9 @@ static const struct {
- 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
- 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
- 	{ "arm64.nobti",		"id_aa64pfr1.bt=0" },
-+	{ "arm64.nopauth",
-+	  "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
-+	  "id_aa64isar1.api=0 id_aa64isar1.apa=0"	   },
- 	{ "nokaslr",			"kaslr.disabled=1" },
- };
- 
--- 
-2.29.2
+I've applied patch 5 then, could you send the rest of the DT patches
+when 5.13-rc1 is out?
 
+Thanks!
+Maxime
+
+--67rbkf5xfhl6dmyc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYA6j2QAKCRDj7w1vZxhR
+xYcpAP91ABOYBXnLhbPFLoxRDI3hcFTpJzj4wbHeKnZQsH04KgD/UpIbE3RYPXqZ
+nEg++6cCHvC0ym6NPIdLM/3ufqLqrAs=
+=JBYr
+-----END PGP SIGNATURE-----
+
+--67rbkf5xfhl6dmyc--
