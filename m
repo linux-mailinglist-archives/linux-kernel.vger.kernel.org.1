@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD812302C5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4475302C6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731493AbhAYUQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:16:54 -0500
-Received: from mga07.intel.com ([134.134.136.100]:19568 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731932AbhAYUQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:16:33 -0500
-IronPort-SDR: LzzUWn6mQWkAeUe4KVB4/acdBtJSW3DRNY02sQ1jXrsKBn0iEid2xTvu8I1CUQHQhFqvzgdeGv
- xZZBTK8gP7BQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="243873675"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="243873675"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:15:52 -0800
-IronPort-SDR: 5vdWv8JEEDU662Tbm6nLwFIyIA0E1XMlgXPhBhVRyuX8FufUl8tF6qdfV+odDvsT5lBWafNGim
- 2XgLnZBmoIqA==
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="361664239"
-Received: from stalawai-desk.amr.corp.intel.com (HELO [10.254.124.248]) ([10.254.124.248])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:15:51 -0800
-Subject: Re: [PATCH] x86/mm: Tracking linear mapping split events since boot
-To:     Saravanan D <saravanand@outlook.com>, x86@kernel.org,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <BYAPR01MB40856478D5BE74CB6A7D5578CFBD9@BYAPR01MB4085.prod.exchangelabs.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <30752f8e-16e9-d093-e6ec-31fd45715e9d@intel.com>
-Date:   Mon, 25 Jan 2021 12:15:51 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725794AbhAYUVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732157AbhAYUUV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:20:21 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E6C061573;
+        Mon, 25 Jan 2021 12:19:41 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id q3so3581292oog.4;
+        Mon, 25 Jan 2021 12:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=TOMpPd11zmzVUjqkEO7S2YQ3HvOrNWk6xiDVCpWtcCM=;
+        b=ojQTPATwo/zsVBVmOfPpvXAEpoWR6rsubog+KAHbgcY8dm/Q4N76i4y2ZrmipUqE55
+         5epAZldjBRqdT/ycugDyNPjuPC6pDlL17XNZKg0ldvdkJF/HA0VLhYjahvY7IiUOpIBa
+         Zoe0KewuDcVdW4o++6QEZelnhKqsk2/4m3L7u2P4kB7jeEc1pFefcqna5B8Bq6WdMOnH
+         CDaPsHdzu5FS5teBBV3EqeYL24fV217L8EtfXKNMOKwF4sSS4/l9HNwHYG1QCbQjEGBN
+         HbdURM3DlYIg+NXfHU0REv+Z/KSKQmVTxArvGYSGI4BMF8moD2YSnCxVwGGYHXN/SlQc
+         Pp/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=TOMpPd11zmzVUjqkEO7S2YQ3HvOrNWk6xiDVCpWtcCM=;
+        b=CMg2dvrv2Iw7HZ80Fzului67xyq6r9vzEJ2uiJXA0uS7bYf3OZGwXXMB+fQqoM1Gzo
+         Gb5vpqb2FIXqXD6EhuojdpESgFVRle1kVPTESMzjrc97dJSE7OiT1wL0ZIzf/Ncu6HSi
+         MC8Rh97g62Pe2DbYcSX2IAKGTZzwCroHPZDzDJWVZFMMh7xjRelmVAUPOF9GIoD+sQMz
+         YHqxGordFjHW5Cut3rqxdUEfuMD0ZDam8+wYep1qs5TRTBzspav3A0rhMZSpummKp2hK
+         GyCixhD5u/kOCBoKWQ5h9zEfwAvDVxHnNL/2b4wA6Ay9WQEc7nelHdqCSOHbBIOUGOdJ
+         jMLg==
+X-Gm-Message-State: AOAM531X6OOGq3ZBY7JKjXIFjyuKCwUNjpO9AvGCKckJHoHioFxJweMK
+        C8d+Zi05xy4FCFjLjmyWwZ1QjsUxjhw=
+X-Google-Smtp-Source: ABdhPJytxl014k0jsWt6Dm8vCwO+1EQFH2+gPnz592HDCkpJ6txGWEFdYoCZp7VsBiGTmDWL0NLyUg==
+X-Received: by 2002:a4a:58d6:: with SMTP id f205mr1599140oob.38.1611605980572;
+        Mon, 25 Jan 2021 12:19:40 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k65sm3694559oia.19.2021.01.25.12.19.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 Jan 2021 12:19:39 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 25 Jan 2021 12:19:38 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Thomas Hebb <tommyhebb@gmail.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Bob Hepple <bob.hepple@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control
+ blacklist
+Message-ID: <20210125201938.GB78651@roeck-us.net>
+References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
+ <20210125100540.55wbgdsem3htplx3@pali>
 MIME-Version: 1.0
-In-Reply-To: <BYAPR01MB40856478D5BE74CB6A7D5578CFBD9@BYAPR01MB4085.prod.exchangelabs.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125100540.55wbgdsem3htplx3@pali>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 12:11 PM, Saravanan D wrote:
-> Numerous hugepage splits in the linear mapping would give
-> admins the signal to narrow down the sluggishness caused by TLB
-> miss/reload.
+On Mon, Jan 25, 2021 at 11:05:40AM +0100, Pali Rohár wrote:
+> On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
+> > It has been reported[0] that the Dell XPS 15 L502X exhibits similar
+> > freezing behavior to the other systems[1] on this blacklist. The issue
+> > was exposed by a prior change of mine to automatically load
+> > dell_smm_hwmon on a wider set of XPS models. To fix the regression, add
+> > this model to the blacklist.
+> > 
+> > [0] https://bugzilla.kernel.org/show_bug.cgi?id=211081
+> > [1] https://bugzilla.kernel.org/show_bug.cgi?id=195751
+> > 
+> > Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all XPS models")
+> > Cc: stable@vger.kernel.org
+> > Reported-by: Bob Hepple <bob.hepple@gmail.com>
+> > Tested-by: Bob Hepple <bob.hepple@gmail.com>
+> > Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> > ---
+> > 
+> >  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> > index ec448f5f2dc3..73b9db9e3aab 100644
+> > --- a/drivers/hwmon/dell-smm-hwmon.c
+> > +++ b/drivers/hwmon/dell-smm-hwmon.c
+> > @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_fan_support_dmi_table[] __initdata = {
+> >  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 9333"),
+> >  		},
+> >  	},
+> > +	{
+> > +		.ident = "Dell XPS 15 L502X",
+> > +		.matches = {
+> > +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell System XPS L502X"),
 > 
-> One of the many lasting (as we don't coalesce back) sources for huge page
-> splits is tracing as the granular page attribute/permission changes would
-> force the kernel to split code segments mapped to huge pages to smaller
-> ones thereby increasing the probability of TLB miss/reload even after
-> tracing has been stopped.
+> Hello! Are you sure that it is required to completely disable fan
+> support? And not only access to fan type label for which is different
+> blaclist i8k_blacklist_fan_type_dmi_table?
 > 
-> The split event information will be displayed at the bottom of
-> /proc/meminfo
-> ....
-> DirectMap4k:     3505112 kB
-> DirectMap2M:    19464192 kB
-> DirectMap1G:    12582912 kB
-> DirectMap2MSplits:  1705
-> DirectMap1GSplits:    20
 
-This seems much more like something we'd want in /proc/vmstat or as a
-tracepoint than meminfo.  A tracepoint would be especially nice because
-the trace buffer could actually be examined if an admin finds an
-excessive number of these.
+I'll drop this patch from my branch. Please send a Reviewed-by: or Acked-by: tag
+if/when I should apply it.
+
+Thanks,
+Guenter
