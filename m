@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BF730328A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED04303296
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbhAYJqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 04:46:03 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11862 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbhAYJ31 (ORCPT
+        id S1726347AbhAYJfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 04:35:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726476AbhAYJ0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:29:27 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DPP6m65prz7Znb;
-        Mon, 25 Jan 2021 17:03:44 +0800 (CST)
-Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.186.182) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 25 Jan 2021 17:04:48 +0800
-From:   Shenming Lu <lushenming@huawei.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
-        <lushenming@huawei.com>
-Subject: [RFC PATCH v1 3/4] vfio: Try to enable IOPF for VFIO devices
-Date:   Mon, 25 Jan 2021 17:04:01 +0800
-Message-ID: <20210125090402.1429-4-lushenming@huawei.com>
-X-Mailer: git-send-email 2.27.0.windows.1
-In-Reply-To: <20210125090402.1429-1-lushenming@huawei.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
+        Mon, 25 Jan 2021 04:26:46 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13740C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:26:06 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id v24so16687828lfr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vnHeIwqxBtkc8QdAEDyiefJYi3lqnllVIwzZtHS/B8g=;
+        b=w6k6hAuCgmKRlMvfak3gAwLBF1ghJ7OJMdzv94wIXyk+McQu600jCNJRMlFKJOzu1/
+         4bb0EeexNpiwLgylwSbU/iJ5jQcD48zepuuZDnemJ14pqne0VjOjbLxbQBid1jMv278y
+         xoCPOl9K182hLiqElQuy9wwMbNVp0j4sGkAjr2YkXV/k/4KIHcGcQf4ZNWcSM+XzTF3w
+         m76e0qrv18wYDNZ43IPZy2SF38TA3E+8MFv9p02+qJnP+EBFHtk40wIbwkKqgJX5CzAx
+         /dPSZlMgiQ1Efr06sfI7fMGhIgeVdIQxn1v/CA2hIawa9tsYc9rahiH4uRHkQGBB9d4X
+         f3xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vnHeIwqxBtkc8QdAEDyiefJYi3lqnllVIwzZtHS/B8g=;
+        b=G8BXiLJ12OgsOJahCoRHI8BYr5tg1Neav1GO/OP0CEcozo7YHDsFnbkxuob0XQ16hu
+         HfRuFtfH7N3FJ4U9PM4eqif6C80i2DoFepwScE4q/q1/qXIsSx773cRnZXtCsC+a25Ox
+         LtFKLlyRcXoGCCNgBZ6MC4IPPfqxuKRkIVKfpsAnQojICzVDNHM4YqRyx8XMfDsO3uKp
+         xCig+yPTGxKHTFFiAWFbinbHCnzOaFxx7vpMMk79tQ5aJc5pHQBHSsSpIvACO+sg4Jl+
+         2boqUe7tXQgYqlJWACyJDTbuv7Zj9yQe0R4vox+JkX/5Jxib7Prnp7sveFggysCF9j5w
+         ctEw==
+X-Gm-Message-State: AOAM532Y0ZOdWm/HUOPDbUX531wD54yR9jU8RT/YztMg7MuuQtCtut4p
+        hOKVigLBxza665rrlv4bbOMYAdlghfdRfM3V8eWBCw==
+X-Google-Smtp-Source: ABdhPJzll3PPyYXYd0I8wnd4RuNtKdjP0BBHZkPGmyH//U/sZs25PD8QjdjNEfYnZfMRvPwpIsmPh/PHTOG+1Qv9j2I=
+X-Received: by 2002:a19:83d3:: with SMTP id f202mr665248lfd.277.1611566763364;
+ Mon, 25 Jan 2021 01:26:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.186.182]
-X-CFilter-Loop: Reflected
+References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201027091936.GS32041@suse.de> <alpine.DEB.2.22.394.2101242134530.2788@hadrien>
+ <20210125091238.GE20777@suse.de> <alpine.DEB.2.22.394.2101251017480.5053@hadrien>
+In-Reply-To: <alpine.DEB.2.22.394.2101251017480.5053@hadrien>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 25 Jan 2021 10:25:52 +0100
+Message-ID: <CAKfTPtDePZam9q7pR8-uSOif75d3EDmcZsawc2_Vx3RfDdLzOw@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: check for idle core
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If IOMMU_DEV_FEAT_IOPF is set for the VFIO device, which means that
-the delivering of page faults of this device from the IOMMU is enabled,
-we register the VFIO page fault handler to complete the whole faulting
-path (HW+SW). And add a iopf_enabled field in struct vfio_device to
-record it.
+On Mon, 25 Jan 2021 at 10:20, Julia Lawall <julia.lawall@inria.fr> wrote:
+>
+>
+>
+> On Mon, 25 Jan 2021, Mel Gorman wrote:
+>
+> > On Sun, Jan 24, 2021 at 09:38:14PM +0100, Julia Lawall wrote:
+> > >
+> > >
+> > > On Tue, 27 Oct 2020, Mel Gorman wrote:
+> > >
+> > > > On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
+> > > > > Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
+> > > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > > > > Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
+> > > > >
+> > > >
+> > > > While not a universal win, it was mostly a win or neutral. In few cases
+> > > > where there was a problem, one benchmark I'm a bit suspicious of generally
+> > > > as occasionally it generates bad results for unknown and unpredictable
+> > > > reasons. In another, it was very machine specific and the differences
+> > > > were small in absolte time rather than relative time. Other tests on the
+> > > > same machine were fine so overall;
+> > > >
+> > > > Acked-by: Mel Gorman <mgorman@suse.de>
+> > >
+> > > Recently, we have been testing the phoronix multicore benchmarks.  On v5.9
+> > > with this patch, the preparation time of phoronix slows down, from ~23
+> > > seconds to ~28 seconds.  In v5.11-rc4, we see 29 seconds.  It's not yet
+> > > clear what causes the problem.  But perhaps the patch should be removed
+> > > from v5.11, until the problem is understood.
+> > >
+> > > commit d8fcb81f1acf651a0e50eacecca43d0524984f87
+> > >
+> >
+> > I'm not 100% convinved given that it was a mix of wins and losses. In
+> > the wakup path in general, universal wins almost never happen. It's not
+> > 100% clear from your mail what happens during the preparation patch. If
+> > it included time to download the benchmarks and install then it would be
+> > inherently variable due to network time (if download) or cache hotness
+> > (if installing/compiling). While preparation time can be interesting --
+> > for example, if preparation involves reading a lot of files from disk,
+> > it's not universally interesting when it's not the critical phase of a
+> > benchmark.
+>
+> The benchmark is completely downloaded prior to the runs.  There seems to
+> be some perturbation to the activation of containerd.  Normally it is
+> even:  *   *   *   *
 
-Signed-off-by: Shenming Lu <lushenming@huawei.com>
----
- drivers/vfio/vfio.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Does it impact the benchmark results too or only the preparation prior
+to running the benchmark ?
 
-diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-index ff7797260d0f..fd885d99ee0f 100644
---- a/drivers/vfio/vfio.c
-+++ b/drivers/vfio/vfio.c
-@@ -97,6 +97,7 @@ struct vfio_device {
- 	struct vfio_group		*group;
- 	struct list_head		group_next;
- 	void				*device_data;
-+	bool				iopf_enabled;
- };
- 
- #ifdef CONFIG_VFIO_NOIOMMU
-@@ -532,6 +533,21 @@ static struct vfio_group *vfio_group_get_from_dev(struct device *dev)
- /**
-  * Device objects - create, release, get, put, search
-  */
-+
-+static void vfio_device_enable_iopf(struct vfio_device *device)
-+{
-+	struct device *dev = device->dev;
-+
-+	if (!iommu_dev_has_feature(dev, IOMMU_DEV_FEAT_IOPF))
-+		return;
-+
-+	if (WARN_ON(iommu_register_device_fault_handler(dev,
-+					vfio_iommu_dev_fault_handler, dev)))
-+		return;
-+
-+	device->iopf_enabled = true;
-+}
-+
- static
- struct vfio_device *vfio_group_create_device(struct vfio_group *group,
- 					     struct device *dev,
-@@ -549,6 +565,8 @@ struct vfio_device *vfio_group_create_device(struct vfio_group *group,
- 	device->group = group;
- 	device->ops = ops;
- 	device->device_data = device_data;
-+	/* By default try to enable IOPF */
-+	vfio_device_enable_iopf(device);
- 	dev_set_drvdata(dev, device);
- 
- 	/* No need to get group_lock, caller has group reference */
-@@ -573,6 +591,8 @@ static void vfio_device_release(struct kref *kref)
- 	mutex_unlock(&group->device_lock);
- 
- 	dev_set_drvdata(device->dev, NULL);
-+	if (device->iopf_enabled)
-+		WARN_ON(iommu_unregister_device_fault_handler(device->dev));
- 
- 	kfree(device);
- 
--- 
-2.19.1
+>
+> and with the patch it becomes more like: *     **     **
+>
+> That is every other one is on time, and every other one is late.
+>
+> But I don't know why this happens.
+>
+> julia
+>
+> >
+> > I think it would be better to wait until the problem is fully understood
+> > to see if it's a timing artifact (e.g. a race between when prev_cpu is
+> > observed to be idle and when it is busy).
 
+I agree that a better understanding of what is happening is necessary
+before any changes
+
+> >
+> > --
+> > Mel Gorman
+> > SUSE Labs
+> >
