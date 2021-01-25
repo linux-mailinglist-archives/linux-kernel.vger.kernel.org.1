@@ -2,232 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8940F303642
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF63303658
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbhAZGHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:07:52 -0500
-Received: from mail-bn7nam10on2071.outbound.protection.outlook.com ([40.107.92.71]:11553
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728287AbhAYMw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:52:28 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nvkUVhUe2yGK1j5dcNoFG04SxgWG9ZIcvRLvt8eCn3VekCAhtW+gGEn1//1OrgpI7EfBdN1NMPG+TcRG+C50pyuSUilkxBJNoHk+M3TS6jEjCbdLJE9nSkvewQeeJhIZY+EeyvctXap1qhs+1Ej5iGUZf67AwUvvQhTB9UZnA6rNQ5ZCAMRusLFKa+EuxjYiWynjL94WsoUfWdwvkSm632c19aceV76Ta54DYozctZwmWyJs/+TjfFyM2SjGM5Jq/fziAwMBVkj7igic3rj70QAz2MU6D1jMKcbE7N4Slh5cA2lrVD0Ze0MPJoDxVzYQPIvALQfcM34uAgfUPFW/pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y9eWoRtzmfEofR7xel36hDq/sZcTaQavEWF3YgC/kVc=;
- b=EmnYQSL0S7nqclw7OoJxc45kI+3NKuD4rfLLySqR/+jMpq8wJreG54ZrvWDNK/EJQNSyh+bkHXFWntjXyrCKfEq7jwmvO6qXgVjD3TH2WSUPrE70owG+MgVbWbmFxqifzDl3miBGEXaNTHpHq4b5wfhmeEy1/8JPV9dhrPOCh6y4kSI9620OmQrTiVEmFZOlejdYUeoFjMPBvoS3oYfiWXIPwwZLe2leKTg+72jI14ctPv2lL54/mZcJnNtwpEOgdj9R0SeUY6udpeWSO7Z6VxqE7FyEEm72+E0o/pg6kOZciCWXqDNz8rByinMvwtxBxNzTGTF4PLfsl8w378JGrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y9eWoRtzmfEofR7xel36hDq/sZcTaQavEWF3YgC/kVc=;
- b=yRhxnUFQGQ8hIDEVamzyiiTGm1f63PE6EY/PkJn1S1pLrc4Xld4ozn2r9EHyn6xv5Bvx2POYPVWmFPDSCEIIEOlfq2eMH7Vy1KR429eqgXdBVdqYcM218Vwd9G3qZClCHaOL/Bj6wauHO7TaZihtn0ExazXdNvOrteYQ2HCJdiU=
-Received: from CY4PR12MB1287.namprd12.prod.outlook.com (2603:10b6:903:40::8)
- by CY4PR12MB1749.namprd12.prod.outlook.com (2603:10b6:903:11d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
- 2021 12:51:34 +0000
-Received: from CY4PR12MB1287.namprd12.prod.outlook.com
- ([fe80::bc0f:dd2:ef80:de2]) by CY4PR12MB1287.namprd12.prod.outlook.com
- ([fe80::bc0f:dd2:ef80:de2%12]) with mapi id 15.20.3784.019; Mon, 25 Jan 2021
- 12:51:34 +0000
-From:   "Chen, Guchun" <Guchun.Chen@amd.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        "Wentland, Harry" <Harry.Wentland@amd.com>,
-        "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Aberback, Joshua" <Joshua.Aberback@amd.com>,
-        "Lakha, Bhawanpreet" <Bhawanpreet.Lakha@amd.com>,
-        "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "Chalmers, Wesley" <Wesley.Chalmers@amd.com>,
-        "Zhuo, Qingqing" <Qingqing.Zhuo@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Jacky Liao <ziyu.liao@amd.com>,
-        "Leung, Martin" <Martin.Leung@amd.com>
-Subject: RE: [PATCH] drm/amd/display: use div_s64() for 64-bit division
-Thread-Topic: [PATCH] drm/amd/display: use div_s64() for 64-bit division
-Thread-Index: AQHW8w7f9zwUf5VmV0W3hq1/1dnYF6o4SpRg
-Date:   Mon, 25 Jan 2021 12:51:33 +0000
-Message-ID: <CY4PR12MB1287B8B020D280A5F12ED62DF1BD9@CY4PR12MB1287.namprd12.prod.outlook.com>
-References: <20210125114012.2480845-1-arnd@kernel.org>
-In-Reply-To: <20210125114012.2480845-1-arnd@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-01-25T12:51:27Z;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=5905a068-9ca2-433b-ba79-be6e78fd8f54;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [180.164.215.185]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 77c5e308-4ba4-4981-7aea-08d8c12ff1fa
-x-ms-traffictypediagnostic: CY4PR12MB1749:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR12MB1749C15C542A56BD78DFDCFBF1BD9@CY4PR12MB1749.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uaAQ+ctbBbdbu3lfLtifZAqixiQ0828cvvd0QZSCU0jpcHfDWKgSZUzs2B9poHXwfsJ4COdF5wKveRXkaEZClPgJ0VT3l3neArQSefmhx5BPcpsA37JlTK2j1BYkqpL9Ur9QZgRnUqyTtFTujBPYQqyabGBtGBAWBTFCTtP31sEUpLgyFYNJJBN7ZKfTtux7IpYQNcMEtPYND2QRcmQ/nuT33eER5aW3sOwTFVklYiqzK/e5UawLIfEacjctRZ72Ib7tLMI7fpg3mKO79JOCwvrIsNpErd8QrvILBAmYkER/J61uNBa0aN47nqFwIwHvqo8BjvhhM3eGTTZlZ2o5zCcfQO11YH14quPF6NevvYwYolim4ubKRvCxQA6z1jnrW07RHNNFh+JulOLmg7D1hp2eHIw2c7UZNaIiibuNxKFRIxNOUeCnRzLNF+msh5MD4+YMuEhGUwPE19v7RsNCcNjuTPZZAccg9E4qniqrR+Y=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1287.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(76116006)(33656002)(966005)(71200400001)(54906003)(316002)(66946007)(83380400001)(26005)(110136005)(6636002)(6506007)(2906002)(8676002)(66446008)(4326008)(66556008)(66476007)(8936002)(478600001)(55016002)(64756008)(53546011)(186003)(45080400002)(86362001)(52536014)(7696005)(5660300002)(921005)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?qnAyumjZh6LVZQzhx8goOUF6iPjKICO2EG2VcxIwTRVr2BrNIeVTZYNEfS8f?=
- =?us-ascii?Q?rik6O4KO47FPiU8xdRyldEByhHiYmoKSmRBILmg1wQQVKODHMbYGoCod3Z2J?=
- =?us-ascii?Q?SWtwfnf7+OUzcQ7n7RJ8ctD+Qlf0EOC12H6Jk0761u/xV7H3FLMe4qx89HTm?=
- =?us-ascii?Q?nNrXTOiLYnYDCpC+nO9utEEEo80/c6pZkLbOCP5VSHePeF2eSoL4As0GtxcC?=
- =?us-ascii?Q?y8MwQlGv5Iy5M+7o0xQxSldN5+zen3FSvtsrGElr0LYYwOsNR7ETLhw14/Xc?=
- =?us-ascii?Q?XaAtPAmwN5mG8QPPt6cMgfWac6nHJVCJFQSRa0YLkeeBgejKtBco8VePchoi?=
- =?us-ascii?Q?ZU3SyQX66u5InkDXdBcn+2kAE7FvPJICqo/0tSNj8sKU0FwRghC8ccePr/vZ?=
- =?us-ascii?Q?v+EKyoyINmuDM+F3h3nZFZ7z14i2JWYVID1JsaqLznHQpeEZ7t8wSOdBxoyn?=
- =?us-ascii?Q?ZuLtX97SgKpey6LO1If7gVb3+mhwN8no13kdQxRLi3VwVvee5+JdF8lulHNS?=
- =?us-ascii?Q?O81Eh+Gb7NngxC96T2jGVlN9fX8sReAPURsAsXyjD5hFaX2M/1WDMoQ91hIT?=
- =?us-ascii?Q?ZYPq4lveyJemIKldotxBoBrpHLSuiektdPNpH8+xU7SA8UVb+PIHZnPtMpqu?=
- =?us-ascii?Q?/VA6brMXpL6J65odVJ8Lv/b2SWcij51fEvku1F15k/RcSUfQKOdM5waxcGzK?=
- =?us-ascii?Q?rwhGsccT65NCtBoAEU2Ofelk4Sx90IwlVYr1XUJUhFgxVA7ibPkOvdD8/Qsh?=
- =?us-ascii?Q?EnUtY5+VNpm0pPA+0qalmUh8BrHuS+ylgthG2xxP4W0f1MYHB8dLODFtGBlK?=
- =?us-ascii?Q?fGrkJ2vBHJrQHZ5eAtiQRUxYgWb67BPjdbKjj4sH+aI0E4ZvvGasjrZNnOrf?=
- =?us-ascii?Q?AmU9Tvnegupyz5huNEn+FBBS54vCpwb0VgDrx3G9C7y/+BdrDdZ5HQK/3Q36?=
- =?us-ascii?Q?7SywyuUmqIBOOIUN/IIpgZhH3TMIvt0jmjPyO7iabVmVF9/lo8ai+rYxqbbl?=
- =?us-ascii?Q?EvyEedJgPQlOq0jEgNtOsgasAeLV9KyltcpqZ2ivIvrVJpNiPMk+oAENJG6a?=
- =?us-ascii?Q?MJZIdILd?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729486AbhAZGPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:15:02 -0500
+Received: from de-deferred2.bosch-org.com ([139.15.180.217]:35288 "EHLO
+        de-deferred2.bosch-org.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728613AbhAYNIz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:08:55 -0500
+Received: from de-out1.bosch-org.com (snat-lb41g3-dmz-psi-sl1-maildeferred.fe.ssn.bosch.com [139.15.180.215])
+        by fe0vms0193.rbdmz01.com (Postfix) with ESMTPS id 4DPVHp0XTXzD3l;
+        Mon, 25 Jan 2021 13:56:54 +0100 (CET)
+Received: from si0vm1948.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
+        by si0vms0217.rbdmz01.com (Postfix) with ESMTPS id 4DPVFv1rWnz4f3lwd;
+        Mon, 25 Jan 2021 13:55:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
+        s=key2-intmail; t=1611579315;
+        bh=euRhdnUaVRB7WYYx1jBcEN1vRJOnUijtneH+xYtWGIM=; l=10;
+        h=From:Subject:From:Reply-To:Sender;
+        b=aWvsA1xDQjmcACqwmv7+MW8kD2Al0yZfwPDlbuZwGZqkmAkX93RAycf10d+Jpocpp
+         NaiT4Ncd5Rh8JThS8E5JKlGRowdaXsbuzQm1MhB2K3hRMl46OTNj5/9z9z/4LCYjGC
+         l0XzSbbOeKXF28dJ553vHJkMMWXmxv5lZRLIflzw=
+Received: from fe0vm02900.rbesz01.com (unknown [10.58.172.176])
+        by si0vm1948.rbesz01.com (Postfix) with ESMTPS id 4DPVFv1VhMz5PF;
+        Mon, 25 Jan 2021 13:55:15 +0100 (CET)
+X-AuditID: 0a3aad0c-f13ff700000020da-ec-600ebfb39f36
+Received: from fe0vm1652.rbesz01.com ( [10.58.173.29])
+        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by fe0vm02900.rbesz01.com (SMG Outbound) with SMTP id 83.80.08410.3BFBE006; Mon, 25 Jan 2021 13:55:15 +0100 (CET)
+Received: from SI-HUB2000.de.bosch.com (si-hub2000.de.bosch.com [10.4.103.108])
+        by fe0vm1652.rbesz01.com (Postfix) with ESMTPS id 4DPVFv00zyzV15;
+        Mon, 25 Jan 2021 13:55:15 +0100 (CET)
+Received: from luchador.grb-fir.grb.de.bosch.com (10.19.187.97) by
+ SI-HUB2000.de.bosch.com (10.4.103.108) with Microsoft SMTP Server id
+ 15.1.2106.2; Mon, 25 Jan 2021 13:55:14 +0100
+From:   Mark Jonas <mark.jonas@de.bosch.com>
+To:     Support Opensource <support.opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <Adam.Thomson.Opensource@diasemi.com>,
+        <stwiss.opensource@diasemi.com>, <marek.vasut@gmail.com>,
+        <tingquan.ruan@cn.bosch.com>, <hubert.streidl@de.bosch.com>,
+        Mark Jonas <mark.jonas@de.bosch.com>
+Subject: [PATCH 0/1] mfd: da9063: Support SMBus and I2C mode
+Date:   Mon, 25 Jan 2021 13:54:57 +0100
+Message-ID: <20210125125458.1302525-1-mark.jonas@de.bosch.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1287.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77c5e308-4ba4-4981-7aea-08d8c12ff1fa
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 12:51:33.8034
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: icYnYWQN6lkGZ92f2hlAK/tRzLYtiz3wEASIUK3Z7Dxd0lDjo8ZUu6MIO2+/o+LwZpUF5mBKF4IH+RUzmVB3Mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1749
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsXCZbVWVnfzfr4EgylNLBZL3y9ltph/5Byr
+        xf2vRxktLu+aw2ZxdM89ZovWvUfYLa7+Xs9isbf1IrMDh8eKT/oeO2fdZffYtKqTzePOtT1s
+        Hp83yQWwRnHZpKTmZJalFunbJXBlTHjHU/CEq6LzemID40KOLkZODgkBE4kr+4+zdDFycQgJ
+        zGCSWLXmDBOEs5tR4kn3dChnB6PElm0v2EFa2AS0JG6e2MEMYosI1Eqs27oBrIhZoItJ4u3k
+        z6xdjBwcwgI2EjMXxIDUsAioSvQ+vQJWzytgJ/Hv5GkWiNXyEjMvfWeHiAtKnJz5BCzODBRv
+        3jqbGcKWkDj44gXzBEa+WUjKZiEpm4WkbAEj8ypGsbRUg7JcAyNLAwO9oqTU4ioDQ73k/NxN
+        jJDw5dnBeKrng94hRiYOxkOMEhzMSiK8u/V4EoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzqvBs
+        jBMSSE8sSc1OTS1ILYLJMnFwSjUwtc1weMVT13KobzvTs5PxM56eP9ASvjgs2PDjjmuFFWz7
+        1IoKvm0urxXsaDtode9D3ZYvU5XmWC8Q/hqQc+LX20+/Ziuvk65lkGk4/eSgSWtniqu27uIA
+        +fMXUjYe5p5XveR/LtMPNoEFU+7L+AVfWMT9siFiOntR+e9ZpUe8bz93a2AoXOHhtWd7kfkN
+        TaVUJjPWZanthTrOyZWVvheKlwRufuZXPeXYFPvK5R2Xvqt4mc9cHtQZMyXGhOX+ft5JKdc5
+        7hg73lNI2bpQpHHdhsdRiSdYd/06VCf00OHWqjPL/zf9m8pzcL+Gk/FF6VXv9yz6MFXn/aYv
+        umFKpn3tJT2mDGkNcZMlbjeo9U+NVWIpzkg01GIuKk4EAJUbB9/OAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Public Use]
+On an NXP i.MX6 Solo processor we are running an application which makes
+use of real-time threads (SCHED_RR). In combination with a DA9063 we
+experienced (rare) random shut-downs and reboots. We found that the
+issue was caused by a combination of the (default) DA9063 SMBus mode
+and non-atomic I2C transactions of the i.MX6 I2C driver. Because a
+transaction could be idle for longer than the SMBus clock time-out due
+to a real-time thread the DA9063 would time-out and receive the second
+half of the transaction as an unintended message.
 
-Hi Arnd Bergmann,
+The solution we are giving to review in this patch is to allow using the
+I2C mode of the DA9063. We kindly ask for feedback and eventually hope
+for an integration to the mainline.
 
-Thanks for your patch. This link error during compile has been fixed by bel=
-ow commit and been submitted to drm-next branch already.
+Because we are on a vendor kernel we were not able to test this patch
+on the current mainline kernel. Though, we tested a (very similar) patch
+on our (close to mainline) Linux 4.14 and 5.4 vendor kernels.
 
-5da047444e82 drm/amd/display: fix 64-bit division issue on 32-bit OS
+Hubert Streidl (1):
+  mfd: da9063: Support SMBus and I2C mode
 
-Regards,
-Guchun
+ Documentation/devicetree/bindings/mfd/da9063.txt |  7 +++++++
+ drivers/mfd/da9063-core.c                        |  9 +++++++++
+ drivers/mfd/da9063-i2c.c                         | 13 +++++++++++++
+ include/linux/mfd/da9063/core.h                  |  1 +
+ include/linux/mfd/da9063/registers.h             |  3 +++
+ 5 files changed, 33 insertions(+)
 
------Original Message-----
-From: amd-gfx <amd-gfx-bounces@lists.freedesktop.org> On Behalf Of Arnd Ber=
-gmann
-Sent: Monday, January 25, 2021 7:40 PM
-To: Wentland, Harry <Harry.Wentland@amd.com>; Li, Sun peng (Leo) <Sunpeng.L=
-i@amd.com>; Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christi=
-an <Christian.Koenig@amd.com>; David Airlie <airlied@linux.ie>; Daniel Vett=
-er <daniel@ffwll.ch>; Aberback, Joshua <Joshua.Aberback@amd.com>; Lakha, Bh=
-awanpreet <Bhawanpreet.Lakha@amd.com>; Kazlauskas, Nicholas <Nicholas.Kazla=
-uskas@amd.com>
-Cc: Arnd Bergmann <arnd@arndb.de>; Chalmers, Wesley <Wesley.Chalmers@amd.co=
-m>; Zhuo, Qingqing <Qingqing.Zhuo@amd.com>; Siqueira, Rodrigo <Rodrigo.Siqu=
-eira@amd.com>; linux-kernel@vger.kernel.org; amd-gfx@lists.freedesktop.org;=
- dri-devel@lists.freedesktop.org; Jacky Liao <ziyu.liao@amd.com>; Leung, Ma=
-rtin <Martin.Leung@amd.com>
-Subject: [PATCH] drm/amd/display: use div_s64() for 64-bit division
+-- 
+2.25.1
 
-From: Arnd Bergmann <arnd@arndb.de>
-
-The open-coded 64-bit division causes a link error on 32-bit
-machines:
-
-ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefine=
-d!
-ERROR: modpost: "__divdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined=
-!
-
-Use the div_s64() to perform the division here. One of them was an unsigned=
- division originally, but it looks like signed division was intended, so us=
-e that to consistently allow a negative delay.
-
-Fixes: ea7154d8d9fb ("drm/amd/display: Update dcn30_apply_idle_power_optimi=
-zations() code")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/g=
-pu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index dff83c6a142a..a133e399e76d 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -772,8 +772,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc=
-, bool enable)
- 							cursor_cache_enable ? &cursor_attr : NULL)) {
- 				unsigned int v_total =3D stream->adjust.v_total_max ?
- 						stream->adjust.v_total_max : stream->timing.v_total;
--				unsigned int refresh_hz =3D (unsigned long long) stream->timing.pix_cl=
-k_100hz *
--						100LL /	(v_total * stream->timing.h_total);
-+				unsigned int refresh_hz =3D div_s64((unsigned long long) stream->timin=
-g.pix_clk_100hz *
-+						100LL, v_total * stream->timing.h_total);
-=20
- 				/*
- 				 * one frame time in microsec:
-@@ -800,8 +800,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc=
-, bool enable)
- 				unsigned int denom =3D refresh_hz * 6528;
- 				unsigned int stutter_period =3D dc->current_state->perf_params.stutter=
-_period_us;
-=20
--				tmr_delay =3D (((1000000LL + 2 * stutter_period * refresh_hz) *
--						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
-+				tmr_delay =3D div_s64(((1000000LL + 2 * stutter_period * refresh_hz) *
-+						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
- 						denom) - 64LL;
-=20
- 				/* scale should be increased until it fits into 6 bits */ @@ -815,8 +8=
-15,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enabl=
-e)
- 					}
-=20
- 					denom *=3D 2;
--					tmr_delay =3D (((1000000LL + 2 * stutter_period * refresh_hz) *
--							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
-+					tmr_delay =3D div_s64(((1000000LL + 2 * stutter_period * refresh_hz) =
-*
-+							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
- 							denom) - 64LL;
- 				}
-=20
---
-2.29.2
-
-_______________________________________________
-amd-gfx mailing list
-amd-gfx@lists.freedesktop.org
-https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flists.f=
-reedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=3D04%7C01%7Cguchun.c=
-hen%40amd.com%7C4bb97aae9edc4153392c08d8c1260048%7C3dd8961fe4884e608e11a82d=
-994e183d%7C0%7C0%7C637471716255231899%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wL=
-jAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DkL=
-dkVHfkYx%2Bd249%2BmtG5GJTq295Pxzw7mgTe0FD8QvY%3D&amp;reserved=3D0
