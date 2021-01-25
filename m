@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB8B30365A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E22D30365B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbhAZGPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:15:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56672 "EHLO
+        id S1731427AbhAZGPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728670AbhAYNN2 (ORCPT
+        with ESMTP id S1728684AbhAYNOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:13:28 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE61C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:12:46 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id i187so7370584lfd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:12:46 -0800 (PST)
+        Mon, 25 Jan 2021 08:14:02 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F23FC06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:13:17 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id b26so17618690lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:13:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GG3vahY76s4SRL3M46lNCBCKQEIbcfJITvOyi7b/xaE=;
-        b=ylsAFriX37XVbpLrF13WtDMR2c5hpD1ojpoIGrNq9XuUCJ+9ZI/nVndYmxlHicPxsr
-         52qifpbb0+zInjIDkQ11DvZmSyXZJ/R20DjkOXxxkHnEABVBZbOzGkXPXPB4eqbOlL1h
-         LEl0q7mHUumORmwisiHLCkLGZQmH9RHokoY+QyCc/hh+c6kNDGOTw67XXhAJgqmzTrBv
-         hmTR9mbudnnkvVb467jCiWzmrVLL3g/sf29ebSobv0ehWnSe9b8HMIFV0j2oH/peWx4B
-         J45aJxeAsuAfpcp/uKzeX5SN7xjHAkh2fNG+HCqz4spZ6FkSfx109zCghylojY/728lH
-         /CPw==
+        bh=dkjGH+G3sbPs0AwBpKTZTNMo6PAnhVg3Vk9O+oPBcYo=;
+        b=Jh7/FEpR91Kn0N8agvzoZbDt8Vo0Re5umfDss3QUmF1BVvSaj9lIq8UbWi6u8L58yZ
+         DZA92Cn7qbWCqYz+j1NHBTG9c95BbJLfjZbNc+pHZqcNlBjqsl2f930JkVnnekbroya/
+         Pan4OWOrhztzpXYSMxzPpkCTRDLqxWFcnqDGUIyMiYCLgt+7Sf2HKwR6WGphRoXg+IY7
+         NioWkdeZjyDA17yR1tK0y8Ze1vyNNDByrWKrewGm+9VSIHFtkyCC+5uIrIwx/gNTBdKf
+         4bYbf3cNy0fKzaUDFkIO1IUc3smoFFfFAop5sisWtetjF7iKYE4KGd/KvXhrF/aGLwoS
+         3R7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GG3vahY76s4SRL3M46lNCBCKQEIbcfJITvOyi7b/xaE=;
-        b=WzP51HTiUs9qwQ0x8tRo6uMauNsks4kioQvSGRZnaZWz+MEIMNPg0HzuTlq/PxE4Md
-         pb61zpVJVFKvVAAo0bsfirY11hzp4nHX10fZQuZ1uItVuyt3wBqaB/Lo9Fsr1zJjJgKs
-         JV8axAZsm/CSLflESvIiLmYkwgjBCpNH72nhDJftISKTToP8XGk0/dKUa3yC5vZ6R9mu
-         5uV7HvvPlFPThgq+SFmyBEU2VnUvhYsIf8l+e9AyS8KcpZ3p70sBXMPZtHb9hZIbiR8K
-         LKn/PScN0UCeOOxBXfguY/1tXo3Pu7w9m/VxvQmtKP5szPS/CRN7gsHpEMgZaoh1OyP0
-         4hdA==
-X-Gm-Message-State: AOAM531sUf+O5GFLAjONzp2bjUVE8uM7jW8jQlyL3b/Mdab08ss4fRfs
-        tJyzOmw+skAoNFW93vYTC0XeOkb0g7pUHyswtHEMyg==
-X-Google-Smtp-Source: ABdhPJxDT3XMILf8kQD/47RjOiNlQdTecGrpgSBvjuTehZg5fGASxkkq8PKsR78LBS6XWePVlhcSeupwkL3gjJrh/18=
-X-Received: by 2002:a19:b8e:: with SMTP id 136mr255455lfl.29.1611580364908;
- Mon, 25 Jan 2021 05:12:44 -0800 (PST)
+        bh=dkjGH+G3sbPs0AwBpKTZTNMo6PAnhVg3Vk9O+oPBcYo=;
+        b=dpVRpAem80WDPx3ERC58BaDmzb1UdQVoTpeS2xNKwm9TpUnQGYblLgWNOGCy5pmJEg
+         pv90VrGQ+X7r5zN59gJlZi8jtNB1fd3yOEQ2sp+bu9LGHwstucwVaNVGEM+K8EdUjnWI
+         3KTZQHOgGJE1nWyvXsugrucuNw0kBBMIFUwzHPWmgSFF613Yse2ReQgkPPCL7aGh9WqR
+         MX+Xjo9oSZfM+kv2Eju5CmOj7QglUkkFVnk1m+mx4rjnz1HhhWLJlns8NmoPQKoLkAs/
+         lOgtqIo92EKlRafFfNtwdVSy+76McCsH6J3qukSvWU9yafb9JAk9ImSmCfI9l1KgIS40
+         jphA==
+X-Gm-Message-State: AOAM531kheY+XkL4RM162Wy+/J7HPqrVihXiy46ae9G9s1KtBMKSzdqw
+        h0QYjeSqPBx2ThxnUmm6j1Sss0oFr1fNsVPqJ9gOgpZIh/uylw==
+X-Google-Smtp-Source: ABdhPJxb7i93hzji/0XqwZuGFblpA4aj5dMHr9srYEFMDhw8118iclkxarMinp3+461hMdPJxmB4BxSJZ/B8GxjDcRU=
+X-Received: by 2002:ac2:5c45:: with SMTP id s5mr250905lfp.586.1611580395894;
+ Mon, 25 Jan 2021 05:13:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210125044322.6280-1-dqfext@gmail.com> <20210125044322.6280-3-dqfext@gmail.com>
-In-Reply-To: <20210125044322.6280-3-dqfext@gmail.com>
+References: <20210125044322.6280-1-dqfext@gmail.com> <20210125044322.6280-2-dqfext@gmail.com>
+In-Reply-To: <20210125044322.6280-2-dqfext@gmail.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Jan 2021 14:12:34 +0100
-Message-ID: <CACRpkdZtgqABQc5qDZCLLJKXvAEugLKM2RCKia9hypS0A5GkDw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 2/2] net: dsa: mt7530: MT7530 optional GPIO support
+Date:   Mon, 25 Jan 2021 14:13:05 +0100
+Message-ID: <CACRpkdag3P7yGVmzkcdi8zw=3WJFNDDTQDOWujBB54YgFZJ22g@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/2] dt-bindings: net: dsa: add MT7530 GPIO
+ controller binding
 To:     DENG Qingfang <dqfext@gmail.com>
 Cc:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
@@ -82,10 +83,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jan 25, 2021 at 5:43 AM DENG Qingfang <dqfext@gmail.com> wrote:
 
-> MT7530's LED controller can drive up to 15 LED/GPIOs.
->
-> Add support for GPIO control and allow users to use its GPIOs by
-> setting gpio-controller property in device tree.
+> Add device tree binding to support MT7530 GPIO controller.
 >
 > Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 
