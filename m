@@ -2,219 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC8F3036D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A333036CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729776AbhAZGuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:50:17 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:20189 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729781AbhAYOv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:51:26 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DPXmS1NGMz9v0Hl;
-        Mon, 25 Jan 2021 15:48:24 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id EkPXsMuex3eP; Mon, 25 Jan 2021 15:48:24 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPXmS0365z9v0Hk;
-        Mon, 25 Jan 2021 15:48:24 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 895728B79E;
-        Mon, 25 Jan 2021 15:48:29 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id cE-EMZBN0A4D; Mon, 25 Jan 2021 15:48:29 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5A8A38B79B;
-        Mon, 25 Jan 2021 15:48:29 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4EE1F66AD8; Mon, 25 Jan 2021 14:48:29 +0000 (UTC)
-Message-Id: <35e22ae59d0e1810ab7954918bdb1078b06d6bbd.1611585031.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1611585031.git.christophe.leroy@csgroup.eu>
-References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v4 16/23] powerpc/32: Always save non volatile GPRs at syscall
- entry
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        msuchanek@suse.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 25 Jan 2021 14:48:29 +0000 (UTC)
+        id S1730619AbhAZGqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:46:13 -0500
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:45546 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729697AbhAYOt2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:49:28 -0500
+Received: by mail-lf1-f46.google.com with SMTP id q12so18086575lfo.12;
+        Mon, 25 Jan 2021 06:49:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=oPSrp6GTXszof/dNN0q+//X3RVS3y6bDNp6+3lvklGQ=;
+        b=jtTS7e/3x1/mpInMILVwubXIwLgaHHcMUvtktA4EA2yowmYpz/NaoGI0xcO9r2/hJG
+         2LKW9FFMaPZfUre9lYxHU/e3UWm12/YuBzRGMLW4G/nOSylNzf93Wq/oAhKS3LbpBwWC
+         EQniVSuP59cWS0mV3r+iMQXS7eqeroHk2kznI3na7PALPp/M6Yne70YleLRiwdpwULZj
+         2ir41JYX9uEmZsF2pl6qJ977AjHLXW1FNUH/9XU2UE8Emz/huGR+q7AK5kaHr/Bghofi
+         NpehEplSbsnPkRPbHJNHjtHAEGqikQHXub9HpHQsEILjIpoXHzYkRAIZPq+diddj1Kmz
+         lb5w==
+X-Gm-Message-State: AOAM5336oVRs/R4oreF0gYCIfMt0sTe6pE1F3TGYe6HaEWUPazevvZgo
+        Lw+ovWz7EjJ0VfycND6WD9I=
+X-Google-Smtp-Source: ABdhPJxOjRvLElV4WAr8IXb2gJhiSVLKwvCwYVqcrseNfOeAj1QsN/9i/cFCsdPeje6SLk7QEAbtoA==
+X-Received: by 2002:a19:3f87:: with SMTP id m129mr424730lfa.560.1611586123211;
+        Mon, 25 Jan 2021 06:48:43 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id b11sm1958382lfi.174.2021.01.25.06.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 06:48:42 -0800 (PST)
+Message-ID: <7a3d897d6af9f4310e5cc98ca74123192da49e27.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v2 09/17] mfd: Support for ROHM BD71815 PMIC core
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+In-Reply-To: <20210125141044.GZ4903@dell>
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+         <14480ca837005aecd7053202c2347e36ad29faee.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210125141044.GZ4903@dell>
+Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date:   Mon, 25 Jan 2021 16:48:36 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for porting syscall entry/exit to C, inconditionally
-save non volatile general purpose registers.
+Hello Lee,
 
-Commit 965dd3ad3076 ("powerpc/64/syscall: Remove non-volatile GPR save
-optimisation") provides detailed explanation.
+Thanks again for the review!
 
-This increases the number of cycles by 24 cycles on 8xx with
-null_syscall benchmark (280 => 304 cycles)
+On Mon, 2021-01-25 at 14:10 +0000, Lee Jones wrote:
+> On Tue, 19 Jan 2021, Matti Vaittinen wrote:
+> 
+> > Add core support for ROHM BD71815 Power Management IC.
+> > 
+> > The IC integrates regulators, a battery charger with a coulomb
+> > counter,
+> > a real-time clock (RTC), clock gate and general-purpose outputs
+> > (GPO).
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > ---
+> > Changes since v1:
+> >   - Used BIT() for better readability
+> >   - removed some unused definitions
+> > 
+> >  drivers/mfd/Kconfig              |  15 +-
+> >  drivers/mfd/rohm-bd71828.c       | 416 +++++++++++++++++++++--
+> >  include/linux/mfd/rohm-bd71815.h | 561
+> > +++++++++++++++++++++++++++++++
+> >  include/linux/mfd/rohm-bd71828.h |   3 +
+> >  4 files changed, 952 insertions(+), 43 deletions(-)
+> >  create mode 100644 include/linux/mfd/rohm-bd71815.h
+> > 
+> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > index bdfce7b15621..59bfacb91898 100644
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -1984,19 +1984,20 @@ config MFD_ROHM_BD70528
+> >  	  charger.
+> >  
+> >  config MFD_ROHM_BD71828
+> > -	tristate "ROHM BD71828 Power Management IC"
+> > +	tristate "ROHM BD71828 and BD71815 Power Management IC"
+> >  	depends on I2C=y
+> >  	depends on OF
+> >  	select REGMAP_I2C
+> >  	select REGMAP_IRQ
+> >  	select MFD_CORE
+> >  	help
+> > -	  Select this option to get support for the ROHM BD71828 Power
+> > -	  Management IC. BD71828GW is a single-chip power management IC
+> > for
+> > -	  battery-powered portable devices. The IC integrates 7 buck
+> > -	  converters, 7 LDOs, and a 1500 mA single-cell linear charger.
+> > -	  Also included is a Coulomb counter, a real-time clock (RTC),
+> > and
+> > -	  a 32.768 kHz clock gate.
+> > +	  Select this option to get support for the ROHM BD71828 and
+> > BD71815
+> > +	  Power Management ICs. BD71828GW and BD71815AGW are single-
+> > chip power
+> > +	  management ICs mainly for battery-powered portable devices.
+> > +	  The BD71828 integrates 7 buck converters and 7 LDOs. The
+> > BD71815
+> > +	  has 5 bucks, 7 LDOs, and a boost for driving LEDs. Both ICs
+> > provide
+> > +	  also a single-cell linear charger, a Coulomb counter, a real-
+> > time
+> > +	  clock (RTC), GPIOs and a 32.768 kHz clock gate.
+> >  
+> >  config MFD_STM32_LPTIMER
+> >  	tristate "Support for STM32 Low-Power Timer"
+> > diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-
+> > bd71828.c
+> > index 210261d026f2..28b82477ce4c 100644
+> > --- a/drivers/mfd/rohm-bd71828.c
+> > +++ b/drivers/mfd/rohm-bd71828.c
+> > @@ -2,7 +2,7 @@
+> >  //
+> >  // Copyright (C) 2019 ROHM Semiconductors
+> >  //
+> > -// ROHM BD71828 PMIC driver
+> > +// ROHM BD71828/BD71815 PMIC driver
+> >  
+> >  #include <linux/gpio_keys.h>
+> >  #include <linux/i2c.h>
+> > @@ -11,7 +11,9 @@
+> >  #include <linux/ioport.h>
+> >  #include <linux/irq.h>
+> >  #include <linux/mfd/core.h>
+> > +#include <linux/mfd/rohm-bd71815.h>
+> >  #include <linux/mfd/rohm-bd71828.h>
+> > +#include <linux/mfd/rohm-generic.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of_device.h>
+> >  #include <linux/regmap.h>
+> > @@ -29,12 +31,102 @@ static struct gpio_keys_platform_data
+> > bd71828_powerkey_data = {
+> >  	.name = "bd71828-pwrkey",
+> >  };
+> >  
+> > -static const struct resource rtc_irqs[] = {
+> > +static const struct resource bd71815_rtc_irqs[] = {
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC0, "bd71815-rtc-alm-0"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC1, "bd71815-rtc-alm-1"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC2, "bd71815-rtc-alm-2"),
+> > +};
+> > +
+> > +static const struct resource bd71828_rtc_irqs[] = {
+> >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC0, "bd71828-rtc-alm-0"),
+> >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC1, "bd71828-rtc-alm-1"),
+> >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC2, "bd71828-rtc-alm-2"),
+> >  };
+> >  
+> > +static struct resource bd71815_power_irqs[] = {
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_RMV, "bd71815-dcin-rmv"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-clps-out"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-clps-in"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_RES, "bd71815-dcin-
+> > ovp-res"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_DET, "bd71815-dcin-
+> > ovp-det"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_RES, "bd71815-dcin-
+> > mon-res"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_DET, "bd71815-dcin-
+> > mon-det"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_RES, "bd71815-vsys-uv-
+> > res"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_DET, "bd71815-vsys-uv-
+> > det"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_RES, "bd71815-vsys-
+> > low-res"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_DET, "bd71815-vsys-
+> > low-det"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-
+> > mon-res"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-
+> > mon-det"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TEMP, "bd71815-chg-
+> > wdg-temp"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TIME, "bd71815-chg-
+> > wdg"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_RES, "bd71815-
+> > rechg-res"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_DET, "bd71815-
+> > rechg-det"),
+> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RANGED_TEMP_TRANSITION,
+> > +			     "bd71815-ranged-temp-transit"),
+> 
+> The new line limit is 100.  Feel free to run these out.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/entry_32.S           | 46 +-----------------------
- arch/powerpc/kernel/head_32.h            |  2 +-
- arch/powerpc/kernel/head_booke.h         |  2 +-
- arch/powerpc/kernel/syscalls/syscall.tbl | 20 +++--------
- 4 files changed, 8 insertions(+), 62 deletions(-)
+I learn new things every day it seems. This change is more than
+welcome!
 
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index b1e36602c013..97dc28a68465 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -351,6 +351,7 @@ trace_syscall_entry_irq_off:
- 
- 	.globl	transfer_to_syscall
- transfer_to_syscall:
-+	SAVE_NVGPRS(r1)
- #ifdef CONFIG_PPC_BOOK3S_32
- 	kuep_lock r11, r12
- #endif
-@@ -614,51 +615,6 @@ ret_from_kernel_syscall:
- #endif
- _ASM_NOKPROBE_SYMBOL(ret_from_kernel_syscall)
- 
--/*
-- * The fork/clone functions need to copy the full register set into
-- * the child process. Therefore we need to save all the nonvolatile
-- * registers (r13 - r31) before calling the C code.
-- */
--	.globl	ppc_fork
--ppc_fork:
--	SAVE_NVGPRS(r1)
--	lwz	r0,_TRAP(r1)
--	rlwinm	r0,r0,0,0,30		/* clear LSB to indicate full */
--	stw	r0,_TRAP(r1)		/* register set saved */
--	b	sys_fork
--
--	.globl	ppc_vfork
--ppc_vfork:
--	SAVE_NVGPRS(r1)
--	lwz	r0,_TRAP(r1)
--	rlwinm	r0,r0,0,0,30		/* clear LSB to indicate full */
--	stw	r0,_TRAP(r1)		/* register set saved */
--	b	sys_vfork
--
--	.globl	ppc_clone
--ppc_clone:
--	SAVE_NVGPRS(r1)
--	lwz	r0,_TRAP(r1)
--	rlwinm	r0,r0,0,0,30		/* clear LSB to indicate full */
--	stw	r0,_TRAP(r1)		/* register set saved */
--	b	sys_clone
--
--	.globl	ppc_clone3
--ppc_clone3:
--	SAVE_NVGPRS(r1)
--	lwz	r0,_TRAP(r1)
--	rlwinm	r0,r0,0,0,30		/* clear LSB to indicate full */
--	stw	r0,_TRAP(r1)		/* register set saved */
--	b	sys_clone3
--
--	.globl	ppc_swapcontext
--ppc_swapcontext:
--	SAVE_NVGPRS(r1)
--	lwz	r0,_TRAP(r1)
--	rlwinm	r0,r0,0,0,30		/* clear LSB to indicate full */
--	stw	r0,_TRAP(r1)		/* register set saved */
--	b	sys_swapcontext
--
- /*
-  * Top-level page fault handling.
-  * This is in assembler because if do_page_fault tells us that
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index 24dc326e0d56..7b12736ec546 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -148,7 +148,7 @@
- 	stw	r2,GPR2(r11)
- 	addi	r10,r10,STACK_FRAME_REGS_MARKER@l
- 	stw	r9,_MSR(r11)
--	li	r2, \trapno + 1
-+	li	r2, \trapno
- 	stw	r10,8(r11)
- 	stw	r2,_TRAP(r11)
- 	SAVE_GPR(0, r11)
-diff --git a/arch/powerpc/kernel/head_booke.h b/arch/powerpc/kernel/head_booke.h
-index b3c502c503a0..626e716576ce 100644
---- a/arch/powerpc/kernel/head_booke.h
-+++ b/arch/powerpc/kernel/head_booke.h
-@@ -124,7 +124,7 @@ ALT_FTR_SECTION_END_IFSET(CPU_FTR_EMB_HV)
- 	stw	r2,GPR2(r11)
- 	addi	r12, r12, STACK_FRAME_REGS_MARKER@l
- 	stw	r9,_MSR(r11)
--	li	r2, \trapno + 1
-+	li	r2, \trapno
- 	stw	r12, 8(r11)
- 	stw	r2,_TRAP(r11)
- 	SAVE_GPR(0, r11)
-diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
-index f744eb5cba88..96b2157f0371 100644
---- a/arch/powerpc/kernel/syscalls/syscall.tbl
-+++ b/arch/powerpc/kernel/syscalls/syscall.tbl
-@@ -9,9 +9,7 @@
- #
- 0	nospu	restart_syscall			sys_restart_syscall
- 1	nospu	exit				sys_exit
--2	32	fork				ppc_fork			sys_fork
--2	64	fork				sys_fork
--2	spu	fork				sys_ni_syscall
-+2	nospu	fork				sys_fork
- 3	common	read				sys_read
- 4	common	write				sys_write
- 5	common	open				sys_open			compat_sys_open
-@@ -160,9 +158,7 @@
- 119	32	sigreturn			sys_sigreturn			compat_sys_sigreturn
- 119	64	sigreturn			sys_ni_syscall
- 119	spu	sigreturn			sys_ni_syscall
--120	32	clone				ppc_clone			sys_clone
--120	64	clone				sys_clone
--120	spu	clone				sys_ni_syscall
-+120	nospu	clone				sys_clone
- 121	common	setdomainname			sys_setdomainname
- 122	common	uname				sys_newuname
- 123	common	modify_ldt			sys_ni_syscall
-@@ -244,9 +240,7 @@
- 186	spu	sendfile			sys_sendfile64
- 187	common	getpmsg				sys_ni_syscall
- 188	common 	putpmsg				sys_ni_syscall
--189	32	vfork				ppc_vfork			sys_vfork
--189	64	vfork				sys_vfork
--189	spu	vfork				sys_ni_syscall
-+189	nospu	vfork				sys_vfork
- 190	common	ugetrlimit			sys_getrlimit			compat_sys_getrlimit
- 191	common	readahead			sys_readahead			compat_sys_readahead
- 192	32	mmap2				sys_mmap2			compat_sys_mmap2
-@@ -322,9 +316,7 @@
- 248	32	clock_nanosleep			sys_clock_nanosleep_time32
- 248	64	clock_nanosleep			sys_clock_nanosleep
- 248	spu	clock_nanosleep			sys_clock_nanosleep
--249	32	swapcontext			ppc_swapcontext			compat_sys_swapcontext
--249	64	swapcontext			sys_swapcontext
--249	spu	swapcontext			sys_ni_syscall
-+249	nospu	swapcontext			sys_swapcontext			compat_sys_swapcontext
- 250	common	tgkill				sys_tgkill
- 251	32	utimes				sys_utimes_time32
- 251	64	utimes				sys_utimes
-@@ -522,9 +514,7 @@
- 432	common	fsmount				sys_fsmount
- 433	common	fspick				sys_fspick
- 434	common	pidfd_open			sys_pidfd_open
--435	32	clone3				ppc_clone3			sys_clone3
--435	64	clone3				sys_clone3
--435	spu	clone3				sys_ni_syscall
-+435	nospu	clone3				sys_clone3
- 436	common	close_range			sys_close_range
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
--- 
-2.25.0
+> > +	if (!strncmp(mode, "open-drain", 10)) {
+> > +		dev_dbg(dev, "configuring clk32kout as open-drain");
+> 
+> Do you *really* need these?
+
+No. development leftover. Thanks for pointing that.
+
+> > 
+> > +		button_irq = 0;
+> > +		dev_info(&i2c->dev, "BD71815 found\n");
+> 
+> Again, are these *really* useful to you and/or your users?
+> 
+> Besides, this device not *found* i.e. scanned/read and instantiated,
+> it has simply been matched from the local DTB.  It can still be
+> wrong.  You can probably omit them.
+
+You're right. One can check the DT contents from /proc if he wants to
+check what IC compatible was used. Thanks.
+> 
+> [...]
+> 
+> > diff --git a/include/linux/mfd/rohm-bd71815.h
+> > b/include/linux/mfd/rohm-bd71815.h
+> > new file mode 100644
+> > index 000000000000..8ee5874a5b73
+> > --- /dev/null
+> > +++ b/include/linux/mfd/rohm-bd71815.h
+> > @@ -0,0 +1,561 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > +/*
+> > + * Copyright 2014 Embest Technology Co. Ltd. Inc.
+> 
+> Jeeze!  Is this for the Amiga?
+
+Nah. Long live NXP SOCs! ;) I think BD71815 was _originally_ developed
+for i.MX6.
+
+> 
+> > + * Author: yanglsh@embest-tech.com
+> > + *
+> > + * 2020, 2021 Heavily modified by:
+> 
+> You should probably add a proper copyright.
+Ok. I guess I can do so. Thanks!
+
+> > + *	 Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > + */
+> > +
+> > +#ifndef _MFD_BD71815_H
+> > +#define _MFD_BD71815_H
+> > +
+> > +#include <linux/regmap.h>
+
+Best Regards
+-- Matti Vaittinen
 
