@@ -2,65 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC02302E73
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A451A302E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbhAYV4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:56:01 -0500
-Received: from mga07.intel.com ([134.134.136.100]:26851 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732997AbhAYVzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:55:38 -0500
-IronPort-SDR: UgOAQ2Y37DwEde+wVNrP0TURWnN3HvHbtZed8Ocsh+EIr0M2mu0jUnHaciASBVhMtvr9+loMh/
- HVSUItaKtTmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="243888423"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="243888423"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 13:54:54 -0800
-IronPort-SDR: I0+abZd4zAGdotiSlfcecsXBkdivRWAlN7K4u+lcuJ5kiSV7XWRH6RtTDJ+je+J4PMCTYaM2zB
- HLyUCXxXEODQ==
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="350447758"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 13:54:53 -0800
-Date:   Mon, 25 Jan 2021 21:54:52 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        David Binderman <dcb314@hotmail.com>,
-        Babu Moger <babu.moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
-Message-ID: <YA8+LHYEM12DgJhf@otcwcpicx3.sc.intel.com>
-References: <20201130202010.178373-1-fenghua.yu@intel.com>
- <YA8uZYiGFzee+UHD@otcwcpicx3.sc.intel.com>
- <1d4c6c2c-55a7-d55d-e859-c2eccee25383@linuxfoundation.org>
+        id S1732809AbhAYWAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:00:07 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:16863 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733030AbhAYV4r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:56:47 -0500
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 10PLtVuv010003;
+        Tue, 26 Jan 2021 06:55:31 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 10PLtVuv010003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611611732;
+        bh=MveyNhX/Q55BK5TLqNfAZkfF+yHw/qazmwfJNs3YUFQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=K1q4ibmji9cgyLczPPDOd/kGDPeGCQnoaywDs3oY2NNKJsfjHRAAd2qK1JXBfh+Y1
+         VxUnxk6h08mNQG7v7rF+B4GlWFzBNYvhEMVQrw+PG2gylCkWuCDESv/3X9wU/Tr4z4
+         UZaFvqgs3hDdpYsY3OWchNBscpqSVKSptywk4B/LtjHvEBBF348FVTYg8mp1pigcsd
+         svz4zOybb9sdQal8cFns8vvHAVldiegt9xYUGIvSu1YCpZfsOo7SnaC2yZgOIamAt4
+         apQSovqzXiBMaUyUlwU+b92rSiDTZMVcIoEinauPOjUYlnCKUVOlWBATnhGoS6z9Ws
+         a3X+RAudXzf3A==
+X-Nifty-SrcIP: [209.85.216.50]
+Received: by mail-pj1-f50.google.com with SMTP id kx7so440916pjb.2;
+        Mon, 25 Jan 2021 13:55:31 -0800 (PST)
+X-Gm-Message-State: AOAM530bsZXWj9ZXKGX26pLfYkJGv9WIiLfN2Lsi2CKEJZmlxtQF+aYQ
+        6Ff4QalWK3cPHjmm8w6q4HcO8s88QZEnwxyH8+k=
+X-Google-Smtp-Source: ABdhPJwhZb6x1b4UxKLwPs9cja3rm1ktMGQrT/2LvmPOdOPBPLNVG1bEO2b/KFoRx721rPIVTVOZ0zSXnvJGyvP+g3M=
+X-Received: by 2002:a17:903:248e:b029:de:b329:ffaa with SMTP id
+ p14-20020a170903248eb02900deb329ffaamr2685673plw.71.1611611730923; Mon, 25
+ Jan 2021 13:55:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d4c6c2c-55a7-d55d-e859-c2eccee25383@linuxfoundation.org>
+References: <20210123091631.716794-1-masahiroy@kernel.org>
+In-Reply-To: <20210123091631.716794-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 26 Jan 2021 06:54:53 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATsEURRtV0Rcmm3KctA6je5yRfYAhe10Y4Gj5rbwULxNQ@mail.gmail.com>
+Message-ID: <CAK7LNATsEURRtV0Rcmm3KctA6je5yRfYAhe10Y4Gj5rbwULxNQ@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: simplify GCC_PLUGINS enablement in dummy-tools/gcc
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Philipp Rudo <prudo@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:52:09PM -0700, Shuah Khan wrote:
-> On 1/25/21 1:47 PM, Fenghua Yu wrote:
-> > On Mon, Nov 30, 2020 at 08:19:53PM +0000, Fenghua Yu wrote:
-> > > This patch set has several miscellaneous fixes to resctrl selftest tool
-> > > that are easily visible to user. V1 had fixes to CAT test and CMT test
-> > > but they were dropped in V2 because having them here made the patchset
-> > Just a friendly reminder. Will you push this series to the upstream?
-> > Maybe I miss something but I don't see this series in the linux-kselftest
-> > tree yet.
-> > 
-> 
-> Sorry I am a bit behind on reviews. I will pull these fixes in this
-> week for 5.12-rc1 and will let you know if I would like changes.
+On Sat, Jan 23, 2021 at 6:16 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> With commit 1e860048c53e ("gcc-plugins: simplify GCC plugin-dev
+> capability test") applied, this check can be way simpler because
+> now scripts/gcc-plugins/Kconfig only checks plugin-version.h
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  scripts/dummy-tools/gcc | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/scripts/dummy-tools/gcc b/scripts/dummy-tools/gcc
+> index 33487e99d83e..5c113cad5601 100755
+> --- a/scripts/dummy-tools/gcc
+> +++ b/scripts/dummy-tools/gcc
+> @@ -75,16 +75,12 @@ if arg_contain -S "$@"; then
+>         fi
+>  fi
+>
+> -# For scripts/gcc-plugin.sh
+> +# To set GCC_PLUGINS
+>  if arg_contain -print-file-name=plugin "$@"; then
+>         plugin_dir=$(mktemp -d)
+>
+> -       sed -n 's/.*#include "\(.*\)"/\1/p' $(dirname $0)/../gcc-plugins/gcc-common.h |
+> -       while read header
+> -       do
+> -               mkdir -p $plugin_dir/include/$(dirname $header)
+> -               touch $plugin_dir/include/$header
+> -       done
+> +       mkdir -p $plugin_dir/include
+> +       touch $plugin_dir/include/plugin-version.h
+>
+>         echo $plugin_dir
+>         exit 0
+> --
+> 2.27.0
+>
 
-Really appreciate your help, Shuah!
+Applied to linux-kbuild.
 
--Fenghua
+
+-- 
+Best Regards
+Masahiro Yamada
