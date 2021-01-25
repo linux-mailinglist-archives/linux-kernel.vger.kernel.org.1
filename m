@@ -2,147 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7089B3020A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617213020AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbhAYDDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:03:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726894AbhAYDBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:01:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B4A922472
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 03:00:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611543659;
-        bh=AYqxvGyeiCTBN2q0vDvDSCeZBESw4z+hzzzTHOIy2l8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UuW8gHju+PThwUt1j3FycLZofaROrhSmbHacbZ0fP/EEPO/9BEMq7SUdp2PKNSCKo
-         nrwymyj9C4qQTUVaeqtZONvFTAxinluTuCrntQ1Epx/hkW7HC97ET9w5baQdQKO1+X
-         ik4hsBTGVFTLsgbe/cZH7AyJNrtkRUjbHoYqGblSkc2OVuW72PPQgib0uyBYTNHDJf
-         xL70QbPwdzyIXcPl8yuA1Y4ODK78Q7Z0puxrWprAreojTCP3WvdJjQQLH7SJ4uTa8i
-         +J1t+f0m4aWmby4Daq2JmZWHcgnJorbHrS75fnbho39sttucTDoZxs/rm/gi5D6Tn+
-         ezztnafwag4iA==
-Received: by mail-ed1-f48.google.com with SMTP id f1so13425085edr.12
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:00:59 -0800 (PST)
-X-Gm-Message-State: AOAM531WViP293NNOfQi1V7tcOYeaiwlOfhdcTpINqb3s/wrb/Ksn7Q7
-        SsRXL8rLsYNPQf8D85F0ET5wbRyWxlzZUwcOtVWiqg==
-X-Google-Smtp-Source: ABdhPJyMw6/j8We7L4+fkmpBHwOPQy6z61Y4/FLsVCPQ8Z/8A+2ZC65f9Ro6yjLZPXBg57OILIfi7PEHjVcKOlyyA1c=
-X-Received: by 2002:aa7:d4d2:: with SMTP id t18mr856070edr.238.1611543658089;
- Sun, 24 Jan 2021 19:00:58 -0800 (PST)
+        id S1726712AbhAYDIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726630AbhAYDIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 22:08:34 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E213C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:07:54 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id gx1so1985977pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:07:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=u8+YbkbccOnTqbWHKnDyaMuyym5pEv5IG+EImU42D6M=;
+        b=MJy6OqiaaLqTicZSQyhluQpXvA0EVEL681DUoeBYtHv7G3AVEEeDpKIhkdZLMMKvuU
+         1QH4rMwBnUZnRgpvGKKVleRTyzdI4+BsusreYgtgBupeL6Bo0otwlK51fYQWYBAxpDdH
+         NI5fXAjrYMAVyFltVblQkcpfbiBTJomT05odfRQxEuyTu+kY99Twaam1l4m/vSxAO/WL
+         CMS9fH3sZ2XVYbZmgkmLrOzEVZ+FZX4m8c34hLjaMb2XV1Tz+HxNb6qJtwP5fCgVxwtb
+         isVgmExJEyCZTHyTE+Uvq8OXKxn42vzX0v+rsIFL5X9rUGKbrjXEH4tlnh9V29kbWFT3
+         Zvhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=u8+YbkbccOnTqbWHKnDyaMuyym5pEv5IG+EImU42D6M=;
+        b=mCBPbpKSAfJbY80Fi8QBeUSIIRM0xzmafdWVqYWH/OkFWHi/YAU885krAndyv67JZE
+         E/Qiy296ODcAXaMG2Xz7akL97hx6WXu5mFEU/4mqSNAB6qs+fEgCXQ82+SvbPRgPsFns
+         ClSvN5ZMDqE8pXefE3UpS8KmsBvE5sSpGI6uhg6jlPLbJNhU/t/mzn6N1s4c2cMvwEzl
+         ZOvJP6S3VwXLdT2eZZIaG044FnNOP+NtfUWQODSK9fDf6e9WImXwcccBaYzY3Uvscehb
+         T3FQu8mzCt4vYEiAPWEhkuiP/iPX1rvAfnKt1P8Mu13twV6/bCWTyDs930PnceMzWnY4
+         Rxiw==
+X-Gm-Message-State: AOAM531d+2CNRfK7ATuDctXh2GATGFrssE8zGCIVnDDTYTsoyy1iTW89
+        xYhKHNo8TtADyr2zx1pVXFrFzA==
+X-Google-Smtp-Source: ABdhPJznGhbmqZqh5TnNgZUZ5C8Qkle96KENqXu8ahyIxfYvxvKFOOt/YTH0Tf8L7qqK0ZJZEnm2KQ==
+X-Received: by 2002:a17:902:e541:b029:df:df4f:2921 with SMTP id n1-20020a170902e541b02900dfdf4f2921mr6555444plf.52.1611544073448;
+        Sun, 24 Jan 2021 19:07:53 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id b14sm17415811pju.14.2021.01.24.19.07.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 Jan 2021 19:07:52 -0800 (PST)
+Date:   Mon, 25 Jan 2021 08:37:50 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Yangtao Li <tiny.windzz@gmail.com>
+Subject: Re: [PATCH v3] soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+Message-ID: <20210125030750.735minp7toxortm4@vireshk-i7>
+References: <20210121190117.25235-1-digetx@gmail.com>
+ <20210122063537.7yd7ww47gl2rdsdu@vireshk-i7>
+ <60cfafdf-4615-5a41-103d-96c35ba1fa8c@gmail.com>
 MIME-Version: 1.0
-References: <20210125021435.16646-1-jiangshanlai@gmail.com>
-In-Reply-To: <20210125021435.16646-1-jiangshanlai@gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 24 Jan 2021 19:00:46 -0800
-X-Gmail-Original-Message-ID: <CALCETrW1qP=vbHCSdgOLjjP+-i=io3o1w5bMdtH_UHSV3gvBXg@mail.gmail.com>
-Message-ID: <CALCETrW1qP=vbHCSdgOLjjP+-i=io3o1w5bMdtH_UHSV3gvBXg@mail.gmail.com>
-Subject: Re: [PATCH] x86/entry/64: De-Xen-ify our NMI code further
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <60cfafdf-4615-5a41-103d-96c35ba1fa8c@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 5:13 PM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
->
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
->
-> The commit 929bacec21478("x86/entry/64: De-Xen-ify our NMI code") simplified
-> the NMI code by changing paravirt code into native code and left a comment
-> about "inspecting RIP instead".  But until now, "inspecting RIP instead"
-> has not been made happened and this patch tries to complete it.
->
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  arch/x86/entry/entry_64.S | 46 +++++++++++----------------------------
->  1 file changed, 13 insertions(+), 33 deletions(-)
->
-> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-> index cad08703c4ad..cb6b8a6c6652 100644
-> --- a/arch/x86/entry/entry_64.S
-> +++ b/arch/x86/entry/entry_64.S
-> @@ -1268,32 +1268,12 @@ SYM_CODE_START(asm_exc_nmi)
->         je      nested_nmi
->
->         /*
-> -        * Now test if the previous stack was an NMI stack.  This covers
-> -        * the case where we interrupt an outer NMI after it clears
-> -        * "NMI executing" but before IRET.  We need to be careful, though:
-> -        * there is one case in which RSP could point to the NMI stack
-> -        * despite there being no NMI active: naughty userspace controls
-> -        * RSP at the very beginning of the SYSCALL targets.  We can
-> -        * pull a fast one on naughty userspace, though: we program
-> -        * SYSCALL to mask DF, so userspace cannot cause DF to be set
-> -        * if it controls the kernel's RSP.  We set DF before we clear
-> -        * "NMI executing".
-> +        * Now test if we interrupt an outer NMI after it clears
-> +        * "NMI executing" but before iret.
+On 22-01-21, 17:41, Dmitry Osipenko wrote:
+> 22.01.2021 09:35, Viresh Kumar пишет:
+> > On 21-01-21, 22:01, Dmitry Osipenko wrote:
+> >> Add common helper which initializes OPP table for Tegra SoC core devices.
+> >>
+> >> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> >> Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
+> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> >> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> >> [tested on some other non-upstreamed-yet T20/30/114 devices as well]
+> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >> ---
+> >>
+> >> Changelog:
+> >>
+> >> v3: - This patch is factored out from [1] to ease merging of the patches
+> >>       that will use the new helper. The goal is to get this new helper
+> >>       into 5.12, this should remove dependency on this patch for a several
+> >>       patchsets of a different subsystems (DRM, media, memory, etc) that
+> >>       will target 5.13.
+> >>
+> >>       @Thierry/Jon, please review and apply this patch for 5.12!
+> > 
+> > This is not how stuff works in kernel Dmitry, every commit in the
+> > kernel tree should build(at least)/boot fine. Your patch can only be
+> > applied once your base tree has all the patches on which your work is
+> > based of, otherwise this will lead to build failure (stuff like git
+> > bisect breaks with that). It would be better if you take this patch in
+> > 5.13, or after 5.12-rc2 once all other stuff lands.
+> > 
+> 
+> OMG, I completely missed that the devm series from Yangtao Li isn't
+> merged yet.
+> 
+> Viresh / Yangtao, will be it be okay if I'll collect all the
+> prerequisite devm patches from Yangtao + add this patch into a single
+> series that could be merged via the OPP tree for 5.12?
+> 
+> Of course Thierry or Jon will need to give the ack for the Tegra changes
+> in that case.
 
-s/interrupt/interrupted
+I haven't heard back from Yangtao since his last post, not sure what's going on.
+It is normally better if he keeps posting his series, unless he is busy and will
+not be able to do it.
 
-But let's make it a lot more clear:
-
-
-Now test if we interrupted an outer NMI that just cleared "NMI
-executing" and is about to IRET.  This is a single-instruction window.
-This check does not handle the case in which we get a nested interrupt
-(#MC, #VE, #VC, etc.) after clearing "NMI executing" but before the
-outer NMI executes IRET.
-
-> +       movq    $nmi_executing_cleared, %rdx
-> +       cmpq    8(%rsp), %rdx
-> +       jne     first_nmi
-
-If we're okay with non-PIC code, then this is suboptimal -- you can
-just compare directly.  But using PIC is polite, so that movq should
-be a RIP-relative leaq.
-
->
->         /* This is a nested NMI. */
->
-> @@ -1438,16 +1418,16 @@ nmi_restore:
->         addq    $6*8, %rsp
->
->         /*
-> -        * Clear "NMI executing".  Set DF first so that we can easily
-> -        * distinguish the remaining code between here and IRET from
-> -        * the SYSCALL entry and exit paths.
-> -        *
-> -        * We arguably should just inspect RIP instead, but I (Andy) wrote
-> -        * this code when I had the misapprehension that Xen PV supported
-> -        * NMIs, and Xen PV would break that approach.
-> +        * Clear "NMI executing".  It also leaves a window after it before
-> +        * iret which should be also considered to be "NMI executing" albeit
-> +        * with "NMI executing" variable being zero.  So we should also check
-> +        * the RIP after it when checking "NMI executing".  See the code
-> +        * before nested_nmi.  No code is allowed to be added to between
-> +        * clearing "NMI executing" and iret unless we check a larger window
-> +        * with a range of RIPs instead of currently a single-RIP window.
-
-Let's simplify this comment:
-
-Clear "NMI executing".  This leaves a window in which a nested NMI
-could observe "NMI executing" cleared, and a nested NMI will detect
-this by inspecting RIP.
-
->          */
-> -       std
->         movq    $0, 5*8(%rsp)           /* clear "NMI executing" */
-> +nmi_executing_cleared:
->
-
-This should be local.  Let's call it .Lnmi_iret.  And add a comment:
-
-.Lnmi_iret: /* must be immediately after clearing "NMI executing" */
-
->         /*
->          * iretq reads the "iret" frame and exits the NMI stack in a
+-- 
+viresh
