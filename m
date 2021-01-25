@@ -2,134 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96075302240
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88932302244
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbhAYGux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 01:50:53 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:51786 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727195AbhAYGs5 (ORCPT
+        id S1727182AbhAYGzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 01:55:40 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:50531 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727145AbhAYGrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:48:57 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210125064732epoutp0248f8af957d7737bb7ba8551011a02b2a~dZshXuz_s2392823928epoutp02F
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:47:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210125064732epoutp0248f8af957d7737bb7ba8551011a02b2a~dZshXuz_s2392823928epoutp02F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611557252;
-        bh=MdJmU13+cQffQ66PN9tFmxfBKVu6PuYMV1moSX5+xe8=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=D64cEimoDJ5+aFPhm5ZnXqKzpetOgzgCq3Lg0Jbr4ef5DHE1n2lnw2mrNdak49y0F
-         vYvQ/KhaK/AKzftKVtTfbFvrJAX0MmnIj1ybN9alaEeiTXYnvyqPo8lm3m0z9bydmK
-         5EY1U6t4dFEo83isPdCgEIhykp9003WilOz5dtzQ=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210125064731epcas1p29694f56ee4dbce209d49eaafda876ecc~dZsgYEte-0856108561epcas1p2W;
-        Mon, 25 Jan 2021 06:47:31 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DPL5Y5fhmz4x9QJ; Mon, 25 Jan
-        2021 06:47:29 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EE.71.09582.1896E006; Mon, 25 Jan 2021 15:47:29 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb~dZseJNaPI2442624426epcas1p3M;
-        Mon, 25 Jan 2021 06:47:28 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210125064728epsmtrp147a106c9fd849909c25835397adfa780~dZseIWWR71301413014epsmtrp1m;
-        Mon, 25 Jan 2021 06:47:28 +0000 (GMT)
-X-AuditID: b6c32a37-899ff7000000256e-67-600e6981605f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        38.31.13470.0896E006; Mon, 25 Jan 2021 15:47:28 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210125064728epsmtip131c763bc2294f25ba12c1a0439353e29~dZsd29NA23116731167epsmtip1W;
-        Mon, 25 Jan 2021 06:47:28 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        baolin.wang@linaro.org, arnd@arndb.de, cw9316.lee@samsung.com,
-        colyli@suse.de, lee.jones@linaro.org, sartgarg@codeaurora.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-Subject: [PATCH] mmc: queue: Exclude unnecessary header file
-Date:   Mon, 25 Jan 2021 15:43:55 +0900
-Message-Id: <20210125064355.28545-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Mon, 25 Jan 2021 01:47:43 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1l3vcN-0007HZ-DA; Mon, 25 Jan 2021 07:44:55 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1l3vcM-0007H5-BC; Mon, 25 Jan 2021 07:44:54 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id EBA88240041;
+        Mon, 25 Jan 2021 07:44:53 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 793EE240040;
+        Mon, 25 Jan 2021 07:44:53 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id D3BCE2064A;
+        Mon, 25 Jan 2021 07:44:52 +0100 (CET)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDJsWRmVeSWpSXmKPExsWy7bCmnm5jJl+CwdpGJYuTT9awWfyddIzd
-        4lPDFWaL6Y3n2S1mnGpjtdh37SS7xa+/69ktdjw/w25x/+tRRovLu+awWRz5389oMaPvG6tF
-        0599LBbH14Y78Hn8/jWJ0eNyXy+Tx+I9L5k87lzbw+bRt2UVo8fm09UenzfJBbBH5dhkpCam
-        pBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAF2spFCWmFMKFApI
-        LC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCjQK07MLS7NS9dLzs+1MjQwMDIFqkzIyXi2K7vg
-        IGvFhdZZ7A2M11m6GDk5JARMJO4e+MXWxcjFISSwg1FiWe83dgjnE6PE8rsNjBDON0aJeS8a
-        gco4wFpWXFWHiO9llLg0+xhUxxdGiTkXTrGCFLEJaEncPuYNEhcR+MAo8eT5TzaQfcwCKRKv
-        et6B7RYWsJFonjIXzGYRUJXY2LOaFcTmFbCWaL92jQ3iPnmJP/d7mCHighInZz5hgZgjL9G8
-        dTYzyAIJgV4OiWXP9rJCNLhIPDx4hAnCFpZ4dXwLO4QtJfGyv40doqGZUeLU7HNQTgujxOsr
-        N6CqjCU+ff7MCPICs4CmxPpd+hBhRYmdv+cyQmzmk3j3tYcVEhS8Eh1tQhAlKhJzus6xwez6
-        eOMx1D0eEi3fII4WEoiVWHdlK+sERvlZSP6ZheSfWQiLFzAyr2IUSy0ozk1PLTYsMEaO1U2M
-        4GSrZb6DcdrbD3qHGJk4GA8xSnAwK4nw7tbjSRDiTUmsrEotyo8vKs1JLT7EaAoM4YnMUqLJ
-        +cB0n1cSb2hqZGxsbGFiZm5maqwkzptk8CBeSCA9sSQ1OzW1ILUIpo+Jg1OqgenQzTK1sxdv
-        f8rI3ZXrK92+aOmemWeYmZqmCGz6mPmNvUV2leI5kUevfVVLg5m5z9RYl9UfKO6MjBGpf698
-        5cdD/hV7S3bm+F5ffP/IvweZjZzdU+Ys2pd+4NaGhAOruSWaORSYk61eue4tXyhzX/itx9IJ
-        1+dfbn1xXSJnxiqnCcFf7mTNO/2XzfBX+VKLx5zabIJTUvi82iefMajo/38seu2sExOC4m99
-        Zn7oFfKnIqqnOVH/3aa5v//p1SwWPXL4XfntSQ5PFPn0El0b2BQ//PlpFah3NF/X5ZmU5tKO
-        bU7vf3dUO7ofPbOoN5TJ8+18kW3z159TsljpPLf17Nk52Sv4lJfuCo7fejPqiKypEktxRqKh
-        FnNRcSIAUnRf4T8EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsWy7bCSnG5DJl+CwZQr2hYnn6xhs/g76Ri7
-        xaeGK8wW0xvPs1vMONXGarHv2kl2i19/17Nb7Hh+ht3i/tejjBaXd81hszjyv5/RYkbfN1aL
-        pj/7WCyOrw134PP4/WsSo8flvl4mj8V7XjJ53Lm2h82jb8sqRo/Np6s9Pm+SC2CP4rJJSc3J
-        LEst0rdL4Mp4tiu74CBrxYXWWewNjNdZuhg5OCQETCRWXFXvYuTiEBLYzSgxteEcexcjJ1Bc
-        SmL3/vNsEDXCEocPF0PUfGKUuPZiLztInE1AS+L2MW+QuIjAH0aJS/tbmUB6mQUyJL59PAFm
-        CwvYSDRPmcsCYrMIqEps7FnNCmLzClhLtF+7xgaxS17iz/0eZoi4oMTJmU9YIObISzRvnc08
-        gZFvFpLULCSpBYxMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgsNeS3MH4/ZVH/QO
-        MTJxMB5ilOBgVhLh3a3HkyDEm5JYWZValB9fVJqTWnyIUZqDRUmc90LXyXghgfTEktTs1NSC
-        1CKYLBMHp1QDU/WqqKPfi2QtJOZc28CdzOllVaEq6Rg99dsviROmaQ7yl5V3T7TIV74jorTh
-        +awS04kyohqvVyzZcfpPhEv50VKDO5OL1/C2nS+44PF+/4l8Sz1eBoHbJxs+MbPPd1ZROpkn
-        lt/6sevW/LJIjk9p296oHf1Y0v9N1q/ufnXMXfPS7TOv16fvjKqof+Qw53ff/CWdWw5fv9MQ
-        JbI89gTbsdVr4n696eqf/13/6aIrf10m7592wd3M/NGvup/yx9LZ5yi32jjbyYpMj5o756FZ
-        3E/GzCXGR/9FmzHlr5gZenChl9nNaTnJE3YrBaxUPzPj86n2T0dv+nQrKzGxsSt3PxaZuK7s
-        QPOCVqZIvTc5oUosxRmJhlrMRcWJAMA2KiHqAgAA
-X-CMS-MailID: 20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb
-References: <CGME20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb@epcas1p3.samsung.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 25 Jan 2021 07:44:52 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v5] net: lapb: Add locking to the lapb module
+Organization: TDT AG
+In-Reply-To: <20210123204507.35c895db@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210121002129.93754-1-xie.he.0141@gmail.com>
+ <b42575d44fb7f5c1253635a19c3e21e2@dev.tdt.de>
+ <20210123204507.35c895db@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Message-ID: <4eed4c14ad7065c902c4de8f6d86b58e@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate: clean
+X-purgate-ID: 151534::1611557094-00000D41-25A4B177/0/0
+X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+On 2021-01-24 05:45, Jakub Kicinski wrote:
+> On Fri, 22 Jan 2021 10:07:05 +0100 Martin Schiller wrote:
+>> On 2021-01-21 01:21, Xie He wrote:
+>> > In the lapb module, the timers may run concurrently with other code in
+>> > this module, and there is currently no locking to prevent the code from
+>> > racing on "struct lapb_cb". This patch adds locking to prevent racing.
+>> >
+>> > 1. Add "spinlock_t lock" to "struct lapb_cb"; Add "spin_lock_bh" and
+>> > "spin_unlock_bh" to APIs, timer functions and notifier functions.
+>> >
+>> > 2. Add "bool t1timer_stop, t2timer_stop" to "struct lapb_cb" to make us
+>> > able to ask running timers to abort; Modify "lapb_stop_t1timer" and
+>> > "lapb_stop_t2timer" to make them able to abort running timers;
+>> > Modify "lapb_t2timer_expiry" and "lapb_t1timer_expiry" to make them
+>> > abort after they are stopped by "lapb_stop_t1timer",
+>> > "lapb_stop_t2timer",
+>> > and "lapb_start_t1timer", "lapb_start_t2timer".
+>> >
+>> > 3. Let lapb_unregister wait for other API functions and running timers
+>> > to stop.
+>> >
+>> > 4. The lapb_device_event function calls lapb_disconnect_request. In
+>> > order to avoid trying to hold the lock twice, add a new function named
+>> > "__lapb_disconnect_request" which assumes the lock is held, and make
+>> > it called by lapb_disconnect_request and lapb_device_event.
+>> >
+>> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>> > Cc: Martin Schiller <ms@dev.tdt.de>
+>> > Signed-off-by: Xie He <xie.he.0141@gmail.com>
+>> 
+>> I don't have the opportunity to test this at the moment, but code 
+>> looks
+>> reasonable so far. Have you tested this at runtime?
+> 
+> Are you okay with this being merged or would you like to review
+> further/test?
+> 
+> Nothing jumps out to me either (other than a few nit picks).
 
-From the 4.19 kernel, thread related code has been removed in queue.c.
-So we can exclude unnecessary header file.
+Adding a small delay in the while loop is a good idea.
+Otherwise: Yes, I agree with merging this.
 
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
----
- drivers/mmc/core/queue.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index de7cb0369c30..c7218da6f17c 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -7,7 +7,6 @@
- #include <linux/module.h>
- #include <linux/blkdev.h>
- #include <linux/freezer.h>
--#include <linux/kthread.h>
- #include <linux/scatterlist.h>
- #include <linux/dma-mapping.h>
- #include <linux/backing-dev.h>
--- 
-2.29.0
-
+> 
+>> > Change from v4:
+>> > Make lapb_unregister wait for other refs to "lapb" to drop, to ensure
+>> > that other LAPB API calls have all finished.
+>> >
+>> > Change from v3:
+>> > In lapb_unregister make sure the self-restarting t1timer has really
+>> > been
+>> > stopped.
+>> >
+>> > Change from v2:
+>> > Create a new __lapb_disconnect_request function to reduce redundant
+>> > code.
+>> >
+>> > Change from v1:
+>> > Broke long lines to keep the line lengths within 80 characters.
+> 
+>> > @@ -178,11 +182,23 @@ int lapb_unregister(struct net_device *dev)
+>> >  		goto out;
+>> >  	lapb_put(lapb);
+>> >
+>> > +	/* Wait for other refs to "lapb" to drop */
+>> > +	while (refcount_read(&lapb->refcnt) > 2)
+>> > +		;
+> 
+> Tight loop like this is a little scary, perhaps add a small
+> usleep_range() here?
+> 
+>> > +
+>> > +	spin_lock_bh(&lapb->lock);
+>> > +
+>> >  	lapb_stop_t1timer(lapb);
+>> >  	lapb_stop_t2timer(lapb);
+>> >
+>> >  	lapb_clear_queues(lapb);
+>> >
+>> > +	spin_unlock_bh(&lapb->lock);
+>> > +
+>> > +	/* Wait for running timers to stop */
+>> > +	del_timer_sync(&lapb->t1timer);
+>> > +	del_timer_sync(&lapb->t2timer);
+>> > +
+>> >  	__lapb_remove_cb(lapb);
+>> >
+>> >  	lapb_put(lapb);
+> 
+>> > -int lapb_disconnect_request(struct net_device *dev)
+>> > +static int __lapb_disconnect_request(struct lapb_cb *lapb)
+>> >  {
+>> > -	struct lapb_cb *lapb = lapb_devtostruct(dev);
+>> > -	int rc = LAPB_BADTOKEN;
+>> > -
+>> > -	if (!lapb)
+>> > -		goto out;
+>> > -
+>> >  	switch (lapb->state) {
+>> >  	case LAPB_STATE_0:
+>> > -		rc = LAPB_NOTCONNECTED;
+>> > -		goto out_put;
+>> > +		return LAPB_NOTCONNECTED;
+>> >
+>> >  	case LAPB_STATE_1:
+>> >  		lapb_dbg(1, "(%p) S1 TX DISC(1)\n", lapb->dev);
+>> > @@ -310,12 +328,10 @@ int lapb_disconnect_request(struct net_device
+>> > *dev)
+>> >  		lapb_send_control(lapb, LAPB_DISC, LAPB_POLLON, LAPB_COMMAND);
+>> >  		lapb->state = LAPB_STATE_0;
+>> >  		lapb_start_t1timer(lapb);
+>> > -		rc = LAPB_NOTCONNECTED;
+>> > -		goto out_put;
+>> > +		return LAPB_NOTCONNECTED;
+>> >
+>> >  	case LAPB_STATE_2:
+>> > -		rc = LAPB_OK;
+>> > -		goto out_put;
+>> > +		return LAPB_OK;
+>> >  	}
+>> >
+>> >  	lapb_clear_queues(lapb);
+>> > @@ -328,8 +344,22 @@ int lapb_disconnect_request(struct net_device
+>> > *dev)
+>> >  	lapb_dbg(1, "(%p) S3 DISC(1)\n", lapb->dev);
+>> >  	lapb_dbg(0, "(%p) S3 -> S2\n", lapb->dev);
+>> >
+>> > -	rc = LAPB_OK;
+>> > -out_put:
+>> > +	return LAPB_OK;
+>> > +}
+> 
+> Since this is a fix for net, I'd advise against converting the goto
+> into direct returns (as much as I generally like such conversion).
