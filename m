@@ -2,260 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C46D30272F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A7D3026F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730456AbhAYPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730293AbhAYPpF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:45:05 -0500
-Received: from newton.telenet-ops.be (newton.telenet-ops.be [IPv6:2a02:1800:120:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F5BC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:44:24 -0800 (PST)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4DPXG800R0zMsLHn
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:25:36 +0100 (CET)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id M2QZ2400R4C55Sk012QZRB; Mon, 25 Jan 2021 15:24:34 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l42nB-000eiX-8K; Mon, 25 Jan 2021 15:24:33 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l42nA-004P5J-8z; Mon, 25 Jan 2021 15:24:32 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
-Date:   Mon, 25 Jan 2021 15:24:31 +0100
-Message-Id: <20210125142431.1049668-5-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210125142431.1049668-1-geert+renesas@glider.be>
-References: <20210125142431.1049668-1-geert+renesas@glider.be>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729865AbhAYO6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:58:14 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:32297 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729806AbhAYOvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:51:11 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DPXmG6qNkz9v0Gx;
+        Mon, 25 Jan 2021 15:48:14 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id i86nuNVSqIdo; Mon, 25 Jan 2021 15:48:14 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPXmG62w5z9v0Gh;
+        Mon, 25 Jan 2021 15:48:14 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5CE778B79E;
+        Mon, 25 Jan 2021 15:48:20 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 1X3w8sKLOoET; Mon, 25 Jan 2021 15:48:20 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1DFCA8B79B;
+        Mon, 25 Jan 2021 15:48:20 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 131EF66AD8; Mon, 25 Jan 2021 14:48:20 +0000 (UTC)
+Message-Id: <948e7ce0981938077868b3cba8d6cf9126edcfe0.1611585031.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v4 07/23] powerpc/8xx: Create C version of
+ kuap_user/kernel_restore() and friends
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        msuchanek@suse.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 25 Jan 2021 14:48:20 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
-the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
-  1. The per-channel registers are located in a second register block.
-     Add support for mapping the second block, using the appropriate
-     offsets and stride.
-  2. The common Channel Clear Register (DMACHCLR) was replaced by a
-     per-channel register.
-     Update rcar_dmac_chan_clear{,_all}() to handle this.
-     As rcar_dmac_init() needs to clear the status before the individual
-     channels are probed, channel index and base address initialization
-     are moved forward.
+In preparation of porting PPC32 to C syscall entry/exit,
+create C version of kuap_user_restore() and kuap_kernel_restore()
+and kuap_check() and kuap_get_and_check() on 8xx
 
-Inspired by a patch in the BSP by Phong Hoang
-<phong.hoang.wz@renesas.com>.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-v2:
-  - Use two separate named regions instead of an iomem[] array,
-  - Drop rcar_dmac_of_data.chan_reg_block, check for
-    !rcar_dmac_of_data.chan_offset_base instead,
-  - Precalculate chan_base in rcar_dmac_probe().
----
- drivers/dma/sh/rcar-dmac.c | 74 ++++++++++++++++++++++++++++----------
- 1 file changed, 55 insertions(+), 19 deletions(-)
+ arch/powerpc/include/asm/nohash/32/kup-8xx.h | 27 ++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
-index 7a0f802c61e5152d..d9589eea98083215 100644
---- a/drivers/dma/sh/rcar-dmac.c
-+++ b/drivers/dma/sh/rcar-dmac.c
-@@ -189,7 +189,8 @@ struct rcar_dmac_chan {
-  * struct rcar_dmac - R-Car Gen2 DMA Controller
-  * @engine: base DMA engine object
-  * @dev: the hardware device
-- * @iomem: remapped I/O memory base
-+ * @dmac_base: remapped base register block
-+ * @chan_base: remapped channel register block (optional)
-  * @n_channels: number of available channels
-  * @channels: array of DMAC channels
-  * @channels_mask: bitfield of which DMA channels are managed by this driver
-@@ -198,7 +199,8 @@ struct rcar_dmac_chan {
- struct rcar_dmac {
- 	struct dma_device engine;
- 	struct device *dev;
--	void __iomem *iomem;
-+	void __iomem *dmac_base;
-+	void __iomem *chan_base;
+diff --git a/arch/powerpc/include/asm/nohash/32/kup-8xx.h b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
+index 17a4a616436f..5ca6c375f767 100644
+--- a/arch/powerpc/include/asm/nohash/32/kup-8xx.h
++++ b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
+@@ -34,6 +34,33 @@
  
- 	unsigned int n_channels;
- 	struct rcar_dmac_chan *channels;
-@@ -234,7 +236,7 @@ struct rcar_dmac_of_data {
- #define RCAR_DMAOR_PRI_ROUND_ROBIN	(3 << 8)
- #define RCAR_DMAOR_AE			(1 << 2)
- #define RCAR_DMAOR_DME			(1 << 0)
--#define RCAR_DMACHCLR			0x0080
-+#define RCAR_DMACHCLR			0x0080	/* Not on R-Car V3U */
- #define RCAR_DMADPSEC			0x00a0
+ #include <asm/reg.h>
  
- #define RCAR_DMASAR			0x0000
-@@ -297,6 +299,9 @@ struct rcar_dmac_of_data {
- #define RCAR_DMAFIXDAR			0x0014
- #define RCAR_DMAFIXDPBASE		0x0060
- 
-+/* For R-Car V3U */
-+#define RCAR_V3U_DMACHCLR		0x0100
++static inline void kuap_user_restore(struct pt_regs *regs)
++{
++}
 +
- /* Hardcode the MEMCPY transfer size to 4 bytes. */
- #define RCAR_DMAC_MEMCPY_XFER_SIZE	4
- 
-@@ -307,17 +312,17 @@ struct rcar_dmac_of_data {
- static void rcar_dmac_write(struct rcar_dmac *dmac, u32 reg, u32 data)
++static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long kuap)
++{
++	mtspr(SPRN_MD_AP, kuap);
++}
++
++static inline void kuap_check(void)
++{
++	if (!IS_ENABLED(CONFIG_PPC_KUAP_DEBUG))
++		return;
++
++	WARN_ON_ONCE(mfspr(SPRN_MD_AP) >> 16 != MD_APG_KUAP >> 16);
++}
++
++static inline unsigned long kuap_get_and_check(void)
++{
++	unsigned long kuap = mfspr(SPRN_MD_AP);
++
++	if (IS_ENABLED(CONFIG_PPC_KUAP_DEBUG))
++		WARN_ON_ONCE(mfspr(SPRN_MD_AP) >> 16 != MD_APG_KUAP >> 16);
++
++	return kuap;
++}
++
+ static inline void allow_user_access(void __user *to, const void __user *from,
+ 				     unsigned long size, unsigned long dir)
  {
- 	if (reg == RCAR_DMAOR)
--		writew(data, dmac->iomem + reg);
-+		writew(data, dmac->dmac_base + reg);
- 	else
--		writel(data, dmac->iomem + reg);
-+		writel(data, dmac->dmac_base + reg);
- }
- 
- static u32 rcar_dmac_read(struct rcar_dmac *dmac, u32 reg)
- {
- 	if (reg == RCAR_DMAOR)
--		return readw(dmac->iomem + reg);
-+		return readw(dmac->dmac_base + reg);
- 	else
--		return readl(dmac->iomem + reg);
-+		return readl(dmac->dmac_base + reg);
- }
- 
- static u32 rcar_dmac_chan_read(struct rcar_dmac_chan *chan, u32 reg)
-@@ -339,12 +344,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
- static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
- 				 struct rcar_dmac_chan *chan)
- {
--	rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
-+	if (dmac->chan_base)
-+		rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-+	else
-+		rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
- }
- 
- static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
- {
--	rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-+	struct rcar_dmac_chan *chan;
-+	unsigned int i;
-+
-+	if (dmac->chan_base) {
-+		for_each_rcar_dmac_chan(i, chan, dmac)
-+			rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-+	} else {
-+		rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-+	}
- }
- 
- /* -----------------------------------------------------------------------------
-@@ -1744,7 +1760,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
- 
- static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
- 				struct rcar_dmac_chan *rchan,
--				const struct rcar_dmac_of_data *data,
- 				unsigned int index)
- {
- 	struct platform_device *pdev = to_platform_device(dmac->dev);
-@@ -1753,9 +1768,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
- 	char *irqname;
- 	int ret;
- 
--	rchan->index = index;
--	rchan->iomem = dmac->iomem + data->chan_offset_base +
--		       data->chan_offset_stride * index;
- 	rchan->mid_rid = -EINVAL;
- 
- 	spin_lock_init(&rchan->lock);
-@@ -1842,6 +1854,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 	const struct rcar_dmac_of_data *data;
- 	struct rcar_dmac_chan *chan;
- 	struct dma_device *engine;
-+	void __iomem *chan_base;
- 	struct rcar_dmac *dmac;
- 	unsigned int i;
- 	int ret;
-@@ -1880,9 +1893,24 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	/* Request resources. */
--	dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(dmac->iomem))
--		return PTR_ERR(dmac->iomem);
-+	dmac->dmac_base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(dmac->dmac_base))
-+		return PTR_ERR(dmac->dmac_base);
-+
-+	if (!data->chan_offset_base) {
-+		dmac->chan_base = devm_platform_ioremap_resource(pdev, 1);
-+		if (IS_ERR(dmac->chan_base))
-+			return PTR_ERR(dmac->chan_base);
-+
-+		chan_base = dmac->chan_base;
-+	} else {
-+		chan_base = dmac->dmac_base + data->chan_offset_base;
-+	}
-+
-+	for_each_rcar_dmac_chan(i, chan, dmac) {
-+		chan->index = i;
-+		chan->iomem = chan_base + i * data->chan_offset_stride;
-+	}
- 
- 	/* Enable runtime PM and initialize the device. */
- 	pm_runtime_enable(&pdev->dev);
-@@ -1929,7 +1957,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&engine->channels);
- 
- 	for_each_rcar_dmac_chan(i, chan, dmac) {
--		ret = rcar_dmac_chan_probe(dmac, chan, data, i);
-+		ret = rcar_dmac_chan_probe(dmac, chan, i);
- 		if (ret < 0)
- 			goto error;
- 	}
-@@ -1977,14 +2005,22 @@ static void rcar_dmac_shutdown(struct platform_device *pdev)
- }
- 
- static const struct rcar_dmac_of_data rcar_dmac_data = {
--	.chan_offset_base = 0x8000,
--	.chan_offset_stride = 0x80,
-+	.chan_offset_base	= 0x8000,
-+	.chan_offset_stride	= 0x80,
-+};
-+
-+static const struct rcar_dmac_of_data rcar_v3u_dmac_data = {
-+	.chan_offset_base	= 0x0,
-+	.chan_offset_stride	= 0x1000,
- };
- 
- static const struct of_device_id rcar_dmac_of_ids[] = {
- 	{
- 		.compatible = "renesas,rcar-dmac",
- 		.data = &rcar_dmac_data,
-+	}, {
-+		.compatible = "renesas,dmac-r8a779a0",
-+		.data = &rcar_v3u_dmac_data,
- 	},
- 	{ /* Sentinel */ }
- };
 -- 
-2.25.1
+2.25.0
 
