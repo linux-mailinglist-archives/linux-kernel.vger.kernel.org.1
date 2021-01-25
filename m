@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A67130242A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A6530240B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbhAYLSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:18:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52250 "EHLO mail.kernel.org"
+        id S1727690AbhAYLCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:02:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52400 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbhAYLFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 06:05:34 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5999D22D04;
-        Mon, 25 Jan 2021 10:53:56 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l3zSD-009rDe-B1; Mon, 25 Jan 2021 10:50:42 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: [PATCH v5 18/21] arm64: Move "nokaslr" over to the early cpufeature infrastructure
-Date:   Mon, 25 Jan 2021 10:50:16 +0000
-Message-Id: <20210125105019.2946057-19-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210125105019.2946057-1-maz@kernel.org>
-References: <20210125105019.2946057-1-maz@kernel.org>
+        id S1727628AbhAYK5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:57:19 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 91279ACF4;
+        Mon, 25 Jan 2021 10:56:04 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 11:56:02 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+        pasha.tatashin@soleen.com
+Subject: Re: [PATCH 2/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <20210125105557.GA28363@linux>
+References: <20201217130758.11565-1-osalvador@suse.de>
+ <20201217130758.11565-3-osalvador@suse.de>
+ <21079c2d-67d0-fc59-8d7f-0795b3f8a3e3@redhat.com>
+ <20210125103951.GA27851@linux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125103951.GA27851@linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given that the early cpufeature infrastructure has borrowed quite
-a lot of code from the kaslr implementation, let's reimplement
-the matching of the "nokaslr" option with it.
+On Mon, Jan 25, 2021 at 11:39:55AM +0100, Oscar Salvador wrote:
+> > Interresting, so we automatically support differeing sizeof(struct
+> > page). I guess it will be problematic in case of sizeof(struct page) !=
+> > 64, because then, we might not have multiples of 2MB for the memmap of a
+> > memory block.
+> > 
+> > IIRC, it could happen that if we add two consecutive memory blocks, that
+> > the second one might reuse parts of the vmemmap residing on the first
+> > memory block. If you remove the first one, you might be in trouble.
+> > 
+> > E.g., on x86-64
+> >  vmemmap_populate()->vmemmap_populate_hugepages()->vmemmap_alloc_block_buf():
+> > - Populate a huge page
+> > 
+> > vmemmap_free()->remove_pagetable()...->remove_pmd_table():
+> > - memchr_inv() will leave the hugepage populated.
+> > 
+> > Do we want to fence that off, maybe in mhp_supports_memmap_on_memory()?
+> > Or do we somehow want to fix that? We should never populate partial huge
+> > pages from an altmap ...
+> > 
+> > But maybe I am missing something.
+> 
+> No, you are not missing anything.
+> 
+> I think that remove_pmd_table() should be fixed.
+> vmemmap_populate_hugepages() allocates PMD_SIZE chunk and marks the PMD as
+> PAGE_KERNEL_LARGE, so when remove_pmd_table() sees that 1) the PMD
+> is large and 2) the chunk is not aligned, the memset() should be writing
+> PAGE_INUSE for a PMD chunk.
+> 
+> I do not really a see a reason why this should not happen.
+> Actually, we will be leaving pagetables behind as we never get to free
+> the PMD chunk when sizeof(struct page) is not a multiple of 2MB.
+> 
+> I plan to fix remove_pmd_table(), but for now let us not allow to use this feature
+> if the size of a struct page is not 64.
+> Let us keep it simply for the time being, shall we?
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/kernel/idreg-override.c | 15 +++++++++++++
- arch/arm64/kernel/kaslr.c          | 36 ++----------------------------
- 2 files changed, 17 insertions(+), 34 deletions(-)
+My first intention was:
 
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index cbb8eaa48742..3ccf51b84ba4 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -31,8 +31,22 @@ static const struct ftr_set_desc mmfr1 __initdata = {
- 	},
- };
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index b5a3fa4033d3..0c9756a2eb24 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1044,32 +1044,14 @@ remove_pmd_table(pmd_t *pmd_start, unsigned long addr, unsigned long end,
+ 			continue;
  
-+extern struct arm64_ftr_override kaslr_feature_override;
-+
-+static const struct ftr_set_desc kaslr __initdata = {
-+	.name		= "kaslr",
-+#ifdef CONFIG_RANDOMIZE_BASE
-+	.override	= &kaslr_feature_override,
-+#endif
-+	.fields		= {
-+		{ "disabled", 0 },
-+		{}
-+	},
-+};
-+
- static const struct ftr_set_desc * const regs[] __initdata = {
- 	&mmfr1,
-+	&kaslr,
- };
+ 		if (pmd_large(*pmd)) {
+-			if (IS_ALIGNED(addr, PMD_SIZE) &&
+-			    IS_ALIGNED(next, PMD_SIZE)) {
+-				if (!direct)
+-					free_hugepage_table(pmd_page(*pmd),
+-							    altmap);
+-
+-				spin_lock(&init_mm.page_table_lock);
+-				pmd_clear(pmd);
+-				spin_unlock(&init_mm.page_table_lock);
+-				pages++;
+-			} else {
+-				/* If here, we are freeing vmemmap pages. */
+-				memset((void *)addr, PAGE_INUSE, next - addr);
+-
+-				page_addr = page_address(pmd_page(*pmd));
+-				if (!memchr_inv(page_addr, PAGE_INUSE,
+-						PMD_SIZE)) {
+-					free_hugepage_table(pmd_page(*pmd),
+-							    altmap);
+-
+-					spin_lock(&init_mm.page_table_lock);
+-					pmd_clear(pmd);
+-					spin_unlock(&init_mm.page_table_lock);
+-				}
+-			}
++			if (!direct)
++				free_hugepage_table(pmd_page(*pmd),
++						    altmap);
  
- static const struct {
-@@ -41,6 +55,7 @@ static const struct {
- } aliases[] __initdata = {
- 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
- 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
-+	{ "nokaslr",			"kaslr.disabled=1" },
- };
- 
- static char *cmdline_contains_option(const char *cmdline, const char *option)
-diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
-index 5fc86e7d01a1..27f8939deb1b 100644
---- a/arch/arm64/kernel/kaslr.c
-+++ b/arch/arm64/kernel/kaslr.c
-@@ -51,39 +51,7 @@ static __init u64 get_kaslr_seed(void *fdt)
- 	return ret;
- }
- 
--static __init bool cmdline_contains_nokaslr(const u8 *cmdline)
--{
--	const u8 *str;
--
--	str = strstr(cmdline, "nokaslr");
--	return str == cmdline || (str > cmdline && *(str - 1) == ' ');
--}
--
--static __init bool is_kaslr_disabled_cmdline(void *fdt)
--{
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE)) {
--		int node;
--		const u8 *prop;
--
--		node = fdt_path_offset(fdt, "/chosen");
--		if (node < 0)
--			goto out;
--
--		prop = fdt_getprop(fdt, node, "bootargs", NULL);
--		if (!prop)
--			goto out;
--
--		if (cmdline_contains_nokaslr(prop))
--			return true;
--
--		if (IS_ENABLED(CONFIG_CMDLINE_EXTEND))
--			goto out;
--
--		return false;
--	}
--out:
--	return cmdline_contains_nokaslr(CONFIG_CMDLINE);
--}
-+struct arm64_ftr_override kaslr_feature_override __initdata;
- 
- /*
-  * This routine will be executed with the kernel mapped at its default virtual
-@@ -126,7 +94,7 @@ u64 __init kaslr_early_init(void)
- 	 * Check if 'nokaslr' appears on the command line, and
- 	 * return 0 if that is the case.
- 	 */
--	if (is_kaslr_disabled_cmdline(fdt)) {
-+	if (kaslr_feature_override.val & kaslr_feature_override.mask & 0xf) {
- 		kaslr_status = KASLR_DISABLED_CMDLINE;
- 		return 0;
- 	}
++			spin_lock(&init_mm.page_table_lock);
++			pmd_clear(pmd);
++			spin_unlock(&init_mm.page_table_lock);
++			pages++;
+ 			continue;
+ 		}
+
+I did not try it out yet and this might explode badly, but AFAICS, a PMD size
+chunk is always allocated even when the section does not spand 2MB.
+E.g: sizeof(struct page) = 56.
+
+PAGES_PER_SECTION * 64 = 2097152
+PAGES_PER_SECTION * 56 = 1835008
+
+Even in the latter case, vmemmap_populate_hugepages will allocate a PMD size chunk
+to satisfy the unaligned range.
+So, unless I am missing something, it should not be a problem to free that 2MB in
+remove_pmd_table when 1) the PMD is large and 2) the range is not aligned.
+
+
 -- 
-2.29.2
-
+Oscar Salvador
+SUSE L3
