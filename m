@@ -2,183 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579DB304886
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7E0304820
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388492AbhAZFoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:44:44 -0500
-Received: from mga02.intel.com ([134.134.136.20]:47122 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbhAYMLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:11:51 -0500
-IronPort-SDR: fqz5a1tn3qhlMUlkY76XwQXck4G6XKSaQOGwObuDQINO2RFZplUNFUZ0mza3zGyUSkwAAvW5Ko
- mN5FdGqLc2gg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="166812576"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="166812576"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 03:52:51 -0800
-IronPort-SDR: 48DaYsnvHv+gYU3iB0lIM7aytVWrCoDavD2mjf0kyTM07tuyUD4vfRcB0epq/cCvtOYMGfxoLJ
- ZQzg2k7suibA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="472167193"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by fmsmga001.fm.intel.com with SMTP; 25 Jan 2021 03:52:39 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 25 Jan 2021 13:52:38 +0200
-Date:   Mon, 25 Jan 2021 13:52:38 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-tegra@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Marek Vasut <marex@denx.de>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-mediatek@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-rockchip@lists.infradead.org,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-msm@vger.kernel.org, Dave Airlie <airlied@redhat.com>,
-        linux-mips@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Alison Wang <alison.wang@nxp.com>,
-        dri-devel@lists.freedesktop.org,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-amlogic@lists.infradead.org, freedreno@lists.freedesktop.org,
-        Sean Paul <sean@poorly.run>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Sandy Huang <hjc@rock-chips.com>, linux-kernel@vger.kernel.org,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Subject: Re: [PATCH v2 08/11] drm: Rename plane->state variables in atomic
- update and disable
-Message-ID: <YA6xBuECFjzjY7gG@intel.com>
-References: <20210121163537.1466118-1-maxime@cerno.tech>
- <20210121163537.1466118-8-maxime@cerno.tech>
- <YArBy2DKdCct5cYW@intel.com>
- <20210125105218.kv63vjbxz5b35hdo@gilmour>
+        id S1732327AbhAZFuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:50:55 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11154 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727938AbhAYMTe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:19:34 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DPSxv236qz15yFW;
+        Mon, 25 Jan 2021 19:56:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 19:57:23 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <kjain@linux.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <james.clark@arm.com>, <nakamura.shun@jp.fujitsu.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 1/4] perf vendor events arm64: Fix Ampere eMag event typo
+Date:   Mon, 25 Jan 2021 19:53:17 +0800
+Message-ID: <1611575600-2440-2-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
+References: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210125105218.kv63vjbxz5b35hdo@gilmour>
-X-Patchwork-Hint: comment
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:52:18AM +0100, Maxime Ripard wrote:
-> Hi Ville,
-> 
-> On Fri, Jan 22, 2021 at 02:15:07PM +0200, Ville Syrjälä wrote:
-> > On Thu, Jan 21, 2021 at 05:35:33PM +0100, Maxime Ripard wrote:
-> > > Some drivers are storing the plane->state pointer in atomic_update and
-> > > atomic_disable in a variable simply called state, while the state passed
-> > > as an argument is called old_state.
-> > > 
-> > > In order to ease subsequent reworks and to avoid confusing or
-> > > inconsistent names, let's rename those variables to new_state.
-> > > 
-> > > This was done using the following coccinelle script, plus some manual
-> > > changes for mtk and tegra.
-> > > 
-> > > @ plane_atomic_func @
-> > > identifier helpers;
-> > > identifier func;
-> > > @@
-> > > 
-> > > (
-> > >  static const struct drm_plane_helper_funcs helpers = {
-> > >  	...,
-> > >  	.atomic_disable = func,
-> > > 	...,
-> > >  };
-> > > |
-> > >  static const struct drm_plane_helper_funcs helpers = {
-> > >  	...,
-> > >  	.atomic_update = func,
-> > > 	...,
-> > >  };
-> > > )
-> > > 
-> > > @ moves_new_state_old_state @
-> > > identifier plane_atomic_func.func;
-> > > identifier plane;
-> > > symbol old_state;
-> > > symbol state;
-> > > @@
-> > > 
-> > >  func(struct drm_plane *plane, struct drm_plane_state *old_state)
-> > >  {
-> > >  	...
-> > > -	struct drm_plane_state *state = plane->state;
-> > > +	struct drm_plane_state *new_state = plane->state;
-> > > 	...
-> > >  }
-> > > 
-> > > @ depends on moves_new_state_old_state @
-> > > identifier plane_atomic_func.func;
-> > > identifier plane;
-> > > identifier old_state;
-> > > symbol state;
-> > > @@
-> > > 
-> > >  func(struct drm_plane *plane, struct drm_plane_state *old_state)
-> > >  {
-> > >  	<...
-> > > -	state
-> > > +	new_state
-> > > 	...>
-> > 
-> > Was going to say that this migh eat something else, but I guess
-> > the dependency prevents that?
-> 
-> Yeah, the dependency takes care of this
-> 
-> > Another way to avoid that I suppose would be to declare 'state'
-> > as
-> > symbol moves_new_state_old_state.state;
-> > 
-> > That would probably make the intent a bit more obvious, even with
-> > the dependency. Or does a dependency somehow automagically imply
-> > that?
-> 
-> I'm not sure if it does, but it's a symbol here not an identifier or an
-> expression, so here moves_new_state_old_state.state would always resolve
-> to state (and only state) anyway
+The "briefdescription" for event 0x35 has a typo - fix it.
 
-Hm. Right. OK, cocci bits look good to me. Variable naming
-bikeshed I'll leave to others :)
+Fixes: d35c595bf005 ("perf vendor events arm64: Revise core JSON events for eMAG")
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-
+diff --git a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
+index 40010a8724b3..ce6e7e796057 100644
+--- a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
++++ b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
+@@ -114,7 +114,7 @@
+         "PublicDescription": "Level 2 access to instruciton TLB that caused a page table walk. This event counts on any instruciton access which causes L2I_TLB_REFILL to count",
+         "EventCode": "0x35",
+         "EventName": "L2I_TLB_ACCESS",
+-        "BriefDescription": "L2D TLB access"
++        "BriefDescription": "L2I TLB access"
+     },
+     {
+         "PublicDescription": "Branch target buffer misprediction",
 -- 
-Ville Syrjälä
-Intel
+2.26.2
+
