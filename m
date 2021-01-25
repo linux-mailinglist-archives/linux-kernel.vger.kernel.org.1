@@ -2,155 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC130302890
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F9B30288A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730615AbhAYROj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:14:39 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:64712 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730591AbhAYRNO (ORCPT
+        id S1729881AbhAYRNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:13:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730159AbhAYRLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:13:14 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10PGpb7v012912;
-        Mon, 25 Jan 2021 09:10:24 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=cjrr+SByo3bYWD+sRL1+ZQn0Ad6l9pAbfCb0OzS63is=;
- b=fzgfDpZtZvtrBjExTU+w4nrUPnuRirFWfXS8l8PssBfZ5+jMJnbZ5BWIL3kJwe/l2MCV
- AGE32EXTCGIR3BPdeS9UD7+BtO3JcdjmEiuHON5t0tnNrnbLxO9XTKlZ9a++tzSr3O9z
- ePziouYZNUxgji5KnObu+e6JuD1bs80LwyFfKjc8EXiXgwC2YK14sNSd2bbRDkXsHkf4
- G65Mlg3R5fzuingdltMYZifqSMAZjsLl+jcqN4WU+ZBFGaeOkNzEaemf/LS7h9KmCtvv
- M3ioawvXPKN1xWXRXo5NWFn6h9JZQpOfSCakTerI9LdqwgswLYUhGDEUxEOiWTVnemTk 9Q== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 368m6ud2gj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 09:10:24 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
- 2021 09:10:22 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
- 2021 09:10:22 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Jan 2021 09:10:22 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 27F573F7041;
-        Mon, 25 Jan 2021 09:10:18 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v3 RFC net-next 19/19] net: mvpp2: add TX FC firmware check
-Date:   Mon, 25 Jan 2021 19:08:06 +0200
-Message-ID: <1611594486-29431-20-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1611594486-29431-1-git-send-email-stefanc@marvell.com>
-References: <1611594486-29431-1-git-send-email-stefanc@marvell.com>
+        Mon, 25 Jan 2021 12:11:41 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DF4C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:10:31 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id p5so15480914oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:10:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CiQwU0uQMl0x2LLoEUfiYuSqNBnhBy8hs2yd2mhpH0A=;
+        b=cDbyQlsCCe8Cot3vrfN5F/iXSU/8y9dODtuV7WZ2sjlCDEP7cN9foP1BzFPJc6SFlW
+         Vdy0MGAths5Uo9w3678VYa+qxbIBd4ZkSsa2iPexeQDp+4AZQjhJVIhsh4/xdQCaTt+6
+         u7VN2XBVyIthAijZX2yYZqwQkrvvXs2NcCcU7a6Fcs0+kDIBw5c9QJlVD3OCbNVeUny/
+         jenR4l1nMdwRbj2J5Ts38jT2O5iESUd9xyqMUXZOIsjOVmx1wSaH/rrSloptYzGamNTW
+         uaoPSPdKqwD3PW3HzZJ2V+5bSksP6P1TwRE1o97fANuVx1pPQET0HopxxUkWcXBqNL25
+         09MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CiQwU0uQMl0x2LLoEUfiYuSqNBnhBy8hs2yd2mhpH0A=;
+        b=UjTy9iuK2XI3iiMaIX2N2PThT06vW/ZSUfQFC59FMwCIC+6NgX6Pv0/l+qt0TiyfmC
+         I2AYpdfpDGZ3vWd4cSW4qDzvLGwvOXqmjYolkhCxjQHob2+Mfa9zTX2Eyr/j5vPpz6zT
+         wvnxZ25u6dIDzmUSb1pitRBnPSpaGXZ4uoAxZ3XdL/iJVcQfj25cozzhRAQ122OvRTVL
+         QRM53PDEpiWntgd5Q9RVkUR4dZMDFyBh+vKCkc3Iam6r573L3AL2sW542LRhD1rGtCt/
+         SMBbxalwbvN4C14sMFlVYyCHxE6nmd8QwKDwt0+uw0Q4ulDuxFVspexeC/yfajPvC+Z4
+         vKng==
+X-Gm-Message-State: AOAM5307nVDnM22Jfv6wEXvgk28szxtac39i0li4Kxy30Ykv3ZE4/SQr
+        LeQOhPHFSyGkltch1/JgYkHHgw==
+X-Google-Smtp-Source: ABdhPJwvzgGBdYbZSP0vhyScwPdNWTzVfw20HDZVrDrLYGkEsg2A9FYv4lzLJATK9Kj9OG46uvpb+A==
+X-Received: by 2002:aca:f551:: with SMTP id t78mr721431oih.34.1611594631387;
+        Mon, 25 Jan 2021 09:10:31 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n18sm702450oov.4.2021.01.25.09.10.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 09:10:30 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:10:29 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: phy: qcom,qmp: Add SM8350 UFS PHY
+ bindings
+Message-ID: <YA77hbH6aOW7mzbF@builder.lan>
+References: <20210125100906.4004908-1-vkoul@kernel.org>
+ <20210125100906.4004908-3-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_07:2021-01-25,2021-01-25 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125100906.4004908-3-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Mon 25 Jan 04:09 CST 2021, Vinod Koul wrote:
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+> Add the compatible strings for the UFS PHY found on SM8350 SoC.
+> 
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 41 ++++++++++++++++----
- 2 files changed, 35 insertions(+), 7 deletions(-)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 0765d6f..47a4b38 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -829,6 +829,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index bb7dfed..3aa877b 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -932,6 +932,34 @@ static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7283,7 +7311,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7511,13 +7539,12 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err) {
-+			dev_warn(&pdev->dev, "CM3 firmware not running, version should be higher than 18.09\n");
-+			dev_warn(&pdev->dev, "Flow control not supported\n");
-+		}
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
--- 
-1.9.1
-
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> index 62c4f2ba5b9f..bf804c12fa5f 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> @@ -38,6 +38,7 @@ properties:
+>        - qcom,sm8250-qmp-modem-pcie-phy
+>        - qcom,sm8250-qmp-usb3-phy
+>        - qcom,sm8250-qmp-usb3-uni-phy
+> +      - qcom,sm8350-qmp-ufs-phy
+>        - qcom,sm8350-qmp-usb3-phy
+>        - qcom,sm8350-qmp-usb3-uni-phy
+>        - qcom,sdx55-qmp-usb3-uni-phy
+> -- 
+> 2.26.2
+> 
