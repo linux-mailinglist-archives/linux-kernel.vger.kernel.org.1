@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1663029B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 444E8302997
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731344AbhAYSLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        id S1731237AbhAYSHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731384AbhAYSEO (ORCPT
+        with ESMTP id S1729481AbhAYSFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:04:14 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A52C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:03:34 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s15so8123420plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:03:34 -0800 (PST)
+        Mon, 25 Jan 2021 13:05:44 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42C1C06174A;
+        Mon, 25 Jan 2021 10:05:02 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id n6so16545403edt.10;
+        Mon, 25 Jan 2021 10:05:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1pJ/Zg4ITbpnJw71WkGTelTq5ONDoCLkdhBdvVCe5i4=;
-        b=k+KsWO2X4iS3aQW0u2AustK5TvQV3i7HDSLpoN2SKTpgi2Cg1iDN3/xQWKhErdpfg7
-         QHVwRoJHJi9HP1UDsT1vPCaYjFAvbL7/w0refH8FvCVOfCSmaBZQVF7xcpuygh5BJG/h
-         zeImed+1NT7e9sv9w1rcprQaGeQMIpTfJyHbCU24COqaNF4pubMfYHdIUBPajTTB9obw
-         Ki40OU0c1SsW5Y/uaREqbLRNwDT3q/hkhxGYzwPjRB4SkcuD56axUKkS59J8q2jr+WvS
-         a5xqHXyzy+Bl/sa8FJGv+7eJ8uHrkGLPrAZiO9o9KXthrQHHXF6wbMWbLDKciwrSdyFO
-         oFZA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UDJrM+VObhQM/htR7xUxXEq8/3SNBalypsfeL4EmF2w=;
+        b=pLxYuLaVuy9i9RrCOeTt+Ra3ac0FztbvVloblfhJa4KR0vf+aRF/AGcPVs8eLWXEAT
+         xAAsSVzYrNjygz8Jxo+IaWXyXOU9r0qXIRgQEYsQM1ZlS6iYFeBDyFi702OHMuKtJTTw
+         5lv1VG/r3+PtnAmeXzyDN5XfuiCIxecaBj/nEMeKr3zyHdkHCEd2WKr174UgOhbOMbWY
+         5I5ul7scP8Tne+Bshl84snibgjyTkNNZ/l/hk6zGbpeVwjKTGJN/FL0Tm9OnqJadgCKJ
+         o3u116RB3tQJADnZRZ4DfLMXCm55zA7JfMrcdFZRNRoqMJ2+tW1T/IkKelNz6ZJCzKnl
+         dU0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1pJ/Zg4ITbpnJw71WkGTelTq5ONDoCLkdhBdvVCe5i4=;
-        b=QY+p8NoxtkGEk7TR9tHYRooQRU53sH3+LQ0VRHtJ8/wCzLa3rJZq1k0xOpVW+0DHnO
-         qfozkkXRxYbzVegRzk8YaFSdnPNuNtm6H/ygtYKt6eVPm5LojDkI2oZ4LhSObDuErfZ5
-         XHnYe6uJvqyjSj89ujrThXZ9dlq1NO3IkcGo9LZiMjyOH+ujuyROgMKx8XnC/9Bc1kP1
-         aaxhYZHY5paaNjDzi8OnKPDpKXPuWjFszse/Un1YPJ6io6TYAK7xlDGbd4EneDMxu6lb
-         pK8w2vVWYWTxsvoHiJAEM18yZLngdbnFmEV/DtxOBlsTN/IgnmahphYDaqogM/FQ5UEg
-         uX9Q==
-X-Gm-Message-State: AOAM53053UBpkpDelbGCMKm+3qKcdX9Vd1anEeOMqitgN5fsFfWyuvbt
-        UGzVPapx0tyFuiTZxpTb7vUkHhBnHDN/+84CFt/xLw==
-X-Google-Smtp-Source: ABdhPJxhTFp/J1wD7mLm9mReeYAHLE1jxITaDZV7Ek3501Dq5sv45lD9qOFynyiG2hL1//FGjgYTzzNjuYIJhIUamkw=
-X-Received: by 2002:a17:902:aa8b:b029:da:ef22:8675 with SMTP id
- d11-20020a170902aa8bb02900daef228675mr1620975plr.15.1611597813990; Mon, 25
- Jan 2021 10:03:33 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UDJrM+VObhQM/htR7xUxXEq8/3SNBalypsfeL4EmF2w=;
+        b=TsowLmgzojYlLt4VldgzoIlEiCMhMThRxn2oVFXw+gMxx0F2B8HBgjGgRBd7mP19Bp
+         rrsmfoINfJF6+PPT39oHsGduBI36BECHmIP4i51DeYU4jWNwjJYne1soacDl4bVgN4ie
+         0oa1u1NntCPJmd2uJoYsz2pBW4UEoNf+uMNVVLWPaO+5PutyFdETT0H5sKYNQa1/8mMi
+         WsW36kPUGtghReFJuludnvG260VoW5gUT6VKJJLJT8A5A4WdFa+ybMFKJiy4C9Dm2udD
+         elGcXMlOuUrbH3pUAMfNX3w6BFDSK4KDtF6R2qhu443q7R1aIPexucGVlDxCe+SKRk25
+         /2cg==
+X-Gm-Message-State: AOAM532dGeBc2U/sJ7DQr9sqGGPcUcCq+RiVNuwYZoIWpjr1z3UHX/Ea
+        PElOMGUT8xD8rozVXM1tZuA=
+X-Google-Smtp-Source: ABdhPJyprG2pZ2VHd1B+QLdm2O8aTju8TlntahMjrmU4U0TiTm5jEK4KNLZuCxKXkv3STAbF1mTg7Q==
+X-Received: by 2002:a05:6402:1701:: with SMTP id y1mr1446570edu.251.1611597901034;
+        Mon, 25 Jan 2021 10:05:01 -0800 (PST)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id gb13sm5590778ejc.81.2021.01.25.10.04.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 10:04:59 -0800 (PST)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        Samuel Pascua <pascua.samuel.14@gmail.com>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        Brian Masney <masneyb@onstation.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH v3 1/4] ARM: dts: qcom: msm8974: add gpu support
+Date:   Mon, 25 Jan 2021 20:04:24 +0200
+Message-Id: <20210125180427.3109269-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210125111223.2540294c@canb.auug.org.au>
-In-Reply-To: <20210125111223.2540294c@canb.auug.org.au>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Mon, 25 Jan 2021 10:03:23 -0800
-Message-ID: <CAOFY-A0_f_fbj_+7HN-sBh5H97_HciW=yBRMnw5kvwYsvjyhBg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the net-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 4:12 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the bpf-next tree got a conflict in:
->
->   net/ipv4/tcp.c
->
-> between commit:
->
->   7eeba1706eba ("tcp: Add receive timestamp support for receive zerocopy.")
->
-> from the net-next tree and commit:
->
->   9cacf81f8161 ("bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE")
->
-> from the bpf-next tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
+From: Brian Masney <masneyb@onstation.org>
 
-The fix looks good, thank you.
+Add support for the a3xx GPU. opp_table is chosen to include lower
+frequencies common to all different msm8974 variants.
 
--Arjun
+Signed-off-by: Brian Masney <masneyb@onstation.org>
+[iskren.chernev@gmail.com: change opp-table values in v3]
+Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+---
+Changes in v3:
+- change opp-table as suggested by Konrad Dybcio
+- remove tested-by/reviewed-by because of code changes
 
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc net/ipv4/tcp.c
-> index e1a17c6b473c,26aa923cf522..000000000000
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@@ -4160,18 -4098,13 +4160,20 @@@ static int do_tcp_getsockopt(struct soc
->                 if (copy_from_user(&zc, optval, len))
->                         return -EFAULT;
->                 lock_sock(sk);
->  -              err = tcp_zerocopy_receive(sk, &zc);
->  +              err = tcp_zerocopy_receive(sk, &zc, &tss);
-> +               err = BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sk, level, optname,
-> +                                                         &zc, &len, err);
->                 release_sock(sk);
->  -              if (len >= offsetofend(struct tcp_zerocopy_receive, err))
->  -                      goto zerocopy_rcv_sk_err;
->  +              if (len >= offsetofend(struct tcp_zerocopy_receive, msg_flags))
->  +                      goto zerocopy_rcv_cmsg;
->                 switch (len) {
->  +              case offsetofend(struct tcp_zerocopy_receive, msg_flags):
->  +                      goto zerocopy_rcv_cmsg;
->  +              case offsetofend(struct tcp_zerocopy_receive, msg_controllen):
->  +              case offsetofend(struct tcp_zerocopy_receive, msg_control):
->  +              case offsetofend(struct tcp_zerocopy_receive, flags):
->  +              case offsetofend(struct tcp_zerocopy_receive, copybuf_len):
->  +              case offsetofend(struct tcp_zerocopy_receive, copybuf_address):
->                 case offsetofend(struct tcp_zerocopy_receive, err):
->                         goto zerocopy_rcv_sk_err;
->                 case offsetofend(struct tcp_zerocopy_receive, inq):
+v2: https://lkml.org/lkml/2021/1/24/142
+v1: https://lkml.org/lkml/2020/12/30/322
+
+ arch/arm/boot/dts/qcom-msm8974.dtsi | 45 +++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
+
+diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom-msm8974.dtsi
+index 51f5f904f9eb9..683622d6c8954 100644
+--- a/arch/arm/boot/dts/qcom-msm8974.dtsi
++++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
+@@ -1399,6 +1399,51 @@ cnoc: interconnect@fc480000 {
+ 			         <&rpmcc RPM_SMD_CNOC_A_CLK>;
+ 		};
+
++		gpu_opp_table: opp_table {
++			status = "disabled";
++
++			compatible = "operating-points-v2";
++
++			opp-320000000 {
++				opp-hz = /bits/ 64 <320000000>;
++			};
++
++			opp-200000000 {
++				opp-hz = /bits/ 64 <200000000>;
++			};
++
++			opp-27000000 {
++				opp-hz = /bits/ 64 <27000000>;
++			};
++		};
++
++		gpu: adreno@fdb00000 {
++			status = "disabled";
++
++			compatible = "qcom,adreno-330.2",
++			             "qcom,adreno";
++			reg = <0xfdb00000 0x10000>;
++			reg-names = "kgsl_3d0_reg_memory";
++			interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "kgsl_3d0_irq";
++			clock-names = "core",
++			              "iface",
++			              "mem_iface";
++			clocks = <&mmcc OXILI_GFX3D_CLK>,
++			         <&mmcc OXILICX_AHB_CLK>,
++			         <&mmcc OXILICX_AXI_CLK>;
++			sram = <&gmu_sram>;
++			power-domains = <&mmcc OXILICX_GDSC>;
++			operating-points-v2 = <&gpu_opp_table>;
++
++			interconnects = <&mmssnoc MNOC_MAS_GRAPHICS_3D &bimc BIMC_SLV_EBI_CH0>,
++			                <&ocmemnoc OCMEM_VNOC_MAS_GFX3D &ocmemnoc OCMEM_SLV_OCMEM>;
++			interconnect-names = "gfx-mem",
++			                     "ocmem";
++
++			// iommus = <&gpu_iommu 0>;
++		};
++
+ 		mdss: mdss@fd900000 {
+ 			status = "disabled";
+
+
+base-commit: 226871e2eda4832d94c3239add7e52ad17b81ce5
+--
+2.30.0
+
