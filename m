@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FBF303199
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA0D303193
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731570AbhAYTMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:12:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
+        id S1731665AbhAYTNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:13:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730565AbhAYSvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:51:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 628BA22EBD;
-        Mon, 25 Jan 2021 18:51:22 +0000 (UTC)
+        id S1726690AbhAYSvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FAD220679;
+        Mon, 25 Jan 2021 18:51:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600683;
-        bh=FgjfKD7AQhM1oaPnIOP66n285DWl8xk47mn+TxxvEks=;
+        s=korg; t=1611600688;
+        bh=In/cV+P4D6M8hrAMF7yvb79c/3RJkE2g05yr8QORLRo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QDEbAQFF3QQoOmMeYmTt86tUCEOBcBPjXa3ZDmMrYw0YH1z+FnRl66/Y4F32Hd6jL
-         AEGFPZmgMEcb6PivXW5ntkzmMTedXbuBbzgwaYkPx0gDJmFgv4zhXCn+ZeJ7yFdpXG
-         +A649zaPQyAWNReMgLYrbdZmB/HdVGo8IrWvAkgM=
+        b=Fue/jGlV1+rZOclPH80Gr7BflMT0WZEGkzWvCwN0RGcWLdgn8vr/DpVTTHVVuBpxz
+         HcIGvwYqWLm0RprB3rB1Q/nsVBRDBejmBlw6jqLLvCw/Uf/dz3YwtnRcnOGFzP3PIC
+         7+sMN6+KRbDrzFmTrpbIkKl2/vPpn6GpR0NdXLLw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 110/199] i2c: sprd: depend on COMMON_CLK to fix compile tests
-Date:   Mon, 25 Jan 2021 19:38:52 +0100
-Message-Id: <20210125183220.900615564@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.10 112/199] iio: ad5504: Fix setting power-down state
+Date:   Mon, 25 Jan 2021 19:38:54 +0100
+Message-Id: <20210125183220.975055608@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,40 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-[ Upstream commit 9ecd1d2b302b600351fac50779f43fcb680c1a16 ]
+commit efd597b2839a9895e8a98fcb0b76d2f545802cd4 upstream.
 
-The I2C_SPRD uses Common Clock Framework thus it cannot be built on
-platforms without it (e.g. compile test on MIPS with LANTIQ):
+The power-down mask of the ad5504 is actually a power-up mask. Meaning if
+a bit is set the corresponding channel is powered up and if it is not set
+the channel is powered down.
 
-    /usr/bin/mips-linux-gnu-ld: drivers/i2c/busses/i2c-sprd.o: in function `sprd_i2c_probe':
-    i2c-sprd.c:(.text.sprd_i2c_probe+0x254): undefined reference to `clk_set_parent'
+The driver currently has this the wrong way around, resulting in the
+channel being powered up when requested to be powered down and vice versa.
 
-Fixes: 4a2d5f663dab ("i2c: Enable compile testing for more drivers")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3bbbf150ffde ("staging:iio:dac:ad5504: Use strtobool for boolean values")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Link: https://lore.kernel.org/r/20201209104649.5794-1-lars@metafoo.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/i2c/busses/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/iio/dac/ad5504.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index a49e0ed4a599d..7e693dcbdd196 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -1012,6 +1012,7 @@ config I2C_SIRF
- config I2C_SPRD
- 	tristate "Spreadtrum I2C interface"
- 	depends on I2C=y && (ARCH_SPRD || COMPILE_TEST)
-+	depends on COMMON_CLK
- 	help
- 	  If you say yes to this option, support will be included for the
- 	  Spreadtrum I2C interface.
--- 
-2.27.0
-
+--- a/drivers/iio/dac/ad5504.c
++++ b/drivers/iio/dac/ad5504.c
+@@ -187,9 +187,9 @@ static ssize_t ad5504_write_dac_powerdow
+ 		return ret;
+ 
+ 	if (pwr_down)
+-		st->pwr_down_mask |= (1 << chan->channel);
+-	else
+ 		st->pwr_down_mask &= ~(1 << chan->channel);
++	else
++		st->pwr_down_mask |= (1 << chan->channel);
+ 
+ 	ret = ad5504_spi_write(st, AD5504_ADDR_CTRL,
+ 				AD5504_DAC_PWRDWN_MODE(st->pwr_down_mode) |
 
 
