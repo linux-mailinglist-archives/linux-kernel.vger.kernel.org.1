@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6427B3037D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5434C3037DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732654AbhAZI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:26:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
+        id S2389995AbhAZI0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:26:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727648AbhAYSms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFCB923104;
-        Mon, 25 Jan 2021 18:42:06 +0000 (UTC)
+        id S1727669AbhAYSmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B19423105;
+        Mon, 25 Jan 2021 18:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600127;
-        bh=0lY4H3kBTeH0lr7fN7Qyk/PF6JGXFxRNxZtQMOKWVSI=;
+        s=korg; t=1611600129;
+        bh=QuJmZNIir1CDuoiX+eW7XOgiW57FkfJXOpL5Q1c2yYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bmi2aZQscteBTg53xnA0g4BWSafQtj8+YbEtFR1FucpGJMYDOjnhEYSgelIU83MYo
-         Jleq5f/WftMeMZtSi2VqnMhDKV0GsizWdN7exsktiY0u//2CcksVRlF101cgVa5ITO
-         eMkeYBFLseBhHbUaM7OC5xB+zcZ6+OvJowMVKMbc=
+        b=GE7Sm+/VWhxAxwPvVcbwqwWGZSQw4Vujnv6/lXSOmN02JCGhgoVDnHEH8XWMY6nLQ
+         GlyRD/oQsAQdzpXPJ/eO9sbKVGY0EOEq2YSIQfu73zdFo+mlrrZ6CLYuRjKNqHCczR
+         AjWURGhQ/6UzRaM3ZaFAI6pSDzp13pIljyPryW38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JC Kuo <jckuo@nvidia.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.19 42/58] xhci: tegra: Delay for disabling LFPS detector
-Date:   Mon, 25 Jan 2021 19:39:43 +0100
-Message-Id: <20210125183158.527649766@linuxfoundation.org>
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 43/58] driver core: Extend device_is_dependent()
+Date:   Mon, 25 Jan 2021 19:39:44 +0100
+Message-Id: <20210125183158.568871999@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -39,47 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: JC Kuo <jckuo@nvidia.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit da7e0c3c2909a3d9bf8acfe1db3cb213bd7febfb upstream.
+commit 3d1cf435e201d1fd63e4346b141881aed086effd upstream.
 
-Occasionally, we are seeing some SuperSpeed devices resumes right after
-being directed to U3. This commits add 500us delay to ensure LFPS
-detector is disabled before sending ACK to firmware.
+If the device passed as the target (second argument) to
+device_is_dependent() is not completely registered (that is, it has
+been initialized, but not added yet), but the parent pointer of it
+is set, it may be missing from the list of the parent's children
+and device_for_each_child() called by device_is_dependent() cannot
+be relied on to catch that dependency.
 
-[   16.099363] tegra-xusb 70090000.usb: entering ELPG
-[   16.104343] tegra-xusb 70090000.usb: 2-1 isn't suspended: 0x0c001203
-[   16.114576] tegra-xusb 70090000.usb: not all ports suspended: -16
-[   16.120789] tegra-xusb 70090000.usb: entering ELPG failed
+For this reason, modify device_is_dependent() to check the ancestors
+of the target device by following its parent pointer in addition to
+the device_for_each_child() walk.
 
-The register write passes through a few flop stages of 32KHz clock domain.
-NVIDIA ASIC designer reviewed RTL and suggests 500us delay.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: JC Kuo <jckuo@nvidia.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210115161907.2875631-3-mathias.nyman@linux.intel.com
+Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
+Reported-by: Stephan Gerhold <stephan@gerhold.net>
+Tested-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Link: https://lore.kernel.org/r/17705994.d592GUb2YH@kreacher
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-tegra.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/base/core.c |   17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -578,6 +578,13 @@ static void tegra_xusb_mbox_handle(struc
- 								     enable);
- 			if (err < 0)
- 				break;
-+
-+			/*
-+			 * wait 500us for LFPS detector to be disabled before
-+			 * sending ACK
-+			 */
-+			if (!enable)
-+				usleep_range(500, 1000);
- 		}
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -93,6 +93,16 @@ void device_links_read_unlock(int not_us
+ }
+ #endif /* !CONFIG_SRCU */
  
- 		if (err < 0) {
++static bool device_is_ancestor(struct device *dev, struct device *target)
++{
++	while (target->parent) {
++		target = target->parent;
++		if (dev == target)
++			return true;
++	}
++	return false;
++}
++
+ /**
+  * device_is_dependent - Check if one device depends on another one
+  * @dev: Device to check dependencies for.
+@@ -106,7 +116,12 @@ static int device_is_dependent(struct de
+ 	struct device_link *link;
+ 	int ret;
+ 
+-	if (dev == target)
++	/*
++	 * The "ancestors" check is needed to catch the case when the target
++	 * device has not been completely initialized yet and it is still
++	 * missing from the list of children of its parent device.
++	 */
++	if (dev == target || device_is_ancestor(dev, target))
+ 		return 1;
+ 
+ 	ret = device_for_each_child(dev, target, device_is_dependent);
 
 
