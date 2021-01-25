@@ -2,197 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E655303998
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5CF3039B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391757AbhAZJzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731264AbhAYSxX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:23 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137C0C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:43 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id m6so8930353pfm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=PyFIQTDz1+7uxusIMsa/H38XD+IyWyEJp5nLEM5ZZd8=;
-        b=dQKkjj9DVQim0K/skB4pCoM6XlszO8t5AesFN6sHJRGiAG1sl9X1rhfUGPH7DBMxps
-         4FSvluOvSFM9pROoZdXZ5TRGBGWr6NuUWocrI6Pe4RxpCXQAz2LslgoL2SJhZGRwcgKC
-         Y+lgwAzzBAgPOTNPN4tUJdbI8H7lj8ha7oyBU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=PyFIQTDz1+7uxusIMsa/H38XD+IyWyEJp5nLEM5ZZd8=;
-        b=i+86cHcCymdRifhnGj4TDKanUmQ5GF3Q1ikoPTeKqfIlDnDj/xghAObqZqYDtXWC1v
-         6PnZY0FZjUmFXpTBqH9Y3nrYOIExKL0/H8X8qourSzqV18Sx4+/Ckn309wT9wKvC/9N9
-         olKACIRIwok0GTmBjVAipIbFaisAhZoc6yCcyQYtb7vvPjvIJLZ3dxXvGf3Gdf5eD2r0
-         8MwadIgXXM9XPSDoUvb2IVTxR8FOFt4mxTfpG11GG3UGmo1h98azMo3vAjraBqUmBYyx
-         lE8Sg3IxuG6tNmk5ye6c9fxGdmX5bVbSHy2upVTt/xgJMioe7DK5FCOGd6VueO8VOT6L
-         xu7w==
-X-Gm-Message-State: AOAM533LunSvQdeNIIEU6fEmWGnMPo+PeazMSj83hJKRO6iNuxaoIjnT
-        54qpAofVXQ7jfQdN/4VuzjTdKkjGxSM3dA==
-X-Google-Smtp-Source: ABdhPJy8Q5bX833NbF6fj+EubnPYe5iTDhajBtTDYN4FLQd3stBRSYm16E9qQmbb4bme8Tn7JzfBbQ==
-X-Received: by 2002:a63:4d52:: with SMTP id n18mr1872928pgl.237.1611600762258;
-        Mon, 25 Jan 2021 10:52:42 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:1066:b437:97cd:2278])
-        by smtp.gmail.com with ESMTPSA id a37sm16168315pgm.79.2021.01.25.10.52.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:52:41 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S2390929AbhAZJ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:58:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731307AbhAYSyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:54:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A566206E5;
+        Mon, 25 Jan 2021 18:53:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600799;
+        bh=HDZGee8HdLshihdFtcKmIvRMMk/dBYE3C4lxTQIFzyI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NVDwsV35bDWiup/yuAha9sGl1a12xfV40JI7pHy5IsSiuXJOjiCyjPi4bFvRjnruq
+         f7RQSoOuLu5NHSCuKxk0P0NpmH92hqhm/2UCtDSdwg4eSkD79ylAkJP/usxaoI7sG/
+         mYVYP7EZg9oK+8abiFJ+egY2I7w7jqz3P90HWcKg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 125/199] mm: fix numa stats for thp migration
+Date:   Mon, 25 Jan 2021 19:39:07 +0100
+Message-Id: <20210125183221.489619590@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+References: <20210125183216.245315437@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
-References: <20210122225443.186184-1-swboyd@chromium.org> <20210122225443.186184-4-swboyd@chromium.org> <20210124173820.4528b9c9@archlinux> <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>
-To:     Gwendal Grignou <gwendal@chromium.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Date:   Mon, 25 Jan 2021 10:52:40 -0800
-Message-ID: <161160076017.76967.4467861058817044169@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Gwendal Grignou (2021-01-24 13:41:44)
-> On Sun, Jan 24, 2021 at 9:38 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Fri, 22 Jan 2021 14:54:43 -0800
-> > Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > > ---
-> > >  drivers/iio/proximity/Kconfig             |  11 +
-> > >  drivers/iio/proximity/Makefile            |   1 +
-> > >  drivers/iio/proximity/cros_ec_proximity.c | 252 ++++++++++++++++++++=
-++
+From: Shakeel Butt <shakeelb@google.com>
 
-I suppose I'll change this to cros_ec_mkbp_proximity as well.
+commit 5c447d274f3746fbed6e695e7b9a2d7bd8b31b71 upstream.
 
-> > > diff --git a/drivers/iio/proximity/cros_ec_proximity.c b/drivers/iio/=
-proximity/cros_ec_proximity.c
-> > > new file mode 100644
-> > > index 000000000000..a3aef911e3cc
-> > > --- /dev/null
-> > > +++ b/drivers/iio/proximity/cros_ec_proximity.c
-> > > @@ -0,0 +1,252 @@
-[...]
-> > > +
-> > > +static int cros_ec_proximity_query(struct cros_ec_device *ec_dev, in=
-t *state)
-> > > +{
-> > > +     struct ec_params_mkbp_info *params;
-> > > +     struct cros_ec_command *msg;
-> > > +     int ret;
-> > > +
-> > > +     msg =3D kzalloc(sizeof(*msg) + max(sizeof(u32), sizeof(*params)=
-),
-> > > +                   GFP_KERNEL);
-> >
-> > Given this is known at build time, perhaps better to add it to the
-> > iio_priv() accessed structure and avoid having to handle allocations
-> > separately.
-> As Jonathan said, it can be preallocated in iio private structure. We
-> can also use the stack, given the response size is known beforehand.
-> See cros_ec_cec_set_log_addr() or cros_ec_pwm_get_duty() for example.
+Currently the kernel is not correctly updating the numa stats for
+NR_FILE_PAGES and NR_SHMEM on THP migration.  Fix that.
 
-I suppose stack is even simpler. I'll try that.
+For NR_FILE_DIRTY and NR_ZONE_WRITE_PENDING, although at the moment
+there is no need to handle THP migration as kernel still does not have
+write support for file THP but to be more future proof, this patch adds
+the THP support for those stats as well.
 
-> > > +
-> > > +static int cros_ec_proximity_notify(struct notifier_block *nb,
-> > > +                          unsigned long queued_during_suspend, void =
-*_ec)
-> > > +{
-> > > +     struct cros_ec_proximity_data *data;
-> > > +     struct cros_ec_device *ec =3D _ec;
-> > > +     u8 event_type =3D ec->event_data.event_type & EC_MKBP_EVENT_TYP=
-E_MASK;
-> > > +     void *switches =3D &ec->event_data.data.switches;
-> > > +     struct iio_dev *indio_dev;
-> > > +     s64 timestamp;
-> > > +     int state, dir;
-> > > +     u64 ev;
-> > > +
-> > > +     if (event_type =3D=3D EC_MKBP_EVENT_SWITCH) {
-> > > +             data =3D container_of(nb, struct cros_ec_proximity_data=
-, notifier);
-> > > +             indio_dev =3D data->indio_dev;
-> > > +
-> > > +             mutex_lock(&data->lock);
-> > > +             if (data->enabled) {
-> > > +                     timestamp =3D iio_get_time_ns(indio_dev);
-> For Android, given the timestamp must be time it happens, not reported
-> [https://source.android.com/devices/sensors/sensors-hal2] """The
-> timestamp must be accurate and correspond to the time at which the
-> event physically happened, not the time it was reported.""", consider
-> using ec_dev->last_event_time and apply a delta if the iio clock base
-> is different from CLOCK_BOOTTIME.
+Link: https://lkml.kernel.org/r/20210108155813.2914586-2-shakeelb@google.com
+Fixes: e71769ae52609 ("mm: enable thp migration for shmem thp")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Ah alright. Is there a reason why cros_ec_get_time_ns() is using
-boottime instead of plain ktime_get(), i.e. CLOCK_MONOTONIC? Otherwise I
-suppose some sort of cros_ec API should be exposed to convert the
-last_event_time to whatever clock base is desired. Does that exist?
+---
+ mm/migrate.c |   23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-> > > +static int cros_ec_proximity_probe(struct platform_device *pdev)
-> > > +{
-> > > +     struct device *dev =3D &pdev->dev;
-> > > +     struct cros_ec_device *ec =3D dev_get_drvdata(dev->parent);
-> > > +     struct iio_dev *indio_dev;
-> > > +     struct cros_ec_proximity_data *data;
-> > > +     int ret;
-> > > +
-> > > +     indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
-> > > +     if (!indio_dev)
-> > > +             return -ENOMEM;
-> > > +
-> > > +     data =3D iio_priv(indio_dev);
-> > > +     data->ec =3D ec;
-> > > +     data->indio_dev =3D indio_dev;
-> > > +     mutex_init(&data->lock);
-> > > +     platform_set_drvdata(pdev, data);
-> > > +
-> > > +     indio_dev->name =3D "cros_ec_proximity";
-> Define a constant CROS_EC_[MKBP_]PROXIMITY_DRIVER_NAME and use it here
-> and in struct platform_driver cros_ec_proximity_driver.
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -406,6 +406,7 @@ int migrate_page_move_mapping(struct add
+ 	struct zone *oldzone, *newzone;
+ 	int dirty;
+ 	int expected_count = expected_page_refs(mapping, page) + extra_count;
++	int nr = thp_nr_pages(page);
+ 
+ 	if (!mapping) {
+ 		/* Anonymous page without mapping */
+@@ -441,7 +442,7 @@ int migrate_page_move_mapping(struct add
+ 	 */
+ 	newpage->index = page->index;
+ 	newpage->mapping = page->mapping;
+-	page_ref_add(newpage, thp_nr_pages(page)); /* add cache reference */
++	page_ref_add(newpage, nr); /* add cache reference */
+ 	if (PageSwapBacked(page)) {
+ 		__SetPageSwapBacked(newpage);
+ 		if (PageSwapCache(page)) {
+@@ -463,7 +464,7 @@ int migrate_page_move_mapping(struct add
+ 	if (PageTransHuge(page)) {
+ 		int i;
+ 
+-		for (i = 1; i < HPAGE_PMD_NR; i++) {
++		for (i = 1; i < nr; i++) {
+ 			xas_next(&xas);
+ 			xas_store(&xas, newpage);
+ 		}
+@@ -474,7 +475,7 @@ int migrate_page_move_mapping(struct add
+ 	 * to one less reference.
+ 	 * We know this isn't the last reference.
+ 	 */
+-	page_ref_unfreeze(page, expected_count - thp_nr_pages(page));
++	page_ref_unfreeze(page, expected_count - nr);
+ 
+ 	xas_unlock(&xas);
+ 	/* Leave irq disabled to prevent preemption while updating stats */
+@@ -497,17 +498,17 @@ int migrate_page_move_mapping(struct add
+ 		old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
+ 		new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
+ 
+-		__dec_lruvec_state(old_lruvec, NR_FILE_PAGES);
+-		__inc_lruvec_state(new_lruvec, NR_FILE_PAGES);
++		__mod_lruvec_state(old_lruvec, NR_FILE_PAGES, -nr);
++		__mod_lruvec_state(new_lruvec, NR_FILE_PAGES, nr);
+ 		if (PageSwapBacked(page) && !PageSwapCache(page)) {
+-			__dec_lruvec_state(old_lruvec, NR_SHMEM);
+-			__inc_lruvec_state(new_lruvec, NR_SHMEM);
++			__mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
++			__mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
+ 		}
+ 		if (dirty && mapping_can_writeback(mapping)) {
+-			__dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
+-			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
+-			__inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
+-			__inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
++			__mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
++			__mod_zone_page_state(oldzone, NR_ZONE_WRITE_PENDING, -nr);
++			__mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
++			__mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
+ 		}
+ 	}
+ 	local_irq_enable();
 
-I used dev->driver->name instead. Yay for no define!
 
-> > > +     indio_dev->dev.parent =3D dev;
-> Not needed, done by iio_device_alloc(), called by devm_iio_device_alloc().
-
-Ok.
-
-> > > +static const struct of_device_id cros_ec_proximity_of_match[] =3D {
-> > > +     { .compatible =3D "google,cros-ec-proximity" },
-> > > +     {}
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
-> > > +#endif
-> > > +
-> > > +static struct platform_driver cros_ec_proximity_driver =3D {
-> > > +     .driver =3D {
-> > > +             .name =3D "cros-ec-proximity",
-> > > +             .of_match_table =3D of_match_ptr(cros_ec_proximity_of_m=
-atch),
-> Add a ACPI match table to match.
-
-I don't have an ACPI system in hand. What should the ACPI table look
-like? Can ACPI use the of_match_table logic?
-
-> > > +     },
-> > > +     .probe =3D cros_ec_proximity_probe,
-> > > +     .remove =3D cros_ec_proximity_remove,
-> > > +};
