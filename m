@@ -2,69 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB540302C02
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5AF302C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732149AbhAYTw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:52:26 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:33979 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731937AbhAYThP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:37:15 -0500
-Received: by mail-ot1-f47.google.com with SMTP id a109so13937399otc.1;
-        Mon, 25 Jan 2021 11:37:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BqRRksk+3G/r1SIptHOITJUnap9kkWd8tCAejk57+/w=;
-        b=OwDDLGBJC02p/vvd2mM+hSDHhk3Ez96B/97S5tAG3a7vN/2KRlQuhOpB2/nJ/NIri4
-         cEDkrm0wkyYLo7XmVVIed6GErHzOzWzmV4tQcQqZxmKvysz6NDqeoP6Bd3MdWYC9w6yx
-         sUJWFNVGSXtI4RG2/pPtBbzAp5vQha7glDGm4bPlvxdDZfCgNIvzuV9NzARAz1tJtESo
-         klG55b822artdGoIq6+nBgqJJBVnZ1ZZuxBmQT/pzMwd60lH26NjOSVq8HGahoHQziX7
-         en9KTBFriJPv1jU8qPbsw7RAnDUiusx2vEjxWjTNjCelgYeaIKuJ93KxxppY4uggS6fj
-         DX3A==
-X-Gm-Message-State: AOAM533EpgavPz5L9Hf7reE+UMfBuDDjOQnb3EYGmB9JXDIHcWaW9Rce
-        ex0oWeliaFJt+fgR7QZ0jw==
-X-Google-Smtp-Source: ABdhPJzlEW0dIRUFPrRvLWdmFeuR1WWHyjf3aQ+xypxGsQfZC/kKhBP3Saz9yuCGB7AFW3Nx6YZPOg==
-X-Received: by 2002:a05:6830:13d3:: with SMTP id e19mr1527569otq.157.1611603394687;
-        Mon, 25 Jan 2021 11:36:34 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l110sm2623884otc.25.2021.01.25.11.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:36:33 -0800 (PST)
-Received: (nullmailer pid 830912 invoked by uid 1000);
-        Mon, 25 Jan 2021 19:36:32 -0000
-Date:   Mon, 25 Jan 2021 13:36:32 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] dt-bindings: arm64: dts: mediatek: Add krane sku0
-Message-ID: <20210125193632.GA830825@robh.at.kernel.org>
-References: <20210113110400.616319-1-hsinyi@chromium.org>
- <20210113110400.616319-3-hsinyi@chromium.org>
+        id S1732158AbhAYTwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:52:49 -0500
+Received: from mga09.intel.com ([134.134.136.24]:28854 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731919AbhAYTlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:41:20 -0500
+IronPort-SDR: RIDpzrMel86cx846B77IJEM0poexx7HzLMM+96r2+2SzDz6YTGZ+OaXlFTFq/F+83nPbuzdKET
+ 8IBO/8QYpK0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179936890"
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="179936890"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 11:39:55 -0800
+IronPort-SDR: 6UCbQk3KpBrios7K18Q623lCYKxLETnSU8+ywUef7wLszvGvoLktgenVXNkqlesed3+EEoO6SD
+ uu3HCg/xwC/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="504267860"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 25 Jan 2021 11:39:52 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 87D51D7; Mon, 25 Jan 2021 21:39:51 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v1 01/10] x86/platform/intel-mid: Remove unused leftovers (msic_audio)
+Date:   Mon, 25 Jan 2021 21:39:39 +0200
+Message-Id: <20210125193948.56760-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
+References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113110400.616319-3-hsinyi@chromium.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 19:04:03 +0800, Hsin-Yi Wang wrote:
-> Krane-sku0 is similar to krane-sku176 but using a different panel
-> source.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
+The commit 05f4434bc130 ("ASoC: Intel: remove mfld_machine") removed
+the driver, no need to have support files for it.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ .../platform/intel-mid/device_libs/Makefile   |  1 -
+ .../device_libs/platform_msic_audio.c         | 42 -------------------
+ 2 files changed, 43 deletions(-)
+ delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_msic_audio.c
+
+diff --git a/arch/x86/platform/intel-mid/device_libs/Makefile b/arch/x86/platform/intel-mid/device_libs/Makefile
+index 918edac9ab9a..e926577fe665 100644
+--- a/arch/x86/platform/intel-mid/device_libs/Makefile
++++ b/arch/x86/platform/intel-mid/device_libs/Makefile
+@@ -8,7 +8,6 @@ obj-$(subst m,y,$(CONFIG_BRCMFMAC_SDIO)) += platform_bcm43xx.o
+ obj-$(subst m,y,$(CONFIG_BT_HCIUART_BCM)) += platform_bt.o
+ # IPC Devices
+ obj-$(subst m,y,$(CONFIG_MFD_INTEL_MSIC)) += platform_msic.o
+-obj-$(subst m,y,$(CONFIG_SND_MFLD_MACHINE)) += platform_msic_audio.o
+ obj-$(subst m,y,$(CONFIG_GPIO_MSIC)) += platform_msic_gpio.o
+ obj-$(subst m,y,$(CONFIG_MFD_INTEL_MSIC)) += platform_msic_ocd.o
+ obj-$(subst m,y,$(CONFIG_MFD_INTEL_MSIC)) += platform_msic_battery.o
+diff --git a/arch/x86/platform/intel-mid/device_libs/platform_msic_audio.c b/arch/x86/platform/intel-mid/device_libs/platform_msic_audio.c
+deleted file mode 100644
+index e765da78ad8c..000000000000
+--- a/arch/x86/platform/intel-mid/device_libs/platform_msic_audio.c
++++ /dev/null
+@@ -1,42 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * platform_msic_audio.c: MSIC audio platform data initialization file
+- *
+- * (C) Copyright 2013 Intel Corporation
+- * Author: Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/interrupt.h>
+-#include <linux/scatterlist.h>
+-#include <linux/init.h>
+-#include <linux/sfi.h>
+-#include <linux/platform_device.h>
+-#include <linux/mfd/intel_msic.h>
+-#include <asm/intel-mid.h>
+-
+-#include "platform_msic.h"
+-
+-static void *msic_audio_platform_data(void *info)
+-{
+-	struct platform_device *pdev;
+-
+-	pdev = platform_device_register_simple("sst-platform", -1, NULL, 0);
+-
+-	if (IS_ERR(pdev)) {
+-		pr_err("failed to create audio platform device\n");
+-		return NULL;
+-	}
+-
+-	return msic_generic_platform_data(info, INTEL_MSIC_BLOCK_AUDIO);
+-}
+-
+-static const struct devs_id msic_audio_dev_id __initconst = {
+-	.name = "msic_audio",
+-	.type = SFI_DEV_TYPE_IPC,
+-	.delay = 1,
+-	.msic = 1,
+-	.get_platform_data = &msic_audio_platform_data,
+-};
+-
+-sfi_device(msic_audio_dev_id);
+-- 
+2.29.2
+
