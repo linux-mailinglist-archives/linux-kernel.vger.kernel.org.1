@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019D73031B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E243031B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730951AbhAYStC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:49:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58354 "EHLO mail.kernel.org"
+        id S1731020AbhAYStI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:49:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727783AbhAYSn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728492AbhAYSn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:43:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 768AF2067B;
-        Mon, 25 Jan 2021 18:42:32 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8431020665;
+        Mon, 25 Jan 2021 18:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600152;
-        bh=lpQJ2lY//73KYox3M7TIWIXn1tIaYScuivULBqgJ4MQ=;
+        s=korg; t=1611600158;
+        bh=mg8NDMbXTiGz2vnM2wRCdZ6fsdYgYOYEY+WBXAWVZYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IVEbASxOOc7hEup57ej13mW8wzu+hBmGfK+YBA2HkaCpNhnt0PNrmBVpm29E4TaP8
-         BOqkdF1yVdJxaFCDW6qpbzf6W0UOdKrMFuVdd/y+AaPOArA65Are7ZMAD9EipyjAWB
-         +zA+XEaN/CMJbferhbm6/45W7G/GoSMX+hi2lTQI=
+        b=1DhDzzbFrfF+SYcr5HTI3jUNP7Ji9qbBPhuG7jjwcBySJFzTHpUKlh5CO+krIEKLr
+         y8XRvUYwT1tX0YX0QEW7IGFB4CCNlvC48HZnvtLxGfU68AMcn1YxHaUqvujo6ghMMM
+         Bmnn+9qxwJvQg6XkpvI85dahh2fqr4JTAATzEapc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 51/58] udp: mask TOS bits in udp_v4_early_demux()
-Date:   Mon, 25 Jan 2021 19:39:52 +0100
-Message-Id: <20210125183158.900130769@linuxfoundation.org>
+Subject: [PATCH 4.19 53/58] net_sched: avoid shift-out-of-bounds in tcindex_set_parms()
+Date:   Mon, 25 Jan 2021 19:39:54 +0100
+Message-Id: <20210125183158.974465946@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -39,88 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 8d2b51b008c25240914984208b2ced57d1dd25a5 upstream.
+commit bcd0cf19ef8258ac31b9a20248b05c15a1f4b4b0 upstream.
 
-udp_v4_early_demux() is the only function that calls
-ip_mc_validate_source() with a TOS that hasn't been masked with
-IPTOS_RT_MASK.
+tc_index being 16bit wide, we need to check that TCA_TCINDEX_SHIFT
+attribute is not silly.
 
-This results in different behaviours for incoming multicast UDPv4
-packets, depending on if ip_mc_validate_source() is called from the
-early-demux path (udp_v4_early_demux) or from the regular input path
-(ip_route_input_noref).
+UBSAN: shift-out-of-bounds in net/sched/cls_tcindex.c:260:29
+shift exponent 255 is too large for 32-bit type 'int'
+CPU: 0 PID: 8516 Comm: syz-executor228 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ valid_perfect_hash net/sched/cls_tcindex.c:260 [inline]
+ tcindex_set_parms.cold+0x1b/0x215 net/sched/cls_tcindex.c:425
+ tcindex_change+0x232/0x340 net/sched/cls_tcindex.c:546
+ tc_new_tfilter+0x13fb/0x21b0 net/sched/cls_api.c:2127
+ rtnetlink_rcv_msg+0x8b6/0xb80 net/core/rtnetlink.c:5555
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-ECN would normally not be used with UDP multicast packets, so the
-practical consequences should be limited on that side. However,
-IPTOS_RT_MASK is used to also masks the TOS' high order bits, to align
-with the non-early-demux path behaviour.
-
-Reproducer:
-
-  Setup two netns, connected with veth:
-  $ ip netns add ns0
-  $ ip netns add ns1
-  $ ip -netns ns0 link set dev lo up
-  $ ip -netns ns1 link set dev lo up
-  $ ip link add name veth01 netns ns0 type veth peer name veth10 netns ns1
-  $ ip -netns ns0 link set dev veth01 up
-  $ ip -netns ns1 link set dev veth10 up
-  $ ip -netns ns0 address add 192.0.2.10 peer 192.0.2.11/32 dev veth01
-  $ ip -netns ns1 address add 192.0.2.11 peer 192.0.2.10/32 dev veth10
-
-  In ns0, add route to multicast address 224.0.2.0/24 using source
-  address 198.51.100.10:
-  $ ip -netns ns0 address add 198.51.100.10/32 dev lo
-  $ ip -netns ns0 route add 224.0.2.0/24 dev veth01 src 198.51.100.10
-
-  In ns1, define route to 198.51.100.10, only for packets with TOS 4:
-  $ ip -netns ns1 route add 198.51.100.10/32 tos 4 dev veth10
-
-  Also activate rp_filter in ns1, so that incoming packets not matching
-  the above route get dropped:
-  $ ip netns exec ns1 sysctl -wq net.ipv4.conf.veth10.rp_filter=1
-
-  Now try to receive packets on 224.0.2.11:
-  $ ip netns exec ns1 socat UDP-RECVFROM:1111,ip-add-membership=224.0.2.11:veth10,ignoreeof -
-
-  In ns0, send packet to 224.0.2.11 with TOS 4 and ECT(0) (that is,
-  tos 6 for socat):
-  $ echo test0 | ip netns exec ns0 socat - UDP-DATAGRAM:224.0.2.11:1111,bind=:1111,tos=6
-
-  The "test0" message is properly received by socat in ns1, because
-  early-demux has no cached dst to use, so source address validation
-  is done by ip_route_input_mc(), which receives a TOS that has the
-  ECN bits masked.
-
-  Now send another packet to 224.0.2.11, still with TOS 4 and ECT(0):
-  $ echo test1 | ip netns exec ns0 socat - UDP-DATAGRAM:224.0.2.11:1111,bind=:1111,tos=6
-
-  The "test1" message isn't received by socat in ns1, because, now,
-  early-demux has a cached dst to use and calls ip_mc_validate_source()
-  immediately, without masking the ECN bits.
-
-Fixes: bc044e8db796 ("udp: perform source validation for mcast early demux")
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Link: https://lore.kernel.org/r/20210114185229.1742255-1-eric.dumazet@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv4/udp.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/sched/cls_tcindex.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2416,7 +2416,8 @@ int udp_v4_early_demux(struct sk_buff *s
- 		 */
- 		if (!inet_sk(sk)->inet_daddr && in_dev)
- 			return ip_mc_validate_source(skb, iph->daddr,
--						     iph->saddr, iph->tos,
-+						     iph->saddr,
-+						     iph->tos & IPTOS_RT_MASK,
- 						     skb->dev, in_dev, &itag);
- 	}
- 	return 0;
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -339,9 +339,13 @@ tcindex_set_parms(struct net *net, struc
+ 	if (tb[TCA_TCINDEX_MASK])
+ 		cp->mask = nla_get_u16(tb[TCA_TCINDEX_MASK]);
+ 
+-	if (tb[TCA_TCINDEX_SHIFT])
++	if (tb[TCA_TCINDEX_SHIFT]) {
+ 		cp->shift = nla_get_u32(tb[TCA_TCINDEX_SHIFT]);
+-
++		if (cp->shift > 16) {
++			err = -EINVAL;
++			goto errout;
++		}
++	}
+ 	if (!cp->hash) {
+ 		/* Hash not specified, use perfect hash if the upper limit
+ 		 * of the hashing index is below the threshold.
 
 
