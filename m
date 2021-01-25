@@ -2,139 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57123027F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C0B3027E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730782AbhAYQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:35:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
+        id S1730647AbhAYQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:32:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbhAYQ1Q (ORCPT
+        with ESMTP id S1727840AbhAYQb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:27:16 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A68C0613D6;
-        Mon, 25 Jan 2021 08:26:05 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id f2so10799469ljp.11;
-        Mon, 25 Jan 2021 08:26:05 -0800 (PST)
+        Mon, 25 Jan 2021 11:31:56 -0500
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60D3C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:31:15 -0800 (PST)
+Received: by mail-oo1-xc32.google.com with SMTP id u7so2794799ooq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:31:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pwiBAJcXYk8d7kT5fmV95SV7WAmrxHsioIdFAWPZ7cs=;
-        b=L8o1UrrEFpCjbC+bRyN15Jhx0D19SfJEVpzjAqtevIxwNchxm1wC9LK5lbb+af17p1
-         l0C2jiTNpqYYZpBbXpH2e0WZST2qHNiPTaaYHEeULnSi2lQZCuCB01GGpaXApBpVGfJ8
-         t4N1YWCForZTUrbRzZ1wGWnWqNhKSU1imQj9jlOCG8WjMk9z54Te6nyTBlwZrbfapVNt
-         KOs56wtG4jpINOa3fM51Twa28b4kDQJpdUvR6KQLP7UWWubUAeDClWOyEEjORrI9Y8tP
-         7t8cL2JS4v1KeIGoWSud5qKBCIz0In93ApU2vzy5Uwp3ILb9GR1G+dqvi/K5tUWlB1gc
-         YgZg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=40kUnDJvOmh5mDDNnYdWwiYEGd/OPR4RTz7rIN8oEbE=;
+        b=XZ5hLoU7Gt6LqV97bM4MM0VSQMQ3a5EMjK+QSRvhR84Kb52hEeZWrMsybNPdnWX0Sk
+         88Nqt/fDlA8Tc/UOdTVCuKqssUmGUWrlbNExFeI5QRa7MpNFgG+Pi1jZ9jUCDD34BT8M
+         eLMTCfGsbyW0dJLWani4JdaOD9o0rdv0zmH57PnM5CmZJSN9Mv02mBYJI+fVGEtNPZCu
+         Utd7QwG32ejzUqe0TTuZ0lr5fINVkYBVByLTFVlkm9MvTyIdlWbggyCpLv8bMAB61hKk
+         vfBaDUWkAilTTOyTjMvpoUvkXDkpR8sB8gd9jBgI9DFY3ec0WpCzKtAEKidkY2rK4vX7
+         rv9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pwiBAJcXYk8d7kT5fmV95SV7WAmrxHsioIdFAWPZ7cs=;
-        b=TUc+KY9QgQTyAlFkwPwTglpsYX45d3n4SZM17Lr9bSW9NwULkWZUXZ+gyRYImJnA+s
-         KWSNQfSL2P10C4HYKSCpdhn05I472pkiEIZV5vHPZ6bvOhy9On+xjmq9DJCn7eJFDXgL
-         8O1AWM2n52YOLn8LNhB3OXNEUyTIOI7139J6P2UmHxnCfhOKtcXnQBrIZMkH7V39xalk
-         mVuosGtKfdOqrAZ/QEYciDkZ25H6fz+t6KgEprCubcQW42KazrjlC2Z3xEjaMgWYBwa4
-         z5dNRS0jMFkpObps3OuLi+jJ5gLFT2uxQpgtXZSF+bXEafJuYd6AITuiBpzbnPeGOIu5
-         RqUg==
-X-Gm-Message-State: AOAM533G9vuVq2IicsIRF32uyD4CwIDpeuCKERPYk+A52iCBS+0EIqzI
-        88tacRBSRO7XiTzheAEL0iM=
-X-Google-Smtp-Source: ABdhPJyX8tp9f2RFd1Z3a9fsWAs40Rjv4MfVUtkXuu1ZDEkw1ViCeMQo1Z1byhVy2PYh4qg53nh/tQ==
-X-Received: by 2002:a2e:914b:: with SMTP id q11mr518510ljg.503.1611591963587;
-        Mon, 25 Jan 2021 08:26:03 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 10sm334972lfq.53.2021.01.25.08.26.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=40kUnDJvOmh5mDDNnYdWwiYEGd/OPR4RTz7rIN8oEbE=;
+        b=Wqt+LiU4oy15mQyDijXu4fUExXf1VlIg6bZrySKxyIyCJT280j68PEH/73WksqToBy
+         Y8PrjsQA057iOu8+rUF9iAP+b2ChzS12DHEQLMaHdwOaxahxtE/YnKiKIlPFQHXDQRNe
+         ScbBroRhZEjCifEJJHW7725jIp9iY7fBTi5d/gFCnDn1bTQn4/O1lvwQhSIsIq7CUhHP
+         Pdm8XskDuHuNVA+Gmr4Lln8v04CPdezJGJjqBDy4fTtG0EFhXERLfg3QeZrM4IaoYP/x
+         aifrbT83H55t5avaHP12Nv4uQn+Vuh0wbmnON5LVDxJr7PEMKunD3umNmlQKjztqEv4g
+         jOKQ==
+X-Gm-Message-State: AOAM533yiEyiIu+juLj5mdSli3heOzRrmUcg+B7tCZNooauL1fGDWNSB
+        uYD2Lk8DcxUHpuPI5U5Ed23olw==
+X-Google-Smtp-Source: ABdhPJx6u0GLpjr7JeuYgLHTAwAsm0aZo1oZtVpfh9nPhjg0TnmSZtnHo8yv6fVIqonJI5LU6elcSQ==
+X-Received: by 2002:a4a:e746:: with SMTP id n6mr1024445oov.84.1611592275091;
+        Mon, 25 Jan 2021 08:31:15 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a22sm2869730otp.53.2021.01.25.08.31.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 08:26:02 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 25 Jan 2021 17:25:59 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210125162559.GA52712@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210125132236.GJ827@dhcp22.suse.cz>
- <20210125143150.GA2282@pc638.lan>
- <20210125153943.GN827@dhcp22.suse.cz>
+        Mon, 25 Jan 2021 08:31:14 -0800 (PST)
+Date:   Mon, 25 Jan 2021 10:31:12 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] drivers: crypto: qce: common: Set data unit size
+ to message length for AES XTS transformation
+Message-ID: <YA7yUD7OqUKBFN83@builder.lan>
+References: <20210120184843.3217775-1-thara.gopinath@linaro.org>
+ <20210120184843.3217775-5-thara.gopinath@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125153943.GN827@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210120184843.3217775-5-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 04:39:43PM +0100, Michal Hocko wrote:
-> On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
-> > > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
-> > > > For a single argument we can directly request a page from a caller
-> > > > context when a "carry page block" is run out of free spots. Instead
-> > > > of hitting a slow path we can request an extra page by demand and
-> > > > proceed with a fast path.
-> > > > 
-> > > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> > > > and that its fallback is the relatively high latency synchronize_rcu().
-> > > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> > > > to allow limited sleeping within the memory allocator.
-> > > 
-> > > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
-> > > way to allocate without triggering the OOM killer. Is this really what
-> > > you need/want? Is __GFP_NORETRY too weak?
-> > > 
-> > Hm... We agreed to proceed with limited lightwait memory direct reclaim.
-> > Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
-> > point: https://www.spinics.net/lists/rcu/msg02856.html
-> > 
-> > <snip>
-> >     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
-> >     further decisions based on instrumentation of the success rates of
-> >     these opportunistic allocations.
-> > <snip>
-> 
-> I completely agree with Johannes here.
-> 
-> > but for some reason, i can't find a tail or head of it, we introduced
-> > __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
-> > What we would like to avoid.
-> 
-> Not that I object to this use but I think it would be much better to use
-> it based on actual data. Going along with it right away might become a
-> future burden to make any changes in this aspect later on due to lack of 
-> exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
-> try as hard as it can get without being really disruptive (like OOM
-> killing something). And your wording didn't really give me that
-> impression.
-> 
-Initially i proposed just to go with GFP_NOWAIT flag. But later on there
-was a discussion about a fallback path, that uses synchronize_rcu() can be
-slow, thus minimizing its hitting would be great. So, here we go with a
-trade off.
+On Wed 20 Jan 12:48 CST 2021, Thara Gopinath wrote:
 
-Doing it hard as __GFP_RETRY_MAYFAIL can do, is not worth(IMHO), but to have some
-light-wait requests would be acceptable. That is why __GFP_NORETRY was proposed.
+> Set the register REG_ENCR_XTS_DU_SIZE to cryptlen for AES XTS
+> transformation. Anything else causes the engine to return back
+> wrong results.
+> 
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+>  drivers/crypto/qce/common.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
+> index a73db2a5637f..f7bc701a4aa2 100644
+> --- a/drivers/crypto/qce/common.c
+> +++ b/drivers/crypto/qce/common.c
+> @@ -295,15 +295,15 @@ static void qce_xtskey(struct qce_device *qce, const u8 *enckey,
+>  {
+>  	u32 xtskey[QCE_MAX_CIPHER_KEY_SIZE / sizeof(u32)] = {0};
+>  	unsigned int xtsklen = enckeylen / (2 * sizeof(u32));
+> -	unsigned int xtsdusize;
+>  
+>  	qce_cpu_to_be32p_array((__be32 *)xtskey, enckey + enckeylen / 2,
+>  			       enckeylen / 2);
+>  	qce_write_array(qce, REG_ENCR_XTS_KEY0, xtskey, xtsklen);
+>  
+> -	/* xts du size 512B */
+> -	xtsdusize = min_t(u32, QCE_SECTOR_SIZE, cryptlen);
 
-There were simple criterias we discussed which we would like to achieve:
+I wonder if this is a hardware limitation that has gone away in the
+newer chips. I am however not able to find anything about it, so I'm in
+favor of merging this patch and if anyone actually uses the driver on
+the older hardware we'd have to go back and quirk it somehow.
 
-a) minimize a fallback hitting;
-b) avoid of OOM involving;
-c) avoid of dipping into the emergency reserves. See kvfree_rcu: Use __GFP_NOMEMALLOC for single-argument kvfree_rcu()
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
---
-Vlad Rezki
+Regards,
+Bjorn
+
+> -	qce_write(qce, REG_ENCR_XTS_DU_SIZE, xtsdusize);
+> +	/* Set data unit size to cryptlen. Anything else causes
+> +	 * crypto engine to return back incorrect results.
+> +	 */
+> +	qce_write(qce, REG_ENCR_XTS_DU_SIZE, cryptlen);
+>  }
+>  
+>  static int qce_setup_regs_skcipher(struct crypto_async_request *async_req,
+> -- 
+> 2.25.1
+> 
