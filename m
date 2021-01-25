@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D71302B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D84302B49
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731493AbhAYTOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:14:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
+        id S1726958AbhAYTQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:16:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbhAYSwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:52:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B8C920679;
-        Mon, 25 Jan 2021 18:51:58 +0000 (UTC)
+        id S1726873AbhAYSw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:52:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8682C20719;
+        Mon, 25 Jan 2021 18:51:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600718;
-        bh=d9N9Rw7S0yFY1ZgMzq2rorDUajTElzhzdLWNWf8VZM8=;
+        s=korg; t=1611600706;
+        bh=dtHWywZcjIYTvK9Xnj3nvbbc7zy5dcn9/5bvnLGxh/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nKEmX874eioggjYWCKsyTk0YZewood/QCogM2RpwutuwlT/3rcsCfIw35UVzYI3FX
-         XtzowD/a5wSK1V16vsCH6GuA0PqhG3/Dfpn7ZuH3RAWjZKq6lhFJNuoa5ZZw4AxgrO
-         N7vmWJFb7vtrU16YYv5W5/Oe2kMVbD0luXFPmFiA=
+        b=oVp1PXqQYMwzSe5pwjFVvrPLq1ZRMeYfHQCJR6Xi+Qi8R5VO7JEze0FATOPlltsXg
+         vgfXfwhUUvcVu8CVkYqOU4ELD7iu4qyNUMcC3s7KJo9J/v3K6z/aT8zoPKxKHd8UXM
+         KIbKanLW+PKdr5fRJRxn6zUFGSPbGzWl9BiDV1T0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neta Ostrovsky <netao@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 094/199] RDMA/cma: Fix error flow in default_roce_mode_store
-Date:   Mon, 25 Jan 2021 19:38:36 +0100
-Message-Id: <20210125183220.241455008@linuxfoundation.org>
+        stable@vger.kernel.org, Mathias Kresin <dev@kresin.me>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.10 118/199] irqchip/mips-cpu: Set IPI domain parent chip
+Date:   Mon, 25 Jan 2021 19:39:00 +0100
+Message-Id: <20210125183221.214457390@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,41 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neta Ostrovsky <netao@nvidia.com>
+From: Mathias Kresin <dev@kresin.me>
 
-[ Upstream commit 7c7b3e5d9aeed31d35c5dab0bf9c0fd4c8923206 ]
+commit 599b3063adf4bf041a87a69244ee36aded0d878f upstream.
 
-In default_roce_mode_store(), we took a reference to cma_dev, but didn't
-return it with cma_dev_put in the error flow.
+Since commit 55567976629e ("genirq/irqdomain: Allow partial trimming of
+irq_data hierarchy") the irq_data chain is valided.
 
-Fixes: 1c15b4f2a42f ("RDMA/core: Modify enum ib_gid_type and enum rdma_network_type")
-Link: https://lore.kernel.org/r/20210113130214.562108-1-leon@kernel.org
-Signed-off-by: Neta Ostrovsky <netao@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The irq_domain_trim_hierarchy() function doesn't consider the irq + ipi
+domain hierarchy as valid, since the ipi domain has the irq domain set
+as parent, but the parent domain has no chip set. Hence the boot ends in
+a kernel panic.
+
+Set the chip for the parent domain as it is done in the mips gic irq
+driver, to have a valid irq_data chain.
+
+Fixes: 3838a547fda2 ("irqchip: mips-cpu: Introduce IPI IRQ domain support")
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Mathias Kresin <dev@kresin.me>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210107213603.1637781-1-dev@kresin.me
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/core/cma_configfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-mips-cpu.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
-index 7ec4af2ed87ab..35d1ec1095f9c 100644
---- a/drivers/infiniband/core/cma_configfs.c
-+++ b/drivers/infiniband/core/cma_configfs.c
-@@ -131,8 +131,10 @@ static ssize_t default_roce_mode_store(struct config_item *item,
- 		return ret;
+--- a/drivers/irqchip/irq-mips-cpu.c
++++ b/drivers/irqchip/irq-mips-cpu.c
+@@ -197,6 +197,13 @@ static int mips_cpu_ipi_alloc(struct irq
+ 		if (ret)
+ 			return ret;
  
- 	gid_type = ib_cache_gid_parse_type_str(buf);
--	if (gid_type < 0)
-+	if (gid_type < 0) {
-+		cma_configfs_params_put(cma_dev);
- 		return -EINVAL;
-+	}
- 
- 	ret = cma_set_default_gid_type(cma_dev, group->port_num, gid_type);
- 
--- 
-2.27.0
-
++		ret = irq_domain_set_hwirq_and_chip(domain->parent, virq + i, hwirq,
++						    &mips_mt_cpu_irq_controller,
++						    NULL);
++
++		if (ret)
++			return ret;
++
+ 		ret = irq_set_irq_type(virq + i, IRQ_TYPE_LEVEL_HIGH);
+ 		if (ret)
+ 			return ret;
 
 
