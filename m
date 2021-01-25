@@ -2,135 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8603027D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 645F73027CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730668AbhAYQ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42040 "EHLO
+        id S1730550AbhAYQ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:27:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727840AbhAYQ1L (ORCPT
+        with ESMTP id S1730765AbhAYQZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:27:11 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226A7C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:26:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ixdyS05p7ztMglop7rXtNcIDaMbcHqMuwN4v+O3qLuk=; b=tnzyKZlg/LeBjujzlgIYG7CdTJ
-        pJ3QEFg6nagxlRxheDtmuGqZtDD6zVrtryCaGERZqm7fsvdPJ5qBk2Hx153fRH9Z3ZwIxkGmUgiCw
-        dBpEcoH6QUDvq6hiloccNTRrBZtf2Qkv+vRrmJ+NJJ+P/7XFOeXf/vIqFtXKjE4+jTLI5Y/MPWynt
-        xJhRIzo1dB7vbaORp8VzLmpZu6EV6PFTazSodEDWYpcZkV3MY5cWxXQJ9IAI1h2OVsa2RQodyS5QZ
-        h0EqJ+UQ1sgANOxI/ewQLgo7G01amZrCPLFpQ/pCscl8fJbQVGucGy+8sTp69JwTN+BRmSTi1jWXp
-        Z0gos8Fw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l44fq-004Oy8-6O; Mon, 25 Jan 2021 16:25:11 +0000
-Date:   Mon, 25 Jan 2021 16:25:06 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-Message-ID: <20210125162506.GF308988@casper.infradead.org>
-References: <20210125042441.20030-1-longman@redhat.com>
- <20210125092815.GB827@dhcp22.suse.cz>
- <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
- <20210125160328.GP827@dhcp22.suse.cz>
+        Mon, 25 Jan 2021 11:25:53 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00556C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:25:12 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id v1so13261740ott.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:25:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KLhKRtgeJ+2sRx58ZlTjQzSVRy9woj1CcpkOodtGDmc=;
+        b=yPd8UfDeWLMehfS5LV06ocnlP6qW/7ep5g0yzZUQwCqfJVjWXRiCGK8dv4G4epvJ3E
+         wPKwbPXb/rzSCyyv/Lc4eqCUZAUZYCP67krU4E6A1ZsA33/u58wLwe94QG+WIywQRaGk
+         vzAXErfcl7KzVzOYR8OrCsfZuCM1sf8oAlEurXFe8wM0KIE1F3BGyk2EbgF+y8vFa42F
+         6ng05cte0YjlINhwmMbQc+xn2YC/bXhjjH59SREPscQE8HmTDf9qeTzgHip4eBj2mtXC
+         rvPWN3cABIy7BrnRvuzHG2bHclx7fQDP1wgZQ5oP6xsJvI8ay1am6aA/7Z1WnoDeT+Tq
+         jtAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KLhKRtgeJ+2sRx58ZlTjQzSVRy9woj1CcpkOodtGDmc=;
+        b=lYp+wWxA46o3r1rlHvbBNh6IzphhZ8UDw2h8XATrc2/B5KXS6gT0jf334ixWTcmu8X
+         ihH21rXX1FKH+3uxatOu2daxgd/WUtpcqJrvcQrUQ2us+px+uHO6QBVBoEvJpJZ+Y/Wt
+         GzS309xBg8CyB3LvmxNDNuMnrKSauhvCfVUekOrR9oSA4fMkJhMmDyL+vRQLuwp4Bpvi
+         dPB7FObepQTTzbMOF+WiTfEIcNDq/Y4hbFWK76L3wxI3TVBvDw3rthnaKo80MElt10Pf
+         uztdq5ndv0zcC2+5VZBsqTKeM1yW3WwpojbAzMih4FxSlco4+bV9UVWExgeYOlUBQNa/
+         EOJA==
+X-Gm-Message-State: AOAM531kLvliM3RhDfBQeZoFK8minXD+Y8TjKFuZjvUeN7Ur25EntZPB
+        kVrn/P5rwwMZpfdWWkDpnLjRrw==
+X-Google-Smtp-Source: ABdhPJx+2x08xXpPFpyeCPmzZYM6V5JbIV/1q2hyn+nq63lcg3m5cjTfpxmxB56iFVW0sB78f0czSQ==
+X-Received: by 2002:a05:6830:157:: with SMTP id j23mr1042468otp.240.1611591912296;
+        Mon, 25 Jan 2021 08:25:12 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r10sm3631796oib.31.2021.01.25.08.25.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 08:25:11 -0800 (PST)
+Date:   Mon, 25 Jan 2021 10:25:09 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] drivers: crypto: qce: skcipher: Fix regressions
+ found during fuzz testing
+Message-ID: <YA7w5W0Rhyiy5hs4@builder.lan>
+References: <20210120184843.3217775-1-thara.gopinath@linaro.org>
+ <20210120184843.3217775-4-thara.gopinath@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125160328.GP827@dhcp22.suse.cz>
+In-Reply-To: <20210120184843.3217775-4-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 05:03:28PM +0100, Michal Hocko wrote:
-> On Mon 25-01-21 10:57:54, Waiman Long wrote:
-> > On 1/25/21 4:28 AM, Michal Hocko wrote:
-> > > On Sun 24-01-21 23:24:41, Waiman Long wrote:
-> > > > The commit 3fea5a499d57 ("mm: memcontrol: convert page
-> > > > cache to a new mem_cgroup_charge() API") introduced a bug in
-> > > > __add_to_page_cache_locked() causing the following splat:
-> > > > 
-> > > >   [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
-> > > >   [ 1570.068333] pages's memcg:ffff8889a4116000
-> > > >   [ 1570.068343] ------------[ cut here ]------------
-> > > >   [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
-> > > >   [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
-> > > >   [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
-> > > >   [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
-> > > >   [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
-> > > >     :
-> > > >   [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
-> > > >   [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
-> > > >   [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
-> > > >   [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
-> > > >   [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
-> > > >   [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
-> > > >   [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
-> > > >   [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > >   [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
-> > > >   [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > >   [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > >   [ 1570.068402] PKRU: 55555554
-> > > >   [ 1570.068404] Call Trace:
-> > > >   [ 1570.068407]  mem_cgroup_charge+0x175/0x770
-> > > >   [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
-> > > >   [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
-> > > >   [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
-> > > >   [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
-> > > >   [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
-> > > >   [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
-> > > >   [ 1570.068693]  read_pages+0x5b1/0xc40
-> > > >   [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
-> > > >   [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
-> > > >   [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
-> > > >   [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
-> > > >   [ 1570.068872]  new_sync_read+0x3af/0x610
-> > > >   [ 1570.068901]  vfs_read+0x339/0x4b0
-> > > >   [ 1570.068909]  ksys_read+0xf1/0x1c0
-> > > >   [ 1570.068920]  do_syscall_64+0x33/0x40
-> > > >   [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > >   [ 1570.068930] RIP: 0033:0x7ff039135595
-> > > > 
-> > > > Before that commit, there was a try_charge() and commit_charge()
-> > > > in __add_to_page_cache_locked(). These 2 separated charge functions
-> > > > were replaced by a single mem_cgroup_charge(). However, it forgot
-> > > > to add a matching mem_cgroup_uncharge() when the xarray insertion
-> > > > failed with the page released back to the pool. Fix this by adding a
-> > > > mem_cgroup_uncharge() call when insertion error happens.
-> > > > 
-> > > > Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
-> > > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > > OK, this is indeed a subtle bug. The patch aimed at simplifying the
-> > > charge lifetime so that users do not really have to think about when to
-> > > uncharge as that happens when the page is freed. fscache somehow breaks
-> > > that assumption because it doesn't free up pages but it keeps some of
-> > > them in the cache.
-> > > 
-> > > I have tried to wrap my head around the cached object life time in
-> > > fscache but failed and got lost in the maze. Is this the only instance
-> > > of the problem? Would it make more sense to explicitly handle charges in
-> > > the fscache code or there are other potential users to fall into this
-> > > trap?
-> > 
-> > There may be other places that have similar problem. I focus on the
-> > filemap.c case as I have a test case that can reliably produce the bug
-> > splat. This patch does fix it for my test case.
+On Wed 20 Jan 12:48 CST 2021, Thara Gopinath wrote:
+
+> This patch contains the following fixes for the supported encryption
+> algorithms in the Qualcomm crypto engine(CE)
+> 1. Return unsupported if key1 = key2 for AES XTS algorithm since CE
+> does not support this and the operation causes the engine to hang.
+> 2. Return unsupported if any three keys are same for DES3 algorithms
+> since CE does not support this and the operation causes the engine to
+> hang.
+> 3. Return unsupported for 0 length plain texts since crypto engine BAM
+> dma does not support 0 length data.
+> 4. ECB messages do not have an IV and hence set the ivsize to 0.
+> 5. Ensure that the data passed for ECB/CBC encryption/decryption is
+> blocksize aligned. Otherwise the CE hangs on the operation.
+> 6. Allow messages of length less that 512 bytes for all other encryption
+> algorithms other than AES XTS. The recommendation is only for AES XTS
+> to have data size greater than 512 bytes.
 > 
-> I believe this needs a more general fix than catching a random places
-> which you can trigger. Would it make more sense to address this at the
-> fscache level and always make sure that a page returned to the pool is
-> always uncharged instead?
 
-I believe you mean "page cache" -- there is a separate thing called
-'fscache' which is used to cache network filesystems.
+This seems like 6 trivial changes, that if send individually will be
+easy to reason about and if there's ever any regressions it will be easy
+to bisect.
 
-I don't understand the memcg code at all, so I have no useful feedback
-on what you're saying other than this.
+So please split this patch.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+> 
+> v2->v3:
+> 	- Made the comparison between keys to check if any two keys are
+> 	  same for triple des algorithms constant-time as per
+> 	  Nym Seddon's suggestion.
+> 
+>  drivers/crypto/qce/skcipher.c | 68 ++++++++++++++++++++++++++++++-----
+>  1 file changed, 60 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
+> index a2d3da0ad95f..d78b932441ab 100644
+> --- a/drivers/crypto/qce/skcipher.c
+> +++ b/drivers/crypto/qce/skcipher.c
+> @@ -167,16 +167,32 @@ static int qce_skcipher_setkey(struct crypto_skcipher *ablk, const u8 *key,
+>  	struct crypto_tfm *tfm = crypto_skcipher_tfm(ablk);
+>  	struct qce_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
+>  	unsigned long flags = to_cipher_tmpl(ablk)->alg_flags;
+> +	unsigned int __keylen;
+>  	int ret;
+>  
+>  	if (!key || !keylen)
+>  		return -EINVAL;
+>  
+> -	switch (IS_XTS(flags) ? keylen >> 1 : keylen) {
+> +	/*
+> +	 * AES XTS key1 = key2 not supported by crypto engine.
+> +	 * Revisit to request a fallback cipher in this case.
+> +	 */
+> +	if (IS_XTS(flags)) {
+> +		__keylen = keylen >> 1;
+> +		if (!memcmp(key, key + __keylen, __keylen))
+> +			return -EINVAL;
+> +	} else {
+> +		__keylen = keylen;
+> +	}
+> +	switch (__keylen) {
+>  	case AES_KEYSIZE_128:
+>  	case AES_KEYSIZE_256:
+>  		memcpy(ctx->enc_key, key, keylen);
+>  		break;
+> +	case AES_KEYSIZE_192:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+>  	}
+>  
+>  	ret = crypto_skcipher_setkey(ctx->fallback, key, keylen);
+> @@ -204,12 +220,27 @@ static int qce_des3_setkey(struct crypto_skcipher *ablk, const u8 *key,
+>  			   unsigned int keylen)
+>  {
+>  	struct qce_cipher_ctx *ctx = crypto_skcipher_ctx(ablk);
+> +	u32 _key[6];
+>  	int err;
+>  
+>  	err = verify_skcipher_des3_key(ablk, key);
+>  	if (err)
+>  		return err;
+>  
+> +	/*
+> +	 * The crypto engine does not support any two keys
+> +	 * being the same for triple des algorithms. The
+> +	 * verify_skcipher_des3_key does not check for all the
+> +	 * below conditions. Return -ENOKEY in case any two keys
+> +	 * are the same. Revisit to see if a fallback cipher
+> +	 * is needed to handle this condition.
+> +	 */
+> +	memcpy(_key, key, DES3_EDE_KEY_SIZE);
+> +	if (!((_key[0] ^ _key[2]) | (_key[1] ^ _key[3])) |
+> +	    !((_key[2] ^ _key[4]) | (_key[3] ^ _key[5])) |
+> +	    !((_key[0] ^ _key[4]) | (_key[1] ^ _key[5])))
+> +		return -ENOKEY;
+> +
+>  	ctx->enc_keylen = keylen;
+>  	memcpy(ctx->enc_key, key, keylen);
+>  	return 0;
+> @@ -221,6 +252,7 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
+>  	struct qce_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
+>  	struct qce_cipher_reqctx *rctx = skcipher_request_ctx(req);
+>  	struct qce_alg_template *tmpl = to_cipher_tmpl(tfm);
+> +	unsigned int blocksize = crypto_skcipher_blocksize(tfm);
+>  	int keylen;
+>  	int ret;
+>  
+> @@ -228,14 +260,34 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
+>  	rctx->flags |= encrypt ? QCE_ENCRYPT : QCE_DECRYPT;
+>  	keylen = IS_XTS(rctx->flags) ? ctx->enc_keylen >> 1 : ctx->enc_keylen;
+>  
+> -	/* qce is hanging when AES-XTS request len > QCE_SECTOR_SIZE and
+> -	 * is not a multiple of it; pass such requests to the fallback
+> +	/* CE does not handle 0 length messages */
+> +	if (!req->cryptlen)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * ECB and CBC algorithms require message lengths to be
+> +	 * multiples of block size.
+> +	 * TODO: The spec says AES CBC mode for certain versions
+> +	 * of crypto engine can handle partial blocks as well.
+> +	 * Test and enable such messages.
+> +	 */
+> +	if (IS_ECB(rctx->flags) || IS_CBC(rctx->flags))
+> +		if (!IS_ALIGNED(req->cryptlen, blocksize))
+> +			return -EINVAL;
+> +
+> +	/*
+> +	 * Conditions for requesting a fallback cipher
+> +	 * AES-192 (not supported by crypto engine (CE))
+> +	 * AES-XTS request with len <= 512 byte (not recommended to use CE)
+> +	 * AES-XTS request with len > QCE_SECTOR_SIZE and
+> +	 * is not a multiple of it.(Revisit this condition to check if it is
+> +	 * needed in all versions of CE)
+>  	 */
+>  	if (IS_AES(rctx->flags) &&
+> -	    (((keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256) ||
+> -	      req->cryptlen <= aes_sw_max_len) ||
+> -	     (IS_XTS(rctx->flags) && req->cryptlen > QCE_SECTOR_SIZE &&
+> -	      req->cryptlen % QCE_SECTOR_SIZE))) {
+> +	    ((keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256) ||
+> +	    (IS_XTS(rctx->flags) && ((req->cryptlen <= aes_sw_max_len) ||
+> +	    (req->cryptlen > QCE_SECTOR_SIZE &&
+> +	    req->cryptlen % QCE_SECTOR_SIZE))))) {
+>  		skcipher_request_set_tfm(&rctx->fallback_req, ctx->fallback);
+>  		skcipher_request_set_callback(&rctx->fallback_req,
+>  					      req->base.flags,
+> @@ -307,7 +359,7 @@ static const struct qce_skcipher_def skcipher_def[] = {
+>  		.name		= "ecb(aes)",
+>  		.drv_name	= "ecb-aes-qce",
+>  		.blocksize	= AES_BLOCK_SIZE,
+> -		.ivsize		= AES_BLOCK_SIZE,
+> +		.ivsize		= 0,
+>  		.min_keysize	= AES_MIN_KEY_SIZE,
+>  		.max_keysize	= AES_MAX_KEY_SIZE,
+>  	},
+> -- 
+> 2.25.1
+> 
