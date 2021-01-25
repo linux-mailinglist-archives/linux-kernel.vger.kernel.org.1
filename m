@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5B930219D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F0230219F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbhAYFRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:17:54 -0500
-Received: from ozlabs.org ([203.11.71.1]:47501 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725272AbhAYFRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:17:51 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPJ5H593Kz9sT6;
-        Mon, 25 Jan 2021 16:17:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611551829;
-        bh=d6wH0tewhj2bTX9Py+IDUHXdALC/jLkfFA/RuTcPyzc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gmRlcwysBMsyZfCEoqaIMtPmy0JEXVucpm2BMAKFfW25pohCiOFcS50ICHdWCSSon
-         hVPHJle+OcJHyPIZ1B7xN7MccgoOQUbZyTAaJ28zFCVIbBToQmG8SNo4OEzj3CgDY/
-         HgT7c3uxPXWOy2U6O6oEUbr8vETF8IMNGMTijz3qw0Z6VFTZOrA0Yrcq3Qu8B28l1t
-         dkXHtQcMgqID1tSYdm/RDOblcFT2v+jdrHe+GZwBygLQN0DBO6/BB5KIsFYovHnt7/
-         ffGHLAdnMuE+6WpoF4GUkhVMpjZUlGIn3SN/qShlMrjkh/WJguQ5umyCe7iwAp6oYX
-         nhRUa4mmMRjxQ==
-Date:   Mon, 25 Jan 2021 16:17:06 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the pidfd tree with the vfs tree
-Message-ID: <20210125161706.05873f95@canb.auug.org.au>
+        id S1726421AbhAYFVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbhAYFVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 00:21:38 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383E7C061573;
+        Sun, 24 Jan 2021 21:20:58 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id l18so1750374pji.3;
+        Sun, 24 Jan 2021 21:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Dds/WUdH9PnyQJIl6DvWk3y0e5c+VljMiMqdDLW00eo=;
+        b=aUbpK8mE9FdDCtnG3Wp9dOLFJQatc42v4dnZuSe5ywgLs15fD3JjZJBG7YCRiH9BzJ
+         tavgdxfEWMP3nJDfIwkAnml3MRco42FXX3GStJkbURsCA7Wc1xAzfL2nZbxc3Dl/0OnR
+         PPRWJ21N/wtenBqYyHPlu2jYWm++0xttx4mK3RR9qtXLWHVK/wN8VpM3qW0znmce8ilY
+         J/QqAdmXSMzDkwacS1yjggWPWguohByHbCOz9gVIPVPVqH9xtCQorDKWv1kwd8LsNOn5
+         zILCy8RE24C22/PnXnOAhIxPE0XiasA6oOnK0WnfHOtUKxuxwKsHtiStfTCL6JJ1VnSc
+         YxJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Dds/WUdH9PnyQJIl6DvWk3y0e5c+VljMiMqdDLW00eo=;
+        b=BU0nCea92oGJq09Itl4uj5aTZlrRJoTBS1w5R6fgB73eJbyzCpFp4Cs2X3Lff9SYCo
+         yIsfl811BL9LRJqY5WDfT8NNMD6so9sA6fsk5X6Qp+1+bJSyqByZRh+pMvsObXU6QUbw
+         HlhwGtjomCKFv2ArQti2DHVIrQClvfBF2iz6Dkbb3zEWP7V6cYq9HT7+/9/LlMdqFsHD
+         1enDJqnOa22Oy1JX8yqCtjL7WWGh1sgZSD8zz8BR/p4nqlQw+bHy7T8oZo/Gzd0uTsMF
+         Rdk1x61uXIjsLCvhZn9u7G2+3dWd/FV+hf6WLfyEVqMjUNXCFc79eIWe9vbq5uWUOSIe
+         kXSQ==
+X-Gm-Message-State: AOAM531cqFhA0YHEjF1xQYXSvAS3nFwWRCeNBcjSZWbBIVftN5i32XYa
+        xbB7l40YAbkVnR15M5DS8Ww4ogecs9k=
+X-Google-Smtp-Source: ABdhPJzdUoh5B6dMgRhGEhLrOl14C38iw8g4rBvfTcmwcgxwtNxlDqwC+tNX1D3wLLKV1Y/PP2FSjw==
+X-Received: by 2002:a17:90a:4088:: with SMTP id l8mr1571526pjg.106.1611552057777;
+        Sun, 24 Jan 2021 21:20:57 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id kr9sm17111965pjb.0.2021.01.24.21.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 21:20:56 -0800 (PST)
+Date:   Sun, 24 Jan 2021 21:20:54 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        linux-input@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9] Input: elants_i2c - support eKTF3624
+Message-ID: <YA5VNtc7vetdNDHq@google.com>
+References: <20210124195414.27333-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Nu1zmlhzmy3bv3chsysBAyR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210124195414.27333-1-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Nu1zmlhzmy3bv3chsysBAyR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Jan 24, 2021 at 10:54:14PM +0300, Dmitry Osipenko wrote:
+> From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> 
+> Add ELAN KTF3624 touchscreen support to the elants_i2c driver.
+> The eKTF3624 TS is found on a series of ASUS Transformer tablet devices,
+> Nexus 7 tablet and etc. The firmware interface of eKTF3624 is nearly
+> identical to eKTH3500, which is already supported by the driver.
+> The minor differences of the firmware interface are now handled by
+> the driver. The eKTF3624 support was tested on ASUS Transformer TF700T,
+> TF300T and Nexus 7 tablets.
+> 
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Hi all,
+Applied, thank you.
 
-Today's linux-next merge of the pidfd tree got a conflict in:
-
-  fs/coredump.c
-
-between commit:
-
-  8a3cc755b138 ("coredump: don't bother with do_truncate()")
-
-from the vfs tree and commit:
-
-  643fe55a0679 ("open: handle idmapped mounts in do_truncate()")
-
-from the pidfd tree.
-
-I fixed it up (the former removes dump_truncate(), so I did that) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Nu1zmlhzmy3bv3chsysBAyR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOVFIACgkQAVBC80lX
-0Gw/0Qf+JFgUcVZNwP9lt7ECeC/3/cLkYiapiJW1WjcRHewkur4tuMZPwzG3OCeG
-jZCml+TrGMbxvGSV0KzoERAy732EDvGzqmUERwIfQcssNpxQ5OqvXYz2Ey/7hyq3
-jqIzPw0V+9vZRZVIAD41ClxzHNje1bJBh392wXv5/mF7Okgwu3OD/U6I1qMVhVWV
-JSxuKaSIigrpnRSzA/K5QaKLvGX9HXxS3yXvHUjgccATnz0jlaf/d5woM4ZOdOPD
-PC8aA0Pj8F0D141L7Ta5AufwswA4Ud5e610lgyF1VAHIwymhUnUDzQ4YPtRMNRk7
-5N22AcYiQWm8Vhk/dqphmjGUIzxVxA==
-=bpqY
------END PGP SIGNATURE-----
-
---Sig_/Nu1zmlhzmy3bv3chsysBAyR--
+-- 
+Dmitry
