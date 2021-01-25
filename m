@@ -2,157 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3FB302A2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:27:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63947302A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbhAYS1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:27:08 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:34472 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726586AbhAYS0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:26:39 -0500
-Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 27A8CCECCB;
-        Mon, 25 Jan 2021 19:33:07 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH v2] Bluetooth: btusb: fix memory leak on suspend and
- resume
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210114112143.GA1318@cosmos>
-Date:   Mon, 25 Jan 2021 19:25:41 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <B529E35E-EAB3-4D8C-B615-9D5C3BDECB94@holtmann.org>
-References: <20210114112143.GA1318@cosmos>
-To:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        id S1726869AbhAYS2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:28:15 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:38444 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbhAYS16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:27:58 -0500
+Received: from zn.tnic (p200300ec2f09db000456e0102ed32bc5.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:db00:456:e010:2ed3:2bc5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF1F61EC0104;
+        Mon, 25 Jan 2021 19:27:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611599234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QN3ei/A8mfrH9ATVg5ntkb1LsnqB0BMG6fj7B9jab8Y=;
+        b=sgo0SEzlpyG+vZTbZ5zKg1uAiSwR4t01ASxw76IKDmIUwWEuBoa5rCNc5ZmAxln/A6motI
+        76ImTK0R6xY4xOzkkLZQ1FTGA+BIxjbxG04UAx6e6J4emK+UJGgciuRNxNxebOQEVvqkHx
+        02hyznf75NMUbtjLjxEu5EzAmOcIPPM=
+Date:   Mon, 25 Jan 2021 19:27:09 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v17 11/26] x86/mm: Update ptep_set_wrprotect() and
+ pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
+Message-ID: <20210125182709.GC23290@zn.tnic>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-12-yu-cheng.yu@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201229213053.16395-12-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vamshi,
+On Tue, Dec 29, 2020 at 01:30:38PM -0800, Yu-cheng Yu wrote:
+> When Shadow Stack is introduced, [R/O + _PAGE_DIRTY] PTE is reserved for
+> shadow stack.  Copy-on-write PTEs have [R/O + _PAGE_COW].
+> 
+> When a PTE goes from [R/W + _PAGE_DIRTY] to [R/O + _PAGE_COW], it could
+> become a transient shadow stack PTE in two cases:
+> 
+> The first case is that some processors can start a write but end up seeing
+> a read-only PTE by the time they get to the Dirty bit, creating a transient
+> shadow stack PTE.  However, this will not occur on processors supporting
+> Shadow Stack, therefore we don't need a TLB flush here.
 
-> kmemleak report:
-> unreferenced object 0xffff9b1127f00500 (size 208):
->  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
->  hex dump (first 32 bytes):
->    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->    00 60 ed 05 11 9b ff ff 00 00 00 00 00 00 00 00  .`..............
->  backtrace:
->    [<000000006ab3fd59>] kmem_cache_alloc_node+0x17a/0x480
->    [<0000000051a5f6f9>] __alloc_skb+0x5b/0x1d0
->    [<0000000037e2d252>] hci_prepare_cmd+0x32/0xc0 [bluetooth]
->    [<0000000010b586d5>] hci_req_add_ev+0x84/0xe0 [bluetooth]
->    [<00000000d2deb520>] hci_req_clear_event_filter+0x42/0x70 [bluetooth]
->    [<00000000f864bd8c>] hci_req_prepare_suspend+0x84/0x470 [bluetooth]
->    [<000000001deb2cc4>] hci_prepare_suspend+0x31/0x40 [bluetooth]
->    [<000000002677dd79>] process_one_work+0x209/0x3b0
->    [<00000000aaa62b07>] worker_thread+0x34/0x400
->    [<00000000826d176c>] kthread+0x126/0x140
->    [<000000002305e558>] ret_from_fork+0x22/0x30
-> unreferenced object 0xffff9b1125c6ee00 (size 512):
->  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
->  hex dump (first 32 bytes):
->    04 00 00 00 0d 00 00 00 05 0c 01 00 11 9b ff ff  ................
->    00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
->  backtrace:
->    [<000000009f07c0cc>] slab_post_alloc_hook+0x59/0x270
->    [<0000000049431dc2>] __kmalloc_node_track_caller+0x15f/0x330
->    [<00000000027a42f6>] __kmalloc_reserve.isra.70+0x31/0x90
->    [<00000000e8e3e76a>] __alloc_skb+0x87/0x1d0
->    [<0000000037e2d252>] hci_prepare_cmd+0x32/0xc0 [bluetooth]
->    [<0000000010b586d5>] hci_req_add_ev+0x84/0xe0 [bluetooth]
->    [<00000000d2deb520>] hci_req_clear_event_filter+0x42/0x70 [bluetooth]
->    [<00000000f864bd8c>] hci_req_prepare_suspend+0x84/0x470 [bluetooth]
->    [<000000001deb2cc4>] hci_prepare_suspend+0x31/0x40 [bluetooth]
->    [<000000002677dd79>] process_one_work+0x209/0x3b0
->    [<00000000aaa62b07>] worker_thread+0x34/0x400
->    [<00000000826d176c>] kthread+0x126/0x140
->    [<000000002305e558>] ret_from_fork+0x22/0x30
-> unreferenced object 0xffff9b112b395788 (size 8):
->  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
->  hex dump (first 8 bytes):
->    20 00 00 00 00 00 04 00                           .......
->  backtrace:
->    [<0000000052dc28d2>] kmem_cache_alloc_trace+0x15e/0x460
->    [<0000000046147591>] alloc_ctrl_urb+0x52/0xe0 [btusb]
->    [<00000000a2ed3e9e>] btusb_send_frame+0x91/0x100 [btusb]
->    [<000000001e66030e>] hci_send_frame+0x7e/0xf0 [bluetooth]
->    [<00000000bf6b7269>] hci_cmd_work+0xc5/0x130 [bluetooth]
->    [<000000002677dd79>] process_one_work+0x209/0x3b0
->    [<00000000aaa62b07>] worker_thread+0x34/0x400
->    [<00000000826d176c>] kthread+0x126/0x140
->    [<000000002305e558>] ret_from_fork+0x22/0x30
+Who's "we"?
+
+> The second case is that when the software, without atomic, tests & replaces
+
+"... when _PAGE_DIRTY is replaced with _PAGE_COW non-atomically, a transient
+shadow stack PTE can be created, as a result."
+
+> _PAGE_DIRTY with _PAGE_COW, a transient shadow stack PTE can exist.
+> This is prevented with cmpxchg.
 > 
-> In pm sleep-resume context, while the btusb device rebinds, it enters
-> hci_unregister_dev(), whilst there is a possibility of hdev receiving
-> PM_POST_SUSPEND suspend_notifier event, leading to generation of msg
-> frames. When hci_unregister_dev() completes, i.e. hdev context is
-> destroyed/freed, those intermittently sent msg frames cause memory
-> leak.
+> Dave Hansen, Jann Horn, Andy Lutomirski, and Peter Zijlstra provided many
+> insights to the issue.  Jann Horn provided the cmpxchg solution.
 > 
-> BUG details:
-> Below is stack trace of thread that enters hci_unregister_dev(), marks
-> the hdev flag HCI_UNREGISTER to 1, and then goes onto to wait on notifier
-> lock - refer unregister_pm_notifier().
-> 
->  hci_unregister_dev+0xa5/0x320 [bluetoot]
->  btusb_disconnect+0x68/0x150 [btusb]
->  usb_unbind_interface+0x77/0x250
->  ? kernfs_remove_by_name_ns+0x75/0xa0
->  device_release_driver_internal+0xfe/0x1
->  device_release_driver+0x12/0x20
->  bus_remove_device+0xe1/0x150
->  device_del+0x192/0x3e0
->  ? usb_remove_ep_devs+0x1f/0x30
->  usb_disable_device+0x92/0x1b0
->  usb_disconnect+0xc2/0x270
->  hub_event+0x9f6/0x15d0
->  ? rpm_idle+0x23/0x360
->  ? rpm_idle+0x26b/0x360
->  process_one_work+0x209/0x3b0
->  worker_thread+0x34/0x400
->  ? process_one_work+0x3b0/0x3b0
->  kthread+0x126/0x140
->  ? kthread_park+0x90/0x90
->  ret_from_fork+0x22/0x30
-> 
-> Below is stack trace of thread executing hci_suspend_notifier() which
-> processes the PM_POST_SUSPEND event, while the unbinding thread is
-> waiting on lock.
-> 
->  hci_suspend_notifier.cold.39+0x5/0x2b [bluetooth]
->  blocking_notifier_call_chain+0x69/0x90
->  pm_notifier_call_chain+0x1a/0x20
->  pm_suspend.cold.9+0x334/0x352
->  state_store+0x84/0xf0
->  kobj_attr_store+0x12/0x20
->  sysfs_kf_write+0x3b/0x40
->  kernfs_fop_write+0xda/0x1c0
->  vfs_write+0xbb/0x250
->  ksys_write+0x61/0xe0
->  __x64_sys_write+0x1a/0x20
->  do_syscall_64+0x37/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Fix hci_suspend_notifer(), not to act on events when flag HCI_UNREGISTER
-> is set.
-> 
-> Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 > ---
-> net/bluetooth/hci_core.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
+>  arch/x86/include/asm/pgtable.h | 52 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+> index 666c25ab9564..1c84f1ba32b9 100644
+> --- a/arch/x86/include/asm/pgtable.h
+> +++ b/arch/x86/include/asm/pgtable.h
+> @@ -1226,6 +1226,32 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+>  static inline void ptep_set_wrprotect(struct mm_struct *mm,
+>  				      unsigned long addr, pte_t *ptep)
+>  {
+> +	/*
+> +	 * Some processors can start a write, but end up seeing a read-only
+> +	 * PTE by the time they get to the Dirty bit.  In this case, they
+> +	 * will set the Dirty bit, leaving a read-only, Dirty PTE which
+> +	 * looks like a shadow stack PTE.
+> +	 *
+> +	 * However, this behavior has been improved
 
-patch has been applied to bluetooth-next tree.
+Improved how?
 
-Regards
+> and will not occur on
+> +	 * processors supporting Shadow Stack.  Without this guarantee, a
 
-Marcel
+Which guarantee? That it won't happen on CPUs which support SHSTK?
 
+> +	 * transition to a non-present PTE and flush the TLB would be
+
+s/flush the TLB/TLB flush/
+
+> +	 * needed.
+> +	 *
+> +	 * When changing a writable PTE to read-only and if the PTE has
+> +	 * _PAGE_DIRTY set, move that bit to _PAGE_COW so that the PTE is
+> +	 * not a shadow stack PTE.
+> +	 */
+
+This sentence doesn't belong here as it refers to what pte_wrprotect()
+does. You could expand the comment in pte_wrprotect() with this here as
+it is better.
+
+> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+> +		pte_t old_pte, new_pte;
+> +
+> +		do {
+> +			old_pte = READ_ONCE(*ptep);
+> +			new_pte = pte_wrprotect(old_pte);
+
+Maybe I'm missing something but those two can happen outside of the
+loop, no? Or is *ptep somehow changing concurrently while the loop is
+doing the CMPXCHG and you need to recreate it each time?
+
+IOW, you can generate upfront and do the empty loop...
+
+> +
+> +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
+> +
+> +		return;
+> +	}
+>  	clear_bit(_PAGE_BIT_RW, (unsigned long *)&ptep->pte);
+>  }
+>  
+> @@ -1282,6 +1308,32 @@ static inline pud_t pudp_huge_get_and_clear(struct mm_struct *mm,
+>  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+>  				      unsigned long addr, pmd_t *pmdp)
+>  {
+> +	/*
+> +	 * Some processors can start a write, but end up seeing a read-only
+> +	 * PMD by the time they get to the Dirty bit.  In this case, they
+> +	 * will set the Dirty bit, leaving a read-only, Dirty PMD which
+> +	 * looks like a Shadow Stack PMD.
+> +	 *
+> +	 * However, this behavior has been improved and will not occur on
+> +	 * processors supporting Shadow Stack.  Without this guarantee, a
+> +	 * transition to a non-present PMD and flush the TLB would be
+> +	 * needed.
+> +	 *
+> +	 * When changing a writable PMD to read-only and if the PMD has
+> +	 * _PAGE_DIRTY set, move that bit to _PAGE_COW so that the PMD is
+> +	 * not a shadow stack PMD.
+> +	 */
+
+Same comments as above.
+
+> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK)) {
+> +		pmd_t old_pmd, new_pmd;
+> +
+> +		do {
+> +			old_pmd = READ_ONCE(*pmdp);
+> +			new_pmd = pmd_wrprotect(old_pmd);
+> +
+> +		} while (!try_cmpxchg((pmdval_t *)pmdp, (pmdval_t *)&old_pmd, pmd_val(new_pmd)));
+> +
+> +		return;
+> +	}
+>  	clear_bit(_PAGE_BIT_RW, (unsigned long *)pmdp);
+>  }
+>  
+> -- 
+> 2.21.0
+> 
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
