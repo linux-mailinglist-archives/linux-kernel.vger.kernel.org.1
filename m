@@ -2,59 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31874302596
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DE03025B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbhAYNkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:40:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36126 "EHLO mx2.suse.de"
+        id S1729094AbhAYNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:49:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbhAYNhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:37:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4FF5AAC45;
-        Mon, 25 Jan 2021 13:36:23 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 14:36:20 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
-        pasha.tatashin@soleen.com
-Subject: Re: [PATCH 2/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <20210125133544.GA31473@linux>
-References: <20201217130758.11565-1-osalvador@suse.de>
- <20201217130758.11565-3-osalvador@suse.de>
- <21079c2d-67d0-fc59-8d7f-0795b3f8a3e3@redhat.com>
- <20210125103951.GA27851@linux>
- <20210125105557.GA28363@linux>
- <64b0dca6-4460-ec6c-66f6-88db24ec288f@redhat.com>
+        id S1729052AbhAYNsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:48:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ECB922240;
+        Mon, 25 Jan 2021 13:46:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611582419;
+        bh=4jeTXsONQRvlpQNo8y1N+7h1UcVWalGRTtzIbqhd3rM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OEtXqwrUq1iirVFq9qgSaEL96SW0ubYogbrPYtb/DEu2Sy43hGKfesstIYJ4eoY3h
+         +LaUR6hkVwIBcd1iOxEnS4O86wumpOAmN8sKcV/sePGDMpbJ4JSYM1S8u2GsfWC9jB
+         IpETXmF2tZCdVB8dKbSpgzSbQBK1KQArUoD+/9PHPuQiJOVkFED5X1Nqv1pHeETYLW
+         oaAGALgYujtdCPjBEUNfKuDnL5UpMZAtqYYhvN2zvVCt6szD3Zs7hlkFzIW1Bs0k0u
+         AwUEwjIlUC5VunOD2GEdq9qkwjdIrKO5uw4jsJjHI4k3CfzhkRDpvu/7eIdKQZsRX9
+         K41iOttCH+ibA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l42Cx-00033C-H3; Mon, 25 Jan 2021 14:47:07 +0100
+Date:   Mon, 25 Jan 2021 14:47:07 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Pho Tran <Pho.Tran@silabs.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "johan@kernel.org" <johan@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v4] USB: serial: cp210x: Fix error 32 when hardware flow
+ control  is enabled.
+Message-ID: <YA7L21jbIl9hPQf1@hovoldconsulting.com>
+References: <E0AAFEFF-2250-4991-8ED8-9B6EE14111EC@silabs.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <64b0dca6-4460-ec6c-66f6-88db24ec288f@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <E0AAFEFF-2250-4991-8ED8-9B6EE14111EC@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 12:02:53PM +0100, David Hildenbrand wrote:
-> Assume you have two consecutive memory blocks with 56 sizeof(struct page).
-> The first one allocates a PMD (2097152) but only consumes 1835008, the second
-> one reuses the remaining part and allocates another PMD (1835008),
-> only using parts of it.
+On Thu, Jan 21, 2021 at 09:52:23AM +0000, Pho Tran wrote:
+> Fix error 32 returned by CP210X_SET_MHS when hardware flow control is enabled.
 > 
-> Ripping out a memory block, along with the PMD in the vmemmap would
-> remove parts of the vmemmap of another memory block.
+> The root cause of error 32 is that user application (CoolTerm, linux-serial-test)
+> opened cp210x device with hardware flow control then attempt to control RTS/DTR pins.
+> In hardware flow control, RTS/DTR pins will be controlled by hardware only,
+> any attempt to control those pins will cause error 32 from the device.
+> This fix will block MHS command(command to control RTS/DTR pins) to the device
+> if hardware flow control is being used.
+> 
+> Signed-off-by: Pho Tran <pho.tran@silabs.com>
+> ---
+> 01/21/2021: Patch v3 modified based on comment from Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 01/19/2021: Patch v2  Modified based on comment from Johan Hovold <johan@kernel.org>
+> and Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Bleh, yeah, I was confused, you are right.
+Giving credit in the commit log is nice, but this still doesn't say
+anything about *what* you changed.
 
-> You might want to take a look at:
+> ---
+>  drivers/usb/serial/cp210x.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index fbb10dfc56e3..814dff5fee98 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -1204,7 +1204,12 @@ static int cp210x_tiocmset(struct tty_struct *tty,
+>  		unsigned int set, unsigned int clear)
+>  {
+>  	struct usb_serial_port *port = tty->driver_data;
+> -	return cp210x_tiocmset_port(port, set, clear);
+> +
+> +	/* Don't send SET_MHS command if device in hardware flow control mode. */
+> +	if (C_CRTSCTS(tty))
+> +		return 0;
 
-Thanks a lot for the hints, I will have a look ;-)
+You didn't reply to my comments that what should be done here is to
+disable auto-RTS when clearing TIOCM_RST and re-enable it when setting
+the same bit. If you disagree with review feedback you need to say so
+and not just resend a new version of your patch without an explanation.
 
+Note that the above would also needlessly prevent DTR from being changed
+whenever auto-RTS is enabled and return success instead of an error to
+user space.
 
--- 
-Oscar Salvador
-SUSE L3
+My suggestion for how to suppress the error message from dtr_rts()
+suffers from the same problem so I've updated that patch and implemented
+proper RTS handling in the driver now.
+
+This takes care not only of the SET_MHS error messages, but also makes
+sure that RTS can always be deasserted and some other related issues
+with regards to modem control.
+
+> +	else
+> +		return cp210x_tiocmset_port(port, set, clear);
+>  }
+>  
+>  static int cp210x_tiocmset_port(struct usb_serial_port *port,
+
+Johan
