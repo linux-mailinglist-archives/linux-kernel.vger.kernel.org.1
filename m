@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8D5302C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26673302C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732273AbhAYUbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        id S1732281AbhAYUcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732320AbhAYUaP (ORCPT
+        with ESMTP id S1732012AbhAYUcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:30:15 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19AC0C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:29:30 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id w14so9074408pfi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:29:30 -0800 (PST)
+        Mon, 25 Jan 2021 15:32:09 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B0BC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:31:27 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id p13so16999662ljg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:31:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=DCEP4gnVGuX122R3MmiG4Mh/J3FSnjqd1Q2nTdmlp1A=;
-        b=czO9lF4xQAIchrxIYbplkf7nO7CKPxP42s+chuaVhLevnBowti/kngBiCN3dHGZNMo
-         EPwcaCxAeCPYb6HjKn+SA+aqJnxOE4xGXRzTL5iCSSmkVbW8qZtKFtX/nQXl0qED0Huf
-         lFUH1SxNF/RYJrbSxmYPLfRwv2m8dICrDWmCw=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rpdkiDUiJjTq8PYQ0mE03z4QPO39NKIUJykccdYPnZA=;
+        b=P/J81xwDxdbJsrAqkXE0UocZqLdLlW6TRSIBDm+Rj1uhnfpUxdANylY0cJ1/VCyNG9
+         67oNRCFZnK+QCvACVI37MTvMiHCnXvvg8Yt0ZAzEz16SNIvGDLmxT2M/KzFkDBYDQm3G
+         gqS1m+tDXT+CXpw2w2sRAjbzmUxnsJspNELLA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=DCEP4gnVGuX122R3MmiG4Mh/J3FSnjqd1Q2nTdmlp1A=;
-        b=s3NRgseD1VThFKO4vpIsS+69pUHHR3EgpXrjJ1rCyh5ArzHklLQlDSPu+9w6j6QPE7
-         5NZ0Jh9s1dFwkEo3MN77mis83nYa3RfNr3ve62c6mpNQLZbRk3ZGBDVswhyGM57IYkIR
-         bhhRISIS5vdN818m31tJaAuBtq1mKXUF6fC0zMcUrRxAAsTMS1Y9dPcSO34/Hm6YwK8R
-         q8J9FOI4sqiKemKY85uAmmecuCBjX8qbt81RCludYB+Skog6Le5xqfNyNqjAhLnFm1iL
-         MH5NOPzgsHg70Jqcy6k6JEPNU/HYyL7WLyx+ANB4YGumAof0pD+eA3GNOTPQmxU84a+7
-         GipA==
-X-Gm-Message-State: AOAM533G3vVWSLyeVVEtMwfWItO5d5CfaGNunjIPxTGGWhIiMf1Q7n/M
-        4iuhhnpqbxqKgtcRhBRS41u+5g==
-X-Google-Smtp-Source: ABdhPJypmTAXXNM6u+Jcdgi8ZKzmQ99oJF1tF2CC/PL6E54yVkqgPThSD13OYhBvfX4XNr3XcchQSA==
-X-Received: by 2002:a62:36c4:0:b029:1b9:7ca6:5d6b with SMTP id d187-20020a6236c40000b02901b97ca65d6bmr1913863pfa.43.1611606569745;
-        Mon, 25 Jan 2021 12:29:29 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:1066:b437:97cd:2278])
-        by smtp.gmail.com with ESMTPSA id t206sm17377408pgb.84.2021.01.25.12.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 12:29:29 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rpdkiDUiJjTq8PYQ0mE03z4QPO39NKIUJykccdYPnZA=;
+        b=GHAY+fFZz3cfYkJd9XUnpcVITFpLjqR3x7BRxA8ZzwmVvQPU2F72sU30CJALiTWAqP
+         yQ/+LkdVACbumWa0DERX14Iu09CHLoPe/5T3TaexB7+TaSwnJpPvx57B7SYpdEhmKu7L
+         HfriVfhOTVE4Nj03rB9KNnM15c6MlRtDBt9YeMJcX+Q3548L0gcbax3WnalgYyaTC45T
+         z47kdgiuH5H85d3ogRcYzsaJr01hEEG2GG+2HhoeJDTANS37t4nbn6fRV40Ac9NhsiO0
+         CZ8KuD8V1uFNwtET5fUNmtwOmljx/CkGWvqXKC+nLpO1mKkfRCVk+eqEUA75XAiLPlOr
+         +ZLw==
+X-Gm-Message-State: AOAM531QbaPpRtTkgyQdnTOI1ZrLiPDPvFKc3mf75S/8xV3KcaPkJPL7
+        kF41bMvyVcU2S4msqzOBOPszXwdwp+eqlA==
+X-Google-Smtp-Source: ABdhPJwMmHli6TSCHk4AYbCZK2P5mq5a3ocFsmT+3C1AiUTQMHmcqG7/oL8dj0E8hcHsFN6uFC2Urw==
+X-Received: by 2002:a2e:2ac4:: with SMTP id q187mr1035146ljq.151.1611606686010;
+        Mon, 25 Jan 2021 12:31:26 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id j2sm2101595lfe.134.2021.01.25.12.31.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 12:31:24 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id b26so19687528lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:31:24 -0800 (PST)
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr990527lfu.40.1611606684432;
+ Mon, 25 Jan 2021 12:31:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210115144345.v2.5.I3c01f3aab8335cb509da7009d8938c1a27a266dc@changeid>
-References: <20210115224420.1635017-1-dianders@chromium.org> <20210115144345.v2.5.I3c01f3aab8335cb509da7009d8938c1a27a266dc@changeid>
-Subject: Re: [PATCH v2 5/5] drm/panel-simple: Add N116BCA-EA1
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-To:     Douglas Anderson <dianders@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Date:   Mon, 25 Jan 2021 12:29:27 -0800
-Message-ID: <161160656766.76967.8403671583757705105@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210125190925.3655829-1-samitolvanen@google.com>
+ <CAHk-=wj0NKCw30deEEThF+9_F7JDobfO-VTJm64gqvp4zzsWfg@mail.gmail.com>
+ <CAHk-=wi8mBdnj7QEO9yRzzoJDc+JqfKgy1gXU9iZL8=fF=YO8g@mail.gmail.com> <YA8hYxasFC9VarRq@kroah.com>
+In-Reply-To: <YA8hYxasFC9VarRq@kroah.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Jan 2021 12:31:08 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi=PWosa1VZQKBf9b2pMgVac_P+QPHp7TwLS7JVDHKUgA@mail.gmail.com>
+Message-ID: <CAHk-=wi=PWosa1VZQKBf9b2pMgVac_P+QPHp7TwLS7JVDHKUgA@mail.gmail.com>
+Subject: Re: [PATCH] n_tty: fix redirected_tty_write checks after write_iter conversion
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2021-01-15 14:44:20)
-> This panel is quite similar to the similarly named N116BGE panel (the
-> nominal timings are, in fact identical).  However, let's add a new
-> entry because the full range of clocks listed for N116BGE aren't
-> supported for N116BCA-EA1, at least according to the datasheet.
->=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+On Mon, Jan 25, 2021 at 11:52 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> I have nothing else that I know of, so yes, it is easier for you to take
+> it directly, thanks!
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+It's top-of-tree right now, commit  9f12e37cae44.
+
+And I just noticed I screwed up the formatting when editing the patch
+- after pushing out.  I deleted the actual top line.
+
+Darn.
+
+            Linus
