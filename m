@@ -2,926 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A498F302F0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62880302F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732506AbhAYWaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:30:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732952AbhAYVgx (ORCPT
+        id S1732140AbhAYWbJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 17:31:09 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2966 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732944AbhAYVgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:36:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611610525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oe3AoVzecEphJalmHp26i/e0nD/s+oCMkWUTC/bRQ7g=;
-        b=Plq/fJ2Hd8kg9AiEU/L/XlQHPSuOkUQmN5MARiHLSo0JeH0SaFv7qih5O61sV9SSQM2TTz
-        W1Mhcj9L4ZYLeiB4el3Y2uhXf/oX2gpJvyyEM05PlmK3YNYX+GcqRpYaZc3LPQ3W3hgLAh
-        g8Pa1WSt9BKehH0Qxv5OhD05T93sevU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-uwp7u-_xN52n5wMSxU03Ig-1; Mon, 25 Jan 2021 16:35:23 -0500
-X-MC-Unique: uwp7u-_xN52n5wMSxU03Ig-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 460628735C1;
-        Mon, 25 Jan 2021 21:35:21 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3081819C47;
-        Mon, 25 Jan 2021 21:35:15 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 22/32] afs: Prepare for use of THPs
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 25 Jan 2021 21:35:14 +0000
-Message-ID: <161161051439.2537118.15577827510426326534.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 25 Jan 2021 16:36:50 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DPjnL08cFz5KCg;
+        Tue, 26 Jan 2021 05:34:46 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 26 Jan 2021 05:35:57 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 26 Jan 2021 05:35:57 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Tue, 26 Jan 2021 05:35:57 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "mingo@kernel.org" <mingo@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
+        "mgorman@suse.de" <mgorman@suse.de>
+Subject: RE: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for
+ the deduplicating sort
+Thread-Topic: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for
+ the deduplicating sort
+Thread-Index: AQHW8LvLAz5G3mjdME+poUenwzVodao3mZgg///3IYCAAHq7gIAA0qKA
+Date:   Mon, 25 Jan 2021 21:35:56 +0000
+Message-ID: <ff1e47829eac4278a3489c46c39873c8@hisilicon.com>
+References: <20210122123943.1217-1-valentin.schneider@arm.com>
+ <20210122123943.1217-2-valentin.schneider@arm.com>
+ <bfb703294b234e1e926a68fcb73dbee3@hisilicon.com> <jhj1re92wqm.mognet@arm.com>
+ <jhjtur50xu2.mognet@arm.com>
+In-Reply-To: <jhjtur50xu2.mognet@arm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.203.227]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a prelude to supporting transparent huge pages, use thp_size() and
-similar rather than PAGE_SIZE/SHIFT.
 
-Further, try and frame everything in terms of file positions and lengths
-rather than page indices and numbers of pages.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+> -----Original Message-----
+> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+> Sent: Tuesday, January 26, 2021 5:46 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> linux-kernel@vger.kernel.org
+> Cc: mingo@kernel.org; peterz@infradead.org; vincent.guittot@linaro.org;
+> dietmar.eggemann@arm.com; morten.rasmussen@arm.com; mgorman@suse.de
+> Subject: RE: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for
+> the deduplicating sort
+> 
+> On 25/01/21 09:26, Valentin Schneider wrote:
+> > On 25/01/21 02:23, Song Bao Hua (Barry Song) wrote:
+> >
+> >> with the below topology:
+> >> qemu-system-aarch64 -M virt -nographic \
+> >>  -smp cpus=8 \
+> >>  -numa node,cpus=0-1,nodeid=0 \
+> >>  -numa node,cpus=2-3,nodeid=1 \
+> >>  -numa node,cpus=4-5,nodeid=2 \
+> >>  -numa node,cpus=6-7,nodeid=3 \
+> >>  -numa dist,src=0,dst=1,val=12 \
+> >>  -numa dist,src=0,dst=2,val=20 \
+> >>  -numa dist,src=0,dst=3,val=22 \
+> >>  -numa dist,src=1,dst=2,val=22 \
+> >>  -numa dist,src=2,dst=3,val=12 \
+> >>  -numa dist,src=1,dst=3,val=24 \
+> >>
+> >>
+> >> The panic address is *1294:
+> >>
+> >>                         if (sdd->sd) {
+> >>     1280:       f9400e61        ldr     x1, [x19, #24]
+> >>     1284:       b4000201        cbz     x1, 12c4 <build_sched_domains+0x414>
+> >>                                 sd = *per_cpu_ptr(sdd->sd, j);
+> >>     1288:       93407eb7        sxtw    x23, w21
+> >>     128c:       aa0103e0        mov     x0, x1
+> >>     1290:       f8777ac2        ldr     x2, [x22, x23, lsl #3]
+> >>     *1294:       f8626800        ldr     x0, [x0, x2]
+> >>                                 if (sd && (sd->flags & SD_OVERLAP))
+> >>     1298:       b4000120        cbz     x0, 12bc <build_sched_domains+0x40c>
+> >>     129c:       b9403803        ldr     w3, [x0, #56]
+> >>     12a0:       365800e3        tbz     w3, #11, 12bc
+> >> <build_sched_domains+0x40c>
+> >>                                         free_sched_groups(sd->groups, 0);
+> >>     12a4:       f9400800        ldr     x0, [x0, #16]
+> >>         if (!sg)
+> >>
+> >
+> > Thanks for giving it a shot, let me run that with your topology and see
+> > where I end up.
+> >
+> 
+> I can't seem to reproduce this - your topology is actually among the ones
+> I tested this against.
+> 
+> Applying this patch obviously doesn't get rid of the group span issue, but
+> it does remove this warning:
+> 
+> [    0.354806] ERROR: Node-0 not representative
+> [    0.354806]
+> [    0.355223]   10 12 20 22
+> [    0.355475]   12 10 22 24
+> [    0.355648]   20 22 10 12
+> [    0.355814]   22 24 12 10
+> 
+> I'm running this based on tip/sched/core:
+> 
+>   65bcf072e20e ("sched: Use task_current() instead of 'rq->curr == p'")
+I was using 5.11-rc1. One thing I'd like to mention is that:
 
- fs/afs/dir.c      |    2 
- fs/afs/file.c     |    8 -
- fs/afs/internal.h |    2 
- fs/afs/write.c    |  436 +++++++++++++++++++++++++++++------------------------
- 4 files changed, 245 insertions(+), 203 deletions(-)
+For the below topology:
++-------+          +-----+
+| node1 |  20      |node2|
+|       +----------+     |
++---+---+          +-----+
+    |                  |12
+12  |                  |
++---+---+          +---+-+
+|       |          |node3|
+| node0 |          |     |
++-------+          +-----+
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 6439ea18667f..8f858b6395fa 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -2082,6 +2082,6 @@ static void afs_dir_invalidatepage(struct page *page, unsigned int offset,
- 		afs_stat_v(dvnode, n_inval);
- 
- 	/* we clean up only if the entire page is being invalidated */
--	if (offset == 0 && length == PAGE_SIZE)
-+	if (offset == 0 && length == thp_size(page))
- 		detach_page_private(page);
- }
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index acbc21a8c80e..f6282ac0d222 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -330,8 +330,8 @@ static int afs_page_filler(struct key *key, struct page *page)
- 	req->vnode		= vnode;
- 	req->key		= key_get(key);
- 	req->pos		= (loff_t)page->index << PAGE_SHIFT;
--	req->len		= PAGE_SIZE;
--	req->nr_pages		= 1;
-+	req->len		= thp_size(page);
-+	req->nr_pages		= thp_nr_pages(page);
- 	req->done		= afs_file_read_done;
- 	req->cleanup		= afs_file_read_cleanup;
- 
-@@ -575,8 +575,8 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page);
- 	clear_page_dirty_for_io(page);
- full_invalidate:
--	detach_page_private(page);
- 	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page);
-+	detach_page_private(page);
- }
- 
- /*
-@@ -621,8 +621,8 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- #endif
- 
- 	if (PagePrivate(page)) {
--		detach_page_private(page);
- 		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
-+		detach_page_private(page);
- 	}
- 
- 	/* indicate that the page can be released */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index d4163f9babfd..daf5339ae316 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -815,8 +815,6 @@ struct afs_operation {
- 			loff_t	pos;
- 			loff_t	size;
- 			loff_t	i_size;
--			pgoff_t	first;		/* first page in mapping to deal with */
--			pgoff_t	last;		/* last page in mapping to deal with */
- 			bool	laundering;	/* Laundering page, PG_writeback not set */
- 		} store;
- 		struct {
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 89c804bfe253..e672833c99bc 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -94,15 +94,15 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
- 	struct page *page;
- 	unsigned long priv;
--	unsigned f, from = pos & (PAGE_SIZE - 1);
--	unsigned t, to = from + len;
--	pgoff_t index = pos >> PAGE_SHIFT;
-+	unsigned f, from;
-+	unsigned t, to;
-+	pgoff_t index;
- 	int ret;
- 
--	_enter("{%llx:%llu},{%lx},%u,%u",
--	       vnode->fid.vid, vnode->fid.vnode, index, from, to);
-+	_enter("{%llx:%llu},%llx,%x",
-+	       vnode->fid.vid, vnode->fid.vnode, pos, len);
- 
--	page = grab_cache_page_write_begin(mapping, index, flags);
-+	page = grab_cache_page_write_begin(mapping, pos / PAGE_SIZE, flags);
- 	if (!page)
- 		return -ENOMEM;
- 
-@@ -121,19 +121,20 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	wait_on_page_fscache(page);
- #endif
- 
-+	index = page->index;
-+	from = pos - index * PAGE_SIZE;
-+	to = from + len;
-+
- try_again:
- 	/* See if this page is already partially written in a way that we can
- 	 * merge the new write with.
- 	 */
--	t = f = 0;
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
- 		f = afs_page_dirty_from(page, priv);
- 		t = afs_page_dirty_to(page, priv);
- 		ASSERTCMP(f, <=, t);
--	}
- 
--	if (f != t) {
- 		if (PageWriteback(page)) {
- 			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"), page);
- 			goto flush_conflicting_write;
-@@ -180,7 +181,7 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- {
- 	struct afs_vnode *vnode = AFS_FS_I(file_inode(file));
- 	unsigned long priv;
--	unsigned int f, from = pos & (PAGE_SIZE - 1);
-+	unsigned int f, from = pos & (thp_size(page) - 1);
- 	unsigned int t, to = from + copied;
- 	loff_t i_size, maybe_i_size;
- 	int ret = 0;
-@@ -233,9 +234,8 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 		trace_afs_page_dirty(vnode, tracepoint_string("dirty"), page);
- 	}
- 
--	set_page_dirty(page);
--	if (PageDirty(page))
--		_debug("dirtied");
-+	if (set_page_dirty(page))
-+		_debug("dirtied %lx", page->index);
- 	ret = copied;
- 
- out:
-@@ -248,40 +248,43 @@ int afs_write_end(struct file *file, struct address_space *mapping,
-  * kill all the pages in the given range
-  */
- static void afs_kill_pages(struct address_space *mapping,
--			   pgoff_t first, pgoff_t last)
-+			   loff_t start, loff_t len)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
- 	struct pagevec pv;
--	unsigned count, loop;
-+	unsigned int loop, psize;
- 
--	_enter("{%llx:%llu},%lx-%lx",
--	       vnode->fid.vid, vnode->fid.vnode, first, last);
-+	_enter("{%llx:%llu},%llx @%llx",
-+	       vnode->fid.vid, vnode->fid.vnode, len, start);
- 
- 	pagevec_init(&pv);
- 
- 	do {
--		_debug("kill %lx-%lx", first, last);
-+		_debug("kill %llx @%llx", len, start);
- 
--		count = last - first + 1;
--		if (count > PAGEVEC_SIZE)
--			count = PAGEVEC_SIZE;
--		pv.nr = find_get_pages_contig(mapping, first, count, pv.pages);
--		ASSERTCMP(pv.nr, ==, count);
-+		pv.nr = find_get_pages_contig(mapping, start / PAGE_SIZE,
-+					      PAGEVEC_SIZE, pv.pages);
-+		if (pv.nr == 0)
-+			break;
- 
--		for (loop = 0; loop < count; loop++) {
-+		for (loop = 0; loop < pv.nr; loop++) {
- 			struct page *page = pv.pages[loop];
-+
-+			if (page->index * PAGE_SIZE >= start + len)
-+				break;
-+
-+			psize = thp_size(page);
-+			start += psize;
-+			len -= psize;
- 			ClearPageUptodate(page);
--			SetPageError(page);
- 			end_page_writeback(page);
--			if (page->index >= first)
--				first = page->index + 1;
- 			lock_page(page);
- 			generic_error_remove_page(mapping, page);
- 			unlock_page(page);
- 		}
- 
- 		__pagevec_release(&pv);
--	} while (first <= last);
-+	} while (len > 0);
- 
- 	_leave("");
- }
-@@ -291,37 +294,40 @@ static void afs_kill_pages(struct address_space *mapping,
-  */
- static void afs_redirty_pages(struct writeback_control *wbc,
- 			      struct address_space *mapping,
--			      pgoff_t first, pgoff_t last)
-+			      loff_t start, loff_t len)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
- 	struct pagevec pv;
--	unsigned count, loop;
-+	unsigned int loop, psize;
- 
--	_enter("{%llx:%llu},%lx-%lx",
--	       vnode->fid.vid, vnode->fid.vnode, first, last);
-+	_enter("{%llx:%llu},%llx @%llx",
-+	       vnode->fid.vid, vnode->fid.vnode, len, start);
- 
- 	pagevec_init(&pv);
- 
- 	do {
--		_debug("redirty %lx-%lx", first, last);
-+		_debug("redirty %llx @%llx", len, start);
- 
--		count = last - first + 1;
--		if (count > PAGEVEC_SIZE)
--			count = PAGEVEC_SIZE;
--		pv.nr = find_get_pages_contig(mapping, first, count, pv.pages);
--		ASSERTCMP(pv.nr, ==, count);
-+		pv.nr = find_get_pages_contig(mapping, start / PAGE_SIZE,
-+					      PAGEVEC_SIZE, pv.pages);
-+		if (pv.nr == 0)
-+			break;
- 
--		for (loop = 0; loop < count; loop++) {
-+		for (loop = 0; loop < pv.nr; loop++) {
- 			struct page *page = pv.pages[loop];
- 
-+			if (page->index * PAGE_SIZE >= start + len)
-+				break;
-+
-+			psize = thp_size(page);
-+			start += psize;
-+			len -= psize;
- 			redirty_page_for_writepage(wbc, page);
- 			end_page_writeback(page);
--			if (page->index >= first)
--				first = page->index + 1;
- 		}
- 
- 		__pagevec_release(&pv);
--	} while (first <= last);
-+	} while (len > 0);
- 
- 	_leave("");
- }
-@@ -329,23 +335,28 @@ static void afs_redirty_pages(struct writeback_control *wbc,
- /*
-  * completion of write to server
-  */
--static void afs_pages_written_back(struct afs_vnode *vnode, pgoff_t start, pgoff_t last)
-+static void afs_pages_written_back(struct afs_vnode *vnode, loff_t start, unsigned int len)
- {
- 	struct address_space *mapping = vnode->vfs_inode.i_mapping;
- 	struct page *page;
-+	pgoff_t end;
- 
--	XA_STATE(xas, &mapping->i_pages, start);
-+	XA_STATE(xas, &mapping->i_pages, start / PAGE_SIZE);
- 
--	_enter("{%llx:%llu},{%lx-%lx}",
--	       vnode->fid.vid, vnode->fid.vnode, start, last);
-+	_enter("{%llx:%llu},{%x @%llx}",
-+	       vnode->fid.vid, vnode->fid.vnode, len, start);
- 
- 	rcu_read_lock();
- 
--	xas_for_each(&xas, page, last) {
--		ASSERT(PageWriteback(page));
-+	end = (start + len - 1) / PAGE_SIZE;
-+	xas_for_each(&xas, page, end) {
-+		if (!PageWriteback(page)) {
-+			kdebug("bad %x @%llx page %lx %lx", len, start, page->index, end);
-+			ASSERT(PageWriteback(page));
-+		}
- 
--		detach_page_private(page);
- 		trace_afs_page_dirty(vnode, tracepoint_string("clear"), page);
-+		detach_page_private(page);
- 		page_endio(page, true, 0);
- 	}
- 
-@@ -404,7 +415,7 @@ static void afs_store_data_success(struct afs_operation *op)
- 	afs_vnode_commit_status(op, &op->file[0]);
- 	if (op->error == 0) {
- 		if (!op->store.laundering)
--			afs_pages_written_back(vnode, op->store.first, op->store.last);
-+			afs_pages_written_back(vnode, op->store.pos, op->store.size);
- 		afs_stat_v(vnode, n_stores);
- 		atomic_long_add(op->store.size, &afs_v2net(vnode)->n_store_bytes);
- 	}
-@@ -419,8 +430,7 @@ static const struct afs_operation_ops afs_store_data_operation = {
- /*
-  * write to a file
-  */
--static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,
--			  loff_t pos, pgoff_t first, pgoff_t last,
-+static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter, loff_t pos,
- 			  bool laundering)
- {
- 	struct afs_operation *op;
-@@ -453,8 +463,6 @@ static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,
- 	op->file[0].dv_delta = 1;
- 	op->store.write_iter = iter;
- 	op->store.pos = pos;
--	op->store.first = first;
--	op->store.last = last;
- 	op->store.size = size;
- 	op->store.i_size = max(pos + size, i_size);
- 	op->store.laundering = laundering;
-@@ -499,40 +507,49 @@ static int afs_store_data(struct afs_vnode *vnode, struct iov_iter *iter,
- static void afs_extend_writeback(struct address_space *mapping,
- 				 struct afs_vnode *vnode,
- 				 long *_count,
--				 pgoff_t start,
--				 pgoff_t final_page,
--				 unsigned *_offset,
--				 unsigned *_to,
--				 bool new_content)
-+				 loff_t start,
-+				 loff_t max_len,
-+				 bool new_content,
-+				 unsigned int *_len)
- {
--	struct page *pages[8], *page;
--	unsigned long count = *_count, priv;
--	unsigned offset = *_offset, to = *_to, n, f, t;
--	int loop;
-+	struct pagevec pvec;
-+	struct page *page;
-+	unsigned long priv;
-+	unsigned int psize, filler = 0;
-+	unsigned int f, t;
-+	loff_t len = *_len;
-+	pgoff_t index = (start + len) / PAGE_SIZE;
-+	bool stop = true;
-+	unsigned int i;
-+
-+	XA_STATE(xas, &mapping->i_pages, index);
-+	pagevec_init(&pvec);
- 
--	start++;
- 	do {
--		_debug("more %lx [%lx]", start, count);
--		n = final_page - start + 1;
--		if (n > ARRAY_SIZE(pages))
--			n = ARRAY_SIZE(pages);
--		n = find_get_pages_contig(mapping, start, ARRAY_SIZE(pages), pages);
--		_debug("fgpc %u", n);
--		if (n == 0)
--			goto no_more;
--		if (pages[0]->index != start) {
--			do {
--				put_page(pages[--n]);
--			} while (n > 0);
--			goto no_more;
--		}
-+		/* Firstly, we gather up a batch of contiguous dirty pages
-+		 * under the RCU read lock - but we can't clear the dirty flags
-+		 * there if any of those pages are mapped.
-+		 */
-+		rcu_read_lock();
- 
--		for (loop = 0; loop < n; loop++) {
--			page = pages[loop];
--			if (to != PAGE_SIZE && !new_content)
-+		xas_for_each(&xas, page, ULONG_MAX) {
-+			stop = true;
-+			if (xas_retry(&xas, page))
-+				continue;
-+			if (xa_is_value(page))
-+				break;
-+			if (page->index != index)
- 				break;
--			if (page->index > final_page)
-+
-+			if (!page_cache_get_speculative(page)) {
-+				xas_reset(&xas);
-+				continue;
-+			}
-+
-+			/* Has the page moved or been split? */
-+			if (unlikely(page != xas_reload(&xas)))
- 				break;
-+
- 			if (!trylock_page(page))
- 				break;
- 			if (!PageDirty(page) || PageWriteback(page)) {
-@@ -540,6 +557,7 @@ static void afs_extend_writeback(struct address_space *mapping,
- 				break;
- 			}
- 
-+			psize = thp_size(page);
- 			priv = page_private(page);
- 			f = afs_page_dirty_from(page, priv);
- 			t = afs_page_dirty_to(page, priv);
-@@ -547,110 +565,126 @@ static void afs_extend_writeback(struct address_space *mapping,
- 				unlock_page(page);
- 				break;
- 			}
--			to = t;
- 
-+			len += filler + t;
-+			filler = psize - t;
-+			if (len >= max_len || *_count <= 0)
-+				stop = true;
-+			else if (t == psize || new_content)
-+				stop = false;
-+
-+			index += thp_nr_pages(page);
-+			if (!pagevec_add(&pvec, page))
-+				break;
-+			if (stop)
-+				break;
-+		}
-+
-+		if (!stop)
-+			xas_pause(&xas);
-+		rcu_read_unlock();
-+
-+		/* Now, if we obtained any pages, we can shift them to being
-+		 * writable and mark them for caching.
-+		 */
-+		if (!pagevec_count(&pvec))
-+			break;
-+
-+		for (i = 0; i < pagevec_count(&pvec); i++) {
-+			page = pvec.pages[i];
- 			trace_afs_page_dirty(vnode, tracepoint_string("store+"), page);
- 
- 			if (!clear_page_dirty_for_io(page))
- 				BUG();
- 			if (test_set_page_writeback(page))
- 				BUG();
-+
-+			*_count -= thp_nr_pages(page);
- 			unlock_page(page);
--			put_page(page);
--		}
--		count += loop;
--		if (loop < n) {
--			for (; loop < n; loop++)
--				put_page(pages[loop]);
--			goto no_more;
- 		}
- 
--		start += loop;
--	} while (start <= final_page && count < 65536);
-+		pagevec_release(&pvec);
-+		cond_resched();
-+	} while (!stop);
- 
--no_more:
--	*_count = count;
--	*_offset = offset;
--	*_to = to;
-+	*_len = len;
- }
- 
- /*
-  * Synchronously write back the locked page and any subsequent non-locked dirty
-  * pages.
-  */
--static int afs_write_back_from_locked_page(struct address_space *mapping,
--					   struct writeback_control *wbc,
--					   struct page *primary_page,
--					   pgoff_t final_page)
-+static ssize_t afs_write_back_from_locked_page(struct address_space *mapping,
-+					       struct writeback_control *wbc,
-+					       struct page *page,
-+					       loff_t start, loff_t end)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
- 	struct iov_iter iter;
--	unsigned long count, priv;
--	unsigned offset, to;
--	pgoff_t start, first, last;
--	loff_t i_size, pos, end;
-+	unsigned long priv;
-+	unsigned int offset, to, len, max_len;
-+	loff_t i_size = i_size_read(&vnode->vfs_inode);
- 	bool new_content = test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags);
-+	long count = wbc->nr_to_write;
- 	int ret;
- 
--	_enter(",%lx", primary_page->index);
-+	_enter(",%lx,%llx-%llx", page->index, start, end);
- 
--	count = 1;
--	if (test_set_page_writeback(primary_page))
-+	if (test_set_page_writeback(page))
- 		BUG();
- 
-+	count -= thp_nr_pages(page);
-+
- 	/* Find all consecutive lockable dirty pages that have contiguous
- 	 * written regions, stopping when we find a page that is not
- 	 * immediately lockable, is not dirty or is missing, or we reach the
- 	 * end of the range.
- 	 */
--	start = primary_page->index;
--	priv = page_private(primary_page);
--	offset = afs_page_dirty_from(primary_page, priv);
--	to = afs_page_dirty_to(primary_page, priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("store"), primary_page);
--
--	WARN_ON(offset == to);
--	if (offset == to)
--		trace_afs_page_dirty(vnode, tracepoint_string("WARN"), primary_page);
--
--	if (start < final_page &&
--	    (to == PAGE_SIZE || new_content))
--		afs_extend_writeback(mapping, vnode, &count, start, final_page,
--				     &offset, &to, new_content);
-+	priv = page_private(page);
-+	offset = afs_page_dirty_from(page, priv);
-+	to = afs_page_dirty_to(page, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("store"), page);
-+
-+	len = to - offset;
-+	start += offset;
-+	if (start < i_size) {
-+		/* Trim the write to the EOF; the extra data is ignored.  Also
-+		 * put an upper limit on the size of a single storedata op.
-+		 */
-+		max_len = 65536 * 4096;
-+		max_len = min_t(unsigned long long, max_len, end - start + 1);
-+		max_len = min_t(unsigned long long, max_len, i_size - start);
-+
-+		if (len < max_len &&
-+		    (to == thp_size(page) || new_content))
-+			afs_extend_writeback(mapping, vnode, &count,
-+					     start, max_len, new_content, &len);
-+		len = min_t(loff_t, len, max_len);
-+	}
- 
- 	/* We now have a contiguous set of dirty pages, each with writeback
- 	 * set; the first page is still locked at this point, but all the rest
- 	 * have been unlocked.
- 	 */
--	unlock_page(primary_page);
--
--	first = primary_page->index;
--	last = first + count - 1;
--	_debug("write back %lx[%u..] to %lx[..%u]", first, offset, last, to);
--
--	pos = first;
--	pos <<= PAGE_SHIFT;
--	pos += offset;
--	end = last;
--	end <<= PAGE_SHIFT;
--	end += to;
-+	unlock_page(page);
- 
--	/* Trim the actual write down to the EOF */
--	i_size = i_size_read(&vnode->vfs_inode);
--	if (end > i_size)
--		end = i_size;
-+	if (start < i_size) {
-+		_debug("write back %x @%llx [%llx]", len, start, i_size);
- 
--	if (pos < i_size) {
--		iov_iter_xarray(&iter, WRITE, &mapping->i_pages, pos, end - pos);
--		ret = afs_store_data(vnode, &iter, pos, first, last, false);
-+		iov_iter_xarray(&iter, WRITE, &mapping->i_pages, start, len);
-+		ret = afs_store_data(vnode, &iter, start, false);
- 	} else {
-+		_debug("write discard %x @%llx [%llx]", len, start, i_size);
-+
- 		/* The dirty region was entirely beyond the EOF. */
-+		afs_pages_written_back(vnode, start, len);
- 		ret = 0;
- 	}
- 
- 	switch (ret) {
- 	case 0:
--		ret = count;
-+		wbc->nr_to_write = count;
-+		ret = len;
- 		break;
- 
- 	default:
-@@ -662,13 +696,13 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 	case -EKEYEXPIRED:
- 	case -EKEYREJECTED:
- 	case -EKEYREVOKED:
--		afs_redirty_pages(wbc, mapping, first, last);
-+		afs_redirty_pages(wbc, mapping, start, len);
- 		mapping_set_error(mapping, ret);
- 		break;
- 
- 	case -EDQUOT:
- 	case -ENOSPC:
--		afs_redirty_pages(wbc, mapping, first, last);
-+		afs_redirty_pages(wbc, mapping, start, len);
- 		mapping_set_error(mapping, -ENOSPC);
- 		break;
- 
-@@ -680,7 +714,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 	case -ENOMEDIUM:
- 	case -ENXIO:
- 		trace_afs_file_error(vnode, ret, afs_file_error_writeback_fail);
--		afs_kill_pages(mapping, first, last);
-+		afs_kill_pages(mapping, start, len);
- 		mapping_set_error(mapping, ret);
- 		break;
- 	}
-@@ -695,19 +729,19 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
-  */
- int afs_writepage(struct page *page, struct writeback_control *wbc)
- {
--	int ret;
-+	ssize_t ret;
-+	loff_t start;
- 
- 	_enter("{%lx},", page->index);
- 
-+	start = page->index * PAGE_SIZE;
- 	ret = afs_write_back_from_locked_page(page->mapping, wbc, page,
--					      wbc->range_end >> PAGE_SHIFT);
-+					      start, LLONG_MAX - start);
- 	if (ret < 0) {
--		_leave(" = %d", ret);
--		return 0;
-+		_leave(" = %zd", ret);
-+		return ret;
- 	}
- 
--	wbc->nr_to_write -= ret;
--
- 	_leave(" = 0");
- 	return 0;
- }
-@@ -717,35 +751,46 @@ int afs_writepage(struct page *page, struct writeback_control *wbc)
-  */
- static int afs_writepages_region(struct address_space *mapping,
- 				 struct writeback_control *wbc,
--				 pgoff_t index, pgoff_t end, pgoff_t *_next)
-+				 loff_t start, loff_t end, loff_t *_next)
- {
- 	struct page *page;
--	int ret, n;
-+	ssize_t ret;
-+	int n;
- 
--	_enter(",,%lx,%lx,", index, end);
-+	_enter("%llx,%llx,", start, end);
- 
- 	do {
--		n = find_get_pages_range_tag(mapping, &index, end,
--					PAGECACHE_TAG_DIRTY, 1, &page);
-+		pgoff_t index = start / PAGE_SIZE;
-+
-+		n = find_get_pages_range_tag(mapping, &index, end / PAGE_SIZE,
-+					     PAGECACHE_TAG_DIRTY, 1, &page);
- 		if (!n)
- 			break;
- 
-+		start = (loff_t)page->index * PAGE_SIZE; /* May regress with THPs */
-+
- 		_debug("wback %lx", page->index);
- 
--		/*
--		 * at this point we hold neither the i_pages lock nor the
-+		/* At this point we hold neither the i_pages lock nor the
- 		 * page lock: the page may be truncated or invalidated
- 		 * (changing page->mapping to NULL), or even swizzled
- 		 * back from swapper_space to tmpfs file mapping
- 		 */
--		ret = lock_page_killable(page);
--		if (ret < 0) {
--			put_page(page);
--			_leave(" = %d", ret);
--			return ret;
-+		if (wbc->sync_mode != WB_SYNC_NONE) {
-+			ret = lock_page_killable(page);
-+			if (ret < 0) {
-+				put_page(page);
-+				return ret;
-+			}
-+		} else {
-+			if (!trylock_page(page)) {
-+				put_page(page);
-+				return 0;
-+			}
- 		}
- 
- 		if (page->mapping != mapping || !PageDirty(page)) {
-+			start += thp_size(page);
- 			unlock_page(page);
- 			put_page(page);
- 			continue;
-@@ -761,20 +806,20 @@ static int afs_writepages_region(struct address_space *mapping,
- 
- 		if (!clear_page_dirty_for_io(page))
- 			BUG();
--		ret = afs_write_back_from_locked_page(mapping, wbc, page, end);
-+		ret = afs_write_back_from_locked_page(mapping, wbc, page, start, end);
- 		put_page(page);
- 		if (ret < 0) {
--			_leave(" = %d", ret);
-+			_leave(" = %zd", ret);
- 			return ret;
- 		}
- 
--		wbc->nr_to_write -= ret;
-+		start += ret * PAGE_SIZE;
- 
- 		cond_resched();
--	} while (index < end && wbc->nr_to_write > 0);
-+	} while (wbc->nr_to_write > 0);
- 
--	*_next = index;
--	_leave(" = 0 [%lx]", *_next);
-+	*_next = start;
-+	_leave(" = 0 [%llx]", *_next);
- 	return 0;
- }
- 
-@@ -785,7 +830,7 @@ int afs_writepages(struct address_space *mapping,
- 		   struct writeback_control *wbc)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(mapping->host);
--	pgoff_t start, end, next;
-+	loff_t start, next;
- 	int ret;
- 
- 	_enter("");
-@@ -800,22 +845,19 @@ int afs_writepages(struct address_space *mapping,
- 		return 0;
- 
- 	if (wbc->range_cyclic) {
--		start = mapping->writeback_index;
--		end = -1;
--		ret = afs_writepages_region(mapping, wbc, start, end, &next);
-+		start = mapping->writeback_index * PAGE_SIZE;
-+		ret = afs_writepages_region(mapping, wbc, start, LLONG_MAX, &next);
- 		if (start > 0 && wbc->nr_to_write > 0 && ret == 0)
- 			ret = afs_writepages_region(mapping, wbc, 0, start,
- 						    &next);
--		mapping->writeback_index = next;
-+		mapping->writeback_index = next / PAGE_SIZE;
- 	} else if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX) {
--		end = (pgoff_t)(LLONG_MAX >> PAGE_SHIFT);
--		ret = afs_writepages_region(mapping, wbc, 0, end, &next);
-+		ret = afs_writepages_region(mapping, wbc, 0, LLONG_MAX, &next);
- 		if (wbc->nr_to_write > 0)
- 			mapping->writeback_index = next;
- 	} else {
--		start = wbc->range_start >> PAGE_SHIFT;
--		end = wbc->range_end >> PAGE_SHIFT;
--		ret = afs_writepages_region(mapping, wbc, start, end, &next);
-+		ret = afs_writepages_region(mapping, wbc,
-+					    wbc->range_start, wbc->range_end, &next);
- 	}
- 
- 	up_read(&vnode->validate_lock);
-@@ -873,13 +915,13 @@ int afs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
-  */
- vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- {
-+	struct page *page = thp_head(vmf->page);
- 	struct file *file = vmf->vma->vm_file;
- 	struct inode *inode = file_inode(file);
- 	struct afs_vnode *vnode = AFS_FS_I(inode);
- 	unsigned long priv;
- 
--	_enter("{{%llx:%llu}},{%lx}",
--	       vnode->fid.vid, vnode->fid.vnode, vmf->page->index);
-+	_enter("{{%llx:%llu}},{%lx}", vnode->fid.vid, vnode->fid.vnode, page->index);
- 
- 	sb_start_pagefault(inode->i_sb);
- 
-@@ -887,31 +929,33 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	 * be modified.  We then assume the entire page will need writing back.
- 	 */
- #ifdef CONFIG_AFS_FSCACHE
--	if (PageFsCache(vmf->page) &&
--	    wait_on_page_bit_killable(vmf->page, PG_fscache) < 0)
-+	if (PageFsCache(page) &&
-+	    wait_on_page_bit_killable(page, PG_fscache) < 0)
- 		return VM_FAULT_RETRY;
- #endif
- 
--	if (PageWriteback(vmf->page) &&
--	    wait_on_page_bit_killable(vmf->page, PG_writeback) < 0)
-+	if (PageWriteback(page) &&
-+	    wait_on_page_bit_killable(page, PG_writeback) < 0)
- 		return VM_FAULT_RETRY;
- 
--	if (lock_page_killable(vmf->page) < 0)
-+	if (lock_page_killable(page) < 0)
- 		return VM_FAULT_RETRY;
- 
- 	/* We mustn't change page->private until writeback is complete as that
- 	 * details the portion of the page we need to write back and we might
- 	 * need to redirty the page if there's a problem.
- 	 */
--	wait_on_page_writeback(vmf->page);
-+	wait_on_page_writeback(page);
- 
--	priv = afs_page_dirty(vmf->page, 0, PAGE_SIZE);
-+	priv = afs_page_dirty(page, 0, thp_size(page));
- 	priv = afs_page_dirty_mmapped(priv);
--	if (PagePrivate(vmf->page))
--		set_page_private(vmf->page, priv);
--	else
--		attach_page_private(vmf->page, (void *)priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"), vmf->page);
-+	if (PagePrivate(page)) {
-+		set_page_private(page, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("mkwrite+"), page);
-+	} else {
-+		attach_page_private(page, (void *)priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"), page);
-+	}
- 	file_update_time(file);
- 
- 	sb_end_pagefault(inode->i_sb);
-@@ -964,7 +1008,7 @@ int afs_launder_page(struct page *page)
- 	priv = page_private(page);
- 	if (clear_page_dirty_for_io(page)) {
- 		f = 0;
--		t = PAGE_SIZE;
-+		t = thp_size(page);
- 		if (PagePrivate(page)) {
- 			f = afs_page_dirty_from(page, priv);
- 			t = afs_page_dirty_to(page, priv);
-@@ -976,12 +1020,12 @@ int afs_launder_page(struct page *page)
- 		iov_iter_bvec(&iter, WRITE, bv, 1, bv[0].bv_len);
- 
- 		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
--		ret = afs_store_data(vnode, &iter, (loff_t)page->index << PAGE_SHIFT,
--				     page->index, page->index, true);
-+		ret = afs_store_data(vnode, &iter, (loff_t)page->index * PAGE_SIZE,
-+				     true);
- 	}
- 
--	detach_page_private(page);
- 	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
-+	detach_page_private(page);
- 	wait_on_page_fscache(page);
- 	return ret;
- }
+with node0-node2 as 22, node0-node3 as 24, node1-node3 as 22.
 
+I will get the below sched_domains_numa_distance[]:
+10, 12, 22, 24
+As you can see there is *no* 20. So the node1 and node2 will
+only get two-level numa sched_domain:
+
+
+But for the below topology:
++-------+          +-----+
+| node0 |  20      |node2|
+|       +----------+     |
++---+---+          +-----+
+    |                  |12
+12  |                  |
++---+---+          +---+-+
+|       |          |node3|
+| node1 |          |     |
++-------+          +-----+
+
+with node1-node2 as 22, node1-node3 as 24,node0-node3 as 22.
+
+I will get the below sched_domains_numa_distance[]:
+10, 12, 20, 22, 24
+
+What I have seen is the performance will be better if we
+drop the 20 as we will get a sched_domain hierarchy with less
+levels, and two intermediate nodes won't have the group span
+issue.
+
+Thanks
+Barry
 
