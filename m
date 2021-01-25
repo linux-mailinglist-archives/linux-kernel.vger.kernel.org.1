@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668CB3020B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 349EF3020B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbhAYDOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:14:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726790AbhAYDNt (ORCPT
+        id S1726660AbhAYDNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbhAYDNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:13:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611544343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wyqsE2ie42MN4KyFAEL6ikQv7mdclBjRKNwb4r3BNqA=;
-        b=bspd4hqhiCQlgnyXJKdaSsuPXLc/qTcXGPtoT2MUsFd2daY+qhDX/B2xJDWJ7gNEXFkgmG
-        j6b8FE6rjJFGizcK2SkWZeigk/lka4RImB6Sp7OedYSoZCeC42lx5z4nhq+L0Yptt3KKic
-        +wO0XpLZpFtWHvvpvAqanseZUTN9GSQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-HswSJKU1PvukQT_eyiencA-1; Sun, 24 Jan 2021 22:12:19 -0500
-X-MC-Unique: HswSJKU1PvukQT_eyiencA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDF3E803623;
-        Mon, 25 Jan 2021 03:12:17 +0000 (UTC)
-Received: from [10.72.12.105] (ovpn-12-105.pek2.redhat.com [10.72.12.105])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7AD86F984;
-        Mon, 25 Jan 2021 03:12:08 +0000 (UTC)
-Subject: Re: [PATCH v2 1/1] vhost scsi: alloc vhost_scsi with kvzalloc() to
- avoid delay
-To:     Dongli Zhang <dongli.zhang@oracle.com>,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mst@redhat.com, pbonzini@redhat.com,
-        stefanha@redhat.com, joe.jin@oracle.com,
-        aruna.ramakrishna@oracle.com
-References: <20210123080853.4214-1-dongli.zhang@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <61ed58d6-052b-9065-361d-dc6010fc91ef@redhat.com>
-Date:   Mon, 25 Jan 2021 11:12:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 24 Jan 2021 22:13:20 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D50C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:12:34 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id o20so7617577pfu.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:12:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=urJs6HyiGePGW36OxGzHF9HD4lDBm01oVgmZ3FzjjN8=;
+        b=wq5LV1NSa4zvkXCRKeEch78k1Isx5I3ys5QgrLmB/yKm0wuExPfrByc5l1bnFJ9AWI
+         cY5Y05W+sdINMR/VRK1NCOD2Ltt8ETv68f/DSDHlT7F+4tvk93oGQOeYryVdkIlEqARs
+         fE663ePh32Enyfwm0aIb9HqehH3DWUHokQTEwUDR5qasqDefCvP2FITWE2bLEUMyfJbx
+         xagORdWSP7W3DiJPFdyDCCPatXnigJPX+vphSUA6W1Gh6gWg56rPFOsZRbhnN7AKjy+I
+         uiB7F+Kwh5+4suMxFt11Zo2DdvcNzB0cKXMcoAIFgP4ytL1oM5rk6Zv94N28WLCDYs68
+         G9MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=urJs6HyiGePGW36OxGzHF9HD4lDBm01oVgmZ3FzjjN8=;
+        b=HKOgPoKeAo/xBGhZ8SVUfYGtRyRf1NIf4N4IGhh2CLo4gpbAEZAIjhNGCtO1LFpy4t
+         3fwGdMNp1PueHhEgqzZ7Qgle7scZligyCRVcXcbRLrrqI0QPbz8DaIelE6tfUEQoS2hc
+         mpLZz3TlV7vGWqkugDolrho4sIXFwD2RP/EBDp5m54DSCJp1TK8BW4qJN/TFzHSi6m+O
+         MJPUz93nJebUHC8zgbd5X1M7aFIGP9B9pHIsZTS2GsBofv05/c9gxj18VscdFI0WTq4v
+         i5Ra8MzfSEWgeAKSDXO8mI4T/9gRqkBoYLJEvkZUwlhqFbsgDrA8Tb+IR6HPZKY7H4ne
+         54rQ==
+X-Gm-Message-State: AOAM530Iumn63VMld21+Sp5ycJ4r0IbuitjOgw+Jns+tMF9kIA9vdhjQ
+        oHFG0342Q3DPP5O214U0u0WblA==
+X-Google-Smtp-Source: ABdhPJyIgKLkBEtpBKoSzlAdFlIpt+usudr4M22M5kUkO2jZJTYTry2HYschwCElOMBa38EfuuSXew==
+X-Received: by 2002:a65:4542:: with SMTP id x2mr8503202pgr.90.1611544353610;
+        Sun, 24 Jan 2021 19:12:33 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id e20sm1273051pgr.48.2021.01.24.19.12.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 Jan 2021 19:12:31 -0800 (PST)
+Date:   Mon, 25 Jan 2021 08:42:29 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 03/13] opp: Keep track of currently programmed OPP
+Message-ID: <20210125031229.adthgnbzlcpt4btj@vireshk-i7>
+References: <cover.1611227342.git.viresh.kumar@linaro.org>
+ <96b57316a2a307a5cc5ff7302b3cd0084123a2ed.1611227342.git.viresh.kumar@linaro.org>
+ <b634343a-8005-fc35-e38b-bfeaa7310a70@gmail.com>
+ <20210122044532.pc7cpcgy3kjbqmls@vireshk-i7>
+ <8af5abe4-fc3f-8ce4-ff14-542754f0275d@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210123080853.4214-1-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8af5abe4-fc3f-8ce4-ff14-542754f0275d@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22-01-21, 17:31, Dmitry Osipenko wrote:
+> This may not be true for all kinds of hardware, a display controller is
+> one example. If display's pixclock is raised before the memory bandwidth
+> of the display's memory client, then display controller may get a memory
+> underflow since it won't be able to fetch memory fast enough and it's
+> not possible to pause data transmission to display panel, hence display
+> panel may get out of sync and a full hardware reset will be needed in
+> order to recover. At least this is the case for NVIDIA Tegra SoCs.
 
-On 2021/1/23 下午4:08, Dongli Zhang wrote:
-> The size of 'struct vhost_scsi' is order-10 (~2.3MB). It may take long time
-> delay by kzalloc() to compact memory pages by retrying multiple times when
-> there is a lack of high-order pages. As a result, there is latency to
-> create a VM (with vhost-scsi) or to hotadd vhost-scsi-based storage.
->
-> The prior commit 595cb754983d ("vhost/scsi: use vmalloc for order-10
-> allocation") prefers to fallback only when really needed, while this patch
-> allocates with kvzalloc() with __GFP_NORETRY implicitly set to avoid
-> retrying memory pages compact for multiple times.
->
-> The __GFP_NORETRY is implicitly set if the size to allocate is more than
-> PAGE_SZIE and when __GFP_RETRY_MAYFAIL is not explicitly set.
->
-> Cc: Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-> Cc: Joe Jin <joe.jin@oracle.com>
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
-> Changed since v1:
->    - To combine kzalloc() and vzalloc() as kvzalloc()
->      (suggested by Jason Wang)
->
->   drivers/vhost/scsi.c | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
-> index 4ce9f00ae10e..5de21ad4bd05 100644
-> --- a/drivers/vhost/scsi.c
-> +++ b/drivers/vhost/scsi.c
-> @@ -1814,12 +1814,9 @@ static int vhost_scsi_open(struct inode *inode, struct file *f)
->   	struct vhost_virtqueue **vqs;
->   	int r = -ENOMEM, i;
->   
-> -	vs = kzalloc(sizeof(*vs), GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL);
-> -	if (!vs) {
-> -		vs = vzalloc(sizeof(*vs));
-> -		if (!vs)
-> -			goto err_vs;
-> -	}
-> +	vs = kvzalloc(sizeof(*vs), GFP_KERNEL);
-> +	if (!vs)
-> +		goto err_vs;
->   
->   	vqs = kmalloc_array(VHOST_SCSI_MAX_VQ, sizeof(*vqs), GFP_KERNEL);
->   	if (!vqs)
+Hmm, but I expected that the request for more data will only come after the
+opp-set-rate has finished and not in between. May be I am wrong. There is
+nothing wrong in doing it the regulator way if required.
 
+> I guess it's not a real problem for any of OPP API users right now, but
+> this is something to keep in mind.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Sure, I am not against it. Just that we thought it isn't worth the code.
 
-
-
+-- 
+viresh
