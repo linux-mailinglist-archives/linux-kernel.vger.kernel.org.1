@@ -2,285 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8FE303920
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE7F30392C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391280AbhAZJh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:37:58 -0500
-Received: from de-out1.bosch-org.com ([139.15.230.186]:43016 "EHLO
-        de-out1.bosch-org.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730973AbhAYSu1 (ORCPT
+        id S2391268AbhAZJix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731093AbhAYSud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:50:27 -0500
-X-Greylist: delayed 21228 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Jan 2021 13:50:17 EST
-Received: from fe0vm1649.rbesz01.com (lb41g3-ha-dmz-psi-sl1-mailout.fe.ssn.bosch.com [139.15.230.188])
-        by si0vms0216.rbdmz01.com (Postfix) with ESMTPS id 4DPf6T6rqvz1XLGST;
-        Mon, 25 Jan 2021 19:49:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=de.bosch.com;
-        s=key2-intmail; t=1611600562;
-        bh=e+muQfjpYN/grXRvOTQOUaZ8Y+XBA+2ynN1FkqkpBr4=; l=10;
-        h=From:Subject:From:Reply-To:Sender;
-        b=d78WJXj2hcPo8yEz29V7fTSATJ3aHwZenl3ztzjToDFKDKsmsjLGyZ9JpiGNifCsS
-         R9IKPvQDSQtuabpsDmyAQCK8fr1Yf+zodskSDNkz3Offc1C2JEV2qoTVNQV39OAuby
-         9FbzwzgyUGE9pO0+hAIhEkWRw7Qm9OCW8OH1SxCk=
-Received: from si0vm4642.rbesz01.com (unknown [10.58.172.176])
-        by fe0vm1649.rbesz01.com (Postfix) with ESMTPS id 4DPf6T6YFxz1wv;
-        Mon, 25 Jan 2021 19:49:21 +0100 (CET)
-X-AuditID: 0a3aad12-f07ff700000020f1-b5-600f12b13563
-Received: from si0vm1949.rbesz01.com ( [10.58.173.29])
-        (using TLS with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by si0vm4642.rbesz01.com (SMG Outbound) with SMTP id 10.D7.08433.1B21F006; Mon, 25 Jan 2021 19:49:21 +0100 (CET)
-Received: from FE-MBX2043.de.bosch.com (fe-mbx2043.de.bosch.com [10.3.231.53])
-        by si0vm1949.rbesz01.com (Postfix) with ESMTPS id 4DPf6T5lPcz6CjZP6;
-        Mon, 25 Jan 2021 19:49:21 +0100 (CET)
-Received: from FE-MBX2051.de.bosch.com (10.3.231.61) by
- FE-MBX2043.de.bosch.com (10.3.231.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Mon, 25 Jan 2021 19:49:21 +0100
-Received: from FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f]) by
- FE-MBX2051.de.bosch.com ([fe80::9402:faf1:5852:4e2f%6]) with mapi id
- 15.01.2106.006; Mon, 25 Jan 2021 19:49:21 +0100
-From:   "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Adam.Thomson.Opensource@diasemi.com" 
-        <Adam.Thomson.Opensource@diasemi.com>,
-        "stwiss.opensource@diasemi.com" <stwiss.opensource@diasemi.com>,
-        "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
-        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
-        "Streidl Hubert (BT-FIR/ENG1-Grb)" <Hubert.Streidl@de.bosch.com>,
-        "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>
-Subject: [PATCH 1/1] mfd: da9063: Support SMBus and I2C mode
-Thread-Topic: [PATCH 1/1] mfd: da9063: Support SMBus and I2C mode
-Thread-Index: AQHW8xlUd4non6+XsUm+Dh7IRb1SI6o4rktw
-Date:   Mon, 25 Jan 2021 18:49:21 +0000
-Message-ID: <38bea27bd11b453e9b69dcdb6a0b4e48@de.bosch.com>
-References: <20210125125458.1302525-1-mark.jonas@de.bosch.com>
- <20210125125458.1302525-2-mark.jonas@de.bosch.com>
-In-Reply-To: <20210125125458.1302525-2-mark.jonas@de.bosch.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.141.241.3]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 25 Jan 2021 13:50:33 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C1FC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:49:53 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id r4so8205286pls.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:49:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Qc9prigLr3Iter3zKRVLUD7b0eU7k2VCSX5sIttLDgg=;
+        b=m8DkWFQPsrh2wBcnsmhE/9gnfrksXwrsTg/zDNyNqa4YHanUT+kR2iQHKAbdphvZIg
+         ikJbZQyXyRRuns5PpJHhwhRUcsDaVt8ft2nA88AoiugAbZpgqzkMeEVpkzsBGpjzvLdZ
+         VX1CxpV/1m2DeNg1Xu/awMn8GPh6F1SVeGh16Jdd1z276RGPIaolA0GZ0aiDKIx5/jT3
+         zd/vPAFft+XOXAZn+fZOzt01OQZYOH1fq88sub6IqLzzNSK03hijgeaKRJt7eZ3Z6duL
+         EDHNY+SgDZT/2mH+JXoCDp2GBgiR4PZqXmQsKIPfMAtM92sE7H2BgyZ+41sTGMfYt0/2
+         8rTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Qc9prigLr3Iter3zKRVLUD7b0eU7k2VCSX5sIttLDgg=;
+        b=Khr/EoJon6IJvz6b+60GcwbIVoCPVB6hQGvX3OnW/Ve6Xzvq+v1km6aoKJOgwe4N7Q
+         j6rhC/2asq9OS6FL+2b79RJ+NN9BaBogrHrN7pvK4gRcA8gNfOojbukodSGf3P5h3+lW
+         si+HzmqLkmzHAGm0lV58Q8YOCvSwTA7oe5J6Ozkp52RgorvO/kx5HtTJiZ76CxyNMACP
+         ISz0GEFrLnrbNpf/90fSu4Fvzpsn5G+RPBaWxUGkeJ4tYVyMNhhb2oaDZqCUDtCLrFXE
+         0O+jBUBlcs+pw6ImHsIRHB2it1Xm552UAibhyxfbMJ3buzGMzvfAlgoW8Tpsh1n6ZPsT
+         aKHA==
+X-Gm-Message-State: AOAM532Z6rlCR+QEnkcx3Cai5jXgi35g4azafKJlAvF7xJWwHXbObUsr
+        E8uEQhnEsW7J9gY+C6AJw704xQ==
+X-Google-Smtp-Source: ABdhPJwH9EKRENY2gEjojawmMdhasu1aby6Zvv4W3t4MT6btS2PjPlQfFq/MlNfLCeZB1TexXWSdTA==
+X-Received: by 2002:a17:90b:34b:: with SMTP id fh11mr1552423pjb.225.1611600593222;
+        Mon, 25 Jan 2021 10:49:53 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p64sm17065143pfb.201.2021.01.25.10.49.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 10:49:52 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:49:50 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, linux-kernel@vger.kernel.org,
+        jonathan.zhouwen@huawei.com, catalin.marinas@arm.com
+Subject: Re: [PATCH v7 00/28] coresight: etm4x: Support for system
+ instructions
+Message-ID: <20210125184950.GC894394@xps15>
+References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsXCZbVWVnejEH+CQccPE4ul75cyW8w/co7V
-        4v7Xo4wWl3fNYbM4uuces0Xr3iPsFld/r2ex2Nt6kdmBw2PFJ32PnbPusntsWtXJ5nHn2h42
-        j8+b5AJYo7hsUlJzMstSi/TtErgyjhyezlJw16LiysULjA2ME/W6GDk5JARMJJ7u+sPaxcjF
-        ISQwnUni6cJuNghnL6PEun0HWSCct4wSS269ZwZpERI4wCix8lgtiM0mYCex//UbJhBbRKBW
-        Yt3WDUwgDcwCrSwS8yddZAFJCAvYSPTe/MIMUeQo8ePMORYI20hi6cRP7CA2i4CqxJp/3WA2
-        r4C1xMfzE5gglhVLHJv0GszmFLCXaLvXwwpiMwrISmzYcB5sJrOAuMSmZ99ZIf4RkFiyByIu
-        ISAq8fLxP6i4gsTxxyuYIOr1JG5MncIGYWtLLFv4mhlir6DEyZlPWCYwis9CMnYWkpZZSFpm
-        IWlZwMiyilG0ONOgLNfEzMRIrygptbjKwFAvOT93EyMkZoV2MP7q+KB3iJGJg/EQowQHs5II
-        7249ngQh3pTEyqrUovz4otKc1OJDjNIcLErivCo8G+OEBNITS1KzU1MLUotgskwcnFINTNsr
-        v/SXzag6Od/21S2jop0lu1L7xQ+6bDk5U8HUR+ZmbXznPfElupWa5/tavjjNT/J1d0mv3+/b
-        uiA4nlf/9g6N3pSsayauezamXRWZu4/9IGPDmnfzIs56VXhf2sFpNDO64McGme3mDysnay+U
-        qBS/elZsZaHMpxMXcy5zWPmo/4m9nFT7tfBEr3OFWVDv22v/e1N3HVd8c7p6qlBYcr9iwqZf
-        vk0ighEarRdNZJPiDF64lQrOKjWsXflE7sWECTt9I66297741NQu0nz44OeYp/Nuv5X53LHL
-        67G3wuUjUZcj5LycBZ8wHbQ4mB7VZWtxjTelm9V5bqtlfvjyqokaNcd3Wlauje8RnaCmxFKc
-        kWioxVxUnAgAOQQ0YkgDAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110224850.1880240-1-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Jan 10, 2021 at 10:48:22PM +0000, Suzuki K Poulose wrote:
+> CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
+> mandates the system instructions for registers.
+> This also implies that they may not be on the amba bus.
+> Right now all the CoreSight components are accessed via memory
+> map. Also, we have some common routines in coresight generic
+> code driver (e.g, CS_LOCK, claim/disclaim), which assume the
+> mmio. In order to preserve the generic algorithms at a single
+> place and to allow dynamic switch for ETMs, this series introduces
+> an abstraction layer for accessing a coresight device. It is
+> designed such that the mmio access are fast tracked (i.e, without
+> an indirect function call).
+> 
+> This will also help us to get rid of the driver+attribute specific
+> sysfs show/store routines and replace them with a single routine
+> to access a given register offset (which can be embedded in the
+> dev_ext_attribute). This is not currently implemented in the series,
+> but can be achieved.
+> 
+> Further we switch the generic routines to work with the abstraction.
+> With this in place, we refactor the etm4x code a bit to allow for
+> supporting the system instructions with very little new code.
+> 
+> We use TRCDEVARCH for the detection of the ETM component, which
+> is a standard register as per CoreSight architecture, rather than
+> the etm specific id register TRCIDR1. This is for making sure
+> that we are able to detect the ETM via system instructions accurately,
+> when the the trace unit could be anything (etm or a custom trace unit).
+> To keep the backward compatibility for any existing broken
+> impelementation which may not implement TRCDEVARCH, we fall back to TRCIDR1.
+> Also this covers us for the changes in the future architecture [0].
+> 
+> Also, v8.4 self-hosted tracing extensions (coupled with ETMv4.4) adds
+> new filtering registers for trace by exception level. So on a v8.4
+> system, with Trace Filtering support, without the appropriate
+> programming of the Trace filter registers (TRFCR_ELx), tracing
+> will not be enabled. This series also includes the TraceFiltering
+> support to cover the ETM-v4.4 support.
+> 
+> The series has been mildly tested on a model for system instructions.
+> I would really appreciate any testing on real hardware.
+> 
+> Applies on coresight/next. A tree is available here [1].
 
-I also intended to send a cover-letter but it was somehow lost. Here it is:
+I have applied this set.
 
-On an NXP i.MX6 Solo processor we are running an application which makes us=
-e of real-time threads (SCHED_RR). In combination with a DA9063 we experien=
-ced (rare) random shut-downs and reboots. We found that the issue was cause=
-d by a combination of the (default) DA9063 SMBus mode and non-atomic I2C tr=
-ansactions of the i.MX6 I2C driver. Because a transaction could be idle for=
- longer than the SMBus clock time-out due to a real-time thread the DA9063 =
-would time-out and receive the second half of the transaction as an uninten=
-ded message.
+Thanks,
+Mathieu
 
-The solution we are giving to review in this patch is to allow using the I2=
-C mode of the DA9063. We kindly ask for feedback and eventually hope for an=
- integration to the mainline.
-
-Because we are on a vendor kernel we were not able to test this patch on th=
-e current mainline kernel. Though, we tested a (very similar) patch on our =
-(close to mainline) Linux 4.14 and 5.4 vendor kernels.
-
-Cheers,
-Mark
-
- Mark Jonas
-
-Building Technologies, Panel Software Fire (BT-FIR/ENG1-Grb)
-Bosch Sicherheitssysteme=A0GmbH | Postfach 11 11 | 85626 Grasbrunn | GERMAN=
-Y | www.boschsecurity.com
-
-Sitz: Stuttgart, Registergericht: Amtsgericht Stuttgart HRB 23118
-Aufsichtsratsvorsitzender: Christian Fischer; Gesch=E4ftsf=FChrung: Tanja R=
-=FCckert, Andreas Bartz, Thomas Quante
-
-> -----Urspr=FCngliche Nachricht-----
-> Von: Mark Jonas <mark.jonas@de.bosch.com>
-> Gesendet: Montag, 25. Januar 2021 13:55
-> An: Support Opensource <support.opensource@diasemi.com>; Lee Jones
-> <lee.jones@linaro.org>; Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
-> Adam.Thomson.Opensource@diasemi.com; stwiss.opensource@diasemi.com;
-> marek.vasut@gmail.com; RUAN Tingquan (BT-FIR/ENG1-Zhu)
-> <Tingquan.Ruan@cn.bosch.com>; Streidl Hubert (BT-FIR/ENG1-Grb)
-> <Hubert.Streidl@de.bosch.com>; Jonas Mark (BT-FIR/ENG1-Grb)
-> <Mark.Jonas@de.bosch.com>
-> Betreff: [PATCH 1/1] mfd: da9063: Support SMBus and I2C mode
->=20
-> From: Hubert Streidl <hubert.streidl@de.bosch.com>
->=20
-> By default the PMIC DA9063 2-wire interface is SMBus compliant. This mean=
-s
-> the PMIC will automatically reset the interface when the clock signal cea=
-ses for
-> more than the SMBus timeout of 35 ms.
->=20
-> If the I2C driver / device is not capable of creating atomic I2C transact=
-ions, a
-> context change can cause a ceasing of the the clock signal. This can happ=
-en if
-> for example a real-time thread is scheduled.
-> Then the DA9063 in SMBus mode will reset the 2-wire interface.
-> Subsequently a write message could end up in the wrong register. This cou=
-ld
-> cause unpredictable system behavior.
->=20
-> The DA9063 PMIC also supports an I2C compliant mode for the 2-wire interf=
-ace.
-> This mode does not reset the interface when the clock signal ceases. Thus=
- the
-> problem depicted above does not occur.
->=20
-> This patch makes the I2C mode configurable by device tree. The SMBus
-> compliant mode is kept as the default.
->=20
-> Signed-off-by: Hubert Streidl <hubert.streidl@de.bosch.com>
-> Signed-off-by: Mark Jonas <mark.jonas@de.bosch.com>
-> ---
->  Documentation/devicetree/bindings/mfd/da9063.txt |  7 +++++++
->  drivers/mfd/da9063-core.c                        |  9 +++++++++
->  drivers/mfd/da9063-i2c.c                         | 13 +++++++++++++
->  include/linux/mfd/da9063/core.h                  |  1 +
->  include/linux/mfd/da9063/registers.h             |  3 +++
->  5 files changed, 33 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mfd/da9063.txt
-> b/Documentation/devicetree/bindings/mfd/da9063.txt
-> index 8da879935c59..256f2a25fe0a 100644
-> --- a/Documentation/devicetree/bindings/mfd/da9063.txt
-> +++ b/Documentation/devicetree/bindings/mfd/da9063.txt
-> @@ -19,6 +19,12 @@ Required properties:
->  - interrupts : IRQ line information.
->  - interrupt-controller
->=20
-> +Optional properties:
-> +
-> +- i2c-mode : Switch serial 2-wire interface into I2C mode. Without this
-> +  property the PMIC uses the SMBus mode (resets the interface if the
-> +clock
-> +  ceases for a longer time than the SMBus timeout).
-> +
->  Sub-nodes:
->=20
->  - regulators : This node defines the settings for the LDOs and BUCKs.
-> @@ -77,6 +83,7 @@ Example:
->  		interrupt-parent =3D <&gpio6>;
->  		interrupts =3D <11 IRQ_TYPE_LEVEL_LOW>;
->  		interrupt-controller;
-> +		i2c-mode;
->=20
->  		rtc {
->  			compatible =3D "dlg,da9063-rtc";
-> diff --git a/drivers/mfd/da9063-core.c b/drivers/mfd/da9063-core.c index
-> df407c3afce3..baa1e4310c8c 100644
-> --- a/drivers/mfd/da9063-core.c
-> +++ b/drivers/mfd/da9063-core.c
-> @@ -162,6 +162,15 @@ int da9063_device_init(struct da9063 *da9063,
-> unsigned int irq)  {
->  	int ret;
->=20
-> +	if (da9063->i2cmode) {
-> +		ret =3D regmap_update_bits(da9063->regmap,
-> DA9063_REG_CONFIG_J,
-> +				DA9063_TWOWIRE_TO, 0);
-> +		if (ret < 0) {
-> +			dev_err(da9063->dev, "Cannot enable I2C mode.\n");
-> +			return -EIO;
-> +		}
-> +	}
-> +
->  	ret =3D da9063_clear_fault_log(da9063);
->  	if (ret < 0)
->  		dev_err(da9063->dev, "Cannot clear fault log\n"); diff --git
-> a/drivers/mfd/da9063-i2c.c b/drivers/mfd/da9063-i2c.c index
-> 3781d0bb7786..af0bf13ab43e 100644
-> --- a/drivers/mfd/da9063-i2c.c
-> +++ b/drivers/mfd/da9063-i2c.c
-> @@ -351,6 +351,17 @@ static const struct of_device_id da9063_dt_ids[] =3D=
- {
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(of, da9063_dt_ids);
-> +
-> +static void da9063_i2c_parse_dt(struct i2c_client *client, struct
-> +da9063 *da9063) {
-> +	struct device_node *np =3D client->dev.of_node;
-> +
-> +	if (of_property_read_bool(np, "i2c-mode"))
-> +		da9063->i2cmode =3D true;
-> +	else
-> +		da9063->i2cmode =3D false;
-> +}
-> +
->  static int da9063_i2c_probe(struct i2c_client *i2c,
->  			    const struct i2c_device_id *id)
->  {
-> @@ -366,6 +377,8 @@ static int da9063_i2c_probe(struct i2c_client *i2c,
->  	da9063->chip_irq =3D i2c->irq;
->  	da9063->type =3D id->driver_data;
->=20
-> +	da9063_i2c_parse_dt(i2c, da9063);
-> +
->  	ret =3D da9063_get_device_type(i2c, da9063);
->  	if (ret)
->  		return ret;
-> diff --git a/include/linux/mfd/da9063/core.h b/include/linux/mfd/da9063/c=
-ore.h
-> index fa7a43f02f27..866864c50f78 100644
-> --- a/include/linux/mfd/da9063/core.h
-> +++ b/include/linux/mfd/da9063/core.h
-> @@ -77,6 +77,7 @@ struct da9063 {
->  	enum da9063_type type;
->  	unsigned char	variant_code;
->  	unsigned int	flags;
-> +	bool	i2cmode;
->=20
->  	/* Control interface */
->  	struct regmap	*regmap;
-> diff --git a/include/linux/mfd/da9063/registers.h
-> b/include/linux/mfd/da9063/registers.h
-> index 1dbabf1b3cb8..6e0f66a2e727 100644
-> --- a/include/linux/mfd/da9063/registers.h
-> +++ b/include/linux/mfd/da9063/registers.h
-> @@ -1037,6 +1037,9 @@
->  #define		DA9063_NONKEY_PIN_AUTODOWN	0x02
->  #define		DA9063_NONKEY_PIN_AUTOFLPRT	0x03
->=20
-> +/* DA9063_REG_CONFIG_J (addr=3D0x10F) */
-> +#define DA9063_TWOWIRE_TO			0x40
-> +
->  /* DA9063_REG_MON_REG_5 (addr=3D0x116) */
->  #define DA9063_MON_A8_IDX_MASK			0x07
->  #define		DA9063_MON_A8_IDX_NONE		0x00
-> --
-> 2.25.1
-
+> 
+> [0] https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcidr1
+> [1] https://gitlab.arm.com/linux-arm/linux-skp coresight/etm/sysreg-v7
+> 
+> Changes since v6:
+>   - New patch: Patch9 : Prepare the sysfs attributes for
+>     filtering by offset of the register
+>   - New patch: Patch12: Hide ETM registers unaccessible
+>     on the ETM (for system instructions based ETMs)
+>   - Split the list of ETM registers to memory mapped only
+>     and common registers (Patch 11)
+>   - Fixed the alignment issues pointed by Mathieu
+>     (Patch 3, 14, 24)
+> 
+> Changes since v5:
+>   - Rebased on to coresight/next.
+>   - Moved trcdevarch to mgmt/ in sysfs and updated the sysfs ABI
+>     document (Mike Leach)
+>   - New patch : Moved the etm4_check_arch_features to run on the CPU, since
+>     the PID of the ETM has to be read on the CPU and is unavailable
+>     otherwise.
+> 
+> Changes since v4:
+>   - Fix typo in commit description for the patches 02 & 15
+>   - Refactor the AMBA device "remove" call back for use with
+>     paltform_driver. (patch 21). Thus remove Review tag by Mathieu,
+>     even though the changes are minimal.
+>   - Added "remove" callback for platform_driver in patch 22, removed
+>     Review tag by Mathieu
+>   - Add 'U' suffix for constants in Patch 24 (Catalin)
+>   - Fixed field extraction in Patch 25
+> 
+> Changes since v3:
+>   - Device tree compatible changed to etm4x
+>   - Use etm4x_** instead of generalizing etm_ in etm4x driver.
+>   - Added v8.4 self hosted trace support patches, reworked
+>     from Jonathan's series.
+>   - Dropped queued patches.
+>   - Expose TRCDEVARCH via trcidr, as this will be needed for
+>     the userspace tools to determine the trace major/minor
+>     arch versions.
+>   - Remove csa argument to read()/write() (Mathieu)
+>   - Fix secure exception mask calculation (Mathieu)
+>   - Fix various coding style comments (Mathieu)
+>    (See individual patches for change log)
+>   
+> Changes since V2:
+>   - Several fixes to the ETM register accesses. Access a register
+>     when it is present.
+>   - Add support for TRCIDR3.NUMPROCS for v4.2+
+>   - Drop OS lock detection. Use software lock only in case of mmio.
+>   - Fix issues with the Exception level masks (Mike Leach)
+>   - Fall back to using TRCIDR1 when TRCDEVARCH is not "present"
+>   - Use a generic notion of ETM architecture (rather than using
+>     the encoding as in registers)
+>   - Fixed some checkpatch issues.
+>   - Changed the dts compatible string to "arm,coresight-etm-sysreg"
+>     (Mike Leach)
+> 
+> Changes since V1:
+>   - Flip the switch for iomem from no_iomem to io_mem in csdev_access.
+>   - Split patches for claim/disclaim and CS_LOCK/UNLOCK conversions.
+>   - Move device access initialisation for etm4x to the target CPU
+>   - Cleanup secure exception level mask handling.
+>   - Switch to use TRCDEVARCH for ETM component discovery. This
+>     is for making 
+>   - Check the availability of OS/Software Locks before using them.
+> 
+> Known issues: 
+>   Checkpatch failure for "coresight: etm4x: Add sysreg access helpers" :
+> 
+>   ERROR: Macros with complex values should be enclosed in parentheses
+>   #121: FILE: drivers/hwtracing/coresight/coresight-etm4x.h:153:
+>   +#define CASE_READ(res, x)                                      \
+>   +    case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
+> 
+>  I don't know a way to fix the warning without loosing the code
+>  readability, which I believe is crucial for such a construct.
+> 
+> 
+> 
+> Jonathan Zhou (2):
+>   arm64: Add TRFCR_ELx definitions
+>   coresight: Add support for v8.4 SelfHosted tracing
+> 
+> Suzuki K Poulose (26):
+>   coresight: etm4x: Handle access to TRCSSPCICRn
+>   coresight: etm4x: Skip accessing TRCPDCR in save/restore
+>   coresight: Introduce device access abstraction
+>   coresight: tpiu: Prepare for using coresight device access abstraction
+>   coresight: Convert coresight_timeout to use access abstraction
+>   coresight: Convert claim/disclaim operations to use access wrappers
+>   coresight: etm4x: Always read the registers on the host CPU
+>   coresight: etm4x: Convert all register accesses
+>   coresight: etm4x: Make offset available for sysfs attributes
+>   coresight: etm4x: Add commentary on the registers
+>   coresight: etm4x: Add sysreg access helpers
+>   coresight: etm4x: Hide sysfs attributes for unavailable registers
+>   coresight: etm4x: Define DEVARCH register fields
+>   coresight: etm4x: Check for Software Lock
+>   coresight: etm4x: Cleanup secure exception level masks
+>   coresight: etm4x: Clean up exception level masks
+>   coresight: etm4x: Handle ETM architecture version
+>   coresight: etm4x: Detect access early on the target CPU
+>   coresight: etm4x: Use TRCDEVARCH for component discovery
+>   coresight: etm4x: Expose trcdevarch via sysfs
+>   coresight: etm4x: Add necessary synchronization for sysreg access
+>   coresight: etm4x: Detect system instructions support
+>   coresight: etm4x: Refactor probing routine
+>   coresight: etm4x: Run arch feature detection on the CPU
+>   coresight: etm4x: Add support for sysreg only devices
+>   dts: bindings: coresight: ETM system register access only units
+> 
+>  .../testing/sysfs-bus-coresight-devices-etm4x |   8 +
+>  .../devicetree/bindings/arm/coresight.txt     |   5 +-
+>  arch/arm64/include/asm/sysreg.h               |  11 +
+>  drivers/hwtracing/coresight/coresight-catu.c  |  12 +-
+>  drivers/hwtracing/coresight/coresight-core.c  | 122 ++-
+>  .../hwtracing/coresight/coresight-cti-core.c  |  18 +-
+>  drivers/hwtracing/coresight/coresight-etb10.c |  10 +-
+>  .../coresight/coresight-etm3x-core.c          |   9 +-
+>  .../coresight/coresight-etm4x-core.c          | 805 ++++++++++++------
+>  .../coresight/coresight-etm4x-sysfs.c         | 187 ++--
+>  drivers/hwtracing/coresight/coresight-etm4x.h | 505 ++++++++++-
+>  .../hwtracing/coresight/coresight-funnel.c    |   7 +-
+>  .../coresight/coresight-replicator.c          |  13 +-
+>  drivers/hwtracing/coresight/coresight-stm.c   |   4 +-
+>  .../hwtracing/coresight/coresight-tmc-core.c  |  16 +-
+>  .../hwtracing/coresight/coresight-tmc-etf.c   |  10 +-
+>  .../hwtracing/coresight/coresight-tmc-etr.c   |   4 +-
+>  drivers/hwtracing/coresight/coresight-tpiu.c  |  31 +-
+>  include/linux/coresight.h                     | 220 ++++-
+>  19 files changed, 1520 insertions(+), 477 deletions(-)
+> 
+> -- 
+> 2.24.1
+> 
