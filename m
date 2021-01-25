@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B40D302376
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AACE30239D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbhAYKDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 05:03:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727292AbhAYKAc (ORCPT
+        id S1727518AbhAYKWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 05:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727398AbhAYKQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:00:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611568728;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I5qvNwK9Eh5sztpVmXUqhiLY8j0P2hRONqOuGd/Z0cw=;
-        b=hsUthOawGbgnKbDw/8UbW5xgVubl35rSdLRhwNynULnCcv1AvNGh9spshT4hVJMElrOgeJ
-        fTdalYrO79rLZXSvF/tEHcSrtnVKo8C26BoSM4+hIugpJUggHESUKH/D+V5cvg8VEYIeDz
-        vV0zdic4n3FkYGyvD4kiD2wc8xAy9Kc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-uyDhJZNSPIC6DoHuY25OKw-1; Mon, 25 Jan 2021 04:58:46 -0500
-X-MC-Unique: uyDhJZNSPIC6DoHuY25OKw-1
-Received: by mail-ed1-f70.google.com with SMTP id a24so7035700eda.14
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:58:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I5qvNwK9Eh5sztpVmXUqhiLY8j0P2hRONqOuGd/Z0cw=;
-        b=Q8RpNXzKD4J8L8ZuUwPOBXejInbrMDVHoQ0ORWIz4DHEcvwmiykGkXujN0niIOBus5
-         3uKdbtdVS9qqmtFsmCLtaywVihZxYg0h/+RUi5pbrjYM5sixbbsSeZJ/MQGZSJIepKp9
-         izIhhXjIWvfHolKovR1I63aAnhhIKH2b0tbqg0SSd/9IeJsMUocnbqCfR/KRYmmiOdux
-         XQ8BMkgpTtpnHArFqtk89v66UZkY6pPuhynWZLXDuOkdKwWHJwBiDcDd/jLg6rSAec3M
-         J4FEjvev+PRix9PfHlI9BZGYUomWe3bCGjtzOeqNL7UBhH8pkspzIPC/ohmZaYMz8oXm
-         9Kcg==
-X-Gm-Message-State: AOAM531CnLO5sc8NtVAW76b0pFTNWA6jymYhFos0r78gmpbTerUUeRxN
-        KdCq8I/sUvDUUuNBzxbUTfrVjH75NK/QjkKwTZFMJGQ+OQZCW0pjKWihP7BZVwoRkWx5KSYDYYc
-        jahHFpowannmAEf3WTDb4tcPF
-X-Received: by 2002:aa7:dace:: with SMTP id x14mr862792eds.300.1611568725549;
-        Mon, 25 Jan 2021 01:58:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxQ4gfGMmhFnROhe7nsAtZpVsiUl1zkraUWm/PZk66fih7yway/EpdSqFBNEaVdkT9kgyApew==
-X-Received: by 2002:aa7:dace:: with SMTP id x14mr862782eds.300.1611568725435;
-        Mon, 25 Jan 2021 01:58:45 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k22sm10408741edv.33.2021.01.25.01.58.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 01:58:44 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86/mmu: improve robustness of some functions
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Stephen Zhang <stephenzhangzsd@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-References: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
- <87a6sx4a0l.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <99258705-ff9e-aa0c-ba58-da87df760655@redhat.com>
-Date:   Mon, 25 Jan 2021 10:58:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 25 Jan 2021 05:16:09 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E62AC06178A;
+        Mon, 25 Jan 2021 02:04:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ypMbUlgrFbzcYuyucmNzuPumJ/xgx4bvW34r5XmbX2k=; b=q+Ey7/6eqsYlxEb26Jlt9VFQu+
+        lkJNNN+ouMyaQPwzLeanUfS9aIhBlgUpehQjGLYi+paXzMifRwePCvK3tpdrmNf5kQsYyPtY8+QX5
+        uBRAEDSP31JRdBJQ7mv1nLE4jBZHBBsrmL5WFOzOitm3TlkHZU/sMJcu+S3uPSd+uJH4g4lbLipkH
+        wWN5fwjMRALwccVtTwgmEdaVggHULpi0GubaHrezgIgZKeE/GK182Qa+xTFCEnRKEi5ZfJr8ePpbV
+        XkWct4vsBx6iUjhHb5Isw4drz3XUruAMrjUaAjkM0aH+yyjhOPgnRM2F23QFu8zzsyh4bhZjgxCuL
+        LVTypm2g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l3yjD-000500-Lp; Mon, 25 Jan 2021 10:04:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63A2F300DB4;
+        Mon, 25 Jan 2021 11:04:08 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4FBF928B66D18; Mon, 25 Jan 2021 11:04:08 +0100 (CET)
+Date:   Mon, 25 Jan 2021 11:04:08 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Larabel <Michael@phoronix.com>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost
+ in schedutil invariant formula
+Message-ID: <YA6XmO2nuivdpE8M@hirez.programming.kicks-ass.net>
+References: <20210122204038.3238-1-ggherdovich@suse.cz>
+ <20210122204038.3238-2-ggherdovich@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <87a6sx4a0l.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122204038.3238-2-ggherdovich@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/21 10:54, Vitaly Kuznetsov wrote:
+On Fri, Jan 22, 2021 at 09:40:38PM +0100, Giovanni Gherdovich wrote:
+> This workload is constant in time, so instead of using the PELT sum we can
+> pretend that scale invariance is obtained with
 > 
-> What if we do something like (completely untested):
+>     util_inv = util_raw * freq_curr / freq_max1        [formula-1]
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index bfc6389edc28..5ec15e4160b1 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -12,7 +12,7 @@
->  extern bool dbg;
->  
->  #define pgprintk(x...) do { if (dbg) printk(x); } while (0)
-> -#define rmap_printk(x...) do { if (dbg) printk(x); } while (0)
-> +#define rmap_printk(fmt, args...) do { if (dbg) printk("%s: " fmt, __func__, ## args); } while (0)
->  #define MMU_WARN_ON(x) WARN_ON(x)
->  #else
->  #define pgprintk(x...) do { } while (0)
+> where util_raw is the PELT util from v5.10 (which is to say, not invariant),
+> and util_inv is the PELT util from v5.11-rc4. freq_max1 comes from
+> commit 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for
+> frequency invariance on AMD EPYC") and is (P0+max_boost)/2 = (2.25+3.4)/2 =
+> 2.825 GHz.  Then we have the schedutil formula
 > 
-> and eliminate the need to pass '__func__,' explicitly? We can probably
-> do the same to pgprintk().
+>     freq_next = 1.25 * freq_max2 * util_inv            [formula-2]
+> 
+> Here v5.11-rc4 uses freq_max2 = P0 = 2.25 GHz (and this patch changes it to
+> 3.4 GHz).
+> 
+> Since all cores are busy, there is no boost available. Let's be generous and say
+> the tasks initially get P0, i.e. freq_curr = 2.25 GHz. Combining the formulas
+> above and taking util_raw = 825/1024 = 0.8, freq_next is:
+> 
+>     freq_next = 1.25 * 2.25 * 0.8 * 2.25 / 2.825 = 1.79 GHz
 
-Nice indeed.  Though I wonder if anybody has ever used these.  For those 
-that I actually needed in the past I created tracepoints instead.
+Right, so here's a 'problem' between schedutil and cpufreq, they don't
+use the same f_max at all times.
 
-Paolo
+And this is also an inconsistency between acpi_cpufreq and intel_pstate
+(passive). IIRC the intel_pstate cpufreq drivers uses 4C/1C/P0 resp,
+while ACPI seems to stick to P0 f_max.
 
+Rafael; should ACPI change that behaviour rather than adding yet another
+magic variable?
