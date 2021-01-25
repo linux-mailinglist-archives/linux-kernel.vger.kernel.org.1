@@ -2,228 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EFE303039
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3853B303052
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732906AbhAYXdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:33:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25040 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732913AbhAYXd1 (ORCPT
+        id S1732719AbhAYXhS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 18:37:18 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:2990 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732939AbhAYXgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:33:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611617519;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j42RI3rK5rRixflFMh1UUzbe7YwSLEe6oi69dQNNK2c=;
-        b=JF2Z1LbYshowPJgcDnEAgt8dJuCl5Mubrazpp4A1x6BVwSux1psqKM6iE4uuwuS4GZvwR6
-        t/ouK52u7Rs/6tEqqOXkKcn+/UY86xblDvbFGiqPIiH1JX3eBA9C/i2+iX7pnROo2QNKI2
-        UoHY/MGrkWHSooC24q+QE/gtoCakXzs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-zYSd0EcUM82xDSWrdCG0Uw-1; Mon, 25 Jan 2021 18:31:55 -0500
-X-MC-Unique: zYSd0EcUM82xDSWrdCG0Uw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1483806674;
-        Mon, 25 Jan 2021 23:31:53 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A68086A254;
-        Mon, 25 Jan 2021 23:31:52 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 16:31:51 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210125163151.5e0aeecb@omen.home.shazbot.org>
-In-Reply-To: <20210125180440.GR4147@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
-        <20210122122503.4e492b96@omen.home.shazbot.org>
-        <20210122200421.GH4147@nvidia.com>
-        <20210125172035.3b61b91b.cohuck@redhat.com>
-        <20210125180440.GR4147@nvidia.com>
+        Mon, 25 Jan 2021 18:36:37 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DPmRG2ZPfzR7MJ;
+        Tue, 26 Jan 2021 07:34:18 +0800 (CST)
+Received: from dggpemm100010.china.huawei.com (7.185.36.24) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 26 Jan 2021 07:35:23 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm100010.china.huawei.com (7.185.36.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Tue, 26 Jan 2021 07:35:22 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Tue, 26 Jan 2021 07:35:22 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        "linux-accelerators@lists.ozlabs.org" 
+        <linux-accelerators@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "chensihang (A)" <chensihang1@hisilicon.com>
+Subject: RE: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
+Thread-Topic: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
+Thread-Index: AQHW8vWniUnMS+RFOU2UJJCa8sDlvKo39q+AgADtcaD//5AFgIAAh9tQ
+Date:   Mon, 25 Jan 2021 23:35:22 +0000
+Message-ID: <5f64a68042c64f37b5cba74028bd2189@hisilicon.com>
+References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
+ <20210125154717.GW4605@ziepe.ca>
+ <96b655ade2534a65974a378bb68383ee@hisilicon.com>
+ <20210125231619.GY4605@ziepe.ca>
+In-Reply-To: <20210125231619.GY4605@ziepe.ca>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.203.227]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 14:04:40 -0400
-Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-> On Mon, Jan 25, 2021 at 05:20:35PM +0100, Cornelia Huck wrote:
+
+> -----Original Message-----
+> From: owner-linux-mm@kvack.org [mailto:owner-linux-mm@kvack.org] On Behalf Of
+> Jason Gunthorpe
+> Sent: Tuesday, January 26, 2021 12:16 PM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Cc: Wangzhou (B) <wangzhou1@hisilicon.com>; Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org>; Arnd Bergmann <arnd@arndb.de>; Zhangfei Gao
+> <zhangfei.gao@linaro.org>; linux-accelerators@lists.ozlabs.org;
+> linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org;
+> linux-mm@kvack.org; Liguozhu (Kenneth) <liguozhu@hisilicon.com>; chensihang
+> (A) <chensihang1@hisilicon.com>
+> Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
 > 
-> > I think you cut out an important part of Alex' comment, so let me
-> > repost it here:  
+> On Mon, Jan 25, 2021 at 10:21:14PM +0000, Song Bao Hua (Barry Song) wrote:
+> > mlock, while certainly be able to prevent swapping out, it won't
+> > be able to stop page moving due to:
+> > * memory compaction in alloc_pages()
+> > * making huge pages
+> > * numa balance
+> > * memory compaction in CMA
 > 
-> Yes, I've already respnded to this.
+> Enabling those things is a major reason to have SVA device in the
+> first place, providing a SW API to turn it all off seems like the
+> wrong direction.
 
-Not really.  For example, how can struct vfio_pci_device be exposed
-as-is to the various drivers that may be derived from vfio-pci-core?
-As soon as such a driver starts touching those fields or performing
-operations on their own without making proper use of those fields, then
-the API is not the simple set of exported functions below, it's the
-entire mechanics of every bit of data in that structure and the
-structures it includes.  If we're making a library then we need to
-define public and private data.  We're just tossing everything here
-into the private header which is necessarily public to the derived
-drivers if they're to have any means to operate on the device.
+I wouldn't say this is a major reason to have SVA. If we read the
+history of SVA and papers, people would think easy programming due
+to data struct sharing between cpu and device, and process space
+isolation in device would be the major reasons for SVA. SVA also
+declares it supports zero-copy while zero-copy doesn't necessarily
+depend on SVA.
 
-> > I'm missing the bigger picture of how this api is supposed to work out,
-> > a driver with a lot of TODOs does not help much to figure out whether
-> > this split makes sense and is potentially useful for a number of use
-> > cases  
+Page migration and I/O page fault overhead, on the other hand, would
+probably be the major problems which block SVA becoming a 
+high-performance and more popular solution.
+
 > 
-> The change to vfio-pci is essentially complete, ignoring some
-> additional cleanup. I'm not sure seeing details how some mlx5 driver
-> uses it will be substantially more informative if it is useful for
-> S390, or Intel.
-
-We're supposed to be enlightened by a vendor driver that does nothing
-more than pass the opaque device_data through to the core functions,
-but in reality this is exactly the point of concern above.  At a
-minimum that vendor driver needs to look at the vdev to get the pdev,
-but then what else does it look at, consume, or modify.  Now we have
-vendor drivers misusing the core because it's not clear which fields
-are private and how public fields can be used safely, any core
-extensions potentially break vendor drivers, etc.  We're only even hand
-waving that existing device specific support could be farmed out to new
-device specific drivers without even going to the effort to prove that.
- 
-> As far as API it is clear to see:
+> If the device doesn't want to use SVA then don't use it, use normal
+> DMA pinning like everything else.
 > 
-> > +/* Exported functions */
-> > +struct vfio_pci_device *vfio_create_pci_device(struct pci_dev *pdev,
-> > +               const struct vfio_device_ops *vfio_pci_ops, void *dd_data);
 
-Nit, dd_data is never defined or used.  The function returns a struct
-vfio_pci_device, but I'm not sure whether that's supposed to be public
-or private.  IMO, it should be private and perhaps access functions
-should be provided for fields we consider public.
+If we disable SVA, we won't get the benefits of SVA on address sharing,
+and process space isolation.
 
-> > +void vfio_destroy_pci_device(struct pci_dev *pdev);  
-> 
-> Called from probe/remove of the consuming driver
-> 
-> > +int vfio_pci_core_open(void *device_data);
-> > +void vfio_pci_core_release(void *device_data);
-> > +long vfio_pci_core_ioctl(void *device_data, unsigned int cmd,
-> > +               unsigned long arg);
-> > +ssize_t vfio_pci_core_read(void *device_data, char __user *buf, size_t count,
-> > +               loff_t *ppos);
-> > +ssize_t vfio_pci_core_write(void *device_data, const char __user *buf,
-> > +               size_t count, loff_t *ppos);
-> > +int vfio_pci_core_mmap(void *device_data, struct vm_area_struct *vma);
-> > +void vfio_pci_core_request(void *device_data, unsigned int count);
-> > +int vfio_pci_core_match(void *device_data, char *buf);  
-> 
-> Called from vfio_device_ops and has the existing well defined API of
-> the matching ops.
+> Jason
 
-All of these require using struct vfio_pci_device to do anything beyond
-the stub implementation in 3/3.
-
-> > +int vfio_pci_core_sriov_configure(struct pci_dev *pdev, int nr_virtfn);
-> > +pci_ers_result_t vfio_pci_core_aer_err_detected(struct pci_dev *pdev,
-> > +               pci_channel_state_t state);
-> > +  
-> 
-> Callbacks from the PCI core, API defined by the PCI subsystem.
-> 
-> Notice there is no major new API exposed from vfio-pci, nor are
-> vfio-pci internals any more exposed then they used to be.
-
-They absolutely are.  These are all private, non-exported functions and
-data structures.  Here the vfio_device_ops and all the internal state
-are all laid bare.
-
-> Except create/destroy, every single newly exported function was
-> already available via a function pointer someplace else in the
-> API. This is a key point, because it is very much NOT like the May
-> series.
-
-They were available to vfio-core, which honored that device_data was
-private.
- 
-> Because the new driver sits before vfio_pci because it owns the
-> vfio_device_ops, it introduces nearly nothing new. The May series put
-> the new driver after vfio-pci as some internalized sub-driver and
-> exposed a whole new API, wrappers and callbacks to go along with it.
-> 
-> For instance if a new driver wants to implement some new thing under
-> ioctl, like migration, then it would do
-> 
-> static long new_driver_pci_core_ioctl(void *device_data, unsigned int cmd,
->                unsigned long arg)
-> {
->    switch (cmd) {
->      case NEW_THING: return new_driver_thing();
-
-new_driver_thing relative too what.  Now we need to decode the
-vfio-pci-core private data and parse through it to access or affect the
-device.
-
->      default: return vfio_pci_core_ioctl(device_data, cmd, arg);
->    }
-> }
-> static const struct vfio_device_ops new_driver_pci_ops = {
->    [...]
->    .ioctl = new_driver_ioctl,
-> };
-> 
-> Simple enough, if you understand the above, then you also understand
-> what direction the mlx5 driver will go in.
-> 
-> This is also why it is clearly useful for a wide range of cases, as a
-> driver can use as much or as little of the vfio-pci-core ops as it
-> wants. The driver doesn't get to reach into vfio-pci, but it can sit
-> before it and intercept the entire uAPI. That is very powerful.
-
-But vfio-pci-core is actually vfio-pci and there's no way for a vendor
-derived driver to do much of anything without reaching into struct
-vfio_pci_device, so yes, it is reaching into vfio-pci.
- 
-> > or whether mdev (even with its different lifecycle model) or a  
-> 
-> I think it is appropriate to think of mdev as only the special
-> lifecycle model, it doesn't have any other functionality.
-> 
-> mdev's lifecycle model does nothing to solve the need to libraryize
-> vfio-pci.
-> 
-> > different vfio bus driver might be a better fit for the more  
-> 
-> What is a "vfio bus driver" ? Why would we need a bus here?
-
-./Documentation/driver-api/vfio.rst
-
-We refer to drivers that bridge vfio-core to bus implementations, ex.
-vfio-pci, as "vfio bus drivers".  This is partially why we've so far
-extended vfio-pci with device specific features, as a bus specific
-driver rather than a device specific driver.
-
-> > involved cases. (For example, can s390 ISM fit here?)  
-> 
-> Don't know what is special about ISM? What TODO do you think will help
-> answer that question?
-
-So far the TODOs rather mask the dirty little secrets of the extension
-rather than showing how a vendor derived driver needs to root around in
-struct vfio_pci_device to do something useful, so probably porting
-actual device specific support rather than further hand waving would be
-more helpful.  Thanks,
-
-Alex
-
+Thanks
+Barry
