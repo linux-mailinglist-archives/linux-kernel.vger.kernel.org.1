@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701103029BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88F73029AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731371AbhAYSNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:13:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
+        id S1731236AbhAYSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:11:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731260AbhAYSDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:03:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A997522583;
-        Mon, 25 Jan 2021 18:03:01 +0000 (UTC)
+        id S1731389AbhAYSE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:04:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C1392251F;
+        Mon, 25 Jan 2021 18:03:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611597782;
-        bh=XauW+yiq9PtiLTCRxGls7vBx60Zpm0LmrZUr+oXBxRo=;
+        s=k20201202; t=1611597827;
+        bh=kHd1vjztpK98GssBUhEyIwyxCExvuJ7OgyNX0Uwd+70=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=iyq9f8V840omIGOnw2ZyP+t+wGGLaWsJi36buJoF3okaMAmncHZjs9AC21hcRAElb
-         yqTDVa30Jw162sTNEl3jiFgoyB5JJ9mEXIWfw9eMEENGZpBHz9npyz4RvpoayfKf21
-         Teo47zlSRs0sgrFb9dH7lyy1RIbcV0iBG3nHJ0InaCIwAEkuco4dxzgd5VUu9aEJWt
-         0gF2YTKOOPQqdQLzvuXd/PDfkbEeaiQTstPPYUsavZQ0pMoQuaDTgCsMI+Blq/a0mq
-         Ky9bPMrzekERI75Gc8ep0meyQaGuSw0GlLZlLgAPYmWY+sIvpGn0MUQ7pV8h/PJZ6b
-         gzMpXxZM7rWEw==
+        b=PjAw92Z9nlCJs3d5U6PyqI2duJhnWZj7kq/UH/TkLx7QZ4a+sTbe7tbC8fO/AMQRS
+         abFi7P41dB1YNRGN1Pvvg9YG1FE8uplyXRpiCjAZ1ztUob9lG+Fs2qDVZ3zNl5dsjL
+         PaB660Tx5wN27rs2ijk5UjtG1D/F8ml+5n63jhGop+ngip4RLqiAhOottbFwUDYjMU
+         9DroX4zqBvk2kXYfGYBSURHLegWAImPp5+PCuXYSkXw2BKVPE/w+D1yFmhlLkerxVF
+         vkZNVFB4XsR1SuY40tBwdr8Zbp16hLwgk4U5rdEUNLzYOhUkmOMVs6vPHHCbEoKVBm
+         GnhuWUiexREug==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-In-Reply-To: <20210120003154.26749-1-digetx@gmail.com>
-References: <20210120003154.26749-1-digetx@gmail.com>
-Subject: Re: (subset) [PATCH v3 0/6] Clock and reset improvements for Tegra ALSA drivers
-Message-Id: <161159774049.2212.2964424673309683521.b4-ty@kernel.org>
-Date:   Mon, 25 Jan 2021 18:02:20 +0000
+To:     Christoph Fritz <chf.fritz@googlemail.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <60d8eb8feefd26380cc9c6503f835e569be90465.camel@googlemail.com>
+References: <60d8eb8feefd26380cc9c6503f835e569be90465.camel@googlemail.com>
+Subject: Re: [PATCH] regulator: pf8x00: set ramp_delay for bucks
+Message-Id: <161159778522.2496.12823600495022018154.b4-ty@kernel.org>
+Date:   Mon, 25 Jan 2021 18:03:05 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,31 +41,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Jan 2021 03:31:48 +0300, Dmitry Osipenko wrote:
-> This series improves the handling of clock and reset controls of
-> NVIDA Tegra ALSA drivers. Tegra HDA and AHUB drivers aren't handling
-> resets properly, which needs to be fixed in order to unblock other patches
-> related to fixes of the reset controller driver since HDA/AHUB are bound
-> to fail once reset controller driver will be corrected. In particular ALSA
-> drivers are relying on implicit de-assertion of resets which is done by the
-> tegra-clk driver. It's not the business of the clk driver to touch resets
-> and we need to fix this because it breaks reset/clk programming sequences
-> of other Tegra drivers.
-> 
-> [...]
+On Mon, 25 Jan 2021 17:13:41 +0100, Christoph Fritz wrote:
+> This patch sets ramp_delay for bucks to the max value given by the
+> datasheet.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[4/6] ASoC: tegra: ahub: Add missing resets
-      commit: 24a41a38dd2df065ee942221c2fae5e314770865
-[5/6] ASoC: tegra: ahub: Use clk_bulk helpers
-      commit: 6d8ac9b1dd2f138f4aa39008994600f561eeede8
-[6/6] ASoC: tegra: ahub: Reset hardware properly
-      commit: ed9ce1ed2239909c23d48c723c6549417c476246
+[1/1] regulator: pf8x00: set ramp_delay for bucks
+      commit: 4288b4ccda966c2a49ec7c67100208378bdb34d2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
