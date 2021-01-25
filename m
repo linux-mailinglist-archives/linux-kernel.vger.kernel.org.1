@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F41E302508
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A713302515
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbhAYMhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 07:37:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35494 "EHLO mail.kernel.org"
+        id S1728197AbhAYMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 07:45:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728023AbhAYMYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:24:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFE9222F9;
-        Mon, 25 Jan 2021 11:28:36 +0000 (UTC)
+        id S1728249AbhAYMoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:44:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFAD622A84;
+        Mon, 25 Jan 2021 11:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611574119;
-        bh=Xp2YXhN5fYQEq2trNt3KUwGwkgV2teZlMQj7za+4IoI=;
+        s=k20201202; t=1611574372;
+        bh=zvGcvAbZxeaS91GmqlrL8rhrbP5aTskoffAf2GJZ5Y0=;
         h=From:To:Cc:Subject:Date:From;
-        b=QvKH9jeOavEWiOczUcI4W4UQQaWsny3NOCFBCniUa95Ut30fB55x3xS5KzuKfAle+
-         NYQr9nE8Cb70EEV3bYUcMyxgvvj8GA8gU12vzqQC8w+bxVIa4k8wF76DK0QttkQonH
-         28SovmJyPSmHPPykeccrah8i5dcqVr/oxcU9Umlv4FRsZ4gynvg6oX9R9piHSc2Q33
-         OSNavd2AKbUVT3YXYBhsuTBeTNcFTAHNIqG/Ihe+PKQJ09UnefFHyOi1sKa6IOVqAY
-         mqm7fqRrZ7ffiUoF31ODqeHQHfUVicGx9JbdYViqefWxp4Fy7IdHtY515fZ7mdk4+2
-         5YDbFxLOSjh4Q==
+        b=kUTFpQYw5TdsBGw4F25VVK/zFKfvZetV3mcOIPt6QI1p+V7aEh/5b3ubkGvpGWZMy
+         WFfX8JT+W7GsvCYdSEdBqvsXu6MZTD2xdSjm1WDsFsc+8dew+lnk6TwHFWNQq+K4qL
+         9BlaR2i02SEHome13p5tbBuDMdqziFKigs15ugFtqTJBT1cMFlRO0S46rk4NZIHwP+
+         066eHnXPJiDiCb/VUwL/QoxLZBZdWXzOmpKGx104PjAHMIytEOkjqFoyHJVnJwvBEz
+         s+rDBzjUQsiGlj4n8ClJis+KbQnF3gaR9+RfYRLEAurKs4XEHauhSG+DOK5oZBM/+w
+         Zjt3NnQJxSfBQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Peter Chen <peter.chen@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] kasan: export kasan_poison
-Date:   Mon, 25 Jan 2021 12:28:13 +0100
-Message-Id: <20210125112831.2156212-1-arnd@kernel.org>
+Subject: [PATCH] usb: host: ehci-tegra: fix Kconfig depencies
+Date:   Mon, 25 Jan 2021 12:32:30 +0100
+Message-Id: <20210125113248.2268952-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,31 +43,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The unit test module fails to build after adding a reference
-to kasan_poison:
+Selecting the chipidea driver from the old Kconfig symbol
+can lead to a missing dependency:
 
-ERROR: modpost: "kasan_poison" [lib/test_kasan.ko] undefined!
+WARNING: unmet direct dependencies detected for USB_CHIPIDEA
+  Depends on [m]: USB_SUPPORT [=y] && (USB_EHCI_HCD [=y] && USB_GADGET [=m] || USB_EHCI_HCD [=y] && !USB_GADGET [=m] || !USB_EHCI_HCD [=y] && USB_GADGET [=m]) && HAS_DMA [=y]
+  Selected by [y]:
+  - USB_EHCI_TEGRA [=y] && USB_SUPPORT [=y] && USB [=y] && USB_EHCI_HCD [=y] && ARCH_TEGRA [=y]
+aarch64-linux-ld: drivers/usb/chipidea/otg.o: in function `ci_handle_vbus_change':
+otg.c:(.text+0x3c8): undefined reference to `usb_gadget_vbus_connect'
+aarch64-linux-ld: otg.c:(.text+0x42c): undefined reference to `usb_gadget_vbus_disconnect'
+aarch64-linux-ld: drivers/usb/chipidea/otg.o: in function `ci_otg_work':
+otg.c:(.text+0x5d4): undefined reference to `usb_gadget_vbus_disconnect'
+...
 
-Export this symbol to make it available to loadable modules.
+Duplicate the dependency to ensure that this driver can
+only be a loadable module if one of its dependencies is.
 
-Fixes: b9b322c2bba9 ("kasan: add match-all tag tests")
+Fixes: c3590c7656fb ("usb: host: ehci-tegra: Remove the driver")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- mm/kasan/shadow.c | 1 +
+ drivers/usb/host/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index de6b3f074742..32e7a5c148e6 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -94,6 +94,7 @@ void kasan_poison(const void *address, size_t size, u8 value)
- 
- 	__memset(shadow_start, value, shadow_end - shadow_start);
- }
-+EXPORT_SYMBOL_GPL(kasan_poison);
- 
- void kasan_unpoison(const void *address, size_t size)
- {
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 160e5d3927e2..66b01b619ecd 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -269,6 +269,7 @@ config USB_EHCI_HCD_AT91
+ config USB_EHCI_TEGRA
+ 	tristate "NVIDIA Tegra HCD support"
+ 	depends on ARCH_TEGRA
++	depends on ((USB_EHCI_HCD && USB_GADGET) || (USB_EHCI_HCD && !USB_GADGET) || (!USB_EHCI_HCD && USB_GADGET)) && HAS_DMA
+ 	select USB_CHIPIDEA
+ 	select USB_CHIPIDEA_HOST
+ 	select USB_CHIPIDEA_TEGRA
 -- 
 2.29.2
 
