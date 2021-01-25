@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABD63037E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4D53037D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390052AbhAZI3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58894 "EHLO mail.kernel.org"
+        id S2389928AbhAZIZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:25:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727697AbhAYSmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56AA5206B2;
-        Mon, 25 Jan 2021 18:42:14 +0000 (UTC)
+        id S1727646AbhAYSms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFB9230FE;
+        Mon, 25 Jan 2021 18:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600134;
-        bh=kQ38umAKWVsDV+fLqjxbuXs7+lKRqag3m1nfj79qei0=;
+        s=korg; t=1611600112;
+        bh=du7oJrbTuBu5U1oNDSjNAn64cgutbMWetU71tr4xy/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0RqqeUh3ZXVCFmbgjdRkxxwuwo7ayPwKHX66IJEJu3yfO8PixEbJTtWndL2aL12Sw
-         B2y7SMJMVveGquy4qVY1E8O7YG+ugkSsJkhKCTfQ6S16EPHqCOrJi6remO5zKmcBA4
-         vfh1u4+MPpWthMV1rn2FX3ZiFN5NzyppaDYxZW4U=
+        b=sirI6vjXS7gz0LX57zNvTT38HFpcp3QKqt6lo/GaiT/K/XRXvmn+8cUR/dg22u/fZ
+         Bybm+rRQSgGXQNxyVsfKa11TJctzcYtImhOjmfMtPSYBrv8hE2ZkEWxoFQ2WDMA/VI
+         8rC/pXe9EaZ3db2od0qG8pjFZ+fE1KDMQ/CoJiXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/58] selftests: net: fib_tests: remove duplicate log test
-Date:   Mon, 25 Jan 2021 19:39:28 +0100
-Message-Id: <20210125183157.861861091@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Eugene Korenevsky <ekorenevsky@astralinux.ru>
+Subject: [PATCH 4.19 36/58] ehci: fix EHCI host controller initialization sequence
+Date:   Mon, 25 Jan 2021 19:39:37 +0100
+Message-Id: <20210125183158.261001494@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -42,39 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Eugene Korenevsky <ekorenevsky@astralinux.ru>
 
-[ Upstream commit fd23d2dc180fccfad4b27a8e52ba1bc415d18509 ]
+commit 280a9045bb18833db921b316a5527d2b565e9f2e upstream.
 
-The previous test added an address with a specified metric and check if
-correspond route was created. I somehow added two logs for the same
-test. Remove the duplicated one.
+According to EHCI spec, EHCI HC clears USBSTS.HCHalted whenever
+USBCMD.RS=1.
 
-Reported-by: Antoine Tenart <atenart@redhat.com>
-Fixes: 0d29169a708b ("selftests/net/fib_tests: update addr_metric_test for peer route testing")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Link: https://lore.kernel.org/r/20210119025930.2810532-1-liuhangbin@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, it is a good practice to wait some time after setting USBCMD.RS
+(approximately 100ms) until USBSTS.HCHalted become zero.
+
+Without this waiting, VirtualBox's EHCI virtual HC accidentally hangs
+(see BugLink).
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211095
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Eugene Korenevsky <ekorenevsky@astralinux.ru>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210110173609.GA17313@himera.home
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/net/fib_tests.sh | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/usb/host/ehci-hcd.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/testing/selftests/net/fib_tests.sh b/tools/testing/selftests/net/fib_tests.sh
-index 67048f922ff20..a5ba149761bf9 100755
---- a/tools/testing/selftests/net/fib_tests.sh
-+++ b/tools/testing/selftests/net/fib_tests.sh
-@@ -987,7 +987,6 @@ ipv6_addr_metric_test()
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -574,6 +574,7 @@ static int ehci_run (struct usb_hcd *hcd
+ 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
+ 	u32			temp;
+ 	u32			hcc_params;
++	int			rc;
  
- 	check_route6 "2001:db8:104::1 dev dummy2 proto kernel metric 260"
- 	log_test $? 0 "Set metric with peer route on local side"
--	log_test $? 0 "User specified metric on local address"
- 	check_route6 "2001:db8:104::2 dev dummy2 proto kernel metric 260"
- 	log_test $? 0 "Set metric with peer route on peer side"
+ 	hcd->uses_new_polling = 1;
  
--- 
-2.27.0
-
+@@ -629,9 +630,20 @@ static int ehci_run (struct usb_hcd *hcd
+ 	down_write(&ehci_cf_port_reset_rwsem);
+ 	ehci->rh_state = EHCI_RH_RUNNING;
+ 	ehci_writel(ehci, FLAG_CF, &ehci->regs->configured_flag);
++
++	/* Wait until HC become operational */
+ 	ehci_readl(ehci, &ehci->regs->command);	/* unblock posted writes */
+ 	msleep(5);
++	rc = ehci_handshake(ehci, &ehci->regs->status, STS_HALT, 0, 100 * 1000);
++
+ 	up_write(&ehci_cf_port_reset_rwsem);
++
++	if (rc) {
++		ehci_err(ehci, "USB %x.%x, controller refused to start: %d\n",
++			 ((ehci->sbrn & 0xf0)>>4), (ehci->sbrn & 0x0f), rc);
++		return rc;
++	}
++
+ 	ehci->last_periodic_enable = ktime_get_real();
+ 
+ 	temp = HC_VERSION(ehci, ehci_readl(ehci, &ehci->caps->hc_capbase));
 
 
