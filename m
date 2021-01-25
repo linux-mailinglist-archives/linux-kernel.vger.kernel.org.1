@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C077C302801
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155BD302802
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730795AbhAYQgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:36:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
+        id S1730810AbhAYQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:36:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730714AbhAYQev (ORCPT
+        with ESMTP id S1730790AbhAYQfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:34:51 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F168C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:34:11 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id cq1so8720598pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:34:11 -0800 (PST)
+        Mon, 25 Jan 2021 11:35:53 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57B2C06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:34:33 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id r38so3350119pgk.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:34:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+AO/2UPHVqA76MbynGpJlAANlIGJYjkKh16kwZOTMC4=;
-        b=PPuMnezYxZLU1GBR+XJo640F4pBzFCyqglGIccvXWXFTVkFWv4ReNDC50805k1Q+nN
-         pg0DQnB7qe+yrM1z7ppEcUd9bW/ChiB4vxXRzkzhUFsXQbt6+HqLueR1PpleCHp0c3pE
-         VS7XyrD9pmDq5XtEJmdajsibreM5BjGvnu4eI9SFUcOUJ7IzNTPJMOrqD9CdCL8bhNyz
-         Ppq4soczUAo+KR1vtq9dkSzMdQc/8Y+bqH/LBZ4ewmrVyrOhMRaN2mQlq9NesO6kJEzi
-         wEBpjYjv9baKkyed1m9vmxn9jX1ytG4JdEyVeNCnI6n7WoatKuz6huBO1vedAH1wolo1
-         LdbA==
+        bh=as5GizHsylFLHZ2B76fHu3xlwPfopZftZapmvXZfdBI=;
+        b=omW8hovOw4YNVuopGunob3jsGMue6hQm7tCpSbn685C26yM6KRLGq4dcykO69/vMJO
+         LUcQQF+VTz19uqSOfXrl/VxjU/Tr5vyphAR1bk9Se6RnzIFwv/2XmjaJFPpc/x+NsxYu
+         SgBbjNCD4WaPpAe6RKcExIPSpmiTeyE4qcWa9ye1cEOMWFJRFFAqJZiaRvSZYMC4Xt+s
+         yzgUHJ1pagxj0AepqbKYwOgewxjnrKjBRfqLvsEV4sS+tRCFuzE+5axDnVWCzuNzH+EH
+         P6zJfbvwBvRuyJqqve8/NEJbdis8Jr0O/MbhOZKah8FJq4RhTdEIK8NQmc9bKgdwEcXh
+         yCXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+AO/2UPHVqA76MbynGpJlAANlIGJYjkKh16kwZOTMC4=;
-        b=ZLcMB/W/G+6Zq8+vxS+iTs93UCn7L3SwXB4S3QLQwrX5areWrKtyP7Z4k41po5K4xV
-         WbXQQA1h5zNff+HZa0pQETuT1jkBge9L8YcjG1CmIjCOuBpi9ki9KfBMuSmMCJjEprS/
-         BhaZnBQHJf3Yq6XHlQ937LrH2ADaCEtfTCuHmMDKyba5tBsj7h7xzJ+Bn656rldNf+/n
-         AtmFS+GDXkxbYreTptBqBp4DVy0igxvvISM/fz+6d3W6YICTvxdYwLHz2sSxgbIGv3cw
-         4Lpx/ImMm4cI1710PlBFrj6Hs+xHPa73jOT2b/1vsKXdToimQGXAHrVxPwyN9J/MCG08
-         XzyA==
-X-Gm-Message-State: AOAM530QpVklES6mHfXUiD2ehx1s9opAZtRvhTbC6LUoihkEz5trFjT8
-        v6hHWJKZAxhDJ6C2ofEWnd1m2GiGkDdgtA==
-X-Google-Smtp-Source: ABdhPJzybYKA1znlHXhhGgXLMk93uctVdNxPhUeXsQAQ+YB8kNQc0MgFmE1hR0jx322y1i0gJkPw9Q==
-X-Received: by 2002:a17:902:70c6:b029:df:d62a:8c69 with SMTP id l6-20020a17090270c6b02900dfd62a8c69mr1518424plt.20.1611592450638;
-        Mon, 25 Jan 2021 08:34:10 -0800 (PST)
+        bh=as5GizHsylFLHZ2B76fHu3xlwPfopZftZapmvXZfdBI=;
+        b=SWZZq445J4sBgUtj3J61kI42igNokx0VFi23GO1coGBj+n/g+j/yPRHkHVo+Yttmt2
+         zXtAEiu4XI3aCM9LMirLYjUz6YlsNrxGAm43CgvjTU+NEFoc1pcrvzZ2gKDQ8WyrBwj/
+         bypLpqMWhV0OXbpUZXK3PTlSpi5aZNTz/GUewtHZQeaOqWqDnXSdm42+xIw+CiWTka4t
+         2StTPX3mpq4JtR44pxMTFUiMTfFSWAjf+I3AQXibAE19IMLTjm0nrelGiXgvpuMtfyeq
+         yEek2H3EKho0Gfv09e1o9Lpg+M9z0C2XHYChkgYMF7sZadvncidLL7K2MEfLI4+d+pCG
+         rIUw==
+X-Gm-Message-State: AOAM531r3esuBFhfODZCa/ZnYTYQXVR6RaitafdWK898rz0c4+AUTuPi
+        ovi6i1pkcQ0R3gfytTxgnwpwttmka5ZA4Q==
+X-Google-Smtp-Source: ABdhPJwldRbRMLbbGui+JSlEAwmRA/32VfoL1DXjYd8+KfPQq5yN6nha14wtvvwpZXVy8X7e+ejY6g==
+X-Received: by 2002:a63:5023:: with SMTP id e35mr1374857pgb.56.1611592472947;
+        Mon, 25 Jan 2021 08:34:32 -0800 (PST)
 Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id gt21sm18568189pjb.56.2021.01.25.08.34.09
+        by smtp.gmail.com with ESMTPSA id q197sm16798916pfc.155.2021.01.25.08.34.31
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Jan 2021 08:34:09 -0800 (PST)
+        Mon, 25 Jan 2021 08:34:32 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -78,12 +78,13 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Anthony Steinhauser <asteinhauser@google.com>,
         Jay Lang <jaytlang@mit.edu>,
         "Chang S. Bae" <chang.seok.bae@intel.com>
-Subject: [PATCH V2 0/6] x86: don't abuse tss.sp1
-Date:   Tue, 26 Jan 2021 01:34:28 +0800
-Message-Id: <20210125173444.22696-1-jiangshanlai@gmail.com>
+Subject: [PATCH V2 1/6] x86_64: move cpu_current_top_of_stack out of TSS
+Date:   Tue, 26 Jan 2021 01:34:29 +0800
+Message-Id: <20210125173444.22696-2-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <CALCETrWPnvNr9S2hsxL+pbhNWv0OOL7tBq1XmABPjYK7zZSJbw@mail.gmail.com>
+In-Reply-To: <20210125173444.22696-1-jiangshanlai@gmail.com>
 References: <CALCETrWPnvNr9S2hsxL+pbhNWv0OOL7tBq1XmABPjYK7zZSJbw@mail.gmail.com>
+ <20210125173444.22696-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -92,40 +93,154 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-In x86_64, tss.sp1 is reused as cpu_current_top_of_stack.  But we can
-directly use percpu since CR3 and gs_base is correct when it is used.
+When X86_BUG_CPU_MELTDOWN & KPTI, cpu_current_top_of_stack lives in the
+TSS which is also in the user CR3 and it becomes a coveted fruit.  An
+attacker can fetch the kernel stack top from it and continue next steps
+of actions based on the kernel stack.
 
-In x86_32, tss.sp1 is resued as thread.sp0 in three places in entry
-code.  We have the correct CR3 and %fs at two of the places.  The last
-one is sysenter.  This patchset makes %fs available earlier so that
-we can also use percpu in sysenter.  And add a percpu cpu_current_thread_sp0
-for thread.sp0 instead of tss.sp1
+The address might not be very usefull for attacker, but it is not so
+necessary to be in TSS either.  It is only accessed when CR3 is kernel CR3
+and gs_base is kernel gs_base which means it can be in any percpu variable.
 
-Changed from V1
-	Requested from Andy to also fix sp1 for x86_32.
-	Update comments in the x86_64 patch as Andy sugguested.
+The major reason it is in TSS might be performance because it is hot in
+cache and tlb since we just access sp2 as the scratch space in syscall.
 
-Lai Jiangshan (6):
-  x86_64: move cpu_current_top_of_stack out of TSS
-  x86_32: use percpu instead of offset-calculation to get thread.sp0
-    when SWITCH_TO_KERNEL_STACK
-  x86_32/sysenter: switch to the task stack without emptying the entry
-    stack
-  x86_32/sysenter: restore %fs before switching stack
-  x86_32/sysenter: use percpu to get thread.sp0 when sysenter
-  x86_32: use cpu_current_thread_sp0 instead of cpu_tss_rw.x86_tss.sp1
+So we can move it to a percpu variable near other hot percpu variables,
+such as current_task, __preempt_count, and they are in the same
+cache line.
 
- arch/x86/entry/entry_32.S          | 38 +++++++++++++++++-------------
- arch/x86/include/asm/processor.h   | 12 ++--------
- arch/x86/include/asm/switch_to.h   |  9 ++-----
- arch/x86/include/asm/thread_info.h |  6 -----
- arch/x86/kernel/asm-offsets.c      |  1 -
- arch/x86/kernel/asm-offsets_32.c   | 10 --------
- arch/x86/kernel/cpu/common.c       | 12 +++++++++-
- arch/x86/kernel/process.c          |  7 ------
- arch/x86/mm/pti.c                  |  7 +++---
- 9 files changed, 40 insertions(+), 62 deletions(-)
+tools/testing/selftests/seccomp/seccomp_benchmark desn't show any
+performance lost in "getpid native" result.  And actually, the result
+changes from 93ns before patch to 92ns after patch when !KPTI, and the
+test is very stable although the test desn't show a higher degree of
+precision but enough to know it doesn't cause degression for the test.
 
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+---
+ arch/x86/include/asm/processor.h   | 10 ----------
+ arch/x86/include/asm/switch_to.h   |  7 +------
+ arch/x86/include/asm/thread_info.h |  6 ------
+ arch/x86/kernel/cpu/common.c       |  3 +++
+ arch/x86/kernel/process.c          |  7 +------
+ arch/x86/mm/pti.c                  |  7 +++----
+ 6 files changed, 8 insertions(+), 32 deletions(-)
+
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index c20a52b5534b..886d32da1318 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -314,11 +314,6 @@ struct x86_hw_tss {
+ struct x86_hw_tss {
+ 	u32			reserved1;
+ 	u64			sp0;
+-
+-	/*
+-	 * We store cpu_current_top_of_stack in sp1 so it's always accessible.
+-	 * Linux does not use ring 1, so sp1 is not otherwise needed.
+-	 */
+ 	u64			sp1;
+ 
+ 	/*
+@@ -428,12 +423,7 @@ struct irq_stack {
+ 
+ DECLARE_PER_CPU(struct irq_stack *, hardirq_stack_ptr);
+ 
+-#ifdef CONFIG_X86_32
+ DECLARE_PER_CPU(unsigned long, cpu_current_top_of_stack);
+-#else
+-/* The RO copy can't be accessed with this_cpu_xyz(), so use the RW copy. */
+-#define cpu_current_top_of_stack cpu_tss_rw.x86_tss.sp1
+-#endif
+ 
+ #ifdef CONFIG_X86_64
+ struct fixed_percpu_data {
+diff --git a/arch/x86/include/asm/switch_to.h b/arch/x86/include/asm/switch_to.h
+index 9f69cc497f4b..b5f0d2ff47e4 100644
+--- a/arch/x86/include/asm/switch_to.h
++++ b/arch/x86/include/asm/switch_to.h
+@@ -71,12 +71,7 @@ static inline void update_task_stack(struct task_struct *task)
+ 	else
+ 		this_cpu_write(cpu_tss_rw.x86_tss.sp1, task->thread.sp0);
+ #else
+-	/*
+-	 * x86-64 updates x86_tss.sp1 via cpu_current_top_of_stack. That
+-	 * doesn't work on x86-32 because sp1 and
+-	 * cpu_current_top_of_stack have different values (because of
+-	 * the non-zero stack-padding on 32bit).
+-	 */
++	/* Xen PV enters the kernel on the thread stack. */
+ 	if (static_cpu_has(X86_FEATURE_XENPV))
+ 		load_sp0(task_top_of_stack(task));
+ #endif
+diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+index 0d751d5da702..3dc93d8df425 100644
+--- a/arch/x86/include/asm/thread_info.h
++++ b/arch/x86/include/asm/thread_info.h
+@@ -197,12 +197,6 @@ static inline int arch_within_stack_frames(const void * const stack,
+ #endif
+ }
+ 
+-#else /* !__ASSEMBLY__ */
+-
+-#ifdef CONFIG_X86_64
+-# define cpu_current_top_of_stack (cpu_tss_rw + TSS_sp1)
+-#endif
+-
+ #endif
+ 
+ #ifdef CONFIG_COMPAT
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 35ad8480c464..f3d7fd7e9684 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1745,6 +1745,9 @@ DEFINE_PER_CPU(unsigned int, irq_count) __visible = -1;
+ DEFINE_PER_CPU(int, __preempt_count) = INIT_PREEMPT_COUNT;
+ EXPORT_PER_CPU_SYMBOL(__preempt_count);
+ 
++DEFINE_PER_CPU(unsigned long, cpu_current_top_of_stack) = TOP_OF_INIT_STACK;
++EXPORT_PER_CPU_SYMBOL(cpu_current_top_of_stack);
++
+ /* May not be marked __init: used by software suspend */
+ void syscall_init(void)
+ {
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 145a7ac0c19a..296de77da4b2 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -63,14 +63,9 @@ __visible DEFINE_PER_CPU_PAGE_ALIGNED(struct tss_struct, cpu_tss_rw) = {
+ 		 */
+ 		.sp0 = (1UL << (BITS_PER_LONG-1)) + 1,
+ 
+-		/*
+-		 * .sp1 is cpu_current_top_of_stack.  The init task never
+-		 * runs user code, but cpu_current_top_of_stack should still
+-		 * be well defined before the first context switch.
+-		 */
++#ifdef CONFIG_X86_32
+ 		.sp1 = TOP_OF_INIT_STACK,
+ 
+-#ifdef CONFIG_X86_32
+ 		.ss0 = __KERNEL_DS,
+ 		.ss1 = __KERNEL_CS,
+ #endif
+diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+index 1aab92930569..e101cd87d038 100644
+--- a/arch/x86/mm/pti.c
++++ b/arch/x86/mm/pti.c
+@@ -440,10 +440,9 @@ static void __init pti_clone_user_shared(void)
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		/*
+-		 * The SYSCALL64 entry code needs to be able to find the
+-		 * thread stack and needs one word of scratch space in which
+-		 * to spill a register.  All of this lives in the TSS, in
+-		 * the sp1 and sp2 slots.
++		 * The SYSCALL64 entry code needs one word of scratch space
++		 * in which to spill a register.  It lives in the sp2 slot
++		 * of the CPU's TSS.
+ 		 *
+ 		 * This is done for all possible CPUs during boot to ensure
+ 		 * that it's propagated to all mms.
 -- 
 2.19.1.6.gb485710b
 
