@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442A83037B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EEA3037C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbhAZIRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:17:37 -0500
-Received: from ns.iliad.fr ([212.27.33.1]:52266 "EHLO ns.iliad.fr"
+        id S2389815AbhAZIVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:21:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727133AbhAYSkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:40:05 -0500
-Received: from ns.iliad.fr (localhost [127.0.0.1])
-        by ns.iliad.fr (Postfix) with ESMTP id BE74220CD1;
-        Mon, 25 Jan 2021 19:39:08 +0100 (CET)
-Received: from [192.168.108.37] (freebox.vlq16.iliad.fr [213.36.7.13])
-        by ns.iliad.fr (Postfix) with ESMTP id 9D2001FF42;
-        Mon, 25 Jan 2021 19:39:06 +0100 (CET)
-Subject: Re: [PATCH] mmc: brcmstb: Fix sdhci_pltfm_suspend link error
-To:     Arnd Bergmann <arnd@kernel.org>, Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-mmc@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20210125125050.102605-1-arnd@kernel.org>
-From:   Nicolas Schichan <nschichan@freebox.fr>
-Autocrypt: addr=nschichan@freebox.fr; prefer-encrypt=mutual; keydata=
- xsDiBEmTLz8RBADBY46VzpMBGf4or14ijXlvY0jzJsBfWiBtpAbEGmyAEwf9olyd5yMrEnE1
- qJk0NpcOMiXB/DMvOhJv4kxY6KT6r1y1UwmolkMJ782kt2zqyxaLpXsdSFBnLaN38XKgsvtW
- snnFCA6FT3bYNPNVgNMuog2UhUn2eKGVBVW0nuFbGwCg5WM290H0BLJE9+v+z6UBqC0MIhED
- /jENkiSXAhRzbFLc7cusXxmAUQlGO7kmWkZAShC+p2W/a/1BhCoefunkLKlMlJpSJJklbseQ
- RZxfyImKFuep1pRhHM6PDpXP49jfYF6WYbbq7Bx752uUkRD9D5XqHfgPRuFRUC79rDgxFZv9
- 2Umxuyacsg6gU0O3B8z2r0koXhffBACBymptu/4uHXO98HUuc92PwwswzqPyYXdZUQs37Fgc
- rMZxR4utRzWDnLy81bRn00yHVfK/FJ14Bxx06xlLnmFZC3fy3z+g2cRxKFZ5H9AI0OnNQD69
- eJTbARTNbKsgUvjqTvZTMg6TlesKSRI4kgCl9eejyrMuvOkSmeAnXwQHJM0nTmljb2xhcyBT
- Y2hpY2hhbiA8bnNjaGljaGFuQGZyZWVib3guZnI+wmAEExECACAFAkmTLz8CGwMGCwkIBwMC
- BBUCCAMEFgIDAQIeAQIXgAAKCRCL3CkFLvhg0PwDAKDQJXWNg9QyfYatePfw4W2k1oKOSwCg
- ldD3GhvlDaYUjIcgpTGsK+21OnXOwU0ESZMvSRAIAIau5WL6+zCIjb9WTTf6bX1ULD3gtWTB
- i/APtidAfIZJe87T7S7x3v7RRAPo5CAb787jgHZPzbZ2kRBbAPWB9ZF0d11m9Le3kmJPr6Lj
- tSPGX8FY+T1pvUIi2OIbhVgKC5QpLB0pq8ISAEk1N/9eBGo7QXOEyeHwhIQS6+kOj5HlyA5U
- sIw3M0bNTz9MWudHGphoad5ZF+gGVAXCN5s6TTSsKxWrejacaz0Y5r1nFjelK1fnqEWpiMD6
- sh4Bv1gawiMOowd1tgeHeyvabRiBF780yU5EeNpv5T1vTUCaphPfFbPdrnOjrleN+kNqN8kS
- 4b3G+WvEz+t9NRvFUiQgB+MAAwUH/3bx27p+GDxAwduC9rwvD2WbPkRYaMjTTcm7y+ssqCdL
- VosZGFuqWdjcoc7sYsY6cfciupLAmSaX0kIPtzS0VBmzgtQRpdJSiC2ZskdMBg9/5C5lYWx9
- T5Y8ys82LT8AmX3CzQbc1duk4bZ5bg5DrS79I2lE/2bzCS/HbIWNwCuunwk9s9A7KU8KhpXh
- Xo7LUwYRJVsYjrhOGJcgPtPMp4ReFHtHlp5AaXEmZbBq1gtYwotd3eNXgp+gClXNxzI/+vW5
- d/u1t7Og6qXSJlYGK8Xbc/zZyU3BfR9u17jlJlPp51lXNF3MkMHcdWa31fnmsmqRCcq8FF8j
- RDBuScP0gj7CSQQYEQIACQUCSZMvSQIbDAAKCRCL3CkFLvhg0OK6AJ4+05fuwuFFrGNahTwK
- 3SjvbE3HRwCgyuYgGcOqrIycpseHVTZlVuxF0Q8=
-Message-ID: <d5901e29-cbce-1c3e-15e6-15015c6e6be4@freebox.fr>
-Date:   Mon, 25 Jan 2021 19:39:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726773AbhAYSmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D31362075B;
+        Mon, 25 Jan 2021 18:40:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600048;
+        bh=4a17WWqCWMg+33SgzqVc9aR8rOqnpBy9FNYj0IklNsA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1P/xuYENGN3t+83rA7mddmmQQ7Naq7WkCz/s/iErnNkf0qol+C3DvjXSlJw70vjgU
+         TpEjTCXexGlvUj4ey0PD2++ZhEB9biJWv6c6gY6YDAx6Mwq+wUH/g7He3bJd7aFlwP
+         P/wdNGaIch0XiF2z/N7v8VCF6YZAxpAMgS4uWIVI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 11/58] ASoC: Intel: haswell: Add missing pm_ops
+Date:   Mon, 25 Jan 2021 19:39:12 +0100
+Message-Id: <20210125183157.179020523@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20210125125050.102605-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: ClamAV using ClamSMTP ; ns.iliad.fr ; Mon Jan 25 19:39:08 2021 +0100 (CET)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/2021 13:50, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> sdhci_pltfm_suspend() is only available when CONFIG_PM_SLEEP
-> support is built into the kernel, which caused a regression
-> in a recent bugfix:
-> 
-> ld.lld: error: undefined symbol: sdhci_pltfm_suspend
->>>> referenced by sdhci-brcmstb.c
->>>>               mmc/host/sdhci-brcmstb.o:(sdhci_brcmstb_shutdown) in archive drivers/built-in.a
-> 
-> Making the call conditional on the symbol fixes the link
-> error.
-> 
-> Fixes: 5b191dcba719 ("mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend")
-> Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> It would be helpful if someone could test this to ensure that the
-> driver works correctly even when CONFIG_PM_SLEEP is disabled
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Good evening Arnd,
+[ Upstream commit bb224c3e3e41d940612d4cc9573289cdbd5cb8f5 ]
 
-I have just given this patch a test, and the driver works fine on my side,
-afterwards.
+haswell machine board is missing pm_ops what prevents it from undergoing
+suspend-resume procedure successfully. Assign default snd_soc_pm_ops so
+this is no longer the case.
 
-Tested-by: Nicolas Schichan <nschichan@freebox.fr>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Link: https://lore.kernel.org/r/20201217105401.27865-1-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/intel/boards/haswell.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  drivers/mmc/host/sdhci-brcmstb.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
-> index f9780c65ebe9..dc9280b149db 100644
-> --- a/drivers/mmc/host/sdhci-brcmstb.c
-> +++ b/drivers/mmc/host/sdhci-brcmstb.c
-> @@ -314,7 +314,8 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
->  
->  static void sdhci_brcmstb_shutdown(struct platform_device *pdev)
->  {
-> -	sdhci_pltfm_suspend(&pdev->dev);
-> +	if (IS_ENABLED(CONFIG_PM_SLEEP))
-> +		sdhci_pltfm_suspend(&pdev->dev);
->  }
->  
->  MODULE_DEVICE_TABLE(of, sdhci_brcm_of_match);
-> 
-
-
+diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
+index a4022983a7ce0..67eb4a446c3cb 100644
+--- a/sound/soc/intel/boards/haswell.c
++++ b/sound/soc/intel/boards/haswell.c
+@@ -198,6 +198,7 @@ static struct platform_driver haswell_audio = {
+ 	.probe = haswell_audio_probe,
+ 	.driver = {
+ 		.name = "haswell-audio",
++		.pm = &snd_soc_pm_ops,
+ 	},
+ };
+ 
 -- 
-Nicolas Schichan
-Freebox SAS
+2.27.0
+
+
+
