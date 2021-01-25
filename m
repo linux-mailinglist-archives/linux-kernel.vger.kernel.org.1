@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789A3302633
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542EE302634
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729352AbhAYOSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:18:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729256AbhAYOLj (ORCPT
+        id S1729287AbhAYOTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:19:30 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11875 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729302AbhAYOLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:11:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611583771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1tk4eS0Y2Vo2oPY0Z4JxAQzLc8itlAhOCREG8ddZvOI=;
-        b=SPutpDpkrVGS4v14VwG3C2qD8JKbaKn0rO1zKPXv5ZQqhg4fnZsBwlWgge1YbyEJrK1m0h
-        8E9reNeW36wOH8G18Q1SfR5nYmaE4ScqzPlAl3bd3447F6n8QZlPHGL92hAGUP+WLy8fnu
-        jg+wBU32QNGbu8Iz6McDc8wVDbjhEL8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-SQGrC9dfPNiAj-kd1C9gig-1; Mon, 25 Jan 2021 09:09:29 -0500
-X-MC-Unique: SQGrC9dfPNiAj-kd1C9gig-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03975180A0A5;
-        Mon, 25 Jan 2021 14:09:28 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13F365D731;
-        Mon, 25 Jan 2021 14:09:26 +0000 (UTC)
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210125042441.20030-1-longman@redhat.com>
- <20210125043631.GD308988@casper.infradead.org>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <1f234e4f-be0d-ecf9-7934-4be3de0d6fe5@redhat.com>
-Date:   Mon, 25 Jan 2021 09:09:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 25 Jan 2021 09:11:55 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DPWvr4PrPz7Zrr;
+        Mon, 25 Jan 2021 22:09:44 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 22:10:47 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        "Julien Thierry" <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: [PATCH 1/2] KVM: arm64: Distinguish cases of allocating memcache more precisely
+Date:   Mon, 25 Jan 2021 22:10:43 +0800
+Message-ID: <20210125141044.380156-2-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
+In-Reply-To: <20210125141044.380156-1-wangyanan55@huawei.com>
+References: <20210125141044.380156-1-wangyanan55@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210125043631.GD308988@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/24/21 11:36 PM, Matthew Wilcox wrote:
-> On Sun, Jan 24, 2021 at 11:24:41PM -0500, Waiman Long wrote:
->> diff --git a/mm/filemap.c b/mm/filemap.c
->> index 5c9d564317a5..aa0e0fb04670 100644
->> --- a/mm/filemap.c
->> +++ b/mm/filemap.c
->> @@ -835,6 +835,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->>   	XA_STATE(xas, &mapping->i_pages, offset);
->>   	int huge = PageHuge(page);
->>   	int error;
->> +	bool charged = false;
-> I don't think we need this extra bool.
->
->> @@ -896,6 +898,8 @@ noinline int __add_to_page_cache_locked(struct page *page,
->>   
->>   	if (xas_error(&xas)) {
->>   		error = xas_error(&xas);
->> +		if (charged)
->> +			mem_cgroup_uncharge(page);
->>   		goto error;
->>   	}
-> Better:
->
-> -		goto error;
-> +		goto uncharge;
-> ...
-> +uncharge:
-> +	if (!huge)
-> +		mem_cgroup_uncharge(page);
->   error:
-> ...
->
-That was my original plan. After finding out there was a potentially 
-conflicting patch in linux-next:
+With a guest translation fault, we don't really need the memcache pages
+when only installing a new entry to the existing page table or replacing
+the table entry with a block entry. And with a guest permission fault,
+we also don't need the memcache pages for a write_fault in dirty-logging
+time if VMs are not configured with huge mappings.
 
-commit 7a02fa97b897 ("secretmem: add memcg accounting")
+The cases where allocations from memcache are required can be much more
+precisely distinguished by comparing fault_granule and vma_pagesize.
 
-@@ -839,7 +840,7 @@ noinline int __add_to_page_cache_locked(struct page 
-*page,
-         page->mapping = mapping;
-         page->index = offset;
+Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+---
+ arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
--       if (!huge) {
-+       if (!huge && !page_is_secretmem(page)) {
-                 error = mem_cgroup_charge(page, current->mm, gfp);
-                 if (error)
-                         goto error;
-
-Adding a boolean is an easy way out without conflicting it.
-
-Cheers,
-Longman
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 7d2257cc5438..8e8549ea1d70 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -820,19 +820,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	gfn = fault_ipa >> PAGE_SHIFT;
+ 	mmap_read_unlock(current->mm);
+ 
+-	/*
+-	 * Permission faults just need to update the existing leaf entry,
+-	 * and so normally don't require allocations from the memcache. The
+-	 * only exception to this is when dirty logging is enabled at runtime
+-	 * and a write fault needs to collapse a block entry into a table.
+-	 */
+-	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
+-		ret = kvm_mmu_topup_memory_cache(memcache,
+-						 kvm_mmu_cache_min_pages(kvm));
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
+ 	/*
+ 	 * Ensure the read of mmu_notifier_seq happens before we call
+@@ -898,6 +885,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
+ 		prot |= KVM_PGTABLE_PROT_X;
+ 
++	/*
++	 * Allocations from the memcache are required only when granule of the
++	 * lookup level where a guest fault happened exceeds the vma_pagesize,
++	 * which means new page tables will be created in the fault handlers.
++	 */
++	if (fault_granule > vma_pagesize) {
++		ret = kvm_mmu_topup_memory_cache(memcache,
++						 kvm_mmu_cache_min_pages(kvm));
++		if (ret)
++			return ret;
++	}
++
+ 	/*
+ 	 * Under the premise of getting a FSC_PERM fault, we just need to relax
+ 	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
+-- 
+2.19.1
 
