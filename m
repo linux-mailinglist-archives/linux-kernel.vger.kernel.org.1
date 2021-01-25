@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3953048B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712A53048A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388299AbhAZFmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:42:13 -0500
-Received: from mx1.emlix.com ([136.243.223.33]:41980 "EHLO mx1.emlix.com"
+        id S2388417AbhAZFo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:44:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55492 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727769AbhAYMKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:10:16 -0500
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id B55D65FCA5;
-        Mon, 25 Jan 2021 12:56:18 +0100 (CET)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v5] scripts: use pkg-config to locate libcrypto
-Date:   Mon, 25 Jan 2021 12:56:14 +0100
-Message-ID: <2525730.a3zTd9XyL1@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <3394639.6NgGvCfkNl@devpool47>
-References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35> <3394639.6NgGvCfkNl@devpool47>
+        id S1727657AbhAYMKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:10:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B8AA2ACF4;
+        Mon, 25 Jan 2021 12:08:36 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 13:08:32 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com,
+        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v13 09/12] mm: hugetlb: add a kernel parameter
+ hugetlb_free_vmemmap
+Message-ID: <20210125120827.GA29289@linux>
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-10-songmuchun@bytedance.com>
+ <7550ebba-fdb5-0dc9-a517-dda56bd105d9@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1700098.1KN2oRN6cf"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7550ebba-fdb5-0dc9-a517-dda56bd105d9@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart1700098.1KN2oRN6cf
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Rolf Eike Beer <eb@emlix.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Linux Kernel Developers List <linux-kernel@vger.kernel.org>, David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v5] scripts: use pkg-config to locate libcrypto
-Date: Mon, 25 Jan 2021 12:56:14 +0100
-Message-ID: <2525730.a3zTd9XyL1@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <3394639.6NgGvCfkNl@devpool47>
-References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35> <3394639.6NgGvCfkNl@devpool47>
+On Mon, Jan 25, 2021 at 12:43:23PM +0100, David Hildenbrand wrote:
+> > -	if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+> > +	if (is_hugetlb_free_vmemmap_enabled() ||
+> > +	    end - start < PAGES_PER_SECTION * sizeof(struct page))
+> 
+> This looks irresponsible. You ignore any altmap, even though current
+> altmap users (ZONE_DEVICE) will not actually result in applicable
+> vmemmaps that huge pages could ever use.
+> 
+> Why do you ignore the altmap completely? This has to be properly
+> documented, but IMHO it's not even the right approach to mess with
+> altmap here.
 
-Am Mittwoch, 13. Januar 2021, 13:49:12 CET schrieb Rolf Eike Beer:
-> Otherwise build fails if the headers are not in the default location. Whi=
-le
-> at it also ask pkg-config for the libs, with fallback to the existing
-> value.
+The goal was not to ignore altmap but to disable PMD mapping sections
+when the feature was enabled.
+Shame on me I did not notice that with this, altmap will be ignored.
 
-Can someone please take this through the kbuild-tree? Noone seems to be=20
-interested in picking this up so far.
+Something like below maybe:
 
-Thanks,
+int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+                struct vmem_altmap *altmap)
+{
+        int err;
+        bool populate_base_pages = false;
 
-Eike
-=2D-=20
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-=46on +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
-Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
-=2E: DE 205 198 055
+        if ((end - start < PAGES_PER_SECTION * sizeof(struct page)) ||
+            (is_hugetlb_free_vmemmap_enabled() && !altmap))
+                populate_base_pages = true;
 
-emlix - smart embedded open source
-
---nextPart1700098.1KN2oRN6cf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYA6x3gAKCRCr5FH7Xu2t
-/FNHA/9GA1b168qTGS1IMyWlzzkXL9f4BBohKPlnQ4nYQ8JrCjFnqEhWKMakZkaJ
-wMJ5rmxuq8FyVQr9Cp07M3/Wmpj9ByjgSLcWMmUyrUbcuzA/eI7sVW3TBn/d6e32
-gW2sSpftxpt3w3mS1lE/faNSflEkFer02DQ5B1SPkxK6KREiXg==
-=WcBP
------END PGP SIGNATURE-----
-
---nextPart1700098.1KN2oRN6cf--
+        if (populate_base_pages) {
+                err = vmemmap_populate_basepages(start, end, node, NULL);
+        } else if (boot_cpu_has(X86_FEATURE_PSE)) {
+	....
 
 
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+> 
 
+-- 
+Oscar Salvador
+SUSE L3
