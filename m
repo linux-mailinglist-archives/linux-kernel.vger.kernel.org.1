@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B451303021
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9929D30301D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732858AbhAYX2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52046 "EHLO
+        id S1732273AbhAYX2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:28:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732712AbhAYVbO (ORCPT
+        with ESMTP id S1732714AbhAYVbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 16:31:14 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61AFC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:55 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id n2so29622592iom.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:55 -0800 (PST)
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B73AC06178C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:57 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id n2so29622681iom.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=U2sFIZtfJJ0QC3wGockY2PpSjOlVKhMWufupSAbCHfM=;
-        b=HsoNMJjY0ptFTHawJovVbdo1QvUvx9PhrtAZ6L6h1g1m6G7S9GFWrsTCw4kZGubZdn
-         nIoQEdms4zJbAQFuqF1gpw50hs+7mRMH4LxVDmu/cKQU3VVeJWslp/V0LvM1mgrSKuy7
-         6WTPkeBsafEiAUh1wGI+RjTpGdtKe0D84QO3P/+Fn9LMhKVsxMKbk4S5tuZ8bQUy/Wu6
-         RRFxlMa4Pw4PuvzlrHUTaQvxP4exslRv5lqIuIiCKLRoSXZPru0MxRARMN8Kcl3VTMDj
-         9ghslcKvgaVZITssbx7OMA79nEJw9lJaCu0bQ6R8/PHuiEqxpQkZalFcN2S5hMX1YIjT
-         z16A==
+        bh=bETQihSoViQnYCs/1MkGcaLaZjmmD0arqKg/QkCXmJg=;
+        b=IUkYYNUNHA44h9oE5wtFFNGRrb99rBzxIZnNRV9NIMpLL+npuo7h5iu7oOfzjdSPak
+         4LvHOrv9WJ0pRJM6DyZlTP1swiFDsNST9ro+oQdhqWVZ8KnUSvSU1mhwTDQwVTBv8cMK
+         PDHNn9nIJrIC09nu/dXqv88oZ5RoKnRNg7QV87Pjt4OOSJfJW6PwonTx9DVWTNiinOEd
+         anc6kVb+DqqJvC2yzTsSwTvDb4OAPfEx3zgbW/A0wSM3OnUggrNK1iDj802Cfy+Mhk7J
+         d32NAnz7Gn+/2cJ3UOxBAYEwYo4B7eqSciUNrzWy2Gq7rSLmkGdUjlct0o91Eja9CHbK
+         hBkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=U2sFIZtfJJ0QC3wGockY2PpSjOlVKhMWufupSAbCHfM=;
-        b=nzIEWX/JCAhKd1K5cY/oNRT8q2LVqCj6dpx5S3YzeHGm5xqvdg+wXzbALhOB7gfdp5
-         Rj9SmKnvG2EZ63KjrqUhzbSHFYS1jrS61+vz2lEv0l63DMwTt+8x11fOrasH2TBwQcq1
-         qFhRsHmEEDvZAfxG1FYbJn/I6MC+F+B7k78fJgGWDF6DxppdWywoGYt9mp4/PivuXN1g
-         S34lh73zgORCXr8KIeP5/XFRRgLODewnGV23uCtWTtRN1cYJrMMpiYMChScokicMvwsU
-         7e+PAQgUzcOb9TwQ1doV0dnrLzNHsMCcg5VGJnteq1pgCuwQR4LzNP0N1bmJP2CNX12N
-         4aZQ==
-X-Gm-Message-State: AOAM530xAnPllY6USCZPQNripfg3HU/TZwVZSVROAI2DxU9L6oWi/6+b
-        8Giw/QwHK8lnLCSJ0ByzjK3MrseBNsJ0Yg==
-X-Google-Smtp-Source: ABdhPJwP/V1jgGaBUV0O14grNW5IDNvFYdbq+qUncFxBb0kvhir3BCgU/lIT5beImnvo0VooNC8/Ww==
-X-Received: by 2002:a05:6602:154e:: with SMTP id h14mr1952503iow.1.1611610195348;
-        Mon, 25 Jan 2021 13:29:55 -0800 (PST)
+        bh=bETQihSoViQnYCs/1MkGcaLaZjmmD0arqKg/QkCXmJg=;
+        b=ZjW7iSTFSqJz+ksaubPtVC2A0i3JK7I5Tjpvb+HZdYbr9o1q+QGKiADKy4R2bPoTDx
+         arWWeghBZ2obZgTNeVeDUrGBLo0GaRPapiPMIg7o0kum7S7HggH5rPFVqmDhohwwXJeF
+         6HFTnBYFZ9GB9hP1Hb7GfZHT3SZy/SAeL1JVXXT7KS7qSU9TQ9HLY3Dxw1tTWJ/LvU4a
+         G7V20l9VpBx3G1QyPHXiXUXxsUe7q94ZWdQI7NkhoZ+JSu3nNroNjI/maxljSQ4qilmF
+         vSZyISWbVRCzCswqN2otaLDuSWzhjTsryuvLQ60/DPUFVKTmWrjL4GUqouFeILFSt550
+         Z/zg==
+X-Gm-Message-State: AOAM530IfCfksFiA/FwliX2g9UffeKAlsJsxzToP58otXHeEhQib8A3U
+        D2ViM0j1ZN7pwHIly1SQxDPAMw==
+X-Google-Smtp-Source: ABdhPJzqCXsolQCIZrqqDOZkOF1FM4o1x5z9BsFTxcH0klDld6KVCLpqVR+dw5wXuD4QORZoLiGLEA==
+X-Received: by 2002:a92:874d:: with SMTP id d13mr1983914ilm.270.1611610196359;
+        Mon, 25 Jan 2021 13:29:56 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o18sm11136241ioa.39.2021.01.25.13.29.54
+        by smtp.gmail.com with ESMTPSA id o18sm11136241ioa.39.2021.01.25.13.29.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:29:54 -0800 (PST)
+        Mon, 25 Jan 2021 13:29:55 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/6] net: ipa: drop packet if status has valid tag
-Date:   Mon, 25 Jan 2021 15:29:44 -0600
-Message-Id: <20210125212947.17097-4-elder@linaro.org>
+Subject: [PATCH net-next 4/6] net: ipa: signal when tag transfer completes
+Date:   Mon, 25 Jan 2021 15:29:45 -0600
+Message-Id: <20210125212947.17097-5-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210125212947.17097-1-elder@linaro.org>
 References: <20210125212947.17097-1-elder@linaro.org>
@@ -65,69 +65,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce ipa_endpoint_status_tag(), which returns true if received
-status indicates its tag field is valid.  The endpoint parameter is
-not yet used.
+There are times, such as when the modem crashes, when we issue
+commands to clear the IPA hardware pipeline.  These commands include
+a data transfer command that delivers a small packet directly to the
+default (AP<-LAN RX) endpoint.
 
-Call this from ipa_status_drop_packet(), and drop the packet if the
-status indicates the tag was valid.  Pass the endpoint pointer to
-ipa_status_drop_packet(), and rename it ipa_endpoint_status_drop().
-The endpoint will be used in the next patch.
+The places that do this wait for the transactions that contain these
+commands to complete, but the pipeline can't be assumed clear until
+the sent packet has been *received*.
+
+The small transfer will be delivered with a status structure, and
+that status will indicate its tag is valid.  This is the only place
+we send a tagged packet, so we use the tag to determine when the
+pipeline clear packet has arrived.
+
+Add a completion to the IPA structure to to be used to signal
+the receipt of a pipeline clear packet.  Create a new function
+ipa_cmd_pipeline_clear_wait() that will wait for that completion.
+
+Reinitialize the completion whenever pipeline clear commands are
+added to a transaction.  Extend ipa_endpoint_status_tag() to check
+whether a packet whose status contains a valid tag was sent from the
+AP->command TX endpoint, and if so, signal the new IPA completion.
+
+Have all callers of ipa_cmd_pipeline_clear_add() wait for the
+pipeline clear indication after the transaction that clears the
+pipeline has completed.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ drivers/net/ipa/ipa.h          |  2 ++
+ drivers/net/ipa/ipa_cmd.c      |  9 +++++++++
+ drivers/net/ipa/ipa_cmd.h      |  7 +++++++
+ drivers/net/ipa/ipa_endpoint.c | 27 ++++++++++++++++++++++++++-
+ drivers/net/ipa/ipa_main.c     |  1 +
+ 5 files changed, 45 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index c5524215054c8..f1764768f0602 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -69,8 +69,11 @@ struct ipa_status {
- };
+diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
+index c6c6a7f6909c1..8020776313716 100644
+--- a/drivers/net/ipa/ipa.h
++++ b/drivers/net/ipa/ipa.h
+@@ -43,6 +43,7 @@ enum ipa_flag {
+  * @flags:		Boolean state flags
+  * @version:		IPA hardware version
+  * @pdev:		Platform device
++ * @completion:		Used to signal pipeline clear transfer complete
+  * @smp2p:		SMP2P information
+  * @clock:		IPA clocking information
+  * @table_addr:		DMA address of filter/route table content
+@@ -82,6 +83,7 @@ struct ipa {
+ 	DECLARE_BITMAP(flags, IPA_FLAG_COUNT);
+ 	enum ipa_version version;
+ 	struct platform_device *pdev;
++	struct completion completion;
+ 	struct notifier_block nb;
+ 	void *notifier;
+ 	struct ipa_smp2p *smp2p;
+diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
+index 27630244512d8..7df0072bddcce 100644
+--- a/drivers/net/ipa/ipa_cmd.c
++++ b/drivers/net/ipa/ipa_cmd.c
+@@ -573,6 +573,9 @@ void ipa_cmd_pipeline_clear_add(struct gsi_trans *trans)
+ 	struct ipa *ipa = container_of(trans->gsi, struct ipa, gsi);
+ 	struct ipa_endpoint *endpoint;
  
- /* Field masks for struct ipa_status structure fields */
-+#define IPA_STATUS_MASK_TAG_VALID_FMASK		GENMASK(4, 4)
-+#define IPA_STATUS_SRC_IDX_FMASK		GENMASK(4, 0)
- #define IPA_STATUS_DST_IDX_FMASK		GENMASK(4, 0)
- #define IPA_STATUS_FLAGS1_RT_RULE_ID_FMASK	GENMASK(31, 22)
-+#define IPA_STATUS_FLAGS2_TAG_FMASK		GENMASK_ULL(63, 16)
++	/* This will complete when the transfer is received */
++	reinit_completion(&ipa->completion);
++
+ 	/* Issue a no-op register write command (mask 0 means no write) */
+ 	ipa_cmd_register_write_add(trans, 0, 0, 0, true);
  
- #ifdef IPA_VALIDATE
- 
-@@ -1172,11 +1175,22 @@ static bool ipa_endpoint_status_skip(struct ipa_endpoint *endpoint,
- 	return false;	/* Don't skip this packet, process it */
+@@ -596,6 +599,11 @@ u32 ipa_cmd_pipeline_clear_count(void)
+ 	return 4;
  }
  
-+static bool ipa_endpoint_status_tag(struct ipa_endpoint *endpoint,
-+				    const struct ipa_status *status)
++void ipa_cmd_pipeline_clear_wait(struct ipa *ipa)
 +{
-+	return !!(status->mask & IPA_STATUS_MASK_TAG_VALID_FMASK);
++	wait_for_completion(&ipa->completion);
 +}
 +
- /* Return whether the status indicates the packet should be dropped */
--static bool ipa_status_drop_packet(const struct ipa_status *status)
-+static bool ipa_endpoint_status_drop(struct ipa_endpoint *endpoint,
-+				     const struct ipa_status *status)
+ void ipa_cmd_pipeline_clear(struct ipa *ipa)
  {
- 	u32 val;
+ 	u32 count = ipa_cmd_pipeline_clear_count();
+@@ -605,6 +613,7 @@ void ipa_cmd_pipeline_clear(struct ipa *ipa)
+ 	if (trans) {
+ 		ipa_cmd_pipeline_clear_add(trans);
+ 		gsi_trans_commit_wait(trans);
++		ipa_cmd_pipeline_clear_wait(ipa);
+ 	} else {
+ 		dev_err(&ipa->pdev->dev,
+ 			"error allocating %u entry tag transaction\n", count);
+diff --git a/drivers/net/ipa/ipa_cmd.h b/drivers/net/ipa/ipa_cmd.h
+index a41a58cc2c5ac..6dd3d35cf315d 100644
+--- a/drivers/net/ipa/ipa_cmd.h
++++ b/drivers/net/ipa/ipa_cmd.h
+@@ -170,8 +170,15 @@ void ipa_cmd_pipeline_clear_add(struct gsi_trans *trans);
+  */
+ u32 ipa_cmd_pipeline_clear_count(void);
  
-+	/* If the status indicates a tagged transfer, we'll drop the packet */
-+	if (ipa_endpoint_status_tag(endpoint, status))
-+		return true;
++/**
++ * ipa_cmd_pipeline_clear_wait() - Wait pipeline clear to complete
++ * @ipa:	- IPA pointer
++ */
++void ipa_cmd_pipeline_clear_wait(struct ipa *ipa);
 +
- 	/* Deaggregation exceptions we drop; all other types we consume */
- 	if (status->exception)
- 		return status->exception == IPA_STATUS_EXCEPTION_DEAGGR;
-@@ -1225,7 +1239,7 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
- 		if (endpoint->data->checksum)
- 			len += sizeof(struct rmnet_map_dl_csum_trailer);
+ /**
+  * ipa_cmd_pipeline_clear() - Clear the hardware pipeline
++ * @ipa:	- IPA pointer
+  */
+ void ipa_cmd_pipeline_clear(struct ipa *ipa);
  
--		if (!ipa_status_drop_packet(status)) {
-+		if (!ipa_endpoint_status_drop(endpoint, status)) {
- 			void *data2;
- 			u32 extra;
- 			u32 len2;
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index f1764768f0602..cef89325a3bb0 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -436,6 +436,8 @@ int ipa_endpoint_modem_exception_reset_all(struct ipa *ipa)
+ 	/* XXX This should have a 1 second timeout */
+ 	gsi_trans_commit_wait(trans);
+ 
++	ipa_cmd_pipeline_clear_wait(ipa);
++
+ 	return 0;
+ }
+ 
+@@ -1178,7 +1180,30 @@ static bool ipa_endpoint_status_skip(struct ipa_endpoint *endpoint,
+ static bool ipa_endpoint_status_tag(struct ipa_endpoint *endpoint,
+ 				    const struct ipa_status *status)
+ {
+-	return !!(status->mask & IPA_STATUS_MASK_TAG_VALID_FMASK);
++	struct ipa_endpoint *command_endpoint;
++	struct ipa *ipa = endpoint->ipa;
++	u32 endpoint_id;
++
++	if (!(status->mask & IPA_STATUS_MASK_TAG_VALID_FMASK))
++		return false;	/* No valid tag */
++
++	/* The status contains a valid tag.  We know the packet was sent to
++	 * this endpoint (already verified by ipa_endpoint_status_skip()).
++	 * If the packet came from the AP->command TX endpoint we know
++	 * this packet was sent as part of the pipeline clear process.
++	 */
++	endpoint_id = u8_get_bits(status->endp_src_idx,
++				  IPA_STATUS_SRC_IDX_FMASK);
++	command_endpoint = ipa->name_map[IPA_ENDPOINT_AP_COMMAND_TX];
++	if (endpoint_id == command_endpoint->endpoint_id) {
++		complete(&ipa->completion);
++	} else {
++		dev_err(&ipa->pdev->dev,
++			"unexpected tagged packet from endpoint %u\n",
++			endpoint_id);
++	}
++
++	return true;
+ }
+ 
+ /* Return whether the status indicates the packet should be dropped */
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index ab0fd5cb49277..c10e7340b0318 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -831,6 +831,7 @@ static int ipa_probe(struct platform_device *pdev)
+ 	dev_set_drvdata(dev, ipa);
+ 	ipa->clock = clock;
+ 	ipa->version = data->version;
++	init_completion(&ipa->completion);
+ 
+ 	ret = ipa_reg_init(ipa);
+ 	if (ret)
 -- 
 2.20.1
 
