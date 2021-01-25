@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12403303938
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AD6303922
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391471AbhAZJlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:41:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37544 "EHLO mail.kernel.org"
+        id S2391304AbhAZJih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:38:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731131AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:51:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ECA922DFB;
-        Mon, 25 Jan 2021 18:50:44 +0000 (UTC)
+        id S1731092AbhAYSuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:50:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3495A20758;
+        Mon, 25 Jan 2021 18:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600645;
-        bh=TvoxUaYKyTJSm4C6R/yNO1CK4InwfvxfRJEgKERmIds=;
+        s=korg; t=1611600591;
+        bh=Y0y4RiRCOTkbxzR1OuKcUy8g7sjPnEEbdSQgPF7jO/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YwjvKwRKvmXltvBKdGHz28YoadxzbLc90FFNjAt4XyQnw+m+G1hEerJqaZOgDlLVZ
-         P/1Sg/RK6LgXLCuK1/kfiUX7zTuA1zLHSEZ2h/0864ehretEgqe58CJScoCt6TzIVh
-         UNgdL+C1qIoY25WHm/jMPOpHEgRN4frz/cEKkO9g=
+        b=vcjXxJCO5osr7BTEnFw+nds5NncQKb3yvmPHLnDAklvC+Km8JOLimtJsNV3I031RV
+         uYeS+fbElo+Pdv9K1rX1G/SaFOWHDlIZMbiYhfD9CY1zXU2p49ZGAh+DGdgBW1ZZzM
+         RRt6PiGW7jyfy97f1txx6j2x5ImXofQexDbbCXlk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 055/199] xen: Fix event channel callback via INTX/GSI
-Date:   Mon, 25 Jan 2021 19:37:57 +0100
-Message-Id: <20210125183218.588061023@linuxfoundation.org>
+Subject: [PATCH 5.10 057/199] x86/xen: Fix xen_hvm_smp_init() when vector callback not available
+Date:   Mon, 25 Jan 2021 19:37:59 +0100
+Message-Id: <20210125183218.669824593@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,249 +43,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-[ Upstream commit 3499ba8198cad47b731792e5e56b9ec2a78a83a2 ]
+[ Upstream commit 3d7746bea92530e8695258a3cf3ddec7a135edd6 ]
 
-For a while, event channel notification via the PCI platform device
-has been broken, because we attempt to communicate with xenstore before
-we even have notifications working, with the xs_reset_watches() call
-in xs_init().
+Only the IPI-related functions in the smp_ops should be conditional
+on the vector callback being available. The rest should still happen:
 
-We tend to get away with this on Xen versions below 4.0 because we avoid
-calling xs_reset_watches() anyway, because xenstore might not cope with
-reading a non-existent key. And newer Xen *does* have the vector
-callback support, so we rarely fall back to INTX/GSI delivery.
+ • xen_hvm_smp_prepare_boot_cpu()
 
-To fix it, clean up a bit of the mess of xs_init() and xenbus_probe()
-startup. Call xs_init() directly from xenbus_init() only in the !XS_HVM
-case, deferring it to be called from xenbus_probe() in the XS_HVM case
-instead.
+   This function does two things, both of which should still happen if
+   there is no vector callback support.
 
-Then fix up the invocation of xenbus_probe() to happen either from its
-device_initcall if the callback is available early enough, or when the
-callback is finally set up. This means that the hack of calling
-xenbus_probe() from a workqueue after the first interrupt, or directly
-from the PCI platform device setup, is no longer needed.
+   The call to xen_vcpu_setup() for vCPU0 should still happen as it just
+   sets up the vcpu_info for CPU0. That does happen for the secondary
+   vCPUs too, from xen_cpu_up_prepare_hvm().
+
+   The second thing it does is call xen_init_spinlocks(), which perhaps
+   counter-intuitively should *also* still be happening in the case
+   without vector callbacks, so that it can clear its local xen_pvspin
+   flag and disable the virt_spin_lock_key accordingly.
+
+   Checking xen_have_vector_callback in xen_init_spinlocks() itself
+   would affect PV guests, so set the global nopvspin flag in
+   xen_hvm_smp_init() instead, when vector callbacks aren't available.
+
+ • xen_hvm_smp_prepare_cpus()
+
+   This does some IPI-related setup by calling xen_smp_intr_init() and
+   xen_init_lock_cpu(), which can be made conditional. And it sets the
+   xen_vcpu_id to XEN_VCPU_ID_INVALID for all possible CPUS, which does
+   need to happen.
+
+ • xen_smp_cpus_done()
+
+   This offlines any vCPUs which doesn't fit in the global shared_info
+   page, if separate vcpu_info placement isn't available. That part also
+   needs to happen regardless of vector callback support.
+
+ • xen_hvm_cpu_die()
+
+   This doesn't actually do anything other than commin_cpu_die() right
+   right now in the !vector_callback case; all three teardown functions
+   it calls should be no-ops. But to guard against future regressions
+   it's useful to call it anyway, and for it to explicitly check for
+   xen_have_vector_callback before calling those additional functions.
 
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20210113132606.422794-2-dwmw2@infradead.org
+Link: https://lore.kernel.org/r/20210106153958.584169-6-dwmw2@infradead.org
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/xen/enlighten.c          |  2 +-
- drivers/xen/events/events_base.c  | 10 ----
- drivers/xen/platform-pci.c        |  1 -
- drivers/xen/xenbus/xenbus.h       |  1 +
- drivers/xen/xenbus/xenbus_comms.c |  8 ---
- drivers/xen/xenbus/xenbus_probe.c | 81 +++++++++++++++++++++++++------
- include/xen/xenbus.h              |  2 +-
- 7 files changed, 70 insertions(+), 35 deletions(-)
+ arch/x86/xen/smp_hvm.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
-index 60e901cd0de6a..5a957a9a09843 100644
---- a/arch/arm/xen/enlighten.c
-+++ b/arch/arm/xen/enlighten.c
-@@ -371,7 +371,7 @@ static int __init xen_guest_init(void)
- 	}
- 	gnttab_init();
- 	if (!xen_initial_domain())
--		xenbus_probe(NULL);
-+		xenbus_probe();
+diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
+index f5e7db4f82abb..056430a1080bb 100644
+--- a/arch/x86/xen/smp_hvm.c
++++ b/arch/x86/xen/smp_hvm.c
+@@ -33,9 +33,11 @@ static void __init xen_hvm_smp_prepare_cpus(unsigned int max_cpus)
+ 	int cpu;
  
- 	/*
- 	 * Making sure board specific code will not set up ops for
-diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index 6038c4c35db5a..bbebe248b7264 100644
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -2010,16 +2010,6 @@ static struct irq_chip xen_percpu_chip __read_mostly = {
- 	.irq_ack		= ack_dynirq,
- };
+ 	native_smp_prepare_cpus(max_cpus);
+-	WARN_ON(xen_smp_intr_init(0));
  
--int xen_set_callback_via(uint64_t via)
--{
--	struct xen_hvm_param a;
--	a.domid = DOMID_SELF;
--	a.index = HVM_PARAM_CALLBACK_IRQ;
--	a.value = via;
--	return HYPERVISOR_hvm_op(HVMOP_set_param, &a);
--}
--EXPORT_SYMBOL_GPL(xen_set_callback_via);
--
- #ifdef CONFIG_XEN_PVHVM
- /* Vector callbacks are better than PCI interrupts to receive event
-  * channel notifications because we can receive vector callbacks on any
-diff --git a/drivers/xen/platform-pci.c b/drivers/xen/platform-pci.c
-index dd911e1ff782c..9db557b76511b 100644
---- a/drivers/xen/platform-pci.c
-+++ b/drivers/xen/platform-pci.c
-@@ -149,7 +149,6 @@ static int platform_pci_probe(struct pci_dev *pdev,
- 	ret = gnttab_init();
- 	if (ret)
- 		goto grant_out;
--	xenbus_probe(NULL);
- 	return 0;
- grant_out:
- 	gnttab_free_auto_xlat_frames();
-diff --git a/drivers/xen/xenbus/xenbus.h b/drivers/xen/xenbus/xenbus.h
-index 2a93b7c9c1599..dc15373354144 100644
---- a/drivers/xen/xenbus/xenbus.h
-+++ b/drivers/xen/xenbus/xenbus.h
-@@ -115,6 +115,7 @@ int xenbus_probe_node(struct xen_bus_type *bus,
- 		      const char *type,
- 		      const char *nodename);
- int xenbus_probe_devices(struct xen_bus_type *bus);
-+void xenbus_probe(void);
+-	xen_init_lock_cpu(0);
++	if (xen_have_vector_callback) {
++		WARN_ON(xen_smp_intr_init(0));
++		xen_init_lock_cpu(0);
++	}
  
- void xenbus_dev_changed(const char *node, struct xen_bus_type *bus);
- 
-diff --git a/drivers/xen/xenbus/xenbus_comms.c b/drivers/xen/xenbus/xenbus_comms.c
-index eb5151fc8efab..e5fda0256feb3 100644
---- a/drivers/xen/xenbus/xenbus_comms.c
-+++ b/drivers/xen/xenbus/xenbus_comms.c
-@@ -57,16 +57,8 @@ DEFINE_MUTEX(xs_response_mutex);
- static int xenbus_irq;
- static struct task_struct *xenbus_task;
- 
--static DECLARE_WORK(probe_work, xenbus_probe);
--
--
- static irqreturn_t wake_waiting(int irq, void *unused)
+ 	for_each_possible_cpu(cpu) {
+ 		if (cpu == 0)
+@@ -50,9 +52,11 @@ static void __init xen_hvm_smp_prepare_cpus(unsigned int max_cpus)
+ static void xen_hvm_cpu_die(unsigned int cpu)
  {
--	if (unlikely(xenstored_ready == 0)) {
--		xenstored_ready = 1;
--		schedule_work(&probe_work);
--	}
--
- 	wake_up(&xb_waitq);
- 	return IRQ_HANDLED;
- }
-diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
-index 44634d970a5ca..c8f0282bb6497 100644
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -683,29 +683,76 @@ void unregister_xenstore_notifier(struct notifier_block *nb)
- }
- EXPORT_SYMBOL_GPL(unregister_xenstore_notifier);
- 
--void xenbus_probe(struct work_struct *unused)
-+void xenbus_probe(void)
- {
- 	xenstored_ready = 1;
- 
-+	/*
-+	 * In the HVM case, xenbus_init() deferred its call to
-+	 * xs_init() in case callbacks were not operational yet.
-+	 * So do it now.
-+	 */
-+	if (xen_store_domain_type == XS_HVM)
-+		xs_init();
-+
- 	/* Notify others that xenstore is up */
- 	blocking_notifier_call_chain(&xenstore_chain, 0, NULL);
- }
--EXPORT_SYMBOL_GPL(xenbus_probe);
- 
--static int __init xenbus_probe_initcall(void)
-+/*
-+ * Returns true when XenStore init must be deferred in order to
-+ * allow the PCI platform device to be initialised, before we
-+ * can actually have event channel interrupts working.
-+ */
-+static bool xs_hvm_defer_init_for_callback(void)
- {
--	if (!xen_domain())
--		return -ENODEV;
-+#ifdef CONFIG_XEN_PVHVM
-+	return xen_store_domain_type == XS_HVM &&
-+		!xen_have_vector_callback;
-+#else
-+	return false;
-+#endif
-+}
- 
--	if (xen_initial_domain() || xen_hvm_domain())
--		return 0;
-+static int __init xenbus_probe_initcall(void)
-+{
-+	/*
-+	 * Probe XenBus here in the XS_PV case, and also XS_HVM unless we
-+	 * need to wait for the platform PCI device to come up.
-+	 */
-+	if (xen_store_domain_type == XS_PV ||
-+	    (xen_store_domain_type == XS_HVM &&
-+	     !xs_hvm_defer_init_for_callback()))
-+		xenbus_probe();
- 
--	xenbus_probe(NULL);
- 	return 0;
- }
--
- device_initcall(xenbus_probe_initcall);
- 
-+int xen_set_callback_via(uint64_t via)
-+{
-+	struct xen_hvm_param a;
-+	int ret;
-+
-+	a.domid = DOMID_SELF;
-+	a.index = HVM_PARAM_CALLBACK_IRQ;
-+	a.value = via;
-+
-+	ret = HYPERVISOR_hvm_op(HVMOP_set_param, &a);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * If xenbus_probe_initcall() deferred the xenbus_probe()
-+	 * due to the callback not functioning yet, we can do it now.
-+	 */
-+	if (!xenstored_ready && xs_hvm_defer_init_for_callback())
-+		xenbus_probe();
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(xen_set_callback_via);
-+
- /* Set up event channel for xenstored which is run as a local process
-  * (this is normally used only in dom0)
-  */
-@@ -818,11 +865,17 @@ static int __init xenbus_init(void)
- 		break;
- 	}
- 
--	/* Initialize the interface to xenstore. */
--	err = xs_init();
--	if (err) {
--		pr_warn("Error initializing xenstore comms: %i\n", err);
--		goto out_error;
-+	/*
-+	 * HVM domains may not have a functional callback yet. In that
-+	 * case let xs_init() be called from xenbus_probe(), which will
-+	 * get invoked at an appropriate time.
-+	 */
-+	if (xen_store_domain_type != XS_HVM) {
-+		err = xs_init();
-+		if (err) {
-+			pr_warn("Error initializing xenstore comms: %i\n", err);
-+			goto out_error;
+ 	if (common_cpu_die(cpu) == 0) {
+-		xen_smp_intr_free(cpu);
+-		xen_uninit_lock_cpu(cpu);
+-		xen_teardown_timer(cpu);
++		if (xen_have_vector_callback) {
++			xen_smp_intr_free(cpu);
++			xen_uninit_lock_cpu(cpu);
++			xen_teardown_timer(cpu);
 +		}
  	}
+ }
+ #else
+@@ -64,14 +68,17 @@ static void xen_hvm_cpu_die(unsigned int cpu)
  
- 	if ((xen_store_domain_type != XS_LOCAL) &&
-diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
-index 00c7235ae93e7..2c43b0ef1e4d5 100644
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -192,7 +192,7 @@ void xs_suspend_cancel(void);
+ void __init xen_hvm_smp_init(void)
+ {
+-	if (!xen_have_vector_callback)
++	smp_ops.smp_prepare_boot_cpu = xen_hvm_smp_prepare_boot_cpu;
++	smp_ops.smp_prepare_cpus = xen_hvm_smp_prepare_cpus;
++	smp_ops.smp_cpus_done = xen_smp_cpus_done;
++	smp_ops.cpu_die = xen_hvm_cpu_die;
++
++	if (!xen_have_vector_callback) {
++		nopvspin = true;
+ 		return;
++	}
  
- struct work_struct;
- 
--void xenbus_probe(struct work_struct *);
-+void xenbus_probe(void);
- 
- #define XENBUS_IS_ERR_READ(str) ({			\
- 	if (!IS_ERR(str) && strlen(str) == 0) {		\
+-	smp_ops.smp_prepare_cpus = xen_hvm_smp_prepare_cpus;
+ 	smp_ops.smp_send_reschedule = xen_smp_send_reschedule;
+-	smp_ops.cpu_die = xen_hvm_cpu_die;
+ 	smp_ops.send_call_func_ipi = xen_smp_send_call_function_ipi;
+ 	smp_ops.send_call_func_single_ipi = xen_smp_send_call_function_single_ipi;
+-	smp_ops.smp_prepare_boot_cpu = xen_hvm_smp_prepare_boot_cpu;
+-	smp_ops.smp_cpus_done = xen_smp_cpus_done;
+ }
 -- 
 2.27.0
 
