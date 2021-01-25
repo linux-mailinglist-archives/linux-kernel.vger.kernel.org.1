@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C7C30387D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFA33037F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390743AbhAZI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:59:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33734 "EHLO mail.kernel.org"
+        id S2390185AbhAZIdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:33:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730161AbhAYSqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:46:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2F63230FA;
-        Mon, 25 Jan 2021 18:45:48 +0000 (UTC)
+        id S1728247AbhAYSnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:43:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59721221E7;
+        Mon, 25 Jan 2021 18:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600349;
-        bh=Kq0aYncV1wz5N8/Ipur8uGJBgZLsF/TF5GYQip7CU4E=;
+        s=korg; t=1611600147;
+        bh=IvC8Y5xINbI2xrQg1uy9+MeeYbIZw42VCzYgpTN/ilA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tl8xAHRWJSur/9v8C0bIA6y2ZRZhJlan0Ro5DsIN3k1ecIGDl1QBuaNayNcsvH9bw
-         gAofz8AiIOtIwVsrPLN7D8Ar5IkVLlJ+Jz9halBmPTQWqnJbdWu1Iq+hUKazvQxzxn
-         wnreFsje+1/k3QcDeoxioO+vFDDFSxSyx2yBDBJY=
+        b=hElHLJuyo8MXE6ilLddW64ZLhraYu23E0Jy1Eo9pqsqK4kNGYITjIRSmgjynQMJ4+
+         ov9yzwuxpfGX9L+GA6LHQdTQ1AdP0HWujEvWlxOSXkXvslQomnjQrEo8Jv8ZQ91k2G
+         /f+D4vwk2K8++QS5oZhA77JMzdaVtaCZmUo/Q6bE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.4 67/86] pinctrl: ingenic: Fix JZ4760 support
-Date:   Mon, 25 Jan 2021 19:39:49 +0100
-Message-Id: <20210125183203.875160331@linuxfoundation.org>
+        stable@vger.kernel.org, Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        YJ Chiang <yj.chiang@mediatek.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 49/58] kasan: fix unaligned address is unhandled in kasan_remove_zero_shadow
+Date:   Mon, 25 Jan 2021 19:39:50 +0100
+Message-Id: <20210125183158.814212724@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-References: <20210125183201.024962206@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,139 +46,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Lecopzer Chen <lecopzer@gmail.com>
 
-commit 9a85c09a3f507b925d75cb0c7c8f364467038052 upstream.
+commit a11a496ee6e2ab6ed850233c96b94caf042af0b9 upstream.
 
-- JZ4760 and JZ4760B have a similar register layout as the JZ4740, and
-  don't use the new register layout, which was introduced with the
-  JZ4770 SoC and not the JZ4760 or JZ4760B SoCs.
+During testing kasan_populate_early_shadow and kasan_remove_zero_shadow,
+if the shadow start and end address in kasan_remove_zero_shadow() is not
+aligned to PMD_SIZE, the remain unaligned PTE won't be removed.
 
-- The JZ4740 code path only expected two function modes to be
-  configurable for each pin, and wouldn't work with more than two. Fix
-  it for the JZ4760, which has four configurable function modes.
+In the test case for kasan_remove_zero_shadow():
 
-Fixes: 0257595a5cf4 ("pinctrl: Ingenic: Add pinctrl driver for JZ4760 and JZ4760B.")
-Cc: <stable@vger.kernel.org> # 5.3
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Link: https://lore.kernel.org/r/20201211232810.261565-1-paul@crapouillou.net
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+    shadow_start: 0xffffffb802000000, shadow end: 0xffffffbfbe000000
+
+    3-level page table:
+      PUD_SIZE: 0x40000000 PMD_SIZE: 0x200000 PAGE_SIZE: 4K
+
+0xffffffbf80000000 ~ 0xffffffbfbdf80000 will not be removed because in
+kasan_remove_pud_table(), kasan_pmd_table(*pud) is true but the next
+address is 0xffffffbfbdf80000 which is not aligned to PUD_SIZE.
+
+In the correct condition, this should fallback to the next level
+kasan_remove_pmd_table() but the condition flow always continue to skip
+the unaligned part.
+
+Fix by correcting the condition when next and addr are neither aligned.
+
+Link: https://lkml.kernel.org/r/20210103135621.83129-1-lecopzer@gmail.com
+Fixes: 0207df4fa1a86 ("kernel/memremap, kasan: make ZONE_DEVICE with work with KASAN")
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: YJ Chiang <yj.chiang@mediatek.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- drivers/pinctrl/pinctrl-ingenic.c |   24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ mm/kasan/kasan_init.c |   20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -1378,7 +1378,7 @@ static inline bool ingenic_gpio_get_valu
- static void ingenic_gpio_set_value(struct ingenic_gpio_chip *jzgc,
- 				   u8 offset, int value)
- {
--	if (jzgc->jzpc->version >= ID_JZ4760)
-+	if (jzgc->jzpc->version >= ID_JZ4770)
- 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_PAT0, offset, !!value);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, offset, !!value);
-@@ -1389,7 +1389,7 @@ static void irq_set_type(struct ingenic_
- {
- 	u8 reg1, reg2;
+--- a/mm/kasan/kasan_init.c
++++ b/mm/kasan/kasan_init.c
+@@ -372,9 +372,10 @@ static void kasan_remove_pmd_table(pmd_t
  
--	if (jzgc->jzpc->version >= ID_JZ4760) {
-+	if (jzgc->jzpc->version >= ID_JZ4770) {
- 		reg1 = JZ4760_GPIO_PAT1;
- 		reg2 = JZ4760_GPIO_PAT0;
- 	} else {
-@@ -1464,7 +1464,7 @@ static void ingenic_gpio_irq_enable(stru
- 	struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
- 	int irq = irqd->hwirq;
+ 		if (kasan_pte_table(*pmd)) {
+ 			if (IS_ALIGNED(addr, PMD_SIZE) &&
+-			    IS_ALIGNED(next, PMD_SIZE))
++			    IS_ALIGNED(next, PMD_SIZE)) {
+ 				pmd_clear(pmd);
+-			continue;
++				continue;
++			}
+ 		}
+ 		pte = pte_offset_kernel(pmd, addr);
+ 		kasan_remove_pte_table(pte, addr, next);
+@@ -397,9 +398,10 @@ static void kasan_remove_pud_table(pud_t
  
--	if (jzgc->jzpc->version >= ID_JZ4760)
-+	if (jzgc->jzpc->version >= ID_JZ4770)
- 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, true);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, true);
-@@ -1480,7 +1480,7 @@ static void ingenic_gpio_irq_disable(str
+ 		if (kasan_pmd_table(*pud)) {
+ 			if (IS_ALIGNED(addr, PUD_SIZE) &&
+-			    IS_ALIGNED(next, PUD_SIZE))
++			    IS_ALIGNED(next, PUD_SIZE)) {
+ 				pud_clear(pud);
+-			continue;
++				continue;
++			}
+ 		}
+ 		pmd = pmd_offset(pud, addr);
+ 		pmd_base = pmd_offset(pud, 0);
+@@ -423,9 +425,10 @@ static void kasan_remove_p4d_table(p4d_t
  
- 	ingenic_gpio_irq_mask(irqd);
+ 		if (kasan_pud_table(*p4d)) {
+ 			if (IS_ALIGNED(addr, P4D_SIZE) &&
+-			    IS_ALIGNED(next, P4D_SIZE))
++			    IS_ALIGNED(next, P4D_SIZE)) {
+ 				p4d_clear(p4d);
+-			continue;
++				continue;
++			}
+ 		}
+ 		pud = pud_offset(p4d, addr);
+ 		kasan_remove_pud_table(pud, addr, next);
+@@ -457,9 +460,10 @@ void kasan_remove_zero_shadow(void *star
  
--	if (jzgc->jzpc->version >= ID_JZ4760)
-+	if (jzgc->jzpc->version >= ID_JZ4770)
- 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_INT, irq, false);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, false);
-@@ -1505,7 +1505,7 @@ static void ingenic_gpio_irq_ack(struct
- 			irq_set_type(jzgc, irq, IRQ_TYPE_LEVEL_HIGH);
- 	}
+ 		if (kasan_p4d_table(*pgd)) {
+ 			if (IS_ALIGNED(addr, PGDIR_SIZE) &&
+-			    IS_ALIGNED(next, PGDIR_SIZE))
++			    IS_ALIGNED(next, PGDIR_SIZE)) {
+ 				pgd_clear(pgd);
+-			continue;
++				continue;
++			}
+ 		}
  
--	if (jzgc->jzpc->version >= ID_JZ4760)
-+	if (jzgc->jzpc->version >= ID_JZ4770)
- 		ingenic_gpio_set_bit(jzgc, JZ4760_GPIO_FLAG, irq, false);
- 	else
- 		ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, irq, true);
-@@ -1562,7 +1562,7 @@ static void ingenic_gpio_irq_handler(str
- 
- 	chained_irq_enter(irq_chip, desc);
- 
--	if (jzgc->jzpc->version >= ID_JZ4760)
-+	if (jzgc->jzpc->version >= ID_JZ4770)
- 		flag = ingenic_gpio_read_reg(jzgc, JZ4760_GPIO_FLAG);
- 	else
- 		flag = ingenic_gpio_read_reg(jzgc, JZ4740_GPIO_FLAG);
-@@ -1643,7 +1643,7 @@ static int ingenic_gpio_get_direction(st
- 	struct ingenic_pinctrl *jzpc = jzgc->jzpc;
- 	unsigned int pin = gc->base + offset;
- 
--	if (jzpc->version >= ID_JZ4760)
-+	if (jzpc->version >= ID_JZ4770)
- 		return ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_INT) ||
- 			ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PAT1);
- 
-@@ -1676,7 +1676,7 @@ static int ingenic_pinmux_set_pin_fn(str
- 		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
- 		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT0, func & 0x1);
- 		ingenic_shadow_config_pin_load(jzpc, pin);
--	} else if (jzpc->version >= ID_JZ4760) {
-+	} else if (jzpc->version >= ID_JZ4770) {
- 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
- 		ingenic_config_pin(jzpc, pin, GPIO_MSK, false);
- 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, func & 0x2);
-@@ -1684,7 +1684,7 @@ static int ingenic_pinmux_set_pin_fn(str
- 	} else {
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_FUNC, true);
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_TRIG, func & 0x2);
--		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func > 0);
-+		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func & 0x1);
- 	}
- 
- 	return 0;
-@@ -1734,7 +1734,7 @@ static int ingenic_pinmux_gpio_set_direc
- 		ingenic_shadow_config_pin(jzpc, pin, GPIO_MSK, true);
- 		ingenic_shadow_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
- 		ingenic_shadow_config_pin_load(jzpc, pin);
--	} else if (jzpc->version >= ID_JZ4760) {
-+	} else if (jzpc->version >= ID_JZ4770) {
- 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_INT, false);
- 		ingenic_config_pin(jzpc, pin, GPIO_MSK, true);
- 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PAT1, input);
-@@ -1764,7 +1764,7 @@ static int ingenic_pinconf_get(struct pi
- 	unsigned int offt = pin / PINS_PER_GPIO_CHIP;
- 	bool pull;
- 
--	if (jzpc->version >= ID_JZ4760)
-+	if (jzpc->version >= ID_JZ4770)
- 		pull = !ingenic_get_pin_config(jzpc, pin, JZ4760_GPIO_PEN);
- 	else
- 		pull = !ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_PULL_DIS);
-@@ -1796,7 +1796,7 @@ static int ingenic_pinconf_get(struct pi
- static void ingenic_set_bias(struct ingenic_pinctrl *jzpc,
- 		unsigned int pin, bool enabled)
- {
--	if (jzpc->version >= ID_JZ4760)
-+	if (jzpc->version >= ID_JZ4770)
- 		ingenic_config_pin(jzpc, pin, JZ4760_GPIO_PEN, !enabled);
- 	else
- 		ingenic_config_pin(jzpc, pin, JZ4740_GPIO_PULL_DIS, !enabled);
+ 		p4d = p4d_offset(pgd, addr);
 
 
