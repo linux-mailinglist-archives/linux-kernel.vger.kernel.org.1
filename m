@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BB23037EA
+	by mail.lfdr.de (Postfix) with ESMTP id A29D23037EB
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390133AbhAZIaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:30:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59202 "EHLO mail.kernel.org"
+        id S2389792AbhAZIa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:30:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727746AbhAYSmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727773AbhAYSmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:42:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8A8B22E03;
-        Mon, 25 Jan 2021 18:41:38 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7767522EBD;
+        Mon, 25 Jan 2021 18:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600099;
-        bh=EvPL4ASu1PG4XMnHkbH0qSRCqhNArWZOsfFhzsNDX4Y=;
+        s=korg; t=1611600102;
+        bh=97QC5h9CZMaiyQZYGx+Dn/bksEFvah5o5m0uBKw+3hg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dAvLa8adrO7ggaA1bLxSkDR2oDm+A0+ZkmEqvx4DqZCJSiNIFhOJ7FqBGH7XDHkdh
-         lMOUakUmtEmKfrpz+q6EUT56yCDiKATA0xCUS3XarpT7bJJTeJAYhzwom/JdnA9nLM
-         LppAxESJCIaH7wWHgP+sgxo4F7yTweiWAApAdBWU=
+        b=I4xZnEZ9oVkPZy9II+/++iHePU2Hq+qTi5CLPpcmm8caWJa+rnid28hgg+I3vuBmv
+         SbdRxYdKdslym3XFowqPlO8qLHi5NWS+6ckdrcPl9h71GwEEo/509GwjLi6GzJpZMi
+         nljX5Y3WnzqS3eKLywHmwMG7rhg6Zn+LJSFRR5ig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Martin Wilck <mwilck@suse.com>, Christoph Hellwig <hch@lst.de>,
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.19 08/58] dm: avoid filesystem lookup in dm_get_dev_t()
-Date:   Mon, 25 Jan 2021 19:39:09 +0100
-Message-Id: <20210125183157.060828606@linuxfoundation.org>
+Subject: [PATCH 4.19 09/58] dm integrity: fix a crash if "recalculate" used without "internal_hash"
+Date:   Mon, 25 Jan 2021 19:39:10 +0100
+Message-Id: <20210125183157.099202935@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -40,66 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 809b1e4945774c9ec5619a8f4e2189b7b3833c0c upstream.
+commit 2d06dfecb132a1cc2e374a44eae83b5c4356b8b4 upstream.
 
-This reverts commit
-644bda6f3460 ("dm table: fall back to getting device using name_to_dev_t()")
+Recalculate can only be specified with internal_hash.
 
-dm_get_dev_t() is just used to convert an arbitrary 'path' string
-into a dev_t. It doesn't presume that the device is present; that
-check will be done later, as the only caller is dm_get_device(),
-which does a dm_get_table_device() later on, which will properly
-open the device.
-
-So if the path string already _is_ in major:minor representation
-we can convert it directly, avoiding a recursion into the filesystem
-to lookup the block device.
-
-This avoids a hang in multipath_message() when the filesystem is
-inaccessible.
-
-Fixes: 644bda6f3460 ("dm table: fall back to getting device using name_to_dev_t()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin Wilck <mwilck@suse.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-table.c |   15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/md/dm-integrity.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -431,14 +431,23 @@ int dm_get_device(struct dm_target *ti,
- {
- 	int r;
- 	dev_t dev;
-+	unsigned int major, minor;
-+	char dummy;
- 	struct dm_dev_internal *dd;
- 	struct dm_table *t = ti->table;
- 
- 	BUG_ON(!t);
- 
--	dev = dm_get_dev_t(path);
--	if (!dev)
--		return -ENODEV;
-+	if (sscanf(path, "%u:%u%c", &major, &minor, &dummy) == 2) {
-+		/* Extract the major/minor numbers */
-+		dev = MKDEV(major, minor);
-+		if (MAJOR(dev) != major || MINOR(dev) != minor)
-+			return -EOVERFLOW;
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -3515,6 +3515,12 @@ try_smaller_buffer:
+ 			r = -ENOMEM;
+ 			goto bad;
+ 		}
 +	} else {
-+		dev = dm_get_dev_t(path);
-+		if (!dev)
-+			return -ENODEV;
-+	}
++		if (ic->sb->flags & cpu_to_le32(SB_FLAG_RECALCULATING)) {
++			ti->error = "Recalculate can only be specified with internal_hash";
++			r = -EINVAL;
++			goto bad;
++		}
+ 	}
  
- 	dd = find_device(&t->devices, dev);
- 	if (!dd) {
+ 	ic->bufio = dm_bufio_client_create(ic->meta_dev ? ic->meta_dev->bdev : ic->dev->bdev,
 
 
