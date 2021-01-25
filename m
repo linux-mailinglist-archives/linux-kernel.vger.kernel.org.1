@@ -2,196 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C6F3026C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83663026C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbhAYPPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:15:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
+        id S1729996AbhAYPNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:13:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729824AbhAYOwo (ORCPT
+        with ESMTP id S1729821AbhAYOwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:52:44 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4047C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:52:03 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id q12so18103593lfo.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:52:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gBq/cXkQq96ZdadHbeLIVkrbnkXQgb5R2ac1/WrI8S0=;
-        b=xeSjJ/j2VagBpsJUmcj0AoFSUSfr08S3P2dDyN1xGmgVr3hH2zAjfDwd/Ay5uUTjxh
-         tZABy2l2Hp6yb6ycGIA5AQKvQ6SzIde9rnA4spenZrE2x0vuHNWmhObkfzket4Zg1cPa
-         aSLvkHgk5Oa6m+zae0CQnZFe/b9v9htxNA29gZqVKwA+zXThWM+iDNdjP4a96oJoV6Hs
-         VTx1abgaDazQg1YTgYV0tlewVciVtFj3xURxGuolMEQftrZlfnJFoc+uNZuQYCRBqrY5
-         ubjgiHwrsRjoOVDfqn/ywHR+Rs2qUBYdC2LDLjQ8K0xE/KLm7lxnf0VPc7liBL/gONFj
-         edEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gBq/cXkQq96ZdadHbeLIVkrbnkXQgb5R2ac1/WrI8S0=;
-        b=fFmhEkHWp78tS4yUUnNKqj3BaejbMiYhIzWgGrhVWcfpKI1LE8SH0SDp9mkEq63hgB
-         DjN02fFSoIvlFPf6JPOL4P4ncOTzUuBAs4m0ayiAhEC70w31US+lB5aqptlGVNhtWcGo
-         GxBVsQFgiU5VvAacznkZzneGKEfbhmWLXwWHayXJzZlRtgdWR3xrPlVZr47Wbb6PoVQ8
-         PqAaORGbiJhWQi/sr7XTYR6/HDz+OKtflxQfb5g2iVDC87La8W/XlriPdIand2mU0ns9
-         0KVoR/o9mcAS6cAt7q4OJF3jdn1ScFq391lPLw47HRu/dLmNIczD4z87j7TwOke4C9E+
-         XRNQ==
-X-Gm-Message-State: AOAM5309FNJ9yYlOB6KF1MUDGX97cRujJZZ1vZuvHlnqBoL2bv28jpkS
-        aw7YVzbqNnqNn6DufnUGHlyKhv8uO5a94k8mZq/owg==
-X-Google-Smtp-Source: ABdhPJxeoujHAkYOOuevm8Q3fDYD3fT7mkeu+KzPGbhRydDmT5BQEcOa1gaTFdjFkUqfksG1AbIz400OJ5G9vW+Ucgc=
-X-Received: by 2002:a19:ac45:: with SMTP id r5mr460858lfc.305.1611586322291;
- Mon, 25 Jan 2021 06:52:02 -0800 (PST)
+        Mon, 25 Jan 2021 09:52:47 -0500
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E475C06174A;
+        Mon, 25 Jan 2021 06:51:58 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id A764B1F8AC;
+        Mon, 25 Jan 2021 15:51:54 +0100 (CET)
+Subject: Re: [PATCH 1/2] media: venus: core: Add sdm660 DT compatible and
+ resource struct
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, phone-devel@vger.kernel.org
+References: <20210115185252.333562-1-angelogioacchino.delregno@somainline.org>
+ <20210115185252.333562-2-angelogioacchino.delregno@somainline.org>
+ <2dc8a95f-110f-526f-18a8-6393e508c3a6@linaro.org>
+ <eabc91cc-de96-08ef-756c-87fe43d6fadc@somainline.org>
+ <cfc1998f-8d9b-5237-f286-7fdc69874b30@xs4all.nl>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <40c38734-a69d-2314-c342-244ee5a0e6b1@somainline.org>
+Date:   Mon, 25 Jan 2021 15:51:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
- <CAKfTPtAxnsEDL436zUypLj2XyMQyhgPvJ8q_23835sQxWzGtxw@mail.gmail.com> <a99d59c3-2023-1e8f-83cd-d964e156ffd6@linux.intel.com>
-In-Reply-To: <a99d59c3-2023-1e8f-83cd-d964e156ffd6@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 25 Jan 2021 15:51:51 +0100
-Message-ID: <CAKfTPtCCzy5keKcEOUX6D1+wty0dtYEfA5=oezWRgKY_beO5NQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1] sched/fair: limit load balance redo times at the
- same sched_domain level
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Aubrey Li <aubrey.li@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cfc1998f-8d9b-5237-f286-7fdc69874b30@xs4all.nl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 15:00, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->
-> On 2021/1/25 18:56, Vincent Guittot wrote:
-> > On Mon, 25 Jan 2021 at 06:50, Aubrey Li <aubrey.li@intel.com> wrote:
-> >>
-> >> A long-tail load balance cost is observed on the newly idle path,
-> >> this is caused by a race window between the first nr_running check
-> >> of the busiest runqueue and its nr_running recheck in detach_tasks.
-> >>
-> >> Before the busiest runqueue is locked, the tasks on the busiest
-> >> runqueue could be pulled by other CPUs and nr_running of the busiest
-> >> runqueu becomes 1, this causes detach_tasks breaks with LBF_ALL_PINNED
-> >
-> > We should better detect that when trying to detach task like below
->
-> This should be a compromise from my understanding. If we give up load balance
-> this time due to the race condition, we do reduce the load balance cost on the
-> newly idle path, but if there is an imbalance indeed at the same sched_domain
+Il 25/01/21 11:40, Hans Verkuil ha scritto:
+> On 18/01/2021 18:45, AngeloGioacchino Del Regno wrote:
+>> Il 18/01/21 18:21, Stanimir Varbanov ha scritto:
+>>> Hi Angelo,
+>>>
+>>> Thanks for the patch!
+>>>
+>>> On 1/15/21 8:52 PM, AngeloGioacchino Del Regno wrote:
+>>>> Add the SDM660 DT compatible and its resource structure, also
+>>>> including support for the Venus pmdomains, in order to support
+>>>> the Venus block in SDM630, SDM636, SDM660 and SDA variants.
+>>>>
+>>>> This SoC features Venus 4.4 (HFI3XX), with one vcodec used for
+>>>> both encoding and decoding, switched on through two GDSCs.
+>>>> The core clock for this Venus chip is powered by the RPM VDD_CX
+>>>> power domain.
+>>>>
+>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>>>> ---
+>>>>    drivers/media/platform/qcom/venus/core.c | 66 ++++++++++++++++++++++++
+>>>>    1 file changed, 66 insertions(+)
+>>>>
+>>>> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+>>>> index bdd293faaad0..83ca86a63241 100644
+>>>> --- a/drivers/media/platform/qcom/venus/core.c
+>>>> +++ b/drivers/media/platform/qcom/venus/core.c
+>>>> @@ -565,6 +565,71 @@ static const struct venus_resources sdm845_res_v2 = {
+>>>>    	.fwname = "qcom/venus-5.2/venus.mdt",
+>>>>    };
+>>>>    
+>>>> +static const struct freq_tbl sdm660_freq_table[] = {
+>>>> +	{ 0, 518400000 },
+>>>> +	{ 0, 441600000 },
+>>>> +	{ 0, 404000000 },
+>>>> +	{ 0, 320000000 },
+>>>> +	{ 0, 269330000 },
+>>>> +	{ 0, 133330000 },
+>>>> +};
+>>>> +
+>>>> +static const struct reg_val sdm660_reg_preset[] = {
+>>>> +	{ 0x80010, 0x001f001f },
+>>>> +	{ 0x80018, 0x00000156 },
+>>>> +	{ 0x8001C, 0x00000156 },
+>>>> +};
+>>>> +
+>>>> +static const struct bw_tbl sdm660_bw_table_enc[] = {
+>>>> +	{  979200,  1044000, 0, 2446336, 0 },	/* 4k UHD @ 30 */
+>>>> +	{  864000,   887000, 0, 2108416, 0 },	/* 720p @ 240 */
+>>>> +	{  489600,   666000, 0, 1207296, 0 },	/* 1080p @ 60 */
+>>>> +	{  432000,   578000, 0, 1058816, 0 },	/* 720p @ 120 */
+>>>> +	{  244800,   346000, 0,  616448, 0 },	/* 1080p @ 30 */
+>>>> +	{  216000,   293000, 0,  534528, 0 },	/* 720p @ 60 */
+>>>> +	{  108000,   151000, 0,  271360, 0 },	/* 720p @ 30 */
+>>>> +};
+>>>> +
+>>>> +static const struct bw_tbl sdm660_bw_table_dec[] = {
+>>>> +	{  979200,  2365000, 0, 1892000, 0 },	/* 4k UHD @ 30 */
+>>>> +	{  864000,  1978000, 0, 1554000, 0 },	/* 720p @ 240 */
+>>>> +	{  489600,  1133000, 0,  895000, 0 },	/* 1080p @ 60 */
+>>>> +	{  432000,   994000, 0,  781000, 0 },	/* 720p @ 120 */
+>>>> +	{  244800,   580000, 0,  460000, 0 },	/* 1080p @ 30 */
+>>>> +	{  216000,   501000, 0,  301000, 0 },	/* 720p @ 60 */
+>>>> +	{  108000,   255000, 0,  202000, 0 },	/* 720p @ 30 */
+>>>> +};
+>>>> +
+>>>> +static const struct venus_resources sdm660_res = {
+>>>> +	.freq_tbl = sdm660_freq_table,
+>>>> +	.freq_tbl_size = ARRAY_SIZE(sdm660_freq_table),
+>>>> +	.reg_tbl = sdm660_reg_preset,
+>>>> +	.reg_tbl_size = ARRAY_SIZE(sdm660_reg_preset),
+>>>> +	.bw_tbl_enc = sdm660_bw_table_enc,
+>>>> +	.bw_tbl_enc_size = ARRAY_SIZE(sdm660_bw_table_enc),
+>>>> +	.bw_tbl_dec = sdm660_bw_table_dec,
+>>>> +	.bw_tbl_dec_size = ARRAY_SIZE(sdm660_bw_table_dec),
+>>>> +	.clks = {"core", "iface", "bus_throttle", "bus" },
+>>>> +	.clks_num = 4,
+>>>> +	.vcodec0_clks = { "vcodec0_core" },
+>>>> +	.vcodec_clks_num = 1,
+>>>> +	.vcodec_pmdomains = { "venus", "vcodec0" },
+>>>> +	.vcodec_pmdomains_num = 2,
+>>>> +	.opp_pmdomain = (const char *[]) { "cx", NULL },
+>>>> +	.vcodec_num = 1,
+>>>> +	.max_load = 1036800,
+>>>> +	.hfi_version = HFI_VERSION_3XX,
+>>>> +	.vmem_id = VIDC_RESOURCE_NONE,
+>>>> +	.vmem_size = 0,
+>>>> +	.vmem_addr = 0,
+>>>> +	.cp_start = 0,
+>>>> +	.cp_size = 0x79000000,
+>>>> +	.cp_nonpixel_start = 0x1000000,
+>>>> +	.cp_nonpixel_size = 0x28000000,
+>>>> +	.dma_mask = 0xd9000000 - 1,
+>>>> +	.fwname = "qcom/venus-4.4/venus.mdt",
+>>>
+>>> Did you try venus-4.2 firmware from linux-firmware tree [1] ?
+>>>
+>>
+>> No I haven't.. and I can't... my Sony devices (but I think that this is
+>> a practice of all OEMs/ODMs) are using a Sony signed venus firmware, so
+>> I am totally limited to use the firmware that comes with the device.
+>>
+>> Besides that, the version is still different so, even if I had any
+>> possibility to try that, I don't think that it would work anyway...
 
-Redo path is there in case, LB has found an imbalance but it can't
-move some loads from this busiest rq to dest rq because of some cpu
-affinity. So it tries to fix the imbalance by moving load onto another
-rq of the group. In your case, the imbalance has disappeared because
-it has already been pulled by another rq so you don't have to try to
-find another imbalance. And I would even say you should not in order
-to let other level to take a chance to spread the load
+Hello!
 
-> level, we have to wait the next softirq entry to handle that imbalance. This
-> means the tasks on the second busiest runqueue have to stay longer, which could
-> introduce tail latency as well. That's why I introduced a variable to control
-> the redo loops. I'll send this to the benchmark queue to see if it makes any
+> 
+> I'm a bit confused. "qcom/venus-4.4/venus.mdt" is the Sony signed FW?
+> 
 
-TBH, I don't like multiplying the number of knobs
+In my case it is, but this follows the generic firmware path as was done
+for all the other Venus firmwares, so my code is not pointing at Sony
+specific things, but just generic ones.
 
-> difference.
->
-> Thanks,
-> -Aubrey
->
-> >
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -7688,6 +7688,16 @@ static int detach_tasks(struct lb_env *env)
-> >
-> >         lockdep_assert_held(&env->src_rq->lock);
-> >
-> > +       /*
-> > +        * Another CPU has emptied this runqueue in the meantime.
-> > +        * Just return and leave the load_balance properly.
-> > +        */
-> > +       if (env->src_rq->nr_running <= 1 && !env->loop) {
-> > +               /* Clear the flag as we will not test any task */
-> > +               env->flags &= ~LBF_ALL_PINNED;
-> > +               return 0;
-> > +       }
-> > +
-> >         if (env->imbalance <= 0)
-> >                 return 0;
-> >
-> >
-> >> flag set, and triggers load_balance redo at the same sched_domain level.
-> >>
-> >> In order to find the new busiest sched_group and CPU, load balance will
-> >> recompute and update the various load statistics, which eventually leads
-> >> to the long-tail load balance cost.
-> >>
-> >> This patch introduces a variable(sched_nr_lb_redo) to limit load balance
-> >> redo times, combined with sysctl_sched_nr_migrate, the max load balance
-> >> cost is reduced from 100+ us to 70+ us, measured on a 4s x86 system with
-> >> 192 logical CPUs.
-> >>
-> >> Cc: Andi Kleen <ak@linux.intel.com>
-> >> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> >> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> >> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
-> >> ---
-> >>  kernel/sched/fair.c | 7 ++++++-
-> >>  1 file changed, 6 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> >> index ae7ceba..b59f371 100644
-> >> --- a/kernel/sched/fair.c
-> >> +++ b/kernel/sched/fair.c
-> >> @@ -7407,6 +7407,8 @@ struct lb_env {
-> >>         unsigned int            loop;
-> >>         unsigned int            loop_break;
-> >>         unsigned int            loop_max;
-> >> +       unsigned int            redo_cnt;
-> >> +       unsigned int            redo_max;
-> >>
-> >>         enum fbq_type           fbq_type;
-> >>         enum migration_type     migration_type;
-> >> @@ -9525,6 +9527,7 @@ static int should_we_balance(struct lb_env *env)
-> >>         return group_balance_cpu(sg) == env->dst_cpu;
-> >>  }
-> >>
-> >> +static const unsigned int sched_nr_lb_redo = 1;
-> >>  /*
-> >>   * Check this_cpu to ensure it is balanced within domain. Attempt to move
-> >>   * tasks if there is an imbalance.
-> >> @@ -9547,6 +9550,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> >>                 .dst_grpmask    = sched_group_span(sd->groups),
-> >>                 .idle           = idle,
-> >>                 .loop_break     = sched_nr_migrate_break,
-> >> +               .redo_max       = sched_nr_lb_redo,
-> >>                 .cpus           = cpus,
-> >>                 .fbq_type       = all,
-> >>                 .tasks          = LIST_HEAD_INIT(env.tasks),
-> >> @@ -9682,7 +9686,8 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> >>                          * destination group that is receiving any migrated
-> >>                          * load.
-> >>                          */
-> >> -                       if (!cpumask_subset(cpus, env.dst_grpmask)) {
-> >> +                       if (!cpumask_subset(cpus, env.dst_grpmask) &&
-> >> +                                       ++env.redo_cnt < env.redo_max) {
-> >>                                 env.loop = 0;
-> >>                                 env.loop_break = sched_nr_migrate_break;
-> >>                                 goto redo;
-> >> --
-> >> 2.7.4
-> >>
->
+Every Qualcomm-powered consumer device (smartphones, tablets etc) have
+got a double sigcheck: one for qcom, one for OEM specific and most of
+the times the TZ is configured to accept only firmwares that also have
+the OEM signature.
+
+This is not true for all the firmwares - for example, Adreno has this
+mechanism only for the ZAP part - but unfortunately I'm not aware of
+any consumer device accepting a Venus firmware with the "generic"
+Qualcomm signature only (so - without the OEM signature).
+
+Short answer:
+1. qcom/venus-4.4/venus.mdt is a generic firmware for Venus
+2. 99% of the people needs a different firmware for signature issues
+
+
+> This patch can't be merged unless there is a corresponding firmware available
+> in linux-firmware. Is the current 4.2 firmware in linux-firmware signed by
+> Qualcomm? Can they provided 4.4 firmware as well?
+> 
+
+If there is such issue, then maybe we should do "something" about it: I
+would then propose to remove all references to fwname and just get this
+done in DT, where every qcom board already specifies its own path for
+its own firmware.
+
+In any case, the issue that you're raising here has been raised multiple
+times on LKML, I don't precisely remember, but I recall seeing this for
+something like 4 years (or even more) being raised every now and then...
+
+> I have no idea how this works for the venus driver, but I hope Stanimir does.
+> 
+
+As far as I've understood, this driver just uses the firmware which
+path is hardcoded in fwname, even though at this point I would like
+to get an opinion from Stanimir.
+
+Would you be ok if we start parsing firmware-name from DT for this
+driver? The flow would be something like:
+
+Is firmware-name DT property present?
+    Yes -> Use FW path from firmware-name property
+    No  -> Use the FW path from the fwname field of struct
+           venus_resources
+
+This is a common flow in at least freedreno and remoteproc (modem).
+
+-- Angelo
+
+> Regards,
+> 
+> 	Hans
+> 
+>>
+>>>> +};
+>>>> +
+>>>>    static const struct freq_tbl sc7180_freq_table[] = {
+>>>>    	{  0, 500000000 },
+>>>>    	{  0, 434000000 },
+>>>> @@ -613,6 +678,7 @@ static const struct venus_resources sc7180_res = {
+>>>>    static const struct of_device_id venus_dt_match[] = {
+>>>>    	{ .compatible = "qcom,msm8916-venus", .data = &msm8916_res, },
+>>>>    	{ .compatible = "qcom,msm8996-venus", .data = &msm8996_res, },
+>>>> +	{ .compatible = "qcom,sdm660-venus", .data = &sdm660_res, },
+>>>>    	{ .compatible = "qcom,sdm845-venus", .data = &sdm845_res, },
+>>>>    	{ .compatible = "qcom,sdm845-venus-v2", .data = &sdm845_res_v2, },
+>>>>    	{ .compatible = "qcom,sc7180-venus", .data = &sc7180_res, },
+>>>>
+>>>
+>>> Reviewed-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>>>
+>>
+>> Thank you!
+>> - Angelo
+>>
+> 
+
