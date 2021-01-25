@@ -2,176 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330A4304901
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D643048EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387952AbhAZFfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:35:00 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:40963 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727557AbhAYKZm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:25:42 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id 3z2slT9JIiWRg3z2vlfsGd; Mon, 25 Jan 2021 11:24:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1611570274; bh=kmHFrl41CYcqrNiUZ72T0IMxn1HeaqRQUa+uQpTKAh4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=oXmmdET7/MG/IZ6DB+YbjqvMyhUlv+UHIP/hooPMt+bj5p4JvdWpj7cKP9ZenlLRd
-         uiexvauakHRez0Bck0x0rbTX0KBmRRvX6Ho9uQWFT+sHUVs/HihYCyNeLjm8nafR6s
-         jppMSjbGCkxBY/y0C4QkkDKMspDT2pwCvL3oBv4F9xOk8k5TJKtBV8GTTGvSVwfPDB
-         9ROhVFjx7qTPgR3i2n7tLGMa3kA+M1KVMXDT0KxXSAiB3dYeAr5Ktr+GcNUFLphWpG
-         sP7G3JmSIyVNfbnaISVDX1XVdEPIbOfNirESEyeA886EoGEOZdsCzKhq6yIAH/u/+j
-         CygTI7tJRSGOQ==
-Subject: Re: [PATCH v4 4/5] docs: Document CLL and Mastering display
- colorimetry controls
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-References: <20210120092606.3987207-1-stanimir.varbanov@linaro.org>
- <20210120092606.3987207-5-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <e93c5dec-94a9-89f6-dae2-b1d14092d674@xs4all.nl>
-Date:   Mon, 25 Jan 2021 11:24:30 +0100
+        id S1727724AbhAZFgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:36:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:45116 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727614AbhAYKqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:46:17 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B348A11FB;
+        Mon, 25 Jan 2021 02:45:15 -0800 (PST)
+Received: from [10.57.40.145] (unknown [10.57.40.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E92033F66E;
+        Mon, 25 Jan 2021 02:45:12 -0800 (PST)
+Subject: Re: [RFC PATCH] perf: Handle multiple formatted AUX records
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
+        Ingo Molnar <mingo@redhat.com>, will@kernel.org,
+        mark.rutland@arm.com, mike.leach@linaro.org, al.grant@arm.com,
+        anshuman.khandual@arm.com, mathieu.poirier@linaro.org,
+        linux-arm-kernel@lists.infradead.org, jolsa@redhat.com,
+        acme@kernel.org
+References: <20210122151829.2890484-1-suzuki.poulose@arm.com>
+ <20210122151829.2890484-2-suzuki.poulose@arm.com>
+ <YA6cjdmfG8x2EggP@hirez.programming.kicks-ass.net>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <b30069fb-3df4-8c8a-9ee8-471c0a6d5f38@arm.com>
+Date:   Mon, 25 Jan 2021 10:45:06 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210120092606.3987207-5-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <YA6cjdmfG8x2EggP@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfA2/LOkNI9VQJ8+gVuoFSlqX10OKjpezettPw9cfd1F+z945XPysL/FtmxGPSQh6w2Nxgn4pZxYFMO3HxMQyC5bmacnsaKD0DGwgog/IMieaPYtfB+eT
- KsGJTtWapnowAtcuxLk8FwO46TguaqfFzdAp29e27RYPtEEkyOE2raaxnVgBKADvJefm9ILJhT/fQ4SWaXPXIO5+jsVAFVyvIG1zL11MvxXXekykbKDT+18y
- g++RnhJcjbbjmJxb+gq2tn3k8nlZrTrQp3nDa/Rg0aAlaFV4sB+FXIR9LWGDXbrANdL5l29xoCKtBbortuK7tcSxXbE84hkGTKrWP5TxJXcNbaedp69UuWWK
- XiENvPOTMyqkkoIW+xZo6nKnEvjhfXjCJDSEo+CbL7RVOMxef6rTLiaLi7LP+BxlM6oIXszJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 10:26, Stanimir Varbanov wrote:
-> Document Content Light Level and Mastering Display v4l2 colorimetry
-> controls.
+Hi Peter
+
+On 1/25/21 10:25 AM, Peter Zijlstra wrote:
+> On Fri, Jan 22, 2021 at 03:18:29PM +0000, Suzuki K Poulose wrote:
+>> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
+>> generated by the ETM (associated with individual CPUs, like Intel PT)
+>> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
+>>
+>> The TMC-ETR applies formatting of the raw ETM trace data, as it
+>> can collect traces from multiple ETMs, with the TraceID to indicate
+>> the source of a given trace packet.
+>>
+>> Arm Trace Buffer Extension is new "sink" IP, attached to individual
+>> CPUs and thus do not provide additional formatting, like TMC-ETR.
+>>
+>> Additionally, a system could have both TRBE *and* TMC-ETR for
+>> the trace collection. e.g, TMC-ETR could be used as a single
+>> trace buffer to collect data from multiple ETMs to correlate
+>> the traces from different CPUs. It is possible to have a
+>> perf session where some events end up collecting the trace
+>> in TMC-ETR while the others in TRBE. Thus we need a way
+>> to identify the type of the trace for each AUX record.
+>>
+>> This patch adds a new flag to indicate the trace format
+>> for the given record. Also, includes the changes that
+>> demonstrates how this can be used in the CoreSight PMU
+>> to solve the problem.
+>>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
 > 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  .../media/v4l/ext-ctrls-colorimetry.rst       | 71 +++++++++++++++++++
->  .../media/videodev2.h.rst.exceptions          |  2 +
->  2 files changed, 73 insertions(+)
+>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+>> index b15e3447cd9f..ea7dcc7b30f0 100644
+>> --- a/include/uapi/linux/perf_event.h
+>> +++ b/include/uapi/linux/perf_event.h
+>> @@ -1109,6 +1109,7 @@ enum perf_callchain_context {
+>>   #define PERF_AUX_FLAG_OVERWRITE		0x02	/* snapshot from overwrite mode */
+>>   #define PERF_AUX_FLAG_PARTIAL		0x04	/* record contains gaps */
+>>   #define PERF_AUX_FLAG_COLLISION		0x08	/* sample collided with another */
+>> +#define PERF_AUX_FLAG_ALT_FMT		0x10	/* this record is in alternate trace format */
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> index 6b0cd2054e84..e7e55323651f 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> @@ -17,3 +17,74 @@ Colorimetry Control IDs
->      The Colorimetry class descriptor. Calling
->      :ref:`VIDIOC_QUERYCTRL` for this control will
->      return a description of this control class.
-> +
-> +``V4L2_CID_COLORIMETRY_HDR10_CLL_INFO (struct)``
-> +    The Content Light Level defines upper bounds for the nominal target
-> +    brightness light level of the pictures.
-> +
-> +.. c:type:: v4l2_ctrl_hdr10_cll_info
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table:: struct v4l2_ctrl_hdr10_cll_info
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u16
-> +      - ``max_content_light_level``
-> +      - The upper bound for the maximum light level among all individual
-> +        samples for the pictures of a coded video sequence, cd/m2. When
-
-For this document:
-
-cd/m2 -> cd/m\ :sup:`2`
-
-> +        equal to 0 no such upper bound is present.
-> +    * - __u16
-> +      - ``max_pic_average_light_level``
-> +      - The upper bound for the maximum average light level among the
-> +        samples for any individual picture of a coded video sequence, cd/m2.
-> +        When equal to 0 no such upper bound is present.
-> +
-> +``V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY (struct)``
-> +    The mastering display defines the colour volume (the colour primaries,
-
-For this document: colour -> color
-
-(The US spelling is used)
-
-> +    white point and luminance range) of a display considered to be the
-> +    mastering display for the current video content.
-> +
-> +.. c:type:: v4l2_ctrl_hdr10_mastering_display
-> +
-> +.. cssclass:: longtable
-> +
-> +.. flat-table:: struct v4l2_ctrl_hdr10_mastering_display
-> +    :header-rows:  0
-> +    :stub-columns: 0
-> +    :widths:       1 1 2
-> +
-> +    * - __u16
-> +      - ``display_primaries_x[3]``
-> +      - Specifies the normalized x chromaticity coordinate of the colour
-> +        primary component c of the mastering display in increments of 0.00002.
-> +        For describing the mastering display that uses Red, Green and Blue
-> +        colour primaries, index value c equal to 0 corresponds to the Green
-> +        primary, c equal to 1 corresponds to Blue primary and c equal to 2
-> +        corresponds to the Red colour primary.
-> +    * - __u16
-> +      - ``display_primaries_y[3]``
-> +      - Specifies the normalized y chromaticity coordinate of the colour
-> +        primary component c of the mastering display in increments of 0.00002.
-> +        For describing the mastering display that uses Red, Green and Blue
-> +        colour primaries, index value c equal to 0 corresponds to the Green
-> +        primary, c equal to 1 corresponds to Blue primary and c equal to 2
-> +        corresponds to Red colour primary.
-> +    * - __u16
-> +      - ``white_point_x``
-> +      - Specifies the normalized x chromaticity coordinate of the white
-> +        point of the mastering display in increments of 0.00002.
-> +    * - __u16
-> +      - ``white_point_y``
-> +      - Specifies the normalized y chromaticity coordinate of the white
-> +        point of the mastering display in increments of 0.00002.
-> +    * - __u32
-> +      - ``max_luminance``
-> +      - Specifies the nominal maximum display luminance of the mastering
-> +        display in units of 0.0001 cd/m2.
-> +    * - __u32
-> +      - ``min_luminance``
-> +      - specifies the nominal minimum display luminance of the mastering
-> +        display in units of 0.0001 cd/m2.
-> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> index 0ed170c6e720..af4b8b87c5d7 100644
-> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> @@ -147,6 +147,8 @@ replace symbol V4L2_CTRL_TYPE_HEVC_PPS :c:type:`v4l2_ctrl_type`
->  replace symbol V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS :c:type:`v4l2_ctrl_type`
->  replace symbol V4L2_CTRL_TYPE_AREA :c:type:`v4l2_ctrl_type`
->  replace symbol V4L2_CTRL_TYPE_FWHT_PARAMS :c:type:`v4l2_ctrl_type`
-> +replace symbol V4L2_CTRL_TYPE_HDR10_CLL_INFO :c:type:`v4l2_ctrl_hdr10_cll_info`
-> +replace symbol V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY :c:type:`v4l2_ctrl_hdr10_mastering_display`
-
-No, these two should be :c:type:`v4l2_ctrl_type` like the others.
-
->  
->  # V4L2 capability defines
->  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
+> Since we have a whole u64, do we want to reserve a whole nibble (or
+> maybe even a byte) for a format type? Because with a single bit like
+> this, we'll kick ourselves when we end up with the need for a 3rd format
+> type.
 > 
 
-You also need to document the new p_hdr10_cll and p_hdr10_mastering
-fields in Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst.
+Sure, makes sense. We could do:
 
-Regards,
+#define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00
 
-	Hans
+Additionally, the values could be allocated by individual PMUs and
+interpreted by the corresponding counterpart. That way we don't
+have to worry about centralized allocation of the "TYPE" fields.
+
+e,g:
+
+#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000
+#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100
+
+#define PERF_AUX_FLAG_RANDOM_PMU_FORMAT_FMT1		0x0000
+#define PERF_AUX_FLAG_RANDOM_PMU_FORMAT_FMT2		0x0100
+
+
+What do you think ?
+
+Cheers
+Suzuki
+
+
+
+
+
