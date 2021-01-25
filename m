@@ -2,202 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144603020E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583783020EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbhAYD7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:59:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726677AbhAYD7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:59:44 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A639C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:59:04 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id y205so7648059pfc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:59:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JawmNI2cw7dC+renZYHY4PhE5rPmyLgqTpnvi0+Z94E=;
-        b=i+XW3lJuJx4xsB43+d4WmMeA1XBib0Lbd67jLeCEJwWlNJqNf/dI0LfOc90u9wTZB9
-         9Ow/6b92TQ/NSL4xfgGz2BGnq7FmCxeMEfQ8498E8+skKsd4ruCVqTU8ng+yV3fVgo2o
-         RXy8JUE019jPedU7S9UnxT01GI/L6C6t3PR0myctdR6Qe37/ZDZPcoK5k0FAN2OgW0bP
-         PzXZ5qayVhE4BId7InEM1+ya+SN0bfusauctEnFobR7X2oOS/E0BD/Us9RKejDvJX7bR
-         WkRgZVOfO2N95U6srshwm1Jn1PU3l+BzCbI8tAN3W6iKuG6hnoUS54DctdsYZwq32Sro
-         OZZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JawmNI2cw7dC+renZYHY4PhE5rPmyLgqTpnvi0+Z94E=;
-        b=Ve4lY7Uvc0H0tdN0s0CncEuYVixNXHDxqDOB5qWZLbsKe3wN5M/vQcEki9e0oyvWZh
-         hSZhLhy0R6Hq5j8IaCgfiRS4Q4QjQx1JRwTLcXUvs6CI3JOFByfB644M++I0JkLepRb3
-         fus7ZiXa7sD5j8FD1snUbkrM9cWPn6sKj1QXAKcKauU7SmcFl5PcqG/quS5qvz63mFOy
-         Jmzh52T/Gj2XhHDhwi0+cqp09wg2woy9Qt45H74tXHK6XruZI68GBtFc4d3rjhgUc0gp
-         yZ3eJmxdToq0zyxinH0ofKAwkredzh/pcldrBdAoxJWtQ4s5Q3vB5uUFqnyp558kv5hq
-         Ssqw==
-X-Gm-Message-State: AOAM533V3ETKr+1ks/KZ2R46NNOW+fVc1vlQI/NBr3IGjSKoTfbro5vD
-        HoDMgyOpAiWXbeDbgVAkoMAY58yKztjYyd/hOLpi7Q==
-X-Google-Smtp-Source: ABdhPJwo/Nr8Bv+3rC1BGZXCTci7+PJcz19l2647770oGa45hpUmoQp0YwA1O7f0Gn40pHg0K5qRzCdFyHIVSmtZFa0=
-X-Received: by 2002:a62:7694:0:b029:1b9:8d43:95af with SMTP id
- r142-20020a6276940000b02901b98d4395afmr16376787pfc.2.1611547143936; Sun, 24
- Jan 2021 19:59:03 -0800 (PST)
+        id S1726873AbhAYEDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 23:03:01 -0500
+Received: from ozlabs.org ([203.11.71.1]:54295 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726630AbhAYEC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 23:02:58 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPGQv1pVDz9sVr;
+        Mon, 25 Jan 2021 15:02:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611547335;
+        bh=t4Cdmr6WPppmw/WPPi2js/whhfRw4imP1sO+Om/hfuA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=V5lwbOQD2k0SZTZjBTAKk01dMc8lAsjWR5oeKRcYD52CCAvU0dF96HIx8O0wCjU2F
+         4QmEAAN+rVz1VwSEsFITVBNw5WbCvzxU5nXP1rAXp/gl7u3NAwmVGljhdjZ4jRGf8s
+         NLJRvJbrV1+SvbPFAiZxsKBA4RW7FDLka8tOZZdxJ8pFLieIBEdyZpRV9dx9yVU/Oc
+         7G9cJcB55XBsIvW9zPrEutLvEV36HhKjCEDX/vVFy5cEnoxA+VD90k3BNjObQti+m6
+         AaAnTZrY//XgsoYbcBVkL+s70BBBtNi9TCoeSvpyh1VKqyBvTjKCTJV5FeI1c1uFbc
+         NDkjLv/9/zCeg==
+Date:   Mon, 25 Jan 2021 15:02:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: linux-next: manual merge of the scsi-mkp tree with the kbuild tree
+Message-ID: <20210125150213.2b09c92e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-5-songmuchun@bytedance.com> <59d18082-248a-7014-b917-625d759c572@google.com>
-In-Reply-To: <59d18082-248a-7014-b917-625d759c572@google.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 25 Jan 2021 11:58:27 +0800
-Message-ID: <CAMZfGtX0a3am_PLy3L8pmPW1qU+zwFJqUzzXd3e0Tt3Nen6SpA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 04/12] mm: hugetlb: defer freeing of
- HugeTLB pages
-To:     David Rientjes <rientjes@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/vlco5R12RarBjpBdHN0u1L/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 7:55 AM David Rientjes <rientjes@google.com> wrote:
->
->
-> On Sun, 17 Jan 2021, Muchun Song wrote:
->
-> > In the subsequent patch, we should allocate the vmemmap pages when
-> > freeing HugeTLB pages. But update_and_free_page() is always called
-> > with holding hugetlb_lock, so we cannot use GFP_KERNEL to allocate
-> > vmemmap pages. However, we can defer the actual freeing in a kworker
-> > to prevent from using GFP_ATOMIC to allocate the vmemmap pages.
-> >
-> > The update_hpage_vmemmap_workfn() is where the call to allocate
-> > vmemmmap pages will be inserted.
-> >
->
-> I think it's reasonable to assume that userspace can release free hugetlb
-> pages from the pool on oom conditions when reclaim has become too
-> expensive.  This approach now requires that we can allocate vmemmap pages
-> in a potential oom condition as a prerequisite for freeing memory, which
-> seems less than ideal.
->
-> And, by doing this through a kworker, we can presumably get queued behind
-> another work item that requires memory to make forward progress in this
-> oom condition.
->
-> Two thoughts:
->
-> - We're going to be freeing the hugetlb page after we can allocate the
->   vmemmap pages, so why do we need to allocate with GFP_KERNEL?  Can't we
->   simply dip into memory reserves using GFP_ATOMIC (and thus can be
->   holding hugetlb_lock) because we know we'll be freeing more memory than
->   we'll be allocating?
+--Sig_/vlco5R12RarBjpBdHN0u1L/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Right.
+Hi all,
 
->   I think requiring a GFP_KERNEL allocation to block
->   to free memory for vmemmap when we'll be freeing memory ourselves is
->   dubious.  This simplifies all of this.
+Today's linux-next merge of the scsi-mkp tree got a conflict in:
 
-Thanks for your thoughts. I just thought that we can go to reclaim
-when there is no memory in the system. But we cannot block when
-using GFP_KERNEL. Actually, we cannot deal with fail of memory
-allocating. In the next patch, I try to sleep 100ms and then try again
-to allocate memory when allocating memory fails.
+  drivers/scsi/gdth.c
 
->
-> - If the answer is that we actually have to use GFP_KERNEL for other
->   reasons, what are your thoughts on pre-allocating the vmemmap as opposed
->   to deferring to a kworker?  In other words, preallocate the necessary
->   memory with GFP_KERNEL and put it on a linked list in struct hstate
->   before acquiring hugetlb_lock.
+between commit:
 
-put_page() can be used in an atomic context. Actually, we cannot sleep
-in the __free_huge_page(). It seems a little tricky. Right?
+  537896fabed1 ("kbuild: give the SUBLEVEL more room in KERNEL_VERSION")
 
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > ---
-> >  mm/hugetlb.c         | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++--
-> >  mm/hugetlb_vmemmap.c | 12 ---------
-> >  mm/hugetlb_vmemmap.h | 17 ++++++++++++
-> >  3 files changed, 89 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 140135fc8113..c165186ec2cf 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1292,15 +1292,85 @@ static inline void destroy_compound_gigantic_page(struct page *page,
-> >                                               unsigned int order) { }
-> >  #endif
-> >
-> > -static void update_and_free_page(struct hstate *h, struct page *page)
-> > +static void __free_hugepage(struct hstate *h, struct page *page);
-> > +
-> > +/*
-> > + * As update_and_free_page() is always called with holding hugetlb_lock, so we
-> > + * cannot use GFP_KERNEL to allocate vmemmap pages. However, we can defer the
-> > + * actual freeing in a workqueue to prevent from using GFP_ATOMIC to allocate
-> > + * the vmemmap pages.
-> > + *
-> > + * The update_hpage_vmemmap_workfn() is where the call to allocate vmemmmap
-> > + * pages will be inserted.
-> > + *
-> > + * update_hpage_vmemmap_workfn() locklessly retrieves the linked list of pages
-> > + * to be freed and frees them one-by-one. As the page->mapping pointer is going
-> > + * to be cleared in update_hpage_vmemmap_workfn() anyway, it is reused as the
-> > + * llist_node structure of a lockless linked list of huge pages to be freed.
-> > + */
-> > +static LLIST_HEAD(hpage_update_freelist);
-> > +
-> > +static void update_hpage_vmemmap_workfn(struct work_struct *work)
-> >  {
-> > -     int i;
-> > +     struct llist_node *node;
-> > +
-> > +     node = llist_del_all(&hpage_update_freelist);
-> > +
-> > +     while (node) {
-> > +             struct page *page;
-> > +             struct hstate *h;
-> > +
-> > +             page = container_of((struct address_space **)node,
-> > +                                  struct page, mapping);
-> > +             node = node->next;
-> > +             page->mapping = NULL;
-> > +             h = page_hstate(page);
-> > +
-> > +             spin_lock(&hugetlb_lock);
-> > +             __free_hugepage(h, page);
-> > +             spin_unlock(&hugetlb_lock);
-> >
-> > +             cond_resched();
->
-> Wouldn't it be better to hold hugetlb_lock for the iteration rather than
-> constantly dropping it and reacquiring it?  Use
-> cond_resched_lock(&hugetlb_lock) instead?
+from the kbuild tree and commit:
 
-Great. We can use it. Thanks.
+  0653c358d2dc ("scsi: Drop gdth driver")
+
+from the scsi-mkp tree.
+
+I fixed it up (I deleted the file) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vlco5R12RarBjpBdHN0u1L/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOQsUACgkQAVBC80lX
+0GwkBwf6A0A4dPfz96Fl+355R9TD4Le3/bMBWpD3l9ZqZiCrBDyj2sPw3EBe0fbp
+l4DppIgmTpdnF6sM+mp6DZUi/cWlJsFutSJHl5clBhvQ30d6muV8I39GHnlsCM2J
+D4+H+GinCPrt20ehZrTrgtAA6Nl7gXP3ZHlOjQxq5lzHZdmtYUxZddEwWIIx8S67
+2uBAl+F7yHByjN1DNVHqTILgvDR4JeBuz2QxAzpe3V56MhrjfjoPE7WuWrbVaSFc
+Nor+B8WkJxjm88ekP/XH0wJqHX+C86y++pb9343scc8LHP+i0eLnsvw+kti+qRO6
+dznIJiUyXXySDEHqXLtifw4AtALbpA==
+=yQGu
+-----END PGP SIGNATURE-----
+
+--Sig_/vlco5R12RarBjpBdHN0u1L/--
