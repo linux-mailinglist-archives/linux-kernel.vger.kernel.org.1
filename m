@@ -2,117 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D643048EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5703048C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbhAZFgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:36:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:45116 "EHLO foss.arm.com"
+        id S2388163AbhAZFjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:39:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727614AbhAYKqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:46:17 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B348A11FB;
-        Mon, 25 Jan 2021 02:45:15 -0800 (PST)
-Received: from [10.57.40.145] (unknown [10.57.40.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E92033F66E;
-        Mon, 25 Jan 2021 02:45:12 -0800 (PST)
-Subject: Re: [RFC PATCH] perf: Handle multiple formatted AUX records
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        Ingo Molnar <mingo@redhat.com>, will@kernel.org,
-        mark.rutland@arm.com, mike.leach@linaro.org, al.grant@arm.com,
-        anshuman.khandual@arm.com, mathieu.poirier@linaro.org,
-        linux-arm-kernel@lists.infradead.org, jolsa@redhat.com,
-        acme@kernel.org
-References: <20210122151829.2890484-1-suzuki.poulose@arm.com>
- <20210122151829.2890484-2-suzuki.poulose@arm.com>
- <YA6cjdmfG8x2EggP@hirez.programming.kicks-ass.net>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <b30069fb-3df4-8c8a-9ee8-471c0a6d5f38@arm.com>
-Date:   Mon, 25 Jan 2021 10:45:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727720AbhAYK6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:58:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED02821D81;
+        Mon, 25 Jan 2021 10:50:27 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l3zRx-009rDe-N4; Mon, 25 Jan 2021 10:50:25 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v5 00/21] arm64: Early CPU feature override, and applications to VHE, BTI and PAuth
+Date:   Mon, 25 Jan 2021 10:49:58 +0000
+Message-Id: <20210125105019.2946057-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <YA6cjdmfG8x2EggP@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter
+It recently came to light that there is a need to be able to override
+some CPU features very early on, before the kernel is fully up and
+running. The reasons for this range from specific feature support
+(such as using Protected KVM on VHE HW, which is the main motivation
+for this work) to errata workaround (a feature is broken on a CPU and
+needs to be turned off, or rather not enabled).
 
-On 1/25/21 10:25 AM, Peter Zijlstra wrote:
-> On Fri, Jan 22, 2021 at 03:18:29PM +0000, Suzuki K Poulose wrote:
->> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
->> generated by the ETM (associated with individual CPUs, like Intel PT)
->> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
->>
->> The TMC-ETR applies formatting of the raw ETM trace data, as it
->> can collect traces from multiple ETMs, with the TraceID to indicate
->> the source of a given trace packet.
->>
->> Arm Trace Buffer Extension is new "sink" IP, attached to individual
->> CPUs and thus do not provide additional formatting, like TMC-ETR.
->>
->> Additionally, a system could have both TRBE *and* TMC-ETR for
->> the trace collection. e.g, TMC-ETR could be used as a single
->> trace buffer to collect data from multiple ETMs to correlate
->> the traces from different CPUs. It is possible to have a
->> perf session where some events end up collecting the trace
->> in TMC-ETR while the others in TRBE. Thus we need a way
->> to identify the type of the trace for each AUX record.
->>
->> This patch adds a new flag to indicate the trace format
->> for the given record. Also, includes the changes that
->> demonstrates how this can be used in the CoreSight PMU
->> to solve the problem.
->>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
-> 
->> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
->> index b15e3447cd9f..ea7dcc7b30f0 100644
->> --- a/include/uapi/linux/perf_event.h
->> +++ b/include/uapi/linux/perf_event.h
->> @@ -1109,6 +1109,7 @@ enum perf_callchain_context {
->>   #define PERF_AUX_FLAG_OVERWRITE		0x02	/* snapshot from overwrite mode */
->>   #define PERF_AUX_FLAG_PARTIAL		0x04	/* record contains gaps */
->>   #define PERF_AUX_FLAG_COLLISION		0x08	/* sample collided with another */
->> +#define PERF_AUX_FLAG_ALT_FMT		0x10	/* this record is in alternate trace format */
-> 
-> Since we have a whole u64, do we want to reserve a whole nibble (or
-> maybe even a byte) for a format type? Because with a single bit like
-> this, we'll kick ourselves when we end up with the need for a 3rd format
-> type.
-> 
+This series tries to offer a limited framework for this kind of
+problems, by allowing a set of options to be passed on the
+command-line and altering the feature set that the cpufeature
+subsystem exposes to the rest of the kernel. Note that this doesn't
+change anything for code that directly uses the CPU ID registers.
 
-Sure, makes sense. We could do:
+The series completely changes the way a VHE-capable system boots, by
+*always* booting non-VHE first, and then upgrading to VHE when deemed
+capable. Although it sounds scary, this is actually simple to
+implement (and I wish I had done that five years ago). The "upgrade to
+VHE" path is then conditioned on the VHE feature not being disabled
+from the command-line.
 
-#define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00
+Said command-line parsing borrows a lot from the kaslr code, and
+subsequently allows the "nokaslr" option to be moved to the new
+infrastructure (though it all looks a bit... odd).
 
-Additionally, the values could be allocated by individual PMUs and
-interpreted by the corresponding counterpart. That way we don't
-have to worry about centralized allocation of the "TYPE" fields.
+Further patches now add support for disabling BTI and PAuth, the
+latter being based on an initial series by Srinivas Ramana[0]. There
+is some ongoing discussions about being able to disable MTE, but no
+clear resolution on that subject yet.
 
-e,g:
+This has been tested on multiple VHE and non-VHE systems.
 
-#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000
-#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100
+* From v4 [4]:
+  - Documentation fixes
+  - Moved the val/mask pair into a arm64_ftr_override structure,
+    leading to simpler code
+  - All arm64_ftr_reg now have a default override, which simplifies
+    the code a bit further
+  - Dropped some of the "const" attributes
+  - Renamed init_shadow_regs() to init_feature_override()
+  - Renamed struct reg_desc to struct ftr_set_desc
+  - Refactored command-line parsing
+  - Simplified handling of VHE being disabled on the cmdline
+  - Turn EL1 S1 MMU off on switch to VHE
+  - HVC_VHE_RESTART now returns an error code on failure
+  - Added missing asmlinkage and dummy prototypes
+  - Collected Acks and RBs from David, Catalin and Suzuki
 
-#define PERF_AUX_FLAG_RANDOM_PMU_FORMAT_FMT1		0x0000
-#define PERF_AUX_FLAG_RANDOM_PMU_FORMAT_FMT2		0x0100
+* From v3 [3]:
+  - Fixed the VHE_RESTART stub (duh!)
+  - Switched to using arm64_ftr_safe_value() instead of the user
+    provided value
+  - Per-feature override warning
 
+* From v2 [2]:
+  - Simplify the VHE_RESTART stub
+  - Fixed a number of spelling mistakes, and hopefully introduced a
+    few more
+  - Override features in __read_sysreg_by_encoding()
+  - Allow both BTI and PAuth to be overridden on the command line
+  - Rebased on -rc3
 
-What do you think ?
+* From v1 [1]:
+  - Fix SPE init on VHE when EL2 doesn't own SPE
+  - Fix re-init when KASLR is used
+  - Handle the resume path
+  - Rebased to 5.11-rc2
 
-Cheers
-Suzuki
+[0] https://lore.kernel.org/r/1610152163-16554-1-git-send-email-sramana@codeaurora.org
+[1] https://lore.kernel.org/r/20201228104958.1848833-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20210104135011.2063104-1-maz@kernel.org
+[3] https://lore.kernel.org/r/20210111132811.2455113-1-maz@kernel.org
+[4] https://lore.kernel.org/r/20210118094533.2874082-1-maz@kernel.org
 
+Marc Zyngier (20):
+  arm64: Fix labels in el2_setup macros
+  arm64: Fix outdated TCR setup comment
+  arm64: Turn the MMU-on sequence into a macro
+  arm64: Provide an 'upgrade to VHE' stub hypercall
+  arm64: Initialise as nVHE before switching to VHE
+  arm64: Move VHE-specific SPE setup to mutate_to_vhe()
+  arm64: Simplify init_el2_state to be non-VHE only
+  arm64: Move SCTLR_EL1 initialisation to EL-agnostic code
+  arm64: cpufeature: Add global feature override facility
+  arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+  arm64: Extract early FDT mapping from kaslr_early_init()
+  arm64: cpufeature: Add an early command-line cpufeature override
+    facility
+  arm64: Allow ID_AA64MMFR1_EL1.VH to be overridden from the command
+    line
+  arm64: Honor VHE being disabled from the command-line
+  arm64: Add an aliasing facility for the idreg override
+  arm64: Make kvm-arm.mode={nvhe, protected} an alias of
+    id_aa64mmfr1.vh=0
+  KVM: arm64: Document HVC_VHE_RESTART stub hypercall
+  arm64: Move "nokaslr" over to the early cpufeature infrastructure
+  arm64: cpufeatures: Allow disabling of BTI from the command-line
+  arm64: cpufeatures: Allow disabling of Pointer Auth from the
+    command-line
 
+Srinivas Ramana (1):
+  arm64: Defer enabling pointer authentication on boot core
 
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ Documentation/virt/kvm/arm/hyp-abi.rst        |   9 +
+ arch/arm64/include/asm/assembler.h            |  17 ++
+ arch/arm64/include/asm/cpufeature.h           |  11 +
+ arch/arm64/include/asm/el2_setup.h            |  60 ++----
+ arch/arm64/include/asm/pointer_auth.h         |  10 +
+ arch/arm64/include/asm/setup.h                |  11 +
+ arch/arm64/include/asm/stackprotector.h       |   1 +
+ arch/arm64/include/asm/virt.h                 |   7 +-
+ arch/arm64/kernel/Makefile                    |   2 +-
+ arch/arm64/kernel/asm-offsets.c               |   3 +
+ arch/arm64/kernel/cpufeature.c                |  70 +++++-
+ arch/arm64/kernel/head.S                      |  75 ++-----
+ arch/arm64/kernel/hyp-stub.S                  | 133 +++++++++++-
+ arch/arm64/kernel/idreg-override.c            | 202 ++++++++++++++++++
+ arch/arm64/kernel/kaslr.c                     |  43 +---
+ arch/arm64/kernel/setup.c                     |  15 ++
+ arch/arm64/kernel/sleep.S                     |   1 +
+ arch/arm64/kvm/arm.c                          |   3 +
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   2 +-
+ arch/arm64/mm/mmu.c                           |   2 +-
+ arch/arm64/mm/proc.S                          |  16 +-
+ 22 files changed, 532 insertions(+), 170 deletions(-)
+ create mode 100644 arch/arm64/include/asm/setup.h
+ create mode 100644 arch/arm64/kernel/idreg-override.c
 
+-- 
+2.29.2
 
