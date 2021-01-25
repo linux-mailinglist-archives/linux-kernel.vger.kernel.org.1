@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CAA302B9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA61302B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731877AbhAYT1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:27:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41330 "EHLO mail.kernel.org"
+        id S1731932AbhAYT3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:29:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731365AbhAYSzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:55:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 671DF224D4;
-        Mon, 25 Jan 2021 18:54:26 +0000 (UTC)
+        id S1731374AbhAYSzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 951AA20719;
+        Mon, 25 Jan 2021 18:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600866;
-        bh=/3m6V8VVoxS5MugNHj2VXzbuJkQSHoQ4GThF+RLfz+U=;
+        s=korg; t=1611600906;
+        bh=b9/PnXiWVuWWv+6ysr1/+T+fJJOF4mysCxbAqNLW0eY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqTR5ypcIhyeis68j6xbsO8xLdVyUon7Y8A+kpt+cBFOCpgMm0ow6W46fT3uYhg5W
-         7UzQS3rRx0u7LM85xNO38WQ1BJtxrdxTw6+lzuQk989JDtzFjwFBrFWReaEXukC6qR
-         8ZJ+1Wdx66vzUTDZiP15BaMBb4wSj7e0Xgt2h/dU=
+        b=gnwFxw9kwiCqqv29qjd1nFY4wz8Qo6CY/BaiYPLohWP5PCo/zs6oJPGC8qwWkxcV5
+         CqBbZTqhopZsG8W2V0T/6KDRF198UpxkBc/t9zqQbrtKlc0R+N0h4ebzv9cM1ilplg
+         ixPpJZ6K9gEro8FYhgvywcank1JEDTuj3LTzjPOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alban Bedel <alban.bedel@aerq.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 181/199] net: mscc: ocelot: Fix multicast to the CPU port
-Date:   Mon, 25 Jan 2021 19:40:03 +0100
-Message-Id: <20210125183223.828129419@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.10 197/199] kernfs: implement ->write_iter
+Date:   Mon, 25 Jan 2021 19:40:19 +0100
+Message-Id: <20210125183224.488254865@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,71 +38,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alban Bedel <alban.bedel@aerq.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit 584b7cfcdc7d6d416a9d6fece9516764bd977d2e upstream.
+commit cc099e0b399889c6485c88368b19824b087c9f8c upstream.
 
-Multicast entries in the MAC table use the high bits of the MAC
-address to encode the ports that should get the packets. But this port
-mask does not work for the CPU port, to receive these packets on the
-CPU port the MAC_CPU_COPY flag must be set.
+Switch kernfs to implement the write_iter method instead of plain old
+write to prepare to supporting splice and sendfile again.
 
-Because of this IPv6 was effectively not working because neighbor
-solicitations were never received. This was not apparent before commit
-9403c158 (net: mscc: ocelot: support IPv4, IPv6 and plain Ethernet mdb
-entries) as the IPv6 entries were broken so all incoming IPv6
-multicast was then treated as unknown and flooded on all ports.
-
-To fix this problem rework the ocelot_mact_learn() to set the
-MAC_CPU_COPY flag when a multicast entry that target the CPU port is
-added. For this we have to read back the ports endcoded in the pseudo
-MAC address by the caller. It is not a very nice design but that avoid
-changing the callers and should make backporting easier.
-
-Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
-Fixes: 9403c158b872 ("net: mscc: ocelot: support IPv4, IPv6 and plain Ethernet mdb entries")
-Link: https://lore.kernel.org/r/20210119140638.203374-1-alban.bedel@aerq.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210120204631.274206-3-hch@lst.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/ethernet/mscc/ocelot.c |   23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ fs/kernfs/file.c |   28 ++++++++++------------------
+ 1 file changed, 10 insertions(+), 18 deletions(-)
 
---- a/drivers/net/ethernet/mscc/ocelot.c
-+++ b/drivers/net/ethernet/mscc/ocelot.c
-@@ -60,14 +60,27 @@ int ocelot_mact_learn(struct ocelot *oce
- 		      const unsigned char mac[ETH_ALEN],
- 		      unsigned int vid, enum macaccess_entry_type type)
- {
-+	u32 cmd = ANA_TABLES_MACACCESS_VALID |
-+		ANA_TABLES_MACACCESS_DEST_IDX(port) |
-+		ANA_TABLES_MACACCESS_ENTRYTYPE(type) |
-+		ANA_TABLES_MACACCESS_MAC_TABLE_CMD(MACACCESS_CMD_LEARN);
-+	unsigned int mc_ports;
-+
-+	/* Set MAC_CPU_COPY if the CPU port is used by a multicast entry */
-+	if (type == ENTRYTYPE_MACv4)
-+		mc_ports = (mac[1] << 8) | mac[2];
-+	else if (type == ENTRYTYPE_MACv6)
-+		mc_ports = (mac[0] << 8) | mac[1];
-+	else
-+		mc_ports = 0;
-+
-+	if (mc_ports & BIT(ocelot->num_phys_ports))
-+		cmd |= ANA_TABLES_MACACCESS_MAC_CPU_COPY;
-+
- 	ocelot_mact_select(ocelot, mac, vid);
- 
- 	/* Issue a write command */
--	ocelot_write(ocelot, ANA_TABLES_MACACCESS_VALID |
--			     ANA_TABLES_MACACCESS_DEST_IDX(port) |
--			     ANA_TABLES_MACACCESS_ENTRYTYPE(type) |
--			     ANA_TABLES_MACACCESS_MAC_TABLE_CMD(MACACCESS_CMD_LEARN),
--			     ANA_TABLES_MACACCESS);
-+	ocelot_write(ocelot, cmd, ANA_TABLES_MACACCESS);
- 
- 	return ocelot_mact_wait_for_completion(ocelot);
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -242,13 +242,7 @@ static ssize_t kernfs_fop_read_iter(stru
+ 	return kernfs_file_read_iter(iocb, iter);
  }
+ 
+-/**
+- * kernfs_fop_write - kernfs vfs write callback
+- * @file: file pointer
+- * @user_buf: data to write
+- * @count: number of bytes
+- * @ppos: starting offset
+- *
++/*
+  * Copy data in from userland and pass it to the matching kernfs write
+  * operation.
+  *
+@@ -258,20 +252,18 @@ static ssize_t kernfs_fop_read_iter(stru
+  * modify only the the value you're changing, then write entire buffer
+  * back.
+  */
+-static ssize_t kernfs_fop_write(struct file *file, const char __user *user_buf,
+-				size_t count, loff_t *ppos)
++static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+ {
+-	struct kernfs_open_file *of = kernfs_of(file);
++	struct kernfs_open_file *of = kernfs_of(iocb->ki_filp);
++	ssize_t len = iov_iter_count(iter);
+ 	const struct kernfs_ops *ops;
+-	ssize_t len;
+ 	char *buf;
+ 
+ 	if (of->atomic_write_len) {
+-		len = count;
+ 		if (len > of->atomic_write_len)
+ 			return -E2BIG;
+ 	} else {
+-		len = min_t(size_t, count, PAGE_SIZE);
++		len = min_t(size_t, len, PAGE_SIZE);
+ 	}
+ 
+ 	buf = of->prealloc_buf;
+@@ -282,7 +274,7 @@ static ssize_t kernfs_fop_write(struct f
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	if (copy_from_user(buf, user_buf, len)) {
++	if (copy_from_iter(buf, len, iter) != len) {
+ 		len = -EFAULT;
+ 		goto out_free;
+ 	}
+@@ -301,7 +293,7 @@ static ssize_t kernfs_fop_write(struct f
+ 
+ 	ops = kernfs_ops(of->kn);
+ 	if (ops->write)
+-		len = ops->write(of, buf, len, *ppos);
++		len = ops->write(of, buf, len, iocb->ki_pos);
+ 	else
+ 		len = -EINVAL;
+ 
+@@ -309,7 +301,7 @@ static ssize_t kernfs_fop_write(struct f
+ 	mutex_unlock(&of->mutex);
+ 
+ 	if (len > 0)
+-		*ppos += len;
++		iocb->ki_pos += len;
+ 
+ out_free:
+ 	if (buf == of->prealloc_buf)
+@@ -662,7 +654,7 @@ static int kernfs_fop_open(struct inode
+ 
+ 	/*
+ 	 * Write path needs to atomic_write_len outside active reference.
+-	 * Cache it in open_file.  See kernfs_fop_write() for details.
++	 * Cache it in open_file.  See kernfs_fop_write_iter() for details.
+ 	 */
+ 	of->atomic_write_len = ops->atomic_write_len;
+ 
+@@ -950,7 +942,7 @@ EXPORT_SYMBOL_GPL(kernfs_notify);
+ 
+ const struct file_operations kernfs_file_fops = {
+ 	.read_iter	= kernfs_fop_read_iter,
+-	.write		= kernfs_fop_write,
++	.write_iter	= kernfs_fop_write_iter,
+ 	.llseek		= generic_file_llseek,
+ 	.mmap		= kernfs_fop_mmap,
+ 	.open		= kernfs_fop_open,
 
 
