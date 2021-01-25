@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617213020AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CDA3020AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAYDIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        id S1726736AbhAYDLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbhAYDIe (ORCPT
+        with ESMTP id S1726660AbhAYDLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:08:34 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E213C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:07:54 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id gx1so1985977pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:07:53 -0800 (PST)
+        Sun, 24 Jan 2021 22:11:07 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DC1C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:10:26 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id a20so4514962pjs.1
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 19:10:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=u8+YbkbccOnTqbWHKnDyaMuyym5pEv5IG+EImU42D6M=;
-        b=MJy6OqiaaLqTicZSQyhluQpXvA0EVEL681DUoeBYtHv7G3AVEEeDpKIhkdZLMMKvuU
-         1QH4rMwBnUZnRgpvGKKVleRTyzdI4+BsusreYgtgBupeL6Bo0otwlK51fYQWYBAxpDdH
-         NI5fXAjrYMAVyFltVblQkcpfbiBTJomT05odfRQxEuyTu+kY99Twaam1l4m/vSxAO/WL
-         CMS9fH3sZ2XVYbZmgkmLrOzEVZ+FZX4m8c34hLjaMb2XV1Tz+HxNb6qJtwP5fCgVxwtb
-         isVgmExJEyCZTHyTE+Uvq8OXKxn42vzX0v+rsIFL5X9rUGKbrjXEH4tlnh9V29kbWFT3
-         Zvhg==
+        bh=wABN0PT/1uNSFrGdIrkcCEhg4WEbDL/+pWG1JFqkxBA=;
+        b=UnJCehjrYU2vKR+H2yI5OG0uvswV4DsRTnmGyoPfOxoGOoh2oEBwr0E8v+gEN/fp3u
+         NaEcUNfCmrwWJb7my+ihcB/mWk/eeFqbcpHzEumbTDEgPKGtxZhEk6jW/UekmkOHODL8
+         yom6XPoLIHbdHFZ5m/W446R2CXQl2zznoEGxIxOM+sN9t8L1JKOZrLZpOfTN0jOiuKAF
+         XqyTlUap52FH1Socv1djvml0DD5DKyqDqTOvc8UD7KR2wOMo2ezcC02ip5TAMeiMW3S2
+         SkPx1tLxEdV+Gxl2gDTfZjXU32MGZGVJJTZzJVHBxwLdhsVD1RnD2g4/+UgPcGJKPCJq
+         V44Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=u8+YbkbccOnTqbWHKnDyaMuyym5pEv5IG+EImU42D6M=;
-        b=mCBPbpKSAfJbY80Fi8QBeUSIIRM0xzmafdWVqYWH/OkFWHi/YAU885krAndyv67JZE
-         E/Qiy296ODcAXaMG2Xz7akL97hx6WXu5mFEU/4mqSNAB6qs+fEgCXQ82+SvbPRgPsFns
-         ClSvN5ZMDqE8pXefE3UpS8KmsBvE5sSpGI6uhg6jlPLbJNhU/t/mzn6N1s4c2cMvwEzl
-         ZOvJP6S3VwXLdT2eZZIaG044FnNOP+NtfUWQODSK9fDf6e9WImXwcccBaYzY3Uvscehb
-         T3FQu8mzCt4vYEiAPWEhkuiP/iPX1rvAfnKt1P8Mu13twV6/bCWTyDs930PnceMzWnY4
-         Rxiw==
-X-Gm-Message-State: AOAM531d+2CNRfK7ATuDctXh2GATGFrssE8zGCIVnDDTYTsoyy1iTW89
-        xYhKHNo8TtADyr2zx1pVXFrFzA==
-X-Google-Smtp-Source: ABdhPJznGhbmqZqh5TnNgZUZ5C8Qkle96KENqXu8ahyIxfYvxvKFOOt/YTH0Tf8L7qqK0ZJZEnm2KQ==
-X-Received: by 2002:a17:902:e541:b029:df:df4f:2921 with SMTP id n1-20020a170902e541b02900dfdf4f2921mr6555444plf.52.1611544073448;
-        Sun, 24 Jan 2021 19:07:53 -0800 (PST)
+        bh=wABN0PT/1uNSFrGdIrkcCEhg4WEbDL/+pWG1JFqkxBA=;
+        b=tJe5HgNjGbj3y3FIXert4llswY+p0hQNshimxldWQuUwQD7yCA8BMMvQ32nXsY15oq
+         Inp3ggcm3PVZWkg4aDTD5dmZ9ksDgeXPjs7TnavUVESI4MG5VBJRJoAd555lQNNazeCB
+         wNy1R+lFLnlVdWTvfhddHD0RqGJd07mR0+rNMxi1M3ES2JazHxIWRbOsGj6k9sd0/Ugb
+         kCcMlDPwAjIKg4OaLAeoxnmMkZ9vcj30wZjZZlGHPa4i4+sikd6AWeVmJRSQTnQc1rpi
+         R5oGYqT9TovcgfuU1/xQhfAVzaI0dM3+0PpOgOBVyeeV54uEavZWWxqEhOFIJtg0gSN/
+         EWPw==
+X-Gm-Message-State: AOAM530+1BvnY1epCiE9xoAS18eH1urf5SU9xLuaXXpS4SsOArqKwzfk
+        90YEN1ACzrEsC/XEFNWLQrKRog==
+X-Google-Smtp-Source: ABdhPJwECRQ5UnnivMklopaGuIyjpNECRo99aPxNEwNNxmHFJwzSOUUEPM/ZCDxwkJ9ZOnsbIq9TCQ==
+X-Received: by 2002:a17:90a:520e:: with SMTP id v14mr737287pjh.9.1611544226384;
+        Sun, 24 Jan 2021 19:10:26 -0800 (PST)
 Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id b14sm17415811pju.14.2021.01.24.19.07.52
+        by smtp.gmail.com with ESMTPSA id s65sm15364217pfc.95.2021.01.24.19.10.25
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 24 Jan 2021 19:07:52 -0800 (PST)
-Date:   Mon, 25 Jan 2021 08:37:50 +0530
+        Sun, 24 Jan 2021 19:10:25 -0800 (PST)
+Date:   Mon, 25 Jan 2021 08:40:24 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, Yangtao Li <tiny.windzz@gmail.com>
-Subject: Re: [PATCH v3] soc/tegra: Add devm_tegra_core_dev_init_opp_table()
-Message-ID: <20210125030750.735minp7toxortm4@vireshk-i7>
-References: <20210121190117.25235-1-digetx@gmail.com>
- <20210122063537.7yd7ww47gl2rdsdu@vireshk-i7>
- <60cfafdf-4615-5a41-103d-96c35ba1fa8c@gmail.com>
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] memory: tegra: Remove calls to dev_pm_opp_set_clkname()
+Message-ID: <20210125031024.g6limtpu4ozzp2mr@vireshk-i7>
+References: <1430e70777fdcf1c946ca2fef296f439762a4f21.1611295029.git.viresh.kumar@linaro.org>
+ <36db9831-0d68-2502-ad64-5aab05b16974@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <60cfafdf-4615-5a41-103d-96c35ba1fa8c@gmail.com>
+In-Reply-To: <36db9831-0d68-2502-ad64-5aab05b16974@gmail.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-01-21, 17:41, Dmitry Osipenko wrote:
-> 22.01.2021 09:35, Viresh Kumar пишет:
-> > On 21-01-21, 22:01, Dmitry Osipenko wrote:
-> >> Add common helper which initializes OPP table for Tegra SoC core devices.
-> >>
-> >> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> >> Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
-> >> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-> >> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> >> [tested on some other non-upstreamed-yet T20/30/114 devices as well]
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >> ---
-> >>
-> >> Changelog:
-> >>
-> >> v3: - This patch is factored out from [1] to ease merging of the patches
-> >>       that will use the new helper. The goal is to get this new helper
-> >>       into 5.12, this should remove dependency on this patch for a several
-> >>       patchsets of a different subsystems (DRM, media, memory, etc) that
-> >>       will target 5.13.
-> >>
-> >>       @Thierry/Jon, please review and apply this patch for 5.12!
+On 22-01-21, 18:00, Dmitry Osipenko wrote:
+> 22.01.2021 09:00, Viresh Kumar пишет:
+> > There is no point calling dev_pm_opp_set_clkname() with the "name"
+> > parameter set to NULL, this is already done by the OPP core at setup
+> > time and should work as it is.
 > > 
-> > This is not how stuff works in kernel Dmitry, every commit in the
-> > kernel tree should build(at least)/boot fine. Your patch can only be
-> > applied once your base tree has all the patches on which your work is
-> > based of, otherwise this will lead to build failure (stuff like git
-> > bisect breaks with that). It would be better if you take this patch in
-> > 5.13, or after 5.12-rc2 once all other stuff lands.
-> > 
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > Dmitry, am I missing something obvious here ?
 > 
-> OMG, I completely missed that the devm series from Yangtao Li isn't
-> merged yet.
+> The dev_pm_opp_set_clkname() ensures that the OPP table has a clk
+> assigned to the table.
 > 
-> Viresh / Yangtao, will be it be okay if I'll collect all the
-> prerequisite devm patches from Yangtao + add this patch into a single
-> series that could be merged via the OPP tree for 5.12?
-> 
-> Of course Thierry or Jon will need to give the ack for the Tegra changes
-> in that case.
+> The _allocate_opp_table() ignores all clk_get() errors except the
+> -EPROBE_DEFER.
 
-I haven't heard back from Yangtao since his last post, not sure what's going on.
-It is normally better if he keeps posting his series, unless he is busy and will
-not be able to do it.
+That is the case for everyone relying on OPP core to get it. It should be fine
+for this case as well.
+
+> The opp_table->clk must be not a PTR_ERR for these memory drivers.
+> 
+> On the other hand, the memory drivers also do the devm_clk_get()
+> themselves, hence technically clk_get() of _allocate_opp_table()
+> shouldn't fail. But I'll need to take a closer look at the clk core, to
+> check whether clk_get() could fail for the implicit _allocate_opp_table().
+> 
+> Tegra124-emc driver also has dev_pm_opp_set_clkname(), BTW.
 
 -- 
 viresh
