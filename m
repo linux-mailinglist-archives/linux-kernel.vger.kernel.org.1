@@ -2,80 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6096F3020DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2283020DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbhAYDf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbhAYDfY (ORCPT
+        id S1726731AbhAYDmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:42:16 -0500
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:41595 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726571AbhAYDmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:35:24 -0500
-Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87550C061574;
-        Sun, 24 Jan 2021 19:34:44 -0800 (PST)
-Subject: Re: [PATCH 05/14] rtc: ds1685: use rtc_lock/rtc_unlock
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210119220653.677750-1-alexandre.belloni@bootlin.com>
- <20210119220653.677750-5-alexandre.belloni@bootlin.com>
-From:   Joshua Kinard <kumba@gentoo.org>
-Openpgp: preference=signencrypt
-Message-ID: <62b9f5fb-acc0-0418-1e44-b6d0965784a4@gentoo.org>
-Date:   Sun, 24 Jan 2021 22:33:57 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sun, 24 Jan 2021 22:42:14 -0500
+Received: by mail-lj1-f174.google.com with SMTP id f11so13559706ljm.8;
+        Sun, 24 Jan 2021 19:41:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KsWOPVVebh8NoYzkQbBqzXbOw2W6S43eUM3sdOKqu1k=;
+        b=hlgPcufewTWyoMRMnyRPZh2YICFrz9pIKMAgipDG+odRSa0XULe429prONjKOmuXpL
+         eDyiUevfuEdDGdy02+f84JZf+duLIBKMN6shuADsdZUykEFzN/tLLyLFrsQbQuJHfA08
+         TSxzNdOzAMZ/eJk6Cl7URK3jS97xVc0/wTNSuytNqSjmawQrYLSVYbVCSuG4IkwKpTuA
+         I0jAIVfEb2BKmlWgNuyJDiht0Xod5JEfbK0/tVcnjebFM0fb1vqxpVu2GJw3bZfkIxGp
+         V0XsC3PjZmtdKFsgJTGEpzHuMzGlpRUS1FdNeo8EUqOBGcwLEo9lwXv5+kKVjyx2VbEV
+         rTVQ==
+X-Gm-Message-State: AOAM532TOytrp7KU3EB83b2km4E/O+cQckko2qOzasW2E+lfF7j5XOVb
+        teKSbL8N1RggMQzPV+L4y27q5IWS0nEI5Q==
+X-Google-Smtp-Source: ABdhPJzOmPlojCD8p4IIh07lMBwTGHAruJl9Ezil9g+Ojxys6cRkos1qoZMoL1UsvVfqdm369eWbyA==
+X-Received: by 2002:a05:651c:31c:: with SMTP id a28mr936046ljp.119.1611546091376;
+        Sun, 24 Jan 2021 19:41:31 -0800 (PST)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id a6sm1446992ljd.62.2021.01.24.19.41.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Jan 2021 19:41:31 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id s18so450734ljg.7;
+        Sun, 24 Jan 2021 19:41:31 -0800 (PST)
+X-Received: by 2002:a2e:9ccc:: with SMTP id g12mr175261ljj.282.1611546090897;
+ Sun, 24 Jan 2021 19:41:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210119220653.677750-5-alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210124152421.39693-1-samuel@sholland.org>
+In-Reply-To: <20210124152421.39693-1-samuel@sholland.org>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Mon, 25 Jan 2021 11:41:22 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66wS-tCsnnE44MUMYF13hhbsVN1tRRG6p=10yDf870mfw@mail.gmail.com>
+Message-ID: <CAGb2v66wS-tCsnnE44MUMYF13hhbsVN1tRRG6p=10yDf870mfw@mail.gmail.com>
+Subject: Re: [PATCH] power: supply: axp20x_usb_power: Init work before
+ enabling IRQs
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/19/2021 17:06, Alexandre Belloni wrote:
-> Avoid accessing directly rtc->ops_lock and use the RTC core helpers.
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+On Sun, Jan 24, 2021 at 11:24 PM Samuel Holland <samuel@sholland.org> wrote:
+>
+> The IRQ handler calls mod_delayed_work() on power->vbus_detect. However,
+> that work item is not initialized until after the IRQs are enabled. If
+> an IRQ is already pending when the driver is probed, the driver calls
+> mod_delayed_work() on an uninitialized work item, which causes an oops.
+>
+> Fixes: bcfb7ae3f50b ("power: supply: axp20x_usb_power: Only poll while offline")
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > ---
->  drivers/rtc/rtc-ds1685.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-ds1685.c b/drivers/rtc/rtc-ds1685.c
-> index d69c807af29b..75db7ab654a5 100644
-> --- a/drivers/rtc/rtc-ds1685.c
-> +++ b/drivers/rtc/rtc-ds1685.c
-> @@ -658,7 +658,6 @@ ds1685_rtc_irq_handler(int irq, void *dev_id)
->  {
->  	struct platform_device *pdev = dev_id;
->  	struct ds1685_priv *rtc = platform_get_drvdata(pdev);
-> -	struct mutex *rtc_mutex;
->  	u8 ctrlb, ctrlc;
->  	unsigned long events = 0;
->  	u8 num_irqs = 0;
-> @@ -667,8 +666,7 @@ ds1685_rtc_irq_handler(int irq, void *dev_id)
->  	if (unlikely(!rtc))
->  		return IRQ_HANDLED;
->  
-> -	rtc_mutex = &rtc->dev->ops_lock;
-> -	mutex_lock(rtc_mutex);
-> +	rtc_lock(rtc->dev);
->  
->  	/* Ctrlb holds the interrupt-enable bits and ctrlc the flag bits. */
->  	ctrlb = rtc->read(rtc, RTC_CTRL_B);
-> @@ -713,7 +711,7 @@ ds1685_rtc_irq_handler(int irq, void *dev_id)
->  		}
->  	}
->  	rtc_update_irq(rtc->dev, num_irqs, events);
-> -	mutex_unlock(rtc_mutex);
-> +	rtc_unlock(rtc->dev);
->  
->  	return events ? IRQ_HANDLED : IRQ_NONE;
+>  drivers/power/supply/axp20x_usb_power.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
+> index 20817a49110b..02aba3da271a 100644
+> --- a/drivers/power/supply/axp20x_usb_power.c
+> +++ b/drivers/power/supply/axp20x_usb_power.c
+> @@ -711,20 +711,21 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+>                              struct_size(power, irqs, axp_data->num_irq_names),
+>                              GFP_KERNEL);
+>         if (!power)
+>                 return -ENOMEM;
+>
+>         platform_set_drvdata(pdev, power);
+>
+>         power->axp20x_id = axp_data->axp20x_id;
+>         power->regmap = axp20x->regmap;
+>         power->num_irqs = axp_data->num_irq_names;
+> +       INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
+
+Nit:
+Since axp20x_usb_power_poll_vbus() calls power_supply_changed() on
+power->supply, it would make more sense to have INIT_DELAYED_WORK()
+after devm_power_supply_register(), just so things are ordered correctly.
+In practice this has no effect on the end result, since by the time the
+interrupts are enabled the power supply would have been registered.
+
+ChenYu
+
+>         if (power->axp20x_id == AXP202_ID) {
+>                 /* Enable vbus valid checking */
+>                 ret = regmap_update_bits(power->regmap, AXP20X_VBUS_MON,
+>                                          AXP20X_VBUS_MON_VBUS_VALID,
+>                                          AXP20X_VBUS_MON_VBUS_VALID);
+>                 if (ret)
+>                         return ret;
+>
+>                 if (IS_ENABLED(CONFIG_AXP20X_ADC))
+> @@ -763,21 +764,20 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+>                 ret = devm_request_any_context_irq(&pdev->dev, power->irqs[i],
+>                                                    axp20x_usb_power_irq, 0,
+>                                                    DRVNAME, power);
+>                 if (ret < 0) {
+>                         dev_err(&pdev->dev, "Error requesting %s IRQ: %d\n",
+>                                 axp_data->irq_names[i], ret);
+>                         return ret;
+>                 }
+>         }
+>
+> -       INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
+>         if (axp20x_usb_vbus_needs_polling(power))
+>                 queue_delayed_work(system_power_efficient_wq, &power->vbus_detect, 0);
+>
+>         return 0;
 >  }
-> 
-
-Acked-by: Joshua Kinard <kumba@gentoo.org>
-
+>
+>  static int axp20x_usb_power_remove(struct platform_device *pdev)
+>  {
+>         struct axp20x_usb_power *power = platform_get_drvdata(pdev);
+>
+> --
+> 2.26.2
+>
