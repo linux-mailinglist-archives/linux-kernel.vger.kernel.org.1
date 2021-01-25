@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C0230374D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AC0303750
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389441AbhAZHZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:25:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S1732542AbhAZH1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730300AbhAYPpG (ORCPT
+        with ESMTP id S1730294AbhAYPpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 10:45:06 -0500
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235EEC061356
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:18:49 -0800 (PST)
-Received: by mail-oo1-xc31.google.com with SMTP id g46so2961489ooi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:18:49 -0800 (PST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3846C06121C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:18:57 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id w14so8559773pfi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:18:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tqHsUUcTKe2jpNesKI4Ls70gHgXQSHomQormGTtd+iw=;
-        b=imItcls200JtD5a68DthH3lsLf4uMZWQ91vTV4g7TYBg/St0bmxyqGgdbR2rjn+iIn
-         15IkSULWWDrZXcQisDmEKjoemcLL+w95s//mDlWuqpn1ypwxq18OsLoIHX0HT+7fnFBr
-         gHfE+lEYIN24Q9D9WVpXPXNpVAUg4x06GLOOSCxEdKzQgDNUvqlA9INcdgIqp+3SN48t
-         poqxp3XiVOn8u5prL2a86r9pykxuSIRUX6rqn25vYQ+ze2XDzkZIcwfhKgERUdL7a2RP
-         i9m7zEA33fA7c7FxLWieFyPQBNFvXBOchQ0DN2rc1uL5FLu2bF83xmYA+emTYMDrPDHn
-         6Lug==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MBPqVt45ITLJCzWFHUcX7mkPIKQDJQ44GECVzhqpWDs=;
+        b=G3e6OVQKtf9PYFBBqnu0AOCvBcNEwC9QfRFNv8xdM/x+24O80RY6a6VjcakPrZGva2
+         j91axmEy5T3xSWpNjPc50h9VLNVUyCGhCMMOeztEC9nRebK9mkBf4eodCu9x/fFclHwV
+         aaMyehgVVy8e5suSbAvWIVyCujylV6zlox9mkwSoJIvHUdPRjkWh7cIem6r8IXHnlsiC
+         fDMnY0yu+KrV675abtw29Zs/fxNa30ZXITPw/RDaZsuJhyo00M0gDviTwHJxUs1S8Qea
+         +waYdVHu2NtwrfHCPVk9YJYa/Yxm3VIsbObYn60XZXlGwlCWC0gmVDhXahraDDBxjsKV
+         ro/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tqHsUUcTKe2jpNesKI4Ls70gHgXQSHomQormGTtd+iw=;
-        b=OYRDki/yPT+b7wKAnVg5iJynLeayK1ev62yI53ItyC4Vx8mvwOPRYKFj8Faj1l/nmm
-         izZFdSuhV+7NOQg7+A60Azw0230evomXyDb2qz8R4uvVZxJsFUfshlYJcr5Trfvf6NVC
-         Y3oHWE51Rz2DfI1UQLLwnzx1CzvvO8xyC8ZadlyHJPqGNI/u50h088PNhTLKPtFKOzNL
-         9EAnWwXcqtSGuxllUd56lRjx2ERAf+DeAkBZneKgP5EZneauc2L9lcTz6MkeRc9jP+SU
-         x4Xr3pE6/rlZmfqORjId/oAUai7sjaMdt0l0B0jyOeYdbVoD9FdeGNb6vm1qLGIJE3vy
-         ggnA==
-X-Gm-Message-State: AOAM531j5H9cv2TuA1CLsEzMc1GYmKePx5VsJk3GOp92P7+6tJnCIWPN
-        VghW0OZa7lQg59mQpgACKVjO9A==
-X-Google-Smtp-Source: ABdhPJxhWtj7ijUayPT4NSsxAYdvO1VOqHaRxL5y+7iV9e5hW3l/lC2sNftCU/43hxqEuvMuSgiwdQ==
-X-Received: by 2002:a05:6820:22c:: with SMTP id j12mr815447oob.65.1611587928383;
-        Mon, 25 Jan 2021 07:18:48 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id m7sm3524169otq.33.2021.01.25.07.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 07:18:47 -0800 (PST)
-Date:   Mon, 25 Jan 2021 09:18:45 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        agross@kernel.org, mchehab@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: venus: core: Add sdm660 DT compatible and
- resource struct
-Message-ID: <YA7hVQVTXT554cKN@builder.lan>
-References: <20210115185252.333562-1-angelogioacchino.delregno@somainline.org>
- <20210115185252.333562-2-angelogioacchino.delregno@somainline.org>
- <2dc8a95f-110f-526f-18a8-6393e508c3a6@linaro.org>
- <eabc91cc-de96-08ef-756c-87fe43d6fadc@somainline.org>
- <cfc1998f-8d9b-5237-f286-7fdc69874b30@xs4all.nl>
- <40c38734-a69d-2314-c342-244ee5a0e6b1@somainline.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MBPqVt45ITLJCzWFHUcX7mkPIKQDJQ44GECVzhqpWDs=;
+        b=GKCXvjtkJdtUofjmAYGmIeNfngr9FfZ1lHj/aexhvBz6N4SQkObHuhWwUrvsBddwn6
+         zPcGku94nOzoqP3fYZuQJBu03ZRR/39vtC72S0NbOdu1FYLyXR6JtlfRmh/6faJq5kdR
+         cg4izSKkoaGOqo2jKWlMsjTian+u+awZc92hOFVCBRv6NtpaBoSqHDJz8bSuDfgD7m3E
+         pbcWYT3ncw3y4buK5E3s2tNxV/yUHhdAWmd00Vv6kzQDfkUpYjgcQL6+sPq+q4Dzz1fT
+         jAXuCz0em6US5KpAzdseRiQhNjatQ+CU/TUF/jdGyUcFfy4ZXGwV8xahketspY8dWMkx
+         I9/g==
+X-Gm-Message-State: AOAM531Hx0bvZ/YFjLWglO4i/GG4XyWoOoQYBfpSdmxzLFeGYDObMsDb
+        VcoDDgiLxLS56FvQYk0/6g7zCg==
+X-Google-Smtp-Source: ABdhPJzkgcc5IscHt+KOy83sg2XBvPAbFM956SP/fqdTFGtzqO73x70J+0XMfjEVsP8hhFlhwHdQoQ==
+X-Received: by 2002:a62:ed09:0:b029:1bb:3ffc:b7f9 with SMTP id u9-20020a62ed090000b02901bb3ffcb7f9mr923337pfh.52.1611587937426;
+        Mon, 25 Jan 2021 07:18:57 -0800 (PST)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id b67sm16883015pfa.140.2021.01.25.07.18.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 07:18:56 -0800 (PST)
+Subject: Re: linux-next: Signed-off-by missing for commit in the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210125204329.22a4964c@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8a6c48de-7136-97b1-1013-4b707afb5d06@kernel.dk>
+Date:   Mon, 25 Jan 2021 08:18:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40c38734-a69d-2314-c342-244ee5a0e6b1@somainline.org>
+In-Reply-To: <20210125204329.22a4964c@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 Jan 08:51 CST 2021, AngeloGioacchino Del Regno wrote:
-
-> Il 25/01/21 11:40, Hans Verkuil ha scritto:
-> > On 18/01/2021 18:45, AngeloGioacchino Del Regno wrote:
-> > > Il 18/01/21 18:21, Stanimir Varbanov ha scritto:
-> > > > > diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-[..]
-> > > > > +	.fwname = "qcom/venus-4.4/venus.mdt",
-[..]
-> > This patch can't be merged unless there is a corresponding firmware available
-> > in linux-firmware. Is the current 4.2 firmware in linux-firmware signed by
-> > Qualcomm? Can they provided 4.4 firmware as well?
-> > 
+On 1/25/21 2:43 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> If there is such issue, then maybe we should do "something" about it: I
-> would then propose to remove all references to fwname and just get this
-> done in DT, where every qcom board already specifies its own path for
-> its own firmware.
+> Commits
 > 
+>   36962a1e4186 ("io_uring: create common fixed_rsrc_data allocation routines")
+>   5bc97865b3b6 ("io_uring: create common fixed_rsrc_ref_node handling routines")
+>   b2315a2cda1f ("io_uring: generalize io_queue_rsrc_removal")
+>   a63c1259317d ("io_uring: rename file related variables to rsrc")
+> 
+> are missing a Signed-off-by from their author.
 
-We have the same problem with production devices on e.g. SDM845, where
-the firmware referenced by fw_name and present in linux-firmware won't
-work on any real devices.
+Fixed up, thanks.
 
-As such, providing means for specifying the firmware name in DT would be
-a very reasonable thing, and in line with how we handle this in other
-subsystems (using the firmware-name property, containing the full
-relative path).
+-- 
+Jens Axboe
 
-Regards,
-Bjorn
