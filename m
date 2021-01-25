@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FF130444B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57822304462
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389800AbhAZIU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:20:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
+        id S2390662AbhAZIyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:54:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726825AbhAYSmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74064206B2;
-        Mon, 25 Jan 2021 18:40:45 +0000 (UTC)
+        id S1730020AbhAYSqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:46:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0663C224BE;
+        Mon, 25 Jan 2021 18:45:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600045;
-        bh=7k2Jx5mwTCLd1j081OKwOqxCgp0APbM47qafwSfCgVA=;
+        s=korg; t=1611600325;
+        bh=RccCsQNVx20yPJGFohhUuMJI9emhkI0B9PKi9OPEaC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mrMJe5WZaNByOGpy2I7mcrY7MAT5c/JKuiwo/qdM299QGTSf24mRqHxoB2rGPoyzE
-         A9TM4ps9paJmotxa6ALPDeM5dmd3IoC5Oeti2Yzo07g/kMWvp9mFdl4eHXjlk6nE63
-         ndb45JXB/x+kKY+Cc0PTQbcq9Sxf4ixNwar/zL8w=
+        b=UmODwJo7c+/gxd/sGIGdBwIkqT9IL8jqun/M7BxPG1y5ZR2sno6u3GVYMIb4aY4yy
+         J+P8wd4FUGrrIFjBQEAekHg66YQasrN/mAGInSCKFCir9VNs48PspaAanWp96egFv7
+         Bb90JDAa3xX5TwArVLekOTzVRFi0BnTi6AuhqVtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.19 10/58] drm/atomic: put state on error path
-Date:   Mon, 25 Jan 2021 19:39:11 +0100
-Message-Id: <20210125183157.137181286@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 41/86] drm/nouveau/kms/nv50-: fix case where notifier buffer is at offset 0
+Date:   Mon, 25 Jan 2021 19:39:23 +0100
+Message-Id: <20210125183202.801047339@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
-References: <20210125183156.702907356@linuxfoundation.org>
+In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
+References: <20210125183201.024962206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-commit 43b67309b6b2a3c08396cc9b3f83f21aa529d273 upstream.
+[ Upstream commit caeb6ab899c3d36a74cda6e299c6e1c9c4e2a22e ]
 
-Put the state before returning error code.
+VRAM offset 0 is a valid address, triggered on GA102.
 
-Fixes: 44596b8c4750 ("drm/atomic: Unify conflicting encoder handling.")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210119121127.84127-1-bianpan2016@163.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_atomic_helper.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/nouveau/dispnv50/disp.c     | 4 ++--
+ drivers/gpu/drm/nouveau/dispnv50/disp.h     | 2 +-
+ drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/drm_atomic_helper.c
-+++ b/drivers/gpu/drm/drm_atomic_helper.c
-@@ -2938,7 +2938,7 @@ int drm_atomic_helper_set_config(struct
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+index ee2b1e1199e09..daa79d39201f9 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+@@ -132,7 +132,7 @@ nv50_dmac_destroy(struct nv50_dmac *dmac)
  
- 	ret = handle_conflicting_encoders(state, true);
+ int
+ nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
+-		 const s32 *oclass, u8 head, void *data, u32 size, u64 syncbuf,
++		 const s32 *oclass, u8 head, void *data, u32 size, s64 syncbuf,
+ 		 struct nv50_dmac *dmac)
+ {
+ 	struct nouveau_cli *cli = (void *)device->object.client;
+@@ -167,7 +167,7 @@ nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
  	if (ret)
--		return ret;
-+		goto fail;
+ 		return ret;
  
- 	ret = drm_atomic_commit(state);
+-	if (!syncbuf)
++	if (syncbuf < 0)
+ 		return 0;
  
+ 	ret = nvif_object_init(&dmac->base.user, 0xf0000000, NV_DMA_IN_MEMORY,
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.h b/drivers/gpu/drm/nouveau/dispnv50/disp.h
+index 7c41b0599d1ac..284068fa6d007 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.h
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.h
+@@ -70,7 +70,7 @@ struct nv50_dmac {
+ 
+ int nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
+ 		     const s32 *oclass, u8 head, void *data, u32 size,
+-		     u64 syncbuf, struct nv50_dmac *dmac);
++		     s64 syncbuf, struct nv50_dmac *dmac);
+ void nv50_dmac_destroy(struct nv50_dmac *);
+ 
+ u32 *evo_wait(struct nv50_dmac *, int nr);
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c b/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c
+index f7dbd965e4e72..b49a212af4d8d 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c
+@@ -68,7 +68,7 @@ wimmc37b_init_(const struct nv50_wimm_func *func, struct nouveau_drm *drm,
+ 	int ret;
+ 
+ 	ret = nv50_dmac_create(&drm->client.device, &disp->disp->object,
+-			       &oclass, 0, &args, sizeof(args), 0,
++			       &oclass, 0, &args, sizeof(args), -1,
+ 			       &wndw->wimm);
+ 	if (ret) {
+ 		NV_ERROR(drm, "wimm%04x allocation failed: %d\n", oclass, ret);
+-- 
+2.27.0
+
 
 
