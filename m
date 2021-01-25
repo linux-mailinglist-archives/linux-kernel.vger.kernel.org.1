@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF8230397F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EA5303981
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391383AbhAZJvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:51:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39874 "EHLO mail.kernel.org"
+        id S2390894AbhAZJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:52:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731194AbhAYSxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF1B2224D1;
-        Mon, 25 Jan 2021 18:52:23 +0000 (UTC)
+        id S1731199AbhAYSxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:53:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C58620679;
+        Mon, 25 Jan 2021 18:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600744;
-        bh=fgkYR3eZXan/liAaAqx8oy1KPKmgEInSuP5TaA0fjpc=;
+        s=korg; t=1611600747;
+        bh=J/MqnpdPnis/WjdqvfjzUhp8QDvAxGk/8m9Oo+CbvSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LtnyHqdf8wOjuNHNnvS4kc8it8yxOKIPi87Ih4eGiQh/s7L9sl0VPtCkKlqBfirML
-         CrlLvDY6umSQRS0OZoZmdCCzb/wy368GbttXDnPtnYUk7frUBTG8P8UpQBq8KFh6xw
-         aNG/SjD2GGHnWfkmygCcU6ErIvnSBddzz4Y9I+cg=
+        b=DQde5+mOuOcXTxNZAR9pOKpP9H6H6H8DA7ATtbso7Uma129czYKPlnEp5e38fj7S3
+         xdEqO1moXMyJ56DGYahbUZzMaNKL4yn1wPkKq6yrZcg1I4fY5mcnH83Iuy/ndosVjB
+         N7uFS0cDHpRUT4SvoPDKxvmiemAw4Cfl8ozv7sj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH 5.10 135/199] USB: gadget: dummy-hcd: Fix errors in port-reset handling
-Date:   Mon, 25 Jan 2021 19:39:17 +0100
-Message-Id: <20210125183221.918294406@linuxfoundation.org>
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: [PATCH 5.10 136/199] usb: udc: core: Use lock when write to soft_connect
+Date:   Mon, 25 Jan 2021 19:39:18 +0100
+Message-Id: <20210125183221.960781508@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,73 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit 6e6aa61d81194c01283880950df563b1b9abec46 upstream.
+commit c28095bc99073ddda65e4f31f6ae0d908d4d5cd8 upstream.
 
-Commit c318840fb2a4 ("USB: Gadget: dummy-hcd: Fix shift-out-of-bounds
-bug") messed up the way dummy-hcd handles requests to turn on the
-RESET port feature (I didn't notice that the original switch case
-ended with a fallthrough).  The call to set_link_state() was
-inadvertently removed, as was the code to set the USB_PORT_STAT_RESET
-flag when the speed is USB2.
+Use lock to guard against concurrent access for soft-connect/disconnect
+operations when writing to soft_connect sysfs.
 
-In addition, the original code never checked whether the port was
-connected before handling the port-reset request.  There was a check
-for the port being powered, but it was removed by that commit!  In
-practice this doesn't matter much because the kernel doesn't try to
-reset disconnected ports, but it's still bad form.
-
-This patch fixes these problems by changing the fallthrough to break,
-adding back in the missing set_link_state() call, setting the
-port-reset status flag, adding a port-is-connected test, and removing
-a redundant assignment statement.
-
-Fixes: c318840fb2a4 ("USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug")
-CC: <stable@vger.kernel.org>
+Fixes: 2ccea03a8f7e ("usb: gadget: introduce UDC Class")
+Cc: stable@vger.kernel.org
 Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20210113194510.GA1290698@rowland.harvard.edu
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Link: https://lore.kernel.org/r/338ea01fbd69b1985ef58f0f59af02c805ddf189.1610611437.git.Thinh.Nguyen@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/dummy_hcd.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/udc/core.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/gadget/udc/dummy_hcd.c
-+++ b/drivers/usb/gadget/udc/dummy_hcd.c
-@@ -2266,17 +2266,20 @@ static int dummy_hub_control(
- 			}
- 			fallthrough;
- 		case USB_PORT_FEAT_RESET:
-+			if (!(dum_hcd->port_status & USB_PORT_STAT_CONNECTION))
-+				break;
- 			/* if it's already enabled, disable */
- 			if (hcd->speed == HCD_USB3) {
--				dum_hcd->port_status = 0;
- 				dum_hcd->port_status =
- 					(USB_SS_PORT_STAT_POWER |
- 					 USB_PORT_STAT_CONNECTION |
- 					 USB_PORT_STAT_RESET);
--			} else
-+			} else {
- 				dum_hcd->port_status &= ~(USB_PORT_STAT_ENABLE
- 					| USB_PORT_STAT_LOW_SPEED
- 					| USB_PORT_STAT_HIGH_SPEED);
-+				dum_hcd->port_status |= USB_PORT_STAT_RESET;
-+			}
- 			/*
- 			 * We want to reset device status. All but the
- 			 * Self powered feature
-@@ -2288,7 +2291,8 @@ static int dummy_hub_control(
- 			 * interval? Is it still 50msec as for HS?
- 			 */
- 			dum_hcd->re_timeout = jiffies + msecs_to_jiffies(50);
--			fallthrough;
-+			set_link_state(dum_hcd);
-+			break;
- 		case USB_PORT_FEAT_C_CONNECTION:
- 		case USB_PORT_FEAT_C_RESET:
- 		case USB_PORT_FEAT_C_ENABLE:
+--- a/drivers/usb/gadget/udc/core.c
++++ b/drivers/usb/gadget/udc/core.c
+@@ -1532,10 +1532,13 @@ static ssize_t soft_connect_store(struct
+ 		struct device_attribute *attr, const char *buf, size_t n)
+ {
+ 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
++	ssize_t			ret;
+ 
++	mutex_lock(&udc_lock);
+ 	if (!udc->driver) {
+ 		dev_err(dev, "soft-connect without a gadget driver\n");
+-		return -EOPNOTSUPP;
++		ret = -EOPNOTSUPP;
++		goto out;
+ 	}
+ 
+ 	if (sysfs_streq(buf, "connect")) {
+@@ -1546,10 +1549,14 @@ static ssize_t soft_connect_store(struct
+ 		usb_gadget_udc_stop(udc);
+ 	} else {
+ 		dev_err(dev, "unsupported command '%s'\n", buf);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
+-	return n;
++	ret = n;
++out:
++	mutex_unlock(&udc_lock);
++	return ret;
+ }
+ static DEVICE_ATTR_WO(soft_connect);
+ 
 
 
