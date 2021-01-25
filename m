@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEB63038F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1703038F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:25:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbhAZJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:25:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36122 "EHLO mail.kernel.org"
+        id S2389966AbhAZJYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:24:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731004AbhAYStH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:49:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED764224D4;
-        Mon, 25 Jan 2021 18:48:21 +0000 (UTC)
+        id S1730924AbhAYStA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:49:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C028620758;
+        Mon, 25 Jan 2021 18:48:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600502;
-        bh=tXLQSIHnS4d+/iqfYlvP75/xWHWSLHLa+wtd3ubTVM0=;
+        s=korg; t=1611600525;
+        bh=UOqp19TyeTSMYkkUvVfDI2f3oeJjYUfYWfIoj8Nh5D4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oa/WgvPQ649HzzgPanJEatfW80v5R6Nih16jxx38qVDsRDmtEAXklThUMIcxYZ6P1
-         CAX09zUPhSvRuatAgy0I+ZjkC0vveQGD/Ryx/PvaS2RUMP1mLPSgxGCC4AIGR0dLhW
-         6XNZcGsJ05M8/sD8dMMkfnvbMdkxCzrClyOAKtEc=
+        b=rn2zc3CnsgyZ5LD1gq14Zpry3EwUTrRM+8CXLYhtADmabpSStiITpSsFi8x0pj/AG
+         UgKV+qf7ggfqbklIXTarK9CPR3I7CcKFHaZU3+wyTpLzBTh6x8pYSMXx0vO2jhc2Zb
+         t3VdsyxB0q1sU8lPIFFxvZ5YDzPONrUYMOtW8tHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 040/199] x86/hyperv: Fix kexec panic/hang issues
-Date:   Mon, 25 Jan 2021 19:37:42 +0100
-Message-Id: <20210125183217.936237180@linuxfoundation.org>
+        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 048/199] riscv: Enable interrupts during syscalls with M-Mode
+Date:   Mon, 25 Jan 2021 19:37:50 +0100
+Message-Id: <20210125183218.282312736@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -40,135 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Damien Le Moal <damien.lemoal@wdc.com>
 
-[ Upstream commit dfe94d4086e40e92b1926bddcefa629b791e9b28 ]
+[ Upstream commit 643437b996bac9267785e0bd528332e2d5811067 ]
 
-Currently the kexec kernel can panic or hang due to 2 causes:
+When running is M-Mode (no MMU config), MPIE does not get set. This
+results in all syscalls being executed with interrupts disabled as
+handle_exception never sets SR_IE as it always sees SR_PIE being
+cleared. Fix this by always force enabling interrupts in
+handle_syscall when CONFIG_RISCV_M_MODE is enabled.
 
-1) hv_cpu_die() is not called upon kexec, so the hypervisor corrupts the
-old VP Assist Pages when the kexec kernel runs. The same issue is fixed
-for hibernation in commit 421f090c819d ("x86/hyperv: Suspend/resume the
-VP assist page for hibernation"). Now fix it for kexec.
-
-2) hyperv_cleanup() is called too early. In the kexec path, the other CPUs
-are stopped in hv_machine_shutdown() -> native_machine_shutdown(), so
-between hv_kexec_handler() and native_machine_shutdown(), the other CPUs
-can still try to access the hypercall page and cause panic. The workaround
-"hv_hypercall_pg = NULL;" in hyperv_cleanup() is unreliabe. Move
-hyperv_cleanup() to a better place.
-
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Link: https://lore.kernel.org/r/20201222065541.24312-1-decui@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_init.c       |  4 ++++
- arch/x86/include/asm/mshyperv.h |  2 ++
- arch/x86/kernel/cpu/mshyperv.c  | 18 ++++++++++++++++++
- drivers/hv/vmbus_drv.c          |  2 --
- 4 files changed, 24 insertions(+), 2 deletions(-)
+ arch/riscv/kernel/entry.S | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 6fb8cb7b9bcc6..6375967a8244d 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -16,6 +16,7 @@
- #include <asm/hyperv-tlfs.h>
- #include <asm/mshyperv.h>
- #include <asm/idtentry.h>
-+#include <linux/kexec.h>
- #include <linux/version.h>
- #include <linux/vmalloc.h>
- #include <linux/mm.h>
-@@ -26,6 +27,8 @@
- #include <linux/syscore_ops.h>
- #include <clocksource/hyperv_timer.h>
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 835e45bb59c40..744f3209c48d0 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -155,6 +155,15 @@ skip_context_tracking:
+ 	tail do_trap_unknown
  
-+int hyperv_init_cpuhp;
-+
- void *hv_hypercall_pg;
- EXPORT_SYMBOL_GPL(hv_hypercall_pg);
- 
-@@ -424,6 +427,7 @@ void __init hyperv_init(void)
- 
- 	register_syscore_ops(&hv_syscore_ops);
- 
-+	hyperv_init_cpuhp = cpuhp;
- 	return;
- 
- remove_cpuhp_state:
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index ffc289992d1b0..30f76b9668579 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -74,6 +74,8 @@ static inline void hv_disable_stimer0_percpu_irq(int irq) {}
- 
- 
- #if IS_ENABLED(CONFIG_HYPERV)
-+extern int hyperv_init_cpuhp;
-+
- extern void *hv_hypercall_pg;
- extern void  __percpu  **hyperv_pcpu_input_arg;
- 
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 05ef1f4550cbd..6cc50ab07bded 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -135,14 +135,32 @@ static void hv_machine_shutdown(void)
- {
- 	if (kexec_in_progress && hv_kexec_handler)
- 		hv_kexec_handler();
-+
+ handle_syscall:
++#ifdef CONFIG_RISCV_M_MODE
 +	/*
-+	 * Call hv_cpu_die() on all the CPUs, otherwise later the hypervisor
-+	 * corrupts the old VP Assist Pages and can crash the kexec kernel.
++	 * When running is M-Mode (no MMU config), MPIE does not get set.
++	 * As a result, we need to force enable interrupts here because
++	 * handle_exception did not do set SR_IE as it always sees SR_PIE
++	 * being cleared.
 +	 */
-+	if (kexec_in_progress && hyperv_init_cpuhp > 0)
-+		cpuhp_remove_state(hyperv_init_cpuhp);
-+
-+	/* The function calls stop_other_cpus(). */
- 	native_machine_shutdown();
-+
-+	/* Disable the hypercall page when there is only 1 active CPU. */
-+	if (kexec_in_progress)
-+		hyperv_cleanup();
- }
- 
- static void hv_machine_crash_shutdown(struct pt_regs *regs)
- {
- 	if (hv_crash_handler)
- 		hv_crash_handler(regs);
-+
-+	/* The function calls crash_smp_send_stop(). */
- 	native_machine_crash_shutdown(regs);
-+
-+	/* Disable the hypercall page when there is only 1 active CPU. */
-+	hyperv_cleanup();
- }
- #endif /* CONFIG_KEXEC_CORE */
- #endif /* CONFIG_HYPERV */
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 4fad3e6745e53..a5a402e776c77 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -2542,7 +2542,6 @@ static void hv_kexec_handler(void)
- 	/* Make sure conn_state is set as hv_synic_cleanup checks for it */
- 	mb();
- 	cpuhp_remove_state(hyperv_cpuhp_online);
--	hyperv_cleanup();
- };
- 
- static void hv_crash_handler(struct pt_regs *regs)
-@@ -2558,7 +2557,6 @@ static void hv_crash_handler(struct pt_regs *regs)
- 	cpu = smp_processor_id();
- 	hv_stimer_cleanup(cpu);
- 	hv_synic_disable_regs(cpu);
--	hyperv_cleanup();
- };
- 
- static int hv_synic_suspend(void)
++	csrs CSR_STATUS, SR_IE
++#endif
+ #if defined(CONFIG_TRACE_IRQFLAGS) || defined(CONFIG_CONTEXT_TRACKING)
+ 	/* Recover a0 - a7 for system calls */
+ 	REG_L a0, PT_A0(sp)
 -- 
 2.27.0
 
