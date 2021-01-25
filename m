@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278893038B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45603038BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390823AbhAZJJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:09:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34318 "EHLO mail.kernel.org"
+        id S2390958AbhAZJL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:11:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726232AbhAYSrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:47:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC0B2063A;
-        Mon, 25 Jan 2021 18:46:48 +0000 (UTC)
+        id S1726278AbhAYSre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:47:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 490FD20665;
+        Mon, 25 Jan 2021 18:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600409;
-        bh=UT+rl+2+0NAavv/BPNEVV9SwG2eshTHv/Vezhk/VX58=;
+        s=korg; t=1611600411;
+        bh=rhdd9zoGwTGc+vAf2PO+qrNMwyqttEzin2sdVGvKGeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=14ceTkya8o8TmlpJHHDGGjJHg0y2P9FE+aS7qOH9c97CalhivU0RaUE7DdsPHBJCg
-         2gRo9IrKzqSNxeQ2vu15Ap2l0AXw8bjbg1pf190HbCBtqVT6JShIqXAJbNb57IKDg7
-         xHS7wtDP9DZoTJcX7J5QDeKDlBEfCQLA+NcgjOcY=
+        b=xMIW16PItlgyy5wYyRq8XR0rAeXB4As0eC8ee67qcom/aI2X+kS5AECXLt/AVSAkR
+         22u02BJ6C4GDFJYLh1nBYNNhrITP1bAl8gO0rQvFEC6tCFeCdkf69GtPOpJKoKSh8T
+         8df1sFkJVFztWWZ2XeB/zNIeZ3e9DJjW1Thv9h9I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matteo Croce <mcroce@microsoft.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 78/86] ipv6: create multicast route with RTPROT_KERNEL
-Date:   Mon, 25 Jan 2021 19:40:00 +0100
-Message-Id: <20210125183204.351085977@linuxfoundation.org>
+Subject: [PATCH 5.4 79/86] net_sched: avoid shift-out-of-bounds in tcindex_set_parms()
+Date:   Mon, 25 Jan 2021 19:40:01 +0100
+Message-Id: <20210125183204.395227355@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -39,40 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit a826b04303a40d52439aa141035fca5654ccaccd upstream.
+commit bcd0cf19ef8258ac31b9a20248b05c15a1f4b4b0 upstream.
 
-The ff00::/8 multicast route is created without specifying the fc_protocol
-field, so the default RTPROT_BOOT value is used:
+tc_index being 16bit wide, we need to check that TCA_TCINDEX_SHIFT
+attribute is not silly.
 
-  $ ip -6 -d route
-  unicast ::1 dev lo proto kernel scope global metric 256 pref medium
-  unicast fe80::/64 dev eth0 proto kernel scope global metric 256 pref medium
-  unicast ff00::/8 dev eth0 proto boot scope global metric 256 pref medium
-
-As the documentation says, this value identifies routes installed during
-boot, but the route is created when interface is set up.
-Change the value to RTPROT_KERNEL which is a better value.
+UBSAN: shift-out-of-bounds in net/sched/cls_tcindex.c:260:29
+shift exponent 255 is too large for 32-bit type 'int'
+CPU: 0 PID: 8516 Comm: syz-executor228 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ valid_perfect_hash net/sched/cls_tcindex.c:260 [inline]
+ tcindex_set_parms.cold+0x1b/0x215 net/sched/cls_tcindex.c:425
+ tcindex_change+0x232/0x340 net/sched/cls_tcindex.c:546
+ tc_new_tfilter+0x13fb/0x21b0 net/sched/cls_api.c:2127
+ rtnetlink_rcv_msg+0x8b6/0xb80 net/core/rtnetlink.c:5555
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
 Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Link: https://lore.kernel.org/r/20210114185229.1742255-1-eric.dumazet@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv6/addrconf.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/sched/cls_tcindex.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -2454,6 +2454,7 @@ static void addrconf_add_mroute(struct n
- 		.fc_flags = RTF_UP,
- 		.fc_type = RTN_UNICAST,
- 		.fc_nlinfo.nl_net = dev_net(dev),
-+		.fc_protocol = RTPROT_KERNEL,
- 	};
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -366,9 +366,13 @@ tcindex_set_parms(struct net *net, struc
+ 	if (tb[TCA_TCINDEX_MASK])
+ 		cp->mask = nla_get_u16(tb[TCA_TCINDEX_MASK]);
  
- 	ipv6_addr_set(&cfg.fc_dst, htonl(0xFF000000), 0, 0, 0);
+-	if (tb[TCA_TCINDEX_SHIFT])
++	if (tb[TCA_TCINDEX_SHIFT]) {
+ 		cp->shift = nla_get_u32(tb[TCA_TCINDEX_SHIFT]);
+-
++		if (cp->shift > 16) {
++			err = -EINVAL;
++			goto errout;
++		}
++	}
+ 	if (!cp->hash) {
+ 		/* Hash not specified, use perfect hash if the upper limit
+ 		 * of the hashing index is below the threshold.
 
 
