@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41C530382D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA19C30382F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390331AbhAZIjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:39:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
+        id S2390370AbhAZIji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:39:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728662AbhAYSnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:43:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA112074B;
-        Mon, 25 Jan 2021 18:43:14 +0000 (UTC)
+        id S1728666AbhAYSnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:43:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD392083E;
+        Mon, 25 Jan 2021 18:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600195;
-        bh=Mv2rqlaJW1BoCRBzU6hB7XGeAPeXtLJmXqqtg6DUfBY=;
+        s=korg; t=1611600198;
+        bh=Q4um/mPmFlhHEcZTIbeme6olhiiq6rbGgcy8LRTLgUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LfAbpqdeRfWHwoecVvzG7+ZJnX7li0cnhBgSUEjX0I8aAkLxOnm3EOjHA3/JjvAjl
-         6xS/qLYer6GBSkCfHoPgzZOw6Kbe9EE5bmmqslXhkE/Yti5fv7F0wMci8kIWLEyCe4
-         YCtO6p+a88so0mQ2a2Wo+IyvyXncma7fc6MiL/7Q=
+        b=OuxqJ8Q4SFGXMsnMub1YQgEoy7TfXYwy0P6/ZaevGks5FVmgT9LleY4coXKyjzRv2
+         rEkPl8C91W+35Oay1ARt28zbsMQHLieNQO7D4yvaM1RC4yIo7VuaklJhtESWSd5VMD
+         s02338AbYmYmGTN14KHhL6+dweVDqAq6FgLuVjfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: [PATCH 5.4 01/86] i2c: bpmp-tegra: Ignore unknown I2C_M flags
-Date:   Mon, 25 Jan 2021 19:38:43 +0100
-Message-Id: <20210125183201.091280052@linuxfoundation.org>
+        stable@vger.kernel.org, Moody Salem <moody@uniswap.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.4 02/86] platform/x86: i2c-multi-instantiate: Dont create platform device for INT3515 ACPI nodes
+Date:   Mon, 25 Jan 2021 19:38:44 +0100
+Message-Id: <20210125183201.138705731@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,34 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikko Perttunen <mperttunen@nvidia.com>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit bc1c2048abbe3c3074b4de91d213595c57741a6b upstream.
+commit 9bba96275576da0cf78ede62aeb2fc975ed8a32d upstream.
 
-In order to not to start returning errors when new I2C_M flags are
-added, change behavior to just ignore all flags that we don't know
-about. This includes the I2C_M_DMA_SAFE flag that already exists but
-causes -EINVAL to be returned for valid transactions.
+There are several reports about the tps6598x causing
+interrupt flood on boards with the INT3515 ACPI node, which
+then causes instability. There appears to be several
+problems with the interrupt. One problem is that the
+I2CSerialBus resources do not always map to the Interrupt
+resource with the same index, but that is not the only
+problem. We have not been able to come up with a solution
+for all the issues, and because of that disabling the device
+for now.
 
-Cc: stable@vger.kernel.org # v4.19+
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+The PD controller on these platforms is autonomous, and the
+purpose for the driver is primarily to supply status to the
+userspace, so this will not affect any functionality.
+
+Reported-by: Moody Salem <moody@uniswap.org>
+Fixes: a3dd034a1707 ("ACPI / scan: Create platform device for INT3515 ACPI nodes")
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1883511
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Link: https://lore.kernel.org/r/20201223143644.33341-1-heikki.krogerus@linux.intel.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/i2c/busses/i2c-tegra-bpmp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/i2c-multi-instantiate.c |   31 ++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
---- a/drivers/i2c/busses/i2c-tegra-bpmp.c
-+++ b/drivers/i2c/busses/i2c-tegra-bpmp.c
-@@ -80,7 +80,7 @@ static int tegra_bpmp_xlate_flags(u16 fl
- 		flags &= ~I2C_M_RECV_LEN;
- 	}
+--- a/drivers/platform/x86/i2c-multi-instantiate.c
++++ b/drivers/platform/x86/i2c-multi-instantiate.c
+@@ -166,13 +166,29 @@ static const struct i2c_inst_data bsg215
+ 	{}
+ };
  
--	return (flags != 0) ? -EINVAL : 0;
-+	return 0;
- }
+-static const struct i2c_inst_data int3515_data[]  = {
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
+-	{}
+-};
++/*
++ * Device with _HID INT3515 (TI PD controllers) has some unresolved interrupt
++ * issues. The most common problem seen is interrupt flood.
++ *
++ * There are at least two known causes. Firstly, on some boards, the
++ * I2CSerialBus resource index does not match the Interrupt resource, i.e. they
++ * are not one-to-one mapped like in the array below. Secondly, on some boards
++ * the IRQ line from the PD controller is not actually connected at all. But the
++ * interrupt flood is also seen on some boards where those are not a problem, so
++ * there are some other problems as well.
++ *
++ * Because of the issues with the interrupt, the device is disabled for now. If
++ * you wish to debug the issues, uncomment the below, and add an entry for the
++ * INT3515 device to the i2c_multi_instance_ids table.
++ *
++ * static const struct i2c_inst_data int3515_data[]  = {
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
++ *	{ }
++ * };
++ */
  
- /**
+ /*
+  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+@@ -181,7 +197,6 @@ static const struct i2c_inst_data int351
+ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)bsg1160_data },
+ 	{ "BSG2150", (unsigned long)bsg2150_data },
+-	{ "INT3515", (unsigned long)int3515_data },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
 
 
