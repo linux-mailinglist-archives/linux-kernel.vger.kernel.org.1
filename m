@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BADE303637
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3261D30363B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389135AbhAZGE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:04:59 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2409 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728409AbhAYMvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:51:08 -0500
-Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DPV3K404jz67gKV;
-        Mon, 25 Jan 2021 20:46:05 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 25 Jan 2021 13:50:25 +0100
-Received: from [10.47.2.25] (10.47.2.25) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 25 Jan
- 2021 12:50:24 +0000
-Subject: Re: [PATCH 0/4] perf vendor events arm64: Some tidy-up/refactoring
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
-        <kjain@linux.ibm.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <james.clark@arm.com>, <nakamura.shun@jp.fujitsu.com>,
+        id S1726506AbhAZGFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:05:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728410AbhAYMvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:51:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D288122242;
+        Mon, 25 Jan 2021 12:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611579030;
+        bh=Mxhwg+UDKM8wuGIvGKD1s6VRf2UKfTSt1jkq1w6O030=;
+        h=From:To:Cc:Subject:Date:From;
+        b=H8ciKPeeEysLON81tT/e2uHWJvzVCLpZuUpTJbOFjQ/tokbNe45yK1zo/oD6z4NO/
+         0pU82f2OSww8AjuQ/kQ6UAtSVO+A+21Ty1FGgZyH5nhZIzDuZ2V0WksokAjMDPhqFc
+         32XX7awtIvVZu2bLEBZekD4A00/zxpG2tu5ECi3StnfA+zaLdgv7rDDGt8HTcj4xVw
+         SRnpZmheAnDIqdVmdIS97COHcEDe5Byj5A3nSr48wUQtjqHNmW5sfYzD0jWZNHpoBq
+         5oD1rvLbHLnwYGhnp9rye5y+H+tjWq2p9gfzslQ6RorM9gwQhLlzmd1XigRBbuB2D/
+         BqQK1XC6x7REg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        "Mathieu Poirier" <mathieu.poirier@linaro.org>
-References: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <a8533b41-ef64-4584-4a65-ca605d6e4acb@huawei.com>
-Date:   Mon, 25 Jan 2021 12:49:04 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: kfence: fix header inclusion
+Date:   Mon, 25 Jan 2021 13:50:20 +0100
+Message-Id: <20210125125025.102381-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.2.25]
-X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/2021 11:53, John Garry wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-+ Missed reviewers for 
-https://lore.kernel.org/lkml/1611575600-2440-1-git-send-email-john.garry@huawei.com/T/#u
+Randconfig builds started warning about a missing function declaration
+after set_memory_valid() is moved to a new file:
 
-> There is much event duplication in the common and uarch events for A76
-> and Ampere eMag support, so factor out into a common JSON.
-> 
-> Since the wording for events may differ between CPU datasheet and
-> the architecture reference manual, the current wording is kept. This
-> is unless there are minor differences. In addition, event names are
-> renamed to be same as architecture reference manual, to keep commonality.
-> 
-> Also a minor fix is included for the Ampere eMag JSON.
-> 
-> John Garry (4):
->    perf vendor events arm64: Fix Ampere eMag event typo
->    perf vendor events arm64: Add common and uarch event JSON
->    perf vendor events arm64: Reference common and uarch events for Ampere
->      eMag
->    perf vendor events arm64: Reference common and uarch events for A76
-> 
->   .../arch/arm64/ampere/emag/branch.json        |   8 +-
->   .../arch/arm64/ampere/emag/bus.json           |   5 +-
->   .../arch/arm64/ampere/emag/cache.json         |  58 +---
->   .../arch/arm64/ampere/emag/clock.json         |   4 +-
->   .../arch/arm64/ampere/emag/exception.json     |  10 +-
->   .../arch/arm64/ampere/emag/instruction.json   |  34 +--
->   .../arch/arm64/ampere/emag/memory.json        |  11 +-
->   .../arch/arm64/arm/cortex-a76-n1/branch.json  |  12 +-
->   .../arch/arm64/arm/cortex-a76-n1/bus.json     |  19 +-
->   .../arch/arm64/arm/cortex-a76-n1/cache.json   | 118 +++------
->   .../arm64/arm/cortex-a76-n1/exception.json    |  10 +-
->   .../arm64/arm/cortex-a76-n1/instruction.json  |  45 +---
->   .../arch/arm64/arm/cortex-a76-n1/memory.json  |   6 +-
->   .../arch/arm64/arm/cortex-a76-n1/other.json   |   4 +-
->   .../arm64/arm/cortex-a76-n1/pipeline.json     |  12 +-
->   .../arm64/armv8-common-and-microarch.json     | 248 ++++++++++++++++++
->   16 files changed, 356 insertions(+), 248 deletions(-)
->   create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
-> 
+In file included from mm/kfence/core.c:26:
+arch/arm64/include/asm/kfence.h:17:2: error: implicit declaration of function 'set_memory_valid' [-Werror,-Wimplicit-function-declaration]
+
+Include the correct header again.
+
+Fixes: 9e18ec3cfabd ("set_memory: allow querying whether set_direct_map_*() is actually enabled")
+Fixes: 204555ff8bd6 ("arm64, kfence: enable KFENCE for ARM64")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm64/include/asm/kfence.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/kfence.h b/arch/arm64/include/asm/kfence.h
+index d061176d57ea..aa855c6a0ae6 100644
+--- a/arch/arm64/include/asm/kfence.h
++++ b/arch/arm64/include/asm/kfence.h
+@@ -8,7 +8,7 @@
+ #ifndef __ASM_KFENCE_H
+ #define __ASM_KFENCE_H
+ 
+-#include <asm/cacheflush.h>
++#include <asm/set_memory.h>
+ 
+ static inline bool arch_kfence_init_pool(void) { return true; }
+ 
+-- 
+2.29.2
 
