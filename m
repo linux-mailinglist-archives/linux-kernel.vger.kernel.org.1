@@ -2,81 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01FF30229E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 09:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C4E3022CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 09:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbhAYH6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 02:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727206AbhAYH4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 02:56:41 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1D2C061786;
-        Sun, 24 Jan 2021 23:55:46 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id 19so11682723qkh.3;
-        Sun, 24 Jan 2021 23:55:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HQfuLGY7+zwlDZhEg0OVcwQeT0assScp36yMfVSg3oQ=;
-        b=CDAsSmmGGLHyrV7qmnqiaXRBNktT5aiE2Jq9jbYyXc7uncggROhQvZ9ZJmR4Xe452t
-         y07O4FvZ287NIE/bjUM8hPOi2Zz5IZMbOXSQag6gNMbP0qkP7BibYQ74df/1mkbD1Lwj
-         HdhJ805awRUoBSdzXnUjapwjeJj0wXidD4eU9jd9S1xy7iVzYheMKrjILck3v3INyKfn
-         KbYeizeCSpXdGQt45JdkGkmQmQIaIsCuvcNLbxk0/iFguutGDeM+5MC9XU0P0k+Fziaw
-         KCMxFOH0cAuovZnTFFADL0OsVZdV6a2QjE+3ehozQLqR06Ydtz0u1CWJttjwDihEl7y0
-         ZoXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HQfuLGY7+zwlDZhEg0OVcwQeT0assScp36yMfVSg3oQ=;
-        b=oT/1wrnFZY3Du6HUScwQlt+5z8VOhRSx6O1EPFVugVgXzSelkVMioiS+KXA8jSUQG5
-         rugYyKIL4DCr378CxylDMcg7fN+dQ1G92mAu7xzqvBKYIqmdZ6Bp1F7m+OmapBI8gSth
-         nVSTALIFj/WttcbpZIxapucOyQ+LXGi1XtIf9PORApHIzGv09X86FrbmakuDn3O9p8x5
-         BHjlKMhLQ2v6kU0RE0Yly9uH8utZRupdwklHQoEMIw4VxNAjPvymWIMIPFKBCixRmztX
-         9U98SpyOjjD9dV+LeQgqa3bsPOz2M+DyARCLEIlLDsDF0tg14FSzLbU+Jqe2VaLKzsZv
-         RhqA==
-X-Gm-Message-State: AOAM531aOCW7MYTnP7qC3UtSP9stBUO/XGuEgp2LQhrwk+mnmh54fbxL
-        qgWVq+5/VgVqFZhb5b4j6EsaSqLgvHzrxMjKpGFgn30yfNM=
-X-Google-Smtp-Source: ABdhPJwmg2MPDDk4q2QlROEE2AVJmZ/FfSYRqacNcDz1SW3eQdSbnXPO0bwxNnEesXXxgl+uGB6FqbLDg5c2GZMGRPQ=
-X-Received: by 2002:a05:620a:46:: with SMTP id t6mr1483533qkt.108.1611561345329;
- Sun, 24 Jan 2021 23:55:45 -0800 (PST)
+        id S1727190AbhAYHNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 02:13:22 -0500
+Received: from mga03.intel.com ([134.134.136.65]:35221 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727025AbhAYGle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 01:41:34 -0500
+IronPort-SDR: nPyJQ9qc9pPrOL4dnWEHeA3bKLVU9K9zbvr4s4A/V3FGDnMhJYv8+HKLAgoJxJxGq19y49wRxn
+ 86x36vyYSr4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="179751939"
+X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
+   d="scan'208";a="179751939"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 22:39:47 -0800
+IronPort-SDR: x1pQtgl3vcIHAqaNMGPNforbqej7B9oB3xCmQyOi3Cxrqt5aXqhbxSa/ieMbla22NotuJZShiL
+ NCXbB8TkfwQQ==
+X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
+   d="scan'208";a="429144312"
+Received: from ymachlev-mobl1.ger.corp.intel.com (HELO outtakka.ger.corp.intel.com) ([10.214.244.152])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 22:39:44 -0800
+From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
+To:     kpsingh@kernel.org
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, kpsingh@google.com,
+        linux-kernel@vger.kernel.org, mikko.ylinen@linux.intel.com
+Subject: [PATCH v2] bpf: Drop disabled LSM hooks from the sleepable set
+Date:   Mon, 25 Jan 2021 08:39:36 +0200
+Message-Id: <20210125063936.89365-1-mikko.ylinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <CACYkzJ5i6DNxY3D3SqiO_LO2HBbA-EgPFdK8ZBcFNmTVWweucg@mail.gmail.com>
+References: <CACYkzJ5i6DNxY3D3SqiO_LO2HBbA-EgPFdK8ZBcFNmTVWweucg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210122212229.17072-1-richard@nod.at> <20210122212229.17072-4-richard@nod.at>
- <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com> <cca6ac4f-4739-76be-9b48-b3643017a556@huawei.com>
-In-Reply-To: <cca6ac4f-4739-76be-9b48-b3643017a556@huawei.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Mon, 25 Jan 2021 08:55:34 +0100
-Message-ID: <CAFLxGvyHL5AMWcfLQg2fS6Nbp255yjve5nJ83ELYHnPhKp6Wxw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
-To:     Zhihao Cheng <chengzhihao1@huawei.com>
-Cc:     Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
-        David Gstir <david@sigma-star.at>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 2:12 AM Zhihao Cheng <chengzhihao1@huawei.com> wrot=
-e:
->
-> =E5=9C=A8 2021/1/23 10:45, Zhihao Cheng =E5=86=99=E9=81=93:
->
-> >> @@ -430,6 +433,7 @@ static int do_tmpfile(struct inode *dir, struct
-> >> dentry *dentry,
-> >>       return 0;
-> >>   out_cancel:
-> Still one question:
-> > Does this need a judgment? Like this,
+Some networking and keys LSM hooks are conditionally enabled
+and when building the new sleepable BPF LSM hooks with those
+LSM hooks disabled, the following build error occurs:
 
-The idea was that in the !whiteout case, sz_change is always 0.
+BTFIDS  vmlinux
+FAILED unresolved symbol bpf_lsm_socket_socketpair
 
---=20
-Thanks,
-//richard
+To fix the error, conditionally add the relevant networking/keys
+LSM hooks to the sleepable set.
+
+Fixes: 423f16108c9d8 ("bpf: Augment the set of sleepable LSM hooks")
+Signed-off-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
+---
+ kernel/bpf/bpf_lsm.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index 70e5e0b6d69d..1622a44d1617 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -149,7 +149,11 @@ BTF_ID(func, bpf_lsm_file_ioctl)
+ BTF_ID(func, bpf_lsm_file_lock)
+ BTF_ID(func, bpf_lsm_file_open)
+ BTF_ID(func, bpf_lsm_file_receive)
++
++#ifdef CONFIG_SECURITY_NETWORK
+ BTF_ID(func, bpf_lsm_inet_conn_established)
++#endif /* CONFIG_SECURITY_NETWORK */
++
+ BTF_ID(func, bpf_lsm_inode_create)
+ BTF_ID(func, bpf_lsm_inode_free_security)
+ BTF_ID(func, bpf_lsm_inode_getattr)
+@@ -166,7 +170,11 @@ BTF_ID(func, bpf_lsm_inode_symlink)
+ BTF_ID(func, bpf_lsm_inode_unlink)
+ BTF_ID(func, bpf_lsm_kernel_module_request)
+ BTF_ID(func, bpf_lsm_kernfs_init_security)
++
++#ifdef CONFIG_KEYS
+ BTF_ID(func, bpf_lsm_key_free)
++#endif /* CONFIG_KEYS */
++
+ BTF_ID(func, bpf_lsm_mmap_file)
+ BTF_ID(func, bpf_lsm_netlink_send)
+ BTF_ID(func, bpf_lsm_path_notify)
+@@ -181,6 +189,8 @@ BTF_ID(func, bpf_lsm_sb_show_options)
+ BTF_ID(func, bpf_lsm_sb_statfs)
+ BTF_ID(func, bpf_lsm_sb_umount)
+ BTF_ID(func, bpf_lsm_settime)
++
++#ifdef CONFIG_SECURITY_NETWORK
+ BTF_ID(func, bpf_lsm_socket_accept)
+ BTF_ID(func, bpf_lsm_socket_bind)
+ BTF_ID(func, bpf_lsm_socket_connect)
+@@ -195,6 +205,8 @@ BTF_ID(func, bpf_lsm_socket_recvmsg)
+ BTF_ID(func, bpf_lsm_socket_sendmsg)
+ BTF_ID(func, bpf_lsm_socket_shutdown)
+ BTF_ID(func, bpf_lsm_socket_socketpair)
++#endif /* CONFIG_SECURITY_NETWORK */
++
+ BTF_ID(func, bpf_lsm_syslog)
+ BTF_ID(func, bpf_lsm_task_alloc)
+ BTF_ID(func, bpf_lsm_task_getsecid)
+-- 
+2.17.1
+
