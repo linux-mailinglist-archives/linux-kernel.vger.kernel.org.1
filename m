@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA19C30382F
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0E330382E
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390370AbhAZIji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:39:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58162 "EHLO mail.kernel.org"
+        id S2390346AbhAZIje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:39:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728666AbhAYSnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728685AbhAYSnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:43:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD392083E;
-        Mon, 25 Jan 2021 18:43:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51562224DF;
+        Mon, 25 Jan 2021 18:43:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600198;
-        bh=Q4um/mPmFlhHEcZTIbeme6olhiiq6rbGgcy8LRTLgUA=;
+        s=korg; t=1611600200;
+        bh=w1OnTU9k+cQiUb9aXuBJ2basIp27sxGyMU7OKMjUXmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OuxqJ8Q4SFGXMsnMub1YQgEoy7TfXYwy0P6/ZaevGks5FVmgT9LleY4coXKyjzRv2
-         rEkPl8C91W+35Oay1ARt28zbsMQHLieNQO7D4yvaM1RC4yIo7VuaklJhtESWSd5VMD
-         s02338AbYmYmGTN14KHhL6+dweVDqAq6FgLuVjfo=
+        b=rpWJ4NOeLrNJIlLYK7S76Ia5Fut8nWotkoofCAlXN+O0MSghJFYc7oYNXPI7ZmhN5
+         Wg/IwOTkOXJEClalvB2YlkFBqlVlOLwXJro79CcdmHl9+hYGlUUcR3fySAxalURWd9
+         7L0Wigs/OWwnzuakXBLTSxqbs4Ch6tXAPlLH3w+s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moody Salem <moody@uniswap.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        stable@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.4 02/86] platform/x86: i2c-multi-instantiate: Dont create platform device for INT3515 ACPI nodes
-Date:   Mon, 25 Jan 2021 19:38:44 +0100
-Message-Id: <20210125183201.138705731@linuxfoundation.org>
+Subject: [PATCH 5.4 03/86] platform/x86: ideapad-laptop: Disable touchpad_switch for ELAN0634
+Date:   Mon, 25 Jan 2021 19:38:45 +0100
+Message-Id: <20210125183201.181510720@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -40,83 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-commit 9bba96275576da0cf78ede62aeb2fc975ed8a32d upstream.
+commit f419e5940f1d9892ea6f45acdaca572b9e73ff39 upstream.
 
-There are several reports about the tps6598x causing
-interrupt flood on boards with the INT3515 ACPI node, which
-then causes instability. There appears to be several
-problems with the interrupt. One problem is that the
-I2CSerialBus resources do not always map to the Interrupt
-resource with the same index, but that is not the only
-problem. We have not been able to come up with a solution
-for all the issues, and because of that disabling the device
-for now.
+Newer ideapads (e.g.: Yoga 14s, 720S 14) come with ELAN0634 touchpad do not
+use EC to switch touchpad.
 
-The PD controller on these platforms is autonomous, and the
-purpose for the driver is primarily to supply status to the
-userspace, so this will not affect any functionality.
+Reading VPCCMD_R_TOUCHPAD will return zero thus touchpad may be blocked
+unexpectedly.
+Writing VPCCMD_W_TOUCHPAD may cause a spurious key press.
 
-Reported-by: Moody Salem <moody@uniswap.org>
-Fixes: a3dd034a1707 ("ACPI / scan: Create platform device for INT3515 ACPI nodes")
-Cc: stable@vger.kernel.org
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1883511
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20201223143644.33341-1-heikki.krogerus@linux.intel.com
+Add has_touchpad_switch to workaround these machines.
+
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: stable@vger.kernel.org # 5.4+
+--
+v2: Specify touchpad to ELAN0634
+v3: Stupid missing ! in v2
+v4: Correct acpi_dev_present usage (Hans)
+Link: https://lore.kernel.org/r/20210107144438.12605-1-jiaxun.yang@flygoat.com
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/platform/x86/i2c-multi-instantiate.c |   31 ++++++++++++++++++++-------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ drivers/platform/x86/ideapad-laptop.c |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
---- a/drivers/platform/x86/i2c-multi-instantiate.c
-+++ b/drivers/platform/x86/i2c-multi-instantiate.c
-@@ -166,13 +166,29 @@ static const struct i2c_inst_data bsg215
- 	{}
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -92,6 +92,7 @@ struct ideapad_private {
+ 	struct dentry *debug;
+ 	unsigned long cfg;
+ 	bool has_hw_rfkill_switch;
++	bool has_touchpad_switch;
+ 	const char *fnesc_guid;
  };
  
--static const struct i2c_inst_data int3515_data[]  = {
--	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
--	{}
--};
-+/*
-+ * Device with _HID INT3515 (TI PD controllers) has some unresolved interrupt
-+ * issues. The most common problem seen is interrupt flood.
-+ *
-+ * There are at least two known causes. Firstly, on some boards, the
-+ * I2CSerialBus resource index does not match the Interrupt resource, i.e. they
-+ * are not one-to-one mapped like in the array below. Secondly, on some boards
-+ * the IRQ line from the PD controller is not actually connected at all. But the
-+ * interrupt flood is also seen on some boards where those are not a problem, so
-+ * there are some other problems as well.
-+ *
-+ * Because of the issues with the interrupt, the device is disabled for now. If
-+ * you wish to debug the issues, uncomment the below, and add an entry for the
-+ * INT3515 device to the i2c_multi_instance_ids table.
-+ *
-+ * static const struct i2c_inst_data int3515_data[]  = {
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
-+ *	{ }
-+ * };
-+ */
+@@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct
+ 	} else if (attr == &dev_attr_fn_lock.attr) {
+ 		supported = acpi_has_method(priv->adev->handle, "HALS") &&
+ 			acpi_has_method(priv->adev->handle, "SALS");
+-	} else
++	} else if (attr == &dev_attr_touchpad.attr)
++		supported = priv->has_touchpad_switch;
++	else
+ 		supported = true;
  
- /*
-  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
-@@ -181,7 +197,6 @@ static const struct i2c_inst_data int351
- static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
- 	{ "BSG1160", (unsigned long)bsg1160_data },
- 	{ "BSG2150", (unsigned long)bsg2150_data },
--	{ "INT3515", (unsigned long)int3515_data },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
+ 	return supported ? attr->mode : 0;
+@@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(
+ {
+ 	unsigned long value;
+ 
++	if (!priv->has_touchpad_switch)
++		return;
++
+ 	/* Without reading from EC touchpad LED doesn't switch state */
+ 	if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
+ 		/* Some IdeaPads don't really turn off touchpad - they only
+@@ -989,6 +995,9 @@ static int ideapad_acpi_add(struct platf
+ 	priv->platform_device = pdev;
+ 	priv->has_hw_rfkill_switch = dmi_check_system(hw_rfkill_list);
+ 
++	/* Most ideapads with ELAN0634 touchpad don't use EC touchpad switch */
++	priv->has_touchpad_switch = !acpi_dev_present("ELAN0634", NULL, -1);
++
+ 	ret = ideapad_sysfs_init(priv);
+ 	if (ret)
+ 		return ret;
+@@ -1006,6 +1015,10 @@ static int ideapad_acpi_add(struct platf
+ 	if (!priv->has_hw_rfkill_switch)
+ 		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
+ 
++	/* The same for Touchpad */
++	if (!priv->has_touchpad_switch)
++		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
++
+ 	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
+ 		if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
+ 			ideapad_register_rfkill(priv, i);
 
 
