@@ -2,127 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F17304AD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FA6304AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbhAZE41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 23:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
+        id S1729920AbhAZE6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 23:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbhAYJUO (ORCPT
+        with ESMTP id S1726305AbhAYJUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 04:20:14 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C118C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:18:10 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id a9so11257260wrt.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:18:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Y7QSAI4exnMwTSIl2D/guBzjw3QSq7D2XfoHWDkim0M=;
-        b=kz5X1h6DqSqeV6eliWhiDPYDhC/5Vb+VoxkBn2I420H7P49skPLRYqgfpy4f78qbr/
-         c5yj6Fk29J7lf+Fjnowbz8gNGIkVBkt8/Wuery3OFtJI2sfmIr94lMufUrC1aCG999U7
-         UOgZNCFrpeMAFMOF6GY93vEi8n7J0GPb+MQ8ADVe6SKgJzhydqAA1WaTIq5UXXR1v0pq
-         EZmu2x/+3cCej4t0CYQoyblwOT1n76QH2ggxx8SM6LphJ3e6hObPgfl2pkVo/zBGynon
-         kovYuruRtDQ5tEugsYLd1Bo1gxPQId/F2EuJMOCc0m4kt5ZtWPhpjRmbkdfS6JvVvMfq
-         9yAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Y7QSAI4exnMwTSIl2D/guBzjw3QSq7D2XfoHWDkim0M=;
-        b=rvhODeid46G21O0bGTRrU6Mqk34ie6uRr2HvByFnbwiTEG0Kt43hXUqKTsirZhoH+c
-         SAIEpy4BJm0L35J4Zh3Zo36t538PazSFt7Gyy3IB0JoWCZELgzeLqaZ0f+pfXz9AjUwb
-         cA6Ih/IK+FnM0DmAQdu4lCIw0GKrQxRVuaFBlvtjoZk67NOLsf4g8kJJ0dKTP7o1qbrc
-         GeFofQ5SQSRWXNS3HPttAmLpEM5pePL57TTJ83pQBu9RG2Fnf5M75zUb1YmIiWQ13ssX
-         8J7WrHJfRMuZgpz2gi1nFw/m+MAC0TlmeuBhdh9gQYkdSxdAKNQ2OK/G3ceZRkon8vpJ
-         UD6g==
-X-Gm-Message-State: AOAM533MwxSy0ZKcPb9tjDqvzMxIhR8/uSefAPg6X/JEv27uR/ICdSKv
-        UdyuKJughdlk0WoNvNeVYUM=
-X-Google-Smtp-Source: ABdhPJw+CnX1ojnwI5+Km+6OVd8qHBN/eVrDsmFJRtBQmrYurXcm6CNStkvdgbes0Df3GJB6yjz5zg==
-X-Received: by 2002:a5d:5913:: with SMTP id v19mr10731wrd.207.1611562689269;
-        Mon, 25 Jan 2021 00:18:09 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id m12sm20286798wmc.10.2021.01.25.00.18.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 00:18:08 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Qiang Yu <yuq825@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Steven Price <steven.price@arm.com>
-Subject: [PATCH] drm/lima: add governor data with pre-defined thresholds
-Date:   Mon, 25 Jan 2021 08:18:04 +0000
-Message-Id: <20210125081804.13016-1-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D746C061794;
+        Mon, 25 Jan 2021 00:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=j//jmpTMMIX1qFdQL7zVyhGRSx0ek9fg+isx268q0ig=; b=o6Qe0tEoHyLc+FhqyfnvQk7R3Z
+        i7r6/HZ3NVNNSJkNE+XuQW/pekOqvJwaZskdSwSO5LoiWdvzvfnCXERRrWhE3T/MevKQZNz06AIe2
+        0w8pyIRx8rykCCTs9oQ1Cl9PC1RsY3tDVbwkDuedlbVLk4ROBY2UFfHIyNBvN88RfFvId868G2rgQ
+        g/Xw1jenZkNOXyL3h2yDo96cITqlov8ODmqUUoVzIYJIil+Rsx8Zg6ltixJHFw1vHklVPNprdzclZ
+        EkNy9Czomc/7zgtUfjEg0KMst4wGRbX3g6pN/UGKMRQZ6/7OXeARKC2/lr9Bb6BcO0AGuMqQphzSh
+        kEeP0Y+A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3xBu-003xca-6D; Mon, 25 Jan 2021 08:25:46 +0000
+Date:   Mon, 25 Jan 2021 08:25:42 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 2/3] blk-mq: Always complete remote completions requests
+ in softirq
+Message-ID: <20210125082542.GC942655@infradead.org>
+References: <20210123201027.3262800-1-bigeasy@linutronix.de>
+ <20210123201027.3262800-3-bigeasy@linutronix.de>
+ <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adapts the panfrost pre-defined thresholds change [0] to the
-lima driver to improve real-world performance. The upthreshold value has
-been set to ramp GPU frequency to max freq faster (compared to panfrost)
-to compensate for the lower overall performance of utgard devices.
+On Mon, Jan 25, 2021 at 08:10:16AM +0100, Hannes Reinecke wrote:
+> I don't get this.
+> This code is about _avoiding_ having to raise a softirq if the driver
+> exports more than one hardware queue.
+> So where exactly does the remote CPU case come in here?
 
-[0] https://patchwork.kernel.org/project/dri-devel/patch/20210121170445.19761-1-lukasz.luba@arm.com/
-
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
----
-I have been using Kodi as my test application. If you scroll in library
-views with hundreds of list items and the panfrost values the slow GPU
-ramp up is quite noticeable and the GUI feels sluggish. As everything
-lima runs on is inherently slower than panfrost using devices I believe
-it's better to ramp up to max freq quicker.
-
- drivers/gpu/drm/lima/lima_devfreq.c | 10 +++++++++-
- drivers/gpu/drm/lima/lima_devfreq.h |  2 ++
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-index 5686ad4aaf7c..c9854315a0b5 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.c
-+++ b/drivers/gpu/drm/lima/lima_devfreq.c
-@@ -163,8 +163,16 @@ int lima_devfreq_init(struct lima_device *ldev)
- 	lima_devfreq_profile.initial_freq = cur_freq;
- 	dev_pm_opp_put(opp);
- 
-+	/*
-+	 * Setup default thresholds for the simple_ondemand governor.
-+	 * The values are chosen based on experiments.
-+	 */
-+	ldevfreq->gov_data.upthreshold = 20;
-+	ldevfreq->gov_data.downdifferential = 5;
-+
- 	devfreq = devm_devfreq_add_device(dev, &lima_devfreq_profile,
--					  DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
-+					  DEVFREQ_GOV_SIMPLE_ONDEMAND,
-+					  &ldevfreq->gov_data);
- 	if (IS_ERR(devfreq)) {
- 		dev_err(dev, "Couldn't initialize GPU devfreq\n");
- 		ret = PTR_ERR(devfreq);
-diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-index 2d9b3008ce77..b0c7c736e81a 100644
---- a/drivers/gpu/drm/lima/lima_devfreq.h
-+++ b/drivers/gpu/drm/lima/lima_devfreq.h
-@@ -4,6 +4,7 @@
- #ifndef __LIMA_DEVFREQ_H__
- #define __LIMA_DEVFREQ_H__
- 
-+#include <linux/devfreq.h>
- #include <linux/spinlock.h>
- #include <linux/ktime.h>
- 
-@@ -18,6 +19,7 @@ struct lima_devfreq {
- 	struct opp_table *clkname_opp_table;
- 	struct opp_table *regulators_opp_table;
- 	struct thermal_cooling_device *cooling;
-+	struct devfreq_simple_ondemand_data gov_data;
- 
- 	ktime_t busy_time;
- 	ktime_t idle_time;
--- 
-2.17.1
-
+__blk_mq_complete_request_remote is only called for the case where we
+do not completelky locally.  The case that "degrades" here is where
+the device supports multiple queues, but less than the number of CPUs,
+and we bounce the completion to another CPU.
