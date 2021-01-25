@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22986303993
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085BE30399D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391673AbhAZJyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:54:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S2390408AbhAZJzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:55:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731118AbhAYSxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62D122063A;
-        Mon, 25 Jan 2021 18:53:00 +0000 (UTC)
+        id S1730968AbhAYSxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:53:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 282EE2067B;
+        Mon, 25 Jan 2021 18:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600781;
-        bh=fw0AKS6yGr6dhQxufmepSzV+/4ZNy/50A218e2CH1wY=;
+        s=korg; t=1611600783;
+        bh=PPZ0MfUPWSy1AH5SxpOjJFEARfCKR9NukERrkOVpdPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ojs8wSWWrb6e6XDyustOjgvNrKJGtLLJFjB13wK+V5D3tsqoiNz/gi/2bmZjOkWHD
-         zLjTKsi0saZVTUyBLbpzIoqlvDnAxItA46Q+dQ0d+JPI7MognOERJyEGHRVdkLUYf0
-         MRue+GIg6n0ZPj3dEcywyYnMJchcvjXLb8/ZeNHU=
+        b=qUXqRJDDerGvSTqdicIujrl2E8EW5I+bouHfTqF4ERSejSTT2SgOtBx4RHm2C+Tu+
+         xMU6GHBoQFpUzI7rYnB+cCNT0mTqdfIRwPYS+yMJNkIm5ZBYEyeVfVNOrjbK8WkLWQ
+         tyS5WXuIaG1zMD0VhNuVsblSwbiTSLbyNb7X0Ok4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
-        Rafael Kitover <rkitover@gmail.com>,
-        Yazen Ghannam <Yazen.Ghannam@amd.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.10 148/199] x86/cpu/amd: Set __max_die_per_package on AMD
-Date:   Mon, 25 Jan 2021 19:39:30 +0100
-Message-Id: <20210125183222.461739577@linuxfoundation.org>
+        stable@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Xin Long <lucien.xin@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        syzbot+2624e3778b18fc497c92@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 149/199] cls_flower: call nla_ok() before nla_next()
+Date:   Mon, 25 Jan 2021 19:39:31 +0100
+Message-Id: <20210125183222.503822502@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -42,49 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yazen Ghannam <Yazen.Ghannam@amd.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-commit 76e2fc63ca40977af893b724b00cc2f8e9ce47a4 upstream.
+commit c96adff95619178e2118925578343ad54857c80c upstream.
 
-Set the maximum DIE per package variable on AMD using the
-NodesPerProcessor topology value. This will be used by RAPL, among
-others, to determine the maximum number of DIEs on the system in order
-to do per-DIE manipulations.
+fl_set_enc_opt() simply checks if there are still bytes left to parse,
+but this is not sufficent as syzbot seems to be able to generate
+malformatted netlink messages. nla_ok() is more strict so should be
+used to validate the next nlattr here.
 
- [ bp: Productize into a proper patch. ]
+And nla_validate_nested_deprecated() has less strict check too, it is
+probably too late to switch to the strict version, but we can just
+call nla_ok() too after it.
 
-Fixes: 028c221ed190 ("x86/CPU/AMD: Save AMD NodeId as cpu_die_id")
-Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
-Reported-by: Rafael Kitover <rkitover@gmail.com>
-Signed-off-by: Yazen Ghannam <Yazen.Ghannam@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
-Tested-by: Rafael Kitover <rkitover@gmail.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210939
-Link: https://lkml.kernel.org/r/20210106112106.GE5729@zn.tnic
-Link: https://lkml.kernel.org/r/20210111101455.1194-1-bp@alien8.de
+Reported-and-tested-by: syzbot+2624e3778b18fc497c92@syzkaller.appspotmail.com
+Fixes: 0a6e77784f49 ("net/sched: allow flower to match tunnel options")
+Fixes: 79b1011cb33d ("net: sched: allow flower to match erspan options")
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Xin Long <lucien.xin@gmail.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Link: https://lore.kernel.org/r/20210115185024.72298-1-xiyou.wangcong@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/cpu/amd.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/sched/cls_flower.c |   22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -569,12 +569,12 @@ static void bsp_init_amd(struct cpuinfo_
- 		u32 ecx;
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -1272,6 +1272,10 @@ static int fl_set_enc_opt(struct nlattr
  
- 		ecx = cpuid_ecx(0x8000001e);
--		nodes_per_socket = ((ecx >> 8) & 7) + 1;
-+		__max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
- 	} else if (boot_cpu_has(X86_FEATURE_NODEID_MSR)) {
- 		u64 value;
- 
- 		rdmsrl(MSR_FAM10H_NODE_ID, value);
--		nodes_per_socket = ((value >> 3) & 7) + 1;
-+		__max_die_per_package = nodes_per_socket = ((value >> 3) & 7) + 1;
+ 		nla_opt_msk = nla_data(tb[TCA_FLOWER_KEY_ENC_OPTS_MASK]);
+ 		msk_depth = nla_len(tb[TCA_FLOWER_KEY_ENC_OPTS_MASK]);
++		if (!nla_ok(nla_opt_msk, msk_depth)) {
++			NL_SET_ERR_MSG(extack, "Invalid nested attribute for masks");
++			return -EINVAL;
++		}
  	}
  
- 	if (!boot_cpu_has(X86_FEATURE_AMD_SSBD) &&
+ 	nla_for_each_attr(nla_opt_key, nla_enc_key,
+@@ -1307,9 +1311,6 @@ static int fl_set_enc_opt(struct nlattr
+ 				NL_SET_ERR_MSG(extack, "Key and mask miss aligned");
+ 				return -EINVAL;
+ 			}
+-
+-			if (msk_depth)
+-				nla_opt_msk = nla_next(nla_opt_msk, &msk_depth);
+ 			break;
+ 		case TCA_FLOWER_KEY_ENC_OPTS_VXLAN:
+ 			if (key->enc_opts.dst_opt_type) {
+@@ -1340,9 +1341,6 @@ static int fl_set_enc_opt(struct nlattr
+ 				NL_SET_ERR_MSG(extack, "Key and mask miss aligned");
+ 				return -EINVAL;
+ 			}
+-
+-			if (msk_depth)
+-				nla_opt_msk = nla_next(nla_opt_msk, &msk_depth);
+ 			break;
+ 		case TCA_FLOWER_KEY_ENC_OPTS_ERSPAN:
+ 			if (key->enc_opts.dst_opt_type) {
+@@ -1373,14 +1371,20 @@ static int fl_set_enc_opt(struct nlattr
+ 				NL_SET_ERR_MSG(extack, "Key and mask miss aligned");
+ 				return -EINVAL;
+ 			}
+-
+-			if (msk_depth)
+-				nla_opt_msk = nla_next(nla_opt_msk, &msk_depth);
+ 			break;
+ 		default:
+ 			NL_SET_ERR_MSG(extack, "Unknown tunnel option type");
+ 			return -EINVAL;
+ 		}
++
++		if (!msk_depth)
++			continue;
++
++		if (!nla_ok(nla_opt_msk, msk_depth)) {
++			NL_SET_ERR_MSG(extack, "A mask attribute is invalid");
++			return -EINVAL;
++		}
++		nla_opt_msk = nla_next(nla_opt_msk, &msk_depth);
+ 	}
+ 
+ 	return 0;
 
 
