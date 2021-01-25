@@ -2,93 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAA9302DAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26D3302DAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732659AbhAYV2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732636AbhAYVTk (ORCPT
+        id S1726468AbhAYV3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:29:20 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:44288 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732647AbhAYVT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:19:40 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67A7C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:18:59 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id i63so9133933pfg.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:18:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q+E2QKYZrluBg1iBjQcak9MCibuQJCXbencd0L2CEXM=;
-        b=w4IcicZbBoygZLxK2+ZjwfLVCA5GB0v4cbBBX+5PEGG9DjSu4dgMOET+57SXcJyBd/
-         vONyKRVJJf7NIkT/Tg8JeJgtTzy9mceZ2+wyfmL+2bGpbzJej1eUsz6MlHoX3AX4elY8
-         VV7onfeGs/WwGYsk1MfxUoGHtNg/yn0j/Qt6ty/YrR68JosNkFYn1HnFoSnhWCw2yt8P
-         68/WR/FiZ+28j3UrwQBmd8iVwyucoP8IzkssTqyen0IEwUwQUc3XagTD+InltkBjrMew
-         n8D5wE3Gn7iV9CtrMoTtcFas09mEAaQhUgX+aK0k7DZRFPgtIveXLAHXuc6wRWCoTcR8
-         cdAQ==
+        Mon, 25 Jan 2021 16:19:59 -0500
+Received: by mail-oi1-f182.google.com with SMTP id n7so4415365oic.11;
+        Mon, 25 Jan 2021 13:19:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q+E2QKYZrluBg1iBjQcak9MCibuQJCXbencd0L2CEXM=;
-        b=q3zmGvtaNH5atNBOwzn7fcO/mpxai2UmRL7SLIbko7Uh77nR8Q51/p1jfhqRqdsM26
-         Iot2CEM+Sp67Bd++nUasscG+v/BGjaBBkoMuAedDnd5NHUZGWMRYhtAQH6iMe63pgWXB
-         rwTD65dwkfH6ASsOuWBgkvI3+I0XQ9UMnn94uRXaTzsPM+cNQ272vpfHHVELFxv+eW7J
-         85iNL78MsuzXaPylEwjJPNPqG1LegvIAobv67wD2zHVkDLV1V+RdLiVxxqEH8ezLjxui
-         xYse1htZ2aLwJSdPCE+8ij2qX8PQ2AhJyoDYKG4Uk6MVJVmQSEUI3JgoD1Ard/lUOF/S
-         rImQ==
-X-Gm-Message-State: AOAM533/7wATSaG6GjiTIVYFJ366MGGDuIVCyYvV2A0FTKFnsBcodF9c
-        PjVvybzqQQZrxmIemEh+Vfzp0Lhn8asJzg==
-X-Google-Smtp-Source: ABdhPJwLqpaGmQeIn98hN4B/n7hJ4LVC8tm8BvqnQxWCX+m2eS68Fwi/gy7lTD0qb2ib36JEDvAIaw==
-X-Received: by 2002:a65:5b47:: with SMTP id y7mr2363233pgr.221.1611609539114;
-        Mon, 25 Jan 2021 13:18:59 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id n1sm240830pjv.47.2021.01.25.13.18.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 13:18:58 -0800 (PST)
-Subject: Re: [PATCH BUGFIX/IMPROVEMENT 0/6] block, bfq: second batch of fixes
- and improvements
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210125190248.49338-1-paolo.valente@linaro.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <50888903-86bd-0815-e671-58df34aa01e2@kernel.dk>
-Date:   Mon, 25 Jan 2021 14:18:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NibYT71W+B8TDWyLV12/C5+2M+J43v+ssl9R4tm+o1Q=;
+        b=WBQYa4KNp88aJf5nI2uN2Ep4giLJJa8qwpPc+76m4vXtxf2aP8yhLWy/5Ks88+KExy
+         Xaig3hTzFR+hVxTg3DCf/5shFxpXjczIiVAgtzb7DhaIkUZoc1Y+DMvFTDgiMz513kAu
+         XNTmqE4CmAT8K/US+8CIs5f1YJZbh1+Oyro8niDUZ1rH5zjY7hbiqXAxY/+Xp9EWgdGK
+         B0l121+fnoucrJdcHayWAEDQTQN9HGVbIkAJvyhv8tNvQEmb/rzmmknAsXVVKslHyBRO
+         Rgodc2+xZrpm+a2d6ulhGlUVM7uKZD2+kZmU73CzKIIQBoBMGVEWbzmD/LtfHFv6QRxy
+         EzMA==
+X-Gm-Message-State: AOAM531fIhbzZFGcvUo5fldq3PqfhT512sEmiItywvCOA/5L/rhxLfHo
+        RBN02i4lnr34CSETcwpMyA==
+X-Google-Smtp-Source: ABdhPJzawJ1RMizxJND21fu6qb4j513EzjDeH7HKS+tLfPZacMXvR7CRmkgQOrWYyoYiX7+j1r9tOg==
+X-Received: by 2002:aca:f255:: with SMTP id q82mr1293905oih.138.1611609555404;
+        Mon, 25 Jan 2021 13:19:15 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z20sm2732315oth.55.2021.01.25.13.19.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 13:19:12 -0800 (PST)
+Received: (nullmailer pid 1014454 invoked by uid 1000);
+        Mon, 25 Jan 2021 21:19:10 -0000
+Date:   Mon, 25 Jan 2021 15:19:10 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
+Subject: Re: [PATCH v2 11/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
+ LVDS display bridge binding
+Message-ID: <20210125211910.GA1004310@robh.at.kernel.org>
+References: <1610616132-8220-1-git-send-email-victor.liu@nxp.com>
+ <1610616132-8220-12-git-send-email-victor.liu@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20210125190248.49338-1-paolo.valente@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610616132-8220-12-git-send-email-victor.liu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 12:02 PM, Paolo Valente wrote:
-> Hi,
-> here's batch 2/3.
+On Thu, Jan 14, 2021 at 05:22:09PM +0800, Liu Ying wrote:
+> This patch adds bindings for i.MX8qm/qxp LVDS display bridge(LDB).
 > 
-> Thanks,
-> Paolo
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v1->v2:
+> * Use graph schema. (Laurent)
+> * Side note i.MX8qxp LDB official name 'pixel mapper'. (Laurent)
 > 
-> Paolo Valente (6):
->   block, bfq: replace mechanism for evaluating I/O intensity
->   block, bfq: re-evaluate convenience of I/O plugging on rq arrivals
->   block, bfq: fix switch back from soft-rt weitgh-raising
->   block, bfq: save also weight-raised service on queue merging
->   block, bfq: save also injection state on queue merging
->   block, bfq: make waker-queue detection more robust
+>  .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 176 +++++++++++++++++++++
+>  1 file changed, 176 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
 > 
->  block/bfq-iosched.c | 328 ++++++++++++++++++++++++++------------------
->  block/bfq-iosched.h |  29 ++--
->  2 files changed, 214 insertions(+), 143 deletions(-)
+> diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
+> new file mode 100644
+> index 00000000..514ac90
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
+> @@ -0,0 +1,176 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8qxp-ldb.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX8qm/qxp LVDS Display Bridge
+> +
+> +maintainers:
+> +  - Liu Ying <victor.liu@nxp.com>
+> +
+> +description: |
+> +  The Freescale i.MX8qm/qxp LVDS Display Bridge(LDB) has two channels.
+> +
+> +  For i.MX8qxp LDB, each channel supports up to 24bpp parallel input color
+> +  format and can map the input to VESA or JEIDA standards.  The two channels
+> +  cannot be used simultaneously, that is to say, the user should pick one of
+> +  them to use.  Two LDB channels from two LDB instances can work together in
+> +  LDB split mode to support a dual link LVDS display.  The channel indexes
+> +  have to be different.  Channel0 outputs odd pixels and channel1 outputs
+> +  even pixels.
+> +
+> +  For i.MX8qm LDB, each channel additionally supports up to 30bpp parallel
+> +  input color format.  The two channels can be used simultaneously, either
+> +  in dual mode or split mode.  In dual mode, the two channels output identical
+> +  data.  In split mode, channel0 outputs odd pixels and channel1 outputs even
+> +  pixels.
+> +
+> +  A side note is that i.MX8qm/qxp LDB is officially called pixel mapper in
+> +  the SoC reference manuals.  The pixel mapper uses logic of LDBs embedded in
+> +  i.MX6qdl/sx SoCs, i.e., it is essentially based on them.  To keep the naming
+> +  consistency, this binding calls it LDB.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8qm-ldb
+> +      - fsl,imx8qxp-ldb
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  clocks:
+> +    items:
+> +      - description: pixel clock
+> +      - description: bypass clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pixel
+> +      - const: bypass
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  fsl,syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: |
+> +      A phandle which points to Control and Status Registers(CSR) module.
 
-Applied, thanks.
+Again, seems like this binding should be a child of the syscon.
 
--- 
-Jens Axboe
-
+> +
+> +  fsl,companion-ldb:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: |
+> +      A phandle which points to companion LDB which is used in LDB split mode.
+> +
+> +patternProperties:
+> +  "^channel@[0-1]$":
+> +    type: object
+> +    description: Represents a channel of LDB.
+> +
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +      reg:
+> +        description: The channel index.
+> +        enum: [ 0, 1 ]
+> +
+> +      phys:
+> +        description: A phandle to the phy module representing the LVDS PHY.
+> +        maxItems: 1
+> +
+> +      phy-names:
+> +        const: lvds_phy
+> +
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Input port of the channel.
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Output port of the channel.
+> +
+> +    required:
+> +      - "#address-cells"
+> +      - "#size-cells"
+> +      - reg
+> +      - phys
+> +      - phy-names
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - fsl,syscon
+> +  - channel@0
+> +  - channel@1
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx8qm-ldb
+> +    then:
+> +      properties:
+> +        fsl,companion-ldb: false
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/firmware/imx/rsrc.h>
+> +    ldb {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        compatible = "fsl,imx8qxp-ldb";
+> +        clocks = <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_MISC2>,
+> +                 <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_BYPASS>;
+> +        clock-names = "pixel", "bypass";
+> +        power-domains = <&pd IMX_SC_R_LVDS_0>;
+> +        fsl,syscon = <&mipi_lvds_0_csr>;
+> +
+> +        channel@0 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <0>;
+> +            phys = <&mipi_lvds_0_phy>;
+> +            phy-names = "lvds_phy";
+> +
+> +            port@0 {
+> +                reg = <0>;
+> +
+> +                mipi_lvds_0_ldb_ch0_mipi_lvds_0_pxl2dpi: endpoint {
+> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch0>;
+> +                };
+> +            };
+> +        };
+> +
+> +        channel@1 {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            reg = <1>;
+> +            phys = <&mipi_lvds_0_phy>;
+> +            phy-names = "lvds_phy";
+> +
+> +            port@0 {
+> +                reg = <0>;
+> +
+> +                mipi_lvds_0_ldb_ch1_mipi_lvds_0_pxl2dpi: endpoint {
+> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch1>;
+> +                };
+> +            };
+> +        };
+> +    };
+> -- 
+> 2.7.4
+> 
