@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62973036A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6D73036A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388227AbhAZGfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:35:13 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46344 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729372AbhAYOUG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:20:06 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10PEIQcL034678;
-        Mon, 25 Jan 2021 08:18:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611584306;
-        bh=l8MqkTrspZlMfkzgo3/5nS3QIQbMMeHh3WA/tS5Z+wA=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ThDlTgJPRdOf6dgZg1BQ74EIZVBODtg3S7RY1yp7nU91rNJzrEnLXZsCGDDb3l4y9
-         7jb/rTweB20iG6GykQJ2FlsJuHoWwI/+Qbsdf1LfMs5QHeEFbKJajYt8ocVzg1cvL8
-         ztLqZE7hXu2jJsJZ0eShTH0JbLyHqKrs+4YnHe2A=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10PEIQsU098221
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Jan 2021 08:18:26 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
- Jan 2021 08:18:25 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 25 Jan 2021 08:18:26 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10PEIQk2058681;
-        Mon, 25 Jan 2021 08:18:26 -0600
-Date:   Mon, 25 Jan 2021 08:18:26 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] mmc: J7200: Add support for higher speed modes in
- MMCSD subsystems
-Message-ID: <20210125141826.b7gfv6molvunzzwb@generous>
-References: <20210122162403.20700-1-a-govindraju@ti.com>
- <20210122180629.3j3aoueiwiib4gso@cavalier>
- <5341eeb2-e637-424f-3328-60dbddee1376@ti.com>
- <20210125135112.gvddr4uv7vx7kfrq@triangle>
- <fd7ac744-a6dc-9f1f-c13f-96faca14d75b@ti.com>
+        id S2388351AbhAZGfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:35:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729376AbhAYOUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:20:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E42AA2228A;
+        Mon, 25 Jan 2021 14:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611584370;
+        bh=7fpC+lTJSKxpC4pR/T7CZ14Iq6EymDL3VFSG9czVQ7M=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=iB6Y6xf+/afU+e1dBXKFAVyDkgLDNaPfZ/lS/xU2wbHUzebK2Papr3magQ+88sSrp
+         MBcXZZDW1hugZVvSZwxNbs5veQR87pmKIZ2VXz4t0Fc3lEiiZJf2M+ZRZc+xOrIuaq
+         bsmrUC5jXApAMYfFc/Ueau/7vikJz6MR4NMSlW9DEqt2T7od5GmlQzz73TIfoL2+RL
+         VTcxKDVdoRXV2dqqzE5zQEoYCGt1qCGUVwn0nGKDlCyiiXp0OLAhtf0QbuEZr+3p4S
+         t3Es3m0iL7a2nc/RykX5Oot98plEbzvnd/vRzi2f0O2R++xI4AqbTuRQCSn0oZ0bvh
+         ngxpcp73vFnOw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xe-linux-external@cisco.com
+In-Reply-To: <20210121231237.30664-2-danielwa@cisco.com>
+References: <20210121231237.30664-2-danielwa@cisco.com>
+Subject: Re: [PATCH 2/2] spidev: Add cisco device compatible
+Message-Id: <161158432930.33513.16598539718945571721.b4-ty@kernel.org>
+Date:   Mon, 25 Jan 2021 14:18:49 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <fd7ac744-a6dc-9f1f-c13f-96faca14d75b@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19:43-20210125, Aswath Govindraju wrote:
-> >>> Will also help to provide some verification log along with this.
-> >>>
-> >>
-> >> May I know what sort of logs would be best to provide. Would enumeration
-> >> logs during boot suffice ?
-> >>
-> >> Like this,
-> >> https://pastebin.ubuntu.com/p/v9NRV7GwMw/ ?
-> > 
-> > That just says we detected the cards, no?
-> > I thought we had tests around this? Something including /sys/kernel/debug/mmc*/ios
-> > 
-> > Something that demonstrates that this actually runs at the claimed
-> > speeds? That would be nice on linux-next, if possible as well..
-> > 
-> 
-> Yes there are tests which confirm that claimed speeds are functional. I
-> will add them in the respin.
+On Thu, 21 Jan 2021 15:12:36 -0800, Daniel Walker wrote:
+> Add compatible string for Cisco device present on the Cisco Petra
+> platform.
 
-Awesome.  much appreciated.
+Applied to
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+
+Thanks!
+
+[2/2] spidev: Add cisco device compatible
+      commit: 396cf2a46adddbf51373e16225c1d25254310046
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
