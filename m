@@ -2,137 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CA0302738
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F6130275C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730556AbhAYPth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:49:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
+        id S1730605AbhAYP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730464AbhAYPsA (ORCPT
+        with ESMTP id S1730295AbhAYPue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:48:00 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E4FC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:47:19 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id d15so9932481qtw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:47:19 -0800 (PST)
+        Mon, 25 Jan 2021 10:50:34 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32582C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:49:54 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id c128so11525201wme.2
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:49:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WYtrk+5jMyfHMrIk+GFUJtKNShhaML4SL+BF9mnl4ek=;
-        b=mEv+bdSqBPdjlX/bdjKIR3SI9YdPtbWuLoQeE76ZBBDrifSvgzpKe2Al9843jB5V2y
-         jYAIfZmPEPaeZ5Oqkxoy8QvIVo91+adpqZujygppxIvbax/2vGxGjT3BDnBJ9PYWOzUB
-         rbyhx9bsrcmb2rCRD0697Qhj/mNjh0DJinCAfGOX+TjDxCgWsCHPHxm7IgD04aftGPv0
-         oJKvBKP3SKQlHkfSkivNxC9jF2Z+VXgar36M3oCMSTRxG3OdArdOxVO+jBLutbLw40hm
-         Ywjxl5S6mpTmxxEMrSa2iGbxjeJX6ur9qiCgicoYFfxnWO/esqBDF0MtydZh82NCSBKW
-         jxWg==
+        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=It4AKC/1LgMluJkIF4Rxerhljl96iqpqFZ1n3C8wBp0=;
+        b=c32YHNj4kWZxvS9lrPFa4ahqB8ubYx3V48YuMsZe3rurWlI+y1sJmmraLjYbSAqDPr
+         2nW97On+s058SIZGzhVQ3BRX/a0g8qHIESAM6OGH/8TwenwDKSk0MOclXNCK44noVQv0
+         EkktJtNYx5QMAPbJGQOhpdrSXNlRmTQqbCHNwCzqATlUVFRe62clPjyXmT5/mf7BYTBC
+         G8d2QAVF8FJWpz5jO0WwnOsBFrynYtUlM/rZTXfy+3L/PhsUmnF/nhynPV2wNRw4iwYn
+         ZNHFWBHMGqhoNaSfxftoVh0mssMp8mQlGOxOk4bfdYEsNt0VDfrLbe+DnvmeuWXq6XYl
+         OntA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WYtrk+5jMyfHMrIk+GFUJtKNShhaML4SL+BF9mnl4ek=;
-        b=E8Jvs1lMcCSt2zlAVfVm322x2Meqv0wm6BGntRHPhm4xgapXxqxU2R24gFlBRopdO8
-         y/tEw/8PAE83oiw7z319xKiNAI7RcVCFBPaqxA3ln/d0Y5vEC+3HxoQwfMjP/nj9Cngg
-         N+BRc9LPLcwEfEe5/EfosXr1KwHYfl//8MAVMauzRuTv+FRdHQN5rg5N1Vtl8lgeYOoN
-         BaBkoUTueYCA2ocRlSz54lE8hkJUEgr+kZjAgDqEdp6xNB7UaDWlOYRglg7XJrjGVvhE
-         4a6jT3JylCrP717UBZoAYNn8IsC7Y8NyoPdF4ocD8kmLZ0v8gD3EGVdNSlPW8KHg+sI1
-         gtKQ==
-X-Gm-Message-State: AOAM531HPe8D6NM/CdrlNc0zBeOOPLi1rAv0Mtm8nnnQvsJbbbVndZzy
-        s8eaWp65nYJq2fueAFUwrdezVA==
-X-Google-Smtp-Source: ABdhPJxr0w4GGj4XFZfzo1ZpWgm8ksFBdTqQ/q89OryNoBYa59S4vVi7J2T2VaunByVM7HxRC+LHEw==
-X-Received: by 2002:ac8:6987:: with SMTP id o7mr977438qtq.295.1611589638773;
-        Mon, 25 Jan 2021 07:47:18 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id o76sm409454qke.104.2021.01.25.07.47.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 07:47:18 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l445F-006YE8-Qg; Mon, 25 Jan 2021 11:47:17 -0400
-Date:   Mon, 25 Jan 2021 11:47:17 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-mm@kvack.org,
-        song.bao.hua@hisilicon.com, liguozhu@hisilicon.com,
-        Sihang Chen <chensihang1@hisilicon.com>
-Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
-Message-ID: <20210125154717.GW4605@ziepe.ca>
-References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=It4AKC/1LgMluJkIF4Rxerhljl96iqpqFZ1n3C8wBp0=;
+        b=HWp0qfkXNIAwhfKzsML+dIHNdgyMuc3ANPGWUyHX6yuj54VHe9KkYhB9ZZislaN+lh
+         A9bAhvW6GRwvuD41Wa4f3qQRfCC9SFOccbTUUsvX5PYEaTcbzt646JtUHCyAIBKc9vrk
+         jAZ5eIaZMXOLzHXSN3HD8AIG0d6/iXXbfKBBnTdp8SQmSta5IvraLNGyIDyLMo134e1P
+         1EUu8ZnBSuP6/QT7bsFKuseYAWA1L6ARm4TthL6QO8MTchhxRx6fjYpN+pQroWmnOcdc
+         e9r2ypaHAx8TIg7xSC/Zgi5KFdDsvBZvOLd8JglGS/MS+r17CpJG8IkpITWwH77q1o9q
+         lEOg==
+X-Gm-Message-State: AOAM532Ae33U41FYptu1uIeC88Bwm1x3W2zfpxZrkxM+lCO68XZRcP/n
+        EPnsAby9LDO+gAiHiYh5ubeqkv+GXCxLmk6HMJM=
+X-Google-Smtp-Source: ABdhPJwpHvp3T7QlTivtE5nnKQKPGyArOFvCZBBeQswNQMsXOe+7u5ot2ou9qQf9NjS2SntU6UDyRw==
+X-Received: by 2002:a05:600c:4e88:: with SMTP id f8mr738722wmq.6.1611589792841;
+        Mon, 25 Jan 2021 07:49:52 -0800 (PST)
+Received: from localhost.localdomain ([5.35.34.67])
+        by smtp.gmail.com with ESMTPSA id q7sm24624599wrx.18.2021.01.25.07.49.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Jan 2021 07:49:52 -0800 (PST)
+From:   Denis Kirjanov <kda@linux-powerpc.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, kuba@kernel.org
+Subject: [PATCH] fs: export kern_path_locked
+Date:   Mon, 25 Jan 2021 18:49:37 +0300
+Message-Id: <20210125154937.26479-1-kda@linux-powerpc.org>
+X-Mailer: git-send-email 2.16.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 04:34:56PM +0800, Zhou Wang wrote:
+the function is used outside and we have a prototype
+defined in namei.h
 
-> +static int uacce_pin_page(struct uacce_pin_container *priv,
-> +			  struct uacce_pin_address *addr)
-> +{
-> +	unsigned int flags = FOLL_FORCE | FOLL_WRITE;
-> +	unsigned long first, last, nr_pages;
-> +	struct page **pages;
-> +	struct pin_pages *p;
-> +	int ret;
-> +
-> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
-> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
-> +	nr_pages = last - first + 1;
-> +
-> +	pages = vmalloc(nr_pages * sizeof(struct page *));
-> +	if (!pages)
-> +		return -ENOMEM;
-> +
-> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +	if (!p) {
-> +		ret = -ENOMEM;
-> +		goto free;
-> +	}
-> +
-> +	ret = pin_user_pages_fast(addr->addr & PAGE_MASK, nr_pages,
-> +				  flags | FOLL_LONGTERM, pages);
+Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
+---
+ fs/namei.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-This needs to copy the RLIMIT_MEMLOCK and can_do_mlock() stuff from
-other places, like ib_umem_get
+diff --git a/fs/namei.c b/fs/namei.c
+index 78443a85480a..3de3b3642302 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2450,6 +2450,7 @@ struct dentry *kern_path_locked(const char *name, struct path *path)
+ 	putname(filename);
+ 	return d;
+ }
++EXPORT_SYMBOL(kern_path_locked);
+ 
+ int kern_path(const char *name, unsigned int flags, struct path *path)
+ {
+-- 
+2.16.4
 
-> +	ret = xa_err(xa_store(&priv->array, p->first, p, GFP_KERNEL));
-
-And this is really weird, I don't think it makes sense to make handles
-for DMA based on the starting VA.
-
-> +static int uacce_unpin_page(struct uacce_pin_container *priv,
-> +			    struct uacce_pin_address *addr)
-> +{
-> +	unsigned long first, last, nr_pages;
-> +	struct pin_pages *p;
-> +
-> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
-> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
-> +	nr_pages = last - first + 1;
-> +
-> +	/* find pin_pages */
-> +	p = xa_load(&priv->array, first);
-> +	if (!p)
-> +		return -ENODEV;
-> +
-> +	if (p->nr_pages != nr_pages)
-> +		return -EINVAL;
-> +
-> +	/* unpin */
-> +	unpin_user_pages(p->pages, p->nr_pages);
-
-And unpinning without guaranteeing there is no ongoing DMA is really
-weird
-
-Are you abusing this in conjunction with a SVA scheme just to prevent
-page motion? Why wasn't mlock good enough?
-
-Jason
