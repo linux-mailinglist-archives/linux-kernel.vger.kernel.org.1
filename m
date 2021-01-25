@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A1F30387C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D64630387A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390699AbhAZI7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:59:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33670 "EHLO mail.kernel.org"
+        id S2390525AbhAZI5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:57:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730207AbhAYSqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730228AbhAYSqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:46:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83F10207B3;
-        Mon, 25 Jan 2021 18:45:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1691D22460;
+        Mon, 25 Jan 2021 18:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600360;
-        bh=bWV1q/vlPePa8LOU1u+HIReIsNMq//s48XHaFX7Nheg=;
+        s=korg; t=1611600362;
+        bh=mgx7pnFdilp/Ys9xnrEwavJygvFFYBcW5x63QN/EosA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HdSOIV/OVC7XMebShIvECX+aPoxSyrEK268vT/2NJ9SNavlMcrZXMY5eHBiQfVRNp
-         QnUwAcKkM3jqFWbXzzmxKpM/ckpk7tzFNN2FGlF94oJMTTcqn8bjIJr9TABPAhVtQu
-         UBdSo8bVEvSwekxIZShpspKFdtOnhv0dXQhTPut4=
+        b=xhLEi1aOJFtASOhVuF2J9blu4qChoz5vaKtqrjv4M4Jtmp1tDQ57NELbMviwIngpW
+         AQTd3JP7uUSCPcJDNdrG9Ri8haq2PZPn+VvlH5mgnrdMUM/Qm1R3vepNu+NPY5sdQ5
+         Nv/bHj2ZyF/DBiNf0r2viD2gci1KDOoeqUH/IvQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Rich Felker <dalias@libc.org>
-Subject: [PATCH 5.4 70/86] sh: dma: fix kconfig dependency for G2_DMA
-Date:   Mon, 25 Jan 2021 19:39:52 +0100
-Message-Id: <20210125183204.006473984@linuxfoundation.org>
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 71/86] net: dsa: mv88e6xxx: also read STU state in mv88e6250_g1_vtu_getnext
+Date:   Mon, 25 Jan 2021 19:39:53 +0100
+Message-Id: <20210125183204.050612042@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -40,50 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-commit f477a538c14d07f8c45e554c8c5208d588514e98 upstream.
+commit 87fe04367d842c4d97a77303242d4dd4ac351e46 upstream.
 
-When G2_DMA is enabled and SH_DMA is disabled, it results in the following
-Kbuild warning:
+mv88e6xxx_port_vlan_join checks whether the VTU already contains an
+entry for the given vid (via mv88e6xxx_vtu_getnext), and if so, merely
+changes the relevant .member[] element and loads the updated entry
+into the VTU.
 
-WARNING: unmet direct dependencies detected for SH_DMA_API
-  Depends on [n]: SH_DMA [=n]
-  Selected by [y]:
-  - G2_DMA [=y] && SH_DREAMCAST [=y]
+However, at least for the mv88e6250, the on-stack struct
+mv88e6xxx_vtu_entry vlan never has its .state[] array explicitly
+initialized, neither in mv88e6xxx_port_vlan_join() nor inside the
+getnext implementation. So the new entry has random garbage for the
+STU bits, breaking VLAN filtering.
 
-The reason is that G2_DMA selects SH_DMA_API without depending on or
-selecting SH_DMA while SH_DMA_API depends on SH_DMA.
+When the VTU entry is initially created, those bits are all zero, and
+we should make sure to keep them that way when the entry is updated.
 
-When G2_DMA was first introduced with commit 40f49e7ed77f
-("sh: dma: Make G2 DMA configurable."), this wasn't an issue since
-SH_DMA_API didn't have such dependency, and this way was the only way to
-enable it since SH_DMA_API was non-visible. However, later SH_DMA_API was
-made visible and dependent on SH_DMA with commit d8902adcc1a9
-("dmaengine: sh: Add Support SuperH DMA Engine driver").
-
-Let G2_DMA depend on SH_DMA_API instead to avoid Kbuild issues.
-
-Fixes: d8902adcc1a9 ("dmaengine: sh: Add Support SuperH DMA Engine driver")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Signed-off-by: Rich Felker <dalias@libc.org>
+Fixes: 92307069a96c (net: dsa: mv88e6xxx: Avoid VTU corruption on 6097)
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
+Tested-by: Tobias Waldekranz <tobias@waldekranz.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/sh/drivers/dma/Kconfig |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/dsa/mv88e6xxx/global1_vtu.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/sh/drivers/dma/Kconfig
-+++ b/arch/sh/drivers/dma/Kconfig
-@@ -63,8 +63,7 @@ config PVR2_DMA
+--- a/drivers/net/dsa/mv88e6xxx/global1_vtu.c
++++ b/drivers/net/dsa/mv88e6xxx/global1_vtu.c
+@@ -351,6 +351,10 @@ int mv88e6250_g1_vtu_getnext(struct mv88
+ 		if (err)
+ 			return err;
  
- config G2_DMA
- 	tristate "G2 Bus DMA support"
--	depends on SH_DREAMCAST
--	select SH_DMA_API
-+	depends on SH_DREAMCAST && SH_DMA_API
- 	help
- 	  This enables support for the DMA controller for the Dreamcast's
- 	  G2 bus. Drivers that want this will generally enable this on
++		err = mv88e6185_g1_stu_data_read(chip, entry);
++		if (err)
++			return err;
++
+ 		/* VTU DBNum[3:0] are located in VTU Operation 3:0
+ 		 * VTU DBNum[5:4] are located in VTU Operation 9:8
+ 		 */
 
 
