@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B091E3023BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078AF3023D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbhAYKd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 05:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
+        id S1727589AbhAYKop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 05:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727466AbhAYK0v (ORCPT
+        with ESMTP id S1727496AbhAYKie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:26:51 -0500
+        Mon, 25 Jan 2021 05:38:34 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5B8C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:26:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24625C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:37:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qflAfQM3W85yj+1edLkQfUMSK1MfzCW3r7LrzwY7rZk=; b=lAnAWHbOETGWBQfpywT0L2QcMZ
-        HWUw5CPr5RvY1aYiJOLTWOYn0inc8cKiMtUm3FxSdRyS00D+5Ak4W2IXpf5cy4/pvYiyDeRE4wPLk
-        rMH5Pv3Da9au03PTpL1SatGbjz1QFx63yapRPGziYSLBnOoEHLUUJ5GDIBVwK6JflpUqSoYp3thY0
-        zqp3bhncrFjWFKN8bKpPbiqeFzfqnB2N6TjnGYM7R7VIoPs1SDvR4t1Hj+ydC3SueS+5GUG5bxvwY
-        hpbdRlQnlAPbJg6enhy4JhPG6AWeBQ4Tv+RJSuHAveMkeXPOZ33WB9zvRLE7M13cKcNAAJucXzsug
-        EvM8iVkw==;
+        bh=iMGBNmPvE4v1jywfgHxZnsC9PInWaaImOpYiuSDeYH8=; b=XGpRgv3UJ1zJBW1lmzkCciStOJ
+        Fp22GXksW20qouvjnkQyOJRz7xJ/3hGCev25dsQRZyK/godEYPjEsGRwphqnRH5iY36uiHOXF5YYO
+        wfZ9qYFYEdIe9KbG9A3ZzKFLW89p7SQzfmydp3NSQ3fDzrUzZ2/FednXm54Jl4a9FJbd1A3M3Ao5a
+        hdz912DQaJ0cw97ygdFs9UXvjl1I4lgKmwroHS7zEzbUiJgH7haBcPFJs+Mfu+O3VNYkXMjRwRDJL
+        PS8Bf9tdx6drZsIMe+gOcGTMfqWY7ollFuNRcaxftHUXWMT6UZQkQgfSwvXpohLwsULrZaQIfU84L
+        aDLSzj1A==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l3z3g-0044mD-Tb; Mon, 25 Jan 2021 10:25:37 +0000
+        id 1l3zF1-0045UB-A4; Mon, 25 Jan 2021 10:37:15 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5EF193010C8;
-        Mon, 25 Jan 2021 11:25:17 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 61EB53010C8;
+        Mon, 25 Jan 2021 11:37:02 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3CF9D2B0615C6; Mon, 25 Jan 2021 11:25:17 +0100 (CET)
-Date:   Mon, 25 Jan 2021 11:25:17 +0100
+        id 4369D2B0615C6; Mon, 25 Jan 2021 11:37:02 +0100 (CET)
+Date:   Mon, 25 Jan 2021 11:37:02 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        Ingo Molnar <mingo@redhat.com>, will@kernel.org,
-        mark.rutland@arm.com, mike.leach@linaro.org, al.grant@arm.com,
-        anshuman.khandual@arm.com, mathieu.poirier@linaro.org,
-        linux-arm-kernel@lists.infradead.org, jolsa@redhat.com,
-        acme@kernel.org
-Subject: Re: [RFC PATCH] perf: Handle multiple formatted AUX records
-Message-ID: <YA6cjdmfG8x2EggP@hirez.programming.kicks-ass.net>
-References: <20210122151829.2890484-1-suzuki.poulose@arm.com>
- <20210122151829.2890484-2-suzuki.poulose@arm.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] printk: Add new pr_*_deferred_once() variants
+Message-ID: <YA6fTuFEaCjFQB3h@hirez.programming.kicks-ass.net>
+References: <20210123233741.3614408-1-qais.yousef@arm.com>
+ <20210123233741.3614408-2-qais.yousef@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122151829.2890484-2-suzuki.poulose@arm.com>
+In-Reply-To: <20210123233741.3614408-2-qais.yousef@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 03:18:29PM +0000, Suzuki K Poulose wrote:
-> CoreSight PMU supports aux-buffer for the ETM tracing. The trace
-> generated by the ETM (associated with individual CPUs, like Intel PT)
-> is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
+On Sat, Jan 23, 2021 at 11:37:40PM +0000, Qais Yousef wrote:
+> To allow users in code where printk is not allowed.
 > 
-> The TMC-ETR applies formatting of the raw ETM trace data, as it
-> can collect traces from multiple ETMs, with the TraceID to indicate
-> the source of a given trace packet.
-> 
-> Arm Trace Buffer Extension is new "sink" IP, attached to individual
-> CPUs and thus do not provide additional formatting, like TMC-ETR.
-> 
-> Additionally, a system could have both TRBE *and* TMC-ETR for
-> the trace collection. e.g, TMC-ETR could be used as a single
-> trace buffer to collect data from multiple ETMs to correlate
-> the traces from different CPUs. It is possible to have a
-> perf session where some events end up collecting the trace
-> in TMC-ETR while the others in TRBE. Thus we need a way
-> to identify the type of the trace for each AUX record.
-> 
-> This patch adds a new flag to indicate the trace format
-> for the given record. Also, includes the changes that
-> demonstrates how this can be used in the CoreSight PMU
-> to solve the problem.
-> 
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
 > ---
+>  include/linux/printk.h | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> index fe7eb2351610..92c0978c7b44 100644
+> --- a/include/linux/printk.h
+> +++ b/include/linux/printk.h
+> @@ -480,21 +480,45 @@ extern int kptr_restrict;
+>  	printk_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+>  /* no pr_cont_once, don't do that... */
+>  
+> +#define pr_emerg_deferred_once(fmt, ...)				\
+> +	printk_deferred_once(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_alert_deferred_once(fmt, ...)				\
+> +	printk_deferred_once(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_crit_deferred_once(fmt, ...)					\
+> +	printk_deferred_once(KERN_CRIT pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_err_deferred_once(fmt, ...)					\
+> +	printk_deferred_once(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_warn_deferred_once(fmt, ...)					\
+> +	printk_deferred_once(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_notice_deferred_once(fmt, ...)				\
+> +	printk_deferred_once(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
+> +#define pr_info_deferred_once(fmt, ...)					\
+> +	printk_deferred_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+> +/* no pr_cont_deferred_once, don't do that... */
 
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index b15e3447cd9f..ea7dcc7b30f0 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -1109,6 +1109,7 @@ enum perf_callchain_context {
->  #define PERF_AUX_FLAG_OVERWRITE		0x02	/* snapshot from overwrite mode */
->  #define PERF_AUX_FLAG_PARTIAL		0x04	/* record contains gaps */
->  #define PERF_AUX_FLAG_COLLISION		0x08	/* sample collided with another */
-> +#define PERF_AUX_FLAG_ALT_FMT		0x10	/* this record is in alternate trace format */
+I absolutely detest this.. the whole _deferred thing is an abomination.
 
-Since we have a whole u64, do we want to reserve a whole nibble (or
-maybe even a byte) for a format type? Because with a single bit like
-this, we'll kick ourselves when we end up with the need for a 3rd format
-type.
+We should be very close to printk not needing this anymore, printk
+people?
