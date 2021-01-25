@@ -2,63 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0724302C9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4027B302CA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbhAYUfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732295AbhAYUfL (ORCPT
+        id S1732332AbhAYUgT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 15:36:19 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:53452 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732285AbhAYUfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:35:11 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB32C061573;
-        Mon, 25 Jan 2021 12:34:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=WiGs1qgslmQVm39ErD8FtEC6YDu9ozQcsFkJHMOI2oc=; b=eZ8aDB5ZjP439EyzjUsxb2Omrs
-        pv4125X9udbw90Pa8WcK+X5aWTVUx97W7l0D2xai6lRWw+hg6ECKbzarQnqRk/n/6xr97uDVUvFm1
-        pH6Yduz5vyjw2NSWX/jn4b70SgPSavVvFzhvAnoNk/0c+FuLRd0jnnBcdZUhJeF0V2V5FCnDaQcRU
-        FDQqcZ9hXIYRNn5DHmTc7NGLq7maKunmcaj2pf6vcxTyYzqzpcl9bw8ZVd/1vxNwjUZ0zfhzVPmMb
-        zfXpWVog6L4xZ73AmCYoYMHS6sjvOyzaUhHqeRCyDKlWW/aXd67qofS528Mdxm0YEF0Ortj3eyvNY
-        zxNO1Xfw==;
-Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l48Z7-0003zB-RN; Mon, 25 Jan 2021 20:34:26 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Subject: [PATCH RESEND] kvm: mmu.h: delete duplicated word
-Date:   Mon, 25 Jan 2021 12:34:19 -0800
-Message-Id: <20210125203420.26069-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 25 Jan 2021 15:35:22 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23697353-1500050 
+        for multiple; Mon, 25 Jan 2021 20:34:33 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
+References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
+Subject: Re: Linux 5.11-rc5
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 25 Jan 2021 20:34:34 +0000
+Message-ID: <161160687463.28991.354987542182281928@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete the repeated word "is".
+Quoting Linus Torvalds (2021-01-25 01:06:40)
+> Mike Rapoport (3):
+...
+>       mm: fix initialization of struct page for holes in memory layout
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
----
- arch/x86/kvm/mmu.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+We have half a dozen or so different machines in CI that are silently
+failing to boot, that we believe is bisected to this patch.
 
---- linux-next-20200720.orig/arch/x86/kvm/mmu.h
-+++ linux-next-20200720/arch/x86/kvm/mmu.h
-@@ -191,7 +191,7 @@ static inline u8 permission_fault(struct
- 		* PKRU defines 32 bits, there are 16 domains and 2
- 		* attribute bits per domain in pkru.  pte_pkey is the
- 		* index of the protection domain, so pte_pkey * 2 is
--		* is the index of the first bit for the domain.
-+		* the index of the first bit for the domain.
- 		*/
- 		pkru_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
- 
+17:56              tsa : ickle: dolphin: I hit the following patch in my bisection, and the hang is also dependent on kconfig
+17:56              tsa : first bad commit: [d3921cb8be29ce5668c64e23ffdaeec5f8c69399] mm: fix initialization of struct page for holes in
+                         memory layout
+17:57              tsa : couldn't reproduce on older CI kconfig, current one does it
+                         https://gitlab.freedesktop.org/gfx-ci/i915-infra/-/blob/master/kconfig/debug
+
+Here's a boot dmesg from some affected machines from just before the merge
+with rc5:
+https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/shard-skl1/boot18.txt
+https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-skl-6600u/boot.html
+https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bsw-cyan/boot.html
+https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bdw-samus/boot.html
+-Chris
