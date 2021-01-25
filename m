@@ -2,121 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94035302BC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61694302BF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732066AbhAYTi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:38:59 -0500
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:35043 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731664AbhAYTUm (ORCPT
+        id S1731779AbhAYTrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:47:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28732 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731495AbhAYTYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:20:42 -0500
-Received: by mail-wm1-f53.google.com with SMTP id e15so602989wme.0;
-        Mon, 25 Jan 2021 11:20:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9J1fjDoECtAEX54iT8gOtMcZFBoy3aSp1IkHbOxFr8Y=;
-        b=US3njgDcuwrc3kzKvQHySjDDm2LZzpNkRS6EezkfouRfbztzYiqXy35SjeyXbgyTTC
-         x52yVqq4RVZCafHWr9j2DoAkUMbvpqL/fDuWpzKrGTc9/h1z6CUcZQ+YbrYJYROSWjed
-         4mMTlZ6bTrtKrBYC/OKsg+3mZaVP8cr8+LEAc681G969HlyaT0ZVErYM+p7HnlenWj/1
-         7g+y/4KQiOVhnyQTG3PjwTYHx8ysGNp5Cm32aACNxXF6zgyCm/8fyr4BZ2Aogzgqxh/Q
-         M/O/vg3kDw8knF2zCqIgJUu7WLXLx3OCiFL9/4NAGYcry0i71nwwS66klDjZL46CWrxH
-         ISWQ==
-X-Gm-Message-State: AOAM530EFnVaOpc/Aey+LGo3EOvKzi7pdijJ5gij4hGVP1quJp5xyt7F
-        iR1b4ht6tA2+mWAjcMTBJO0=
-X-Google-Smtp-Source: ABdhPJzxDnybmXi/gidk5uvLkyd7uOmYrWowYJaxWlB0aK2RQfYrenNjL5HbhRghKru/jguqqc1dCw==
-X-Received: by 2002:a1c:a1c1:: with SMTP id k184mr1454545wme.101.1611602400704;
-        Mon, 25 Jan 2021 11:20:00 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id l7sm272497wmg.41.2021.01.25.11.19.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:19:59 -0800 (PST)
-Date:   Mon, 25 Jan 2021 20:19:57 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mn-beacon-som: Enable QSPI on SOM
-Message-ID: <20210125191957.nrc2saxqebt6tjic@kozik-lap>
-References: <20210119134258.774480-1-aford173@gmail.com>
- <20210119134258.774480-2-aford173@gmail.com>
+        Mon, 25 Jan 2021 14:24:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611602559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sLaxbldCpmtlUDFodMqs6EtRoH2fJw9kHTicx3mvJQs=;
+        b=hvPyM2X0t8/a1Hl1GHJUJLTZnwM2EAdqO/HQuzPvzyIHHGLuYA1hndLkJWsPQo2SlLMmlx
+        rBSv1bD2J9G58sOhE8Qc4GaQ3RthaZOgz8ExP4ct5PUXHbFNIiwrrzgFcNNNnVjRqdEGvD
+        cM+3mRzbbfYxJEF8RaPDVA8+wiI5oM0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-wbF-Bqt3NsKIoD6ejRlndQ-1; Mon, 25 Jan 2021 14:22:34 -0500
+X-MC-Unique: wbF-Bqt3NsKIoD6ejRlndQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E23E9100C601;
+        Mon, 25 Jan 2021 19:22:30 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 251C960C0F;
+        Mon, 25 Jan 2021 19:22:21 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 20:22:19 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     brouer@redhat.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH net-next 3/3] net: page_pool: simplify page recycling
+ condition tests
+Message-ID: <20210125202219.43d3d0f0@carbon>
+In-Reply-To: <20210125164612.243838-4-alobakin@pm.me>
+References: <20210125164612.243838-1-alobakin@pm.me>
+        <20210125164612.243838-4-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210119134258.774480-2-aford173@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 07:42:58AM -0600, Adam Ford wrote:
-> There is a QSPI chip connected to the FlexSPI bus.  Enable it.
+On Mon, 25 Jan 2021 16:47:20 +0000
+Alexander Lobakin <alobakin@pm.me> wrote:
+
+> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
+> this function is just a redundant wrapper over page_is_pfmemalloc(),
+> so Inline it into its sole call site.
 > 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  net/core/page_pool.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-> index 2120e6485393..9f575184d899 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-> @@ -7,6 +7,7 @@ / {
->  	aliases {
->  		rtc0 = &rtc;
->  		rtc1 = &snvs_rtc;
-> +		spi0 = &flexspi;
->  	};
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index f3c690b8c8e3..ad8b0707af04 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *page,
+>  	return true;
+>  }
 >  
->  	usdhc1_pwrseq: usdhc1_pwrseq {
-> @@ -89,6 +90,22 @@ ethphy0: ethernet-phy@0 {
->  	};
->  };
+> -/* page is NOT reusable when:
+> - * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
+> - */
+> -static bool pool_page_reusable(struct page_pool *pool, struct page *page)
+> -{
+> -	return !page_is_pfmemalloc(page);
+> -}
+> -
+>  /* If the page refcnt == 1, this will try to recycle the page.
+>   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
+>   * the configured size min(dma_sync_size, pool->max_len).
+> @@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>  	 * regular page allocator APIs.
+>  	 *
+>  	 * refcnt == 1 means page_pool owns page, and can recycle it.
+> +	 *
+> +	 * page is NOT reusable when allocated when system is under
+> +	 * some pressure. (page_is_pfmemalloc)
+>  	 */
+> -	if (likely(page_ref_count(page) == 1 &&
+> -		   pool_page_reusable(pool, page))) {
+> +	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
+>  		/* Read barrier done in page_ref_count / READ_ONCE */
 >  
-> +&flexspi {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_flexspi>;
-> +	status = "okay";
-> +
-> +	flash@0 {
-> +		reg = <0>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "jedec,spi-nor";
-> +		spi-max-frequency = <80000000>;
-> +		spi-tx-bus-width = <4>;
-> +		spi-rx-bus-width = <4>;
-> +	};
-> +};
-> +
->  &i2c1 {
->  	clock-frequency = <400000>;
->  	pinctrl-names = "default";
-> @@ -318,6 +335,18 @@ MX8MN_IOMUXC_I2C3_SDA_I2C3_SDA		0x400001c3
->  		>;
->  	};
->  
-> +	pinctrl_flexspi: flexspigrp {
-> +		fsl,pins = <
-> +			MX8MN_IOMUXC_NAND_ALE_QSPI_A_SCLK               0x1c2
-> +			MX8MN_IOMUXC_NAND_CE0_B_QSPI_A_SS0_B            0x82
-> +			MX8MN_IOMUXC_NAND_DATA00_QSPI_A_DATA0           0x82
-> +			MX8MN_IOMUXC_NAND_DATA01_QSPI_A_DATA1           0x82
-> +			MX8MN_IOMUXC_NAND_DATA02_QSPI_A_DATA2           0x82
-> +			MX8MN_IOMUXC_NAND_DATA03_QSPI_A_DATA3           0x82
-> +		>;
-> +	};
-> +
-> +
+>  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
 
-Double line break. Beside that:
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
+-- 
 Best regards,
-Krzysztof
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
