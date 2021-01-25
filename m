@@ -2,112 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A72303748
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1C8303708
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389566AbhAZHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730321AbhAYPpG (ORCPT
+        id S2389376AbhAZHEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:04:40 -0500
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:43333 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730147AbhAYPkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:45:06 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA00C0698C3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:33:07 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id q1so27286737ion.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:33:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2talsnklJaVWOGtsgs8EdiY+cMK9LMTP+0Z5YlQJtd4=;
-        b=P7ErHoA/+D5d+b8kMTYT1LddbEtINrboZFlaN3z8uGxV0oWIoLCWPw6oBNwR5GRvYt
-         psAiLFGGow+NL4Ke6hnZu9IvshizfPkjGOIz6+89O5ziHVJNAupK3243HNTsXMwuM+v1
-         EWC/CMdFqfrLg9QiCHHnDIv9qgIaACZfumqe0=
+        Mon, 25 Jan 2021 10:40:02 -0500
+Received: by mail-oi1-f175.google.com with SMTP id i25so3757279oie.10;
+        Mon, 25 Jan 2021 07:39:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2talsnklJaVWOGtsgs8EdiY+cMK9LMTP+0Z5YlQJtd4=;
-        b=tXt9xGlGXWfHpbGiyHljf8zXDcbVRw5oiOD/U4lYQ5Zyr5qAisMpewd2kqYpFHfqgb
-         CsGBbhtjDKt601ggbrs0ho/S2HK+bD3tGiJlDdMf6UsHoQ2IbLJ6a6c5wyh14kTvuWjO
-         D0lJVexx/djt25WMgofHUlru68V+6SJcFtlVPPWueAHNW3y2PPiFZJKdWo7sVd3QJ1I4
-         8u640ld/OFpn/3UWfoU0eOtcPWdYByn0+mYeohiXjCl7YYprguB4tC5r0U8J82NbB0ly
-         QxZ5+t0KaN41yYOXMrXLfBZNs2pqbW4Scm64wNb/87R2oEsdeNxED74afY1XbnvBWwR2
-         SQWA==
-X-Gm-Message-State: AOAM532IRz7DYGjufDrPtOht+qsvmBkEk/EbchWUpsOAVMg/WwNpaGFP
-        izQeg4PxxK6lNf4tivexYCy59OdOW8KbIA==
-X-Google-Smtp-Source: ABdhPJxUbmcMeGkX2ysM9tPtrszMYhXUtSY+ZmpqNQmJ+gFt0A0XM83EtVGyjMYhMg2XhRw9u1tP8g==
-X-Received: by 2002:a05:6e02:1032:: with SMTP id o18mr819698ilj.13.1611588786484;
-        Mon, 25 Jan 2021 07:33:06 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id v7sm11885285iln.79.2021.01.25.07.33.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 07:33:05 -0800 (PST)
-Subject: Re: [PATCH] [net-next] ipa: add remoteproc dependency
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210125113557.2388311-1-arnd@kernel.org>
- <YA7iVQtm8P2F1VAN@builder.lan>
- <CAK8P3a21TwzvESbnmGYpj9vrvpWM5uayZjpk9KA4Cg9wk78C4Q@mail.gmail.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <a41bb573-f133-0188-275f-4637e10bbbaf@ieee.org>
-Date:   Mon, 25 Jan 2021 09:33:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xv2F8uEJDzNOELHmwTwNLPLNs8lRPkq+SnWZqNcKmSE=;
+        b=l0RiaogzJdbwI3BYj1NXzN9PA0A5mun/+03eFzsjANhlnWfE+LejPPZ85bnWGm8GEt
+         P8mwM89xcXvc3sOStSQsVTtRZ79DAVjUMUlAkEZrseS5/g6D6XBLED0tnaWoqFy8hhH6
+         kZ5wIL8bHBN7gcWHltYxXuJI8PZQwZkGUQvlRamY4clk7/9Nx2pjldLHcBoVopr3Q1lV
+         pB/dohKXuIPXa0TammoqpCckEiZuX66MChOceW0K0JJsh4qzvshOe+ASt8nKGRhHtEhx
+         WIAaG0PDEJuqD40HCs+/Q/+mZREE6GoN6+XGH1AOsnGT4DTWQvDRsnx0FfkfE0MguhkL
+         xiAg==
+X-Gm-Message-State: AOAM532xYGwCZyicwI041k9wISSwXBB4v3lc1Fad+4ndO0W3rSlPLyjb
+        rJox62RZq58+tphVi11bEtqA75vOzlRC9NnJQxQ=
+X-Google-Smtp-Source: ABdhPJwZj9WDxzrkp5B5fBpFQxEJMl3itE2IsPYlaaZPJaGCbLO05CDNwOR5DGdC23BcrNbXL/hWQx20i4ztPmfvMHc=
+X-Received: by 2002:aca:1219:: with SMTP id 25mr489984ois.54.1611589161153;
+ Mon, 25 Jan 2021 07:39:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a21TwzvESbnmGYpj9vrvpWM5uayZjpk9KA4Cg9wk78C4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200916205434.GA10389@duo.ucw.cz> <87czyf5jjp.fsf@vps.thesusis.net>
+ <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com>
+ <CAKMK7uEGXOC_ci=Drm=Hz+xPGdcoxv8YZ-gcOckoPmu2XijiSA@mail.gmail.com>
+ <CAMuHMdVzCjVim4A3eAZzztqUyjb6a2bjmSkgxUnaugQFv42qag@mail.gmail.com> <87k0s4ai33.fsf@vps.thesusis.net>
+In-Reply-To: <87k0s4ai33.fsf@vps.thesusis.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 25 Jan 2021 16:39:09 +0100
+Message-ID: <CAMuHMdVe-pS4wT++RDzF+EYd-_SC9naGJj8dzWbN6mt0yAnVxg@mail.gmail.com>
+Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
+To:     Phillip Susi <phill@thesusis.net>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 9:30 AM, Arnd Bergmann wrote:
-> On Mon, Jan 25, 2021 at 4:23 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
->>
->> On Mon 25 Jan 05:35 CST 2021, Arnd Bergmann wrote:
->>
->>> From: Arnd Bergmann <arnd@arndb.de>
->>>
->>> Compile-testing without CONFIG_REMOTEPROC results in a build failure:
->>>
->>>>>> referenced by ipa_main.c
->>>>>>                net/ipa/ipa_main.o:(ipa_probe) in archive drivers/built-in.a
->>> ld.lld: error: undefined symbol: rproc_put
->>>>>> referenced by ipa_main.c
->>>>>>                net/ipa/ipa_main.o:(ipa_probe) in archive drivers/built-in.a
->>>>>> referenced by ipa_main.c
->>>>>>                net/ipa/ipa_main.o:(ipa_remove) in archive drivers/built-in.a
->>>
->>> Add a new dependency to avoid this.
->>>
->>
->> Afaict this should be addressed by:
->>
->> 86fdf1fc60e9 ("net: ipa: remove a remoteproc dependency")
->>
->> which is present in linux-next.
-> 
-> Ok, good. I was testing with next-20210122, which was
-> still lacking that commit.
+Hi Phillip,
 
-Yes, for various reasons this took a while to get incorporated.
-It just got accepted over the weekend.  Thanks for mentioning it.
+On Fri, Jan 22, 2021 at 8:26 PM Phillip Susi <phill@thesusis.net> wrote:
+> Geert Uytterhoeven writes:
+> Judging from some of the comments in the code, it looks like you were
+> one of the original authors of fbcon?  I haven't been able to find any
 
-					-Alex
+Indeed, a looooong time ago... Before DRM existed.
 
-> 
->        Arnd
-> 
+> of these sczbot crash reports, and am not sure how fuzzing syscalls
+> would really affect this code ( it's not really handling a buch of
+> ioctls or otherwise taking arguments from user space ) , but I am a bit
 
+AFAIU, most of these are triggered by VT ioctls.
+There is an intimate relation between the VT and fbev subsystems: VT
+changes impact fbdev, and vice versa.
+
+Perhaps these should be decoupled, at the expense of worse user
+experience (i.e. the user needing to change both screen resolution and
+number of columns/rows of the text console)?
+
+> confused as to why the softback was implemented the way that it was.
+>
+> vgacon simply copies the main buffer to vram in ->set_origin() and then
+> changes the pointers to operate out of the much larger vram while that
+> virtual terminal is active.  If I understand it correctly, it looks like
+> fbcon instead opts to operate out of the main buffer but rescue lines as
+> they are scrolled off and relocate them to the softback buffer.  This
+> seems to be rather more convoluted.
+>
+> I'm thinking of re-implementing scrollback more like the way vgacon does
+> it: allocate a big "vram" buffer and operate out of that.  Obviously
+> ->scroll() and ->scrolldelta() have to actually repaint the screen rather
+> than simply change the pointer register, but that should be about the
+> only difference.
+
+I'm not that intimate familiar anymore with the current state of the
+code, but it used to be like this:
+  - vgacon used a VRAM buffer for the current VC, and multiple shadow
+    buffers to implement virtual consoles,
+  - fbcon always used the shadow buffers, with each update triggering
+    an update of the frame buffer (see below).
+
+As the text console buffer handling should be the same for vgacon and
+fbcon, I expect most scrollback bugs (if any) to be present in both.
+
+> I have also noticed that there was some code to use hardware panning of
+> the video buffer rather than having to do a block bitblt to scroll the
+> contents of the screen, but that it was disabled because virtually no
+> video drivers actually implemented it?  That seems like a shame, but if
+> it is so, then there's no sense carrying the dead code so I think I'll
+> clean that up now.
+>
+> Now that I look at it again, everything is simply always redrawn now
+> instead of even doing a simple bitblt.  Daniel, you mentioned that
+> almost nobody supports hardware acceleration, but even without any
+> specific hardware support, surely even if bitblt() is implemented just
+> as a memcpy(), it has to be faster than redrawing all of the characters
+> doesn't it?  Getting rid of the panning if it isn't generally supported
+> I can see, but I don't understand killing bitblt even if most devices
+> don't accelerate it.
+
+There are multiple ways to implement scrolling:
+  1. If the hardware supports a larger virtual screen and panning, and
+     the virtual screen is enabled, most scrolling can be implemented by
+     panning, with a casual copy when reaching the bottom (or top) of
+     the virtual screen.
+     This mode is (was) available on most graphics hardware with
+     dedicated graphics memory.
+  2. If a 2D acceleration engine is available, copying (and
+     clearing/filling) can be implemented by rectangle copy/fill
+     operations.
+  3. Rectangle copy/fill by the CPU is always available.
+  4. Redrawing characters by the CPU is always available.
+
+Which option was used depended on the hardware: not all options are
+available everywhere, and some perform better than others.
+E.g. on PCI graphics cards, reading graphics memory by the CPU is
+usually very slow, so option 3 is much slower than option 4 (given a
+sufficiently fast CPU).
+AFAIU, option 2 is not suitable for modern systems with 3D acceleration.
+On the older (slower) systems (lacking VGA text mode) for which fbcon
+was originally written, option 4 is usually the slowest.
+
+Support for 1-3 were removed in commit 39aead8373b3c20b ("fbcon: Disable
+accelerated scrolling"), which claimed only 3 (DRM) drivers made use of
+this, ignoring the other 32 (fbdev) drivers making use of it.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
