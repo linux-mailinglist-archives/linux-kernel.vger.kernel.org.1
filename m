@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ADB302B76
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C64302B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731702AbhAYTU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:20:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39988 "EHLO mail.kernel.org"
+        id S1731984AbhAYT3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:29:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731297AbhAYSxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E5D122460;
-        Mon, 25 Jan 2021 18:53:36 +0000 (UTC)
+        id S1731385AbhAYSzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E5EB207B3;
+        Mon, 25 Jan 2021 18:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600817;
-        bh=6u95SOw7y/uqzQ1KFj4jjpCMM4zUQdSZONEzPtlPIbc=;
+        s=korg; t=1611600893;
+        bh=kA66J9R8GJIJ1MxQzUP7vADOMxUyTJOLiwqEt0ZuhEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ocp6jGX96YygzAWxFwBykWSvHbWf8yCmzwji9ardSgZFes6RNasSpSAwKfn6/Pkuo
-         OVijsTfyrSJT4tlEC8U/zALtzLz7cp3sOugxbLal/jsBqfjlPM6hzRE+1HevxOsuLx
-         fxeBLEL3O2gXIYxU7op5PFWpgxVskGhZiqCf05Js=
+        b=vdzgUCMe8j3Aj1cs7CwvA5ONOYcNRCsEoZhuhqxRr4ruO8crbg/ZLAwvzIHLywm+Z
+         QHz4dgG7xxXkgVIzt2bTdL04xq0b4avZXNeFnz3lXIkq6Hq//RCJTxe0Sg/8TIIPD2
+         gVstsljd12rTzcNGBw+AzQztgpC2Cv6uyydSOrVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jinyang He <hejinyang@loongson.cn>,
-        Rich Felker <dalias@libc.org>
-Subject: [PATCH 5.10 155/199] sh: Remove unused HAVE_COPY_THREAD_TLS macro
-Date:   Mon, 25 Jan 2021 19:39:37 +0100
-Message-Id: <20210125183222.748348658@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 161/199] sh_eth: Fix power down vs. is_opened flag ordering
+Date:   Mon, 25 Jan 2021 19:39:43 +0100
+Message-Id: <20210125183222.994360061@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,28 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinyang He <hejinyang@loongson.cn>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 19170492735be935747b0545b7eed8bb40cc1209 upstream.
+commit f6a2e94b3f9d89cb40771ff746b16b5687650cbb upstream.
 
-Fixes: 	e1cc9d8d596e ("sh: switch to copy_thread_tls()")
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-Signed-off-by: Rich Felker <dalias@libc.org>
+sh_eth_close() does a synchronous power down of the device before
+marking it closed.  Revert the order, to make sure the device is never
+marked opened while suspended.
+
+While at it, use pm_runtime_put() instead of pm_runtime_put_sync(), as
+there is no reason to do a synchronous power down.
+
+Fixes: 7fa2955ff70ce453 ("sh_eth: Fix sleeping function called from invalid context")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Link: https://lore.kernel.org/r/20210118150812.796791-1-geert+renesas@glider.be
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/sh/Kconfig |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/renesas/sh_eth.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -30,7 +30,6 @@ config SUPERH
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
--	select HAVE_COPY_THREAD_TLS
- 	select HAVE_DEBUG_BUGVERBOSE
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DYNAMIC_FTRACE
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -2606,10 +2606,10 @@ static int sh_eth_close(struct net_devic
+ 	/* Free all the skbuffs in the Rx queue and the DMA buffer. */
+ 	sh_eth_ring_free(ndev);
+ 
+-	pm_runtime_put_sync(&mdp->pdev->dev);
+-
+ 	mdp->is_opened = 0;
+ 
++	pm_runtime_put(&mdp->pdev->dev);
++
+ 	return 0;
+ }
+ 
 
 
