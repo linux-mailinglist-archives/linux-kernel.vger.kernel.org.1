@@ -2,104 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C12302850
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82801302851
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbhAYQ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:57:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43758 "EHLO mx2.suse.de"
+        id S1729918AbhAYQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:58:53 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:51334 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728681AbhAYQzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:55:41 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611593693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DUCMunEAlwcf5q7H1YeFZFYeq7DLFWJs3Mg8KMXP9Z0=;
-        b=qPts7aTDPFTfj2b8NYdndbwpl6i5JliE2w0lBoVUP6U4zTo/URi/QcGr43vpN94WGA5dCH
-        XnAz2JWBNo5ymP9pAlPpdWXCt4R7yejmS/ex2MOk+DV9LdD+lM2/Tj5CaXr9zzbw6bQq4U
-        uLTmX7JwDHxFzCuXNYkpPrT28pphQ8o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DA924ACFB;
-        Mon, 25 Jan 2021 16:54:52 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 17:54:51 +0100
-From:   Michal Hocko <mhocko@suse.com>
+        id S1729369AbhAYQ51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:57:27 -0500
+Received: from zn.tnic (p200300ec2f09db004bb0ee0cb7e01378.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:db00:4bb0:ee0c:b7e0:1378])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A12151EC030D;
+        Mon, 25 Jan 2021 17:56:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611593803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=BD74lMtV58jwXCy0MpC+aGxOM2Y8WpxjlRkgS1KEFjM=;
+        b=lSktTLxvW8kMg+MvEcRC1HRH2dLCN4YLLVW7JV4JweUscGQHhTOSWIuRLYVBY/O7vmpSub
+        0ILCirzk/2yRiYh9A0br/PQXlHhBs7KGHwbVh24KdJYatwzBF7bWNPyQwru0Uwft4A/goH
+        jWAz0LhPtEsVMpTWf6A1a/ukVMKgQPc=
+Date:   Mon, 25 Jan 2021 17:56:43 +0100
+From:   Borislav Petkov <bp@alien8.de>
 To:     Mike Rapoport <rppt@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
         David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-Message-ID: <20210125165451.GT827@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-9-rppt@kernel.org>
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH 1/2] x86/setup: consolidate early memory reservations
+Message-ID: <20210125165643.GH23070@zn.tnic>
+References: <20210115083255.12744-1-rppt@kernel.org>
+ <20210115083255.12744-2-rppt@kernel.org>
+ <20210125145041.GD23070@zn.tnic>
+ <20210125153114.GH6332@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210121122723.3446-9-rppt@kernel.org>
+In-Reply-To: <20210125153114.GH6332@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-01-21 14:27:20, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Account memory consumed by secretmem to memcg. The accounting is updated
-> when the memory is actually allocated and freed.
+On Mon, Jan 25, 2021 at 05:31:14PM +0200, Mike Rapoport wrote:
+> This would make sense but it's tricky. From memblock perspective,
+> allocations are always allowed and it is the user responsibility to ensure
+> all the early reservations are done before allocating memory.
 
-What does this mean? What are the lifetime rules?
+Yah, I don't trust my users to know that for sure...
 
-[...]
+> So adding such a WARN would require a new memblock API and it's adoption by
+> all architectures, which is way beyond the scope of this series :)
 
-> +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
-> +{
-> +	int err;
-> +
-> +	err = memcg_kmem_charge_page(page, gfp, order);
-> +	if (err)
-> +		return err;
-> +
-> +	/*
-> +	 * seceremem caches are unreclaimable kernel allocations, so treat
-> +	 * them as unreclaimable slab memory for VM statistics purposes
-> +	 */
-> +	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-> +			      PAGE_SIZE << order);
+So definitely not for those series but I could imagine something like
 
-A lot of memcg accounted memory is not reclaimable. Why do you abuse
-SLAB counter when this is not a slab owned memory? Why do you use the
-kmem accounting API when __GFP_ACCOUNT should give you the same without
-this details?
+memblock_reserve()
+	
+	if (memblock_allocations_allowed())
+		WARN
+
+or so. This way you don't need to touch the archtectures. It all depends
+on what the other arches need/use.
+
+Or you could even make that a new memblock_reserve_warn() thing or so
+and wrap that functionality in it and have x86 call it only...
+
+Anyway, something to that effect.
+
+As to those two patches, you can add
+
+Acked-by: Borislav Petkov <bp@suse.de>
+
+to the next revision since akpm is going to take them.
+
+Thx.
+
 -- 
-Michal Hocko
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
