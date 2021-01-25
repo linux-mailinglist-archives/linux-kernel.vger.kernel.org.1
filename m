@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F57630396B
+	by mail.lfdr.de (Postfix) with ESMTP id 8A36130396C
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391480AbhAZJtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:49:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39598 "EHLO mail.kernel.org"
+        id S2391554AbhAZJtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:49:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726891AbhAYSwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:52:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C391820758;
-        Mon, 25 Jan 2021 18:52:00 +0000 (UTC)
+        id S1731022AbhAYSwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:52:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 410B22310A;
+        Mon, 25 Jan 2021 18:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600721;
-        bh=ZyWuKXthMxWtsaLohxHWLnb8UvzOoVhzaSyUSQZ74cY=;
+        s=korg; t=1611600723;
+        bh=HFYo4Y1Q2p1Oup6eWHfaH/2RgWK7eKYtOYYJiw4sHto=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jaTjLGo2DOuplA+qh/15ZybghsFR+ShcdeoxFesi1AfyKlGMrDL07TLfQfYt2tyse
-         52iwByZvMWH+qZU4nb7bxSjomJ0a0GMsuW2dWfBvzdQSf3aQEBN+7n4iLDNY0MQVx0
-         4u6lAY7lKkfZzjR2WYcXAgZWJu6ZHpDOvAmKeLTo=
+        b=ygXkb069ApeDNEej/HQ50Ml8bvvCFY/T3MGEZRPoVgMsXIp0rqtfsc2vAoHmnh0mc
+         RmiVjxxpAHQqNxSQgy5nu4eAdQl2ePf/3jxHaxF/z0XnrfpJf+KiIHYdL7nrRz6TVJ
+         g7i5hdFhiQoc1K0kfPe4E3LEH6G4YWGdQiy+xcyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Petr Mladek <pmladek@suse.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 095/199] printk: ringbuffer: fix line counting
-Date:   Mon, 25 Jan 2021 19:38:37 +0100
-Message-Id: <20210125183220.288395830@linuxfoundation.org>
+Subject: [PATCH 5.10 096/199] printk: fix kmsg_dump_get_buffer length calulations
+Date:   Mon, 25 Jan 2021 19:38:38 +0100
+Message-Id: <20210125183220.331125049@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,43 +43,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 668af87f995b6d6d09595c088ad1fb5dd9ff25d2 ]
+[ Upstream commit 89ccf18f032f26946e2ea6258120472eec6aa745 ]
 
-Counting text lines in a record simply involves counting the number
-of newline characters (+1). However, it is searching the full data
-block for newline characters, even though the text data can be (and
-often is) a subset of that area. Since the extra area in the data
-block was never initialized, the result is that extra newlines may
-be seen and counted.
+kmsg_dump_get_buffer() uses @syslog to determine if the syslog
+prefix should be written to the buffer. However, when calculating
+the maximum number of records that can fit into the buffer, it
+always counts the bytes from the syslog prefix.
 
-Restrict newline searching to the text data length.
+Use @syslog when calculating the maximum number of records that can
+fit into the buffer.
 
-Fixes: b6cf8b3f3312 ("printk: add lockless ringbuffer")
+Fixes: e2ae715d66bf ("kmsg - kmsg_dump() use iterator to receive log buffer content")
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20210113144234.6545-1-john.ogness@linutronix.de
+Link: https://lore.kernel.org/r/20210113164413.1599-1-john.ogness@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/printk/printk_ringbuffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/printk/printk.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index 74e25a1704f2b..617dd63589650 100644
---- a/kernel/printk/printk_ringbuffer.c
-+++ b/kernel/printk/printk_ringbuffer.c
-@@ -1720,7 +1720,7 @@ static bool copy_data(struct prb_data_ring *data_ring,
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3376,7 +3376,7 @@ bool kmsg_dump_get_buffer(struct kmsg_du
+ 	while (prb_read_valid_info(prb, seq, &info, &line_count)) {
+ 		if (r.info->seq >= dumper->next_seq)
+ 			break;
+-		l += get_record_print_text_size(&info, line_count, true, time);
++		l += get_record_print_text_size(&info, line_count, syslog, time);
+ 		seq = r.info->seq + 1;
+ 	}
  
- 	/* Caller interested in the line count? */
- 	if (line_count)
--		*line_count = count_lines(data, data_size);
-+		*line_count = count_lines(data, len);
+@@ -3386,7 +3386,7 @@ bool kmsg_dump_get_buffer(struct kmsg_du
+ 						&info, &line_count)) {
+ 		if (r.info->seq >= dumper->next_seq)
+ 			break;
+-		l -= get_record_print_text_size(&info, line_count, true, time);
++		l -= get_record_print_text_size(&info, line_count, syslog, time);
+ 		seq = r.info->seq + 1;
+ 	}
  
- 	/* Caller interested in the data content? */
- 	if (!buf || !buf_size)
--- 
-2.27.0
-
 
 
