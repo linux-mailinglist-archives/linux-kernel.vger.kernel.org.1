@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03A13038A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AB730389E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390872AbhAZJF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:05:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33670 "EHLO mail.kernel.org"
+        id S2390784AbhAZJDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:03:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730533AbhAYSrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:47:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 502E72310E;
-        Mon, 25 Jan 2021 18:46:33 +0000 (UTC)
+        id S1730526AbhAYSrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:47:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9BCC23110;
+        Mon, 25 Jan 2021 18:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600393;
-        bh=MML0RhjYqf4iDB6sL55kedkhNv5IKT2gLQybQyxIeXA=;
+        s=korg; t=1611600396;
+        bh=zXxPj2mz3TeHYYeBPFRY2ftmWGj036Lw6BjuNgQZ2lw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08AsxYBN3OchZcyWwuVqgnKeCtoL5+VPbZC1pW+LLnKc2ketv+XfzixjB4m6WgXTc
-         8GhjAqiUb8bfa/WxOJBRhy0Aa9OZwV4fLgUd2+A4SFwteNrSRlLf0pvsuNUd4bT60V
-         PZjz5oa753DqsCKTFzVoelpfy3S2Jv//Kswf+3x0=
+        b=1j9I2sTSnKuuS4KMNqr3BhEmlh51GGc0DZthWNKzOQmKa6n8n3Z96k3n2AGCT48zz
+         mp0YhQgUjPAdhk0Gg0k4SdB92IHU9EzClXtYhfHcrIgftFz2Gk+/0c0DXazGk4P7fw
+         2x3ZfJ2Ki2BhLEAHiEwnDxd2WRA7izqp0XCsKzLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Juerg Haefliger <juergh@canonical.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
+        stable@vger.kernel.org, William McCall <william.mccall@gmail.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Enke Chen <enchen@paloaltonetworks.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 85/86] tcp: do not mess with cloned skbs in tcp_add_backlog()
-Date:   Mon, 25 Jan 2021 19:40:07 +0100
-Message-Id: <20210125183204.641595910@linuxfoundation.org>
+Subject: [PATCH 5.4 86/86] tcp: fix TCP_USER_TIMEOUT with zero window
+Date:   Mon, 25 Jan 2021 19:40:08 +0100
+Message-Id: <20210125183204.684104321@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -41,113 +43,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Enke Chen <enchen@paloaltonetworks.com>
 
-commit b160c28548bc0a87cbd16d5af6d3edcfd70b8c9a upstream.
+commit 9d9b1ee0b2d1c9e02b2338c4a4b0a062d2d3edac upstream.
 
-Heiner Kallweit reported that some skbs were sent with
-the following invalid GSO properties :
-- gso_size > 0
-- gso_type == 0
+The TCP session does not terminate with TCP_USER_TIMEOUT when data
+remain untransmitted due to zero window.
 
-This was triggerring a WARN_ON_ONCE() in rtl8169_tso_csum_v2.
+The number of unanswered zero-window probes (tcp_probes_out) is
+reset to zero with incoming acks irrespective of the window size,
+as described in tcp_probe_timer():
 
-Juerg Haefliger was able to reproduce a similar issue using
-a lan78xx NIC and a workload mixing TCP incoming traffic
-and forwarded packets.
+    RFC 1122 4.2.2.17 requires the sender to stay open indefinitely
+    as long as the receiver continues to respond probes. We support
+    this by default and reset icsk_probes_out with incoming ACKs.
 
-The problem is that tcp_add_backlog() is writing
-over gso_segs and gso_size even if the incoming packet will not
-be coalesced to the backlog tail packet.
+This counter, however, is the wrong one to be used in calculating the
+duration that the window remains closed and data remain untransmitted.
+Thanks to Jonathan Maxwell <jmaxwell37@gmail.com> for diagnosing the
+actual issue.
 
-While skb_try_coalesce() would bail out if tail packet is cloned,
-this overwriting would lead to corruptions of other packets
-cooked by lan78xx, sharing a common super-packet.
+In this patch a new timestamp is introduced for the socket in order to
+track the elapsed time for the zero-window probes that have not been
+answered with any non-zero window ack.
 
-The strategy used by lan78xx is to use a big skb, and split
-it into all received packets using skb_clone() to avoid copies.
-The drawback of this strategy is that all the small skb share a common
-struct skb_shared_info.
-
-This patch rewrites TCP gso_size/gso_segs handling to only
-happen on the tail skb, since skb_try_coalesce() made sure
-it was not cloned.
-
-Fixes: 4f693b55c3d2 ("tcp: implement coalescing on backlog queue")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Bisected-by: Juerg Haefliger <juergh@canonical.com>
-Tested-by: Juerg Haefliger <juergh@canonical.com>
-Reported-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209423
-Link: https://lore.kernel.org/r/20210119164900.766957-1-eric.dumazet@gmail.com
+Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+Reported-by: William McCall <william.mccall@gmail.com>
+Co-developed-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+Reviewed-by: Yuchung Cheng <ycheng@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210115223058.GA39267@localhost.localdomain
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/ipv4/tcp_ipv4.c |   25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ include/net/inet_connection_sock.h |    3 +++
+ net/ipv4/inet_connection_sock.c    |    1 +
+ net/ipv4/tcp.c                     |    1 +
+ net/ipv4/tcp_input.c               |    1 +
+ net/ipv4/tcp_output.c              |    1 +
+ net/ipv4/tcp_timer.c               |   14 +++++++-------
+ 6 files changed, 14 insertions(+), 7 deletions(-)
 
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1657,6 +1657,7 @@ int tcp_v4_early_demux(struct sk_buff *s
- bool tcp_add_backlog(struct sock *sk, struct sk_buff *skb)
- {
- 	u32 limit = READ_ONCE(sk->sk_rcvbuf) + READ_ONCE(sk->sk_sndbuf);
-+	u32 tail_gso_size, tail_gso_segs;
- 	struct skb_shared_info *shinfo;
- 	const struct tcphdr *th;
- 	struct tcphdr *thtail;
-@@ -1664,6 +1665,7 @@ bool tcp_add_backlog(struct sock *sk, st
- 	unsigned int hdrlen;
- 	bool fragstolen;
- 	u32 gso_segs;
-+	u32 gso_size;
- 	int delta;
+--- a/include/net/inet_connection_sock.h
++++ b/include/net/inet_connection_sock.h
+@@ -83,6 +83,8 @@ struct inet_connection_sock_af_ops {
+  * @icsk_ext_hdr_len:	   Network protocol overhead (IP/IPv6 options)
+  * @icsk_ack:		   Delayed ACK control data
+  * @icsk_mtup;		   MTU probing control data
++ * @icsk_probes_tstamp:    Probe timestamp (cleared by non-zero window ack)
++ * @icsk_user_timeout:	   TCP_USER_TIMEOUT value
+  */
+ struct inet_connection_sock {
+ 	/* inet_sock has to be the first member! */
+@@ -133,6 +135,7 @@ struct inet_connection_sock {
  
- 	/* In case all data was pulled from skb frags (in __pskb_pull_tail()),
-@@ -1689,13 +1691,6 @@ bool tcp_add_backlog(struct sock *sk, st
+ 		u32		  probe_timestamp;
+ 	} icsk_mtup;
++	u32			  icsk_probes_tstamp;
+ 	u32			  icsk_user_timeout;
+ 
+ 	u64			  icsk_ca_priv[104 / sizeof(u64)];
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -840,6 +840,7 @@ struct sock *inet_csk_clone_lock(const s
+ 		newicsk->icsk_retransmits = 0;
+ 		newicsk->icsk_backoff	  = 0;
+ 		newicsk->icsk_probes_out  = 0;
++		newicsk->icsk_probes_tstamp = 0;
+ 
+ 		/* Deinitialize accept_queue to trap illegal accesses. */
+ 		memset(&newicsk->icsk_accept_queue, 0, sizeof(newicsk->icsk_accept_queue));
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2627,6 +2627,7 @@ int tcp_disconnect(struct sock *sk, int
+ 	icsk->icsk_backoff = 0;
+ 	tp->snd_cwnd = 2;
+ 	icsk->icsk_probes_out = 0;
++	icsk->icsk_probes_tstamp = 0;
+ 	icsk->icsk_rto = TCP_TIMEOUT_INIT;
+ 	tp->snd_ssthresh = TCP_INFINITE_SSTHRESH;
+ 	tp->snd_cwnd = TCP_INIT_CWND;
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -3286,6 +3286,7 @@ static void tcp_ack_probe(struct sock *s
+ 		return;
+ 	if (!after(TCP_SKB_CB(head)->end_seq, tcp_wnd_end(tp))) {
+ 		icsk->icsk_backoff = 0;
++		icsk->icsk_probes_tstamp = 0;
+ 		inet_csk_clear_xmit_timer(sk, ICSK_TIME_PROBE0);
+ 		/* Socket must be waked up by subsequent tcp_data_snd_check().
+ 		 * This function is not for random using!
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -3835,6 +3835,7 @@ void tcp_send_probe0(struct sock *sk)
+ 		/* Cancel probe timer, if it is not required. */
+ 		icsk->icsk_probes_out = 0;
+ 		icsk->icsk_backoff = 0;
++		icsk->icsk_probes_tstamp = 0;
+ 		return;
+ 	}
+ 
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -344,6 +344,7 @@ static void tcp_probe_timer(struct sock
+ 
+ 	if (tp->packets_out || !skb) {
+ 		icsk->icsk_probes_out = 0;
++		icsk->icsk_probes_tstamp = 0;
+ 		return;
+ 	}
+ 
+@@ -355,13 +356,12 @@ static void tcp_probe_timer(struct sock
+ 	 * corresponding system limit. We also implement similar policy when
+ 	 * we use RTO to probe window in tcp_retransmit_timer().
  	 */
- 	th = (const struct tcphdr *)skb->data;
- 	hdrlen = th->doff * 4;
--	shinfo = skb_shinfo(skb);
+-	if (icsk->icsk_user_timeout) {
+-		u32 elapsed = tcp_model_timeout(sk, icsk->icsk_probes_out,
+-						tcp_probe0_base(sk));
 -
--	if (!shinfo->gso_size)
--		shinfo->gso_size = skb->len - hdrlen;
--
--	if (!shinfo->gso_segs)
--		shinfo->gso_segs = 1;
+-		if (elapsed >= icsk->icsk_user_timeout)
+-			goto abort;
+-	}
++	if (!icsk->icsk_probes_tstamp)
++		icsk->icsk_probes_tstamp = tcp_jiffies32;
++	else if (icsk->icsk_user_timeout &&
++		 (s32)(tcp_jiffies32 - icsk->icsk_probes_tstamp) >=
++		 msecs_to_jiffies(icsk->icsk_user_timeout))
++		goto abort;
  
- 	tail = sk->sk_backlog.tail;
- 	if (!tail)
-@@ -1718,6 +1713,15 @@ bool tcp_add_backlog(struct sock *sk, st
- 		goto no_coalesce;
- 
- 	__skb_pull(skb, hdrlen);
-+
-+	shinfo = skb_shinfo(skb);
-+	gso_size = shinfo->gso_size ?: skb->len;
-+	gso_segs = shinfo->gso_segs ?: 1;
-+
-+	shinfo = skb_shinfo(tail);
-+	tail_gso_size = shinfo->gso_size ?: (tail->len - hdrlen);
-+	tail_gso_segs = shinfo->gso_segs ?: 1;
-+
- 	if (skb_try_coalesce(tail, skb, &fragstolen, &delta)) {
- 		TCP_SKB_CB(tail)->end_seq = TCP_SKB_CB(skb)->end_seq;
- 
-@@ -1744,11 +1748,8 @@ bool tcp_add_backlog(struct sock *sk, st
- 		}
- 
- 		/* Not as strict as GRO. We only need to carry mss max value */
--		skb_shinfo(tail)->gso_size = max(shinfo->gso_size,
--						 skb_shinfo(tail)->gso_size);
--
--		gso_segs = skb_shinfo(tail)->gso_segs + shinfo->gso_segs;
--		skb_shinfo(tail)->gso_segs = min_t(u32, gso_segs, 0xFFFF);
-+		shinfo->gso_size = max(gso_size, tail_gso_size);
-+		shinfo->gso_segs = min_t(u32, gso_segs + tail_gso_segs, 0xFFFF);
- 
- 		sk->sk_backlog.len += delta;
- 		__NET_INC_STATS(sock_net(sk),
+ 	max_probes = sock_net(sk)->ipv4.sysctl_tcp_retries2;
+ 	if (sock_flag(sk, SOCK_DEAD)) {
 
 
