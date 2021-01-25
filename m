@@ -2,97 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD10302A2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3FB302A2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbhAYS0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbhAYSZc (ORCPT
+        id S1726866AbhAYS1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:27:08 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:34472 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbhAYS0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:25:32 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F188C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:24:52 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id k193so13427650qke.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:24:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=HnSvtHvi0XPNHM/mWiGJMhC+HTvDL2NKMxV7WptHfR4=;
-        b=cXX3n5P62RS1OIbP0vOV8vm1mKp+DqGnf20BppLCxsEQe/SYzhopl9mI9sXGZ3RpNb
-         9IE4juvewKXdZxUV6SlFbcPZa9Bdt8XtcTo8VzvugAALA54L0VPBXeJvKf7SxkfsLd/p
-         uqR/4mxUc+RixF5vtmQjpM1Yq+A0tX81+QWtMm/eXFUfPgtyzPLtZohHPjZ6f9gVStGU
-         OJqRjLDUNxSkznpxxW8i+N3h8O9aBbDkjl145iCfOrhwou5eSmQvvgNpdcikIFcgsT5L
-         FasAp2DnvVnoDGE/7ZuxQn0hpSkxyVMxfdQJ766voKaE1dH6soi/JeH6+rikFoMNwnJj
-         TvEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=HnSvtHvi0XPNHM/mWiGJMhC+HTvDL2NKMxV7WptHfR4=;
-        b=O0RlBExIKmbpIDUqHytuEBloMV3mJaNZfowYx9LGp2qFlXzn55mmqSW7vki0eWsEcr
-         bOoLCPbc/HPjtK3BwxZDlDghWMzxpve0qdny20BKxBpyp1SptwqevKh5tIhQhuxG4cKx
-         OtRSTiNqx9jbk/H4LG6sqoTVsYbm+aoU7zB95KH/uClfNm7NDN1qfU9qIgVS42t7TmCQ
-         0wbDx9iufs38Ow2dn7W6e/fRkWc8/py1UVH+umEYyvWM30Qor93jpoUrjwnHEr2wciWf
-         Nt87w/78F8dRlbgwfM9H7oHq2p2n3ahYKJhRGpqRh6fq1DmxqwTrQTWGFgqkyNr/JHNM
-         w00Q==
-X-Gm-Message-State: AOAM533BKpFBbr0L8am0d6wRAfUEYxsCzraynHYFuVzdXWOhny6GnrA0
-        yOAxY81Ip8PONQVnS2e/4Fqr3w==
-X-Google-Smtp-Source: ABdhPJxJ8+We+9/uI1REscQW0vVnt3GvKzHfyM0Hy/lkgOEkOXaxGEVEHJok9twXTDAEAlsCtGc7QA==
-X-Received: by 2002:a05:620a:1127:: with SMTP id p7mr2076301qkk.447.1611599091863;
-        Mon, 25 Jan 2021 10:24:51 -0800 (PST)
-Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
-        by smtp.gmail.com with ESMTPSA id x15sm7400377qtr.72.2021.01.25.10.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:24:51 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:24:50 -0500 (EST)
-From:   Nicolas Pitre <npitre@baylibre.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v3] PM / clk: make PM clock layer compatible with clocks
- that must sleep
-In-Reply-To: <CAJZ5v0hn=aUXS-cBG333YXiG2_SUhfkvzsJPYqmWRyDu1zc+VA@mail.gmail.com>
-Message-ID: <82qo9ooo-32q0-2r4r-26q-o8482651qr91@onlyvoer.pbz>
-References: <17nqrn25-rp5s-4652-o5o1-72p2oprqpq90@onlyvoer.pbz> <CA+G9fYsyXsNSXGy6BWZ6mgpAP=+7r6Xy9jQ2xxb9mXyHdRoBCg@mail.gmail.com> <CAMuHMdULW4bnb0Jc0+ZaF9P2VNgnYsvEks7y8WYCk045BHqh7A@mail.gmail.com> <CA+G9fYvh0iSyEDQs7+0CX82FLPDCg5UmAt+1JuPsndmfmYF3kw@mail.gmail.com>
- <CAJZ5v0hFjpGp2GbV1Evi+BbUF7Am4ETY4Cm8VzTrvTJ=7=oyPQ@mail.gmail.com> <84r6s34s-opq7-9358-o45n-27s17084012@onlyvoer.pbz> <CAJZ5v0jUxonxp0q80Kdcbax+WMmh-NZ_h=KQG-HcfFdE1hr4VA@mail.gmail.com> <CAJZ5v0hj4VC_kjB5e_b_ho=ET_quG5zUh0Dbbdwofp-6azopsw@mail.gmail.com>
- <CA+G9fYsRVxWPW1nvSXMTLWfEadrdBDSH5hRPtoUYpfpqq8zRSw@mail.gmail.com> <CAJZ5v0gsYb1uxDUTHUe539w8uXhk=m337Xn6wtPhF1oPKzaYrQ@mail.gmail.com> <30np982n-r2q8-8532-q6os-9p9729ppos45@syhkavp.arg> <CAJZ5v0iNtmXWr3uXzit5Er_j7G=LkGVyhdNAsjwpVWsDy8F7KQ@mail.gmail.com>
- <61p41n8-r88q-9npq-879o-s4r5856os9s1@onlyvoer.pbz> <CAJZ5v0hn=aUXS-cBG333YXiG2_SUhfkvzsJPYqmWRyDu1zc+VA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 25 Jan 2021 13:26:39 -0500
+Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 27A8CCECCB;
+        Mon, 25 Jan 2021 19:33:07 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH v2] Bluetooth: btusb: fix memory leak on suspend and
+ resume
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210114112143.GA1318@cosmos>
+Date:   Mon, 25 Jan 2021 19:25:41 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <B529E35E-EAB3-4D8C-B615-9D5C3BDECB94@holtmann.org>
+References: <20210114112143.GA1318@cosmos>
+To:     Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021, Rafael J. Wysocki wrote:
+Hi Vamshi,
 
-> On Sun, Jan 24, 2021 at 12:07 AM Nicolas Pitre <npitre@baylibre.com> wrote:
-> > A note on sparse:
-> > According to https://lwn.net/Articles/109066/ there are things
-> > that sparse can't cope with. In particular, pm_clk_op_lock() and
-> > pm_clk_op_unlock() may or may not lock/unlock psd->lock depending on
-> > some runtime condition. To work around that we tell sparse the lock
-> > is always untaken for the purpose of static analisys.
+> kmemleak report:
+> unreferenced object 0xffff9b1127f00500 (size 208):
+>  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
+>  hex dump (first 32 bytes):
+>    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>    00 60 ed 05 11 9b ff ff 00 00 00 00 00 00 00 00  .`..............
+>  backtrace:
+>    [<000000006ab3fd59>] kmem_cache_alloc_node+0x17a/0x480
+>    [<0000000051a5f6f9>] __alloc_skb+0x5b/0x1d0
+>    [<0000000037e2d252>] hci_prepare_cmd+0x32/0xc0 [bluetooth]
+>    [<0000000010b586d5>] hci_req_add_ev+0x84/0xe0 [bluetooth]
+>    [<00000000d2deb520>] hci_req_clear_event_filter+0x42/0x70 [bluetooth]
+>    [<00000000f864bd8c>] hci_req_prepare_suspend+0x84/0x470 [bluetooth]
+>    [<000000001deb2cc4>] hci_prepare_suspend+0x31/0x40 [bluetooth]
+>    [<000000002677dd79>] process_one_work+0x209/0x3b0
+>    [<00000000aaa62b07>] worker_thread+0x34/0x400
+>    [<00000000826d176c>] kthread+0x126/0x140
+>    [<000000002305e558>] ret_from_fork+0x22/0x30
+> unreferenced object 0xffff9b1125c6ee00 (size 512):
+>  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
+>  hex dump (first 32 bytes):
+>    04 00 00 00 0d 00 00 00 05 0c 01 00 11 9b ff ff  ................
+>    00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
+>  backtrace:
+>    [<000000009f07c0cc>] slab_post_alloc_hook+0x59/0x270
+>    [<0000000049431dc2>] __kmalloc_node_track_caller+0x15f/0x330
+>    [<00000000027a42f6>] __kmalloc_reserve.isra.70+0x31/0x90
+>    [<00000000e8e3e76a>] __alloc_skb+0x87/0x1d0
+>    [<0000000037e2d252>] hci_prepare_cmd+0x32/0xc0 [bluetooth]
+>    [<0000000010b586d5>] hci_req_add_ev+0x84/0xe0 [bluetooth]
+>    [<00000000d2deb520>] hci_req_clear_event_filter+0x42/0x70 [bluetooth]
+>    [<00000000f864bd8c>] hci_req_prepare_suspend+0x84/0x470 [bluetooth]
+>    [<000000001deb2cc4>] hci_prepare_suspend+0x31/0x40 [bluetooth]
+>    [<000000002677dd79>] process_one_work+0x209/0x3b0
+>    [<00000000aaa62b07>] worker_thread+0x34/0x400
+>    [<00000000826d176c>] kthread+0x126/0x140
+>    [<000000002305e558>] ret_from_fork+0x22/0x30
+> unreferenced object 0xffff9b112b395788 (size 8):
+>  comm "kworker/u17:2", pid 500, jiffies 4294937470 (age 580.136s)
+>  hex dump (first 8 bytes):
+>    20 00 00 00 00 00 04 00                           .......
+>  backtrace:
+>    [<0000000052dc28d2>] kmem_cache_alloc_trace+0x15e/0x460
+>    [<0000000046147591>] alloc_ctrl_urb+0x52/0xe0 [btusb]
+>    [<00000000a2ed3e9e>] btusb_send_frame+0x91/0x100 [btusb]
+>    [<000000001e66030e>] hci_send_frame+0x7e/0xf0 [bluetooth]
+>    [<00000000bf6b7269>] hci_cmd_work+0xc5/0x130 [bluetooth]
+>    [<000000002677dd79>] process_one_work+0x209/0x3b0
+>    [<00000000aaa62b07>] worker_thread+0x34/0x400
+>    [<00000000826d176c>] kthread+0x126/0x140
+>    [<000000002305e558>] ret_from_fork+0x22/0x30
 > 
-> It looks like sparse is still complaining:
+> In pm sleep-resume context, while the btusb device rebinds, it enters
+> hci_unregister_dev(), whilst there is a possibility of hdev receiving
+> PM_POST_SUSPEND suspend_notifier event, leading to generation of msg
+> frames. When hci_unregister_dev() completes, i.e. hdev context is
+> destroyed/freed, those intermittently sent msg frames cause memory
+> leak.
 > 
-> https://lore.kernel.org/linux-acpi/600dc681.3mAl9WQXnragfNZk%25lkp@intel.com/
+> BUG details:
+> Below is stack trace of thread that enters hci_unregister_dev(), marks
+> the hdev flag HCI_UNREGISTER to 1, and then goes onto to wait on notifier
+> lock - refer unregister_pm_notifier().
+> 
+>  hci_unregister_dev+0xa5/0x320 [bluetoot]
+>  btusb_disconnect+0x68/0x150 [btusb]
+>  usb_unbind_interface+0x77/0x250
+>  ? kernfs_remove_by_name_ns+0x75/0xa0
+>  device_release_driver_internal+0xfe/0x1
+>  device_release_driver+0x12/0x20
+>  bus_remove_device+0xe1/0x150
+>  device_del+0x192/0x3e0
+>  ? usb_remove_ep_devs+0x1f/0x30
+>  usb_disable_device+0x92/0x1b0
+>  usb_disconnect+0xc2/0x270
+>  hub_event+0x9f6/0x15d0
+>  ? rpm_idle+0x23/0x360
+>  ? rpm_idle+0x26b/0x360
+>  process_one_work+0x209/0x3b0
+>  worker_thread+0x34/0x400
+>  ? process_one_work+0x3b0/0x3b0
+>  kthread+0x126/0x140
+>  ? kthread_park+0x90/0x90
+>  ret_from_fork+0x22/0x30
+> 
+> Below is stack trace of thread executing hci_suspend_notifier() which
+> processes the PM_POST_SUSPEND event, while the unbinding thread is
+> waiting on lock.
+> 
+>  hci_suspend_notifier.cold.39+0x5/0x2b [bluetooth]
+>  blocking_notifier_call_chain+0x69/0x90
+>  pm_notifier_call_chain+0x1a/0x20
+>  pm_suspend.cold.9+0x334/0x352
+>  state_store+0x84/0xf0
+>  kobj_attr_store+0x12/0x20
+>  sysfs_kf_write+0x3b/0x40
+>  kernfs_fop_write+0xda/0x1c0
+>  vfs_write+0xbb/0x250
+>  ksys_write+0x61/0xe0
+>  __x64_sys_write+0x1a/0x20
+>  do_syscall_64+0x37/0x80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Fix hci_suspend_notifer(), not to act on events when flag HCI_UNREGISTER
+> is set.
+> 
+> Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+> ---
+> net/bluetooth/hci_core.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Would you happen to still have one of those randconfig configuration?
+patch has been applied to bluetooth-next tree.
 
-I'd like to know why sparse complains about 3 out of 93 configs.
+Regards
 
+Marcel
 
-Nicolas
