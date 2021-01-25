@@ -2,117 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6723304B5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC11304B4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbhAZEqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 23:46:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51796 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726111AbhAYJPY (ORCPT
+        id S1727831AbhAZErs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 23:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbhAYJPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:15:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611565989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZqYL4d9Wet8su96h3iK+TQ2tTSrGpnqviwW5v3ZJymE=;
-        b=NcriAY0exsFdsXKTIBFvs+gnn6tDNw1SBImAT+hkgX3RtfDHkk/zrQiqWnTN23A3o3lFmx
-        YZ3yXmQQD663fBf+49TX+3qut+dhbSvePrZisWgUKnna41KWGezF7zZBmpIjNQ81UD6tZ6
-        p0ccIQ4N6KEQxCMMTmJPhYGdzEX/K6M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-cpZnYtDQPpaJkZZw6Hzrbw-1; Mon, 25 Jan 2021 04:13:05 -0500
-X-MC-Unique: cpZnYtDQPpaJkZZw6Hzrbw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47D8E107ACE3;
-        Mon, 25 Jan 2021 09:13:03 +0000 (UTC)
-Received: from [10.36.115.13] (ovpn-115-13.ams2.redhat.com [10.36.115.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D463470481;
-        Mon, 25 Jan 2021 09:13:00 +0000 (UTC)
-Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
- <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
- <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
-Date:   Mon, 25 Jan 2021 10:13:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Mon, 25 Jan 2021 04:15:55 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EA2C0611C2;
+        Mon, 25 Jan 2021 01:14:28 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id u11so7175843plg.13;
+        Mon, 25 Jan 2021 01:14:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Uuz1cWK615KjsyzAn5B4uJHEFhZmMkBz735HYYCWLVw=;
+        b=h/AIA79zizQQWojMq6zI+7TjxgSNttvCWo/+HGGBWb3sk7UE2Ca2RaycAW6/fXal6h
+         RzoL80f2C9Wyua8eX9hB2eb0UVf9KnDI2VfeZVnOcsc0c4NE8QGisnZoIy8m8tCw3ceo
+         vOL0S4bjzdbfDaFNX2lENvCM8ZHEy/+WwP5aFXLG9k2g72TwPQE9AMfW3Ob60acOuhac
+         PlGtxE8DLVNXD45cgC/cTlqyqgwNwQ+XF/53fbVJUTlOtmX03qPW9UWwrG7ID/bDQc1h
+         PRdNb79irDYNhfm4zfPtxFEUtTbTveFrJOY1K3wTaMNX5tsqPKNWdWcVERzgpbBnVSEu
+         ZxxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Uuz1cWK615KjsyzAn5B4uJHEFhZmMkBz735HYYCWLVw=;
+        b=isy86x8roF+OT5p5KoUiAMQZbbnerl0ZI82vUcruMqRctJD5mUKheTVu/FQGarUWp/
+         91WshTYj121JGTYpszCDfysuZ7GH+hrpe0kZ6Y7Iw9tblEl5Oa05Ge2hkHG3JLboyVlY
+         YFRhWxOo8/UkafhxopfjihSKEMEvKTZdmwS4W9DeUmkrjORRfUfaRh/+HquH+HP/xuiA
+         n6ds9Qy4JHJtMk48x2DMiG7Ycp7Q8CyUxIGPgrCRyFE5dZeln/o3qJxERKHHReImaM7/
+         zguKYLlRb2GBjtmnW3e+XuBdR5W/JVxxeDTYmOWvQAHGAZJIbRYHZNWYI+Id7/tWlNML
+         neyw==
+X-Gm-Message-State: AOAM530jY7e/vvTSaXZQBpgpGGJveUIJZ8UVauRR5fnwe3QfDUVLbTKn
+        AXbkCfgsRHLck1cW5gtynXU=
+X-Google-Smtp-Source: ABdhPJyXozHSNR3fCJUy/gHIy4qAmev22ABOH8/+wjpYGHD2zR3SUBsJ5+AJ2vN67e7SzkUYmysjIg==
+X-Received: by 2002:a17:90a:17a5:: with SMTP id q34mr4549773pja.47.1611566067755;
+        Mon, 25 Jan 2021 01:14:27 -0800 (PST)
+Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id p13sm15184063pjz.49.2021.01.25.01.14.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Jan 2021 01:14:26 -0800 (PST)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
+        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] fbtft: add tearing signal detect
+Date:   Mon, 25 Jan 2021 17:14:30 +0800
+Message-Id: <1611566070-84944-1-git-send-email-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.01.21 07:22, Anshuman Khandual wrote:
-> 
-> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
->> pfn_valid() asserts that there is a memblock entry for a given pfn without
->> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->> that they do not have memblock entries. Hence memblock_is_map_memory() will
->> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->> into the system via memremap_pages() called from a driver, their respective
->> memory sections will not have SECTION_IS_EARLY set.
->>
->> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->> for firmware reserved memory regions. memblock_is_map_memory() can just be
->> skipped as its always going to be positive and that will be an optimization
->> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
->> normal memory too will not have SECTION_IS_EARLY set for their sections.
->>
->> Skipping memblock_is_map_memory() for all non early memory sections would
->> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->> performance for normal hotplug memory as well.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Ard Biesheuvel <ardb@kernel.org>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> Hello David/Mike,
-> 
-> Given that we would need to rework early sections, memblock semantics via a
-> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
-> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
-> which fixes a problem (and improves performance) can be merged first. After
-> that, I could start working on the proposed rework. Could you please let me
-> know your thoughts on this. Thank you.
+From: zhangxuezhi <zhangxuezhi1@yulong.com>
 
-As I said, we might have to throw in an pfn_section_valid() check, to
-catch not-section-aligned ZONE_DEVICE ranges (I assume this is possible
-on arm64 as well, no?).
+For st7789v ic,add tearing signal detect to avoid screen tearing
 
-Apart from that, I'm fine with a simple fix upfront, that can be more
-easily backported if needed. (Q: do we? is this stable material?)
+Signed-off-by: zhangxuezhi <zhangxuezhi1@yulong.com>
+---
+v3:modify author name
+---
+ drivers/staging/fbtft/fb_st7789v.c | 134 ++++++++++++++++++++++++++++++++++++-
+ drivers/staging/fbtft/fbtft.h      |   1 +
+ 2 files changed, 134 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
+index 3a280cc..5426276 100644
+--- a/drivers/staging/fbtft/fb_st7789v.c
++++ b/drivers/staging/fbtft/fb_st7789v.c
+@@ -9,9 +9,12 @@
+ #include <linux/delay.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
++#include <linux/mutex.h>
++#include <linux/interrupt.h>
++#include <linux/completion.h>
+ #include <linux/module.h>
+ #include <video/mipi_display.h>
+-
++#include <linux/gpio/consumer.h>
+ #include "fbtft.h"
+ 
+ #define DRVNAME "fb_st7789v"
+@@ -66,6 +69,38 @@ enum st7789v_command {
+ #define MADCTL_MX BIT(6) /* bitmask for column address order */
+ #define MADCTL_MY BIT(7) /* bitmask for page address order */
+ 
++#define SPI_PANEL_TE_TIMEOUT	400
++static struct mutex te_mutex;/*mutex for tearing line*/
++static struct completion spi_panel_te;
++
++static irqreturn_t spi_panel_te_handler(int irq, void *data)
++{
++	complete(&spi_panel_te);
++	return IRQ_HANDLED;
++}
++
++static void enable_spi_panel_te_irq(struct fbtft_par *par, bool enable)
++{
++	static int te_irq_count;
++
++	if (!par->gpio.te) {
++		pr_err("%s:%d,SPI panel TE GPIO not configured\n",
++		       __func__, __LINE__);
++		return;
++	}
++
++	mutex_lock(&te_mutex);
++
++	if (enable) {
++		if (++te_irq_count == 1)
++			enable_irq(gpiod_to_irq(par->gpio.te));
++	} else {
++		if (--te_irq_count == 0)
++			disable_irq(gpiod_to_irq(par->gpio.te));
++	}
++	mutex_unlock(&te_mutex);
++}
++
+ /**
+  * init_display() - initialize the display controller
+  *
+@@ -82,6 +117,29 @@ enum st7789v_command {
+  */
+ static int init_display(struct fbtft_par *par)
+ {
++	int rc;
++	struct device *dev = par->info->device;
++
++	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
++	if (par->gpio.te) {
++		init_completion(&spi_panel_te);
++		mutex_init(&te_mutex);
++		rc = devm_request_irq(dev,
++				      gpiod_to_irq(par->gpio.te),
++				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
++				     "TE_GPIO", par);
++		if (rc) {
++			pr_err("TE request_irq failed.\n");
++			devm_gpiod_put(dev, par->gpio.te);
++			par->gpio.te = NULL;
++		} else {
++			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
++			pr_info("TE request_irq completion.\n");
++		}
++	} else {
++		pr_err("%s:%d, TE gpio not specified\n",
++		       __func__, __LINE__);
++	}
+ 	/* turn off sleep mode */
+ 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
+ 	mdelay(120);
+@@ -137,6 +195,9 @@ static int init_display(struct fbtft_par *par)
+ 	 */
+ 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
+ 
++    /*Tearing Effect Line On*/
++	if (par->gpio.te)
++		write_reg(par, 0x35, 0x00);
+ 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
+ 
+ 	if (HSD20_IPS)
+@@ -145,6 +206,76 @@ static int init_display(struct fbtft_par *par)
+ 	return 0;
+ }
+ 
++/*****************************************************************************
++ *
++ *   int (*write_vmem)(struct fbtft_par *par);
++ *
++ *****************************************************************************/
++
++/* 16 bit pixel over 8-bit databus */
++int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
++{
++	u16 *vmem16;
++	__be16 *txbuf16 = par->txbuf.buf;
++	size_t remain;
++	size_t to_copy;
++	size_t tx_array_size;
++	int i;
++	int rc, ret = 0;
++	size_t startbyte_size = 0;
++
++	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
++		      __func__, offset, len);
++
++	remain = len / 2;
++	vmem16 = (u16 *)(par->info->screen_buffer + offset);
++
++	if (par->gpio.dc)
++		gpiod_set_value(par->gpio.dc, 1);
++
++	/* non buffered write */
++	if (!par->txbuf.buf)
++		return par->fbtftops.write(par, vmem16, len);
++
++	/* buffered write */
++	tx_array_size = par->txbuf.len / 2;
++
++	if (par->startbyte) {
++		txbuf16 = par->txbuf.buf + 1;
++		tx_array_size -= 2;
++		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
++		startbyte_size = 1;
++	}
++
++	while (remain) {
++		to_copy = min(tx_array_size, remain);
++		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
++			to_copy, remain - to_copy);
++
++		for (i = 0; i < to_copy; i++)
++			txbuf16[i] = cpu_to_be16(vmem16[i]);
++
++		vmem16 = vmem16 + to_copy;
++		if (par->gpio.te) {
++			enable_spi_panel_te_irq(par, true);
++			reinit_completion(&spi_panel_te);
++			rc = wait_for_completion_timeout(&spi_panel_te,
++							 msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
++			if (rc == 0)
++				pr_err("wait panel TE time out\n");
++		}
++		ret = par->fbtftops.write(par, par->txbuf.buf,
++								startbyte_size + to_copy * 2);
++		if (par->gpio.te)
++			enable_spi_panel_te_irq(par, false);
++		if (ret < 0)
++			return ret;
++		remain -= to_copy;
++	}
++
++	return ret;
++}
++
+ /**
+  * set_var() - apply LCD properties like rotation and BGR mode
+  *
+@@ -259,6 +390,7 @@ static int blank(struct fbtft_par *par, bool on)
+ 	.gamma = HSD20_IPS_GAMMA,
+ 	.fbtftops = {
+ 		.init_display = init_display,
++		.write_vmem = st7789v_write_vmem16_bus8,
+ 		.set_var = set_var,
+ 		.set_gamma = set_gamma,
+ 		.blank = blank,
+diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
+index 76f8c09..93bac05 100644
+--- a/drivers/staging/fbtft/fbtft.h
++++ b/drivers/staging/fbtft/fbtft.h
+@@ -212,6 +212,7 @@ struct fbtft_par {
+ 		struct gpio_desc *wr;
+ 		struct gpio_desc *latch;
+ 		struct gpio_desc *cs;
++		struct gpio_desc *te;
+ 		struct gpio_desc *db[16];
+ 		struct gpio_desc *led[16];
+ 		struct gpio_desc *aux[16];
 -- 
-Thanks,
-
-David / dhildenb
+1.9.1
 
