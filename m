@@ -2,79 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6E8302E61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66563302E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732886AbhAYVws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:52:48 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57748 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732754AbhAYVvv (ORCPT
+        id S1732848AbhAYVwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:52:40 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:52460 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732773AbhAYVwL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:51:51 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10PLoo2p011874
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 16:50:51 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 35C1515C3709; Mon, 25 Jan 2021 16:50:50 -0500 (EST)
-Date:   Mon, 25 Jan 2021 16:50:50 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Chunguang Xu <brookxu.cn@gmail.com>
-Cc:     adilger.kernel@dilger.ca, jack@suse.com,
-        harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/4] make jbd2 debug switch per device
-Message-ID: <YA89Ov+yuX6BHJpS@mit.edu>
-References: <cover.1611402263.git.brookxu@tencent.com>
+        Mon, 25 Jan 2021 16:52:11 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611611503; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=oHOfrs93dyIetVBU17pSKVVbhMAMi8Wbu2YOAnCq9/E=; b=pqrS83KCenanL+hYK3YUx+RwfcUPxAyf1eZypWMYunSfSMzYOQLxeSbAXQ68vziu6lPuEFFs
+ CRNS5XpMVZQ+lVbGXVrZwc6rYLYxnUWXLXMnwF5izxodO/5T+Pp1eHAKJcrnbjchOGPNuhbH
+ kQOdAnEEPwBVbKbBCz1NaYAqJ6E=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 600f3d50f07bb817adaee6ff (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 21:51:12
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 84EF7C43462; Mon, 25 Jan 2021 21:51:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89640C433C6;
+        Mon, 25 Jan 2021 21:51:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 89640C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 25 Jan 2021 14:51:07 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] iommu/arm-smmu: Add support for driver IOMMU
+ fault handlers
+Message-ID: <20210125215107.GB16374@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Krishna Reddy <vdumpa@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201124191600.2051751-1-jcrouse@codeaurora.org>
+ <20201124191600.2051751-2-jcrouse@codeaurora.org>
+ <20210122124125.GA24102@willie-the-truck>
+ <8ba2f53d-abbf-af7f-07f6-48ad7f383a37@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1611402263.git.brookxu@tencent.com>
+In-Reply-To: <8ba2f53d-abbf-af7f-07f6-48ad7f383a37@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 08:00:42PM +0800, Chunguang Xu wrote:
-> On a multi-disk machine, because jbd2 debugging switch is global, this
-> confuses the logs of multiple disks. It is not easy to distinguish the
-> logs of each disk and the amount of generated logs is very large. Maybe
-> a separate debugging switch for each disk would be better, so that we
-> can easily distinguish the logs of a certain disk. 
+On Fri, Jan 22, 2021 at 12:53:17PM +0000, Robin Murphy wrote:
+> On 2021-01-22 12:41, Will Deacon wrote:
+> >On Tue, Nov 24, 2020 at 12:15:58PM -0700, Jordan Crouse wrote:
+> >>Call report_iommu_fault() to allow upper-level drivers to register their
+> >>own fault handlers.
+> >>
+> >>Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> >>---
+> >>
+> >>  drivers/iommu/arm/arm-smmu/arm-smmu.c | 16 +++++++++++++---
+> >>  1 file changed, 13 insertions(+), 3 deletions(-)
+> >>
+> >>diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> >>index 0f28a8614da3..7fd18bbda8f5 100644
+> >>--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> >>+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> >>@@ -427,6 +427,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+> >>  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+> >>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> >>  	int idx = smmu_domain->cfg.cbndx;
+> >>+	int ret;
+> >>  	fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
+> >>  	if (!(fsr & ARM_SMMU_FSR_FAULT))
+> >>@@ -436,11 +437,20 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+> >>  	iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
+> >>  	cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
+> >>-	dev_err_ratelimited(smmu->dev,
+> >>-	"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+> >>+	ret = report_iommu_fault(domain, dev, iova,
+> >>+		fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
+> >>+
+> >>+	if (ret == -ENOSYS)
+> >>+		dev_err_ratelimited(smmu->dev,
+> >>+		"Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+> >>  			    fsr, iova, fsynr, cbfrsynra, idx);
+> >>-	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+> >>+	/*
+> >>+	 * If the iommu fault returns an error (except -ENOSYS) then assume that
+> >>+	 * they will handle resuming on their own
+> >>+	 */
+> >>+	if (!ret || ret == -ENOSYS)
+> >>+		arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+> >
+> >Hmm, I don't grok this part. If the fault handler returned an error and
+> >we don't clear the FSR, won't we just re-take the irq immediately?
 > 
-> We can enable jbd2 debugging of a device in the following ways:
-> echo X > /proc/fs/jbd2/sdX/jbd2_debug
+> If we don't touch the FSR at all, yes. Even if we clear the fault indicator
+> bits, the interrupt *might* remain asserted until a stalled transaction is
+> actually resolved - that's that lovely IMP-DEF corner.
+>
+> Robin.
 > 
-> But there is a small disadvantage here. Because the debugging switch is
-> placed in the journal_t object, the log before the object is initialized
-> will be lost. However, usually this will not have much impact on
-> debugging.
 
-The jbd debugging infrastructure dates back to the very beginnings of
-ext3, when Stephen Tweedie added them while he was first implementing
-the jbd layer.  So this dates back to a time before we had other
-schemes like dynamic debug or tracepoints or eBPF.
+This is for stall-on-fault. The idea is that if the developer chooses to do so
+we would stall the GPU after a fault long enough to take a picture of it with
+devcoredump and then release the FSR. Since we can't take the devcoredump from
+the interrupt handler we schedule it in a worker and then return an error
+to let the main handler know that we'll come back around clear the FSR later
+when we are done.
 
-I wonder if instead of trying to enhance our own bespoke debugging
-system, instead we set up something like tracepoints where they would
-be useful.  I'm not proposing that we try to replace all jbd_debug()
-statements with tracepoints but I think it would be useful to look at
-what sort of information would actually be *useful* on a production
-server, and add those tracepoints to the jbd2 layer.  What I like
-about tracepoints is you can enable them on a much more fine-grained
-fashion; information is sent to userspace in a much more efficient
-manner than printk; you can filter tracepoint events in the kernel,
-before sending them to userspace; and if you want more sophisticated
-filtering or aggregation, you can use eBPF.
+It is assumed that we'll have to turn off interrupts in our handler to allow
+this to work. Its all very implementation specific, but then again we're
+assuming that if you want to do this then you know what you are doing.
 
-What was the original use case which inspired this?  Were you indeed
-trying to debug some kind of problem on a production system?  (Why did
-you have multiple disks active at the same time?)  Was there a
-specific problem you were trying to debug?  What debug level were you
-using?  Which jbd_debug statements were most useful to you?  Which
-just got in the way (but which had to be enabled given the log level
-you needed to get the debug messages that you needed)?
+In that spirit the error that skips the FSR should probably be something
+specific instead of "all errors" - that way a well meaning handler that returns
+a -EINVAL doesn't accidentally break itself.
 
-    	      	      	    	     	      - Ted
+Jordan
+
+> >I think
+> >it would be better to do this unconditionally, and print the "Unhandled
+> >context fault" message for any non-zero value of ret.
+
+> >
+> >Will
+> >
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
