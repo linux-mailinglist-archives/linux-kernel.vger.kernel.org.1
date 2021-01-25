@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67D4303747
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D35303755
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389549AbhAZHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:21:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42288 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730332AbhAYPok (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:44:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611589380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TwUrudT149MlYBAjlrkqwTg7VCY0+Yq9+gSFRKaR80s=;
-        b=TxT/UvEAK43OHQieTVUkcYnHR7UTgGNZnrNJxgFZr9apuHfIiWbIBZdak26JwBGmkkO2e3
-        pvl/fkrnER5Stt046wBDsUPiLolqgaT7Z/9hDPGo9N+LDeKU5o8KX4JU7Xr77ubfc5IMR9
-        2nz63zDq89ocL64y7agTiEWgNJVi+Us=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-wFt5wxUKNkKXGw7gDZYURA-1; Mon, 25 Jan 2021 10:42:58 -0500
-X-MC-Unique: wFt5wxUKNkKXGw7gDZYURA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1765809DC9;
-        Mon, 25 Jan 2021 15:42:56 +0000 (UTC)
-Received: from gondolin (ovpn-113-161.ams2.redhat.com [10.36.113.161])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9017D5E1A4;
-        Mon, 25 Jan 2021 15:42:54 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 16:42:52 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        schnelle@linux.ibm.com, pmorel@linux.ibm.com,
-        borntraeger@de.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] vfio-pci/zdev: Introduce the zPCI I/O vfio region
-Message-ID: <20210125164252.1d1af6cd.cohuck@redhat.com>
-In-Reply-To: <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
-References: <1611086550-32765-1-git-send-email-mjrosato@linux.ibm.com>
-        <1611086550-32765-5-git-send-email-mjrosato@linux.ibm.com>
-        <20210122164843.269f806c@omen.home.shazbot.org>
-        <9c363ff5-b76c-d697-98e2-cf091a404d15@linux.ibm.com>
-Organization: Red Hat GmbH
+        id S2389465AbhAZH3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:29:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730355AbhAYPpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:45:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3C192224C;
+        Mon, 25 Jan 2021 15:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611587096;
+        bh=NpbOL0QAy2B+v2obTlYdRHqEBTB+JvqMn4xl7op6tQk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nhVwK8YAdvdKoEPF2JktD7o2Kqm/pYYHEesrR/2aKWKgwr7rSdyvQRSFeHsqdW8/C
+         sWUPIulZ+zahhyz6yyZ9ThlEo4HuJ4D0KpYU+8KEeZ1hrLnPDHEq/RDKk0qnL8zhnu
+         rPCeg6RbLnar0PQbA2AN9IX60Pd6gO7BDYvCyi5wIgRnRWM2QFFOViRw/OuMuIZnaI
+         CMUFaYcPOr/b2Q7CU1kOgJfYXXtaCqIlDJnJ6cHz+dhHbWsyXWDyPHiTDXIaE+lG6Y
+         FYmFxsBBhh8uiFIg8PfY0pW110lc9hg7rwP5LHxvVp0mWUs2c25hMzlgU8dA/rdXZ7
+         /CtWoWgEYwPig==
+Received: by mail-ej1-f54.google.com with SMTP id by1so18497535ejc.0;
+        Mon, 25 Jan 2021 07:04:55 -0800 (PST)
+X-Gm-Message-State: AOAM533CV9GGZkdeWiMq5JQX1ODc9xU/xxek9E1nOBBzzsX7SAx7uLAP
+        7S9DIUUdu9yldLwDEu1wSypqmJmlz7BvLLd+RJw=
+X-Google-Smtp-Source: ABdhPJzojfz9zKZgZqlkUtTNjng/1jRATIl36jwsa/Jt/SJvnlIGM8ns0P8MPSjplQ4Nzdq74KQFPv1BPhXYQKoWZDo=
+X-Received: by 2002:a17:906:2898:: with SMTP id o24mr618828ejd.215.1611587094202;
+ Mon, 25 Jan 2021 07:04:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210125113654.2408057-1-arnd@kernel.org> <CAJKOXPfteJ3Jia4Qd9DabjxcOtax3uDgi1fSbz4_+cHsJ1prQQ@mail.gmail.com>
+ <CAK8P3a0apBUbck9Z3UMKfwSJw8a-UbbXLTLUvSyOKEwTgPLjqg@mail.gmail.com>
+ <CAJKOXPc6LWnqiyO9WgxUZPo-vitNcQQr2oDoyD44P2YTSJ7j=g@mail.gmail.com> <CAK8P3a1NEbZtXVA0Z4P3K97L9waBp7nkCWOkdYjR3+7FUF0P0Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a1NEbZtXVA0Z4P3K97L9waBp7nkCWOkdYjR3+7FUF0P0Q@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Mon, 25 Jan 2021 16:04:42 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPdWouEFtCp_iG+py1JcyrEU2Fj98jBAPTKZXQXCDQE54A@mail.gmail.com>
+Message-ID: <CAJKOXPdWouEFtCp_iG+py1JcyrEU2Fj98jBAPTKZXQXCDQE54A@mail.gmail.com>
+Subject: Re: [PATCH] ath9k: fix build error with LEDS_CLASS=m
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 09:40:38 -0500
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Mon, 25 Jan 2021 at 15:38, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Mon, Jan 25, 2021 at 2:27 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > On Mon, 25 Jan 2021 at 14:09, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > On Mon, Jan 25, 2021 at 12:40 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > > On Mon, 25 Jan 2021 at 12:36, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > But we do not want to have this dependency (selecting MAC80211_LEDS).
+> > > > I fixed this problem here:
+> > > > https://lore.kernel.org/lkml/20201227143034.1134829-1-krzk@kernel.org/
+> > > > Maybe let's take this approach?
+> > >
+> > > Generally speaking, I don't like to have a device driver specific Kconfig
+> > > setting 'select' a subsystem', for two reasons:
+> > >
+> > > - you suddenly get asked for tons of new LED specific options when
+> > >   enabling seemingly benign options
+> > >
+> > > - Mixing 'depends on' and 'select' leads to bugs with circular
+> > >   dependencies that usually require turning some other 'select'
+> > >   into 'depends on'.
+> > >
+> > > The problem with LEDS_CLASS in particular is that there is a mix of drivers
+> > > using one vs the other roughly 50:50.
+> >
+> > Yes, you are right, I also don't like it. However it was like this
+> > before my commit so I am not introducing a new issue. The point is
+> > that in your choice the MAC80211_LEDS will be selected if LEDS_CLASS
+> > is present, which is exactly what I was trying to fix/remove. My WiFi
+> > dongle does not have a LED and it causes a periodic (every second)
+> > event. However I still have LEDS_CLASS for other LEDS in the system.
+>
+> What is the effect of this lost event every second? If it causes some
+> runtime warning or other problem, then neither of our fixes would
+> solve it completely, because someone with a distro kernel would
+> see the same issue when they have the symbol enabled but no
+> physical LED in the device.
 
-> On 1/22/21 6:48 PM, Alex Williamson wrote:
-> > On Tue, 19 Jan 2021 15:02:30 -0500
-> > Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-> >   
-> >> Some s390 PCI devices (e.g. ISM) perform I/O operations that have very
-> >> specific requirements in terms of alignment as well as the patterns in
-> >> which the data is read/written. Allowing these to proceed through the
-> >> typical vfio_pci_bar_rw path will cause them to be broken in up in such a
-> >> way that these requirements can't be guaranteed. In addition, ISM devices
-> >> do not support the MIO codepaths that might be triggered on vfio I/O coming
-> >> from userspace; we must be able to ensure that these devices use the
-> >> non-MIO instructions.  To facilitate this, provide a new vfio region by
-> >> which non-MIO instructions can be passed directly to the host kernel s390
-> >> PCI layer, to be reliably issued as non-MIO instructions.
-> >>
-> >> This patch introduces the new vfio VFIO_REGION_SUBTYPE_IBM_ZPCI_IO region
-> >> and implements the ability to pass PCISTB and PCILG instructions over it,
-> >> as these are what is required for ISM devices.  
-> > 
-> > There have been various discussions about splitting vfio-pci to allow
-> > more device specific drivers rather adding duct tape and bailing wire
-> > for various device specific features to extend vfio-pci.  The latest
-> > iteration is here[1].  Is it possible that such a solution could simply
-> > provide the standard BAR region indexes, but with an implementation that
-> > works on s390, rather than creating new device specific regions to
-> > perform the same task?  Thanks,
-> > 
-> > Alex
-> > 
-> > [1]https://lore.kernel.org/lkml/20210117181534.65724-1-mgurtovoy@nvidia.com/
-> >   
-> 
-> Thanks for the pointer, I'll have to keep an eye on this.  An approach 
-> like this could solve some issues, but I think a main issue that still 
-> remains with relying on the standard BAR region indexes (whether using 
-> the current vfio-pci driver or a device-specific driver) is that QEMU 
-> writes to said BAR memory region are happening in, at most, 8B chunks 
-> (which then, in the current general-purpose vfio-pci code get further 
-> split up into 4B iowrite operations).  The alternate approach I'm 
-> proposing here is allowing for the whole payload (4K) in a single 
-> operation, which is significantly faster.  So, I suspect even with a 
-> device specific driver we'd want this sort of a region anyhow..
+I meant that having MAC80211_LEDS selected causes the ath9k driver to
+toggle on/off the WiFi LED. Every second, regardless whether it's
+doing something or not. In my setup, I have problems with a WiFi
+dongle somehow crashing (WiFi disappears, nothing comes from the
+dongle... maybe it's Atheros FW, maybe some HW problem) and I found
+this LED on/off slightly increases the chances of this dongle-crash.
+That was the actual reason behind my commits.
 
-I'm also wondering about device specific vs architecture/platform
-specific handling.
+Second reason is that I don't want to send USB commands every second
+when the device is idle. It unnecessarily consumes power on my
+low-power device.
 
-If we're trying to support ISM devices, that's device specific
-handling; but if we're trying to add more generic things like the large
-payload support, that's not necessarily tied to a device, is it? For
-example, could a device support large payload if plugged into a z, but
-not if plugged into another machine?
+Of course another solution is to just disable the trigger via sysfs
+LED API. It would also work but my patch allows entire code to be
+compiled-out (which was conditional in ath9k already).
 
+Therefore the patch I sent allows the ath9k LED option to be fully
+choosable. Someone wants every-second-LED-blink, sure, enable
+ATH9K_LEDS and you have it. Someone wants to reduce the kernel size,
+don't enable ATH9K_LEDS.
+
+Best regards,
+Krzysztof
