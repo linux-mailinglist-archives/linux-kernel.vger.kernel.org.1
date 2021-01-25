@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A8D3038C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B09F3038DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389966AbhAZJPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:15:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33762 "EHLO mail.kernel.org"
+        id S2389512AbhAZJUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:20:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726950AbhAYSrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:47:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEEF1224BE;
-        Mon, 25 Jan 2021 18:47:09 +0000 (UTC)
+        id S1727069AbhAYSrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:47:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87339224DF;
+        Mon, 25 Jan 2021 18:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600430;
-        bh=DRaBQNii7okTU7Y6WLb9KoJToxoFiwRVPO0x4HMcFVM=;
+        s=korg; t=1611600433;
+        bh=JaIU3/pIKgCO1wlrX4supaU7123yKweSYk85zX5aXmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QO0LVprOjp54S0oqjMarbrclIl7H2URp8gDkJ5GXu37WF5fN69mPvxAcyoXndgA8S
-         3aC8hy205zPGx3cKdsSLOjZW21qpnQ7ZVUesmWLCSC/H2JEwni0+shpJfvGEdfi3QB
-         od9RCtZZ68sutiQoOxYa5b1rR+PW02XX1Id3Kol4=
+        b=FWu/yWlyfiikknjVtiKQmPRMIhLC6ikqPBvOQWigeHVTstO1berOXJH9IvcijhPLm
+         kXv4vEmDp53G/jgBCkbHZa0vL4NsYOdP/Wk9Ed8ojAEnTpqea6WaQv50nt5oQPqIFC
+         9bjlUsmaOiU1zTRNy+2dBNfF2g0rj+t8/R7bMeBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 012/199] dm crypt: fix copy and paste bug in crypt_alloc_req_aead
-Date:   Mon, 25 Jan 2021 19:37:14 +0100
-Message-Id: <20210125183216.774291856@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Subject: [PATCH 5.10 013/199] ACPI: scan: Make acpi_bus_get_device() clear return pointer on error
+Date:   Mon, 25 Jan 2021 19:37:15 +0100
+Message-Id: <20210125183216.811483453@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -40,42 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ignat Korchagin <ignat@cloudflare.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 004b8ae9e2de55ca7857ba8471209dd3179e088c upstream.
+commit 78a18fec5258c8df9435399a1ea022d73d3eceb9 upstream.
 
-In commit d68b29584c25 ("dm crypt: use GFP_ATOMIC when allocating
-crypto requests from softirq") code was incorrectly copy and pasted
-from crypt_alloc_req_skcipher()'s crypto request allocation code to
-crypt_alloc_req_aead(). It is OK from runtime perspective as both
-simple encryption request pointer and AEAD request pointer are part of
-a union, but may confuse code reviewers.
+Set the acpi_device pointer which acpi_bus_get_device() returns-by-
+reference to NULL on errors.
 
-Fixes: d68b29584c25 ("dm crypt: use GFP_ATOMIC when allocating crypto requests from softirq")
-Cc: stable@vger.kernel.org # v5.9+
-Reported-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+We've recently had 2 cases where callers of acpi_bus_get_device()
+did not properly error check the return value, so set the returned-
+by-reference acpi_device pointer to NULL, because at least some
+callers of acpi_bus_get_device() expect that to be done on errors.
+
+[ rjw: This issue was exposed by commit 71da201f38df ("ACPI: scan:
+  Defer enumeration of devices with _DEP lists") which caused it to
+  be much more likely to occur on some systems, but the real defect
+  had been introduced by an earlier commit. ]
+
+Fixes: 40e7fcb19293 ("ACPI: Add _DEP support to fix battery issue on Asus T100TA")
+Fixes: bcfcd409d4db ("usb: split code locating ACPI companion into port and device")
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Diagnosed-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: All applicable <stable@vger.kernel.org>
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/md/dm-crypt.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/acpi/scan.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -1481,9 +1481,9 @@ static int crypt_alloc_req_skcipher(stru
- static int crypt_alloc_req_aead(struct crypt_config *cc,
- 				 struct convert_context *ctx)
- {
--	if (!ctx->r.req) {
--		ctx->r.req = mempool_alloc(&cc->req_pool, in_interrupt() ? GFP_ATOMIC : GFP_NOIO);
--		if (!ctx->r.req)
-+	if (!ctx->r.req_aead) {
-+		ctx->r.req_aead = mempool_alloc(&cc->req_pool, in_interrupt() ? GFP_ATOMIC : GFP_NOIO);
-+		if (!ctx->r.req_aead)
- 			return -ENOMEM;
- 	}
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -586,6 +586,8 @@ static int acpi_get_device_data(acpi_han
+ 	if (!device)
+ 		return -EINVAL;
  
++	*device = NULL;
++
+ 	status = acpi_get_data_full(handle, acpi_scan_drop_device,
+ 				    (void **)device, callback);
+ 	if (ACPI_FAILURE(status) || !*device) {
 
 
