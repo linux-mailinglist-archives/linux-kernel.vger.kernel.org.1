@@ -2,138 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9249B3022A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 09:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D4E3022AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 09:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbhAYIAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 03:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727236AbhAYH4l (ORCPT
+        id S1727311AbhAYIJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 03:09:12 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:40834 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727307AbhAYIAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 02:56:41 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1134C0613ED
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 23:54:43 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id 186so6676243vsz.13
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 23:54:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=shLCHFFMB4DAp0A0ILgc+eh2S2wXCYfyelqnf4KL6us=;
-        b=Px9KUJsGwJ+VtNulQrpo/gNubEPUdjzL9axWZwpaxfB/oLoVrtc0t1GYJCMzKHcXDV
-         9l6qQIgZcF4L1+IAccLk1ZVIAxm/s0IaiWoE+lC4RDtEB8AVaSimH+KNn/RfinTLPu3C
-         fQeytqMsM3ShLU1d/TSI7rWDnJmmkSacvXy3k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=shLCHFFMB4DAp0A0ILgc+eh2S2wXCYfyelqnf4KL6us=;
-        b=Eg0ER09SVsyB8RhpAdvDO1gjoNIBlyGGq6rU3BWZcYUZrpVFlykZkksLKWr9nHDhHI
-         G8r7h1XyPRBBzd2O5KYIH6fnS0D44MO1PyMI1/69WD4YWFsm0dH8USKOqNc4loJqHENt
-         0P9ZZhJ4bJdX7dR1hgxpCSAzxr4Mo2hlVOogB756YN/sdeINmo3lKE/Urke6HkhSB+d1
-         yQpJMeIl3B10KRLV4mCcZcOba2zwwYXETMuWFQqNWPxUDqCwWxxYh1YqcEv8CufYM40D
-         2RVUp0g5OKniVMtkYtDSfZqA7pLiNZo+lR3R0DYXsmho86VFRY/tSlPSILD3oLcLD0oK
-         ohBw==
-X-Gm-Message-State: AOAM530iqP1cNtnH7RW+verG4RHWs7PzIl7we7XWwMcIjREAEZnXtqQn
-        5geV1QyW0ozrefn2fIyioxkLBUKhFS9ugExW20r+XA==
-X-Google-Smtp-Source: ABdhPJxq6uXHnDY4RVG3ffjbpATtyupiGISReVdidQGDUJdMst+TXrrJKK/Vy7bMu/1qDhBMrWXBpYi1MsH/3SjYMfE=
-X-Received: by 2002:a67:6b46:: with SMTP id g67mr4296vsc.60.1611561282606;
- Sun, 24 Jan 2021 23:54:42 -0800 (PST)
-MIME-Version: 1.0
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Mon, 25 Jan 2021 15:54:31 +0800
-Message-ID: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
-Subject: [BUG] copy_file_range with sysfs file as input
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <dchinner@redhat.com>
-Cc:     Luis Lozano <llozano@chromium.org>, iant@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 25 Jan 2021 03:00:33 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMmi-sD_1611561544;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMmi-sD_1611561544)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 25 Jan 2021 15:59:08 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     paulus@ozlabs.org
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] KVM: PPC: Book3S: Assign boolean values to a bool variable
+Date:   Mon, 25 Jan 2021 15:59:02 +0800
+Message-Id: <1611561542-17017-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi copy_file_range experts,
+Fix the following coccicheck warnings:
 
-We hit this interesting issue when upgrading Go compiler from 1.13 to
-1.15 [1]. Basically we use Go's `io.Copy` to copy the content of
-`/sys/kernel/debug/tracing/trace` to a temporary file.
+./arch/powerpc/kvm/book3s_hv_rm_xics.c:381:3-15: WARNING: Assignment of
+0/1 to bool variable.
 
-Under the hood, Go now uses `copy_file_range` syscall to optimize the
-copy operation. However, that fails to copy any content when the input
-file is from sysfs/tracefs, with an apparent size of 0 (but there is
-still content when you `cat` it, of course).
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ arch/powerpc/kvm/book3s_hv_rm_xics.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-A repro case is available in comment7 (adapted from the man page),
-also copied below [2].
+diff --git a/arch/powerpc/kvm/book3s_hv_rm_xics.c b/arch/powerpc/kvm/book3s_hv_rm_xics.c
+index c2c9c73..68e509d 100644
+--- a/arch/powerpc/kvm/book3s_hv_rm_xics.c
++++ b/arch/powerpc/kvm/book3s_hv_rm_xics.c
+@@ -378,7 +378,7 @@ static void icp_rm_deliver_irq(struct kvmppc_xics *xics, struct kvmppc_icp *icp,
+ 			arch_spin_unlock(&ics->lock);
+ 			icp->n_reject++;
+ 			new_irq = reject;
+-			check_resend = 0;
++			check_resend = false;
+ 			goto again;
+ 		}
+ 	} else {
+-- 
+1.8.3.1
 
-Output looks like this (on kernels 5.4.89 (chromeos), 5.7.17 and
-5.10.3 (chromeos))
-$ ./copyfrom /sys/kernel/debug/tracing/trace x
-0 bytes copied
-$ cat x
-$ cat /sys/kernel/debug/tracing/trace
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 0/0   #P:8
-#
-#                                _-----=> irqs-off
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| /     delay
-#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-#              | |         |   ||||      |         |
-
-I can try to dig further, but thought you'd like to get a bug report
-as soon as possible.
-
-Thanks,
-
-Nicolas
-
-[1] http://issuetracker.google.com/issues/178332739
-[2]
-#define _GNU_SOURCE
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <unistd.h>
-
-int
-main(int argc, char **argv)
-{
-        int fd_in, fd_out;
-        loff_t ret;
-
-        if (argc != 3) {
-                fprintf(stderr, "Usage: %s <source> <destination>\n", argv[0]);
-                exit(EXIT_FAILURE);
-        }
-
-        fd_in = open(argv[1], O_RDONLY);
-        if (fd_in == -1) {
-                perror("open (argv[1])");
-                exit(EXIT_FAILURE);
-        }
-
-        fd_out = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-        if (fd_out == -1) {
-                perror("open (argv[2])");
-                exit(EXIT_FAILURE);
-        }
-
-        ret = copy_file_range(fd_in, NULL, fd_out, NULL, 1024, 0);
-        if (ret == -1) {
-                perror("copy_file_range");
-                exit(EXIT_FAILURE);
-        }
-        printf("%d bytes copied\n", (int)ret);
-
-        close(fd_in);
-        close(fd_out);
-        exit(EXIT_SUCCESS);
-}
