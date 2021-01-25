@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D838D3040BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18083040BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391489AbhAZJlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:41:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
+        id S2391448AbhAZJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:40:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731016AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:51:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4C2230FE;
-        Mon, 25 Jan 2021 18:50:46 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D942310A;
+        Mon, 25 Jan 2021 18:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600647;
-        bh=ofOobhAYAlhx7z0vjQRQRqTy0ct47jqIcLvfC6rMWZs=;
+        s=korg; t=1611600652;
+        bh=ZRdEgExoQGaP23kwrINMhYQZYgcDHq3m22r39Cu4ZFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GthisWVxgH4o2x+2Boe4XDNDlcq+wCuj78Sr0AoNxFoXxSF4N/1cJkKARlASb/RCm
-         KA0rR0vj0JRz3kblPrtdC+yvwI2IrpeYf9SPRi5JDpQS0009S3bFWIxBSo+ndC3FpD
-         GJd/yilksGjXFAI6nDVHkeY98g+WMfog/VnhHVwE=
+        b=jzneQR0NC+OFflhrMa8V2++AfrG+kl+ynTwbdD/NUvPtwNX2IRbXmSjLzMFxRRdRW
+         PtGeWCFh4jIv4L8eOxXe8kLkej/qIA4Fpb88FuRpw3RWgiaz5dUB+9LtZmYwCBu6Zt
+         hfq96PleY2gMzukDpyGxT1ExwSf3/R+JpYFnjPWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ariel Marcovitch <ariel.marcovitch@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Takashi Iwai <tiwai@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/199] powerpc: Fix alignment bug within the init sections
-Date:   Mon, 25 Jan 2021 19:38:31 +0100
-Message-Id: <20210125183220.028257959@linuxfoundation.org>
+Subject: [PATCH 5.10 099/199] drm/vc4: Unify PCM cards driver_name
+Date:   Mon, 25 Jan 2021 19:38:41 +0100
+Message-Id: <20210125183220.457534182@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -42,69 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ariel Marcovitch <arielmarcovitch@gmail.com>
+From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-[ Upstream commit 2225a8dda263edc35a0e8b858fe2945cf6240fde ]
+[ Upstream commit 33c74535b03ecf11359de14bc88302595b1de44f ]
 
-This is a bug that causes early crashes in builds with an .exit.text
-section smaller than a page and an .init.text section that ends in the
-beginning of a physical page (this is kinda random, which might
-explain why this wasn't really encountered before).
+User-space ALSA matches a card's driver name against an internal list of
+aliases in order to select the correct configuration for the system.
+When the driver name isn't defined, the match is performed against the
+card's name.
 
-The init sections are ordered like this:
-  .init.text
-  .exit.text
-  .init.data
+With the introduction of RPi4 we now have two HDMI ports with two
+distinct audio cards. This is reflected in their names, making them
+different from previous RPi versions. With this, ALSA ultimately misses
+the board's configuration on RPi4.
 
-Currently, these sections aren't page aligned.
+In order to avoid this, set "card->driver_name" to "vc4-hdmi"
+unanimously.
 
-Because the init code might become read-only at runtime and because
-the .init.text section can potentially reside on the same physical
-page as .init.data, the beginning of .init.data might be mapped
-read-only along with .init.text.
-
-Then when the kernel tries to modify a variable in .init.data (like
-kthreadd_done, used in kernel_init()) the kernel panics.
-
-To avoid this, make _einittext page aligned and also align .exit.text
-to make sure .init.data is always seperated from the text segments.
-
-Fixes: 060ef9d89d18 ("powerpc32: PAGE_EXEC required for inittext")
-Signed-off-by: Ariel Marcovitch <ariel.marcovitch@gmail.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210102201156.10805-1-ariel.marcovitch@gmail.com
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Fixes: f437bc1ec731 ("drm/vc4: drv: Support BCM2711")
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210115191209.12852-1-nsaenzjulienne@suse.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vmlinux.lds.S | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index 50507dac118ae..83281aee14d2f 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -187,6 +187,12 @@ SECTIONS
- 	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) {
- 		_sinittext = .;
- 		INIT_TEXT
-+
-+		/*
-+		 *.init.text might be RO so we must ensure this section ends on
-+		 * a page boundary.
-+		 */
-+		. = ALIGN(PAGE_SIZE);
- 		_einittext = .;
- #ifdef CONFIG_PPC64
- 		*(.tramp.ftrace.init);
-@@ -200,6 +206,8 @@ SECTIONS
- 		EXIT_TEXT
- 	}
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index afc178b0d89f4..eaba98e15de46 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1268,6 +1268,7 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+ 	card->dai_link = dai_link;
+ 	card->num_links = 1;
+ 	card->name = vc4_hdmi->variant->card_name;
++	card->driver_name = "vc4-hdmi";
+ 	card->dev = dev;
+ 	card->owner = THIS_MODULE;
  
-+	. = ALIGN(PAGE_SIZE);
-+
- 	INIT_DATA_SECTION(16)
- 
- 	. = ALIGN(8);
 -- 
 2.27.0
 
