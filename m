@@ -2,150 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221BA3036D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BEE3036DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbhAZGvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:51:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729943AbhAYPe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:34:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0CFB227BF;
-        Mon, 25 Jan 2021 15:03:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611586987;
-        bh=0lg9lKXNFsGW0ZYgktOcWgFnhneGWwZnxv6sZqfftUg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oxEo6gbjMpHT+BzNGHzl9XABc5soiu8eVcnZ32gNyDQ4W9p1DHT+U66PxAFY/N6VW
-         CdYsQteCbACzes2Qv8d4/Tv5xbdsn0Ebht7XMccDOfjgDfpqxZI8f+8xQQED8Ev1jI
-         aJoxhjszwOSBS0vqx4MG0bciZ0Z3aOdBsoA0j7P2UBa+ZcWdzqPbKx7U7I6SctL21o
-         3Erg0hiXga1keYNq9oU888fEEH1JFDMPzkLFCam5SX7jw0h4rGizfZNYYKqQrq0eR+
-         ROjxDh3JaHJR9+PSn8yOr2rA1PbE23/Kh1ug/YoAxz3eQTe0m0ZZF6JMeDLXPoqhdL
-         or0ELKGQjuK5Q==
-Received: by pali.im (Postfix)
-        id CA0F3BAB; Mon, 25 Jan 2021 16:03:05 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Thomas Schreiber <tschreibe@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] net: sfp: add mode quirk for GPON module Ubiquiti U-Fiber Instant
-Date:   Mon, 25 Jan 2021 16:02:28 +0100
-Message-Id: <20210125150228.8523-3-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210125150228.8523-1-pali@kernel.org>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20210125150228.8523-1-pali@kernel.org>
+        id S2389095AbhAZGz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:55:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729854AbhAYPgH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:36:07 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AD4C0613D6;
+        Mon, 25 Jan 2021 07:03:02 -0800 (PST)
+Received: from [IPv6:2804:214:81d7:a6cc:f83c:66c3:4225:e59d] (unknown [IPv6:2804:214:81d7:a6cc:f83c:66c3:4225:e59d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 6CEE71F44F13;
+        Mon, 25 Jan 2021 15:02:58 +0000 (GMT)
+Subject: Re: [PATCH 2/3] media: videodev2.h: clarify
+ v4l2_pix_format_mplane.sizeimage docs when to set to zero
+To:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org
+Cc:     mchehab@kernel.org, hans.verkuil@cisco.com, kernel@collabora.com,
+        linux-kernel@vger.kernel.org, tfiga@chromium.org
+References: <20210114180149.1755892-1-helen.koike@collabora.com>
+ <20210114180149.1755892-3-helen.koike@collabora.com>
+ <acae9f51-f8ca-b5f6-9af0-f0acc04e911d@xs4all.nl>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <2afcfc92-eaec-6175-cfc4-0cfe760bed9f@collabora.com>
+Date:   Mon, 25 Jan 2021 12:02:53 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <acae9f51-f8ca-b5f6-9af0-f0acc04e911d@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Ubiquiti U-Fiber Instant SFP GPON module has nonsensical information
-stored in its EEPROM. It claims to support all transceiver types including
-10G Ethernet. Clear all claimed modes and set only 1000baseX_Full, which is
-the only one supported.
 
-This module has also phys_id set to SFF, and the SFP subsystem currently
-does not allow to use SFP modules detected as SFFs. Add exception for this
-module so it can be detected as supported.
 
-This change finally allows to detect and use SFP GPON module Ubiquiti
-U-Fiber Instant on Linux system.
+On 1/25/21 6:31 AM, Hans Verkuil wrote:
+> On 14/01/2021 19:01, Helen Koike wrote:
+>> sizeimage field should be set to zero for unused planes, even when
+>> v4l2_pix_format_mplane.num_planes is smaller then the index of planes.
+> 
+> then -> than
 
-EEPROM content of this SFP module is (where XX is serial number):
+Ack.
 
-00: 02 04 0b ff ff ff ff ff ff ff ff 03 0c 00 14 c8    ???........??.??
-10: 00 00 00 00 55 42 4e 54 20 20 20 20 20 20 20 20    ....UBNT
-20: 20 20 20 20 00 18 e8 29 55 46 2d 49 4e 53 54 41        .??)UF-INSTA
-30: 4e 54 20 20 20 20 20 20 34 20 20 20 05 1e 00 36    NT      4   ??.6
-40: 00 06 00 00 55 42 4e 54 XX XX XX XX XX XX XX XX    .?..UBNTXXXXXXXX
-50: 20 20 20 20 31 34 30 31 32 33 20 20 60 80 02 41        140123  `??A
+> 
+>>
+>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+>>
+>> ---
+>>
+>> I caught this with v4l2-compliance, which throws an error if we dirty
+>> planes, even if invalid, so I would like to make it clear in the docs.
+> 
+> What is the error? And with which driver?
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
+I was implementing conversions to/from Ext API, and I thought v4l2-compliance
+wasn't happy if I didn't zero the other entries, but I'm trying to reproduce
+it now by adding a non-zero value to sizeimage and I can't reproduce it, so
+it was probably my mistake.
+Please ignore this patch and sorry for the noise.
 
----
-Changes in v4:
-* Rewritten the commit message by Marek's suggestion
+> 
+> I wonder if this isn't a v4l2-compliance bug. And if we want this to be
+> zeroed, then it wouldn't it be better to do that in the V4L2 core rather
+> than bother drivers with this?
+> 
+>> ---
+>>  include/uapi/linux/videodev2.h | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>> index 79dbde3bcf8d..d9b7c9177605 100644
+>> --- a/include/uapi/linux/videodev2.h
+>> +++ b/include/uapi/linux/videodev2.h
+>> @@ -2227,6 +2227,7 @@ struct v4l2_mpeg_vbi_fmt_ivtv {
+>>   * struct v4l2_plane_pix_format - additional, per-plane format definition
+>>   * @sizeimage:		maximum size in bytes required for data, for which
+>>   *			this plane will be used
+>> + *			Drivers should be set it zero for unused planes.
+> 
+> This sentence is a bit garbled.
+> 
+> You probably meant: Drivers must set this to zero for unused planes.
+> 
+> But it makes no sense to just zero this field. I would zero the whole struct
+> contents for the unused planes.
+> 
+>>   * @bytesperline:	distance in bytes between the leftmost pixels in two
+>>   *			adjacent lines
+>>   */
+>>
+> 
+> The API doesn't mention whether unused plane formats should be zeroed or not,
+> but it does make sense that they are. I don't think that the userspace API
+> should be changed (esp. since there are apparently already drivers that do
+> not zero these unused plane formats), but it makes sense that the compliance
+> test does verify this, and that the V4L2 core would zero unused plane formats.
+> 
+> I never like it when undefined values are allowed in an API, so it makes sense
+> that this is done.
 
-Changes in v3:
-* no change
 
-Changes in v2:
-* add this module also into sfp_module_supported() function
----
- drivers/net/phy/sfp-bus.c | 15 +++++++++++++++
- drivers/net/phy/sfp.c     | 17 +++++++++++++++--
- 2 files changed, 30 insertions(+), 2 deletions(-)
+Ack.
 
-diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-index 20b91f5dfc6e..4cf874fb5c5b 100644
---- a/drivers/net/phy/sfp-bus.c
-+++ b/drivers/net/phy/sfp-bus.c
-@@ -44,6 +44,17 @@ static void sfp_quirk_2500basex(const struct sfp_eeprom_id *id,
- 	phylink_set(modes, 2500baseX_Full);
- }
- 
-+static void sfp_quirk_ubnt_uf_instant(const struct sfp_eeprom_id *id,
-+				      unsigned long *modes)
-+{
-+	/* Ubiquiti U-Fiber Instant module claims that support all transceiver
-+	 * types including 10G Ethernet which is not truth. So clear all claimed
-+	 * modes and set only one mode which module supports: 1000baseX_Full.
-+	 */
-+	phylink_zero(modes);
-+	phylink_set(modes, 1000baseX_Full);
-+}
-+
- static const struct sfp_quirk sfp_quirks[] = {
- 	{
- 		// Alcatel Lucent G-010S-P can operate at 2500base-X, but
-@@ -63,6 +74,10 @@ static const struct sfp_quirk sfp_quirks[] = {
- 		.vendor = "HUAWEI",
- 		.part = "MA5671A",
- 		.modes = sfp_quirk_2500basex,
-+	}, {
-+		.vendor = "UBNT",
-+		.part = "UF-INSTANT",
-+		.modes = sfp_quirk_ubnt_uf_instant,
- 	},
- };
- 
-diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-index f2b5e467a800..7a680b5177f5 100644
---- a/drivers/net/phy/sfp.c
-+++ b/drivers/net/phy/sfp.c
-@@ -273,8 +273,21 @@ static const struct sff_data sff_data = {
- 
- static bool sfp_module_supported(const struct sfp_eeprom_id *id)
- {
--	return id->base.phys_id == SFF8024_ID_SFP &&
--	       id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP;
-+	if (id->base.phys_id == SFF8024_ID_SFP &&
-+	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP)
-+		return true;
-+
-+	/* SFP GPON module Ubiquiti U-Fiber Instant has in its EEPROM stored
-+	 * phys id SFF instead of SFP. Therefore mark this module explicitly
-+	 * as supported based on vendor name and pn match.
-+	 */
-+	if (id->base.phys_id == SFF8024_ID_SFF_8472 &&
-+	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP &&
-+	    !memcmp(id->base.vendor_name, "UBNT            ", 16) &&
-+	    !memcmp(id->base.vendor_pn, "UF-INSTANT      ", 16))
-+		return true;
-+
-+	return false;
- }
- 
- static const struct sff_data sfp_data = {
--- 
-2.20.1
+Thanks
+Helen
 
+
+> 
+> Regards,
+> 
+> 	Hans
+> 
