@@ -2,262 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24CF302D62
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C89F302D5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732586AbhAYVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:15:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbhAYVJj (ORCPT
+        id S1732227AbhAYVMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:12:34 -0500
+Received: from simcoe208srvr.owm.bell.net ([184.150.200.208]:56390 "EHLO
+        torfep01.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732061AbhAYVJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:09:39 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB79C061573;
-        Mon, 25 Jan 2021 13:08:36 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id gx5so20050828ejb.7;
-        Mon, 25 Jan 2021 13:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bNXeXc3vGhxTCm0XPiMscGdXWu7Ggi1oyXI1subSlPc=;
-        b=eNT5m3XBY71AOp5C+JofQOqSiVSnVIHplG8Hv4i4ZXn0o3BHGJ68hHRKj/jS3KgtW9
-         tKhGTx+B9nQkKCdr76/T+W0hf7jUvHT/cMdrBiq0QPDYooOKCCVQDLTGAjtV5OLNulqq
-         MtLz2U3ObznDzaFsCT/1ArxlbsiSZq9wedFqEiwylDJHJ+pNGSmDBklA2LJvqbcPIpq3
-         rSVtuWp6B1N9FnRWY8+0mheqDDGnyWJBXK6XOepbN+yltO58LL4C23mmlZEhpV942pQQ
-         MdNToxw4s+8ADzWI+fHC+LL0I02wjVHIu61oOuv6BseNeg/PQ9pkIVNpXTEIRto6hGQC
-         vZlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bNXeXc3vGhxTCm0XPiMscGdXWu7Ggi1oyXI1subSlPc=;
-        b=cXjoKLyY+H/p5Lvbf+sWTiVo0IEpm48JQsxcgocDbausu2LuklNqIe67QJhAjtEXT4
-         gk8+DAoFhJmgbbqC/BaB7b0Sr/OcI3F4hFUOacLRmt56IKN0pA+enFeGesfrWrPCOtdY
-         TRipUjqWrGpOGu2CYDLl9Q2ENTr33JI7j70ygoR8LcFGA2BZZPl0IZKP8dPHd39yUTw8
-         seca5Tec3ECmyyIe4Dz09WLcnDuwexGEz9rS8QkiqDwsNp9xGJPwuNCh+ApsWSohXbCh
-         U1oIdX3dBA99szKFesz8VZmcAzhAZ/+/WPfg/rMmYHijqUMqCYnwTCsKXO3IhIAFcLHz
-         dTjQ==
-X-Gm-Message-State: AOAM5319qMNuXQOheAlbaC6Vwevmp4vH3OmGaHfkwymhccL2zODcKnXN
-        VfCy4n++LPHaVydOtUjbeBvjiEaXyHmzRNJCRSmivweRu1s=
-X-Google-Smtp-Source: ABdhPJwhZLoyEyyuQP9vDiDAuzHGfDislX6Yw/pL7fd9JAcf0IFFTYreblvhZn3h5HVUFyQ9FMmMbPGDFxdk4xCN9K8=
-X-Received: by 2002:a17:906:f841:: with SMTP id ks1mr1477717ejb.507.1611608915557;
- Mon, 25 Jan 2021 13:08:35 -0800 (PST)
+        Mon, 25 Jan 2021 16:09:43 -0500
+Received: from bell.net torfep01 184.150.200.158 by torfep01.bell.net
+          with ESMTP
+          id <20210125210838.GAGQ6892.torfep01.bell.net@torspm01.bell.net>;
+          Mon, 25 Jan 2021 16:08:38 -0500
+Received: from [192.168.2.49] (really [70.50.109.22]) by torspm01.bell.net
+          with ESMTP
+          id <20210125210838.SILO29322.torspm01.bell.net@[192.168.2.49]>;
+          Mon, 25 Jan 2021 16:08:38 -0500
+Subject: Re: hppa64-linux-ld: mm/hugetlb.o(.text+0x50dc): cannot reach printk
+To:     Helge Deller <deller@gmx.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-parisc@vger.kernel.org, kbuild-all@lists.01.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>
+References: <202101162230.XswE8zOX-lkp@intel.com>
+ <CAKwvOd=rrTLc510cEA84BC_zzYVQ0ifPEMhRRtU-cyYPs_E4eA@mail.gmail.com>
+ <bed0d008-c5c0-011e-6f1e-fb248f97c009@bell.net>
+ <88735d3b-1b56-bc8a-2183-1f9549626002@gmx.de>
+ <20210125204720.GA28462@ls3530.fritz.box>
+ <4bdf35de-f804-4e9d-cde9-cc6785840a60@gmx.de>
+From:   John David Anglin <dave.anglin@bell.net>
+Message-ID: <627d4b69-79cf-371b-9aa7-d87f26e4f088@bell.net>
+Date:   Mon, 25 Jan 2021 16:08:37 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210121230621.654304-1-shy828301@gmail.com> <20210121230621.654304-8-shy828301@gmail.com>
- <1c621cd8-7d13-ddfa-bb83-d4260a1bb754@virtuozzo.com>
-In-Reply-To: <1c621cd8-7d13-ddfa-bb83-d4260a1bb754@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 25 Jan 2021 13:08:23 -0800
-Message-ID: <CAHbLzkrnWy5wB0mhGjZ__ikUSoH09zbbb59jhXHmf6k+A3netw@mail.gmail.com>
-Subject: Re: [v4 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4bdf35de-f804-4e9d-cde9-cc6785840a60@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-Analysis: v=2.4 cv=ctpeL30i c=1 sm=1 tr=0 ts=600f3356 a=S6gQgrXzeH76ECG4GouVuA==:117 a=S6gQgrXzeH76ECG4GouVuA==:17 a=IkcTkHD0fZMA:10 a=EmqxpYm9HcoA:10 a=QyXUC8HyAAAA:8 a=VwQbUJbxAAAA:8 a=i-5SCMXTAAAA:20 a=nRxgo2pvAAAA:8 a=FBHGMhGWAAAA:8 a=LudcmL_S42iirT4DLs4A:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=hyOiLu3se5BDDO0nYPa2:22 a=9gvnlMMaQFpL9xblJ6ne:22
+X-CM-Envelope: MS4xfBm+iWn1x0N/bu8YqxDfecrW/1DprFkEWxGFHQvGGB+eXnb08frWbCa9QNOag0GldZc6Ljm4gL90Y8+oPDNd+jElpfYyrUg9M6XkHPqYWhdaiQqX5Ht3 +Eto+1v25/NtPLhb8uJ7LTlnRPAq4DJUSLxeiA2kSb+2YNtkZHZFQUFKZ0MNM1k9jrHw/LMuVJRWzi77zhjgYkFJveYZ0VTRoo8k/j2E7kSkhSb5wLCS6bVE Ql4f04TWq4+V7eR8C8dVMw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 1:31 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 22.01.2021 02:06, Yang Shi wrote:
-> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> >
-> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> > may suffer from over shrink, excessive reclaim latency, etc.
-> >
-> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> >
-> > We observed this hit in our production environment which was running vfs heavy workload
-> > shown as the below tracing log:
-> >
-> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> > cache items 246404277 delta 31345 total_scan 123202138
-> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> > last shrinker return val 123186855
-> >
-> > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
-> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> >
-> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> > better isolation.
-> >
-> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |  7 +++---
-> >  mm/vmscan.c                | 49 +++++++++++++++++++++++++-------------
-> >  2 files changed, 36 insertions(+), 20 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 62b888b88a5f..e0384367e07d 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -93,12 +93,13 @@ struct lruvec_stat {
-> >  };
-> >
-> >  /*
-> > - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-> > - * which have elements charged to this memcg.
-> > + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
-> > + * shrinkers, which have elements charged to this memcg.
-> >   */
-> >  struct shrinker_info {
-> >       struct rcu_head rcu;
-> > -     unsigned long map[];
-> > +     unsigned long *map;
-> > +     atomic_long_t *nr_deferred;
-> >  };
-> >
-> >  /*
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 018e1beb24c9..722aa71b13b2 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -192,11 +192,13 @@ static void free_shrinker_info_rcu(struct rcu_head *head)
-> >       kvfree(container_of(head, struct shrinker_info, rcu));
-> >  }
-> >
-> > -static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> > -                                int size, int old_size)
-> > +static int expand_one_shrinker_info(struct mem_cgroup *memcg, int nr_max,
-> > +                                 int m_size, int d_size,
-> > +                                 int old_m_size, int old_d_size)
-> >  {
-> >       struct shrinker_info *new, *old;
-> >       int nid;
-> > +     int size = m_size + d_size;
-> >
-> >       for_each_node(nid) {
-> >               old = rcu_dereference_protected(
-> > @@ -209,9 +211,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> >               if (!new)
-> >                       return -ENOMEM;
-> >
-> > -             /* Set all old bits, clear all new bits */
-> > -             memset(new->map, (int)0xff, old_size);
-> > -             memset((void *)new->map + old_size, 0, size - old_size);
-> > +             new->map = (unsigned long *)(new + 1);
-> > +             new->nr_deferred = (atomic_long_t *)(new->map +
-> > +                                     nr_max / BITS_PER_LONG + 1);
->
-> Why not
->
->                 new->nr_deferred = (void *)new->map + m_size;
-> ?
->
-> > +
-> > +             /* map: set all old bits, clear all new bits */
-> > +             memset(new->map, (int)0xff, old_m_size);
-> > +             memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
-> > +             /* nr_deferred: copy old values, clear all new values */
-> > +             memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
-> > +             memset((void *)new->nr_deferred + old_d_size, 0, d_size - old_d_size);
-> >
-> >               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
-> >               call_rcu(&old->rcu, free_shrinker_info_rcu);
-> > @@ -226,9 +235,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
-> >       struct shrinker_info *info;
-> >       int nid;
-> >
-> > -     if (mem_cgroup_is_root(memcg))
-> > -             return;
-> > -
-> >       for_each_node(nid) {
-> >               pn = mem_cgroup_nodeinfo(memcg, nid);
-> >               info = rcu_dereference_protected(pn->shrinker_info, true);
-> > @@ -242,12 +248,13 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >  {
-> >       struct shrinker_info *info;
-> >       int nid, size, ret = 0;
-> > -
-> > -     if (mem_cgroup_is_root(memcg))
-> > -             return 0;
-> > +     int m_size, d_size = 0;
-> >
-> >       down_write(&shrinker_rwsem);
-> > -     size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> > +     m_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> > +     d_size = shrinker_nr_max * sizeof(atomic_long_t);
-> > +     size = m_size + d_size;
-> > +
-> >       for_each_node(nid) {
-> >               info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
-> >               if (!info) {
-> > @@ -255,6 +262,9 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
-> >                       ret = -ENOMEM;
-> >                       break;
-> >               }
-> > +             info->map = (unsigned long *)(info + 1);
-> > +             info->nr_deferred = (atomic_long_t *)(info->map +
-> > +                                     shrinker_nr_max / BITS_PER_LONG + 1);
->
-> Why not:
->                 info->nr_deferred = (void*)info->map + m_size;
+I would suggest the following for this hunk:
 
-Yes, definitely. Will fix in v5.
++    ldil    L%intr_restore, %r2
++    BL    preempt_schedule_irq
++    ldo     R%intr_restore(%r2), %r2
 
-> ?
->
-> >               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
-> >       }
-> >       up_write(&shrinker_rwsem);
-> > @@ -266,10 +276,16 @@ static int expand_shrinker_info(int new_id)
-> >  {
-> >       int size, old_size, ret = 0;
-> >       int new_nr_max = new_id + 1;
-> > +     int m_size, d_size = 0;
-> > +     int old_m_size, old_d_size = 0;
-> >       struct mem_cgroup *memcg;
-> >
-> > -     size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> > -     old_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> > +     m_size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
-> > +     d_size = new_nr_max * sizeof(atomic_long_t);
-> > +     size = m_size + d_size;
-> > +     old_m_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
->
-> Could you please pack this twice repeating pattern into some macro? E.g.,
->
-> #define NR_MAX_TO_SHR_MAP_SIZE(nr_max)  \
->         ((nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long))
+    ldil    L%intr_restore, %r1
+    b,l    preempt_schedule_irq,%r2
+    ldo     R%intr_restore(%r1), %r2
 
-Sure. Will incorporate in v5.
+On PA 2.0 hardware that gives a 22-bit call.
 
+Dave
+
+On 2021-01-25 3:59 p.m., Helge Deller wrote:
+> On 1/25/21 9:47 PM, Helge Deller wrote:
+>>>>> On Sat, Jan 16, 2021 at 6:37 AM kernel test robot <lkp@intel.com> wrote:
+>>>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>>>>> head:   1d94330a437a573cfdf848f6743b1ed169242c8a
+>>>>>> commit: eff8728fe69880d3f7983bec3fb6cea4c306261f vmlinux.lds.h: Add PGO and AutoFDO input sections
+>>>>>> date:   5 months ago
+>>>>>> config: parisc-randconfig-r032-20210116 (attached as .config)
+>>>>>> compiler: hppa64-linux-gcc (GCC) 9.3.0
+>>>>>> reproduce (this is a W=1 build):
+>>>>>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>>>         chmod +x ~/bin/make.cross
+>>>>>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eff8728fe69880d3f7983bec3fb6cea4c306261f
+>>>>>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>>>         git fetch --no-tags linus master
+>>>>>>         git checkout eff8728fe69880d3f7983bec3fb6cea4c306261f
+>>>>>>         # save the attached .config to linux build tree
+>>>>>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
+>>>>>>
+>>>>>> If you fix the issue, kindly add following tag as appropriate
+>>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>>
+>>>>>> All errors (new ones prefixed by >>):
+>>>>>>
+>>>>>>    hppa64-linux-ld: mm/page_alloc.o(.ref.text+0x110): cannot reach unknown
+>>>>>>    hppa64-linux-ld: mm/memblock.o(.text+0x27c): cannot reach __warn_printk
+>>>>>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0xc4): cannot reach printk
+>> ....
+>>
+>> The problem with this .config is, that both CONFIG_MODULES and
+>> CONFIG_MLONGCALLS are set to "n".
+>> The Kconfig autodetection needs fixing to enable CONFIG_MLONGCALLS in
+>> this case.
+>>
+>>
+>> This patch fixes it for me:
+>>
+>> [PATCH] Require -mlong-calls gcc option for !CONFIG_MODULES
+>>
+>> When building a kernel without module support, the CONFIG_MLONGCALL
+>> option needs to be enabled. This patch fixes the autodetection in the
+>> Kconfig script and uses a far call to preempt_schedule_irq() in
+>> intr_do_preempt().
+>>
+>> Signed-off-by: Helge Deller <deller@gmx.de>
+>> Reported-by: kernel test robot <lkp@intel.com>
+> There's a small bug in the code below:
+> 	BL	preempt_schedule_irq
+> needs to be
+> 	BL	preempt_schedule_irq, %r0
 >
-> > +     old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
-> > +     old_size = old_m_size + old_d_size;
-> >       if (size <= old_size)
-> >               return 0;
-> >
-> > @@ -278,9 +294,8 @@ static int expand_shrinker_info(int new_id)
-> >
-> >       memcg = mem_cgroup_iter(NULL, NULL, NULL);
-> >       do {
-> > -             if (mem_cgroup_is_root(memcg))
-> > -                     continue;
-> > -             ret = expand_one_shrinker_info(memcg, size, old_size);
-> > +             ret = expand_one_shrinker_info(memcg, new_nr_max, m_size, d_size,
-> > +                                            old_m_size, old_d_size);
-> >               if (ret) {
-> >                       mem_cgroup_iter_break(NULL, memcg);
-> >                       goto out;
-> >
+> I'll do some more testing and will push the final version
+> through the parisc tree.
+>
+> Helge
 >
 >
+>> ---
+>>
+>> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+>> index 78b17621ee4a..278462186ac4 100644
+>> --- a/arch/parisc/Kconfig
+>> +++ b/arch/parisc/Kconfig
+>> @@ -202,9 +202,8 @@ config PREFETCH
+>>  	depends on PA8X00 || PA7200
+>>
+>>  config MLONGCALLS
+>> -	bool "Enable the -mlong-calls compiler option for big kernels"
+>> -	default y if !MODULES || UBSAN || FTRACE
+>> -	default n
+>> +	def_bool y if !MODULES || UBSAN || FTRACE
+>> +	bool "Enable the -mlong-calls compiler option for big kernels" if MODULES && !UBSAN && !FTRACE
+>>  	depends on PA8X00
+>>  	help
+>>  	  If you configure the kernel to include many drivers built-in instead
+>> diff --git a/arch/parisc/kernel/entry.S b/arch/parisc/kernel/entry.S
+>> index beba9816cc6c..6320f6a8397c 100644
+>> --- a/arch/parisc/kernel/entry.S
+>> +++ b/arch/parisc/kernel/entry.S
+>> @@ -997,10 +997,19 @@ intr_do_preempt:
+>>  	bb,<,n	%r20, 31 - PSW_SM_I, intr_restore
+>>  	nop
+>>
+>> -	BL	preempt_schedule_irq, %r2
+>> -	nop
+>> +	/* ssm PSW_SM_I done later in intr_restore */
+>> +#ifdef CONFIG_MLONGCALLS
+>> +	ldil    L%intr_restore, %r2
+>> +	load32	preempt_schedule_irq, %r1
+>> +	bv	%r0(%r1)
+>> +	ldo     R%intr_restore(%r2), %r2
+>> +#else
+>> +	ldil    L%intr_restore, %r2
+>> +	BL	preempt_schedule_irq
+>> +	ldo     R%intr_restore(%r2), %r2
+>> +#endif
+>> +
+>>
+>> -	b,n	intr_restore		/* ssm PSW_SM_I done by intr_restore */
+>>  #endif /* CONFIG_PREEMPTION */
+>>
+>>  	/*
+>>
+>>
+
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
