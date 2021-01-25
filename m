@@ -2,93 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078AF3023D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8503023D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727589AbhAYKop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 05:44:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727496AbhAYKie (ORCPT
+        id S1727639AbhAYKrR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 05:47:17 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:48998 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727561AbhAYKjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:38:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24625C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iMGBNmPvE4v1jywfgHxZnsC9PInWaaImOpYiuSDeYH8=; b=XGpRgv3UJ1zJBW1lmzkCciStOJ
-        Fp22GXksW20qouvjnkQyOJRz7xJ/3hGCev25dsQRZyK/godEYPjEsGRwphqnRH5iY36uiHOXF5YYO
-        wfZ9qYFYEdIe9KbG9A3ZzKFLW89p7SQzfmydp3NSQ3fDzrUzZ2/FednXm54Jl4a9FJbd1A3M3Ao5a
-        hdz912DQaJ0cw97ygdFs9UXvjl1I4lgKmwroHS7zEzbUiJgH7haBcPFJs+Mfu+O3VNYkXMjRwRDJL
-        PS8Bf9tdx6drZsIMe+gOcGTMfqWY7ollFuNRcaxftHUXWMT6UZQkQgfSwvXpohLwsULrZaQIfU84L
-        aDLSzj1A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l3zF1-0045UB-A4; Mon, 25 Jan 2021 10:37:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 61EB53010C8;
-        Mon, 25 Jan 2021 11:37:02 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4369D2B0615C6; Mon, 25 Jan 2021 11:37:02 +0100 (CET)
-Date:   Mon, 25 Jan 2021 11:37:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] printk: Add new pr_*_deferred_once() variants
-Message-ID: <YA6fTuFEaCjFQB3h@hirez.programming.kicks-ass.net>
-References: <20210123233741.3614408-1-qais.yousef@arm.com>
- <20210123233741.3614408-2-qais.yousef@arm.com>
+        Mon, 25 Jan 2021 05:39:35 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-268-EnfBxMR6OVGrbaoVYShqvw-1; Mon, 25 Jan 2021 10:37:39 +0000
+X-MC-Unique: EnfBxMR6OVGrbaoVYShqvw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 25 Jan 2021 10:37:36 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 25 Jan 2021 10:37:36 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Candle Sun' <candlesea@gmail.com>,
+        "keescook@chromium.org" <keescook@chromium.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "natechancellor@gmail.com" <natechancellor@gmail.com>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "candle.sun@unisoc.com" <candle.sun@unisoc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: RE: [PATCH] lkdtm: fix memory copy size for WRITE_KERN
+Thread-Topic: [PATCH] lkdtm: fix memory copy size for WRITE_KERN
+Thread-Index: AQHW8v+fVpSBFdR3bUKo3QkF9iGP/qo4I1KA
+Date:   Mon, 25 Jan 2021 10:37:36 +0000
+Message-ID: <97d1f36a3b534b7fbd3790a0277ccaf5@AcuMS.aculab.com>
+References: <20210125085622.2322-1-candlesea@gmail.com>
+In-Reply-To: <20210125085622.2322-1-candlesea@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123233741.3614408-2-qais.yousef@arm.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 11:37:40PM +0000, Qais Yousef wrote:
-> To allow users in code where printk is not allowed.
+From: Candle Sun
+> Sent: 25 January 2021 08:56
 > 
-> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> From: Candle Sun <candle.sun@unisoc.com>
+> 
+> Though do_overwritten() follows do_nothing() in source code, the final
+> memory address order is determined by compiler. We can't always assume
+> address of do_overwritten() is bigger than do_nothing(). At least the
+> Clang we are using places do_overwritten() before do_nothing() in the
+> object. This causes the copy size in lkdtm_WRITE_KERN() is *really*
+> big and WRITE_KERN test on ARM32 arch will fail.
+> 
+> Compare the address order before doing the subtraction.
+
+It isn't clear that helps.
+Compile with -ffunction-sections and/or do LTO an there
+is no reason at all why the functions should be together.
+
+Even without that lkdtm_WRITE_KERN() could easily be between them.
+
+You need to get the size of the 'empty function' from the
+symbol table.
+
+	David
+
+> 
+> Signed-off-by: Candle Sun <candle.sun@unisoc.com>
 > ---
->  include/linux/printk.h | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+>  drivers/misc/lkdtm/perms.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
 > 
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index fe7eb2351610..92c0978c7b44 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -480,21 +480,45 @@ extern int kptr_restrict;
->  	printk_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
->  /* no pr_cont_once, don't do that... */
->  
-> +#define pr_emerg_deferred_once(fmt, ...)				\
-> +	printk_deferred_once(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_alert_deferred_once(fmt, ...)				\
-> +	printk_deferred_once(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_crit_deferred_once(fmt, ...)					\
-> +	printk_deferred_once(KERN_CRIT pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_err_deferred_once(fmt, ...)					\
-> +	printk_deferred_once(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_warn_deferred_once(fmt, ...)					\
-> +	printk_deferred_once(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_notice_deferred_once(fmt, ...)				\
-> +	printk_deferred_once(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
-> +#define pr_info_deferred_once(fmt, ...)					\
-> +	printk_deferred_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
-> +/* no pr_cont_deferred_once, don't do that... */
+> diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
+> index 2dede2ef658f..fbfbdf89d668 100644
+> --- a/drivers/misc/lkdtm/perms.c
+> +++ b/drivers/misc/lkdtm/perms.c
+> @@ -31,13 +31,13 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
+>   * This just returns to the caller. It is designed to be copied into
+>   * non-executable memory regions.
+>   */
+> -static void do_nothing(void)
+> +static noinline void do_nothing(void)
+>  {
+>  	return;
+>  }
+> 
+>  /* Must immediately follow do_nothing for size calculuations to work out. */
+> -static void do_overwritten(void)
+> +static noinline void do_overwritten(void)
+>  {
+>  	pr_info("do_overwritten wasn't overwritten!\n");
+>  	return;
+> @@ -110,15 +110,14 @@ void lkdtm_WRITE_RO_AFTER_INIT(void)
+> 
+>  void lkdtm_WRITE_KERN(void)
+>  {
+> -	size_t size;
+> -	volatile unsigned char *ptr;
+> +	unsigned long value_dow = (unsigned long)do_overwritten;
+> +	unsigned long value_do =  (unsigned long)do_nothing;
+> +	size_t size = (size_t)(value_dow > value_do ?
+> +			value_dow - value_do : value_do - value_dow);
+> 
+> -	size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
+> -	ptr = (unsigned char *)do_overwritten;
+> -
+> -	pr_info("attempting bad %zu byte write at %px\n", size, ptr);
+> -	memcpy((void *)ptr, (unsigned char *)do_nothing, size);
+> -	flush_icache_range((unsigned long)ptr, (unsigned long)(ptr + size));
+> +	pr_info("attempting bad %zu byte write at %px\n", size, do_overwritten);
+> +	memcpy((void *)value_dow, (void *)value_do, size);
+> +	flush_icache_range(value_dow, value_dow + (unsigned long)size);
+>  	pr_err("FAIL: survived bad write\n");
+> 
+>  	do_overwritten();
+> --
+> 2.17.0
 
-I absolutely detest this.. the whole _deferred thing is an abomination.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-We should be very close to printk not needing this anymore, printk
-people?
