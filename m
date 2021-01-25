@@ -2,92 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F22630221E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8941B302223
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727066AbhAYGYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 01:24:41 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:56966 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727030AbhAYGUs (ORCPT
+        id S1727083AbhAYG1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 01:27:14 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:35692 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727018AbhAYGWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:20:48 -0500
-X-UUID: 476174a8f2af47edb003d7b346db0768-20210125
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BTFnfX9tvYF+UTisfH0CClcEuPKpZzWlTghgpfHyzAE=;
-        b=WcJYyQ1C9QghVaMAGv3CgBsyHvJI8ysSc6dw/T/gx6d/RnT9gfFHMCDjpelP1apwY8Bwx+8YereNI1KjqMfQ3FpeuzUusAe5uJROyxahquX9g+g/YWoX0XaeUI6YzUKVPV8GaQdp+GzUPMrab9H0VWikNmXWFbdGpooGrE3G9Yo=;
-X-UUID: 476174a8f2af47edb003d7b346db0768-20210125
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 938150992; Mon, 25 Jan 2021 14:19:29 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
- 2021 14:19:19 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Jan 2021 14:19:18 +0800
-Message-ID: <1611555559.3905.2.camel@mhfsdcap03>
-Subject: Re: [PATCH next v2 04/17] dt-bindings: phy: mediatek: dsi-phy: add
- optional clock-names
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        DTML <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Min Guo <min.guo@mediatek.com>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 25 Jan 2021 14:19:19 +0800
-In-Reply-To: <CAAOTY_84OF71QK6M5JT1M5YAFKED_xWVpx8B8t859OsVxE0cfQ@mail.gmail.com>
-References: <20210122120323.4337-1-chunfeng.yun@mediatek.com>
-         <20210122120323.4337-4-chunfeng.yun@mediatek.com>
-         <CAAOTY_84OF71QK6M5JT1M5YAFKED_xWVpx8B8t859OsVxE0cfQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 3A0FC78E41D0B8BD472C347915E9404CB40430474059A1083A147199EE7783B72000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Mon, 25 Jan 2021 01:22:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611555678; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=031CmOz7IHwqK2RKXiiWONMufFviMXMNdtPF56c9Nb4=; b=S3WzNosDh6wxQ+pVNaJ+Alwd+JyPcs5msj4CvWEh1bU/cZFlT/+lAYd6LS56LCQvpVo1+buK
+ 1a/Nvwe4R4MYVDEIvYD3utQZggVQ+Iqn0+3mKsPjWusCAD72LtSHmLNp99yMxVfMNmqzBtup
+ cHqNuczCECwtC6ALu/Pdg/29Po0=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 600e633fd75e1218e3eb5cbd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 06:20:47
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8E13BC43461; Mon, 25 Jan 2021 06:20:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 90D8EC433C6;
+        Mon, 25 Jan 2021 06:20:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 90D8EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        tkjos@google.com, dianders@chromium.org, ilina@codeaurora.org,
+        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v2 1/3] drivers: qcom: rpmh: Disallow active requests in solver mode
+Date:   Mon, 25 Jan 2021 11:50:35 +0530
+Message-Id: <1611555637-7688-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIxLTAxLTIzIGF0IDA4OjE4ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgQ2h1bmZlbmc6DQo+IA0KPiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRl
-ay5jb20+IOaWvCAyMDIx5bm0MeaciDIy5pelIOmAseS6lCDkuIvljYg4OjA05a+r6YGT77yaDQo+
-ID4NCj4gPiBBZGQgYW4gb3B0aW9uYWwgImNsb2NrLW5hbWVzIiBwcm9wZXJ0eSwgaXQncyBub3Qg
-dXNlZCB0byBnZXQgdGhlIGNsb2NrLA0KPiA+IGJ1dCBzb21lIERUUyBmaWxlcyAoZS5nLiBtdDgx
-ODMpIHByb3ZpZGUgaXQuDQo+IA0KPiBJIHRoaW5rIHRoZSBsb2dpYyBpcyB0aGF0IHdlIGRlZmlu
-ZSBwcm9wZXJ0eSBpbiBiaW5kaW5nIGRvY3VtZW50DQo+IGZpcnN0LCBhbmQgdGhlbiB3cml0ZSBp
-dCBpbiBkZXZpY2UgdHJlZS4gSWYgYSBwcm9wZXJ0eSBkb2VzIG5vdCBleGlzdA0KPiBpbiBiaW5k
-aW5nIGRvY3VtZW50LCB3ZSBzaG91bGQgbm90IHdyaXRlIGl0IGluIGRldmljZSB0cmVlLiBTbyBs
-ZXQncw0KPiBkcm9wIHRoaXMgcGF0Y2ggYW5kIHJlbW92ZSBjbG9jay1uYW1lcyBpbiBtdDgxODMu
-ZHRzaS4NCk9rLCBJdCdzIGJldHRlciB0byByZW1vdmUgdW5uZWNlc3NhcnkgcHJvcGVydHkuDQoN
-Cj4gDQo+IFJlZ2FyZHMsDQo+IENodW4tS3VhbmcuDQo+IA0KPiA+DQo+ID4gQ2M6IENodW4tS3Vh
-bmcgSHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3JnPg0KPiA+IENjOiBQaGlsaXBwIFphYmVsIDxw
-LnphYmVsQHBlbmd1dHJvbml4LmRlPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8
-Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiB2MjogbmV3IHBhdGNoIHNl
-cGFyYXRlZCBmcm9tIFszLzE1XSBzdWdnZXN0ZWQgYnkgQ0sNCj4gPiAtLS0NCj4gPiAgRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxkc2ktcGh5LnlhbWwgfCA0
-ICsrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlm
-ZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWss
-ZHNpLXBoeS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRp
-YXRlayxkc2ktcGh5LnlhbWwNCj4gPiBpbmRleCA2ZTRkNzk1ZjliMDIuLmFmNmU1NTRjNWI2OSAx
-MDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21l
-ZGlhdGVrLGRzaS1waHkueWFtbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9waHkvbWVkaWF0ZWssZHNpLXBoeS55YW1sDQo+ID4gQEAgLTM1LDYgKzM1LDEwIEBA
-IHByb3BlcnRpZXM6DQo+ID4gICAgICBpdGVtczoNCj4gPiAgICAgICAgLSBkZXNjcmlwdGlvbjog
-UExMIHJlZmVyZW5jZSBjbG9jaw0KPiA+DQo+ID4gKyAgY2xvY2stbmFtZXM6DQo+ID4gKyAgICBp
-dGVtczoNCj4gPiArICAgICAgLSBjb25zdDogcmVmDQo+ID4gKw0KPiA+ICAgIGNsb2NrLW91dHB1
-dC1uYW1lczoNCj4gPiAgICAgIG1heEl0ZW1zOiAxDQo+ID4NCj4gPiAtLQ0KPiA+IDIuMTguMA0K
-PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4g
-TGludXgtbWVkaWF0ZWsgbWFpbGluZyBsaXN0DQo+ID4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5m
-cmFkZWFkLm9yZw0KPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbWVkaWF0ZWsNCg0K
+From: Lina Iyer <ilina@codeaurora.org>
+
+Controllers may be in 'solver' state, where they could be in autonomous
+mode executing low power modes for their hardware and as such are not
+available for sending active votes. Device driver may notify RPMH
+that the controller is in solver mode and when in such mode, disallow
+requests from platform drivers for state change using the RSC.
+
+Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+---
+(no changes since v1)
+---
+ drivers/soc/qcom/rpmh-internal.h |  5 ++++
+ drivers/soc/qcom/rpmh-rsc.c      | 31 ++++++++++++++++++++++
+ drivers/soc/qcom/rpmh.c          | 56 ++++++++++++++++++++++++++++++++++++++++
+ drivers/soc/qcom/trace-rpmh.h    | 20 ++++++++++++++
+ include/soc/qcom/rpmh.h          |  5 ++++
+ 5 files changed, 117 insertions(+)
+
+diff --git a/drivers/soc/qcom/rpmh-internal.h b/drivers/soc/qcom/rpmh-internal.h
+index 344ba68..79486d6 100644
+--- a/drivers/soc/qcom/rpmh-internal.h
++++ b/drivers/soc/qcom/rpmh-internal.h
+@@ -77,12 +77,14 @@ struct rpmh_request {
+  * @cache: the list of cached requests
+  * @cache_lock: synchronize access to the cache data
+  * @dirty: was the cache updated since flush
++ * @in_solver_mode: Controller is busy in solver mode
+  * @batch_cache: Cache sleep and wake requests sent as batch
+  */
+ struct rpmh_ctrlr {
+ 	struct list_head cache;
+ 	spinlock_t cache_lock;
+ 	bool dirty;
++	bool in_solver_mode;
+ 	struct list_head batch_cache;
+ };
+ 
+@@ -94,6 +96,7 @@ struct rpmh_ctrlr {
+  * @tcs_base:           Start address of the TCS registers in this controller.
+  * @id:                 Instance id in the controller (Direct Resource Voter).
+  * @num_tcs:            Number of TCSes in this DRV.
++ * @in_solver_mode:     Controller is busy in solver mode
+  * @rsc_pm:             CPU PM notifier for controller.
+  *                      Used when solver mode is not present.
+  * @cpus_in_pm:         Number of CPUs not in idle power collapse.
+@@ -116,6 +119,7 @@ struct rsc_drv {
+ 	void __iomem *tcs_base;
+ 	int id;
+ 	int num_tcs;
++	bool in_solver_mode;
+ 	struct notifier_block rsc_pm;
+ 	atomic_t cpus_in_pm;
+ 	struct tcs_group tcs[TCS_TYPE_NR];
+@@ -129,6 +133,7 @@ int rpmh_rsc_send_data(struct rsc_drv *drv, const struct tcs_request *msg);
+ int rpmh_rsc_write_ctrl_data(struct rsc_drv *drv,
+ 			     const struct tcs_request *msg);
+ void rpmh_rsc_invalidate(struct rsc_drv *drv);
++int rpmh_rsc_mode_solver_set(struct rsc_drv *drv, bool enable);
+ 
+ void rpmh_tx_done(const struct tcs_request *msg, int r);
+ int rpmh_flush(struct rpmh_ctrlr *ctrlr);
+diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+index a84ab0d..1c1f5b0 100644
+--- a/drivers/soc/qcom/rpmh-rsc.c
++++ b/drivers/soc/qcom/rpmh-rsc.c
+@@ -635,6 +635,12 @@ int rpmh_rsc_send_data(struct rsc_drv *drv, const struct tcs_request *msg)
+ 
+ 	spin_lock_irqsave(&drv->lock, flags);
+ 
++	if (drv->in_solver_mode) {
++		/* Controller is busy in 'solver' mode */
++		spin_unlock_irqrestore(&drv->lock, flags);
++		return -EBUSY;
++	}
++
+ 	/* Wait forever for a free tcs. It better be there eventually! */
+ 	wait_event_lock_irq(drv->tcs_wait,
+ 			    (tcs_id = claim_tcs_for_req(drv, tcs, msg)) >= 0,
+@@ -855,6 +861,31 @@ static int rpmh_rsc_cpu_pm_callback(struct notifier_block *nfb,
+ 	return ret;
+ }
+ 
++/**
++ * rpmh_rsc_mode_solver_set() - Enable/disable solver mode.
++ * @drv:     The controller.
++ * @enable:  Boolean state to be set - true/false
++ *
++ * Return:
++ * * 0			- success
++ * * -EBUSY		- AMCs are busy
++ */
++int rpmh_rsc_mode_solver_set(struct rsc_drv *drv, bool enable)
++{
++	int ret = -EBUSY;
++
++	if (spin_trylock(&drv->lock)) {
++		if (!enable || !rpmh_rsc_ctrlr_is_busy(drv)) {
++			drv->in_solver_mode = enable;
++			trace_rpmh_solver_set(drv, enable);
++			ret = 0;
++		}
++		spin_unlock(&drv->lock);
++	}
++
++	return ret;
++}
++
+ static int rpmh_probe_tcs_config(struct platform_device *pdev,
+ 				 struct rsc_drv *drv, void __iomem *base)
+ {
+diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
+index 01765ee..cbe6b96 100644
+--- a/drivers/soc/qcom/rpmh.c
++++ b/drivers/soc/qcom/rpmh.c
+@@ -76,6 +76,22 @@ static struct rpmh_ctrlr *get_rpmh_ctrlr(const struct device *dev)
+ 	return &drv->client;
+ }
+ 
++static int check_ctrlr_state(struct rpmh_ctrlr *ctrlr, enum rpmh_state state)
++{
++	int ret = 0;
++
++	if (state != RPMH_ACTIVE_ONLY_STATE)
++		return ret;
++
++	/* Do not allow sending active votes when in solver mode */
++	spin_lock(&ctrlr->cache_lock);
++	if (ctrlr->in_solver_mode)
++		ret = -EBUSY;
++	spin_unlock(&ctrlr->cache_lock);
++
++	return ret;
++}
++
+ void rpmh_tx_done(const struct tcs_request *msg, int r)
+ {
+ 	struct rpmh_request *rpm_msg = container_of(msg, struct rpmh_request,
+@@ -229,9 +245,14 @@ static int __fill_rpmh_msg(struct rpmh_request *req, enum rpmh_state state,
+ int rpmh_write_async(const struct device *dev, enum rpmh_state state,
+ 		     const struct tcs_cmd *cmd, u32 n)
+ {
++	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
+ 	struct rpmh_request *rpm_msg;
+ 	int ret;
+ 
++	ret = check_ctrlr_state(ctrlr, state);
++	if (ret)
++		return ret;
++
+ 	rpm_msg = kzalloc(sizeof(*rpm_msg), GFP_ATOMIC);
+ 	if (!rpm_msg)
+ 		return -ENOMEM;
+@@ -262,8 +283,13 @@ int rpmh_write(const struct device *dev, enum rpmh_state state,
+ {
+ 	DECLARE_COMPLETION_ONSTACK(compl);
+ 	DEFINE_RPMH_MSG_ONSTACK(dev, state, &compl, rpm_msg);
++	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
+ 	int ret;
+ 
++	ret = check_ctrlr_state(ctrlr, state);
++	if (ret)
++		return ret;
++
+ 	ret = __fill_rpmh_msg(&rpm_msg, state, cmd, n);
+ 	if (ret)
+ 		return ret;
+@@ -338,6 +364,10 @@ int rpmh_write_batch(const struct device *dev, enum rpmh_state state,
+ 	int ret, i;
+ 	void *ptr;
+ 
++	ret = check_ctrlr_state(ctrlr, state);
++	if (ret)
++		return ret;
++
+ 	if (!cmd || !n)
+ 		return -EINVAL;
+ 
+@@ -505,3 +535,29 @@ void rpmh_invalidate(const struct device *dev)
+ 	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
+ }
+ EXPORT_SYMBOL(rpmh_invalidate);
++
++/**
++ * rpmh_mode_solver_set() - Indicate that the RSC controller hardware has
++ * been configured to be in solver mode
++ *
++ * @dev: The device making the request
++ * @enable: Boolean value indicating if the controller is in solver mode.
++ *
++ * Return:
++ * * 0          - Success
++ * * Error code - Otherwise
++ */
++int rpmh_mode_solver_set(const struct device *dev, bool enable)
++{
++	int ret;
++	struct rpmh_ctrlr *ctrlr = get_rpmh_ctrlr(dev);
++
++	spin_lock(&ctrlr->cache_lock);
++	ret = rpmh_rsc_mode_solver_set(ctrlr_to_drv(ctrlr), enable);
++	if (!ret)
++		ctrlr->in_solver_mode = enable;
++	spin_unlock(&ctrlr->cache_lock);
++
++	return ret;
++}
++EXPORT_SYMBOL(rpmh_mode_solver_set);
+diff --git a/drivers/soc/qcom/trace-rpmh.h b/drivers/soc/qcom/trace-rpmh.h
+index feb0cb4..b2b934c 100644
+--- a/drivers/soc/qcom/trace-rpmh.h
++++ b/drivers/soc/qcom/trace-rpmh.h
+@@ -71,6 +71,26 @@ TRACE_EVENT(rpmh_send_msg,
+ 		  __entry->addr, __entry->data, __entry->wait)
+ );
+ 
++TRACE_EVENT(rpmh_solver_set,
++
++	TP_PROTO(struct rsc_drv *d, bool set),
++
++	TP_ARGS(d, set),
++
++	TP_STRUCT__entry(
++			 __string(name, d->name)
++			 __field(bool, set)
++	),
++
++	TP_fast_assign(
++		       __assign_str(name, d->name);
++		       __entry->set = set;
++	),
++
++	TP_printk("%s: solver mode set: %d",
++		  __get_str(name), __entry->set)
++);
++
+ #endif /* _TRACE_RPMH_H */
+ 
+ #undef TRACE_INCLUDE_PATH
+diff --git a/include/soc/qcom/rpmh.h b/include/soc/qcom/rpmh.h
+index bdbee1a..fa8bb53 100644
+--- a/include/soc/qcom/rpmh.h
++++ b/include/soc/qcom/rpmh.h
+@@ -20,6 +20,8 @@ int rpmh_write_async(const struct device *dev, enum rpmh_state state,
+ int rpmh_write_batch(const struct device *dev, enum rpmh_state state,
+ 		     const struct tcs_cmd *cmd, u32 *n);
+ 
++int rpmh_mode_solver_set(const struct device *dev, bool enable);
++
+ void rpmh_invalidate(const struct device *dev);
+ 
+ #else
+@@ -38,6 +40,9 @@ static inline int rpmh_write_batch(const struct device *dev,
+ 				   const struct tcs_cmd *cmd, u32 *n)
+ { return -ENODEV; }
+ 
++static int rpmh_mode_solver_set(const struct device *dev, bool enable)
++{ return -ENODEV; }
++
+ static inline void rpmh_invalidate(const struct device *dev)
+ {
+ }
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
