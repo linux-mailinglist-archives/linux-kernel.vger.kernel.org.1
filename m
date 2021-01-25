@@ -2,201 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A03730242E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A42302438
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbhAYLUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:20:39 -0500
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:14452 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727489AbhAYLMA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 06:12:00 -0500
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 2C3E852170A;
-        Mon, 25 Jan 2021 14:09:53 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1611572993;
-        bh=+evlBQTjtpQnXiYbVvVD+UBl4Iu9ySd2jxnHdq45aQg=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=q0jv4H3ashr9crX3YEou+Rzj9m1dWEnReQ/oUaoJU/Fw9HHRnGRxrfxuMN8l93hgJ
-         fvkzBICDPGYVRLH4dB+tqsADqb+f2ZAyDqXBXzfxB9BScb6CUUq5R1S8ZwdUdO/Q2/
-         ko+76BmTmFI+/UKdILfJqks8EOvtBQCOrOGumQFU=
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 52A4C5215D6;
-        Mon, 25 Jan 2021 14:09:52 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 25
- Jan 2021 14:09:51 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
-Subject: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET support
-Date:   Mon, 25 Jan 2021 14:09:00 +0300
-Message-ID: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
+        id S1727840AbhAYL1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:27:04 -0500
+Received: from mail-dm6nam12on2121.outbound.protection.outlook.com ([40.107.243.121]:57313
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727776AbhAYLMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 06:12:38 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ha4uiTIAMIJ5SYS4srjIZDeqxBSt45Q7cbJPFCw+ngt5837UGsZnHpbX4VM133h38Y57eWhAZq2Ir8fBGk7PRTwMqV7g/fLmao+/5GB1aA48GhJ9XgLmPspZV8XILpsccrsIOg1xfgfVdgbIGp7L1js+KkHtrKmeMXjtwK8BsOvpbc0ih4cZMANv003xqYNyy+BCEfQ2koLx4JA0D9DEQs+mMP1kyxiAycArgL2TTX0xXQiX38ybdtJJsO0J4VEiVZQqRfzyjjH0BdMdf7s3eY977Dndv8zlPZgJUdJjUhNMu7lu5wtAsE4p2sqhYDsUPeGVz6QWJSu+dl9p+wrwmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=omUbABZOgw5Fp0Y1jelt4e+NPCWjpIOqJucYqVthNbI=;
+ b=YGAbTPwJnodJRgMJGipxW21GgQpi7Zx5+M16+LMTmOyM6VVT0erV0W+vt45Q11bHg+cwQuU6LFQ5ImKFy/wRQi+u7XA5SGXjFX9utbIuOqKS6uhbYhiRhzM6F8/K3gLF/qxTqCtMGGHlt1xD0eLpwTIyZlFDe26dLyGQIcQ76ZEd49ydbnpLlGF1AeoEOJj0BmR0WUFw2trGfamYXt4cToaqaoAUI6Lhl8fRRKq1ntGNFs2nju4ybcGVVYno2p6bfOsuTMwdmy/yqlU7bll9XsBioFHv3IsaLyyPqIjqFljQikwJPrdfWVu6ghEkHldnIJPoGN0FSk1/BNEZ3LDqQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=omUbABZOgw5Fp0Y1jelt4e+NPCWjpIOqJucYqVthNbI=;
+ b=nCIyQGrMyFBneI4eq1tzkx2a/yJzYc2UF8+yOyknNjFV6xVftldOaetkv5Fawh/r8x2aCFcQwcLRDhNnF+382tfPuaHtxg4xTp1tM+fAGQcHAdy1uGtMgkV7LuMgqL71BF4p76pTcoGtm9TvOGIxRX/gpPuSWqFEgkNoU5QkfAs=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB6262.namprd04.prod.outlook.com (2603:10b6:a03:e3::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
+ 2021 11:11:09 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132%6]) with mapi id 15.20.3763.015; Mon, 25 Jan 2021
+ 11:11:09 +0000
+Date:   Mon, 25 Jan 2021 19:10:39 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: [PATCH v3 0/3] Add MIPI rx DPI support
+Message-ID: <cover.1611572142.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HK2PR02CA0174.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::34) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/25/2021 10:47:48
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 161362 [Jan 25 2021]
-X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/25/2021 10:51:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/25/2021 10:11:00 AM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/01/25 10:04:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/25 05:31:00 #16022694
-X-KLMS-AntiVirus-Status: Clean, skipped
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zhaomy-pc (61.148.116.10) by HK2PR02CA0174.apcprd02.prod.outlook.com (2603:1096:201:1f::34) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 11:11:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e0f82def-f839-4747-751f-08d8c121ea7e
+X-MS-TrafficTypeDiagnostic: BYAPR04MB6262:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB62627C13E06F594DAC2546A7C7BD9@BYAPR04MB6262.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PiOA886UvjzA6p3oHSUVXXIBd7Uzr4YB6pQJP7ZZp/1fH75OlM9F3epS3nlF0aRqTy1wAslgAI6BJUuQktfm/o4fuIMT1jA24OwsFR55T9TVsBqoogRvJmQ/j7rhrr0dOiCKWUspowDC523KNB1Jj65VVhbz93ZxO4KZIvBNwQGuH9OCnO7Bb7VtxxuL5nsKz6SkFMx322NEatyd9/V9mkGUfSxDGI43fLC22ANqn9rrPL1C/ZZEeo3HiuD7y2KEsIXM+HdoCHpjlBn7ICaxRVBgdOB0dxxtBNbqYPGy3MVfO872fOBcFjX/7TIdmA1YUPgVPraa9zNE1bNYxYeTc4w5aCa1g8y1LSOCN+375C0xB9QILsAwkqRzpEkEwUfeqfmVNLgpkDtpd66FBLNhYo1l2h45RjdYYWzanRXzyph92YQbwvv0hwUCsi7pm5dQAsHDqZtiAupeEG9vzYAiqUkCGU/x9Z1/pyZTH4dZuqJLpKF8kBhteTFMeE7KF1uFcjzBKMz/bpffeFjXlJgbRPYKiV7I4btrYaQkoGmR0ecl4OhIM7JiyagHZUoQhgCA+TQc9J/X7BxGeFkALo56ZQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39840400004)(136003)(376002)(346002)(26005)(186003)(6486002)(16526019)(83380400001)(2616005)(956004)(478600001)(66946007)(316002)(110136005)(54906003)(8676002)(8936002)(6496006)(66476007)(52116002)(4326008)(66556008)(86362001)(36756003)(7416002)(5660300002)(2906002)(6666004)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?y3e+LDXMO9ZyrqgtC3vdRjuKhTwqqZX5FlfZkgjobKC8jREXMRntSCklS8L6?=
+ =?us-ascii?Q?ca4P884/I8FPJBIclIwcvT0Wwp9uKKcbDmW7wODkMwGQUYfhveG+HeTVFHkE?=
+ =?us-ascii?Q?NXdTIKR02hYfn2M7DhEGLl/yG0wJZZoMwYREJiKB8uRbaW1w6DjnM0zKAhUW?=
+ =?us-ascii?Q?TNPhlmxhySprZDSVw+X3fQoFcbjz7w8ev3InDLBLCUccrGhbeuy8BYg3UHmP?=
+ =?us-ascii?Q?SfHyWTcXH5I+mZ80lLAOFHK/kkLV7sJf0t1H0d6nrTbl3beYgLqnLs3NwZwb?=
+ =?us-ascii?Q?n+4qDyV8jnXIS8QjSF81b7l2MODp9IxVS/D5a2q6mlKOvktuvAvBvTkZyt9+?=
+ =?us-ascii?Q?pMYLNwvrhaNEW5tOsBECMsVfEy1FrxpyvJZ0hkZl2k7QXnCHhlFfDxMtnBxm?=
+ =?us-ascii?Q?GLhFX4Dau5pyho+lkdTh3rdNm56QKVZ88eyVCtsikfSmSP5iXzUF4F062hpu?=
+ =?us-ascii?Q?a4wwGB2PlLJRfkaXxfkP9QCgIakTunJR4PeaDtdz2uotbjK62bmrCxXyxh7S?=
+ =?us-ascii?Q?vi0A586oYp8EDbhwBofUJUCjbkgEsZsGDiuKMQV/M8sCB4wYo/hhOoYIg10f?=
+ =?us-ascii?Q?GN75bNZ2PpHZdeQ6aQ8MtJOqFRjhRMK1GKbOYQdy6IDOLm5SD0T35r7SoI12?=
+ =?us-ascii?Q?T1p7Rg36Nxmv6wiiGuFvO6j114Kptg8R+7k3A34+v5jqH3a2Rskx97ZxFr8g?=
+ =?us-ascii?Q?S+DTdS09zHElkL5JMywmblDck2dx+MD2Jh9xdMDWCAkIP2+kzlk/rFS0G2/+?=
+ =?us-ascii?Q?VaY1uEB8fw+UdDy08/XQthRT7jb/Qat0s6U+4lLfsqNUB2286UA5yRqqNkhy?=
+ =?us-ascii?Q?oPo6rYRNdGsSy7dyrRChcNZH/ZBEElK2VfMTBOPiiPK6ImE/vFBpJMLkh+lJ?=
+ =?us-ascii?Q?FjgjxWE0uIFGJSsqFjmQdR8tB2X/IwNFuwkemAU9Msa7OYhOl95Lq6lmQVsR?=
+ =?us-ascii?Q?uQB66lSrNqgaHysoNm2gqL5mi+uQ40LyOmZ5vsepBY6bRRn6E21x/sDNYjW8?=
+ =?us-ascii?Q?LsIutMfel4oZtjaKj3S3S2PDPGX148MsEfaudO4jc9aSYbQg5IZG0HHVjI/S?=
+ =?us-ascii?Q?Mv2E7UP+?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0f82def-f839-4747-751f-08d8c121ea7e
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 11:11:08.9075
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /C+L6S/U4v5L3dqoEAcYATGtPaMLj3dl6c+o3MqXEFeAJ8zM9JloFuAjdC10i4KsQbWbv5lW+pcYLjHI1jEhrw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB6262
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	This patchset impelements support of SOCK_SEQPACKET for virtio
-transport.
-	As SOCK_SEQPACKET guarantees to save record boundaries, so to
-do it, new packet operation was added: it marks start of record (with
-record length in header), such packet doesn't carry any data.  To send
-record, packet with start marker is sent first, then all data is sent
-as usual 'RW' packets. On receiver's side, length of record is known
-from packet with start record marker. Now as  packets of one socket
-are not reordered neither on vsock nor on vhost transport layers, such
-marker allows to restore original record on receiver's side. If user's
-buffer is smaller that record length, when all out of size data is
-dropped.
-	Maximum length of datagram is not limited as in stream socket,
-because same credit logic is used. Difference with stream socket is
-that user is not woken up until whole record is received or error
-occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
-	Tests also implemented.
+Hi all, this patch series implement MIPI rx DPI feature. Please help to review.
 
- Arseny Krasnov (13):
-  af_vsock: prepare for SOCK_SEQPACKET support
-  af_vsock: prepare 'vsock_connectible_recvmsg()'
-  af_vsock: implement SEQPACKET rx loop
-  af_vsock: implement send logic for SOCK_SEQPACKET
-  af_vsock: rest of SEQPACKET support
-  af_vsock: update comments for stream sockets
-  virtio/vsock: dequeue callback for SOCK_SEQPACKET
-  virtio/vsock: fetch length for SEQPACKET record
-  virtio/vsock: add SEQPACKET receive logic
-  virtio/vsock: rest of SOCK_SEQPACKET support
-  virtio/vsock: setup SEQPACKET ops for transport
-  vhost/vsock: setup SEQPACKET ops for transport
-  vsock_test: add SOCK_SEQPACKET tests
+This is the v3 version, any mistakes, please let me know,
+I'll fix it in the next series.
 
- drivers/vhost/vsock.c                   |   7 +-
- include/linux/virtio_vsock.h            |  12 +
- include/net/af_vsock.h                  |   6 +
- include/uapi/linux/virtio_vsock.h       |   9 +
- net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
- net/vmw_vsock/virtio_transport.c        |   4 +
- net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
- tools/testing/vsock/util.c              |  32 +-
- tools/testing/vsock/util.h              |   3 +
- tools/testing/vsock/vsock_test.c        | 126 +++++
- 10 files changed, 862 insertions(+), 175 deletions(-)
+Change history:
+v3: Fix Rob Herring, Dan Carpenter, Nicolas comments
+ - Split the patch, fix not correct return data
+ - Fix several coding format
+ - Split DP tx swing register setting to two property
+ - Add HDCP support vender flag
+ - remove 'analogix,swing-setting' and 'analogix,mipi-dpi-in' property
 
- TODO:
- - Support for record integrity control. As transport could drop some
-   packets, something like "record-id" and record end marker need to
-   be implemented. Idea is that SEQ_BEGIN packet carries both record
-   length and record id, end marker(let it be SEQ_END) carries only
-   record id. To be sure that no one packet was lost, receiver checks
-   length of data between SEQ_BEGIN and SEQ_END(it must be same with
-   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
-   means that both markers were not dropped. I think that easiest way
-   to implement record id for SEQ_BEGIN is to reuse another field of
-   packet header(SEQ_BEGIN already uses 'flags' as record length).For
-   SEQ_END record id could be stored in 'flags'.
-     Another way to implement it, is to move metadata of both SEQ_END
-   and SEQ_BEGIN to payload. But this approach has problem, because
-   if we move something to payload, such payload is accounted by
-   credit logic, which fragments payload, while payload with record
-   length and id couldn't be fragmented. One way to overcome it is to
-   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
-   is to update 'stream_has_space()' function: current implementation
-   return non-zero when at least 1 byte is allowed to use,but updated
-   version will have extra argument, which is needed length. For 'RW'
-   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
-   record id) and for SEQ_END it is sizeof(record id).
+v2: Fix Rob Herring comment
+ - Fix yamllint warnings/errors in analogix,anx7625.yaml
+ - Fix kernel robot compile warning
 
- - What to do, when server doesn't support SOCK_SEQPACKET. In current
-   implementation RST is replied in the same way when listening port
-   is not found. I think that current RST is enough,because case when
-   server doesn't support SEQ_PACKET is same when listener missed(e.g.
-   no listener in both cases).
+v1: initial MIPI rx DPI feature support
 
- v2 -> v3:
- - patches reorganized: split for prepare and implementation patches
- - local variables are declared in "Reverse Christmas tree" manner
- - virtio_transport_common.c: valid leXX_to_cpu() for vsock header
-   fields access
- - af_vsock.c: 'vsock_connectible_*sockopt()' added as shared code
-   between stream and seqpacket sockets.
- - af_vsock.c: loops in '__vsock_*_recvmsg()' refactored.
- - af_vsock.c: 'vsock_wait_data()' refactored.
 
- v1 -> v2:
- - patches reordered: af_vsock.c related changes now before virtio vsock
- - patches reorganized: more small patches, where +/- are not mixed
- - tests for SOCK_SEQPACKET added
- - all commit messages updated
- - af_vsock.c: 'vsock_pre_recv_check()' inlined to
-   'vsock_connectible_recvmsg()'
- - af_vsock.c: 'vsock_assign_transport()' returns ENODEV if transport
-   was not found
- - virtio_transport_common.c: transport callback for seqpacket dequeue
- - virtio_transport_common.c: simplified
-   'virtio_transport_recv_connected()'
- - virtio_transport_common.c: send reset on socket and packet type
-			      mismatch.
+Xin Ji (3):
+  dt-bindings:drm/bridge:anx7625:add HDCP support flag and swing reg
+  drm/bridge: anx7625: fix not correct return value
+  drm/bridge: anx7625: add MIPI DPI input feature support
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+ .../bindings/display/bridge/analogix,anx7625.yaml  |  57 +++-
+ drivers/gpu/drm/bridge/analogix/anx7625.c          | 330 +++++++++++++++++----
+ drivers/gpu/drm/bridge/analogix/anx7625.h          |  20 +-
+ 3 files changed, 341 insertions(+), 66 deletions(-)
 
 -- 
-2.25.1
+2.7.4
 
