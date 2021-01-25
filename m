@@ -2,69 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A732304A61
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB95304A24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbhAZFF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:05:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbhAYJbU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:31:20 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381D2C06174A;
-        Mon, 25 Jan 2021 01:29:10 -0800 (PST)
-Date:   Mon, 25 Jan 2021 10:29:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611566948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jku6Tec7q+qisOnosheK7vPMPoB+SzWJoKjJCzgdLxg=;
-        b=DrPEmKrc4+G8WhLciMvGkpFc4uAI2a8BdHh8QU8pB3a+unm7cxOiq1DEOPoc1GTsSfd/3C
-        frMHNk7Sam/2rNyhTkDRsamHk48BJNeIpcIsDCIpzmiErE7SAZu8YvZYgoJ65G8vOIYRsh
-        c3x7EnfPf/BKR6Gqp73SzHCPFrxAiadldUqwkiXVhv1tqXRkuZshREBt5Zy8KuyJ5ZC/j0
-        uYg8OKkIe5Ip2erc1HJI6nOAqHjzUKFH/7+a7/24759mfkugEaei10WDQMY9DWKAXK09HC
-        fHX+5hVbz/N2T9h1KEXN5sNgFnPKGTI2DCUKnMDRgZI5rJgwZFdYGb2ojph5tg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611566948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jku6Tec7q+qisOnosheK7vPMPoB+SzWJoKjJCzgdLxg=;
-        b=HuTQnFwN9rYs6voYZat4Kwko1csP9h7nuja7LDtXWfVh9hWfcWxzyjMah87AWxEuaniJUT
-        mrnNdDj6m6cH1+BQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Hannes Reinecke <hare@suse.de>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 2/3] blk-mq: Always complete remote completions requests
- in softirq
-Message-ID: <20210125092908.ntugyvnbyigxpoyl@linutronix.de>
-References: <20210123201027.3262800-1-bigeasy@linutronix.de>
- <20210123201027.3262800-3-bigeasy@linutronix.de>
- <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
- <20210125082542.GC942655@infradead.org>
- <20210125083029.utnjqs2s3diqb5vx@linutronix.de>
- <20210125083248.GA945284@infradead.org>
+        id S1730031AbhAZFOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:14:37 -0500
+Received: from mga07.intel.com ([134.134.136.100]:24544 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726984AbhAYJlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:41:01 -0500
+IronPort-SDR: O1OlXT3GB1RrNMskYylZhQYus9H/fUavgr7q+X/7Q7IXvIJiw+EeZzsT2O8waly2uDXG1WwcHD
+ Uzt6o+5GCF7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="243773211"
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="243773211"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 01:34:02 -0800
+IronPort-SDR: SNoZNL8KIhrD+eKpTytEij+R3D6xneGtryZekQJenjgTIeNUcFirYAzs3Ie6Y4yG+SZSjnI/I3
+ kny4lbqgi5Rg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="471993591"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 25 Jan 2021 01:33:59 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 25 Jan 2021 11:33:59 +0200
+Date:   Mon, 25 Jan 2021 11:33:59 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     angkery <angkery@163.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+Subject: Re: [PATCH v3 2/2] usb: typec: tcpci_maxim: add terminating newlines
+ to logging
+Message-ID: <20210125093359.GC1720720@kuha.fi.intel.com>
+References: <20210124143947.1688-1-angkery@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125083248.GA945284@infradead.org>
+In-Reply-To: <20210124143947.1688-1-angkery@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-25 08:32:48 [+0000], Christoph Hellwig wrote:
-> Well, I put it in quotes because I'm not sure what the exact effect
-> is.  But we do delay these completions to the softirq now instead of
-> hardirq context, which at least in theory increases latency.  OTOH it
-> might even have positive effects on the rest of the system.
+On Sun, Jan 24, 2021 at 10:39:47PM +0800, angkery wrote:
+> From: Junlin Yang <yangjunlin@yulong.com>
+> 
+> Add terminating '\n' to the formats where missed.
+> 
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
 
-The last part is/was my motivation ;)
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Sebastian
+> ---
+> v3:Modify it again and submit it separately from patch 1.
+> 
+>  drivers/usb/typec/tcpm/tcpci_maxim.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+> index 7f54f51a..5d7463c 100644
+> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
+> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+> @@ -158,7 +158,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+>  	 */
+>  	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, 2);
+>  	if (ret < 0) {
+> -		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d", ret);
+> +		dev_err(chip->dev, "TCPC_RX_BYTE_CNT read failed ret:%d\n", ret);
+>  		return;
+>  	}
+>  
+> @@ -167,13 +167,13 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+>  
+>  	if (count == 0 || frame_type != TCPC_RX_BUF_FRAME_TYPE_SOP) {
+>  		max_tcpci_write16(chip, TCPC_ALERT, TCPC_ALERT_RX_STATUS);
+> -		dev_err(chip->dev, "%s", count ==  0 ? "error: count is 0" :
+> +		dev_err(chip->dev, "%s\n", count ==  0 ? "error: count is 0" :
+>  			"error frame_type is not SOP");
+>  		return;
+>  	}
+>  
+>  	if (count > sizeof(struct pd_message) || count + 1 > TCPC_RECEIVE_BUFFER_LEN) {
+> -		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d", count);
+> +		dev_err(chip->dev, "Invalid TCPC_RX_BYTE_CNT %d\n", count);
+>  		return;
+>  	}
+>  
+> @@ -184,7 +184,7 @@ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+>  	count += 1;
+>  	ret = regmap_raw_read(chip->data.regmap, TCPC_RX_BYTE_CNT, rx_buf, count);
+>  	if (ret < 0) {
+> -		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d", ret);
+> +		dev_err(chip->dev, "Error: TCPC_RX_BYTE_CNT read failed: %d\n", ret);
+>  		return;
+>  	}
+>  
+> @@ -317,7 +317,7 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
+>  			return ret;
+>  
+>  		if (reg_status & TCPC_SINK_FAST_ROLE_SWAP) {
+> -			dev_info(chip->dev, "FRS Signal");
+> +			dev_info(chip->dev, "FRS Signal\n");
+>  			tcpm_sink_frs(chip->port);
+>  		}
+>  	}
+> @@ -460,7 +460,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+>  	max_tcpci_init_regs(chip);
+>  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+>  	if (IS_ERR(chip->tcpci)) {
+> -		dev_err(&client->dev, "TCPCI port registration failed");
+> +		dev_err(&client->dev, "TCPCI port registration failed\n");
+>  		return PTR_ERR(chip->tcpci);
+>  	}
+>  	chip->port = tcpci_get_tcpm_port(chip->tcpci);
+> -- 
+> 1.9.1
+
+thanks,
+
+-- 
+heikki
