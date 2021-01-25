@@ -2,117 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C4830378B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C2C30378C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbhAZH5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728723AbhAYQyu (ORCPT
+        id S2387705AbhAZH6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:58:10 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:56590 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729064AbhAYQzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:54:50 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A8BC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:54:10 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 30so9294227pgr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:54:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=98KsfeJcSNeAq7D2e2LH4xgYP6akBDNIEzkaVdZ+rkw=;
-        b=Oo5uK1YsHdQRSpOXYXzGBJe7lmxs/p9bDTq7nTmzYXI9uNvfHic+t5VRutNPjN++q2
-         U8ZR3mhcRILkM0mwPhAulKTYGYWvlGwFLc3F+xJ21Mv17yZpr//tLixrwZatM+SytvDq
-         dPaXSFXeju/kawr/26rmzasqgx8/8szaIVHwTE0qe6T+yoowpSbYBgTqN7zucSkz/AJG
-         U5wCXO8ejI5WlYZKAm6QvX59xg8yvcmLF+BYG5XgdmJC6bVZ2+vgoNdB+fTesFsR+h/i
-         TiFEPgH/fzLAennBnxoFTvJmRIm/4zMCRn35kfGkLa4l/EKeqtg80piU6RAQIE+1Cbhp
-         Fxvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=98KsfeJcSNeAq7D2e2LH4xgYP6akBDNIEzkaVdZ+rkw=;
-        b=Pd/NAzezV+ypxCtHUjeSS0okPnHq8Dl47xHFRCN8HKhL649bfIRPz3Nh26H4qi0/Zh
-         ShkYCmeVaiTAnTF9L2AxB52nPJi6WWA9+ZEENkbUArJ6Gss9UC8S5mx0cybmjrzpSc+z
-         GREzWofPRxg/dO+eo/CHFr4+uQ9VVKCdTL6xT1bJDqGE3yQc0rzG3n3McR5B8t2/JsCO
-         8TN65lRlY2mwyXUeYCQ0m2tBmSlxgu+s7dplA+flHb6KKaAyCwqQ+OaJkigbveQOEJaQ
-         Z4NPMVOTlKBzsLL+Bf5vv+LnXcU3Cy5RWxfzLXAC+gKxhmRAZhIVb/ebs37aYCojFggb
-         Jlug==
-X-Gm-Message-State: AOAM5322a55kbLlfzjNKBuFQ7x7YAHILQ/T0T/q8ZbLceJ7/h1ah7z7J
-        VuJ5v1dihdd6DXRiM5yrCp2tVA==
-X-Google-Smtp-Source: ABdhPJww3ALlC+Iz60JCj51ZcFCuikckWRJvHg478hZXeCENQgqzuZS7QTUpTXKDAJCTuOpGwe1/XQ==
-X-Received: by 2002:a63:ef14:: with SMTP id u20mr1438952pgh.93.1611593650110;
-        Mon, 25 Jan 2021 08:54:10 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 130sm17428435pfb.92.2021.01.25.08.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 08:54:09 -0800 (PST)
-Date:   Mon, 25 Jan 2021 08:54:02 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Stephen Zhang <stephenzhangzsd@gmail.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Subject: Re: [PATCH] KVM: x86/mmu: improve robustness of some functions
-Message-ID: <YA73qq1tTLxTEGKV@google.com>
-References: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
- <87a6sx4a0l.fsf@vitty.brq.redhat.com>
- <99258705-ff9e-aa0c-ba58-da87df760655@redhat.com>
+        Mon, 25 Jan 2021 11:55:12 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210125165422euoutp020aee223dc908f50709c970d45e82a5a4~dh_WsnZZm1284012840euoutp02B
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:54:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210125165422euoutp020aee223dc908f50709c970d45e82a5a4~dh_WsnZZm1284012840euoutp02B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611593662;
+        bh=D+3F7rEE3+9XcRlqap5qRSJcQi9jGi7LsZrW2rMX31s=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=unOLB9WR4+5zuJSW1ycopWjXK9/FpYbqQIbTXSnUTlw2ZPWtalFGmFxrcpuU3e+N8
+         HPHoGRAN7CYqlKQysqnEY3QkfXKbN/m3Nrw7gtWs/PB6Nttvzu7Az+Jc+t/B+50/Np
+         r9bKtsXgkKfuWA0P0VleBpQyGSMdhxo6X/FlQOcs=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210125165421eucas1p23d8b048160291efadec8e26c7f4f60b2~dh_WKQPDl0475704757eucas1p2B;
+        Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id C3.E6.27958.DB7FE006; Mon, 25
+        Jan 2021 16:54:21 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210125165421eucas1p21049ed87217b177c3711c7b5726bd085~dh_VvicLQ0474404744eucas1p2M;
+        Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210125165421eusmtrp2d5461c9981472a90299b90666192941c~dh_VtuJ3E0209902099eusmtrp2C;
+        Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
+X-AuditID: cbfec7f2-f15ff70000006d36-7d-600ef7bdf4ec
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id BA.D5.21957.CB7FE006; Mon, 25
+        Jan 2021 16:54:20 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210125165420eusmtip2edaa26c1cdc930426ff1b2db4b20515c~dh_VcYsi72869128691eusmtip2B;
+        Mon, 25 Jan 2021 16:54:20 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v11 0/3] AX88796C SPI Ethernet Adapter
+Date:   Mon, 25 Jan 2021 17:54:03 +0100
+Message-Id: <20210125165406.9692-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99258705-ff9e-aa0c-ba58-da87df760655@redhat.com>
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLKsWRmVeSWpSXmKPExsWy7djPc7p7v/MlGPzdI29x/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2px89AKRotNj6+xWlzeNYfN
+        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsDsIely+dpHZY8vKm0weO2fdZffYtKqTzWPzknqP
+        nTs+M3n0bVnF6PF5k1wARxSXTUpqTmZZapG+XQJXxskNv9kLlulW/Dpyjr2BcZlyFyMnh4SA
+        icT3pRuZuhi5OIQEVjBK3GmaCOV8YZSYPvUBE0iVkMBnRomD0/JgOg5faGWEiC9nlNh5MAHC
+        fs4osfShBojNJuAo0b/0BCvIIBGBe8wS69sfMII4zAL7gBruTWEGqRIWMJP4MOcsG4jNIqAq
+        8a7/K3sXIwcHr4CVxMX7nBDL5CXal28HK+EVEJQ4OfMJC4jNL6AlsabpOpjNDFTTvHU2M8h8
+        CYHlnBJ3lv1jhGh2kWh4f44ZwhaWeHV8CzuELSPxf+d8JpBdEgL1EpMnmUH09jBKbJvzgwWi
+        xlrizrlfbCA1zAKaEut36UOEHSVmrJjEDNHKJ3HjrSDECXwSk7ZNhwrzSnS0CUFUq0is698D
+        NVBKovfVCkaIEg+JKVOVJjAqzkLy1ywkv8xCWLuAkXkVo3hqaXFuemqxYV5quV5xYm5xaV66
+        XnJ+7iZGYIo7/e/4px2Mc1991DvEyMTBeIhRgoNZSYR3tx5PghBvSmJlVWpRfnxRaU5q8SFG
+        aQ4WJXHeVbPXxAsJpCeWpGanphakFsFkmTg4pRqYFh95Z68md3nteeMfYe5+2edSlYvTg1S3
+        FfauL38wLydirdVmpd0ySetn8mxovNhS6PqedUmDqI3lz/6NpfsX+hlNmZi88O3SvasSuXt3
+        lerpRRT8lvBxYrRa0Ljm4ATV+wxPLWyvhq7f+3OS78sORWfuo651ETGXVOVWXfkQeq66IeDE
+        VYU+hvIkrfo3Pw5q9mXFicZ/c7lxctocn6N5MWLx06SPCzGrGHFePWFocl9i+T6Hk3zHt55Q
+        SW35tnvOPY68/EWZGVbTTK5OP/NZ+UTwtdkWvZoTgldkt0Z6T0sL9qqY57f2bfwmw3Tm8yeF
+        VUqlljMcUzm9+MUK2T8/BGY/9VyS/Pm333JxLdvPSizFGYmGWsxFxYkAb4rrQuADAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xe7p7vvMlGLzqs7E4f/cQs8XGGetZ
+        Leacb2GxmH/kHKvFovczWC2uvb3DatH/+DWzxfnzG9gtLmzrY7W4eWgFo8Wmx9dYLS7vmsNm
+        MeP8PiaLQ1P3MlqsPXKX3eLYAjGL1r1H2B0EPS5fu8jssWXlTSaPnbPusntsWtXJ5rF5Sb3H
+        zh2fmTz6tqxi9Pi8SS6AI0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/O
+        JiU1J7MstUjfLkEv4+SG3+wFy3Qrfh05x97AuEy5i5GTQ0LAROLwhVbGLkYuDiGBpYwS26Ze
+        ZOli5ABKSEmsnJsOUSMs8edaFxtEzVNGiee/vrODJNgEHCX6l55gBUmICLxhlmi695YdxGEW
+        2Mcosf/oYrAqYQEziQ9zzrKB2CwCqhLv+r+yg2zgFbCSuHifE2KDvET78u1gJbwCghInZz4B
+        O4JZQF1i/TwhkDC/gJbEmqbrLCA2M1B589bZzBMYBWYh6ZiF0DELSdUCRuZVjCKppcW56bnF
+        hnrFibnFpXnpesn5uZsYgXG67djPzTsY5736qHeIkYmD8RCjBAezkgjvbj2eBCHelMTKqtSi
+        /Pii0pzU4kOMpkAPTGSWEk3OByaKvJJ4QzMDU0MTM0sDU0szYyVx3q1z18QLCaQnlqRmp6YW
+        pBbB9DFxcEo1MLmfamY+rtud+OD3eT7jEvmGH9bvNx9f8WRfE9crnol2E9Wiei4/a5i33LNF
+        aGlyTc3KEu2FM8oDD/xPuiIzK0aNq9EpqNtyK+u2OrGLXl0qvWocgVt1Cu6Ze7ySNGVc5bz/
+        0L4H0sE6P3fOVOtdcVVTLkDLc+68l98XbZg099cdLfPpWx9dcbx27c7sMzrbBT5/r+4Jjz71
+        /OTijS/rfJYzFG/tSPVWzA2eG/g7Ve7i36UmCvPk/4nXOM9j8Fm4+LqF+B7vkAc1/yxMhd93
+        sR5e1/XcnvkUu+t39W72Mpl7DE5c58+sfhiUx8v54PvnfqnYrBPZt8NOPfRRsjdadUDrka2+
+        4bGX7eYhT665zlZiKc5INNRiLipOBAA+t0M4XAMAAA==
+X-CMS-MailID: 20210125165421eucas1p21049ed87217b177c3711c7b5726bd085
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210125165421eucas1p21049ed87217b177c3711c7b5726bd085
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210125165421eucas1p21049ed87217b177c3711c7b5726bd085
+References: <CGME20210125165421eucas1p21049ed87217b177c3711c7b5726bd085@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021, Paolo Bonzini wrote:
-> On 25/01/21 10:54, Vitaly Kuznetsov wrote:
-> > 
-> > What if we do something like (completely untested):
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> > index bfc6389edc28..5ec15e4160b1 100644
-> > --- a/arch/x86/kvm/mmu/mmu_internal.h
-> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> > @@ -12,7 +12,7 @@
-> >  extern bool dbg;
-> >  #define pgprintk(x...) do { if (dbg) printk(x); } while (0)
-> > -#define rmap_printk(x...) do { if (dbg) printk(x); } while (0)
-> > +#define rmap_printk(fmt, args...) do { if (dbg) printk("%s: " fmt, __func__, ## args); } while (0)
-> >  #define MMU_WARN_ON(x) WARN_ON(x)
-> >  #else
-> >  #define pgprintk(x...) do { } while (0)
-> > 
-> > and eliminate the need to pass '__func__,' explicitly? We can probably
-> > do the same to pgprintk().
-> 
-> Nice indeed.  Though I wonder if anybody has ever used these.
+This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+found on ARTIK5 evaluation board. The driver has been ported from a
+v3.10.9 vendor kernel for ARTIK5 board.
 
-I've used the ones in pte_list_add() and __pte_list_remove().  I had to add more
-info to track down the bug I introduced, but their initial existence was helpful.
+Changes in v11:
+  - changed stat counters to 64-bit
+  - replaced WARN_ON(!mutex_is_locked()) with lockdep_assert_held()
+  - replaced ax88796c_free_skb_queue() with __skb_queue_purge()
+  - added cancel_work_sync() for ax_work
+  - removed unused fields of struct skb_data
+  - replaced MAX() with max() from minmax.h
 
-That being said, I definitely did not build with MMU_DEBUG defined, I simply
-changed a handful of rmap_printks to pr_warn.  Blindly enabling MMU_DEBUG
-activates far too much output to be useful.  That may not have been the case
-when the core parts of the MMU were under heavy development, but it does feel
-like the time has come to excise the bulk of the pgprintk and rmap_printk hooks.
-Ditto for mmu_audit.c.
+Changes in v10:
+  - removed unused variable
+ 
+Changes in v9:
+  - used pskb_extend_head()
+  - used ethtool private flags instead of tunables to switch SPI
+    compression
+  - changed
+    - alloc_skb() to netdev_alloc(skb)
+    - __pskb_trim() to pskb_trim()
+  - removed:
+    - chages to skb->truesize
+    - unnecessary casting to short
+    - return f() in a void function
+    - IRQF_SHARED flags
+    - unnecessary memset(0) of kzalloc()ed buffer
+    - unused endiannes detection
+    - unnecessary __packed attribute for some structures
+  - added:
+    - temporary variable in AX_WRITE/READ sequences
+    - missin mutex_unlock() in error paths
+  - axspi_read_reg() returns a constant value in case of an error
+  
+Changes in v8:
+  - fixed the entry in MAINTAINERS
+  - removed unnecessary netif_err()
+  - changed netif_rx() to netif_rx_ni() for code running in a process
+    context
+  - added explicit type casting for ~BIT()
 
-> For those that I actually needed in the past I created tracepoints instead.
+Changes in v7:
+  - removed duplicate code
+  - moved a constant buffer definition away from a header file
 
-Ya.  There are times where I prefer using the kernel log over tracepoints, but
-it's easy enough to copy-paste the tracepoint into a pr_* when desired.
+Changes in v6:
+  - fixed typos in Kconfig
+  - checked argument value in ax88796c_set_tunable
+  - updated tags in commit messages
 
-I'd be ok with converting a few select rmap_printks to tracepoints, but I vote
-to completely remove the bulk of the existing code.  Tracepoints always make me
-a bit wary, it's easy to forget/overlook that the inputs to the tracepoint are
-still generated even if the tracepoint itself is disabled.  E.g. being too
-liberal with tracepoints could theoretically degrade performance.
+Changes in v5:
+  - coding style (local variable declarations)
+  - added spi0 node in the DT binding example and removed
+    interrupt-parent
+  - removed comp module parameter
+  - added CONFIG_SPI_AX88796C_COMPRESSION option to set the initial
+    state of SPI compression
+  - introduced new ethtool tunable "spi-compression" to controll SPI
+    transfer compression
+  - removed unused fields in struct ax88796c_device
+  - switched from using buffers allocated on stack for SPI transfers
+    to DMA safe ones embedded in struct ax_spi and allocated with
+    kmalloc()
 
-If we do yank them, I think it makes sense to git rid of mmu_audit.c in the same
-commit.  In theory, that would make it easier for someone to restore the hooks
-if they need the hooks to debug something in the future.
+Changes in v4:
+  - fixed compilation problems in asix,ax88796c.yaml and in
+  ax88796c_main.c introduced in v3
+
+Changes in v3:
+  - modify vendor-prefixes.yaml in a separate patch
+  - fix several problems in the dt binding
+    - removed unnecessary descriptions and properties
+    - changed the order of entries
+    - fixed problems with missing defines in the example
+  - change (1 << N) to BIT(N), left a few (0 << N)
+  - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
+    ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
+    ax88796c_set_mac_address() with appropriate kernel functions.
+  - disable PHY auto-polling in MAC and use PHYLIB to track the state
+    of PHY and configure MAC
+  - propagate return values instead of returning constants in several
+    places
+  - add WARN_ON() for unlocked mutex
+  - remove local work queue and use the system_wq
+  - replace phy_connect_direct() with phy_connect() and move
+    devm_register_netdev() to the end of ax88796c_probe()
+    (Unlike phy_connect_direct() phy_connect() does not crash if the
+    network device isn't registered yet.)
+  - remove error messages on ENOMEM
+  - move free_irq() to the end of ax88796c_close() to avoid race
+    condition
+  - implement flow-control
+
+Changes in v2:
+  - use phylib
+  - added DT bindings
+  - moved #includes to *.c files
+  - used mutex instead of a semaphore for locking
+  - renamed some constants
+  - added error propagation for several functions
+  - used ethtool for dumping registers
+  - added control over checksum offloading
+  - remove vendor specific PM
+  - removed macaddr module parameter and added support for reading a MAC
+    address from platform data (e.g. DT)
+  - removed dependency on SPI from NET_VENDOR_ASIX
+  - added an entry in the MAINTAINERS file
+  - simplified logging with appropriate netif_* and netdev_* helpers
+  - lots of style fixes
+
+Łukasz Stelmach (3):
+  dt-bindings: vendor-prefixes: Add asix prefix
+  dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
+  net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
+
+ .../bindings/net/asix,ax88796c.yaml           |   73 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/asix/Kconfig             |   35 +
+ drivers/net/ethernet/asix/Makefile            |    6 +
+ drivers/net/ethernet/asix/ax88796c_ioctl.c    |  239 ++++
+ drivers/net/ethernet/asix/ax88796c_ioctl.h    |   26 +
+ drivers/net/ethernet/asix/ax88796c_main.c     | 1146 +++++++++++++++++
+ drivers/net/ethernet/asix/ax88796c_main.h     |  568 ++++++++
+ drivers/net/ethernet/asix/ax88796c_spi.c      |  115 ++
+ drivers/net/ethernet/asix/ax88796c_spi.h      |   69 +
+ 13 files changed, 2287 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+ create mode 100644 drivers/net/ethernet/asix/Kconfig
+ create mode 100644 drivers/net/ethernet/asix/Makefile
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
+
+-- 
+2.26.2
+
