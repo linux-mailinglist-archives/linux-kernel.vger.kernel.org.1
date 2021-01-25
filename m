@@ -2,118 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9204301FC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A49301FCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbhAYArh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 19:47:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbhAYArd (ORCPT
+        id S1726601AbhAYAtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 19:49:20 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33267 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726553AbhAYAsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 19:47:33 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E66C061573;
-        Sun, 24 Jan 2021 16:46:52 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPB5L0VGNz9sCq;
-        Mon, 25 Jan 2021 11:46:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611535610;
-        bh=nHdxDyfkK9GBPLAjs71LKqnjaCHPvX7x7DbWhmOho1o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=omIlNslOCgdzSoKlhAmi9gsbfzuDTmEAoe7b2xj18PgPCWey0v6wKgY1HcIRh0hlJ
-         oKpNhck7WIF2IFeWeodSbtD+8fTOTP4qp/TJeOLrgTm0bJJHk5dvaGcQnTN0QCc/8J
-         54YJaR8UZBevjnaZ5S2mcvkG0y6MArUdqewPl7AY+xWaRoLsp+PGod8HSYaH5YI718
-         enPGLyxoDb6FKipWvd5BZgiqU9urgwV+CjAXT7UL0gXoizkCotFcvfXhhhsOjf5RkA
-         s1fjSqwaSW6BkD6mq7FlI1ZW3wtvtg4ZF8T0wOipSPAbE20ACmNj2P9L2A/py/aGfq
-         +QIQe4NLJ2yvg==
-Date:   Mon, 25 Jan 2021 11:46:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Imre Deak <imre.deak@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the drm-intel tree with the drm tree
-Message-ID: <20210125114644.7b7cec67@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PgZHLRLUstc9bdqLlXUvmG/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Sun, 24 Jan 2021 19:48:33 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id F34335C00D4;
+        Sun, 24 Jan 2021 19:47:46 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Sun, 24 Jan 2021 19:47:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=y1nWTSF553upeE1Epom1RrsssjZa5L2
+        ibP59KtZo8T0=; b=Ut+P9DcY3DtzVn969+U0jXWzJI6fZA59WXlEgDuJU28e4Uf
+        lJjp8TL2HPGfoZ1dZEp/OEFIEbxhqGu/TnuiRSTK7zpbZBWFQyQYofoKfh9obmzI
+        /6WKAMt/fa04djYgu3ZSNitMsG9LUHlSFRzoHzJM8dXJRXspR5E8AyYgZOvX9xZd
+        pKvtIq0x5+0esqZTlfg9CU8Kd+v0gtGqNI6KOEKOIpf2WtNcvJlC2YaxCiDElsT9
+        pSZNqU1Ch1m+Hr5HbB8LbDRw80rqePiHBtIIBUvcqV8tV3MO6DDiqGVDDmfXhi7c
+        Zf4vQJl9zjwXixTmDvJL9fLN5J+axH5hj1DYcpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=y1nWTS
+        F553upeE1Epom1RrsssjZa5L2ibP59KtZo8T0=; b=RyGecOrdRR+ctcQgEt4SCe
+        8lzzc2w8yX7ZaqRxKd7dVKN1EyuI+B4qVGgWsE5/0BmzLzVpEWsXK9DlnNsr+XGk
+        JXq1CJXu2SS7Hp+6aEVBicd9rvvbFchUriCKTeJNsGv5JzZ1CI6p/Q7O+GgLD/Ef
+        +O4NlS7lBqG08OwZFZbc09C3gH6u2rIY4oasJU45MDduLM4pRMXdfFfVnXg9wXym
+        2nO2e+EvLz4m4csPvEgFqLgd3xH6E2Fm+MJ2PEqDrNdtzsELtheg6TMHe2CT/y0Y
+        wlwf89A4j79SdXxQs39pxeiBIZSfmMpGQHh4+8/ka4ew5sRPPO4UhxI3cFX8Rh6g
+        ==
+X-ME-Sender: <xms:MBUOYFTVp_xSYzvzRfF715cQWdEtOFuHDeWNtvgndimMic7Koq6K2Q>
+    <xme:MBUOYOxohSYaNXqa3Nwy0eb6T8Rl8u0o73iWyT3JLJao1oQ9-581Pm7OJfHw_oHYc
+    qOi1N1NnZXAXp6Q8A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvgddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeffgeffveduueeljefgfeevhfegtefguefgkeefhfekjeeivdekiedttddv
+    ledvvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhinhhfrhgruggvrggurdhorh
+    hgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghn
+    ughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:MBUOYK0MApys27sTXlXIbSJRL1aNvmSw4oKrc2gkzF-UIqdEaek38g>
+    <xmx:MBUOYNA_oj536NgOLrRnvmpztxsLfdJktPbXyQE3eGLdqWlX8WMIHw>
+    <xmx:MBUOYOjPbeDqgIzGSLMDBJUNVN9M6zc9u9o7bfveTZ4MM2aczlbn4g>
+    <xmx:MhUOYCgGC9ByEf0gaBOXVlg1Es9FACVq8nPimVyaq-3XXg4SxOSoMg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A76A2A0005D; Sun, 24 Jan 2021 19:47:44 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
+Mime-Version: 1.0
+Message-Id: <57a20436-5d12-4f7c-b413-0cd1908acf02@www.fastmail.com>
+In-Reply-To: <HK0PR06MB338049BAE1D1DAE7567F620DF2A00@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20200928070108.14040-1-ryan_chen@aspeedtech.com>
+ <20200928070108.14040-2-ryan_chen@aspeedtech.com>
+ <160264382296.310579.9835482254268204873@swboyd.mtv.corp.google.com>
+ <CACPK8Xe-_hTey7hTJjG2-EcDsTN0qOw3bWBcrZZohEK3QOJuvg@mail.gmail.com>
+ <160269577311.884498.8429245140509326318@swboyd.mtv.corp.google.com>
+ <adadc9ef-32ab-0a79-327c-c499c1c04093@sholland.org>
+ <HK0PR06MB338049BAE1D1DAE7567F620DF2A00@HK0PR06MB3380.apcprd06.prod.outlook.com>
+Date:   Mon, 25 Jan 2021 11:17:24 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Samuel Holland" <samuel@sholland.org>,
+        "Stephen Boyd" <sboyd@kernel.org>, "Joel Stanley" <joel@jms.id.au>
+Cc:     BMC-SW <BMC-SW@aspeedtech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/1] clk: aspeed: modify some default clks are critical
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PgZHLRLUstc9bdqLlXUvmG/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the drm-intel tree got a conflict in:
+On Fri, 22 Jan 2021, at 18:45, Ryan Chen wrote:
+> Hello,
+> 	How about this patch progress?
+> 	It does impact a lot of machine that when BMC boot at u-boot. 
+> 	SUART is work for Host. But after boot into kernel, due to the clk disabled. 
+> 	The SUART is not work for Host anymore. 
 
-  drivers/gpu/drm/i915/gem/i915_gem_object.h
+Maybe it's worth taking Ryan's patch for now, and when the protected-clocks 
+binding gets merged we can rip out the CLK_IS_CRITICAL flags and convert the 
+Aspeed devicetrees to use protected-clocks instead?
 
-between commit:
+The only issue I see with that plan is it becomes ambiguous as to which clock 
+each platform considers crititical/in-need-of-protection.
 
-  41a9c75d0acf ("drm/i915/gem: Move stolen node into GEM object union")
+Andrew
 
-from the drm tree and commit:
-
-  5fbc2c2bfa5c ("drm/i915/gem: Add a helper to read data from a GEM object =
-page")
-
-from the drm-intel tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/i915/gem/i915_gem_object.h
-index 5274e9d139b4,ae83737f1d48..000000000000
---- a/drivers/gpu/drm/i915/gem/i915_gem_object.h
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_object.h
-@@@ -548,6 -546,6 +554,8 @@@ i915_gem_object_invalidate_frontbuffer(
-  		__i915_gem_object_invalidate_frontbuffer(obj, origin);
-  }
- =20
- +bool i915_gem_object_is_shmem(const struct drm_i915_gem_object *obj);
- +
-+ int i915_gem_object_read_from_page(struct drm_i915_gem_object *obj, u64 o=
-ffset, void *dst, int size);
-+=20
-  #endif
-
---Sig_/PgZHLRLUstc9bdqLlXUvmG/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOFPQACgkQAVBC80lX
-0Gz7LAf/TjcOO+YgVZYw+gPIYCLggFUAn0h47d/ZJC4FOuDF643UsqClylEBQCdK
-VO2j5NewDHP1H6cEBBUtjYISJ8mSAwVQG5FfN9O26WWZSb9epLJVy3B1Jy84P+GL
-GOwH3+Z2tb8KedjGz20+89XOImZ7JKtq1x99I7sLxNEy7VS9FzilSPfAyY5H4CbR
-+NyWajYZTGonjXUklRxI90GRaKV2aV1ZRkr1OY6pJZw0uoev2ggft2uu94Es/zw4
-cG+7z2suIQsacXB+jYbQP+q0K/aYvGRxd9AlquXGCw152SPPIzePM+BK32Ae6+Qx
-yh/QrfTIU1mfVef6Ez5/elx2UG21vw==
-=UCtQ
------END PGP SIGNATURE-----
-
---Sig_/PgZHLRLUstc9bdqLlXUvmG/--
+> 
+> Regards,
+> Ryan
+> > -----Original Message-----
+> > From: Samuel Holland <samuel@sholland.org>
+> > Sent: Thursday, October 29, 2020 10:25 AM
+> > To: Stephen Boyd <sboyd@kernel.org>; Joel Stanley <joel@jms.id.au>
+> > Cc: Andrew Jeffery <andrew@aj.id.au>; Michael Turquette
+> > <mturquette@baylibre.com>; Ryan Chen <ryan_chen@aspeedtech.com>;
+> > BMC-SW <BMC-SW@aspeedtech.com>; Linux ARM
+> > <linux-arm-kernel@lists.infradead.org>; linux-aspeed
+> > <linux-aspeed@lists.ozlabs.org>; linux-clk@vger.kernel.org; Linux Kernel
+> > Mailing List <linux-kernel@vger.kernel.org>
+> > Subject: Re: Re: [PATCH 1/1] clk: aspeed: modify some default clks are critical
+> > 
+> > Stephen,
+> > 
+> > On 10/14/20 12:16 PM, Stephen Boyd wrote:
+> > > Quoting Joel Stanley (2020-10-13 22:28:00)
+> > >> On Wed, 14 Oct 2020 at 02:50, Stephen Boyd <sboyd@kernel.org> wrote:
+> > >>>
+> > >>> Quoting Ryan Chen (2020-09-28 00:01:08)
+> > >>>> In ASPEED SoC LCLK is LPC clock for all SuperIO device, UART1/UART2
+> > >>>> are default for Host SuperIO UART device, eSPI clk for Host eSPI
+> > >>>> bus access eSPI slave channel, those clks can't be disable should
+> > >>>> keep default, otherwise will affect Host side access SuperIO and SPI slave
+> > device.
+> > >>>>
+> > >>>> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+> > >>>> ---
+> > >>>
+> > >>> Is there resolution on this thread?
+> > >>
+> > >> Not yet.
+> > >>
+> > >> We have a system where the BMC (management controller) controls some
+> > >> clocks, but the peripherals that it's clocking are outside the BMC's
+> > >> control. In this case, the host processor us using some UARTs and
+> > >> what not independent of any code running on the BMC.
+> > >>
+> > >> Ryan wants to have them marked as critical so the BMC never powers them
+> > down.
+> > >>
+> > >> However, there are systems that don't use this part of the soc, so
+> > >> for those implementations they are not critical and Linux on the BMC
+> > >> can turn them off.
+> > >>
+> > >> Do you have any thoughts? Has anyone solved a similar problem already?
+> > >>
+> > >
+> > > Is this critical clocks in DT? Where we want to have different DT for
+> > > different device configurations to indicate that some clks should be
+> > > marked critical so they're never turned off and other times they
+> > > aren't so they're turned off?
+> > >
+> > > It also sounds sort of like the protected-clocks binding. Where you
+> > > don't want to touch certain clks depending on the usage configuration
+> > > of the SoC. There is a patch to make that generic that I haven't
+> > > applied because it looks wrong at first glance[1]. Maybe not
+> > > registering those clks to the framework on the configuration that Ryan has is
+> > good enough?
+> > 
+> > Could you please be more specific than the patch "looks wrong"? I'm more
+> > than happy to update the patch to address your concerns, but I cannot do that
+> > unless I know what your concerns are.
+> > 
+> > Regards,
+> > Samuel
+> > 
+> > > [1]
+> > > https://lore.kernel.org/r/20200903040015.5627-2-samuel@sholland.org
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
