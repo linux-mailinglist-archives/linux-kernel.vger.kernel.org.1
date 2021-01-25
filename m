@@ -2,189 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDADB302F28
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2051C302F54
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732842AbhAYWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:36:50 -0500
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:37959 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731266AbhAYWf6 (ORCPT
+        id S1732608AbhAYWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732693AbhAYWnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:35:58 -0500
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 25 Jan 2021 14:34:59 -0800
-Received: from htb-1n-eng-dhcp122.eng.vmware.com (unknown [10.20.114.3])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 1580C2020A;
-        Mon, 25 Jan 2021 14:35:01 -0800 (PST)
-Received: by htb-1n-eng-dhcp122.eng.vmware.com (Postfix, from userid 0)
-        id 0D032A9FB6; Mon, 25 Jan 2021 14:35:01 -0800 (PST)
-From:   Ronak Doshi <doshir@vmware.com>
-To:     <netdev@vger.kernel.org>
-CC:     Ronak Doshi <doshir@vmware.com>, Petr Vandrovec <petr@vmware.com>,
-        "maintainer:VMWARE VMXNET3 ETHERNET DRIVER" <pv-drivers@vmware.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 net-next] Remove buf_info from device accessible structures
-Date:   Mon, 25 Jan 2021 14:34:56 -0800
-Message-ID: <20210125223456.25043-1-doshir@vmware.com>
-X-Mailer: git-send-email 2.11.0
+        Mon, 25 Jan 2021 17:43:04 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15A7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:42:23 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id v200so539440ybe.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:42:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uUoNf9BBFKkgh2ppnaejSB621RRoaZzYwArQ/+nGs5I=;
+        b=v0CUYdsfdi78E2T5lQL29cB54rzB1CtEtGaQywaH8ndp/fK0k15CDrNwlYXhEyXGnP
+         6Y0DHhTk81aGdBor3d8zkKCVoBmT7D/aXbgN9n3yrbsMPRuS2Rkmo8oNkhOz/3Ki0RfW
+         SmbaFODL6ySPYtok39wzAJVIjIvR/s2vbkntxDz+Ej1rnJsMqqury3SsKXGmeviI1BDH
+         SoD+MDozlVTb89r7Zm2Gf6P18wk2T4ZUw7OavjOg7m/kq5cQNSvN+NKHXZvv9HhVNZlq
+         tEI6rOU7qvZuDYFGdHCnakyn8Y0+1yJrwo3rRs/OdJZ0ScW7WullbDpbVzq35Aa+PxTR
+         lj4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uUoNf9BBFKkgh2ppnaejSB621RRoaZzYwArQ/+nGs5I=;
+        b=JFJy2cE8y78JWWPyZANvlSC2oyHuf+FeO4lSmdobeFsJ3UjnrMido3Ik64Y4Vc7r2F
+         H8CvvSWPIvBQlHhfTvcJZgBuIsWlb4D2QLdBhFB6l9S5e87TIS4byDeRYDMYBjgJx8sa
+         jz8IZiF6sgHWMf/rWYqERhMuYnkNKlNjSoRoUdKQz0D1V1lzeULb0HlDxsZsourphL8x
+         LvO0QPCQr/WrhvGzWgwek/21+ZjCcuvHFw8Rzg+Ubu08r8ttT70+PUzYz8Y1ufYbEQHU
+         Si9am668j4oxUixQW7AllUDqYxRG2UKaQTF8t7SCxFaivnfVCn2LR3kht0pyzEs+9Otu
+         RxJw==
+X-Gm-Message-State: AOAM53044t2VUdD1Z5OQ0qvw7DByp1g36iqsn+zlYyqIfwnjMREo4dCZ
+        3vtTacv9D+Yvp1389tZO9O7Qk/XbvLhBS0kOpvyr9w==
+X-Google-Smtp-Source: ABdhPJzstPk4hc3oMjRFyfDYbQKEtMFjvVapEAWEK8W/jH+3yeTl2JV0+Uap2GESBQLTIzc5VXYaLlyzC7kWrcxtQPQ=
+X-Received: by 2002:a25:3345:: with SMTP id z66mr4179764ybz.466.1611614542807;
+ Mon, 25 Jan 2021 14:42:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: doshir@vmware.com does not
- designate permitted sender hosts)
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com> <a24391e62b107040435766fff52bdd31@walle.cc>
+In-Reply-To: <a24391e62b107040435766fff52bdd31@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 25 Jan 2021 14:41:46 -0800
+Message-ID: <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Michael Walle <michael@walle.cc>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmxnet3: Remove buf_info from device accessible structures
+On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> > Hi Saravana,
+> >
+> > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
+> > wrote:
+> >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
+> >> wrote:
+> >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+> >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+> >> > > wrote:
+> >> > >>
+> >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+> >> > >> all CCs to BCCs :(]
+> >> > >>
+> >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> >> > >> >>
+> >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> >> > >> >> wrote:
+> >> > >> >> >
+> >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+> >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+> >> > >> >> > deferral. Convert it to builtin_platform_driver().
+> >> > >> >>
+> >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> >> > >> >> shouldn't it be fixed or removed?
+> >> > >> >
+> >> > >> > I was actually thinking about this too. The problem with fixing
+> >> > >> > builtin_platform_driver_probe() to behave like
+> >> > >> > builtin_platform_driver() is that these probe functions could be
+> >> > >> > marked with __init. But there are also only 20 instances of
+> >> > >> > builtin_platform_driver_probe() in the kernel:
+> >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+> >> > >> > 20
+> >> > >> >
+> >> > >> > So it might be easier to just fix them to not use
+> >> > >> > builtin_platform_driver_probe().
+> >> > >> >
+> >> > >> > Michael,
+> >> > >> >
+> >> > >> > Any chance you'd be willing to help me by converting all these to
+> >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> >> > >>
+> >> > >> If it just moving the probe function to the _driver struct and
+> >> > >> remove the __init annotations. I could look into that.
+> >> > >
+> >> > > Yup. That's pretty much it AFAICT.
+> >> > >
+> >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+> >> > > for async probe, etc. But I doubt anyone is actually setting async
+> >> > > flags and still using builtin_platform_driver_probe().
+> >> >
+> >> > Hasn't module_platform_driver_probe() the same problem? And there
+> >> > are ~80 drivers which uses that.
+> >>
+> >> Yeah. The biggest problem with all of these is the __init markers.
+> >> Maybe some familiar with coccinelle can help?
+> >
+> > And dropping them will increase memory usage.
+>
+> Although I do have the changes for the builtin_platform_driver_probe()
+> ready, I don't think it makes much sense to send these unless we agree
+> on the increased memory footprint. While there are just a few
+> builtin_platform_driver_probe() and memory increase _might_ be
+> negligible, there are many more module_platform_driver_probe().
 
-buf_info structures in RX & TX queues are private driver data that
-do not need to be visible to the device.  Although there is physical
-address and length in the queue descriptor that points to these
-structures, their layout is not standardized, and device never looks
-at them.
+While it's good to drop code that'll not be used past kernel init, the
+module_platform_driver_probe() is going even more extreme. It doesn't
+even allow deferred probe (well before kernel init is done). I don't
+think that behavior is right and that's why we should delete it. Also,
+I doubt if any of these probe functions even take up 4KB of memory.
 
-So lets allocate these structures in non-DMA-able memory, and fill
-physical address as all-ones and length as zero in the queue
-descriptor.
-
-That should alleviate worries brought by Martin Radev in
-https://lists.osuosl.org/pipermail/intel-wired-lan/Week-of-Mon-20210104/022829.html
-that malicious vmxnet3 device could subvert SVM/TDX guarantees.
-
-Signed-off-by: Petr Vandrovec <petr@vmware.com>
-Signed-off-by: Ronak Doshi <doshir@vmware.com>
----
-Changes in v2:
- - Use kcalloc_node()
- - Remove log for memory allocation failure
-Changes in v3:
- - Do not pass __GFP_ZERO to kcalloc
----
- drivers/net/vmxnet3/vmxnet3_drv.c | 37 ++++++++++++-------------------------
- drivers/net/vmxnet3/vmxnet3_int.h |  2 --
- 2 files changed, 12 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
-index 336504b7531d..419e81b21d9b 100644
---- a/drivers/net/vmxnet3/vmxnet3_drv.c
-+++ b/drivers/net/vmxnet3/vmxnet3_drv.c
-@@ -452,9 +452,7 @@ vmxnet3_tq_destroy(struct vmxnet3_tx_queue *tq,
- 		tq->comp_ring.base = NULL;
- 	}
- 	if (tq->buf_info) {
--		dma_free_coherent(&adapter->pdev->dev,
--				  tq->tx_ring.size * sizeof(tq->buf_info[0]),
--				  tq->buf_info, tq->buf_info_pa);
-+		kfree(tq->buf_info);
- 		tq->buf_info = NULL;
- 	}
- }
-@@ -505,8 +503,6 @@ static int
- vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
- 		  struct vmxnet3_adapter *adapter)
- {
--	size_t sz;
--
- 	BUG_ON(tq->tx_ring.base || tq->data_ring.base ||
- 	       tq->comp_ring.base || tq->buf_info);
- 
-@@ -534,9 +530,9 @@ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
- 		goto err;
- 	}
- 
--	sz = tq->tx_ring.size * sizeof(tq->buf_info[0]);
--	tq->buf_info = dma_alloc_coherent(&adapter->pdev->dev, sz,
--					  &tq->buf_info_pa, GFP_KERNEL);
-+	tq->buf_info = kcalloc_node(tq->tx_ring.size, sizeof(tq->buf_info[0]),
-+				    GFP_KERNEL,
-+				    dev_to_node(&adapter->pdev->dev));
- 	if (!tq->buf_info)
- 		goto err;
- 
-@@ -1738,10 +1734,7 @@ static void vmxnet3_rq_destroy(struct vmxnet3_rx_queue *rq,
- 	}
- 
- 	if (rq->buf_info[0]) {
--		size_t sz = sizeof(struct vmxnet3_rx_buf_info) *
--			(rq->rx_ring[0].size + rq->rx_ring[1].size);
--		dma_free_coherent(&adapter->pdev->dev, sz, rq->buf_info[0],
--				  rq->buf_info_pa);
-+		kfree(rq->buf_info[0]);
- 		rq->buf_info[0] = rq->buf_info[1] = NULL;
- 	}
- }
-@@ -1883,10 +1876,9 @@ vmxnet3_rq_create(struct vmxnet3_rx_queue *rq, struct vmxnet3_adapter *adapter)
- 		goto err;
- 	}
- 
--	sz = sizeof(struct vmxnet3_rx_buf_info) * (rq->rx_ring[0].size +
--						   rq->rx_ring[1].size);
--	bi = dma_alloc_coherent(&adapter->pdev->dev, sz, &rq->buf_info_pa,
--				GFP_KERNEL);
-+	bi = kcalloc_node(rq->rx_ring[0].size + rq->rx_ring[1].size,
-+			  sizeof(rq->buf_info[0][0]), GFP_KERNEL,
-+			  dev_to_node(&adapter->pdev->dev));
- 	if (!bi)
- 		goto err;
- 
-@@ -2522,14 +2514,12 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
- 		tqc->txRingBasePA   = cpu_to_le64(tq->tx_ring.basePA);
- 		tqc->dataRingBasePA = cpu_to_le64(tq->data_ring.basePA);
- 		tqc->compRingBasePA = cpu_to_le64(tq->comp_ring.basePA);
--		tqc->ddPA           = cpu_to_le64(tq->buf_info_pa);
-+		tqc->ddPA           = cpu_to_le64(~0ULL);
- 		tqc->txRingSize     = cpu_to_le32(tq->tx_ring.size);
- 		tqc->dataRingSize   = cpu_to_le32(tq->data_ring.size);
- 		tqc->txDataRingDescSize = cpu_to_le32(tq->txdata_desc_size);
- 		tqc->compRingSize   = cpu_to_le32(tq->comp_ring.size);
--		tqc->ddLen          = cpu_to_le32(
--					sizeof(struct vmxnet3_tx_buf_info) *
--					tqc->txRingSize);
-+		tqc->ddLen          = cpu_to_le32(0);
- 		tqc->intrIdx        = tq->comp_ring.intr_idx;
- 	}
- 
-@@ -2541,14 +2531,11 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
- 		rqc->rxRingBasePA[0] = cpu_to_le64(rq->rx_ring[0].basePA);
- 		rqc->rxRingBasePA[1] = cpu_to_le64(rq->rx_ring[1].basePA);
- 		rqc->compRingBasePA  = cpu_to_le64(rq->comp_ring.basePA);
--		rqc->ddPA            = cpu_to_le64(rq->buf_info_pa);
-+		rqc->ddPA            = cpu_to_le64(~0ULL);
- 		rqc->rxRingSize[0]   = cpu_to_le32(rq->rx_ring[0].size);
- 		rqc->rxRingSize[1]   = cpu_to_le32(rq->rx_ring[1].size);
- 		rqc->compRingSize    = cpu_to_le32(rq->comp_ring.size);
--		rqc->ddLen           = cpu_to_le32(
--					sizeof(struct vmxnet3_rx_buf_info) *
--					(rqc->rxRingSize[0] +
--					 rqc->rxRingSize[1]));
-+		rqc->ddLen           = cpu_to_le32(0);
- 		rqc->intrIdx         = rq->comp_ring.intr_idx;
- 		if (VMXNET3_VERSION_GE_3(adapter)) {
- 			rqc->rxDataRingBasePA =
-diff --git a/drivers/net/vmxnet3/vmxnet3_int.h b/drivers/net/vmxnet3/vmxnet3_int.h
-index d958b92c9429..e910596b79cf 100644
---- a/drivers/net/vmxnet3/vmxnet3_int.h
-+++ b/drivers/net/vmxnet3/vmxnet3_int.h
-@@ -240,7 +240,6 @@ struct vmxnet3_tx_queue {
- 	spinlock_t                      tx_lock;
- 	struct vmxnet3_cmd_ring         tx_ring;
- 	struct vmxnet3_tx_buf_info      *buf_info;
--	dma_addr_t                       buf_info_pa;
- 	struct vmxnet3_tx_data_ring     data_ring;
- 	struct vmxnet3_comp_ring        comp_ring;
- 	struct Vmxnet3_TxQueueCtrl      *shared;
-@@ -298,7 +297,6 @@ struct vmxnet3_rx_queue {
- 	u32 qid2;           /* rqID in RCD for buffer from 2nd ring */
- 	u32 dataRingQid;    /* rqID in RCD for buffer from data ring */
- 	struct vmxnet3_rx_buf_info     *buf_info[2];
--	dma_addr_t                      buf_info_pa;
- 	struct Vmxnet3_RxQueueCtrl            *shared;
- 	struct vmxnet3_rq_driver_stats  stats;
- } __attribute__((__aligned__(SMP_CACHE_BYTES)));
--- 
-2.11.0
-
+-Saravana
