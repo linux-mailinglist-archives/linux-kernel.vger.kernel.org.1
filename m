@@ -2,167 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A8E3049CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 980CB3049BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732426AbhAZFXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:23:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40512 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726448AbhAYJ5G (ORCPT
+        id S1732545AbhAZFYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:24:30 -0500
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:53039 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727202AbhAYJ7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:57:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611568463;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQWXsTywCg/HpuhUqGg4Mb/h0MABQoSPqp38t2qFTo4=;
-        b=Q0XQnHe+N7pBRuPwzz4seLChQv4aTG9SDNb1Xo20KH/mDBvntu/JWw2bAJ2qi7At6MgezS
-        bt0TtU/xQNmKXSvqmo5WduPxztTLAAM/IlYeBnvoaw/pB2MdIM8fJx+U5ymPXxXe+B1roq
-        zk7FCXR2A7O42opmv06STMCO0+PsfJ0=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-6wsXe-JWNN2Eb6h1RHaQ1Q-1; Mon, 25 Jan 2021 04:54:21 -0500
-X-MC-Unique: 6wsXe-JWNN2Eb6h1RHaQ1Q-1
-Received: by mail-ed1-f71.google.com with SMTP id m18so413070edp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:54:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=BQWXsTywCg/HpuhUqGg4Mb/h0MABQoSPqp38t2qFTo4=;
-        b=kRvgeGK8YoXWJZ3Ii8PLrypCLCBTWEokzYRYZp5PaQObMRBBXyEjc7N1ZwYeemMHZC
-         yenoZ9oAMrVdBb5HjLbHj4kKLTLGVuNAHUvDJWiNDmsqm+yuXW1QLU39mE+Xj1cxiv8I
-         pnYdpyWk1sQLK2mgVVnl3+21yWU9yJzm9owKLSA71es6VoVMsiS3b5URk98BqItOLhJp
-         EsKJklwhmWg4uyNj5GpSFID7GhjANd1M3uCJX4pmfLTFx8oVNtQ6aeKklwASWvdbsco6
-         RDtp05SBiIaRYe65dIIAksmX4waHdOsoSGCDCIiCYqfsI1MOXNYJ68anRjqE8okBuLQ+
-         GOZw==
-X-Gm-Message-State: AOAM530nn9qs3bfqMkkpG5z2NHfZJ02T1BQ/dlTx+mTN3BChNxfONUKg
-        n3pbVK782kGAIvTi/+/GKuSrR+MzJvXazbMi+pY6dEk35+yBUjPZWSsMBte3V4a6Ag9JVsyXEcq
-        nAVMa9FLjnFUaeFxJ9KRg9Zi4
-X-Received: by 2002:a05:6402:100b:: with SMTP id c11mr623831edu.193.1611568460050;
-        Mon, 25 Jan 2021 01:54:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxcqcQjZJ1pJCHs48lf5IQcDnFo3BNnKaESA4fXV5jd/jEtPbExIpDIqbrHSMeIExDR9IX4ZQ==
-X-Received: by 2002:a05:6402:100b:: with SMTP id c11mr623817edu.193.1611568459926;
-        Mon, 25 Jan 2021 01:54:19 -0800 (PST)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id hr31sm7965914ejc.125.2021.01.25.01.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 01:54:19 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Stephen Zhang <stephenzhangzsd@gmail.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Zhang <stephenzhangzsd@gmail.com>, pbonzini@redhat.com,
-        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Subject: Re: [PATCH] KVM: x86/mmu: improve robustness of some functions
-In-Reply-To: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
-References: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
-Date:   Mon, 25 Jan 2021 10:54:18 +0100
-Message-ID: <87a6sx4a0l.fsf@vitty.brq.redhat.com>
+        Mon, 25 Jan 2021 04:59:13 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 3ybylSxZYiWRg3yc1lfkwc; Mon, 25 Jan 2021 10:56:45 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1611568605; bh=d1oH/dg1c5hhev2gtzREZqY4fF4dPmvsBxp3g3Tqro8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=bux89eyFprXyWlWsSl9sUDGSz5Ky77ppK+K5B5ZUNwpioOcY+VMMrZCztl+qX8+fl
+         pnnJ7SvrZZukM8ckUclq1Cf9gYDj0hj9IfW0ZNcKrNS9F6WIim5iQ2VvJmNqeXFDuc
+         vl+esb01CifwdvL3K41MAI7GceWTbYbZ6+1sZSLYUqymtYtCxXbUejUv7qj6SwdHjC
+         xgs1TDsyqpeXFSH68tegT1VIhfriz012XeJfcwKZQRKNrHYrVxVlWEgF9AqeapWn1k
+         C702m3tGV4nMhKcUYm7HUVSjFxC20qVl5ZztEBNmCvTR2ykYAY7OEXxhi4X1Wx6KUR
+         VoMUejT25x/yw==
+Subject: Re: [PATCH 1/3] media: i2c: adv7842: remove open coded version of
+ SMBus block write
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210119093912.1838-1-wsa+renesas@sang-engineering.com>
+ <20210119093912.1838-2-wsa+renesas@sang-engineering.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <df22c72d-cbae-0e87-8448-9dbcabbc5823@xs4all.nl>
+Date:   Mon, 25 Jan 2021 10:56:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210119093912.1838-2-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfD9+Q/+bx9WBtEmKNst4heavMkDzpVddMvSyjurw+8jq6sMwFNAsxPcZYjneEbP2g+ED3R8MXYWavoSXhlHzOBd8+E8NkS4pjmoeVhbiAq+ninDLC9CA
+ R27uvEu3NZDPCicsKfV0uoF+NLQPV4i5ncRgcfUh9qVl+qi0a+EpKk3LaD04chSOgHfqEH5RjiHgAuAI+Qm9r2CPXuFYwi0Wh1tkCGmkq/Yx1ePUzadDG7kZ
+ EUCmYErPgqrB0MHXgMr9m8njMP6TuM+cB+P6uaDXNub3QrHO5Ka1ADyHOiGnWtK0FmDaPaHS9KpoH7n8cs/aJbICfe8dbjf0tSkWfzRbu7sBH6liZoveMcoW
+ Zxyn1L+OhcuFTBJS8ToiBBqQgWIKx2X9+R45maODAiynyNUMlLvYhU/I2YMNLJPEephgdzmX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Zhang <stephenzhangzsd@gmail.com> writes:
+On 19/01/2021 10:39, Wolfram Sang wrote:
+> The version here is identical to the one in the I2C core, so use the
+> latter version directly.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-> If the name of this function changes, you can easily
-> forget to modify the code in the corresponding place.
-> In fact, such errors already exist in spte_write_protect
->  and spte_clear_dirty.
->
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-What if we do something like (completely untested):
+Looks good to me!
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index bfc6389edc28..5ec15e4160b1 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -12,7 +12,7 @@
- extern bool dbg;
- 
- #define pgprintk(x...) do { if (dbg) printk(x); } while (0)
--#define rmap_printk(x...) do { if (dbg) printk(x); } while (0)
-+#define rmap_printk(fmt, args...) do { if (dbg) printk("%s: " fmt, __func__, ## args); } while (0)
- #define MMU_WARN_ON(x) WARN_ON(x)
- #else
- #define pgprintk(x...) do { } while (0)
+	Hans
 
-and eliminate the need to pass '__func__,' explicitly? We can probably
-do the same to pgprintk().
-
-> Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
 > ---
->  arch/x86/kvm/mmu/mmu.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6d16481..09462c3d 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -844,17 +844,17 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
->  	int i, count = 0;
+> 
+> Changes since RFC:
+> * skip define, use i2c_smbus_write_i2c_block_data directly
+> 
+>  drivers/media/i2c/adv7842.c | 24 +++++-------------------
+>  1 file changed, 5 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/adv7842.c b/drivers/media/i2c/adv7842.c
+> index 0855f648416d..e0629d5ef17b 100644
+> --- a/drivers/media/i2c/adv7842.c
+> +++ b/drivers/media/i2c/adv7842.c
+> @@ -343,20 +343,6 @@ static void adv_smbus_write_byte_no_check(struct i2c_client *client,
+>  		       I2C_SMBUS_BYTE_DATA, &data);
+>  }
 >  
->  	if (!rmap_head->val) {
-> -		rmap_printk("pte_list_add: %p %llx 0->1\n", spte, *spte);
-> +		rmap_printk("%s: %p %llx 0->1\n", __func__, spte, *spte);
->  		rmap_head->val = (unsigned long)spte;
->  	} else if (!(rmap_head->val & 1)) {
-> -		rmap_printk("pte_list_add: %p %llx 1->many\n", spte, *spte);
-> +		rmap_printk("%s: %p %llx 1->many\n", __func__, spte, *spte);
->  		desc = mmu_alloc_pte_list_desc(vcpu);
->  		desc->sptes[0] = (u64 *)rmap_head->val;
->  		desc->sptes[1] = spte;
->  		rmap_head->val = (unsigned long)desc | 1;
->  		++count;
->  	} else {
-> -		rmap_printk("pte_list_add: %p %llx many->many\n", spte, *spte);
-> +		rmap_printk("%s: %p %llx many->many\n",	__func__, spte, *spte);
->  		desc = (struct pte_list_desc *)(rmap_head->val & ~1ul);
->  		while (desc->sptes[PTE_LIST_EXT-1]) {
->  			count += PTE_LIST_EXT;
-> @@ -1115,7 +1115,7 @@ static bool spte_write_protect(u64 *sptep, bool pt_protect)
->  	      !(pt_protect && spte_can_locklessly_be_made_writable(spte)))
->  		return false;
+> -static s32 adv_smbus_write_i2c_block_data(struct i2c_client *client,
+> -				  u8 command, unsigned length, const u8 *values)
+> -{
+> -	union i2c_smbus_data data;
+> -
+> -	if (length > I2C_SMBUS_BLOCK_MAX)
+> -		length = I2C_SMBUS_BLOCK_MAX;
+> -	data.block[0] = length;
+> -	memcpy(data.block + 1, values, length);
+> -	return i2c_smbus_xfer(client->adapter, client->addr, client->flags,
+> -			      I2C_SMBUS_WRITE, command,
+> -			      I2C_SMBUS_I2C_BLOCK_DATA, &data);
+> -}
+> -
+>  /* ----------------------------------------------------------------------- */
 >  
-> -	rmap_printk("rmap_write_protect: spte %p %llx\n", sptep, *sptep);
-> +	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
+>  static inline int io_read(struct v4l2_subdev *sd, u8 reg)
+> @@ -741,7 +727,7 @@ static int edid_write_vga_segment(struct v4l2_subdev *sd)
+>  	rep_write_and_or(sd, 0x77, 0xef, 0x10);
 >  
->  	if (pt_protect)
->  		spte &= ~SPTE_MMU_WRITEABLE;
-> @@ -1142,7 +1142,7 @@ static bool spte_clear_dirty(u64 *sptep)
->  {
->  	u64 spte = *sptep;
+>  	for (i = 0; !err && i < 256; i += I2C_SMBUS_BLOCK_MAX)
+> -		err = adv_smbus_write_i2c_block_data(state->i2c_edid, i,
+> +		err = i2c_smbus_write_i2c_block_data(state->i2c_edid, i,
+>  					     I2C_SMBUS_BLOCK_MAX, val + i);
+>  	if (err)
+>  		return err;
+> @@ -807,7 +793,7 @@ static int edid_write_hdmi_segment(struct v4l2_subdev *sd, u8 port)
+>  	rep_write_and_or(sd, 0x77, 0xef, 0x00);
 >  
-> -	rmap_printk("rmap_clear_dirty: spte %p %llx\n", sptep, *sptep);
-> +	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
+>  	for (i = 0; !err && i < 256; i += I2C_SMBUS_BLOCK_MAX)
+> -		err = adv_smbus_write_i2c_block_data(state->i2c_edid, i,
+> +		err = i2c_smbus_write_i2c_block_data(state->i2c_edid, i,
+>  						     I2C_SMBUS_BLOCK_MAX, edid + i);
+>  	if (err)
+>  		return err;
+> @@ -1079,7 +1065,7 @@ static void configure_custom_video_timings(struct v4l2_subdev *sd,
+>  		/* Should only be set in auto-graphics mode [REF_02, p. 91-92] */
+>  		/* setup PLL_DIV_MAN_EN and PLL_DIV_RATIO */
+>  		/* IO-map reg. 0x16 and 0x17 should be written in sequence */
+> -		if (adv_smbus_write_i2c_block_data(client, 0x16, 2, pll)) {
+> +		if (i2c_smbus_write_i2c_block_data(client, 0x16, 2, pll)) {
+>  			v4l2_err(sd, "writing to reg 0x16 and 0x17 failed\n");
+>  			break;
+>  		}
+> @@ -1135,7 +1121,7 @@ static void adv7842_set_offset(struct v4l2_subdev *sd, bool auto_offset, u16 off
+>  	offset_buf[3] = offset_c & 0x0ff;
 >  
->  	MMU_WARN_ON(!spte_ad_enabled(spte));
->  	spte &= ~shadow_dirty_mask;
-> @@ -1184,7 +1184,7 @@ static bool spte_set_dirty(u64 *sptep)
->  {
->  	u64 spte = *sptep;
+>  	/* Registers must be written in this order with no i2c access in between */
+> -	if (adv_smbus_write_i2c_block_data(state->i2c_cp, 0x77, 4, offset_buf))
+> +	if (i2c_smbus_write_i2c_block_data(state->i2c_cp, 0x77, 4, offset_buf))
+>  		v4l2_err(sd, "%s: i2c error writing to CP reg 0x77, 0x78, 0x79, 0x7a\n", __func__);
+>  }
 >  
-> -	rmap_printk("rmap_set_dirty: spte %p %llx\n", sptep, *sptep);
-> +	rmap_printk("%s: spte %p %llx\n", __func__, sptep, *sptep);
+> @@ -1164,7 +1150,7 @@ static void adv7842_set_gain(struct v4l2_subdev *sd, bool auto_gain, u16 gain_a,
+>  	gain_buf[3] = ((gain_c & 0x0ff));
 >  
->  	/*
->  	 * Similar to the !kvm_x86_ops.slot_disable_log_dirty case,
-> @@ -1363,8 +1363,8 @@ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  	/* Registers must be written in this order with no i2c access in between */
+> -	if (adv_smbus_write_i2c_block_data(state->i2c_cp, 0x73, 4, gain_buf))
+> +	if (i2c_smbus_write_i2c_block_data(state->i2c_cp, 0x73, 4, gain_buf))
+>  		v4l2_err(sd, "%s: i2c error writing to CP reg 0x73, 0x74, 0x75, 0x76\n", __func__);
+>  }
 >  
->  restart:
->  	for_each_rmap_spte(rmap_head, &iter, sptep) {
-> -		rmap_printk("kvm_set_pte_rmapp: spte %p %llx gfn %llx (%d)\n",
-> -			    sptep, *sptep, gfn, level);
-> +		rmap_printk("%s: spte %p %llx gfn %llx (%d)\n",
-> +			      __func__, sptep, *sptep, gfn, level);
->  
->  		need_flush = 1;
-
--- 
-Vitaly
+> 
 
