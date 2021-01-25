@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA622303738
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCD5303735
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389500AbhAZHM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:12:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60356 "EHLO
+        id S2389482AbhAZHMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:12:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730263AbhAYPmq (ORCPT
+        with ESMTP id S1730251AbhAYPmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:42:46 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72872C061A30
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:31:11 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id b5so13042168wrr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:31:11 -0800 (PST)
+        Mon, 25 Jan 2021 10:42:31 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688EDC061A32
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:31:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 190so11304839wmz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:31:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=android.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ct9PhrrOuETu1TZRiUnqvRkBgYvkOjSl9yA+Mh+fZkE=;
-        b=d93RGymDI8SrwfWZ4+U5KGIE4ej0/9iOF0WtM9yKr4V7dIpUSnPusH7FkaZQhX7Ups
-         mYy1EnkZLM//7ewHBRPVfs1yhMGkkfmcjuqtr6BXiavq7nGS0Pv7mWYhQHQCKr6hy1yO
-         7T1h95Sx+qCZ7ozjVWfuXiaLAHrC8J/hf+3TMkXDSziP+mdR1IgqgA1AC+95uRnGoUjr
-         ZS0u9z50PXmREzCKKEmxTJrJ34lv2X755Y4B+YKjYIOC4ywF828bD5sD56xIyqVo9Q4a
-         sXoZPnU0lY1IVMB+VTU59sh7QDk7RFL9qbr63yQErpcNFkANlovu/ys+yvj8pgTyT7/P
-         qf2g==
+        bh=K33/kOxBcJ35u0ayW/ijJxNjK4mLraYNnDTliI6dnXg=;
+        b=kEj9BGL5vLSacxvqiOxwxcXXj8ycWN/r3TCV1Hwysj38wWty0mJygofEQqWU26ui1M
+         nSiKhu2j2W8JnvD8/P9Fecc8f6MmDioumRGUsVD1hlExvJ18kILVeqHFfiSrxVrXceUC
+         EipXBOeNwHRtCdrckg8JGa2BqXsxzlX4awNOH25pPAbcE2zjU8E+9u12SERC+BBCWFkh
+         DorvOEgbrys+KXkZ5Wm8YAqfPdg6tU76o0PRXGTCzJgC1lQbI0kVc9D5NO18BMN9oqPg
+         U1VNlFw/T1jB79L7fD2O1y0zh5XwdnI7Zg8Hlf27ZtuOLoff0e0s6OWsM6D8AJpYwowe
+         mJSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ct9PhrrOuETu1TZRiUnqvRkBgYvkOjSl9yA+Mh+fZkE=;
-        b=ECjGvJ4HWBHmpcg+gpg91rcrTNGkQfMoFDipC8fyLstz7aVPcVVu1K2VJ4CaMm4pbq
-         ktiWgDjyecGmaoEbx/6dlBKLQlUN9DkF6HfUXmbJ0RqEQh9Q48SLonfC8gG1uH6D8I+y
-         nlaGDrvKT2bOELsJ2c3RC2vJ/xpvuCeIXRO9wAfCNeCXFgKbwdpREyz4coyb8rrLtwcC
-         ZZe0DnJKgd1w/Zo1/17KIH9PU9DUzrk7yeuzKxR8/AKvZeUtre/IsatzkrIFq020jxNA
-         yQ1ygSMaLKi8leHXSWmnFqC4IuWQ21HXB75MuyPCdE8GORxFswmVXsHm+gl5QqVyGE+5
-         HfQA==
-X-Gm-Message-State: AOAM533LnqHqpPuwMifBUkXpqR0P/qmdspc6DunM/9l/aYfR2EZv9iao
-        B2Jqf5A2TO+CG+T3wc/OwUZP/w==
-X-Google-Smtp-Source: ABdhPJyz4iM1784q2nVRJNfNeVWmWxr+WW51+AFKTN/cIcbKerVTBQT95wRgvmKp2wxuqlvic2XoLA==
-X-Received: by 2002:adf:8b41:: with SMTP id v1mr1592261wra.282.1611588670233;
-        Mon, 25 Jan 2021 07:31:10 -0800 (PST)
+        bh=K33/kOxBcJ35u0ayW/ijJxNjK4mLraYNnDTliI6dnXg=;
+        b=NwF5Dyh/P0K2yzMWePHAom9t665dNEtyPUoIMcuxNj6Yh36lfD6YsBw4WlQ0iSb2WZ
+         2HcPhcWUXXyfhGutgqSB4OqltW1iZa8Hqn92yKcDVprTMuvXxissiFwUUJmAi2oCUDqI
+         L1l/WpOpMdrzeYSePAUSmXDjgruCD2LgrBMmUf2mWnqm4JylmJB7asrVeWrL9qaE3u7x
+         8vsCyB3e7u+MLT00V/U2PACM5aqWgF0LUw5dVdfqmu5iLQQCILAA7u58xLQ59TPcKjF+
+         gCUR25F9MVVTVO1aVSAgN9OsJRKpqFGLsOXgxxPecUHKS6ZV/75jkTxQoQNmuBZ7LivJ
+         kXFg==
+X-Gm-Message-State: AOAM533KNHcpSxN+oFYnFZMJnNZ5OBLc51Zqz9RdBNxMKU1+5kJRNGw4
+        dDA6Grq+S2jCQeFtw4hpRiKLLg==
+X-Google-Smtp-Source: ABdhPJxl8xZzl0+FEyNEX1aEMDptA5wDn7nR38epMj7SLt7Ns8ljT/fbQdKsorC/hddSaYL8bPtaZQ==
+X-Received: by 2002:a7b:c942:: with SMTP id i2mr642875wml.51.1611588671158;
+        Mon, 25 Jan 2021 07:31:11 -0800 (PST)
 Received: from balsini.lon.corp.google.com ([2a00:79e0:d:210:4cd4:5994:40fe:253d])
-        by smtp.gmail.com with ESMTPSA id o14sm22611965wri.48.2021.01.25.07.31.09
+        by smtp.gmail.com with ESMTPSA id o14sm22611965wri.48.2021.01.25.07.31.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 07:31:09 -0800 (PST)
+        Mon, 25 Jan 2021 07:31:10 -0800 (PST)
 From:   Alessio Balsini <balsini@android.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>
 Cc:     Akilesh Kailash <akailash@google.com>,
@@ -64,9 +64,9 @@ Cc:     Akilesh Kailash <akailash@google.com>,
         Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
         fuse-devel@lists.sourceforge.net, kernel-team@android.com,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND V12 3/8] fuse: Definitions and ioctl for passthrough
-Date:   Mon, 25 Jan 2021 15:30:52 +0000
-Message-Id: <20210125153057.3623715-4-balsini@android.com>
+Subject: [PATCH RESEND V12 4/8] fuse: Passthrough initialization and release
+Date:   Mon, 25 Jan 2021 15:30:53 +0000
+Message-Id: <20210125153057.3623715-5-balsini@android.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 In-Reply-To: <20210125153057.3623715-1-balsini@android.com>
 References: <20210125153057.3623715-1-balsini@android.com>
@@ -76,310 +76,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expose the FUSE_PASSTHROUGH interface to user space and declare all the
-basic data structures and functions as the skeleton on top of which the
-FUSE passthrough functionality will be built.
+Implement the FUSE passthrough ioctl that associates the lower
+(passthrough) file system file with the fuse_file.
 
-As part of this, introduce the new FUSE passthrough ioctl, which allows
-the FUSE daemon to specify a direct connection between a FUSE file and a
-lower file system file. Such ioctl requires user space to pass the file
-descriptor of one of its opened files through the fuse_passthrough_out
-data structure introduced in this patch. This structure includes extra
-fields for possible future extensions.
-Also, add the passthrough functions for the set-up and tear-down of the
-data structures and locks that will be used both when fuse_conns and
-fuse_files are created/deleted.
+The file descriptor passed to the ioctl by the FUSE daemon is used to
+access the relative file pointer, that will be copied to the fuse_file
+data structure to consolidate the link between the FUSE and lower file
+system.
+
+To enable the passthrough mode, user space triggers the
+FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl and, if the call succeeds, receives
+back an identifier that will be used at open/create response time in the
+fuse_open_out field to associate the FUSE file to the lower file system
+file.
+The value returned by the ioctl to user space can be:
+- > 0: success, the identifier can be used as part of an open/create
+reply.
+- <= 0: an error occurred.
+The value 0 represents an error to preserve backward compatibility: the
+fuse_open_out field that is used to pass the passthrough_fh back to the
+kernel uses the same bits that were previously as struct padding, and is
+commonly zero-initialized (e.g., in the libfuse implementation).
+Removing 0 from the correct values fixes the ambiguity between the case
+in which 0 corresponds to a real passthrough_fh, a missing
+implementation of FUSE passthrough or a request for a normal FUSE file,
+simplifying the user space implementation.
+
+For the passthrough mode to be successfully activated, the lower file
+system file must implement both read_iter and write_iter file
+operations. This extra check avoids special pseudo files to be targeted
+for this feature.
+Passthrough comes with another limitation: no further file system
+stacking is allowed for those FUSE file systems using passthrough.
 
 Signed-off-by: Alessio Balsini <balsini@android.com>
 ---
- fs/fuse/Makefile          |  1 +
- fs/fuse/dev.c             | 12 ++++++++++++
- fs/fuse/dir.c             |  2 ++
- fs/fuse/file.c            |  4 +++-
- fs/fuse/fuse_i.h          | 27 +++++++++++++++++++++++++++
- fs/fuse/inode.c           | 17 ++++++++++++++++-
- fs/fuse/passthrough.c     | 21 +++++++++++++++++++++
- include/uapi/linux/fuse.h | 11 ++++++++++-
- 8 files changed, 92 insertions(+), 3 deletions(-)
- create mode 100644 fs/fuse/passthrough.c
+ fs/fuse/inode.c       |  5 +++
+ fs/fuse/passthrough.c | 87 ++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 90 insertions(+), 2 deletions(-)
 
-diff --git a/fs/fuse/Makefile b/fs/fuse/Makefile
-index 8c7021fb2cd4..20ed23aa16fa 100644
---- a/fs/fuse/Makefile
-+++ b/fs/fuse/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_CUSE) += cuse.o
- obj-$(CONFIG_VIRTIO_FS) += virtiofs.o
- 
- fuse-y := dev.o dir.o file.o inode.o control.o xattr.o acl.o readdir.o
-+fuse-y += passthrough.o
- fuse-$(CONFIG_FUSE_DAX) += dax.o
- 
- virtiofs-y := virtio_fs.o
-diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-index ff9f3b83f879..5446f13db5a0 100644
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -2236,6 +2236,7 @@ static long fuse_dev_ioctl(struct file *file, unsigned int cmd,
- 	int res;
- 	int oldfd;
- 	struct fuse_dev *fud = NULL;
-+	struct fuse_passthrough_out pto;
- 
- 	if (_IOC_TYPE(cmd) != FUSE_DEV_IOC_MAGIC)
- 		return -EINVAL;
-@@ -2266,6 +2267,17 @@ static long fuse_dev_ioctl(struct file *file, unsigned int cmd,
- 			}
- 		}
- 		break;
-+	case _IOC_NR(FUSE_DEV_IOC_PASSTHROUGH_OPEN):
-+		res = -EFAULT;
-+		if (!copy_from_user(&pto,
-+				    (struct fuse_passthrough_out __user *)arg,
-+				    sizeof(pto))) {
-+			res = -EINVAL;
-+			fud = fuse_get_dev(file);
-+			if (fud)
-+				res = fuse_passthrough_open(fud, &pto);
-+		}
-+		break;
- 	default:
- 		res = -ENOTTY;
- 		break;
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index 78f9f209078c..c9a1b33c5481 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -513,6 +513,7 @@ static int fuse_create_open(struct inode *dir, struct dentry *entry,
- {
- 	int err;
- 	struct inode *inode;
-+	struct fuse_conn *fc = get_fuse_conn(dir);
- 	struct fuse_mount *fm = get_fuse_mount(dir);
- 	FUSE_ARGS(args);
- 	struct fuse_forget_link *forget;
-@@ -574,6 +575,7 @@ static int fuse_create_open(struct inode *dir, struct dentry *entry,
- 	ff->fh = outopen.fh;
- 	ff->nodeid = outentry.nodeid;
- 	ff->open_flags = outopen.open_flags;
-+	fuse_passthrough_setup(fc, ff, &outopen);
- 	inode = fuse_iget(dir->i_sb, outentry.nodeid, outentry.generation,
- 			  &outentry.attr, entry_attr_timeout(&outentry), 0);
- 	if (!inode) {
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 8cccecb55fb8..953f3034c375 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -158,7 +158,7 @@ int fuse_do_open(struct fuse_mount *fm, u64 nodeid, struct file *file,
- 		if (!err) {
- 			ff->fh = outarg.fh;
- 			ff->open_flags = outarg.open_flags;
--
-+			fuse_passthrough_setup(fc, ff, &outarg);
- 		} else if (err != -ENOSYS) {
- 			fuse_file_free(ff);
- 			return err;
-@@ -304,6 +304,8 @@ void fuse_release_common(struct file *file, bool isdir)
- 	struct fuse_release_args *ra = ff->release_args;
- 	int opcode = isdir ? FUSE_RELEASEDIR : FUSE_RELEASE;
- 
-+	fuse_passthrough_release(&ff->passthrough);
-+
- 	fuse_prepare_release(fi, ff, file->f_flags, opcode);
- 
- 	if (ff->flock) {
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 7c4b8cb93f9f..8d39f5304a11 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -180,6 +180,14 @@ struct fuse_conn;
- struct fuse_mount;
- struct fuse_release_args;
- 
-+/**
-+ * Reference to lower filesystem file for read/write operations handled in
-+ * passthrough mode
-+ */
-+struct fuse_passthrough {
-+	struct file *filp;
-+};
-+
- /** FUSE specific file data */
- struct fuse_file {
- 	/** Fuse connection for this file */
-@@ -225,6 +233,9 @@ struct fuse_file {
- 
- 	} readdir;
- 
-+	/** Container for data related to the passthrough functionality */
-+	struct fuse_passthrough passthrough;
-+
- 	/** RB node to be linked on fuse_conn->polled_files */
- 	struct rb_node polled_node;
- 
-@@ -755,6 +766,9 @@ struct fuse_conn {
- 	/* Auto-mount submounts announced by the server */
- 	unsigned int auto_submounts:1;
- 
-+	/** Passthrough mode for read/write IO */
-+	unsigned int passthrough:1;
-+
- 	/** The number of requests waiting for completion */
- 	atomic_t num_waiting;
- 
-@@ -798,6 +812,12 @@ struct fuse_conn {
- 
- 	/** List of filesystems using this connection */
- 	struct list_head mounts;
-+
-+	/** IDR for passthrough requests */
-+	struct idr passthrough_req;
-+
-+	/** Protects passthrough_req */
-+	spinlock_t passthrough_req_lock;
- };
- 
- /*
-@@ -1213,4 +1233,11 @@ void fuse_dax_inode_cleanup(struct inode *inode);
- bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_alignment);
- void fuse_dax_cancel_work(struct fuse_conn *fc);
- 
-+/* passthrough.c */
-+int fuse_passthrough_open(struct fuse_dev *fud,
-+			  struct fuse_passthrough_out *pto);
-+int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
-+			   struct fuse_open_out *openarg);
-+void fuse_passthrough_release(struct fuse_passthrough *passthrough);
-+
- #endif /* _FS_FUSE_I_H */
 diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index b0e18b470e91..a1104d5abb70 100644
+index a1104d5abb70..7ebc398fbacb 100644
 --- a/fs/fuse/inode.c
 +++ b/fs/fuse/inode.c
-@@ -691,6 +691,7 @@ void fuse_conn_init(struct fuse_conn *fc, struct fuse_mount *fm,
- 	memset(fc, 0, sizeof(*fc));
- 	spin_lock_init(&fc->lock);
- 	spin_lock_init(&fc->bg_lock);
-+	spin_lock_init(&fc->passthrough_req_lock);
- 	init_rwsem(&fc->killsb);
- 	refcount_set(&fc->count, 1);
- 	atomic_set(&fc->dev_count, 1);
-@@ -699,6 +700,7 @@ void fuse_conn_init(struct fuse_conn *fc, struct fuse_mount *fm,
- 	INIT_LIST_HEAD(&fc->bg_queue);
- 	INIT_LIST_HEAD(&fc->entry);
- 	INIT_LIST_HEAD(&fc->devices);
-+	idr_init(&fc->passthrough_req);
- 	atomic_set(&fc->num_waiting, 0);
- 	fc->max_background = FUSE_DEFAULT_MAX_BACKGROUND;
- 	fc->congestion_threshold = FUSE_DEFAULT_CONGESTION_THRESHOLD;
-@@ -1052,6 +1054,12 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
- 				fc->handle_killpriv_v2 = 1;
- 				fm->sb->s_flags |= SB_NOSEC;
- 			}
-+			if (arg->flags & FUSE_PASSTHROUGH) {
-+				fc->passthrough = 1;
-+				/* Prevent further stacking */
-+				fm->sb->s_stack_depth =
-+					FILESYSTEM_MAX_STACK_DEPTH;
-+			}
- 		} else {
- 			ra_pages = fc->max_read / PAGE_SIZE;
- 			fc->no_lock = 1;
-@@ -1095,7 +1103,7 @@ void fuse_send_init(struct fuse_mount *fm)
- 		FUSE_PARALLEL_DIROPS | FUSE_HANDLE_KILLPRIV | FUSE_POSIX_ACL |
- 		FUSE_ABORT_ERROR | FUSE_MAX_PAGES | FUSE_CACHE_SYMLINKS |
- 		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
--		FUSE_HANDLE_KILLPRIV_V2;
-+		FUSE_HANDLE_KILLPRIV_V2 | FUSE_PASSTHROUGH;
- #ifdef CONFIG_FUSE_DAX
- 	if (fm->fc->dax)
- 		ia->in.flags |= FUSE_MAP_ALIGNMENT;
-@@ -1123,9 +1131,16 @@ void fuse_send_init(struct fuse_mount *fm)
- }
- EXPORT_SYMBOL_GPL(fuse_send_init);
+@@ -1133,6 +1133,11 @@ EXPORT_SYMBOL_GPL(fuse_send_init);
  
-+static int free_fuse_passthrough(int id, void *p, void *data)
-+{
-+	return 0;
-+}
-+
- void fuse_free_conn(struct fuse_conn *fc)
+ static int free_fuse_passthrough(int id, void *p, void *data)
  {
- 	WARN_ON(!list_empty(&fc->devices));
-+	idr_for_each(&fc->passthrough_req, free_fuse_passthrough, NULL);
-+	idr_destroy(&fc->passthrough_req);
- 	kfree_rcu(fc, rcu);
++	struct fuse_passthrough *passthrough = (struct fuse_passthrough *)p;
++
++	fuse_passthrough_release(passthrough);
++	kfree(p);
++
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(fuse_free_conn);
+ 
 diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-new file mode 100644
-index 000000000000..594060c654f8
---- /dev/null
+index 594060c654f8..cf993e83803e 100644
+--- a/fs/fuse/passthrough.c
 +++ b/fs/fuse/passthrough.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "fuse_i.h"
-+
-+#include <linux/fuse.h>
-+
-+int fuse_passthrough_open(struct fuse_dev *fud,
-+			  struct fuse_passthrough_out *pto)
-+{
-+	return -EINVAL;
-+}
-+
-+int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
-+			   struct fuse_open_out *openarg)
-+{
-+	return -EINVAL;
-+}
-+
-+void fuse_passthrough_release(struct fuse_passthrough *passthrough)
-+{
-+}
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index 54442612c48b..9d7685ce0acd 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -360,6 +360,7 @@ struct fuse_file_lock {
- #define FUSE_MAP_ALIGNMENT	(1 << 26)
- #define FUSE_SUBMOUNTS		(1 << 27)
- #define FUSE_HANDLE_KILLPRIV_V2	(1 << 28)
-+#define FUSE_PASSTHROUGH	(1 << 29)
+@@ -3,19 +3,102 @@
+ #include "fuse_i.h"
  
- /**
-  * CUSE INIT request/reply flags
-@@ -625,7 +626,7 @@ struct fuse_create_in {
- struct fuse_open_out {
- 	uint64_t	fh;
- 	uint32_t	open_flags;
--	uint32_t	padding;
-+	uint32_t	passthrough_fh;
- };
+ #include <linux/fuse.h>
++#include <linux/idr.h>
  
- struct fuse_release_in {
-@@ -828,6 +829,13 @@ struct fuse_in_header {
- 	uint32_t	padding;
- };
- 
-+struct fuse_passthrough_out {
-+	uint32_t	fd;
-+	/* For future implementation */
-+	uint32_t	len;
-+	void		*vec;
-+};
+ int fuse_passthrough_open(struct fuse_dev *fud,
+ 			  struct fuse_passthrough_out *pto)
+ {
+-	return -EINVAL;
++	int res;
++	struct file *passthrough_filp;
++	struct fuse_conn *fc = fud->fc;
++	struct inode *passthrough_inode;
++	struct super_block *passthrough_sb;
++	struct fuse_passthrough *passthrough;
 +
- struct fuse_out_header {
- 	uint32_t	len;
- 	int32_t		error;
-@@ -905,6 +913,7 @@ struct fuse_notify_retrieve_in {
- /* Device ioctls: */
- #define FUSE_DEV_IOC_MAGIC		229
- #define FUSE_DEV_IOC_CLONE		_IOR(FUSE_DEV_IOC_MAGIC, 0, uint32_t)
-+#define FUSE_DEV_IOC_PASSTHROUGH_OPEN	_IOW(FUSE_DEV_IOC_MAGIC, 1, struct fuse_passthrough_out)
++	if (!fc->passthrough)
++		return -EPERM;
++
++	/* This field is reserved for future implementation */
++	if (pto->len != 0)
++		return -EINVAL;
++
++	passthrough_filp = fget(pto->fd);
++	if (!passthrough_filp) {
++		pr_err("FUSE: invalid file descriptor for passthrough.\n");
++		return -EBADF;
++	}
++
++	if (!passthrough_filp->f_op->read_iter ||
++	    !passthrough_filp->f_op->write_iter) {
++		pr_err("FUSE: passthrough file misses file operations.\n");
++		res = -EBADF;
++		goto err_free_file;
++	}
++
++	passthrough_inode = file_inode(passthrough_filp);
++	passthrough_sb = passthrough_inode->i_sb;
++	if (passthrough_sb->s_stack_depth >= FILESYSTEM_MAX_STACK_DEPTH) {
++		pr_err("FUSE: fs stacking depth exceeded for passthrough\n");
++		res = -EINVAL;
++		goto err_free_file;
++	}
++
++	passthrough = kmalloc(sizeof(struct fuse_passthrough), GFP_KERNEL);
++	if (!passthrough) {
++		res = -ENOMEM;
++		goto err_free_file;
++	}
++
++	passthrough->filp = passthrough_filp;
++
++	idr_preload(GFP_KERNEL);
++	spin_lock(&fc->passthrough_req_lock);
++	res = idr_alloc(&fc->passthrough_req, passthrough, 1, 0, GFP_ATOMIC);
++	spin_unlock(&fc->passthrough_req_lock);
++	idr_preload_end();
++
++	if (res > 0)
++		return res;
++
++	fuse_passthrough_release(passthrough);
++	kfree(passthrough);
++
++err_free_file:
++	fput(passthrough_filp);
++
++	return res;
+ }
  
- struct fuse_lseek_in {
- 	uint64_t	fh;
+ int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
+ 			   struct fuse_open_out *openarg)
+ {
+-	return -EINVAL;
++	struct fuse_passthrough *passthrough;
++	int passthrough_fh = openarg->passthrough_fh;
++
++	if (!fc->passthrough)
++		return -EPERM;
++
++	/* Default case, passthrough is not requested */
++	if (passthrough_fh <= 0)
++		return -EINVAL;
++
++	spin_lock(&fc->passthrough_req_lock);
++	passthrough = idr_remove(&fc->passthrough_req, passthrough_fh);
++	spin_unlock(&fc->passthrough_req_lock);
++
++	if (!passthrough)
++		return -EINVAL;
++
++	ff->passthrough = *passthrough;
++	kfree(passthrough);
++
++	return 0;
+ }
+ 
+ void fuse_passthrough_release(struct fuse_passthrough *passthrough)
+ {
++	if (passthrough->filp) {
++		fput(passthrough->filp);
++		passthrough->filp = NULL;
++	}
+ }
 -- 
 2.30.0.280.ga3ce27912f-goog
 
