@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1ECC302AF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA83E302AA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:47:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731305AbhAYS45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:56:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33228 "EHLO mail.kernel.org"
+        id S1730064AbhAYSqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729824AbhAYSpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:45:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A4BB224DF;
-        Mon, 25 Jan 2021 18:44:35 +0000 (UTC)
+        id S1727818AbhAYSnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:43:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74549230FC;
+        Mon, 25 Jan 2021 18:41:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600276;
-        bh=0vaSpt8UTfCAODmVo1G0Aj3+/qvjp3OxCQURV5qPFAc=;
+        s=korg; t=1611600110;
+        bh=iqQyFP7wRDoMcx/S90AhwSOVZPz9JIWqCAbAhmzhtvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0ZwlZfJkpXkOkb5I3UP3vGwd0z/MxTxQYctkRfDZrdBKEoCOjtDNOspX2vWKzYqo9
-         yYP/3U6DmWBWMDQ2Jf81znKfBnvrFrbh6OsThh2YTe2UXgP9RLl9cjL8plHcp2QNdi
-         f+4fuDkbMA2DwG+hR1Ydtnxos4HnFD8G0Qy2NYoM=
+        b=eRywLWiyZiC283txLKA6r8MYHsomBkuesCbbkbYR3+Dp41JZEkknjrk2P4pLILLlC
+         Bf8+9bKie5rKhZYoViA3NA5JYp86ikcU+6vz0rUvPjF7FyBs6uWk4ndMRgLZkS6zMe
+         a7LWQnIXVjjMYNL3D6M2mEYO0P/S/w2D6z/38k0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 38/86] drm/nouveau/privring: ack interrupts the same way as RM
-Date:   Mon, 25 Jan 2021 19:39:20 +0100
-Message-Id: <20210125183202.675342538@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 4.19 35/58] serial: mvebu-uart: fix tx lost characters at power off
+Date:   Mon, 25 Jan 2021 19:39:36 +0100
+Message-Id: <20210125183158.218240795@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-References: <20210125183201.024962206@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,119 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit e05e06cd34f5311f677294a08b609acfbc315236 ]
+commit 54ca955b5a4024e2ce0f206b03adb7109bc4da26 upstream.
 
-Whatever it is that we were doing before doesn't work on Ampere.
+Commit c685af1108d7 ("serial: mvebu-uart: fix tx lost characters") fixed tx
+lost characters at low baud rates but started causing tx lost characters
+when kernel is going to power off or reboot.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+TX_EMP tells us when transmit queue is empty therefore all characters were
+transmitted. TX_RDY tells us when CPU can send a new character.
+
+Therefore we need to use different check prior transmitting new character
+and different check after all characters were sent.
+
+This patch splits polling code into two functions: wait_for_xmitr() which
+waits for TX_RDY and wait_for_xmite() which waits for TX_EMP.
+
+When rebooting A3720 platform without this patch on UART is print only:
+[   42.699�
+
+And with this patch on UART is full output:
+[   39.530216] reboot: Restarting system
+
+Fixes: c685af1108d7 ("serial: mvebu-uart: fix tx lost characters")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201223191931.18343-1-pali@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c | 10 +++++++---
- drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c | 10 +++++++---
- 2 files changed, 14 insertions(+), 6 deletions(-)
+ drivers/tty/serial/mvebu-uart.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c
-index d80dbc8f09b20..55a4ea4393c62 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gf100.c
-@@ -22,6 +22,7 @@
-  * Authors: Ben Skeggs
-  */
- #include "priv.h"
-+#include <subdev/timer.h>
- 
- static void
- gf100_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
-@@ -31,7 +32,6 @@ gf100_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x122124 + (i * 0x0400));
- 	u32 stat = nvkm_rd32(device, 0x122128 + (i * 0x0400));
- 	nvkm_debug(ibus, "HUB%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x122128 + (i * 0x0400), 0x00000200, 0x00000000);
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -637,6 +637,14 @@ static void wait_for_xmitr(struct uart_p
+ 				  (val & STAT_TX_RDY(port)), 1, 10000);
  }
  
- static void
-@@ -42,7 +42,6 @@ gf100_ibus_intr_rop(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x124124 + (i * 0x0400));
- 	u32 stat = nvkm_rd32(device, 0x124128 + (i * 0x0400));
- 	nvkm_debug(ibus, "ROP%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x124128 + (i * 0x0400), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -53,7 +52,6 @@ gf100_ibus_intr_gpc(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x128124 + (i * 0x0400));
- 	u32 stat = nvkm_rd32(device, 0x128128 + (i * 0x0400));
- 	nvkm_debug(ibus, "GPC%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x128128 + (i * 0x0400), 0x00000200, 0x00000000);
- }
- 
- void
-@@ -90,6 +88,12 @@ gf100_ibus_intr(struct nvkm_subdev *ibus)
- 			intr1 &= ~stat;
- 		}
- 	}
++static void wait_for_xmite(struct uart_port *port)
++{
++	u32 val;
 +
-+	nvkm_mask(device, 0x121c4c, 0x0000003f, 0x00000002);
-+	nvkm_msec(device, 2000,
-+		if (!(nvkm_rd32(device, 0x121c4c) & 0x0000003f))
-+			break;
-+	);
- }
- 
- static int
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c
-index 9025ed1bd2a99..4caf3ef087e1d 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/ibus/gk104.c
-@@ -22,6 +22,7 @@
-  * Authors: Ben Skeggs
-  */
- #include "priv.h"
-+#include <subdev/timer.h>
- 
- static void
- gk104_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
-@@ -31,7 +32,6 @@ gk104_ibus_intr_hub(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x122124 + (i * 0x0800));
- 	u32 stat = nvkm_rd32(device, 0x122128 + (i * 0x0800));
- 	nvkm_debug(ibus, "HUB%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x122128 + (i * 0x0800), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -42,7 +42,6 @@ gk104_ibus_intr_rop(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x124124 + (i * 0x0800));
- 	u32 stat = nvkm_rd32(device, 0x124128 + (i * 0x0800));
- 	nvkm_debug(ibus, "ROP%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x124128 + (i * 0x0800), 0x00000200, 0x00000000);
- }
- 
- static void
-@@ -53,7 +52,6 @@ gk104_ibus_intr_gpc(struct nvkm_subdev *ibus, int i)
- 	u32 data = nvkm_rd32(device, 0x128124 + (i * 0x0800));
- 	u32 stat = nvkm_rd32(device, 0x128128 + (i * 0x0800));
- 	nvkm_debug(ibus, "GPC%d: %06x %08x (%08x)\n", i, addr, data, stat);
--	nvkm_mask(device, 0x128128 + (i * 0x0800), 0x00000200, 0x00000000);
- }
- 
- void
-@@ -90,6 +88,12 @@ gk104_ibus_intr(struct nvkm_subdev *ibus)
- 			intr1 &= ~stat;
- 		}
- 	}
++	readl_poll_timeout_atomic(port->membase + UART_STAT, val,
++				  (val & STAT_TX_EMP), 1, 10000);
++}
 +
-+	nvkm_mask(device, 0x12004c, 0x0000003f, 0x00000002);
-+	nvkm_msec(device, 2000,
-+		if (!(nvkm_rd32(device, 0x12004c) & 0x0000003f))
-+			break;
-+	);
- }
+ static void mvebu_uart_console_putchar(struct uart_port *port, int ch)
+ {
+ 	wait_for_xmitr(port);
+@@ -664,7 +672,7 @@ static void mvebu_uart_console_write(str
  
- static int
--- 
-2.27.0
-
+ 	uart_console_write(port, s, count, mvebu_uart_console_putchar);
+ 
+-	wait_for_xmitr(port);
++	wait_for_xmite(port);
+ 
+ 	if (ier)
+ 		writel(ier, port->membase + UART_CTRL(port));
 
 
