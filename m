@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C4030396E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F69303941
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391613AbhAZJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:49:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39728 "EHLO mail.kernel.org"
+        id S1731132AbhAZJnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:43:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730898AbhAYSwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:52:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D9F2083E;
-        Mon, 25 Jan 2021 18:52:08 +0000 (UTC)
+        id S1731158AbhAYSvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DF552083E;
+        Mon, 25 Jan 2021 18:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600728;
-        bh=3hMnAhkbB1MYme38c2UwxvaIjm4LXBdUS4KYMwmNrF0=;
+        s=korg; t=1611600675;
+        bh=4xlM1I/vK0Zb5Neahpka7frgpb4IyD1ETQ1CY5n6wIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XLDooBPvogRHQ2RopIt9dWmmmdDiAqQKNoac/GNOqLwczLboiYIxZlJBN6vOMPL7E
-         9vFJ5+Z5wl45IMi4KgSDeRpTACIck4Gl34bb40Tw2EKKmEDk4gpNPNardXOpJNooIh
-         bS3mIlVki4/jtzztcj++M7jMyAAZHTarFBasJ1ig=
+        b=JLTMsNw/VvlnFb37JjiGsRdGrSKcZsoNnHq4T6TF1nDYAYzXnyLVjopKCnlrczdrs
+         ow5stpSs/1ieuYZf3ace1U10eNTUeEEI7d6ScklWrTZOCIGl4BkeiRSFEe/57t30zR
+         Uq1k2YSfj84vXLI132fDzGSiC9YVzn7/XkSdGZ6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Youling Tang <tangyouling@loongson.cn>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 088/199] powerpc: Use the common INIT_DATA_SECTION macro in vmlinux.lds.S
-Date:   Mon, 25 Jan 2021 19:38:30 +0100
-Message-Id: <20210125183219.985361292@linuxfoundation.org>
+Subject: [PATCH 5.10 090/199] arm64: entry: remove redundant IRQ flag tracing
+Date:   Mon, 25 Jan 2021 19:38:32 +0100
+Message-Id: <20210125183220.070116605@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -40,57 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Youling Tang <tangyouling@loongson.cn>
+From: Mark Rutland <mark.rutland@arm.com>
 
-[ Upstream commit fdcfeaba38e5b183045f5b079af94f97658eabe6 ]
+[ Upstream commit df06824767cc9a32fbdb0e3d3b7e169292a5b5fe ]
 
-Use the common INIT_DATA_SECTION rule for the linker script in an effort
-to regularize the linker script.
+All EL0 returns go via ret_to_user(), which masks IRQs and notifies
+lockdep and tracing before calling into do_notify_resume(). Therefore,
+there's no need for do_notify_resume() to call trace_hardirqs_off(), and
+the comment is stale. The call is simply redundant.
 
-Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1604487550-20040-1-git-send-email-tangyouling@loongson.cn
+In ret_to_user() we call exit_to_user_mode(), which notifies lockdep and
+tracing the IRQs will be enabled in userspace, so there's no need for
+el0_svc_common() to call trace_hardirqs_on() before returning. Further,
+at the start of ret_to_user() we call trace_hardirqs_off(), so not only
+is this redundant, but it is immediately undone.
+
+In addition to being redundant, the trace_hardirqs_on() in
+el0_svc_common() leaves lockdep inconsistent with the hardware state,
+and is liable to cause issues for any C code or instrumentation
+between this and the call to trace_hardirqs_off() which undoes it in
+ret_to_user().
+
+This patch removes the redundant tracing calls and associated stale
+comments.
+
+Fixes: 23529049c684 ("arm64: entry: fix non-NMI user<->kernel transitions")
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210107145310.44616-1-mark.rutland@arm.com
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/vmlinux.lds.S | 19 +------------------
- 1 file changed, 1 insertion(+), 18 deletions(-)
+ arch/arm64/kernel/signal.c  | 7 -------
+ arch/arm64/kernel/syscall.c | 9 +--------
+ 2 files changed, 1 insertion(+), 15 deletions(-)
 
-diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-index f887f9d5b9e84..50507dac118ae 100644
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -200,21 +200,7 @@ SECTIONS
- 		EXIT_TEXT
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index a8184cad88907..50852992752b0 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -914,13 +914,6 @@ static void do_signal(struct pt_regs *regs)
+ asmlinkage void do_notify_resume(struct pt_regs *regs,
+ 				 unsigned long thread_flags)
+ {
+-	/*
+-	 * The assembly code enters us with IRQs off, but it hasn't
+-	 * informed the tracing code of that for efficiency reasons.
+-	 * Update the trace code with the current status.
+-	 */
+-	trace_hardirqs_off();
+-
+ 	do {
+ 		/* Check valid user FS if needed */
+ 		addr_limit_user_check();
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index f8f758e4a3064..6fa8cfb8232aa 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -165,15 +165,8 @@ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 	if (!has_syscall_work(flags) && !IS_ENABLED(CONFIG_DEBUG_RSEQ)) {
+ 		local_daif_mask();
+ 		flags = current_thread_info()->flags;
+-		if (!has_syscall_work(flags) && !(flags & _TIF_SINGLESTEP)) {
+-			/*
+-			 * We're off to userspace, where interrupts are
+-			 * always enabled after we restore the flags from
+-			 * the SPSR.
+-			 */
+-			trace_hardirqs_on();
++		if (!has_syscall_work(flags) && !(flags & _TIF_SINGLESTEP))
+ 			return;
+-		}
+ 		local_daif_restore(DAIF_PROCCTX);
  	}
- 
--	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET) {
--		INIT_DATA
--	}
--
--	.init.setup : AT(ADDR(.init.setup) - LOAD_OFFSET) {
--		INIT_SETUP(16)
--	}
--
--	.initcall.init : AT(ADDR(.initcall.init) - LOAD_OFFSET) {
--		INIT_CALLS
--	}
--
--	.con_initcall.init : AT(ADDR(.con_initcall.init) - LOAD_OFFSET) {
--		CON_INITCALL
--	}
-+	INIT_DATA_SECTION(16)
- 
- 	. = ALIGN(8);
- 	__ftr_fixup : AT(ADDR(__ftr_fixup) - LOAD_OFFSET) {
-@@ -242,9 +228,6 @@ SECTIONS
- 		__stop___fw_ftr_fixup = .;
- 	}
- #endif
--	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
--		INIT_RAM_FS
--	}
- 
- 	PERCPU_SECTION(L1_CACHE_BYTES)
  
 -- 
 2.27.0
