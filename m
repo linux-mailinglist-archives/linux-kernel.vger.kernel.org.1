@@ -2,110 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0713E302590
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D088E302580
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbhAYNgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:36:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbhAYNeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:34:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C9B122AEC;
-        Mon, 25 Jan 2021 11:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611574818;
-        bh=imRMguePrRlh4uW9e4XxMGfsGUxkK+bwXiHzZqO3Lfk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ip1QXuQsU9uUE/EF4n+BVfUEq61Zdw8/dP3khpaYi4AUlj1yREcXD4ZVqVlDTu+5T
-         r0DaS5VV6QN5VPKZV2efZHtJbaFEj8lRcEEpZwXV/P5T9SnYXa4kkPCE8NDIVsQFrF
-         6xCt1WXIY4ODEzX+ji14hKUArR2coftxRwlB7iKH+BnVXwMJu27EynYyb/8pL4anA3
-         h9MzorSjudFf9Me4W82DINBpwapQuffCJ/Kxhgoe2Bjb2wLKk8zpyATWUSq8yPjmMZ
-         H0pVYl2EL0CaHP9Ku4f4+r+UiAy1YvL1CWmIvKCvccTLN8nnCQ/f+DmYyJZlB36PEy
-         OC11OOTu8R7fQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Joshua Aberback <joshua.aberback@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Wesley Chalmers <Wesley.Chalmers@amd.com>,
-        Jacky Liao <ziyu.liao@amd.com>,
-        Martin Leung <martin.leung@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/display: use div_s64() for 64-bit division
-Date:   Mon, 25 Jan 2021 12:39:55 +0100
-Message-Id: <20210125114012.2480845-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S1728666AbhAYN0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:26:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21860 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728778AbhAYNXj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:23:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611580931;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pe96sTcVv1iQlwn39Q1EDK7ZILjYkl1+OID9WuUjkZw=;
+        b=Y2Bzd3O2IzIa/88uD20x3jgs3mCljLI/jX+PBKxPx3yfc+NbxCGEO51yKR9YTlSQDDgD5g
+        vBvN0TjPbcHn8Xfo0k7DF23XXtSqkzgUjLHzokuSaVu/XhZI1v0iG22suaBmKHJjRNAylN
+        A1VgOfZ4Wbew4qvmEJss7uEZXS5K62c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549-1enst45LMzyoDS5FwPtgkw-1; Mon, 25 Jan 2021 08:22:08 -0500
+X-MC-Unique: 1enst45LMzyoDS5FwPtgkw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 792AD107ACE3;
+        Mon, 25 Jan 2021 13:22:06 +0000 (UTC)
+Received: from starship (unknown [10.35.206.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 29F3E5C1C5;
+        Mon, 25 Jan 2021 13:22:02 +0000 (UTC)
+Message-ID: <f1c90d8a44795bbdef549a5fcf375bcf1d52af93.camel@redhat.com>
+Subject: Thoughts on sharing KVM tracepoints [was:Re: [PATCH 2/2] KVM: nVMX:
+ trace nested vm entry]
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        linux-kernel@vger.kernel.org, Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>
+Date:   Mon, 25 Jan 2021 15:22:01 +0200
+In-Reply-To: <YAn/t7TWP0xmVEHs@google.com>
+References: <20210121171043.946761-1-mlevitsk@redhat.com>
+         <20210121171043.946761-3-mlevitsk@redhat.com> <YAn/t7TWP0xmVEHs@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Thu, 2021-01-21 at 14:27 -0800, Sean Christopherson wrote:
+> On Thu, Jan 21, 2021, Maxim Levitsky wrote:
+> > This is very helpful to debug nested VMX issues.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/trace.h      | 30 ++++++++++++++++++++++++++++++
+> >  arch/x86/kvm/vmx/nested.c |  5 +++++
+> >  arch/x86/kvm/x86.c        |  3 ++-
+> >  3 files changed, 37 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> > index 2de30c20bc264..ec75efdac3560 100644
+> > --- a/arch/x86/kvm/trace.h
+> > +++ b/arch/x86/kvm/trace.h
+> > @@ -554,6 +554,36 @@ TRACE_EVENT(kvm_nested_vmrun,
+> >  		__entry->npt ? "on" : "off")
+> >  );
+> >  
+> > +
+> > +/*
+> > + * Tracepoint for nested VMLAUNCH/VMRESUME
+> > + */
+> > +TRACE_EVENT(kvm_nested_vmenter,
+> > +	    TP_PROTO(__u64 rip, __u64 vmcs, __u64 nested_rip,
+> > +		     __u32 entry_intr_info),
+> > +	    TP_ARGS(rip, vmcs, nested_rip, entry_intr_info),
+> > +
+> > +	TP_STRUCT__entry(
+> > +		__field(	__u64,		rip		)
+> > +		__field(	__u64,		vmcs		)
+> > +		__field(	__u64,		nested_rip	)
+> > +		__field(	__u32,		entry_intr_info	)
+> > +	),
+> > +
+> > +	TP_fast_assign(
+> > +		__entry->rip			= rip;
+> > +		__entry->vmcs			= vmcs;
+> > +		__entry->nested_rip		= nested_rip;
+> > +		__entry->entry_intr_info	= entry_intr_info;
+> > +	),
+> > +
+> > +	TP_printk("rip: 0x%016llx vmcs: 0x%016llx nrip: 0x%016llx "
+> > +		  "entry_intr_info: 0x%08x",
+> > +		__entry->rip, __entry->vmcs, __entry->nested_rip,
+> > +		__entry->entry_intr_info)
+> 
+> I still don't see why VMX can't share this with SVM.  "npt' can easily be "tdp",
+> differentiating between VMCB and VMCS can be down with ISA, and VMX can give 0
+> for int_ctl (or throw in something else interesting/relevant).
 
-The open-coded 64-bit division causes a link error on 32-bit
-machines:
+I understand very well your point, and I don't strongly disagree with you.
+However let me voice my own thoughts on this:
+ 
+I think that sharing tracepoints between SVM and VMX isn't necessarily a good idea.
+It does make sense in some cases but not in all of them.
+ 
+The trace points are primarily intended for developers, thus they should capture as
+much as possible relevant info but not everything because traces can get huge.
+ 
+Also despite the fact that a developer will look at the traces, some usability is welcome
+as well (e.g for new developers), and looking at things like info1/info2/intr_info/error_code
+isn't very usable (btw the error_code should at least be called intr_info_error_code, and
+of course both it and intr_info are VMX specific).
+ 
+So I don't even like the fact that kvm_entry/kvm_exit are shared, and neither I want
+to add even more shared trace points.
+ 
+I understand that there are some benefits of sharing, namely a userspace tool can use
+the same event to *profile* kvm, but I am not sure that this is worth it.
+ 
+What we could have done is to have ISA (and maybe even x86) agnostic kvm_exit/kvm_entry
+tracepoints that would have no data attached to them, or have very little (like maybe RIP),
+and then have ISA specific tracepoints with the reset of the info.
+ 
+Same could be applied to kvm_nested_vmenter, although for this one I don't think that we
+need an ISA agnostic tracepoint.
+ 
+Having said all that, I am not hell bent on this. If you really want it to be this way,
+I won't argue that much.
+ 
+Thoughts?
 
-ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-ERROR: modpost: "__divdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
 
-Use the div_s64() to perform the division here. One of them was an
-unsigned division originally, but it looks like signed division was
-intended, so use that to consistently allow a negative delay.
+Best regards,
+	Maxim Levitsky
 
-Fixes: ea7154d8d9fb ("drm/amd/display: Update dcn30_apply_idle_power_optimizations() code")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-index dff83c6a142a..a133e399e76d 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -772,8 +772,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enable)
- 							cursor_cache_enable ? &cursor_attr : NULL)) {
- 				unsigned int v_total = stream->adjust.v_total_max ?
- 						stream->adjust.v_total_max : stream->timing.v_total;
--				unsigned int refresh_hz = (unsigned long long) stream->timing.pix_clk_100hz *
--						100LL /	(v_total * stream->timing.h_total);
-+				unsigned int refresh_hz = div_s64((unsigned long long) stream->timing.pix_clk_100hz *
-+						100LL, v_total * stream->timing.h_total);
- 
- 				/*
- 				 * one frame time in microsec:
-@@ -800,8 +800,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enable)
- 				unsigned int denom = refresh_hz * 6528;
- 				unsigned int stutter_period = dc->current_state->perf_params.stutter_period_us;
- 
--				tmr_delay = (((1000000LL + 2 * stutter_period * refresh_hz) *
--						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
-+				tmr_delay = div_s64(((1000000LL + 2 * stutter_period * refresh_hz) *
-+						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
- 						denom) - 64LL;
- 
- 				/* scale should be increased until it fits into 6 bits */
-@@ -815,8 +815,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enable)
- 					}
- 
- 					denom *= 2;
--					tmr_delay = (((1000000LL + 2 * stutter_period * refresh_hz) *
--							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
-+					tmr_delay = div_s64(((1000000LL + 2 * stutter_period * refresh_hz) *
-+							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
- 							denom) - 64LL;
- 				}
- 
--- 
-2.29.2
+> 
+> 	trace_kvm_nested_vmenter(kvm_rip_read(vcpu),
+> 				 vmx->nested.current_vmptr,
+> 				 vmcs12->guest_rip,
+> 				 0,
+> 				 vmcs12->vm_entry_intr_info_field,
+> 			 	 nested_cpu_has_ept(vmcs12),
+> 				 KVM_ISA_VMX);
+> 
+> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+> index 2de30c20bc26..90f7cdb31fc1 100644
+> --- a/arch/x86/kvm/trace.h
+> +++ b/arch/x86/kvm/trace.h
+> @@ -522,12 +522,12 @@ TRACE_EVENT(kvm_pv_eoi,
+>  );
+> 
+>  /*
+> - * Tracepoint for nested VMRUN
+> + * Tracepoint for nested VM-Enter.  Note, vmcb==vmcs on VMX.
+>   */
+> -TRACE_EVENT(kvm_nested_vmrun,
+> +TRACE_EVENT(kvm_nested_vmenter,
+>             TP_PROTO(__u64 rip, __u64 vmcb, __u64 nested_rip, __u32 int_ctl,
+> -                    __u32 event_inj, bool npt),
+> -           TP_ARGS(rip, vmcb, nested_rip, int_ctl, event_inj, npt),
+> +                    __u32 event_inj, bool tdp, __u32 isa),
+> +           TP_ARGS(rip, vmcb, nested_rip, int_ctl, event_inj, tdp, isa),
+> 
+>         TP_STRUCT__entry(
+>                 __field(        __u64,          rip             )
+> @@ -535,7 +535,8 @@ TRACE_EVENT(kvm_nested_vmrun,
+>                 __field(        __u64,          nested_rip      )
+>                 __field(        __u32,          int_ctl         )
+>                 __field(        __u32,          event_inj       )
+> -               __field(        bool,           npt             )
+> +               __field(        bool,           tdp             )
+> +               __field(        __u32,          isa             )
+>         ),
+> 
+>         TP_fast_assign(
+> @@ -544,14 +545,16 @@ TRACE_EVENT(kvm_nested_vmrun,
+>                 __entry->nested_rip     = nested_rip;
+>                 __entry->int_ctl        = int_ctl;
+>                 __entry->event_inj      = event_inj;
+> -               __entry->npt            = npt;
+> +               __entry->tdp            = tdp;
+> +               __entry->isa            = isa;
+>         ),
+> 
+> -       TP_printk("rip: 0x%016llx vmcb: 0x%016llx nrip: 0x%016llx int_ctl: 0x%08x "
+> -                 "event_inj: 0x%08x npt: %s",
+> -               __entry->rip, __entry->vmcb, __entry->nested_rip,
+> +       TP_printk("rip: 0x%016llx %s: 0x%016llx nrip: 0x%016llx int_ctl: 0x%08x "
+> +                 "event_inj: 0x%08x tdp: %s",
+> +               __entry->rip, __entry->isa == KVM_ISA_VMX ? "vmcs" : "vmcb",
+> +               __entry->vmcb, __entry->nested_rip,
+>                 __entry->int_ctl, __entry->event_inj,
+> -               __entry->npt ? "on" : "off")
+> +               __entry->tdp ? "on" : "off")
+>  );
+> 
+>  TRACE_EVENT(kvm_nested_intercepts,
+> 
+> 
+
 
