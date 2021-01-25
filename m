@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6D8304B54
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34B9304AF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727694AbhAZEr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 23:47:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
+        id S1728957AbhAZEyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 23:54:06 -0500
+Received: from mga06.intel.com ([134.134.136.31]:13133 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbhAYJPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:15:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CFB22C9C;
-        Mon, 25 Jan 2021 08:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611562756;
-        bh=PK/CPNfEVE3sgimFMYY6HtmJMEKnK5VbqgWqrbzhSwY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KY26vNuBWID6epO1g7qRWGgYroKtAFrWsA1RoHzCbRaB35YHEhnmL6u9CR9Ze+7FA
-         Icnh+zEjHPKScZC/RwLW8v8+1FzruybuqKgJ32mYI9cs+QcostyFzN2+Dd4dy+tmaS
-         8+0aL32pFPDgsjKt3ATqSIcICoLLECBfZUxoffs/8LW+2i1j8LJtUrealh9j+IcVyA
-         rduljQUlbYDtHrgsp47URr8iHdsY8uEAbBEhcaQX3H9D5XW20Ix745oQMziPieUIO3
-         ScvokFEv8x6/onJsLns8hoqdCqjS/QzIiJz7JXDaG1kf9Dm6zhfPMVsz+RYlGKlz3S
-         oOWn1u+4Cy6Vg==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     corbet@lwn.net
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@protonmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kernel-doc: Make the description of return value readable
-Date:   Mon, 25 Jan 2021 10:19:04 +0200
-Message-Id: <20210125081905.145569-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726206AbhAYJRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:17:21 -0500
+IronPort-SDR: Z0TprXzOShrv3pjnYf4/y6reX4ovBFg9+0XsemwH65fzdE4yU2r0Xn/IRwUo02weYZpRkNeoVb
+ YXLVPVH7AOuQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="241224924"
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="241224924"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:53:48 -0800
+IronPort-SDR: SDi71bYL6pLFDMKMp/gLPwRdDdOZIO+91gHzTlFn+GUYQSjuGZCWAzmgPcS55DpY6uaIo+Ivcb
+ gXFA2NRSv67Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="471979294"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Jan 2021 00:53:46 -0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     gregkh@linuxfoundation.org, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com
+Subject: [PATCH v9 0/2] UIO support for dfl devices
+Date:   Mon, 25 Jan 2021 16:49:21 +0800
+Message-Id: <1611564563-9665-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The description on how to describe return values is over-complicated, and
-hard to follow. For alien reason, the body of the section is a note, and
-the first paragraph speaks about 'Return', albeit the section name is
-actually 'Return:'.
+This patchset supports some dfl device drivers written in userspace.
 
-To give a better help when both implementing and reviewing patches, provide
-a straight-forward guideline, how to decribe return values, instead of
-providing a note that starts by "blacklisting" one of the infinite possible
-options of doing it wrong.
+In the patchset v1, the "driver_override" interface should be used to bind
+the DFL UIO driver to DFL devices. But there is concern that the
+"driver_override" interface is not OK itself.
 
-This decreases the cumulative amount of time, which is probably
-substantial, on this otherwise somewhat trivial topic.
+In v2, we use a new matching algorithem. The "driver_override" interface
+is abandoned, the DFL UIO driver matches any DFL device which could not be
+handled by other DFL drivers. So the DFL UIO driver could be used for new
+DFL devices which are not supported by kernel. The concern is the UIO may
+not be suitable as a default/generic driver for all dfl features, such as
+features with multiple interrupts.
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- Documentation/doc-guide/kernel-doc.rst | 34 +++++++-------------------
- 1 file changed, 9 insertions(+), 25 deletions(-)
+In v4, we specify each matching device in the id_table of the UIO driver,
+just the same as other dfl drivers do. Now the UIO driver supports Ether
+Group feature. To support more DFL features, their feature ids should be
+added to the driver's id_table.
 
-diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
-index 79aaa55d6bcf..dc5e1722c150 100644
---- a/Documentation/doc-guide/kernel-doc.rst
-+++ b/Documentation/doc-guide/kernel-doc.rst
-@@ -136,34 +136,18 @@ Examples::
- Return values
- ~~~~~~~~~~~~~
- 
--The return value, if any, should be described in a dedicated section
--named ``Return``.
-+The return value, if any, should be described in a dedicated section named
-+``Return:``.
- 
--.. note::
--
--  #) The multi-line descriptive text you provide does *not* recognize
--     line breaks, so if you try to format some text nicely, as in::
--
--	* Return:
--	* 0 - OK
--	* -EINVAL - invalid argument
--	* -ENOMEM - out of memory
--
--     this will all run together and produce::
--
--	Return: 0 - OK -EINVAL - invalid argument -ENOMEM - out of memory
--
--     So, in order to produce the desired line breaks, you need to use a
--     ReST list, e. g.::
-+In order to describe multiple return values, a ReST list should be used. That
-+way Sphinx knows how to line-up them properly::
- 
--      * Return:
--      * * 0		- OK to runtime suspend the device
--      * * -EBUSY	- Device should not be runtime suspended
-+  * Return:
-+  * - 0:	The run-time is allowed to suspend the device.
-+  * - -EBUSY:	Device should not be suspended.
- 
--  #) If the descriptive text you provide has lines that begin with
--     some phrase followed by a colon, each of those phrases will be taken
--     as a new section heading, which probably won't produce the desired
--     effect.
-+Using a dash rather than asterisk an is probably a better idea, because it does
-+not meddle as much with the C-comments.
- 
- Structure, union, and enumeration documentation
- -----------------------------------------------
+Before v9, we create a "uio_pdrv_genirq" platform device using DFL devices'
+resources. Then we leverage the uio_pdrv_genirq driver for UIO support. It
+is suggested that we implement a driver in drivers/uio that directly calls
+UIO framework APIs. So we implement the uio_dfl driver in v9. The driver
+now only binds the ether group feature, which has no irq. So the irq
+support is not implemented yet.
+
+
+Main changes from v1:
+- switch to the new matching algorithem. It matches DFL devices which could
+  not be handled by other DFL drivers.
+- refacor the code about device resources filling.
+- add the documentation.
+
+Main changes from v2:
+- split the match ops changes in dfl.c to an independent patch.
+- move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
+  to driver/fpga/dfl.h
+- some minor fixes.
+
+Main changes from v3:
+- switch to specifying each matching device in the driver's id_table.
+- refactor the irq handling code.
+
+Main changes from v4:
+- refactor the irq handling code.
+
+Main changes from v5:
+- fix the res[] zero initialization issue.
+- improve the return code for probe().
+- some doc improvement.
+
+Main changes from v6:
+- use platform_device_register_resndata() for pdev creation.
+
+Main changes from v7:
+- some doc fixes.
+
+Main changes from v9:
+- switch to add a uio driver in drivers/uio 
+
+Xu Yilun (2):
+  uio: uio_dfl: add userspace i/o driver for DFL bus
+  Documentation: fpga: dfl: Add description for DFL UIO support
+
+ Documentation/fpga/dfl.rst | 23 ++++++++++++++++
+ drivers/uio/Kconfig        | 13 +++++++++
+ drivers/uio/Makefile       |  1 +
+ drivers/uio/uio_dfl.c      | 66 ++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 103 insertions(+)
+ create mode 100644 drivers/uio/uio_dfl.c
+
 -- 
-2.30.0
+2.7.4
 
