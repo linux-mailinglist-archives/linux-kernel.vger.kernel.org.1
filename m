@@ -2,270 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311D5302333
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 10:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1747B302332
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 10:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbhAYJWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 04:22:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33290 "EHLO
+        id S1726309AbhAYJUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 04:20:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbhAYJPz (ORCPT
+        with ESMTP id S1726059AbhAYJPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:15:55 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA8CC061355;
-        Mon, 25 Jan 2021 00:44:11 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id z21so8445114pgj.4;
-        Mon, 25 Jan 2021 00:44:11 -0800 (PST)
+        Mon, 25 Jan 2021 04:15:23 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8B4C06121E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:47:42 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id c12so11351985wrc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:47:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=kql6/H7XE4iGCcMOEzKNPSUD4IIdZnFwuOgOy/87akg=;
-        b=BZw5Rn+MdGlWCL+t7+pLH/7drROvvcmFubGAs87DVdRv+OxYf6B1mMv++cK/pjW/4v
-         fm/K6XZHZTev3BBNa4QcPMmF12GtAwGDSahGRnoOWZtF9iMN2J00naXvOGhySynpEpl7
-         00cl72haOnL2RztGq3aVriAUiipIIIHHgVTYv2JQMmRmMO/CjQG4JPkJPQ4i841X/tqY
-         tA5rPkEY5nn/jJuc589vusw6sxipiu4hqTB7c6BHb+NgRhg8PxQvooDq3NvAlKD75C7i
-         bS6r6G0/JC3z6ERS1WDDTVWnkVTYurzxvM26Lat8dqC8mfP3au/sgClPBvyc/8IjENmM
-         yBUg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=L7zRLOa9/A/iQHZsxRUBd/9JtCVTjujkb4lDAg3Vr/k=;
+        b=j8lsVt/e7FhY4i8Y9QQP5WgESMMeZIAWgIRZOLbW5E07ES6H7jUpfiUfE7QeFdOHa0
+         ItxEt6o9YKKMy3BhwIB0kW5uFBrz/fttbgTjb5/bYkaxbsKPoXZYv85PowEdLtmYOJXO
+         i/PT6SeXKYMF+Xf1vaPSeJvXcG1SyerAO2+sjQwoqfcw+B57A9ZPTvFxr+yfdII4Q3JH
+         LPvpoiB8VArMarTPiLhj5CQ52Af3IVk9MO8X3HRDqdYdCu/sKjayNFtGTFQ5szcsHlk9
+         UTauyFktDFvfyhx70AZGyAt8Je7Pu3nB5ZjYaZz4WomeXp7iBUH3uUNY3A/ZYZAC1n1O
+         TQiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kql6/H7XE4iGCcMOEzKNPSUD4IIdZnFwuOgOy/87akg=;
-        b=SFzqnrCByNO/jM2ZsKzC3PEYuB8n2ZuuOXripfKh6SNF2USOIkUdBCeVx5pILG7Wdj
-         tu9UucEevkre9ur/4osfJ+y//FkZtneUXwIr7Slx0cTmWTkiQIZhHY1qJtr2RQxuQ3UE
-         UsCCp79RN5ZDUzqtQLtNT4cw3L7sCAp6CmwrUk4zpaSKGCjxr+FZs3aO4lfHP9lrNyQC
-         BSlGwo71EwxVPM+sgtq2YGUSvuhApb+GKgwov+YgVRYxN1fnBBmGTJSk4ZIiPb22T2XU
-         4n3WJmMvdZFTfVjA+O3bHGzlKbRvY2w61z2Hl3YQJ0aGbsyCazPU4SEMXTgAaG6lgp5f
-         dGDw==
-X-Gm-Message-State: AOAM531nlVUED3T8sSGXtR3yqzxLSPW7p6aVL9jHxbYY5O/6zCSUduY9
-        HIA4/GWsntRzUr8m4WrRQJ4=
-X-Google-Smtp-Source: ABdhPJx0Jqei25/t9AkDDGOL0Y8Uik/RfREQCpOF1yCy/AilZuI1RTNjilmyI+ENKpeIqoaAQT0mRw==
-X-Received: by 2002:a05:6a00:2385:b029:1b6:1603:4ea3 with SMTP id f5-20020a056a002385b02901b616034ea3mr9950604pfc.40.1611564251051;
-        Mon, 25 Jan 2021 00:44:11 -0800 (PST)
-Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id 145sm15521010pfu.8.2021.01.25.00.44.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Jan 2021 00:44:10 -0800 (PST)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     colin.king@canonical.com, oliver.graute@kococonnector.com,
-        zhangxuezhi1@yulong.com, mh12gx2825@gmail.com, sbrivio@redhat.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] fbtft: add tearing signal detect
-Date:   Mon, 25 Jan 2021 16:44:12 +0800
-Message-Id: <1611564252-84205-1-git-send-email-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=L7zRLOa9/A/iQHZsxRUBd/9JtCVTjujkb4lDAg3Vr/k=;
+        b=caB5Pa+GQk10d3w//VAi+JEzOonD5bM9NpcuB2Fp4WqeQ3JClv2YG4G/QaHkcECwsE
+         EF03fa9cz4J7I5sdX7yIPmsNoOA2dsNccZB1Jk5vS7iDu67KiPGnndp3+Bjl5cHXP8Fy
+         BF3S82ufVsOVC4H19aQoym+FIrxh6ga+QGMaPMHTGT6uxMh2KCIuYcHg6PrZYOo8vUEn
+         uN6D8Mf1LX8AP5PXaO9bbB1PIrGB6WfoirupfOTe3JWbqiMGH3MXPAbllRDYUxzf943A
+         BRSyFSW0yxfZHc9gvdDdeZJsS8zSKD7rLsH66AGXyTDkbhhKYNoPdG5tuM64SRai8EYT
+         O2IQ==
+X-Gm-Message-State: AOAM5301qaz2jr2ll/GENJhpOnEOtt4rpgKhIE9dsfGOcgd4qmhiNXtD
+        xLkLkBCMjOT01vdMmmJBoSlt0A==
+X-Google-Smtp-Source: ABdhPJwvAT5QrVlgVRVXIetqyDdGS4/PFt4ktrvS4hgcS34u7NUByd/Pzsn94Nh20vlcxbXW4hhjMA==
+X-Received: by 2002:adf:f009:: with SMTP id j9mr1074570wro.35.1611564461410;
+        Mon, 25 Jan 2021 00:47:41 -0800 (PST)
+Received: from dell ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id i6sm13827473wrs.71.2021.01.25.00.47.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 00:47:40 -0800 (PST)
+Date:   Mon, 25 Jan 2021 08:47:39 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+        Pragnesh.patel@sifive.com, zong.li@sifive.com,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 06/20] clk: sifive: fu540-prci: Declare static const
+ variable 'prci_clk_fu540' where it's used
+Message-ID: <20210125084739.GW4903@dell>
+References: <20210120093040.1719407-7-lee.jones@linaro.org>
+ <mhng-d13d3ca6-2ec1-4c56-a4a8-56faafe5569c@palmerdabbelt-glaptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <mhng-d13d3ca6-2ec1-4c56-a4a8-56faafe5569c@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "carlis.zhang_cp" <zhangxuezhi1@yulong.com>
+On Fri, 22 Jan 2021, Palmer Dabbelt wrote:
 
-For st7789v ic,add tearing signal detect to avoid screen tearing
+> On Wed, 20 Jan 2021 01:30:26 PST (-0800), lee.jones@linaro.org wrote:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/clk/sifive/fu540-prci.h:16:35: warning: ‘prci_clk_fu540’ defined but not used [-Wunused-const-variable=]
+> >  drivers/clk/sifive/fu540-prci.h:16:35: warning: ‘prci_clk_fu540’ defined but not used [-Wunused-const-variable=]
+> > 
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Pragnesh Patel <Pragnesh.patel@sifive.com>
+> > Cc: Zong Li <zong.li@sifive.com>
+> > Cc: linux-clk@vger.kernel.org
+> > Cc: linux-riscv@lists.infradead.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/clk/sifive/fu540-prci.h  | 5 -----
+> >  drivers/clk/sifive/sifive-prci.c | 5 +++++
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/clk/sifive/fu540-prci.h b/drivers/clk/sifive/fu540-prci.h
+> > index c8271efa7bdc7..c220677dc0108 100644
+> > --- a/drivers/clk/sifive/fu540-prci.h
+> > +++ b/drivers/clk/sifive/fu540-prci.h
+> > @@ -13,9 +13,4 @@
+> > 
+> >  extern struct __prci_clock __prci_init_clocks_fu540[NUM_CLOCK_FU540];
+> > 
+> > -static const struct prci_clk_desc prci_clk_fu540 = {
+> > -	.clks = __prci_init_clocks_fu540,
+> > -	.num_clks = ARRAY_SIZE(__prci_init_clocks_fu540),
+> > -};
+> > -
+> >  #endif /* __SIFIVE_CLK_FU540_PRCI_H */
+> > diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
+> > index c78b042750e21..1490b01ce6290 100644
+> > --- a/drivers/clk/sifive/sifive-prci.c
+> > +++ b/drivers/clk/sifive/sifive-prci.c
+> > @@ -12,6 +12,11 @@
+> >  #include "fu540-prci.h"
+> >  #include "fu740-prci.h"
+> > 
+> > +static const struct prci_clk_desc prci_clk_fu540 = {
+> > +	.clks = __prci_init_clocks_fu540,
+> > +	.num_clks = ARRAY_SIZE(__prci_init_clocks_fu540),
+> > +};
+> > +
+> >  /*
+> >   * Private functions
+> >   */
+> 
+> This doesn't look like my sifive-prci.c, so I'm assuming it's against one of
+> the clock trees and therefor should go in over there.
 
-Signed-off-by: carlis.zhang_cp <zhangxuezhi1@yulong.com>
----
-v2:add release te gpio after irq request fail
----
- drivers/staging/fbtft/fb_st7789v.c | 134 ++++++++++++++++++++++++++++++++++++-
- drivers/staging/fbtft/fbtft.h      |   1 +
- 2 files changed, 134 insertions(+), 1 deletion(-)
+This patch is applied against -next.
 
-diff --git a/drivers/staging/fbtft/fb_st7789v.c b/drivers/staging/fbtft/fb_st7789v.c
-index 3a280cc..5426276 100644
---- a/drivers/staging/fbtft/fb_st7789v.c
-+++ b/drivers/staging/fbtft/fb_st7789v.c
-@@ -9,9 +9,12 @@
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-+#include <linux/mutex.h>
-+#include <linux/interrupt.h>
-+#include <linux/completion.h>
- #include <linux/module.h>
- #include <video/mipi_display.h>
--
-+#include <linux/gpio/consumer.h>
- #include "fbtft.h"
- 
- #define DRVNAME "fb_st7789v"
-@@ -66,6 +69,38 @@ enum st7789v_command {
- #define MADCTL_MX BIT(6) /* bitmask for column address order */
- #define MADCTL_MY BIT(7) /* bitmask for page address order */
- 
-+#define SPI_PANEL_TE_TIMEOUT	400
-+static struct mutex te_mutex;/*mutex for tearing line*/
-+static struct completion spi_panel_te;
-+
-+static irqreturn_t spi_panel_te_handler(int irq, void *data)
-+{
-+	complete(&spi_panel_te);
-+	return IRQ_HANDLED;
-+}
-+
-+static void enable_spi_panel_te_irq(struct fbtft_par *par, bool enable)
-+{
-+	static int te_irq_count;
-+
-+	if (!par->gpio.te) {
-+		pr_err("%s:%d,SPI panel TE GPIO not configured\n",
-+		       __func__, __LINE__);
-+		return;
-+	}
-+
-+	mutex_lock(&te_mutex);
-+
-+	if (enable) {
-+		if (++te_irq_count == 1)
-+			enable_irq(gpiod_to_irq(par->gpio.te));
-+	} else {
-+		if (--te_irq_count == 0)
-+			disable_irq(gpiod_to_irq(par->gpio.te));
-+	}
-+	mutex_unlock(&te_mutex);
-+}
-+
- /**
-  * init_display() - initialize the display controller
-  *
-@@ -82,6 +117,29 @@ enum st7789v_command {
-  */
- static int init_display(struct fbtft_par *par)
- {
-+	int rc;
-+	struct device *dev = par->info->device;
-+
-+	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-+	if (par->gpio.te) {
-+		init_completion(&spi_panel_te);
-+		mutex_init(&te_mutex);
-+		rc = devm_request_irq(dev,
-+				      gpiod_to_irq(par->gpio.te),
-+				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
-+				     "TE_GPIO", par);
-+		if (rc) {
-+			pr_err("TE request_irq failed.\n");
-+			devm_gpiod_put(dev, par->gpio.te);
-+			par->gpio.te = NULL;
-+		} else {
-+			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-+			pr_info("TE request_irq completion.\n");
-+		}
-+	} else {
-+		pr_err("%s:%d, TE gpio not specified\n",
-+		       __func__, __LINE__);
-+	}
- 	/* turn off sleep mode */
- 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE);
- 	mdelay(120);
-@@ -137,6 +195,9 @@ static int init_display(struct fbtft_par *par)
- 	 */
- 	write_reg(par, PWCTRL1, 0xA4, 0xA1);
- 
-+    /*Tearing Effect Line On*/
-+	if (par->gpio.te)
-+		write_reg(par, 0x35, 0x00);
- 	write_reg(par, MIPI_DCS_SET_DISPLAY_ON);
- 
- 	if (HSD20_IPS)
-@@ -145,6 +206,76 @@ static int init_display(struct fbtft_par *par)
- 	return 0;
- }
- 
-+/*****************************************************************************
-+ *
-+ *   int (*write_vmem)(struct fbtft_par *par);
-+ *
-+ *****************************************************************************/
-+
-+/* 16 bit pixel over 8-bit databus */
-+int st7789v_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
-+{
-+	u16 *vmem16;
-+	__be16 *txbuf16 = par->txbuf.buf;
-+	size_t remain;
-+	size_t to_copy;
-+	size_t tx_array_size;
-+	int i;
-+	int rc, ret = 0;
-+	size_t startbyte_size = 0;
-+
-+	fbtft_par_dbg(DEBUG_WRITE_VMEM, par, "st7789v ---%s(offset=%zu, len=%zu)\n",
-+		      __func__, offset, len);
-+
-+	remain = len / 2;
-+	vmem16 = (u16 *)(par->info->screen_buffer + offset);
-+
-+	if (par->gpio.dc)
-+		gpiod_set_value(par->gpio.dc, 1);
-+
-+	/* non buffered write */
-+	if (!par->txbuf.buf)
-+		return par->fbtftops.write(par, vmem16, len);
-+
-+	/* buffered write */
-+	tx_array_size = par->txbuf.len / 2;
-+
-+	if (par->startbyte) {
-+		txbuf16 = par->txbuf.buf + 1;
-+		tx_array_size -= 2;
-+		*(u8 *)(par->txbuf.buf) = par->startbyte | 0x2;
-+		startbyte_size = 1;
-+	}
-+
-+	while (remain) {
-+		to_copy = min(tx_array_size, remain);
-+		dev_dbg(par->info->device, "    to_copy=%zu, remain=%zu\n",
-+			to_copy, remain - to_copy);
-+
-+		for (i = 0; i < to_copy; i++)
-+			txbuf16[i] = cpu_to_be16(vmem16[i]);
-+
-+		vmem16 = vmem16 + to_copy;
-+		if (par->gpio.te) {
-+			enable_spi_panel_te_irq(par, true);
-+			reinit_completion(&spi_panel_te);
-+			rc = wait_for_completion_timeout(&spi_panel_te,
-+							 msecs_to_jiffies(SPI_PANEL_TE_TIMEOUT));
-+			if (rc == 0)
-+				pr_err("wait panel TE time out\n");
-+		}
-+		ret = par->fbtftops.write(par, par->txbuf.buf,
-+								startbyte_size + to_copy * 2);
-+		if (par->gpio.te)
-+			enable_spi_panel_te_irq(par, false);
-+		if (ret < 0)
-+			return ret;
-+		remain -= to_copy;
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * set_var() - apply LCD properties like rotation and BGR mode
-  *
-@@ -259,6 +390,7 @@ static int blank(struct fbtft_par *par, bool on)
- 	.gamma = HSD20_IPS_GAMMA,
- 	.fbtftops = {
- 		.init_display = init_display,
-+		.write_vmem = st7789v_write_vmem16_bus8,
- 		.set_var = set_var,
- 		.set_gamma = set_gamma,
- 		.blank = blank,
-diff --git a/drivers/staging/fbtft/fbtft.h b/drivers/staging/fbtft/fbtft.h
-index 76f8c09..93bac05 100644
---- a/drivers/staging/fbtft/fbtft.h
-+++ b/drivers/staging/fbtft/fbtft.h
-@@ -212,6 +212,7 @@ struct fbtft_par {
- 		struct gpio_desc *wr;
- 		struct gpio_desc *latch;
- 		struct gpio_desc *cs;
-+		struct gpio_desc *te;
- 		struct gpio_desc *db[16];
- 		struct gpio_desc *led[16];
- 		struct gpio_desc *aux[16];
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+Thanks Palmer.
+
 -- 
-1.9.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
