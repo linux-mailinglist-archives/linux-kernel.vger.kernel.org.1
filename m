@@ -2,126 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BB5302C9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC85302C8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732220AbhAYUfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732216AbhAYUSu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:18:50 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25DFC061756;
-        Mon, 25 Jan 2021 12:18:09 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id g69so15356517oib.12;
-        Mon, 25 Jan 2021 12:18:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=T76zXLihM3diqRLtZIwr3s1pIV8slciUw1jl5T7rp2k=;
-        b=K1aG8r0xtnUduoJ378Az/Ll+cK46hNzfniF1kLO/eIfK5oTWlgK29czxbEyQSEWQzv
-         AV7K6OP3yFnq1EAt4zpz+TCEyp9wqpa3qFZS/RuVHDLyAeLfdt7G9QUPIBLIhx12NaHb
-         +cvCzY/XQUg+RBrhOQ93li6C2A76SLGF0cw4fJUpxPYQf79PignF/2Is4dSV0oQJNnxu
-         rpQcsqCFY30Y2b7xgZFWp2zXZ44NzpOZv91Ew57nEg3DMfFuYBpWA7Lpu5cEKrbHmYji
-         ambAVCTnpM+nsMX4rf+CmDy6MFRjrIjg+BnxjlSNp0cL77RRVTySyKjwSq3WUMXUtxOw
-         8ZGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=T76zXLihM3diqRLtZIwr3s1pIV8slciUw1jl5T7rp2k=;
-        b=BrsZTAe4MDOtT2V6Dr+MZ+b+A3HzcPyO6nRBkmw8JLQZ8EOdNCB0JGMwWg4oT8iP3n
-         DP3y+DVW7FA2R2yB02Hm6DYeRU2qUHakLYNqHZPbJ2AXZkSOhSfnbaR0c4H7qLA3Qext
-         LmlrNPOMFfQzybmtStgV45WJJPhHBlVsW+qCnOm4cAOEYdBTs4mbURFjhhfw17GZ5rXf
-         A41gOb2IUS9E4s8/1TvoSIcPBhFPgvjQ7UMWOzwQmeJBSk9OymiGBoc1yfDtuV47QYlR
-         Pp2HPcwTxIZzZkIuy0F8LlXNa0zXoybNegB/se26ds1F5pe5/lCSbJIZSjR3QGSAyook
-         z8+Q==
-X-Gm-Message-State: AOAM530vjUxwLXb2CSVug7zNcJcLPu+mpQXhne44/ThKwiWuEZFQ25Tl
-        v7505GXH6qgyvZZv7P0ULEU=
-X-Google-Smtp-Source: ABdhPJxJj/WRS/F7K4xGjTWcdjNiBM17xYrsbvcw3PGmWj4pzSUlZ0atmhluxxp1xDNUKEOxGJS+sg==
-X-Received: by 2002:a05:6808:a09:: with SMTP id n9mr1189205oij.26.1611605889041;
-        Mon, 25 Jan 2021 12:18:09 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c18sm2225899oov.20.2021.01.25.12.18.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 25 Jan 2021 12:18:08 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 25 Jan 2021 12:18:06 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH 5.10 000/199] 5.10.11-rc1 review
-Message-ID: <20210125201806.GA78651@roeck-us.net>
-References: <20210125183216.245315437@linuxfoundation.org>
- <ef5b0670-83ea-e754-033c-2f3f56a8c822@linaro.org>
+        id S1726420AbhAYUah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:30:37 -0500
+Received: from mout.gmx.net ([212.227.15.19]:39601 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732252AbhAYU2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:28:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1611606373;
+        bh=EFre/a3jxQxs6PpHV4GixbvePX8KFTSbRFMlZ4ilUP0=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=UWn9olG0oI9NA/RcFbkJaLiYqGfDVsh+50NSnMeT1qA7kjDcHplPK5IJzr0Zb0rED
+         v1xWm/O0t1irWT6lHSefCD0laydTVu8OWwyWhtMteaVTIxUhmlBbWcgLodgrPKnQ+t
+         2k5id9nzP5phY77G7pntxzy11Ir30zDhoMRO1kdA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.209]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N95e9-1m6Otm0KZj-0166Bd; Mon, 25
+ Jan 2021 21:26:13 +0100
+Date:   Mon, 25 Jan 2021 21:26:10 +0100
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, j.neuschaefer@gmx.net
+Subject: Re: [PATCH] ARM: dts: imx6sl-tolino-shine2hd: Add Netronix embedded
+ controller
+Message-ID: <YA8pYv1944Y7uaT0@latitude>
+References: <20210124214127.3631530-8-j.neuschaefer@gmx.net>
+ <20210125190804.12552-1-andreas@kemnade.info>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kTqtERsJ9y+2H155"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ef5b0670-83ea-e754-033c-2f3f56a8c822@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210125190804.12552-1-andreas@kemnade.info>
+X-Provags-ID: V03:K1:o6uNvkYzVOedAmld+ISO/GuuMIygh/it05hbmQLNE9GlRObmwEc
+ T6CfoHJ12oCWRev4lwMiF6lBzGQ4N4UignoFzTtg9ctm5+LhjJ3znqQUa9k6FJE5nInHjLV
+ FdfLWpv9Sj70b5BEGPjak5WZEe97P5MeoFSu7C+V4Lir0fbCTd+CIUCyvqPpFK0R5BmUH0Y
+ WZfm8WUbcV28LpWKvpl3Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iR91ag/I62I=:MovJrX+Kyx+YKy4XnmrS1c
+ v+u/wrh7RTEy75SlPcfhk01NRl/rjmkDG/M0rQRgp8wzqH+8L69bMMLiDlfdnI9N+CKYMvRop
+ KfZ6huQBBDTvD9Wkd52tfRUt+jyii2qXe4uCkvlPajy6JOOwFh9CrpxV/FlkMC6k7opkkdg5d
+ MBhLIB43De7eMeT/zteEdx8dPz+29dEhcDKckQPJYqEYWyMhtAxDKKNqfQ3c4hNy+wVTJ79WH
+ lR2ddH9vQpnamlh9FOuyUWLDgYEmTBL0kzoaZkE5qOohz+EpZvPr5BDPOUaiXRiJZDjFhjceN
+ jgwY3BFtglj6sgl/W7pWKfPJpMk+LEm3LwW3TXLnU6XVp+iHpxQsfu9OzttJtaJsRyIrnl9gU
+ +1pWMfsXN6Qot7BDgwyTER/jvey8K3l/wBq806iZgqn8kS5/tsGic3fvMhTzg8KiWr7Ztvw/1
+ O0TExe+c9iNPwDbzB1DMcrx2foUkr/c8BbhTIdVzDS6Qb4nwk5+kkwDvEJm+l8z4lWZaecZIi
+ 7RQEtspfTJ48pfk5CvMNjnx/3FCEYjxG0XOMhOkODV6NdxRAMjWUe/Bd9FrODNxlYmgYeyat6
+ pxYOE07ju5SceL7u8ym4SvG2uJ5X3lHt7Cipy91H9WPJkCp050sZJQKSJ5H22VRilGDvHdbqJ
+ hDKLXIhajJOUtiznomfOhkW/AfBKWb+1/8T0eCQ5K1DZZ8F+AdTHkbxHFKhjltbWgoGyXfOro
+ tN3JjGHCsuX3YqgRPkJ113lSyWOAZlUHwTClEyD+KJIdKF5PZF2286BMKquS/UPxuIbxWiXVj
+ bns5JEolycShzHuu4PhNc8/ei97IqltfwWKf6CQx9yC52iPhEe7t0YYaRcfBK9z5xWO00gH6e
+ 5OL0fYoHJw4/HInvR7vA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 01:36:03PM -0600, Daniel Díaz wrote:
-> Hello!
-> 
-> 
-> On 1/25/21 12:37 PM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.11 release.
-> > There are 199 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Sanity results from Linaro’s test farm.
-> Regressions detected.
-> 
-[ ... ]
-> 
-> Errors look like the following:
-> 
->   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
->   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c: In function 'bsp_init_amd':
->   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c:572:3: error: '__max_die_per_package' undeclared (first use in this function); did you mean 'topology_max_die_per_package'?
->     572 |   __max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
->         |   ^~~~~~~~~~~~~~~~~~~~~
->         |   topology_max_die_per_package
-> 
-> Will find out more soon.
-> 
 
-This may be due to commit 76e2fc63ca40 ("x86/cpu/amd: Set __max_die_per_package
-on AMD").
+--kTqtERsJ9y+2H155
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Our patches robot tells me:
+On Mon, Jan 25, 2021 at 08:08:04PM +0100, Andreas Kemnade wrote:
+> For now, the driver detects an incompatible version, but since
+> that can be handled by auto-detection, add the controller to the
+> devicetree now. Only PWM seems to be available, there is no RTC
+> in that controller.
+>=20
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
 
-SHA 76e2fc63ca40 recursively fixed by: 1eb8f690bcb5
+Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
 
-I don't see commit 1eb8f690bcb5 ("x86/topology: Make __max_die_per_package
-available unconditionally") in the commit log. I have not checked,
-but it is at least possible that applying it fixes the problem.
+>  arch/arm/boot/dts/imx6sl-tolino-shine2hd.dts | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/arm/boot/dts/imx6sl-tolino-shine2hd.dts b/arch/arm/boot=
+/dts/imx6sl-tolino-shine2hd.dts
+> index caa279608803..c26bc5e10593 100644
+> --- a/arch/arm/boot/dts/imx6sl-tolino-shine2hd.dts
+> +++ b/arch/arm/boot/dts/imx6sl-tolino-shine2hd.dts
+> @@ -97,8 +97,11 @@ &i2c1 {
+>  	pinctrl-1 =3D <&pinctrl_i2c1_sleep>;
+>  	status =3D "okay";
+> =20
+> -	/* TODO: embedded controller at 0x43 (driver missing) */
+> -
+> +	ec: embedded-controller@43 {
+> +		compatible =3D "netronix,ntxec";
+> +		reg =3D <0x43>;
+> +		#pwm-cells =3D <2>;
+> +	};
 
-Guenter
+Looks good.
+
+
+Thanks,
+Jonathan
+
+--kTqtERsJ9y+2H155
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmAPKUoACgkQCDBEmo7z
+X9u9ag//S/K5DO3ayaScrll9NlC74fZcgRkDT5nttrbR2oI2+Sek0ed+0S3jCAXJ
+JkkPbjLUhIKLc3dzANimLEmmG6BNTdANoz0kHMWNMg3tqgf2MaHeIS2mGFKKs+FT
+xtnfezH1ZXNUpONGIk+fp9KvDLibSsflQZyyR32F+OqWH7GpXcmi8Gaz6kk1jxmk
+qsPpqRcB3RiFJjkeywnacOoS+zoRw4eOthu2KunHTQodNH/oFhQF47GD+mNUOrlT
+NCvapl6RbRWB3NNvHSWmNmpoVSuMkFXwC/dShAtVpaVd0NmuxonXw+4MpP1KoBmi
+K+piVAv8jmf3PMSDLZY15ShowDplIgwqmtKiVpMEqkD3uiaKu5xT245v/1yhLcr6
+ja9kKuTP853VIs2zjqrC2wIWEFmd979WofnR9Oev5uE4WP/iY5dbIp7Ny3iZSyl7
+3oytpKKvIaj9kRbAqvWnpA6ZoHksu3/bXWaDAMe4HbZDukfeczKnfF1Xgb0mbIhQ
+PkY8kStCSXmg+91JryzEFkMP5WhgjYCqUV3ibx5vcBnUM4Bg40/lZmS7TGlZUJIM
+YSPTiFY0cOyyh5ZXDCUPk2GHl9lLxuDj7/SvI4eDb/rREbcqUGwck4HNYTlh7FSH
+/fitjSt+2r2ypFs16yKg3S/+Exm9iCRW+qjyK220WvBxeaiUd4o=
+=Jnph
+-----END PGP SIGNATURE-----
+
+--kTqtERsJ9y+2H155--
