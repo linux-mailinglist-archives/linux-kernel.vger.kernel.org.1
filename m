@@ -2,122 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3833C3021B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6D33021D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbhAYFYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:24:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S1726371AbhAYF2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAYFYW (ORCPT
+        with ESMTP id S1725959AbhAYF1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:24:22 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F51EC061573;
-        Sun, 24 Jan 2021 21:23:42 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPJDm5KT6z9sVS;
-        Mon, 25 Jan 2021 16:23:36 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611552218;
-        bh=FPt1PXLmp2TZo2ef/NIp7OyF/2BaOYxPd9SrPJl1dyY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NKwgbUVtfoVdC7+3vf+GgDlL90j2rd0k2mcOHgydF3bz8jOIO9lQgsBNE94H3riKL
-         XG2r6iYxGGkZYO5HpCYKyJZ3i1hg2rb28zz//SVdPGLYOvw+paNePJlS/2TpCw4CH4
-         8+p7ia7nX68v1qXk2pbnu1gsiD31v2F9XYKYX0bQjIeOmc/YHZH/hP486msq3tnshA
-         wg592U0gFBLld1cfl1xNiKPR8tNqDez3Ncoyg60mqn0ryg78B28icrYXcSwFStrFwM
-         7rMLH9lolZ0Wrh6LQuNuO7BzQwrabe+ToniW/MUtqzEiKTxnPHMtALHlXz6du+KMaE
-         pq+V0u2BovI3g==
-Date:   Mon, 25 Jan 2021 16:23:36 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Tycho Andersen <tycho@tycho.pizza>
-Subject: linux-next: manual merge of the pidfd tree with the overlayfs tree
-Message-ID: <20210125162336.470e3183@canb.auug.org.au>
+        Mon, 25 Jan 2021 00:27:52 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88D2C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 21:27:11 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 2so5689375qvd.0
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 21:27:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GKTBOeeUx6wXeRV6P9Jfat4kGoUSJVEmxQdNQfrFvYE=;
+        b=j695vV5wc3nWbcMyhTthhn8OdI8FeBU0NIYpfGjClWPlG3p0NydLWU3g8ZsUMYwpBb
+         KW2JNRKyHSLj5NbF3zgv98LTNXR/FI39adb5P8g5Ov78xV8+1I3sJLAx/58VQjev1KK9
+         XKN6U58W3kDgBuh9ixEWML+5uiYTRljv9/vcApapM+BuN0SafT8eT2cq36/M2Nhx4pOJ
+         J+dP+esVrOb1dc6faQd7ITFMjpT86ScCGU+zUJalRsk7qImxfM17ctgNIbj4tyIuQypR
+         1Iiztz5jbMamKVvZAj8X7V/REhVlSgRHspm0lD1mMncTqhuBLErXKvrpx0VXyNdgEZ0T
+         x3Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GKTBOeeUx6wXeRV6P9Jfat4kGoUSJVEmxQdNQfrFvYE=;
+        b=ACpmy/YkPkdLEIGftf/EIk+poo2i+wIRMLTFYkS9RaHzVqxSdz24R1GKd5gOyyJZCj
+         QZ3xnT4kHcJrVqh/ubxvPr6xvQTkdELDKBirWl4g6/ob+6Rp95HIaSQCzBc2sgLV2+Hh
+         M9w09tC+Ey/R2JYGS3Qn8NVHC2Ode/+DPclNwpifgMCyTdLeNfJrFBrw2GDhkTh5mqAV
+         FlB64X0l0zb5zYV7IO7/AUKg5qeO40NOgMLjL50rBglhzUJaE0jH5l/vZ/dtzcgzXylK
+         lhKq9AREKWFb85dAA7PDSJZtMC4CgJXBCJYOP6wJrdPFM+JNE5prau6SJE8AmPYVLLXi
+         FhBw==
+X-Gm-Message-State: AOAM531CvSg38ConMWSIpc2ZMaeUM8RTSdgc3KFZajy8OeGcD1wwzVna
+        xrBJ5N2CE/sG0MMIv4RU8kkBMA==
+X-Google-Smtp-Source: ABdhPJx6twpOFiNUXkHrytF4tAaeP9jbL+fIEfsueCOWmVBETzURbZy1jFgpbjKAN/zJfi4NlaTIRA==
+X-Received: by 2002:ad4:4e86:: with SMTP id dy6mr6025332qvb.4.1611552430534;
+        Sun, 24 Jan 2021 21:27:10 -0800 (PST)
+Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id x49sm10447908qth.95.2021.01.24.21.27.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Jan 2021 21:27:09 -0800 (PST)
+Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Claire Chang <tientzu@chromium.org>
+Cc:     heikki.krogerus@linux.intel.com, peterz@infradead.org,
+        grant.likely@arm.com, paulus@samba.org,
+        Frank Rowand <frowand.list@gmail.com>, mingo@kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        sstabellini@kernel.org, Saravana Kannan <saravanak@google.com>,
+        Joerg Roedel <joro@8bytes.org>, rafael.j.wysocki@intel.com,
+        Christoph Hellwig <hch@lst.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        xen-devel@lists.xenproject.org,
+        Thierry Reding <treding@nvidia.com>,
+        linux-devicetree <devicetree@vger.kernel.org>, will@kernel.org,
+        dan.j.williams@intel.com, linuxppc-dev@lists.ozlabs.org,
+        Rob Herring <robh+dt@kernel.org>, boris.ostrovsky@oracle.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        jgross@suse.com, Nicolas Boichat <drinkcat@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>, rdunlap@infradead.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        iommu@lists.linux-foundation.org, xypron.glpk@gmx.de,
+        Robin Murphy <robin.murphy@arm.com>, bauerman@linux.ibm.com
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-3-tientzu@chromium.org>
+ <20210106185241.GA109735@localhost.localdomain>
+ <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
+ <20210107175740.GA16519@char.us.oracle.com>
+ <aa5af7d1-779e-f0f6-e6ba-8040e603523f@gmail.com>
+From:   Jon Masters <jcm@jonmasters.org>
+Organization: World Organi{s,z}ation of Broken Dreams
+Message-ID: <a843a970-afec-6541-c54b-4bc2a3c4750a@jonmasters.org>
+Date:   Mon, 25 Jan 2021 00:26:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YvLZhwTuqxN6yof2SjV4/Nc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <aa5af7d1-779e-f0f6-e6ba-8040e603523f@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YvLZhwTuqxN6yof2SjV4/Nc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 1/7/21 1:09 PM, Florian Fainelli wrote:
+> On 1/7/21 9:57 AM, Konrad Rzeszutek Wilk wrote:
+>> On Fri, Jan 08, 2021 at 01:39:18AM +0800, Claire Chang wrote:
+>>> Hi Greg and Konrad,
+>>>
+>>> This change is intended to be non-arch specific. Any arch that lacks DMA access
+>>> control and has devices not behind an IOMMU can make use of it. Could you share
+>>> why you think this should be arch specific?
+>>
+>> The idea behind non-arch specific code is it to be generic. The devicetree
+>> is specific to PowerPC, Sparc, and ARM, and not to x86 - hence it should
+>> be in arch specific code.
+> 
+> In premise the same code could be used with an ACPI enabled system with
+> an appropriate service to identify the restricted DMA regions and unlock
+> them.
+> 
+> More than 1 architecture requiring this function (ARM and ARM64 are the
+> two I can think of needing this immediately) sort of calls for making
+> the code architecture agnostic since past 2, you need something that scales.
+> 
+> There is already code today under kernel/dma/contiguous.c that is only
+> activated on a CONFIG_OF=y && CONFIG_OF_RESERVED_MEM=y system, this is
+> no different.
 
-Hi all,
+<unrelated to these patches, which are useful for the case cited>
 
-Today's linux-next merge of the pidfd tree got a conflict in:
+Just a note for history/archives that this approach would not be 
+appropriate on general purpose Arm systems, such as SystemReady-ES 
+edge/non-server platforms seeking to run general purpose distros. I want 
+to have that in the record before someone at Arm (or NVidia, or a bunch 
+of others that come to mind who have memory firewalls) gets an idea.
 
-  fs/ecryptfs/inode.c
+If you're working at an Arm vendor and come looking at this later 
+thinking "wow, what a great idea!", please fix your hardware to have a 
+real IOMMU/SMMU and real PCIe. You'll be pointed at this reply.
 
-between commit:
+Jon.
 
-  176cfe865da6 ("ecryptfs: fix uid translation for setxattr on security.cap=
-ability")
-
-from the overlayfs tree and commit:
-
-  c7c7a1a18af4 ("xattr: handle idmapped mounts")
-
-from the pidfd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/ecryptfs/inode.c
-index 58d0f7187997,55da9a91f51a..000000000000
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@@ -1024,11 -1043,10 +1045,12 @@@ ecryptfs_setxattr(struct dentry *dentry
-  		rc =3D -EOPNOTSUPP;
-  		goto out;
-  	}
- -	rc =3D vfs_setxattr(&init_user_ns, lower_dentry, name, value, size,
- -			  flags);
- +	inode_lock(lower_inode);
-- 	rc =3D __vfs_setxattr_locked(lower_dentry, name, value, size, flags, NUL=
-L);
-++	rc =3D __vfs_setxattr_locked(&init_user_ns, lower_dentry, name,
-++				   value, size, flags, NULL);
- +	inode_unlock(lower_inode);
-  	if (!rc && inode)
- -		fsstack_copy_attr_all(inode, d_inode(lower_dentry));
- +		fsstack_copy_attr_all(inode, lower_inode);
-  out:
-  	return rc;
-  }
-
---Sig_/YvLZhwTuqxN6yof2SjV4/Nc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOVdgACgkQAVBC80lX
-0GxG+Af9GzZ7SSGXPeMBJXxkpNAq6LewBXOlbJCGA09W5N7NpXyx/55e649AtkDL
-ugz3gSIUDGyxYx6K1h4pU6FAADpHsAi5d92SnYMrfgS1Gpw+oyrLGPOrBZYbnWm6
-RGl9ZnMjulGzfefss1U2WxfNZ3iDIGnaGqP3k6nreRbcCbzF/2aJvX8t/NKvJnEE
-T92DSQAxT3fTHPaSERIJ6XEdN6zbfxO44CsrUDBy0vfYs7U4NdfbUbqPGHNA3Qz0
-/6hv90jwcv1VgMYvX9WfLzG0GYwj7UkMiOiD2ef/ehmclc2EPzvpiliwg8vi4sfY
-td47eFbkOpfGDZq/ZW4Mq++qwJnPFw==
-=dVMD
------END PGP SIGNATURE-----
-
---Sig_/YvLZhwTuqxN6yof2SjV4/Nc--
+-- 
+Computer Architect
