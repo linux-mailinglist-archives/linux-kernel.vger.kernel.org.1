@@ -2,159 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FE230363F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8940F303642
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbhAZGGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:06:50 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:51087 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728421AbhAYMwF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:52:05 -0500
-Received: by mail-io1-f69.google.com with SMTP id n80so7621112iod.17
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 04:51:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7yzACKBivQNVWbNjmhIg71uYXUw2G8UL5fat5y7REW4=;
-        b=FLCr/O1VoQal/Zy7+L5qt6rPevKEjsi3E2m7UloEwSY8p4JkqTsJbys16KKRddn93y
-         8dDaxVwtLfyWyU9A8JgbeWojTJZsPEmwUFffqUD97Wg6deqfrIufiNYje61uqYWFotc9
-         jbwAOTUzrBFOC+pXHghfNFqfrD8Nf0Hkdb0VpzJIhtzc/eG35jBpSKbAQKpnO6/gCIY6
-         UohKbrBQMieckOcyQvVOIlJFXrOV+qDFSE+nKiOmNjuSEGZ7TCSXf06uB/OzDrfprJVb
-         qZzyW/Ad5/hQzsU0xLfhlKME7mUzBsmlsIcJPV+TGiVEgoslLukDDZqkC9pOuww5uATc
-         eOHw==
-X-Gm-Message-State: AOAM533/nGYVo0X3z5uU7SOwzzdy4g+xn0ZQ3pAOFbpt1YO+3dR/5YPe
-        7akIEge+cuvPvKzienFkwSZyLnVZcGXEXbv37aXOg2xlwlKM
-X-Google-Smtp-Source: ABdhPJzzOgJeF/k86yPx6Ztit1zKlLLNrUgdYqjd8lbjY8KSPTCNUjYPR+VhMYD1Qny61CaNhemRGItHNDiPue28Zw8h++HRxTP/
+        id S1728421AbhAZGHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:07:52 -0500
+Received: from mail-bn7nam10on2071.outbound.protection.outlook.com ([40.107.92.71]:11553
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728287AbhAYMw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:52:28 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nvkUVhUe2yGK1j5dcNoFG04SxgWG9ZIcvRLvt8eCn3VekCAhtW+gGEn1//1OrgpI7EfBdN1NMPG+TcRG+C50pyuSUilkxBJNoHk+M3TS6jEjCbdLJE9nSkvewQeeJhIZY+EeyvctXap1qhs+1Ej5iGUZf67AwUvvQhTB9UZnA6rNQ5ZCAMRusLFKa+EuxjYiWynjL94WsoUfWdwvkSm632c19aceV76Ta54DYozctZwmWyJs/+TjfFyM2SjGM5Jq/fziAwMBVkj7igic3rj70QAz2MU6D1jMKcbE7N4Slh5cA2lrVD0Ze0MPJoDxVzYQPIvALQfcM34uAgfUPFW/pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y9eWoRtzmfEofR7xel36hDq/sZcTaQavEWF3YgC/kVc=;
+ b=EmnYQSL0S7nqclw7OoJxc45kI+3NKuD4rfLLySqR/+jMpq8wJreG54ZrvWDNK/EJQNSyh+bkHXFWntjXyrCKfEq7jwmvO6qXgVjD3TH2WSUPrE70owG+MgVbWbmFxqifzDl3miBGEXaNTHpHq4b5wfhmeEy1/8JPV9dhrPOCh6y4kSI9620OmQrTiVEmFZOlejdYUeoFjMPBvoS3oYfiWXIPwwZLe2leKTg+72jI14ctPv2lL54/mZcJnNtwpEOgdj9R0SeUY6udpeWSO7Z6VxqE7FyEEm72+E0o/pg6kOZciCWXqDNz8rByinMvwtxBxNzTGTF4PLfsl8w378JGrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y9eWoRtzmfEofR7xel36hDq/sZcTaQavEWF3YgC/kVc=;
+ b=yRhxnUFQGQ8hIDEVamzyiiTGm1f63PE6EY/PkJn1S1pLrc4Xld4ozn2r9EHyn6xv5Bvx2POYPVWmFPDSCEIIEOlfq2eMH7Vy1KR429eqgXdBVdqYcM218Vwd9G3qZClCHaOL/Bj6wauHO7TaZihtn0ExazXdNvOrteYQ2HCJdiU=
+Received: from CY4PR12MB1287.namprd12.prod.outlook.com (2603:10b6:903:40::8)
+ by CY4PR12MB1749.namprd12.prod.outlook.com (2603:10b6:903:11d::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
+ 2021 12:51:34 +0000
+Received: from CY4PR12MB1287.namprd12.prod.outlook.com
+ ([fe80::bc0f:dd2:ef80:de2]) by CY4PR12MB1287.namprd12.prod.outlook.com
+ ([fe80::bc0f:dd2:ef80:de2%12]) with mapi id 15.20.3784.019; Mon, 25 Jan 2021
+ 12:51:34 +0000
+From:   "Chen, Guchun" <Guchun.Chen@amd.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "Wentland, Harry" <Harry.Wentland@amd.com>,
+        "Li, Sun peng (Leo)" <Sunpeng.Li@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Aberback, Joshua" <Joshua.Aberback@amd.com>,
+        "Lakha, Bhawanpreet" <Bhawanpreet.Lakha@amd.com>,
+        "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        "Chalmers, Wesley" <Wesley.Chalmers@amd.com>,
+        "Zhuo, Qingqing" <Qingqing.Zhuo@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Jacky Liao <ziyu.liao@amd.com>,
+        "Leung, Martin" <Martin.Leung@amd.com>
+Subject: RE: [PATCH] drm/amd/display: use div_s64() for 64-bit division
+Thread-Topic: [PATCH] drm/amd/display: use div_s64() for 64-bit division
+Thread-Index: AQHW8w7f9zwUf5VmV0W3hq1/1dnYF6o4SpRg
+Date:   Mon, 25 Jan 2021 12:51:33 +0000
+Message-ID: <CY4PR12MB1287B8B020D280A5F12ED62DF1BD9@CY4PR12MB1287.namprd12.prod.outlook.com>
+References: <20210125114012.2480845-1-arnd@kernel.org>
+In-Reply-To: <20210125114012.2480845-1-arnd@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-01-25T12:51:27Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=5905a068-9ca2-433b-ba79-be6e78fd8f54;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [180.164.215.185]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 77c5e308-4ba4-4981-7aea-08d8c12ff1fa
+x-ms-traffictypediagnostic: CY4PR12MB1749:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR12MB1749C15C542A56BD78DFDCFBF1BD9@CY4PR12MB1749.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2512;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uaAQ+ctbBbdbu3lfLtifZAqixiQ0828cvvd0QZSCU0jpcHfDWKgSZUzs2B9poHXwfsJ4COdF5wKveRXkaEZClPgJ0VT3l3neArQSefmhx5BPcpsA37JlTK2j1BYkqpL9Ur9QZgRnUqyTtFTujBPYQqyabGBtGBAWBTFCTtP31sEUpLgyFYNJJBN7ZKfTtux7IpYQNcMEtPYND2QRcmQ/nuT33eER5aW3sOwTFVklYiqzK/e5UawLIfEacjctRZ72Ib7tLMI7fpg3mKO79JOCwvrIsNpErd8QrvILBAmYkER/J61uNBa0aN47nqFwIwHvqo8BjvhhM3eGTTZlZ2o5zCcfQO11YH14quPF6NevvYwYolim4ubKRvCxQA6z1jnrW07RHNNFh+JulOLmg7D1hp2eHIw2c7UZNaIiibuNxKFRIxNOUeCnRzLNF+msh5MD4+YMuEhGUwPE19v7RsNCcNjuTPZZAccg9E4qniqrR+Y=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1287.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(76116006)(33656002)(966005)(71200400001)(54906003)(316002)(66946007)(83380400001)(26005)(110136005)(6636002)(6506007)(2906002)(8676002)(66446008)(4326008)(66556008)(66476007)(8936002)(478600001)(55016002)(64756008)(53546011)(186003)(45080400002)(86362001)(52536014)(7696005)(5660300002)(921005)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?qnAyumjZh6LVZQzhx8goOUF6iPjKICO2EG2VcxIwTRVr2BrNIeVTZYNEfS8f?=
+ =?us-ascii?Q?rik6O4KO47FPiU8xdRyldEByhHiYmoKSmRBILmg1wQQVKODHMbYGoCod3Z2J?=
+ =?us-ascii?Q?SWtwfnf7+OUzcQ7n7RJ8ctD+Qlf0EOC12H6Jk0761u/xV7H3FLMe4qx89HTm?=
+ =?us-ascii?Q?nNrXTOiLYnYDCpC+nO9utEEEo80/c6pZkLbOCP5VSHePeF2eSoL4As0GtxcC?=
+ =?us-ascii?Q?y8MwQlGv5Iy5M+7o0xQxSldN5+zen3FSvtsrGElr0LYYwOsNR7ETLhw14/Xc?=
+ =?us-ascii?Q?XaAtPAmwN5mG8QPPt6cMgfWac6nHJVCJFQSRa0YLkeeBgejKtBco8VePchoi?=
+ =?us-ascii?Q?ZU3SyQX66u5InkDXdBcn+2kAE7FvPJICqo/0tSNj8sKU0FwRghC8ccePr/vZ?=
+ =?us-ascii?Q?v+EKyoyINmuDM+F3h3nZFZ7z14i2JWYVID1JsaqLznHQpeEZ7t8wSOdBxoyn?=
+ =?us-ascii?Q?ZuLtX97SgKpey6LO1If7gVb3+mhwN8no13kdQxRLi3VwVvee5+JdF8lulHNS?=
+ =?us-ascii?Q?O81Eh+Gb7NngxC96T2jGVlN9fX8sReAPURsAsXyjD5hFaX2M/1WDMoQ91hIT?=
+ =?us-ascii?Q?ZYPq4lveyJemIKldotxBoBrpHLSuiektdPNpH8+xU7SA8UVb+PIHZnPtMpqu?=
+ =?us-ascii?Q?/VA6brMXpL6J65odVJ8Lv/b2SWcij51fEvku1F15k/RcSUfQKOdM5waxcGzK?=
+ =?us-ascii?Q?rwhGsccT65NCtBoAEU2Ofelk4Sx90IwlVYr1XUJUhFgxVA7ibPkOvdD8/Qsh?=
+ =?us-ascii?Q?EnUtY5+VNpm0pPA+0qalmUh8BrHuS+ylgthG2xxP4W0f1MYHB8dLODFtGBlK?=
+ =?us-ascii?Q?fGrkJ2vBHJrQHZ5eAtiQRUxYgWb67BPjdbKjj4sH+aI0E4ZvvGasjrZNnOrf?=
+ =?us-ascii?Q?AmU9Tvnegupyz5huNEn+FBBS54vCpwb0VgDrx3G9C7y/+BdrDdZ5HQK/3Q36?=
+ =?us-ascii?Q?7SywyuUmqIBOOIUN/IIpgZhH3TMIvt0jmjPyO7iabVmVF9/lo8ai+rYxqbbl?=
+ =?us-ascii?Q?EvyEedJgPQlOq0jEgNtOsgasAeLV9KyltcpqZ2ivIvrVJpNiPMk+oAENJG6a?=
+ =?us-ascii?Q?MJZIdILd?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a02:1d0a:: with SMTP id 10mr399144jaj.122.1611579082433;
- Mon, 25 Jan 2021 04:51:22 -0800 (PST)
-Date:   Mon, 25 Jan 2021 04:51:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc67d205b9b8feb2@google.com>
-Subject: KASAN: slab-out-of-bounds Write in record_print_text
-From:   syzbot <syzbot+a42d84593d6a89a76f26@syzkaller.appspotmail.com>
-To:     adobriyan@gmail.com, akpm@linux-foundation.org,
-        davem@davemloft.net, john.ogness@linutronix.de, kuba@kernel.org,
-        kuznet@ms2.inr.ac.ru, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1287.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77c5e308-4ba4-4981-7aea-08d8c12ff1fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 12:51:33.8034
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: icYnYWQN6lkGZ92f2hlAK/tRzLYtiz3wEASIUK3Z7Dxd0lDjo8ZUu6MIO2+/o+LwZpUF5mBKF4IH+RUzmVB3Mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1749
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+[AMD Public Use]
 
-syzbot found the following issue on:
+Hi Arnd Bergmann,
 
-HEAD commit:    e6806137 Merge tag 'irq_urgent_for_v5.11_rc5' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c59c6f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be33d8015c9de024
-dashboard link: https://syzkaller.appspot.com/bug?extid=a42d84593d6a89a76f26
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1575e6b4d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17aea4e8d00000
+Thanks for your patch. This link error during compile has been fixed by bel=
+ow commit and been submitted to drm-next branch already.
 
-The issue was bisected to:
+5da047444e82 drm/amd/display: fix 64-bit division issue on 32-bit OS
 
-commit f0e386ee0c0b71ea6f7238506a4d0965a2dbef11
-Author: John Ogness <john.ogness@linutronix.de>
-Date:   Thu Jan 14 17:04:12 2021 +0000
+Regards,
+Guchun
 
-    printk: fix buffer overflow potential for print_text()
+-----Original Message-----
+From: amd-gfx <amd-gfx-bounces@lists.freedesktop.org> On Behalf Of Arnd Ber=
+gmann
+Sent: Monday, January 25, 2021 7:40 PM
+To: Wentland, Harry <Harry.Wentland@amd.com>; Li, Sun peng (Leo) <Sunpeng.L=
+i@amd.com>; Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christi=
+an <Christian.Koenig@amd.com>; David Airlie <airlied@linux.ie>; Daniel Vett=
+er <daniel@ffwll.ch>; Aberback, Joshua <Joshua.Aberback@amd.com>; Lakha, Bh=
+awanpreet <Bhawanpreet.Lakha@amd.com>; Kazlauskas, Nicholas <Nicholas.Kazla=
+uskas@amd.com>
+Cc: Arnd Bergmann <arnd@arndb.de>; Chalmers, Wesley <Wesley.Chalmers@amd.co=
+m>; Zhuo, Qingqing <Qingqing.Zhuo@amd.com>; Siqueira, Rodrigo <Rodrigo.Siqu=
+eira@amd.com>; linux-kernel@vger.kernel.org; amd-gfx@lists.freedesktop.org;=
+ dri-devel@lists.freedesktop.org; Jacky Liao <ziyu.liao@amd.com>; Leung, Ma=
+rtin <Martin.Leung@amd.com>
+Subject: [PATCH] drm/amd/display: use div_s64() for 64-bit division
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f30130d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=140b0130d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=100b0130d00000
+From: Arnd Bergmann <arnd@arndb.de>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a42d84593d6a89a76f26@syzkaller.appspotmail.com
-Fixes: f0e386ee0c0b ("printk: fix buffer overflow potential for print_text()")
+The open-coded 64-bit division causes a link error on 32-bit
+machines:
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in record_print_text+0x33f/0x380 kernel/printk/printk.c:1401
-Write of size 1 at addr ffff88801c2faf40 by task in:imklog/8158
+ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefine=
+d!
+ERROR: modpost: "__divdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined=
+!
 
-CPU: 1 PID: 8158 Comm: in:imklog Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- record_print_text+0x33f/0x380 kernel/printk/printk.c:1401
- syslog_print+0x2bb/0x430 kernel/printk/printk.c:1459
- do_syslog.part.0+0x2a8/0x7c0 kernel/printk/printk.c:1586
- do_syslog+0x49/0x60 kernel/printk/printk.c:1567
- kmsg_read+0x90/0xb0 fs/proc/kmsg.c:40
- pde_read fs/proc/inode.c:321 [inline]
- proc_reg_read+0x119/0x300 fs/proc/inode.c:331
- vfs_read+0x1b5/0x570 fs/read_write.c:494
- ksys_read+0x12d/0x250 fs/read_write.c:634
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f3e2eec922d
-Code: c1 20 00 00 75 10 b8 00 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 4e fc ff ff 48 89 04 24 b8 00 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 97 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:00007f3e2c865580 EFLAGS: 00000293 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3e2eec922d
-RDX: 0000000000001fa0 RSI: 00007f3e2c865da0 RDI: 0000000000000004
-RBP: 000055d0880849d0 R08: 0000000000000000 R09: 0000000004000001
-R10: 0000000000000001 R11: 0000000000000293 R12: 00007f3e2c865da0
-R13: 0000000000001fa0 R14: 0000000000001f9f R15: 00007f3e2c865df3
+Use the div_s64() to perform the division here. One of them was an unsigned=
+ division originally, but it looks like signed division was intended, so us=
+e that to consistently allow a negative delay.
 
-Allocated by task 8158:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kmalloc include/linux/slab.h:552 [inline]
- syslog_print+0xb2/0x430 kernel/printk/printk.c:1430
- do_syslog.part.0+0x2a8/0x7c0 kernel/printk/printk.c:1586
- do_syslog+0x49/0x60 kernel/printk/printk.c:1567
- kmsg_read+0x90/0xb0 fs/proc/kmsg.c:40
- pde_read fs/proc/inode.c:321 [inline]
- proc_reg_read+0x119/0x300 fs/proc/inode.c:331
- vfs_read+0x1b5/0x570 fs/read_write.c:494
- ksys_read+0x12d/0x250 fs/read_write.c:634
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff88801c2fa800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 832 bytes to the right of
- 1024-byte region [ffff88801c2fa800, ffff88801c2fac00)
-The buggy address belongs to the page:
-page:00000000eb65f4f5 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1c2f8
-head:00000000eb65f4f5 order:2 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010041140
-raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88801c2fae00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88801c2fae80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88801c2faf00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                           ^
- ffff88801c2faf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88801c2fb000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
+Fixes: ea7154d8d9fb ("drm/amd/display: Update dcn30_apply_idle_power_optimi=
+zations() code")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c b/drivers/g=
+pu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+index dff83c6a142a..a133e399e76d 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+@@ -772,8 +772,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc=
+, bool enable)
+ 							cursor_cache_enable ? &cursor_attr : NULL)) {
+ 				unsigned int v_total =3D stream->adjust.v_total_max ?
+ 						stream->adjust.v_total_max : stream->timing.v_total;
+-				unsigned int refresh_hz =3D (unsigned long long) stream->timing.pix_cl=
+k_100hz *
+-						100LL /	(v_total * stream->timing.h_total);
++				unsigned int refresh_hz =3D div_s64((unsigned long long) stream->timin=
+g.pix_clk_100hz *
++						100LL, v_total * stream->timing.h_total);
+=20
+ 				/*
+ 				 * one frame time in microsec:
+@@ -800,8 +800,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc=
+, bool enable)
+ 				unsigned int denom =3D refresh_hz * 6528;
+ 				unsigned int stutter_period =3D dc->current_state->perf_params.stutter=
+_period_us;
+=20
+-				tmr_delay =3D (((1000000LL + 2 * stutter_period * refresh_hz) *
+-						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
++				tmr_delay =3D div_s64(((1000000LL + 2 * stutter_period * refresh_hz) *
++						(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
+ 						denom) - 64LL;
+=20
+ 				/* scale should be increased until it fits into 6 bits */ @@ -815,8 +8=
+15,8 @@ bool dcn30_apply_idle_power_optimizations(struct dc *dc, bool enabl=
+e)
+ 					}
+=20
+ 					denom *=3D 2;
+-					tmr_delay =3D (((1000000LL + 2 * stutter_period * refresh_hz) *
+-							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1) /
++					tmr_delay =3D div_s64(((1000000LL + 2 * stutter_period * refresh_hz) =
+*
++							(100LL + dc->debug.mall_additional_timer_percent) + denom - 1),
+ 							denom) - 64LL;
+ 				}
+=20
+--
+2.29.2
+
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@lists.freedesktop.org
+https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flists.f=
+reedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=3D04%7C01%7Cguchun.c=
+hen%40amd.com%7C4bb97aae9edc4153392c08d8c1260048%7C3dd8961fe4884e608e11a82d=
+994e183d%7C0%7C0%7C637471716255231899%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wL=
+jAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DkL=
+dkVHfkYx%2Bd249%2BmtG5GJTq295Pxzw7mgTe0FD8QvY%3D&amp;reserved=3D0
