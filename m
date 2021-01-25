@@ -2,92 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B01D3034F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA85303516
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727470AbhAZFbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:31:23 -0500
-Received: from outbound-smtp49.blacknight.com ([46.22.136.233]:48943 "EHLO
-        outbound-smtp49.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727499AbhAYKV6 (ORCPT
+        id S2387900AbhAZFey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:34:54 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11490 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727484AbhAYKYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:21:58 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp49.blacknight.com (Postfix) with ESMTPS id B858241C026
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:59:10 +0000 (GMT)
-Received: (qmail 12105 invoked from network); 25 Jan 2021 08:59:10 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 25 Jan 2021 08:59:10 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
+        Mon, 25 Jan 2021 05:24:14 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DPPj60jNnzjD82;
+        Mon, 25 Jan 2021 17:30:02 +0800 (CST)
+Received: from [10.174.176.185] (10.174.176.185) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 17:31:07 +0800
+Subject: Re: [PATCH 3/4] ubifs: Update directory size when creating whiteouts
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, David Gstir <david@sigma-star.at>,
         LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 2/4] sched/fair: Move avg_scan_cost calculations under SIS_PROP
-Date:   Mon, 25 Jan 2021 08:59:07 +0000
-Message-Id: <20210125085909.4600-3-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210125085909.4600-1-mgorman@techsingularity.net>
-References: <20210125085909.4600-1-mgorman@techsingularity.net>
+        stable <stable@vger.kernel.org>
+References: <20210122212229.17072-1-richard@nod.at>
+ <20210122212229.17072-4-richard@nod.at>
+ <5b51ff9c-8f5e-c348-5195-c0a0bf60b746@huawei.com>
+ <cca6ac4f-4739-76be-9b48-b3643017a556@huawei.com>
+ <CAFLxGvyHL5AMWcfLQg2fS6Nbp255yjve5nJ83ELYHnPhKp6Wxw@mail.gmail.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <45bacc97-5fe0-baed-ce6a-321f15406575@huawei.com>
+Date:   Mon, 25 Jan 2021 17:31:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <CAFLxGvyHL5AMWcfLQg2fS6Nbp255yjve5nJ83ELYHnPhKp6Wxw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.185]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted by Vincent Guittot, avg_scan_costs are calculated for SIS_PROP
-even if SIS_PROP is disabled. Move the time calculations under a SIS_PROP
-check and while we are at it, exclude the cost of initialising the CPU
-mask from the average scan cost.
+在 2021/1/25 15:55, Richard Weinberger 写道:
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9f5682aeda2e..c8d8e185cf3b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6153,6 +6153,8 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	if (!this_sd)
- 		return -1;
- 
-+	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+
- 	if (sched_feat(SIS_PROP)) {
- 		u64 avg_cost, avg_idle, span_avg;
- 
-@@ -6168,11 +6170,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 			nr = div_u64(span_avg, avg_cost);
- 		else
- 			nr = 4;
--	}
--
--	time = cpu_clock(this);
- 
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+		time = cpu_clock(this);
-+	}
- 
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
-@@ -6181,8 +6181,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 			break;
- 	}
- 
--	time = cpu_clock(this) - time;
--	update_avg(&this_sd->avg_scan_cost, time);
-+	if (sched_feat(SIS_PROP)) {
-+		time = cpu_clock(this) - time;
-+		update_avg(&this_sd->avg_scan_cost, time);
-+	}
- 
- 	return cpu;
- }
--- 
-2.26.2
+> 
+> The idea was that in the !whiteout case, sz_change is always 0.
+> 
+Oh, sz_change was initialized to 0, I missed it.
+Thanks.
 
