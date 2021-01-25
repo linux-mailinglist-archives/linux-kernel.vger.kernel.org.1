@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D45F302FA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD76303024
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731995AbhAYW7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:59:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45323 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732271AbhAYW6F (ORCPT
+        id S1732604AbhAYXaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732709AbhAYVbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:58:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611615399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D+br43BWYs8uxBdvKqN099cMR5CRAOYUfWqj6wzB+qg=;
-        b=J9QNgzZ2gAczTNRcr0lZW4wpcNzyHu8EzSN7Ll7eEl838u2bhRo2YRwri6JBHKZBtIKN8p
-        C3pkLD1D2C4biYsKJj7yft5OZWkFq7/Lc2ACAtlZr4t9BhNcAkObvEUP+MVIbQ7LTnoase
-        WBoUl0MSj1N9CnkokD7EdyCj0hwQALk=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-439-6iEmp0MpOEChA8mOWeDLUA-1; Mon, 25 Jan 2021 17:56:37 -0500
-X-MC-Unique: 6iEmp0MpOEChA8mOWeDLUA-1
-Received: by mail-qt1-f197.google.com with SMTP id k90so7377617qte.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:56:37 -0800 (PST)
+        Mon, 25 Jan 2021 16:31:07 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DFFC0613ED
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:54 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id h11so29505712ioh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:29:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JpZv+T7F3bf/GFAbswYSEjxp4C4JU0WA8H2GZ/JQhn0=;
+        b=tTCfUMZuXXOxBVYrRDGvhRwfEDPgDy4t6wA+C8pWcN4V0hyLN2U+IXN1LwoDs0qraT
+         sx4+DVP5A9M7joq5aUbhqwZvVx2F83jyJkZbt2bzhJ+gXAatK3IxpfvmbLNQ+q/s1QN7
+         0fKSNRY/qKad7zA0P55n64XeTExtnnSUBhwO13w2N1NmvIU1Pz8j5b470s3px6sQZlRN
+         6XfrcxpUeTT2DMCF30FnMVXepqox6mQuqJWX78r48/FQWjKq456DyNAej71Ar3qIGMyg
+         pvyg/2f/mya4+umdwOIcgfF5zcZDL4NSPNlVuO7F+VRlaGQidsza29hyL3hsC/T4HmW2
+         VfRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=D+br43BWYs8uxBdvKqN099cMR5CRAOYUfWqj6wzB+qg=;
-        b=KsxWY6FlLYoVYBZYlt8YXI4g8TvUVZEFHRQhkFiOzEZtYYpSDEptBgbbrEUiHN42AX
-         bANfY4atnFxh4870E9q4LKuE+rLhz2aROlNWzLWLpKXbr9A7KLFhX+i3rX/kuf1NQ6fD
-         apk3Lq76vjxwJf84syWzHOQ0FYSKVhaibtfXnb/F8UiPUvqmts2O7cNzvSAdy3FuN6pZ
-         9fLqrip29Q8vREmPjmxbDUJJ+vs2l9WDzTmszpZ9/IPo6b88M42L6R54r5daI9YgaH8T
-         27R5cOLyMfzxpBqqFph8z5dRA8BZcQEYuC8d/MFlEb38VevNU/XK4ECOigQnCgQaKMfa
-         6uzQ==
-X-Gm-Message-State: AOAM531A2AFVNlckC/8Pba7yzC6aqIKD5fDfJe6RbByMT9Ywx9Dt2H3i
-        WNX1itmxuvF68j22ujn0pgwzhKp5fUsWNpVuk8N1t4+ZhBK2V0fmHkMK44AEZDLluqNki2LXQty
-        yH+aMT8hIt/eaSs2RZxWj/qq1
-X-Received: by 2002:a37:d202:: with SMTP id f2mr3082605qkj.81.1611615396605;
-        Mon, 25 Jan 2021 14:56:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw0CDpDdzmMTKfL+eejHQpDS9fn/OYZvcxiwollZ5JcIM5XBoJVFbzIxVegmL/lHSuTJYRx2A==
-X-Received: by 2002:a37:d202:: with SMTP id f2mr3082590qkj.81.1611615396362;
-        Mon, 25 Jan 2021 14:56:36 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r64sm3941406qkf.121.2021.01.25.14.56.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 14:56:35 -0800 (PST)
-Subject: Re: [PATCHv3 1/6] firmware: stratix10-svc: add
- COMMAND_AUTHENTICATE_BITSTREAM flag
-To:     richard.gong@linux.intel.com, mdf@kernel.org,
-        gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
- <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <4e1c60e6-8e6e-d0c6-970f-674958ffe91d@redhat.com>
-Date:   Mon, 25 Jan 2021 14:56:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JpZv+T7F3bf/GFAbswYSEjxp4C4JU0WA8H2GZ/JQhn0=;
+        b=k8RJygtQgmlody+3Z9sMDcIb3oH9YlteMQqNsC3/CcjP9uaLrrEbCRs94bddaraA6h
+         waNF/5VrMwSmeD0jaALlWJuXmY7kKVVjhNf19enW2EIZo/FrFhRpxpXAgaLLyj8tCFts
+         bD0dCI3M7awx1Dw3Xd5n++TwLVRwRPJjL0yRF5EqBCC2rfDUaDUFT5QPS6wdu1X9AElw
+         eZiChwRqAxcn5WC2lwQIj0xKdvsc37kMOU9E6xYOKoH5ZYLYMB7cQGKvvPMXfsXk0Zgy
+         kcKl/ueZcPno9JIbmZOWPpEt2+p9M1EcN9H2dtt3+tgSwT5G66mvFq1hro50KbWhump8
+         gGEQ==
+X-Gm-Message-State: AOAM531gO77GiihjEI5DI6UouQ9pH5EvvaMucaHe4QkC9PGcjptBV458
+        PfryB0uqNTTZmQ/dQK7+2lKIYA==
+X-Google-Smtp-Source: ABdhPJyzRCXz0E1tVEFkhBN9u8PRqrJEetO7mQx9rC4ivB78aX3cmT8tnDASVx4G5hhRnji9Dt0rBg==
+X-Received: by 2002:a92:48ce:: with SMTP id j75mr2055154ilg.160.1611610194258;
+        Mon, 25 Jan 2021 13:29:54 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id o18sm11136241ioa.39.2021.01.25.13.29.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 13:29:53 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 2/6] net: ipa: minor update to handling of packet with status
+Date:   Mon, 25 Jan 2021 15:29:43 -0600
+Message-Id: <20210125212947.17097-3-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210125212947.17097-1-elder@linaro.org>
+References: <20210125212947.17097-1-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <1611608188-25621-2-git-send-email-richard.gong@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rearrange some comments and assignments made when handling a packet
+that is received with status, aiming to improve understandability.
 
-On 1/25/21 12:56 PM, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
->
-> Add COMMAND_AUTHENTICATE_BITSTREAM command flag for new added bitstream
-> authentication feature. Authenticating a bitstream is to make sure a signed
-> bitstream has the valid signatures.
->
-> Except for the actual configuration of the device, the bitstream
-> authentication works the same way as FPGA configuration does. If the
-> authentication passes, the signed bitstream will be programmed into QSPI
-> flash memory and will be expected to boot without issues.
->
-> Clean up COMMAND_RECONFIG_FLAG_PARTIAL flag by resetting it to 0, which
-> aligns with the firmware settings.
->
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> ---
-> v3: no change
-> v2: new added
-> ---
->  include/linux/firmware/intel/stratix10-svc-client.h | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-> index ebc2956..7ada1f2 100644
-> --- a/include/linux/firmware/intel/stratix10-svc-client.h
-> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
-> @@ -51,12 +51,17 @@
->  #define SVC_STATUS_NO_SUPPORT		6
->  
->  /*
+Use DIV_ROUND_CLOSEST() to get a better per-packet true size estimate.
 
-This patch fails to apply, i believe the conflict is because in mainline this is '/**' not '/*'
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_endpoint.c | 30 +++++++++++++++++-------------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
 
-Please check or point me at the branch/tag you are using.
-
-I am using char-misc-next.
-
-Tom
-
-Tom
+diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
+index 39ae0dd4e0471..c5524215054c8 100644
+--- a/drivers/net/ipa/ipa_endpoint.c
++++ b/drivers/net/ipa/ipa_endpoint.c
+@@ -1213,12 +1213,11 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
+ 			continue;
+ 		}
+ 
+-		/* Compute the amount of buffer space consumed by the
+-		 * packet, including the status element.  If the hardware
+-		 * is configured to pad packet data to an aligned boundary,
+-		 * account for that.  And if checksum offload is is enabled
+-		 * a trailer containing computed checksum information will
+-		 * be appended.
++		/* Compute the amount of buffer space consumed by the packet,
++		 * including the status element.  If the hardware is configured
++		 * to pad packet data to an aligned boundary, account for that.
++		 * And if checksum offload is enabled a trailer containing
++		 * computed checksum information will be appended.
+ 		 */
+ 		align = endpoint->data->rx.pad_align ? : 1;
+ 		len = le16_to_cpu(status->pkt_len);
+@@ -1226,16 +1225,21 @@ static void ipa_endpoint_status_parse(struct ipa_endpoint *endpoint,
+ 		if (endpoint->data->checksum)
+ 			len += sizeof(struct rmnet_map_dl_csum_trailer);
+ 
+-		/* Charge the new packet with a proportional fraction of
+-		 * the unused space in the original receive buffer.
+-		 * XXX Charge a proportion of the *whole* receive buffer?
+-		 */
+ 		if (!ipa_status_drop_packet(status)) {
+-			u32 extra = unused * len / total_len;
+-			void *data2 = data + sizeof(*status);
+-			u32 len2 = le16_to_cpu(status->pkt_len);
++			void *data2;
++			u32 extra;
++			u32 len2;
+ 
+ 			/* Client receives only packet data (no status) */
++			data2 = data + sizeof(*status);
++			len2 = le16_to_cpu(status->pkt_len);
++
++			/* Have the true size reflect the extra unused space in
++			 * the original receive buffer.  Distribute the "cost"
++			 * proportionately across all aggregated packets in the
++			 * buffer.
++			 */
++			extra = DIV_ROUND_CLOSEST(unused * len, total_len);
+ 			ipa_endpoint_skb_copy(endpoint, data2, len2, extra);
+ 		}
+ 
+-- 
+2.20.1
 
