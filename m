@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E93E3038DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E693038DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390311AbhAZJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
+        id S2390416AbhAZJUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:20:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730610AbhAYSsA (ORCPT
+        with ESMTP id S1730624AbhAYSsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:48:00 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFB7C0613D6;
-        Mon, 25 Jan 2021 10:47:19 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id g1so16761332edu.4;
-        Mon, 25 Jan 2021 10:47:19 -0800 (PST)
+        Mon, 25 Jan 2021 13:48:18 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C690AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:47:33 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id j12so135308pjy.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:47:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nDehBXC5CPnwPawQZMlRv9xTC6ikQPcXUSWi8mtNNCM=;
-        b=bFCjrLXgHhYQFWM05dJfAnHtfh9k/ZIWNa+ZXxtNtEcHRgf2YRrSHPidxK2p3hzpjK
-         jPgGX/IhNMA4EG1zXRnXlC644Ah2yojB3EZrVisNuCyjrel4cSWWLUw8WQ6PfhIXE+RY
-         wm+T0/u/d3kA2jT9taZ2oq1HDMmBEgwmPvgSbxs7+UHz6TrX5xZzhUExGS4rSB2JlYIe
-         3YT/1PpKMeuLi7uoWoYE2ofK2w1Ebo/QxKsfjZ8hrYtTrFhnDvZZg2DBEjAJlcPUCAz8
-         taLFzpa3PD3RiXa9jOdjEU1SzXFmI2IEHqkjvq6W53zQs+00uyF5mwIox2pza2EyJs3Q
-         iwBA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=ETq2ktZkANjUC7Me/RyH9n1tJakbH50bRmVCx0xOmwg=;
+        b=OwEBYQmaBsKbc7iDfMlqm2AWtZvRyFNZfh0RZHpJvnSTDzlpuc8InF121vKQkdAM9I
+         o48u7t/O1pHkbeuCyGvD7PBJxbfgQ1ZpGAs1P93++HXiembtNowP79kdpPL71MazE2Js
+         MOjKH7BVJPSFVTSk2iMDaDNbJ66ZVC/Oyudj3q0Ek98fFGw/iu9n0JPoBDNWgkY6JayK
+         ptMBDCpsyrA7UZQzBm4vtKw6TLFOGYqAjPF1awu+O3RoDAwgGvyeZMIY1Km951sUFv19
+         kr02qfCVRCvnVUjfbxLlg0eG0NaOULqteXBvwUnwOULESMD4hbmUWrAGjdwvS8W2jeE7
+         +Rfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nDehBXC5CPnwPawQZMlRv9xTC6ikQPcXUSWi8mtNNCM=;
-        b=FX1MiI4QpIX8UOqEsYUeJK09F1QrCQmSQz28jaZk1jVhvkc+z2+bRYOsoc67fq9Amg
-         W46dNjKQDa/Mfz2uZtq04xPtfuPn+Y+z6s13c5delRlvVcFwHxnDo6yxvZTRXYYJUrHn
-         hejx+QpXxmwL8SdA/JdJN0ZEZH4+v7gHcIMPmmn7Vrj/3ZBoJRc2RCPexH0wrkKkx8+a
-         vKMI74L8loUxW+YTKnBy14ZDn49gBbXfoWhX0TokYxR0IGoMMmapMXwhDZA6AeVzUDPv
-         cJSW/D+nYC6WA4S9qIWTf4ot8AKzzjph3maOtEJ33d69gJIZ0GcL1QvDfwE+KSs6Prui
-         3AUw==
-X-Gm-Message-State: AOAM532SbhMA7MQoDKe6vW578nMtqTr00qHEMm4bghEMzpN8f+VtRoXK
-        qZgm1Z+eyRjcffImGHqr2MMmXWctlCw=
-X-Google-Smtp-Source: ABdhPJy3nYjnWIw/wvYkqBmyMQLIZ/bguKH8rV+PJA7vyKO58ToviMoMPnwQCxTouI22RmDwtQ60TA==
-X-Received: by 2002:a05:6402:1152:: with SMTP id g18mr1698932edw.18.1611600438569;
-        Mon, 25 Jan 2021 10:47:18 -0800 (PST)
-Received: from BV030612LT ([188.24.159.61])
-        by smtp.gmail.com with ESMTPSA id x2sm9652071eds.51.2021.01.25.10.47.16
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=ETq2ktZkANjUC7Me/RyH9n1tJakbH50bRmVCx0xOmwg=;
+        b=Nu3h9Hat4Z9xE2b6VoqoVB2IB1/LKR+CyY/k/Hr9IiHKeFrb8bMichJz1myqxihMip
+         ueZUN8BM5JdphoCqWpXWNu4Ifr+V8HiA7nZyhY1hHA1CJBOEej2P7b2xupHU/LBy7pmR
+         5EujNjCcdUo5CurlG05+QoaCYe1P7j/WLoeUOA2WvTADKo2p8KkYxNfR0buogpZ+NmJR
+         XZ+/4SJ/0ohBJjR1FZRG3oiLSr3R/c8imoXZi7TXSCQBqdvFebxnJWmQBeevM5zmloX9
+         fFvOdRhcOZ3Hh4riiWmDkdfAkfFJcf++V2OkQOVA9hoLcs+lF1+O+ncDrR3YE2jCijiu
+         bDkw==
+X-Gm-Message-State: AOAM532qNPGRaaw3IySdJ+YOS5vNq7Ym4Ex8tchGbgbncaenK42CN6Az
+        hWpmdXdIrbFXK9TYetVDk9VRNw==
+X-Google-Smtp-Source: ABdhPJwcJvhoNQhB4A5BKUQVkatkkHcE3W30AKdVI3lYpo5ilXK0mRFQaoESZtN23pj62Dq7kfxK8w==
+X-Received: by 2002:a17:90a:a394:: with SMTP id x20mr1593054pjp.24.1611600453220;
+        Mon, 25 Jan 2021 10:47:33 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id z16sm17086131pgj.51.2021.01.25.10.47.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:47:17 -0800 (PST)
-Date:   Mon, 25 Jan 2021 20:47:15 +0200
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v6 3/7] mfd: Add MFD driver for ATC260x PMICs
-Message-ID: <20210125184715.GA1061394@BV030612LT>
-References: <cover.1611165200.git.cristian.ciocaltea@gmail.com>
- <4bc76f9e3dc7204d7f407af6ee61c9f193a789d3.1611165200.git.cristian.ciocaltea@gmail.com>
- <20210125142558.GA4903@dell>
+        Mon, 25 Jan 2021 10:47:32 -0800 (PST)
+Date:   Mon, 25 Jan 2021 10:47:31 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3_=E7=9B=B4=E4=B9=9F=29?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v13 02/12] mm: hugetlb: introduce a new
+ config HUGETLB_PAGE_FREE_VMEMMAP
+In-Reply-To: <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com>
+Message-ID: <2d9bfd8d-a77f-6470-807c-1a71ffeac3ff@google.com>
+References: <20210117151053.24600-1-songmuchun@bytedance.com> <20210117151053.24600-3-songmuchun@bytedance.com> <472a58b9-12cb-3c3-d132-13dbae5174f0@google.com> <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com> <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org>
+ <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210125142558.GA4903@dell>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Mon, 25 Jan 2021, Muchun Song wrote:
 
-On Mon, Jan 25, 2021 at 02:25:58PM +0000, Lee Jones wrote:
-> On Wed, 20 Jan 2021, Cristian Ciocaltea wrote:
+> > >> I'm not sure I understand the rationale for providing this help text if
+> > >> this is def_bool depending on CONFIG_HUGETLB_PAGE.  Are you intending that
+> > >> this is actually configurable and we want to provide guidance to the admin
+> > >> on when to disable it (which it currently doesn't)?  If not, why have the
+> > >> help text?
+> > >
+> > > This is __not__ configurable. Seems like a comment to help others
+> > > understand this option. Like Randy said.
+> >
+> > Yes, it could be written with '#' (or "comment") comment syntax instead of as help text.
 > 
-> > Add initial support for the Actions Semi ATC260x PMICs which integrates
-> > Audio Codec, Power management, Clock generation and GPIO controller
-> > blocks.
-> > 
-> > For the moment this driver only supports Regulator, Poweroff and Onkey
-> > functionalities for the ATC2603C and ATC2609A chip variants.
- 
-[...]
-
-> > +static void regmap_lock_mutex(void *__mutex)
-> > +{
-> > +	struct mutex *mutex = __mutex;
-> > +
-> > +	/*
-> > +	 * Using regmap within an atomic context (e.g. accessing a PMIC when
-> > +	 * powering system down) is normally allowed only if the regmap type
-> > +	 * is MMIO and the regcache type is either REGCACHE_NONE or
-> > +	 * REGCACHE_FLAT. For slow buses like I2C and SPI, the regmap is
-> > +	 * internally protected by a mutex which is acquired non-atomically.
-> > +	 *
-> > +	 * Let's improve this by using a customized locking scheme inspired
-> > +	 * from I2C atomic transfer. See i2c_in_atomic_xfer_mode() for a
-> > +	 * starting point.
-> > +	 */
-> > +	if (system_state > SYSTEM_RUNNING && irqs_disabled())
-> > +		mutex_trylock(mutex);
-> > +	else
-> > +		mutex_lock(mutex);
-> > +}
+> Got it. I will update in the next version. Thanks.
 > 
-> Would this be useful to anyone else?
 
-If you refer to the locking scheme, it is currently required by the
-power-off driver to handle atomic contexts.
-
-> For my own reference (apply this as-is to your sign-off block):
-
-Please note the patches "[4/7] regulator: ..." and "[5/7] power: ..."
-have been already picked up by Mark and Sebastian, respectively, while
-Dmitry suggested to merge "[6/7] input: ..." through MFD.
-
->   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> 
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-
-Thanks,
-Cristi
+I'm not sure that Kconfig is the right place to document functional 
+behavior of the kernel, especially for non-configurable options.  Seems 
+like this is already served by existing comments added by this patch 
+series in the files where the description is helpful.
