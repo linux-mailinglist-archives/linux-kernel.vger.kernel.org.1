@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C941D303262
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E4930325E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbhAYNDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:03:00 -0500
-Received: from mga04.intel.com ([192.55.52.120]:5384 "EHLO mga04.intel.com"
+        id S1728636AbhAYNMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:12:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728489AbhAYMyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:54:16 -0500
-IronPort-SDR: EzCSf1UTVaoAg66S8X5xdI4mPotAfAT+XruT49cMsrZo9qGiB2GWPaKPqA/fdssAAJyDd4JXSI
- jqTyOzXASRQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="177147235"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="177147235"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 04:53:33 -0800
-IronPort-SDR: tWqBdNMhV3hcViy9JOaGmcT+5DWyuLq+FZG/MIYJlpqeviRwZ4SeY/JqdPCEH9QophG81Wz/RK
- 16TbnkbIEhyg==
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="387359615"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.168.247]) ([10.249.168.247])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 04:53:29 -0800
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Andi Kleen <andi@firstfloor.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <YACXQwBPI8OFV1T+@google.com>
- <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
- <YAHXlWmeR9p6JZm2@google.com>
- <20210115182700.byczztx3vjhsq3p3@two.firstfloor.org>
- <YAHkOiQsxMfOMYvp@google.com>
- <YAqhPPkexq+dQ5KD@hirez.programming.kicks-ass.net>
- <eb30d86f-6492-d6e3-3a24-f58c724f68fd@linux.intel.com>
- <YA6nxuM5Stlolk5x@hirez.programming.kicks-ass.net>
- <076a5c7b-de2e-daf9-e6c0-5a42fb38aaa3@intel.com>
- <YA62/DV7reRvVyYk@hirez.programming.kicks-ass.net>
-From:   "Xu, Like" <like.xu@intel.com>
-Message-ID: <e78cee6c-5d05-753e-1265-0b0e06c201a7@intel.com>
-Date:   Mon, 25 Jan 2021 20:53:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1728561AbhAYNEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:04:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2270122525;
+        Mon, 25 Jan 2021 13:03:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611579803;
+        bh=uFf5gx7Zdz1puW9C8td0+AgyP27di2Lipd6E/uIVRTY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M9UPGDsdpRQdi6KUpICA5lyhneCmtK/JJbLSWC0hKKN/YE4cgj/hGCMuUyIpqq80O
+         ohRg+SOZMlX9n30Xz0xsygNVlnlcX4olxF5AcTD5iNQbycYYcdYCR/byWFn4gbf6Va
+         KTxsDpY0p2gFoMMkxLagCHjknxUiXg4L44HyUT7CQgag+rgn/bDUUTS2pOrN806CWL
+         GZvBPi1iVizdxDZX5RYeFvnk+BsW+me5KINnynvYdNKMKa3xMlMe79QU4VaPCcL3Ve
+         Wo5C9awTjjfEUeoQUW+xxlisxXk2F6rjRn6IAfZfvMkkDz3+Rcp1WobICFK39MC57+
+         fT1VAOGkBGONg==
+Date:   Mon, 25 Jan 2021 13:02:41 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     corentin noel <corentin.noel56@gmail.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: spi-au1550: pr_err instead of printk
+Message-ID: <20210125130241.GA12316@sirena.org.uk>
+References: <20210123030344.15999-1-corentin.noel56@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YA62/DV7reRvVyYk@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Content-Disposition: inline
+In-Reply-To: <20210123030344.15999-1-corentin.noel56@gmail.com>
+X-Cookie: byob, v:
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/25 20:18, Peter Zijlstra wrote:
-> On Mon, Jan 25, 2021 at 08:07:06PM +0800, Xu, Like wrote:
->
->> So under the premise that counter cross-mapping is allowed,
->> how can hypercall help fix it ?
-> Hypercall or otherwise exposing the mapping, will let the guest fix it
-> up when it already touches the data. Which avoids the host from having
-> to access the guest memory and is faster, no?
-- as you may know, the mapping table is changing rapidly from
-the time records to be rewritten to the time records to be read;
 
-- the patches will modify the records before it is notified via PMI
-which means it's transparent to normal guests (including Windows);
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- a malicious guest would ignore the exposed mapping and the
-hypercall and I don't think it can solve the leakage issue at all;
+On Sat, Jan 23, 2021 at 04:03:44AM +0100, corentin noel wrote:
+> Signed-off-by: corentin noel <corentin.noel56@gmail.com>
 
-- make the guest aware of that hypercall or mapping requires more code changes
-in the guest side; but now we can make it on the KVM side and we also know that
-cross-mapping case rarely happens, and the overhead is acceptable based on 
-our tests;
+This doesn't apply against current code, please check and resend.  It
+should apply against my tree which already has your previous patches
+including the one which=20
 
-Please let me know if you or Sean are not going to
-buy in the PEBS records rewrite proposal in the patch 13 - 17.
+>  		if (!ddma_memid)
+> -			printk(KERN_ERR "au1550-spi: cannot add memory"
+> -					"dbdma device\n");
+> +			pr_err("au1550-spi: cannot add memory dbdma device\n");
 
----
-thx,likexu
+merged this onto a single line.
+
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAOwXEACgkQJNaLcl1U
+h9CJiggAhRlEWiOOBrU34fOLxbYlZsTPMLAfBcPSDJ79XNeZurmkj0+2cceEmvbd
+603O1RA9/sqivsxJir5VtPNk3q2iHhVhy0L2WE6UQbqwGPn2JO3z7SE+4wt1GhLT
+z/qO2KyfNqm3iIQ54laI69oyrF6QbxfIucl+cIw3ALuOA25D1W54/AV8GBDIqfl4
+hQLGLsw0ehFWvVq2WdNwEY594AESU9X4Pfe1mBaRnnzn6lVh3Jom9B9N5ICJHqLp
+03bxc7XOQ8vobDmzrm926I1uKUM+zUeVCecr7DGV+1stjVQFXnkHiHVbFck+862z
+YIpu9u7TgZpKEWDag6Ae4sSHgTvzrg==
+=qaqC
+-----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
