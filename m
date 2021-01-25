@@ -2,65 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799B8304A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654523049FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731518AbhAZFRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:17:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727021AbhAYJq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:46:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE6D922D57;
-        Mon, 25 Jan 2021 09:44:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611567880;
-        bh=u6boge7fxbWaIkvX2C8PHSGb3b9pegYZfrTBtvLYU1s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K0nfHg8qMuF2HQM7LNCOmVD0+W2bhl+oEPxwXcvm6WPe1/sqgwCPfl7qbGi44q++W
-         CKRkYPTHQP5vaYBx3pXehhmYv7hNXwF/wbKDn0Vr12J3ZMoMrWYKMPmLFTa2jbUFbV
-         wEG/sQ9YOa0Uu2Z2MEx1Rxxb41YrlM1OwBwmf2V4wSpHSA395SDOTV948bn6crOC1P
-         woOqPaiRhB6Oz70DZ2BIfAuuRLC2WHAN2inq/gFKuWbyfOEDDZaeQxucB5UUbfzwU2
-         8bP+RqdyPs0PA3YXZmz8/18qP8/0T0rsOU0Yy2QTMFYOqLgDfPEwQci4wKXCXkdiXA
-         jj5XhWvD2WMNg==
-Received: by mail-ot1-f42.google.com with SMTP id h14so12164756otr.4;
-        Mon, 25 Jan 2021 01:44:39 -0800 (PST)
-X-Gm-Message-State: AOAM531MfIoGrxqg6gheix6Gp9h4kyi5Kiw68sPjb8zFhp8yfwpfAb7l
-        rtZNVJZwWVkzb9Ua9cIsQZWQTPzfzhVkn8dYnkg=
-X-Google-Smtp-Source: ABdhPJx5bK63LxQdSz83vvgGvjc6te6I6zTut9vNIMSPOcLt0olx7YgMNrNj2+6Kv3w4X2taztS/GS3pOQU3GhUs5II=
-X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr124882otc.251.1611567878981;
- Mon, 25 Jan 2021 01:44:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125091256.302fd411@canb.auug.org.au>
-In-Reply-To: <20210125091256.302fd411@canb.auug.org.au>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 25 Jan 2021 10:44:23 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0QSicc8kQbdCnBUxcCfYDxe6rTLuijstOqpiTkwf3cSw@mail.gmail.com>
-Message-ID: <CAK8P3a0QSicc8kQbdCnBUxcCfYDxe6rTLuijstOqpiTkwf3cSw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the risc-v tree with the arm-soc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731839AbhAZFTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727182AbhAYJrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:47:47 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE5EC06174A;
+        Mon, 25 Jan 2021 01:47:27 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id u14so10121459wmq.4;
+        Mon, 25 Jan 2021 01:47:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=B+TvUBR4F7qwpXaxM7BOb6i7WPhpcifu1ieFC/m280w=;
+        b=NpAlLEnnFQO/egJf0teABmtLY0tYXbVxOCE0f2ARR7GrOvA0y3ldkHMrFIorWa4hjY
+         QL5TC82p4VDJzXWiw0MS6V2KsLUM/y8YpgisO12rmokoVqfFEsIXjQuqnbboGDyf5OoP
+         b3Qc3BuWvP3RoWqdHQrBytVfPntkdOUWnzw98x6oKgl6K3va6I/Uawj4ShS2cp7qXghl
+         OEB7xkgzdDJq9q5ZUpE30AcD04xwik7tkLcqBO0qYFdVtQPN6mpBJuFfkgMlmO/J1JM5
+         uMTBcVUBANxrIYE2SiPJ+wrw28BF0RAMz2ZkHAvM6MA2n6GItbpk1Z5xFFIXTkU/lHaY
+         mqWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=B+TvUBR4F7qwpXaxM7BOb6i7WPhpcifu1ieFC/m280w=;
+        b=L3ZUZIum1McsTZlp1JmB4Ozu8s/2fBAbv0p1rfvAiLnRZ5LBJLyZpq7ye2v6e2c4We
+         1vnyA8IOkesyK0YuRJuPJpV8HOMLzpVZu0XO7RJVm3e7MwE2XBjXWandEyspLTHX7UPl
+         Fstks/kIosmjIlVyUdWRvYKLlE2B8W8+6nponXg6QAT4f6qf1Dae/DlzhU8KL6Qwtho3
+         AkpL+RhmSSaq0oKMLcnVtsoPBh/VswxoPu4YAEjR7dqzLhZvqgC5AHuUoLph7hdxSFpY
+         lgTwq0L0FaodGK0h+ZOfOJ0pZMdgM/NjYJ64MV7Ll9UEdijBLYqf4/FdVmO64DaWCiYh
+         hPlQ==
+X-Gm-Message-State: AOAM531MnkKlA8MbVumRFqL4xBUT1FDfg35JyLv8XGhUHnZK5/HUB+ON
+        B9/KtOnFfQ4fgux77haAjcq28USOIwY=
+X-Google-Smtp-Source: ABdhPJxwOgzRO2LRzg4hgbYCV3I3MTgNqxlNi5sJ3TNssmvgKKgFfqvu54+tu53gd10WGUEjbQTd9Q==
+X-Received: by 2002:a1c:e043:: with SMTP id x64mr696120wmg.48.1611568046155;
+        Mon, 25 Jan 2021 01:47:26 -0800 (PST)
+Received: from jonathan-N53SV.station ([151.81.101.204])
+        by smtp.googlemail.com with ESMTPSA id u5sm22154052wmg.9.2021.01.25.01.47.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 01:47:25 -0800 (PST)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
+        phone-devel@vger.kernel.org,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 2/3] arm64: dts: qcom: msm8916: Add blsp_i2c3
+Date:   Mon, 25 Jan 2021 10:44:31 +0100
+Message-Id: <20210125094435.7528-3-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
+References: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 11:14 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+MSM8916 has another I2C QUP controller that can be enabled on
+GPIO 10 and 11.
 
-Looks good, thanks!
+Add blsp_i2c3 to msm8916.dtsi and disable it by default.
 
-      Arnd
+Reviewed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/msm8916-pins.dtsi | 16 ++++++++++++++++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi      | 15 +++++++++++++++
+ 2 files changed, 31 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
+index 4dc437f13fa5..7dedb91b9930 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
+@@ -220,6 +220,22 @@
+ 		bias-disable;
+ 	};
+ 
++	i2c3_default: i2c3-default {
++		pins = "gpio10", "gpio11";
++		function = "blsp_i2c3";
++
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	i2c3_sleep: i2c3-sleep {
++		pins = "gpio10", "gpio11";
++		function = "gpio";
++
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	i2c4_default: i2c4-default {
+ 		pins = "gpio14", "gpio15";
+ 		function = "blsp_i2c4";
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 402e891a84ab..1045d7e518f3 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -1528,6 +1528,21 @@
+ 			status = "disabled";
+ 		};
+ 
++		blsp_i2c3: i2c@78b7000 {
++			compatible = "qcom,i2c-qup-v2.2.1";
++			reg = <0x078b7000 0x500>;
++			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&gcc GCC_BLSP1_AHB_CLK>,
++				 <&gcc GCC_BLSP1_QUP3_I2C_APPS_CLK>;
++			clock-names = "iface", "core";
++			pinctrl-names = "default", "sleep";
++			pinctrl-0 = <&i2c3_default>;
++			pinctrl-1 = <&i2c3_sleep>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
+ 		blsp_spi3: spi@78b7000 {
+ 			compatible = "qcom,spi-qup-v2.2.1";
+ 			reg = <0x078b7000 0x500>;
+-- 
+2.17.1
+
