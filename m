@@ -2,193 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A113028AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541663028BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730968AbhAYRU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:20:27 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47724 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730939AbhAYRT4 (ORCPT
+        id S1730684AbhAYRW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:22:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730980AbhAYRWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:19:56 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10PHHpPD006876;
-        Mon, 25 Jan 2021 18:19:12 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=RyqhFivtd4rFZG+7AJ8QF845UIBd+GmRh8eyFKGG/cY=;
- b=DcskUFtVPsGYZHR0oigOKd+hby6prfRTocXipg4DtgDmTNHUTJuVwaazTp3Y323qWsbA
- 678VwkXcpLDi2U+XSI+WrHrN2X69pUcUmNIOcw10MRinaPzZo7Mn1nHy3ESQdDecD6DW
- 1TG1nszo5LtaU4fz/XYcFgN/HhiVwq3GxIbR8Tzww2IR3I4SjrWET4TrbukeG6kOEMQi
- t2FjlQsNLZvMV8c7HO8MpUjBNP8tqAODU8gzvRlgK9Qkw1B03buTPCTAeREFV8ScO8/Z
- ciPdgjb0wRP8nF6Ba3qloEwPkhRriEn6JmWJ34/kRisRUbfCFwuHJs6VoCjwCU8SQZtU Mw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 368bjn45hm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 18:19:12 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BCD7010002A;
-        Mon, 25 Jan 2021 18:19:11 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A7CA522740E;
-        Mon, 25 Jan 2021 18:19:11 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
- 2021 18:19:11 +0100
-Subject: Re: [Linux-stm32] [PATCH] rpmsg: char: return an error if device
- already open
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210106133714.9984-1-arnaud.pouliquen@foss.st.com>
- <20210114190543.GB255481@xps15> <6de9ff8f-0be1-387a-df7e-7d77dd859513@st.com>
- <YA7kNj0/lbUhqJBd@builder.lan>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <bd33a7de-5a02-406a-c8e3-e00749adce8e@foss.st.com>
-Date:   Mon, 25 Jan 2021 18:19:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 25 Jan 2021 12:22:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611595250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fLkc6jBByIwZj+y5K87dwsdh1F4jKYYT1Ucr0DYgAHo=;
+        b=jBe0BXwmZBHCNzfkNXdgQOfvaVyC0xcS5od5vsCrK5BBa3zo4X/dxx4iSX7OV2iySqTqGr
+        +sVSDQNG37U8blBPDsV/pgHbf3zm1OYjtyPsCIPa7mQYvKONSZEGv/yRdpJx0c+hPec3mM
+        u7BVLGGd27GfDeinFf0COqjZfjw0DNQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-BsjjSMAxOdS1oRXxbwGosw-1; Mon, 25 Jan 2021 12:20:46 -0500
+X-MC-Unique: BsjjSMAxOdS1oRXxbwGosw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B643559;
+        Mon, 25 Jan 2021 17:20:45 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 663E55D9DB;
+        Mon, 25 Jan 2021 17:20:45 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH] KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX
+Date:   Mon, 25 Jan 2021 12:20:44 -0500
+Message-Id: <20210125172044.1360661-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YA7kNj0/lbUhqJBd@builder.lan>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_07:2021-01-25,2021-01-25 signatures=0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+VMX also uses KVM_REQ_GET_NESTED_STATE_PAGES for the Hyper-V eVMCS,
+which may need to be loaded outside guest mode.  Therefore we cannot
+WARN in that case.
 
-On 1/25/21 4:31 PM, Bjorn Andersson wrote:
-> On Fri 15 Jan 03:13 CST 2021, Arnaud POULIQUEN wrote:
-> 
->> Hi Mathieu,
->>
->>
->> On 1/14/21 8:05 PM, Mathieu Poirier wrote:
->>> On Wed, Jan 06, 2021 at 02:37:14PM +0100, Arnaud Pouliquen wrote:
->>>> The rpmsg_create_ept function is invoked when the device is opened.
->>>> As only one endpoint must be created per device. It is not
->>>> possible to open the same device twice.
->>>> The fix consists in returning -EBUSY when device is already
->>>> opened.
->>>>
->>>> Fixes: c0cdc19f84a4 ("rpmsg: Driver for user space endpoint interface")
->>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>>> ---
->>>>  drivers/rpmsg/rpmsg_char.c | 3 +++
->>>>  1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->>>> index 4bbbacdbf3bb..360a1ab0a9c4 100644
->>>> --- a/drivers/rpmsg/rpmsg_char.c
->>>> +++ b/drivers/rpmsg/rpmsg_char.c
->>>> @@ -127,6 +127,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->>>>  	struct rpmsg_device *rpdev = eptdev->rpdev;
->>>>  	struct device *dev = &eptdev->dev;
->>>>  
->>>> +	if (eptdev->ept)
->>>> +		return -EBUSY;
->>>> +
->>>
->>> I rarely had to work so hard to review a 2 line patch...
->>
->> That means that my commit description was not enough explicit...
->>
->>>
->>> As far as I can tell the actual code is doing the right thing.  If user space is
->>> trying to open the same eptdev more than once function rpmsg_create_ept() should
->>> complain and the operation denied, wich is what the current code is doing.  
->>>
->>> There is currently two customers for this API - SMD and GLINK.  The SMD code is
->>> quite clear that if the channel is already open, the operation will be
->>> denied [1].  The GLINK code isn't as clear but the fact that it returns NULL on
->>> error conditions [2] is a good indication that things are working the same way.
->>>
->>> What kind of use case are you looking to address?  Is there any way you can use
->>> rpdev->ops->create_ept() as it is currently done?
->>
->> This patch was part of the IOCTL rpmsg series. I sent it separately at Bjorn's
->> request [1].
->>
-> 
-> I apparently didn't spend as much effort as Mathieu thinking about the
-> details. I do believe that he's right, at least both GLINK and SMD
-> _should_ return -EBUSY if we try to open an already open channel -
-> either because the kernel has bound a driver to the channel or because
-> rpmsg_char already has it opened.
-> 
->> I detect the issue using the RPMSG_ADDR_ANY for the source address when tested
->> it with the rpmsf_virtio bus. In this case at each sys open of the device, a new
->> endpoint is created because a new source address is allocated.
->>
-> 
-> In SMD and GLINK channels are identified solely by their name and hence
-> it's not possible to have duplicates. As this isn't the case for virtio
-> I didn't have any objections to it and that's why I asked you to resend
-> it separately.
-> 
-> But in line with GLINK/SMD, what would the expected behavior be if I
-> with the virtio backend open a rpmsg_char which is already bound to a
-> kernel driver?
+However, that part of nested_get_vmcs12_pages is _not_ needed at
+vmentry time.  Split it out of KVM_REQ_GET_NESTED_STATE_PAGES handling,
+so that both vmentry and migration (and in the latter case, independent
+of is_guest_mode) do the parts that are needed.
 
-I guess that user applications should expect same behavior, regardless of the
-backend. So this patch would ensure the check at RPMsg service level.
+Cc: <stable@vger.kernel.org> # 5.10.x: f2c7ef3ba: KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES
+Cc: <stable@vger.kernel.org> # 5.10.x
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/nested.c |  3 +++
+ arch/x86/kvm/vmx/nested.c | 32 ++++++++++++++++++++++++++------
+ arch/x86/kvm/x86.c        |  4 +---
+ 3 files changed, 30 insertions(+), 9 deletions(-)
 
-> 
-> Do you think we should get another "channel" or do you think the virtio
-> driver should detect this and return -EBUSY? (I.e. render this patch
-> unnecessary)
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index cb4c6ee10029..7a605ad8254d 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -200,6 +200,9 @@ static bool svm_get_nested_state_pages(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 
++	if (WARN_ON(!is_guest_mode(vcpu)))
++		return true;
++
+ 	if (!nested_svm_vmrun_msrpm(svm)) {
+ 		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+ 		vcpu->run->internal.suberror =
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 0fbb46990dfc..20ab40a2ac34 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -3124,13 +3124,9 @@ static int nested_vmx_check_vmentry_hw(struct kvm_vcpu *vcpu)
+ 	return 0;
+ }
+ 
+-static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
++static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+ {
+-	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+-	struct kvm_host_map *map;
+-	struct page *page;
+-	u64 hpa;
+ 
+ 	/*
+ 	 * hv_evmcs may end up being not mapped after migration (when
+@@ -3152,6 +3148,19 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+ 			return false;
+ 		}
+ 	}
++	return true;
++}
++
++static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
++{
++	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
++	struct vcpu_vmx *vmx = to_vmx(vcpu);
++	struct kvm_host_map *map;
++	struct page *page;
++	u64 hpa;
++
++	if (!nested_get_evmcs_page(vcpu))
++		return false;
+ 
+ 	if (nested_cpu_has2(vmcs12, SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES)) {
+ 		/*
+@@ -3224,6 +3233,17 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+ 	return true;
+ }
+ 
++static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
++{
++	if (!nested_get_evmcs_page(vcpu))
++		return false;
++
++	if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
++		return false;
++
++	return true;
++}
++
+ static int nested_vmx_write_pml_buffer(struct kvm_vcpu *vcpu, gpa_t gpa)
+ {
+ 	struct vmcs12 *vmcs12;
+@@ -6602,7 +6622,7 @@ struct kvm_x86_nested_ops vmx_nested_ops = {
+ 	.hv_timer_pending = nested_vmx_preemption_timer_pending,
+ 	.get_state = vmx_get_nested_state,
+ 	.set_state = vmx_set_nested_state,
+-	.get_nested_state_pages = nested_get_vmcs12_pages,
++	.get_nested_state_pages = vmx_get_nested_state_pages,
+ 	.write_log_dirty = nested_vmx_write_pml_buffer,
+ 	.enable_evmcs = nested_enable_evmcs,
+ 	.get_evmcs_version = nested_get_evmcs_version,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9a8969a6dd06..b910aa74ee05 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8802,9 +8802,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 
+ 	if (kvm_request_pending(vcpu)) {
+ 		if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
+-			if (WARN_ON_ONCE(!is_guest_mode(vcpu)))
+-				;
+-			else if (unlikely(!kvm_x86_ops.nested_ops->get_nested_state_pages(vcpu))) {
++			if (unlikely(!kvm_x86_ops.nested_ops->get_nested_state_pages(vcpu))) {
+ 				r = 0;
+ 				goto out;
+ 			}
+-- 
+2.26.2
 
-Regarding virtio implementation we could create a new channel only if either the
-channel name, either the local address or the remote address is different.
-So a channel would be created only if one address is set to RPMSG_ADDR_ANY.
-But could be a nightmare to handle it, in case of multi open/close.
-
-In my opinion the channel should be created only on /dev/rpmsgX creation.
-
-That said, if this patch generates too much discussion. we can also leave it on
-hold until figure out how to adapt the RPMsg char for the virtio backend.
-
-Thanks,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> [1]https://patchwork.kernel.org/project/linux-remoteproc/patch/20201222105726.16906-11-arnaud.pouliquen@foss.st.com/
->>
->> Thanks,
->> Arnaud
->>
->>>
->>> Thanks,
->>> Mathieu
->>>
->>> [1]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/rpmsg/qcom_smd.c#L920
->>> [2]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/rpmsg/qcom_glink_native.c#L1149
->>>
->>>>  	get_device(dev);
->>>>  
->>>>  	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
->>>> -- 
->>>> 2.17.1
->>>>
->>> _______________________________________________
->>> Linux-stm32 mailing list
->>> Linux-stm32@st-md-mailman.stormreply.com
->>> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
->>>
