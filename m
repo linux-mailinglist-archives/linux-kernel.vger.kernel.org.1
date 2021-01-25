@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85547302118
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:29:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6F130211A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAYE2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 23:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbhAYE2p (ORCPT
+        id S1727003AbhAYE3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 23:29:19 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15604 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726571AbhAYE3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 23:28:45 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B32DC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 20:28:05 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id e9so383587pjj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 20:28:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6dXiISuywEBuazI4xj4yFxY1nkp6ZflUiyorvnDifvs=;
-        b=Pq81h34KvrPTQiyWomze+Gw0KOD9of/oGveHh8B5C5f5Sw4seL+lndqGq/fAjIrD+J
-         05Cx+85/WkzFyXxhTM5yroL3dsKGbDYim/4ymqHmdb7IR3xzTBf3w2oGIBTQFsDm1st3
-         hHEDn3TsvNVeMQ3/2qwteLe7YDeG/gE+x/cn6aO3UAHsIa7MF1h9DPFeoaf2sCEvujnO
-         6JaptvWLA7TZRWpvpkGFFG4C6yh9Hy5FZUS1NW8LBIQbROK31BVgszsAhQZK9qtmOJzX
-         WqSFtCAH8vAZvmoCr00LoAGUqYUtjbSl418ug6Cav3y2Loqs5rsA09FKY4BJumwuwhQa
-         d0VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6dXiISuywEBuazI4xj4yFxY1nkp6ZflUiyorvnDifvs=;
-        b=YK+fJMrzBcUPQW9C6G+9S9V54snXqfHh7ZOPCDoxI+WjvMmQGf8A3cKsh9I8tSQN/i
-         xDcOKbZxdNaHTx81/U7+5twlP6GllYSlRgTiuVK0wUlxgHdtdiMZiMa+/SaP9ZFpzwte
-         V7NFz+7bxIMhaakwckrKpCiD85CqUbCqZ2ImSezZVrN0pCB7n0q2ql4URM0bvg6R3oP+
-         uHeo1NUOZEsQhmsEZT6P8AIlcQ0Wle6auZE1i4MAIrUSzUu0sacCovlTzOoKIV0N2vHh
-         8vFVL/8T1FJbtH+/pvrN8AsEo2rBH06Hi+mu07TIjjlYDhmvbnLZufR9n2X/cp/UPaoC
-         Nz9g==
-X-Gm-Message-State: AOAM533+mDp7WM65AhiG6mf9cJYfHEvSFkL/UVPHQVofG1MP7SnLrVgo
-        ocXyfrUcfDvxhZ7PXQnZIXgNRg==
-X-Google-Smtp-Source: ABdhPJw/2/1B5rytSzbIS7zdfgAkoF4oaB/9PLp8Tj4sfje42S00tsY6WtySESAMMoXHwKIe7NHOoQ==
-X-Received: by 2002:a17:902:ed88:b029:de:86f9:3e09 with SMTP id e8-20020a170902ed88b02900de86f93e09mr17759813plj.38.1611548885148;
-        Sun, 24 Jan 2021 20:28:05 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id gv22sm16102738pjb.56.2021.01.24.20.28.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Jan 2021 20:28:04 -0800 (PST)
-Subject: Re: [PATCH v3 0/3] blk-mq: Don't complete in IRQ, use llist_head
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-References: <20210123201027.3262800-1-bigeasy@linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4e703284-2f75-6030-f697-aa2d362c3949@kernel.dk>
-Date:   Sun, 24 Jan 2021 21:27:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 24 Jan 2021 23:29:17 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10P3Wm6P122647;
+        Sun, 24 Jan 2021 23:28:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=lBURt//ZdQDVDGPWKPhVijkBdOR/OHduunbYxyLV06E=;
+ b=cufY8Be7QK4XRB2y9ZpGcPUyf2EcqhiZZ1jQBw8YYC7ZJ1J7X/Tutx4jp0PXMqPQJleX
+ Lrl3KyY9tJw+sl6JKHdrhp1aPeM4/uh0JwikAs6achmdRpewMLJEzaJaInVv5ofv96tj
+ ybZDLdz9c3JjALLlZmx1rR7cfInPh+xpVkPbY40ZWx76Few8JAYtvQNV6evR/yl2uKiW
+ jdxKp1Sg3EnjeotLg9KG6LLwccQ0CxeJoCJ8qzNVVIYAP/ylSfy479VyQpWdB9Ji8hXU
+ HQzCQN+/v+Gl9+ApYbiFuRpd1NytDcoQtOgxv6qzHkrMEuRthCZJktzmHBiZlFNKCHt8 Qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 369neu1rn6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Jan 2021 23:28:23 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10P3kYuV169290;
+        Sun, 24 Jan 2021 23:28:23 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 369neu1rmr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 24 Jan 2021 23:28:22 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10P4RG3p009380;
+        Mon, 25 Jan 2021 04:28:20 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 368be89f9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jan 2021 04:28:20 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10P4SIpu46072288
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Jan 2021 04:28:18 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6841942042;
+        Mon, 25 Jan 2021 04:28:18 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 14D9442041;
+        Mon, 25 Jan 2021 04:28:16 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.102.2.59])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 25 Jan 2021 04:28:15 +0000 (GMT)
+Date:   Mon, 25 Jan 2021 09:58:13 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        aneesh.kumar@linux.ibm.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+Message-ID: <20210125042813.GA2869122@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20201118082759.1413056-1-bharata@linux.ibm.com>
+ <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
+ <20210121053003.GB2587010@in.ibm.com>
+ <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
+ <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
+ <CAG48ez0gutKNuRj4E22tkv8mQKo-6TExGMxvpHCtUz8sFonb3A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210123201027.3262800-1-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0gutKNuRj4E22tkv8mQKo-6TExGMxvpHCtUz8sFonb3A@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-25_01:2021-01-22,2021-01-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 spamscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101250019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/23/21 1:10 PM, Sebastian Andrzej Siewior wrote:
-> Patch 2+3 were applied and then dropped by Jens due to a NOHZ+softirq
-> related warning [0]. Turns out a successful wakeup via
-> set_nr_if_polling() will not process any softirqs and the CPU may go
-> back to idle. This is addressed by patch #1.
+On Fri, Jan 22, 2021 at 02:05:47PM +0100, Jann Horn wrote:
+> On Thu, Jan 21, 2021 at 7:19 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+> > On 1/21/21 11:01 AM, Christoph Lameter wrote:
+> > > On Thu, 21 Jan 2021, Bharata B Rao wrote:
+> > >
+> > >> > The problem is that calculate_order() is called a number of times
+> > >> > before secondaries CPUs are booted and it returns 1 instead of 224.
+> > >> > This makes the use of num_online_cpus() irrelevant for those cases
+> > >> >
+> > >> > After adding in my command line "slub_min_objects=36" which equals to
+> > >> > 4 * (fls(num_online_cpus()) + 1) with a correct num_online_cpus == 224
+> > >> > , the regression diseapears:
+> > >> >
+> > >> > 9 iterations of hackbench -l 16000 -g 16: 3.201sec (+/- 0.90%)
+> >
+> > I'm surprised that hackbench is that sensitive to slab performance, anyway. It's
+> > supposed to be a scheduler benchmark? What exactly is going on?
 > 
-> smpcfd_dying_cpu() will also invoke SMP-functions calls via
-> flush_smp_call_function_queue() but the block layer shouldn't queue
-> anything because the CPU isn't online anymore.
-> The two caller of flush_smp_call_function_from_idle() look fine with
-> opening interrupts from within do_softirq().
+> Uuuh, I think powerpc doesn't have cmpxchg_double?
 > 
-> [0] https://lkml.kernel.org/r/1ee4b31b-350e-a9f5-4349-cfb34b89829a@kernel.dk
+> "vgrep cmpxchg_double arch/" just spits out arm64, s390 and x86? And
+> <https://liblfds.org/mediawiki/index.php?title=Article:CAS_and_LL/SC_Implementation_Details_by_Processor_family>
+> says under "POWERPC": "no DW LL/SC"
+> 
+> So powerpc is probably hitting the page-bitlock-based implementation
+> all the time for stuff like __slub_free()? Do you have detailed
+> profiling results from "perf top" or something like that?
 
-I can queue up the block side once the IPI fix is in some stable branch
-that I can pull in.
+I can check that, but the current patch was aimed at reducing
+the page order of the slub caches so that they don't end up
+consuming more memory on 64K systems.
 
--- 
-Jens Axboe
+> 
+> (I actually have some WIP patches and a design document for getting
+> rid of cmpxchg_double in struct page that I hacked together in the
+> last couple days; I'm currently in the process of sending them over to
+> some other folks in the company who hopefully have cycles to
+> review/polish/benchmark them so that they can be upstreamed, assuming
+> that those folks think they're important enough. I don't have the
+> cycles for it...)
 
+Sounds interesting, will keep a watch to see its effect on powerpc.
+
+Regards,
+Bharata.
