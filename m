@@ -2,272 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A333036CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0B73036C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730619AbhAZGqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:46:13 -0500
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:45546 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729697AbhAYOt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:49:28 -0500
-Received: by mail-lf1-f46.google.com with SMTP id q12so18086575lfo.12;
-        Mon, 25 Jan 2021 06:49:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=oPSrp6GTXszof/dNN0q+//X3RVS3y6bDNp6+3lvklGQ=;
-        b=jtTS7e/3x1/mpInMILVwubXIwLgaHHcMUvtktA4EA2yowmYpz/NaoGI0xcO9r2/hJG
-         2LKW9FFMaPZfUre9lYxHU/e3UWm12/YuBzRGMLW4G/nOSylNzf93Wq/oAhKS3LbpBwWC
-         EQniVSuP59cWS0mV3r+iMQXS7eqeroHk2kznI3na7PALPp/M6Yne70YleLRiwdpwULZj
-         2ir41JYX9uEmZsF2pl6qJ977AjHLXW1FNUH/9XU2UE8Emz/huGR+q7AK5kaHr/Bghofi
-         NpehEplSbsnPkRPbHJNHjtHAEGqikQHXub9HpHQsEILjIpoXHzYkRAIZPq+diddj1Kmz
-         lb5w==
-X-Gm-Message-State: AOAM5336oVRs/R4oreF0gYCIfMt0sTe6pE1F3TGYe6HaEWUPazevvZgo
-        Lw+ovWz7EjJ0VfycND6WD9I=
-X-Google-Smtp-Source: ABdhPJxOjRvLElV4WAr8IXb2gJhiSVLKwvCwYVqcrseNfOeAj1QsN/9i/cFCsdPeje6SLk7QEAbtoA==
-X-Received: by 2002:a19:3f87:: with SMTP id m129mr424730lfa.560.1611586123211;
-        Mon, 25 Jan 2021 06:48:43 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id b11sm1958382lfi.174.2021.01.25.06.48.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 06:48:42 -0800 (PST)
-Message-ID: <7a3d897d6af9f4310e5cc98ca74123192da49e27.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v2 09/17] mfd: Support for ROHM BD71815 PMIC core
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-In-Reply-To: <20210125141044.GZ4903@dell>
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
-         <14480ca837005aecd7053202c2347e36ad29faee.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210125141044.GZ4903@dell>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730581AbhAZGng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:43:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729790AbhAYOtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:49:24 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B36A520848;
+        Mon, 25 Jan 2021 14:48:40 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l43AU-009tYm-Ut; Mon, 25 Jan 2021 14:48:39 +0000
 MIME-Version: 1.0
-Date:   Mon, 25 Jan 2021 16:48:36 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 25 Jan 2021 14:48:38 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] genirq/msi: Activate Multi-MSI early when
+ MSI_FLAG_ACTIVATE_EARLY is set
+In-Reply-To: <19ddad1517f0495d92c2248d04cf0d5c@huawei.com>
+References: <20210123122759.1781359-1-maz@kernel.org>
+ <19ddad1517f0495d92c2248d04cf0d5c@huawei.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <4e7ea548f1667410dd6197509ab15ef4@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, bhelgaas@google.com, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Lee,
-
-Thanks again for the review!
-
-On Mon, 2021-01-25 at 14:10 +0000, Lee Jones wrote:
-> On Tue, 19 Jan 2021, Matti Vaittinen wrote:
+On 2021-01-25 14:39, Shameerali Kolothum Thodi wrote:
+>> -----Original Message-----
+>> From: Marc Zyngier [mailto:maz@kernel.org]
+>> Sent: 23 January 2021 12:28
+>> To: linux-kernel@vger.kernel.org
+>> Cc: Thomas Gleixner <tglx@linutronix.de>; Bjorn Helgaas
+>> <bhelgaas@google.com>; Shameerali Kolothum Thodi
+>> <shameerali.kolothum.thodi@huawei.com>; stable@vger.kernel.org
+>> Subject: [PATCH] genirq/msi: Activate Multi-MSI early when
+>> MSI_FLAG_ACTIVATE_EARLY is set
+>> 
+>> When MSI_FLAG_ACTIVATE_EARLY is set (which is the case for PCI),
+>> we perform the activation of the interrupt (which in the case of
+>> PCI results in the endpoint being programmed) as soon as the
+>> interrupt is allocated.
+>> 
+>> But it appears that this is only done for the first vector,
+>> introducing an inconsistent behaviour for PCI Multi-MSI.
+>> 
+>> Fix it by iterating over the number of vectors allocated to
+>> each MSI descriptor. This is easily achieved by introducing
+>> a new "for_each_msi_vector" iterator, together with a tiny
+>> bit of refactoring.
+>> 
+>> Fixes: f3b0946d629c ("genirq/msi: Make sure PCI MSIs are activated 
+>> early")
+>> Reported-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> Cc: stable@vger.kernel.org
+>> ---
+>>  include/linux/msi.h |  6 ++++++
+>>  kernel/irq/msi.c    | 44 ++++++++++++++++++++------------------------
+>>  2 files changed, 26 insertions(+), 24 deletions(-)
+>> 
+>> diff --git a/include/linux/msi.h b/include/linux/msi.h
+>> index 360a0a7e7341..aef35fd1cf11 100644
+>> --- a/include/linux/msi.h
+>> +++ b/include/linux/msi.h
+>> @@ -178,6 +178,12 @@ struct msi_desc {
+>>  	list_for_each_entry((desc), dev_to_msi_list((dev)), list)
+>>  #define for_each_msi_entry_safe(desc, tmp, dev)	\
+>>  	list_for_each_entry_safe((desc), (tmp), dev_to_msi_list((dev)), 
+>> list)
+>> +#define for_each_msi_vector(desc, __irq, dev)				\
+>> +	for_each_msi_entry((desc), (dev))				\
+>> +		if ((desc)->irq)					\
+>> +			for (__irq = (desc)->irq;			\
+>> +			     __irq < ((desc)->irq + (desc)->nvec_used);	\
+>> +			     __irq++)
+>> 
+>>  #ifdef CONFIG_IRQ_MSI_IOMMU
+>>  static inline const void *msi_desc_get_iommu_cookie(struct msi_desc 
+>> *desc)
+>> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+>> index 2c0c4d6d0f83..d924676c8781 100644
+>> --- a/kernel/irq/msi.c
+>> +++ b/kernel/irq/msi.c
+>> @@ -436,22 +436,22 @@ int __msi_domain_alloc_irqs(struct irq_domain
+>> *domain, struct device *dev,
+>> 
+>>  	can_reserve = msi_check_reservation_mode(domain, info, dev);
+>> 
+>> -	for_each_msi_entry(desc, dev) {
+>> -		virq = desc->irq;
+>> -		if (desc->nvec_used == 1)
+>> -			dev_dbg(dev, "irq %d for MSI\n", virq);
+>> -		else
+>> +	/*
+>> +	 * This flag is set by the PCI layer as we need to activate
+>> +	 * the MSI entries before the PCI layer enables MSI in the
+>> +	 * card. Otherwise the card latches a random msi message.
+>> +	 */
+>> +	if (!(info->flags & MSI_FLAG_ACTIVATE_EARLY))
+>> +		goto skip_activate;
 > 
-> > Add core support for ROHM BD71815 Power Management IC.
-> > 
-> > The IC integrates regulators, a battery charger with a coulomb
-> > counter,
-> > a real-time clock (RTC), clock gate and general-purpose outputs
-> > (GPO).
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > ---
-> > Changes since v1:
-> >   - Used BIT() for better readability
-> >   - removed some unused definitions
-> > 
-> >  drivers/mfd/Kconfig              |  15 +-
-> >  drivers/mfd/rohm-bd71828.c       | 416 +++++++++++++++++++++--
-> >  include/linux/mfd/rohm-bd71815.h | 561
-> > +++++++++++++++++++++++++++++++
-> >  include/linux/mfd/rohm-bd71828.h |   3 +
-> >  4 files changed, 952 insertions(+), 43 deletions(-)
-> >  create mode 100644 include/linux/mfd/rohm-bd71815.h
-> > 
-> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > index bdfce7b15621..59bfacb91898 100644
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> > @@ -1984,19 +1984,20 @@ config MFD_ROHM_BD70528
-> >  	  charger.
-> >  
-> >  config MFD_ROHM_BD71828
-> > -	tristate "ROHM BD71828 Power Management IC"
-> > +	tristate "ROHM BD71828 and BD71815 Power Management IC"
-> >  	depends on I2C=y
-> >  	depends on OF
-> >  	select REGMAP_I2C
-> >  	select REGMAP_IRQ
-> >  	select MFD_CORE
-> >  	help
-> > -	  Select this option to get support for the ROHM BD71828 Power
-> > -	  Management IC. BD71828GW is a single-chip power management IC
-> > for
-> > -	  battery-powered portable devices. The IC integrates 7 buck
-> > -	  converters, 7 LDOs, and a 1500 mA single-cell linear charger.
-> > -	  Also included is a Coulomb counter, a real-time clock (RTC),
-> > and
-> > -	  a 32.768 kHz clock gate.
-> > +	  Select this option to get support for the ROHM BD71828 and
-> > BD71815
-> > +	  Power Management ICs. BD71828GW and BD71815AGW are single-
-> > chip power
-> > +	  management ICs mainly for battery-powered portable devices.
-> > +	  The BD71828 integrates 7 buck converters and 7 LDOs. The
-> > BD71815
-> > +	  has 5 bucks, 7 LDOs, and a boost for driving LEDs. Both ICs
-> > provide
-> > +	  also a single-cell linear charger, a Coulomb counter, a real-
-> > time
-> > +	  clock (RTC), GPIOs and a 32.768 kHz clock gate.
-> >  
-> >  config MFD_STM32_LPTIMER
-> >  	tristate "Support for STM32 Low-Power Timer"
-> > diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-
-> > bd71828.c
-> > index 210261d026f2..28b82477ce4c 100644
-> > --- a/drivers/mfd/rohm-bd71828.c
-> > +++ b/drivers/mfd/rohm-bd71828.c
-> > @@ -2,7 +2,7 @@
-> >  //
-> >  // Copyright (C) 2019 ROHM Semiconductors
-> >  //
-> > -// ROHM BD71828 PMIC driver
-> > +// ROHM BD71828/BD71815 PMIC driver
-> >  
-> >  #include <linux/gpio_keys.h>
-> >  #include <linux/i2c.h>
-> > @@ -11,7 +11,9 @@
-> >  #include <linux/ioport.h>
-> >  #include <linux/irq.h>
-> >  #include <linux/mfd/core.h>
-> > +#include <linux/mfd/rohm-bd71815.h>
-> >  #include <linux/mfd/rohm-bd71828.h>
-> > +#include <linux/mfd/rohm-generic.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_device.h>
-> >  #include <linux/regmap.h>
-> > @@ -29,12 +31,102 @@ static struct gpio_keys_platform_data
-> > bd71828_powerkey_data = {
-> >  	.name = "bd71828-pwrkey",
-> >  };
-> >  
-> > -static const struct resource rtc_irqs[] = {
-> > +static const struct resource bd71815_rtc_irqs[] = {
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC0, "bd71815-rtc-alm-0"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC1, "bd71815-rtc-alm-1"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC2, "bd71815-rtc-alm-2"),
-> > +};
-> > +
-> > +static const struct resource bd71828_rtc_irqs[] = {
-> >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC0, "bd71828-rtc-alm-0"),
-> >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC1, "bd71828-rtc-alm-1"),
-> >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC2, "bd71828-rtc-alm-2"),
-> >  };
-> >  
-> > +static struct resource bd71815_power_irqs[] = {
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_RMV, "bd71815-dcin-rmv"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-clps-out"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-clps-in"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_RES, "bd71815-dcin-
-> > ovp-res"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_DET, "bd71815-dcin-
-> > ovp-det"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_RES, "bd71815-dcin-
-> > mon-res"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_DET, "bd71815-dcin-
-> > mon-det"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_RES, "bd71815-vsys-uv-
-> > res"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_DET, "bd71815-vsys-uv-
-> > det"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_RES, "bd71815-vsys-
-> > low-res"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_DET, "bd71815-vsys-
-> > low-det"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-
-> > mon-res"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-
-> > mon-det"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TEMP, "bd71815-chg-
-> > wdg-temp"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TIME, "bd71815-chg-
-> > wdg"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_RES, "bd71815-
-> > rechg-res"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_DET, "bd71815-
-> > rechg-det"),
-> > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RANGED_TEMP_TRANSITION,
-> > +			     "bd71815-ranged-temp-transit"),
-> 
-> The new line limit is 100.  Feel free to run these out.
+> This will change the dbg print behavior. From the commit f3b0946d629c,
+> it looks like the below dev_dbg() code was there for 
+> !MSI_FLAG_ACTIVATE_EARLY
+> case as well. Not sure how much this matters though.
 
-I learn new things every day it seems. This change is more than
-welcome!
+I'm not sure this matters either. We may have relied on these statements
+some 6/7 years ago, as the whole hierarchy stuff was brand new, but we
+now have a much better debug infrastructure thanks to Thomas. I'd be
+totally in favour of dropping it.
 
-> > +	if (!strncmp(mode, "open-drain", 10)) {
-> > +		dev_dbg(dev, "configuring clk32kout as open-drain");
-> 
-> Do you *really* need these?
+Thanks,
 
-No. development leftover. Thanks for pointing that.
-
-> > 
-> > +		button_irq = 0;
-> > +		dev_info(&i2c->dev, "BD71815 found\n");
-> 
-> Again, are these *really* useful to you and/or your users?
-> 
-> Besides, this device not *found* i.e. scanned/read and instantiated,
-> it has simply been matched from the local DTB.  It can still be
-> wrong.  You can probably omit them.
-
-You're right. One can check the DT contents from /proc if he wants to
-check what IC compatible was used. Thanks.
-> 
-> [...]
-> 
-> > diff --git a/include/linux/mfd/rohm-bd71815.h
-> > b/include/linux/mfd/rohm-bd71815.h
-> > new file mode 100644
-> > index 000000000000..8ee5874a5b73
-> > --- /dev/null
-> > +++ b/include/linux/mfd/rohm-bd71815.h
-> > @@ -0,0 +1,561 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> > +/*
-> > + * Copyright 2014 Embest Technology Co. Ltd. Inc.
-> 
-> Jeeze!  Is this for the Amiga?
-
-Nah. Long live NXP SOCs! ;) I think BD71815 was _originally_ developed
-for i.MX6.
-
-> 
-> > + * Author: yanglsh@embest-tech.com
-> > + *
-> > + * 2020, 2021 Heavily modified by:
-> 
-> You should probably add a proper copyright.
-Ok. I guess I can do so. Thanks!
-
-> > + *	 Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > + */
-> > +
-> > +#ifndef _MFD_BD71815_H
-> > +#define _MFD_BD71815_H
-> > +
-> > +#include <linux/regmap.h>
-
-Best Regards
--- Matti Vaittinen
-
+         M.
+-- 
+Jazz is not dead. It just smells funny...
