@@ -2,81 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC89E302A4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C432B302A58
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbhAYScK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:32:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58478 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbhAYSbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:31:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611599467; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uqGPhwP3Lp8NPepOOe5fR+cd2R65FBDmRR/EArzQzA8=;
-        b=ua3+I4lEcHFW3ioskhY8N98ODDCWluL0+MzmmP+epwSO6nGcXihX+PJVNhmyrVHO2Ns7XR
-        PsfPk6klzDOztgREfEaDFQ9LJdnxIZSwzg74N8LwVaYcGOV1KZfTj7mUijLPk2YPRgD0Mi
-        qyLaWMTT9MktCvWnX0Ksi8a4xVAF9Dk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EB7DAE1F;
-        Mon, 25 Jan 2021 18:31:07 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 19:31:05 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-Message-ID: <20210125183105.GW827@dhcp22.suse.cz>
-References: <20210125042441.20030-1-longman@redhat.com>
- <20210125092815.GB827@dhcp22.suse.cz>
- <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
- <20210125160328.GP827@dhcp22.suse.cz>
- <20210125162506.GF308988@casper.infradead.org>
- <20210125164118.GS827@dhcp22.suse.cz>
- <20210125181436.GV827@dhcp22.suse.cz>
- <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
+        id S1726780AbhAYSe5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 13:34:57 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:45493 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbhAYSd0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:33:26 -0500
+Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 78BB2CECCA;
+        Mon, 25 Jan 2021 19:39:56 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB
+ wakeup by default
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201230065441.1179-1-max.chou@realtek.com>
+Date:   Mon, 25 Jan 2021 19:32:31 +0100
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Alex Lu <alex_lu@realsil.com.cn>,
+        Hilda Wu <hildawu@realtek.com>, kidman@realtek.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <D8DB0325-437C-453B-86CC-55B4F255B335@holtmann.org>
+References: <20201230065441.1179-1-max.chou@realtek.com>
+To:     Max Chou <max.chou@realtek.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25-01-21 13:23:58, Waiman Long wrote:
-> On 1/25/21 1:14 PM, Michal Hocko wrote:
-[...]
-> > With the proposed simplification by Willy
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> Thank for the ack. However, I am a bit confused about what you mean by
-> simplification. There is another linux-next patch that changes the condition
-> for mem_cgroup_charge() to
+Hi Max,
 
-This is obviously a fix and I believe should go in the next rc while
-secretmem is a new feature which should wait at least to the next merge
-window.
+> For the original commit of 9e45524a011107a73bc2cdde8370c61e82e93a4d,
+> wakeup is always disabled for Realtek Bluetooth devices.
+> However, there's the capability for Realtek Bluetooth devices to
+> apply USB wakeup. Otherwise, there's the better power consumption
+> without USB wakeup during suspending.
+> In this commit, divide the original commit into two parts.
+> 1. Redefine the feature that Realtek devices should be enabled wakeup on
+> auto-suspend as BTUSB_WAKEUP_AUTOSUSPEND.
+> 2. Add a Kconfig option to switch disable_wakeup for Bluetooth
+> USB devices by default as CONFIG_BT_HCIBTUSB_DISABLEWAKEUP.
 
-> -       if (!huge) {
-> +       if (!huge && !page_is_secretmem(page)) {
->                 error = mem_cgroup_charge(page, current->mm, gfp);
-> 
-> That is the main reason why I introduced the boolean variable as I don't
-> want to call the external page_is_secretmem() function twice.
-> 
-> Cheers,
-> Longman
-> 
+lets not make this so complicated. Lets just make this work. So define this based on the Realtek hardware that supports it and not just a generic option. If your hardware is broken or works different from revision to revision, then quirk it inside the driver.
 
--- 
-Michal Hocko
-SUSE Labs
+Regards
+
+Marcel
+
