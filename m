@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27196302E18
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7FF302E55
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733047AbhAYVkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:40:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31372 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732932AbhAYVgb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:36:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611610504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MyiqIKKteHQeOAKiImYJHwBmazbFLi4M9gsQ1oXoZGw=;
-        b=OwK2kpBk3+j0hzbf1ZVcOH6FcGMUfgwoi1cMEZ4CFzPiIc7IABQyt+I9pO/64L+ldNlRUW
-        i4E771qm9RbExkfOOXnQp9Z2QKVX8KGLmcPMcplyG9/cWrUWqaumw1VXPgptzSyxa+z2wA
-        2Pi9nEHrtv/b5vpfXZNmCuEEnfAnj4g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-GfybAjvnOgONvzZN4cc-kw-1; Mon, 25 Jan 2021 16:35:02 -0500
-X-MC-Unique: GfybAjvnOgONvzZN4cc-kw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3DF028735C2;
-        Mon, 25 Jan 2021 21:35:00 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E23B5D9DB;
-        Mon, 25 Jan 2021 21:34:54 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 20/32] afs: Wait on PG_fscache before modifying/releasing a
- page
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        id S1733051AbhAYVtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:49:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732834AbhAYVib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:38:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F8A2229C6;
+        Mon, 25 Jan 2021 21:35:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611610543;
+        bh=2Di0IbIXl1xn2Q918lq0pHS35BBSv9IAQLWTpnF3034=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cy17SSKvvNvxfTqzme3GulWvb12hmNhkF7DBhyy2a+M5IaoGf8exm+dMOhwdI3cnD
+         O9Y6le+GeozBAOlFWKkpEB+vZ71maF7XrODlor4nn34mqAaY2SmcJJTy1/7R4Vzp0U
+         bPshjl150D1+6AqGJJwRZluiwgpDdWOErZGjlhYbAQhuHLMYpqQxkt2okbl3QmaaEV
+         +AvTUTAKQGnim5uoCQhk9nL/vcRX66pRqMexDaS2sIjDuNGgW078c+2BX0w5Eu0hmE
+         oc6a5eiysTeaoVlQWOTzqTt5FOVdCY/F5kyVzE2NWYn7vW0p6El384BwmC/nQzLCGf
+         IjSwSAhpZJ+aA==
+Date:   Mon, 25 Jan 2021 23:35:26 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 25 Jan 2021 21:34:53 +0000
-Message-ID: <161161049369.2537118.11591934943429117060.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
+Message-ID: <20210125213526.GK6332@kernel.org>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-9-rppt@kernel.org>
+ <20210125161706.GE308988@casper.infradead.org>
+ <CALvZod7rn_5oXT6Z+iRCeMX_iMRO9G_8FnwSRGpJJwyBz5Wpnw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7rn_5oXT6Z+iRCeMX_iMRO9G_8FnwSRGpJJwyBz5Wpnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PG_fscache is going to be used to indicate that a page is being written to
-the cache, and that the page should not be modified or released until it's
-finished.
+On Mon, Jan 25, 2021 at 09:18:04AM -0800, Shakeel Butt wrote:
+> On Mon, Jan 25, 2021 at 8:20 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Thu, Jan 21, 2021 at 02:27:20PM +0200, Mike Rapoport wrote:
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > >
+> > > Account memory consumed by secretmem to memcg. The accounting is updated
+> > > when the memory is actually allocated and freed.
 
-Make afs_invalidatepage() and afs_releasepage() wait for it.
+I though about doing per-page accounting, but then one would be able to
+create a lot of secretmem file descriptors, use only a page from each while
+actual memory consumption will be way higher.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+> > I think this is wrong.  It fails to account subsequent allocators from
+> > the same PMD.  If you want to track like this, you need separate pools
+> > per memcg.
+> >
+> 
+> Are these secretmem pools shared between different jobs/memcgs?
 
- fs/afs/file.c  |    9 +++++++++
- fs/afs/write.c |   10 ++++++++++
- 2 files changed, 19 insertions(+)
+A secretmem pool is per anonymous file descriptor and this file descriptor
+can be shared only explicitly between several processes. So, the secretmem
+pool should not be shared between different jobs/memcg. Of course, it's
+possible to spread threads of a process across different memcgs, but in
+that case the accounting will be similar to what's happening today with
+sl*b. The first thread to cause kmalloc() will be charged for the
+allocation of the entire slab and subsequent allocations from that slab
+will not be accounted.
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index f1bab69e99d4..acbc21a8c80e 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -594,6 +594,7 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
- 	if (PagePrivate(page))
- 		afs_invalidate_dirty(page, offset, length);
- 
-+	wait_on_page_fscache(page);
- 	_leave("");
- }
- 
-@@ -611,6 +612,14 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- 
- 	/* deny if page is being written to the cache and the caller hasn't
- 	 * elected to wait */
-+#ifdef CONFIG_AFS_FSCACHE
-+	if (PageFsCache(page)) {
-+		if (!(gfp_flags & __GFP_DIRECT_RECLAIM) || !(gfp_flags & __GFP_FS))
-+			return false;
-+		wait_on_page_fscache(page);
-+	}
-+#endif
-+
- 	if (PagePrivate(page)) {
- 		detach_page_private(page);
- 		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index dd4dc1c868b5..e1791de90478 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -117,6 +117,10 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 		SetPageUptodate(page);
- 	}
- 
-+#ifdef CONFIG_AFS_FSCACHE
-+	wait_on_page_fscache(page);
-+#endif
-+
- try_again:
- 	/* See if this page is already partially written in a way that we can
- 	 * merge the new write with.
-@@ -857,6 +861,11 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	/* Wait for the page to be written to the cache before we allow it to
- 	 * be modified.  We then assume the entire page will need writing back.
- 	 */
-+#ifdef CONFIG_AFS_FSCACHE
-+	if (PageFsCache(vmf->page) &&
-+	    wait_on_page_bit_killable(vmf->page, PG_fscache) < 0)
-+		return VM_FAULT_RETRY;
-+#endif
- 
- 	if (PageWriteback(vmf->page) &&
- 	    wait_on_page_bit_killable(vmf->page, PG_writeback) < 0)
-@@ -948,5 +957,6 @@ int afs_launder_page(struct page *page)
- 
- 	detach_page_private(page);
- 	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
-+	wait_on_page_fscache(page);
- 	return ret;
- }
+That said, having a pool per memcg will add ton of complexity with very
+dubious value.
 
-
+-- 
+Sincerely yours,
+Mike.
