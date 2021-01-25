@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7278E303640
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0037303649
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbhAZGHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728427AbhAYMwF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:52:05 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B75C0613D6;
-        Mon, 25 Jan 2021 03:14:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IZD+dGpJMuaKiBFySlf5qc6OjXdYWk5ceY7IXIWaNrA=; b=mu5dcukKGytbgmut4RSw7dYW5p
-        jcb5tnp16OjtgRykfyfz5gM6Dcvxvfy0l8Ql2XjjHmacq88H1SRBUDZzA49ulM4kutjU+0VK5jQ5t
-        nS723mOgAWmB0I0wvGGuVnT9tuEgrTxGokhUpEpSSYtThg6mCJ0/Fdo1N9TF32vKLai9XtwyZmu4/
-        rUTHV7jKaxH5JlUbT+TV0sn/gaIddu4ScySHHYGa92fn+GEcyP3P585VchE6U0i4hG4OR38Rr18f0
-        B2ZwNZH5TE4p88Ve/9VJhdKASrdNHY/4OhvapqGRj97q34yGtlHXAElDKADMLIXYX/FkDSn28LE6+
-        xLtPT5ew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l3zo1-0047fH-T7; Mon, 25 Jan 2021 11:13:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 76CE43003D8;
-        Mon, 25 Jan 2021 12:13:10 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 401F82B0615F7; Mon, 25 Jan 2021 12:13:10 +0100 (CET)
-Date:   Mon, 25 Jan 2021 12:13:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        "Xu, Like" <like.xu@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-Message-ID: <YA6nxuM5Stlolk5x@hirez.programming.kicks-ass.net>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <YACXQwBPI8OFV1T+@google.com>
- <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
- <YAHXlWmeR9p6JZm2@google.com>
- <20210115182700.byczztx3vjhsq3p3@two.firstfloor.org>
- <YAHkOiQsxMfOMYvp@google.com>
- <YAqhPPkexq+dQ5KD@hirez.programming.kicks-ass.net>
- <eb30d86f-6492-d6e3-3a24-f58c724f68fd@linux.intel.com>
-MIME-Version: 1.0
+        id S1729672AbhAZGJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:09:47 -0500
+Received: from mail-dm6nam10on2132.outbound.protection.outlook.com ([40.107.93.132]:51393
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728517AbhAYM4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:56:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lI6SK4E3xRljlAFfWTyVhX7ESBmlgFpjBLJNGWh1KiMypPMwjO905t2jVnRv0IEY8ASo0KM+kwhOC0SUNvijmu4899No4Rl2Xa0SNl0gMstFAbXfiHoNwf9YLOUQmNSJ5uUOngkzUTrRtpEPEFeTAXrAGpuby+2mEiadD4kCoHHXOeaLoLs+e2xe31uLXQE8WevuTvVx51iDJxMGj1Ly2xKh3a2iXJ5FSKWJXCHT5UqfWkPGy8Kw3EOKDiGKVU/bsJCf4jz3n5fOROmiRFI9CdPuU5fZIfs84onYgpvJ0ooAt0uHKkQpEzQdFtemV3AdY8VAfKY3T5eEbd2law+X7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CxJSPytLTGbJfuVaYKZUvuN+jvubAhBytBbcyAoj2zg=;
+ b=bX0y1lG4b8FE9VN1aJGGCoXNm6bXJ+kyfs8Nyf0R2HyTUurwVS6iuxUAfd81nNefBHrEm2Ts8NDm4vRD1DbRWFWnCxh8qfnWC0f9u7cekBrZyctJE+gpI0tUidSaWmWmervfuMsWZQYxpFScABoPo+0ma+DYTwbwcv+n4M4WQbW4A20eFKFQkykXKbAjcCGHkmpRxpbl8yjAOQ6zyC5Y2LvRabOim2tkRiE4zCWSudoc3w46XlgcmvNUarUTQ2ukkZ/yNsFXPvyn27X8NZsSdYv0mHDhLoH2zeTJHjSt1XMayjnCq/8jJCcS52w96m/FXjbt1QZaD5KVmwKdp9vjIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CxJSPytLTGbJfuVaYKZUvuN+jvubAhBytBbcyAoj2zg=;
+ b=t9J+MmmjbqU3hd5Qr3KGI9Zm4gzGIQGO9vhBVY6/C8gRgJ+OjiG9kL4DVj4vBBcggA52V+fEFHcE5jnO9lOLDwIB76d7h1lCQY0VbISpqkHHaE30q6V7o4p4bRfY7tNnY3OicN8Yf3O2TPzyRlFTA9wVFtfa4lrbg9xmi5i6kIU=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB6262.namprd04.prod.outlook.com (2603:10b6:a03:e3::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Mon, 25 Jan
+ 2021 11:14:09 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132%6]) with mapi id 15.20.3763.015; Mon, 25 Jan 2021
+ 11:14:09 +0000
+Date:   Mon, 25 Jan 2021 19:13:40 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: [PATCH v3 2/3] drm/bridge: anx7625: fix not correct return value
+Message-ID: <b585748741a9a4c20175e7f62ecad2d86de4a161.1611572143.git.xji@analogixsemi.com>
+References: <cover.1611572142.git.xji@analogixsemi.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eb30d86f-6492-d6e3-3a24-f58c724f68fd@linux.intel.com>
+In-Reply-To: <cover.1611572142.git.xji@analogixsemi.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HKAPR04CA0005.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::15) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zhaomy-pc (61.148.116.10) by HKAPR04CA0005.apcprd04.prod.outlook.com (2603:1096:203:d0::15) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 11:14:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ea6472dc-de02-4ad1-38ac-08d8c1225625
+X-MS-TrafficTypeDiagnostic: BYAPR04MB6262:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB626253E9EB2FE57C32AA0404C7BD9@BYAPR04MB6262.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:813;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wu1NqyjrAS/vuvHwieTCtuFiy1w4qRfc3YXDWDczgOIWAB3yxLtHgeKSV8T+8BbjEIlGNEPyuY0PIIyI1yAFvIERzhvRRWJm+KIobbyx+iEyTAqxvWfyg3wgXcvUPyaYsefGYkikeCxwaagnbGcPhFp3Zoxrb1XkvKTEqDYgCefKm3WblcZDaIhxTdYQlG6WZBBzSyOUi45ipoDBNd0QgWmmQ3YQR33+O1EgvCAGNlw2BXzpNEp8LSKIKlE/Z/KvFFgvSI4e4o4AVmloaiR5hgNPxF/yeMVIoTUs2HXRmJmAE2eE8B2JbhX6WjFl6/8lX0/js2Lvwxyztvy7iif52eNioQvn0GtGp1a+P7GfALYs2JF7/MI4kdCWPAtGzGIrLNp1HROi8As5L+dqh0hg7fOs4B6/jiHpERx7ul+JpluRk0ZfzdGbfc+gsrcpUoTruE8mg1KjL4eJcexJR2GXpbVN4As3C6hsytMfCO3AvO2uhNUb2OXSQh352fL4FPZKZfinq2HQEpnXNOXsLfDhiphfGi4czdJm9Cihz0hMdW6Tmn8jYYXgp4eepk7M96oMwHKjzbPearqIZRA/rsnbyQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(39850400004)(376002)(346002)(26005)(186003)(6486002)(16526019)(83380400001)(2616005)(956004)(478600001)(66946007)(4744005)(316002)(110136005)(54906003)(8676002)(8936002)(6496006)(66476007)(52116002)(4326008)(66556008)(86362001)(36756003)(7416002)(5660300002)(2906002)(6666004)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ODh3Bt1n/+sqMReuQsywQIgR6W5nnxwklUNQp5uO5jQX4mnYS1yWI5KtzjAd?=
+ =?us-ascii?Q?L3oEkJJT3z5vVB2qSbQkBEalSi6X/GDVZTSGg5TRewiVgRlcY+oZV+zOvDBN?=
+ =?us-ascii?Q?OhMmpBmSMdI04i1DnUnlcb564k4elGSCfDW9ZMpsPgUVpt9+VkiBUbmuHAUz?=
+ =?us-ascii?Q?00WtE7YZRWvyoX6Z79Sg6AeoNsQQ+es5BIWTOnDIZeNtPVp+r3F9dniumXn3?=
+ =?us-ascii?Q?+Dx3OriBw63jI7ySAL2mZF/EfEV6FU35VwgO7JMhjza64DZ+GOz3YZnUjlH8?=
+ =?us-ascii?Q?N4FAbUb6W4eST31mwMeIGcD1RcLZzV7A9/o0IydxSXtZuXQWBGlEz46iB0ix?=
+ =?us-ascii?Q?XRn0XDek4+7jWrv3+QyxNDtxlfrRZa5/dn4UTRVhfejkLaZXQlRmDm1PnVtj?=
+ =?us-ascii?Q?CJuf6KH2JYesdNGF7VaRvdW5q+jyoDf6um+p25oFTFkFj0euRdNA2mQHNp4P?=
+ =?us-ascii?Q?b7etygpAR+2SBl70wFqgWyeNPwXRGFACED7w8PIebCagKb/9FamT1/fNf2+n?=
+ =?us-ascii?Q?fMZW19KI8ebg+JGvdXR3MzZdUukvgwMqgbfMc4vqNrZXvlHtfxb1jDPUTiyj?=
+ =?us-ascii?Q?dYLnrxdYNUyACxizc/FIVZC2jnDL4Je61zFNOcVEd5xGiMMAY7JeyzEInmhF?=
+ =?us-ascii?Q?uEd9jArDCra1Ooi/JUeUS5NGnNM+CPmlRRDr4cNMps11H4njZ2a+0l+SlZWz?=
+ =?us-ascii?Q?cRyDFHjiDhn/GHwlKNlgXVXzjhz0EHI4R3lYlHGLcjDk12oyDQrRhB0G8MsK?=
+ =?us-ascii?Q?ll3/5EXTmThtGPNIuaxTCpxtUoZxwmUUEg5MBnZIAJgSU68Tv62vtr3RMfbF?=
+ =?us-ascii?Q?8pSPx/oL8nduqpMKRxsMoLua2ePVX3iDeoqMyywFA4puXUaXeIlviyjV2W2Y?=
+ =?us-ascii?Q?DjaSsfmNM/ogBCu2S2TDvegQlxHvJP3LqhAk9TrL+ts2WE1RhPNqg6KsdYlF?=
+ =?us-ascii?Q?EvOGuMFmyghnHkICiZKTHI+SK6edgv8LDnCGfk3PZTK9UsVmT6kwsbT1gwL4?=
+ =?us-ascii?Q?3GjyauTmUWOkKEN7h1myN7MW7giJGVkrrJ5/IoU3tX8uHZZvYVZ8GgT1Wma7?=
+ =?us-ascii?Q?JzpokN97?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea6472dc-de02-4ad1-38ac-08d8c1225625
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 11:14:09.5555
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JxewNBCuJfcAzxbhJKvZEsCamLhV2ei7FdwJnfW9Y6x2welQ2OqXNYhrXkrocDPkCqYvgJmZq7q16Mlbpux24Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB6262
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 04:08:22PM +0800, Like Xu wrote:
-> Hi Peter,
-> 
-> On 2021/1/22 17:56, Peter Zijlstra wrote:
-> > On Fri, Jan 15, 2021 at 10:51:38AM -0800, Sean Christopherson wrote:
-> > > On Fri, Jan 15, 2021, Andi Kleen wrote:
-> > > > > I'm asking about ucode/hardare.  Is the "guest pebs buffer write -> PEBS PMI"
-> > > > > guaranteed to be atomic?
-> > > > 
-> > > > Of course not.
-> > > 
-> > > So there's still a window where the guest could observe the bad counter index,
-> > > correct?
-> > 
-> > Guest could do a hypercall to fix up the DS area before it tries to read
-> > it I suppose. Or the HV could expose the index mapping and have the
-> > guest fix up it.
-> 
-> A weird (malicious) guest would read unmodified PEBS records in the
-> guest PEBS buffer from other vCPUs without the need for hypercall or
-> index mapping from HV.
-> 
-> Do you see any security issues on this host index leak window?
-> 
-> > 
-> > Adding a little virt crud on top shouldn't be too hard.
-> > 
-> 
-> The patches 13-17 in this version has modified the guest PEBS buffer
-> to correct the index mapping information in the guest PEBS records.
+At some time, the original code may return non zero value, force return 0
+if operation finished
 
-Right, but given there is no atomicity between writing the DS area and
-triggering the PMI (as already established earlier in this thread), a
-malicious guest can already access this information, no?
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 65cc059..04536cc 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -189,10 +189,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+ 			       AP_AUX_CTRL_STATUS);
+ 	if (val < 0 || (val & 0x0F)) {
+ 		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
+-		val = -EIO;
++		return -EIO;
+ 	}
+ 
+-	return val;
++	return 0;
+ }
+ 
+ static int anx7625_video_mute_control(struct anx7625_data *ctx,
+-- 
+2.7.4
 
