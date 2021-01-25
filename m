@@ -2,203 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324D6302EA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6CF302EA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733014AbhAYWEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        id S1733165AbhAYWF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:05:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733100AbhAYWBz (ORCPT
+        with ESMTP id S1733205AbhAYWDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:01:55 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4304C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:01:14 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id d13so29782325ioy.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:01:14 -0800 (PST)
+        Mon, 25 Jan 2021 17:03:49 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7D3C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:03:09 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id j12so9185917pfj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:03:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pt4uK7+fglRi5mSqUM+0Zo64wDCR3qdBbt9k3yKslD8=;
-        b=axfpFnb5vFhsKKRyt7UL2WEe+Dlta2QbR/1ZinUR8BsFqr4/jOkuHB0Wgc0c71WHhd
-         MLn93dAhJA5BeLIo8Uj8DrJKcSXEfTdB8vhufNuTHrPtHimZ4EjJ+qYldHjXGdv6ye9R
-         AUaY7LzLH40iRCf/65TXPhX/zhZzxCwJuqXZfVI0pB3VyfHLg5eFPzvRnBJnBrqxSm1A
-         pWlOadjqDuTwEMwzT/0n4jiCvhIYhkAqmwLwIrrwa7oDdWhAwWJHjP4IH770SAqqZz9w
-         sqiF2I9cJWr7nLrUJKZNvQAJNth5jxl7QE6onbn+5XQGaFfgRb8sqUQpWP13dHMy2+2o
-         TUkg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9uTkelnkgdH1/h1qSEC3+KB2ZZOMZMIqxRYnkoanZM4=;
+        b=e48pg2fnQuL945QN5H8Vqv7bjX7l4CQIY5iNiZMX75XZLI2m+HxbhLqfsgNifpr/SZ
+         qaR8nCtuU+N+h4snOkvPLNyDR8PxaMl8kXfvWPiXP/auSxLP+ru06vivV0yQ5r/mJqDh
+         Pq1GsRCAqqvXIL7IvnbcFpPZJMU3JssEpiHKo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pt4uK7+fglRi5mSqUM+0Zo64wDCR3qdBbt9k3yKslD8=;
-        b=ePEjp0FHyzkPQIy5WWBY8K9Y2PIOVkjs8xje3RvIx+18lpqKF3FikCgNENFhGEgRX4
-         LKZAqQXaKbAx/pcb5XtNRGArt9kVH9qOiM4PGv6uI8Mdh1cs0WX4s7AxvFK6xQZqbQmJ
-         ieoPlhJN5Tk9+hc6862dZTLg1CBqz8qpQXbbCpclaQyRsa6pG3h3dy3upuDORU1xgrfm
-         JFU07aezltVT8HdZcMQPf1vM6F94c65xE6Xamq1VwK5PVQbfw/vUvvDinl+IfGTy9+hi
-         5AHAXv3j1p/DWrHzOCG5izGCa0Fq5/7CifFfJ5UwuiXRYAwUgmmcQhzLb4UPJ8C1z/JS
-         VGBg==
-X-Gm-Message-State: AOAM533I++q7QUy3Cbu4PUu3TKNQwJ3Ns80lIWsrNmFUOd0lYl8j3lL4
-        xHlOZzw74Hs9MF37NLGmo6QyZ64rm8Qhn38JqCM/Rg==
-X-Google-Smtp-Source: ABdhPJxbv+KJl68OGuLDQGZ21cJh5kav4eRWVOWzT1xABymSjAkyc9/0/SfMYctXANPZG7uAUInsnbX+k+F8kqwxNK4=
-X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr2058326ila.69.1611612073822;
- Mon, 25 Jan 2021 14:01:13 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9uTkelnkgdH1/h1qSEC3+KB2ZZOMZMIqxRYnkoanZM4=;
+        b=f2TYCv01wn//6ShnkZvSA/Ar4d8jYAx7dvdVEHtrcU9N8k5SXCHvZufLEimcrdvJIE
+         aqpMQzOhWWEd6y1PHU0x9jPVlvFxK/Ka1cklTp6co5TvRSzPYb1Q7LGnJz7KOxKsPdfv
+         Eeet9VqmwxdIk7TezoYcApOd0GuyMuFEXrhbcaiZ+vZCl8THJXzd8BP+NwyMRskNlwF/
+         dIOY9zrJ2VEOLLqTMUTHG3NtRTe445VCLSBz4gBaE2qYspOoqjKdVVD6dBie119xy+b4
+         SS218c0TS8fSR5pNdZRUFDSA8WHvEt0miDUnLJW3o2/B1/SyhEzoWpOaemv8GWWleH47
+         aG8g==
+X-Gm-Message-State: AOAM5305mM1T2p9MvR60XdJ0re+CB90vsY3UgR2pPpcLZuqc/i7l98tM
+        XONBoLJBmPs4I56uB8RhOC53lv0VeCCWKg==
+X-Google-Smtp-Source: ABdhPJxELKHojiOS5LE+ZaEcSNUqh2aAeWOTc0igtRFBcAtlACI3x+7qSajwJcaRvf2ETtq/yQ/s3A==
+X-Received: by 2002:a63:5d5f:: with SMTP id o31mr2597849pgm.295.1611612189024;
+        Mon, 25 Jan 2021 14:03:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a131sm18614270pfd.171.2021.01.25.14.03.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 14:03:08 -0800 (PST)
+Date:   Mon, 25 Jan 2021 14:03:07 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <202101251401.F18409FDD1@keescook>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-References: <0000000000005d4f3205b9ab95f4@google.com> <20210125131252.4e17d3f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210125131252.4e17d3f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 25 Jan 2021 23:01:02 +0100
-Message-ID: <CANn89iK+ckTzYd70CzerWOiCXt6TJfKPok1mBHarDJYBCot-_A@mail.gmail.com>
-Subject: Re: WARNING in pskb_expand_head
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com>,
-        Alexander Duyck <alexanderduyck@fb.com>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:12 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> CC Willem just in case
+On Mon, Jan 25, 2021 at 02:42:10PM -0600, Josh Poimboeuf wrote:
+> When a GCC version mismatch is detected, print a warning and disable the
+> plugin.  The only exception is the RANDSTRUCT plugin which needs all
+> code to see the same struct layouts.  In that case print an error.
 
+I prefer this patch as-is: only randstruct needs a hard failure. The
+others likely work (in fact, randstruct likely works too).
 
-This is an old bug really, tun_napi_alloc_frags() does not make sure
-its @len argument is not too big.
+Masahiro, are you suggesting to be a hard-failure for all plugins?
 
-Since __skb_grow() does not use __GFP_NOWARN we end up with this well
-known warning in mm layer.
-
-I would use the following fix :
-
-
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 62690baa19bc8c4bf52f8b18a092f570e2125fc8..a0740e40a145fa2e175edd2180d369859c5d786b
-100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1367,13 +1367,16 @@ static struct sk_buff
-*tun_napi_alloc_frags(struct tun_file *tfile,
-        if (it->nr_segs > MAX_SKB_FRAGS + 1)
-                return ERR_PTR(-EMSGSIZE);
-
-+       linear = iov_iter_single_seg_count(it);
-+       if (linear > SKB_MAX_ALLOC)
-+               return ERR_PTR(-EMSGSIZE);
-+
-        local_bh_disable();
-        skb = napi_get_frags(&tfile->napi);
-        local_bh_enable();
-        if (!skb)
-                return ERR_PTR(-ENOMEM);
-
--       linear = iov_iter_single_seg_count(it);
-        err = __skb_grow(skb, linear);
-        if (err)
-                goto free;
-
-
->
-> On Sun, 24 Jan 2021 12:51:20 -0800 syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    7d68e382 bpf: Permit size-0 datasec
-> > git tree:       bpf-next
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=132567e7500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=a1c17e56a8a62294c714
-> > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ae23af500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13856bc7500000
-> >
-> > The issue was bisected to:
-> >
-> > commit 3226b158e67cfaa677fd180152bfb28989cb2fac
-> > Author: Eric Dumazet <edumazet@google.com>
-> > Date:   Wed Jan 13 16:18:19 2021 +0000
-> >
-> >     net: avoid 32 x truesize under-estimation for tiny skbs
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151a3027500000
-> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=171a3027500000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=131a3027500000
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com
-> > Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
-> >
-> > RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
-> > R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-> > R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 8703 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
-> > Modules linked in:
-> > CPU: 1 PID: 8703 Comm: syz-executor857 Not tainted 5.11.0-rc3-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
-> > Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
-> > RSP: 0018:ffffc90001ecf910 EFLAGS: 00010246
-> > RAX: 0000000000000000 RBX: 1ffff920003d9f26 RCX: 0000000000000000
-> > RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000060a20
-> > RBP: 0000000000020a20 R08: 0000000000000000 R09: 0000000000000001
-> > R10: ffffffff86f1be3c R11: 0000000000000000 R12: 0000000000000012
-> > R13: 0000000020010300 R14: 0000000000060a20 R15: 0000000000000000
-> > FS:  0000000001148880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00000000006d5090 CR3: 000000001d414000 CR4: 00000000001506e0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  __alloc_pages include/linux/gfp.h:511 [inline]
-> >  __alloc_pages_node include/linux/gfp.h:524 [inline]
-> >  alloc_pages_node include/linux/gfp.h:538 [inline]
-> >  kmalloc_large_node+0x60/0x110 mm/slub.c:3984
-> >  __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4481
-> >  __kmalloc_reserve net/core/skbuff.c:150 [inline]
-> >  pskb_expand_head+0xae9/0x1050 net/core/skbuff.c:1632
-> >  __skb_grow include/linux/skbuff.h:2748 [inline]
-> >  tun_napi_alloc_frags drivers/net/tun.c:1377 [inline]
-> >  tun_get_user+0x1f52/0x3690 drivers/net/tun.c:1730
-> >  tun_chr_write_iter+0xe1/0x1d0 drivers/net/tun.c:1926
-> >  call_write_iter include/linux/fs.h:1901 [inline]
-> >  new_sync_write+0x426/0x650 fs/read_write.c:518
-> >  vfs_write+0x791/0xa30 fs/read_write.c:605
-> >  ksys_write+0x12d/0x250 fs/read_write.c:658
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > RIP: 0033:0x4440a9
-> > Code: e8 6c 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> > RSP: 002b:00007fffdb5a8e08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004440a9
-> > RDX: 000000002001016f RSI: 0000000020000380 RDI: 0000000000000003
-> > RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
-> > R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-> > R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> > syzbot can test patches for this issue, for details see:
-> > https://goo.gl/tpsmEJ#testing-patches
->
+-- 
+Kees Cook
