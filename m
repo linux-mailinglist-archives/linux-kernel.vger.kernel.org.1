@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08AB3026E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD07302735
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729999AbhAYP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:29:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729904AbhAYPAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:00:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BA622ADF;
-        Mon, 25 Jan 2021 14:59:14 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 14:59:12 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH v4 1/3] arm64: Improve kernel address detection of
- __is_lm_address()
-Message-ID: <20210125145911.GG25360@gaia>
-References: <20210122155642.23187-1-vincenzo.frascino@arm.com>
- <20210122155642.23187-2-vincenzo.frascino@arm.com>
- <20210125130204.GA4565@C02TD0UTHF1T.local>
- <ddc0f9e2-f63e-9c34-f0a4-067d1c5d63b8@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ddc0f9e2-f63e-9c34-f0a4-067d1c5d63b8@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1730524AbhAYPsp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 10:48:45 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:34198 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730377AbhAYPq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:46:29 -0500
+Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 44C42CECC6;
+        Mon, 25 Jan 2021 16:16:34 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH v6 0/7] MSFT offloading support for advertisement monitor
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210122083617.3163489-1-apusaka@google.com>
+Date:   Mon, 25 Jan 2021 16:09:08 +0100
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <6C36E164-E3DC-44D3-A223-E75DC33CC090@holtmann.org>
+References: <20210122083617.3163489-1-apusaka@google.com>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:36:34PM +0000, Vincenzo Frascino wrote:
-> On 1/25/21 1:02 PM, Mark Rutland wrote:
-> > On Fri, Jan 22, 2021 at 03:56:40PM +0000, Vincenzo Frascino wrote:
-> >> Currently, the __is_lm_address() check just masks out the top 12 bits
-> >> of the address, but if they are 0, it still yields a true result.
-> >> This has as a side effect that virt_addr_valid() returns true even for
-> >> invalid virtual addresses (e.g. 0x0).
-> >>
-> >> Improve the detection checking that it's actually a kernel address
-> >> starting at PAGE_OFFSET.
-> >>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-> >> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> >> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > 
-> > Looking around, it seems that there are some existing uses of
-> > virt_addr_valid() that expect it to reject addresses outside of the
-> > TTBR1 range. For example, check_mem_type() in drivers/tee/optee/call.c.
-> > 
-> > Given that, I think we need something that's easy to backport to stable.
-> > 
-> 
-> I agree, I started looking at it this morning and I found cases even in the main
-> allocators (slub and page_alloc) either then the one you mentioned.
-> 
-> > This patch itself looks fine, but it's not going to backport very far,
-> > so I suspect we might need to write a preparatory patch that adds an
-> > explicit range check to virt_addr_valid() which can be trivially
-> > backported.
-> > 
-> 
-> I checked the old releases and I agree this is not back-portable as it stands.
-> I propose therefore to add a preparatory patch with the check below:
-> 
-> #define __is_ttrb1_address(addr)	((u64)(addr) >= PAGE_OFFSET && \
-> 					(u64)(addr) < PAGE_END)
-> 
-> If it works for you I am happy to take care of it and post a new version of my
-> patches.
+Hi Archie,
 
-I'm not entirely sure we need a preparatory patch. IIUC (it needs
-checking), virt_addr_valid() was fine until 5.4, broken by commit
-14c127c957c1 ("arm64: mm: Flip kernel VA space"). Will addressed the
-flip case in 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using
-__is_lm_address()") but this broke the <PAGE_OFFSET case. So in 5.4 a
-NULL address is considered valid.
+> This series of patches manages the hardware offloading part of MSFT
+> extension API. The full documentation can be accessed by this link:
+> https://docs.microsoft.com/en-us/windows-hardware/drivers/bluetooth/microsoft-defined-bluetooth-hci-commands-and-events
+> 
+> Only four of the HCI commands are planned to be implemented:
+> HCI_VS_MSFT_Read_Supported_Features (implemented in previous patch),
+> HCI_VS_MSFT_LE_Monitor_Advertisement,
+> HCI_VS_MSFT_LE_Cancel_Monitor_Advertisement, and
+> HCI_VS_MSFT_LE_Set_Advertisement_Filter_Enable.
+> These are the commands which would be used for advertisement monitor
+> feature. Only if the controller supports the MSFT extension would
+> these commands be sent. Otherwise, software-based monitoring would be
+> performed in the user space instead.
+> 
+> Thanks in advance for your feedback!
+> 
+> Archie
+> 
+> Changes in v6:
+> * New patch "advmon offload MSFT interleave scanning integration"
+> * New patch "disable advertisement filters during suspend"
+> 
+> Changes in v5:
+> * Discard struct flags on msft_data and use it's members directly
+> 
+> Changes in v4:
+> * Change the logic of merging add_adv_patterns_monitor with rssi
+> * Aligning variable declaration on mgmt.h
+> * Replacing the usage of BT_DBG with bt_dev_dbg
+> 
+> Changes in v3:
+> * Flips the order of rssi and pattern_count on mgmt struct
+> * Fix return type of msft_remove_monitor
+> 
+> Changes in v2:
+> * Add a new opcode instead of modifying an existing one
+> * Also implement the new MGMT opcode and merge the functionality with
+>  the old one.
+> 
+> Archie Pusaka (6):
+>  Bluetooth: advmon offload MSFT add rssi support
+>  Bluetooth: advmon offload MSFT add monitor
+>  Bluetooth: advmon offload MSFT remove monitor
+>  Bluetooth: advmon offload MSFT handle controller reset
+>  Bluetooth: advmon offload MSFT handle filter enablement
+>  Bluetooth: advmon offload MSFT interleave scanning integration
+> 
+> Howard Chung (1):
+>  Bluetooth: disable advertisement filters during suspend
+> 
+> include/net/bluetooth/hci_core.h |  36 ++-
+> include/net/bluetooth/mgmt.h     |  16 ++
+> net/bluetooth/hci_core.c         | 174 +++++++++---
+> net/bluetooth/hci_request.c      |  49 +++-
+> net/bluetooth/mgmt.c             | 391 +++++++++++++++++++-------
+> net/bluetooth/msft.c             | 460 ++++++++++++++++++++++++++++++-
+> net/bluetooth/msft.h             |  30 ++
+> 7 files changed, 1015 insertions(+), 141 deletions(-)
 
-Ard's commit f4693c2716b3 ("arm64: mm: extend linear region for 52-bit
-VA configurations") changed the test to no longer rely on va_bits but
-did not change the broken semantics.
+all 7 patches have been applied to bluetooth-next tree.
 
-If Ard's change plus the fix proposed in this test works on 5.4, I'd say
-we just merge this patch with the corresponding Cc stable and Fixes tags
-and tweak it slightly when doing the backports as it wouldn't apply
-cleanly. IOW, I wouldn't add another check to virt_addr_valid() as we
-did not need one prior to 5.4.
+Regards
 
--- 
-Catalin
+Marcel
+
