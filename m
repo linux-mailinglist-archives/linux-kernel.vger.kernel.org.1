@@ -2,86 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467F0302E52
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4872B302E3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733035AbhAYVs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:48:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732824AbhAYViN (ORCPT
+        id S1732197AbhAYVpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:45:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733014AbhAYVis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:38:13 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F41FC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:37:12 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id h7so19962843lfc.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:37:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XNwBZ3uUnUb6Ispb11A6Ynn8ywRI2rWh9CboV8C5Qnk=;
-        b=mQqP0hPmK8AL9hwA46BPP0fAkOQ+2S+3v8D+yIF1BGI64yaCzmtjet9Azij0dS+oag
-         oQx/W4C2Q6+1Gi7L26OrkEc+pyBzLRv17WDCGEhCz3305HXkApZY7M63fmZHvb3S04HI
-         hVsQgwlMCeOTHCNxLBQhMVi+/Dak8Yzu2HWA4mK2xSnSCL6H7WJpRpAkzPVg9beNMS3w
-         3u6o2DhTZ82O2qcxvC2uz5FiHbe6S5PzSPTWmmohyTzI40jSz1RsifLSGH+rXtUQYHfN
-         Cf3r8/f40Edkc1QImHhT0IKNeCx+9fqHTgdaYCjp8y5N2rQplEltM92lh6ZwaOaeXl3d
-         In1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XNwBZ3uUnUb6Ispb11A6Ynn8ywRI2rWh9CboV8C5Qnk=;
-        b=plh1Z6uiQQwYvF+hSu4aocio+r1CluQ1cHPb7ln/vVryTSbx+VifLvLaKT9FPtb5kr
-         fMepoO5YBBARcYTfjTjmNgiCfonl2oUqwgrX19juQkamyQD7taO5VIitBEibPdGtDFFA
-         wPk+xIeYQD1y5Yc9OQVEcEc7tQS3VsCHnM25/AYT0sY1InnAXE6oQOGlxe7qvWL1VFMJ
-         KXQwmC+9rw4R7RzB4+lBnxQyjPd4xbOCVRn0wN33loNuyQ9p5+teDMs8I4jFmGsjVfe0
-         II850X+W0vvpS5RhgzzOxK9W5ZRqXdP1s0exdIOJJ6B0ZNEWH/l/YvYcveANhnKBKvcP
-         41EQ==
-X-Gm-Message-State: AOAM531KEqNHd6iWU9Im4HBkbNyxOsD/X2GZi/ER6CRGOMKStJY8QF6K
-        YfjhAPGfJPj+lB+kP2VRA6UJyxxr3CZKySuD8a8=
-X-Google-Smtp-Source: ABdhPJzI9r1h6MStmuIfDO08jOyhr0/Qd7bFRk1fQL8XaCinMVzX+rLNP6mlN9l3feMzj7VUszRNgy1j+rpnO4RQOjA=
-X-Received: by 2002:a19:488c:: with SMTP id v134mr1093199lfa.229.1611610630782;
- Mon, 25 Jan 2021 13:37:10 -0800 (PST)
+        Mon, 25 Jan 2021 16:38:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611610641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DJBzsieLz3F34jgWNbDfs2G62KaotvEgYmhgd9nKqH8=;
+        b=KkOLx5p4T/FenTdeozBFdtHqDlFqJs7c+BHcVVeY8Dv+OiY1IRk+L/nLrTaZU146vcAyWw
+        IwNqUrERTvdl0MIOA31SHG2MqZihW1weBRBUD0pBf2uFrJ4Cd8IVvA8LbPVPnlc2B8XJxV
+        EUjiIIQkxjjOHfo8k0cityRvLgNwOC0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-Zz0Nd77RMqGTYIwAN4aTyA-1; Mon, 25 Jan 2021 16:37:17 -0500
+X-MC-Unique: Zz0Nd77RMqGTYIwAN4aTyA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11D2680669E;
+        Mon, 25 Jan 2021 21:37:15 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 755C510023AD;
+        Mon, 25 Jan 2021 21:37:12 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 30/32] NFS: Allow internal use of read structs and functions
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 25 Jan 2021 21:37:11 +0000
+Message-ID: <161161063169.2537118.13133700308967412779.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
- <20210108214313.GA7979@ripley> <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
- <20210110153532.GA7264@ripley> <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
- <20210110200606.GD7264@ripley> <CAOMZO5DJUm4zutTB1oi5M0zj4_PFZEAbGzX6_LUAkX_dvEz=Qg@mail.gmail.com>
- <20210116124856.GA3406@portage> <CAOMZO5DKann0ojZrhjyXOqrRq9owtgrrZTGwttD_bU0-KO=aBg@mail.gmail.com>
- <20210125212917.GA4177@portage>
-In-Reply-To: <20210125212917.GA4177@portage>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 25 Jan 2021 18:36:59 -0300
-Message-ID: <CAOMZO5DiTDQneYMtNBDpyqtYUYJ3AZ_fqWNSyfxWB5AfaNfULg@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
-To:     Oliver Graute <oliver.graute@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-On Mon, Jan 25, 2021 at 6:29 PM Oliver Graute <oliver.graute@gmail.com> wrote:
+The conversion of the NFS read paths to the new fscache API
+will require use of a few read structs and functions,
+so move these declarations as required.
 
-> Ok I fixed the pin conflict with regulator-gpio and added a 5V
-> regulator node in my dts file. Now the display is working fine!
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+---
 
-That's good news :-)
+ fs/nfs/internal.h |    8 ++++++++
+ fs/nfs/read.c     |   13 ++++---------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
-> I'll post the dts files soon and check if there is something to
-> improve for this patch.
+diff --git a/fs/nfs/internal.h b/fs/nfs/internal.h
+index 62d3189745cd..8514d002c922 100644
+--- a/fs/nfs/internal.h
++++ b/fs/nfs/internal.h
+@@ -457,9 +457,17 @@ extern int nfs4_get_rootfh(struct nfs_server *server, struct nfs_fh *mntfh, bool
+ 
+ struct nfs_pgio_completion_ops;
+ /* read.c */
++extern const struct nfs_pgio_completion_ops nfs_async_read_completion_ops;
+ extern void nfs_pageio_init_read(struct nfs_pageio_descriptor *pgio,
+ 			struct inode *inode, bool force_mds,
+ 			const struct nfs_pgio_completion_ops *compl_ops);
++struct nfs_readdesc {
++	struct nfs_pageio_descriptor pgio;
++	struct nfs_open_context *ctx;
++};
++extern int readpage_async_filler(void *data, struct page *page);
++extern void nfs_pageio_complete_read(struct nfs_pageio_descriptor *pgio,
++				     struct inode *inode);
+ extern void nfs_read_prepare(struct rpc_task *task, void *calldata);
+ extern void nfs_pageio_reset_read_mds(struct nfs_pageio_descriptor *pgio);
+ 
+diff --git a/fs/nfs/read.c b/fs/nfs/read.c
+index c2df4040f26c..13266eda8f60 100644
+--- a/fs/nfs/read.c
++++ b/fs/nfs/read.c
+@@ -30,7 +30,7 @@
+ 
+ #define NFSDBG_FACILITY		NFSDBG_PAGECACHE
+ 
+-static const struct nfs_pgio_completion_ops nfs_async_read_completion_ops;
++const struct nfs_pgio_completion_ops nfs_async_read_completion_ops;
+ static const struct nfs_rw_ops nfs_rw_read_ops;
+ 
+ static struct kmem_cache *nfs_rdata_cachep;
+@@ -74,7 +74,7 @@ void nfs_pageio_init_read(struct nfs_pageio_descriptor *pgio,
+ }
+ EXPORT_SYMBOL_GPL(nfs_pageio_init_read);
+ 
+-static void nfs_pageio_complete_read(struct nfs_pageio_descriptor *pgio,
++void nfs_pageio_complete_read(struct nfs_pageio_descriptor *pgio,
+ 				     struct inode *inode)
+ {
+ 	struct nfs_pgio_mirror *pgm;
+@@ -132,11 +132,6 @@ static void nfs_readpage_release(struct nfs_page *req, int error)
+ 	nfs_release_request(req);
+ }
+ 
+-struct nfs_readdesc {
+-	struct nfs_pageio_descriptor pgio;
+-	struct nfs_open_context *ctx;
+-};
+-
+ static void nfs_page_group_set_uptodate(struct nfs_page *req)
+ {
+ 	if (nfs_page_group_sync_on_bit(req, PG_UPTODATE))
+@@ -215,7 +210,7 @@ nfs_async_read_error(struct list_head *head, int error)
+ 	}
+ }
+ 
+-static const struct nfs_pgio_completion_ops nfs_async_read_completion_ops = {
++const struct nfs_pgio_completion_ops nfs_async_read_completion_ops = {
+ 	.error_cleanup = nfs_async_read_error,
+ 	.completion = nfs_read_completion,
+ };
+@@ -290,7 +285,7 @@ static void nfs_readpage_result(struct rpc_task *task,
+ 		nfs_readpage_retry(task, hdr);
+ }
+ 
+-static int
++int
+ readpage_async_filler(void *data, struct page *page)
+ {
+ 	struct nfs_readdesc *desc = (struct nfs_readdesc *)data;
 
-Did the panel patch I sent earlier work?
-https://pastebin.com/raw/diTMVsh8
 
-If it does, I can send it formally if you want.
