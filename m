@@ -2,81 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6D3303666
+	by mail.lfdr.de (Postfix) with ESMTP id 92136303667
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732051AbhAZGTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:19:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41933 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728767AbhAYNYY (ORCPT
+        id S1732232AbhAZGTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728811AbhAYNZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:24:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611580977;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0HGRoOq6BrrbzjHTsXqbOX8EfSf6zyIl/yxyGyvENJM=;
-        b=hKg9wC3fJ8UJSDDalt+dcqIuZsR781KqVnRZlLAscFnBIlqMJj5BmW8XTh9aOFp3WKHPVj
-        rLGKMOXdTBT5p6DHE98HvkqgzC4DGfu/NGaAMDUaInzB+XOolSKOgd4ekBW3Mc4ZzBsQBU
-        povqt745LleleWuusMmPkejHCPmTY7Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-zDQWX4KjMwav68AebMd7pQ-1; Mon, 25 Jan 2021 08:22:56 -0500
-X-MC-Unique: zDQWX4KjMwav68AebMd7pQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49B6E107ACE8;
-        Mon, 25 Jan 2021 13:22:54 +0000 (UTC)
-Received: from starship (unknown [10.35.206.204])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1901D60936;
-        Mon, 25 Jan 2021 13:22:46 +0000 (UTC)
-Message-ID: <c13849a741793d2f177447efb93f1719f73bf669.camel@redhat.com>
-Subject: Re: [PATCH v2 2/4] KVM: SVM: Add emulation support for #GP
- triggered by SVM instructions
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wei Huang <whuang2@amd.com>, Wei Huang <wei.huang2@amd.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, luto@amacapital.net
-Date:   Mon, 25 Jan 2021 15:22:46 +0200
-In-Reply-To: <YAoCy5C0Zj97iSjN@google.com>
-References: <20210121065508.1169585-1-wei.huang2@amd.com>
-         <20210121065508.1169585-3-wei.huang2@amd.com>
-         <cc55536e913e79d7ca99cbeb853586ca5187c5a9.camel@redhat.com>
-         <c77f4f42-657a-6643-8432-a07ccf3b221e@amd.com>
-         <cd4e3b9a5d5e4b47fa78bfb0ce447e856b18f8c8.camel@redhat.com>
-         <YAoCy5C0Zj97iSjN@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 25 Jan 2021 08:25:00 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A40EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:24:04 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id q12so17669020lfo.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:24:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=34Hjx1PO1OKBRWQUrjxNAC4+pp7naMbUXfnreuKppo0=;
+        b=U1BRxsxgIXCQkdb0WfGZa6suAj/6wG3+04a9HPdPlYnpnX1pHCsj+4/RYbxvNDntbz
+         bJKJctzgbm/etLBAwiqLEq8ALBDPdKjNL4l8aWc8y2UvDKjrUBTmYLUluzgm7LTjqsSF
+         VVowa2M2X+IUhNJL3Hhaf0vMZdkig92DVd35r4Iryl9rNu2v6TnXGf5DzfWikQlbAPgT
+         lqS4eScXIHsoy1z79984dOtw8VVqNNru0v6jhtizPxArhQ9w1Y6bL0dzJSJ/oNXP+qcI
+         C2o+wU74/Gq2sT8tqz5cBms2PQlcoMp/MiLxW8+VQAGy4LA0QnO7LkQrWoKG8eZNboOR
+         5ozg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=34Hjx1PO1OKBRWQUrjxNAC4+pp7naMbUXfnreuKppo0=;
+        b=Z7zlUFEJpe41OTpWY0x37jkle2DJJtu5ojlrg9ceGEqeJf4YYSrOgqXh8I+NDvy26s
+         273fnaNn0Wl+msTIy78fS0esnUDrwVTIgXN4jTtwvnO6jEJna77vzmJrQh5VhVZ8KvRR
+         /k+V8r++vhpbkp3zq0zsok90kaZe01e3xJJjOEh/h7Qpriv2ZqUjFt2+HEGTrKXU5agH
+         IruGLHRA1Ot/gWE8fVqwFkucqz/RwBOP3+ZQpOkTAhi6jKfRHnnr+Fz3DIzXbL0DIGN/
+         kyy7cn8J/fsCiMoOSGQ9jUAjZzq6481Rutmlk+peo9Qr9Kn2wn3jVvKK956QzzB8ja3A
+         MGSA==
+X-Gm-Message-State: AOAM531z6Dbo1QNrCQSWmk/uHCpOu4LDhk8Tz00cdLqcAJnD2lBSYiIK
+        HNWb5xe6guia/3gnO7FpvZXGperR0RfFVb9sHV0lNQ==
+X-Google-Smtp-Source: ABdhPJy0nwZ5Xc+AK9TDpDG68Lvr+X4i3hL2Vjj1dgWwa7U9qcvyGCF00i2TLUkL5k/YTscMh6dKEv2v+PJsmQ1Kl7U=
+X-Received: by 2002:a19:ac45:: with SMTP id r5mr283498lfc.305.1611581042784;
+ Mon, 25 Jan 2021 05:24:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com> <20210122183927.ivqyapttzd6lflwk@e107158-lin>
+In-Reply-To: <20210122183927.ivqyapttzd6lflwk@e107158-lin>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 25 Jan 2021 14:23:51 +0100
+Message-ID: <CAKfTPtA=Cv3N6EQ7UcgeUsRaAMy7U242xzH+rfJJzE73bYFZ5A@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-21 at 14:40 -0800, Sean Christopherson wrote:
-> On Thu, Jan 21, 2021, Maxim Levitsky wrote:
-> > BTW, on unrelated note, currently the smap test is broken in kvm-unit tests.
-> > I bisected it to commit 322cdd6405250a2a3e48db199f97a45ef519e226
-> > 
-> > It seems that the following hack (I have no idea why it works,
-> > since I haven't dug deep into the area 'fixes', the smap test for me)
-> > 
-> > -#define USER_BASE      (1 << 24)
-> > +#define USER_BASE      (1 << 25)
-> 
-> https://lkml.kernel.org/r/20210121111808.619347-2-imbrenda@linux.ibm.com
-> 
-Thanks!
+On Fri, 22 Jan 2021 at 19:39, Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 01/22/21 17:56, Vincent Guittot wrote:
+> > > ---
+> > >  kernel/sched/fair.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 04a3ce20da67..fe2dc0024db5 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -8381,7 +8381,7 @@ static bool update_nohz_stats(struct rq *rq, bool force)
+> > >         if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+> > >                 return false;
+> > >
+> > > -       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick))
+> > > +       if (!force && !time_after(jiffies, rq->last_blocked_load_update_tick + (HZ/20)))
+> >
+> > This condition is there to make sure to update blocked load at most
+> > once a tick in order to filter newly idle case otherwise the rate
+> > limit is already done by load balance interval
+> > This hard coded (HZ/20) looks really like an ugly hack
+>
+> This was meant as an RFC patch to discuss the problem really.
+>
+> Joel is seeing update_blocked_averages() taking ~100us. Half of it seems in
+> processing __update_blocked_fair() and the other half in sugov_update_shared().
+> So roughly 50us each. Note that each function is calling an iterator in
 
-Best regards,
-	Maxim Levitsky
+Can I assume that a freq change happens if sugov_update_shared() takes 50us ?
+which would mean that the update was useful at the end ?
 
+> return. Correct me if my numbers are wrong Joel.
+>
+> Running on a little core on low frequency these numbers don't look too odd.
+> So I'm not seeing how we can speed these functions up.
+>
+> But since update_sg_lb_stats() will end up with multiple calls to
+> update_blocked_averages() in one go, this latency adds up quickly.
+>
+> One noticeable factor in Joel's system is the presence of a lot of cgroups.
+> Which is essentially what makes __update_blocked_fair() expensive, and it seems
+> to always return something has decayed so we end up with a call to
+> sugov_update_shared() in every call.
+>
+> I think we should limit the expensive call to update_blocked_averages() but
+
+At the opposite, some will complain that block values  stay stall to
+high value and prevent any useful adjustment.
+
+Also update_blocked average is already rate limited with idle and busy
+load_balance
+
+Seems like the problem raised by Joel is the number of newly idle load balance
+
+> I honestly don't know what would be the right way to do it :-/
+>
+> Or maybe there's another better alternative too..
+>
+> Thanks
+>
+> --
+> Qais Yousef
+>
+> >
+> > >                 return true;
+> > >
+> > >         update_blocked_averages(cpu);
+> > > --
+> > > 2.30.0.280.ga3ce27912f-goog
+> > >
