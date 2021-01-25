@@ -2,85 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41289302C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB540302C02
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732118AbhAYTv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:51:57 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:43639 "EHLO
+        id S1732149AbhAYTw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:52:26 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:33979 "EHLO
         mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731959AbhAYTgr (ORCPT
+        with ESMTP id S1731937AbhAYThP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:36:47 -0500
-Received: by mail-ot1-f47.google.com with SMTP id v1so13898520ott.10;
-        Mon, 25 Jan 2021 11:36:32 -0800 (PST)
+        Mon, 25 Jan 2021 14:37:15 -0500
+Received: by mail-ot1-f47.google.com with SMTP id a109so13937399otc.1;
+        Mon, 25 Jan 2021 11:37:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mH2q1AZz5irHrvq/3t1+Obhg0JHH2TFjERBNOT0hM0Q=;
-        b=kHRTcon5gkg8SRuDD2vKcTtr8mLEKrRVRfUepR+vwUkVTALUi0qhZHnOLAQfpGA8nO
-         v9hFkNl7ovck8fRU91TRDhgHikzmEieptoGufXz5mz1YGNtSACKppmmrX4NykT7g6VpR
-         72t+3vJcc+u7J78XwED+D5a2C8oh5EsKfGVxXkHybN9qVQHSWGWB9FEM/DWi+nLX3jDI
-         fi/m+93Lu8UikDho+vYay+J8XTaltFtYD7c5Mr/t5PlVy1HW3gqwXT9wuKDsQwC4MRgH
-         tgKLdFoaYykFv+KNMEqnUInQJdCd58X/AEALBrPPGHz2TVuuBu6/Y3R0DbWsc1CiCXvL
-         IyUg==
-X-Gm-Message-State: AOAM530SgHShS7lzmroF8duZEsmO+lmdV2ltjkhGO+gpcXiIMyQJFtVO
-        Rf6UVEG7ZrBo77I7NQdNfQ==
-X-Google-Smtp-Source: ABdhPJwBqs6kpkcYrx/aXfe/1e/07a9bQgMjrd1YtHP4Jbg6s9G1TE28GLJ8saSbZE8IZ5BXrEU1qg==
-X-Received: by 2002:a05:6830:2f3:: with SMTP id r19mr1513671ote.299.1611603366943;
-        Mon, 25 Jan 2021 11:36:06 -0800 (PST)
+        bh=BqRRksk+3G/r1SIptHOITJUnap9kkWd8tCAejk57+/w=;
+        b=OwDDLGBJC02p/vvd2mM+hSDHhk3Ez96B/97S5tAG3a7vN/2KRlQuhOpB2/nJ/NIri4
+         cEDkrm0wkyYLo7XmVVIed6GErHzOzWzmV4tQcQqZxmKvysz6NDqeoP6Bd3MdWYC9w6yx
+         sUJWFNVGSXtI4RG2/pPtBbzAp5vQha7glDGm4bPlvxdDZfCgNIvzuV9NzARAz1tJtESo
+         klG55b822artdGoIq6+nBgqJJBVnZ1ZZuxBmQT/pzMwd60lH26NjOSVq8HGahoHQziX7
+         en9KTBFriJPv1jU8qPbsw7RAnDUiusx2vEjxWjTNjCelgYeaIKuJ93KxxppY4uggS6fj
+         DX3A==
+X-Gm-Message-State: AOAM533EpgavPz5L9Hf7reE+UMfBuDDjOQnb3EYGmB9JXDIHcWaW9Rce
+        ex0oWeliaFJt+fgR7QZ0jw==
+X-Google-Smtp-Source: ABdhPJzlEW0dIRUFPrRvLWdmFeuR1WWHyjf3aQ+xypxGsQfZC/kKhBP3Saz9yuCGB7AFW3Nx6YZPOg==
+X-Received: by 2002:a05:6830:13d3:: with SMTP id e19mr1527569otq.157.1611603394687;
+        Mon, 25 Jan 2021 11:36:34 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z4sm551224ooz.5.2021.01.25.11.36.05
+        by smtp.gmail.com with ESMTPSA id l110sm2623884otc.25.2021.01.25.11.36.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:36:06 -0800 (PST)
-Received: (nullmailer pid 830007 invoked by uid 1000);
-        Mon, 25 Jan 2021 19:36:04 -0000
-Date:   Mon, 25 Jan 2021 13:36:04 -0600
+        Mon, 25 Jan 2021 11:36:33 -0800 (PST)
+Received: (nullmailer pid 830912 invoked by uid 1000);
+        Mon, 25 Jan 2021 19:36:32 -0000
+Date:   Mon, 25 Jan 2021 13:36:32 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Bin Liu <bin.liu@mediatek.com>, David Airlie <airlied@linux.ie>,
-        Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Rick Chang <rick.chang@mediatek.com>
-Subject: Re: [PATCH 22/24] dt-bindings: memory: mediatek: update mediatek,
- smi-larb.yaml references
-Message-ID: <20210125193604.GA829546@robh.at.kernel.org>
-References: <cover.1610535349.git.mchehab+huawei@kernel.org>
- <c70bd79b311a65babe7374eaf81974563400a943.1610535350.git.mchehab+huawei@kernel.org>
+        linux-arm-kernel@lists.infradead.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] dt-bindings: arm64: dts: mediatek: Add krane sku0
+Message-ID: <20210125193632.GA830825@robh.at.kernel.org>
+References: <20210113110400.616319-1-hsinyi@chromium.org>
+ <20210113110400.616319-3-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c70bd79b311a65babe7374eaf81974563400a943.1610535350.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210113110400.616319-3-hsinyi@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 11:59:23 +0100, Mauro Carvalho Chehab wrote:
-> Changeset 27bb0e42855a ("dt-bindings: memory: mediatek: Convert SMI to DT schema")
-> renamed: Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.txt
-> to: Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml.
+On Wed, 13 Jan 2021 19:04:03 +0800, Hsin-Yi Wang wrote:
+> Krane-sku0 is similar to krane-sku176 but using a different panel
+> source.
 > 
-> Update its cross-references accordingly.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > ---
->  .../devicetree/bindings/display/mediatek/mediatek,disp.txt      | 2 +-
->  .../devicetree/bindings/media/mediatek-jpeg-decoder.txt         | 2 +-
->  .../devicetree/bindings/media/mediatek-jpeg-encoder.txt         | 2 +-
->  Documentation/devicetree/bindings/media/mediatek-mdp.txt        | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 
-Applied, thanks!
+Reviewed-by: Rob Herring <robh@kernel.org>
