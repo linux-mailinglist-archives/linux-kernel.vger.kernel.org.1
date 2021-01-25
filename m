@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFB330362F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 223EC303646
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbhAZGDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:03:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbhAYMr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:47:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8EB622D04;
-        Mon, 25 Jan 2021 12:46:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611578806;
-        bh=kXFZkQ9+v70aH3YVPuA5/lu+eenOiEeGF4vdN+dLFXQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DXTCMseCI/Zpe+8B3NRpfNUmZER45GKnjtDKktN9SOa5UxRqf7GzeMm26nh7vHuzB
-         a1vxPTVpUEG3IS8mGE/i695PZBWod8q4jJKIcWH5d5wgIPBxbpGTJV/c8Gxh8k9oJR
-         lZGpFG2I1enjOqDI7LYKBuArgdxcJcuN/jhMLEN0qt6b3GVquUJEDWlwQhWxNwIvis
-         bubRTpFAdqO4LuM8OB2fmrZHyuOs4XhU4zCVbDYasw46qtiSq+2SEg3bMvH/5iCX8R
-         ReLQ+Li7judC1UxCNTvdGb97OGiO+bLO1RK4szwMpzgfJULqIM5mYRMY+wUy4YNLgG
-         EoeAvpQdDw+JA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com,
-        Andreas Noever <andreas.noever@gmail.com>,
-        linux-usb@vger.kernel.org
-Subject: [RFC 3/3] thunderbolt: build kunit tests without structleak plugin
-Date:   Mon, 25 Jan 2021 13:45:28 +0100
-Message-Id: <20210125124533.101339-4-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210125124533.101339-1-arnd@kernel.org>
-References: <20210125124533.101339-1-arnd@kernel.org>
+        id S1728827AbhAZGIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:08:38 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11492 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728437AbhAYMww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:52:52 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DPV8k4bwpzjD7W;
+        Mon, 25 Jan 2021 20:50:46 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 20:51:49 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
+        <kjain@linux.ibm.com>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] perf test: Add parse-metric memory bandwidth testcase
+Date:   Mon, 25 Jan 2021 20:47:22 +0800
+Message-ID: <1611578842-5749-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Event duration_time in a metric expression requires special handling.
 
-The structleak plugin causes the stack frame size to grow immensely:
+Improve test coverage by including a metric whose expression includes
+duration_time. The actual metric is a copied from the L1D_Cache_Fill_BW
+metric on my broadwell machine.
 
-drivers/thunderbolt/test.c:1529:1: error: the frame size of 1176 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
-
-Turn it off in this file.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- drivers/thunderbolt/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+Based on acme perf/core + "perf metricgroup: Fix for metrics containing duration_time"
 
-diff --git a/drivers/thunderbolt/Makefile b/drivers/thunderbolt/Makefile
-index 7aa48f6c41d9..e571c0495a84 100644
---- a/drivers/thunderbolt/Makefile
-+++ b/drivers/thunderbolt/Makefile
-@@ -7,6 +7,7 @@ thunderbolt-objs += nvm.o retimer.o quirks.o
- thunderbolt-${CONFIG_ACPI} += acpi.o
- thunderbolt-$(CONFIG_DEBUG_FS) += debugfs.o
- thunderbolt-${CONFIG_USB4_KUNIT_TEST} += test.o
-+CFLAGS_REMOVE_test.o += -fplugin-arg-structleak_plugin-byref -fplugin-arg-structleak_plugin-byref-all
+diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+index ce7be37f0d88..6dc1db1626ad 100644
+--- a/tools/perf/tests/parse-metric.c
++++ b/tools/perf/tests/parse-metric.c
+@@ -69,6 +69,10 @@ static struct pmu_event pme_test[] = {
+ 	.metric_expr	= "1/m3",
+ 	.metric_name	= "M3",
+ },
++{
++	.metric_expr	= "64 * l1d.replacement / 1000000000 / duration_time",
++	.metric_name	= "L1D_Cache_Fill_BW",
++},
+ {
+ 	.name	= NULL,
+ }
+@@ -107,6 +111,8 @@ static void load_runtime_stat(struct runtime_stat *st, struct evlist *evlist,
+ 	evlist__for_each_entry(evlist, evsel) {
+ 		count = find_value(evsel->name, vals);
+ 		perf_stat__update_shadow_stats(evsel, count, 0, st);
++		if (!strcmp(evsel->name, "duration_time"))
++			update_stats(&walltime_nsecs_stats, count);
+ 	}
+ }
  
- thunderbolt_dma_test-${CONFIG_USB4_DMA_TEST} += dma_test.o
- obj-$(CONFIG_USB4_DMA_TEST) += thunderbolt_dma_test.o
+@@ -321,6 +327,23 @@ static int test_recursion_fail(void)
+ 	return 0;
+ }
+ 
++static int test_memory_bandwidth(void)
++{
++	double ratio;
++	struct value vals[] = {
++		{ .event = "l1d.replacement", .val = 4000000 },
++		{ .event = "duration_time",  .val = 200000000 },
++		{ .event = NULL, },
++	};
++
++	TEST_ASSERT_VAL("failed to compute metric",
++			compute_metric("L1D_Cache_Fill_BW", vals, &ratio) == 0);
++	TEST_ASSERT_VAL("L1D_Cache_Fill_BW, wrong ratio",
++			1.28 == ratio);
++
++	return 0;
++}
++
+ static int test_metric_group(void)
+ {
+ 	double ratio1, ratio2;
+@@ -353,5 +376,6 @@ int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unu
+ 	TEST_ASSERT_VAL("DCache_L2 failed", test_dcache_l2() == 0);
+ 	TEST_ASSERT_VAL("recursion fail failed", test_recursion_fail() == 0);
+ 	TEST_ASSERT_VAL("test metric group", test_metric_group() == 0);
++	TEST_ASSERT_VAL("Memory bandwidth", test_memory_bandwidth() == 0);
+ 	return 0;
+ }
 -- 
-2.29.2
+2.26.2
 
