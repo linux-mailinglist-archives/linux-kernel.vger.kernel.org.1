@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E693038DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45091303904
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390416AbhAZJUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730624AbhAYSsS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:48:18 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C690AC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:47:33 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id j12so135308pjy.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:47:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=ETq2ktZkANjUC7Me/RyH9n1tJakbH50bRmVCx0xOmwg=;
-        b=OwEBYQmaBsKbc7iDfMlqm2AWtZvRyFNZfh0RZHpJvnSTDzlpuc8InF121vKQkdAM9I
-         o48u7t/O1pHkbeuCyGvD7PBJxbfgQ1ZpGAs1P93++HXiembtNowP79kdpPL71MazE2Js
-         MOjKH7BVJPSFVTSk2iMDaDNbJ66ZVC/Oyudj3q0Ek98fFGw/iu9n0JPoBDNWgkY6JayK
-         ptMBDCpsyrA7UZQzBm4vtKw6TLFOGYqAjPF1awu+O3RoDAwgGvyeZMIY1Km951sUFv19
-         kr02qfCVRCvnVUjfbxLlg0eG0NaOULqteXBvwUnwOULESMD4hbmUWrAGjdwvS8W2jeE7
-         +Rfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=ETq2ktZkANjUC7Me/RyH9n1tJakbH50bRmVCx0xOmwg=;
-        b=Nu3h9Hat4Z9xE2b6VoqoVB2IB1/LKR+CyY/k/Hr9IiHKeFrb8bMichJz1myqxihMip
-         ueZUN8BM5JdphoCqWpXWNu4Ifr+V8HiA7nZyhY1hHA1CJBOEej2P7b2xupHU/LBy7pmR
-         5EujNjCcdUo5CurlG05+QoaCYe1P7j/WLoeUOA2WvTADKo2p8KkYxNfR0buogpZ+NmJR
-         XZ+/4SJ/0ohBJjR1FZRG3oiLSr3R/c8imoXZi7TXSCQBqdvFebxnJWmQBeevM5zmloX9
-         fFvOdRhcOZ3Hh4riiWmDkdfAkfFJcf++V2OkQOVA9hoLcs+lF1+O+ncDrR3YE2jCijiu
-         bDkw==
-X-Gm-Message-State: AOAM532qNPGRaaw3IySdJ+YOS5vNq7Ym4Ex8tchGbgbncaenK42CN6Az
-        hWpmdXdIrbFXK9TYetVDk9VRNw==
-X-Google-Smtp-Source: ABdhPJwcJvhoNQhB4A5BKUQVkatkkHcE3W30AKdVI3lYpo5ilXK0mRFQaoESZtN23pj62Dq7kfxK8w==
-X-Received: by 2002:a17:90a:a394:: with SMTP id x20mr1593054pjp.24.1611600453220;
-        Mon, 25 Jan 2021 10:47:33 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id z16sm17086131pgj.51.2021.01.25.10.47.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:47:32 -0800 (PST)
-Date:   Mon, 25 Jan 2021 10:47:31 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3_=E7=9B=B4=E4=B9=9F=29?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v13 02/12] mm: hugetlb: introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-In-Reply-To: <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com>
-Message-ID: <2d9bfd8d-a77f-6470-807c-1a71ffeac3ff@google.com>
-References: <20210117151053.24600-1-songmuchun@bytedance.com> <20210117151053.24600-3-songmuchun@bytedance.com> <472a58b9-12cb-3c3-d132-13dbae5174f0@google.com> <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com> <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org>
- <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com>
+        id S2391110AbhAZJaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:30:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728621AbhAYSth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:49:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E5662067B;
+        Mon, 25 Jan 2021 18:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600561;
+        bh=yar+POTz+vhoeHEmu5w/G1nxdxiXk1bIOlmBumyjAAM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OFq6HCzbniZZdl5QXokVJhC05+JCa4AM6e4xeNCjQG+nNnq6evPdjgbgZOMqIm/XK
+         jIdpepFokE6Qpe2EGocPY0m4MF2K0rk5bkYV6xkRuA5Jbxyes/+eupbbiprkXg5V+H
+         yjM1Bx5CTxO8z6nN44LgTD+By9ObLLx7Gfit3uQo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.10 022/199] mmc: sdhci-of-dwcmshc: fix rpmb access
+Date:   Mon, 25 Jan 2021 19:37:24 +0100
+Message-Id: <20210125183217.192901843@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+References: <20210125183216.245315437@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021, Muchun Song wrote:
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-> > >> I'm not sure I understand the rationale for providing this help text if
-> > >> this is def_bool depending on CONFIG_HUGETLB_PAGE.  Are you intending that
-> > >> this is actually configurable and we want to provide guidance to the admin
-> > >> on when to disable it (which it currently doesn't)?  If not, why have the
-> > >> help text?
-> > >
-> > > This is __not__ configurable. Seems like a comment to help others
-> > > understand this option. Like Randy said.
-> >
-> > Yes, it could be written with '#' (or "comment") comment syntax instead of as help text.
-> 
-> Got it. I will update in the next version. Thanks.
-> 
+commit ca1219c0a7432272324660fc9f61a9940f90c50b upstream.
 
-I'm not sure that Kconfig is the right place to document functional 
-behavior of the kernel, especially for non-configurable options.  Seems 
-like this is already served by existing comments added by this patch 
-series in the files where the description is helpful.
+Commit a44f7cb93732 ("mmc: core: use mrq->sbc when sending CMD23 for
+RPMB") began to use ACMD23 for RPMB if the host supports ACMD23. In
+RPMB ACM23 case, we need to set bit 31 to CMD23 argument, otherwise
+RPMB write operation will return general fail.
+
+However, no matter V4 is enabled or not, the dwcmshc's ARGUMENT2
+register is 32-bit block count register which doesn't support stuff
+bits of CMD23 argument. So let's handle this specific ACMD23 case.
+
+>From another side, this patch also prepare for future v4 enabling
+for dwcmshc, because from the 4.10 spec, the ARGUMENT2 register is
+redefined as 32bit block count which doesn't support stuff bits of
+CMD23 argument.
+
+Fixes: a44f7cb93732 ("mmc: core: use mrq->sbc when sending CMD23 for RPMB")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20201229161625.38255233@xhacker.debian
+Cc: stable@vger.kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/mmc/host/sdhci-of-dwcmshc.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+--- a/drivers/mmc/host/sdhci-of-dwcmshc.c
++++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+@@ -16,6 +16,8 @@
+ 
+ #include "sdhci-pltfm.h"
+ 
++#define SDHCI_DWCMSHC_ARG2_STUFF	GENMASK(31, 16)
++
+ /* DWCMSHC specific Mode Select value */
+ #define DWCMSHC_CTRL_HS400		0x7
+ 
+@@ -49,6 +51,29 @@ static void dwcmshc_adma_write_desc(stru
+ 	sdhci_adma_write_desc(host, desc, addr, len, cmd);
+ }
+ 
++static void dwcmshc_check_auto_cmd23(struct mmc_host *mmc,
++				     struct mmc_request *mrq)
++{
++	struct sdhci_host *host = mmc_priv(mmc);
++
++	/*
++	 * No matter V4 is enabled or not, ARGUMENT2 register is 32-bit
++	 * block count register which doesn't support stuff bits of
++	 * CMD23 argument on dwcmsch host controller.
++	 */
++	if (mrq->sbc && (mrq->sbc->arg & SDHCI_DWCMSHC_ARG2_STUFF))
++		host->flags &= ~SDHCI_AUTO_CMD23;
++	else
++		host->flags |= SDHCI_AUTO_CMD23;
++}
++
++static void dwcmshc_request(struct mmc_host *mmc, struct mmc_request *mrq)
++{
++	dwcmshc_check_auto_cmd23(mmc, mrq);
++
++	sdhci_request(mmc, mrq);
++}
++
+ static void dwcmshc_set_uhs_signaling(struct sdhci_host *host,
+ 				      unsigned int timing)
+ {
+@@ -133,6 +158,8 @@ static int dwcmshc_probe(struct platform
+ 
+ 	sdhci_get_of_property(pdev);
+ 
++	host->mmc_host_ops.request = dwcmshc_request;
++
+ 	err = sdhci_add_host(host);
+ 	if (err)
+ 		goto err_clk;
+
+
