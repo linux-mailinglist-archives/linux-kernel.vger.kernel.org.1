@@ -2,124 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709F83026E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988E1302752
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729873AbhAYP03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:26:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32896 "EHLO mail.kernel.org"
+        id S1730565AbhAYPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:52:36 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:33499 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729932AbhAYPCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:02:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38C232310B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611586834;
-        bh=hd/WXSL7nvCB88gXvns199QHmgVVBrlCpN1PP6wvQHw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jpPA43bvelk6gF/9cB93LHi7Tly+kXkFx6hG6PHe+9hpQbbKXRCjw499iIjLbeqnz
-         AjqmnsIR7Tui3CxngPzhbqCv09a5QdeWAtjObuDMpO+LqJhNRFSxhGOI3B3il2HN98
-         8SMTMo41asS0b/1rp4BG5XSI44LSR7AzJe/bh+u5xkk4TPSRVmj8IHhPgU0Y/mMZyD
-         yKfIXt54JTHJN6dUxsvM/V/FCAolPrs33scoHlvMVVb+dVdMjXnWCnFPCxTGhnzlH+
-         VReByrSeAq6c39B8eS77RfwGjyFPhRP6qBI7/B6nR7II3xm1OfuYKmRET2QcxFTYZF
-         N2trskMz/Kwjg==
-Received: by mail-ot1-f53.google.com with SMTP id d1so12939492otl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:00:34 -0800 (PST)
-X-Gm-Message-State: AOAM532wfXJ4rhPEu3swG4sVLvMamLgByVOq7qDV9Dbwm0MwVy/Ouofp
-        rQSdKUVAPX+q7eVmhxkUZow5YZ0R7CQ1pwhlRSE=
-X-Google-Smtp-Source: ABdhPJw1XagAoMkdlEgNaYOLX1Mg3wGRaGlR6h1xBKgBfrY9aj6SMHjzWNtcB8bOfL/jGHT7EzD/r/eZef5aGiCiEgQ=
-X-Received: by 2002:a05:6830:1158:: with SMTP id x24mr712541otq.108.1611586833510;
- Mon, 25 Jan 2021 07:00:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125105019.2946057-1-maz@kernel.org> <20210125105019.2946057-19-maz@kernel.org>
- <CAMj1kXFcc+0At5+9Keo1MF=TeGE9-eOHtSpK7yVy5jzwXt6KCA@mail.gmail.com>
- <3a98ff1db79c90c96038b924eb534643@kernel.org> <CAMj1kXGTu8AtMnm7NxB8M2xFuXHSKzAx2hjjeaAW2v-usvavVQ@mail.gmail.com>
- <32b49beb87b25303d71fd2f7053c7959@kernel.org>
-In-Reply-To: <32b49beb87b25303d71fd2f7053c7959@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 25 Jan 2021 16:00:21 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXGW3yWqBMk8E23e4PnYAXWUGUUeg4xFVyhHtq+v3WLF_w@mail.gmail.com>
-Message-ID: <CAMj1kXGW3yWqBMk8E23e4PnYAXWUGUUeg4xFVyhHtq+v3WLF_w@mail.gmail.com>
-Subject: Re: [PATCH v5 18/21] arm64: Move "nokaslr" over to the early
- cpufeature infrastructure
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1730436AbhAYPvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:51:38 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DPN7n2tc9z9tycp;
+        Mon, 25 Jan 2021 09:19:33 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id r9zd72zybLeJ; Mon, 25 Jan 2021 09:19:33 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPN7n1rTrz9tyck;
+        Mon, 25 Jan 2021 09:19:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3ECA78B780;
+        Mon, 25 Jan 2021 09:19:38 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9YHVHQQQx1xl; Mon, 25 Jan 2021 09:19:38 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EC7C48B75F;
+        Mon, 25 Jan 2021 09:19:37 +0100 (CET)
+Subject: Re: [PATCH v10 05/12] mm: HUGE_VMAP arch support cleanup
+To:     Christoph Hellwig <hch@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-6-npiggin@gmail.com>
+ <20210124114008.GE694255@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <eaa411c5-c3c1-ff87-a671-4059324d0ee1@csgroup.eu>
+Date:   Mon, 25 Jan 2021 09:19:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <20210124114008.GE694255@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 15:28, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2021-01-25 14:19, Ard Biesheuvel wrote:
-> > On Mon, 25 Jan 2021 at 14:54, Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> On 2021-01-25 12:54, Ard Biesheuvel wrote:
->
-> [...]
->
-> >> > This struct now takes up
-> >> > - ~100 bytes for the characters themselves (which btw are not emitted
-> >> > into __initdata or __initconst)
-> >> > - 6x8 bytes for the char pointers
-> >> > - 6x24 bytes for the RELA relocations that annotate these pointers as
-> >> > quantities that need to be relocated at boot (on a kernel built with
-> >> > KASLR)
-> >> >
-> >> > I know it's only a drop in the ocean, but in this case, where the
-> >> > struct is statically declared and defined only once, and in the same
-> >> > place, we could easily turn this into
-> >> >
-> >> > static const struct {
-> >> >    char alias[24];
-> >> >    char param[20];
-> >> > };
-> >> >
-> >> > and get rid of all the overhead. The only slightly annoying thing is
-> >> > that the array sizes need to be kept in sync with the largest instance
-> >> > appearing in the array, but this is easy when the struct type is
-> >> > declared in the same place where its only instance is defined.
-> >>
-> >> Fair enough. I personally find the result butt-ugly, but I agree
-> >> that it certainly saves some memory. Does the following work for
-> >> you? I can even give symbolic names to the various constants (how
-> >> generous of me! ;-).
-> >>
-> >
-> > To be honest, I was anticipating more of a discussion, but this looks
-> > reasonable to me.
->
-> It looked like a reasonable ask: all the strings are completely useless
-> once the kernel has booted, and I'm the first to moan that I can't boot
-> an arm64 kernel with less than 60MB of RAM (OK, it's a pretty bloated
-> kernel...).
->
-> > Does 'char    feature[80];' really need 80 bytes though?
->
-> It really needs 75 bytes, because of this:
->
->         { "arm64.nopauth",
->           "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
->           "id_aa64isar1.api=0 id_aa64isar1.apa=0"          },
->
-> 80 is a round enough number.
->
 
-Fair enough. This will inflate the struct substantially, but at least
-it's all __initconst data now, and it's all NUL bytes so it compresses
-much better than the pointers and RELA entries.
+
+Le 24/01/2021 à 12:40, Christoph Hellwig a écrit :
+>> diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
+>> index 2ca708ab9b20..597b40405319 100644
+>> --- a/arch/arm64/include/asm/vmalloc.h
+>> +++ b/arch/arm64/include/asm/vmalloc.h
+>> @@ -1,4 +1,12 @@
+>>   #ifndef _ASM_ARM64_VMALLOC_H
+>>   #define _ASM_ARM64_VMALLOC_H
+>>   
+>> +#include <asm/page.h>
+>> +
+>> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+>> +bool arch_vmap_p4d_supported(pgprot_t prot);
+>> +bool arch_vmap_pud_supported(pgprot_t prot);
+>> +bool arch_vmap_pmd_supported(pgprot_t prot);
+>> +#endif
+> 
+> Shouldn't the be inlines or macros?  Also it would be useful
+> if the architectures would not have to override all functions
+> but just those that are it actually implements?
+> 
+> Also lots of > 80 char lines in the patch.
+> 
+
+Since https://github.com/linuxppc/linux/commit/bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+this 80 char limit is not strongly enforced anymore.
+
+Allthough 80 is still the prefered limit, code is often more readable with a slightly longer single 
+line that with lines splited.
+
+Christophe
