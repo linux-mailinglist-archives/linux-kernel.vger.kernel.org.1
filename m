@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84603303851
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C0F30387B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:59:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390574AbhAZIsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:48:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33006 "EHLO mail.kernel.org"
+        id S1728630AbhAZI7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:59:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729815AbhAYSpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:45:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F5EA20665;
-        Mon, 25 Jan 2021 18:44:56 +0000 (UTC)
+        id S1730102AbhAYSqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:46:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C695120719;
+        Mon, 25 Jan 2021 18:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600297;
-        bh=5WUoD5zwsd4RXHHGhCQkpJlGUZLtx2s2ZRLAwnOOOLU=;
+        s=korg; t=1611600354;
+        bh=qzM2hHj14eND2hCMF9AFPQw0B9SckEsTa+ivL8dBuIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wuu36N3T8g7xAb6tXtq0TuE+iqB4pfylERGVxUtmBT4+XDmZfgmDqoJXdZETRu4lP
-         1YxB0GdAIiTx3IxhGUhK+hsOUBEFs0zJCdAvZhifDnLxJyOl4z+YMDuhjFG49e+wSq
-         Vf8Ta7FpoAmw5DiJO06KbTToi8KXZtLa5vik+oho=
+        b=X9Ww2bdYlQ1jR4unMValeL0Ejhip5lhyM36BQWnCgvRKcXl5pogN69m/+v+uSXqlL
+         NHIRYMFWm7D+llQCtw4T7u/zNQ46TM0AVfjETHs/oBZx3ODWLs1aBCkWfM7MF0/MaG
+         Tma2mX8/mXrIjXvcA9y4cLXdymhXpeIFPL2wUmKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        stable@vger.kernel.org, Youling Tang <tangyouling@loongson.cn>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 40/86] drm/nouveau/mmu: fix vram heap sizing
-Date:   Mon, 25 Jan 2021 19:39:22 +0100
-Message-Id: <20210125183202.758808845@linuxfoundation.org>
+Subject: [PATCH 5.4 42/86] powerpc: Use the common INIT_DATA_SECTION macro in vmlinux.lds.S
+Date:   Mon, 25 Jan 2021 19:39:24 +0100
+Message-Id: <20210125183202.840887063@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -39,33 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Youling Tang <tangyouling@loongson.cn>
 
-[ Upstream commit add42781ad76c5ae65127bf13852a4c6b2f08849 ]
+[ Upstream commit fdcfeaba38e5b183045f5b079af94f97658eabe6 ]
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Use the common INIT_DATA_SECTION rule for the linker script in an effort
+to regularize the linker script.
+
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1604487550-20040-1-git-send-email-tangyouling@loongson.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/kernel/vmlinux.lds.S | 19 +------------------
+ 1 file changed, 1 insertion(+), 18 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c
-index ee11ccaf0563c..cb51e248cb41b 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/mmu/base.c
-@@ -316,9 +316,9 @@ nvkm_mmu_vram(struct nvkm_mmu *mmu)
- {
- 	struct nvkm_device *device = mmu->subdev.device;
- 	struct nvkm_mm *mm = &device->fb->ram->vram;
--	const u32 sizeN = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NORMAL);
--	const u32 sizeU = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NOMAP);
--	const u32 sizeM = nvkm_mm_heap_size(mm, NVKM_RAM_MM_MIXED);
-+	const u64 sizeN = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NORMAL);
-+	const u64 sizeU = nvkm_mm_heap_size(mm, NVKM_RAM_MM_NOMAP);
-+	const u64 sizeM = nvkm_mm_heap_size(mm, NVKM_RAM_MM_MIXED);
- 	u8 type = NVKM_MEM_KIND * !!mmu->func->kind;
- 	u8 heap = NVKM_MEM_VRAM;
- 	int heapM, heapN, heapU;
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index 4def51c12e1bf..f9081724d6910 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -223,21 +223,7 @@ SECTIONS
+ 		EXIT_TEXT
+ 	}
+ 
+-	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET) {
+-		INIT_DATA
+-	}
+-
+-	.init.setup : AT(ADDR(.init.setup) - LOAD_OFFSET) {
+-		INIT_SETUP(16)
+-	}
+-
+-	.initcall.init : AT(ADDR(.initcall.init) - LOAD_OFFSET) {
+-		INIT_CALLS
+-	}
+-
+-	.con_initcall.init : AT(ADDR(.con_initcall.init) - LOAD_OFFSET) {
+-		CON_INITCALL
+-	}
++	INIT_DATA_SECTION(16)
+ 
+ 	. = ALIGN(8);
+ 	__ftr_fixup : AT(ADDR(__ftr_fixup) - LOAD_OFFSET) {
+@@ -265,9 +251,6 @@ SECTIONS
+ 		__stop___fw_ftr_fixup = .;
+ 	}
+ #endif
+-	.init.ramfs : AT(ADDR(.init.ramfs) - LOAD_OFFSET) {
+-		INIT_RAM_FS
+-	}
+ 
+ 	PERCPU_SECTION(L1_CACHE_BYTES)
+ 
 -- 
 2.27.0
 
