@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5668F3035DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FC030356D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388970AbhAZFzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:55:40 -0500
-Received: from foss.arm.com ([217.140.110.172]:46654 "EHLO foss.arm.com"
+        id S1731662AbhAZFlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:41:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728087AbhAYM3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:29:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C32EED1;
-        Mon, 25 Jan 2021 03:31:40 -0800 (PST)
-Received: from [10.37.8.33] (unknown [10.37.8.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25E963F66E;
-        Mon, 25 Jan 2021 03:31:38 -0800 (PST)
-Subject: Re: [PATCH] kasan: export kasan_poison
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Vyukov <dvyukov@google.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        id S1727790AbhAYMKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:10:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44EBE22AAA;
+        Mon, 25 Jan 2021 11:36:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611574561;
+        bh=BZfbuSURKnkXQKRffrZynYjAYt2pvrMVX3otNME949I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kLyTrI57IOeN5+8ySHG6sqb5MlnMqkxgupnU6fzeabSJOK8Rvn/XxyG4Mi9x64/RX
+         ZzUgUZYsPhDQ9hT4cdYOyT/2zNXass0nQcFjY4CwmiW9BcZXOX9rR+exbh2r5Y4YgR
+         JemhqwaRmUpEUHb9SgluNCnr8RQsp0iOCY9I5WoVY1vG5XXVK9iuQtS0bweo8yvNnF
+         S+fqjv04/QLDHL4w5pmpMWcu6ydDQD0Hw06l6hSQHTiAsh6S7vKDA1mgSECx2I0anh
+         5KkxIkzc3Ma6PMp/XvcCph3yPDAvo+PtmxXvfCMTTh93oyP2a9i8VeP4z3kDw7wMGm
+         42O1M3sPvTX9w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210125112831.2156212-1-arnd@kernel.org>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <d15786d7-b7cd-86ae-adac-5a581e683be1@arm.com>
-Date:   Mon, 25 Jan 2021 11:35:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: [PATCH] [net-next] ipa: add remoteproc dependency
+Date:   Mon, 25 Jan 2021 12:35:50 +0100
+Message-Id: <20210125113557.2388311-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210125112831.2156212-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+Compile-testing without CONFIG_REMOTEPROC results in a build failure:
 
-On 1/25/21 11:28 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The unit test module fails to build after adding a reference
-> to kasan_poison:
-> 
-> ERROR: modpost: "kasan_poison" [lib/test_kasan.ko] undefined!
-> 
-> Export this symbol to make it available to loadable modules.
-> 
-> Fixes: b9b322c2bba9 ("kasan: add match-all tag tests")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> referenced by ipa_main.c
+>>>               net/ipa/ipa_main.o:(ipa_probe) in archive drivers/built-in.a
+ld.lld: error: undefined symbol: rproc_put
+>>> referenced by ipa_main.c
+>>>               net/ipa/ipa_main.o:(ipa_probe) in archive drivers/built-in.a
+>>> referenced by ipa_main.c
+>>>               net/ipa/ipa_main.o:(ipa_remove) in archive drivers/built-in.a
 
-Thanks I just stumbled on the same issue ;)
+Add a new dependency to avoid this.
 
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Fixes: 38a4066f593c ("net: ipa: support COMPILE_TEST")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/ipa/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  mm/kasan/shadow.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> index de6b3f074742..32e7a5c148e6 100644
-> --- a/mm/kasan/shadow.c
-> +++ b/mm/kasan/shadow.c
-> @@ -94,6 +94,7 @@ void kasan_poison(const void *address, size_t size, u8 value)
->  
->  	__memset(shadow_start, value, shadow_end - shadow_start);
->  }
-> +EXPORT_SYMBOL_GPL(kasan_poison);
->  
->  void kasan_unpoison(const void *address, size_t size)
->  {
-> 
-
+diff --git a/drivers/net/ipa/Kconfig b/drivers/net/ipa/Kconfig
+index b68f1289b89e..aa1c0ae3cf01 100644
+--- a/drivers/net/ipa/Kconfig
++++ b/drivers/net/ipa/Kconfig
+@@ -3,6 +3,7 @@ config QCOM_IPA
+ 	depends on 64BIT && NET && QCOM_SMEM
+ 	depends on ARCH_QCOM || COMPILE_TEST
+ 	depends on QCOM_RPROC_COMMON || (QCOM_RPROC_COMMON=n && COMPILE_TEST)
++	depends on REMOTEPROC
+ 	select QCOM_MDT_LOADER if ARCH_QCOM
+ 	select QCOM_QMI_HELPERS
+ 	help
 -- 
-Regards,
-Vincenzo
+2.29.2
+
