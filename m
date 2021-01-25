@@ -2,88 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D403037E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149723037B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbhAZI3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:29:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727064AbhAYSmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04433206CB;
-        Mon, 25 Jan 2021 18:42:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600137;
-        bh=bWV1q/vlPePa8LOU1u+HIReIsNMq//s48XHaFX7Nheg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1VK4gyNglTOboLEPyaxdDwcDTs3sY19buIHgI3+SWj7+Mxtt8lCAwQJUwn1ZmAw5r
-         u/YVyoBIY7lW0B4wCvE772fRT/HlqPWdK6iVW5m6D3ETYpGw71x8Xjn9qy/bjY22jX
-         mdoh6cffHhDCWDpZNR3K4d/dRoml4Drli8eAqfuQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Rich Felker <dalias@libc.org>
-Subject: [PATCH 4.19 45/58] sh: dma: fix kconfig dependency for G2_DMA
-Date:   Mon, 25 Jan 2021 19:39:46 +0100
-Message-Id: <20210125183158.650519362@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
-References: <20210125183156.702907356@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2388260AbhAZISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727153AbhAYSkc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:40:32 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4D7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:39:52 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id md11so141335pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:39:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=HUlXmhLxfFL0uFjwqnaYUzkmMX5jHNTTDGv5mrAagns=;
+        b=VDd+kTVIuDmtmmzrmR2idk0dEsQSoBV+Wvd0o1RUrWFyKmvG9iTjca49MKwbg+9W+y
+         1W6UA6nUqEcRMyQpcJexChxujhcdlgsaHf+4u8wTZRRpZ0CIQHNBFrDyBkqsSDhQZMcp
+         PJbjpiJjNYnNFdL6l16WgMzSaHNW6oxxjN5ks=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=HUlXmhLxfFL0uFjwqnaYUzkmMX5jHNTTDGv5mrAagns=;
+        b=TCCqxgH3ErbRs16uyoxjqcC4mEFTiW61ZxgGUm4am6JjCHzDE0HzsZ4T8V5M+vRml8
+         TG9GqYKPp60nIKzxpKx56uvllYz16/BKguf4lRNKQElCnBgte5Ivnwx4Db0LS4HlBuf5
+         mWjb0e+KDX4DEd7vkJQzjyHgEnN2Pbxl5r8D3J5Ipzst4121QgChMUF6gPKPBbtlUlt8
+         Uq+XmappJMo9y6/fNdi6rwUu0iMo3G4lVUOiktxWzgDgSYrsHtP0Frb9rkUIK0jSqNr2
+         k3SdMApZ414ixuvHCW6Z+ZatzoAYeZbH0eCK/bZVrpntohFRX6Q6k99aKnIRQfSvTWk3
+         1uQg==
+X-Gm-Message-State: AOAM531fqaHG/lMlxTRlrfkeDaH5n6osnpjjoPofINuRy2M9UjxJnR1B
+        ZogxWG1ah5Aarw8vW1JUjhleLlNcibno6Q==
+X-Google-Smtp-Source: ABdhPJy4wGvq0eaFs5eQTf+pY1PrJ+/m12dTr7V0NP3w2jPDL6TmSkYaRRVmDiKREMpNPDNXdYmnRA==
+X-Received: by 2002:a17:90a:4504:: with SMTP id u4mr1610012pjg.218.1611599991735;
+        Mon, 25 Jan 2021 10:39:51 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:1066:b437:97cd:2278])
+        by smtp.gmail.com with ESMTPSA id ga4sm78946pjb.53.2021.01.25.10.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 10:39:51 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210124173820.4528b9c9@archlinux>
+References: <20210122225443.186184-1-swboyd@chromium.org> <20210122225443.186184-4-swboyd@chromium.org> <20210124173820.4528b9c9@archlinux>
+Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Date:   Mon, 25 Jan 2021 10:39:49 -0800
+Message-ID: <161159998973.76967.1213998704222248070@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Quoting Jonathan Cameron (2021-01-24 09:38:20)
+> On Fri, 22 Jan 2021 14:54:43 -0800
+> Stephen Boyd <swboyd@chromium.org> wrote:
+>=20
+> > Add support for a ChromeOS EC proximity driver that exposes a "front"
+> > proximity sensor via the IIO subsystem. The EC decides when front
+> > proximity is near and sets an MKBP switch 'EC_MKBP_FRONT_PROXIMITY' to
+> > notify the kernel of proximity. Similarly, when proximity detects
+> > something far away it sets the switch bit to 0. For now this driver
+> > exposes a single sensor, but it could be expanded in the future via more
+> > MKBP bits if desired.
+> >=20
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Benson Leung <bleung@chromium.org>
+> > Cc: Guenter Roeck <groeck@chromium.org>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>=20
+> Hi Stephen,
+>=20
+> Looks more or less fine to me.  My main concern is potential confusion
+> in naming with the cros_ec_prox_light driver that we already have.
+>=20
+> A few other minor bits and bobs inline.
+>=20
 
-commit f477a538c14d07f8c45e554c8c5208d588514e98 upstream.
+Cool thanks.
 
-When G2_DMA is enabled and SH_DMA is disabled, it results in the following
-Kbuild warning:
+> > diff --git a/drivers/iio/proximity/Makefile b/drivers/iio/proximity/Mak=
+efile
+> > index 9c1aca1a8b79..b1330dd8e212 100644
+> > --- a/drivers/iio/proximity/Makefile
+> > +++ b/drivers/iio/proximity/Makefile
+> > @@ -5,6 +5,7 @@
+> > =20
+> >  # When adding new entries keep the list in alphabetical order
+> >  obj-$(CONFIG_AS3935)         +=3D as3935.o
+> > +obj-$(CONFIG_CROS_EC_PROXIMITY)      +=3D cros_ec_proximity.o
+> >  obj-$(CONFIG_ISL29501)               +=3D isl29501.o
+> >  obj-$(CONFIG_LIDAR_LITE_V2)  +=3D pulsedlight-lidar-lite-v2.o
+> >  obj-$(CONFIG_MB1232)         +=3D mb1232.o
+> > diff --git a/drivers/iio/proximity/cros_ec_proximity.c b/drivers/iio/pr=
+oximity/cros_ec_proximity.c
+> > new file mode 100644
+> > index 000000000000..a3aef911e3cc
+> > --- /dev/null
+> > +++ b/drivers/iio/proximity/cros_ec_proximity.c
+> > @@ -0,0 +1,252 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Driver for cros-ec proximity sensor exposed through MKBP switch
+> > + *
+> > + * Copyright 2021 Google LLC.
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/kernel.h>
+>=20
+> Slight preference for alphabetical order though keeping specific
+> sections separate as done here is fine.
 
-WARNING: unmet direct dependencies detected for SH_DMA_API
-  Depends on [n]: SH_DMA [=n]
-  Selected by [y]:
-  - G2_DMA [=y] && SH_DREAMCAST [=y]
+Will fix.
 
-The reason is that G2_DMA selects SH_DMA_API without depending on or
-selecting SH_DMA while SH_DMA_API depends on SH_DMA.
+>=20
+> > +#include <linux/notifier.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/types.h>
+> > +
+> > +#include <linux/platform_data/cros_ec_commands.h>
+> > +#include <linux/platform_data/cros_ec_proto.h>
+> > +
+> > +#include <linux/iio/events.h>
+> > +#include <linux/iio/iio.h>
+> > +#include <linux/iio/sysfs.h>
+> > +
+> > +#include <asm/unaligned.h>
+> > +
+> > +struct cros_ec_proximity_data {
+> > +     struct cros_ec_device *ec;
+> > +     struct iio_dev *indio_dev;
+> > +     struct mutex lock;
+> > +     struct notifier_block notifier;
+> > +     bool enabled;
+> > +};
+> > +
+> > +static const struct iio_event_spec cros_ec_prox_events[] =3D {
+> > +     {
+> > +             .type =3D IIO_EV_TYPE_THRESH,
+> > +             .dir =3D IIO_EV_DIR_EITHER,
+> > +             .mask_separate =3D BIT(IIO_EV_INFO_ENABLE),
+> > +     },
+> > +};
+> > +
+> > +static const struct iio_chan_spec cros_ec_prox_chan_spec[] =3D {
+> > +     {
+> > +             .type =3D IIO_PROXIMITY,
+> > +             .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW),
+> > +             .event_spec =3D cros_ec_prox_events,
+> > +             .num_event_specs =3D ARRAY_SIZE(cros_ec_prox_events),
+> > +     },
+> > +};
+> > +
+> > +static int cros_ec_proximity_parse_state(const void *data)
+> > +{
+> > +     u32 switches =3D get_unaligned_le32(data);
+> > +
+> > +     return !!(switches & BIT(EC_MKBP_FRONT_PROXIMITY));
+> > +}
+> > +
+> > +static int cros_ec_proximity_query(struct cros_ec_device *ec_dev, int =
+*state)
+> > +{
+> > +     struct ec_params_mkbp_info *params;
+> > +     struct cros_ec_command *msg;
+> > +     int ret;
+> > +
+> > +     msg =3D kzalloc(sizeof(*msg) + max(sizeof(u32), sizeof(*params)),
+> > +                   GFP_KERNEL);
+>=20
+> Given this is known at build time, perhaps better to add it to the=20
+> iio_priv() accessed structure and avoid having to handle allocations
+> separately.
 
-When G2_DMA was first introduced with commit 40f49e7ed77f
-("sh: dma: Make G2 DMA configurable."), this wasn't an issue since
-SH_DMA_API didn't have such dependency, and this way was the only way to
-enable it since SH_DMA_API was non-visible. However, later SH_DMA_API was
-made visible and dependent on SH_DMA with commit d8902adcc1a9
-("dmaengine: sh: Add Support SuperH DMA Engine driver").
+Ok.
 
-Let G2_DMA depend on SH_DMA_API instead to avoid Kbuild issues.
+>=20
+> > +     if (!msg)
+> > +             return -ENOMEM;
+[...]
+> > +static int cros_ec_proximity_read_raw(struct iio_dev *indio_dev,
+> > +                        const struct iio_chan_spec *chan, int *val,
+> > +                        int *val2, long mask)
+> > +{
+> > +     struct cros_ec_proximity_data *data =3D iio_priv(indio_dev);
+> > +     struct cros_ec_device *ec =3D data->ec;
+> > +     int ret;
+> > +
+> > +     if (chan->type !=3D IIO_PROXIMITY)
+> > +             return -EINVAL;
+> > +
+> > +     switch (mask) {
+> > +     case IIO_CHAN_INFO_RAW:
+> > +             ret =3D iio_device_claim_direct_mode(indio_dev);
+>=20
+> Normally we only introduce these protections when adding the ability
+> to change the state from direct to buffered (which these prevent).
+> This driver doesn't yet support any other modes so I don't think
+> there is any benefit in having these.
+>=20
+> If the aim is more local protection then should use a local lock
+> as the semantics fo these functions might change in future.
 
-Fixes: d8902adcc1a9 ("dmaengine: sh: Add Support SuperH DMA Engine driver")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Signed-off-by: Rich Felker <dalias@libc.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Alright I'll drop it.
 
----
- arch/sh/drivers/dma/Kconfig |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+>=20
+>=20
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             ret =3D cros_ec_proximity_query(ec, val);
+> > +             iio_device_release_direct_mode(indio_dev);
+> > +             if (ret)
+> > +                     return ret;
+> > +
+> > +             return IIO_VAL_INT;
+> > +     }
+> > +
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static int cros_ec_proximity_read_event_config(struct iio_dev *indio_d=
+ev,
+> > +                                 const struct iio_chan_spec *chan,
+> > +                                 enum iio_event_type type,
+> > +                                 enum iio_event_direction dir)
+> > +{
+> > +     struct cros_ec_proximity_data *data =3D iio_priv(indio_dev);
+> > +
+> > +     return data->enabled;
+> > +}
+> > +
+> > +static int cros_ec_proximity_write_event_config(struct iio_dev *indio_=
+dev,
+> > +                                  const struct iio_chan_spec *chan,
+> > +                                  enum iio_event_type type,
+> > +                                  enum iio_event_direction dir, int st=
+ate)
+> > +{
+> > +     struct cros_ec_proximity_data *data =3D iio_priv(indio_dev);
+> > +
+> > +     mutex_lock(&data->lock);
+> > +     data->enabled =3D state;
+> > +     mutex_unlock(&data->lock);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct iio_info cros_ec_proximity_info =3D {
+> > +     .read_raw =3D cros_ec_proximity_read_raw,
+> > +     .read_event_config =3D cros_ec_proximity_read_event_config,
+> > +     .write_event_config =3D cros_ec_proximity_write_event_config,
+> > +};
+> > +
+> > +static int cros_ec_proximity_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev =3D &pdev->dev;
+> > +     struct cros_ec_device *ec =3D dev_get_drvdata(dev->parent);
+> > +     struct iio_dev *indio_dev;
+> > +     struct cros_ec_proximity_data *data;
+> > +     int ret;
+> > +
+> > +     indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
+> > +     if (!indio_dev)
+> > +             return -ENOMEM;
+> > +
+> > +     data =3D iio_priv(indio_dev);
+> > +     data->ec =3D ec;
+> > +     data->indio_dev =3D indio_dev;
+> > +     mutex_init(&data->lock);
+> > +     platform_set_drvdata(pdev, data);
+> > +
+> > +     indio_dev->name =3D "cros_ec_proximity";
+> > +     indio_dev->dev.parent =3D dev;
+> > +     indio_dev->info =3D &cros_ec_proximity_info;
+> > +     indio_dev->modes =3D INDIO_DIRECT_MODE;
+> > +     indio_dev->channels =3D cros_ec_prox_chan_spec;
+> > +     indio_dev->num_channels =3D ARRAY_SIZE(cros_ec_prox_chan_spec);
+> > +
+> > +     ret =3D devm_iio_device_register(dev, indio_dev);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     data->notifier.notifier_call =3D cros_ec_proximity_notify;
+> > +     ret =3D blocking_notifier_chain_register(&ec->event_notifier,
+> > +                                            &data->notifier);
+> > +     if (ret)
+> > +             dev_err(dev, "cannot register notifier: %d\n", ret);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static int cros_ec_proximity_remove(struct platform_device *pdev)
+> > +{
+> > +     struct cros_ec_proximity_data *data =3D platform_get_drvdata(pdev=
+);
+> > +     struct cros_ec_device *ec =3D data->ec;
+> > +
+> > +     blocking_notifier_chain_unregister(&ec->event_notifier,
+> > +                                        &data->notifier);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +#ifdef CONFIG_OF
+>=20
+> As a general rule, we are trying to clear out protections on CONFIG_OF etc
+> and use of of_match_ptr() on the basis they don't really gain us anything
+> and prevent use of some other firmware types.  Here I guess you know what
+> your firmware looks like, but I'm still keen to drop it in the interests
+> of there being fewer places to copy it from.
+>=20
+> It may be a good idea to give this a more specific name as well given
+> we already have cros-ec-prox as a platform device id from
+> the cros_ec_light_prox driver.
 
---- a/arch/sh/drivers/dma/Kconfig
-+++ b/arch/sh/drivers/dma/Kconfig
-@@ -63,8 +63,7 @@ config PVR2_DMA
- 
- config G2_DMA
- 	tristate "G2 Bus DMA support"
--	depends on SH_DREAMCAST
--	select SH_DMA_API
-+	depends on SH_DREAMCAST && SH_DMA_API
- 	help
- 	  This enables support for the DMA controller for the Dreamcast's
- 	  G2 bus. Drivers that want this will generally enable this on
+Alright. I renamed it to cros_ec_mkbp_proximity throughout this driver.
+I'm concerned about dropping CONFIG_OF because of_match_ptr() and
+CONFIG_OF=3Dn makes it unused but I suppose that will be OK as long as
+compilation passes.
 
-
+>=20
+>=20
+> > +static const struct of_device_id cros_ec_proximity_of_match[] =3D {
+> > +     { .compatible =3D "google,cros-ec-proximity" },
+> > +     {}
+> > +};
+> > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
+> > +#endif
+> > +
+> > +static struct platform_driver cros_ec_proximity_driver =3D {
+> > +     .driver =3D {
+> > +             .name =3D "cros-ec-proximity",
+> > +             .of_match_table =3D of_match_ptr(cros_ec_proximity_of_mat=
+ch),
+> > +     },
+> > +     .probe =3D cros_ec_proximity_probe,
+> > +     .remove =3D cros_ec_proximity_remove,
+> > +};
+> > +module_platform_driver(cros_ec_proximity_driver);
+> > +
