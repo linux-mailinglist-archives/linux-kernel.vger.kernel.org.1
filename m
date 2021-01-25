@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE82C3034F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F953034E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387656AbhAZFa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:30:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727470AbhAYKTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3873222597;
-        Mon, 25 Jan 2021 09:53:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611568439;
-        bh=OOn7cmzw71J8lu3YYw6ES8LmbvuXLKRJR9o9mJxQkLc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tbvRBgTG48DsX8aTGhXT7RZuODV1evwh4xCr95tV4R9TzXJZAxmuA9AnVmG13jQ+5
-         PPtN2LRUYlp/oogxLh5KRxa+wdduJi8vKN8zzKxaK9CNlNOtyB2tEIjmOOyZj2HlFf
-         adYgLAX0MGmV5dzfq3tSomR87ZQzHh1QA23V345u30+JIbb3vMTqtang+2etUsfZnm
-         uzdH2kj7YlmIlPHOEZZKx9dySrc3J7fg6uqDl/ZKdzBUa1nymuHyBk21kw/7SBJWjP
-         x0eni/48tLa87cEm1JGV/JMdsiuItHQwsyWEsb4TVWZJun59witX3qqAvUapYkhg55
-         YE0LlnSp5F5GQ==
-Date:   Mon, 25 Jan 2021 10:53:53 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     corbet@lwn.net,
-        "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: Make the description of return value
- readable
-Message-ID: <20210125105353.5c695d42@coco.lan>
-In-Reply-To: <20210125081905.145569-1-jarkko@kernel.org>
-References: <20210125081905.145569-1-jarkko@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2387573AbhAZFaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:30:09 -0500
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:33331 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727436AbhAYKSE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:18:04 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 3yqClT3gRiWRg3yqFlfogV; Mon, 25 Jan 2021 11:11:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1611569487; bh=iHjqjC1dPct1fusIaq3KcBt0B0WlEHCalPEjGV1Ps7M=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=p3zqztYL2ccY2ClDM+4msMNkOFX+1M6x1CZMwLN4s534L0apVn8tpoKeU/nHCHMLT
+         3K+QQgFvV5qUTiZkJmZA0r0kG9FxzlsJVzS+fsM3/xCQ6iEB3hqvbBOka8xRAgL6dr
+         099EJ69oOevCeOhB2Z/rVSZRDBu00Y0tpdJ/4aFiZWnAFy8SWI395xii7Q6pshpJJn
+         WoyJ2pkbgUqJl+2G+OXMw6dM9uCRibNqSeuK4B56DuF7Nf6G73jJf6qZTjV4putdUo
+         A7E3Q3emJ70+/0gbVGOkBm9tj5gVxAp/nTKepQ+2xvBEOUOjBUqSq24mxLTodSnl+m
+         GvX83ysYzpiBQ==
+Subject: Re: [PATCH v4 2/5] docs: Document colorimetry class
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210120092606.3987207-1-stanimir.varbanov@linaro.org>
+ <20210120092606.3987207-3-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <ca570ca5-356d-1b89-8653-476d27375519@xs4all.nl>
+Date:   Mon, 25 Jan 2021 11:11:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210120092606.3987207-3-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfAcnFOLmq7LGmgbbdP/0yyr6VBQ9i/0oZ0u5hJVj+076zYK7C6jHVnd+YoxwGdQw4pklzUDaTGIle8v0p5+bPrGGHChXwB+1TauPPNN2cPLyt0ExOONG
+ wmLEB4gm03w82zD/P4mPtBg2CNLeEwQReG1SvN1JsvRomfTS0L2LdpWpF0IbSnHcFBEtxhXNddBpfX7pCqZ5qo3kJXTmC55TOHdEx6uFwBCYE+u8RJ2w7hgZ
+ dY3t51xewnASo34+YkSvqVbEjwSzh3Oy+nsEVubHCkn8T6PV2dn78IIfHRSQZM0ytXJdXkiqZVblE2PoP1LisvFjscUiqnFNABtSJaUc4EfuagToBPpTHOGe
+ VgCWZRQ2pOeDVPZfoqsEP69le0hh2fv+5mtJUA99qiXPiYhtuphkYQOl8gGhof+LMWW2lGhK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 25 Jan 2021 10:19:04 +0200
-Jarkko Sakkinen <jarkko@kernel.org> escreveu:
-
-> The description on how to describe return values is over-complicated, and
-> hard to follow. For alien reason, the body of the section is a note, and
-> the first paragraph speaks about 'Return', albeit the section name is
-> actually 'Return:'.
+On 20/01/2021 10:26, Stanimir Varbanov wrote:
+> Add a document for ext control colorimetry class.
 > 
-> To give a better help when both implementing and reviewing patches, provide
-> a straight-forward guideline, how to decribe return values, instead of
-> providing a note that starts by "blacklisting" one of the infinite possible
-> options of doing it wrong.
-> 
-> This decreases the cumulative amount of time, which is probably
-> substantial, on this otherwise somewhat trivial topic.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 > ---
->  Documentation/doc-guide/kernel-doc.rst | 34 +++++++-------------------
->  1 file changed, 9 insertions(+), 25 deletions(-)
+>  .../userspace-api/media/v4l/common.rst        |  1 +
+>  .../media/v4l/ext-ctrls-colorimetry.rst       | 19 +++++++++++++++++++
+>  .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 ++++
+>  3 files changed, 24 insertions(+)
+>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
 > 
-> diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
-> index 79aaa55d6bcf..dc5e1722c150 100644
-> --- a/Documentation/doc-guide/kernel-doc.rst
-> +++ b/Documentation/doc-guide/kernel-doc.rst
-> @@ -136,34 +136,18 @@ Examples::
->  Return values
->  ~~~~~~~~~~~~~
->  
-> -The return value, if any, should be described in a dedicated section
-> -named ``Return``.
-> +The return value, if any, should be described in a dedicated section named
-> +``Return:``.
->  
-> -.. note::
-> -
-> -  #) The multi-line descriptive text you provide does *not* recognize
-> -     line breaks, so if you try to format some text nicely, as in::
-> -
-> -	* Return:
-> -	* 0 - OK
-> -	* -EINVAL - invalid argument
-> -	* -ENOMEM - out of memory
-> -
-> -     this will all run together and produce::
-> -
-> -	Return: 0 - OK -EINVAL - invalid argument -ENOMEM - out of memory
-> -
-> -     So, in order to produce the desired line breaks, you need to use a
-> -     ReST list, e. g.::
-> +In order to describe multiple return values, a ReST list should be used. That
-> +way Sphinx knows how to line-up them properly::
->  
-> -      * Return:
-> -      * * 0		- OK to runtime suspend the device
-> -      * * -EBUSY	- Device should not be runtime suspended
-> +  * Return:
-> +  * - 0:	The run-time is allowed to suspend the device.
-> +  * - -EBUSY:	Device should not be suspended.
->  
-> -  #) If the descriptive text you provide has lines that begin with
-> -     some phrase followed by a colon, each of those phrases will be taken
-> -     as a new section heading, which probably won't produce the desired
-> -     effect.
-> +Using a dash rather than asterisk an is probably a better idea, because it does
-> +not meddle as much with the C-comments.
+> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
+> index 8c263c5a85d8..ea0435182e44 100644
+> --- a/Documentation/userspace-api/media/v4l/common.rst
+> +++ b/Documentation/userspace-api/media/v4l/common.rst
+> @@ -51,6 +51,7 @@ applicable to all devices.
+>      ext-ctrls-fm-tx
+>      ext-ctrls-fm-rx
+>      ext-ctrls-detect
+> +    ext-ctrls-colorimetry
+>      fourcc
+>      format
+>      planar-apis
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> new file mode 100644
+> index 000000000000..6b0cd2054e84
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> @@ -0,0 +1,19 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +
+> +.. _colorimetry-controls:
+> +
+> +*****************************
+> +Colorimetry Control Reference
+> +*****************************
+> +
+> +Below are controls within the Colorimetry control class.
 
-Well, there are different opinions with that regards... Some devs think that
-using:
+This needs a bit more work since it doesn't explain anything :-)
 
-	- -EBUSY
+See how it is done in other ext-ctrls-*.rst files.
 
-is confusing. I ended agreeing with that. That's why the recommendation is
-to use an asterisk.
+Regards,
 
-Thanks,
-Mauro
+	Hans
+
+> +
+> +Colorimetry Control IDs
+> +-----------------------
+> +
+> +.. _colorimetry-control-id:
+> +
+> +``V4L2_CID_COLORIMETRY_CLASS (class)``
+> +    The Colorimetry class descriptor. Calling
+> +    :ref:`VIDIOC_QUERYCTRL` for this control will
+> +    return a description of this control class.
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> index b9c62affbb5a..8a95ebdd499a 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> @@ -394,6 +394,10 @@ still cause this situation.
+>        - 0xa40000
+>        - The class containing stateless codec controls. These controls are
+>  	described in :ref:`codec-stateless-controls`.
+> +    * - ``V4L2_CTRL_CLASS_COLORIMETRY``
+> +      - 0xa50000
+> +      - The class containing colorimetry controls. These controls are
+> +	described in :ref:`colorimetry-controls`.
+>  
+>  Return Value
+>  ============
+> 
+
