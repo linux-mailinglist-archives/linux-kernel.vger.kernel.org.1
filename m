@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EA5303981
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A0630396D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390894AbhAZJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:52:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39902 "EHLO mail.kernel.org"
+        id S2391593AbhAZJtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:49:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731199AbhAYSxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C58620679;
-        Mon, 25 Jan 2021 18:52:26 +0000 (UTC)
+        id S1731147AbhAYSwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:52:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D231A20719;
+        Mon, 25 Jan 2021 18:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600747;
-        bh=J/MqnpdPnis/WjdqvfjzUhp8QDvAxGk/8m9Oo+CbvSA=;
+        s=korg; t=1611600749;
+        bh=u+vVjMmD7rLCzkuaoKutz6a+wuv38iaSnT1zF7N/EjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQde5+mOuOcXTxNZAR9pOKpP9H6H6H8DA7ATtbso7Uma129czYKPlnEp5e38fj7S3
-         xdEqO1moXMyJ56DGYahbUZzMaNKL4yn1wPkKq6yrZcg1I4fY5mcnH83Iuy/ndosVjB
-         N7uFS0cDHpRUT4SvoPDKxvmiemAw4Cfl8ozv7sj0=
+        b=ejE4wVLrSxrpVZ4xGnNPe6obtFHDiobi65Ab+RhCIeodsGs9o++mb/VsY5yXGH4zK
+         TIYOXNz51ZHOeCfwufBcvfVA01qTtkQOsw7CqakifK6oosfuMrwBw4rEpT9Ghug1tp
+         Vh89c9L2IyhcWJbeHdQkcGXwqczd5HRocIpZwe6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH 5.10 136/199] usb: udc: core: Use lock when write to soft_connect
-Date:   Mon, 25 Jan 2021 19:39:18 +0100
-Message-Id: <20210125183221.960781508@linuxfoundation.org>
+        stable@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Subject: [PATCH 5.10 137/199] usb: bdc: Make bdc pci driver depend on BROKEN
+Date:   Mon, 25 Jan 2021 19:39:19 +0100
+Message-Id: <20210125183222.001133488@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,57 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
 
-commit c28095bc99073ddda65e4f31f6ae0d908d4d5cd8 upstream.
+commit ef02684c4e67d8c35ac83083564135bc7b1d3445 upstream.
 
-Use lock to guard against concurrent access for soft-connect/disconnect
-operations when writing to soft_connect sysfs.
+The bdc pci driver is going to be removed due to it not existing in the
+wild. This patch turns off compilation of the driver so that stable
+kernels can also pick up the change. This helps the out-of-tree
+facetimehd webcam driver as the pci id conflicts with bdc.
 
-Fixes: 2ccea03a8f7e ("usb: gadget: introduce UDC Class")
-Cc: stable@vger.kernel.org
+Cc: Al Cooper <alcooperx@gmail.com>
+Cc: <stable@vger.kernel.org>
 Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/338ea01fbd69b1985ef58f0f59af02c805ddf189.1610611437.git.Thinh.Nguyen@synopsys.com
+Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Link: https://lore.kernel.org/r/20210118203615.13995-1-patrik.r.jakobsson@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/core.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/udc/bdc/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/udc/core.c
-+++ b/drivers/usb/gadget/udc/core.c
-@@ -1532,10 +1532,13 @@ static ssize_t soft_connect_store(struct
- 		struct device_attribute *attr, const char *buf, size_t n)
- {
- 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
-+	ssize_t			ret;
- 
-+	mutex_lock(&udc_lock);
- 	if (!udc->driver) {
- 		dev_err(dev, "soft-connect without a gadget driver\n");
--		return -EOPNOTSUPP;
-+		ret = -EOPNOTSUPP;
-+		goto out;
- 	}
- 
- 	if (sysfs_streq(buf, "connect")) {
-@@ -1546,10 +1549,14 @@ static ssize_t soft_connect_store(struct
- 		usb_gadget_udc_stop(udc);
- 	} else {
- 		dev_err(dev, "unsupported command '%s'\n", buf);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out;
- 	}
- 
--	return n;
-+	ret = n;
-+out:
-+	mutex_unlock(&udc_lock);
-+	return ret;
- }
- static DEVICE_ATTR_WO(soft_connect);
- 
+--- a/drivers/usb/gadget/udc/bdc/Kconfig
++++ b/drivers/usb/gadget/udc/bdc/Kconfig
+@@ -17,7 +17,7 @@ if USB_BDC_UDC
+ comment "Platform Support"
+ config	USB_BDC_PCI
+ 	tristate "BDC support for PCIe based platforms"
+-	depends on USB_PCI
++	depends on USB_PCI && BROKEN
+ 	default USB_BDC_UDC
+ 	help
+ 		Enable support for platforms which have BDC connected through PCIe, such as Lego3 FPGA platform.
 
 
