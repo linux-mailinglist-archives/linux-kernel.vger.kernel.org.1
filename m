@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4763037C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40DF3037C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389828AbhAZIV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:21:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
+        id S2389861AbhAZIWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:22:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727118AbhAYSm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727088AbhAYSm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:42:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3F67224F9;
-        Mon, 25 Jan 2021 18:41:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A495C20719;
+        Mon, 25 Jan 2021 18:41:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600071;
-        bh=NA7f1FBcFwBO4Z4vA6XRI2QVvmWbgDAdsDCAp1KwOOM=;
+        s=korg; t=1611600089;
+        bh=JaIU3/pIKgCO1wlrX4supaU7123yKweSYk85zX5aXmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CsAQ24NaLByLMUg9itTQU1t5l96uhYGw+FhkzXHi50xHzwD9MYWO6Ek9JVbyQzmBN
-         520/p+k7hbnPaWW32tb7sP0KxxuQWzVeGOGCkTUNnWuaYhIIQvKPCuBKaekAqeya7d
-         JqFcZ+v4KI6dhIGCKlNWEQ+BBUH7AvSkIvf+/c9g=
+        b=QLHG2BzoXA4Kuv4EbCKDmdXRQjKUabNnFRVKM3gEH/+G8hUgEm0+H7fd4uhF2LkGG
+         9Gn1uXd+ytzLqXkbxiscil1Srn4njl/qVzo3j/MX2HaobgEPdBMqMfDArBXVKiquE2
+         +8IA3P/hqWUyngev74pD2xnFh30SzM0zr8mEtDa4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+e42504ff21cff05a595f@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 02/58] ALSA: seq: oss: Fix missing error check in snd_seq_oss_synth_make_info()
-Date:   Mon, 25 Jan 2021 19:39:03 +0100
-Message-Id: <20210125183156.810065558@linuxfoundation.org>
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Subject: [PATCH 4.19 04/58] ACPI: scan: Make acpi_bus_get_device() clear return pointer on error
+Date:   Mon, 25 Jan 2021 19:39:05 +0100
+Message-Id: <20210125183156.891035876@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -40,38 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 217bfbb8b0bfa24619b11ab75c135fec99b99b20 upstream.
+commit 78a18fec5258c8df9435399a1ea022d73d3eceb9 upstream.
 
-snd_seq_oss_synth_make_info() didn't check the error code from
-snd_seq_oss_midi_make_info(), and this leads to the call of strlcpy()
-with the uninitialized string as the source, which may lead to the
-access over the limit.
+Set the acpi_device pointer which acpi_bus_get_device() returns-by-
+reference to NULL on errors.
 
-Add the proper error check for avoiding the failure.
+We've recently had 2 cases where callers of acpi_bus_get_device()
+did not properly error check the return value, so set the returned-
+by-reference acpi_device pointer to NULL, because at least some
+callers of acpi_bus_get_device() expect that to be done on errors.
 
-Reported-by: syzbot+e42504ff21cff05a595f@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210115093428.15882-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+[ rjw: This issue was exposed by commit 71da201f38df ("ACPI: scan:
+  Defer enumeration of devices with _DEP lists") which caused it to
+  be much more likely to occur on some systems, but the real defect
+  had been introduced by an earlier commit. ]
+
+Fixes: 40e7fcb19293 ("ACPI: Add _DEP support to fix battery issue on Asus T100TA")
+Fixes: bcfcd409d4db ("usb: split code locating ACPI companion into port and device")
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Diagnosed-by: Rafael J. Wysocki <rafael@kernel.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: All applicable <stable@vger.kernel.org>
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/seq/oss/seq_oss_synth.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/acpi/scan.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/core/seq/oss/seq_oss_synth.c
-+++ b/sound/core/seq/oss/seq_oss_synth.c
-@@ -624,7 +624,8 @@ snd_seq_oss_synth_make_info(struct seq_o
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -586,6 +586,8 @@ static int acpi_get_device_data(acpi_han
+ 	if (!device)
+ 		return -EINVAL;
  
- 	if (info->is_midi) {
- 		struct midi_info minf;
--		snd_seq_oss_midi_make_info(dp, info->midi_mapped, &minf);
-+		if (snd_seq_oss_midi_make_info(dp, info->midi_mapped, &minf))
-+			return -ENXIO;
- 		inf->synth_type = SYNTH_TYPE_MIDI;
- 		inf->synth_subtype = 0;
- 		inf->nr_voices = 16;
++	*device = NULL;
++
+ 	status = acpi_get_data_full(handle, acpi_scan_drop_device,
+ 				    (void **)device, callback);
+ 	if (ACPI_FAILURE(status) || !*device) {
 
 
