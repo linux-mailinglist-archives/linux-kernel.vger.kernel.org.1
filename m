@@ -2,230 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAC33027AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F327C3027B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730560AbhAYQVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730628AbhAYQVe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:21:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266FCC06178C;
-        Mon, 25 Jan 2021 08:20:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IJWSMxQ0cSD59sZdRy00Q/p6Rk88W9Y0AQrU4XxStZg=; b=PuPaQ600mHPoHQdKyO6XI5TBrm
-        CnXgjHw3HKWzCm5rtjfhkN6pBiyt2h/9yeDanzks13gq46MuMu5ie6WAiuNN2m/RkKR/rpK0Ta+ng
-        fHJqJV/J5ZL7Mm56BAbERsDJQvtiznZxtFYP1h0WIVW4cRUSWOgeXte9ZAwEUfG7Limi/SljDPwHf
-        3LMXYk3STX6IxUUL3ZYWCYEFfmPendGeUlO+ZrAdcgyCMSmB3rEIdQrHxVOnGrHC53/rZBPfRUW94
-        buoqllvpB2FvdrEAlQBBWi7qPaBsXDmTgOiFPH1Y4lZIdk+po0IBNUEGXYPVncthQFPVdxLrQWtZK
-        FRfe61ig==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l44Y6-004OSf-8C; Mon, 25 Jan 2021 16:17:11 +0000
-Date:   Mon, 25 Jan 2021 16:17:06 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-Message-ID: <20210125161706.GE308988@casper.infradead.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-9-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121122723.3446-9-rppt@kernel.org>
+        id S1730535AbhAYQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:22:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730418AbhAYQUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:20:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0BAF22AAA;
+        Mon, 25 Jan 2021 16:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611591604;
+        bh=IFCd/a40LfbI9sYQ3IA+ME16kG0Vr1F0TTsO2JGtIXw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=FTyQ4S7Qd6y1i4PafI8lY3OvEXMx2s+6jQuFHIxy2ljj8HlBEqj7WymJBb+LW/JBm
+         nQx1eDbYXsZ3BWmRkAQ/ozWJLuFySgqe0pO+EOFvGMkfKxuw03l2aed4j6nnhPC24d
+         ap/s/fgcdktqqKxExwxlAANgXUgM6ik0Wb53+Um+ZwUGnnS5Fe4Z4ioHyMowoXe9WJ
+         97kGePJEQg/d/Ub7+ICCRbXsttJS8zC6Lf2f/WaKrWRsQrovIxYKZZpfiSkmuaTyiy
+         8aniBeGf671F034iLFW1XME3g4Ub20j8NzPwqnLEBAc6dtsLxtBxtcwP4YQ8K4+Jui
+         MlNqMKQ3OM0zA==
+Message-ID: <b671a1ad7906be389190fd98df6112de87259f91.camel@kernel.org>
+Subject: Re: [PATCH v6 3/6] tracing: Update synth command errors
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
+Date:   Mon, 25 Jan 2021 10:20:02 -0600
+In-Reply-To: <20210122222311.7559b4e71d1dc3ce60fa3fcc@kernel.org>
+References: <cover.1611243025.git.zanussi@kernel.org>
+         <18090ccadf2c33b03e4eaad429867d7088782721.1611243025.git.zanussi@kernel.org>
+         <20210122222311.7559b4e71d1dc3ce60fa3fcc@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 02:27:20PM +0200, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Fri, 2021-01-22 at 22:23 +0900, Masami Hiramatsu wrote:
+> Hi Tom,
 > 
-> Account memory consumed by secretmem to memcg. The accounting is updated
-> when the memory is actually allocated and freed.
-
-I think this is wrong.  It fails to account subsequent allocators from
-the same PMD.  If you want to track like this, you need separate pools
-per memcg.
-
-I think you shouldn't try to track like this; better to just track on
-a per-page basis.  After all, the page allocator doesn't track order-10
-pages to the memcg that initially caused them to be split.
-
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Christopher Lameter <cl@linux.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Elena Reshetova <elena.reshetova@intel.com>
-> Cc: Hagen Paul Pfeifer <hagen@jauu.net>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: James Bottomley <jejb@linux.ibm.com>
-> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Tycho Andersen <tycho@tycho.ws>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  mm/filemap.c   |  3 ++-
->  mm/secretmem.c | 36 +++++++++++++++++++++++++++++++++++-
->  2 files changed, 37 insertions(+), 2 deletions(-)
+> On Thu, 21 Jan 2021 11:01:06 -0600
+> Tom Zanussi <zanussi@kernel.org> wrote:
 > 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 2d0c6721879d..bb28dd6d9e22 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -42,6 +42,7 @@
->  #include <linux/psi.h>
->  #include <linux/ramfs.h>
->  #include <linux/page_idle.h>
-> +#include <linux/secretmem.h>
->  #include "internal.h"
->  
->  #define CREATE_TRACE_POINTS
-> @@ -839,7 +840,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->  	page->mapping = mapping;
->  	page->index = offset;
->  
-> -	if (!huge) {
-> +	if (!huge && !page_is_secretmem(page)) {
->  		error = mem_cgroup_charge(page, current->mm, gfp);
->  		if (error)
->  			goto error;
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> index 469211c7cc3a..05026460e2ee 100644
-> --- a/mm/secretmem.c
-> +++ b/mm/secretmem.c
-> @@ -18,6 +18,7 @@
->  #include <linux/memblock.h>
->  #include <linux/pseudo_fs.h>
->  #include <linux/secretmem.h>
-> +#include <linux/memcontrol.h>
->  #include <linux/set_memory.h>
->  #include <linux/sched/signal.h>
->  
-> @@ -44,6 +45,32 @@ struct secretmem_ctx {
->  
->  static struct cma *secretmem_cma;
->  
-> +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
-> +{
-> +	int err;
-> +
-> +	err = memcg_kmem_charge_page(page, gfp, order);
-> +	if (err)
-> +		return err;
-> +
-> +	/*
-> +	 * seceremem caches are unreclaimable kernel allocations, so treat
-> +	 * them as unreclaimable slab memory for VM statistics purposes
-> +	 */
-> +	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-> +			      PAGE_SIZE << order);
-> +
-> +	return 0;
-> +}
-> +
-> +static void secretmem_unaccount_pages(struct page *page, int order)
-> +{
-> +
-> +	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-> +			      -PAGE_SIZE << order);
-> +	memcg_kmem_uncharge_page(page, order);
-> +}
-> +
->  static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
->  {
->  	unsigned long nr_pages = (1 << PMD_PAGE_ORDER);
-> @@ -56,6 +83,10 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
->  	if (!page)
->  		return -ENOMEM;
->  
-> +	err = secretmem_account_pages(page, gfp, PMD_PAGE_ORDER);
-> +	if (err)
-> +		goto err_cma_release;
-> +
->  	/*
->  	 * clear the data left from the prevoius user before dropping the
->  	 * pages from the direct map
-> @@ -65,7 +96,7 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
->  
->  	err = set_direct_map_invalid_noflush(page, nr_pages);
->  	if (err)
-> -		goto err_cma_release;
-> +		goto err_memcg_uncharge;
->  
->  	addr = (unsigned long)page_address(page);
->  	err = gen_pool_add(pool, addr, PMD_SIZE, NUMA_NO_NODE);
-> @@ -83,6 +114,8 @@ static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
->  	 * won't fail
->  	 */
->  	set_direct_map_default_noflush(page, nr_pages);
-> +err_memcg_uncharge:
-> +	secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
->  err_cma_release:
->  	cma_release(secretmem_cma, page, nr_pages);
->  	return err;
-> @@ -314,6 +347,7 @@ static void secretmem_cleanup_chunk(struct gen_pool *pool,
->  	int i;
->  
->  	set_direct_map_default_noflush(page, nr_pages);
-> +	secretmem_unaccount_pages(page, PMD_PAGE_ORDER);
->  
->  	for (i = 0; i < nr_pages; i++)
->  		clear_highpage(page + i);
-> -- 
-> 2.28.0
+> > Since array types are handled differently, errors referencing them
+> > also need to be handled differently.  Add and use a new
+> > INVALID_ARRAY_SPEC error.  Also add INVALID_CMD and INVALID_DYN_CMD
+> > to
+> > catch and display the correct form for badly-formed commands, which
+> > can also be used in place of CMD_INCOMPLETE, which is removed, and
+> > remove CMD_TOO_LONG, since it's no longer used.
 > 
+> OK, so this will add new errors for precise error logging.
+> 
+> > 
+> > Signed-off-by: Tom Zanussi <zanussi@kernel.org>
+> > ---
+> >  kernel/trace/trace_events_synth.c | 72
+> > +++++++++++++++++++++++++++----
+> >  1 file changed, 63 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_events_synth.c
+> > b/kernel/trace/trace_events_synth.c
+> > index a79c17b97add..dd141ee6b3fc 100644
+> > --- a/kernel/trace/trace_events_synth.c
+> > +++ b/kernel/trace/trace_events_synth.c
+> > @@ -23,13 +23,14 @@
+> >  #undef ERRORS
+> >  #define ERRORS	\
+> >  	C(BAD_NAME,		"Illegal name"),		\
+> > -	C(CMD_INCOMPLETE,	"Incomplete command"),		\
+> > +	C(INVALID_CMD,		"Command must be of the form:
+> > <name> field[;field] ..."),\
+> > +	C(INVALID_DYN_CMD,	"Command must be of the form: s or
+> > -:[synthetic/]<name> field[;field] ..."),\
+> >  	C(EVENT_EXISTS,		"Event already exists"),	\
+> >  	C(TOO_MANY_FIELDS,	"Too many fields"),		\
+> >  	C(INCOMPLETE_TYPE,	"Incomplete type"),		\
+> >  	C(INVALID_TYPE,		"Invalid type"),		\
+> > -	C(INVALID_FIELD,	"Invalid field"),		\
+> > -	C(CMD_TOO_LONG,		"Command too long"),
+> > +	C(INVALID_FIELD,        "Invalid field"),		\
+> > +	C(INVALID_ARRAY_SPEC,	"Invalid array specification"),
+> >  
+> >  #undef C
+> >  #define C(a, b)		SYNTH_ERR_##a
+> > @@ -655,7 +656,10 @@ static struct synth_field
+> > *parse_synth_field(int argc, char **argv)
+> >  
+> >  	size = synth_field_size(field->type);
+> >  	if (size < 0) {
+> > -		synth_err(SYNTH_ERR_INVALID_TYPE, errpos(field_type));
+> > +		if (array)
+> > +			synth_err(SYNTH_ERR_INVALID_ARRAY_SPEC,
+> > errpos(field_name));
+> > +		else
+> > +			synth_err(SYNTH_ERR_INVALID_TYPE,
+> > errpos(field_type));
+> >  		ret = -EINVAL;
+> >  		goto free;
+> >  	} else if (size == 0) {
+> > @@ -1176,7 +1180,7 @@ static int __create_synth_event(const char
+> > *name, const char *raw_fields)
+> >  	mutex_lock(&event_mutex);
+> >  
+> >  	if (name[0] == '\0') {
+> > -		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
+> > +		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+> >  		ret = -EINVAL;
+> >  		goto out;
+> >  	}
+> > @@ -1228,7 +1232,7 @@ static int __create_synth_event(const char
+> > *name, const char *raw_fields)
+> >  	}
+> >  
+> >  	if (n_fields == 0) {
+> > -		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
+> > +		synth_err(SYNTH_ERR_INVALID_CMD, 0);
+> >  		ret = -EINVAL;
+> >  		goto err;
+> >  	}
+> > @@ -1366,6 +1370,40 @@ int synth_event_delete(const char
+> > *event_name)
+> >  }
+> >  EXPORT_SYMBOL_GPL(synth_event_delete);
+> >  
+> > +static int check_command(const char *raw_command)
+> > +{
+> > +	char **argv = NULL, *cmd, *saved_cmd, *name_and_field;
+> > +	int argc, ret = 0;
+> > +
+> > +	cmd = saved_cmd = kstrdup(raw_command, GFP_KERNEL);
+> > +	if (!cmd)
+> > +		return -ENOMEM;
+> > +
+> > +	name_and_field = strsep(&cmd, ";");
+> > +	if (!name_and_field) {
+> > +		ret = -EINVAL;
+> > +		goto free;
+> > +	}
+> > +
+> > +	if (name_and_field[0] == '!')
+> > +		goto free;
+> > +
+> > +	argv = argv_split(GFP_KERNEL, name_and_field, &argc);
+> > +	if (!argv) {
+> > +		ret = -ENOMEM;
+> > +		goto free;
+> > +	}
+> > +
+> > +	if (argc < 3)
+> > +		ret = -EINVAL;
+> > +free:
+> > +	kfree(saved_cmd);
+> > +	if (argv)
+> > +		argv_free(argv);
+> > +
+> > +	return ret;
+> > +}
+> 
+> But I'm not sure why this (yet another parser) is needed. What you
+> are expecting
+> for this check_command()? Could you tell me some examples?
+> 
+
+This is just a common function to check we even have the possibility of
+a valid command.  It will catch things right off the top like
+
+  # echo 'myevent' >> synthetic_events
+
+or
+
+  # echo 'myevent int'  >> synthetic events
+
+You're right, it's confusing to have it in this patch, since it really
+belongs in the rework patch - I'll move it there.
+
+Thanks,
+
+Tom
+
+
+> Thank you,
+> 
+> 
+> 
+
