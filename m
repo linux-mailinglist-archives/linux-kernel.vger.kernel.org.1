@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0142C3039AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564803039A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391290AbhAZJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:57:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40454 "EHLO mail.kernel.org"
+        id S2391732AbhAZJ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:57:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731301AbhAYSxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731298AbhAYSxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:53:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F835221E3;
-        Mon, 25 Jan 2021 18:53:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 236F7224BE;
+        Mon, 25 Jan 2021 18:53:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600794;
-        bh=A7spKmcgzj5bdGNQ+cuN9qdBZB0Pc4WFgGyKVYfV7fc=;
+        s=korg; t=1611600819;
+        bh=DVs/Hsq1dMmzP/4IIndLl33tcW4RfiE+yYR4fA+0KTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNKtOAVEnhIhBr5T4GDpLys99c86ER8Au22MfzVsSp/t7JX3TPBmIrPXbHw1qALnr
-         23bhBheTOrS0JFwP9DRNjAeLp9lvfUcDSNy1dR76pR8ZilKoczCwkO2gbUIscsuKvp
-         pmoZpoOfA+MD5VPC9DVTxCNWX4z3WFX3z3SGyKYE=
+        b=UfTsyPlLTA6OHXSY7tzmNsJImK6OH0Xau//Z/wrdoapb5PC7Co5fF3QBkLePiHd0B
+         rjVLP2SrVlwTdJ0zhjmnA6tJrqevMELU9uVrzuTxeQaGOem1FTTvaowK2S9brpTbhX
+         WfeSvm/iHzHh9Bcn90QVq8/itddQBXTiSgObBl6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kent Gibson <warthog618@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.10 152/199] tools: gpio: fix %llu warning in gpio-watch.c
-Date:   Mon, 25 Jan 2021 19:39:34 +0100
-Message-Id: <20210125183222.624505274@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        David Howells <dhowells@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 164/199] cachefiles: Drop superfluous readpages aops NULL check
+Date:   Mon, 25 Jan 2021 19:39:46 +0100
+Message-Id: <20210125183223.118213615@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,56 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kent Gibson <warthog618@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 1fc7c1ef37f86f207b4db40aba57084bb2f6a69a upstream.
+commit db58465f1121086b524be80be39d1fedbe5387f3 upstream.
 
-Some platforms, such as mips64, don't map __u64 to long long unsigned
-int so using %llu produces a warning:
+After the recent actions to convert readpages aops to readahead, the
+NULL checks of readpages aops in cachefiles_read_or_alloc_page() may
+hit falsely.  More badly, it's an ASSERT() call, and this panics.
 
-gpio-watch.c: In function ‘main’:
-gpio-watch.c:89:30: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
-   89 |    printf("line %u: %s at %llu\n",
-      |                           ~~~^
-      |                              |
-      |                              long long unsigned int
-      |                           %lu
-   90 |           chg.info.offset, event, chg.timestamp_ns);
-      |                                   ~~~~~~~~~~~~~~~~
-      |                                      |
-      |                                      __u64 {aka long unsigned int}
+Drop the superfluous NULL checks for fixing this regression.
 
-Replace the %llu with PRIu64 and cast the argument to uint64_t.
+[DH: Note that cachefiles never actually used readpages, so this check was
+ never actually necessary]
 
-Fixes: 33f0c47b8fb4 ("tools: gpio: implement gpio-watch")
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208883
+BugLink: https://bugzilla.opensuse.org/show_bug.cgi?id=1175245
+Fixes: 9ae326a69004 ("CacheFiles: A cache that backs onto a mounted filesystem")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Acked-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/gpio/gpio-watch.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/cachefiles/rdwr.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/tools/gpio/gpio-watch.c
-+++ b/tools/gpio/gpio-watch.c
-@@ -10,6 +10,7 @@
- #include <ctype.h>
- #include <errno.h>
- #include <fcntl.h>
-+#include <inttypes.h>
- #include <linux/gpio.h>
- #include <poll.h>
- #include <stdbool.h>
-@@ -86,8 +87,8 @@ int main(int argc, char **argv)
- 				return EXIT_FAILURE;
- 			}
+--- a/fs/cachefiles/rdwr.c
++++ b/fs/cachefiles/rdwr.c
+@@ -413,7 +413,6 @@ int cachefiles_read_or_alloc_page(struct
  
--			printf("line %u: %s at %llu\n",
--			       chg.info.offset, event, chg.timestamp_ns);
-+			printf("line %u: %s at %" PRIu64 "\n",
-+			       chg.info.offset, event, (uint64_t)chg.timestamp_ns);
- 		}
- 	}
+ 	inode = d_backing_inode(object->backer);
+ 	ASSERT(S_ISREG(inode->i_mode));
+-	ASSERT(inode->i_mapping->a_ops->readpages);
  
+ 	/* calculate the shift required to use bmap */
+ 	shift = PAGE_SHIFT - inode->i_sb->s_blocksize_bits;
+@@ -713,7 +712,6 @@ int cachefiles_read_or_alloc_pages(struc
+ 
+ 	inode = d_backing_inode(object->backer);
+ 	ASSERT(S_ISREG(inode->i_mode));
+-	ASSERT(inode->i_mapping->a_ops->readpages);
+ 
+ 	/* calculate the shift required to use bmap */
+ 	shift = PAGE_SHIFT - inode->i_sb->s_blocksize_bits;
 
 
