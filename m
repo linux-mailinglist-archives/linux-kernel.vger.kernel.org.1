@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE47303900
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A23303902
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391055AbhAZJ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:29:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36338 "EHLO mail.kernel.org"
+        id S2391088AbhAZJaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:30:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731046AbhAYStW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:49:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7D9922B3F;
-        Mon, 25 Jan 2021 18:48:39 +0000 (UTC)
+        id S1727143AbhAYStc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:49:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B09992083E;
+        Mon, 25 Jan 2021 18:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600520;
-        bh=rF/943KhXezfdgbCMm4/HFxCfE2Bb3ZbRhYMEJrffP4=;
+        s=korg; t=1611600530;
+        bh=LvVRTh7MSvbssqT4SZy33+D8NrWxVC7FKb7pFdKc0Uk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RCtDH8ICdon75TpJOabmEHocw2RZ+Ixg/FoX8uSqqMWXAWFB2NESYcV+OXSjxwPc7
-         HMYxJ/52IU0c7fQL/36x4P7tSv+juWxqO4orkCmt7YgYRmg8XTX52mBELfZVsp4fc7
-         byjGgAkk1doezi7AAUMAhz3hxAOa0iWujIXEcMU0=
+        b=eg6ygwINPOQmRCxQr6hAXV8NQmiAVvqHSrIyoCi9mzO/49v9/q5goiGZ+Knf0y05L
+         pfwSDXzBv6wvjs+z+hgqp7jGNgHuK1vVrYadKRqJx8xrWP4FG3m/Br62xb9FKVd0Q1
+         GXI+m/zp3lhQpUd8X8uvAuXTVKhprzYPglEtwabg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 046/199] riscv: Fix kernel time_init()
-Date:   Mon, 25 Jan 2021 19:37:48 +0100
-Message-Id: <20210125183218.198940570@linuxfoundation.org>
+        stable@vger.kernel.org, Seth Miller <miller.seth@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 050/199] HID: Ignore battery for Elan touchscreen on ASUS UX550
+Date:   Mon, 25 Jan 2021 19:37:52 +0100
+Message-Id: <20210125183218.373193047@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,46 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Seth Miller <miller.seth@gmail.com>
 
-[ Upstream commit 11f4c2e940e2f317c9d8fb5a79702f2a4a02ff98 ]
+[ Upstream commit 7c38e769d5c508939ce5dc26df72602f3c902342 ]
 
-If of_clk_init() is not called in time_init(), clock providers defined
-in the system device tree are not initialized, resulting in failures for
-other devices to initialize due to missing clocks.
-Similarly to other architectures and to the default kernel time_init()
-implementation, call of_clk_init() before executing timer_probe() in
-time_init().
+Battery status is being reported for the Elan touchscreen on ASUS
+UX550 laptops despite not having a batter. It always shows either 0 or
+1%.
 
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Seth Miller <miller.seth@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/time.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hid/hid-ids.h   | 1 +
+ drivers/hid/hid-input.c | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/arch/riscv/kernel/time.c b/arch/riscv/kernel/time.c
-index 4d3a1048ad8b1..8a5cf99c07762 100644
---- a/arch/riscv/kernel/time.c
-+++ b/arch/riscv/kernel/time.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2017 SiFive
-  */
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index f170feaac40ba..94180c63571ed 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -387,6 +387,7 @@
+ #define USB_DEVICE_ID_TOSHIBA_CLICK_L9W	0x0401
+ #define USB_DEVICE_ID_HP_X2		0x074d
+ #define USB_DEVICE_ID_HP_X2_10_COVER	0x0755
++#define USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN	0x2706
  
-+#include <linux/of_clk.h>
- #include <linux/clocksource.h>
- #include <linux/delay.h>
- #include <asm/sbi.h>
-@@ -24,6 +25,8 @@ void __init time_init(void)
- 	riscv_timebase = prop;
- 
- 	lpj_fine = riscv_timebase / HZ;
-+
-+	of_clk_init(NULL);
- 	timer_probe();
- }
+ #define USB_VENDOR_ID_ELECOM		0x056e
+ #define USB_DEVICE_ID_ELECOM_BM084	0x0061
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 4dca113924593..32024905fd70f 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -322,6 +322,8 @@ static const struct hid_device_id hid_battery_quirks[] = {
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LOGITECH,
+ 		USB_DEVICE_ID_LOGITECH_DINOVO_EDGE_KBD),
+ 	  HID_BATTERY_QUIRK_IGNORE },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_ELAN, USB_DEVICE_ID_ASUS_UX550_TOUCHSCREEN),
++	  HID_BATTERY_QUIRK_IGNORE },
+ 	{}
+ };
  
 -- 
 2.27.0
