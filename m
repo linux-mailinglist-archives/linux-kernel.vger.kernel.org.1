@@ -2,70 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240D23021E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56543021EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbhAYFlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:41:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23451 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725821AbhAYFl2 (ORCPT
+        id S1726714AbhAYFsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:48:42 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:19708 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbhAYFs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:41:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611553197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XwObwWA9fXyhzGiJ652Ze6C+PNgOaSeBXRe2BUCfC24=;
-        b=QreP/L56BWN+nWaV8eKFB/0dJs8zC9SZRlQ7D5g1dzRNNjbyIkQdxjmdy5hQs1CRi+WxLW
-        WPikq7PI3f3RGt5gy4AzKiJW5UXO90yATnsUlAdqOLTOnLt0MXmIHQrwlcs9wPW7WG9Y2I
-        nxFVwRufRXPRgyxje2pUOQ2NegJP0xw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-zOc8quYmOFuRDXkNJt48FQ-1; Mon, 25 Jan 2021 00:39:55 -0500
-X-MC-Unique: zOc8quYmOFuRDXkNJt48FQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7156918C8C00;
-        Mon, 25 Jan 2021 05:39:53 +0000 (UTC)
-Received: from suzdal.zaitcev.lan (ovpn-112-54.phx2.redhat.com [10.3.112.54])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E4D2260C5F;
-        Mon, 25 Jan 2021 05:39:52 +0000 (UTC)
-Date:   Sun, 24 Jan 2021 23:39:52 -0600
-From:   Pete Zaitcev <zaitcev@redhat.com>
-To:     Jeremy Figgins <kernel@jeremyfiggins.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
-        zaitcev@redhat.com
-Subject: Re: [PATCH] USB: usblp: don't call usb_set_interface if there's a
- single alt
-Message-ID: <20210124233924.34d278fc@suzdal.zaitcev.lan>
-In-Reply-To: <YAy9kJhM/rG8EQXC@watson>
-References: <YAy9kJhM/rG8EQXC@watson>
-Organization: Red Hat, Inc.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Mon, 25 Jan 2021 00:48:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=qti.qualcomm.com; i=@qti.qualcomm.com; q=dns/txt;
+  s=qcdkim; t=1611553706; x=1643089706;
+  h=from:to:cc:subject:date:message-id;
+  bh=Jc0pww2EeutSvXzzlyYPwaeU7Tg2Hh9IkScJ5YhJZCE=;
+  b=Cq6gSEqXXHKGOs/JJ7FTO8C2vFxr4TCsLFWXieaZv+6DES7LFFyz4IYy
+   hdDx4Wgl+X1B/tMzlZYj/pwB1ISLbLkqjy6skDoE4oVfpAJ85lAwT2CEr
+   SFOY4Sa2cJ1gblb/yCA+SMWr05vEjqPjSzovupblgQvdl2qOI38ZFwei2
+   E=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 24 Jan 2021 21:47:45 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Jan 2021 21:47:44 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 25 Jan 2021 11:17:28 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id EE43921578; Mon, 25 Jan 2021 11:17:27 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@qti.qualcomm.com>
+To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
+        stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org,
+        Dikshita Agarwal <dikshita@qti.qualcomm.com>
+Subject: [PATCH v6 0/2] Add encoder ctrls for long term reference
+Date:   Mon, 25 Jan 2021 11:16:56 +0530
+Message-Id: <1611553618-17224-1-git-send-email-dikshita@qti.qualcomm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021 18:21:36 -0600
-Jeremy Figgins <kernel@jeremyfiggins.com> wrote:
+This series add the encoder controls for long term reference (LTR)
+and support for the same in venus driver.
 
-> Signed-off-by: Jeremy Figgins <kernel@jeremyfiggins.com>
+Dikshita Agarwal (2):
+  media: v4l2-ctrl: add controls for long term reference.
+  venus: venc: Add support for Long Term Reference (LTR) controls
 
-> +++ b/drivers/usb/class/usblp.c
-> +	if (usblp->intf->num_altsetting > 1) {
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 18 ++++++++
+ drivers/media/platform/qcom/venus/venc_ctrls.c     | 49 +++++++++++++++++++++-
+ drivers/media/v4l2-core/v4l2-ctrls.c               | 14 +++++++
+ include/uapi/linux/v4l2-controls.h                 |  3 ++
+ 4 files changed, 83 insertions(+), 1 deletion(-)
 
-Acked-by: Pete Zaitcev <zaitcev@redhat.com>
-
-I am having some misgivings about it, but let's see if it works.
-At worst, someone will complain and we'll revert to quirks.
-
--- Pete
+-- 
+2.7.4
 
