@@ -2,383 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7612303697
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C1B30369E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbhAZGcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729290AbhAYOLq (ORCPT
+        id S1732683AbhAZGe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:34:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729255AbhAYOOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:11:46 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3D7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:10:49 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id f16so2053270wmq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zH0NEkG3AkFr4jGffOltirP3sm6e4qzdbWMUDm6pzLE=;
-        b=SRebwxQ7TFksC5IwMikzJ5HEz185i6km8QLqy2tzc21KOY3W+dnsTINsjvyumQSmG0
-         1QoGHJp+x3n3QwXEWYFCqsvWd0DqduPME/tlSPj20Z4++oqUQczekiSN7TKBZI5cuYjY
-         IX1ziQ4Ock3gmA2IOv8sS2v/0V/nz8w+f0qVH9mZlTROxDpWGCwfnRgQPslEKVD3Rbiw
-         f8jZFun5gdlTwzzuoW4ewllgKY6skqeU71ZUekohbSCxEa3f+LqLWCjjwSgB/IdR1gS3
-         MR2dVPZrRXaUVPLWXp/fesDG41ubLtiMBHtvEzTapz9FVU5L4KohQ1/xPocjQwQkPeEz
-         3k6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zH0NEkG3AkFr4jGffOltirP3sm6e4qzdbWMUDm6pzLE=;
-        b=nkPxsOwavBTp0vPpYViRsntrz/ir+6Jqg/Np2GESzAPtJlUyknYcGC9+GjcIde7RgV
-         +qY8qYLrbizGqzrfFK333wnHal8+RHk0VUaT2ktoAS2Vqkh9zMOgIFzlM3etI5fiLPjn
-         OuD1xV20cDwqJ50KhAxeP2hIXT1L5gAd74tiZPeB5ekHpd2rqHhEvPZPh+PAVkwuU3Rd
-         cC4/ZLVeKoP8ovmB7mZv4D5jbFS+cY6jnEUjMBqm/hhIemdngciF2yxQduJUeNm7GYXQ
-         uYU7GpyEWuwF7Rcom3vsF8gLvd72bzKhALelCrkrisdmpogXoX4NeFwrbkxfX/NFTB+x
-         4C6w==
-X-Gm-Message-State: AOAM530Qba6o5T1vW3/lCjz96lfJQ/dDVu4GnVAyEgyDo1gN1t3+OWs7
-        NHB0dh5KwEXfq6hBL8Nn5duuEw==
-X-Google-Smtp-Source: ABdhPJwDKlHKaDAHOAQGGiwPTDUBPbAjrqMLjsiY/cakhRnPFVmktcVug0+lIuO6y9u8Wgnv9logFQ==
-X-Received: by 2002:a1c:e255:: with SMTP id z82mr340638wmg.60.1611583847665;
-        Mon, 25 Jan 2021 06:10:47 -0800 (PST)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id c18sm41394036wmk.0.2021.01.25.06.10.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 06:10:46 -0800 (PST)
-Date:   Mon, 25 Jan 2021 14:10:44 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v2 09/17] mfd: Support for ROHM BD71815 PMIC core
-Message-ID: <20210125141044.GZ4903@dell>
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
- <14480ca837005aecd7053202c2347e36ad29faee.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+        Mon, 25 Jan 2021 09:14:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611583983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iIynMtgnRqz+VkJaiVKyd+A9flrqqThOoONtrV6hF3o=;
+        b=E5M474vPL4YVTA6est2JlqY8CVztf6KZ5FUWPL+I4WspQd3voZdajx4Xcn5aSxzXYfvSFF
+        zjLlrV9c+k0oc++XdB2WaaM/WGrmK6z43LMkJ4MaeHu1LBEOk2tQ+8k7gF+SRnH3YWhgrX
+        iwPDnX+5WYHBvie8nXpzjJNQY5fWIs4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-jzWJGVMcOC29gBSl7bsUKw-1; Mon, 25 Jan 2021 09:12:59 -0500
+X-MC-Unique: jzWJGVMcOC29gBSl7bsUKw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 862261005513;
+        Mon, 25 Jan 2021 14:12:57 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-163.rdu2.redhat.com [10.10.117.163])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A37711981B;
+        Mon, 25 Jan 2021 14:12:56 +0000 (UTC)
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+References: <20210125042441.20030-1-longman@redhat.com>
+ <3b3f2b56-e66a-db5e-8d8e-95f3812c6838@huawei.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <4367cc87-1ebf-6df2-d2d4-939c548ca790@redhat.com>
+Date:   Mon, 25 Jan 2021 09:12:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <14480ca837005aecd7053202c2347e36ad29faee.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <3b3f2b56-e66a-db5e-8d8e-95f3812c6838@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021, Matti Vaittinen wrote:
+On 1/25/21 1:30 AM, Miaohe Lin wrote:
+> On 2021/1/25 12:24, Waiman Long wrote:
+>> The commit 3fea5a499d57 ("mm: memcontrol: convert page
+>> cache to a new mem_cgroup_charge() API") introduced a bug in
+>> __add_to_page_cache_locked() causing the following splat:
+>>
+>>   [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
+>>   [ 1570.068333] pages's memcg:ffff8889a4116000
+>>   [ 1570.068343] ------------[ cut here ]------------
+>>   [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
+>>   [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
+>>   [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
+>>   [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
+>>   [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
+>>     :
+>>   [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
+>>   [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
+>>   [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
+>>   [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
+>>   [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
+>>   [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
+>>   [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
+>>   [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>   [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
+>>   [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>   [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>   [ 1570.068402] PKRU: 55555554
+>>   [ 1570.068404] Call Trace:
+>>   [ 1570.068407]  mem_cgroup_charge+0x175/0x770
+>>   [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
+>>   [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
+>>   [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
+>>   [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
+>>   [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
+>>   [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
+>>   [ 1570.068693]  read_pages+0x5b1/0xc40
+>>   [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
+>>   [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
+>>   [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
+>>   [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
+>>   [ 1570.068872]  new_sync_read+0x3af/0x610
+>>   [ 1570.068901]  vfs_read+0x339/0x4b0
+>>   [ 1570.068909]  ksys_read+0xf1/0x1c0
+>>   [ 1570.068920]  do_syscall_64+0x33/0x40
+>>   [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>   [ 1570.068930] RIP: 0033:0x7ff039135595
+>>
+>> Before that commit, there was a try_charge() and commit_charge()
+>> in __add_to_page_cache_locked(). These 2 separated charge functions
+>> were replaced by a single mem_cgroup_charge(). However, it forgot
+>> to add a matching mem_cgroup_uncharge() when the xarray insertion
+>> failed with the page released back to the pool. Fix this by adding a
+>> mem_cgroup_uncharge() call when insertion error happens.
+>>
+>> Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Cc stable should be needed.
 
-> Add core support for ROHM BD71815 Power Management IC.
-> 
-> The IC integrates regulators, a battery charger with a coulomb counter,
-> a real-time clock (RTC), clock gate and general-purpose outputs (GPO).
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
-> Changes since v1:
->   - Used BIT() for better readability
->   - removed some unused definitions
-> 
->  drivers/mfd/Kconfig              |  15 +-
->  drivers/mfd/rohm-bd71828.c       | 416 +++++++++++++++++++++--
->  include/linux/mfd/rohm-bd71815.h | 561 +++++++++++++++++++++++++++++++
->  include/linux/mfd/rohm-bd71828.h |   3 +
->  4 files changed, 952 insertions(+), 43 deletions(-)
->  create mode 100644 include/linux/mfd/rohm-bd71815.h
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index bdfce7b15621..59bfacb91898 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1984,19 +1984,20 @@ config MFD_ROHM_BD70528
->  	  charger.
->  
->  config MFD_ROHM_BD71828
-> -	tristate "ROHM BD71828 Power Management IC"
-> +	tristate "ROHM BD71828 and BD71815 Power Management IC"
->  	depends on I2C=y
->  	depends on OF
->  	select REGMAP_I2C
->  	select REGMAP_IRQ
->  	select MFD_CORE
->  	help
-> -	  Select this option to get support for the ROHM BD71828 Power
-> -	  Management IC. BD71828GW is a single-chip power management IC for
-> -	  battery-powered portable devices. The IC integrates 7 buck
-> -	  converters, 7 LDOs, and a 1500 mA single-cell linear charger.
-> -	  Also included is a Coulomb counter, a real-time clock (RTC), and
-> -	  a 32.768 kHz clock gate.
-> +	  Select this option to get support for the ROHM BD71828 and BD71815
-> +	  Power Management ICs. BD71828GW and BD71815AGW are single-chip power
-> +	  management ICs mainly for battery-powered portable devices.
-> +	  The BD71828 integrates 7 buck converters and 7 LDOs. The BD71815
-> +	  has 5 bucks, 7 LDOs, and a boost for driving LEDs. Both ICs provide
-> +	  also a single-cell linear charger, a Coulomb counter, a real-time
-> +	  clock (RTC), GPIOs and a 32.768 kHz clock gate.
->  
->  config MFD_STM32_LPTIMER
->  	tristate "Support for STM32 Low-Power Timer"
-> diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-bd71828.c
-> index 210261d026f2..28b82477ce4c 100644
-> --- a/drivers/mfd/rohm-bd71828.c
-> +++ b/drivers/mfd/rohm-bd71828.c
-> @@ -2,7 +2,7 @@
->  //
->  // Copyright (C) 2019 ROHM Semiconductors
->  //
-> -// ROHM BD71828 PMIC driver
-> +// ROHM BD71828/BD71815 PMIC driver
->  
->  #include <linux/gpio_keys.h>
->  #include <linux/i2c.h>
-> @@ -11,7 +11,9 @@
->  #include <linux/ioport.h>
->  #include <linux/irq.h>
->  #include <linux/mfd/core.h>
-> +#include <linux/mfd/rohm-bd71815.h>
->  #include <linux/mfd/rohm-bd71828.h>
-> +#include <linux/mfd/rohm-generic.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
->  #include <linux/regmap.h>
-> @@ -29,12 +31,102 @@ static struct gpio_keys_platform_data bd71828_powerkey_data = {
->  	.name = "bd71828-pwrkey",
->  };
->  
-> -static const struct resource rtc_irqs[] = {
-> +static const struct resource bd71815_rtc_irqs[] = {
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC0, "bd71815-rtc-alm-0"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC1, "bd71815-rtc-alm-1"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC2, "bd71815-rtc-alm-2"),
-> +};
-> +
-> +static const struct resource bd71828_rtc_irqs[] = {
->  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC0, "bd71828-rtc-alm-0"),
->  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC1, "bd71828-rtc-alm-1"),
->  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC2, "bd71828-rtc-alm-2"),
->  };
->  
-> +static struct resource bd71815_power_irqs[] = {
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_RMV, "bd71815-dcin-rmv"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-clps-out"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-clps-in"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_RES, "bd71815-dcin-ovp-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_DET, "bd71815-dcin-ovp-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_RES, "bd71815-dcin-mon-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_DET, "bd71815-dcin-mon-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_RES, "bd71815-vsys-uv-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_DET, "bd71815-vsys-uv-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_RES, "bd71815-vsys-low-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_DET, "bd71815-vsys-low-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-mon-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-mon-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TEMP, "bd71815-chg-wdg-temp"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TIME, "bd71815-chg-wdg"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_RES, "bd71815-rechg-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_DET, "bd71815-rechg-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RANGED_TEMP_TRANSITION,
-> +			     "bd71815-ranged-temp-transit"),
+Yes, this patch should go to stable. I think the stable tree maintainers 
+will automatically pick up patches with the "Fixes" tag. That is why I 
+don't explicitly put a "cc:stable" line in the patch.
 
-The new line limit is 100.  Feel free to run these out.
+Thanks,
+Longman
 
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_STATE_TRANSITION,
-> +			     "bd71815-chg-state-change"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_TEMP_NORMAL,
-> +			     "bd71815-bat-temp-normal"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_TEMP_ERANGE,
-> +			     "bd71815-bat-temp-erange"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_REMOVED, "bd71815-bat-rmv"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_DETECTED, "bd71815-bat-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_THERM_REMOVED, "bd71815-therm-rmv"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_THERM_DETECTED, "bd71815-therm-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_DEAD, "bd71815-bat-dead"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_SHORTC_RES,
-> +			     "bd71815-bat-short-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_SHORTC_DET,
-> +			     "bd71815-bat-short-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_LOW_VOLT_RES,
-> +			     "bd71815-bat-low-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_LOW_VOLT_DET,
-> +			     "bd71815-bat-low-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_VOLT_RES,
-> +			     "bd71815-bat-over-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_VOLT_DET,
-> +			     "bd71815-bat-over-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_MON_RES, "bd71815-bat-mon-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_MON_DET, "bd71815-bat-mon-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_CC_MON1, "bd71815-bat-cc-mon1"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_CC_MON2, "bd71815-bat-cc-mon2"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_CC_MON3, "bd71815-bat-cc-mon3"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_1_RES,
-> +			     "bd71815-bat-oc1-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_1_DET,
-> +			     "bd71815-bat-oc1-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_2_RES,
-> +			     "bd71815-bat-oc2-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_2_DET,
-> +			     "bd71815-bat-oc2-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_3_RES,
-> +			     "bd71815-bat-oc3-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_BAT_OVER_CURR_3_DET,
-> +			     "bd71815-bat-oc3-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_RES,
-> +			     "bd71815-bat-low-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_LOW_DET,
-> +			     "bd71815-bat-low-det"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_RES, "bd71815-bat-hi-res"),
-> +	DEFINE_RES_IRQ_NAMED(BD71815_INT_TEMP_BAT_HI_DET, "bd71815-bat-hi-det"),
-> +};
-
-[...]
-
-> +static const struct regmap_irq bd71815_irqs[] = {
-
-[...]
-
-> +	REGMAP_IRQ_REG(BD71815_INT_TEMP_CHIP_OVER_VF_DET, 10,
-> +		       BD71815_INT_TEMP_CHIP_OVER_VF_DET_MASK),
-
-As above.
-
-> +	/* RTC Alarm */
-> +	REGMAP_IRQ_REG(BD71815_INT_RTC0, 11, BD71815_INT_RTC0_MASK),
-> +	REGMAP_IRQ_REG(BD71815_INT_RTC1, 11, BD71815_INT_RTC1_MASK),
-> +	REGMAP_IRQ_REG(BD71815_INT_RTC2, 11, BD71815_INT_RTC2_MASK),
-> +};
-
-[...]
-
-> +static int set_clk_mode(struct device *dev, struct regmap *regmap,
-> +			int clkmode_reg)
-> +{
-> +	int ret;
-> +	const char *mode;
-> +
-> +	ret = of_property_read_string_index(dev->of_node, "rohm,clkout-mode", 0,
-> +					    &mode);
-> +	if (ret) {
-> +		if (ret == -EINVAL)
-> +			return 0;
-> +		return ret;
-> +	}
-> +	if (!strncmp(mode, "open-drain", 10)) {
-> +		dev_dbg(dev, "configuring clk32kout as open-drain");
-
-Do you *really* need these?
-
-> +		ret = regmap_update_bits(regmap, clkmode_reg, OUT32K_MODE,
-> +					 OUT32K_MODE_OPEN_DRAIN);
-> +	} else if (!strncmp(mode, "cmos", 4)) {
-> +		dev_dbg(dev, "configuring clk32kout as cmos");
-> +		ret = regmap_update_bits(regmap, clkmode_reg, OUT32K_MODE,
-> +					 OUT32K_MODE_CMOS);
-> +	} else {
-> +		dev_err(dev, "bad clk32kout mode configuration");
-> +		return -EINVAL;
-> +	}
-> +	return ret;
-> +}
-> +
->  static int bd71828_i2c_probe(struct i2c_client *i2c)
->  {
-> -	struct rohm_regmap_dev *chip;
->  	struct regmap_irq_chip_data *irq_data;
->  	int ret;
-> +	struct regmap *regmap;
-> +	const struct regmap_config *regmap_config;
-> +	struct regmap_irq_chip *irqchip;
-> +	unsigned int chip_type;
-> +	struct mfd_cell *mfd;
-> +	int cells;
-> +	int button_irq;
-> +	int clkmode_reg;
->  
->  	if (!i2c->irq) {
->  		dev_err(&i2c->dev, "No IRQ configured\n");
->  		return -EINVAL;
->  	}
->  
-> -	chip = devm_kzalloc(&i2c->dev, sizeof(*chip), GFP_KERNEL);
-> -	if (!chip)
-> -		return -ENOMEM;
-> -
-> -	dev_set_drvdata(&i2c->dev, chip);
-> +	chip_type = (unsigned int)(uintptr_t)
-> +		    of_device_get_match_data(&i2c->dev);
-> +	switch (chip_type) {
-> +	case ROHM_CHIP_TYPE_BD71828:
-> +		mfd = bd71828_mfd_cells;
-> +		cells = ARRAY_SIZE(bd71828_mfd_cells);
-> +		regmap_config = &bd71828_regmap;
-> +		irqchip = &bd71828_irq_chip;
-> +		clkmode_reg = BD71815_REG_OUT32K;
-> +		button_irq = BD71828_INT_SHORTPUSH;
-> +		dev_info(&i2c->dev, "BD71828 found\n");
-> +		break;
-> +	case ROHM_CHIP_TYPE_BD71815:
-> +		mfd = bd71815_mfd_cells;
-> +		cells = ARRAY_SIZE(bd71815_mfd_cells);
-> +		regmap_config = &bd71815_regmap;
-> +		irqchip = &bd71815_irq_chip;
-> +		clkmode_reg = BD71828_REG_OUT32K;
-> +		/*
-> +		 * If BD71817 support is needed we should be able to handle it
-> +		 * with proper DT configs + BD71815 drivers + power-button.
-> +		 * BD71815 data-sheet does not list the power-button IRQ so we
-> +		 * don't use it.
-> +		 */
-> +		button_irq = 0;
-> +		dev_info(&i2c->dev, "BD71815 found\n");
-
-Again, are these *really* useful to you and/or your users?
-
-Besides, this device not *found* i.e. scanned/read and instantiated,
-it has simply been matched from the local DTB.  It can still be
-wrong.  You can probably omit them.
-
-[...]
-
-> diff --git a/include/linux/mfd/rohm-bd71815.h b/include/linux/mfd/rohm-bd71815.h
-> new file mode 100644
-> index 000000000000..8ee5874a5b73
-> --- /dev/null
-> +++ b/include/linux/mfd/rohm-bd71815.h
-> @@ -0,0 +1,561 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/*
-> + * Copyright 2014 Embest Technology Co. Ltd. Inc.
-
-Jeeze!  Is this for the Amiga?
-
-> + * Author: yanglsh@embest-tech.com
-> + *
-> + * 2020, 2021 Heavily modified by:
-
-You should probably add a proper copyright.
-
-> + *	 Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> + */
-> +
-> +#ifndef _MFD_BD71815_H
-> +#define _MFD_BD71815_H
-> +
-> +#include <linux/regmap.h>
-
-[...]
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
