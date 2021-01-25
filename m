@@ -2,312 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7482302239
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96075302240
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727135AbhAYGqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 01:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbhAYGng (ORCPT
+        id S1727187AbhAYGux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 01:50:53 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:51786 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727195AbhAYGs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:43:36 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42EDC0613ED
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 22:42:45 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id my11so8721913pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 22:42:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=14Bj46XsmXbx8plhZIOf6y+coaN/fUKX0SPBaGuWf7g=;
-        b=K+fEZGRQSbFrMb6wpHc6SmH0r9YjxxbhSOFrGK58eer8lhC15uhhxYdXkoFfOnIokM
-         ShizDBmMZx2ZoD5i7bGeHdmqBpHgAIxp9Lla9dEPI1+s266i+9fAKebNZ4SpZlulRt+5
-         ta0T+HzD4ymvq7xdjdAyz/vUWgEe76ciMAIH8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=14Bj46XsmXbx8plhZIOf6y+coaN/fUKX0SPBaGuWf7g=;
-        b=uhX6zeu1wau5hZh7PtAN6XWI9aPm3W62e9EN/O4b1i2Ar5FIUwVe54g8NxGvK0/9Pc
-         Hz4DeWhfVGUjL9WUsMjdCpRlBO3L/f03v07bcZpWu0PhRylbbJbjWJNWVe+38rpnHqA1
-         6jbaxiqgl764/maaIhDAM8ZR2AyEhWlYjEcjuxkbh8g7SofOdwHgAWXJpAHfhP8hNs+f
-         nvW0GxkMeG8zJifig5YSuXh7zno3d0NzmHv4eW0hnhGaAh7JMWPPlR0P5J9W2QNVBpRU
-         dbjuCUSzc6YLQS8IgxZtEXXj3h526kVI09lwyV0m3p8ipBrIJ8wVydrK/+VGaWuqwGfE
-         fRgg==
-X-Gm-Message-State: AOAM533p9V6AXG6+BRC0HONV/hm8zmSFtXikR5l6/u706RJJ0iZaZsaT
-        x6CWELh61qy84q8fd3tDJkhwgg==
-X-Google-Smtp-Source: ABdhPJw2Koj77z3eEz0N0rMl8RJZzwBQ86hcwevAAQ4aIZlPMfH8PvMZ5rre+Io8LdeOagBw+lsCUw==
-X-Received: by 2002:a17:90a:a44:: with SMTP id o62mr20286765pjo.209.1611556965293;
-        Sun, 24 Jan 2021 22:42:45 -0800 (PST)
-Received: from localhost ([2401:fa00:8f:203:f693:9fff:fef4:a930])
-        by smtp.gmail.com with ESMTPSA id n8sm17935062pjo.18.2021.01.24.22.42.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 24 Jan 2021 22:42:44 -0800 (PST)
-From:   David Stevens <stevensd@chromium.org>
-X-Google-Original-From: David Stevens <stevensd@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>
-Subject: [PATCH] KVM: x86/mmu: consider the hva in mmu_notifer retry
-Date:   Mon, 25 Jan 2021 15:42:34 +0900
-Message-Id: <20210125064234.2078146-1-stevensd@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+        Mon, 25 Jan 2021 01:48:57 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210125064732epoutp0248f8af957d7737bb7ba8551011a02b2a~dZshXuz_s2392823928epoutp02F
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:47:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210125064732epoutp0248f8af957d7737bb7ba8551011a02b2a~dZshXuz_s2392823928epoutp02F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611557252;
+        bh=MdJmU13+cQffQ66PN9tFmxfBKVu6PuYMV1moSX5+xe8=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=D64cEimoDJ5+aFPhm5ZnXqKzpetOgzgCq3Lg0Jbr4ef5DHE1n2lnw2mrNdak49y0F
+         vYvQ/KhaK/AKzftKVtTfbFvrJAX0MmnIj1ybN9alaEeiTXYnvyqPo8lm3m0z9bydmK
+         5EY1U6t4dFEo83isPdCgEIhykp9003WilOz5dtzQ=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210125064731epcas1p29694f56ee4dbce209d49eaafda876ecc~dZsgYEte-0856108561epcas1p2W;
+        Mon, 25 Jan 2021 06:47:31 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DPL5Y5fhmz4x9QJ; Mon, 25 Jan
+        2021 06:47:29 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EE.71.09582.1896E006; Mon, 25 Jan 2021 15:47:29 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb~dZseJNaPI2442624426epcas1p3M;
+        Mon, 25 Jan 2021 06:47:28 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210125064728epsmtrp147a106c9fd849909c25835397adfa780~dZseIWWR71301413014epsmtrp1m;
+        Mon, 25 Jan 2021 06:47:28 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-67-600e6981605f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        38.31.13470.0896E006; Mon, 25 Jan 2021 15:47:28 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210125064728epsmtip131c763bc2294f25ba12c1a0439353e29~dZsd29NA23116731167epsmtip1W;
+        Mon, 25 Jan 2021 06:47:28 +0000 (GMT)
+From:   Chanwoo Lee <cw9316.lee@samsung.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        baolin.wang@linaro.org, arnd@arndb.de, cw9316.lee@samsung.com,
+        colyli@suse.de, lee.jones@linaro.org, sartgarg@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com
+Subject: [PATCH] mmc: queue: Exclude unnecessary header file
+Date:   Mon, 25 Jan 2021 15:43:55 +0900
+Message-Id: <20210125064355.28545-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDJsWRmVeSWpSXmKPExsWy7bCmnm5jJl+CwdpGJYuTT9awWfyddIzd
+        4lPDFWaL6Y3n2S1mnGpjtdh37SS7xa+/69ktdjw/w25x/+tRRovLu+awWRz5389oMaPvG6tF
+        0599LBbH14Y78Hn8/jWJ0eNyXy+Tx+I9L5k87lzbw+bRt2UVo8fm09UenzfJBbBH5dhkpCam
+        pBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAF2spFCWmFMKFApI
+        LC5W0rezKcovLUlVyMgvLrFVSi1IySkwNCjQK07MLS7NS9dLzs+1MjQwMDIFqkzIyXi2K7vg
+        IGvFhdZZ7A2M11m6GDk5JARMJO4e+MXWxcjFISSwg1FiWe83dgjnE6PE8rsNjBDON0aJeS8a
+        gco4wFpWXFWHiO9llLg0+xhUxxdGiTkXTrGCFLEJaEncPuYNEhcR+MAo8eT5TzaQfcwCKRKv
+        et6B7RYWsJFonjIXzGYRUJXY2LOaFcTmFbCWaL92jQ3iPnmJP/d7mCHighInZz5hgZgjL9G8
+        dTYzyAIJgV4OiWXP9rJCNLhIPDx4hAnCFpZ4dXwLO4QtJfGyv40doqGZUeLU7HNQTgujxOsr
+        N6CqjCU+ff7MCPICs4CmxPpd+hBhRYmdv+cyQmzmk3j3tYcVEhS8Eh1tQhAlKhJzus6xwez6
+        eOMx1D0eEi3fII4WEoiVWHdlK+sERvlZSP6ZheSfWQiLFzAyr2IUSy0ozk1PLTYsMEaO1U2M
+        4GSrZb6DcdrbD3qHGJk4GA8xSnAwK4nw7tbjSRDiTUmsrEotyo8vKs1JLT7EaAoM4YnMUqLJ
+        +cB0n1cSb2hqZGxsbGFiZm5maqwkzptk8CBeSCA9sSQ1OzW1ILUIpo+Jg1OqgenQzTK1sxdv
+        f8rI3ZXrK92+aOmemWeYmZqmCGz6mPmNvUV2leI5kUevfVVLg5m5z9RYl9UfKO6MjBGpf698
+        5cdD/hV7S3bm+F5ffP/IvweZjZzdU+Ys2pd+4NaGhAOruSWaORSYk61eue4tXyhzX/itx9IJ
+        1+dfbn1xXSJnxiqnCcFf7mTNO/2XzfBX+VKLx5zabIJTUvi82iefMajo/38seu2sExOC4m99
+        Zn7oFfKnIqqnOVH/3aa5v//p1SwWPXL4XfntSQ5PFPn0El0b2BQ//PlpFah3NF/X5ZmU5tKO
+        bU7vf3dUO7ofPbOoN5TJ8+18kW3z159TsljpPLf17Nk52Sv4lJfuCo7fejPqiKypEktxRqKh
+        FnNRcSIAUnRf4T8EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsWy7bCSnG5DJl+CwZQr2hYnn6xhs/g76Ri7
+        xaeGK8wW0xvPs1vMONXGarHv2kl2i19/17Nb7Hh+ht3i/tejjBaXd81hszjyv5/RYkbfN1aL
+        pj/7WCyOrw134PP4/WsSo8flvl4mj8V7XjJ53Lm2h82jb8sqRo/Np6s9Pm+SC2CP4rJJSc3J
+        LEst0rdL4Mp4tiu74CBrxYXWWewNjNdZuhg5OCQETCRWXFXvYuTiEBLYzSgxteEcexcjJ1Bc
+        SmL3/vNsEDXCEocPF0PUfGKUuPZiLztInE1AS+L2MW+QuIjAH0aJS/tbmUB6mQUyJL59PAFm
+        CwvYSDRPmcsCYrMIqEps7FnNCmLzClhLtF+7xgaxS17iz/0eZoi4oMTJmU9YIObISzRvnc08
+        gZFvFpLULCSpBYxMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgsNeS3MH4/ZVH/QO
+        MTJxMB5ilOBgVhLh3a3HkyDEm5JYWZValB9fVJqTWnyIUZqDRUmc90LXyXghgfTEktTs1NSC
+        1CKYLBMHp1QDU/WqqKPfi2QtJOZc28CdzOllVaEq6Rg99dsviROmaQ7yl5V3T7TIV74jorTh
+        +awS04kyohqvVyzZcfpPhEv50VKDO5OL1/C2nS+44PF+/4l8Sz1eBoHbJxs+MbPPd1ZROpkn
+        lt/6sevW/LJIjk9p296oHf1Y0v9N1q/ufnXMXfPS7TOv16fvjKqof+Qw53ff/CWdWw5fv9MQ
+        JbI89gTbsdVr4n696eqf/13/6aIrf10m7592wd3M/NGvup/yx9LZ5yi32jjbyYpMj5o756FZ
+        3E/GzCXGR/9FmzHlr5gZenChl9nNaTnJE3YrBaxUPzPj86n2T0dv+nQrKzGxsSt3PxaZuK7s
+        QPOCVqZIvTc5oUosxRmJhlrMRcWJAMA2KiHqAgAA
+X-CMS-MailID: 20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb
+References: <CGME20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Stevens <stevensd@chromium.org>
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-Use the range passed to mmu_notifer's invalidate_range_start to prevent
-spurious page fault retries due to changes in unrelated host virtual
-addresses. This has the secondary effect of greatly reducing the
-likelihood of extreme latency when handing a page fault due to another
-thread having been preempted while modifying host virtual addresses.
+From the 4.19 kernel, thread related code has been removed in queue.c.
+So we can exclude unnecessary header file.
 
-Signed-off-by: David Stevens <stevensd@chromium.org>
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
 ---
- arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
- arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
- arch/x86/kvm/mmu/mmu.c                 | 16 ++++++++++------
- arch/x86/kvm/mmu/paging_tmpl.h         |  7 ++++---
- include/linux/kvm_host.h               | 22 +++++++++++++++++++++-
- virt/kvm/kvm_main.c                    | 22 ++++++++++++++++++----
- 6 files changed, 55 insertions(+), 16 deletions(-)
+ drivers/mmc/core/queue.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/powerpc/kvm/book3s_64_mmu_hv.c b/arch/powerpc/kvm/book3s_64_mmu_hv.c
-index 38ea396a23d6..8e06cd3f759c 100644
---- a/arch/powerpc/kvm/book3s_64_mmu_hv.c
-+++ b/arch/powerpc/kvm/book3s_64_mmu_hv.c
-@@ -590,7 +590,7 @@ int kvmppc_book3s_hv_page_fault(struct kvm_vcpu *vcpu,
- 	} else {
- 		/* Call KVM generic code to do the slow-path check */
- 		pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
--					   writing, &write_ok);
-+					   writing, &write_ok, NULL);
- 		if (is_error_noslot_pfn(pfn))
- 			return -EFAULT;
- 		page = NULL;
-diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-index bb35490400e9..e603de7ade52 100644
---- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
-+++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
-@@ -822,7 +822,7 @@ int kvmppc_book3s_instantiate_page(struct kvm_vcpu *vcpu,
- 
- 		/* Call KVM generic code to do the slow-path check */
- 		pfn = __gfn_to_pfn_memslot(memslot, gfn, false, NULL,
--					   writing, upgrade_p);
-+					   writing, upgrade_p, NULL);
- 		if (is_error_noslot_pfn(pfn))
- 			return -EFAULT;
- 		page = NULL;
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6d16481aa29d..79166288ed03 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3658,8 +3658,8 @@ static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
- }
- 
- static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
--			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, bool write,
--			 bool *writable)
-+			 gpa_t cr2_or_gpa, kvm_pfn_t *pfn, hva_t *hva,
-+			 bool write, bool *writable)
- {
- 	struct kvm_memory_slot *slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
- 	bool async;
-@@ -3672,7 +3672,8 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
- 	}
- 
- 	async = false;
--	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async, write, writable);
-+	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, &async,
-+				    write, writable, hva);
- 	if (!async)
- 		return false; /* *pfn has correct page already */
- 
-@@ -3686,7 +3687,8 @@ static bool try_async_pf(struct kvm_vcpu *vcpu, bool prefault, gfn_t gfn,
- 			return true;
- 	}
- 
--	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL, write, writable);
-+	*pfn = __gfn_to_pfn_memslot(slot, gfn, false, NULL,
-+				    write, writable, hva);
- 	return false;
- }
- 
-@@ -3699,6 +3701,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	gfn_t gfn = gpa >> PAGE_SHIFT;
- 	unsigned long mmu_seq;
- 	kvm_pfn_t pfn;
-+	hva_t hva;
- 	int r;
- 
- 	if (page_fault_handle_page_track(vcpu, error_code, gfn))
-@@ -3717,7 +3720,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	smp_rmb();
- 
--	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, write, &map_writable))
-+	if (try_async_pf(vcpu, prefault, gfn, gpa, &pfn, &hva,
-+			 write, &map_writable))
- 		return RET_PF_RETRY;
- 
- 	if (handle_abnormal_pfn(vcpu, is_tdp ? 0 : gpa, gfn, pfn, ACC_ALL, &r))
-@@ -3725,7 +3729,7 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 
- 	r = RET_PF_RETRY;
- 	spin_lock(&vcpu->kvm->mmu_lock);
--	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
-+	if (mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
- 		goto out_unlock;
- 	r = make_mmu_pages_available(vcpu);
- 	if (r)
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 50e268eb8e1a..3171784139a4 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -790,6 +790,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 	struct guest_walker walker;
- 	int r;
- 	kvm_pfn_t pfn;
-+	hva_t hva;
- 	unsigned long mmu_seq;
- 	bool map_writable, is_self_change_mapping;
- 	int max_level;
-@@ -840,8 +841,8 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	smp_rmb();
- 
--	if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, write_fault,
--			 &map_writable))
-+	if (try_async_pf(vcpu, prefault, walker.gfn, addr, &pfn, &hva,
-+			 write_fault, &map_writable))
- 		return RET_PF_RETRY;
- 
- 	if (handle_abnormal_pfn(vcpu, addr, walker.gfn, pfn, walker.pte_access, &r))
-@@ -869,7 +870,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 
- 	r = RET_PF_RETRY;
- 	spin_lock(&vcpu->kvm->mmu_lock);
--	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
-+	if (mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva))
- 		goto out_unlock;
- 
- 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index f3b1013fb22c..b70097685249 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -502,6 +502,8 @@ struct kvm {
- 	struct mmu_notifier mmu_notifier;
- 	unsigned long mmu_notifier_seq;
- 	long mmu_notifier_count;
-+	unsigned long mmu_notifier_range_start;
-+	unsigned long mmu_notifier_range_end;
- #endif
- 	long tlbs_dirty;
- 	struct list_head devices;
-@@ -729,7 +731,7 @@ kvm_pfn_t gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn);
- kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn);
- kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
- 			       bool atomic, bool *async, bool write_fault,
--			       bool *writable);
-+			       bool *writable, hva_t *hva);
- 
- void kvm_release_pfn_clean(kvm_pfn_t pfn);
- void kvm_release_pfn_dirty(kvm_pfn_t pfn);
-@@ -1203,6 +1205,24 @@ static inline int mmu_notifier_retry(struct kvm *kvm, unsigned long mmu_seq)
- 		return 1;
- 	return 0;
- }
-+
-+static inline int mmu_notifier_retry_hva(struct kvm *kvm,
-+					 unsigned long mmu_seq,
-+					 unsigned long hva)
-+{
-+	/*
-+	 * Unlike mmu_notifier_retry, this function relies on
-+	 * kvm->mmu_lock for consistency.
-+	 */
-+	if (unlikely(kvm->mmu_notifier_count)) {
-+		if (kvm->mmu_notifier_range_start <= hva &&
-+		    hva < kvm->mmu_notifier_range_end)
-+			return 1;
-+	}
-+	if (kvm->mmu_notifier_seq != mmu_seq)
-+		return 1;
-+	return 0;
-+}
- #endif
- 
- #ifdef CONFIG_HAVE_KVM_IRQ_ROUTING
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index fa9e3614d30e..d6e1ef5cb184 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -483,6 +483,18 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
- 	 * count is also read inside the mmu_lock critical section.
- 	 */
- 	kvm->mmu_notifier_count++;
-+	if (likely(kvm->mmu_notifier_count == 1)) {
-+		kvm->mmu_notifier_range_start = range->start;
-+		kvm->mmu_notifier_range_end = range->end;
-+	} else {
-+		/**
-+		 * Tracking multiple concurrent ranges has diminishing returns,
-+		 * so just use the maximum range. This persists until after all
-+		 * outstanding invalidation operations complete.
-+		 */
-+		kvm->mmu_notifier_range_start = 0;
-+		kvm->mmu_notifier_range_end = ULONG_MAX;
-+	}
- 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
- 					     range->flags);
- 	/* we've to flush the tlb before the pages can be freed */
-@@ -2010,9 +2022,11 @@ static kvm_pfn_t hva_to_pfn(unsigned long addr, bool atomic, bool *async,
- 
- kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
- 			       bool atomic, bool *async, bool write_fault,
--			       bool *writable)
-+			       bool *writable, hva_t *hva)
- {
- 	unsigned long addr = __gfn_to_hva_many(slot, gfn, NULL, write_fault);
-+	if (hva)
-+		*hva = addr;
- 
- 	if (addr == KVM_HVA_ERR_RO_BAD) {
- 		if (writable)
-@@ -2041,19 +2055,19 @@ kvm_pfn_t gfn_to_pfn_prot(struct kvm *kvm, gfn_t gfn, bool write_fault,
- 		      bool *writable)
- {
- 	return __gfn_to_pfn_memslot(gfn_to_memslot(kvm, gfn), gfn, false, NULL,
--				    write_fault, writable);
-+				    write_fault, writable, NULL);
- }
- EXPORT_SYMBOL_GPL(gfn_to_pfn_prot);
- 
- kvm_pfn_t gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
- {
--	return __gfn_to_pfn_memslot(slot, gfn, false, NULL, true, NULL);
-+	return __gfn_to_pfn_memslot(slot, gfn, false, NULL, true, NULL, NULL);
- }
- EXPORT_SYMBOL_GPL(gfn_to_pfn_memslot);
- 
- kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn)
- {
--	return __gfn_to_pfn_memslot(slot, gfn, true, NULL, true, NULL);
-+	return __gfn_to_pfn_memslot(slot, gfn, true, NULL, true, NULL, NULL);
- }
- EXPORT_SYMBOL_GPL(gfn_to_pfn_memslot_atomic);
- 
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index de7cb0369c30..c7218da6f17c 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -7,7 +7,6 @@
+ #include <linux/module.h>
+ #include <linux/blkdev.h>
+ #include <linux/freezer.h>
+-#include <linux/kthread.h>
+ #include <linux/scatterlist.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/backing-dev.h>
 -- 
-2.30.0.280.ga3ce27912f-goog
+2.29.0
 
