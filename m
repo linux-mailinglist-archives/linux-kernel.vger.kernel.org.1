@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F0F303236
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED89F30323B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbhAYOFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:05:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34164 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729052AbhAYOBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:01:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611583214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=sdcHMLB31tbVyd/BVCp9LaTCjmBsfraBzDo/3Q+9DY0=;
-        b=a+FXT8qjH2HLENLcySw+AEVEMq3UZKQkhDpMgaFFkB5quYElNpPQP/9K13VrYvtrJ2mk8E
-        HXo1oyd6S52wm9Ck4hPZD1//7kYwxWiQD3+kJo7VRZ+22wVC1mRDMla2ykm8i7igFHcxJa
-        1WuCmcl4PO8kMCN1ZzQbhfe2/WQ9KHg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 78AC0AC45;
-        Mon, 25 Jan 2021 14:00:14 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        id S1729339AbhAYONp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:13:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729255AbhAYOIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:08:46 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BB6C0613D6;
+        Mon, 25 Jan 2021 06:08:02 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4BFC6331;
+        Mon, 25 Jan 2021 15:08:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1611583680;
+        bh=sjCWCuGQ91U+T/0nFlj+7MX712ur5d08TWXtqlvD9Xs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=capaosn0vDWFRiSnaj/PgDHhjjCNdRyMHGfJ1C5bC0PpylOK8672d0hQWb67KHpYr
+         uFG8Pjl3xnehIVZafMYKWi3Hhs2OtCnwXLczhIHEvOAThLd8jxYltjHhrnLqt+kY10
+         L1mxh6zCIRRAoBb6/60Onp9daHe3kYpxEO26GdR8=
+Date:   Mon, 25 Jan 2021 16:07:41 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
+        hans.verkuil@cisco.com, kernel@collabora.com,
         linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] x86/xen: avoid warning in Xen pv guest with CONFIG_AMD_MEM_ENCRYPT enabled
-Date:   Mon, 25 Jan 2021 15:00:13 +0100
-Message-Id: <20210125140013.10198-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+Subject: Re: [PATCH] media: doc: pixfmt-yuv: Fix 4:4:4 subsampling info
+Message-ID: <YA7QrYiUjb6BD8cK@pendragon.ideasonboard.com>
+References: <20210122182723.327438-1-helen.koike@collabora.com>
+ <YAvyu6AvEmZy6WRq@pendragon.ideasonboard.com>
+ <7f650d51-d419-53cc-0ad1-b241a10ab801@collabora.com>
+ <9468d3e1-ac8b-8de7-5632-1da9119c992e@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9468d3e1-ac8b-8de7-5632-1da9119c992e@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When booting a kernel which has been built with CONFIG_AMD_MEM_ENCRYPT
-enabled as a Xen pv guest a warning is issued for each processor:
+Hi Helen,
 
-[    5.964347] ------------[ cut here ]------------
-[    5.968314] WARNING: CPU: 0 PID: 1 at /home/gross/linux/head/arch/x86/xen/enlighten_pv.c:660 get_trap_addr+0x59/0x90
-[    5.972321] Modules linked in:
-[    5.976313] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.11.0-rc5-default #75
-[    5.980313] Hardware name: Dell Inc. OptiPlex 9020/0PC5F7, BIOS A05 12/05/2013
-[    5.984313] RIP: e030:get_trap_addr+0x59/0x90
-[    5.988313] Code: 42 10 83 f0 01 85 f6 74 04 84 c0 75 1d b8 01 00 00 00 c3 48 3d 00 80 83 82 72 08 48 3d 20 81 83 82 72 0c b8 01 00 00 00 eb db <0f> 0b 31 c0 c3 48 2d 00 80 83 82 48 ba 72 1c c7 71 1c c7 71 1c 48
-[    5.992313] RSP: e02b:ffffc90040033d38 EFLAGS: 00010202
-[    5.996313] RAX: 0000000000000001 RBX: ffffffff82a141d0 RCX: ffffffff8222ec38
-[    6.000312] RDX: ffffffff8222ec38 RSI: 0000000000000005 RDI: ffffc90040033d40
-[    6.004313] RBP: ffff8881003984a0 R08: 0000000000000007 R09: ffff888100398000
-[    6.008312] R10: 0000000000000007 R11: ffffc90040246000 R12: ffff8884082182a8
-[    6.012313] R13: 0000000000000100 R14: 000000000000001d R15: ffff8881003982d0
-[    6.016316] FS:  0000000000000000(0000) GS:ffff888408200000(0000) knlGS:0000000000000000
-[    6.020313] CS:  e030 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    6.024313] CR2: ffffc900020ef000 CR3: 000000000220a000 CR4: 0000000000050660
-[    6.028314] Call Trace:
-[    6.032313]  cvt_gate_to_trap.part.7+0x3f/0x90
-[    6.036313]  ? asm_exc_double_fault+0x30/0x30
-[    6.040313]  xen_convert_trap_info+0x87/0xd0
-[    6.044313]  xen_pv_cpu_up+0x17a/0x450
-[    6.048313]  bringup_cpu+0x2b/0xc0
-[    6.052313]  ? cpus_read_trylock+0x50/0x50
-[    6.056313]  cpuhp_invoke_callback+0x80/0x4c0
-[    6.060313]  _cpu_up+0xa7/0x140
-[    6.064313]  cpu_up+0x98/0xd0
-[    6.068313]  bringup_nonboot_cpus+0x4f/0x60
-[    6.072313]  smp_init+0x26/0x79
-[    6.076313]  kernel_init_freeable+0x103/0x258
-[    6.080313]  ? rest_init+0xd0/0xd0
-[    6.084313]  kernel_init+0xa/0x110
-[    6.088313]  ret_from_fork+0x1f/0x30
-[    6.092313] ---[ end trace be9ecf17dceeb4f3 ]---
+On Mon, Jan 25, 2021 at 11:02:01AM -0300, Helen Koike wrote:
+> On 1/25/21 10:57 AM, Helen Koike wrote:
+> > On 1/23/21 6:56 AM, Laurent Pinchart wrote:
+> >> On Fri, Jan 22, 2021 at 03:27:23PM -0300, Helen Koike wrote:
+> >>> YUV 4:4:4 is not subsampled, fix this in the docs.
+> >>>
+> >>> Fixes: da785536e007 ("media: doc: pixfmt-yuv: Move all semi-planar YUV formats to common file")
+> >>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> >>> ---
+> >>>  Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst | 4 ++--
+> >>>  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>>
+> >>> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> >>> index 7d4d39201a3f..bcb4ef24c334 100644
+> >>> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> >>> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> >>> @@ -396,8 +396,8 @@ number of lines as the luma plane.
+> >>>  NV24 and NV42
+> >>>  -------------
+> >>>  
+> >>> -Semi-planar YUV 4:4:4 formats. The chroma plane is subsampled by 2 in the
+> >>> -horizontal direction. Chroma lines contain half the number of pixels and the
+> >>> +Semi-planar YUV 4:4:4 formats. No sub-sampling.
+> >>
+> >> "The chroma plane is not subsampled." ?
+> > 
+> > Ack.
+> > 
+> >>> +Chroma lines contain the same number of pixels and the
+> >>>  same number of bytes as luma lines, and the chroma plane contains the same
+> >>>  number of lines as the luma plane.
+> >>
+> >> That's not quite right, the chroma lines contain twice the number of
+> >> pixels and bytes, as there's one Cb and one Cr value in the chroma line
+> >> for each Y value in the luma line.
+> 
+> Actually, it is the same number o pixels, but twice the number o bytes.
+> Since a trio (YCbCr) compose a pixel.
+> 
+> At least this is how I understand comparing the logic of the text description
+> of NV16 YUV4:2:2.
 
-Reason is that there is no Xen pv trap entry for X86_TRAP_VC.
+You're right, my bad.
 
-Fix that by defining a trap entry for X86_TRAP_VC in Xen pv mode.
+> >> Maybe the text could be reflowed ?
+> > 
+> > Ack.
+> > 
+> > I'll submit v2 updating the text.
 
-Fixes: 0786138c78e793 ("x86/sev-es: Add a Runtime #VC Exception Handler")
-Cc: <stable@vger.kernel.org> # v5.10
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- arch/x86/include/asm/idtentry.h |  3 +++
- arch/x86/xen/enlighten_pv.c     | 11 +++++++++++
- arch/x86/xen/xen-asm.S          |  3 +++
- 3 files changed, 17 insertions(+)
-
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 247a60a47331..115a76e77e65 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -609,6 +609,9 @@ DECLARE_IDTENTRY_DF(X86_TRAP_DF,	exc_double_fault);
- /* #VC */
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- DECLARE_IDTENTRY_VC(X86_TRAP_VC,	exc_vmm_communication);
-+#ifdef CONFIG_XEN_PV
-+DECLARE_IDTENTRY_RAW(X86_TRAP_VC,	xenpv_exc_vmm_communication);
-+#endif
- #endif
- 
- #ifdef CONFIG_XEN_PV
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 4409306364dc..82948251f57b 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -583,6 +583,14 @@ DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
- 		exc_debug(regs);
- }
- 
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+DEFINE_IDTENTRY_RAW(xenpv_exc_vmm_communication)
-+{
-+	/* This should never happen and there is no way to handle it. */
-+	panic("X86_TRAP_VC in Xen PV mode.");
-+}
-+#endif
-+
- struct trap_array_entry {
- 	void (*orig)(void);
- 	void (*xen)(void);
-@@ -625,6 +633,9 @@ static struct trap_array_entry trap_array[] = {
- 	TRAP_ENTRY(exc_coprocessor_error,		false ),
- 	TRAP_ENTRY(exc_alignment_check,			false ),
- 	TRAP_ENTRY(exc_simd_coprocessor_error,		false ),
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	TRAP_ENTRY_REDIR(exc_vmm_communication,		true ),
-+#endif
- };
- 
- static bool __ref get_trap_addr(void **addr, unsigned int ist)
-diff --git a/arch/x86/xen/xen-asm.S b/arch/x86/xen/xen-asm.S
-index 1cb0e84b9161..16f4db35de44 100644
---- a/arch/x86/xen/xen-asm.S
-+++ b/arch/x86/xen/xen-asm.S
-@@ -175,6 +175,9 @@ xen_pv_trap asm_exc_alignment_check
- xen_pv_trap asm_exc_machine_check
- #endif /* CONFIG_X86_MCE */
- xen_pv_trap asm_exc_simd_coprocessor_error
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+xen_pv_trap asm_xenpv_exc_vmm_communication
-+#endif /* CONFIG_AMD_MEM_ENCRYPT */
- #ifdef CONFIG_IA32_EMULATION
- xen_pv_trap entry_INT80_compat
- #endif
 -- 
-2.26.2
+Regards,
 
+Laurent Pinchart
