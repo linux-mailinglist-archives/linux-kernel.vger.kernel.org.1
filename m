@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7AB303754
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA5B30375D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388750AbhAZH3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:29:00 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:38760 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730339AbhAYPpS (ORCPT
+        id S2389382AbhAZHff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:35:35 -0500
+Received: from relay08.th.seeweb.it ([5.144.164.169]:58377 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730371AbhAYPsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:45:18 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10PFhJOw068695;
-        Mon, 25 Jan 2021 09:43:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611589399;
-        bh=vpK8KsGh4di2NeiKW/oNr1WDemKXSP0tZVJsjl+yK2I=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Pm76+CeI0lFGxKuMy53JoY+o4Um3hoRNRan78X6YFK0td+dwpiEPKQEL6Y2rY+jSq
-         dN58ujcgdNdYXFPFzCpVMx3GcHeVf8HePFsVsZ+p36uw1rSl4vzzOaZ793XoJ3BJHz
-         DQTJ0BRf2KRPpmmUE0W4ZGktfal7c3aEFEn2iHDA=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10PFhJ8v042342
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Jan 2021 09:43:19 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
- Jan 2021 09:43:19 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 25 Jan 2021 09:43:19 -0600
-Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10PFhIGL112819;
-        Mon, 25 Jan 2021 09:43:19 -0600
-Subject: Re: [PATCH v2 0/5] Introduce PRU remoteproc consumer API
-To:     "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
-        <robh+dt@kernel.org>, <ssantosh@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <lee.jones@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
-        <rogerq@kernel.org>
-References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
- <20210106232704.GE9149@xps15> <11303a1b-5ab4-def5-77b1-c500894c9c87@ti.com>
- <20210107224448.GB43045@xps15> <75365443-57e3-e2e0-5865-f78af9d5890b@ti.com>
- <b0e32ad0-487f-9d57-7287-835eee836514@oracle.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <c5252e8d-094a-dcb7-7ccb-172e58ab3413@ti.com>
-Date:   Mon, 25 Jan 2021 09:43:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 25 Jan 2021 10:48:18 -0500
+Received: from [192.168.1.101] (abaf219.neoplus.adsl.tpnet.pl [83.6.169.219])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E485E3EEEF;
+        Mon, 25 Jan 2021 16:47:14 +0100 (CET)
+Subject: Re: [PATCH 3/4] ARM: dts: qcom: msm8974-klte: add support for display
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Luca Weiss <luca@z3ntu.xyz>,
+        Iskren Chernev <iskren.chernev@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Samuel Pascua <pascua.samuel.14@gmail.com>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>
+References: <20210124135610.1779295-1-iskren.chernev@gmail.com>
+ <20210124135610.1779295-3-iskren.chernev@gmail.com>
+ <282b07a1-2e39-2dbe-dd7b-eed2ae9e25fb@somainline.org>
+ <6632821.dtBD41K2ms@g550jk>
+ <f02b945f-5546-6e15-17b5-74be8af8a501@somainline.org>
+ <YA7maSZdp1EphINK@builder.lan>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <c8ac5b2b-8d1c-d652-de0d-07f38c77cd50@somainline.org>
+Date:   Mon, 25 Jan 2021 16:47:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <b0e32ad0-487f-9d57-7287-835eee836514@oracle.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <YA7maSZdp1EphINK@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Santosh,
 
-On 1/24/21 10:34 PM, santosh.shilimkar@oracle.com wrote:
-> Hi Suman, Mathieu,
-> 
-> On 1/7/21 2:49 PM, Suman Anna wrote:
->> On 1/7/21 4:44 PM, Mathieu Poirier wrote:
->>> On Wed, Jan 06, 2021 at 06:03:25PM -0600, Suman Anna wrote:
->>>> Hi Mathieu,
->>>>
-> [...]
->>> I only see input from Andy and Lars in the thread you point out, nothing from
->>> Greg.  I have also taken a look at the patch [1] that made checkpatch complain
->>> about ENOTSUPP.  From what I see in that commit log the goal is to prevent new
->>> additions of ENOTSUPP to the kernel.
->>>
->>> Please modify and resend, otherwise I'm sure someone will send another patch to
->>> fix it before the end of the cycle.
->>
->> Yeah ok. I will send out a v3.
->>
-> I haven't seen v3 of this series yet. Please post it
-> if you would like to include it for 5.12.
+> I know how bad it is, so I understand your desire to not have to rebase
+> that, but I will merge things as they become ready on the list.
+>
+> So please post your change (perhaps it's posted and I'm failing to find
+> it in my inbox?) and I'd be happy to merge it so we get it cleaned up!
+>
+> Thanks,
+> Bjorn
 
-This series is dependent on couple of patches that would have to come through
-the remoteproc tree first, and I need to post the next versions of those as
-well. So, let me sort out those first. You can drop this from your queue for 5.12.
 
-regards
-Suman
+Here it is: [1]
+
+
+Be aware that it truly is humongous and should be split (I couldn't resist adding missing pins/dma while cleaning things up) and it.. was not really intended to be sent as-is. It's also supposed to work on the previous release of Linux, so some Samsung DTs in particular changed since and will need some manual rebasing. But I'll happily leave it as a reference if somebody has the time to pick it up. The konrad/8974 branch in this repo contains more (beware, GPU ones are untested!) 8974 fixes and I have some more on my drive that are.. not really ready for their prime time just yet either..
+
+
+Konrad
+
+
+
+[1] https://github.com/SoMainline/linux/commit/291ea6860f8b95df67d63fbd378d61b3a157ac15
+
