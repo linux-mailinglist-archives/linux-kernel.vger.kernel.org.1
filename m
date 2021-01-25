@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0FB303403
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C0E303425
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbhAZFMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37898 "EHLO
+        id S1731657AbhAZFSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726580AbhAYJiX (ORCPT
+        with ESMTP id S1727166AbhAYJrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:38:23 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E8BC061355
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:36:49 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id c12so9217372qtv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:36:49 -0800 (PST)
+        Mon, 25 Jan 2021 04:47:14 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA2DC061786;
+        Mon, 25 Jan 2021 01:46:27 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id c127so10118336wmf.5;
+        Mon, 25 Jan 2021 01:46:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cRQosLm6C15KsdbC23z53ajS0ecGg4Tv0WOPnf4DcbI=;
-        b=EHl79LcNBPa09vYmh5NvxQvwwidvVxnIqn3I/Hy/z9XHQ/fHzVwKPcucw1DHXOV3ug
-         vYD3EbzHtHyuqjEgXkK0bduWkFxxoKGyzKX6qpt159lfypUoBN4LItQQc/6tyeHTDAHM
-         7uOabEhAEHERLBY1WRTHE9SA17jPhFPTUJUalI0ZXPTDLuhkpDX1XkU61wMqvv9eNKec
-         XZJO51qerZojWiNgdVnXAmlPwSY5ueaeAo+CcTYVWKVrEQlGbL0d0B9xBc1v3nvQ9M0f
-         BcSaFnw4p/WvBfghFxU/VegTdjo93M6UIv5jZhhuhJLfg6foUVIr8U06lYJMe/QG8IIB
-         Gn6g==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=TV0xw0urZWA7yxhi2valt8DXJLxBV/z7jKveKN9m6ds=;
+        b=ksPQsC1nyqO+hH9ep9+kZ9SMdnnJhY6fJ9CkJknO3o36nva3MH/duQt3Udm7n/flT9
+         Jm8qaUB8ragyj99W6FbJ1bx12lcMj0ajZsLh5MfUSX6UoSZlNIeIQ3IS4Cs807DaLdv5
+         M6raw4K7eljJYmIjxavEeoAEMDr+aBaL8I1WUg2eA93aQKcllkmaGfsj7Zes6fQpQmLP
+         vRW22Y9IB8DHC9a4pe8zANO5roi20X9hHWyYjZ5NSDOlwLxi/1T+VxXV5ZdtPvZy300r
+         6X4hmcF+A6rf6YD1G4p46vVTboNpZu2xAbCRZngsHrWl9NYtJWh3hozj9qbkhBWM46Ft
+         Jsbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cRQosLm6C15KsdbC23z53ajS0ecGg4Tv0WOPnf4DcbI=;
-        b=VZTzDFf2Wjz8YdODDOnLAF74UXNgGaf4FR17ZvH+F3LpmWwItKz1yqX3yaPNNcTbC0
-         YWJpGIKwkESsiF5ZP/NRt11oif8jkAjFkVgSOok7Ne4C0pDsxPnw3BVo1Zp60XoJBzHq
-         iHYKFvEczlLpT+V6W7ad1QBn6LJxx3+YSqjnkjBT1nwGzOwteem++/J0vsU6eQrBEorU
-         2NL/CP43zLhY+BRpRmWp6MEU+d+1XvTZnO2Khdt678PTN/n0rz3acX0YUgTI3yjoXMeo
-         3rEJ8xfNFEOHwfZXNw/V6KieP9mqoWNzrXctSxYkyaUdUIZN92A791T4v3zw45pmUqzE
-         ScNg==
-X-Gm-Message-State: AOAM533JrPbJBXaW3FgGeoEavNMqb02QuNXsxzhL8WVRRKCVP1RXc7M6
-        vrizMiQExH78Ahk+osqa40cMwDAwlWveBKhB1Vx1Xw==
-X-Google-Smtp-Source: ABdhPJx/RY2g66p/t1/L0q/cqPmlQAgvBZkCf/KHiV6YEfYM36LT31LfSHFCetjbvDZYwqBG8g5Q4idYKqRctw+2qic=
-X-Received: by 2002:ac8:e0e:: with SMTP id a14mr587226qti.66.1611567408146;
- Mon, 25 Jan 2021 01:36:48 -0800 (PST)
-MIME-Version: 1.0
-References: <000000000000418c7705afcff2e1@google.com> <0000000000001b4eeb05b91ae518@google.com>
-In-Reply-To: <0000000000001b4eeb05b91ae518@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 25 Jan 2021 10:36:36 +0100
-Message-ID: <CACT4Y+Y=rsqHVRGWtfcJmdd_8CAYw3W_tO72_YkpLiu6d9Qo6w@mail.gmail.com>
-Subject: Re: general protection fault in jffs2_parse_param
-To:     syzbot <syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com>
-Cc:     anmol.karan123@gmail.com, David Howells <dhowells@redhat.com>,
-        dwmw2@infradead.org, jamie@nuviainc.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, lizhe67@huawei.com,
-        Richard Weinberger <richard@nod.at>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TV0xw0urZWA7yxhi2valt8DXJLxBV/z7jKveKN9m6ds=;
+        b=qE0yAAZcfbAbhhqgkICuJH5OY5zw6IR803A2cvr0wlsRpMWI43JVEpXF+ctWyOk9JZ
+         25QG9hYeSmLRzMAqRQ5F8ynyKFkJyD5bdJR9fIkZBcTSBewPTs/zEAGBBV1khzegmsIo
+         2CgXRPdhPBaaRC5cmT8wMD4ycQoVHT3ACRglldTytKPLIQ7ks+gnnPTrPDTyL3tdTCn+
+         tpVr0ToT6/qg6mkTjSx/uCi0wbplnhDP1+KmiLpxPnukaYlzO3e2+icZV3JlRxvaKodN
+         9s7x+H63QGpsro7SLHUKnPLeZIpOb6RSiP5QF+vKSYeRCQ1il5GkeNR7S4IPLpxWKSXz
+         Nijg==
+X-Gm-Message-State: AOAM533/tvIye7/YGXjnzbqDMRu3s3R6felbR7kiiKUBRZoRT4VntN48
+        n5tXOiaBZbF3+D1E0Ad6lqTeJZi0OCU=
+X-Google-Smtp-Source: ABdhPJy1oQ/Ef4RY0U1iiHDEM5BlNCP4W/7PSDGr2G5l/6GJTQZunZNIiiPPIokMN5NYb0I0QoxUeg==
+X-Received: by 2002:a05:600c:2253:: with SMTP id a19mr1599635wmm.75.1611567985825;
+        Mon, 25 Jan 2021 01:46:25 -0800 (PST)
+Received: from jonathan-N53SV.station ([151.81.101.204])
+        by smtp.googlemail.com with ESMTPSA id u5sm22154052wmg.9.2021.01.25.01.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 01:46:25 -0800 (PST)
+From:   Jonathan Albrieux <jonathan.albrieux@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
+        phone-devel@vger.kernel.org,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 0/3] Add initial support for BQ Aquaris X5
+Date:   Mon, 25 Jan 2021 10:44:29 +0100
+Message-Id: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 5:14 PM syzbot
-<syzbot+9765367bb86a19d38732@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit a61df3c413e49b0042f9caf774c58512d1cc71b7
-> Author: Jamie Iles <jamie@nuviainc.com>
-> Date:   Mon Oct 12 13:12:04 2020 +0000
->
->     jffs2: Fix NULL pointer dereference in rp_size fs option parsing
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15cb91e7500000
-> start commit:   bf3e7628 Merge branch 'mtd/fixes' of git://git.kernel.org/..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9765367bb86a19d38732
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d81f32500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13516852500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: jffs2: Fix NULL pointer dereference in rp_size fs option parsing
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+v2:
+ - reorder I2C devices sorting them by address
 
-#syz fix: jffs2: Fix NULL pointer dereference in rp_size fs option parsing
+v1:
+ - initial patch submission
+https://lore.kernel.org/linux-arm-msm/20210124135409.5473-1-jonathan.albrieux@gmail.com/
+
+Aquaris X5 (Longcheer L8910) is a smartphone released by BQ in 2015.
+
+As part of msm8916-mainline project, this series aims to bring initial
+mainline support for it.
+
+Features added:
+ - SDHCI (internal and external storage)
+ - USB Device Mode
+ - UART
+ - Regulators
+ - WiFi/BT
+ - Volume buttons
+ - Vibrator
+ - Touchkeys backlight
+ - Accelerometer and gyroscope sensor
+ - Magnetometer sensor
+
+Jonathan Albrieux (3):
+  arm64: dts: qcom: Add device tree for BQ Aquaris X5 (Longcheer L8910)
+  arm64: dts: qcom: msm8916: Add blsp_i2c3
+  arm64: dts: qcom: msm8916-longcheer-l8910: Add imu/magnetometer
+
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ .../boot/dts/qcom/msm8916-longcheer-l8910.dts | 267 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/msm8916-pins.dtsi    |  16 ++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi         |  15 +
+ 4 files changed, 299 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
+
+-- 
+2.17.1
+
