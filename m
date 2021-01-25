@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F144A303674
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF61303676
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731622AbhAZGXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:23:54 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:11568 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728987AbhAYNjg (ORCPT
+        id S2387976AbhAZGYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:24:35 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38216 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729062AbhAYNov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:39:36 -0500
-X-IronPort-AV: E=Sophos;i="5.79,373,1602540000"; 
-   d="scan'208";a="488960900"
-Received: from clt-128-93-178-244.vpn.inria.fr ([128.93.178.244])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 14:38:36 +0100
-Date:   Mon, 25 Jan 2021 14:38:35 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] sched/fair: check for idle core
-In-Reply-To: <CAKfTPtDePZam9q7pR8-uSOif75d3EDmcZsawc2_Vx3RfDdLzOw@mail.gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2101251437140.5943@hadrien>
-References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr> <20201027091936.GS32041@suse.de> <alpine.DEB.2.22.394.2101242134530.2788@hadrien> <20210125091238.GE20777@suse.de> <alpine.DEB.2.22.394.2101251017480.5053@hadrien>
- <CAKfTPtDePZam9q7pR8-uSOif75d3EDmcZsawc2_Vx3RfDdLzOw@mail.gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 25 Jan 2021 08:44:51 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10PDgvsr022022;
+        Mon, 25 Jan 2021 07:42:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611582177;
+        bh=d1OxbwVGVoPZKA+7fDtdX5sTY5ftzy3FzxvOCFe04C4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=siyVWOJpai9utbwFiKVoJS3tWr7ZUKeygpKIkfFxkq0NVt54Iu23yrWOjJ9irZ2ed
+         16tvK8xSlJNGSnch0vwqMSAAmN6I3Pomy/Tue5wLGEwr4cOZbMItwAmduqjNF+PVcE
+         GDuewV48xOSO5zkIHzf4rJzUFHSRshC5JFskFddk=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10PDgv2Q107207
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Jan 2021 07:42:57 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
+ Jan 2021 07:42:57 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 25 Jan 2021 07:42:57 -0600
+Received: from [10.250.232.169] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10PDgrHB116154;
+        Mon, 25 Jan 2021 07:42:54 -0600
+Subject: Re: [PATCH 0/2] mmc: J7200: Add support for higher speed modes in
+ MMCSD subsystems
+To:     Nishanth Menon <nm@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210122162403.20700-1-a-govindraju@ti.com>
+ <20210122180629.3j3aoueiwiib4gso@cavalier>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <5341eeb2-e637-424f-3328-60dbddee1376@ti.com>
+Date:   Mon, 25 Jan 2021 19:12:52 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210122180629.3j3aoueiwiib4gso@cavalier>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nishanth,
 
+On 22/01/21 11:36 pm, Nishanth Menon wrote:
+> On 21:54-20210122, Aswath Govindraju wrote:
+>> The following series of patches
+>> - adds support for HS200 and HS400 speed modes in MMCSD0 subsystem
+>> - adds support for UHS-I speed modes in MMCSD1 subsystem 
+>>
+>> Aswath Govindraju (2):
+>>   arm64: dts: ti: k3-j7200-main: Add support for HS200 and HS400 modes
+>>     in MMCSD0 subsystem
+>>   arm64: dts: ti: k3-j7200-main: Add support for UHS-I modes in MMCSD1
+>>     subsystem
+> 
+> 
+> Just a curious couple of questions:
+> Does squashing both the patches create a problem for understanding or a
+> later bisect? I kind of thought these mostly go hand in hand between the
+> instances, am I mistaken?
+> 
 
-On Mon, 25 Jan 2021, Vincent Guittot wrote:
+Yes, they can be squashed. I post a respin doing this.
 
-> On Mon, 25 Jan 2021 at 10:20, Julia Lawall <julia.lawall@inria.fr> wrote:
-> >
-> >
-> >
-> > On Mon, 25 Jan 2021, Mel Gorman wrote:
-> >
-> > > On Sun, Jan 24, 2021 at 09:38:14PM +0100, Julia Lawall wrote:
-> > > >
-> > > >
-> > > > On Tue, 27 Oct 2020, Mel Gorman wrote:
-> > > >
-> > > > > On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
-> > > > > > Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
-> > > > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > > > > > Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
-> > > > > >
-> > > > >
-> > > > > While not a universal win, it was mostly a win or neutral. In few cases
-> > > > > where there was a problem, one benchmark I'm a bit suspicious of generally
-> > > > > as occasionally it generates bad results for unknown and unpredictable
-> > > > > reasons. In another, it was very machine specific and the differences
-> > > > > were small in absolte time rather than relative time. Other tests on the
-> > > > > same machine were fine so overall;
-> > > > >
-> > > > > Acked-by: Mel Gorman <mgorman@suse.de>
-> > > >
-> > > > Recently, we have been testing the phoronix multicore benchmarks.  On v5.9
-> > > > with this patch, the preparation time of phoronix slows down, from ~23
-> > > > seconds to ~28 seconds.  In v5.11-rc4, we see 29 seconds.  It's not yet
-> > > > clear what causes the problem.  But perhaps the patch should be removed
-> > > > from v5.11, until the problem is understood.
-> > > >
-> > > > commit d8fcb81f1acf651a0e50eacecca43d0524984f87
-> > > >
-> > >
-> > > I'm not 100% convinved given that it was a mix of wins and losses. In
-> > > the wakup path in general, universal wins almost never happen. It's not
-> > > 100% clear from your mail what happens during the preparation patch. If
-> > > it included time to download the benchmarks and install then it would be
-> > > inherently variable due to network time (if download) or cache hotness
-> > > (if installing/compiling). While preparation time can be interesting --
-> > > for example, if preparation involves reading a lot of files from disk,
-> > > it's not universally interesting when it's not the critical phase of a
-> > > benchmark.
-> >
-> > The benchmark is completely downloaded prior to the runs.  There seems to
-> > be some perturbation to the activation of containerd.  Normally it is
-> > even:  *   *   *   *
->
-> Does it impact the benchmark results too or only the preparation prior
-> to running the benchmark ?
+> Are there any otap delay params update needed or the defaults are good
+> to go?
+> 
 
-Looking at a few of the benchmarks, there is no clear pattern which is
-better.  But there is not a big degradation, like from 23 to 28 seconds
-for the preparation time.  I will report back when we figure out more.
+The otap values are already up-to-date with the data sheet and don't
+need updation.
 
-julia
+> Will also help to provide some verification log along with this.
+> 
 
->
-> >
-> > and with the patch it becomes more like: *     **     **
-> >
-> > That is every other one is on time, and every other one is late.
-> >
-> > But I don't know why this happens.
-> >
-> > julia
-> >
-> > >
-> > > I think it would be better to wait until the problem is fully understood
-> > > to see if it's a timing artifact (e.g. a race between when prev_cpu is
-> > > observed to be idle and when it is busy).
->
-> I agree that a better understanding of what is happening is necessary
-> before any changes
->
-> > >
-> > > --
-> > > Mel Gorman
-> > > SUSE Labs
-> > >
->
+May I know what sort of logs would be best to provide. Would enumeration
+logs during boot suffice ?
+
+Like this,
+https://pastebin.ubuntu.com/p/v9NRV7GwMw/ ?
+
+Thanks,
+Aswath
