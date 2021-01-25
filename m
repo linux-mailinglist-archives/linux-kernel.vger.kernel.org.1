@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED1F303063
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E2A303061
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732741AbhAYXn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:43:56 -0500
-Received: from mga09.intel.com ([134.134.136.24]:55690 "EHLO mga09.intel.com"
+        id S1732683AbhAYXnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:43:50 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:33838 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732665AbhAYXlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732962AbhAYXlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 18:41:53 -0500
-IronPort-SDR: 14GIq/HaNbCX9o3u/CpDhNBpx6F1FemKFhz9D/Argd7HogAOfcV8Kq4fZr8szUvDnWvHAMwHcK
- VatfQOPQ02BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179967802"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="179967802"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 15:39:36 -0800
-IronPort-SDR: 0c5+MwZ4nPWpzySfO5nrCXG3v+C8e/ZR/qIys6UWsnw9a26vANP5hMuWso44uL30BDIzWlKV1z
- mwc0GegIw4sw==
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="402534524"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 15:39:35 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 1F7E66365;
-        Mon, 25 Jan 2021 15:39:35 -0800 (PST)
-Date:   Mon, 25 Jan 2021 15:39:35 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, jassisinghbrar@gmail.com,
-        linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
-Subject: Re: [PATCH v2 29/34] Intel tsens i2c slave driver.
-Message-ID: <20210125233935.GA13745@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20210108212600.36850-1-mgross@linux.intel.com>
- <20210108212600.36850-30-mgross@linux.intel.com>
- <fe1aad31-a536-4f0b-e817-b795890f4b45@infradead.org>
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1l4BTA-00060r-Kk; Tue, 26 Jan 2021 00:40:28 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     robh+dt@kernel.org, wim@linux-watchdog.org, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 1/8] dt-binding: watchdog: add more Rockchip compatibles to snps,dw-wdt.yaml
+Date:   Tue, 26 Jan 2021 00:40:27 +0100
+Message-ID: <11680602.O9o76ZdvQC@phil>
+In-Reply-To: <20210123173401.GA57343@roeck-us.net>
+References: <20201218120534.13788-1-jbx6244@gmail.com> <20210123173401.GA57343@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe1aad31-a536-4f0b-e817-b795890f4b45@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:15:06PM -0800, Randy Dunlap wrote:
-> On 1/8/21 1:25 PM, mgross@linux.intel.com wrote:
-> > diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-> > index 8b263fdd80c3..c2138339bd89 100644
-> > --- a/drivers/misc/intel_tsens/Kconfig
-> > +++ b/drivers/misc/intel_tsens/Kconfig
-> > @@ -14,6 +14,20 @@ config INTEL_TSENS_LOCAL_HOST
-> >  	  Say Y if using a processor that includes the Intel VPU such as
-> >  	  Keem Bay.  If unsure, say N.
+Hi Guenter,
+
+Am Samstag, 23. Januar 2021, 18:34:01 CET schrieb Guenter Roeck:
+> On Fri, Dec 18, 2020 at 01:05:27PM +0100, Johan Jonker wrote:
+> > The watchdog compatible strings are suppose to be SoC orientated.
+> > In the more recently added Rockchip SoC dtsi files only
+> > the fallback string "snps,dw-wdt" is used, so add the following
+> > compatible strings:
+> > 
+> > "rockchip,px30-wdt", "snps,dw-wdt"
+> > "rockchip,rk3228-wdt", "snps,dw-wdt"
+> > "rockchip,rk3308-wdt", "snps,dw-wdt"
+> > "rockchip,rk3328-wdt", "snps,dw-wdt"
+> > "rockchip,rk3399-wdt", "snps,dw-wdt"
+> > "rockchip,rv1108-wdt", "snps,dw-wdt"
+> > 
+> > make ARCH=arm dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> > 
+> > make ARCH=arm64 dtbs_check
+> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> > 
+> > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> > Acked-by: Rob Herring <robh@kernel.org>
+> > Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+just to clarify, do you expect me to pick up the dt-binding patch
+with the devicetree patches or do you want to take this individual
+patch through the watchdog tree instead?
+
+
+Thanks
+Heiko
+
+> > ---
+> >  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> > index f7ee9229c..b58596b18 100644
+> > --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> > +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
+> > @@ -18,10 +18,16 @@ properties:
+> >        - const: snps,dw-wdt
+> >        - items:
+> >            - enum:
+> > +              - rockchip,px30-wdt
+> >                - rockchip,rk3066-wdt
+> >                - rockchip,rk3188-wdt
+> > +              - rockchip,rk3228-wdt
+> >                - rockchip,rk3288-wdt
+> > +              - rockchip,rk3308-wdt
+> > +              - rockchip,rk3328-wdt
+> >                - rockchip,rk3368-wdt
+> > +              - rockchip,rk3399-wdt
+> > +              - rockchip,rv1108-wdt
+> >            - const: snps,dw-wdt
 > >  
-> > +config INTEL_TSENS_I2C_SLAVE
-> > +	bool "I2C slave driver for intel tsens"
+> >    reg:
 > 
-> Why bool instead of tristate?
-Becuase the I2C driver depends on a file scoped global i2c_plat_data
-instanciated in the INTELL_TSENS_LOCAL_HOST DRIVER (intel_tsens_thermal.[ch])
-
-Udhaya, would you care to comment further?
-
---mark
 
 
-> 
-> > +	depends on INTEL_TSENS_LOCAL_HOST
-> > +	select I2C
-> > +	select I2C_SLAVE
-> > +	help
-> > +	  This option enables tsens i2c slave driver.
-> 
-> 	                            I2C
-> 
-> > +
-> > +	  This driver is used for reporting thermal data via I2C
-> > +	  SMBUS to remote host.
-> > +	  Enable this option if you want to have support for thermal
-> > +	  management controller
-> 
-> 	             controller.
-> 
-> > +	  Say Y if using a processor that includes the Intel VPU such as
-> > +	  Keem Bay.  If unsure, say N.
-> 
-> 
-> -- 
-> ~Randy
-> 
+
+
