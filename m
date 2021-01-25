@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C2C30378C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5BC303790
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387705AbhAZH6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:58:10 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:56590 "EHLO
+        id S2389637AbhAZH7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:59:06 -0500
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:56610 "EHLO
         mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729064AbhAYQzM (ORCPT
+        with ESMTP id S1729154AbhAYQzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:55:12 -0500
+        Mon, 25 Jan 2021 11:55:20 -0500
 Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210125165422euoutp020aee223dc908f50709c970d45e82a5a4~dh_WsnZZm1284012840euoutp02B
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:54:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210125165422euoutp020aee223dc908f50709c970d45e82a5a4~dh_WsnZZm1284012840euoutp02B
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210125165423euoutp02854b1beeb9d5b6d194cbbce5b03ed8a8~dh_Xs6NLx1285012850euoutp02C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:54:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210125165423euoutp02854b1beeb9d5b6d194cbbce5b03ed8a8~dh_Xs6NLx1285012850euoutp02C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611593662;
-        bh=D+3F7rEE3+9XcRlqap5qRSJcQi9jGi7LsZrW2rMX31s=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=unOLB9WR4+5zuJSW1ycopWjXK9/FpYbqQIbTXSnUTlw2ZPWtalFGmFxrcpuU3e+N8
-         HPHoGRAN7CYqlKQysqnEY3QkfXKbN/m3Nrw7gtWs/PB6Nttvzu7Az+Jc+t/B+50/Np
-         r9bKtsXgkKfuWA0P0VleBpQyGSMdhxo6X/FlQOcs=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        s=mail20170921; t=1611593663;
+        bh=1G3u1jT+Nh0xSBwzdrr/0Z5HtSD8zq/pIwITlYIiVC4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S36j5tna5mkcowOcAym83NH98VIh4MkaeziBzu4lL8uSr7LRh3rb/q36A0/3M4Qqn
+         8biK19PRR3h6h146VtX2g1dkw7UgiEcIiEruVCkxEJvByuiXeNsnmFwQeO7FyIdU6M
+         dIeV8W5WDeh/0seMmeq4mBB+zUri3up4hRI1R8G8=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
         eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210125165421eucas1p23d8b048160291efadec8e26c7f4f60b2~dh_WKQPDl0475704757eucas1p2B;
-        Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id C3.E6.27958.DB7FE006; Mon, 25
-        Jan 2021 16:54:21 +0000 (GMT)
+        20210125165422eucas1p2dbe4fea61410bc343a30c4d1e16d586b~dh_W5vDDh0474404744eucas1p2N;
+        Mon, 25 Jan 2021 16:54:22 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id BC.BF.44805.EB7FE006; Mon, 25
+        Jan 2021 16:54:22 +0000 (GMT)
 Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210125165421eucas1p21049ed87217b177c3711c7b5726bd085~dh_VvicLQ0474404744eucas1p2M;
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210125165421eucas1p1e35b229fc823c74088e9be55bec36ec7~dh_WAiZEw2390323903eucas1p1G;
         Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
 Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
         eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210125165421eusmtrp2d5461c9981472a90299b90666192941c~dh_VtuJ3E0209902099eusmtrp2C;
+        20210125165421eusmtrp2fe836402e78b3afc63d76ca859b2cd86~dh_V-xwq90209902099eusmtrp2D;
         Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
-X-AuditID: cbfec7f2-f15ff70000006d36-7d-600ef7bdf4ec
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id BA.D5.21957.CB7FE006; Mon, 25
-        Jan 2021 16:54:20 +0000 (GMT)
-Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+X-AuditID: cbfec7f4-b37ff7000000af05-d3-600ef7beaae6
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id DB.D5.21957.DB7FE006; Mon, 25
+        Jan 2021 16:54:21 +0000 (GMT)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
         (KnoxPortal) with ESMTPA id
-        20210125165420eusmtip2edaa26c1cdc930426ff1b2db4b20515c~dh_VcYsi72869128691eusmtip2B;
-        Mon, 25 Jan 2021 16:54:20 +0000 (GMT)
+        20210125165421eusmtip1e1e6752f319d2aed8e53cfac40e43d15~dh_Vx5KSK0626706267eusmtip1W;
+        Mon, 25 Jan 2021 16:54:21 +0000 (GMT)
 From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
 To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -61,199 +61,84 @@ To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
 Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
         <b.zolnierkie@samsung.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
-Subject: [PATCH v11 0/3] AX88796C SPI Ethernet Adapter
-Date:   Mon, 25 Jan 2021 17:54:03 +0100
-Message-Id: <20210125165406.9692-1-l.stelmach@samsung.com>
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v11 1/3] dt-bindings: vendor-prefixes: Add asix prefix
+Date:   Mon, 25 Jan 2021 17:54:04 +0100
+Message-Id: <20210125165406.9692-2-l.stelmach@samsung.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210125165406.9692-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
 Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLKsWRmVeSWpSXmKPExsWy7djPc7p7v/MlGPzdI29x/u4hZouNM9az
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOKsWRmVeSWpSXmKPExsWy7djP87r7vvMlGBxawWdx/u4hZouNM9az
         Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2px89AKRotNj6+xWlzeNYfN
-        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsDsIely+dpHZY8vKm0weO2fdZffYtKqTzWPzknqP
-        nTs+M3n0bVnF6PF5k1wARxSXTUpqTmZZapG+XQJXxskNv9kLlulW/Dpyjr2BcZlyFyMnh4SA
-        icT3pRuZuhi5OIQEVjBK3GmaCOV8YZSYPvUBE0iVkMBnRomD0/JgOg5faGWEiC9nlNh5MAHC
-        fs4osfShBojNJuAo0b/0BCvIIBGBe8wS69sfMII4zAL7gBruTWEGqRIWMJP4MOcsG4jNIqAq
-        8a7/K3sXIwcHr4CVxMX7nBDL5CXal28HK+EVEJQ4OfMJC4jNL6AlsabpOpjNDFTTvHU2M8h8
-        CYHlnBJ3lv1jhGh2kWh4f44ZwhaWeHV8CzuELSPxf+d8JpBdEgL1EpMnmUH09jBKbJvzgwWi
-        xlrizrlfbCA1zAKaEut36UOEHSVmrJjEDNHKJ3HjrSDECXwSk7ZNhwrzSnS0CUFUq0is698D
-        NVBKovfVCkaIEg+JKVOVJjAqzkLy1ywkv8xCWLuAkXkVo3hqaXFuemqxYV5quV5xYm5xaV66
-        XnJ+7iZGYIo7/e/4px2Mc1991DvEyMTBeIhRgoNZSYR3tx5PghBvSmJlVWpRfnxRaU5q8SFG
-        aQ4WJXHeVbPXxAsJpCeWpGanphakFsFkmTg4pRqYFh95Z68md3nteeMfYe5+2edSlYvTg1S3
-        FfauL38wLydirdVmpd0ySetn8mxovNhS6PqedUmDqI3lz/6NpfsX+hlNmZi88O3SvasSuXt3
-        lerpRRT8lvBxYrRa0Ljm4ATV+wxPLWyvhq7f+3OS78sORWfuo651ETGXVOVWXfkQeq66IeDE
-        VYU+hvIkrfo3Pw5q9mXFicZ/c7lxctocn6N5MWLx06SPCzGrGHFePWFocl9i+T6Hk3zHt55Q
-        SW35tnvOPY68/EWZGVbTTK5OP/NZ+UTwtdkWvZoTgldkt0Z6T0sL9qqY57f2bfwmw3Tm8yeF
-        VUqlljMcUzm9+MUK2T8/BGY/9VyS/Pm333JxLdvPSizFGYmGWsxFxYkAb4rrQuADAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xe7p7vvMlGLzqs7E4f/cQs8XGGetZ
-        Leacb2GxmH/kHKvFovczWC2uvb3DatH/+DWzxfnzG9gtLmzrY7W4eWgFo8Wmx9dYLS7vmsNm
-        MeP8PiaLQ1P3MlqsPXKX3eLYAjGL1r1H2B0EPS5fu8jssWXlTSaPnbPusntsWtXJ5rF5Sb3H
-        zh2fmTz6tqxi9Pi8SS6AI0rPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/O
-        JiU1J7MstUjfLkEv4+SG3+wFy3Qrfh05x97AuEy5i5GTQ0LAROLwhVbGLkYuDiGBpYwS26Ze
-        ZOli5ABKSEmsnJsOUSMs8edaFxtEzVNGiee/vrODJNgEHCX6l55gBUmICLxhlmi695YdxGEW
-        2Mcosf/oYrAqYQEziQ9zzrKB2CwCqhLv+r+yg2zgFbCSuHifE2KDvET78u1gJbwCghInZz4B
-        O4JZQF1i/TwhkDC/gJbEmqbrLCA2M1B589bZzBMYBWYh6ZiF0DELSdUCRuZVjCKppcW56bnF
-        hnrFibnFpXnpesn5uZsYgXG67djPzTsY5736qHeIkYmD8RCjBAezkgjvbj2eBCHelMTKqtSi
-        /Pii0pzU4kOMpkAPTGSWEk3OByaKvJJ4QzMDU0MTM0sDU0szYyVx3q1z18QLCaQnlqRmp6YW
-        pBbB9DFxcEo1MLmfamY+rtud+OD3eT7jEvmGH9bvNx9f8WRfE9crnol2E9Wiei4/a5i33LNF
-        aGlyTc3KEu2FM8oDD/xPuiIzK0aNq9EpqNtyK+u2OrGLXl0qvWocgVt1Cu6Ze7ySNGVc5bz/
-        0L4H0sE6P3fOVOtdcVVTLkDLc+68l98XbZg099cdLfPpWx9dcbx27c7sMzrbBT5/r+4Jjz71
-        /OTijS/rfJYzFG/tSPVWzA2eG/g7Ve7i36UmCvPk/4nXOM9j8Fm4+LqF+B7vkAc1/yxMhd93
-        sR5e1/XcnvkUu+t39W72Mpl7DE5c58+sfhiUx8v54PvnfqnYrBPZt8NOPfRRsjdadUDrka2+
-        4bGX7eYhT665zlZiKc5INNRiLipOBAA+t0M4XAMAAA==
-X-CMS-MailID: 20210125165421eucas1p21049ed87217b177c3711c7b5726bd085
+        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsFv837OD3UHI4/K1i8weW1beZPLYOesuu8emVZ1s
+        HpuX1Hvs3PGZyaNvyypGj8+b5AI4orhsUlJzMstSi/TtErgyVt86zlzwk63i8u7n7A2MP1m7
+        GDk5JARMJD4sPcDUxcjFISSwglFi94EprBDOF0aJ6Qc2skA4nxklTh5fCddyaOpzqKrljBKN
+        Z/oYIZznjBIrZlxlBKliE3CU6F96AqxKROAes8T69gdgVcwC9xkl7j1fzQxSJSzgJjHjxhc2
+        EJtFQFXi5tmDYDt4Bawk5qyYwAaxT16iffl2MJtTwFriyeH5TBA1ghInZz5hAbH5BbQk1jRd
+        B7OZgeqbt85mBlkmIXCYU+LO351MEINcJJ6d2Qj1hLDEq+Nb2CFsGYn/O0GGcgDZ9RKTJ5lB
+        9PYwSmyb84MFosZa4s65X2wgNcwCmhLrd+lDhB0lnt3+A9XKJ3HjrSDECXwSk7ZNZ4YI80p0
+        tAlBVKtIrOvfAzVQSqL31QrGCYxKs5A8MwvJA7MQdi1gZF7FKJ5aWpybnlpslJdarlecmFtc
+        mpeul5yfu4kRmPZO/zv+ZQfj8lcf9Q4xMnEwHmKU4GBWEuHdrceTIMSbklhZlVqUH19UmpNa
+        fIhRmoNFSZw3acuaeCGB9MSS1OzU1ILUIpgsEwenVAOTkah26+sz+sZObqlBXIvsnGIWMSjv
+        lfq8zvn1vCmH7p3+PlPp+c5J9r8OufUatv2P/VQS4qR78e2iXCn56vSAHR+YjPv8+J2X3xTg
+        tjjqe8Zb4r/auWX3Ds3deFuw57l/xsT49qWtcQu+691JfGMvw6ObUzv9RPWj9UdPLakw0l60
+        Y52W/oTnNocmKF0M3COZxCRgWLi3l6OuMEzM/G7ipXJefUuBOEnLxQdjHhcG7nizL3xV0rS0
+        xJcLehUZvYub9s1izdHq3je/+bpCI+cj9W3GV3U4XzrO3Oev/yf2/nz7Pf8avKdM3ra2SzI2
+        /PqZy3OvWq58dv1nxua1NsYbPcXKfz7ZrFqaUZKwSiJIiaU4I9FQi7moOBEAo9QfEuoDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrOIsWRmVeSWpSXmKPExsVy+t/xu7p7v/MlGMxdI2Jx/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2px89AKRotNj6+xWlzeNYfN
+        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsFv837OD3UHI4/K1i8weW1beZPLYOesuu8emVZ1s
+        HpuX1Hvs3PGZyaNvyypGj8+b5AI4ovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOt
+        jEyV9O1sUlJzMstSi/TtEvQyVt86zlzwk63i8u7n7A2MP1m7GDk5JARMJA5NfQ5kc3EICSxl
+        lDh2cjpLFyMHUEJKYuXcdIgaYYk/17rYIGqeMkqs2XuTESTBJuAo0b/0BFiziMAbZomme2/Z
+        QRxmgfuMEr8+vQCrEhZwk5hx4wsbiM0ioCpx8+xBsNW8AlYSc1ZMYINYIS/Rvnw7mM0pYC3x
+        5PB8JhBbCKjm/MtvbBD1ghInZz4Bu45ZQF1i/TwhkDC/gJbEmqbrLCA2M9CY5q2zmScwCs1C
+        0jELoWMWkqoFjMyrGEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAmN827Gfm3cwznv1Ue8QIxMH
+        4yFGCQ5mJRHe3Xo8CUK8KYmVValF+fFFpTmpxYcYTYE+m8gsJZqcD0wyeSXxhmYGpoYmZpYG
+        ppZmxkrivFvnrokXEkhPLEnNTk0tSC2C6WPi4JRqYEpiuZo/KV2nZSnv1jDRzqA1rXuOX5fb
+        lVggsXdThcwae9knxRJyeXqXYr7bP5p6d+FbiVWr9x8pv7E4RKXh05l3k+ZPDCqZFC6uvL+3
+        gOPzot6J/qXGMyslO06fu9N1vdZJYFnutjueXyqyQnepbFm8rXjKxpYTT2/UhAtZeXedPsR8
+        XGpywpec4phDNxdU7jz0/pEzf/H1qFXWMxqYtFNLSv3E//qlX/L+dmh1e26Gt/M9z38Lju5a
+        O3F38GoZ3zc3NgtZ9VwP2id1/PuqgNcGZ33jd7Iq3GibpKb2Q1N71eldtcV1u/r6TDadq5Ze
+        2bL52NOeXz8UXiY1dEdosEs6WT9/zLJ19knbgLpF1nuVWIozEg21mIuKEwE6dyoWegMAAA==
+X-CMS-MailID: 20210125165421eucas1p1e35b229fc823c74088e9be55bec36ec7
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210125165421eucas1p21049ed87217b177c3711c7b5726bd085
+X-RootMTR: 20210125165421eucas1p1e35b229fc823c74088e9be55bec36ec7
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20210125165421eucas1p21049ed87217b177c3711c7b5726bd085
-References: <CGME20210125165421eucas1p21049ed87217b177c3711c7b5726bd085@eucas1p2.samsung.com>
+X-CMS-RootMailID: 20210125165421eucas1p1e35b229fc823c74088e9be55bec36ec7
+References: <20210125165406.9692-1-l.stelmach@samsung.com>
+        <CGME20210125165421eucas1p1e35b229fc823c74088e9be55bec36ec7@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
-found on ARTIK5 evaluation board. The driver has been ported from a
-v3.10.9 vendor kernel for ARTIK5 board.
+Add the prefix for ASIX Electronics Corporation.
 
-Changes in v11:
-  - changed stat counters to 64-bit
-  - replaced WARN_ON(!mutex_is_locked()) with lockdep_assert_held()
-  - replaced ax88796c_free_skb_queue() with __skb_queue_purge()
-  - added cancel_work_sync() for ax_work
-  - removed unused fields of struct skb_data
-  - replaced MAX() with max() from minmax.h
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes in v10:
-  - removed unused variable
- 
-Changes in v9:
-  - used pskb_extend_head()
-  - used ethtool private flags instead of tunables to switch SPI
-    compression
-  - changed
-    - alloc_skb() to netdev_alloc(skb)
-    - __pskb_trim() to pskb_trim()
-  - removed:
-    - chages to skb->truesize
-    - unnecessary casting to short
-    - return f() in a void function
-    - IRQF_SHARED flags
-    - unnecessary memset(0) of kzalloc()ed buffer
-    - unused endiannes detection
-    - unnecessary __packed attribute for some structures
-  - added:
-    - temporary variable in AX_WRITE/READ sequences
-    - missin mutex_unlock() in error paths
-  - axspi_read_reg() returns a constant value in case of an error
-  
-Changes in v8:
-  - fixed the entry in MAINTAINERS
-  - removed unnecessary netif_err()
-  - changed netif_rx() to netif_rx_ni() for code running in a process
-    context
-  - added explicit type casting for ~BIT()
-
-Changes in v7:
-  - removed duplicate code
-  - moved a constant buffer definition away from a header file
-
-Changes in v6:
-  - fixed typos in Kconfig
-  - checked argument value in ax88796c_set_tunable
-  - updated tags in commit messages
-
-Changes in v5:
-  - coding style (local variable declarations)
-  - added spi0 node in the DT binding example and removed
-    interrupt-parent
-  - removed comp module parameter
-  - added CONFIG_SPI_AX88796C_COMPRESSION option to set the initial
-    state of SPI compression
-  - introduced new ethtool tunable "spi-compression" to controll SPI
-    transfer compression
-  - removed unused fields in struct ax88796c_device
-  - switched from using buffers allocated on stack for SPI transfers
-    to DMA safe ones embedded in struct ax_spi and allocated with
-    kmalloc()
-
-Changes in v4:
-  - fixed compilation problems in asix,ax88796c.yaml and in
-  ax88796c_main.c introduced in v3
-
-Changes in v3:
-  - modify vendor-prefixes.yaml in a separate patch
-  - fix several problems in the dt binding
-    - removed unnecessary descriptions and properties
-    - changed the order of entries
-    - fixed problems with missing defines in the example
-  - change (1 << N) to BIT(N), left a few (0 << N)
-  - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
-    ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
-    ax88796c_set_mac_address() with appropriate kernel functions.
-  - disable PHY auto-polling in MAC and use PHYLIB to track the state
-    of PHY and configure MAC
-  - propagate return values instead of returning constants in several
-    places
-  - add WARN_ON() for unlocked mutex
-  - remove local work queue and use the system_wq
-  - replace phy_connect_direct() with phy_connect() and move
-    devm_register_netdev() to the end of ax88796c_probe()
-    (Unlike phy_connect_direct() phy_connect() does not crash if the
-    network device isn't registered yet.)
-  - remove error messages on ENOMEM
-  - move free_irq() to the end of ax88796c_close() to avoid race
-    condition
-  - implement flow-control
-
-Changes in v2:
-  - use phylib
-  - added DT bindings
-  - moved #includes to *.c files
-  - used mutex instead of a semaphore for locking
-  - renamed some constants
-  - added error propagation for several functions
-  - used ethtool for dumping registers
-  - added control over checksum offloading
-  - remove vendor specific PM
-  - removed macaddr module parameter and added support for reading a MAC
-    address from platform data (e.g. DT)
-  - removed dependency on SPI from NET_VENDOR_ASIX
-  - added an entry in the MAINTAINERS file
-  - simplified logging with appropriate netif_* and netdev_* helpers
-  - lots of style fixes
-
-Łukasz Stelmach (3):
-  dt-bindings: vendor-prefixes: Add asix prefix
-  dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
-  net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
-
- .../bindings/net/asix,ax88796c.yaml           |   73 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
- MAINTAINERS                                   |    6 +
- drivers/net/ethernet/Kconfig                  |    1 +
- drivers/net/ethernet/Makefile                 |    1 +
- drivers/net/ethernet/asix/Kconfig             |   35 +
- drivers/net/ethernet/asix/Makefile            |    6 +
- drivers/net/ethernet/asix/ax88796c_ioctl.c    |  239 ++++
- drivers/net/ethernet/asix/ax88796c_ioctl.h    |   26 +
- drivers/net/ethernet/asix/ax88796c_main.c     | 1146 +++++++++++++++++
- drivers/net/ethernet/asix/ax88796c_main.h     |  568 ++++++++
- drivers/net/ethernet/asix/ax88796c_spi.c      |  115 ++
- drivers/net/ethernet/asix/ax88796c_spi.h      |   69 +
- 13 files changed, 2287 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
- create mode 100644 drivers/net/ethernet/asix/Kconfig
- create mode 100644 drivers/net/ethernet/asix/Makefile
- create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
- create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
- create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
- create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
- create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
- create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
-
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index e8c773478f54..b962f852ccaf 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -125,6 +125,8 @@ patternProperties:
+     description: Asahi Kasei Corp.
+   "^asc,.*":
+     description: All Sensors Corporation
++  "^asix,.*":
++    description: ASIX Electronics Corporation
+   "^aspeed,.*":
+     description: ASPEED Technology Inc.
+   "^asus,.*":
 -- 
 2.26.2
 
