@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8083024FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B1C302505
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbhAYMcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 07:32:06 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11869 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbhAYMTc (ORCPT
+        id S1728158AbhAYMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 07:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727969AbhAYMVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:19:32 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DPSxv69Jgz7Zrn;
-        Mon, 25 Jan 2021 19:56:19 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 25 Jan 2021 19:57:23 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>,
-        <kjain@linux.ibm.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <james.clark@arm.com>, <nakamura.shun@jp.fujitsu.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH 0/4] perf vendor events arm64: Some tidy-up/refactoring
-Date:   Mon, 25 Jan 2021 19:53:16 +0800
-Message-ID: <1611575600-2440-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Mon, 25 Jan 2021 07:21:02 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54DCC061223
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 03:57:32 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1l40Uq-0006VJ-Rx; Mon, 25 Jan 2021 12:57:28 +0100
+Subject: Re: [PATCH v3] iio: adc: stm32-adc: enable timestamping for non-DMA
+ usage
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20210125112127.1583-1-a.fatoum@pengutronix.de>
+ <b649a0fd-b229-8a54-b374-72ecedca9e64@pengutronix.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <b6413a27-9cdf-9f60-be49-03398ee3f1f6@pengutronix.de>
+Date:   Mon, 25 Jan 2021 12:57:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+In-Reply-To: <b649a0fd-b229-8a54-b374-72ecedca9e64@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is much event duplication in the common and uarch events for A76
-and Ampere eMag support, so factor out into a common JSON.
 
-Since the wording for events may differ between CPU datasheet and
-the architecture reference manual, the current wording is kept. This
-is unless there are minor differences. In addition, event names are
-renamed to be same as architecture reference manual, to keep commonality.
 
-Also a minor fix is included for the Ampere eMag JSON.
+On 25.01.21 12:49, Marc Kleine-Budde wrote:
+> On 1/25/21 12:21 PM, Ahmad Fatoum wrote:
+>> For non-DMA usage, we have an easy way to associate a timestamp with a
+>> sample: iio_pollfunc_store_time stores a timestamp in the primary
+>> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+>> to push out the buffer along with the timestamp.
+>>
+>> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+>> Do this.
+>>
+>> For DMA, it's not as easy, because we don't push the buffers out of
+>> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+>> a tasklet scheduled after a DMA completion.
+>>
+>> Preferably, the DMA controller would copy us the timestamp into that buffer
+>> as well. Until this is implemented, restrict timestamping support to
+>> only PIO. For low-frequency sampling, PIO is probably good enough.
+>>
+>> Cc: Holger Assmann <has@pengutronix.de>
+>> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> ---
+>> v2 -> v3:
+>>   - explicitly specify alignment (Jonathan)
+>>   - increase buffer size to hold additional timestamp
+>> v1 -> v2:
+>>   - Added comment about timestamping being PIO only (Fabrice)
+>>   - Added missing DMA resource clean up in error path (Fabrice)
+>>   - Added Fabrice's Acked-by
+>> ---
+>>  drivers/iio/adc/stm32-adc.c | 39 +++++++++++++++++++++++++++++--------
+>>  1 file changed, 31 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+>> index c067c994dae2..ab2f440d7afb 100644
+>> --- a/drivers/iio/adc/stm32-adc.c
+>> +++ b/drivers/iio/adc/stm32-adc.c
+>> @@ -177,7 +177,7 @@ struct stm32_adc_cfg {
+>>   * @offset:		ADC instance register offset in ADC block
+>>   * @cfg:		compatible configuration data
+>>   * @completion:		end of single conversion completion
+>> - * @buffer:		data buffer
+>> + * @buffer:		data buffer + 8 bytes for timestamp if enabled
+>                                       ^
+>>   * @clk:		clock for this adc instance
+>>   * @irq:		interrupt for this adc instance
+>>   * @lock:		spinlock
+>> @@ -200,7 +200,7 @@ struct stm32_adc {
+>>  	u32			offset;
+>>  	const struct stm32_adc_cfg	*cfg;
+>>  	struct completion	completion;
+>> -	u16			buffer[STM32_ADC_MAX_SQ];
+>> +	u16			buffer[STM32_ADC_MAX_SQ + 8] __aligned(8);
+>          ^^                                               ^
+> 
+> How does that fit together?
 
-John Garry (4):
-  perf vendor events arm64: Fix Ampere eMag event typo
-  perf vendor events arm64: Add common and uarch event JSON
-  perf vendor events arm64: Reference common and uarch events for Ampere
-    eMag
-  perf vendor events arm64: Reference common and uarch events for A76
+Ah indeed, that's a little longer than needed.
+Thanks for catching.
 
- .../arch/arm64/ampere/emag/branch.json        |   8 +-
- .../arch/arm64/ampere/emag/bus.json           |   5 +-
- .../arch/arm64/ampere/emag/cache.json         |  58 +---
- .../arch/arm64/ampere/emag/clock.json         |   4 +-
- .../arch/arm64/ampere/emag/exception.json     |  10 +-
- .../arch/arm64/ampere/emag/instruction.json   |  34 +--
- .../arch/arm64/ampere/emag/memory.json        |  11 +-
- .../arch/arm64/arm/cortex-a76-n1/branch.json  |  12 +-
- .../arch/arm64/arm/cortex-a76-n1/bus.json     |  19 +-
- .../arch/arm64/arm/cortex-a76-n1/cache.json   | 118 +++------
- .../arm64/arm/cortex-a76-n1/exception.json    |  10 +-
- .../arm64/arm/cortex-a76-n1/instruction.json  |  45 +---
- .../arch/arm64/arm/cortex-a76-n1/memory.json  |   6 +-
- .../arch/arm64/arm/cortex-a76-n1/other.json   |   4 +-
- .../arm64/arm/cortex-a76-n1/pipeline.json     |  12 +-
- .../arm64/armv8-common-and-microarch.json     | 248 ++++++++++++++++++
- 16 files changed, 356 insertions(+), 248 deletions(-)
- create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+> 
+> Marc
+> 
+> 
 
 -- 
-2.26.2
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
