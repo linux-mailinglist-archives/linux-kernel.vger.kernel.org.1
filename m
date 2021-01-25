@@ -2,104 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C911F302584
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2483025A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbhAYNb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:31:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728820AbhAYNZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:25:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC3422DFB;
-        Mon, 25 Jan 2021 13:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611581072;
-        bh=5GiYmwGzV4JHurHiAg6NtioYPugoWSn030T3iDqS5ss=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fXBnuZuU9TUEnWBhf5aO7KTv0N+YMPIwvLsCFzwS0eed2CZRpmyKI55ji+kPGOZRY
-         16Om0miDTjh2W1xAC71K9SNizou+iHIl6GxRez/BAxMVbqNi22Noh0l6Kbgb4iu9Zb
-         ZjlcEzI8NTKKSyGQC2HwkIPds11EJ8Y1sx1t1uNqERoUu3P/4PGFesEl6RMJfvWwW4
-         VuWUXIGvm3kqK5x08U/dKIxAm8c7aETc1ot9h9uU/+5o/opxnlFsUSjCAIbaJcdSH/
-         DBQ0AxDwvle3pUYj1YEsNcx++/KmdGX/Q2tnBq/LnPEHuWjSP+6Ibwwkve5c6O0s0A
-         eUB0fktEXP6Cg==
-From:   Will Deacon <will@kernel.org>
-To:     stable@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [STABLE BACKPORT v2 4.4.y, 4.9.y and 4.14.y] compiler.h: Raise minimum version of GCC to 5.1 for arm64
-Date:   Mon, 25 Jan 2021 13:24:25 +0000
-Message-Id: <20210125132425.28245-1-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1729039AbhAYNnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:43:37 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11588 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728975AbhAYNkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:40:04 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DPVm41ftRzMPjk;
+        Mon, 25 Jan 2021 21:17:56 +0800 (CST)
+Received: from huawei.com (10.175.100.227) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 25 Jan 2021
+ 21:19:17 +0800
+From:   Tang Yizhou <tangyizhou@huawei.com>
+To:     <linux-mm@kvack.org>
+CC:     <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        Tang Yizhou <tangyizhou@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: [PATCH v3] mm, oom: Fix a comment in dump_task
+Date:   Mon, 25 Jan 2021 21:30:06 +0800
+Message-ID: <20210125133006.7242-1-tangyizhou@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.100.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
+If p is a kthread, it will be checked in oom_unkillable_task() so
+we can delete the corresponding comment.
 
-GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
-beyond the stack pointer, resulting in memory corruption if an interrupt
-is taken after the stack pointer has been adjusted but before the
-reference has been executed. This leads to subtle, infrequent data
-corruption such as the EXT4 problems reported by Russell King at the
-link below.
-
-Life is too short for buggy compilers, so raise the minimum GCC version
-required by arm64 to 5.1.
-
-Reported-by: Russell King <linux@armlinux.org.uk>
-Suggested-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: <stable@vger.kernel.org> # 4.4.y, 4.9.y and 4.14.y only
-Cc: Theodore Ts'o <tytso@mit.edu>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
-Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-[will: backport to 4.4.y/4.9.y/4.14.y; add __clang__ check]
-Link: https://lore.kernel.org/r/CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Tang Yizhou <tangyizhou@huawei.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- include/linux/compiler-gcc.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+v2: Update CC list
+v3: Add Acked-by tags
+ mm/oom_kill.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index af8b4a879934..9485abe76b68 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -145,6 +145,12 @@
- 
- #if GCC_VERSION < 30200
- # error Sorry, your compiler is too old - please upgrade it.
-+#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100 && !defined(__clang__)
-+/*
-+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-+ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
-+ */
-+# error Sorry, your version of GCC is too old - please use 5.1 or newer.
- #endif
- 
- #if GCC_VERSION < 30300
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 04b19b7b5435..9f043ad29554 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -395,9 +395,8 @@ static int dump_task(struct task_struct *p, void *arg)
+ 	task = find_lock_task_mm(p);
+ 	if (!task) {
+ 		/*
+-		 * This is a kthread or all of p's threads have already
+-		 * detached their mm's.  There's no need to report
+-		 * them; they can't be oom killed anyway.
++		 * All of p's threads have already detached their mm's. There's
++		 * no need to report them; they can't be oom killed anyway.
+ 		 */
+ 		return 0;
+ 	}
 -- 
-2.30.0.280.ga3ce27912f-goog
+2.22.0
 
