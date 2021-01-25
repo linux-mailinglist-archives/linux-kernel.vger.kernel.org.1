@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1461303767
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77C3303763
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389578AbhAZHkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S2389548AbhAZHj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:39:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728638AbhAYQAS (ORCPT
+        with ESMTP id S1728704AbhAYQAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 11:00:18 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21BAC0617A9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:58:43 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id e9so7877639plh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:58:43 -0800 (PST)
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52174C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:59:36 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id g69so14460417oib.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:59:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ydjA7lxNDcY9m5HH4n1Isbc66o3HKVgUPIygbXwoUMM=;
-        b=bI02x67oVJOucPOxKOB9n3X6KcNxCqIpxk5n0fxC4X/uFlQaaUy+xP+qcDK0qgJA7t
-         mWFK2tKkiqtuWxZJvB44mpmemEF/S+YGxTW9vjz8KWnzcutGYJEs+vjezSfpdlvaat30
-         NrMsLYnxAPDb/60yNPxEjnOGe2XeZLZa2qteFs3BDDpQq8v+NYEA0j27JKKvD8Jo9hGB
-         m1FubjB+dKRDuIvGoJ5Krq3haj3y4rnOv+TQTyR+lsKZVtOzTkhokVPN9B3vqb9Kf/tF
-         OgnBEzoTN7wXg3qcCOF4/ajnPQb9aZOpN8ShjkT8r+GX28FyVyVD2Nsgv5WX9h7sZf9A
-         iVhw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=+pYAJ+qtdA2Zi9bUNlE6iZVYTZ1DpDlRllJEPtONPQM=;
+        b=nLpnCNIxJP4e3BA7ZKqyNtAmE9ZL35EjK1LsPtFVHmaP7CrYX9JtJrVvCywT+y914l
+         fa/OSDDaCNRl0LDflfZJe/h/YmX436VVEDWrYOcT7qyHlQl1jvYQVCbUNjPnR1mI6zw0
+         gkDk3BaMWJFw/rhA+jB/NGAsTbVn/4uTVkCJdVdnntDFrpvh2bQ0Q6KXbtHjP5ZzOZ1c
+         KC/JA3fFS2+7XQGyrJhqYYNRS3ucPBNl1m1+nbkd8JY0siWxc3WWnWX8ik9pRA+4bSHP
+         4tUxWZbv73U32dccIzREhXjP2yNPiXCPnMldxSZ5ZnZpkWISnP0VPkmt33gINFLaMzXC
+         SVww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ydjA7lxNDcY9m5HH4n1Isbc66o3HKVgUPIygbXwoUMM=;
-        b=QB6FWvMRik0MD/vlUFsbty1+WHmu0ivDDTDp0dL9FpWisEu5dI3qioxpms3NGurU9e
-         KomYzvCEirhR2zAcjdJ0Xkv4aGxXb/M0/gSS+IwYFkqqKBMNz2ev1EqyawNLhKzdmZFr
-         /eV1x/nTT6yug+cUnctViZEA8SQqP0Re4g+voVGkNFDUT2BQs5s1Q0dF6apLqiMFF4wq
-         ZH8AsqegoytbhpaNWum5byNIGGZRR7TbsFUix7+Bz9Dt7bXRlNEdt6yJue6ZG9hXlstu
-         h69krQ1TjzL956/CmZiNQs8hMrjfmORPjQtqOVKf8gGTJ6SueQSt96Su2APH6ac5/z5Q
-         GqqQ==
-X-Gm-Message-State: AOAM531rurtfAGnn+kkt/bU5uPmurCVSMXOFCg5T+U1Do9CAwpJrRjYE
-        EMiw9ajQmxqdx1lzN9NdP/izdT/sJKCVgQ==
-X-Google-Smtp-Source: ABdhPJxvYFudM0/t7uvN4OEM1XLPVgOQbMzfZischKww36TwjmQpcH3dkzLr1QJ1pvzT7oKrjCpfaw==
-X-Received: by 2002:a17:90a:6f05:: with SMTP id d5mr843071pjk.145.1611590322691;
-        Mon, 25 Jan 2021 07:58:42 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id i25sm16942011pgb.33.2021.01.25.07.58.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 07:58:41 -0800 (PST)
-Subject: Re: [PATCH v3 0/7] no-copy bvec
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        linux-block@vger.kernel.org
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-References: <cover.1610170479.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b1d0ae2a-a4ca-2b41-b8df-4c8036afe781@kernel.dk>
-Date:   Mon, 25 Jan 2021 08:58:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=+pYAJ+qtdA2Zi9bUNlE6iZVYTZ1DpDlRllJEPtONPQM=;
+        b=BZv4Mk9BLF1l6KVQOXtMK4VkSYMuCHtyoJQqrqvDu4uej3XSwhwUduOtN/HPNetM1u
+         Z4EnOks4jQOklldwW32AEu2eidrfTj3O8PYAKXtmHpF1ilMW4JRcUI0bvcEKhdLOMCaQ
+         wg6CG0pAj5/h/QkFuayVvB4R/GNV/SXB+nUYCa44GzmarNPMWQTs62xC7G5mVrn3p4V5
+         xSaIfa8miUpL6m84Zss7ZJvETu/P9cAtX5QW343OfgDU7WY6dDZ0T/DdStqL/JNkxJPO
+         ElmHsm96Mf4HsD2WzQKSxcJTkPEuIyKFyQT/kVxj9aFP2XVc21F7pHUtt/IbYTjrlro0
+         K8oA==
+X-Gm-Message-State: AOAM530qxKXwla40MRvOsrCuKyTQNTzgp6GXAL2me3DvjE5rvwlrZDCe
+        MV4dikOelBq1KCnptpRVLsrQSoXNHrRfKPdIuJ0=
+X-Google-Smtp-Source: ABdhPJyXWl7azGyfKDl05mx9n7244iAPcy/TQ011bOKDcIkA2szZVHKebBfW13i9JRFFRiXvMoBKjm1GxI8AUsFhbOg=
+X-Received: by 2002:aca:3dd6:: with SMTP id k205mr534203oia.96.1611590375791;
+ Mon, 25 Jan 2021 07:59:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1610170479.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:aca:d4d7:0:0:0:0:0 with HTTP; Mon, 25 Jan 2021 07:59:35
+ -0800 (PST)
+Reply-To: hkmohammedh@gmail.com
+From:   HK Mohammed Hossain <jk041773@gmail.com>
+Date:   Mon, 25 Jan 2021 15:59:35 +0000
+Message-ID: <CAP_Z9sDm8BzFQtoqz3Q0_bFxguOp7vj-6o9mQNhWFpzqtyN7Xg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/9/21 9:02 AM, Pavel Begunkov wrote:
-> Currently, when iomap and block direct IO gets a bvec based iterator
-> the bvec will be copied, with all other accounting that takes much
-> CPU time and causes additional allocation for larger bvecs. The
-> patchset makes it to reuse the passed in iter bvec.
-
-Applied, thanks.
-
 -- 
-Jens Axboe
+Dearest Friend,
 
+I have an important message for you just get back for details.
+
+Regards
+Mohammed Hossain
