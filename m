@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D38E302666
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDDA30265B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729719AbhAYOnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:43:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        id S1729571AbhAYOfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729491AbhAYOmE (ORCPT
+        with ESMTP id S1729467AbhAYOcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:42:04 -0500
-X-Greylist: delayed 545 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Jan 2021 06:41:02 PST
-Received: from leibniz.telenet-ops.be (leibniz.telenet-ops.be [IPv6:2a02:1800:110:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8686C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:41:02 -0800 (PST)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4DPXPS00bJzMsJcv
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:31:56 +0100 (CET)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id M2Wi240034C55Sk012WiV4; Mon, 25 Jan 2021 15:30:54 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l42t7-000emF-Gs; Mon, 25 Jan 2021 15:30:41 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l42t6-004PfB-P9; Mon, 25 Jan 2021 15:30:40 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Viresh Kumar <vireshk@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] ntp: Use freezable workqueue for RTC synchronization
-Date:   Mon, 25 Jan 2021 15:30:39 +0100
-Message-Id: <20210125143039.1051912-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 25 Jan 2021 09:32:35 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B115BC06178A;
+        Mon, 25 Jan 2021 06:31:54 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id b26so17998721lff.9;
+        Mon, 25 Jan 2021 06:31:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=J81vU0UwWpEHhAfUrDasXcHzBdqWSd90SVkou0JGu4s=;
+        b=Aa5iatRhzwdZySQ1I03K4tT8lWwA7lItloapzYsFQhLCzD4Zkwi7Z2RhdRhdmh2FX5
+         Uf1ID4KlMe74ptwxWoxkDlDNun/NFbcBQl2IkjIw56m1gAZziRcKw1HIofFxbyr7/T0K
+         AvBID7qGAY3jpcyqPcbhojR874K43pRgxGgt545/awcFhzQJfzW4ygq+JBXuKB43f6wP
+         Tox+5e2RyvBVxCIxfqAUItBOWNOmPRtVDwB5tsihVoyF+bHZP1+h/6V6YpzB0URyXv5M
+         DEaNSPRiprsZ9YmfBLxYx98KkluAG2oE0XiVeImrQQx9lwtB/pvlObMenied/zkscs6R
+         1evw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=J81vU0UwWpEHhAfUrDasXcHzBdqWSd90SVkou0JGu4s=;
+        b=fVGuLAco5PO0OnutjMfxiJLYEeQBv3+A8D+XZrwjrQ3wX18hcL3HSWXNQqlvt4ql1D
+         p4MIwMFdoy5/s3kiGhbnH+zO58WoBnSFPLDSePMuu8m6PqgqU6FhAF5fYmHc5tI8srnC
+         SKRPE7adE2kDGNMSiSYESYXIlGEp0O+0Y8xzvYaNL17HSPZJkM7O6nHa92V9yQqOPerm
+         5w6HNwIFRUWuF9zJOkxUGz/m0LeNfmGyWf9RwSwLziYEiSuzWTEtl/1axsatYoZbwavd
+         PPbcd55FrvFDHfLABfPQoGyb7rgUaNZ9zFAQJdXkeL3yh6Ua+/qKIniwkdpLmJluxlob
+         OQ9Q==
+X-Gm-Message-State: AOAM530zI+30qa4umvXEOcmtq5lwb/dR6D548gRClORQ8yEXlZXQtrB3
+        eEaNX71clF34VBEKUIHd9uc=
+X-Google-Smtp-Source: ABdhPJw3s/RyopZ/qc1k6J1ikFH4L5TTXroAy0eCJZmxRuEGUsnerFoUYGwFSoIkPpYpnhNyO7mn+A==
+X-Received: by 2002:a05:6512:a8e:: with SMTP id m14mr381149lfu.641.1611585113193;
+        Mon, 25 Jan 2021 06:31:53 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c14sm1934922lfd.186.2021.01.25.06.31.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 06:31:52 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 25 Jan 2021 15:31:50 +0100
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210125143150.GA2282@pc638.lan>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125132236.GJ827@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bug fixed by commit e3fab2f3de081e98 ("ntp: Fix RTC synchronization
-on 32-bit platforms") revealed an underlying issue: RTC synchronization
-may happen anytime, even while the system is partially suspended.
+> On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> > For a single argument we can directly request a page from a caller
+> > context when a "carry page block" is run out of free spots. Instead
+> > of hitting a slow path we can request an extra page by demand and
+> > proceed with a fast path.
+> > 
+> > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > and that its fallback is the relatively high latency synchronize_rcu().
+> > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > to allow limited sleeping within the memory allocator.
+> 
+> __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+> way to allocate without triggering the OOM killer. Is this really what
+> you need/want? Is __GFP_NORETRY too weak?
+> 
+Hm... We agreed to proceed with limited lightwait memory direct reclaim.
+Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
+point: https://www.spinics.net/lists/rcu/msg02856.html
 
-On systems where the RTC is connected to an I2C bus, the I2C bus
-controller may already or still be suspended, triggering a WARNING
-during suspend or resume from s2ram:
+<snip>
+    So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
+    further decisions based on instrumentation of the success rates of
+    these opportunistic allocations.
+<snip>
 
-    WARNING: CPU: 0 PID: 124 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0x634/0x680
-    i2c i2c-6: Transfer while suspended
-    [...]
-    Workqueue: events_power_efficient sync_hw_clock
-    [...]
-    [<c0738e08>] (__i2c_transfer) from [<c0738eac>] (i2c_transfer+0x58/0xf8)
-    [<c0738eac>] (i2c_transfer) from [<c065202c>] (regmap_i2c_read+0x58/0x94)
-    [<c065202c>] (regmap_i2c_read) from [<c064de40>] (_regmap_raw_read+0x19c/0x2f4)
-    [<c064de40>] (_regmap_raw_read) from [<c064dfdc>] (_regmap_bus_read+0x44/0x68)
-    [<c064dfdc>] (_regmap_bus_read) from [<c064ccb4>] (_regmap_read+0x84/0x1a4)
-    [<c064ccb4>] (_regmap_read) from [<c064d334>] (_regmap_update_bits+0xa8/0xf4)
-    [<c064d334>] (_regmap_update_bits) from [<c064d464>] (_regmap_select_page+0xe4/0x100)
-    [<c064d464>] (_regmap_select_page) from [<c064d554>] (_regmap_raw_write_impl+0xd4/0x6c4)
-    [<c064d554>] (_regmap_raw_write_impl) from [<c064ec10>] (_regmap_raw_write+0xd8/0x114)
-    [<c064ec10>] (_regmap_raw_write) from [<c064eca4>] (regmap_raw_write+0x58/0x7c)
-    [<c064eca4>] (regmap_raw_write) from [<c064ede0>] (regmap_bulk_write+0x118/0x13c)
-    [<c064ede0>] (regmap_bulk_write) from [<c073660c>] (da9063_rtc_set_time+0x44/0x8c)
-    [<c073660c>] (da9063_rtc_set_time) from [<c0734164>] (rtc_set_time+0xc8/0x228)
-    [<c0734164>] (rtc_set_time) from [<c02abe78>] (sync_hw_clock+0x128/0x1fc)
-    [<c02abe78>] (sync_hw_clock) from [<c023e6a0>] (process_one_work+0x330/0x550)
-    [<c023e6a0>] (process_one_work) from [<c023f0a8>] (worker_thread+0x22c/0x2ec)
+but for some reason, i can't find a tail or head of it, we introduced
+__GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
+What we would like to avoid.
 
-Fix this race condition by using the freezable instead of the normal
-power-efficient workqueue.
+I tend to say that it was a typo.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- kernel/time/ntp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you for pointing to it!
 
-diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
-index 54d52fab201d283e..6310328fe398406a 100644
---- a/kernel/time/ntp.c
-+++ b/kernel/time/ntp.c
-@@ -502,7 +502,7 @@ static struct hrtimer sync_hrtimer;
- 
- static enum hrtimer_restart sync_timer_callback(struct hrtimer *timer)
- {
--	queue_work(system_power_efficient_wq, &sync_work);
-+	queue_work(system_freezable_power_efficient_wq, &sync_work);
- 
- 	return HRTIMER_NORESTART;
- }
-@@ -668,7 +668,7 @@ void ntp_notify_cmos_timer(void)
- 	 * just a pointless work scheduled.
- 	 */
- 	if (ntp_synced() && !hrtimer_is_queued(&sync_hrtimer))
--		queue_work(system_power_efficient_wq, &sync_work);
-+		queue_work(system_freezable_power_efficient_wq, &sync_work);
- }
- 
- static void __init ntp_init_cmos_sync(void)
--- 
-2.25.1
-
+--
+Vlad Rezki
