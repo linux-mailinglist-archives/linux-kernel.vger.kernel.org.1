@@ -2,140 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F18C304870
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB1F304827
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388558AbhAZFpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:45:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727770AbhAYMOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:14:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A9822B3B;
-        Mon, 25 Jan 2021 11:40:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611574857;
-        bh=6D5DQ40HGM9bv3hJpq+RCwIVOaKeM70frKbqsE8znNs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G9GnVDUAGX+OfnPvn3gL+SN38nLclH5OZ0K4v111vpvFJ/KkSpmpONmzwQd+loQQ4
-         PYGpP348v4ZGBWsLoD9rA+nEu6O3i3Ed+NmKg2TQcnS49V5voqNT4NDpwEJ+tL2j9F
-         B5Aq/+8H9NbWY3PJeFSzYt0QNRea8KGKho6M27rXLtfWdwH2m3qNmYkAXx0BcR+y1c
-         a+HuJlJo0wdTVSqgtmmesvY8o6Xj8HzAmuZUJB2B5Qzo4rZIfB01HPsDiaYcJOiKoQ
-         i5Y3tlrf2YgIuDHmx9h2LTAcb5V1j0TQCE58aK2QaCZ601ns23YHRsU4677jkIQfKe
-         gK5/cwVqNT0XQ==
-Received: by mail-ed1-f52.google.com with SMTP id j13so14895866edp.2;
-        Mon, 25 Jan 2021 03:40:56 -0800 (PST)
-X-Gm-Message-State: AOAM531QCaEeqYlv1cK3uwrg4us7LCWhWk95PnBJLBmhimO53YGZR3rT
-        RYw/M271kAAhO/PolC0zztVwWo9auHTolW16ZZ0=
-X-Google-Smtp-Source: ABdhPJynjF22NzGKJULN+rk02lXwoPJNjqn1Evfhz0gaK9ahQzC3HawPa96aanqNiT5p5HKgN533f+6lp7738Dc7uq0=
-X-Received: by 2002:aa7:c308:: with SMTP id l8mr101170edq.246.1611574855267;
- Mon, 25 Jan 2021 03:40:55 -0800 (PST)
+        id S2388761AbhAZFvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727949AbhAYMVC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:21:02 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FA5C0611BE;
+        Mon, 25 Jan 2021 03:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XQNE380mf8MyZPTbvq3CiyPi2sBRm44UXxzB0gfGkD8=; b=PD6nPFC3TKsP3y4tBWF47SfUrg
+        WemPXWK/Gk/CQp3LT7qeRWpKVbve3/xouiNU9MVX7yrGhwPO1GADoXiOX/WUPiHn2Qycd7cWDo2U6
+        mIkub09hhBk8n6BVJ7+buDgvZXZZ+nM9pvGDdAs6RozEPZYHrBMrFhQkwNeD6/somQuov6s8unJeW
+        OmdwK5FP90gSvmP4xMPMqQlIdGKnAAIYWL8PZIhNubhFbtxB/zNC1ASbJWEgC3geIa/8JQdd3HN4n
+        qQ8PcUwLsO1ez5AUricnaIeKq4nXgCxOP2HeMooUZ//Dm/KO9olK26kJ2v7R9iYYzR28Sf3BcJK7A
+        +vWRvPKg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l40L8-0002jt-IO; Mon, 25 Jan 2021 11:47:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 728C0300DB4;
+        Mon, 25 Jan 2021 12:47:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 04B902B0615EF; Mon, 25 Jan 2021 12:47:23 +0100 (CET)
+Date:   Mon, 25 Jan 2021 12:47:23 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org,
+        "Xu, Like" <like.xu@intel.com>
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI
+ and inject it to guest
+Message-ID: <YA6vy509FT8IUddS@hirez.programming.kicks-ass.net>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
+ <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
+ <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
+ <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
+ <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
+ <ed5b16cb-30c7-dab7-92c3-b70ba8483d1e@linux.intel.com>
 MIME-Version: 1.0
-References: <20210125113654.2408057-1-arnd@kernel.org>
-In-Reply-To: <20210125113654.2408057-1-arnd@kernel.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 25 Jan 2021 12:40:43 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPfteJ3Jia4Qd9DabjxcOtax3uDgi1fSbz4_+cHsJ1prQQ@mail.gmail.com>
-Message-ID: <CAJKOXPfteJ3Jia4Qd9DabjxcOtax3uDgi1fSbz4_+cHsJ1prQQ@mail.gmail.com>
-Subject: Re: [PATCH] ath9k: fix build error with LEDS_CLASS=m
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     ath9k-devel@qca.qualcomm.com, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed5b16cb-30c7-dab7-92c3-b70ba8483d1e@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 12:36, Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When CONFIG_ATH9K is built-in but LED support is in a loadable
-> module, both ath9k drivers fails to link:
->
-> x86_64-linux-ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `ath_deinit_leds':
-> gpio.c:(.text+0x36): undefined reference to `led_classdev_unregister'
-> x86_64-linux-ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `ath_init_leds':
-> gpio.c:(.text+0x179): undefined reference to `led_classdev_register_ext'
->
-> The problem is that the 'imply' keyword does not enforce any dependency
-> but is only a weak hint to Kconfig to enable another symbol from a
-> defconfig file.
->
-> Change imply to a 'depends on LEDS_CLASS' that prevents the incorrect
-> configuration but still allows building the driver without LED support.
->
-> The 'select MAC80211_LEDS' is now ensures that the LED support is
-> actually used if it is present, and the added Kconfig dependency
-> on MAC80211_LEDS ensures that it cannot be enabled manually when it
-> has no effect.
+On Mon, Jan 25, 2021 at 04:26:22PM +0800, Like Xu wrote:
 
-But we do not want to have this dependency (selecting MAC80211_LEDS).
-I fixed this problem here:
-https://lore.kernel.org/lkml/20201227143034.1134829-1-krzk@kernel.org/
-Maybe let's take this approach?
+> In the host and guest PEBS both enabled case,
+> we'll get a crazy dmesg *bombing* about spurious PMI warning
+> if we pass the host PEBS PMI "harmlessly" to the guest:
+> 
+> [11261.502536] Uhhuh. NMI received for unknown reason 2c on CPU 36.
+> [11261.502539] Do you have a strange power saving mode enabled?
+> [11261.502541] Dazed and confused, but trying to continue
 
-Best regards,
-Krzysztof
+How? AFAICT handle_pmi_common() will increment handled when
+GLOBAL_STATUS_BUFFER_OVF_BIT is set, irrespective of DS containing
+data.
 
->
-> Fixes: 197f466e93f5 ("ath9k_htc: Do not select MAC80211_LEDS by default")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/wireless/ath/ath9k/Kconfig | 8 ++------
->  net/mac80211/Kconfig                   | 2 +-
->  2 files changed, 3 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath9k/Kconfig b/drivers/net/wireless/ath/ath9k/Kconfig
-> index a84bb9b6573f..e150d82eddb6 100644
-> --- a/drivers/net/wireless/ath/ath9k/Kconfig
-> +++ b/drivers/net/wireless/ath/ath9k/Kconfig
-> @@ -21,11 +21,9 @@ config ATH9K_BTCOEX_SUPPORT
->  config ATH9K
->         tristate "Atheros 802.11n wireless cards support"
->         depends on MAC80211 && HAS_DMA
-> +       select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
->         select ATH9K_HW
->         select ATH9K_COMMON
-> -       imply NEW_LEDS
-> -       imply LEDS_CLASS
-> -       imply MAC80211_LEDS
->         help
->           This module adds support for wireless adapters based on
->           Atheros IEEE 802.11n AR5008, AR9001 and AR9002 family
-> @@ -176,11 +174,9 @@ config ATH9K_PCI_NO_EEPROM
->  config ATH9K_HTC
->         tristate "Atheros HTC based wireless cards support"
->         depends on USB && MAC80211
-> +       select MAC80211_LEDS if LEDS_CLASS=y || LEDS_CLASS=MAC80211
->         select ATH9K_HW
->         select ATH9K_COMMON
-> -       imply NEW_LEDS
-> -       imply LEDS_CLASS
-> -       imply MAC80211_LEDS
->         help
->           Support for Atheros HTC based cards.
->           Chipsets supported: AR9271
-> diff --git a/net/mac80211/Kconfig b/net/mac80211/Kconfig
-> index cd9a9bd242ba..51ec8256b7fa 100644
-> --- a/net/mac80211/Kconfig
-> +++ b/net/mac80211/Kconfig
-> @@ -69,7 +69,7 @@ config MAC80211_MESH
->  config MAC80211_LEDS
->         bool "Enable LED triggers"
->         depends on MAC80211
-> -       depends on LEDS_CLASS
-> +       depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
->         select LEDS_TRIGGERS
->         help
->           This option enables a few LED triggers for different
-> --
-> 2.29.2
->
+
