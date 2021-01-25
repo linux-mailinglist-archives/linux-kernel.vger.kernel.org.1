@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D72302CF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E86FC302D0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732263AbhAYUwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:52:24 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47416 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732000AbhAYUvu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:51:50 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0E7231C0B81; Mon, 25 Jan 2021 21:51:09 +0100 (CET)
-Date:   Mon, 25 Jan 2021 21:51:08 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/199] 5.10.11-rc1 review
-Message-ID: <20210125205108.GB5220@duo.ucw.cz>
-References: <20210125183216.245315437@linuxfoundation.org>
+        id S1732172AbhAYUym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:54:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732420AbhAYUxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:53:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72BAC22513;
+        Mon, 25 Jan 2021 20:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611607961;
+        bh=HrLqwMmB9QuqNykshbTVTHa1+DOc0VDy8lIvxe0ein4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HUrhbj4NkDNkKT2HAYy1gJVIVwG9cmrdRiq/CBDD+1u9APLW3FIvcO58emXryQ5B1
+         XJ0LujBQV8y2Yhkgc0yU9o2xhseQbkp1nZ5LMN0axfTUKIFtUc3GWpRqBzbwAwf+Ut
+         0VeXc5Vl0yq7u3ViiiTq4XHR+ZlJy8jMoty2bqfp9Ya3BQLTFEjkyt4/WFCvCvx6Dl
+         0oJtZaCFc3aeoebZjIshf7uFWib6h0t9dGyVB7eUJ76WLyeVeQ+3v4OJZz3yRCpRPC
+         Pjks6Za8uWS6rW+N/hX+sPOYmfueNcjzwNA4Y+/MENuhZRVRkITGEwm0LHIiXSuClG
+         /6w2crhu2Rb6w==
+Date:   Mon, 25 Jan 2021 20:51:59 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v6 4/7] regulator: Add regulator driver for ATC260x PMICs
+Message-ID: <20210125205159.GD4510@sirena.org.uk>
+References: <cover.1611165200.git.cristian.ciocaltea@gmail.com>
+ <3f48e9f8114cac0557abca88d4437849423793bb.1611165200.git.cristian.ciocaltea@gmail.com>
+ <20210125192311.GC4510@sirena.org.uk>
+ <20210125205048.GA1066705@BV030612LT>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="XF85m9dhOBO43t/C"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
 Content-Disposition: inline
-In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+In-Reply-To: <20210125205048.GA1066705@BV030612LT>
+X-Cookie: Drive defensively.  Buy a tank.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---XF85m9dhOBO43t/C
+--OaZoDhBhXzo6bW1J
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On Mon, Jan 25, 2021 at 10:50:48PM +0200, Cristian Ciocaltea wrote:
+> On Mon, Jan 25, 2021 at 07:23:11PM +0000, Mark Brown wrote:
 
-> This is the start of the stable review cycle for the 5.10.11 release.
-> There are 199 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
-> Anything received after that time might be too late.
+> > Please do not submit new versions of already applied patches, please
+> > submit incremental updates to the existing code.  Modifying existing
 
-CIP testing did not find any problems here:
+> The patches applied to 'for-next' branches were not modified, but I have
+> (wrongly) assumed I need to keep them in the series until they are
+> eventually merged into master.
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
+> So, if I understand correctly, I should have dropped them from the patch
+> series as soon as they had been queued, and only if they need some
+> additional work, I can re-add them as incremental updates.
 
-(siemens board has problems before kernel is started, so that is not
-real failure)
+Yes, once something is applied it shouldn't need sending again.
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---XF85m9dhOBO43t/C
+--OaZoDhBhXzo6bW1J
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYA8vPAAKCRAw5/Bqldv6
-8ttIAJ9g8H6CjEPuKTdtMxz0sGpo7anEHwCffL1Pvv0DkLQrSLPgG9bSHxar9kQ=
-=YzUW
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAPL24ACgkQJNaLcl1U
+h9CuhQf/TXNo5eKpTUo+pUm9d26vwESEP6romcQrnmFmNyU4ZhIcsHgis10aABRt
+ye8Itsor1mzv4phDC78NaXtr+TD/wF9Fg4Yg+N83rgUIcFXPPSFD5E4UzXoFB5Mt
+Mr0zuijpaYRfNKSiXKfKzNEKZB0wGiG3YjvEbVJRvuXkhL8LCGlW0T2xZGRCodbH
+wiiT4RXVB9kHIm2mcmoQdjGQHHi9bBpgu6UWPpP2MEq6gF6CWw1/uLWg9CtXnt9l
+8OaAt70Obju+Ea1E6dKjQxAQIUTd/UOh6Rs0aQAbYrrmRDJZDbSa1IfyMF243rEm
+SrF9cful63vaauj5Nx6PODc7Rr+vjQ==
+=90r4
 -----END PGP SIGNATURE-----
 
---XF85m9dhOBO43t/C--
+--OaZoDhBhXzo6bW1J--
