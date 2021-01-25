@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17845302ED5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CB1302ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732351AbhAYWTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:19:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732060AbhAYWTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:19:14 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C0EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:18:33 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id u25so20117008lfc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:18:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A/Q6Oc7PeuEcOpsoTdR6W8VQQNB+BX6FWqtQmvephYI=;
-        b=TGVCNCPSNbUbsysH6Tox8d7pwWgph9ObN+6ge3dhPh5MKc6p7Z5wgPqQ2NNKfuCzZj
-         L1KLMBgdwttsYm/V0TBJ8Czaru+RbXH1bym7El17fcwB/A0PYkUidXKrhSUaqWqNj/0p
-         bM2jSpOBuiRZIfYYmyDd6ql/u6wBz7OOs5lcA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A/Q6Oc7PeuEcOpsoTdR6W8VQQNB+BX6FWqtQmvephYI=;
-        b=c6aDhN/SdpizW9jZcpc9Jo4B0KEhsVlseNLKvgxVxrNIGmKPvEy8wd/eICBuBmimow
-         59R64wDTFhBV2DhpwkzSydb5BFyf88PEnjTu+nS4H9hltC7Xc7bTN6YE13ZudX8RnAx3
-         P3KQGqZz7RSdRXT3CqNHA30usoRZ2XQ0sFYmbBnG98dcNUdtGtu71iBX4bddFZJOedOw
-         7koOjD4BhBL2cwo+AfCDV+Qi+5p2vMzitvPVbSNaUe1ZS52X0PGF0ROgsPV7S2IdbSdS
-         IopaCSgWHJCPyhGiGdd0haIyk+39lZnECAja0lzVCSVM9ONWbuONhjG0FxnHGzBv20gl
-         LzGQ==
-X-Gm-Message-State: AOAM530rHAM2yA0w/aPUe0mxsL+eKa/vXRtYS2sGpRp9UXHAaXXuTMxS
-        qY8hJ12vmTwO++ztU+V9ViSG+WsFPBGhxnVlz7RtUA==
-X-Google-Smtp-Source: ABdhPJyai8NTk2KgZnwz2fp7w8KnZGavKufSHn1oqZr7KwEuq5/gI61Hrs6tOhwWfyUmve7sEMkTiksFvcUnNBIRE0I=
-X-Received: by 2002:a19:644b:: with SMTP id b11mr1179908lfj.358.1611613112276;
- Mon, 25 Jan 2021 14:18:32 -0800 (PST)
+        id S1731997AbhAYWU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:20:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:45039 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732358AbhAYWTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:19:25 -0500
+IronPort-SDR: iBtGRh4x4jC5jQqTwbFKNe/Si9NZfLZhB3Z5LYMK934cFoz8jumtgrXvTdOBxuFv93xCaZI1J0
+ aEL7jfW35ITQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="167485735"
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="167485735"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 14:18:39 -0800
+IronPort-SDR: DugOZsV+ToMjSGqjsXLvGijFi0PtI0XJE4I4LV/dYgGFrabp02LiqxEDb9/wwuIe3v5gJVNFfF
+ HGVTIeRsiaLA==
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="393535238"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.60.232]) ([10.212.60.232])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 14:18:38 -0800
+Subject: Re: [PATCH v17 11/26] x86/mm: Update ptep_set_wrprotect() and
+ pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-12-yu-cheng.yu@intel.com>
+ <20210125182709.GC23290@zn.tnic>
+ <8084836b-4990-90e8-5c9a-97a920f0239e@intel.com>
+ <20210125215558.GK23070@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <c000e1fa-5da8-9316-ef9e-565d79308296@intel.com>
+Date:   Mon, 25 Jan 2021 14:18:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210121163801.v3.1.Id9bc5434114de07512661f002cdc0ada8b3d6d02@changeid>
- <070E7413-A3E3-4FEB-80BC-D3DD922DA19B@holtmann.org>
-In-Reply-To: <070E7413-A3E3-4FEB-80BC-D3DD922DA19B@holtmann.org>
-From:   Miao-chen Chou <mcchou@chromium.org>
-Date:   Mon, 25 Jan 2021 14:18:22 -0800
-Message-ID: <CABmPvSEtpmz5oK2ZshRm0+HhoLL6rig92v9d63ocpy6m7MvUdw@mail.gmail.com>
-Subject: Re: [PATCH v3] Bluetooth: Keep MSFT ext info throughout ahci_dev's
- life cycle
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
-        Alain Michaud <alainm@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210125215558.GK23070@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
+On 1/25/2021 1:55 PM, Borislav Petkov wrote:
+> On Mon, Jan 25, 2021 at 01:27:51PM -0800, Yu, Yu-cheng wrote:
+>>> Maybe I'm missing something but those two can happen outside of the
+>>> loop, no? Or is *ptep somehow changing concurrently while the loop is
+>>> doing the CMPXCHG and you need to recreate it each time?
+>>>
+>>> IOW, you can generate upfront and do the empty loop...
+>>
+>> *ptep can change concurrently.
+> 
+> Care to elaborate?
+> 
 
-On Mon, Jan 25, 2021 at 7:13 AM Marcel Holtmann <marcel@holtmann.org> wrote:
->
-> Hi Miao-chen,
->
-> > This moves msft_do_close() from hci_dev_do_close() to
-> > hci_unregister_dev() to avoid clearing MSFT extension info. This also
-> > avoids retrieving MSFT info upon every msft_do_open() if MSFT extension
-> > has been initialized.
-> >
-> > The following test steps were performed.
-> > (1) boot the test device and verify the MSFT support debug log in syslog
-> > (2) restart bluetoothd and verify msft_do_close() doesn't get invoked
-> >
-> > Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
-> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> > Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-> > ---
-> > Hi Maintainers,
-> >
-> > This patch fixes the life cycle of MSFT HCI extension. The current
-> > symmetric calls to msft_do{open,close} in hci_dev_do_{open,close} cause
-> > incorrect MSFT features during bluetoothd start-up. After the kernel
-> > powers on the controller to register the hci_dev, it performs
-> > hci_dev_do_close() which call msft_do_close() and MSFT data gets wiped
-> > out. And then during the startup of bluetoothd, Adv Monitor Manager
-> > relies on reading the MSFT features from the kernel to present the
-> > feature set of the controller to D-Bus clients. However, the power state
-> > of the controller is off during the init of D-Bus interfaces. As a
-> > result, invalid MSFT features are returned by the kernel, since it was
-> > previously wiped out due to hci_dev_do_close().
->
-> then just keep the values around and not wipe them. However I prefer still to keep the symmetry and re-read the value every time we init. We can make sure to release the msft_data on unregister.
-This patch does exactly what you described - keep the values around
-and not wipe them until unregistration of hdev. Since the only thing
-that msft_do_close() does is to release msft_data and reset
-hdev->msft_data it to NULL, and that's why I move msft_do_close() from
- hci_dev_do_close() to hci_unregister_dev() to release the msft_data.
-If this is about naming, I am happy to change msft_do_close() to
-perhaps msft_reset() or something similar. As for msft_do_open(), I
-will change it to re-read the msft_data instead of skipping.
-
-Regards,
-Miao
+For example, when a thread reads a W=1, D=0 PTE and before changing it 
+to W=0,D=0, another thread could have written to the page and the PTE is 
+W=1, D=1 now.  When try_cmpxchg() detects the difference, old_pte is 
+read again.
