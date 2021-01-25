@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F7D3036A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA623036AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbhAZGga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729456AbhAYO3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:29:42 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F505C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:28:21 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id z9so9750948qtv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:28:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gqrob1newlkQ15lRtU6auZ3RzaABmYXA8xpX2IglXFQ=;
-        b=dGX57SKqFdpXq5Em8dpxESukUDK+OYiiN20VisCm8Wi+VFYCGEzLwzJQYwF1wsuX7r
-         WjZJwHEvgvYAc4oAicLOOCAwPegzkAoCSLgLXVDWCGsrbRKY+vMoGhqIDIm/qcF3wyoX
-         b+hwihpHfWpDuJsB4/bB0oipat6DwE7Oql4xR1XMqYNVs6VvbUXm35h4WKvxzkvcdadX
-         kUDDTyr/b3yOo8C+AyPndWjFIf3sK4ivPmbG2qSZvbKM6s6BdVRmMkx02qk4qz5cKkBh
-         0E5bdtMqcDbzuKXs/tLLt3dvNzJfdlDzLp1x5LEheVzj+HrgZHJimVBItPJDW19vNXXO
-         8y2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gqrob1newlkQ15lRtU6auZ3RzaABmYXA8xpX2IglXFQ=;
-        b=g2ecFhJq9hh+KNWQaTzkip0QvRJZvhMdQ8N93NBUkTZK/HtT/DMBuKOylq6EvBuVdD
-         dpIBvi/Sks9SH6eeALdu0j2D9WB2QAuC9ErEBPbJVNkcWh3Lywyp65CopH+8hVeFIri3
-         M0wkLrXTxzJL01Aw2oq2H/q3pxQQ8G3EBiAdtgWDpHgtsUbJcEbpTMlqM4YXzrvQ6Cr0
-         71I/WmlDqpeacNHZwS4Ylu9Sxxf/forHRPaSpwEAlCqQM2/RrDlnkmMzWnCiNRhBlBGH
-         7qsp00uxnYCSMaHScTXVMeRA9I86gC67ZDFtHsbjLCGjbpStheFpkk64IB+ym8vxF8N/
-         B3jw==
-X-Gm-Message-State: AOAM5303jFZXcAKAfgQiZZZbRqmWiLC2nWyB+w6MHwmwgly6eTus4UR+
-        9jkAAZxG8r3pS/rFPPqnlHdfEw==
-X-Google-Smtp-Source: ABdhPJzF2m7RRft4yyKJebF8jzkPIF+Jv8HIYEWXVMaMo2dw3cdqZZG9ubwMIkYD4CRazbEmFlt1hg==
-X-Received: by 2002:ac8:6edd:: with SMTP id f29mr654427qtv.213.1611584900594;
-        Mon, 25 Jan 2021 06:28:20 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id m64sm12086816qkb.90.2021.01.25.06.28.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 06:28:20 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l42qp-006Vxe-HI; Mon, 25 Jan 2021 10:28:19 -0400
-Date:   Mon, 25 Jan 2021 10:28:19 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 08/14] mm/gup: do not migrate zero page
-Message-ID: <20210125142819.GU4605@ziepe.ca>
-References: <20210120014333.222547-1-pasha.tatashin@soleen.com>
- <20210120014333.222547-9-pasha.tatashin@soleen.com>
- <20210120131400.GF4605@ziepe.ca>
- <CA+CK2bCu-uWWOxS_sPhfgzXTq-cqYFsHK_QFo7F+rStKpJJDRA@mail.gmail.com>
+        id S1730691AbhAZGho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:37:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729535AbhAYOcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:32:13 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC6BE23121;
+        Mon, 25 Jan 2021 14:28:49 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l42rH-009tNN-FP; Mon, 25 Jan 2021 14:28:47 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bCu-uWWOxS_sPhfgzXTq-cqYFsHK_QFo7F+rStKpJJDRA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 25 Jan 2021 14:28:47 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH v5 18/21] arm64: Move "nokaslr" over to the early
+ cpufeature infrastructure
+In-Reply-To: <CAMj1kXGTu8AtMnm7NxB8M2xFuXHSKzAx2hjjeaAW2v-usvavVQ@mail.gmail.com>
+References: <20210125105019.2946057-1-maz@kernel.org>
+ <20210125105019.2946057-19-maz@kernel.org>
+ <CAMj1kXFcc+0At5+9Keo1MF=TeGE9-eOHtSpK7yVy5jzwXt6KCA@mail.gmail.com>
+ <3a98ff1db79c90c96038b924eb534643@kernel.org>
+ <CAMj1kXGTu8AtMnm7NxB8M2xFuXHSKzAx2hjjeaAW2v-usvavVQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <32b49beb87b25303d71fd2f7053c7959@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: ardb@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 09:26:41AM -0500, Pavel Tatashin wrote:
+On 2021-01-25 14:19, Ard Biesheuvel wrote:
+> On Mon, 25 Jan 2021 at 14:54, Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2021-01-25 12:54, Ard Biesheuvel wrote:
 
-> I thought about this, and it would code a little cleaner. But, the
-> reason I did not is because zero_page is perfectly pinnable, it is not
-> pinnable only when it is in a movable zone (and it should not be in a
-> movable zones for other reasons as well), but that is another bug that
-> needs to be resolved, and once that bug is resolved this condition can
-> be removed from gup migration.
+[...]
 
-My point is you've defined the zero page to be pinnable no matter what
-zone it is in, so is_pinnable(zero_page) == true
+>> > This struct now takes up
+>> > - ~100 bytes for the characters themselves (which btw are not emitted
+>> > into __initdata or __initconst)
+>> > - 6x8 bytes for the char pointers
+>> > - 6x24 bytes for the RELA relocations that annotate these pointers as
+>> > quantities that need to be relocated at boot (on a kernel built with
+>> > KASLR)
+>> >
+>> > I know it's only a drop in the ocean, but in this case, where the
+>> > struct is statically declared and defined only once, and in the same
+>> > place, we could easily turn this into
+>> >
+>> > static const struct {
+>> >    char alias[24];
+>> >    char param[20];
+>> > };
+>> >
+>> > and get rid of all the overhead. The only slightly annoying thing is
+>> > that the array sizes need to be kept in sync with the largest instance
+>> > appearing in the array, but this is easy when the struct type is
+>> > declared in the same place where its only instance is defined.
+>> 
+>> Fair enough. I personally find the result butt-ugly, but I agree
+>> that it certainly saves some memory. Does the following work for
+>> you? I can even give symbolic names to the various constants (how
+>> generous of me! ;-).
+>> 
+> 
+> To be honest, I was anticipating more of a discussion, but this looks
+> reasonable to me.
 
-Jason
+It looked like a reasonable ask: all the strings are completely useless
+once the kernel has booted, and I'm the first to moan that I can't boot
+an arm64 kernel with less than 60MB of RAM (OK, it's a pretty bloated
+kernel...).
+
+> Does 'char    feature[80];' really need 80 bytes though?
+
+It really needs 75 bytes, because of this:
+
+	{ "arm64.nopauth",
+	  "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
+	  "id_aa64isar1.api=0 id_aa64isar1.apa=0"	   },
+
+80 is a round enough number.
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
