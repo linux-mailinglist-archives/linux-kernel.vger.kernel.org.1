@@ -2,108 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7183A302621
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BA330262E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729305AbhAYOMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729257AbhAYOIq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:08:46 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC08C06174A;
-        Mon, 25 Jan 2021 06:07:13 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id d81so26679257iof.3;
-        Mon, 25 Jan 2021 06:07:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MfJhOBecinWbFOTxZtZGMsUEJch79P7wyNbZhiMKN2k=;
-        b=tbw0OmMrl9G0M7V4hRbiSjrCPulxgRQ8a6kALEa9yseU/p/hu5Z7VVGkCxR93HWm44
-         GdlWi3h2FJLFwTmUuyLlX8KbQdGfebaKnUw5wCz5+n6uOMTpS4PTjb4k4ibML3ZeIuGW
-         Cja1i4hdcurLXOROaOa8uyS0yYi2T29thr4N93iHWPiftcFR+2ZYk/hZ5Xzr0WcJrJBb
-         KqPx8mCVLGDyb9bIrno17smLkWWc/FgkhpjgKhco3MTJ0tkfIGWjbmXrUuT//DPBeOVO
-         JaKjIL8/RsH9HVC1hiqmMPakp7BOW+9j+y0Dje27sZeX+O6eSQHKdrb1/ZxgsS9X3xWD
-         EYMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MfJhOBecinWbFOTxZtZGMsUEJch79P7wyNbZhiMKN2k=;
-        b=VfWLe1C8BldSHiDP+hu7FDi32a4kRdCe8ramZLeHDI5bX3CD8pDKKyS9+E5nVpS7M+
-         Z4wRjo58K3e9lfI+2LirF7rhRB9jOSWxUWqLOymETCo9GOFCgB7pjCRnwCxW3zJ8YjfD
-         IpvTW+SFvtE6ZQvW7ZncU7sbWS/2bXwYlsConIPkTzdnU3HB9yNOKNCGZVxZPpMlGOCM
-         oyL+pVCLYN82K0HRaaL+aJCKZM9bqPSBOaFjZ66VmBKXlBtfM5qsDC/l4gUdNJIuSP4j
-         ZXrrfdlyjjCq7TkiiQwfPZnNYSQ3MPDYHyat6fvzpaTAicWr21eqgvimafo1xTWgFSEW
-         /G6Q==
-X-Gm-Message-State: AOAM533Yb2deRDx8/M6g32qwREYH5lebvTbS2NIjT+7YanljzpdWbLMP
-        rtSUq9iEC5dQm2c/Xy24LGXpSfk2QfCDVkyvisA=
-X-Google-Smtp-Source: ABdhPJxFWlFj4oQv3EORI/Pn5HSHQB3dA3akAox4XAy+f4DX9tnDRCxTs1yLdlaRrAR4/IdnPjF3ivrkTcg2gEEbT94=
-X-Received: by 2002:a5e:da01:: with SMTP id x1mr544571ioj.100.1611583632785;
- Mon, 25 Jan 2021 06:07:12 -0800 (PST)
+        id S1729154AbhAYORf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:17:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729259AbhAYOJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:09:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03ED12145D;
+        Mon, 25 Jan 2021 14:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611583700;
+        bh=OvS6YJLr/vKp0c5P4TYdr+9ctcl9Nkqj0yOfYVirDXY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uQlKE63x5yFRjC4SfMJEjHb32OLQAA9iUdxuqjY7zZGRj8GE5YvbayQlXTOTWyLSY
+         oQRYRCOMUSCtETKWHl5x6F+94wBQbmRhJ2rP6UV6UyS/OsPoh0pfEzcSbKBjEV6Jn3
+         5uIKjtckfZB8928sUdlBfJkxD2+bn6cgMYyH4LIQ=
+Date:   Mon, 25 Jan 2021 15:08:17 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@linuxdriverproject.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Staging/IIO driver fixes for 5.11-rc5
+Message-ID: <YA7Q0XZMIdudb6x9@kroah.com>
+References: <YA1u24kUPB+B7gKY@kroah.com>
+ <CAHk-=whe0kHRKsNegF+JxCooS_Z0otcEX_Ggz=iN2v3D1Rssxg@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1611287342.git.brookxu@tencent.com> <20210125124117.GB1175@quack2.suse.cz>
-In-Reply-To: <20210125124117.GB1175@quack2.suse.cz>
-From:   =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
-Date:   Mon, 25 Jan 2021 22:07:01 +0800
-Message-ID: <CADtkEectLRZRUfWEhQtaCgMUJY0Mik=XN5A-seHJxdBNjFMJ-w@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] make jbd2 debug switch per device
-To:     Jan Kara <jack@suse.cz>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whe0kHRKsNegF+JxCooS_Z0otcEX_Ggz=iN2v3D1Rssxg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your reply.
+On Sun, Jan 24, 2021 at 11:31:59AM -0800, Linus Torvalds wrote:
+> On Sun, Jan 24, 2021 at 4:58 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > David Lechner (1):
+> >       counter:ti-eqep: remove floor
+> 
+> I'm not sure why that ti-eqep counter driver seems to be in your
+> "iio/staging" pile rather than "char/misc", but whatever..
 
-Jan Kara wrote on 2021/1/25 20:41:
-> On Fri 22-01-21 14:43:18, Chunguang Xu wrote:
->> On a multi-disk machine, because jbd2 debugging switch is global, this
->> confuses the logs of multiple disks. It is not easy to distinguish the
->> logs of each disk and the amount of generated logs is very large. Or a
->> separate debugging switch for each disk would be better, so that you
->> can easily distinguish the logs of a certain disk.
->>
->> We can enable jbd2 debugging of a device in the following ways:
->> echo X > /proc/fs/jbd2/sdX/jbd2_debug
->>
->> But there is a small disadvantage here. Because the debugging switch is
->> placed in the journal_t object, the log before the object is initialized
->> will be lost. However, usually this will not have much impact on
->> debugging.
->
-> OK, I didn't look at the series yet but I'm wondering: How are you using
-> jbd2 debugging? I mean obviously it isn't meant for production use but
-> rather for debugging JBD2 bugs so I'm kind of wondering in which case too
-> many messages matter.
-We perform stress testing on machines in the test environment, and use scripts
-to capture journal related logs to analyze problems. There are 12 disks on this
-machine, and each disk runs different jobs. Our test kernel also adds
-some additional
-function-related logs. If we adjust the log level to a higher level, a large
-number of logs have nothing to do with the disk to be observed. These logs are
-generated by system agents or coordinated tasks. This makes the log difficul
-to analyze.
+Jonathan said why that was needed, I think it was due to fixes in the
+counter core code, but he can verify this better than I can...
 
-> And if the problem is that there's a problem with distinguishing messages
-> from multiple filesystems, then it would be perhaps more useful to add
-> journal identification to each message similarly as we do it with ext4
-> messages (likely by using journal->j_dev) - which is very simple to do
-> after your patches 3 and 4.
-Our test kernel did this. Because it broke the log format, I was not
-sure whether
-it would break something, so I didn't bring this part. Even if the
-device information
-is added, when there are more disks and the log level is higher, there will be a
-lot of irrelevant logs, which makes it necessary to consume a lot of
-CPU to filter
-messages. Therefore, a device-level switch is provided to make
-everything simpler.
->
->                                                               Honza
->
+thanks,
+
+greg k-h
