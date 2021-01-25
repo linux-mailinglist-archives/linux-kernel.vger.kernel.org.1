@@ -2,118 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2FB302926
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718AA30295C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731078AbhAYRlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:41:52 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:59189 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730823AbhAYRl2 (ORCPT
+        id S1731256AbhAYRyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:54:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48496 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731221AbhAYRxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:41:28 -0500
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 92EAF5C0117;
-        Mon, 25 Jan 2021 12:40:37 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 25 Jan 2021 12:40:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=a/1Zdl8q3hrc9J13uyMUxKnwgql+l/+n6v4WGL5c3
-        7I=; b=BvgBCr0wL2XfvptDg33jpQdkTVA28ZsheUyov/8+0QyMMw4ob4HiwJSqF
-        zgaqju8N9jk3G4Z2bP461zNtPDRrrgkjJaNa9KCdIJrLogpdBb62PieETVbtIlY+
-        luXTJeuxhJlNpOfQzPsoPSIY3N7g9PjeXKwBasR8zSy+KaYTdd8fWmLqm7O/flod
-        k2XsDchEjyWABk1ceLcfXzlt/w0vi+xL+2eEkNZOuqdvly2Voehmjpu937PeBabW
-        K6V5oQfKIwH7qppKbyRgzQzYN0wAZ1Jq8ofXNQcleXjhjvZc8hpltRrSc9CTeuV+
-        dAYSu5p3xcfg/JRLEPw60kAyCJwRg==
-X-ME-Sender: <xms:lAIPYDkFB5EGDVTQwdXFDORcQ_OVs70OAfYNZi8n-vUFKs4z4eypcQ>
-    <xme:lAIPYGauWOsQHWzFpgPQkDjVSXnuHSukjZAHj6-5kkgB__-yHkn4za1S08Ime6WM_
-    S8PMMIrvuM90Vo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefgddutdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepjeehtdevhfekgeefleffffeufedvhfegffejtefhkeehfefgkeevueekvdeu
-    ffevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepkeegrddvvdelrdduhe
-    efrdeggeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:lAIPYN949f35eXPz85P6V_c-rv8CPxKnZa1Vj_KSHJiEKob50g6xcw>
-    <xmx:lAIPYOFQkby8WZIaYb7-0CEfE9XOTiGo71yoVmbvPOjZVAPAhueMmA>
-    <xmx:lAIPYPcmscg0e6ZvfDk958TystaM1ZeLGvbs-kAkES0y9U5vCOWw4g>
-    <xmx:lQIPYOXlg-E_WAS2tYQ255jbY6oQE0i4ieC1NipzQKOpei1tQfAfjw>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D59E81080059;
-        Mon, 25 Jan 2021 12:40:35 -0500 (EST)
-Date:   Mon, 25 Jan 2021 19:40:32 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Message-ID: <20210125174032.GA2982684@shredder.lan>
-References: <20210121112937.30989-1-oleksandr.mazur@plvision.eu>
- <20210121122152.GA2647590@shredder.lan>
- <20210121093605.49ba26ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210125121234.GJ3565223@nanopsycho.orion>
- <AM0P190MB07387522928B6730DBE1BB77E4BD0@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
- <20210125145614.GM3565223@nanopsycho.orion>
+        Mon, 25 Jan 2021 12:53:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611597100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xODWl/rovJkT4NW0P+V0xEqTdFWADSeZHn3xURKPRRA=;
+        b=ExRy+eKgpXOuiqI3C84btHRjMuVpjReBpRPpPl1SgU3BiWO/n+t2tqcY3KDU9XOjR0uojX
+        OwRyiJz/SOLNBZDFmHidPBHnScdooeCI9nQUs/k4gpf5t/IlyZ24KlLsAKpanKfecpGr8X
+        YWsrlKzWc7sbrtGBdm+JKsjOhCmYgPQ=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-JexPanAKOki8aWn8nVPTIw-1; Mon, 25 Jan 2021 12:40:40 -0500
+X-MC-Unique: JexPanAKOki8aWn8nVPTIw-1
+Received: by mail-ej1-f70.google.com with SMTP id md20so4121005ejb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:40:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xODWl/rovJkT4NW0P+V0xEqTdFWADSeZHn3xURKPRRA=;
+        b=TY9xuuVpmqx7UsYAfr3GQWXllOnsptZ9FgdR5u5T/2ET+v86dgasHGOVsHxXT6XPV5
+         IbMjyzya5q1La+AJMTpZ9uXqckJYuE7CGqfdt1l0OPQcp23akMC6qbx8ZzGOPZF6m2VU
+         zYhReVxV/uka2Fl7rvAKHi0gvVDtnlb8/sbrUY6MezKgV2uqi8g6/Xzf3pVE1z1/CExY
+         sUtvo0xuzFcHJWhw5BNdPAFZ08qcaq+YzdRqC97NzPSHkYUPiXY5HNyUXtQ/FTWXMRAE
+         v5vJLZ0q1RHls3AsT14ZM/5t+6y7ScLrImt3ogZIIaX3LkdiT12OvGIAH5ys5o4cpcBg
+         lWfw==
+X-Gm-Message-State: AOAM532pM74V5e17UL/QBI0tDeeJBbWZkI4kWSnQoFf3eJPEMDtEcEC2
+        WtwggVikA0HjhF76bh6CKk2LeRNKzZ7NDHfTcRzoWBSLzWUn9Uz50h0va+5LILuzheGxKFza8eT
+        1ZX96f1w83bj0hbMjXTgGEKWg
+X-Received: by 2002:a17:906:2743:: with SMTP id a3mr1107498ejd.378.1611596438943;
+        Mon, 25 Jan 2021 09:40:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJybbFIE0LZRQI9HeTMwIUBbVlJMu6onaNrnfZNHd1jFsNkphoNLfXXCuSzJ4agnaOQhuTxCNA==
+X-Received: by 2002:a17:906:2743:: with SMTP id a3mr1107489ejd.378.1611596438719;
+        Mon, 25 Jan 2021 09:40:38 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id v9sm8552063ejd.92.2021.01.25.09.40.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 09:40:37 -0800 (PST)
+Subject: Re: [PATCH v2] KVM/SVM: add support for SEV attestation command
+To:     Brijesh Singh <brijesh.singh@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        John Allen <john.allen@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-crypto@vger.kernel.org
+References: <20210104151749.30248-1-brijesh.singh@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <87dacde9-5b4e-71fb-e4cf-22d5504b830b@redhat.com>
+Date:   Mon, 25 Jan 2021 18:40:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210125145614.GM3565223@nanopsycho.orion>
+In-Reply-To: <20210104151749.30248-1-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 03:56:14PM +0100, Jiri Pirko wrote:
-> Mon, Jan 25, 2021 at 01:24:27PM CET, oleksandr.mazur@plvision.eu wrote:
-> >Thu, Jan 21, 2021 at 06:36:05PM CET, kuba@kernel.org wrote:
-> >>On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:
-> >>> On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote:
-> >>> > Add new trap action HARD_DROP, which can be used by the
-> >>> > drivers to register traps, where it's impossible to get
-> >>> > packet reported to the devlink subsystem by the device
-> >>> > driver, because it's impossible to retrieve dropped packet
-> >>> > from the device itself.
-> >>> > In order to use this action, driver must also register
-> >>> > additional devlink operation - callback that is used
-> >>> > to retrieve number of packets that have been dropped by
-> >>> > the device.  
-> >>> 
-> >>> Are these global statistics about number of packets the hardware dropped
-> >>> for a specific reason or are these per-port statistics?
-> >>> 
-> >>> It's a creative use of devlink-trap interface, but I think it makes
-> >>> sense. Better to re-use an existing interface than creating yet another
-> >>> one.
-> >>
-> >>Not sure if I agree, if we can't trap why is it a trap?
-> >>It's just a counter.
-> >
-> >>+1
-> >Device might be unable to trap only the 'DROP' packets, and this information should be transparent for the user.
-> >
-> >I agree on the statement, that new action might be an overhead.
-> >I could continue on with the solution Ido Schimmel proposed: since no new action would be needed and no UAPI changes are required, i could simply do the dropped statistics (additional field) output added upon trap stats queiring.
-> >(In case if driver registerd callback, of course; and do so only for DROP actions)
+On 04/01/21 16:17, Brijesh Singh wrote:
+> The SEV FW version >= 0.23 added a new command that can be used to query
+> the attestation report containing the SHA-256 digest of the guest memory
+> encrypted through the KVM_SEV_LAUNCH_UPDATE_{DATA, VMSA} commands and
+> sign the report with the Platform Endorsement Key (PEK).
 > 
-> It is not "a trap". You just need to count dropped packet. You don't
-> trap anything. That is why I don't think this has anything to do with
-> "trap" infra.
+> See the SEV FW API spec section 6.8 for more details.
+> 
+> Note there already exist a command (KVM_SEV_LAUNCH_MEASURE) that can be
+> used to get the SHA-256 digest. The main difference between the
+> KVM_SEV_LAUNCH_MEASURE and KVM_SEV_ATTESTATION_REPORT is that the latter
+> can be called while the guest is running and the measurement value is
+> signed with PEK.
+> 
+> Cc: James Bottomley <jejb@linux.ibm.com>
+> Cc: Tom Lendacky <Thomas.Lendacky@amd.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: linux-crypto@vger.kernel.org
+> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Tested-by: James Bottomley <jejb@linux.ibm.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+> v2:
+>    * Fix documentation typo
+> 
+>   .../virt/kvm/amd-memory-encryption.rst        | 21 ++++++
+>   arch/x86/kvm/svm/sev.c                        | 71 +++++++++++++++++++
+>   drivers/crypto/ccp/sev-dev.c                  |  1 +
+>   include/linux/psp-sev.h                       | 17 +++++
+>   include/uapi/linux/kvm.h                      |  8 +++
+>   5 files changed, 118 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> index 09a8f2a34e39..469a6308765b 100644
+> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> @@ -263,6 +263,27 @@ Returns: 0 on success, -negative on error
+>                   __u32 trans_len;
+>           };
+>   
+> +10. KVM_SEV_GET_ATTESTATION_REPORT
+> +----------------------------------
+> +
+> +The KVM_SEV_GET_ATTESTATION_REPORT command can be used by the hypervisor to query the attestation
+> +report containing the SHA-256 digest of the guest memory and VMSA passed through the KVM_SEV_LAUNCH
+> +commands and signed with the PEK. The digest returned by the command should match the digest
+> +used by the guest owner with the KVM_SEV_LAUNCH_MEASURE.
+> +
+> +Parameters (in): struct kvm_sev_attestation
+> +
+> +Returns: 0 on success, -negative on error
+> +
+> +::
+> +
+> +        struct kvm_sev_attestation_report {
+> +                __u8 mnonce[16];        /* A random mnonce that will be placed in the report */
+> +
+> +                __u64 uaddr;            /* userspace address where the report should be copied */
+> +                __u32 len;
+> +        };
+> +
+>   References
+>   ==========
+>   
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 566f4d18185b..c4d3ee6be362 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -927,6 +927,74 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>   	return ret;
+>   }
+>   
+> +static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> +{
+> +	void __user *report = (void __user *)(uintptr_t)argp->data;
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +	struct sev_data_attestation_report *data;
+> +	struct kvm_sev_attestation_report params;
+> +	void __user *p;
+> +	void *blob = NULL;
+> +	int ret;
+> +
+> +	if (!sev_guest(kvm))
+> +		return -ENOTTY;
+> +
+> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
+> +		return -EFAULT;
+> +
+> +	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	/* User wants to query the blob length */
+> +	if (!params.len)
+> +		goto cmd;
+> +
+> +	p = (void __user *)(uintptr_t)params.uaddr;
+> +	if (p) {
+> +		if (params.len > SEV_FW_BLOB_MAX_SIZE) {
+> +			ret = -EINVAL;
+> +			goto e_free;
+> +		}
+> +
+> +		ret = -ENOMEM;
+> +		blob = kmalloc(params.len, GFP_KERNEL);
+> +		if (!blob)
+> +			goto e_free;
+> +
+> +		data->address = __psp_pa(blob);
+> +		data->len = params.len;
+> +		memcpy(data->mnonce, params.mnonce, sizeof(params.mnonce));
+> +	}
+> +cmd:
+> +	data->handle = sev->handle;
+> +	ret = sev_issue_cmd(kvm, SEV_CMD_ATTESTATION_REPORT, data, &argp->error);
+> +	/*
+> +	 * If we query the session length, FW responded with expected data.
+> +	 */
+> +	if (!params.len)
+> +		goto done;
+> +
+> +	if (ret)
+> +		goto e_free_blob;
+> +
+> +	if (blob) {
+> +		if (copy_to_user(p, blob, params.len))
+> +			ret = -EFAULT;
+> +	}
+> +
+> +done:
+> +	params.len = data->len;
+> +	if (copy_to_user(report, &params, sizeof(params)))
+> +		ret = -EFAULT;
+> +e_free_blob:
+> +	kfree(blob);
+> +e_free:
+> +	kfree(data);
+> +	return ret;
+> +}
+> +
+>   int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>   {
+>   	struct kvm_sev_cmd sev_cmd;
+> @@ -971,6 +1039,9 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>   	case KVM_SEV_LAUNCH_SECRET:
+>   		r = sev_launch_secret(kvm, &sev_cmd);
+>   		break;
+> +	case KVM_SEV_GET_ATTESTATION_REPORT:
+> +		r = sev_get_attestation_report(kvm, &sev_cmd);
+> +		break;
+>   	default:
+>   		r = -EINVAL;
+>   		goto out;
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index 476113e12489..cb9b4c4e371e 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -128,6 +128,7 @@ static int sev_cmd_buffer_len(int cmd)
+>   	case SEV_CMD_LAUNCH_UPDATE_SECRET:	return sizeof(struct sev_data_launch_secret);
+>   	case SEV_CMD_DOWNLOAD_FIRMWARE:		return sizeof(struct sev_data_download_firmware);
+>   	case SEV_CMD_GET_ID:			return sizeof(struct sev_data_get_id);
+> +	case SEV_CMD_ATTESTATION_REPORT:	return sizeof(struct sev_data_attestation_report);
+>   	default:				return 0;
+>   	}
+>   
+> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+> index 49d155cd2dfe..b801ead1e2bb 100644
+> --- a/include/linux/psp-sev.h
+> +++ b/include/linux/psp-sev.h
+> @@ -66,6 +66,7 @@ enum sev_cmd {
+>   	SEV_CMD_LAUNCH_MEASURE		= 0x033,
+>   	SEV_CMD_LAUNCH_UPDATE_SECRET	= 0x034,
+>   	SEV_CMD_LAUNCH_FINISH		= 0x035,
+> +	SEV_CMD_ATTESTATION_REPORT	= 0x036,
+>   
+>   	/* Guest migration commands (outgoing) */
+>   	SEV_CMD_SEND_START		= 0x040,
+> @@ -483,6 +484,22 @@ struct sev_data_dbg {
+>   	u32 len;				/* In */
+>   } __packed;
+>   
+> +/**
+> + * struct sev_data_attestation_report - SEV_ATTESTATION_REPORT command parameters
+> + *
+> + * @handle: handle of the VM
+> + * @mnonce: a random nonce that will be included in the report.
+> + * @address: physical address where the report will be copied.
+> + * @len: length of the physical buffer.
+> + */
+> +struct sev_data_attestation_report {
+> +	u32 handle;				/* In */
+> +	u32 reserved;
+> +	u64 address;				/* In */
+> +	u8 mnonce[16];				/* In */
+> +	u32 len;				/* In/Out */
+> +} __packed;
+> +
+>   #ifdef CONFIG_CRYPTO_DEV_SP_PSP
+>   
+>   /**
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index ca41220b40b8..d3385f7f08a2 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1585,6 +1585,8 @@ enum sev_cmd_id {
+>   	KVM_SEV_DBG_ENCRYPT,
+>   	/* Guest certificates commands */
+>   	KVM_SEV_CERT_EXPORT,
+> +	/* Attestation report */
+> +	KVM_SEV_GET_ATTESTATION_REPORT,
+>   
+>   	KVM_SEV_NR_MAX,
+>   };
+> @@ -1637,6 +1639,12 @@ struct kvm_sev_dbg {
+>   	__u32 len;
+>   };
+>   
+> +struct kvm_sev_attestation_report {
+> +	__u8 mnonce[16];
+> +	__u64 uaddr;
+> +	__u32 len;
+> +};
+> +
+>   #define KVM_DEV_ASSIGN_ENABLE_IOMMU	(1 << 0)
+>   #define KVM_DEV_ASSIGN_PCI_2_3		(1 << 1)
+>   #define KVM_DEV_ASSIGN_MASK_INTX	(1 << 2)
+> 
 
-From [1] I understand that it is a trap and the action can be switched,
-but when it is 'drop', the hardware can provide statistics about number
-of packets that were discarded in hardware. If this is correct, then the
-suggestion in [2] looks valid to me.
+Queued, thanks.
 
-[1] https://lore.kernel.org/netdev/AM0P190MB073828252FFDA3215387765CE4A00@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM/
-[2] https://lore.kernel.org/netdev/20210123160348.GB2799851@shredder.lan/
+Paolo
+
