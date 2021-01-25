@@ -2,147 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B490304938
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C603048EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387726AbhAZFai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:30:38 -0500
-Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:37606 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727495AbhAYKVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:21:53 -0500
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id 02E5682102;
-        Mon, 25 Jan 2021 11:58:49 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1611565129; bh=M5T8IVEuH9uBT6rA34kAGJxS5Tq8grPx+kUaZQ66ui0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JQTcv+8fFv/j0Eh4Hlq23VBnUHR1TdsKHqkXHbaxwZIa0SNtu438xVWhgFbeJCpm+
-         CkiBOTHRNhih3+ahC5/YwsvOdAa/IFVspj71B36UMJhZwX7ltgX3MvRqPgbcC6RoWW
-         WDCEqTCje0pt+JRMozRNncst7ayCH/LbhUkoQ5ql2Ax1K6v/5svT3HCXI6Fr957jN7
-         QG1QPMH4jqJgG103Mv3GBdlx92bWPkaRL2iuyIE1Rryy0CC345mI7b6GOlayRmmw+J
-         VRdTeVIgbyiHtOb9fAbmmTxfvAYqhdvOs6DojNInzJTPB3hrB4AuoEAqbL2LzVvFts
-         fuuX8OJdhCaMw==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        id S1730692AbhAZFgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:36:07 -0500
+Received: from relay.sw.ru ([185.231.240.75]:46278 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727329AbhAYKoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:44:15 -0500
+Received: from [192.168.15.14]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l3yDA-000TI6-5a; Mon, 25 Jan 2021 12:31:04 +0300
+Subject: Re: [v4 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
+        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-Date:   Mon, 25 Jan 2021 11:57:54 +0300
-Message-ID: <4225841.iQuhppFpKy@metabook>
-In-Reply-To: <cce7fdd0-2b75-26f5-ce25-ca8803ffccc5@gmail.com>
-References: <20210122214247.6536-1-sbauer@blackbox.su> <4496952.bab7Homqhv@metabook> <cce7fdd0-2b75-26f5-ce25-ca8803ffccc5@gmail.com>
+References: <20210121230621.654304-1-shy828301@gmail.com>
+ <20210121230621.654304-8-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <1c621cd8-7d13-ddfa-bb83-d4260a1bb754@virtuozzo.com>
+Date:   Mon, 25 Jan 2021 12:31:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210121230621.654304-8-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, January 23, 2021 4:39:47 AM MSK Florian Fainelli wrote:
-> On 1/22/2021 5:01 PM, Sergej Bauer wrote:
-> > On Saturday, January 23, 2021 3:01:47 AM MSK Florian Fainelli wrote:
-> >> On 1/22/2021 3:58 PM, Sergej Bauer wrote:
-> >>> On Saturday, January 23, 2021 2:23:25 AM MSK Andrew Lunn wrote:
-> >>>>>>> @@ -1000,8 +1005,10 @@ static void lan743x_phy_close(struct
-> >>>>>>> lan743x_adapter *adapter)>
-> >>>>>>> 
-> >>>>>>>  	struct net_device *netdev = adapter->netdev;
-> >>>>>>>  	
-> >>>>>>>  	phy_stop(netdev->phydev);
-> >>>>>>> 
-> >>>>>>> -	phy_disconnect(netdev->phydev);
-> >>>>>>> -	netdev->phydev = NULL;
-> >>>>>>> +	if (phy_is_pseudo_fixed_link(netdev->phydev))
-> >>>>>>> +		lan743x_virtual_phy_disconnect(netdev->phydev);
-> >>>>>>> +	else
-> >>>>>>> +		phy_disconnect(netdev->phydev);
-> >>>>>> 
-> >>>>>> phy_disconnect() should work. You might want to call
-> >>>> 
-> >>>> There are drivers which call phy_disconnect() on a fixed_link. e.g.
-> >>>> 
-> >>>> https://elixir.bootlin.com/linux/v5.11-rc4/source/drivers/net/usb/lan78
-> >>>> xx
-> >>>> .c# L3555.
-> >>>> 
-> >>>> 
-> >>>> It could be your missing call to fixed_phy_unregister() is leaving
-> >>>> behind bad state.
-> >>> 
-> >>> lan743x_virtual_phy_disconnect removes sysfs-links and calls
-> >>> fixed_phy_unregister()
-> >>> and the reason was phydev in sysfs.
-> >>> 
-> >>>>> It was to make ethtool show full set of supported speeds and MII only
-> >>>>> in
-> >>>>> supported ports (without TP and the no any ports in the bare card).
-> >>>> 
-> >>>> But fixed link does not support the full set of speed. It is fixed. It
-> >>>> supports only one speed it is configured with.
-> >>> 
-> >>> That's why I "re-implemented the fixed PHY driver" as Florian said.
-> >>> The goal of virtual phy was to make an illusion of real device working
-> >>> in
-> >>> loopback mode. So I could use ethtool and ioctl's to switch speed of
-> >>> device.>
-> >>> 
-> >>>> And by setting it
-> >>>> wrongly, you are going to allow the user to do odd things, like use
-> >>>> ethtool force the link speed to a speed which is not actually
-> >>>> supported.
-> >>> 
-> >>> I have lan743x only and in loopback mode it allows to use speeds
-> >>> 10/100/1000MBps
-> >>> in full-duplex mode only. But the highest speed I have achived was
-> >>> something near
-> >>> 752Mbps...
-> >>> And I can switch speed on the fly, without reloading the module.
-> >>> 
-> >>> May by I should limit the list of acceptable devices?
-> >> 
-> >> It is not clear what your use case is so maybe start with explaining it
-> >> and we can help you define something that may be acceptable for upstream
-> >> inclusion.
-> > 
-> > it migth be helpful for developers work on userspace networking tools with
-> > PHY-less lan743x (the interface even could not be brought up)
-> > of course, there nothing much to do without TP port but the difference is
-> > representative.
+On 22.01.2021 02:06, Yang Shi wrote:
+> Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
 > 
-> You are still not explaining why fixed PHY is not a suitable emulation
-> and what is different, providing the output of ethtool does not tell me
-> how you are using it.
+> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> may suffer from over shrink, excessive reclaim latency, etc.
 > 
-> Literally everyone using Ethernet switches or MAC to MAC Ethernet
-> connections uses fixed PHY and is reasonably happy with it.
+> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> 
+> We observed this hit in our production environment which was running vfs heavy workload
+> shown as the below tracing log:
+> 
+> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> cache items 246404277 delta 31345 total_scan 123202138
+> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> last shrinker return val 123186855
+> 
+> The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+> This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> 
+> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> better isolation.
+> 
+> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  include/linux/memcontrol.h |  7 +++---
+>  mm/vmscan.c                | 49 +++++++++++++++++++++++++-------------
+>  2 files changed, 36 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 62b888b88a5f..e0384367e07d 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -93,12 +93,13 @@ struct lruvec_stat {
+>  };
+>  
+>  /*
+> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> - * which have elements charged to this memcg.
+> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> + * shrinkers, which have elements charged to this memcg.
+>   */
+>  struct shrinker_info {
+>  	struct rcu_head rcu;
+> -	unsigned long map[];
+> +	unsigned long *map;
+> +	atomic_long_t *nr_deferred;
+>  };
+>  
+>  /*
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 018e1beb24c9..722aa71b13b2 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -192,11 +192,13 @@ static void free_shrinker_info_rcu(struct rcu_head *head)
+>  	kvfree(container_of(head, struct shrinker_info, rcu));
+>  }
+>  
+> -static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> -				   int size, int old_size)
+> +static int expand_one_shrinker_info(struct mem_cgroup *memcg, int nr_max,
+> +				    int m_size, int d_size,
+> +				    int old_m_size, int old_d_size)
+>  {
+>  	struct shrinker_info *new, *old;
+>  	int nid;
+> +	int size = m_size + d_size;
+>  
+>  	for_each_node(nid) {
+>  		old = rcu_dereference_protected(
+> @@ -209,9 +211,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+>  		if (!new)
+>  			return -ENOMEM;
+>  
+> -		/* Set all old bits, clear all new bits */
+> -		memset(new->map, (int)0xff, old_size);
+> -		memset((void *)new->map + old_size, 0, size - old_size);
+> +		new->map = (unsigned long *)(new + 1);
+> +		new->nr_deferred = (atomic_long_t *)(new->map +
+> +					nr_max / BITS_PER_LONG + 1);
 
-Florian, the key idea is to make virtual phy device which acts as real 802.11
-standard  phy.
+Why not
 
-original fixed_phy and swphy are little bit useless as they do not support
-write operation. in contrast of them virtual_phy supports write to all
-registers. and can change the speed of interface by means of SIOCSMIIREG ioctl
-call either ethtool.
-changing of appropriate bits in register 0 will change speed reflecting in 
-ethtool
-and vise versa.
+		new->nr_deferred = (void *)new->map + m_size;
+?
 
+> +
+> +		/* map: set all old bits, clear all new bits */
+> +		memset(new->map, (int)0xff, old_m_size);
+> +		memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
+> +		/* nr_deferred: copy old values, clear all new values */
+> +		memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
+> +		memset((void *)new->nr_deferred + old_d_size, 0, d_size - old_d_size);
+>  
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+>  		call_rcu(&old->rcu, free_shrinker_info_rcu);
+> @@ -226,9 +235,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>  	struct shrinker_info *info;
+>  	int nid;
+>  
+> -	if (mem_cgroup_is_root(memcg))
+> -		return;
+> -
+>  	for_each_node(nid) {
+>  		pn = mem_cgroup_nodeinfo(memcg, nid);
+>  		info = rcu_dereference_protected(pn->shrinker_info, true);
+> @@ -242,12 +248,13 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  {
+>  	struct shrinker_info *info;
+>  	int nid, size, ret = 0;
+> -
+> -	if (mem_cgroup_is_root(memcg))
+> -		return 0;
+> +	int m_size, d_size = 0;
+>  
+>  	down_write(&shrinker_rwsem);
+> -	size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> +	m_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> +	d_size = shrinker_nr_max * sizeof(atomic_long_t);
+> +	size = m_size + d_size;
+> +
+>  	for_each_node(nid) {
+>  		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+>  		if (!info) {
+> @@ -255,6 +262,9 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  			ret = -ENOMEM;
+>  			break;
+>  		}
+> +		info->map = (unsigned long *)(info + 1);
+> +		info->nr_deferred = (atomic_long_t *)(info->map +
+> +					shrinker_nr_max / BITS_PER_LONG + 1);
 
--- 
-                                Regards,
-                                        Sergej
+Why not:
+		info->nr_deferred = (void*)info->map + m_size;
+?
 
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+>  	}
+>  	up_write(&shrinker_rwsem);
+> @@ -266,10 +276,16 @@ static int expand_shrinker_info(int new_id)
+>  {
+>  	int size, old_size, ret = 0;
+>  	int new_nr_max = new_id + 1;
+> +	int m_size, d_size = 0;
+> +	int old_m_size, old_d_size = 0;
+>  	struct mem_cgroup *memcg;
+>  
+> -	size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> -	old_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> +	m_size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> +	d_size = new_nr_max * sizeof(atomic_long_t);
+> +	size = m_size + d_size;
+> +	old_m_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
 
+Could you please pack this twice repeating pattern into some macro? E.g.,
+
+#define NR_MAX_TO_SHR_MAP_SIZE(nr_max)	\
+	((nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long))
+
+> +	old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
+> +	old_size = old_m_size + old_d_size;
+>  	if (size <= old_size)
+>  		return 0;
+>  
+> @@ -278,9 +294,8 @@ static int expand_shrinker_info(int new_id)
+>  
+>  	memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>  	do {
+> -		if (mem_cgroup_is_root(memcg))
+> -			continue;
+> -		ret = expand_one_shrinker_info(memcg, size, old_size);
+> +		ret = expand_one_shrinker_info(memcg, new_nr_max, m_size, d_size,
+> +					       old_m_size, old_d_size);
+>  		if (ret) {
+>  			mem_cgroup_iter_break(NULL, memcg);
+>  			goto out;
+> 
 
