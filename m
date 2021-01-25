@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657823033EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 370AF3033CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbhAZFJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:09:17 -0500
-Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:42373 "EHLO
-        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726662AbhAYJbv (ORCPT
+        id S1731333AbhAZFFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:05:21 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11438 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbhAYJ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:31:51 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id 9DB5C236039
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:59:10 +0000 (GMT)
-Received: (qmail 12092 invoked from network); 25 Jan 2021 08:59:10 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 25 Jan 2021 08:59:10 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 1/4] sched/fair: Remove SIS_AVG_CPU
-Date:   Mon, 25 Jan 2021 08:59:06 +0000
-Message-Id: <20210125085909.4600-2-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210125085909.4600-1-mgorman@techsingularity.net>
-References: <20210125085909.4600-1-mgorman@techsingularity.net>
+        Mon, 25 Jan 2021 04:29:25 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DPP6x1KZ8zjBx9;
+        Mon, 25 Jan 2021 17:03:53 +0800 (CST)
+Received: from DESKTOP-7FEPK9S.china.huawei.com (10.174.186.182) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 25 Jan 2021 17:04:43 +0800
+From:   Shenming Lu <lushenming@huawei.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>,
+        <lushenming@huawei.com>
+Subject: [RFC PATCH v1 1/4] vfio/type1: Add a bitmap to track IOPF mapped pages
+Date:   Mon, 25 Jan 2021 17:03:59 +0800
+Message-ID: <20210125090402.1429-2-lushenming@huawei.com>
+X-Mailer: git-send-email 2.27.0.windows.1
+In-Reply-To: <20210125090402.1429-1-lushenming@huawei.com>
+References: <20210125090402.1429-1-lushenming@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.186.182]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SIS_AVG_CPU was introduced as a means of avoiding a search when the
-average search cost indicated that the search would likely fail. It was
-a blunt instrument and disabled by commit 4c77b18cf8b7 ("sched/fair: Make
-select_idle_cpu() more aggressive") and later replaced with a proportional
-search depth by commit 1ad3aaf3fcd2 ("sched/core: Implement new approach
-to scale select_idle_cpu()").
+When IOPF enabled, the pages are pinned and mapped on demand, we add
+a bitmap to track them.
 
-While there are corner cases where SIS_AVG_CPU is better, it has now been
-disabled for almost three years. As the intent of SIS_PROP is to reduce
-the time complexity of select_idle_cpu(), lets drop SIS_AVG_CPU and focus
-on SIS_PROP as a throttling mechanism.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Shenming Lu <lushenming@huawei.com>
 ---
- kernel/sched/fair.c     | 20 +++++++++-----------
- kernel/sched/features.h |  1 -
- 2 files changed, 9 insertions(+), 12 deletions(-)
+ drivers/vfio/vfio_iommu_type1.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04a3ce20da67..9f5682aeda2e 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6145,7 +6145,6 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	struct sched_domain *this_sd;
--	u64 avg_cost, avg_idle;
- 	u64 time;
- 	int this = smp_processor_id();
- 	int cpu, nr = INT_MAX;
-@@ -6154,18 +6153,17 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	if (!this_sd)
- 		return -1;
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 0b4dedaa9128..f1d4de5ab094 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -95,6 +95,7 @@ struct vfio_dma {
+ 	struct task_struct	*task;
+ 	struct rb_root		pfn_list;	/* Ex-user pinned pfn list */
+ 	unsigned long		*bitmap;
++	unsigned long		*iommu_mapped_bitmap;	/* IOPF mapped bitmap */
+ };
  
--	/*
--	 * Due to large variance we need a large fuzz factor; hackbench in
--	 * particularly is sensitive here.
--	 */
--	avg_idle = this_rq()->avg_idle / 512;
--	avg_cost = this_sd->avg_scan_cost + 1;
-+	if (sched_feat(SIS_PROP)) {
-+		u64 avg_cost, avg_idle, span_avg;
+ struct vfio_group {
+@@ -143,6 +144,8 @@ struct vfio_regions {
+ #define DIRTY_BITMAP_PAGES_MAX	 ((u64)INT_MAX)
+ #define DIRTY_BITMAP_SIZE_MAX	 DIRTY_BITMAP_BYTES(DIRTY_BITMAP_PAGES_MAX)
  
--	if (sched_feat(SIS_AVG_CPU) && avg_idle < avg_cost)
--		return -1;
-+		/*
-+		 * Due to large variance we need a large fuzz factor;
-+		 * hackbench in particularly is sensitive here.
-+		 */
-+		avg_idle = this_rq()->avg_idle / 512;
-+		avg_cost = this_sd->avg_scan_cost + 1;
++#define IOMMU_MAPPED_BITMAP_BYTES(n) DIRTY_BITMAP_BYTES(n)
++
+ static int put_pfn(unsigned long pfn, int prot);
  
--	if (sched_feat(SIS_PROP)) {
--		u64 span_avg = sd->span_weight * avg_idle;
-+		span_avg = sd->span_weight * avg_idle;
- 		if (span_avg > 4*avg_cost)
- 			nr = div_u64(span_avg, avg_cost);
- 		else
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 68d369cba9e4..e875eabb6600 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -54,7 +54,6 @@ SCHED_FEAT(TTWU_QUEUE, true)
- /*
-  * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
-  */
--SCHED_FEAT(SIS_AVG_CPU, false)
- SCHED_FEAT(SIS_PROP, true)
+ static struct vfio_group *vfio_iommu_find_iommu_group(struct vfio_iommu *iommu,
+@@ -949,6 +952,7 @@ static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
+ 	vfio_unlink_dma(iommu, dma);
+ 	put_task_struct(dma->task);
+ 	vfio_dma_bitmap_free(dma);
++	kfree(dma->iommu_mapped_bitmap);
+ 	kfree(dma);
+ 	iommu->dma_avail++;
+ }
+@@ -1354,6 +1358,14 @@ static int vfio_dma_do_map(struct vfio_iommu *iommu,
+ 		goto out_unlock;
+ 	}
  
- /*
++	dma->iommu_mapped_bitmap = kvzalloc(IOMMU_MAPPED_BITMAP_BYTES(size / PAGE_SIZE),
++					    GFP_KERNEL);
++	if (!dma->iommu_mapped_bitmap) {
++		ret = -ENOMEM;
++		kfree(dma);
++		goto out_unlock;
++	}
++
+ 	iommu->dma_avail--;
+ 	dma->iova = iova;
+ 	dma->vaddr = vaddr;
 -- 
-2.26.2
+2.19.1
 
