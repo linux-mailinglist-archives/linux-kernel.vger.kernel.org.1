@@ -2,202 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B5B303992
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E655303998
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391655AbhAZJyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:54:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
+        id S2391757AbhAZJzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731244AbhAYSxP (ORCPT
+        with ESMTP id S1731264AbhAYSxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:15 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F8DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:34 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id n3so3159620qvf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:34 -0800 (PST)
+        Mon, 25 Jan 2021 13:53:23 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137C0C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:43 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id m6so8930353pfm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=j3Xw/oUQa+S/aBSbggXK87Od8rLNAanZ/b3oUBXYjEc=;
-        b=e7cR0ZkUc3Squxu4N7tsIG9B42FgOGrFNiImW0dWiyrg4zUJwTidbZpK7W1xVvuWaf
-         8NKPqVsud++RW0sBib73ddkSGhobD087cDBYGuf5QhJ/xlNqq+rrPkJ0SWngm6FJobkh
-         VeLEzapz9YCa/4UUQkV69cotn7GPF9O3MhrJubQ1M+AqJdFN3jT5Yn5x4hrOXpZcJavJ
-         8veR72HThrqFdVoZg6jkt7sfbDqtqjczpjkn5MdD6M8AvctDpQ9PYGAKja8s0EuiWQJZ
-         04ieqY8h9fLKRAZslQd4fBz3oZ4cSu6wnANCxjBvkzpkLJpHFQyw4hZkkjvfUIENMpf9
-         nvuw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=PyFIQTDz1+7uxusIMsa/H38XD+IyWyEJp5nLEM5ZZd8=;
+        b=dQKkjj9DVQim0K/skB4pCoM6XlszO8t5AesFN6sHJRGiAG1sl9X1rhfUGPH7DBMxps
+         4FSvluOvSFM9pROoZdXZ5TRGBGWr6NuUWocrI6Pe4RxpCXQAz2LslgoL2SJhZGRwcgKC
+         Y+lgwAzzBAgPOTNPN4tUJdbI8H7lj8ha7oyBU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=j3Xw/oUQa+S/aBSbggXK87Od8rLNAanZ/b3oUBXYjEc=;
-        b=F2h81dgfxYDykGYD5TR64snjIcuDbDWFZlcWMFzisY4AeFYcUkA4wHvZ7nISJ9eQwk
-         eUvCDIzc9O5+0mERvkRJRSJSLxqnkMtI+c1suY4rGc5vSgujMHx+TkgPBZF+X6x6bmnK
-         DGlf9XgjtZui2oaX4QX91t+2GFUvKZVNQrYeRkyY/ijoAuLpbl+ensEN/5kT3VOTK4S5
-         hB8brVoPd7a6EPayQYA3g/9bqTfei6sE46eL88uXmvp3sNRHvTzok5FeVpNCpygbVO8C
-         o9o6mS128e4mBQucXQaQLdOIEu0JvG56AP5ozcCdeIh4Afs40WOYrpkT8aSvU3gZI5o2
-         BgSg==
-X-Gm-Message-State: AOAM5336eXimgFXyIsfpoxLdYBa9v3jairpa8o48ja2Q9sHXGxG/pfHp
-        GWoUPMKjAzcXXJzQdzaqE48cxQ==
-X-Google-Smtp-Source: ABdhPJz61WKW7+3RRnYPymhLMqo8u5vUDYq80GJjjeVR0iW65AN/hvww8VxkZYxc+3aPrzkQemHA+w==
-X-Received: by 2002:a0c:fa4c:: with SMTP id k12mr2118880qvo.16.1611600754187;
-        Mon, 25 Jan 2021 10:52:34 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:f735])
-        by smtp.gmail.com with ESMTPSA id c17sm12772425qkb.13.2021.01.25.10.52.33
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=PyFIQTDz1+7uxusIMsa/H38XD+IyWyEJp5nLEM5ZZd8=;
+        b=i+86cHcCymdRifhnGj4TDKanUmQ5GF3Q1ikoPTeKqfIlDnDj/xghAObqZqYDtXWC1v
+         6PnZY0FZjUmFXpTBqH9Y3nrYOIExKL0/H8X8qourSzqV18Sx4+/Ckn309wT9wKvC/9N9
+         olKACIRIwok0GTmBjVAipIbFaisAhZoc6yCcyQYtb7vvPjvIJLZ3dxXvGf3Gdf5eD2r0
+         8MwadIgXXM9XPSDoUvb2IVTxR8FOFt4mxTfpG11GG3UGmo1h98azMo3vAjraBqUmBYyx
+         lE8Sg3IxuG6tNmk5ye6c9fxGdmX5bVbSHy2upVTt/xgJMioe7DK5FCOGd6VueO8VOT6L
+         xu7w==
+X-Gm-Message-State: AOAM533LunSvQdeNIIEU6fEmWGnMPo+PeazMSj83hJKRO6iNuxaoIjnT
+        54qpAofVXQ7jfQdN/4VuzjTdKkjGxSM3dA==
+X-Google-Smtp-Source: ABdhPJy8Q5bX833NbF6fj+EubnPYe5iTDhajBtTDYN4FLQd3stBRSYm16E9qQmbb4bme8Tn7JzfBbQ==
+X-Received: by 2002:a63:4d52:: with SMTP id n18mr1872928pgl.237.1611600762258;
+        Mon, 25 Jan 2021 10:52:42 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:1066:b437:97cd:2278])
+        by smtp.gmail.com with ESMTPSA id a37sm16168315pgm.79.2021.01.25.10.52.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:52:33 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:52:32 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-Message-ID: <YA8TcICO1OpFwKsj@cmpxchg.org>
-References: <20210125042441.20030-1-longman@redhat.com>
- <20210125092815.GB827@dhcp22.suse.cz>
- <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
- <20210125160328.GP827@dhcp22.suse.cz>
- <20210125162506.GF308988@casper.infradead.org>
- <20210125164118.GS827@dhcp22.suse.cz>
- <20210125181436.GV827@dhcp22.suse.cz>
- <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
+        Mon, 25 Jan 2021 10:52:41 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
+References: <20210122225443.186184-1-swboyd@chromium.org> <20210122225443.186184-4-swboyd@chromium.org> <20210124173820.4528b9c9@archlinux> <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+To:     Gwendal Grignou <gwendal@chromium.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Date:   Mon, 25 Jan 2021 10:52:40 -0800
+Message-ID: <161160076017.76967.4467861058817044169@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 01:23:58PM -0500, Waiman Long wrote:
-> On 1/25/21 1:14 PM, Michal Hocko wrote:
-> > On Mon 25-01-21 17:41:19, Michal Hocko wrote:
-> > > On Mon 25-01-21 16:25:06, Matthew Wilcox wrote:
-> > > > On Mon, Jan 25, 2021 at 05:03:28PM +0100, Michal Hocko wrote:
-> > > > > On Mon 25-01-21 10:57:54, Waiman Long wrote:
-> > > > > > On 1/25/21 4:28 AM, Michal Hocko wrote:
-> > > > > > > On Sun 24-01-21 23:24:41, Waiman Long wrote:
-> > > > > > > > The commit 3fea5a499d57 ("mm: memcontrol: convert page
-> > > > > > > > cache to a new mem_cgroup_charge() API") introduced a bug in
-> > > > > > > > __add_to_page_cache_locked() causing the following splat:
-> > > > > > > > 
-> > > > > > > >    [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
-> > > > > > > >    [ 1570.068333] pages's memcg:ffff8889a4116000
-> > > > > > > >    [ 1570.068343] ------------[ cut here ]------------
-> > > > > > > >    [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
-> > > > > > > >    [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
-> > > > > > > >    [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
-> > > > > > > >    [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
-> > > > > > > >    [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
-> > > > > > > >      :
-> > > > > > > >    [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
-> > > > > > > >    [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
-> > > > > > > >    [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
-> > > > > > > >    [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
-> > > > > > > >    [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
-> > > > > > > >    [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
-> > > > > > > >    [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
-> > > > > > > >    [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > > > > >    [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
-> > > > > > > >    [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > > > > >    [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > > > > >    [ 1570.068402] PKRU: 55555554
-> > > > > > > >    [ 1570.068404] Call Trace:
-> > > > > > > >    [ 1570.068407]  mem_cgroup_charge+0x175/0x770
-> > > > > > > >    [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
-> > > > > > > >    [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
-> > > > > > > >    [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
-> > > > > > > >    [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
-> > > > > > > >    [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
-> > > > > > > >    [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
-> > > > > > > >    [ 1570.068693]  read_pages+0x5b1/0xc40
-> > > > > > > >    [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
-> > > > > > > >    [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
-> > > > > > > >    [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
-> > > > > > > >    [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
-> > > > > > > >    [ 1570.068872]  new_sync_read+0x3af/0x610
-> > > > > > > >    [ 1570.068901]  vfs_read+0x339/0x4b0
-> > > > > > > >    [ 1570.068909]  ksys_read+0xf1/0x1c0
-> > > > > > > >    [ 1570.068920]  do_syscall_64+0x33/0x40
-> > > > > > > >    [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > > > > >    [ 1570.068930] RIP: 0033:0x7ff039135595
-> > > > > > > > 
-> > > > > > > > Before that commit, there was a try_charge() and commit_charge()
-> > > > > > > > in __add_to_page_cache_locked(). These 2 separated charge functions
-> > > > > > > > were replaced by a single mem_cgroup_charge(). However, it forgot
-> > > > > > > > to add a matching mem_cgroup_uncharge() when the xarray insertion
-> > > > > > > > failed with the page released back to the pool. Fix this by adding a
-> > > > > > > > mem_cgroup_uncharge() call when insertion error happens.
-> > > > > > > > 
-> > > > > > > > Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
-> > > > > > > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > > > > > > OK, this is indeed a subtle bug. The patch aimed at simplifying the
-> > > > > > > charge lifetime so that users do not really have to think about when to
-> > > > > > > uncharge as that happens when the page is freed. fscache somehow breaks
-> > > > > > > that assumption because it doesn't free up pages but it keeps some of
-> > > > > > > them in the cache.
-> > > > > > > 
-> > > > > > > I have tried to wrap my head around the cached object life time in
-> > > > > > > fscache but failed and got lost in the maze. Is this the only instance
-> > > > > > > of the problem? Would it make more sense to explicitly handle charges in
-> > > > > > > the fscache code or there are other potential users to fall into this
-> > > > > > > trap?
-> > > > > > There may be other places that have similar problem. I focus on the
-> > > > > > filemap.c case as I have a test case that can reliably produce the bug
-> > > > > > splat. This patch does fix it for my test case.
-> > > > > I believe this needs a more general fix than catching a random places
-> > > > > which you can trigger. Would it make more sense to address this at the
-> > > > > fscache level and always make sure that a page returned to the pool is
-> > > > > always uncharged instead?
-> > > > I believe you mean "page cache" -- there is a separate thing called
-> > > > 'fscache' which is used to cache network filesystems.
-> > > Yes, I really had fscache in mind because it does have an "unusual" page
-> > > life time rules.
-> > > 
-> > > > I don't understand the memcg code at all, so I have no useful feedback
-> > > > on what you're saying other than this.
-> > > Well the memcg accounting rules after the rework should have simplified
-> > > the API usage for most users. You will get memory charged when it is
-> > > used and it will go away when the page is freed. If a page is not really
-> > > freed in some cases and it can be reused then it doesn't really fit into
-> > > this scheme automagically. I do undestand that this puts some additional
-> > > burden on those special cases. I am not really sure what is the right
-> > > way here myself but considering there might be other similar cases like
-> > > that I would lean towards special casing where the pool is implemented.
-> > > I would expect there is some state to be maintain for that purpose
-> > > already.
-> > After some more thinking I've came to conclusion that the patch as
-> > proposed is the proper way forward. It is easier to follow if the
-> > unwinding of state changes are local to the function.
-> I think so. It is easier to understand if the charge and uncharge functions
-> are grouped together in the same function.
-> > 
-> > With the proposed simplification by Willy
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> Thank for the ack. However, I am a bit confused about what you mean by
-> simplification. There is another linux-next patch that changes the condition
-> for mem_cgroup_charge() to
-> 
-> -       if (!huge) {
-> +       if (!huge && !page_is_secretmem(page)) {
->                 error = mem_cgroup_charge(page, current->mm, gfp);
-> 
-> That is the main reason why I introduced the boolean variable as I don't
-> want to call the external page_is_secretmem() function twice.
+Quoting Gwendal Grignou (2021-01-24 13:41:44)
+> On Sun, Jan 24, 2021 at 9:38 AM Jonathan Cameron <jic23@kernel.org> wrote:
+> >
+> > On Fri, 22 Jan 2021 14:54:43 -0800
+> > Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > > ---
+> > >  drivers/iio/proximity/Kconfig             |  11 +
+> > >  drivers/iio/proximity/Makefile            |   1 +
+> > >  drivers/iio/proximity/cros_ec_proximity.c | 252 ++++++++++++++++++++=
+++
 
-The variable works for me.
+I suppose I'll change this to cros_ec_mkbp_proximity as well.
 
-On the other hand, as Michal points out, the uncharge function will be
-called again on the page when it's being freed (in non-fscache cases),
-so you're already relying on being able to call it on any page -
-charged, uncharged, never charged. It would be fine to call it
-unconditionally in the error path. Aesthetic preference, I guess.
+> > > diff --git a/drivers/iio/proximity/cros_ec_proximity.c b/drivers/iio/=
+proximity/cros_ec_proximity.c
+> > > new file mode 100644
+> > > index 000000000000..a3aef911e3cc
+> > > --- /dev/null
+> > > +++ b/drivers/iio/proximity/cros_ec_proximity.c
+> > > @@ -0,0 +1,252 @@
+[...]
+> > > +
+> > > +static int cros_ec_proximity_query(struct cros_ec_device *ec_dev, in=
+t *state)
+> > > +{
+> > > +     struct ec_params_mkbp_info *params;
+> > > +     struct cros_ec_command *msg;
+> > > +     int ret;
+> > > +
+> > > +     msg =3D kzalloc(sizeof(*msg) + max(sizeof(u32), sizeof(*params)=
+),
+> > > +                   GFP_KERNEL);
+> >
+> > Given this is known at build time, perhaps better to add it to the
+> > iio_priv() accessed structure and avoid having to handle allocations
+> > separately.
+> As Jonathan said, it can be preallocated in iio private structure. We
+> can also use the stack, given the response size is known beforehand.
+> See cros_ec_cec_set_log_addr() or cros_ec_pwm_get_duty() for example.
+
+I suppose stack is even simpler. I'll try that.
+
+> > > +
+> > > +static int cros_ec_proximity_notify(struct notifier_block *nb,
+> > > +                          unsigned long queued_during_suspend, void =
+*_ec)
+> > > +{
+> > > +     struct cros_ec_proximity_data *data;
+> > > +     struct cros_ec_device *ec =3D _ec;
+> > > +     u8 event_type =3D ec->event_data.event_type & EC_MKBP_EVENT_TYP=
+E_MASK;
+> > > +     void *switches =3D &ec->event_data.data.switches;
+> > > +     struct iio_dev *indio_dev;
+> > > +     s64 timestamp;
+> > > +     int state, dir;
+> > > +     u64 ev;
+> > > +
+> > > +     if (event_type =3D=3D EC_MKBP_EVENT_SWITCH) {
+> > > +             data =3D container_of(nb, struct cros_ec_proximity_data=
+, notifier);
+> > > +             indio_dev =3D data->indio_dev;
+> > > +
+> > > +             mutex_lock(&data->lock);
+> > > +             if (data->enabled) {
+> > > +                     timestamp =3D iio_get_time_ns(indio_dev);
+> For Android, given the timestamp must be time it happens, not reported
+> [https://source.android.com/devices/sensors/sensors-hal2] """The
+> timestamp must be accurate and correspond to the time at which the
+> event physically happened, not the time it was reported.""", consider
+> using ec_dev->last_event_time and apply a delta if the iio clock base
+> is different from CLOCK_BOOTTIME.
+
+Ah alright. Is there a reason why cros_ec_get_time_ns() is using
+boottime instead of plain ktime_get(), i.e. CLOCK_MONOTONIC? Otherwise I
+suppose some sort of cros_ec API should be exposed to convert the
+last_event_time to whatever clock base is desired. Does that exist?
+
+> > > +static int cros_ec_proximity_probe(struct platform_device *pdev)
+> > > +{
+> > > +     struct device *dev =3D &pdev->dev;
+> > > +     struct cros_ec_device *ec =3D dev_get_drvdata(dev->parent);
+> > > +     struct iio_dev *indio_dev;
+> > > +     struct cros_ec_proximity_data *data;
+> > > +     int ret;
+> > > +
+> > > +     indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
+> > > +     if (!indio_dev)
+> > > +             return -ENOMEM;
+> > > +
+> > > +     data =3D iio_priv(indio_dev);
+> > > +     data->ec =3D ec;
+> > > +     data->indio_dev =3D indio_dev;
+> > > +     mutex_init(&data->lock);
+> > > +     platform_set_drvdata(pdev, data);
+> > > +
+> > > +     indio_dev->name =3D "cros_ec_proximity";
+> Define a constant CROS_EC_[MKBP_]PROXIMITY_DRIVER_NAME and use it here
+> and in struct platform_driver cros_ec_proximity_driver.
+
+I used dev->driver->name instead. Yay for no define!
+
+> > > +     indio_dev->dev.parent =3D dev;
+> Not needed, done by iio_device_alloc(), called by devm_iio_device_alloc().
+
+Ok.
+
+> > > +static const struct of_device_id cros_ec_proximity_of_match[] =3D {
+> > > +     { .compatible =3D "google,cros-ec-proximity" },
+> > > +     {}
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
+> > > +#endif
+> > > +
+> > > +static struct platform_driver cros_ec_proximity_driver =3D {
+> > > +     .driver =3D {
+> > > +             .name =3D "cros-ec-proximity",
+> > > +             .of_match_table =3D of_match_ptr(cros_ec_proximity_of_m=
+atch),
+> Add a ACPI match table to match.
+
+I don't have an ACPI system in hand. What should the ACPI table look
+like? Can ACPI use the of_match_table logic?
+
+> > > +     },
+> > > +     .probe =3D cros_ec_proximity_probe,
+> > > +     .remove =3D cros_ec_proximity_remove,
+> > > +};
