@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D8A302EF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B9A302F04
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732066AbhAYWY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:24:57 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:37670 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732252AbhAYWYj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:24:39 -0500
-Received: by mail-oi1-f175.google.com with SMTP id r189so16502989oih.4;
-        Mon, 25 Jan 2021 14:24:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0NjYeDD1lzj1UZeJ9nl8y/ztWhDb5GAabmpEUTqpWuo=;
-        b=EPYRiaMo/U0wTmAtZgPZ6/IdxUwf6GhlWKE7iQfzHiP0qD9M2dLXd/+AOcMJOVr8qn
-         HTiZwX959eQL71CiH07RNzcHnDTBjEf46Scw/jhcqYDUxoi9nZPg2skURGlY1+AZeOVC
-         WnjAWJ649JX3EsLNBMM0se8DJZ2QSjA0kprueXennEkR+/Ji5UAPOiakjSVnsnJ/A1xp
-         anW3/rfSwpmxrDZCfgD6NnDO2ePlx2LUoPVlezd7AqyTVgbwe3Fjnf1SxR5P2+Ec9xgO
-         BF06HY/hsBzFka8muq/I4DML9lnowZyAjucRF8865vWXAVPb/lwdaluC98kt0ikRTIN5
-         3ilQ==
-X-Gm-Message-State: AOAM531KLZ1QkXzCURtgeG63PhbVF/wUR9iBV6iaGvgQ4NNoBGnIgDTh
-        hVVl5elAqtSSX0cclHGEoQ==
-X-Google-Smtp-Source: ABdhPJyiC85YjLm3GdEPgUAZ01e4BVRyZ2WIvAASAZ4Nfi00rOeQsMsqQRoTcgV1oRHZeeEIutbAsw==
-X-Received: by 2002:a05:6808:c:: with SMTP id u12mr1364028oic.163.1611613436039;
-        Mon, 25 Jan 2021 14:23:56 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d10sm3459431ooh.32.2021.01.25.14.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 14:23:55 -0800 (PST)
-Received: (nullmailer pid 1131708 invoked by uid 1000);
-        Mon, 25 Jan 2021 22:23:54 -0000
-Date:   Mon, 25 Jan 2021 16:23:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: mtd: move partition binding to its own
- file
-Message-ID: <20210125222354.GA1131674@robh.at.kernel.org>
-References: <20210115153901.31052-1-zajec5@gmail.com>
+        id S1732273AbhAYW1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:27:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731770AbhAYW07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:26:59 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 872A620756;
+        Mon, 25 Jan 2021 22:26:08 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l4AJC-009ypw-8i; Mon, 25 Jan 2021 22:26:06 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: (subset) [PATCH v6 0/5] ARM: arm64: Add SMCCC TRNG entropy service
+Date:   Mon, 25 Jan 2021 22:25:49 +0000
+Message-Id: <161161350642.425740.16814835137021867526.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210106103453.152275-1-andre.przywara@arm.com>
+References: <20210106103453.152275-1-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210115153901.31052-1-zajec5@gmail.com>
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux@armlinux.org.uk, andre.przywara@arm.com, ardb@kernel.org, catalin.marinas@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linus.walleij@linaro.org, sudeep.holla@arm.com, broonie@kernel.org, lorenzo.pieralisi@arm.com, tytso@mit.edu
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Jan 2021 16:38:59 +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Wed, 6 Jan 2021 10:34:48 +0000, Andre Przywara wrote:
+> a fix to v5, now *really* fixing the wrong priority of SMCCC vs. RNDR
+> in arch_get_random_seed_long_early(). Apologies for messing this up
+> in v5 and thanks to broonie for being on the watch!
 > 
-> Single partition binding is quite common and may be:
-> 1. Used by multiple parsers
-> 2. Extended for more specific cases
+> Will, Catalin: it would be much appreciated if you could consider taking
+> patch 1/5. This contains the common definitions, and is a prerequisite
+> for every other patch, although they are somewhat independent and likely
+> will need to go through different subsystems.
 > 
-> Move it to separated file to avoid code duplication.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->  .../mtd/partitions/fixed-partitions.yaml      | 33 +------------
->  .../bindings/mtd/partitions/partition.yaml    | 47 +++++++++++++++++++
->  2 files changed, 48 insertions(+), 32 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition.yaml
-> 
+> [...]
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied to kvm-arm64/rng-5.12, thanks!
+
+[5/5] KVM: arm64: implement the TRNG hypervisor call
+      commit: a8e190cdae1bf8e9e490776b8179babc1962bb25
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
