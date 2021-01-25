@@ -2,147 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2051C302F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714E1302F42
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732608AbhAYWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732693AbhAYWnE (ORCPT
+        id S1732698AbhAYWnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:43:07 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:34893 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732562AbhAYWms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:43:04 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15A7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:42:23 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id v200so539440ybe.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 14:42:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uUoNf9BBFKkgh2ppnaejSB621RRoaZzYwArQ/+nGs5I=;
-        b=v0CUYdsfdi78E2T5lQL29cB54rzB1CtEtGaQywaH8ndp/fK0k15CDrNwlYXhEyXGnP
-         6Y0DHhTk81aGdBor3d8zkKCVoBmT7D/aXbgN9n3yrbsMPRuS2Rkmo8oNkhOz/3Ki0RfW
-         SmbaFODL6ySPYtok39wzAJVIjIvR/s2vbkntxDz+Ej1rnJsMqqury3SsKXGmeviI1BDH
-         SoD+MDozlVTb89r7Zm2Gf6P18wk2T4ZUw7OavjOg7m/kq5cQNSvN+NKHXZvv9HhVNZlq
-         tEI6rOU7qvZuDYFGdHCnakyn8Y0+1yJrwo3rRs/OdJZ0ScW7WullbDpbVzq35Aa+PxTR
-         lj4A==
+        Mon, 25 Jan 2021 17:42:48 -0500
+Received: by mail-oi1-f172.google.com with SMTP id w8so16576256oie.2;
+        Mon, 25 Jan 2021 14:42:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uUoNf9BBFKkgh2ppnaejSB621RRoaZzYwArQ/+nGs5I=;
-        b=JFJy2cE8y78JWWPyZANvlSC2oyHuf+FeO4lSmdobeFsJ3UjnrMido3Ik64Y4Vc7r2F
-         H8CvvSWPIvBQlHhfTvcJZgBuIsWlb4D2QLdBhFB6l9S5e87TIS4byDeRYDMYBjgJx8sa
-         jz8IZiF6sgHWMf/rWYqERhMuYnkNKlNjSoRoUdKQz0D1V1lzeULb0HlDxsZsourphL8x
-         LvO0QPCQr/WrhvGzWgwek/21+ZjCcuvHFw8Rzg+Ubu08r8ttT70+PUzYz8Y1ufYbEQHU
-         Si9am668j4oxUixQW7AllUDqYxRG2UKaQTF8t7SCxFaivnfVCn2LR3kht0pyzEs+9Otu
-         RxJw==
-X-Gm-Message-State: AOAM53044t2VUdD1Z5OQ0qvw7DByp1g36iqsn+zlYyqIfwnjMREo4dCZ
-        3vtTacv9D+Yvp1389tZO9O7Qk/XbvLhBS0kOpvyr9w==
-X-Google-Smtp-Source: ABdhPJzstPk4hc3oMjRFyfDYbQKEtMFjvVapEAWEK8W/jH+3yeTl2JV0+Uap2GESBQLTIzc5VXYaLlyzC7kWrcxtQPQ=
-X-Received: by 2002:a25:3345:: with SMTP id z66mr4179764ybz.466.1611614542807;
- Mon, 25 Jan 2021 14:42:22 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=C16k2tPv0ywSlhxsEf4kr9GhjRN4cyYWhe3TJNuKzzI=;
+        b=IeVigiuXiM81Dl6uQ/dZSO+rEN7qh6fWTaA8WO/ic5uL0LquiCXI0P+fhPn2OU2mU3
+         sOzUkXRs5SyOa1E6qIb/sSzBkh+9ZqFGfnPJBdGXV5JT5o5ME8CFDtionm2PtH6i1un0
+         ydpPkFZUK0gyvgf1fF16t0On7+Ek3qqW/D8pcOXq9jD5qOLD69nYfpQdo30ZJHjiOCjM
+         bQttrEDENZZtt+PEyPaVKLrYYQWFCKEhc+D/O5hdp1tdaVMpQSsFlKIZwNoPqHICqmZV
+         hYrHYhxMLGKEGAXBnIp6ROtXP3YdlRXHqg9d3x296HVUiRonlGk4CVluQROzYjLa6Xt7
+         J0OQ==
+X-Gm-Message-State: AOAM532kpp4PKRL+9eqtn5r7go3RjNATKV65NPKBhap6QAtvKI4gt9TZ
+        z0E/NTbUFMz+TLdrYjEK5g==
+X-Google-Smtp-Source: ABdhPJxNAlUnSs1N3aeHo57kzd72x7tcnq/Np938jOWY7EEaiSXUXNM8ZPQuNIrsiTsmANBV4oAnsQ==
+X-Received: by 2002:aca:c085:: with SMTP id q127mr1504728oif.70.1611614527227;
+        Mon, 25 Jan 2021 14:42:07 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a28sm391910ook.24.2021.01.25.14.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 14:42:06 -0800 (PST)
+Received: (nullmailer pid 1163692 invoked by uid 1000);
+        Mon, 25 Jan 2021 22:42:05 -0000
+Date:   Mon, 25 Jan 2021 16:42:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 2/3] dt-bindings: mtd: add binding from BCM4908 partitions
+Message-ID: <20210125224205.GA1131879@robh.at.kernel.org>
+References: <20210115153901.31052-1-zajec5@gmail.com>
+ <20210115153901.31052-2-zajec5@gmail.com>
 MIME-Version: 1.0
-References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc> <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
- <f706c0e4b684e07635396fcf02f4c9a6@walle.cc> <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
- <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com> <a24391e62b107040435766fff52bdd31@walle.cc>
-In-Reply-To: <a24391e62b107040435766fff52bdd31@walle.cc>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 25 Jan 2021 14:41:46 -0800
-Message-ID: <CAGETcx8FO+YSM0jwCnDdnvE3NCdjZ=1FSmAZpyaOEOvCgd4SXw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
-To:     Michael Walle <michael@walle.cc>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210115153901.31052-2-zajec5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:49 AM Michael Walle <michael@walle.cc> wrote:
->
-> Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
-> > Hi Saravana,
-> >
-> > On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com>
-> > wrote:
-> >> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc>
-> >> wrote:
-> >> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
-> >> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
-> >> > > wrote:
-> >> > >>
-> >> > >> [RESEND, fat-fingered the buttons of my mail client and converted
-> >> > >> all CCs to BCCs :(]
-> >> > >>
-> >> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> >> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> >> > >> >>
-> >> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> >> > >> >> wrote:
-> >> > >> >> >
-> >> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
-> >> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
-> >> > >> >> > deferral. Convert it to builtin_platform_driver().
-> >> > >> >>
-> >> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> >> > >> >> shouldn't it be fixed or removed?
-> >> > >> >
-> >> > >> > I was actually thinking about this too. The problem with fixing
-> >> > >> > builtin_platform_driver_probe() to behave like
-> >> > >> > builtin_platform_driver() is that these probe functions could be
-> >> > >> > marked with __init. But there are also only 20 instances of
-> >> > >> > builtin_platform_driver_probe() in the kernel:
-> >> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
-> >> > >> > 20
-> >> > >> >
-> >> > >> > So it might be easier to just fix them to not use
-> >> > >> > builtin_platform_driver_probe().
-> >> > >> >
-> >> > >> > Michael,
-> >> > >> >
-> >> > >> > Any chance you'd be willing to help me by converting all these to
-> >> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> >> > >>
-> >> > >> If it just moving the probe function to the _driver struct and
-> >> > >> remove the __init annotations. I could look into that.
-> >> > >
-> >> > > Yup. That's pretty much it AFAICT.
-> >> > >
-> >> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
-> >> > > for async probe, etc. But I doubt anyone is actually setting async
-> >> > > flags and still using builtin_platform_driver_probe().
-> >> >
-> >> > Hasn't module_platform_driver_probe() the same problem? And there
-> >> > are ~80 drivers which uses that.
-> >>
-> >> Yeah. The biggest problem with all of these is the __init markers.
-> >> Maybe some familiar with coccinelle can help?
-> >
-> > And dropping them will increase memory usage.
->
-> Although I do have the changes for the builtin_platform_driver_probe()
-> ready, I don't think it makes much sense to send these unless we agree
-> on the increased memory footprint. While there are just a few
-> builtin_platform_driver_probe() and memory increase _might_ be
-> negligible, there are many more module_platform_driver_probe().
+On Fri, Jan 15, 2021 at 04:39:00PM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> BCM4908 uses fixed partitions layout but function of some partitions may
+> vary. Some devices use multiple firmware partitions and those should be
+> marked to let system discover their purpose.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>  .../partitions/brcm,bcm4908-partitions.yaml   | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
+> new file mode 100644
+> index 000000000000..4090b61a3da7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mtd/partitions/brcm,bcm4908-partitions.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Broadcom BCM4908 partitioning
+> +
+> +description: |
+> +  Broadcom BCM4908 CFE bootloader supports two firmware partitions. One is used
+> +  for regular booting, the other is treated as fallback.
+> +
+> +  This binding allows defining all fixed partitions and marking those containing
+> +  firmware. System can use that information e.g. for booting or flashing
+> +  purposes.
+> +
+> +maintainers:
+> +  - Rafał Miłecki <rafal@milecki.pl>
+> +
+> +properties:
+> +  compatible:
+> +    const: brcm,bcm4908-partitions
+> +
+> +  "#address-cells": true
+> +
+> +  "#size-cells": true
 
-While it's good to drop code that'll not be used past kernel init, the
-module_platform_driver_probe() is going even more extreme. It doesn't
-even allow deferred probe (well before kernel init is done). I don't
-think that behavior is right and that's why we should delete it. Also,
-I doubt if any of these probe functions even take up 4KB of memory.
+limit these to 1 and 2? 
 
--Saravana
+> +
+> +patternProperties:
+> +  "@[0-9a-f]+$":
+
+^partition@...
+
+> +    allOf:
+
+You can drop 'allOf'.
+
+> +      - $ref: "partition.yaml#"
+> +      - properties:
+> +          compatible:
+> +            const: brcm,bcm4908-firmware
+
+Also needs 'unevaluatedProperties: false'
+
+> +
+> +required:
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    partitions {
+> +        compatible = "brcm,bcm4908-partitions";
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +
+> +        partition@0 {
+> +            label = "cferom";
+> +            reg = <0x0 0x100000>;
+> +        };
+> +
+> +        partition@100000 {
+> +            compatible = "brcm,bcm4908-firmware";
+> +            reg = <0x100000 0xf00000>;
+> +        };
+> +
+> +        partition@1000000 {
+> +            compatible = "brcm,bcm4908-firmware";
+> +            reg = <0x1000000 0xf00000>;
+> +        };
+> +
+> +        partition@1f00000 {
+> +            label = "calibration";
+> +            reg = <0x1f00000 0x100000>;
+> +        };
+> +    };
+> -- 
+> 2.26.2
+> 
