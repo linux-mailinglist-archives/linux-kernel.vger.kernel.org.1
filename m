@@ -2,262 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26D3302DAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:29:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1042D302D84
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbhAYV3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:29:20 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:44288 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732647AbhAYVT7 (ORCPT
+        id S1732593AbhAYVWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:22:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58675 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732665AbhAYVVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:19:59 -0500
-Received: by mail-oi1-f182.google.com with SMTP id n7so4415365oic.11;
-        Mon, 25 Jan 2021 13:19:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NibYT71W+B8TDWyLV12/C5+2M+J43v+ssl9R4tm+o1Q=;
-        b=WBQYa4KNp88aJf5nI2uN2Ep4giLJJa8qwpPc+76m4vXtxf2aP8yhLWy/5Ks88+KExy
-         Xaig3hTzFR+hVxTg3DCf/5shFxpXjczIiVAgtzb7DhaIkUZoc1Y+DMvFTDgiMz513kAu
-         XNTmqE4CmAT8K/US+8CIs5f1YJZbh1+Oyro8niDUZ1rH5zjY7hbiqXAxY/+Xp9EWgdGK
-         B0l121+fnoucrJdcHayWAEDQTQN9HGVbIkAJvyhv8tNvQEmb/rzmmknAsXVVKslHyBRO
-         Rgodc2+xZrpm+a2d6ulhGlUVM7uKZD2+kZmU73CzKIIQBoBMGVEWbzmD/LtfHFv6QRxy
-         EzMA==
-X-Gm-Message-State: AOAM531fIhbzZFGcvUo5fldq3PqfhT512sEmiItywvCOA/5L/rhxLfHo
-        RBN02i4lnr34CSETcwpMyA==
-X-Google-Smtp-Source: ABdhPJzawJ1RMizxJND21fu6qb4j513EzjDeH7HKS+tLfPZacMXvR7CRmkgQOrWYyoYiX7+j1r9tOg==
-X-Received: by 2002:aca:f255:: with SMTP id q82mr1293905oih.138.1611609555404;
-        Mon, 25 Jan 2021 13:19:15 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z20sm2732315oth.55.2021.01.25.13.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:19:12 -0800 (PST)
-Received: (nullmailer pid 1014454 invoked by uid 1000);
-        Mon, 25 Jan 2021 21:19:10 -0000
-Date:   Mon, 25 Jan 2021 15:19:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: Re: [PATCH v2 11/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
- LVDS display bridge binding
-Message-ID: <20210125211910.GA1004310@robh.at.kernel.org>
-References: <1610616132-8220-1-git-send-email-victor.liu@nxp.com>
- <1610616132-8220-12-git-send-email-victor.liu@nxp.com>
+        Mon, 25 Jan 2021 16:21:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611609579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gfg/hxSYIFb+RC3VgIgWh3IEpOrZKtS57wEA5wqW8hY=;
+        b=LyoMwtcJaXISdgsWH9sz2JtiuhyPFgs14/eVwpVlSmg1fbxh/Qc9KxfT+Ir1oUQpX7lEOS
+        3d0hUF4HlPyb+wZCW0Txx22pQGT1oHMsHvwEjmcttjtwtO9PNthSPQH4sW32Jo86Iw7gUL
+        pzVhSLRuv+S/tQNFa/hoph+gOzrKfTc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-24-7J9p8aPkNCeVG5QgMZHZjg-1; Mon, 25 Jan 2021 16:19:35 -0500
+X-MC-Unique: 7J9p8aPkNCeVG5QgMZHZjg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 133E710054FF;
+        Mon, 25 Jan 2021 21:19:33 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23F015D6AB;
+        Mon, 25 Jan 2021 21:19:31 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 15:19:29 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
+        Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Julien Thierry <jthierry@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        linux-hardening@vger.kernel.org, live-patching@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
+Message-ID: <20210125211929.62e6gzvl54hpmwn2@treble>
+References: <20210120173800.1660730-1-jthierry@redhat.com>
+ <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
+ <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
+ <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
+ <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net>
+ <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
+ <20210121185452.fxoz4ehqfv75bdzq@treble>
+ <20210122174342.GG6391@sirena.org.uk>
+ <bebccb15-1195-c004-923e-74d8444250e1@linux.microsoft.com>
+ <CAMj1kXFr0wvx-hG6nBY4ibju9ww4x0CGhQber3MZQ2ZZn9LHWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1610616132-8220-12-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <CAMj1kXFr0wvx-hG6nBY4ibju9ww4x0CGhQber3MZQ2ZZn9LHWw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 05:22:09PM +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qm/qxp LVDS display bridge(LDB).
+On Fri, Jan 22, 2021 at 10:43:09PM +0100, Ard Biesheuvel wrote:
+> On Fri, 22 Jan 2021 at 22:15, Madhavan T. Venkataraman <madvenka@linux.microsoft.com> wrote:
+> > On 1/22/21 11:43 AM, Mark Brown wrote:
+> > > On Thu, Jan 21, 2021 at 12:54:52PM -0600, Josh Poimboeuf wrote:
+> > >
+> > >> 2) The shadow stack idea sounds promising -- how hard would it be to
+> > >>    make a prototype reliable unwinder?
+> > >
+> > > In theory it doesn't look too hard and I can't see a particular reason
+> > > not to try doing this - there's going to be edge cases but hopefully for
+> > > reliable stack trace they're all in areas where we would be happy to
+> > > just decide the stack isn't reliable anyway, things like nesting which
+> > > allocates separate shadow stacks for each nested level for example.
+> > > I'll take a look.
+> > >
+> >
+> > I am a new comer to this discussion and I am learning. Just have some
+> > questions. Pardon me if they are obvious or if they have already been
+> > asked and answered.
+> >
+> > Doesn't Clang already have support for a shadow stack implementation for ARM64?
+> > We could take a look at how Clang does it.
+> >
+> > Will there not be a significant performance hit? May be, some of it can be
+> > mitigated by using a parallel shadow stack rather than a compact one.
+> >
+> > Are there any longjmp style situations in the kernel where the stack is
+> > unwound by several frames? In these cases, the shadow stack must be unwound
+> > accordingly.
+> >
 > 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v1->v2:
-> * Use graph schema. (Laurent)
-> * Side note i.MX8qxp LDB official name 'pixel mapper'. (Laurent)
+> Hello Madhavan,
 > 
->  .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 176 +++++++++++++++++++++
->  1 file changed, 176 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> new file mode 100644
-> index 00000000..514ac90
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> @@ -0,0 +1,176 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8qxp-ldb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX8qm/qxp LVDS Display Bridge
-> +
-> +maintainers:
-> +  - Liu Ying <victor.liu@nxp.com>
-> +
-> +description: |
-> +  The Freescale i.MX8qm/qxp LVDS Display Bridge(LDB) has two channels.
-> +
-> +  For i.MX8qxp LDB, each channel supports up to 24bpp parallel input color
-> +  format and can map the input to VESA or JEIDA standards.  The two channels
-> +  cannot be used simultaneously, that is to say, the user should pick one of
-> +  them to use.  Two LDB channels from two LDB instances can work together in
-> +  LDB split mode to support a dual link LVDS display.  The channel indexes
-> +  have to be different.  Channel0 outputs odd pixels and channel1 outputs
-> +  even pixels.
-> +
-> +  For i.MX8qm LDB, each channel additionally supports up to 30bpp parallel
-> +  input color format.  The two channels can be used simultaneously, either
-> +  in dual mode or split mode.  In dual mode, the two channels output identical
-> +  data.  In split mode, channel0 outputs odd pixels and channel1 outputs even
-> +  pixels.
-> +
-> +  A side note is that i.MX8qm/qxp LDB is officially called pixel mapper in
-> +  the SoC reference manuals.  The pixel mapper uses logic of LDBs embedded in
-> +  i.MX6qdl/sx SoCs, i.e., it is essentially based on them.  To keep the naming
-> +  consistency, this binding calls it LDB.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8qm-ldb
-> +      - fsl,imx8qxp-ldb
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  clocks:
-> +    items:
-> +      - description: pixel clock
-> +      - description: bypass clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pixel
-> +      - const: bypass
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  fsl,syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      A phandle which points to Control and Status Registers(CSR) module.
+> Let's discuss the details of shadow call stacks on a separate thread,
+> instead of further hijacking Julien's series.
 
-Again, seems like this binding should be a child of the syscon.
+It's quite relevant to this thread.  There's no need to consider merging
+Julien's patches if you have a better approach.  Why not discuss it
+here?  I'm also interested in the answers to Madhavan's questions.
 
-> +
-> +  fsl,companion-ldb:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      A phandle which points to companion LDB which is used in LDB split mode.
-> +
-> +patternProperties:
-> +  "^channel@[0-1]$":
-> +    type: object
-> +    description: Represents a channel of LDB.
-> +
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      reg:
-> +        description: The channel index.
-> +        enum: [ 0, 1 ]
-> +
-> +      phys:
-> +        description: A phandle to the phy module representing the LVDS PHY.
-> +        maxItems: 1
-> +
-> +      phy-names:
-> +        const: lvds_phy
-> +
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Input port of the channel.
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: Output port of the channel.
-> +
-> +    required:
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +      - reg
-> +      - phys
-> +      - phy-names
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - clocks
-> +  - clock-names
-> +  - power-domains
-> +  - fsl,syscon
-> +  - channel@0
-> +  - channel@1
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: fsl,imx8qm-ldb
-> +    then:
-> +      properties:
-> +        fsl,companion-ldb: false
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    ldb {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        compatible = "fsl,imx8qxp-ldb";
-> +        clocks = <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_MISC2>,
-> +                 <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_BYPASS>;
-> +        clock-names = "pixel", "bypass";
-> +        power-domains = <&pd IMX_SC_R_LVDS_0>;
-> +        fsl,syscon = <&mipi_lvds_0_csr>;
-> +
-> +        channel@0 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <0>;
-> +            phys = <&mipi_lvds_0_phy>;
-> +            phy-names = "lvds_phy";
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +
-> +                mipi_lvds_0_ldb_ch0_mipi_lvds_0_pxl2dpi: endpoint {
-> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch0>;
-> +                };
-> +            };
-> +        };
-> +
-> +        channel@1 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <1>;
-> +            phys = <&mipi_lvds_0_phy>;
-> +            phy-names = "lvds_phy";
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +
-> +                mipi_lvds_0_ldb_ch1_mipi_lvds_0_pxl2dpi: endpoint {
-> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch1>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.7.4
-> 
+-- 
+Josh
+
