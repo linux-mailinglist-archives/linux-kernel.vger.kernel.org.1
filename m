@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57822304462
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C75630445C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390662AbhAZIyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:54:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
+        id S2390256AbhAZIhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:37:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730020AbhAYSqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:46:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0663C224BE;
-        Mon, 25 Jan 2021 18:45:24 +0000 (UTC)
+        id S1728542AbhAYSnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:43:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EE4922D58;
+        Mon, 25 Jan 2021 18:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600325;
-        bh=RccCsQNVx20yPJGFohhUuMJI9emhkI0B9PKi9OPEaC4=;
+        s=korg; t=1611600185;
+        bh=/3IHmFBK+i9o0ZchEW+8498GZB+nRuXyVcfGyBjaUcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UmODwJo7c+/gxd/sGIGdBwIkqT9IL8jqun/M7BxPG1y5ZR2sno6u3GVYMIb4aY4yy
-         J+P8wd4FUGrrIFjBQEAekHg66YQasrN/mAGInSCKFCir9VNs48PspaAanWp96egFv7
-         Bb90JDAa3xX5TwArVLekOTzVRFi0BnTi6AuhqVtY=
+        b=L/CZyyqU/LoeTQnjKjASXe9gJvvuk3H0ADJ4rLqez5I0pQG9Bek8/bvfPGyODdfR+
+         FIFRMFVulIFloTcpHoAOU1B3JOuj6+nCIQZPiIgy2ZbDBImjZv67FO1+diEBvYZI1M
+         LQAD0c+jCPFjvNIvNwUqnD2DCHfrZ2pPxV8vt01A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 41/86] drm/nouveau/kms/nv50-: fix case where notifier buffer is at offset 0
-Date:   Mon, 25 Jan 2021 19:39:23 +0100
-Message-Id: <20210125183202.801047339@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: [PATCH 4.19 33/58] intel_th: pci: Add Alder Lake-P support
+Date:   Mon, 25 Jan 2021 19:39:34 +0100
+Message-Id: <20210125183158.129415534@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-References: <20210125183201.024962206@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 
-[ Upstream commit caeb6ab899c3d36a74cda6e299c6e1c9c4e2a22e ]
+commit cb5c681ab9037e25fcca20689c82cf034566d610 upstream.
 
-VRAM offset 0 is a valid address, triggered on GA102.
+This adds support for the Trace Hub in Alder Lake-P.
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Link: https://lore.kernel.org/r/20210115195917.3184-3-alexander.shishkin@linux.intel.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/nouveau/dispnv50/disp.c     | 4 ++--
- drivers/gpu/drm/nouveau/dispnv50/disp.h     | 2 +-
- drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/hwtracing/intel_th/pci.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index ee2b1e1199e09..daa79d39201f9 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -132,7 +132,7 @@ nv50_dmac_destroy(struct nv50_dmac *dmac)
- 
- int
- nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
--		 const s32 *oclass, u8 head, void *data, u32 size, u64 syncbuf,
-+		 const s32 *oclass, u8 head, void *data, u32 size, s64 syncbuf,
- 		 struct nv50_dmac *dmac)
- {
- 	struct nouveau_cli *cli = (void *)device->object.client;
-@@ -167,7 +167,7 @@ nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
- 	if (ret)
- 		return ret;
- 
--	if (!syncbuf)
-+	if (syncbuf < 0)
- 		return 0;
- 
- 	ret = nvif_object_init(&dmac->base.user, 0xf0000000, NV_DMA_IN_MEMORY,
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.h b/drivers/gpu/drm/nouveau/dispnv50/disp.h
-index 7c41b0599d1ac..284068fa6d007 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.h
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.h
-@@ -70,7 +70,7 @@ struct nv50_dmac {
- 
- int nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
- 		     const s32 *oclass, u8 head, void *data, u32 size,
--		     u64 syncbuf, struct nv50_dmac *dmac);
-+		     s64 syncbuf, struct nv50_dmac *dmac);
- void nv50_dmac_destroy(struct nv50_dmac *);
- 
- u32 *evo_wait(struct nv50_dmac *, int nr);
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c b/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c
-index f7dbd965e4e72..b49a212af4d8d 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/wimmc37b.c
-@@ -68,7 +68,7 @@ wimmc37b_init_(const struct nv50_wimm_func *func, struct nouveau_drm *drm,
- 	int ret;
- 
- 	ret = nv50_dmac_create(&drm->client.device, &disp->disp->object,
--			       &oclass, 0, &args, sizeof(args), 0,
-+			       &oclass, 0, &args, sizeof(args), -1,
- 			       &wndw->wimm);
- 	if (ret) {
- 		NV_ERROR(drm, "wimm%04x allocation failed: %d\n", oclass, ret);
--- 
-2.27.0
-
+--- a/drivers/hwtracing/intel_th/pci.c
++++ b/drivers/hwtracing/intel_th/pci.c
+@@ -231,6 +231,11 @@ static const struct pci_device_id intel_
+ 		.driver_data = (kernel_ulong_t)&intel_th_2x,
+ 	},
+ 	{
++		/* Alder Lake-P */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x51a6),
++		.driver_data = (kernel_ulong_t)&intel_th_2x,
++	},
++	{
+ 		/* Emmitsburg PCH */
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x1bcc),
+ 		.driver_data = (kernel_ulong_t)&intel_th_2x,
 
 
