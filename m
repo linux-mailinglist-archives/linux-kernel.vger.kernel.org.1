@@ -2,131 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61694302BF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755F7302BEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731779AbhAYTrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:47:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28732 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731495AbhAYTYT (ORCPT
+        id S1732062AbhAYTpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:45:43 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:45955 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731797AbhAYTXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:24:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611602559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sLaxbldCpmtlUDFodMqs6EtRoH2fJw9kHTicx3mvJQs=;
-        b=hvPyM2X0t8/a1Hl1GHJUJLTZnwM2EAdqO/HQuzPvzyIHHGLuYA1hndLkJWsPQo2SlLMmlx
-        rBSv1bD2J9G58sOhE8Qc4GaQ3RthaZOgz8ExP4ct5PUXHbFNIiwrrzgFcNNNnVjRqdEGvD
-        cM+3mRzbbfYxJEF8RaPDVA8+wiI5oM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561-wbF-Bqt3NsKIoD6ejRlndQ-1; Mon, 25 Jan 2021 14:22:34 -0500
-X-MC-Unique: wbF-Bqt3NsKIoD6ejRlndQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E23E9100C601;
-        Mon, 25 Jan 2021 19:22:30 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 251C960C0F;
-        Mon, 25 Jan 2021 19:22:21 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 20:22:19 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     brouer@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH net-next 3/3] net: page_pool: simplify page recycling
- condition tests
-Message-ID: <20210125202219.43d3d0f0@carbon>
-In-Reply-To: <20210125164612.243838-4-alobakin@pm.me>
-References: <20210125164612.243838-1-alobakin@pm.me>
-        <20210125164612.243838-4-alobakin@pm.me>
+        Mon, 25 Jan 2021 14:23:41 -0500
+Received: by mail-oi1-f180.google.com with SMTP id g69so15181527oib.12;
+        Mon, 25 Jan 2021 11:23:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lJBccorxZ78ZbWSXWYq+VpysyyXbwoSq8AT6JmLKs/w=;
+        b=GFELKUEChVrsjtnBz2LirVUz/Ob+11YPypwjNg0g5eB8DxafYEBxa6nExHwsPEtPTs
+         76VCu/l41kzekz+/6pF2EPpF1a4l8j0LTI+Wo3dJgC6QWPbTpYDn2yJw4Ys1LJpgPNyl
+         GNARdRcyMmboY+/D7T3Yuos2PACGX4+RrgIIYN+h98ZbLto2VfUhS0ihEvqlZemJM6CS
+         f0S8sOR6PT9pSndk+8Iz68zygBwCS39zmspEU0FzQWOgxwiP/BQ/9+efY8fJfOT2VdcG
+         FEM7LEQReSm02THXFSVTM4lD4xgcbmmnac4Zd2ZJAiqaiddzBX4Mj9gXzQGGit2JF/vz
+         lunA==
+X-Gm-Message-State: AOAM533AvX4mb45rZ5WlyjagPsJQhUEl9P5Ye3xLrfRPZobC9vPp80Eh
+        3isL0HxC3YY2G2fF+BVlow==
+X-Google-Smtp-Source: ABdhPJw8oBDePZvFx7h28Zdqx/oSirBM5F51dv0HF/xFXU2wHZkKa9wVzcmO8UDMhbR280BUU3EEBQ==
+X-Received: by 2002:aca:eb49:: with SMTP id j70mr1063871oih.90.1611602574947;
+        Mon, 25 Jan 2021 11:22:54 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d127sm3363294oob.14.2021.01.25.11.22.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 11:22:53 -0800 (PST)
+Received: (nullmailer pid 805318 invoked by uid 1000);
+        Mon, 25 Jan 2021 19:22:53 -0000
+Date:   Mon, 25 Jan 2021 13:22:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mathieu.poirier@linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH V2 06/11] dts: bindings: Document device tree bindings
+ for ETE
+Message-ID: <20210125192253.GA791043@robh.at.kernel.org>
+References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
+ <1610511498-4058-7-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610511498-4058-7-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 16:47:20 +0000
-Alexander Lobakin <alobakin@pm.me> wrote:
-
-> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-> this function is just a redundant wrapper over page_is_pfmemalloc(),
-> so Inline it into its sole call site.
+On Wed, Jan 13, 2021 at 09:48:13AM +0530, Anshuman Khandual wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
 > 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> Document the device tree bindings for Embedded Trace Extensions.
+> ETE can be connected to legacy coresight components and thus
+> could optionally contain a connection graph as described by
+> the CoreSight bindings.
+> 
+> Cc: devicetree@vger.kernel.org
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Rob Herring <robh@kernel.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  net/core/page_pool.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
-
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
+>  Documentation/devicetree/bindings/arm/ete.yaml | 71 ++++++++++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
 > 
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index f3c690b8c8e3..ad8b0707af04 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *page,
->  	return true;
->  }
->  
-> -/* page is NOT reusable when:
-> - * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
-> - */
-> -static bool pool_page_reusable(struct page_pool *pool, struct page *page)
-> -{
-> -	return !page_is_pfmemalloc(page);
-> -}
-> -
->  /* If the page refcnt == 1, this will try to recycle the page.
->   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
->   * the configured size min(dma_sync_size, pool->max_len).
-> @@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->  	 * regular page allocator APIs.
->  	 *
->  	 * refcnt == 1 means page_pool owns page, and can recycle it.
-> +	 *
-> +	 * page is NOT reusable when allocated when system is under
-> +	 * some pressure. (page_is_pfmemalloc)
->  	 */
-> -	if (likely(page_ref_count(page) == 1 &&
-> -		   pool_page_reusable(pool, page))) {
-> +	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
->  		/* Read barrier done in page_ref_count / READ_ONCE */
->  
->  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
+> new file mode 100644
+> index 0000000..00e6a77
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +# Copyright 2021, Arm Ltd
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: ARM Embedded Trace Extensions
+> +
+> +maintainers:
+> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
+> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+> +
+> +description: |
+> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
+> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
+> +  architecture and has extended support for future architecture changes.
+> +  The trace generated by the ETE could be stored via legacy CoreSight
+> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
+> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
+> +  legacy CoreSight components, a node must be listed per instance, along
+> +  with any optional connection graph as per the coresight bindings.
+> +  See bindings/arm/coresight.txt.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^ete([0-9a-f]+)$"
+> +  compatible:
+> +    items:
+> +      - const: arm,embedded-trace-extension
+> +
+> +  cpu:
 
+We use 'cpus' in a couple of other places, let's do that here for 
+consistency.
 
+> +    description: |
+> +      Handle to the cpu this ETE is bound to.
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  out-ports:
+> +    description: |
+> +      Out put connections from the ETE to legacy CoreSight trace bus.
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Output
 
+> +    $ref: /schemas/graph.yaml#/properties/ports
+
+You have to define what each 'port' is if there can be more than 1. If 
+there's only ever 1 then you just need 'port' though maybe all the 
+coresight bindings require 'out-ports'. And the port nodes need a $ref 
+to '/schemas/graph.yaml#/properties/port'.
+
+> +
+> +required:
+> +  - compatible
+> +  - cpu
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +
+> +# An ETE node without legacy CoreSight connections
+> +  - |
+> +    ete0 {
+> +      compatible = "arm,embedded-trace-extension";
+> +      cpu = <&cpu_0>;
+> +    };
+> +# An ETE node with legacy CoreSight connections
+> +  - |
+> +   ete1 {
+> +      compatible = "arm,embedded-trace-extension";
+> +      cpu = <&cpu_1>;
+> +
+> +      out-ports {        /* legacy coresight connection */
+> +         port {
+> +             ete1_out_port: endpoint {
+> +                remote-endpoint = <&funnel_in_port0>;
+> +             };
+> +         };
+> +      };
+> +   };
+> +
+> +...
+> -- 
+> 2.7.4
+> 
