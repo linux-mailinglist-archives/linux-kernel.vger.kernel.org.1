@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34595302034
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1ED830202E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbhAYCOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 21:14:46 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11434 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbhAYCFQ (ORCPT
+        id S1727102AbhAYCJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 21:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727075AbhAYCHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 21:05:16 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DPCny1TLTzjBgB;
-        Mon, 25 Jan 2021 10:03:34 +0800 (CST)
-Received: from [10.174.179.117] (10.174.179.117) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 25 Jan 2021 10:04:20 +0800
-Subject: Re: [PATCH] mm: Fix potential pte_unmap_unlock pte error
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <tglx@linutronix.de>, <dave.hansen@intel.com>,
-        <jpoimboe@redhat.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>
-References: <20210109080118.20885-1-linmiaohe@huawei.com>
- <20210110171443.GC1914459@tassilo.jf.intel.com>
- <530deddf-705e-045d-f7c6-521531dced71@huawei.com>
- <2c691a87-42fd-63f6-6d7a-136be6572fab@huawei.com>
- <20210123180107.95f54cc0849a6d8c6afa16ee@linux-foundation.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <372dc830-56ae-799c-6026-bb35c1803026@huawei.com>
-Date:   Mon, 25 Jan 2021 10:04:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 24 Jan 2021 21:07:06 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20280C061573;
+        Sun, 24 Jan 2021 18:06:18 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id cq1so7396241pjb.4;
+        Sun, 24 Jan 2021 18:06:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dJotwfyRiNvMA2JUWu/JdXPCefXCZhv30V+8f8cWdbc=;
+        b=JZVXM3B0nywR9s6BtSUdcVekC9BKl92Ivhxa6IwhBdJRMuNjbijJUt6V2KjrKzJ0/E
+         bgTk5GB0lwIsNPeRbSqZuc9xanAzEzB+bqlsvsGwYygx/wVh4ntqeOX+u2u4yZcIaYdd
+         sqC1QgJ8BuGD5mjVTylvLzyKD7QYkxmNe+K8wwWJr4abG9Javr09s/Cd71yPNN75uVKT
+         oJbxQf1T3/oDNT5+m0U90nzhVgy2KWg8P292uiXsd9SSB53XxDlSPGRZQyprVs/K48SM
+         ViqTuYEk/+qLU/+g5chYYamO84wKVIBEJLrGHqZChQGHgQJgib+loWHcLH+CtacCIBrW
+         WGRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dJotwfyRiNvMA2JUWu/JdXPCefXCZhv30V+8f8cWdbc=;
+        b=RjQHAT1Vd+0m5ftE95n7oIysJpX/KQqq0N3my7FNElLPd/DGp9cGqZkt1XQ43L1OaG
+         3kxMI2xSrK0i1eShR1uU9QSAf6waWINkyifxJ3nIfEi3dKQwUdAi5ReXc/IMABeTBBSI
+         S9uFkPCoqfK1V9iAydKd7P6jrqbBYi2ROXpGc9U0NTyb/sbT01NTAxoqP5eM1ddUdXQY
+         L/OqB2RwNnVfb398g5Vah/nAU08BuULb7LJtzYnfwa5p1oJFDJ4V0EenCpDxMJjuOwOH
+         wTZRR1Be7WgCzmBmNEqRO59THcYRyauxMdqnWPFtg7FR6JP/4kjowpP4DNFo6Muo8cog
+         ilmQ==
+X-Gm-Message-State: AOAM531qAzzDWHaYK78zKbr5KLr+3jbYCOssEPN06NoDCFctk42hfftj
+        XYDjf9mKiDAwleQY75F95OIt+Af6JpE=
+X-Google-Smtp-Source: ABdhPJytq+LS4ij4D7XRl5F7Ax/WUiGR4m6QVCZjCrYHJIIfoULzrZLDv3NMSlEGS7/n+eQ/rhnVGw==
+X-Received: by 2002:a17:90b:2286:: with SMTP id kx6mr6555938pjb.92.1611540377603;
+        Sun, 24 Jan 2021 18:06:17 -0800 (PST)
+Received: from localhost (g54.222-224-210.ppp.wakwak.ne.jp. [222.224.210.54])
+        by smtp.gmail.com with ESMTPSA id b206sm14417100pfb.73.2021.01.24.18.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 18:06:16 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:06:13 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the openrisc tree with Linus' tree
+Message-ID: <20210125020613.GT2002709@lianli.shorne-pla.net>
+References: <20210125090506.35337fa2@canb.auug.org.au>
+ <20210125010446.GS2002709@lianli.shorne-pla.net>
+ <20210125124746.40e2638d@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210123180107.95f54cc0849a6d8c6afa16ee@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.117]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125124746.40e2638d@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/24 10:01, Andrew Morton wrote:
-> On Fri, 22 Jan 2021 16:27:23 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
+On Mon, Jan 25, 2021 at 12:47:46PM +1100, Stephen Rothwell wrote:
+> Hi Stafford,
 > 
->> Hi Andrew:
->> On 2021/1/14 10:51, Miaohe Lin wrote:
->>> Hi:
->>> On 2021/1/11 1:14, Andi Kleen wrote:
->>>> On Sat, Jan 09, 2021 at 03:01:18AM -0500, Miaohe Lin wrote:
->>>>> Since commit 42e4089c7890 ("x86/speculation/l1tf: Disallow non privileged
->>>>> high MMIO PROT_NONE mappings"), when the first pfn modify is not allowed,
->>>>> we would break the loop with pte unchanged. Then the wrong pte - 1 would
->>>>> be passed to pte_unmap_unlock.
->>>>
->>>> Thanks.
->>>>
->>>> While the fix is correct, I'm not sure if it actually is a real bug. Is there
->>>> any architecture that would do something else than unlocking the underlying
->>>> page?  If it's just the underlying page then it should be always the same
->>>> page, so no bug.
->>>>
->>>
->>> It's just a theoretical issue via code inspection.
->>
->> Should I send a new one without Cc statle or just drop this patch? Thanks.
+> On Mon, 25 Jan 2021 10:04:46 +0900 Stafford Horne <shorne@gmail.com> wrote:
+> >
+> > Thank's I knew about this conflict but I was not sure the best way to handle, I
+> > was/am going to rebase the openrisc/for-next branch onto 5.11-rc5 once released.
+> > I will resolve the conflict during the rebase so you should be able to drop the
+> > conflict patch after that.
 > 
-> Your patch makes the code much less scary looking.  I added Andi's
-> observation to the changelog, removed the cc:stable and queued it up,
-> thanks.
-> 
-> .
-> 
+> Its a pretty trivial conflict, so I wouldn't do the rebase just for this.
 
-Sounds reasonable. Many thanks for doing this!
+Alright, I will not rebase.
+
+> > The issue is I had a fix that went straight to 5.11.  Should I usually put these
+> > kind of fixes on my for-next and my fixes branches in parallel, that way I can
+> > resolve conflicts on for-next before hand?
+> 
+> I notice that the version in Linus' tree was merged from a separate
+> branch.  The easiest that to do is for you to merge that same branch
+> into your for-next branch - that way you only get your own changes, not
+> any other stuff that might be in Linus' tree.
+> 
+> > I don't usually do that as in my mind for next is for 5.12 and fixes for 5.11 go
+> > straight to 5.11.  Also, I don't like putting the same patch in 2 queues.  But
+> > if I got any advice on how to avoid this in the future it would be appreciated.
+> 
+> Like I said, just merge your fixes branch into you for-next branch
+> when/if you think the fixes are important for further development, or
+> the conflicts become to great.
+
+That sounds like a good idea.  Let me do that.
+
+> I can also add you fixes branch to linux-next if you like (I already
+> have 86 other "fixes" branches).
+
+I think that should be alright for now, I'll maintain merging the fixes branch
+myself when I think it's needed.
+
+Thank you,
+
+-Stafford
