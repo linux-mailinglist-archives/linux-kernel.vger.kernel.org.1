@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC30302C26
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016D0302C21
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbhAYUBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:01:21 -0500
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:44124 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732140AbhAYT4J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:56:09 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1732209AbhAYUAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:00:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732252AbhAYT4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:56:12 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 92EDF7A28;
-        Mon, 25 Jan 2021 11:55:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 92EDF7A28
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1611604512;
-        bh=L29mAEJ6cru7ET5XOlCC3ggXmPlpoV2+85bRSMdiplg=;
-        h=To:Cc:From:Subject:Date:From;
-        b=S6CxXpQSvNy8NqrOhoy/h5KNBWmu6n+d5AfZtm7SiNcpfaBpv+8hUsaKekM1Ige5A
-         d4fU+FiQThCdABltwFjGQVhHvGvip/NURoplC3beMRM1mvxtHovAjxineunZhE+dp+
-         DNs37mhdAgFamj6JXIaCoVwS+d1+ukFb/Mq1hve4=
-To:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Subject: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
-Date:   Mon, 25 Jan 2021 11:55:11 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B35720708;
+        Mon, 25 Jan 2021 19:55:31 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 14:55:29 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/3] tracing: Merge irqflags + preempt counter.
+Message-ID: <20210125145529.6f20ec4e@gandalf.local.home>
+In-Reply-To: <20210125195228.ydtrixn4v3hb4lmj@linutronix.de>
+References: <20210112230057.2374308-1-bigeasy@linutronix.de>
+        <20210112230057.2374308-2-bigeasy@linutronix.de>
+        <20210122170750.600b2372@gandalf.local.home>
+        <20210125140551.hlpbreks4f7ytuza@linutronix.de>
+        <20210125140323.6b1ff20c@gandalf.local.home>
+        <20210125195228.ydtrixn4v3hb4lmj@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-CA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On Mon, 25 Jan 2021 20:52:28 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-The 5.10 LTS kernel being officially LTS supported for 2 years presents a problem:
-why would anyone select a 5.10 kernel with 2 year LTS when 5.4 kernel has a 6 year LTS.
+> On 2021-01-25 14:03:23 [-0500], Steven Rostedt wrote:
+> > 
+> > I was thinking about the inlining for two reasons. One was to consolidate
+> > the logic in the header file, as they are small functions. And two, inlined
+> > functions tend to be faster than non-inlined functions. Thus, I wasn't
+> > looking at this from a size point of view, but since this is called by all
+> > events, including function tracer, being efficient is a requirement.  
+> 
+> In the ftrace_syscall_enter() example I made, flags were not evaluated
+> three times but only once. This should do more in terms of performance
+> compare to simply inline it.
 
-Yet, various unofficial reports indicate it will be supported for 6 years.  And AOSP has already declared the use
-of 5.10 kernel in their Android S and T releases.
+Oh, I know. It's one of the things I like about your series. But that
+doesn't make it less of a reason to inline it ;-)
 
-Is there some way we could make the LTS support more clear.
-A 2 year declaration is not LTS any more.
-If 5.10 is "actually" going to be supported for 6 years it would be quite valuable to make such a declaration.
-https://www.kernel.org/category/releases.html
+> 
+> > > I can post the irqflags-merge and the inlinining as two seprate patches
+> > > and you can then decide if you merge the two patches or drop the
+> > > inlining.  
+> > 
+> > Feel free to send it as separate patches. I'd like to have the inlining.  
+> 
+> Just sent as an extra patch. In case you have a benchmark, I'm curious
+> ;)
+> 
 
-Regards,
- Scott
+Yep, looking at it now. Thanks!
 
-
-
-
-
-
+-- Steve
