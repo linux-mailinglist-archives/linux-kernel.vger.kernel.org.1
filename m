@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2E430446B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EA9304460
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389164AbhAZJ07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:26:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35934 "EHLO mail.kernel.org"
+        id S2390581AbhAZItX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:49:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731025AbhAYStO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:49:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B98A2063A;
-        Mon, 25 Jan 2021 18:48:54 +0000 (UTC)
+        id S1729866AbhAYSp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:45:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40C7420758;
+        Mon, 25 Jan 2021 18:44:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600535;
-        bh=v96sACv011yE0+Z3rLK+GaGBJSBWc3PlydDDvFBYxyQ=;
+        s=korg; t=1611600288;
+        bh=hJKOoBD8W/cKk0OsUkS6P/cs5GPCHWp0tKsvACmIvu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vUgEPmAFkI0BkP08NxQVab4tDkJJCdel9tkSW3GOp681b/QKyOAGxANdxVZV7hjYm
-         FuEVbHNsV403UTExn6uRoHN7nyZME2imbZv0O8pyLdQhgnez/1MbIqkeevfts0+e6q
-         v3gr3w9edNQbKiMVY9rTQ0bi2VUxtFxjxRm1pTr8=
+        b=BTNmP5j2uf0oYKM6OnWKBs8xobLC9fS2G1Tc743W0ybDFPk8jCColclOTNkDx5Ixs
+         pqx0om1FV9s+GygiPi/Uc+dqzlYIiC9xyJKm38BjRPVVKa1j825VyqBydUfVXzPvAw
+         ynrsC71oC8Cmwu92PanVCq+3fi9zB77xfHAIVcbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
         Martin Wilck <mwilck@suse.com>, Christoph Hellwig <hch@lst.de>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 025/199] dm: avoid filesystem lookup in dm_get_dev_t()
-Date:   Mon, 25 Jan 2021 19:37:27 +0100
-Message-Id: <20210125183217.318368884@linuxfoundation.org>
+Subject: [PATCH 5.4 13/86] dm: avoid filesystem lookup in dm_get_dev_t()
+Date:   Mon, 25 Jan 2021 19:38:55 +0100
+Message-Id: <20210125183201.599174722@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
-References: <20210125183216.245315437@linuxfoundation.org>
+In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
+References: <20210125183201.024962206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,7 +74,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/md/dm-table.c
 +++ b/drivers/md/dm-table.c
-@@ -370,14 +370,23 @@ int dm_get_device(struct dm_target *ti,
+@@ -428,14 +428,23 @@ int dm_get_device(struct dm_target *ti,
  {
  	int r;
  	dev_t dev;
