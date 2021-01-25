@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38349302920
+	by mail.lfdr.de (Postfix) with ESMTP id AE58E302921
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731206AbhAYRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:40:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:53414 "EHLO foss.arm.com"
+        id S1731203AbhAYRk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:40:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731178AbhAYRj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:39:27 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB78E1063;
-        Mon, 25 Jan 2021 09:38:34 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.45.22])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 021DC3F68F;
-        Mon, 25 Jan 2021 09:38:31 -0800 (PST)
-Date:   Mon, 25 Jan 2021 17:38:29 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH v4 1/3] arm64: Improve kernel address detection of
- __is_lm_address()
-Message-ID: <20210125173829.GB4565@C02TD0UTHF1T.local>
-References: <20210122155642.23187-1-vincenzo.frascino@arm.com>
- <20210122155642.23187-2-vincenzo.frascino@arm.com>
- <20210125130204.GA4565@C02TD0UTHF1T.local>
- <ddc0f9e2-f63e-9c34-f0a4-067d1c5d63b8@arm.com>
- <20210125145911.GG25360@gaia>
+        id S1731185AbhAYRjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:39:42 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52E8E22B3B;
+        Mon, 25 Jan 2021 17:39:01 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 12:38:59 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH V2] x86/entry/64: De-Xen-ify our NMI code further
+Message-ID: <20210125123859.39b244ca@gandalf.local.home>
+In-Reply-To: <20210125074506.15064-1-jiangshanlai@gmail.com>
+References: <CALCETrW1qP=vbHCSdgOLjjP+-i=io3o1w5bMdtH_UHSV3gvBXg@mail.gmail.com>
+        <20210125074506.15064-1-jiangshanlai@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125145911.GG25360@gaia>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:59:12PM +0000, Catalin Marinas wrote:
-> On Mon, Jan 25, 2021 at 02:36:34PM +0000, Vincenzo Frascino wrote:
-> > On 1/25/21 1:02 PM, Mark Rutland wrote:
-> > > On Fri, Jan 22, 2021 at 03:56:40PM +0000, Vincenzo Frascino wrote:
-> > > This patch itself looks fine, but it's not going to backport very far,
-> > > so I suspect we might need to write a preparatory patch that adds an
-> > > explicit range check to virt_addr_valid() which can be trivially
-> > > backported.
-> > 
-> > I checked the old releases and I agree this is not back-portable as it stands.
-> > I propose therefore to add a preparatory patch with the check below:
-> > 
-> > #define __is_ttrb1_address(addr)	((u64)(addr) >= PAGE_OFFSET && \
-> > 
-> > If it works for you I am happy to take care of it and post a new version of my
-> > patches.
+On Mon, 25 Jan 2021 15:45:06 +0800
+Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> I'm not entirely sure we need a preparatory patch. IIUC (it needs
-> checking), virt_addr_valid() was fine until 5.4, broken by commit
-> 14c127c957c1 ("arm64: mm: Flip kernel VA space").
-
-Ah, so it was; thanks for digging into the history!
-
-> Will addressed the
-> flip case in 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using
-> __is_lm_address()") but this broke the <PAGE_OFFSET case. So in 5.4 a
-> NULL address is considered valid.
+> The commit 929bacec21478("x86/entry/64: De-Xen-ify our NMI code") simplified
+> the NMI code by changing paravirt code into native code and left a comment
+> about "inspecting RIP instead".  But until now, "inspecting RIP instead"
+> has not been made happened and this patch tries to complete it.
 > 
-> Ard's commit f4693c2716b3 ("arm64: mm: extend linear region for 52-bit
-> VA configurations") changed the test to no longer rely on va_bits but
-> did not change the broken semantics.
+> Comments in the code was from Andy Lutomirski.  Thanks!
 > 
-> If Ard's change plus the fix proposed in this test works on 5.4, I'd say
-> we just merge this patch with the corresponding Cc stable and Fixes tags
-> and tweak it slightly when doing the backports as it wouldn't apply
-> cleanly. IOW, I wouldn't add another check to virt_addr_valid() as we
-> did not need one prior to 5.4.
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>  arch/x86/entry/entry_64.S | 44 ++++++++++-----------------------------
+>  1 file changed, 11 insertions(+), 33 deletions(-)
+> 
+> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+> index cad08703c4ad..21f67ea62341 100644
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -1268,32 +1268,14 @@ SYM_CODE_START(asm_exc_nmi)
+>  	je	nested_nmi
+>  
+>  	/*
+> -	 * Now test if the previous stack was an NMI stack.  This covers
+> -	 * the case where we interrupt an outer NMI after it clears
+> -	 * "NMI executing" but before IRET.  We need to be careful, though:
+> -	 * there is one case in which RSP could point to the NMI stack
+> -	 * despite there being no NMI active: naughty userspace controls
+> -	 * RSP at the very beginning of the SYSCALL targets.  We can
+> -	 * pull a fast one on naughty userspace, though: we program
+> -	 * SYSCALL to mask DF, so userspace cannot cause DF to be set
+> -	 * if it controls the kernel's RSP.  We set DF before we clear
+> -	 * "NMI executing".
+> +	 * Now test if we interrupted an outer NMI that just cleared "NMI
+> +	 * executing" and is about to IRET.  This is a single-instruction
+> +	 * window.  This check does not handle the case in which we get a
+> +	 * nested interrupt (#MC, #VE, #VC, etc.) after clearing
+> +	 * "NMI executing" but before the outer NMI executes IRET.
+>  	 */
+> -	lea	6*8(%rsp), %rdx
+> -	/* Compare the NMI stack (rdx) with the stack we came from (4*8(%rsp)) */
+> -	cmpq	%rdx, 4*8(%rsp)
+> -	/* If the stack pointer is above the NMI stack, this is a normal NMI */
+> -	ja	first_nmi
+> -
+> -	subq	$EXCEPTION_STKSZ, %rdx
+> -	cmpq	%rdx, 4*8(%rsp)
+> -	/* If it is below the NMI stack, it is a normal NMI */
+> -	jb	first_nmi
+> -
+> -	/* Ah, it is within the NMI stack. */
+> -
+> -	testb	$(X86_EFLAGS_DF >> 8), (3*8 + 1)(%rsp)
+> -	jz	first_nmi	/* RSP was user controlled. */
 
-That makes sense to me; sorry for the noise!
+So we no longer check to see if the current stack is on the NMI stack.
+Makes sense, since this beginning of the NMI code can not be interrupted,
+as there's no breakpoints or faults that can occur when that happens. The
+$nmi_executing is set in all other locations except for:
 
-Thanks,
-Mark.
+  repeat_nmi - end_repeat_nmi
+  and for the iretq itself (.Lnmi_iret).
+
+Thus, by just checking the nmi_executing variable on the stack along with
+the RIP compared to repeat_nim-end_repeat_nmi + .Lnmi_iret, we can safely
+tell if the NMI is nested or not.
+
+I was working on rewriting the beginning comments to reflect these updates,
+and discovered a possible bug that exists (unrelated to this patch).
+
+> +	cmpq	$.Lnmi_iret, 8(%rsp)
+> +	jne	first_nmi
+>  
+
+On triggering an NMI from user space, I see the switch to the thread stack
+is done, and "exc_nmi" is called.
+
+The problem I see with this is that exc_nmi is called with the thread
+stack, if it were to take an exception, NMIs would be enabled allowing for
+a nested NMI to run. From what I can tell, I don't see anything stopping
+that NMI from executing over the currently running NMI. That is, this means
+that NMI handlers are now re-entrant.
+
+Yes, the stack issue is not a problem here, but NMI handlers are not
+allowed to be re-entrant. For example, we have spin locks in NMI handlers
+that are considered fine if they are only used in NMI handlers. But because
+there's a possible way to make NMI handlers re-entrant then these spin
+locks can deadlock.
+
+I'm guessing that we need to add some tricks to the user space path to
+set and clear the "NMI executing" variable, but the return may become a bit
+complex in clearing that without races.
+
+-- Steve
