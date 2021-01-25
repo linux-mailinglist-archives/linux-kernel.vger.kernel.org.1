@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2319B302D9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4CE302D81
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732671AbhAYV1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:27:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        id S1732628AbhAYVW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731932AbhAYVVp (ORCPT
+        with ESMTP id S1732431AbhAYVWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:21:45 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58B1C061573;
-        Mon, 25 Jan 2021 13:21:04 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id r32so14740443ybd.5;
-        Mon, 25 Jan 2021 13:21:04 -0800 (PST)
+        Mon, 25 Jan 2021 16:22:08 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F26DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:21:28 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id p185so14707088ybg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:21:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z3lCPZHOlWCqOFxwlNBZvwznnjkRC7QjnUuvoRMU1js=;
-        b=AWfk7f2W5VMVwnBdqUIg2d7rqamzb4Yv1IDg4ZdKjHwmcoU0cfFgonTlu8aYVrIjdl
-         2zHwkZP1rUF6NmjZHL37d/JSECgfSFS+jLu35oNLOSK90efm7k0BDRHE59X89vFzv6xa
-         nIBXOs4vzGfCbXF4yHBxy893bj75YsgAHCjcCOUwiH+YWLsS18THsVR4Xi4jr/S9rCs7
-         Q0OKmKNYBilicr18C8VdebXxch0K2pWmCat2/BxWDxjr81pLfoI6XCgSpv06Goq3MOlN
-         UDXZ8a1Q0GHpWPR7GK+P46L8gzxJpf9LReDeDyaR1gxu0x1MsYtM7yMdB+K40dfAHE+F
-         7tHw==
+        bh=NfYv+sVEF3bhw1NrTL/111YRCiFQJbiGpgUEbN5Ud3g=;
+        b=vdoywtZsQ04KYGh8y4efLs3tq5e1SzosxigrGdvStf9bM1O0nvApWO3Y9rRfdxm5Q9
+         iBOofp4u7ovw3TwqeVBSowBIb7ovyCzPiLP1PNN3GZA9D1GXc1Kti6dvPtotq0FXlZ2T
+         TK8IGBt+3DaqiOfXQVW9/bsFCdOjWrPOBcWu9fkjevhJjx/K2c02T4ko67c6zo7Cb7Ww
+         x6JNUJiN8QA8CoY8UHtLRdNOyJF6ZK6DnToXZKnErTBwoKtJU9SdFOJcqF3H0h0X+gN5
+         frr5LV2Ta9aEnTEogDIVMg8476FzvkjeGSYWawvxPWvzPZl3dD56feqno43CgvXY44MG
+         AZdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z3lCPZHOlWCqOFxwlNBZvwznnjkRC7QjnUuvoRMU1js=;
-        b=nx5b22W5F5Upi8Fp9em7JNK5W5sEA0T2lYDlgbmbAcOFpqMo+IlC7sjaimu1Isw5Xz
-         fZkUWn58nJ7VEyHXnWdcSmrIjDq2QdPxzjFflhsN/5ZKjTtF8fmhgmgCYmaSPwG47ON3
-         R/Ufphc9WLzxLHaLefNfeQPybf1ebE5zYobaElPaHsk5Alq8YrJ0DMRy3T3hRnjG5bGD
-         /cPdNLpgRLARbB+bW1CbxiS5hxie3tBdBwlQpUF87B3YETrKJfEptXxJr3ik5hpTfmdP
-         e6pneIyaa7Eslw2VHY9t+Jho4fOQL9YxcVYkbQqZiYAkKUCSifzZjkNVyxqV3oAfEXWe
-         rFgw==
-X-Gm-Message-State: AOAM532/zaHWGhBmwiQYYPVHDaD/N8tkZ6XJqsUsmkOuIDJ8YwaZZTCv
-        BpMxFE//SnE73PPeBmMfYHmevKESglhILNxHHIU=
-X-Google-Smtp-Source: ABdhPJz/qrVrI1+It/goUqbBAtWieAunYcdLPQ/h/BJBfBU3NKOQ6Dgn3qZyis7KHACFTh0bSoVnaAJa7SdLQeWR+Nk=
-X-Received: by 2002:a25:d84d:: with SMTP id p74mr3490418ybg.135.1611609664337;
- Mon, 25 Jan 2021 13:21:04 -0800 (PST)
+        bh=NfYv+sVEF3bhw1NrTL/111YRCiFQJbiGpgUEbN5Ud3g=;
+        b=gZc0s7l2AiE1kD/pxqLp2ao1n1Iht5fWZYjZxM5/ONw6m35NjcS1f5rwMSFkD2xRr4
+         F/UWoKhnlT9+vGoek3fZ+I5GmM9FiW2u/6cpg/7oV3vBLiiOy6BA36yc6LIXn8rTzEr7
+         fz9Y4MFpeOeEecDlkDKm83TKgi4Af/eahPdXJO9VUYIuZ2evnjRC0u0iQPXPejIKuE1M
+         qhGd2u5h2CvGQNb/E2vlo+lWwquAA/nROBCen0Q3p+Uhi5RmaYP38I2TQBIpZTHolYGq
+         AUSx1U3Lk8R4tmYbhPSAIsZM4jdEfCZIzQpkYutRbMX/3UQQu2PRMvmbaWqwl2VyEks6
+         xRkw==
+X-Gm-Message-State: AOAM530HTbdLDJqJeRl/0kJDbsqCBmFoj+vESjcPuOfMIhuMykYVETUI
+        Cfb8VnHvYy/E9uGpj01PCFWJAUi1jJAADp8IfyQ=
+X-Google-Smtp-Source: ABdhPJytXOelKtb1GMWyyHCYrEkRMeWpmEba0362qDSgQ5UPwB3bJFpapP9xjNvxXaS+BxK/NP1/h9h31mlppGTKZmU=
+X-Received: by 2002:a25:af8c:: with SMTP id g12mr3770009ybh.33.1611609687898;
+ Mon, 25 Jan 2021 13:21:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210118123538.564597-1-geert@linux-m68k.org> <20210118123538.564597-4-geert@linux-m68k.org>
-In-Reply-To: <20210118123538.564597-4-geert@linux-m68k.org>
+References: <20210122153940.2874225-1-geert@linux-m68k.org>
+In-Reply-To: <20210122153940.2874225-1-geert@linux-m68k.org>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 25 Jan 2021 22:20:53 +0100
-Message-ID: <CANiq72=UPoJh4oaoev2a4+iYO1T0YwtCRPXjZ=gatHyAi_OC=g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] dt-bindings: auxdisplay: ht16k33: Convert to json-schema
+Date:   Mon, 25 Jan 2021 22:21:17 +0100
+Message-ID: <CANiq72mCatMxsub7HXaKzj+v2o13aNCP-9vUx_UAxPYSt_k0Lg@mail.gmail.com>
+Subject: Re: [PATCH] auxdisplay: ht16k33: Fix refresh rate handling
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 1:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri, Jan 22, 2021 at 4:39 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Convert the Holtek HT16K33 LED controller with keyscan Device Tree
-> binding documentation to json-schema.
+> Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
+> already the number of jiffies to wait.
 
 Applied to -next, thanks!
 
