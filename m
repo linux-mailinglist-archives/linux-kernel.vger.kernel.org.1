@@ -2,221 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715DE3030D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 01:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308EA303113
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732758AbhAZAHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 19:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
+        id S1731966AbhAYThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732575AbhAZAHh (ORCPT
+        with ESMTP id S1730891AbhAYTAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 19:07:37 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFEBC061574;
-        Mon, 25 Jan 2021 16:06:56 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id g12so20591979ejf.8;
-        Mon, 25 Jan 2021 16:06:55 -0800 (PST)
+        Mon, 25 Jan 2021 14:00:01 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF04C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:59:20 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id b11so14330437ybj.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:59:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s0qDWtLwcyse6Vw+4qM2uEdaJXfCHIGfegIlcnD3nSg=;
-        b=XzALX73D2ahOpMtnBeDzQZdG8emxXcoDU47wCB6L7ZrQvNSpSSNUxTqfEhYv59IDEQ
-         515cfRf12SN7Kd8rZoZrCaQtDBCu90ZhHOcvT0WaVyJSotIU4kkSxgUhPcMdImkNnwqh
-         Slo4NPmBV8SzdaWtme3ek/eFNq2JwodAJy+g3iHFYwz6QWVJXbxGhQE0xMu9SawdeNcz
-         Jz8PQfyGztxUXQ7yvawUqtm8Y93I3q8f+EqtCY6czY1VHUx+fGfwC57Fq9wob1gCKHEy
-         7MUVG1alEHQE2vTRaLZ+O8sXh/U/HF8PK4hnRZQksgU0RYKEFmAOIXtibjy1MND8aKMS
-         Pc5g==
+        bh=MycbrezgsQZFT8oqiMufe2gK1ooAaS0SUCHVJFVQ9MQ=;
+        b=D89ARNqQBSe6Gl9R5DO/KGq6f+XwI019KcTyn5HUgOjPlzNOoKDGLvzncEHAHxv7re
+         lb0QJau2yo6HykmQLwhmFTcTH8Sq6QkyRikthUtPyKV308YBxPqBa17hLZ7vVdG82tdr
+         1ZYHEmIoWgXZXzZgGJavOcNzowg9rVJTESsTDHUrdAkVRtjVOXki39cVm64f90B/xnUN
+         p++bUV3uNwbHulfuik0Rs79fbFZMM9ifY6BNJzC7/LyidIkjYH3n/Y3WfoT8VtT0C7bQ
+         vqglJpySbxKD72RPbiNIaXSY6RlQxd1v9SjROcZsCNjlhR4Ys9ezoFcio6JbYI7EjanP
+         cYLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s0qDWtLwcyse6Vw+4qM2uEdaJXfCHIGfegIlcnD3nSg=;
-        b=b2S8iYFnAW+doJXSKT77yxVojZCnRMD0iD+Cuqc98z/EZL9Iwg+nNxWVx595JPgbMX
-         CaVeWHqTFy/YQNKzFtlTjYX5yWiM/ndUd6qcx501HS8wGsTqWP+kjaKMlV0/P9znnAJH
-         rr0Bu760GQgJoYK3YTVCMKg2E8kROmuD6fnLO+/zSUDhwCsw78fqF6cqKcwrlPI+dqFM
-         0yPnHGm1pCTfJYRs1FkoKffHxJ1PJfdD1WkRBdVbszhqZv7OmuUu1au3Gbdi8JouNoZh
-         y3y3Vycq15np1adh/MfyXXSrgne3NFkKj60RbthHFFnePLPm6xAp2e+CiSK9oij3AqJj
-         0FZQ==
-X-Gm-Message-State: AOAM531Myi5TIhA5e7XEqm0ASTfj05kq0sU5n5c8tadLrJs+r48mSsUL
-        yh/51X2CC6eyZLL2a8Yly9wNNHJ1mm3CUMMlTDY=
-X-Google-Smtp-Source: ABdhPJxoPkFKN90hhXSMg3s7SqZzzhxZ+tsgeRmXet6l8yCvGGsUtV7K0xqPgQyOExb864fQKuQUFbprfNPjamSR1kQ=
-X-Received: by 2002:a17:906:3f8d:: with SMTP id b13mr1804751ejj.464.1611619614733;
- Mon, 25 Jan 2021 16:06:54 -0800 (PST)
+        bh=MycbrezgsQZFT8oqiMufe2gK1ooAaS0SUCHVJFVQ9MQ=;
+        b=tFWNGh6SzgJr/0qEW9urMZD7Xoq4G7TCD5dkwSr43ppquY+WMnPAPP3T1zzE1isWPv
+         jV+oBDfiu0MVo+Lzycn+7mP6nE115Y98L1KnJvxLWmDX8nxry/Ou35LYwDEhPWZHSbx2
+         ezXHTkRdfd/2xLCzzGEFj3VoQibeyHwU1SJtpTddv5mbkbUdYZ0KzFrpV5nM0T596oLm
+         009vCs3KdS8fJWaK7OIYRAWzpCltGMvixRix2NB8/uQUrNkUMqB2Omq+NrvEyTeAOy6B
+         g3lb1K4O73Og0MVkcef9ZPF5Aa0L2L/l+IDmHoNCZhBIJBtreMrrFXOXnZH1D/HPArGA
+         UKLA==
+X-Gm-Message-State: AOAM5309leCo9r2rdU21rpbyJPbGYoNenNRvOG99o3lo34iv1fOC1BMW
+        FBMJCnagm1S8vCRSU67iu/hV0PCWp4K8jbA2maBV7Q==
+X-Google-Smtp-Source: ABdhPJwgOyKDm0nJVp7CDR5p+pD9pfx6JsaeKrbh2AWLDPYbm1qy57jLH9fVrTDF4d9HZfHyOf/YQTtTZFeWAQ46qnY=
+X-Received: by 2002:a25:2f46:: with SMTP id v67mr3110432ybv.20.1611601159888;
+ Mon, 25 Jan 2021 10:59:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20210123161812.1043345-1-horatiu.vultur@microchip.com> <20210123161812.1043345-4-horatiu.vultur@microchip.com>
-In-Reply-To: <20210123161812.1043345-4-horatiu.vultur@microchip.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 25 Jan 2021 19:06:18 -0500
-Message-ID: <CAF=yD-KdqagGYZwzke-tX257JbtbPwi-2p0esOV1EFX3DN_ZUg@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/4] bridge: mrp: Extend br_mrp_switchdev to
- detect better the errors
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     =?UTF-8?B?SmnFmcOtIFDDrXJrbw==?= <jiri@resnulli.us>,
-        ivecera@redhat.com, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, roopa@nvidia.com,
-        nikolay@nvidia.com, Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Network Development <netdev@vger.kernel.org>,
+References: <20210120105246.23218-1-michael@walle.cc> <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc> <20210125165041.GA5979@e121166-lin.cambridge.arm.com>
+In-Reply-To: <20210125165041.GA5979@e121166-lin.cambridge.arm.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 25 Jan 2021 10:58:43 -0800
+Message-ID: <CAGETcx-P-MxM+49XdUGBmg5YgnHS=fmz8uewywXvLSFKj=MqRQ@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to builtin_platform_driver()
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Michael Walle <michael@walle.cc>, Rob Herring <robh@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        bridge@lists.linux-foundation.org
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 11:23 AM Horatiu Vultur
-<horatiu.vultur@microchip.com> wrote:
+On Mon, Jan 25, 2021 at 8:50 AM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
 >
-> This patch extends the br_mrp_switchdev functions to be able to have a
-> better understanding what cause the issue and if the SW needs to be used
-> as a backup.
+> On Wed, Jan 20, 2021 at 08:28:36PM +0100, Michael Walle wrote:
+> > [RESEND, fat-fingered the buttons of my mail client and converted
+> > all CCs to BCCs :(]
+> >
+> > Am 2021-01-20 20:02, schrieb Saravana Kannan:
+> > > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+> > > > wrote:
+> > > > >
+> > > > > fw_devlink will defer the probe until all suppliers are ready. We can't
+> > > > > use builtin_platform_driver_probe() because it doesn't retry after probe
+> > > > > deferral. Convert it to builtin_platform_driver().
+> > > >
+> > > > If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+> > > > shouldn't it be fixed or removed?
+> > >
+> > > I was actually thinking about this too. The problem with fixing
+> > > builtin_platform_driver_probe() to behave like
+> > > builtin_platform_driver() is that these probe functions could be
+> > > marked with __init. But there are also only 20 instances of
+> > > builtin_platform_driver_probe() in the kernel:
+> > > $ git grep ^builtin_platform_driver_probe | wc -l
+> > > 20
+> > >
+> > > So it might be easier to just fix them to not use
+> > > builtin_platform_driver_probe().
+> > >
+> > > Michael,
+> > >
+> > > Any chance you'd be willing to help me by converting all these to
+> > > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+> >
+> > If it just moving the probe function to the _driver struct and
+> > remove the __init annotations. I could look into that.
 >
-> There are the following cases:
-> - when the code is compiled without CONFIG_NET_SWITCHDEV. In this case
->   return success so the SW can continue with the protocol. Depending on
->   the function it returns 0 or BR_MRP_SW.
-> - when code is compiled with CONFIG_NET_SWITCHDEV and the driver doesn't
->   implement any MRP callbacks, then the HW can't run MRP so it just
->   returns -EOPNOTSUPP. So the SW will stop further to configure the
->   node.
-> - when code is compiled with CONFIG_NET_SWITCHDEV and the driver fully
->   supports any MRP functionality then the SW doesn't need to do
->   anything.  The functions will return 0 or BR_MRP_HW.
-> - when code is compiled with CONFIG_NET_SWITCHDEV and the HW can't run
->   completely the protocol but it can help the SW to run it.  For
->   example, the HW can't support completely MRM role(can't detect when it
->   stops receiving MRP Test frames) but it can redirect these frames to
->   CPU. In this case it is possible to have a SW fallback. The SW will
->   try initially to call the driver with sw_backup set to false, meaning
->   that the HW can implement completely the role. If the driver returns
->   -EOPNOTSUPP, the SW will try again with sw_backup set to false,
->   meaning that the SW will detect when it stops receiving the frames. In
->   case the driver returns 0 then the SW will continue to configure the
->   node accordingly.
->
-> In this way is more clear when the SW needs to stop configuring the
-> node, or when the SW is used as a backup or the HW can implement the
-> functionality.
->
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> Can I drop this patch then ?
 
+No, please pick it up. Michael and I were talking about doing similar
+changes for other drivers.
 
-> -int br_mrp_switchdev_set_ring_role(struct net_bridge *br,
-> -                                  struct br_mrp *mrp,
-> -                                  enum br_mrp_ring_role_type role)
-> +enum br_mrp_hw_support
-> +br_mrp_switchdev_set_ring_role(struct net_bridge *br, struct br_mrp *mrp,
-> +                              enum br_mrp_ring_role_type role)
->  {
->         struct switchdev_obj_ring_role_mrp mrp_role = {
->                 .obj.orig_dev = br->dev,
->                 .obj.id = SWITCHDEV_OBJ_ID_RING_ROLE_MRP,
->                 .ring_role = role,
->                 .ring_id = mrp->ring_id,
-> +               .sw_backup = false,
->         };
->         int err;
->
-> +       /* If switchdev is not enabled then just run in SW */
-> +       if (!IS_ENABLED(CONFIG_NET_SWITCHDEV))
-> +               return BR_MRP_SW;
-> +
-> +       /* First try to see if HW can implement comptletly the role in HW */
-
-typo: completely
-
->         if (role == BR_MRP_RING_ROLE_DISABLED)
->                 err = switchdev_port_obj_del(br->dev, &mrp_role.obj);
->         else
->                 err = switchdev_port_obj_add(br->dev, &mrp_role.obj, NULL);
->
-> -       return err;
-> +       /* In case of success then just return and notify the SW that doesn't
-> +        * need to do anything
-> +        */
-> +       if (!err)
-> +               return BR_MRP_HW;
-> +
-> +       /* There was some issue then is not possible at all to have this role so
-> +        * just return failire
-
-typo: failure
-
-> +        */
-> +       if (err != -EOPNOTSUPP)
-> +               return BR_MRP_NONE;
-> +
-> +       /* In case the HW can't run complety in HW the protocol, we try again
-
-typo: completely. Please proofread your comments closely. I saw at
-least one typo in the commit messages too.
-
-More in general comments that say what the code does can generally be eschewed.
-
-> +        * and this time to allow the SW to help, but the HW needs to redirect
-> +        * the frames to CPU.
-> +        */
-> +       mrp_role.sw_backup = true;
-> +       err = switchdev_port_obj_add(br->dev, &mrp_role.obj, NULL);
-
-This calls the same function. I did not see code that changes behavior
-based on sw_backup. Will this not give the same result?
-
-Also, this lacks the role test (add or del). Is that because if
-falling back onto SW mode during add, this code does not get called at
-all on delete?
-
-> +
-> +       /* In case of success then notify the SW that it needs to help with the
-> +        * protocol
-> +        */
-> +       if (!err)
-> +               return BR_MRP_SW;
-> +
-> +       return BR_MRP_NONE;
->  }
->
-> -int br_mrp_switchdev_send_ring_test(struct net_bridge *br,
-> -                                   struct br_mrp *mrp, u32 interval,
-> -                                   u8 max_miss, u32 period,
-> -                                   bool monitor)
-> +enum br_mrp_hw_support
-> +br_mrp_switchdev_send_ring_test(struct net_bridge *br, struct br_mrp *mrp,
-> +                               u32 interval, u8 max_miss, u32 period,
-> +                               bool monitor)
->  {
->         struct switchdev_obj_ring_test_mrp test = {
->                 .obj.orig_dev = br->dev,
-> @@ -79,12 +106,29 @@ int br_mrp_switchdev_send_ring_test(struct net_bridge *br,
->         };
->         int err;
->
-> +       /* If switchdev is not enabled then just run in SW */
-> +       if (!IS_ENABLED(CONFIG_NET_SWITCHDEV))
-> +               return BR_MRP_SW;
-> +
->         if (interval == 0)
->                 err = switchdev_port_obj_del(br->dev, &test.obj);
->         else
->                 err = switchdev_port_obj_add(br->dev, &test.obj, NULL);
->
-> -       return err;
-> +       /* If everything succeed then the HW can send this frames, so the SW
-> +        * doesn't need to generate them
-> +        */
-> +       if (!err)
-> +               return BR_MRP_HW;
-> +
-> +       /* There was an error when the HW was configured so the SW return
-> +        * failure
-> +        */
-> +       if (err != -EOPNOTSUPP)
-> +               return BR_MRP_NONE;
-> +
-> +       /* So the HW can't generate these frames so allow the SW to do that */
-> +       return BR_MRP_SW;
-
-This is the same ternary test as above. It recurs a few times. Perhaps
-it can use a helper.
+-Saravana
