@@ -2,95 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C67302FF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8C5302FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731770AbhAYXRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732822AbhAYXRC (ORCPT
+        id S1732678AbhAYXUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:20:09 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:45862 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732660AbhAYXTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:17:02 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07718C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:16:22 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id dj6so7062311qvb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:16:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pr+2CvKWSXQlcfbagHzf9FCH1wHTJk+YNUukuggEowE=;
-        b=MPHMowxrctdI061dZikfB78k3kxJo7RV7pqbovUiUMGwLMx5mqeqVdd8BY75mLwS/U
-         86aVmxSp3sp0NfyjYsQORyQ313BLeOnaF7UX0hMGJTbhPPTepqaouuIKpVXygcWMsM4Z
-         QsVhyYYFAeq1iiJUujMomSxuVWJUU3HZcn+eO2EOg6EaKLJhuGCMEF+aAeneZN2CZgUP
-         GS4DEay3LHU1iFNBJ3pB0b/I8zPMgmLsSITxXEQbpsLsYzU5KZ+Gf0hjrx+zl4KQ8TkW
-         6K78hQCeKEqBkB2Cp6MuJB0zcVq6xgrOEn2t1t6hpBpHYXFzcBfAXmNCTo367HUJsMXA
-         o23w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pr+2CvKWSXQlcfbagHzf9FCH1wHTJk+YNUukuggEowE=;
-        b=BsKg6TUldnr1afCMBw+6mMzjwTzyGlDDAhDUasAF4/8dA8GdcZvPydxmwdYpkPqceT
-         cdkaYvnHjjZzAD0RVJPOl9VbksbbDkmbXT/z31vtttT1Z5TCkNs1pEcF5/lAqLQ19wGg
-         +7xPkN6ZkU20LmFFes9U0nTs1YNxrOOL5JdcuAcpnLMqJTMfTT9mMlleal1MeTCamWtw
-         ctUlOqJsE3Q2AZsiXvZUyEwmD21H+a/8hhoxk+tusdVkJMAMXzmOnXA0tHQIbCjJmGL3
-         AYdrKzbVHlojQuQd/IKui9whGIqikp/zh84HEGCD0nmffwKI8FAG9tiUvmI3yQVC1Sc5
-         ZnEg==
-X-Gm-Message-State: AOAM5317CHF3zGQdNjWEgbMmUQBp8bP1T0MKlPiDQVPOyoha2hUNK3fc
-        iMm7RkFhnHT0ferixD58sZdpgA==
-X-Google-Smtp-Source: ABdhPJyGDZ0yKVIVXVyamsLCpnaLzzwlkeMkZZGH66Bz7h7jySB+qEi/pLU/0Wjd+fPB0jo3AzFjjA==
-X-Received: by 2002:a0c:c583:: with SMTP id a3mr3118919qvj.15.1611616581170;
-        Mon, 25 Jan 2021 15:16:21 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id w9sm13608151qka.76.2021.01.25.15.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 15:16:20 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l4B5o-006pqt-00; Mon, 25 Jan 2021 19:16:20 -0400
-Date:   Mon, 25 Jan 2021 19:16:19 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        "linux-accelerators@lists.ozlabs.org" 
-        <linux-accelerators@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
-Message-ID: <20210125231619.GY4605@ziepe.ca>
-References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
- <20210125154717.GW4605@ziepe.ca>
- <96b655ade2534a65974a378bb68383ee@hisilicon.com>
+        Mon, 25 Jan 2021 18:19:22 -0500
+Received: from localhost.localdomain (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 10PNHDrD029059;
+        Tue, 26 Jan 2021 08:17:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 10PNHDrD029059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611616634;
+        bh=xwIb0oqMknXVdymXEZ6iq/BFlhwRA9qFCQ7anGrVqGg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KzyJpXCJXKnGOOfVfP7oeCny6KI2hL5T3EDgyMyAb+lYn3rwWdPjwK9PvjZFtKYcU
+         bA4VVOSCpV8WTjKjxQEu2XIxwqBVLoss4P8n1F5j5agQr+x3v8y6V9dU4MB2Cxoh2p
+         GiSZ2TlgyFpVHkQCSPG8ooIziLm7DWLXMQHUJ6sqPpS2MstSTEjSjOVxoAx5LFvGf9
+         DRJScYKPhBqD1DNmTfsn76fg83DAOIDo+bdUVK3+7miCW5jiWU4HDhXrouMRfzITBe
+         NMDZXItfH4c7BkZSzAio/ps7SEx7YETugX0ZtUyQEs4FT8xlmsyT1R9U43ZW/WzFs2
+         CAaZfTYhldI+w==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] net: move CONFIG_NET guard to top Makefile
+Date:   Tue, 26 Jan 2021 08:16:55 +0900
+Message-Id: <20210125231659.106201-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96b655ade2534a65974a378bb68383ee@hisilicon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:21:14PM +0000, Song Bao Hua (Barry Song) wrote:
-> mlock, while certainly be able to prevent swapping out, it won't
-> be able to stop page moving due to:
-> * memory compaction in alloc_pages()
-> * making huge pages
-> * numa balance
-> * memory compaction in CMA
+When CONFIG_NET is disabled, nothing under the net/ directory is
+compiled. Move the CONFIG_NET guard to the top Makefile so the net/
+directory is entirely skipped.
 
-Enabling those things is a major reason to have SVA device in the
-first place, providing a SW API to turn it all off seems like the
-wrong direction.
+When Kbuild visits net/Makefile, CONFIG_NET is obvioulsy 'y' because
+CONFIG_NET is a bool option. Clean up net/Makefile.
 
-If the device doesn't want to use SVA then don't use it, use normal
-DMA pinning like everything else.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Jason
+ Makefile     |  3 ++-
+ net/Makefile | 11 ++++-------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index b0e4767735dc..61357f7eb55f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -649,7 +649,8 @@ ifeq ($(KBUILD_EXTMOD),)
+ core-y		:= init/ usr/
+ drivers-y	:= drivers/ sound/
+ drivers-$(CONFIG_SAMPLES) += samples/
+-drivers-y	+= net/ virt/
++drivers-$(CONFIG_NET) += net/
++drivers-y	+= virt/
+ libs-y		:= lib/
+ endif # KBUILD_EXTMOD
+ 
+diff --git a/net/Makefile b/net/Makefile
+index d96b0aa8f39f..6fa3b2e26cab 100644
+--- a/net/Makefile
++++ b/net/Makefile
+@@ -6,20 +6,19 @@
+ # Rewritten to use lists instead of if-statements.
+ #
+ 
+-obj-$(CONFIG_NET)		:= devres.o socket.o core/
++obj-y				:= devres.o socket.o core/
+ 
+-tmp-$(CONFIG_COMPAT) 		:= compat.o
+-obj-$(CONFIG_NET)		+= $(tmp-y)
++obj-$(CONFIG_COMPAT)		+= compat.o
+ 
+ # LLC has to be linked before the files in net/802/
+ obj-$(CONFIG_LLC)		+= llc/
+-obj-$(CONFIG_NET)		+= ethernet/ 802/ sched/ netlink/ bpf/ ethtool/
++obj-y				+= ethernet/ 802/ sched/ netlink/ bpf/ ethtool/
+ obj-$(CONFIG_NETFILTER)		+= netfilter/
+ obj-$(CONFIG_INET)		+= ipv4/
+ obj-$(CONFIG_TLS)		+= tls/
+ obj-$(CONFIG_XFRM)		+= xfrm/
+ obj-$(CONFIG_UNIX_SCM)		+= unix/
+-obj-$(CONFIG_NET)		+= ipv6/
++obj-y				+= ipv6/
+ obj-$(CONFIG_BPFILTER)		+= bpfilter/
+ obj-$(CONFIG_PACKET)		+= packet/
+ obj-$(CONFIG_NET_KEY)		+= key/
+@@ -63,9 +62,7 @@ obj-$(CONFIG_6LOWPAN)		+= 6lowpan/
+ obj-$(CONFIG_IEEE802154)	+= ieee802154/
+ obj-$(CONFIG_MAC802154)		+= mac802154/
+ 
+-ifeq ($(CONFIG_NET),y)
+ obj-$(CONFIG_SYSCTL)		+= sysctl_net.o
+-endif
+ obj-$(CONFIG_DNS_RESOLVER)	+= dns_resolver/
+ obj-$(CONFIG_CEPH_LIB)		+= ceph/
+ obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
+-- 
+2.27.0
+
