@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E2A303061
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F92303062
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732683AbhAYXnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:43:50 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:33838 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732962AbhAYXlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:41:53 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1l4BTA-00060r-Kk; Tue, 26 Jan 2021 00:40:28 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     robh+dt@kernel.org, wim@linux-watchdog.org, jamie@jamieiles.com,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 1/8] dt-binding: watchdog: add more Rockchip compatibles to snps,dw-wdt.yaml
-Date:   Tue, 26 Jan 2021 00:40:27 +0100
-Message-ID: <11680602.O9o76ZdvQC@phil>
-In-Reply-To: <20210123173401.GA57343@roeck-us.net>
-References: <20201218120534.13788-1-jbx6244@gmail.com> <20210123173401.GA57343@roeck-us.net>
+        id S1732864AbhAYXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:44:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53681 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732933AbhAYXmQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 18:42:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611618049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UzIK0dNGmCcK/1nr62R/wDDSGrVY+nqc18uNMtz2XpI=;
+        b=L5ue6JSh+jjhqmHAdHdLTwjJh9Z8Ip6FqtRDlOuyuEaPRNG/0DR1EGhcmGfcPX173Ite3O
+        lAMz0V+SRsl0o8Z5/W3wnthjolM7pkQOqGbLyYqd7Ey1KA+1s3f94Nfmekg1DHCHIXTfjp
+        2z/Q2lmWQMKpVlDmr6mFOnWU82rAERk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-4oFIAcJwOPamaxj-0gPjkg-1; Mon, 25 Jan 2021 18:40:45 -0500
+X-MC-Unique: 4oFIAcJwOPamaxj-0gPjkg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 463A080A5C0;
+        Mon, 25 Jan 2021 23:40:43 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7D5DB10023AD;
+        Mon, 25 Jan 2021 23:40:41 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 17:40:39 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Michal Hocko <mhocko@suse.com>,
+        rostedt@goodmis.org, jbaron@akamai.com, ardb@kernel.org
+Subject: Re: [RFC PATCH 6/8] preempt/dynamic: Provide
+ preempt_schedule[_notrace]() static calls
+Message-ID: <20210125234039.mb5fvhyzzoujajhm@treble>
+References: <20210118141223.123667-1-frederic@kernel.org>
+ <20210118141223.123667-7-frederic@kernel.org>
+ <20210122165226.GD16371@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210122165226.GD16371@worktop.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
-
-Am Samstag, 23. Januar 2021, 18:34:01 CET schrieb Guenter Roeck:
-> On Fri, Dec 18, 2020 at 01:05:27PM +0100, Johan Jonker wrote:
-> > The watchdog compatible strings are suppose to be SoC orientated.
-> > In the more recently added Rockchip SoC dtsi files only
-> > the fallback string "snps,dw-wdt" is used, so add the following
-> > compatible strings:
-> > 
-> > "rockchip,px30-wdt", "snps,dw-wdt"
-> > "rockchip,rk3228-wdt", "snps,dw-wdt"
-> > "rockchip,rk3308-wdt", "snps,dw-wdt"
-> > "rockchip,rk3328-wdt", "snps,dw-wdt"
-> > "rockchip,rk3399-wdt", "snps,dw-wdt"
-> > "rockchip,rv1108-wdt", "snps,dw-wdt"
-> > 
-> > make ARCH=arm dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> > 
-> > make ARCH=arm64 dtbs_check
-> > DT_SCHEMA_FILES=Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> > 
-> > Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+On Fri, Jan 22, 2021 at 05:52:26PM +0100, Peter Zijlstra wrote:
+> On Mon, Jan 18, 2021 at 03:12:21PM +0100, Frederic Weisbecker wrote:
+> > +#ifdef CONFIG_PREEMPT_DYNAMIC
+> > +DEFINE_STATIC_CALL(preempt_schedule, __preempt_schedule_func());
+> > +EXPORT_STATIC_CALL(preempt_schedule);
+> > +#endif
 > 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-just to clarify, do you expect me to pick up the dt-binding patch
-with the devicetree patches or do you want to take this individual
-patch through the watchdog tree instead?
-
-
-Thanks
-Heiko
-
-> > ---
-> >  Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> > index f7ee9229c..b58596b18 100644
-> > --- a/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> > +++ b/Documentation/devicetree/bindings/watchdog/snps,dw-wdt.yaml
-> > @@ -18,10 +18,16 @@ properties:
-> >        - const: snps,dw-wdt
-> >        - items:
-> >            - enum:
-> > +              - rockchip,px30-wdt
-> >                - rockchip,rk3066-wdt
-> >                - rockchip,rk3188-wdt
-> > +              - rockchip,rk3228-wdt
-> >                - rockchip,rk3288-wdt
-> > +              - rockchip,rk3308-wdt
-> > +              - rockchip,rk3328-wdt
-> >                - rockchip,rk3368-wdt
-> > +              - rockchip,rk3399-wdt
-> > +              - rockchip,rv1108-wdt
-> >            - const: snps,dw-wdt
-> >  
-> >    reg:
+> > +#ifdef CONFIG_PREEMPT_DYNAMIC
+> > +DEFINE_STATIC_CALL(preempt_schedule_notrace, __preempt_schedule_notrace_func());
+> > +EXPORT_STATIC_CALL(preempt_schedule_notrace);
+> > +#endif
 > 
+> So one of the things I hates most of this is that is allows 'random'
+> modules to hijack the preemption by rewriting these callsites. Once you
+> export the key, we've lost.
+> 
+> I've tried a number of things, but this is the only one I could come up
+> with that actually stands a chance against malicious modules (vbox and
+> the like).
+> 
+> It's somewhat elaborate, but afaict it actually works.
 
+What about this hopefully abuse-proof idea which has less code, less
+complexity, no registration, no new data structures, no COC defiance.
 
+Add a writable-by-modules bit to the key struct, which can be set when
+you define the key.  Enforce it in __static_call_update() with a call to
+__builtin_return_address(0).  WARN when the caller's text isn't in the
+kernel proper and the flag isn't set.
 
+Hm?
+
+-- 
+Josh
 
