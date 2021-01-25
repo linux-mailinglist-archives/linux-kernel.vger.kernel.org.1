@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5497430496D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36597304957
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732880AbhAZF2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:28:33 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:20619 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727330AbhAYKNY (ORCPT
+        id S1733138AbhAZF3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:29:19 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:58353 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727393AbhAYKQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:13:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1611569227;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Subject:Sender;
-        bh=/pQs1UTSU8NSB7mRfB8RlJZdZ2fKeEBAAIz/2cLj9Tw=;
-        b=UyxYqe2M5YG7v7fe90gyZFldrQy/iVcLbWogXFce6/sXJHP6+bESS/mANHsTCf5ysT
-        hj5SdPHfksh3nCx5wrANcA7jYcGZ/dhiSXua1wq+3Niyl1U/55PX3g/gesGdUixqb7YU
-        F6MjOK4H+4+c5KTv5WFfOj8XK82zd7DzHGSF3o84wO+4IGghXWGhy0hPFhGvmFUJXS28
-        CN1AcrdPsfoOTofWaw0W+p/MQNky0q3lFjrsurxh7rdm7VPCpuO6PFdJJYckTklG01Uk
-        Wz3rHPIsbWkHY65UwUpyk0aCCmI2dxw2akgPFBu7o01qd8nlNr3VJX8MESvyNTiULFFR
-        5RDw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j9IczEaYo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id R0a218x0PA72kv7
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 25 Jan 2021 11:07:02 +0100 (CET)
-Date:   Mon, 25 Jan 2021 11:06:56 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: msm8916-longcheer-l8910: Add
- imu/magnetometer
-Message-ID: <YA6YQMHDk4Nx1dDE@gerhold.net>
-References: <20210125094435.7528-1-jonathan.albrieux@gmail.com>
- <20210125094435.7528-4-jonathan.albrieux@gmail.com>
+        Mon, 25 Jan 2021 05:16:10 -0500
+X-UUID: 6384287551e242db833b41f0c09ca140-20210125
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=agLfhRiuBQXPUocs/4aHh4BCnBF//jWXNeHjcfaSKuI=;
+        b=Uiaz2Pj+ptMJi915Iq/CtEYKrHAaOLC0jFKhZbgkqvdjx1tU96R+Jlsrzu44OHBHUEIkOBP9Q3ivGRk9smm23GStaHPZ029Ka0LC/p8pXJHhYI1s7IDgG3jOcZVc1UgDXGzjtSJm3OcIbvuy+8SI7yMVvribHCNQaWBuix3ncD4=;
+X-UUID: 6384287551e242db833b41f0c09ca140-20210125
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1678971890; Mon, 25 Jan 2021 18:14:40 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
+ 2021 18:14:34 +0800
+Received: from [10.19.240.15] (10.19.240.15) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Jan 2021 18:14:34 +0800
+Message-ID: <1611569674.5980.101.camel@mcddlt001>
+Subject: Re: [PATCH v2] PCI: Re-enable downstream port LTR if it was
+ previously enabled
+From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Utkarsh H Patel" <utkarsh.h.patel@intel.com>,
+        <linux-pci@vger.kernel.org>, <matthias.bgg@gmail.com>,
+        <lambert.wang@mediatek.com>, <linux-mediatek@lists.infradead.org>,
+        <haijun.liu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Alex Williamson" <alex.williamson@redhat.com>
+Date:   Mon, 25 Jan 2021 18:14:34 +0800
+In-Reply-To: <20210122132006.GA2749050@bjorn-Precision-5520>
+References: <20210122132006.GA2749050@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125094435.7528-4-jonathan.albrieux@gmail.com>
+X-TM-SNTS-SMTP: 285C75945C61DF9626389DE331E26E2A373F19C46FAB96DAF5BBD6B4539DE7102000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:44:32AM +0100, Jonathan Albrieux wrote:
-> BQ Aquaris X5 (Longcheer L8910) has:
->  - BMI160 accelerometer and gyroscope sensor
->  - AK09911 magnetometer sensor
-> Add them to the device tree.
-> 
-> This patch depends on patch "arm64: dts: qcom: msm8916: Add blsp_i2c3".
-> 
-> Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+T24gRnJpLCAyMDIxLTAxLTIyIGF0IDA3OjIwIC0wNjAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
+PiBPbiBGcmksIEphbiAyMiwgMjAyMSBhdCAwMzowMzoxMVBNICswODAwLCBNaW5nY2h1YW5nIFFp
+YW8gd3JvdGU6DQo+ID4gT24gVGh1LCAyMDIxLTAxLTIxIGF0IDE2OjMxIC0wNjAwLCBCam9ybiBI
+ZWxnYWFzIHdyb3RlOg0KPiA+ID4gWytjYyBBbGV4IGFuZCBNaW5nY2h1YW5nIGV0IGFsIGZyb20N
+Cj4gPiA+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTAxMTIwNzI3MzkuMzE2MjQtMS1t
+aW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tXQ0KPiA+ID4gDQo+ID4gPiBPbiBUdWUsIEphbiAx
+OSwgMjAyMSBhdCAwNDoxNDoxMFBNICswMzAwLCBNaWthIFdlc3RlcmJlcmcgd3JvdGU6DQo+ID4g
+PiA+IFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2IHNheXMgdGhhdCB0aGUgZG93bnN0cmVhbSBwb3J0
+cyBtdXN0IHJlc2V0IHRoZQ0KPiA+ID4gPiBMVFIgZW5hYmxlIGJpdCBpZiB0aGUgbGluayBnb2Vz
+IGRvd24gKHBvcnQgZ29lcyBETF9Eb3duIHN0YXR1cykuIE5vdywgaWYNCj4gPiA+ID4gd2UgaGFk
+IExUUiBwcmV2aW91c2x5IGVuYWJsZWQgYW5kIHRoZSBQQ0llIGVuZHBvaW50IGdldHMgaG90LXJl
+bW92ZWQgYW5kDQo+ID4gPiA+IHRoZW4gaG90LWFkZGVkIGJhY2sgdGhlIC0+bHRyX3BhdGggb2Yg
+dGhlIGRvd25zdHJlYW0gcG9ydCBpcyBzdGlsbCBzZXQNCj4gPiA+ID4gYnV0IHRoZSBwb3J0IG5v
+dyBkb2VzIG5vdCBoYXZlIHRoZSBMVFIgZW5hYmxlIGJpdCBzZXQgYW55bW9yZS4NCj4gPiA+ID4g
+DQo+ID4gPiA+IEZvciB0aGlzIHJlYXNvbiBjaGVjayBpZiB0aGUgYnJpZGdlIHVwc3RyZWFtIGhh
+ZCBMVFIgZW5hYmxlZCBwcmV2aW91c2x5DQo+ID4gPiA+IGFuZCByZS1lbmFibGUgaXQgYmVmb3Jl
+IGVuYWJsaW5nIExUUiBmb3IgdGhlIGVuZHBvaW50Lg0KPiA+ID4gPiANCj4gPiA+ID4gUmVwb3J0
+ZWQtYnk6IFV0a2Fyc2ggSCBQYXRlbCA8dXRrYXJzaC5oLnBhdGVsQGludGVsLmNvbT4NCj4gPiA+
+ID4gU2lnbmVkLW9mZi1ieTogTWlrYSBXZXN0ZXJiZXJnIDxtaWthLndlc3RlcmJlcmdAbGludXgu
+aW50ZWwuY29tPg0KPiA+ID4gDQo+ID4gPiBJIHRoaW5rIHRoaXMgYW5kIE1pbmdjaHVhbmcncyBw
+YXRjaCwgd2hpY2ggaXMgZXNzZW50aWFsbHkgaWRlbnRpY2FsLA0KPiA+ID4gYXJlIHJpZ2h0IGFu
+ZCBzb2x2ZXMgdGhlIHByb2JsZW0gZm9yIGhvdC1yZW1vdmUvaG90LWFkZC4gIEluIHRoYXQNCj4g
+PiA+IHNjZW5hcmlvIHdlIGNhbGwgcGNpX2NvbmZpZ3VyZV9sdHIoKSBvbiB0aGUgaG90LWFkZGVk
+IGRldmljZSwgYW5kDQo+ID4gPiB3aXRoIHRoaXMgcGF0Y2gsIHdlJ2xsIHJlLWVuYWJsZSBMVFIg
+b24gdGhlIGJyaWRnZSBsZWFkaW5nIHRvIHRoZSBuZXcNCj4gPiA+IGRldmljZSBiZWZvcmUgZW5h
+YmxpbmcgTFRSIG9uIHRoZSBuZXcgZGV2aWNlIGl0c2VsZi4NCj4gPiA+IA0KPiA+ID4gQnV0IGRv
+bid0IHdlIGhhdmUgYSBzaW1pbGFyIHByb2JsZW0gaWYgd2Ugc2ltcGx5IGRvIGEgRnVuZGFtZW50
+YWwNCj4gPiA+IFJlc2V0IG9uIGEgZGV2aWNlPyAgSSB0aGluayB0aGUgcmVzZXQgcGF0aCB3aWxs
+IHJlc3RvcmUgdGhlIGRldmljZSdzDQo+ID4gPiBzdGF0ZSwgaW5jbHVkaW5nIFBDSV9FWFBfREVW
+Q1RMMiwgYnV0IGl0IGRvZXNuJ3QgZG8gYW55dGhpbmcgd2l0aCB0aGUNCj4gPiA+IHVwc3RyZWFt
+IGJyaWRnZSwgZG9lcyBpdD8NCj4gPiANCj4gPiBZZXMuIEkgdGhpbmsgdGhlIHNhbWUgcHJvYmxl
+bSBleGlzdHMgdW5kZXIgc3VjaCBzY2VuYXJpbywgYW5kIHRoYXTigJlzIHRoZQ0KPiA+IGlzc3Vl
+IG15IHBhdGNoIGludGVuZHMgdG8gcmVzb2x2ZS4NCj4gPiBJIGFsc28gcHJlcGFyZWQgYSB2MiBw
+YXRjaCBmb3IgcmV2aWV3KHVwZGF0ZSB0aGUgcGF0Y2ggZGVzY3JpcHRpb24pLg0KPiA+IFNoYWxs
+IEkgc3VibWl0IHRoZSB2MiBwYXRjaCBmb3IgcmV2aWV3Pw0KPiANCj4gSG93IGRvZXMgeW91ciBw
+YXRjaCBzb2x2ZSB0aGlzIGZvciB0aGUgcmVzZXQgcGF0aD8gIEkgZG9uJ3QgdGhpbmsgd2UNCj4g
+Y2FsbCBwY2lfY29uZmlndXJlX2x0cigpIHdoZW4gd2UgcmVzZXQgYSBkZXZpY2UuDQo+IA0KDQpT
+b3JyeSwgSSBtaXN1bmRlcnN0YW5kIHRoZSByZXNldCBwYXRoLiBXaGVuIHdlIGRvIGEgRnVuZGFt
+ZW50YWwgUmVzZXQgb24NCmEgZGV2aWNlLCB3ZSBjYW4gdHJpZ2dlciBkZXZpY2UgcmVtb3ZhbCBh
+bmQgcmVzY2FuIGZsb3cgdG8gcmVzdG9yZSB0aGUNCmRldmljZS4gSW4gZGV2aWNlIHJlc2NhbiBm
+bG93LCBwY2lfY29uZmlndXJlX2x0cigpIHdpbGwgYmUgaW52b2tlZC4gSQ0KcmVnYXJkIHRoZSAi
+cmVtb3ZlIGFuZCByZXNjYW4gZmxvdyIgYXMgYSBwYXJ0IG9mIHJlc2V0IHBhdGggZm9yIHRoaXMN
+CmNhc2UgOikNCklmIHdlIHJlc3RvcmUgZGV2aWNlIGp1c3Qgd2l0aCBwY2lfcmVzdG9yZV9zdGF0
+ZSgpIGluIGRldmljZSBkcml2ZXINCmFmdGVyIGRldmljZSByZXNldHMsIHRoZSBMVFIgcHJvYmxl
+bSBhbHNvIGV4aXN0cyBkdWUgdG8NCnBjaV9yZXN0b3JlX3N0YXRlKCkgZG9lcyBub3RoaW5nIHdp
+dGggdXBzdHJlYW0gYnJpZGdlLiBJbiBuZXh0IHBhdGNoLCBJDQp3b3VsZCBsaWtlIHRvIHJlLWVu
+YWJsZSBMVFIgZm9yIHVwc3RyZWFtIGJyaWRnZSBiZWZvcmUgcmVzdG9yaW5nDQpkZXZpY2UncyBQ
+Q0lfRVhQX0RFVkNUTDIgaWYgaXQgaXMgbmVlZGVkLg0KDQo+ID4gPiBTbyBpZiBhIGJyaWRnZSBh
+bmQgYSBkZXZpY2UgYmVsb3cgaXQgYm90aCBoYXZlIExUUiBlbmFibGVkLCBjYW4ndCB3ZQ0KPiA+
+ID4gaGF2ZSB0aGUgZm9sbG93aW5nOg0KPiA+ID4gDQo+ID4gPiAgIC0gYnJpZGdlIExUUiBlbmFi
+bGVkDQo+ID4gPiAgIC0gZGV2aWNlIExUUiBlbmFibGVkDQo+ID4gPiAgIC0gcmVzZXQgZGV2aWNl
+LCBlLmcuLCB2aWEgU2Vjb25kYXJ5IEJ1cyBSZXNldA0KPiA+ID4gICAtIGxpbmsgZ29lcyBkb3du
+LCBicmlkZ2UgZGlzYWJsZXMgTFRSDQo+ID4gPiAgIC0gbGluayBjb21lcyBiYWNrIHVwLCBMVFIg
+ZGlzYWJsZWQgaW4gYm90aCBicmlkZ2UgYW5kIGRldmljZQ0KPiA+ID4gICAtIHJlc3RvcmUgZGV2
+aWNlIHN0YXRlLCBpbmNsdWRpbmcgTFRSIGVuYWJsZQ0KPiA+ID4gICAtIGRldmljZSBzZW5kcyBM
+VFIgbWVzc2FnZQ0KPiA+ID4gICAtIGJyaWRnZSByZXBvcnRzIFVuc3VwcG9ydGVkIFJlcXVlc3QN
+Cj4gPiA+IA0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gUHJldmlvdXMgdmVyc2lvbiBjYW4gYmUgZm91
+bmQgaGVyZToNCj4gPiA+ID4gDQo+ID4gPiA+ICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGlu
+dXgtcGNpLzIwMjEwMTE0MTM0NzI0Ljc5NTExLTEtbWlrYS53ZXN0ZXJiZXJnQGxpbnV4LmludGVs
+LmNvbS8NCj4gPiA+ID4gDQo+ID4gPiA+IENoYW5nZXMgZnJvbSB0aGUgcHJldmlvdXMgdmVyc2lv
+bjoNCj4gPiA+ID4gDQo+ID4gPiA+ICAgKiBDb3JyZWN0ZWQgdHlwb3MgaW4gdGhlIGNvbW1pdCBt
+ZXNzYWdlDQo+ID4gPiA+ICAgKiBObyBuZWVkIHRvIGNhbGwgcGNpZV9kb3duc3RyZWFtX3BvcnQo
+KQ0KPiA+ID4gPiANCj4gPiA+ID4gIGRyaXZlcnMvcGNpL3Byb2JlLmMgfCAxNyArKysrKysrKysr
+KysrKysrLQ0KPiA+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDEgZGVs
+ZXRpb24oLSkNCj4gPiA+ID4gDQo+ID4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wcm9i
+ZS5jIGIvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+ID4gPiBpbmRleCAwZWI2OGI0NzM1NGYuLmE0
+YThjMDMwNWZiOSAxMDA2NDQNCj4gPiA+ID4gLS0tIGEvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+
+ID4gPiArKysgYi9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gPiA+IEBAIC0yMTUzLDcgKzIxNTMs
+NyBAQCBzdGF0aWMgdm9pZCBwY2lfY29uZmlndXJlX2x0cihzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0K
+PiA+ID4gPiAgew0KPiA+ID4gPiAgI2lmZGVmIENPTkZJR19QQ0lFQVNQTQ0KPiA+ID4gPiAgCXN0
+cnVjdCBwY2lfaG9zdF9icmlkZ2UgKmhvc3QgPSBwY2lfZmluZF9ob3N0X2JyaWRnZShkZXYtPmJ1
+cyk7DQo+ID4gPiA+IC0Jc3RydWN0IHBjaV9kZXYgKmJyaWRnZTsNCj4gPiA+ID4gKwlzdHJ1Y3Qg
+cGNpX2RldiAqYnJpZGdlID0gTlVMTDsNCj4gPiA+ID4gIAl1MzIgY2FwLCBjdGw7DQo+ID4gPiA+
+ICANCj4gPiA+ID4gIAlpZiAoIXBjaV9pc19wY2llKGRldikpDQo+ID4gPiA+IEBAIC0yMTkxLDYg
+KzIxOTEsMjEgQEAgc3RhdGljIHZvaWQgcGNpX2NvbmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYg
+KmRldikNCj4gPiA+ID4gIAlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9S
+T09UX1BPUlQgfHwNCj4gPiA+ID4gIAkgICAgKChicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdl
+KGRldikpICYmDQo+ID4gPiA+ICAJICAgICAgYnJpZGdlLT5sdHJfcGF0aCkpIHsNCj4gPiA+ID4g
+KwkJLyoNCj4gPiA+ID4gKwkJICogRG93bnN0cmVhbSBwb3J0cyByZXNldCB0aGUgTFRSIGVuYWJs
+ZSBiaXQgd2hlbiB0aGUNCj4gPiA+ID4gKwkJICogbGluayBnb2VzIGRvd24gKGUuZyBvbiBob3Qt
+cmVtb3ZlKSBzbyByZS1lbmFibGUgdGhlDQo+ID4gPiA+ICsJCSAqIGJpdCBoZXJlIGlmIG5vdCBz
+ZXQgYW55bW9yZS4NCj4gPiA+ID4gKwkJICogUENJZSByNS4wLCBzZWMgNy41LjMuMTYuDQo+ID4g
+PiA+ICsJCSAqLw0KPiA+ID4gPiArCQlpZiAoYnJpZGdlKSB7DQo+ID4gPiA+ICsJCQlwY2llX2Nh
+cGFiaWxpdHlfcmVhZF9kd29yZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwgJmN0bCk7DQo+ID4g
+PiA+ICsJCQlpZiAoIShjdGwgJiBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKSkgew0KPiA+ID4gPiAr
+CQkJCXBjaV9kYmcoYnJpZGdlLCAicmUtZW5hYmxpbmcgTFRSXG4iKTsNCj4gPiA+ID4gKwkJCQlw
+Y2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNUTDIsDQo+ID4gPiA+
+ICsJCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KPiA+ID4gPiArCQkJfQ0KPiA+ID4g
+PiArCQl9DQo+ID4gPiA+ICsJCXBjaV9kYmcoZGV2LCAiZW5hYmxpbmcgTFRSXG4iKTsNCj4gPiA+
+ID4gIAkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwgUENJX0VYUF9ERVZDVEwyLA0KPiA+
+ID4gPiAgCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9FTik7DQo+ID4gPiA+ICAJCWRldi0+bHRy
+X3BhdGggPSAxOw0KPiA+ID4gPiAtLSANCj4gPiA+ID4gMi4yOS4yDQo+ID4gPiA+IA0KPiA+IA0K
+DQo=
 
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-
-> ---
->  .../boot/dts/qcom/msm8916-longcheer-l8910.dts | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-> index 7d5eff922f41..27845189ac2b 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8910.dts
-> @@ -56,6 +56,35 @@
->  	};
->  };
->  
-> +&blsp_i2c3 {
-> +	status = "okay";
-> +
-> +	magnetometer@d {
-> +		compatible = "asahi-kasei,ak09911";
-> +		reg = <0x0d>;
-> +
-> +		vdd-supply = <&pm8916_l17>;
-> +		vid-supply = <&pm8916_l6>;
-> +
-> +		reset-gpios = <&msmgpio 111 GPIO_ACTIVE_LOW>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&mag_reset_default>;
-> +	};
-> +
-> +	imu@68 {
-> +		compatible = "bosch,bmi160";
-> +		reg = <0x68>;
-> +
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l6>;
-> +
-> +		mount-matrix = "0", "1", "0",
-> +			      "-1", "0", "0",
-> +			       "0", "0", "1";
-> +	};
-> +};
-> +
->  &blsp1_uart2 {
->  	status = "okay";
->  };
-> @@ -220,6 +249,14 @@
->  		bias-pull-up;
->  	};
->  
-> +	mag_reset_default: mag-reset-default {
-> +		pins = "gpio111";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
->  	usb_id_default: usb-id-default {
->  		pins = "gpio110";
->  		function = "gpio";
-> -- 
-> 2.17.1
-> 
