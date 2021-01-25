@@ -2,96 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2393302BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56F0302BF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732143AbhAYTsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731893AbhAYT2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:28:32 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FF2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:27:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1t/GdNTi2oOTw8D8/h34ezIij3NRN5j7ufZ5EEKo418=; b=hkr0J/fGVEB/dyOiwRHxMp3vdA
-        1btyMmB2G8h9CTaU7eoDL9FNz6Mr53fJOK9CL1hyvTRPNYwKe79UxoM4oIyDmua6x+LE5heuj349T
-        TUd9fP4idCMAmmCdqfA06x81JLYCdAWd3gNNTi1fCLs01It9h1n8xtTTuRI5omIKs+uc=;
-Received: from p200300ccff0a26001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0a:2600:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1l47WV-0007WI-0u; Mon, 25 Jan 2021 20:27:39 +0100
-Received: from andi by aktux with local (Exim 4.92)
-        (envelope-from <andreas@kemnade.info>)
-        id 1l47WU-0004ba-P1; Mon, 25 Jan 2021 20:27:38 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     lgirdwood@gmail.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andreas Kemnade <andreas@kemnade.info>
-Subject: [PATCH] regulator: core: avoid error messages for deferred probing
-Date:   Mon, 25 Jan 2021 20:27:36 +0100
-Message-Id: <20210125192736.17657-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.29.2
+        id S1732162AbhAYTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:48:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731914AbhAYT3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:29:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 804EC21D79;
+        Mon, 25 Jan 2021 19:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611602900;
+        bh=6On6sfkiGo0BjdpSyslylTwlmNwbsH/AgnljyDfO1uU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hK8doc1xMi+SLHQlsjEplwak91eoXAIZPbh8xVQS310QxdI2GjVdOw0WrCERovOM1
+         OmS9IJFJbJEfzZWpPU/67naO0kOWsiqxfiUz9GNW5KHaM8uMyOYjL/f+RqTQubHUz+
+         Mb/eg31FW1VdrfLlc+F9Jftb3O/GV/OWQF+fXpdY=
+Date:   Mon, 25 Jan 2021 20:28:17 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        lars@metafoo.de, Michael.Hennerich@analog.com, nuno.sa@analog.com,
+        dragos.bogdan@analog.com, "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v2 03/12][RESEND] iio: buffer: rework buffer &
+ scan_elements dir creation
+Message-ID: <YA8b0az9c0Hha405@kroah.com>
+References: <20210122162529.84978-1-alexandru.ardelean@analog.com>
+ <20210122162529.84978-4-alexandru.ardelean@analog.com>
+ <20210124181126.07c100a5@archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210124181126.07c100a5@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Noise like this happens on boot with regulators which can be bypassed
-when the supply is not probed. That looks too alarming and confusing.
+On Sun, Jan 24, 2021 at 06:11:26PM +0000, Jonathan Cameron wrote:
+> On Fri, 22 Jan 2021 18:25:20 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> 
+> > When adding more than one IIO buffer per IIO device, we will need to create
+> > a buffer & scan_elements directory for each buffer.
+> > We also want to move the 'scan_elements' to be a sub-directory of the
+> > 'buffer' folder.
+> > 
+> > The format we want to reach is, for a iio:device0 folder, for 2 buffers
+> > [for example], we have a 'buffer0' and a 'buffer1' subfolder, and each with
+> > it's own 'scan_elements' subfolder.
+> > 
+> > So, for example:
+> >    iio:device0/buffer0
+> >       scan_elements/
+> > 
+> >    iio:device0/buffer1
+> >       scan_elements/
+> > 
+> > The other attributes under 'bufferX' would remain unchanged.
+> > 
+> > However, we would also need to symlink back to the old 'buffer' &
+> > 'scan_elements' folders, to keep backwards compatibility.
+> > 
+> > Doing all these, require that we maintain the kobjects for each 'bufferX'
+> > and 'scan_elements' so that we can symlink them back. We also need to
+> > implement the sysfs_ops for these folders.
+> > 
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> 
+> +CC GregKH and Rafael W for feedback on various things inline.
+> 
+> It might be that this is the neatest solution that we can come up with but
+> more eyes would be good!
 
-[    3.844092] vddpu: bypassed regulator has no supply!
-[    3.849105] vddpu: failed to get the current voltage: -EPROBE_DEFER
-[    3.855591] vddpu: supplied by DCDC1
-[    3.877211] vddsoc: bypassed regulator has no supply!
-[    3.882538] vddsoc: failed to get the current voltage: -EPROBE_DEFER
-[    3.888975] vddsoc: supplied by DCDC1
+In short, please do NOT do this.
 
-Handle such issues silently.
+At all.
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- drivers/regulator/core.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+no.
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index ca03d8e70bd1..238745fc97c2 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1168,6 +1168,9 @@ static int machine_constraints_voltage(struct regulator_dev *rdev,
- 			current_uV = regulator_get_voltage_rdev(rdev);
- 		}
- 
-+		if (current_uV == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+
- 		if (current_uV < 0) {
- 			rdev_err(rdev,
- 				 "failed to get the current voltage: %pe\n",
-@@ -4151,9 +4154,12 @@ int regulator_get_voltage_rdev(struct regulator_dev *rdev)
- 		if (bypassed) {
- 			/* if bypassed the regulator must have a supply */
- 			if (!rdev->supply) {
-+				if (rdev->supply_name)
-+					return -EPROBE_DEFER;
-+
- 				rdev_err(rdev,
- 					 "bypassed regulator has no supply!\n");
--				return -EPROBE_DEFER;
-+				return -EINVAL;
- 			}
- 
- 			return regulator_get_voltage_rdev(rdev->supply->rdev);
--- 
-2.29.2
+{sigh}
 
+> 
+> Whilst I think this looks fine, I'm less confident than I'd like to be.
+> 
+> Jonathan
+> 
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 195 +++++++++++++++++++++++++++---
+> >  drivers/iio/industrialio-core.c   |  24 ++--
+> >  include/linux/iio/buffer_impl.h   |  14 ++-
+> >  include/linux/iio/iio.h           |   2 +-
+> >  4 files changed, 200 insertions(+), 35 deletions(-)
+> > 
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+> > index 0412c4fda4c1..0f470d902790 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -1175,8 +1175,6 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
+> >  	return (ret < 0) ? ret : len;
+> >  }
+> >  
+> > -static const char * const iio_scan_elements_group_name = "scan_elements";
+> > -
+> >  static ssize_t iio_buffer_show_watermark(struct device *dev,
+> >  					 struct device_attribute *attr,
+> >  					 char *buf)
+> > @@ -1252,6 +1250,124 @@ static struct attribute *iio_buffer_attrs[] = {
+> >  	&dev_attr_data_available.attr,
+> >  };
+> >  
+> > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+> > +
+> > +static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
+> > +					struct attribute *attr,
+> > +					char *buf)
+> > +{
+> > +	struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
+> > +	struct device_attribute *dattr;
+> > +
+> > +	dattr = to_dev_attr(attr);
+> > +
+> > +	return dattr->show(&buffer->indio_dev->dev, dattr, buf);
+> > +}
+
+
+First off, you are dealing with "raw" kobjects here, below a 'struct
+device' in the device tree, which means that suddenly userspace does not
+know what in the world is going on, and you lost events and lots of
+other stuff.
+
+Never do this.  It should not be needed, and you are just trying to
+paper over one odd decision of an api with another one you will be stuck
+with for forever.
+
+Remember the driver core can create subdirectories for your attributes
+automatically if you want them to be in a subdir, but that's it, no
+further than that.  Just name the attribute group.
+
+But yes, you can not create a symlink to there, because (surprise), you
+don't want to!
+
+So please, just rethink your naming, create a totally new naming scheme
+for multiple entities, and just drop the old one (or keep a single
+value if you really want to.)  Don't make it harder than it has to be
+please, you can never remove the "compatible symlinks", just make a new
+api and move on.
+
+thanks,
+
+greg k-h
