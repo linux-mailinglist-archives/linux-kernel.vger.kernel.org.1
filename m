@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E32A3036BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD5F3036DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387970AbhAZGln convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 01:41:43 -0500
-Received: from wnbcorp.com ([175.126.38.143]:36710 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729474AbhAYOlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:41:10 -0500
-Received: from [100.89.229.92] (188-206-79-191.mobile.kpn.net [188.206.79.191])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10GDEIcc007280;
-        Sat, 16 Jan 2021 22:19:14 +0900
-Message-Id: <202101161319.10GDEIcc007280@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S2389236AbhAZGyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730012AbhAYPgH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:36:07 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74D8C061786;
+        Mon, 25 Jan 2021 07:04:03 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4DPTlp38fgz1s8P3;
+        Mon, 25 Jan 2021 13:32:38 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4DPTlp29gnz1rfK8;
+        Mon, 25 Jan 2021 13:32:38 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id SjUqCsmRVQvc; Mon, 25 Jan 2021 13:32:35 +0100 (CET)
+X-Auth-Info: pQzdjtka2BKwz0OQu6FP+DYh5itMUuZK8lIFjS5qH9s=
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Mon, 25 Jan 2021 13:32:35 +0100 (CET)
+Subject: Re: [PATCH] [5.8 regression] net: ks8851: fix link error
+To:     Arnd Bergmann <arnd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210125121937.3900988-1-arnd@kernel.org>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <d412433b-032a-9ed9-81aa-fe3f7c6d50d5@denx.de>
+Date:   Mon, 25 Jan 2021 13:32:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Sat, 16 Jan 2021 14:19:25 +0100
-Reply-To: johnsonwilson389@gmail.com
+In-Reply-To: <20210125121937.3900988-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On 1/25/21 1:19 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> An object file cannot be built for both loadable module and built-in
+> use at the same time:
+> 
+> arm-linux-gnueabi-ld: drivers/net/ethernet/micrel/ks8851_common.o: in function `ks8851_probe_common':
+> ks8851_common.c:(.text+0xf80): undefined reference to `__this_module'
+> 
+> Change the ks8851_common code to be a standalone module instead,
+> and use Makefile logic to ensure this is built-in if at least one
+> of its two users is.
+> 
+> Fixes: 797047f875b5 ("net: ks8851: Implement Parallel bus operations")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Marek sent two other patches to address the problem:
+> https://lore.kernel.org/netdev/20210116164828.40545-1-marex@denx.de/
+> https://lore.kernel.org/netdev/20210115134239.126152-1-marex@denx.de/
+> 
+> My version is what I applied locally to my randconfig tree, and
+> I think this is the cleanest solution.
 
-Sir/Madam,
-
-CONGRATULATIONS!!!
-
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 14th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+If this version works for all the configuration combinations, then 
+that's perfect, thanks.
