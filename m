@@ -2,90 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3C9302A9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:46:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23617302B17
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbhAYSqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727801AbhAYSnG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:43:06 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889F1C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:42:26 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id 31so8190613plb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:42:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Q1SeF2s/DOLhyrOyKgBakT7b/doGN2Q3Ae7/R3HebVk=;
-        b=o+tw8sjX0uJ14bRLrUXrIfbNecZ0kkQ+N/BxD4ZeO4jVV3Znvyq5q5Yl/uTUTTljS1
-         478N/0lEuiof0nTnC0w37vPwmZgwIciGZkYgCLBhkW8frsQtI/4Sf/+iu4rOD99wsP4u
-         KdziPrhQgzsWwy8nryVzz2dsYQKt3hCMfjLE0BTybUhhoLlB17Q1/azYDIve2iEqqOp6
-         e+3qaUGBQuXiu0+cK5aqQgQ8cCdWH3KYIvUvKyd4db3nXMNayV8VSiQftrfG/Kj9MF8t
-         z3NYTtuSCuAItS4AoSZTsRf58wxnRMC1R61Uvb3Yc/JBwYOTv32h/O79X8m+HUdH8rmK
-         zQJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q1SeF2s/DOLhyrOyKgBakT7b/doGN2Q3Ae7/R3HebVk=;
-        b=E0RdhqRAShgmslfrhQ1FyRUmRN5RZOkSw2OXgNu0Jae1QBEiqvFcf4rJM9MKEMd6eQ
-         oil0IwxxABHJJJJTqenSV3C+rRKMRNIpVwkm//RbmRIiX5PcUKTA87C5CvrLSUVbIzvu
-         t+xj46YcpzPNUmrZHSO7CcW5QXJuH9mAMY5tFbv8/7Z3pJaLI9fg2pMoWQt9c+ZLaevv
-         nmjD44IpKPi/RPGNiHiV1SeUAwisSpRdQ59G/un+Bw5AdSt5xmF4ygnufUXjW1etBO05
-         SxIHSnMdlLzNUglQCDT7GhZ9e2aVpXc7EoaBhuYphzbxll0ilk6DnMf+dk99i5e/fS6R
-         M5iw==
-X-Gm-Message-State: AOAM5333MjYGwGmiyzGXTsJ/D6BHKPg25w2TX9rIMKu5qlSdpfACSyEt
-        1BSi/FZsHhdB5x376TZmZ29elH5esHY+n9KY/gg=
-X-Google-Smtp-Source: ABdhPJwjCcv4RRP9CigW3gQV1lycuRcJwmMDSLYrsymwEU6kAYy+01iyMr5Zb7AiKWIUwTUT9ji2gQ==
-X-Received: by 2002:a17:90a:7d08:: with SMTP id g8mr1623836pjl.180.1611600146133;
-        Mon, 25 Jan 2021 10:42:26 -0800 (PST)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id w20sm18981643pga.90.2021.01.25.10.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:42:25 -0800 (PST)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/2] arm64: dts: meson: add support for Beelink GS-King-X
-Date:   Mon, 25 Jan 2021 10:42:20 -0800
-Message-Id: <161160013614.17631.15425630960344817638.b4-ty@baylibre.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210119145734.12675-1-christianshewitt@gmail.com>
-References: <20210119145734.12675-1-christianshewitt@gmail.com>
+        id S1731515AbhAYTGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:06:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730728AbhAYSs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:48:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BAB02067B;
+        Mon, 25 Jan 2021 18:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600465;
+        bh=Q4um/mPmFlhHEcZTIbeme6olhiiq6rbGgcy8LRTLgUA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=f6FabGNHSs32vgyIzoPHj4cyuzJ2yJXrQCI/3BB7nabYBxSYfUg8EGA8I7HNv4Njw
+         otsys5a0RUCDMm/lQDmYUNqIesEfv/jenU2wSldZvaI4HZ6eUfikWZ1/li6x/5z94C
+         gkFAFLbCQJPhS+I5Gfb7NMjhDpKkpVs/AsUb1ehE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Moody Salem <moody@uniswap.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.10 006/199] platform/x86: i2c-multi-instantiate: Dont create platform device for INT3515 ACPI nodes
+Date:   Mon, 25 Jan 2021 19:37:08 +0100
+Message-Id: <20210125183216.521133883@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+References: <20210125183216.245315437@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Jan 2021 14:57:32 +0000, Christian Hewitt wrote:
-> This series adds bindings and device-tree for the Beelink (AZW) GS-King-X,
-> which like GT-King and GT-King Pro is based on the W400 reference design.
-> 
-> Changes since v2:
-> - shorten audio card name to GSKING-X
-> - add Neil's tested-by
-> - add Martin's reviews
-> 
-> [...]
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Applied, thanks!
+commit 9bba96275576da0cf78ede62aeb2fc975ed8a32d upstream.
 
-[1/2] dt-bindings: arm: amlogic: add support for the Beelink GS-King-X
-      commit: 39f5e36d5d2b5cae17cfac1f2cd038f0f8bc834b
-[2/2] arm64: dts: meson: add initial Beelink GS-King-X device-tree
-      commit: f3d4ad4f106e21161d232c41a6676416e2498ae4
+There are several reports about the tps6598x causing
+interrupt flood on boards with the INT3515 ACPI node, which
+then causes instability. There appears to be several
+problems with the interrupt. One problem is that the
+I2CSerialBus resources do not always map to the Interrupt
+resource with the same index, but that is not the only
+problem. We have not been able to come up with a solution
+for all the issues, and because of that disabling the device
+for now.
 
-Best regards,
--- 
-Kevin Hilman <khilman@baylibre.com>
+The PD controller on these platforms is autonomous, and the
+purpose for the driver is primarily to supply status to the
+userspace, so this will not affect any functionality.
+
+Reported-by: Moody Salem <moody@uniswap.org>
+Fixes: a3dd034a1707 ("ACPI / scan: Create platform device for INT3515 ACPI nodes")
+Cc: stable@vger.kernel.org
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1883511
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Link: https://lore.kernel.org/r/20201223143644.33341-1-heikki.krogerus@linux.intel.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/platform/x86/i2c-multi-instantiate.c |   31 ++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
+
+--- a/drivers/platform/x86/i2c-multi-instantiate.c
++++ b/drivers/platform/x86/i2c-multi-instantiate.c
+@@ -166,13 +166,29 @@ static const struct i2c_inst_data bsg215
+ 	{}
+ };
+ 
+-static const struct i2c_inst_data int3515_data[]  = {
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
+-	{}
+-};
++/*
++ * Device with _HID INT3515 (TI PD controllers) has some unresolved interrupt
++ * issues. The most common problem seen is interrupt flood.
++ *
++ * There are at least two known causes. Firstly, on some boards, the
++ * I2CSerialBus resource index does not match the Interrupt resource, i.e. they
++ * are not one-to-one mapped like in the array below. Secondly, on some boards
++ * the IRQ line from the PD controller is not actually connected at all. But the
++ * interrupt flood is also seen on some boards where those are not a problem, so
++ * there are some other problems as well.
++ *
++ * Because of the issues with the interrupt, the device is disabled for now. If
++ * you wish to debug the issues, uncomment the below, and add an entry for the
++ * INT3515 device to the i2c_multi_instance_ids table.
++ *
++ * static const struct i2c_inst_data int3515_data[]  = {
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
++ *	{ }
++ * };
++ */
+ 
+ /*
+  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+@@ -181,7 +197,6 @@ static const struct i2c_inst_data int351
+ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)bsg1160_data },
+ 	{ "BSG2150", (unsigned long)bsg2150_data },
+-	{ "INT3515", (unsigned long)int3515_data },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
+
+
