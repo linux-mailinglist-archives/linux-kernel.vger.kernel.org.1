@@ -2,176 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFF53031EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3782B3031ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730909AbhAYQuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
+        id S1729039AbhAYQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730862AbhAYQqp (ORCPT
+        with ESMTP id S1728706AbhAYQxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:46:45 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EA5C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:46:04 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 190so11659588wmz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:46:04 -0800 (PST)
+        Mon, 25 Jan 2021 11:53:30 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE71C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:52:48 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id x23so3427793oop.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:52:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=iB3FOTkC0uwThb3VNvB3HWCSTcBSlNU3/HpxGPo/J4I=;
-        b=tny51Hq/UYPn60occVED9UjGBfecQ+4oPMD8Ktl/oXyi5U2j6D6eka7CGM/p46QE23
-         0hLn4J/os6qIlrb1zZTwJBCsnFjDY4ytl6Xyx5SBAE5DLKhcvRWnugqQcPmWBPuJz2pO
-         70PWjg34zgFTmhQZY1sCpKkqAldfxxDxdztLyo9+hsy/PgSVtd7wWam6BzPFwqjxFTWq
-         MGdEgbK11tuSkhwBPYXB0ym22etODTWvVvHUiP/dOuq98xFCByAQaZp00ug+K03yoKs4
-         Sx0v5z2NXvHhDnwX3qbFR499GxIYr3jdXjeI+w81LZ+2Vry8yzG+7lunggfUDnpVaDy2
-         94eA==
+        bh=e4g+tFMveVk8ycAsFKT1Lz7duEh4H/cEv5udD3mnNBI=;
+        b=YyYVgk1gaBAIt0BLww0cBWRnTkqVpS9HZmmIKYYnx/bLzLrxHdEIkzHDAJmJ/3iajL
+         1/Xof5C5eeFbTCApft+pnhF4a0plDSLHWelfx3fvtBSNrQHAN1r0XgRfIz4S3dCgYY/c
+         TvU8bw/l6tgxrC//wpyFwFPf4WAuV1Cd6ywDR33WmpSwLQN9oy7SP0oUYeT28utik3Pn
+         /shD+yrTYJ4/MZoTBTllB+kiMqP7+WkR0am7N/DgzCVCr/pizSblXFXfkUlBpyag3YjV
+         PFwDwD5zx34zpmeDU2aYyKxB3MKj0FIgT3gEUl58Rh0LTWPx54+r9qSmj3Y/OR+3etWt
+         mlYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iB3FOTkC0uwThb3VNvB3HWCSTcBSlNU3/HpxGPo/J4I=;
-        b=PqGLj9dDO7TgfJBvcCEbWFSyPBJKecnfQ9eVWbA92TtCjTDwozi35f72+LgJ/Htcrz
-         yl1eUmY9ahBWbyOUEdHP2D0cbkjoY/hygJospcjyI83Gokzb13ElyDjYuWXEOVB2j6kN
-         lC4G2tUJcIwomBWY6zBm9maUXo5TAnXiF9N2toOCpl1STbOD0TR5J50CONUUULcNausY
-         Na+vCDgdrqQjjLXKmWlbuHhcmgMbX6Y3kgF89GB59HAvNpGoQVNAJSbaGLlQVRz6x5NL
-         fIoKCZpWPDtY25AZ0Uvx5Yk/WKsxlFJBNgsrGuCIe4oGsQtrtq4fQSs1YZlf6SikBtg2
-         G4WQ==
-X-Gm-Message-State: AOAM530V4cyj/nwyrS42FDCCKgS5w2rhdU9+JY2bdfGqg/2ry4rI5Krs
-        nwvmBfsNBTVZEBvLI4TyYFhD+g==
-X-Google-Smtp-Source: ABdhPJz+j7zmvBIJ9yFAMv9o6WgMy/Vr5GBwzrfw9xRPAO0mPpb+ZA47/q13Ay057MnBx4yCPchCyg==
-X-Received: by 2002:a1c:e486:: with SMTP id b128mr956980wmh.136.1611593163573;
-        Mon, 25 Jan 2021 08:46:03 -0800 (PST)
-Received: from google.com ([2a00:79e0:d:210:4cd4:5994:40fe:253d])
-        by smtp.gmail.com with ESMTPSA id n16sm22856690wrj.26.2021.01.25.08.46.02
+        bh=e4g+tFMveVk8ycAsFKT1Lz7duEh4H/cEv5udD3mnNBI=;
+        b=VNdTJDezSTKjZ1Nr5UWiV1vVBi0cPNl+sQVewbUvIWYX7xESxL+veDu3fnGJIdd1ag
+         ahGHvUDcp2+OAcU/aZ4B7uGoZrhmjGjO3mR530ULs4ykU73tGMDgMY9pZ2SHQx5o57sh
+         qqeGH6U5Ddd2wk428My3Xa/ckF5e1uCzudLHLtu3hR5ecFUQJX0OJ4qggdinmrYDLnD6
+         74YLtr2xqoI7TGuxXQhNZxfQ2CjEKeK8qbUMBId98e80RSinn0H8KltO8/ikGyiNpy0u
+         f5jzrTBTZa2DSJ/2iY7Y42N2HWRHFaNEdhuXvLxTuAYLqI/0q5q2T3X3Tq7Aq5SWlkOc
+         fhjA==
+X-Gm-Message-State: AOAM530jXgx/V2BDugwpXGF4LBjg6hxBUnna+Df0c4KVYZNDRllMCMPp
+        OvqeS6Pbkr3Rshj6dgkCLEPs8zR2um9QXQ==
+X-Google-Smtp-Source: ABdhPJwfUAIQOxGReRupBWy1n2paERXB5qvQXdMr8vlHkDVgKPYczT/2xa88heY1HjuW/CODmjXa/g==
+X-Received: by 2002:a4a:e294:: with SMTP id k20mr1083994oot.82.1611593568047;
+        Mon, 25 Jan 2021 08:52:48 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a71sm166694oob.48.2021.01.25.08.52.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 08:46:03 -0800 (PST)
-Date:   Mon, 25 Jan 2021 16:46:01 +0000
-From:   Alessio Balsini <balsini@android.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND V12 1/8] fs: Generic function to convert iocb to
- rw flags
-Message-ID: <YA71ydLBbKmZg5/O@google.com>
-References: <20210125153057.3623715-1-balsini@android.com>
- <20210125153057.3623715-2-balsini@android.com>
+        Mon, 25 Jan 2021 08:52:47 -0800 (PST)
+Date:   Mon, 25 Jan 2021 10:52:45 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Andy Gross <agross@kernel.org>, robh+dt@kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: Re: [PATCH v2 4/4] arm: dts: add 8devices Habanero DVK
+Message-ID: <YA73XeUCO/0bYKT2@builder.lan>
+References: <20200909195640.3127341-1-robert.marko@sartura.hr>
+ <20200909195640.3127341-5-robert.marko@sartura.hr>
+ <CA+HBbNEkmYMi5KutwrBVh3uqzjdEmHrbJnPbH43C9B-Kq1MBNA@mail.gmail.com>
+ <YAsf9aZ8mXU8vLZK@builder.lan>
+ <CA+HBbNHtvP7_8RovLs1L=C+iSpGTRAov17TuC58DwNkkAeSjfQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125153057.3623715-2-balsini@android.com>
+In-Reply-To: <CA+HBbNHtvP7_8RovLs1L=C+iSpGTRAov17TuC58DwNkkAeSjfQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 03:30:50PM +0000, Alessio Balsini wrote:
-> OverlayFS implements its own function to translate iocb flags into rw
-> flags, so that they can be passed into another vfs call.
-> With commit ce71bfea207b4 ("fs: align IOCB_* flags with RWF_* flags")
-> Jens created a 1:1 matching between the iocb flags and rw flags,
-> simplifying the conversion.
+On Mon 25 Jan 04:59 CST 2021, Robert Marko wrote:
+
+> On Fri, Jan 22, 2021 at 7:56 PM Bjorn Andersson <bjorn.andersson@linaro.org>
+> wrote:
 > 
-> Reduce the OverlayFS code by making the flag conversion function generic
-> and reusable.
+> > On Fri 02 Oct 12:41 CDT 2020, Robert Marko wrote:
+> >
+> > > On Wed, Sep 9, 2020 at 9:56 PM Robert Marko <robert.marko@sartura.hr>
+> > wrote:
+> > > >
+> > > > 8devices Habanero DVK is a dual-band SoM development kit based on
+> > Qualcomm
+> > > > IPQ4019 + QCA8075 platform.
+> > > >
+> > > > Specs are:
+> > > > CPU: QCA IPQ4019
+> > > > RAM: DDR3L 512MB
+> > > > Storage: 32MB SPI-NOR and optional Parallel SLC NAND(Some boards ship
+> > with it and some without)
+> > > > WLAN1: 2.4 GHz built into IPQ4019 (802.11n) 2x2
+> > > > WLAN2: 5 GHz built into IPO4019 (802.11ac Wawe-2) 2x2
+> > > > Ethernet: 5x Gbit LAN (QCA 8075)
+> > > > USB: 1x USB 2.0 and 1x USB 3.0 (Both built into IPQ4019)
+> > > > MicroSD slot (Uses SD controller built into IPQ4019)
+> > > > SDIO3.0/EMMC slot (Uses the same SD controller)
+> > > > Mini PCI-E Gen 2.0 slot (Built into IPQ4019)
+> > > > 5x LEDs (4 GPIO controllable)
+> > > > 2x Pushbutton (1 is connected to GPIO, other to SoC reset)
+> > > > LCD ZIF socket (Uses the LCD controller built into IPQ4019 which has
+> > no driver support)
+> > > > 1x UART 115200 rate on J18
+> > > >
+> > > > 2x breakout development headers
+> > > > 12V DC Jack for power
+> > > > DIP switch for bootstrap configuration
+> > > >
+> > > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> > > > Cc: Luka Perkov <luka.perkov@sartura.hr>
+> > > > ---
+> > > > Changes since v1:
+> > > > * Drop include that does not exist
+> > > >
+> > > >  arch/arm/boot/dts/Makefile                    |   1 +
+> > > >  .../boot/dts/qcom-ipq4019-habanero-dvk.dts    | 304 ++++++++++++++++++
+> > > >  2 files changed, 305 insertions(+)
+> > > >  create mode 100644 arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
+> > > >
+> > > > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> > > > index 246d82fc5fcd..004262e0d699 100644
+> > > > --- a/arch/arm/boot/dts/Makefile
+> > > > +++ b/arch/arm/boot/dts/Makefile
+> > > > @@ -898,6 +898,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+> > > >         qcom-ipq4019-ap.dk04.1-c3.dtb \
+> > > >         qcom-ipq4019-ap.dk07.1-c1.dtb \
+> > > >         qcom-ipq4019-ap.dk07.1-c2.dtb \
+> > > > +       qcom-ipq4019-habanero-dvk.dtb \
+> > > >         qcom-ipq8064-ap148.dtb \
+> > > >         qcom-ipq8064-rb3011.dtb \
+> > > >         qcom-msm8660-surf.dtb \
+> > > > diff --git a/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
+> > b/arch/arm/boot/dts/qcom-ipq4019-habanero-dvk.dts
+[..]
+> > >
+> > > Hi,
+> > > Is there an issue with the patch preventing the review?
+> > >
+> >
+> > Found this in my inbox and I don't know why I never replied to you,
+> > perhaps because kernel test robot says it doesn't build...
+> >
+> > I tried to apply it now but there's no "vqmmc" so it doesn't build :/
+> >
+> >
+> > If you're still interested in this I'd be happy to merge it if you can
+> > fix up the vqmmc - and if respinning it I would appreciate if you could
+> > sort the nodes alphabetically.
+> >
+> > Regards,
+> > Bjorn
+> >
 > 
-> Signed-off-by: Alessio Balsini <balsini@android.com>
-> ---
->  fs/overlayfs/file.c | 23 +++++------------------
->  include/linux/fs.h  |  5 +++++
->  2 files changed, 10 insertions(+), 18 deletions(-)
+> Hi,
+> This patch series depends on:
+> https://patchwork.kernel.org/patch/11765789/
+> https://patchwork.kernel.org/patch/11760437/
 > 
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index bd9dd38347ae..56be2ffc5a14 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -15,6 +15,8 @@
->  #include <linux/fs.h>
->  #include "overlayfs.h"
->  
-> +#define OVL_IOCB_MASK (IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
-> +
->  struct ovl_aio_req {
->  	struct kiocb iocb;
->  	struct kiocb *orig_iocb;
-> @@ -236,22 +238,6 @@ static void ovl_file_accessed(struct file *file)
->  	touch_atime(&file->f_path);
->  }
->  
-> -static rwf_t ovl_iocb_to_rwf(int ifl)
-> -{
-> -	rwf_t flags = 0;
-> -
-> -	if (ifl & IOCB_NOWAIT)
-> -		flags |= RWF_NOWAIT;
-> -	if (ifl & IOCB_HIPRI)
-> -		flags |= RWF_HIPRI;
-> -	if (ifl & IOCB_DSYNC)
-> -		flags |= RWF_DSYNC;
-> -	if (ifl & IOCB_SYNC)
-> -		flags |= RWF_SYNC;
-> -
-> -	return flags;
-> -}
-> -
->  static void ovl_aio_cleanup_handler(struct ovl_aio_req *aio_req)
->  {
->  	struct kiocb *iocb = &aio_req->iocb;
-> @@ -299,7 +285,8 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->  	old_cred = ovl_override_creds(file_inode(file)->i_sb);
->  	if (is_sync_kiocb(iocb)) {
->  		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
-> -				    ovl_iocb_to_rwf(iocb->ki_flags));
-> +				    iocb_to_rw_flags(iocb->ki_flags,
-> +						     OVL_IOCB_MASK));
->  	} else {
->  		struct ovl_aio_req *aio_req;
->  
-> @@ -356,7 +343,7 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->  	if (is_sync_kiocb(iocb)) {
->  		file_start_write(real.file);
->  		ret = vfs_iter_write(real.file, iter, &iocb->ki_pos,
-> -				     ovl_iocb_to_rwf(ifl));
-> +				     iocb_to_rw_flags(ifl, OVL_IOCB_MASK));
->  		file_end_write(real.file);
->  		/* Update size */
->  		ovl_copyattr(ovl_inode_real(inode), inode);
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index fd47deea7c17..647c35423545 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3275,6 +3275,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
->  	return 0;
->  }
->  
-> +static inline rwf_t iocb_to_rw_flags(int ifl, int iocb_mask)
-> +{
-> +	return ifl & iocb_mask;
-> +}
-> +
->  static inline ino_t parent_ino(struct dentry *dentry)
->  {
->  	ino_t res;
-> -- 
-> 2.30.0.280.ga3ce27912f-goog
+> USB nodes appear to finally be picked for the Qcom tree while the VQMMC LDO
+> is still pending.
+> 
+> I am still interested in this and was planning to send the updated versions
+> anyway soon.
+> I Will respin these and reorder the nodes.
 > 
 
-For some reason lkml.org and lore.kernel.org are not showing this change
-as part of the thread.
-Let's see if replying to the email fixes the indexing.
+I've pushed out the vqmmc patch now as well. Looking forward to the
+respin of this patch.
 
-Regards,
-Alessio
+Thank you,
+Bjorn
