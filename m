@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AB23039D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C863039B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390281AbhAZKHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:07:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41662 "EHLO mail.kernel.org"
+        id S2403761AbhAZKAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:00:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731197AbhAYSzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:55:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 609762083E;
-        Mon, 25 Jan 2021 18:54:55 +0000 (UTC)
+        id S1731338AbhAYSyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:54:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF8920719;
+        Mon, 25 Jan 2021 18:53:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600895;
-        bh=X5IxGU+IQ+S/Gbrs/YQ1+mIW3CpgFlKdrE3C2eg/RcA=;
+        s=korg; t=1611600825;
+        bh=YaoFlUXHhcaBDbyC+y3UWkB3R7NV44U7PV0JzBxp0U0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AcbXfWJ/MCJJyE7gLZF1HVM25TvjuEC34MSt61nMKT6UOiv3XBuEQ5I5YpJ6FvVqG
-         acpLvS+A6V47ZcA+lR6JyqQjFb6JJaUeziT3K5Gv8169StgtSLKO5Jj7UgzBhXXj+x
-         RQZWt5h2rhHsCpTNoVdYUxEhdRh0328qW7oJ9xt4=
+        b=W/rgiZU3KtMJsaadcu3blCmvN1iDjeN2fDBtWUU8XOUGb/8yJhq7mSoTXyhIzd8g1
+         11yds1MDw61XXp/oFRLy8bKneLoYW8Tbqqr3D49ASBhuEu99UJX4DBQm2p10ATQTq0
+         OiRQIJSp87X3k801Q4gZoBiH5it2Vj+GZ6ObpjnQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>, Marc Orr <marcorr@google.com>
-Subject: [PATCH 5.10 162/199] nvme-pci: refactor nvme_unmap_data
-Date:   Mon, 25 Jan 2021 19:39:44 +0100
-Message-Id: <20210125183223.038107852@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 166/199] skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
+Date:   Mon, 25 Jan 2021 19:39:48 +0100
+Message-Id: <20210125183223.200711279@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,123 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Alexander Lobakin <alobakin@pm.me>
 
-commit 9275c206f88e5c49cb3e71932c81c8561083db9e upstream.
+commit 66c556025d687dbdd0f748c5e1df89c977b6c02a upstream.
 
-Split out three helpers from nvme_unmap_data that will allow finer grained
-unwinding from nvme_map_data.
+Commit 3226b158e67c ("net: avoid 32 x truesize under-estimation for
+tiny skbs") ensured that skbs with data size lower than 1025 bytes
+will be kmalloc'ed to avoid excessive page cache fragmentation and
+memory consumption.
+However, the fix adressed only __napi_alloc_skb() (primarily for
+virtio_net and napi_get_frags()), but the issue can still be achieved
+through __netdev_alloc_skb(), which is still used by several drivers.
+Drivers often allocate a tiny skb for headers and place the rest of
+the frame to frags (so-called copybreak).
+Mirror the condition to __netdev_alloc_skb() to handle this case too.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Marc Orr <marcorr@google.com>
+Since v1 [0]:
+ - fix "Fixes:" tag;
+ - refine commit message (mention copybreak usecase).
+
+[0] https://lore.kernel.org/netdev/20210114235423.232737-1-alobakin@pm.me
+
+Fixes: a1c7fff7e18f ("net: netdev_alloc_skb() use build_skb()")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Link: https://lore.kernel.org/r/20210115150354.85967-1-alobakin@pm.me
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/nvme/host/pci.c |   77 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 49 insertions(+), 28 deletions(-)
+ net/core/skbuff.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -542,50 +542,71 @@ static inline bool nvme_pci_use_sgls(str
- 	return true;
- }
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -432,7 +432,11 @@ struct sk_buff *__netdev_alloc_skb(struc
  
--static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
-+static void nvme_free_prps(struct nvme_dev *dev, struct request *req)
- {
--	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
- 	const int last_prp = NVME_CTRL_PAGE_SIZE / sizeof(__le64) - 1;
--	dma_addr_t dma_addr = iod->first_dma, next_dma_addr;
-+	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
-+	dma_addr_t dma_addr = iod->first_dma;
- 	int i;
+ 	len += NET_SKB_PAD;
  
--	if (iod->dma_len) {
--		dma_unmap_page(dev->dev, dma_addr, iod->dma_len,
--			       rq_dma_dir(req));
--		return;
-+	for (i = 0; i < iod->npages; i++) {
-+		__le64 *prp_list = nvme_pci_iod_list(req)[i];
-+		dma_addr_t next_dma_addr = le64_to_cpu(prp_list[last_prp]);
-+
-+		dma_pool_free(dev->prp_page_pool, prp_list, dma_addr);
-+		dma_addr = next_dma_addr;
- 	}
- 
--	WARN_ON_ONCE(!iod->nents);
-+}
- 
--	if (is_pci_p2pdma_page(sg_page(iod->sg)))
--		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
--				    rq_dma_dir(req));
--	else
--		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
-+static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
-+{
-+	const int last_sg = SGES_PER_PAGE - 1;
-+	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
-+	dma_addr_t dma_addr = iod->first_dma;
-+	int i;
- 
-+	for (i = 0; i < iod->npages; i++) {
-+		struct nvme_sgl_desc *sg_list = nvme_pci_iod_list(req)[i];
-+		dma_addr_t next_dma_addr = le64_to_cpu((sg_list[last_sg]).addr);
- 
--	if (iod->npages == 0)
--		dma_pool_free(dev->prp_small_pool, nvme_pci_iod_list(req)[0],
--			dma_addr);
-+		dma_pool_free(dev->prp_page_pool, sg_list, dma_addr);
-+		dma_addr = next_dma_addr;
-+	}
- 
--	for (i = 0; i < iod->npages; i++) {
--		void *addr = nvme_pci_iod_list(req)[i];
-+}
- 
--		if (iod->use_sgl) {
--			struct nvme_sgl_desc *sg_list = addr;
-+static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
-+{
-+	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
- 
--			next_dma_addr =
--			    le64_to_cpu((sg_list[SGES_PER_PAGE - 1]).addr);
--		} else {
--			__le64 *prp_list = addr;
-+	if (is_pci_p2pdma_page(sg_page(iod->sg)))
-+		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
-+				    rq_dma_dir(req));
-+	else
-+		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
-+}
- 
--			next_dma_addr = le64_to_cpu(prp_list[last_prp]);
--		}
-+static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
-+{
-+	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
- 
--		dma_pool_free(dev->prp_page_pool, addr, dma_addr);
--		dma_addr = next_dma_addr;
-+	if (iod->dma_len) {
-+		dma_unmap_page(dev->dev, iod->first_dma, iod->dma_len,
-+			       rq_dma_dir(req));
-+		return;
- 	}
- 
-+	WARN_ON_ONCE(!iod->nents);
-+
-+	nvme_unmap_sg(dev, req);
-+	if (iod->npages == 0)
-+		dma_pool_free(dev->prp_small_pool, nvme_pci_iod_list(req)[0],
-+			      iod->first_dma);
-+	else if (iod->use_sgl)
-+		nvme_free_sgls(dev, req);
-+	else
-+		nvme_free_prps(dev, req);
- 	mempool_free(iod->sg, dev->iod_mempool);
- }
- 
+-	if ((len > SKB_WITH_OVERHEAD(PAGE_SIZE)) ||
++	/* If requested length is either too small or too big,
++	 * we use kmalloc() for skb->head allocation.
++	 */
++	if (len <= SKB_WITH_OVERHEAD(1024) ||
++	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+ 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
+ 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
+ 		if (!skb)
 
 
