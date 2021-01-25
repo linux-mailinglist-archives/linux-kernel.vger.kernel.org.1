@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E41B3037E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9843037D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390023AbhAZI2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:28:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
+        id S1728855AbhAZIZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:25:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727645AbhAYSmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 788B723100;
-        Mon, 25 Jan 2021 18:41:54 +0000 (UTC)
+        id S1727668AbhAYSms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 610F023101;
+        Mon, 25 Jan 2021 18:41:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600115;
-        bh=Gn+MkB9Eng1cTrCl6XMQZ0tZy4zKzPh+svjPu8k37l0=;
+        s=korg; t=1611600119;
+        bh=Lr4kGqLdBH46Ho6YB/3cuq2D3nR/saIdiWeiqOsVfUM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=afPgIiScMGPds50/+75bc2hWtTuOerQeaLJVnvytQCPrUuxrHyyexFIRiKR2lxx1Q
-         +F06FNqd/73vJe5yn9tw3FcWvJBRx/XO3zSe2N4UeKn8fxt9ZJbqYHJDWBuqVyBps7
-         kAmDPAWOKoQp17tJ6Le60sxGNvQXh0B7iwRePb2E=
+        b=L576egijzkCtVkjWEVKKBVHiGQ1g89tYWX1ZzZvwdVZM1P46qlDWPtF7HgDyfjbtU
+         84t3jPckGSSDgogCRi4j1x+IqfqQJgo0d/0OU8guvKjIrNqMxUOeLgvNOGJXidy9mc
+         1ClEd0NKPopdULMBc31+WanulXy4v+qDEKyTEoHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Longfang Liu <liulongfang@huawei.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: [PATCH 4.19 37/58] USB: ehci: fix an interrupt calltrace error
-Date:   Mon, 25 Jan 2021 19:39:38 +0100
-Message-Id: <20210125183158.308708462@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: [PATCH 4.19 39/58] usb: udc: core: Use lock when write to soft_connect
+Date:   Mon, 25 Jan 2021 19:39:40 +0100
+Message-Id: <20210125183158.394376239@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -39,48 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longfang Liu <liulongfang@huawei.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit 643a4df7fe3f6831d14536fd692be85f92670a52 upstream.
+commit c28095bc99073ddda65e4f31f6ae0d908d4d5cd8 upstream.
 
-The system that use Synopsys USB host controllers goes to suspend
-when using USB audio player. This causes the USB host controller
-continuous send interrupt signal to system, When the number of
-interrupts exceeds 100000, the system will forcibly close the
-interrupts and output a calltrace error.
+Use lock to guard against concurrent access for soft-connect/disconnect
+operations when writing to soft_connect sysfs.
 
-When the system goes to suspend, the last interrupt is reported to
-the driver. At this time, the system has set the state to suspend.
-This causes the last interrupt to not be processed by the system and
-not clear the interrupt flag. This uncleared interrupt flag constantly
-triggers new interrupt event. This causing the driver to receive more
-than 100,000 interrupts, which causes the system to forcibly close the
-interrupt report and report the calltrace error.
-
-so, when the driver goes to sleep and changes the system state to
-suspend, the interrupt flag needs to be cleared.
-
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/1610416647-45774-1-git-send-email-liulongfang@huawei.com
-Cc: stable <stable@vger.kernel.org>
+Fixes: 2ccea03a8f7e ("usb: gadget: introduce UDC Class")
+Cc: stable@vger.kernel.org
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Link: https://lore.kernel.org/r/338ea01fbd69b1985ef58f0f59af02c805ddf189.1610611437.git.Thinh.Nguyen@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/ehci-hub.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/gadget/udc/core.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/host/ehci-hub.c
-+++ b/drivers/usb/host/ehci-hub.c
-@@ -345,6 +345,9 @@ static int ehci_bus_suspend (struct usb_
+--- a/drivers/usb/gadget/udc/core.c
++++ b/drivers/usb/gadget/udc/core.c
+@@ -1471,10 +1471,13 @@ static ssize_t soft_connect_store(struct
+ 		struct device_attribute *attr, const char *buf, size_t n)
+ {
+ 	struct usb_udc		*udc = container_of(dev, struct usb_udc, dev);
++	ssize_t			ret;
  
- 	unlink_empty_async_suspended(ehci);
++	mutex_lock(&udc_lock);
+ 	if (!udc->driver) {
+ 		dev_err(dev, "soft-connect without a gadget driver\n");
+-		return -EOPNOTSUPP;
++		ret = -EOPNOTSUPP;
++		goto out;
+ 	}
  
-+	/* Some Synopsys controllers mistakenly leave IAA turned on */
-+	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
-+
- 	/* Any IAA cycle that started before the suspend is now invalid */
- 	end_iaa_cycle(ehci);
- 	ehci_handle_start_intr_unlinks(ehci);
+ 	if (sysfs_streq(buf, "connect")) {
+@@ -1486,10 +1489,14 @@ static ssize_t soft_connect_store(struct
+ 		usb_gadget_udc_stop(udc);
+ 	} else {
+ 		dev_err(dev, "unsupported command '%s'\n", buf);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 
+-	return n;
++	ret = n;
++out:
++	mutex_unlock(&udc_lock);
++	return ret;
+ }
+ static DEVICE_ATTR_WO(soft_connect);
+ 
 
 
