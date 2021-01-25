@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B24302107
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595BB30210D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbhAYEQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 23:16:43 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:33747 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726714AbhAYEQl (ORCPT
+        id S1726982AbhAYESy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 23:18:54 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34738 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726705AbhAYESv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 23:16:41 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 5A0595807D1;
-        Sun, 24 Jan 2021 23:15:55 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Sun, 24 Jan 2021 23:15:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=Y5snhxS8mW1RuSQI45POs81UwwdOf3y
-        NQAfUu8eLaUE=; b=m9bcb0GHHgsSbwl7lL55N45p01DOOg9ndlB3FmCPgJ3xXUo
-        JLiDPtSnYg5YZ5MwIdOglzub2eGncYZBS/d3G+tbfYrGFWjOt/12//mCtcO5Kcns
-        DFdXqa4LT2m7CO6akoTRiFA3YBhszjPrHH6SUFCIgwvM0RBtM7rRLCGQuIWPDLJ4
-        3nKMN1+BiAvatNN8U5eD2yqTLubH80YwjNCSlMOr8LhxIs/FEapWGeYx0fiA2iNI
-        Ve2CI4i0cnCF4FidlTY0Wc0hzJqnEYMEnx5RwZ5H7tQplhPqETHf1+AGWgriPGe4
-        p3phnhNNkkSil/B3Za738uQT8a51AdB8zYuycWw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Y5snhx
-        S8mW1RuSQI45POs81UwwdOf3yNQAfUu8eLaUE=; b=EXa6EsDCXBYEJ0Z7UzZlgg
-        a54aVP6unAa5wgcDozLCQiFSCI7aFY+L8W1vjYo1O86NPdOcn6ZT7bVlPgke8BIS
-        vsOEMljfl7W19pxuRvkYjJAlZzV6oXVtZMzkUpVoT7uylHhAmSl87O08m21hGGdL
-        1qiZMEFX2CfmF1rVSENbHP35Aa1Ks547nyqSQrbd3pcRXMVJA91jgFnaYuvihfFH
-        z5rYUUV7hXCxS6VAMhGpAqd4S0bzM6uXJ9g+dIz8TGOqXq5lAMQ9Xv5tecUDL1+Q
-        lyRO1IGP2YxVe3brNcC8vD8eGxT2zPdWsWUl21z/s0yGTab2RR9cR2xJHAg8LwBA
-        ==
-X-ME-Sender: <xms:-0UOYFKSCZ0WiMgNHtVp_sAUfwHv0MnGYIdK3v1xk87wxMdniTV3rA>
-    <xme:-0UOYBIVF75za-d1gdUkeo7N3zKc157PPnFGmsGGbb0eSgwSYxOFV7-Vx_DUR7uaY
-    -z4xkL2AOhlsredvA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddvgdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:-0UOYNt8uqyEwDh4-2BVQJCQU_DccsE0IiTAYrSMjpRIDb1BY6tbTQ>
-    <xmx:-0UOYGZXW2ADtpBwVI5e44eTcwxzRmSx1WrlJfU08CazK-sN6jfWsQ>
-    <xmx:-0UOYMaetVmDD4wcDismNO9ltQdFAgdPuQ0h2tg4jucHX4o64AhzqQ>
-    <xmx:-0UOYITdZoaB0Spq5mACc-0xNzWxWW8eibFea0K9l8_QB80G-Z6CmQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 330BAA0005D; Sun, 24 Jan 2021 23:15:55 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
-Mime-Version: 1.0
-Message-Id: <a40f7391-e468-4155-b19c-240fb65ce22c@www.fastmail.com>
-In-Reply-To: <20210114131622.8951-6-chiawei_wang@aspeedtech.com>
-References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
- <20210114131622.8951-6-chiawei_wang@aspeedtech.com>
-Date:   Mon, 25 Jan 2021 14:45:34 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Corey Minyard" <minyard@acm.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-Cc:     BMC-SW@aspeedtech.com, "Haiyue Wang" <haiyue.wang@linux.intel.com>,
-        "Cyril Bur" <cyrilbur@gmail.com>,
-        "Robert Lippert" <rlippert@google.com>
-Subject: Re: [PATCH v5 5/5] soc: aspeed: Adapt to new LPC device tree layout
+        Sun, 24 Jan 2021 23:18:51 -0500
+X-UUID: de213c63389d4290a620dc527a27c4b8-20210125
+X-UUID: de213c63389d4290a620dc527a27c4b8-20210125
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <hailong.fan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 267704855; Mon, 25 Jan 2021 12:18:04 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 25 Jan 2021 12:17:58 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Jan 2021 12:17:57 +0800
+From:   Hailong Fan <hailong.fan@mediatek.com>
+To:     Sean Wang <sean.wang@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <srv_heupstream@mediatek.com>, <chentsung@chromium.org>,
+        <gtk_pangao@mediatek.com>, <hanks.chen@mediatek.com>,
+        <yong.wu@mediatek.com>, Hailong Fan <hailong.fan@mediatek.com>
+Subject: [PATCH V3] pinctrl: mediatek: Fix trigger type setting follow for unexpected interrupt
+Date:   Mon, 25 Jan 2021 12:17:53 +0800
+Message-ID: <20210125041753.2214-1-hailong.fan@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-SNTS-SMTP: 972CF18D8D8EEAA5AF2E7A2875C19B7CD5AC24A825D33DEA389C59B300ABEC432000:8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When flipping the polarity will be generated interrupt under certain
+circumstances, but GPIO external signal has not changed.
+Then, mask the interrupt before polarity setting, and clear the
+unexpected interrupt after trigger type setting completed.
 
+Remove mtk_eint_flip_edge: because mtk_eint_unmask already calls it.
 
-On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
-> Add check against LPC device v2 compatible string to
-> ensure that the fixed device tree layout is adopted.
-> The LPC register offsets are also fixed accordingly.
-> 
-> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> ---
->  drivers/soc/aspeed/aspeed-lpc-ctrl.c  | 20 ++++++++++++++------
->  drivers/soc/aspeed/aspeed-lpc-snoop.c | 23 +++++++++++++++--------
+Signed-off-by: Hailong Fan <hailong.fan@mediatek.com>
+Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+ drivers/pinctrl/mediatek/mtk-eint.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Using a Witherspoon (AST2500) I've tested the aspeed-lpc-ctrl driver:
+diff --git a/drivers/pinctrl/mediatek/mtk-eint.c b/drivers/pinctrl/mediatek/mtk-eint.c
+index 22736f60c16c..3b9b5dbd7968 100644
+--- a/drivers/pinctrl/mediatek/mtk-eint.c
++++ b/drivers/pinctrl/mediatek/mtk-eint.c
+@@ -157,6 +157,7 @@ static void mtk_eint_ack(struct irq_data *d)
+ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+ {
+ 	struct mtk_eint *eint = irq_data_get_irq_chip_data(d);
++	bool masked;
+ 	u32 mask = BIT(d->hwirq & 0x1f);
+ 	void __iomem *reg;
+ 
+@@ -173,6 +174,13 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+ 	else
+ 		eint->dual_edge[d->hwirq] = 0;
+ 
++	if (!mtk_eint_get_mask(eint, d->hwirq)) {
++		mtk_eint_mask(d);
++		masked = false;
++	} else {
++		masked = true;
++	}
++
+ 	if (type & (IRQ_TYPE_LEVEL_LOW | IRQ_TYPE_EDGE_FALLING)) {
+ 		reg = mtk_eint_get_offset(eint, d->hwirq, eint->regs->pol_clr);
+ 		writel(mask, reg);
+@@ -189,8 +197,9 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
+ 		writel(mask, reg);
+ 	}
+ 
+-	if (eint->dual_edge[d->hwirq])
+-		mtk_eint_flip_edge(eint, d->hwirq);
++	mtk_eint_ack(d);
++	if (!masked)
++		mtk_eint_unmask(d);
+ 
+ 	return 0;
+ }
+-- 
+2.18.0
 
-Tested-by: Andrew Jeffery <andrew@aj.id.au>
