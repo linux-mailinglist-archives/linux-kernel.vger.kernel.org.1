@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1101302477
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678E6302459
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727755AbhAYLrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:47:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
+        id S1727753AbhAYLhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:37:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727744AbhAYLEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 06:04:47 -0500
+        id S1727784AbhAYLFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 06:05:39 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 904A622AAC;
-        Mon, 25 Jan 2021 10:54:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 540C722B3F;
+        Mon, 25 Jan 2021 10:53:58 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l3zSA-009rDe-0b; Mon, 25 Jan 2021 10:50:39 +0000
+        id 1l3zSG-009rDe-6W; Mon, 25 Jan 2021 10:50:45 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v5 16/21] arm64: Make kvm-arm.mode={nvhe, protected} an alias of id_aa64mmfr1.vh=0
-Date:   Mon, 25 Jan 2021 10:50:14 +0000
-Message-Id: <20210125105019.2946057-17-maz@kernel.org>
+Subject: [PATCH v5 19/21] arm64: cpufeatures: Allow disabling of BTI from the command-line
+Date:   Mon, 25 Jan 2021 10:50:17 +0000
+Message-Id: <20210125105019.2946057-20-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210125105019.2946057-1-maz@kernel.org>
 References: <20210125105019.2946057-1-maz@kernel.org>
@@ -54,64 +54,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Admitedly, passing id_aa64mmfr1.vh=0 on the command-line isn't
-that easy to understand, and it is likely that users would much
-prefer write "kvm-arm.mode=nvhe", or "...=protected".
+In order to be able to disable BTI at runtime, whether it is
+for testing purposes, or to work around HW issues, let's add
+support for overriding the ID_AA64PFR1_EL1.BTI field.
 
-So here you go. This has the added advantage that we can now
-always honor the "kvm-arm.mode=protected" option, even when
-booting on a VHE system.
+This is further mapped on the arm64.nobti command-line alias.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 Acked-by: David Brazdil <dbrazdil@google.com>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 3 +++
- arch/arm64/kernel/idreg-override.c              | 2 ++
- arch/arm64/kvm/arm.c                            | 3 +++
- 3 files changed, 8 insertions(+)
+ Documentation/admin-guide/kernel-parameters.txt |  3 +++
+ arch/arm64/include/asm/cpufeature.h             |  1 +
+ arch/arm64/kernel/cpufeature.c                  |  4 +++-
+ arch/arm64/kernel/idreg-override.c              | 11 +++++++++++
+ arch/arm64/mm/mmu.c                             |  2 +-
+ 5 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9e3cdb271d06..2786fd39a047 100644
+index 2786fd39a047..7599fd0f1ad7 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2257,6 +2257,9 @@
- 	kvm-arm.mode=
- 			[KVM,ARM] Select one of KVM/arm64's modes of operation.
+@@ -373,6 +373,9 @@
+ 	arcrimi=	[HW,NET] ARCnet - "RIM I" (entirely mem-mapped) cards
+ 			Format: <io>,<irq>,<nodeID>
  
-+			nvhe: Standard nVHE-based mode, without support for
-+			      protected guests.
++	arm64.nobti	[ARM64] Unconditionally disable Branch Target
++			Identification support
 +
- 			protected: nVHE-based mode with support for guests whose
- 				   state is kept private from the host.
- 				   Not valid if the kernel is running in EL2.
+ 	ataflop=	[HW,M68k]
+ 
+ 	atarimouse=	[HW,MOUSE] Atari Mouse
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index b0ed37da4067..4e2f2de9d0d7 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -819,6 +819,7 @@ static inline unsigned int get_vmid_bits(u64 mmfr1)
+ }
+ 
+ extern struct arm64_ftr_override id_aa64mmfr1_override;
++extern struct arm64_ftr_override id_aa64pfr1_override;
+ 
+ u32 get_kvm_ipa_limit(void);
+ void dump_cpu_features(void);
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index c1d6712c4249..bb99ddb212b5 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -558,6 +558,7 @@ static const struct arm64_ftr_bits ftr_raz[] = {
+ #define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, &no_override)
+ 
+ struct arm64_ftr_override id_aa64mmfr1_override;
++struct arm64_ftr_override id_aa64pfr1_override;
+ 
+ static const struct __ftr_reg_entry {
+ 	u32			sys_id;
+@@ -593,7 +594,8 @@ static const struct __ftr_reg_entry {
+ 
+ 	/* Op1 = 0, CRn = 0, CRm = 4 */
+ 	ARM64_FTR_REG(SYS_ID_AA64PFR0_EL1, ftr_id_aa64pfr0),
+-	ARM64_FTR_REG(SYS_ID_AA64PFR1_EL1, ftr_id_aa64pfr1),
++	ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64PFR1_EL1, ftr_id_aa64pfr1,
++			       &id_aa64pfr1_override),
+ 	ARM64_FTR_REG(SYS_ID_AA64ZFR0_EL1, ftr_id_aa64zfr0),
+ 
+ 	/* Op1 = 0, CRn = 0, CRm = 5 */
 diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 4fad3fc4d104..cbb8eaa48742 100644
+index 3ccf51b84ba4..71349b644246 100644
 --- a/arch/arm64/kernel/idreg-override.c
 +++ b/arch/arm64/kernel/idreg-override.c
-@@ -39,6 +39,8 @@ static const struct {
- 	const char	*alias;
- 	const char	*feature;
- } aliases[] __initdata = {
-+	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
-+	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
+@@ -31,6 +31,15 @@ static const struct ftr_set_desc mmfr1 __initdata = {
+ 	},
  };
  
- static char *cmdline_contains_option(const char *cmdline, const char *option)
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 04c44853b103..597565a65ca2 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1966,6 +1966,9 @@ static int __init early_kvm_mode_cfg(char *arg)
- 		return 0;
- 	}
- 
-+	if (strcmp(arg, "nvhe") == 0 && !WARN_ON(is_kernel_in_hyp_mode()))
-+		return 0;
++static const struct ftr_set_desc pfr1 __initdata = {
++	.name		= "id_aa64pfr1",
++	.override	= &id_aa64pfr1_override,
++	.fields		= {
++	        { "bt", ID_AA64PFR1_BT_SHIFT },
++		{}
++	},
++};
 +
- 	return -EINVAL;
+ extern struct arm64_ftr_override kaslr_feature_override;
+ 
+ static const struct ftr_set_desc kaslr __initdata = {
+@@ -46,6 +55,7 @@ static const struct ftr_set_desc kaslr __initdata = {
+ 
+ static const struct ftr_set_desc * const regs[] __initdata = {
+ 	&mmfr1,
++	&pfr1,
+ 	&kaslr,
+ };
+ 
+@@ -55,6 +65,7 @@ static const struct {
+ } aliases[] __initdata = {
+ 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
+ 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
++	{ "arm64.nobti",		"id_aa64pfr1.bt=0" },
+ 	{ "nokaslr",			"kaslr.disabled=1" },
+ };
+ 
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index ae0c3d023824..617e704c980b 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -628,7 +628,7 @@ static bool arm64_early_this_cpu_has_bti(void)
+ 	if (!IS_ENABLED(CONFIG_ARM64_BTI_KERNEL))
+ 		return false;
+ 
+-	pfr1 = read_sysreg_s(SYS_ID_AA64PFR1_EL1);
++	pfr1 = __read_sysreg_by_encoding(SYS_ID_AA64PFR1_EL1);
+ 	return cpuid_feature_extract_unsigned_field(pfr1,
+ 						    ID_AA64PFR1_BT_SHIFT);
  }
- early_param("kvm-arm.mode", early_kvm_mode_cfg);
 -- 
 2.29.2
 
