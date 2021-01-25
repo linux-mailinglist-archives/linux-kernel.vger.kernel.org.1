@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1703038F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCC43038AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389966AbhAZJYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:24:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35676 "EHLO mail.kernel.org"
+        id S2390753AbhAZJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:07:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730924AbhAYStA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:49:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C028620758;
-        Mon, 25 Jan 2021 18:48:44 +0000 (UTC)
+        id S1730488AbhAYSrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:47:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35A37221E7;
+        Mon, 25 Jan 2021 18:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600525;
-        bh=UOqp19TyeTSMYkkUvVfDI2f3oeJjYUfYWfIoj8Nh5D4=;
+        s=korg; t=1611600380;
+        bh=MJksqXmuYaGUzjr4jC6xeLEyWJivFShEUeqd9qu+zGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rn2zc3CnsgyZ5LD1gq14Zpry3EwUTrRM+8CXLYhtADmabpSStiITpSsFi8x0pj/AG
-         UgKV+qf7ggfqbklIXTarK9CPR3I7CcKFHaZU3+wyTpLzBTh6x8pYSMXx0vO2jhc2Zb
-         t3VdsyxB0q1sU8lPIFFxvZ5YDzPONrUYMOtW8tHY=
+        b=IW7Dg3Yw41JcBg2kY0e/3DbgUJr/Rw5VwGj0ilu210/5x+WfUVu9+I8QAi4+YTvuY
+         UeIHjWA7hRhUoLh7xouKpBudxZPrhM8t6/HOM1Ce4m5ISEqMOLTgo5Bq3d96TVIiiS
+         ET4t21SRzCYuMDU9Kzsp39pHey//ipV0YXoOO8OU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 048/199] riscv: Enable interrupts during syscalls with M-Mode
-Date:   Mon, 25 Jan 2021 19:37:50 +0100
-Message-Id: <20210125183218.282312736@linuxfoundation.org>
+Subject: [PATCH 5.4 39/86] drm/nouveau/i2c/gm200: increase width of aux semaphore owner fields
+Date:   Mon, 25 Jan 2021 19:39:21 +0100
+Message-Id: <20210125183202.717886739@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
-References: <20210125183216.245315437@linuxfoundation.org>
+In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
+References: <20210125183201.024962206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Ben Skeggs <bskeggs@redhat.com>
 
-[ Upstream commit 643437b996bac9267785e0bd528332e2d5811067 ]
+[ Upstream commit ba6e9ab0fcf3d76e3952deb12b5f993991621d9c ]
 
-When running is M-Mode (no MMU config), MPIE does not get set. This
-results in all syscalls being executed with interrupts disabled as
-handle_exception never sets SR_IE as it always sees SR_PIE being
-cleared. Fix this by always force enabling interrupts in
-handle_syscall when CONFIG_RISCV_M_MODE is enabled.
+Noticed while debugging GA102.
 
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/kernel/entry.S | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 835e45bb59c40..744f3209c48d0 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -155,6 +155,15 @@ skip_context_tracking:
- 	tail do_trap_unknown
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
+index edb6148cbca04..d0e80ad526845 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
+@@ -33,7 +33,7 @@ static void
+ gm200_i2c_aux_fini(struct gm200_i2c_aux *aux)
+ {
+ 	struct nvkm_device *device = aux->base.pad->i2c->subdev.device;
+-	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00310000, 0x00000000);
++	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00710000, 0x00000000);
+ }
  
- handle_syscall:
-+#ifdef CONFIG_RISCV_M_MODE
-+	/*
-+	 * When running is M-Mode (no MMU config), MPIE does not get set.
-+	 * As a result, we need to force enable interrupts here because
-+	 * handle_exception did not do set SR_IE as it always sees SR_PIE
-+	 * being cleared.
-+	 */
-+	csrs CSR_STATUS, SR_IE
-+#endif
- #if defined(CONFIG_TRACE_IRQFLAGS) || defined(CONFIG_CONTEXT_TRACKING)
- 	/* Recover a0 - a7 for system calls */
- 	REG_L a0, PT_A0(sp)
+ static int
+@@ -54,10 +54,10 @@ gm200_i2c_aux_init(struct gm200_i2c_aux *aux)
+ 			AUX_ERR(&aux->base, "begin idle timeout %08x", ctrl);
+ 			return -EBUSY;
+ 		}
+-	} while (ctrl & 0x03010000);
++	} while (ctrl & 0x07010000);
+ 
+ 	/* set some magic, and wait up to 1ms for it to appear */
+-	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00300000, ureq);
++	nvkm_mask(device, 0x00d954 + (aux->ch * 0x50), 0x00700000, ureq);
+ 	timeout = 1000;
+ 	do {
+ 		ctrl = nvkm_rd32(device, 0x00d954 + (aux->ch * 0x50));
+@@ -67,7 +67,7 @@ gm200_i2c_aux_init(struct gm200_i2c_aux *aux)
+ 			gm200_i2c_aux_fini(aux);
+ 			return -EBUSY;
+ 		}
+-	} while ((ctrl & 0x03000000) != urep);
++	} while ((ctrl & 0x07000000) != urep);
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
