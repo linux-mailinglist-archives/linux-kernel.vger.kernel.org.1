@@ -2,77 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036C0302D5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B77302D60
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732572AbhAYVNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:13:53 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:44247 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732089AbhAYVKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:10:32 -0500
-Received: by mail-oi1-f180.google.com with SMTP id n7so4388033oic.11;
-        Mon, 25 Jan 2021 13:10:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8EGUy8U2RwJyq81BEAVJtm2VF5/FAEU46s/eVOgFMfY=;
-        b=I02/ZqrT58cd8npMS6BWOi8dmx9cCrxCOS6xv22oEq7LvtqxLoSaPabbcOjqDH5dZN
-         ztj/QED2M6gqLZww1iBM+wpmfWypn6xwgyk1wUdgSiRrf3CuS/5Pzgh1+iUbBauYGh6t
-         +7Om6l7Yd5QhukxL9+Ll+J8D5DF6dumvT8a6nJ7ghJtZY7Jj+nqPO1BD3W7budJ2m837
-         ev5FjtGW2pXizPJStn0u5G5b0fdXPHLM6q48w7gkac3+Ftvaz0Nd+BxBoWDPXYO8ZVbS
-         uQh3m+OwXYvdEsuyI3s0+RilDjjIZpp5dM9depe4PFPt3juSLvtR8nHpdT3wScW8LjDG
-         df5w==
-X-Gm-Message-State: AOAM531ASsTZHq4+PlCGEK/+vsmGbPk9SIcc94I7zhraudaSDFXMjhk4
-        kvWtAhRMZl4hlfV4UJp1Og==
-X-Google-Smtp-Source: ABdhPJw/TL7yZ8JQWTLegv05bAk7wOK5tF1q2AOv/129pN+7Xi2JhuVEPqRl+CgJDDIq7XfPlIDQBA==
-X-Received: by 2002:a05:6808:8e3:: with SMTP id d3mr820427oic.10.1611608991785;
-        Mon, 25 Jan 2021 13:09:51 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n19sm3702063otk.57.2021.01.25.13.09.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:09:50 -0800 (PST)
-Received: (nullmailer pid 997768 invoked by uid 1000);
-        Mon, 25 Jan 2021 21:09:48 -0000
-Date:   Mon, 25 Jan 2021 15:09:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     kishon@ti.com, kernel@pengutronix.de, linux-media@vger.kernel.org,
-        linux-imx@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        dri-devel@lists.freedesktop.org, narmstrong@baylibre.com,
-        linux-kernel@vger.kernel.org, Laurent.pinchart@ideasonboard.com,
-        s.hauer@pengutronix.de, vkoul@kernel.org, jernej.skrabec@siol.net,
-        mchehab@kernel.org, airlied@linux.ie,
-        linux-arm-kernel@lists.infradead.org, jonas@kwiboo.se,
-        a.hajda@samsung.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
- pixel combiner binding
-Message-ID: <20210125210948.GA997706@robh.at.kernel.org>
-References: <1610616132-8220-1-git-send-email-victor.liu@nxp.com>
- <1610616132-8220-5-git-send-email-victor.liu@nxp.com>
+        id S1732453AbhAYVOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:14:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732499AbhAYVLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:11:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D54221E5;
+        Mon, 25 Jan 2021 21:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611609041;
+        bh=Or1lBWhIl6RhblDUyDn8EaqaFsiiaspRZSUVLOdK22s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FC9OPJ6fbDxo9sIAGIaqpRzEYEiQYDJWCp094vh/XwDlKFTOKHWwgyOQRALzzdv6l
+         x1ey31edZgpKfRHXMm4wtr2xc0Aig2eATuOC1q26p9lc8sMtxn1b3W14thnXl7c+yo
+         JEyZl6a6+G2pZ2zp0aHXMXi9Oz+NiMJxPvw/enaLKL8vjJgGMt1A3uJfxBufMc8Xh4
+         vfDB0uNWgh+Qjqw9pw0Veg8MGu8x+HUVQoTgIFx4xZJVLeVTudYpF2bAV9q+yK4Naw
+         S7sLx7Qo+6QNkV474fc6gnc2ItjY0Jm0JmiDXqyMpL9J7fkBW4w2FtcTucbf86yIbK
+         YB8ERf9LAC3tA==
+Received: by mail-ot1-f52.google.com with SMTP id h14so14189628otr.4;
+        Mon, 25 Jan 2021 13:10:41 -0800 (PST)
+X-Gm-Message-State: AOAM5324XcoLQyFPxoAL94FdnQo94c2suoK9K1Qp8erG9jLayKyKAyJC
+        jXVfMdBPkrPKh3giWh5Cel5/aUf1ljuJbk8Jo58=
+X-Google-Smtp-Source: ABdhPJx85RBJtKdPvFQbtXYq4Zitdz57yxwULz+I5SV5UoWY2Mu7mKXU8P0C+eO/zadx+uWCAlDypuzteW/fMha1lJc=
+X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr1753457otq.305.1611609040975;
+ Mon, 25 Jan 2021 13:10:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610616132-8220-5-git-send-email-victor.liu@nxp.com>
+References: <20210125113248.2268952-1-arnd@kernel.org> <20210125162230.GA145777@rowland.harvard.edu>
+In-Reply-To: <20210125162230.GA145777@rowland.harvard.edu>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 25 Jan 2021 22:10:24 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3YkgW2fk9=YDgcVXgA6WHR9WfRdEPOyMeA1sc_Ck7AOw@mail.gmail.com>
+Message-ID: <CAK8P3a3YkgW2fk9=YDgcVXgA6WHR9WfRdEPOyMeA1sc_Ck7AOw@mail.gmail.com>
+Subject: Re: [PATCH] usb: host: ehci-tegra: fix Kconfig depencies
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        USB list <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Jan 2021 17:22:02 +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qm/qxp pixel combiner.
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v1->v2:
-> * Use graph schema. (Laurent)
-> * Use enum instead of oneOf + const for the reg property of pixel combiner
->   channels. (Rob)
-> 
->  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 144 +++++++++++++++++++++
->  1 file changed, 144 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-> 
+On Mon, Jan 25, 2021 at 5:22 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Mon, Jan 25, 2021 at 12:32:30PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Selecting the chipidea driver from the old Kconfig symbol
+> > can lead to a missing dependency:
+>
+> Arnd:
+>
+> I found this whole patch a little confusing.  For example, in the
+> sentence above, what does "the old Kconfig symbol" refer to?
+>
+> Comparing the various Kconfig files, I see what the problem is.  The
+> commit which this one fixes made CONFIG_EHCI_TEGRA select
+> CONFIG_USB_CHIPIDEA, but it didn't make EHCI_TEGRA depend on the things
+> that USB_CHIPIDEA depends on.  Can you please state this more explicitly
+> in the patch description?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Sure, I'll resend in a bit.
+
+> > WARNING: unmet direct dependencies detected for USB_CHIPIDEA
+> >   Depends on [m]: USB_SUPPORT [=y] && (USB_EHCI_HCD [=y] && USB_GADGET [=m] || USB_EHCI_HCD [=y] && !USB_GADGET [=m] || !USB_EHCI_HCD [=y] && USB_GADGET [=m]) && HAS_DMA [=y]
+> >   Selected by [y]:
+> >   - USB_EHCI_TEGRA [=y] && USB_SUPPORT [=y] && USB [=y] && USB_EHCI_HCD [=y] && ARCH_TEGRA [=y]
+> > aarch64-linux-ld: drivers/usb/chipidea/otg.o: in function `ci_handle_vbus_change':
+> > otg.c:(.text+0x3c8): undefined reference to `usb_gadget_vbus_connect'
+> > aarch64-linux-ld: otg.c:(.text+0x42c): undefined reference to `usb_gadget_vbus_disconnect'
+> > aarch64-linux-ld: drivers/usb/chipidea/otg.o: in function `ci_otg_work':
+> > otg.c:(.text+0x5d4): undefined reference to `usb_gadget_vbus_disconnect'
+> > ...
+> >
+> > Duplicate the dependency to ensure that this driver can
+> > only be a loadable module if one of its dependencies is.
+> >
+> > Fixes: c3590c7656fb ("usb: host: ehci-tegra: Remove the driver")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/usb/host/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> > index 160e5d3927e2..66b01b619ecd 100644
+> > --- a/drivers/usb/host/Kconfig
+> > +++ b/drivers/usb/host/Kconfig
+> > @@ -269,6 +269,7 @@ config USB_EHCI_HCD_AT91
+> >  config USB_EHCI_TEGRA
+> >       tristate "NVIDIA Tegra HCD support"
+> >       depends on ARCH_TEGRA
+> > +     depends on ((USB_EHCI_HCD && USB_GADGET) || (USB_EHCI_HCD && !USB_GADGET) || (!USB_EHCI_HCD && USB_GADGET)) && HAS_DMA
+> >       select USB_CHIPIDEA
+> >       select USB_CHIPIDEA_HOST
+> >       select USB_CHIPIDEA_TEGRA
+>
+> Isn't there at least one other missing dependency?  This entry selects
+> USB_CHIPIDEA_TEGRA, which depends on OF.  So shouldn't this entry also
+> depend on OF?  Or does the Kconfig system detect that for us?
+
+Yes, there is a hard dependency on ARCH_TEGRA, which implies OF.
+
+> Also, while I'm no expert on the Kconfig language, it seems that the new
+> "depends" line could be a lot easier to understand if it was refactored
+> with some comments added.  Yes, I realize you just copied the existing
+> dependency from the USB_CHIPIDEA entry -- that one could stand to be
+> cleaned up as well.
+>
+> For instance, how about putting the HAS_DMA part into a separate line,
+> since it's unrelated to the other stuff?
+
+Actually it's probably best to just drop the HAS_DMA here, as it is also
+implied by ARCH_TEGRA.
+
+>  And the rest looks like it
+> could be changed to:
+>
+>         depends on USB_EHCI_HCD || USB_GADGET
+>
+> although that probably isn't quite valid.  Still, can't it be changed to
+> something simpler than
+>
+>         (USB_EHCI_HCD && USB_GADGET) || (USB_EHCI_HCD && !USB_GADGET) ||
+>                         (!USB_EHCI_HCD && USB_GADGET)
+
+The problem is that if either USB_EHCI_HCD or USB_GADGET are loadable
+modules, then USB_CHIPIDEA must not be built-in, but if one of the two is
+disabled, we must still have a dependency on the other. I guess it could be
+rewritten into
+
+      depends on USB_EHCI_HCD || USB_GADGET  # needs at least one of the two
+      depends on m ||  USB_EHCI_HCD!=m # must be =m if USB_EHCI_HCD=m
+      depends on m ||  USB_GADGET!=m # must be =m if USB_GADGET=m
+
+I see that USB_EHCI_TEGRA already depends on USB_EHCI_HCD,
+so I think this collapses into a much simpler
+
+      depends on USB_GADGET || USB_GADGET=n # for USB_CHIPIDEA
+
+         Arnd
