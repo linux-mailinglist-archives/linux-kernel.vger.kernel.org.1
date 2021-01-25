@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922F3302B77
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA77302B66
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731750AbhAYTVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:21:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39752 "EHLO mail.kernel.org"
+        id S1731745AbhAYTTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:19:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730888AbhAYSxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:53:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C29221FB;
-        Mon, 25 Jan 2021 18:53:33 +0000 (UTC)
+        id S1731266AbhAYSxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:53:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E9820719;
+        Mon, 25 Jan 2021 18:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600814;
-        bh=StjzP9ss1a/bEPqV7AaDH6R4B/vUv/S2+ILEGi46ltg=;
+        s=korg; t=1611600788;
+        bh=hd8DWQ87NPnbKcvlSfisChFaqcQXks0WXP7Ym5bLg10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EmYoRnUtC+aGeN2ljDD5BV4XnFCaQyaasp5UsnJqlJo8XSsOu3ImFKiXbhTbJn9Kx
-         u+GNItX3MDPgaYTZTmv5LQnZTCrftqHI9yolb94PA2/8tfIBW9MgPNfifTDZOrwSqz
-         qJL+I5GM2lWIk1gD8nRy/z7cH5u13sNcM27oMp2w=
+        b=tYlBSWMBs87ZS7ozg2P2od9vxc2KmEfMs2+TEUU1NeKs2sS0Nf5S7VbS2YgVZkRJe
+         ZKV2PIPAquFoeR7MSHq8g9q21hB+NFo8SxFhR4MROhhK4U6rUTDhEZ5crxAyofcluy
+         2Gu3El1njNO0nTEPK3x/8iL1STWwLKWMPKG8gFso=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 121/199] proc_sysctl: fix oops caused by incorrect command parameters
-Date:   Mon, 25 Jan 2021 19:39:03 +0100
-Message-Id: <20210125183221.332143557@linuxfoundation.org>
+Subject: [PATCH 5.10 124/199] mm: memcg: fix memcg file_dirty numa stat
+Date:   Mon, 25 Jan 2021 19:39:06 +0100
+Message-Id: <20210125183221.451554920@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -49,73 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoming Ni <nixiaoming@huawei.com>
+From: Shakeel Butt <shakeelb@google.com>
 
-commit 697edcb0e4eadc41645fe88c991fe6a206b1a08d upstream.
+commit 8a8792f600abacd7e1b9bb667759dca1c153f64c upstream.
 
-The process_sysctl_arg() does not check whether val is empty before
-invoking strlen(val).  If the command line parameter () is incorrectly
-configured and val is empty, oops is triggered.
+The kernel updates the per-node NR_FILE_DIRTY stats on page migration
+but not the memcg numa stats.
 
-For example:
-  "hung_task_panic=1" is incorrectly written as "hung_task_panic", oops is
-  triggered. The call stack is as follows:
-    Kernel command line: .... hung_task_panic
-    ......
-    Call trace:
-    __pi_strlen+0x10/0x98
-    parse_args+0x278/0x344
-    do_sysctl_args+0x8c/0xfc
-    kernel_init+0x5c/0xf4
-    ret_from_fork+0x10/0x30
+That was not an issue until recently the commit 5f9a4f4a7096 ("mm:
+memcontrol: add the missing numa_stat interface for cgroup v2") exposed
+numa stats for the memcg.
 
-To fix it, check whether "val" is empty when "phram" is a sysctl field.
-Error codes are returned in the failure branch, and error logs are
-generated by parse_args().
+So fix the file_dirty per-memcg numa stat.
 
-Link: https://lkml.kernel.org/r/20210118133029.28580-1-nixiaoming@huawei.com
-Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters from kernel command line")
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Iurii Zaikin <yzaikin@google.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: <stable@vger.kernel.org>	[5.8+]
+Link: https://lkml.kernel.org/r/20210108155813.2914586-1-shakeelb@google.com
+Fixes: 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface for cgroup v2")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Yang Shi <shy828301@gmail.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/proc/proc_sysctl.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ mm/migrate.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1770,6 +1770,12 @@ static int process_sysctl_arg(char *para
- 			return 0;
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -504,9 +504,9 @@ int migrate_page_move_mapping(struct add
+ 			__inc_lruvec_state(new_lruvec, NR_SHMEM);
+ 		}
+ 		if (dirty && mapping_can_writeback(mapping)) {
+-			__dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
++			__dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
+ 			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
+-			__inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
++			__inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
+ 			__inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
+ 		}
  	}
- 
-+	if (!val)
-+		return -EINVAL;
-+	len = strlen(val);
-+	if (len == 0)
-+		return -EINVAL;
-+
- 	/*
- 	 * To set sysctl options, we use a temporary mount of proc, look up the
- 	 * respective sys/ file and write to it. To avoid mounting it when no
-@@ -1811,7 +1817,6 @@ static int process_sysctl_arg(char *para
- 				file, param, val);
- 		goto out;
- 	}
--	len = strlen(val);
- 	wret = kernel_write(file, val, len, &pos);
- 	if (wret < 0) {
- 		err = wret;
 
 
