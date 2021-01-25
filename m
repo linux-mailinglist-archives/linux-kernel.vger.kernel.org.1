@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9340302C7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B080D302C84
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbhAYU1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:27:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727454AbhAYU0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:26:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4E41922582;
-        Mon, 25 Jan 2021 20:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611606358;
-        bh=/umDtUOr18i+5kdpH8cDDCXYCUzQ8EB4QI8YgMuDx/0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=fxl3DcosDIX9+MAi2bX8LWPK8ReDBPs/wLK7PmIzxJ6aP4RjW1D9fRZoztcHacKMG
-         39yIQU3b24Di/tPKMa7cfYjCNJmAdz+ZQcgF90GQec8fTR/30/zXS8CA2J41J07bZT
-         Ehw7QwrDsAzdLSekTbOcTk0btr8A8C1qQzZQ/SRVArESvJKu6q3kGzOQE+lgTqVMdH
-         nLzKsabczPzKPTM2O+Be0EqKcRfcbwX/WFn66uG4uK/5GoCWpqb8JjFjaEY3wYdbiD
-         nuW2zM3d8aSZpJ2cJHogEg5PPv5DTWZOkqj+FbZPCfM/fu0sWogOt7VJe+k2q3ARtq
-         9CxJQhKXrKqaA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 39CCF61E38;
-        Mon, 25 Jan 2021 20:25:58 +0000 (UTC)
-Subject: Re: [GIT PULL] printk urgent fix for 5.11-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YA7Y1WIjM3Oy2O7Y@alley>
-References: <YA7Y1WIjM3Oy2O7Y@alley>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YA7Y1WIjM3Oy2O7Y@alley>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.11-urgent-fixup
-X-PR-Tracked-Commit-Id: 61bb17da44a0b6d079e68872e3569bb3eda17656
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 007ad27d7bafc6df36e1d6ad4a13f6d602376193
-Message-Id: <161160635814.7553.16773013877295301535.pr-tracker-bot@kernel.org>
-Date:   Mon, 25 Jan 2021 20:25:58 +0000
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Sven Schnelle <svens@linux.ibm.com>
+        id S1732271AbhAYU3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732170AbhAYU04 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:26:56 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C70C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:26:04 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id l18so341852pji.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:26:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=Kq5gT7mxggPfi7e9b5vgYqHvxswxUEITmOo503bNPRM=;
+        b=l8fldT7NjqGsjK8e94mViVElU78aFxacWv4iHmvj1C3Ick6Lhj1+EsgWrpghrCeHWi
+         JsIV2m2zChqQE0GBl535HOJULKdZKUINIZR0VX/EwakawxvZAgXmZDmDwnJqiAGWvfRS
+         xohl0yNNwGWrr0UvyECHMsm2FZkHmr9fDb4N0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=Kq5gT7mxggPfi7e9b5vgYqHvxswxUEITmOo503bNPRM=;
+        b=PzE80ybOkUCFl4F0Msa3UhYNVLLNNwgrV38j1gwYVbKkecmNwpRZ1LmqGKSD81lozy
+         G8yyUva4mqyYiCcHz4MBZXyk0cR0pwdflbHV6KNn5QTHJ7QgbNFWdhvkLFgVGHhLLo4g
+         tn7T0D3ONFHfOmqiMxZZHRY2b1DwVOHIkFXKMW9i20tLgdCxuVHU404uSoB/pzi79MNI
+         JlKwQZw2tkzX/rGCgnc8oCo7ed3gbbPQ5wYZomM7FRjWR+1ksndKMStholQw1YkXKlGR
+         7MzzAdwyVV/r3QFgjxTM6p5O0rHjAR4SJpGp50Kmbm8eFDPiUN1mNGdBtGOx9kRfu4/U
+         3LLg==
+X-Gm-Message-State: AOAM5334eG2IG+lEyCG1boa9e/MCA+2d2gM1RYTb+L2Bc97pZq8JRQ2c
+        PdY5biFFYcKEBCDDPj93BcOeIg==
+X-Google-Smtp-Source: ABdhPJzqwYZ812WkWyypqLpJnXmYbS5oyt36jko1D4jMQ5RuHYxVmUdhXcCRuhSBCyLyeK/rHupRGw==
+X-Received: by 2002:a17:902:9883:b029:df:fc41:38e1 with SMTP id s3-20020a1709029883b02900dffc4138e1mr2160391plp.68.1611606364411;
+        Mon, 25 Jan 2021 12:26:04 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:1066:b437:97cd:2278])
+        by smtp.gmail.com with ESMTPSA id t8sm183396pjm.45.2021.01.25.12.26.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 12:26:03 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210115144345.v2.2.I183b1817610d7a82fdd3bc852e96d2985df9623f@changeid>
+References: <20210115224420.1635017-1-dianders@chromium.org> <20210115144345.v2.2.I183b1817610d7a82fdd3bc852e96d2985df9623f@changeid>
+Subject: Re: [PATCH v2 2/5] drm/panel-simple: Don't wait longer for HPD than hpd_absent_delay
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Date:   Mon, 25 Jan 2021 12:26:02 -0800
+Message-ID: <161160636226.76967.16862386814744159828@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 25 Jan 2021 15:42:29 +0100:
+Quoting Douglas Anderson (2021-01-15 14:44:17)
+> If a panel has an hpd_absent_delay specified then we know exactly how
+> long the maximum time is before HPD must be asserted.  That means we
+> can use it as a timeout for polling the HPD pin instead of using an
+> arbitrary timeout.  This is especially useful for dealing with panels
+> that periodically fail to power on and need to be retried.  We can
+> detect the problem sooner.
+>=20
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.11-urgent-fixup
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/007ad27d7bafc6df36e1d6ad4a13f6d602376193
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
