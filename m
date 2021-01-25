@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D83D30231F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 10:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31216302330
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 10:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbhAYJJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 04:09:26 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:58121 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbhAYGWI (ORCPT
+        id S1726231AbhAYJRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 04:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbhAYJPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:22:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611555677; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=n51NmrhCqqNMGc+z6xxnaJLMBlKY1MVhckYbF79Fvlc=; b=wEXJrV0tC9kzvqvu3Yc/n+peowbcmV/j4qndNsDj7J50o1v5f6yOGV+hHV2vhZ17O/DB7xvX
- a4CIJN0tK6cgjtFMYUV+1rqSeHJf6/8x9ByabYbEnP0IcX9AjuDeSl48Ng8Fi4YrtfN7IS6d
- nOxXX7Y6RpDDB0waC8EV2D/G1p4=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 600e6342d75e1218e3eb6077 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 06:20:50
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8E985C43463; Mon, 25 Jan 2021 06:20:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 074ECC433CA;
-        Mon, 25 Jan 2021 06:20:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 074ECC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        tkjos@google.com, dianders@chromium.org, ilina@codeaurora.org,
-        lsrao@codeaurora.org, Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v2 2/3] soc: qcom: rpmh: Add rpmh_write_sleep_and_wake() function
-Date:   Mon, 25 Jan 2021 11:50:36 +0530
-Message-Id: <1611555637-7688-2-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611555637-7688-1-git-send-email-mkshah@codeaurora.org>
-References: <1611555637-7688-1-git-send-email-mkshah@codeaurora.org>
+        Mon, 25 Jan 2021 04:15:23 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC19DC06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:18:58 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id a9so11259281wrt.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:18:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q600Utn5CHHrIrEp71Q3qYBMngzPu277qVinvis4Thk=;
+        b=nREyOnY2CVXjIIEvrNx3+72LX7UrbmjuyB7BYUZksPx7CSNK4olcd1+AWp8FLrOoFN
+         GHTtm1qdunFTCXQLgY4uq07alzAb3d8otuyYCQZfG2P02YizyyHu6wpMJwRzDI9qkZZP
+         vUfWDUdsJZlXRoWGr1LSf51riWezqvxHIFMSOcCJkGeVm7NwcSFBSI7A5/Mv3zjQuVrJ
+         9e6wYB9BOdcCFCRlVYB4jCn5vnpV3nWnmHQY3XBKL14gih3DAVuOgD6KGM9Un+pp2/0h
+         qLgsQwz090HJYvcp+7bMxXvrdMFsngt/s/LaQRtdEou3kbqLE3RsU5Q0zRjHLc2mBIHy
+         XTLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q600Utn5CHHrIrEp71Q3qYBMngzPu277qVinvis4Thk=;
+        b=tnFCdeVrMu9Zv0QO7cn3BYpYHfq8KwIxX4TspzXylFhEy1dK5gNFk1+MwD79pDjsnu
+         2Dr0Rvrs/F4Ng7Kw+j2Mhd7TT2HD9wPa0bcdDMRqZErElmlGxlx+FZy7CgIvvOkTbP+f
+         CSDl/nJjN1dPuVSQrusb6YYbbP0plXUl8gBFZpkShmb+nVikMCZNTYR8FreXO2jY6pHB
+         9UscnbuzNBlNW7kPchg4XxHVnqLrrm5yOivQKTEDGffLz+TRj6fv6808lFZ00KiCeaZW
+         JHrRuvcQ++BuHHe/bCTyO3YVkH6I8MYxV8AOVK7NHrCwvZ20U7YLLVJzp+PuHHpL9twl
+         gYUg==
+X-Gm-Message-State: AOAM531jUANnX5l60jXpjRRwrDHr6oLdrP/6u4bnK1n3INvy3UQa9bvd
+        kr4/fLjCNqp3sW+NyrhC9Z/od4viR4MqLg==
+X-Google-Smtp-Source: ABdhPJyQkY+xO02tgsOdElGMDryx1Cc2ynhm51I/0me+mHeenSl+K7hJ5lNV0Ghq0ee1Cqj7JU0tQw==
+X-Received: by 2002:a05:6000:1082:: with SMTP id y2mr1166660wrw.27.1611562737449;
+        Mon, 25 Jan 2021 00:18:57 -0800 (PST)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id r10sm19915008wmd.15.2021.01.25.00.18.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 00:18:56 -0800 (PST)
+Date:   Mon, 25 Jan 2021 08:18:55 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 4.0+" <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] kdb: Make memory allocations more robust
+Message-ID: <20210125081855.gfq3n6urcmght3ef@maple.lan>
+References: <1611313556-4004-1-git-send-email-sumit.garg@linaro.org>
+ <CAD=FV=V8HwhdhpCoiZx4XbTMWug0CAxhsnPR+5V9rB0W7QXFTQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=V8HwhdhpCoiZx4XbTMWug0CAxhsnPR+5V9rB0W7QXFTQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let RPMH clients call rpmh_write_sleep_and_wake() to immediately
-write cached sleep and wake data to the TCSes.
+On Fri, Jan 22, 2021 at 09:25:44AM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Fri, Jan 22, 2021 at 3:06 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> >
+> > Currently kdb uses in_interrupt() to determine whether its library
+> > code has been called from the kgdb trap handler or from a saner calling
+> > context such as driver init.  This approach is broken because
+> > in_interrupt() alone isn't able to determine kgdb trap handler entry from
+> > normal task context. This can happen during normal use of basic features
+> > such as breakpoints and can also be trivially reproduced using:
+> > echo g > /proc/sysrq-trigger
+> 
+> I guess an alternative to your patch is to fully eliminate GFP_KDB.
+> It always strikes me as a sub-optimal design to choose between
+> GFP_ATOMIC and GFP_KERNEL like this.  Presumably others must agree
+> because otherwise I'd expect that the overall kernel would have
+> something like "GFP_AUTOMATIC"?
+> 
+> It doesn't feel like it'd be that hard to do something more explicit.
+> From a quick glance:
+> 
+> * I think kdb_defcmd() and kdb_defcmd2() are always called in response
+> to a user typing something on the kdb command line.  Those should
+> always be GFP_ATOMIC, right?
 
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
-(no changes since v1)
----
- drivers/soc/qcom/rpmh.c | 16 ++++++++++++++++
- include/soc/qcom/rpmh.h |  5 +++++
- 2 files changed, 21 insertions(+)
+No. I'm afraid not. The kdb parser is also used to execute
+kernel/debug/kdb/kdb_cmds as part of the kdb initialization. This
+initialization happens from the init calls rather than from the kgdb
+trap handler code.
 
-diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
-index cbe6b96..725b8f0 100644
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -515,6 +515,22 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
- }
- 
- /**
-+ * rpmh_write_sleep_and_wake() - Writes the buffered wake and sleep sets
-+ * to TCSes
-+ *
-+ * @dev: The device making the request
-+ *
-+ * Return:
-+ * * 0          - Success
-+ * * Error code - Otherwise
-+ */
-+int rpmh_write_sleep_and_wake(const struct device *dev)
-+{
-+	return rpmh_flush(get_rpmh_ctrlr(dev));
-+}
-+EXPORT_SYMBOL(rpmh_write_sleep_and_wake);
-+
-+/**
-  * rpmh_invalidate: Invalidate sleep and wake sets in batch_cache
-  *
-  * @dev: The device making the request
-diff --git a/include/soc/qcom/rpmh.h b/include/soc/qcom/rpmh.h
-index fa8bb53..59b68f8 100644
---- a/include/soc/qcom/rpmh.h
-+++ b/include/soc/qcom/rpmh.h
-@@ -22,6 +22,8 @@ int rpmh_write_batch(const struct device *dev, enum rpmh_state state,
- 
- int rpmh_mode_solver_set(const struct device *dev, bool enable);
- 
-+int rpmh_write_sleep_and_wake(const struct device *dev);
-+
- void rpmh_invalidate(const struct device *dev);
- 
- #else
-@@ -43,6 +45,9 @@ static inline int rpmh_write_batch(const struct device *dev,
- static int rpmh_mode_solver_set(const struct device *dev, bool enable)
- { return -ENODEV; }
- 
-+static int rpmh_write_sleep_and_wake(const struct device *dev)
-+{ return -ENODEV; }
-+
- static inline void rpmh_invalidate(const struct device *dev)
- {
- }
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+When I first looked at Sumit's patch I had a similar reaction to you
+but, whilst it is clearly it's not impossible to pass flags into the
+kdb parser and all its subcommands, I concluded that GFP_KDB is a
+better approach.
 
+BTW the reason I insisted on getting rid of the in_atomic() was to make
+it clear that GFP_KDB discriminates between exactly two calling contexts
+(normal and kgdb trap handler). I was didn't want any hints that imply
+GFP_KDB is a (broken) implementation of something like GFP_AUTOMATIC!
+
+
+Daniel.
