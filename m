@@ -2,204 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8A2302F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392A4302F94
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732386AbhAYW4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:56:20 -0500
-Received: from mga09.intel.com ([134.134.136.24]:52559 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732154AbhAYWzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:55:51 -0500
-IronPort-SDR: eITmavLr9bxvQks1gVTenFAde9kiMdIWhSQdgzC5ieGqOR+a87sfb07fBQUOtpuz0tJjM0ogpe
- smFDU+EiRipA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179962674"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="179962674"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 14:55:10 -0800
-IronPort-SDR: sld4pWMa3Q4QYt8r+JhN9VL8OaAXOL7FXNLqtS0/v7wTxYdxjH1tBqih6kEAvXbFNemQ34Y2YG
- 9icLa2z2vsQQ==
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="409921428"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 14:55:10 -0800
-Date:   Mon, 25 Jan 2021 14:55:09 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v5] x86/mce: Avoid infinite loop for copy from user recovery
-Message-ID: <20210125225509.GA7149@agluck-desk2.amr.corp.intel.com>
-References: <20210111214452.1826-1-tony.luck@intel.com>
- <20210115003817.23657-1-tony.luck@intel.com>
- <20210115152754.GC9138@zn.tnic>
- <20210115193435.GA4663@agluck-desk2.amr.corp.intel.com>
- <20210115205103.GA5920@agluck-desk2.amr.corp.intel.com>
- <20210115232346.GA7967@agluck-desk2.amr.corp.intel.com>
- <20210119105632.GF27433@zn.tnic>
- <20210119235759.GA9970@agluck-desk2.amr.corp.intel.com>
- <20210120121812.GF825@zn.tnic>
- <20210121210959.GA10304@agluck-desk2.amr.corp.intel.com>
+        id S1732719AbhAYW5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:57:13 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:41443 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732351AbhAYW4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:56:23 -0500
+X-IronPort-AV: E=Sophos;i="5.79,374,1602518400"; 
+   d="scan'208";a="103820568"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 26 Jan 2021 06:55:32 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 7D9D04CE6031;
+        Tue, 26 Jan 2021 06:55:30 +0800 (CST)
+Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 26 Jan 2021 06:55:29 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Tue, 26 Jan 2021 06:55:28 +0800
+From:   Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
+        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+Subject: [PATCH v2 00/10] fsdax: introduce fs query to support reflink
+Date:   Tue, 26 Jan 2021 06:55:16 +0800
+Message-ID: <20210125225526.1048877-1-ruansy.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121210959.GA10304@agluck-desk2.amr.corp.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 7D9D04CE6031.AAC22
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 01:09:59PM -0800, Luck, Tony wrote:
-> On Wed, Jan 20, 2021 at 01:18:12PM +0100, Borislav Petkov wrote:
-> But, on a whim, I changed the type of mce_count from "int" to "atomic_t" and
-> fixeed up the increment & clear to use atomic_inc_return() and atomic_set().
-> See updated patch below.
-> 
-> I can't see why this should have made any difference. But the "int" version
-> crashes in a few dozen machine checks. The "atomic_t" version has run many
-> thousands of machine checks (10213 in the current boot according to /proc/interrupts)
-> with no issues.
+This patchset is aimed to support shared pages tracking for fsdax.
 
-And now I've changed it back to non-atomic (but keeping the
-slightly cleaner looking code style that I used for the atomic
-version).  This one also works for thousands of injections and
-recoveries.  Maybe take it now before it stops working again :-)
+Change from V1:
+  - Add the old memory-failure handler back for rolling back
+  - Add callback in MD's ->rmap() to support multiple mapping of dm device
+  - Add judgement for CONFIG_SYSFS
+  - Add pfn_valid() judgement in hwpoison_filter()
+  - Rebased to v5.11-rc5
 
--Tony
+Change from RFC v3:
+  - Do not lock dax entry in memory failure handler
+  - Add a helper function for corrupted_range
+  - Add restrictions in xfs code
+  - Fix code style
+  - remove the useless association and lock in fsdax
 
-From: Tony Luck <tony.luck@intel.com>
+Change from RFC v2:
+  - Adjust the order of patches
+  - Divide the infrastructure and the drivers that use it
+  - Rebased to v5.10
 
-Recovery action when get_user() triggers a machine check uses the fixup
-path to make get_user() return -EFAULT.  Also queue_task_work() sets up
-so that kill_me_maybe() will be called on return to user mode to send a
-SIGBUS to the current process.
+Change from RFC v1:
+  - Introduce ->block_lost() for block device
+  - Support mapped device
+  - Add 'not available' warning for realtime device in XFS
+  - Rebased to v5.10-rc1
 
-But there are places in the kernel where the code assumes that this
-EFAULT return was simply because of a page fault. The code takes some
-action to fix that, and then retries the access. This results in a second
-machine check.
+This patchset moves owner tracking from dax_assocaite_entry() to pmem
+device driver, by introducing an interface ->memory_failure() of struct
+pagemap.  This interface is called by memory_failure() in mm, and
+implemented by pmem device.  Then pmem device calls its ->corrupted_range()
+to find the filesystem which the corrupted data located in, and call
+filesystem handler to track files or metadata assocaited with this page.
+Finally we are able to try to fix the corrupted data in filesystem and do
+other necessary processing, such as killing processes who are using the
+files affected.
 
-While processing this second machine check queue_task_work() is called
-again. But since this uses the same callback_head structure that
-was used in the first call, the net result is an entry on the
-current->task_works list that points to itself. When task_work_run()
-is called it loops forever in this code:
+The call trace is like this:
+memory_failure()
+ pgmap->ops->memory_failure()      => pmem_pgmap_memory_failure()
+  gendisk->fops->corrupted_range() => - pmem_corrupted_range()
+                                      - md_blk_corrupted_range()
+   sb->s_ops->currupted_range()    => xfs_fs_corrupted_range()
+    xfs_rmap_query_range()
+     xfs_currupt_helper()
+      * corrupted on metadata
+          try to recover data, call xfs_force_shutdown()
+      * corrupted on file data 
+          try to recover data, call mf_dax_mapping_kill_procs()
 
-		do {
-			next = work->next;
-			work->func(work);
-			work = next;
-			cond_resched();
-		} while (work);
+The fsdax & reflink support for XFS is not contained in this patchset.
 
-Add a counter (current->mce_count) to keep track of repeated machine checks
-before task_work() is called. First machine check saves the address information
-and calls task_work_add(). Subsequent machine checks before that task_work
-call back is executed check that the address is in the same page as the first
-machine check (since the callback will offline exactly one page).
+(Rebased on v5.11-rc5)
 
-Expected worst case is two machine checks before moving on (e.g. one user
-access with page faults disabled, then a repeat to the same addrsss with
-page faults enabled). Just in case there is some code that loops forever
-enforce a limit of 10.
+Shiyang Ruan (10):
+  pagemap: Introduce ->memory_failure()
+  blk: Introduce ->corrupted_range() for block device
+  fs: Introduce ->corrupted_range() for superblock
+  mm, fsdax: Refactor memory-failure handler for dax mapping
+  mm, pmem: Implement ->memory_failure() in pmem driver
+  pmem: Implement ->corrupted_range() for pmem driver
+  dm: Introduce ->rmap() to find bdev offset
+  md: Implement ->corrupted_range()
+  xfs: Implement ->corrupted_range() for XFS
+  fs/dax: Remove useless functions
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/kernel/cpu/mce/core.c | 35 +++++++++++++++++++++++++++-------
- include/linux/sched.h          |  1 +
- 2 files changed, 29 insertions(+), 7 deletions(-)
+ block/genhd.c                 |   6 ++
+ drivers/md/dm-linear.c        |  20 ++++
+ drivers/md/dm.c               |  61 +++++++++++
+ drivers/nvdimm/pmem.c         |  44 ++++++++
+ fs/block_dev.c                |  42 +++++++-
+ fs/dax.c                      |  63 ++++-------
+ fs/xfs/xfs_fsops.c            |   5 +
+ fs/xfs/xfs_mount.h            |   1 +
+ fs/xfs/xfs_super.c            | 109 +++++++++++++++++++
+ include/linux/blkdev.h        |   2 +
+ include/linux/dax.h           |   1 +
+ include/linux/device-mapper.h |   5 +
+ include/linux/fs.h            |   2 +
+ include/linux/genhd.h         |   3 +
+ include/linux/memremap.h      |   8 ++
+ include/linux/mm.h            |   9 ++
+ mm/memory-failure.c           | 190 +++++++++++++++++++++++-----------
+ 17 files changed, 466 insertions(+), 105 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index e133ce1e562b..30dedffd6f88 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1238,6 +1238,9 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
- 
- static void kill_me_now(struct callback_head *ch)
- {
-+	struct task_struct *p = container_of(ch, struct task_struct, mce_kill_me);
-+
-+	p->mce_count = 0;
- 	force_sig(SIGBUS);
- }
- 
-@@ -1246,6 +1249,7 @@ static void kill_me_maybe(struct callback_head *cb)
- 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
- 	int flags = MF_ACTION_REQUIRED;
- 
-+	p->mce_count = 0;
- 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
- 
- 	if (!p->mce_ripv)
-@@ -1266,12 +1270,29 @@ static void kill_me_maybe(struct callback_head *cb)
- 	}
- }
- 
--static void queue_task_work(struct mce *m, int kill_current_task)
-+static void queue_task_work(struct mce *m, char *msg, int kill_current_task)
- {
--	current->mce_addr = m->addr;
--	current->mce_kflags = m->kflags;
--	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
--	current->mce_whole_page = whole_page(m);
-+	int count = ++current->mce_count;
-+
-+	/* First call, save all the details */
-+	if (count == 1) {
-+		current->mce_addr = m->addr;
-+		current->mce_kflags = m->kflags;
-+		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
-+		current->mce_whole_page = whole_page(m);
-+	}
-+
-+	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
-+	if (count > 10)
-+		mce_panic("Too many machine checks while accessing user data", m, msg);
-+
-+	/* Second or later call, make sure page address matches the one from first call */
-+	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
-+		mce_panic("Machine checks to different user pages", m, msg);
-+
-+	/* Do not call task_work_add() more than once */
-+	if (count > 1)
-+		return;
- 
- 	if (kill_current_task)
- 		current->mce_kill_me.func = kill_me_now;
-@@ -1414,7 +1435,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		/* If this triggers there is no way to recover. Die hard. */
- 		BUG_ON(!on_thread_stack() || !user_mode(regs));
- 
--		queue_task_work(&m, kill_current_task);
-+		queue_task_work(&m, msg, kill_current_task);
- 
- 	} else {
- 		/*
-@@ -1432,7 +1453,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		}
- 
- 		if (m.kflags & MCE_IN_KERNEL_COPYIN)
--			queue_task_work(&m, kill_current_task);
-+			queue_task_work(&m, msg, kill_current_task);
- 	}
- out:
- 	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 6e3a5eeec509..386366c9c757 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1362,6 +1362,7 @@ struct task_struct {
- 					mce_whole_page : 1,
- 					__mce_reserved : 62;
- 	struct callback_head		mce_kill_me;
-+	int				mce_count;
- #endif
- 
- #ifdef CONFIG_KRETPROBES
 -- 
-2.29.2
+2.30.0
+
+
 
