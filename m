@@ -2,94 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA923023CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725DD3023A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727489AbhAYKmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 05:42:11 -0500
-Received: from mga18.intel.com ([134.134.136.126]:14078 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727423AbhAYKhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:37:41 -0500
-IronPort-SDR: Nkcf3k0VB3i9oL8GLtTcasCPxzZvIqI28JAjnyptGYc83wKlpjajBLGIrdxvMmTLXeLCbd3xr9
- QKqXF/iwbtDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="167358140"
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="167358140"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:08:30 -0800
-IronPort-SDR: +yed1xN/jKxYgQSYnlV82Hldq/lmX9jM0EfNi8kT917T/sfidv4AAiqvN61YAqMDp2sAgl/AF+
- ucNkTjPGuIeg==
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="387230072"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:08:26 -0800
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <andi@firstfloor.org>
-Cc:     "Xu, Like" <like.xu@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <YACXQwBPI8OFV1T+@google.com>
- <f8a8e4e2-e0b1-8e68-81d4-044fb62045d5@intel.com>
- <YAHXlWmeR9p6JZm2@google.com>
- <20210115182700.byczztx3vjhsq3p3@two.firstfloor.org>
- <YAHkOiQsxMfOMYvp@google.com>
- <YAqhPPkexq+dQ5KD@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <eb30d86f-6492-d6e3-3a24-f58c724f68fd@linux.intel.com>
-Date:   Mon, 25 Jan 2021 16:08:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1727392AbhAYK16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 05:27:58 -0500
+Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:37604 "EHLO
+        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727496AbhAYKVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:21:55 -0500
+Received: from metabook.localnet (metabook.metanet [192.168.2.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by blackbox.su (Postfix) with ESMTPSA id B00AB82100;
+        Mon, 25 Jan 2021 11:58:41 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
+        t=1611565121; bh=8SZ2rrDH5Iz6uZt2+yloOAHMdEXzY9V0yUVQOQ+k1GU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JpT/eO585YBzoG2pyoFdUxwkmhbihLudgZA8wWSUggDMnKy8TdKM3LkU7/iHxSXOX
+         faRm/PdiHzNtvHzyQaJoStZ9uFdypKDZPr7pwEqscu1I2hYHfjFyRJE0OP4gLYANpQ
+         X/GBa9zFGwUczVP4tzVUgA1Sh5AEfovQqgxj0mpO3lh91AdL+bpWnBuHNfA82oC2n/
+         P9bKO8hAelVdzp/sPv79Hoz1wLZEIKAS3eIBcKVCqVGtTJ1FiVfKVHnn9iXuwMSwMH
+         Z5xmj7A1HJ0d5u2r6bH+cuPKhQjbwHeuJ60eZTsTq67XSHqL4wsIWqMRnqEYupjtyU
+         rUO2nwKhQrSSg==
+From:   Sergej Bauer <sbauer@blackbox.su>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Simon Horman <simon.horman@netronome.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
+Date:   Mon, 25 Jan 2021 11:57:47 +0300
+Message-ID: <4533953.k7tWhSxINc@metabook>
+In-Reply-To: <YAt8trmR1FjGnCeF@lunn.ch>
+References: <20210122214247.6536-1-sbauer@blackbox.su> <4496952.bab7Homqhv@metabook> <YAt8trmR1FjGnCeF@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <YAqhPPkexq+dQ5KD@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On 2021/1/22 17:56, Peter Zijlstra wrote:
-> On Fri, Jan 15, 2021 at 10:51:38AM -0800, Sean Christopherson wrote:
->> On Fri, Jan 15, 2021, Andi Kleen wrote:
->>>> I'm asking about ucode/hardare.  Is the "guest pebs buffer write -> PEBS PMI"
->>>> guaranteed to be atomic?
->>>
->>> Of course not.
->>
->> So there's still a window where the guest could observe the bad counter index,
->> correct?
+On Saturday, January 23, 2021 4:32:38 AM MSK Andrew Lunn wrote:
+> > it migth be helpful for developers work on userspace networking tools with
+> > PHY-less lan743x
 > 
-> Guest could do a hypercall to fix up the DS area before it tries to read
-> it I suppose. Or the HV could expose the index mapping and have the
-> guest fix up it.
-
-A weird (malicious) guest would read unmodified PEBS records in the
-guest PEBS buffer from other vCPUs without the need for hypercall or
-index mapping from HV.
-
-Do you see any security issues on this host index leak window?
-
+> (the interface even could not be brought up)
 > 
-> Adding a little virt crud on top shouldn't be too hard.
+> > of course, there nothing much to do without TP port but the difference is
+> > representative.
+> > 
+> > sbauer@metamini ~$ sudo ethtool eth7
+> > Settings for eth7:
+> > Cannot get device settings: No such device
+> > 
+> >         Supports Wake-on: pumbag
+> >         Wake-on: d
+> >         Current message level: 0x00000137 (311)
+> >         
+> >                                drv probe link ifdown ifup tx_queued
+> >         
+> >         Link detected: no
+> > 
+> > sbauer@metamini ~$ sudo ifup eth7
+> > sbauer@metamini ~$ sudo ethtool eth7
+> > 
+> > Settings for eth7:
+> >         Supported ports: [ MII ]
+> >         Supported link modes:   10baseT/Full
+> >         
+> >                                 100baseT/Full
+> >                                 1000baseT/Full
+> >         
+> >         Supported pause frame use: Symmetric Receive-only
+> >         Supports auto-negotiation: Yes
+> >         Supported FEC modes: Not reported
+> >         Advertised link modes:  10baseT/Full
+> >         
+> >                                 100baseT/Full
+> >                                 1000baseT/Full
+> >         
+> >         Advertised pause frame use: Symmetric Receive-only
+> >         Advertised auto-negotiation: Yes
+> >         Advertised FEC modes: Not reported
+> >         Speed: 1000Mb/s
+> >         Duplex: Full
+> >         Port: MII
+> >         PHYAD: 0
+> >         Transceiver: internal
+> >         Auto-negotiation: on
+> >         Supports Wake-on: pumbag
+> >         Wake-on: d
+> >         Current message level: 0x00000137 (311)
+> >         
+> >                                drv probe link ifdown ifup tx_queued
+> >         
+> >         Link detected: yes
+> > 
+> > sbauer@metamini ~$ sudo mii-tool -vv eth7
+> > Using SIOCGMIIPHY=0x8947
+> > eth7: negotiated 1000baseT-FD, link ok
+> > 
+> >   registers for MII PHY 0:
+> >     5140 512d 7431 0011 4140 4140 000d 0000
+> >     0000 0200 7800 0000 0000 0000 0000 2000
+> >     0000 0000 0000 0000 0000 0000 0000 0000
+> >     0000 0000 0000 0000 0000 0000 0000 0000
+> >   
+> >   product info: vendor 1d:0c:40, model 1 rev 1
+> >   basic mode:   loopback, autonegotiation enabled
+> >   basic status: autonegotiation complete, link ok
+> >   capabilities: 1000baseT-FD 100baseTx-FD 10baseT-FD
+> >   advertising:  1000baseT-FD 100baseTx-FD 10baseT-FD
+> >   link partner: 1000baseT-FD 100baseTx-FD 10baseT-FD
 > 
+> You have not shown anything i cannot do with the ethernet interfaces i
+> have in my laptop. And since ethtool is pretty standardized, what
+> lan743x offers should be pretty much the same as any 1G Ethernet MAC
+> using most 1G PHYs.
+> 
+>       Andrew
 
-The patches 13-17 in this version has modified the guest PEBS buffer
-to correct the index mapping information in the guest PEBS records.
+Andrew, for this moment with lan743x we can get only this:
+sbauer@metamini ~/devel/kernel-works/net-next.git master$ sudo ethtool eth7
+Settings for eth7:
+Cannot get device settings: No such device
+        Supports Wake-on: pumbag
+        Wake-on: d
+        Current message level: 0x00000137 (311)
+                               drv probe link ifdown ifup tx_queued
+        Link detected: no
+sbauer@metamini ~/devel/kernel-works/net-next.git master$ sudo mii-tool -vv 
+eth7
+Using SIOCGMIIPHY=0x8947
+SIOCGMIIPHY on 'eth7' failed: Invalid argument
 
----
-thx,likexu
+
+-- 
+                                Regards,
+                                    Sergej.
+
+
+
+
