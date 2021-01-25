@@ -2,109 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7FF302E55
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1DE302E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733051AbhAYVtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:49:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732834AbhAYVib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:38:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F8A2229C6;
-        Mon, 25 Jan 2021 21:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611610543;
-        bh=2Di0IbIXl1xn2Q918lq0pHS35BBSv9IAQLWTpnF3034=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cy17SSKvvNvxfTqzme3GulWvb12hmNhkF7DBhyy2a+M5IaoGf8exm+dMOhwdI3cnD
-         O9Y6le+GeozBAOlFWKkpEB+vZ71maF7XrODlor4nn34mqAaY2SmcJJTy1/7R4Vzp0U
-         bPshjl150D1+6AqGJJwRZluiwgpDdWOErZGjlhYbAQhuHLMYpqQxkt2okbl3QmaaEV
-         +AvTUTAKQGnim5uoCQhk9nL/vcRX66pRqMexDaS2sIjDuNGgW078c+2BX0w5Eu0hmE
-         oc6a5eiysTeaoVlQWOTzqTt5FOVdCY/F5kyVzE2NWYn7vW0p6El384BwmC/nQzLCGf
-         IjSwSAhpZJ+aA==
-Date:   Mon, 25 Jan 2021 23:35:26 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1732697AbhAYVkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:40:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31719 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733001AbhAYVhw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:37:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611610585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9AGQ+mfuWZPgf1o7G9jfH2wEhkq5VbnMNcHJv95un4U=;
+        b=SHNRJd5uGvA+ZsZNWLe9cKyxIJXPwpAxFt1yy1bTmy7f6R4uEYP3TP+mZhx5UkSBAbS1EZ
+        34gzZmohg3nPKMQQLFeSq90sLK+FnIgVSjZxZ/RtSlw/LY9ddvLE8S5PMbvo1QhmbM26Gy
+        0Hchihd7plbSkkZeSjgCKp7bgqk141s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-_iuHzRAyM8qI7fQRD3qbTw-1; Mon, 25 Jan 2021 16:36:23 -0500
+X-MC-Unique: _iuHzRAyM8qI7fQRD3qbTw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7081CCE64E;
+        Mon, 25 Jan 2021 21:36:20 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6510A5C1C5;
+        Mon, 25 Jan 2021 21:36:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 27/32] NFS: Refactor nfs_readpage() and nfs_readpage_async()
+ to use nfs_readdesc
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-Message-ID: <20210125213526.GK6332@kernel.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-9-rppt@kernel.org>
- <20210125161706.GE308988@casper.infradead.org>
- <CALvZod7rn_5oXT6Z+iRCeMX_iMRO9G_8FnwSRGpJJwyBz5Wpnw@mail.gmail.com>
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 25 Jan 2021 21:36:13 +0000
+Message-ID: <161161057357.2537118.6542184374596533032.stgit@warthog.procyon.org.uk>
+In-Reply-To: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7rn_5oXT6Z+iRCeMX_iMRO9G_8FnwSRGpJJwyBz5Wpnw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 09:18:04AM -0800, Shakeel Butt wrote:
-> On Mon, Jan 25, 2021 at 8:20 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, Jan 21, 2021 at 02:27:20PM +0200, Mike Rapoport wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > >
-> > > Account memory consumed by secretmem to memcg. The accounting is updated
-> > > when the memory is actually allocated and freed.
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-I though about doing per-page accounting, but then one would be able to
-create a lot of secretmem file descriptors, use only a page from each while
-actual memory consumption will be way higher.
+Both nfs_readpage() and nfs_readpages() use similar code.
+This patch should be no functional change, and refactors
+nfs_readpage_async() to use nfs_readdesc to enable future
+merging of nfs_readpage_async() and nfs_readpage_async_filler().
 
-> > I think this is wrong.  It fails to account subsequent allocators from
-> > the same PMD.  If you want to track like this, you need separate pools
-> > per memcg.
-> >
-> 
-> Are these secretmem pools shared between different jobs/memcgs?
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+---
 
-A secretmem pool is per anonymous file descriptor and this file descriptor
-can be shared only explicitly between several processes. So, the secretmem
-pool should not be shared between different jobs/memcg. Of course, it's
-possible to spread threads of a process across different memcgs, but in
-that case the accounting will be similar to what's happening today with
-sl*b. The first thread to cause kmalloc() will be charged for the
-allocation of the entire slab and subsequent allocations from that slab
-will not be accounted.
+ fs/nfs/read.c          |   62 +++++++++++++++++++++++-------------------------
+ include/linux/nfs_fs.h |    3 +-
+ 2 files changed, 31 insertions(+), 34 deletions(-)
 
-That said, having a pool per memcg will add ton of complexity with very
-dubious value.
+diff --git a/fs/nfs/read.c b/fs/nfs/read.c
+index 1153c4e0a155..5fda30742a32 100644
+--- a/fs/nfs/read.c
++++ b/fs/nfs/read.c
+@@ -114,18 +114,23 @@ static void nfs_readpage_release(struct nfs_page *req, int error)
+ 	nfs_release_request(req);
+ }
+ 
+-int nfs_readpage_async(struct nfs_open_context *ctx, struct inode *inode,
++struct nfs_readdesc {
++	struct nfs_pageio_descriptor pgio;
++	struct nfs_open_context *ctx;
++};
++
++int nfs_readpage_async(void *data, struct inode *inode,
+ 		       struct page *page)
+ {
++	struct nfs_readdesc *desc = (struct nfs_readdesc *)data;
+ 	struct nfs_page	*new;
+ 	unsigned int len;
+-	struct nfs_pageio_descriptor pgio;
+ 	struct nfs_pgio_mirror *pgm;
+ 
+ 	len = nfs_page_length(page);
+ 	if (len == 0)
+ 		return nfs_return_empty_page(page);
+-	new = nfs_create_request(ctx, page, 0, len);
++	new = nfs_create_request(desc->ctx, page, 0, len);
+ 	if (IS_ERR(new)) {
+ 		unlock_page(page);
+ 		return PTR_ERR(new);
+@@ -133,21 +138,21 @@ int nfs_readpage_async(struct nfs_open_context *ctx, struct inode *inode,
+ 	if (len < PAGE_SIZE)
+ 		zero_user_segment(page, len, PAGE_SIZE);
+ 
+-	nfs_pageio_init_read(&pgio, inode, false,
++	nfs_pageio_init_read(&desc->pgio, inode, false,
+ 			     &nfs_async_read_completion_ops);
+-	if (!nfs_pageio_add_request(&pgio, new)) {
++	if (!nfs_pageio_add_request(&desc->pgio, new)) {
+ 		nfs_list_remove_request(new);
+-		nfs_readpage_release(new, pgio.pg_error);
++		nfs_readpage_release(new, desc->pgio.pg_error);
+ 	}
+-	nfs_pageio_complete(&pgio);
++	nfs_pageio_complete(&desc->pgio);
+ 
+ 	/* It doesn't make sense to do mirrored reads! */
+-	WARN_ON_ONCE(pgio.pg_mirror_count != 1);
++	WARN_ON_ONCE(desc->pgio.pg_mirror_count != 1);
+ 
+-	pgm = &pgio.pg_mirrors[0];
++	pgm = &desc->pgio.pg_mirrors[0];
+ 	NFS_I(inode)->read_io += pgm->pg_bytes_written;
+ 
+-	return pgio.pg_error < 0 ? pgio.pg_error : 0;
++	return desc->pgio.pg_error < 0 ? desc->pgio.pg_error : 0;
+ }
+ 
+ static void nfs_page_group_set_uptodate(struct nfs_page *req)
+@@ -312,7 +317,7 @@ static void nfs_readpage_result(struct rpc_task *task,
+  */
+ int nfs_readpage(struct file *filp, struct page *page)
+ {
+-	struct nfs_open_context *ctx;
++	struct nfs_readdesc desc;
+ 	struct inode *inode = page_file_mapping(page)->host;
+ 	int ret;
+ 
+@@ -339,39 +344,34 @@ int nfs_readpage(struct file *filp, struct page *page)
+ 
+ 	if (filp == NULL) {
+ 		ret = -EBADF;
+-		ctx = nfs_find_open_context(inode, NULL, FMODE_READ);
+-		if (ctx == NULL)
++		desc.ctx = nfs_find_open_context(inode, NULL, FMODE_READ);
++		if (desc.ctx == NULL)
+ 			goto out_unlock;
+ 	} else
+-		ctx = get_nfs_open_context(nfs_file_open_context(filp));
++		desc.ctx = get_nfs_open_context(nfs_file_open_context(filp));
+ 
+ 	if (!IS_SYNC(inode)) {
+-		ret = nfs_readpage_from_fscache(ctx, inode, page);
++		ret = nfs_readpage_from_fscache(desc.ctx, inode, page);
+ 		if (ret == 0)
+ 			goto out;
+ 	}
+ 
+-	xchg(&ctx->error, 0);
+-	ret = nfs_readpage_async(ctx, inode, page);
++	xchg(&desc.ctx->error, 0);
++	ret = nfs_readpage_async(&desc, inode, page);
+ 	if (!ret) {
+ 		ret = wait_on_page_locked_killable(page);
+ 		if (!PageUptodate(page) && !ret)
+-			ret = xchg(&ctx->error, 0);
++			ret = xchg(&desc.ctx->error, 0);
+ 	}
+ 	nfs_add_stats(inode, NFSIOS_READPAGES, 1);
+ out:
+-	put_nfs_open_context(ctx);
++	put_nfs_open_context(desc.ctx);
+ 	return ret;
+ out_unlock:
+ 	unlock_page(page);
+ 	return ret;
+ }
+ 
+-struct nfs_readdesc {
+-	struct nfs_pageio_descriptor *pgio;
+-	struct nfs_open_context *ctx;
+-};
+-
+ static int
+ readpage_async_filler(void *data, struct page *page)
+ {
+@@ -390,9 +390,9 @@ readpage_async_filler(void *data, struct page *page)
+ 
+ 	if (len < PAGE_SIZE)
+ 		zero_user_segment(page, len, PAGE_SIZE);
+-	if (!nfs_pageio_add_request(desc->pgio, new)) {
++	if (!nfs_pageio_add_request(&desc->pgio, new)) {
+ 		nfs_list_remove_request(new);
+-		error = desc->pgio->pg_error;
++		error = desc->pgio.pg_error;
+ 		nfs_readpage_release(new, error);
+ 		goto out;
+ 	}
+@@ -407,7 +407,6 @@ readpage_async_filler(void *data, struct page *page)
+ int nfs_readpages(struct file *filp, struct address_space *mapping,
+ 		struct list_head *pages, unsigned nr_pages)
+ {
+-	struct nfs_pageio_descriptor pgio;
+ 	struct nfs_pgio_mirror *pgm;
+ 	struct nfs_readdesc desc;
+ 	struct inode *inode = mapping->host;
+@@ -440,17 +439,16 @@ int nfs_readpages(struct file *filp, struct address_space *mapping,
+ 	if (ret == 0)
+ 		goto read_complete; /* all pages were read */
+ 
+-	desc.pgio = &pgio;
+-	nfs_pageio_init_read(&pgio, inode, false,
++	nfs_pageio_init_read(&desc.pgio, inode, false,
+ 			     &nfs_async_read_completion_ops);
+ 
+ 	ret = read_cache_pages(mapping, pages, readpage_async_filler, &desc);
+-	nfs_pageio_complete(&pgio);
++	nfs_pageio_complete(&desc.pgio);
+ 
+ 	/* It doesn't make sense to do mirrored reads! */
+-	WARN_ON_ONCE(pgio.pg_mirror_count != 1);
++	WARN_ON_ONCE(desc.pgio.pg_mirror_count != 1);
+ 
+-	pgm = &pgio.pg_mirrors[0];
++	pgm = &desc.pgio.pg_mirrors[0];
+ 	NFS_I(inode)->read_io += pgm->pg_bytes_written;
+ 	npages = (pgm->pg_bytes_written + PAGE_SIZE - 1) >>
+ 		 PAGE_SHIFT;
+diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
+index 681ed98e4ba8..cb0248a34518 100644
+--- a/include/linux/nfs_fs.h
++++ b/include/linux/nfs_fs.h
+@@ -570,8 +570,7 @@ nfs_have_writebacks(struct inode *inode)
+ extern int  nfs_readpage(struct file *, struct page *);
+ extern int  nfs_readpages(struct file *, struct address_space *,
+ 		struct list_head *, unsigned);
+-extern int  nfs_readpage_async(struct nfs_open_context *, struct inode *,
+-			       struct page *);
++extern int  nfs_readpage_async(void *, struct inode *, struct page *);
+ 
+ /*
+  * inline functions
 
--- 
-Sincerely yours,
-Mike.
+
