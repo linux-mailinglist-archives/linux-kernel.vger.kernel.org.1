@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD7C3026F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0493026F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729881AbhAYO7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:59:00 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:32297 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729802AbhAYOvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:51:45 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DPXmb3P71z9v0Ht;
-        Mon, 25 Jan 2021 15:48:31 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id P6Kxlvizs71j; Mon, 25 Jan 2021 15:48:31 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPXmb2ctpz9v0Hk;
-        Mon, 25 Jan 2021 15:48:31 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DA1698B7A0;
-        Mon, 25 Jan 2021 15:48:36 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id U6Dxr_he3iTE; Mon, 25 Jan 2021 15:48:36 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9CFD78B79E;
-        Mon, 25 Jan 2021 15:48:36 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 8F12E66AD8; Mon, 25 Jan 2021 14:48:36 +0000 (UTC)
-Message-Id: <b4feabb6a7860d36eb858ede68a276ae739fda33.1611585031.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1611585031.git.christophe.leroy@csgroup.eu>
-References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v4 23/23] powerpc/syscall: Avoid storing 'current' in another
- pointer
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        msuchanek@suse.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 25 Jan 2021 14:48:36 +0000 (UTC)
+        id S1729979AbhAYPcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729894AbhAYO75 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:59:57 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AB0C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:59:13 -0800 (PST)
+Received: from zn.tnic (p200300ec2f09db0095810f165069682a.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:db00:9581:f16:5069:682a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0A2241EC0572;
+        Mon, 25 Jan 2021 15:59:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611586752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=H1lt6BqMznE4SchYbIuclVKLnxqPlbAP3RCfbMs7uhI=;
+        b=qkQ95WmU512S2Kp3vzvVX+I6j4AOlTi4F+EKMdsp3Ox4mkTGc0uTIaG3oGNOfzBTrpLxbp
+        HK0CUC54QGmIcz7qBJHP7sbkC7nlfrTRrx8P7CABfM5xOuIH4bkJvGwb7y6C9u82swJSUN
+        rAt0uH8NiwP0Fyl9a5ONCsPv62rHziU=
+Date:   Mon, 25 Jan 2021 15:59:11 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH 1/2] x86/setup: consolidate early memory reservations
+Message-ID: <20210125145911.GF23070@zn.tnic>
+References: <20210115083255.12744-1-rppt@kernel.org>
+ <20210115083255.12744-2-rppt@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210115083255.12744-2-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By saving the pointer pointing to thread_info.flags, gcc copies r2
-in a non-volatile register.
+On Fri, Jan 15, 2021 at 10:32:54AM +0200, Mike Rapoport wrote:
+> +	trim_low_memory_range();
 
-We know 'current' doesn't change, so avoid that intermediaite pointer.
+Btw, you can get rid of that one too:
 
-Reduces null_syscall benchmark by 2 cycles (322 => 320 cycles)
+/*
+ * Here we put platform-specific memory range workarounds, i.e.
+ * memory known to be corrupt or otherwise in need to be reserved on
+ * specific platforms.
+ *
+ * If this gets used more widely it could use a real dispatch mechanism.
+ */
+static void __init trim_platform_memory_ranges(void)
+{
+        trim_snb_memory();
+}
 
-On PPC64, gcc seems to know that 'current' is not changing, and it keeps
-it in a non volatile register to avoid multiple read of 'current' in paca.
+yeah, yeah, we can do a real dispatch mechanism but we didn't need one
+since 2012 so I guess we can get rid of trim_platform_memory_ranges()
+and call trim_snb_memory() directly and simplify it even more.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/syscall.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Thx.
 
-diff --git a/arch/powerpc/kernel/syscall.c b/arch/powerpc/kernel/syscall.c
-index 47ae55f94d1c..72e0b18b88d8 100644
---- a/arch/powerpc/kernel/syscall.c
-+++ b/arch/powerpc/kernel/syscall.c
-@@ -186,7 +186,6 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 					   struct pt_regs *regs,
- 					   long scv)
- {
--	unsigned long *ti_flagsp = &current_thread_info()->flags;
- 	unsigned long ti_flags;
- 	unsigned long ret = 0;
- 
-@@ -202,7 +201,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 	/* Check whether the syscall is issued inside a restartable sequence */
- 	rseq_syscall(regs);
- 
--	ti_flags = *ti_flagsp;
-+	ti_flags = current_thread_info()->flags;
- 
- 	if (unlikely(r3 >= (unsigned long)-MAX_ERRNO) && !scv) {
- 		if (likely(!(ti_flags & (_TIF_NOERROR | _TIF_RESTOREALL)))) {
-@@ -216,7 +215,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 			ret = _TIF_RESTOREALL;
- 		else
- 			regs->gpr[3] = r3;
--		clear_bits(_TIF_PERSYSCALL_MASK, ti_flagsp);
-+		clear_bits(_TIF_PERSYSCALL_MASK, &current_thread_info()->flags);
- 	} else {
- 		regs->gpr[3] = r3;
- 	}
-@@ -228,7 +227,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 
- again:
- 	local_irq_disable();
--	ti_flags = READ_ONCE(*ti_flagsp);
-+	ti_flags = READ_ONCE(current_thread_info()->flags);
- 	while (unlikely(ti_flags & (_TIF_USER_WORK_MASK & ~_TIF_RESTORE_TM))) {
- 		local_irq_enable();
- 		if (ti_flags & _TIF_NEED_RESCHED) {
-@@ -244,7 +243,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 			do_notify_resume(regs, ti_flags);
- 		}
- 		local_irq_disable();
--		ti_flags = READ_ONCE(*ti_flagsp);
-+		ti_flags = READ_ONCE(current_thread_info()->flags);
- 	}
- 
- 	if (IS_ENABLED(CONFIG_PPC_BOOK3S) && IS_ENABLED(CONFIG_PPC_FPU)) {
 -- 
-2.25.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
