@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71274303875
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1288C3037FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390599AbhAZI5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:57:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
+        id S2390196AbhAZIdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:33:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730047AbhAYSqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:46:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73F0922D58;
-        Mon, 25 Jan 2021 18:45:43 +0000 (UTC)
+        id S1728362AbhAYSnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:43:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 456AC2075B;
+        Mon, 25 Jan 2021 18:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600344;
-        bh=UKDr5wvYWa3oDVHqw81KBDA1tJIdeyCpvj3hgKXAwtg=;
+        s=korg; t=1611600142;
+        bh=oHxPXzKK3nFpYPADnIChqOUV0ts/0McSoAhq9TiRnyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wclE6nT0ickn82xmdWx1+UsIsNQRF44kGciOLkhVWTUD6DuCYiyUwNW9gQ6qUGAFL
-         fMaSHcs7iVNrgLFtw7VOtihgOg/vUQUxl/8Bc7llWscWRCpl6WAyUgUXXvitUrdpKW
-         fCcKYrq9NkDwiG5aO7ht6oN85TFqjE63UvtM7FWA=
+        b=BINDH/bZVotbGKwJACRp9UkFPl1Q5O51zcZ633Pt9od9odQQaMUPQNM3gCppGOjAx
+         GJ/u1Nt3NBs32IQvtLW1Wxa6Q7MXieL/1UbtPX+T1HrpjnOTlIEhN+kWZEMmWk3XXs
+         GltLPy2Vn/9nycaJYmWkWrt01QQWCeE9KrRnoULY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JC Kuo <jckuo@nvidia.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 65/86] xhci: tegra: Delay for disabling LFPS detector
-Date:   Mon, 25 Jan 2021 19:39:47 +0100
-Message-Id: <20210125183203.792881184@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 47/58] sh_eth: Fix power down vs. is_opened flag ordering
+Date:   Mon, 25 Jan 2021 19:39:48 +0100
+Message-Id: <20210125183158.735125528@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-References: <20210125183201.024962206@linuxfoundation.org>
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: JC Kuo <jckuo@nvidia.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit da7e0c3c2909a3d9bf8acfe1db3cb213bd7febfb upstream.
+commit f6a2e94b3f9d89cb40771ff746b16b5687650cbb upstream.
 
-Occasionally, we are seeing some SuperSpeed devices resumes right after
-being directed to U3. This commits add 500us delay to ensure LFPS
-detector is disabled before sending ACK to firmware.
+sh_eth_close() does a synchronous power down of the device before
+marking it closed.  Revert the order, to make sure the device is never
+marked opened while suspended.
 
-[   16.099363] tegra-xusb 70090000.usb: entering ELPG
-[   16.104343] tegra-xusb 70090000.usb: 2-1 isn't suspended: 0x0c001203
-[   16.114576] tegra-xusb 70090000.usb: not all ports suspended: -16
-[   16.120789] tegra-xusb 70090000.usb: entering ELPG failed
+While at it, use pm_runtime_put() instead of pm_runtime_put_sync(), as
+there is no reason to do a synchronous power down.
 
-The register write passes through a few flop stages of 32KHz clock domain.
-NVIDIA ASIC designer reviewed RTL and suggests 500us delay.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: JC Kuo <jckuo@nvidia.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210115161907.2875631-3-mathias.nyman@linux.intel.com
+Fixes: 7fa2955ff70ce453 ("sh_eth: Fix sleeping function called from invalid context")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Link: https://lore.kernel.org/r/20210118150812.796791-1-geert+renesas@glider.be
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-tegra.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/ethernet/renesas/sh_eth.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-tegra.c
-+++ b/drivers/usb/host/xhci-tegra.c
-@@ -562,6 +562,13 @@ static void tegra_xusb_mbox_handle(struc
- 								     enable);
- 			if (err < 0)
- 				break;
-+
-+			/*
-+			 * wait 500us for LFPS detector to be disabled before
-+			 * sending ACK
-+			 */
-+			if (!enable)
-+				usleep_range(500, 1000);
- 		}
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -2620,10 +2620,10 @@ static int sh_eth_close(struct net_devic
+ 	/* Free all the skbuffs in the Rx queue and the DMA buffer. */
+ 	sh_eth_ring_free(ndev);
  
- 		if (err < 0) {
+-	pm_runtime_put_sync(&mdp->pdev->dev);
+-
+ 	mdp->is_opened = 0;
+ 
++	pm_runtime_put(&mdp->pdev->dev);
++
+ 	return 0;
+ }
+ 
 
 
