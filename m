@@ -2,338 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6A5302725
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2402302733
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730370AbhAYPqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:46:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730295AbhAYPnW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:43:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA89BC0617AA
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=+N3dQkYlLxs8i5hcB6leniGln0+8d1xqIFyV5mhxTpI=; b=OopwtapzenrrG4wXlecz8UY5uB
-        j3Q1yJoI7JE9T+aT6cA1l3LN+cUxdphHloMAT3dZlvDEOnc7W2hhJB3x/fPSOt7z0uEsdaINlCEh2
-        0QevigKwZXqTIQLlrPlII4H6ZF3Vu6AK7gJ6o3Zg2aGPjnghHvezvOFyYgYpDXYeSFO6Vm71iH8MD
-        /F4bCbTlB6hrzoo8EWxJpewopbRs6A1tN5iS/CnjJQBsuAtF1cGPmQEMa7PMbUXna2dS9+6XIb6KO
-        6XzLMWHj4zHMG8kiQ7g4/i+OZPRsSKa185sNuB+vVnkhcbe5CiWAFkY1rFr5Ch9c0aKxVTctqGNES
-        WYCNy6Kw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l43Zp-004KsO-1s; Mon, 25 Jan 2021 15:14:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 872AB3070D5;
-        Mon, 25 Jan 2021 16:14:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7257B2B6D76CD; Mon, 25 Jan 2021 16:14:47 +0100 (CET)
-Message-ID: <20210125151314.808569647@infradead.org>
-User-Agent: quilt/0.66
-Date:   Mon, 25 Jan 2021 16:09:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     walken@google.com, dave@stgolabs.net, mingo@kernel.org,
-        tglx@linutronix.de, oleg@redhat.com, irogers@google.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        peterz@infradead.org, Tejun Heo <tj@kernel.org>
-Subject: [PATCH v2 4/7] rbtree, perf: Use new rbtree helpers
-References: <20210125150953.679129361@infradead.org>
+        id S1730488AbhAYPsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:48:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730353AbhAYPp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:45:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC37D22EBF;
+        Mon, 25 Jan 2021 15:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611587503;
+        bh=r5Uo07IQYlBEdLUN4JJ8iBXUHjeKUZXycoL6vpJfGJ0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XFWbHp7KHXEFjyM6C90aTj6/8cIhEeua3UZRyetUsW/pffyrn4bL0U3jptBLjrHzB
+         P1r0zm2u5P92v3WAPqZNmyb3eNmVPXUoXm+SCVDkaW7p7nr/rSy9rN918ITvCYdsyL
+         8AtqBm4jGT+dyQf99Ki0fecuONmWBSkbCc81y/psVEBIcV7YMVCUejscCcVujcSk4D
+         4dSxx5vidN/eVL1bSpIlV5cjr2rbDKUJnJPmlITGS1pN+0gYaHZ4I3Wlr/nyi5Ivpc
+         mRmwp13Igu+okBVasvZKPeRXYXteRCPRwqkilfJAtopvbAw5h+7zp4046O0Rb+lFrd
+         hrDQkhUxSLH1g==
+Received: by mail-oi1-f172.google.com with SMTP id g69so14289420oib.12;
+        Mon, 25 Jan 2021 07:11:43 -0800 (PST)
+X-Gm-Message-State: AOAM5300vdMihRKPY3vcu8rwZgzTCQqFkJCLl3USDlFE5y+8LpqTMjYw
+        WHWZcidolO6nu3Z0KoSZEDdAPX5WAfDEDFDGKWY=
+X-Google-Smtp-Source: ABdhPJxdJ3BJcGsYMDL3f90oYHHi/YyWcPc/WE/CEaHqFC/PG55A6VPahWUH0/LFCBt9e0OYCoUW465Pd+6s+5408mw=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr396747oig.11.1611587502910;
+ Mon, 25 Jan 2021 07:11:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
+In-Reply-To: <CA+G9fYsvDWDogC+xgeG2V9MMofV5svTipDigDiUBje+2jSRK8g@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 25 Jan 2021 16:11:26 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
+Message-ID: <CAK8P3a2OeeW29ekbD70Ns4LTjGRJRT9P0wM-SAxUin1zAxP7TA@mail.gmail.com>
+Subject: Re: LTP: madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
+        chrubis <chrubis@suse.cz>, Jan Stancek <jstancek@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <christian@brauner.io>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Vorel <pvorel@suse.cz>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Joerg.Vehlow@aox-tech.de, Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce rbtree boiler plate by using the new helpers.
+On Mon, Jan 25, 2021 at 3:48 PM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> LTP syscalls madvise08 test case failed on all devices from
+> Linux next 20210118 to till day.
+> strace log attached to this email and link provided below.
+>
+> BAD: next-20210118
+> GOOD: next-20210115
+>
+> This failure is easily reproducible on Linux next tag 20210118 above.
+>
+> tst_test.c:1250: TINFO: Timeout per run is 0h 15m 00s
+> madvise08.c:73: TINFO: Temporary core pattern is
+> '/scratch/ltp-2nftQzNI1K/HclFMH/dump-%p'
+> madvise08.c:112: TINFO: Dump file should be dump-10109
+> madvise08.c:196: TPASS: madvise(..., MADV_DONTDUMP)
+> madvise08.c:112: TINFO: Dump file should be dump-10110
+> madvise08.c:203: TFAIL: No sequence in dump after MADV_DODUMP.
+>
+> strace log,
+> https://lkft.validation.linaro.org/scheduler/job/2184866#L1257
 
-One noteworthy change is unification of the various (partial) compare
-functions. We construct a subtree match by forcing the sub-order to
-always match, see __group_cmp().
+Ok, so in this part of the log,
 
-Due to 'const' we had to touch cgroup_id().
+[pid   485] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_DUMPED,
+si_pid=487, si_uid=0, si_status=SIGABRT, si_utime=0, si_stime=0} ---
+[pid   485] write(2, \"madvise08.c:117: \33[1;34mTINFO: \33\"...,
+64madvise08.c:117: [1;34mTINFO: [0mDump file should be dump-487
+) = 64
+[pid   485] access(\"dump-487\", F_OK)    = 0
+[pid   485] openat(AT_FDCWD, \"dump-487\", O_RDONLY) = 3
+[pid   485] read(3,
+\"\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\4\0>\0\1\0\0\0\0\0\0\0\0\0\0\0\"...,
+1024) = 1024
+[pid   485] read(3,
+\"\0\320\3\0\0\0\0\0\0\340\375\24\304\177\0\0\0\0\0\0\0\0\0\0\0\20\0\0\0\0\0\0\"...,
+1024) = 292
+[pid   485] read(3, \"\", 1024)           = 0
+[pid   485] close(3)                    = 0
+[pid   485] write(2, \"madvise08.c:208: \33[1;31mTFAIL: \33\"...,
+74madvise08.c:208: [1;31mTFAIL: [0mNo sequence in dump after
+MADV_DODUMP.
 
-Cc: Tejun Heo <tj@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/cgroup.h |    4 
- kernel/events/core.c   |  201 ++++++++++++++++++++++---------------------------
- 2 files changed, 95 insertions(+), 110 deletions(-)
+it seems that the data that was requested to be dumped with MADV_DODUMP is
+indeed completely absent.
 
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -307,7 +307,7 @@ void css_task_iter_end(struct css_task_i
-  * Inline functions.
-  */
- 
--static inline u64 cgroup_id(struct cgroup *cgrp)
-+static inline u64 cgroup_id(const struct cgroup *cgrp)
- {
- 	return cgrp->kn->id;
- }
-@@ -701,7 +701,7 @@ void cgroup_path_from_kernfs_id(u64 id,
- struct cgroup_subsys_state;
- struct cgroup;
- 
--static inline u64 cgroup_id(struct cgroup *cgrp) { return 1; }
-+static inline u64 cgroup_id(const struct cgroup *cgrp) { return 1; }
- static inline void css_get(struct cgroup_subsys_state *css) {}
- static inline void css_put(struct cgroup_subsys_state *css) {}
- static inline int cgroup_attach_task_all(struct task_struct *from,
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1575,50 +1575,91 @@ static void perf_event_groups_init(struc
- 	groups->index = 0;
- }
- 
-+static inline struct cgroup *event_cgroup(const struct perf_event *event)
-+{
-+	struct cgroup *cgroup = NULL;
-+
-+#ifdef CONFIG_CGROUP_PERF
-+	if (event->cgrp)
-+		cgroup = event->cgrp->css.cgroup;
-+#endif
-+
-+	return cgroup;
-+}
-+
- /*
-  * Compare function for event groups;
-  *
-  * Implements complex key that first sorts by CPU and then by virtual index
-  * which provides ordering when rotating groups for the same CPU.
-  */
--static bool
--perf_event_groups_less(struct perf_event *left, struct perf_event *right)
--{
--	if (left->cpu < right->cpu)
--		return true;
--	if (left->cpu > right->cpu)
--		return false;
-+static __always_inline int
-+perf_event_groups_cmp(const int left_cpu, const struct cgroup *left_cgroup,
-+		      const u64 left_group_index, const struct perf_event *right)
-+{
-+	if (left_cpu < right->cpu)
-+		return -1;
-+	if (left_cpu > right->cpu)
-+		return 1;
- 
- #ifdef CONFIG_CGROUP_PERF
--	if (left->cgrp != right->cgrp) {
--		if (!left->cgrp || !left->cgrp->css.cgroup) {
--			/*
--			 * Left has no cgroup but right does, no cgroups come
--			 * first.
--			 */
--			return true;
--		}
--		if (!right->cgrp || !right->cgrp->css.cgroup) {
--			/*
--			 * Right has no cgroup but left does, no cgroups come
--			 * first.
--			 */
--			return false;
--		}
--		/* Two dissimilar cgroups, order by id. */
--		if (left->cgrp->css.cgroup->kn->id < right->cgrp->css.cgroup->kn->id)
--			return true;
-+	{
-+		const struct cgroup *right_cgroup = event_cgroup(right);
-+
-+		if (left_cgroup != right_cgroup) {
-+			if (!left_cgroup) {
-+				/*
-+				 * Left has no cgroup but right does, no
-+				 * cgroups come first.
-+				 */
-+				return -1;
-+			}
-+			if (!right_cgroup) {
-+				/*
-+				 * Right has no cgroup but left does, no
-+				 * cgroups come first.
-+				 */
-+				return 1;
-+			}
-+			/* Two dissimilar cgroups, order by id. */
-+			if (cgroup_id(left_cgroup) < cgroup_id(right_cgroup))
-+				return -1;
- 
--		return false;
-+			return 1;
-+		}
- 	}
- #endif
- 
--	if (left->group_index < right->group_index)
--		return true;
--	if (left->group_index > right->group_index)
--		return false;
-+	if (left_group_index < right->group_index)
-+		return -1;
-+	if (left_group_index > right->group_index)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+#define __node_2_pe(node) \
-+	rb_entry((node), struct perf_event, group_node)
- 
--	return false;
-+static inline bool __group_less(struct rb_node *a, const struct rb_node *b)
-+{
-+	struct perf_event *e = __node_2_pe(a);
-+	return perf_event_groups_cmp(e->cpu, event_cgroup(e), e->group_index,
-+				     __node_2_pe(b)) < 0;
-+}
-+
-+struct __group_key {
-+	int cpu;
-+	struct cgroup *cgroup;
-+};
-+
-+static inline int __group_cmp(const void *key, const struct rb_node *node)
-+{
-+	const struct __group_key *a = key;
-+	const struct perf_event *b = __node_2_pe(node);
-+
-+	/* partial/subtree match: @cpu, @cgroup; ignore: @group_index */
-+	return perf_event_groups_cmp(a->cpu, a->cgroup, b->group_index, b);
- }
- 
- /*
-@@ -1630,27 +1671,9 @@ static void
- perf_event_groups_insert(struct perf_event_groups *groups,
- 			 struct perf_event *event)
- {
--	struct perf_event *node_event;
--	struct rb_node *parent;
--	struct rb_node **node;
--
- 	event->group_index = ++groups->index;
- 
--	node = &groups->tree.rb_node;
--	parent = *node;
--
--	while (*node) {
--		parent = *node;
--		node_event = container_of(*node, struct perf_event, group_node);
--
--		if (perf_event_groups_less(event, node_event))
--			node = &parent->rb_left;
--		else
--			node = &parent->rb_right;
--	}
--
--	rb_link_node(&event->group_node, parent, node);
--	rb_insert_color(&event->group_node, &groups->tree);
-+	rb_add(&event->group_node, &groups->tree, __group_less);
- }
- 
- /*
-@@ -1698,45 +1721,17 @@ static struct perf_event *
- perf_event_groups_first(struct perf_event_groups *groups, int cpu,
- 			struct cgroup *cgrp)
- {
--	struct perf_event *node_event = NULL, *match = NULL;
--	struct rb_node *node = groups->tree.rb_node;
--#ifdef CONFIG_CGROUP_PERF
--	u64 node_cgrp_id, cgrp_id = 0;
--
--	if (cgrp)
--		cgrp_id = cgrp->kn->id;
--#endif
--
--	while (node) {
--		node_event = container_of(node, struct perf_event, group_node);
--
--		if (cpu < node_event->cpu) {
--			node = node->rb_left;
--			continue;
--		}
--		if (cpu > node_event->cpu) {
--			node = node->rb_right;
--			continue;
--		}
--#ifdef CONFIG_CGROUP_PERF
--		node_cgrp_id = 0;
--		if (node_event->cgrp && node_event->cgrp->css.cgroup)
--			node_cgrp_id = node_event->cgrp->css.cgroup->kn->id;
--
--		if (cgrp_id < node_cgrp_id) {
--			node = node->rb_left;
--			continue;
--		}
--		if (cgrp_id > node_cgrp_id) {
--			node = node->rb_right;
--			continue;
--		}
--#endif
--		match = node_event;
--		node = node->rb_left;
--	}
-+	struct __group_key key = {
-+		.cpu = cpu,
-+		.cgroup = cgrp,
-+	};
-+	struct rb_node *node;
-+
-+	node = rb_find_first(&key, &groups->tree, __group_cmp);
-+	if (node)
-+		return __node_2_pe(node);
- 
--	return match;
-+	return NULL;
- }
- 
- /*
-@@ -1745,27 +1740,17 @@ perf_event_groups_first(struct perf_even
- static struct perf_event *
- perf_event_groups_next(struct perf_event *event)
- {
--	struct perf_event *next;
--#ifdef CONFIG_CGROUP_PERF
--	u64 curr_cgrp_id = 0;
--	u64 next_cgrp_id = 0;
--#endif
-+	struct __group_key key = {
-+		.cpu = event->cpu,
-+		.cgroup = event_cgroup(event),
-+	};
-+	struct rb_node *next;
-+
-+	next = rb_next_match(&key, &event->group_node, __group_cmp);
-+	if (next)
-+		return __node_2_pe(next);
- 
--	next = rb_entry_safe(rb_next(&event->group_node), typeof(*event), group_node);
--	if (next == NULL || next->cpu != event->cpu)
--		return NULL;
--
--#ifdef CONFIG_CGROUP_PERF
--	if (event->cgrp && event->cgrp->css.cgroup)
--		curr_cgrp_id = event->cgrp->css.cgroup->kn->id;
--
--	if (next->cgrp && next->cgrp->css.cgroup)
--		next_cgrp_id = next->cgrp->css.cgroup->kn->id;
--
--	if (curr_cgrp_id != next_cgrp_id)
--		return NULL;
--#endif
--	return next;
-+	return NULL;
- }
- 
- /*
+There was exactly one commit that got merged between next-20210115 and
+next-20120118
+related to core dumps: 8a3cc755b138 ("coredump: don't bother with
+do_truncate()").
+Adding Al Viro to Cc for that.
 
+Naresh, could you try reverting that patch?
 
+     Arnd
