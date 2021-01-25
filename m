@@ -2,97 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CB53031F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFF53031EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730908AbhAYQsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:48:18 -0500
-Received: from foss.arm.com ([217.140.110.172]:51440 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730819AbhAYQqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:46:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CFCD1042;
-        Mon, 25 Jan 2021 08:45:48 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E49B83F68F;
-        Mon, 25 Jan 2021 08:45:46 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "mingo\@kernel.org" <mingo@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
-        "mgorman\@suse.de" <mgorman@suse.de>
-Subject: RE: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for the deduplicating sort
-In-Reply-To: <jhj1re92wqm.mognet@arm.com>
-References: <20210122123943.1217-1-valentin.schneider@arm.com> <20210122123943.1217-2-valentin.schneider@arm.com> <bfb703294b234e1e926a68fcb73dbee3@hisilicon.com> <jhj1re92wqm.mognet@arm.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 25 Jan 2021 16:45:41 +0000
-Message-ID: <jhjtur50xu2.mognet@arm.com>
+        id S1730909AbhAYQuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730862AbhAYQqp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:46:45 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EA5C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:46:04 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 190so11659588wmz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:46:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iB3FOTkC0uwThb3VNvB3HWCSTcBSlNU3/HpxGPo/J4I=;
+        b=tny51Hq/UYPn60occVED9UjGBfecQ+4oPMD8Ktl/oXyi5U2j6D6eka7CGM/p46QE23
+         0hLn4J/os6qIlrb1zZTwJBCsnFjDY4ytl6Xyx5SBAE5DLKhcvRWnugqQcPmWBPuJz2pO
+         70PWjg34zgFTmhQZY1sCpKkqAldfxxDxdztLyo9+hsy/PgSVtd7wWam6BzPFwqjxFTWq
+         MGdEgbK11tuSkhwBPYXB0ym22etODTWvVvHUiP/dOuq98xFCByAQaZp00ug+K03yoKs4
+         Sx0v5z2NXvHhDnwX3qbFR499GxIYr3jdXjeI+w81LZ+2Vry8yzG+7lunggfUDnpVaDy2
+         94eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iB3FOTkC0uwThb3VNvB3HWCSTcBSlNU3/HpxGPo/J4I=;
+        b=PqGLj9dDO7TgfJBvcCEbWFSyPBJKecnfQ9eVWbA92TtCjTDwozi35f72+LgJ/Htcrz
+         yl1eUmY9ahBWbyOUEdHP2D0cbkjoY/hygJospcjyI83Gokzb13ElyDjYuWXEOVB2j6kN
+         lC4G2tUJcIwomBWY6zBm9maUXo5TAnXiF9N2toOCpl1STbOD0TR5J50CONUUULcNausY
+         Na+vCDgdrqQjjLXKmWlbuHhcmgMbX6Y3kgF89GB59HAvNpGoQVNAJSbaGLlQVRz6x5NL
+         fIoKCZpWPDtY25AZ0Uvx5Yk/WKsxlFJBNgsrGuCIe4oGsQtrtq4fQSs1YZlf6SikBtg2
+         G4WQ==
+X-Gm-Message-State: AOAM530V4cyj/nwyrS42FDCCKgS5w2rhdU9+JY2bdfGqg/2ry4rI5Krs
+        nwvmBfsNBTVZEBvLI4TyYFhD+g==
+X-Google-Smtp-Source: ABdhPJz+j7zmvBIJ9yFAMv9o6WgMy/Vr5GBwzrfw9xRPAO0mPpb+ZA47/q13Ay057MnBx4yCPchCyg==
+X-Received: by 2002:a1c:e486:: with SMTP id b128mr956980wmh.136.1611593163573;
+        Mon, 25 Jan 2021 08:46:03 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:4cd4:5994:40fe:253d])
+        by smtp.gmail.com with ESMTPSA id n16sm22856690wrj.26.2021.01.25.08.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 08:46:03 -0800 (PST)
+Date:   Mon, 25 Jan 2021 16:46:01 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND V12 1/8] fs: Generic function to convert iocb to
+ rw flags
+Message-ID: <YA71ydLBbKmZg5/O@google.com>
+References: <20210125153057.3623715-1-balsini@android.com>
+ <20210125153057.3623715-2-balsini@android.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125153057.3623715-2-balsini@android.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/21 09:26, Valentin Schneider wrote:
-> On 25/01/21 02:23, Song Bao Hua (Barry Song) wrote:
->
->> with the below topology:
->> qemu-system-aarch64 -M virt -nographic \
->>  -smp cpus=8 \
->>  -numa node,cpus=0-1,nodeid=0 \
->>  -numa node,cpus=2-3,nodeid=1 \
->>  -numa node,cpus=4-5,nodeid=2 \
->>  -numa node,cpus=6-7,nodeid=3 \
->>  -numa dist,src=0,dst=1,val=12 \
->>  -numa dist,src=0,dst=2,val=20 \
->>  -numa dist,src=0,dst=3,val=22 \
->>  -numa dist,src=1,dst=2,val=22 \
->>  -numa dist,src=2,dst=3,val=12 \
->>  -numa dist,src=1,dst=3,val=24 \
->>
->>
->> The panic address is *1294:
->>
->>                         if (sdd->sd) {
->>     1280:       f9400e61        ldr     x1, [x19, #24]
->>     1284:       b4000201        cbz     x1, 12c4 <build_sched_domains+0x414>
->>                                 sd = *per_cpu_ptr(sdd->sd, j);
->>     1288:       93407eb7        sxtw    x23, w21
->>     128c:       aa0103e0        mov     x0, x1
->>     1290:       f8777ac2        ldr     x2, [x22, x23, lsl #3]
->>     *1294:       f8626800        ldr     x0, [x0, x2]
->>                                 if (sd && (sd->flags & SD_OVERLAP))
->>     1298:       b4000120        cbz     x0, 12bc <build_sched_domains+0x40c>
->>     129c:       b9403803        ldr     w3, [x0, #56]
->>     12a0:       365800e3        tbz     w3, #11, 12bc
->> <build_sched_domains+0x40c>
->>                                         free_sched_groups(sd->groups, 0);
->>     12a4:       f9400800        ldr     x0, [x0, #16]
->>         if (!sg)
->>
->
-> Thanks for giving it a shot, let me run that with your topology and see
-> where I end up.
->
+On Mon, Jan 25, 2021 at 03:30:50PM +0000, Alessio Balsini wrote:
+> OverlayFS implements its own function to translate iocb flags into rw
+> flags, so that they can be passed into another vfs call.
+> With commit ce71bfea207b4 ("fs: align IOCB_* flags with RWF_* flags")
+> Jens created a 1:1 matching between the iocb flags and rw flags,
+> simplifying the conversion.
+> 
+> Reduce the OverlayFS code by making the flag conversion function generic
+> and reusable.
+> 
+> Signed-off-by: Alessio Balsini <balsini@android.com>
+> ---
+>  fs/overlayfs/file.c | 23 +++++------------------
+>  include/linux/fs.h  |  5 +++++
+>  2 files changed, 10 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
+> index bd9dd38347ae..56be2ffc5a14 100644
+> --- a/fs/overlayfs/file.c
+> +++ b/fs/overlayfs/file.c
+> @@ -15,6 +15,8 @@
+>  #include <linux/fs.h>
+>  #include "overlayfs.h"
+>  
+> +#define OVL_IOCB_MASK (IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
+> +
+>  struct ovl_aio_req {
+>  	struct kiocb iocb;
+>  	struct kiocb *orig_iocb;
+> @@ -236,22 +238,6 @@ static void ovl_file_accessed(struct file *file)
+>  	touch_atime(&file->f_path);
+>  }
+>  
+> -static rwf_t ovl_iocb_to_rwf(int ifl)
+> -{
+> -	rwf_t flags = 0;
+> -
+> -	if (ifl & IOCB_NOWAIT)
+> -		flags |= RWF_NOWAIT;
+> -	if (ifl & IOCB_HIPRI)
+> -		flags |= RWF_HIPRI;
+> -	if (ifl & IOCB_DSYNC)
+> -		flags |= RWF_DSYNC;
+> -	if (ifl & IOCB_SYNC)
+> -		flags |= RWF_SYNC;
+> -
+> -	return flags;
+> -}
+> -
+>  static void ovl_aio_cleanup_handler(struct ovl_aio_req *aio_req)
+>  {
+>  	struct kiocb *iocb = &aio_req->iocb;
+> @@ -299,7 +285,8 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  	old_cred = ovl_override_creds(file_inode(file)->i_sb);
+>  	if (is_sync_kiocb(iocb)) {
+>  		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
+> -				    ovl_iocb_to_rwf(iocb->ki_flags));
+> +				    iocb_to_rw_flags(iocb->ki_flags,
+> +						     OVL_IOCB_MASK));
+>  	} else {
+>  		struct ovl_aio_req *aio_req;
+>  
+> @@ -356,7 +343,7 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
+>  	if (is_sync_kiocb(iocb)) {
+>  		file_start_write(real.file);
+>  		ret = vfs_iter_write(real.file, iter, &iocb->ki_pos,
+> -				     ovl_iocb_to_rwf(ifl));
+> +				     iocb_to_rw_flags(ifl, OVL_IOCB_MASK));
+>  		file_end_write(real.file);
+>  		/* Update size */
+>  		ovl_copyattr(ovl_inode_real(inode), inode);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index fd47deea7c17..647c35423545 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3275,6 +3275,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+>  	return 0;
+>  }
+>  
+> +static inline rwf_t iocb_to_rw_flags(int ifl, int iocb_mask)
+> +{
+> +	return ifl & iocb_mask;
+> +}
+> +
+>  static inline ino_t parent_ino(struct dentry *dentry)
+>  {
+>  	ino_t res;
+> -- 
+> 2.30.0.280.ga3ce27912f-goog
+> 
 
-I can't seem to reproduce this - your topology is actually among the ones
-I tested this against.
+For some reason lkml.org and lore.kernel.org are not showing this change
+as part of the thread.
+Let's see if replying to the email fixes the indexing.
 
-Applying this patch obviously doesn't get rid of the group span issue, but
-it does remove this warning:
-
-[    0.354806] ERROR: Node-0 not representative
-[    0.354806]
-[    0.355223]   10 12 20 22
-[    0.355475]   12 10 22 24
-[    0.355648]   20 22 10 12
-[    0.355814]   22 24 12 10
-
-I'm running this based on tip/sched/core:
-
-  65bcf072e20e ("sched: Use task_current() instead of 'rq->curr == p'")
+Regards,
+Alessio
