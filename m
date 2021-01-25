@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1798302564
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658E2302565
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbhAYNPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:15:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42568 "EHLO mail.kernel.org"
+        id S1728723AbhAYNQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:16:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728629AbhAYNKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:10:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C57AD22D58
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:09:34 +0000 (UTC)
+        id S1728545AbhAYNKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:10:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6234622D50;
+        Mon, 25 Jan 2021 13:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611580174;
-        bh=y5SD7INd+SJt7jxXfJP2LnyGCDy2q11vfjo9M/wnIVg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CzHvKf0g4XRU3kZT+EAi1uu/b8urWuaKUoh7B2C4vgC224fDtXQv2oHgNFop9yhZT
-         2NAVkLC7L51W5AAHJatCrAxQaZGGe8ikLSGTJyflMWj71WwoMujeWrPVS93iC1TKwI
-         x8IXnE2nOh3LtWah61deyMxC6o408RKhwybxqQHAd+opNvhFi5a0T4aRl8m1xi1DH6
-         wsKNG/eN4JKz1Sz+I59YIY7HdRNsZBImAyvqYbJLknXsqtZGg59Fa+dNZ2fW1Tb9ok
-         XisCQGg02FTISRO4Tr0H83Lqk2GgUor15GeedhP0qyrOoICJ9TKfPHZdLC53amcu9N
-         55hpWqNriPU0w==
-Received: by mail-ot1-f54.google.com with SMTP id n42so12636372ota.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:09:34 -0800 (PST)
-X-Gm-Message-State: AOAM530XS4hwyNg/o6+cF/VoRROGw/MUVbAsOpgU6+0wovgKBHFWkWh2
-        LiyNXZFbJFJk6dtPXsCntUrC9/71hFxOdKQ42Bc=
-X-Google-Smtp-Source: ABdhPJyuJJk9G4dOr5X/W/Oejpn00xm3L5Vgy94ryIckeQco5eZlFX7WU57R1TChXjR/NR+IHQywGOH1ZsrZxjRin3w=
-X-Received: by 2002:a9d:741a:: with SMTP id n26mr388999otk.210.1611580174003;
- Mon, 25 Jan 2021 05:09:34 -0800 (PST)
+        s=k20201202; t=1611580199;
+        bh=CIoI4bee4su0waagEjise7oAP9BZHPbX7apg69n7aGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XeltK6WNbANu0LKOJ4LMBRPyIfOb9baP18JlL9TULtnIl+6HAzcfvm8KsbuZBaL4N
+         nrjbcLuBeN5KnYjEnDl1zWJaG+ueAu/O9IJoKA4SJHBbgUt3AfBE1XdVjutoYD3OEq
+         k96SkOscKH6Agm4uzWKqCyjDljfAgr36e8F0QC/4/o/11Pcqn/oX0PCK7eBMEbW4Cq
+         I+9RNLTrro/SQR3lp96lyWnjMi3N+5rHCBgGmwGIPDsNkRJpy4LyTiGpdw12JmzBMr
+         nLBVHACkMyPG9DsL6VhVo62ZhFtCiyIPb1Oo/FH/QVE8e+Fe4IVu2EF/vpQb0iZMGN
+         e+k5Ran43HxBg==
+Date:   Mon, 25 Jan 2021 13:09:18 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Christoph Fritz <chf.fritz@googlemail.com>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] regulator: pf8x00: set ramp_delay for bucks
+Message-ID: <20210125130918.GB4510@sirena.org.uk>
+References: <4c2e79d4fa96befdc9a6c59c3ff27b0a34f9fb56.camel@googlemail.com>
+ <1611222152.1561.5.camel@googlemail.com>
+ <3753ba4c92fda75e646ccf629bb95e9d692ddbdb.camel@googlemail.com>
 MIME-Version: 1.0
-References: <20210125122650.4178417-1-arnd@kernel.org> <161157800073.27462.7610644354455990065@build.alporthouse.com>
-In-Reply-To: <161157800073.27462.7610644354455990065@build.alporthouse.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 25 Jan 2021 14:09:18 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2nWZnHfxqsKpq4iA1yYkJcVw01OewsZ9WSKUczoUR0+g@mail.gmail.com>
-Message-ID: <CAK8P3a2nWZnHfxqsKpq4iA1yYkJcVw01OewsZ9WSKUczoUR0+g@mail.gmail.com>
-Subject: Re: [PATCH] i915: Fix DRM_I915_WERROR dependencies
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
+Content-Disposition: inline
+In-Reply-To: <3753ba4c92fda75e646ccf629bb95e9d692ddbdb.camel@googlemail.com>
+X-Cookie: Drive defensively.  Buy a tank.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 1:33 PM Chris Wilson <chris@chris-wilson.co.uk> wrote:
->
-> Quoting Arnd Bergmann (2021-01-25 12:26:44)
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > CONFIG_DRM_I915_DEBUG now selects CONFIG_DRM_I915_WERROR, but fails
-> > to honor its dependencies:
-> >
-> > WARNING: unmet direct dependencies detected for DRM_I915_WERROR
-> >   Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && !COMPILE_TEST [=y]
-> >   Selected by [m]:
-> >   - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && EXPERT [=y] && DRM_I915 [=m]
->
-> DRM_I915_DEBUG now depends on !COMPILE_TEST and EXPERT.
 
-Works for me, thanks!
+--24zk1gE8NUlDmwG9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-      Arnd
+On Mon, Jan 25, 2021 at 10:27:00AM +0100, Christoph Fritz wrote:
+> This patch sets ramp_delay for bucks to the max value given by the
+> datasheet.
+
+Please don't send new patches in reply to old threads, it buries things
+and makes it much harder to follow what's going on.  Start a new thread
+for new submissions.
+
+--24zk1gE8NUlDmwG9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAOwv0ACgkQJNaLcl1U
+h9ClgAf/YFXClM3qDB2n9SkbV1W8nl6Ok6CNs+fUb0NTNflFZnhVEFCjNxGSIk84
+ojGBi1IdK6l3+ykmHI3aikCpciVJCoruO2rlrHSSG+7DnDMnBPOOu4T7TwEhdwXI
+718nsNxT/akB7oXdqu/fkymPodACovkl+ggvK90uJAEEg6UaZY1Ml916NxVQjVCQ
+1xy8BaBU1+G8+3RHGKARWgdU46P3LEndRDlOXXot6FRFwnsCGFXdkbtN/YEg/1qZ
+mGgB2jVIskf4TfI0cpAnrm6uyJKiXjBdz/q6FRPgS333dBOkzY+Qz/yguLv+wxq9
+gTGrERFoKMTx8XlwH8GmUSwhX0vJfA==
+=5luB
+-----END PGP SIGNATURE-----
+
+--24zk1gE8NUlDmwG9--
