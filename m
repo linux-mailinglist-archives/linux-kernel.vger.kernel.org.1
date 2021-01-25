@@ -2,126 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F953034E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAEA3034E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387573AbhAZFaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:30:09 -0500
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:33331 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727436AbhAYKSE (ORCPT
+        id S2387485AbhAZF3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:29:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727413AbhAYKQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:18:04 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id 3yqClT3gRiWRg3yqFlfogV; Mon, 25 Jan 2021 11:11:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1611569487; bh=iHjqjC1dPct1fusIaq3KcBt0B0WlEHCalPEjGV1Ps7M=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=p3zqztYL2ccY2ClDM+4msMNkOFX+1M6x1CZMwLN4s534L0apVn8tpoKeU/nHCHMLT
-         3K+QQgFvV5qUTiZkJmZA0r0kG9FxzlsJVzS+fsM3/xCQ6iEB3hqvbBOka8xRAgL6dr
-         099EJ69oOevCeOhB2Z/rVSZRDBu00Y0tpdJ/4aFiZWnAFy8SWI395xii7Q6pshpJJn
-         WoyJ2pkbgUqJl+2G+OXMw6dM9uCRibNqSeuK4B56DuF7Nf6G73jJf6qZTjV4putdUo
-         A7E3Q3emJ70+/0gbVGOkBm9tj5gVxAp/nTKepQ+2xvBEOUOjBUqSq24mxLTodSnl+m
-         GvX83ysYzpiBQ==
-Subject: Re: [PATCH v4 2/5] docs: Document colorimetry class
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-References: <20210120092606.3987207-1-stanimir.varbanov@linaro.org>
- <20210120092606.3987207-3-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <ca570ca5-356d-1b89-8653-476d27375519@xs4all.nl>
-Date:   Mon, 25 Jan 2021 11:11:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 25 Jan 2021 05:16:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D92C06178B;
+        Mon, 25 Jan 2021 02:15:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=EpzAO0iqhpxUKy/j0uXljmV9Rd
+        S3sNnn6W3uVI7/1+e/09WTq70rb3FrVXj2HHhc3kJ0tG68btenp6UffDhhZf4lY5wCpvgQIvY643W
+        /lZWh+Ks+fxaHW1C5o6mEcPlAlO7Y2fGZcgSrJ5ap8qbEwzqJn7T/0UriZZtPcvA0kDJx8FOKGAT+
+        UhyLRQKKP6SV3N6AeGfwWVIAScZReNTgR+7YO7PLBN1wARN6P5kf16Rd2aOzP/rN6frSZSRrxNco2
+        alIP035p63YPXOaRDRjx1c9PAaab+Wkq4ARc9xvSxVPTDFvLE14cDeWA2L0u1sIHroGbybgqnFAYx
+        5X8J53Eg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3ytI-00448g-22; Mon, 25 Jan 2021 10:14:43 +0000
+Date:   Mon, 25 Jan 2021 10:14:36 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 3/3 v2] blk-mq: Use llist_head for blk_cpu_done
+Message-ID: <20210125101436.GB967667@infradead.org>
+References: <20210123201027.3262800-1-bigeasy@linutronix.de>
+ <20210123201027.3262800-4-bigeasy@linutronix.de>
+ <20210125083012.GD942655@infradead.org>
+ <20210125083204.ahddujk5m6njwbju@linutronix.de>
+ <20210125083903.GB945284@infradead.org>
+ <20210125095412.qxknd2vbsmgtrhqb@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210120092606.3987207-3-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfAcnFOLmq7LGmgbbdP/0yyr6VBQ9i/0oZ0u5hJVj+076zYK7C6jHVnd+YoxwGdQw4pklzUDaTGIle8v0p5+bPrGGHChXwB+1TauPPNN2cPLyt0ExOONG
- wmLEB4gm03w82zD/P4mPtBg2CNLeEwQReG1SvN1JsvRomfTS0L2LdpWpF0IbSnHcFBEtxhXNddBpfX7pCqZ5qo3kJXTmC55TOHdEx6uFwBCYE+u8RJ2w7hgZ
- dY3t51xewnASo34+YkSvqVbEjwSzh3Oy+nsEVubHCkn8T6PV2dn78IIfHRSQZM0ytXJdXkiqZVblE2PoP1LisvFjscUiqnFNABtSJaUc4EfuagToBPpTHOGe
- VgCWZRQ2pOeDVPZfoqsEP69le0hh2fv+5mtJUA99qiXPiYhtuphkYQOl8gGhof+LMWW2lGhK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125095412.qxknd2vbsmgtrhqb@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/01/2021 10:26, Stanimir Varbanov wrote:
-> Add a document for ext control colorimetry class.
-> 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  .../userspace-api/media/v4l/common.rst        |  1 +
->  .../media/v4l/ext-ctrls-colorimetry.rst       | 19 +++++++++++++++++++
->  .../media/v4l/vidioc-g-ext-ctrls.rst          |  4 ++++
->  3 files changed, 24 insertions(+)
->  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
-> index 8c263c5a85d8..ea0435182e44 100644
-> --- a/Documentation/userspace-api/media/v4l/common.rst
-> +++ b/Documentation/userspace-api/media/v4l/common.rst
-> @@ -51,6 +51,7 @@ applicable to all devices.
->      ext-ctrls-fm-tx
->      ext-ctrls-fm-rx
->      ext-ctrls-detect
-> +    ext-ctrls-colorimetry
->      fourcc
->      format
->      planar-apis
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> new file mode 100644
-> index 000000000000..6b0cd2054e84
-> --- /dev/null
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
-> @@ -0,0 +1,19 @@
-> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> +
-> +.. _colorimetry-controls:
-> +
-> +*****************************
-> +Colorimetry Control Reference
-> +*****************************
-> +
-> +Below are controls within the Colorimetry control class.
+Looks good,
 
-This needs a bit more work since it doesn't explain anything :-)
-
-See how it is done in other ext-ctrls-*.rst files.
-
-Regards,
-
-	Hans
-
-> +
-> +Colorimetry Control IDs
-> +-----------------------
-> +
-> +.. _colorimetry-control-id:
-> +
-> +``V4L2_CID_COLORIMETRY_CLASS (class)``
-> +    The Colorimetry class descriptor. Calling
-> +    :ref:`VIDIOC_QUERYCTRL` for this control will
-> +    return a description of this control class.
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> index b9c62affbb5a..8a95ebdd499a 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> @@ -394,6 +394,10 @@ still cause this situation.
->        - 0xa40000
->        - The class containing stateless codec controls. These controls are
->  	described in :ref:`codec-stateless-controls`.
-> +    * - ``V4L2_CTRL_CLASS_COLORIMETRY``
-> +      - 0xa50000
-> +      - The class containing colorimetry controls. These controls are
-> +	described in :ref:`colorimetry-controls`.
->  
->  Return Value
->  ============
-> 
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
