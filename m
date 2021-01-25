@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173F4302D30
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D738302D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732490AbhAYVDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:03:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
+        id S1732422AbhAYVBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732089AbhAYTqD (ORCPT
+        with ESMTP id S1732046AbhAYTqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:46:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D807FC061788
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:18 -0800 (PST)
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611603917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+19JPvUeEPz3buNdrU4/rwbMP83cWYc5rUDipvmbJA=;
-        b=LkCUhikzMxHbxgQqUWYhL5yHUaIPlvz7fZEXS+dH1qV7jDgyOxszPrHQOPDuP/5Ul9Z3MB
-        Lbtc9VQjEIJBrEDCLIvpK652BDXv3M5nYQBWjyB5I9eM4SI26nNKDswf1JIn/KRmYzPSOo
-        go9VV5I0xYJY5LQ1PyhyB/LJCUItHIm8FjF8R3B7rhqCgE/9xozjRXmkog3JHTsKBat581
-        1aPQ+3YkYwLfJN21xQvJaCkD19eQIqisxt5eVLjpWFQJOK2+YwMQRX87/tgxqy9JzOG4IZ
-        FWw5KX4/RTflRj3bDGbsqPHJCY1e4o2B5A8yAo8tOsHlm9xY6d3XNT2kbKz+YA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611603917;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+19JPvUeEPz3buNdrU4/rwbMP83cWYc5rUDipvmbJA=;
-        b=7ngGw6xOfD56rGDoDEJWxrD/oe1GIqeQQbOEAceTVAwNhjkQ6nyYkmgGtSyVOuxgbbuNub
-        Hr18UKU/g8CiyYCA==
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4/4] tracing: Remove NULL check from current in tracing_generic_entry_update().
-Date:   Mon, 25 Jan 2021 20:45:11 +0100
-Message-Id: <20210125194511.3924915-5-bigeasy@linutronix.de>
-In-Reply-To: <20210125194511.3924915-1-bigeasy@linutronix.de>
-References: <20210125140323.6b1ff20c@gandalf.local.home>
- <20210125194511.3924915-1-bigeasy@linutronix.de>
+        Mon, 25 Jan 2021 14:46:24 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28ACDC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:32 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id f11so16774950ljm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=syJuf9O5ZY7LJlX8RFLkH84nx7PJyz0ipreUlnGtkr8=;
+        b=PlSjQOA16FQTRiDiYrGHNDGYrqEDyKIJLFNYD0R7oUV9+QRSealBG24kbjV4W2iRL9
+         kCdVwFe7pzM98gvdHJNdaLewBijzW2qy6NV4UQtH/GCjFycHPUH/EzEekOTkhjlZzSSc
+         7v2d8VitaA+d38AzYAvhdYQuTHoM4vSDEd8ko=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=syJuf9O5ZY7LJlX8RFLkH84nx7PJyz0ipreUlnGtkr8=;
+        b=YziHTMHmPPoWOVyH0VQAZK56TJtlGUpjHbC+NOpyPE/xwHMptGl4rtWS5i4Zf7PkKV
+         W1+iwm/CipNBWhoGD4sNmNnIl1VKDrs44QQ5q5JQDx9ZJF1Bn2C0bh8NAcJL89Ybm1Z1
+         HNgC7r5UUmV+D/W0yl8YgjOQWCaFcJfs1V7GcB/OZ026esTn/ZAF6bSdNGGImbgfG1cY
+         LHcz965QYWUtJg8D1gwP45jWRUUu0AR8mAaKpkDCC0fUJ5qvrSDYnd/3FDXqJlNjAExn
+         sGFYXJUAecN4q14nWUIBSO5js5ukQanmaravBYWgvkQkirtl7uI3RdXR1gMZODi1laIa
+         q6Fg==
+X-Gm-Message-State: AOAM530ON4loUxvY8zk0BfI2/BePfdxnefBhxyuJUZmF+bDJ9jOclQ3r
+        E6/IljmTP3oaIEzviSGm9aWVT1RcPXxUpw==
+X-Google-Smtp-Source: ABdhPJyxfis+JMzMGBajVHEKyxIScCtZh+9xWc9LaHA0Cmay6yYeq4rIJkJiKR8HlBf4Q1TIdmNNPw==
+X-Received: by 2002:a2e:98ca:: with SMTP id s10mr977709ljj.283.1611603930230;
+        Mon, 25 Jan 2021 11:45:30 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id t25sm2089722lfl.105.2021.01.25.11.45.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 11:45:29 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id i187so9267116lfd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:29 -0800 (PST)
+X-Received: by 2002:a19:c14c:: with SMTP id r73mr876753lff.201.1611603928929;
+ Mon, 25 Jan 2021 11:45:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20210125190925.3655829-1-samitolvanen@google.com> <CAHk-=wj0NKCw30deEEThF+9_F7JDobfO-VTJm64gqvp4zzsWfg@mail.gmail.com>
+In-Reply-To: <CAHk-=wj0NKCw30deEEThF+9_F7JDobfO-VTJm64gqvp4zzsWfg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Jan 2021 11:45:12 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi8mBdnj7QEO9yRzzoJDc+JqfKgy1gXU9iZL8=fF=YO8g@mail.gmail.com>
+Message-ID: <CAHk-=wi8mBdnj7QEO9yRzzoJDc+JqfKgy1gXU9iZL8=fF=YO8g@mail.gmail.com>
+Subject: Re: [PATCH] n_tty: fix redirected_tty_write checks after write_iter conversion
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I can't imagine when or why `current' would return a NULL pointer. This
-check was added in commit
-      72829bc3d63cd ("ftrace: move enums to ftrace.h and make helper functi=
-on global")
+On Mon, Jan 25, 2021 at 11:27 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Obvious ACK from me.
 
-but it doesn't give me hint why it was needed.
+Greg - if you have nothing else lined up in the tty tree, I can take
+this fix directly if it's easier.
 
-Assume `current' never returns a NULL pointer and remove the check.
+And Sami - how did you actually notice? Some lint-like tool, or is
+there something that actually broke from n_tty not handling a
+redirected tty right?
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/trace_events.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 67ae708de40d6..5d1eeac4bfbea 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -152,10 +152,8 @@ static inline void tracing_generic_entry_update(struct=
- trace_entry *entry,
- 						unsigned short type,
- 						unsigned int trace_ctx)
- {
--	struct task_struct *tsk =3D current;
--
- 	entry->preempt_count		=3D trace_ctx & 0xff;
--	entry->pid			=3D (tsk) ? tsk->pid : 0;
-+	entry->pid			=3D current->pid;
- 	entry->type			=3D type;
- 	entry->flags =3D			trace_ctx >> 16;
- }
---=20
-2.30.0
-
+            Linus
