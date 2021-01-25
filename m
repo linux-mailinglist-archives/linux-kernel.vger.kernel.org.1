@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD41302BC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEBE302BF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732050AbhAYTiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:38:54 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:37706 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731639AbhAYTRn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:17:43 -0500
-Received: by mail-ot1-f47.google.com with SMTP id h14so13843384otr.4;
-        Mon, 25 Jan 2021 11:15:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ErqAg2y9hs1L+kCRiFT/cc4ljw/VF8qC2nINOTViShA=;
-        b=EPVkO1Isuv6oQjAfACLZr92UzkJ0slroQdQan2wPZ2/assj/fBhEdPI3gybCBCgJQM
-         tA1/F3nCzcpzifUDyk1gc8X9/yJCTgYrzx/7p8AWs3tVBb8e+paLlLGjHgutAS3Zik2+
-         byDN0wu3C8hRBmSCnTmyj9c3aikg7LgNLxr0LPUqTB0z4QagU2t+swF9sxOkZecVDweS
-         Y43/aso/N6S1MlcycIfOrjac3jZlvHoT4h0k8j8vkA6BdUMYhdEg+tez4W6CKCOMl2tK
-         HXcPQUukRiV9OYNmfhQqI6Usb3EbLXWWSuwphafEPxZ1ndB4naTH/j2Zorbenrj8MAZH
-         bRNA==
-X-Gm-Message-State: AOAM533gOsoVYhOXZUySheSXHHeLJ/Lqml3f2EcEi3LjdI8ncctCrf9e
-        W55+rJ+LTpABDVCLwGABlA==
-X-Google-Smtp-Source: ABdhPJxS3Td2D1qEwVYkiS0V5TCXWefaoE1oDxv4liSO3HZpq6boaHywUbznHMOC01Lk9pSB968fsQ==
-X-Received: by 2002:a9d:65:: with SMTP id 92mr1439847ota.207.1611602085885;
-        Mon, 25 Jan 2021 11:14:45 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m9sm2172811oih.35.2021.01.25.11.14.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:14:44 -0800 (PST)
-Received: (nullmailer pid 790835 invoked by uid 1000);
-        Mon, 25 Jan 2021 19:14:43 -0000
-Date:   Mon, 25 Jan 2021 13:14:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v2 1/3] dt-bindings: sun4i-a10-lradc-keys: Accept
- wakeup-source property
-Message-ID: <20210125191443.GA790778@robh.at.kernel.org>
-References: <20210113040542.34247-1-samuel@sholland.org>
- <20210113040542.34247-2-samuel@sholland.org>
+        id S1726573AbhAYTtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:49:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46112 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbhAYTeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:34:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611602091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RACfGCkhI5scU7X7ybvkFm/nrdSxi4NbSKB3Ciwz/80=;
+        b=R+YIlUOVpaeaDnsYXuqRDLAWnxLc15ZmI+0PoNuM9AExN/9QM4YNlQrBHrZDwk+qAIS/7e
+        0XPH6zNXUBbn7amR2QqW5wvxIVMbDIivLK5Gysm3KHEjGMQMUZRdk7nIGY+EQGDuxm6Sqz
+        FLx7yWYc0ayhMSjIienUXxTuSkyGKLQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2A2CDAF11;
+        Mon, 25 Jan 2021 19:14:51 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 20:14:48 +0100
+From:   Anthony Iliopoulos <ailiop@suse.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.19 12/58] dm integrity: select CRYPTO_SKCIPHER
+Message-ID: <YA8YqIkt2VAbChSU@technoir>
+References: <20210125183156.702907356@linuxfoundation.org>
+ <20210125183157.221452946@linuxfoundation.org>
+ <20210125185829.GA2818@duo.ucw.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113040542.34247-2-samuel@sholland.org>
+In-Reply-To: <20210125185829.GA2818@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 22:05:40 -0600, Samuel Holland wrote:
-> The LRADC provides an interrupt that can be used to wake the system.
-> Signify this by accepting a "wakeup-source" property in the binding.
+On Mon, Jan 25, 2021 at 07:58:29PM +0100, Pavel Machek wrote:
+> Hi!
 > 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../bindings/input/allwinner,sun4i-a10-lradc-keys.yaml          | 2 ++
->  1 file changed, 2 insertions(+)
+> > From: Anthony Iliopoulos <ailiop@suse.com>
+> > 
+> > [ Upstream commit f7b347acb5f6c29d9229bb64893d8b6a2c7949fb ]
+> > 
+> > The integrity target relies on skcipher for encryption/decryption, but
+> > certain kernel configurations may not enable CRYPTO_SKCIPHER, leading to
+> > compilation errors due to unresolved symbols. Explicitly select
+> > CRYPTO_SKCIPHER for DM_INTEGRITY, since it is unconditionally dependent
+> > on it.
 > 
+> There is no such config option in 4.19. This patch is not suitable
+> here.
+> 
+> grep -r CRYPTO_SKCIPHER .
+> ./include/crypto/skcipher.h:#ifndef _CRYPTO_SKCIPHER_H
+> ./include/crypto/skcipher.h:#define _CRYPTO_SKCIPHER_H
+> ./include/crypto/skcipher.h:#endif	/* _CRYPTO_SKCIPHER_H */
 
-Acked-by: Rob Herring <robh@kernel.org>
+This is due to commit b95bba5d0114 ("crypto: skcipher - rename the
+crypto_blkcipher module and kconfig option"), which was applied in
+v5.5-rc1. As already pointed out in [1], if this is to be backported to
+any earlier releases then SKCIPHER needs to be changed to BLKCIPHER.
+
+Best regards,
+Anthony
+
+[1] https://lore.kernel.org/lkml/YAfD81Jw%2F0NU0eWN@sol.localdomain/#t
