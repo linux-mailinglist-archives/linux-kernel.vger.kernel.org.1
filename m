@@ -2,72 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325BB30311A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215A430313F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730810AbhAYTms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:42:48 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:53083 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731704AbhAYTVB (ORCPT
+        id S1732020AbhAZB3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 20:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731958AbhAYTgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:21:01 -0500
-Received: by mail-wm1-f43.google.com with SMTP id m187so429110wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:20:45 -0800 (PST)
+        Mon, 25 Jan 2021 14:36:46 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E29C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:36:06 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id x23so3555322oop.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wN8bDXKo/sZdUhtHCToUyQ3G6xkD7paHpTxxTd1ufLM=;
+        b=WbRk46YONVHeZi/3+ZiWIUaQcnSv9l67FxIgWDrgf1bf+dZuuZOSjD2iUm7tCn7/yX
+         pt4UflePxgsbkY74+CGgpvVhgtnvVJdjV8OiYIdYaGUmmLSqnS/uwZqcAijNVlhej3C8
+         aiKXJJPjhQWvJQMJgX0RKRNKYO+UErA/3n4J4yFekhI/4oaf/4CJfJALYtlqGDIlpBFN
+         0Le7/buE0UrUgqlKxJcmfdxZBPnyC13WsB4MDyu6kSJ6tr7N+7OyrrCPSWSbmJK3SzNC
+         VVl7+gTbbRbp4cq9ru6b+J8T3X1a1BYx0O+xweGZlxOLAf2R/vBUdSnQpXk2F8MirS/f
+         aKXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+VM9tYuZi9TFiT89C4HXiMuE6/oY1MSRRS/fHaTXpt4=;
-        b=l84nqeCgZj7kVI0VZlc/rjKZDYCQzjkPLQkYPBgMyHcIlmMuUng6oK/EDuF9vVXhAV
-         yQ729ao5drf258jvORZfzWb8nBBnjbwKYJ9+f52GwNgJGpOvOE8OlU4sqddMkJEUkLJ1
-         2KIa1VcxeFfrC8maQRqPfnPci+5NmraMXjNtQ8Tay/A2AGx9JuYb6oCgGSuRs+Hg/kL1
-         rwDHcNmtnY8iq98j8SBn/C1hrG+1kbbl+dpSemWx0Po0nxxPpWnFE9LMPqZ7/szAqmsr
-         TSvhcXqQbrMd3xK0EGv168hENXOzbpgExf+3369BFpetvgzSAU4QTfVjXNFJ1w0pEXU0
-         zSTQ==
-X-Gm-Message-State: AOAM530gRdVIfXkOrkIEMjCPYmvfwDWEJVTyCBCB9T8Y9toqqZvCkCus
-        V+bTPk3SRIXnwFIAdLy6Zpk=
-X-Google-Smtp-Source: ABdhPJy8EN1TBaLnmzEwu+GRJkeqUP6Xvpa54hML6+2oEu0hhHdQ8uG7nxWJzimxSp/yCy6HAGtREA==
-X-Received: by 2002:a1c:a406:: with SMTP id n6mr1483778wme.53.1611602419513;
-        Mon, 25 Jan 2021 11:20:19 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id j7sm257561wmb.40.2021.01.25.11.20.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:20:18 -0800 (PST)
-Date:   Mon, 25 Jan 2021 20:20:17 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Pan Bian <bianpan2016@163.com>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wN8bDXKo/sZdUhtHCToUyQ3G6xkD7paHpTxxTd1ufLM=;
+        b=rBO1IGN9jBUPyZQtCYySjoYrf2xBHDfZgoiK0SitUEFx0A8Oop5xoQuvchPQakpG9T
+         TXcfkekhFQVv1VuyQCIvqK4JqmHOknzMSv9kVDY1/fKj/mMec+K5jezkkrink+1S5cl9
+         WdchNj0JryiM1cow3UFsai1+CxzVg61Zp4cPf1E3sHIApMlvcepqejTSHo5ExLoJTT+Q
+         RYFcqD8ehR201QQU24HuDFLx8/l7RkJhFsQ+lGRGEOpGD/0k8hg4ay7p6oXqkHWNYUi1
+         r83W8pdKCDvnXRivtLXHS29KbdirIKjCUsBxKETzlROWi8VgMOWZdP8OUyZqdq+3x6hR
+         Frbg==
+X-Gm-Message-State: AOAM533V4YSjCLrOFcSND4klESAICh+M/0+Omxs5yqTbQDheUzCd+7SQ
+        klPy2WnanHyKXXIq8zCml2YZyqtRA8NrQrOI
+X-Google-Smtp-Source: ABdhPJzucnNcQz80GA4WZVw/O/3diSasE4sizJswZ3mk6abs9v0QeFWG5Y+BVHw9DPLioim8kXZt9g==
+X-Received: by 2002:a4a:4f88:: with SMTP id c130mr87535oob.60.1611603365685;
+        Mon, 25 Jan 2021 11:36:05 -0800 (PST)
+Received: from [192.168.17.50] (CableLink-189-219-73-147.Hosts.InterCable.net. [189.219.73.147])
+        by smtp.gmail.com with ESMTPSA id a71sm251051oob.48.2021.01.25.11.36.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 11:36:05 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/199] 5.10.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memory: ti-aemif: Drop child node when jumping out loop
-Message-ID: <20210125192017.l3w7hd5ntnqp4gyr@kozik-lap>
-References: <20210121090359.61763-1-bianpan2016@163.com>
+Cc:     shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
+        pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+References: <20210125183216.245315437@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <ef5b0670-83ea-e754-033c-2f3f56a8c822@linaro.org>
+Date:   Mon, 25 Jan 2021 13:36:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210121090359.61763-1-bianpan2016@163.com>
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 01:03:59AM -0800, Pan Bian wrote:
-> Call of_node_put() to decrement the reference count of the child node
-> child_np when jumping out of the loop body of
-> for_each_available_child_of_node(), which is a macro that increments and
-> decrements the reference count of child node. If the loop is broken, the
-> reference of the child node should be dropped manually.
+Hello!
+
+
+On 1/25/21 12:37 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.11 release.
+> There are 199 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Fixes: 5a7c81547c1d ("memory: ti-aemif: introduce AEMIF driver")
-> Signed-off-by: Pan Bian <bianpan2016@163.com>
-> ---
->  drivers/memory/ti-aemif.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Thanks, applied.
+Sanity results from Linaro’s test farm.
+Regressions detected.
 
-Best regards,
-Krzysztof
+Summary
+------------------------------------------------------------------------
 
+kernel: 5.10.11-rc1
+git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+git branch: linux-5.10.y
+git commit: efec2624e657b370b1621e8514a1fa6d65eb20a0
+git describe: v5.10.10-200-gefec2624e657
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y-sanity/build/v5.10.10-200-gefec2624e657
+
+Regressions (compared to build v5.10.10)
+------------------------------------------------------------------------
+
+x86_64:
+   build:
+     * clang-10-allnoconfig
+     * clang-10-tinyconfig
+     * gcc-8-allnoconfig
+     * gcc-8-tinyconfig
+     * gcc-9-allnoconfig
+     * gcc-9-tinyconfig
+     * gcc-10-allnoconfig
+     * gcc-10-tinyconfig
+
+i386:
+   build:
+     * clang-10-allnoconfig
+     * clang-10-tinyconfig
+     * clang-11-allnoconfig
+     * clang-11-tinyconfig
+     * gcc-8-allnoconfig
+     * gcc-8-tinyconfig
+     * gcc-9-allnoconfig
+     * gcc-9-tinyconfig
+     * gcc-10-allnoconfig
+     * gcc-10-tinyconfig
+
+
+No fixes (compared to build v5.10.10)
+
+Ran 704 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- i386
+- juno-r2
+- mips
+- parisc
+- powerpc
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-smoketest-tests
+
+
+Errors look like the following:
+
+   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu- 'CC=sccache x86_64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c: In function 'bsp_init_amd':
+   /builds/1nZbYji0zW0SkEnWMrDznWWzerI/arch/x86/kernel/cpu/amd.c:572:3: error: '__max_die_per_package' undeclared (first use in this function); did you mean 'topology_max_die_per_package'?
+     572 |   __max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
+         |   ^~~~~~~~~~~~~~~~~~~~~
+         |   topology_max_die_per_package
+
+Will find out more soon.
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
