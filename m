@@ -2,362 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149723037B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6213037B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388260AbhAZISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:18:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        id S2389771AbhAZITG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727153AbhAYSkc (ORCPT
+        with ESMTP id S1726515AbhAYSlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:40:32 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4D7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:39:52 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id md11so141335pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:39:52 -0800 (PST)
+        Mon, 25 Jan 2021 13:41:36 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F0EC0613ED
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:40:00 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id i63so8902216pfg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=HUlXmhLxfFL0uFjwqnaYUzkmMX5jHNTTDGv5mrAagns=;
-        b=VDd+kTVIuDmtmmzrmR2idk0dEsQSoBV+Wvd0o1RUrWFyKmvG9iTjca49MKwbg+9W+y
-         1W6UA6nUqEcRMyQpcJexChxujhcdlgsaHf+4u8wTZRRpZ0CIQHNBFrDyBkqsSDhQZMcp
-         PJbjpiJjNYnNFdL6l16WgMzSaHNW6oxxjN5ks=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=810IMXBV1/7mh3IkPVy/heX6P4WxI70MgM5s4wu77lk=;
+        b=u4B/C7BEtW7GmGqfQghiovSJn8gO99Pb5HExxzSjMZqc8cbA0s/22qK3vj85LwJ0wg
+         PHxgfkU6fg1Y0GKPRujmkXWB00lGaqM0mn34g8DjKHj/NhbH76rs2qvDBbU1w4nZuRpU
+         +3YX+gC7rUamoxyK8ByJtLqNZutVJkMyfUJpXdUsw7ujcfDCpPJsagf5gq3UJQX/Z375
+         heG7MTIvnaQvLNtg50+1k1agjJD56f8bDYxVVLhUxpCQdK5MxVMCHpLeilveMyn5YRVV
+         9OkRrDjn5Vtg9ucs65M7Vk56qf5RJsbAa5n45ocKZuGFsrX+PbA3cVDupA10Rm6ECXdk
+         crcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=HUlXmhLxfFL0uFjwqnaYUzkmMX5jHNTTDGv5mrAagns=;
-        b=TCCqxgH3ErbRs16uyoxjqcC4mEFTiW61ZxgGUm4am6JjCHzDE0HzsZ4T8V5M+vRml8
-         TG9GqYKPp60nIKzxpKx56uvllYz16/BKguf4lRNKQElCnBgte5Ivnwx4Db0LS4HlBuf5
-         mWjb0e+KDX4DEd7vkJQzjyHgEnN2Pbxl5r8D3J5Ipzst4121QgChMUF6gPKPBbtlUlt8
-         Uq+XmappJMo9y6/fNdi6rwUu0iMo3G4lVUOiktxWzgDgSYrsHtP0Frb9rkUIK0jSqNr2
-         k3SdMApZ414ixuvHCW6Z+ZatzoAYeZbH0eCK/bZVrpntohFRX6Q6k99aKnIRQfSvTWk3
-         1uQg==
-X-Gm-Message-State: AOAM531fqaHG/lMlxTRlrfkeDaH5n6osnpjjoPofINuRy2M9UjxJnR1B
-        ZogxWG1ah5Aarw8vW1JUjhleLlNcibno6Q==
-X-Google-Smtp-Source: ABdhPJy4wGvq0eaFs5eQTf+pY1PrJ+/m12dTr7V0NP3w2jPDL6TmSkYaRRVmDiKREMpNPDNXdYmnRA==
-X-Received: by 2002:a17:90a:4504:: with SMTP id u4mr1610012pjg.218.1611599991735;
-        Mon, 25 Jan 2021 10:39:51 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:1066:b437:97cd:2278])
-        by smtp.gmail.com with ESMTPSA id ga4sm78946pjb.53.2021.01.25.10.39.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=810IMXBV1/7mh3IkPVy/heX6P4WxI70MgM5s4wu77lk=;
+        b=RX88WUcpywilaWSxmlVYzHtdGnkuFojs0cml7yyt9chjg6cl1ZPqM5BAnDTI0T1DTX
+         SydqmEBJqxxcmYCtmMwoZAJ3CO8frrOWBjE/AQ//MuYc/o7TtuzDX7tV9RLuQ1v0BF9Z
+         QVJZPv218//1d7Zhhiw3rDpfn7FeH1P2o28wdMKDAlJSUdYyM+PHx1pcooXUW3tRRleX
+         xk7LD4h0kNejTEQ0IDEYhZA/nGHKQCNTnS8Z5ZwQRtyFpSJNQkcQcLsTWrEqIZWLCQ//
+         pegydpn8FGUukYuEBSVBZyXiM+j/4LksT4I2V3zfyZlbeibGhMsyngfwdWphqr0bHxlA
+         d6fQ==
+X-Gm-Message-State: AOAM533Y7N1hitv7dw6iS4nph1NVx6CLLNxdT1pOmcGdi+4O4nAiWERi
+        WE0WLZgg5+a/MhPpH7x+9b4PeQ==
+X-Google-Smtp-Source: ABdhPJxajfRLmXuLMz8O2NxSLlOGCAw1FB3G6FN+5k8IuapA0+LLhqa+zHE51dDR6HVowNwr4seRrw==
+X-Received: by 2002:a63:dc06:: with SMTP id s6mr1873867pgg.358.1611599999924;
+        Mon, 25 Jan 2021 10:39:59 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id h23sm5023016pgh.64.2021.01.25.10.39.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:39:51 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 25 Jan 2021 10:39:59 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:39:57 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        anshuman.khandual@arm.com, mike.leach@linaro.org,
+        leo.yan@linaro.org, linux-kernel@vger.kernel.org,
+        jonathan.zhouwen@huawei.com, catalin.marinas@arm.com,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Tingwei Zhang <tingwei@codeaurora.org>
+Subject: Re: [PATCH v7 02/28] coresight: etm4x: Skip accessing TRCPDCR in
+ save/restore
+Message-ID: <20210125183957.GA894394@xps15>
+References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
+ <20210110224850.1880240-3-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210124173820.4528b9c9@archlinux>
-References: <20210122225443.186184-1-swboyd@chromium.org> <20210122225443.186184-4-swboyd@chromium.org> <20210124173820.4528b9c9@archlinux>
-Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Date:   Mon, 25 Jan 2021 10:39:49 -0800
-Message-ID: <161159998973.76967.1213998704222248070@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110224850.1880240-3-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Cameron (2021-01-24 09:38:20)
-> On Fri, 22 Jan 2021 14:54:43 -0800
-> Stephen Boyd <swboyd@chromium.org> wrote:
->=20
-> > Add support for a ChromeOS EC proximity driver that exposes a "front"
-> > proximity sensor via the IIO subsystem. The EC decides when front
-> > proximity is near and sets an MKBP switch 'EC_MKBP_FRONT_PROXIMITY' to
-> > notify the kernel of proximity. Similarly, when proximity detects
-> > something far away it sets the switch bit to 0. For now this driver
-> > exposes a single sensor, but it could be expanded in the future via more
-> > MKBP bits if desired.
-> >=20
-> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > Cc: Benson Leung <bleung@chromium.org>
-> > Cc: Guenter Roeck <groeck@chromium.org>
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->=20
-> Hi Stephen,
->=20
-> Looks more or less fine to me.  My main concern is potential confusion
-> in naming with the cros_ec_prox_light driver that we already have.
->=20
-> A few other minor bits and bobs inline.
->=20
+On Sun, Jan 10, 2021 at 10:48:24PM +0000, Suzuki K Poulose wrote:
+> When the ETM is affected by Qualcomm errata, modifying the
+> TRCPDCR could cause the system hang. Even though this is
+> taken care of during enable/disable ETM, the ETM state
+> save/restore could still access the TRCPDCR. Make sure
+> we skip the access during the save/restore.
+> 
+> Found by code inspection.
+> 
+> Fixes: 02510a5aa78df45 ("coresight: etm4x: Add support to skip trace unit power up")
 
-Cool thanks.
+The SHA1 should be 12 character long, something I commented on in V4.  I fixed
+it.
 
-> > diff --git a/drivers/iio/proximity/Makefile b/drivers/iio/proximity/Mak=
-efile
-> > index 9c1aca1a8b79..b1330dd8e212 100644
-> > --- a/drivers/iio/proximity/Makefile
-> > +++ b/drivers/iio/proximity/Makefile
-> > @@ -5,6 +5,7 @@
-> > =20
-> >  # When adding new entries keep the list in alphabetical order
-> >  obj-$(CONFIG_AS3935)         +=3D as3935.o
-> > +obj-$(CONFIG_CROS_EC_PROXIMITY)      +=3D cros_ec_proximity.o
-> >  obj-$(CONFIG_ISL29501)               +=3D isl29501.o
-> >  obj-$(CONFIG_LIDAR_LITE_V2)  +=3D pulsedlight-lidar-lite-v2.o
-> >  obj-$(CONFIG_MB1232)         +=3D mb1232.o
-> > diff --git a/drivers/iio/proximity/cros_ec_proximity.c b/drivers/iio/pr=
-oximity/cros_ec_proximity.c
-> > new file mode 100644
-> > index 000000000000..a3aef911e3cc
-> > --- /dev/null
-> > +++ b/drivers/iio/proximity/cros_ec_proximity.c
-> > @@ -0,0 +1,252 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Driver for cros-ec proximity sensor exposed through MKBP switch
-> > + *
-> > + * Copyright 2021 Google LLC.
-> > + */
-> > +
-> > +#include <linux/module.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/kernel.h>
->=20
-> Slight preference for alphabetical order though keeping specific
-> sections separate as done here is fine.
-
-Will fix.
-
->=20
-> > +#include <linux/notifier.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/types.h>
-> > +
-> > +#include <linux/platform_data/cros_ec_commands.h>
-> > +#include <linux/platform_data/cros_ec_proto.h>
-> > +
-> > +#include <linux/iio/events.h>
-> > +#include <linux/iio/iio.h>
-> > +#include <linux/iio/sysfs.h>
-> > +
-> > +#include <asm/unaligned.h>
-> > +
-> > +struct cros_ec_proximity_data {
-> > +     struct cros_ec_device *ec;
-> > +     struct iio_dev *indio_dev;
-> > +     struct mutex lock;
-> > +     struct notifier_block notifier;
-> > +     bool enabled;
-> > +};
-> > +
-> > +static const struct iio_event_spec cros_ec_prox_events[] =3D {
-> > +     {
-> > +             .type =3D IIO_EV_TYPE_THRESH,
-> > +             .dir =3D IIO_EV_DIR_EITHER,
-> > +             .mask_separate =3D BIT(IIO_EV_INFO_ENABLE),
-> > +     },
-> > +};
-> > +
-> > +static const struct iio_chan_spec cros_ec_prox_chan_spec[] =3D {
-> > +     {
-> > +             .type =3D IIO_PROXIMITY,
-> > +             .info_mask_separate =3D BIT(IIO_CHAN_INFO_RAW),
-> > +             .event_spec =3D cros_ec_prox_events,
-> > +             .num_event_specs =3D ARRAY_SIZE(cros_ec_prox_events),
-> > +     },
-> > +};
-> > +
-> > +static int cros_ec_proximity_parse_state(const void *data)
-> > +{
-> > +     u32 switches =3D get_unaligned_le32(data);
-> > +
-> > +     return !!(switches & BIT(EC_MKBP_FRONT_PROXIMITY));
-> > +}
-> > +
-> > +static int cros_ec_proximity_query(struct cros_ec_device *ec_dev, int =
-*state)
-> > +{
-> > +     struct ec_params_mkbp_info *params;
-> > +     struct cros_ec_command *msg;
-> > +     int ret;
-> > +
-> > +     msg =3D kzalloc(sizeof(*msg) + max(sizeof(u32), sizeof(*params)),
-> > +                   GFP_KERNEL);
->=20
-> Given this is known at build time, perhaps better to add it to the=20
-> iio_priv() accessed structure and avoid having to handle allocations
-> separately.
-
-Ok.
-
->=20
-> > +     if (!msg)
-> > +             return -ENOMEM;
-[...]
-> > +static int cros_ec_proximity_read_raw(struct iio_dev *indio_dev,
-> > +                        const struct iio_chan_spec *chan, int *val,
-> > +                        int *val2, long mask)
-> > +{
-> > +     struct cros_ec_proximity_data *data =3D iio_priv(indio_dev);
-> > +     struct cros_ec_device *ec =3D data->ec;
-> > +     int ret;
-> > +
-> > +     if (chan->type !=3D IIO_PROXIMITY)
-> > +             return -EINVAL;
-> > +
-> > +     switch (mask) {
-> > +     case IIO_CHAN_INFO_RAW:
-> > +             ret =3D iio_device_claim_direct_mode(indio_dev);
->=20
-> Normally we only introduce these protections when adding the ability
-> to change the state from direct to buffered (which these prevent).
-> This driver doesn't yet support any other modes so I don't think
-> there is any benefit in having these.
->=20
-> If the aim is more local protection then should use a local lock
-> as the semantics fo these functions might change in future.
-
-Alright I'll drop it.
-
->=20
->=20
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             ret =3D cros_ec_proximity_query(ec, val);
-> > +             iio_device_release_direct_mode(indio_dev);
-> > +             if (ret)
-> > +                     return ret;
-> > +
-> > +             return IIO_VAL_INT;
-> > +     }
-> > +
-> > +     return -EINVAL;
-> > +}
-> > +
-> > +static int cros_ec_proximity_read_event_config(struct iio_dev *indio_d=
-ev,
-> > +                                 const struct iio_chan_spec *chan,
-> > +                                 enum iio_event_type type,
-> > +                                 enum iio_event_direction dir)
-> > +{
-> > +     struct cros_ec_proximity_data *data =3D iio_priv(indio_dev);
-> > +
-> > +     return data->enabled;
-> > +}
-> > +
-> > +static int cros_ec_proximity_write_event_config(struct iio_dev *indio_=
-dev,
-> > +                                  const struct iio_chan_spec *chan,
-> > +                                  enum iio_event_type type,
-> > +                                  enum iio_event_direction dir, int st=
-ate)
-> > +{
-> > +     struct cros_ec_proximity_data *data =3D iio_priv(indio_dev);
-> > +
-> > +     mutex_lock(&data->lock);
-> > +     data->enabled =3D state;
-> > +     mutex_unlock(&data->lock);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct iio_info cros_ec_proximity_info =3D {
-> > +     .read_raw =3D cros_ec_proximity_read_raw,
-> > +     .read_event_config =3D cros_ec_proximity_read_event_config,
-> > +     .write_event_config =3D cros_ec_proximity_write_event_config,
-> > +};
-> > +
-> > +static int cros_ec_proximity_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev =3D &pdev->dev;
-> > +     struct cros_ec_device *ec =3D dev_get_drvdata(dev->parent);
-> > +     struct iio_dev *indio_dev;
-> > +     struct cros_ec_proximity_data *data;
-> > +     int ret;
-> > +
-> > +     indio_dev =3D devm_iio_device_alloc(dev, sizeof(*data));
-> > +     if (!indio_dev)
-> > +             return -ENOMEM;
-> > +
-> > +     data =3D iio_priv(indio_dev);
-> > +     data->ec =3D ec;
-> > +     data->indio_dev =3D indio_dev;
-> > +     mutex_init(&data->lock);
-> > +     platform_set_drvdata(pdev, data);
-> > +
-> > +     indio_dev->name =3D "cros_ec_proximity";
-> > +     indio_dev->dev.parent =3D dev;
-> > +     indio_dev->info =3D &cros_ec_proximity_info;
-> > +     indio_dev->modes =3D INDIO_DIRECT_MODE;
-> > +     indio_dev->channels =3D cros_ec_prox_chan_spec;
-> > +     indio_dev->num_channels =3D ARRAY_SIZE(cros_ec_prox_chan_spec);
-> > +
-> > +     ret =3D devm_iio_device_register(dev, indio_dev);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     data->notifier.notifier_call =3D cros_ec_proximity_notify;
-> > +     ret =3D blocking_notifier_chain_register(&ec->event_notifier,
-> > +                                            &data->notifier);
-> > +     if (ret)
-> > +             dev_err(dev, "cannot register notifier: %d\n", ret);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int cros_ec_proximity_remove(struct platform_device *pdev)
-> > +{
-> > +     struct cros_ec_proximity_data *data =3D platform_get_drvdata(pdev=
-);
-> > +     struct cros_ec_device *ec =3D data->ec;
-> > +
-> > +     blocking_notifier_chain_unregister(&ec->event_notifier,
-> > +                                        &data->notifier);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +#ifdef CONFIG_OF
->=20
-> As a general rule, we are trying to clear out protections on CONFIG_OF etc
-> and use of of_match_ptr() on the basis they don't really gain us anything
-> and prevent use of some other firmware types.  Here I guess you know what
-> your firmware looks like, but I'm still keen to drop it in the interests
-> of there being fewer places to copy it from.
->=20
-> It may be a good idea to give this a more specific name as well given
-> we already have cros-ec-prox as a platform device id from
-> the cros_ec_light_prox driver.
-
-Alright. I renamed it to cros_ec_mkbp_proximity throughout this driver.
-I'm concerned about dropping CONFIG_OF because of_match_ptr() and
-CONFIG_OF=3Dn makes it unused but I suppose that will be OK as long as
-compilation passes.
-
->=20
->=20
-> > +static const struct of_device_id cros_ec_proximity_of_match[] =3D {
-> > +     { .compatible =3D "google,cros-ec-proximity" },
-> > +     {}
-> > +};
-> > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
-> > +#endif
-> > +
-> > +static struct platform_driver cros_ec_proximity_driver =3D {
-> > +     .driver =3D {
-> > +             .name =3D "cros-ec-proximity",
-> > +             .of_match_table =3D of_match_ptr(cros_ec_proximity_of_mat=
-ch),
-> > +     },
-> > +     .probe =3D cros_ec_proximity_probe,
-> > +     .remove =3D cros_ec_proximity_remove,
-> > +};
-> > +module_platform_driver(cros_ec_proximity_driver);
-> > +
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Cc: Tingwei Zhang <tingwei@codeaurora.org>
+> Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 76526679b998..cce65fc0c9aa 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1373,7 +1373,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  
+>  	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
+>  
+> -	state->trcpdcr = readl(drvdata->base + TRCPDCR);
+> +	if (!drvdata->skip_power_up)
+> +		state->trcpdcr = readl(drvdata->base + TRCPDCR);
+>  
+>  	/* wait for TRCSTATR.IDLE to go up */
+>  	if (coresight_timeout(drvdata->base, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
+> @@ -1391,9 +1392,9 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+>  	 * potentially save power on systems that respect the TRCPDCR_PU
+>  	 * despite requesting software to save/restore state.
+>  	 */
+> -	writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
+> -			drvdata->base + TRCPDCR);
+> -
+> +	if (!drvdata->skip_power_up)
+> +		writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
+> +				drvdata->base + TRCPDCR);
+>  out:
+>  	CS_LOCK(drvdata->base);
+>  	return ret;
+> @@ -1488,7 +1489,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
+>  
+>  	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
+>  
+> -	writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
+> +	if (!drvdata->skip_power_up)
+> +		writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
+>  
+>  	drvdata->state_needs_restore = false;
+>  
+> -- 
+> 2.24.1
+> 
