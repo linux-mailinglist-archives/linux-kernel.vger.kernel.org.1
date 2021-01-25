@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D738302D26
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5A1302D27
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:03:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732422AbhAYVBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732046AbhAYTqY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:46:24 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28ACDC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:32 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id f11so16774950ljm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=syJuf9O5ZY7LJlX8RFLkH84nx7PJyz0ipreUlnGtkr8=;
-        b=PlSjQOA16FQTRiDiYrGHNDGYrqEDyKIJLFNYD0R7oUV9+QRSealBG24kbjV4W2iRL9
-         kCdVwFe7pzM98gvdHJNdaLewBijzW2qy6NV4UQtH/GCjFycHPUH/EzEekOTkhjlZzSSc
-         7v2d8VitaA+d38AzYAvhdYQuTHoM4vSDEd8ko=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=syJuf9O5ZY7LJlX8RFLkH84nx7PJyz0ipreUlnGtkr8=;
-        b=YziHTMHmPPoWOVyH0VQAZK56TJtlGUpjHbC+NOpyPE/xwHMptGl4rtWS5i4Zf7PkKV
-         W1+iwm/CipNBWhoGD4sNmNnIl1VKDrs44QQ5q5JQDx9ZJF1Bn2C0bh8NAcJL89Ybm1Z1
-         HNgC7r5UUmV+D/W0yl8YgjOQWCaFcJfs1V7GcB/OZ026esTn/ZAF6bSdNGGImbgfG1cY
-         LHcz965QYWUtJg8D1gwP45jWRUUu0AR8mAaKpkDCC0fUJ5qvrSDYnd/3FDXqJlNjAExn
-         sGFYXJUAecN4q14nWUIBSO5js5ukQanmaravBYWgvkQkirtl7uI3RdXR1gMZODi1laIa
-         q6Fg==
-X-Gm-Message-State: AOAM530ON4loUxvY8zk0BfI2/BePfdxnefBhxyuJUZmF+bDJ9jOclQ3r
-        E6/IljmTP3oaIEzviSGm9aWVT1RcPXxUpw==
-X-Google-Smtp-Source: ABdhPJyxfis+JMzMGBajVHEKyxIScCtZh+9xWc9LaHA0Cmay6yYeq4rIJkJiKR8HlBf4Q1TIdmNNPw==
-X-Received: by 2002:a2e:98ca:: with SMTP id s10mr977709ljj.283.1611603930230;
-        Mon, 25 Jan 2021 11:45:30 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id t25sm2089722lfl.105.2021.01.25.11.45.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 11:45:29 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id i187so9267116lfd.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:45:29 -0800 (PST)
-X-Received: by 2002:a19:c14c:: with SMTP id r73mr876753lff.201.1611603928929;
- Mon, 25 Jan 2021 11:45:28 -0800 (PST)
+        id S1732366AbhAYVBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:01:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:58644 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732117AbhAYTrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:47:42 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03AF731B;
+        Mon, 25 Jan 2021 11:46:06 -0800 (PST)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 000763F66E;
+        Mon, 25 Jan 2021 11:46:04 -0800 (PST)
+Date:   Mon, 25 Jan 2021 19:46:02 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] printk: Add new pr_*_deferred_once() variants
+Message-ID: <20210125194602.4ayir2tmlllmrnk4@e107158-lin>
+References: <20210123233741.3614408-1-qais.yousef@arm.com>
+ <20210123233741.3614408-2-qais.yousef@arm.com>
+ <YA6fTuFEaCjFQB3h@hirez.programming.kicks-ass.net>
+ <87y2gh2shy.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20210125190925.3655829-1-samitolvanen@google.com> <CAHk-=wj0NKCw30deEEThF+9_F7JDobfO-VTJm64gqvp4zzsWfg@mail.gmail.com>
-In-Reply-To: <CAHk-=wj0NKCw30deEEThF+9_F7JDobfO-VTJm64gqvp4zzsWfg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 25 Jan 2021 11:45:12 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi8mBdnj7QEO9yRzzoJDc+JqfKgy1gXU9iZL8=fF=YO8g@mail.gmail.com>
-Message-ID: <CAHk-=wi8mBdnj7QEO9yRzzoJDc+JqfKgy1gXU9iZL8=fF=YO8g@mail.gmail.com>
-Subject: Re: [PATCH] n_tty: fix redirected_tty_write checks after write_iter conversion
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87y2gh2shy.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:27 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Obvious ACK from me.
+On 01/25/21 12:04, John Ogness wrote:
+> On 2021-01-25, Peter Zijlstra <peterz@infradead.org> wrote:
+> > On Sat, Jan 23, 2021 at 11:37:40PM +0000, Qais Yousef wrote:
+> >> To allow users in code where printk is not allowed.
+> >> 
+> >> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> >> ---
+> >>  include/linux/printk.h | 24 ++++++++++++++++++++++++
+> >>  1 file changed, 24 insertions(+)
+> >> 
+> >> diff --git a/include/linux/printk.h b/include/linux/printk.h
+> >> index fe7eb2351610..92c0978c7b44 100644
+> >> --- a/include/linux/printk.h
+> >> +++ b/include/linux/printk.h
+> >> @@ -480,21 +480,45 @@ extern int kptr_restrict;
+> >>  	printk_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+> >>  /* no pr_cont_once, don't do that... */
+> >>  
+> >> +#define pr_emerg_deferred_once(fmt, ...)				\
+> >> +	printk_deferred_once(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
+> >> +#define pr_alert_deferred_once(fmt, ...)				\
+> >> +	printk_deferred_once(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
+> >> +#define pr_crit_deferred_once(fmt, ...)					\
+> >> +	printk_deferred_once(KERN_CRIT pr_fmt(fmt), ##__VA_ARGS__)
+> >> +#define pr_err_deferred_once(fmt, ...)					\
+> >> +	printk_deferred_once(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+> >> +#define pr_warn_deferred_once(fmt, ...)					\
+> >> +	printk_deferred_once(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
+> >> +#define pr_notice_deferred_once(fmt, ...)				\
+> >> +	printk_deferred_once(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
+> >> +#define pr_info_deferred_once(fmt, ...)					\
+> >> +	printk_deferred_once(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+> >> +/* no pr_cont_deferred_once, don't do that... */
+> >
+> > I absolutely detest this.. the whole _deferred thing is an
+> > abomination.
+> 
+> And it will disappear at some point.
+> 
+> > We should be very close to printk not needing this anymore, printk
+> > people?
+> 
+> It will disappear once console printing threads are introduced. We
+> probably still have a few kernel releases until we see that. First we
+> need to finish merging full lockless access, remove the safe buffers,
+> and merge the atomic consoles.
 
-Greg - if you have nothing else lined up in the tty tree, I can take
-this fix directly if it's easier.
+Okay. As I said in the cover letter, I didn't think the addition of these new
+macros looked like a win overall.
 
-And Sami - how did you actually notice? Some lint-like tool, or is
-there something that actually broke from n_tty not handling a
-redirected tty right?
+I will drop this patch and just open code the use of printk_deferred_once() in
+hrtimer_interrupt(). Which should be easier to fix later when it should
+disappear.
 
-            Linus
+Thanks
+
+--
+Qais Yousef
