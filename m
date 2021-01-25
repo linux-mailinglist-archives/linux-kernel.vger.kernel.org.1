@@ -2,388 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E38E302F6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6E6302F8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:56:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732127AbhAYWu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:50:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39986 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732866AbhAYVfQ (ORCPT
+        id S1732365AbhAYWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:55:24 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34958 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732684AbhAYVev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:35:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611610422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pYJgL9LK9rSIKWVgFalSzYYYdU21hFgzxSciVNpHbLQ=;
-        b=WmRmB+0tPMkKpuBW00spPXOij4FdsnGZXzYTdAcjd5mboP3CraznIle6jSzQ2K2Aan9eu2
-        tG/DHz7302tpmkKyS5VWQplQD9Mw+GJdIxIZf0wf7KR7xrWOPqtb2t3Rg2FkiCr2jhhf/3
-        54GMpczsJcFCALfK/NQHazIgRaBgbEs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-BRdgQwU2Mu21iy-0CfjCxg-1; Mon, 25 Jan 2021 16:33:38 -0500
-X-MC-Unique: BRdgQwU2Mu21iy-0CfjCxg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FECF8735C2;
-        Mon, 25 Jan 2021 21:33:36 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 401BB5D6AB;
-        Mon, 25 Jan 2021 21:33:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 13/32] afs: Pass page into dirty region helpers to provide THP
- size
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 25 Jan 2021 21:33:27 +0000
-Message-ID: <161161040747.2537118.11435394902674511430.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 25 Jan 2021 16:34:51 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10PLVp4Z146855;
+        Mon, 25 Jan 2021 16:33:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Urd9Qgx0jzy/GiFaI6Fka0/iTbjR61vvK2y71xJUzCs=;
+ b=GyJSSThZUGykNwgncp8KGVXjPeegIpfZXLyCba1j0C5P0KOBqZ4nQSAvNyJVYFEOkz5N
+ Ndm5a4mhonp0qqGw+bpcEdeL9eYnH2Z2BGOUlJNYppGta80jXPTWwCNym7En5Fps0UPT
+ SVrSKkHf1WhcdZs7bn5KQRCw0NMwwoLLwkkYURgErTwfT8N7gJo2a822wGT5bGc3VCIB
+ sM0Jxlp5Orakt2pfwbc+pZwsghnjOultWXdRmwazJCTg0iSPnh3MrP+ZwGF/+LXevwdp
+ IjgLrHIrXNXK0rtB+Hii8uBpJkoKV4xCZwSkTgadyZy7tdFFRCVqVyGLqZ7V8IbMBRFS Ag== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36a4tnhp3r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jan 2021 16:33:56 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10PLSQtN011069;
+        Mon, 25 Jan 2021 21:33:54 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 368be894m1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jan 2021 21:33:54 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10PLXiL937945808
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Jan 2021 21:33:44 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CA407AE04D;
+        Mon, 25 Jan 2021 21:33:51 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 91370AE051;
+        Mon, 25 Jan 2021 21:33:50 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.26.126])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 25 Jan 2021 21:33:50 +0000 (GMT)
+Date:   Mon, 25 Jan 2021 23:33:48 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11-rc5
+Message-ID: <20210125213348.GB196782@linux.ibm.com>
+References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
+ <161160687463.28991.354987542182281928@build.alporthouse.com>
+ <CAHk-=wh23BXwBwBgPmt9h2EJztnzKKf=qr5r=B0Hr6BGgZ-QDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh23BXwBwBgPmt9h2EJztnzKKf=qr5r=B0Hr6BGgZ-QDA@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-25_09:2021-01-25,2021-01-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 clxscore=1015 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101250107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass a pointer to the page being accessed into the dirty region helpers so
-that the size of the page can be determined in case it's a transparent huge
-page.
+On Mon, Jan 25, 2021 at 12:49:39PM -0800, Linus Torvalds wrote:
+> On Mon, Jan 25, 2021 at 12:35 PM Chris Wilson <chris@chris-wilson.co.uk> wrote:
+> >
+> > Quoting Linus Torvalds (2021-01-25 01:06:40)
+> > > Mike Rapoport (3):
+> > ...
+> > >       mm: fix initialization of struct page for holes in memory layout
+> >
+> > We have half a dozen or so different machines in CI that are silently
+> > failing to boot, that we believe is bisected to this patch.
+> 
+> That commit reverts cleanly - so if you can verify that reverting it
+> fixes your CI machines, I think that that's the right thing to do for
+> now, unless Mike can figure out some obvious "Duh!" moment from your
+> working dmesg.
 
-This also required the page to be passed into the afs_page_dirty trace
-point - so there's no need to specifically pass in the index or private
-data as these can be retrieved directly from the page struct.
+Unfortunately not, at least at 11pm :(
+Maybe tomorrow I'll have something smarter to say.
+ 
+> Mike: should we perhaps revert the first patch too (commit
+> bde9cfa3afe4: "x86/setup: don't remove E820_TYPE_RAM for pfn 0")?
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+I wonder, maybe actually this one is causing troubles?
 
- fs/afs/file.c              |   20 +++++++--------
- fs/afs/internal.h          |   16 ++++++------
- fs/afs/write.c             |   60 ++++++++++++++++++--------------------------
- include/trace/events/afs.h |   23 ++++++++++-------
- 4 files changed, 55 insertions(+), 64 deletions(-)
+Chris, would it be possible to check what happens if you revert only
+bde9cfa3afe4?
 
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 6d43713fde01..21868bfc3a44 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -515,8 +515,8 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 		return;
- 
- 	/* We may need to shorten the dirty region */
--	f = afs_page_dirty_from(priv);
--	t = afs_page_dirty_to(priv);
-+	f = afs_page_dirty_from(page, priv);
-+	t = afs_page_dirty_to(page, priv);
- 
- 	if (t <= offset || f >= end)
- 		return; /* Doesn't overlap */
-@@ -534,17 +534,17 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 	if (f == t)
- 		goto undirty;
- 
--	priv = afs_page_dirty(f, t);
-+	priv = afs_page_dirty(page, f, t);
- 	set_page_private(page, priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page->index, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page);
- 	return;
- 
- undirty:
--	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page->index, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page);
- 	clear_page_dirty_for_io(page);
- full_invalidate:
--	priv = (unsigned long)detach_page_private(page);
--	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page->index, priv);
-+	detach_page_private(page);
-+	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page);
- }
- 
- /*
-@@ -572,7 +572,6 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
- static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
--	unsigned long priv;
- 
- 	_enter("{{%llx:%llu}[%lu],%lx},%x",
- 	       vnode->fid.vid, vnode->fid.vnode, page->index, page->flags,
-@@ -581,9 +580,8 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- 	/* deny if page is being written to the cache and the caller hasn't
- 	 * elected to wait */
- 	if (PagePrivate(page)) {
--		priv = (unsigned long)detach_page_private(page);
--		trace_afs_page_dirty(vnode, tracepoint_string("rel"),
--				     page->index, priv);
-+		detach_page_private(page);
-+		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
- 	}
- 
- 	/* indicate that the page can be released */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 0d150a29e39e..cd545e7dbfb8 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -875,31 +875,31 @@ struct afs_vnode_cache_aux {
- #define __AFS_PAGE_PRIV_MMAPPED	0x8000UL
- #endif
- 
--static inline unsigned int afs_page_dirty_resolution(void)
-+static inline unsigned int afs_page_dirty_resolution(struct page *page)
- {
--	int shift = PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
-+	int shift = thp_order(page) + PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
- 	return (shift > 0) ? shift : 0;
- }
- 
--static inline size_t afs_page_dirty_from(unsigned long priv)
-+static inline size_t afs_page_dirty_from(struct page *page, unsigned long priv)
- {
- 	unsigned long x = priv & __AFS_PAGE_PRIV_MASK;
- 
- 	/* The lower bound is inclusive */
--	return x << afs_page_dirty_resolution();
-+	return x << afs_page_dirty_resolution(page);
- }
- 
--static inline size_t afs_page_dirty_to(unsigned long priv)
-+static inline size_t afs_page_dirty_to(struct page *page, unsigned long priv)
- {
- 	unsigned long x = (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK;
- 
- 	/* The upper bound is immediately beyond the region */
--	return (x + 1) << afs_page_dirty_resolution();
-+	return (x + 1) << afs_page_dirty_resolution(page);
- }
- 
--static inline unsigned long afs_page_dirty(size_t from, size_t to)
-+static inline unsigned long afs_page_dirty(struct page *page, size_t from, size_t to)
- {
--	unsigned int res = afs_page_dirty_resolution();
-+	unsigned int res = afs_page_dirty_resolution(page);
- 	from >>= res;
- 	to = (to - 1) >> res;
- 	return (to << __AFS_PAGE_PRIV_SHIFT) | from;
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 92eaa88000d7..9d0cef35ecba 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -112,15 +112,14 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	t = f = 0;
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
--		f = afs_page_dirty_from(priv);
--		t = afs_page_dirty_to(priv);
-+		f = afs_page_dirty_from(page, priv);
-+		t = afs_page_dirty_to(page, priv);
- 		ASSERTCMP(f, <=, t);
- 	}
- 
- 	if (f != t) {
- 		if (PageWriteback(page)) {
--			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"),
--					     page->index, priv);
-+			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"), page);
- 			goto flush_conflicting_write;
- 		}
- 		/* If the file is being filled locally, allow inter-write
-@@ -204,21 +203,19 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
--		f = afs_page_dirty_from(priv);
--		t = afs_page_dirty_to(priv);
-+		f = afs_page_dirty_from(page, priv);
-+		t = afs_page_dirty_to(page, priv);
- 		if (from < f)
- 			f = from;
- 		if (to > t)
- 			t = to;
--		priv = afs_page_dirty(f, t);
-+		priv = afs_page_dirty(page, f, t);
- 		set_page_private(page, priv);
--		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"), page);
- 	} else {
--		priv = afs_page_dirty(from, to);
-+		priv = afs_page_dirty(page, from, to);
- 		attach_page_private(page, (void *)priv);
--		trace_afs_page_dirty(vnode, tracepoint_string("dirty"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("dirty"), page);
- 	}
- 
- 	set_page_dirty(page);
-@@ -321,7 +318,6 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
- 				   pgoff_t first, pgoff_t last)
- {
- 	struct pagevec pv;
--	unsigned long priv;
- 	unsigned count, loop;
- 
- 	_enter("{%llx:%llu},{%lx-%lx}",
-@@ -340,9 +336,9 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
- 		ASSERTCMP(pv.nr, ==, count);
- 
- 		for (loop = 0; loop < count; loop++) {
--			priv = (unsigned long)detach_page_private(pv.pages[loop]);
-+			detach_page_private(pv.pages[loop]);
- 			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
--					     pv.pages[loop]->index, priv);
-+					     pv.pages[loop]);
- 			end_page_writeback(pv.pages[loop]);
- 		}
- 		first += count;
-@@ -516,15 +512,13 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 	 */
- 	start = primary_page->index;
- 	priv = page_private(primary_page);
--	offset = afs_page_dirty_from(priv);
--	to = afs_page_dirty_to(priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("store"),
--			     primary_page->index, priv);
-+	offset = afs_page_dirty_from(primary_page, priv);
-+	to = afs_page_dirty_to(primary_page, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("store"), primary_page);
- 
- 	WARN_ON(offset == to);
- 	if (offset == to)
--		trace_afs_page_dirty(vnode, tracepoint_string("WARN"),
--				     primary_page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("WARN"), primary_page);
- 
- 	if (start >= final_page ||
- 	    (to < PAGE_SIZE && !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)))
-@@ -562,8 +556,8 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			}
- 
- 			priv = page_private(page);
--			f = afs_page_dirty_from(priv);
--			t = afs_page_dirty_to(priv);
-+			f = afs_page_dirty_from(page, priv);
-+			t = afs_page_dirty_to(page, priv);
- 			if (f != 0 &&
- 			    !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)) {
- 				unlock_page(page);
-@@ -571,8 +565,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			}
- 			to = t;
- 
--			trace_afs_page_dirty(vnode, tracepoint_string("store+"),
--					     page->index, priv);
-+			trace_afs_page_dirty(vnode, tracepoint_string("store+"), page);
- 
- 			if (!clear_page_dirty_for_io(page))
- 				BUG();
-@@ -861,14 +854,13 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	 */
- 	wait_on_page_writeback(vmf->page);
- 
--	priv = afs_page_dirty(0, PAGE_SIZE);
-+	priv = afs_page_dirty(vmf->page, 0, PAGE_SIZE);
- 	priv = afs_page_dirty_mmapped(priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
--			     vmf->page->index, priv);
- 	if (PagePrivate(vmf->page))
- 		set_page_private(vmf->page, priv);
- 	else
- 		attach_page_private(vmf->page, (void *)priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"), vmf->page);
- 	file_update_time(file);
- 
- 	sb_end_pagefault(inode->i_sb);
-@@ -921,17 +913,15 @@ int afs_launder_page(struct page *page)
- 		f = 0;
- 		t = PAGE_SIZE;
- 		if (PagePrivate(page)) {
--			f = afs_page_dirty_from(priv);
--			t = afs_page_dirty_to(priv);
-+			f = afs_page_dirty_from(page, priv);
-+			t = afs_page_dirty_to(page, priv);
- 		}
- 
--		trace_afs_page_dirty(vnode, tracepoint_string("launder"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
- 		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
- 	}
- 
--	priv = (unsigned long)detach_page_private(page);
--	trace_afs_page_dirty(vnode, tracepoint_string("laundered"),
--			     page->index, priv);
-+	detach_page_private(page);
-+	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
- 	return ret;
- }
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 4a5cc8c64be3..9203cf6a8c53 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -969,30 +969,33 @@ TRACE_EVENT(afs_dir_check_failed,
- 	    );
- 
- TRACE_EVENT(afs_page_dirty,
--	    TP_PROTO(struct afs_vnode *vnode, const char *where,
--		     pgoff_t page, unsigned long priv),
-+	    TP_PROTO(struct afs_vnode *vnode, const char *where, struct page *page),
- 
--	    TP_ARGS(vnode, where, page, priv),
-+	    TP_ARGS(vnode, where, page),
- 
- 	    TP_STRUCT__entry(
- 		    __field(struct afs_vnode *,		vnode		)
- 		    __field(const char *,		where		)
- 		    __field(pgoff_t,			page		)
--		    __field(unsigned long,		priv		)
-+		    __field(unsigned long,		from		)
-+		    __field(unsigned long,		to		)
- 			     ),
- 
- 	    TP_fast_assign(
- 		    __entry->vnode = vnode;
- 		    __entry->where = where;
--		    __entry->page = page;
--		    __entry->priv = priv;
-+		    __entry->page = page->index;
-+		    __entry->from = afs_page_dirty_from(page, page->private);
-+		    __entry->to = afs_page_dirty_to(page, page->private);
-+		    __entry->to |= (afs_is_page_dirty_mmapped(page->private) ?
-+				    (1UL << (BITS_PER_LONG - 1)) : 0);
- 			   ),
- 
--	    TP_printk("vn=%p %lx %s %zx-%zx%s",
-+	    TP_printk("vn=%p %lx %s %lx-%lx%s",
- 		      __entry->vnode, __entry->page, __entry->where,
--		      afs_page_dirty_from(__entry->priv),
--		      afs_page_dirty_to(__entry->priv),
--		      afs_is_page_dirty_mmapped(__entry->priv) ? " M" : "")
-+		      __entry->from,
-+		      __entry->to & ~(1UL << (BITS_PER_LONG - 1)),
-+		      __entry->to & (1UL << (BITS_PER_LONG - 1)) ? " M" : "")
- 	    );
- 
- TRACE_EVENT(afs_call_state,
+>                 Linus
 
-
+-- 
+Sincerely yours,
+Mike.
