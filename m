@@ -2,183 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E79330383B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8123038B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390383AbhAZIm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbhAYSoA (ORCPT
+        id S2390869AbhAZJJi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 04:09:38 -0500
+Received: from belmont79srvr.owm.bell.net ([184.150.200.79]:53034 "EHLO
+        mtlfep01.bell.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730458AbhAYSrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:44:00 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8C5C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:43:20 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id q9so13175195qkn.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:43:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e31ZKvJ3uMMh3udMHplAa9CcURwdEJCMRv6tmo/vpN4=;
-        b=VtCbhIPROig9ujvD81SBylGAjxU9uRXIMbbqmc6HskPKWA+H4uRmvJZPHy8tklzB5V
-         kuVbX/pn4uNCnXIrrpRP5eQIxmwaDuiWWqqUCAmOv53jC11M4GT+QFWdgvTxS8A8gswm
-         TZRcozFb/Ye3TmyMhRSlD/wuYTnvNAfEwgkTVO5tWdzrnsUM1oiwW+XrTVDN7DBQD7JR
-         LAWGX0I0HpZBVGGZb7hmLPs0oLaLmyssYQ8mX8+khiwZHo7c0N88SD7oDIBItZa3/Qeb
-         l2h0yUZAJ5Kl/gerlBE5vTq1UrbNHY/KP/m5lbhMOvA4ap2uViPUtFgZ6Z3NnQUpjene
-         ydAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e31ZKvJ3uMMh3udMHplAa9CcURwdEJCMRv6tmo/vpN4=;
-        b=syE+hhzcwu2L+5MHb03XcyWcILCLHrW2aDAtzTAve95LINA4XN8bjU3UgPGK1wBclr
-         uTHLY3CSJk2DwgZF3WOiHoIlGt5pFjiBmnEJkrD7VrTbdC8Vv/oKxd3L+9mrA6Gmy1zz
-         PKY8AJjg7faBPp4smJmxbGytOj/YK9I7irumFQO9K+ve2slI2Vc8CYauM3iXGlVb0f8t
-         Nxju8A/EyFwo/WkuCvLAFdoNiFoQHCrB4FxIG+UyE8/2uPgfAuV8XLM6Al37K+NZerCi
-         BkP19OFlCSSADXbEfasBwVvU2rZzv4md09UfRHo+Za/skouelmtWSHv+R8E8uj1BDDtn
-         xXgQ==
-X-Gm-Message-State: AOAM531dzCk3KLBV7X2m3iHKrGhrJRpIG2V3cGsuf7G/utF1tNpGuENn
-        Dj61DHQuhOiNOpg04KY4T1Jd8z5yj72SAg==
-X-Google-Smtp-Source: ABdhPJxM02aLqyVMXmh3HYEmGzbrn5TzvFgP36skLQRyQEsby8HCbmtSau/FNEPZn5vvWMAUKwawPA==
-X-Received: by 2002:a37:b982:: with SMTP id j124mr2201351qkf.1.1611600199783;
-        Mon, 25 Jan 2021 10:43:19 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:f735])
-        by smtp.gmail.com with ESMTPSA id 75sm7108881qta.68.2021.01.25.10.43.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:43:18 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:43:17 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
- __add_to_page_cache_locked()
-Message-ID: <YA8RRQ/WYqX3nF3o@cmpxchg.org>
-References: <20210125042441.20030-1-longman@redhat.com>
- <20210125092815.GB827@dhcp22.suse.cz>
- <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
- <20210125160328.GP827@dhcp22.suse.cz>
- <20210125162506.GF308988@casper.infradead.org>
- <20210125164118.GS827@dhcp22.suse.cz>
+        Mon, 25 Jan 2021 13:47:04 -0500
+X-Greylist: delayed 707 seconds by postgrey-1.27 at vger.kernel.org; Mon, 25 Jan 2021 13:47:02 EST
+Received: from bell.net mtlfep01 184.150.200.30 by mtlfep01.bell.net
+          with ESMTP
+          id <20210125183428.LZOG120733.mtlfep01.bell.net@mtlspm01.bell.net>;
+          Mon, 25 Jan 2021 13:34:28 -0500
+Received: from [192.168.2.49] (really [70.50.109.22]) by mtlspm01.bell.net
+          with ESMTP
+          id <20210125183428.WVFJ130487.mtlspm01.bell.net@[192.168.2.49]>;
+          Mon, 25 Jan 2021 13:34:28 -0500
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller@gmx.de, linux-parisc@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>
+References: <202101162230.XswE8zOX-lkp@intel.com>
+ <CAKwvOd=rrTLc510cEA84BC_zzYVQ0ifPEMhRRtU-cyYPs_E4eA@mail.gmail.com>
+From:   John David Anglin <dave.anglin@bell.net>
+Subject: Re: hppa64-linux-ld: mm/hugetlb.o(.text+0x50dc): cannot reach printk
+Message-ID: <bed0d008-c5c0-011e-6f1e-fb248f97c009@bell.net>
+Date:   Mon, 25 Jan 2021 13:34:28 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125164118.GS827@dhcp22.suse.cz>
+In-Reply-To: <CAKwvOd=rrTLc510cEA84BC_zzYVQ0ifPEMhRRtU-cyYPs_E4eA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+X-CM-Analysis: v=2.4 cv=cZIXElPM c=1 sm=1 tr=0 ts=600f0f34 a=S6gQgrXzeH76ECG4GouVuA==:117 a=S6gQgrXzeH76ECG4GouVuA==:17 a=IkcTkHD0fZMA:10 a=EmqxpYm9HcoA:10 a=VwQbUJbxAAAA:8 a=QyXUC8HyAAAA:8 a=i-5SCMXTAAAA:20 a=i3X5FwGiAAAA:8 a=FBHGMhGWAAAA:8 a=yRC9fba0LiWuTPqrjCQA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=mmqRlSCDY2ywfjPLJ4af:22 a=9gvnlMMaQFpL9xblJ6ne:22
+X-CM-Envelope: MS4xfA3IhXP2MKD/icKKaCQXJ4K0jNVxw4Qp/f30doegR4L/Fo6/24GObNOPOLafHv1xMErOcZ1EE8E5opgA1HhYGKFUw5iMejcavNPaKDNd42hBDqAEfXj/ t+xjxv2FGBaUYG5xIhqWvvdJID9Om4rRjDIe0gpaiH9j7jjUvlydCqpDVpDNQPHKwkmfVSkSPiRu7MDLeiEBPfc8XKNUgAN5ba0iSU/rittIOs1cvCpmaCMr 2ECQmfeE8WToI8fPfFiUbQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 05:41:18PM +0100, Michal Hocko wrote:
-> On Mon 25-01-21 16:25:06, Matthew Wilcox wrote:
-> > On Mon, Jan 25, 2021 at 05:03:28PM +0100, Michal Hocko wrote:
-> > > On Mon 25-01-21 10:57:54, Waiman Long wrote:
-> > > > On 1/25/21 4:28 AM, Michal Hocko wrote:
-> > > > > On Sun 24-01-21 23:24:41, Waiman Long wrote:
-> > > > > > The commit 3fea5a499d57 ("mm: memcontrol: convert page
-> > > > > > cache to a new mem_cgroup_charge() API") introduced a bug in
-> > > > > > __add_to_page_cache_locked() causing the following splat:
-> > > > > > 
-> > > > > >   [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
-> > > > > >   [ 1570.068333] pages's memcg:ffff8889a4116000
-> > > > > >   [ 1570.068343] ------------[ cut here ]------------
-> > > > > >   [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
-> > > > > >   [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
-> > > > > >   [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
-> > > > > >   [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
-> > > > > >   [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
-> > > > > >     :
-> > > > > >   [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
-> > > > > >   [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
-> > > > > >   [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
-> > > > > >   [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
-> > > > > >   [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
-> > > > > >   [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
-> > > > > >   [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
-> > > > > >   [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > > >   [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
-> > > > > >   [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > > >   [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > > >   [ 1570.068402] PKRU: 55555554
-> > > > > >   [ 1570.068404] Call Trace:
-> > > > > >   [ 1570.068407]  mem_cgroup_charge+0x175/0x770
-> > > > > >   [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
-> > > > > >   [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
-> > > > > >   [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
-> > > > > >   [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
-> > > > > >   [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
-> > > > > >   [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
-> > > > > >   [ 1570.068693]  read_pages+0x5b1/0xc40
-> > > > > >   [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
-> > > > > >   [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
-> > > > > >   [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
-> > > > > >   [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
-> > > > > >   [ 1570.068872]  new_sync_read+0x3af/0x610
-> > > > > >   [ 1570.068901]  vfs_read+0x339/0x4b0
-> > > > > >   [ 1570.068909]  ksys_read+0xf1/0x1c0
-> > > > > >   [ 1570.068920]  do_syscall_64+0x33/0x40
-> > > > > >   [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > > > >   [ 1570.068930] RIP: 0033:0x7ff039135595
-> > > > > > 
-> > > > > > Before that commit, there was a try_charge() and commit_charge()
-> > > > > > in __add_to_page_cache_locked(). These 2 separated charge functions
-> > > > > > were replaced by a single mem_cgroup_charge(). However, it forgot
-> > > > > > to add a matching mem_cgroup_uncharge() when the xarray insertion
-> > > > > > failed with the page released back to the pool. Fix this by adding a
-> > > > > > mem_cgroup_uncharge() call when insertion error happens.
-> > > > > > 
-> > > > > > Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
-> > > > > > Signed-off-by: Waiman Long <longman@redhat.com>
-> > > > > OK, this is indeed a subtle bug. The patch aimed at simplifying the
-> > > > > charge lifetime so that users do not really have to think about when to
-> > > > > uncharge as that happens when the page is freed. fscache somehow breaks
-> > > > > that assumption because it doesn't free up pages but it keeps some of
-> > > > > them in the cache.
-> > > > > 
-> > > > > I have tried to wrap my head around the cached object life time in
-> > > > > fscache but failed and got lost in the maze. Is this the only instance
-> > > > > of the problem? Would it make more sense to explicitly handle charges in
-> > > > > the fscache code or there are other potential users to fall into this
-> > > > > trap?
-> > > > 
-> > > > There may be other places that have similar problem. I focus on the
-> > > > filemap.c case as I have a test case that can reliably produce the bug
-> > > > splat. This patch does fix it for my test case.
-> > > 
-> > > I believe this needs a more general fix than catching a random places
-> > > which you can trigger. Would it make more sense to address this at the
-> > > fscache level and always make sure that a page returned to the pool is
-> > > always uncharged instead?
-> > 
-> > I believe you mean "page cache" -- there is a separate thing called
-> > 'fscache' which is used to cache network filesystems.
-> 
-> Yes, I really had fscache in mind because it does have an "unusual" page
-> life time rules.
-> 
-> > I don't understand the memcg code at all, so I have no useful feedback
-> > on what you're saying other than this.
-> 
-> Well the memcg accounting rules after the rework should have simplified
-> the API usage for most users. You will get memory charged when it is
-> used and it will go away when the page is freed. If a page is not really
-> freed in some cases and it can be reused then it doesn't really fit into
-> this scheme automagically. I do undestand that this puts some additional
-> burden on those special cases. I am not really sure what is the right
-> way here myself but considering there might be other similar cases like
-> that I would lean towards special casing where the pool is implemented.
-> I would expect there is some state to be maintain for that purpose
-> already.
+For calls, this issue can be avoided with -mlong-calls option.  Without this, 64-bit calls are limited to
+a 22-bit pc-relative offset (8 MB).  This does make branches somewhat less efficient.  At the moment,
+the 64-bit linker does not support adding branch extending stubs.
 
-FWIW, khugepaged does a similar type of page recycling, where when one
-virtual area fails to collapse, the scanner caches the physical page
-and tries to reuse it for the next area. See the mem_cgroup_uncharge()
-call in collapse_huge_page().
+Thunks are currently limited to a 17-bit pc-relative offset.
 
-While it's nice to be able to leave the uncharge to the free call, in
-reuse cases like this I don't think it's a problem to have a matching
-uncharge.
+Regards,
+Dave
+
+On 2021-01-25 12:54 p.m., Nick Desaulniers wrote:
+> I suspect that adding some more sections here makes the distance
+> between other sections too large to encode?  IIRC, arm (32b) linker
+> can emit "range extending thunks" to help jump large distances.  Not
+> sure what to make of this report; I wouldn't have expected this GCC
+> randconfig to generate code in any of the sections that were added to
+> the linkerscript in
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eff8728fe69880d3f7983bec3fb6cea4c306261f.
+>
+> On Sat, Jan 16, 2021 at 6:37 AM kernel test robot <lkp@intel.com> wrote:
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   1d94330a437a573cfdf848f6743b1ed169242c8a
+>> commit: eff8728fe69880d3f7983bec3fb6cea4c306261f vmlinux.lds.h: Add PGO and AutoFDO input sections
+>> date:   5 months ago
+>> config: parisc-randconfig-r032-20210116 (attached as .config)
+>> compiler: hppa64-linux-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>         chmod +x ~/bin/make.cross
+>>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eff8728fe69880d3f7983bec3fb6cea4c306261f
+>>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>         git fetch --no-tags linus master
+>>         git checkout eff8728fe69880d3f7983bec3fb6cea4c306261f
+>>         # save the attached .config to linux build tree
+>>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>    hppa64-linux-ld: mm/page_alloc.o(.ref.text+0x110): cannot reach unknown
+>>    hppa64-linux-ld: mm/memblock.o(.text+0x27c): cannot reach __warn_printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0xc4): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x140): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x1e0): cannot reach memmove
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x314): cannot reach memmove
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x428): cannot reach memmove
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x5d4): cannot reach __warn_printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0xb20): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0xce8): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0xd30): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0xd4c): cannot reach memcpy
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x1130): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x11e0): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x16d8): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x1788): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x1e04): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.meminit.text+0x1e2c): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x24): cannot reach strstr
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x100): cannot reach __warn_printk
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x118): cannot reach dump_stack
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x220): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x48c): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x55c): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x62c): cannot reach printk
+>>    hppa64-linux-ld: mm/memblock.o(.init.text+0x720): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4cc): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x580): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x690): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x768): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7c8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x938): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x980): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xaf8): cannot reach sprintf
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xb60): cannot reach sprintf
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xbd0): cannot reach sprintf
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xc38): cannot reach sprintf
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xcd8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xcf0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xd7c): cannot reach __next_node_in
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xdb4): cannot reach __next_node_in
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xeb8): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xec8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0xf58): cannot reach sprintf
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x1638): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x16d8): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x1764): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x17d0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x1974): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x1990): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x19b4): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x19d4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x1d88): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x1db0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2588): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2658): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x26a8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x26e4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x27b0): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2964): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2984): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x29bc): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2a00): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2a40): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2b38): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2b58): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2c14): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2c8c): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2ccc): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2df4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2ed8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2f38): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2f60): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2f84): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x2fc8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3018): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3044): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3218): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3308): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x340c): cannot reach __xchg64
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3580): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x35b0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3604): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3aa0): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3b00): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x3efc): cannot reach down_write
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4484): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x46ac): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4814): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x485c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x48cc): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4a1c): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4a88): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4b14): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4c0c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4cc0): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4d18): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4dd4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x4ed4): cannot reach __muldi3
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5008): cannot reach sprintf
+>>>> hppa64-linux-ld: mm/hugetlb.o(.text+0x50dc): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x51bc): cannot reach __muldi3
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5348): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x535c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x53d8): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x53ec): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x565c): cannot reach down_read
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5890): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x58d4): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x59f4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5b94): cannot reach _raw_spin_lock_irqsave
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5bf4): cannot reach _raw_spin_unlock_irqrestore
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5c14): cannot reach _raw_spin_lock_irqsave
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5c34): cannot reach _raw_spin_unlock_irqrestore
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5f58): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x5fdc): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x613c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6248): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x643c): cannot reach down_write
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x64c0): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6690): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x66c0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x69a0): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x69c0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x69d0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6a00): cannot reach ___ratelimit
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6a28): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6a80): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6bf4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6d98): cannot reach mutex_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6de0): cannot reach down_read
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x6df4): cannot reach mutex_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x705c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7344): cannot reach down_read
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x74ac): cannot reach mutex_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x74e0): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7708): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x77b0): cannot reach mutex_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7830): cannot reach mutex_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x794c): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7978): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7998): cannot reach mutex_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7b14): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7bfc): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7ce4): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7e84): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x7f0c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8068): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8084): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x80b4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8240): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8314): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8518): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x85e0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8624): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x87a8): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8868): cannot reach down_write
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x889c): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x88ec): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8d40): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8d60): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8d9c): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8db8): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8e78): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8ea0): cannot reach __muldi3
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8ec0): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x8fd0): cannot reach __warn_printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x9074): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x90a4): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x90d4): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x92ec): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x9334): cannot reach __cmpxchg_u32
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x93dc): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x9454): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x9558): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x969c): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.text+0x96ac): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x248): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x26c): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x36c): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x3d0): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x3ec): cannot reach sscanf
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x568): cannot reach snprintf
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x728): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x744): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x8d4): cannot reach _raw_spin_lock
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0x900): cannot reach _raw_spin_unlock
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xa40): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xa70): cannot reach kobject_create_and_add
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xb64): cannot reach kobject_create_and_add
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xb9c): cannot reach kobject_put
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xbb4): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xc84): cannot reach __muldi3
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xde8): cannot reach memparse
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xec0): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xef0): cannot reach unknown
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xf94): cannot reach memparse
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xfcc): cannot reach printk
+>>    hppa64-linux-ld: mm/hugetlb.o(.init.text+0xfe4): cannot reach unknown
+>>    hppa64-linux-ld: mm/slab.o(.text+0x490): cannot reach __udivdi3
+>>    hppa64-linux-ld: mm/slab.o(.text+0x4ac): cannot reach __umoddi3
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+>
+
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
+
