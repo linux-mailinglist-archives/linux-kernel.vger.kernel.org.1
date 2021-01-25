@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293EE3038E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6883A3038BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390949AbhAZJWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:22:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35726 "EHLO mail.kernel.org"
+        id S2390926AbhAZJKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:10:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730815AbhAYSsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:48:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31DDE206FA;
-        Mon, 25 Jan 2021 18:47:52 +0000 (UTC)
+        id S1726694AbhAYSre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:47:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9392C22460;
+        Mon, 25 Jan 2021 18:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600473;
-        bh=wSr1RMry3InHkIhdUBQgjnCBPPXoDJZC94sGjZrYwyY=;
+        s=korg; t=1611600425;
+        bh=e0Ty4pCZkGjsK14w8f92uSSiaSSYm5pQGe0C7bzJxeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ca+YzlUxEP5nYa9oXe6fduDg1tpJrM41z+KlCViEeBiCteMAEQ/ZSbfmcNXC7KzgT
-         89ixEyZO49tTXVppfKazO2HoBmjbuW1QWXQB7V6nJgdBkYJR9/WKgoc/C8Ps5C1mdC
-         V/IS9H2gqUY+XoSXmSGpi/FH5MdLjPnxy9NtCOYE=
+        b=DciENOj8ZP619YVO3Unl6Y3nUIMdzWmmjBcMe3ohDwOj5n9M4YdvA/dKdKls+S6Av
+         XI6udcDte/Y6hthKgxKtjb7ReYs3hjS4moyLR+Zg2duYuXPPvJhgpNFeOyJhiKTKkt
+         /UOaMrG+jW+/Mua/usr4D7v+s1y8qfXZiG3/A+7c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 009/199] ALSA: hda/realtek - Limit int mic boost on Acer Aspire E5-575T
-Date:   Mon, 25 Jan 2021 19:37:11 +0100
-Message-Id: <20210125183216.652171066@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 010/199] ALSA: hda/via: Add minimum mute flag
+Date:   Mon, 25 Jan 2021 19:37:12 +0100
+Message-Id: <20210125183216.694159371@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,57 +38,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 495dc7637cb5ca8e39c46db818328410bb6e73a1 upstream.
+commit 67ea698c3950d10925be33c21ca49ffb64e21842 upstream.
 
-The Acer Apire E5-575T laptop with codec ALC255 has a terrible
-background noise comes from internal mic capture. And the jack
-sensing dose not work for headset like some other Acer laptops.
+It turned out that VIA codecs also mute the sound in the lowest mixer
+level.  Turn on the dac_min_mute flag to indicate the mute-as-minimum
+in TLV like already done in Conexant and IDT codecs.
 
-This patch limits the internal mic boost on top of the existing
-ALC255_FIXUP_ACER_MIC_NO_PRESENCE quirk for Acer Aspire E5-575T.
-
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210559
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210114082728.74729-1-chiu@endlessos.org
+Link: https://lore.kernel.org/r/20210114072453.11379-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/pci/hda/patch_via.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6371,6 +6371,7 @@ enum {
- 	ALC256_FIXUP_HP_HEADSET_MIC,
- 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
- 	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
-+	ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7808,6 +7809,12 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE
- 	},
-+	[ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_limit_int_mic_boost,
-+		.chained = true,
-+		.chain_id = ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7826,6 +7833,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1065, "Acer Aspire C20-820", ALC269VC_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
-+	SND_PCI_QUIRK(0x1025, 0x1094, "Acer Aspire E5-575T", ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1166, "Acer Veriton N4640G", ALC269_FIXUP_LIFEBOOK),
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -113,6 +113,7 @@ static struct via_spec *via_new_spec(str
+ 		spec->codec_type = VT1708S;
+ 	spec->gen.indep_hp = 1;
+ 	spec->gen.keep_eapd_on = 1;
++	spec->gen.dac_min_mute = 1;
+ 	spec->gen.pcm_playback_hook = via_playback_pcm_hook;
+ 	spec->gen.add_stereo_mix_input = HDA_HINT_STEREO_MIX_AUTO;
+ 	codec->power_save_node = 1;
 
 
