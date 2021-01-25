@@ -2,191 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C21C3036F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22123036D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbhAZG65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:58:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:49646 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730046AbhAYPg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:36:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 373CD1A00;
-        Mon, 25 Jan 2021 07:19:30 -0800 (PST)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 361213F68F;
-        Mon, 25 Jan 2021 07:19:28 -0800 (PST)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        Samuel Holland <samuel@sholland.org>,
-        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v4 15/21] phy: sun4i-usb: Rework HCI PHY (aka. "pmu_unk1") handling
-Date:   Mon, 25 Jan 2021 15:18:05 +0000
-Message-Id: <20210125151811.11871-16-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210125151811.11871-1-andre.przywara@arm.com>
-References: <20210125151811.11871-1-andre.przywara@arm.com>
+        id S2389157AbhAZGwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:52:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729997AbhAYPfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:35:40 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA8CC061220
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:20:52 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id v126so12730916qkd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:20:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GjyXRdkS9rYBkV7uCNLwkePmU3ilYmeFcWLWpttgYjU=;
+        b=stEDK4sk0hGJhirBVI5jQ0Wtp9k0V7TJzrUFNqqxpOlgxQgIID1zxEJ1RmKBelzaYa
+         fHWsD6UBuRDGvoBIc7Hfq0mVGO4lUxc+4M2v5YiDxMSjIhf5fnRwelOrC352FWNZ4Slh
+         Sn3/jOV0QduzaPpI6Sk4OG4E6+QrpXxtEHgkpgENKQ4g2bE1A0y9BVM3fkYSc7c6gdpq
+         i/ZQGwXWc5fd1id5h4Hc7heHZdch72cMxps4Bx1ewiI20ffZ/1Jo7x+/VG5aqQreVjBx
+         7OApyL4WgLIA0I9XqpWiDHetDaA0H19sO/qu+VbB4pK5Pe/mQTv0YOBDm9g4SY1/GVO7
+         gLZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GjyXRdkS9rYBkV7uCNLwkePmU3ilYmeFcWLWpttgYjU=;
+        b=XPpMrXnBXFBKPEn8262ysbZ0exjVjf2RYP8OZep9PJ06ZRg426PBhpPKYdlBDQIYjj
+         EvnpRB1xlyL4rpIZlhUIiJ3ydqu3ZQ41uZQUGv1cSa+ObkQmPfIObXfZfqLH8o57fYqT
+         wC2TFIJfOtBjX9FP0l6t7jzAMzPGLb+cdaxU2k8qUnoQGQcCLHf63kdkyXTKiNb3IVpF
+         gJwmzSEImc3VqpUWo569FkUBm+URN0vYEmn7EOrdlHVkh9bw7of4pgaGrPntARDHkWNj
+         D7/XFBx/EOBxcL6zdJBeowDteTg75NWamdPTPbt9J08Sq8gwqXk07DQaHOafflyFUQX+
+         bL6A==
+X-Gm-Message-State: AOAM533Ib7zqf5HWuz+XYNVeBgBQLSZakGkpubkvtk+La05vJo/wvGax
+        8JR5uNZUcUX5tzeEFoosbC0=
+X-Google-Smtp-Source: ABdhPJw2FEHmPYPDqiG5RwW2W6SL4HC17iaQM2x+z+j/T2np7lIWVdUbIWgDclrrVTBEJSJ1rpMfXQ==
+X-Received: by 2002:a37:8942:: with SMTP id l63mr1210058qkd.94.1611588051712;
+        Mon, 25 Jan 2021 07:20:51 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id b16sm11126295qtx.85.2021.01.25.07.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 07:20:50 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 25 Jan 2021 10:20:52 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, walken@google.com, dave@stgolabs.net,
+        mingo@kernel.org, tglx@linutronix.de, oleg@redhat.com,
+        irogers@google.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH v2 4/7] rbtree, perf: Use new rbtree helpers
+Message-ID: <YA7h1OZOoOna+e4G@slm.duckdns.org>
+References: <20210125150953.679129361@infradead.org>
+ <20210125151314.808569647@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125151314.808569647@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Icenowy pointed out, newer manuals (starting with H6) actually
-document the register block at offset 0x800 as "HCI controller and PHY
-interface", also describe the bits in our "PMU_UNK1" register.
-Let's put proper names to those "unknown" variables and symbols.
+On Mon, Jan 25, 2021 at 04:09:57PM +0100, Peter Zijlstra wrote:
+> Reduce rbtree boiler plate by using the new helpers.
+> 
+> One noteworthy change is unification of the various (partial) compare
+> functions. We construct a subtree match by forcing the sub-order to
+> always match, see __group_cmp().
+> 
+> Due to 'const' we had to touch cgroup_id().
+> 
+> Cc: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-While we are at it, generalise the existing code by allowing a bitmap
-of bits to clear, to cover newer SoCs: The A100 and H616 use a different
-bit for the SIDDQ control.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Maxime Ripard <mripard@kernel.org>
----
- drivers/phy/allwinner/phy-sun4i-usb.c | 29 +++++++++++----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+Thanks.
 
-diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-index 788dd5cdbb7d..539209fe3468 100644
---- a/drivers/phy/allwinner/phy-sun4i-usb.c
-+++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-@@ -43,7 +43,7 @@
- #define REG_PHYCTL_A33			0x10
- #define REG_PHY_OTGCTL			0x20
- 
--#define REG_PMU_UNK1			0x10
-+#define REG_HCI_PHY_CTL			0x10
- 
- #define PHYCTL_DATA			BIT(7)
- 
-@@ -115,9 +115,9 @@ struct sun4i_usb_phy_cfg {
- 	int hsic_index;
- 	enum sun4i_usb_phy_type type;
- 	u32 disc_thresh;
-+	u32 hci_phy_ctl_siddq;
- 	u8 phyctl_offset;
- 	bool dedicated_clocks;
--	bool enable_pmu_unk1;
- 	bool phy0_dual_route;
- 	int missing_phys;
- };
-@@ -288,6 +288,12 @@ static int sun4i_usb_phy_init(struct phy *_phy)
- 		return ret;
- 	}
- 
-+	if (phy->pmu && data->cfg->hci_phy_ctl_siddq) {
-+		val = readl(phy->pmu + REG_HCI_PHY_CTL);
-+		val &= ~data->cfg->hci_phy_ctl_siddq;
-+		writel(val, phy->pmu + REG_HCI_PHY_CTL);
-+	}
-+
- 	if (data->cfg->type == sun8i_a83t_phy ||
- 	    data->cfg->type == sun50i_h6_phy) {
- 		if (phy->index == 0) {
-@@ -297,11 +303,6 @@ static int sun4i_usb_phy_init(struct phy *_phy)
- 			writel(val, data->base + data->cfg->phyctl_offset);
- 		}
- 	} else {
--		if (phy->pmu && data->cfg->enable_pmu_unk1) {
--			val = readl(phy->pmu + REG_PMU_UNK1);
--			writel(val & ~2, phy->pmu + REG_PMU_UNK1);
--		}
--
- 		/* Enable USB 45 Ohm resistor calibration */
- 		if (phy->index == 0)
- 			sun4i_usb_phy_write(phy, PHY_RES45_CAL_EN, 0x01, 1);
-@@ -863,7 +864,6 @@ static const struct sun4i_usb_phy_cfg sun4i_a10_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A10,
- 	.dedicated_clocks = false,
--	.enable_pmu_unk1 = false,
- };
- 
- static const struct sun4i_usb_phy_cfg sun5i_a13_cfg = {
-@@ -872,7 +872,6 @@ static const struct sun4i_usb_phy_cfg sun5i_a13_cfg = {
- 	.disc_thresh = 2,
- 	.phyctl_offset = REG_PHYCTL_A10,
- 	.dedicated_clocks = false,
--	.enable_pmu_unk1 = false,
- };
- 
- static const struct sun4i_usb_phy_cfg sun6i_a31_cfg = {
-@@ -881,7 +880,6 @@ static const struct sun4i_usb_phy_cfg sun6i_a31_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A10,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = false,
- };
- 
- static const struct sun4i_usb_phy_cfg sun7i_a20_cfg = {
-@@ -890,7 +888,6 @@ static const struct sun4i_usb_phy_cfg sun7i_a20_cfg = {
- 	.disc_thresh = 2,
- 	.phyctl_offset = REG_PHYCTL_A10,
- 	.dedicated_clocks = false,
--	.enable_pmu_unk1 = false,
- };
- 
- static const struct sun4i_usb_phy_cfg sun8i_a23_cfg = {
-@@ -899,7 +896,6 @@ static const struct sun4i_usb_phy_cfg sun8i_a23_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A10,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = false,
- };
- 
- static const struct sun4i_usb_phy_cfg sun8i_a33_cfg = {
-@@ -908,7 +904,6 @@ static const struct sun4i_usb_phy_cfg sun8i_a33_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A33,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = false,
- };
- 
- static const struct sun4i_usb_phy_cfg sun8i_a83t_cfg = {
-@@ -925,7 +920,7 @@ static const struct sun4i_usb_phy_cfg sun8i_h3_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A33,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = true,
-+	.hci_phy_ctl_siddq = BIT(1),
- 	.phy0_dual_route = true,
- };
- 
-@@ -935,7 +930,7 @@ static const struct sun4i_usb_phy_cfg sun8i_r40_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A33,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = true,
-+	.hci_phy_ctl_siddq = BIT(1),
- 	.phy0_dual_route = true,
- };
- 
-@@ -945,7 +940,7 @@ static const struct sun4i_usb_phy_cfg sun8i_v3s_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A33,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = true,
-+	.hci_phy_ctl_siddq = BIT(1),
- 	.phy0_dual_route = true,
- };
- 
-@@ -955,7 +950,7 @@ static const struct sun4i_usb_phy_cfg sun50i_a64_cfg = {
- 	.disc_thresh = 3,
- 	.phyctl_offset = REG_PHYCTL_A33,
- 	.dedicated_clocks = true,
--	.enable_pmu_unk1 = true,
-+	.hci_phy_ctl_siddq = BIT(1),
- 	.phy0_dual_route = true,
- };
- 
 -- 
-2.17.5
-
+tejun
