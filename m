@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4383031C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8F53031CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbhAYSpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:45:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58894 "EHLO mail.kernel.org"
+        id S1729049AbhAYSn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:43:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727349AbhAYSmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EDF022460;
-        Mon, 25 Jan 2021 18:40:55 +0000 (UTC)
+        id S1727060AbhAYSm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C071E224D4;
+        Mon, 25 Jan 2021 18:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600056;
-        bh=G0hwRYnbXc6l/tV8pex+dZGLS2ecO09b9ad3GWlMxkU=;
+        s=korg; t=1611600066;
+        bh=Ig8moJu33pnUjzGkeAFtZIUhRO1QCYANqkOw5Nf1+6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wZLizwb7rPjImqvD5aoyuEeLQgNVkZgY9fk8R9jrzzLW3i9+4gJfjm+OAlpbKHvXA
-         7Ae4NnrrfmVlfAQI2OFIQdbjGITNUGA2WagvY/ePKE957VYwV1lwRoU9kHi68AUdAj
-         /nvRX+ZuWHmjlRCvlQeEDEIJXCFRodMhs3iUtn9E=
+        b=UbRg2sJiWjzMOPGVOfN4HFQSDpDp5y0jujAbnKuQq4xB8bRkCUt561nAfh/+rEYKD
+         eujGE/c2L8ZYZIipMHvtgPWMTr3P9ipNVm9rmwSUYXfSmcf+R3NKfXZrrqWqWIE11+
+         EgSsa1pRGNM6/IcPYyFsuF9U3rpluYs+E0Y6OWLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 14/58] scsi: qedi: Correct max length of CHAP secret
-Date:   Mon, 25 Jan 2021 19:39:15 +0100
-Message-Id: <20210125183157.310335636@linuxfoundation.org>
+Subject: [PATCH 4.19 18/58] xen: Fix event channel callback via INTX/GSI
+Date:   Mon, 25 Jan 2021 19:39:19 +0100
+Message-Id: <20210125183157.473138447@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -41,44 +41,251 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nilesh Javali <njavali@marvell.com>
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-[ Upstream commit d50c7986fbf0e2167279e110a2ed5bd8e811c660 ]
+[ Upstream commit 3499ba8198cad47b731792e5e56b9ec2a78a83a2 ]
 
-The CHAP secret displayed garbage characters causing iSCSI login
-authentication failure. Correct the CHAP password max length.
+For a while, event channel notification via the PCI platform device
+has been broken, because we attempt to communicate with xenstore before
+we even have notifications working, with the xs_reset_watches() call
+in xs_init().
 
-Link: https://lore.kernel.org/r/20201217105144.8055-1-njavali@marvell.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+We tend to get away with this on Xen versions below 4.0 because we avoid
+calling xs_reset_watches() anyway, because xenstore might not cope with
+reading a non-existent key. And newer Xen *does* have the vector
+callback support, so we rarely fall back to INTX/GSI delivery.
+
+To fix it, clean up a bit of the mess of xs_init() and xenbus_probe()
+startup. Call xs_init() directly from xenbus_init() only in the !XS_HVM
+case, deferring it to be called from xenbus_probe() in the XS_HVM case
+instead.
+
+Then fix up the invocation of xenbus_probe() to happen either from its
+device_initcall if the callback is available early enough, or when the
+callback is finally set up. This means that the hack of calling
+xenbus_probe() from a workqueue after the first interrupt, or directly
+from the PCI platform device setup, is no longer needed.
+
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/20210113132606.422794-2-dwmw2@infradead.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/xen/enlighten.c          |  2 +-
+ drivers/xen/events/events_base.c  | 10 ----
+ drivers/xen/platform-pci.c        |  1 -
+ drivers/xen/xenbus/xenbus.h       |  1 +
+ drivers/xen/xenbus/xenbus_comms.c |  8 ---
+ drivers/xen/xenbus/xenbus_probe.c | 81 +++++++++++++++++++++++++------
+ include/xen/xenbus.h              |  2 +-
+ 7 files changed, 70 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index eaa50328de90c..e201c163ea1c8 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2129,7 +2129,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
- 			     chap_name);
+diff --git a/arch/arm/xen/enlighten.c b/arch/arm/xen/enlighten.c
+index 07060e5b58641..8aa901e20ca8e 100644
+--- a/arch/arm/xen/enlighten.c
++++ b/arch/arm/xen/enlighten.c
+@@ -405,7 +405,7 @@ static int __init xen_guest_init(void)
+ 	}
+ 	gnttab_init();
+ 	if (!xen_initial_domain())
+-		xenbus_probe(NULL);
++		xenbus_probe();
+ 
+ 	/*
+ 	 * Making sure board specific code will not set up ops for
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index aca8456752797..8c08c7d46d3d0 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -1987,16 +1987,6 @@ static struct irq_chip xen_percpu_chip __read_mostly = {
+ 	.irq_ack		= ack_dynirq,
+ };
+ 
+-int xen_set_callback_via(uint64_t via)
+-{
+-	struct xen_hvm_param a;
+-	a.domid = DOMID_SELF;
+-	a.index = HVM_PARAM_CALLBACK_IRQ;
+-	a.value = via;
+-	return HYPERVISOR_hvm_op(HVMOP_set_param, &a);
+-}
+-EXPORT_SYMBOL_GPL(xen_set_callback_via);
+-
+ #ifdef CONFIG_XEN_PVHVM
+ /* Vector callbacks are better than PCI interrupts to receive event
+  * channel notifications because we can receive vector callbacks on any
+diff --git a/drivers/xen/platform-pci.c b/drivers/xen/platform-pci.c
+index 5d7dcad0b0a0d..4cec8146609ad 100644
+--- a/drivers/xen/platform-pci.c
++++ b/drivers/xen/platform-pci.c
+@@ -162,7 +162,6 @@ static int platform_pci_probe(struct pci_dev *pdev,
+ 	ret = gnttab_init();
+ 	if (ret)
+ 		goto grant_out;
+-	xenbus_probe(NULL);
+ 	return 0;
+ grant_out:
+ 	gnttab_free_auto_xlat_frames();
+diff --git a/drivers/xen/xenbus/xenbus.h b/drivers/xen/xenbus/xenbus.h
+index 88516a8a9f932..a9bb5f91082d3 100644
+--- a/drivers/xen/xenbus/xenbus.h
++++ b/drivers/xen/xenbus/xenbus.h
+@@ -115,6 +115,7 @@ int xenbus_probe_node(struct xen_bus_type *bus,
+ 		      const char *type,
+ 		      const char *nodename);
+ int xenbus_probe_devices(struct xen_bus_type *bus);
++void xenbus_probe(void);
+ 
+ void xenbus_dev_changed(const char *node, struct xen_bus_type *bus);
+ 
+diff --git a/drivers/xen/xenbus/xenbus_comms.c b/drivers/xen/xenbus/xenbus_comms.c
+index eb5151fc8efab..e5fda0256feb3 100644
+--- a/drivers/xen/xenbus/xenbus_comms.c
++++ b/drivers/xen/xenbus/xenbus_comms.c
+@@ -57,16 +57,8 @@ DEFINE_MUTEX(xs_response_mutex);
+ static int xenbus_irq;
+ static struct task_struct *xenbus_task;
+ 
+-static DECLARE_WORK(probe_work, xenbus_probe);
+-
+-
+ static irqreturn_t wake_waiting(int irq, void *unused)
+ {
+-	if (unlikely(xenstored_ready == 0)) {
+-		xenstored_ready = 1;
+-		schedule_work(&probe_work);
+-	}
+-
+ 	wake_up(&xb_waitq);
+ 	return IRQ_HANDLED;
+ }
+diff --git a/drivers/xen/xenbus/xenbus_probe.c b/drivers/xen/xenbus/xenbus_probe.c
+index e6d0903459e11..14ccf13ab8fa1 100644
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -683,29 +683,76 @@ void unregister_xenstore_notifier(struct notifier_block *nb)
+ }
+ EXPORT_SYMBOL_GPL(unregister_xenstore_notifier);
+ 
+-void xenbus_probe(struct work_struct *unused)
++void xenbus_probe(void)
+ {
+ 	xenstored_ready = 1;
+ 
++	/*
++	 * In the HVM case, xenbus_init() deferred its call to
++	 * xs_init() in case callbacks were not operational yet.
++	 * So do it now.
++	 */
++	if (xen_store_domain_type == XS_HVM)
++		xs_init();
++
+ 	/* Notify others that xenstore is up */
+ 	blocking_notifier_call_chain(&xenstore_chain, 0, NULL);
+ }
+-EXPORT_SYMBOL_GPL(xenbus_probe);
+ 
+-static int __init xenbus_probe_initcall(void)
++/*
++ * Returns true when XenStore init must be deferred in order to
++ * allow the PCI platform device to be initialised, before we
++ * can actually have event channel interrupts working.
++ */
++static bool xs_hvm_defer_init_for_callback(void)
+ {
+-	if (!xen_domain())
+-		return -ENODEV;
++#ifdef CONFIG_XEN_PVHVM
++	return xen_store_domain_type == XS_HVM &&
++		!xen_have_vector_callback;
++#else
++	return false;
++#endif
++}
+ 
+-	if (xen_initial_domain() || xen_hvm_domain())
+-		return 0;
++static int __init xenbus_probe_initcall(void)
++{
++	/*
++	 * Probe XenBus here in the XS_PV case, and also XS_HVM unless we
++	 * need to wait for the platform PCI device to come up.
++	 */
++	if (xen_store_domain_type == XS_PV ||
++	    (xen_store_domain_type == XS_HVM &&
++	     !xs_hvm_defer_init_for_callback()))
++		xenbus_probe();
+ 
+-	xenbus_probe(NULL);
+ 	return 0;
+ }
+-
+ device_initcall(xenbus_probe_initcall);
+ 
++int xen_set_callback_via(uint64_t via)
++{
++	struct xen_hvm_param a;
++	int ret;
++
++	a.domid = DOMID_SELF;
++	a.index = HVM_PARAM_CALLBACK_IRQ;
++	a.value = via;
++
++	ret = HYPERVISOR_hvm_op(HVMOP_set_param, &a);
++	if (ret)
++		return ret;
++
++	/*
++	 * If xenbus_probe_initcall() deferred the xenbus_probe()
++	 * due to the callback not functioning yet, we can do it now.
++	 */
++	if (!xenstored_ready && xs_hvm_defer_init_for_callback())
++		xenbus_probe();
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(xen_set_callback_via);
++
+ /* Set up event channel for xenstored which is run as a local process
+  * (this is normally used only in dom0)
+  */
+@@ -818,11 +865,17 @@ static int __init xenbus_init(void)
  		break;
- 	case ISCSI_BOOT_TGT_CHAP_SECRET:
--		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
-+		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
- 			     chap_secret);
- 		break;
- 	case ISCSI_BOOT_TGT_REV_CHAP_NAME:
-@@ -2137,7 +2137,7 @@ qedi_show_boot_tgt_info(struct qedi_ctx *qedi, int type,
- 			     mchap_name);
- 		break;
- 	case ISCSI_BOOT_TGT_REV_CHAP_SECRET:
--		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_NAME_MAX_LEN,
-+		rc = sprintf(buf, "%.*s\n", NVM_ISCSI_CFG_CHAP_PWD_MAX_LEN,
- 			     mchap_secret);
- 		break;
- 	case ISCSI_BOOT_TGT_FLAGS:
+ 	}
+ 
+-	/* Initialize the interface to xenstore. */
+-	err = xs_init();
+-	if (err) {
+-		pr_warn("Error initializing xenstore comms: %i\n", err);
+-		goto out_error;
++	/*
++	 * HVM domains may not have a functional callback yet. In that
++	 * case let xs_init() be called from xenbus_probe(), which will
++	 * get invoked at an appropriate time.
++	 */
++	if (xen_store_domain_type != XS_HVM) {
++		err = xs_init();
++		if (err) {
++			pr_warn("Error initializing xenstore comms: %i\n", err);
++			goto out_error;
++		}
+ 	}
+ 
+ 	if ((xen_store_domain_type != XS_LOCAL) &&
+diff --git a/include/xen/xenbus.h b/include/xen/xenbus.h
+index eba01ab5a55e0..fe9a9fa2ebc45 100644
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -187,7 +187,7 @@ void xs_suspend_cancel(void);
+ 
+ struct work_struct;
+ 
+-void xenbus_probe(struct work_struct *);
++void xenbus_probe(void);
+ 
+ #define XENBUS_IS_ERR_READ(str) ({			\
+ 	if (!IS_ERR(str) && strlen(str) == 0) {		\
 -- 
 2.27.0
 
