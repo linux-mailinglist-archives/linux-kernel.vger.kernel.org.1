@@ -2,157 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561363049A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2843A3049A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732721AbhAZF0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:26:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S1730609AbhAZFZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:25:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbhAYKKj (ORCPT
+        with ESMTP id S1727242AbhAYKAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:10:39 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5FFC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:08:16 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id u17so24860765iow.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:08:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eCxCQEQ4HvI2NlY9PmMxsOvyAaZ9vQJprFugqixw5r0=;
-        b=WDjggGB6Kp4PMVO4nbG14DJnvJ+OyOKaKjnmP3dmbh2EUttrfvodSJhoBpVs2WlKBg
-         wduKwE1xWNGlh4fmBZW/FOIcCYxO1+JiWaN1rEtwc63db1oobjWTpsqdRQq4rAydBSGL
-         G8JF6ic+C4XddCsjRGvsP3RYvaDbNrZeFDyzi309cc/hy9qopEQsL8Ua2QJU0fIgrpVY
-         1XIf61Ex3l+VuDvgaOgPmcCcB9FDfcmMR13WY1/3z80beKEc7hVhLHdBuLjv5z5UlM94
-         9gVb5PkWdi3KWVwJtJlpqjqDB6S50g1d1Et87a6oQwHm8K/c8H527+nhyCTLrB2YAr+g
-         5e4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eCxCQEQ4HvI2NlY9PmMxsOvyAaZ9vQJprFugqixw5r0=;
-        b=ldco3YVNFoPQTd78CNEW1WHOtKkHNW3c+MSyKX9RdsWooQ0dthfltyyhR9hVFmkpTm
-         ynhK/qKiThhn9KWdPdjPFjooBn9A7mDUAv/yojOXnMWNDCl5wjh6AYsGKKvJbybuoGwg
-         3Mjn5AnpiURZORWxUoMJJIhklDRuL9Zhi8RkkI8GveFp0dexLP7u+srZJu3rwGt2L4P9
-         ETQvEzifO4qPi73OWao48NglN2KDHCYf+UC8thslU2rMKbPQtBuAgsJyEBMoZ6r+W67w
-         Av1/z+AoZpWqfdkWL7xB/V5K7irhLUpZD+7Tcy0RsV7SgJUzB1OR7lc+4X9MwBj6wNqf
-         SQbg==
-X-Gm-Message-State: AOAM533O4FFDdSuW2DTaMi1mBzpjzhqFDBAahCowwUTtjKv9cYjCm+bX
-        xyIwLxdDzJmmB0yB9+2+8TN0ywFJRZwfjHfQE/o=
-X-Google-Smtp-Source: ABdhPJygXQ2AqNLzgmCZyOw1vMtfdVx8F/jRqDL9SL0qR/LiWsDUlYWhD0Rnw4sEnbmAfHLiwzVvE8cRe4JAM4k0Vgc=
-X-Received: by 2002:a6b:14d:: with SMTP id 74mr148330iob.182.1611562095340;
- Mon, 25 Jan 2021 00:08:15 -0800 (PST)
+        Mon, 25 Jan 2021 05:00:13 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B409C0617AA;
+        Mon, 25 Jan 2021 00:33:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mjV/4Z3CDRxQhs+wKq1+GM3JPWdjP4pMPtKxh3gu3Qg=; b=qnNhg72wYDhaBpZbjBxRedU+0p
+        y18yUOE0T3saR/wjRv9Aysq05dijQ7rGD5IeOiFPH4IulcBXMa3mSOHz0nsjGONuGjnX8bUxe91Lq
+        o0iftOB1HJRWIZKgbAeUX4mB9TIgk7jLu/uAP9L1t8upK9ueQWwbbOlUgvqt/ZQjEXoM0KwZG+rou
+        3qUKywQdTwqdQxaEgTi6nJlEmmzNg13jdVCmIRVlCP50Kroa0OZiFB+esbyPn8aL4CaRTfVBIbVQi
+        0tdq9by/K4+pPYMA2KFWLNuUh2lqwMMtMUm2P7OYZsltG6zVCZ+V+b+veepwSUlfVj8Fek4VCXNzW
+        ccCPJNOA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l3xIm-003y01-HS; Mon, 25 Jan 2021 08:32:49 +0000
+Date:   Mon, 25 Jan 2021 08:32:48 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Hannes Reinecke <hare@suse.de>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH 2/3] blk-mq: Always complete remote completions requests
+ in softirq
+Message-ID: <20210125083248.GA945284@infradead.org>
+References: <20210123201027.3262800-1-bigeasy@linutronix.de>
+ <20210123201027.3262800-3-bigeasy@linutronix.de>
+ <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
+ <20210125082542.GC942655@infradead.org>
+ <20210125083029.utnjqs2s3diqb5vx@linutronix.de>
 MIME-Version: 1.0
-References: <20210125042441.20030-1-longman@redhat.com>
-In-Reply-To: <20210125042441.20030-1-longman@redhat.com>
-From:   Muchun Song <smuchun@gmail.com>
-Date:   Mon, 25 Jan 2021 16:07:38 +0800
-Message-ID: <CAPSr9jFcuRNQ7Q_Yo9KDSbYV2=8-siL-1ckxhfVwCiG5tg-vfw@mail.gmail.com>
-Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to __add_to_page_cache_locked()
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125083029.utnjqs2s3diqb5vx@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 12:29 PM Waiman Long <longman@redhat.com> wrote:
->
-> The commit 3fea5a499d57 ("mm: memcontrol: convert page
-> cache to a new mem_cgroup_charge() API") introduced a bug in
-> __add_to_page_cache_locked() causing the following splat:
->
->  [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
->  [ 1570.068333] pages's memcg:ffff8889a4116000
->  [ 1570.068343] ------------[ cut here ]------------
->  [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
->  [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
->  [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
->  [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
->  [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
->    :
->  [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
->  [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
->  [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
->  [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
->  [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
->  [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
->  [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
->  [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
->  [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->  [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->  [ 1570.068402] PKRU: 55555554
->  [ 1570.068404] Call Trace:
->  [ 1570.068407]  mem_cgroup_charge+0x175/0x770
->  [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
->  [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
->  [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
->  [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
->  [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
->  [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
->  [ 1570.068693]  read_pages+0x5b1/0xc40
->  [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
->  [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
->  [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
->  [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
->  [ 1570.068872]  new_sync_read+0x3af/0x610
->  [ 1570.068901]  vfs_read+0x339/0x4b0
->  [ 1570.068909]  ksys_read+0xf1/0x1c0
->  [ 1570.068920]  do_syscall_64+0x33/0x40
->  [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  [ 1570.068930] RIP: 0033:0x7ff039135595
->
-> Before that commit, there was a try_charge() and commit_charge()
-> in __add_to_page_cache_locked(). These 2 separated charge functions
-> were replaced by a single mem_cgroup_charge(). However, it forgot
-> to add a matching mem_cgroup_uncharge() when the xarray insertion
-> failed with the page released back to the pool. Fix this by adding a
-> mem_cgroup_uncharge() call when insertion error happens.
->
-> Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/filemap.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 5c9d564317a5..aa0e0fb04670 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -835,6 +835,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->         XA_STATE(xas, &mapping->i_pages, offset);
->         int huge = PageHuge(page);
->         int error;
-> +       bool charged = false;
->
->         VM_BUG_ON_PAGE(!PageLocked(page), page);
->         VM_BUG_ON_PAGE(PageSwapBacked(page), page);
-> @@ -848,6 +849,7 @@ noinline int __add_to_page_cache_locked(struct page *page,
->                 error = mem_cgroup_charge(page, current->mm, gfp);
->                 if (error)
->                         goto error;
-> +               charged = true;
->         }
->
->         gfp &= GFP_RECLAIM_MASK;
-> @@ -896,6 +898,8 @@ noinline int __add_to_page_cache_locked(struct page *page,
->
->         if (xas_error(&xas)) {
->                 error = xas_error(&xas);
-> +               if (charged)
+On Mon, Jan 25, 2021 at 09:30:29AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-01-25 08:25:42 [+0000], Christoph Hellwig wrote:
+> > On Mon, Jan 25, 2021 at 08:10:16AM +0100, Hannes Reinecke wrote:
+> > > I don't get this.
+> > > This code is about _avoiding_ having to raise a softirq if the driver
+> > > exports more than one hardware queue.
+> > > So where exactly does the remote CPU case come in here?
+> > 
+> > __blk_mq_complete_request_remote is only called for the case where we
+> > do not completelky locally.  The case that "degrades" here is where
+> > the device supports multiple queues, but less than the number of CPUs,
+> > and we bounce the completion to another CPU.
+> 
+> Does it really "degrade" or just use the softirq more often? The usual
+> case is run the softirqs in irq_exit() which is just after IPI.
 
-Can "if (!huge)" replace "if (charged)"?
-
-> +                       mem_cgroup_uncharge(page);
->                 goto error;
->         }
->
-> --
-> 2.18.1
->
+Well, I put it in quotes because I'm not sure what the exact effect
+is.  But we do delay these completions to the softirq now instead of
+hardirq context, which at least in theory increases latency.  OTOH it
+might even have positive effects on the rest of the system.
