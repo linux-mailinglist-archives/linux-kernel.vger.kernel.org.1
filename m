@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D861F3035E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5668F3035DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388984AbhAZFzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
+        id S2388970AbhAZFzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:55:40 -0500
+Received: from foss.arm.com ([217.140.110.172]:46654 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728096AbhAYMam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:30:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10558229C4;
-        Mon, 25 Jan 2021 11:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611574489;
-        bh=a2bSyOMO46IPcaFlhR4MH60Iu4lFxH8xggwH3p3rK9w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G2/Q0fCoKAJfCaoAmqMH2wmRka3USgb+UlOaBSbjvk/m2dkjMCVZ5+AWKm427llxi
-         OnIgWX9MjYwhGs0QrApuDiD9OMdoXO860ehCMDcUjqFX1IndJ8c910aRUtZXzORSqK
-         WHUoUORnj50bUZecM/JN/qMsRZM8KLANnLE9Ehvw1yHmxpwMqwmo4nsgJyU2g/4rK/
-         OL4qqzNXrBN3MUdI3p46WWWP/L+XzGzc0J5txZoWCxMcyO/A+w1wQKazU2c7eO8JAi
-         Vf++JuIwIYV3rGH0sfxtPkn4354V8Se6FBwMmzi9bSUiwFputdpI2cUuNoZcuITvzv
-         ehnC7OLzUer3A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-pci@vger.kernel.org,
+        id S1728087AbhAYM3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:29:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C32EED1;
+        Mon, 25 Jan 2021 03:31:40 -0800 (PST)
+Received: from [10.37.8.33] (unknown [10.37.8.33])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25E963F66E;
+        Mon, 25 Jan 2021 03:31:38 -0800 (PST)
+Subject: Re: [PATCH] kasan: export kasan_poison
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Dmitry Vyukov <dvyukov@google.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: endpoint: Select configfs dependency
-Date:   Mon, 25 Jan 2021 12:34:39 +0100
-Message-Id: <20210125113445.2341590-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+References: <20210125112831.2156212-1-arnd@kernel.org>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <d15786d7-b7cd-86ae-adac-5a581e683be1@arm.com>
+Date:   Mon, 25 Jan 2021 11:35:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125112831.2156212-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-The newly added pci-epf-ntb driver uses configfs, which
-causes a link failure when that is disabled at compile-time:
 
-arm-linux-gnueabi-ld: drivers/pci/endpoint/functions/pci-epf-ntb.o: in function `epf_ntb_add_cfs':
-pci-epf-ntb.c:(.text+0x954): undefined reference to `config_group_init_type_name'
+On 1/25/21 11:28 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The unit test module fails to build after adding a reference
+> to kasan_poison:
+> 
+> ERROR: modpost: "kasan_poison" [lib/test_kasan.ko] undefined!
+> 
+> Export this symbol to make it available to loadable modules.
+> 
+> Fixes: b9b322c2bba9 ("kasan: add match-all tag tests")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Add a 'select' statement to Kconfig to ensure it's always there,
-which is the common way to enable it for other configfs users.
+Thanks I just stumbled on the same issue ;)
 
-Fixes: 7dc64244f9e9 ("PCI: endpoint: Add EP function driver to provide NTB functionality")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/pci/endpoint/functions/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-diff --git a/drivers/pci/endpoint/functions/Kconfig b/drivers/pci/endpoint/functions/Kconfig
-index 24bfb2af65a1..5d35fcd613ef 100644
---- a/drivers/pci/endpoint/functions/Kconfig
-+++ b/drivers/pci/endpoint/functions/Kconfig
-@@ -16,6 +16,7 @@ config PCI_EPF_TEST
- config PCI_EPF_NTB
- 	tristate "PCI Endpoint NTB driver"
- 	depends on PCI_ENDPOINT
-+	select CONFIGFS_FS
- 	help
- 	  Select this configuration option to enable the NTB driver
- 	  for PCI Endpoint. NTB driver implements NTB controller
+> ---
+>  mm/kasan/shadow.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index de6b3f074742..32e7a5c148e6 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -94,6 +94,7 @@ void kasan_poison(const void *address, size_t size, u8 value)
+>  
+>  	__memset(shadow_start, value, shadow_end - shadow_start);
+>  }
+> +EXPORT_SYMBOL_GPL(kasan_poison);
+>  
+>  void kasan_unpoison(const void *address, size_t size)
+>  {
+> 
+
 -- 
-2.29.2
-
+Regards,
+Vincenzo
