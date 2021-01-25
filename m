@@ -2,161 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F26C3020F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3983020F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbhAYEJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 23:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        id S1726810AbhAYEMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 23:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726677AbhAYEJp (ORCPT
+        with ESMTP id S1726571AbhAYEMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 23:09:45 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2CFC061573;
-        Sun, 24 Jan 2021 20:09:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=+IJV3bEfZ7kR0QePaso8V0y8l7olQ2am3PHLp7mjaRk=; b=P/iaNSkwB7i3Vy7vJfDCjMsweS
-        xHuL9HuKIv3j4vS9CVemwEi4aJW+VXHPhkvmHlRF0nLhZqtylwMkIlMvErBn+iAxt2UIZff+o7RGS
-        s8RtUiG/PTSJYPN8EpF/Oi2CwfXTLsdAtRowR9lwR+KNqwuZQwuF4X56t8k95/SYycRYTcIgRbNjM
-        r6fBCZITTai9e+6jxL0ICLZyfKa3JNc3SpWDixf1x32YjxUwN6lcZsTjI7Y9RDkiNxtuhzy+rImqP
-        u+bVbFOMu2aWa4kms1lmQ94LONlSnADzHivTgXjExKPRzhtQ7GkZVq1NPOH4bC9BZa9TWvQYQv5y/
-        5mmcnKJw==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l3tBR-0000iE-Pd; Mon, 25 Jan 2021 04:08:58 +0000
-Subject: Re: [External] Re: [PATCH v13 02/12] mm: hugetlb: introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-3-songmuchun@bytedance.com>
- <472a58b9-12cb-3c3-d132-13dbae5174f0@google.com>
- <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org>
-Date:   Sun, 24 Jan 2021 20:08:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Sun, 24 Jan 2021 23:12:03 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915B7C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 20:11:23 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id e15so8813516qte.9
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 20:11:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7DDOsk7Ib7jK8ckjR3tRTdrPYa8fKQRBKllgiwoBNEI=;
+        b=TShPHzOcqYsIubwlQ8PdWgRgUUWq2+yZ440xdJGJl6S5FOP2n0OrZx9Ah7uLz8635D
+         71PbsGL676qmzweRNHXSEa2O3UTFqSyx2yxqAZ7hG39frPSrQLyYR4A7ccYp1yZ5wXOJ
+         ZGslFvDb2Ke1Wf6aqhBXz18yLcFnZzB8IswKhxN+bq3RW0Hz9MK2K6za59R64LbcNZUI
+         OtTOO/m7VMJdIVy81zErD5zDYUWnFQfn8fRPp+7s2OPkaJ0o5PluNHTFBqSHWg35yezW
+         F1wOMTF21gwkecMJqrzVQHnfZqoUwoqSnorg9WgUaUsAmCLY+IWn/Blj6uR4eotDA88o
+         CgRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=7DDOsk7Ib7jK8ckjR3tRTdrPYa8fKQRBKllgiwoBNEI=;
+        b=j4Q9DdiYkZJZsq6hNlunev9BW1XNtkUewSc04079HsDKyv70cMdjReiETwDRQ7kMcH
+         TjRp8+BTk4Qfh30x3uJW1Fbb0rBLn5QXETl6yg82m7BfS4b5YMMp/psiUmSb3Jg0xq2A
+         OJkp8UtmQ+GkOBfTRvPI9ccwS4rlB1hpSyuawFLc4MwZuZb8ZOWJaCTlPvFyN/rqZkkE
+         8q+Tm5/jcPjocKp1LEeKWogat8JsX8sXqVkTGHmbDs6nRc/ENBton1FqxZ9FMEvZFvTe
+         LhqamhHxi37MHsL+mH8jR3AHVuhwRxM+sFXXzzsXwyTRZukThshTLBfcu4O1vykzTNRa
+         tIOg==
+X-Gm-Message-State: AOAM530eHv1oKx9t+evDu5V1/npF7ZkghkfBx7IWbU4AaOVs77PanZWl
+        WAaXRMCJ8Geu1UHjBYXoNQNnR+zCE6jyzA==
+X-Google-Smtp-Source: ABdhPJwaC6pshntzPnC2e7XcjW03VajqI2q8xDa5ZhgIQLWQFgKCdVYacC9koqVOKbtjL8g2CWZMlw==
+X-Received: by 2002:aed:2022:: with SMTP id 31mr7031743qta.85.1611547882282;
+        Sun, 24 Jan 2021 20:11:22 -0800 (PST)
+Received: from Gentoo ([156.146.58.37])
+        by smtp.gmail.com with ESMTPSA id k14sm6331315qtj.40.2021.01.24.20.11.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Jan 2021 20:11:21 -0800 (PST)
+Date:   Mon, 25 Jan 2021 09:41:15 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11-rc5
+Message-ID: <YA5E44s1zl4aCD6x@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com>
+ <20210125034819.GA163132@roeck-us.net>
+ <YA5Be9sL4NUs4thi@Gentoo>
+ <b975e215-0dd1-65fe-be51-c7c8c7b6571a@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uqY6bDK8g+sYR45M"
+Content-Disposition: inline
+In-Reply-To: <b975e215-0dd1-65fe-be51-c7c8c7b6571a@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/24/21 8:06 PM, Muchun Song wrote:
-> On Mon, Jan 25, 2021 at 7:58 AM David Rientjes <rientjes@google.com> wrote:
+
+--uqY6bDK8g+sYR45M
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 20:06 Sun 24 Jan 2021, Guenter Roeck wrote:
+>On 1/24/21 7:56 PM, Bhaskar Chowdhury wrote:
+>> On 19:48 Sun 24 Jan 2021, Guenter Roeck wrote:
+>>> On Sun, Jan 24, 2021 at 05:06:40PM -0800, Linus Torvalds wrote:
+>>>> So this rc looked fairly calm and small, all the way up until today.
+>>>>
+>>>> In fact, over 40% of the non-merge commits came in today, as people
+>>>> unloaded their work for the week on me. The end result is a slightly
+>>>> larger than usual rc5 (but both 5.10 and 5.8 were bigger, so not some
+>>>> kind of odd outlier).
+>>>>
+>>>> Nothing particularly stands out. We had a couple of splice()
+>>>> regressions that came in during the previous release as part of the
+>>>> "get rid of set_fs()" development, but they were for odd cases that
+>>>> most people would never notice. I think it's just that 5.10 is now
+>>>> getting more widely deployed so people see the fallout from that
+>>>> rather fundamental change in the last release.=A0 And the only reason I
+>>>> even reacted to those is just because I ended up being involved with
+>>>> some of the tty patches during the early calm period of the past week.
+>>>> There's a few more still pending.
+>>>>
+>>>> But the bulk of it all is all the usual miscellaneous fixes all over
+>>>> the place, and a lot of it is truly trivial one- or few-liners. Just
+>>>> under half the patch is for drivers, with the rest being the usual mix
+>>>> of tooling, arch updates, filesystem and core (mm, scheduling,
+>>>> networking).
+>>>>
+>>>> Nothing here makes me go "Uhhuh" in other words.
+>>>>
+>>>
+>>> Looking pretty good now.
+>>>
+>>> Build results:
+>>> =A0=A0=A0=A0total: 153 pass: 153 fail: 0
+>>> Qemu test results:
+>>> =A0=A0=A0=A0total: 430 pass: 430 fail: 0
+>>>
+>>> Guenter
 >>
+>> Hey,
 >>
->> On Sun, 17 Jan 2021, Muchun Song wrote:
+>> Mind letting us know ,what you are running? Any automated stuff? Any spe=
+cific
+>> tool or tools?? Scripts???
 >>
->>> The HUGETLB_PAGE_FREE_VMEMMAP option is used to enable the freeing
->>> of unnecessary vmemmap associated with HugeTLB pages. The config
->>> option is introduced early so that supporting code can be written
->>> to depend on the option. The initial version of the code only
->>> provides support for x86-64.
->>>
->>> Like other code which frees vmemmap, this config option depends on
->>> HAVE_BOOTMEM_INFO_NODE. The routine register_page_bootmem_info() is
->>> used to register bootmem info. Therefore, make sure
->>> register_page_bootmem_info is enabled if HUGETLB_PAGE_FREE_VMEMMAP
->>> is defined.
->>>
->>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>> Reviewed-by: Oscar Salvador <osalvador@suse.de>
->>> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>>  arch/x86/mm/init_64.c |  2 +-
->>>  fs/Kconfig            | 18 ++++++++++++++++++
->>>  2 files changed, 19 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
->>> index 0a45f062826e..0435bee2e172 100644
->>> --- a/arch/x86/mm/init_64.c
->>> +++ b/arch/x86/mm/init_64.c
->>> @@ -1225,7 +1225,7 @@ static struct kcore_list kcore_vsyscall;
->>>
->>>  static void __init register_page_bootmem_info(void)
->>>  {
->>> -#ifdef CONFIG_NUMA
->>> +#if defined(CONFIG_NUMA) || defined(CONFIG_HUGETLB_PAGE_FREE_VMEMMAP)
->>>       int i;
->>>
->>>       for_each_online_node(i)
->>> diff --git a/fs/Kconfig b/fs/Kconfig
->>> index 976e8b9033c4..e7c4c2a79311 100644
->>> --- a/fs/Kconfig
->>> +++ b/fs/Kconfig
->>> @@ -245,6 +245,24 @@ config HUGETLBFS
->>>  config HUGETLB_PAGE
->>>       def_bool HUGETLBFS
->>>
->>> +config HUGETLB_PAGE_FREE_VMEMMAP
->>> +     def_bool HUGETLB_PAGE
+>> Bloody curious to know Guenter ...if those stuff are expose able to publ=
+ic
+>> consumption , please do provide the pointer too (I am being lazy to find=
+ it)
 >>
->> I'm not sure I understand the rationale for providing this help text if
->> this is def_bool depending on CONFIG_HUGETLB_PAGE.  Are you intending that
->> this is actually configurable and we want to provide guidance to the admin
->> on when to disable it (which it currently doesn't)?  If not, why have the
->> help text?
-> 
-> This is __not__ configurable. Seems like a comment to help others
-> understand this option. Like Randy said.
+>
+>Results:
+>	https://kerneltests.org/builders
+>Script repository:
+>	https://github.com/groeck/linux-build-test
+>
+>Guenter
+>
 
-Yes, it could be written with '#' (or "comment") comment syntax instead of as help text.
-
-thanks.
-
->>
->>> +     depends on X86_64
->>> +     depends on SPARSEMEM_VMEMMAP
->>> +     depends on HAVE_BOOTMEM_INFO_NODE
->>> +     help
->>> +       The option HUGETLB_PAGE_FREE_VMEMMAP allows for the freeing of
->>> +       some vmemmap pages associated with pre-allocated HugeTLB pages.
->>> +       For example, on X86_64 6 vmemmap pages of size 4KB each can be
->>> +       saved for each 2MB HugeTLB page.  4094 vmemmap pages of size 4KB
->>> +       each can be saved for each 1GB HugeTLB page.
->>> +
->>> +       When a HugeTLB page is allocated or freed, the vmemmap array
->>> +       representing the range associated with the page will need to be
->>> +       remapped.  When a page is allocated, vmemmap pages are freed
->>> +       after remapping.  When a page is freed, previously discarded
->>> +       vmemmap pages must be allocated before remapping.
->>> +
->>>  config MEMFD_CREATE
->>>       def_bool TMPFS || HUGETLBFS
->>>
-> 
+Thanks a bunch!
 
 
--- 
-~Randy
+--uqY6bDK8g+sYR45M
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAORNwACgkQsjqdtxFL
+KRX2qwgA0EiCwFOomd4WjP1JHT3yJQLEw+bmJ+7Ck2QTHh7fDKsxRnl0DEb7m7kC
+7ZzatId654bIMGrbjfEypisINbSwvP1QjtZbthJYsx9GPHT9iQtz13XCjcTZGEys
+hw8495pKgUcqDNIJwZa8SSzDtqkpoZoQTW2a+5Czw12aG1MsQ/iyE6cScEv9MhIz
+6C/k+C0TrAW0csbfApPMh8SxamB65PR2kYeGHlISQBfp/lIvnHhlYTVd34T7ePrz
+Hn2E/ZVx7kv/9OU+8hhtli2iwj1I7Kn8QHB9GJUD5XId2tzYI6OZeK8D+tIG77JQ
+Dt67ufANdrtHZppArCitQHp9O+DdrQ==
+=kQCP
+-----END PGP SIGNATURE-----
+
+--uqY6bDK8g+sYR45M--
