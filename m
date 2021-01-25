@@ -2,137 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63089304AA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCDD304A96
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbhAZFCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:02:11 -0500
-Received: from mga09.intel.com ([134.134.136.24]:40319 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726470AbhAYJX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:23:58 -0500
-IronPort-SDR: fL6ScXw1Hp8bLEj59EFm5bfpo8AMBoczSzdx3WYukJOdTBq+UDL3qdzL1A8LRDVXv0d2OraUJO
- FY66PbeV49MQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="179842884"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="179842884"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 01:22:00 -0800
-IronPort-SDR: A+6R6t4KFN+e7YYc+geD8CA4cFQ+E9AOnuQE+MgzQsYJHCnyIceMqXckBGSXfWBevySIvu5olx
- KSclSfI92Czg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="471989144"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 Jan 2021 01:21:57 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 25 Jan 2021 11:21:56 +0200
-Date:   Mon, 25 Jan 2021 11:21:56 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: typec: tcpm: Create legacy PDOs for PD2 connection
-Message-ID: <20210125092156.GA1720720@kuha.fi.intel.com>
-References: <20210115163311.391332-1-kyletso@google.com>
- <20210121084101.GC423216@kuha.fi.intel.com>
- <CAGZ6i=0M6=cZpfm=Eu4s4XTjwz5GPbpStNNOdjnPAkJ1y2MRRA@mail.gmail.com>
+        id S1726801AbhAZFDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:03:00 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:41605 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbhAYJZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:25:02 -0500
+Received: by mail-io1-f71.google.com with SMTP id w4so3299255iod.8
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:24:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=0Fb4rwegTwb56Mr7ykus3R8M8PDXB2O7qEzvQDOjkTc=;
+        b=hB1ciiiYJseI1Ar1yt9dZpNP/mKqCC2tBzIn8B++dQrAlUKpZbIjVong4IGwL1eM2L
+         qBp3Bv9pGyklGW4uK5RtLiQE5As4oMMQPn3ZRpolqi2bTsyEQgMSwkiZoMPGyR1OBSmh
+         HNnuS2dbkdYbF9KQ4WhwCWlT5ZewLE8w1FrXw4xYhh3eWr1E5JB8JdnBjC5c7nlFHICj
+         RY5mlC74G6DvFs2gCh0CqQlkFaRQAuwc/T4L5KBzTyrRqmgAump4dHaUN5Zs+5fUIb54
+         lp2vhn14sOW585m+4CkiqT7d6oJHrQ0XcR7TdbqDf92hSDtJlfIdvCTwmyoImplH4/cA
+         1AYg==
+X-Gm-Message-State: AOAM530k/dC2SoB0MxaQb6hIRlsSESjMmc/LZaincqU7XMnXciuQwQDx
+        kYSFLvYd+s3IibLD2aN0kbMoriEwqW/bCHHsa/H3fbt9kGKH
+X-Google-Smtp-Source: ABdhPJyENOcvDGfGuto0tBK8tVnA1dRaVnkvxurx8tif2F2+iW1IskSa66Cplsmx2RK253y3kQ0fZ1iET5wXUvaLKhtv2zMnXHrM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGZ6i=0M6=cZpfm=Eu4s4XTjwz5GPbpStNNOdjnPAkJ1y2MRRA@mail.gmail.com>
+X-Received: by 2002:a6b:6016:: with SMTP id r22mr81296iog.93.1611566657135;
+ Mon, 25 Jan 2021 01:24:17 -0800 (PST)
+Date:   Mon, 25 Jan 2021 01:24:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000216a9f05b9b61a72@google.com>
+Subject: KASAN: slab-out-of-bounds Write in hci_chan_del
+From:   syzbot <syzbot+2483a91bbbf64347d474@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Thu, Jan 21, 2021 at 05:48:46PM +0800, Kyle Tso wrote:
-> On Thu, Jan 21, 2021 at 4:41 PM Heikki Krogerus
-> <heikki.krogerus@linux.intel.com> wrote:
-> >
-> > Hi Kyle,
-> >
-> > On Sat, Jan 16, 2021 at 12:33:11AM +0800, Kyle Tso wrote:
-> > > If the port partner is PD2, the PDOs of the local port should follow the
-> > > format defined in PD2 Spec. Dynamically modify the pre-defined PD3 PDOs
-> > > and transform them into PD2 format before sending them to the PD2 port
-> > > partner.
-> >
-> > I guess it's not possible for the system to supply separate static
-> > PDOs for each PD revision?
-> >
-> We can do that for sure. But a problem is that if there are more PD
-> revisions in the future, we will need to add more PDO arrays.
-> For backward compatibility, the new revision usually uses the
-> previously-reserved bits for the new features.
-> >From my perspective, the better way to achieve the backward
-> compatibility is to just clear the bits if those are reserved in the
-> previous revision.
+syzbot found the following issue on:
 
-I was trying to think of something better for this, but I got nothing.
-I'm not completely comfortable with this, but never mind. Let's just go
-with this.
+HEAD commit:    45dfb8a5 Merge tag 'task_work-2021-01-19' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17c913b8d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=39701af622f054a9
+dashboard link: https://syzkaller.appspot.com/bug?extid=2483a91bbbf64347d474
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-> I can submit another patch which adds another PDO array for PD2 if you
-> think it is more appropriate.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Not necessary.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2483a91bbbf64347d474@syzkaller.appspotmail.com
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+==================================================================
+BUG: KASAN: slab-out-of-bounds in instrument_atomic_write include/linux/instrumented.h:86 [inline]
+BUG: KASAN: slab-out-of-bounds in set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
+BUG: KASAN: slab-out-of-bounds in hci_chan_del+0x130/0x200 net/bluetooth/hci_conn.c:1746
+Write of size 8 at addr ffff88801b8d3dc8 by task syz-executor.4/15313
 
-> > > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > > ---
-> > >  drivers/usb/typec/tcpm/tcpm.c | 62 +++++++++++++++++++++++++++++------
-> > >  include/linux/usb/pd.h        |  1 +
-> > >  2 files changed, 53 insertions(+), 10 deletions(-)
-> > >
-> > > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > > index 22a85b396f69..1220ab1ed47d 100644
-> > > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > > @@ -911,13 +911,47 @@ static int tcpm_set_pwr_role(struct tcpm_port *port, enum typec_role role)
-> > >       return 0;
-> > >  }
-> > >
-> > > +/*
-> > > + * Transform the PDO to be compliant to PD rev2.0.
-> > > + * Return 0 if the PDO type is not defined in PD rev2.0.
-> > > + * Otherwise, return the converted PDO.
-> > > + */
-> > > +static u32 tcpm_forge_legacy_pdo(struct tcpm_port *port, u32 pdo, enum typec_role role)
-> > > +{
-> > > +     switch (pdo_type(pdo)) {
-> > > +     case PDO_TYPE_FIXED:
-> > > +             if (role == TYPEC_SINK)
-> > > +                     return pdo & ~PDO_FIXED_FRS_CURR_MASK;
-> > > +             else
-> > > +                     return pdo & ~PDO_FIXED_UNCHUNK_EXT;
-> > > +     case PDO_TYPE_VAR:
-> > > +     case PDO_TYPE_BATT:
-> > > +             return pdo;
-> > > +     case PDO_TYPE_APDO:
-> > > +     default:
-> > > +             return 0;
-> > > +     }
-> > > +}
-> > > +
-> > >  static int tcpm_pd_send_source_caps(struct tcpm_port *port)
-> > >  {
-> > >       struct pd_message msg;
-> > > -     int i;
-> > > +     u32 pdo;
-> > > +     unsigned int i, nr_pdo = 0;
-> >
-> > Side note. I think this driver uses the "reverse christmas tree"
-> > style with the variables.
-> 
-> I will change the order (if there is a next version)
-> 
-> thanks,
-> Kyle
+CPU: 1 PID: 15313 Comm: syz-executor.4 Not tainted 5.11.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_write include/linux/instrumented.h:86 [inline]
+ set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
+ hci_chan_del+0x130/0x200 net/bluetooth/hci_conn.c:1746
+ l2cap_conn_del+0x478/0x7b0 net/bluetooth/l2cap_core.c:1906
+ l2cap_disconn_cfm net/bluetooth/l2cap_core.c:8167 [inline]
+ l2cap_disconn_cfm+0x98/0xd0 net/bluetooth/l2cap_core.c:8160
+ hci_disconn_cfm include/net/bluetooth/hci_core.h:1462 [inline]
+ hci_conn_hash_flush+0x127/0x260 net/bluetooth/hci_conn.c:1565
+ hci_dev_do_close+0x569/0x1110 net/bluetooth/hci_core.c:1776
+ hci_unregister_dev+0x223/0xfe0 net/bluetooth/hci_core.c:3872
+ vhci_release+0x70/0xe0 drivers/bluetooth/hci_vhci.c:340
+ __fput+0x283/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x190 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xc5c/0x2ae0 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x427/0x20f0 kernel/signal.c:2773
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e219
+Code: Unable to access opcode bytes at RIP 0x45e1ef.
+RSP: 002b:00007f8ad2dfbcf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000119bf88 RCX: 000000000045e219
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000119bf88
+RBP: 000000000119bf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffe86791b2f R14: 00007f8ad2dfc9c0 R15: 000000000119bf8c
 
--- 
-heikki
+Allocated by task 10445:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc.constprop.0+0x7f/0xa0 mm/kasan/common.c:429
+ kasan_kmalloc include/linux/kasan.h:219 [inline]
+ __do_kmalloc mm/slab.c:3659 [inline]
+ __kmalloc+0x20c/0x440 mm/slab.c:3668
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ tomoyo_get_name+0x234/0x480 security/tomoyo/memory.c:173
+ tomoyo_parse_name_union+0xbc/0x160 security/tomoyo/util.c:260
+ tomoyo_update_path_acl security/tomoyo/file.c:395 [inline]
+ tomoyo_write_file+0x4c0/0x7f0 security/tomoyo/file.c:1022
+ tomoyo_write_domain2+0x116/0x1d0 security/tomoyo/common.c:1152
+ tomoyo_add_entry security/tomoyo/common.c:2042 [inline]
+ tomoyo_supervisor+0xbc4/0xef0 security/tomoyo/common.c:2103
+ tomoyo_audit_path_log security/tomoyo/file.c:168 [inline]
+ tomoyo_path_permission security/tomoyo/file.c:587 [inline]
+ tomoyo_path_permission+0x270/0x3a0 security/tomoyo/file.c:573
+ tomoyo_path_perm+0x39e/0x400 security/tomoyo/file.c:838
+ tomoyo_path_symlink+0x94/0xe0 security/tomoyo/tomoyo.c:200
+ security_path_symlink+0xdf/0x150 security/security.c:1111
+ do_symlinkat+0x123/0x2c0 fs/namei.c:3987
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801b8d3d00
+ which belongs to the cache kmalloc-128 of size 128
+The buggy address is located 72 bytes to the right of
+ 128-byte region [ffff88801b8d3d00, ffff88801b8d3d80)
+The buggy address belongs to the page:
+page:000000005d65c789 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88801b8d3700 pfn:0x1b8d3
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea0000997a88 ffffea00008a2e48 ffff888010040400
+raw: ffff88801b8d3700 ffff88801b8d3000 000000010000000f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801b8d3c80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88801b8d3d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff88801b8d3d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                                              ^
+ ffff88801b8d3e00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff88801b8d3e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
