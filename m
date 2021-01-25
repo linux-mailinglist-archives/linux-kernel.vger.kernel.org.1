@@ -2,288 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3C830202D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46756302078
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbhAYCHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 21:07:01 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:45482 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726982AbhAYB5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 20:57:44 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210125015639epoutp016356032404c5e4af801ffcdf22e2b37e~dVui6GUmP3173531735epoutp01e
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:56:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210125015639epoutp016356032404c5e4af801ffcdf22e2b37e~dVui6GUmP3173531735epoutp01e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611539799;
-        bh=rn2uVheFCBif+lhBXMLYPUD6I7WgD/KcJtIJV7c8e1E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XfotF10AsIQ2zVmK/62CREGo5YE7P9ioKXaWXszVHPykxYTgteI3C7wleen2OID9h
-         hjqPDWsVKMZAbS4DpHUcVeoZ3Lj8qWbpsPwX0n9vAotXboezR+Z9+b5r2e0G7PxcaV
-         8t71Vz8FAU+EX2oTI4JNL6bzC0WP6FoJe51W0GuQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210125015638epcas1p283cc32bdb44680bd1a5ee7f52229ff7b~dVuiJrOor3043230432epcas1p2G;
-        Mon, 25 Jan 2021 01:56:38 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DPCdw6nY6z4x9Pw; Mon, 25 Jan
-        2021 01:56:36 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        01.A4.09577.4552E006; Mon, 25 Jan 2021 10:56:36 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210125015636epcas1p344b530317fe3379914449197ad591eff~dVugLaLaW1445114451epcas1p38;
-        Mon, 25 Jan 2021 01:56:36 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210125015636epsmtrp17237fed9547283f2764725e83c31313d~dVugHn0Io0612306123epsmtrp1y;
-        Mon, 25 Jan 2021 01:56:36 +0000 (GMT)
-X-AuditID: b6c32a39-bfdff70000002569-b0-600e25541ce0
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B8.16.13470.4552E006; Mon, 25 Jan 2021 10:56:36 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210125015635epsmtip188138917777460951e2c52a2bfe829f9~dVuf3G9lJ2076020760epsmtip1P;
-        Mon, 25 Jan 2021 01:56:35 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     ming.lei@redhat.com
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mj0123.lee@samsung.com,
-        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-Subject: Re: [PATCH v2] bio: limit bio max size
-Date:   Mon, 25 Jan 2021 10:41:10 +0900
-Message-Id: <20210125014110.16525-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210122034547.GC509982@T590>
+        id S1727074AbhAYC3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 21:29:10 -0500
+Received: from mail-dm6nam10on2086.outbound.protection.outlook.com ([40.107.93.86]:38752
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726686AbhAYBv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 20:51:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bmWl6PPiLAV8gec7yNOr6Trzl6uzrnhNyXudQyZXWkDnl0SVH+URktKjohXpA6/V0k4kf4U4qYBZ6rSAO5MXU31393Z7/b8T/5ZY0M3JaiNHr4YIeM0NJPYCi7aZnwht/MhypMC9SpbQhSoMwjzQWE4zbdQpBeHaKLJ8WfAjvck5vFuN45CW8kRJZsXKYNwhPx/KimLDoGgFLpRRhvgQRSAeqnQeLcAxqjt9iHOE0qbpl6Ont9GBwmGDiZuQWbq/4lRHIGBm96msuBpJxdr4A0dmsueJkEdDDusDtK/dr4CkkuALzW1H4V3VwRJC7HqD/7r5G6zA9bVJaHcYk0957A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jnP4zBSKTpJ9ib0L/NCRowxQZw354UwxissNoqGvghc=;
+ b=k4j1o3iGB/bNyUnhFxddhLN6xtnaMFxuN8KnGNLjkIug7MYRAC18ZRyIYhBJcpwGHRgWj9rT/zSqMWb0l+T8hWzGl2b+UJop+vIIeE4rLhkf8QAuDArGHad14bGIM1vaIjF4VkcRuhLzGcRtSK+8l0iMMq3m+egQaxal7EoN0Wv0ttEHi0mGxtqgMUDamwxTyM2uTxdrk2zggB5XgQTkPuwxjJ1GN761OG1ttFdBRWFd7cFKWVbxRh0rqUwXDk/fMi/YAWpbGP6seENPXSYoPghSrlKfH/Rg0Zgjpy3Sl7ZShIH9c5RIYus7QgBm7Y7G6Sva7B47iuSdEqIyLVTTeg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jnP4zBSKTpJ9ib0L/NCRowxQZw354UwxissNoqGvghc=;
+ b=C60jR/uE4J/EzO07GnZ9XkZTcw5HjhasPqF4vM9pVeZKKTpueEa2Bp+A422hYckc2iorc/J7Nn8KgKf7elm6qD/5zkfhszx4fsBW69v1KljR08EVEsGzRJkfm3sh2NDz5XXKXBIgehmK6ZI62lQ4u8R5uVADHafldf8mGO5tWXQ=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4226.namprd11.prod.outlook.com (2603:10b6:a03:1bf::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Mon, 25 Jan
+ 2021 01:50:38 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 01:50:38 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: =?gb2312?B?u9i4tDogu9i4tDogW1BBVENIIDMvM10ga3ZmcmVlX3JjdTogdXNlIG1pZ3Jh?=
+ =?gb2312?Q?te=5Fdisable/enable()?=
+Thread-Topic: =?gb2312?B?u9i4tDogW1BBVENIIDMvM10ga3ZmcmVlX3JjdTogdXNlIG1pZ3JhdGVfZGlz?=
+ =?gb2312?Q?able/enable()?=
+Thread-Index: AQHW70jTxon3D/CQOEadHLsdcTdvhao00RgBgAKIBACAADuklQ==
+Date:   Mon, 25 Jan 2021 01:50:38 +0000
+Message-ID: <BYAPR11MB2632939DA9FB6AC1B25FA847FFBD9@BYAPR11MB2632.namprd11.prod.outlook.com>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210120162148.1973-3-urezki@gmail.com>
+ <BYAPR11MB263252B1BD73A38DD8C0AF4EFFBF0@BYAPR11MB2632.namprd11.prod.outlook.com>,<20210124215700.GB1076@pc636>
+In-Reply-To: <20210124215700.GB1076@pc636>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: da6bc1af-a3c1-472d-777e-08d8c0d39d4b
+x-ms-traffictypediagnostic: BY5PR11MB4226:
+x-microsoft-antispam-prvs: <BY5PR11MB4226DB766108158E28FF030BFFBD0@BY5PR11MB4226.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D70MTXpBqYIkPW+ToYQfpOH1bG5XRG9QBuasdebA9iwOoQgtcvP9EnIfIl5Kb03pMbA0jl5qI4ngfRyBlgnJU3zMYCUcMhjb0ifFm4gDO15QYrwxne9VJF/wLIJFoKtwwwXpicWsHZy145TtC1+XOS5hPxY2ds5OzqkYOqihwxUzpDP4BIx0LiQFxeQWhNzTURehQRWzi9lZiN1buVJLxY4HgobHUpweceTngXRARILwnnbMYFS26MHvpXBl6p1PtBrVDwcFPyxQREC6P41MwhBnE5LTbvXZ8Ob4uI9/r5n8Nr/l1zQ2BfXlWe9DkekEd8WpwWevXZox75hAdkprQs4VE2agCW0utu/go2R6ZhSe4M6awFZ1hGnT5VufRqdFnLMeXb8yDFleOd9aG/yTCg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(39830400003)(346002)(6506007)(26005)(186003)(83380400001)(33656002)(4326008)(9686003)(55016002)(7696005)(224303003)(66556008)(66476007)(66946007)(76116006)(6916009)(7416002)(91956017)(66446008)(64756008)(86362001)(52536014)(316002)(5660300002)(2906002)(478600001)(54906003)(8936002)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?RCtGRGRhSzQ3ZU5QV2lBR0haeHdVZHd6cFE2ZWNKMEVTbHVrSmg4Ym43bU95?=
+ =?gb2312?B?QW95WDJUdi9HdE5PZnE4Z2QvUldVczlNNWRCTGxWdi93dkZOTGtoV2U1WHpU?=
+ =?gb2312?B?S29RdkNBL2t2QjQrdExPa0plSnFKOTBEYjQ4cUl0MEo0V3hJdi9Id21lTFZ0?=
+ =?gb2312?B?SnVma1ZpdUM2TXFNWXA0bnRqMnRVdXNvU0V2ZmlMenFRRDh3VnhRZ0loZjE3?=
+ =?gb2312?B?bFZhYkx2Qy9ZZnArSHBKVEQwQ1JZanUrZzRMblgvbDBqMWhFYkpERW5QejI3?=
+ =?gb2312?B?cG1RVkNDZnZEMktBQzZibVlNczdEcEtnbUJEcDA5RmluWENRQWgxZCtWMXYv?=
+ =?gb2312?B?SUFEa0V6VkU1VXh1VmVNL0FaajJ5SlF6aGtuaUpnRDYwSmlPcU5BZStzTnI5?=
+ =?gb2312?B?b1JWVjBmT1dKYUlzU2ZlZkdVeE50cE9MWjloL0VYUStJdnIvbnFlRHJvQzQx?=
+ =?gb2312?B?OHAvSUY0SVIwQW5TRU5kSkF0YTRUb3pzTlJGZTFhN1hYdGs2RE1IR2VTQVJU?=
+ =?gb2312?B?QmE3TGxLTEZZRVc3dUNQYjBXems3UWdIS1Bsb2l2cXFxMit2cWxMYitDQzBl?=
+ =?gb2312?B?M0ZNdFV3VW1kSWl0SVJmRXFwd05tUkVIWFVadWxxYVFDSEYxbFRvNlFjRTF4?=
+ =?gb2312?B?ZEljUmJva2laZHlJN3dDRUtmd1ZLQzBmdDJOZ04xU21mU3VZTnNoTXhCckdq?=
+ =?gb2312?B?ZWQrTW5RNTg3WnlCaTlLUDhYa1BySkZ4VWk5TVd3Wm5ZNlRJekZENmlJQVYy?=
+ =?gb2312?B?RkpUYjlWdmNVOVY1ZmtnU1BKTW9wOG1US2JNMFhTM1hwMUtYNHdNMkVsbEpp?=
+ =?gb2312?B?d25FMSs4U1U1Y0hDcVR4Y3hpS1VoaWhHYnp2N1VYVjdNQlhuOFgyZnhoT2Ni?=
+ =?gb2312?B?Vk5maG9xVVN0S09abDVlakZVbng5SDVjSm4wTElGdzJYdFk3MWVIejlqa215?=
+ =?gb2312?B?S3RrY0g3S2JhQzlwbHRQc3Qza1hLT21jVE5uNHh5SldiRXU0d0NQOVczL1N0?=
+ =?gb2312?B?V0NJUjJ3YUZVYnBzVHZYd2dKMStGaWlEdmlsU1FDRFVsVmJzQkxVM0xDQUVp?=
+ =?gb2312?B?cjJ0YmRJM0dzbjlBVkFsOUNaanBhWkY0aHZneTFiSDFidFUxVU9Na25RcW5C?=
+ =?gb2312?B?S0ROc0FuTW10eVMzV0phU2c2bE9zQnNCcmx4V1RuQlhJSFBrRTZLdHByMy9Z?=
+ =?gb2312?B?WUYzRzl1OCtPOFVwMVVMclVqRjJET0tTK21GaDIzQ1VFR1FMRmpSdUFrekJv?=
+ =?gb2312?B?VUdyVmw2eGo2U05JNVM3MjRvODEzYU9vNHJSMEZ4RjJhYnJEVjdqVnUzY2xX?=
+ =?gb2312?Q?HHV/usoCA+d90=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGJsWRmVeSWpSXmKPExsWy7bCmvm6IKl+CwfnrRhZzVm1jtFh9t5/N
-        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
-        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
-        bB7v911l8+jbsorR4/MmOY/2A91MARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqG
-        lhbmSgp5ibmptkouPgG6bpk5QN8oKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoM
-        DQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMvpfnWMsaDSvmPzkDHMD40q1LkZODgkBE4mXN9Yx
-        dzFycQgJ7GCUOP7hB5TziVFi2ZMudgjnG6PEulUH2GFaVn1ZCFW1l1Hiz8OlbBDOZ0aJFQ+X
-        MYJUsQnoSPS9vcUGYosIiEu0LlnFBFLELHCAWWLx/U5mkISwgL7EohVvwIpYBFQlPl7fBBTn
-        4OAVsJaYdS8YYpu8xNPe5WDlnALaEvO+zmUBsXkFBCVOznwCZjMD1TRvnQ12kYTADQ6J/Y8b
-        GSGaXSRe7L4AdbawxKvjW6BsKYmX/W3sEA3djBLNbfMZIZwJjBJLni9jgqgylvj0+TMjyEXM
-        ApoS63fpQ4QVJXb+nssIsZlP4t3XHlaQEgkBXomONiGIEhWJMy33mWF2PV+7E2qih8TtWQ/A
-        WoUE6iS+3elgmcCoMAvJP7OQ/DMLYfECRuZVjGKpBcW56anFhgWmyHG8iRGcwLUsdzBOf/tB
-        7xAjEwfjIUYJDmYlEd7dejwJQrwpiZVVqUX58UWlOanFhxhNgYE9kVlKNDkfmEPySuINTY2M
-        jY0tTMzMzUyNlcR5kwwexAsJpCeWpGanphakFsH0MXFwSjUwscVMPrViY5vgJd9Vz2b56Dzu
-        nMJQmV/+U2Vx6aJzhQnxnmIvrD6aK/xuvq9QGqX1wpxz/fpY1RPPVUu/er6b2lt0O5vZVfGC
-        KPvLkp63YSsT7A5d3OS7+9erw3PmSy7eYh6w8oDZKUt1/n/zJid68DIUc5bxbTdSSueM72LM
-        btj54P+fKYJC12+wxX99u/Dxs/eH5X/+uaeefT1f45P1moSpbk2taxzPRqfyTI7RYr7cbVnW
-        nb3bTEuyOvyT4t3TF7gluu4mtZ2tXC0q7Kvks+P628BJxets+k5OaG3Ylft3Xqrn/mhFQw0J
-        3Z2/xS9etvHSm9Nw+7uVunsD44aXXvt2/dQMzFlgMOW+yQ4PJZbijERDLeai4kQAzbSTUmkE
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJTjdElS/BoPUPu8WcVdsYLVbf7Wez
-        aG3/xmTR86SJ1eJv1z0mi68Piy323tK2uLxrDpvFocnNTBbTN89htrh2/wy7xeF7V1ksHi6Z
-        yGxx7uQnVot5jx0sfi0/ymjx/sd1dotTOyYzW6zf+5PNQdhjYvM7do+ds+6ye1w+W+qxaVUn
-        m8f7fVfZPPq2rGL0+LxJzqP9QDdTAEcUl01Kak5mWWqRvl0CV0b/q3OMBY3mFZOfnGFuYFyp
-        1sXIySEhYCKx6stC5i5GLg4hgd2MEm9/HGGGSEhJHD/xlrWLkQPIFpY4fLgYouYjo0TLh1YW
-        kBo2AR2Jvre32EBsEQFxidYlq5hAipgFrjFLNKx5AZYQFtCXWLTiDZjNIqAq8fH6JmaQobwC
-        1hKz7gVD7JKXeNq7HGwvp4C2xLyvc8HmCwloSTR8a2QFsXkFBCVOznwCFmcGqm/eOpt5AqPA
-        LCSpWUhSCxiZVjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBMeYluYOxu2rPugdYmTi
-        YDzEKMHBrCTCu1uPJ0GINyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJJanZqakFqUUw
-        WSYOTqkGJvP0uIqSpkUHF1a/urVOsadiiuq5uktGbPk5a50DT+3w2/9XPeDglpyX2y+LqK+J
-        cLv77eXnn5MXOX2I0es/q9rt++ec4qarZ6qXzTVcpOtgVnCk4tm+dVYPFIP2+/UcfW5q6Xt7
-        Wb2R+uFt+y/e/mB7dNqi3Iw/voa8/3f5d6q/Yd1xb5nCm3lC4f9/J6Sf3r3AnO/gvYlO6p7f
-        Pyk/0OUQDngjqnTp6of9IoGbGc+lT6g4VrFKnykmettOU/Gg/ORs8b5k6+sFhudy6+6bNdzY
-        vqj7607p2kWBLzepHzI2krxguaQlWfDddoe2+Kj13dLp5Zc+/3v0WMXWTuPnfacrFsbzI/pK
-        +mo9te/51SixFGckGmoxFxUnAgBDYholIAMAAA==
-X-CMS-MailID: 20210125015636epcas1p344b530317fe3379914449197ad591eff
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210125015636epcas1p344b530317fe3379914449197ad591eff
-References: <20210122034547.GC509982@T590>
-        <CGME20210125015636epcas1p344b530317fe3379914449197ad591eff@epcas1p3.samsung.com>
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: da6bc1af-a3c1-472d-777e-08d8c0d39d4b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 01:50:38.0617
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: alx8Hz5gx10BhotJE1eAMPSKcLuWCLq33oZyITRq7xtcTaKnnlT/R+bRxwymwLENDk5P6LMCLS13C8SOs5f+t5SqoQo/NQhN39X6sAlKPNI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4226
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, Jan 21, 2021 at 09:58:03AM +0900, Changheun Lee wrote:
-> > bio size can grow up to 4GB when muli-page bvec is enabled.
-> > but sometimes it would lead to inefficient behaviors.
-> > in case of large chunk direct I/O, - 32MB chunk read in user space -
-> > all pages for 32MB would be merged to a bio structure if memory address is
-> > continued phsycally. it makes some delay to submit until merge complete.
-> > bio max size should be limited as a proper size.
-> > 
-> > When 32MB chunk read with direct I/O option is coming from userspace,
-> > kernel behavior is below now. it's timeline.
-> 
-> IMO, the issue should only exist on sync direct IO and writeback.
-> Not sure if writeback cares this small delay because user data
-> has been written to page cache already.
-> 
-> Wrt. your big direct IO case, as I suggested, you may reduce the
-> submission delay a lot by applying THP.
-> 
-> Or you can just hardcode the limit in case of sync dio.
-
-As you said, this small delay is not affect in case of writeback.
-It's not common, but there are needs of direct I/O from userspace.
-It will be operated optional, not default in v3 patch version.
-And it'll be activated with queue flag, or sysfs node.
-Please, review it again.
-
-> 
-> > 
-> >  | bio merge for 32MB. total 8,192 pages are merged.
-> >  | total elapsed time is over 2ms.
-> >  |------------------ ... ----------------------->|
-> >                                                  | 8,192 pages merged a bio.
-> >                                                  | at this time, first bio submit is done.
-> >                                                  | 1 bio is split to 32 read request and issue.
-> >                                                  |--------------->
-> >                                                   |--------------->
-> >                                                    |--------------->
-> >                                                               ......
-> >                                                                    |--------------->
-> >                                                                     |--------------->|
-> >                           total 19ms elapsed to complete 32MB read done from device. |
-> > 
-> > If bio max size is limited with 1MB, behavior is changed below.
-> > 
-> >  | bio merge for 1MB. 256 pages are merged for each bio.
-> >  | total 32 bio will be made.
-> >  | total elapsed time is over 2ms. it's same.
-> >  | but, first bio submit timing is fast. about 100us.
-> >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-> >       | 256 pages merged a bio.
-> >       | at this time, first bio submit is done.
-> >       | and 1 read request is issued for 1 bio.
-> >       |--------------->
-> >            |--------------->
-> >                 |--------------->
-> >                                       ......
-> >                                                  |--------------->
-> >                                                   |--------------->|
-> >         total 17ms elapsed to complete 32MB read done from device. |
-> > 
-> > As a result, read request issue timing is faster if bio max size is limited.
-> > Current kernel behavior with multipage bvec, super large bio can be created.
-> > And it lead to delay first I/O request issue.
-> > 
-> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
-> > 
-> > ---
-> >  block/bio.c               | 17 ++++++++++++++++-
-> >  include/linux/bio.h       | 13 +++----------
-> >  include/linux/blk_types.h |  1 +
-> >  3 files changed, 20 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/block/bio.c b/block/bio.c
-> > index 1f2cc1fbe283..027503c2e2e7 100644
-> > --- a/block/bio.c
-> > +++ b/block/bio.c
-> > @@ -284,9 +284,24 @@ void bio_init(struct bio *bio, struct bio_vec *table,
-> >  
-> >  	bio->bi_io_vec = table;
-> >  	bio->bi_max_vecs = max_vecs;
-> > +	bio->bi_max_size = UINT_MAX;
-> >  }
-> >  EXPORT_SYMBOL(bio_init);
-> >  
-> > +void bio_set_dev(struct bio *bio, struct block_device *bdev)
-> > +{
-> > +	if (bio->bi_disk != bdev->bd_disk)
-> > +		bio_clear_flag(bio, BIO_THROTTLED);
-> > +
-> > +	bio->bi_disk = bdev->bd_disk;
-> > +	bio->bi_partno = bdev->bd_partno;
-> > +	bio->bi_max_size = blk_queue_get_max_sectors(bio->bi_disk->queue,
-> > +			bio_op(bio)) << SECTOR_SHIFT;
-> > +
-> > +	bio_associate_blkg(bio);
-> > +}
-> > +EXPORT_SYMBOL(bio_set_dev);
-> > +
-> >  /**
-> >   * bio_reset - reinitialize a bio
-> >   * @bio:	bio to reset
-> > @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
-> >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
-> >  
-> >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
-> > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-> > +			if (bio->bi_iter.bi_size > bio->bi_max_size - len)
-> >  				*same_page = false;
-> >  				return false;
-> >  			}
-> > diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > index 1edda614f7ce..b9803e80c259 100644
-> > --- a/include/linux/bio.h
-> > +++ b/include/linux/bio.h
-> > @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
-> >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
-> >  		return true;
-> >  
-> > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
-> > +	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
-> >  		return true;
-> >  
-> >  	return false;
-> > @@ -482,20 +482,13 @@ extern struct bio_vec *bvec_alloc(gfp_t, int, unsigned long *, mempool_t *);
-> >  extern void bvec_free(mempool_t *, struct bio_vec *, unsigned int);
-> >  extern unsigned int bvec_nr_vecs(unsigned short idx);
-> >  extern const char *bio_devname(struct bio *bio, char *buffer);
-> > -
-> > -#define bio_set_dev(bio, bdev) 			\
-> > -do {						\
-> > -	if ((bio)->bi_disk != (bdev)->bd_disk)	\
-> > -		bio_clear_flag(bio, BIO_THROTTLED);\
-> > -	(bio)->bi_disk = (bdev)->bd_disk;	\
-> > -	(bio)->bi_partno = (bdev)->bd_partno;	\
-> > -	bio_associate_blkg(bio);		\
-> > -} while (0)
-> > +extern void bio_set_dev(struct bio *bio, struct block_device *bdev);
-> >  
-> >  #define bio_copy_dev(dst, src)			\
-> >  do {						\
-> >  	(dst)->bi_disk = (src)->bi_disk;	\
-> >  	(dst)->bi_partno = (src)->bi_partno;	\
-> > +	(dst)->bi_max_size = (src)->bi_max_size;\
-> >  	bio_clone_blkg_association(dst, src);	\
-> >  } while (0)
-> >  
-> > diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> > index 866f74261b3b..e5dd5b7d8fc1 100644
-> > --- a/include/linux/blk_types.h
-> > +++ b/include/linux/blk_types.h
-> > @@ -270,6 +270,7 @@ struct bio {
-> >  	 */
-> >  
-> >  	unsigned short		bi_max_vecs;	/* max bvl_vecs we can hold */
-> > +	unsigned int		bi_max_size;	/* max data size we can hold */
-> 
-> People don't like to extend bio which can be fit in two cachelines
-> exactly, and adding one 'int' will make it cross 3 cache lines.
-> 
-
-Yes, you right. good comment.
-I'll not add a new variable in bio. :)
-
-> 
-> Thanks,
-> Ming
-> 
-> 
-
----
-Changheun Lee
-Samsung Electronics
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogVWxhZHpp
+c2xhdSBSZXpraSA8dXJlemtpQGdtYWlsLmNvbT4Kt6LLzcqxvOQ6IDIwMjHE6jHUwjI1yNUgNTo1
+NwrK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiBVbGFkemlzbGF1IFJlemtpIChTb255KTsgTEtN
+TDsgUkNVOyBQYXVsIEUgLiBNY0tlbm5leTsgTWljaGFlbCBFbGxlcm1hbjsgQW5kcmV3IE1vcnRv
+bjsgRGFuaWVsIEF4dGVuczsgRnJlZGVyaWMgV2Vpc2JlY2tlcjsgTmVlcmFqIFVwYWRoeWF5OyBK
+b2VsIEZlcm5hbmRlczsgUGV0ZXIgWmlqbHN0cmE7IE1pY2hhbCBIb2NrbzsgVGhvbWFzIEdsZWl4
+bmVyOyBUaGVvZG9yZSBZIC4gVHMnbzsgU2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvcjsgT2xla3Np
+eSBBdnJhbWNoZW5rbwrW98ziOiBSZTogu9i4tDogW1BBVENIIDMvM10ga3ZmcmVlX3JjdTogdXNl
+IG1pZ3JhdGVfZGlzYWJsZS9lbmFibGUoKQoKPkhlbGxvLCBaaGFuZy4KCj4gPl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+t6K8/sjLOiBVbGFkemlzbGF1IFJlemtp
+IChTb255KSA8dXJlemtpQGdtYWlsLmNvbT4KPiA+t6LLzcqxvOQ6IDIwMjHE6jHUwjIxyNUgMDoy
+MQo+ID7K1bz+yMs6IExLTUw7IFJDVTsgUGF1bCBFIC4gTWNLZW5uZXk7IE1pY2hhZWwgRWxsZXJt
+YW4KPiA+s63LzTogQW5kcmV3IE1vcnRvbjsgRGFuaWVsIEF4dGVuczsgRnJlZGVyaWMgV2Vpc2Jl
+Y2tlcjsgTmVlcmFqID5VcGFkaHlheTsgSm9lbCBGZXJuYW5kZXM7IFBldGVyIFppamxzdHJhOyBN
+aWNoYWwgSG9ja287IFRob21hcyA+R2xlaXhuZXI7IFRoZW9kb3JlIFkgLiBUcydvOyBTZWJhc3Rp
+YW4gQW5kcnplaiBTaWV3aW9yOyBVbGFkemlzbGF1ID5SZXpraTsgT2xla3NpeSBBdnJhbWNoZW5r
+bwo+ID7W98ziOiBbUEFUQ0ggMy8zXSBrdmZyZWVfcmN1OiB1c2UgbWlncmF0ZV9kaXNhYmxlL2Vu
+YWJsZSgpCj4gPgo+ID5TaW5jZSB0aGUgcGFnZSBpcyBvYnRhaW5lZCBpbiBhIGZ1bGx5IHByZWVt
+cHRpYmxlIGNvbnRleHQsIGRyb3BwaW5nCj4gPnRoZSBsb2NrIGNhbiBsZWFkIHRvIG1pZ3JhdGlv
+biBvbnRvIGFub3RoZXIgQ1BVLiBBcyBhIHJlc3VsdCBhIHByZXYuCj4gPmJub2RlIG9mIHRoYXQg
+Q1BVIG1heSBiZSB1bmRlcnV0aWxpc2VkLCBiZWNhdXNlIGEgZGVjaXNpb24gaGFzIGJlZW4KPiA+
+bWFkZSBmb3IgYSBDUFUgdGhhdCB3YXMgcnVuIG91dCBvZiBmcmVlIHNsb3RzIHRvIHN0b3JlIGEg
+cG9pbnRlci4KPiA+Cj4gPm1pZ3JhdGVfZGlzYWJsZS9lbmFibGUoKSBhcmUgbm93IGluZGVwZW5k
+ZW50IG9mIFJULCB1c2UgaXQgaW4gb3JkZXIKPiA+dG8gcHJldmVudCBhbnkgbWlncmF0aW9uIGR1
+cmluZyBhIHBhZ2UgcmVxdWVzdCBmb3IgYSBzcGVjaWZpYyBDUFUgaXQKPiA+aXMgcmVxdWVzdGVk
+IGZvci4KPgo+Cj4gSGVsbG8gUmV6a2kKPgo+IFRoZSBjcml0aWNhbCBtaWdyYXRlX2Rpc2FibGUv
+ZW5hYmxlKCkgYXJlYSBpcyBub3QgYWxsb3dlZCB0byBibG9jaywgdW5kZXIgUlQgYW5kIG5vbiBS
+VC4KPiBUaGVyZSBpcyBzdWNoIGEgZGVzY3JpcHRpb24gaW4gcHJlZW1wdC5oCj4KPgo+ICogTm90
+ZXMgb24gdGhlIGltcGxlbWVudGF0aW9uLgo+ICAqCj4gICogVGhlIGltcGxlbWVudGF0aW9uIGlz
+IHBhcnRpY3VsYXJseSB0cmlja3kgc2luY2UgZXhpc3RpbmcgY29kZSBwYXR0ZXJucwo+ICAqIGRp
+Y3RhdGUgbmVpdGhlciBtaWdyYXRlX2Rpc2FibGUoKSBub3IgbWlncmF0ZV9lbmFibGUoKSBpcyBh
+bGxvd2VkIHRvIGJsb2NrLgo+ICAqIFRoaXMgbWVhbnMgdGhhdCBpdCBjYW5ub3QgdXNlIGNwdXNf
+cmVhZF9sb2NrKCkgdG8gc2VyaWFsaXplIGFnYWluc3QgaG90cGx1ZywKPiAgKiBub3IgY2FuIGl0
+IGVhc2lseSBtaWdyYXRlIGl0c2VsZiBpbnRvIGEgcGVuZGluZyBhZmZpbml0eSBtYXNrIGNoYW5n
+ZSBvbgo+ICAqIG1pZ3JhdGVfZW5hYmxlKCkuCj4KPkhvdyBpIGludGVycHJldCBpdCBpcyBtaWdy
+YXRlX2VuYWJsZSgpL21pZ3JhdGVfZGlzYWJsZSgpIGFyZSBub3QgYWxsb3dlZCB0bwo+dXNlIGFu
+eSBibG9ja2luZyBwcmltaXRpdmVzLCBzdWNoIGFzIHJ3c2VtL211dGV4ZXMvZXRjLiBpbiBvcmRl
+ciB0byBtYXJrIGEKPmN1cnJlbnQgY29udGV4dCBhcyBub24tbWlncmF0YWJsZS4KPgo+dm9pZCBt
+aWdyYXRlX2Rpc2FibGUodm9pZCkKPnsKPiBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnAgPSBjdXJyZW50
+Owo+Cj4gaWYgKHAtPm1pZ3JhdGlvbl9kaXNhYmxlZCkgewo+ICBwLT5taWdyYXRpb25fZGlzYWJs
+ZWQrKzsKPiAgcmV0dXJuOwo+IH0KCj4gcHJlZW1wdF9kaXNhYmxlKCk7Cj4gdGhpc19ycSgpLT5u
+cl9waW5uZWQrKzsKPiBwLT5taWdyYXRpb25fZGlzYWJsZWQgPSAxOwo+IHByZWVtcHRfZW5hYmxl
+KCk7Cj59Cj4KPkl0IGRvZXMgbm90aGluZyB0aGF0IHByZXZlbnRzIHlvdSBmcm9tIGRvaW5nIHNj
+aGVkdWxlKCkgb3IgZXZlbiB3YWl0IGZvciBhbnkKPmV2ZW50KG11dGV4IHNsb3cgcGF0aCBiZWhh
+dmlvdXIpLCB3aGVuIHRoZSBwcm9jZXNzIGlzIHJlbW92ZWQgZnJvbSB0aGUgcnVuLXF1ZXVlLgo+
+SSBtZWFuIGFmdGVyIHRoZSBtaWdyYXRlX2Rpc2FibGUoKSBpcyBpbnZva2VkLiBPciBpIG1pc3Mg
+c29tZXRoaW5nPwoKSGVsbG8gUmV6a2kKClNvcnJ5LCB0aGVyZSdzIHNvbWV0aGluZyB3cm9uZyB3
+aXRoIHRoZSBwcmV2aW91cyBkZXNjcmlwdGlvbi4gClRoZXJlIGFyZSB0aGUgZm9sbG93aW5nIHNj
+ZW5hcmlvcwogCkR1ZSB0byBtaWdyYXRlX2Rpc2FibGUgd2lsbCBpbmNyZWFzZSBycSdzIG5yX3Bp
+bm5lZCwgYWZ0ZXIgdGhhdAppZiBnZXRfZnJlZV9wYWdlIGJlIGJsb2NrZWQsIGFuZCB0aGlzIHRp
+bWUsIENQVSBnb2luZyBvZmZsaW5lLCAgCnRoZSBzY2hlZF9jcHVfd2FpdF9lbXB0eSgpIGJlIGNh
+bGxlZCBpbiBwZXItY3B1ICJjcHVocC8lZCIgdGFzaywKYW5kIGJlIGJsb2NrZWQuCgpzY2hlZF9j
+cHVfd2FpdF9lbXB0eSgpCnsKCiAgICAgICByY3V3YWl0X3dhaXRfZXZlbnQoJnJxLT5ob3RwbHVn
+X3dhaXQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgIHJxLT5ucl9ydW5uaW5nID09IDEgJiYg
+IXJxX2hhc19waW5uZWRfdGFza3MocnEpLAogICAgICAgICAgICAgICAgICAgICAgICAgICBUQVNL
+X1VOSU5URVJSVVBUSUJMRSk7Cn0KCgoKPgo+IEhvdyBhYm91dCB0aGUgZm9sbG93aW5nIGNoYW5n
+ZXM6Cj4KPiBkaWZmIC0tZ2l0IGEva2VybmVsL3JjdS90cmVlLmMgYi9rZXJuZWwvcmN1L3RyZWUu
+Ywo+IGluZGV4IGU3YTIyNmFiZmYwZC4uMmFhMTk1MzdhYzdjIDEwMDY0NAo+IC0tLSBhL2tlcm5l
+bC9yY3UvdHJlZS5jCj4gKysrIGIva2VybmVsL3JjdS90cmVlLmMKPiBAQCAtMzQ4OCwxMiArMzQ4
+OCwxMCBAQCBhZGRfcHRyX3RvX2J1bGtfa3JjX2xvY2soc3RydWN0IGtmcmVlX3JjdV9jcHUgKipr
+cmNwLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICgqa3JjcCktPmJrdmhlYWRbaWR4XS0+bnJf
+cmVjb3JkcyA9PSBLVkZSRUVfQlVMS19NQVhfRU5UUikgewo+ICAgICAgICAgICAgICAgICBibm9k
+ZSA9IGdldF9jYWNoZWRfYm5vZGUoKmtyY3ApOwo+ICAgICAgICAgICAgICAgICBpZiAoIWJub2Rl
+ICYmIGNhbl9hbGxvYykgewo+IC0gICAgICAgICAgICAgICAgICAgICAgIG1pZ3JhdGVfZGlzYWJs
+ZSgpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIGtyY190aGlzX2NwdV91bmxvY2soKmtyY3As
+ICpmbGFncyk7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgYm5vZGUgPSAoc3RydWN0IGt2ZnJl
+ZV9yY3VfYnVsa19kYXRhICopCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBfX2dl
+dF9mcmVlX3BhZ2UoR0ZQX0tFUk5FTCB8IF9fR0ZQX1JFVFJZX01BWUZBSUwgfCBfX0dGUF9OT01F
+TUFMTE9DIHwgX19HRlBfTk9XQVJOKTsKPiAtICAgICAgICAgICAgICAgICAgICAgICAqa3JjcCA9
+IGtyY190aGlzX2NwdV9sb2NrKGZsYWdzKTsKPiAtICAgICAgICAgICAgICAgICAgICAgICBtaWdy
+YXRlX2VuYWJsZSgpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHJhd19zcGluX2xvY2tfaXJx
+c2F2ZSgmKCprcmNwKS0+bG9jaywgKmZsYWdzKTsKPgpIbS4uIFRha2luZyB0aGUgZm9ybWVyIGxv
+Y2sgY2FuIGxlYWQgdG8gYSBwb2ludGVyIGxlYWtpbmcsIGkgbWVhbiBhIENQVSBhc3NvY2lhdGVk
+CndpdGggImtyY3AiIG1pZ2h0IGdvIG9mZmxpbmUgZHVyaW5nIGEgcGFnZSByZXF1ZXN0IHByb2Nl
+c3MsIHNvIGEgcXVldWluZyBvY2N1cnMgb24Kb2ZmLWxpbmVkIENQVS4gQXBhdCBvZiB0aGF0LCBh
+Y3F1aXJpbmcgYSBmb3JtZXIgbG9jayBzdGlsbCBkb2VzIG5vdCBzb2x2ZToKCi0gQ1BVMSBpbiBw
+cm9jZXNzIG9mIHBhZ2UgYWxsb2NhdGlvbjsKLSBDUFUxIGdldHMgbWlncmF0ZWQgdG8gQ1BVMjsK
+LSBhbm90aGVyIHRhc2sgcnVubmluZyBvbiBDUFUxIGFsc28gYWxsb2NhdGUgYSBwYWdlOwotIGJv
+dGggYm5vZGVzIGFyZSBhZGRlZCB0byBrcmNwIGFzc29jaWF0ZWQgd2l0aCBDUFUxLgoKSSBhZ3Jl
+ZSB0aGF0IHN1Y2ggc2NlbmFyaW8gcHJvYmFibHkgd2lsbCBuZXZlciBoYXBwZW4gb3IgaSB3b3Vs
+ZCBzYXksIGNhbiBiZQpjb25zaWRlcmVkIGFzIGEgY29ybmVyIGNhc2UuIFdlIGNhbiBkcm9wIHRo
+ZToKCltQQVRDSCAzLzNdIGt2ZnJlZV9yY3U6IHVzZSBtaWdyYXRlX2Rpc2FibGUvZW5hYmxlKCkK
+CmFuZCBsaXZlIHdpdGg6IGFuIGFsbG9jYXRlZCBibm9kZSBjYW4gYmUgcXVldWVkIHRvIGFub3Ro
+ZXIgQ1BVLCBzbyBpdHMgcHJldi4KImJub2RlIiBjYW4gYmUgdW5kZXJ1dGlsaXplZC4gV2hhdCBp
+cyBhbHNvIGNhbiBiZSBjb25zaWRlcmVkIGFzIGEgY29ybmVyIGNhc2UuCkFjY29yZGluZyB0byBt
+eSB0ZXN0cywgaXQgaXMgaGFyZCB0byBhY2hpZXZlOgoKUnVubmluZyBrdmZyZWVfcmN1KCkgc2lt
+dWx0YW5lb3VzbHkgaW4gYSB0aWdodCBsb29wLCAxIDAwMCAwMDAgYWxsb2NhdGlvbnMvZnJlZWlu
+ZzoKCi0gNjQgQ1BVcyBhbmQgNjQgdGhyZWFkcyBzaG93ZWQgMSBtaWdyYXRpb247Ci0gNjQgQ1BV
+cyBhbmQgMTI4IHRocmVhZHMgc2hvd2VkIDAgbWlncmF0aW9uczsKLSA2NCBDUFVzIGFuZCAzMiB0
+aHJlYWRzIHNob3dlZCAwIG1pZ3JhdGlvbi4KClRob3VnaHRzPwoKVGhhbmsgeW91IGZvciB5b3Vy
+IGNvbW1lbnRzIQoKLS0KVmxhZCBSZXpraQo=
