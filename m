@@ -2,177 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B618B302980
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701103029BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731345AbhAYSDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:03:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21940 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731237AbhAYSCl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:02:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611597664;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kj8WnD/Av6xcMsQoIXxz2MAQOClQaGXeQfmUh1k3o8A=;
-        b=Mn/6NSydLK+Nmg9UCWVsdZo56Qk+HZchxM+8SCK3ywyrONNvfRvjT8sydl0biG3v4eeeqW
-        R60m8lVyfI09vLTu3ZWp5d597NHeKToFnYZ99Gv1W8Iu09wosKC4uks2EG8y1UIQJOcijH
-        2sYrcuOY5VoYGEQWf2ESsTFkj9ihXAE=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-cBjkQqczO0CxCHdNulfyCw-1; Mon, 25 Jan 2021 13:01:02 -0500
-X-MC-Unique: cBjkQqczO0CxCHdNulfyCw-1
-Received: by mail-ed1-f72.google.com with SMTP id o8so2630963edh.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:01:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kj8WnD/Av6xcMsQoIXxz2MAQOClQaGXeQfmUh1k3o8A=;
-        b=Ume2L7+2Mb2tGluVAxq73Eyi2JdDNG9iFl6O+uVFKerxsir8JNA3Do8yToJpYleqPH
-         gh3SPKo9PPOTQM7z7q5K73xVX8YBUecicgvIcWmUq900/kaDIc1/oM4gPGosTJLyzC/K
-         p8cDAL4sQmBIcWwWCiRvAqDljcG/yzwJbJxiE/SZ5mOC6rGaWZPm1x/7XyZTqFfxPgOK
-         6oF1hOzv9My/EbExE2i/ctVeS0lOqo+grVfqoCS8A1SQr29MrkgKVLwwndn3fO4q3zBg
-         d5C7WNtxyU8Btt2rJyBHLKitRrVtgj6xN4BhMz5KEQZOaXIorMrByBXpioyGgzcJA+XF
-         QFYQ==
-X-Gm-Message-State: AOAM531AqPu0XcH2mqwTbHjj1H7stLYEYven4Mi23JwBFFSfw0pyLkMj
-        C/X6WxTHVJuG73vts2bl/ATwpW+LQAsa20Jp7KU3+EVM0s1U/dITxGSP9l+OOdOevPN+QkVZCGn
-        lMlHo4Zb2i1gbtdtGxXmt4u0XTYGy4g0nbRBgrmr08WTC/EeQJyBSNSQqblAHWNwEdkBCFk/oH1
-        a+
-X-Received: by 2002:a17:906:eca7:: with SMTP id qh7mr1097679ejb.437.1611597660753;
-        Mon, 25 Jan 2021 10:01:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxeiEgicdT3pEGVyqBj+RfipVTpizJIEG1yxBOTpx3zmJo8WRd8bAmyPonXBZuA7ck3e+VyWA==
-X-Received: by 2002:a17:906:eca7:: with SMTP id qh7mr1097662ejb.437.1611597660523;
-        Mon, 25 Jan 2021 10:01:00 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x25sm10802093edv.65.2021.01.25.10.00.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 10:00:59 -0800 (PST)
-Subject: Re: [PATCH v5 0/4] Add bus lock VM exit support
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201106090315.18606-1-chenyi.qiang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <95477feb-b92d-8f26-fc59-11bbdcc8354b@redhat.com>
-Date:   Mon, 25 Jan 2021 19:00:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1731371AbhAYSNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:13:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731260AbhAYSDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:03:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A997522583;
+        Mon, 25 Jan 2021 18:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611597782;
+        bh=XauW+yiq9PtiLTCRxGls7vBx60Zpm0LmrZUr+oXBxRo=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=iyq9f8V840omIGOnw2ZyP+t+wGGLaWsJi36buJoF3okaMAmncHZjs9AC21hcRAElb
+         yqTDVa30Jw162sTNEl3jiFgoyB5JJ9mEXIWfw9eMEENGZpBHz9npyz4RvpoayfKf21
+         Teo47zlSRs0sgrFb9dH7lyy1RIbcV0iBG3nHJ0InaCIwAEkuco4dxzgd5VUu9aEJWt
+         0gF2YTKOOPQqdQLzvuXd/PDfkbEeaiQTstPPYUsavZQ0pMoQuaDTgCsMI+Blq/a0mq
+         Ky9bPMrzekERI75Gc8ep0meyQaGuSw0GlLZlLgAPYmWY+sIvpGn0MUQ7pV8h/PJZ6b
+         gzMpXxZM7rWEw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+In-Reply-To: <20210120003154.26749-1-digetx@gmail.com>
+References: <20210120003154.26749-1-digetx@gmail.com>
+Subject: Re: (subset) [PATCH v3 0/6] Clock and reset improvements for Tegra ALSA drivers
+Message-Id: <161159774049.2212.2964424673309683521.b4-ty@kernel.org>
+Date:   Mon, 25 Jan 2021 18:02:20 +0000
 MIME-Version: 1.0
-In-Reply-To: <20201106090315.18606-1-chenyi.qiang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/20 10:03, Chenyi Qiang wrote:
-> This patch series add the support for bus lock VM exit in KVM. It is a
-> sub-feature of bus lock detection. When it is enabled by the VMM, the
-> processor generates a "Bus Lock" VM exit following execution of an
-> instruction if the processor detects that one or more bus locks were
-> caused the instruction was being executed (due to either direct access
-> by the instruction or stuffed accesses like through A/D updates).
+On Wed, 20 Jan 2021 03:31:48 +0300, Dmitry Osipenko wrote:
+> This series improves the handling of clock and reset controls of
+> NVIDA Tegra ALSA drivers. Tegra HDA and AHUB drivers aren't handling
+> resets properly, which needs to be fixed in order to unblock other patches
+> related to fixes of the reset controller driver since HDA/AHUB are bound
+> to fail once reset controller driver will be corrected. In particular ALSA
+> drivers are relying on implicit de-assertion of resets which is done by the
+> tegra-clk driver. It's not the business of the clk driver to touch resets
+> and we need to fix this because it breaks reset/clk programming sequences
+> of other Tegra drivers.
 > 
-> Bus lock VM exit will introduce a new modifier bit (bit 26) in
-> exit_reason field in VMCS which indicates bus lock VM exit is preempted
-> by a higher priority VM exit. The first patch is to apply Sean's
-> refactor for vcpu_vmx.exit_reason as a preparation patch for bus lock
-> VM exit support.
-> 
-> The second patch is the refactor for vcpu->run->flags. Bus lock VM exit
-> will introduce a new field in the flags to inform the userspace that
-> there's a bus lock detected in guest. It's also a preparation patch.
-> 
-> The third patch is the concrete enabling working for bus lock VM exit.
-> Add the support to set the capability to enable bus lock VM exit. The
-> current implementation is just exiting to userspace when handling the
-> bus lock detected in guest.
-> 
-> The detail of throttling policy in user space is still to be discussed.
-> We may enforce ratelimit on bus lock in guest, inject some sleep time,
-> or... We hope to get more ideas on this.
-> 
-> Document for Bus Lock Detection is now available at the latest "Intel
-> Architecture Instruction Set Extensions Programming Reference".
-> 
-> Document Link:
-> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
-> 
-> ---
-> 
-> Changelogs
-> 
-> v4->v5:
-> - rebase on top on v5.10-rc2
-> - add preparation patch that reset the vcpu->run->flags at the beginning
->    of the vcpu_run.(Suggested by Sean)
-> - set the KVM_RUN_BUS_LOCK for all bus lock exit to avoid checking both
->    exit_reason and run->flags
-> - add the document to introduce the new kvm capability
->    (KVM_CAP_X86_BUS_LOCK_EXIT)
-> - v4:https://lore.kernel.org/lkml/20201012033542.4696-1-chenyi.qiang@intel.com/
-> 
-> 
-> v3->v4:
-> - rebase on top of v5.9
-> - some code cleanup.
-> - v3:https://lore.kernel.org/lkml/20200910083751.26686-1-chenyi.qiang@intel.com/
-> 
-> v2->v3:
-> - use a bitmap to get/set the capability of bus lock detection. we support
->    exit and off mode currently.
-> - put the handle of exiting to userspace in vmx.c, thus no need to
->    define a shadow to track vmx->exit_reason.bus_lock_detected.
-> - remove the vcpu->stats.bus_locks since every bus lock exits to userspace.
-> - v2:https://lore.kernel.org/lkml/20200817033604.5836-1-chenyi.qiang@intel.com/
-> 
-> v1->v2:
-> - resolve Vitaly's comment to introduce the KVM_EXIT_BUS_LOCK and a
->    capability to enable it.
-> - add the support to exit to user space when handling bus locks.
-> - extend the vcpu->run->flags to indicate bus lock detected for other
->    exit reasons when exiting to user space.
-> - v1:https://lore.kernel.org/lkml/20200628085341.5107-1-chenyi.qiang@intel.com/
-> 
-> ---
-> 
-> Chenyi Qiang (3):
->    KVM: X86: Reset the vcpu->run->flags at the beginning of vcpu_run
->    KVM: VMX: Enable bus lock VM exit
->    KVM: X86: Add the Document for KVM_CAP_X86_BUS_LOCK_EXIT
-> 
-> Sean Christopherson (1):
->    KVM: VMX: Convert vcpu_vmx.exit_reason to a union
-> 
->   Documentation/virt/kvm/api.rst     |  45 ++++++++++++-
->   arch/x86/include/asm/kvm_host.h    |   7 ++
->   arch/x86/include/asm/vmx.h         |   1 +
->   arch/x86/include/asm/vmxfeatures.h |   1 +
->   arch/x86/include/uapi/asm/kvm.h    |   1 +
->   arch/x86/include/uapi/asm/vmx.h    |   4 +-
->   arch/x86/kvm/vmx/capabilities.h    |   6 ++
->   arch/x86/kvm/vmx/nested.c          |  42 +++++++-----
->   arch/x86/kvm/vmx/vmx.c             | 105 +++++++++++++++++++----------
->   arch/x86/kvm/vmx/vmx.h             |  25 ++++++-
->   arch/x86/kvm/x86.c                 |  28 +++++++-
->   include/uapi/linux/kvm.h           |   5 ++
->   12 files changed, 214 insertions(+), 56 deletions(-)
-> 
+> [...]
 
-Queued, thanks.  I have replaced KVM_RUN_BUS_LOCK with 
-KVM_RUN_X86_BUS_LOCK, though.
+Applied to
 
-Paolo
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[4/6] ASoC: tegra: ahub: Add missing resets
+      commit: 24a41a38dd2df065ee942221c2fae5e314770865
+[5/6] ASoC: tegra: ahub: Use clk_bulk helpers
+      commit: 6d8ac9b1dd2f138f4aa39008994600f561eeede8
+[6/6] ASoC: tegra: ahub: Reset hardware properly
+      commit: ed9ce1ed2239909c23d48c723c6549417c476246
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
