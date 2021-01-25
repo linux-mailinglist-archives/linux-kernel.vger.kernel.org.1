@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723EE3047DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1773047BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388942AbhAZFzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:55:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728079AbhAYM2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:28:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D462310A;
-        Mon, 25 Jan 2021 12:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611577615;
-        bh=A+0Js7aEmvCEqlxCd8cHbZodFFgw/k9Df4K9Dm9wPII=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Ib3D0YrzD1CUR5but9zvYwxIeND0+tWbU7jxbm/1mcLUF54N6XWKhH/QWeLYd14eR
-         6mm8rR+Ya5w0KhD8rluz6fxb5crom4FcSVUwf5GzyiZy1OCsUzMLR0VUJKlhtPpVCW
-         oTY15YVVMfDLujC/oOVsfC2a16GF+byZOa7nAHdgrs5XGoz2tFMtVi2c5wd1PpH5n3
-         wmUweYibZ3wHr/+RgSOhQ3dAIRIsLzdC6y60U7SvMyoK94yyaG6nReuGCrobXrmDh8
-         7M0+XvAPbLrJ1uEOkB4DPubqCwreOPyNmsnpn7euYkWRMRlj2zFmuIdbsX6aUqB5pP
-         0yd5+fM8vlDzA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] i915: Fix DRM_I915_WERROR dependencies
-Date:   Mon, 25 Jan 2021 13:26:44 +0100
-Message-Id: <20210125122650.4178417-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2389027AbhAZF5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728168AbhAYMkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:40:37 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65A6C0617AB
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 04:32:08 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id r38so2875036pgk.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 04:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ECcZXTiq168nlNhR7ZlqDDfbZIIxsXgGrmSQrRFKW1k=;
+        b=Ph4WYGn2BsoGsFlVUnxP3hj1VCYxYacseAW5OCLeblJYeuG6yu8s2kOfPKEe1xrBHP
+         Kvmuq9KxZ2+muLC0d/R5BiHA2WC5v0Hv85KR6xMMw1JqzIxHpZPr1qPOO3HsD7aSUO0T
+         BmjzqkDTnMkNb47FKaRVXulU2QoYBXcFFYeLrtVufuq3/10W2RtYZftnMiSDr+up8FOo
+         RtVIBdv1rcBVrDMYWzRMFR5jn8g/XDdBEQ94kEIlQsf1K9d0Hs3Ge+yhC/YnCm0w5RM6
+         mNhCqldAM5m+kJLkSCaadYu4ZaczmwJS3OwlJ917t55v5AkhUyPwGOMyk8eO+44Z4bBZ
+         LkXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ECcZXTiq168nlNhR7ZlqDDfbZIIxsXgGrmSQrRFKW1k=;
+        b=mNOnA53s+9haxprqIqRRE2D0OgkFMyD2kEdm/uSUyQKdxnuFGnAqDPtGRxQ2043EB0
+         u5OgCN2Ix+USFIchxGMjjdR5W1UZmavYjJ/vxupHHjDO+LI6/Pax/jl9IMA3bXHCdfUC
+         IOgL0ZzxJdN5AULlTd9PWFizNpc4snr5WYC21SL8SpnYCikF2ces7/BWIv/mMT0zdsKB
+         bn6xXx8affXqd2zHQNYJq/nLH3XRij6rw/fdUttS/pztvi4DwNHwiBQ5AARsMLQ6md9P
+         2YvkCqu2xeXsH4jnHZAppStbe3clzr75r7o9gvN09hWnvu3JTPQRUP01/IUow2COU2ya
+         lvTA==
+X-Gm-Message-State: AOAM531GlHpQbufIDJvzQRMZeflM/PVcYUMKDqU1PJMgirNbL+9rNAzW
+        cWtRvz0FIdoYkVHxR3l54tSyxvXbqP8D183Y3S9dNg==
+X-Google-Smtp-Source: ABdhPJxv7O9hvhAigWaoL82tnMBoDZgg+H4lyx4pRubFGd/QUUt0UnNO1EEo+PnyWnmbi+w8Cm1zJisMoarJUFLjK7E=
+X-Received: by 2002:a63:1f21:: with SMTP id f33mr419885pgf.31.1611577928305;
+ Mon, 25 Jan 2021 04:32:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-10-songmuchun@bytedance.com> <7550ebba-fdb5-0dc9-a517-dda56bd105d9@redhat.com>
+ <20210125120827.GA29289@linux>
+In-Reply-To: <20210125120827.GA29289@linux>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 25 Jan 2021 20:31:31 +0800
+Message-ID: <CAMZfGtWaBSA7yHD218h0p_5+9OgCveYemF6xn3cKA6SopjhjVQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 09/12] mm: hugetlb: add a kernel
+ parameter hugetlb_free_vmemmap
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Jan 25, 2021 at 8:08 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Mon, Jan 25, 2021 at 12:43:23PM +0100, David Hildenbrand wrote:
+> > > -   if (end - start < PAGES_PER_SECTION * sizeof(struct page))
+> > > +   if (is_hugetlb_free_vmemmap_enabled() ||
+> > > +       end - start < PAGES_PER_SECTION * sizeof(struct page))
+> >
+> > This looks irresponsible. You ignore any altmap, even though current
+> > altmap users (ZONE_DEVICE) will not actually result in applicable
+> > vmemmaps that huge pages could ever use.
+> >
+> > Why do you ignore the altmap completely? This has to be properly
+> > documented, but IMHO it's not even the right approach to mess with
+> > altmap here.
+>
+> The goal was not to ignore altmap but to disable PMD mapping sections
+> when the feature was enabled.
+> Shame on me I did not notice that with this, altmap will be ignored.
+>
+> Something like below maybe:
 
-CONFIG_DRM_I915_DEBUG now selects CONFIG_DRM_I915_WERROR, but fails
-to honor its dependencies:
+Yeah, Thanks a lot.
 
-WARNING: unmet direct dependencies detected for DRM_I915_WERROR
-  Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && !COMPILE_TEST [=y]
-  Selected by [m]:
-  - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && EXPERT [=y] && DRM_I915 [=m]
-
-Change the 'select' to a conditional one that doesn't trigger -Werror
-warnings for allmodconfig builds and other compile tests.
-
-Fixes: 4f86975f539d ("drm/i915: Add DEBUG_GEM to the recommended CI config")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/i915/Kconfig.debug | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/Kconfig.debug b/drivers/gpu/drm/i915/Kconfig.debug
-index be76054c01d8..97793b28d007 100644
---- a/drivers/gpu/drm/i915/Kconfig.debug
-+++ b/drivers/gpu/drm/i915/Kconfig.debug
-@@ -31,9 +31,9 @@ config DRM_I915_DEBUG
- 	select DRM_DEBUG_SELFTEST
- 	select DMABUF_SELFTESTS
- 	select SW_SYNC # signaling validation framework (igt/syncobj*)
--	select DRM_I915_WERROR
--	select DRM_I915_DEBUG_GEM
--	select DRM_I915_DEBUG_GEM_ONCE
-+	select DRM_I915_WERROR if !COMPILE_TEST
-+	select DRM_I915_DEBUG_GEM if !COMPILE_TEST
-+	select DRM_I915_DEBUG_GEM_ONCE if !COMPILE_TEST
- 	select DRM_I915_DEBUG_MMIO
- 	select DRM_I915_DEBUG_RUNTIME_PM
- 	select DRM_I915_SW_FENCE_DEBUG_OBJECTS
--- 
-2.29.2
-
+>
+> int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+>                 struct vmem_altmap *altmap)
+> {
+>         int err;
+>         bool populate_base_pages = false;
+>
+>         if ((end - start < PAGES_PER_SECTION * sizeof(struct page)) ||
+>             (is_hugetlb_free_vmemmap_enabled() && !altmap))
+>                 populate_base_pages = true;
+>
+>         if (populate_base_pages) {
+>                 err = vmemmap_populate_basepages(start, end, node, NULL);
+>         } else if (boot_cpu_has(X86_FEATURE_PSE)) {
+>         ....
+>
+>
+> >
+> > --
+> > Thanks,
+> >
+> > David / dhildenb
+> >
+> >
+>
+> --
+> Oscar Salvador
+> SUSE L3
