@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A9F30390A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17ED630392F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391240AbhAZJcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:32:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
+        id S2391313AbhAZJjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:39:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727212AbhAYSuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:50:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D9712067B;
-        Mon, 25 Jan 2021 18:49:48 +0000 (UTC)
+        id S1731094AbhAYSue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:50:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4399206FA;
+        Mon, 25 Jan 2021 18:49:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600589;
-        bh=p1zvHNvX4mBTOFr0HwcT/Szj2x4F0eoll/67TJiUa4s=;
+        s=korg; t=1611600594;
+        bh=ql/kFEkBLHLBDz/G+ZYC3wDISYxrGGwrIfVrsmmQ7DQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2QRLTk4rlRgWE5pyJYliEqfNatALrSdrmBVaak1Dzy8UY8WX2xfdMIxYV/aEaakEz
-         4Dl+zvr6cc8sro1pls9M2XDYZ/V6Dl3OSbkRaLm4bmT4bzSNoBXrpXensx4MyXRtl1
-         cpd2b4Yq+i1y5GGI2G7OOzhGroaClO88ZGXGIbxo=
+        b=sYK9yMJAPYu54j3O8j9JorTKlehUY5jjUBz7KNiwNxLizyj1g64LCKXQXblmCpwcL
+         zN0deFlZSr2OjNMH7/jzKfeZOZyEeoIghPiY3Momb3XB+Aw6vqRa3jWLkKHGXCWDxw
+         eq5MA4fskFRUEuz7VfkjfyPs2HDTqxonPCLXrPoQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 074/199] RISC-V: Fix maximum allowed phsyical memory for RV32
-Date:   Mon, 25 Jan 2021 19:38:16 +0100
-Message-Id: <20210125183219.391097351@linuxfoundation.org>
+Subject: [PATCH 5.10 075/199] x86/xen: fix nopvspin build error
+Date:   Mon, 25 Jan 2021 19:38:17 +0100
+Message-Id: <20210125183219.433270205@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,51 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atish Patra <atish.patra@wdc.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit e557793799c5a8406afb08aa170509619f7eac36 ]
+[ Upstream commit bd9dcef67ffcae2de49e319fba349df76472fd10 ]
 
-Linux kernel can only map 1GB of address space for RV32 as the page offset
-is set to 0xC0000000. The current description in the Kconfig is confusing
-as it indicates that RV32 can support 2GB of physical memory. That is
-simply not true for current kernel. In future, a 2GB split support can be
-added to allow 2GB physical address space.
+Fix build error in x86/xen/ when PARAVIRT_SPINLOCKS is not enabled.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Fixes this build error:
+
+../arch/x86/xen/smp_hvm.c: In function ‘xen_hvm_smp_init’:
+../arch/x86/xen/smp_hvm.c:77:3: error: ‘nopvspin’ undeclared (first use in this function)
+   nopvspin = true;
+
+Fixes: 3d7746bea925 ("x86/xen: Fix xen_hvm_smp_init() when vector callback not available")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/20210115191123.27572-1-rdunlap@infradead.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/Kconfig | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/x86/xen/smp_hvm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 44377fd7860e4..234a21d26f674 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -134,7 +134,7 @@ config PA_BITS
+diff --git a/arch/x86/xen/smp_hvm.c b/arch/x86/xen/smp_hvm.c
+index 056430a1080bb..6ff3c887e0b99 100644
+--- a/arch/x86/xen/smp_hvm.c
++++ b/arch/x86/xen/smp_hvm.c
+@@ -74,7 +74,9 @@ void __init xen_hvm_smp_init(void)
+ 	smp_ops.cpu_die = xen_hvm_cpu_die;
  
- config PAGE_OFFSET
- 	hex
--	default 0xC0000000 if 32BIT && MAXPHYSMEM_2GB
-+	default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
- 	default 0x80000000 if 64BIT && !MMU
- 	default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
- 	default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
-@@ -247,10 +247,12 @@ config MODULE_SECTIONS
+ 	if (!xen_have_vector_callback) {
++#ifdef CONFIG_PARAVIRT_SPINLOCKS
+ 		nopvspin = true;
++#endif
+ 		return;
+ 	}
  
- choice
- 	prompt "Maximum Physical Memory"
--	default MAXPHYSMEM_2GB if 32BIT
-+	default MAXPHYSMEM_1GB if 32BIT
- 	default MAXPHYSMEM_2GB if 64BIT && CMODEL_MEDLOW
- 	default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
- 
-+	config MAXPHYSMEM_1GB
-+		bool "1GiB"
- 	config MAXPHYSMEM_2GB
- 		bool "2GiB"
- 	config MAXPHYSMEM_128GB
 -- 
 2.27.0
 
