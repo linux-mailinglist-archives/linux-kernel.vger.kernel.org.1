@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B73303406
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BB2303400
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbhAZFMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:12:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726919AbhAYJja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:39:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CEFAC22472;
-        Mon, 25 Jan 2021 09:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611566940;
-        bh=wF0JYx7C+UwAIZY8ksPAuFgLqtbCeO/VruEju37N6uo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UVmpbLLUS17+Ue9duoUlgwPZAao35PSkhItEGsD+FSck0iLnOluYZsuOCgXE0g4wP
-         hnC+b2Znk45U2PhKkTOSc/4ceGhIqgsz6tRKk3YKakkpX4LC3bDpYNsNZEW3EsXbZA
-         pwRl84JwfoH8fc2R3mBJb8Zj75Gsf4+nt7Qi4xSQ=
-Date:   Mon, 25 Jan 2021 10:28:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Zhou Wang <wangzhou1@hisilicon.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        linux-accelerators@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-mm@kvack.org,
-        song.bao.hua@hisilicon.com, liguozhu@hisilicon.com,
-        Sihang Chen <chensihang1@hisilicon.com>
-Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
-Message-ID: <YA6PWSs8dxsHEpY+@kroah.com>
-References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
+        id S1728607AbhAZFLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:11:30 -0500
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:49535 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726874AbhAYJh0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:37:26 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 3yDIlSnCqiWRg3yDLlfekq; Mon, 25 Jan 2021 10:31:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1611567076; bh=lyAPFBaE1Bq0jra7Y6NTG5IHiOXadujAN/CxHQ1wQQ4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=vRgIN1Zn3QWtnrfSaaTy6vqsBpaIDZjDb4olGfFCXDC8I1cioJVmjgkDYrqhyjq4S
+         RmI7GwPAGGZMpVmKHkvyUNV2hl3Sdk47U21uOm0G+Qsg+6iP4VYrOoLCO45PVQ5Mhy
+         RDGuzr0dYYm7/vZe+K7BYGE1MAtjTMOHW7Vn00njRezCiMEV31zAnfCFAdku8gzjNs
+         QVlILdOb7lIbotZs4UU3TwodZdhG4fDn+hbg6gG+O+A2Ea8eFUSuT6tZg4f2pFlHGt
+         tNdy7gOinOVuFYAcAwSa2Vm/jx6yBJ8EnLx9X54UJ5WRlf8CLLWthRUnjMBNySSniG
+         EwMeleBw9fY8w==
+Subject: Re: [PATCH 2/3] media: videodev2.h: clarify
+ v4l2_pix_format_mplane.sizeimage docs when to set to zero
+To:     Helen Koike <helen.koike@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     mchehab@kernel.org, hans.verkuil@cisco.com, kernel@collabora.com,
+        linux-kernel@vger.kernel.org, tfiga@chromium.org
+References: <20210114180149.1755892-1-helen.koike@collabora.com>
+ <20210114180149.1755892-3-helen.koike@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <acae9f51-f8ca-b5f6-9af0-f0acc04e911d@xs4all.nl>
+Date:   Mon, 25 Jan 2021 10:31:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
+In-Reply-To: <20210114180149.1755892-3-helen.koike@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfMoo6eUXuuO8P7YSv4WF1BSMR/THkRGfW5U8tJJ+Kn9qZpbg15ZNXBuih0rT2YqOimyVrG1Iqc7e+Z4SHjKnF1k1+hxdlPzrrnCA89xlHa5t/NU75r58
+ /iXEePZhioTqnPeR0Es6SwLXZ6WqupllAlhH0ow5NCRdbIzs31nIoSd/jc3kZeT8N6XuZ0tmuAcLaW01yV3EMjhAFhX9GO6huTlpLGHqCDdGwc4FGQX5NTV7
+ O9pFM0Qh5h9b9trykUXAnKSpvVe6seF07ds6J19rXD9LQQgOTFgmiK8hgfJyUjCjaNQOqqK6wdY4UbR0Hxzv9Ak1G692PdJcZb3ivacCVQx8irN5dWH9bNV2
+ psLX7RQMnOVqlhQti6/e4w3uv6qoX2PizvXbQqLUvzeNuJK6G3g=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 04:34:56PM +0800, Zhou Wang wrote:
-> +static int uacce_pin_page(struct uacce_pin_container *priv,
-> +			  struct uacce_pin_address *addr)
-> +{
-> +	unsigned int flags = FOLL_FORCE | FOLL_WRITE;
-> +	unsigned long first, last, nr_pages;
-> +	struct page **pages;
-> +	struct pin_pages *p;
-> +	int ret;
-> +
-> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
-> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
-> +	nr_pages = last - first + 1;
-> +
-> +	pages = vmalloc(nr_pages * sizeof(struct page *));
-> +	if (!pages)
-> +		return -ENOMEM;
-> +
-> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +	if (!p) {
-> +		ret = -ENOMEM;
-> +		goto free;
-> +	}
-> +
-> +	ret = pin_user_pages_fast(addr->addr & PAGE_MASK, nr_pages,
-> +				  flags | FOLL_LONGTERM, pages);
-> +	if (ret != nr_pages) {
-> +		pr_err("uacce: Failed to pin page\n");
-> +		goto free_p;
-> +	}
-> +	p->first = first;
-> +	p->nr_pages = nr_pages;
-> +	p->pages = pages;
-> +
-> +	ret = xa_err(xa_store(&priv->array, p->first, p, GFP_KERNEL));
-> +	if (ret)
-> +		goto unpin_pages;
-> +
-> +	return 0;
-> +
-> +unpin_pages:
-> +	unpin_user_pages(pages, nr_pages);
-> +free_p:
-> +	kfree(p);
-> +free:
-> +	vfree(pages);
-> +	return ret;
-> +}
+On 14/01/2021 19:01, Helen Koike wrote:
+> sizeimage field should be set to zero for unused planes, even when
+> v4l2_pix_format_mplane.num_planes is smaller then the index of planes.
 
-No error checking on the memory locations or size of memory to be
-'pinned', what could ever go wrong?
+then -> than
 
-Note, this opens a huge hole in the kernel that needs to be documented
-really really really well somewhere, as it can cause very strange
-results if you do not know exactly what you are doing, which is why I am
-going to require that the mm developers sign off on this type of thing.
+> 
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> 
+> ---
+> 
+> I caught this with v4l2-compliance, which throws an error if we dirty
+> planes, even if invalid, so I would like to make it clear in the docs.
 
-And to give more context, I really don't think this is needed, but if it
-is, it should be a new syscall, not buried in an ioctl for a random
-misc driver, but the author seems to want it tied to this specific
-driver...
+What is the error? And with which driver?
 
-thanks,
+I wonder if this isn't a v4l2-compliance bug. And if we want this to be
+zeroed, then it wouldn't it be better to do that in the V4L2 core rather
+than bother drivers with this?
 
-greg k-h
+> ---
+>  include/uapi/linux/videodev2.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 79dbde3bcf8d..d9b7c9177605 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -2227,6 +2227,7 @@ struct v4l2_mpeg_vbi_fmt_ivtv {
+>   * struct v4l2_plane_pix_format - additional, per-plane format definition
+>   * @sizeimage:		maximum size in bytes required for data, for which
+>   *			this plane will be used
+> + *			Drivers should be set it zero for unused planes.
+
+This sentence is a bit garbled.
+
+You probably meant: Drivers must set this to zero for unused planes.
+
+But it makes no sense to just zero this field. I would zero the whole struct
+contents for the unused planes.
+
+>   * @bytesperline:	distance in bytes between the leftmost pixels in two
+>   *			adjacent lines
+>   */
+> 
+
+The API doesn't mention whether unused plane formats should be zeroed or not,
+but it does make sense that they are. I don't think that the userspace API
+should be changed (esp. since there are apparently already drivers that do
+not zero these unused plane formats), but it makes sense that the compliance
+test does verify this, and that the V4L2 core would zero unused plane formats.
+
+I never like it when undefined values are allowed in an API, so it makes sense
+that this is done.
+
+Regards,
+
+	Hans
