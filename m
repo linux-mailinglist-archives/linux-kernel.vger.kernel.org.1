@@ -2,76 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E782302C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD2A302C1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732286AbhAYT6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        id S1732323AbhAYT6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732022AbhAYTwV (ORCPT
+        with ESMTP id S1732170AbhAYTy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:52:21 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596ABC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:51:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Du/q5LRry+qwFWg6D6J8n4Tp2lbFgXQBONbvdq1RoxI=; b=EUbx38SULFVOZla3Li/Ps//cmQ
-        5806UI+xS1E6FYpo/85hoj4d5UK6PVShPFSRFtHVl1v+Ecch0zoA7C7XUmd36vR7ia3REBgL2wXmP
-        yYx8Fd5zRPkspFQDjvM14QS8CbOaltRhTLRNCzcY8Rv7DLCAoYhWqCikDS6y93MNPHtEIM4qxo2e9
-        svZNWKrXAgCdGM+qzdiExY6zSfuL1RIXZq2CIR4jSFa0aAmLWXT2tnMrMXF1DCCZAOhAkpQTctJXD
-        kK8uWjv3mF1hmFGeQw7hioMYEHwzksxlp7jfZT+vVt7q950JmyaCPmO6QnBFzflGRHZQwv/f12EGO
-        Rxo37hdw==;
-Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l47tf-0007C7-R3; Mon, 25 Jan 2021 19:51:36 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        linux-afs@lists.infradead.org
-Subject: [PATCH RESEND] fs: afs: delete repeated words in comments
-Date:   Mon, 25 Jan 2021 11:51:30 -0800
-Message-Id: <20210125195130.24735-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 25 Jan 2021 14:54:26 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EB9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:53:46 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id my11so280945pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UthBW/7aTeKJLkQ2gI2ILuvzKbz0dGSFoA74H4DgD7Y=;
+        b=GZzwzP8DUYjfTXLWP/nUmiRbzFuoYgCUUa7CEV0bHsQnZ6fo3XVNbKEiqz74xF/RI2
+         78oL5/yrKXKUetF3IaCfiyzdbySyPdbHJdUm1jnfjiiBhL8P4ATBORLSqwpBS70OttGE
+         fExOoES24GlJeWAAed6RnLnN7gi7chTaxqvn0ckIf3y2SbrLDJW+OCLeEbynTCYxvc/w
+         bNhpLLUzjldHOxitllIGRAR+4gxED3PfD48QnEHemekcceQ7Z3wKxgrJGQVugejPNdX1
+         ci3O+CWL9IlDLbu4EpJLd1KmyPOVWzds2a3RkNsorfioivrZAr4Z7hbldhHR4dqW8k/D
+         NdKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UthBW/7aTeKJLkQ2gI2ILuvzKbz0dGSFoA74H4DgD7Y=;
+        b=p7faeG8SHR9Q/i6omIhYh5w+tfN/FLh+dGKTV88VtQfWXyJwZ+WpXtZ6Xej1nPT5gG
+         gRcz+8l9Ym3DZtgQq2j3vPuw8S8ihEhCC+uWJvBoGuqgJ0Q3glULyAf12SUvKxINJosU
+         p0NuiMY1h3gANlv7O6q/LvKyrkFhSdUVAjRj7Csh95E804V1xSh1kj8Q+7uhjk8Q5E8Y
+         Kt8nc9Es9Hbl1rhPdavoCYIxzIFspDCo3znVm1MKf+sdDV106fyNkmtGCpy09Ir1/ibP
+         j1Xx0p99uUdVkXhMDZ1Fo6dqfwe5Lup35A5WTQNCUoZudEb4pfyqkqDiOLEADDzXO7ml
+         GpbQ==
+X-Gm-Message-State: AOAM533583LivG0XsJN8mfrYPcQEp+txCjTUXPt06+v19KpE3V8j6lg/
+        /LX9LUBPERjfYW181WDVLY2hl44CDWh0hQ==
+X-Google-Smtp-Source: ABdhPJyDSLN/cq1I5pWOjFeRUOmc6e+1xThysV13+nq1I4sH4C2tZ4DvvdmGgxaME8f6BqeBE63udw==
+X-Received: by 2002:a17:90a:e16:: with SMTP id v22mr1852642pje.73.1611604425437;
+        Mon, 25 Jan 2021 11:53:45 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id j16sm181905pjj.18.2021.01.25.11.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 11:53:44 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:53:38 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside
+ guest mode for VMX
+Message-ID: <YA8hwsL8SWzWEA0h@google.com>
+References: <20210125172044.1360661-1-pbonzini@redhat.com>
+ <YA8ZHrh9ca0lPJgk@google.com>
+ <0b90c11b-0dce-60f3-c98d-3441b418e771@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b90c11b-0dce-60f3-c98d-3441b418e771@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop duplicated words {the, consider} in comments.
+On Mon, Jan 25, 2021, Paolo Bonzini wrote:
+> On 25/01/21 20:16, Sean Christopherson wrote:
+> > >   }
+> > > +static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
+> > > +{
+> > > +	if (!nested_get_evmcs_page(vcpu))
+> > > +		return false;
+> > > +
+> > > +	if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
+> > > +		return false;
+> > nested_get_evmcs_page() will get called twice in the common case of
+> > is_guest_mode() == true.  I can't tell if that will ever be fatal, but it's
+> > definitely weird.  Maybe this?
+> > 
+> > 	if (!is_guest_mode(vcpu))
+> > 		return nested_get_evmcs_page(vcpu);
+> > 
+> > 	return nested_get_vmcs12_pages(vcpu);
+> > 
+> 
+> I wouldn't say there is a common case;
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Howells <dhowells@redhat.com>
-Cc: linux-afs@lists.infradead.org
----
- fs/afs/flock.c  |    2 +-
- fs/afs/rotate.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Eh, I would argue that it is more common to do KVM_REQ_GET_NESTED_STATE_PAGES
+with is_guest_mode() than it is with !is_guest_mode(), as the latter is valid if
+and only if eVMCS is in use.  But, I think we're only vying for internet points. :-)
 
---- linux-next-20200807.orig/fs/afs/flock.c
-+++ linux-next-20200807/fs/afs/flock.c
-@@ -152,7 +152,7 @@ static void afs_next_locker(struct afs_v
- }
- 
- /*
-- * Kill off all waiters in the the pending lock queue due to the vnode being
-+ * Kill off all waiters in the pending lock queue due to the vnode being
-  * deleted.
-  */
- static void afs_kill_lockers_enoent(struct afs_vnode *vnode)
---- linux-next-20200807.orig/fs/afs/rotate.c
-+++ linux-next-20200807/fs/afs/rotate.c
-@@ -236,7 +236,7 @@ bool afs_select_fileserver(struct afs_op
- 
- 		case VMOVED:
- 			/* The volume migrated to another server.  We consider
--			 * consider all locks and callbacks broken and request
-+			 * all locks and callbacks broken and request
- 			 * an update from the VLDB.
- 			 *
- 			 * We also limit the number of VMOVED hops we will
+> however the idea was to remove the call to nested_get_evmcs_page from
+> nested_get_vmcs12_pages, since that one is only needed after
+> KVM_GET_NESTED_STATE and not during VMLAUNCH/VMRESUME.
+
+I'm confused, this patch explicitly adds a call to nested_get_evmcs_page() in
+nested_get_vmcs12_pages().
