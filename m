@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E33303834
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F03303842
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390235AbhAZIkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:40:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
+        id S1728684AbhAZIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:43:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729159AbhAYSn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:43:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D33922D50;
-        Mon, 25 Jan 2021 18:43:38 +0000 (UTC)
+        id S1727842AbhAYSob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:44:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8CC520665;
+        Mon, 25 Jan 2021 18:43:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600219;
-        bh=PGuMs4WIllYlMcEsKh2EnKnF4jCyBPRhs34xat9Jk1g=;
+        s=korg; t=1611600224;
+        bh=MHHSEdHWWHQDTN+p6yi39+yU36kMMRKVLoHSUbGF48c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tw2/S0qJxDESqNTDHTeWqpU/EvtHmvF+Up7OjP99NFPjM02gqwDs8twrV2Nbkgymk
-         nxpYqzOc6rIeoaXZnyCzaIelteCabIVFP2Ypk/5oZKmT92TdgVy1YPe6uTPK5RJmPs
-         ej3hQb682Gxm5i+MC8+tXAgd0c3WOXTF9HjBe7mI=
+        b=iDI2zLXqK8vFEhrMxB3Bq3XPk2Ia9At8nyLuNdaeMjquJfkagtTjpmGDrkNwPj0Mf
+         aVxXsgz7VFzgxbK0vDvdBqH1JccR7TBcuQILtBUVQC9a9C2HPQ6Kl5m1PVoL8xbJgp
+         YR07cVTmtpmjcTo27VzC0HcqZZRecVBnsteMi/pI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Anthony Iliopoulos <ailiop@suse.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 18/86] ASoC: Intel: haswell: Add missing pm_ops
-Date:   Mon, 25 Jan 2021 19:39:00 +0100
-Message-Id: <20210125183201.820157667@linuxfoundation.org>
+Subject: [PATCH 5.4 20/86] dm integrity: select CRYPTO_SKCIPHER
+Date:   Mon, 25 Jan 2021 19:39:02 +0100
+Message-Id: <20210125183201.904049390@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -41,34 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Anthony Iliopoulos <ailiop@suse.com>
 
-[ Upstream commit bb224c3e3e41d940612d4cc9573289cdbd5cb8f5 ]
+[ Upstream commit f7b347acb5f6c29d9229bb64893d8b6a2c7949fb ]
 
-haswell machine board is missing pm_ops what prevents it from undergoing
-suspend-resume procedure successfully. Assign default snd_soc_pm_ops so
-this is no longer the case.
+The integrity target relies on skcipher for encryption/decryption, but
+certain kernel configurations may not enable CRYPTO_SKCIPHER, leading to
+compilation errors due to unresolved symbols. Explicitly select
+CRYPTO_SKCIPHER for DM_INTEGRITY, since it is unconditionally dependent
+on it.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20201217105401.27865-1-cezary.rojewski@intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/haswell.c | 1 +
+ drivers/md/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/haswell.c
-index 3dadf9bff796a..cf47fd9cd506b 100644
---- a/sound/soc/intel/boards/haswell.c
-+++ b/sound/soc/intel/boards/haswell.c
-@@ -206,6 +206,7 @@ static struct platform_driver haswell_audio = {
- 	.probe = haswell_audio_probe,
- 	.driver = {
- 		.name = "haswell-audio",
-+		.pm = &snd_soc_pm_ops,
- 	},
- };
- 
+diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+index aa98953f4462e..7dd6e98257c72 100644
+--- a/drivers/md/Kconfig
++++ b/drivers/md/Kconfig
+@@ -565,6 +565,7 @@ config DM_INTEGRITY
+ 	select BLK_DEV_INTEGRITY
+ 	select DM_BUFIO
+ 	select CRYPTO
++	select CRYPTO_SKCIPHER
+ 	select ASYNC_XOR
+ 	---help---
+ 	  This device-mapper target emulates a block device that has
 -- 
 2.27.0
 
