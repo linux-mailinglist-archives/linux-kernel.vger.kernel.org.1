@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F20B3027CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF683027D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730723AbhAYQ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:26:40 -0500
-Received: from mail-oo1-f42.google.com ([209.85.161.42]:39147 "EHLO
-        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730770AbhAYQ0D (ORCPT
+        id S1729816AbhAYQa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:30:27 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:40118 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729993AbhAYQ1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:26:03 -0500
-Received: by mail-oo1-f42.google.com with SMTP id z36so1463211ooi.6;
-        Mon, 25 Jan 2021 08:25:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eFwTq+OScXIcVonxGOjBlHjUqwMYEvu6XWhum3jN8NI=;
-        b=CL7M/oUzUcl5VtJNC1eEZNqlaTiTMo25p60mGtRGfBkTI4YgONPaJehJWyXipQ4Wh3
-         HmlGnnu6Cq/wSBkKrTnr+Kb8XSlkwANRR/H14shTP2lnz571+KV4zPcZTGam+YdY2ULj
-         4tJ5r14ODIRv4O1MwltyFZxfSFVwFyt1tnsHjQKdps6xmE5RIN78sA+cwEoJhvAxcrwE
-         /A6+ihoLEI/Kg0VR4H02ezY2zB1oxAwUGIrMb2YfSnyQVtZrqUva89r6ejpjymPwghp8
-         IjKJe+mzdS0VI727P4v9rn9Dtn0BNf3yB1iEPUaM9jrNLslh4VzU5ZZul5ce5chAB4DW
-         INew==
-X-Gm-Message-State: AOAM530+Kz8jRR4xJg4YpqkdTKEiIcXMCb55BtObKSSXHZuVLQqtQhuo
-        uqel/MSI8wtOb4x+89bD7640S9II8dxjYVFxFlU=
-X-Google-Smtp-Source: ABdhPJw94FS2sVkIv7zvr5rZNd8U07Htu+OFlLA4/p6peeom+asbQeBkITEoCKvoQ4I4CyzSQUvYE2e5xtNUlRgxMmc=
-X-Received: by 2002:a4a:9873:: with SMTP id z48mr1015923ooi.44.1611591922626;
- Mon, 25 Jan 2021 08:25:22 -0800 (PST)
+        Mon, 25 Jan 2021 11:27:41 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10PGPmUH090421;
+        Mon, 25 Jan 2021 10:25:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611591948;
+        bh=w3PJZmqxxaVKfmdUeB/QsuwKCTlYxK6K5krP0sgaD9c=;
+        h=From:To:CC:Subject:Date;
+        b=Wpf7ad+uywWwqIyFsWVORyAzRBogPSeBsLbijXgnzupIL10OJHX9MEaDKOIoVFFfb
+         nHb1Ks6SEToYejDXQzxQ2ahnq3f0r3Y+VnzlqaDFSjgcrpNqRcLGzstzas9VKtTuiM
+         octFy8LVz0uL10w37aEh9lwWeVtIDZsB4WPtLoS4=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10PGPmRB111646
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Jan 2021 10:25:48 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
+ Jan 2021 10:25:48 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 25 Jan 2021 10:25:48 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10PGPhsM064422;
+        Mon, 25 Jan 2021 10:25:44 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] arm64: dts: ti: k3-j7200-main: Add support for higher speed modes in MMCSD subsystems
+Date:   Mon, 25 Jan 2021 21:55:32 +0530
+Message-ID: <20210125162532.30845-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <87blkbx1gt.fsf@gmx.net> <CAJZ5v0j86pX_a4bSLP=sobLoYhfQYV9dWL8HHf2941kXgND79g@mail.gmail.com>
- <CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com>
- <9709109.MH8tSaV5v9@kreacher> <87eej0iuf0.fsf@gmx.net> <87wnw278ds.fsf@gmx.net>
-In-Reply-To: <87wnw278ds.fsf@gmx.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 25 Jan 2021 17:25:11 +0100
-Message-ID: <CAJZ5v0ihGfW=8PRXZgLVMfwOCVJQQh=Kc+htqbYhBFvxgfYuZQ@mail.gmail.com>
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-To:     Stephen Berman <stephen.berman@gmx.net>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 2:49 PM Stephen Berman <stephen.berman@gmx.net> wrote:
->
-> On Mon, 04 Jan 2021 16:38:43 +0100 Stephen Berman <stephen.berman@gmx.net> wrote:
->
-> > On Thu, 31 Dec 2020 21:46:11 +0100 "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
-> >
-> >> ATM, I'm tempted to do something like the patch below (with the rationale
-> >> that it shouldn't be necessary to read the temperature right after updating
-> >> the trip points if polling is in use, because the next update through polling
-> >> will cause it to be read anyway and it will trigger trip point actions as
-> >> needed).
-> >>
-> >> Stephen, can you give it a go, please?
-> >
-> > On Sat, 02 Jan 2021 12:03:17 +0100 "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
-> >
-> >> There is one more way to address this, probably better: instead of checking the
-> >> temperature right away in acpi_thermal_notify(), queue that on
-> >> acpi_thermal_pm_queue
-> >> and so only if another thermal check is not pending.
-> >>
-> >> This way there will be at most one temperature check coming from
-> >> acpi_thermal_notify() queued up at any time which should prevent the
-> >> build-up of work items from taking place.
-> >>
-> >> So something like this:
-> >
-> > Thanks for the patches.  I'll try them as soon as I can.
->
-> FTR, since this is the thread I started for this bug, I've confirmed in
-> https://lore.kernel.org/lkml/87y2gi78sg.fsf@gmx.net/T/#t that the latest
-> patch fixes the bug.
+The following speed modes are now supported in J7200 SoC,
+- HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
+- UHS-I speed modes in MMCSD1 subsystem [1].
 
-OK, thanks!
+Set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1 device
+tree nodes.
 
-The patch has been applied as 5.11-rc material.
+[1] - section 12.3.6.1.1 MMCSD Features, in
+      https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf
+
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+
+performance test logs using EXT4 filesystem for eMMC HS400 speed mode,
+https://pastebin.ubuntu.com/p/JnPs8DxV58/
+
+performance test logs using EXT4 filesystem for SD SDR104 speed mode,
+https://pastebin.ubuntu.com/p/KPGzBz8YwC/
+
+Changes since v1:
+- Squashed the two patches into one
+- added performance logs for the above mentioned speed modes
+
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index 4cc2e9094d0e..4b3d0b5739e8 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -517,6 +517,8 @@
+ 		ti,trm-icp = <0x8>;
+ 		bus-width = <8>;
+ 		mmc-ddr-1_8v;
++		mmc-hs200-1_8v;
++		mmc-hs400-1_8v;
+ 		dma-coherent;
+ 	};
+ 
+@@ -534,7 +536,6 @@
+ 		ti,otap-del-sel-sdr50 = <0xc>;
+ 		ti,otap-del-sel-sdr104 = <0x5>;
+ 		ti,otap-del-sel-ddr50 = <0xc>;
+-		no-1-8-v;
+ 		dma-coherent;
+ 	};
+ 
+-- 
+2.17.1
+
