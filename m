@@ -2,62 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FA6304AB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E127304ABC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729920AbhAZE6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 23:58:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726305AbhAYJUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:20:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D746C061794;
-        Mon, 25 Jan 2021 00:25:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j//jmpTMMIX1qFdQL7zVyhGRSx0ek9fg+isx268q0ig=; b=o6Qe0tEoHyLc+FhqyfnvQk7R3Z
-        i7r6/HZ3NVNNSJkNE+XuQW/pekOqvJwaZskdSwSO5LoiWdvzvfnCXERRrWhE3T/MevKQZNz06AIe2
-        0w8pyIRx8rykCCTs9oQ1Cl9PC1RsY3tDVbwkDuedlbVLk4ROBY2UFfHIyNBvN88RfFvId868G2rgQ
-        g/Xw1jenZkNOXyL3h2yDo96cITqlov8ODmqUUoVzIYJIil+Rsx8Zg6ltixJHFw1vHklVPNprdzclZ
-        EkNy9Czomc/7zgtUfjEg0KMst4wGRbX3g6pN/UGKMRQZ6/7OXeARKC2/lr9Bb6BcO0AGuMqQphzSh
-        kEeP0Y+A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l3xBu-003xca-6D; Mon, 25 Jan 2021 08:25:46 +0000
-Date:   Mon, 25 Jan 2021 08:25:42 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
+        id S1730144AbhAZE6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 23:58:55 -0500
+Received: from mga01.intel.com ([192.55.52.88]:21973 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726304AbhAYJUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:20:15 -0500
+IronPort-SDR: 6Z8pwwGR9ZByhUNj53GCp7mwzjsISPKnjUXAb171icLZhlZXZJuJbb/UK4rhfbCiAoS+WnZoRw
+ GDZ+/bmwPMIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="198459800"
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="198459800"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:26:36 -0800
+IronPort-SDR: krmTHTvV9H1Em7YztLgy8AHyHyDUYxQkj03g7g4NA78ph4D8nEIi8ocAQEiHfrfeZEd2vGIV6W
+ s89XGV2WwhSQ==
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="387239873"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:26:24 -0800
+Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
+ inject it to guest
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 2/3] blk-mq: Always complete remote completions requests
- in softirq
-Message-ID: <20210125082542.GC942655@infradead.org>
-References: <20210123201027.3262800-1-bigeasy@linutronix.de>
- <20210123201027.3262800-3-bigeasy@linutronix.de>
- <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org,
+        "Xu, Like" <like.xu@intel.com>
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-5-like.xu@linux.intel.com>
+ <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
+ <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
+ <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
+ <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
+ <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <ed5b16cb-30c7-dab7-92c3-b70ba8483d1e@linux.intel.com>
+Date:   Mon, 25 Jan 2021 16:26:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:10:16AM +0100, Hannes Reinecke wrote:
-> I don't get this.
-> This code is about _avoiding_ having to raise a softirq if the driver
-> exports more than one hardware queue.
-> So where exactly does the remote CPU case come in here?
+Hi Peter,
 
-__blk_mq_complete_request_remote is only called for the case where we
-do not completelky locally.  The case that "degrades" here is where
-the device supports multiple queues, but less than the number of CPUs,
-and we bounce the completion to another CPU.
+On 2021/1/15 22:44, Peter Zijlstra wrote:
+> On Fri, Jan 15, 2021 at 10:30:13PM +0800, Xu, Like wrote:
+> 
+>>> Are you sure? Spurious NMI/PMIs are known to happen anyway. We have far
+>>> too much code to deal with them.
+>>
+>> https://lore.kernel.org/lkml/20170628130748.GI5981@leverpostej/T/
+>>
+>> In the rr workload, the commit change "the PMI interrupts in skid region
+>> should be dropped"
+>> is reverted since some users complain that:
+>>
+>>> It seems to me that it might be reasonable to ignore the interrupt if
+>>> the purpose of the interrupt is to trigger sampling of the CPUs
+>>> register state.  But if the interrupt will trigger some other
+>>> operation, such as a signal on an fd, then there's no reason to drop
+>>> it.
+>>
+>> I assume that if the PMI drop is unacceptable, either will spurious PMI
+>> injection.
+>>
+>> I'm pretty open if you insist that we really need to do this for guest PEBS
+>> enabling.
+> 
+> That was an entirely different issue. We were dropping events on the
+> floor because they'd passed priv boundaries. So there was an actual
+> event, and we made it go away.
+> 
+> What we're talking about here is raising an PMI with BUFFER_OVF set,
+> even if the DS is empty. That should really be harmless. We'll take the
+> PMI, find there's nothing there, and do nothing.
+> 
+
+In the host and guest PEBS both enabled case,
+we'll get a crazy dmesg *bombing* about spurious PMI warning
+if we pass the host PEBS PMI "harmlessly" to the guest:
+
+[11261.502536] Uhhuh. NMI received for unknown reason 2c on CPU 36.
+[11261.502539] Do you have a strange power saving mode enabled?
+[11261.502541] Dazed and confused, but trying to continue
+
+Legacy guest users may be very confused and dissatisfied with that.
+
+I'm double checking with you if it's acceptable to take the proposal
+"disables the co-existence of guest PEBS and host PEBS" as the first
+step to upstream, and enable both host and guest PEBS in the near future.
+
+---
+thx,likexu
