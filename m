@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995F3302A06
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A786B302A04
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726351AbhAYSV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:21:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41708 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726642AbhAYSVH (ORCPT
+        id S1726688AbhAYSVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:21:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbhAYSUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:21:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611598775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H4TSNt/4SXvDlED+RMxB+tDfc6cFdU946xMQ2FUbIlY=;
-        b=iK98xf6duQc1xWgK0KME3N5qlJXYoEMkFvpoRnDgJh5fbImK+tpEDhdbfVLxHxoqqdP+3K
-        MCjhxrmLTT99XJqFmsg/GNcJVRnf/9r7dwrYkwoZ2DhmVSxajo5QqbCA76GrgWpDE6wmqH
-        +zzJC98IYFE/mArUESEl7yqqmRj2MF0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-177-MDt6SEWsP-SXDCCjfd8nlQ-1; Mon, 25 Jan 2021 13:19:31 -0500
-X-MC-Unique: MDt6SEWsP-SXDCCjfd8nlQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAE13190D341;
-        Mon, 25 Jan 2021 18:19:29 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.128])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6493E19C47;
-        Mon, 25 Jan 2021 18:19:28 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 25 Jan 2021 19:19:29 +0100 (CET)
-Date:   Mon, 25 Jan 2021 19:19:27 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     rostedt@goodmis.org, mingo@redhat.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] tracing: precise log info for kretprobe addr err
-Message-ID: <20210125181926.GA10248@redhat.com>
-References: <20210125160108.2147511-1-Jianlin.Lv@arm.com>
+        Mon, 25 Jan 2021 13:20:52 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41103C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:19:51 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id e9so130503pjj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:19:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=0c4KjDt9RqUgbcxyXAyGUkPhwWC8rpyfeee6wZQAFco=;
+        b=AqNbyr+0wl4qPhxc3CH+99Y1/W6aQeouqpdR58sNIYDkGf5WmwV5MgeLJBM+IJ1Pvc
+         dioGNRhcggbnIEy9SigRQFGl8trx8Oxl81+dLdOAiLTHheihfnqS0qNI5qKQ51G6PrWi
+         AjxiMB4vDodzkwLRjltgGxDQrHLTXzNrsIXnVtWs2KYQTZTQ3pIGDts5Yr21ui0aaIQi
+         4bSnWwkHoSrHG0JHeaBj3YOZKvkMqu3AnHvqU6KZCxOoYOENDNIxXW9TJT6Fpy/alZj4
+         lOQ5W05p4mQz8efM/bPfTOaLOcBGbqYkFi5TwVKa1jIVc91DXYFZhhGlS/2/K5IOi6+O
+         Zr0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=0c4KjDt9RqUgbcxyXAyGUkPhwWC8rpyfeee6wZQAFco=;
+        b=fV1OBvn/bSEWed2XbTgY90Gn9Om7lJd+L0IwODje2vOxOAapmWQJKO/inFEtLxbEXv
+         gFCNhC2kqB74IQMeYF9fwpx1JfCooMTDXee+WLlfrZPYbt/VVGvyFDQYaQX2sL/bmZCO
+         xRO87PnyFtdrKXXO2VRxvceOVIEN9uLCOIjxUfr6g5gL5mebpi6oVb42bCeHV+OUJWxo
+         WoSrQ9v9Z4s+kCzD+iNtBvTihqDzesjLvgX15ji4wMmmGIEXuzRo/JkTs7D5/AgAlZ2m
+         XVz9t4esfMKkbonij/z18eRXZTTa/CiILke49cLhcYJ5Cdy7O7/EQe3rQYj+4184vLVY
+         1oKw==
+X-Gm-Message-State: AOAM531qTuXZGSFEx3neFBkjE1EqYFC/f7k4+cIZOrJr+tSuWLhO88+K
+        k8VS6AaXnVqPH/cBXTZVB2kIpQ==
+X-Google-Smtp-Source: ABdhPJx4cEmVf7ft4lmXwGwBrpz2zFbNGi/QGjI/RQLigXVw/jFM6+G/RZb7dQlNfHWGfUuyCC1KTQ==
+X-Received: by 2002:a17:902:f54e:b029:de:19f9:c45f with SMTP id h14-20020a170902f54eb02900de19f9c45fmr1958100plf.48.1611598790601;
+        Mon, 25 Jan 2021 10:19:50 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id w21sm16351255pff.220.2021.01.25.10.19.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 10:19:49 -0800 (PST)
+Date:   Mon, 25 Jan 2021 10:19:48 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH net-next 2/3] net: constify page_is_pfmemalloc() argument
+ at call sites
+In-Reply-To: <20210125164612.243838-3-alobakin@pm.me>
+Message-ID: <85978330-9753-f7a-f263-7a1cfd95b851@google.com>
+References: <20210125164612.243838-1-alobakin@pm.me> <20210125164612.243838-3-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125160108.2147511-1-Jianlin.Lv@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/26, Jianlin Lv wrote:
->
-> When trying to create kretprobe with the wrong function symbol in tracefs;
-> The error is triggered in the register_trace_kprobe() and recorded as
-> FAIL_REG_PROBE issue,
->
-> Example:
->   $ cd /sys/kernel/debug/tracing
->   $ echo 'r:myprobe ERROR_SYMBOL_XXX ret=%x0' >> kprobe_events
->     bash: echo: write error: Invalid argument
->   $ cat error_log
->     [142797.347877] trace_kprobe: error: Failed to register probe event
->     Command: r:myprobe ERROR_SYMBOL_XXX ret=%x0
->                        ^
->
-> This error can be detected in the parameter parsing stage, the effect of
-> applying this patch is as follows:
->
->   $ echo 'r:myprobe ERROR_SYMBOL_XXX ret=%x0' >> kprobe_events
->     bash: echo: write error: Invalid argument
->   $ cat error_log
->     [415.89]trace_kprobe: error: Retprobe address must be an function entry
->     Command: r:myprobe ERROR_SYMBOL_XXX ret=%x0
+On Mon, 25 Jan 2021, Alexander Lobakin wrote:
 
-IOW, the "offset != 0" check removed by this patch is obviously wrong, right?
+> Constify "page" argument for page_is_pfmemalloc() users where applicable.
+> 
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  drivers/net/ethernet/hisilicon/hns3/hns3_enet.c   | 2 +-
+>  drivers/net/ethernet/intel/fm10k/fm10k_main.c     | 2 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c       | 2 +-
+>  drivers/net/ethernet/intel/iavf/iavf_txrx.c       | 2 +-
+>  drivers/net/ethernet/intel/ice/ice_txrx.c         | 2 +-
+>  drivers/net/ethernet/intel/igb/igb_main.c         | 2 +-
+>  drivers/net/ethernet/intel/igc/igc_main.c         | 2 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     | 2 +-
+>  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c   | 2 +-
+>  include/linux/skbuff.h                            | 4 ++--
+>  11 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> index 512080640cbc..0f8e962b5010 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> @@ -2800,7 +2800,7 @@ static void hns3_nic_alloc_rx_buffers(struct hns3_enet_ring *ring,
+>  	writel(i, ring->tqp->io_base + HNS3_RING_RX_RING_HEAD_REG);
+>  }
+>  
+> -static bool hns3_page_is_reusable(struct page *page)
+> +static bool hns3_page_is_reusable(const struct page *page)
+>  {
+>  	return page_to_nid(page) == numa_mem_id() &&
+>  		!page_is_pfmemalloc(page);
 
-Agreed, but...
+Hi Alexander,
 
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -830,7 +830,7 @@ static int trace_kprobe_create(int argc, const char *argv[])
->  			flags |= TPARG_FL_RETURN;
->  		if (kprobe_on_func_entry(NULL, symbol, offset))
->  			flags |= TPARG_FL_FENTRY;
-> -		if (offset && is_return && !(flags & TPARG_FL_FENTRY)) {
-> +		if (!strchr(symbol, ':') && is_return && !(flags & TPARG_FL_FENTRY)) {
-
-but why did you add the strchr(':') check instead?
-
-I was really puzzled until I found the this email from Masami:
-https://lore.kernel.org/lkml/20210120131406.5a992c1e434681750a0cd5d4@kernel.org/
-
-So I leave this to you and Masami, but perhaps you can document this check at
-least in the changelog?
-
-Oleg.
-
+All of these functions appear to be doing the same thing, would it make 
+sense to simply add this to a header file and remove all the code 
+duplication as well?
