@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E767630378A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C4830378B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbhAZHzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:55:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:51616 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727927AbhAYQvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:51:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18AD511FB;
-        Mon, 25 Jan 2021 08:50:48 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 874043F68F;
-        Mon, 25 Jan 2021 08:50:46 -0800 (PST)
-Date:   Mon, 25 Jan 2021 16:50:41 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh@kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
- builtin_platform_driver()
-Message-ID: <20210125165041.GA5979@e121166-lin.cambridge.arm.com>
-References: <20210120105246.23218-1-michael@walle.cc>
- <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
- <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
- <c3e35b90e173b15870a859fd7001a712@walle.cc>
+        id S1729403AbhAZH5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728723AbhAYQyu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:54:50 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A8BC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:54:10 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 30so9294227pgr.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:54:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=98KsfeJcSNeAq7D2e2LH4xgYP6akBDNIEzkaVdZ+rkw=;
+        b=Oo5uK1YsHdQRSpOXYXzGBJe7lmxs/p9bDTq7nTmzYXI9uNvfHic+t5VRutNPjN++q2
+         U8ZR3mhcRILkM0mwPhAulKTYGYWvlGwFLc3F+xJ21Mv17yZpr//tLixrwZatM+SytvDq
+         dPaXSFXeju/kawr/26rmzasqgx8/8szaIVHwTE0qe6T+yoowpSbYBgTqN7zucSkz/AJG
+         U5wCXO8ejI5WlYZKAm6QvX59xg8yvcmLF+BYG5XgdmJC6bVZ2+vgoNdB+fTesFsR+h/i
+         TiFEPgH/fzLAennBnxoFTvJmRIm/4zMCRn35kfGkLa4l/EKeqtg80piU6RAQIE+1Cbhp
+         Fxvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=98KsfeJcSNeAq7D2e2LH4xgYP6akBDNIEzkaVdZ+rkw=;
+        b=Pd/NAzezV+ypxCtHUjeSS0okPnHq8Dl47xHFRCN8HKhL649bfIRPz3Nh26H4qi0/Zh
+         ShkYCmeVaiTAnTF9L2AxB52nPJi6WWA9+ZEENkbUArJ6Gss9UC8S5mx0cybmjrzpSc+z
+         GREzWofPRxg/dO+eo/CHFr4+uQ9VVKCdTL6xT1bJDqGE3yQc0rzG3n3McR5B8t2/JsCO
+         8TN65lRlY2mwyXUeYCQ0m2tBmSlxgu+s7dplA+flHb6KKaAyCwqQ+OaJkigbveQOEJaQ
+         Z4NPMVOTlKBzsLL+Bf5vv+LnXcU3Cy5RWxfzLXAC+gKxhmRAZhIVb/ebs37aYCojFggb
+         Jlug==
+X-Gm-Message-State: AOAM5322a55kbLlfzjNKBuFQ7x7YAHILQ/T0T/q8ZbLceJ7/h1ah7z7J
+        VuJ5v1dihdd6DXRiM5yrCp2tVA==
+X-Google-Smtp-Source: ABdhPJww3ALlC+Iz60JCj51ZcFCuikckWRJvHg478hZXeCENQgqzuZS7QTUpTXKDAJCTuOpGwe1/XQ==
+X-Received: by 2002:a63:ef14:: with SMTP id u20mr1438952pgh.93.1611593650110;
+        Mon, 25 Jan 2021 08:54:10 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 130sm17428435pfb.92.2021.01.25.08.54.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 08:54:09 -0800 (PST)
+Date:   Mon, 25 Jan 2021 08:54:02 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Stephen Zhang <stephenzhangzsd@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
+Subject: Re: [PATCH] KVM: x86/mmu: improve robustness of some functions
+Message-ID: <YA73qq1tTLxTEGKV@google.com>
+References: <1611314323-2770-1-git-send-email-stephenzhangzsd@gmail.com>
+ <87a6sx4a0l.fsf@vitty.brq.redhat.com>
+ <99258705-ff9e-aa0c-ba58-da87df760655@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c3e35b90e173b15870a859fd7001a712@walle.cc>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <99258705-ff9e-aa0c-ba58-da87df760655@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 08:28:36PM +0100, Michael Walle wrote:
-> [RESEND, fat-fingered the buttons of my mail client and converted
-> all CCs to BCCs :(]
+On Mon, Jan 25, 2021, Paolo Bonzini wrote:
+> On 25/01/21 10:54, Vitaly Kuznetsov wrote:
+> > 
+> > What if we do something like (completely untested):
+> > 
+> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> > index bfc6389edc28..5ec15e4160b1 100644
+> > --- a/arch/x86/kvm/mmu/mmu_internal.h
+> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> > @@ -12,7 +12,7 @@
+> >  extern bool dbg;
+> >  #define pgprintk(x...) do { if (dbg) printk(x); } while (0)
+> > -#define rmap_printk(x...) do { if (dbg) printk(x); } while (0)
+> > +#define rmap_printk(fmt, args...) do { if (dbg) printk("%s: " fmt, __func__, ## args); } while (0)
+> >  #define MMU_WARN_ON(x) WARN_ON(x)
+> >  #else
+> >  #define pgprintk(x...) do { } while (0)
+> > 
+> > and eliminate the need to pass '__func__,' explicitly? We can probably
+> > do the same to pgprintk().
 > 
-> Am 2021-01-20 20:02, schrieb Saravana Kannan:
-> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
-> > > 
-> > > On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
-> > > wrote:
-> > > >
-> > > > fw_devlink will defer the probe until all suppliers are ready. We can't
-> > > > use builtin_platform_driver_probe() because it doesn't retry after probe
-> > > > deferral. Convert it to builtin_platform_driver().
-> > > 
-> > > If builtin_platform_driver_probe() doesn't work with fw_devlink, then
-> > > shouldn't it be fixed or removed?
-> > 
-> > I was actually thinking about this too. The problem with fixing
-> > builtin_platform_driver_probe() to behave like
-> > builtin_platform_driver() is that these probe functions could be
-> > marked with __init. But there are also only 20 instances of
-> > builtin_platform_driver_probe() in the kernel:
-> > $ git grep ^builtin_platform_driver_probe | wc -l
-> > 20
-> > 
-> > So it might be easier to just fix them to not use
-> > builtin_platform_driver_probe().
-> > 
-> > Michael,
-> > 
-> > Any chance you'd be willing to help me by converting all these to
-> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
-> 
-> If it just moving the probe function to the _driver struct and
-> remove the __init annotations. I could look into that.
+> Nice indeed.  Though I wonder if anybody has ever used these.
 
-Can I drop this patch then ?
+I've used the ones in pte_list_add() and __pte_list_remove().  I had to add more
+info to track down the bug I introduced, but their initial existence was helpful.
 
-Thanks,
-Lorenzo
+That being said, I definitely did not build with MMU_DEBUG defined, I simply
+changed a handful of rmap_printks to pr_warn.  Blindly enabling MMU_DEBUG
+activates far too much output to be useful.  That may not have been the case
+when the core parts of the MMU were under heavy development, but it does feel
+like the time has come to excise the bulk of the pgprintk and rmap_printk hooks.
+Ditto for mmu_audit.c.
+
+> For those that I actually needed in the past I created tracepoints instead.
+
+Ya.  There are times where I prefer using the kernel log over tracepoints, but
+it's easy enough to copy-paste the tracepoint into a pr_* when desired.
+
+I'd be ok with converting a few select rmap_printks to tracepoints, but I vote
+to completely remove the bulk of the existing code.  Tracepoints always make me
+a bit wary, it's easy to forget/overlook that the inputs to the tracepoint are
+still generated even if the tracepoint itself is disabled.  E.g. being too
+liberal with tracepoints could theoretically degrade performance.
+
+If we do yank them, I think it makes sense to git rid of mmu_audit.c in the same
+commit.  In theory, that would make it easier for someone to restore the hooks
+if they need the hooks to debug something in the future.
