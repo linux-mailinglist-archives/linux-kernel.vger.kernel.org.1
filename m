@@ -2,148 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315C13023BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F543023C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 11:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbhAYKdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 05:33:13 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51470 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbhAYKZY (ORCPT
+        id S1727535AbhAYKcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 05:32:20 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:63942 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727483AbhAYKWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:25:24 -0500
-Received: by mail-io1-f70.google.com with SMTP id y20so18251945ioy.18
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:25:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=m8wT6/GYAr4kqq+Vd6zCqDzhuX6QAA8Z8W9ZsMMjKCE=;
-        b=eCqmlE7QQujeZc+c8Z5wAJOFoCvmxeSW2lnN+Jrr/gUbyWOZszFd+i/+xH7qOgpV9a
-         3VQicXQq782lGE60GehVpKXdDsXBNPQGrkpMAonwjUu+/5TkzUafNU+YL6zlLqE9sXxH
-         EI2WS1G20mxKAxqf9hWHAf1w1JzxWTkUXsLMMx7jbIuvjJcqQiKasW+UCai/m62PtUz3
-         QAasi5fIPi9QdgTe60xOHBkJ/+AZbAv7EB0nTHBO0l9xzACHMCWZZhdevhDjdiSv0qJ2
-         6enEZ+eahHdMubb6LeU6PFOc/HCgMnd+vMkLNsaLApG/JkZuAbHmQBkK2ul6MDsgAkKD
-         t9/A==
-X-Gm-Message-State: AOAM532zWR5Qc8VgVPL3Clg2dPyYLRH/BORTu7uyqOky1BW2oXvq4ZxF
-        UybeVQ2GXZ+J3fyGMKDjTB/raf5ZlwAhDkRymQcTo6nDyTKD
-X-Google-Smtp-Source: ABdhPJweWOBaRR6+1DFNitHtqFYy1jDn+gBsR8Ey2l3LhOiuPFc+x9BnI+mWxs83IYguPYqtKj3hDzaPgfF61aAIqfwScP21KZff
+        Mon, 25 Jan 2021 05:22:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611570144; x=1643106144;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=Jaf5ap+iRlOkRyLK7k0c5JvNu7KlWsQcAxQtQYo01tc=;
+  b=aGJd+h8+0Owe0neCTCaabz+DqXWI4Ucb7djpKxWdQPVltjeztuil/anu
+   rwPIeZfGFjIYLfPxUkYY0Fz/TSayNvYHzUJ5wjjSm49Dw1PEsFJf4VOY8
+   JXvEGqJYPDLqyoTLd5SACz151TLklHSCWfSwot23Plx8E3OZR0DeG6EJV
+   wEGqks6OwcR0AsRCH6iJzF5bELjg2IIJYJFdeMfUTHVlY2gqVppjtyI2j
+   W5Ntsu54bg3UWgV5Ym2+wHWkZJxgCh0X2zUHymvq7ZUnV+90Sf6sce/UR
+   TgyTMk/JsV7OdKI1/DJVDqoBZ42qn64rs83lYorEZQ95c0Tu2n6/7uVPf
+   Q==;
+IronPort-SDR: auLMmQbeDPZdalqB8hS/UqSVzeM4BRKpKA7JIztoIeE5szefrpMWTYy6fhnnOVnieEAkNyMHmx
+ EtJhqrj92HMS6eV77nMpNNvQCM3LAykk2XUtRCrF54+xI7cZuQ6AMCg84G5Da2x9SLBB7oVHNX
+ lb7kk12CK+U0dcasoQmuXWyEc6dpqipjN16+MjWQsvdg6REE+lCoO2HovSZdNT4OVui55xjVQa
+ fBGUFr3dWDG7vXY/vvo9ig4IPuIEp2gZsUaOH65ROGcNXkaEpiKq1dLgHy67ZWAIHdclni0A2l
+ jzg=
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="107162032"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 25 Jan 2021 03:19:26 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 25 Jan 2021 03:19:26 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 25 Jan 2021 03:19:21 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH 1/3] dt-bindings: pinctrl: at91-pio4: add slew-rate
+Date:   Mon, 25 Jan 2021 12:19:12 +0200
+Message-ID: <1611569954-23279-2-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611569954-23279-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1611569954-23279-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e204:: with SMTP id z4mr3719ioc.28.1611568334421; Mon,
- 25 Jan 2021 01:52:14 -0800 (PST)
-Date:   Mon, 25 Jan 2021 01:52:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001ac5af05b9b67e2d@google.com>
-Subject: linux-next boot error: WARNING in cfg80211_register_netdevice
-From:   syzbot <syzbot+2c4a63c6480a7457eca5@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Document slew-rate DT binding for SAMA7G5.
 
-syzbot found the following issue on:
-
-HEAD commit:    59fa6a16 Add linux-next specific files for 20210125
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1647f4bf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae5f53cc82a45e0d
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c4a63c6480a7457eca5
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c4a63c6480a7457eca5@syzkaller.appspotmail.com
-
-Rounding down aligned max_sectors from 4294967295 to 4294967288
-db_root: cannot open: /etc/target
-slram: not enough parameters.
-ftl_cs: FTL header not found.
-wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
-wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
-MACsec IEEE 802.1AE
-libphy: Fixed MDIO Bus: probed
-tun: Universal TUN/TAP device driver, 1.6
-vcan: Virtual CAN interface driver
-vxcan: Virtual CAN Tunnel driver
-slcan: serial line CAN interface driver
-slcan: 10 dynamic interface channels.
-CAN device driver interface
-usbcore: registered new interface driver usb_8dev
-usbcore: registered new interface driver ems_usb
-usbcore: registered new interface driver esd_usb2
-usbcore: registered new interface driver gs_usb
-usbcore: registered new interface driver kvaser_usb
-usbcore: registered new interface driver mcba_usb
-usbcore: registered new interface driver peak_usb
-e100: Intel(R) PRO/100 Network Driver
-e100: Copyright(c) 1999-2006 Intel Corporation
-e1000: Intel(R) PRO/1000 Network Driver
-e1000: Copyright (c) 1999-2006 Intel Corporation.
-e1000e: Intel(R) PRO/1000 Network Driver
-e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-mkiss: AX.25 Multikiss, Hans Albas PE1AYX
-AX.25: 6pack driver, Revision: 0.3.0
-AX.25: bpqether driver version 004
-PPP generic driver version 2.4.2
-PPP BSD Compression module registered
-PPP Deflate Compression module registered
-PPP MPPE Compression module registered
-NET: Registered protocol family 24
-PPTP driver version 0.8.5
-SLIP: version 0.8.4-NET3.019-NEWTTY (dynamic channels, max=256) (6 bit encapsulation enabled).
-CSLIP: code copyright 1989 Regents of the University of California.
-SLIP linefill/keepalive option.
-hdlc: HDLC support module revision 1.22
-LAPB Ethernet driver version 0.02
-usbcore: registered new interface driver ath9k_htc
-usbcore: registered new interface driver carl9170
-usbcore: registered new interface driver ath6kl_usb
-usbcore: registered new interface driver ar5523
-usbcore: registered new interface driver ath10k_usb
-usbcore: registered new interface driver rndis_wlan
-mac80211_hwsim: initializing netlink
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at net/wireless/core.c:1336 cfg80211_register_netdevice+0x235/0x330 net/wireless/core.c:1336
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc4-next-20210125-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cfg80211_register_netdevice+0x235/0x330 net/wireless/core.c:1336
-Code: f9 be ff ff ff ff bf e8 05 00 00 e8 95 e8 c6 00 31 ff 41 89 c4 89 c6 e8 89 99 3b f9 45 85 e4 0f 85 73 fe ff ff e8 fb 91 3b f9 <0f> 0b e8 f4 91 3b f9 48 85 ed 0f 85 6c fe ff ff e8 e6 91 3b f9 0f
-RSP: 0000:ffffc90000c679a8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffffff8d2511bc RCX: 0000000000000000
-RDX: ffff888140758000 RSI: ffffffff88378355 RDI: 0000000000000003
-RBP: ffff88801b408bd0 R08: 0000000000000000 R09: ffffffff8cc6c227
-R10: ffffffff88378347 R11: 00000000ffff8000 R12: 0000000000000000
-R13: ffff88801b408000 R14: ffff88801b40972c R15: ffff88801b408000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000000b28e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee80211_if_add+0xfb8/0x18f0 net/mac80211/iface.c:1984
- ieee80211_register_hw+0x31dc/0x3c40 net/mac80211/main.c:1285
- mac80211_hwsim_new_radio+0x20d9/0x48d0 drivers/net/wireless/mac80211_hwsim.c:3333
- init_mac80211_hwsim+0x5d0/0x761 drivers/net/wireless/mac80211_hwsim.c:4550
- do_one_initcall+0x103/0x650 init/main.c:1226
- do_initcall_level init/main.c:1299 [inline]
- do_initcalls init/main.c:1315 [inline]
- do_basic_setup init/main.c:1335 [inline]
- kernel_init_freeable+0x605/0x689 init/main.c:1536
- kernel_init+0xd/0x1b8 init/main.c:1424
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt       | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt
+index 265015bc0603..e2b861ce16d8 100644
+--- a/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt
++++ b/Documentation/devicetree/bindings/pinctrl/atmel,at91-pio4-pinctrl.txt
+@@ -35,9 +35,11 @@ ioset settings. Use the macros from boot/dts/<soc>-pinfunc.h file to get the
+ right representation of the pin.
+ 
+ Optional properties:
+-- GENERIC_PINCONFIG: generic pinconfig options to use, bias-disable,
+-bias-pull-down, bias-pull-up, drive-open-drain, input-schmitt-enable,
+-input-debounce, output-low, output-high.
++- GENERIC_PINCONFIG: generic pinconfig options to use:
++	- bias-disable, bias-pull-down, bias-pull-up, drive-open-drain,
++	  input-schmitt-enable, input-debounce, output-low, output-high.
++	- for microchip,sama7g5-pinctrl only:
++		- slew-rate: 0 - disabled, 1 - enabled (default)
+ - atmel,drive-strength: 0 or 1 for low drive, 2 for medium drive and 3 for
+ high drive. The default value is low drive.
+ 
+-- 
+2.7.4
+
