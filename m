@@ -2,63 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCAA303648
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FF930362E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbhAZGJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:09:13 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11493 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728490AbhAYMyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:54:20 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DPTlt2PZpzjCd2;
-        Mon, 25 Jan 2021 20:32:42 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 25 Jan 2021 20:33:45 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <andreyknvl@google.com>,
-        <dvyukov@google.com>, <allen.lkml@gmail.com>,
-        <stern@rowland.harvard.edu>, <sashal@kernel.org>,
-        <gustavoars@kernel.org>, <a.darwish@linutronix.de>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] usb: core: Remove unused including <linux/version.h>
-Date:   Mon, 25 Jan 2021 20:44:48 +0800
-Message-ID: <1611578688-43256-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1729028AbhAZGDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:03:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728248AbhAYMq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:46:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE3B322AAC;
+        Mon, 25 Jan 2021 12:46:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611578774;
+        bh=ls2cUHUbFUJZ5qjE5yPv0cWaPnFNVfjXn2kCI4yqF5c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dbt1781s8CYoMRuC3iRVY6S4Q8wyRMTGTV/uVaSH7xGTA7Sq50aR1Da+j0THyPwEN
+         Lg/0vj9dgK/avaAqitMt7Qm3UQOBJe+fq8hL4781KwCvL0cW7we0f3l+LFO7hQ1MQ/
+         Z1nuF1wO4CSzefOqzW9XkBzBbo/NcEQ6DRit4gPwwM+evLGoJk5uys201GYs72UuX8
+         bOjzG5u/qjzWyf5WRdsybXJqkQ5QLrn5/8SByNFyiQ+VESNfqoNWsl04qhOXx1LKoW
+         MM8LtQuNmCYfsCfwuFq46hHJJQlDsHsCspe8R+3y+6PI7RoPQGC9mSCq4sHqy2DUT5
+         arOSNYiKNVM2A==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [RFC 2/3] drivers/base: build kunit tests without structleak plugin
+Date:   Mon, 25 Jan 2021 13:45:27 +0100
+Message-Id: <20210125124533.101339-3-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210125124533.101339-1-arnd@kernel.org>
+References: <20210125124533.101339-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following versioncheck warning:
+From: Arnd Bergmann <arnd@arndb.de>
 
-drivers/usb/core/hcd.c:14:1: unused including <linux/version.h>
+The structleak plugin causes the stack frame size to grow immensely:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+drivers/base/test/property-entry-test.c: In function 'pe_test_reference':
+drivers/base/test/property-entry-test.c:481:1: error: the frame size of 2640 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+  481 | }
+      | ^
+drivers/base/test/property-entry-test.c: In function 'pe_test_uints':
+drivers/base/test/property-entry-test.c:99:1: error: the frame size of 2592 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+
+Turn it off in this file.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/usb/core/hcd.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/base/test/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 3f03813..53bc93d 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -11,7 +11,6 @@
+diff --git a/drivers/base/test/Makefile b/drivers/base/test/Makefile
+index 3ca56367c84b..2f15fae8625f 100644
+--- a/drivers/base/test/Makefile
++++ b/drivers/base/test/Makefile
+@@ -2,3 +2,4 @@
+ obj-$(CONFIG_TEST_ASYNC_DRIVER_PROBE)	+= test_async_driver_probe.o
  
- #include <linux/bcd.h>
- #include <linux/module.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/sched/task_stack.h>
- #include <linux/slab.h>
+ obj-$(CONFIG_KUNIT_DRIVER_PE_TEST) += property-entry-test.o
++CFLAGS_REMOVE_property-entry-test.o += -fplugin-arg-structleak_plugin-byref -fplugin-arg-structleak_plugin-byref-all
 -- 
-2.6.2
+2.29.2
 
