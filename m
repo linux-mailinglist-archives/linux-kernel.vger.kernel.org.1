@@ -2,594 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF985303216
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217B43031F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729958AbhAYPe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:34:57 -0500
-Received: from mga06.intel.com ([134.134.136.31]:26833 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729850AbhAYO5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:57:22 -0500
-IronPort-SDR: 8n6TOCyf1plxhv+JHLYe3LGSKnNDct7OUDGvkyc1B8tg4rCbO3tXqiip9GTOQniHGu9g7tFtkg
- GNAHVQSmR3bQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="241272634"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="241272634"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 06:55:13 -0800
-IronPort-SDR: tQ6uYvAppjcdsH7a9dZS/9hX8d3pkUan54lN+FILvseZ9bmqjzPNgFzXiU5XHSakEo5CWs2QzC
- J3whQwPrCPeQ==
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="387412723"
-Received: from gliakhov-mobl2.ger.corp.intel.com (HELO ubuntu) ([10.249.45.174])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 06:55:11 -0800
-Date:   Mon, 25 Jan 2021 15:54:59 +0100 (CET)
-From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
-cc:     virtualization@lists.linux-foundation.org,
-        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
-        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH v2 2/9] ALSA: virtio: add virtio sound driver
-In-Reply-To: <20210124165408.1122868-3-anton.yakovlev@opensynergy.com>
-Message-ID: <8754dae8-114-6383-510-de2ba9dc4fa@intel.com>
-References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com> <20210124165408.1122868-3-anton.yakovlev@opensynergy.com>
+        id S1729148AbhAYQB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:01:28 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:48086 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730382AbhAYP5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:57:09 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10PF1YUQ029834;
+        Mon, 25 Jan 2021 16:05:32 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=iCz92iVqfHGteRU+hU/TvcxooA89t1WUlYOEoi877eE=;
+ b=e2ixu6nDXMeNFxQMc8yCSH7pB0ubJ5Cqo8V0EukSC1NytFpSTZI3hjyv8j1UCOk1H8X8
+ Wu8L/OMSjafFJ0H1yJnCKc63EdBpE2cFCWxajGuIu4Sqhvs5MfEkeGhHHzu5TrNghdvR
+ wtOvmrBHKJMA0WmtuvxHyoVp4Rch+i5R5rK7ajYoAUCc3fg++m48Bd1doQbtYhfBlfRY
+ wdV5PE3bnP47WXKLlR7nHV8tG+r8sdKt7g7ppfFxh8taxsJgC7Vx3UOaScRjHgWizuWw
+ FTgtBrP4mh4DUOQebvmx0Vc3FN0x2UKdqYXoILtxgwov+OqUvg/y6Jq9zN+C7y7g/9rF +w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 368c15k9wc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jan 2021 16:05:32 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 82DBE10002A;
+        Mon, 25 Jan 2021 16:05:31 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5AA1522B283;
+        Mon, 25 Jan 2021 16:05:31 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 16:05:30 +0100
+Subject: Re: [PATCH 2/5] ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amarula@amarulasolutions.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Francesco Utel <francesco.utel@engicam.com>,
+        Mirko Ardinghi <mirko.ardinghi@engicam.com>
+References: <20201223191402.378560-1-jagan@amarulasolutions.com>
+ <20201223191402.378560-3-jagan@amarulasolutions.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <21398844-c334-f753-0fac-144a0cdc29dc@foss.st.com>
+Date:   Mon, 25 Jan 2021 16:05:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+In-Reply-To: <20201223191402.378560-3-jagan@amarulasolutions.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-25_05:2021-01-25,2021-01-25 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anton,
+Hi,
 
-A couple of mostly cosmetic comments inline.
-
-On Sun, 24 Jan 2021, Anton Yakovlev wrote:
-
-> Introduce skeleton of the virtio sound driver. The driver implements
-> the virtio sound device specification, which has become part of the
-> virtio standard.
->
-> Initial initialization of the device, virtqueues and creation of an
-> empty ALSA sound device. Also, handling DEVICE_NEEDS_RESET device
-> status.
->
-> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+On 12/23/20 8:13 PM, Jagan Teki wrote:
+> MicroGEA STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
+> 
+> General features:
+> - STM32MP157AAC
+> - Up to 1GB DDR3L-800
+> - 512MB Nand flash
+> - I2S
+> 
+> MicroGEA STM32MP1 needs to mount on top of Engicam MicroDev carrier
+> boards for creating complete platform solutions.
+> 
+> Add support for it.
+> 
+> Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> Signed-off-by: Francesco Utel <francesco.utel@engicam.com>
+> Signed-off-by: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 > ---
-> MAINTAINERS                     |   9 +
-> include/uapi/linux/virtio_snd.h | 361 +++++++++++++++++++++++++++
-> sound/Kconfig                   |   2 +
-> sound/Makefile                  |   3 +-
-> sound/virtio/Kconfig            |  10 +
-> sound/virtio/Makefile           |   7 +
-> sound/virtio/virtio_card.c      | 415 ++++++++++++++++++++++++++++++++
-> sound/virtio/virtio_card.h      |  76 ++++++
-> 8 files changed, 882 insertions(+), 1 deletion(-)
-> create mode 100644 include/uapi/linux/virtio_snd.h
-> create mode 100644 sound/virtio/Kconfig
-> create mode 100644 sound/virtio/Makefile
-> create mode 100644 sound/virtio/virtio_card.c
-> create mode 100644 sound/virtio/virtio_card.h
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 00836f6452f0..3f509d54a457 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18936,6 +18936,15 @@ W:	https://virtio-mem.gitlab.io/
-> F:	drivers/virtio/virtio_mem.c
-> F:	include/uapi/linux/virtio_mem.h
->
-> +VIRTIO SOUND DRIVER
-> +M:	Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> +M:	"Michael S. Tsirkin" <mst@redhat.com>
-> +L:	virtualization@lists.linux-foundation.org
-> +L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-> +S:	Maintained
-> +F:	include/uapi/linux/virtio_snd.h
-> +F:	sound/virtio/*
-> +
-> VIRTUAL BOX GUEST DEVICE DRIVER
-> M:	Hans de Goede <hdegoede@redhat.com>
-> M:	Arnd Bergmann <arnd@arndb.de>
-> diff --git a/include/uapi/linux/virtio_snd.h b/include/uapi/linux/virtio_snd.h
+>   .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 147 ++++++++++++++++++
+>   1 file changed, 147 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
 > new file mode 100644
-> index 000000000000..1ff6310e54d6
+> index 000000000000..97d569107bfe
 > --- /dev/null
-> +++ b/include/uapi/linux/virtio_snd.h
-> @@ -0,0 +1,361 @@
-> +/* SPDX-License-Identifier: BSD-3-Clause */
+> +++ b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> @@ -0,0 +1,147 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
 > +/*
-> + * Copyright (C) 2020  OpenSynergy GmbH
-> + *
-> + * This header is BSD licensed so anyone can use the definitions to
-> + * implement compatible drivers/servers.
-> + *
-> + * Redistribution and use in source and binary forms, with or without
-> + * modification, are permitted provided that the following conditions
-> + * are met:
-
-Can a BSD licence actually be further restricted?
-
-> + * 1. Redistributions of source code must retain the above copyright
-> + *    notice, this list of conditions and the following disclaimer.
-> + * 2. Redistributions in binary form must reproduce the above copyright
-> + *    notice, this list of conditions and the following disclaimer in the
-> + *    documentation and/or other materials provided with the distribution.
-> + * 3. Neither the name of OpenSynergy GmbH nor the names of its contributors
-> + *    may be used to endorse or promote products derived from this software
-> + *    without specific prior written permission.
-> + * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-> + * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-> + * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-> + * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL IBM OR
-
-IBM? Also no idea whether this warranty disclaimer is appropriate here. I 
-thought we were transitioning to those SPDX identifiers to eliminate all 
-these headers.
-
-> + * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-> + * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-> + * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-> + * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-> + * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-> + * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-> + * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-> + * SUCH DAMAGE.
+> + * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
+> + * Copyright (c) 2020 Engicam srl
+> + * Copyright (c) 2020 Amarula Solutons(India)
 > + */
+> +
 
-[snip]
+If STM32MP157AAC is soldered onto this board, you should include SoC 
+dtsi here and no into MicroDev 2.0 board. No ?
 
-> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-> new file mode 100644
-> index 000000000000..532d823fdf6f
-> --- /dev/null
-> +++ b/sound/virtio/virtio_card.c
-> @@ -0,0 +1,415 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Sound card driver for virtio
-> + * Copyright (C) 2020  OpenSynergy GmbH
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
++#include "stm32mp15-pinctrl.dtsi"
++#include "stm32mp15xxaa-pinctrl.dtsi"
 
-Same here, I think SPDX means you don't need all this here any more.
 
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#include <linux/module.h>
-> +#include <linux/moduleparam.h>
-> +#include <linux/virtio_config.h>
-> +#include <sound/initval.h>
-> +#include <uapi/linux/virtio_ids.h>
+Regards
+Alex
+
+> +/ {
+> +	compatible = "engicam,microgea-stm32mp1", "st,stm32mp157";
 > +
-> +#include "virtio_card.h"
-> +
-> +static void virtsnd_remove(struct virtio_device *vdev);
-> +
-> +/**
-> + * virtsnd_event_send() - Add an event to the event queue.
-> + * @vqueue: Underlying event virtqueue.
-> + * @event: Event.
-> + * @notify: Indicates whether or not to send a notification to the device.
-> + * @gfp: Kernel flags for memory allocation.
-> + *
-> + * Context: Any context.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +static int virtsnd_event_send(struct virtqueue *vqueue,
-> +			      struct virtio_snd_event *event, bool notify,
-> +			      gfp_t gfp)
-> +{
-> +	struct scatterlist sg;
-> +	struct scatterlist *psgs[1] = { &sg };
-> +	int rc;
-> +
-> +	/* reset event content */
-> +	memset(event, 0, sizeof(*event));
-> +
-> +	sg_init_one(&sg, event, sizeof(*event));
-> +
-> +	rc = virtqueue_add_sgs(vqueue, psgs, 0, 1, event, gfp);
-> +	if (rc)
-> +		return rc;
-> +
-> +	if (notify)
-> +		if (virtqueue_kick_prepare(vqueue))
-> +			if (!virtqueue_notify(vqueue))
-> +				return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * virtsnd_event_notify_cb() - Dispatch all reported events from the event queue.
-> + * @vqueue: Underlying event virtqueue.
-> + *
-> + * This callback function is called upon a vring interrupt request from the
-> + * device.
-> + *
-> + * Context: Interrupt context.
-> + */
-> +static void virtsnd_event_notify_cb(struct virtqueue *vqueue)
-> +{
-> +	struct virtio_snd *snd = vqueue->vdev->priv;
-> +	struct virtio_snd_queue *queue = virtsnd_event_queue(snd);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&queue->lock, flags);
-> +	while (queue->vqueue) {
-> +		virtqueue_disable_cb(queue->vqueue);
-> +
-> +		for (;;) {
-> +			struct virtio_snd_event *event;
-> +			u32 length;
-> +
-> +			event = virtqueue_get_buf(queue->vqueue, &length);
-> +			if (!event)
-> +				break;
-> +
-> +			virtsnd_event_send(queue->vqueue, event, true,
-> +					   GFP_ATOMIC);
-> +		}
-> +
-> +		if (unlikely(virtqueue_is_broken(queue->vqueue)))
-> +			break;
-> +
-> +		if (virtqueue_enable_cb(queue->vqueue))
-> +			break;
-> +	}
-> +	spin_unlock_irqrestore(&queue->lock, flags);
-> +}
-> +
-> +/**
-> + * virtsnd_find_vqs() - Enumerate and initialize all virtqueues.
-> + * @snd: VirtIO sound device.
-> + *
-> + * After calling this function, the event queue is disabled.
-> + *
-> + * Context: Any context.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +static int virtsnd_find_vqs(struct virtio_snd *snd)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	vq_callback_t *callbacks[VIRTIO_SND_VQ_MAX] = { 0 };
-> +	const char *names[VIRTIO_SND_VQ_MAX] = {
-> +		[VIRTIO_SND_VQ_CONTROL] = "virtsnd-ctl",
-> +		[VIRTIO_SND_VQ_EVENT] = "virtsnd-event",
-> +		[VIRTIO_SND_VQ_TX] = "virtsnd-tx",
-> +		[VIRTIO_SND_VQ_RX] = "virtsnd-rx"
+> +	memory@c0000000 {
+> +		reg = <0xc0000000 0x10000000>;
 > +	};
-> +	struct virtqueue *vqs[VIRTIO_SND_VQ_MAX] = { 0 };
-> +	unsigned int i;
-> +	unsigned int n = 0;
-> +	int rc;
 > +
-> +	callbacks[VIRTIO_SND_VQ_EVENT] = virtsnd_event_notify_cb;
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
 > +
-> +	rc = virtio_find_vqs(vdev, VIRTIO_SND_VQ_MAX, vqs, callbacks, names,
-> +			     NULL);
-> +	if (rc) {
-> +		dev_err(&vdev->dev, "failed to initialize virtqueues\n");
-> +		return rc;
-> +	}
+> +		mcuram2: mcuram2@10000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10000000 0x40000>;
+> +			no-map;
+> +		};
 > +
-> +	for (i = 0; i < VIRTIO_SND_VQ_MAX; ++i)
-> +		snd->queues[i].vqueue = vqs[i];
+> +		vdev0vring0: vdev0vring0@10040000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10040000 0x1000>;
+> +			no-map;
+> +		};
 > +
-> +	/* Allocate events and populate the event queue */
-> +	virtqueue_disable_cb(vqs[VIRTIO_SND_VQ_EVENT]);
+> +		vdev0vring1: vdev0vring1@10041000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10041000 0x1000>;
+> +			no-map;
+> +		};
 > +
-> +	n = virtqueue_get_vring_size(vqs[VIRTIO_SND_VQ_EVENT]);
+> +		vdev0buffer: vdev0buffer@10042000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x10042000 0x4000>;
+> +			no-map;
+> +		};
 > +
-> +	snd->event_msgs = devm_kcalloc(&vdev->dev, n, sizeof(*snd->event_msgs),
-> +				       GFP_KERNEL);
-> +	if (!snd->event_msgs)
-> +		return -ENOMEM;
+> +		mcuram: mcuram@30000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x30000000 0x40000>;
+> +			no-map;
+> +		};
 > +
-> +	for (i = 0; i < n; ++i) {
-> +		rc = virtsnd_event_send(vqs[VIRTIO_SND_VQ_EVENT],
-> +					&snd->event_msgs[i], false, GFP_KERNEL);
-> +		if (rc)
-> +			return rc;
-> +	}
+> +		retram: retram@38000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x38000000 0x10000>;
+> +			no-map;
+> +		};
+> +	};
 > +
-> +	return 0;
-> +}
+> +	vin: regulator-vin {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vin";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		regulator-always-on;
+> +	};
 > +
-> +/**
-> + * virtsnd_enable_event_vq() - Enable the event virtqueue.
-> + * @snd: VirtIO sound device.
-> + *
-> + * Context: Any context.
-> + */
-> +static void virtsnd_enable_event_vq(struct virtio_snd *snd)
-> +{
-> +	struct virtio_snd_queue *queue = virtsnd_event_queue(snd);
+> +	vddcore: regulator-vddcore {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vddcore";
+> +		regulator-min-microvolt = <1200000>;
+> +		regulator-max-microvolt = <1200000>;
+> +		regulator-always-on;
+> +		vin-supply = <&vin>;
+> +	};
 > +
-> +	if (!virtqueue_enable_cb(queue->vqueue))
-> +		virtsnd_event_notify_cb(queue->vqueue);
-> +}
+> +	vdd: regulator-vdd {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vdd";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-always-on;
+> +		vin-supply = <&vin>;
+> +	};
 > +
-> +/**
-> + * virtsnd_disable_vqs() - Disable all virtqueues.
-> + * @snd: VirtIO sound device.
-> + *
-> + * Also free all allocated events and control messages.
-> + *
-> + * Context: Any context.
-> + */
-> +static void virtsnd_disable_vqs(struct virtio_snd *snd)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	unsigned int i;
-> +	unsigned long flags;
-> +
-> +	for (i = 0; i < VIRTIO_SND_VQ_MAX; ++i) {
-> +		struct virtio_snd_queue *queue = &snd->queues[i];
-> +
-> +		spin_lock_irqsave(&queue->lock, flags);
-> +		/* Prohibit the use of the queue */
-> +		if (queue->vqueue)
-> +			virtqueue_disable_cb(queue->vqueue);
-> +		queue->vqueue = NULL;
-> +		spin_unlock_irqrestore(&queue->lock, flags);
-> +	}
-> +
-> +	if (snd->event_msgs)
-
-Check not needed, kfree(NULL) is ok.
-
-> +		devm_kfree(&vdev->dev, snd->event_msgs);
-
-I think there are very few cases when managed resources have to be 
-explicitly freed. If explicit freeing is always required, then there's no 
-need to have them managed. If there's a clear case for managed resources, 
-usually you don't need to free them explicitly. Here.event_msgs are 
-allocated in virtsnd_find_vqs() above, which is only called during 
-probing. And this function is only called during release. So, I'd assume, 
-that you don't need to free memory explicitly here.
-
-> +
-> +	snd->event_msgs = NULL;
-
-snd is about to be freed, so do you really need this?
-
-> +}
-> +
-> +/**
-> + * virtsnd_reset_fn() - Kernel worker's function to reset the device.
-> + * @work: Reset device work.
-> + *
-> + * Context: Process context.
-> + */
-> +static void virtsnd_reset_fn(struct work_struct *work)
-> +{
-> +	struct virtio_snd *snd =
-> +		container_of(work, struct virtio_snd, reset_work);
-> +	struct virtio_device *vdev = snd->vdev;
-> +	struct device *dev = &vdev->dev;
-> +	int rc;
-> +
-> +	dev_info(dev, "sound device needs reset\n");
-> +
-> +	/*
-> +	 * It seems that the only way to properly reset the device is to remove
-> +	 * and re-create the ALSA sound card device.
-> +	 *
-> +	 * Also resetting the device involves a number of steps with setting the
-> +	 * status bits described in the virtio specification. And the easiest
-> +	 * way to get everything right is to use the virtio bus interface.
-> +	 */
-> +	rc = dev->bus->remove(dev);
-> +	if (rc)
-> +		dev_warn(dev, "bus->remove() failed: %d", rc);
-> +
-> +	rc = dev->bus->probe(dev);
-> +	if (rc)
-> +		dev_err(dev, "bus->probe() failed: %d", rc);
-
-This looks very suspicious to me. Wondering what ALSA maintainers will say 
-to this.
-
-> +}
-> +
-> +/**
-> + * virtsnd_build_devs() - Read configuration and build ALSA devices.
-> + * @snd: VirtIO sound device.
-> + *
-> + * Context: Any context that permits to sleep.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +static int virtsnd_build_devs(struct virtio_snd *snd)
-> +{
-> +	struct virtio_device *vdev = snd->vdev;
-> +	int rc;
-> +
-> +	rc = snd_card_new(&vdev->dev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
-> +			  THIS_MODULE, 0, &snd->card);
-> +	if (rc < 0)
-> +		return rc;
-> +
-> +	snd->card->private_data = snd;
-> +
-> +	strscpy(snd->card->id, "viosnd", sizeof(snd->card->id));
-> +	strscpy(snd->card->driver, "virtio_snd", sizeof(snd->card->driver));
-> +	strscpy(snd->card->shortname, "VIOSND", sizeof(snd->card->shortname));
-> +	strscpy(snd->card->longname, "VirtIO Sound Card",
-> +		sizeof(snd->card->longname));
-> +
-> +	return snd_card_register(snd->card);
-> +}
-> +
-> +/**
-> + * virtsnd_validate() - Validate if the device can be started.
-> + * @vdev: VirtIO parent device.
-> + *
-> + * Context: Any context.
-> + * Return: 0 on success, -EINVAL on failure.
-> + */
-> +static int virtsnd_validate(struct virtio_device *vdev)
-> +{
-> +	if (!vdev->config->get) {
-> +		dev_err(&vdev->dev, "configuration access disabled\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
-> +		dev_err(&vdev->dev,
-> +			"device does not comply with spec version 1.x\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * virtsnd_probe() - Create and initialize the device.
-> + * @vdev: VirtIO parent device.
-> + *
-> + * Context: Any context that permits to sleep.
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +static int virtsnd_probe(struct virtio_device *vdev)
-> +{
-> +	struct virtio_snd *snd;
-> +	unsigned int i;
-> +	int rc;
-> +
-> +	snd = devm_kzalloc(&vdev->dev, sizeof(*snd), GFP_KERNEL);
-> +	if (!snd)
-> +		return -ENOMEM;
-> +
-> +	snd->vdev = vdev;
-> +	INIT_WORK(&snd->reset_work, virtsnd_reset_fn);
-> +
-> +	vdev->priv = snd;
-> +
-> +	for (i = 0; i < VIRTIO_SND_VQ_MAX; ++i)
-> +		spin_lock_init(&snd->queues[i].lock);
-> +
-> +	rc = virtsnd_find_vqs(snd);
-> +	if (rc)
-> +		goto on_failure;
-> +
-> +	virtio_device_ready(vdev);
-> +
-> +	rc = virtsnd_build_devs(snd);
-> +	if (rc)
-> +		goto on_failure;
-> +
-> +	virtsnd_enable_event_vq(snd);
-> +
-> +on_failure:
-> +	if (rc)
-> +		virtsnd_remove(vdev);
-> +
-> +	return rc;
-> +}
-> +
-> +/**
-> + * virtsnd_remove() - Remove VirtIO and ALSA devices.
-> + * @vdev: VirtIO parent device.
-> + *
-> + * Context: Any context that permits to sleep.
-> + */
-> +static void virtsnd_remove(struct virtio_device *vdev)
-> +{
-> +	struct virtio_snd *snd = vdev->priv;
-> +
-> +	if (!snd)
-> +		return;
-> +
-> +	/*
-> +	 * Make sure no one is accessing the virtqueues and sending synchronous
-> +	 * requests to the device. This can happen if we got here because the
-> +	 * device needs to be reset.
-> +	 */
-> +	virtsnd_disable_vqs(snd);
-> +
-> +	if (snd->card)
-> +		snd_card_free(snd->card);
-> +
-> +	vdev->config->reset(vdev);
-> +	vdev->config->del_vqs(vdev);
-> +
-> +	devm_kfree(&vdev->dev, snd);
-
-No need for this.
-
-> +
-> +	vdev->priv = NULL;
-
-and for this either.
-
-> +}
-> +
-> +/**
-> + * virtsnd_config_changed() - Handle configuration change notification.
-> + * @vdev: VirtIO parent device.
-> + *
-> + * This callback function is called upon a configuration change interrupt
-> + * request from the device. Currently only used to handle NEEDS_RESET device
-> + * status.
-> + *
-> + * Context: Interrupt context.
-> + */
-> +static void virtsnd_config_changed(struct virtio_device *vdev)
-> +{
-> +	struct virtio_snd *snd = vdev->priv;
-> +	unsigned int status = vdev->config->get_status(vdev);
-> +
-> +	if (status & VIRTIO_CONFIG_S_NEEDS_RESET)
-> +		schedule_work(&snd->reset_work);
-> +	else
-> +		dev_warn(&vdev->dev,
-> +			 "sound device configuration was changed\n");
-> +}
-> +
-> +static const struct virtio_device_id id_table[] = {
-> +	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
-> +	{ 0 },
+> +	vddq_ddr: regulator-vddq-ddr {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vddq_ddr";
+> +		regulator-min-microvolt = <1350000>;
+> +		regulator-max-microvolt = <1350000>;
+> +		regulator-always-on;
+> +		vin-supply = <&vin>;
+> +	};
 > +};
 > +
-> +static struct virtio_driver virtsnd_driver = {
-> +	.driver.name = KBUILD_MODNAME,
-> +	.driver.owner = THIS_MODULE,
-> +	.id_table = id_table,
-> +	.validate = virtsnd_validate,
-> +	.probe = virtsnd_probe,
-> +	.remove = virtsnd_remove,
-> +	.config_changed = virtsnd_config_changed,
+> +&dts {
+> +	status = "okay";
 > +};
 > +
-> +static int __init init(void)
-> +{
-> +	return register_virtio_driver(&virtsnd_driver);
-> +}
-> +module_init(init);
+> +&fmc {
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&fmc_pins_a>;
+> +	pinctrl-1 = <&fmc_sleep_pins_a>;
+> +	status = "okay";
 > +
-> +static void __exit fini(void)
-> +{
-> +	unregister_virtio_driver(&virtsnd_driver);
-> +}
-> +module_exit(fini);
+> +	nand-controller@4,0 {
+> +		status = "okay";
 > +
-> +MODULE_DEVICE_TABLE(virtio, id_table);
-> +MODULE_DESCRIPTION("Virtio sound card driver");
-> +MODULE_LICENSE("GPL");
-
-Thanks
-Guennadi
+> +		nand@0 {
+> +			reg = <0>;
+> +			nand-on-flash-bbt;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +		};
+> +	};
+> +};
+> +
+> +&ipcc {
+> +	status = "okay";
+> +};
+> +
+> +&iwdg2{
+> +	timeout-sec = <32>;
+> +	status = "okay";
+> +};
+> +
+> +&m4_rproc{
+> +	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
+> +			<&vdev0vring1>, <&vdev0buffer>;
+> +	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>;
+> +	mbox-names = "vq0", "vq1", "shutdown";
+> +	interrupt-parent = <&exti>;
+> +	interrupts = <68 1>;
+> +	status = "okay";
+> +};
+> +
+> +&rng1 {
+> +	status = "okay";
+> +};
+> +
+> +&rtc{
+> +	status = "okay";
+> +};
+> +
+> +&vrefbuf {
+> +	regulator-min-microvolt = <2500000>;
+> +	regulator-max-microvolt = <2500000>;
+> +	vdda-supply = <&vdd>;
+> +	status = "okay";
+> +};
+> 
