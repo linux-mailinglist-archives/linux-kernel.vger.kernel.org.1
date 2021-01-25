@@ -2,137 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C5D302272
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 08:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45797302283
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 08:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727296AbhAYHdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 02:33:35 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48942 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727237AbhAYHcJ (ORCPT
+        id S1727234AbhAYHlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 02:41:22 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:33485 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727279AbhAYHkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 02:32:09 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10P7DBO7142692;
-        Mon, 25 Jan 2021 02:31:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=TuGY8IWz75AhAWPLAr7pIVZsBex+aBv7yqLuEEUeVbM=;
- b=iWgbiYIc/92wYYo6EJoAUn+v5x+nFUHTojI4PIqIgFMDORxEbRCwg0kT8UjVkukvHJlA
- t5yWoDRdjTYE2sLP9C5xoHSBFVOlVjjhHmNQAacdaCFgPyy7VJf9+xm2O0psbgLfh+lT
- aRRqVbi4l7UVyttqdbdPEIQ+Qk04xVB3i6ReVQOeB6lAIYCdMp00sJ1VM3RegW7G++n6
- V822zTSB3ll60q332dBb7W1NEW7erCNoTNwT5Id0W/D6o5aDSLUz9U2ymA5a5fMc18QI
- STL+ErGjb0rH7XFN/zFlfkJdFiILGZz4w57w5yNEh7UV+67hG82oTKlv/7xZsqLYiPee Tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 369sddgbxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 02:31:11 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10P7EnXT149247;
-        Mon, 25 Jan 2021 02:31:10 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 369sddgbx7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 02:31:10 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10P7MQdv002163;
-        Mon, 25 Jan 2021 07:31:08 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 368be88t8n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 07:31:07 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10P7V50b45875668
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Jan 2021 07:31:05 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A76744C040;
-        Mon, 25 Jan 2021 07:31:05 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F97C4C05A;
-        Mon, 25 Jan 2021 07:31:04 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.26.126])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 25 Jan 2021 07:31:04 +0000 (GMT)
-Date:   Mon, 25 Jan 2021 09:31:02 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
-Message-ID: <20210125073102.GF7648@linux.ibm.com>
-References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
- <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
- <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
+        Mon, 25 Jan 2021 02:40:05 -0500
+X-UUID: f87a051fe7da4746a07bfe9a06a046d9-20210125
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=eaKrYBp0hGVYnPSA5KCNXRSANeSeK4w6ULIYmIqny0c=;
+        b=IKnNQJcyUxkxfu7rG1CpvxWXjVVPw6yw8VEIinFRsurIO19twS3mRKEdVOAQ1Cp5HhzSi0OjY4N2cok3vNc5rPXX7IKWHK6B1yTwlOtaT1xxMmqWu8Hf5MCpu+Q+r4WR/hP+XRn13EhGolqlGc7v4cmNfHM0Yhirid068GwxO8I=;
+X-UUID: f87a051fe7da4746a07bfe9a06a046d9-20210125
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1927905852; Mon, 25 Jan 2021 15:33:33 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
+ 2021 15:33:29 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Jan 2021 15:33:27 +0800
+Message-ID: <1611560007.3184.39.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 06/27] dt-bindings: mediatek: Add binding for mt8192
+ IOMMU
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+CC:     <youlin.pei@mediatek.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Evan Green <evgreen@chromium.org>, <chao.hao@mediatek.com>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <anan.sun@mediatek.com>, Robin Murphy <robin.murphy@arm.com>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg 
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 25 Jan 2021 15:33:27 +0800
+In-Reply-To: <CAAFQd5C3G=eE+dwOK0Vg=tcSR8LFWWG1YDta3=9nZ1G0Bv7dcA@mail.gmail.com>
+References: <20201209080102.26626-1-yong.wu@mediatek.com>
+         <20201209080102.26626-7-yong.wu@mediatek.com>
+         <X+L9XpkoII7tw/tX@chromium.org> <1608809713.26323.262.camel@mhfsdcap03>
+         <CAAFQd5CCJv=0q=V45Z7mtq7FSq1c5TcH6vyqfp3MWxaA=ZexJQ@mail.gmail.com>
+         <1610520301.31716.27.camel@mhfsdcap03>
+         <CAAFQd5A26tZo3gpsmqbRSa3x7a1KThzt9Jw74jWsqQGrBsabhw@mail.gmail.com>
+         <1611126445.19055.34.camel@mhfsdcap03>
+         <CAAFQd5C3G=eE+dwOK0Vg=tcSR8LFWWG1YDta3=9nZ1G0Bv7dcA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_01:2021-01-22,2021-01-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 spamscore=0 clxscore=1015 phishscore=0
- impostorscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101250037
+X-TM-SNTS-SMTP: 45B73F16997C51A00F73C94674285A8549216EF92CCA307E0CCDF36A89D582E72000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:52:32AM +0530, Anshuman Khandual wrote:
-> 
-> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
-> > pfn_valid() asserts that there is a memblock entry for a given pfn without
-> > MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
-> > that they do not have memblock entries. Hence memblock_is_map_memory() will
-> > invariably fail via memblock_search() for a ZONE_DEVICE based address. This
-> > eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
-> > to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
-> > into the system via memremap_pages() called from a driver, their respective
-> > memory sections will not have SECTION_IS_EARLY set.
-> > 
-> > Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
-> > regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
-> > for firmware reserved memory regions. memblock_is_map_memory() can just be
-> > skipped as its always going to be positive and that will be an optimization
-> > for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
-> > normal memory too will not have SECTION_IS_EARLY set for their sections.
-> > 
-> > Skipping memblock_is_map_memory() for all non early memory sections would
-> > fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
-> > performance for normal hotplug memory as well.
-> > 
-> > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > Cc: Will Deacon <will@kernel.org>
-> > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
-> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> Hello David/Mike,
-> 
-> Given that we would need to rework early sections, memblock semantics via a
-> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
-> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
-> which fixes a problem (and improves performance) can be merged first. After
-> that, I could start working on the proposed rework. Could you please let me
-> know your thoughts on this. Thank you.
+T24gTW9uLCAyMDIxLTAxLTI1IGF0IDEzOjE4ICswOTAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
+T24gV2VkLCBKYW4gMjAsIDIwMjEgYXQgNDowOCBQTSBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVr
+LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBPbiBXZWQsIDIwMjEtMDEtMjAgYXQgMTM6MTUgKzA5MDAs
+IFRvbWFzeiBGaWdhIHdyb3RlOg0KPiA+ID4gT24gV2VkLCBKYW4gMTMsIDIwMjEgYXQgMzo0NSBQ
+TSBZb25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+
+IE9uIFdlZCwgMjAyMS0wMS0xMyBhdCAxNDozMCArMDkwMCwgVG9tYXN6IEZpZ2Egd3JvdGU6DQo+
+ID4gPiA+ID4gT24gVGh1LCBEZWMgMjQsIDIwMjAgYXQgODozNSBQTSBZb25nIFd1IDx5b25nLnd1
+QG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gT24gV2VkLCAy
+MDIwLTEyLTIzIGF0IDE3OjE4ICswOTAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4gPiA+ID4gPiA+
+ID4gT24gV2VkLCBEZWMgMDksIDIwMjAgYXQgMDQ6MDA6NDFQTSArMDgwMCwgWW9uZyBXdSB3cm90
+ZToNCj4gPiA+ID4gPiA+ID4gPiBUaGlzIHBhdGNoIGFkZHMgZGVjcmlwdGlvbnMgZm9yIG10ODE5
+MiBJT01NVSBhbmQgU01JLg0KPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gbXQ4MTky
+IGFsc28gaXMgTVRLIElPTU1VIGdlbjIgd2hpY2ggdXNlcyBBUk0gU2hvcnQtRGVzY3JpcHRvciB0
+cmFuc2xhdGlvbg0KPiA+ID4gPiA+ID4gPiA+IHRhYmxlIGZvcm1hdC4gVGhlIE00VS1TTUkgSFcg
+ZGlhZ3JhbSBpcyBhcyBiZWxvdzoNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgRU1JDQo+ID4gPiA+ID4gPiA+ID4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfA0KPiA+ID4gPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgTTRVDQo+ID4gPiA+ID4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KPiA+
+ID4gPiA+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAtLS0tLS0tLS0tLS0NCj4gPiA+ID4g
+PiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgIFNNSSBDb21tb24NCj4gPiA+ID4gPiA+ID4g
+PiAgICAgICAgICAgICAgICAgICAgICAgLS0tLS0tLS0tLS0tDQo+ID4gPiA+ID4gPiA+ID4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfA0KPiA+ID4gPiA+ID4gPiA+ICAgKy0tLS0tLS0rLS0t
+LS0tKy0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0rDQo+ID4gPiA+ID4gPiA+
+ID4gICB8ICAgICAgIHwgICAgICB8ICAgICAgfCAgICAgICAuLi4uLi4gICAgICAgICB8ICAgICAg
+IHwNCj4gPiA+ID4gPiA+ID4gPiAgIHwgICAgICAgfCAgICAgIHwgICAgICB8ICAgICAgICAgICAg
+ICAgICAgICAgIHwgICAgICAgfA0KPiA+ID4gPiA+ID4gPiA+IGxhcmIwICAgbGFyYjEgIGxhcmIy
+ICBsYXJiNCAgICAgLi4uLi4uICAgICAgbGFyYjE5ICAgbGFyYjIwDQo+ID4gPiA+ID4gPiA+ID4g
+ZGlzcDAgICBkaXNwMSAgIG1kcCAgICB2ZGVjICAgICAgICAgICAgICAgICAgIElQRSAgICAgIElQ
+RQ0KPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gQWxsIHRoZSBjb25uZWN0aW9ucyBh
+cmUgSFcgZml4ZWQsIFNXIGNhbiBOT1QgYWRqdXN0IGl0Lg0KPiA+ID4gPiA+ID4gPiA+DQo+ID4g
+PiA+ID4gPiA+ID4gbXQ4MTkyIE00VSBzdXBwb3J0IDB+MTZHQiBpb3ZhIHJhbmdlLiB3ZSBwcmVh
+c3NpZ24gZGlmZmVyZW50IGVuZ2luZXMNCj4gPiA+ID4gPiA+ID4gPiBpbnRvIGRpZmZlcmVudCBp
+b3ZhIHJhbmdlczoNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IGRvbWFpbi1pZCAg
+bW9kdWxlICAgICBpb3ZhLXJhbmdlICAgICAgICAgICAgICAgICAgbGFyYnMNCj4gPiA+ID4gPiA+
+ID4gPiAgICAwICAgICAgIGRpc3AgICAgICAgIDAgfiA0RyAgICAgICAgICAgICAgICAgICAgICBs
+YXJiMC8xDQo+ID4gPiA+ID4gPiA+ID4gICAgMSAgICAgICB2Y29kZWMgICAgICA0RyB+IDhHICAg
+ICAgICAgICAgICAgICAgICAgbGFyYjQvNS83DQo+ID4gPiA+ID4gPiA+ID4gICAgMiAgICAgICBj
+YW0vbWRwICAgICA4RyB+IDEyRyAgICAgICAgICAgICBsYXJiMi85LzExLzEzLzE0LzE2LzE3LzE4
+LzE5LzIwDQo+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+IFdoeSBkbyB3ZSBwcmVhc3NpZ24g
+dGhlc2UgYWRkcmVzc2VzIGluIERUPyBTaG91bGRuJ3QgaXQgYmUgYSB1c2VyJ3Mgb3INCj4gPiA+
+ID4gPiA+ID4gaW50ZWdyYXRvcidzIGRlY2lzaW9uIHRvIHNwbGl0IHRoZSAxNiBHQiBhZGRyZXNz
+IHJhbmdlIGludG8gc3ViLXJhbmdlcw0KPiA+ID4gPiA+ID4gPiBhbmQgZGVmaW5lIHdoaWNoIGxh
+cmJzIHRob3NlIHN1Yi1yYW5nZXMgYXJlIHNoYXJlZCB3aXRoPw0KPiA+ID4gPiA+ID4NCj4gPiA+
+ID4gPiA+IFRoZSBwcm9ibGVtIGlzIHRoYXQgd2UgY2FuJ3Qgc3BsaXQgdGhlIDE2R0IgcmFuZ2Ug
+d2l0aCB0aGUgbGFyYiBhcyB1bml0Lg0KPiA+ID4gPiA+ID4gVGhlIGV4YW1wbGUgaXMgdGhlIGJl
+bG93IGNjdTAobGFyYjEzIHBvcnQ5LzEwKSBpcyBhIGluZGVwZW5kZW50DQo+ID4gPiA+ID4gPiBy
+YW5nZShkb21haW4pLCB0aGUgb3RoZXJzIHBvcnRzIGluIGxhcmIxMyBpcyBpbiBhbm90aGVyIGRv
+bWFpbi4NCj4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiBkaXNwL3Zjb2RlYy9jYW0vbWRwIGRvbid0
+IGhhdmUgc3BlY2lhbCBpb3ZhIHJlcXVpcmVtZW50LCB0aGV5IGNvdWxkDQo+ID4gPiA+ID4gPiBh
+Y2Nlc3MgYW55IHJhbmdlLiB2Y29kZWMgYWxzbyBjYW4gbG9jYXRlIDhHfjEyRy4gaXQgZG9uJ3Qg
+Y2FyZSBhYm91dA0KPiA+ID4gPiA+ID4gd2hlcmUgaXRzIGlvdmEgbG9jYXRlLiBoZXJlIEkgcHJl
+YXNzaWduIGxpa2UgdGhpcyBmb2xsb3dpbmcgd2l0aCBvdXINCj4gPiA+ID4gPiA+IGludGVybmFs
+IHByb2plY3Qgc2V0dGluZy4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IExldCBtZSB0cnkgdG8gdW5k
+ZXJzdGFuZCB0aGlzIGEgYml0IG1vcmUuIEdpdmVuIHRoZSBzcGxpdCB5b3UncmUNCj4gPiA+ID4g
+PiBwcm9wb3NpbmcsIGlzIHRoZXJlIGFjdHVhbGx5IGFueSBpc29sYXRpb24gZW5mb3JjZWQgYmV0
+d2VlbiBwYXJ0aWN1bGFyDQo+ID4gPiA+ID4gZG9tYWlucz8gRm9yIGV4YW1wbGUsIGlmIEkgcHJv
+Z3JhbSB2Y29kZWMgdG8gd2l0aCBhIERNQSBhZGRyZXNzIGZyb20NCj4gPiA+ID4gPiB0aGUgMC00
+RyByYW5nZSwgd291bGQgdGhlIElPTU1VIGFjdHVhbGx5IGdlbmVyYXRlIGEgZmF1bHQsIGV2ZW4g
+aWYNCj4gPiA+ID4gPiBkaXNwIGhhZCBzb21lIG1lbW9yeSBtYXBwZWQgYXQgdGhhdCBhZGRyZXNz
+Pw0KPiA+ID4gPg0KPiA+ID4gPiBJbiB0aGlzIGNhc2UuIHdlIHdpbGwgZ2V0IGZhdWx0IGluIGN1
+cnJlbnQgU1cgc2V0dGluZy4NCj4gPiA+ID4NCj4gPiA+DQo+ID4gPiBPa2F5LCB0aGFua3MuDQo+
+ID4gPg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gV2h5IHNldCB0aGlzIGlu
+IERUPywgdGhpcyBpcyBvbmx5IGZvciBzaW1wbGlmeWluZyB0aGUgY29kZS4gQXNzdW1lIHdlDQo+
+ID4gPiA+ID4gPiBwdXQgaXQgaW4gdGhlIHBsYXRmb3JtIGRhdGEuIFdlIGhhdmUgdXAgdG8gMzIg
+bGFyYnMsIGVhY2ggbGFyYiBoYXMgdXAgdG8NCj4gPiA+ID4gPiA+IDMyIHBvcnRzLCBlYWNoIHBv
+cnQgbWF5IGJlIGluIGRpZmZlcmVudCBpb21tdSBkb21haW5zLiB3ZSBzaG91bGQgaGF2ZSBhDQo+
+ID4gPiA+ID4gPiBiaWcgYXJyYXkgZm9yIHRoaXMuLmhvd2V2ZXIgd2Ugb25seSB1c2UgYSBtYWNy
+byB0byBnZXQgdGhlIGRvbWFpbiBpbiB0aGUNCj4gPiA+ID4gPiA+IERUIG1ldGhvZC4NCj4gPiA+
+ID4gPiA+DQo+ID4gPiA+ID4gPiBXaGVuIHJlcGx5aW5nIHRoaXMgbWFpbCwgSSBoYXBwZW4gdG8g
+c2VlIHRoZXJlIGlzIGEgImRldi0+ZGV2X3JhbmdlX21hcCINCj4gPiA+ID4gPiA+IHdoaWNoIGhh
+cyAiZG1hLXJhbmdlIiBpbmZvcm1hdGlvbiwgSSB0aGluayBJIGNvdWxkIHVzZSB0aGlzIHZhbHVl
+IHRvIGdldA0KPiA+ID4gPiA+ID4gd2hpY2ggZG9tYWluIHRoZSBkZXZpY2UgYmVsb25nIHRvLiB0
+aGVuIG5vIG5lZWQgcHV0IGRvbWlkIGluIERULiBJIHdpbGwNCj4gPiA+ID4gPiA+IHRlc3QgdGhp
+cy4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+IE15IGZlZWxpbmcgaXMgdGhhdCB0aGUgb25seSBwYXJ0
+IHRoYXQgbmVlZHMgdG8gYmUgZW5mb3JjZWQgc3RhdGljYWxseQ0KPiA+ID4gPiA+IGlzIHRoZSBy
+ZXNlcnZlZCBJT1ZBIHJhbmdlIGZvciBDQ1VzLiBUaGUgb3RoZXIgcmFuZ2VzIHNob3VsZCBiZQ0K
+PiA+ID4gPiA+IGRldGVybWluZWQgZHluYW1pY2FsbHksIGFsdGhvdWdoIEkgdGhpbmsgSSBuZWVk
+IHRvIHVuZGVyc3RhbmQgYmV0dGVyDQo+ID4gPiA+ID4gaG93IHRoZSBoYXJkd2FyZSBhbmQgeW91
+ciBwcm9wb3NlZCBkZXNpZ24gd29yayB0byB0ZWxsIHdoYXQgd291bGQgYmUNCj4gPiA+ID4gPiBs
+aWtlbHkgdGhlIGJlc3QgY2hvaWNlIGhlcmUuDQo+ID4gPiA+DQo+ID4gPiA+IEkgaGF2ZSByZW1v
+dmVkIHRoZSBkb21pZCBwYXRjaCBpbiB2Ni4gYW5kIGdldCB0aGUgZG9tYWluIGlkIGluIFsyNy8z
+M10NCj4gPiA+ID4gaW4gdjYuLg0KPiA+ID4gPg0KPiA+ID4gPiBBYm91dCB0aGUgb3RoZXIgcmFu
+Z2VzIHNob3VsZCBiZSBkeW5hbWljYWwsIHRoZSBjb21taXQgbWVzc2FnZSBbMzAvMzNdDQo+ID4g
+PiA+IG9mIHY2IHNob3VsZCBiZSBoZWxwZnVsLiB0aGUgcHJvYmxlbSBpcyB0aGF0IHdlIGhhdmUg
+YSBiYW5rX3NlbCBzZXR0aW5nDQo+ID4gPiA+IGZvciB0aGUgaW92YVszMjozM10uIGN1cnJlbnRs
+eSB3ZSBwcmVhc3NpZ24gdGhpcyB2YWx1ZS4gdGh1cywgYWxsIHRoZQ0KPiA+ID4gPiByYW5nZXMg
+YXJlIGZpeGVkLiBJZiB5b3UgYWRqdXN0IHRoaXMgc2V0dGluZywgeW91IGNhbiBsZXQgdmNvZGVj
+IGFjY2Vzcw0KPiA+ID4gPiAwfjRHLg0KPiA+ID4NCj4gPiA+IE9rYXksIHNvIGl0IHNvdW5kcyBs
+aWtlIHdlIGVmZmVjdGl2ZWx5IGhhdmUgZm91ciA0RyBhZGRyZXNzIHNwYWNlcyBhbmQNCj4gPiA+
+IHdlIGNhbiBhc3NpZ24gdGhlIG1hc3RlciBkZXZpY2VzIHRvIHRoZW0uIEkgZ3Vlc3MgZWFjaCBv
+ZiB0aGVzZQ0KPiA+ID4gYWRkcmVzcyBzcGFjZXMgbWFrZXMgZm9yIGFuIElPTU1VIGdyb3VwLg0K
+PiA+DQo+ID4gWWVzLiBFYWNoIGEgYWRkcmVzcyBzcGFjZXMgaXMgYW4gSU9NTVUgZ3JvdXAuDQo+
+ID4NCj4gPiA+DQo+ID4gPiBJdCdzIGZpbmUgdG8gcHJlLWFzc2lnbiB0aGUgZGV2aWNlcyB0byB0
+aG9zZSBncm91cHMgZm9yIG5vdywgYnV0IGl0DQo+ID4gPiBkZWZpbml0ZWx5IHNob3VsZG4ndCBi
+ZSBoYXJkY29kZWQgaW4gRFQsIGJlY2F1c2UgaXQgZGVwZW5kcyBvbiB0aGUgdXNlDQo+ID4gPiBj
+YXNlIG9mIHRoZSBkZXZpY2UuIEknbGwgdGFrZSBhIGxvb2sgYXQgdjYsIGJ1dCBpdCBzb3VuZHMg
+bGlrZSBpdA0KPiA+ID4gc2hvdWxkIGJlIGZpbmUgaWYgaXQgZG9lc24ndCB0YWtlIHRoZSBhZGRy
+ZXNzIHNwYWNlIGFzc2lnbm1lbnQgZnJvbSBEVA0KPiA+ID4gYW55bW9yZS4NCj4gPg0KPiA+IFRo
+YW5rcyB2ZXJ5IG11Y2ggZm9yIHlvdXIgcmV2aWV3Lg0KPiA+DQo+IA0KPiBIbW0sIEkgaGFkIGEg
+bG9vayBhdCB2NiBhbmQgaXQgc3RpbGwgaGFzIHRoZSBhZGRyZXNzIHNwYWNlcyBoYXJkY29kZWQN
+Cj4gaW4gdGhlIERUUy4gDQoNCnNvcnJ5LiBJIGRpZG4ndCBnZXQgaGVyZS4gd2hlcmUgZG8geW91
+IG1lYW4uIG9yIGhlbHAgcmVwbHkgaW4gdjYuDQoNCkkgb25seSBhZGRlZCB0aGUgcHJlYXNzaWdu
+IGxpc3QgYXMgY29tbWVudCBpbiB0aGUgZmlsZQ0KKGR0LWJpbmRpbmcvbWVtb3J5L210ODE5Mi1s
+YXJiLXBvcnQuaCkuIEkgdGhvdWdodCBvdXIgaW9tbXUgY29uc3VtZXIgbWF5DQpuZWVkIGl0IHdo
+ZW4gdGhleSB1c2UgdGhlc2UgcG9ydHMuIHRoZXkgbmVlZCBhZGQgZG1hLXJhbmdlcyBwcm9wZXJ0
+eSBpZg0KaXRzIGlvdmEgaXMgb3ZlciA0R0IuDQoNCj4gQ291bGQgd2UgbW92ZSB0aGUgZml4ZWQg
+YXNzaWdubWVudCB0byB0aGUgTVRLIElPTU1VIGRyaXZlciBjb2RlIGluc3RlYWQsDQo+IHNvIHRo
+YXQgaXQgY2FuIGJlIGVhc2lseSBhZGp1c3RlZCBhcyB0aGUga2VybmVsIGNvZGUNCj4gZXZvbHZl
+cyB3aXRob3V0IHRoZSBuZWVkIHRvIHVwZGF0ZSB0aGUgRFRTPw0KPiANCj4gPiA+DQo+ID4gPiA+
+DQo+ID4gPiA+IEN1cnJlbnRseSB3ZSBoYXZlIG5vIGludGVyZmFjZSB0byBhZGp1c3QgdGhpcyBz
+ZXR0aW5nLiBTdXBwb3NlIHdlIGFkZCBhDQo+ID4gPiA+IG5ldyBpbnRlcmZhY2UgZm9yIHRoaXMu
+IEl0IHdvdWxkIGJlIHNvbWV0aGluZyBsaWtlOg0KPiA+ID4gPg0KPiA+ID4gPiAgICBpbnQgbXRr
+X3NtaV9sYXJiX2NvbmZpZ19iYW5rc2VsKHN0cnVjdCBkZXZpY2UgKmxhcmIsIGludCBiYW5rc2Vs
+KQ0KPiA+ID4gPg0KPiA+ID4gPiAgICBUaGVuLCBhbGwgdGhlIE1NIGRyaXZlcnMgc2hvdWxkIGNh
+bGwgaXQgYmVmb3JlIHRoZSBIVyB3b3JrcyBldmVyeQ0KPiA+ID4gPiB0aW1lLCBhbmQgaXRzIGlt
+cGxlbWVudCB3aWxsIGJlIGEgYml0IGNvbXBsZXggc2luY2Ugd2UgYXJlbid0IHN1cmUgaWYNCj4g
+PiA+ID4gdGhlIGxhcmIgaGFzIHBvd2VyIGF0IHRoYXQgdGltZS4gdGhlIGltcG9ydGFudCB0aGlu
+ZyBpcyB0aGF0IHRoZSBNTQ0KPiA+ID4gPiBkZXZpY2VzIGhhdmUgYWxyZWFkeSBub3Qga25vd24g
+d2hpY2ggbGFyYiBpdCBjb25uZWN0cyB3aXRoIGFzIHdlIHBsYW4gdG8NCj4gPiA+ID4gZGVsZXRl
+ICJtZWRpYXRlayxsYXJiIiBpbiB0aGVpciBkdHNpIG5vZGVzLg0KPiA+ID4NCj4gPiA+IEZyb20g
+dGhlIHByYWN0aWNhbCBwb2ludCBvZiB2aWV3LCBpdCBkb2Vzbid0IGxvb2sgbGlrZSBzZXR0aW5n
+IHRoaXMgb24NCj4gPiA+IGEgcGVyLWxhcmIgYmFzaXMgd291bGQgbWFrZSBtdWNoIHNlbnNlLiBU
+aGUgcmVhc29uIHRvIHN3aXRjaCB0aGUNCj4gPiA+IGJhbmtfc2VsIHdvdWxkIGJlIHRvIGRlY2lk
+ZSB3aGljaCBNTSBkZXZpY2VzIGNhbiBzaGFyZSB0aGUgc2FtZQ0KPiA+ID4gYWRkcmVzcyBzcGFj
+ZS4gVGhpcyBpcyBhIHNlY3VyaXR5IGFzcGVjdCwgYmVjYXVzZSBpdCBlZmZlY3RpdmVseQ0KPiA+
+ID4gZGV0ZXJtaW5lcyB3aGljaCBkZXZpY2VzIGFyZSBpc29sYXRlZCBmcm9tIGVhY2ggb3RoZXIu
+DQo+ID4gPg0KPiA+ID4gVGhhdCBzYWlkLCBJIGFncmVlIHRoYXQgZm9yIG5vdyB3ZSBjYW4ganVz
+dCBzdGFydCB3aXRoIGEgZml4ZWQNCj4gPiA+IGFzc2lnbm1lbnQuIFdlIGNhbiB0aGluayBvZiB0
+aGUgQVBJIGlmIHRoZXJlIGlzIGEgbmVlZCB0byBhZGp1c3QgdGhlDQo+ID4gPiBhc3NpZ25tZW50
+Lg0KPiA+DQo+ID4gU29ycnkgZm9yIGhlcmUuIEkgZm9yZ290IGEgdGhpbmcgaGVyZS4gdGhhdCBp
+bnRlcmZhY2UgYWJvdmUgc3RpbGwgd2lsbA0KPiA+IG5vdCBiZSBoZWxwZnVsLiBJZiB3ZSBkb24n
+dCBkaXZpZGUgdGhlIHdob2xlIDE2R0IgcmFuZ2VzIGludG8gNA0KPiA+IHJlZ2lvbnMobGV0IGFs
+bCB0aGUgb3RoZXIgcmFuZ2VzIGJlIGR5bmFtaWNhbCksIEl0IHdvbid0IHdvcmsgc2luY2Ugd2UN
+Cj4gPiBjYW4gb25seSBhZGp1c3QgYmFua19zZWwgd2l0aCB0aGUgbGFyYiBhcyB1bml0LiBUaGlz
+IGlzIGEgcHJvYmxlbS4gdGhlcmUNCj4gPiBhcmUgbWFueSBwb3J0cyBpbiBhIGxhcmIuIFRha2Ug
+YSBleGFtcGxlLCB0aGUgYWRkcmVzcyBmb3IgdmNvZGVjIHJlYWQNCj4gPiBwb3J0IGlzIDMyYml0
+cyB3aGlsZSB0aGUgYWRkcmVzcyBmb3IgdmNvZGVjIHdyaXRlIHBvcnQgaXMgMzNiaXQsIHRoZW4g
+aXQNCj4gPiB3aWxsIGZhaWwgc2luY2Ugd2Ugb25seSBoYXZlIG9uZSBiYW5rX3NlbCBzZXR0aW5n
+IGZvciBvbmUgbGFyYi4NCj4gDQo+IFRoYXQncyBleGFjdGx5IHdoeSBJIHByb3Bvc2VkIHRvIGhh
+dmUgdGhlIEFQSSBvcGVyYXRlIGJhc2VkIG9uIHRoZQ0KPiBzdHJ1Y3QgZGV2aWNlLCByYXRoZXIg
+dGhhbiBpbmRpdmlkdWFsIERNQSBwb3J0cy4gQWx0aG91Z2ggSSBndWVzcyB0aGUNCj4gQ0NVIGNh
+c2UgaXMgZGlmZmVyZW50LCBiZWNhdXNlIGl0J3MgdGhlIHNhbWUgbGFyYiBhcyB0aGUgY2FtZXJh
+Lg0KPiANCj4gQW55d2F5LCBJIGFncmVlIHRoYXQgd2UgZG9uJ3QgaGF2ZSB0byBjb21lIHVwIHdp
+dGggc3VjaCBhbiBBUEkgcmlnaHQgbm93Lg0KDQpUaGFua3MgZm9yIHRoZSBjb25maXJtLg0KDQo+
+IA0KPiA+IFRodXMgd2UNCj4gPiBoYXZlIHRvIHVzZSBjdXJyZW50IGRlc2lnbi4NCj4gPg0KPiA+
+ID4NCj4gPiA+ID4NCj4gPiA+ID4gICAgSW4gY3VycmVudCBkZXNpZ24sIHRoZSBNTSBkZXZpY2Ug
+ZG9uJ3QgbmVlZCBjYXJlIGFib3V0IGl0IGFuZCA0R0INCj4gPiA+ID4gcmFuZ2UgaXMgZW5vdWdo
+IGZvciB0aGVtLg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IEFjdHVhbGx5LCBpcyB0aGUgY3VycmVu
+dCBhc3NpZ25tZW50IGNvcnJlY3Q/DQo+ID4NCj4gPiBPaC4gSW4gdGhlIGNvZGUgKHBhdGNoIFsz
+Mi8zM10gb2YgdjYpLCBJIHB1dCBDQ1UwLzEgaW4gdGhlIGNhbS9tZHANCj4gPiByZWdpb24gd2hp
+Y2ggc3RhcnQgYXQgOEcgc2luY2UgQ0NVMC8xIGlzIGEgbW9kdWxlIG9mIGNhbWVyYS4NCj4gPg0K
+PiA+ID4NCj4gPiA+IGRvbWFpbi1pZCAgbW9kdWxlICAgICBpb3ZhLXJhbmdlICAgICAgICAgICAg
+ICAgICAgbGFyYnMNCj4gPiA+ICAgIDAgICAgICAgZGlzcCAgICAgICAgMCB+IDRHICAgICAgICAg
+ICAgICAgICAgICAgIGxhcmIwLzENCj4gPiA+ICAgIDEgICAgICAgdmNvZGVjICAgICAgNEcgfiA4
+RyAgICAgICAgICAgICAgICAgICAgIGxhcmI0LzUvNw0KPiA+ID4gICAgMiAgICAgICBjYW0vbWRw
+ICAgICA4RyB+IDEyRyAgICAgICAgICAgICBsYXJiMi85LzExLzEzLzE0LzE2LzE3LzE4LzE5LzIw
+DQo+ID4gPiAgICAzICAgICAgIENDVTAgICAgMHg0MDAwXzAwMDAgfiAweDQzZmZfZmZmZiAgICAg
+bGFyYjEzOiBwb3J0IDkvMTANCj4gPiA+ICAgIDQgICAgICAgQ0NVMSAgICAweDQ0MDBfMDAwMCB+
+IDB4NDdmZl9mZmZmICAgICBsYXJiMTQ6IHBvcnQgNC81DQo+ID4gPg0KPiA+ID4gV291bGRuJ3Qg
+Q0NVMCBhbmQgQ0NVMSBjb25mbGljdCB3aXRoIGRpc3A/DQo+ID4NCj4gPiBBYm91dCB0aGUgY29u
+ZmxpY3QsIEkgdXNlIHBhdGNoIFsyOS8zM10gb2YgdjYgZm9yIHRoaXMuIEkgd2lsbCByZXNlcnZl
+DQo+ID4gdGhpcyBzcGVjaWFsIGlvdmEgcmVnaW9uIHdoZW4gdGhlIGZ1bGwgZG9tYWluKDAtNEcg
+aW4gdGhpcyBleGFtcGxlKQ0KPiA+IGluaXRpYWxpemUuDQo+ID4NCj4gPiA+IFNob3VsZCBwZXJo
+YXBzIGRpc3AgYmUgYXNzaWduZWQgMTJHIH4gMTZHIGluc3RlYWQ/DQo+ID4NCj4gPiBJIHRoaW5r
+IG5vIG5lZWQgcHV0IGl0IHRvIDEyRy0xNkcsIEluIHByZXZpb3VzIFNvQywgd2UgaGF2ZSBvbmx5
+IDRHQg0KPiA+IHJhbmdlcyBmb3Igd2hvbGUgTU0gZW5naW5lcy4gY3VycmVudGx5IG9ubHkgY2Ft
+L21kcCBkb21haW4gZXhjbHVkZSAxMjhNDQo+ID4gZm9yIENDVS4gaXQgc2hvdWxkIGJlIHNvbWV0
+aGluZyB3cm9uZyBpZiB0aGlzIGlzIG5vdCBlbm91Z2guDQo+ID4NCj4gDQo+IEluZGVlZCwgc3Bh
+Y2UgaXMgbm90IGEgcHJvYmxlbSwgYnV0IGZyb20gdGhlIHNlY3VyaXR5IHBvaW50IG9mIHZpZXcN
+Cj4gaXQncyB1bmRlc2lyYWJsZS4gSSBiZWxpZXZlIENDVSB3b3VsZCBiZSBydW5uaW5nIHByb3By
+aWV0YXJ5IGZpcm13YXJlLA0KPiBzbyBpdCBzaG91bGQgYmUgaXNvbGF0ZWQgYXMgbXVjaCBhcyBw
+b3NzaWJsZSBmcm9tIG90aGVyIGNvbXBvbmVudHMuDQoNCkNDVSBhcmUgaW4gdGhlIHNhbWUgbGFy
+YiB3aXRoIGNhbWVyYS4gVGh1cywgaXQgYWxzbyBuZWVkIGxvY2F0ZSB0aGUgc2FtZQ0KaW92YSBy
+YW5nZSB3aXRoIGNhbWVyYS4NCg0KPiBBbmQsIGFmdGVyIGFsbCwgd2h5IHdhc3RlIHRoZSByZW1h
+aW5pbmcgNEcgb2YgYWRkcmVzcyBzcGFjZT8NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gVG9tYXN6
+DQo+IA0KPiA+ID4NCj4gPiA+IEJlc3QgcmVnYXJkcywNCj4gPiA+IFRvbWFzeg0KPiA+ID4NCj4g
+PiA+ID4gPg0KPiA+ID4gPiA+IEJlc3QgcmVnYXJkcywNCj4gPiA+ID4gPiBUb21hc3oNCj4gPiA+
+ID4gPg0KPiA+ID4gPiA+ID4NCj4gPiA+ID4gPiA+IFRoYW5rcy4NCj4gPiA+ID4gPiA+ID4NCj4g
+PiA+ID4gPiA+ID4gQmVzdCByZWdhcmRzLA0KPiA+ID4gPiA+ID4gPiBUb21hc3oNCj4gPiA+ID4g
+PiA+ID4NCj4gPiA+ID4gPiA+ID4gPiAgICAzICAgICAgIENDVTAgICAgMHg0MDAwXzAwMDAgfiAw
+eDQzZmZfZmZmZiAgICAgbGFyYjEzOiBwb3J0IDkvMTANCj4gPiA+ID4gPiA+ID4gPiAgICA0ICAg
+ICAgIENDVTEgICAgMHg0NDAwXzAwMDAgfiAweDQ3ZmZfZmZmZiAgICAgbGFyYjE0OiBwb3J0IDQv
+NQ0KPiA+ID4gPiA+ID4gPiA+DQo+ID4gPiA+ID4gPiA+ID4gVGhlIGlvdmEgcmFuZ2UgZm9yIEND
+VTAvMShjYW1lcmEgY29udHJvbCB1bml0KSBpcyBIVyByZXF1aXJlbWVudC4NCj4gPiA+ID4gPiA+
+ID4gPg0KPiA+ID4gPiA+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlvbmcud3VAbWVk
+aWF0ZWsuY29tPg0KPiA+ID4gPiA+ID4gPiA+IFJldmlld2VkLWJ5OiBSb2IgSGVycmluZyA8cm9i
+aEBrZXJuZWwub3JnPg0KPiA+ID4gPiA+ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ID4gPiA+ICAuLi4v
+YmluZGluZ3MvaW9tbXUvbWVkaWF0ZWssaW9tbXUueWFtbCAgICAgICAgfCAgMTggKy0NCj4gPiA+
+ID4gPiA+ID4gPiAgaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXQ4MTkyLWxhcmItcG9ydC5o
+IHwgMjQwICsrKysrKysrKysrKysrKysrKw0KPiA+ID4gPiA+ID4gPiA+ICAyIGZpbGVzIGNoYW5n
+ZWQsIDI1NyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gPiA+ID4gPiA+ID4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL21lbW9yeS9tdDgxOTItbGFyYi1w
+b3J0LmgNCj4gPiA+ID4gPiA+ID4gPg0KPiA+ID4gPiA+ID4gW3NuaXBdDQo+ID4gPiA+DQo+ID4N
+Cj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZy
+YWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+bGludXgtbWVkaWF0ZWsNCg0K
 
-I didn't object to these patches, I think they are fine.
-I agree that we can look into update of arm64's pfn_valid(), maybe right
-after decrease of section size lands in.
- 
-> - Anshuman
-
--- 
-Sincerely yours,
-Mike.
