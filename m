@@ -2,292 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3883024DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3BD3024D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbhAYMYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 07:24:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727891AbhAYMP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:15:28 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E1FC061A27
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 03:48:52 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1l403e-0003BU-Q1; Mon, 25 Jan 2021 12:29:22 +0100
-Subject: Re: [Linux-stm32] [PATCH] ARM: dts: stm32: enable STM32MP1 crypto/CRC
- accelerators unconditionally
-To:     Lionel DEBIEVE <lionel.debieve@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210119095241.17888-1-a.fatoum@pengutronix.de>
- <d14933ea-2c77-7cca-8e2b-3972ea47d733@foss.st.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <55578a12-2049-ef17-e6bb-9c2e4b1da5ea@pengutronix.de>
-Date:   Mon, 25 Jan 2021 12:29:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727970AbhAYMVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 07:21:00 -0500
+Received: from ns.iliad.fr ([212.27.33.1]:43210 "EHLO ns.iliad.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727851AbhAYMO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:14:27 -0500
+Received: from ns.iliad.fr (localhost [127.0.0.1])
+        by ns.iliad.fr (Postfix) with ESMTP id 696D2201B0;
+        Mon, 25 Jan 2021 12:42:55 +0100 (CET)
+Received: from [192.168.108.37] (freebox.vlq16.iliad.fr [213.36.7.13])
+        by ns.iliad.fr (Postfix) with ESMTP id 53799201AB;
+        Mon, 25 Jan 2021 12:42:55 +0100 (CET)
+Subject: Re: [PATCH] mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend
+To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+References: <20210107221509.6597-1-alcooperx@gmail.com>
+From:   Nicolas Schichan <nschichan@freebox.fr>
+Autocrypt: addr=nschichan@freebox.fr; prefer-encrypt=mutual; keydata=
+ xsDiBEmTLz8RBADBY46VzpMBGf4or14ijXlvY0jzJsBfWiBtpAbEGmyAEwf9olyd5yMrEnE1
+ qJk0NpcOMiXB/DMvOhJv4kxY6KT6r1y1UwmolkMJ782kt2zqyxaLpXsdSFBnLaN38XKgsvtW
+ snnFCA6FT3bYNPNVgNMuog2UhUn2eKGVBVW0nuFbGwCg5WM290H0BLJE9+v+z6UBqC0MIhED
+ /jENkiSXAhRzbFLc7cusXxmAUQlGO7kmWkZAShC+p2W/a/1BhCoefunkLKlMlJpSJJklbseQ
+ RZxfyImKFuep1pRhHM6PDpXP49jfYF6WYbbq7Bx752uUkRD9D5XqHfgPRuFRUC79rDgxFZv9
+ 2Umxuyacsg6gU0O3B8z2r0koXhffBACBymptu/4uHXO98HUuc92PwwswzqPyYXdZUQs37Fgc
+ rMZxR4utRzWDnLy81bRn00yHVfK/FJ14Bxx06xlLnmFZC3fy3z+g2cRxKFZ5H9AI0OnNQD69
+ eJTbARTNbKsgUvjqTvZTMg6TlesKSRI4kgCl9eejyrMuvOkSmeAnXwQHJM0nTmljb2xhcyBT
+ Y2hpY2hhbiA8bnNjaGljaGFuQGZyZWVib3guZnI+wmAEExECACAFAkmTLz8CGwMGCwkIBwMC
+ BBUCCAMEFgIDAQIeAQIXgAAKCRCL3CkFLvhg0PwDAKDQJXWNg9QyfYatePfw4W2k1oKOSwCg
+ ldD3GhvlDaYUjIcgpTGsK+21OnXOwU0ESZMvSRAIAIau5WL6+zCIjb9WTTf6bX1ULD3gtWTB
+ i/APtidAfIZJe87T7S7x3v7RRAPo5CAb787jgHZPzbZ2kRBbAPWB9ZF0d11m9Le3kmJPr6Lj
+ tSPGX8FY+T1pvUIi2OIbhVgKC5QpLB0pq8ISAEk1N/9eBGo7QXOEyeHwhIQS6+kOj5HlyA5U
+ sIw3M0bNTz9MWudHGphoad5ZF+gGVAXCN5s6TTSsKxWrejacaz0Y5r1nFjelK1fnqEWpiMD6
+ sh4Bv1gawiMOowd1tgeHeyvabRiBF780yU5EeNpv5T1vTUCaphPfFbPdrnOjrleN+kNqN8kS
+ 4b3G+WvEz+t9NRvFUiQgB+MAAwUH/3bx27p+GDxAwduC9rwvD2WbPkRYaMjTTcm7y+ssqCdL
+ VosZGFuqWdjcoc7sYsY6cfciupLAmSaX0kIPtzS0VBmzgtQRpdJSiC2ZskdMBg9/5C5lYWx9
+ T5Y8ys82LT8AmX3CzQbc1duk4bZ5bg5DrS79I2lE/2bzCS/HbIWNwCuunwk9s9A7KU8KhpXh
+ Xo7LUwYRJVsYjrhOGJcgPtPMp4ReFHtHlp5AaXEmZbBq1gtYwotd3eNXgp+gClXNxzI/+vW5
+ d/u1t7Og6qXSJlYGK8Xbc/zZyU3BfR9u17jlJlPp51lXNF3MkMHcdWa31fnmsmqRCcq8FF8j
+ RDBuScP0gj7CSQQYEQIACQUCSZMvSQIbDAAKCRCL3CkFLvhg0OK6AJ4+05fuwuFFrGNahTwK
+ 3SjvbE3HRwCgyuYgGcOqrIycpseHVTZlVuxF0Q8=
+Message-ID: <6ce58f44-050d-3716-791c-0e924b43d26a@freebox.fr>
+Date:   Mon, 25 Jan 2021 12:42:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <d14933ea-2c77-7cca-8e2b-3972ea47d733@foss.st.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210107221509.6597-1-alcooperx@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: ClamAV using ClamSMTP ; ns.iliad.fr ; Mon Jan 25 12:42:55 2021 +0100 (CET)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Lionel,
-
-On 19.01.21 11:50, Lionel DEBIEVE wrote:
-> Hi Ahmad,
+On 07/01/2021 23:15, Al Cooper wrote:
+> Commit e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
+> that added a shutdown callback to the diver, is causing "mmc timeout"
+> errors on S5 suspend. The problem was that the "remove" was queuing
+> additional MMC commands after the "shutdown" and these caused
+> timeouts as the MMC queues were cleaned up for "remove". The
+> shutdown callback will be changed to calling sdhci-pltfm_suspend
+> which should get better power savings because the clocks will be
+> shutdown.
 > 
-> These IPs could be enabled in the secure side. To avoid any concurrency access, I prefer to keep all that crypto IPs status disable.
-> For examples, RNG can be managed in OP-TEE, so it will remain disable in Linux.
-You could extend that reasoning (OP-TEE might use them) to all peripherals.
-As the device tree is supposed to describe the hardware., I'd assume whether
-something is enabled in Linux or OP-TEE should be project-specific configuration
-(or fixed up by boot firmware).
-
-But I don't feel too strongly about it. Please dismiss and thanks for the clarification.
-
-Cheers,
-Ahmad
-
-
-> BR,
+> Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+> ---
+>  drivers/mmc/host/sdhci-brcmstb.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> Lionel
+> diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+> index bbf3496f4495..f9780c65ebe9 100644
+> --- a/drivers/mmc/host/sdhci-brcmstb.c
+> +++ b/drivers/mmc/host/sdhci-brcmstb.c
+> @@ -314,11 +314,7 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>  
+>  static void sdhci_brcmstb_shutdown(struct platform_device *pdev)
+>  {
+> -	int ret;
+> -
+> -	ret = sdhci_pltfm_unregister(pdev);
+> -	if (ret)
+> -		dev_err(&pdev->dev, "failed to shutdown\n");
+> +	sdhci_pltfm_suspend(&pdev->dev);
+>  }
+>  
+>  MODULE_DEVICE_TABLE(of, sdhci_brcm_of_match);
 > 
-> On 1/19/21 10:52 AM, Ahmad Fatoum wrote:
->> There is no SoC-external hardware support needed for the hash1, rng1,
->> crc1 and cryp1 IP blocks to function. Enable them thus unconditionally
->> instead of replicating their enablement in board device trees.
->>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->>   arch/arm/boot/dts/stm32mp151.dtsi              |  3 ---
->>   arch/arm/boot/dts/stm32mp157a-stinger96.dtsi   |  4 ----
->>   arch/arm/boot/dts/stm32mp157c-dk2.dts          |  4 ----
->>   arch/arm/boot/dts/stm32mp157c-ed1.dts          | 16 ----------------
->>   arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi |  4 ----
->>   arch/arm/boot/dts/stm32mp15xc.dtsi             |  1 -
->>   arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi   |  8 --------
->>   arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi   |  4 ----
->>   arch/arm/boot/dts/stm32mp15xx-dkx.dtsi         | 12 ------------
->>   arch/arm/boot/dts/stm32mp15xx-osd32.dtsi       |  4 ----
->>   10 files changed, 60 deletions(-)
->>
->> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
->> index 3c75abacb374..c2d998343b6a 100644
->> --- a/arch/arm/boot/dts/stm32mp151.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
->> @@ -1297,7 +1297,6 @@ hash1: hash@54002000 {
->>               dmas = <&mdma1 31 0x2 0x1000A02 0x0 0x0>;
->>               dma-names = "in";
->>               dma-maxburst = <2>;
->> -            status = "disabled";
->>           };
->>             rng1: rng@54003000 {
->> @@ -1305,7 +1304,6 @@ rng1: rng@54003000 {
->>               reg = <0x54003000 0x400>;
->>               clocks = <&rcc RNG1_K>;
->>               resets = <&rcc RNG1_R>;
->> -            status = "disabled";
->>           };
->>             mdma1: dma-controller@58000000 {
->> @@ -1402,7 +1400,6 @@ crc1: crc@58009000 {
->>               compatible = "st,stm32f7-crc";
->>               reg = <0x58009000 0x400>;
->>               clocks = <&rcc CRC1>;
->> -            status = "disabled";
->>           };
->>             stmmac_axi_config_0: stmmac-axi-config {
->> diff --git a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
->> index 58275bcf9e26..268a99291d79 100644
->> --- a/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp157a-stinger96.dtsi
->> @@ -253,10 +253,6 @@ &pwr_regulators {
->>       vdd_3v3_usbfs-supply = <&vdd_usb>;
->>   };
->>   -&rng1 {
->> -    status = "okay";
->> -};
->> -
->>   &rtc {
->>       status = "okay";
->>   };
->> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts b/arch/arm/boot/dts/stm32mp157c-dk2.dts
->> index 2bc92ef3aeb9..045636555ddd 100644
->> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
->> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
->> @@ -29,10 +29,6 @@ chosen {
->>       };
->>   };
->>   -&cryp1 {
->> -    status = "okay";
->> -};
->> -
->>   &dsi {
->>       status = "okay";
->>       phy-dsi-supply = <&reg18>;
->> diff --git a/arch/arm/boot/dts/stm32mp157c-ed1.dts b/arch/arm/boot/dts/stm32mp157c-ed1.dts
->> index 81a7d5849db4..f69622097e89 100644
->> --- a/arch/arm/boot/dts/stm32mp157c-ed1.dts
->> +++ b/arch/arm/boot/dts/stm32mp157c-ed1.dts
->> @@ -115,14 +115,6 @@ adc1: adc@0 {
->>       };
->>   };
->>   -&crc1 {
->> -    status = "okay";
->> -};
->> -
->> -&cryp1 {
->> -    status = "okay";
->> -};
->> -
->>   &dac {
->>       pinctrl-names = "default";
->>       pinctrl-0 = <&dac_ch1_pins_a &dac_ch2_pins_a>;
->> @@ -144,10 +136,6 @@ &gpu {
->>       contiguous-area = <&gpu_reserved>;
->>   };
->>   -&hash1 {
->> -    status = "okay";
->> -};
->> -
->>   &i2c4 {
->>       pinctrl-names = "default", "sleep";
->>       pinctrl-0 = <&i2c4_pins_a>;
->> @@ -325,10 +313,6 @@ &pwr_regulators {
->>       vdd_3v3_usbfs-supply = <&vdd_usb>;
->>   };
->>   -&rng1 {
->> -    status = "okay";
->> -};
->> -
->>   &rtc {
->>       status = "okay";
->>   };
->> diff --git a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
->> index 6cf49a0a9e69..a2aca1982bf6 100644
->> --- a/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp157c-odyssey-som.dtsi
->> @@ -250,10 +250,6 @@ &m4_rproc {
->>       status = "okay";
->>   };
->>   -&rng1 {
->> -    status = "okay";
->> -};
->> -
->>   &rtc {
->>       status = "okay";
->>   };
->> diff --git a/arch/arm/boot/dts/stm32mp15xc.dtsi b/arch/arm/boot/dts/stm32mp15xc.dtsi
->> index b06a55a2fa18..86953d7ddde0 100644
->> --- a/arch/arm/boot/dts/stm32mp15xc.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp15xc.dtsi
->> @@ -12,7 +12,6 @@ cryp1: cryp@54001000 {
->>               interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
->>               clocks = <&rcc CRYP1>;
->>               resets = <&rcc CRYP1_R>;
->> -            status = "disabled";
->>           };
->>       };
->>   };
->> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
->> index ac46ab363e1b..603c14054509 100644
->> --- a/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi
->> @@ -377,14 +377,6 @@ flash0: mx66l51235l@0 {
->>       };
->>   };
->>   -&rng1 {
->> -    status = "okay";
->> -};
->> -
->> -&rtc {
->> -    status = "okay";
->> -};
->> -
->>   &sdmmc1 {
->>       pinctrl-names = "default", "opendrain", "sleep";
->>       pinctrl-0 = <&sdmmc1_b4_pins_a &sdmmc1_dir_pins_a>;
->> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
->> index 803eb8bc9c85..3f4af430aaf4 100644
->> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-som.dtsi
->> @@ -204,10 +204,6 @@ flash0: spi-flash@0 {
->>       };
->>   };
->>   -&rng1 {
->> -    status = "okay";
->> -};
->> -
->>   &rtc {
->>       status = "okay";
->>   };
->> diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
->> index 89c0e1ddc387..0cca6c3ff4a0 100644
->> --- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
->> @@ -124,10 +124,6 @@ &cec {
->>       status = "okay";
->>   };
->>   -&crc1 {
->> -    status = "okay";
->> -};
->> -
->>   &dts {
->>       status = "okay";
->>   };
->> @@ -155,10 +151,6 @@ &gpu {
->>       contiguous-area = <&gpu_reserved>;
->>   };
->>   -&hash1 {
->> -    status = "okay";
->> -};
->> -
->>   &i2c1 {
->>       pinctrl-names = "default", "sleep";
->>       pinctrl-0 = <&i2c1_pins_a>;
->> @@ -482,10 +474,6 @@ &pwr_regulators {
->>       vdd_3v3_usbfs-supply = <&vdd_usb>;
->>   };
->>   -&rng1 {
->> -    status = "okay";
->> -};
->> -
->>   &rtc {
->>       status = "okay";
->>   };
->> diff --git a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
->> index 713485a95795..d03d4d12133c 100644
->> --- a/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp15xx-osd32.dtsi
->> @@ -224,7 +224,3 @@ &m4_rproc {
->>       interrupts = <68 1>;
->>       status = "okay";
->>   };
->> -
->> -&rng1 {
->> -    status = "okay";
->> -};
-> 
+
+Good morning,
+
+Unfortunately this patch will cause link failures when CONFIG_PM_SLEEP is not
+set in the kernel config, as in sdhci-pltfm.c, the implementation of
+sdhci_pltfm_suspend() is in between #ifdef CONFIG_PM_SLEEP:
+
+/opt/toolchains/aarch64-musl-1.1.21-gcc-8.3.0-binutils-2.32-gdb-7.12.1-2/bin/aarch64-linux-musl-ld:
+drivers/mmc/host/sdhci-brcmstb.o: in function `sdhci_brcmstb_shutdown':
+sdhci-brcmstb.c:(.text+0x16c): undefined reference to `sdhci_pltfm_suspend'
+sdhci-brcmstb.c:(.text+0x16c): relocation truncated to fit: R_AARCH64_CALL26
+against undefined symbol `sdhci_pltfm_suspend'
+
+
+I'm not sure if definiting sdhci_pltfm_suspend() empty stubs in sdhci-pltfm.h
+when CONFIG_PM_SLEEP is not set would be prefered over adding #ifdef
+CONFIG_PM_SLEEP in sdhci-brcmstb.c, but I can send a patch for either solution.
+
+Regards,
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Nicolas Schichan
+
