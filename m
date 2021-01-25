@@ -2,99 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA5A304900
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330A4304901
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387926AbhAZFe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:34:57 -0500
-Received: from 95-165-96-9.static.spd-mgts.ru ([95.165.96.9]:38350 "EHLO
-        blackbox.su" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727550AbhAYKYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:24:49 -0500
-Received: from metabook.localnet (metabook.metanet [192.168.2.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by blackbox.su (Postfix) with ESMTPSA id 1436D82100;
-        Mon, 25 Jan 2021 13:24:20 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=blackbox.su; s=mail;
-        t=1611570260; bh=OIH8jJvJj4R+44q6v+7DHOVKderUN4HFIOEk+xnmAO4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C9czO7zOFEKQUIArb/pVy2Px03p232ZckGiAWzPcBQXEeuf5dUwbp+Q+lSMPtj1UK
-         7LzVJ0//OEsLOmAkQ03nEB0jE14UVhjziBwqv4Wn40oTy1Dvue0wP4+yOM/C8dZgjk
-         NLcOjy7LArtgb4xrwBaEnxWc56Wrx65t0+zdfN8RZLzQ49wGmvwuHLKzYvTrU0KOFb
-         luU2yM1wkV/VWla+DQ+KfD/r06hrGjw7mOSZA4ZpXlhV0MWYD0qwnXSWySNRYdxegL
-         yqlvG9CCKUM/FHxmNZxSYhZ8404MLNqf1tOPWFirA30rbMrIMKhvVuaIH83Ej9oC/X
-         VqeaXk1++Abhg==
-From:   Sergej Bauer <sbauer@blackbox.su>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, f.fainelli@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Simon Horman <simon.horman@netronome.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] lan743x: add virtual PHY for PHY-less devices
-Date:   Mon, 25 Jan 2021 13:23:25 +0300
-Message-ID: <2014021.cZaaFtpcjn@metabook>
-In-Reply-To: <YAtebdG1Q0dxxkdC@lunn.ch>
-References: <20210122214247.6536-1-sbauer@blackbox.su> <21783568.4JFRnjC3Rk@metabook> <YAtebdG1Q0dxxkdC@lunn.ch>
+        id S2387952AbhAZFfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:35:00 -0500
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:40963 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727557AbhAYKZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:25:42 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id 3z2slT9JIiWRg3z2vlfsGd; Mon, 25 Jan 2021 11:24:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1611570274; bh=kmHFrl41CYcqrNiUZ72T0IMxn1HeaqRQUa+uQpTKAh4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=oXmmdET7/MG/IZ6DB+YbjqvMyhUlv+UHIP/hooPMt+bj5p4JvdWpj7cKP9ZenlLRd
+         uiexvauakHRez0Bck0x0rbTX0KBmRRvX6Ho9uQWFT+sHUVs/HihYCyNeLjm8nafR6s
+         jppMSjbGCkxBY/y0C4QkkDKMspDT2pwCvL3oBv4F9xOk8k5TJKtBV8GTTGvSVwfPDB
+         9ROhVFjx7qTPgR3i2n7tLGMa3kA+M1KVMXDT0KxXSAiB3dYeAr5Ktr+GcNUFLphWpG
+         sP7G3JmSIyVNfbnaISVDX1XVdEPIbOfNirESEyeA886EoGEOZdsCzKhq6yIAH/u/+j
+         CygTI7tJRSGOQ==
+Subject: Re: [PATCH v4 4/5] docs: Document CLL and Mastering display
+ colorimetry controls
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20210120092606.3987207-1-stanimir.varbanov@linaro.org>
+ <20210120092606.3987207-5-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <e93c5dec-94a9-89f6-dae2-b1d14092d674@xs4all.nl>
+Date:   Mon, 25 Jan 2021 11:24:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210120092606.3987207-5-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfA2/LOkNI9VQJ8+gVuoFSlqX10OKjpezettPw9cfd1F+z945XPysL/FtmxGPSQh6w2Nxgn4pZxYFMO3HxMQyC5bmacnsaKD0DGwgog/IMieaPYtfB+eT
+ KsGJTtWapnowAtcuxLk8FwO46TguaqfFzdAp29e27RYPtEEkyOE2raaxnVgBKADvJefm9ILJhT/fQ4SWaXPXIO5+jsVAFVyvIG1zL11MvxXXekykbKDT+18y
+ g++RnhJcjbbjmJxb+gq2tn3k8nlZrTrQp3nDa/Rg0aAlaFV4sB+FXIR9LWGDXbrANdL5l29xoCKtBbortuK7tcSxXbE84hkGTKrWP5TxJXcNbaedp69UuWWK
+ XiENvPOTMyqkkoIW+xZo6nKnEvjhfXjCJDSEo+CbL7RVOMxef6rTLiaLi7LP+BxlM6oIXszJ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, January 23, 2021 2:23:25 AM MSK Andrew Lunn wrote:
-> > > > @@ -1000,8 +1005,10 @@ static void lan743x_phy_close(struct
-> > > > lan743x_adapter *adapter)>
-> > > > 
-> > > >  	struct net_device *netdev = adapter->netdev;
-> > > >  	
-> > > >  	phy_stop(netdev->phydev);
-> > > > 
-> > > > -	phy_disconnect(netdev->phydev);
-> > > > -	netdev->phydev = NULL;
-> > > > +	if (phy_is_pseudo_fixed_link(netdev->phydev))
-> > > > +		lan743x_virtual_phy_disconnect(netdev->phydev);
-> > > > +	else
-> > > > +		phy_disconnect(netdev->phydev);
-> > > 
-> > > phy_disconnect() should work. You might want to call
+On 20/01/2021 10:26, Stanimir Varbanov wrote:
+> Document Content Light Level and Mastering Display v4l2 colorimetry
+> controls.
 > 
-> There are drivers which call phy_disconnect() on a fixed_link. e.g.
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  .../media/v4l/ext-ctrls-colorimetry.rst       | 71 +++++++++++++++++++
+>  .../media/videodev2.h.rst.exceptions          |  2 +
+>  2 files changed, 73 insertions(+)
 > 
-> https://elixir.bootlin.com/linux/v5.11-rc4/source/drivers/net/usb/lan78xx.c#
-> L3555.
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> index 6b0cd2054e84..e7e55323651f 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> @@ -17,3 +17,74 @@ Colorimetry Control IDs
+>      The Colorimetry class descriptor. Calling
+>      :ref:`VIDIOC_QUERYCTRL` for this control will
+>      return a description of this control class.
+> +
+> +``V4L2_CID_COLORIMETRY_HDR10_CLL_INFO (struct)``
+> +    The Content Light Level defines upper bounds for the nominal target
+> +    brightness light level of the pictures.
+> +
+> +.. c:type:: v4l2_ctrl_hdr10_cll_info
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hdr10_cll_info
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u16
+> +      - ``max_content_light_level``
+> +      - The upper bound for the maximum light level among all individual
+> +        samples for the pictures of a coded video sequence, cd/m2. When
+
+For this document:
+
+cd/m2 -> cd/m\ :sup:`2`
+
+> +        equal to 0 no such upper bound is present.
+> +    * - __u16
+> +      - ``max_pic_average_light_level``
+> +      - The upper bound for the maximum average light level among the
+> +        samples for any individual picture of a coded video sequence, cd/m2.
+> +        When equal to 0 no such upper bound is present.
+> +
+> +``V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY (struct)``
+> +    The mastering display defines the colour volume (the colour primaries,
+
+For this document: colour -> color
+
+(The US spelling is used)
+
+> +    white point and luminance range) of a display considered to be the
+> +    mastering display for the current video content.
+> +
+> +.. c:type:: v4l2_ctrl_hdr10_mastering_display
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hdr10_mastering_display
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u16
+> +      - ``display_primaries_x[3]``
+> +      - Specifies the normalized x chromaticity coordinate of the colour
+> +        primary component c of the mastering display in increments of 0.00002.
+> +        For describing the mastering display that uses Red, Green and Blue
+> +        colour primaries, index value c equal to 0 corresponds to the Green
+> +        primary, c equal to 1 corresponds to Blue primary and c equal to 2
+> +        corresponds to the Red colour primary.
+> +    * - __u16
+> +      - ``display_primaries_y[3]``
+> +      - Specifies the normalized y chromaticity coordinate of the colour
+> +        primary component c of the mastering display in increments of 0.00002.
+> +        For describing the mastering display that uses Red, Green and Blue
+> +        colour primaries, index value c equal to 0 corresponds to the Green
+> +        primary, c equal to 1 corresponds to Blue primary and c equal to 2
+> +        corresponds to Red colour primary.
+> +    * - __u16
+> +      - ``white_point_x``
+> +      - Specifies the normalized x chromaticity coordinate of the white
+> +        point of the mastering display in increments of 0.00002.
+> +    * - __u16
+> +      - ``white_point_y``
+> +      - Specifies the normalized y chromaticity coordinate of the white
+> +        point of the mastering display in increments of 0.00002.
+> +    * - __u32
+> +      - ``max_luminance``
+> +      - Specifies the nominal maximum display luminance of the mastering
+> +        display in units of 0.0001 cd/m2.
+> +    * - __u32
+> +      - ``min_luminance``
+> +      - specifies the nominal minimum display luminance of the mastering
+> +        display in units of 0.0001 cd/m2.
+> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> index 0ed170c6e720..af4b8b87c5d7 100644
+> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
+> @@ -147,6 +147,8 @@ replace symbol V4L2_CTRL_TYPE_HEVC_PPS :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_AREA :c:type:`v4l2_ctrl_type`
+>  replace symbol V4L2_CTRL_TYPE_FWHT_PARAMS :c:type:`v4l2_ctrl_type`
+> +replace symbol V4L2_CTRL_TYPE_HDR10_CLL_INFO :c:type:`v4l2_ctrl_hdr10_cll_info`
+> +replace symbol V4L2_CTRL_TYPE_HDR10_MASTERING_DISPLAY :c:type:`v4l2_ctrl_hdr10_mastering_display`
+
+No, these two should be :c:type:`v4l2_ctrl_type` like the others.
+
+>  
+>  # V4L2 capability defines
+>  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
 > 
-> It could be your missing call to fixed_phy_unregister() is leaving
-> behind bad state.
-> 
-fixed_phy_unregister() were inside of lan743x_virtual_phy_disconnect()
 
-> > It was to make ethtool show full set of supported speeds and MII only in
-> > supported ports (without TP and the no any ports in the bare card).
-> 
-> But fixed link does not support the full set of speed. It is fixed. It
-> supports only one speed it is configured with.  And by setting it
-> wrongly, you are going to allow the user to do odd things, like use
-> ethtool force the link speed to a speed which is not actually
-> supported.
-when writing virtual phy i have used "Microchip AN2948 Configuration Registers
-of LAN743x" document and the lan743x is designed only for LAN7430 either
-LAN7431 as it pointed in the document and in lan743x_pcidev_tbl. which both
-support speeds 10/100/1000 Mbps.
+You also need to document the new p_hdr10_cll and p_hdr10_mastering
+fields in Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst.
 
+Regards,
 
--- 
-                                Regards,
-                                    Sergej.
-
-
-
-
+	Hans
