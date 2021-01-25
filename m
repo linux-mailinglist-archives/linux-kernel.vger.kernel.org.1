@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18083040BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4863040A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391448AbhAZJku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:40:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36812 "EHLO mail.kernel.org"
+        id S2391570AbhAZJpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:45:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731016AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:51:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D942310A;
-        Mon, 25 Jan 2021 18:50:51 +0000 (UTC)
+        id S1731164AbhAYSvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07FFF20665;
+        Mon, 25 Jan 2021 18:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600652;
-        bh=ZRdEgExoQGaP23kwrINMhYQZYgcDHq3m22r39Cu4ZFk=;
+        s=korg; t=1611600662;
+        bh=6M1+X/O+rb9PG7g8fHUffNHEDfkKlAkXvrGxIqgZfPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jzneQR0NC+OFflhrMa8V2++AfrG+kl+ynTwbdD/NUvPtwNX2IRbXmSjLzMFxRRdRW
-         PtGeWCFh4jIv4L8eOxXe8kLkej/qIA4Fpb88FuRpw3RWgiaz5dUB+9LtZmYwCBu6Zt
-         hfq96PleY2gMzukDpyGxT1ExwSf3/R+JpYFnjPWs=
+        b=rAWnNry1juv07Zq8Bvd4j7Zp2zIInJ6O7Xg+2BPfzhQtBGEvpjbGMnNz8z6vtRnRW
+         Ocjko9nnYVNp9UhkmxIIpnvvsLKI4+QGWmmyHAGgaQMC2QD2/+GJ20CRWb9biLHZBo
+         zZs6CTjEHjKG4KNWz/UJUpOYIRFHg2mh2WLL8sKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Takashi Iwai <tiwai@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 099/199] drm/vc4: Unify PCM cards driver_name
-Date:   Mon, 25 Jan 2021 19:38:41 +0100
-Message-Id: <20210125183220.457534182@linuxfoundation.org>
+        stable@vger.kernel.org, "Kenneth R. Crudup" <kenny@panix.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 103/199] ALSA: hda: Balance runtime/system PM if direct-complete is disabled
+Date:   Mon, 25 Jan 2021 19:38:45 +0100
+Message-Id: <20210125183220.617523783@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -42,44 +40,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 33c74535b03ecf11359de14bc88302595b1de44f ]
+[ Upstream commit 2b73649cee65b8e33c75c66348cb1bfe0ff9d766 ]
 
-User-space ALSA matches a card's driver name against an internal list of
-aliases in order to select the correct configuration for the system.
-When the driver name isn't defined, the match is performed against the
-card's name.
+After hibernation, HDA controller can't be runtime-suspended after
+commit 215a22ed31a1 ("ALSA: hda: Refactor codjc PM to use
+direct-complete optimization"), which enables direct-complete for HDA
+codec.
 
-With the introduction of RPi4 we now have two HDMI ports with two
-distinct audio cards. This is reflected in their names, making them
-different from previous RPi versions. With this, ALSA ultimately misses
-the board's configuration on RPi4.
+The HDA codec driver didn't expect direct-complete will be disabled
+after it returns a positive value from prepare() callback. However,
+there are some places that PM core can disable direct-complete. For
+instance, system hibernation or when codec has subordinates like LEDs.
 
-In order to avoid this, set "card->driver_name" to "vc4-hdmi"
-unanimously.
+So if the codec is prepared for direct-complete but PM core still calls
+codec's suspend or freeze callback, partially revert the commit and take
+the original approach, which uses pm_runtime_force_*() helpers to
+ensure PM refcount are balanced. Meanwhile, still keep prepare() and
+complete() callbacks to enable direct-complete and request a resume for
+jack detection, respectively.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Fixes: f437bc1ec731 ("drm/vc4: drv: Support BCM2711")
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210115191209.12852-1-nsaenzjulienne@suse.de
+Reported-by: Kenneth R. Crudup <kenny@panix.com>
+Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Link: https://lore.kernel.org/r/20210119152145.346558-1-kai.heng.feng@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/hda_codec.c | 24 +++++++-----------------
+ 1 file changed, 7 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index afc178b0d89f4..eaba98e15de46 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1268,6 +1268,7 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
- 	card->dai_link = dai_link;
- 	card->num_links = 1;
- 	card->name = vc4_hdmi->variant->card_name;
-+	card->driver_name = "vc4-hdmi";
- 	card->dev = dev;
- 	card->owner = THIS_MODULE;
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 687216e745267..eec1775dfffe9 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -2934,7 +2934,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
+ 	snd_hdac_leave_pm(&codec->core);
+ }
+ 
+-static int hda_codec_suspend(struct device *dev)
++static int hda_codec_runtime_suspend(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 	unsigned int state;
+@@ -2953,7 +2953,7 @@ static int hda_codec_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int hda_codec_resume(struct device *dev)
++static int hda_codec_runtime_resume(struct device *dev)
+ {
+ 	struct hda_codec *codec = dev_to_hda_codec(dev);
+ 
+@@ -2968,16 +2968,6 @@ static int hda_codec_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int hda_codec_runtime_suspend(struct device *dev)
+-{
+-	return hda_codec_suspend(dev);
+-}
+-
+-static int hda_codec_runtime_resume(struct device *dev)
+-{
+-	return hda_codec_resume(dev);
+-}
+-
+ #endif /* CONFIG_PM */
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -2998,31 +2988,31 @@ static void hda_codec_pm_complete(struct device *dev)
+ static int hda_codec_pm_suspend(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_SUSPEND;
+-	return hda_codec_suspend(dev);
++	return pm_runtime_force_suspend(dev);
+ }
+ 
+ static int hda_codec_pm_resume(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESUME;
+-	return hda_codec_resume(dev);
++	return pm_runtime_force_resume(dev);
+ }
+ 
+ static int hda_codec_pm_freeze(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_FREEZE;
+-	return hda_codec_suspend(dev);
++	return pm_runtime_force_suspend(dev);
+ }
+ 
+ static int hda_codec_pm_thaw(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_THAW;
+-	return hda_codec_resume(dev);
++	return pm_runtime_force_resume(dev);
+ }
+ 
+ static int hda_codec_pm_restore(struct device *dev)
+ {
+ 	dev->power.power_state = PMSG_RESTORE;
+-	return hda_codec_resume(dev);
++	return pm_runtime_force_resume(dev);
+ }
+ #endif /* CONFIG_PM_SLEEP */
  
 -- 
 2.27.0
