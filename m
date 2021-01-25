@@ -2,104 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFF0302EB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783C0302EB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbhAYWMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:12:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45457 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731913AbhAYWJb (ORCPT
+        id S1731405AbhAYWMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:12:45 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44456 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732171AbhAYWLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:09:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611612485;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YEfGCW9pOkAOxQjE9Kgiz1zr3syKfIZyR2H1zYGJuOs=;
-        b=Xycli50YhPe4pATq94uSlZegONdUOX79Nqy44Xg2jIc/8L6bLap654J7djZNkxB84XRwMH
-        x+9+0iVHa1c7bV5vrWff/0J4DIZn2uBopmoENO61aen38JeRCGu/BxEZ+yVDU7ynR6QNvz
-        WKZ3aKsa6d24331S2mnX/ut+ZwsoD8k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-398-f-xxbEYqOyqco9IPcad1rA-1; Mon, 25 Jan 2021 17:08:03 -0500
-X-MC-Unique: f-xxbEYqOyqco9IPcad1rA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C291218C8C00;
-        Mon, 25 Jan 2021 22:08:01 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F2276F978;
-        Mon, 25 Jan 2021 22:08:00 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 16:07:57 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210125220757.vxdsf6sttpy46cq7@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
- <20210125212755.jfwlqogpcarmxdgt@treble>
- <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
+        Mon, 25 Jan 2021 17:11:30 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10PM9eVA082042;
+        Mon, 25 Jan 2021 16:09:40 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611612580;
+        bh=arAM2Y1yK2CyFW0okER1s3JUpc8E8Tbuq+WjpElJ554=;
+        h=From:To:CC:Subject:Date;
+        b=YXhk8xFaso21AUjc1MOVDvuLA7oIkdrh+i/UbPXIGd3jVaqGHp+NLaRsJDV485sm2
+         kT2dyYu09lHnM6Ey2OkQ5TKpyqMjI/PfkaPE7VAo7GUn88MFSc/Xw0EsKDCGKXavvn
+         j6VJ76ez4TJSW1z1CQXD/yHvNYIbqIedkSx1FRE4=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10PM9e8x106488
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Jan 2021 16:09:40 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
+ Jan 2021 16:09:40 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 25 Jan 2021 16:09:40 -0600
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10PM9eCP045403;
+        Mon, 25 Jan 2021 16:09:40 -0600
+Received: from localhost ([10.250.35.71])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 10PM9eKJ126738;
+        Mon, 25 Jan 2021 16:09:40 -0600
+From:   Suman Anna <s-anna@ti.com>
+To:     Santosh Shilimkar <ssantosh@kernel.org>
+CC:     David Lechner <david@lechnology.com>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Subject: [PATCH] soc: ti: pruss: Refactor the CFG sub-module init
+Date:   Mon, 25 Jan 2021 16:09:33 -0600
+Message-ID: <20210125220933.27654-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 06:44:35AM +0900, Masahiro Yamada wrote:
-> > > If people use a different compiler, they must be
-> > > prepared for any possible problem.
-> > >
-> > > Using different compiler flags for in-tree and out-of-tree
-> > > is even more dangerous.
-> > >
-> > > For example, CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled
-> > > for in-tree build, and then disabled for out-of-tree modules,
-> > > the struct layout will mismatch, won't it?
-> >
-> > If you read the patch you'll notice that it handles that case, when it's
-> > caused by GCC mismatch.
-> >
-> > However, as alluded to in the [1] footnote, it doesn't handle the case
-> > where the OOT build system doesn't have gcc-plugin-devel installed.
-> > Then CONFIG_GCC_PLUGIN_RANDSTRUCT gets silently disabled and the build
-> > succeeds!  That happens even without a GCC mismatch.
-> 
-> 
-> Ah, sorry.
-> 
-> I responded too early before reading the patch fully.
-> 
-> But, I do not like to make RANDSTRUCT a special case.
-> 
-> I'd rather want to stop building for any plugin.
+The CFG sub-module is not present on some earlier SoCs like the
+DA850/OMAPL-138 in the TI Davinci family. Refactor out the CFG
+sub-module parse and initialization logic into a separate function
+to make it easier to add logic for the PRUSS IP on the above legacy
+SoC families.
 
-Other than RANDSTRUCT there doesn't seem to be any problem with
-disabling them (and printing a warning) in the OOT build.  Why not give
-users that option?  It's harmless, and will make distro's (and their
-users') lives easier.
+Signed-off-by: Suman Anna <s-anna@ti.com>
+---
+Hi Santosh,
 
-Either GCC mismatch is ok, or it's not.  Let's not half-enforce it.
+This patch would apply on top of your for_5.12/drivers-soc branch.
+David can build his PRUSS support on Davinci on top of this patch.
 
-Also, how do you propose we solve the other problem, where a missing
-optional library (gcc-plugin-devel) causes the OOT module build to
-silently disable the plugin?  This is related to my earlier complaint
-about the dangers of toolchain-dependent kconfig options.
+regards
+Suman
 
+ drivers/soc/ti/pruss.c | 91 +++++++++++++++++++++++-------------------
+ 1 file changed, 50 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/soc/ti/pruss.c b/drivers/soc/ti/pruss.c
+index 1d6890134312..f22ac1edbdd0 100644
+--- a/drivers/soc/ti/pruss.c
++++ b/drivers/soc/ti/pruss.c
+@@ -161,6 +161,53 @@ static struct regmap_config regmap_conf = {
+ 	.reg_stride = 4,
+ };
+ 
++static int pruss_cfg_of_init(struct device *dev, struct pruss *pruss)
++{
++	struct device_node *np = dev_of_node(dev);
++	struct device_node *child;
++	struct resource res;
++	int ret;
++
++	child = of_get_child_by_name(np, "cfg");
++	if (!child) {
++		dev_err(dev, "%pOF is missing its 'cfg' node\n", child);
++		return -ENODEV;
++	}
++
++	if (of_address_to_resource(child, 0, &res)) {
++		ret = -ENOMEM;
++		goto node_put;
++	}
++
++	pruss->cfg_base = devm_ioremap(dev, res.start, resource_size(&res));
++	if (!pruss->cfg_base) {
++		ret = -ENOMEM;
++		goto node_put;
++	}
++
++	regmap_conf.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", child,
++				     (u64)res.start);
++	regmap_conf.max_register = resource_size(&res) - 4;
++
++	pruss->cfg_regmap = devm_regmap_init_mmio(dev, pruss->cfg_base,
++						  &regmap_conf);
++	kfree(regmap_conf.name);
++	if (IS_ERR(pruss->cfg_regmap)) {
++		dev_err(dev, "regmap_init_mmio failed for cfg, ret = %ld\n",
++			PTR_ERR(pruss->cfg_regmap));
++		ret = PTR_ERR(pruss->cfg_regmap);
++		goto node_put;
++	}
++
++	ret = pruss_clk_init(pruss, child);
++	if (ret)
++		dev_err(dev, "pruss_clk_init failed, ret = %d\n", ret);
++
++node_put:
++	of_node_put(child);
++	return ret;
++}
++
+ static int pruss_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -239,56 +286,18 @@ static int pruss_probe(struct platform_device *pdev)
+ 		goto rpm_disable;
+ 	}
+ 
+-	child = of_get_child_by_name(np, "cfg");
+-	if (!child) {
+-		dev_err(dev, "%pOF is missing its 'cfg' node\n", child);
+-		ret = -ENODEV;
++	ret = pruss_cfg_of_init(dev, pruss);
++	if (ret < 0)
+ 		goto rpm_put;
+-	}
+-
+-	if (of_address_to_resource(child, 0, &res)) {
+-		ret = -ENOMEM;
+-		goto node_put;
+-	}
+-
+-	pruss->cfg_base = devm_ioremap(dev, res.start, resource_size(&res));
+-	if (!pruss->cfg_base) {
+-		ret = -ENOMEM;
+-		goto node_put;
+-	}
+-
+-	regmap_conf.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", child,
+-				     (u64)res.start);
+-	regmap_conf.max_register = resource_size(&res) - 4;
+-
+-	pruss->cfg_regmap = devm_regmap_init_mmio(dev, pruss->cfg_base,
+-						  &regmap_conf);
+-	kfree(regmap_conf.name);
+-	if (IS_ERR(pruss->cfg_regmap)) {
+-		dev_err(dev, "regmap_init_mmio failed for cfg, ret = %ld\n",
+-			PTR_ERR(pruss->cfg_regmap));
+-		ret = PTR_ERR(pruss->cfg_regmap);
+-		goto node_put;
+-	}
+-
+-	ret = pruss_clk_init(pruss, child);
+-	if (ret) {
+-		dev_err(dev, "pruss_clk_init failed, ret = %d\n", ret);
+-		goto node_put;
+-	}
+ 
+ 	ret = devm_of_platform_populate(dev);
+ 	if (ret) {
+ 		dev_err(dev, "failed to register child devices\n");
+-		goto node_put;
++		goto rpm_put;
+ 	}
+ 
+-	of_node_put(child);
+-
+ 	return 0;
+ 
+-node_put:
+-	of_node_put(child);
+ rpm_put:
+ 	pm_runtime_put_sync(dev);
+ rpm_disable:
 -- 
-Josh
+2.29.2
 
