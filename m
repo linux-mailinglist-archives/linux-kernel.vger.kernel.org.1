@@ -2,292 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476A530205B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3C830202D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbhAYCYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 21:24:44 -0500
-Received: from mga11.intel.com ([192.55.52.93]:4255 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726886AbhAYByz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 20:54:55 -0500
-IronPort-SDR: ZoVyR3CriUktz/r1BW0bQ+knFEb3eGNvzCETNx6rUb2bKXA3XlZHR8hfPJatot4oMspT/vvxIn
- BLWfRGRF62mQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="176137847"
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="176137847"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 17:51:13 -0800
-IronPort-SDR: MxGFps2RK20Nghpp7QXbpCJaFS130NWJB84sEGi9YsYEMJyV6yu8zOcvPZZb2+I30HC4ozlgVm
- PJ3bakDPX/BQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
-   d="scan'208";a="352796036"
-Received: from jsia-hp-z620-workstation.png.intel.com ([10.221.118.135])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jan 2021 17:51:11 -0800
-From:   Sia Jee Heng <jee.heng.sia@intel.com>
-To:     vkoul@kernel.org, Eugeniy.Paltsev@synopsys.com, robh+dt@kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, jee.heng.sia@intel.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v12 17/17] dmaengine: dw-axi-dmac: Virtually split the linked-list
-Date:   Mon, 25 Jan 2021 09:32:55 +0800
-Message-Id: <20210125013255.25799-18-jee.heng.sia@intel.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210125013255.25799-1-jee.heng.sia@intel.com>
-References: <20210125013255.25799-1-jee.heng.sia@intel.com>
+        id S1727078AbhAYCHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 21:07:01 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:45482 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726982AbhAYB5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 20:57:44 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210125015639epoutp016356032404c5e4af801ffcdf22e2b37e~dVui6GUmP3173531735epoutp01e
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:56:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210125015639epoutp016356032404c5e4af801ffcdf22e2b37e~dVui6GUmP3173531735epoutp01e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611539799;
+        bh=rn2uVheFCBif+lhBXMLYPUD6I7WgD/KcJtIJV7c8e1E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XfotF10AsIQ2zVmK/62CREGo5YE7P9ioKXaWXszVHPykxYTgteI3C7wleen2OID9h
+         hjqPDWsVKMZAbS4DpHUcVeoZ3Lj8qWbpsPwX0n9vAotXboezR+Z9+b5r2e0G7PxcaV
+         8t71Vz8FAU+EX2oTI4JNL6bzC0WP6FoJe51W0GuQ=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210125015638epcas1p283cc32bdb44680bd1a5ee7f52229ff7b~dVuiJrOor3043230432epcas1p2G;
+        Mon, 25 Jan 2021 01:56:38 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DPCdw6nY6z4x9Pw; Mon, 25 Jan
+        2021 01:56:36 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        01.A4.09577.4552E006; Mon, 25 Jan 2021 10:56:36 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210125015636epcas1p344b530317fe3379914449197ad591eff~dVugLaLaW1445114451epcas1p38;
+        Mon, 25 Jan 2021 01:56:36 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210125015636epsmtrp17237fed9547283f2764725e83c31313d~dVugHn0Io0612306123epsmtrp1y;
+        Mon, 25 Jan 2021 01:56:36 +0000 (GMT)
+X-AuditID: b6c32a39-bfdff70000002569-b0-600e25541ce0
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B8.16.13470.4552E006; Mon, 25 Jan 2021 10:56:36 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210125015635epsmtip188138917777460951e2c52a2bfe829f9~dVuf3G9lJ2076020760epsmtip1P;
+        Mon, 25 Jan 2021 01:56:35 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     ming.lei@redhat.com
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mj0123.lee@samsung.com,
+        nanich.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+Subject: Re: [PATCH v2] bio: limit bio max size
+Date:   Mon, 25 Jan 2021 10:41:10 +0900
+Message-Id: <20210125014110.16525-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210122034547.GC509982@T590>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGJsWRmVeSWpSXmKPExsWy7bCmvm6IKl+CwfnrRhZzVm1jtFh9t5/N
+        orX9G5NFz5MmVou/XfeYLL4+LLbYe0vb4vKuOWwWhyY3M1lM3zyH2eLa/TPsFofvXWWxeLhk
+        IrPFuZOfWC3mPXaw+LX8KKPF+x/X2S1O7ZjMbLF+7082B2GPic3v2D12zrrL7nH5bKnHplWd
+        bB7v911l8+jbsorR4/MmOY/2A91MARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqG
+        lhbmSgp5ibmptkouPgG6bpk5QN8oKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoM
+        DQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMvpfnWMsaDSvmPzkDHMD40q1LkZODgkBE4mXN9Yx
+        dzFycQgJ7GCUOP7hB5TziVFi2ZMudgjnG6PEulUH2GFaVn1ZCFW1l1Hiz8OlbBDOZ0aJFQ+X
+        MYJUsQnoSPS9vcUGYosIiEu0LlnFBFLELHCAWWLx/U5mkISwgL7EohVvwIpYBFQlPl7fBBTn
+        4OAVsJaYdS8YYpu8xNPe5WDlnALaEvO+zmUBsXkFBCVOznwCZjMD1TRvnQ12kYTADQ6J/Y8b
+        GSGaXSRe7L4AdbawxKvjW6BsKYmX/W3sEA3djBLNbfMZIZwJjBJLni9jgqgylvj0+TMjyEXM
+        ApoS63fpQ4QVJXb+nssIsZlP4t3XHlaQEgkBXomONiGIEhWJMy33mWF2PV+7E2qih8TtWQ/A
+        WoUE6iS+3elgmcCoMAvJP7OQ/DMLYfECRuZVjGKpBcW56anFhgWmyHG8iRGcwLUsdzBOf/tB
+        7xAjEwfjIUYJDmYlEd7dejwJQrwpiZVVqUX58UWlOanFhxhNgYE9kVlKNDkfmEPySuINTY2M
+        jY0tTMzMzUyNlcR5kwwexAsJpCeWpGanphakFsH0MXFwSjUwscVMPrViY5vgJd9Vz2b56Dzu
+        nMJQmV/+U2Vx6aJzhQnxnmIvrD6aK/xuvq9QGqX1wpxz/fpY1RPPVUu/er6b2lt0O5vZVfGC
+        KPvLkp63YSsT7A5d3OS7+9erw3PmSy7eYh6w8oDZKUt1/n/zJid68DIUc5bxbTdSSueM72LM
+        btj54P+fKYJC12+wxX99u/Dxs/eH5X/+uaeefT1f45P1moSpbk2taxzPRqfyTI7RYr7cbVnW
+        nb3bTEuyOvyT4t3TF7gluu4mtZ2tXC0q7Kvks+P628BJxets+k5OaG3Ylft3Xqrn/mhFQw0J
+        3Z2/xS9etvHSm9Nw+7uVunsD44aXXvt2/dQMzFlgMOW+yQ4PJZbijERDLeai4kQAzbSTUmkE
+        AAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJTjdElS/BoPUPu8WcVdsYLVbf7Wez
+        aG3/xmTR86SJ1eJv1z0mi68Piy323tK2uLxrDpvFocnNTBbTN89htrh2/wy7xeF7V1ksHi6Z
+        yGxx7uQnVot5jx0sfi0/ymjx/sd1dotTOyYzW6zf+5PNQdhjYvM7do+ds+6ye1w+W+qxaVUn
+        m8f7fVfZPPq2rGL0+LxJzqP9QDdTAEcUl01Kak5mWWqRvl0CV0b/q3OMBY3mFZOfnGFuYFyp
+        1sXIySEhYCKx6stC5i5GLg4hgd2MEm9/HGGGSEhJHD/xlrWLkQPIFpY4fLgYouYjo0TLh1YW
+        kBo2AR2Jvre32EBsEQFxidYlq5hAipgFrjFLNKx5AZYQFtCXWLTiDZjNIqAq8fH6JmaQobwC
+        1hKz7gVD7JKXeNq7HGwvp4C2xLyvc8HmCwloSTR8a2QFsXkFBCVOznwCFmcGqm/eOpt5AqPA
+        LCSpWUhSCxiZVjFKphYU56bnFhsWGOallusVJ+YWl+al6yXn525iBMeYluYOxu2rPugdYmTi
+        YDzEKMHBrCTCu1uPJ0GINyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJJanZqakFqUUw
+        WSYOTqkGJvP0uIqSpkUHF1a/urVOsadiiuq5uktGbPk5a50DT+3w2/9XPeDglpyX2y+LqK+J
+        cLv77eXnn5MXOX2I0es/q9rt++ec4qarZ6qXzTVcpOtgVnCk4tm+dVYPFIP2+/UcfW5q6Xt7
+        Wb2R+uFt+y/e/mB7dNqi3Iw/voa8/3f5d6q/Yd1xb5nCm3lC4f9/J6Sf3r3AnO/gvYlO6p7f
+        Pyk/0OUQDngjqnTp6of9IoGbGc+lT6g4VrFKnykmettOU/Gg/ORs8b5k6+sFhudy6+6bNdzY
+        vqj7607p2kWBLzepHzI2krxguaQlWfDddoe2+Kj13dLp5Zc+/3v0WMXWTuPnfacrFsbzI/pK
+        +mo9te/51SixFGckGmoxFxUnAgBDYholIAMAAA==
+X-CMS-MailID: 20210125015636epcas1p344b530317fe3379914449197ad591eff
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210125015636epcas1p344b530317fe3379914449197ad591eff
+References: <20210122034547.GC509982@T590>
+        <CGME20210125015636epcas1p344b530317fe3379914449197ad591eff@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AxiDMA driver exposed the dma_set_max_seg_size() to the DMAENGINE.
-It shall helps the DMA clients to create size-optimized linked-list
-for the controller.
+> On Thu, Jan 21, 2021 at 09:58:03AM +0900, Changheun Lee wrote:
+> > bio size can grow up to 4GB when muli-page bvec is enabled.
+> > but sometimes it would lead to inefficient behaviors.
+> > in case of large chunk direct I/O, - 32MB chunk read in user space -
+> > all pages for 32MB would be merged to a bio structure if memory address is
+> > continued phsycally. it makes some delay to submit until merge complete.
+> > bio max size should be limited as a proper size.
+> > 
+> > When 32MB chunk read with direct I/O option is coming from userspace,
+> > kernel behavior is below now. it's timeline.
+> 
+> IMO, the issue should only exist on sync direct IO and writeback.
+> Not sure if writeback cares this small delay because user data
+> has been written to page cache already.
+> 
+> Wrt. your big direct IO case, as I suggested, you may reduce the
+> submission delay a lot by applying THP.
+> 
+> Or you can just hardcode the limit in case of sync dio.
 
-However, there are certain situations where DMA client might not be
-abled to benefit from the dma_get_max_seg_size() if the segment size
-can't meet the nature of the DMA client's operation.
+As you said, this small delay is not affect in case of writeback.
+It's not common, but there are needs of direct I/O from userspace.
+It will be operated optional, not default in v3 patch version.
+And it'll be activated with queue flag, or sysfs node.
+Please, review it again.
 
-In the case of ALSA operation, ALSA application and driver expecting
-to run in a period of larger than 10ms regardless of the bit depth.
-With this large period, there is a strong request to split the linked-list
-in the AxiDMA driver.
+> 
+> > 
+> >  | bio merge for 32MB. total 8,192 pages are merged.
+> >  | total elapsed time is over 2ms.
+> >  |------------------ ... ----------------------->|
+> >                                                  | 8,192 pages merged a bio.
+> >                                                  | at this time, first bio submit is done.
+> >                                                  | 1 bio is split to 32 read request and issue.
+> >                                                  |--------------->
+> >                                                   |--------------->
+> >                                                    |--------------->
+> >                                                               ......
+> >                                                                    |--------------->
+> >                                                                     |--------------->|
+> >                           total 19ms elapsed to complete 32MB read done from device. |
+> > 
+> > If bio max size is limited with 1MB, behavior is changed below.
+> > 
+> >  | bio merge for 1MB. 256 pages are merged for each bio.
+> >  | total 32 bio will be made.
+> >  | total elapsed time is over 2ms. it's same.
+> >  | but, first bio submit timing is fast. about 100us.
+> >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+> >       | 256 pages merged a bio.
+> >       | at this time, first bio submit is done.
+> >       | and 1 read request is issued for 1 bio.
+> >       |--------------->
+> >            |--------------->
+> >                 |--------------->
+> >                                       ......
+> >                                                  |--------------->
+> >                                                   |--------------->|
+> >         total 17ms elapsed to complete 32MB read done from device. |
+> > 
+> > As a result, read request issue timing is faster if bio max size is limited.
+> > Current kernel behavior with multipage bvec, super large bio can be created.
+> > And it lead to delay first I/O request issue.
+> > 
+> > Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> > 
+> > ---
+> >  block/bio.c               | 17 ++++++++++++++++-
+> >  include/linux/bio.h       | 13 +++----------
+> >  include/linux/blk_types.h |  1 +
+> >  3 files changed, 20 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/block/bio.c b/block/bio.c
+> > index 1f2cc1fbe283..027503c2e2e7 100644
+> > --- a/block/bio.c
+> > +++ b/block/bio.c
+> > @@ -284,9 +284,24 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+> >  
+> >  	bio->bi_io_vec = table;
+> >  	bio->bi_max_vecs = max_vecs;
+> > +	bio->bi_max_size = UINT_MAX;
+> >  }
+> >  EXPORT_SYMBOL(bio_init);
+> >  
+> > +void bio_set_dev(struct bio *bio, struct block_device *bdev)
+> > +{
+> > +	if (bio->bi_disk != bdev->bd_disk)
+> > +		bio_clear_flag(bio, BIO_THROTTLED);
+> > +
+> > +	bio->bi_disk = bdev->bd_disk;
+> > +	bio->bi_partno = bdev->bd_partno;
+> > +	bio->bi_max_size = blk_queue_get_max_sectors(bio->bi_disk->queue,
+> > +			bio_op(bio)) << SECTOR_SHIFT;
+> > +
+> > +	bio_associate_blkg(bio);
+> > +}
+> > +EXPORT_SYMBOL(bio_set_dev);
+> > +
+> >  /**
+> >   * bio_reset - reinitialize a bio
+> >   * @bio:	bio to reset
+> > @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+> >  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+> >  
+> >  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> > -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> > +			if (bio->bi_iter.bi_size > bio->bi_max_size - len)
+> >  				*same_page = false;
+> >  				return false;
+> >  			}
+> > diff --git a/include/linux/bio.h b/include/linux/bio.h
+> > index 1edda614f7ce..b9803e80c259 100644
+> > --- a/include/linux/bio.h
+> > +++ b/include/linux/bio.h
+> > @@ -113,7 +113,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+> >  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+> >  		return true;
+> >  
+> > -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> > +	if (bio->bi_iter.bi_size > bio->bi_max_size - len)
+> >  		return true;
+> >  
+> >  	return false;
+> > @@ -482,20 +482,13 @@ extern struct bio_vec *bvec_alloc(gfp_t, int, unsigned long *, mempool_t *);
+> >  extern void bvec_free(mempool_t *, struct bio_vec *, unsigned int);
+> >  extern unsigned int bvec_nr_vecs(unsigned short idx);
+> >  extern const char *bio_devname(struct bio *bio, char *buffer);
+> > -
+> > -#define bio_set_dev(bio, bdev) 			\
+> > -do {						\
+> > -	if ((bio)->bi_disk != (bdev)->bd_disk)	\
+> > -		bio_clear_flag(bio, BIO_THROTTLED);\
+> > -	(bio)->bi_disk = (bdev)->bd_disk;	\
+> > -	(bio)->bi_partno = (bdev)->bd_partno;	\
+> > -	bio_associate_blkg(bio);		\
+> > -} while (0)
+> > +extern void bio_set_dev(struct bio *bio, struct block_device *bdev);
+> >  
+> >  #define bio_copy_dev(dst, src)			\
+> >  do {						\
+> >  	(dst)->bi_disk = (src)->bi_disk;	\
+> >  	(dst)->bi_partno = (src)->bi_partno;	\
+> > +	(dst)->bi_max_size = (src)->bi_max_size;\
+> >  	bio_clone_blkg_association(dst, src);	\
+> >  } while (0)
+> >  
+> > diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> > index 866f74261b3b..e5dd5b7d8fc1 100644
+> > --- a/include/linux/blk_types.h
+> > +++ b/include/linux/blk_types.h
+> > @@ -270,6 +270,7 @@ struct bio {
+> >  	 */
+> >  
+> >  	unsigned short		bi_max_vecs;	/* max bvl_vecs we can hold */
+> > +	unsigned int		bi_max_size;	/* max data size we can hold */
+> 
+> People don't like to extend bio which can be fit in two cachelines
+> exactly, and adding one 'int' will make it cross 3 cache lines.
+> 
 
-Signed-off-by: Sia Jee Heng <jee.heng.sia@intel.com>
-Reviewed-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Tested-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Yes, you right. good comment.
+I'll not add a new variable in bio. :)
+
+> 
+> Thanks,
+> Ming
+> 
+> 
+
 ---
- .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    | 111 ++++++++++++++----
- drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |   1 +
- 2 files changed, 92 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-index 88d4923dee6c..ac3d81b72a15 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac-platform.c
-@@ -581,6 +581,11 @@ static int dw_axi_dma_set_hw_desc(struct axi_dma_chan *chan,
- 	if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
- 		mem_width = DWAXIDMAC_TRANS_WIDTH_32;
- 
-+	if (!IS_ALIGNED(mem_addr, 4)) {
-+		dev_err(chan->chip->dev, "invalid buffer alignment\n");
-+		return -EINVAL;
-+	}
-+
- 	switch (chan->direction) {
- 	case DMA_MEM_TO_DEV:
- 		reg_width = __ffs(chan->config.dst_addr_width);
-@@ -642,6 +647,35 @@ static int dw_axi_dma_set_hw_desc(struct axi_dma_chan *chan,
- 	return 0;
- }
- 
-+static size_t calculate_block_len(struct axi_dma_chan *chan,
-+				  dma_addr_t dma_addr, size_t buf_len,
-+				  enum dma_transfer_direction direction)
-+{
-+	u32 data_width, reg_width, mem_width;
-+	size_t axi_block_ts, block_len;
-+
-+	axi_block_ts = chan->chip->dw->hdata->block_size[chan->id];
-+
-+	switch (direction) {
-+	case DMA_MEM_TO_DEV:
-+		data_width = BIT(chan->chip->dw->hdata->m_data_width);
-+		mem_width = __ffs(data_width | dma_addr | buf_len);
-+		if (mem_width > DWAXIDMAC_TRANS_WIDTH_32)
-+			mem_width = DWAXIDMAC_TRANS_WIDTH_32;
-+
-+		block_len = axi_block_ts << mem_width;
-+		break;
-+	case DMA_DEV_TO_MEM:
-+		reg_width = __ffs(chan->config.src_addr_width);
-+		block_len = axi_block_ts << reg_width;
-+		break;
-+	default:
-+		block_len = 0;
-+	}
-+
-+	return block_len;
-+}
-+
- static struct dma_async_tx_descriptor *
- dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 			    size_t buf_len, size_t period_len,
-@@ -652,13 +686,27 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 	struct axi_dma_hw_desc *hw_desc = NULL;
- 	struct axi_dma_desc *desc = NULL;
- 	dma_addr_t src_addr = dma_addr;
--	u32 num_periods = buf_len / period_len;
-+	u32 num_periods, num_segments;
-+	size_t axi_block_len;
-+	u32 total_segments;
-+	u32 segment_len;
- 	unsigned int i;
- 	int status;
- 	u64 llp = 0;
- 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
- 
--	desc = axi_desc_alloc(num_periods);
-+	num_periods = buf_len / period_len;
-+
-+	axi_block_len = calculate_block_len(chan, dma_addr, buf_len, direction);
-+	if (axi_block_len == 0)
-+		return NULL;
-+
-+	num_segments = DIV_ROUND_UP(period_len, axi_block_len);
-+	segment_len = DIV_ROUND_UP(period_len, num_segments);
-+
-+	total_segments = num_periods * num_segments;
-+
-+	desc = axi_desc_alloc(total_segments);
- 	if (unlikely(!desc))
- 		goto err_desc_get;
- 
-@@ -666,12 +714,13 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 	desc->chan = chan;
- 	chan->cyclic = true;
- 	desc->length = 0;
-+	desc->period_len = period_len;
- 
--	for (i = 0; i < num_periods; i++) {
-+	for (i = 0; i < total_segments; i++) {
- 		hw_desc = &desc->hw_desc[i];
- 
- 		status = dw_axi_dma_set_hw_desc(chan, hw_desc, src_addr,
--						period_len);
-+						segment_len);
- 		if (status < 0)
- 			goto err_desc_get;
- 
-@@ -681,17 +730,17 @@ dw_axi_dma_chan_prep_cyclic(struct dma_chan *dchan, dma_addr_t dma_addr,
- 		 */
- 		set_desc_last(hw_desc);
- 
--		src_addr += period_len;
-+		src_addr += segment_len;
- 	}
- 
- 	llp = desc->hw_desc[0].llp;
- 
- 	/* Managed transfer list */
- 	do {
--		hw_desc = &desc->hw_desc[--num_periods];
-+		hw_desc = &desc->hw_desc[--total_segments];
- 		write_desc_llp(hw_desc, llp | lms);
- 		llp = hw_desc->llp;
--	} while (num_periods);
-+	} while (total_segments);
- 
- 	dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num, true);
- 
-@@ -713,9 +762,13 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
- 	struct axi_dma_chan *chan = dchan_to_axi_dma_chan(dchan);
- 	struct axi_dma_hw_desc *hw_desc = NULL;
- 	struct axi_dma_desc *desc = NULL;
-+	u32 num_segments, segment_len;
-+	unsigned int loop = 0;
- 	struct scatterlist *sg;
-+	size_t axi_block_len;
-+	u32 len, num_sgs = 0;
- 	unsigned int i;
--	u32 mem, len;
-+	dma_addr_t mem;
- 	int status;
- 	u64 llp = 0;
- 	u8 lms = 0; /* Select AXI0 master for LLI fetching */
-@@ -723,35 +776,51 @@ dw_axi_dma_chan_prep_slave_sg(struct dma_chan *dchan, struct scatterlist *sgl,
- 	if (unlikely(!is_slave_direction(direction) || !sg_len))
- 		return NULL;
- 
--	chan->direction = direction;
-+	mem = sg_dma_address(sgl);
-+	len = sg_dma_len(sgl);
-+
-+	axi_block_len = calculate_block_len(chan, mem, len, direction);
-+	if (axi_block_len == 0)
-+		return NULL;
- 
--	desc = axi_desc_alloc(sg_len);
-+	for_each_sg(sgl, sg, sg_len, i)
-+		num_sgs += DIV_ROUND_UP(sg_dma_len(sg), axi_block_len);
-+
-+	desc = axi_desc_alloc(num_sgs);
- 	if (unlikely(!desc))
- 		goto err_desc_get;
- 
- 	desc->chan = chan;
- 	desc->length = 0;
-+	chan->direction = direction;
- 
- 	for_each_sg(sgl, sg, sg_len, i) {
- 		mem = sg_dma_address(sg);
- 		len = sg_dma_len(sg);
--		hw_desc = &desc->hw_desc[i];
--
--		status = dw_axi_dma_set_hw_desc(chan, hw_desc, mem, len);
--		if (status < 0)
--			goto err_desc_get;
--		desc->length += hw_desc->len;
-+		num_segments = DIV_ROUND_UP(sg_dma_len(sg), axi_block_len);
-+		segment_len = DIV_ROUND_UP(sg_dma_len(sg), num_segments);
-+
-+		do {
-+			hw_desc = &desc->hw_desc[loop++];
-+			status = dw_axi_dma_set_hw_desc(chan, hw_desc, mem, segment_len);
-+			if (status < 0)
-+				goto err_desc_get;
-+
-+			desc->length += hw_desc->len;
-+			len -= segment_len;
-+			mem += segment_len;
-+		} while (len >= segment_len);
- 	}
- 
- 	/* Set end-of-link to the last link descriptor of list */
--	set_desc_last(&desc->hw_desc[sg_len - 1]);
-+	set_desc_last(&desc->hw_desc[num_sgs - 1]);
- 
- 	/* Managed transfer list */
- 	do {
--		hw_desc = &desc->hw_desc[--sg_len];
-+		hw_desc = &desc->hw_desc[--num_sgs];
- 		write_desc_llp(hw_desc, llp | lms);
- 		llp = hw_desc->llp;
--	} while (sg_len);
-+	} while (num_sgs);
- 
- 	dw_axi_dma_set_hw_channel(chan->chip, chan->hw_handshake_num, true);
- 
-@@ -953,7 +1022,6 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 	vd = vchan_next_desc(&chan->vc);
- 
- 	if (chan->cyclic) {
--		vchan_cyclic_callback(vd);
- 		desc = vd_to_axi_desc(vd);
- 		if (desc) {
- 			llp = lo_hi_readq(chan->chan_regs + CH_LLP);
-@@ -963,6 +1031,9 @@ static void axi_chan_block_xfer_complete(struct axi_dma_chan *chan)
- 					axi_chan_irq_clear(chan, hw_desc->lli->status_lo);
- 					hw_desc->lli->ctl_hi |= CH_CTL_H_LLI_VALID;
- 					desc->completed_blocks = i;
-+
-+					if (((hw_desc->len * (i + 1)) % desc->period_len) == 0)
-+						vchan_cyclic_callback(vd);
- 					break;
- 				}
- 			}
-diff --git a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-index 1e937ea2a96d..b69897887c76 100644
---- a/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-+++ b/drivers/dma/dw-axi-dmac/dw-axi-dmac.h
-@@ -100,6 +100,7 @@ struct axi_dma_desc {
- 	struct axi_dma_chan		*chan;
- 	u32				completed_blocks;
- 	u32				length;
-+	u32				period_len;
- };
- 
- static inline struct device *dchan2dev(struct dma_chan *dchan)
--- 
-2.18.0
-
+Changheun Lee
+Samsung Electronics
