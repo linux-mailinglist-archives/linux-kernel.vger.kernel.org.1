@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEEA302658
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D38E302666
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729539AbhAYOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:33:09 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:39169 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729441AbhAYOb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:31:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611585069; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=WIm37k0ByHb05TgsSjKkGlgy9s/AveqlMwkdHtOxQkE=;
- b=xIeUwjwqBkUB1u702Pzeu9GE/W2HHkLCIfusubeWfMpl4IeAHSX76OewWtpsuf91RnTzuWxG
- lCzJVxiO+XzCENn17/v+FWi/E1NsSM0+LoR49STsws+y/d+vdJ77tc0qhyWJGJPvonJgI1Z5
- hu3quoF1iBPe+qVXg3h2hQ5k3Dc=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 600ed606ad4c9e395bf69eab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 14:30:30
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 10EA1C43464; Mon, 25 Jan 2021 14:30:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BA8B0C433C6;
-        Mon, 25 Jan 2021 14:30:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BA8B0C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1729719AbhAYOnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:43:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729491AbhAYOmE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:42:04 -0500
+X-Greylist: delayed 545 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Jan 2021 06:41:02 PST
+Received: from leibniz.telenet-ops.be (leibniz.telenet-ops.be [IPv6:2a02:1800:110:4::f00:d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8686C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:41:02 -0800 (PST)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4DPXPS00bJzMsJcv
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:31:56 +0100 (CET)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id M2Wi240034C55Sk012WiV4; Mon, 25 Jan 2021 15:30:54 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l42t7-000emF-Gs; Mon, 25 Jan 2021 15:30:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l42t6-004PfB-P9; Mon, 25 Jan 2021 15:30:40 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Viresh Kumar <vireshk@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] ntp: Use freezable workqueue for RTC synchronization
+Date:   Mon, 25 Jan 2021 15:30:39 +0100
+Message-Id: <20210125143039.1051912-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] rtlwifi: rtl8821ae: style: Simplify bool comparison
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>
-Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        YANG LI <abaci-bugfix@linux.alibaba.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210125143030.10EA1C43464@smtp.codeaurora.org>
-Date:   Mon, 25 Jan 2021 14:30:30 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YANG LI <abaci-bugfix@linux.alibaba.com> wrote:
+The bug fixed by commit e3fab2f3de081e98 ("ntp: Fix RTC synchronization
+on 32-bit platforms") revealed an underlying issue: RTC synchronization
+may happen anytime, even while the system is partially suspended.
 
-> Fix the following coccicheck warning:
-> ./drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3853:7-17:
-> WARNING: Comparison of 0/1 to bool variable
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+On systems where the RTC is connected to an I2C bus, the I2C bus
+controller may already or still be suspended, triggering a WARNING
+during suspend or resume from s2ram:
 
-Patchwork gives me this From field:
+    WARNING: CPU: 0 PID: 124 at drivers/i2c/i2c-core.h:54 __i2c_transfer+0x634/0x680
+    i2c i2c-6: Transfer while suspended
+    [...]
+    Workqueue: events_power_efficient sync_hw_clock
+    [...]
+    [<c0738e08>] (__i2c_transfer) from [<c0738eac>] (i2c_transfer+0x58/0xf8)
+    [<c0738eac>] (i2c_transfer) from [<c065202c>] (regmap_i2c_read+0x58/0x94)
+    [<c065202c>] (regmap_i2c_read) from [<c064de40>] (_regmap_raw_read+0x19c/0x2f4)
+    [<c064de40>] (_regmap_raw_read) from [<c064dfdc>] (_regmap_bus_read+0x44/0x68)
+    [<c064dfdc>] (_regmap_bus_read) from [<c064ccb4>] (_regmap_read+0x84/0x1a4)
+    [<c064ccb4>] (_regmap_read) from [<c064d334>] (_regmap_update_bits+0xa8/0xf4)
+    [<c064d334>] (_regmap_update_bits) from [<c064d464>] (_regmap_select_page+0xe4/0x100)
+    [<c064d464>] (_regmap_select_page) from [<c064d554>] (_regmap_raw_write_impl+0xd4/0x6c4)
+    [<c064d554>] (_regmap_raw_write_impl) from [<c064ec10>] (_regmap_raw_write+0xd8/0x114)
+    [<c064ec10>] (_regmap_raw_write) from [<c064eca4>] (regmap_raw_write+0x58/0x7c)
+    [<c064eca4>] (regmap_raw_write) from [<c064ede0>] (regmap_bulk_write+0x118/0x13c)
+    [<c064ede0>] (regmap_bulk_write) from [<c073660c>] (da9063_rtc_set_time+0x44/0x8c)
+    [<c073660c>] (da9063_rtc_set_time) from [<c0734164>] (rtc_set_time+0xc8/0x228)
+    [<c0734164>] (rtc_set_time) from [<c02abe78>] (sync_hw_clock+0x128/0x1fc)
+    [<c02abe78>] (sync_hw_clock) from [<c023e6a0>] (process_one_work+0x330/0x550)
+    [<c023e6a0>] (process_one_work) from [<c023f0a8>] (worker_thread+0x22c/0x2ec)
 
-From: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Fix this race condition by using the freezable instead of the normal
+power-efficient workqueue.
 
-I guess you are sharing the same email address with multiple persons? And patchwork stored the first person using that address?
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ kernel/time/ntp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I recommend using individual addresses for each person submitting patches. I
-cannot apply this.
-
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 54d52fab201d283e..6310328fe398406a 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -502,7 +502,7 @@ static struct hrtimer sync_hrtimer;
+ 
+ static enum hrtimer_restart sync_timer_callback(struct hrtimer *timer)
+ {
+-	queue_work(system_power_efficient_wq, &sync_work);
++	queue_work(system_freezable_power_efficient_wq, &sync_work);
+ 
+ 	return HRTIMER_NORESTART;
+ }
+@@ -668,7 +668,7 @@ void ntp_notify_cmos_timer(void)
+ 	 * just a pointless work scheduled.
+ 	 */
+ 	if (ntp_synced() && !hrtimer_is_queued(&sync_hrtimer))
+-		queue_work(system_power_efficient_wq, &sync_work);
++		queue_work(system_freezable_power_efficient_wq, &sync_work);
+ }
+ 
+ static void __init ntp_init_cmos_sync(void)
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
