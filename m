@@ -2,408 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA513302C58
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD812302C5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731731AbhAYUQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732008AbhAYUMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:12:41 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3625C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:12:00 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id a7so6932674qkb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:12:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=PLbgmCMm0FhltnfMcJbi+FzUyet2cUHru1+w8v2w4Ik=;
-        b=NAUAPBL5of1NvglP8xUf1Zp35YN/GRq5q8j0WajH8T5q1I/AJDN/mTkn9BGLpVyold
-         XqqthaJtlaWFRJj/P0nMtjNA0cOVzzVloM5N4CfeMEG9m6a3oeQ8Qq9vcsjWlPWBQfsC
-         Gy6y37QKGgcrcpR/OqHUgz90rMqQ5mfxfQu17SHRj+GMCOtrvsFukb6WS9t/RQkyKxl2
-         WmcAv8Lc2O9ADJkWZepFe/WThHfO1LmhQgi0ddL6EVLEjVEKgt9OLcNUAuQYtSF8qLlz
-         fufz0Srn0KWRjyso2sFtCqSgv+61JfKXQ/BHv3p31S7Q5aLBN3pSRP7X+SngHt8QLUKB
-         D2Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PLbgmCMm0FhltnfMcJbi+FzUyet2cUHru1+w8v2w4Ik=;
-        b=RRSUdK0MWdia6mVeoTMjaQdyVlJ9m9V8P516pIZhJ1R+nJBzjbHpIc0OUw1oAaf/jQ
-         HG0va9gQK1iL3ymVNQvR4Og1TyI32QbeBkWJeWgwwt0nHMXsMOjSiSv1c2IcZ3xPAKZy
-         7W44D0B03ePXeERk7SjJ48ucrC8faH8WmJqkioEShqd1/yEhIlaDNrEHmzU6/F3qmFE/
-         EXh9Jrwh2uT1NUyyJPOCgZEcP2A8ZNpF68t6KKGD9rgxmJB5kaad4yM0Nq1z4/pBo6xv
-         lciAPU0QqQ1cPIkIWjdGwuy84OIyUX2FMWEToFRf7OHhulgcLcgCrFXOnqc3S6jGNw6l
-         Yhuw==
-X-Gm-Message-State: AOAM5335JwE5HUCv1jxtLjh/AFM+D3f4Ut4XCeat7UfoWipSmvRLL3h/
-        +NWv13TdcKg7Vp0s2kwuqXsvgA==
-X-Google-Smtp-Source: ABdhPJxFP3+McMlCyT8jtzI9OCw2G4gf6mtiYQu0lO99Ajs26VVRLs3LmXARtSoLSMobpCRlBwJ8Gg==
-X-Received: by 2002:a37:5d5:: with SMTP id 204mr2474305qkf.436.1611605520153;
-        Mon, 25 Jan 2021 12:12:00 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id 2sm11918564qtt.24.2021.01.25.12.11.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 12:11:59 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, tyhicks@linux.microsoft.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sashal@kernel.org, jmorris@namei.org,
-        lukas.bulwahn@gmail.com, hch@lst.de, pvorel@suse.cz,
-        ming.lei@redhat.com, mzxreary@0pointer.de, mcgrof@kernel.org,
-        zhengbin13@huawei.com, maco@android.com, colin.king@canonical.com,
-        evgreen@chromium.org
-Subject: [PATCH v3 1/1] loop: scale loop device by introducing per device lock
-Date:   Mon, 25 Jan 2021 15:11:56 -0500
-Message-Id: <20210125201156.1330164-2-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210125201156.1330164-1-pasha.tatashin@soleen.com>
-References: <20210125201156.1330164-1-pasha.tatashin@soleen.com>
+        id S1731493AbhAYUQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:16:54 -0500
+Received: from mga07.intel.com ([134.134.136.100]:19568 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731932AbhAYUQd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 15:16:33 -0500
+IronPort-SDR: LzzUWn6mQWkAeUe4KVB4/acdBtJSW3DRNY02sQ1jXrsKBn0iEid2xTvu8I1CUQHQhFqvzgdeGv
+ xZZBTK8gP7BQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="243873675"
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="243873675"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:15:52 -0800
+IronPort-SDR: 5vdWv8JEEDU662Tbm6nLwFIyIA0E1XMlgXPhBhVRyuX8FufUl8tF6qdfV+odDvsT5lBWafNGim
+ 2XgLnZBmoIqA==
+X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
+   d="scan'208";a="361664239"
+Received: from stalawai-desk.amr.corp.intel.com (HELO [10.254.124.248]) ([10.254.124.248])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 12:15:51 -0800
+Subject: Re: [PATCH] x86/mm: Tracking linear mapping split events since boot
+To:     Saravanan D <saravanand@outlook.com>, x86@kernel.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com
+References: <BYAPR01MB40856478D5BE74CB6A7D5578CFBD9@BYAPR01MB4085.prod.exchangelabs.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <30752f8e-16e9-d093-e6ec-31fd45715e9d@intel.com>
+Date:   Mon, 25 Jan 2021 12:15:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <BYAPR01MB40856478D5BE74CB6A7D5578CFBD9@BYAPR01MB4085.prod.exchangelabs.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, loop device has only one global lock:
-loop_ctl_mutex.
+On 1/25/21 12:11 PM, Saravanan D wrote:
+> Numerous hugepage splits in the linear mapping would give
+> admins the signal to narrow down the sluggishness caused by TLB
+> miss/reload.
+> 
+> One of the many lasting (as we don't coalesce back) sources for huge page
+> splits is tracing as the granular page attribute/permission changes would
+> force the kernel to split code segments mapped to huge pages to smaller
+> ones thereby increasing the probability of TLB miss/reload even after
+> tracing has been stopped.
+> 
+> The split event information will be displayed at the bottom of
+> /proc/meminfo
+> ....
+> DirectMap4k:     3505112 kB
+> DirectMap2M:    19464192 kB
+> DirectMap1G:    12582912 kB
+> DirectMap2MSplits:  1705
+> DirectMap1GSplits:    20
 
-This becomes hot in scenarios where many loop devices are used.
-
-Scale it by introducing per-device lock: lo_mutex that protects the
-fields in struct loop_device. Keep loop_ctl_mutex to protect global
-data such as loop_index_idr, loop_lookup, loop_add.
-
-Lock ordering: loop_ctl_mutex > lo_mutex.
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
----
- drivers/block/loop.c | 92 +++++++++++++++++++++++++-------------------
- drivers/block/loop.h |  1 +
- 2 files changed, 54 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index e5ff328f0917..e520aaf94f93 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -704,7 +704,7 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 	int		error;
- 	bool		partscan;
- 
--	error = mutex_lock_killable(&loop_ctl_mutex);
-+	error = mutex_lock_killable(&lo->lo_mutex);
- 	if (error)
- 		return error;
- 	error = -ENXIO;
-@@ -743,9 +743,9 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 	loop_update_dio(lo);
- 	blk_mq_unfreeze_queue(lo->lo_queue);
- 	partscan = lo->lo_flags & LO_FLAGS_PARTSCAN;
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	/*
--	 * We must drop file reference outside of loop_ctl_mutex as dropping
-+	 * We must drop file reference outside of lo_mutex as dropping
- 	 * the file ref can take bd_mutex which creates circular locking
- 	 * dependency.
- 	 */
-@@ -755,7 +755,7 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
- 	return 0;
- 
- out_err:
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	if (file)
- 		fput(file);
- 	return error;
-@@ -1092,7 +1092,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 			goto out_putf;
- 	}
- 
--	error = mutex_lock_killable(&loop_ctl_mutex);
-+	error = mutex_lock_killable(&lo->lo_mutex);
- 	if (error)
- 		goto out_bdev;
- 
-@@ -1171,7 +1171,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 	 * put /dev/loopXX inode. Later in __loop_clr_fd() we bdput(bdev).
- 	 */
- 	bdgrab(bdev);
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	if (partscan)
- 		loop_reread_partitions(lo, bdev);
- 	if (!(mode & FMODE_EXCL))
-@@ -1179,7 +1179,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
- 	return 0;
- 
- out_unlock:
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- out_bdev:
- 	if (!(mode & FMODE_EXCL))
- 		bd_abort_claiming(bdev, loop_configure);
-@@ -1200,7 +1200,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 	bool partscan = false;
- 	int lo_number;
- 
--	mutex_lock(&loop_ctl_mutex);
-+	mutex_lock(&lo->lo_mutex);
- 	if (WARN_ON_ONCE(lo->lo_state != Lo_rundown)) {
- 		err = -ENXIO;
- 		goto out_unlock;
-@@ -1253,7 +1253,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 	lo_number = lo->lo_number;
- 	loop_unprepare_queue(lo);
- out_unlock:
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	if (partscan) {
- 		/*
- 		 * bd_mutex has been held already in release path, so don't
-@@ -1284,18 +1284,18 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 	 * protects us from all the other places trying to change the 'lo'
- 	 * device.
- 	 */
--	mutex_lock(&loop_ctl_mutex);
-+	mutex_lock(&lo->lo_mutex);
- 	lo->lo_flags = 0;
- 	if (!part_shift)
- 		lo->lo_disk->flags |= GENHD_FL_NO_PART_SCAN;
- 	lo->lo_state = Lo_unbound;
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 
- 	/*
--	 * Need not hold loop_ctl_mutex to fput backing file.
--	 * Calling fput holding loop_ctl_mutex triggers a circular
-+	 * Need not hold lo_mutex to fput backing file.
-+	 * Calling fput holding lo_mutex triggers a circular
- 	 * lock dependency possibility warning as fput can take
--	 * bd_mutex which is usually taken before loop_ctl_mutex.
-+	 * bd_mutex which is usually taken before lo_mutex.
- 	 */
- 	if (filp)
- 		fput(filp);
-@@ -1306,11 +1306,11 @@ static int loop_clr_fd(struct loop_device *lo)
- {
- 	int err;
- 
--	err = mutex_lock_killable(&loop_ctl_mutex);
-+	err = mutex_lock_killable(&lo->lo_mutex);
- 	if (err)
- 		return err;
- 	if (lo->lo_state != Lo_bound) {
--		mutex_unlock(&loop_ctl_mutex);
-+		mutex_unlock(&lo->lo_mutex);
- 		return -ENXIO;
- 	}
- 	/*
-@@ -1325,11 +1325,11 @@ static int loop_clr_fd(struct loop_device *lo)
- 	 */
- 	if (atomic_read(&lo->lo_refcnt) > 1) {
- 		lo->lo_flags |= LO_FLAGS_AUTOCLEAR;
--		mutex_unlock(&loop_ctl_mutex);
-+		mutex_unlock(&lo->lo_mutex);
- 		return 0;
- 	}
- 	lo->lo_state = Lo_rundown;
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 
- 	return __loop_clr_fd(lo, false);
- }
-@@ -1344,7 +1344,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
- 	bool partscan = false;
- 	bool size_changed = false;
- 
--	err = mutex_lock_killable(&loop_ctl_mutex);
-+	err = mutex_lock_killable(&lo->lo_mutex);
- 	if (err)
- 		return err;
- 	if (lo->lo_encrypt_key_size &&
-@@ -1411,7 +1411,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
- 		partscan = true;
- 	}
- out_unlock:
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	if (partscan)
- 		loop_reread_partitions(lo, bdev);
- 
-@@ -1425,11 +1425,11 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
- 	struct kstat stat;
- 	int ret;
- 
--	ret = mutex_lock_killable(&loop_ctl_mutex);
-+	ret = mutex_lock_killable(&lo->lo_mutex);
- 	if (ret)
- 		return ret;
- 	if (lo->lo_state != Lo_bound) {
--		mutex_unlock(&loop_ctl_mutex);
-+		mutex_unlock(&lo->lo_mutex);
- 		return -ENXIO;
- 	}
- 
-@@ -1448,10 +1448,10 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
- 		       lo->lo_encrypt_key_size);
- 	}
- 
--	/* Drop loop_ctl_mutex while we call into the filesystem. */
-+	/* Drop lo_mutex while we call into the filesystem. */
- 	path = lo->lo_backing_file->f_path;
- 	path_get(&path);
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	ret = vfs_getattr(&path, &stat, STATX_INO, AT_STATX_SYNC_AS_STAT);
- 	if (!ret) {
- 		info->lo_device = huge_encode_dev(stat.dev);
-@@ -1637,7 +1637,7 @@ static int lo_simple_ioctl(struct loop_device *lo, unsigned int cmd,
- {
- 	int err;
- 
--	err = mutex_lock_killable(&loop_ctl_mutex);
-+	err = mutex_lock_killable(&lo->lo_mutex);
- 	if (err)
- 		return err;
- 	switch (cmd) {
-@@ -1653,7 +1653,7 @@ static int lo_simple_ioctl(struct loop_device *lo, unsigned int cmd,
- 	default:
- 		err = lo->ioctl ? lo->ioctl(lo, cmd, arg) : -EINVAL;
- 	}
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	return err;
- }
- 
-@@ -1879,27 +1879,33 @@ static int lo_open(struct block_device *bdev, fmode_t mode)
- 	struct loop_device *lo;
- 	int err;
- 
-+	/*
-+	 * take loop_ctl_mutex to protect lo pointer from race with
-+	 * loop_control_ioctl(LOOP_CTL_REMOVE), however, to reduce
-+	 * contention release it prior to updating lo->lo_refcnt.
-+	 */
- 	err = mutex_lock_killable(&loop_ctl_mutex);
- 	if (err)
- 		return err;
- 	lo = bdev->bd_disk->private_data;
- 	if (!lo) {
--		err = -ENXIO;
--		goto out;
-+		mutex_unlock(&loop_ctl_mutex);
-+		return -ENXIO;
- 	}
--
--	atomic_inc(&lo->lo_refcnt);
--out:
-+	err = mutex_lock_killable(&lo->lo_mutex);
- 	mutex_unlock(&loop_ctl_mutex);
--	return err;
-+	if (err)
-+		return err;
-+	atomic_inc(&lo->lo_refcnt);
-+	mutex_unlock(&lo->lo_mutex);
-+	return 0;
- }
- 
- static void lo_release(struct gendisk *disk, fmode_t mode)
- {
--	struct loop_device *lo;
-+	struct loop_device *lo = disk->private_data;
- 
--	mutex_lock(&loop_ctl_mutex);
--	lo = disk->private_data;
-+	mutex_lock(&lo->lo_mutex);
- 	if (atomic_dec_return(&lo->lo_refcnt))
- 		goto out_unlock;
- 
-@@ -1907,7 +1913,7 @@ static void lo_release(struct gendisk *disk, fmode_t mode)
- 		if (lo->lo_state != Lo_bound)
- 			goto out_unlock;
- 		lo->lo_state = Lo_rundown;
--		mutex_unlock(&loop_ctl_mutex);
-+		mutex_unlock(&lo->lo_mutex);
- 		/*
- 		 * In autoclear mode, stop the loop thread
- 		 * and remove configuration after last close.
-@@ -1924,7 +1930,7 @@ static void lo_release(struct gendisk *disk, fmode_t mode)
- 	}
- 
- out_unlock:
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- }
- 
- static const struct block_device_operations lo_fops = {
-@@ -1963,10 +1969,10 @@ static int unregister_transfer_cb(int id, void *ptr, void *data)
- 	struct loop_device *lo = ptr;
- 	struct loop_func_table *xfer = data;
- 
--	mutex_lock(&loop_ctl_mutex);
-+	mutex_lock(&lo->lo_mutex);
- 	if (lo->lo_encryption == xfer)
- 		loop_release_xfer(lo);
--	mutex_unlock(&loop_ctl_mutex);
-+	mutex_unlock(&lo->lo_mutex);
- 	return 0;
- }
- 
-@@ -2152,6 +2158,7 @@ static int loop_add(struct loop_device **l, int i)
- 		disk->flags |= GENHD_FL_NO_PART_SCAN;
- 	disk->flags |= GENHD_FL_EXT_DEVT;
- 	atomic_set(&lo->lo_refcnt, 0);
-+	mutex_init(&lo->lo_mutex);
- 	lo->lo_number		= i;
- 	spin_lock_init(&lo->lo_lock);
- 	disk->major		= LOOP_MAJOR;
-@@ -2182,6 +2189,7 @@ static void loop_remove(struct loop_device *lo)
- 	blk_cleanup_queue(lo->lo_queue);
- 	blk_mq_free_tag_set(&lo->tag_set);
- 	put_disk(lo->lo_disk);
-+	mutex_destroy(&lo->lo_mutex);
- 	kfree(lo);
- }
- 
-@@ -2261,15 +2269,21 @@ static long loop_control_ioctl(struct file *file, unsigned int cmd,
- 		ret = loop_lookup(&lo, parm);
- 		if (ret < 0)
- 			break;
-+		ret = mutex_lock_killable(&lo->lo_mutex);
-+		if (ret)
-+			break;
- 		if (lo->lo_state != Lo_unbound) {
- 			ret = -EBUSY;
-+			mutex_unlock(&lo->lo_mutex);
- 			break;
- 		}
- 		if (atomic_read(&lo->lo_refcnt) > 0) {
- 			ret = -EBUSY;
-+			mutex_unlock(&lo->lo_mutex);
- 			break;
- 		}
- 		lo->lo_disk->private_data = NULL;
-+		mutex_unlock(&lo->lo_mutex);
- 		idr_remove(&loop_index_idr, lo->lo_number);
- 		loop_remove(lo);
- 		break;
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index af75a5ee4094..a3c04f310672 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -62,6 +62,7 @@ struct loop_device {
- 	struct request_queue	*lo_queue;
- 	struct blk_mq_tag_set	tag_set;
- 	struct gendisk		*lo_disk;
-+	struct mutex		lo_mutex;
- };
- 
- struct loop_cmd {
--- 
-2.25.1
-
+This seems much more like something we'd want in /proc/vmstat or as a
+tracepoint than meminfo.  A tracepoint would be especially nice because
+the trace buffer could actually be examined if an admin finds an
+excessive number of these.
