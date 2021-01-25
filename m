@@ -2,154 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF960302D6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C19302D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732601AbhAYVSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:18:35 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:40533 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732494AbhAYVOz (ORCPT
+        id S1732365AbhAYVUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:20:21 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:64935 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732444AbhAYVR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:14:55 -0500
-Received: by mail-io1-f72.google.com with SMTP id x26so6788988ior.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:14:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5two7q/jQViPfMzjfYYBiWhjgEhntyhQrt/LvBiQkQk=;
-        b=AHDK3/0MV1vrivBuNSzC5bOmecnJU06PF7I77IUAxf5w5XDjSulR5efGIGfeHPv4Xz
-         s/l+AZx9J8NlCrE1qX8V9M9BosUJchVP69fCYv4OYMY30/iD8y2aTNxGoH7BJ8NQetgw
-         VXOqBUF+day6DBoJxY576tUpj6hEnjuQJolV5cRndTK4clM3xyciH8JPukUmczJK34OC
-         ewTjwWaIrAGvV85rQS5V+fKVRE/3qlptb5d8Xhe2dgowVDAhY7tT21YAT9TPZwcNnofW
-         Yf9iCmH9bFV5D2vhvZUJ1Otqu5EJd7n9sU3z6oZ+v1OAXYPoljP2FQpgIH/O7q1TZuG8
-         zx7g==
-X-Gm-Message-State: AOAM531TB6KG5T14aueiJLcmKEvPcxg9lG8lAuG3iqi5VmpKUy0OEAco
-        3RqgfApgJ/HZcwiwm2Bh+BGeysoKNR2masrENe6UEFeCWDCX
-X-Google-Smtp-Source: ABdhPJwlNFQz2I94k61tkKqfr745uZD/G0fgwStqqE9WW8YG/sboY77KeUygvfjNF6IenJ8LLnCze65w5v1Te12JARMxmbxghUtm
+        Mon, 25 Jan 2021 16:17:57 -0500
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 10PLGee1021843;
+        Tue, 26 Jan 2021 06:16:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 10PLGee1021843
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611609401;
+        bh=UBtSR4SngVZcF8xuMqiB6wAgmObrFSnj0hR3SZnjGx0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fW3IypG7DU0Sy2lJtuivc8NXYOkwYgV1o24luqg5jMlQ7htBZVHMwK1Bg+83r1pZX
+         XU1ojvBCOeiW6XLA8AUFPtvMILO1Zzy/w4jaYAuqh0sQD0bXQiXUArRl2jZ9uO0LA6
+         GwwHRaBChHy2gH7+l+cqefFpB3/kTTJbcTNwH/Hqpqo9d4m7fIRGGTap/fcXErVJoh
+         BKbTy/7Y8ztwNzH/aS0NLbVjcih88Gzwqxp+kl5XjU0MhCJj8olKks2xBqphOQRrlG
+         d8gJFMz7qLN396NBHwtMwuLwHjtVVbHN5bN6dv0gYLyG2Ih/kA4lB0VLlOb+IYvH4T
+         pjafarslnPZdQ==
+X-Nifty-SrcIP: [209.85.216.51]
+Received: by mail-pj1-f51.google.com with SMTP id l18so425615pji.3;
+        Mon, 25 Jan 2021 13:16:40 -0800 (PST)
+X-Gm-Message-State: AOAM531aIFflY0j4930lDxf+sxYAFpQIbvXlkL+p40BNs4wq6xLkpvgM
+        fA64PJiXkMvCQ9xOdDD2hStH4Z9dsDKGR6KFxFE=
+X-Google-Smtp-Source: ABdhPJwDImYxkIOjCoi/rm0VtnjdA+o6S7kwL7EOOzfsdixXundNyzEhU5nkidT+65Dzvl7m9J+3VoyUG6AYLNoHq1U=
+X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr2231069pjh.198.1611609399736;
+ Mon, 25 Jan 2021 13:16:39 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:96c3:: with SMTP id g186mr2054432ilh.180.1611609253204;
- Mon, 25 Jan 2021 13:14:13 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:14:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000dd83d05b9c005cf@google.com>
-Subject: KASAN: global-out-of-bounds Write in record_print_text
-From:   syzbot <syzbot+db1faa35484efb6a54ea@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        gregkh@linuxfoundation.org, john.fastabend@gmail.com,
-        john.ogness@linutronix.de, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pmladek@suse.com, rafael@kernel.org, sergey.senozhatsky@gmail.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+In-Reply-To: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 26 Jan 2021 06:16:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
+Message-ID: <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    bc085f8f Add linux-next specific files for 20210121
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a726a4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1224bbf217b0bec8
-dashboard link: https://syzkaller.appspot.com/bug?extid=db1faa35484efb6a54ea
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1173b294d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1035c13b500000
-
-The issue was bisected to:
-
-commit f0e386ee0c0b71ea6f7238506a4d0965a2dbef11
-Author: John Ogness <john.ogness@linutronix.de>
-Date:   Thu Jan 14 17:04:12 2021 +0000
-
-    printk: fix buffer overflow potential for print_text()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11671b84d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13671b84d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15671b84d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+db1faa35484efb6a54ea@syzkaller.appspotmail.com
-Fixes: f0e386ee0c0b ("printk: fix buffer overflow potential for print_text()")
-
-netdevsim netdevsim0 netdevsim3 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
-==================================================================
-BUG: KASAN: global-out-of-bounds in record_print_text+0x33f/0x380 kernel/printk/printk.c:1401
-Write of size 1 at addr ffffffff8f09f144 by task kworker/u4:0/9
-
-CPU: 1 PID: 9 Comm: kworker/u4:0 Not tainted 5.11.0-rc4-next-20210121-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:397 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:414
- record_print_text+0x33f/0x380 kernel/printk/printk.c:1401
- console_unlock+0x318/0xbb0 kernel/printk/printk.c:2555
- vprintk_emit+0x189/0x490 kernel/printk/printk.c:2092
- dev_vprintk_emit+0x36e/0x3b2 drivers/base/core.c:4358
- dev_printk_emit+0xba/0xf1 drivers/base/core.c:4369
- __netdev_printk+0x1c6/0x27a net/core/dev.c:11073
- netdev_info+0xd7/0x109 net/core/dev.c:11128
- nsim_udp_tunnel_unset_port.cold+0x95/0xb8 drivers/net/netdevsim/udp_tunnels.c:64
- udp_tunnel_nic_device_sync_one net/ipv4/udp_tunnel_nic.c:225 [inline]
- udp_tunnel_nic_device_sync_by_port net/ipv4/udp_tunnel_nic.c:246 [inline]
- __udp_tunnel_nic_device_sync.part.0+0xa4c/0xcb0 net/ipv4/udp_tunnel_nic.c:289
- __udp_tunnel_nic_device_sync net/ipv4/udp_tunnel_nic.c:283 [inline]
- udp_tunnel_nic_flush+0x2b4/0x5e0 net/ipv4/udp_tunnel_nic.c:668
- udp_tunnel_nic_unregister net/ipv4/udp_tunnel_nic.c:869 [inline]
- udp_tunnel_nic_netdevice_event+0x65c/0x19a0 net/ipv4/udp_tunnel_nic.c:909
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
- call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
- call_netdevice_notifiers net/core/dev.c:2066 [inline]
- rollback_registered_many+0x92e/0x14c0 net/core/dev.c:9513
- rollback_registered net/core/dev.c:9558 [inline]
- unregister_netdevice_queue+0x2dd/0x570 net/core/dev.c:10734
- unregister_netdevice include/linux/netdevice.h:2853 [inline]
- nsim_destroy+0x35/0x70 drivers/net/netdevsim/netdev.c:338
- __nsim_dev_port_del+0x144/0x1e0 drivers/net/netdevsim/dev.c:967
- nsim_dev_port_del_all drivers/net/netdevsim/dev.c:980 [inline]
- nsim_dev_reload_destroy+0xff/0x1e0 drivers/net/netdevsim/dev.c:1158
- nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:725
- devlink_reload+0x15a/0x5e0 net/core/devlink.c:3191
- devlink_pernet_pre_exit+0x154/0x220 net/core/devlink.c:10329
- ops_pre_exit_list net/core/net_namespace.c:177 [inline]
- cleanup_net+0x451/0xb10 net/core/net_namespace.c:592
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-The buggy address belongs to the variable:
- dmesg_restrict+0x24/0x40
-
-Memory state around the buggy address:
- ffffffff8f09f000: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
- ffffffff8f09f080: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
->ffffffff8f09f100: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 00 00 00 00
-                                           ^
- ffffffff8f09f180: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffff8f09f200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+On Tue, Jan 26, 2021 at 5:42 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> When building out-of-tree kernel modules, the build system doesn't
+> require the GCC version to match the version used to build the original
+> kernel.  That's probably [1] fine.
+>
+> In fact, for many distros, the version of GCC used to build the latest
+> kernel doesn't necessarily match the latest released GCC, so a GCC
+> mismatch turns out to be pretty common.  And with CONFIG_MODVERSIONS
+> it's probably more common.
+>
+> So a lot of users have come to rely on being able to use a different
+> version of GCC when building OOT modules.
+>
+> But with GCC plugins enabled, that's no longer allowed:
+>
+>   cc1: error: incompatible gcc/plugin versions
+>   cc1: error: failed to initialize plugin ./scripts/gcc-plugins/structleak_plugin.so
+>
+> That error comes from the plugin's call to
+> plugin_default_version_check(), which strictly enforces the GCC version.
+> The strict check makes sense, because there's nothing to prevent the GCC
+> plugin ABI from changing -- and it often does.
+>
+> But failing the build isn't necessary.  For most plugins, OOT modules
+> will otherwise work just fine without the plugin instrumentation.
+>
+> When a GCC version mismatch is detected, print a warning and disable the
+> plugin.  The only exception is the RANDSTRUCT plugin which needs all
+> code to see the same struct layouts.  In that case print an error.
+>
+> [1] Ignoring, for the moment, that the kernel now has
+>     toolchain-dependent kconfig options, which can silently disable
+>     features and cause havoc when compiler versions differ, or even when
+>     certain libraries are missing.  This is a separate problem which
+>     also needs to be addressed.
+>
+> Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+We are based on the assumption that we use the same
+compiler for in-tree and out-of-tree.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+If people use a different compiler, they must be
+prepared for any possible problem.
+
+
+Using different compiler flags for in-tree and out-of-tree
+is even more dangerous.
+
+For example, CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled
+for in-tree build, and then disabled for out-of-tree modules,
+the struct layout will mismatch, won't it?
+
+
+This patch is ugly, and not doing the right thing.
+
+
+
+
+>  scripts/Makefile.gcc-plugins | 19 +++++++++++++++++++
+>  scripts/Makefile.kcov        | 11 +++++++++++
+>  2 files changed, 30 insertions(+)
+>
+> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
+> index 952e46876329..7227692fba59 100644
+> --- a/scripts/Makefile.gcc-plugins
+> +++ b/scripts/Makefile.gcc-plugins
+> @@ -51,6 +51,25 @@ export DISABLE_ARM_SSP_PER_TASK_PLUGIN
+>  GCC_PLUGINS_CFLAGS := $(strip $(addprefix -fplugin=$(objtree)/scripts/gcc-plugins/, $(gcc-plugin-y)) $(gcc-plugin-cflags-y))
+>  # The sancov_plugin.so is included via CFLAGS_KCOV, so it is removed here.
+>  GCC_PLUGINS_CFLAGS := $(filter-out %/sancov_plugin.so, $(GCC_PLUGINS_CFLAGS))
+> +
+> +# Out-of-tree module check: If there's a GCC version mismatch, disable plugins
+> +# and print a warning.  Otherwise the OOT module build will fail due to
+> +# plugin_default_version_check().
+> +ifneq ($(GCC_PLUGINS_CFLAGS),)
+> +    ifneq ($(KBUILD_EXTMOD),)
+> +        ifneq ($(CONFIG_GCC_VERSION), $(shell $(srctree)/scripts/gcc-version.sh $(HOSTCXX)))
+> +
+> +            ifdef CONFIG_GCC_PLUGIN_RANDSTRUCT
+> +                $(error error: CONFIG_GCC_PLUGIN_RANDSTRUCT requires out-of-tree modules to be built using the same GCC version as the kernel.)
+> +            endif
+> +
+> +            $(warning warning: Disabling GCC plugins for out-of-tree modules due to GCC version mismatch.)
+> +            $(warning warning: The following plugins have been disabled: $(gcc-plugin-y))
+> +            GCC_PLUGINS_CFLAGS :=
+> +       endif
+> +    endif
+> +endif
+> +
+>  export GCC_PLUGINS_CFLAGS
+>
+>  # Add the flags to the build!
+> diff --git a/scripts/Makefile.kcov b/scripts/Makefile.kcov
+> index 67e8cfe3474b..63a2bc2aabb2 100644
+> --- a/scripts/Makefile.kcov
+> +++ b/scripts/Makefile.kcov
+> @@ -3,4 +3,15 @@ kcov-flags-$(CONFIG_CC_HAS_SANCOV_TRACE_PC)    += -fsanitize-coverage=trace-pc
+>  kcov-flags-$(CONFIG_KCOV_ENABLE_COMPARISONS)   += -fsanitize-coverage=trace-cmp
+>  kcov-flags-$(CONFIG_GCC_PLUGIN_SANCOV)         += -fplugin=$(objtree)/scripts/gcc-plugins/sancov_plugin.so
+>
+> +# Out-of-tree module check for GCC version mismatch.
+> +# See the similar check in scripts/Makefile.gcc-plugins
+> +ifneq ($(CONFIG_GCC_PLUGIN_SANCOV),)
+> +    ifneq ($(KBUILD_EXTMOD),)
+> +        ifneq ($(CONFIG_GCC_VERSION), $(shell $(srctree)/scripts/gcc-version.sh $(HOSTCXX)))
+> +            $(warning warning: Disabling CONFIG_GCC_PLUGIN_SANCOV for out-of-tree modules due to GCC version mismatch.)
+> +            kcov-flags-y := $(filter-out %/sancov_plugin.so, $(kcov-flags-y))
+> +        endif
+> +    endif
+> +endif
+> +
+>  export CFLAGS_KCOV := $(kcov-flags-y)
+> --
+> 2.29.2
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
