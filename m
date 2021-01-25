@@ -2,34 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18739302B46
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922F3302B77
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731647AbhAYTP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:15:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39478 "EHLO mail.kernel.org"
+        id S1731750AbhAYTVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:21:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729835AbhAYSw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:52:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 247E820E65;
-        Mon, 25 Jan 2021 18:51:48 +0000 (UTC)
+        id S1730888AbhAYSxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:53:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0C29221FB;
+        Mon, 25 Jan 2021 18:53:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600708;
-        bh=Hz/PhX6BP8NQZxm3lsKRW4iLuewYuhA1lT9S6nwoeSA=;
+        s=korg; t=1611600814;
+        bh=StjzP9ss1a/bEPqV7AaDH6R4B/vUv/S2+ILEGi46ltg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AhsCiFL32crjBAmPzPULdw/3Pna3r2l+zRXNnCZKDTzrNg+RRSSDeOOzM95dcLmYn
-         7ZZNhCIAH7VYciHEOusSsSIHFGroVB9TOfGBVJJkEfjSFuBqYINy6KzUPyIFMW0vjL
-         VZkS/8LtejsEIwlvwruTpdJAfr7r2Sy9wgxkcMPo=
+        b=EmYoRnUtC+aGeN2ljDD5BV4XnFCaQyaasp5UsnJqlJo8XSsOu3ImFKiXbhTbJn9Kx
+         u+GNItX3MDPgaYTZTmv5LQnZTCrftqHI9yolb94PA2/8tfIBW9MgPNfifTDZOrwSqz
+         qJL+I5GM2lWIk1gD8nRy/z7cH5u13sNcM27oMp2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Mazur <krzysiek@podlesie.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        =?UTF-8?q?Krzysztof=20Piotr=20Ol=C4=99dzki?= <ole@ans.pl>
-Subject: [PATCH 5.10 119/199] x86/mmx: Use KFPU_387 for MMX string operations
-Date:   Mon, 25 Jan 2021 19:39:01 +0100
-Message-Id: <20210125183221.250497496@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaoming Ni <nixiaoming@huawei.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 121/199] proc_sysctl: fix oops caused by incorrect command parameters
+Date:   Mon, 25 Jan 2021 19:39:03 +0100
+Message-Id: <20210125183221.332143557@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,94 +49,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Xiaoming Ni <nixiaoming@huawei.com>
 
-commit 67de8dca50c027ca0fa3b62a488ee5035036a0da upstream.
+commit 697edcb0e4eadc41645fe88c991fe6a206b1a08d upstream.
 
-The default kernel_fpu_begin() doesn't work on systems that support XMM but
-haven't yet enabled CR4.OSFXSR.  This causes crashes when _mmx_memcpy() is
-called too early because LDMXCSR generates #UD when the aforementioned bit
-is clear.
+The process_sysctl_arg() does not check whether val is empty before
+invoking strlen(val).  If the command line parameter () is incorrectly
+configured and val is empty, oops is triggered.
 
-Fix it by using kernel_fpu_begin_mask(KFPU_387) explicitly.
+For example:
+  "hung_task_panic=1" is incorrectly written as "hung_task_panic", oops is
+  triggered. The call stack is as follows:
+    Kernel command line: .... hung_task_panic
+    ......
+    Call trace:
+    __pi_strlen+0x10/0x98
+    parse_args+0x278/0x344
+    do_sysctl_args+0x8c/0xfc
+    kernel_init+0x5c/0xf4
+    ret_from_fork+0x10/0x30
 
-Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
-Reported-by: Krzysztof Mazur <krzysiek@podlesie.net>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Krzysztof Piotr Olędzki <ole@ans.pl>
-Tested-by: Krzysztof Mazur <krzysiek@podlesie.net>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/e7bf21855fe99e5f3baa27446e32623358f69e8d.1611205691.git.luto@kernel.org
+To fix it, check whether "val" is empty when "phram" is a sysctl field.
+Error codes are returned in the failure branch, and error logs are
+generated by parse_args().
+
+Link: https://lkml.kernel.org/r/20210118133029.28580-1-nixiaoming@huawei.com
+Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters from kernel command line")
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: <stable@vger.kernel.org>	[5.8+]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/lib/mmx_32.c |   20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ fs/proc/proc_sysctl.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/arch/x86/lib/mmx_32.c
-+++ b/arch/x86/lib/mmx_32.c
-@@ -26,6 +26,16 @@
- #include <asm/fpu/api.h>
- #include <asm/asm.h>
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1770,6 +1770,12 @@ static int process_sysctl_arg(char *para
+ 			return 0;
+ 	}
  
-+/*
-+ * Use KFPU_387.  MMX instructions are not affected by MXCSR,
-+ * but both AMD and Intel documentation states that even integer MMX
-+ * operations will result in #MF if an exception is pending in FCW.
-+ *
-+ * EMMS is not needed afterwards because, after calling kernel_fpu_end(),
-+ * any subsequent user of the 387 stack will reinitialize it using
-+ * KFPU_387.
-+ */
++	if (!val)
++		return -EINVAL;
++	len = strlen(val);
++	if (len == 0)
++		return -EINVAL;
 +
- void *_mmx_memcpy(void *to, const void *from, size_t len)
- {
- 	void *p;
-@@ -37,7 +47,7 @@ void *_mmx_memcpy(void *to, const void *
- 	p = to;
- 	i = len >> 6; /* len/64 */
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	__asm__ __volatile__ (
- 		"1: prefetch (%0)\n"		/* This set is 28 bytes */
-@@ -127,7 +137,7 @@ static void fast_clear_page(void *page)
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	__asm__ __volatile__ (
- 		"  pxor %%mm0, %%mm0\n" : :
-@@ -160,7 +170,7 @@ static void fast_copy_page(void *to, voi
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
  	/*
- 	 * maybe the prefetch stuff can go before the expensive fnsave...
-@@ -247,7 +257,7 @@ static void fast_clear_page(void *page)
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	__asm__ __volatile__ (
- 		"  pxor %%mm0, %%mm0\n" : :
-@@ -282,7 +292,7 @@ static void fast_copy_page(void *to, voi
- {
- 	int i;
- 
--	kernel_fpu_begin();
-+	kernel_fpu_begin_mask(KFPU_387);
- 
- 	__asm__ __volatile__ (
- 		"1: prefetch (%0)\n"
+ 	 * To set sysctl options, we use a temporary mount of proc, look up the
+ 	 * respective sys/ file and write to it. To avoid mounting it when no
+@@ -1811,7 +1817,6 @@ static int process_sysctl_arg(char *para
+ 				file, param, val);
+ 		goto out;
+ 	}
+-	len = strlen(val);
+ 	wret = kernel_write(file, val, len, &pos);
+ 	if (wret < 0) {
+ 		err = wret;
 
 
