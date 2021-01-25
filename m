@@ -2,186 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCC7302611
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7183A302621
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729191AbhAYOD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:03:56 -0500
-Received: from mga09.intel.com ([134.134.136.24]:64533 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729192AbhAYOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:00:01 -0500
-IronPort-SDR: k6KD8fCgv/QgWm5s0WgIgU9S2hi/UNWqUmpgDczFta4jLZ8K4dBcRr3dnka5OAeHzsVtsZ5+W4
- DyiMtWc3UAmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="179875209"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="179875209"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 05:58:25 -0800
-IronPort-SDR: RPOGy6mxQTQt4HRnf6xsTWetw250rDz5bANkE5fC6RoSHdOzk51z5UEXNEqoO+gizQ8bz6Kqz2
- 5wWUZQKUmCYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="406246136"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 25 Jan 2021 05:58:24 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l42Nr-000098-DJ; Mon, 25 Jan 2021 13:58:23 +0000
-Date:   Mon, 25 Jan 2021 21:58:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 22840ddac02152c3853c9a59dada585fc85be3c9
-Message-ID: <600ece69.P19aU1/jzWWyQ4FW%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729305AbhAYOMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729257AbhAYOIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:08:46 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC08C06174A;
+        Mon, 25 Jan 2021 06:07:13 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id d81so26679257iof.3;
+        Mon, 25 Jan 2021 06:07:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MfJhOBecinWbFOTxZtZGMsUEJch79P7wyNbZhiMKN2k=;
+        b=tbw0OmMrl9G0M7V4hRbiSjrCPulxgRQ8a6kALEa9yseU/p/hu5Z7VVGkCxR93HWm44
+         GdlWi3h2FJLFwTmUuyLlX8KbQdGfebaKnUw5wCz5+n6uOMTpS4PTjb4k4ibML3ZeIuGW
+         Cja1i4hdcurLXOROaOa8uyS0yYi2T29thr4N93iHWPiftcFR+2ZYk/hZ5Xzr0WcJrJBb
+         KqPx8mCVLGDyb9bIrno17smLkWWc/FgkhpjgKhco3MTJ0tkfIGWjbmXrUuT//DPBeOVO
+         JaKjIL8/RsH9HVC1hiqmMPakp7BOW+9j+y0Dje27sZeX+O6eSQHKdrb1/ZxgsS9X3xWD
+         EYMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MfJhOBecinWbFOTxZtZGMsUEJch79P7wyNbZhiMKN2k=;
+        b=VfWLe1C8BldSHiDP+hu7FDi32a4kRdCe8ramZLeHDI5bX3CD8pDKKyS9+E5nVpS7M+
+         Z4wRjo58K3e9lfI+2LirF7rhRB9jOSWxUWqLOymETCo9GOFCgB7pjCRnwCxW3zJ8YjfD
+         IpvTW+SFvtE6ZQvW7ZncU7sbWS/2bXwYlsConIPkTzdnU3HB9yNOKNCGZVxZPpMlGOCM
+         oyL+pVCLYN82K0HRaaL+aJCKZM9bqPSBOaFjZ66VmBKXlBtfM5qsDC/l4gUdNJIuSP4j
+         ZXrrfdlyjjCq7TkiiQwfPZnNYSQ3MPDYHyat6fvzpaTAicWr21eqgvimafo1xTWgFSEW
+         /G6Q==
+X-Gm-Message-State: AOAM533Yb2deRDx8/M6g32qwREYH5lebvTbS2NIjT+7YanljzpdWbLMP
+        rtSUq9iEC5dQm2c/Xy24LGXpSfk2QfCDVkyvisA=
+X-Google-Smtp-Source: ABdhPJxFWlFj4oQv3EORI/Pn5HSHQB3dA3akAox4XAy+f4DX9tnDRCxTs1yLdlaRrAR4/IdnPjF3ivrkTcg2gEEbT94=
+X-Received: by 2002:a5e:da01:: with SMTP id x1mr544571ioj.100.1611583632785;
+ Mon, 25 Jan 2021 06:07:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <cover.1611287342.git.brookxu@tencent.com> <20210125124117.GB1175@quack2.suse.cz>
+In-Reply-To: <20210125124117.GB1175@quack2.suse.cz>
+From:   =?UTF-8?B?6K645pil5YWJ?= <brookxu.cn@gmail.com>
+Date:   Mon, 25 Jan 2021 22:07:01 +0800
+Message-ID: <CADtkEectLRZRUfWEhQtaCgMUJY0Mik=XN5A-seHJxdBNjFMJ-w@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] make jbd2 debug switch per device
+To:     Jan Kara <jack@suse.cz>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 22840ddac02152c3853c9a59dada585fc85be3c9  Merge branch 'linus'
+Thanks for your reply.
 
-elapsed time: 721m
+Jan Kara wrote on 2021/1/25 20:41:
+> On Fri 22-01-21 14:43:18, Chunguang Xu wrote:
+>> On a multi-disk machine, because jbd2 debugging switch is global, this
+>> confuses the logs of multiple disks. It is not easy to distinguish the
+>> logs of each disk and the amount of generated logs is very large. Or a
+>> separate debugging switch for each disk would be better, so that you
+>> can easily distinguish the logs of a certain disk.
+>>
+>> We can enable jbd2 debugging of a device in the following ways:
+>> echo X > /proc/fs/jbd2/sdX/jbd2_debug
+>>
+>> But there is a small disadvantage here. Because the debugging switch is
+>> placed in the journal_t object, the log before the object is initialized
+>> will be lost. However, usually this will not have much impact on
+>> debugging.
+>
+> OK, I didn't look at the series yet but I'm wondering: How are you using
+> jbd2 debugging? I mean obviously it isn't meant for production use but
+> rather for debugging JBD2 bugs so I'm kind of wondering in which case too
+> many messages matter.
+We perform stress testing on machines in the test environment, and use scripts
+to capture journal related logs to analyze problems. There are 12 disks on this
+machine, and each disk runs different jobs. Our test kernel also adds
+some additional
+function-related logs. If we adjust the log level to a higher level, a large
+number of logs have nothing to do with the disk to be observed. These logs are
+generated by system agents or coordinated tasks. This makes the log difficul
+to analyze.
 
-configs tested: 124
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                         3c120_defconfig
-sh                          rsk7264_defconfig
-mips                           jazz_defconfig
-powerpc                   currituck_defconfig
-powerpc                      ppc44x_defconfig
-h8300                     edosk2674_defconfig
-arm                         axm55xx_defconfig
-c6x                                 defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                  colibri_pxa300_defconfig
-ia64                          tiger_defconfig
-arm                         lpc32xx_defconfig
-h8300                    h8300h-sim_defconfig
-s390                       zfcpdump_defconfig
-arm                        spear6xx_defconfig
-x86_64                           alldefconfig
-powerpc                     ksi8560_defconfig
-arc                     nsimosci_hs_defconfig
-mips                         tb0287_defconfig
-sh                      rts7751r2d1_defconfig
-mips                         tb0219_defconfig
-mips                           ip27_defconfig
-m68k                         apollo_defconfig
-arc                        nsimosci_defconfig
-sh                               j2_defconfig
-sh                   sh7770_generic_defconfig
-sh                         ecovec24_defconfig
-nios2                            allyesconfig
-powerpc                      mgcoge_defconfig
-powerpc                     ep8248e_defconfig
-sh                        sh7763rdp_defconfig
-arm                        mini2440_defconfig
-arm                            mps2_defconfig
-sh                        sh7757lcr_defconfig
-um                           x86_64_defconfig
-sh                           se7712_defconfig
-sparc                       sparc32_defconfig
-arm                          ixp4xx_defconfig
-arm                         hackkit_defconfig
-m68k                       m5475evb_defconfig
-c6x                        evmc6678_defconfig
-powerpc                     tqm8560_defconfig
-xtensa                  nommu_kc705_defconfig
-mips                  cavium_octeon_defconfig
-mips                           ip28_defconfig
-arm                     eseries_pxa_defconfig
-powerpc                 linkstation_defconfig
-powerpc64                        alldefconfig
-xtensa                  cadence_csp_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a001-20210125
-i386                 randconfig-a002-20210125
-i386                 randconfig-a004-20210125
-i386                 randconfig-a006-20210125
-i386                 randconfig-a005-20210125
-i386                 randconfig-a003-20210125
-i386                 randconfig-a013-20210125
-i386                 randconfig-a011-20210125
-i386                 randconfig-a012-20210125
-i386                 randconfig-a015-20210125
-i386                 randconfig-a014-20210125
-i386                 randconfig-a016-20210125
-x86_64               randconfig-a003-20210125
-x86_64               randconfig-a002-20210125
-x86_64               randconfig-a001-20210125
-x86_64               randconfig-a005-20210125
-x86_64               randconfig-a006-20210125
-x86_64               randconfig-a004-20210125
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20210125
-x86_64               randconfig-a016-20210125
-x86_64               randconfig-a015-20210125
-x86_64               randconfig-a011-20210125
-x86_64               randconfig-a013-20210125
-x86_64               randconfig-a014-20210125
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> And if the problem is that there's a problem with distinguishing messages
+> from multiple filesystems, then it would be perhaps more useful to add
+> journal identification to each message similarly as we do it with ext4
+> messages (likely by using journal->j_dev) - which is very simple to do
+> after your patches 3 and 4.
+Our test kernel did this. Because it broke the log format, I was not
+sure whether
+it would break something, so I didn't bring this part. Even if the
+device information
+is added, when there are more disks and the log level is higher, there will be a
+lot of irrelevant logs, which makes it necessary to consume a lot of
+CPU to filter
+messages. Therefore, a device-level switch is provided to make
+everything simpler.
+>
+>                                                               Honza
+>
