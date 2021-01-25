@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E374B302C4B
+	by mail.lfdr.de (Postfix) with ESMTP id 02E11302C49
 	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732259AbhAYULY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:11:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S1732242AbhAYUK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732240AbhAYUIq (ORCPT
+        with ESMTP id S1731603AbhAYUJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 15:08:46 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBE3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:08:01 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id a12so1771074qvo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:08:01 -0800 (PST)
+        Mon, 25 Jan 2021 15:09:01 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09632C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:08:21 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id p21so14548641lfu.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=EsmJo5oovzpiXmuqZ5cSfYBminZGw3Bg63uNHCPKszo=;
-        b=ENSG3oZS14wDgHi3pz1j8HF5s1yaseO5q088aeOljcRi0mhRWG8GFqZoY64FFpGKHz
-         Ehh0As5KPGIsykN2tP9K/cW1Mx7tYXboztSO25LumKZlfsa04jw093aDne2S45EAkTvW
-         8KTMdHG8I0f+yryjY1/p2OAICg5Q86DPpl9Zzax2POqYCRsqnhDlGmzNevSNqj7S8VmM
-         2hNb/FJX2dZ1IJUcbPSckd64Tj+kfkQsVh7+shwh6EMgI487xNNck/TbjNvLzt0itjpw
-         a+ekZZzaLHxe8KbdSqqedb9D3a2VpLuS2sUl9v4h8Yc6QRZwZf6MHNgysvPGgTuF0hup
-         r64Q==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZeZ/z6nzSFDAV4wLoLwt3dt0tgNMo3emIxIkq4fN40k=;
+        b=dl6sqhW2bwwla8KTDatqSOETpc6qOuFiO3hNwqxSjZlozYGXOAn8S8pKuRSZgdbIXp
+         POEGbzNrH3AeLjGmkGcts9CBVMpkfEYtlKBuvv48tyzXoZm2uRU5b8e2a3RPN6zJwhmy
+         9lXpQzQsohkefQjrRZ2Ac2GnaYPrr6azWKAJU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=EsmJo5oovzpiXmuqZ5cSfYBminZGw3Bg63uNHCPKszo=;
-        b=Zwhaof3O0yk8cvq+qG4PZDy3SA7x8liGZjvOhr0Y1MEIMf96lL5itI7aoFlMpApmWJ
-         4+U+gr5hVf0TY0JU/Rh+31gtK5oW2yWhUSzonRGLqYNZTOw2lAxCB1HCd9/YDtFJ2fJ8
-         yC17CQR1MsBujh7fLbblfu2npZ95Qw+jfbV328Glo3xfmtw3aqA+If2gAopJQrAkBuJI
-         oHKcOp7MC8GVsStK4bY+ShLa9gBztAtrJwAmuUQbs6tnEfcw3x0JSKxb9w75o4mSOoy3
-         TDO+1WqYNRl1O6JYJy7iNlzcycMU++VTs7GGJLzYmxoKcNtkyEwUrRqFPOreZtrLSo2k
-         4lVw==
-X-Gm-Message-State: AOAM533dOKhCc/AeAZegI8tNl5Z/NsKYZ6hM2L1ktcDwk4jfQQiFO6Gf
-        C8iec576rJKPWTaa283EDynZvI7MRjQ=
-X-Google-Smtp-Source: ABdhPJziezI5V9r9KODuMOvf9In7Hp3LFS7fHTA+FlCc+wSy66UtmD7QLxk7HAhDdwFOow6ERd/5HLV08S4=
-Sender: "oupton via sendgmr" <oupton@oupton2.c.googlers.com>
-X-Received: from oupton2.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:136])
- (user=oupton job=sendgmr) by 2002:ad4:580f:: with SMTP id dd15mr2428478qvb.40.1611605280552;
- Mon, 25 Jan 2021 12:08:00 -0800 (PST)
-Date:   Mon, 25 Jan 2021 20:07:56 +0000
-In-Reply-To: <20200914133626.hlsvu5kces3wsirr@google.com>
-Message-Id: <20210125200756.1249239-1-oupton@google.com>
-Mime-Version: 1.0
-References: <20200914133626.hlsvu5kces3wsirr@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: Re: [BUG]: KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe
-From:   Oliver Upton <oupton@google.com>
-To:     dbrazdil@google.com
-Cc:     hns@goldelico.com, linux-kernel@vger.kernel.org, maz@kernel.org,
-        sashal@kernel.org, Oliver Upton <oupton@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZeZ/z6nzSFDAV4wLoLwt3dt0tgNMo3emIxIkq4fN40k=;
+        b=OB1bZwoU0RLD+3BfERMhmEi3OpYJY8FxtY3Jt+EwcGgl7fG4ArHrQGdlib1QRM2jSD
+         AvkUe7x1qNJAvVWdbJysJxOYV85VfxzKh3KQ92pX9c8LezR0qF31HqJoO97qMa872s8r
+         iFnck791MzjplNrTrG+eiS4X8XdUWDnCm/H1iT21I3zESYHcWejn7D/s6l/R18Y6Vyr1
+         O2dmzFHE/AnchS+ecL8THFXMLF7DipaTX57lJ0g3sYgXf10cfDbE+hKHuB+sAk2oSViw
+         q+WtJI9aIn5IX7maSQrGcroGOo+8diwink1lDtywfoPn2EA6pyRHpMvDUBMXgyXsckR8
+         0aeg==
+X-Gm-Message-State: AOAM5314Hsvo4m4qwKi38I01KX4L2ew+kZ9cUlVjhdE0fzKklwIvSD5i
+        k2G/oJrhMxpTBxZi8Ym7ry1mlj2BpLEAAw==
+X-Google-Smtp-Source: ABdhPJySun2hSPjHGCPPLIy4eqEMR8N3Eb4l3X6QIy7QUnUxWewJEXj6ysaYpk01w9AkzwYkJFmb7g==
+X-Received: by 2002:a05:6512:3763:: with SMTP id z3mr983985lft.639.1611605299277;
+        Mon, 25 Jan 2021 12:08:19 -0800 (PST)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id a16sm570600lfd.59.2021.01.25.12.08.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 12:08:18 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id f17so16873225ljg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 12:08:18 -0800 (PST)
+X-Received: by 2002:a2e:860f:: with SMTP id a15mr977159lji.411.1611605298101;
+ Mon, 25 Jan 2021 12:08:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20210125190925.3655829-1-samitolvanen@google.com>
+ <CAHk-=wj0NKCw30deEEThF+9_F7JDobfO-VTJm64gqvp4zzsWfg@mail.gmail.com>
+ <CAHk-=wi8mBdnj7QEO9yRzzoJDc+JqfKgy1gXU9iZL8=fF=YO8g@mail.gmail.com> <CABCJKucWV3V10KRiHN+Oph-nffrBmo6Sc6+jAKJasQ8wFekRJw@mail.gmail.com>
+In-Reply-To: <CABCJKucWV3V10KRiHN+Oph-nffrBmo6Sc6+jAKJasQ8wFekRJw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 25 Jan 2021 12:08:02 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiScU+tS8ZSL2-gpuKB5Z-XKLOGkF8WW=bL-8t_KSqxFg@mail.gmail.com>
+Message-ID: <CAHk-=wiScU+tS8ZSL2-gpuKB5Z-XKLOGkF8WW=bL-8t_KSqxFg@mail.gmail.com>
+Subject: Re: [PATCH] n_tty: fix redirected_tty_write checks after write_iter conversion
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> That means we have two options:
-> (a) define __hyp_panic_string in a different .c file in all pre-5.9 branches, or
-> (b) revert the backported patch.
-> 
-> The patch was needed in 5.9 and should stay there. It wasn't needed in earlier
-> versions because the symbol was being kept alive by another user. It did "fix"
-> the inline asm semantics, but the problem was never triggered in pre-5.9.
-> 
-> Sasha, with this and the GCC bug in mind, would you agree that (b) is the
-> better course of action?
+On Mon, Jan 25, 2021 at 12:03 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> Neither, I noticed this because the conflicting function declarations
+> broke Clang's Control Flow Integrity checking.
 
-Sasha,
+Ahh, interesting. Is that automated somewhere, or are you running your
+own special checks? It sounds like a useful thing.
 
-Any chance we can get this patch reverted as David has suggested? It was
-backported to 5.4 LTS in commit 653ae33b030b ("KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe")
-and is causing build issues with a 4.9.4 vintage of GCC.
+I was thinking that maybe I should make some sparse-based cross-file
+checker, but it sounds like -fsanitize=cfi (or whatever it is you do)
+catches it.
 
-Thanks!
-
---
-Oliver
+              Linus
