@@ -2,106 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E04B3028AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1133028A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730958AbhAYRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:20:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53484 "EHLO
+        id S1730949AbhAYRTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:19:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730651AbhAYRTh (ORCPT
+        with ESMTP id S1729481AbhAYRSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:19:37 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131D2C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:18:17 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id m22so18903763lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:18:16 -0800 (PST)
+        Mon, 25 Jan 2021 12:18:52 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14637C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:18:12 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id n42so13456592ota.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:18:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NF3PAS9R3ZcPxx4Z5KTeI/YMZHaaDZloSJa4zd+LcN4=;
-        b=dcojzpvBme3j+zUhY3ahCgy1OWbsKkFNmO1SmDOVx9o3VOdmi1r2YX6L0pn3CYTKxE
-         UuzL4cx554sA9UWfceH335k9zgKeNdNZbQkg0ruEwHt2oD7i5VhQHFj8dho+iNbxnOIi
-         kbP6D0HNZYkv/fCic1j5WVLYkd7Cr9blj/atVb/ioXbDyORifrO8kcGBh7MCL0flLrDK
-         D2ZQOL0FlMXMeBJEJSv+/JfLGOP1UGbY+1X/Y5zaitRWa/9P2DldYEEdQW4OPBEOCyLf
-         c+RRNgmCaHeK6qP/DS1Pp+OIpiTReTg8yF4kHgiTCvjQR1HWcMVRmJAgmErZ8wIE4wHP
-         EOAQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ezmAm6nOvax9k/hdZ3S4Bw2223KEqVuV2WE0GJMSK0I=;
+        b=CDlaboiVoAK5xbM8BtWeOumETZLuJawZjwEn8LF2Ob+LXSFZgonwUcx/R6aQP/NLva
+         aoe4OdcraYwSpo8ETIC9jTpcHbDFr2Pwc6mqYsg0RMfEH9NpzXCGi2kx0YCisQT3mla5
+         N+XeVQMi2QcCP9+ayH2YhnP1xrplQCUrxsbNrszMJRK7ZIu1mQyVOSr2nkelvsjK8Kkt
+         szwHDlISErvzRMIMJ6NMMzCCc07EkPSR9tW8iKob5LJ718ccvXzDSt8pSXH9eRDDdN8E
+         niGlIdEdFECECoBQTfvUquR6LEOQIoMfUlbyDL8JyTjk93Rw/dZ+doh0Ywx4yPpqKcFV
+         VOqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NF3PAS9R3ZcPxx4Z5KTeI/YMZHaaDZloSJa4zd+LcN4=;
-        b=bIAa9EaSd+jiAx5pTxP0+QBNMRTBZZVdCsZF6m+TKgZONy/NSnJ5HKNgxfzFni7/1b
-         Swe0TaAji1sEPKvVeXL8yY0K8xVzo2zrpo9sH2vdxnIj0Stz86/2T3DZGUaaq27LCx/S
-         cnpXgKJWGXxSwa6r8mji3K3Zgmnjr9wt1hOWaqyOHRmPrc5RU9ZEFCItrAWECpEbPy9L
-         jaYLA+xeE0c2if1S2ZIJoqyD5HgjQuWSuBlW+vhZh73PHIR5wkrXJQ5V7skiRAYfivag
-         Uf44qY1clmYHIyc4uRDbVF3QpTGa9JainRPhhlCEecuMrjnSLRPe+Yp8tMEenMSCxfGX
-         LI6A==
-X-Gm-Message-State: AOAM531NhXmEpLNlSiJsObbDhFuJ3Y6C360hWTm8s0KpzfUgVUlUDtgJ
-        um06zGhYkwIplVDm/GQoIr9IcPvtoNgFlkS3O8OFWg==
-X-Google-Smtp-Source: ABdhPJwZgyZD9DAvRTvevIrwihPTON7uK5jWWLxrkR+Wnn2HSb0H7RhPgRrIgLYR899I6nP8mpJ+rzybzF2sMZbacI0=
-X-Received: by 2002:a05:6512:79:: with SMTP id i25mr660173lfo.549.1611595095275;
- Mon, 25 Jan 2021 09:18:15 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ezmAm6nOvax9k/hdZ3S4Bw2223KEqVuV2WE0GJMSK0I=;
+        b=DUuCAYrnz/MVjJY+xg21x7oiE9fBrYWVHwZLN+/XerIFsVmUgPPcCmWpGI37Bvss20
+         UCZNIqQkI0eHCPZhRJzCfyqXZk6V1FgKkG5kSJw9tIOFZ+yf6s206Cvu+3zGgLktDrEB
+         2fInkvXc1gBCOEx5Zm7k0ObHh1gwEjPkqSbSPE1hekYeMBNTrCwCPzhaSXveK7l53+g6
+         WTphnvetNgLHDejVQ6kGc8JVWos+uKH981BKn8Arfdb89IYmgDe3bvj4R0eDJ0zq9GT7
+         3a0RwwqVRJevoe0g3lDYMwD1r3/QqlNdUbv7hzUGiMtlDV99gBS2Zn02skWkr1makvKj
+         7Kig==
+X-Gm-Message-State: AOAM532Tj09tpfJ8saguQ7I8NJvJU32OLV53wMovar/qKx5PCgp/Mf00
+        U/ghyLbebL6ruuavhoIT+3R6mw==
+X-Google-Smtp-Source: ABdhPJxw/bosntKhmEmnnXkonTWsBXUcYE/ZJMm6awCzajkx5b61oK9PymMjB2S3P/0b+wNRmNYZjw==
+X-Received: by 2002:a05:6830:309b:: with SMTP id f27mr1128443ots.118.1611595091314;
+        Mon, 25 Jan 2021 09:18:11 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id j8sm3612709oie.47.2021.01.25.09.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 09:18:10 -0800 (PST)
+Date:   Mon, 25 Jan 2021 11:18:08 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Vivek Aknurwar <viveka@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jeevan Shriram <jshriram@codeaurora.org>
+Subject: Re: [PATCH v4 3/5] clk: qcom: clk-alpha-pll: Add support for Lucid
+ 5LPE PLL
+Message-ID: <YA79UPODso3cmMFU@builder.lan>
+References: <20210118044321.2571775-1-vkoul@kernel.org>
+ <20210118044321.2571775-4-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <20210121122723.3446-1-rppt@kernel.org> <20210121122723.3446-9-rppt@kernel.org>
- <20210125161706.GE308988@casper.infradead.org>
-In-Reply-To: <20210125161706.GE308988@casper.infradead.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 25 Jan 2021 09:18:04 -0800
-Message-ID: <CALvZod7rn_5oXT6Z+iRCeMX_iMRO9G_8FnwSRGpJJwyBz5Wpnw@mail.gmail.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118044321.2571775-4-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 8:20 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, Jan 21, 2021 at 02:27:20PM +0200, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> >
-> > Account memory consumed by secretmem to memcg. The accounting is updated
-> > when the memory is actually allocated and freed.
->
-> I think this is wrong.  It fails to account subsequent allocators from
-> the same PMD.  If you want to track like this, you need separate pools
-> per memcg.
->
+On Sun 17 Jan 22:43 CST 2021, Vinod Koul wrote:
 
-Are these secretmem pools shared between different jobs/memcgs?
+> From: Vivek Aknurwar <viveka@codeaurora.org>
+> 
+> Lucid 5LPE is a slightly different Lucid PLL with different offsets and
+> porgramming sequence so add support for these
+> 
+> Signed-off-by: Vivek Aknurwar <viveka@codeaurora.org>
+> Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
+> [vkoul: rebase and tidy up for upstream]
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/clk/qcom/clk-alpha-pll.c | 173 +++++++++++++++++++++++++++++++
+>  drivers/clk/qcom/clk-alpha-pll.h |   4 +
+>  2 files changed, 177 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+> index a30ea7b09224..f9c48da21bd1 100644
+> --- a/drivers/clk/qcom/clk-alpha-pll.c
+> +++ b/drivers/clk/qcom/clk-alpha-pll.c
+> @@ -156,6 +156,12 @@ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+>  /* LUCID PLL specific settings and offsets */
+>  #define LUCID_PCAL_DONE		BIT(27)
+>  
+> +/* LUCID 5LPE PLL specific settings and offsets */
+> +#define LUCID_5LPE_PCAL_DONE		BIT(11)
+> +#define LUCID_5LPE_ALPHA_PLL_ACK_LATCH	BIT(13)
+> +#define LUCID_5LPE_PLL_LATCH_INPUT	BIT(14)
+> +#define LUCID_5LPE_ENABLE_VOTE_RUN	BIT(21)
+> +
+>  #define pll_alpha_width(p)					\
+>  		((PLL_ALPHA_VAL_U(p) - PLL_ALPHA_VAL(p) == 4) ?	\
+>  				 ALPHA_REG_BITWIDTH : ALPHA_REG_16BIT_WIDTH)
+> @@ -1604,3 +1610,170 @@ const struct clk_ops clk_alpha_pll_agera_ops = {
+>  	.set_rate = clk_alpha_pll_agera_set_rate,
+>  };
+>  EXPORT_SYMBOL_GPL(clk_alpha_pll_agera_ops);
+> +
+> +static int alpha_pll_lucid_5lpe_enable(struct clk_hw *hw)
+> +{
+> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> +	u32 val;
+> +	int ret;
+> +
+> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* If in FSM mode, just vote for it */
+> +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
+> +		ret = clk_enable_regmap(hw);
+> +		if (ret)
+> +			return ret;
+> +		return wait_for_pll_enable_lock(pll);
+> +	}
+> +
+> +	/* Check if PLL is already enabled, return if enabled */
+> +	ret = trion_pll_is_enabled(pll, pll->clkr.regmap);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+> +	if (ret)
+> +		return ret;
+> +
+> +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_RUN);
+> +
+> +	ret = wait_for_pll_enable_lock(pll);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Enable the PLL outputs */
+> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, PLL_OUT_MASK);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Enable the global PLL outputs */
+> +	return regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
+> +}
+> +
+> +static void alpha_pll_lucid_5lpe_disable(struct clk_hw *hw)
+> +{
+> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> +	u32 val;
+> +	int ret;
+> +
+> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> +	if (ret)
+> +		return;
+> +
+> +	/* If in FSM mode, just unvote it */
+> +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN) {
+> +		clk_disable_regmap(hw);
+> +		return;
+> +	}
+> +
+> +	/* Disable the global PLL output */
+> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_MODE(pll), PLL_OUTCTRL, 0);
+> +	if (ret)
+> +		return;
+> +
+> +	/* Disable the PLL outputs */
+> +	ret = regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll), PLL_OUT_MASK, 0);
+> +	if (ret)
+> +		return;
+> +
+> +	/* Place the PLL mode in STANDBY */
+> +	regmap_write(pll->clkr.regmap, PLL_OPMODE(pll), PLL_STANDBY);
+> +}
+> +
+> +/*
+> + * The Lucid 5LPE PLL requires a power-on self-calibration which happens
+> + * when the PLL comes out of reset. Calibrate in case it is not completed.
+> + */
+> +static int alpha_pll_lucid_5lpe_prepare(struct clk_hw *hw)
+> +{
+> +	struct clk_alpha_pll *pll = to_clk_alpha_pll(hw);
+> +	struct clk_hw *p;
+> +	u32 val;
+> +	int ret;
+> +
+> +	/* Return early if calibration is not needed. */
+> +	regmap_read(pll->clkr.regmap, PLL_MODE(pll), &val);
+
+I doubt this will ever fail, but static analysis tools would complain
+about val possibly being uninitialized after this.
+
+And the return value is checked in the other functions.
+
+Regards,
+Bjorn
+
+> +	if (val & LUCID_5LPE_PCAL_DONE)
+> +		return 0;
+> +
+> +	p = clk_hw_get_parent(hw);
+> +	if (!p)
+> +		return -EINVAL;
+> +
+> +	ret = alpha_pll_lucid_5lpe_enable(hw);
+> +	if (ret)
+> +		return ret;
+> +
+> +	alpha_pll_lucid_5lpe_disable(hw);
+> +
+> +	return 0;
+> +}
+> +
+> +static int alpha_pll_lucid_5lpe_set_rate(struct clk_hw *hw, unsigned long rate,
+> +					 unsigned long prate)
+> +{
+> +	return __alpha_pll_trion_set_rate(hw, rate, prate,
+> +					  LUCID_5LPE_PLL_LATCH_INPUT,
+> +					  LUCID_5LPE_ALPHA_PLL_ACK_LATCH);
+> +}
+> +
+> +static int clk_lucid_5lpe_pll_postdiv_set_rate(struct clk_hw *hw, unsigned long rate,
+> +					       unsigned long parent_rate)
+> +{
+> +	struct clk_alpha_pll_postdiv *pll = to_clk_alpha_pll_postdiv(hw);
+> +	int i, val = 0, div, ret;
+> +	u32 mask;
+> +
+> +	/*
+> +	 * If the PLL is in FSM mode, then treat set_rate callback as a
+> +	 * no-operation.
+> +	 */
+> +	ret = regmap_read(pll->clkr.regmap, PLL_USER_CTL(pll), &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val & LUCID_5LPE_ENABLE_VOTE_RUN)
+> +		return 0;
+> +
+> +	div = DIV_ROUND_UP_ULL((u64)parent_rate, rate);
+> +	for (i = 0; i < pll->num_post_div; i++) {
+> +		if (pll->post_div_table[i].div == div) {
+> +			val = pll->post_div_table[i].val;
+> +			break;
+> +		}
+> +	}
+> +
+> +	mask = GENMASK(pll->width + pll->post_div_shift - 1, pll->post_div_shift);
+> +	return regmap_update_bits(pll->clkr.regmap, PLL_USER_CTL(pll),
+> +				  mask, val << pll->post_div_shift);
+> +}
+> +
+> +const struct clk_ops clk_alpha_pll_lucid_5lpe_ops = {
+> +	.prepare = alpha_pll_lucid_5lpe_prepare,
+> +	.enable = alpha_pll_lucid_5lpe_enable,
+> +	.disable = alpha_pll_lucid_5lpe_disable,
+> +	.is_enabled = clk_trion_pll_is_enabled,
+> +	.recalc_rate = clk_trion_pll_recalc_rate,
+> +	.round_rate = clk_alpha_pll_round_rate,
+> +	.set_rate = alpha_pll_lucid_5lpe_set_rate,
+> +};
+> +EXPORT_SYMBOL(clk_alpha_pll_lucid_5lpe_ops);
+> +
+> +const struct clk_ops clk_alpha_pll_fixed_lucid_5lpe_ops = {
+> +	.enable = alpha_pll_lucid_5lpe_enable,
+> +	.disable = alpha_pll_lucid_5lpe_disable,
+> +	.is_enabled = clk_trion_pll_is_enabled,
+> +	.recalc_rate = clk_trion_pll_recalc_rate,
+> +	.round_rate = clk_alpha_pll_round_rate,
+> +};
+> +EXPORT_SYMBOL(clk_alpha_pll_fixed_lucid_5lpe_ops);
+> +
+> +const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops = {
+> +	.recalc_rate = clk_alpha_pll_postdiv_fabia_recalc_rate,
+> +	.round_rate = clk_alpha_pll_postdiv_fabia_round_rate,
+> +	.set_rate = clk_lucid_5lpe_pll_postdiv_set_rate,
+> +};
+> +EXPORT_SYMBOL(clk_alpha_pll_postdiv_lucid_5lpe_ops);
+> diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
+> index 0ea30d2f3da1..6943e933be0f 100644
+> --- a/drivers/clk/qcom/clk-alpha-pll.h
+> +++ b/drivers/clk/qcom/clk-alpha-pll.h
+> @@ -144,6 +144,10 @@ extern const struct clk_ops clk_alpha_pll_lucid_ops;
+>  extern const struct clk_ops clk_alpha_pll_postdiv_lucid_ops;
+>  extern const struct clk_ops clk_alpha_pll_agera_ops;
+>  
+> +extern const struct clk_ops clk_alpha_pll_lucid_5lpe_ops;
+> +extern const struct clk_ops clk_alpha_pll_fixed_lucid_5lpe_ops;
+> +extern const struct clk_ops clk_alpha_pll_postdiv_lucid_5lpe_ops;
+> +
+>  void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+>  			     const struct alpha_pll_config *config);
+>  void clk_fabia_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+> -- 
+> 2.26.2
+> 
