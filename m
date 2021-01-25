@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CE5302B87
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A0F302B8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731802AbhAYTXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:23:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41036 "EHLO mail.kernel.org"
+        id S1731606AbhAYTYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:24:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731203AbhAYSyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:54:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29E1A221E3;
-        Mon, 25 Jan 2021 18:54:03 +0000 (UTC)
+        id S1726698AbhAYSzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AA77224BE;
+        Mon, 25 Jan 2021 18:54:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600843;
-        bh=rhdd9zoGwTGc+vAf2PO+qrNMwyqttEzin2sdVGvKGeg=;
+        s=korg; t=1611600861;
+        bh=QPyzoAnFKy+IVHJkJOlMtUaE78rNJTGrjdCQ+WPAP18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KIAbtxraEmUFfqKMofHU+X3+LtwVCV2qUP1MKJFESnxf8IT7HybkWUmB4CsQAaZ8y
-         AYzjSBI9LzVjY0QBCsnU8cze0LIqOx6ve8++ICfNU5iuQ1uXxvPqAepqlpM8lnMd1k
-         3w3arIoR8wxHP3OVYETy2XiKaj9Wvd0lunEiKNJA=
+        b=r3nfdJp+UoMrFCaneQxMpIKBd0XEVKL3PTbz5dtNENdiaUww70fNbrJVi2ZN3I2fW
+         2fzLsCt6xKjN1IWsB56KAuyYGBprYqCNL8WWyvluf1Ca9y2s2mI4mG/YqyWfLBQNSc
+         Au5N57qt8QD+E0iUjKXQJb/oA1cPq2uwVE0sbss8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
+        Juerg Haefliger <juergh@canonical.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 173/199] net_sched: avoid shift-out-of-bounds in tcindex_set_parms()
-Date:   Mon, 25 Jan 2021 19:39:55 +0100
-Message-Id: <20210125183223.498903589@linuxfoundation.org>
+Subject: [PATCH 5.10 179/199] tcp: do not mess with cloned skbs in tcp_add_backlog()
+Date:   Mon, 25 Jan 2021 19:40:01 +0100
+Message-Id: <20210125183223.751786083@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -42,65 +43,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-commit bcd0cf19ef8258ac31b9a20248b05c15a1f4b4b0 upstream.
+commit b160c28548bc0a87cbd16d5af6d3edcfd70b8c9a upstream.
 
-tc_index being 16bit wide, we need to check that TCA_TCINDEX_SHIFT
-attribute is not silly.
+Heiner Kallweit reported that some skbs were sent with
+the following invalid GSO properties :
+- gso_size > 0
+- gso_type == 0
 
-UBSAN: shift-out-of-bounds in net/sched/cls_tcindex.c:260:29
-shift exponent 255 is too large for 32-bit type 'int'
-CPU: 0 PID: 8516 Comm: syz-executor228 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- valid_perfect_hash net/sched/cls_tcindex.c:260 [inline]
- tcindex_set_parms.cold+0x1b/0x215 net/sched/cls_tcindex.c:425
- tcindex_change+0x232/0x340 net/sched/cls_tcindex.c:546
- tc_new_tfilter+0x13fb/0x21b0 net/sched/cls_api.c:2127
- rtnetlink_rcv_msg+0x8b6/0xb80 net/core/rtnetlink.c:5555
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This was triggerring a WARN_ON_ONCE() in rtl8169_tso_csum_v2.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Juerg Haefliger was able to reproduce a similar issue using
+a lan78xx NIC and a workload mixing TCP incoming traffic
+and forwarded packets.
+
+The problem is that tcp_add_backlog() is writing
+over gso_segs and gso_size even if the incoming packet will not
+be coalesced to the backlog tail packet.
+
+While skb_try_coalesce() would bail out if tail packet is cloned,
+this overwriting would lead to corruptions of other packets
+cooked by lan78xx, sharing a common super-packet.
+
+The strategy used by lan78xx is to use a big skb, and split
+it into all received packets using skb_clone() to avoid copies.
+The drawback of this strategy is that all the small skb share a common
+struct skb_shared_info.
+
+This patch rewrites TCP gso_size/gso_segs handling to only
+happen on the tail skb, since skb_try_coalesce() made sure
+it was not cloned.
+
+Fixes: 4f693b55c3d2 ("tcp: implement coalescing on backlog queue")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Link: https://lore.kernel.org/r/20210114185229.1742255-1-eric.dumazet@gmail.com
+Bisected-by: Juerg Haefliger <juergh@canonical.com>
+Tested-by: Juerg Haefliger <juergh@canonical.com>
+Reported-by: Heiner Kallweit <hkallweit1@gmail.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209423
+Link: https://lore.kernel.org/r/20210119164900.766957-1-eric.dumazet@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sched/cls_tcindex.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/ipv4/tcp_ipv4.c |   25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
---- a/net/sched/cls_tcindex.c
-+++ b/net/sched/cls_tcindex.c
-@@ -366,9 +366,13 @@ tcindex_set_parms(struct net *net, struc
- 	if (tb[TCA_TCINDEX_MASK])
- 		cp->mask = nla_get_u16(tb[TCA_TCINDEX_MASK]);
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1755,6 +1755,7 @@ int tcp_v4_early_demux(struct sk_buff *s
+ bool tcp_add_backlog(struct sock *sk, struct sk_buff *skb)
+ {
+ 	u32 limit = READ_ONCE(sk->sk_rcvbuf) + READ_ONCE(sk->sk_sndbuf);
++	u32 tail_gso_size, tail_gso_segs;
+ 	struct skb_shared_info *shinfo;
+ 	const struct tcphdr *th;
+ 	struct tcphdr *thtail;
+@@ -1762,6 +1763,7 @@ bool tcp_add_backlog(struct sock *sk, st
+ 	unsigned int hdrlen;
+ 	bool fragstolen;
+ 	u32 gso_segs;
++	u32 gso_size;
+ 	int delta;
  
--	if (tb[TCA_TCINDEX_SHIFT])
-+	if (tb[TCA_TCINDEX_SHIFT]) {
- 		cp->shift = nla_get_u32(tb[TCA_TCINDEX_SHIFT]);
+ 	/* In case all data was pulled from skb frags (in __pskb_pull_tail()),
+@@ -1787,13 +1789,6 @@ bool tcp_add_backlog(struct sock *sk, st
+ 	 */
+ 	th = (const struct tcphdr *)skb->data;
+ 	hdrlen = th->doff * 4;
+-	shinfo = skb_shinfo(skb);
 -
-+		if (cp->shift > 16) {
-+			err = -EINVAL;
-+			goto errout;
-+		}
-+	}
- 	if (!cp->hash) {
- 		/* Hash not specified, use perfect hash if the upper limit
- 		 * of the hashing index is below the threshold.
+-	if (!shinfo->gso_size)
+-		shinfo->gso_size = skb->len - hdrlen;
+-
+-	if (!shinfo->gso_segs)
+-		shinfo->gso_segs = 1;
+ 
+ 	tail = sk->sk_backlog.tail;
+ 	if (!tail)
+@@ -1816,6 +1811,15 @@ bool tcp_add_backlog(struct sock *sk, st
+ 		goto no_coalesce;
+ 
+ 	__skb_pull(skb, hdrlen);
++
++	shinfo = skb_shinfo(skb);
++	gso_size = shinfo->gso_size ?: skb->len;
++	gso_segs = shinfo->gso_segs ?: 1;
++
++	shinfo = skb_shinfo(tail);
++	tail_gso_size = shinfo->gso_size ?: (tail->len - hdrlen);
++	tail_gso_segs = shinfo->gso_segs ?: 1;
++
+ 	if (skb_try_coalesce(tail, skb, &fragstolen, &delta)) {
+ 		TCP_SKB_CB(tail)->end_seq = TCP_SKB_CB(skb)->end_seq;
+ 
+@@ -1842,11 +1846,8 @@ bool tcp_add_backlog(struct sock *sk, st
+ 		}
+ 
+ 		/* Not as strict as GRO. We only need to carry mss max value */
+-		skb_shinfo(tail)->gso_size = max(shinfo->gso_size,
+-						 skb_shinfo(tail)->gso_size);
+-
+-		gso_segs = skb_shinfo(tail)->gso_segs + shinfo->gso_segs;
+-		skb_shinfo(tail)->gso_segs = min_t(u32, gso_segs, 0xFFFF);
++		shinfo->gso_size = max(gso_size, tail_gso_size);
++		shinfo->gso_segs = min_t(u32, gso_segs + tail_gso_segs, 0xFFFF);
+ 
+ 		sk->sk_backlog.len += delta;
+ 		__NET_INC_STATS(sock_net(sk),
 
 
