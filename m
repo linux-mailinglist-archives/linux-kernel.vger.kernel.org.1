@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42BC303931
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C459303932
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391338AbhAZJjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:39:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37792 "EHLO mail.kernel.org"
+        id S2391361AbhAZJj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:39:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731104AbhAYSuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731110AbhAYSuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:50:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 826E8207B3;
-        Mon, 25 Jan 2021 18:49:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F28F8221E3;
+        Mon, 25 Jan 2021 18:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600597;
-        bh=5jnrlHnylrYAHa/akBJ9ZvTWQzQ1pKGPovbDQaIXsEc=;
+        s=korg; t=1611600599;
+        bh=uH+diHvqLRpY7zcz5jfIN7OJGEpyTCxurNx5avkHbnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vXs4UgRZIse6ahGcpZ/5DeJepQ/gUk2HbV/SID/YNg+2r26rmsF02W67ALZb2o5aa
-         NeNEYr9OlKzh6rW4TgLq0d26aY6G7794CvFDFwl+swZBZFYFPO3N4cfZqE1mo4c8w9
-         IsjuG3N/S6f1Q35oum5Djgu3eg61gvRyR8brIvh8=
+        b=dauOeMAS7w9qEDJUq7fl8FONBMF4zVMlVVNzogtem/yVUlkYFCYx8hpiLPPfVumLm
+         GZstZFnBZjOaQBz1JAYH/rwiZHqSaSMH1za5PqEcpw3WmXDC2Da4zX6/4OmweNlS3x
+         7jdfvoli6H4tXVvo3pupHIqReI7rqKGxW1hQtWcM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 076/199] nfsd: Fixes for nfsd4_encode_read_plus_data()
-Date:   Mon, 25 Jan 2021 19:38:18 +0100
-Message-Id: <20210125183219.474286489@linuxfoundation.org>
+Subject: [PATCH 5.10 077/199] nfsd: Dont set eof on a truncated READ_PLUS
+Date:   Mon, 25 Jan 2021 19:38:19 +0100
+Message-Id: <20210125183219.514358431@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,42 +43,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 72d78717c6d06adf65d2e3dccc96d9e9dc978593 ]
+[ Upstream commit b68f0cbd3f95f2df81e525c310a41fc73c2ed0d3 ]
 
-Ensure that we encode the data payload + padding, and that we truncate
-the preallocated buffer to the actual read size.
+If the READ_PLUS operation was truncated due to an error, then ensure we
+clear the 'eof' flag.
 
-Fixes: 528b84934eb9 ("NFSD: Add READ_PLUS data support")
+Fixes: 9f0b5792f07d ("NFSD: Encode a full READ_PLUS reply")
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4xdr.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/nfsd/nfs4xdr.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index 833a2c64dfe80..26f6e277101de 100644
+index 26f6e277101de..5f5169b9c2e90 100644
 --- a/fs/nfsd/nfs4xdr.c
 +++ b/fs/nfsd/nfs4xdr.c
-@@ -4632,6 +4632,7 @@ nfsd4_encode_read_plus_data(struct nfsd4_compoundres *resp,
- 			    resp->rqstp->rq_vec, read->rd_vlen, maxcount, eof);
- 	if (nfserr)
- 		return nfserr;
-+	xdr_truncate_encode(xdr, starting_len + 16 + xdr_align_size(*maxcount));
+@@ -4736,14 +4736,15 @@ out:
+ 	if (nfserr && segments == 0)
+ 		xdr_truncate_encode(xdr, starting_len);
+ 	else {
+-		tmp = htonl(eof);
+-		write_bytes_to_xdr_buf(xdr->buf, starting_len,     &tmp, 4);
+-		tmp = htonl(segments);
+-		write_bytes_to_xdr_buf(xdr->buf, starting_len + 4, &tmp, 4);
+ 		if (nfserr) {
+ 			xdr_truncate_encode(xdr, last_segment);
+ 			nfserr = nfs_ok;
++			eof = 0;
+ 		}
++		tmp = htonl(eof);
++		write_bytes_to_xdr_buf(xdr->buf, starting_len,     &tmp, 4);
++		tmp = htonl(segments);
++		write_bytes_to_xdr_buf(xdr->buf, starting_len + 4, &tmp, 4);
+ 	}
  
- 	tmp = htonl(NFS4_CONTENT_DATA);
- 	write_bytes_to_xdr_buf(xdr->buf, starting_len,      &tmp,   4);
-@@ -4639,6 +4640,10 @@ nfsd4_encode_read_plus_data(struct nfsd4_compoundres *resp,
- 	write_bytes_to_xdr_buf(xdr->buf, starting_len + 4,  &tmp64, 8);
- 	tmp = htonl(*maxcount);
- 	write_bytes_to_xdr_buf(xdr->buf, starting_len + 12, &tmp,   4);
-+
-+	tmp = xdr_zero;
-+	write_bytes_to_xdr_buf(xdr->buf, starting_len + 16 + *maxcount, &tmp,
-+			       xdr_pad_size(*maxcount));
- 	return nfs_ok;
- }
- 
+ 	return nfserr;
 -- 
 2.27.0
 
