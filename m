@@ -2,64 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B6B302226
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6850B302228
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbhAYGbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 01:31:11 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11856 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727149AbhAYG2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:28:49 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DPKdl029jz7ZgK;
-        Mon, 25 Jan 2021 14:26:51 +0800 (CST)
-Received: from [10.174.179.117] (10.174.179.117) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 25 Jan 2021 14:27:58 +0800
-Subject: Re: [PATCH] mm/filemap: Remove redundant variable's assignment
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <08dc7237b44b9455ab095b44dc6969a1607b08db.1611544316.git.baolin.wang@linux.alibaba.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <2dfe7c46-f8a3-a28b-021b-7c6f4d2843f9@huawei.com>
-Date:   Mon, 25 Jan 2021 14:27:56 +0800
+        id S1726866AbhAYGcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 01:32:47 -0500
+Received: from mga01.intel.com ([192.55.52.88]:41249 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727167AbhAYGbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 01:31:02 -0500
+IronPort-SDR: XXbAp7tp2giaVSTIHCHLOfdJCUGN3CYv58p8hrpIPeuo+QH7y9YA8gK6tKYGd+VVJO34tVLiNA
+ 7aAUExiyaMfA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="198446576"
+X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
+   d="scan'208";a="198446576"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 22:29:00 -0800
+IronPort-SDR: oE6OFidgDPXQk1X02gWX8/Qcq6TrRHYYw3iQmTP9/6VpP6lJpH5X71iUCfH2UzjpE76vvUN4MY
+ 7v3JdkXcCXDQ==
+X-IronPort-AV: E=Sophos;i="5.79,372,1602572400"; 
+   d="scan'208";a="387189858"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.29.249]) ([10.255.29.249])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2021 22:28:57 -0800
+Cc:     baolu.lu@linux.intel.com, "Raj, Ashok" <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+References: <20210121014505.1659166-1-baolu.lu@linux.intel.com>
+ <20210121014505.1659166-2-baolu.lu@linux.intel.com>
+ <MWHPR11MB18862D2EA5BD432BF22D99A48CA09@MWHPR11MB1886.namprd11.prod.outlook.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 1/3] iommu/vt-d: Add rate limited information when PRQ
+ overflows
+Message-ID: <da341e11-0923-9127-3385-c2eab9e0db2b@linux.intel.com>
+Date:   Mon, 25 Jan 2021 14:28:54 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <08dc7237b44b9455ab095b44dc6969a1607b08db.1611544316.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <MWHPR11MB18862D2EA5BD432BF22D99A48CA09@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.117]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/25 11:20, Baolin Wang wrote:
-> We've already set the variable 'i' 's initial value before using it,
-> thus remove redundant previous assignment of variable 'i'.
+Hi Kevin,
+
+On 2021/1/22 14:38, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Thursday, January 21, 2021 9:45 AM
+>>
+>> So that the uses could get chances to know what happened.
+>>
+>> Suggested-by: Ashok Raj <ashok.raj@intel.com>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/svm.c | 10 ++++++++--
+>>   1 file changed, 8 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+>> index 033b25886e57..f49fe715477b 100644
+>> --- a/drivers/iommu/intel/svm.c
+>> +++ b/drivers/iommu/intel/svm.c
+>> @@ -895,6 +895,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   	struct intel_iommu *iommu = d;
+>>   	struct intel_svm *svm = NULL;
+>>   	int head, tail, handled = 0;
+>> +	struct page_req_dsc *req;
+>>
+>>   	/* Clear PPR bit before reading head/tail registers, to
+>>   	 * ensure that we get a new interrupt if needed. */
+>> @@ -904,7 +905,6 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>>   	head = dmar_readq(iommu->reg + DMAR_PQH_REG) &
+>> PRQ_RING_MASK;
+>>   	while (head != tail) {
+>>   		struct vm_area_struct *vma;
+>> -		struct page_req_dsc *req;
+>>   		struct qi_desc resp;
+>>   		int result;
+>>   		vm_fault_t ret;
+>> @@ -1042,8 +1042,14 @@ static irqreturn_t prq_event_thread(int irq, void
+>> *d)
+>>   	 * Clear the page request overflow bit and wake up all threads that
+>>   	 * are waiting for the completion of this handling.
+>>   	 */
+>> -	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO)
+>> +	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
+>> +		head = dmar_readq(iommu->reg + DMAR_PQH_REG) &
+>> PRQ_RING_MASK;
+>> +		req = &iommu->prq[head / sizeof(*req)];
+>> +		pr_warn_ratelimited("IOMMU: %s: Page request overflow:
+>> HEAD: %08llx %08llx",
+>> +				    iommu->name, ((unsigned long long
+>> *)req)[0],
+>> +				    ((unsigned long long *)req)[1]);
+>>   		writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
+>> +	}
+>>
 > 
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->  mm/filemap.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index e4906f5..07b02f3 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2472,7 +2472,6 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
->  		if ((iocb->ki_flags & IOCB_WAITQ) && written)
->  			iocb->ki_flags |= IOCB_NOWAIT;
->  
-> -		i = 0;
->  		pg_nr = generic_file_buffered_read_get_pages(iocb, iter,
->  							     pages, nr_pages);
->  		if (pg_nr < 0) {
+> Not about rate limiting but I think we may have a problem in above
+> logic. It is incorrect to always clear PRO when it's set w/o first checking
+> whether the overflow condition has been cleared. This code assumes
+> that if an overflow condition occurs it must have been cleared by earlier
+> loop when hitting this check. However since this code runs in a threaded
+> context, the overflow condition could occur even after you reset the head
+> to the tail (under some extreme condition). To be sane I think we'd better
+> read both head/tail again after seeing a pending PRO here and only clear
+> PRO when it becomes a false indicator based on latest head/tail.
 > 
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Yes, agreed. We can check the head and tail and clear the overflow bit
+until the queue is empty. The finial code looks like:
+
+         /*
+          * Clear the page request overflow bit and wake up all threads that
+          * are waiting for the completion of this handling.
+          */
+         if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
+                 head = dmar_readq(iommu->reg + DMAR_PQH_REG) & 
+PRQ_RING_MASK;
+                 tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & 
+PRQ_RING_MASK;
+                 if (head == tail) {
+                         req = &iommu->prq[head / sizeof(*req)];
+                         pr_warn_ratelimited("IOMMU: %s: Page request 
+overflow cleared: HEAD: %08llx %08llx",
+                                             iommu->name, ((unsigned 
+long long *)req)[0],
+                                             ((unsigned long long 
+*)req)[1]);
+                         writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
+                 }
+         }
+
+Thought?
+
+> Thanks
+> Kevin
+> 
+
+Best regards,
+baolu
