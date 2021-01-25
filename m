@@ -2,37 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5CF3039B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9453039B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390929AbhAZJ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:58:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
+        id S2391582AbhAZJ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:58:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731307AbhAYSyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:54:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A566206E5;
-        Mon, 25 Jan 2021 18:53:18 +0000 (UTC)
+        id S1730407AbhAYSyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:54:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E015F2075B;
+        Mon, 25 Jan 2021 18:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600799;
-        bh=HDZGee8HdLshihdFtcKmIvRMMk/dBYE3C4lxTQIFzyI=;
+        s=korg; t=1611600801;
+        bh=DHhBEhZM+tSThgz4owHDP+gCKhPGhj76oHeiXkbn3ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVDwsV35bDWiup/yuAha9sGl1a12xfV40JI7pHy5IsSiuXJOjiCyjPi4bFvRjnruq
-         f7RQSoOuLu5NHSCuKxk0P0NpmH92hqhm/2UCtDSdwg4eSkD79ylAkJP/usxaoI7sG/
-         mYVYP7EZg9oK+8abiFJ+egY2I7w7jqz3P90HWcKg=
+        b=1cCh4EgnPTER6hiT3+Fn7siWl98urz51DWKe4v6OHRechcYX1L5fjXtoTSiN8Drjq
+         zKWeVNNSOWz8vJpQ7RvWj+Oax3fJgOkCCLNhxn033JnCk9NUfoAcylGbaJJgnPtNE1
+         50SPUL6TtBrY4Pj/CeII6jzIDDVHpTsvmgGofoEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 125/199] mm: fix numa stats for thp migration
-Date:   Mon, 25 Jan 2021 19:39:07 +0100
-Message-Id: <20210125183221.489619590@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 126/199] io_uring: iopoll requests should also wake task ->in_idle state
+Date:   Mon, 25 Jan 2021 19:39:08 +0100
+Message-Id: <20210125183221.531456067@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -44,97 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shakeel Butt <shakeelb@google.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit 5c447d274f3746fbed6e695e7b9a2d7bd8b31b71 upstream.
+commit c93cc9e16d88e0f5ea95d2d65d58a8a4dab258bc upstream.
 
-Currently the kernel is not correctly updating the numa stats for
-NR_FILE_PAGES and NR_SHMEM on THP migration.  Fix that.
+If we're freeing/finishing iopoll requests, ensure we check if the task
+is in idling in terms of cancelation. Otherwise we could end up waiting
+forever in __io_uring_task_cancel() if the task has active iopoll
+requests that need cancelation.
 
-For NR_FILE_DIRTY and NR_ZONE_WRITE_PENDING, although at the moment
-there is no need to handle THP migration as kernel still does not have
-write support for file THP but to be more future proof, this patch adds
-the THP support for those stats as well.
-
-Link: https://lkml.kernel.org/r/20210108155813.2914586-2-shakeelb@google.com
-Fixes: e71769ae52609 ("mm: enable thp migration for shmem thp")
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Yang Shi <shy828301@gmail.com>
-Reviewed-by: Roman Gushchin <guro@fb.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Muchun Song <songmuchun@bytedance.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org # 5.9+
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/migrate.c |   23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ fs/io_uring.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -406,6 +406,7 @@ int migrate_page_move_mapping(struct add
- 	struct zone *oldzone, *newzone;
- 	int dirty;
- 	int expected_count = expected_page_refs(mapping, page) + extra_count;
-+	int nr = thp_nr_pages(page);
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -2167,6 +2167,8 @@ static void io_req_free_batch_finish(str
+ 		struct io_uring_task *tctx = rb->task->io_uring;
  
- 	if (!mapping) {
- 		/* Anonymous page without mapping */
-@@ -441,7 +442,7 @@ int migrate_page_move_mapping(struct add
- 	 */
- 	newpage->index = page->index;
- 	newpage->mapping = page->mapping;
--	page_ref_add(newpage, thp_nr_pages(page)); /* add cache reference */
-+	page_ref_add(newpage, nr); /* add cache reference */
- 	if (PageSwapBacked(page)) {
- 		__SetPageSwapBacked(newpage);
- 		if (PageSwapCache(page)) {
-@@ -463,7 +464,7 @@ int migrate_page_move_mapping(struct add
- 	if (PageTransHuge(page)) {
- 		int i;
- 
--		for (i = 1; i < HPAGE_PMD_NR; i++) {
-+		for (i = 1; i < nr; i++) {
- 			xas_next(&xas);
- 			xas_store(&xas, newpage);
- 		}
-@@ -474,7 +475,7 @@ int migrate_page_move_mapping(struct add
- 	 * to one less reference.
- 	 * We know this isn't the last reference.
- 	 */
--	page_ref_unfreeze(page, expected_count - thp_nr_pages(page));
-+	page_ref_unfreeze(page, expected_count - nr);
- 
- 	xas_unlock(&xas);
- 	/* Leave irq disabled to prevent preemption while updating stats */
-@@ -497,17 +498,17 @@ int migrate_page_move_mapping(struct add
- 		old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
- 		new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
- 
--		__dec_lruvec_state(old_lruvec, NR_FILE_PAGES);
--		__inc_lruvec_state(new_lruvec, NR_FILE_PAGES);
-+		__mod_lruvec_state(old_lruvec, NR_FILE_PAGES, -nr);
-+		__mod_lruvec_state(new_lruvec, NR_FILE_PAGES, nr);
- 		if (PageSwapBacked(page) && !PageSwapCache(page)) {
--			__dec_lruvec_state(old_lruvec, NR_SHMEM);
--			__inc_lruvec_state(new_lruvec, NR_SHMEM);
-+			__mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
-+			__mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
- 		}
- 		if (dirty && mapping_can_writeback(mapping)) {
--			__dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
--			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
--			__inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
--			__inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
-+			__mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
-+			__mod_zone_page_state(oldzone, NR_ZONE_WRITE_PENDING, -nr);
-+			__mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
-+			__mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
- 		}
+ 		percpu_counter_sub(&tctx->inflight, rb->task_refs);
++		if (atomic_read(&tctx->in_idle))
++			wake_up(&tctx->wait);
+ 		put_task_struct_many(rb->task, rb->task_refs);
+ 		rb->task = NULL;
  	}
- 	local_irq_enable();
+@@ -2186,6 +2188,8 @@ static void io_req_free_batch(struct req
+ 			struct io_uring_task *tctx = rb->task->io_uring;
+ 
+ 			percpu_counter_sub(&tctx->inflight, rb->task_refs);
++			if (atomic_read(&tctx->in_idle))
++				wake_up(&tctx->wait);
+ 			put_task_struct_many(rb->task, rb->task_refs);
+ 		}
+ 		rb->task = req->task;
 
 
