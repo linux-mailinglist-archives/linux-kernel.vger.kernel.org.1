@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572E2303933
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49778303935
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391380AbhAZJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:40:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
+        id S2391399AbhAZJkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:40:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730871AbhAYSuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:50:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F403A2063A;
-        Mon, 25 Jan 2021 18:50:13 +0000 (UTC)
+        id S1730962AbhAYSvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 938F62067B;
+        Mon, 25 Jan 2021 18:50:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600614;
-        bh=N8+4XAaY5SVHvDSceX+S21bvw7FkyehDhyC0eYvfnXQ=;
+        s=korg; t=1611600617;
+        bh=c2MuqezHcKNzAiM1yrZjSxkfci542e9Lcb3Mdhpv3OY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=otRsr3oUKqngR2nWkZ+QrMK15klu8kKwwy0C4chQGJhCirlOfGPT0HLF1YmZBQb8z
-         j2HRQyQKF6KvxN+liMKg/UGlUD4T7RqD1mffarkXVDTNM3HOxOAmi5IY5dHA8iyZjD
-         KEmxQEN9JHqnJTuhTsHF6h+lajACIp+VdNP1+kgo=
+        b=xyWEx5dhjucD0ew5zKK3yEoUtILxEaDHd3nzwRZWfuA8n3c+9+L0OLUWDPq6Bojik
+         BtoVG3s9ni2tMENLh/vQ6OeF6yIzjRmyK9cZ1IBd8G5xVj22OwVrvNXUg4pOFjVnHW
+         1nLIPT9Cly97Nfo2aGb0yJ5OhpaP8bWmSoMfkzhE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phil Oester <kernel@linuxace.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 083/199] scsi: megaraid_sas: Fix MEGASAS_IOC_FIRMWARE regression
-Date:   Mon, 25 Jan 2021 19:38:25 +0100
-Message-Id: <20210125183219.770744554@linuxfoundation.org>
+Subject: [PATCH 5.10 084/199] scsi: ufs: ufshcd-pltfrm depends on HAS_IOMEM
+Date:   Mon, 25 Jan 2021 19:38:26 +0100
+Message-Id: <20210125183219.812739460@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,78 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit b112036535eda34460677ea883eaecc3a45a435d ]
+[ Upstream commit 5e6ddadf7637d336acaad1df1f3bcbb07f7d104d ]
 
-Phil Oester reported that a fix for a possible buffer overrun that I sent
-caused a regression that manifests in this output:
+Building ufshcd-pltfrm.c on arch/s390/ has a linker error since S390 does
+not support IOMEM, so add a dependency on HAS_IOMEM.
 
- Event Message: A PCI parity error was detected on a component at bus 0 device 5 function 0.
- Severity: Critical
- Message ID: PCI1308
+s390-linux-ld: drivers/scsi/ufs/ufshcd-pltfrm.o: in function `ufshcd_pltfrm_init':
+ufshcd-pltfrm.c:(.text+0x38e): undefined reference to `devm_platform_ioremap_resource'
 
-The original code tried to handle the sense data pointer differently when
-using 32-bit 64-bit DMA addressing, which would lead to a 32-bit dma_addr_t
-value of 0x11223344 to get stored
+where that devm_ function is inside an #ifdef CONFIG_HAS_IOMEM/#endif
+block.
 
-32-bit kernel:       44 33 22 11 ?? ?? ?? ??
-64-bit LE kernel:    44 33 22 11 00 00 00 00
-64-bit BE kernel:    00 00 00 00 44 33 22 11
-
-or a 64-bit dma_addr_t value of 0x1122334455667788 to get stored as
-
-32-bit kernel:       88 77 66 55 ?? ?? ?? ??
-64-bit kernel:       88 77 66 55 44 33 22 11
-
-In my patch, I tried to ensure that the same value is used on both 32-bit
-and 64-bit kernels, and picked what seemed to be the most sensible
-combination, storing 32-bit addresses in the first four bytes (as 32-bit
-kernels already did), and 64-bit addresses in eight consecutive bytes (as
-64-bit kernels already did), but evidently this was incorrect.
-
-Always storing the dma_addr_t pointer as 64-bit little-endian,
-i.e. initializing the second four bytes to zero in case of 32-bit
-addressing, apparently solved the problem for Phil, and is consistent with
-what all 64-bit little-endian machines did before.
-
-I also checked in the history that in previous versions of the code, the
-pointer was always in the first four bytes without padding, and that
-previous attempts to fix 64-bit user space, big-endian architectures and
-64-bit DMA were clearly flawed and seem to have introduced made this worse.
-
-Link: https://lore.kernel.org/r/20210104234137.438275-1-arnd@kernel.org
-Fixes: 381d34e376e3 ("scsi: megaraid_sas: Check user-provided offsets")
-Fixes: 107a60dd71b5 ("scsi: megaraid_sas: Add support for 64bit consistent DMA")
-Fixes: 94cd65ddf4d7 ("[SCSI] megaraid_sas: addded support for big endian architecture")
-Fixes: 7b2519afa1ab ("[SCSI] megaraid_sas: fix 64 bit sense pointer truncation")
-Reported-by: Phil Oester <kernel@linuxace.com>
-Tested-by: Phil Oester <kernel@linuxace.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: lore.kernel.org/r/202101031125.ZEFCUiKi-lkp@intel.com
+Link: https://lore.kernel.org/r/20210106040822.933-1-rdunlap@infradead.org
+Fixes: 03b1781aa978 ("[SCSI] ufs: Add Platform glue driver for ufshcd")
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Avri Altman <avri.altman@wdc.com>
+Cc: linux-scsi@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_base.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/scsi/ufs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index 9ebeb031329d9..cc45cdac13844 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -8232,11 +8232,9 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
- 			goto out;
- 		}
- 
-+		/* always store 64 bits regardless of addressing */
- 		sense_ptr = (void *)cmd->frame + ioc->sense_off;
--		if (instance->consistent_mask_64bit)
--			put_unaligned_le64(sense_handle, sense_ptr);
--		else
--			put_unaligned_le32(sense_handle, sense_ptr);
-+		put_unaligned_le64(sense_handle, sense_ptr);
- 	}
- 
- 	/*
+diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
+index dcdb4eb1f90ba..c339517b7a094 100644
+--- a/drivers/scsi/ufs/Kconfig
++++ b/drivers/scsi/ufs/Kconfig
+@@ -72,6 +72,7 @@ config SCSI_UFS_DWC_TC_PCI
+ config SCSI_UFSHCD_PLATFORM
+ 	tristate "Platform bus based UFS Controller support"
+ 	depends on SCSI_UFSHCD
++	depends on HAS_IOMEM
+ 	help
+ 	This selects the UFS host controller support. Select this if
+ 	you have an UFS controller on Platform bus.
 -- 
 2.27.0
 
