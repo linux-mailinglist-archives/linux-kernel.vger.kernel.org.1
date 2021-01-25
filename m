@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F7C303225
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BA0303222
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729475AbhAYO0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:26:48 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:41040 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729391AbhAYOVq (ORCPT
+        id S1729513AbhAYOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:40:23 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:3152 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729594AbhAYOhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:21:46 -0500
-Received: by mail-oi1-f174.google.com with SMTP id m13so6948588oig.8;
-        Mon, 25 Jan 2021 06:21:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o4KyYlby3ix9gWsgIE+54GAeLjjtUdHgSTrB2Z0eyrw=;
-        b=LI+ZX9dcYzclLN2m7h7CjvAWfO329p94IC60huk3tMyZpe78aVF1K5vX79OmnJ8QtY
-         UFr+OlVYYVKacZs4rLbZd+rRa733PJwthJUvyXGkcglWekwxLH1fwsWx+N+cd2RrlDjH
-         1sc25Dizvu1ItjNyQtd6Am2vjp6Sldsoa4kaHakvZ5QxGUEZ4sN8ws01hByRBwV7HCxW
-         sZlXYpWptwCHxqTsC01bZFsaDU0cOzC8y3pj94WcrI68dyazZoPI5QlSVZsMG3Ny4iNh
-         P6IKR8TQKcOphBC/a/BYyT2BoZOavTXPKkH0nsoX9fkVDArKa9AAgnVU3Dt4hJejHC2f
-         9RbQ==
-X-Gm-Message-State: AOAM531oSouNuHHMd+XxkZ9J2ZKiAQAK6/xvKMTgFpOVhevLke7bJ+re
-        c7nmAbIjwGej/ERAFbK79rHZA30eH0T/CrKyTSw=
-X-Google-Smtp-Source: ABdhPJwVtpKcPVKOwYR/zAg3FHVzFS2mssYCbKzz3y5LZbpmHtHzej0Ch/BY6dLBcr0oR62dlxAVLIoJ6k0Quw0KWv4=
-X-Received: by 2002:aca:1219:: with SMTP id 25mr274231ois.54.1611584449552;
- Mon, 25 Jan 2021 06:20:49 -0800 (PST)
+        Mon, 25 Jan 2021 09:37:31 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10PERDlX031593;
+        Mon, 25 Jan 2021 15:36:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=wWIxKXclgLdylfMZwg4le6uLRNhXM5uQkriSpG1L/VE=;
+ b=xDacxuGMlftE4qlGtMteqLhPLAIvOkN3Z1TeDzs4R++YvsQHgM4XkOxD4jBHRR2dgT8h
+ GMu9NLW9gvQzYS26/JetULJEJZETzjFnJqALYpp5bgbn4i4W6m0tTL1ofi/erdhF+5wt
+ mimEReF7fo5Yac3mCVYLzTAg65qw7z5HbhLx0m2ujduoWLG654WGjFODZrph2EshXwqo
+ nCMsX/+kQ5ywqpF9oOrDNl4/Npp3dy0UqHzdBOS8/ELMxS0aMPREwBZz8ApPhLGIyNdJ
+ ZwykXOZpV2FxlvoX/HO9Zuuhjr2DCzWwHbCjG8C/bSDyUfwFMC4Xmo3PDi0HRJV7hJ+M oA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 368a56bh4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jan 2021 15:36:22 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8427E10002A;
+        Mon, 25 Jan 2021 15:36:19 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 6892222743F;
+        Mon, 25 Jan 2021 15:36:19 +0100 (CET)
+Received: from lmecxl0912.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Jan
+ 2021 15:36:18 +0100
+Subject: Re: [PATCH] ARM: multi_v7_defconfig: add STM32 CEC support
+To:     Yannick Fertre <yannick.fertre@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210115143236.27675-1-yannick.fertre@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <687e3445-ffc3-7133-db2a-14e6c7c8efea@foss.st.com>
+Date:   Mon, 25 Jan 2021 15:36:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210107181524.1947173-1-geert+renesas@glider.be>
- <20210107181524.1947173-5-geert+renesas@glider.be> <20210112103648.GL2771@vkoul-mobl>
- <CAMuHMdUiQkP4W17ovot29NGRPa0rYgpsDC7zVC2KxxxDfVsd+w@mail.gmail.com> <20210112170415.GU2771@vkoul-mobl>
-In-Reply-To: <20210112170415.GU2771@vkoul-mobl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 25 Jan 2021 15:20:38 +0100
-Message-ID: <CAMuHMdWVD4fc9WHLW9L+rDoqPp4YkRzUjWuy=RmndKcqqq-RnQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Phong Hoang <phong.hoang.wz@renesas.com>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210115143236.27675-1-yannick.fertre@foss.st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-25_04:2021-01-25,2021-01-25 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Hi Yannick
 
-On Tue, Jan 12, 2021 at 6:04 PM Vinod Koul <vkoul@kernel.org> wrote:
-> On 12-01-21, 16:54, Geert Uytterhoeven wrote:
-> > On Tue, Jan 12, 2021 at 11:36 AM Vinod Koul <vkoul@kernel.org> wrote:
-> > > On 07-01-21, 19:15, Geert Uytterhoeven wrote:
-> > > > The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
-> > > > the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
-> > > >   1. The per-channel registers are located in a second register block.
-> > > >      Add support for mapping the second block, using the appropriate
-> > > >      offsets and stride.
-> > > >   2. The common Channel Clear Register (DMACHCLR) was replaced by a
-> > > >      per-channel register.
-> > > >      Update rcar_dmac_chan_clear{,_all}() to handle this.
-> > > >      As rcar_dmac_init() needs to clear the status before the individual
-> > > >      channels are probed, channel index and base address initialization
-> > > >      are moved forward.
-> > > >
-> > > > Inspired by a patch in the BSP by Phong Hoang
-> > > > <phong.hoang.wz@renesas.com>.
-> > > >
-> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> >
-> > > > --- a/drivers/dma/sh/rcar-dmac.c
-> > > > +++ b/drivers/dma/sh/rcar-dmac.c
-> > > > @@ -189,7 +189,7 @@ struct rcar_dmac_chan {
-> > > >   * struct rcar_dmac - R-Car Gen2 DMA Controller
-> > > >   * @engine: base DMA engine object
-> > > >   * @dev: the hardware device
-> > > > - * @iomem: remapped I/O memory base
-> > > > + * @iomem: remapped I/O memory bases (second is optional)
-> > > >   * @n_channels: number of available channels
-> > > >   * @channels: array of DMAC channels
-> > > >   * @channels_mask: bitfield of which DMA channels are managed by this driver
-> > > > @@ -198,7 +198,7 @@ struct rcar_dmac_chan {
-> > > >  struct rcar_dmac {
-> > > >       struct dma_device engine;
-> > > >       struct device *dev;
-> > > > -     void __iomem *iomem;
-> > > > +     void __iomem *iomem[2];
-> > >
-> > > do you forsee many more memory regions, if not then why not add second
-> >
-> > No I don't. TBH, I didn't foresee this change either; you never know
-> > what the hardware people have on their mind for the next SoC ;-)
-> >
-> > > region, that way changes in this patch will be lesser..?
-> >
-> > I did consider that option.  However, doing so would imply that (a) the
-> > code to map the memory regions can no longer be a loop, but has to be
-> > unrolled manually, and (b) rcar_dmac_of_data.chan_reg_block can no
-> > longer be used to index iomem[], but needs a conditional expression or
-> > statement.
-> >
-> > > and it would be better to refer to a region by its name rather than
-> > > iomem[1]..
-> >
-> >     - * @iomem: remapped I/O memory base
-> >     + * @common_base: remapped common or combined I/O memory base
-> >     + * @channel_base: remapped optional channel I/O memory base
-> >
-> >     -     void __iomem *iomem;
-> >     +     void __iomem *common_base;
-> >     +     void __iomem *channel_base;
-> >
-> > If you still think this is worthwhile, I can make these changes.
->
-> Either way suits me, TBH it is not a deal breaker, so i would leave it
-> upto you :)
+On 1/15/21 3:32 PM, Yannick Fertre wrote:
+> Enable CEC support for STMicroelectronics as loadable module.
+> 
+> Signed-off-by: Yannick Fertre <yannick.fertre@foss.st.com>
+> ---
+>   arch/arm/configs/multi_v7_defconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> index c5f25710fedc..05cc0607a9ad 100644
+> --- a/arch/arm/configs/multi_v7_defconfig
+> +++ b/arch/arm/configs/multi_v7_defconfig
+> @@ -656,6 +656,7 @@ CONFIG_V4L_TEST_DRIVERS=y
+>   CONFIG_VIDEO_VIVID=m
+>   CONFIG_CEC_PLATFORM_DRIVERS=y
+>   CONFIG_CEC_SAMSUNG_S5P=m
+> +CONFIG_CEC_STM32=m
+>   CONFIG_VIDEO_ADV7180=m
+>   CONFIG_VIDEO_ADV7604=m
+>   CONFIG_VIDEO_ADV7604_CEC=y
+> 
 
-I managed to use named regions at the expense of only 6 more lines of
-source code, even reducing the resulting binary size.
-So stay ready for v2 ;-)
+Applied on stm32-next.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks.
+Alex
