@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09BD304A1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A8F304A20
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730310AbhAZFPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:15:00 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59554 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726765AbhAYJnD (ORCPT
+        id S1730564AbhAZFPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:15:07 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:35456 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727080AbhAYJoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:43:03 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10P8hkLA031898;
-        Mon, 25 Jan 2021 08:44:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=xD0aLkep0O0ztrxHEAKgiehLDzdRg7ouOuFGlmLu46g=;
- b=AVuuxMrUSolBWpVKPpA64A8FnVA+PksbYXPw9cVRKnixcUEVuuZPeL4pDk4DifQ56NW3
- P0+MHMZLjW9bzqdUQukEgrEwcfBMQV9/X/o4FOz0sWLc8OhEin9IcWFpUOhtYBqlMy8d
- msUmXZxzR1XJcoPsO6+LrIMOafhFG0XMeLJUwbD60VZsmezJ4StZmFRki8xYwIhaCe+N
- RuzcvmVAAtpGNOMD37TBlhJEM/F2T2v1Dx3ZZ5ZVSmn9l/MFel3+WRx0vDNW6Ds2e+g2
- ubOcaDgQasf7Il+rSzJ5UZ0wDR91037mUUStBA5Gs4QgJst+rvJBM97BS3vwO9naB1Hc Ew== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 368b7qm54a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Jan 2021 08:44:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10P8a1Fv176118;
-        Mon, 25 Jan 2021 08:44:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 368wqunj56-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Jan 2021 08:44:12 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10P8iAiK019015;
-        Mon, 25 Jan 2021 08:44:10 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 25 Jan 2021 00:44:10 -0800
-Date:   Mon, 25 Jan 2021 11:44:02 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Nilesh Javali <njavali@marvell.com>
-Cc:     GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] scsi: qla2xxx: fix some memory corruption
-Message-ID: <YA6E0geUlL9Hs04A@mwanda>
+        Mon, 25 Jan 2021 04:44:07 -0500
+Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1l3yP6-0005J1-2i; Mon, 25 Jan 2021 09:43:24 +0000
+Date:   Mon, 25 Jan 2021 10:43:23 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Dealing with complex patch series in linux-next
+Message-ID: <20210125094323.gz7g5p6xeifolf5v@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9874 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101250051
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9874 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101250052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was supposed to be "data" instead of "&data".  The current code
-will corrupt the stack.
+Hey,
 
-Fixes: dbf1f53cfd23 ("scsi: qla2xxx: Implementation to get and manage host, target stats and initiator port")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/scsi/qla2xxx/qla_bsg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+After having received another round of acks on the idmapped mounts
+series and other fses about to move forward with porting I moved forward
+with merging [1] into my for-next branch which is tracked by sfr in
+linux-next.
+Given the nature of the series I expected there to be a good chunk of
+merge conflicts including some non-trivial ones. But there proved to be
+too many conflicts or at least a few ones that sfr couldn't handle
+without more insight into the series. So after talking to sfr this
+morning we decided to drop the tree for today.
 
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-index e45da05383cd..bee8cf9f8123 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.c
-+++ b/drivers/scsi/qla2xxx/qla_bsg.c
-@@ -2667,7 +2667,7 @@ qla2x00_get_tgt_stats(struct bsg_job *bsg_job)
- 
- 		bsg_reply->reply_payload_rcv_len =
- 			sg_copy_from_buffer(bsg_job->reply_payload.sg_list,
--					    bsg_job->reply_payload.sg_cnt, &data,
-+					    bsg_job->reply_payload.sg_cnt, data,
- 					    sizeof(struct ql_vnd_tgt_stats_resp));
- 
- 		bsg_reply->result = DID_OK;
--- 
-2.29.2
+Obviously we would like to see this in linux-next and we will likely run
+into similar problems should you decide to want to pull this.
+I could try and choose a common base with at least one tree (e.g. Al's)
+but this will only get rid of some merge conflicts.
+I'm sure I could also do an extremely fine-grained split of each patch
+in the series though I don't think that's very helpful in this case
+either.
+I could do a daily rebase onto linux-next which is similar to what
+Andrew does for such patch series which get included into linux-next as
+a rebased post-next patchbomb (as sfr pointed out to me). The series has
+a large xfstest series associated with it so it's at least easily
+detectable when the rebase breaks things.
+I would prefer to not have to burden someone else with this and rather
+deal with the merge conflict resolution myself to make sure that no
+wider context is missed. It would also allow me to point out where the
+painpoints are if this gets sent for inclusion/is accepted.
 
+So completely independent of whether or not you ultimately decide to
+accept or reject the series it might be pretty helpful to know what your
+preferred way of dealing with similar series is to make it easier for
+you later on.
+
+Christian
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=idmapped_mounts
+
+I know that we have
+https://www.kernel.org/doc/html/latest/maintainer/rebasing-and-merging.html
+and it touches on stuff like this to some extent in "Merging from
+sibling or upstream" trees but it's not clear that this would be
+beneficial here or whether it wouldn't just make the changeset harder to
+follow.
