@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792BE30395B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144C430395F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391341AbhAZJrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:47:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37342 "EHLO mail.kernel.org"
+        id S2390642AbhAZJsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:48:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729140AbhAYSv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:51:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EC32224D4;
-        Mon, 25 Jan 2021 18:51:40 +0000 (UTC)
+        id S1730906AbhAYSwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:52:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D22C2063A;
+        Mon, 25 Jan 2021 18:51:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600700;
-        bh=L0Qp7PhH17kthonGmjN4nMEHUWMGrxvxtbev0IxJl1o=;
+        s=korg; t=1611600711;
+        bh=1yUwA90lzmW+4t40YjFZ/GcNuPnmM+e7HuCFl6f8ZkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mgy0PExgfzSIld5IQ/GJy6RpTJIR64D298x6k1rvOiXBdjVHTe7KVtTHoU0nLa0cK
-         OzxuqleVitlLgc1pkXCKhV6H0nZlP5J20Gr+A1GBQigm3ALJNNjvPvkS/U8er9ujfd
-         0AXcnwGnwsdvJdU7nkwNxusO78JYBx+X6iI5K+9g=
+        b=ufQ46OFpzeOYvqBED82WYURMlEXO0U7/NYh6qLmT+F6BRA8eoayHcvGlPJVkTz0FV
+         0SfojRo4JfJec/1/OSSHy+7m06AaTa/7VKpkW5zNB5SmsvJWx8hbOw6L3qzPrahJDa
+         bo6k6iY7DxvDQNjRlj1Su3Remgrdor+Q6wGVmv7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 117/199] cifs: do not fail __smb_send_rqst if non-fatal signals are pending
-Date:   Mon, 25 Jan 2021 19:38:59 +0100
-Message-Id: <20210125183221.172800351@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Qian Cai <cai@lca.pw>, Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 120/199] x86/setup: dont remove E820_TYPE_RAM for pfn 0
+Date:   Mon, 25 Jan 2021 19:39:02 +0100
+Message-Id: <20210125183221.294324295@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -40,59 +46,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit 214a5ea081e77346e4963dd6d20c5539ff8b6ae6 upstream.
+commit bde9cfa3afe4324ec251e4af80ebf9b7afaf7afe upstream.
 
-RHBZ 1848178
+Patch series "mm: fix initialization of struct page for holes in  memory layout", v3.
 
-The original intent of returning an error in this function
-in the patch:
-  "CIFS: Mask off signals when sending SMB packets"
-was to avoid interrupting packet send in the middle of
-sending the data (and thus breaking an SMB connection),
-but we also don't want to fail the request for non-fatal
-signals even before we have had a chance to try to
-send it (the reported problem could be reproduced e.g.
-by exiting a child process when the parent process was in
-the midst of calling futimens to update a file's timestamps).
+Commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+rather that check each PFN") exposed several issues with the memory map
+initialization and these patches fix those issues.
 
-In addition, since the signal may remain pending when we enter the
-sending loop, we may end up not sending the whole packet before
-TCP buffers become full. In this case the code returns -EINTR
-but what we need here is to return -ERESTARTSYS instead to
-allow system calls to be restarted.
+Initially there were crashes during compaction that Qian Cai reported
+back in April [1].  It seemed back then that the problem was fixed, but
+a few weeks ago Andrea Arcangeli hit the same bug [2] and there was an
+additional discussion at [3].
 
-Fixes: b30c74c73c78 ("CIFS: Mask off signals when sending SMB packets")
-Cc: stable@vger.kernel.org # v5.1+
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+[1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+[2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
+[3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
+
+This patch (of 2):
+
+The first 4Kb of memory is a BIOS owned area and to avoid its allocation
+for the kernel it was not listed in e820 tables as memory.  As the result,
+pfn 0 was never recognised by the generic memory management and it is not
+a part of neither node 0 nor ZONE_DMA.
+
+If set_pfnblock_flags_mask() would be ever called for the pageblock
+corresponding to the first 2Mbytes of memory, having pfn 0 outside of
+ZONE_DMA would trigger
+
+	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+
+Along with reserving the first 4Kb in e820 tables, several first pages are
+reserved with memblock in several places during setup_arch().  These
+reservations are enough to ensure the kernel does not touch the BIOS area
+and it is not necessary to remove E820_TYPE_RAM for pfn 0.
+
+Remove the update of e820 table that changes the type of pfn 0 and move
+the comment describing why it was done to trim_low_memory_range() that
+reserves the beginning of the memory.
+
+Link: https://lkml.kernel.org/r/20210111194017.22696-2-rppt@kernel.org
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/transport.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/setup.c |   20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
---- a/fs/cifs/transport.c
-+++ b/fs/cifs/transport.c
-@@ -338,7 +338,7 @@ __smb_send_rqst(struct TCP_Server_Info *
- 	if (ssocket == NULL)
- 		return -EAGAIN;
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -666,17 +666,6 @@ static void __init trim_platform_memory_
+ static void __init trim_bios_range(void)
+ {
+ 	/*
+-	 * A special case is the first 4Kb of memory;
+-	 * This is a BIOS owned area, not kernel ram, but generally
+-	 * not listed as such in the E820 table.
+-	 *
+-	 * This typically reserves additional memory (64KiB by default)
+-	 * since some BIOSes are known to corrupt low memory.  See the
+-	 * Kconfig help text for X86_RESERVE_LOW.
+-	 */
+-	e820__range_update(0, PAGE_SIZE, E820_TYPE_RAM, E820_TYPE_RESERVED);
+-
+-	/*
+ 	 * special case: Some BIOSes report the PC BIOS
+ 	 * area (640Kb -> 1Mb) as RAM even though it is not.
+ 	 * take them out.
+@@ -733,6 +722,15 @@ early_param("reservelow", parse_reservel
  
--	if (signal_pending(current)) {
-+	if (fatal_signal_pending(current)) {
- 		cifs_dbg(FYI, "signal pending before send request\n");
- 		return -ERESTARTSYS;
- 	}
-@@ -429,7 +429,7 @@ unmask:
- 
- 	if (signal_pending(current) && (total_len != send_length)) {
- 		cifs_dbg(FYI, "signal is pending after attempt to send\n");
--		rc = -EINTR;
-+		rc = -ERESTARTSYS;
- 	}
- 
- 	/* uncork it */
+ static void __init trim_low_memory_range(void)
+ {
++	/*
++	 * A special case is the first 4Kb of memory;
++	 * This is a BIOS owned area, not kernel ram, but generally
++	 * not listed as such in the E820 table.
++	 *
++	 * This typically reserves additional memory (64KiB by default)
++	 * since some BIOSes are known to corrupt low memory.  See the
++	 * Kconfig help text for X86_RESERVE_LOW.
++	 */
+ 	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+ }
+ 	
 
 
