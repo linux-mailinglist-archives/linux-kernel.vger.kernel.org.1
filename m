@@ -2,113 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E127304ABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747E8304AAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730144AbhAZE6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 23:58:55 -0500
-Received: from mga01.intel.com ([192.55.52.88]:21973 "EHLO mga01.intel.com"
+        id S1730475AbhAZFAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:00:06 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:63650 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbhAYJUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:20:15 -0500
-IronPort-SDR: 6Z8pwwGR9ZByhUNj53GCp7mwzjsISPKnjUXAb171icLZhlZXZJuJbb/UK4rhfbCiAoS+WnZoRw
- GDZ+/bmwPMIw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="198459800"
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="198459800"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:26:36 -0800
-IronPort-SDR: krmTHTvV9H1Em7YztLgy8AHyHyDUYxQkj03g7g4NA78ph4D8nEIi8ocAQEiHfrfeZEd2vGIV6W
- s89XGV2WwhSQ==
-X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
-   d="scan'208";a="387239873"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 00:26:24 -0800
-Subject: Re: [PATCH v3 04/17] perf: x86/ds: Handle guest PEBS overflow PMI and
- inject it to guest
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
-        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Andi Kleen <andi@firstfloor.org>, wei.w.wang@intel.com,
-        luwei.kang@intel.com, linux-kernel@vger.kernel.org,
-        "Xu, Like" <like.xu@intel.com>
-References: <20210104131542.495413-1-like.xu@linux.intel.com>
- <20210104131542.495413-5-like.xu@linux.intel.com>
- <X/86UWuV/9yt14hQ@hirez.programming.kicks-ass.net>
- <9c343e40-bbdf-8af0-3307-5274070ee3d2@intel.com>
- <YAGEFgqQv281jVHc@hirez.programming.kicks-ass.net>
- <2c197d5a-09a8-968c-a942-c95d18983c9d@intel.com>
- <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
-From:   Like Xu <like.xu@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <ed5b16cb-30c7-dab7-92c3-b70ba8483d1e@linux.intel.com>
-Date:   Mon, 25 Jan 2021 16:26:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S1726382AbhAYJVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:21:34 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DPNdq1m6Tz9tx0J;
+        Mon, 25 Jan 2021 09:42:07 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id AlOAqHfQxURs; Mon, 25 Jan 2021 09:42:07 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPNdq0GGQz9tx0H;
+        Mon, 25 Jan 2021 09:42:07 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8D91C8B784;
+        Mon, 25 Jan 2021 09:42:11 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id QbIhTspIBlNr; Mon, 25 Jan 2021 09:42:11 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4DC8A8B780;
+        Mon, 25 Jan 2021 09:42:11 +0100 (CET)
+Subject: Re: [PATCH v10 06/12] powerpc: inline huge vmap supported functions
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-7-npiggin@gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <c03010a7-a358-0321-d5d4-80a770c2213f@csgroup.eu>
+Date:   Mon, 25 Jan 2021 09:42:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <YAGqWNl2FKxVussV@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210124082230.2118861-7-npiggin@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
 
-On 2021/1/15 22:44, Peter Zijlstra wrote:
-> On Fri, Jan 15, 2021 at 10:30:13PM +0800, Xu, Like wrote:
+
+Le 24/01/2021 à 09:22, Nicholas Piggin a écrit :
+> This allows unsupported levels to be constant folded away, and so
+> p4d_free_pud_page can be removed because it's no longer linked to.
+
+Ah, ok, you did it here. Why not squashing this patch into patch 5 directly ?
+
 > 
->>> Are you sure? Spurious NMI/PMIs are known to happen anyway. We have far
->>> too much code to deal with them.
->>
->> https://lore.kernel.org/lkml/20170628130748.GI5981@leverpostej/T/
->>
->> In the rr workload, the commit change "the PMI interrupts in skid region
->> should be dropped"
->> is reverted since some users complain that:
->>
->>> It seems to me that it might be reasonable to ignore the interrupt if
->>> the purpose of the interrupt is to trigger sampling of the CPUs
->>> register state.  But if the interrupt will trigger some other
->>> operation, such as a signal on an fd, then there's no reason to drop
->>> it.
->>
->> I assume that if the PMI drop is unacceptable, either will spurious PMI
->> injection.
->>
->> I'm pretty open if you insist that we really need to do this for guest PEBS
->> enabling.
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>   arch/powerpc/include/asm/vmalloc.h       | 19 ++++++++++++++++---
+>   arch/powerpc/mm/book3s64/radix_pgtable.c | 21 ---------------------
+>   2 files changed, 16 insertions(+), 24 deletions(-)
 > 
-> That was an entirely different issue. We were dropping events on the
-> floor because they'd passed priv boundaries. So there was an actual
-> event, and we made it go away.
+> diff --git a/arch/powerpc/include/asm/vmalloc.h b/arch/powerpc/include/asm/vmalloc.h
+> index 105abb73f075..3f0c153befb0 100644
+> --- a/arch/powerpc/include/asm/vmalloc.h
+> +++ b/arch/powerpc/include/asm/vmalloc.h
+> @@ -1,12 +1,25 @@
+>   #ifndef _ASM_POWERPC_VMALLOC_H
+>   #define _ASM_POWERPC_VMALLOC_H
+>   
+> +#include <asm/mmu.h>
+>   #include <asm/page.h>
+>   
+>   #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -bool arch_vmap_p4d_supported(pgprot_t prot);
+> -bool arch_vmap_pud_supported(pgprot_t prot);
+> -bool arch_vmap_pmd_supported(pgprot_t prot);
+> +static inline bool arch_vmap_p4d_supported(pgprot_t prot)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline bool arch_vmap_pud_supported(pgprot_t prot)
+> +{
+> +	/* HPT does not cope with large pages in the vmalloc area */
+> +	return radix_enabled();
+> +}
+> +
+> +static inline bool arch_vmap_pmd_supported(pgprot_t prot)
+> +{
+> +	return radix_enabled();
+> +}
+>   #endif
+>   
+>   #endif /* _ASM_POWERPC_VMALLOC_H */
+> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> index 743807fc210f..8da62afccee5 100644
+> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
+> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
+> @@ -1082,22 +1082,6 @@ void radix__ptep_modify_prot_commit(struct vm_area_struct *vma,
+>   	set_pte_at(mm, addr, ptep, pte);
+>   }
+>   
+> -bool arch_vmap_pud_supported(pgprot_t prot)
+> -{
+> -	/* HPT does not cope with large pages in the vmalloc area */
+> -	return radix_enabled();
+> -}
+> -
+> -bool arch_vmap_pmd_supported(pgprot_t prot)
+> -{
+> -	return radix_enabled();
+> -}
+> -
+> -int p4d_free_pud_page(p4d_t *p4d, unsigned long addr)
+> -{
+> -	return 0;
+> -}
+> -
+>   int pud_set_huge(pud_t *pud, phys_addr_t addr, pgprot_t prot)
+>   {
+>   	pte_t *ptep = (pte_t *)pud;
+> @@ -1181,8 +1165,3 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+>   
+>   	return 1;
+>   }
+> -
+> -bool arch_vmap_p4d_supported(pgprot_t prot)
+> -{
+> -	return false;
+> -}
 > 
-> What we're talking about here is raising an PMI with BUFFER_OVF set,
-> even if the DS is empty. That should really be harmless. We'll take the
-> PMI, find there's nothing there, and do nothing.
-> 
-
-In the host and guest PEBS both enabled case,
-we'll get a crazy dmesg *bombing* about spurious PMI warning
-if we pass the host PEBS PMI "harmlessly" to the guest:
-
-[11261.502536] Uhhuh. NMI received for unknown reason 2c on CPU 36.
-[11261.502539] Do you have a strange power saving mode enabled?
-[11261.502541] Dazed and confused, but trying to continue
-
-Legacy guest users may be very confused and dissatisfied with that.
-
-I'm double checking with you if it's acceptable to take the proposal
-"disables the co-existence of guest PEBS and host PEBS" as the first
-step to upstream, and enable both host and guest PEBS in the near future.
-
----
-thx,likexu
