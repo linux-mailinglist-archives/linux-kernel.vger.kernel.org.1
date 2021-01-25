@@ -2,193 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AD4302D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 682CA302D6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732557AbhAYVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:17:15 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:43331 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731305AbhAYVOC (ORCPT
+        id S1732560AbhAYVSX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 16:18:23 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:54302 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732089AbhAYVOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:14:02 -0500
-Received: by mail-oi1-f170.google.com with SMTP id i25so4887949oie.10;
-        Mon, 25 Jan 2021 13:13:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cX7e5IAmASc14zGSnphUn29Siqdn8Wr9I+VbJxTaObg=;
-        b=n4jmTvXlWAfB2ERsBU4gyQx0OQEJ/736ZhHKfnSE8sw/Q6dicF2yDkL3cyYsDtn6h1
-         aEt2+e3R09YQwSPr5Fdluo8BNQO4GaSkPFnn9PuRXmKhDNB6xEhdYtcJ/DYhOYO0p4SF
-         s/FFX3D6LB02YAjDEW1MiNk7ubbTaEa7mOTO53zQxA0GtxgwDopG3a2/sRGw0vioTCkr
-         fnYXacQlQxk5J6GPmVBs+SpRZO5CDoximNqpz3KhiqiI6K2oS5pxoGk56WqPOq8qrrEN
-         EjH9gDBP4jGCJw4+F23tYOVuFXKvE3Q5M3aw5pJHaJWLVik0pycFnrvHkhygH7VamzF6
-         zwGg==
-X-Gm-Message-State: AOAM531dnS7YaDmZvZN5lVbQ09Hnwx+rLQ1aZ2CvgUXvhkbdstlOKlGq
-        KRqciU+Tdyxcr+BmozRTMA==
-X-Google-Smtp-Source: ABdhPJxyHpYE0jveACHdHGN4IUgt1JxJunblNFJL71YJPq5wqcX95oVfuHOeO2+rUY8for0DukPa1Q==
-X-Received: by 2002:aca:5d09:: with SMTP id r9mr1282546oib.25.1611609200585;
-        Mon, 25 Jan 2021 13:13:20 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m10sm616132oim.42.2021.01.25.13.13.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 13:13:19 -0800 (PST)
-Received: (nullmailer pid 1004036 invoked by uid 1000);
-        Mon, 25 Jan 2021 21:13:16 -0000
-Date:   Mon, 25 Jan 2021 15:13:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: Re: [PATCH v2 08/14] dt-bindings: display: bridge: Add i.MX8qxp
- pixel link to DPI binding
-Message-ID: <20210125211316.GA1000096@robh.at.kernel.org>
-References: <1610616132-8220-1-git-send-email-victor.liu@nxp.com>
- <1610616132-8220-9-git-send-email-victor.liu@nxp.com>
+        Mon, 25 Jan 2021 16:14:45 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23697578-1500050 
+        for multiple; Mon, 25 Jan 2021 21:13:58 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1610616132-8220-9-git-send-email-victor.liu@nxp.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210125210456.GA196782@linux.ibm.com>
+References: <CAHk-=wgmJ0q1URHrOb-2iCOdZ8gYybiH6LY2Gq7cosXu6kxAnA@mail.gmail.com> <161160687463.28991.354987542182281928@build.alporthouse.com> <20210125210456.GA196782@linux.ibm.com>
+Subject: Re: Linux 5.11-rc5
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Date:   Mon, 25 Jan 2021 21:13:59 +0000
+Message-ID: <161160923954.29150.8571056944016500691@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 05:22:06PM +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qxp pixel link to DPI(PXL2DPI).
+Quoting Mike Rapoport (2021-01-25 21:04:56)
+> On Mon, Jan 25, 2021 at 08:34:34PM +0000, Chris Wilson wrote:
+> > Quoting Linus Torvalds (2021-01-25 01:06:40)
+> > > Mike Rapoport (3):
+> > ...
+> > >       mm: fix initialization of struct page for holes in memory layout
+> > 
+> > We have half a dozen or so different machines in CI that are silently
+> > failing to boot, that we believe is bisected to this patch.
+> > 
+> > 17:56              tsa : ickle: dolphin: I hit the following patch in my bisection, and the hang is also dependent on kconfig
+> > 17:56              tsa : first bad commit: [d3921cb8be29ce5668c64e23ffdaeec5f8c69399] mm: fix initialization of struct page for holes in
+> >                          memory layout
+> > 17:57              tsa : couldn't reproduce on older CI kconfig, current one does it
+> >                          https://gitlab.freedesktop.org/gfx-ci/i915-infra/-/blob/master/kconfig/debug
+> > 
+> > Here's a boot dmesg from some affected machines from just before the merge
+> > with rc5:
+> > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/shard-skl1/boot18.txt
+> > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-skl-6600u/boot.html
+> > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bsw-cyan/boot.html
+> > https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_9676/fi-bdw-samus/boot.html
 > 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v1->v2:
-> * Use graph schema. (Laurent)
-> 
->  .../display/bridge/fsl,imx8qxp-pxl2dpi.yaml        | 105 +++++++++++++++++++++
->  1 file changed, 105 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-> new file mode 100644
-> index 00000000..187824e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8qxp-pxl2dpi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX8qxp Pixel Link to Display Pixel Interface
-> +
-> +maintainers:
-> +  - Liu Ying <victor.liu@nxp.com>
-> +
-> +description: |
-> +  The Freescale i.MX8qxp Pixel Link to Display Pixel Interface(PXL2DPI)
-> +  interfaces the pixel link 36-bit data output and the DSI controller’s
-> +  MIPI-DPI 24-bit data input, and inputs of LVDS Display Bridge(LDB) module
-> +  used in LVDS mode, to remap the pixel color codings between those modules.
-> +  This module is purely combinatorial.
-> +
-> +properties:
-> +  compatible:
-> +    const: fsl,imx8qxp-pxl2dpi
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  fsl,syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      A phandle which points to Control and Status Registers(CSR) module.
+> Is there any way to get early console from these machines?
 
-If this is the only control interface, then make it a child node of the 
-phandle.
+12:16 tsa : none of those have good hook for serial
 
-> +
-> +  fsl,companion-pxl2dpi:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      A phandle which points to companion PXL2DPI which is used by downstream
-> +      LVDS Display Bridge(LDB) in split mode.
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: The PXL2DPI input port node from pixel link.
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description: The PXL2DPI output port node to downstream bridge.
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +required:
-> +  - compatible
-> +  - power-domains
-> +  - fsl,syscon
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    pxl2dpi {
-> +        compatible = "fsl,imx8qxp-pxl2dpi";
-> +        power-domains = <&pd IMX_SC_R_MIPI_0>;
-> +        fsl,syscon = <&mipi_lvds_0_csr>;
-> +
-> +        ports {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            port@0 {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <0>;
-> +
-> +                mipi_lvds_0_pxl2dpi_dc_pixel_link0: endpoint@0 {
-> +                    reg = <0>;
-> +                    remote-endpoint = <&dc_pixel_link0_mipi_lvds_0_pxl2dpi>;
-> +                };
-> +
-> +                mipi_lvds_0_pxl2dpi_dc_pixel_link1: endpoint@1 {
-> +                     reg = <1>;
-> +                     remote-endpoint = <&dc_pixel_link1_mipi_lvds_0_pxl2dpi>;
-> +                };
-> +            };
-> +
-> +            port@1 {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                reg = <1>;
-> +
-> +                mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch0: endpoint@0 {
-> +                    reg = <0>;
-> +                    remote-endpoint = <&mipi_lvds_0_ldb_ch0_mipi_lvds_0_pxl2dpi>;
-> +                };
-> +
-> +                mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch1: endpoint@1 {
-> +                    reg = <1>;
-> +                    remote-endpoint = <&mipi_lvds_0_ldb_ch1_mipi_lvds_0_pxl2dpi>;
-> +                };
-> +            };
-> +        };
-> +    };
-> -- 
-> 2.7.4
-> 
+Nothing on the console and no serial console option, and panics before
+netconsole.
+
+Maybe some early_printk and boot_delay if you think there's something to
+see with those, but I'll have to ask Tomi nicely tomorrow.
+-Chris
