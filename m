@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB92303903
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B763038FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391098AbhAZJao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:30:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36494 "EHLO mail.kernel.org"
+        id S2390896AbhAZJ2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:28:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728492AbhAYSte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:49:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FE8E221E3;
-        Mon, 25 Jan 2021 18:48:52 +0000 (UTC)
+        id S1731036AbhAYStQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:49:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A95B20679;
+        Mon, 25 Jan 2021 18:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600532;
-        bh=nNAHqXNlik6Lp82foU7Am+8xOHXb3VK7DiEQfGKesrc=;
+        s=korg; t=1611600540;
+        bh=YRDhHawHPzSnZSitjYPPVI9uapMujMO5D+sYLQsexXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+GCwpxrI2u+I8XYubggHbDV3c+hmb5LEK30Og1kbJfaKJ/nM1pi1XSEnMDa0q13g
-         dfdwGaHAAdHF+flbxd9jlnBQo+YD6TJ7IXQV59QxNlt9rhvY6MYIbQv4GFjuiyCzfD
-         5716ja3On1+tHav2FdjUEnSmaX4yuA8nDlGNLBk0=
+        b=yzOrolbAMRrExhaecs6CzoAqT9mZtqaJaEsVu1ecSpPWSLlfemO5W03CYXNvPweLG
+         lKU8Xgo4fTKvBuwg7xP7mFel6CHgnA3LW/NPiDW2DA/2rEPsdFYaz+L6TWN5ZK7wD6
+         xShsfN2wviv8sg8sRQbhWECkFUOavw1KTRUnmufE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
-        Ion Agorria <ion@agorria.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 051/199] clk: tegra30: Add hda clock default rates to clock driver
-Date:   Mon, 25 Jan 2021 19:37:53 +0100
-Message-Id: <20210125183218.416641681@linuxfoundation.org>
+Subject: [PATCH 5.10 053/199] riscv: cacheinfo: Fix using smp_processor_id() in preemptible
+Date:   Mon, 25 Jan 2021 19:37:55 +0100
+Message-Id: <20210125183218.506997486@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,41 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Geis <pgwipeout@gmail.com>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-[ Upstream commit f4eccc7fea203cfb35205891eced1ab51836f362 ]
+[ Upstream commit 80709af7325d179b433817f421c85449f2454046 ]
 
-Current implementation defaults the hda clocks to clk_m. This causes hda
-to run too slow to operate correctly. Fix this by defaulting to pll_p and
-setting the frequency to the correct rate.
+Use raw_smp_processor_id instead of smp_processor_id() to fix warning,
 
-This matches upstream t124 and downstream t30.
+BUG: using smp_processor_id() in preemptible [00000000] code: init/1
+caller is debug_smp_processor_id+0x1c/0x26
+CPU: 0 PID: 1 Comm: init Not tainted 5.10.0-rc4 #211
+Call Trace:
+  walk_stackframe+0x0/0xaa
+  show_stack+0x32/0x3e
+  dump_stack+0x76/0x90
+  check_preemption_disabled+0xaa/0xac
+  debug_smp_processor_id+0x1c/0x26
+  get_cache_size+0x18/0x68
+  load_elf_binary+0x868/0xece
+  bprm_execve+0x224/0x498
+  kernel_execve+0xdc/0x142
+  run_init_process+0x90/0x9e
+  try_to_run_init_process+0x12/0x3c
+  kernel_init+0xb4/0xf8
+  ret_from_exception+0x0/0xc
 
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Ion Agorria <ion@agorria.com>
-Acked-by: Sameer Pujar <spujar@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-Link: https://lore.kernel.org/r/20210108135913.2421585-2-pgwipeout@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The issue is found when CONFIG_DEBUG_PREEMPT enabled.
+
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
+Tested-by: Atish Patra <atish.patra@wdc.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+[Palmer: Added a comment.]
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/tegra/clk-tegra30.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/riscv/kernel/cacheinfo.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/tegra/clk-tegra30.c b/drivers/clk/tegra/clk-tegra30.c
-index 37244a7e68c22..9cf249c344d9e 100644
---- a/drivers/clk/tegra/clk-tegra30.c
-+++ b/drivers/clk/tegra/clk-tegra30.c
-@@ -1256,6 +1256,8 @@ static struct tegra_clk_init_table init_table[] __initdata = {
- 	{ TEGRA30_CLK_I2S3_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
- 	{ TEGRA30_CLK_I2S4_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
- 	{ TEGRA30_CLK_VIMCLK_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
-+	{ TEGRA30_CLK_HDA, TEGRA30_CLK_PLL_P, 102000000, 0 },
-+	{ TEGRA30_CLK_HDA2CODEC_2X, TEGRA30_CLK_PLL_P, 48000000, 0 },
- 	/* must be the last entry */
- 	{ TEGRA30_CLK_CLK_MAX, TEGRA30_CLK_CLK_MAX, 0, 0 },
- };
+diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
+index de59dd457b415..d867813570442 100644
+--- a/arch/riscv/kernel/cacheinfo.c
++++ b/arch/riscv/kernel/cacheinfo.c
+@@ -26,7 +26,16 @@ cache_get_priv_group(struct cacheinfo *this_leaf)
+ 
+ static struct cacheinfo *get_cacheinfo(u32 level, enum cache_type type)
+ {
+-	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(smp_processor_id());
++	/*
++	 * Using raw_smp_processor_id() elides a preemptability check, but this
++	 * is really indicative of a larger problem: the cacheinfo UABI assumes
++	 * that cores have a homonogenous view of the cache hierarchy.  That
++	 * happens to be the case for the current set of RISC-V systems, but
++	 * likely won't be true in general.  Since there's no way to provide
++	 * correct information for these systems via the current UABI we're
++	 * just eliding the check for now.
++	 */
++	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(raw_smp_processor_id());
+ 	struct cacheinfo *this_leaf;
+ 	int index;
+ 
 -- 
 2.27.0
 
