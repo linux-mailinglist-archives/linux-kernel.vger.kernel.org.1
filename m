@@ -2,158 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8C2302033
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB3E302053
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 03:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbhAYCOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 21:14:12 -0500
-Received: from m12-18.163.com ([220.181.12.18]:38156 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbhAYCNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 21:13:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=io0AEOw0uob5Qbn+w5
-        V1NwepDBt67XvadtkYGlmb31k=; b=NF8Ahen+6vNnSm1DXJlso1KE7SwjSH24JD
-        efxmUO1r4jwRuegdfzpZhDiWbOCTLv6LUFI512wHGDYSxOEaitaL5Zm9jj4qMOKW
-        6zKqakzlC4sTqckel+44czjjJhNvjbOAmV8n4T51TB6fRZhz4rugJq9gGvi4r62K
-        yYEipi6gs=
-Received: from COOL-20200923LL.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowAAH4c6pJA5gG6WFQw--.9008S2;
-        Mon, 25 Jan 2021 09:53:52 +0800 (CST)
-From:   Guoqing Chi <chi962464zy@163.com>
-To:     trix@redhat.com
-Cc:     linux-iio@vger.kernel.org, jic23@kernel.org, huyue2@yulong.com,
-        linux-kernel@vger.kernel.org, zhangwen@yulong.com,
-        chiguoqing@yulong.com, chiguoqing <chi962464zy@163.com>
-Subject: [PATCH v2 resend] iio: imu: bmi160: add mutex_lock for avoiding race
-Date:   Mon, 25 Jan 2021 09:53:44 +0800
-Message-Id: <20210125015344.106-1-chi962464zy@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: EsCowAAH4c6pJA5gG6WFQw--.9008S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWFWkGw47ZF4Duw1rZFykuFg_yoW5Zr4DpF
-        17Cr45ArZ3XF1xCrnrZr95ZFyYg34SgF1UJ34Iga45Z3yYyF1Ykrn8ta4SvFnYkryUAr4a
-        grW8Xr4ruF4qvw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRCJPiUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/xtbBSRYjRFaD9chowAABs5
+        id S1726951AbhAYCXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 21:23:12 -0500
+Received: from smtprelay0117.hostedemail.com ([216.40.44.117]:54736 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726950AbhAYB4B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 20:56:01 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 71DAF18002DCA;
+        Mon, 25 Jan 2021 01:55:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:988:989:1260:1261:1277:1311:1313:1314:1345:1515:1516:1518:1522:1536:1692:1711:1730:1747:1777:1792:2392:2393:2559:2562:3138:3139:3140:3141:3142:3876:3877:5007:6114:6642:7652:10004:10018:10400:11658:11914:12297:12760:13069:13311:13357:21080:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: back90_3e183ed27581
+X-Filterd-Recvd-Size: 681
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 25 Jan 2021 01:55:07 +0000 (UTC)
+Message-ID: <08ee32211e8b40234257a236c842a7be6703144c.camel@perches.com>
+Subject: Anyone have ideas for checkpatch improvements ?
+From:   Joe Perches <joe@perches.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andy Whitcroft <apw@canonical.com>
+Date:   Sun, 24 Jan 2021 17:55:06 -0800
+Content-Type: text/plain
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chiguoqing <chi962464zy@163.com>
-
-Adding mutex_lock, when read and write reg need to use this lock to
-avoid race.
-
-Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
----
-v2:Follow write function to fix read function.
-Adding mutex init in core probe function.
-Adding break in switch case at read and write function.
-
- drivers/iio/imu/bmi160/bmi160.h      |  2 ++
- drivers/iio/imu/bmi160/bmi160_core.c | 34 +++++++++++++++++++---------
- 2 files changed, 25 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/iio/imu/bmi160/bmi160.h b/drivers/iio/imu/bmi160/bmi160.h
-index 32c2ea2d7112..0c189a8b5b53 100644
---- a/drivers/iio/imu/bmi160/bmi160.h
-+++ b/drivers/iio/imu/bmi160/bmi160.h
-@@ -3,9 +3,11 @@
- #define BMI160_H_
- 
- #include <linux/iio/iio.h>
-+#include <linux/mutex.h>
- #include <linux/regulator/consumer.h>
- 
- struct bmi160_data {
-+	struct mutex lock;
- 	struct regmap *regmap;
- 	struct iio_trigger *trig;
- 	struct regulator_bulk_data supplies[2];
-diff --git a/drivers/iio/imu/bmi160/bmi160_core.c b/drivers/iio/imu/bmi160/bmi160_core.c
-index 290b5ef83f77..e303378f4841 100644
---- a/drivers/iio/imu/bmi160/bmi160_core.c
-+++ b/drivers/iio/imu/bmi160/bmi160_core.c
-@@ -452,26 +452,32 @@ static int bmi160_read_raw(struct iio_dev *indio_dev,
- 	int ret;
- 	struct bmi160_data *data = iio_priv(indio_dev);
- 
-+	mutex_lock(&data->lock);
- 	switch (mask) {
- 	case IIO_CHAN_INFO_RAW:
- 		ret = bmi160_get_data(data, chan->type, chan->channel2, val);
--		if (ret)
--			return ret;
--		return IIO_VAL_INT;
-+		if (!ret)
-+			ret = IIO_VAL_INT;
-+		break;
- 	case IIO_CHAN_INFO_SCALE:
- 		*val = 0;
- 		ret = bmi160_get_scale(data,
- 				       bmi160_to_sensor(chan->type), val2);
--		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-+		if (!ret)
-+			ret = IIO_VAL_INT_PLUS_MICRO;
-+		break;
- 	case IIO_CHAN_INFO_SAMP_FREQ:
- 		ret = bmi160_get_odr(data, bmi160_to_sensor(chan->type),
- 				     val, val2);
--		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-+		if (!ret)
-+			ret = IIO_VAL_INT_PLUS_MICRO;
-+		break;
- 	default:
--		return -EINVAL;
-+		ret = -EINVAL;
- 	}
-+	mutex_unlock(&data->lock);
- 
--	return 0;
-+	return ret;
- }
- 
- static int bmi160_write_raw(struct iio_dev *indio_dev,
-@@ -479,19 +485,24 @@ static int bmi160_write_raw(struct iio_dev *indio_dev,
- 			    int val, int val2, long mask)
- {
- 	struct bmi160_data *data = iio_priv(indio_dev);
-+	int result;
- 
-+	mutex_lock(&data->lock);
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SCALE:
--		return bmi160_set_scale(data,
-+		result = bmi160_set_scale(data,
- 					bmi160_to_sensor(chan->type), val2);
-+		break;
- 	case IIO_CHAN_INFO_SAMP_FREQ:
--		return bmi160_set_odr(data, bmi160_to_sensor(chan->type),
-+		result = bmi160_set_odr(data, bmi160_to_sensor(chan->type),
- 				      val, val2);
-+		break;
- 	default:
--		return -EINVAL;
-+		result = -EINVAL;
- 	}
-+	mutex_unlock(&data->lock);
- 
--	return 0;
-+	return result;
- }
- 
- static
-@@ -838,6 +849,7 @@ int bmi160_core_probe(struct device *dev, struct regmap *regmap,
- 		return -ENOMEM;
- 
- 	data = iio_priv(indio_dev);
-+	mutex_init(&data->lock);
- 	dev_set_drvdata(dev, indio_dev);
- 	data->regmap = regmap;
- 
--- 
-2.17.1
 
 
