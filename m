@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41050303885
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CB0303887
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388426AbhAZJAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:00:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
+        id S2390776AbhAZJBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:01:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730320AbhAYSqb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:46:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5765520665;
-        Mon, 25 Jan 2021 18:46:07 +0000 (UTC)
+        id S1726633AbhAYSqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:46:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C23042067B;
+        Mon, 25 Jan 2021 18:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600367;
-        bh=Gfzgj83rpZzOZEReGsOO/vUQx7d6wgmScyxZBohDm1w=;
+        s=korg; t=1611600370;
+        bh=BAAw2el7VSWzS5NnVOyyghdQ4oO7R+bR8fqn+CNmSew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vqlub8fVVnR0pY4JSPa8KsqJjr58HO9k5O/9SPwkcbJhzkBlO1mVwXZRJ20RuOTZ1
-         kkLp8INTCiNnNcZSUUn98rKOkB9jaub0FHrL66NjuQtdASC51Px/grO1nf3K6YFauo
-         ubFOCcZ+X8dUt+wIpFXS5Jce0fvTmD/oAcSJvFTI=
+        b=icRjoLSar/LBBYWwMfBpJnhWhc1rZGZF/Wno/icVTk7aSCFZrYDAGlasAPRCf7nQm
+         MAObiq7PEuGIG4HbZpIdgpVYb4L2bFNLp6w5JgxZq3KWYOKaUWSZmCvp4KSPYBW1I7
+         OAEohwi5aNwL548pzgZAlR+GfVYErs+BTj0GA5V0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phil Oester <kernel@linuxace.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Ariel Marcovitch <ariel.marcovitch@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 44/86] scsi: megaraid_sas: Fix MEGASAS_IOC_FIRMWARE regression
-Date:   Mon, 25 Jan 2021 19:39:26 +0100
-Message-Id: <20210125183202.928579634@linuxfoundation.org>
+Subject: [PATCH 5.4 45/86] powerpc: Fix alignment bug within the init sections
+Date:   Mon, 25 Jan 2021 19:39:27 +0100
+Message-Id: <20210125183202.970095454@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -41,78 +42,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ariel Marcovitch <arielmarcovitch@gmail.com>
 
-[ Upstream commit b112036535eda34460677ea883eaecc3a45a435d ]
+[ Upstream commit 2225a8dda263edc35a0e8b858fe2945cf6240fde ]
 
-Phil Oester reported that a fix for a possible buffer overrun that I sent
-caused a regression that manifests in this output:
+This is a bug that causes early crashes in builds with an .exit.text
+section smaller than a page and an .init.text section that ends in the
+beginning of a physical page (this is kinda random, which might
+explain why this wasn't really encountered before).
 
- Event Message: A PCI parity error was detected on a component at bus 0 device 5 function 0.
- Severity: Critical
- Message ID: PCI1308
+The init sections are ordered like this:
+  .init.text
+  .exit.text
+  .init.data
 
-The original code tried to handle the sense data pointer differently when
-using 32-bit 64-bit DMA addressing, which would lead to a 32-bit dma_addr_t
-value of 0x11223344 to get stored
+Currently, these sections aren't page aligned.
 
-32-bit kernel:       44 33 22 11 ?? ?? ?? ??
-64-bit LE kernel:    44 33 22 11 00 00 00 00
-64-bit BE kernel:    00 00 00 00 44 33 22 11
+Because the init code might become read-only at runtime and because
+the .init.text section can potentially reside on the same physical
+page as .init.data, the beginning of .init.data might be mapped
+read-only along with .init.text.
 
-or a 64-bit dma_addr_t value of 0x1122334455667788 to get stored as
+Then when the kernel tries to modify a variable in .init.data (like
+kthreadd_done, used in kernel_init()) the kernel panics.
 
-32-bit kernel:       88 77 66 55 ?? ?? ?? ??
-64-bit kernel:       88 77 66 55 44 33 22 11
+To avoid this, make _einittext page aligned and also align .exit.text
+to make sure .init.data is always seperated from the text segments.
 
-In my patch, I tried to ensure that the same value is used on both 32-bit
-and 64-bit kernels, and picked what seemed to be the most sensible
-combination, storing 32-bit addresses in the first four bytes (as 32-bit
-kernels already did), and 64-bit addresses in eight consecutive bytes (as
-64-bit kernels already did), but evidently this was incorrect.
-
-Always storing the dma_addr_t pointer as 64-bit little-endian,
-i.e. initializing the second four bytes to zero in case of 32-bit
-addressing, apparently solved the problem for Phil, and is consistent with
-what all 64-bit little-endian machines did before.
-
-I also checked in the history that in previous versions of the code, the
-pointer was always in the first four bytes without padding, and that
-previous attempts to fix 64-bit user space, big-endian architectures and
-64-bit DMA were clearly flawed and seem to have introduced made this worse.
-
-Link: https://lore.kernel.org/r/20210104234137.438275-1-arnd@kernel.org
-Fixes: 381d34e376e3 ("scsi: megaraid_sas: Check user-provided offsets")
-Fixes: 107a60dd71b5 ("scsi: megaraid_sas: Add support for 64bit consistent DMA")
-Fixes: 94cd65ddf4d7 ("[SCSI] megaraid_sas: addded support for big endian architecture")
-Fixes: 7b2519afa1ab ("[SCSI] megaraid_sas: fix 64 bit sense pointer truncation")
-Reported-by: Phil Oester <kernel@linuxace.com>
-Tested-by: Phil Oester <kernel@linuxace.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 060ef9d89d18 ("powerpc32: PAGE_EXEC required for inittext")
+Signed-off-by: Ariel Marcovitch <ariel.marcovitch@gmail.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210102201156.10805-1-ariel.marcovitch@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_base.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ arch/powerpc/kernel/vmlinux.lds.S | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index 4a23dd8b7f9aa..b9c1f722f1ded 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -8174,11 +8174,9 @@ megasas_mgmt_fw_ioctl(struct megasas_instance *instance,
- 			goto out;
- 		}
- 
-+		/* always store 64 bits regardless of addressing */
- 		sense_ptr = (void *)cmd->frame + ioc->sense_off;
--		if (instance->consistent_mask_64bit)
--			put_unaligned_le64(sense_handle, sense_ptr);
--		else
--			put_unaligned_le32(sense_handle, sense_ptr);
-+		put_unaligned_le64(sense_handle, sense_ptr);
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index f9081724d6910..a4e576019d79c 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -210,6 +210,12 @@ SECTIONS
+ 	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) {
+ 		_sinittext = .;
+ 		INIT_TEXT
++
++		/*
++		 *.init.text might be RO so we must ensure this section ends on
++		 * a page boundary.
++		 */
++		. = ALIGN(PAGE_SIZE);
+ 		_einittext = .;
+ #ifdef CONFIG_PPC64
+ 		*(.tramp.ftrace.init);
+@@ -223,6 +229,8 @@ SECTIONS
+ 		EXIT_TEXT
  	}
  
- 	/*
++	. = ALIGN(PAGE_SIZE);
++
+ 	INIT_DATA_SECTION(16)
+ 
+ 	. = ALIGN(8);
 -- 
 2.27.0
 
