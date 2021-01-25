@@ -2,142 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED04303296
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C64303298
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbhAYJfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 04:35:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbhAYJ0q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:26:46 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13740C06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:26:06 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id v24so16687828lfr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 01:26:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vnHeIwqxBtkc8QdAEDyiefJYi3lqnllVIwzZtHS/B8g=;
-        b=w6k6hAuCgmKRlMvfak3gAwLBF1ghJ7OJMdzv94wIXyk+McQu600jCNJRMlFKJOzu1/
-         4bb0EeexNpiwLgylwSbU/iJ5jQcD48zepuuZDnemJ14pqne0VjOjbLxbQBid1jMv278y
-         xoCPOl9K182hLiqElQuy9wwMbNVp0j4sGkAjr2YkXV/k/4KIHcGcQf4ZNWcSM+XzTF3w
-         m76e0qrv18wYDNZ43IPZy2SF38TA3E+8MFv9p02+qJnP+EBFHtk40wIbwkKqgJX5CzAx
-         /dPSZlMgiQ1Efr06sfI7fMGhIgeVdIQxn1v/CA2hIawa9tsYc9rahiH4uRHkQGBB9d4X
-         f3xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vnHeIwqxBtkc8QdAEDyiefJYi3lqnllVIwzZtHS/B8g=;
-        b=G8BXiLJ12OgsOJahCoRHI8BYr5tg1Neav1GO/OP0CEcozo7YHDsFnbkxuob0XQ16hu
-         HfRuFtfH7N3FJ4U9PM4eqif6C80i2DoFepwScE4q/q1/qXIsSx773cRnZXtCsC+a25Ox
-         LtFKLlyRcXoGCCNgBZ6MC4IPPfqxuKRkIVKfpsAnQojICzVDNHM4YqRyx8XMfDsO3uKp
-         xCig+yPTGxKHTFFiAWFbinbHCnzOaFxx7vpMMk79tQ5aJc5pHQBHSsSpIvACO+sg4Jl+
-         2boqUe7tXQgYqlJWACyJDTbuv7Zj9yQe0R4vox+JkX/5Jxib7Prnp7sveFggysCF9j5w
-         ctEw==
-X-Gm-Message-State: AOAM532Y0ZOdWm/HUOPDbUX531wD54yR9jU8RT/YztMg7MuuQtCtut4p
-        hOKVigLBxza665rrlv4bbOMYAdlghfdRfM3V8eWBCw==
-X-Google-Smtp-Source: ABdhPJzll3PPyYXYd0I8wnd4RuNtKdjP0BBHZkPGmyH//U/sZs25PD8QjdjNEfYnZfMRvPwpIsmPh/PHTOG+1Qv9j2I=
-X-Received: by 2002:a19:83d3:: with SMTP id f202mr665248lfd.277.1611566763364;
- Mon, 25 Jan 2021 01:26:03 -0800 (PST)
+        id S1726903AbhAYJis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 04:38:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:44244 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726043AbhAYJ1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:27:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 847D61042;
+        Mon, 25 Jan 2021 01:26:28 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66B323F66B;
+        Mon, 25 Jan 2021 01:26:27 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "mingo\@kernel.org" <mingo@kernel.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
+        "mgorman\@suse.de" <mgorman@suse.de>
+Subject: RE: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for the deduplicating sort
+In-Reply-To: <bfb703294b234e1e926a68fcb73dbee3@hisilicon.com>
+References: <20210122123943.1217-1-valentin.schneider@arm.com> <20210122123943.1217-2-valentin.schneider@arm.com> <bfb703294b234e1e926a68fcb73dbee3@hisilicon.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 25 Jan 2021 09:26:25 +0000
+Message-ID: <jhj1re92wqm.mognet@arm.com>
 MIME-Version: 1.0
-References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
- <20201027091936.GS32041@suse.de> <alpine.DEB.2.22.394.2101242134530.2788@hadrien>
- <20210125091238.GE20777@suse.de> <alpine.DEB.2.22.394.2101251017480.5053@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2101251017480.5053@hadrien>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 25 Jan 2021 10:25:52 +0100
-Message-ID: <CAKfTPtDePZam9q7pR8-uSOif75d3EDmcZsawc2_Vx3RfDdLzOw@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: check for idle core
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 10:20, Julia Lawall <julia.lawall@inria.fr> wrote:
->
->
->
-> On Mon, 25 Jan 2021, Mel Gorman wrote:
->
-> > On Sun, Jan 24, 2021 at 09:38:14PM +0100, Julia Lawall wrote:
-> > >
-> > >
-> > > On Tue, 27 Oct 2020, Mel Gorman wrote:
-> > >
-> > > > On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
-> > > > > Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
-> > > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > > > > Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
-> > > > >
-> > > >
-> > > > While not a universal win, it was mostly a win or neutral. In few cases
-> > > > where there was a problem, one benchmark I'm a bit suspicious of generally
-> > > > as occasionally it generates bad results for unknown and unpredictable
-> > > > reasons. In another, it was very machine specific and the differences
-> > > > were small in absolte time rather than relative time. Other tests on the
-> > > > same machine were fine so overall;
-> > > >
-> > > > Acked-by: Mel Gorman <mgorman@suse.de>
-> > >
-> > > Recently, we have been testing the phoronix multicore benchmarks.  On v5.9
-> > > with this patch, the preparation time of phoronix slows down, from ~23
-> > > seconds to ~28 seconds.  In v5.11-rc4, we see 29 seconds.  It's not yet
-> > > clear what causes the problem.  But perhaps the patch should be removed
-> > > from v5.11, until the problem is understood.
-> > >
-> > > commit d8fcb81f1acf651a0e50eacecca43d0524984f87
-> > >
-> >
-> > I'm not 100% convinved given that it was a mix of wins and losses. In
-> > the wakup path in general, universal wins almost never happen. It's not
-> > 100% clear from your mail what happens during the preparation patch. If
-> > it included time to download the benchmarks and install then it would be
-> > inherently variable due to network time (if download) or cache hotness
-> > (if installing/compiling). While preparation time can be interesting --
-> > for example, if preparation involves reading a lot of files from disk,
-> > it's not universally interesting when it's not the critical phase of a
-> > benchmark.
->
-> The benchmark is completely downloaded prior to the runs.  There seems to
-> be some perturbation to the activation of containerd.  Normally it is
-> even:  *   *   *   *
+On 25/01/21 02:23, Song Bao Hua (Barry Song) wrote:
 
-Does it impact the benchmark results too or only the preparation prior
-to running the benchmark ?
+> with the below topology:
+> qemu-system-aarch64 -M virt -nographic \
+>  -smp cpus=8 \
+>  -numa node,cpus=0-1,nodeid=0 \
+>  -numa node,cpus=2-3,nodeid=1 \
+>  -numa node,cpus=4-5,nodeid=2 \
+>  -numa node,cpus=6-7,nodeid=3 \
+>  -numa dist,src=0,dst=1,val=12 \
+>  -numa dist,src=0,dst=2,val=20 \
+>  -numa dist,src=0,dst=3,val=22 \
+>  -numa dist,src=1,dst=2,val=22 \
+>  -numa dist,src=2,dst=3,val=12 \
+>  -numa dist,src=1,dst=3,val=24 \
+>
+>
+> The panic address is *1294:
+>
+>                         if (sdd->sd) {
+>     1280:       f9400e61        ldr     x1, [x19, #24]
+>     1284:       b4000201        cbz     x1, 12c4 <build_sched_domains+0x414>
+>                                 sd = *per_cpu_ptr(sdd->sd, j);
+>     1288:       93407eb7        sxtw    x23, w21
+>     128c:       aa0103e0        mov     x0, x1
+>     1290:       f8777ac2        ldr     x2, [x22, x23, lsl #3]
+>     *1294:       f8626800        ldr     x0, [x0, x2]
+>                                 if (sd && (sd->flags & SD_OVERLAP))
+>     1298:       b4000120        cbz     x0, 12bc <build_sched_domains+0x40c>
+>     129c:       b9403803        ldr     w3, [x0, #56]
+>     12a0:       365800e3        tbz     w3, #11, 12bc
+> <build_sched_domains+0x40c>
+>                                         free_sched_groups(sd->groups, 0);
+>     12a4:       f9400800        ldr     x0, [x0, #16]
+>         if (!sg)
+>
 
->
-> and with the patch it becomes more like: *     **     **
->
-> That is every other one is on time, and every other one is late.
->
-> But I don't know why this happens.
->
-> julia
->
-> >
-> > I think it would be better to wait until the problem is fully understood
-> > to see if it's a timing artifact (e.g. a race between when prev_cpu is
-> > observed to be idle and when it is busy).
+Thanks for giving it a shot, let me run that with your topology and see
+where I end up.
 
-I agree that a better understanding of what is happening is necessary
-before any changes
-
-> >
-> > --
-> > Mel Gorman
-> > SUSE Labs
-> >
+> Thanks
+> Barry
+>
+>> ---
+>>  include/linux/topology.h |  1 +
+>>  kernel/sched/topology.c  | 99 +++++++++++++++++++---------------------
+>>  2 files changed, 49 insertions(+), 51 deletions(-)
+>>
+>> diff --git a/include/linux/topology.h b/include/linux/topology.h
+>> index ad03df1cc266..7634cd737061 100644
+>> --- a/include/linux/topology.h
+>> +++ b/include/linux/topology.h
+>> @@ -48,6 +48,7 @@ int arch_update_cpu_topology(void);
+>>  /* Conform to ACPI 2.0 SLIT distance definitions */
+>>  #define LOCAL_DISTANCE		10
+>>  #define REMOTE_DISTANCE		20
+>> +#define DISTANCE_BITS           8
+>>  #ifndef node_distance
+>>  #define node_distance(from,to)	((from) == (to) ? LOCAL_DISTANCE :
+>> REMOTE_DISTANCE)
+>>  #endif
+>> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+>> index 5d3675c7a76b..bf5c9bd10bfe 100644
+>> --- a/kernel/sched/topology.c
+>> +++ b/kernel/sched/topology.c
+>> @@ -1596,66 +1596,58 @@ static void init_numa_topology_type(void)
+>>      }
+>>  }
+>>
+>> +
+>> +#define NR_DISTANCE_VALUES (1 << DISTANCE_BITS)
+>> +
+>>  void sched_init_numa(void)
+>>  {
+>> -	int next_distance, curr_distance = node_distance(0, 0);
+>>      struct sched_domain_topology_level *tl;
+>> -	int level = 0;
+>> -	int i, j, k;
+>> -
+>> -	sched_domains_numa_distance = kzalloc(sizeof(int) * (nr_node_ids + 1),
+>> GFP_KERNEL);
+>> -	if (!sched_domains_numa_distance)
+>> -		return;
+>> -
+>> -	/* Includes NUMA identity node at level 0. */
+>> -	sched_domains_numa_distance[level++] = curr_distance;
+>> -	sched_domains_numa_levels = level;
+>> +	unsigned long *distance_map;
+>> +	int nr_levels = 0;
+>> +	int i, j;
+>>
+>>      /*
+>>       * O(nr_nodes^2) deduplicating selection sort -- in order to find the
+>>       * unique distances in the node_distance() table.
+>> -	 *
+>> -	 * Assumes node_distance(0,j) includes all distances in
+>> -	 * node_distance(i,j) in order to avoid cubic time.
+>>       */
+>> -	next_distance = curr_distance;
+>> +	distance_map = bitmap_alloc(NR_DISTANCE_VALUES, GFP_KERNEL);
+>> +	if (!distance_map)
+>> +		return;
+>> +
+>> +	bitmap_zero(distance_map, NR_DISTANCE_VALUES);
+>>      for (i = 0; i < nr_node_ids; i++) {
+>>              for (j = 0; j < nr_node_ids; j++) {
+>> -			for (k = 0; k < nr_node_ids; k++) {
+>> -				int distance = node_distance(i, k);
+>> -
+>> -				if (distance > curr_distance &&
+>> -				    (distance < next_distance ||
+>> -				     next_distance == curr_distance))
+>> -					next_distance = distance;
+>> -
+>> -				/*
+>> -				 * While not a strong assumption it would be nice to know
+>> -				 * about cases where if node A is connected to B, B is not
+>> -				 * equally connected to A.
+>> -				 */
+>> -				if (sched_debug() && node_distance(k, i) != distance)
+>> -					sched_numa_warn("Node-distance not symmetric");
+>> +			int distance = node_distance(i, j);
+>>
+>> -				if (sched_debug() && i && !find_numa_distance(distance))
+>> -					sched_numa_warn("Node-0 not representative");
+>> +			if (distance < LOCAL_DISTANCE || distance >= NR_DISTANCE_VALUES) {
+>> +				sched_numa_warn("Invalid distance value range");
+>> +				return;
+>>                      }
+>> -			if (next_distance != curr_distance) {
+>> -				sched_domains_numa_distance[level++] = next_distance;
+>> -				sched_domains_numa_levels = level;
+>> -				curr_distance = next_distance;
+>> -			} else break;
+>> +
+>> +			bitmap_set(distance_map, distance, 1);
+>>              }
+>> +	}
+>> +	/*
+>> +	 * We can now figure out how many unique distance values there are and
+>> +	 * allocate memory accordingly.
+>> +	 */
+>> +	nr_levels = bitmap_weight(distance_map, NR_DISTANCE_VALUES);
+>>
+>> -		/*
+>> -		 * In case of sched_debug() we verify the above assumption.
+>> -		 */
+>> -		if (!sched_debug())
+>> -			break;
+>> +	sched_domains_numa_distance = kcalloc(nr_levels, sizeof(int),
+>> GFP_KERNEL);
+>> +	if (!sched_domains_numa_distance) {
+>> +		bitmap_free(distance_map);
+>> +		return;
+>> +	}
+>> +
+>> +	for (i = 0, j = 0; i < nr_levels; i++, j++) {
+>> +		j = find_next_bit(distance_map, NR_DISTANCE_VALUES, j);
+>> +		sched_domains_numa_distance[i] = j;
+>>      }
+>>
+>> +	bitmap_free(distance_map);
+>> +
+>>      /*
+>> -	 * 'level' contains the number of unique distances
+>> +	 * 'nr_levels' contains the number of unique distances
+>>       *
+>>       * The sched_domains_numa_distance[] array includes the actual distance
+>>       * numbers.
+>> @@ -1664,15 +1656,15 @@ void sched_init_numa(void)
+>>      /*
+>>       * Here, we should temporarily reset sched_domains_numa_levels to 0.
+>>       * If it fails to allocate memory for array sched_domains_numa_masks[][],
+>> -	 * the array will contain less then 'level' members. This could be
+>> +	 * the array will contain less then 'nr_levels' members. This could be
+>>       * dangerous when we use it to iterate array sched_domains_numa_masks[][]
+>>       * in other functions.
+>>       *
+>> -	 * We reset it to 'level' at the end of this function.
+>> +	 * We reset it to 'nr_levels' at the end of this function.
+>>       */
+>>      sched_domains_numa_levels = 0;
+>>
+>> -	sched_domains_numa_masks = kzalloc(sizeof(void *) * level, GFP_KERNEL);
+>> +	sched_domains_numa_masks = kzalloc(sizeof(void *) * nr_levels,
+>> GFP_KERNEL);
+>>      if (!sched_domains_numa_masks)
+>>              return;
+>>
+>> @@ -1680,7 +1672,7 @@ void sched_init_numa(void)
+>>       * Now for each level, construct a mask per node which contains all
+>>       * CPUs of nodes that are that many hops away from us.
+>>       */
+>> -	for (i = 0; i < level; i++) {
+>> +	for (i = 0; i < nr_levels; i++) {
+>>              sched_domains_numa_masks[i] =
+>>                      kzalloc(nr_node_ids * sizeof(void *), GFP_KERNEL);
+>>              if (!sched_domains_numa_masks[i])
+>> @@ -1688,12 +1680,17 @@ void sched_init_numa(void)
+>>
+>>              for (j = 0; j < nr_node_ids; j++) {
+>>                      struct cpumask *mask = kzalloc(cpumask_size(), GFP_KERNEL);
+>> +			int k;
+>> +
+>>                      if (!mask)
+>>                              return;
+>>
+>>                      sched_domains_numa_masks[i][j] = mask;
+>>
+>>                      for_each_node(k) {
+>> +				if (sched_debug() && (node_distance(j, k) != node_distance(k,
+>> j)))
+>> +					sched_numa_warn("Node-distance not symmetric");
+>> +
+>>                              if (node_distance(j, k) > sched_domains_numa_distance[i])
+>>                                      continue;
+>>
+>> @@ -1705,7 +1702,7 @@ void sched_init_numa(void)
+>>      /* Compute default topology size */
+>>      for (i = 0; sched_domain_topology[i].mask; i++);
+>>
+>> -	tl = kzalloc((i + level + 1) *
+>> +	tl = kzalloc((i + nr_levels) *
+>>                      sizeof(struct sched_domain_topology_level), GFP_KERNEL);
+>>      if (!tl)
+>>              return;
+>> @@ -1728,7 +1725,7 @@ void sched_init_numa(void)
+>>      /*
+>>       * .. and append 'j' levels of NUMA goodness.
+>>       */
+>> -	for (j = 1; j < level; i++, j++) {
+>> +	for (j = 1; j < nr_levels; i++, j++) {
+>>              tl[i] = (struct sched_domain_topology_level){
+>>                      .mask = sd_numa_mask,
+>>                      .sd_flags = cpu_numa_flags,
+>> @@ -1740,8 +1737,8 @@ void sched_init_numa(void)
+>>
+>>      sched_domain_topology = tl;
+>>
+>> -	sched_domains_numa_levels = level;
+>> -	sched_max_numa_distance = sched_domains_numa_distance[level - 1];
+>> +	sched_domains_numa_levels = nr_levels;
+>> +	sched_max_numa_distance = sched_domains_numa_distance[nr_levels - 1];
+>>
+>>      init_numa_topology_type();
+>>  }
+>> --
+>> 2.27.0
