@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63B2302816
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CF3302807
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730820AbhAYQlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:41:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S1730859AbhAYQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:38:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730781AbhAYQgj (ORCPT
+        with ESMTP id S1730812AbhAYQgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:36:39 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A3C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:35:58 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id j12so8719912pjy.5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:35:58 -0800 (PST)
+        Mon, 25 Jan 2021 11:36:55 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8039C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:36:14 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id e9so1680858pjj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:36:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z41UuKh+J5aniE9+28c3DumogNmp+4Y18W99bbzbbBM=;
-        b=WK19KQkZCYCTyhv+cncKz2OmECR9h+SoB3yc9f+g2b6uDLU1ojYhD70oqZD0ev+dVu
-         5s9TJ5z/4omLDqJtYlrfGsI4keHPEQBOrj4ix6fDyb4ZgIC8KXqpJedTFikBoAIjsDeS
-         7+mI7GlnbzfiPfUiJFF8ejaA3oe3paAol6YaOSqYj23zV+0Z+hFHQz4y3mkKnNBGwoUI
-         zLKeykcU2AzbF3SG8Mw5GzvWTl751r2NKnShG5BsW9co+ZMiCBivLB2FigQuFoxGzZfe
-         ti9XmAZZjI4XjmsrGQiK2g+amtf5HBXsl85CQFGQR5aS0r7L22ZlyIy2eh8a1JFwlQf9
-         QkHA==
+        bh=WxIHznqwAGESe2xc5cpCSnujQzQI1SoVg8yAGG62ByY=;
+        b=hj5zUO9EOYdqo9s5O/GMHCMj3BisbPvYUkcwSQyPR4AiJF7/Y04KNsFnQ89dQ3LvNU
+         vqQh9iJjBYuMr1mUZ8JoXc2mLIk0/C1HrQgIBt9KFskDzMu60iVIHc2LmHmc7N3xVHEe
+         MaJ9Dv5aTshT2t1q03/HH/U1n4Oq+wKzpcxPrOvZLdx0vVfVAKnrJ/AIoYUZuDMUEGrp
+         4PQWwpSeFCPWV1Nuc7OmG71IZ4bbcxYi5bZtsQsG9BTrvi6OXmCzWRTHAuCSleEqRyZD
+         I96nTfF97c3ZQcJkuOtMIIcF+liw85+UgkocuVHVa0lAeiNL4sZuxymevlevQ+FYEDrO
+         j+PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z41UuKh+J5aniE9+28c3DumogNmp+4Y18W99bbzbbBM=;
-        b=nut7ODO/46J6MeaJJJaNPuqzMFRRlLh2g/sjqmIsM2ka6RSh6jSZ6pb8mo+NY7w/6t
-         KxqXGFw7cgVld3mOpKK0V9kWeeUAGUczMfqx9h/lUGT9cgUwP3lvaOtAW2AbvcOxYpd0
-         ehJBjLF8X62T/Npbi1gM9j/u2lG8aJjJWcoh3qnbS7MSOSjII6+rNzNU2BcFE63OPwEQ
-         g/xvtu9TgXWllJgwl0jpRsLzKk7PQWNqUm3A+v0JnzUd3mNc3HjQ40Rk1uYwToELPY3H
-         FGls3aVRFrdbkjKSSdGKZQpN5WT6B0OVlvjLqic9Lvt8j8dl/TFifvOFWjTFKoYQXRx9
-         F0DA==
-X-Gm-Message-State: AOAM530ban5Z67QIJJJqka7nYOGvOH9O3UvxTvTTN6deFIAV5j6bM3Kw
-        /wH4R8luP0S3MrSz55YdkM7xpzVfvFUbXA==
-X-Google-Smtp-Source: ABdhPJwS8xLIyQ0VuBobIO3kxH1bw+94N8qxKq7O0Msc3aL+tSsBdXymgC0QjBHEio0ThFhObTKAMQ==
-X-Received: by 2002:a17:90b:246:: with SMTP id fz6mr1001381pjb.131.1611592558269;
-        Mon, 25 Jan 2021 08:35:58 -0800 (PST)
+        bh=WxIHznqwAGESe2xc5cpCSnujQzQI1SoVg8yAGG62ByY=;
+        b=Tj1BzTCCj6kRuU93f0PyExvUG0tR2Tefqu+0j8tPDaiWZ9SfuwQXLPXxd6qKfLZPlO
+         ztUTW+owF7JJpUOc8R9OGEBb8xy4UN6L2MLk1p12RfcvbR49QttEDR8okDS9D3Xa5+bV
+         kk7PSvH8Mmf1DP8XIYKREgV2JXC2KgwLx7PEeHcLI7p8yMu06HwKqJA6t5RQVX1XR1n0
+         Ia6Ql2ZpihzVT1TL5S3M8cCv3+g6zcbRLfAEimlrySNER77inQjG0iTgT23nPwPmTvGj
+         tPPvEOh2CgOO+fKcb2LDZErOqX4GVNh6yPozC5EXLTZWhPF/E6U8YX+rnxxZWF+lffME
+         vzlw==
+X-Gm-Message-State: AOAM532dTz4vjYI2zBNR0BrCk+ALOK7W7SngBWgKu/eH4khan/y38Nm7
+        HW5ylBk3Wts1N1Mds2MlcRClPAojyU32Cg==
+X-Google-Smtp-Source: ABdhPJxq4D/dblNlcs9Dr9mo/IDgF1x3tUjJRoNjHlM1Odxl8EBvPhUEDS3/0kQM3bjIgLRiIWH9qQ==
+X-Received: by 2002:a17:90a:5208:: with SMTP id v8mr1041060pjh.224.1611592574186;
+        Mon, 25 Jan 2021 08:36:14 -0800 (PST)
 Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id q141sm7200350pfc.24.2021.01.25.08.35.55
+        by smtp.gmail.com with ESMTPSA id z15sm17163658pfr.89.2021.01.25.08.36.12
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Jan 2021 08:35:57 -0800 (PST)
+        Mon, 25 Jan 2021 08:36:13 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
@@ -78,9 +78,9 @@ Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
         Anthony Steinhauser <asteinhauser@google.com>,
         Jay Lang <jaytlang@mit.edu>,
         "Chang S. Bae" <chang.seok.bae@intel.com>
-Subject: [PATCH V2 5/6] x86_32/sysenter: use percpu to get thread.sp0 when sysenter
-Date:   Tue, 26 Jan 2021 01:34:33 +0800
-Message-Id: <20210125173444.22696-6-jiangshanlai@gmail.com>
+Subject: [PATCH V2 6/6] x86_32: use cpu_current_thread_sp0 instead of cpu_tss_rw.x86_tss.sp1
+Date:   Tue, 26 Jan 2021 01:34:34 +0800
+Message-Id: <20210125173444.22696-7-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20210125173444.22696-1-jiangshanlai@gmail.com>
 References: <CALCETrWPnvNr9S2hsxL+pbhNWv0OOL7tBq1XmABPjYK7zZSJbw@mail.gmail.com>
@@ -93,56 +93,127 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-TSS_entry2task_stack is used to refer to tss.sp1 which is stored the value
-of thread.sp0.
+sp1 is not used by hardware and is used as thread.sp0.  We should just
+use new percpu variable.
 
-At the code where TSS_entry2task_stack is used in sysenter, the CR3 is
-already kernel CR3 and kernel segments is loaded.
-
-So that we can directly use percpu for it instead of offset-calculation.
-
-And we remove the unused TSS_entry2task_stack.
+And remove unneeded TSS_sp1.
 
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- arch/x86/entry/entry_32.S        |  2 +-
- arch/x86/kernel/asm-offsets_32.c | 10 ----------
- 2 files changed, 1 insertion(+), 11 deletions(-)
+ arch/x86/entry/entry_32.S        | 6 +++---
+ arch/x86/include/asm/processor.h | 2 ++
+ arch/x86/include/asm/switch_to.h | 2 +-
+ arch/x86/kernel/asm-offsets.c    | 1 -
+ arch/x86/kernel/cpu/common.c     | 9 ++++++++-
+ arch/x86/kernel/process.c        | 2 --
+ 6 files changed, 14 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/entry/entry_32.S b/arch/x86/entry/entry_32.S
-index a8d2640394f9..3cb42efb3c04 100644
+index 3cb42efb3c04..22cd3d8fd23e 100644
 --- a/arch/x86/entry/entry_32.S
 +++ b/arch/x86/entry/entry_32.S
+@@ -472,7 +472,7 @@
+ 	movl	%esp, %esi
+ 
+ 	/* Load top of task-stack into %edi */
+-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp1), %edi
++	movl	PER_CPU_VAR(cpu_current_thread_sp0), %edi
+ 
+ 	/* Special case - entry from kernel mode via entry stack */
+ #ifdef CONFIG_VM86
+@@ -658,7 +658,7 @@
+ 	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp0), %edi
+ 
+ 	/* Bytes on the task-stack to ecx */
+-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp1), %ecx
++	movl	PER_CPU_VAR(cpu_current_thread_sp0), %ecx
+ 	subl	%esi, %ecx
+ 
+ 	/* Allocate stack-frame on entry-stack */
 @@ -916,7 +916,7 @@ SYM_FUNC_START(entry_SYSENTER_32)
  
  	/* Switch to task stack */
  	movl	%esp, %eax
--	movl	(3*4+TSS_entry2task_stack)(%esp), %esp
-+	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp1), %esp
+-	movl	PER_CPU_VAR(cpu_tss_rw + TSS_sp1), %esp
++	movl	PER_CPU_VAR(cpu_current_thread_sp0), %esp
  
  .Lsysenter_past_esp:
  	pushl	$__USER_DS		/* pt_regs->ss */
-diff --git a/arch/x86/kernel/asm-offsets_32.c b/arch/x86/kernel/asm-offsets_32.c
-index 6e043f295a60..6d4143cfbf03 100644
---- a/arch/x86/kernel/asm-offsets_32.c
-+++ b/arch/x86/kernel/asm-offsets_32.c
-@@ -43,16 +43,6 @@ void foo(void)
- 	OFFSET(saved_context_gdt_desc, saved_context, gdt_desc);
- 	BLANK();
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 886d32da1318..4265884c33e7 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -774,6 +774,8 @@ static inline void spin_lock_prefetch(const void *x)
  
--	/*
--	 * Offset from the entry stack to task stack stored in TSS. Kernel entry
--	 * happens on the per-cpu entry-stack, and the asm code switches to the
--	 * task-stack pointer stored in x86_tss.sp1, which is a copy of
--	 * task->thread.sp0 where entry code can find it.
--	 */
--	DEFINE(TSS_entry2task_stack,
--	       offsetof(struct cpu_entry_area, tss.x86_tss.sp1) -
--	       offsetofend(struct cpu_entry_area, entry_stack_page.stack));
--
+ #define KSTK_ESP(task)		(task_pt_regs(task)->sp)
+ 
++DECLARE_PER_CPU(unsigned long, cpu_current_thread_sp0);
++
+ #else
+ #define INIT_THREAD { }
+ 
+diff --git a/arch/x86/include/asm/switch_to.h b/arch/x86/include/asm/switch_to.h
+index b5f0d2ff47e4..e27eb7974797 100644
+--- a/arch/x86/include/asm/switch_to.h
++++ b/arch/x86/include/asm/switch_to.h
+@@ -69,7 +69,7 @@ static inline void update_task_stack(struct task_struct *task)
+ 	if (static_cpu_has(X86_FEATURE_XENPV))
+ 		load_sp0(task->thread.sp0);
+ 	else
+-		this_cpu_write(cpu_tss_rw.x86_tss.sp1, task->thread.sp0);
++		this_cpu_write(cpu_current_thread_sp0, task->thread.sp0);
+ #else
+ 	/* Xen PV enters the kernel on the thread stack. */
+ 	if (static_cpu_has(X86_FEATURE_XENPV))
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index 60b9f42ce3c1..3b63b6062792 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -98,6 +98,5 @@ static void __used common(void)
+ 
+ 	/* Offset for fields in tss_struct */
+ 	OFFSET(TSS_sp0, tss_struct, x86_tss.sp0);
+-	OFFSET(TSS_sp1, tss_struct, x86_tss.sp1);
+ 	OFFSET(TSS_sp2, tss_struct, x86_tss.sp2);
+ }
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index f3d7fd7e9684..b2c37d369137 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1789,12 +1789,19 @@ EXPORT_PER_CPU_SYMBOL(__preempt_count);
+ /*
+  * On x86_32, vm86 modifies tss.sp0, so sp0 isn't a reliable way to find
+  * the top of the kernel stack.  Use an extra percpu variable to track the
+- * top of the kernel stack directly.
++ * top of the kernel stack directly and an percpu variable to track the
++ * thread.sp0 for using in entry code.  cpu_current_top_of_stack and
++ * cpu_current_thread_sp0 are different value because of the non-zero
++ * stack-padding on 32bit.  See more comment at TOP_OF_KERNEL_STACK_PADDING
++ * and vm86.
+  */
+ DEFINE_PER_CPU(unsigned long, cpu_current_top_of_stack) =
+ 	(unsigned long)&init_thread_union + THREAD_SIZE;
+ EXPORT_PER_CPU_SYMBOL(cpu_current_top_of_stack);
+ 
++DEFINE_PER_CPU(unsigned long, cpu_current_thread_sp0) = TOP_OF_INIT_STACK;
++EXPORT_PER_CPU_SYMBOL(cpu_current_thread_sp0);
++
  #ifdef CONFIG_STACKPROTECTOR
- 	BLANK();
- 	OFFSET(stack_canary_offset, stack_canary, canary);
+ DEFINE_PER_CPU_ALIGNED(struct stack_canary, stack_canary);
+ #endif
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 296de77da4b2..e6d4b5399a81 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -64,8 +64,6 @@ __visible DEFINE_PER_CPU_PAGE_ALIGNED(struct tss_struct, cpu_tss_rw) = {
+ 		.sp0 = (1UL << (BITS_PER_LONG-1)) + 1,
+ 
+ #ifdef CONFIG_X86_32
+-		.sp1 = TOP_OF_INIT_STACK,
+-
+ 		.ss0 = __KERNEL_DS,
+ 		.ss1 = __KERNEL_CS,
+ #endif
 -- 
 2.19.1.6.gb485710b
 
