@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B1C302505
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05BB3024FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 13:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbhAYMfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 07:35:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbhAYMVC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:21:02 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54DCC061223
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 03:57:32 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1l40Uq-0006VJ-Rx; Mon, 25 Jan 2021 12:57:28 +0100
-Subject: Re: [PATCH v3] iio: adc: stm32-adc: enable timestamping for non-DMA
- usage
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210125112127.1583-1-a.fatoum@pengutronix.de>
- <b649a0fd-b229-8a54-b374-72ecedca9e64@pengutronix.de>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <b6413a27-9cdf-9f60-be49-03398ee3f1f6@pengutronix.de>
-Date:   Mon, 25 Jan 2021 12:57:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728132AbhAYMdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 07:33:40 -0500
+Received: from mga11.intel.com ([192.55.52.93]:6423 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727945AbhAYMUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:20:42 -0500
+IronPort-SDR: UUM+SgqLDM/RUWR/Mu/NYg87hsq6LpWFnhS+5ja+f9myNoNZeOlJleCKi6RcJ0/q4krQHk8GEp
+ YKMVSHePH6EA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="176204571"
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="176204571"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 04:18:24 -0800
+IronPort-SDR: oxSq+bW0tCqWU7I2UIGAZLet7pukoh2GDoYW+hDR7viC1W6Qv3oq8Ajr6Sxkxtvbu6MNER9gNl
+ KhfYLaN582aw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="361471544"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by fmsmga008.fm.intel.com with SMTP; 25 Jan 2021 04:18:20 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 25 Jan 2021 14:18:20 +0200
+Date:   Mon, 25 Jan 2021 14:18:20 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Koba Ko <koba.ko@canonical.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm/dp_mst: Align mst link rate with soure rate
+Message-ID: <YA63DOXXObWp6AF6@intel.com>
+References: <20210113014105.28110-1-koba.ko@canonical.com>
+ <20210113014105.28110-2-koba.ko@canonical.com>
+ <8735z5t5qz.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <b649a0fd-b229-8a54-b374-72ecedca9e64@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8735z5t5qz.fsf@intel.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 25.01.21 12:49, Marc Kleine-Budde wrote:
-> On 1/25/21 12:21 PM, Ahmad Fatoum wrote:
->> For non-DMA usage, we have an easy way to associate a timestamp with a
->> sample: iio_pollfunc_store_time stores a timestamp in the primary
->> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
->> to push out the buffer along with the timestamp.
->>
->> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
->> Do this.
->>
->> For DMA, it's not as easy, because we don't push the buffers out of
->> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
->> a tasklet scheduled after a DMA completion.
->>
->> Preferably, the DMA controller would copy us the timestamp into that buffer
->> as well. Until this is implemented, restrict timestamping support to
->> only PIO. For low-frequency sampling, PIO is probably good enough.
->>
->> Cc: Holger Assmann <has@pengutronix.de>
->> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->> v2 -> v3:
->>   - explicitly specify alignment (Jonathan)
->>   - increase buffer size to hold additional timestamp
->> v1 -> v2:
->>   - Added comment about timestamping being PIO only (Fabrice)
->>   - Added missing DMA resource clean up in error path (Fabrice)
->>   - Added Fabrice's Acked-by
->> ---
->>  drivers/iio/adc/stm32-adc.c | 39 +++++++++++++++++++++++++++++--------
->>  1 file changed, 31 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
->> index c067c994dae2..ab2f440d7afb 100644
->> --- a/drivers/iio/adc/stm32-adc.c
->> +++ b/drivers/iio/adc/stm32-adc.c
->> @@ -177,7 +177,7 @@ struct stm32_adc_cfg {
->>   * @offset:		ADC instance register offset in ADC block
->>   * @cfg:		compatible configuration data
->>   * @completion:		end of single conversion completion
->> - * @buffer:		data buffer
->> + * @buffer:		data buffer + 8 bytes for timestamp if enabled
->                                       ^
->>   * @clk:		clock for this adc instance
->>   * @irq:		interrupt for this adc instance
->>   * @lock:		spinlock
->> @@ -200,7 +200,7 @@ struct stm32_adc {
->>  	u32			offset;
->>  	const struct stm32_adc_cfg	*cfg;
->>  	struct completion	completion;
->> -	u16			buffer[STM32_ADC_MAX_SQ];
->> +	u16			buffer[STM32_ADC_MAX_SQ + 8] __aligned(8);
->          ^^                                               ^
+On Wed, Jan 13, 2021 at 01:51:00PM +0200, Jani Nikula wrote:
+> On Wed, 13 Jan 2021, Koba Ko <koba.ko@canonical.com> wrote:
+> > After read the link rate from MST hub, align with
+> > maximum source rate.
+> >
+> > Signed-off-by: Koba Ko <koba.ko@canonical.com>
+> > ---
+> >  drivers/gpu/drm/drm_dp_mst_topology.c   | 8 ++++++++
+> >  drivers/gpu/drm/i915/display/intel_dp.c | 7 +++++++
+> >  include/drm/drm_dp_helper.h             | 8 ++++++++
+> >  include/drm/drm_dp_mst_helper.h         | 4 ++++
+> >  4 files changed, 27 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > index 6982ecbf30b5..e7ceae97be85 100644
+> > --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> > +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> > @@ -3672,6 +3672,10 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+> >  {
+> >  	int ret = 0;
+> >  	struct drm_dp_mst_branch *mstb = NULL;
+> > +	unsigned int max_link_rate_tbl[MAX_DRM_DP_MAX_RATE + 1] = {
+> > +		DP_LINK_BW_1_62, DP_LINK_BW_2_7, DP_LINK_BW_5_4,
+> > +		DP_LINK_BW_8_1, DP_LINK_RATE_TABLE
+> > +	};
 > 
-> How does that fit together?
+> Please no. Read on for why.
+> 
+> >  
+> >  	mutex_lock(&mgr->payload_lock);
+> >  	mutex_lock(&mgr->lock);
+> > @@ -3693,6 +3697,9 @@ int drm_dp_mst_topology_mgr_set_mst(struct drm_dp_mst_topology_mgr *mgr, bool ms
+> >  			goto out_unlock;
+> >  		}
+> >  
+> > +		if (mgr->max_source_rate < MAX_DRM_DP_MAX_RATE)
+> > +			mgr->dpcd[1] = max_link_rate_tbl[mgr->max_source_rate];
+> 
+> Make ->max_source_rate the actual physical rate in kHz, and use
+> drm_dp_link_rate_to_bw_code() here.
+> 
+> > +
+> >  		mgr->pbn_div = drm_dp_get_vc_payload_bw(mgr->dpcd[1],
+> >  							mgr->dpcd[2] & DP_MAX_LANE_COUNT_MASK);
+> >  		if (mgr->pbn_div == 0) {
+> > @@ -5422,6 +5429,7 @@ int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
+> >  	mgr->aux = aux;
+> >  	mgr->max_dpcd_transaction_bytes = max_dpcd_transaction_bytes;
+> >  	mgr->max_payloads = max_payloads;
+> > +	mgr->max_source_rate = MAX_DRM_DP_MAX_RATE;
+> >  	mgr->conn_base_id = conn_base_id;
+> >  	if (max_payloads + 1 > sizeof(mgr->payload_mask) * 8 ||
+> >  	    max_payloads + 1 > sizeof(mgr->vcpi_mask) * 8)
+> > diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> > index 469e765a1b7b..a89b4c823123 100644
+> > --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> > +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> > @@ -5392,6 +5392,13 @@ intel_dp_configure_mst(struct intel_dp *intel_dp)
+> >  	intel_dp->is_mst = sink_can_mst &&
+> >  		i915->params.enable_dp_mst;
+> >  
+> > +	if (intel_dp_source_supports_hbr3(intel_dp))
+> > +		intel_dp->mst_mgr.max_source_rate = DRM_DP_MAX_RATE_HBR3;
+> > +	else if (intel_dp_source_supports_hbr2(intel_dp))
+> > +		intel_dp->mst_mgr.max_source_rate = DRM_DP_MAX_RATE_HBR2;
+> > +	else
+> > +		intel_dp->mst_mgr.max_source_rate = DRM_DP_MAX_RATE_HBR;
+> 
+> Whenever this file references a "rate", it's the rate in kHz. This is
+> confusing. Use the rate in kHz.
+> 
+> Also, please look at how intel_dp_source_supports_hbr* are implemented;
+> we already have all the supported source rates cached in intel_dp.
+> 
+> The max source rate is:
+> 
+> 	intel_dp->source_rates[intel_dp->num_source_rates - 1].
+> 
+> No need to do the if ladder here at all. If you like, you can add a
+> helper:
+> 
+> int intel_dp_max_source_rate(struct intel_dp *intel_dp)
+> {
+>         return intel_dp->source_rates[intel_dp->num_source_rates - 1];
+> }
 
-Ah indeed, that's a little longer than needed.
-Thanks for catching.
+Using the max source rate isn't super great either. A bit better
+than the current mess though.
 
-> 
-> Marc
-> 
-> 
+The correct fix would be to let the driver provide the actually
+used link_rate+lane_count to the MST code during atomic_check(),
+instead of trying to guess what the driver is going to use.
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Ville Syrjälä
+Intel
