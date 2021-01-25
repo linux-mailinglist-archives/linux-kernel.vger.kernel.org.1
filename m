@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993F3303664
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6D3303666
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731958AbhAZGSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:18:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48444 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728757AbhAYNVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:21:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611580783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1732051AbhAZGTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:19:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41933 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728767AbhAYNYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:24:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611580977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hvyCg1tArEMURZiCaw0o7rfIdGticTsjrcjPx+/JdNc=;
-        b=A4Vm72+PELLClS/Iy715Uik0vACGATsRtA2iQMVkLUk7pB1NNEp+sD+oPc2YAwpCTCYFWo
-        S6cgCM5W61YrqU3UsTpXfJsNEmMTLpZ92x7E+4u1Hve30Vlh8wUkj93JfsZaBNc0InUmqa
-        E/9B6Y8rEAQXzzf6L5pfNetYN4lnJf8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D4325AAC6;
-        Mon, 25 Jan 2021 13:19:42 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 14:19:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     linux-man@vger.kernel.org, akpm@linux-foundation.org,
-        jannh@google.com, keescook@chromium.org, jeffv@google.com,
-        minchan@kernel.org, shakeelb@google.com, rientjes@google.com,
-        edgararriaga@google.com, timmurray@google.com, linux-mm@kvack.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH 1/1] process_madvise.2: Add process_madvise man page
-Message-ID: <20210125131935.GI827@dhcp22.suse.cz>
-References: <20210120202337.1481402-1-surenb@google.com>
+        bh=0HGRoOq6BrrbzjHTsXqbOX8EfSf6zyIl/yxyGyvENJM=;
+        b=hKg9wC3fJ8UJSDDalt+dcqIuZsR781KqVnRZlLAscFnBIlqMJj5BmW8XTh9aOFp3WKHPVj
+        rLGKMOXdTBT5p6DHE98HvkqgzC4DGfu/NGaAMDUaInzB+XOolSKOgd4ekBW3Mc4ZzBsQBU
+        povqt745LleleWuusMmPkejHCPmTY7Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-zDQWX4KjMwav68AebMd7pQ-1; Mon, 25 Jan 2021 08:22:56 -0500
+X-MC-Unique: zDQWX4KjMwav68AebMd7pQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49B6E107ACE8;
+        Mon, 25 Jan 2021 13:22:54 +0000 (UTC)
+Received: from starship (unknown [10.35.206.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1901D60936;
+        Mon, 25 Jan 2021 13:22:46 +0000 (UTC)
+Message-ID: <c13849a741793d2f177447efb93f1719f73bf669.camel@redhat.com>
+Subject: Re: [PATCH v2 2/4] KVM: SVM: Add emulation support for #GP
+ triggered by SVM instructions
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wei Huang <whuang2@amd.com>, Wei Huang <wei.huang2@amd.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, luto@amacapital.net
+Date:   Mon, 25 Jan 2021 15:22:46 +0200
+In-Reply-To: <YAoCy5C0Zj97iSjN@google.com>
+References: <20210121065508.1169585-1-wei.huang2@amd.com>
+         <20210121065508.1169585-3-wei.huang2@amd.com>
+         <cc55536e913e79d7ca99cbeb853586ca5187c5a9.camel@redhat.com>
+         <c77f4f42-657a-6643-8432-a07ccf3b221e@amd.com>
+         <cd4e3b9a5d5e4b47fa78bfb0ce447e856b18f8c8.camel@redhat.com>
+         <YAoCy5C0Zj97iSjN@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120202337.1481402-1-surenb@google.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20-01-21 12:23:37, Suren Baghdasaryan wrote:
-[...]
->     MADV_COLD (since Linux 5.4.1)
->         Deactivate a given range of pages by moving them from active to
->         inactive LRU list. This is done to accelerate the reclaim of these
->         pages. The advice might be ignored for some pages in the range when it
->         is not applicable.
-
-I do not think we want to talk about active/inactive LRU lists here.
-Wouldn't it be sufficient to say
-Deactive a given range of pages which will make them a more probable
-reclaim target should there be a memory pressure. This is a
-non-destructive operation.
-
-Other than that, looks good to me from the content POV.
-
+On Thu, 2021-01-21 at 14:40 -0800, Sean Christopherson wrote:
+> On Thu, Jan 21, 2021, Maxim Levitsky wrote:
+> > BTW, on unrelated note, currently the smap test is broken in kvm-unit tests.
+> > I bisected it to commit 322cdd6405250a2a3e48db199f97a45ef519e226
+> > 
+> > It seems that the following hack (I have no idea why it works,
+> > since I haven't dug deep into the area 'fixes', the smap test for me)
+> > 
+> > -#define USER_BASE      (1 << 24)
+> > +#define USER_BASE      (1 << 25)
+> 
+> https://lkml.kernel.org/r/20210121111808.619347-2-imbrenda@linux.ibm.com
+> 
 Thanks!
--- 
-Michal Hocko
-SUSE Labs
+
+Best regards,
+	Maxim Levitsky
+
