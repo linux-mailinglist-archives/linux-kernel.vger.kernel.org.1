@@ -2,87 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E416E302568
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061B730256A
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbhAYNSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728648AbhAYNMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:12:16 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB17DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:11:35 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id t8so7858316ljk.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 05:11:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1LHPs6veKloMhyGbYCzf5Tkrc+RdfRRKizZUrP4RKFk=;
-        b=no554Qq64SPim1EkiyV++9RtKXhSiJqgj89U4AUxO5hNWnnHViu7BjgjSz8ZDoJYqf
-         LW0GdBFzeFeszL7hHdwkSntSWE2O/C4QGTBl5cxeS393dYKAbrciyRWA8TwJeTkSq7LF
-         GlwdRfD5eT2bZ6lf9IEY1x1vKreOlXrNEsIwVN789eG5pH3s+8xzpJN3Dl62us/rCTHc
-         KfmMOr/E4La8i+C5E9aGQVCMT6CnvHAoxMebnW7K5drwNziItNuyOutIGjYHA0BVMTb9
-         p0C2E34IUVLijevWi8jla6iVc19Qjv7J5byAsZty6fAhKWu66e5nk58F6EB2B0Vsz4/c
-         BByQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1LHPs6veKloMhyGbYCzf5Tkrc+RdfRRKizZUrP4RKFk=;
-        b=d13kl8XnsZ75fFd/I3f2KEZYXr8Tv1Vf9O68DG5ywhl1mrNNqhvpodOANWqd7z3ZfI
-         Cw3XLFW3E0qWnO98xsSH/FKlO+orF6ScMTnDS9Cw0STWP1wbW2cHwlAlPZxgidITAtxR
-         cYt/3v17gidp0h2F/IcaZLzS/nmVLRkHSxnj7fFb1DTUEM8gjDEN9tEssidaZOF23Fym
-         0HoEjbWkuOQjd/OBdBmR6tKVPyix2k1Em6jOfzPGyZKQsPZx9PVvgwRRhvEYy93qgI2y
-         KCgu1OHUyMXo53KZvX/imFAbadFihC/w326TaMyQ705zrC1SlA0d/fQNwSIF3J8rwg94
-         A9cA==
-X-Gm-Message-State: AOAM531iYle7v7Mjp5cINq2hKtLfgFoFAC5BtKScJbyq89mxrWRjR309
-        zvd1ibzit+E3ydJ3irksV1G46ATRBtEc9R3jGSVR1Q==
-X-Google-Smtp-Source: ABdhPJy4HpEIGMikU7HZMCkt1pVwvvpvX/8qj1OgXZGQhen4TdHca8wLEsqLlamFaD35zyCmUp0OaXP94h/RKNN2IeA=
-X-Received: by 2002:a2e:964f:: with SMTP id z15mr166740ljh.368.1611580294339;
- Mon, 25 Jan 2021 05:11:34 -0800 (PST)
+        id S1728737AbhAYNTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:19:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37966 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728608AbhAYNMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:12:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611580322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gWGUX5BQka/TYr2ZK97IOPcurnLuL5UlU4w1UDBIDS0=;
+        b=S+u9xiNJ/Y4QHOvsaNZi3Tr/iedHMRiBhIjW1BWvXuuMLQOIPa+GFfFxUJMPT7JjIGmHqB
+        1DjahGJq23HDdtJO0cXw7I4Sa7DvBuH/47YZpWQLcYyJlOHyiaCSqr0q5s6Fmq0ZdLVmZc
+        R/vSTXP1DwuGAf8EX7FBJrFNUYDo0HY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1FD60AC45;
+        Mon, 25 Jan 2021 13:12:02 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 14:12:00 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
+        david@redhat.com, surenb@google.com, pullip.cho@samsung.com,
+        joaodias@google.com, hridya@google.com, john.stultz@linaro.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, hch@infradead.org, robh+dt@kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH v4 2/4] mm: failfast mode with __GFP_NORETRY in
+ alloc_contig_range
+Message-ID: <20210125131200.GG827@dhcp22.suse.cz>
+References: <20210121175502.274391-1-minchan@kernel.org>
+ <20210121175502.274391-3-minchan@kernel.org>
 MIME-Version: 1.0
-References: <20210125041753.2214-1-hailong.fan@mediatek.com>
-In-Reply-To: <20210125041753.2214-1-hailong.fan@mediatek.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 25 Jan 2021 14:11:23 +0100
-Message-ID: <CACRpkdadvp9t5xdpK+=35jwfbrR0AXM0bRSWBfWH9jJFBbEyeA@mail.gmail.com>
-Subject: Re: [PATCH V3] pinctrl: mediatek: Fix trigger type setting follow for
- unexpected interrupt
-To:     Hailong Fan <hailong.fan@mediatek.com>
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        youlin.pei@mediatek.com, Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream@mediatek.com, chentsung@chromium.org,
-        gtk_pangao@mediatek.com, Hanks Chen <hanks.chen@mediatek.com>,
-        yong.wu@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121175502.274391-3-minchan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 5:18 AM Hailong Fan <hailong.fan@mediatek.com> wrote:
+On Thu 21-01-21 09:55:00, Minchan Kim wrote:
+> Contiguous memory allocation can be stalled due to waiting
+> on page writeback and/or page lock which causes unpredictable
+> delay. It's a unavoidable cost for the requestor to get *big*
+> contiguous memory but it's expensive for *small* contiguous
+> memory(e.g., order-4) because caller could retry the request
+> in different range where would have easy migratable pages
+> without stalling.
+> 
+> This patch introduce __GFP_NORETRY as compaction gfp_mask in
+> alloc_contig_range so it will fail fast without blocking
+> when it encounters pages needed waiting.
 
-> When flipping the polarity will be generated interrupt under certain
-> circumstances, but GPIO external signal has not changed.
-> Then, mask the interrupt before polarity setting, and clear the
-> unexpected interrupt after trigger type setting completed.
->
-> Remove mtk_eint_flip_edge: because mtk_eint_unmask already calls it.
->
-> Signed-off-by: Hailong Fan <hailong.fan@mediatek.com>
-> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+I am not against controling how hard this allocator tries with gfp mask
+but this changelog is rather void on any data and any user.
 
-Took out v2 and applied this v3 instead.
-(No idea what the difference is, you don't say.)
+It is also rather dubious to have retries when then caller says to not
+retry.
 
-Yours,
-Linus Walleij
+Also why didn't you consider GFP_NOWAIT semantic for non blocking mode?
+
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+>  mm/page_alloc.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b031a5ae0bd5..1cdc3ee0b22e 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8491,12 +8491,16 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  	unsigned int nr_reclaimed;
+>  	unsigned long pfn = start;
+>  	unsigned int tries = 0;
+> +	unsigned int max_tries = 5;
+>  	int ret = 0;
+>  	struct migration_target_control mtc = {
+>  		.nid = zone_to_nid(cc->zone),
+>  		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+>  	};
+>  
+> +	if (cc->alloc_contig && cc->mode == MIGRATE_ASYNC)
+> +		max_tries = 1;
+> +
+>  	migrate_prep();
+>  
+>  	while (pfn < end || !list_empty(&cc->migratepages)) {
+> @@ -8513,7 +8517,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>  				break;
+>  			}
+>  			tries = 0;
+> -		} else if (++tries == 5) {
+> +		} else if (++tries == max_tries) {
+>  			ret = ret < 0 ? ret : -EBUSY;
+>  			break;
+>  		}
+> @@ -8564,7 +8568,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+>  		.nr_migratepages = 0,
+>  		.order = -1,
+>  		.zone = page_zone(pfn_to_page(start)),
+> -		.mode = MIGRATE_SYNC,
+> +		.mode = gfp_mask & __GFP_NORETRY ? MIGRATE_ASYNC : MIGRATE_SYNC,
+>  		.ignore_skip_hint = true,
+>  		.no_set_skip_hint = true,
+>  		.gfp_mask = current_gfp_context(gfp_mask),
+> -- 
+> 2.30.0.296.g2bfb1c46d8-goog
+
+-- 
+Michal Hocko
+SUSE Labs
