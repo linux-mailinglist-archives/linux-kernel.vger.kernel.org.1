@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CF13040C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAE33040BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391370AbhAZJkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:40:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37294 "EHLO mail.kernel.org"
+        id S2391436AbhAZJkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:40:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731103AbhAYSuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:50:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E898020665;
-        Mon, 25 Jan 2021 18:50:18 +0000 (UTC)
+        id S1730985AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2B2A224D4;
+        Mon, 25 Jan 2021 18:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600619;
-        bh=UnHYdNk9k1B2xQ3Wm9jH4n1VYp72giL/z3ycXV8v0Nk=;
+        s=korg; t=1611600637;
+        bh=NSbp94STs1o2eYrzXFBDrkVHII/I0VEPC/C+cdZ6qPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t5lnDvoZ8NO7wwfWJRKveKYAFkZrAeKh7rrmhczXetkfRzA7eDg366Nf+lSnfkBBz
-         YHnJ6louVGIv26IgwLEdZT+q8J8SwGlFbOyEWof5L86FKO7ElUNi0o7ubUYjO5MoR1
-         HEAEhtr09hiLxqI2bg8uHtqoKybmdwqeSqUTw+xA=
+        b=b3wSIn1RcTbQlY770lhzxIb5ChwTdG583hTqFOpwBixoShEBZBfx+hgrcOgWV875/
+         BJORXhUboaxdldrF4atFNeKdSv/XRZ7t0/BebQv0T1PXXK51OhfLkUuK71HbhMI0+9
+         rArdIJEt797mlu+tv9vnKqW9M2SttGxSeJ54/sBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Daniel Wheeler <daniel.wheeler@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>, Roman Li <Roman.Li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 058/199] dts: phy: fix missing mdio device and probe failure of vsc8541-01 device
-Date:   Mon, 25 Jan 2021 19:38:00 +0100
-Message-Id: <20210125183218.713091647@linuxfoundation.org>
+Subject: [PATCH 5.10 062/199] drm/amd/display: disable dcn10 pipe split by default
+Date:   Mon, 25 Jan 2021 19:38:04 +0100
+Message-Id: <20210125183218.894088686@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -41,50 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+From: Li, Roman <Roman.Li@amd.com>
 
-[ Upstream commit be969b7cfbcfa8a835a528f1dc467f0975c6d883 ]
+[ Upstream commit 9d03bb102028b4a3f4a64d6069b219e2e1c1f306 ]
 
-HiFive unleashed A00 board has VSC8541-01 ethernet phy, this device is
-identified as a Revision B device as described in device identification
-registers. In order to use this phy in the unmanaged mode, it requires
-a specific reset sequence of logical 0-1-0-1 transition on the NRESET pin
-as documented here [1].
+[Why]
+The initial purpose of dcn10 pipe split is to support some high
+bandwidth mode which requires dispclk greater than max dispclk. By
+initial bring up power measurement data, it showed power consumption is
+less with pipe split for dcn block. This could be reason for enable pipe
+split by default. By battery life measurement of some Chromebooks,
+result shows battery life is longer with pipe split disabled.
 
-Currently, the bootloader (fsbl or u-boot-spl) takes care of the phy reset.
-If due to some reason the phy device hasn't received the reset by the prior
-stages before the linux macb driver comes into the picture, the MACB mii
-bus gets probed but the mdio scan fails and is not even able to read the
-phy ID registers. It gives an error message:
+[How]
+Disable pipe split by default. Pipe split could be still enabled when
+required dispclk is greater than max dispclk.
 
-"libphy: MACB_mii_bus: probed
-mdio_bus 10090000.ethernet-ffffffff: MDIO device at address 0 is missing."
-
-Thus adding the device OUI (Organizationally Unique Identifier) to the phy
-device node helps to probe the phy device.
-
-[1]: VSC8541-01 datasheet:
-https://www.mouser.com/ds/2/523/Microsemi_VSC8541-01_Datasheet_10496_V40-1148034.pdf
-
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Hersen Wu <hersenxs.wu@amd.com>
+Signed-off-by: Roman Li <Roman.Li@amd.com>
+Reviewed-by: Roman Li <Roman.Li@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-index 4a2729f5ca3f0..60846e88ae4b1 100644
---- a/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-+++ b/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts
-@@ -88,6 +88,7 @@
- 	phy-mode = "gmii";
- 	phy-handle = <&phy0>;
- 	phy0: ethernet-phy@0 {
-+		compatible = "ethernet-phy-id0007.0771";
- 		reg = <0>;
- 	};
- };
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
+index 462d3d981ea5e..0a01be38ee1b8 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
+@@ -608,8 +608,8 @@ static const struct dc_debug_options debug_defaults_drv = {
+ 		.disable_pplib_clock_request = false,
+ 		.disable_pplib_wm_range = false,
+ 		.pplib_wm_report_mode = WM_REPORT_DEFAULT,
+-		.pipe_split_policy = MPC_SPLIT_DYNAMIC,
+-		.force_single_disp_pipe_split = true,
++		.pipe_split_policy = MPC_SPLIT_AVOID,
++		.force_single_disp_pipe_split = false,
+ 		.disable_dcc = DCC_ENABLE,
+ 		.voltage_align_fclk = true,
+ 		.disable_stereo_support = true,
 -- 
 2.27.0
 
