@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2843A3049A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09BD304A1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730609AbhAZFZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:25:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727242AbhAYKAN (ORCPT
+        id S1730310AbhAZFPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:15:00 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:59554 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbhAYJnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:00:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B409C0617AA;
-        Mon, 25 Jan 2021 00:33:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mjV/4Z3CDRxQhs+wKq1+GM3JPWdjP4pMPtKxh3gu3Qg=; b=qnNhg72wYDhaBpZbjBxRedU+0p
-        y18yUOE0T3saR/wjRv9Aysq05dijQ7rGD5IeOiFPH4IulcBXMa3mSOHz0nsjGONuGjnX8bUxe91Lq
-        o0iftOB1HJRWIZKgbAeUX4mB9TIgk7jLu/uAP9L1t8upK9ueQWwbbOlUgvqt/ZQjEXoM0KwZG+rou
-        3qUKywQdTwqdQxaEgTi6nJlEmmzNg13jdVCmIRVlCP50Kroa0OZiFB+esbyPn8aL4CaRTfVBIbVQi
-        0tdq9by/K4+pPYMA2KFWLNuUh2lqwMMtMUm2P7OYZsltG6zVCZ+V+b+veepwSUlfVj8Fek4VCXNzW
-        ccCPJNOA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l3xIm-003y01-HS; Mon, 25 Jan 2021 08:32:49 +0000
-Date:   Mon, 25 Jan 2021 08:32:48 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Hannes Reinecke <hare@suse.de>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 2/3] blk-mq: Always complete remote completions requests
- in softirq
-Message-ID: <20210125083248.GA945284@infradead.org>
-References: <20210123201027.3262800-1-bigeasy@linutronix.de>
- <20210123201027.3262800-3-bigeasy@linutronix.de>
- <30ce5ce2-8b9a-8873-4b37-c8720300942b@suse.de>
- <20210125082542.GC942655@infradead.org>
- <20210125083029.utnjqs2s3diqb5vx@linutronix.de>
+        Mon, 25 Jan 2021 04:43:03 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10P8hkLA031898;
+        Mon, 25 Jan 2021 08:44:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=xD0aLkep0O0ztrxHEAKgiehLDzdRg7ouOuFGlmLu46g=;
+ b=AVuuxMrUSolBWpVKPpA64A8FnVA+PksbYXPw9cVRKnixcUEVuuZPeL4pDk4DifQ56NW3
+ P0+MHMZLjW9bzqdUQukEgrEwcfBMQV9/X/o4FOz0sWLc8OhEin9IcWFpUOhtYBqlMy8d
+ msUmXZxzR1XJcoPsO6+LrIMOafhFG0XMeLJUwbD60VZsmezJ4StZmFRki8xYwIhaCe+N
+ RuzcvmVAAtpGNOMD37TBlhJEM/F2T2v1Dx3ZZ5ZVSmn9l/MFel3+WRx0vDNW6Ds2e+g2
+ ubOcaDgQasf7Il+rSzJ5UZ0wDR91037mUUStBA5Gs4QgJst+rvJBM97BS3vwO9naB1Hc Ew== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 368b7qm54a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Jan 2021 08:44:13 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10P8a1Fv176118;
+        Mon, 25 Jan 2021 08:44:12 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 368wqunj56-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 25 Jan 2021 08:44:12 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10P8iAiK019015;
+        Mon, 25 Jan 2021 08:44:10 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 25 Jan 2021 00:44:10 -0800
+Date:   Mon, 25 Jan 2021 11:44:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Nilesh Javali <njavali@marvell.com>
+Cc:     GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] scsi: qla2xxx: fix some memory corruption
+Message-ID: <YA6E0geUlL9Hs04A@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125083029.utnjqs2s3diqb5vx@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9874 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101250051
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9874 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101250052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 09:30:29AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-01-25 08:25:42 [+0000], Christoph Hellwig wrote:
-> > On Mon, Jan 25, 2021 at 08:10:16AM +0100, Hannes Reinecke wrote:
-> > > I don't get this.
-> > > This code is about _avoiding_ having to raise a softirq if the driver
-> > > exports more than one hardware queue.
-> > > So where exactly does the remote CPU case come in here?
-> > 
-> > __blk_mq_complete_request_remote is only called for the case where we
-> > do not completelky locally.  The case that "degrades" here is where
-> > the device supports multiple queues, but less than the number of CPUs,
-> > and we bounce the completion to another CPU.
-> 
-> Does it really "degrade" or just use the softirq more often? The usual
-> case is run the softirqs in irq_exit() which is just after IPI.
+This was supposed to be "data" instead of "&data".  The current code
+will corrupt the stack.
 
-Well, I put it in quotes because I'm not sure what the exact effect
-is.  But we do delay these completions to the softirq now instead of
-hardirq context, which at least in theory increases latency.  OTOH it
-might even have positive effects on the rest of the system.
+Fixes: dbf1f53cfd23 ("scsi: qla2xxx: Implementation to get and manage host, target stats and initiator port")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/scsi/qla2xxx/qla_bsg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
+index e45da05383cd..bee8cf9f8123 100644
+--- a/drivers/scsi/qla2xxx/qla_bsg.c
++++ b/drivers/scsi/qla2xxx/qla_bsg.c
+@@ -2667,7 +2667,7 @@ qla2x00_get_tgt_stats(struct bsg_job *bsg_job)
+ 
+ 		bsg_reply->reply_payload_rcv_len =
+ 			sg_copy_from_buffer(bsg_job->reply_payload.sg_list,
+-					    bsg_job->reply_payload.sg_cnt, &data,
++					    bsg_job->reply_payload.sg_cnt, data,
+ 					    sizeof(struct ql_vnd_tgt_stats_resp));
+ 
+ 		bsg_reply->result = DID_OK;
+-- 
+2.29.2
+
