@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138463036A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BAC3036B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731368AbhAZGfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:35:45 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:15135 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729407AbhAYOXa (ORCPT
+        id S2388729AbhAZGjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:39:24 -0500
+Received: from newton.telenet-ops.be ([195.130.132.45]:54860 "EHLO
+        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729568AbhAYOfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:23:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611584587; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=n6LnzX+9OwV112HZOi7kygONlFWnbReQdwO0xSe4hbU=;
- b=aMZXE685EPiceJhPLL/EcCCRB2OOq9Mas4b6/7GvtOJf5V9aXk8mqyuCXXVEQTg0XSjJFshU
- B5xs20ePu4tsnwKDk+BLY0Y7+CrATvzEFIP7dvytYe0erNmRVAUAdzYUmIz4tF9lDon0v23o
- 0+utREvaHI6+2IcTnvyUjstqifk=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 600ed42b5677aca7bdc0eb76 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 14:22:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 26373C43461; Mon, 25 Jan 2021 14:22:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BFE08C433CA;
-        Mon, 25 Jan 2021 14:22:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BFE08C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        Mon, 25 Jan 2021 09:35:38 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by newton.telenet-ops.be (Postfix) with ESMTPS id 4DPXG701J7zMsLHb
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:25:35 +0100 (CET)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by andre.telenet-ops.be with bizsmtp
+        id M2QZ240084C55Sk012QZ6k; Mon, 25 Jan 2021 15:24:34 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l42nA-000eiT-MP; Mon, 25 Jan 2021 15:24:32 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1l42nA-004P50-4V; Mon, 25 Jan 2021 15:24:32 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2 0/4] dmaengine: rcar-dmac: Add support for R-Car V3U
+Date:   Mon, 25 Jan 2021 15:24:27 +0100
+Message-Id: <20210125142431.1049668-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/5] rtlwifi: rtl_pci: fix bool comparison in expressions
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210110121525.2407-2-yashsri421@gmail.com>
-References: <20210110121525.2407-2-yashsri421@gmail.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-wireless@vger.kernel.org, pkshih@realtek.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, yashsri421@gmail.com
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210125142235.26373C43461@smtp.codeaurora.org>
-Date:   Mon, 25 Jan 2021 14:22:35 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aditya Srivastava <yashsri421@gmail.com> wrote:
+	Hi Vinod,
 
-> There are certain conditional expressions in rtl_pci, where a boolean
-> variable is compared with true/false, in forms such as (foo == true) or
-> (false != bar), which does not comply with checkpatch.pl (CHECK:
-> BOOL_COMPARISON), according to which boolean variables should be
-> themselves used in the condition, rather than comparing with true/false
-> 
-> E.g., in drivers/net/wireless/realtek/rtlwifi/ps.c,
-> "if (find_p2p_ie == true)" can be replaced with "if (find_p2p_ie)"
-> 
-> Replace all such expressions with the bool variables appropriately
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+This patch series adds support for the Direct Memory Access Controller
+variant in the Renesas R-Car V3U (R8A779A0) SoC, to both DT bindings and
+driver.
 
-5 patches applied to wireless-drivers-next.git, thanks.
+Changes compared to v1:
+  - Add Reviewed-by,
+  - Put the full loop control of for_each_rcar_dmac_chan() on a single
+    line, to improve readability,
+  - Use two separate named regions instead of array,
+  - Drop rcar_dmac_of_data.chan_reg_block, check for
+    !rcar_dmac_of_data.chan_offset_base instead,
+  - Precalculate chan_base in rcar_dmac_probe().
 
-d8cbaa3de403 rtlwifi: rtl_pci: fix bool comparison in expressions
-f7c76283fc5f rtlwifi: rtl8192c-common: fix bool comparison in expressions
-64338f0dfd6a rtlwifi: rtl8188ee: fix bool comparison in expressions
-33ae4623d544 rtlwifi: rtl8192se: fix bool comparison in expressions
-9264cabc1204 rtlwifi: rtl8821ae: fix bool comparison in expressions
+This has been tested on the Renesas Falcon board, using external SPI
+loopback (spi-loopback-test) on MSIOF1 and MSIOF2.
+
+Thanks!
+
+Geert Uytterhoeven (4):
+  dt-bindings: renesas,rcar-dmac: Add r8a779a0 support
+  dmaengine: rcar-dmac: Add for_each_rcar_dmac_chan() helper
+  dmaengine: rcar-dmac: Add helpers for clearing DMA channel status
+  dmaengine: rcar-dmac: Add support for R-Car V3U
+
+ .../bindings/dma/renesas,rcar-dmac.yaml       |  76 ++++++++-----
+ drivers/dma/sh/rcar-dmac.c                    | 105 +++++++++++++-----
+ 2 files changed, 123 insertions(+), 58 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210110121525.2407-2-yashsri421@gmail.com/
+2.25.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Gr{oetje,eeting}s,
 
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
