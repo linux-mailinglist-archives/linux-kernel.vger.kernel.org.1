@@ -2,237 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C588F302C09
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19789302C06
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731591AbhAYTxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:53:31 -0500
-Received: from mga17.intel.com ([192.55.52.151]:32937 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732030AbhAYTlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:41:52 -0500
-IronPort-SDR: raxHeuFMUaIXIjX7ehKUPojwDimC0iXbfrQUE3IIdkAkQJSMv4d8zY6R6QpVGzHTylg24ySrkO
- naJ46UZ8SjaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="159564604"
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="159564604"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 11:39:58 -0800
-IronPort-SDR: f9en5d6H7gdcJsZsuCGmQSuI/RJgvD0KKaPFjgFkMinrOGMQaPH8cCQ6t0SHBWvmsRClvFLFnX
- 1V79xmKa35Ng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,374,1602572400"; 
-   d="scan'208";a="472462796"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Jan 2021 11:39:56 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id CF8F5413; Mon, 25 Jan 2021 21:39:51 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v1 07/10] x86/platform/intel-mid: Remove unused leftovers (msic)
-Date:   Mon, 25 Jan 2021 21:39:45 +0200
-Message-Id: <20210125193948.56760-8-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
-References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
+        id S1732210AbhAYTxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:53:18 -0500
+Received: from mail-db8eur05on2127.outbound.protection.outlook.com ([40.107.20.127]:26689
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731591AbhAYTlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 14:41:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K9m1awrnJ4lKmSeETmCVTKSaQk9mrJXeSNVj5HfES4B8d3t/VC/qkRvWn7NiiM5FePnE5Tra+Eek/gWn/aamJ6/MutM+RUVNnfc8GDogZfI/dHIDCSBwNSd/zkWT+RqUWTUi2qJbuI3qxBxuHfX3i3zXZzR+BDhKo2CAsk9P/6boEPv8swEY8kEn0L/Q2x/HnqWHQDxlScsakwhAaawjGwwThK4dS9Cgp3On5MkS23NYC98hFOAhRJRt7BhgdR+D6xhtK5CUQxt0zw1WrjdJg6Cxr7bN0UPUegzXBXVMWRgdET5IEla9Bfdr0sp+NvAN0F3/FkQb4/7bzWp5Vlm9Sw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IIXp8o1MhupFiQBDqSx9MnIwprLCjdZ0D0QPzyEw+rI=;
+ b=cuEjK3wCF5dxtknfKIHvHDqhXgPnv042vxaQobqLB2tm3TWhSt322Vz9q6deCfdhIm9ecbCMI6TvT73H2sC3sML4NnxVEBxq0w8fojRQnrx1BoYxB2F1AqXc+s/PPapn3NtXWAvCV5rdNOXEUpighfGVtRNYJqStGHkRYzulbimL73cqCnpkR5RQK3DlKAOva9/JxXImx08qXtiPTscak6ziArPApaBPQbtZw5C7L6A3tDkrpJGZgNm3PpRS+IuwpRMBa7h9UBoSAN0vNcMEy/hi0nxgORftVudmZ2gKoo23dgWECtgMicA/WklDOu9vtz1BzIAvO5lniXzDfImgrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IIXp8o1MhupFiQBDqSx9MnIwprLCjdZ0D0QPzyEw+rI=;
+ b=WfCm9c0E3t/kzR49qYgkw0nCJDdyDzAeSUdQugGFZ9UoyWEiRsTXuI079gFpGjtH1rPJ1ba+QZPYiAWdUpKmbo3s4z53RBqkMoSWPJOn2VFjyWnminDf9ac1ql//ula8fs+pRR4xdNvC0dxdrHYQ+tQR/2zH5MW5Sjkb3FINsNI=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM9PR10MB4529.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:26e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Mon, 25 Jan
+ 2021 19:40:53 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::58b2:6a2a:b8f9:bc1a]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::58b2:6a2a:b8f9:bc1a%3]) with mapi id 15.20.3784.017; Mon, 25 Jan 2021
+ 19:40:53 +0000
+Subject: Re: [PATCH 4.19 46/58] net: dsa: mv88e6xxx: also read STU state in
+ mv88e6250_g1_vtu_getnext
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210125183156.702907356@linuxfoundation.org>
+ <20210125183158.687957547@linuxfoundation.org>
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Message-ID: <8447247a-6147-32b6-541d-0dd717ac9882@prevas.dk>
+Date:   Mon, 25 Jan 2021 20:40:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210125183158.687957547@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [5.186.115.188]
+X-ClientProxiedBy: AM6P193CA0087.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:209:88::28) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.149] (5.186.115.188) by AM6P193CA0087.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:88::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Mon, 25 Jan 2021 19:40:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1bf2759b-b8d3-428e-a766-08d8c1692042
+X-MS-TrafficTypeDiagnostic: AM9PR10MB4529:
+X-Microsoft-Antispam-PRVS: <AM9PR10MB45292336F05C60159576BE7093BD0@AM9PR10MB4529.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NFL3DpvanRXDp0PadHnusAP8EO9LWQAqNTRg0p7dD9n3wjJbqRJfOknlq3kn+ut00ODAKV/oZUvQm4LmkLILiMOwaNnhCVW2REH0FTqeilh8GDGgq+iY0lJNbuyyeM/9j+iaVVrUtQWj/nTJTLfixccUh/3sj5885b1sNXlwFa7iPqa+ZP+MclQ7YWftqBaklxmM1rA9SlbZ98VmGlQFzcfoPto1BKUJVMt6N+KPis4wHZ+3j7odvbUsJQ+lyM5U4eI/gV0kOEtt7MlA2Q0LSdgltyuEHiUjR56oWwFr9NKgQcXHoGOuXJVrcO2jnefcjISmGvlppWi6ri9LxVq5jdtGXALspWC3zU+VhqS9kTCZcXJglQWpy2ciX4OrAunitppEYL+sVth4NL/Og2lxbtTakxK56vXQtR8AtNM1qbxadUq1r9xz42IzEylYC2AaoyoWCj1+RrS05iBcVKz1vxB8gPhzDRvLHVg11zeytLE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(39840400004)(396003)(376002)(478600001)(31686004)(956004)(52116002)(66946007)(8676002)(8976002)(26005)(8936002)(16576012)(86362001)(16526019)(2906002)(6486002)(54906003)(31696002)(36756003)(186003)(5660300002)(66476007)(316002)(2616005)(66556008)(4326008)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cGkvOEc4S0Q3NWZBYjZUYWd0QnJsQkh2T2gyZDRiSTJyTC9TQkJkSk1QVjdG?=
+ =?utf-8?B?VndnRkM3bExid0xEcGd3b2E0YUlwaEFYam4zcHlNTHlJRWFrTzNVVnB3Y3o4?=
+ =?utf-8?B?ZEtuOG8rWTZOTGVlOUU5a3VWZEs2WVN1YWlCNDJCSlY3QzZKUndKc3lBQzNU?=
+ =?utf-8?B?aDBmTzVwbWw3WHdJZ0lXOVhRbWovMU4ranEyUktGTElvSVFzZXNxY3FBZlV5?=
+ =?utf-8?B?d1NRYnlTeCtwb2ZtRS9kYlZHOEFGUTBNbWFHclpEV0dXVWVBbG85azBpQmpD?=
+ =?utf-8?B?UFJFSDNCT050Y1FGMkNFOW1JZGN6UG9SR24xaFBCNjJMYlIxZ21XK0p3NXpm?=
+ =?utf-8?B?TUVqbjN2RHhjcHJYUTRDWVRpVlJjYUxSVmtsbzZzcExmeU1admdIaW02djU5?=
+ =?utf-8?B?bldkQkNndi8rS0RxNlIrOGMySTBjZitnT2FMMnNISmMzY3ZpRG5oSHlvYmMw?=
+ =?utf-8?B?bTMwSVQ4cndwbmtXUitVNldKNjQreG9oaUE5eGVBQWdNVjlsZUVPNmVQYnlG?=
+ =?utf-8?B?TTBDZ3hjZStjMURSeXBOVWlScC9OZGJCTzI5VGFjNVgrRFJmT1J6TTBoRmJh?=
+ =?utf-8?B?S3lyeko4RGFlMVIvT1hrYWt5dzNZU2JuSTlDZWFXcXM5MWtFSDNybHdaejZi?=
+ =?utf-8?B?MTJnNnBrUXpwWGRQZ1ZKS21uQmhNRElNU0VORHNtRTJTRW9Uc3hNTDRaTFEy?=
+ =?utf-8?B?SVp3Wk9PU2FudTJSUlgrSlkrY2NNS2JBVFRJaE8zaTNVSnU3WGZ6TVkveUlm?=
+ =?utf-8?B?U0h3MXhQNkxaREw4dnl6UmhOcWNmS2tnU3lFL1VmRkI0TE40SmJJVVRONXdG?=
+ =?utf-8?B?VDA5ZWdGZWV0SVlvMkYrUlJ5TkVHTEhnQnF5U2xtU3owQmErcEIvaWk0Ylcy?=
+ =?utf-8?B?S0dKYUhHQzJYSEY5MDJJRUJ4MTFlODJvelZ6MkFGaUhzVnBURkhQTDNCdU1T?=
+ =?utf-8?B?dWNQUFdjWnp6SW9ORHNLUkhGd3JYUkVkNkZVT0tYV2kvQ0RyOTlNTVRyU2xo?=
+ =?utf-8?B?OXFqbitaL0dHSjZHdU9KeEFyb0VMbFJUVHJ4bmltTkd1Wm5pcTNuVVRONkZK?=
+ =?utf-8?B?cVNNTDBNS2lVc3lvd1RKRmJ5UkpQNFVuMS95UFhuZTY4UlVGOEZPeFlRV2Z1?=
+ =?utf-8?B?WmFhb3dPcmFqTEdnY0lhbmNGeEpYVDl5OWt2MnljeDBVTEswd2FwZHVoS2gx?=
+ =?utf-8?B?STRvVStkbktHS2FMN3lqbU4rSDRqQ09BOHgyY0J5NE1sWUpZTVV3K21pcDd1?=
+ =?utf-8?B?ejFsSm8ySnhMTnArV0p1V2FVcC8wY3A4anRPOWUrUmc1Q0I2WmVBU2hwazR1?=
+ =?utf-8?B?bDQwOWxFV3NQM2RDVldtKzJhREFwZVY2RzV6MnJCMGczK2xMamFEaUh3VTZ6?=
+ =?utf-8?B?b0FNY3RZa28zUXBNeHdyME05NGJKL01iUkV4VDM2UWpkZ1VmenN5OUtZOEtO?=
+ =?utf-8?Q?evrThiul?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1bf2759b-b8d3-428e-a766-08d8c1692042
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jan 2021 19:40:53.2219
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lTqPIomXceUHevbHNxz4wDt8xt0odWHgRuFj2wIqFpphjsszt9sumu6lnw5HQvn49xmigmoFfb4+dDv3jS3NEZwPqYM9scTXfZfqOsbRUZo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4529
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no driver present, remove the device creation and other leftovers.
+On 25/01/2021 19.39, Greg Kroah-Hartman wrote:
+> From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> 
+> commit 87fe04367d842c4d97a77303242d4dd4ac351e46 upstream.
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
----
- arch/x86/include/asm/intel-mid.h              |  7 --
- .../platform/intel-mid/device_libs/Makefile   |  2 -
- .../intel-mid/device_libs/platform_msic.c     | 83 -------------------
- .../intel-mid/device_libs/platform_msic.h     | 15 ----
- arch/x86/platform/intel-mid/sfi.c             |  7 --
- 5 files changed, 114 deletions(-)
- delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_msic.c
- delete mode 100644 arch/x86/platform/intel-mid/device_libs/platform_msic.h
+Greg, please drop this from 4.19-stable. Details:
 
-diff --git a/arch/x86/include/asm/intel-mid.h b/arch/x86/include/asm/intel-mid.h
-index cf0e25f45422..e68ae2155db3 100644
---- a/arch/x86/include/asm/intel-mid.h
-+++ b/arch/x86/include/asm/intel-mid.h
-@@ -37,7 +37,6 @@ struct devs_id {
- 	char name[SFI_NAME_LEN + 1];
- 	u8 type;
- 	u8 delay;
--	u8 msic;
- 	void *(*get_platform_data)(void *info);
- };
- 
-@@ -83,18 +82,12 @@ static inline enum intel_mid_cpu_type intel_mid_identify_cpu(void)
- 	return __intel_mid_cpu_chip;
- }
- 
--static inline bool intel_mid_has_msic(void)
--{
--	return (intel_mid_identify_cpu() == INTEL_MID_CPU_CHIP_PENWELL);
--}
--
- extern void intel_scu_devices_create(void);
- extern void intel_scu_devices_destroy(void);
- 
- #else /* !CONFIG_X86_INTEL_MID */
- 
- #define intel_mid_identify_cpu()	0
--#define intel_mid_has_msic()		0
- 
- static inline void intel_scu_devices_create(void) { }
- static inline void intel_scu_devices_destroy(void) { }
-diff --git a/arch/x86/platform/intel-mid/device_libs/Makefile b/arch/x86/platform/intel-mid/device_libs/Makefile
-index 4e4db0c2b225..4d008b053ac8 100644
---- a/arch/x86/platform/intel-mid/device_libs/Makefile
-+++ b/arch/x86/platform/intel-mid/device_libs/Makefile
-@@ -6,8 +6,6 @@ obj-$(subst m,y,$(CONFIG_MMC_SDHCI_PCI)) += platform_mrfld_sd.o
- # WiFi + BT
- obj-$(subst m,y,$(CONFIG_BRCMFMAC_SDIO)) += platform_bcm43xx.o
- obj-$(subst m,y,$(CONFIG_BT_HCIUART_BCM)) += platform_bt.o
--# IPC Devices
--obj-$(subst m,y,$(CONFIG_MFD_INTEL_MSIC)) += platform_msic.o
- # SPI Devices
- obj-$(subst m,y,$(CONFIG_SPI_SPIDEV)) += platform_mrfld_spidev.o
- # I2C Devices
-diff --git a/arch/x86/platform/intel-mid/device_libs/platform_msic.c b/arch/x86/platform/intel-mid/device_libs/platform_msic.c
-deleted file mode 100644
-index b17783d0d4e7..000000000000
---- a/arch/x86/platform/intel-mid/device_libs/platform_msic.c
-+++ /dev/null
-@@ -1,83 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * platform_msic.c: MSIC platform data initialization file
-- *
-- * (C) Copyright 2013 Intel Corporation
-- * Author: Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
-- */
--
--#include <linux/kernel.h>
--#include <linux/interrupt.h>
--#include <linux/scatterlist.h>
--#include <linux/init.h>
--#include <linux/sfi.h>
--#include <linux/mfd/intel_msic.h>
--#include <asm/intel_scu_ipc.h>
--#include <asm/intel-mid.h>
--#include "platform_msic.h"
--
--struct intel_msic_platform_data msic_pdata;
--
--static struct resource msic_resources[] = {
--	{
--		.start	= INTEL_MSIC_IRQ_PHYS_BASE,
--		.end	= INTEL_MSIC_IRQ_PHYS_BASE + 64 - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--};
--
--static struct platform_device msic_device = {
--	.name		= "intel_msic",
--	.id		= -1,
--	.dev		= {
--		.platform_data	= &msic_pdata,
--	},
--	.num_resources	= ARRAY_SIZE(msic_resources),
--	.resource	= msic_resources,
--};
--
--static int msic_scu_status_change(struct notifier_block *nb,
--				  unsigned long code, void *data)
--{
--	if (code == SCU_DOWN) {
--		platform_device_unregister(&msic_device);
--		return 0;
--	}
--
--	return platform_device_register(&msic_device);
--}
--
--static int __init msic_init(void)
--{
--	static struct notifier_block msic_scu_notifier = {
--		.notifier_call	= msic_scu_status_change,
--	};
--
--	/*
--	 * We need to be sure that the SCU IPC is ready before MSIC device
--	 * can be registered.
--	 */
--	if (intel_mid_has_msic())
--		intel_scu_notifier_add(&msic_scu_notifier);
--
--	return 0;
--}
--arch_initcall(msic_init);
--
--/*
-- * msic_generic_platform_data - sets generic platform data for the block
-- * @info: pointer to the SFI device table entry for this block
-- * @block: MSIC block
-- *
-- * Function sets IRQ number from the SFI table entry for given device to
-- * the MSIC platform data.
-- */
--void *msic_generic_platform_data(void *info, enum intel_msic_block block)
--{
--	struct sfi_device_table_entry *entry = info;
--
--	BUG_ON(block < 0 || block >= INTEL_MSIC_BLOCK_LAST);
--	msic_pdata.irq[block] = entry->irq;
--
--	return NULL;
--}
-diff --git a/arch/x86/platform/intel-mid/device_libs/platform_msic.h b/arch/x86/platform/intel-mid/device_libs/platform_msic.h
-deleted file mode 100644
-index 91deb2e65b0e..000000000000
---- a/arch/x86/platform/intel-mid/device_libs/platform_msic.h
-+++ /dev/null
-@@ -1,15 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * platform_msic.h: MSIC platform data header file
-- *
-- * (C) Copyright 2013 Intel Corporation
-- * Author: Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>
-- */
--#ifndef _PLATFORM_MSIC_H_
--#define _PLATFORM_MSIC_H_
--
--extern struct intel_msic_platform_data msic_pdata;
--
--void *msic_generic_platform_data(void *info, enum intel_msic_block block);
--
--#endif
-diff --git a/arch/x86/platform/intel-mid/sfi.c b/arch/x86/platform/intel-mid/sfi.c
-index 30bd5714a3d4..2b22587bfd3d 100644
---- a/arch/x86/platform/intel-mid/sfi.c
-+++ b/arch/x86/platform/intel-mid/sfi.c
-@@ -338,13 +338,6 @@ static void __init sfi_handle_ipc_dev(struct sfi_device_table_entry *pentry,
- 	if (IS_ERR(pdata))
- 		return;
- 
--	/*
--	 * On Medfield the platform device creation is handled by the MSIC
--	 * MFD driver so we don't need to do it here.
--	 */
--	if (dev->msic && intel_mid_has_msic())
--		return;
--
- 	pdev = platform_device_alloc(pentry->name, 0);
- 	if (pdev == NULL) {
- 		pr_err("out of memory for SFI platform device '%s'.\n",
--- 
-2.29.2
+> 
+> --- a/drivers/net/dsa/mv88e6xxx/global1_vtu.c
+> +++ b/drivers/net/dsa/mv88e6xxx/global1_vtu.c
+> @@ -357,6 +357,10 @@ int mv88e6185_g1_vtu_getnext(struct mv88
+>  		if (err)
+>  			return err;
+>  
+> +		err = mv88e6185_g1_stu_data_read(chip, entry);
+> +		if (err)
+> +			return err;
+> +
 
+The function that this patch applied to in mainline did not exist in
+v4.19. It seems that this hunk has been applied in the similar
+mv88e6185_g1_vtu_getnext(), and indeed, in current 4.19.y, just one more
+line of context shows this:
+
+    353                 err = mv88e6185_g1_stu_data_read(chip, entry);
+    354                 if (err)
+    355                         return err;
+    356
+    357                 /* VTU DBNum[3:0] are located in VTU Operation 3:0
+    358                  * VTU DBNum[7:4] are located in VTU Operation 11:8
+    359                  */
+    360                 err = mv88e6xxx_g1_read(chip,
+MV88E6XXX_G1_VTU_OP, &val);
+    361                 if (err)
+    362                         return err;
+
+
+IOW, it would be a pointless noop adding the same call again.
+
+Rasmus
