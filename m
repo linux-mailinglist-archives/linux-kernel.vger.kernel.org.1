@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA6302E62
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF882302E69
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733075AbhAYVxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732754AbhAYVwv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:52:51 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE13C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:52:11 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id q1so29727363ion.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 13:52:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pk74GqvQTiSPW+FUOPYddOeICtN378ZPpEFtCJXJbA0=;
-        b=c8bTmMXHBkJkpvbtDu2gGdS/MLwzA/mLVak69r3cJB4nQ9liPWEhnWRM8z/7tHOVGm
-         5ET6+3GE5xFEL4ZKQbtmSf40Avz5Xy5pJWX6GBKQa9hhb+//XUSC8zX5bctDATrwaESE
-         8Inl9/OmtfU6HbIOWAlBlkPMUlFLVI4ZrYgEg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pk74GqvQTiSPW+FUOPYddOeICtN378ZPpEFtCJXJbA0=;
-        b=lix1S1kmn+0dsYUXRq79A6X4GbsEHIvjTu1orqLCo8SEO1TIJ5uaWYgDwGaFD0sSqi
-         bvP3wxwVyQAspOaL3pCgOhxf2Vi532vpu/0cD5vPYqu43ePI6s4mgJazx2K75zZitfD1
-         IEbe5k+9KVBdugjDq7++5nnJpfBvwVpHgumGA1KPoCgzmL89WPgifd/Z7JcPfJe46Rb4
-         qMP2+WQ/xurHGrjFbQxVwuB0WMqYa/NBYtQSLuKfgxGJP9OfW+6Ln9BraITlp8re/URQ
-         6FM5EtDVUeyT+iPYNqiJyKcLdNxl9HPg3EATU0AtZ4IwfRJc2M/Xzwtx4SLHqsAWPAdH
-         9BSg==
-X-Gm-Message-State: AOAM5332TbraHvqV+VR3a5K+sxfm/8JXRiqjecbC9GmdYQrt9UupiV/Q
-        nYcfnLSnOd0NrrpNmG0NV/6OFHAPuESo6w==
-X-Google-Smtp-Source: ABdhPJxrxMSykjQyNqpzoOxI6zZcomBgjvqfIb1fsbR1F7KMwv92Lb1GGY51zj8UiRCsSTpDiJxDUg==
-X-Received: by 2002:a5e:d603:: with SMTP id w3mr1944765iom.65.1611611530498;
-        Mon, 25 Jan 2021 13:52:10 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e25sm11463984iom.40.2021.01.25.13.52.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 13:52:09 -0800 (PST)
-Subject: Re: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        David Binderman <dcb314@hotmail.com>,
-        Babu Moger <babu.moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201130202010.178373-1-fenghua.yu@intel.com>
- <YA8uZYiGFzee+UHD@otcwcpicx3.sc.intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1d4c6c2c-55a7-d55d-e859-c2eccee25383@linuxfoundation.org>
-Date:   Mon, 25 Jan 2021 14:52:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <YA8uZYiGFzee+UHD@otcwcpicx3.sc.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1732928AbhAYVyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:54:18 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:31783 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733092AbhAYVxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:53:32 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611611590; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=wjOwZ7hnkSut6Udf2hJQbonOlbKoFsbqZco5e9Oswzk=; b=fR2qsfRVUa1S9421tOeLI3rJqmaFSqDDRk06xBrDqbp4tQYjJCohacD7BfhiirWt8GNmaLFI
+ iSw5ZF5hCLwoqXrzyiOcbLKosC/ogI+V1/NetCaIkj5BDV4KJZNUSNt4MuMBhMf4N7aZxcjn
+ 2qQkmUUsvnPTnlzgjGvtalXVAZg=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 600f3da02c36b2106dd15036 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 21:52:32
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D2380C433C6; Mon, 25 Jan 2021 21:52:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from isaacm-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB1D3C433CA;
+        Mon, 25 Jan 2021 21:52:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB1D3C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=isaacm@codeaurora.org
+From:   "Isaac J. Manjarres" <isaacm@codeaurora.org>
+To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        bjorn.andersson@linaro.org
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH] iommu/arm-smmu-qcom: Fix mask extraction for bootloader programmed SMRs
+Date:   Mon, 25 Jan 2021 13:52:25 -0800
+Message-Id: <1611611545-19055-1-git-send-email-isaacm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 1:47 PM, Fenghua Yu wrote:
-> Hi, Shuah,
-> 
-> On Mon, Nov 30, 2020 at 08:19:53PM +0000, Fenghua Yu wrote:
->> This patch set has several miscellaneous fixes to resctrl selftest tool
->> that are easily visible to user. V1 had fixes to CAT test and CMT test
->> but they were dropped in V2 because having them here made the patchset
->> humongous. So, changes to CAT test and CMT test will be posted in another
->> patchset.
->>
->> Change Log:
->> v4:
->> - Address various comments from Shuah Khan:
->>    1. Combine a few patches e.g. a couple of fixing typos patches into one
->>       and a couple of unmounting patches into one etc.
-> 
-> Just a friendly reminder. Will you push this series to the upstream?
-> Maybe I miss something but I don't see this series in the linux-kselftest
-> tree yet.
-> 
+When extracting the mask for a SMR that was programmed by the
+bootloader, the SMR's valid bit is also extracted and is treated
+as part of the mask, which is not correct. Consider the scenario
+where an SMMU master whose context is determined by a bootloader
+programmed SMR is removed (omitting parts of device/driver core):
 
-Sorry I am a bit behind on reviews. I will pull these fixes in this
-week for 5.12-rc1 and will let you know if I would like changes.
+->iommu_release_device()
+ -> arm_smmu_release_device()
+  -> arm_smmu_master_free_smes()
+   -> arm_smmu_free_sme() /* Assume that the SME is now free */
+   -> arm_smmu_write_sme()
+    -> arm_smmu_write_smr() /* Construct SMR value using mask and SID */
 
-thanks,
--- Shuah
+Since the valid bit was considered as part of the mask, the SMR will
+be programmed as valid.
+
+Fix the SMR mask extraction step for bootloader programmed SMRs
+by masking out the valid bit when we know that we're already
+working with a valid SMR.
+
+Fixes: 07a7f2caaa5a ("iommu/arm-smmu-qcom: Read back stream mappings")
+Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+Cc: stable@vger.kernel.org
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index bcda170..abb1d2f 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -206,6 +206,8 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
+ 		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
+ 
+ 		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
++			/* Ignore valid bit for SMR mask extraction. */
++			smr &= ~ARM_SMMU_SMR_VALID;
+ 			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
+ 			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
+ 			smmu->smrs[i].valid = true;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
