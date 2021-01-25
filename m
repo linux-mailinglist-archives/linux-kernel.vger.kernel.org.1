@@ -2,287 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C64303298
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18545303289
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 04:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbhAYJis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 04:38:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:44244 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbhAYJ1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:27:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 847D61042;
-        Mon, 25 Jan 2021 01:26:28 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66B323F66B;
-        Mon, 25 Jan 2021 01:26:27 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "mingo\@kernel.org" <mingo@kernel.org>,
-        "peterz\@infradead.org" <peterz@infradead.org>,
-        "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
-        "mgorman\@suse.de" <mgorman@suse.de>
-Subject: RE: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for the deduplicating sort
-In-Reply-To: <bfb703294b234e1e926a68fcb73dbee3@hisilicon.com>
-References: <20210122123943.1217-1-valentin.schneider@arm.com> <20210122123943.1217-2-valentin.schneider@arm.com> <bfb703294b234e1e926a68fcb73dbee3@hisilicon.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 25 Jan 2021 09:26:25 +0000
-Message-ID: <jhj1re92wqm.mognet@arm.com>
+        id S1727092AbhAYJoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 04:44:00 -0500
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:36608 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbhAYJ2d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:28:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1611566912; x=1643102912;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=xaEGsFacHDb/r4sO3oy91AEG6vRM3dfJmvdY2sYAKNY=;
+  b=OQEkQotl+EzRHmWf2cHb+TAEaxnRkz+RPz2iz64qi1KgfHoYggGAGJuj
+   m7ljmSo5wJvi9T1syG9Wi/EGmTN/ReuoDEyFqCF1vHYrtsLeUL3Rgs7QV
+   rCb5f0OcTDLQeseRgtkUhHieDbNjixw6pxxxTmdgt/EcjkMZKbzXrfYYA
+   k=;
+X-IronPort-AV: E=Sophos;i="5.79,373,1602547200"; 
+   d="scan'208";a="81316953"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 25 Jan 2021 09:27:40 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com (Postfix) with ESMTPS id 81ED7A1FDB;
+        Mon, 25 Jan 2021 09:27:39 +0000 (UTC)
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 Jan 2021 09:27:39 +0000
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13d01UWB002.ant.amazon.com (10.43.161.136) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 25 Jan 2021 09:27:38 +0000
+Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
+ EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.010;
+ Mon, 25 Jan 2021 09:27:38 +0000
+From:   "Singh, Balbir" <sblbir@amazon.com>
+To:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>
+Subject: Re: [PATCH v4 0/5] Next revision of the L1D flush patches
+Thread-Topic: [PATCH v4 0/5] Next revision of the L1D flush patches
+Thread-Index: AQHW5bdXPppNxOXjHka1CprAc1FaNKo4LTUA
+Date:   Mon, 25 Jan 2021 09:27:38 +0000
+Message-ID: <cf89f0389379daaaff0cbce9c5f1550866e55e91.camel@amazon.com>
+References: <20210108121056.21940-1-sblbir@amazon.com>
+In-Reply-To: <20210108121056.21940-1-sblbir@amazon.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.253]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <098A3AB79A489547B511103D3DF409CF@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/21 02:23, Song Bao Hua (Barry Song) wrote:
-
-> with the below topology:
-> qemu-system-aarch64 -M virt -nographic \
->  -smp cpus=8 \
->  -numa node,cpus=0-1,nodeid=0 \
->  -numa node,cpus=2-3,nodeid=1 \
->  -numa node,cpus=4-5,nodeid=2 \
->  -numa node,cpus=6-7,nodeid=3 \
->  -numa dist,src=0,dst=1,val=12 \
->  -numa dist,src=0,dst=2,val=20 \
->  -numa dist,src=0,dst=3,val=22 \
->  -numa dist,src=1,dst=2,val=22 \
->  -numa dist,src=2,dst=3,val=12 \
->  -numa dist,src=1,dst=3,val=24 \
->
->
-> The panic address is *1294:
->
->                         if (sdd->sd) {
->     1280:       f9400e61        ldr     x1, [x19, #24]
->     1284:       b4000201        cbz     x1, 12c4 <build_sched_domains+0x414>
->                                 sd = *per_cpu_ptr(sdd->sd, j);
->     1288:       93407eb7        sxtw    x23, w21
->     128c:       aa0103e0        mov     x0, x1
->     1290:       f8777ac2        ldr     x2, [x22, x23, lsl #3]
->     *1294:       f8626800        ldr     x0, [x0, x2]
->                                 if (sd && (sd->flags & SD_OVERLAP))
->     1298:       b4000120        cbz     x0, 12bc <build_sched_domains+0x40c>
->     129c:       b9403803        ldr     w3, [x0, #56]
->     12a0:       365800e3        tbz     w3, #11, 12bc
-> <build_sched_domains+0x40c>
->                                         free_sched_groups(sd->groups, 0);
->     12a4:       f9400800        ldr     x0, [x0, #16]
->         if (!sg)
->
-
-Thanks for giving it a shot, let me run that with your topology and see
-where I end up.
-
-> Thanks
-> Barry
->
->> ---
->>  include/linux/topology.h |  1 +
->>  kernel/sched/topology.c  | 99 +++++++++++++++++++---------------------
->>  2 files changed, 49 insertions(+), 51 deletions(-)
->>
->> diff --git a/include/linux/topology.h b/include/linux/topology.h
->> index ad03df1cc266..7634cd737061 100644
->> --- a/include/linux/topology.h
->> +++ b/include/linux/topology.h
->> @@ -48,6 +48,7 @@ int arch_update_cpu_topology(void);
->>  /* Conform to ACPI 2.0 SLIT distance definitions */
->>  #define LOCAL_DISTANCE		10
->>  #define REMOTE_DISTANCE		20
->> +#define DISTANCE_BITS           8
->>  #ifndef node_distance
->>  #define node_distance(from,to)	((from) == (to) ? LOCAL_DISTANCE :
->> REMOTE_DISTANCE)
->>  #endif
->> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
->> index 5d3675c7a76b..bf5c9bd10bfe 100644
->> --- a/kernel/sched/topology.c
->> +++ b/kernel/sched/topology.c
->> @@ -1596,66 +1596,58 @@ static void init_numa_topology_type(void)
->>      }
->>  }
->>
->> +
->> +#define NR_DISTANCE_VALUES (1 << DISTANCE_BITS)
->> +
->>  void sched_init_numa(void)
->>  {
->> -	int next_distance, curr_distance = node_distance(0, 0);
->>      struct sched_domain_topology_level *tl;
->> -	int level = 0;
->> -	int i, j, k;
->> -
->> -	sched_domains_numa_distance = kzalloc(sizeof(int) * (nr_node_ids + 1),
->> GFP_KERNEL);
->> -	if (!sched_domains_numa_distance)
->> -		return;
->> -
->> -	/* Includes NUMA identity node at level 0. */
->> -	sched_domains_numa_distance[level++] = curr_distance;
->> -	sched_domains_numa_levels = level;
->> +	unsigned long *distance_map;
->> +	int nr_levels = 0;
->> +	int i, j;
->>
->>      /*
->>       * O(nr_nodes^2) deduplicating selection sort -- in order to find the
->>       * unique distances in the node_distance() table.
->> -	 *
->> -	 * Assumes node_distance(0,j) includes all distances in
->> -	 * node_distance(i,j) in order to avoid cubic time.
->>       */
->> -	next_distance = curr_distance;
->> +	distance_map = bitmap_alloc(NR_DISTANCE_VALUES, GFP_KERNEL);
->> +	if (!distance_map)
->> +		return;
->> +
->> +	bitmap_zero(distance_map, NR_DISTANCE_VALUES);
->>      for (i = 0; i < nr_node_ids; i++) {
->>              for (j = 0; j < nr_node_ids; j++) {
->> -			for (k = 0; k < nr_node_ids; k++) {
->> -				int distance = node_distance(i, k);
->> -
->> -				if (distance > curr_distance &&
->> -				    (distance < next_distance ||
->> -				     next_distance == curr_distance))
->> -					next_distance = distance;
->> -
->> -				/*
->> -				 * While not a strong assumption it would be nice to know
->> -				 * about cases where if node A is connected to B, B is not
->> -				 * equally connected to A.
->> -				 */
->> -				if (sched_debug() && node_distance(k, i) != distance)
->> -					sched_numa_warn("Node-distance not symmetric");
->> +			int distance = node_distance(i, j);
->>
->> -				if (sched_debug() && i && !find_numa_distance(distance))
->> -					sched_numa_warn("Node-0 not representative");
->> +			if (distance < LOCAL_DISTANCE || distance >= NR_DISTANCE_VALUES) {
->> +				sched_numa_warn("Invalid distance value range");
->> +				return;
->>                      }
->> -			if (next_distance != curr_distance) {
->> -				sched_domains_numa_distance[level++] = next_distance;
->> -				sched_domains_numa_levels = level;
->> -				curr_distance = next_distance;
->> -			} else break;
->> +
->> +			bitmap_set(distance_map, distance, 1);
->>              }
->> +	}
->> +	/*
->> +	 * We can now figure out how many unique distance values there are and
->> +	 * allocate memory accordingly.
->> +	 */
->> +	nr_levels = bitmap_weight(distance_map, NR_DISTANCE_VALUES);
->>
->> -		/*
->> -		 * In case of sched_debug() we verify the above assumption.
->> -		 */
->> -		if (!sched_debug())
->> -			break;
->> +	sched_domains_numa_distance = kcalloc(nr_levels, sizeof(int),
->> GFP_KERNEL);
->> +	if (!sched_domains_numa_distance) {
->> +		bitmap_free(distance_map);
->> +		return;
->> +	}
->> +
->> +	for (i = 0, j = 0; i < nr_levels; i++, j++) {
->> +		j = find_next_bit(distance_map, NR_DISTANCE_VALUES, j);
->> +		sched_domains_numa_distance[i] = j;
->>      }
->>
->> +	bitmap_free(distance_map);
->> +
->>      /*
->> -	 * 'level' contains the number of unique distances
->> +	 * 'nr_levels' contains the number of unique distances
->>       *
->>       * The sched_domains_numa_distance[] array includes the actual distance
->>       * numbers.
->> @@ -1664,15 +1656,15 @@ void sched_init_numa(void)
->>      /*
->>       * Here, we should temporarily reset sched_domains_numa_levels to 0.
->>       * If it fails to allocate memory for array sched_domains_numa_masks[][],
->> -	 * the array will contain less then 'level' members. This could be
->> +	 * the array will contain less then 'nr_levels' members. This could be
->>       * dangerous when we use it to iterate array sched_domains_numa_masks[][]
->>       * in other functions.
->>       *
->> -	 * We reset it to 'level' at the end of this function.
->> +	 * We reset it to 'nr_levels' at the end of this function.
->>       */
->>      sched_domains_numa_levels = 0;
->>
->> -	sched_domains_numa_masks = kzalloc(sizeof(void *) * level, GFP_KERNEL);
->> +	sched_domains_numa_masks = kzalloc(sizeof(void *) * nr_levels,
->> GFP_KERNEL);
->>      if (!sched_domains_numa_masks)
->>              return;
->>
->> @@ -1680,7 +1672,7 @@ void sched_init_numa(void)
->>       * Now for each level, construct a mask per node which contains all
->>       * CPUs of nodes that are that many hops away from us.
->>       */
->> -	for (i = 0; i < level; i++) {
->> +	for (i = 0; i < nr_levels; i++) {
->>              sched_domains_numa_masks[i] =
->>                      kzalloc(nr_node_ids * sizeof(void *), GFP_KERNEL);
->>              if (!sched_domains_numa_masks[i])
->> @@ -1688,12 +1680,17 @@ void sched_init_numa(void)
->>
->>              for (j = 0; j < nr_node_ids; j++) {
->>                      struct cpumask *mask = kzalloc(cpumask_size(), GFP_KERNEL);
->> +			int k;
->> +
->>                      if (!mask)
->>                              return;
->>
->>                      sched_domains_numa_masks[i][j] = mask;
->>
->>                      for_each_node(k) {
->> +				if (sched_debug() && (node_distance(j, k) != node_distance(k,
->> j)))
->> +					sched_numa_warn("Node-distance not symmetric");
->> +
->>                              if (node_distance(j, k) > sched_domains_numa_distance[i])
->>                                      continue;
->>
->> @@ -1705,7 +1702,7 @@ void sched_init_numa(void)
->>      /* Compute default topology size */
->>      for (i = 0; sched_domain_topology[i].mask; i++);
->>
->> -	tl = kzalloc((i + level + 1) *
->> +	tl = kzalloc((i + nr_levels) *
->>                      sizeof(struct sched_domain_topology_level), GFP_KERNEL);
->>      if (!tl)
->>              return;
->> @@ -1728,7 +1725,7 @@ void sched_init_numa(void)
->>      /*
->>       * .. and append 'j' levels of NUMA goodness.
->>       */
->> -	for (j = 1; j < level; i++, j++) {
->> +	for (j = 1; j < nr_levels; i++, j++) {
->>              tl[i] = (struct sched_domain_topology_level){
->>                      .mask = sd_numa_mask,
->>                      .sd_flags = cpu_numa_flags,
->> @@ -1740,8 +1737,8 @@ void sched_init_numa(void)
->>
->>      sched_domain_topology = tl;
->>
->> -	sched_domains_numa_levels = level;
->> -	sched_max_numa_distance = sched_domains_numa_distance[level - 1];
->> +	sched_domains_numa_levels = nr_levels;
->> +	sched_max_numa_distance = sched_domains_numa_distance[nr_levels - 1];
->>
->>      init_numa_topology_type();
->>  }
->> --
->> 2.27.0
+T24gRnJpLCAyMDIxLTAxLTA4IGF0IDIzOjEwICsxMTAwLCBCYWxiaXIgU2luZ2ggd3JvdGU6DQo+
+IEltcGxlbWVudCBhIG1lY2hhbmlzbSB0aGF0IGFsbG93cyB0YXNrcyB0byBjb25kaXRpb25hbGx5
+IGZsdXNoDQo+IHRoZWlyIEwxRCBjYWNoZSAobWl0aWdhdGlvbiBtZWNoYW5pc20gc3VnZ2VzdGVk
+IGluIFsyXSkuIFRoZSBwcmV2aW91cw0KPiBwb3N0cyBvZiB0aGVzZSBwYXRjaGVzIHdlcmUgc2Vu
+dCBmb3IgaW5jbHVzaW9uIChzZWUgWzNdKSBhbmQgd2VyZSBub3QNCj4gaW5jbHVkZWQgZHVlIHRv
+IHRoZSBjb25jZXJuIGZvciB0aGUgbmVlZCBmb3IgYWRkaXRpb25hbCBjaGVja3MsDQo+IHRob3Nl
+IGNoZWNrcyB3ZXJlOg0KPiANCj4gMS4gSW1wbGVtZW50IHRoaXMgbWVjaGFuaXNtIG9ubHkgZm9y
+IENQVXMgYWZmZWN0ZWQgYnkgdGhlIEwxVEYgYnVnDQo+IDIuIERpc2FibGUgdGhlIHNvZnR3YXJl
+IGZhbGxiYWNrDQo+IDMuIFByb3ZpZGUgYW4gb3ZlcnJpZGUgdG8gZW5hYmxlIHRoaXMgbWVjaGFu
+aXNtDQo+IDQuIEJlIFNNVCBhd2FyZSBpbiB0aGUgaW1wbGVtZW50YXRpb24NCj4gDQo+IFRoZSBw
+YXRjaGVzIHN1cHBvcnQgYSB1c2UgY2FzZSB3aGVyZSB0aGUgZW50aXJlIHN5c3RlbSBpcyBub3Qg
+aW4NCj4gbm9uIFNNVCBtb2RlLCBidXQgcmF0aGVyIGEgZmV3IENQVXMgY2FuIGhhdmUgdGhlaXIg
+U01UIHR1cm5lZCBvZmYNCj4gYW5kIHByb2Nlc3NlcyB0aGF0IHdhbnQgdG8gb3B0LWluIGFyZSBl
+eHBlY3RlZCB0byBydW4gb24gbm9uIFNNVA0KPiBjb3Jlcy4gVGhpcyBnaXZlcyB0aGUgYWRtaW5p
+c3RyYXRvciBjb21wbGV0ZSBjb250cm9sIG92ZXIgc2V0dGluZw0KPiB1cCB0aGUgbWl0aWdhdGlv
+biBmb3IgdGhlIGlzc3VlLiBJbiBhZGRpdGlvbiwgdGhlIGFkbWluaXN0cmF0b3INCj4gaGFzIGEg
+Ym9vdCB0aW1lIG92ZXJyaWRlIChsMWRfZmx1c2g9b24pIHRvIHR1cm4gb24gdGhlIG1lY2hhbmlz
+bQ0KPiB3aXRob3V0IHdoaWNoIHRoaXMgbWVjaGFuaXNtIHdpbGwgbm90IHdvcmsuDQo+IA0KPiBU
+byBpbXBsZW1lbnQgdGhlc2UgZWZmaWNpZW50bHksIGEgbmV3IHBlciBjcHUgdmlldyBvZiB3aGV0
+aGVyIHRoZSBjb3JlDQo+IGlzIGluIFNNVCBtb2RlIG9yIG5vdCBpcyBpbXBsZW1lbnRlZCBpbiBw
+YXRjaCAxLiBUaGUgY29kZSBpcyByZWZhY3RvcmVkDQo+IGluIHBhdGNoIDIgc28gdGhhdCB0aGUg
+ZXhpc3RpbmcgY29kZSBjYW4gYWxsb3cgZm9yIG90aGVyIHNwZWN1bGF0aW9uDQo+IHJlbGF0ZWQg
+Y2hlY2tzIHdoZW4gc3dpdGNoaW5nIG1tIGJldHdlZW4gdGFza3MsIHRoaXMgbWVjaGFuaXNtIGhh
+cyBub3QNCj4gY2hhbmdlZCBzaW5jZSB0aGUgbGFzdCBwb3N0LiBUaGUgYWJpbGl0eSB0byBmbHVz
+aCBMMUQgZm9yIHRhc2tzIGlmIHRoZQ0KPiBUSUZfU1BFQ19MMURfRkxVU0ggYml0IGlzIHNldCBh
+bmQgdGhlIHRhc2sgaGFzIGNvbnRleHQgc3dpdGNoZWQgb3V0IG9mIGENCj4gbm9uIFNNVCBjb3Jl
+IGlzIHByb3ZpZGVkIGJ5IHBhdGNoIDMuIEhvb2tzIGZvciB0aGUgdXNlciBzcGFjZSBBUEksIGZv
+cg0KPiB0aGlzIGZlYXR1cmUgdG8gYmUgaW52b2tlZCB2aWEgcHJjdGwgYXJlIHByb3ZpZGVkIGlu
+IHBhdGNoIDQsIGFsb25nIHdpdGgNCj4gdGhlIGNoZWNrcyBkZXNjcmliZWQgYWJvdmUgKDEsIDIs
+IGFuZCAzKS4gRG9jdW1lbnRhdGlvbiB1cGRhdGVzIGFyZSBpbg0KPiBwYXRjaCA1LCB3aXRoIHVw
+ZGF0ZXMgb24gbDFkX2ZsdXNoLCB0aGUgcHJjdGwgY2hhbmdlcyBhbmQgdXBkYXRlcyB0byB0aGUN
+Cj4ga2VybmVsLXBhcmFtZXRlcnMgKGwxZF9mbHVzaF9vdXQpLg0KPiANCj4gVGhlIGNoZWNrcyBm
+b3Igb3B0aW5nIGludG8gTDFEIGZsdXNoaW5nIGFyZToNCj4gCWEuIElmIHRoZSBDUFUgaXMgYWZm
+ZWN0ZWQgYnkgTDFURg0KPiAgICAgICAgIGIuIEhhcmR3YXJlIEwxRCBmbHVzaCBtZWNoYW5pc20g
+aXMgYXZhaWxhYmxlDQo+IA0KPiBBIHRhc2sgcnVubmluZyBvbiBhIGNvcmUgd2l0aCBTTVQgZW5h
+YmxlZCBhbmQgb3B0aW5nIGludG8gdGhpcyBmZWF0dXJlIHdpbGwNCj4gcmVjZWl2ZSBhIFNJR0JV
+Uy4NCj4gDQo+IFJlZmVyZW5jZXMNCj4gWzFdIGh0dHBzOi8vc29mdHdhcmUuaW50ZWwuY29tL3Nl
+Y3VyaXR5LXNvZnR3YXJlLWd1aWRhbmNlL3NvZnR3YXJlLWd1aWRhbmNlL3Nub29wLWFzc2lzdGVk
+LWwxLWRhdGEtc2FtcGxpbmcNCj4gWzJdIGh0dHBzOi8vc29mdHdhcmUuaW50ZWwuY29tL3NlY3Vy
+aXR5LXNvZnR3YXJlLWd1aWRhbmNlL2luc2lnaHRzL2RlZXAtZGl2ZS1zbm9vcC1hc3Npc3RlZC1s
+MS1kYXRhLXNhbXBsaW5nDQo+IFszXSBodHRwczovL2xrbWwub3JnL2xrbWwvMjAyMC82LzIvMTE1
+MA0KPiBbNF0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8yMDIwMDcyOTAwMTEwMy42NDUw
+LTEtc2JsYmlyQGFtYXpvbi5jb20vDQo+IFs1XSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21s
+LzIwMjAxMTE3MjM0OTM0LjI1OTg1LTItc2JsYmlyQGFtYXpvbi5jb20vDQo+IA0KPiBSZXZpZXdl
+cnMgZ3VpZGUgdG8gdjQNCj4gLSBUaGUga2V5IHBhdGNoIGluIHRoZSBzZXJpZXMgYW5kIG1vc3Qg
+b2YgdGhlIGNoYW5nZXMgdG8gdGhpcw0KPiAgIHJldmlzaW9uIGFyZSB0byBwYXRjaCA0LiBwYXRj
+aGVzIDMgYW5kIDUgaGF2ZSBiZWVuIG1vZGlmaWVkDQo+ICAgdG8ga2VlcCB0aGVtIGNvbnNpc3Rl
+bnQgd2l0aCB0aGUgY2hhbmdlcyB0byBwYXRjaCA0Lg0KPiANCj4gQ2hhbmdlbG9nIHY0Og0KPiAt
+IFVzZSBhIHN0YXRpYyBrZXkgdG8gZW5hYmxlIHRoZSBtZWNoYW5pc20gKHJlbW92ZSBvdmVyaGVh
+ZHMpDQo+IC0gQnkgZGVmYXVsdCBoYXZlIHRoZSBtZWNoYW5pc20gdHVybmVkIG9mZiwgc28gdGhl
+cmUgYXJlIHR3bw0KPiAgIG9wdC1pbnMgbmVlZGVkLCBvbmUgYnkgdGhlIGFkbWluaXN0cmF0b3Ig
+YXQgYm9vdCB0aW1lLCBzZWNvbmQNCj4gICBieSB0aGUgYXBwbGljYXRpb24NCj4gLSBSZW5hbWUg
+bDFkX2ZsdXNoX291dC9MMURfRkxVU0hfT1VUIHRvIGwxZF9mbHVzaC9MMURfRkxVU0gNCj4gLSBJ
+bXBsZW1lbnQgb3RoZXIgcmV2aWV3IHJlY29tbWVuZGF0aW9ucw0KPiBDaGFuZ2Vsb2cgdjM6DQo+
+IC0gSW1wbGVtZW50IHRoZSBTSUdCVVMgbWVjaGFuc2ltDQo+IC0gVXBkYXRlIGFuZCBmaXggdGhl
+IGRvY3VtZW50YXRpb24NCj4gDQo+IA0KPiBCYWxiaXIgU2luZ2ggKDUpOg0KPiAgIHg4Ni9zbXA6
+IEFkZCBhIHBlci1jcHUgdmlldyBvZiBTTVQgc3RhdGUNCj4gICB4ODYvbW06IFJlZmFjdG9yIGNv
+bmRfaWJwYigpIHRvIHN1cHBvcnQgb3RoZXIgdXNlIGNhc2VzDQo+ICAgeDg2L21tOiBPcHRpb25h
+bGx5IGZsdXNoIEwxRCBvbiBjb250ZXh0IHN3aXRjaA0KPiAgIHByY3RsOiBIb29rIEwxRCBmbHVz
+aGluZyBpbiB2aWEgcHJjdGwNCj4gICBEb2N1bWVudGF0aW9uOiBBZGQgTDFEIGZsdXNoaW5nIERv
+Y3VtZW50YXRpb24NCj4gDQo+ICBEb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2h3LXZ1bG4vaW5k
+ZXgucnN0ICAgfCAgMSArDQo+ICAuLi4vYWRtaW4tZ3VpZGUvaHctdnVsbi9sMWRfZmx1c2gucnN0
+ICAgICAgICAgfCA3MCArKysrKysrKysrKysrKysNCj4gIC4uLi9hZG1pbi1ndWlkZS9rZXJuZWwt
+cGFyYW1ldGVycy50eHQgICAgICAgICB8IDE3ICsrKysNCj4gIERvY3VtZW50YXRpb24vdXNlcnNw
+YWNlLWFwaS9zcGVjX2N0cmwucnN0ICAgICB8ICA4ICsrDQo+ICBhcmNoL0tjb25maWcgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArDQo+ICBhcmNoL3g4Ni9LY29uZmlnICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSArDQo+ICBhcmNoL3g4Ni9pbmNsdWRlL2Fz
+bS9jYWNoZWZsdXNoLmggICAgICAgICAgICAgfCAgOCArKw0KPiAgYXJjaC94ODYvaW5jbHVkZS9h
+c20vbm9zcGVjLWJyYW5jaC5oICAgICAgICAgIHwgIDIgKw0KPiAgYXJjaC94ODYvaW5jbHVkZS9h
+c20vcHJvY2Vzc29yLmggICAgICAgICAgICAgIHwgIDIgKw0KPiAgYXJjaC94ODYvaW5jbHVkZS9h
+c20vdGhyZWFkX2luZm8uaCAgICAgICAgICAgIHwgIDYgKy0NCj4gIGFyY2gveDg2L2luY2x1ZGUv
+YXNtL3RsYmZsdXNoLmggICAgICAgICAgICAgICB8ICAyICstDQo+ICBhcmNoL3g4Ni9rZXJuZWwv
+Y3B1L2J1Z3MuYyAgICAgICAgICAgICAgICAgICAgfCA3MSArKysrKysrKysrKysrKysNCj4gIGFy
+Y2gveDg2L2tlcm5lbC9zbXBib290LmMgICAgICAgICAgICAgICAgICAgICB8IDEwICsrLQ0KPiAg
+YXJjaC94ODYvbW0vdGxiLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgODggKysrKysr
+KysrKysrKystLS0tLQ0KPiAgaW5jbHVkZS9saW51eC9zY2hlZC5oICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgMTAgKysrDQo+ICBpbmNsdWRlL3VhcGkvbGludXgvcHJjdGwuaCAgICAgICAgICAg
+ICAgICAgICAgfCAgMSArDQo+ICAxNiBmaWxlcyBjaGFuZ2VkLCAyNzMgaW5zZXJ0aW9ucygrKSwg
+MjggZGVsZXRpb25zKC0pDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9hZG1p
+bi1ndWlkZS9ody12dWxuL2wxZF9mbHVzaC5yc3QNCj4NCg0KUGluZyBvbiBhbnkgcmV2aWV3IGNv
+bW1lbnRzPyBTdWdnZXN0ZWQgcmVmYWN0b3Jpbmc/DQoNCkJhbGJpciBTaW5naCANCg==
