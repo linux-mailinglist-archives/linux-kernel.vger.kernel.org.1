@@ -2,129 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CC13021E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240D23021E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbhAYFex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:34:53 -0500
-Received: from ozlabs.org ([203.11.71.1]:58113 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725821AbhAYFdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:33:47 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726660AbhAYFlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:41:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725821AbhAYFl2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 00:41:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611553197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XwObwWA9fXyhzGiJ652Ze6C+PNgOaSeBXRe2BUCfC24=;
+        b=QreP/L56BWN+nWaV8eKFB/0dJs8zC9SZRlQ7D5g1dzRNNjbyIkQdxjmdy5hQs1CRi+WxLW
+        WPikq7PI3f3RGt5gy4AzKiJW5UXO90yATnsUlAdqOLTOnLt0MXmIHQrwlcs9wPW7WG9Y2I
+        nxFVwRufRXPRgyxje2pUOQ2NegJP0xw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-zOc8quYmOFuRDXkNJt48FQ-1; Mon, 25 Jan 2021 00:39:55 -0500
+X-MC-Unique: zOc8quYmOFuRDXkNJt48FQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPJRX2yj9z9sVS;
-        Mon, 25 Jan 2021 16:32:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611552778;
-        bh=LDP1P4Y4arjOIv8CLf0WIRuU5TVAbV+bDlPfSmRS6fw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XEEFB/DQCsdF8Aq1SsbhLxYdZunCTABDmCkTFjGsIaa/4IGMWhn729tm1iDl3t3Ct
-         4+FvuipCGbE6XI0Kwi+J6OdujrnKiwt/jGxTXaIg4ZHFSfXDlPQtoABJ3FtTtnLnBd
-         2vXNN9C49pgvNQvPtFvMMCeOSe1NpkF+uAzBpNwfh8t9CJBqDZ0IF47VmZPhIss876
-         JPO0GDR0ya1QWWuv3QpHVkD7584iXWAqWA7XYhKpy+o3hfMvw55MMcTyCiWinxzj/9
-         OQZRpwtV+J/qy0/3bldvNs5UqZaFlVS6dxEezFzRQXMMlSbV3Xu6bbwCG6NIhRGtfK
-         vvFmX91tYY9bA==
-Date:   Mon, 25 Jan 2021 16:32:55 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <chao@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the pidfd tree with the f2fs tree
-Message-ID: <20210125163255.1a87bba4@canb.auug.org.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7156918C8C00;
+        Mon, 25 Jan 2021 05:39:53 +0000 (UTC)
+Received: from suzdal.zaitcev.lan (ovpn-112-54.phx2.redhat.com [10.3.112.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4D2260C5F;
+        Mon, 25 Jan 2021 05:39:52 +0000 (UTC)
+Date:   Sun, 24 Jan 2021 23:39:52 -0600
+From:   Pete Zaitcev <zaitcev@redhat.com>
+To:     Jeremy Figgins <kernel@jeremyfiggins.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu,
+        zaitcev@redhat.com
+Subject: Re: [PATCH] USB: usblp: don't call usb_set_interface if there's a
+ single alt
+Message-ID: <20210124233924.34d278fc@suzdal.zaitcev.lan>
+In-Reply-To: <YAy9kJhM/rG8EQXC@watson>
+References: <YAy9kJhM/rG8EQXC@watson>
+Organization: Red Hat, Inc.
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fQO7W_vCdECXo+XrIFtm=um";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fQO7W_vCdECXo+XrIFtm=um
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, 23 Jan 2021 18:21:36 -0600
+Jeremy Figgins <kernel@jeremyfiggins.com> wrote:
 
-Hi all,
+> Signed-off-by: Jeremy Figgins <kernel@jeremyfiggins.com>
 
-Today's linux-next merge of the pidfd tree got a conflict in:
+> +++ b/drivers/usb/class/usblp.c
+> +	if (usblp->intf->num_altsetting > 1) {
 
-  fs/f2fs/acl.c
+Acked-by: Pete Zaitcev <zaitcev@redhat.com>
 
-between commit:
+I am having some misgivings about it, but let's see if it works.
+At worst, someone will complain and we'll revert to quirks.
 
-  7cf2e6173b2d ("f2fs: enhance to update i_mode and acl atomically in f2fs_=
-setattr()")
+-- Pete
 
-from the f2fs tree and commit:
-
-  e65ce2a50cf6 ("acl: handle idmapped mounts")
-
-from the pidfd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/f2fs/acl.c
-index 732ec10e7890,a19e86c9adac..000000000000
---- a/fs/f2fs/acl.c
-+++ b/fs/f2fs/acl.c
-@@@ -200,27 -200,6 +200,27 @@@ struct posix_acl *f2fs_get_acl(struct i
-  	return __f2fs_get_acl(inode, type, NULL);
-  }
- =20
- +static int f2fs_acl_update_mode(struct inode *inode, umode_t *mode_p,
- +			  struct posix_acl **acl)
- +{
- +	umode_t mode =3D inode->i_mode;
- +	int error;
- +
- +	if (is_inode_flag_set(inode, FI_ACL_MODE))
- +		mode =3D F2FS_I(inode)->i_acl_mode;
- +
- +	error =3D posix_acl_equiv_mode(*acl, &mode);
- +	if (error < 0)
- +		return error;
- +	if (error =3D=3D 0)
- +		*acl =3D NULL;
-- 	if (!in_group_p(inode->i_gid) &&
-- 	    !capable_wrt_inode_uidgid(inode, CAP_FSETID))
-++	if (!in_group_p(i_gid_into_mnt(&init_user_ns, inode)) &&
-++	    !capable_wrt_inode_uidgid(&init_user_ns, inode, CAP_FSETID))
- +		mode &=3D ~S_ISGID;
- +	*mode_p =3D mode;
- +	return 0;
- +}
- +
-  static int __f2fs_set_acl(struct inode *inode, int type,
-  			struct posix_acl *acl, struct page *ipage)
-  {
-
---Sig_/fQO7W_vCdECXo+XrIFtm=um
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOWAcACgkQAVBC80lX
-0GzRtwf/Yi1STB+vnCtjLTj3cGXMcOpYwn/1/Q5CZsLhChrXTtrE11zuq0CZKGvQ
-ZBIhJmaKUqE5aoZzKut8FLKIwI9F/5u1WDK1hgay7eNhNcSh9olOY7e2oLtEQbL6
-znEhJ3tupx8vz68xrkWogOXqM4rbXYIyo+3a4QMEy/xRth1zi1wCAeS/Bh41KD5K
-jaMjLUbmNA/SV/udVlbmrA46Tmhap4RoUkhV3pclGzqIfI9LtEoKP2cIlHNxqWCh
-6nyygnvaRtcGvi6AKzzKIDRlk7GMcCkJZ1s1/VyTWmcje27VjWxRUwI+tAu8J+Vt
-9zB86MR+yfW2psdOPRCFGecO+xY9yw==
-=DNRt
------END PGP SIGNATURE-----
-
---Sig_/fQO7W_vCdECXo+XrIFtm=um--
