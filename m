@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D746730391A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7865B303918
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391249AbhAZJgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:36:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36842 "EHLO mail.kernel.org"
+        id S2391130AbhAZJft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:35:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731078AbhAYSuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731077AbhAYSuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:50:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29BE922EBD;
-        Mon, 25 Jan 2021 18:50:04 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8F542083E;
+        Mon, 25 Jan 2021 18:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600604;
-        bh=BXAUTlBON4b47JT11rn8DtJCdtslP5zfAcIpxMXkBKs=;
+        s=korg; t=1611600607;
+        bh=7Nbgq+nNg8Nwj+uVPGdpx2XmQoMU6tLYpClwhrtmfTc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LAb3tiUszOjEKdjJCsy8EivWt+6Z1TyODMlq5WYFSPJOEjzh4DH8emRhjdBoUNgYk
-         H9ymTg4yJqU6MjsgHOG7R2fXmxxDYD5C5uDosPsbDfBUFD5++uBT0AHDWnLEckNcDN
-         CMhfHWULkEBynm2c3exVNZBZNVjlSH2YHuy0MQKI=
+        b=0ecn9rjMPBB5Zze4DUY6Yna0DUbMW+ApPycOIsg0tetXQe3wJQV2ap+AKZYsO7Oa7
+         MU/ev1w3O+wClIXwmD9qqLPy2OrgBC7amxD/HyPFXf8iztUh6I4NkUn3F8vjjzSOwU
+         lLMBWY6uByC1mrYjqBeGNL3M4/5Emvb5Krh1tDok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Billy Tsai <billy_tsai@aspeedtech.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sean Wang <sean.wang@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 079/199] pinctrl: aspeed: g6: Fix PWMG0 pinctrl setting
-Date:   Mon, 25 Jan 2021 19:38:21 +0100
-Message-Id: <20210125183219.598473411@linuxfoundation.org>
+Subject: [PATCH 5.10 080/199] pinctrl: mediatek: Fix fallback call path
+Date:   Mon, 25 Jan 2021 19:38:22 +0100
+Message-Id: <20210125183219.641220959@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -42,37 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Billy Tsai <billy_tsai@aspeedtech.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 92ff62a7bcc17d47c0ce8dddfb7a6e1a2e55ebf4 ]
+[ Upstream commit 81bd1579b43e0e285cba667399f1b063f1ce7672 ]
 
-The SCU offset for signal PWM8 in group PWM8G0 is wrong, fix it from
-SCU414 to SCU4B4.
+Some SoCs, eg. mt8183, are using a pinconfig operation bias_set_combo.
+The fallback path in mtk_pinconf_adv_pull_set() should also try this
+operation.
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-Fixes: 2eda1cdec49f ("pinctrl: aspeed: Add AST2600 pinmux support")
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-Link: https://lore.kernel.org/r/20201217024912.3198-1-billy_tsai@aspeedtech.com
+Fixes: cafe19db7751 ("pinctrl: mediatek: Backward compatible to previous Mediatek's bias-pull usage")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Acked-by: Sean Wang <sean.wang@kernel.org>
+Link: https://lore.kernel.org/r/20201228090425.2130569-1-hsinyi@chromium.org
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-index 34803a6c76643..5c1a109842a76 100644
---- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-+++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-@@ -347,7 +347,7 @@ FUNC_GROUP_DECL(RMII4, F24, E23, E24, E25, C25, C24, B26, B25, B24);
- 
- #define D22 40
- SIG_EXPR_LIST_DECL_SESG(D22, SD1CLK, SD1, SIG_DESC_SET(SCU414, 8));
--SIG_EXPR_LIST_DECL_SEMG(D22, PWM8, PWM8G0, PWM8, SIG_DESC_SET(SCU414, 8));
-+SIG_EXPR_LIST_DECL_SEMG(D22, PWM8, PWM8G0, PWM8, SIG_DESC_SET(SCU4B4, 8));
- PIN_DECL_2(D22, GPIOF0, SD1CLK, PWM8);
- GROUP_DECL(PWM8G0, D22);
- 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+index 7e950f5d62d0f..7815426e7aeaa 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+@@ -926,6 +926,10 @@ int mtk_pinconf_adv_pull_set(struct mtk_pinctrl *hw,
+ 			err = hw->soc->bias_set(hw, desc, pullup);
+ 			if (err)
+ 				return err;
++		} else if (hw->soc->bias_set_combo) {
++			err = hw->soc->bias_set_combo(hw, desc, pullup, arg);
++			if (err)
++				return err;
+ 		} else {
+ 			return -ENOTSUPP;
+ 		}
 -- 
 2.27.0
 
