@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF882302E69
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4A9302E72
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732928AbhAYVyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:54:18 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:31783 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733092AbhAYVxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:53:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611611590; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=wjOwZ7hnkSut6Udf2hJQbonOlbKoFsbqZco5e9Oswzk=; b=fR2qsfRVUa1S9421tOeLI3rJqmaFSqDDRk06xBrDqbp4tQYjJCohacD7BfhiirWt8GNmaLFI
- iSw5ZF5hCLwoqXrzyiOcbLKosC/ogI+V1/NetCaIkj5BDV4KJZNUSNt4MuMBhMf4N7aZxcjn
- 2qQkmUUsvnPTnlzgjGvtalXVAZg=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 600f3da02c36b2106dd15036 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 21:52:32
- GMT
-Sender: isaacm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D2380C433C6; Mon, 25 Jan 2021 21:52:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from isaacm-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: isaacm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB1D3C433CA;
-        Mon, 25 Jan 2021 21:52:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB1D3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=isaacm@codeaurora.org
-From:   "Isaac J. Manjarres" <isaacm@codeaurora.org>
-To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        bjorn.andersson@linaro.org
-Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH] iommu/arm-smmu-qcom: Fix mask extraction for bootloader programmed SMRs
-Date:   Mon, 25 Jan 2021 13:52:25 -0800
-Message-Id: <1611611545-19055-1-git-send-email-isaacm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1732634AbhAYVzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:55:40 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:49124 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733001AbhAYVzO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 16:55:14 -0500
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 10PLs0AX013560;
+        Tue, 26 Jan 2021 06:54:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 10PLs0AX013560
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611611640;
+        bh=UX6b6pUkVV6T/bQ7SMCRjpyfBhS2L4xJkhyy+qmYCFU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qEMwILEWC1D9Pv3cg/I6TFtkrEBWBKr00cJU7PSwWioOtRKzYNcGE73cD9ISVxeKB
+         jjmUc+25p/1SkUv9I9dZbRb8YWdszSbRKrnvBu1YAYXAnVUxEkALMEOslDpQ2V6pyq
+         mrIIUIrD4r3HcrgM+X0ARPZqsURqxi3+7ZbUJD6XGCKPoHH3OCjX05eXgYxrL3Xos4
+         JFplKKvX3B/ti7SmVEmdikdJdAf3swJSilMsD1IwlknkZFTsmRro8VLZ/ExOjJ7I0J
+         DmOla6W1TS8nJt2tF6iISuAxrG9/uPLPoCUBeOHCs/g3gOsEZMLFoJSdRWWpfNlvbp
+         c40P9pU0AhJYQ==
+X-Nifty-SrcIP: [209.85.215.182]
+Received: by mail-pg1-f182.google.com with SMTP id o16so247094pgg.5;
+        Mon, 25 Jan 2021 13:54:00 -0800 (PST)
+X-Gm-Message-State: AOAM533hkSnF/qLAiHm5vpB2/KTS4MymyX0NVjV0VE7ejGm7uMAdC89j
+        eWIGypeYvosh9Cp0tVuxSNN4wFbp/BQnPK9Y9oE=
+X-Google-Smtp-Source: ABdhPJz7jVDUCqkHiYZmSxVfXQ2QVujb2/QrlRWGngD0SSPGjQ4ZtlwG1VPt/V++hNbbdBerKFQCeMW2DEksR/gGNHo=
+X-Received: by 2002:a62:2f07:0:b029:1bb:5f75:f985 with SMTP id
+ v7-20020a622f070000b02901bb5f75f985mr2194842pfv.76.1611611639601; Mon, 25 Jan
+ 2021 13:53:59 -0800 (PST)
+MIME-Version: 1.0
+References: <20210125105757.661240-1-uwe@kleine-koenig.org>
+In-Reply-To: <20210125105757.661240-1-uwe@kleine-koenig.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 26 Jan 2021 06:53:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
+Message-ID: <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
+Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        cyril@debamax.com, Arnd Bergmann <arnd@arndb.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When extracting the mask for a SMR that was programmed by the
-bootloader, the SMR's valid bit is also extracted and is treated
-as part of the mask, which is not correct. Consider the scenario
-where an SMMU master whose context is determined by a bootloader
-programmed SMR is removed (omitting parts of device/driver core):
+On Mon, Jan 25, 2021 at 8:07 PM Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.or=
+g> wrote:
+>
+> Adding the -@ switch to dtc results in the binary devicetrees containing
+> a list of symbolic references and their paths. This is necessary to
+> apply device tree overlays e.g. on Raspberry Pi as described on
+> https://www.raspberrypi.org/documentation/configuration/device-tree.md.
+>
+> Obviously the downside of this change is an increas of the size of the
+> generated dtbs, for an arm out-of-tree build (multi_v7_defconfig):
+>
+>         $ du -s arch/arm/boot/dts*
+>         101380  arch/arm/boot/dts-pre
+>         114308  arch/arm/boot/dts-post
+>
+> so this is in average an increase of 12.8% in size.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
 
-->iommu_release_device()
- -> arm_smmu_release_device()
-  -> arm_smmu_master_free_smes()
-   -> arm_smmu_free_sme() /* Assume that the SME is now free */
-   -> arm_smmu_write_sme()
-    -> arm_smmu_write_smr() /* Construct SMR value using mask and SID */
 
-Since the valid bit was considered as part of the mask, the SMR will
-be programmed as valid.
+(CCing DT ML.)
 
-Fix the SMR mask extraction step for bootloader programmed SMRs
-by masking out the valid bit when we know that we're already
-working with a valid SMR.
 
-Fixes: 07a7f2caaa5a ("iommu/arm-smmu-qcom: Read back stream mappings")
-Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-Cc: stable@vger.kernel.org
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 2 ++
- 1 file changed, 2 insertions(+)
+https://www.spinics.net/lists/linux-kbuild/msg27904.html
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index bcda170..abb1d2f 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -206,6 +206,8 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- 		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
- 
- 		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-+			/* Ignore valid bit for SMR mask extraction. */
-+			smr &= ~ARM_SMMU_SMR_VALID;
- 			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
- 			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
- 			smmu->smrs[i].valid = true;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+See Rob's comment:
 
+"We've already rejected doing that. Turning on '-@' can grow the dtb
+size by a significant amount which could be problematic for some
+boards."
+
+
+
+
+
+
+
+
+> ---
+>  scripts/Makefile.lib | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 213677a5ed33..0683a5808f7f 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -319,7 +319,7 @@ $(obj)/%.dtb.S: $(obj)/%.dtb FORCE
+>
+>  quiet_cmd_dtc =3D DTC     $@
+>  cmd_dtc =3D $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc=
+-tmp) $< ; \
+> -       $(DTC) -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
+> +       $(DTC) -@ -O $(patsubst .%,%,$(suffix $@)) -o $@ -b 0 \
+>                 $(addprefix -i,$(dir $<) $(DTC_INCLUDE)) $(DTC_FLAGS) \
+>                 -d $(depfile).dtc.tmp $(dtc-tmp) ; \
+>         cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+> --
+> 2.29.2
+>
+
+
+--
+Best Regards
+
+Masahiro Yamada
