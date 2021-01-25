@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9603B302F5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF44F302F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 23:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732573AbhAYWr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 17:47:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732773AbhAYWqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:46:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8ECF221E7;
-        Mon, 25 Jan 2021 22:45:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611614737;
-        bh=YCaeAwfzY25KrbGYNz7RDomLYi8Q+7EPQfK8l7udhMk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WJx98ur0n4TlQUVCNMFhPsP7M/XNiVJbGcCmbPbWK3DBXVDYt9vesfxTRU7O57njm
-         bYl/670ukflbJM+CAJd1b+q4jj6XjfQqUCtGE8fz+yhy28Pg4R073R49y4XZ/uvMFG
-         Vivz8g4LOITPnj1+gm1qw4qRkqn1DJVLP/LctPhU=
-Date:   Mon, 25 Jan 2021 14:45:36 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Anders Roxell <anders.roxell@linaro.org>, glider@google.com,
-        dvyukov@google.com, catalin.marinas@arm.com, will@kernel.org,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, rppt@kernel.org, david@redhat.com
-Subject: Re: [PATCH] kfence: fix implicit function declaration
-Message-Id: <20210125144536.4544d9fca3b4cda8a6e42517@linux-foundation.org>
-In-Reply-To: <X8otwahnmGQGLpge@elver.google.com>
-References: <20201204121804.1532849-1-anders.roxell@linaro.org>
-        <X8otwahnmGQGLpge@elver.google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1732628AbhAYWxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 17:53:37 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:48819 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732697AbhAYWvv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:51:51 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AED4D1BF20C;
+        Mon, 25 Jan 2021 22:51:01 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 23:51:01 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v4 12/21] dt-bindings: rtc: sun6i: Add H616 compatible
+ string
+Message-ID: <20210125225101.GV1196852@piout.net>
+References: <20210125151811.11871-1-andre.przywara@arm.com>
+ <20210125151811.11871-13-andre.przywara@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125151811.11871-13-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Dec 2020 13:38:25 +0100 Marco Elver <elver@google.com> wrote:
+Hello Andre,
 
-> On Fri, Dec 04, 2020 at 01:18PM +0100, Anders Roxell wrote:
-> > When building kfence the following error shows up:
-> > 
-> > In file included from mm/kfence/report.c:13:
-> > arch/arm64/include/asm/kfence.h: In function ‘kfence_protect_page’:
-> > arch/arm64/include/asm/kfence.h:12:2: error: implicit declaration of function ‘set_memory_valid’ [-Werror=implicit-function-declaration]
-> >    12 |  set_memory_valid(addr, 1, !protect);
-> >       |  ^~~~~~~~~~~~~~~~
-> > 
-> > Use the correct include both
-> > f2b7c491916d ("set_memory: allow querying whether set_direct_map_*() is actually enabled")
-> > and 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64") went in the
+On 25/01/2021 15:18:02+0000, Andre Przywara wrote:
+> Add the obvious compatible name to the existing RTC binding, and pair
+> it with the existing H6 fallback compatible string, as the devices are
+> compatible.
 > 
-> Note that -mm does not have stable commit hashes.
-> 
-> > same day via different trees.
-> > 
-> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> > ---
-> 
-> Ack, we need this patch somewhere but we should probably fix the patch
-> that does the move, otherwise we'll have a build-broken kernel still.
-> 
-> > I got this build error in todays next-20201204.
-> > Andrew, since both patches are in your -mm tree, I think this can be
-> > folded into 4c4c75881536 ("arm64, kfence: enable KFENCE for ARM64")
-> 
-> I don't think that's the right way around. This would result in a
-> build-broken commit point as well.
-> 
-> Looking at current -next, I see that "set_memory: allow querying whether
-> set_direct_map_*() is actually enabled" is after "arm64, kfence: enable
-> KFENCE for ARM64".
-> 
-> I think the patch that introduces set_memory.h for arm64 simply needs to
-> squash in this patch (assuming the order is retained as-is in -mm).
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml       | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
 
-OK, I requeued this patch as
-set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled-fix.patch, part of Mike's secretmem patch series.
+How do you expect that patch to be merged? I was thinking it would go
+through Rob's tree.
+
+> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> index b1b0ee769b71..4193e5813344 100644
+> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> @@ -26,6 +26,9 @@ properties:
+>            - const: allwinner,sun50i-a64-rtc
+>            - const: allwinner,sun8i-h3-rtc
+>        - const: allwinner,sun50i-h6-rtc
+> +      - items:
+> +          - const: allwinner,sun50i-h616-rtc
+> +          - const: allwinner,sun50i-h6-rtc
+>  
+>    reg:
+>      maxItems: 1
+> -- 
+> 2.17.5
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
