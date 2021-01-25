@@ -2,307 +2,608 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40ABE30372F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68066303733
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:13:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389328AbhAZHIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:08:04 -0500
-Received: from mail-41103.protonmail.ch ([185.70.41.103]:55396 "EHLO
-        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730219AbhAYPmN (ORCPT
+        id S2389448AbhAZHLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730248AbhAYPm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:42:13 -0500
-Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 7624820000B7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:09:54 +0000 (UTC)
-Authentication-Results: mail-41103.protonmail.ch;
-        dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="F91tdGQe"
-Date:   Mon, 25 Jan 2021 15:07:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611587255; bh=6gbNlVdgnHaUiyryohCgZd5ryQzBNr+5hI97WloEzqs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=F91tdGQeVEguAB9jLIWvfC1BVy1mAQ9X/NTKAZ6x7nxJC5lRm89/zGyXcqtDaiZXy
-         HvhpygRf31tL0n7vzl/bhzMIycIglvExF3T9T3Ui+HmKPlOKMgOHdtUkF1pbjipTPk
-         iRk+KC+zj6Zjo3+alMpgRftCfLAd1P9cef8/U7zH6tscm4Zpf037i/TQIUUIvS+r0d
-         OZ3f2Gx+/eEttGnWiYYqVl1OtYfqCzBU+hXssHhCPTs/WVpdnnJnV7SUTepX32cvDI
-         ijbQ4dJLZdAv+Bq2SFqF9LF95t2dOcmEf4M4lOScZkk4GAkVTtkx1jsLAInkRQ1n62
-         pllGZJfn9dUwA==
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn@kernel.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
-Message-ID: <20210125150705.18376-1-alobakin@pm.me>
-In-Reply-To: <1611586627.1035807-1-xuanzhuo@linux.alibaba.com>
-References: <1611586627.1035807-1-xuanzhuo@linux.alibaba.com>
+        Mon, 25 Jan 2021 10:42:27 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11E3C0617AB
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:15:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=FrkyJH9N2oXi9xY7KULXItjsoY9MYakLxxRqHjbSlIs=; b=ZzUo6aUMmQcKVV4QcXLLN+urHX
+        CLRs1AqltZupLhua90/snOC5DFdvQjnvmcMWtiFf4NMn/dl7AhOxmDC18cQzoeZQU3NpR9HPiA0rG
+        fGs6GeC3lulst8ymGegBjblZSeC74PP4F60Jo5GlxNBRQAQKUfiQv5EF3qG79lY1i12Y6I/gPOk8s
+        nmP401xYN0qch1p5QVvjngrkAANopkTJadgJEvZPm8li1pTDzxjUg5uOuK8kLRj/jDB8uKHja4AJe
+        J41CSV9TIuv2TtOfkr313eMqeU9PEilEyoaIf3P+j4ZJeYXac8wtLh9TlAdplzB5iSFX8XC1NP40+
+        yKSjY3zg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l43Zq-004KsP-3n; Mon, 25 Jan 2021 15:15:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7E1AA305C22;
+        Mon, 25 Jan 2021 16:14:47 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 63FB4200E5328; Mon, 25 Jan 2021 16:14:47 +0100 (CET)
+Message-ID: <20210125151314.569403269@infradead.org>
+User-Agent: quilt/0.66
+Date:   Mon, 25 Jan 2021 16:09:54 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     walken@google.com, dave@stgolabs.net, mingo@kernel.org,
+        tglx@linutronix.de, oleg@redhat.com, irogers@google.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        peterz@infradead.org
+Subject: [PATCH v2 1/7] rbtree: Add generic add and find helpers
+References: <20210125150953.679129361@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Date: Mon, 25 Jan 2021 22:57:07 +0800
+I've always been bothered by the endless (fragile) boilerplate for
+rbtree, and I recently wrote some rbtree helpers for objtool and
+figured I should lift them into the kernel and use them more widely.
 
-> On Mon, 25 Jan 2021 13:25:45 +0000, Alexander Lobakin <alobakin@pm.me> wr=
-ote:
-> > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Date: Mon, 25 Jan 2021 11:10:43 +0800
-> >
-> > > On Fri, 22 Jan 2021 16:24:17 +0000, Alexander Lobakin <alobakin@pm.me=
-> wrote:
-> > > > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > Date: Fri, 22 Jan 2021 23:36:29 +0800
-> > > >
-> > > > > On Fri, 22 Jan 2021 12:08:00 +0000, Alexander Lobakin <alobakin@p=
-m.me> wrote:
-> > > > > > From: Alexander Lobakin <alobakin@pm.me>
-> > > > > > Date: Fri, 22 Jan 2021 11:55:35 +0000
-> > > > > >
-> > > > > > > From: Alexander Lobakin <alobakin@pm.me>
-> > > > > > > Date: Fri, 22 Jan 2021 11:47:45 +0000
-> > > > > > >
-> > > > > > > > From: Eric Dumazet <eric.dumazet@gmail.com>
-> > > > > > > > Date: Thu, 21 Jan 2021 16:41:33 +0100
-> > > > > > > >
-> > > > > > > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
-> > > > > > > > > > This patch is used to construct skb based on page to sa=
-ve memory copy
-> > > > > > > > > > overhead.
-> > > > > > > > > >
-> > > > > > > > > > This function is implemented based on IFF_TX_SKB_NO_LIN=
-EAR. Only the
-> > > > > > > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR w=
-ill use page to
-> > > > > > > > > > directly construct skb. If this feature is not supporte=
-d, it is still
-> > > > > > > > > > necessary to copy data to construct skb.
-> > > > > > > > > >
-> > > > > > > > > > ---------------- Performance Testing ------------
-> > > > > > > > > >
-> > > > > > > > > > The test environment is Aliyun ECS server.
-> > > > > > > > > > Test cmd:
-> > > > > > > > > > ```
-> > > > > > > > > > xdpsock -i eth0 -t  -S -s <msg size>
-> > > > > > > > > > ```
-> > > > > > > > > >
-> > > > > > > > > > Test result data:
-> > > > > > > > > >
-> > > > > > > > > > size    64      512     1024    1500
-> > > > > > > > > > copy    1916747 1775988 1600203 1440054
-> > > > > > > > > > page    1974058 1953655 1945463 1904478
-> > > > > > > > > > percent 3.0%    10.0%   21.58%  32.3%
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > > > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++=
-++++++++++++++----------
-> > > > > > > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
-> > > > > > > > > >
-> > > > > > > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > > > > > > > > index 4a83117..38af7f1 100644
-> > > > > > > > > > --- a/net/xdp/xsk.c
-> > > > > > > > > > +++ b/net/xdp/xsk.c
-> > > > > > > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struc=
-t sk_buff *skb)
-> > > > > > > > > >  =09sock_wfree(skb);
-> > > > > > > > > >  }
-> > > > > > > > > >
-> > > > > > > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct x=
-dp_sock *xs,
-> > > > > > > > > > +=09=09=09=09=09      struct xdp_desc *desc)
-> > > > > > > > > > +{
-> > > > > > > > > > +=09u32 len, offset, copy, copied;
-> > > > > > > > > > +=09struct sk_buff *skb;
-> > > > > > > > > > +=09struct page *page;
-> > > > > > > > > > +=09void *buffer;
-> > > > > > > > > > +=09int err, i;
-> > > > > > > > > > +=09u64 addr;
-> > > > > > > > > > +
-> > > > > > > > > > +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> > > > > >
-> > > > > > Also,
-> > > > > > maybe we should allocate it with NET_SKB_PAD so NIC drivers cou=
-ld
-> > > > > > use some reserved space?
-> > > > > >
-> > > > > > =09=09skb =3D sock_alloc_send_skb(&xs->sk, NET_SKB_PAD, 1, &err=
-);
-> > > > > > =09=09...
-> > > > > > =09=09skb_reserve(skb, NET_SKB_PAD);
-> > > > > >
-> > > > > > Eric, what do you think?
-> > > > >
-> > > > > I think you are right. Some space should be added to continuous e=
-quipment. This
-> > > > > space should also be added in the copy mode below. Is LL_RESERVED=
-_SPACE more
-> > > > > appropriate?
-> > > >
-> > > > No. If you look at __netdev_alloc_skb() and __napi_alloc_skb(), the=
-y
-> > > > reserve NET_SKB_PAD at the beginning of linear area. Documentation =
-of
-> > > > __build_skb() also says that driver should reserve NET_SKB_PAD befo=
-re
-> > > > the actual frame, so it is a standartized hardware-independent
-> > > > headroom.
-> > >
-> > > I understand that these scenarios are in the case of receiving packet=
-s, and the
-> > > increased space is used by the protocol stack, especially RPS. I don'=
-t know if
-> > > this also applies to the sending scenario?
-> > >
-> > > > Leaving that space in skb->head will allow developers to implement
-> > > > IFF_TX_SKB_NO_LINEAR in a wider variety of drivers, especially when
-> > > > a driver has to prepend some sort of data before the actual frame.
-> > > > Since it's usually of a size of one cacheline, shouldn't be a big
-> > > > deal.
-> > > >
-> > >
-> > > I agree with this. Some network cards require some space. For example=
-,
-> > > virtio-net needs to add a virtio_net_hdr_mrg_rxbuf before skb->data, =
-so my
-> > > original understanding is used here. When we send the skb to the
-> > > driver, the driver may need a memory space. So I refer to the
-> > > implementation of __ip_append_data, I feel that adding
-> > > LL_RESERVED_SPACE is a suitable solution.
-> > >
-> > > I feel that I may still not understand the use scene you mentioned. C=
-an you
-> > > elaborate on what you understand this space will be used for?
-> >
-> > LL_RESERVED_SPACE() consists of L2 header size (Ethernet for the most
-> > cases) and dev->needed_headroom. That is not a value to count on, as:
-> >  - L2 header is already here in XSK buffer;
-> >  - not all drivers set dev->needed_headroom;
-> >  - it's aligned by 16, not L1_CACHE_SIZE.
-> >
-> > As this path is XSK generic path, i.e. when driver-side XSK is not
-> > present or not requested, it can be applied to every driver. Many
-> > of them call skb_cow_head() + skb_push() on their xmit path:
-> >  - nearly all virtual drivers (to insert their specific headers);
-> >  - nearly all switch drivers (to insert switch CPU port tags);
-> >  - some enterprise NIC drivers (ChelsIO for LSO, Netronome
-> >    for TLS etc.).
-> >
-> > skb_cow_head() + skb_push() relies on a required NET_SKB_PAD headroom.
-> > In case where there is no enough space (and you allocate an skb with
-> > no headroom at all), skb will be COWed, which is a huge overhead and
-> > will cause slowdowns.
-> > So, adding NET_SKB_PAD would save from almost all, if not all, such
-> > reallocations.
->
-> I have learnt so much, thanks to you.
+Provide:
 
-Glad to hear!
+partial-order; less() based:
+ - rb_add(): add a new entry to the rbtree
+ - rb_add_cached(): like rb_add(), but for a rb_root_cached
 
-> > > Thanks.
-> > >
-> > > >
-> > > > [ I also had an idea of allocating an skb with a headroom of
-> > > > NET_SKB_PAD + 256 bytes, so nearly all drivers could just call
-> > > > pskb_pull_tail() to support such type of skbuffs without much
-> > > > effort, but I think that it's better to teach drivers to support
-> > > > xmitting of really headless ones. If virtio_net can do it, why
-> > > > shouldn't the others ]
-> > > >
-> > > > > > > > > > +=09if (unlikely(!skb))
-> > > > > > > > > > +=09=09return ERR_PTR(err);
-> > > > > > > > > > +
-> > > > > > > > > > +=09addr =3D desc->addr;
-> > > > > > > > > > +=09len =3D desc->len;
-> > > > > > > > > > +
-> > > > > > > > > > +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> > > > > > > > > > +=09offset =3D offset_in_page(buffer);
-> > > > > > > > > > +=09addr =3D buffer - xs->pool->addrs;
-> > > > > > > > > > +
-> > > > > > > > > > +=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-> > > > > > > > > > +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT]=
-;
-> > > > > > > > > > +
-> > > > > > > > > > +=09=09get_page(page);
-> > > > > > > > > > +
-> > > > > > > > > > +=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - co=
-pied);
-> > > > > > > > > > +
-> > > > > > > > > > +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-> > > > > > > > > > +
-> > > > > > > > > > +=09=09copied +=3D copy;
-> > > > > > > > > > +=09=09addr +=3D copy;
-> > > > > > > > > > +=09=09offset =3D 0;
-> > > > > > > > > > +=09}
-> > > > > > > > > > +
-> > > > > > > > > > +=09skb->len +=3D len;
-> > > > > > > > > > +=09skb->data_len +=3D len;
-> > > > > > > > >
-> > > > > > > > > > +=09skb->truesize +=3D len;
-> > > > > > > > >
-> > > > > > > > > This is not the truesize, unfortunately.
-> > > > > > > > >
-> > > > > > > > > We need to account for the number of pages, not number of=
- bytes.
-> > > > > > > >
-> > > > > > > > The easiest solution is:
-> > > > > > > >
-> > > > > > > > =09skb->truesize +=3D PAGE_SIZE * i;
-> > > > > > > >
-> > > > > > > > i would be equal to skb_shinfo(skb)->nr_frags after exiting=
- the loop.
-> > > > > > >
-> > > > > > > Oops, pls ignore this. I forgot that XSK buffers are not
-> > > > > > > "one per page".
-> > > > > > > We need to count the number of pages manually and then do
-> > > > > > >
-> > > > > > > =09skb->truesize +=3D PAGE_SIZE * npages;
-> > > > > > >
-> > > > > > > Right.
-> > > > > > >
-> > > > > > > > > > +
-> > > > > > > > > > +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
-> > > > > > > > > > +
-> > > > > > > > > > +=09return skb;
-> > > > > > > > > > +}
-> > > > > > > > > > +
-> > > > > > > >
-> > > > > > > > Al
-> > > > > > >
-> > > > > > > Thanks,
-> > > > > > > Al
-> > > > > >
-> > > > > > Al
-> >
-> > Thanks,
-> > Al
+total-order; cmp() based:
+ - rb_find(): find an entry in an rbtree
+ - rb_find_add(): find an entry, and add if not found
 
-Al
+ - rb_find_first(): find the first (leftmost) matching entry
+ - rb_next_match(): continue from rb_find_first()
+ - rb_for_each(): iterate a sub-tree using the previous two
+
+Inlining and constant propagation should see the compiler inline the
+whole thing, including the various compare functions.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Michel Lespinasse <walken@google.com>
+---
+ include/linux/rbtree.h       |  190 ++++++++++++++++++++++++++++++++++++++++++
+ tools/include/linux/rbtree.h |  192 ++++++++++++++++++++++++++++++++++++++++++-
+ tools/objtool/elf.c          |   73 ++--------------
+ 3 files changed, 392 insertions(+), 63 deletions(-)
+
+--- a/include/linux/rbtree.h
++++ b/include/linux/rbtree.h
+@@ -158,4 +158,194 @@ static inline void rb_replace_node_cache
+ 	rb_replace_node(victim, new, &root->rb_root);
+ }
+ 
++/*
++ * The below helper functions use 2 operators with 3 different
++ * calling conventions. The operators are related like:
++ *
++ *	comp(a->key,b) < 0  := less(a,b)
++ *	comp(a->key,b) > 0  := less(b,a)
++ *	comp(a->key,b) == 0 := !less(a,b) && !less(b,a)
++ *
++ * If these operators define a partial order on the elements we make no
++ * guarantee on which of the elements matching the key is found. See
++ * rb_find().
++ *
++ * The reason for this is to allow the find() interface without requiring an
++ * on-stack dummy object, which might not be feasible due to object size.
++ */
++
++/**
++ * rb_add_cached() - insert @node into the leftmost cached tree @tree
++ * @node: node to insert
++ * @tree: leftmost cached tree to insert @node into
++ * @less: operator defining the (partial) node order
++ */
++static __always_inline void
++rb_add_cached(struct rb_node *node, struct rb_root_cached *tree,
++	      bool (*less)(struct rb_node *, const struct rb_node *))
++{
++	struct rb_node **link = &tree->rb_root.rb_node;
++	struct rb_node *parent = NULL;
++	bool leftmost = true;
++
++	while (*link) {
++		parent = *link;
++		if (less(node, parent)) {
++			link = &parent->rb_left;
++		} else {
++			link = &parent->rb_right;
++			leftmost = false;
++		}
++	}
++
++	rb_link_node(node, parent, link);
++	rb_insert_color_cached(node, tree, leftmost);
++}
++
++/**
++ * rb_add() - insert @node into @tree
++ * @node: node to insert
++ * @tree: tree to insert @node into
++ * @less: operator defining the (partial) node order
++ */
++static __always_inline void
++rb_add(struct rb_node *node, struct rb_root *tree,
++       bool (*less)(struct rb_node *, const struct rb_node *))
++{
++	struct rb_node **link = &tree->rb_node;
++	struct rb_node *parent = NULL;
++
++	while (*link) {
++		parent = *link;
++		if (less(node, parent))
++			link = &parent->rb_left;
++		else
++			link = &parent->rb_right;
++	}
++
++	rb_link_node(node, parent, link);
++	rb_insert_color(node, tree);
++}
++
++/**
++ * rb_find_add() - find equivalent @node in @tree, or add @node
++ * @node: node to look-for / insert
++ * @tree: tree to search / modify
++ * @cmp: operator defining the node order
++ *
++ * Returns the rb_node matching @node, or NULL when no match is found and @node
++ * is inserted.
++ */
++static __always_inline struct rb_node *
++rb_find_add(struct rb_node *node, struct rb_root *tree,
++	    int (*cmp)(struct rb_node *, const struct rb_node *))
++{
++	struct rb_node **link = &tree->rb_node;
++	struct rb_node *parent = NULL;
++	int c;
++
++	while (*link) {
++		parent = *link;
++		c = cmp(node, parent);
++
++		if (c < 0)
++			link = &parent->rb_left;
++		else if (c > 0)
++			link = &parent->rb_right;
++		else
++			return parent;
++	}
++
++	rb_link_node(node, parent, link);
++	rb_insert_color(node, tree);
++	return NULL;
++}
++
++/**
++ * rb_find() - find @key in tree @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining the node order
++ *
++ * Returns the rb_node matching @key or NULL.
++ */
++static __always_inline struct rb_node *
++rb_find(const void *key, const struct rb_root *tree,
++	int (*cmp)(const void *key, const struct rb_node *))
++{
++	struct rb_node *node = tree->rb_node;
++
++	while (node) {
++		int c = cmp(key, node);
++
++		if (c < 0)
++			node = node->rb_left;
++		else if (c > 0)
++			node = node->rb_right;
++		else
++			return node;
++	}
++
++	return NULL;
++}
++
++/**
++ * rb_find_first() - find the first @key in @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining node order
++ *
++ * Returns the leftmost node matching @key, or NULL.
++ */
++static __always_inline struct rb_node *
++rb_find_first(const void *key, const struct rb_root *tree,
++	      int (*cmp)(const void *key, const struct rb_node *))
++{
++	struct rb_node *node = tree->rb_node;
++	struct rb_node *match = NULL;
++
++	while (node) {
++		int c = cmp(key, node);
++
++		if (c <= 0) {
++			if (!c)
++				match = node;
++			node = node->rb_left;
++		} else if (c > 0) {
++			node = node->rb_right;
++		}
++	}
++
++	return match;
++}
++
++/**
++ * rb_next_match() - find the next @key in @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining node order
++ *
++ * Returns the next node matching @key, or NULL.
++ */
++static __always_inline struct rb_node *
++rb_next_match(const void *key, struct rb_node *node,
++	      int (*cmp)(const void *key, const struct rb_node *))
++{
++	node = rb_next(node);
++	if (node && cmp(key, node))
++		node = NULL;
++	return node;
++}
++
++/**
++ * rb_for_each() - iterates a subtree matching @key
++ * @node: iterator
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining node order
++ */
++#define rb_for_each(node, key, tree, cmp) \
++	for ((node) = rb_find_first((key), (tree), (cmp)); \
++	     (node); (node) = rb_next_match((key), (node), (cmp)))
++
+ #endif	/* _LINUX_RBTREE_H */
+--- a/tools/include/linux/rbtree.h
++++ b/tools/include/linux/rbtree.h
+@@ -152,4 +152,194 @@ static inline void rb_replace_node_cache
+ 	rb_replace_node(victim, new, &root->rb_root);
+ }
+ 
+-#endif /* __TOOLS_LINUX_PERF_RBTREE_H */
++/*
++ * The below helper functions use 2 operators with 3 different
++ * calling conventions. The operators are related like:
++ *
++ *	comp(a->key,b) < 0  := less(a,b)
++ *	comp(a->key,b) > 0  := less(b,a)
++ *	comp(a->key,b) == 0 := !less(a,b) && !less(b,a)
++ *
++ * If these operators define a partial order on the elements we make no
++ * guarantee on which of the elements matching the key is found. See
++ * rb_find().
++ *
++ * The reason for this is to allow the find() interface without requiring an
++ * on-stack dummy object, which might not be feasible due to object size.
++ */
++
++/**
++ * rb_add_cached() - insert @node into the leftmost cached tree @tree
++ * @node: node to insert
++ * @tree: leftmost cached tree to insert @node into
++ * @less: operator defining the (partial) node order
++ */
++static __always_inline void
++rb_add_cached(struct rb_node *node, struct rb_root_cached *tree,
++	      bool (*less)(struct rb_node *, const struct rb_node *))
++{
++	struct rb_node **link = &tree->rb_root.rb_node;
++	struct rb_node *parent = NULL;
++	bool leftmost = true;
++
++	while (*link) {
++		parent = *link;
++		if (less(node, parent)) {
++			link = &parent->rb_left;
++		} else {
++			link = &parent->rb_right;
++			leftmost = false;
++		}
++	}
++
++	rb_link_node(node, parent, link);
++	rb_insert_color_cached(node, tree, leftmost);
++}
++
++/**
++ * rb_add() - insert @node into @tree
++ * @node: node to insert
++ * @tree: tree to insert @node into
++ * @less: operator defining the (partial) node order
++ */
++static __always_inline void
++rb_add(struct rb_node *node, struct rb_root *tree,
++       bool (*less)(struct rb_node *, const struct rb_node *))
++{
++	struct rb_node **link = &tree->rb_node;
++	struct rb_node *parent = NULL;
++
++	while (*link) {
++		parent = *link;
++		if (less(node, parent))
++			link = &parent->rb_left;
++		else
++			link = &parent->rb_right;
++	}
++
++	rb_link_node(node, parent, link);
++	rb_insert_color(node, tree);
++}
++
++/**
++ * rb_find_add() - find equivalent @node in @tree, or add @node
++ * @node: node to look-for / insert
++ * @tree: tree to search / modify
++ * @cmp: operator defining the node order
++ *
++ * Returns the rb_node matching @node, or NULL when no match is found and @node
++ * is inserted.
++ */
++static __always_inline struct rb_node *
++rb_find_add(struct rb_node *node, struct rb_root *tree,
++	    int (*cmp)(struct rb_node *, const struct rb_node *))
++{
++	struct rb_node **link = &tree->rb_node;
++	struct rb_node *parent = NULL;
++	int c;
++
++	while (*link) {
++		parent = *link;
++		c = cmp(node, parent);
++
++		if (c < 0)
++			link = &parent->rb_left;
++		else if (c > 0)
++			link = &parent->rb_right;
++		else
++			return parent;
++	}
++
++	rb_link_node(node, parent, link);
++	rb_insert_color(node, tree);
++	return NULL;
++}
++
++/**
++ * rb_find() - find @key in tree @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining the node order
++ *
++ * Returns the rb_node matching @key or NULL.
++ */
++static __always_inline struct rb_node *
++rb_find(const void *key, const struct rb_root *tree,
++	int (*cmp)(const void *key, const struct rb_node *))
++{
++	struct rb_node *node = tree->rb_node;
++
++	while (node) {
++		int c = cmp(key, node);
++
++		if (c < 0)
++			node = node->rb_left;
++		else if (c > 0)
++			node = node->rb_right;
++		else
++			return node;
++	}
++
++	return NULL;
++}
++
++/**
++ * rb_find_first() - find the first @key in @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining node order
++ *
++ * Returns the leftmost node matching @key, or NULL.
++ */
++static __always_inline struct rb_node *
++rb_find_first(const void *key, const struct rb_root *tree,
++	      int (*cmp)(const void *key, const struct rb_node *))
++{
++	struct rb_node *node = tree->rb_node;
++	struct rb_node *match = NULL;
++
++	while (node) {
++		int c = cmp(key, node);
++
++		if (c <= 0) {
++			if (!c)
++				match = node;
++			node = node->rb_left;
++		} else if (c > 0) {
++			node = node->rb_right;
++		}
++	}
++
++	return match;
++}
++
++/**
++ * rb_next_match() - find the next @key in @tree
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining node order
++ *
++ * Returns the next node matching @key, or NULL.
++ */
++static __always_inline struct rb_node *
++rb_next_match(const void *key, struct rb_node *node,
++	      int (*cmp)(const void *key, const struct rb_node *))
++{
++	node = rb_next(node);
++	if (node && cmp(key, node))
++		node = NULL;
++	return node;
++}
++
++/**
++ * rb_for_each() - iterates a subtree matching @key
++ * @node: iterator
++ * @key: key to match
++ * @tree: tree to search
++ * @cmp: operator defining node order
++ */
++#define rb_for_each(node, key, tree, cmp) \
++	for ((node) = rb_find_first((key), (tree), (cmp)); \
++	     (node); (node) = rb_next_match((key), (node), (cmp)))
++
++#endif	/* __TOOLS_LINUX_PERF_RBTREE_H */
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -43,75 +43,24 @@ static void elf_hash_init(struct hlist_h
+ #define elf_hash_for_each_possible(name, obj, member, key)			\
+ 	hlist_for_each_entry(obj, &name[hash_min(key, elf_hash_bits())], member)
+ 
+-static void rb_add(struct rb_root *tree, struct rb_node *node,
+-		   int (*cmp)(struct rb_node *, const struct rb_node *))
+-{
+-	struct rb_node **link = &tree->rb_node;
+-	struct rb_node *parent = NULL;
+-
+-	while (*link) {
+-		parent = *link;
+-		if (cmp(node, parent) < 0)
+-			link = &parent->rb_left;
+-		else
+-			link = &parent->rb_right;
+-	}
+-
+-	rb_link_node(node, parent, link);
+-	rb_insert_color(node, tree);
+-}
+-
+-static struct rb_node *rb_find_first(const struct rb_root *tree, const void *key,
+-			       int (*cmp)(const void *key, const struct rb_node *))
+-{
+-	struct rb_node *node = tree->rb_node;
+-	struct rb_node *match = NULL;
+-
+-	while (node) {
+-		int c = cmp(key, node);
+-		if (c <= 0) {
+-			if (!c)
+-				match = node;
+-			node = node->rb_left;
+-		} else if (c > 0) {
+-			node = node->rb_right;
+-		}
+-	}
+-
+-	return match;
+-}
+-
+-static struct rb_node *rb_next_match(struct rb_node *node, const void *key,
+-				    int (*cmp)(const void *key, const struct rb_node *))
+-{
+-	node = rb_next(node);
+-	if (node && cmp(key, node))
+-		node = NULL;
+-	return node;
+-}
+-
+-#define rb_for_each(tree, node, key, cmp) \
+-	for ((node) = rb_find_first((tree), (key), (cmp)); \
+-	     (node); (node) = rb_next_match((node), (key), (cmp)))
+-
+-static int symbol_to_offset(struct rb_node *a, const struct rb_node *b)
++static bool symbol_to_offset(struct rb_node *a, const struct rb_node *b)
+ {
+ 	struct symbol *sa = rb_entry(a, struct symbol, node);
+ 	struct symbol *sb = rb_entry(b, struct symbol, node);
+ 
+ 	if (sa->offset < sb->offset)
+-		return -1;
++		return true;
+ 	if (sa->offset > sb->offset)
+-		return 1;
++		return false;
+ 
+ 	if (sa->len < sb->len)
+-		return -1;
++		return true;
+ 	if (sa->len > sb->len)
+-		return 1;
++		return false;
+ 
+ 	sa->alias = sb;
+ 
+-	return 0;
++	return false;
+ }
+ 
+ static int symbol_by_offset(const void *key, const struct rb_node *node)
+@@ -165,7 +114,7 @@ struct symbol *find_symbol_by_offset(str
+ {
+ 	struct rb_node *node;
+ 
+-	rb_for_each(&sec->symbol_tree, node, &offset, symbol_by_offset) {
++	rb_for_each(node, &offset, &sec->symbol_tree, symbol_by_offset) {
+ 		struct symbol *s = rb_entry(node, struct symbol, node);
+ 
+ 		if (s->offset == offset && s->type != STT_SECTION)
+@@ -179,7 +128,7 @@ struct symbol *find_func_by_offset(struc
+ {
+ 	struct rb_node *node;
+ 
+-	rb_for_each(&sec->symbol_tree, node, &offset, symbol_by_offset) {
++	rb_for_each(node, &offset, &sec->symbol_tree, symbol_by_offset) {
+ 		struct symbol *s = rb_entry(node, struct symbol, node);
+ 
+ 		if (s->offset == offset && s->type == STT_FUNC)
+@@ -193,7 +142,7 @@ struct symbol *find_symbol_containing(co
+ {
+ 	struct rb_node *node;
+ 
+-	rb_for_each(&sec->symbol_tree, node, &offset, symbol_by_offset) {
++	rb_for_each(node, &offset, &sec->symbol_tree, symbol_by_offset) {
+ 		struct symbol *s = rb_entry(node, struct symbol, node);
+ 
+ 		if (s->type != STT_SECTION)
+@@ -207,7 +156,7 @@ struct symbol *find_func_containing(stru
+ {
+ 	struct rb_node *node;
+ 
+-	rb_for_each(&sec->symbol_tree, node, &offset, symbol_by_offset) {
++	rb_for_each(node, &offset, &sec->symbol_tree, symbol_by_offset) {
+ 		struct symbol *s = rb_entry(node, struct symbol, node);
+ 
+ 		if (s->type == STT_FUNC)
+@@ -439,7 +388,7 @@ static int read_symbols(struct elf *elf)
+ 		sym->offset = sym->sym.st_value;
+ 		sym->len = sym->sym.st_size;
+ 
+-		rb_add(&sym->sec->symbol_tree, &sym->node, symbol_to_offset);
++		rb_add(&sym->node, &sym->sec->symbol_tree, symbol_to_offset);
+ 		pnode = rb_prev(&sym->node);
+ 		if (pnode)
+ 			entry = &rb_entry(pnode, struct symbol, node)->list;
+
 
