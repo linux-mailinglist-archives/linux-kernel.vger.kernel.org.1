@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA8F3026D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709F83026E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbhAYPWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729849AbhAYO45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:56:57 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1144C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:56:16 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id p15so6227889wrq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 06:56:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=LMT8I108IgwH+pDf3Xg1LrGxGawVZhIINlR7TedTzQU=;
-        b=L07uWIbonvyLtIx0nIGJ7Ng60gDk8h6eMOVOrA3mPsUjtKK8ee903o7/NwP5uKhnsZ
-         j7dtLX3Pd+8m/qPKEIen+RJY0Hgs4GGdIPXeopuTEggTcO1lJzu9JI5XB7E+5e9TTqJc
-         sRGLhG4+GCbcMj3LRQEBc7Ya0bOY1t/NdSZgQhxsalL6fDT2PD0awS19UG7Gb7LalQjf
-         uN6VvkyZmJX+aPmEIyYNPd1Ins66XkcXbTsGoJ1Bazpm2qhOlFj3pVa27URYXJqwYw2H
-         NF3lYEa/wvQcvNH+rHnL09m9f/xlsZOd9mTyrHbCgu4U7bzxhz0JaqRacxe47ZkzDRLy
-         scPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=LMT8I108IgwH+pDf3Xg1LrGxGawVZhIINlR7TedTzQU=;
-        b=bEPbJpvUYmOvc5wXc9MIb+jaXrQzmt/lDXPSmciXGAwRON3XYscyYFjm/fpWZp30tu
-         kHAgPZ3/s3lDaw0QHQMfQa+HWu/11Zgrt+dpj3jnPhTbEOVz0usFyMUwKy2zZbW9fl7X
-         2TmaluvS+7qL74wqsy+jd7JsRSBpmGYaAi5vekBZvyjKomi/JwyDjjbFrUi547kZWoIr
-         n+saYycch5h9vCJB8s7RapZ+qap7yS9kdndgG+/t7F19PR6vP4sZI7e3RX+s3F7/n7S4
-         xGzV/bYfPlvn5qYXJ4EHzSZQBzpQ0PCZPyHhsXzLrJu1gpuviMoC8Mxu3tpDH55ppPOn
-         nYHw==
-X-Gm-Message-State: AOAM530D56S62ieKMkYZHa+17ut9q0rfIEtFIyjcnqkpVJz/Kqz+u0Wg
-        Ia153UTK194Gf/laLv2ZNO8EIQ==
-X-Google-Smtp-Source: ABdhPJzoDrF+chyqhLGsmCzHbP6XVmzRrhjBlB2SM6Jzo/xfuq/tFeXCPvjIZIP+ljHXQdZe7JUWDQ==
-X-Received: by 2002:a5d:6752:: with SMTP id l18mr1403020wrw.209.1611586575549;
-        Mon, 25 Jan 2021 06:56:15 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id t25sm20862971wmj.39.2021.01.25.06.56.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 06:56:15 -0800 (PST)
-Date:   Mon, 25 Jan 2021 15:56:14 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Ido Schimmel <idosch@idosch.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jiri@nvidia.com" <jiri@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: core: devlink: add new trap action
- HARD_DROP
-Message-ID: <20210125145614.GM3565223@nanopsycho.orion>
-References: <20210121112937.30989-1-oleksandr.mazur@plvision.eu>
- <20210121122152.GA2647590@shredder.lan>
- <20210121093605.49ba26ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210125121234.GJ3565223@nanopsycho.orion>
- <AM0P190MB07387522928B6730DBE1BB77E4BD0@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+        id S1729873AbhAYP03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:26:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729932AbhAYPCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:02:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38C232310B
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:00:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611586834;
+        bh=hd/WXSL7nvCB88gXvns199QHmgVVBrlCpN1PP6wvQHw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jpPA43bvelk6gF/9cB93LHi7Tly+kXkFx6hG6PHe+9hpQbbKXRCjw499iIjLbeqnz
+         AjqmnsIR7Tui3CxngPzhbqCv09a5QdeWAtjObuDMpO+LqJhNRFSxhGOI3B3il2HN98
+         8SMTMo41asS0b/1rp4BG5XSI44LSR7AzJe/bh+u5xkk4TPSRVmj8IHhPgU0Y/mMZyD
+         yKfIXt54JTHJN6dUxsvM/V/FCAolPrs33scoHlvMVVb+dVdMjXnWCnFPCxTGhnzlH+
+         VReByrSeAq6c39B8eS77RfwGjyFPhRP6qBI7/B6nR7II3xm1OfuYKmRET2QcxFTYZF
+         N2trskMz/Kwjg==
+Received: by mail-ot1-f53.google.com with SMTP id d1so12939492otl.13
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:00:34 -0800 (PST)
+X-Gm-Message-State: AOAM532wfXJ4rhPEu3swG4sVLvMamLgByVOq7qDV9Dbwm0MwVy/Ouofp
+        rQSdKUVAPX+q7eVmhxkUZow5YZ0R7CQ1pwhlRSE=
+X-Google-Smtp-Source: ABdhPJw1XagAoMkdlEgNaYOLX1Mg3wGRaGlR6h1xBKgBfrY9aj6SMHjzWNtcB8bOfL/jGHT7EzD/r/eZef5aGiCiEgQ=
+X-Received: by 2002:a05:6830:1158:: with SMTP id x24mr712541otq.108.1611586833510;
+ Mon, 25 Jan 2021 07:00:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AM0P190MB07387522928B6730DBE1BB77E4BD0@AM0P190MB0738.EURP190.PROD.OUTLOOK.COM>
+References: <20210125105019.2946057-1-maz@kernel.org> <20210125105019.2946057-19-maz@kernel.org>
+ <CAMj1kXFcc+0At5+9Keo1MF=TeGE9-eOHtSpK7yVy5jzwXt6KCA@mail.gmail.com>
+ <3a98ff1db79c90c96038b924eb534643@kernel.org> <CAMj1kXGTu8AtMnm7NxB8M2xFuXHSKzAx2hjjeaAW2v-usvavVQ@mail.gmail.com>
+ <32b49beb87b25303d71fd2f7053c7959@kernel.org>
+In-Reply-To: <32b49beb87b25303d71fd2f7053c7959@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 25 Jan 2021 16:00:21 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGW3yWqBMk8E23e4PnYAXWUGUUeg4xFVyhHtq+v3WLF_w@mail.gmail.com>
+Message-ID: <CAMj1kXGW3yWqBMk8E23e4PnYAXWUGUUeg4xFVyhHtq+v3WLF_w@mail.gmail.com>
+Subject: Re: [PATCH v5 18/21] arm64: Move "nokaslr" over to the early
+ cpufeature infrastructure
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Jan 25, 2021 at 01:24:27PM CET, oleksandr.mazur@plvision.eu wrote:
->Thu, Jan 21, 2021 at 06:36:05PM CET, kuba@kernel.org wrote:
->>On Thu, 21 Jan 2021 14:21:52 +0200 Ido Schimmel wrote:
->>> On Thu, Jan 21, 2021 at 01:29:37PM +0200, Oleksandr Mazur wrote:
->>> > Add new trap action HARD_DROP, which can be used by the
->>> > drivers to register traps, where it's impossible to get
->>> > packet reported to the devlink subsystem by the device
->>> > driver, because it's impossible to retrieve dropped packet
->>> > from the device itself.
->>> > In order to use this action, driver must also register
->>> > additional devlink operation - callback that is used
->>> > to retrieve number of packets that have been dropped by
->>> > the device.  
->>> 
->>> Are these global statistics about number of packets the hardware dropped
->>> for a specific reason or are these per-port statistics?
->>> 
->>> It's a creative use of devlink-trap interface, but I think it makes
->>> sense. Better to re-use an existing interface than creating yet another
->>> one.
->>
->>Not sure if I agree, if we can't trap why is it a trap?
->>It's just a counter.
+On Mon, 25 Jan 2021 at 15:28, Marc Zyngier <maz@kernel.org> wrote:
 >
->>+1
->Device might be unable to trap only the 'DROP' packets, and this information should be transparent for the user.
+> On 2021-01-25 14:19, Ard Biesheuvel wrote:
+> > On Mon, 25 Jan 2021 at 14:54, Marc Zyngier <maz@kernel.org> wrote:
+> >>
+> >> On 2021-01-25 12:54, Ard Biesheuvel wrote:
 >
->I agree on the statement, that new action might be an overhead.
->I could continue on with the solution Ido Schimmel proposed: since no new action would be needed and no UAPI changes are required, i could simply do the dropped statistics (additional field) output added upon trap stats queiring.
->(In case if driver registerd callback, of course; and do so only for DROP actions)
+> [...]
+>
+> >> > This struct now takes up
+> >> > - ~100 bytes for the characters themselves (which btw are not emitted
+> >> > into __initdata or __initconst)
+> >> > - 6x8 bytes for the char pointers
+> >> > - 6x24 bytes for the RELA relocations that annotate these pointers as
+> >> > quantities that need to be relocated at boot (on a kernel built with
+> >> > KASLR)
+> >> >
+> >> > I know it's only a drop in the ocean, but in this case, where the
+> >> > struct is statically declared and defined only once, and in the same
+> >> > place, we could easily turn this into
+> >> >
+> >> > static const struct {
+> >> >    char alias[24];
+> >> >    char param[20];
+> >> > };
+> >> >
+> >> > and get rid of all the overhead. The only slightly annoying thing is
+> >> > that the array sizes need to be kept in sync with the largest instance
+> >> > appearing in the array, but this is easy when the struct type is
+> >> > declared in the same place where its only instance is defined.
+> >>
+> >> Fair enough. I personally find the result butt-ugly, but I agree
+> >> that it certainly saves some memory. Does the following work for
+> >> you? I can even give symbolic names to the various constants (how
+> >> generous of me! ;-).
+> >>
+> >
+> > To be honest, I was anticipating more of a discussion, but this looks
+> > reasonable to me.
+>
+> It looked like a reasonable ask: all the strings are completely useless
+> once the kernel has booted, and I'm the first to moan that I can't boot
+> an arm64 kernel with less than 60MB of RAM (OK, it's a pretty bloated
+> kernel...).
+>
+> > Does 'char    feature[80];' really need 80 bytes though?
+>
+> It really needs 75 bytes, because of this:
+>
+>         { "arm64.nopauth",
+>           "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
+>           "id_aa64isar1.api=0 id_aa64isar1.apa=0"          },
+>
+> 80 is a round enough number.
+>
 
-It is not "a trap". You just need to count dropped packet. You don't
-trap anything. That is why I don't think this has anything to do with
-"trap" infra.
+Fair enough. This will inflate the struct substantially, but at least
+it's all __initconst data now, and it's all NUL bytes so it compresses
+much better than the pointers and RELA entries.
