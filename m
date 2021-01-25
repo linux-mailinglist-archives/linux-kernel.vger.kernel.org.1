@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0B73036C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B04353036CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730581AbhAZGng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:43:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729790AbhAYOtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:49:24 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B36A520848;
-        Mon, 25 Jan 2021 14:48:40 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l43AU-009tYm-Ut; Mon, 25 Jan 2021 14:48:39 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 25 Jan 2021 14:48:38 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] genirq/msi: Activate Multi-MSI early when
- MSI_FLAG_ACTIVATE_EARLY is set
-In-Reply-To: <19ddad1517f0495d92c2248d04cf0d5c@huawei.com>
-References: <20210123122759.1781359-1-maz@kernel.org>
- <19ddad1517f0495d92c2248d04cf0d5c@huawei.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <4e7ea548f1667410dd6197509ab15ef4@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: shameerali.kolothum.thodi@huawei.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, bhelgaas@google.com, stable@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S1731563AbhAZGr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:47:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729798AbhAYOtj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:49:39 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8EFC061574;
+        Mon, 25 Jan 2021 06:48:57 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id y187so11308633wmd.3;
+        Mon, 25 Jan 2021 06:48:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=QKVPfv6NioAKXL2jIZ8ignJiUMCaI8h+exsQiu5IPPA=;
+        b=E0JEArhPC9PVqQSnyWc+a/zbPCrY7aFgkE83tMzyQlsm43jR/vImtUY2iYWfm8Y2J6
+         ncpXDMCTpG8UKHD0ttjoVG5ZH9IEDSpCqj1a1ZNsVGFx9aFepGwIRhpJVkoWKHP6NbOu
+         uBNZfso9/uu8TGJdn9BmccBh5qnJfbkCM6OPwbqRTJp7G62dN/axrDg/WXcnbXVXpXCi
+         jpEmF0bSSbb5B6BlE9x1k1Um3V1eKHc5oKvGV4FDBHJ5/dBPe3XKvUxU092Kgg3BTsnb
+         Eh779Yo+ymlSdAzgk/h0gmrfLk+PEYmNQAbCJ9MQdS2ZCmwgOJiGKSBmm5O3J0XYypI0
+         j86w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QKVPfv6NioAKXL2jIZ8ignJiUMCaI8h+exsQiu5IPPA=;
+        b=iWZU4YFOHZiKu6Hqo8KIVcNnv2dYYZ7ELw9uS9aPjlv1NWHDyxajjRwkM2MGJcMDUn
+         qGJ6lHrMohO9XmBsTjPB1A7IYopmwb94CC1aL6Hv/DygUd8KIR6j7vgXZrV4xYw3mA/L
+         FT7pX/KKEgxXVAbjhon97/M/NlYqjpSun0V0TY8bu0FJgPBRw9h6qtLyeDx+ESg1viyu
+         tjghkaV7eXflwQdQT2pvoYN/gjSvFxeBBK8AognAB7WSeKSjh3Z1zZ8Rq8pJhcOqz2kC
+         6Xd6yLH9xPg56E5yvnvlpP8L2VqJfVz3tU0scPmMqho1MYp5cMAYbs2YLznXOUkMXsy2
+         JkUg==
+X-Gm-Message-State: AOAM532s+Sr7lDPUjuvg6WXWALmCGQMEEBX60aPYipn4MSN9kaspmk85
+        aiupJmtNi3eC3BDk4quO4YY=
+X-Google-Smtp-Source: ABdhPJwUHv9gCSik0AJygB1hBoPoE+LvC1chT3BIWydPVTXlqmNYUqnk0AhMSJ3iwcEYds+RtH3bhA==
+X-Received: by 2002:a1c:ddc6:: with SMTP id u189mr473416wmg.172.1611586136014;
+        Mon, 25 Jan 2021 06:48:56 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d4b:4500:649e:f82b:bf2d:2571])
+        by smtp.gmail.com with ESMTPSA id b132sm21454499wmh.21.2021.01.25.06.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 06:48:55 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] kgdb: rectify kernel-doc for kgdb_unregister_io_module()
+Date:   Mon, 25 Jan 2021 15:48:47 +0100
+Message-Id: <20210125144847.21896-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-25 14:39, Shameerali Kolothum Thodi wrote:
->> -----Original Message-----
->> From: Marc Zyngier [mailto:maz@kernel.org]
->> Sent: 23 January 2021 12:28
->> To: linux-kernel@vger.kernel.org
->> Cc: Thomas Gleixner <tglx@linutronix.de>; Bjorn Helgaas
->> <bhelgaas@google.com>; Shameerali Kolothum Thodi
->> <shameerali.kolothum.thodi@huawei.com>; stable@vger.kernel.org
->> Subject: [PATCH] genirq/msi: Activate Multi-MSI early when
->> MSI_FLAG_ACTIVATE_EARLY is set
->> 
->> When MSI_FLAG_ACTIVATE_EARLY is set (which is the case for PCI),
->> we perform the activation of the interrupt (which in the case of
->> PCI results in the endpoint being programmed) as soon as the
->> interrupt is allocated.
->> 
->> But it appears that this is only done for the first vector,
->> introducing an inconsistent behaviour for PCI Multi-MSI.
->> 
->> Fix it by iterating over the number of vectors allocated to
->> each MSI descriptor. This is easily achieved by introducing
->> a new "for_each_msi_vector" iterator, together with a tiny
->> bit of refactoring.
->> 
->> Fixes: f3b0946d629c ("genirq/msi: Make sure PCI MSIs are activated 
->> early")
->> Reported-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Cc: stable@vger.kernel.org
->> ---
->>  include/linux/msi.h |  6 ++++++
->>  kernel/irq/msi.c    | 44 ++++++++++++++++++++------------------------
->>  2 files changed, 26 insertions(+), 24 deletions(-)
->> 
->> diff --git a/include/linux/msi.h b/include/linux/msi.h
->> index 360a0a7e7341..aef35fd1cf11 100644
->> --- a/include/linux/msi.h
->> +++ b/include/linux/msi.h
->> @@ -178,6 +178,12 @@ struct msi_desc {
->>  	list_for_each_entry((desc), dev_to_msi_list((dev)), list)
->>  #define for_each_msi_entry_safe(desc, tmp, dev)	\
->>  	list_for_each_entry_safe((desc), (tmp), dev_to_msi_list((dev)), 
->> list)
->> +#define for_each_msi_vector(desc, __irq, dev)				\
->> +	for_each_msi_entry((desc), (dev))				\
->> +		if ((desc)->irq)					\
->> +			for (__irq = (desc)->irq;			\
->> +			     __irq < ((desc)->irq + (desc)->nvec_used);	\
->> +			     __irq++)
->> 
->>  #ifdef CONFIG_IRQ_MSI_IOMMU
->>  static inline const void *msi_desc_get_iommu_cookie(struct msi_desc 
->> *desc)
->> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
->> index 2c0c4d6d0f83..d924676c8781 100644
->> --- a/kernel/irq/msi.c
->> +++ b/kernel/irq/msi.c
->> @@ -436,22 +436,22 @@ int __msi_domain_alloc_irqs(struct irq_domain
->> *domain, struct device *dev,
->> 
->>  	can_reserve = msi_check_reservation_mode(domain, info, dev);
->> 
->> -	for_each_msi_entry(desc, dev) {
->> -		virq = desc->irq;
->> -		if (desc->nvec_used == 1)
->> -			dev_dbg(dev, "irq %d for MSI\n", virq);
->> -		else
->> +	/*
->> +	 * This flag is set by the PCI layer as we need to activate
->> +	 * the MSI entries before the PCI layer enables MSI in the
->> +	 * card. Otherwise the card latches a random msi message.
->> +	 */
->> +	if (!(info->flags & MSI_FLAG_ACTIVATE_EARLY))
->> +		goto skip_activate;
-> 
-> This will change the dbg print behavior. From the commit f3b0946d629c,
-> it looks like the below dev_dbg() code was there for 
-> !MSI_FLAG_ACTIVATE_EARLY
-> case as well. Not sure how much this matters though.
+The command 'find ./kernel/debug/ | xargs ./scripts/kernel-doc -none'
+reported a typo in the kernel-doc of kgdb_unregister_io_module().
 
-I'm not sure this matters either. We may have relied on these statements
-some 6/7 years ago, as the whole hierarchy stuff was brand new, but we
-now have a much better debug infrastructure thanks to Thomas. I'd be
-totally in favour of dropping it.
+Rectify the kernel-doc, such that no issues remain for ./kernel/debug/.
 
-Thanks,
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on v5.11-rc5 and next-20210122
 
-         M.
+Jason, Daniel, please pick this minor typo fixup.
+
+ kernel/debug/debug_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index af6e8b4fb359..7f22c1c0ffe8 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -1166,7 +1166,7 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
+ EXPORT_SYMBOL_GPL(kgdb_register_io_module);
+ 
+ /**
+- *	kkgdb_unregister_io_module - unregister KGDB IO module
++ *	kgdb_unregister_io_module - unregister KGDB IO module
+  *	@old_dbg_io_ops: the io ops vector
+  *
+  *	Unregister it with the KGDB core.
 -- 
-Jazz is not dead. It just smells funny...
+2.17.1
+
