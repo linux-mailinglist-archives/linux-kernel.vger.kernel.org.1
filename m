@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDDA30265B
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFBD302664
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbhAYOfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:35:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729467AbhAYOcf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:32:35 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B115BC06178A;
-        Mon, 25 Jan 2021 06:31:54 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id b26so17998721lff.9;
-        Mon, 25 Jan 2021 06:31:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=J81vU0UwWpEHhAfUrDasXcHzBdqWSd90SVkou0JGu4s=;
-        b=Aa5iatRhzwdZySQ1I03K4tT8lWwA7lItloapzYsFQhLCzD4Zkwi7Z2RhdRhdmh2FX5
-         Uf1ID4KlMe74ptwxWoxkDlDNun/NFbcBQl2IkjIw56m1gAZziRcKw1HIofFxbyr7/T0K
-         AvBID7qGAY3jpcyqPcbhojR874K43pRgxGgt545/awcFhzQJfzW4ygq+JBXuKB43f6wP
-         Tox+5e2RyvBVxCIxfqAUItBOWNOmPRtVDwB5tsihVoyF+bHZP1+h/6V6YpzB0URyXv5M
-         DEaNSPRiprsZ9YmfBLxYx98KkluAG2oE0XiVeImrQQx9lwtB/pvlObMenied/zkscs6R
-         1evw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=J81vU0UwWpEHhAfUrDasXcHzBdqWSd90SVkou0JGu4s=;
-        b=fVGuLAco5PO0OnutjMfxiJLYEeQBv3+A8D+XZrwjrQ3wX18hcL3HSWXNQqlvt4ql1D
-         p4MIwMFdoy5/s3kiGhbnH+zO58WoBnSFPLDSePMuu8m6PqgqU6FhAF5fYmHc5tI8srnC
-         SKRPE7adE2kDGNMSiSYESYXIlGEp0O+0Y8xzvYaNL17HSPZJkM7O6nHa92V9yQqOPerm
-         5w6HNwIFRUWuF9zJOkxUGz/m0LeNfmGyWf9RwSwLziYEiSuzWTEtl/1axsatYoZbwavd
-         PPbcd55FrvFDHfLABfPQoGyb7rgUaNZ9zFAQJdXkeL3yh6Ua+/qKIniwkdpLmJluxlob
-         OQ9Q==
-X-Gm-Message-State: AOAM530zI+30qa4umvXEOcmtq5lwb/dR6D548gRClORQ8yEXlZXQtrB3
-        eEaNX71clF34VBEKUIHd9uc=
-X-Google-Smtp-Source: ABdhPJw3s/RyopZ/qc1k6J1ikFH4L5TTXroAy0eCJZmxRuEGUsnerFoUYGwFSoIkPpYpnhNyO7mn+A==
-X-Received: by 2002:a05:6512:a8e:: with SMTP id m14mr381149lfu.641.1611585113193;
-        Mon, 25 Jan 2021 06:31:53 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id c14sm1934922lfd.186.2021.01.25.06.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 06:31:52 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 25 Jan 2021 15:31:50 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
+        id S1729700AbhAYOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:41:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729417AbhAYOhl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:37:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D793E2311D;
+        Mon, 25 Jan 2021 14:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611585249;
+        bh=bxzG9qoPXd8t0Jl2EXPbV3luOXZ1glKR1qlcJC0Q3m0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WvFPQel7mDGtqBBgJMhHxxdr9hNZ0kcUPwoRA9anYtbLU4VaKbd5ntUtvSBJC/sa6
+         XQudlVYUIwAoznG8x9nr46u13PX1F/JFMBHEdth6F2905Ahk7nJ/53e7b+24edB5ru
+         wEkhCtUfZIb65a/C7shZtfVtQIs6xPz6AAdoz3hs=
+Date:   Mon, 25 Jan 2021 15:33:50 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Florian Weimer <fweimer@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210125143150.GA2282@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210125132236.GJ827@dhcp22.suse.cz>
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [STABLE BACKPORT v2 4.4.y, 4.9.y and 4.14.y] compiler.h: Raise
+ minimum version of GCC to 5.1 for arm64
+Message-ID: <YA7WztCb4OGA6m4S@kroah.com>
+References: <20210125132425.28245-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210125132236.GJ827@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210125132425.28245-1-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
-> > For a single argument we can directly request a page from a caller
-> > context when a "carry page block" is run out of free spots. Instead
-> > of hitting a slow path we can request an extra page by demand and
-> > proceed with a fast path.
-> > 
-> > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
-> > and that its fallback is the relatively high latency synchronize_rcu().
-> > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
-> > to allow limited sleeping within the memory allocator.
+On Mon, Jan 25, 2021 at 01:24:25PM +0000, Will Deacon wrote:
+> commit dca5244d2f5b94f1809f0c02a549edf41ccd5493 upstream.
 > 
-> __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
-> way to allocate without triggering the OOM killer. Is this really what
-> you need/want? Is __GFP_NORETRY too weak?
+> GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
+> beyond the stack pointer, resulting in memory corruption if an interrupt
+> is taken after the stack pointer has been adjusted but before the
+> reference has been executed. This leads to subtle, infrequent data
+> corruption such as the EXT4 problems reported by Russell King at the
+> link below.
 > 
-Hm... We agreed to proceed with limited lightwait memory direct reclaim.
-Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
-point: https://www.spinics.net/lists/rcu/msg02856.html
+> Life is too short for buggy compilers, so raise the minimum GCC version
+> required by arm64 to 5.1.
+> 
+> Reported-by: Russell King <linux@armlinux.org.uk>
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: <stable@vger.kernel.org> # 4.4.y, 4.9.y and 4.14.y only
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Cc: Florian Weimer <fweimer@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nathan Chancellor <natechancellor@gmail.com>
+> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
+> Link: https://lore.kernel.org/r/20210112224832.10980-1-will@kernel.org
+> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+> [will: backport to 4.4.y/4.9.y/4.14.y; add __clang__ check]
+> Link: https://lore.kernel.org/r/CA+G9fYuzE9WMSB7uGjV4gTzK510SHEdJb_UXQCzsQ5MqA=h9SA@mail.gmail.com
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  include/linux/compiler-gcc.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-<snip>
-    So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
-    further decisions based on instrumentation of the success rates of
-    these opportunistic allocations.
-<snip>
+Thanks, now queued up, let's try this again :)
 
-but for some reason, i can't find a tail or head of it, we introduced
-__GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
-What we would like to avoid.
-
-I tend to say that it was a typo.
-
-Thank you for pointing to it!
-
---
-Vlad Rezki
+greg k-h
