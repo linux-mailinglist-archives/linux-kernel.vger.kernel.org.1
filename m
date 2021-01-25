@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C913022FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 09:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188FB3022F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 09:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726117AbhAYItG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 03:49:06 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:52802 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbhAYIl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 03:41:58 -0500
-Received: by mail-wm1-f43.google.com with SMTP id m187so9796027wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 00:41:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mZo7aKwXK5deoAcrsXLP1GP5WkzKfPSS28ocvilrOE8=;
-        b=JQGfDbg8HrojNONppBEkR4ON/YxepZQv0TOPaxYSHUbEa6F3h8N7vJRBU12h4ipFfF
-         /GGDGa4XXbday2fDFmmn9z1Voyyr9lWkdvRxFfzS1L6m7ORUUFJr0w17H3041ya5m50S
-         P5PWxywP68XyThFzy4LznATDL4hAra9LlYi+XttvHvpaCrnznea0KOxXA776XadfJnQ6
-         wbKQIBLcOiSC4pjyqlYVdWMRV7GGLbgI7lY2n4ysJn1Au/yal9oOfKeoth0Pft+lvBa/
-         PLwzyJ2p8+t1TnAWG8ftOSHF7p7+VvMR0+oKJSl5bEXJiftE4yuyBiWSlO6A9oBqNsgp
-         TOww==
-X-Gm-Message-State: AOAM533QmKlYlqraCYngMcEc9Xpn9GnlmMJcE1Xa9DV/byd/+qwbLgPY
-        PhGIIUIuQFFElRsA+ZPB+j0=
-X-Google-Smtp-Source: ABdhPJzqtyNCKS2sng7AvV/KuXwIGCg36ChTNZfCr5oRaLPx4r2cb6HVrQPNF1aJsw7Pq4EawQNxdA==
-X-Received: by 2002:a05:600c:2255:: with SMTP id a21mr14774541wmm.79.1611564053570;
-        Mon, 25 Jan 2021 00:40:53 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id n193sm20346055wmb.0.2021.01.25.00.40.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 00:40:52 -0800 (PST)
-Date:   Mon, 25 Jan 2021 09:40:51 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        yi.kuo@mediatek.com
-Subject: Re: [PATCH 2/3] memory: mtk-smi: Add module_exit and module_license
-Message-ID: <20210125084051.ipgeu2ksucdag2u4@kozik-lap>
-References: <20210121062429.26504-1-yong.wu@mediatek.com>
- <20210121062429.26504-3-yong.wu@mediatek.com>
- <20210122213427.mwjyjn2wsgnko7mk@kozik-lap>
- <1611557381.3184.21.camel@mhfsdcap03>
+        id S1725769AbhAYIo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 03:44:29 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:48546 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725779AbhAYImH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 03:42:07 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DPNcN2zctz9tyL3;
+        Mon, 25 Jan 2021 09:40:52 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id c_WxoVUwXTso; Mon, 25 Jan 2021 09:40:52 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DPNcM6yPKz9ty97;
+        Mon, 25 Jan 2021 09:40:51 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 043018B783;
+        Mon, 25 Jan 2021 09:40:57 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0Jtu_Uu76NxD; Mon, 25 Jan 2021 09:40:56 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B21838B75F;
+        Mon, 25 Jan 2021 09:40:56 +0100 (CET)
+Subject: Re: [PATCH v10 05/12] mm: HUGE_VMAP arch support cleanup
+To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Ding Tianhong <dingtianhong@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20210124082230.2118861-1-npiggin@gmail.com>
+ <20210124082230.2118861-6-npiggin@gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <21a16acc-7182-90bb-8c5e-2fd176a5cd12@csgroup.eu>
+Date:   Mon, 25 Jan 2021 09:40:53 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1611557381.3184.21.camel@mhfsdcap03>
+In-Reply-To: <20210124082230.2118861-6-npiggin@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:49:41PM +0800, Yong Wu wrote:
-> On Fri, 2021-01-22 at 22:34 +0100, Krzysztof Kozlowski wrote:
-> > On Thu, Jan 21, 2021 at 02:24:28PM +0800, Yong Wu wrote:
-> > > The config MTK_SMI always depends on MTK_IOMMU which is built-in
-> > > currently. Thus we don't have module_exit before. This patch adds
-> > > module_exit and module_license. It is a preparing patch for supporting
-> > > MTK_SMI could been built as a module.
-> > > 
-> > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > ---
-> > >  drivers/memory/mtk-smi.c | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > > 
-> > > diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
-> > > index e2aebd2bfa8e..aa2a25abf04f 100644
-> > > --- a/drivers/memory/mtk-smi.c
-> > > +++ b/drivers/memory/mtk-smi.c
-> > > @@ -597,3 +597,13 @@ static int __init mtk_smi_init(void)
-> > >  	return platform_register_drivers(smidrivers, ARRAY_SIZE(smidrivers));
-> > >  }
-> > >  module_init(mtk_smi_init);
-> > > +
-> > > +static void __exit mtk_smi_exit(void)
-> > > +{
-> > > +	platform_unregister_drivers(smidrivers, ARRAY_SIZE(smidrivers));
-> > > +}
-> > > +module_exit(mtk_smi_exit);
-> > > +
-> > > +MODULE_DESCRIPTION("MediaTek SMI driver");
-> > > +MODULE_ALIAS("platform:MediaTek-SMI");
-> > 
-> > Drivers do not use capital letters, so I have doubts whether this alias
-> > is correct.
-> 
-> I didn't care the upper/lower-case. I will change to lower case in next
-> time.
 
-Then why do you need the alias? The name does not match driver name, so
-what's the purpose of this alias/
+
+Le 24/01/2021 à 09:22, Nicholas Piggin a écrit :
+> This changes the awkward approach where architectures provide init
+> functions to determine which levels they can provide large mappings for,
+> to one where the arch is queried for each call.
+> 
+> This removes code and indirection, and allows constant-folding of dead
+> code for unsupported levels.
+
+It looks like this is only the case when CONFIG_HAVE_ARCH_HUGE_VMAP is not defined.
+
+When it is defined, for exemple on powerpc you defined arch_vmap_p4d_supported() as a regular 
+function in arch/powerpc/mm/book3s64/radix_pgtable.c, so allthough it returns always false, it won't 
+constant fold dead code.
 
 > 
-> MODULE_ALIAS("platform:MediaTek-smi")
+> This also adds a prot argument to the arch query. This is unused
+> currently but could help with some architectures (e.g., some powerpc
+> processors can't map uncacheable memory with large pages).
 > 
-> > 
-> > Adding all these should be squashed with changing Kconfig into tristate.
-> > It does not have sense on its own.
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com> [arm64]
+> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> ---
+>   arch/arm64/include/asm/vmalloc.h         |  8 +++
+>   arch/arm64/mm/mmu.c                      | 10 +--
+>   arch/powerpc/include/asm/vmalloc.h       |  8 +++
+>   arch/powerpc/mm/book3s64/radix_pgtable.c |  8 +--
+>   arch/x86/include/asm/vmalloc.h           |  7 ++
+>   arch/x86/mm/ioremap.c                    | 12 ++--
+>   include/linux/io.h                       |  9 ---
+>   include/linux/vmalloc.h                  |  6 ++
+>   init/main.c                              |  1 -
+>   mm/ioremap.c                             | 88 +++++++++---------------
+>   10 files changed, 79 insertions(+), 78 deletions(-)
 > 
-> Thanks  very much for review.
-> 
-> Only confirm: Squash whole this patch or only squash the MODULE_x into
-> the next patch?
 
-This entire patch 2/3 should be with 3/3.
-
-Best regards,
-Krzysztof
+Christophe
