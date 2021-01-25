@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEA2302714
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A02302717
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbhAYPl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:41:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:49662 "EHLO foss.arm.com"
+        id S1730274AbhAYPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:42:45 -0500
+Received: from foss.arm.com ([217.140.110.172]:49688 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730084AbhAYPim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:38:42 -0500
+        id S1729877AbhAYPj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:39:29 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 478B9176B;
-        Mon, 25 Jan 2021 07:19:25 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDF5F1A25;
+        Mon, 25 Jan 2021 07:19:35 -0800 (PST)
 Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2AEED3F68F;
-        Mon, 25 Jan 2021 07:19:23 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BBE53F68F;
+        Mon, 25 Jan 2021 07:19:32 -0800 (PST)
 From:   Andre Przywara <andre.przywara@arm.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
 Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
@@ -26,11 +26,14 @@ Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
         Shuosheng Huang <huangshuosheng@allwinnertech.com>,
         Yangtao Li <tiny.windzz@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Mark Brown <broonie@kernel.org>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: [PATCH v4 13/21] dt-bindings: spi: sunxi: Add H616 compatible string
-Date:   Mon, 25 Jan 2021 15:18:03 +0000
-Message-Id: <20210125151811.11871-14-andre.przywara@arm.com>
+        linux-sunxi@googlegroups.com,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 17/21] dt-bindings: usb: sunxi-musb: Add H616 compatible string
+Date:   Mon, 25 Jan 2021 15:18:07 +0000
+Message-Id: <20210125151811.11871-18-andre.przywara@arm.com>
 X-Mailer: git-send-email 2.14.1
 In-Reply-To: <20210125151811.11871-1-andre.przywara@arm.com>
 References: <20210125151811.11871-1-andre.przywara@arm.com>
@@ -38,28 +41,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the obvious compatible name to the existing SPI binding, and pair
-it with the existing H3 fallback compatible string, as the devices are
-compatible.
+The H616 MUSB peripheral is presumably compatible to the H3 one.
 
 Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Maxime Ripard <mripard@kernel.org>
 ---
- .../devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml         | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/usb/allwinner,sun4i-a10-musb.yaml      | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-index 7866a655d81c..908248260afa 100644
---- a/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-+++ b/Documentation/devicetree/bindings/spi/allwinner,sun6i-a31-spi.yaml
-@@ -25,6 +25,7 @@ properties:
-           - enum:
-               - allwinner,sun8i-r40-spi
-               - allwinner,sun50i-h6-spi
-+              - allwinner,sun50i-h616-spi
-           - const: allwinner,sun8i-h3-spi
+diff --git a/Documentation/devicetree/bindings/usb/allwinner,sun4i-a10-musb.yaml b/Documentation/devicetree/bindings/usb/allwinner,sun4i-a10-musb.yaml
+index d9207bf9d894..ad8983debeba 100644
+--- a/Documentation/devicetree/bindings/usb/allwinner,sun4i-a10-musb.yaml
++++ b/Documentation/devicetree/bindings/usb/allwinner,sun4i-a10-musb.yaml
+@@ -22,6 +22,9 @@ properties:
+               - allwinner,sun8i-a83t-musb
+               - allwinner,sun50i-h6-musb
+           - const: allwinner,sun8i-a33-musb
++      - items:
++          - const: allwinner,sun50i-h616-musb
++          - const: allwinner,sun8i-h3-musb
  
    reg:
+     maxItems: 1
 -- 
 2.17.5
 
