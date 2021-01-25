@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDC730295A
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CED7302958
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731106AbhAYRyH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 12:54:07 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:33736 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731111AbhAYRwU (ORCPT
+        id S1731232AbhAYRxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731080AbhAYRwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:52:20 -0500
-Received: from marcel-macbook.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8080FCECC8;
-        Mon, 25 Jan 2021 18:58:52 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH 3/3] Bluetooth: btusb: Expose reset gpio to debugfs
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210119124258.3.I7c6ae9b637f9a77f6e6f2e4256c6a0232476be43@changeid>
-Date:   Mon, 25 Jan 2021 18:51:27 +0100
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>, michaelfsun@google.com,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <436E729B-B852-4238-AA42-6FFC2D2BE233@holtmann.org>
-References: <20210119204315.2611811-1-abhishekpandit@chromium.org>
- <20210119124258.3.I7c6ae9b637f9a77f6e6f2e4256c6a0232476be43@changeid>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Mon, 25 Jan 2021 12:52:19 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC540C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:51:37 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id m1so13163378wrq.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:51:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=0snvcNaYNGpV/k+7WdqZD7n4s15hYF8lRKnrHcT9zcs=;
+        b=BtcA8Bf0tWpg53PhU7aSoui0E3BpWfWCGjqofDJ+lP3yBnl5dwdung0WUSxXzvTvA6
+         WTu0tUvkwAXT3Cq0iMGsPbfl59hMfy9/EW2erNyZaTvlylVVwGwXwBqddWaBT3BIrZSZ
+         szt2OKUvwyMX7g2nAaDniEzmcScpvK2uXK2FUX/B8kO35o/a5Bx7cLy+XFV68farduPZ
+         RXmB0aaZMFxEo1a+abC3GeeawXzwnaq7G2FLyEvxRjdRPrR8idbR1k+RyOJQe84ZOVJH
+         Eu6mnLruo8fA0Wi+cgYcDCt2WXKASkVR4Nkm0uuXK0BOtazXaqSUOfOkCWKMVpzE2dNl
+         +dLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0snvcNaYNGpV/k+7WdqZD7n4s15hYF8lRKnrHcT9zcs=;
+        b=VQ9gGJOGR3IfQ0wZW6bV1g2BxYwm+QGwuqnh9HsXSnnttnm4G3/2/MQrH2yURaAuQR
+         QMrq3ODUm9/X+q0mCc85etR4ZKvOWUPLdwtMLT6pz7TeqFgLJo9KztxLbvj0ayVg1HrU
+         RgBH8zoxo27St1IP9pMtAxSlOtpjiqZsxhLC5VhECUUZ1x3i6NXM7x/zGNyuW9+68QOR
+         QqTKVcOW7bdcKKaT15QCd6t1btstGl6dtqQc+z7yYrB8ABZuCTEY9B4G5tiScin8IasW
+         752vFXN87u3tKtHiFif/E7j9xyf6iTVQVMbpWyxVL0Aogjno1mbzre9FZTVHG6tf9uTb
+         idUQ==
+X-Gm-Message-State: AOAM532iFbXTCT0NLHZN0oDEKfr+zsw5B76prCFKM9HukgI0Bk68k9j1
+        EBWdUcIT5w/6MOBNyGF0vr6mGA==
+X-Google-Smtp-Source: ABdhPJzfEafFozbxGGxAYvRjvaBNZaQlhERyvwak6AebaeXwdOrGAa45QDqKfniSaEX6MY+MkoOeMg==
+X-Received: by 2002:a5d:6a01:: with SMTP id m1mr2243274wru.318.1611597096632;
+        Mon, 25 Jan 2021 09:51:36 -0800 (PST)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id r124sm62707wmr.16.2021.01.25.09.51.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 09:51:35 -0800 (PST)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-remoteproc@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     ohad@wizery.com, devicetree@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 0/5] Amlogic Meson Always-On ARC remote-processor
+ support
+In-Reply-To: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
+References: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
+Date:   Mon, 25 Jan 2021 09:51:33 -0800
+Message-ID: <7hmtwwx5ui.fsf@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhishek,
+Martin Blumenstingl <martin.blumenstingl@googlemail.com> writes:
 
-> If btusb has a reset gpio, expose it to userspace so we can toggle the
-> reset gpio directly. This is useful for testing and error recovery.
-> 
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> ---
-> 
-> drivers/bluetooth/btusb.c | 46 +++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 46 insertions(+)
-> 
-> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-> index 880e9cd4ee713..702be1871ed88 100644
-> --- a/drivers/bluetooth/btusb.c
-> +++ b/drivers/bluetooth/btusb.c
-> @@ -6,6 +6,7 @@
->  *  Copyright (C) 2005-2008  Marcel Holtmann <marcel@holtmann.org>
->  */
-> 
-> +#include <linux/debugfs.h>
-> #include <linux/dmi.h>
-> #include <linux/module.h>
-> #include <linux/usb.h>
-> @@ -574,6 +575,46 @@ static void btusb_toggle_gpio(struct gpio_desc *desc, unsigned int duration)
-> 	gpiod_set_value_cansleep(desc, 0);
-> }
-> 
-> +#ifdef CONFIG_DEBUG_FS
-> +static ssize_t btusb_debugfs_has_reset_gpio(struct file *file,
-> +					    char __user *user_buf,
-> +					    size_t count, loff_t *ppos)
-> +{
-> +	struct hci_dev *hdev = file->private_data;
-> +	struct btusb_data *data = hci_get_drvdata(hdev);
-> +	char buf[3];
-> +
-> +	buf[0] = data->reset_gpio ? 'Y' : 'N';
-> +	buf[1] = '\n';
-> +	buf[2] = '\0';
-> +
-> +	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-> +}
-> +
-> +static ssize_t btusb_debugfs_reset_gpio(struct file *file,
-> +					const char __user *user_buf,
-> +					size_t count, loff_t *ppos)
-> +{
-> +	struct hci_dev *hdev = file->private_data;
-> +	struct btusb_data *data = hci_get_drvdata(hdev);
-> +
-> +	if (!data->reset_gpio)
-> +		return -EOPNOTSUPP;
-> +
-> +	bt_dev_warn(hdev, "Debugfs triggering HW reset via gpio");
-> +	btusb_toggle_gpio(data->reset_gpio, data->reset_duration_ms);
-> +
-> +	return count;
-> +}
-> +
-> +static const struct file_operations reset_gpio_fops = {
-> +	.open		= simple_open,
-> +	.read		= btusb_debugfs_has_reset_gpio,
-> +	.write		= btusb_debugfs_reset_gpio,
-> +	.llseek		= default_llseek,
-> +};
-> +#endif
+> Amlogic Meson6/8/8b/8m2 come with an ARC core in the Always-On (AO)
+> power-domain. This is typically used for waking up the ARM CPU after
+> powering it down for system suspend.
+>
+> The exact ARC core used on Meson6 and earlier is not known. I believe
+> it is an ARC625, but I am not sure about this. Meson8/8b/8m2 uses an
+> ARC EM4 core.
+> They all have in common that they use a section of the SoCs SRAM for
+> running code on the ARC core.
+>
+> Unfortunately there's no information about the remote-processor control
+> registers in the public Meson8b (S805) datasheet. All information is
+> either taken from Amlogic's 3.10 kernel and 2011-03 u-boot or found by
+> testing (for example the clock input is not mentioned anywhere in the
+> reference code, but disabling it stops the AO ARC core from working).
+>
+> This series consists of five patches:
+>  1: dt-bindings for the SRAM section
+>  2: dt-bindings for the SECBUS2 syscon region which contains a few
+>     bits for controlling this remote processor
+>  3: dt-bindings for the AO ARC remote processor
+>  4: the driver for booting code on the AO ARC remote processor
+>  5: (only included for documentation purposes) dts changes (these will
+>     be re-sent separately)
+>
+> Patches #3 and #4 should go through the remoteproc tree. Patches #1
+> and #2 may go through Rob's (devicetree) tree, Kevin's linux-amlogic
+> tree or through the remoteproc tree. Personally I have no preference
+> here.
+>
+> To test this series I ported the Amlogic serial driver and added the
+> board files for the Amlogic AO ARC EM4 to the Zephyr RTOS. The code can
+> be found here: [0] (the resulting zephyr.elf can then be loaded as
+> remote-processor firmware from Linux).
+>
+>
+> Changes since v1 at [1]:
+> - fixed yamllint warnings (after installing the package these now also
+>   show up on my build machine) in patches #2 and #3. Thanks for the
+>   hint Rob
+> - dropped the explicit "select" statement from the dt-bindings in patch
+>   #2 as suggested by Rob (thanks)
+>
+>
+> [0] https://github.com/xdarklight/zephyr-rtos/commits/amlogic_ao_em4-20201229
+> [1] https://patchwork.kernel.org/project/linux-amlogic/list/?series=407349
+>
+>
+> Martin Blumenstingl (5):
+>   dt-bindings: sram: Add compatible strings for the Meson AO ARC SRAM
+>   dt-bindings: Amlogic: add the documentation for the SECBUS2 registers
+>   dt-bindings: remoteproc: Add the documentation for Meson AO ARC rproc
+>   remoteproc: meson-mx-ao-arc: Add a driver for the AO ARC remote
+>     procesor
+>   ARM: dts: meson: add the AO ARC remote processor
 
-while I am not convinced that this is the right way, I am fine doing it temporarily. However, please lets create the debugfs file only when a reset GPIO is available and skip the read callback. Only the write one should be supported since there is no point to read the status. The pure existence of the debugfs should indicate support for a HW reset.
+Patches 1-2, 5 queued for v5.12 via the amlogic tree.
 
-Regards
-
-Marcel
-
+Kevin
