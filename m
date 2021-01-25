@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A680B302B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB7F302B8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 20:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbhAYTCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:02:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34906 "EHLO mail.kernel.org"
+        id S1731705AbhAYTZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:25:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726866AbhAYSrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:47:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C51D72067B;
-        Mon, 25 Jan 2021 18:46:53 +0000 (UTC)
+        id S1731361AbhAYSzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE33229C5;
+        Mon, 25 Jan 2021 18:54:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600414;
-        bh=soEzrRJoIclsAyQ7S53/k86JhzKiV0gfGhIDkv4RFas=;
+        s=korg; t=1611600864;
+        bh=SE9Xo74Mmsjaq4i7ndiW5CfX4wHHOux+QA9ro9SRtkc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uzsgJZoawoQJUCqQnJanDuvYdV5yT5jTl1lXtcLMZI443qMD90uUafZ+1uE6GLXIZ
-         DnAgwqLGDqlPqIRouxOxwAWzejUoqomCUtPF+jw4W/QvS1hhGrXO1Kgaelkb8/euGT
-         U0YP8Iyzylr/UlYI8nY000YpNw+q52t9SQn6UERs=
+        b=pX68ignkBtEfxIS5rqI3sOCqeebM0Hrgli14VLsTNkZ0t1SmQoqtijmRgUXwgyiq2
+         gOMrWgPAHBcfjf/d8AmmwYT5fY+gTwdW/Vm/XoC1NGgn/YNritdXlsdogw52pTe2Hx
+         L1Q/6EkTcyjDOD/Ts2E0YaCaGDjWzh62yGOVbZXs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+        stable@vger.kernel.org, William McCall <william.mccall@gmail.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Enke Chen <enchen@paloaltonetworks.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 80/86] net_sched: reject silly cell_log in qdisc_get_rtab()
+Subject: [PATCH 5.10 180/199] tcp: fix TCP_USER_TIMEOUT with zero window
 Date:   Mon, 25 Jan 2021 19:40:02 +0100
-Message-Id: <20210125183204.435866873@linuxfoundation.org>
+Message-Id: <20210125183223.786356182@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-References: <20210125183201.024962206@linuxfoundation.org>
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+References: <20210125183216.245315437@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +43,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Enke Chen <enchen@paloaltonetworks.com>
 
-commit e4bedf48aaa5552bc1f49703abd17606e7e6e82a upstream.
+commit 9d9b1ee0b2d1c9e02b2338c4a4b0a062d2d3edac upstream.
 
-iproute2 probably never goes beyond 8 for the cell exponent,
-but stick to the max shift exponent for signed 32bit.
+The TCP session does not terminate with TCP_USER_TIMEOUT when data
+remain untransmitted due to zero window.
 
-UBSAN reported:
-UBSAN: shift-out-of-bounds in net/sched/sch_api.c:389:22
-shift exponent 130 is too large for 32-bit type 'int'
-CPU: 1 PID: 8450 Comm: syz-executor586 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x183/0x22e lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:148 [inline]
- __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
- __detect_linklayer+0x2a9/0x330 net/sched/sch_api.c:389
- qdisc_get_rtab+0x2b5/0x410 net/sched/sch_api.c:435
- cbq_init+0x28f/0x12c0 net/sched/sch_cbq.c:1180
- qdisc_create+0x801/0x1470 net/sched/sch_api.c:1246
- tc_modify_qdisc+0x9e3/0x1fc0 net/sched/sch_api.c:1662
- rtnetlink_rcv_msg+0xb1d/0xe60 net/core/rtnetlink.c:5564
- netlink_rcv_skb+0x1f0/0x460 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x7de/0x9b0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0xaa6/0xe90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x5a2/0x900 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x319/0x400 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The number of unanswered zero-window probes (tcp_probes_out) is
+reset to zero with incoming acks irrespective of the window size,
+as described in tcp_probe_timer():
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Acked-by: Cong Wang <cong.wang@bytedance.com>
-Link: https://lore.kernel.org/r/20210114160637.1660597-1-eric.dumazet@gmail.com
+    RFC 1122 4.2.2.17 requires the sender to stay open indefinitely
+    as long as the receiver continues to respond probes. We support
+    this by default and reset icsk_probes_out with incoming ACKs.
+
+This counter, however, is the wrong one to be used in calculating the
+duration that the window remains closed and data remain untransmitted.
+Thanks to Jonathan Maxwell <jmaxwell37@gmail.com> for diagnosing the
+actual issue.
+
+In this patch a new timestamp is introduced for the socket in order to
+track the elapsed time for the zero-window probes that have not been
+answered with any non-zero window ack.
+
+Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+Reported-by: William McCall <william.mccall@gmail.com>
+Co-developed-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: Neal Cardwell <ncardwell@google.com>
+Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+Reviewed-by: Yuchung Cheng <ycheng@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/r/20210115223058.GA39267@localhost.localdomain
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sched/sch_api.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/net/inet_connection_sock.h |    3 +++
+ net/ipv4/inet_connection_sock.c    |    1 +
+ net/ipv4/tcp.c                     |    1 +
+ net/ipv4/tcp_input.c               |    1 +
+ net/ipv4/tcp_output.c              |    1 +
+ net/ipv4/tcp_timer.c               |   14 +++++++-------
+ 6 files changed, 14 insertions(+), 7 deletions(-)
 
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -409,7 +409,8 @@ struct qdisc_rate_table *qdisc_get_rtab(
- {
- 	struct qdisc_rate_table *rtab;
+--- a/include/net/inet_connection_sock.h
++++ b/include/net/inet_connection_sock.h
+@@ -76,6 +76,8 @@ struct inet_connection_sock_af_ops {
+  * @icsk_ext_hdr_len:	   Network protocol overhead (IP/IPv6 options)
+  * @icsk_ack:		   Delayed ACK control data
+  * @icsk_mtup;		   MTU probing control data
++ * @icsk_probes_tstamp:    Probe timestamp (cleared by non-zero window ack)
++ * @icsk_user_timeout:	   TCP_USER_TIMEOUT value
+  */
+ struct inet_connection_sock {
+ 	/* inet_sock has to be the first member! */
+@@ -129,6 +131,7 @@ struct inet_connection_sock {
  
--	if (tab == NULL || r->rate == 0 || r->cell_log == 0 ||
-+	if (tab == NULL || r->rate == 0 ||
-+	    r->cell_log == 0 || r->cell_log >= 32 ||
- 	    nla_len(tab) != TC_RTAB_SIZE) {
- 		NL_SET_ERR_MSG(extack, "Invalid rate table parameters for searching");
- 		return NULL;
+ 		u32		  probe_timestamp;
+ 	} icsk_mtup;
++	u32			  icsk_probes_tstamp;
+ 	u32			  icsk_user_timeout;
+ 
+ 	u64			  icsk_ca_priv[104 / sizeof(u64)];
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -851,6 +851,7 @@ struct sock *inet_csk_clone_lock(const s
+ 		newicsk->icsk_retransmits = 0;
+ 		newicsk->icsk_backoff	  = 0;
+ 		newicsk->icsk_probes_out  = 0;
++		newicsk->icsk_probes_tstamp = 0;
+ 
+ 		/* Deinitialize accept_queue to trap illegal accesses. */
+ 		memset(&newicsk->icsk_accept_queue, 0, sizeof(newicsk->icsk_accept_queue));
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -2685,6 +2685,7 @@ int tcp_disconnect(struct sock *sk, int
+ 
+ 	icsk->icsk_backoff = 0;
+ 	icsk->icsk_probes_out = 0;
++	icsk->icsk_probes_tstamp = 0;
+ 	icsk->icsk_rto = TCP_TIMEOUT_INIT;
+ 	icsk->icsk_rto_min = TCP_RTO_MIN;
+ 	icsk->icsk_delack_max = TCP_DELACK_MAX;
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -3370,6 +3370,7 @@ static void tcp_ack_probe(struct sock *s
+ 		return;
+ 	if (!after(TCP_SKB_CB(head)->end_seq, tcp_wnd_end(tp))) {
+ 		icsk->icsk_backoff = 0;
++		icsk->icsk_probes_tstamp = 0;
+ 		inet_csk_clear_xmit_timer(sk, ICSK_TIME_PROBE0);
+ 		/* Socket must be waked up by subsequent tcp_data_snd_check().
+ 		 * This function is not for random using!
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -4080,6 +4080,7 @@ void tcp_send_probe0(struct sock *sk)
+ 		/* Cancel probe timer, if it is not required. */
+ 		icsk->icsk_probes_out = 0;
+ 		icsk->icsk_backoff = 0;
++		icsk->icsk_probes_tstamp = 0;
+ 		return;
+ 	}
+ 
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -343,6 +343,7 @@ static void tcp_probe_timer(struct sock
+ 
+ 	if (tp->packets_out || !skb) {
+ 		icsk->icsk_probes_out = 0;
++		icsk->icsk_probes_tstamp = 0;
+ 		return;
+ 	}
+ 
+@@ -354,13 +355,12 @@ static void tcp_probe_timer(struct sock
+ 	 * corresponding system limit. We also implement similar policy when
+ 	 * we use RTO to probe window in tcp_retransmit_timer().
+ 	 */
+-	if (icsk->icsk_user_timeout) {
+-		u32 elapsed = tcp_model_timeout(sk, icsk->icsk_probes_out,
+-						tcp_probe0_base(sk));
+-
+-		if (elapsed >= icsk->icsk_user_timeout)
+-			goto abort;
+-	}
++	if (!icsk->icsk_probes_tstamp)
++		icsk->icsk_probes_tstamp = tcp_jiffies32;
++	else if (icsk->icsk_user_timeout &&
++		 (s32)(tcp_jiffies32 - icsk->icsk_probes_tstamp) >=
++		 msecs_to_jiffies(icsk->icsk_user_timeout))
++		goto abort;
+ 
+ 	max_probes = sock_net(sk)->ipv4.sysctl_tcp_retries2;
+ 	if (sock_flag(sk, SOCK_DEAD)) {
 
 
