@@ -2,106 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D0C302290
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 08:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E3E302295
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 08:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbhAYHna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 02:43:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
+        id S1727218AbhAYHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 02:54:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727287AbhAYHmj (ORCPT
+        with ESMTP id S1727300AbhAYHmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 02:42:39 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F83C061573;
-        Sun, 24 Jan 2021 23:41:16 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id e15so9803748wme.0;
-        Sun, 24 Jan 2021 23:41:16 -0800 (PST)
+        Mon, 25 Jan 2021 02:42:50 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DDBC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 23:42:06 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id e9so7081641plh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 23:42:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Vln43mgwMFNDI3htKB1T6Ag4DsdFzHSSzpUsFqeuEV8=;
-        b=YlaF8EV+p5Ys4CIcJ/awJ+DIh+YHGs0ojO7kNgf5NVTd1GUFrTzrKgcfJnF3YZdxbK
-         12HO+dRwrrUjsnrLVZe5XOeV8nMb/HHgZUaVi5JFUPsqA+znS+yEOpFcn0MBdIMb/fqd
-         cmnATcaeSsU33Rhvx0jKRxRI+gUxMzuYZwzZ+vwCmpYUu1zQ5XedTnPiQnGMLACIb+hH
-         0/YF2qcdsHiVdA/jc2gERu0N80amkCwowGYbXuAm79GdnjJ50oBCjmXG2M4JMju5KLDI
-         SlfkYlw/GMpcsZSS2ypShNs2pM3JSlsjTnk4QuGeag28F2bgzkKDNAKnX2PRKkbj6Isp
-         pHtg==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7mbaGXtQOBneRXBPI9rhq6Q1yml5C2C1LZtqV3oYKEc=;
+        b=l5wF8kbv5vJ18cKSWjzRkOyzwMT+tS8Hdt8KVjYSmqhOtdOlB+fDpmkYyXwSG2hMaf
+         NPA/Bndgdm39IgUqwcjuhvbp6MpnaQTUCs7y6r+WfQCnCVVFKEsunoRtYnW6PI8Q9GFa
+         sU95uUACSaBOhJoy67QJzhuefsxy9SRflbvSFxmIcuE7iabXUScy2fY59beZ/w95aA2t
+         v55znZ9hojrG4Gmh+7ihSO1tdg+kL1QAleYXMZInOiXlJsgzOCV/HYtN86e4mSxqZcl3
+         aF9beKuexlCWqt0CSgh3JJbdktQf5AyQLraZOQVjkNxRYegFmkTeXTVzFYUb4crULuK0
+         UZVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Vln43mgwMFNDI3htKB1T6Ag4DsdFzHSSzpUsFqeuEV8=;
-        b=tUHQVCaanErQLdsFg7toccq41KqCWrkQQ2dQ8vsNyskQZxbx0EIReXSbzzd0c7c02U
-         3Fw4mElDaR09TcElaC6vDRnBHY51Xx6zDB1AwSjCrTb2/Lfwzj2PMXGqy+MgaoJ6GvXc
-         VTXEP6XPaW7Tr64ZPAMbymx1aiNnObm21XdqPR+MnOGT6/aV9Sq3LO2rN3InfOVpZGEB
-         +2/AACDbDIQbijV8wubNTW+3aWV0CnxaoXsGdYzApHSO7bqgQBs98Dm4gWVcGezCBgb+
-         OMAiqx29gCFoHgDGBE4mAn/rq5yk7YSFFPyMScBziLZHU7Wg8NlZkw8F5Kw1rsncaI9T
-         O4jA==
-X-Gm-Message-State: AOAM532vbpeAWwywsyrXu6zlD9GFV9NT0+oZrx9FRjBomUV1RMh2b9fj
-        tc0hQWk9Vil5P9EGCZBNZW8=
-X-Google-Smtp-Source: ABdhPJwXDtvsM++m/Iu0HjPfin1IyRtsUt7YkR5bDCzhG+W+2LKjpn8dGLlWVJOVwl6RYJr/z94avA==
-X-Received: by 2002:a1c:1b44:: with SMTP id b65mr1202189wmb.188.1611560475444;
-        Sun, 24 Jan 2021 23:41:15 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d4b:4500:649e:f82b:bf2d:2571])
-        by smtp.gmail.com with ESMTPSA id s25sm23313994wrs.49.2021.01.24.23.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 23:41:14 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] rcu-tasks: rectify kernel-doc for struct rcu_tasks
-Date:   Mon, 25 Jan 2021 08:41:05 +0100
-Message-Id: <20210125074105.29038-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7mbaGXtQOBneRXBPI9rhq6Q1yml5C2C1LZtqV3oYKEc=;
+        b=HfBH+2oB1y3qB5mNXMKbYih7H+F1Ed4I4hrG9KSJJ9twP6qgnnwxBUr6F7BGtdnKBv
+         ik40bCf95x3D6d8vRmEWmFwKT6kvHfYcHdppIKJ+zyj7ONMS2Gfa7Q5G8lBFaFUW7cMJ
+         voIf6FLdctRfcNkahK8vymRwUe64W7UrUCTNV8RwCb4knbWTevxu6kvhmyWswWCex8Dl
+         KOMR8x4ScCdbkGDUi2akTL6ofs/4rlNCmvHBE/aGyWFAw8ubrr65hwKIUJGuOSwgqPwO
+         D5Lx8kC9Er0n4iSRVnlqD+UInzaO8pCRQfXSsZ1KUI1MaEFHuJ9gjh4Vah3uTSg3kuKq
+         npoA==
+X-Gm-Message-State: AOAM531wt2Uc2hNjIwSukc7kDO41Xp2GbpFv+fV+YEWrCwb4LOLElA74
+        p0DncteiUYCifd0Glk8ij7U2LQgaBPiBcyX0/W9egQ==
+X-Google-Smtp-Source: ABdhPJzlXZ5eYn850p24thSCtGdODRqp+tkVXVdpKbfjz1moHPWSAuarr+wM4ciCo6NHHrW/gSS3dP98XRSx5N75i9U=
+X-Received: by 2002:a17:90a:3e81:: with SMTP id k1mr3773086pjc.13.1611560526278;
+ Sun, 24 Jan 2021 23:42:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com> <6a68fde-583d-b8bb-a2c8-fbe32e03b@google.com>
+ <CAMZfGtXpg30RhrPm836S6Tr09ynKRPG=_DXtXt9sVTTponnC-g@mail.gmail.com>
+In-Reply-To: <CAMZfGtXpg30RhrPm836S6Tr09ynKRPG=_DXtXt9sVTTponnC-g@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Mon, 25 Jan 2021 15:41:29 +0800
+Message-ID: <CAMZfGtX19x8m+Bkvj+8Ue31m5L_4DmgtZevp2fd++JL7nuSzWw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
+ vmemmap pages associated with each HugeTLB page
+To:     David Rientjes <rientjes@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The command 'find ./kernel/rcu/ | xargs ./scripts/kernel-doc -none'
-reported an issue with the kernel-doc of struct rcu_tasks.
+On Mon, Jan 25, 2021 at 2:40 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Mon, Jan 25, 2021 at 8:05 AM David Rientjes <rientjes@google.com> wrote:
+> >
+> >
+> > On Sun, 17 Jan 2021, Muchun Song wrote:
+> >
+> > > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> > > index ce4be1fa93c2..3b146d5949f3 100644
+> > > --- a/mm/sparse-vmemmap.c
+> > > +++ b/mm/sparse-vmemmap.c
+> > > @@ -29,6 +29,7 @@
+> > >  #include <linux/sched.h>
+> > >  #include <linux/pgtable.h>
+> > >  #include <linux/bootmem_info.h>
+> > > +#include <linux/delay.h>
+> > >
+> > >  #include <asm/dma.h>
+> > >  #include <asm/pgalloc.h>
+> > > @@ -40,7 +41,8 @@
+> > >   * @remap_pte:               called for each non-empty PTE (lowest-level) entry.
+> > >   * @reuse_page:              the page which is reused for the tail vmemmap pages.
+> > >   * @reuse_addr:              the virtual address of the @reuse_page page.
+> > > - * @vmemmap_pages:   the list head of the vmemmap pages that can be freed.
+> > > + * @vmemmap_pages:   the list head of the vmemmap pages that can be freed
+> > > + *                   or is mapped from.
+> > >   */
+> > >  struct vmemmap_remap_walk {
+> > >       void (*remap_pte)(pte_t *pte, unsigned long addr,
+> > > @@ -50,6 +52,10 @@ struct vmemmap_remap_walk {
+> > >       struct list_head *vmemmap_pages;
+> > >  };
+> > >
+> > > +/* The gfp mask of allocating vmemmap page */
+> > > +#define GFP_VMEMMAP_PAGE             \
+> > > +     (GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN | __GFP_THISNODE)
+> > > +
+> >
+> > This is unnecessary, just use the gfp mask directly in allocator.
+>
+> Will do. Thanks.
+>
+> >
+> > >  static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
+> > >                             unsigned long end,
+> > >                             struct vmemmap_remap_walk *walk)
+> > > @@ -228,6 +234,75 @@ void vmemmap_remap_free(unsigned long start, unsigned long end,
+> > >       free_vmemmap_page_list(&vmemmap_pages);
+> > >  }
+> > >
+> > > +static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
+> > > +                             struct vmemmap_remap_walk *walk)
+> > > +{
+> > > +     pgprot_t pgprot = PAGE_KERNEL;
+> > > +     struct page *page;
+> > > +     void *to;
+> > > +
+> > > +     BUG_ON(pte_page(*pte) != walk->reuse_page);
+> > > +
+> > > +     page = list_first_entry(walk->vmemmap_pages, struct page, lru);
+> > > +     list_del(&page->lru);
+> > > +     to = page_to_virt(page);
+> > > +     copy_page(to, (void *)walk->reuse_addr);
+> > > +
+> > > +     set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
+> > > +}
+> > > +
+> > > +static void alloc_vmemmap_page_list(struct list_head *list,
+> > > +                                 unsigned long start, unsigned long end)
+> > > +{
+> > > +     unsigned long addr;
+> > > +
+> > > +     for (addr = start; addr < end; addr += PAGE_SIZE) {
+> > > +             struct page *page;
+> > > +             int nid = page_to_nid((const void *)addr);
+> > > +
+> > > +retry:
+> > > +             page = alloc_pages_node(nid, GFP_VMEMMAP_PAGE, 0);
+> > > +             if (unlikely(!page)) {
+> > > +                     msleep(100);
+> > > +                     /*
+> > > +                      * We should retry infinitely, because we cannot
+> > > +                      * handle allocation failures. Once we allocate
+> > > +                      * vmemmap pages successfully, then we can free
+> > > +                      * a HugeTLB page.
+> > > +                      */
+> > > +                     goto retry;
+> >
+> > Ugh, I don't think this will work, there's no guarantee that we'll ever
+> > succeed and now we can't free a 2MB hugepage because we cannot allocate a
+> > 4KB page.  We absolutely have to ensure we make forward progress here.
+>
+> This can trigger a OOM when there is no memory and kill someone to release
+> some memory. Right?
+>
+> >
+> > We're going to be freeing the hugetlb page after this succeeeds, can we
+> > not use part of the hugetlb page that we're freeing for this memory
+> > instead?
+>
+> It seems a good idea. We can try to allocate memory firstly, if successful,
+> just use the new page to remap (it can reduce memory fragmentation).
+> If not, we can use part of the hugetlb page to remap. What's your opinion
+> about this?
 
-Rectify the kernel-doc, such that no issues remain for ./kernel/rcu/.
+If the HugeTLB page is a gigantic page which is allocated from
+CMA. In this case, we cannot use part of the hugetlb page to remap.
+Right?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on v5.11-rc5 and next-20210122
-
-Paul, please pick this minor kerneldoc cleanup.
-
- kernel/rcu/tasks.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index af7c19439f4e..17c8ebe131af 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -20,7 +20,7 @@ typedef void (*holdouts_func_t)(struct list_head *hop, bool ndrpt, bool *frptp);
- typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
- 
- /**
-- * Definition for a Tasks-RCU-like mechanism.
-+ * struct rcu_tasks - Definition for a Tasks-RCU-like mechanism.
-  * @cbs_head: Head of callback list.
-  * @cbs_tail: Tail pointer for callback list.
-  * @cbs_wq: Wait queue allowning new callback to get kthread's attention.
-@@ -38,7 +38,7 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
-  * @pregp_func: This flavor's pre-grace-period function (optional).
-  * @pertask_func: This flavor's per-task scan function (optional).
-  * @postscan_func: This flavor's post-task scan function (optional).
-- * @holdout_func: This flavor's holdout-list scan function (optional).
-+ * @holdouts_func: This flavor's holdout-list scan function (optional).
-  * @postgp_func: This flavor's post-grace-period function (optional).
-  * @call_func: This flavor's call_rcu()-equivalent function.
-  * @name: This flavor's textual name.
--- 
-2.17.1
-
+>
+> >
+> > > +             }
+> > > +             list_add_tail(&page->lru, list);
+> > > +     }
+> > > +}
+> > > +
+> > > +/**
+> > > + * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
+> > > + *                    to the page which is from the @vmemmap_pages
+> > > + *                    respectively.
+> > > + * @start:   start address of the vmemmap virtual address range.
+> > > + * @end:     end address of the vmemmap virtual address range.
+> > > + * @reuse:   reuse address.
+> > > + */
+> > > +void vmemmap_remap_alloc(unsigned long start, unsigned long end,
+> > > +                      unsigned long reuse)
+> > > +{
+> > > +     LIST_HEAD(vmemmap_pages);
+> > > +     struct vmemmap_remap_walk walk = {
+> > > +             .remap_pte      = vmemmap_restore_pte,
+> > > +             .reuse_addr     = reuse,
+> > > +             .vmemmap_pages  = &vmemmap_pages,
+> > > +     };
+> > > +
+> > > +     might_sleep();
+> > > +
+> > > +     /* See the comment in the vmemmap_remap_free(). */
+> > > +     BUG_ON(start - reuse != PAGE_SIZE);
+> > > +
+> > > +     alloc_vmemmap_page_list(&vmemmap_pages, start, end);
+> > > +     vmemmap_remap_range(reuse, end, &walk);
+> > > +}
+> > > +
+> > >  /*
+> > >   * Allocate a block of memory to be used to back the virtual memory map
+> > >   * or to back the page tables that are used to create the mapping.
+> > > --
+> > > 2.11.0
+> > >
+> > >
