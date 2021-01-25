@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EAE304B6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6D8304B54
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbhAZEqX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 25 Jan 2021 23:46:23 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:56247 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbhAYJPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:15:24 -0500
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10P810gI4010597, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10P810gI4010597
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 25 Jan 2021 16:01:00 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 25 Jan 2021 16:00:59 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833]) by
- RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833%12]) with mapi id
- 15.01.2106.006; Mon, 25 Jan 2021 16:00:59 +0800
-From:   Hilda Wu <hildawu@realtek.com>
-To:     Claire Chang <tientzu@chromium.org>,
-        "marcel@holtmann.org" <marcel@holtmann.org>,
-        "johan.hedberg@gmail.com" <johan.hedberg@gmail.com>,
-        "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>
-CC:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>
-Subject: RE: [PATCH] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY for btrtl
-Thread-Topic: [PATCH] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY
- for btrtl
-Thread-Index: AQHW7ljZ0ruzXjVhcUyIIArQ93ltkao34Wxg
-Date:   Mon, 25 Jan 2021 08:00:59 +0000
-Message-ID: <7df5d8b68525403ba1a252d0cd8eafe0@realtek.com>
-References: <20210119114700.3662156-1-tientzu@chromium.org>
-In-Reply-To: <20210119114700.3662156-1-tientzu@chromium.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.132.158]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727694AbhAZEr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 23:47:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725823AbhAYJPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:15:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CFB22C9C;
+        Mon, 25 Jan 2021 08:19:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611562756;
+        bh=PK/CPNfEVE3sgimFMYY6HtmJMEKnK5VbqgWqrbzhSwY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KY26vNuBWID6epO1g7qRWGgYroKtAFrWsA1RoHzCbRaB35YHEhnmL6u9CR9Ze+7FA
+         Icnh+zEjHPKScZC/RwLW8v8+1FzruybuqKgJ32mYI9cs+QcostyFzN2+Dd4dy+tmaS
+         8+0aL32pFPDgsjKt3ATqSIcICoLLECBfZUxoffs/8LW+2i1j8LJtUrealh9j+IcVyA
+         rduljQUlbYDtHrgsp47URr8iHdsY8uEAbBEhcaQX3H9D5XW20Ix745oQMziPieUIO3
+         ScvokFEv8x6/onJsLns8hoqdCqjS/QzIiJz7JXDaG1kf9Dm6zhfPMVsz+RYlGKlz3S
+         oOWn1u+4Cy6Vg==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     corbet@lwn.net
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@protonmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel-doc: Make the description of return value readable
+Date:   Mon, 25 Jan 2021 10:19:04 +0200
+Message-Id: <20210125081905.145569-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Claire. Patch looks good to me.
+The description on how to describe return values is over-complicated, and
+hard to follow. For alien reason, the body of the section is a note, and
+the first paragraph speaks about 'Return', albeit the section name is
+actually 'Return:'.
 
-Reviewed-by: Hilda Wu <hildawu@realtek.com>
+To give a better help when both implementing and reviewing patches, provide
+a straight-forward guideline, how to decribe return values, instead of
+providing a note that starts by "blacklisting" one of the infinite possible
+options of doing it wrong.
 
------Original Message-----
-From: Claire Chang <tientzu@chromium.org> 
-Sent: Tuesday, January 19, 2021 7:47 PM
-To: marcel@holtmann.org; johan.hedberg@gmail.com; luiz.dentz@gmail.com
-Cc: linux-bluetooth@vger.kernel.org; linux-kernel@vger.kernel.org; Max Chou <max.chou@realtek.com>; Hilda Wu <hildawu@realtek.com>; Claire Chang <tientzu@chromium.org>
-Subject: [PATCH] Bluetooth: hci_h5: Set HCI_QUIRK_SIMULTANEOUS_DISCOVERY for btrtl
+This decreases the cumulative amount of time, which is probably
+substantial, on this otherwise somewhat trivial topic.
 
-Realtek Bluetooth controllers can do both LE scan and BR/EDR inquiry at once, need to set HCI_QUIRK_SIMULTANEOUS_DISCOVERY quirk.
-
-Signed-off-by: Claire Chang <tientzu@chromium.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- drivers/bluetooth/hci_h5.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/doc-guide/kernel-doc.rst | 34 +++++++-------------------
+ 1 file changed, 9 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c index fb9817f97d45..27e96681d583 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -906,6 +906,11 @@ static int h5_btrtl_setup(struct h5 *h5)
- 	/* Give the device some time before the hci-core sends it a reset */
- 	usleep_range(10000, 20000);
+diff --git a/Documentation/doc-guide/kernel-doc.rst b/Documentation/doc-guide/kernel-doc.rst
+index 79aaa55d6bcf..dc5e1722c150 100644
+--- a/Documentation/doc-guide/kernel-doc.rst
++++ b/Documentation/doc-guide/kernel-doc.rst
+@@ -136,34 +136,18 @@ Examples::
+ Return values
+ ~~~~~~~~~~~~~
  
-+	/* Enable controller to do both LE scan and BR/EDR inquiry
-+	 * simultaneously.
-+	 */
-+	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
-+
- out_free:
- 	btrtl_free(btrtl_dev);
+-The return value, if any, should be described in a dedicated section
+-named ``Return``.
++The return value, if any, should be described in a dedicated section named
++``Return:``.
  
---
-2.30.0.284.gd98b1dd5eaa7-goog
+-.. note::
+-
+-  #) The multi-line descriptive text you provide does *not* recognize
+-     line breaks, so if you try to format some text nicely, as in::
+-
+-	* Return:
+-	* 0 - OK
+-	* -EINVAL - invalid argument
+-	* -ENOMEM - out of memory
+-
+-     this will all run together and produce::
+-
+-	Return: 0 - OK -EINVAL - invalid argument -ENOMEM - out of memory
+-
+-     So, in order to produce the desired line breaks, you need to use a
+-     ReST list, e. g.::
++In order to describe multiple return values, a ReST list should be used. That
++way Sphinx knows how to line-up them properly::
+ 
+-      * Return:
+-      * * 0		- OK to runtime suspend the device
+-      * * -EBUSY	- Device should not be runtime suspended
++  * Return:
++  * - 0:	The run-time is allowed to suspend the device.
++  * - -EBUSY:	Device should not be suspended.
+ 
+-  #) If the descriptive text you provide has lines that begin with
+-     some phrase followed by a colon, each of those phrases will be taken
+-     as a new section heading, which probably won't produce the desired
+-     effect.
++Using a dash rather than asterisk an is probably a better idea, because it does
++not meddle as much with the C-comments.
+ 
+ Structure, union, and enumeration documentation
+ -----------------------------------------------
+-- 
+2.30.0
 
