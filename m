@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68F530247F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09900302485
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 12:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727758AbhAYLvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 06:51:55 -0500
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:36861 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbhAYLrh (ORCPT
+        id S1727740AbhAYL6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 06:58:21 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:60313 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727768AbhAYLre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 06:47:37 -0500
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id B7AF952170B;
-        Mon, 25 Jan 2021 14:13:33 +0300 (MSK)
+        Mon, 25 Jan 2021 06:47:34 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id A3DBD760E6;
+        Mon, 25 Jan 2021 14:13:51 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1611573213;
-        bh=qNILJ6yQ/GHfTfHXyXIT4ckYgSbNRSzrC0vF2/kDqlU=;
+        s=mail; t=1611573231;
+        bh=stu9GO49LPKre6+8F7vR9bLCiSZP0+jxTi3lGWw3t/s=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=GCz2JyA13zaZ3pQEN4KHsYjadhUtYzL64RThmkVTjwf0MjaBmVYqbBe4PxMW7Tam3
-         Gyd4taKnovyyTi9PKqYzxGzSqsuqMLAK6RKxqJDjGbiI/Abz7+7YgmSsuwQAKiT+QY
-         cebSeCclXxt3uy/TIZQ1bpoLjGhu2e/8xQjOp5uI=
+        b=UrgkjsDw5I3l04G+xHnOg0TmKTlyhghgpxVedV85MFu+iHSrkMx2/kRdqzPM7No8x
+         bxN34Y75eqB4njxIMott2bYjnXUEEwoSUV9crrM0KYNvkQ6uSCjmSVNSI8mfDIDTRu
+         s9AMQEqvNIO3GLBWvLAJswBH0xlk6ztLFK6324oY=
 Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 57CED52173D;
-        Mon, 25 Jan 2021 14:13:33 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 59A9B760DF;
+        Mon, 25 Jan 2021 14:13:51 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
  (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 25
- Jan 2021 14:13:32 +0300
+ Jan 2021 14:13:50 +0300
 From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
 To:     Stefan Hajnoczi <stefanha@redhat.com>,
         Stefano Garzarella <sgarzare@redhat.com>,
@@ -39,22 +39,23 @@ To:     Stefan Hajnoczi <stefanha@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
         Andra Paraschiv <andraprs@amazon.com>,
         Colin Ian King <colin.king@canonical.com>,
         Jeff Vander Stoep <jeffv@google.com>
 CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <stsp2@yandex.ru>, <oxffffaa@gmail.com>
-Subject: [RFC PATCH v3 05/13] af_vsock: rest of SEQPACKET support
-Date:   Mon, 25 Jan 2021 14:13:18 +0300
-Message-ID: <20210125111321.598653-1-arseny.krasnov@kaspersky.com>
+Subject: [RFC PATCH v3 06/13] af_vsock: update comments for stream sockets
+Date:   Mon, 25 Jan 2021 14:13:39 +0300
+Message-ID: <20210125111342.598799-1-arseny.krasnov@kaspersky.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
 References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.64.68.128]
+X-Originating-IP: [10.64.68.129]
 X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
  (10.64.67.243)
 X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
@@ -97,160 +98,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This does rest of SOCK_SEQPACKET support:
-1) Adds socket ops for SEQPACKET type.
-2) Allows to create socket with SEQPACKET type.
+This replaces 'stream' to 'connect oriented' in comments as SEQPACKET is
+also connect oriented.
 
 Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 ---
- net/vmw_vsock/af_vsock.c | 71 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ net/vmw_vsock/af_vsock.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 4600c1ec3bb3..bbc3c31085aa 100644
+index bbc3c31085aa..0ff1190aad7b 100644
 --- a/net/vmw_vsock/af_vsock.c
 +++ b/net/vmw_vsock/af_vsock.c
-@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 		new_transport = transport_dgram;
- 		break;
- 	case SOCK_STREAM:
-+	case SOCK_SEQPACKET:
- 		if (vsock_use_local_transport(remote_cid))
- 			new_transport = transport_local;
- 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
-@@ -459,6 +460,13 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 			new_transport = transport_g2h;
- 		else
- 			new_transport = transport_h2g;
-+
-+		if (sk->sk_type == SOCK_SEQPACKET) {
-+			if (!new_transport->seqpacket_seq_send_len ||
-+			    !new_transport->seqpacket_seq_get_len ||
-+			    !new_transport->seqpacket_dequeue)
-+				return -ENODEV;
-+		}
- 		break;
- 	default:
- 		return -ESOCKTNOSUPPORT;
-@@ -684,6 +692,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+@@ -415,8 +415,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
  
- 	switch (sk->sk_socket->type) {
- 	case SOCK_STREAM:
-+	case SOCK_SEQPACKET:
- 		spin_lock_bh(&vsock_table_lock);
- 		retval = __vsock_bind_connectible(vsk, addr);
- 		spin_unlock_bh(&vsock_table_lock);
-@@ -1406,6 +1415,12 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
- 	return vsock_connect(sock, addr, addr_len, flags);
- }
+ /* Assign a transport to a socket and call the .init transport callback.
+  *
+- * Note: for stream socket this must be called when vsk->remote_addr is set
+- * (e.g. during the connect() or when a connection request on a listener
++ * Note: for connect oriented socket this must be called when vsk->remote_addr
++ * is set (e.g. during the connect() or when a connection request on a listener
+  * socket is received).
+  * The vsk->remote_addr is used to decide which transport to use:
+  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
+@@ -477,10 +477,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+ 			return 0;
  
-+static int vsock_seqpacket_connect(struct socket *sock, struct sockaddr *addr,
-+				   int addr_len, int flags)
-+{
-+	return vsock_connect(sock, addr, addr_len, flags);
-+}
-+
- static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
- 			bool kern)
- {
-@@ -1633,6 +1648,16 @@ static int vsock_stream_setsockopt(struct socket *sock,
- 					    optlen);
- }
+ 		/* transport->release() must be called with sock lock acquired.
+-		 * This path can only be taken during vsock_stream_connect(),
+-		 * where we have already held the sock lock.
+-		 * In the other cases, this function is called on a new socket
+-		 * which is not assigned to any transport.
++		 * This path can only be taken during vsock_connect(), where we
++		 * have already held the sock lock. In the other cases, this
++		 * function is called on a new socket which is not assigned to
++		 * any transport.
+ 		 */
+ 		vsk->transport->release(vsk);
+ 		vsock_deassign_transport(vsk);
+@@ -657,9 +657,10 @@ static int __vsock_bind_connectible(struct vsock_sock *vsk,
  
-+static int vsock_seqpacket_setsockopt(struct socket *sock,
-+				      int level,
-+				      int optname,
-+				      sockptr_t optval,
-+				      unsigned int optlen)
-+{
-+	return vsock_connectible_setsockopt(sock, level, optname, optval,
-+					    optlen);
-+}
-+
- static int vsock_connectible_getsockopt(struct socket *sock,
- 					int level, int optname,
- 					char __user *optval,
-@@ -1713,6 +1738,15 @@ static int vsock_stream_getsockopt(struct socket *sock,
- 					    optlen);
- }
+ 	vsock_addr_init(&vsk->local_addr, new_addr.svm_cid, new_addr.svm_port);
  
-+static int vsock_seqpacket_getsockopt(struct socket *sock,
-+				      int level, int optname,
-+				      char __user *optval,
-+				      int __user *optlen)
-+{
-+	return vsock_connectible_getsockopt(sock, level, optname, optval,
-+					    optlen);
-+}
-+
- static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
- 				     size_t len)
- {
-@@ -1870,6 +1904,12 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 	return vsock_connectible_sendmsg(sock, msg, len);
- }
+-	/* Remove stream sockets from the unbound list and add them to the hash
+-	 * table for easy lookup by its address.  The unbound list is simply an
+-	 * extra entry at the end of the hash table, a trick used by AF_UNIX.
++	/* Remove connect oriented sockets from the unbound list and add them
++	 * to the hash table for easy lookup by its address.  The unbound list
++	 * is simply an extra entry at the end of the hash table, a trick used
++	 * by AF_UNIX.
+ 	 */
+ 	__vsock_remove_bound(vsk);
+ 	__vsock_insert_bound(vsock_bound_sockets(&vsk->local_addr), vsk);
+@@ -950,10 +951,10 @@ static int vsock_shutdown(struct socket *sock, int mode)
+ 	if ((mode & ~SHUTDOWN_MASK) || !mode)
+ 		return -EINVAL;
  
-+static int vsock_seqpacket_sendmsg(struct socket *sock, struct msghdr *msg,
-+				   size_t len)
-+{
-+	return vsock_connectible_sendmsg(sock, msg, len);
-+}
-+
- static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
- 			   long timeout,
- 			   struct vsock_transport_recv_notify_data *recv_data,
-@@ -2184,6 +2224,13 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 	return vsock_connectible_recvmsg(sock, msg, len, flags);
- }
+-	/* If this is a STREAM socket and it is not connected then bail out
+-	 * immediately.  If it is a DGRAM socket then we must first kick the
+-	 * socket so that it wakes up from any sleeping calls, for example
+-	 * recv(), and then afterwards return the error.
++	/* If this is a connect oriented socket and it is not connected then
++	 * bail out immediately.  If it is a DGRAM socket then we must first
++	 * kick the socket so that it wakes up from any sleeping calls, for
++	 * example recv(), and then afterwards return the error.
+ 	 */
  
-+static int
-+vsock_seqpacket_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-+			int flags)
-+{
-+	return vsock_connectible_recvmsg(sock, msg, len, flags);
-+}
-+
- static const struct proto_ops vsock_stream_ops = {
- 	.family = PF_VSOCK,
- 	.owner = THIS_MODULE,
-@@ -2205,6 +2252,27 @@ static const struct proto_ops vsock_stream_ops = {
- 	.sendpage = sock_no_sendpage,
- };
+ 	sk = sock->sk;
+@@ -1770,7 +1771,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
  
-+static const struct proto_ops vsock_seqpacket_ops = {
-+	.family = PF_VSOCK,
-+	.owner = THIS_MODULE,
-+	.release = vsock_release,
-+	.bind = vsock_bind,
-+	.connect = vsock_seqpacket_connect,
-+	.socketpair = sock_no_socketpair,
-+	.accept = vsock_accept,
-+	.getname = vsock_getname,
-+	.poll = vsock_poll,
-+	.ioctl = sock_no_ioctl,
-+	.listen = vsock_listen,
-+	.shutdown = vsock_shutdown,
-+	.setsockopt = vsock_seqpacket_setsockopt,
-+	.getsockopt = vsock_seqpacket_getsockopt,
-+	.sendmsg = vsock_seqpacket_sendmsg,
-+	.recvmsg = vsock_seqpacket_recvmsg,
-+	.mmap = sock_no_mmap,
-+	.sendpage = sock_no_sendpage,
-+};
-+
- static int vsock_create(struct net *net, struct socket *sock,
- 			int protocol, int kern)
- {
-@@ -2225,6 +2293,9 @@ static int vsock_create(struct net *net, struct socket *sock,
- 	case SOCK_STREAM:
- 		sock->ops = &vsock_stream_ops;
- 		break;
-+	case SOCK_SEQPACKET:
-+		sock->ops = &vsock_seqpacket_ops;
-+		break;
- 	default:
- 		return -ESOCKTNOSUPPORT;
- 	}
+ 	lock_sock(sk);
+ 
+-	/* Callers should not provide a destination with stream sockets. */
++	/* Callers should not provide a destination with connect oriented
++	 * sockets.
++	 */
+ 	if (msg->msg_namelen) {
+ 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
+ 		goto out;
 -- 
 2.25.1
 
