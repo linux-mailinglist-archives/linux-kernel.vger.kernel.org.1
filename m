@@ -2,87 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F0230219F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3833C3021B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 06:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbhAYFVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 00:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
+        id S1726652AbhAYFYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 00:24:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbhAYFVi (ORCPT
+        with ESMTP id S1725944AbhAYFYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 00:21:38 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383E7C061573;
-        Sun, 24 Jan 2021 21:20:58 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id l18so1750374pji.3;
-        Sun, 24 Jan 2021 21:20:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Dds/WUdH9PnyQJIl6DvWk3y0e5c+VljMiMqdDLW00eo=;
-        b=aUbpK8mE9FdDCtnG3Wp9dOLFJQatc42v4dnZuSe5ywgLs15fD3JjZJBG7YCRiH9BzJ
-         tavgdxfEWMP3nJDfIwkAnml3MRco42FXX3GStJkbURsCA7Wc1xAzfL2nZbxc3Dl/0OnR
-         PPRWJ21N/wtenBqYyHPlu2jYWm++0xttx4mK3RR9qtXLWHVK/wN8VpM3qW0znmce8ilY
-         J/QqAdmXSMzDkwacS1yjggWPWguohByHbCOz9gVIPVPVqH9xtCQorDKWv1kwd8LsNOn5
-         zILCy8RE24C22/PnXnOAhIxPE0XiasA6oOnK0WnfHOtUKxuxwKsHtiStfTCL6JJ1VnSc
-         YxJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Dds/WUdH9PnyQJIl6DvWk3y0e5c+VljMiMqdDLW00eo=;
-        b=BU0nCea92oGJq09Itl4uj5aTZlrRJoTBS1w5R6fgB73eJbyzCpFp4Cs2X3Lff9SYCo
-         yIsfl811BL9LRJqY5WDfT8NNMD6so9sA6fsk5X6Qp+1+bJSyqByZRh+pMvsObXU6QUbw
-         HlhwGtjomCKFv2ArQti2DHVIrQClvfBF2iz6Dkbb3zEWP7V6cYq9HT7+/9/LlMdqFsHD
-         1enDJqnOa22Oy1JX8yqCtjL7WWGh1sgZSD8zz8BR/p4nqlQw+bHy7T8oZo/Gzd0uTsMF
-         Rdk1x61uXIjsLCvhZn9u7G2+3dWd/FV+hf6WLfyEVqMjUNXCFc79eIWe9vbq5uWUOSIe
-         kXSQ==
-X-Gm-Message-State: AOAM531cqFhA0YHEjF1xQYXSvAS3nFwWRCeNBcjSZWbBIVftN5i32XYa
-        xbB7l40YAbkVnR15M5DS8Ww4ogecs9k=
-X-Google-Smtp-Source: ABdhPJzdUoh5B6dMgRhGEhLrOl14C38iw8g4rBvfTcmwcgxwtNxlDqwC+tNX1D3wLLKV1Y/PP2FSjw==
-X-Received: by 2002:a17:90a:4088:: with SMTP id l8mr1571526pjg.106.1611552057777;
-        Sun, 24 Jan 2021 21:20:57 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id kr9sm17111965pjb.0.2021.01.24.21.20.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 21:20:56 -0800 (PST)
-Date:   Sun, 24 Jan 2021 21:20:54 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        linux-input@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9] Input: elants_i2c - support eKTF3624
-Message-ID: <YA5VNtc7vetdNDHq@google.com>
-References: <20210124195414.27333-1-digetx@gmail.com>
+        Mon, 25 Jan 2021 00:24:22 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F51EC061573;
+        Sun, 24 Jan 2021 21:23:42 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPJDm5KT6z9sVS;
+        Mon, 25 Jan 2021 16:23:36 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611552218;
+        bh=FPt1PXLmp2TZo2ef/NIp7OyF/2BaOYxPd9SrPJl1dyY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NKwgbUVtfoVdC7+3vf+GgDlL90j2rd0k2mcOHgydF3bz8jOIO9lQgsBNE94H3riKL
+         XG2r6iYxGGkZYO5HpCYKyJZ3i1hg2rb28zz//SVdPGLYOvw+paNePJlS/2TpCw4CH4
+         8+p7ia7nX68v1qXk2pbnu1gsiD31v2F9XYKYX0bQjIeOmc/YHZH/hP486msq3tnshA
+         wg592U0gFBLld1cfl1xNiKPR8tNqDez3Ncoyg60mqn0ryg78B28icrYXcSwFStrFwM
+         7rMLH9lolZ0Wrh6LQuNuO7BzQwrabe+ToniW/MUtqzEiKTxnPHMtALHlXz6du+KMaE
+         pq+V0u2BovI3g==
+Date:   Mon, 25 Jan 2021 16:23:36 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Tycho Andersen <tycho@tycho.pizza>
+Subject: linux-next: manual merge of the pidfd tree with the overlayfs tree
+Message-ID: <20210125162336.470e3183@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210124195414.27333-1-digetx@gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/YvLZhwTuqxN6yof2SjV4/Nc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 10:54:14PM +0300, Dmitry Osipenko wrote:
-> From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> 
-> Add ELAN KTF3624 touchscreen support to the elants_i2c driver.
-> The eKTF3624 TS is found on a series of ASUS Transformer tablet devices,
-> Nexus 7 tablet and etc. The firmware interface of eKTF3624 is nearly
-> identical to eKTH3500, which is already supported by the driver.
-> The minor differences of the firmware interface are now handled by
-> the driver. The eKTF3624 support was tested on ASUS Transformer TF700T,
-> TF300T and Nexus 7 tablets.
-> 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+--Sig_/YvLZhwTuqxN6yof2SjV4/Nc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thank you.
+Hi all,
 
--- 
-Dmitry
+Today's linux-next merge of the pidfd tree got a conflict in:
+
+  fs/ecryptfs/inode.c
+
+between commit:
+
+  176cfe865da6 ("ecryptfs: fix uid translation for setxattr on security.cap=
+ability")
+
+from the overlayfs tree and commit:
+
+  c7c7a1a18af4 ("xattr: handle idmapped mounts")
+
+from the pidfd tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/ecryptfs/inode.c
+index 58d0f7187997,55da9a91f51a..000000000000
+--- a/fs/ecryptfs/inode.c
++++ b/fs/ecryptfs/inode.c
+@@@ -1024,11 -1043,10 +1045,12 @@@ ecryptfs_setxattr(struct dentry *dentry
+  		rc =3D -EOPNOTSUPP;
+  		goto out;
+  	}
+ -	rc =3D vfs_setxattr(&init_user_ns, lower_dentry, name, value, size,
+ -			  flags);
+ +	inode_lock(lower_inode);
+- 	rc =3D __vfs_setxattr_locked(lower_dentry, name, value, size, flags, NUL=
+L);
+++	rc =3D __vfs_setxattr_locked(&init_user_ns, lower_dentry, name,
+++				   value, size, flags, NULL);
+ +	inode_unlock(lower_inode);
+  	if (!rc && inode)
+ -		fsstack_copy_attr_all(inode, d_inode(lower_dentry));
+ +		fsstack_copy_attr_all(inode, lower_inode);
+  out:
+  	return rc;
+  }
+
+--Sig_/YvLZhwTuqxN6yof2SjV4/Nc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOVdgACgkQAVBC80lX
+0GxG+Af9GzZ7SSGXPeMBJXxkpNAq6LewBXOlbJCGA09W5N7NpXyx/55e649AtkDL
+ugz3gSIUDGyxYx6K1h4pU6FAADpHsAi5d92SnYMrfgS1Gpw+oyrLGPOrBZYbnWm6
+RGl9ZnMjulGzfefss1U2WxfNZ3iDIGnaGqP3k6nreRbcCbzF/2aJvX8t/NKvJnEE
+T92DSQAxT3fTHPaSERIJ6XEdN6zbfxO44CsrUDBy0vfYs7U4NdfbUbqPGHNA3Qz0
+/6hv90jwcv1VgMYvX9WfLzG0GYwj7UkMiOiD2ef/ehmclc2EPzvpiliwg8vi4sfY
+td47eFbkOpfGDZq/ZW4Mq++qwJnPFw==
+=dVMD
+-----END PGP SIGNATURE-----
+
+--Sig_/YvLZhwTuqxN6yof2SjV4/Nc--
