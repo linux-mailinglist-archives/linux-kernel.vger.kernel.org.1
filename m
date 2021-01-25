@@ -2,74 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62777304B10
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6723304B5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 22:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbhAZEvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 23:51:45 -0500
-Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:34384 "EHLO
-        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726163AbhAYJRS (ORCPT
+        id S1727483AbhAZEqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 23:46:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51796 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726111AbhAYJPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:17:18 -0500
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 220D942087
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:06:31 +0000 (GMT)
-Received: (qmail 14252 invoked from network); 25 Jan 2021 09:06:30 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Jan 2021 09:06:30 -0000
-Date:   Mon, 25 Jan 2021 09:06:29 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Aubrey Li <aubrey.li@intel.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Subject: Re: [RFC PATCH v1] sched/fair: limit load balance redo times at the
- same sched_domain level
-Message-ID: <20210125090628.GX3592@techsingularity.net>
-References: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
+        Mon, 25 Jan 2021 04:15:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611565989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZqYL4d9Wet8su96h3iK+TQ2tTSrGpnqviwW5v3ZJymE=;
+        b=NcriAY0exsFdsXKTIBFvs+gnn6tDNw1SBImAT+hkgX3RtfDHkk/zrQiqWnTN23A3o3lFmx
+        YZ3yXmQQD663fBf+49TX+3qut+dhbSvePrZisWgUKnna41KWGezF7zZBmpIjNQ81UD6tZ6
+        p0ccIQ4N6KEQxCMMTmJPhYGdzEX/K6M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-cpZnYtDQPpaJkZZw6Hzrbw-1; Mon, 25 Jan 2021 04:13:05 -0500
+X-MC-Unique: cpZnYtDQPpaJkZZw6Hzrbw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47D8E107ACE3;
+        Mon, 25 Jan 2021 09:13:03 +0000 (UTC)
+Received: from [10.36.115.13] (ovpn-115-13.ams2.redhat.com [10.36.115.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D463470481;
+        Mon, 25 Jan 2021 09:13:00 +0000 (UTC)
+Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
+ <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
+ <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <d527c0b8-415b-2425-9f4a-9edec43d8ae5@redhat.com>
+Date:   Mon, 25 Jan 2021 10:13:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <bb5b9c39-d25b-6170-68ea-5b2bf297c1fd@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 02:02:58PM +0800, Aubrey Li wrote:
-> A long-tail load balance cost is observed on the newly idle path,
-> this is caused by a race window between the first nr_running check
-> of the busiest runqueue and its nr_running recheck in detach_tasks.
+On 25.01.21 07:22, Anshuman Khandual wrote:
 > 
-> Before the busiest runqueue is locked, the tasks on the busiest
-> runqueue could be pulled by other CPUs and nr_running of the busiest
-> runqueu becomes 1, this causes detach_tasks breaks with LBF_ALL_PINNED
-> flag set, and triggers load_balance redo at the same sched_domain level.
+> On 12/22/20 12:42 PM, Anshuman Khandual wrote:
+>> pfn_valid() asserts that there is a memblock entry for a given pfn without
+>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
+>> that they do not have memblock entries. Hence memblock_is_map_memory() will
+>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
+>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
+>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
+>> into the system via memremap_pages() called from a driver, their respective
+>> memory sections will not have SECTION_IS_EARLY set.
+>>
+>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
+>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
+>> for firmware reserved memory regions. memblock_is_map_memory() can just be
+>> skipped as its always going to be positive and that will be an optimization
+>> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
+>> normal memory too will not have SECTION_IS_EARLY set for their sections.
+>>
+>> Skipping memblock_is_map_memory() for all non early memory sections would
+>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
+>> performance for normal hotplug memory as well.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: Robin Murphy <robin.murphy@arm.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > 
-> In order to find the new busiest sched_group and CPU, load balance will
-> recompute and update the various load statistics, which eventually leads
-> to the long-tail load balance cost.
+> Hello David/Mike,
 > 
-> This patch introduces a variable(sched_nr_lb_redo) to limit load balance
-> redo times, combined with sysctl_sched_nr_migrate, the max load balance
-> cost is reduced from 100+ us to 70+ us, measured on a 4s x86 system with
-> 192 logical CPUs.
-> 
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Tim Chen <tim.c.chen@linux.intel.com>
-> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+> Given that we would need to rework early sections, memblock semantics via a
+> new config i.e EARLY_SECTION_MEMMAP_HOLES and also some possible changes to
+> ARCH_KEEP_MEMBLOCK and HAVE_ARCH_PFN_VALID, wondering if these patches here
+> which fixes a problem (and improves performance) can be merged first. After
+> that, I could start working on the proposed rework. Could you please let me
+> know your thoughts on this. Thank you.
 
-If redo_max is a constant, why is it not a #define instead of increasing
-the size of lb_env?
+As I said, we might have to throw in an pfn_section_valid() check, to
+catch not-section-aligned ZONE_DEVICE ranges (I assume this is possible
+on arm64 as well, no?).
+
+Apart from that, I'm fine with a simple fix upfront, that can be more
+easily backported if needed. (Q: do we? is this stable material?)
 
 -- 
-Mel Gorman
-SUSE Labs
+Thanks,
+
+David / dhildenb
+
