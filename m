@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7F63028E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE3E3028FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730896AbhAYRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        id S1731037AbhAYRe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730853AbhAYRPX (ORCPT
+        with ESMTP id S1730850AbhAYRPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:15:23 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06C8C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:14:42 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id k47so4682091uad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:14:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GQc6PKJl364Vrp1EanHNeZBMPwrfKXlGnOrqHxfWtgk=;
-        b=knfSS5OTZvscjpM6xakbSLdApoN93eamZqe7F4G6G7cQMv7cyKw5tarTwrRJvpZk1H
-         KNbIG3EdLmNMkSFR/AjfIBPDxxTw/3MWBxlIyeq/0EsjW5eex2WPfOo9i/wEK5AA/UCM
-         poXFNGSOx9LubRJF3xeOPfNVvhhiRai5AF6GM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GQc6PKJl364Vrp1EanHNeZBMPwrfKXlGnOrqHxfWtgk=;
-        b=b0PMFF9j9YrU/5DabYA4mEI8Q2b+v4reaurvRf4XVwUc2ZgUfaMHISPxQ7ygihVZSk
-         F8+vbv5KogNFsk8JQLChx0ID7xPegUx9hNnjRD7140G3GkMfUixW0C3A4ucjhNdo4LMq
-         oXBp+/26kcCS6jLWxPf4MD61mzwf4tL/rOVNoj2/bkZY2mNYlGOCtejIHO1D3980ySD3
-         k7tQ9O/2WJgde6GvPzf2AXPMnVOzyhbCQAejj6zzFNpqDiGSaq9NLWydhZ+xBpwcdwuZ
-         D5to1sOUtmfT5wa81Uu+emg/awt9gujGfliul9bv7srvLNk7n0vypF7rPKqvhl2EScxH
-         bDxA==
-X-Gm-Message-State: AOAM533QTZdT+JEVTh+c8C7NRb5toU4uUnSQWSzPbBz/4AYhBOa8/268
-        Z3e1U4nH6lAtLuRJCqqZqEDBwNn/yU9yJQ==
-X-Google-Smtp-Source: ABdhPJxnl1jnwNN/yyCVyveFwhJoaxeZLPGdr3dto+kVOaHuOwLkJfF4k45SVlL5qGP9eDiEd7YdlQ==
-X-Received: by 2002:ab0:5e6:: with SMTP id e93mr1304223uae.109.1611594881783;
-        Mon, 25 Jan 2021 09:14:41 -0800 (PST)
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
-        by smtp.gmail.com with ESMTPSA id d26sm302974vkn.17.2021.01.25.09.14.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 09:14:40 -0800 (PST)
-Received: by mail-ua1-f52.google.com with SMTP id a31so4662139uae.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 09:14:40 -0800 (PST)
-X-Received: by 2002:ab0:5a70:: with SMTP id m45mr1315298uad.121.1611594880375;
- Mon, 25 Jan 2021 09:14:40 -0800 (PST)
+        Mon, 25 Jan 2021 12:15:18 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBEFC06174A;
+        Mon, 25 Jan 2021 09:14:38 -0800 (PST)
+Received: from zn.tnic (p200300ec2f09db004bb0ee0cb7e01378.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:db00:4bb0:ee0c:b7e0:1378])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A95061EC030D;
+        Mon, 25 Jan 2021 18:14:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611594876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=z7eyGpYXFzkDPUB8M1I4KekEb4xSMFxcKNImwrUUnPA=;
+        b=J8o+WmHJ/hSYwQxW0OjiInNeLcqECsll5NhQ8U3kbCV4OZp02EUAX08csasWTWx1HBtj0V
+        SENQiLpW5olp8akoLBPk1wmL8j/uPcoXZKX5j1/z4A6zZKAXh2V3aUfA57I9DdUptY2ebP
+        M6pIt0QNFCdLIAcZjASs5+D+jPtTaI4=
+Date:   Mon, 25 Jan 2021 18:14:31 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Terry Bowman <terry.bowman@amd.com>,
+        James Morse <james.morse@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        jon.grimm@amd.com
+Subject: Re: [PATCH] ACPI / APEI: Add is_ghes_type() to identify GHES sources
+Message-ID: <20210125171431.GI23070@zn.tnic>
+References: <20210122180322.1720413-1-terry.bowman@amd.com>
+ <CAJZ5v0hoMe=XbwD-oRGiRxAia94JB1CfBiqEXGwan+pN5_pzqw@mail.gmail.com>
 MIME-Version: 1.0
-References: <1611584985-12479-1-git-send-email-sumit.garg@linaro.org>
-In-Reply-To: <1611584985-12479-1-git-send-email-sumit.garg@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 25 Jan 2021 09:14:28 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VOGca=QVmGnUCgtTk5ednPnUXiLekqo77LQ3EknrVXjg@mail.gmail.com>
-Message-ID: <CAD=FV=VOGca=QVmGnUCgtTk5ednPnUXiLekqo77LQ3EknrVXjg@mail.gmail.com>
-Subject: Re: [PATCH] kdb: Refactor env variables get/set code
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hoMe=XbwD-oRGiRxAia94JB1CfBiqEXGwan+pN5_pzqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jan 25, 2021 at 05:41:04PM +0100, Rafael J. Wysocki wrote:
+> On Fri, Jan 22, 2021 at 7:05 PM Terry Bowman <terry.bowman@amd.com> wrote:
+> >
+> > From: Yazen Ghannam <yazen.ghannam@amd.com>
+> >
+> > Refactor duplicated GHES identity logic into is_ghes_type().
+> >
+> > Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> > Reviewed-by: Robert Richter <rrichter@amd.com>
+> > Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+> 
+> If Terry was a co-author of the patch, please add a Co-developed-by:
+> tag for him in addition to the s-o-b.  Otherwise the meaning of his
+> s-o-b is unclear.
+> 
+> Boris, James, any objections to the changes below?
+> 
+> > ---
+> >  drivers/acpi/apei/hest.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+> > index 6e980fe16772..bd702e0ef339 100644
+> > --- a/drivers/acpi/apei/hest.c
+> > +++ b/drivers/acpi/apei/hest.c
+> > @@ -49,6 +49,12 @@ static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
+> >         [ACPI_HEST_TYPE_IA32_DEFERRED_CHECK] = -1,
+> >  };
+> >
+> > +static inline bool is_ghes_type(struct acpi_hest_header *hest_hdr)
+> > +{
+> > +       return hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
+> > +              hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2;
 
-On Mon, Jan 25, 2021 at 6:30 AM Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> diff --git a/kernel/debug/kdb/kdb_env.c b/kernel/debug/kdb/kdb_env.c
-> new file mode 100644
-> index 0000000..33ab5e6
-> --- /dev/null
-> +++ b/kernel/debug/kdb/kdb_env.c
-> @@ -0,0 +1,229 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Kernel Debugger Architecture Independent Environment Functions
-> + *
-> + * Copyright (c) 1999-2004 Silicon Graphics, Inc.  All Rights Reserved.
-> + * Copyright (c) 2009 Wind River Systems, Inc.  All Rights Reserved.
-> + * 03/02/13    added new 2.5 kallsyms <xavier.bru@bull.net>
+I realize that this is supposed to test whether the table point to a
+generic hardware error source but everything in our code pertaining to
+GHES is called, well, "ghes".
 
-I'm not sure the policy for copying over copyright notices like this,
-but I would have expected them to get copied over from the file you
-got the code from?  These are slightly different.
+So I'd prefer to call that is_generic_error() or so.
 
-> + */
-> +
-> +#include <linux/kdb.h>
-> +#include <linux/string.h>
-> +#include "kdb_private.h"
-> +
-> +/*
-> + * Initial environment.   This is all kept static and local to
-> + * this file.   We don't want to rely on the memory allocation
-> + * mechanisms in the kernel, so we use a very limited allocate-only
-> + * heap for new and altered environment variables.  The entire
-> + * environment is limited to a fixed number of entries (add more
-> + * to __env[] if required) and a fixed amount of heap (add more to
-> + * KDB_ENVBUFSIZE if required).
-> + */
-> +static char *__env[] = {
-> +#if defined(CONFIG_SMP)
-> +       "PROMPT=[%d]kdb> ",
-> +#else
-> +       "PROMPT=kdb> ",
-> +#endif
-> +       "MOREPROMPT=more> ",
-> +       "RADIX=16",
-> +       "MDCOUNT=8",            /* lines of md output */
-> +       KDB_PLATFORM_ENV,
-> +       "DTABCOUNT=30",
-> +       "NOSECT=1",
-> +       (char *)0,
+Thx.
 
-In a follow-up patch, I guess these could move from 0 to NULL and
-remove the cast?
+-- 
+Regards/Gruss,
+    Boris.
 
-
-> +/*
-> + * kdbgetenv - This function will return the character string value of
-> + *     an environment variable.
-> + * Parameters:
-> + *     match   A character string representing an environment variable.
-> + * Returns:
-> + *     NULL    No environment variable matches 'match'
-> + *     char*   Pointer to string value of environment variable.
-> + */
-
-In a follow-up patch, the above could be moved to kernel-doc format,
-which we're trying to move to for kgdb when we touch code.
-
-I will leave it up to you about whether the new functions introduced
-in this patch are introduced with the proper kernel doc format or move
-to the right format in the same follow-up patch.
-
-
-> +/*
-> + * kdb_prienv - Display the current environment variables.
-> + */
-> +void kdb_prienv(void)
-
-IMO saving the two characters in the function name isn't worth it,
-especially since this function is called in only one place.  Use
-kdb_printenv()
-
--Doug
+https://people.kernel.org/tglx/notes-about-netiquette
