@@ -2,99 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FA830377A
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC4430377B
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 08:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729435AbhAZHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 02:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730698AbhAYQUT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:20:19 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46115C061788
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:19:39 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id l12so13339195wry.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:19:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=boundarydevices.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q9skQfAW6mvkX2OZYvMTD2P/DTOJaRYGHpGb9rH9Irk=;
-        b=ic75epSwm04koj2KNME8R6MTYgZxodqaksoi2qh/9aBdGXWBRoIxrCUlt50bi6FWtl
-         nwjVftA1JWERZAIq+yvnAd/D78aS05J0YnRHw3JLTtMjlNocvTHYEQVaPEs/Qfbonow+
-         0eSX4qriD4u8Oq0ZBMPDyJ6HSepS+ztJxdZ48=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q9skQfAW6mvkX2OZYvMTD2P/DTOJaRYGHpGb9rH9Irk=;
-        b=H9w0Q1c182rBN1CklRINLr++zTltfwtxZfTBdwCIR6IQ8AMSkrl7XdGmkFkwBeSSZC
-         Cas5N6Xh2xfQ0Giv3JO0SyznlZ+O2de+yrE3U/cnKO0qbEC/gVjW+p2z6N1lqSf2ELhg
-         HbH4anR+hUKXicu3KnQuLKZkaXnf7QJW2FeXSLiOjQp+/2wQic92lDTodiDTniqvjvFs
-         THBf33vHOawugLdhg0ZgUrQilwmKpnEqaLTAoQTftwJQ6beWKYpalBCqlYyRMZZWRo72
-         syW3euPf6UmK57oeYfUP1L2XfqYzmDOtovCgKxSbOoLVAtQUyE3O+8DUkCh0cu6WYx4/
-         MpIA==
-X-Gm-Message-State: AOAM531x+yXBAUiWLh1SVWE62JpNqIW3LZ/daabXQ+A2CionplBg7rxq
-        Y3kp4SmvSdbnAObZqMLNRehUiSi40Oqe6ss6
-X-Google-Smtp-Source: ABdhPJzCEIhG+xkhbAQCDa90/NEtdNjVAYlKIwknDRb0e9tAYEAJekD2nIC5tTDk5r2/aUOeCvR3RQ==
-X-Received: by 2002:adf:9261:: with SMTP id 88mr1782812wrj.227.1611591578048;
-        Mon, 25 Jan 2021 08:19:38 -0800 (PST)
-Received: from p1g2.home (2a01cb000f9f0e008f0bd0d6ec94dd0e.ipv6.abo.wanadoo.fr. [2a01:cb00:f9f:e00:8f0b:d0d6:ec94:dd0e])
-        by smtp.gmail.com with ESMTPSA id a130sm21299198wmf.4.2021.01.25.08.19.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 08:19:37 -0800 (PST)
-From:   Gary Bisson <gary.bisson@boundarydevices.com>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, balbi@kernel.org,
-        gregkh@linuxfoundation.org,
-        Gary Bisson <gary.bisson@boundarydevices.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] usb: dwc3: fix clock issue during resume in OTG mode
-Date:   Mon, 25 Jan 2021 17:19:34 +0100
-Message-Id: <20210125161934.527820-1-gary.bisson@boundarydevices.com>
+        id S2389601AbhAZHtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 02:49:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730753AbhAYQeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:34:11 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5065F22510;
+        Mon, 25 Jan 2021 16:33:30 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l44nw-009ujO-DD; Mon, 25 Jan 2021 16:33:28 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+Cc:     zhukeqian1@huawei.com, James Morse <james.morse@arm.com>,
+        yuzenghui@huawei.com, Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        yezengruan@huawei.com, Gavin Shan <gshan@redhat.com>,
+        wanghaibin.wang@huawei.com, Quentin Perret <qperret@google.com>
+Subject: Re: [PATCH v3 0/3] Some optimization for stage-2 translation
+Date:   Mon, 25 Jan 2021 16:33:25 +0000
+Message-Id: <161159237705.2330282.4465806083809381814.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210114121350.123684-1-wangyanan55@huawei.com>
+References: <20210114121350.123684-1-wangyanan55@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, wangyanan55@huawei.com, linux-arm-kernel@lists.infradead.org, will@kernel.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, zhukeqian1@huawei.com, james.morse@arm.com, yuzenghui@huawei.com, suzuki.poulose@arm.com, julien.thierry.kdev@gmail.com, yezengruan@huawei.com, gshan@redhat.com, wanghaibin.wang@huawei.com, qperret@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fe8abf332b8f ("usb: dwc3: support clocks and resets for DWC3
-core") introduced clock support and a new function named
-dwc3_core_init_for_resume() which enables the clock before calling
-dwc3_core_init() during resume as clocks get disabled during suspend.
+On Thu, 14 Jan 2021 20:13:47 +0800, Yanan Wang wrote:
+> This patch series(v3) make some optimization for stage-2 translation.
+> 
+> About patch-1:
+> Procedures of hyp stage-1 map and guest stage-2 map are quite different,
+> but they are now tied closely by function kvm_set_valid_leaf_pte().
+> So adjust the relative code for ease of code maintenance in the future.
+> 
+> [...]
 
-Unfortunately in this commit the DWC3_GCTL_PRTCAP_OTG case was forgotten
-and therefore during resume, a platform could call dwc3_core_init()
-without re-enabling the clocks first, preventing to resume properly.
+Applied to kvm-arm64/concurrent-translation-fault, thanks!
 
-So update the resume path to call dwc3_core_init_for_resume() as it
-should.
+[1/3] KVM: arm64: Adjust partial code of hyp stage-1 map and guest stage-2 map
+      commit: 8ed80051c8c31d1587722fdb3af16677eba9d693
+[2/3] KVM: arm64: Filter out the case of only changing permissions from stage-2 map path
+      commit: 694d071f8d85d504055540a27f0dbe9dbf44584e
+[3/3] KVM: arm64: Mark the page dirty only if the fault is handled successfully
+      commit: 509552e65ae8287178a5cdea2d734dcd2d6380ab
 
-Fixes: fe8abf332b8f ("usb: dwc3: support clocks and resets for DWC3
-core")
+Cheers,
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Gary Bisson <gary.bisson@boundarydevices.com>
----
- drivers/usb/dwc3/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 841daec70b6e..3101f0dcf6ae 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1758,7 +1758,7 @@ static int dwc3_resume_common(struct dwc3 *dwc, pm_message_t msg)
- 		if (PMSG_IS_AUTO(msg))
- 			break;
- 
--		ret = dwc3_core_init(dwc);
-+		ret = dwc3_core_init_for_resume(dwc);
- 		if (ret)
- 			return ret;
- 
+	M.
 -- 
-2.29.2
+Without deviation from the norm, progress is not possible.
+
 
