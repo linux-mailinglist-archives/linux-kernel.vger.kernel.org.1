@@ -2,117 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD66302175
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9C230217E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 05:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbhAYEyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 23:54:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59664 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727068AbhAYExx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 23:53:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED8D3AF21;
-        Mon, 25 Jan 2021 04:53:11 +0000 (UTC)
-To:     Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchristi@redhat.com
-References: <20210125042942.1087170-1-dongsheng.yang@easystack.cn>
-From:   Coly Li <colyli@suse.de>
-Subject: Re: [PATCH] bcache: dont reset bio opf in bch_data_insert_start
-Message-ID: <7569abf3-3e54-986e-8307-751fa5e00828@suse.de>
-Date:   Mon, 25 Jan 2021 12:53:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210125042942.1087170-1-dongsheng.yang@easystack.cn>
-Content-Type: text/plain; charset=utf-8
+        id S1727089AbhAYE4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 23:56:24 -0500
+Received: from mail-bn8nam12on2074.outbound.protection.outlook.com ([40.107.237.74]:62816
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726760AbhAYE4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 23:56:19 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iv88atHp/UptDDAypbiTpIpEZixVGFJ2+wWyyjCXOnFkE0Ek8iOlN5ALEmLOrSzSqMzvodUhpLhUFjLM6Ihrigpy9fAMVgBy7aZc0lKVDSPDyI0SAJva9eFObXJcsjLMfi8hdm9qpPVB1N0CQwouObb8aWsq3Y29WYs5xRQZ5Py7LM0JLBQBY+H63Vuu74UBycxFYiI7hiGdnHe06O9p+Jr1LyeR4R5ym9WTNWU/wn4DORfgZyCYyZBGfrtTnu0rIbwoWuFaDWKmCadeDVUDa+VaPfCuoZxmpPmI//v4eg+xXLg0hhmbEjT5kbGLJlB79+byFaB0BbdGZTqXU2KdHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pp8eCqYmBEweyxEU/prNnGOT84MXbwil9v1bH9b/ofs=;
+ b=XTtXIBwUTi9TjqnlrCKHYFsGsgZsr/Tdg4KQ2xSzFlUalgROtCYFXepto4bVCEe6BiGfIAQYZmMX4ErNT/cAh0kgFyqzHxrtkzBpeiBb2VJ3newAZ+izz7A90OENPMpJbmNYAJGXpj9icC/oRUiP6W1A7n83yM+LadaHkhKDhbp8ApH5liQd7GVw9IbOAF0wr9PHjxuOhAlMuXA2heXJMj5MXE//hlxLS0ZNY8ZiFSMdd0zJRc+7BET1Se/rHaXwJKdRdfYZqlD19LGuPy1s9omQq+92MfEIqafU0T+1hfibCgE3idfVONjgv8ojpsxiKzUnegEuoZ3asY61KTNSFw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pp8eCqYmBEweyxEU/prNnGOT84MXbwil9v1bH9b/ofs=;
+ b=1bDGOd0BuTx61QOXkyoRkVCiopXsSJNj0+m3l/fxN83RjKY7hhyY922UM6lh6d7tCuEPI+0jMMkGS2eDMSeNZj8HgFJpgZrJLJ9Wohauid1LY+GwUunOf7eEdzzAFcqx1RLW42T3vLBIjraNcSnk1vIK6SBqU/SllRake/ai1Ww=
+Received: from CY4PR12MB1287.namprd12.prod.outlook.com (2603:10b6:903:40::8)
+ by CY4PR1201MB0182.namprd12.prod.outlook.com (2603:10b6:910:18::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.17; Mon, 25 Jan
+ 2021 04:55:23 +0000
+Received: from CY4PR12MB1287.namprd12.prod.outlook.com
+ ([fe80::bc0f:dd2:ef80:de2]) by CY4PR12MB1287.namprd12.prod.outlook.com
+ ([fe80::bc0f:dd2:ef80:de2%12]) with mapi id 15.20.3784.019; Mon, 25 Jan 2021
+ 04:55:23 +0000
+From:   "Chen, Guchun" <Guchun.Chen@amd.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: RE: linux-next: Tree for Jan 22 (amdgpu)
+Thread-Topic: linux-next: Tree for Jan 22 (amdgpu)
+Thread-Index: AQHW8WuKWRhWuGQmpEyStMMh+HbJc6o3xnAQ
+Date:   Mon, 25 Jan 2021 04:55:23 +0000
+Message-ID: <CY4PR12MB1287FE09EB65A01875FF7F2FF1BD9@CY4PR12MB1287.namprd12.prod.outlook.com>
+References: <20210122180643.7039571c@canb.auug.org.au>
+ <64dd3a50-a836-c1b7-738e-6b6b5433117a@infradead.org>
+In-Reply-To: <64dd3a50-a836-c1b7-738e-6b6b5433117a@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-01-25T04:55:21Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=06f6c7b2-6eda-494c-9011-250f079e6267;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [180.167.199.189]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6ba337e8-73c5-4994-5b01-08d8c0ed6c9f
+x-ms-traffictypediagnostic: CY4PR1201MB0182:
+x-microsoft-antispam-prvs: <CY4PR1201MB0182B749B02D8A18FDCF4756F1BD9@CY4PR1201MB0182.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qVRzdF6Thyx8rOTU8Ejo0+Zyz9js0Wp1QuISmZxtBiuGjEfEgi1/EtqxOkUO7osqk3Zsb16IWLjRwG+EMxYi72kn67IzY1X6t1iGQlCRjiaNdeC4Lq+kR4BwpYgJSFJKzD9EdZX51eHsZsQwyTUtR2gN1MkyH2/v/AnV6aD+lYFSvTHle9pnR07GPvzCwnCPR5WxoxzX68A4BQX9KY3bJuRAC/HIJue6ys1HkjxvfCkwYOW08xYca9Rbbzp1YjhFLbRDW4j0rd/ok6T50pZaVO1Ca5zkUJFMZoloeSQEpk5R85Rl6CM2rz65oQVewcno56t6cBI10W2mPC/1BWMShjv87KXTqMsK7szMIGqCdAbixdDfxZFoLhHVEMLX4GJWZ0/QoKFA6iCQVEAkaixxZMHqLnt9sw1lWJUXRLF05RA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1287.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(346002)(366004)(26005)(71200400001)(966005)(54906003)(110136005)(53546011)(5660300002)(45080400002)(8936002)(316002)(9686003)(478600001)(4326008)(186003)(66476007)(33656002)(6506007)(66446008)(55016002)(66556008)(64756008)(2906002)(52536014)(7696005)(8676002)(83380400001)(86362001)(76116006)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?S7jKMlsJ0OGSg4fRbfX7WgQnZ6hdrBcruCVeWobBtMidkVAGIpTsSlDHpNuz?=
+ =?us-ascii?Q?D0DpfHf5fxZdW7mrkGEcj5mOdEJUwwsOCdKwuotiG05pJhKunB+okvjDsH3R?=
+ =?us-ascii?Q?u2PtKz88vOx2NzVRhqWohMQRqXW3GsLhPQi8/yGm7D6Ut0PDT9W4kjv48v1z?=
+ =?us-ascii?Q?+z0/1QIubCIkv7zvlEMISh8yhKgrRohewFlohS/coAZHG6WgjDbCtqwmMMoe?=
+ =?us-ascii?Q?eamZhl2T7OFB36qc7cMlklje/hff0jGvSSUKxLfkapEqLrWmfJsw9lsay9OB?=
+ =?us-ascii?Q?S6K4aMkE6m0ltrmRxarSHojstwJAxKxe+u3cDBcFRIogCLVh4Olmp8GBBulV?=
+ =?us-ascii?Q?eUZrvn1r6HEQ2jdMSMLB5twmK3OxddqqIP1rh+z6XVkffHXlpeb5MUBpx9HP?=
+ =?us-ascii?Q?RwB8HGvkPhp6P8blI9Gl/MC05TAiiRPbkZQL1oYrugLhQBVcpsCO1/x0ehod?=
+ =?us-ascii?Q?xkmy0WwsbqcXTX1CVMR/B7bsw1beGoFhUg8TKdB+7hpTcsGQ/lB9/Q+FIaiH?=
+ =?us-ascii?Q?EU0BOS3k6kp9cP5UW7jw1LM4pYzt5GAyybZaqbOVc74CYRD8WvcphAH4H+ou?=
+ =?us-ascii?Q?aTmcVGXdcpffN9vcIgvZgLQc/WGrL4/ofwK36wdCVnvcLZqi1gfhIfhQPfiW?=
+ =?us-ascii?Q?tOpGNDJ0FZzO3Jg47/fCVUDXnU3bFZvpWvPECpYxgQE2w54TRtXGG5TiXbW9?=
+ =?us-ascii?Q?f8Q6kT/ACiDqKbSh/vruqrgKaXQAWtBk2vk0BAriU9YL0U3j4h19BBqdfL19?=
+ =?us-ascii?Q?QQ0Cj5f2FIi6PDCY1kAn128PeygoK7JciMHdDrSAlwutdRjcKdPwKy587dN5?=
+ =?us-ascii?Q?H9gg4ftbth0h+ZPvQsZ7d0Dm+KF4neCNntf4WJjnSwvTBJG9wibqCLOXkbJz?=
+ =?us-ascii?Q?3pKlh8k4HLXpFXXeft6RBbXVoQEOblu4dpEgscsf02BDMFetFnX0Ahp9zBrd?=
+ =?us-ascii?Q?3Uk4Cr8L1Mkvzvw4DgXP1rRSX8z8pEXdWV3N1Ts+XTyECQn7/lDV+ynQQAq6?=
+ =?us-ascii?Q?csG9Rt6v7AIg/DF4fc5fXecF7StB2Q0b3xo6iZzXdPOQT+3nOLgcAvhyohdJ?=
+ =?us-ascii?Q?WgAOqEH6?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1287.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ba337e8-73c5-4994-5b01-08d8c0ed6c9f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Jan 2021 04:55:23.3720
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PckjjepFt4dWvEufRfh4vOV6EWrrd6BFVAqb0ni7dW63F0ebUB9IagArKkKQMyJSglbZQJojDW3/tyzlU156jw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 12:29 PM, Dongsheng Yang wrote:
-> commit ad0d9e76(bcache: use bio op accessors) makes the bi_opf
-> modified by bio_set_op_attrs(). But there is a logical
-> problem in this commit:
-> 
->                 trace_bcache_cache_insert(k);
->                 bch_keylist_push(&op->insert_keys);
-> 
-> -               n->bi_rw |= REQ_WRITE;
-> +               bio_set_op_attrs(n, REQ_OP_WRITE, 0);
->                 bch_submit_bbio(n, op->c, k, 0);
->         } while (n != bio);
-> 
-> The old code add REQ_WRITE into bio n and keep other flags; the
-> new code set REQ_OP_WRITE to bi_opf, but reset all other flags.
-> 
-> This problem is discoverd in our performance testing:
-> (1) start a fio with 1M x 128depth for read in /dev/nvme0n1p1
-> (2) start a fio with 1M x 128depth for write in /dev/escache0 (cache
-> device is /dev/nvme0n1p2)
-> 
-> We found the BW of reading is 2000+M/s, but the BW of writing is
-> 0-100M/s. After some debugging, we found the problem is io submit in
-> writting is very slow.
-> 
-> bch_data_insert_start() insert a bio to /dev/nvme0n1p1, but as
-> cached_dev submit stack bio will be added into current->bio_list, and
-> return.Then __submit_bio_noacct() will submit the new bio in bio_list
-> into /dev/nvme0n1p1. This operation would be slow in
-> blk_mq_submit_bio() -> rq_qos_throttle(q, bio);
-> 
-> The rq_qos_throttle() will call wbt_should_throttle(),
-> static inline bool wbt_should_throttle(struct rq_wb *rwb, struct bio *bio)
-> {
->         switch (bio_op(bio)) {
->         case REQ_OP_WRITE:
->                 /*
->                  * Don't throttle WRITE_ODIRECT
->                  */
->                 if ((bio->bi_opf & (REQ_SYNC | REQ_IDLE)) ==
->                     (REQ_SYNC | REQ_IDLE))
->                         return false;
-> ... ...
-> }
-> 
-> As the bio_set_op_attrs() reset the (REQ_SYNC | REQ_IDLE), so this write
-> bio will be considered as non-direct write.
-> 
-> After this fix, bio to nvme will flaged as (REQ_SYNC | REQ_IDLE),
-> then fio for writing will get about 1000M/s bandwidth.
-> 
-> Fixes: ad0d9e76a4124708dddd00c04fc4b56fc86c02d6
+[AMD Public Use]
 
-It should be,
-Fixes: ad0d9e76a412 ("bcache: use bio op accessors")
+The link error has been fixed by:
 
-> Signed-off-by: Dongsheng Yang <dongsheng.yang@easystack.cn>
+5da047444e82 drm/amd/display: fix 64-bit division issue on 32-bit OS
 
-Please CC the fixed patch author  Mike Christie <mchristi@redhat.com>.
+Regards,
+Guchun
 
-> ---
->  drivers/md/bcache/request.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/md/bcache/request.c b/drivers/md/bcache/request.c
-> index c7cadaafa947..eb734f7ddaac 100644
-> --- a/drivers/md/bcache/request.c
-> +++ b/drivers/md/bcache/request.c
-> @@ -244,7 +244,7 @@ static void bch_data_insert_start(struct closure *cl)
->  		trace_bcache_cache_insert(k);
->  		bch_keylist_push(&op->insert_keys);
->  
-> -		bio_set_op_attrs(n, REQ_OP_WRITE, 0);
-> +		n->bi_opf |= REQ_OP_WRITE;
->  		bch_submit_bbio(n, op->c, k, 0);
->  	} while (n != bio);
+-----Original Message-----
+From: amd-gfx <amd-gfx-bounces@lists.freedesktop.org> On Behalf Of Randy Du=
+nlap
+Sent: Saturday, January 23, 2021 2:02 AM
+To: Stephen Rothwell <sfr@canb.auug.org.au>; Linux Next Mailing List <linux=
+-next@vger.kernel.org>
+Cc: amd-gfx@lists.freedesktop.org; Linux Kernel Mailing List <linux-kernel@=
+vger.kernel.org>; dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: linux-next: Tree for Jan 22 (amdgpu)
 
-The fix is OK to me, I'd like to see opinion from Mike Christie too.
+On 1/21/21 11:06 PM, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Changes since 20210121:
+>=20
 
-Thanks for the catch.
+on i386:
 
-Coly Li
+ERROR: modpost: "__udivdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefine=
+d!
+ERROR: modpost: "__divdi3" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined=
+!
+
+
+
+--=20
+~Randy
+_______________________________________________
+amd-gfx mailing list
+amd-gfx@lists.freedesktop.org
+https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flists.f=
+reedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=3D04%7C01%7Cguchun.c=
+hen%40amd.com%7C32b5c3dbae684672163608d8bf82ab0c%7C3dd8961fe4884e608e11a82d=
+994e183d%7C0%7C0%7C637469915239051891%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wL=
+jAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D0a=
+61RTCcYsAXilfnxqSzPXxA2q6sIYDKEkMWL6HGJro%3D&amp;reserved=3D0
