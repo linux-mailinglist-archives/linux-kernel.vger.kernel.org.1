@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCD43037DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6427B3037D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732627AbhAZI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:27:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58354 "EHLO mail.kernel.org"
+        id S1732654AbhAZI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:26:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727652AbhAYSmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E10923102;
-        Mon, 25 Jan 2021 18:42:04 +0000 (UTC)
+        id S1727648AbhAYSms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFCB923104;
+        Mon, 25 Jan 2021 18:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600125;
-        bh=goLjPfICnWXpopqQAkGijrPKFoYfCVXCx6RJrB2lbA4=;
+        s=korg; t=1611600127;
+        bh=0lY4H3kBTeH0lr7fN7Qyk/PF6JGXFxRNxZtQMOKWVSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TGkoMheE2+ImBlLmDk5JJevNBdRklbJztzeLR9HMZzkqjzMTKjHz95XAZ4ruEucGH
-         /Ptjlzw8Sm6Pjbcj80sAwV1e2wacQ3ELJ2mgMbT3oMwjM9CdcvA7JKy23bkVNcxu2H
-         AeK6a7kcoDO8j0tVZ9jo8mQ2OcK6gtMBwXqKtmwE=
+        b=Bmi2aZQscteBTg53xnA0g4BWSafQtj8+YbEtFR1FucpGJMYDOjnhEYSgelIU83MYo
+         Jleq5f/WftMeMZtSi2VqnMhDKV0GsizWdN7exsktiY0u//2CcksVRlF101cgVa5ITO
+         eMkeYBFLseBhHbUaM7OC5xB+zcZ6+OvJowMVKMbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
+        stable@vger.kernel.org, JC Kuo <jckuo@nvidia.com>,
         Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.19 41/58] xhci: make sure TRB is fully written before giving it to the controller
-Date:   Mon, 25 Jan 2021 19:39:42 +0100
-Message-Id: <20210125183158.483820186@linuxfoundation.org>
+Subject: [PATCH 4.19 42/58] xhci: tegra: Delay for disabling LFPS detector
+Date:   Mon, 25 Jan 2021 19:39:43 +0100
+Message-Id: <20210125183158.527649766@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -39,53 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: JC Kuo <jckuo@nvidia.com>
 
-commit 576667bad341516edc4e18eb85acb0a2b4c9c9d9 upstream.
+commit da7e0c3c2909a3d9bf8acfe1db3cb213bd7febfb upstream.
 
-Once the command ring doorbell is rung the xHC controller will parse all
-command TRBs on the command ring that have the cycle bit set properly.
+Occasionally, we are seeing some SuperSpeed devices resumes right after
+being directed to U3. This commits add 500us delay to ensure LFPS
+detector is disabled before sending ACK to firmware.
 
-If the driver just started writing the next command TRB to the ring when
-hardware finished the previous TRB, then HW might fetch an incomplete TRB
-as long as its cycle bit set correctly.
+[   16.099363] tegra-xusb 70090000.usb: entering ELPG
+[   16.104343] tegra-xusb 70090000.usb: 2-1 isn't suspended: 0x0c001203
+[   16.114576] tegra-xusb 70090000.usb: not all ports suspended: -16
+[   16.120789] tegra-xusb 70090000.usb: entering ELPG failed
 
-A command TRB is 16 bytes (128 bits) long.
-Driver writes the command TRB in four 32 bit chunks, with the chunk
-containing the cycle bit last. This does however not guarantee that
-chunks actually get written in that order.
+The register write passes through a few flop stages of 32KHz clock domain.
+NVIDIA ASIC designer reviewed RTL and suggests 500us delay.
 
-This was detected in stress testing when canceling URBs with several
-connected USB devices.
-Two consecutive "Set TR Dequeue pointer" commands got queued right
-after each other, and the second one was only partially written when
-the controller parsed it, causing the dequeue pointer to be set
-to bogus values. This was seen as error messages:
-
-"Mismatch between completed Set TR Deq Ptr command & xHCI internal state"
-
-Solution is to add a write memory barrier before writing the cycle bit.
-
-Cc: <stable@vger.kernel.org>
-Tested-by: Ross Zwisler <zwisler@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: JC Kuo <jckuo@nvidia.com>
 Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210115161907.2875631-2-mathias.nyman@linux.intel.com
+Link: https://lore.kernel.org/r/20210115161907.2875631-3-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-ring.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/host/xhci-tegra.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -2835,6 +2835,8 @@ static void queue_trb(struct xhci_hcd *x
- 	trb->field[0] = cpu_to_le32(field1);
- 	trb->field[1] = cpu_to_le32(field2);
- 	trb->field[2] = cpu_to_le32(field3);
-+	/* make sure TRB is fully written before giving it to the controller */
-+	wmb();
- 	trb->field[3] = cpu_to_le32(field4);
+--- a/drivers/usb/host/xhci-tegra.c
++++ b/drivers/usb/host/xhci-tegra.c
+@@ -578,6 +578,13 @@ static void tegra_xusb_mbox_handle(struc
+ 								     enable);
+ 			if (err < 0)
+ 				break;
++
++			/*
++			 * wait 500us for LFPS detector to be disabled before
++			 * sending ACK
++			 */
++			if (!enable)
++				usleep_range(500, 1000);
+ 		}
  
- 	trace_xhci_queue_trb(ring, trb);
+ 		if (err < 0) {
 
 
