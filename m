@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D82301FAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6FA301FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbhAYAIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 19:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbhAYAG5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 19:06:57 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BB6C0613ED
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 16:06:16 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id i5so7783871pgo.1
-        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 16:06:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=lJAlWsxHbl8p3VKZjZPTI5PoyuI0xzJ3qlZ40HECelI=;
-        b=sSZCCC1Kl7/xkG5bjekS3mF2Id9siUna4XWqSxx9E3gjnH1n78FC3bXiv7+Zmr6bqf
-         x19qmrxqdt8IyP7aZzmZY5QAfybRuILE5gfp0RzZ7bUiSqeocAaI3U83eEciulKcJSPv
-         hMHkK7d3sLKGt20HprUuHS0E/5LMWtkIyVhdPDJ/rVNs7tsi8x+I192TUOp6IN7Hofys
-         QXd7ty1ThgdOgAerm1Xa/wRoK150fYvP/iq3cUN3L1wlYSkqDeq3oY0BapKgNdcNkuBh
-         9M/JgN8wyWNYHzxSDeOWmC1yiYYj4rE/ogBZ8HrhhNHqEZyv9BwsEmjgqB61o21ByrAu
-         mgZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=lJAlWsxHbl8p3VKZjZPTI5PoyuI0xzJ3qlZ40HECelI=;
-        b=pEjtsjDmPQDC/tYBUQTAQps+fILPBX7vW979k6RUHTQzrKPQi1HmDtvYPSwirGwYrx
-         /lV0IdXDXQhoCE9ZexsNkr2MKY0tDp/VrsfhGW2W4S2I1ERl+eV+bMI8poWdXyUm997j
-         YPi7PP7sixthWFrIaUv7Wsy+RWwQzJ41Z+Acf4Ps5KjYn8JjBI1knh8XcfSIOFq8Rk7Q
-         n5cIaNmNlVH1c9kmH+0eeJhbfNGg9Lt9N9jGQzvMlHYP6inMKG91cyTo6EpsWZqBLpqF
-         Q/IK7+IZ518vpsrA7pd3+9Elf2adAkudeXJMx78ysCBezHffylkgiDcHSQk7Dd4Q2WRo
-         KfEw==
-X-Gm-Message-State: AOAM5306un6VOImQ//vka+hFw46sy8O2oIPwRbkB0KFjU/alKaA2K/Ev
-        nguoa7X7XH+Eo1c4K11k/KIO0w==
-X-Google-Smtp-Source: ABdhPJzU7elejkU9dKdelvpxBIdm/wMQK6qPXW83kLCYhFsKznYIgbA1Dya8jGqRTCjGICyRt2WiHA==
-X-Received: by 2002:a65:5884:: with SMTP id d4mr1500656pgu.303.1611533176201;
-        Sun, 24 Jan 2021 16:06:16 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id e20sm1056397pgr.48.2021.01.24.16.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 16:06:15 -0800 (PST)
-Date:   Sun, 24 Jan 2021 16:06:14 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, willy@infradead.org, osalvador@suse.de,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v13 06/12] mm: hugetlb: set the PageHWPoison to the raw
- error page
-In-Reply-To: <20210117151053.24600-7-songmuchun@bytedance.com>
-Message-ID: <88a384ba-8487-c66b-e7b-eb6055e3775@google.com>
-References: <20210117151053.24600-1-songmuchun@bytedance.com> <20210117151053.24600-7-songmuchun@bytedance.com>
+        id S1726261AbhAYAO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 19:14:26 -0500
+Received: from onstation.org ([52.200.56.107]:35086 "EHLO onstation.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726593AbhAYALe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 19:11:34 -0500
+Received: from localhost (c-98-239-145-235.hsd1.wv.comcast.net [98.239.145.235])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: masneyb)
+        by onstation.org (Postfix) with ESMTPSA id D68943EA88;
+        Mon, 25 Jan 2021 00:09:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onstation.org;
+        s=default; t=1611533357;
+        bh=NX04KDq22imvna2j2KPjU62cAJRCEXT8lTRLg6sU+9M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZTys71IW91sT6zb8BsXKM4Z3CwcgI6qowbfvayR2iwYFDP+Dcwdtph0pjhHUik6ik
+         Qjqhko3nVgog/EN8ikkXbaf+DTy14IgQZoe6pgCURs1+IHao6gUlhFnCjwIyF7WE4d
+         ODQtZGIouWhWgkLKWc4j/1grPYVXDigIT9++KJVU=
+Date:   Sun, 24 Jan 2021 19:09:16 -0500
+From:   Brian Masney <masneyb@onstation.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Samuel Pascua <pascua.samuel.14@gmail.com>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>
+Subject: Re: [PATCH 1/4] ARM: dts: qcom: msm8974: add gpu support
+Message-ID: <20210125000916.GA22513@onstation.org>
+References: <20210124135610.1779295-1-iskren.chernev@gmail.com>
+ <f1438c9d-458b-2ff7-cae9-f7bf4228ef4c@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1438c9d-458b-2ff7-cae9-f7bf4228ef4c@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 17 Jan 2021, Muchun Song wrote:
-
-> Because we reuse the first tail vmemmap page frame and remap it
-> with read-only, we cannot set the PageHWPosion on a tail page.
-> So we can use the head[4].private to record the real error page
-> index and set the raw error page PageHWPoison later.
+On Sun, Jan 24, 2021 at 03:56:06PM +0100, Konrad Dybcio wrote:
+> Hi,
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> 
+> > +		gpu_opp_table: opp_table {
+> > +			status = "disabled";
+> 
+> 
+> Is there a good reason to disable this?
+> 
+> 
+> > +			opp-800000000 {
+> > +				opp-hz = /bits/ 64 <800000000>;
+> > +			};
+> 
+> No. A330 can't go lightspeed (unless there's some secret ultra-binned msm8974pro-v4-ad-5g). [1]
 
-Acked-by: David Rientjes <rientjes@google.com>
+Hi Iskren,
+
+I believe that the Nexus 5 GPU frequencies are documented in the
+downstream kernel at:
+https://github.com/AICP/kernel_lge_hammerhead/blob/n7.1/arch/arm/boot/dts/msm8974-gpu.dtsi#L67
+
+I am fairly certain that the qcom,bus-freq property is an index into the
+qcom,msm-bus,vectors-KBps property above. This will map to the
+interconnect and operating points in the upstream kernel.
+
+Note that the actual implementation in a3xx_gpu.c and a4xx_gpu.c
+currently has this snippet to set the bus speed:
+
+    /*
+     * Set the ICC path to maximum speed for now by multiplying the fastest
+     * frequency by the bus width (8). We'll want to scale this later on to
+     * improve battery life.
+     */
+    icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+    icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+
+This should be fine for the time being. You'll want to document it
+correctly in device tree though.
+
+If the v2 changes too much, then feel free to drop my name from the
+patch. I thought that I had made these changes already but apparently
+not. :/
+
+Brian
