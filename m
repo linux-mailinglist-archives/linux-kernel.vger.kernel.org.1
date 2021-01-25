@@ -2,107 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8913038B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E93E3038DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390899AbhAZJKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:10:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
+        id S2390311AbhAZJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbhAYSrN (ORCPT
+        with ESMTP id S1730610AbhAYSsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:47:13 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C7FC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:46:32 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id f63so8908686pfa.13
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:46:32 -0800 (PST)
+        Mon, 25 Jan 2021 13:48:00 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFB7C0613D6;
+        Mon, 25 Jan 2021 10:47:19 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id g1so16761332edu.4;
+        Mon, 25 Jan 2021 10:47:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UoVeAcPYBoVP5YmNMUfLeCvrQBLfaM+e0XI1SRxnQQY=;
-        b=CTh/m1HpQKQEbZttGur8vI9oMw39ZBDHSyW9iR9WHtr4mRBDIXg2aDJQLRU5MH/WSW
-         WpQRXLxSLG0/6JcjMWSz0QEztRIxCckygLDFJOZNeeCATowa3UE3kkG4mU1mD48uY0LQ
-         LmL2cFJcTyPUTsehLxdOgT+4zUsilRFbtH0qSAPdjKdv7kZqRmd1Wy0CidSi/tHi3QMF
-         vj5feD/IxBqkgLK48RPJZUCgGLN4hAvDKCRMK47t6JC3yrvU2YFNG2HDGexcXdjqR6RY
-         zmT3/BiTduj+n9Kqs6PMzilpqAwu5DMMsyxSu0GuPjJOixMxfwFanW3l5fO29ma4f6lM
-         Uhug==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nDehBXC5CPnwPawQZMlRv9xTC6ikQPcXUSWi8mtNNCM=;
+        b=bFCjrLXgHhYQFWM05dJfAnHtfh9k/ZIWNa+ZXxtNtEcHRgf2YRrSHPidxK2p3hzpjK
+         jPgGX/IhNMA4EG1zXRnXlC644Ah2yojB3EZrVisNuCyjrel4cSWWLUw8WQ6PfhIXE+RY
+         wm+T0/u/d3kA2jT9taZ2oq1HDMmBEgwmPvgSbxs7+UHz6TrX5xZzhUExGS4rSB2JlYIe
+         3YT/1PpKMeuLi7uoWoYE2ofK2w1Ebo/QxKsfjZ8hrYtTrFhnDvZZg2DBEjAJlcPUCAz8
+         taLFzpa3PD3RiXa9jOdjEU1SzXFmI2IEHqkjvq6W53zQs+00uyF5mwIox2pza2EyJs3Q
+         iwBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UoVeAcPYBoVP5YmNMUfLeCvrQBLfaM+e0XI1SRxnQQY=;
-        b=FdwGKhEt0WVNK+K896xDQpnsEQbb3lV5BpOfSqqcyNbQo2DU1p115TXaA9nCdbzUZT
-         P7fDqZRsuicf4vLYNHrOTTP24Rr8q7ZOJ3NTnAd/u1t/q86cCpDtRzvkasIl2AwJsqjq
-         i70GPCcr47OaF3uvlO/UlM4ViuDswxmq18PFIzEKanutM9INqr8gut+puHxylSfQlpG4
-         8zd6c4rwS4toPHrmLxWc0mbAO5vF+ZCs5i5CeS3tMDCeyKXScfniYYtKNvF8FK/PLQl7
-         EYebDWQ42MUnxqvv7DUJ+TtxLB21i0VgdPDS/lTMdo4fPPvkjand7LilvJsC+X2PCs+S
-         Y0QA==
-X-Gm-Message-State: AOAM532jSIQ8DxMoxdiyBx/F4RsnGPyRTDVnyk3yo0u+GJS5cPQoTE3W
-        /juOVYNyQ1i2XbpnxvxRhRHyuA==
-X-Google-Smtp-Source: ABdhPJxT7fdqgIb+7XNBiAwHrBNT5gYxRrewX2D5LTPe2Cm3sOy174fiftOEXjiG13Ue1bG20wl3Ww==
-X-Received: by 2002:a63:770b:: with SMTP id s11mr1899929pgc.342.1611600392333;
-        Mon, 25 Jan 2021 10:46:32 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id z3sm16881717pfb.157.2021.01.25.10.46.30
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nDehBXC5CPnwPawQZMlRv9xTC6ikQPcXUSWi8mtNNCM=;
+        b=FX1MiI4QpIX8UOqEsYUeJK09F1QrCQmSQz28jaZk1jVhvkc+z2+bRYOsoc67fq9Amg
+         W46dNjKQDa/Mfz2uZtq04xPtfuPn+Y+z6s13c5delRlvVcFwHxnDo6yxvZTRXYYJUrHn
+         hejx+QpXxmwL8SdA/JdJN0ZEZH4+v7gHcIMPmmn7Vrj/3ZBoJRc2RCPexH0wrkKkx8+a
+         vKMI74L8loUxW+YTKnBy14ZDn49gBbXfoWhX0TokYxR0IGoMMmapMXwhDZA6AeVzUDPv
+         cJSW/D+nYC6WA4S9qIWTf4ot8AKzzjph3maOtEJ33d69gJIZ0GcL1QvDfwE+KSs6Prui
+         3AUw==
+X-Gm-Message-State: AOAM532SbhMA7MQoDKe6vW578nMtqTr00qHEMm4bghEMzpN8f+VtRoXK
+        qZgm1Z+eyRjcffImGHqr2MMmXWctlCw=
+X-Google-Smtp-Source: ABdhPJy3nYjnWIw/wvYkqBmyMQLIZ/bguKH8rV+PJA7vyKO58ToviMoMPnwQCxTouI22RmDwtQ60TA==
+X-Received: by 2002:a05:6402:1152:: with SMTP id g18mr1698932edw.18.1611600438569;
+        Mon, 25 Jan 2021 10:47:18 -0800 (PST)
+Received: from BV030612LT ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id x2sm9652071eds.51.2021.01.25.10.47.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:46:31 -0800 (PST)
-Date:   Mon, 25 Jan 2021 10:46:25 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v3 5/5] x86/sgx: Remove redundant if conditions in
- sgx_encl_create
-Message-ID: <YA8SAf3RFTGU/mhL@google.com>
-References: <20210124062907.88229-1-tianjia.zhang@linux.alibaba.com>
- <20210124062907.88229-6-tianjia.zhang@linux.alibaba.com>
- <YA0tvOGp/shchVhu@kroah.com>
+        Mon, 25 Jan 2021 10:47:17 -0800 (PST)
+Date:   Mon, 25 Jan 2021 20:47:15 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] mfd: Add MFD driver for ATC260x PMICs
+Message-ID: <20210125184715.GA1061394@BV030612LT>
+References: <cover.1611165200.git.cristian.ciocaltea@gmail.com>
+ <4bc76f9e3dc7204d7f407af6ee61c9f193a789d3.1611165200.git.cristian.ciocaltea@gmail.com>
+ <20210125142558.GA4903@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YA0tvOGp/shchVhu@kroah.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125142558.GA4903@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021, Greg KH wrote:
-> On Sun, Jan 24, 2021 at 02:29:07PM +0800, Tianjia Zhang wrote:
-> > In this scenario, there is no case where va_page is NULL, and
-> > the error has been checked. The if condition statement here is
-> > redundant, so remove the condition detection.
-> > 
-> > Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> > ---
-> >  arch/x86/kernel/cpu/sgx/ioctl.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-> > index 1c6ecf9fbeff..b0b829f1b761 100644
-> > --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> > +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> > @@ -66,9 +66,11 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
-> >  	va_page = sgx_encl_grow(encl);
-> >  	if (IS_ERR(va_page))
-> >  		return PTR_ERR(va_page);
-> > -	else if (va_page)
-> > -		list_add(&va_page->list, &encl->va_pages);
-> > -	/* else the tail page of the VA page list had free slots. */
-> > +
-> > +	if (WARN_ONCE(!va_page, "non-empty VA page list before ECREATE"))
-> > +		return -EIO;
-> 
-> So you just crashed machines that have panic-on-warn enabled.  Don't do
-> that for no reason, just handle the error and move on.
+Hi Lee,
 
-The WARN will only fire if someone introduces a kernel bug.  It's one part
-documentation, two parts helping detect future breakage.  Even if the VA page
-management is significantly reworked, I'm having a hard time envisioning a
-scenario where adding VA pages before ECREATE would be anything but a kernel bug.
+On Mon, Jan 25, 2021 at 02:25:58PM +0000, Lee Jones wrote:
+> On Wed, 20 Jan 2021, Cristian Ciocaltea wrote:
+> 
+> > Add initial support for the Actions Semi ATC260x PMICs which integrates
+> > Audio Codec, Power management, Clock generation and GPIO controller
+> > blocks.
+> > 
+> > For the moment this driver only supports Regulator, Poweroff and Onkey
+> > functionalities for the ATC2603C and ATC2609A chip variants.
+ 
+[...]
+
+> > +static void regmap_lock_mutex(void *__mutex)
+> > +{
+> > +	struct mutex *mutex = __mutex;
+> > +
+> > +	/*
+> > +	 * Using regmap within an atomic context (e.g. accessing a PMIC when
+> > +	 * powering system down) is normally allowed only if the regmap type
+> > +	 * is MMIO and the regcache type is either REGCACHE_NONE or
+> > +	 * REGCACHE_FLAT. For slow buses like I2C and SPI, the regmap is
+> > +	 * internally protected by a mutex which is acquired non-atomically.
+> > +	 *
+> > +	 * Let's improve this by using a customized locking scheme inspired
+> > +	 * from I2C atomic transfer. See i2c_in_atomic_xfer_mode() for a
+> > +	 * starting point.
+> > +	 */
+> > +	if (system_state > SYSTEM_RUNNING && irqs_disabled())
+> > +		mutex_trylock(mutex);
+> > +	else
+> > +		mutex_lock(mutex);
+> > +}
+> 
+> Would this be useful to anyone else?
+
+If you refer to the locking scheme, it is currently required by the
+power-off driver to handle atomic contexts.
+
+> For my own reference (apply this as-is to your sign-off block):
+
+Please note the patches "[4/7] regulator: ..." and "[5/7] power: ..."
+have been already picked up by Mark and Sebastian, respectively, while
+Dmitry suggested to merge "[6/7] input: ..." through MFD.
+
+>   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> 
+> -- 
+> Lee Jones [李琼斯]
+> Senior Technical Lead - Developer Services
+> Linaro.org │ Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
+
+Thanks,
+Cristi
