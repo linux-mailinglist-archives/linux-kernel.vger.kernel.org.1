@@ -2,75 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1733028B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7F43028B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 18:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbhAYRW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 12:22:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
+        id S1729007AbhAYRVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 12:21:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730684AbhAYRTh (ORCPT
+        with ESMTP id S1730704AbhAYRTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 12:19:37 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62269C06174A;
-        Mon, 25 Jan 2021 09:18:47 -0800 (PST)
-Received: from zn.tnic (p200300ec2f09db004bb0ee0cb7e01378.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:db00:4bb0:ee0c:b7e0:1378])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ED1321EC030D;
-        Mon, 25 Jan 2021 18:18:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611595126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3LnLidjXkAWpZ9HKjYtcnNhAdymEIHQ/WYrF4J5x66M=;
-        b=mm2Nq3EBHi0K7gEB8Ive52mXMjydmS5uj76BOCqVve73VVHdx2EbT3Fx09OHQ9/xT3uJhI
-        FDNkjTiCSfRPVX0hnFtYdr7THy3lzYaW3PL5q2mCMzLj0oN2WWekPStIhpQcPtJPfM2mlY
-        F8v67nqIV+ollYUQJ4Z4fsqONzKfT1Q=
-Date:   Mon, 25 Jan 2021 18:18:45 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>, X86 ML <x86@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v2 2/2] thermal: Move therm_throt there from x86/mce
-Message-ID: <20210125171845.GJ23070@zn.tnic>
-References: <20210125130533.19938-1-bp@alien8.de>
- <20210125130533.19938-3-bp@alien8.de>
- <b0e54fbb8c8b9fea38152bbf179135a6434340d7.camel@intel.com>
- <9ee4051f627dd91020139b1d077a1fb01565d670.camel@linux.intel.com>
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5FDC0617AA;
+        Mon, 25 Jan 2021 09:18:50 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id p5so15510839oif.7;
+        Mon, 25 Jan 2021 09:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=a2SCYB2pu4LcKaw5cBiz01GNZW0EUKZzcZ1pkjCeWGA=;
+        b=Ag9WiKeQmuOHp9O12Fnkh+BfSr6ckKoKHTEit3oe3Afivms+lIhZwJucmaKXZjAISS
+         ELKlp1mni1/z7azoh3ANYNbzJarJT6eI2TRcR6nYldOVQkgG4CZI0bU915dTBnMQPtq/
+         UJKusmPIzBvdxuBu0JT1Bdt/MqEV6ErBVOI5eJhCtvRSG/hrFHtNfCbfRMkbKruB02U/
+         DVGwAXXwAMGAO2wUxKsK615fCxJYzIZdMZ3A0XzvHcvT7UeCfw+UFCzZrn1GGCjfy765
+         OylaodB8uvctXw5xQCtFqUP8I5IWC/gcWAjP5VTRKzmJIOnuYqjOuE4ng9CUrWUW6ENf
+         Az+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a2SCYB2pu4LcKaw5cBiz01GNZW0EUKZzcZ1pkjCeWGA=;
+        b=F0rYL0GF7LXzgg4vbb1hQhOKCjycLX+165iZUESwD9dA18IwY3nHv+75r8uphh/pqY
+         n4Yzaz8apFY+1UMXlbXh6VeELQJPM+IfPqEOAatwH83wduvx3gB8sdetHvxRFoOMKn/Q
+         7Qd0nEbtN8ETAY36EZO+wKxacT+yGebJL9KJ+AN0mGdru5ESjVy6FfnICsss4dk1QqE9
+         IfLqGtvh5XP1vix9nFMkpFFu5CzCzXDdeLWRPHAzAS8y7fIUfpw3sgzzt5PCnYIjYWsV
+         S+8QJJ4uInzs/YY90JW5FtvqSFsbLIkrA3J7asU4Q/dLnRUYo3ULhHFVrO9lmf7gqJe1
+         2bAg==
+X-Gm-Message-State: AOAM532330irriwO2Al69OH3ygqQXMCPjAfDqxABVIu/ZsHa453MoAJN
+        EvLF7LM8lqUAEcaRCNOK42E=
+X-Google-Smtp-Source: ABdhPJzBFt2YyPMKKOv/QzXRgJsqK9hQIpdDnxUZ/IFsJTVqc5bJ/4yaukPwJLM9PwTFQyh1Bmlwwg==
+X-Received: by 2002:aca:b409:: with SMTP id d9mr797395oif.120.1611595129653;
+        Mon, 25 Jan 2021 09:18:49 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j9sm3170102ooq.1.2021.01.25.09.18.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 25 Jan 2021 09:18:48 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 25 Jan 2021 09:18:46 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Lukasz Majczak <lma@semihalf.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
+Message-ID: <20210125171846.GA31929@roeck-us.net>
+References: <20210123014247.989368-1-lma@semihalf.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9ee4051f627dd91020139b1d077a1fb01565d670.camel@linux.intel.com>
+In-Reply-To: <20210123014247.989368-1-lma@semihalf.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 09:14:35AM -0800, Srinivas Pandruvada wrote:
-> Can the handler, processing architectural features via thermal
-> interrupt, reside in arch/x86 folder or need to be
-> drivers/thermal/intel?
+Hi Lukasz,
 
-Look at...
+On Sat, Jan 23, 2021 at 02:42:47AM +0100, Lukasz Majczak wrote:
+> There is a missing call to start_tpm_chip before the call to
+> the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
+> approach maight work for tpm2, it fails for tpm1.x - in that case
+> call to tpm_get_timeouts() or tpm_tis_probe_irq_single() tries to
+> transmit TPM commands on a disabled chip what what doesn't succeed
 
-> > > @@ -718,7 +699,7 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
-> > >  				| PACKAGE_THERM_INT_HIGH_ENABLE), h);
-> > >  	}
-> > >  
-> > > -	smp_thermal_vector = intel_thermal_interrupt;
-> > > +	thermal_set_handler(intel_thermal_interrupt);
+s/what what/what/
 
-... here. ^
+> and in turn causes tpm_tis_core_init() to fail.
+> Tested on Samsung Chromebook Pro (Caroline).
+> 
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+> ---
+>  drivers/char/tpm/tpm_tis_core.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+> index 92c51c6cfd1b..ff0e5fe46a9d 100644
+> --- a/drivers/char/tpm/tpm_tis_core.c
+> +++ b/drivers/char/tpm/tpm_tis_core.c
+> @@ -1063,12 +1063,16 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>  	init_waitqueue_head(&priv->read_queue);
+>  	init_waitqueue_head(&priv->int_queue);
+>  	if (irq != -1) {
+> +		rc = tpm_chip_start(chip);
 
-This should answer your question.
+Unless I am missing something, the underlying problem seems to be
+the calls to tpm1_getcap(). From other code calling this function,
+it looks like it may only require tpm_clk_enable() to work.
 
--- 
-Regards/Gruss,
-    Boris.
+With that in mind, would it possibly be better to call tpm_clk_enable()
+and tpm_clk_disable() around the calls to tpm1_getcap(), ie in
+tpm1_get_timeouts() and in tpm_tis_gen_interrupt() ?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This would avoid the unnecessary calls to tpm_chip_start() and
+tpm_chip_stop() for tpm2 chips.
+
+Thanks,
+Guenter
+
+
+> +		if (rc)
+> +			goto out_err;
+>  		/* Before doing irq testing issue a command to the TPM in polling mode
+>  		 * to make sure it works. May as well use that command to set the
+>  		 * proper timeouts for the driver.
+>  		 */
+>  		if (tpm_get_timeouts(chip)) {
+>  			dev_err(dev, "Could not get TPM timeouts and durations\n");
+> +			tpm_chip_stop(chip);
+>  			rc = -ENODEV;
+>  			goto out_err;
+>  		}
+> @@ -1085,6 +1089,7 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>  		} else {
+>  			tpm_tis_probe_irq(chip, intmask);
+>  		}
+> +		tpm_chip_stop(chip);
+>  	}
+>  
+>  	rc = tpm_chip_register(chip);
