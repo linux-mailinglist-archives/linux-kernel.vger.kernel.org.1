@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1042D302D84
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E19302D7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732593AbhAYVWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:22:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58675 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732665AbhAYVVI (ORCPT
+        id S1732585AbhAYVWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732581AbhAYVUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:21:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611609579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gfg/hxSYIFb+RC3VgIgWh3IEpOrZKtS57wEA5wqW8hY=;
-        b=LyoMwtcJaXISdgsWH9sz2JtiuhyPFgs14/eVwpVlSmg1fbxh/Qc9KxfT+Ir1oUQpX7lEOS
-        3d0hUF4HlPyb+wZCW0Txx22pQGT1oHMsHvwEjmcttjtwtO9PNthSPQH4sW32Jo86Iw7gUL
-        pzVhSLRuv+S/tQNFa/hoph+gOzrKfTc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-7J9p8aPkNCeVG5QgMZHZjg-1; Mon, 25 Jan 2021 16:19:35 -0500
-X-MC-Unique: 7J9p8aPkNCeVG5QgMZHZjg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 133E710054FF;
-        Mon, 25 Jan 2021 21:19:33 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23F015D6AB;
-        Mon, 25 Jan 2021 21:19:31 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 15:19:29 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Julien Thierry <jthierry@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org, live-patching@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [RFC PATCH 00/17] objtool: add base support for arm64
-Message-ID: <20210125211929.62e6gzvl54hpmwn2@treble>
-References: <20210120173800.1660730-1-jthierry@redhat.com>
- <CAMj1kXHO0wgcZ4ZDxj1vS9s7Szfpz8Nz=SAW_=Dnnjy+S9AtyQ@mail.gmail.com>
- <186bb660-6e70-6bbf-4e96-1894799c79ce@redhat.com>
- <CAMj1kXHznGnN2UEai1c2UgyKuTFCS5SZ+qGR6VJwyCuccViw_A@mail.gmail.com>
- <YAlkOFwkb6/hFm1Q@hirez.programming.kicks-ass.net>
- <CAMj1kXE+675mbS66kteKHNfcrco84WTaEL6ncVkkV7tQgbMpFw@mail.gmail.com>
- <20210121185452.fxoz4ehqfv75bdzq@treble>
- <20210122174342.GG6391@sirena.org.uk>
- <bebccb15-1195-c004-923e-74d8444250e1@linux.microsoft.com>
- <CAMj1kXFr0wvx-hG6nBY4ibju9ww4x0CGhQber3MZQ2ZZn9LHWw@mail.gmail.com>
+        Mon, 25 Jan 2021 16:20:41 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913B7C061573;
+        Mon, 25 Jan 2021 13:20:01 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id p185so14702309ybg.8;
+        Mon, 25 Jan 2021 13:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KWlxx7vqFuniWpQig1xl3Gehi+dZ8JGsbOBFONRJmFo=;
+        b=LsGTyNGxNSwp77mqMG4AIQUzQpC2B2TfjIlKnEXXIRk6udbVE5Mbp0bK1NNmsz79z3
+         Q+5+ZR38uXO/JO+ho8ldOnz7c9X/BLWXY2vG2KsJ8/LzdwJRqtEFwZMdaB8owOqUWzIF
+         NVYoFCjOFOkNFLxEO6XrP1Bfk2TaiTPigr4kPbZmDxq4hLgMBdkcG21IVqFOhJxTKs0s
+         h9BlipmOObV0Hn5PWyphnjbU5qhe3/pz1zID5b2mXJl8fNBAX6cUTZTQZKGyckJa+2z4
+         aov77yYBH8ktJm4PnuH8juhA7DJN28WiBewfI+qcy2C6pUwOkodg2zmWQIf8nCwpa5IT
+         R0/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KWlxx7vqFuniWpQig1xl3Gehi+dZ8JGsbOBFONRJmFo=;
+        b=GuqLNMHmPh0SWC2lJvtVXgsbMm5FBmeYYSRxpGwaM5VUr/vmu8k9mbeCXQv/S5AmlH
+         2mSE5EBvR0uRhQYWEvYwcuxAynj/O/RJJQauyBsDWsf5TYmL9jY7rZoxmPZaRCKupflT
+         JxehkRtFP7ToXDqYUh/z0BozRxQjG9CLz5VZeGxMoCqQWF66s5farWqYLn3FQcm6ZcYg
+         EkThfUi6tNOwCX3G6N69i8DVG9+IfFQx6VLNnhSpXtFc6iODPtGzziCBD/LoVguBxM8q
+         Kz+UvMwLSp/v5pb7fKMP7LEmZa2hAfyG1byLNC2TZ+BT/nP5drOnOcA2B09+DOalFJOW
+         x1Gg==
+X-Gm-Message-State: AOAM530TmUc1dxUDiBwdwFT4O4ZbdHee9xtJDGobnPM1/ODOQmxhdnWF
+        cmdNaK+LEttVhiCjMieYX55pY1nSmG1WBqSMNiaqXGRmSP8=
+X-Google-Smtp-Source: ABdhPJyoER2A5eMTfzOUXSXObZe7vKWVhfRtlkjHUcx10bpgG6SEJFFx/ElYdZpTjHczMsnzEKdkV2qDAZwv8N/BUV4=
+X-Received: by 2002:a25:af8c:: with SMTP id g12mr3761991ybh.33.1611609600857;
+ Mon, 25 Jan 2021 13:20:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFr0wvx-hG6nBY4ibju9ww4x0CGhQber3MZQ2ZZn9LHWw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210118123538.564597-1-geert@linux-m68k.org> <20210118123538.564597-2-geert@linux-m68k.org>
+In-Reply-To: <20210118123538.564597-2-geert@linux-m68k.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 25 Jan 2021 22:19:50 +0100
+Message-ID: <CANiq72mD0kGSb+Sgfz1knpho0Fk442ifjzyhW-ULnBLOHY1bKQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: auxdisplay: ht16k33: Keyscan function
+ should be optional
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Michael Kaplan <M.KAPLAN@evva.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 10:43:09PM +0100, Ard Biesheuvel wrote:
-> On Fri, 22 Jan 2021 at 22:15, Madhavan T. Venkataraman <madvenka@linux.microsoft.com> wrote:
-> > On 1/22/21 11:43 AM, Mark Brown wrote:
-> > > On Thu, Jan 21, 2021 at 12:54:52PM -0600, Josh Poimboeuf wrote:
-> > >
-> > >> 2) The shadow stack idea sounds promising -- how hard would it be to
-> > >>    make a prototype reliable unwinder?
-> > >
-> > > In theory it doesn't look too hard and I can't see a particular reason
-> > > not to try doing this - there's going to be edge cases but hopefully for
-> > > reliable stack trace they're all in areas where we would be happy to
-> > > just decide the stack isn't reliable anyway, things like nesting which
-> > > allocates separate shadow stacks for each nested level for example.
-> > > I'll take a look.
-> > >
-> >
-> > I am a new comer to this discussion and I am learning. Just have some
-> > questions. Pardon me if they are obvious or if they have already been
-> > asked and answered.
-> >
-> > Doesn't Clang already have support for a shadow stack implementation for ARM64?
-> > We could take a look at how Clang does it.
-> >
-> > Will there not be a significant performance hit? May be, some of it can be
-> > mitigated by using a parallel shadow stack rather than a compact one.
-> >
-> > Are there any longjmp style situations in the kernel where the stack is
-> > unwound by several frames? In these cases, the shadow stack must be unwound
-> > accordingly.
-> >
-> 
-> Hello Madhavan,
-> 
-> Let's discuss the details of shadow call stacks on a separate thread,
-> instead of further hijacking Julien's series.
+On Mon, Jan 18, 2021 at 1:35 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> From: Robin van der Gracht <robin@protonic.nl>
+>
+> Keyscan should be optional to support simple LED matrix displays (output
+> only).
 
-It's quite relevant to this thread.  There's no need to consider merging
-Julien's patches if you have a better approach.  Why not discuss it
-here?  I'm also interested in the answers to Madhavan's questions.
+Applied to -next, thanks!
 
--- 
-Josh
-
+Cheers,
+Miguel
