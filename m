@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6FA301FB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0C9301FB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 01:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbhAYAO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 19:14:26 -0500
-Received: from onstation.org ([52.200.56.107]:35086 "EHLO onstation.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726593AbhAYALe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 19:11:34 -0500
-Received: from localhost (c-98-239-145-235.hsd1.wv.comcast.net [98.239.145.235])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S1726296AbhAYAUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 19:20:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbhAYARR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 24 Jan 2021 19:17:17 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506ECC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 24 Jan 2021 16:16:23 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: masneyb)
-        by onstation.org (Postfix) with ESMTPSA id D68943EA88;
-        Mon, 25 Jan 2021 00:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onstation.org;
-        s=default; t=1611533357;
-        bh=NX04KDq22imvna2j2KPjU62cAJRCEXT8lTRLg6sU+9M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTys71IW91sT6zb8BsXKM4Z3CwcgI6qowbfvayR2iwYFDP+Dcwdtph0pjhHUik6ik
-         Qjqhko3nVgog/EN8ikkXbaf+DTy14IgQZoe6pgCURs1+IHao6gUlhFnCjwIyF7WE4d
-         ODQtZGIouWhWgkLKWc4j/1grPYVXDigIT9++KJVU=
-Date:   Sun, 24 Jan 2021 19:09:16 -0500
-From:   Brian Masney <masneyb@onstation.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Samuel Pascua <pascua.samuel.14@gmail.com>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>
-Subject: Re: [PATCH 1/4] ARM: dts: qcom: msm8974: add gpu support
-Message-ID: <20210125000916.GA22513@onstation.org>
-References: <20210124135610.1779295-1-iskren.chernev@gmail.com>
- <f1438c9d-458b-2ff7-cae9-f7bf4228ef4c@somainline.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DP9Kj34RLz9sS8;
+        Mon, 25 Jan 2021 11:12:24 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611533546;
+        bh=44tq4/OfMcgWECL37VZAQvGTgZNPvpAZkSSqPeepzqU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=grYIoux24BKw04Evb9w4AKMmyBnYLqxLLpRrSkiydfs52Qd1f60w5JFa+DhKNZbxe
+         m3bZjcAtzm3aPCz4qQoz3uf3J1ddXtoOfWsqwFODaEa0obhEn58Wk8sFhZMZ6trtHA
+         XbgwsGNM8zlNVxYVi3ULc75MFjWQ4Bd2Uz+nnzH+Hs80+WBtzieH/EQcvv2REl2XGq
+         ei9lgEAlLfCm3MtkvBq/wEKCzLS83NxxHSnw1xFzA8L2Tot/O8CVCk7/9vvvGXrYgf
+         UHjZ5uaPXaiItLrnCwoixw4P32JlTaNUVGgenMQVnn/KjfpI5/tdxY4Kt4xAQut5/h
+         nwCTJJ+X94ciA==
+Date:   Mon, 25 Jan 2021 11:12:23 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Arjun Roy <arjunroy@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: linux-next: manual merge of the bpf-next tree with the net-next
+ tree
+Message-ID: <20210125111223.2540294c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f1438c9d-458b-2ff7-cae9-f7bf4228ef4c@somainline.org>
+Content-Type: multipart/signed; boundary="Sig_/9JTGJ/xWlo3l.+DokjWso99";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 03:56:06PM +0100, Konrad Dybcio wrote:
-> Hi,
-> 
-> 
-> > +		gpu_opp_table: opp_table {
-> > +			status = "disabled";
-> 
-> 
-> Is there a good reason to disable this?
-> 
-> 
-> > +			opp-800000000 {
-> > +				opp-hz = /bits/ 64 <800000000>;
-> > +			};
-> 
-> No. A330 can't go lightspeed (unless there's some secret ultra-binned msm8974pro-v4-ad-5g). [1]
+--Sig_/9JTGJ/xWlo3l.+DokjWso99
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Iskren,
+Hi all,
 
-I believe that the Nexus 5 GPU frequencies are documented in the
-downstream kernel at:
-https://github.com/AICP/kernel_lge_hammerhead/blob/n7.1/arch/arm/boot/dts/msm8974-gpu.dtsi#L67
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-I am fairly certain that the qcom,bus-freq property is an index into the
-qcom,msm-bus,vectors-KBps property above. This will map to the
-interconnect and operating points in the upstream kernel.
+  net/ipv4/tcp.c
 
-Note that the actual implementation in a3xx_gpu.c and a4xx_gpu.c
-currently has this snippet to set the bus speed:
+between commit:
 
-    /*
-     * Set the ICC path to maximum speed for now by multiplying the fastest
-     * frequency by the bus width (8). We'll want to scale this later on to
-     * improve battery life.
-     */
-    icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-    icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
+  7eeba1706eba ("tcp: Add receive timestamp support for receive zerocopy.")
 
-This should be fine for the time being. You'll want to document it
-correctly in device tree though.
+from the net-next tree and commit:
 
-If the v2 changes too much, then feel free to drop my name from the
-patch. I thought that I had made these changes already but apparently
-not. :/
+  9cacf81f8161 ("bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE")
 
-Brian
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/ipv4/tcp.c
+index e1a17c6b473c,26aa923cf522..000000000000
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@@ -4160,18 -4098,13 +4160,20 @@@ static int do_tcp_getsockopt(struct soc
+  		if (copy_from_user(&zc, optval, len))
+  			return -EFAULT;
+  		lock_sock(sk);
+ -		err =3D tcp_zerocopy_receive(sk, &zc);
+ +		err =3D tcp_zerocopy_receive(sk, &zc, &tss);
++ 		err =3D BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sk, level, optname,
++ 							  &zc, &len, err);
+  		release_sock(sk);
+ -		if (len >=3D offsetofend(struct tcp_zerocopy_receive, err))
+ -			goto zerocopy_rcv_sk_err;
+ +		if (len >=3D offsetofend(struct tcp_zerocopy_receive, msg_flags))
+ +			goto zerocopy_rcv_cmsg;
+  		switch (len) {
+ +		case offsetofend(struct tcp_zerocopy_receive, msg_flags):
+ +			goto zerocopy_rcv_cmsg;
+ +		case offsetofend(struct tcp_zerocopy_receive, msg_controllen):
+ +		case offsetofend(struct tcp_zerocopy_receive, msg_control):
+ +		case offsetofend(struct tcp_zerocopy_receive, flags):
+ +		case offsetofend(struct tcp_zerocopy_receive, copybuf_len):
+ +		case offsetofend(struct tcp_zerocopy_receive, copybuf_address):
+  		case offsetofend(struct tcp_zerocopy_receive, err):
+  			goto zerocopy_rcv_sk_err;
+  		case offsetofend(struct tcp_zerocopy_receive, inq):
+
+--Sig_/9JTGJ/xWlo3l.+DokjWso99
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAODOcACgkQAVBC80lX
+0Gx1IAf8DfeFGwju4aCfqdSEJEz4kyxubepTOBzSK/aqu+WE4/o+iEVO0n16n1YG
+vM4lgVwCONu/O9XB9S1EKBbac7/q/ZujX/fdOOOVboYM3gSnEHTXeUkbdquiuVEc
+kDWuSFLlGuQl5Ya2+t8zt62h0irGJMr7U/hsFsbFwgTr9ajZq9ditFxHPAvx269y
+Ooo98XiQ49+u21tyGFMGxOlrUZvj0P0AAnRJAC14XOEUirUpTphWsmVngC+vNElh
+lqtvttfJTYB0ZCfjbwPs5hKymnwvR7luPwjYOJcoJeRYs70TqoB29350q0VWXrMD
+MOdLtECEpczC6ZNMhR0x3k/kXsRetA==
+=UY0M
+-----END PGP SIGNATURE-----
+
+--Sig_/9JTGJ/xWlo3l.+DokjWso99--
