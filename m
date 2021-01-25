@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD0B30318B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BE8303187
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbhAYT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 14:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40496 "EHLO mail.kernel.org"
+        id S1731949AbhAYT3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:29:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731370AbhAYSzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:55:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27A4A224D1;
-        Mon, 25 Jan 2021 18:54:57 +0000 (UTC)
+        id S1731372AbhAYSzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 585F12067B;
+        Mon, 25 Jan 2021 18:54:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600898;
-        bh=592mnEOjwaO/oD6+3EW1X7XScL48e4Zj/hTUBkfKt8Q=;
+        s=korg; t=1611600879;
+        bh=/DI96KZo8TZPVizWJqZbIZwmrWP7GY5JCLdjj13HAxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GsUK8LOvxVWzMQbwXCF6+Y6/1AeSQLjUwggzreiNtIUBiMHOtwL8C2uR5CbjA/5/q
-         wxd8TSCNAo00mTq18sOgmE5tMTaA2Qmq4eus9fATIVPWR2cbOkHF29SRxUmmhW+Llk
-         jznNxboQAWab98bCbGcjMv+ivfPEqL9aQDqdqBZk=
+        b=dEMtUBYyjJyNwXpwWe/j3VvvpA0tW84UBVEiR244hyM0Gphpyuw/k6s6Xq/t07fMS
+         21fNzRHVvRLwUaD6/HaMeE4cfnajq+VWz8Ubkum28vKvqXBTLy6fR++p/8LX3seFqj
+         VdNLhle+Nx4HgebUQH1c8oTgzMnaFANExazo8IGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Orr <marcorr@google.com>,
-        Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>
-Subject: [PATCH 5.10 163/199] nvme-pci: fix error unwind in nvme_map_data
-Date:   Mon, 25 Jan 2021 19:39:45 +0100
-Message-Id: <20210125183223.079080835@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 5.10 185/199] pinctrl: qcom: Properly clear "intr_ack_high" interrupts when unmasking
+Date:   Mon, 25 Jan 2021 19:40:07 +0100
+Message-Id: <20210125183223.986951189@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,106 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Douglas Anderson <dianders@chromium.org>
 
-commit fa0732168fa1369dd089e5b06d6158a68229f7b7 upstream.
+commit a95881d6aa2c000e3649f27a1a7329cf356e6bb3 upstream.
 
-Properly unwind step by step using refactored helpers from nvme_unmap_data
-to avoid a potential double dma_unmap on a mapping failure.
+In commit 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for
+msm gpio") we tried to Ack interrupts during unmask.  However, that
+patch forgot to check "intr_ack_high" so, presumably, it only worked
+for a certain subset of SoCs.
 
-Fixes: 7fe07d14f71f ("nvme-pci: merge nvme_free_iod into nvme_unmap_data")
-Reported-by: Marc Orr <marcorr@google.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Marc Orr <marcorr@google.com>
+Let's add a small accessor so we don't need to open-code the logic in
+both places.
+
+This was found by code inspection.  I don't have any access to the
+hardware in question nor software that needs the Ack during unmask.
+
+Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+Tested-by: Maulik Shah <mkshah@codeaurora.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20210114191601.v7.3.I32d0f4e174d45363b49ab611a13c3da8f1e87d0f@changeid
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/nvme/host/pci.c |   28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ drivers/pinctrl/qcom/pinctrl-msm.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -682,7 +682,7 @@ static blk_status_t nvme_pci_setup_prps(
- 			__le64 *old_prp_list = prp_list;
- 			prp_list = dma_pool_alloc(pool, GFP_ATOMIC, &prp_dma);
- 			if (!prp_list)
--				return BLK_STS_RESOURCE;
-+				goto free_prps;
- 			list[iod->npages++] = prp_list;
- 			prp_list[0] = old_prp_list[i - 1];
- 			old_prp_list[i - 1] = cpu_to_le64(prp_dma);
-@@ -702,14 +702,14 @@ static blk_status_t nvme_pci_setup_prps(
- 		dma_addr = sg_dma_address(sg);
- 		dma_len = sg_dma_len(sg);
- 	}
--
- done:
- 	cmnd->dptr.prp1 = cpu_to_le64(sg_dma_address(iod->sg));
- 	cmnd->dptr.prp2 = cpu_to_le64(iod->first_dma);
--
- 	return BLK_STS_OK;
--
-- bad_sgl:
-+free_prps:
-+	nvme_free_prps(dev, req);
-+	return BLK_STS_RESOURCE;
-+bad_sgl:
- 	WARN(DO_ONCE(nvme_print_sgl, iod->sg, iod->nents),
- 			"Invalid SGL for payload:%d nents:%d\n",
- 			blk_rq_payload_bytes(req), iod->nents);
-@@ -781,7 +781,7 @@ static blk_status_t nvme_pci_setup_sgls(
+--- a/drivers/pinctrl/qcom/pinctrl-msm.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+@@ -96,6 +96,14 @@ MSM_ACCESSOR(intr_cfg)
+ MSM_ACCESSOR(intr_status)
+ MSM_ACCESSOR(intr_target)
  
- 			sg_list = dma_pool_alloc(pool, GFP_ATOMIC, &sgl_dma);
- 			if (!sg_list)
--				return BLK_STS_RESOURCE;
-+				goto free_sgls;
- 
- 			i = 0;
- 			nvme_pci_iod_list(req)[iod->npages++] = sg_list;
-@@ -794,6 +794,9 @@ static blk_status_t nvme_pci_setup_sgls(
- 	} while (--entries > 0);
- 
- 	return BLK_STS_OK;
-+free_sgls:
-+	nvme_free_sgls(dev, req);
-+	return BLK_STS_RESOURCE;
- }
- 
- static blk_status_t nvme_setup_prp_simple(struct nvme_dev *dev,
-@@ -862,7 +865,7 @@ static blk_status_t nvme_map_data(struct
- 	sg_init_table(iod->sg, blk_rq_nr_phys_segments(req));
- 	iod->nents = blk_rq_map_sg(req->q, req, iod->sg);
- 	if (!iod->nents)
--		goto out;
-+		goto out_free_sg;
- 
- 	if (is_pci_p2pdma_page(sg_page(iod->sg)))
- 		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
-@@ -871,16 +874,21 @@ static blk_status_t nvme_map_data(struct
- 		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
- 					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
- 	if (!nr_mapped)
--		goto out;
-+		goto out_free_sg;
- 
- 	iod->use_sgl = nvme_pci_use_sgls(dev, req);
- 	if (iod->use_sgl)
- 		ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw, nr_mapped);
- 	else
- 		ret = nvme_pci_setup_prps(dev, req, &cmnd->rw);
--out:
- 	if (ret != BLK_STS_OK)
--		nvme_unmap_data(dev, req);
-+		goto out_unmap_sg;
-+	return BLK_STS_OK;
++static void msm_ack_intr_status(struct msm_pinctrl *pctrl,
++				const struct msm_pingroup *g)
++{
++	u32 val = g->intr_ack_high ? BIT(g->intr_status_bit) : 0;
 +
-+out_unmap_sg:
-+	nvme_unmap_sg(dev, req);
-+out_free_sg:
-+	mempool_free(iod->sg, dev->iod_mempool);
- 	return ret;
- }
++	msm_writel_intr_status(val, pctrl, g);
++}
++
+ static int msm_get_groups_count(struct pinctrl_dev *pctldev)
+ {
+ 	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+@@ -797,7 +805,7 @@ static void msm_gpio_irq_clear_unmask(st
+ 	 * when the interrupt is not in use.
+ 	 */
+ 	if (status_clear)
+-		msm_writel_intr_status(0, pctrl, g);
++		msm_ack_intr_status(pctrl, g);
  
+ 	val = msm_readl_intr_cfg(pctrl, g);
+ 	val |= BIT(g->intr_raw_status_bit);
+@@ -890,7 +898,6 @@ static void msm_gpio_irq_ack(struct irq_
+ 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+ 	const struct msm_pingroup *g;
+ 	unsigned long flags;
+-	u32 val;
+ 
+ 	if (test_bit(d->hwirq, pctrl->skip_wake_irqs)) {
+ 		if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
+@@ -902,8 +909,7 @@ static void msm_gpio_irq_ack(struct irq_
+ 
+ 	raw_spin_lock_irqsave(&pctrl->lock, flags);
+ 
+-	val = g->intr_ack_high ? BIT(g->intr_status_bit) : 0;
+-	msm_writel_intr_status(val, pctrl, g);
++	msm_ack_intr_status(pctrl, g);
+ 
+ 	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
+ 		msm_gpio_update_dual_edge_pos(pctrl, g, d);
 
 
