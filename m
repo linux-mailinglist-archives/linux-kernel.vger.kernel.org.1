@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC5B302217
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F22630221E
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 07:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbhAYGT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 01:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbhAYGTQ (ORCPT
+        id S1727066AbhAYGYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 01:24:41 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:56966 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727030AbhAYGUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 01:19:16 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CDFC061756;
-        Sun, 24 Jan 2021 22:18:24 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPKRw1GN2z9sVX;
-        Mon, 25 Jan 2021 17:18:19 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611555502;
-        bh=2Fp1oQTZ8Qcu6JEynLYpml6vy91YL0jq2UG+B1W/hGA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pRnM6Ekfq75+RgSJWhrjC6e0pEDGnJaL+tiTm/kt3u2gpOxojc20BYYCex46Q1spQ
-         RJ0jm3jOGEx3C7Fw305BuPSKB547hcBhRxBpnk9fkQAhn2HC5kJlWIhkTDUy5JQZbG
-         KUSCxQd2iJbVwGY24ELNpYfS35Mip8khf+tRzxYdeiN0aRL1r6POyON3anyxiLx0Wl
-         JOepsELXIlTTTnpbALFu3mi7y2K7roCBf5/un7lFpYY2OeSxP3jGgW/k999nX1smTF
-         fwvQ+bViZOJVKNf42hrDnh/kQx/8yVXj6nBM6LXhBSfJG98zbcFo2BRMrsTOaljS8G
-         GIFINVKcfEjLg==
-Date:   Mon, 25 Jan 2021 17:18:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Subject: linux-next: manual merge of the pidfd tree with the integrity tree
-Message-ID: <20210125171818.286f08b9@canb.auug.org.au>
+        Mon, 25 Jan 2021 01:20:48 -0500
+X-UUID: 476174a8f2af47edb003d7b346db0768-20210125
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=BTFnfX9tvYF+UTisfH0CClcEuPKpZzWlTghgpfHyzAE=;
+        b=WcJYyQ1C9QghVaMAGv3CgBsyHvJI8ysSc6dw/T/gx6d/RnT9gfFHMCDjpelP1apwY8Bwx+8YereNI1KjqMfQ3FpeuzUusAe5uJROyxahquX9g+g/YWoX0XaeUI6YzUKVPV8GaQdp+GzUPMrab9H0VWikNmXWFbdGpooGrE3G9Yo=;
+X-UUID: 476174a8f2af47edb003d7b346db0768-20210125
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 938150992; Mon, 25 Jan 2021 14:19:29 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
+ 2021 14:19:19 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 25 Jan 2021 14:19:18 +0800
+Message-ID: <1611555559.3905.2.camel@mhfsdcap03>
+Subject: Re: [PATCH next v2 04/17] dt-bindings: phy: mediatek: dsi-phy: add
+ optional clock-names
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        DTML <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Min Guo <min.guo@mediatek.com>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>
+Date:   Mon, 25 Jan 2021 14:19:19 +0800
+In-Reply-To: <CAAOTY_84OF71QK6M5JT1M5YAFKED_xWVpx8B8t859OsVxE0cfQ@mail.gmail.com>
+References: <20210122120323.4337-1-chunfeng.yun@mediatek.com>
+         <20210122120323.4337-4-chunfeng.yun@mediatek.com>
+         <CAAOTY_84OF71QK6M5JT1M5YAFKED_xWVpx8B8t859OsVxE0cfQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/k8KE2htOxDV//cDHrcpI132";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-TM-SNTS-SMTP: 3A0FC78E41D0B8BD472C347915E9404CB40430474059A1083A147199EE7783B72000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/k8KE2htOxDV//cDHrcpI132
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+T24gU2F0LCAyMDIxLTAxLTIzIGF0IDA4OjE4ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
+PiBIaSwgQ2h1bmZlbmc6DQo+IA0KPiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRl
+ay5jb20+IOaWvCAyMDIx5bm0MeaciDIy5pelIOmAseS6lCDkuIvljYg4OjA05a+r6YGT77yaDQo+
+ID4NCj4gPiBBZGQgYW4gb3B0aW9uYWwgImNsb2NrLW5hbWVzIiBwcm9wZXJ0eSwgaXQncyBub3Qg
+dXNlZCB0byBnZXQgdGhlIGNsb2NrLA0KPiA+IGJ1dCBzb21lIERUUyBmaWxlcyAoZS5nLiBtdDgx
+ODMpIHByb3ZpZGUgaXQuDQo+IA0KPiBJIHRoaW5rIHRoZSBsb2dpYyBpcyB0aGF0IHdlIGRlZmlu
+ZSBwcm9wZXJ0eSBpbiBiaW5kaW5nIGRvY3VtZW50DQo+IGZpcnN0LCBhbmQgdGhlbiB3cml0ZSBp
+dCBpbiBkZXZpY2UgdHJlZS4gSWYgYSBwcm9wZXJ0eSBkb2VzIG5vdCBleGlzdA0KPiBpbiBiaW5k
+aW5nIGRvY3VtZW50LCB3ZSBzaG91bGQgbm90IHdyaXRlIGl0IGluIGRldmljZSB0cmVlLiBTbyBs
+ZXQncw0KPiBkcm9wIHRoaXMgcGF0Y2ggYW5kIHJlbW92ZSBjbG9jay1uYW1lcyBpbiBtdDgxODMu
+ZHRzaS4NCk9rLCBJdCdzIGJldHRlciB0byByZW1vdmUgdW5uZWNlc3NhcnkgcHJvcGVydHkuDQoN
+Cj4gDQo+IFJlZ2FyZHMsDQo+IENodW4tS3VhbmcuDQo+IA0KPiA+DQo+ID4gQ2M6IENodW4tS3Vh
+bmcgSHUgPGNodW5rdWFuZy5odUBrZXJuZWwub3JnPg0KPiA+IENjOiBQaGlsaXBwIFphYmVsIDxw
+LnphYmVsQHBlbmd1dHJvbml4LmRlPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8
+Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiB2MjogbmV3IHBhdGNoIHNl
+cGFyYXRlZCBmcm9tIFszLzE1XSBzdWdnZXN0ZWQgYnkgQ0sNCj4gPiAtLS0NCj4gPiAgRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRpYXRlayxkc2ktcGh5LnlhbWwgfCA0
+ICsrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9waHkvbWVkaWF0ZWss
+ZHNpLXBoeS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BoeS9tZWRp
+YXRlayxkc2ktcGh5LnlhbWwNCj4gPiBpbmRleCA2ZTRkNzk1ZjliMDIuLmFmNmU1NTRjNWI2OSAx
+MDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcGh5L21l
+ZGlhdGVrLGRzaS1waHkueWFtbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9waHkvbWVkaWF0ZWssZHNpLXBoeS55YW1sDQo+ID4gQEAgLTM1LDYgKzM1LDEwIEBA
+IHByb3BlcnRpZXM6DQo+ID4gICAgICBpdGVtczoNCj4gPiAgICAgICAgLSBkZXNjcmlwdGlvbjog
+UExMIHJlZmVyZW5jZSBjbG9jaw0KPiA+DQo+ID4gKyAgY2xvY2stbmFtZXM6DQo+ID4gKyAgICBp
+dGVtczoNCj4gPiArICAgICAgLSBjb25zdDogcmVmDQo+ID4gKw0KPiA+ICAgIGNsb2NrLW91dHB1
+dC1uYW1lczoNCj4gPiAgICAgIG1heEl0ZW1zOiAxDQo+ID4NCj4gPiAtLQ0KPiA+IDIuMTguMA0K
+PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4g
+TGludXgtbWVkaWF0ZWsgbWFpbGluZyBsaXN0DQo+ID4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5m
+cmFkZWFkLm9yZw0KPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtbWVkaWF0ZWsNCg0K
 
-Hi all,
-
-Today's linux-next merge of the pidfd tree got a conflict in:
-
-  security/integrity/ima/ima_api.c
-
-between commit:
-
-  2b4a2474a202 ("IMA: generalize keyring specific measurement constructs")
-
-from the integrity tree and commit:
-
-  a2d2329e30e2 ("ima: handle idmapped mounts")
-
-from the pidfd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc security/integrity/ima/ima_api.c
-index 1dd70dc68ffd,ed410efb3597..000000000000
---- a/security/integrity/ima/ima_api.c
-+++ b/security/integrity/ima/ima_api.c
-@@@ -183,17 -184,18 +184,18 @@@ err_out
-   * Returns IMA_MEASURE, IMA_APPRAISE mask.
-   *
-   */
-- int ima_get_action(struct inode *inode, const struct cred *cred, u32 seci=
-d,
-- 		   int mask, enum ima_hooks func, int *pcr,
-+ int ima_get_action(struct user_namespace *mnt_userns, struct inode *inode,
-+ 		   const struct cred *cred, u32 secid, int mask,
-+ 		   enum ima_hooks func, int *pcr,
-  		   struct ima_template_desc **template_desc,
- -		   const char *keyring)
- +		   const char *func_data)
-  {
-  	int flags =3D IMA_MEASURE | IMA_AUDIT | IMA_APPRAISE | IMA_HASH;
- =20
-  	flags &=3D ima_policy_flag;
- =20
-- 	return ima_match_policy(inode, cred, secid, func, mask, flags, pcr,
-- 				template_desc, func_data);
-+ 	return ima_match_policy(mnt_userns, inode, cred, secid, func, mask,
- -				flags, pcr, template_desc, keyring);
-++				flags, pcr, template_desc, func_data);
-  }
- =20
-  /*
-
---Sig_/k8KE2htOxDV//cDHrcpI132
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOYqoACgkQAVBC80lX
-0GwvyQf+KmAb4k0vPNayE44IS4hlsorJ1DccxO0+t0EYFbiDjmqHIsbi5dF7wZKH
-MJuoSGGkOB2F88hmfYj+6+QVRHtHBtrGOaTSjvdCO5oaGhKwa3hVRU7bohAAJW1W
-NsmYm/MV3eKMEr9385Cw9T1N62L6MQYF4a8fjAi5p7AMDnT+ahVydUP3v162ncoc
-fAyoZLQBn3oatKG6CSHNky1N6c4lf85tpC+g1Bd6pL/vsYyT4wLoKrAL7lj+Cltz
-nftNqLdw57dDWUXihbg3Och60UGcJC+PSDuJ/iMv7tm55Q3M83+Nosu9Ygf8MNy2
-5NUca5LiDuSTX4ftcLl/LRNJGxnbtQ==
-=bjV6
------END PGP SIGNATURE-----
-
---Sig_/k8KE2htOxDV//cDHrcpI132--
