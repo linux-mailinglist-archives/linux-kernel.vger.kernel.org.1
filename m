@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A8F304A20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B596E304A1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 21:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbhAZFPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:15:07 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:35456 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727080AbhAYJoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 04:44:07 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1l3yP6-0005J1-2i; Mon, 25 Jan 2021 09:43:24 +0000
-Date:   Mon, 25 Jan 2021 10:43:23 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Dealing with complex patch series in linux-next
-Message-ID: <20210125094323.gz7g5p6xeifolf5v@wittgenstein>
+        id S1730922AbhAZFPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:15:12 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:55103 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727097AbhAYJoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:44:12 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPQ0f22stz9sSs;
+        Mon, 25 Jan 2021 20:43:30 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1611567810;
+        bh=TKvlSRsstD9csvjNrMrpEVFbR7nj0PeMBVSeIXOnVaw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qgF+Gofy3eYFArE4yXSkTQoFzBXfkbBQlLJjZzHS4z9Ywpir3GNxSNpbkhT/II3hW
+         lIEhzR9tw56dqUZ+DW9hwERSYkYyrS5WJvfEcGnk9RKJ9QMp9SM8T1iivflr5Xj72F
+         usOtoOwRy9nI+5qN6TFWDiLg5YJpR1bOZhLrkyow2GMH5HvCWM9pI9Gz27HCwPjfi0
+         fQRLtkTO40zKz5tx/HRYQDSF1V8miebqQoaLg/wYr86ldYbBe4b+KbdNdshXfA4eZ9
+         ti+D8ay47nwUFdkn7QukmIxjgls1do5mAzx/jNT29AphMMBOkQOpK48v4JcjJLobSj
+         XSE1AaPs5zBSQ==
+Date:   Mon, 25 Jan 2021 20:43:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Bijan Mottahedeh <bijan.mottahedeh@oracle.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the block tree
+Message-ID: <20210125204329.22a4964c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: multipart/signed; boundary="Sig_/8b+VE46D+8rlMXcYXUCHCs/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+--Sig_/8b+VE46D+8rlMXcYXUCHCs/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-After having received another round of acks on the idmapped mounts
-series and other fses about to move forward with porting I moved forward
-with merging [1] into my for-next branch which is tracked by sfr in
-linux-next.
-Given the nature of the series I expected there to be a good chunk of
-merge conflicts including some non-trivial ones. But there proved to be
-too many conflicts or at least a few ones that sfr couldn't handle
-without more insight into the series. So after talking to sfr this
-morning we decided to drop the tree for today.
+Hi all,
 
-Obviously we would like to see this in linux-next and we will likely run
-into similar problems should you decide to want to pull this.
-I could try and choose a common base with at least one tree (e.g. Al's)
-but this will only get rid of some merge conflicts.
-I'm sure I could also do an extremely fine-grained split of each patch
-in the series though I don't think that's very helpful in this case
-either.
-I could do a daily rebase onto linux-next which is similar to what
-Andrew does for such patch series which get included into linux-next as
-a rebased post-next patchbomb (as sfr pointed out to me). The series has
-a large xfstest series associated with it so it's at least easily
-detectable when the rebase breaks things.
-I would prefer to not have to burden someone else with this and rather
-deal with the merge conflict resolution myself to make sure that no
-wider context is missed. It would also allow me to point out where the
-painpoints are if this gets sent for inclusion/is accepted.
+Commits
 
-So completely independent of whether or not you ultimately decide to
-accept or reject the series it might be pretty helpful to know what your
-preferred way of dealing with similar series is to make it easier for
-you later on.
+  36962a1e4186 ("io_uring: create common fixed_rsrc_data allocation routine=
+s")
+  5bc97865b3b6 ("io_uring: create common fixed_rsrc_ref_node handling routi=
+nes")
+  b2315a2cda1f ("io_uring: generalize io_queue_rsrc_removal")
+  a63c1259317d ("io_uring: rename file related variables to rsrc")
 
-Christian
+are missing a Signed-off-by from their author.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=idmapped_mounts
+--=20
+Cheers,
+Stephen Rothwell
 
-I know that we have
-https://www.kernel.org/doc/html/latest/maintainer/rebasing-and-merging.html
-and it touches on stuff like this to some extent in "Merging from
-sibling or upstream" trees but it's not clear that this would be
-beneficial here or whether it wouldn't just make the changeset harder to
-follow.
+--Sig_/8b+VE46D+8rlMXcYXUCHCs/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAOksEACgkQAVBC80lX
+0Gzp9Qf/anHqnbnFxmIosUkRQv71WbRxuec6DuwHAR6pxHLJanH7qD4LawyiShT+
+nPKqiYQV9vGGNRY0hV3NeilSIt7ymEnrvs+p2j5XfWvFGl+r8Anj+9mGWeV/phKX
+LQ6u0Fr3joOrZgrlIfn+tOh9jx/bjaKToblseLo3xptKVwmYPcTvBrhO93s9hH8/
+rOE59PnP7qcPXBh27eqmyBtUD1RagcTOFsxG5C6NYRy36SLmuEFEeXxUcc6yqGiY
+s6nwZ3VWrBkK5znxkv9xuGOJjaq8dbaG6x2M8ijhGYb4vtKveZiLisuqnowK+GEb
+wIOtGZ3BLc/FC9GBbuPowV6co4wuwA==
+=WWbZ
+-----END PGP SIGNATURE-----
+
+--Sig_/8b+VE46D+8rlMXcYXUCHCs/--
