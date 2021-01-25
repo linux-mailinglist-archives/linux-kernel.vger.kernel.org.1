@@ -2,107 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DE03025B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3D73025C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 14:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbhAYNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 08:49:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48558 "EHLO mail.kernel.org"
+        id S1729139AbhAYNxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 08:53:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729052AbhAYNsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:48:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ECB922240;
-        Mon, 25 Jan 2021 13:46:59 +0000 (UTC)
+        id S1729044AbhAYNtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:49:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC0BA2087E;
+        Mon, 25 Jan 2021 13:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611582419;
-        bh=4jeTXsONQRvlpQNo8y1N+7h1UcVWalGRTtzIbqhd3rM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OEtXqwrUq1iirVFq9qgSaEL96SW0ubYogbrPYtb/DEu2Sy43hGKfesstIYJ4eoY3h
-         +LaUR6hkVwIBcd1iOxEnS4O86wumpOAmN8sKcV/sePGDMpbJ4JSYM1S8u2GsfWC9jB
-         IpETXmF2tZCdVB8dKbSpgzSbQBK1KQArUoD+/9PHPuQiJOVkFED5X1Nqv1pHeETYLW
-         oaAGALgYujtdCPjBEUNfKuDnL5UpMZAtqYYhvN2zvVCt6szD3Zs7hlkFzIW1Bs0k0u
-         AwUEwjIlUC5VunOD2GEdq9qkwjdIrKO5uw4jsJjHI4k3CfzhkRDpvu/7eIdKQZsRX9
-         K41iOttCH+ibA==
+        s=k20201202; t=1611582505;
+        bh=M0dDfnchJRBjOZVMlgydXFdaoa8BoZIm9o4O0Wwmktc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KZrmKyWpqu4yPsJZJa0DDJB0x8dhDk8cmzp2889/gVgmeHw7xHxTRfm7G8vCE+e7v
+         UZZ2yLjk+owFZJ8jlHJ+5b3l5pwcEAu4qfQQJPcsPhaeO1Mo5HiYq6O16qJHb+jkmK
+         pkXiLQC0513WO4gOvzgRIvnU30I1/xhTD1jYbsP6L5Uj9v42iSmfX4QygjXonDYlm6
+         8LrDWz9PeLcF6NS7oaVxSopmkycF6CLvfNcaKX7j6A7EQjqv6ivtGSuigU+LpPbpQU
+         m2Mxro9XccJgJo5fjn5ZQRSDTskT5pPVoYw9qSd65WSSgsld886oaAOeZ8h9zfxO5T
+         7wl3De5zKJNww==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1l42Cx-00033C-H3; Mon, 25 Jan 2021 14:47:07 +0100
-Date:   Mon, 25 Jan 2021 14:47:07 +0100
+        id 1l42EL-00034M-Dh; Mon, 25 Jan 2021 14:48:33 +0100
 From:   Johan Hovold <johan@kernel.org>
-To:     Pho Tran <Pho.Tran@silabs.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "johan@kernel.org" <johan@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v4] USB: serial: cp210x: Fix error 32 when hardware flow
- control  is enabled.
-Message-ID: <YA7L21jbIl9hPQf1@hovoldconsulting.com>
-References: <E0AAFEFF-2250-4991-8ED8-9B6EE14111EC@silabs.com>
+To:     linux-usb@vger.kernel.org
+Cc:     Pho Tran <Pho.Tran@silabs.com>, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 0/7] USB: serial: cp210x: modem-control fixes
+Date:   Mon, 25 Jan 2021 14:48:10 +0100
+Message-Id: <20210125134817.11749-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E0AAFEFF-2250-4991-8ED8-9B6EE14111EC@silabs.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 09:52:23AM +0000, Pho Tran wrote:
-> Fix error 32 returned by CP210X_SET_MHS when hardware flow control is enabled.
-> 
-> The root cause of error 32 is that user application (CoolTerm, linux-serial-test)
-> opened cp210x device with hardware flow control then attempt to control RTS/DTR pins.
-> In hardware flow control, RTS/DTR pins will be controlled by hardware only,
-> any attempt to control those pins will cause error 32 from the device.
-> This fix will block MHS command(command to control RTS/DTR pins) to the device
-> if hardware flow control is being used.
-> 
-> Signed-off-by: Pho Tran <pho.tran@silabs.com>
-> ---
-> 01/21/2021: Patch v3 modified based on comment from Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 01/19/2021: Patch v2  Modified based on comment from Johan Hovold <johan@kernel.org>
-> and Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Giving credit in the commit log is nice, but this still doesn't say
-anything about *what* you changed.
-
-> ---
->  drivers/usb/serial/cp210x.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index fbb10dfc56e3..814dff5fee98 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -1204,7 +1204,12 @@ static int cp210x_tiocmset(struct tty_struct *tty,
->  		unsigned int set, unsigned int clear)
->  {
->  	struct usb_serial_port *port = tty->driver_data;
-> -	return cp210x_tiocmset_port(port, set, clear);
-> +
-> +	/* Don't send SET_MHS command if device in hardware flow control mode. */
-> +	if (C_CRTSCTS(tty))
-> +		return 0;
-
-You didn't reply to my comments that what should be done here is to
-disable auto-RTS when clearing TIOCM_RST and re-enable it when setting
-the same bit. If you disagree with review feedback you need to say so
-and not just resend a new version of your patch without an explanation.
-
-Note that the above would also needlessly prevent DTR from being changed
-whenever auto-RTS is enabled and return success instead of an error to
-user space.
-
-My suggestion for how to suppress the error message from dtr_rts()
-suffers from the same problem so I've updated that patch and implemented
-proper RTS handling in the driver now.
-
-This takes care not only of the SET_MHS error messages, but also makes
-sure that RTS can always be deasserted and some other related issues
-with regards to modem control.
-
-> +	else
-> +		return cp210x_tiocmset_port(port, set, clear);
->  }
->  
->  static int cp210x_tiocmset_port(struct usb_serial_port *port,
+This series fixes the modem-control handling and its interaction with
+hardware flow control in the cp210x driver.
 
 Johan
+
+Johan Hovold (7):
+  USB: serial: cp210x: suppress modem-control errors
+  USB: serial: cp210x: fix modem-control handling
+  USB: serial: cp210x: drop shift macros
+  USB: serial: cp210x: clean up flow-control debug message
+  USB: serial: cp210x: clean up printk zero padding
+  USB: serial: cp210x: fix RTS handling
+  USB: serial: cp210x: clean up auto-RTS handling
+
+ drivers/usb/serial/cp210x.c | 113 ++++++++++++++++++++++++++++--------
+ 1 file changed, 89 insertions(+), 24 deletions(-)
+
+-- 
+2.26.2
+
