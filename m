@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF2F303BA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8969303BA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405161AbhAZL3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:29:43 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:21544 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731022AbhAZJu3 (ORCPT
+        id S2392505AbhAZLbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:31:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391366AbhAZJsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:50:29 -0500
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10Q9WvNK027767;
-        Tue, 26 Jan 2021 10:49:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=jc22SqmdYibgtAaJq3omeHgrRDIC9ZnXdKisEe+EuSc=;
- b=EWr7NECmAp0pEZ7oHXJO+C8QvdWfHvPmVLkH3Og0PUxq69dszHgi9j8JctB84suqYLYL
- SDDL5PLSFiHvzz/C80My3uBiZ/MkGsmmYgdvAPzlMr7fNOKykVNnvguF78Daae1Zw/G1
- GggsRmb2V9sZMQc/7dSbLlqIthkTV4ZfYY/2DIgJmVpW5snbHUC42fF0qzGUT65B3gHF
- z4PXfeFnxNVByH8vjDplOoPZ70R5cQVYnOPNDSeJal8rtcZ61SmojYmgc3E1kdOJ4X2R
- aC3TaGDOzCSlZLgeCQ5us87ypr4sZD6S2t5ZHpQ4mBIwDKVyxe9rnciu3itCskmJhOcy YQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3689tdrb4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 10:49:33 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1464910002A;
-        Tue, 26 Jan 2021 10:49:33 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 012E3230361;
-        Tue, 26 Jan 2021 10:49:33 +0100 (CET)
-Received: from lmecxl0995.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan
- 2021 10:49:32 +0100
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: phy-stm32-usbphyc: add
- #clock-cells required property
-To:     Rob Herring <robh@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210114171314.18946-1-amelie.delaunay@foss.st.com>
- <20210114171314.18946-2-amelie.delaunay@foss.st.com>
- <20210125214042.GA1049362@robh.at.kernel.org>
-From:   Amelie DELAUNAY <amelie.delaunay@foss.st.com>
-Message-ID: <be0f4e5f-3e7d-d178-160b-ea90e9e00147@foss.st.com>
-Date:   Tue, 26 Jan 2021 10:49:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 26 Jan 2021 04:48:13 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BBAC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:47:33 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1l4KwV-0001x5-BC; Tue, 26 Jan 2021 10:47:23 +0100
+Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:6c72:efc:f7c6:b5c2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 040F05CD72C;
+        Mon, 25 Jan 2021 17:50:02 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 18:50:02 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     trix@redhat.com
+Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        socketcan@hartkopp.net, colin.king@canonical.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: mcba_usb: remove h from printk format specifier
+Message-ID: <20210125175002.7afvx63iqoiqgucz@hardanger.blackshift.org>
+References: <20210124150916.1920434-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210125214042.GA1049362@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_06:2021-01-25,2021-01-26 signatures=0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mnrr4n7v7iy5rkut"
+Content-Disposition: inline
+In-Reply-To: <20210124150916.1920434-1-trix@redhat.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On 1/25/21 10:40 PM, Rob Herring wrote:
-> On Thu, Jan 14, 2021 at 06:13:13PM +0100, Amelie Delaunay wrote:
->> usbphyc provides a unique clock called ck_usbo_48m.
->> STM32 USB OTG needs a 48Mhz clock (utmifs_clk48) for Full-Speed operation.
->> ck_usbo_48m is a possible parent clock for USB OTG 48Mhz clock.
->>
->> ck_usbo_48m is available as soon as the PLL is enabled.
->>
->> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
->> ---
->> No change in v2.
->> ---
->>   .../devicetree/bindings/phy/phy-stm32-usbphyc.yaml          | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
->> index 46df6786727a..4e4da64b8e01 100644
->> --- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
->> +++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
->> @@ -51,6 +51,10 @@ properties:
->>     vdda1v8-supply:
->>       description: regulator providing 1V8 power supply to the PLL block
->>   
->> +  '#clock-cells':
->> +    description: number of clock cells for ck_usbo_48m consumer
->> +    const: 0
->> +
->>   #Required child nodes:
->>   
->>   patternProperties:
->> @@ -102,6 +106,7 @@ required:
->>     - "#size-cells"
->>     - vdda1v1-supply
->>     - vdda1v8-supply
->> +  - '#clock-cells'
-> 
-> You can't really make new properties required as it's not backwards
-> compatible. If things can never work without or the binding has never
-> been used, then you can. You just need to spell this out in the commit
-> msg.
-> 
+--mnrr4n7v7iy5rkut
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In fact things can work without this property. But I made this new 
-property required because in clock-bindings, #clock-cells property is a 
-required property for clock providers.
+On 21-01-24 07:09:16, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+>=20
+> This change fixes the checkpatch warning described in this commit
+> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
+>   unnecessary %h[xudi] and %hh[xudi]")
+>=20
+> Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi].
+>=20
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-phy-stm32-usbphyc bindings are only used in stm32mp151.dtsi, which will 
-be updated with this new property as soon as this bindings will be reviewed.
+Added to linux-can-next/testing.
 
-I can remove this new property from required ones, but is it okay as 
-#clock-cells property is a required property for clock providers?
+Thanks,
+Marc
 
-Regards,
-Amelie
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
->>     - usb-phy@0
->>     - usb-phy@1
->>   
->> @@ -120,6 +125,7 @@ examples:
->>           vdda1v8-supply = <&reg18>;
->>           #address-cells = <1>;
->>           #size-cells = <0>;
->> +        #clock-cells = <0>;
->>   
->>           usbphyc_port0: usb-phy@0 {
->>               reg = <0>;
->> -- 
->> 2.17.1
->>
+--mnrr4n7v7iy5rkut
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAPBMcACgkQqclaivrt
+76kUGQf+JLQZOWRFcqRCPuMen2ZqE1NyXfQrfReiAvL/TeAoiCTG9r1asgTvnzMn
+sKSIW9cQkDHc8Ub7CprAgmrN/LMsGgdyi2LxsDfYXljpt324ZKeLP7VVtjga8+PQ
+uvuR+SAlld3seXmSABMcsrf4ViJf4IcXU0zgfxPzMT6Cyb5QvwbUKTonnye6kMUH
+NAmYQlgFLCgInyVvklEkDf52X2DAy8boTIUt6gdcKy8J9Iw/5FSHrhZq9FVJ3OKV
+IInvSsThpO51aX73SuC5iAR5fci33Hnd61ElhIKZaCe/sGK8FTY6ChRI69GQNAl1
+1AKyAk60SI4AaruWbQA58y+2o2MRPA==
+=nlzt
+-----END PGP SIGNATURE-----
+
+--mnrr4n7v7iy5rkut--
