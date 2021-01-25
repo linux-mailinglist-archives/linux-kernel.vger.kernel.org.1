@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6EA30464B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2FF30477B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 20:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390784AbhAZRfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389575AbhAZHkG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:40:06 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4D1C061797;
-        Mon, 25 Jan 2021 23:25:41 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id t25so3033792pga.2;
-        Mon, 25 Jan 2021 23:25:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eYQjGrreBxAElr6Uc7E2xNYl1ZHh4lNeYv3YVnq1Azg=;
-        b=BYhvgjtyZnmRq/0OOKpD+u298xHkA/5FMpygS6NKJ0AK/dk/ZzlFCyiadPuQT21Bg+
-         4PQQkRyZKzFTq0qPj2KaLCx5BAtI2YjhGQr810HDMwaA3vL4OYzbQyi26FI8yBeAOpHr
-         oSvCEgoeuGOUZOjEyOtHyyUaDBWZUqWnylkDjljSeouJyF29w0c86CSXcf9HTA3rwfGm
-         +c8CJs5re387Wfc5BXfkbsP1CFoQRK1XvrEhzXwQZrWjwEHJaL+UvyX9RIlv4ivBRQqH
-         Th2UvzPpOlgYwmV1G+8i2UnBJ+KMtV5aTHpzmKWJgMKqXKKxSOVtvL+lilOEF5LUgWgJ
-         Z7aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eYQjGrreBxAElr6Uc7E2xNYl1ZHh4lNeYv3YVnq1Azg=;
-        b=uX0rjZO4IYjOY9dlw+4C9CoehC7wtKwOI7Dtjul9mX8epqqEG7KK+8AgR0puLF6yLE
-         8F3afZMARS4/HShk+/CT1x/EISfoioyzd7GlCLXB9HxtrAPSIa1WEhnQaNVMinIt6XLa
-         q2/EljGAmFBLVpAT9iLa+exjH4k0KLB3OIAbNjLG9In/HPlauOGz4uYQytPI0uO8kIK6
-         yHA/Yz2X9GZk4ewWLzyHwfOgUBUXF9ft/9DZT32CuL2QKyo3AxAPrBvctLL8RkECi8BC
-         MqhLuUhrqjPDllQDzhjFhlD6TkAyoZ5AYLQxIabF2DLy5rrU3kmosZL8RKST7IzVPHCE
-         dzXw==
-X-Gm-Message-State: AOAM531qgS7GiogROKxGz9fLommbbjyLXF6n8nQZ9iCFrTamwvQN4gQf
-        u2TxZsiUe1cQi1N/ZUwGBXM=
-X-Google-Smtp-Source: ABdhPJw779iXvaKTjbYXqgTFCTH7h+kyWKHt3/6+CBGwfc8AVjLc0oQommeyBIH9mR0jCF1vvgQh+A==
-X-Received: by 2002:a62:800d:0:b029:1bc:9cd1:8ee1 with SMTP id j13-20020a62800d0000b02901bc9cd18ee1mr4006255pfd.69.1611645941144;
-        Mon, 25 Jan 2021 23:25:41 -0800 (PST)
-Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l12sm1320256pjg.54.2021.01.25.23.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 23:25:40 -0800 (PST)
-From:   Fox Chen <foxhlchen@gmail.com>
-To:     corbet@lwn.net, vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de
-Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
+        id S2389082AbhAZF7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:59:39 -0500
+Received: from relay.sw.ru ([185.231.240.75]:40670 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728228AbhAYMnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:43:31 -0500
+Received: from [192.168.15.14]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1l3xLj-000T1I-8x; Mon, 25 Jan 2021 11:35:51 +0300
+Subject: Re: [v4 PATCH 04/11] mm: vmscan: remove memcg_shrinker_map_size
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
+        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 12/12] docs: path-lookup: update symlink description
-Date:   Tue, 26 Jan 2021 15:24:43 +0800
-Message-Id: <20210126072443.33066-13-foxhlchen@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210126072443.33066-1-foxhlchen@gmail.com>
-References: <20210126072443.33066-1-foxhlchen@gmail.com>
+References: <20210121230621.654304-1-shy828301@gmail.com>
+ <20210121230621.654304-5-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <af9204cb-2298-ee7c-5307-295d33befd8a@virtuozzo.com>
+Date:   Mon, 25 Jan 2021 11:35:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210121230621.654304-5-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-instead of lookup_real()/vfs_create(), i_op->lookup() and
-i_op->create() will be called directly.
+On 22.01.2021 02:06, Yang Shi wrote:
+> Both memcg_shrinker_map_size and shrinker_nr_max is maintained, but actually the
+> map size can be calculated via shrinker_nr_max, so it seems unnecessary to keep both.
+> Remove memcg_shrinker_map_size since shrinker_nr_max is also used by iterating the
+> bit map.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  mm/vmscan.c | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index d3f3701dfcd2..40e7751ef961 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -185,8 +185,7 @@ static LIST_HEAD(shrinker_list);
+>  static DECLARE_RWSEM(shrinker_rwsem);
+>  
+>  #ifdef CONFIG_MEMCG
+> -
+> -static int memcg_shrinker_map_size;
+> +static int shrinker_nr_max;
+>  
+>  static void free_shrinker_map_rcu(struct rcu_head *head)
+>  {
+> @@ -248,7 +247,7 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
+>  		return 0;
+>  
+>  	down_write(&shrinker_rwsem);
+> -	size = memcg_shrinker_map_size;
+> +	size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+>  	for_each_node(nid) {
+>  		map = kvzalloc_node(sizeof(*map) + size, GFP_KERNEL, nid);
+>  		if (!map) {
+> @@ -266,10 +265,11 @@ int alloc_shrinker_maps(struct mem_cgroup *memcg)
+>  static int expand_shrinker_maps(int new_id)
+>  {
+>  	int size, old_size, ret = 0;
+> +	int new_nr_max = new_id + 1;
+>  	struct mem_cgroup *memcg;
+>  
+> -	size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
+> -	old_size = memcg_shrinker_map_size;
+> +	size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> +	old_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+>
+>  	if (size <= old_size)
+>  		return 0;
 
-update vfs_open() logic
+This looks a BUG:
 
-should_follow_link is merged into lookup_last() or open_last_lookup()
-which returns symlink name instead of an integer.
+expand_shrinker_maps(id == 1)
+{
+	old_size = 64;
+	size = 64;
+	
+	===>return 0 and shrinker_nr_max remains 0.
+}
 
-Signed-off-by: Fox Chen <foxhlchen@gmail.com>
----
- Documentation/filesystems/path-lookup.rst | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Then shrink_slab_memcg() misses this shrinker since shrinker_nr_max == 0.
 
-diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/filesystems/path-lookup.rst
-index 2bb3ca486acd..0c6fc296056c 100644
---- a/Documentation/filesystems/path-lookup.rst
-+++ b/Documentation/filesystems/path-lookup.rst
-@@ -1204,16 +1204,15 @@ the code.
-    it.  If the file was found in the dcache, then ``vfs_open()`` is used for
-    this.  If not, then ``lookup_open()`` will either call ``atomic_open()`` (if
-    the filesystem provides it) to combine the final lookup with the open, or
--   will perform the separate ``lookup_real()`` and ``vfs_create()`` steps
-+   will perform the separate ``i_op->lookup()`` and ``i_op->create()`` steps
-    directly.  In the later case the actual "open" of this newly found or
-    created file will be performed by ``vfs_open()``, just as if the name
-    were found in the dcache.
- 
- 2. ``vfs_open()`` can fail with ``-EOPENSTALE`` if the cached information
--   wasn't quite current enough.  Rather than restarting the lookup from
--   the top with ``LOOKUP_REVAL`` set, ``lookup_open()`` is called instead,
--   giving the filesystem a chance to resolve small inconsistencies.
--   If that doesn't work, only then is the lookup restarted from the top.
-+   wasn't quite current enough.  If it's in RCU-walk -ECHILD will be returned
-+   otherwise will return -ESTALE.  When -ESTALE is returned, the caller may
-+   retry with LOOKUP_REVAL flag set.
- 
- 3. An open with O_CREAT **does** follow a symlink in the final component,
-    unlike other creation system calls (like ``mkdir``).  So the sequence::
-@@ -1223,8 +1222,8 @@ the code.
- 
-    will create a file called ``/tmp/bar``.  This is not permitted if
-    ``O_EXCL`` is set but otherwise is handled for an O_CREAT open much
--   like for a non-creating open: ``should_follow_link()`` returns ``1``, and
--   so does ``do_last()`` so that ``trailing_symlink()`` gets called and the
-+   like for a non-creating open: ``lookup_last()`` or ``open_last_lookup()``
-+   returns a non ``Null`` value, and ``link_path_walk()`` gets called and the
-    open process continues on the symlink that was found.
- 
- Updating the access time
--- 
-2.30.0
+>  
+> @@ -286,9 +286,10 @@ static int expand_shrinker_maps(int new_id)
+>  			goto out;
+>  		}
+>  	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
+> +
+>  out:
+>  	if (!ret)
+> -		memcg_shrinker_map_size = size;
+> +		shrinker_nr_max = new_nr_max;
+>  
+>  	return ret;
+>  }
+> @@ -321,7 +322,6 @@ void set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+>  #define SHRINKER_REGISTERING ((struct shrinker *)~0UL)
+>  
+>  static DEFINE_IDR(shrinker_idr);
+> -static int shrinker_nr_max;
+>  
+>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>  {
+> @@ -338,8 +338,6 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>  			idr_remove(&shrinker_idr, id);
+>  			goto unlock;
+>  		}
+> -
+> -		shrinker_nr_max = id + 1;
+>  	}
+>  	shrinker->id = id;
+>  	ret = 0;
+> 
 
