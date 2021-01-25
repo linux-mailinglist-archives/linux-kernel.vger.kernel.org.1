@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6144F302C5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0534302C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731913AbhAYUR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:17:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
+        id S1732339AbhAYT64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:58:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732163AbhAYTxL (ORCPT
+        with ESMTP id S1732240AbhAYTyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:53:11 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335FEC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:52:30 -0800 (PST)
-Date:   Mon, 25 Jan 2021 20:52:28 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611604348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UUaH29QvFzHMxxdgneJABumqEjM9Ye+hRF7dMyP5oOo=;
-        b=Ek4SQjld7lp8AFjhOKVogD8IrRgVQI0t73up02ikbSsCVUs4UFh3K0WClYTqLUe7COaPVn
-        RXZEeOjVwCj0ljXE5HQm4Y6Br6QQ/aHEEso/URTKVJUAWYMzGV2nJysPB3YWqJpEPMdEeR
-        3vJWTZ6IVHwIhYmCvPTDfOaKbq3A3tovQ75oRHRkpGeilkZIwImHr9f27+DgmPst60brmm
-        qb+uLWemz4FdrwELPOr3ZIT2WGIwphUsfokH9yvS59tdf/2GKajW6Hu40QCVIe1BbC/Pjs
-        xP0+TCvYfMeT9dxhgyAicZ755N0GXVTgKspd67lNcq74AuDQQeR8eKabTd67nw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611604348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UUaH29QvFzHMxxdgneJABumqEjM9Ye+hRF7dMyP5oOo=;
-        b=8MmG0FBlOfP+HNMGGPCjl5BfNm4n/BpAh636bMOJvYS1y7xmzMyWAMxqn9jtQZVFaKY+4v
-        XXquQHpI0bX6jEDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 1/3] tracing: Merge irqflags + preempt counter.
-Message-ID: <20210125195228.ydtrixn4v3hb4lmj@linutronix.de>
-References: <20210112230057.2374308-1-bigeasy@linutronix.de>
- <20210112230057.2374308-2-bigeasy@linutronix.de>
- <20210122170750.600b2372@gandalf.local.home>
- <20210125140551.hlpbreks4f7ytuza@linutronix.de>
- <20210125140323.6b1ff20c@gandalf.local.home>
+        Mon, 25 Jan 2021 14:54:39 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30A9C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:53:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=XPc5xOyQBf5tFzS0CqIJXhJ1xLqNqWS/ktX5J0cuAxI=; b=nI4byitjmCyoAR3ZJaXwq6DTDg
+        0rq+ByCeITPyNXFZXQ4DNStS27wJowO44jFJ9tsveEaWXtNWBAvfcZfFO7wHYXHjF77Zg2mcd3DjN
+        MfIj12EcuPe/BQWdUbz1W9KrknfzV9nFc/60t1TnBWpDIfvQwKyvq6F8NlQI2QqFGFEXBlpvneTNL
+        eRCa/EVbknDmNaUMvuWNBshi/Q5FvqspVmJ0zwv6kyWJD5Jcpx+q6LoRD3nKAsBWI9v1aXs/vp9lX
+        BbkDopSmIFEVcNb7/9TQWKU+NUrZUX7G7q5QeZ6ZWkV+UQ3sL0AqPv4q7Qu2AQtNQVkC0TzSFqZbh
+        53kTWerw==;
+Received: from [2601:1c0:6280:3f0::7650] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l47vw-0007Ov-AB; Mon, 25 Jan 2021 19:53:56 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        John Johansen <john.johansen@canonical.com>,
+        apparmor@lists.ubuntu.com, Seth Arnold <seth.arnold@canonical.com>
+Subject: [PATCH RESEND] security: apparmor: file.h: delete duplicated word
+Date:   Mon, 25 Jan 2021 11:53:50 -0800
+Message-Id: <20210125195350.24845-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210125140323.6b1ff20c@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-25 14:03:23 [-0500], Steven Rostedt wrote:
-> 
-> I was thinking about the inlining for two reasons. One was to consolidate
-> the logic in the header file, as they are small functions. And two, inlined
-> functions tend to be faster than non-inlined functions. Thus, I wasn't
-> looking at this from a size point of view, but since this is called by all
-> events, including function tracer, being efficient is a requirement.
+Delete the doubled word "then" in a comment.
 
-In the ftrace_syscall_enter() example I made, flags were not evaluated
-three times but only once. This should do more in terms of performance
-compare to simply inline it.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: John Johansen <john.johansen@canonical.com>
+Cc: apparmor@lists.ubuntu.com
+Reviewed-by: Seth Arnold <seth.arnold@canonical.com>
+---
+ security/apparmor/include/file.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > I can post the irqflags-merge and the inlinining as two seprate patches
-> > and you can then decide if you merge the two patches or drop the
-> > inlining.
-> 
-> Feel free to send it as separate patches. I'd like to have the inlining.
-
-Just sent as an extra patch. In case you have a benchmark, I'm curious
-;)
-
-> Thanks!
-> 
-> -- Steve
-
-Sebastian
+--- linux-next-20200717.orig/security/apparmor/include/file.h
++++ linux-next-20200717/security/apparmor/include/file.h
+@@ -167,7 +167,7 @@ int aa_audit_file(struct aa_profile *pro
+  * @perms: permission table indexed by the matched state accept entry of @dfa
+  * @trans: transition table for indexed by named x transitions
+  *
+- * File permission are determined by matching a path against @dfa and then
++ * File permission are determined by matching a path against @dfa and
+  * then using the value of the accept entry for the matching state as
+  * an index into @perms.  If a named exec transition is required it is
+  * looked up in the transition table.
