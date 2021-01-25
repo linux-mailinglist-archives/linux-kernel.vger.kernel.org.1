@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40DF3037C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBDB3037CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389861AbhAZIWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:22:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58162 "EHLO mail.kernel.org"
+        id S1730839AbhAZIXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:23:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727088AbhAYSm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:42:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A495C20719;
-        Mon, 25 Jan 2021 18:41:28 +0000 (UTC)
+        id S1727093AbhAYSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2886B22D58;
+        Mon, 25 Jan 2021 18:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600089;
-        bh=JaIU3/pIKgCO1wlrX4supaU7123yKweSYk85zX5aXmo=;
+        s=korg; t=1611600091;
+        bh=GWw0fXgZDQAzfnrpZENeGM09c0xmMp2QFGbeH534L6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QLHG2BzoXA4Kuv4EbCKDmdXRQjKUabNnFRVKM3gEH/+G8hUgEm0+H7fd4uhF2LkGG
-         9Gn1uXd+ytzLqXkbxiscil1Srn4njl/qVzo3j/MX2HaobgEPdBMqMfDArBXVKiquE2
-         +8IA3P/hqWUyngev74pD2xnFh30SzM0zr8mEtDa4=
+        b=GRC1h+qXpWZhzey6/eX05vvRgLmXnBiLkrEixnGHUsYnrMm1QuORyvHU/2zT2TCMR
+         CoNBErsqUPpBqD3K/eF/wqwKCDZUTHRLvdwzodtU+4j8crmKSidbK4NOcxQGkJBboD
+         UsdsPBUO3sb54jrivF4hh+GNHvV+/WVb4ekPex7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: [PATCH 4.19 04/58] ACPI: scan: Make acpi_bus_get_device() clear return pointer on error
-Date:   Mon, 25 Jan 2021 19:39:05 +0100
-Message-Id: <20210125183156.891035876@linuxfoundation.org>
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 05/58] btrfs: fix lockdep splat in btrfs_recover_relocation
+Date:   Mon, 25 Jan 2021 19:39:06 +0100
+Message-Id: <20210125183156.928639401@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -42,48 +41,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 78a18fec5258c8df9435399a1ea022d73d3eceb9 upstream.
+commit fb286100974e7239af243bc2255a52f29442f9c8 upstream.
 
-Set the acpi_device pointer which acpi_bus_get_device() returns-by-
-reference to NULL on errors.
+While testing the error paths of relocation I hit the following lockdep
+splat:
 
-We've recently had 2 cases where callers of acpi_bus_get_device()
-did not properly error check the return value, so set the returned-
-by-reference acpi_device pointer to NULL, because at least some
-callers of acpi_bus_get_device() expect that to be done on errors.
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  5.10.0-rc6+ #217 Not tainted
+  ------------------------------------------------------
+  mount/779 is trying to acquire lock:
+  ffffa0e676945418 (&fs_info->balance_mutex){+.+.}-{3:3}, at: btrfs_recover_balance+0x2f0/0x340
 
-[ rjw: This issue was exposed by commit 71da201f38df ("ACPI: scan:
-  Defer enumeration of devices with _DEP lists") which caused it to
-  be much more likely to occur on some systems, but the real defect
-  had been introduced by an earlier commit. ]
+  but task is already holding lock:
+  ffffa0e60ee31da8 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x27/0x100
 
-Fixes: 40e7fcb19293 ("ACPI: Add _DEP support to fix battery issue on Asus T100TA")
-Fixes: bcfcd409d4db ("usb: split code locating ACPI companion into port and device")
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Diagnosed-by: Rafael J. Wysocki <rafael@kernel.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Cc: All applicable <stable@vger.kernel.org>
-[ rjw: Subject and changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+  which lock already depends on the new lock.
+
+  the existing dependency chain (in reverse order) is:
+
+  -> #2 (btrfs-root-00){++++}-{3:3}:
+	 down_read_nested+0x43/0x130
+	 __btrfs_tree_read_lock+0x27/0x100
+	 btrfs_read_lock_root_node+0x31/0x40
+	 btrfs_search_slot+0x462/0x8f0
+	 btrfs_update_root+0x55/0x2b0
+	 btrfs_drop_snapshot+0x398/0x750
+	 clean_dirty_subvols+0xdf/0x120
+	 btrfs_recover_relocation+0x534/0x5a0
+	 btrfs_start_pre_rw_mount+0xcb/0x170
+	 open_ctree+0x151f/0x1726
+	 btrfs_mount_root.cold+0x12/0xea
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 vfs_kern_mount.part.0+0x71/0xb0
+	 btrfs_mount+0x10d/0x380
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 path_mount+0x433/0xc10
+	 __x64_sys_mount+0xe3/0x120
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #1 (sb_internal#2){.+.+}-{0:0}:
+	 start_transaction+0x444/0x700
+	 insert_balance_item.isra.0+0x37/0x320
+	 btrfs_balance+0x354/0xf40
+	 btrfs_ioctl_balance+0x2cf/0x380
+	 __x64_sys_ioctl+0x83/0xb0
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  -> #0 (&fs_info->balance_mutex){+.+.}-{3:3}:
+	 __lock_acquire+0x1120/0x1e10
+	 lock_acquire+0x116/0x370
+	 __mutex_lock+0x7e/0x7b0
+	 btrfs_recover_balance+0x2f0/0x340
+	 open_ctree+0x1095/0x1726
+	 btrfs_mount_root.cold+0x12/0xea
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 vfs_kern_mount.part.0+0x71/0xb0
+	 btrfs_mount+0x10d/0x380
+	 legacy_get_tree+0x30/0x50
+	 vfs_get_tree+0x28/0xc0
+	 path_mount+0x433/0xc10
+	 __x64_sys_mount+0xe3/0x120
+	 do_syscall_64+0x33/0x40
+	 entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+  other info that might help us debug this:
+
+  Chain exists of:
+    &fs_info->balance_mutex --> sb_internal#2 --> btrfs-root-00
+
+   Possible unsafe locking scenario:
+
+	 CPU0                    CPU1
+	 ----                    ----
+    lock(btrfs-root-00);
+				 lock(sb_internal#2);
+				 lock(btrfs-root-00);
+    lock(&fs_info->balance_mutex);
+
+   *** DEADLOCK ***
+
+  2 locks held by mount/779:
+   #0: ffffa0e60dc040e0 (&type->s_umount_key#47/1){+.+.}-{3:3}, at: alloc_super+0xb5/0x380
+   #1: ffffa0e60ee31da8 (btrfs-root-00){++++}-{3:3}, at: __btrfs_tree_read_lock+0x27/0x100
+
+  stack backtrace:
+  CPU: 0 PID: 779 Comm: mount Not tainted 5.10.0-rc6+ #217
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+  Call Trace:
+   dump_stack+0x8b/0xb0
+   check_noncircular+0xcf/0xf0
+   ? trace_call_bpf+0x139/0x260
+   __lock_acquire+0x1120/0x1e10
+   lock_acquire+0x116/0x370
+   ? btrfs_recover_balance+0x2f0/0x340
+   __mutex_lock+0x7e/0x7b0
+   ? btrfs_recover_balance+0x2f0/0x340
+   ? btrfs_recover_balance+0x2f0/0x340
+   ? rcu_read_lock_sched_held+0x3f/0x80
+   ? kmem_cache_alloc_trace+0x2c4/0x2f0
+   ? btrfs_get_64+0x5e/0x100
+   btrfs_recover_balance+0x2f0/0x340
+   open_ctree+0x1095/0x1726
+   btrfs_mount_root.cold+0x12/0xea
+   ? rcu_read_lock_sched_held+0x3f/0x80
+   legacy_get_tree+0x30/0x50
+   vfs_get_tree+0x28/0xc0
+   vfs_kern_mount.part.0+0x71/0xb0
+   btrfs_mount+0x10d/0x380
+   ? __kmalloc_track_caller+0x2f2/0x320
+   legacy_get_tree+0x30/0x50
+   vfs_get_tree+0x28/0xc0
+   ? capable+0x3a/0x60
+   path_mount+0x433/0xc10
+   __x64_sys_mount+0xe3/0x120
+   do_syscall_64+0x33/0x40
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+This is straightforward to fix, simply release the path before we setup
+the balance_ctl.
+
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/scan.c |    2 ++
+ fs/btrfs/volumes.c |    2 ++
  1 file changed, 2 insertions(+)
 
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -586,6 +586,8 @@ static int acpi_get_device_data(acpi_han
- 	if (!device)
- 		return -EINVAL;
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4011,6 +4011,8 @@ int btrfs_recover_balance(struct btrfs_f
+ 		btrfs_warn(fs_info,
+ 	"balance: cannot set exclusive op status, resume manually");
  
-+	*device = NULL;
++	btrfs_release_path(path);
 +
- 	status = acpi_get_data_full(handle, acpi_scan_drop_device,
- 				    (void **)device, callback);
- 	if (ACPI_FAILURE(status) || !*device) {
+ 	mutex_lock(&fs_info->balance_mutex);
+ 	BUG_ON(fs_info->balance_ctl);
+ 	spin_lock(&fs_info->balance_lock);
 
 
