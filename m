@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3A83037AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D003037BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388227AbhAZIRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:17:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57020 "EHLO mail.kernel.org"
+        id S2389791AbhAZIUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:20:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726501AbhAYSim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:38:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6570622ADF;
-        Mon, 25 Jan 2021 18:37:57 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 18:37:54 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v5 13/21] arm64: Allow ID_AA64MMFR1_EL1.VH to be
- overridden from the command line
-Message-ID: <20210125183753.GN25360@gaia>
-References: <20210125105019.2946057-1-maz@kernel.org>
- <20210125105019.2946057-14-maz@kernel.org>
+        id S1726781AbhAYSmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:42:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0143E206CB;
+        Mon, 25 Jan 2021 18:40:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600043;
+        bh=VP6wXkMg3qXVubeMpoppnK5F9Te5/0j+wVUeogk5B74=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=A5GrkCglrI6d7lOXscy+6ovaH2UtAXmBJwMzZdNysW29RoeUgQM55W0jMkauglKPZ
+         13sx5kUViPSbYdPOyzxNsJddDQOr1OELGbsrX1R1HATQdH87+98KavcKqjJOsuERDF
+         deSU0qB9PMzfwcHGXyTVo1VVt9V6TqTf1zaklS78=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 4.19 01/58] i2c: bpmp-tegra: Ignore unknown I2C_M flags
+Date:   Mon, 25 Jan 2021 19:39:02 +0100
+Message-Id: <20210125183156.762423240@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
+References: <20210125183156.702907356@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125105019.2946057-14-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 10:50:11AM +0000, Marc Zyngier wrote:
-> As we want to be able to disable VHE at runtime, let's match
-> "id_aa64mmfr1.vh=" from the command line as an override.
-> This doesn't have much effect yet as our boot code doesn't look
-> at the cpufeature, but only at the HW registers.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Acked-by: David Brazdil <dbrazdil@google.com>
+From: Mikko Perttunen <mperttunen@nvidia.com>
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+commit bc1c2048abbe3c3074b4de91d213595c57741a6b upstream.
+
+In order to not to start returning errors when new I2C_M flags are
+added, change behavior to just ignore all flags that we don't know
+about. This includes the I2C_M_DMA_SAFE flag that already exists but
+causes -EINVAL to be returned for valid transactions.
+
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/i2c/busses/i2c-tegra-bpmp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/i2c/busses/i2c-tegra-bpmp.c
++++ b/drivers/i2c/busses/i2c-tegra-bpmp.c
+@@ -91,7 +91,7 @@ static int tegra_bpmp_xlate_flags(u16 fl
+ 		flags &= ~I2C_M_RECV_LEN;
+ 	}
+ 
+-	return (flags != 0) ? -EINVAL : 0;
++	return 0;
+ }
+ 
+ /**
+
+
