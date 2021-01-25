@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527C3303578
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 722483035D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388356AbhAZFmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:42:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727779AbhAYMKU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:10:20 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D78C0617AB;
-        Mon, 25 Jan 2021 03:37:16 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id q2so4661359plk.4;
-        Mon, 25 Jan 2021 03:37:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=lyJL5RmrtYo3SR2xmnLNbqSqvpRFTAglsJ8iapGc2cU=;
-        b=vcl7mmpM9cZo4dan8q3yYSJT0AyPGuHr3thpLqcrviOPOA41GAV3uo8D9VYuRQpTEp
-         NnWoNXgf7XiKyty0VOn5VbeqVuykZioqekTbXVF9PKingcpZ9ZPskR2CmcKT8oTmuwq/
-         T7qFyq/23apKBb45YIT2xz4SPpF9AB8Kb3QAjtbIe+yEEWKAQ/ST0g9B4M8UN6ZKWTad
-         As/BPdDcOaHyjYZWsaiMuOVWMDVK62za1SQeWu83BrFJQr3s2JJjNNU/VaFp8qR4nLhm
-         v5VdwwKX77foe4XldOYA1/2BzkKBNx8Kg36s6ydAN2/eKN6RPp/NsH2Ml6W6IQffgDCG
-         ZeAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=lyJL5RmrtYo3SR2xmnLNbqSqvpRFTAglsJ8iapGc2cU=;
-        b=aVfQ2uAAIHZtsUHYXwZf4a4iXRndstFr3HutkVIscj1OWjCCouMOkDRSNmJ++9UMXa
-         KPnHLMqh4XKUVryOND+Fu3nvuV7hGJY9qx6Bm9nyeCnYSB5869W5x4mmJWoCLuk+ojC/
-         FEVKd6GYBbBqkC4Q9nbCA9Z3vya0LF1cgRjW07GRRk0Pp/JUaooDcGq07jkrWNOGmzuV
-         MK586NvrSsYnoFPOpLt1DoI+Rz16piWHswBrp+fNY02aSKL1PsJC70YwQ/djVlZRT+s5
-         RjngEyYE+qZMAsqiaeuP/o0ru2B8GLfH1nt6zvCBbHjdCJnCisCGNle3rZ7uD2Y/A9cr
-         4xBQ==
-X-Gm-Message-State: AOAM533lXQ4PFvi07zLvdHu05euh+9vtYCQIvxaOmZOP3e0hHfF2sNzW
-        kC9AhzxyOm9ttGuSP4HHScs=
-X-Google-Smtp-Source: ABdhPJwQaEG7os5ttUkuIQn0Krrn6BcNJkyonQbGJcEmjaCMBQ8fY8SMo+YBjwAoUiTKyR2QsVZxLg==
-X-Received: by 2002:a17:902:59c1:b029:df:fd49:f08d with SMTP id d1-20020a17090259c1b02900dffd49f08dmr200075plj.76.1611574636100;
-        Mon, 25 Jan 2021 03:37:16 -0800 (PST)
-Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
-        by smtp.gmail.com with ESMTPSA id x125sm13108821pfd.17.2021.01.25.03.37.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 03:37:14 -0800 (PST)
-Date:   Mon, 25 Jan 2021 21:37:08 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v10 06/12] powerpc: inline huge vmap supported functions
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-mm@kvack.org
-Cc:     Ding Tianhong <dingtianhong@huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Zefan Li <lizefan@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210124082230.2118861-1-npiggin@gmail.com>
-        <20210124082230.2118861-7-npiggin@gmail.com>
-        <c03010a7-a358-0321-d5d4-80a770c2213f@csgroup.eu>
-In-Reply-To: <c03010a7-a358-0321-d5d4-80a770c2213f@csgroup.eu>
+        id S2388853AbhAZFyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:54:17 -0500
+Received: from mga05.intel.com ([192.55.52.43]:13465 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728042AbhAYMZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:25:30 -0500
+IronPort-SDR: zyA3LxLwAar/hMzorYlYg9jpS947JK4+e4cTx+y0F/r230M/fhp7NTTDki3Dx8evikoINVmR45
+ 0jgktxZm674Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="264533815"
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="264533815"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 03:37:57 -0800
+IronPort-SDR: bUi0UhEituNXVIKn22FdlQbCetj6F+yqu4xxdp5RBf7c4Og23VaE0khtEwf/LI5xtXYO2Ri4hE
+ x5Y8pLWeD8wA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="402275159"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 03:37:56 -0800
+Subject: Re: [PATCH v3 0/5] Scan for an idle sibling in a single pass
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210119112211.3196-1-mgorman@techsingularity.net>
+ <CAKfTPtAsuY4aN6J2C+KCOpyJDULd6yEBZ_8zTLWRXwhakCq8oQ@mail.gmail.com>
+ <20210119120220.GS3592@techsingularity.net>
+ <CAKfTPtAWcVu5y_L93h47WHS1wkUZh=EPxyMDi5vSeNvx14Y_kQ@mail.gmail.com>
+ <20210122101451.GV3592@techsingularity.net>
+ <CAKfTPtADmw_RVL-VTZgOMr2-4-AG0m4KeQLFsNXEEioyARif8A@mail.gmail.com>
+ <eb8ac8de-e6e8-3273-5368-efa6ec0cae9b@linux.intel.com>
+ <20210125090419.GW3592@techsingularity.net>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <31300317-89e0-ca5e-d095-920c6cfe8704@linux.intel.com>
+Date:   Mon, 25 Jan 2021 19:37:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Message-Id: <1611574452.y64320stks.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210125090419.GW3592@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of January 25, 2021 6:42 pm:
->=20
->=20
-> Le 24/01/2021 =C3=A0 09:22, Nicholas Piggin a =C3=A9crit=C2=A0:
->> This allows unsupported levels to be constant folded away, and so
->> p4d_free_pud_page can be removed because it's no longer linked to.
->=20
-> Ah, ok, you did it here. Why not squashing this patch into patch 5 direct=
-ly ?
+On 2021/1/25 17:04, Mel Gorman wrote:
+> On Mon, Jan 25, 2021 at 12:29:47PM +0800, Li, Aubrey wrote:
+>>>>> hackbench -l 2560 -g 1 on 8 cores arm64
+>>>>> v5.11-rc4 : 1.355 (+/- 7.96)
+>>>>> + sis improvement : 1.923 (+/- 25%)
+>>>>> + the patch below : 1.332 (+/- 4.95)
+>>>>>
+>>>>> hackbench -l 2560 -g 256 on 8 cores arm64
+>>>>> v5.11-rc4 : 2.116 (+/- 4.62%)
+>>>>> + sis improvement : 2.216 (+/- 3.84%)
+>>>>> + the patch below : 2.113 (+/- 3.01%)
+>>>>>
+>>
+>> 4 benchmarks reported out during weekend, with patch 3 on a x86 4s system
+>> with 24 cores per socket and 2 HT per core, total 192 CPUs.
+>>
+>> It looks like mid-load has notable changes on my side:
+>> - netperf 50% num of threads in TCP mode has 27.25% improved
+>> - tbench 50% num of threads has 9.52% regression
+>>
+> 
+> It's interesting that patch 3 would make any difference on x64 given that
+> it's SMT2. The scan depth should have been similar. It's somewhat expected
+> that it will not be a universal win, particularly once the utilisation
+> is high enough to spill over in sched domains (25%, 50%, 75% utilisation
+> being interesting on 4-socket systems). In such cases, double scanning can
+> still show improvements for workloads that idle rapidly like tbench and
+> hackbench even though it's expensive. The extra scanning gives more time
+> for a CPU to go idle enough to be selected which can improve throughput
+> but at the cost of wake-up latency,
 
-To reduce arch code movement in the first patch and split up these arch
-patches to get separate acks for them.
+aha, sorry for the confusion. Since you and Vincent discussed to drop
+patch3, I just mentioned I tested 5 patches with patch3, not patch3 alone.
 
-Maybe overkill for these changes but doesn't hurt I think.
+> 
+> Hopefully v4 can be tested as well which is now just a single scan.
+> 
+
+Sure, may I know the baseline of v4?
 
 Thanks,
-Nick
+-Aubrey
