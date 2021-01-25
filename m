@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBB4302D43
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00820302D40
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 22:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732500AbhAYVIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 16:08:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54546 "EHLO mx2.suse.de"
+        id S1732438AbhAYVG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 16:06:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54562 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732100AbhAYVCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726769AbhAYVCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 16:02:25 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 616E0ACF5;
+        by mx2.suse.de (Postfix) with ESMTP id BF218AD62;
         Mon, 25 Jan 2021 21:01:42 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     Florian Fainelli <f.fainelli@gmail.com>
@@ -22,10 +22,12 @@ Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         bcm-kernel-feedback-list@broadcom.com,
         linux-rpi-kernel@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org
-Subject: [GIT PULL 1/4] bcm2835-dt-next-2021-01-25
-Date:   Mon, 25 Jan 2021 22:01:28 +0100
-Message-Id: <20210125210131.14969-1-nsaenzjulienne@suse.de>
+Subject: [GIT PULL 2/4] bcm2835-defconfig-next-2021-01-25
+Date:   Mon, 25 Jan 2021 22:01:29 +0100
+Message-Id: <20210125210131.14969-2-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125210131.14969-1-nsaenzjulienne@suse.de>
+References: <20210125210131.14969-1-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -40,29 +42,19 @@ The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
 are available in the Git repository at:
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2021-01-25
+  https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-defconfig-next-2021-01-25
 
-for you to fetch changes up to 5878b8087904a5827c3551698be83da1ccf84e11:
+for you to fetch changes up to 5462a35ce3e4748e079ee325a1e9bb436f4950b3:
 
-  ARM: dts: bcm2711: Add the BSC interrupt controller (2021-01-25 21:49:41 +0100)
-
-----------------------------------------------------------------
-Add DSI compatible string for Raspberry Pi 4
-
-Enable BSC controller used for HDMI DCC
-
-Add reserved memory node to expose Raspberry Pi 4's bootloader configuration
+  ARM: multi_v7_defconfig: Enable nvmem's rmem driver (2021-01-25 21:57:33 +0100)
 
 ----------------------------------------------------------------
-Dave Stevenson (1):
-      ARM: dts: bcm2711: Use compatible string for BCM2711 DSI1
+Enable NVMEM_RMEM as module to expose RPi4's bootloader configuration to
+userspace
 
-Maxime Ripard (1):
-      ARM: dts: bcm2711: Add the BSC interrupt controller
-
+----------------------------------------------------------------
 Nicolas Saenz Julienne (1):
-      ARM: dts: bcm2711: Add reserved memory template to hold firmware configuration
+      ARM: multi_v7_defconfig: Enable nvmem's rmem driver
 
- arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 17 +++++++++++++++++
- arch/arm/boot/dts/bcm2711.dtsi        | 13 +++++++++++++
- 2 files changed, 30 insertions(+)
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
