@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA38303854
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B1A9303857
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390576AbhAZIso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:48:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33350 "EHLO mail.kernel.org"
+        id S2390598AbhAZIt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:49:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729855AbhAYSp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:45:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB8BF20719;
-        Mon, 25 Jan 2021 18:44:45 +0000 (UTC)
+        id S1729890AbhAYSpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:45:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C941C207B3;
+        Mon, 25 Jan 2021 18:44:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600286;
-        bh=mSyYz7o+5VCrYCB8JhJKofsluDqZot6dmzURsiJwzNo=;
+        s=korg; t=1611600291;
+        bh=5J84VumJ6d+AwkyH0Kkn0pbME9b2qF/uyBsinMi3Yd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZSxL8H0SW56z8UhhUpKt/MxxNJKjEubWb4WQf5ZerXCw0cMPPw7hdOH3cqtabEHR
-         elt0NpZ1+QnrAuNWCyRAeUkWJoEr6v5YR3dSD9wYdkf7G9G5RLcQ3C52Gm1e5kzwZi
-         artG72zZh6xCUq6AII27q0MReyfgUpkXX2tncHA8=
+        b=AZf+U9uBW3lBoe7V2ucoqKdRSIux5lQeBzL9uykg5dew6kf6yMgOqRoPT9yCsCE7t
+         3hZ0NqONxD27hwLE65w73YZNqer9DoB/wLfGhDvBlJv6gw2tvJJ+uyEsC+A0mqvrF+
+         0tS1mznTiN4y438a/oQAAq9NnSXTMtZk/qgUFyHo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Leibovich <alexl@marvell.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.4 12/86] mmc: sdhci-xenon: fix 1.8v regulator stabilization
-Date:   Mon, 25 Jan 2021 19:38:54 +0100
-Message-Id: <20210125183201.557581602@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 14/86] dm integrity: fix a crash if "recalculate" used without "internal_hash"
+Date:   Mon, 25 Jan 2021 19:38:56 +0100
+Message-Id: <20210125183201.641281627@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -41,45 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Leibovich <alexl@marvell.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 1a3ed0dc3594d99ff341ec63865a40519ea24b8d upstream.
+commit 2d06dfecb132a1cc2e374a44eae83b5c4356b8b4 upstream.
 
-Automatic Clock Gating is a feature used for the power consumption
-optimisation. It turned out that during early init phase it may prevent the
-stable voltage switch to 1.8V - due to that on some platforms an endless
-printout in dmesg can be observed: "mmc1: 1.8V regulator output did not
-became stable" Fix the problem by disabling the ACG at very beginning of
-the sdhci_init and let that be enabled later.
+Recalculate can only be specified with internal_hash.
 
-Fixes: 3a3748dba881 ("mmc: sdhci-xenon: Add Marvell Xenon SDHC core functionality")
-Signed-off-by: Alex Leibovich <alexl@marvell.com>
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-Cc: stable@vger.kernel.org
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/20201211141656.24915-1-mw@semihalf.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mmc/host/sdhci-xenon.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/md/dm-integrity.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/mmc/host/sdhci-xenon.c
-+++ b/drivers/mmc/host/sdhci-xenon.c
-@@ -167,7 +167,12 @@ static void xenon_reset_exit(struct sdhc
- 	/* Disable tuning request and auto-retuning again */
- 	xenon_retune_setup(host);
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -4059,6 +4059,12 @@ try_smaller_buffer:
+ 			r = -ENOMEM;
+ 			goto bad;
+ 		}
++	} else {
++		if (ic->sb->flags & cpu_to_le32(SB_FLAG_RECALCULATING)) {
++			ti->error = "Recalculate can only be specified with internal_hash";
++			r = -EINVAL;
++			goto bad;
++		}
+ 	}
  
--	xenon_set_acg(host, true);
-+	/*
-+	 * The ACG should be turned off at the early init time, in order
-+	 * to solve a possible issues with the 1.8V regulator stabilization.
-+	 * The feature is enabled in later stage.
-+	 */
-+	xenon_set_acg(host, false);
- 
- 	xenon_set_sdclk_off_idle(host, sdhc_id, false);
- 
+ 	ic->bufio = dm_bufio_client_create(ic->meta_dev ? ic->meta_dev->bdev : ic->dev->bdev,
 
 
