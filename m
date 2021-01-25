@@ -2,65 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E4F303672
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F144A303674
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387574AbhAZGXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:23:17 -0500
-Received: from forward101p.mail.yandex.net ([77.88.28.101]:35958 "EHLO
-        forward101p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728926AbhAYNdf (ORCPT
+        id S1731622AbhAZGXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:23:54 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:11568 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728987AbhAYNjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:33:35 -0500
-Received: from myt2-0bcf81a4c8f9.qloud-c.yandex.net (myt2-0bcf81a4c8f9.qloud-c.yandex.net [IPv6:2a02:6b8:c00:3b24:0:640:bcf:81a4])
-        by forward101p.mail.yandex.net (Yandex) with ESMTP id 30ADD3280AEB;
-        Mon, 25 Jan 2021 16:32:22 +0300 (MSK)
-Received: from myt3-5a0d70690205.qloud-c.yandex.net (myt3-5a0d70690205.qloud-c.yandex.net [2a02:6b8:c12:4f2b:0:640:5a0d:7069])
-        by myt2-0bcf81a4c8f9.qloud-c.yandex.net (mxback/Yandex) with ESMTP id T6IozmAtdQ-WLH8nZPn;
-        Mon, 25 Jan 2021 16:32:22 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1611581542;
-        bh=7ngRG6nrQB3McavML2flSJugM2lIRtBmprXfxP0B64w=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID:Cc;
-        b=H/bVPIORQBfFXqXnEavEvdE3dw5oXaButNeMgmfIi7mvugJ0wyYX5b1JImRZ6LavQ
-         O0l7GDgL2VuOt2RB6Uxv4j2wLEUF0gwgwXXujedOtrQTjAHfuESeOJ4rgHBLdLwv1z
-         M0YO2fRN9fTk7j0lhh5FMDm2sa7eyxe0nn78qHI8=
-Authentication-Results: myt2-0bcf81a4c8f9.qloud-c.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by myt3-5a0d70690205.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 9fRHntulNw-WKI0NkLI;
-        Mon, 25 Jan 2021 16:32:20 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [RFC PATCH v3 03/13] af_vsock: implement SEQPACKET rx loop
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        oxffffaa@gmail.com
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
-From:   stsp <stsp2@yandex.ru>
-Message-ID: <6a92dc1a-d4ef-37e9-c67b-e8789cf144e3@yandex.ru>
-Date:   Mon, 25 Jan 2021 16:32:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 25 Jan 2021 08:39:36 -0500
+X-IronPort-AV: E=Sophos;i="5.79,373,1602540000"; 
+   d="scan'208";a="488960900"
+Received: from clt-128-93-178-244.vpn.inria.fr ([128.93.178.244])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 14:38:36 +0100
+Date:   Mon, 25 Jan 2021 14:38:35 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] sched/fair: check for idle core
+In-Reply-To: <CAKfTPtDePZam9q7pR8-uSOif75d3EDmcZsawc2_Vx3RfDdLzOw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2101251437140.5943@hadrien>
+References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr> <20201027091936.GS32041@suse.de> <alpine.DEB.2.22.394.2101242134530.2788@hadrien> <20210125091238.GE20777@suse.de> <alpine.DEB.2.22.394.2101251017480.5053@hadrien>
+ <CAKfTPtDePZam9q7pR8-uSOif75d3EDmcZsawc2_Vx3RfDdLzOw@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.01.2021 14:12, Arseny Krasnov пишет:
-> This adds receive loop for SEQPACKET. It looks like receive loop for
-> SEQPACKET,
-     ^^^
-You meant "STREAM"?
+
+
+On Mon, 25 Jan 2021, Vincent Guittot wrote:
+
+> On Mon, 25 Jan 2021 at 10:20, Julia Lawall <julia.lawall@inria.fr> wrote:
+> >
+> >
+> >
+> > On Mon, 25 Jan 2021, Mel Gorman wrote:
+> >
+> > > On Sun, Jan 24, 2021 at 09:38:14PM +0100, Julia Lawall wrote:
+> > > >
+> > > >
+> > > > On Tue, 27 Oct 2020, Mel Gorman wrote:
+> > > >
+> > > > > On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
+> > > > > > Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
+> > > > > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > > > > > Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
+> > > > > >
+> > > > >
+> > > > > While not a universal win, it was mostly a win or neutral. In few cases
+> > > > > where there was a problem, one benchmark I'm a bit suspicious of generally
+> > > > > as occasionally it generates bad results for unknown and unpredictable
+> > > > > reasons. In another, it was very machine specific and the differences
+> > > > > were small in absolte time rather than relative time. Other tests on the
+> > > > > same machine were fine so overall;
+> > > > >
+> > > > > Acked-by: Mel Gorman <mgorman@suse.de>
+> > > >
+> > > > Recently, we have been testing the phoronix multicore benchmarks.  On v5.9
+> > > > with this patch, the preparation time of phoronix slows down, from ~23
+> > > > seconds to ~28 seconds.  In v5.11-rc4, we see 29 seconds.  It's not yet
+> > > > clear what causes the problem.  But perhaps the patch should be removed
+> > > > from v5.11, until the problem is understood.
+> > > >
+> > > > commit d8fcb81f1acf651a0e50eacecca43d0524984f87
+> > > >
+> > >
+> > > I'm not 100% convinved given that it was a mix of wins and losses. In
+> > > the wakup path in general, universal wins almost never happen. It's not
+> > > 100% clear from your mail what happens during the preparation patch. If
+> > > it included time to download the benchmarks and install then it would be
+> > > inherently variable due to network time (if download) or cache hotness
+> > > (if installing/compiling). While preparation time can be interesting --
+> > > for example, if preparation involves reading a lot of files from disk,
+> > > it's not universally interesting when it's not the critical phase of a
+> > > benchmark.
+> >
+> > The benchmark is completely downloaded prior to the runs.  There seems to
+> > be some perturbation to the activation of containerd.  Normally it is
+> > even:  *   *   *   *
+>
+> Does it impact the benchmark results too or only the preparation prior
+> to running the benchmark ?
+
+Looking at a few of the benchmarks, there is no clear pattern which is
+better.  But there is not a big degradation, like from 23 to 28 seconds
+for the preparation time.  I will report back when we figure out more.
+
+julia
+
+>
+> >
+> > and with the patch it becomes more like: *     **     **
+> >
+> > That is every other one is on time, and every other one is late.
+> >
+> > But I don't know why this happens.
+> >
+> > julia
+> >
+> > >
+> > > I think it would be better to wait until the problem is fully understood
+> > > to see if it's a timing artifact (e.g. a race between when prev_cpu is
+> > > observed to be idle and when it is busy).
+>
+> I agree that a better understanding of what is happening is necessary
+> before any changes
+>
+> > >
+> > > --
+> > > Mel Gorman
+> > > SUSE Labs
+> > >
+>
