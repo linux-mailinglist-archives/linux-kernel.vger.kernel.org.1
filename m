@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE0A3038E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293EE3038E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390713AbhAZJVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:21:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35676 "EHLO mail.kernel.org"
+        id S2390949AbhAZJWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:22:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730750AbhAYSs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:48:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 13E3620758;
-        Mon, 25 Jan 2021 18:47:47 +0000 (UTC)
+        id S1730815AbhAYSsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:48:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31DDE206FA;
+        Mon, 25 Jan 2021 18:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600468;
-        bh=w1OnTU9k+cQiUb9aXuBJ2basIp27sxGyMU7OKMjUXmo=;
+        s=korg; t=1611600473;
+        bh=wSr1RMry3InHkIhdUBQgjnCBPPXoDJZC94sGjZrYwyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HawPFCKbIBSxegEkVHyr1m+5mNQtrKuNoHM2ulo1btkxlQ+AITWGTJ5Hs66729cIH
-         bhswGy+QT6TWT9wqjgs7lMUORVn0nfGJlKlV+uyEPoBR19BIi2nzFo24XwmGIr/2Fc
-         L6NqqDtQTZsKwMdhyeD6vHur/BYMAWrU2oNw0yUs=
+        b=Ca+YzlUxEP5nYa9oXe6fduDg1tpJrM41z+KlCViEeBiCteMAEQ/ZSbfmcNXC7KzgT
+         89ixEyZO49tTXVppfKazO2HoBmjbuW1QWXQB7V6nJgdBkYJR9/WKgoc/C8Ps5C1mdC
+         V/IS9H2gqUY+XoSXmSGpi/FH5MdLjPnxy9NtCOYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.10 007/199] platform/x86: ideapad-laptop: Disable touchpad_switch for ELAN0634
-Date:   Mon, 25 Jan 2021 19:37:09 +0100
-Message-Id: <20210125183216.570609714@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 009/199] ALSA: hda/realtek - Limit int mic boost on Acer Aspire E5-575T
+Date:   Mon, 25 Jan 2021 19:37:11 +0100
+Message-Id: <20210125183216.652171066@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -39,84 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-commit f419e5940f1d9892ea6f45acdaca572b9e73ff39 upstream.
+commit 495dc7637cb5ca8e39c46db818328410bb6e73a1 upstream.
 
-Newer ideapads (e.g.: Yoga 14s, 720S 14) come with ELAN0634 touchpad do not
-use EC to switch touchpad.
+The Acer Apire E5-575T laptop with codec ALC255 has a terrible
+background noise comes from internal mic capture. And the jack
+sensing dose not work for headset like some other Acer laptops.
 
-Reading VPCCMD_R_TOUCHPAD will return zero thus touchpad may be blocked
-unexpectedly.
-Writing VPCCMD_W_TOUCHPAD may cause a spurious key press.
+This patch limits the internal mic boost on top of the existing
+ALC255_FIXUP_ACER_MIC_NO_PRESENCE quirk for Acer Aspire E5-575T.
 
-Add has_touchpad_switch to workaround these machines.
-
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: stable@vger.kernel.org # 5.4+
---
-v2: Specify touchpad to ELAN0634
-v3: Stupid missing ! in v2
-v4: Correct acpi_dev_present usage (Hans)
-Link: https://lore.kernel.org/r/20210107144438.12605-1-jiaxun.yang@flygoat.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210114082728.74729-1-chiu@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/platform/x86/ideapad-laptop.c |   15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/platform/x86/ideapad-laptop.c
-+++ b/drivers/platform/x86/ideapad-laptop.c
-@@ -92,6 +92,7 @@ struct ideapad_private {
- 	struct dentry *debug;
- 	unsigned long cfg;
- 	bool has_hw_rfkill_switch;
-+	bool has_touchpad_switch;
- 	const char *fnesc_guid;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6371,6 +6371,7 @@ enum {
+ 	ALC256_FIXUP_HP_HEADSET_MIC,
+ 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
+ 	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
++	ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
  };
  
-@@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct
- 	} else if (attr == &dev_attr_fn_lock.attr) {
- 		supported = acpi_has_method(priv->adev->handle, "HALS") &&
- 			acpi_has_method(priv->adev->handle, "SALS");
--	} else
-+	} else if (attr == &dev_attr_touchpad.attr)
-+		supported = priv->has_touchpad_switch;
-+	else
- 		supported = true;
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7808,6 +7809,12 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
++	[ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc269_fixup_limit_int_mic_boost,
++		.chained = true,
++		.chain_id = ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
++	},
+ };
  
- 	return supported ? attr->mode : 0;
-@@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(
- {
- 	unsigned long value;
- 
-+	if (!priv->has_touchpad_switch)
-+		return;
-+
- 	/* Without reading from EC touchpad LED doesn't switch state */
- 	if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
- 		/* Some IdeaPads don't really turn off touchpad - they only
-@@ -989,6 +995,9 @@ static int ideapad_acpi_add(struct platf
- 	priv->platform_device = pdev;
- 	priv->has_hw_rfkill_switch = dmi_check_system(hw_rfkill_list);
- 
-+	/* Most ideapads with ELAN0634 touchpad don't use EC touchpad switch */
-+	priv->has_touchpad_switch = !acpi_dev_present("ELAN0634", NULL, -1);
-+
- 	ret = ideapad_sysfs_init(priv);
- 	if (ret)
- 		return ret;
-@@ -1006,6 +1015,10 @@ static int ideapad_acpi_add(struct platf
- 	if (!priv->has_hw_rfkill_switch)
- 		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
- 
-+	/* The same for Touchpad */
-+	if (!priv->has_touchpad_switch)
-+		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
-+
- 	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
- 		if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
- 			ideapad_register_rfkill(priv, i);
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7826,6 +7833,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1065, "Acer Aspire C20-820", ALC269VC_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
++	SND_PCI_QUIRK(0x1025, 0x1094, "Acer Aspire E5-575T", ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1166, "Acer Veriton N4640G", ALC269_FIXUP_LIFEBOOK),
 
 
