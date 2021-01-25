@@ -2,254 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE7F30392C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B5B303992
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 10:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391268AbhAZJix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        id S2391655AbhAZJyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 04:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731093AbhAYSud (ORCPT
+        with ESMTP id S1731244AbhAYSxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:50:33 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C1FC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:49:53 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id r4so8205286pls.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:49:53 -0800 (PST)
+        Mon, 25 Jan 2021 13:53:15 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F8DC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:34 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id n3so3159620qvf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:52:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Qc9prigLr3Iter3zKRVLUD7b0eU7k2VCSX5sIttLDgg=;
-        b=m8DkWFQPsrh2wBcnsmhE/9gnfrksXwrsTg/zDNyNqa4YHanUT+kR2iQHKAbdphvZIg
-         ikJbZQyXyRRuns5PpJHhwhRUcsDaVt8ft2nA88AoiugAbZpgqzkMeEVpkzsBGpjzvLdZ
-         VX1CxpV/1m2DeNg1Xu/awMn8GPh6F1SVeGh16Jdd1z276RGPIaolA0GZ0aiDKIx5/jT3
-         zd/vPAFft+XOXAZn+fZOzt01OQZYOH1fq88sub6IqLzzNSK03hijgeaKRJt7eZ3Z6duL
-         EDHNY+SgDZT/2mH+JXoCDp2GBgiR4PZqXmQsKIPfMAtM92sE7H2BgyZ+41sTGMfYt0/2
-         8rTQ==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=j3Xw/oUQa+S/aBSbggXK87Od8rLNAanZ/b3oUBXYjEc=;
+        b=e7cR0ZkUc3Squxu4N7tsIG9B42FgOGrFNiImW0dWiyrg4zUJwTidbZpK7W1xVvuWaf
+         8NKPqVsud++RW0sBib73ddkSGhobD087cDBYGuf5QhJ/xlNqq+rrPkJ0SWngm6FJobkh
+         VeLEzapz9YCa/4UUQkV69cotn7GPF9O3MhrJubQ1M+AqJdFN3jT5Yn5x4hrOXpZcJavJ
+         8veR72HThrqFdVoZg6jkt7sfbDqtqjczpjkn5MdD6M8AvctDpQ9PYGAKja8s0EuiWQJZ
+         04ieqY8h9fLKRAZslQd4fBz3oZ4cSu6wnANCxjBvkzpkLJpHFQyw4hZkkjvfUIENMpf9
+         nvuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Qc9prigLr3Iter3zKRVLUD7b0eU7k2VCSX5sIttLDgg=;
-        b=Khr/EoJon6IJvz6b+60GcwbIVoCPVB6hQGvX3OnW/Ve6Xzvq+v1km6aoKJOgwe4N7Q
-         j6rhC/2asq9OS6FL+2b79RJ+NN9BaBogrHrN7pvK4gRcA8gNfOojbukodSGf3P5h3+lW
-         si+HzmqLkmzHAGm0lV58Q8YOCvSwTA7oe5J6Ozkp52RgorvO/kx5HtTJiZ76CxyNMACP
-         ISz0GEFrLnrbNpf/90fSu4Fvzpsn5G+RPBaWxUGkeJ4tYVyMNhhb2oaDZqCUDtCLrFXE
-         0O+jBUBlcs+pw6ImHsIRHB2it1Xm552UAibhyxfbMJ3buzGMzvfAlgoW8Tpsh1n6ZPsT
-         aKHA==
-X-Gm-Message-State: AOAM532Z6rlCR+QEnkcx3Cai5jXgi35g4azafKJlAvF7xJWwHXbObUsr
-        E8uEQhnEsW7J9gY+C6AJw704xQ==
-X-Google-Smtp-Source: ABdhPJwH9EKRENY2gEjojawmMdhasu1aby6Zvv4W3t4MT6btS2PjPlQfFq/MlNfLCeZB1TexXWSdTA==
-X-Received: by 2002:a17:90b:34b:: with SMTP id fh11mr1552423pjb.225.1611600593222;
-        Mon, 25 Jan 2021 10:49:53 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p64sm17065143pfb.201.2021.01.25.10.49.52
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=j3Xw/oUQa+S/aBSbggXK87Od8rLNAanZ/b3oUBXYjEc=;
+        b=F2h81dgfxYDykGYD5TR64snjIcuDbDWFZlcWMFzisY4AeFYcUkA4wHvZ7nISJ9eQwk
+         eUvCDIzc9O5+0mERvkRJRSJSLxqnkMtI+c1suY4rGc5vSgujMHx+TkgPBZF+X6x6bmnK
+         DGlf9XgjtZui2oaX4QX91t+2GFUvKZVNQrYeRkyY/ijoAuLpbl+ensEN/5kT3VOTK4S5
+         hB8brVoPd7a6EPayQYA3g/9bqTfei6sE46eL88uXmvp3sNRHvTzok5FeVpNCpygbVO8C
+         o9o6mS128e4mBQucXQaQLdOIEu0JvG56AP5ozcCdeIh4Afs40WOYrpkT8aSvU3gZI5o2
+         BgSg==
+X-Gm-Message-State: AOAM5336eXimgFXyIsfpoxLdYBa9v3jairpa8o48ja2Q9sHXGxG/pfHp
+        GWoUPMKjAzcXXJzQdzaqE48cxQ==
+X-Google-Smtp-Source: ABdhPJz61WKW7+3RRnYPymhLMqo8u5vUDYq80GJjjeVR0iW65AN/hvww8VxkZYxc+3aPrzkQemHA+w==
+X-Received: by 2002:a0c:fa4c:: with SMTP id k12mr2118880qvo.16.1611600754187;
+        Mon, 25 Jan 2021 10:52:34 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:f735])
+        by smtp.gmail.com with ESMTPSA id c17sm12772425qkb.13.2021.01.25.10.52.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 10:49:52 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:49:50 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        anshuman.khandual@arm.com, mike.leach@linaro.org,
-        leo.yan@linaro.org, linux-kernel@vger.kernel.org,
-        jonathan.zhouwen@huawei.com, catalin.marinas@arm.com
-Subject: Re: [PATCH v7 00/28] coresight: etm4x: Support for system
- instructions
-Message-ID: <20210125184950.GC894394@xps15>
-References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
+        Mon, 25 Jan 2021 10:52:33 -0800 (PST)
+Date:   Mon, 25 Jan 2021 13:52:32 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+Message-ID: <YA8TcICO1OpFwKsj@cmpxchg.org>
+References: <20210125042441.20030-1-longman@redhat.com>
+ <20210125092815.GB827@dhcp22.suse.cz>
+ <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
+ <20210125160328.GP827@dhcp22.suse.cz>
+ <20210125162506.GF308988@casper.infradead.org>
+ <20210125164118.GS827@dhcp22.suse.cz>
+ <20210125181436.GV827@dhcp22.suse.cz>
+ <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210110224850.1880240-1-suzuki.poulose@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 10:48:22PM +0000, Suzuki K Poulose wrote:
-> CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
-> mandates the system instructions for registers.
-> This also implies that they may not be on the amba bus.
-> Right now all the CoreSight components are accessed via memory
-> map. Also, we have some common routines in coresight generic
-> code driver (e.g, CS_LOCK, claim/disclaim), which assume the
-> mmio. In order to preserve the generic algorithms at a single
-> place and to allow dynamic switch for ETMs, this series introduces
-> an abstraction layer for accessing a coresight device. It is
-> designed such that the mmio access are fast tracked (i.e, without
-> an indirect function call).
+On Mon, Jan 25, 2021 at 01:23:58PM -0500, Waiman Long wrote:
+> On 1/25/21 1:14 PM, Michal Hocko wrote:
+> > On Mon 25-01-21 17:41:19, Michal Hocko wrote:
+> > > On Mon 25-01-21 16:25:06, Matthew Wilcox wrote:
+> > > > On Mon, Jan 25, 2021 at 05:03:28PM +0100, Michal Hocko wrote:
+> > > > > On Mon 25-01-21 10:57:54, Waiman Long wrote:
+> > > > > > On 1/25/21 4:28 AM, Michal Hocko wrote:
+> > > > > > > On Sun 24-01-21 23:24:41, Waiman Long wrote:
+> > > > > > > > The commit 3fea5a499d57 ("mm: memcontrol: convert page
+> > > > > > > > cache to a new mem_cgroup_charge() API") introduced a bug in
+> > > > > > > > __add_to_page_cache_locked() causing the following splat:
+> > > > > > > > 
+> > > > > > > >    [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
+> > > > > > > >    [ 1570.068333] pages's memcg:ffff8889a4116000
+> > > > > > > >    [ 1570.068343] ------------[ cut here ]------------
+> > > > > > > >    [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
+> > > > > > > >    [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
+> > > > > > > >    [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
+> > > > > > > >    [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
+> > > > > > > >    [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
+> > > > > > > >      :
+> > > > > > > >    [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
+> > > > > > > >    [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
+> > > > > > > >    [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
+> > > > > > > >    [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
+> > > > > > > >    [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
+> > > > > > > >    [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
+> > > > > > > >    [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
+> > > > > > > >    [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > > > >    [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
+> > > > > > > >    [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > > > >    [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > > > >    [ 1570.068402] PKRU: 55555554
+> > > > > > > >    [ 1570.068404] Call Trace:
+> > > > > > > >    [ 1570.068407]  mem_cgroup_charge+0x175/0x770
+> > > > > > > >    [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
+> > > > > > > >    [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
+> > > > > > > >    [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
+> > > > > > > >    [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
+> > > > > > > >    [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
+> > > > > > > >    [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
+> > > > > > > >    [ 1570.068693]  read_pages+0x5b1/0xc40
+> > > > > > > >    [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
+> > > > > > > >    [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
+> > > > > > > >    [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
+> > > > > > > >    [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
+> > > > > > > >    [ 1570.068872]  new_sync_read+0x3af/0x610
+> > > > > > > >    [ 1570.068901]  vfs_read+0x339/0x4b0
+> > > > > > > >    [ 1570.068909]  ksys_read+0xf1/0x1c0
+> > > > > > > >    [ 1570.068920]  do_syscall_64+0x33/0x40
+> > > > > > > >    [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > > > > >    [ 1570.068930] RIP: 0033:0x7ff039135595
+> > > > > > > > 
+> > > > > > > > Before that commit, there was a try_charge() and commit_charge()
+> > > > > > > > in __add_to_page_cache_locked(). These 2 separated charge functions
+> > > > > > > > were replaced by a single mem_cgroup_charge(). However, it forgot
+> > > > > > > > to add a matching mem_cgroup_uncharge() when the xarray insertion
+> > > > > > > > failed with the page released back to the pool. Fix this by adding a
+> > > > > > > > mem_cgroup_uncharge() call when insertion error happens.
+> > > > > > > > 
+> > > > > > > > Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
+> > > > > > > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > > > > > OK, this is indeed a subtle bug. The patch aimed at simplifying the
+> > > > > > > charge lifetime so that users do not really have to think about when to
+> > > > > > > uncharge as that happens when the page is freed. fscache somehow breaks
+> > > > > > > that assumption because it doesn't free up pages but it keeps some of
+> > > > > > > them in the cache.
+> > > > > > > 
+> > > > > > > I have tried to wrap my head around the cached object life time in
+> > > > > > > fscache but failed and got lost in the maze. Is this the only instance
+> > > > > > > of the problem? Would it make more sense to explicitly handle charges in
+> > > > > > > the fscache code or there are other potential users to fall into this
+> > > > > > > trap?
+> > > > > > There may be other places that have similar problem. I focus on the
+> > > > > > filemap.c case as I have a test case that can reliably produce the bug
+> > > > > > splat. This patch does fix it for my test case.
+> > > > > I believe this needs a more general fix than catching a random places
+> > > > > which you can trigger. Would it make more sense to address this at the
+> > > > > fscache level and always make sure that a page returned to the pool is
+> > > > > always uncharged instead?
+> > > > I believe you mean "page cache" -- there is a separate thing called
+> > > > 'fscache' which is used to cache network filesystems.
+> > > Yes, I really had fscache in mind because it does have an "unusual" page
+> > > life time rules.
+> > > 
+> > > > I don't understand the memcg code at all, so I have no useful feedback
+> > > > on what you're saying other than this.
+> > > Well the memcg accounting rules after the rework should have simplified
+> > > the API usage for most users. You will get memory charged when it is
+> > > used and it will go away when the page is freed. If a page is not really
+> > > freed in some cases and it can be reused then it doesn't really fit into
+> > > this scheme automagically. I do undestand that this puts some additional
+> > > burden on those special cases. I am not really sure what is the right
+> > > way here myself but considering there might be other similar cases like
+> > > that I would lean towards special casing where the pool is implemented.
+> > > I would expect there is some state to be maintain for that purpose
+> > > already.
+> > After some more thinking I've came to conclusion that the patch as
+> > proposed is the proper way forward. It is easier to follow if the
+> > unwinding of state changes are local to the function.
+> I think so. It is easier to understand if the charge and uncharge functions
+> are grouped together in the same function.
+> > 
+> > With the proposed simplification by Willy
+> > Acked-by: Michal Hocko <mhocko@suse.com>
 > 
-> This will also help us to get rid of the driver+attribute specific
-> sysfs show/store routines and replace them with a single routine
-> to access a given register offset (which can be embedded in the
-> dev_ext_attribute). This is not currently implemented in the series,
-> but can be achieved.
+> Thank for the ack. However, I am a bit confused about what you mean by
+> simplification. There is another linux-next patch that changes the condition
+> for mem_cgroup_charge() to
 > 
-> Further we switch the generic routines to work with the abstraction.
-> With this in place, we refactor the etm4x code a bit to allow for
-> supporting the system instructions with very little new code.
+> -       if (!huge) {
+> +       if (!huge && !page_is_secretmem(page)) {
+>                 error = mem_cgroup_charge(page, current->mm, gfp);
 > 
-> We use TRCDEVARCH for the detection of the ETM component, which
-> is a standard register as per CoreSight architecture, rather than
-> the etm specific id register TRCIDR1. This is for making sure
-> that we are able to detect the ETM via system instructions accurately,
-> when the the trace unit could be anything (etm or a custom trace unit).
-> To keep the backward compatibility for any existing broken
-> impelementation which may not implement TRCDEVARCH, we fall back to TRCIDR1.
-> Also this covers us for the changes in the future architecture [0].
-> 
-> Also, v8.4 self-hosted tracing extensions (coupled with ETMv4.4) adds
-> new filtering registers for trace by exception level. So on a v8.4
-> system, with Trace Filtering support, without the appropriate
-> programming of the Trace filter registers (TRFCR_ELx), tracing
-> will not be enabled. This series also includes the TraceFiltering
-> support to cover the ETM-v4.4 support.
-> 
-> The series has been mildly tested on a model for system instructions.
-> I would really appreciate any testing on real hardware.
-> 
-> Applies on coresight/next. A tree is available here [1].
+> That is the main reason why I introduced the boolean variable as I don't
+> want to call the external page_is_secretmem() function twice.
 
-I have applied this set.
+The variable works for me.
 
-Thanks,
-Mathieu
-
-> 
-> [0] https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcidr1
-> [1] https://gitlab.arm.com/linux-arm/linux-skp coresight/etm/sysreg-v7
-> 
-> Changes since v6:
->   - New patch: Patch9 : Prepare the sysfs attributes for
->     filtering by offset of the register
->   - New patch: Patch12: Hide ETM registers unaccessible
->     on the ETM (for system instructions based ETMs)
->   - Split the list of ETM registers to memory mapped only
->     and common registers (Patch 11)
->   - Fixed the alignment issues pointed by Mathieu
->     (Patch 3, 14, 24)
-> 
-> Changes since v5:
->   - Rebased on to coresight/next.
->   - Moved trcdevarch to mgmt/ in sysfs and updated the sysfs ABI
->     document (Mike Leach)
->   - New patch : Moved the etm4_check_arch_features to run on the CPU, since
->     the PID of the ETM has to be read on the CPU and is unavailable
->     otherwise.
-> 
-> Changes since v4:
->   - Fix typo in commit description for the patches 02 & 15
->   - Refactor the AMBA device "remove" call back for use with
->     paltform_driver. (patch 21). Thus remove Review tag by Mathieu,
->     even though the changes are minimal.
->   - Added "remove" callback for platform_driver in patch 22, removed
->     Review tag by Mathieu
->   - Add 'U' suffix for constants in Patch 24 (Catalin)
->   - Fixed field extraction in Patch 25
-> 
-> Changes since v3:
->   - Device tree compatible changed to etm4x
->   - Use etm4x_** instead of generalizing etm_ in etm4x driver.
->   - Added v8.4 self hosted trace support patches, reworked
->     from Jonathan's series.
->   - Dropped queued patches.
->   - Expose TRCDEVARCH via trcidr, as this will be needed for
->     the userspace tools to determine the trace major/minor
->     arch versions.
->   - Remove csa argument to read()/write() (Mathieu)
->   - Fix secure exception mask calculation (Mathieu)
->   - Fix various coding style comments (Mathieu)
->    (See individual patches for change log)
->   
-> Changes since V2:
->   - Several fixes to the ETM register accesses. Access a register
->     when it is present.
->   - Add support for TRCIDR3.NUMPROCS for v4.2+
->   - Drop OS lock detection. Use software lock only in case of mmio.
->   - Fix issues with the Exception level masks (Mike Leach)
->   - Fall back to using TRCIDR1 when TRCDEVARCH is not "present"
->   - Use a generic notion of ETM architecture (rather than using
->     the encoding as in registers)
->   - Fixed some checkpatch issues.
->   - Changed the dts compatible string to "arm,coresight-etm-sysreg"
->     (Mike Leach)
-> 
-> Changes since V1:
->   - Flip the switch for iomem from no_iomem to io_mem in csdev_access.
->   - Split patches for claim/disclaim and CS_LOCK/UNLOCK conversions.
->   - Move device access initialisation for etm4x to the target CPU
->   - Cleanup secure exception level mask handling.
->   - Switch to use TRCDEVARCH for ETM component discovery. This
->     is for making 
->   - Check the availability of OS/Software Locks before using them.
-> 
-> Known issues: 
->   Checkpatch failure for "coresight: etm4x: Add sysreg access helpers" :
-> 
->   ERROR: Macros with complex values should be enclosed in parentheses
->   #121: FILE: drivers/hwtracing/coresight/coresight-etm4x.h:153:
->   +#define CASE_READ(res, x)                                      \
->   +    case (x): { (res) = read_etm4x_sysreg_const_offset((x)); break; }
-> 
->  I don't know a way to fix the warning without loosing the code
->  readability, which I believe is crucial for such a construct.
-> 
-> 
-> 
-> Jonathan Zhou (2):
->   arm64: Add TRFCR_ELx definitions
->   coresight: Add support for v8.4 SelfHosted tracing
-> 
-> Suzuki K Poulose (26):
->   coresight: etm4x: Handle access to TRCSSPCICRn
->   coresight: etm4x: Skip accessing TRCPDCR in save/restore
->   coresight: Introduce device access abstraction
->   coresight: tpiu: Prepare for using coresight device access abstraction
->   coresight: Convert coresight_timeout to use access abstraction
->   coresight: Convert claim/disclaim operations to use access wrappers
->   coresight: etm4x: Always read the registers on the host CPU
->   coresight: etm4x: Convert all register accesses
->   coresight: etm4x: Make offset available for sysfs attributes
->   coresight: etm4x: Add commentary on the registers
->   coresight: etm4x: Add sysreg access helpers
->   coresight: etm4x: Hide sysfs attributes for unavailable registers
->   coresight: etm4x: Define DEVARCH register fields
->   coresight: etm4x: Check for Software Lock
->   coresight: etm4x: Cleanup secure exception level masks
->   coresight: etm4x: Clean up exception level masks
->   coresight: etm4x: Handle ETM architecture version
->   coresight: etm4x: Detect access early on the target CPU
->   coresight: etm4x: Use TRCDEVARCH for component discovery
->   coresight: etm4x: Expose trcdevarch via sysfs
->   coresight: etm4x: Add necessary synchronization for sysreg access
->   coresight: etm4x: Detect system instructions support
->   coresight: etm4x: Refactor probing routine
->   coresight: etm4x: Run arch feature detection on the CPU
->   coresight: etm4x: Add support for sysreg only devices
->   dts: bindings: coresight: ETM system register access only units
-> 
->  .../testing/sysfs-bus-coresight-devices-etm4x |   8 +
->  .../devicetree/bindings/arm/coresight.txt     |   5 +-
->  arch/arm64/include/asm/sysreg.h               |  11 +
->  drivers/hwtracing/coresight/coresight-catu.c  |  12 +-
->  drivers/hwtracing/coresight/coresight-core.c  | 122 ++-
->  .../hwtracing/coresight/coresight-cti-core.c  |  18 +-
->  drivers/hwtracing/coresight/coresight-etb10.c |  10 +-
->  .../coresight/coresight-etm3x-core.c          |   9 +-
->  .../coresight/coresight-etm4x-core.c          | 805 ++++++++++++------
->  .../coresight/coresight-etm4x-sysfs.c         | 187 ++--
->  drivers/hwtracing/coresight/coresight-etm4x.h | 505 ++++++++++-
->  .../hwtracing/coresight/coresight-funnel.c    |   7 +-
->  .../coresight/coresight-replicator.c          |  13 +-
->  drivers/hwtracing/coresight/coresight-stm.c   |   4 +-
->  .../hwtracing/coresight/coresight-tmc-core.c  |  16 +-
->  .../hwtracing/coresight/coresight-tmc-etf.c   |  10 +-
->  .../hwtracing/coresight/coresight-tmc-etr.c   |   4 +-
->  drivers/hwtracing/coresight/coresight-tpiu.c  |  31 +-
->  include/linux/coresight.h                     | 220 ++++-
->  19 files changed, 1520 insertions(+), 477 deletions(-)
-> 
-> -- 
-> 2.24.1
-> 
+On the other hand, as Michal points out, the uncharge function will be
+called again on the page when it's being freed (in non-fscache cases),
+so you're already relying on being able to call it on any page -
+charged, uncharged, never charged. It would be fine to call it
+unconditionally in the error path. Aesthetic preference, I guess.
