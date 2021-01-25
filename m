@@ -2,81 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F6130275C
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105B7302753
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 16:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730605AbhAYP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 10:59:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
+        id S1728126AbhAYPww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 10:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730295AbhAYPue (ORCPT
+        with ESMTP id S1730579AbhAYPwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 10:50:34 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32582C06178A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:49:54 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id c128so11525201wme.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:49:54 -0800 (PST)
+        Mon, 25 Jan 2021 10:52:05 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C69C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:51:25 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id i30so13156911ota.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 07:51:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-powerpc-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=It4AKC/1LgMluJkIF4Rxerhljl96iqpqFZ1n3C8wBp0=;
-        b=c32YHNj4kWZxvS9lrPFa4ahqB8ubYx3V48YuMsZe3rurWlI+y1sJmmraLjYbSAqDPr
-         2nW97On+s058SIZGzhVQ3BRX/a0g8qHIESAM6OGH/8TwenwDKSk0MOclXNCK44noVQv0
-         EkktJtNYx5QMAPbJGQOhpdrSXNlRmTQqbCHNwCzqATlUVFRe62clPjyXmT5/mf7BYTBC
-         G8d2QAVF8FJWpz5jO0WwnOsBFrynYtUlM/rZTXfy+3L/PhsUmnF/nhynPV2wNRw4iwYn
-         ZNHFWBHMGqhoNaSfxftoVh0mssMp8mQlGOxOk4bfdYEsNt0VDfrLbe+DnvmeuWXq6XYl
-         OntA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AnH8Zx3d2Pw4vQ7JjSbzPf+jFEKtnCEURYKMXZ7izF4=;
+        b=ZcxU7anJ2ZSWMdXAhgnTS6vQEEaxIWbMi+Sl+qOBbZIW5+oXuoVr2qGbaXlCtdyBZV
+         Aa7S5SWpJxIKk/p5bp5oozc2iQ7Nk1DfJjxzTFy2mO2M0rmvHXUwH3bvrhyzJngc+jRQ
+         N7iOVvDIrbxs3ktZ23PBBxzgcg4o5Sek/QAVmLZY3BH6YyWNH/YfXEXA0XRpCM4VH2y0
+         X6fCWC5YmfgsR9kSlOo3kHtWmUW1/36BHlts/+u8vXOhqnhVmg7cCpbtPFIuk8Q6GIpS
+         QxOSH6I02N5gup190GQSXndTJdlB1RKSikDgABqI9KkBxNjQb32svdstebhNzsZRlM5y
+         OoOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=It4AKC/1LgMluJkIF4Rxerhljl96iqpqFZ1n3C8wBp0=;
-        b=HWp0qfkXNIAwhfKzsML+dIHNdgyMuc3ANPGWUyHX6yuj54VHe9KkYhB9ZZislaN+lh
-         A9bAhvW6GRwvuD41Wa4f3qQRfCC9SFOccbTUUsvX5PYEaTcbzt646JtUHCyAIBKc9vrk
-         jAZ5eIaZMXOLzHXSN3HD8AIG0d6/iXXbfKBBnTdp8SQmSta5IvraLNGyIDyLMo134e1P
-         1EUu8ZnBSuP6/QT7bsFKuseYAWA1L6ARm4TthL6QO8MTchhxRx6fjYpN+pQroWmnOcdc
-         e9r2ypaHAx8TIg7xSC/Zgi5KFdDsvBZvOLd8JglGS/MS+r17CpJG8IkpITWwH77q1o9q
-         lEOg==
-X-Gm-Message-State: AOAM532Ae33U41FYptu1uIeC88Bwm1x3W2zfpxZrkxM+lCO68XZRcP/n
-        EPnsAby9LDO+gAiHiYh5ubeqkv+GXCxLmk6HMJM=
-X-Google-Smtp-Source: ABdhPJwpHvp3T7QlTivtE5nnKQKPGyArOFvCZBBeQswNQMsXOe+7u5ot2ou9qQf9NjS2SntU6UDyRw==
-X-Received: by 2002:a05:600c:4e88:: with SMTP id f8mr738722wmq.6.1611589792841;
-        Mon, 25 Jan 2021 07:49:52 -0800 (PST)
-Received: from localhost.localdomain ([5.35.34.67])
-        by smtp.gmail.com with ESMTPSA id q7sm24624599wrx.18.2021.01.25.07.49.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Jan 2021 07:49:52 -0800 (PST)
-From:   Denis Kirjanov <kda@linux-powerpc.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     viro@zeniv.linux.org.uk, kuba@kernel.org
-Subject: [PATCH] fs: export kern_path_locked
-Date:   Mon, 25 Jan 2021 18:49:37 +0300
-Message-Id: <20210125154937.26479-1-kda@linux-powerpc.org>
-X-Mailer: git-send-email 2.16.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AnH8Zx3d2Pw4vQ7JjSbzPf+jFEKtnCEURYKMXZ7izF4=;
+        b=WBI1GDxwr1N/cvCvHAfMR4MpmJ3Al992/jKtgTcldrkOGEjkxQLo/tKAnxD28xm8Ke
+         j8wqiC54+FxJpL2WlbEHQhTOSE52Uz/zlHuf4cBe0PDGdm3KntOpbpFyu6zCnUg+S1Oq
+         OP2UFGUzp1URCpot568giKqlbX59mESIAqOJGsnOMN6ZKoaHpLMM6VEck0sPW1aaCac9
+         3g995S8+vTpucjOs6VJpCTVW5gllswMvwAkavWf/yp4+7Z3XDX1v9XHMh4xIK/aMBjB7
+         WxesEoFmHxo9D0TdfK7bWnhC4lrlmjUFE4HwQvW6KgotYFlOUfKPMXp/dz/Mb2FOkNFC
+         iPlQ==
+X-Gm-Message-State: AOAM532tM7MkNoy19sFaCMgf8rf36c7hHUj3AdNBpf+2uVYYfi+2yUQ9
+        PyYqKH7hL/BLlGdzn2Qj5bnGuKmxSvofBIqkSaQ=
+X-Google-Smtp-Source: ABdhPJxkHywTepuBn+fqbpyLJEosnBpNCyVcv27jF2qPKIMyyV4cAkh1nb0ayowYwrnFaAztgS4G1/tHe/M5JWEe6AA=
+X-Received: by 2002:a9d:784a:: with SMTP id c10mr931304otm.132.1611589884729;
+ Mon, 25 Jan 2021 07:51:24 -0800 (PST)
+MIME-Version: 1.0
+References: <20210125122402.4036126-1-arnd@kernel.org>
+In-Reply-To: <20210125122402.4036126-1-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 25 Jan 2021 10:51:13 -0500
+Message-ID: <CADnq5_MLYdu+cY88yzmv+D6A0twg64C0vLBEhPazCgGseEWg=Q@mail.gmail.com>
+Subject: Re: [PATCH] amdgpu: fix clang build warning
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Joshua Aberback <joshua.aberback@amd.com>,
+        Arnd Bergmann <arnd@arndb.de>, Roman Li <Roman.Li@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nirmoy Das <nirmoy.das@amd.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Will Deacon <will@kernel.org>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the function is used outside and we have a prototype
-defined in namei.h
+On Mon, Jan 25, 2021 at 7:24 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang warns about the -mhard-float command line arguments
+> on architectures that do not support this:
+>
+> clang: error: argument unused during compilation: '-mhard-float' [-Werror,-Wunused-command-line-argument]
+>
+> Move this into the gcc-specific arguments.
+>
+> Fixes: e77165bf7b02 ("drm/amd/display: Add DCN3 blocks to Makefile")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Denis Kirjanov <kda@linux-powerpc.org>
----
- fs/namei.c | 1 +
- 1 file changed, 1 insertion(+)
+Applied.  Thanks!
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 78443a85480a..3de3b3642302 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2450,6 +2450,7 @@ struct dentry *kern_path_locked(const char *name, struct path *path)
- 	putname(filename);
- 	return d;
- }
-+EXPORT_SYMBOL(kern_path_locked);
- 
- int kern_path(const char *name, unsigned int flags, struct path *path)
- {
--- 
-2.16.4
+Alex
 
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn30/Makefile  | 6 ++++--
+>  drivers/gpu/drm/amd/display/dc/dcn301/Makefile | 3 ++-
+>  drivers/gpu/drm/amd/display/dc/dcn302/Makefile | 3 ++-
+>  3 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/Makefile b/drivers/gpu/drm/amd/display/dc/dcn30/Makefile
+> index c20331eb62e0..dfd77b3cc84d 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn30/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/Makefile
+> @@ -32,8 +32,8 @@ DCN30 = dcn30_init.o dcn30_hubbub.o dcn30_hubp.o dcn30_dpp.o dcn30_optc.o \
+>
+>
+>  ifdef CONFIG_X86
+> -CFLAGS_$(AMDDALPATH)/dc/dcn30/dcn30_resource.o := -mhard-float -msse
+> -CFLAGS_$(AMDDALPATH)/dc/dcn30/dcn30_optc.o := -mhard-float -msse
+> +CFLAGS_$(AMDDALPATH)/dc/dcn30/dcn30_resource.o := -msse
+> +CFLAGS_$(AMDDALPATH)/dc/dcn30/dcn30_optc.o := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> @@ -45,6 +45,8 @@ ifdef CONFIG_CC_IS_GCC
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> +CFLAGS_$(AMDDALPATH)/dc/dcn30/dcn30_resource.o += -mhard-float
+> +CFLAGS_$(AMDDALPATH)/dc/dcn30/dcn30_optc.o += -mhard-float
+>  endif
+>
+>  ifdef CONFIG_X86
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/Makefile b/drivers/gpu/drm/amd/display/dc/dcn301/Makefile
+> index 3ca7d911d25c..09264716d1dc 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn301/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn301/Makefile
+> @@ -14,7 +14,7 @@ DCN301 = dcn301_init.o dcn301_resource.o dcn301_dccg.o \
+>                 dcn301_dio_link_encoder.o dcn301_hwseq.o dcn301_panel_cntl.o dcn301_hubbub.o
+>
+>  ifdef CONFIG_X86
+> -CFLAGS_$(AMDDALPATH)/dc/dcn301/dcn301_resource.o := -mhard-float -msse
+> +CFLAGS_$(AMDDALPATH)/dc/dcn301/dcn301_resource.o := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> @@ -25,6 +25,7 @@ ifdef CONFIG_CC_IS_GCC
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> +CFLAGS_$(AMDDALPATH)/dc/dcn301/dcn301_resource.o += -mhard-float
+>  endif
+>
+>  ifdef CONFIG_X86
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn302/Makefile b/drivers/gpu/drm/amd/display/dc/dcn302/Makefile
+> index 8d4924b7dc22..101620a8867a 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn302/Makefile
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn302/Makefile
+> @@ -13,7 +13,7 @@
+>  DCN3_02 = dcn302_init.o dcn302_hwseq.o dcn302_resource.o
+>
+>  ifdef CONFIG_X86
+> -CFLAGS_$(AMDDALPATH)/dc/dcn302/dcn302_resource.o := -mhard-float -msse
+> +CFLAGS_$(AMDDALPATH)/dc/dcn302/dcn302_resource.o := -msse
+>  endif
+>
+>  ifdef CONFIG_PPC64
+> @@ -24,6 +24,7 @@ ifdef CONFIG_CC_IS_GCC
+>  ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+>  IS_OLD_GCC = 1
+>  endif
+> +CFLAGS_$(AMDDALPATH)/dc/dcn302/dcn302_resource.o += -mhard-float
+>  endif
+>
+>  ifdef CONFIG_X86
+> --
+> 2.29.2
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
