@@ -2,154 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5976F303080
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1B230308F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732756AbhAYXuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
+        id S1732874AbhAYXwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732549AbhAYXto (ORCPT
+        with ESMTP id S1732633AbhAYXwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:49:44 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CE6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:49:04 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id t25so2110701pga.2
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:49:04 -0800 (PST)
+        Mon, 25 Jan 2021 18:52:01 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A03C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:51:20 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id p72so30187902iod.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 15:51:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cuvqgCacX4Pb/J8emd8ASYQj+aaRXfkyo5/tJUTXC18=;
-        b=LvIzG2oiZ4fahhXWU/Hl16GJoovvy1FodGhzRZkhCPyPmFR19R6r1WEoZrBUzLtIMM
-         QnTuqHFjlL4l5yPZWzb/BVOd4vaakKa63tFoLObC5jY+g4UzkqDJBZVBH9En3d5sFUYn
-         fdo0AQZ6EtqeWqTx4+L0QXmfvUYGKyCPwHLvI=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nd0bjEbAER/9POSPmPu9O4k2jMAolkMKfCYZRpEWzyk=;
+        b=bGs1hw9F0elvPz+BbFoS7xe/EM2an3AAe4zIcqD0BGcx5igessQoOsC/DD/P52xc/5
+         hBt+ZqlM/vjuMD2h3imyosWbTCkNMNk7Pltf8g6/b7OE3vxO8nQI8N5Wul9COHEAqG0S
+         yzayNaJBcjg0LXu+PIvTebsjETAzNtd4VvKmEIKkQNW6mrrmO1IQLwh9m0A4ITf1FIKW
+         s9OFmSfvAAixtM9LGkFpHAkeIaBQ+kVgtVEEuxhq0PZsMJLpJv58Me9UKt0JB5GMmj6K
+         k8AK4+j9CO44r6FZMOg+K9L/P9iFpPhJJ93Ap9mFGWZQiHNPgBaYmJWN98ljc4zw/Q5J
+         wvpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cuvqgCacX4Pb/J8emd8ASYQj+aaRXfkyo5/tJUTXC18=;
-        b=GPENDDJMgickncMqC8Yeavb9FlNHFrhQOviUVgxgzZImqOva7pAPYPtc93+/jUuau7
-         iA5YTFVzvWKzouQOteuLa1mYmErbWg4tKCmxEqJn6Dci90Hq8rHKk2Df2/qIOLjKag/k
-         RECvEbaVyVaVPr4LxBqGzvF9n48PhxEJ360GozUo63ZPj1spAhijB23w4d2bl94jRU8w
-         PQfmVZo3PYYUjqkKfQbGZjYDgYAGxJ7/dpFPGVTdqiQFleJlxu/jfiCLickCrmASGr5c
-         Gx7e+H2d4EQJLhcfZMn92dOFgq2pgZc1qzjTcxpbMtogVlIUS5i6vPpV/PxrPphyr8CH
-         ZErg==
-X-Gm-Message-State: AOAM532xPdrumzK1PyeM1fqs7DTaWbk4TtxDRH6qKHWZthGYpu4Tw69a
-        2s1kgVMSIRAlEGEEvm4KzdSWY4VYKNR7IA==
-X-Google-Smtp-Source: ABdhPJzO6lwEiB9rHDjl2mcIoIHLun1mZSg9GDhVd7nQPhP25HL0bRXA4RqsiCg8fZUxTOaI377yHw==
-X-Received: by 2002:a62:9248:0:b029:1ae:8b24:34c8 with SMTP id o69-20020a6292480000b02901ae8b2434c8mr2565829pfd.67.1611618543734;
-        Mon, 25 Jan 2021 15:49:03 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:1066:b437:97cd:2278])
-        by smtp.gmail.com with ESMTPSA id i1sm18747306pfb.54.2021.01.25.15.49.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 15:49:03 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Krishna Manikandan <mkrishn@codeaurora.org>
-Subject: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
-Date:   Mon, 25 Jan 2021 15:49:01 -0800
-Message-Id: <20210125234901.2730699-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nd0bjEbAER/9POSPmPu9O4k2jMAolkMKfCYZRpEWzyk=;
+        b=G1FwNTVbX8hryNFT5QWyUl9dTrhABL8jRB5j2q96U1KKBJDlspPS+rPAjbulGBPjmo
+         cE4vd1sspHAi1ASvvpmAUS0cptHwFODiD5Lee6eWxi5TMnmMpkAtjMwg/ryTJ/ixifHs
+         Yue0wQHbYczuW1H+atbF2RtnsbBhEWD3MxSQ4DVfGcGnXBwvDHfEi2vXblFOG8eQBh7N
+         jWy3OavUImJLFWkvjysU5kRURnZWx9B/zpAh/E25q4C6zQLAogURAHA6PWoj4WMwpCi6
+         Yno/4PoL9fn8ytVMBR9XNLtXosJMaq03HJmX6fivbSfraX53AVTfweqeOJnlgztjhZvL
+         nkfQ==
+X-Gm-Message-State: AOAM531EQEbc5DSj8KdDurzp3n8BnVXhC3bOJcpQD6OWFkKmYbCpYpRZ
+        4T0WQPOkkhiBStBZSpU1eqgIsLOfAd0mpGwfJkYF5g==
+X-Google-Smtp-Source: ABdhPJxf+qIzKF7XhAxLeHKncjRgkuZNOfh8DP6LjU66+3S+g62Ik7vptGQ+k/H+PJtulr0uEApYV7CWp6qfJPNoEHo=
+X-Received: by 2002:a02:ca17:: with SMTP id i23mr2640812jak.25.1611618680005;
+ Mon, 25 Jan 2021 15:51:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210112181041.356734-1-bgardon@google.com> <20210112181041.356734-7-bgardon@google.com>
+ <YAiJrsyC1KSTKycg@google.com>
+In-Reply-To: <YAiJrsyC1KSTKycg@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 25 Jan 2021 15:51:08 -0800
+Message-ID: <CANgfPd9Ef=GfcpbB118=h4ksHJ+nOB=YxyJ+6t6GWFKAP4yt8w@mail.gmail.com>
+Subject: Re: [PATCH 06/24] kvm: x86/mmu: Skip no-op changes in TDP MMU functions
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lockdep complains about an AA deadlock when rebooting the device.
+On Wed, Jan 20, 2021 at 11:51 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Tue, Jan 12, 2021, Ben Gardon wrote:
+> > Skip setting SPTEs if no change is expected.
+> >
+> > Reviewed-by: Peter Feiner <pfeiner@google.com>
+> >
+> Nit on all of these, can you remove the extra newline between the Reviewed-by
+> and SOB?
 
-============================================
-WARNING: possible recursive locking detected
-5.4.91 #1 Not tainted
---------------------------------------------
-reboot/5213 is trying to acquire lock:
-ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+Yeah, that line is annoying. I'll make sure it's not there on future patches.
 
-but task is already holding lock:
-ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+>
+> > Signed-off-by: Ben Gardon <bgardon@google.com>
+> > ---
+> >  arch/x86/kvm/mmu/tdp_mmu.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> > index 1987da0da66e..2650fa9fe066 100644
+> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> > @@ -882,6 +882,9 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> >                   !is_last_spte(iter.old_spte, iter.level))
+> >                       continue;
+> >
+> > +             if (!(iter.old_spte & PT_WRITABLE_MASK))
+>
+> Include the new check with the existing if statement?  I think it makes sense to
+> group all the checks on old_spte.
 
-other info that might help us debug this:
-Possible unsafe locking scenario:
+I agree that' s cleaner. I'll group the checks in the next patch set version.
 
-CPU0
-----
-lock(&kms->commit_lock[i]);
-lock(&kms->commit_lock[i]);
+>
+> > +                     continue;
+> > +
+> >               new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
+> >
+> >               tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+> > @@ -1079,6 +1082,9 @@ static bool set_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+> >               if (!is_shadow_present_pte(iter.old_spte))
+> >                       continue;
+> >
+> > +             if (iter.old_spte & shadow_dirty_mask)
+>
+> Same comment here.
+>
+> > +                     continue;
+> > +
+>
+> Unrelated to this patch, but it got me looking at the code: shouldn't
+> clear_dirty_pt_masked() clear the bit in @mask before checking whether or not
+> the spte needs to be modified?  That way the early break kicks in after sptes
+> are checked, not necessarily written.  E.g.
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 2650fa9fe066..d8eeae910cbf 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1010,21 +1010,21 @@ static void clear_dirty_pt_masked(struct kvm *kvm, struct kvm_mmu_page *root,
+>                     !(mask & (1UL << (iter.gfn - gfn))))
+>                         continue;
+>
+> -               if (wrprot || spte_ad_need_write_protect(iter.old_spte)) {
+> -                       if (is_writable_pte(iter.old_spte))
+> -                               new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
+> -                       else
+> -                               continue;
+> -               } else {
+> -                       if (iter.old_spte & shadow_dirty_mask)
+> -                               new_spte = iter.old_spte & ~shadow_dirty_mask;
+> -                       else
+> -                               continue;
+> -               }
+> -
+> -               tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+> -
+>                 mask &= ~(1UL << (iter.gfn - gfn));
+> +
+> +               if (wrprot || spte_ad_need_write_protect(iter.old_spte)) {
+> +                       if (is_writable_pte(iter.old_spte))
+> +                               new_spte = iter.old_spte & ~PT_WRITABLE_MASK;
+> +                       else
+> +                               continue;
+> +               } else {
+> +                       if (iter.old_spte & shadow_dirty_mask)
+> +                               new_spte = iter.old_spte & ~shadow_dirty_mask;
+> +                       else
+> +                               continue;
+> +               }
+> +
+> +               tdp_mmu_set_spte_no_dirty_log(kvm, &iter, new_spte);
+>         }
+>  }
+>
 
-*** DEADLOCK ***
+Great point, that doesn't work as intended at all. I'll adopt your
+proposed fix and include it in a patch after this one in the next
+version of the series.
 
-May be due to missing lock nesting notation
-
-6 locks held by reboot/5213:
-__arm64_sys_reboot+0x148/0x2a0
-device_shutdown+0x10c/0x2c4
-drm_atomic_helper_shutdown+0x48/0xfc
-modeset_lock+0x120/0x24c
-lock_crtcs+0x60/0xa4
-
-stack backtrace:
-CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
-Hardware name: Google Pompom (rev1) with LTE (DT)
-Call trace:
-dump_backtrace+0x0/0x1dc
-show_stack+0x24/0x30
-dump_stack+0xfc/0x1a8
-__lock_acquire+0xcd0/0x22b8
-lock_acquire+0x1ec/0x240
-__mutex_lock_common+0xe0/0xc84
-mutex_lock_nested+0x48/0x58
-lock_crtcs+0x60/0xa4
-msm_atomic_commit_tail+0x348/0x570
-commit_tail+0xdc/0x178
-drm_atomic_helper_commit+0x160/0x168
-drm_atomic_commit+0x68/0x80
-
-This is because lockdep thinks all the locks taken in lock_crtcs() are
-the same lock, when they actually aren't. That's because we call
-mutex_init() in msm_kms_init() and that assigns on static key for every
-lock initialized in this loop. Let's allocate a dynamic number of
-lock_class_keys and assign them to each lock so that lockdep can figure
-out an AA deadlock isn't possible here.
-
-Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
-Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index d8151a89e163..4735251a394d 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -157,6 +157,7 @@ struct msm_kms {
- 	 * from the crtc's pending_timer close to end of the frame:
- 	 */
- 	struct mutex commit_lock[MAX_CRTCS];
-+	struct lock_class_key commit_lock_keys[MAX_CRTCS];
- 	unsigned pending_crtc_mask;
- 	struct msm_pending_timer pending_timers[MAX_CRTCS];
- };
-@@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
- {
- 	unsigned i, ret;
- 
--	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
--		mutex_init(&kms->commit_lock[i]);
-+	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
-+		lockdep_register_key(&kms->commit_lock_keys[i]);
-+		__mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
-+			     &kms->commit_lock_keys[i]);
-+	}
- 
- 	kms->funcs = funcs;
- 
-
-base-commit: 19c329f6808995b142b3966301f217c831e7cf31
--- 
-https://chromeos.dev
-
+>
+> >               new_spte = iter.old_spte | shadow_dirty_mask;
+> >
+> >               tdp_mmu_set_spte(kvm, &iter, new_spte);
+> > --
+> > 2.30.0.284.gd98b1dd5eaa7-goog
+> >
