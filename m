@@ -2,186 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFA3302A3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:31:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F826302A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbhAYS3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S1727003AbhAYSdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbhAYS2D (ORCPT
+        with ESMTP id S1726501AbhAYScc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:28:03 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D7FC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:27:22 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id j21so3576130pls.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:27:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rH51Ivc55ptvFbtJscFbdlO/ZDzsRHEdg+dEPlaRK4c=;
-        b=KqBWErOVNKTWOR2DkBApBRlPLMxnS/H5zTdCCjP0/wpyrm11wzzILf4M1sxaOspxuK
-         5cVwoCqSLEshDs31dHsdSNgNgiAxT8aYJDbSRUjVbuNKXsb9P+zoUZxnz0YPL1BqBl00
-         xBkkgg73CdrVFG9txay538Ptv6lhPUd4oIetXRpXdnxyuvwL0zmEZ8aWsuszeSIyWI65
-         6bikn3vme9aV8MHnCbMSb52yqj5wga234PPOjlMHPR5URXix8xoe4cfZmbaPUkdF9QTE
-         LEMvEvBlTKlcHyxE9A/9SfMGn9uF+0Ldx8pXQBSzby8XGbfriXO02V+db8IZ9TWaQy/7
-         hwhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rH51Ivc55ptvFbtJscFbdlO/ZDzsRHEdg+dEPlaRK4c=;
-        b=cIoab69mTt2dhvOxgWMTbYBOJ++5c8WXtnIQ/lC4Zfh8RqPCM46D5j9ZLVC3QevERU
-         evmdLXbB4KLUH2Dk1Q7vnaLuJRIRjC/io61nLX5Q0e3RiYT9nPAqrICwxy3jjNmgvD58
-         WqnUu1+ntzZ+lKHVse1O/17O8876e0kW/XoUJD/ZbiGBJHG+9Hmip/8MzKvaB2AbDfzy
-         b+WToFw10V/1P5rg3HeTYMscipc2xbUNPOfhYgHTFxvCPFiB0QjG+7aTw+Klkr/hktnS
-         uNXAgqOfMmsZZ7IxlbL9ryUWDcVQR0nPxSwKwV4fMYXDKPY+ScfGiw9eUZYWWl7ClnJi
-         D0aw==
-X-Gm-Message-State: AOAM533b761HHJPu9/BAVVCK8vtnbofRyZJVS1qrFBjGLkhqrYQKABw2
-        o+rV/AJZc8cz/BQHFSpS1yqf6nisjt/lP3UvrTJlig==
-X-Google-Smtp-Source: ABdhPJx2YOu9DODyhHPIBO8CoLu8MRNSftF+KFP3I6bHrp5wBDrDHzYq5B2GpE8c6EuB99CWrH6Sm4Mtc6l9IDAygcs=
-X-Received: by 2002:a17:90b:228f:: with SMTP id kx15mr1617388pjb.32.1611599241506;
- Mon, 25 Jan 2021 10:27:21 -0800 (PST)
+        Mon, 25 Jan 2021 13:32:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D94C0613ED
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 10:31:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=T1UWtlNZr7Dokdzr3mVGS/edHEQG76PknlPWffcpm4k=; b=ORyY0SwLbNumNsaGfMQOC1fNeF
+        opNajgOJtJ0+wMvbeVy/V3NjEu9tUUUEEk1qW/KcU/0/Pb9i8NJFiqpqn599ch+76fi2ua4uji3AH
+        Ze6uAWxivrLFUbg3Casz4FKJe0ZUFdeAUOKRPKqrcxWe3rfekFa93w/1DXzKWdoKLFbidQwE49mPq
+        gX31XgRfdapRiEMeuujfVOxBCWMEcbC+xMi5cak4b03s8nUS7F1aqj4lhkEmbCWbdCYXa+DyBtgvV
+        lxnCRviQVch2r5o62HYxuHG7ZUyYnJIMuFqFz0lkrUVV9gbYevICMNMKYcupjD+Fif5daAjRfZ7sp
+        I8SBhupg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l46c5-004WEQ-PX; Mon, 25 Jan 2021 18:29:31 +0000
+Date:   Mon, 25 Jan 2021 18:29:21 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+Message-ID: <20210125182921.GG308988@casper.infradead.org>
+References: <20210125042441.20030-1-longman@redhat.com>
+ <20210125092815.GB827@dhcp22.suse.cz>
+ <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
+ <20210125160328.GP827@dhcp22.suse.cz>
+ <20210125162506.GF308988@casper.infradead.org>
+ <20210125164118.GS827@dhcp22.suse.cz>
+ <20210125181436.GV827@dhcp22.suse.cz>
+ <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
 MIME-Version: 1.0
-References: <20201231212852.3175381-1-dennis@kernel.org> <20210104234651.GA3548546@ubuntu-m3-large-x86>
- <X/O46grb51Z4faI1@google.com> <CAK8P3a2ZWfNeXKSm8K_SUhhwkor17jFo3xApLXjzfPqX0eUDUA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2ZWfNeXKSm8K_SUhhwkor17jFo3xApLXjzfPqX0eUDUA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 25 Jan 2021 10:27:11 -0800
-Message-ID: <CAKwvOdnxnooqtyeSem63V_P5980jc0Z2PDG=0iM8ixeYTSaTCg@mail.gmail.com>
-Subject: Re: [PATCH] percpu: fix clang modpost warning in pcpu_build_alloc_info()
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Dennis Zhou <dennis@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 3:07 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Tue, Jan 5, 2021 at 1:55 AM Dennis Zhou <dennis@kernel.org> wrote:
-> >
-> > On Mon, Jan 04, 2021 at 04:46:51PM -0700, Nathan Chancellor wrote:
-> > > On Thu, Dec 31, 2020 at 09:28:52PM +0000, Dennis Zhou wrote:
-> > > >
-> >
-> > Hi Nathan,
-> >
-> > >
-> > > Hi Dennis,
-> > >
-> > > I did a bisect of the problematic config against defconfig and it points
-> > > out that CONFIG_GCOV_PROFILE_ALL is in the bad config but not the good
-> > > config, which makes some sense as that will mess with clang's inlining
-> > > heuristics. It does not appear to be the single config that makes a
-> > > difference but it gives some clarity.
-> > >
-> >
-> > Ah, thanks. To me it's kind of a corner case that I don't have a lot of
-> > insight into. __init code is pretty limited and this warning is really
-> > at the compilers whim. However, in this case only clang throws this
-> > warning.
-> >
-> > > I do not personally have any strong opinions around the patch but is it
-> > > really that much wasted memory to just annotate mask with __refdata?
-> >
-> > It's really not much memory, 1 bit per max # of cpus. The reported
-> > config is on the extreme side compiling with 8k NR_CPUS, so 1kb. I'm
-> > just not in love with the idea of adding a patch to improve readability
-> > and it cost idle memory to resolve a compile time warning.
-> >
-> > If no one else chimes in in the next few days, I'll probably just apply
-> > it and go from there. If another issue comes up I'll drop this and tag
-> > it as __refdata.
->
-> I've come across this one again in linux-next today, and found that
-> I had an old patch for it already, that I had never submitted:
->
-> From 7d6f40414490092b86f1a64d8c42426ee350da1a Mon Sep 17 00:00:00 2001
-> From: Arnd Bergmann <arnd@arndb.de>
-> Date: Mon, 7 Dec 2020 23:24:20 +0100
-> Subject: [PATCH] mm: percpu: fix section mismatch warning
->
-> Building with arm64 clang sometimes (fairly rarely) shows a
-> warning about the pcpu_build_alloc_info() function:
->
-> WARNING: modpost: vmlinux.o(.text+0x21697c): Section mismatch in
-> reference from the function cpumask_clear_cpu() to the variable
-> .init.data:pcpu_build_alloc_info.mask
-> The function cpumask_clear_cpu() references
-> the variable __initdata pcpu_build_alloc_info.mask.
-> This is often because cpumask_clear_cpu lacks a __initdata
-> annotation or the annotation of pcpu_build_alloc_info.mask is wrong.
->
-> What appears to be going on here is that the compiler decides to not
-> inline the cpumask_clear_cpu() function that is marked 'inline' but not
-> 'always_inline', and it then produces a specialized version of it that
-> references the static mask unconditionally as an optimization.
->
-> Marking cpumask_clear_cpu() as __always_inline would fix it, as would
-> removing the __initdata annotation on the variable.  I went for marking
-> the function as __attribute__((flatten)) instead because all functions
+On Mon, Jan 25, 2021 at 01:23:58PM -0500, Waiman Long wrote:
+> On 1/25/21 1:14 PM, Michal Hocko wrote:
+> > On Mon 25-01-21 17:41:19, Michal Hocko wrote:
+> > > On Mon 25-01-21 16:25:06, Matthew Wilcox wrote:
+> > > > On Mon, Jan 25, 2021 at 05:03:28PM +0100, Michal Hocko wrote:
+> > > > > On Mon 25-01-21 10:57:54, Waiman Long wrote:
+> > > > > > On 1/25/21 4:28 AM, Michal Hocko wrote:
+> > > > > > > On Sun 24-01-21 23:24:41, Waiman Long wrote:
+> > > > > > > > The commit 3fea5a499d57 ("mm: memcontrol: convert page
+> > > > > > > > cache to a new mem_cgroup_charge() API") introduced a bug in
+> > > > > > > > __add_to_page_cache_locked() causing the following splat:
+> > > > > > > > 
+> > > > > > > >    [ 1570.068330] page dumped because: VM_BUG_ON_PAGE(page_memcg(page))
+> > > > > > > >    [ 1570.068333] pages's memcg:ffff8889a4116000
+> > > > > > > >    [ 1570.068343] ------------[ cut here ]------------
+> > > > > > > >    [ 1570.068346] kernel BUG at mm/memcontrol.c:2924!
+> > > > > > > >    [ 1570.068355] invalid opcode: 0000 [#1] SMP KASAN PTI
+> > > > > > > >    [ 1570.068359] CPU: 35 PID: 12345 Comm: cat Tainted: G S      W I       5.11.0-rc4-debug+ #1
+> > > > > > > >    [ 1570.068363] Hardware name: HP HP Z8 G4 Workstation/81C7, BIOS P60 v01.25 12/06/2017
+> > > > > > > >    [ 1570.068365] RIP: 0010:commit_charge+0xf4/0x130
+> > > > > > > >      :
+> > > > > > > >    [ 1570.068375] RSP: 0018:ffff8881b38d70e8 EFLAGS: 00010286
+> > > > > > > >    [ 1570.068379] RAX: 0000000000000000 RBX: ffffea00260ddd00 RCX: 0000000000000027
+> > > > > > > >    [ 1570.068382] RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88907ebe05a8
+> > > > > > > >    [ 1570.068384] RBP: ffffea00260ddd00 R08: ffffed120fd7c0b6 R09: ffffed120fd7c0b6
+> > > > > > > >    [ 1570.068386] R10: ffff88907ebe05ab R11: ffffed120fd7c0b5 R12: ffffea00260ddd38
+> > > > > > > >    [ 1570.068389] R13: ffff8889a4116000 R14: ffff8889a4116000 R15: 0000000000000001
+> > > > > > > >    [ 1570.068391] FS:  00007ff039638680(0000) GS:ffff88907ea00000(0000) knlGS:0000000000000000
+> > > > > > > >    [ 1570.068394] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > > > > >    [ 1570.068396] CR2: 00007f36f354cc20 CR3: 00000008a0126006 CR4: 00000000007706e0
+> > > > > > > >    [ 1570.068398] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > > > > >    [ 1570.068400] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > > > > >    [ 1570.068402] PKRU: 55555554
+> > > > > > > >    [ 1570.068404] Call Trace:
+> > > > > > > >    [ 1570.068407]  mem_cgroup_charge+0x175/0x770
+> > > > > > > >    [ 1570.068413]  __add_to_page_cache_locked+0x712/0xad0
+> > > > > > > >    [ 1570.068439]  add_to_page_cache_lru+0xc5/0x1f0
+> > > > > > > >    [ 1570.068461]  cachefiles_read_or_alloc_pages+0x895/0x2e10 [cachefiles]
+> > > > > > > >    [ 1570.068524]  __fscache_read_or_alloc_pages+0x6c0/0xa00 [fscache]
+> > > > > > > >    [ 1570.068540]  __nfs_readpages_from_fscache+0x16d/0x630 [nfs]
+> > > > > > > >    [ 1570.068585]  nfs_readpages+0x24e/0x540 [nfs]
+> > > > > > > >    [ 1570.068693]  read_pages+0x5b1/0xc40
+> > > > > > > >    [ 1570.068711]  page_cache_ra_unbounded+0x460/0x750
+> > > > > > > >    [ 1570.068729]  generic_file_buffered_read_get_pages+0x290/0x1710
+> > > > > > > >    [ 1570.068756]  generic_file_buffered_read+0x2a9/0xc30
+> > > > > > > >    [ 1570.068832]  nfs_file_read+0x13f/0x230 [nfs]
+> > > > > > > >    [ 1570.068872]  new_sync_read+0x3af/0x610
+> > > > > > > >    [ 1570.068901]  vfs_read+0x339/0x4b0
+> > > > > > > >    [ 1570.068909]  ksys_read+0xf1/0x1c0
+> > > > > > > >    [ 1570.068920]  do_syscall_64+0x33/0x40
+> > > > > > > >    [ 1570.068926]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > > > > >    [ 1570.068930] RIP: 0033:0x7ff039135595
+> > > > > > > > 
+> > > > > > > > Before that commit, there was a try_charge() and commit_charge()
+> > > > > > > > in __add_to_page_cache_locked(). These 2 separated charge functions
+> > > > > > > > were replaced by a single mem_cgroup_charge(). However, it forgot
+> > > > > > > > to add a matching mem_cgroup_uncharge() when the xarray insertion
+> > > > > > > > failed with the page released back to the pool. Fix this by adding a
+> > > > > > > > mem_cgroup_uncharge() call when insertion error happens.
+> > > > > > > > 
+> > > > > > > > Fixes: 3fea5a499d57 ("mm: memcontrol: convert page cache to a new mem_cgroup_charge() API")
+> > > > > > > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > > > > > OK, this is indeed a subtle bug. The patch aimed at simplifying the
+> > > > > > > charge lifetime so that users do not really have to think about when to
+> > > > > > > uncharge as that happens when the page is freed. fscache somehow breaks
+> > > > > > > that assumption because it doesn't free up pages but it keeps some of
+> > > > > > > them in the cache.
+> > > > > > > 
+> > > > > > > I have tried to wrap my head around the cached object life time in
+> > > > > > > fscache but failed and got lost in the maze. Is this the only instance
+> > > > > > > of the problem? Would it make more sense to explicitly handle charges in
+> > > > > > > the fscache code or there are other potential users to fall into this
+> > > > > > > trap?
+> > > > > > There may be other places that have similar problem. I focus on the
+> > > > > > filemap.c case as I have a test case that can reliably produce the bug
+> > > > > > splat. This patch does fix it for my test case.
+> > > > > I believe this needs a more general fix than catching a random places
+> > > > > which you can trigger. Would it make more sense to address this at the
+> > > > > fscache level and always make sure that a page returned to the pool is
+> > > > > always uncharged instead?
+> > > > I believe you mean "page cache" -- there is a separate thing called
+> > > > 'fscache' which is used to cache network filesystems.
+> > > Yes, I really had fscache in mind because it does have an "unusual" page
+> > > life time rules.
+> > > 
+> > > > I don't understand the memcg code at all, so I have no useful feedback
+> > > > on what you're saying other than this.
+> > > Well the memcg accounting rules after the rework should have simplified
+> > > the API usage for most users. You will get memory charged when it is
+> > > used and it will go away when the page is freed. If a page is not really
+> > > freed in some cases and it can be reused then it doesn't really fit into
+> > > this scheme automagically. I do undestand that this puts some additional
+> > > burden on those special cases. I am not really sure what is the right
+> > > way here myself but considering there might be other similar cases like
+> > > that I would lean towards special casing where the pool is implemented.
+> > > I would expect there is some state to be maintain for that purpose
+> > > already.
+> > After some more thinking I've came to conclusion that the patch as
+> > proposed is the proper way forward. It is easier to follow if the
+> > unwinding of state changes are local to the function.
+> I think so. It is easier to understand if the charge and uncharge functions
+> are grouped together in the same function.
+> > 
+> > With the proposed simplification by Willy
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> 
+> Thank for the ack. However, I am a bit confused about what you mean by
+> simplification. There is another linux-next patch that changes the condition
+> for mem_cgroup_charge() to
+> 
+> -       if (!huge) {
+> +       if (!huge && !page_is_secretmem(page)) {
+>                 error = mem_cgroup_charge(page, current->mm, gfp);
+> 
+> That is the main reason why I introduced the boolean variable as I don't
+> want to call the external page_is_secretmem() function twice.
 
-I had to look this one up; it's new to me!
-https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#Common-Function-Attributes
-https://awesomekling.github.io/Smarter-C++-inlining-with-attribute-flatten/
-
-Seems pretty cool/flexible to control inlining on the caller side!
-
-At the least though, we should avoid open coding the function attributes.  See
-include/linux/compiler_attributes.h
-
-Testing quickly in godbolt, __flatten__ has been supported since at
-least clang 3.5 and gcc 4.4, FWIW (so it doesn't need a
-__has_attribute guard).
-
-> called from it are really meant to be inlined here, and it prevents
-> the same problem happening here again. This is unlikely to be a problem
-> elsewhere because there are very few function-local static __initdata
-> variables in the kernel.
->
-> Fixes: 6c207504ae79 ("percpu: reduce the number of cpu distance comparisons")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> diff --git a/mm/percpu.c b/mm/percpu.c
-> index 5ede8dd407d5..527181c46b08 100644
-> --- a/mm/percpu.c
-> +++ b/mm/percpu.c
-> @@ -2662,10 +2662,9 @@ early_param("percpu_alloc", percpu_alloc_setup);
->   * On success, pointer to the new allocation_info is returned.  On
->   * failure, ERR_PTR value is returned.
->   */
-> -static struct pcpu_alloc_info * __init pcpu_build_alloc_info(
-> -                               size_t reserved_size, size_t dyn_size,
-> -                               size_t atom_size,
-> -                               pcpu_fc_cpu_distance_fn_t cpu_distance_fn)
-> +static struct pcpu_alloc_info * __init __attribute__((flatten))
-> +pcpu_build_alloc_info(size_t reserved_size, size_t dyn_size, size_t atom_size,
-> +                     pcpu_fc_cpu_distance_fn_t cpu_distance_fn)
->  {
->         static int group_map[NR_CPUS] __initdata;
->         static int group_cnt[NR_CPUS] __initdata;
->
->
-> Not sure if this would be any better than your patch.
->
->        Arnd
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAK8P3a2ZWfNeXKSm8K_SUhhwkor17jFo3xApLXjzfPqX0eUDUA%40mail.gmail.com.
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+See earlier emails to Mike suggesting that the accounting of secretmem
+here is wrong.
