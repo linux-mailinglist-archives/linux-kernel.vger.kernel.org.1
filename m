@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D5C30351A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ADD303559
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 06:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388004AbhAZFfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 00:35:16 -0500
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:40223 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727486AbhAYKlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 05:41:18 -0500
-Received: by mail-wr1-f47.google.com with SMTP id c12so11744994wrc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 02:41:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DsJE2zPkprb7gh+GS+eIFG0M1vuNomWHZqhGRuLhtzQ=;
-        b=iFgmho6ywcoHVoNGYfUC9bOKinRGbOeUWH+PcDT7dm5O5YMx8XnqWk6xYI9U6LmxEc
-         OgrT6OjLro2Yx2o0u28tTmOrCQirJ0IoN5RRd9LZY9+oy6PKDKiwZhBRJINgjy4tZYs2
-         A4yGI7CBzk/ogmuGsLmWelEb5VupENnrjgy6GTpExBHU4eAmLoh14tmG13P8IwWmBBs0
-         MbSbadK3UYRAPwn/nCTKXFHtxTssB9GdQLXg8gCRyXpWPbhoYnzlUVZLjysj2XOvl3tU
-         m0jKwf1i1fSt1yZpKmEzZvN5HgzJdzABkNKvR/xebQwWMTk8DuSiytKKyWSkkqzRMykh
-         kIew==
-X-Gm-Message-State: AOAM5306pRTBzjvEdVKgr/FUlLI5eXb79H4BtWOGrIaApzfchYZLy547
-        O019CXCkMNjhi7ePodZ4TUY=
-X-Google-Smtp-Source: ABdhPJxFRyn+qu6XbZN8Kw3vcIaOk89MqJcinq7fckxNIcL/17AL7YibO7Tz3bhcgYseghNGX5zLzA==
-X-Received: by 2002:a5d:4d86:: with SMTP id b6mr200432wru.152.1611571236869;
-        Mon, 25 Jan 2021 02:40:36 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id g1sm21982339wrq.30.2021.01.25.02.40.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 02:40:35 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:40:33 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        yi.kuo@mediatek.com
-Subject: Re: [PATCH 2/3] memory: mtk-smi: Add module_exit and module_license
-Message-ID: <20210125104033.2ewzumhmagmouvo5@kozik-lap>
-References: <20210121062429.26504-1-yong.wu@mediatek.com>
- <20210121062429.26504-3-yong.wu@mediatek.com>
- <20210122213427.mwjyjn2wsgnko7mk@kozik-lap>
- <1611557381.3184.21.camel@mhfsdcap03>
- <20210125084051.ipgeu2ksucdag2u4@kozik-lap>
- <1611566885.5302.4.camel@mhfsdcap03>
+        id S2388113AbhAZFj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 00:39:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727695AbhAYK6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 05:58:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DD0722597;
+        Mon, 25 Jan 2021 10:50:30 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l3zS0-009rDe-CP; Mon, 25 Jan 2021 10:50:28 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v5 03/21] arm64: Turn the MMU-on sequence into a macro
+Date:   Mon, 25 Jan 2021 10:50:01 +0000
+Message-Id: <20210125105019.2946057-4-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210125105019.2946057-1-maz@kernel.org>
+References: <20210125105019.2946057-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1611566885.5302.4.camel@mhfsdcap03>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 05:28:05PM +0800, Yong Wu wrote:
-> On Mon, 2021-01-25 at 09:40 +0100, Krzysztof Kozlowski wrote:
-> > On Mon, Jan 25, 2021 at 02:49:41PM +0800, Yong Wu wrote:
-> > > On Fri, 2021-01-22 at 22:34 +0100, Krzysztof Kozlowski wrote:
-> > > > On Thu, Jan 21, 2021 at 02:24:28PM +0800, Yong Wu wrote:
-> > > > > The config MTK_SMI always depends on MTK_IOMMU which is built-in
-> > > > > currently. Thus we don't have module_exit before. This patch adds
-> > > > > module_exit and module_license. It is a preparing patch for supporting
-> > > > > MTK_SMI could been built as a module.
-> > > > > 
-> > > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > > > ---
-> > > > >  drivers/memory/mtk-smi.c | 10 ++++++++++
-> > > > >  1 file changed, 10 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
-> > > > > index e2aebd2bfa8e..aa2a25abf04f 100644
-> > > > > --- a/drivers/memory/mtk-smi.c
-> > > > > +++ b/drivers/memory/mtk-smi.c
-> > > > > @@ -597,3 +597,13 @@ static int __init mtk_smi_init(void)
-> > > > >  	return platform_register_drivers(smidrivers, ARRAY_SIZE(smidrivers));
-> > > > >  }
-> > > > >  module_init(mtk_smi_init);
-> > > > > +
-> > > > > +static void __exit mtk_smi_exit(void)
-> > > > > +{
-> > > > > +	platform_unregister_drivers(smidrivers, ARRAY_SIZE(smidrivers));
-> > > > > +}
-> > > > > +module_exit(mtk_smi_exit);
-> > > > > +
-> > > > > +MODULE_DESCRIPTION("MediaTek SMI driver");
-> > > > > +MODULE_ALIAS("platform:MediaTek-SMI");
-> > > > 
-> > > > Drivers do not use capital letters, so I have doubts whether this alias
-> > > > is correct.
-> > > 
-> > > I didn't care the upper/lower-case. I will change to lower case in next
-> > > time.
-> > 
-> > Then why do you need the alias? The name does not match driver name, so
-> > what's the purpose of this alias/
-> 
-> I think it is not so necessary for us. I will delete this line in next
-> version.
-> 
-> Only curious what's alias is fit in our case? normally it should be the
-> file name: mtk-smi?
+Turning the MMU on is a popular sport in the arm64 kernel, and
+we do it more than once, or even twice. As we are about to add
+even more, let's turn it into a macro.
 
-If autoloading of your module works, then remove it. The alias is
-necessary for some cases when a device table is missing (e.g. platform
-driver is matched via devicetree but not having the platform_device_id
-table) or matching is done via different method (e.g. driver is matched
-from MFD via devicetree compatible even though there is a
-platform_device_id table).
+No expected functional change.
 
-Best regards,
-Krzysztof
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: David Brazdil <dbrazdil@google.com>
+---
+ arch/arm64/include/asm/assembler.h | 17 +++++++++++++++++
+ arch/arm64/kernel/head.S           | 19 ++++---------------
+ arch/arm64/mm/proc.S               | 12 +-----------
+ 3 files changed, 22 insertions(+), 26 deletions(-)
+
+diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+index bf125c591116..8cded93f99c3 100644
+--- a/arch/arm64/include/asm/assembler.h
++++ b/arch/arm64/include/asm/assembler.h
+@@ -675,6 +675,23 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
+ 	.endif
+ 	.endm
+ 
++/*
++ * Set SCTLR_EL1 to the passed value, and invalidate the local icache
++ * in the process. This is called when setting the MMU on.
++ */
++.macro set_sctlr_el1, reg
++	msr	sctlr_el1, \reg
++	isb
++	/*
++	 * Invalidate the local I-cache so that any instructions fetched
++	 * speculatively from the PoC are discarded, since they may have
++	 * been dynamically patched at the PoU.
++	 */
++	ic	iallu
++	dsb	nsh
++	isb
++.endm
++
+ /*
+  * Check whether to yield to another runnable task from kernel mode NEON code
+  * (which runs with preemption disabled).
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index a0dc987724ed..28e9735302df 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -703,16 +703,9 @@ SYM_FUNC_START(__enable_mmu)
+ 	offset_ttbr1 x1, x3
+ 	msr	ttbr1_el1, x1			// load TTBR1
+ 	isb
+-	msr	sctlr_el1, x0
+-	isb
+-	/*
+-	 * Invalidate the local I-cache so that any instructions fetched
+-	 * speculatively from the PoC are discarded, since they may have
+-	 * been dynamically patched at the PoU.
+-	 */
+-	ic	iallu
+-	dsb	nsh
+-	isb
++
++	set_sctlr_el1	x0
++
+ 	ret
+ SYM_FUNC_END(__enable_mmu)
+ 
+@@ -883,11 +876,7 @@ SYM_FUNC_START_LOCAL(__primary_switch)
+ 	tlbi	vmalle1				// Remove any stale TLB entries
+ 	dsb	nsh
+ 
+-	msr	sctlr_el1, x19			// re-enable the MMU
+-	isb
+-	ic	iallu				// flush instructions fetched
+-	dsb	nsh				// via old mapping
+-	isb
++	set_sctlr_el1	x19			// re-enable the MMU
+ 
+ 	bl	__relocate_kernel
+ #endif
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index ece785477bdc..c967bfd30d2b 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -291,17 +291,7 @@ skip_pgd:
+ 	/* We're done: fire up the MMU again */
+ 	mrs	x17, sctlr_el1
+ 	orr	x17, x17, #SCTLR_ELx_M
+-	msr	sctlr_el1, x17
+-	isb
+-
+-	/*
+-	 * Invalidate the local I-cache so that any instructions fetched
+-	 * speculatively from the PoC are discarded, since they may have
+-	 * been dynamically patched at the PoU.
+-	 */
+-	ic	iallu
+-	dsb	nsh
+-	isb
++	set_sctlr_el1	x17
+ 
+ 	/* Set the flag to zero to indicate that we're all done */
+ 	str	wzr, [flag_ptr]
+-- 
+2.29.2
+
