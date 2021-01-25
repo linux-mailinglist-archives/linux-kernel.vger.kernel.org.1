@@ -2,197 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2268E3029F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C92A3029F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 19:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbhAYST5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:19:57 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:65232 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730507AbhAYRND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726512AbhAYSTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:19:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730535AbhAYRND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 12:13:03 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10PGpMBB017885;
-        Mon, 25 Jan 2021 09:09:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=DUpO0wHw6W9Q7OIz6Ir6AZBxbH3roAo4pdxP7MQK5/E=;
- b=SD5FGTg+lsNKYw3epa2RuPRo7+OK92s6EhNpuOzrJuFAfaEfpxSiqXQrFENL+kkImpTH
- FgPeWLfI5wJhgxWRENyT+8lgg9NivI4VkbSCDBvwEIE53TcgZy/7yvh5GGpexQaYjV/k
- ZCfG5mC9zjGNFqn+xRE9Luzat2YLoK6pQ6ZVuAMg7Oou82zC9nMmO7RAj0OJEIcC8Ds9
- 7YMmxeaYWJ6/B9nE2egBhnRwMQQ9SbEY4zkXnD7ExHl/bWoo7JKp35cwUVkJ7iT52BRd
- qRuFoAasKc74E5D9idE8/BfjVC2Shq28yFA8uKSbIM9CJlmRGGwFdyse9u9jvXFBACt9 Ng== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 368j1u5ah0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 09:09:53 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 25 Jan
- 2021 09:09:51 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Jan 2021 09:09:51 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 7E02F3F703F;
-        Mon, 25 Jan 2021 09:09:48 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v3 RFC net-next 10/19] net: mvpp2: add FCA RXQ non occupied descriptor threshold
-Date:   Mon, 25 Jan 2021 19:07:57 +0200
-Message-ID: <1611594486-29431-11-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1611594486-29431-1-git-send-email-stefanc@marvell.com>
-References: <1611594486-29431-1-git-send-email-stefanc@marvell.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5068922B37;
+        Mon, 25 Jan 2021 17:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611594725;
+        bh=BcVGUAj+xGkXTNYxyy4IxxVaL7E+SB7aCoaGZIuUUnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oH5Kk7O7hHPy8/A3oe0/u0LK3AdK1Ne/NgUI169mmX2a4GGyFX5JJrxRH1tx1SLoY
+         V+prgZ2dqh/mFbhwq/zNrev0D7zIKvJi9TzuCJbvN1CIHGYKPsuIai0kebZK1n4M7x
+         Y6C46nfaRsxPDTEV0+A2RdDQfCl4cB4hfZ7mSudQtDB8amKLtWrwHANaxGIBaWoyrv
+         Eay7EALxoG6VkxDfzCK69rMjbtXt9/67tUgr93f1tgBHFcXX3hLg80JbBhodyzkUDv
+         jdS8oQEAvZHCsDdDffKqSY1NpArvftSeL4ZC7duBAKBW0I08HFKzWvjo0E5ER0XE8U
+         DaSIsWoFTFRwg==
+Date:   Mon, 25 Jan 2021 19:12:02 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lukasz Majczak <lma@semihalf.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
+Message-ID: <YA774rPm1a39y/V7@kernel.org>
+References: <20210123014247.989368-1-lma@semihalf.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_07:2021-01-25,2021-01-25 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210123014247.989368-1-lma@semihalf.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Sat, Jan 23, 2021 at 02:42:47AM +0100, Lukasz Majczak wrote:
+> There is a missing call to start_tpm_chip before the call to
+> the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
+> approach maight work for tpm2, it fails for tpm1.x - in that case
+> call to tpm_get_timeouts() or tpm_tis_probe_irq_single() tries to
+> transmit TPM commands on a disabled chip what what doesn't succeed
+> and in turn causes tpm_tis_core_init() to fail.
+> Tested on Samsung Chromebook Pro (Caroline).
+> 
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
 
-RXQ non occupied descriptor threshold would be used by
-Flow Control Firmware feature to move to the XOFF mode.
-RXQ non occupied threshold would change interrupt cause
-that polled by CM3 Firmware.
-Actual non occupied interrupt masked and won't trigger interrupt.
+Do you have a log demonstrating the failure?
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  3 ++
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 46 +++++++++++++++++---
- 2 files changed, 42 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 73f087c..9d8993f 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -295,6 +295,8 @@
- #define     MVPP2_PON_CAUSE_TXP_OCCUP_DESC_ALL_MASK	0x3fc00000
- #define     MVPP2_PON_CAUSE_MISC_SUM_MASK		BIT(31)
- #define MVPP2_ISR_MISC_CAUSE_REG		0x55b0
-+#define MVPP2_ISR_RX_ERR_CAUSE_REG(port)	(0x5520 + 4 * (port))
-+#define	    MVPP2_ISR_RX_ERR_CAUSE_NONOCC_MASK	0x00ff
- 
- /* Buffer Manager registers */
- #define MVPP2_BM_POOL_BASE_REG(pool)		(0x6000 + ((pool) * 4))
-@@ -764,6 +766,7 @@
- #define MSS_SRAM_SIZE		0x800
- #define FC_QUANTA		0xFFFF
- #define FC_CLK_DIVIDER		100
-+#define MSS_THRESHOLD_STOP	768
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 8f40293a..a4933c4 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1144,14 +1144,19 @@ static inline void mvpp2_qvec_interrupt_disable(struct mvpp2_queue_vector *qvec)
- static void mvpp2_interrupts_mask(void *arg)
- {
- 	struct mvpp2_port *port = arg;
-+	int cpu = smp_processor_id();
-+	u32 thread;
- 
- 	/* If the thread isn't used, don't do anything */
--	if (smp_processor_id() > port->priv->nthreads)
-+	if (cpu >= port->priv->nthreads)
- 		return;
- 
--	mvpp2_thread_write(port->priv,
--			   mvpp2_cpu_to_thread(port->priv, smp_processor_id()),
-+	thread = mvpp2_cpu_to_thread(port->priv, cpu);
-+
-+	mvpp2_thread_write(port->priv, thread,
- 			   MVPP2_ISR_RX_TX_MASK_REG(port->id), 0);
-+	mvpp2_thread_write(port->priv, thread,
-+			   MVPP2_ISR_RX_ERR_CAUSE_REG(port->id), 0);
- }
- 
- /* Unmask the current thread's Rx/Tx interrupts.
-@@ -1161,20 +1166,25 @@ static void mvpp2_interrupts_mask(void *arg)
- static void mvpp2_interrupts_unmask(void *arg)
- {
- 	struct mvpp2_port *port = arg;
--	u32 val;
-+	int cpu = smp_processor_id();
-+	u32 val, thread;
- 
- 	/* If the thread isn't used, don't do anything */
--	if (smp_processor_id() > port->priv->nthreads)
-+	if (cpu >= port->priv->nthreads)
- 		return;
- 
-+	thread = mvpp2_cpu_to_thread(port->priv, cpu);
-+
- 	val = MVPP2_CAUSE_MISC_SUM_MASK |
- 		MVPP2_CAUSE_RXQ_OCCUP_DESC_ALL_MASK(port->priv->hw_version);
- 	if (port->has_tx_irqs)
- 		val |= MVPP2_CAUSE_TXQ_OCCUP_DESC_ALL_MASK;
- 
--	mvpp2_thread_write(port->priv,
--			   mvpp2_cpu_to_thread(port->priv, smp_processor_id()),
-+	mvpp2_thread_write(port->priv, thread,
- 			   MVPP2_ISR_RX_TX_MASK_REG(port->id), val);
-+	mvpp2_thread_write(port->priv, thread,
-+			   MVPP2_ISR_RX_ERR_CAUSE_REG(port->id),
-+			   MVPP2_ISR_RX_ERR_CAUSE_NONOCC_MASK);
- }
- 
- static void
-@@ -1199,6 +1209,9 @@ static void mvpp2_interrupts_unmask(void *arg)
- 
- 		mvpp2_thread_write(port->priv, v->sw_thread_id,
- 				   MVPP2_ISR_RX_TX_MASK_REG(port->id), val);
-+		mvpp2_thread_write(port->priv, v->sw_thread_id,
-+				   MVPP2_ISR_RX_ERR_CAUSE_REG(port->id),
-+				   MVPP2_ISR_RX_ERR_CAUSE_NONOCC_MASK);
- 	}
- }
- 
-@@ -2404,6 +2417,22 @@ static void mvpp2_txp_max_tx_size_set(struct mvpp2_port *port)
- 	}
- }
- 
-+/* Routine set the number of non-occupied descriptors threshold that change
-+ * interrupt error cause polled by FW Flow Control
-+ */
-+static void mvpp2_set_rxq_free_tresh(struct mvpp2_port *port,
-+				     struct mvpp2_rx_queue *rxq)
-+{
-+	u32 val;
-+
-+	mvpp2_write(port->priv, MVPP2_RXQ_NUM_REG, rxq->id);
-+
-+	val = mvpp2_read(port->priv, MVPP2_RXQ_THRESH_REG);
-+	val &= ~MVPP2_RXQ_NON_OCCUPIED_MASK;
-+	val |= MSS_THRESHOLD_STOP << MVPP2_RXQ_NON_OCCUPIED_OFFSET;
-+	mvpp2_write(port->priv, MVPP2_RXQ_THRESH_REG, val);
-+}
-+
- /* Set the number of packets that will be received before Rx interrupt
-  * will be generated by HW.
-  */
-@@ -2659,6 +2688,9 @@ static int mvpp2_rxq_init(struct mvpp2_port *port,
- 	mvpp2_rx_pkts_coal_set(port, rxq);
- 	mvpp2_rx_time_coal_set(port, rxq);
- 
-+	/* Set the number of non occupied descriptors threshold */
-+	mvpp2_set_rxq_free_tresh(port, rxq);
-+
- 	/* Add number of descriptors ready for receiving packets */
- 	mvpp2_rxq_status_update(port, rxq->id, 0, rxq->size);
- 
--- 
-1.9.1
-
+/Jarkko
