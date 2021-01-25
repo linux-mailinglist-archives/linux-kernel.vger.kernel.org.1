@@ -2,183 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17280302C61
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0E4302C60
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 21:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732201AbhAYUSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 15:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        id S1732125AbhAYUR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 15:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732208AbhAYTvY (ORCPT
+        with ESMTP id S1732207AbhAYTvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 14:51:24 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF94C061A2A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:48:42 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1l47qf-0006N0-C0; Mon, 25 Jan 2021 20:48:29 +0100
-Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <afa@pengutronix.de>)
-        id 1l47qb-0007yC-C9; Mon, 25 Jan 2021 20:48:25 +0100
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Cc:     kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] iio: adc: stm32-adc: enable timestamping for non-DMA usage
-Date:   Mon, 25 Jan 2021 20:48:23 +0100
-Message-Id: <20210125194824.30549-1-a.fatoum@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA229C061573;
+        Mon, 25 Jan 2021 11:49:34 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id E968922ED8;
+        Mon, 25 Jan 2021 20:49:32 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611604173;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TRMRiMPnLqcdMCzeCpMY9I5j0GaNmNLOnRGXlUp7ZT8=;
+        b=qVALf0uTVCxJRs5Ek+hjUqnfIBgrqMb2y5kS5ewEe0dB0cM1IODnyCsbAtmptCCioyQNtl
+        3dARMjTSGXO8NauKzu8vlJT4ckMqPlywphyE8RqFAoQ8q02Iu3XppELd/IAT/zTVzPrIbl
+        j6DWPzB+ZAl5Tz6Jfeysii8zyDqmRPA=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: afa@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 25 Jan 2021 20:49:32 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Roy Zang <roy.zang@nxp.com>, PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
+ builtin_platform_driver()
+In-Reply-To: <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+References: <20210120105246.23218-1-michael@walle.cc>
+ <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc>
+ <CAGETcx8eZRd1fJ3yuO_t2UXBFHObeNdv-c8oFH3mXw6zi=zOkQ@mail.gmail.com>
+ <f706c0e4b684e07635396fcf02f4c9a6@walle.cc>
+ <CAGETcx8_6Hp+MWFOhRohXwdWFSfCc7A=zpb5QYNHZE5zv0bDig@mail.gmail.com>
+ <CAMuHMdWvFej-6vkaLM44t7eX2LpkDSXu4_7VH-X-3XRueXTO=A@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <a24391e62b107040435766fff52bdd31@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For non-DMA usage, we have an easy way to associate a timestamp with a
-sample: iio_pollfunc_store_time stores a timestamp in the primary
-trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
-to push out the buffer along with the timestamp.
+Am 2021-01-21 12:01, schrieb Geert Uytterhoeven:
+> Hi Saravana,
+> 
+> On Thu, Jan 21, 2021 at 1:05 AM Saravana Kannan <saravanak@google.com> 
+> wrote:
+>> On Wed, Jan 20, 2021 at 3:53 PM Michael Walle <michael@walle.cc> 
+>> wrote:
+>> > Am 2021-01-20 20:47, schrieb Saravana Kannan:
+>> > > On Wed, Jan 20, 2021 at 11:28 AM Michael Walle <michael@walle.cc>
+>> > > wrote:
+>> > >>
+>> > >> [RESEND, fat-fingered the buttons of my mail client and converted
+>> > >> all CCs to BCCs :(]
+>> > >>
+>> > >> Am 2021-01-20 20:02, schrieb Saravana Kannan:
+>> > >> > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+>> > >> >>
+>> > >> >> On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+>> > >> >> wrote:
+>> > >> >> >
+>> > >> >> > fw_devlink will defer the probe until all suppliers are ready. We can't
+>> > >> >> > use builtin_platform_driver_probe() because it doesn't retry after probe
+>> > >> >> > deferral. Convert it to builtin_platform_driver().
+>> > >> >>
+>> > >> >> If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+>> > >> >> shouldn't it be fixed or removed?
+>> > >> >
+>> > >> > I was actually thinking about this too. The problem with fixing
+>> > >> > builtin_platform_driver_probe() to behave like
+>> > >> > builtin_platform_driver() is that these probe functions could be
+>> > >> > marked with __init. But there are also only 20 instances of
+>> > >> > builtin_platform_driver_probe() in the kernel:
+>> > >> > $ git grep ^builtin_platform_driver_probe | wc -l
+>> > >> > 20
+>> > >> >
+>> > >> > So it might be easier to just fix them to not use
+>> > >> > builtin_platform_driver_probe().
+>> > >> >
+>> > >> > Michael,
+>> > >> >
+>> > >> > Any chance you'd be willing to help me by converting all these to
+>> > >> > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+>> > >>
+>> > >> If it just moving the probe function to the _driver struct and
+>> > >> remove the __init annotations. I could look into that.
+>> > >
+>> > > Yup. That's pretty much it AFAICT.
+>> > >
+>> > > builtin_platform_driver_probe() also makes sure the driver doesn't ask
+>> > > for async probe, etc. But I doubt anyone is actually setting async
+>> > > flags and still using builtin_platform_driver_probe().
+>> >
+>> > Hasn't module_platform_driver_probe() the same problem? And there
+>> > are ~80 drivers which uses that.
+>> 
+>> Yeah. The biggest problem with all of these is the __init markers.
+>> Maybe some familiar with coccinelle can help?
+> 
+> And dropping them will increase memory usage.
 
-For this to work, the driver needs to register an IIO_TIMESTAMP channel.
-Do this.
+Although I do have the changes for the builtin_platform_driver_probe()
+ready, I don't think it makes much sense to send these unless we agree
+on the increased memory footprint. While there are just a few
+builtin_platform_driver_probe() and memory increase _might_ be
+negligible, there are many more module_platform_driver_probe().
 
-For DMA, it's not as easy, because we don't push the buffers out of
-stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
-a tasklet scheduled after a DMA completion.
-
-Preferably, the DMA controller would copy us the timestamp into that buffer
-as well. Until this is implemented, restrict timestamping support to
-only PIO. For low-frequency sampling, PIO is probably good enough.
-
-Cc: Holger Assmann <has@pengutronix.de>
-Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
----
-v3 -> v4:
-  - descrease buffer size to correct size (Marc)
-v2 -> v3:
-  - explicitly specify alignment (Jonathan)
-  - increase buffer size to hold additional timestamp
-v1 -> v2:
-  - Added comment about timestamping being PIO only (Fabrice)
-  - Added missing DMA resource clean up in error path (Fabrice)
-  - Added Fabrice's Acked-by
----
- drivers/iio/adc/stm32-adc.c | 39 +++++++++++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-index c067c994dae2..5ebbd28e45ca 100644
---- a/drivers/iio/adc/stm32-adc.c
-+++ b/drivers/iio/adc/stm32-adc.c
-@@ -177,7 +177,7 @@ struct stm32_adc_cfg {
-  * @offset:		ADC instance register offset in ADC block
-  * @cfg:		compatible configuration data
-  * @completion:		end of single conversion completion
-- * @buffer:		data buffer
-+ * @buffer:		data buffer + 8 bytes for timestamp if enabled
-  * @clk:		clock for this adc instance
-  * @irq:		interrupt for this adc instance
-  * @lock:		spinlock
-@@ -200,7 +200,7 @@ struct stm32_adc {
- 	u32			offset;
- 	const struct stm32_adc_cfg	*cfg;
- 	struct completion	completion;
--	u16			buffer[STM32_ADC_MAX_SQ];
-+	u16			buffer[STM32_ADC_MAX_SQ + 4] __aligned(8);
- 	struct clk		*clk;
- 	int			irq;
- 	spinlock_t		lock;		/* interrupt lock */
-@@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
- 	}
- }
- 
--static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
-+static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
- {
- 	struct device_node *node = indio_dev->dev.of_node;
- 	struct stm32_adc *adc = iio_priv(indio_dev);
-@@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
- 		return -EINVAL;
- 	}
- 
-+	if (timestamping)
-+		num_channels++;
-+
- 	channels = devm_kcalloc(&indio_dev->dev, num_channels,
- 				sizeof(struct iio_chan_spec), GFP_KERNEL);
- 	if (!channels)
-@@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
- 		stm32_adc_smpr_init(adc, channels[i].channel, smp);
- 	}
- 
-+	if (timestamping) {
-+		struct iio_chan_spec *timestamp = &channels[scan_index];
-+
-+		timestamp->type = IIO_TIMESTAMP;
-+		timestamp->channel = -1;
-+		timestamp->scan_index = scan_index;
-+		timestamp->scan_type.sign = 's';
-+		timestamp->scan_type.realbits = 64;
-+		timestamp->scan_type.storagebits = 64;
-+
-+		scan_index++;
-+	}
-+
- 	indio_dev->num_channels = scan_index;
- 	indio_dev->channels = channels;
- 
-@@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	irqreturn_t (*handler)(int irq, void *p) = NULL;
- 	struct stm32_adc *adc;
-+	bool timestamping = false;
- 	int ret;
- 
- 	if (!pdev->dev.of_node)
-@@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = stm32_adc_chan_of_init(indio_dev);
--	if (ret < 0)
--		return ret;
--
- 	ret = stm32_adc_dma_request(dev, indio_dev);
- 	if (ret < 0)
- 		return ret;
- 
--	if (!adc->dma_chan)
-+	if (!adc->dma_chan) {
-+		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
-+		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
-+		 * runs in the IRQ thread to push out buffer along with timestamp.
-+		 */
- 		handler = &stm32_adc_trigger_handler;
-+		timestamping = true;
-+	}
-+
-+	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
-+	if (ret < 0)
-+		goto err_dma_disable;
- 
- 	ret = iio_triggered_buffer_setup(indio_dev,
- 					 &iio_pollfunc_store_time, handler,
--- 
-2.30.0
-
+-michael
