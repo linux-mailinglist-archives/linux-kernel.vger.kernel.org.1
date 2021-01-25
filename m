@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C955302777
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37390302792
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730591AbhAYQHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:07:07 -0500
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:49934 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730376AbhAYQF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:05:29 -0500
-Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10PFK43O002800;
-        Mon, 25 Jan 2021 15:29:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=dsJ5c6z8E2D26JiA6krIDrztQfJIF7o7uMfeJJx/8GE=;
- b=GtCvChbEiJ8EB+t+RcpaUAwa7fmnq/UPwBnRs7hOnMLpPsybj+37MOKjFSHCgyLYttiG
- ISqc980CQru82qGcjoNHH2YhQH/05Af/L9zIATjjyqxYWJWtNWrj58fv7IMhQHpuezKm
- 3RpoM0Jk4cUdmoTzbXrM7KI6wpOV8/W3tI64OG2KWh6/I09uR/U4Ej0L2Gybdz1M++pR
- uJndjvayn1pdBhP1VJXhdx0IhaObciKLE0ZdzRABior2w69qkh9yNhGo6FUrIAuuO5jU
- IVd0646hanMbYvHIrrrQNlGjWznGvkQBkMV1YDBHUA0mnhCDX2m73HlN3OWayGpwKErx Vw== 
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0b-002e3701.pphosted.com with ESMTP id 368cf5x3w6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 15:29:24 +0000
-Received: from g4t3433.houston.hpecorp.net (g4t3433.houston.hpecorp.net [16.208.49.245])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 5B0534F;
-        Mon, 25 Jan 2021 15:29:23 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.214.160.247])
-        by g4t3433.houston.hpecorp.net (Postfix) with ESMTP id A710A4A;
-        Mon, 25 Jan 2021 15:29:22 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 09:29:22 -0600
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     trix@redhat.com
-Cc:     robinmholt@gmail.com, steve.wahl@hpe.com, mike.travis@hpe.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sgi-xp: remove h from printk format specifier
-Message-ID: <20210125152922.GQ144275@swahl-home.5wahls.com>
-References: <20210123160003.1777766-1-trix@redhat.com>
+        id S1730267AbhAYQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:14:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58244 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729862AbhAYQO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 11:14:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611589185; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zKS/Is5s9cc0mzPuWsCvSSGfuL7/tBg1PVAllAYqfSU=;
+        b=TDxYHXSkfZ2OFjnCSFKr3cLU1pTXjeRqsX+yoD/GrbAWpwcu/BRne7P8UJJeilurf6S61l
+        jIZ9y62a+zX2hG3utViE7U7uzmd6K61dhRsEZgt+4HXB0X8O1jTnhROVRP78seKgn3eOxI
+        3SHfPblJ7Slvp9x+xkZcQMwER+1afQk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2AD06ADD8;
+        Mon, 25 Jan 2021 15:39:45 +0000 (UTC)
+Date:   Mon, 25 Jan 2021 16:39:43 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
+Message-ID: <20210125153943.GN827@dhcp22.suse.cz>
+References: <20210120162148.1973-1-urezki@gmail.com>
+ <20210125132236.GJ827@dhcp22.suse.cz>
+ <20210125143150.GA2282@pc638.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210123160003.1777766-1-trix@redhat.com>
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_06:2021-01-25,2021-01-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 malwarescore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101250089
+In-Reply-To: <20210125143150.GA2282@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-By: Steve Wahl <steve.wahl@hpe.com>
+On Mon 25-01-21 15:31:50, Uladzislau Rezki wrote:
+> > On Wed 20-01-21 17:21:46, Uladzislau Rezki (Sony) wrote:
+> > > For a single argument we can directly request a page from a caller
+> > > context when a "carry page block" is run out of free spots. Instead
+> > > of hitting a slow path we can request an extra page by demand and
+> > > proceed with a fast path.
+> > > 
+> > > A single-argument kvfree_rcu() must be invoked in sleepable contexts,
+> > > and that its fallback is the relatively high latency synchronize_rcu().
+> > > Single-argument kvfree_rcu() therefore uses GFP_KERNEL|__GFP_RETRY_MAYFAIL
+> > > to allow limited sleeping within the memory allocator.
+> > 
+> > __GFP_RETRY_MAYFAIL can be quite heavy. It is effectively the most heavy
+> > way to allocate without triggering the OOM killer. Is this really what
+> > you need/want? Is __GFP_NORETRY too weak?
+> > 
+> Hm... We agreed to proceed with limited lightwait memory direct reclaim.
+> Johannes Weiner proposed to go with __GFP_NORETRY flag as a starting
+> point: https://www.spinics.net/lists/rcu/msg02856.html
+> 
+> <snip>
+>     So I'm inclined to suggest __GFP_NORETRY as a starting point, and make
+>     further decisions based on instrumentation of the success rates of
+>     these opportunistic allocations.
+> <snip>
 
-On Sat, Jan 23, 2021 at 08:00:03AM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> This change fixes the checkpatch warning described in this commit
-> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
->   unnecessary %h[xudi] and %hh[xudi]")
-> 
-> Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi].
-> 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/misc/sgi-xp/xpnet.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/misc/sgi-xp/xpnet.c b/drivers/misc/sgi-xp/xpnet.c
-> index 23837d0d6f4a..2508f83bdc3f 100644
-> --- a/drivers/misc/sgi-xp/xpnet.c
-> +++ b/drivers/misc/sgi-xp/xpnet.c
-> @@ -208,7 +208,7 @@ xpnet_receive(short partid, int channel, struct xpnet_message *msg)
->  	} else {
->  		dst = (void *)((u64)skb->data & ~(L1_CACHE_BYTES - 1));
->  		dev_dbg(xpnet, "transferring buffer to the skb->data area;\n\t"
-> -			"xp_remote_memcpy(0x%p, 0x%p, %hu)\n", dst,
-> +			"xp_remote_memcpy(0x%p, 0x%p, %u)\n", dst,
->  					  (void *)msg->buf_pa, msg->size);
->  
->  		ret = xp_remote_memcpy(xp_pa(dst), msg->buf_pa, msg->size);
-> @@ -218,7 +218,7 @@ xpnet_receive(short partid, int channel, struct xpnet_message *msg)
->  			 * !!! appears in_use and we can't just call
->  			 * !!! dev_kfree_skb.
->  			 */
-> -			dev_err(xpnet, "xp_remote_memcpy(0x%p, 0x%p, 0x%hx) "
-> +			dev_err(xpnet, "xp_remote_memcpy(0x%p, 0x%p, 0x%x) "
->  				"returned error=0x%x\n", dst,
->  				(void *)msg->buf_pa, msg->size, ret);
->  
-> -- 
-> 2.27.0
-> 
+I completely agree with Johannes here.
+
+> but for some reason, i can't find a tail or head of it, we introduced
+> __GFP_RETRY_MAYFAIL what is a heavy one from a time consuming point of view.
+> What we would like to avoid.
+
+Not that I object to this use but I think it would be much better to use
+it based on actual data. Going along with it right away might become a
+future burden to make any changes in this aspect later on due to lack of 
+exact reasoning. General rule of thumb for __GFP_RETRY_MAYFAIL is really
+try as hard as it can get without being really disruptive (like OOM
+killing something). And your wording didn't really give me that
+impression.
 
 -- 
-Steve Wahl, Hewlett Packard Enterprise
+Michal Hocko
+SUSE Labs
