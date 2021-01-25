@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8158D3037FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382EC303802
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390293AbhAZIf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:35:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58902 "EHLO mail.kernel.org"
+        id S1730333AbhAZIgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:36:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728579AbhAYSnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728507AbhAYSnZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:43:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A815224F9;
-        Mon, 25 Jan 2021 18:42:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07CEC229C5;
+        Mon, 25 Jan 2021 18:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600176;
-        bh=WZyiB/ChFtC9hDVFASICKfnVZNMXTSiEW2YrwglHarI=;
+        s=korg; t=1611600179;
+        bh=0KM3P452JV5sRjpfsh+9a+nhHk68faqHIAIwdiEHptc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iGXbmLNbtSUB3Infy5U/8zCbXoLtTIa2sfn9gdq1fVA4abHGx5z4TxKEMKpIlzcuP
-         4u3AfiWs0cLjfvs8R9SxsJA/lT1eJE0NDzz1PeiphSX34BW9uZhXtHJDnNKf+GX23G
-         zpxMvKNGEZmhFG+/OL36kXpnyxN/PUq12bAqKcjM=
+        b=i+kjOxK8jbfw8fbQkICn7lfepQD2K7kr51u/iWOL4klb0yA/7UTvwYBuTu0dcp/FI
+         5OFOC5M4eOuia9VjMHAJG0OQe+5ff9PsQXt5BT9z0h2+8UekW2ralBa9TXCEkvV2nt
+         7wgJFMFPVF48hUiWuQ513ihlDcfdjl2qM5nx63Lk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/58] can: peak_usb: fix use after free bugs
-Date:   Mon, 25 Jan 2021 19:39:31 +0100
-Message-Id: <20210125183157.994272274@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 31/58] iio: ad5504: Fix setting power-down state
+Date:   Mon, 25 Jan 2021 19:39:32 +0100
+Message-Id: <20210125183158.039145976@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -41,59 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-[ Upstream commit 50aca891d7a554db0901b245167cd653d73aaa71 ]
+commit efd597b2839a9895e8a98fcb0b76d2f545802cd4 upstream.
 
-After calling peak_usb_netif_rx_ni(skb), dereferencing skb is unsafe.
-Especially, the can_frame cf which aliases skb memory is accessed
-after the peak_usb_netif_rx_ni().
+The power-down mask of the ad5504 is actually a power-up mask. Meaning if
+a bit is set the corresponding channel is powered up and if it is not set
+the channel is powered down.
 
-Reordering the lines solves the issue.
+The driver currently has this the wrong way around, resulting in the
+channel being powered up when requested to be powered down and vice versa.
 
-Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
-Link: https://lore.kernel.org/r/20210120114137.200019-4-mailhol.vincent@wanadoo.fr
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 3bbbf150ffde ("staging:iio:dac:ad5504: Use strtobool for boolean values")
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Acked-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Link: https://lore.kernel.org/r/20201209104649.5794-1-lars@metafoo.de
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/iio/dac/ad5504.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 19600d35aac55..40ac37fe9dcde 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -520,11 +520,11 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
- 	else
- 		memcpy(cfd->data, rm->d, cfd->len);
+--- a/drivers/iio/dac/ad5504.c
++++ b/drivers/iio/dac/ad5504.c
+@@ -189,9 +189,9 @@ static ssize_t ad5504_write_dac_powerdow
+ 		return ret;
  
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
--
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += cfd->len;
+ 	if (pwr_down)
+-		st->pwr_down_mask |= (1 << chan->channel);
+-	else
+ 		st->pwr_down_mask &= ~(1 << chan->channel);
++	else
++		st->pwr_down_mask |= (1 << chan->channel);
  
-+	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(rm->ts_low));
-+
- 	return 0;
- }
- 
-@@ -586,11 +586,11 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
- 	if (!skb)
- 		return -ENOMEM;
- 
--	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
--
- 	netdev->stats.rx_packets++;
- 	netdev->stats.rx_bytes += cf->can_dlc;
- 
-+	peak_usb_netif_rx(skb, &usb_if->time_ref, le32_to_cpu(sm->ts_low));
-+
- 	return 0;
- }
- 
--- 
-2.27.0
-
+ 	ret = ad5504_spi_write(st, AD5504_ADDR_CTRL,
+ 				AD5504_DAC_PWRDWN_MODE(st->pwr_down_mode) |
 
 
