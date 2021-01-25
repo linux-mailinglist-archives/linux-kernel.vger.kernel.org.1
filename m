@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9379230386A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373BF303859
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 09:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390638AbhAZIyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 03:54:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33852 "EHLO mail.kernel.org"
+        id S2390639AbhAZIuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 03:50:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbhAYSqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:46:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4E952075B;
-        Mon, 25 Jan 2021 18:45:19 +0000 (UTC)
+        id S1729986AbhAYSpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:45:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B83520665;
+        Mon, 25 Jan 2021 18:45:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600320;
-        bh=lej7wnmiUtQtlE1WgTEjkg07smA7m24/nuwPXk4qCEo=;
+        s=korg; t=1611600322;
+        bh=n75Q2tY6ZfNexKfok1s9pQn9mz47sj6JLbYAKUy6jNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFLIY6y7XwTxrLtwcJ3dXNgw5qQbxvdqhIwXq+FD7rRguWZFi+gmBsK19DW/2TNQW
-         vhLR21DVFk0s6U6QjPrJioJ//4iK5t1OXgEKnt22TwN+pQthEnvLmv35BTQ/9IzqCc
-         ZUKWTXFPZQ6RZ7xlZ0lcxMa8FR+KlqZJMjbdyMw8=
+        b=C9Gwn/NyCaPQFCD+w5WxMyKINtGPngTYZdDLUUG/UxRqwXeDwcw3n4TlhBC4Zs5kJ
+         pFQJM8mGT9tpOWYfNqjJd5IJL7hjDhYgiJxafiHn6rxBgUASgIOYWmoI5jp7ZGrqJw
+         Kmf31CPJAmAhNc+8LbiOjiJ2i+jOnbU2Qr8IKf50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wang Hui <john.wanghui@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: [PATCH 5.4 57/86] stm class: Fix module init return on allocation failure
-Date:   Mon, 25 Jan 2021 19:39:39 +0100
-Message-Id: <20210125183203.460005989@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+Subject: [PATCH 5.4 58/86] serial: mvebu-uart: fix tx lost characters at power off
+Date:   Mon, 25 Jan 2021 19:39:40 +0100
+Message-Id: <20210125183203.502167744@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
 References: <20210125183201.024962206@linuxfoundation.org>
@@ -40,48 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hui <john.wanghui@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 927633a6d20af319d986f3e42c3ef9f6d7835008 upstream.
+commit 54ca955b5a4024e2ce0f206b03adb7109bc4da26 upstream.
 
-In stm_heartbeat_init(): return value gets reset after the first
-iteration by stm_source_register_device(), so allocation failures
-after that will, after a clean up, return success. Fix that.
+Commit c685af1108d7 ("serial: mvebu-uart: fix tx lost characters") fixed tx
+lost characters at low baud rates but started causing tx lost characters
+when kernel is going to power off or reboot.
 
-Fixes: 119291853038 ("stm class: Add heartbeat stm source device")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hui <john.wanghui@huawei.com>
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Link: https://lore.kernel.org/r/20210115195917.3184-2-alexander.shishkin@linux.intel.com
+TX_EMP tells us when transmit queue is empty therefore all characters were
+transmitted. TX_RDY tells us when CPU can send a new character.
+
+Therefore we need to use different check prior transmitting new character
+and different check after all characters were sent.
+
+This patch splits polling code into two functions: wait_for_xmitr() which
+waits for TX_RDY and wait_for_xmite() which waits for TX_EMP.
+
+When rebooting A3720 platform without this patch on UART is print only:
+[   42.699�
+
+And with this patch on UART is full output:
+[   39.530216] reboot: Restarting system
+
+Fixes: c685af1108d7 ("serial: mvebu-uart: fix tx lost characters")
+Signed-off-by: Pali Rohár <pali@kernel.org>
 Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201223191931.18343-1-pali@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hwtracing/stm/heartbeat.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/tty/serial/mvebu-uart.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
---- a/drivers/hwtracing/stm/heartbeat.c
-+++ b/drivers/hwtracing/stm/heartbeat.c
-@@ -64,7 +64,7 @@ static void stm_heartbeat_unlink(struct
+--- a/drivers/tty/serial/mvebu-uart.c
++++ b/drivers/tty/serial/mvebu-uart.c
+@@ -648,6 +648,14 @@ static void wait_for_xmitr(struct uart_p
+ 				  (val & STAT_TX_RDY(port)), 1, 10000);
+ }
  
- static int stm_heartbeat_init(void)
++static void wait_for_xmite(struct uart_port *port)
++{
++	u32 val;
++
++	readl_poll_timeout_atomic(port->membase + UART_STAT, val,
++				  (val & STAT_TX_EMP), 1, 10000);
++}
++
+ static void mvebu_uart_console_putchar(struct uart_port *port, int ch)
  {
--	int i, ret = -ENOMEM;
-+	int i, ret;
+ 	wait_for_xmitr(port);
+@@ -675,7 +683,7 @@ static void mvebu_uart_console_write(str
  
- 	if (nr_devs < 0 || nr_devs > STM_HEARTBEAT_MAX)
- 		return -EINVAL;
-@@ -72,8 +72,10 @@ static int stm_heartbeat_init(void)
- 	for (i = 0; i < nr_devs; i++) {
- 		stm_heartbeat[i].data.name =
- 			kasprintf(GFP_KERNEL, "heartbeat.%d", i);
--		if (!stm_heartbeat[i].data.name)
-+		if (!stm_heartbeat[i].data.name) {
-+			ret = -ENOMEM;
- 			goto fail_unregister;
-+		}
+ 	uart_console_write(port, s, count, mvebu_uart_console_putchar);
  
- 		stm_heartbeat[i].data.nr_chans	= 1;
- 		stm_heartbeat[i].data.link	= stm_heartbeat_link;
+-	wait_for_xmitr(port);
++	wait_for_xmite(port);
+ 
+ 	if (ier)
+ 		writel(ier, port->membase + UART_CTRL(port));
 
 
