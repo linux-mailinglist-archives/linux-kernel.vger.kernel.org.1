@@ -2,60 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F64230264F
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEEA302658
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 15:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729481AbhAYOa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 09:30:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53882 "EHLO mail.kernel.org"
+        id S1729539AbhAYOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 09:33:09 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:39169 "EHLO m42-8.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729441AbhAYOYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 09:24:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D935123102;
-        Mon, 25 Jan 2021 14:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611584629;
-        bh=ovE4LpzpvxphrWmCFe1gDhMEb1FKhNFTwP40GDj5+h0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ENLFpAIKQk0uVFWgTWA13MA+wIhsdTjp6o2/kO2I674QTwov6SJ5jqSlyXaxoAJgM
-         h+XsGz8flLZ+jDJljyWRIiESh3Lgw7vkBSVjoxkLXOEMFu91nWYc6t3TtcvUR5M/u+
-         1uMaHEBx8gQEleo3Vg2gHMaNUTvxZzIel1PHd3IA=
-Date:   Mon, 25 Jan 2021 15:23:46 +0100
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        stable <stable@vger.kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me
-Subject: Re: [BACKPORT 5.4 PATCH] pinctrl: ingenic: Fix JZ4760 support
-Message-ID: <YA7UcnXkuAh1nuys@kroah.com>
-References: <1611494593252195@kroah.com>
- <20210124134704.202931-1-paul@crapouillou.net>
- <KEYFNQ.YUG2S0J7JWMP2@crapouillou.net>
+        id S1729441AbhAYOb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 09:31:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611585069; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=WIm37k0ByHb05TgsSjKkGlgy9s/AveqlMwkdHtOxQkE=;
+ b=xIeUwjwqBkUB1u702Pzeu9GE/W2HHkLCIfusubeWfMpl4IeAHSX76OewWtpsuf91RnTzuWxG
+ lCzJVxiO+XzCENn17/v+FWi/E1NsSM0+LoR49STsws+y/d+vdJ77tc0qhyWJGJPvonJgI1Z5
+ hu3quoF1iBPe+qVXg3h2hQ5k3Dc=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 600ed606ad4c9e395bf69eab (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 25 Jan 2021 14:30:30
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 10EA1C43464; Mon, 25 Jan 2021 14:30:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BA8B0C433C6;
+        Mon, 25 Jan 2021 14:30:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BA8B0C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <KEYFNQ.YUG2S0J7JWMP2@crapouillou.net>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] rtlwifi: rtl8821ae: style: Simplify bool comparison
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+References: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>
+Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210125143030.10EA1C43464@smtp.codeaurora.org>
+Date:   Mon, 25 Jan 2021 14:30:30 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 24, 2021 at 01:49:32PM +0000, Paul Cercueil wrote:
-> 
-> 
-> Le dim. 24 janv. 2021 à 13:47, Paul Cercueil <paul@crapouillou.net> a écrit
-> :
-> > - JZ4760 and JZ4760B have a similar register layout as the JZ4740, and
-> >   don't use the new register layout, which was introduced with the
-> >   JZ4770 SoC and not the JZ4760 or JZ4760B SoCs.
-> > 
-> > - The JZ4740 code path only expected two function modes to be
-> >   configurable for each pin, and wouldn't work with more than two. Fix
-> >   it for the JZ4760, which has four configurable function modes.
-> 
-> Forgot to add the original commit ID:
-> 9a85c09a3f507b925d75cb0c7c8f364467038052
+YANG LI <abaci-bugfix@linux.alibaba.com> wrote:
 
-Thanks, now queued up.
+> Fix the following coccicheck warning:
+> ./drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3853:7-17:
+> WARNING: Comparison of 0/1 to bool variable
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
 
-greg k-h
+Patchwork gives me this From field:
+
+From: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+
+I guess you are sharing the same email address with multiple persons? And patchwork stored the first person using that address?
+
+I recommend using individual addresses for each person submitting patches. I
+cannot apply this.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
