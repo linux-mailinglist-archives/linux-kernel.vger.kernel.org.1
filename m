@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE13303681
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643E8303686
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 07:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbhAZG0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 01:26:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48906 "EHLO mail.kernel.org"
+        id S1730181AbhAZG2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 01:28:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729004AbhAYNtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 08:49:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A552229C;
-        Mon, 25 Jan 2021 13:48:24 +0000 (UTC)
+        id S1729103AbhAYNvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 08:51:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 089F222C9E;
+        Mon, 25 Jan 2021 13:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611582505;
-        bh=aM4WEZ4ICrEfWHuqpLjWreQ0Ds/6EnJrDpgFJXbEqQc=;
+        bh=8xzLVqBc4Jci34US4grEu+cGJ0o9R2i13nNACkFy6Uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=izVYI39BOonN4h0GibLNCPs2UfWop+zTIvmjeSS1xUyQayPuO+uDSi3CqsYUvz/cX
-         HvFVCjCcG4iyrFgr8+6NCCaIVy+nodqU2KiIAVANwXJaq9d0OLDIOvVY0ylfN3U6wK
-         gI0uBYqqXyOoymZG2by1GJuKiAHL+YJ0Mg9E8ScUWOov7k3nxTNkUDXCkKjS8Djs/y
-         Ijpqpe6qmn3523MiZiLjwuH8LAy5FM6TivRaufw3aMmgF7td8BK74DF1W+75do18Kp
-         43bwNJEFV8D/f64WA6D8NFdlxlJc4NTEOWUg5/eYX8PK2nJ+5G86niR0xlm62nIxrT
-         syWf9QRp1X6Tg==
+        b=dh8ErcIB19k7yiaBeige7PIdnVy8VVUvNQxYDjOyJzpN4pdb0F4CWI0s6Op2DTorV
+         +Yo/siyb/mg3+EGN7gli+8GQcpPS1FPIPS0MGgkZeP7e3fQx8rFV+HsZWDQD3vQlAt
+         7bpTfksWKytTqSK1lGrO8R2cBCv3FPIwoVWRYINoFWqCHDm6fZzfkFM9Ay0DMgmmhq
+         oJJenFniHGbOymYupI7Qn3frFY1BQc1SKu5eq2kinr4F7+2rf7Ydq+c3/UxLz1PuF3
+         yvRLS22Auf6i7ivEfE66f5tUIniio5UnCb4MYbqr6CKdSvPCM5WcB2jLxfvClVwcm8
+         rNSG6O6Lg4tgQ==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1l42EL-00034Z-Uq; Mon, 25 Jan 2021 14:48:33 +0100
+        id 1l42EM-00034c-1a; Mon, 25 Jan 2021 14:48:34 +0100
 From:   Johan Hovold <johan@kernel.org>
 To:     linux-usb@vger.kernel.org
 Cc:     Pho Tran <Pho.Tran@silabs.com>, linux-kernel@vger.kernel.org,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5/7] USB: serial: cp210x: clean up printk zero padding
-Date:   Mon, 25 Jan 2021 14:48:15 +0100
-Message-Id: <20210125134817.11749-6-johan@kernel.org>
+Subject: [PATCH 6/7] USB: serial: cp210x: fix RTS handling
+Date:   Mon, 25 Jan 2021 14:48:16 +0100
+Message-Id: <20210125134817.11749-7-johan@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210125134817.11749-1-johan@kernel.org>
 References: <20210125134817.11749-1-johan@kernel.org>
@@ -42,36 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the 0-flag and a field width to specify zero-padding consistently in
-printk messages.
+Clearing TIOCM_RTS should always deassert RTS and setting the same bit
+should enable auto-RTS if hardware flow control is enabled.
+
+This allows user space to throttle input directly at the source also
+when hardware-assisted flow control is enabled and makes dtr_rts()
+always deassert both lines during close (when HUPCL is set).
 
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/cp210x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/cp210x.c | 47 +++++++++++++++++++++++++++++++------
+ 1 file changed, 40 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index 36ae44818c13..4ba3fb096bf1 100644
+index 4ba3fb096bf1..f00b736f3cd3 100644
 --- a/drivers/usb/serial/cp210x.c
 +++ b/drivers/usb/serial/cp210x.c
-@@ -1319,7 +1319,7 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
- 	if (port_priv->crtscts)
- 		control &= ~CONTROL_WRITE_RTS;
+@@ -1166,7 +1166,10 @@ static void cp210x_set_flow_control(struct tty_struct *tty,
+ 	if (C_CRTSCTS(tty)) {
+ 		ctl_hs |= CP210X_SERIAL_CTS_HANDSHAKE;
+ 		flow_repl &= ~CP210X_SERIAL_RTS_MASK;
+-		flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
++		if (port_priv->rts)
++			flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
++		else
++			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+ 		port_priv->crtscts = true;
+ 	} else {
+ 		ctl_hs &= ~CP210X_SERIAL_CTS_HANDSHAKE;
+@@ -1286,6 +1289,8 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
+ 		unsigned int set, unsigned int clear)
+ {
+ 	struct cp210x_port_private *port_priv = usb_get_serial_port_data(port);
++	struct cp210x_flow_ctl flow_ctl;
++	u32 ctl_hs, flow_repl;
+ 	u16 control = 0;
+ 	int ret;
  
--	dev_dbg(&port->dev, "%s - control = 0x%.4x\n", __func__, control);
-+	dev_dbg(&port->dev, "%s - control = 0x%04x\n", __func__, control);
+@@ -1313,16 +1318,44 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
+ 	}
  
- 	ret = cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
+ 	/*
+-	 * SET_MHS cannot be used to control RTS when auto-RTS is enabled.
+-	 * Note that RTS is still deasserted when disabling the UART on close.
++	 * Use SET_FLOW to set DTR and enable/disable auto-RTS when hardware
++	 * flow control is enabled.
+ 	 */
+-	if (port_priv->crtscts)
+-		control &= ~CONTROL_WRITE_RTS;
++	if (port_priv->crtscts && control & CONTROL_WRITE_RTS) {
++		ret = cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl,
++				sizeof(flow_ctl));
++		if (ret)
++			goto out_unlock;
  
-@@ -1353,7 +1353,7 @@ static int cp210x_tiocmget(struct tty_struct *tty)
- 		|((control & CONTROL_RING)? TIOCM_RI  : 0)
- 		|((control & CONTROL_DCD) ? TIOCM_CD  : 0);
+-	dev_dbg(&port->dev, "%s - control = 0x%04x\n", __func__, control);
++		ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
++		flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
  
--	dev_dbg(&port->dev, "%s - control = 0x%.2x\n", __func__, control);
-+	dev_dbg(&port->dev, "%s - control = 0x%02x\n", __func__, control);
+-	ret = cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
++		ctl_hs &= ~CP210X_SERIAL_DTR_MASK;
++		if (port_priv->dtr)
++			ctl_hs |= CP210X_SERIAL_DTR_ACTIVE;
++		else
++			ctl_hs |= CP210X_SERIAL_DTR_INACTIVE;
  
- 	return result;
- }
++		flow_repl &= ~CP210X_SERIAL_RTS_MASK;
++		if (port_priv->rts)
++			flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
++		else
++			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
++
++		flow_ctl.ulControlHandshake = cpu_to_le32(ctl_hs);
++		flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
++
++		dev_dbg(&port->dev, "%s - ctrl = 0x%02x, flow = 0x%02x\n",
++				__func__, ctl_hs, flow_repl);
++
++		ret = cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
++				sizeof(flow_ctl));
++	} else {
++		dev_dbg(&port->dev, "%s - control = 0x%04x\n", __func__, control);
++
++		ret = cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
++	}
++out_unlock:
+ 	mutex_unlock(&port_priv->mutex);
+ 
+ 	return ret;
 -- 
 2.26.2
 
