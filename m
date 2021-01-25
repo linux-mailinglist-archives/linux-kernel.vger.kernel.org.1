@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAF23031BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F22D3031B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:22:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727479AbhAYSsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 13:48:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59514 "EHLO mail.kernel.org"
+        id S1730845AbhAYSsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 13:48:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728621AbhAYSnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727143AbhAYSnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 13:43:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDEF0206B2;
-        Mon, 25 Jan 2021 18:43:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B917230FA;
+        Mon, 25 Jan 2021 18:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600190;
-        bh=6qUKba3U+XS8Xjrh/Qv9ZVteUNEBPoA5480vfKdzlcQ=;
+        s=korg; t=1611600187;
+        bh=ztdRqxqSNoZeQUmC0PpMWZ7wvHrhTUodvhLo0b1ebdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hGuLQOVyS+Ph19RB8keNIYLRqOk5bQ7L6MSCv+s+xNizxP1W9wJ/bLEQ2VOZQp5ZC
-         z0DeR0HXedHWrM64GkdGLnuLF0lUY331psjZZjcUlE6Ztyt6EgbGX5xe1xlyc7WRsQ
-         4QU4q90Pj/G8kN9cbyn5PC2DJJ4KzlklR/4ABkUc=
+        b=lW+8Q8bX0YmbBDkLVeSCOoPNhx8Bf4FzWZJeXKMQnGj+KkwP/9V9GUP3B9Ny5ka2z
+         k5A4Z+OValat/SCZvH+BvhoEVPMVrn6kJDJuxVOOLVqUv8oZ3X3NZ+W3tOVp31ruEl
+         SG7+CB5clsVvUsbHyklAMahGfIeEhK1EankUa4Dg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Robert Richter <rric@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/58] i2c: octeon: check correct size of maximum RECV_LEN packet
-Date:   Mon, 25 Jan 2021 19:39:26 +0100
-Message-Id: <20210125183157.780600645@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hui <john.wanghui@huawei.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: [PATCH 4.19 34/58] stm class: Fix module init return on allocation failure
+Date:   Mon, 25 Jan 2021 19:39:35 +0100
+Message-Id: <20210125183158.172198534@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183156.702907356@linuxfoundation.org>
 References: <20210125183156.702907356@linuxfoundation.org>
@@ -41,37 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Wang Hui <john.wanghui@huawei.com>
 
-[ Upstream commit 1b2cfa2d1dbdcc3b6dba1ecb7026a537a1d7277f ]
+commit 927633a6d20af319d986f3e42c3ef9f6d7835008 upstream.
 
-I2C_SMBUS_BLOCK_MAX defines already the maximum number as defined in the
-SMBus 2.0 specs. No reason to add one to it.
+In stm_heartbeat_init(): return value gets reset after the first
+iteration by stm_source_register_device(), so allocation failures
+after that will, after a clean up, return success. Fix that.
 
-Fixes: 886f6f8337dd ("i2c: octeon: Support I2C_M_RECV_LEN")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Robert Richter <rric@kernel.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 119291853038 ("stm class: Add heartbeat stm source device")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hui <john.wanghui@huawei.com>
+Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Link: https://lore.kernel.org/r/20210115195917.3184-2-alexander.shishkin@linux.intel.com
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/i2c/busses/i2c-octeon-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwtracing/stm/heartbeat.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-octeon-core.c b/drivers/i2c/busses/i2c-octeon-core.c
-index d9607905dc2f1..845eda70b8cab 100644
---- a/drivers/i2c/busses/i2c-octeon-core.c
-+++ b/drivers/i2c/busses/i2c-octeon-core.c
-@@ -347,7 +347,7 @@ static int octeon_i2c_read(struct octeon_i2c *i2c, int target,
- 		if (result)
- 			return result;
- 		if (recv_len && i == 0) {
--			if (data[i] > I2C_SMBUS_BLOCK_MAX + 1)
-+			if (data[i] > I2C_SMBUS_BLOCK_MAX)
- 				return -EPROTO;
- 			length += data[i];
- 		}
--- 
-2.27.0
-
+--- a/drivers/hwtracing/stm/heartbeat.c
++++ b/drivers/hwtracing/stm/heartbeat.c
+@@ -64,7 +64,7 @@ static void stm_heartbeat_unlink(struct
+ 
+ static int stm_heartbeat_init(void)
+ {
+-	int i, ret = -ENOMEM;
++	int i, ret;
+ 
+ 	if (nr_devs < 0 || nr_devs > STM_HEARTBEAT_MAX)
+ 		return -EINVAL;
+@@ -72,8 +72,10 @@ static int stm_heartbeat_init(void)
+ 	for (i = 0; i < nr_devs; i++) {
+ 		stm_heartbeat[i].data.name =
+ 			kasprintf(GFP_KERNEL, "heartbeat.%d", i);
+-		if (!stm_heartbeat[i].data.name)
++		if (!stm_heartbeat[i].data.name) {
++			ret = -ENOMEM;
+ 			goto fail_unregister;
++		}
+ 
+ 		stm_heartbeat[i].data.nr_chans	= 1;
+ 		stm_heartbeat[i].data.link		= stm_heartbeat_link;
 
 
