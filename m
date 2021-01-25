@@ -2,188 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A483030A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9870A30309E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 00:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731894AbhAYX4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 18:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
+        id S1732449AbhAYXzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 18:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731744AbhAYTot (ORCPT
+        with ESMTP id S1732014AbhAYTpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:44:49 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04952C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:44:05 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id n7so4126074oic.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 11:44:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4LOgS3Tl2OgGzM16/a2EHEUkaq5mzG8xZay7d7qs3K4=;
-        b=MMyjieg972wImvHqf6jMv96D0tW3Zp1XpJThWfiGqGO6cDo4b7fbuo7hYfjywmEBCp
-         z5WoLu4wiDnya9qgIuDvhiHvv1kkfdaZmCKtRbH6QMeJJj0OF732rjckqukloB9ukmSC
-         GumjlL81O4whjWsPQcz2UWPP0sqm7mxKrc1uRPXLy/0j7lI4noMCNRC11hlGjH3RyCmy
-         3rQfT51k360Byu3ev140/doLf+p9Yz6XfCyJuX0ncexj2mOowgqVnijY0olRFWyfdY8C
-         ybZpVRuQidQO8b3rAIeinteF5rxrGQgLecqmVxE8Fje6WTR/CTUMAERcbhr1a8B6y7mE
-         ns6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4LOgS3Tl2OgGzM16/a2EHEUkaq5mzG8xZay7d7qs3K4=;
-        b=r7RY7ZnZIEySvlbMVOLwnH8/2kV7sOOHJChmyZvtWPsIGX6MoOSuH5Bbrj8pm0ITSX
-         0Yv0g2mB+ZxVHtWAlXP5Mxjmqfoq79XwFoPKyM4Mib7y6FQyHXo3I+/d/3sZJpXbJSvo
-         lk+325LjoDSwOhlxka17S2PJiX46mVcHYyjPr4YQuFKGYdLujh0OiABMnJAdwdWF/THm
-         lSeju6gwJG1I5nLDzHLQr64JOPpWfuFBIQYNaNKVdh5wnsX/S+gbc1HhR6UONBocTN//
-         8LJqrgygoaS5diZWPKnqtOafvDP/gSlDjyTk4FbTM7JegZSXeZZzb6rL4Xbmy+JHkFFr
-         X4LQ==
-X-Gm-Message-State: AOAM532s8Vqi4uGYGMpLJzkVqc+89AEJbSA6XnWil3G2588ZFsQ8Jzdx
-        6ATzvHW+fzDH1I6Q3KXOjmMb2g==
-X-Google-Smtp-Source: ABdhPJxw8MvsLzxsJHlbB5NEQ66freuhA82HcyoI+f7DGFFvdQx8XZlUEP8x26ivt4VksVPwDJG8IQ==
-X-Received: by 2002:a05:6808:69a:: with SMTP id k26mr1092485oig.115.1611603845385;
-        Mon, 25 Jan 2021 11:44:05 -0800 (PST)
-Received: from [192.168.17.50] (CableLink-189-219-73-147.Hosts.InterCable.net. [189.219.73.147])
-        by smtp.gmail.com with ESMTPSA id g14sm3182044oon.23.2021.01.25.11.44.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 11:44:04 -0800 (PST)
-Subject: Re: [PATCH 5.4 00/86] 5.4.93-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20210125183201.024962206@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <dec01147-3526-59d8-d7a2-5d23d42c5671@linaro.org>
-Date:   Mon, 25 Jan 2021 13:44:03 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 25 Jan 2021 14:45:22 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376B8C06174A;
+        Mon, 25 Jan 2021 11:44:38 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 55F2822ED8;
+        Mon, 25 Jan 2021 20:44:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1611603872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6If+MuA7xMjVjPkj+ScYzphIBDiMZs5ah103gQQWTRU=;
+        b=Ynwg8u+t+4ehPbQ/ZynTIQmrV+t43/QDTOMm4j884O+3dbfozohojiqWzcwElFOaFmRTgv
+        2ZSGJvv+2x3vaGckP6AO0wmdy5s3mb2Fn3t4zXO7s2wMJFgQOIKPN6UCf44FWmq7JnKnIP
+        BVQw5Ta+4DdNG5wKOpDWu48T169HqYw=
 MIME-Version: 1.0
-In-Reply-To: <20210125183201.024962206@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 25 Jan 2021 20:44:28 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
+ builtin_platform_driver()
+In-Reply-To: <CAGETcx-P-MxM+49XdUGBmg5YgnHS=fmz8uewywXvLSFKj=MqRQ@mail.gmail.com>
+References: <20210120105246.23218-1-michael@walle.cc>
+ <CAL_JsqLSJCLtgPyAdKSqsy=JoHSLYef_0s-stTbiJ+VCq2qaSA@mail.gmail.com>
+ <CAGETcx86HMo=gaDdXFyJ4QQ-pGXWzw2G0J=SjC-eq4K7B1zQHg@mail.gmail.com>
+ <c3e35b90e173b15870a859fd7001a712@walle.cc>
+ <20210125165041.GA5979@e121166-lin.cambridge.arm.com>
+ <CAGETcx-P-MxM+49XdUGBmg5YgnHS=fmz8uewywXvLSFKj=MqRQ@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <40251e6b610897639e2e08fec87c73b3@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 1/25/21 12:38 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.93 release.
-> There are 86 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Am 2021-01-25 19:58, schrieb Saravana Kannan:
+> On Mon, Jan 25, 2021 at 8:50 AM Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com> wrote:
+>> 
+>> On Wed, Jan 20, 2021 at 08:28:36PM +0100, Michael Walle wrote:
+>> > [RESEND, fat-fingered the buttons of my mail client and converted
+>> > all CCs to BCCs :(]
+>> >
+>> > Am 2021-01-20 20:02, schrieb Saravana Kannan:
+>> > > On Wed, Jan 20, 2021 at 6:24 AM Rob Herring <robh@kernel.org> wrote:
+>> > > >
+>> > > > On Wed, Jan 20, 2021 at 4:53 AM Michael Walle <michael@walle.cc>
+>> > > > wrote:
+>> > > > >
+>> > > > > fw_devlink will defer the probe until all suppliers are ready. We can't
+>> > > > > use builtin_platform_driver_probe() because it doesn't retry after probe
+>> > > > > deferral. Convert it to builtin_platform_driver().
+>> > > >
+>> > > > If builtin_platform_driver_probe() doesn't work with fw_devlink, then
+>> > > > shouldn't it be fixed or removed?
+>> > >
+>> > > I was actually thinking about this too. The problem with fixing
+>> > > builtin_platform_driver_probe() to behave like
+>> > > builtin_platform_driver() is that these probe functions could be
+>> > > marked with __init. But there are also only 20 instances of
+>> > > builtin_platform_driver_probe() in the kernel:
+>> > > $ git grep ^builtin_platform_driver_probe | wc -l
+>> > > 20
+>> > >
+>> > > So it might be easier to just fix them to not use
+>> > > builtin_platform_driver_probe().
+>> > >
+>> > > Michael,
+>> > >
+>> > > Any chance you'd be willing to help me by converting all these to
+>> > > builtin_platform_driver() and delete builtin_platform_driver_probe()?
+>> >
+>> > If it just moving the probe function to the _driver struct and
+>> > remove the __init annotations. I could look into that.
+>> 
+>> Can I drop this patch then ?
 > 
-> Responses should be made by Wed, 27 Jan 2021 18:31:44 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.93-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> No, please pick it up. Michael and I were talking about doing similar
+> changes for other drivers.
 
-Sanity results from Linaro’s test farm.
-Regressions detected.
+Yes please, I was just about to answer, but Saravana beat me.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.93-rc1
-git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-git branch: linux-5.4.y
-git commit: 3deaa28e41d9780b3b462686a676fa1d21f55ad3
-git describe: v5.4.92-87-g3deaa28e41d9
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y-sanity/build/v5.4.92-87-g3deaa28e41d9
-
-Regressions (compared to build v5.4.92)
-------------------------------------------------------------------------
-
-x86_64:
-   build:
-     * clang-10-allnoconfig
-     * clang-10-tinyconfig
-     * gcc-8-allnoconfig
-     * gcc-8-tinyconfig
-     * gcc-9-allnoconfig
-     * gcc-9-tinyconfig
-     * gcc-10-allnoconfig
-     * gcc-10-tinyconfig
-
-riscv:
-   build:
-     * clang-10-defconfig
-     * clang-11-defconfig
-     * gcc-8-defconfig
-     * gcc-9-defconfig
-     * gcc-10-defconfig
-
-i386:
-   build:
-     * gcc-8-allnoconfig
-     * gcc-8-tinyconfig
-     * gcc-9-allnoconfig
-     * gcc-9-tinyconfig
-     * gcc-10-allnoconfig
-     * gcc-10-tinyconfig
-
-
-No fixes (compared to build v5.4.92)
-
-Ran 665 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- i386
-- juno-r2
-- mips
-- parisc
-- powerpc
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* ltp-smoketest-tests
-
-
-i386 and x86_64 errors as reported on 5.10. Additionally, RISC-V errors look like this:
-
-   make --silent --keep-going --jobs=8 O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- 'CC=sccache riscv64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
-   Error: /builds/1nZcZgrKHH9C31BJVZOjOhHXH0s/arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts:88.27-28 syntax error
-   FATAL ERROR: Unable to parse input tree
-   make[3]: *** [scripts/Makefile.lib:285: arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dtb] Error 1
-   make[3]: Target '__build' not remade because of errors.
-   make[2]: *** [/builds/1nZcZgrKHH9C31BJVZOjOhHXH0s/scripts/Makefile.build:496: arch/riscv/boot/dts/sifive] Error 2
-   make[2]: Target '__build' not remade because of errors.
-   make[1]: *** [/builds/1nZcZgrKHH9C31BJVZOjOhHXH0s/Makefile:1272: dtbs] Error 2
-
-We'll try to get more info.
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+-michael
