@@ -2,234 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645F73027CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F20B3027CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 17:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730550AbhAYQ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 11:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730765AbhAYQZx (ORCPT
+        id S1730723AbhAYQ0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 11:26:40 -0500
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:39147 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730770AbhAYQ0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 11:25:53 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00556C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:25:12 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id v1so13261740ott.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 08:25:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KLhKRtgeJ+2sRx58ZlTjQzSVRy9woj1CcpkOodtGDmc=;
-        b=yPd8UfDeWLMehfS5LV06ocnlP6qW/7ep5g0yzZUQwCqfJVjWXRiCGK8dv4G4epvJ3E
-         wPKwbPXb/rzSCyyv/Lc4eqCUZAUZYCP67krU4E6A1ZsA33/u58wLwe94QG+WIywQRaGk
-         vzAXErfcl7KzVzOYR8OrCsfZuCM1sf8oAlEurXFe8wM0KIE1F3BGyk2EbgF+y8vFa42F
-         6ng05cte0YjlINhwmMbQc+xn2YC/bXhjjH59SREPscQE8HmTDf9qeTzgHip4eBj2mtXC
-         rvPWN3cABIy7BrnRvuzHG2bHclx7fQDP1wgZQ5oP6xsJvI8ay1am6aA/7Z1WnoDeT+Tq
-         jtAA==
+        Mon, 25 Jan 2021 11:26:03 -0500
+Received: by mail-oo1-f42.google.com with SMTP id z36so1463211ooi.6;
+        Mon, 25 Jan 2021 08:25:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KLhKRtgeJ+2sRx58ZlTjQzSVRy9woj1CcpkOodtGDmc=;
-        b=lYp+wWxA46o3r1rlHvbBNh6IzphhZ8UDw2h8XATrc2/B5KXS6gT0jf334ixWTcmu8X
-         ihH21rXX1FKH+3uxatOu2daxgd/WUtpcqJrvcQrUQ2us+px+uHO6QBVBoEvJpJZ+Y/Wt
-         GzS309xBg8CyB3LvmxNDNuMnrKSauhvCfVUekOrR9oSA4fMkJhMmDyL+vRQLuwp4Bpvi
-         dPB7FObepQTTzbMOF+WiTfEIcNDq/Y4hbFWK76L3wxI3TVBvDw3rthnaKo80MElt10Pf
-         uztdq5ndv0zcC2+5VZBsqTKeM1yW3WwpojbAzMih4FxSlco4+bV9UVWExgeYOlUBQNa/
-         EOJA==
-X-Gm-Message-State: AOAM531kLvliM3RhDfBQeZoFK8minXD+Y8TjKFuZjvUeN7Ur25EntZPB
-        kVrn/P5rwwMZpfdWWkDpnLjRrw==
-X-Google-Smtp-Source: ABdhPJx+2x08xXpPFpyeCPmzZYM6V5JbIV/1q2hyn+nq63lcg3m5cjTfpxmxB56iFVW0sB78f0czSQ==
-X-Received: by 2002:a05:6830:157:: with SMTP id j23mr1042468otp.240.1611591912296;
-        Mon, 25 Jan 2021 08:25:12 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r10sm3631796oib.31.2021.01.25.08.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 08:25:11 -0800 (PST)
-Date:   Mon, 25 Jan 2021 10:25:09 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] drivers: crypto: qce: skcipher: Fix regressions
- found during fuzz testing
-Message-ID: <YA7w5W0Rhyiy5hs4@builder.lan>
-References: <20210120184843.3217775-1-thara.gopinath@linaro.org>
- <20210120184843.3217775-4-thara.gopinath@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eFwTq+OScXIcVonxGOjBlHjUqwMYEvu6XWhum3jN8NI=;
+        b=CL7M/oUzUcl5VtJNC1eEZNqlaTiTMo25p60mGtRGfBkTI4YgONPaJehJWyXipQ4Wh3
+         HmlGnnu6Cq/wSBkKrTnr+Kb8XSlkwANRR/H14shTP2lnz571+KV4zPcZTGam+YdY2ULj
+         4tJ5r14ODIRv4O1MwltyFZxfSFVwFyt1tnsHjQKdps6xmE5RIN78sA+cwEoJhvAxcrwE
+         /A6+ihoLEI/Kg0VR4H02ezY2zB1oxAwUGIrMb2YfSnyQVtZrqUva89r6ejpjymPwghp8
+         IjKJe+mzdS0VI727P4v9rn9Dtn0BNf3yB1iEPUaM9jrNLslh4VzU5ZZul5ce5chAB4DW
+         INew==
+X-Gm-Message-State: AOAM530+Kz8jRR4xJg4YpqkdTKEiIcXMCb55BtObKSSXHZuVLQqtQhuo
+        uqel/MSI8wtOb4x+89bD7640S9II8dxjYVFxFlU=
+X-Google-Smtp-Source: ABdhPJw94FS2sVkIv7zvr5rZNd8U07Htu+OFlLA4/p6peeom+asbQeBkITEoCKvoQ4I4CyzSQUvYE2e5xtNUlRgxMmc=
+X-Received: by 2002:a4a:9873:: with SMTP id z48mr1015923ooi.44.1611591922626;
+ Mon, 25 Jan 2021 08:25:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120184843.3217775-4-thara.gopinath@linaro.org>
+References: <87blkbx1gt.fsf@gmx.net> <CAJZ5v0j86pX_a4bSLP=sobLoYhfQYV9dWL8HHf2941kXgND79g@mail.gmail.com>
+ <CAJZ5v0j7i86twMS+csYMaetUkvqjof4FD2GRNoZ_AN=SBF7F1w@mail.gmail.com>
+ <9709109.MH8tSaV5v9@kreacher> <87eej0iuf0.fsf@gmx.net> <87wnw278ds.fsf@gmx.net>
+In-Reply-To: <87wnw278ds.fsf@gmx.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 25 Jan 2021 17:25:11 +0100
+Message-ID: <CAJZ5v0ihGfW=8PRXZgLVMfwOCVJQQh=Kc+htqbYhBFvxgfYuZQ@mail.gmail.com>
+Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
+To:     Stephen Berman <stephen.berman@gmx.net>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 20 Jan 12:48 CST 2021, Thara Gopinath wrote:
+On Sun, Jan 24, 2021 at 2:49 PM Stephen Berman <stephen.berman@gmx.net> wrote:
+>
+> On Mon, 04 Jan 2021 16:38:43 +0100 Stephen Berman <stephen.berman@gmx.net> wrote:
+>
+> > On Thu, 31 Dec 2020 21:46:11 +0100 "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
+> >
+> >> ATM, I'm tempted to do something like the patch below (with the rationale
+> >> that it shouldn't be necessary to read the temperature right after updating
+> >> the trip points if polling is in use, because the next update through polling
+> >> will cause it to be read anyway and it will trigger trip point actions as
+> >> needed).
+> >>
+> >> Stephen, can you give it a go, please?
+> >
+> > On Sat, 02 Jan 2021 12:03:17 +0100 "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
+> >
+> >> There is one more way to address this, probably better: instead of checking the
+> >> temperature right away in acpi_thermal_notify(), queue that on
+> >> acpi_thermal_pm_queue
+> >> and so only if another thermal check is not pending.
+> >>
+> >> This way there will be at most one temperature check coming from
+> >> acpi_thermal_notify() queued up at any time which should prevent the
+> >> build-up of work items from taking place.
+> >>
+> >> So something like this:
+> >
+> > Thanks for the patches.  I'll try them as soon as I can.
+>
+> FTR, since this is the thread I started for this bug, I've confirmed in
+> https://lore.kernel.org/lkml/87y2gi78sg.fsf@gmx.net/T/#t that the latest
+> patch fixes the bug.
 
-> This patch contains the following fixes for the supported encryption
-> algorithms in the Qualcomm crypto engine(CE)
-> 1. Return unsupported if key1 = key2 for AES XTS algorithm since CE
-> does not support this and the operation causes the engine to hang.
-> 2. Return unsupported if any three keys are same for DES3 algorithms
-> since CE does not support this and the operation causes the engine to
-> hang.
-> 3. Return unsupported for 0 length plain texts since crypto engine BAM
-> dma does not support 0 length data.
-> 4. ECB messages do not have an IV and hence set the ivsize to 0.
-> 5. Ensure that the data passed for ECB/CBC encryption/decryption is
-> blocksize aligned. Otherwise the CE hangs on the operation.
-> 6. Allow messages of length less that 512 bytes for all other encryption
-> algorithms other than AES XTS. The recommendation is only for AES XTS
-> to have data size greater than 512 bytes.
-> 
+OK, thanks!
 
-This seems like 6 trivial changes, that if send individually will be
-easy to reason about and if there's ever any regressions it will be easy
-to bisect.
-
-So please split this patch.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
-> 
-> v2->v3:
-> 	- Made the comparison between keys to check if any two keys are
-> 	  same for triple des algorithms constant-time as per
-> 	  Nym Seddon's suggestion.
-> 
->  drivers/crypto/qce/skcipher.c | 68 ++++++++++++++++++++++++++++++-----
->  1 file changed, 60 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-> index a2d3da0ad95f..d78b932441ab 100644
-> --- a/drivers/crypto/qce/skcipher.c
-> +++ b/drivers/crypto/qce/skcipher.c
-> @@ -167,16 +167,32 @@ static int qce_skcipher_setkey(struct crypto_skcipher *ablk, const u8 *key,
->  	struct crypto_tfm *tfm = crypto_skcipher_tfm(ablk);
->  	struct qce_cipher_ctx *ctx = crypto_tfm_ctx(tfm);
->  	unsigned long flags = to_cipher_tmpl(ablk)->alg_flags;
-> +	unsigned int __keylen;
->  	int ret;
->  
->  	if (!key || !keylen)
->  		return -EINVAL;
->  
-> -	switch (IS_XTS(flags) ? keylen >> 1 : keylen) {
-> +	/*
-> +	 * AES XTS key1 = key2 not supported by crypto engine.
-> +	 * Revisit to request a fallback cipher in this case.
-> +	 */
-> +	if (IS_XTS(flags)) {
-> +		__keylen = keylen >> 1;
-> +		if (!memcmp(key, key + __keylen, __keylen))
-> +			return -EINVAL;
-> +	} else {
-> +		__keylen = keylen;
-> +	}
-> +	switch (__keylen) {
->  	case AES_KEYSIZE_128:
->  	case AES_KEYSIZE_256:
->  		memcpy(ctx->enc_key, key, keylen);
->  		break;
-> +	case AES_KEYSIZE_192:
-> +		break;
-> +	default:
-> +		return -EINVAL;
->  	}
->  
->  	ret = crypto_skcipher_setkey(ctx->fallback, key, keylen);
-> @@ -204,12 +220,27 @@ static int qce_des3_setkey(struct crypto_skcipher *ablk, const u8 *key,
->  			   unsigned int keylen)
->  {
->  	struct qce_cipher_ctx *ctx = crypto_skcipher_ctx(ablk);
-> +	u32 _key[6];
->  	int err;
->  
->  	err = verify_skcipher_des3_key(ablk, key);
->  	if (err)
->  		return err;
->  
-> +	/*
-> +	 * The crypto engine does not support any two keys
-> +	 * being the same for triple des algorithms. The
-> +	 * verify_skcipher_des3_key does not check for all the
-> +	 * below conditions. Return -ENOKEY in case any two keys
-> +	 * are the same. Revisit to see if a fallback cipher
-> +	 * is needed to handle this condition.
-> +	 */
-> +	memcpy(_key, key, DES3_EDE_KEY_SIZE);
-> +	if (!((_key[0] ^ _key[2]) | (_key[1] ^ _key[3])) |
-> +	    !((_key[2] ^ _key[4]) | (_key[3] ^ _key[5])) |
-> +	    !((_key[0] ^ _key[4]) | (_key[1] ^ _key[5])))
-> +		return -ENOKEY;
-> +
->  	ctx->enc_keylen = keylen;
->  	memcpy(ctx->enc_key, key, keylen);
->  	return 0;
-> @@ -221,6 +252,7 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
->  	struct qce_cipher_ctx *ctx = crypto_skcipher_ctx(tfm);
->  	struct qce_cipher_reqctx *rctx = skcipher_request_ctx(req);
->  	struct qce_alg_template *tmpl = to_cipher_tmpl(tfm);
-> +	unsigned int blocksize = crypto_skcipher_blocksize(tfm);
->  	int keylen;
->  	int ret;
->  
-> @@ -228,14 +260,34 @@ static int qce_skcipher_crypt(struct skcipher_request *req, int encrypt)
->  	rctx->flags |= encrypt ? QCE_ENCRYPT : QCE_DECRYPT;
->  	keylen = IS_XTS(rctx->flags) ? ctx->enc_keylen >> 1 : ctx->enc_keylen;
->  
-> -	/* qce is hanging when AES-XTS request len > QCE_SECTOR_SIZE and
-> -	 * is not a multiple of it; pass such requests to the fallback
-> +	/* CE does not handle 0 length messages */
-> +	if (!req->cryptlen)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * ECB and CBC algorithms require message lengths to be
-> +	 * multiples of block size.
-> +	 * TODO: The spec says AES CBC mode for certain versions
-> +	 * of crypto engine can handle partial blocks as well.
-> +	 * Test and enable such messages.
-> +	 */
-> +	if (IS_ECB(rctx->flags) || IS_CBC(rctx->flags))
-> +		if (!IS_ALIGNED(req->cryptlen, blocksize))
-> +			return -EINVAL;
-> +
-> +	/*
-> +	 * Conditions for requesting a fallback cipher
-> +	 * AES-192 (not supported by crypto engine (CE))
-> +	 * AES-XTS request with len <= 512 byte (not recommended to use CE)
-> +	 * AES-XTS request with len > QCE_SECTOR_SIZE and
-> +	 * is not a multiple of it.(Revisit this condition to check if it is
-> +	 * needed in all versions of CE)
->  	 */
->  	if (IS_AES(rctx->flags) &&
-> -	    (((keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256) ||
-> -	      req->cryptlen <= aes_sw_max_len) ||
-> -	     (IS_XTS(rctx->flags) && req->cryptlen > QCE_SECTOR_SIZE &&
-> -	      req->cryptlen % QCE_SECTOR_SIZE))) {
-> +	    ((keylen != AES_KEYSIZE_128 && keylen != AES_KEYSIZE_256) ||
-> +	    (IS_XTS(rctx->flags) && ((req->cryptlen <= aes_sw_max_len) ||
-> +	    (req->cryptlen > QCE_SECTOR_SIZE &&
-> +	    req->cryptlen % QCE_SECTOR_SIZE))))) {
->  		skcipher_request_set_tfm(&rctx->fallback_req, ctx->fallback);
->  		skcipher_request_set_callback(&rctx->fallback_req,
->  					      req->base.flags,
-> @@ -307,7 +359,7 @@ static const struct qce_skcipher_def skcipher_def[] = {
->  		.name		= "ecb(aes)",
->  		.drv_name	= "ecb-aes-qce",
->  		.blocksize	= AES_BLOCK_SIZE,
-> -		.ivsize		= AES_BLOCK_SIZE,
-> +		.ivsize		= 0,
->  		.min_keysize	= AES_MIN_KEY_SIZE,
->  		.max_keysize	= AES_MAX_KEY_SIZE,
->  	},
-> -- 
-> 2.25.1
-> 
+The patch has been applied as 5.11-rc material.
