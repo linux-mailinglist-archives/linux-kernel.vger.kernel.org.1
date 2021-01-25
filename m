@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CC83039C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A633039CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391799AbhAZKDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:03:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
+        id S2391403AbhAZKGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:06:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731326AbhAYSyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:54:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2CAF206B2;
-        Mon, 25 Jan 2021 18:54:33 +0000 (UTC)
+        id S1730694AbhAYSz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:55:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22B68224B8;
+        Mon, 25 Jan 2021 18:54:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600874;
-        bh=A8SHOgM8OLigOYwv2oXxJ5wKlk5EQp96H2iFHeqHHOE=;
+        s=korg; t=1611600887;
+        bh=mgx7pnFdilp/Ys9xnrEwavJygvFFYBcW5x63QN/EosA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQThi/okSKelbxSyiEypjTrLR+lSEX1WBJpgnQxIAhO/bWYwnglo1jHaQXTlMMqTG
-         LKW9P1gcnbhOTj1MF92ZRCWGwOyVdz3u6Zu3PZI+xfWrO+BQrs/a9Gd7mYgvII0Ian
-         WROdRYEhZaHur3jMPSVj01ZncWPTZu33N9RCkC7Q=
+        b=MXOpkbXMkASBhkTEzNgzBJOrN+wFhJfagCC+vL8qA0WqwmL7VWLDiMRo4HMwhUgFQ
+         6TsmWKIMwuCoAhhWNXS4Xy+WNENoZnslP1DtYXnD/rjY7cV/AmtwL05VCWnxvBHUkd
+         vx2i+04yQrMIJ6Ja8p+dhS58AMVxyyOqUukki/rc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 157/199] ASoC: SOF: Intel: fix page fault at probe if i915 init fails
-Date:   Mon, 25 Jan 2021 19:39:39 +0100
-Message-Id: <20210125183222.828090676@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 159/199] net: dsa: mv88e6xxx: also read STU state in mv88e6250_g1_vtu_getnext
+Date:   Mon, 25 Jan 2021 19:39:41 +0100
+Message-Id: <20210125183222.907604965@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
 References: <20210125183216.245315437@linuxfoundation.org>
@@ -43,92 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-commit 9c25af250214e45f6d1c21ff6239a1ffeeedf20e upstream.
+commit 87fe04367d842c4d97a77303242d4dd4ac351e46 upstream.
 
-The earlier commit to fix runtime PM in case i915 init fails,
-introduces a possibility to hit a page fault.
+mv88e6xxx_port_vlan_join checks whether the VTU already contains an
+entry for the given vid (via mv88e6xxx_vtu_getnext), and if so, merely
+changes the relevant .member[] element and loads the updated entry
+into the VTU.
 
-snd_hdac_ext_bus_device_exit() is designed to be called from
-dev.release(). Calling it outside device reference counting, is
-not safe and may lead to calling the device_exit() function
-twice. Additionally, as part of ext_bus_device_init(), the device
-is also registered with snd_hdac_device_register(). Thus before
-calling device_exit(), the device must be removed from device
-hierarchy first.
+However, at least for the mv88e6250, the on-stack struct
+mv88e6xxx_vtu_entry vlan never has its .state[] array explicitly
+initialized, neither in mv88e6xxx_port_vlan_join() nor inside the
+getnext implementation. So the new entry has random garbage for the
+STU bits, breaking VLAN filtering.
 
-Fix the issue by rolling back init actions by calling
-hdac_device_unregister() and then releasing device with put_device().
-This matches with existing code in hdac-ext module.
+When the VTU entry is initially created, those bits are all zero, and
+we should make sure to keep them that way when the entry is updated.
 
-To complete the fix, add handling for the case where
-hda_codec_load_module() returns -ENODEV, and clean up the hdac_ext
-resources also in this case.
-
-In future work, hdac-ext interface should be extended to allow clients
-more flexibility to handle the life-cycle of individual devices, beyond
-just the current snd_hdac_ext_bus_device_remove(), which removes all
-devices.
-
-BugLink: https://github.com/thesofproject/linux/issues/2646
-Reported-by: Jaroslav Kysela <perex@perex.cz>
-Fixes: 6c63c954e1c5 ("ASoC: SOF: fix a runtime pm issue in SOF when HDMI codec doesn't work")
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Libin Yang <libin.yang@intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Link: https://lore.kernel.org/r/20210113150715.3992635-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 92307069a96c (net: dsa: mv88e6xxx: Avoid VTU corruption on 6097)
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Tobias Waldekranz <tobias@waldekranz.com>
+Tested-by: Tobias Waldekranz <tobias@waldekranz.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/sof/intel/hda-codec.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/dsa/mv88e6xxx/global1_vtu.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/sound/soc/sof/intel/hda-codec.c
-+++ b/sound/soc/sof/intel/hda-codec.c
-@@ -156,7 +156,8 @@ static int hda_codec_probe(struct snd_so
- 		if (!hdev->bus->audio_component) {
- 			dev_dbg(sdev->dev,
- 				"iDisp hw present but no driver\n");
--			goto error;
-+			ret = -ENOENT;
-+			goto out;
- 		}
- 		hda_priv->need_display_power = true;
- 	}
-@@ -173,24 +174,23 @@ static int hda_codec_probe(struct snd_so
- 		 * other return codes without modification
+--- a/drivers/net/dsa/mv88e6xxx/global1_vtu.c
++++ b/drivers/net/dsa/mv88e6xxx/global1_vtu.c
+@@ -351,6 +351,10 @@ int mv88e6250_g1_vtu_getnext(struct mv88
+ 		if (err)
+ 			return err;
+ 
++		err = mv88e6185_g1_stu_data_read(chip, entry);
++		if (err)
++			return err;
++
+ 		/* VTU DBNum[3:0] are located in VTU Operation 3:0
+ 		 * VTU DBNum[5:4] are located in VTU Operation 9:8
  		 */
- 		if (ret == 0)
--			goto error;
-+			ret = -ENOENT;
- 	}
- 
--	return ret;
--
--error:
--	snd_hdac_ext_bus_device_exit(hdev);
--	return -ENOENT;
--
-+out:
-+	if (ret < 0) {
-+		snd_hdac_device_unregister(hdev);
-+		put_device(&hdev->dev);
-+	}
- #else
- 	hdev = devm_kzalloc(sdev->dev, sizeof(*hdev), GFP_KERNEL);
- 	if (!hdev)
- 		return -ENOMEM;
- 
- 	ret = snd_hdac_ext_bus_device_init(&hbus->core, address, hdev, HDA_DEV_ASOC);
-+#endif
- 
- 	return ret;
--#endif
- }
- 
- /* Codec initialization */
 
 
