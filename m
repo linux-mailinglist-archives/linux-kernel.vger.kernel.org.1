@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A611E30314C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3462303198
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 03:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbhAZBb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 20:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731933AbhAZB3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:29:16 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B56C0698D1;
-        Mon, 25 Jan 2021 17:28:30 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id x23so3767383oop.1;
-        Mon, 25 Jan 2021 17:28:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6paGRqZC+Saiy/OdOWQy9bDY2PXfN0YJkrt0vyVzmXI=;
-        b=K8X6g49rPyw3kREv1Dn/1hTN6EaW4ZmiqeMy6udTvVa98GSl/D5Bt0XdI/lgNGTfFa
-         hBLDiUayFfthZAQPdRjdsWL+GoF/k5MJ4XrtkG4r3ETy7E2HWwLt0z7SJvKdJVcmwQtW
-         ON3dN+WZbnpPGuztW44h97cX/Y/HwPQdtHBphjc3ODW57/GDuFFAicTKS2xybAeTKiuv
-         GrX0gUnTYE+YDAdlC+CpyHbKNbs/bbF6MBbI9DKNGZ0jKc0dmhxHT7D3E/hGHlgVgO4X
-         Etz5ERO6XeksR1k22n3uFvC0EFQjqof1V/RO/Qr4UsgAlKJVvdb4/3UjYAOlXmKIK0fy
-         o6WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6paGRqZC+Saiy/OdOWQy9bDY2PXfN0YJkrt0vyVzmXI=;
-        b=dElTSJZLxxmBk+DLdv009Ke92hEFCnjV/yz1zNmruggDzQ+6h79RS+bLPmxLchWWXX
-         5zesqR8olUYCeFm0QOEdVOJ/6OU/BW8vu3JHERUBLgz0lVY1gy+yjdNjA8cXrwC26iwl
-         ZNu+3Zkd5TbdvVh6A8hbpDfxpoYOtJap06tiqDIm3RK4SiWfuf4T6co6LwQufbnC3Igu
-         ihZQw4HOsE9qwxqrF68onLRQPLQnlRkwzaa3npnq/DkBJ9cxyXoCr0lbPERtzJRs90Qv
-         vMckJXitwBJfnKJJC753dX1BZ3gw9JJ/oAd10FRw72FrlxMpHVYSM+MW6Pk1KNFua6kb
-         /PvA==
-X-Gm-Message-State: AOAM530/L2mprmz2+owQIHdAXQIk0Uuf/2sAk+ggPKpGiK/qX4fmZPA7
-        mX/SC5+VtPOac8vPbsYzIaiwh4s9nMpEG/AEq7sJr+tDKD8=
-X-Google-Smtp-Source: ABdhPJzmkLV3iU8HhDDGcz85czAKO3NR4Cy9fFZK4aEWZplK3Mt2PZiGDbjZepscdMttmj0AiCMkoNL/st7iuznOHdE=
-X-Received: by 2002:a4a:946d:: with SMTP id j42mr2261363ooi.39.1611624509049;
- Mon, 25 Jan 2021 17:28:29 -0800 (PST)
+        id S1731511AbhAYTMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 14:12:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731019AbhAYSvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 13:51:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74426224D1;
+        Mon, 25 Jan 2021 18:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611600634;
+        bh=kMn8CfxQziRnH48xb4v4RCCNXXh+0G5URM2cOoDmtm8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1F61VAS3wvZaNQEZNh+IPF/XiBJ2y6OGYLEO6WbHWZmG2VuvU0+UGT7OguGR1H1Rc
+         mPg3FMlzpwvxfLuDRu/ou6g2yLk1YNnFm2u3eX6GVilDR6L+TYiyTnYTBXlQ56w9M1
+         z5x2QJLQKv6A0iriKU1CfP7PP33an2+AI2O1wfBo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Victor Zhao <Victor.Zhao@amd.com>,
+        "Emily.Deng" <Emily.Deng@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 061/199] drm/amdgpu/psp: fix psp gfx ctrl cmds
+Date:   Mon, 25 Jan 2021 19:38:03 +0100
+Message-Id: <20210125183218.850058628@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
+References: <20210125183216.245315437@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-References: <1610960877-3110-1-git-send-email-wanpengli@tencent.com>
-In-Reply-To: <1610960877-3110-1-git-send-email-wanpengli@tencent.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Tue, 26 Jan 2021 09:28:17 +0800
-Message-ID: <CANRm+Cx65UHSJA+S4qRR1wdZ=dhyM=U=KwZnbNUSN4XdM1nyQA@mail.gmail.com>
-Subject: Re: [PATCH v2] KVM: kvmclock: Fix vCPUs > 64 can't be online/hotpluged
-To:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping=EF=BC=8C
-On Mon, 18 Jan 2021 at 17:08, Wanpeng Li <kernellwp@gmail.com> wrote:
->
-> From: Wanpeng Li <wanpengli@tencent.com>
->
-> The per-cpu vsyscall pvclock data pointer assigns either an element of th=
-e
-> static array hv_clock_boot (#vCPU <=3D 64) or dynamically allocated memor=
-y
-> hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if
-> kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in
-> kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it by not
-> assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode is no=
-t
-> VDSO_CLOCKMODE_PVCLOCK.
->
-> Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared vari=
-ables")
-> Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-> Tested-by: Haiwei Li <lihaiwei@tencent.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: stable@vger.kernel.org#v4.19-rc5+
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v1 -> v2:
->  * add code comments
->
->  arch/x86/kernel/kvmclock.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index aa59374..01d4e55c 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -294,9 +294,11 @@ static int kvmclock_setup_percpu(unsigned int cpu)
->         /*
->          * The per cpu area setup replicates CPU0 data to all cpu
->          * pointers. So carefully check. CPU0 has been set up in init
-> -        * already.
-> +        * already. Assign vsyscall pvclock data pointer iff kvmclock
-> +        * vsyscall is enabled.
->          */
-> -       if (!cpu || (p && p !=3D per_cpu(hv_clock_per_cpu, 0)))
-> +       if (!cpu || (p && p !=3D per_cpu(hv_clock_per_cpu, 0)) ||
-> +           (kvm_clock.vdso_clock_mode !=3D VDSO_CLOCKMODE_PVCLOCK))
->                 return 0;
->
->         /* Use the static page for the first CPUs, allocate otherwise */
-> --
-> 2.7.4
->
+From: Victor Zhao <Victor.Zhao@amd.com>
+
+[ Upstream commit f14a5c34d143f6627f0be70c0de1d962f3a6ff1c ]
+
+psp GFX_CTRL_CMD_ID_CONSUME_CMD different for windows and linux,
+according to psp, linux cmds are not correct.
+
+v2: only correct GFX_CTRL_CMD_ID_CONSUME_CMD.
+
+Signed-off-by: Victor Zhao <Victor.Zhao@amd.com>
+Reviewed-by: Emily.Deng <Emily.Deng@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h b/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h
+index 4137dc710aafd..7ad0434be293b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h
++++ b/drivers/gpu/drm/amd/amdgpu/psp_gfx_if.h
+@@ -47,7 +47,7 @@ enum psp_gfx_crtl_cmd_id
+     GFX_CTRL_CMD_ID_DISABLE_INT     = 0x00060000,   /* disable PSP-to-Gfx interrupt */
+     GFX_CTRL_CMD_ID_MODE1_RST       = 0x00070000,   /* trigger the Mode 1 reset */
+     GFX_CTRL_CMD_ID_GBR_IH_SET      = 0x00080000,   /* set Gbr IH_RB_CNTL registers */
+-    GFX_CTRL_CMD_ID_CONSUME_CMD     = 0x000A0000,   /* send interrupt to psp for updating write pointer of vf */
++    GFX_CTRL_CMD_ID_CONSUME_CMD     = 0x00090000,   /* send interrupt to psp for updating write pointer of vf */
+     GFX_CTRL_CMD_ID_DESTROY_GPCOM_RING = 0x000C0000, /* destroy GPCOM ring */
+ 
+     GFX_CTRL_CMD_ID_MAX             = 0x000F0000,   /* max command ID */
+-- 
+2.27.0
+
+
+
