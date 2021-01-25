@@ -2,98 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF003020CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D793020CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 25 Jan 2021 04:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbhAYDUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 Jan 2021 22:20:47 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:44797 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726692AbhAYDUi (ORCPT
+        id S1726998AbhAYDVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 24 Jan 2021 22:21:09 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:49532 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726692AbhAYDUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:20:38 -0500
-X-UUID: 9df3b9b45e5240e1a1c1f28f0a7a4257-20210125
-X-UUID: 9df3b9b45e5240e1a1c1f28f0a7a4257-20210125
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <hailong.fan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 333410447; Mon, 25 Jan 2021 11:19:52 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 25 Jan 2021 11:19:51 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 25 Jan 2021 11:19:51 +0800
-From:   Hailong Fan <hailong.fan@mediatek.com>
-To:     Sean Wang <sean.wang@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <youlin.pei@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <srv_heupstream@mediatek.com>, <chentsung@chromium.org>,
-        <gtk_pangao@mediatek.com>, <hanks.chen@mediatek.com>,
-        <yong.wu@mediatek.com>, Hailong Fan <hailong.fan@mediatek.com>
-Subject: [PATCH v2] pinctrl: mediatek: Fix trigger type setting follow for unexpected interrupt
-Date:   Mon, 25 Jan 2021 11:19:46 +0800
-Message-ID: <20210125031946.1882-1-hailong.fan@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
+        Sun, 24 Jan 2021 22:20:53 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UMka-xS_1611544806;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UMka-xS_1611544806)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 25 Jan 2021 11:20:07 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     baolin.wang@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/filemap: Remove redundant variable's assignment
+Date:   Mon, 25 Jan 2021 11:20:02 +0800
+Message-Id: <08dc7237b44b9455ab095b44dc6969a1607b08db.1611544316.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When flipping the polarity will be generated interrupt under certain
-circumstances, but GPIO external signal has not changed.
-Then, mask the interrupt before polarity setting, and clear the
-unexpected interrupt after trigger type setting completed.
+We've already set the variable 'i' 's initial value before using it,
+thus remove redundant previous assignment of variable 'i'.
 
-Signed-off-by: Hailong Fan <hailong.fan@mediatek.com>
-Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- drivers/pinctrl/mediatek/mtk-eint.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ mm/filemap.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pinctrl/mediatek/mtk-eint.c b/drivers/pinctrl/mediatek/mtk-eint.c
-index 22736f60c16c..0042f32c7e7e 100644
---- a/drivers/pinctrl/mediatek/mtk-eint.c
-+++ b/drivers/pinctrl/mediatek/mtk-eint.c
-@@ -157,6 +157,7 @@ static void mtk_eint_ack(struct irq_data *d)
- static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
- {
- 	struct mtk_eint *eint = irq_data_get_irq_chip_data(d);
-+	bool unmasked;
- 	u32 mask = BIT(d->hwirq & 0x1f);
- 	void __iomem *reg;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index e4906f5..07b02f3 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2472,7 +2472,6 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 		if ((iocb->ki_flags & IOCB_WAITQ) && written)
+ 			iocb->ki_flags |= IOCB_NOWAIT;
  
-@@ -173,6 +174,13 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
- 	else
- 		eint->dual_edge[d->hwirq] = 0;
- 
-+	if (!mtk_eint_get_mask(eint, d->hwirq)) {
-+		mtk_eint_mask(d);
-+		unmasked = true;
-+	} else {
-+		unmasked = false;
-+	}
-+
- 	if (type & (IRQ_TYPE_LEVEL_LOW | IRQ_TYPE_EDGE_FALLING)) {
- 		reg = mtk_eint_get_offset(eint, d->hwirq, eint->regs->pol_clr);
- 		writel(mask, reg);
-@@ -189,8 +197,9 @@ static int mtk_eint_set_type(struct irq_data *d, unsigned int type)
- 		writel(mask, reg);
- 	}
- 
--	if (eint->dual_edge[d->hwirq])
--		mtk_eint_flip_edge(eint, d->hwirq);
-+	mtk_eint_ack(d);
-+	if (unmasked)
-+		mtk_eint_unmask(d);
- 
- 	return 0;
- }
+-		i = 0;
+ 		pg_nr = generic_file_buffered_read_get_pages(iocb, iter,
+ 							     pages, nr_pages);
+ 		if (pg_nr < 0) {
 -- 
-2.18.0
+1.8.3.1
 
