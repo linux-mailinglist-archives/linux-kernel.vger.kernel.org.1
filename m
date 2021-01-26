@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD14304E0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2275304E1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389046AbhAZXwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:52:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726275AbhAZQ74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:59:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB71B229C9;
-        Tue, 26 Jan 2021 16:59:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611680356;
-        bh=gRAls07DrECuk0X0leeEk0d93d6mXj1Kwan1fuByVy4=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=KnsAUeIzrJGXRzJY+SVSVSHHly5KZhwzKAKGXMOQbNrc25Rf4hcm8Y3aKAWQePl/Q
-         wK7AoNr5g1J9hj6sXlI1UbimdA3jPsBFvAvpcpBlfg3VoTBBGLZkXyNIvfhtYuKJUi
-         B+ZaiJzg2TcYC78+tx2kQHFsLWgvSz3QNUILUKK6278zNms2bXei6lBLzylxT4rCL5
-         0vUK9RCVSvwL0bNBU/cKIjGn88iKuzL+TMPC3uq2uzqWkAPt5F0bUCFnKURybuvoCP
-         Ow47Xqgnoib42p33vuyp2KIPpIQ2EuFzYXuT5Fv/Shu5T+rCCgRZs6420ck63l/iTm
-         hqqZ9ftMU7Yeg==
-Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
-        keescook@chromium.org, Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
-        Akinobu Mita <akinobu.mita@gmail.com>
-References: <20210116220950.47078-1-timur@kernel.org>
- <20210118182635.GD2260413@casper.infradead.org>
- <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
- <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
- <20210119014725.GH2260413@casper.infradead.org>
- <YAa2oCNWjExWlQTu@jagdpanzerIV.localdomain>
- <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
-From:   Timur Tabi <timur@kernel.org>
-Message-ID: <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
-Date:   Tue, 26 Jan 2021 10:59:12 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389825AbhA0AJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:09:46 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:50596 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729311AbhAZRC6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:02:58 -0500
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611680531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HrMDZ4yyjVd0WEX5TShN5hNg9g3vf27cMToBCTxUBfA=;
+        b=Xvv8yMUp0L+Ni2uJDRs1EOwTOFmGwFvW1GAYHuGK9l0NAUM7BS+PWnQDllxhB7A37j8sOf
+        cVYrXy2JZwp6mMtIqOMA9p8Y1rZ/7MpmylCPL6jXYNJwF8qEukbx5rG0YmMKZFYw/esBGs
+        6Ait0iIUv8oGt2Y8YIv6j14lv6/XgyDB8pM7injs/YWZONNKUNkCxv46y4EHvnmmGvEYbC
+        Ktn+td6fJUiB2a8oWoRt7fjIobYPvgFZHzKH/v277HbCek9FMIpJYfPA8YoPy/G34m9Cuz
+        yiNRzYQs+mJMYalybSzgeBoR3fnA7ThcHoAHLCO74u+sp8PqESzirJBbkce+eA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611680531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HrMDZ4yyjVd0WEX5TShN5hNg9g3vf27cMToBCTxUBfA=;
+        b=ZBFLUZmQbDVKmkgAybOjKtWIDN4MtZBPVL3cJfnwEt7UP5gRQfuKs0S0nsmRojG9fHzN67
+        M8BryvH1KzMG2/Cw==
+To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH V2] rtc: mc146818: Detect and handle broken RTCs
+In-Reply-To: <87y2gfg18p.fsf@nanos.tec.linutronix.de>
+References: <20201206214613.444124194@linutronix.de> <20201206220541.594826678@linutronix.de> <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net> <871re7hlsg.fsf@nanos.tec.linutronix.de> <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net> <87y2gfg18p.fsf@nanos.tec.linutronix.de>
+Date:   Tue, 26 Jan 2021 18:02:11 +0100
+Message-ID: <87tur3fx7w.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 10:47 AM, Vlastimil Babka wrote:
-> Given Linus' current stance later in this thread, could we revive the idea of a
-> boot time option, or at least a CONFIG (I assume a runtime toggle would be too
-> much, even if limited to !kernel_lockdown:)  , that would disable all hashing?
-> It would be really useful for a development/active debugging, as evidenced
-> below. Thanks.
+The recent fix for handling the UIP bit unearthed another issue in the RTC
+code. If the RTC is advertised but the readout is straight 0xFF because
+it's not available, the old code just proceeded with crappy values, but the
+new code hangs because it waits for the UIP bit to become low.
 
-So you're saying:
+Add a sanity check in the RTC CMOS probe function which reads the RTC_VALID
+register (Register D) which should have bit 0-6 cleared. If that's not the
+case then fail to register the CMOS.
 
-if CONFIG_PRINTK_NEVER_HASH is disabled, then %p prints hashed addresses 
-and %px prints unhashed.
+Add the same check to mc146818_get_time(), warn once when the condition
+is true and invalidate the rtc_time data.
 
-If CONFIG_PRINTK_NEVER_HASH is enabled, then %p and %px both print 
-unhashed addresses.
+Reported-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
+---
+V2: Fixed the sizeof() as spotted by Micka=C3=ABl
+---
+ drivers/rtc/rtc-cmos.c         |    8 ++++++++
+ drivers/rtc/rtc-mc146818-lib.c |    7 +++++++
+ 2 files changed, 15 insertions(+)
 
-I like this idea, and I would accept it as a solution if I had to, but I 
-still would also like for an option for print_hex_dump() to print 
-unhashed addresses even when CONFIG_PRINTK_NEVER_HASH is disabled.  I 
-can't always recompile the entire kernel for my testing purposes.
-
-The only drawback to this idea is: what happens if distros start 
-enabling CONFIG_PRINTK_NEVER_HASH by default, just because it makes 
-debugging easier?
+--- a/drivers/rtc/rtc-cmos.c
++++ b/drivers/rtc/rtc-cmos.c
+@@ -805,6 +805,14 @@ cmos_do_probe(struct device *dev, struct
+=20
+ 	spin_lock_irq(&rtc_lock);
+=20
++	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
++	if ((CMOS_READ(RTC_VALID) & 0x7f) !=3D 0) {
++		spin_unlock_irq(&rtc_lock);
++		dev_warn(dev, "not accessible\n");
++		retval =3D -ENXIO;
++		goto cleanup1;
++	}
++
+ 	if (!(flags & CMOS_RTC_FLAGS_NOFREQ)) {
+ 		/* force periodic irq to CMOS reset default of 1024Hz;
+ 		 *
+--- a/drivers/rtc/rtc-mc146818-lib.c
++++ b/drivers/rtc/rtc-mc146818-lib.c
+@@ -21,6 +21,13 @@ unsigned int mc146818_get_time(struct rt
+=20
+ again:
+ 	spin_lock_irqsave(&rtc_lock, flags);
++	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
++	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) !=3D 0)) {
++		spin_unlock_irqrestore(&rtc_lock, flags);
++		memset(time, 0xff, sizeof(*time));
++		return 0;
++	}
++
+ 	/*
+ 	 * Check whether there is an update in progress during which the
+ 	 * readout is unspecified. The maximum update time is ~2ms. Poll
