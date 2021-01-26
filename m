@@ -2,171 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B517B30463B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3249B30463C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393288AbhAZRqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:46:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
+        id S2393305AbhAZRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:46:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730243AbhAZIQH (ORCPT
+        with ESMTP id S2388062AbhAZIQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:16:07 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB10C061574;
-        Tue, 26 Jan 2021 00:15:25 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id u8so18861562ior.13;
-        Tue, 26 Jan 2021 00:15:25 -0800 (PST)
+        Tue, 26 Jan 2021 03:16:39 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E89C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:15:39 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id a9so15452382wrt.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4c7gADz6jMi7sBEnpGX3NOxZxjJzfvoNQ5bl8temnIs=;
-        b=KCzl4c4tpeZ10i66NLwb+5sXArCAG6es5mMwcKHw+NrhLrGCcDEBkfYSPqfJNonto8
-         gUq/H/LuoV3PNYOex5gmcgUCSCDWnwC2P9sked6Vnkei11U7c3T8aSAS1t4Mg1CGfXLS
-         MNbKXIgKiEKsV2owS31XiXIHKNJEM1rKnFhGNbeSgk+u8KYIIa4XYNKEQu7JHTk5gRb/
-         xoDUKpTTzcLrht/Zdi3b79P/byAXHkFuItfdaXSWTfAvq+rzlIPVR1WDSVOOgZyRGtEg
-         MfjWHMMgxLjJlL9MZYwBqAzAweZWR+MBrsBpPGm+Kay6o5XW1KKqMBpSac8Q50UNOMKe
-         2UOg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Fh17X1oGkTFsnIkpB4JAuYpv4oKsLeUxJIgTn2ARuGY=;
+        b=uQ5oGbgzWTCpuDMVUzvFkh/vB8P54bwF4Td57s2a2iHLdgc1g4UKzszqHzfv2e5AhR
+         gAPMceK9UiAjyy+hfICSW+LHB0quf87EEF30lYbTPBDuRgIk4yYU2P92wRWx/9Ty/Tu0
+         3HxL6Nku4sCYzTI/hvdgP15PXncBjxVv+1fhGUlBE8KpOP+UOiiiWsEoi6t0jJnFu3/y
+         vXWl0Y0vTnc6ih59wmMMV19Jd4f3EiJxelJUMWz+NIwyKEaNkdUq+lDNBcRpv7R6LDx/
+         NPZTLMn9WrN5eBl5NijCqIws7a+EmcpCzITZnOS3EPcwKrIMmDFpvp4Ywt9ePljE3j7Z
+         yaHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4c7gADz6jMi7sBEnpGX3NOxZxjJzfvoNQ5bl8temnIs=;
-        b=XspaL1X/s0Q/R2IhQTt6E8fWlb6qVaBnAJmlPLqzVtrT4AEcfy7BVHZE2nVPXVAYEE
-         w3oi1LPV+N2ly75M3wlziw3j5IayWPDqKftWQZ/OXhkOHvxFCv4UtZvDGEH6NISEB5yP
-         7qjqPygINrHXGAaygSndrMVmIxtw6dUlME0tuwBPjyCYwdhlmN0EIAXgQPRukm7yOjG+
-         aZwKRR3vR2NowFRAWZKqnVT/vsa/drV6ZKGSaUaoleOrQ7V+hQ6KXu9VPkngKmdWve0q
-         i+RzwfhE4bWafayx1SAxOL4pQdpg2idkibH32x6Q8F+vYN/Vgf3mD1mdXQ4I8JI0bYJb
-         5Pgg==
-X-Gm-Message-State: AOAM530NWlkIqkyOOspdOHuxjeeeRoGih6N5XuU4PeCqmbrp72mljqfW
-        QApPbdDvkHB2zK0CZRknULH5Y/rZ1b8kki6UMCs=
-X-Google-Smtp-Source: ABdhPJxYOmkTgltga9xoLC0alaqiftrNh1mNkk9Lj2Vw1J2HdaXF9jkhPkrKKL178VCUALqbNVAZpQXXZSosbCOyIDk=
-X-Received: by 2002:a6b:9346:: with SMTP id v67mr3323741iod.108.1611648924777;
- Tue, 26 Jan 2021 00:15:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Fh17X1oGkTFsnIkpB4JAuYpv4oKsLeUxJIgTn2ARuGY=;
+        b=XoF/oTS1Cdh86mfyqb02SXvYF7R1g4GHYDxF3RCMfAUvbYG8TiF2T578GmH5Wv60fz
+         clMQfP24RFCVEaF9b8VsiUDZLPQjdGQ2O+s1J1GRviyl96ewC8H4UoUzzv1BTKrWtVNU
+         61DlSTWeCxiDCHMv38qVEhwFSj/UiJ48wKW/raNQYIcQi8UiNlzCJ+vk2iDTmFQpHFY+
+         B/y0XuZ4gCEZpYaLhGIgkex+wR3kiy1A11MidilmjOBm6bvHvIL3Pa88aargMVFPDkoE
+         6aQqsOb0BV1RVaqt23whhS5qTRoErMz79YB+vnU4Eq4HuAX474YMsb5atlqbd1O6Kk5j
+         XToQ==
+X-Gm-Message-State: AOAM530QT9j0br/GFcI16W05o+/tpSpBzgD+WyDGwPCIopr85uFghaIK
+        MuN3zAiMHTTbdhBUPEdqzIcYew==
+X-Google-Smtp-Source: ABdhPJwQfJcTCXZFY2/bo71X/d025nsEV6vjA3foLfWWnHWxFrHSS2FTrrfm1YpDk53lzrPnfFcMTw==
+X-Received: by 2002:adf:9d82:: with SMTP id p2mr4725387wre.330.1611648938481;
+        Tue, 26 Jan 2021 00:15:38 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id o13sm27797044wrh.88.2021.01.26.00.15.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 00:15:37 -0800 (PST)
+Date:   Tue, 26 Jan 2021 08:15:35 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] mfd: Add MFD driver for ATC260x PMICs
+Message-ID: <20210126081535.GB4903@dell>
+References: <cover.1611165200.git.cristian.ciocaltea@gmail.com>
+ <4bc76f9e3dc7204d7f407af6ee61c9f193a789d3.1611165200.git.cristian.ciocaltea@gmail.com>
+ <20210125142558.GA4903@dell>
+ <20210125184715.GA1061394@BV030612LT>
 MIME-Version: 1.0
-References: <a09eea7616881d40d2db2fb5fa2770dc6166bdae.1611456351.git.tommyhebb@gmail.com>
- <20210125100540.55wbgdsem3htplx3@pali> <CAMcCCgTo87HmwexZS696ok16e9s_8gRgFd38uoLP34r7TbAzBg@mail.gmail.com>
- <CAHzpm2hk4+0FyFrcGYN-JJfx5Ka8yoM8mTsYZA_4WHfWYGa4yQ@mail.gmail.com> <CAHzpm2h2X8ZKEtRxnD-mwyEv=B8J+tH_spFGD2VzfwGdRAaHMw@mail.gmail.com>
-In-Reply-To: <CAHzpm2h2X8ZKEtRxnD-mwyEv=B8J+tH_spFGD2VzfwGdRAaHMw@mail.gmail.com>
-From:   Tom Hebb <tommyhebb@gmail.com>
-Date:   Tue, 26 Jan 2021 00:15:13 -0800
-Message-ID: <CAMcCCgQRDRi1LpxJBTvKcB+dALJJsn=n5Q=Wyvfcw9LGqqjq7Q@mail.gmail.com>
-Subject: Re: [PATCH] hwmon: (dell-smm) Add XPS 15 L502X to fan control blacklist
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Thomas Hebb <tommyhebb@gmail.com>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Bob Hepple <bob.hepple@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210125184715.GA1061394@BV030612LT>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bob reports that blacklisting the fan type label is not sufficient.
-See his message to me below.
+On Mon, 25 Jan 2021, Cristian Ciocaltea wrote:
 
-On Mon, Jan 25, 2021 at 3:38 PM Bob Hepple <bob.hepple@gmail.com> wrote:
->
-> Hi Tom,
->
-> Big nope this end with L502x in i8k_blacklist_fan_type_dmi_table:
->
-> Jan 26 09:35:47 achar kernel: psmouse serio1: TouchPad at
-> isa0060/serio1/input0 lost synchronization, throwing 1 bytes>
->
-> ... and lots of trackpad stall/stutters.
->
-> Cheers
->
->
-> Bob
->
->
->
-> On Tue, 26 Jan 2021 at 08:09, Bob Hepple <bob.hepple@gmail.com> wrote:
-> >
-> > ... compiling now ... results in a coupla hours
-> >
-> > Cheers
-> >
-> >
-> > Bob
-> >
-> > On Tue, 26 Jan 2021 at 04:05, Tom Hebb <tommyhebb@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 25, 2021 at 2:05 AM Pali Roh=C3=A1r <pali@kernel.org> wro=
-te:
-> > > >
-> > > > On Saturday 23 January 2021 18:46:08 Thomas Hebb wrote:
-> > > > > It has been reported[0] that the Dell XPS 15 L502X exhibits simil=
-ar
-> > > > > freezing behavior to the other systems[1] on this blacklist. The =
-issue
-> > > > > was exposed by a prior change of mine to automatically load
-> > > > > dell_smm_hwmon on a wider set of XPS models. To fix the regressio=
-n, add
-> > > > > this model to the blacklist.
-> > > > >
-> > > > > [0] https://bugzilla.kernel.org/show_bug.cgi?id=3D211081
-> > > > > [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D195751
-> > > > >
-> > > > > Fixes: b8a13e5e8f37 ("hwmon: (dell-smm) Use one DMI match for all=
- XPS models")
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Reported-by: Bob Hepple <bob.hepple@gmail.com>
-> > > > > Tested-by: Bob Hepple <bob.hepple@gmail.com>
-> > > > > Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-> > > > > ---
-> > > > >
-> > > > >  drivers/hwmon/dell-smm-hwmon.c | 7 +++++++
-> > > > >  1 file changed, 7 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-=
-smm-hwmon.c
-> > > > > index ec448f5f2dc3..73b9db9e3aab 100644
-> > > > > --- a/drivers/hwmon/dell-smm-hwmon.c
-> > > > > +++ b/drivers/hwmon/dell-smm-hwmon.c
-> > > > > @@ -1159,6 +1159,13 @@ static struct dmi_system_id i8k_blacklist_=
-fan_support_dmi_table[] __initdata =3D {
-> > > > >                       DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "XPS13 93=
-33"),
-> > > > >               },
-> > > > >       },
-> > > > > +     {
-> > > > > +             .ident =3D "Dell XPS 15 L502X",
-> > > > > +             .matches =3D {
-> > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> > > > > +                     DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Dell Sys=
-tem XPS L502X"),
-> > > >
-> > > > Hello! Are you sure that it is required to completely disable fan
-> > > > support? And not only access to fan type label for which is differe=
-nt
-> > > > blaclist i8k_blacklist_fan_type_dmi_table?
-> > >
-> > > This is a good question. We didn't try the other list. Bob is the one=
- with the
-> > > affected system. Could you try moving the added block of code from
-> > > i8k_blacklist_fan_support_dmi_table a few lines up to
-> > > i8k_blacklist_fan_type_dmi_table, Bob, to see if the issue reappears =
-or if it
-> > > remains fixed?
-> > >
-> > > >
-> > > > And have you reported this issue to Dell support?
-> > > >
-> > > > > +             },
-> > > > > +     },
-> > > > >       { }
-> > > > >  };
-> > > > >
-> > > > > --
-> > > > > 2.30.0
-> > > > >
-> > >
-> > > (Apologies for the previous HTML copy of this reply, to those directl=
-y CCed.)
-> > >
-> > > -Tom
+> Hi Lee,
+> 
+> On Mon, Jan 25, 2021 at 02:25:58PM +0000, Lee Jones wrote:
+> > On Wed, 20 Jan 2021, Cristian Ciocaltea wrote:
+> > 
+> > > Add initial support for the Actions Semi ATC260x PMICs which integrates
+> > > Audio Codec, Power management, Clock generation and GPIO controller
+> > > blocks.
+> > > 
+> > > For the moment this driver only supports Regulator, Poweroff and Onkey
+> > > functionalities for the ATC2603C and ATC2609A chip variants.
+>  
+> [...]
+> 
+> > > +static void regmap_lock_mutex(void *__mutex)
+> > > +{
+> > > +	struct mutex *mutex = __mutex;
+> > > +
+> > > +	/*
+> > > +	 * Using regmap within an atomic context (e.g. accessing a PMIC when
+> > > +	 * powering system down) is normally allowed only if the regmap type
+> > > +	 * is MMIO and the regcache type is either REGCACHE_NONE or
+> > > +	 * REGCACHE_FLAT. For slow buses like I2C and SPI, the regmap is
+> > > +	 * internally protected by a mutex which is acquired non-atomically.
+> > > +	 *
+> > > +	 * Let's improve this by using a customized locking scheme inspired
+> > > +	 * from I2C atomic transfer. See i2c_in_atomic_xfer_mode() for a
+> > > +	 * starting point.
+> > > +	 */
+> > > +	if (system_state > SYSTEM_RUNNING && irqs_disabled())
+> > > +		mutex_trylock(mutex);
+> > > +	else
+> > > +		mutex_lock(mutex);
+> > > +}
+> > 
+> > Would this be useful to anyone else?
+> 
+> If you refer to the locking scheme, it is currently required by the
+> power-off driver to handle atomic contexts.
+
+Right, but would this be helpful to any non-Actions drivers?
+
+If so, perhaps it should reside as a Regmap helper?
+
+> > For my own reference (apply this as-is to your sign-off block):
+> 
+> Please note the patches "[4/7] regulator: ..." and "[5/7] power: ..."
+> have been already picked up by Mark and Sebastian, respectively, while
+> Dmitry suggested to merge "[6/7] input: ..." through MFD.
+
+That's fine.
+
+Please re-submit the patches which have not been applied already.
+
+> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+> > 
+> 
+> Thanks,
+> Cristi
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
