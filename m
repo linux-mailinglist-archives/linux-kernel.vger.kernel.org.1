@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8188830459B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC92304590
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393057AbhAZRoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:44:46 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37579 "EHLO
+        id S2393006AbhAZRnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:43:09 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37658 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389699AbhAZIIf (ORCPT
+        with ESMTP id S1732008AbhAZIHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:08:35 -0500
-X-UUID: bfc80a491e504906bba3384191591622-20210126
-X-UUID: bfc80a491e504906bba3384191591622-20210126
+        Tue, 26 Jan 2021 03:07:50 -0500
+X-UUID: f84fd27263b64f908ba0397cf2faa767-20210126
+X-UUID: f84fd27263b64f908ba0397cf2faa767-20210126
 Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
         (envelope-from <henryc.chen@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 402074991; Tue, 26 Jan 2021 16:03:59 +0800
+        with ESMTP id 320729952; Tue, 26 Jan 2021 16:03:59 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
  mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 16:03:57 +0800
+ 15.0.1497.2; Tue, 26 Jan 2021 16:03:58 +0800
 Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 16:03:57 +0800
+ Transport; Tue, 26 Jan 2021 16:03:58 +0800
 From:   Henry Chen <henryc.chen@mediatek.com>
 To:     Georgi Djakov <georgi.djakov@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -40,9 +40,9 @@ CC:     Mark Rutland <mark.rutland@arm.com>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
         Henry Chen <henryc.chen@mediatek.com>
-Subject: [PATCH V8 11/12] arm64: dts: mt8183: add dvfsrc regulator nodes
-Date:   Tue, 26 Jan 2021 16:03:53 +0800
-Message-ID: <1611648234-15043-12-git-send-email-henryc.chen@mediatek.com>
+Subject: [PATCH V8 12/12] arm64: dts: mt8192: add dvfsrc regulator nodes
+Date:   Tue, 26 Jan 2021 16:03:54 +0800
+Message-ID: <1611648234-15043-13-git-send-email-henryc.chen@mediatek.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
 References: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
@@ -53,30 +53,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dvfsrc regulator nodes which is for MT8183-based platforms
+Add dvfsrc regulator nodes which is for MT8192-based platforms
 
 Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 6 ++++++
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index e862078..9fefc5e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -502,6 +502,12 @@
- 			compatible = "mediatek,mt8183-dvfsrc";
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index 81d7d05..1cf91a4 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -470,6 +470,12 @@
+ 				     "mediatek,mt6873-dvfsrc";
  			reg = <0 0x10012000 0 0x1000>;
  			#interconnect-cells = <1>;
 +			dvfsrc_vcore: dvfsrc-vcore {
 +				regulator-name = "dvfsrc-vcore";
-+				regulator-min-microvolt = <725000>;
-+				regulator-max-microvolt = <800000>;
++				regulator-min-microvolt = <575000>;
++				regulator-max-microvolt = <725000>;
 +				regulator-always-on;
 +			};
  		};
  
- 		pwrap: pwrap@1000d000 {
+ 		systimer: timer@10017000 {
 -- 
 1.9.1
 
