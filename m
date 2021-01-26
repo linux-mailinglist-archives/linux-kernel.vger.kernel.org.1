@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1066303BEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4E5303BEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405488AbhAZLoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:44:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387977AbhAZLRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:17:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 266A022273;
-        Tue, 26 Jan 2021 11:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611659818;
-        bh=ASvcxWZYSKp7O/nXXIn6ez1qcX0QfE8kkwGNJE+vnN0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yKWzSm//Sw5/09EFq6WiA5wJvB31zEP1BEeiY5JGoESXZ8OSI2WLF7qxFYSf43RIj
-         V7beP1UsBekkFH24SRxQseeGYd3NGyGn4WivzfN2YkWM7vAYuWeLeZ7WtLgUMYTFbC
-         KTUlsLLEJXpzArM3mDW0YNPIVYuI7ATdTiXl81/E=
-Date:   Tue, 26 Jan 2021 12:16:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, sagar.kadam@sifive.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.4 00/88] 5.4.93-rc2 review
-Message-ID: <YA/6KP4DNVkpSBA5@kroah.com>
-References: <20210126094301.457437398@linuxfoundation.org>
- <CA+G9fYtqJDKOwFGevaOmmK7gbKgo61CpL70yyG2daOxvRp5FSQ@mail.gmail.com>
+        id S2405505AbhAZLog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392224AbhAZLR5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:17:57 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7818BC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:17:17 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id b26so22191956lff.9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:17:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pJqpqM3wbkcxWqAe0VwoN7CRJEfVCncbbtbba4P0YSA=;
+        b=hw3DhRDn9hVvc4daS4DVeWwnNPJ43qcUIN2QWA+gf50WILmLqVSXICy7r5oDz9GATm
+         ECIkd4bdQNiivPf3ijI7v4uD+jrBQtDEg59kE01gsnt1PWWcw6U0buLzykzXXNG4REI4
+         0GZDEuJkpmFTWd6nBzzJSGkI6iH32Wc07L8XVDpMF2OkjY2ESdR2gEjLLW4uA7KOEpmR
+         AEv7CXjcMfJ0OD0n3BxS65Wfgbwe0wRE1w1MnJ2z2su9YhBjULwx1TnYrVOSk2eqG+6w
+         HEQ2kdWFNBLS5tK4HQNC2rhZcdxHgCa1QSd5pJYHnQ1KDL+MWHsXGJBcz51uVQoCQiXd
+         OHxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pJqpqM3wbkcxWqAe0VwoN7CRJEfVCncbbtbba4P0YSA=;
+        b=U2YkqegXXCoiipx1upJvEu2XtgoZBjhE8Sz7+AK5/jPIw9T20vhMoFHyxG/8NOCxsd
+         cg+Wl/O0F0Mk9P1ACz4uFWHGRmQb2PgHHCM3kNZ6lxBirRlCMPp9NEsvMQKO4LyBTLXQ
+         fVj+/PgChhrW7ZyOOtURQunZxZ/3LZHNHgRbF65Xu2mdqY5oQQs7LjAq2yPE2WjLGXUb
+         b0/wNaJRZIgkgyOyDdlN2VhXVIlIfQ2AADNXpkri2dViYL13h5VsRDTNSXictyKfaFjB
+         n5LUUOvaQKs+B4UXJmyrPB5lCk6gdyg79OZQvxlqXDznjPiru84KSAXgPjXQa4lBt9tw
+         O/Zg==
+X-Gm-Message-State: AOAM533vl+SEQsx1aDOx2EqPPYOVttYiUY1g0f2kZPy7BVpAnQfrPttw
+        HYR/qgE/GhVYUVyrNpptc2F+d2VrJBnhhmV4+2KWzN97
+X-Google-Smtp-Source: ABdhPJxU3hj2FF5Ef59xxhwdUjyo3GvwTAUt+FHXSk5+CTSLTpxLfK4jBeA6EZ42XUv6i9hPnC4gUDiyWKXB5lbV6Dc=
+X-Received: by 2002:a19:341:: with SMTP id 62mr2351893lfd.500.1611659835911;
+ Tue, 26 Jan 2021 03:17:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYtqJDKOwFGevaOmmK7gbKgo61CpL70yyG2daOxvRp5FSQ@mail.gmail.com>
+References: <20210108214313.GA7979@ripley> <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
+ <20210110153532.GA7264@ripley> <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
+ <20210110200606.GD7264@ripley> <CAOMZO5DJUm4zutTB1oi5M0zj4_PFZEAbGzX6_LUAkX_dvEz=Qg@mail.gmail.com>
+ <20210116124856.GA3406@portage> <CAOMZO5DKann0ojZrhjyXOqrRq9owtgrrZTGwttD_bU0-KO=aBg@mail.gmail.com>
+ <20210125212917.GA4177@portage> <CAOMZO5DiTDQneYMtNBDpyqtYUYJ3AZ_fqWNSyfxWB5AfaNfULg@mail.gmail.com>
+ <20210125221701.GA20107@ripley>
+In-Reply-To: <20210125221701.GA20107@ripley>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 26 Jan 2021 08:17:04 -0300
+Message-ID: <CAOMZO5A99AJ9NVUmbFr3pE2jxXnQnGNZ+00LHtBTtG3f2mye8w@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
+To:     Oliver Graute <oliver.graute@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 04:43:51PM +0530, Naresh Kamboju wrote:
-> On Tue, 26 Jan 2021 at 15:33, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.4.93 release.
-> > There are 88 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Thu, 28 Jan 2021 09:42:44 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.93-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> As Daniel pointed in the other email thread,
-> riscv failed build:
->      * clang-10-defconfig -  FAILED
->      * clang-11-defconfig -  FAILED
->      * gcc-8-defconfig -  FAILED
->      * gcc-9-defconfig -  FAILED
->      * gcc-10-defconfig -  FAILED
-> 
-> the riscv build failed due to the below commit.
-> 
-> > Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-> >     dts: phy: add GPIO number and active state used for phy reset
-> 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=riscv
-> CROSS_COMPILE=riscv64-linux-gnu- 'CC=sccache riscv64-linux-gnu-gcc'
-> 'HOSTCC=sccache gcc'
-> arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts:88.27-28 syntax error
-> FATAL ERROR: Unable to parse input tree
-> 
-> Build log,
-> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/986616680
+Hi Oliver,
 
-Crap, forgot that one.  Will go drop it now and push out a -rc3.  Is
-this an issue for 5.10.y?
+On Mon, Jan 25, 2021 at 7:17 PM Oliver Graute <oliver.graute@gmail.com> wrote:
 
-thanks,
+> I would prefer mine, because I got a wrong colored penguin on bootup
+> with yours :-)
 
-greg k-h
+I have originally passed .bpc = 8, but looking at the panel datasheet,
+this should be:
+.bpc = 6 instead.
+
+In your patch, you pass the timing parameters three times, but they
+are all the same.
+
+Usually, it is meant to be: minimal, typical, maximum values.
