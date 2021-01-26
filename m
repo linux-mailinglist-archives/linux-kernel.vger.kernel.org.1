@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C2F304DBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507BD304DC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387999AbhAZXPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:15:31 -0500
-Received: from ip4d17989f.dynamic.kabel-deutschland.de ([77.23.152.159]:47616
-        "EHLO kolabdeb.mail.riedlb.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728881AbhAZFRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:17:24 -0500
-X-Virus-Scanned: Debian amavisd-new at mail.riedlb.de
-Received: from User (OpenWrt.mail.riedlb.de [192.168.0.1])
- by kolabdeb.mail.riedlb.de (Postfix) with SMTP id 7A3B324C3B83;
- Fri, 22 Jan 2021 14:52:13 +0100 (CET)
-Reply-To: <uekunio3@gmail.com>
-From:   "Kunio Uematsu" <admin@gardesh-gar.ir>
-Subject: Dearest Beloved !!!   
-Date:   Fri, 22 Jan 2021 08:52:25 -0800
+        id S2388089AbhAZXQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:16:13 -0500
+Received: from m12-12.163.com ([220.181.12.12]:39679 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387759AbhAZFaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 00:30:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=mxInm
+        W0WGyD7tNP1IlQncdf8KhYE4vvXW0RaNikDrpY=; b=VBch1yBoEU6YLN9mWCA8L
+        owEmX3Mxei73LlwWeFZKU1pqdh1d4FWr7mmioHzwsK21lRJ4XS2piCosLSEMJb1/
+        WSUJvThyMAln9lPcMSpRtNDrgRdJxOut/mllmYU6hWxBXolbUa8b3wWU8hGgcTxX
+        yYc4wE95aqoq7zCd55qU8Q=
+Received: from localhost (unknown [218.94.48.178])
+        by smtp8 (Coremail) with SMTP id DMCowABHf6uTgw9gy6c8Nw--.6162S2;
+        Tue, 26 Jan 2021 10:51:00 +0800 (CST)
+Date:   Tue, 26 Jan 2021 10:50:58 +0800
+From:   Guoqing Chi <chi962464zy@163.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhangwen@yulong.com
+Subject: Re: [PATCH] media: vidtv: remove redundant quote
+Message-ID: <20210126105058.000034a4@163.com>
+In-Reply-To: <b470e011-a21e-f333-6650-5c025906d63e@xs4all.nl>
+References: <20210119010947.709-1-chi962464zy@163.com>
+        <b470e011-a21e-f333-6650-5c025906d63e@xs4all.nl>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-Id: <20210122174544.6FADB24D458E@kolabdeb.mail.riedlb.de>
-To:     unlisted-recipients:; (no To-header on input)
+X-CM-TRANSID: DMCowABHf6uTgw9gy6c8Nw--.6162S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtw47urW8Ww4kZry5Jr43Jrb_yoWDuFb_Cw
+        s7Zr4xu34Utr18tF15JF9rZryYkayDZFs5XF98tw1YvFy3Za45J3Wavw17Aa12gF4IvFsr
+        Zry5X348ur13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRiXdb5UUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiNxQmRFWBjYMKtAAAsl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dearest Beloved,
+On Mon, 25 Jan 2021 12:26:54 +0100
+Hans Verkuil <hverkuil@xs4all.nl> wrote:
 
-As you read this, I don't want you to feel sorry for
-me.......because......I believe everyone will die someday. I have been
-diagnosed with esophageal cancer. It has defiled all forms of medical
-treatment, and right now I have only about a few months to live,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear or speak (being deaf and dump now).
-I have not particularly lived my life so well, as I never really cared
-for anyone (not even myself) but my business. Though I am very rich, I
-was never generous, I was always hostile to people and only focused on
-my business as that was the only thing I cared for. But now I regret
-all this as I now know that there is more to life than just wanting to
-have or make all the money in the world.
+> On 19/01/2021 02:09, chiguoqing wrote:
+> > Repeated references string.h
+> > 
+> > Signed-off-by: Wen Zhang <zhangwen@yulong.com>  
+> 
+> checkpatch gives me:
+> 
+> ERROR: Missing Signed-off-by: line by nominal patch author
+> 'chiguoqing <chi962464zy@163.com>'
+> 
+> Can you fix this?
+> 
+> Regards,
+> 
+> 	Hans
 
-I have willed and given most of my property and assets to my immediate
-and extended family members as well as a few close friends. I have
-decided to give also to charity organizations, as I want this to be
-one of the last good deeds I do on earth.
+Hi Hans:
+  I will resend patch,and change author to zhangwen. Thanks.
 
-So far, I have distributed money to some charity organizations in the U.A.E, Algeria, Malaysia
-and some countries in Africa. Now that my health has deteriorated so
-badly, I cannot do this myself anymore. I once asked members of my
-family to close one of my accounts and distribute the money which I
-have there to charity organization in Europe; they refused and kept
-the money to themselves. Hence, I do not trust them anymore, as they
-seem not to be contended with what I have left for them. The last of
-my money which no one knows of is the huge cash sum of Forty-Five
-Million US Dollars (US$45,000,000.00) that I deposited sometime ago in
-an offshore account as I operated my business there before my
-sickness. I will want you to help me collect these deposited funds and
-use the funds to help the orphans, less privileged, handicapped
-persons, homeless, refugees, other charity organizations and do other
-good humanitarian works. You shall only collect 25% of the funds for
-your reward for your time and also any expenses that you might incur
-during this great task.
+> 
+> > ---
+> >  drivers/media/test-drivers/vidtv/vidtv_psi.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c
+> > b/drivers/media/test-drivers/vidtv/vidtv_psi.c index
+> > 4511a2a98405..8ff27d26c343 100644 ---
+> > a/drivers/media/test-drivers/vidtv/vidtv_psi.c +++
+> > b/drivers/media/test-drivers/vidtv/vidtv_psi.c @@ -19,7 +19,6 @@
+> >  #include <linux/ratelimit.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/string.h>
+> > -#include <linux/string.h>
+> >  #include <linux/time.h>
+> >  #include <linux/types.h>
+> >  
+> >   
 
-PLEASE SEND YOUR RESPONSE TO ME WITH YOUR
-DETAILED INFORMATION AND IDENTIFICATION SO THAT I CAN FORWARD TO THE
-BANK WHERE FUND IS DEPOSITED.
 
-Regards,
-Kunio Uematsu
-(Japan)
-Email:uekunio3@gmail.com
