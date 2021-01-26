@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCA23045A5
+	by mail.lfdr.de (Postfix) with ESMTP id CD9FB3045A6
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393356AbhAZRqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:46:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46104 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389756AbhAZIST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:18:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EF21AC4F;
-        Tue, 26 Jan 2021 08:17:26 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 09:17:23 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 1/5] hugetlb: use page.private for hugetlb specific
- page flags
-Message-ID: <20210126081716.GA9519@linux>
-References: <20210122195231.324857-1-mike.kravetz@oracle.com>
- <20210122195231.324857-2-mike.kravetz@oracle.com>
+        id S2393373AbhAZRqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:46:39 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:54554 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389757AbhAZISv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:18:51 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10Q8F7t8039323;
+        Tue, 26 Jan 2021 08:18:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=lKVOl7uXOdllN9n85WrweQqwB29zeAj4HNPLJba3Rns=;
+ b=wDAZMk6Yuy0ovRIUxF70h/49y8SDZDVxlm2lgK/VwRkVY301/GXJKzKkAR8MXRwnVIQL
+ 2922r+QsPuv3gNGliECBLcmulJqxPNCEOgSmMe4w5VPQM1bSvc+SwnGFdhHd1Nn/Rk0x
+ eropp+KNcnkKAiBZgknRSlBuGz9SFRGd82tfn8OYvrpK9P2mLrdVrdvybt0xJSr9ased
+ YJoRgO+aIh8teWAfa76K+cjVlALR+mxgiXrGEzB4QBRMQOucMcBuvCkeREEFqJuRG2hA
+ tSKVCov90YGonOyKRJ+QqljFnhIy4fdUanYvZtJq2q8lhNGOMiG4MsZHSpq66r1aGPTN cw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 3689aah2u2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 08:18:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10Q8A6kC151446;
+        Tue, 26 Jan 2021 08:17:58 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 368wqw4b8h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 08:17:58 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10Q8Hss5025124;
+        Tue, 26 Jan 2021 08:17:54 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 26 Jan 2021 00:17:54 -0800
+Date:   Tue, 26 Jan 2021 11:17:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Carlis <zhangxuezhi3@gmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
+        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
+        colin.king@canonical.com, zhangxuezhi1@yulong.com
+Subject: Re: [PATCH v2] fbtft: add tearing signal detect
+Message-ID: <20210126081745.GX2696@kadam>
+References: <1611564252-84205-1-git-send-email-zhangxuezhi3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210122195231.324857-2-mike.kravetz@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1611564252-84205-1-git-send-email-zhangxuezhi3@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9875 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101260042
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9875 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 phishscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101260042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 11:52:27AM -0800, Mike Kravetz wrote:
-> As hugetlbfs evolved, state information about hugetlb pages was added.
-> One 'convenient' way of doing this was to use available fields in tail
-> pages.  Over time, it has become difficult to know the meaning or contents
-> of fields simply by looking at a small bit of code.  Sometimes, the
-> naming is just confusing.  For example: The PagePrivate flag indicates
-> a huge page reservation was consumed and needs to be restored if an error
-> is encountered and the page is freed before it is instantiated.  The
-> page.private field contains the pointer to a subpool if the page is
-> associated with one.
-> 
-> In an effort to make the code more readable, use page.private to contain
-> hugetlb specific page flags.  These flags will have test, set and clear
-> functions similar to those used for 'normal' page flags.  More importantly,
-> an enum of flag values will be created with names that actually reflect
-> their purpose.
-> 
-> In this patch,
-> - Create infrastructure for hugetlb specific page flag functions
-> - Move subpool pointer to page[1].private to make way for flags
->   Create routines with meaningful names to modify subpool field
-> - Use new HPageRestoreReserve flag instead of PagePrivate
-> 
-> Conversion of other state information will happen in subsequent patches.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Mon, Jan 25, 2021 at 04:44:12PM +0800, Carlis wrote:
+> From: "carlis.zhang_cp" <zhangxuezhi1@yulong.com>
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+I was really expecting that you would fix this and Signed-off-by as
+well.
 
--- 
-Oscar Salvador
-SUSE L3
+regards,
+dan carpenter
+
