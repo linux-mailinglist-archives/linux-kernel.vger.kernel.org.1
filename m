@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015A7303F3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9DC303F46
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404722AbhAZNnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:43:40 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11887 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404814AbhAZNmi (ORCPT
+        id S2403939AbhAZNtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:49:50 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11445 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404850AbhAZNmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:42:38 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DQ7Cs173Hz7bGZ;
-        Tue, 26 Jan 2021 21:40:41 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.176.220) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 21:41:43 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Subject: [PATCH v2 3/3] iommu/arm-smmu-v3: Reserving the entire SMMU register space
-Date:   Tue, 26 Jan 2021 21:41:28 +0800
-Message-ID: <20210126134128.1368-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210126134128.1368-1-thunder.leizhen@huawei.com>
-References: <20210126134128.1368-1-thunder.leizhen@huawei.com>
+        Tue, 26 Jan 2021 08:42:54 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DQ7DT5ZtPzjCXP;
+        Tue, 26 Jan 2021 21:41:13 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 26 Jan 2021 21:42:04 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
+        Yanan Wang <wangyanan55@huawei.com>
+Subject: [RFC PATCH v1 0/5] Enable CPU TTRem feature for stage-2
+Date:   Tue, 26 Jan 2021 21:41:57 +0800
+Message-ID: <20210126134202.381996-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.176.220]
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 52f3fab0067d ("iommu/arm-smmu-v3: Don't reserve implementation
-defined register space") only reserves the basic SMMU register space. So
-the ECMDQ register space is not covered, it should be mapped again. Due
-to the size of this ECMDQ resource is not fixed, depending on
-SMMU_IDR6.CMDQ_CONTROL_PAGE_LOG2NUMQ. Processing its resource reservation
-to avoid resource conflict with PMCG is a bit more complicated.
+Hi all,
+This series enable CPU TTRem feature for stage-2 page table and a RFC is sent
+for some comments, thanks.
 
-Therefore, the resources of the PMCG are not reserved, and the entire SMMU
-resources are reserved.
+The ARMv8.4 TTRem feature offers 3 levels of support when changing block
+size without changing any other parameters that are listed as requiring use
+of break-before-make. And I found that maybe we can use this feature to make
+some improvement for stage-2 page table and the following explains what
+TTRem exactly does for the improvement.
 
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 28 ++++------------------------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 --
- 2 files changed, 4 insertions(+), 26 deletions(-)
+If migration of a VM with hugepages is canceled midway, KVM will adjust the
+stage-2 table mappings back to block mappings. We currently use BBM to replace
+the table entry with a block entry. Take adjustment of 1G block mapping as an
+example, with BBM procedures, we have to invalidate the old table entry first,
+flush TLB and unmap the old table mappings, right before installing the new
+block entry.
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index bca458c00e48a8b..fde24403b06a9e3 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -3476,18 +3476,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
- 	return err;
- }
- 
--static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
--				      resource_size_t size)
--{
--	struct resource res = {
--		.flags = IORESOURCE_MEM,
--		.start = start,
--		.end = start + size - 1,
--	};
--
--	return devm_ioremap_resource(dev, &res);
--}
--
- static int arm_smmu_device_probe(struct platform_device *pdev)
- {
- 	int irq, ret;
-@@ -3523,22 +3511,14 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
- 	}
- 	ioaddr = res->start;
- 
--	/*
--	 * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
--	 * the PMCG registers which are reserved by the PMU driver.
--	 */
--	smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
-+	smmu->base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(smmu->base))
- 		return PTR_ERR(smmu->base);
- 
--	if (arm_smmu_resource_size(smmu) > SZ_64K) {
--		smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
--					       ARM_SMMU_REG_SZ);
--		if (IS_ERR(smmu->page1))
--			return PTR_ERR(smmu->page1);
--	} else {
-+	if (arm_smmu_resource_size(smmu) > SZ_64K)
-+		smmu->page1 = smmu->base + SZ_64K;
-+	else
- 		smmu->page1 = smmu->base;
--	}
- 
- 	/* Interrupt lines */
- 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index da525f46dab4fc1..63f2b476987d6ae 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -152,8 +152,6 @@
- #define ARM_SMMU_PRIQ_IRQ_CFG1		0xd8
- #define ARM_SMMU_PRIQ_IRQ_CFG2		0xdc
- 
--#define ARM_SMMU_REG_SZ			0xe00
--
- /* Common MSI config fields */
- #define MSI_CFG0_ADDR_MASK		GENMASK_ULL(51, 2)
- #define MSI_CFG2_SH			GENMASK(5, 4)
+So there will be a bit long period when the old table entry is invalid before
+installation of the new block entry, if other vCPUs access any guest page within
+the 1G range during this period and find the table entry invalid, they will all
+exit from guest with a translation fault. Actually, these translation faults
+are not necessary, because the block mapping will be built later. Besides, KVM
+will still try to build 1G block mappings for these spurious translation faults,
+and will perform cache maintenance operations, page table walk, etc.
+
+In summary, the spurious faults are caused by invalidation in BBM procedures.
+Approaches of TTRem level 1,2 ensure that there will not be a moment when the
+old table entry is invalid before installation of the new block entry. However,
+level-2 method will possibly lead to a TLB conflict which is bothering, so we
+use nT both at level-1 and level-2 case to avoid handling TLB conflict aborts.
+
+For an implementation which meets level 1 or level 2, the CPU has two responses
+to choose when accessing a block table entry with nT bit set: Firstly, CPU will
+generate a translation fault, the effect of this response is simier to BBM.
+Secondly, CPU can use the block entry for translation. So with the second kind
+of implementation, the above described spurious translations can be prevented.
+
+Yanan Wang (5):
+  KVM: arm64: Detect the ARMv8.4 TTRem feature
+  KVM: arm64: Add an API to get level of TTRem supported by hardware
+  KVM: arm64: Support usage of TTRem in guest stage-2 translation
+  KVM: arm64: Add handling of coalescing tables into a block mapping
+  KVM: arm64: Adapt page-table code to new handling of coalescing tables
+
+ arch/arm64/include/asm/cpucaps.h    |  3 +-
+ arch/arm64/include/asm/cpufeature.h | 13 ++++++
+ arch/arm64/kernel/cpufeature.c      | 10 +++++
+ arch/arm64/kvm/hyp/pgtable.c        | 62 +++++++++++++++++++++++------
+ 4 files changed, 74 insertions(+), 14 deletions(-)
+
 -- 
-1.8.3
-
+2.19.1
 
