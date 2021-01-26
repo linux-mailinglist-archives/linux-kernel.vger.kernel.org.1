@@ -2,122 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5CA3040A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A083040A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405884AbhAZOlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732678AbhAZJqT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:46:19 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76328C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:45:39 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id p72so32297170iod.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:45:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gOpOeDQD5Go0RVdYH+VTIlpj6PaHDPuBI8q5wmtvzOg=;
-        b=a/A3cexkUnnDK9ZGgLuDOiFeuS+vxOSHuV5qBm86n6bj7xrnraMi3lnPjJd+omzfQf
-         ZZZJt6XGrtQfM4dt9ayuEt/FSgLWtchFjtyWb7RGBakPyB5XvS4Xr/z0+E64Qp+QeQnK
-         SUXcThrcTB+zRAIaJwMt0thW39vuy545z6BmH7kL40MgX8tjWqB1A3S2Fr7IRDbHc+m3
-         60Un2PWCjqF26G1DYTjcnRgXAtZIfg9Cm355tqzqL4h0Q+HvvH8xGxn8pjYxsfXSvPxP
-         GSW2juxe7LX+p9GPNzrob4nXHZ3KSbmp1079QEQQudHQU2/vmPmdcocu7ALiLR8AU7el
-         s5oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gOpOeDQD5Go0RVdYH+VTIlpj6PaHDPuBI8q5wmtvzOg=;
-        b=EQY4D468NwAs2YM6rjvMs7ClQKqo/J5JhEbBZmw+RQCk61kVfTbTSGAisyhJ5wlC/8
-         g7eJ5JQ03pDFSlBeYLNo1cKOuXb9T9xGtn5dyh/VPrkJ3BcM2vKcp7gQo97OKffn4t9M
-         md85z/KrswQDWg1yGtMIhJzBw1ttAJYWIOYp7RWMeHQAwh0f3/NxkrLqxAjcx7BG4odx
-         csjSJnKlSUTPkzSjPyPHSsy+idb0ZBgQpM+4PC2biq/gL1pOXt9F5A9hMtVNfHjbLbIv
-         RcqeZItabNvFZ+wmDvHWa+NNwXb2a/2QlgzVbcXNk/dKz4t9VW+aomNBI8eNPtVEq+N+
-         8a4g==
-X-Gm-Message-State: AOAM533k1ZWwh46qBT0spSbTHYa73qy60rEbpGqh36c+FL71VlbEDL3p
-        v2DQZDtvPtsdUKF1Q6wLya4EYZQy1ua5uv5C8rDGnA==
-X-Google-Smtp-Source: ABdhPJwGarMzyBQLp8/ym6smCnWYbz228goyl9dzwfGe6sTozFenoI0EWqNvfXUwR6ErJUVwjROTsxnSZKni/0czFNc=
-X-Received: by 2002:a92:cda1:: with SMTP id g1mr3864461ild.267.1611654338730;
- Tue, 26 Jan 2021 01:45:38 -0800 (PST)
+        id S2405869AbhAZOlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:41:00 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:15840 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731131AbhAZJqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:46:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611654366; h=Content-Type: MIME-Version: Message-ID: Date:
+ Subject: Cc: To: From: Sender;
+ bh=gyYnwf8gFq48iOY3NGgc/sID15GriA7kqliiWtvr56k=; b=s3hBBZZQJe5H8cT52U38u/+o5ldzAiZKcmZxjggtmXPYeh4d5kmFXEC7A4n94XGFy/j7MNU9
+ HhYBA/hq0R2lk85Jbt++Xrvz1QrtmdscZ04vYKO7ixlCU3tXCx3edYGN3nfAPQ8h/vD0HTiT
+ 29o5clpOmWuZyP9PdB/nFyVe+D8=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 600fe4bd72b7c29fd5e7ebcb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 09:45:33
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 10DBCC433ED; Tue, 26 Jan 2021 09:45:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2ED96C433CA;
+        Tue, 26 Jan 2021 09:45:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2ED96C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     linux-bluetooth@vger.kernel.org, ath11k@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [regression v5.11-rc1] btqca: suspend fails with QCA6390
+Date:   Tue, 26 Jan 2021 11:45:28 +0200
+Message-ID: <87o8hcav5z.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20200907101937.10155-1-robert.marko@sartura.hr> <YA72ufb10QEZc5VH@builder.lan>
-In-Reply-To: <YA72ufb10QEZc5VH@builder.lan>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 26 Jan 2021 10:45:28 +0100
-Message-ID: <CA+HBbNHiya-4bbOr_iMbJXNaZ-e-+GfsJm3S7H8Y+ZD_=f7gyQ@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: IPQ4019: add SDHCI VQMMC LDO node
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, robh+dt@kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 5:50 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Mon 07 Sep 05:19 CDT 2020, Robert Marko wrote:
->
-> > Since we now have driver for the SDHCI VQMMC LDO needed
-> > for I/0 voltage levels lets introduce the necessary node for it.
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> > ---
-> >  arch/arm/boot/dts/qcom-ipq4019.dtsi | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/arch/arm/boot/dts/qcom-ipq4019.dtsi b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> > index 6741a1972e55..7774dbd3cec7 100644
-> > --- a/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> > +++ b/arch/arm/boot/dts/qcom-ipq4019.dtsi
-> > @@ -211,6 +211,16 @@ tlmm: pinctrl@1000000 {
-> >                       interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> >               };
-> >
-> > +             vqmmc: regulator@1948000 {
-> > +                     compatible = "qcom,vqmmc-ipq4019-regulator";
-> > +                     reg = <0x01948000 0x4>;
->
-> The actual hardware block where this register is found is the "TCSR"
-> which is 0x01947000 of size 0x21000 - making this the register at offset
-> 0x11000.
->
-> Perhaps it would have been better represented as a simple-mfd with this
-> regulator as a child node thereof.
->
->
-> That said, this has been sitting long enough, so I'll merge it as is and
-> we can rework it once we need more pieces of tcsr.
+Hi,
 
-Thanks,
-I was unaware that it is part of TCSR as I don't have datasheets
-and this was ported from multiple versions of the downstream driver.
+I got Dell XPS 13 9310 laptop which has QCA6390 wlan/bt device. I
+noticed that on v5.11-rc1 suspend fails every time like this:
 
-Regards,
-Robert
->
-> Thanks,
-> Bjorn
->
-> > +                     regulator-name = "vqmmc";
-> > +                     regulator-min-microvolt = <1500000>;
-> > +                     regulator-max-microvolt = <3000000>;
-> > +                     regulator-always-on;
-> > +                     status = "disabled";
-> > +             };
-> > +
-> >               sdhci: sdhci@7824900 {
-> >                       compatible = "qcom,sdhci-msm-v4";
-> >                       reg = <0x7824900 0x11c>, <0x7824000 0x800>;
-> > --
-> > 2.26.2
-> >
+[   91.134305] Bluetooth: hci0: SSR or FW download time out
+[   91.134314] PM: dpm_run_callback(): acpi_subsys_suspend+0x0/0x50 returns -110
+[   91.134331] PM: Device serial0-0 failed to suspend: error -110
+[   91.134338] PM: Some devices failed to suspend, or early wake event detected
+
+On v5.10 suspend worked just fine and after a bisect I found reverting
+commit 2be43abac5a8 ("Bluetooth: hci_qca: Wait for timeout during
+suspend") fixes the issue for me. More info below.
+
+Is there a quick fix for this or should the commit be reverted for
+v5.11? I think it's important to have btqca suspend working on the final
+release as there quite a lot of laptops with QCA6390.
+
+I'll also include ath11k list as we have XPS 13 9310 users there and so
+that they are aware of this regression.
+
+Kalle
+
+commit 2be43abac5a839d44bf9d14716573ae0ac920f2b
+Author:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+AuthorDate: Tue Oct 6 20:50:21 2020 +0530
+Commit:     Marcel Holtmann <marcel@holtmann.org>
+CommitDate: Wed Nov 11 12:07:54 2020 +0100
+
+    Bluetooth: hci_qca: Wait for timeout during suspend
+    
+    Currently qca_suspend() is relied on IBS mechanism. During
+    FW download and memory dump collections, IBS will be disabled.
+    In those cases, driver will allow suspend and still uses the
+    serdev port, which results to errors. Now added a wait timeout
+    if suspend is triggered during FW download and memory collections.
+    
+    Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+    Signed-off-by: Balakrishna Godavarthi <bgodavar@codeaurora.org>
+    Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+    Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+
+
+stock v5.11-rc5, suspend fails:
+
+[    2.924622] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+[    2.924624] Bluetooth: BNEP filters: protocol multicast
+[    2.924627] Bluetooth: BNEP socket layer initialized
+[    3.091669] Bluetooth: hci0: QCA Product ID   :0x00000010
+[    3.091673] Bluetooth: hci0: QCA SOC Version  :0x400a0200
+[    3.091674] Bluetooth: hci0: QCA ROM Version  :0x00000200
+[    3.091674] Bluetooth: hci0: QCA Patch Version:0x00000d2b
+[    3.091676] Bluetooth: hci0: QCA controller version 0x02000200
+[    3.091676] Bluetooth: hci0: QCA Downloading qca/htbtfw20.tlv
+[    3.091689] bluetooth hci0: Direct firmware load for qca/htbtfw20.tlv failed with error -2
+[    3.091692] Bluetooth: hci0: QCA Failed to request file: qca/htbtfw20.tlv (-2)
+[    3.091693] Bluetooth: hci0: QCA Failed to download patch (-2)
+<cut>
+[   13.714497] fscrypt: AES-256-CTS-CBC using implementation "cts(cbc-aes-aesni)"
+[   13.759753] fscrypt: AES-256-XTS using implementation "xts-aes-aesni"
+[   13.818594] broken atomic modeset userspace detected, disabling atomic
+[   14.391415] psmouse serio1: Failed to deactivate mouse on isa0060/serio1: -5
+[   14.871419] psmouse serio1: Failed to enable mouse on isa0060/serio1
+[   19.143493] input: PS/2 Generic Mouse as /devices/platform/i8042/serio1/input/input2
+[   19.347355] psmouse serio1: Failed to enable mouse on isa0060/serio1
+[   84.758946] PM: suspend entry (s2idle)
+[   84.760462] Filesystems sync: 0.001 seconds
+[   84.762783] Freezing user space processes ... (elapsed 0.001 seconds) done.
+[   84.764319] OOM killer disabled.
+[   84.764320] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[   84.765470] printk: Suspending console(s) (use no_console_suspend to debug)
+[   87.806250] Bluetooth: hci0: SSR or FW download time out
+[   87.806261] PM: dpm_run_callback(): acpi_subsys_suspend+0x0/0x50 returns -110
+[   87.806284] PM: Device serial0-0 failed to suspend: error -110
+[   87.806292] PM: Some devices failed to suspend, or early wake event detected
+[   87.924249] OOM killer enabled.
+[   87.924252] Restarting tasks ... done.
+[   87.971055] PM: suspend exit
+[   87.971133] PM: suspend entry (s2idle)
+[   87.975657] Filesystems sync: 0.004 seconds
+[   87.976159] Freezing user space processes ... (elapsed 0.001 seconds) done.
+[   87.977593] OOM killer disabled.
+[   87.977594] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[   87.978699] printk: Suspending console(s) (use no_console_suspend to debug)
+[   91.134305] Bluetooth: hci0: SSR or FW download time out
+[   91.134314] PM: dpm_run_callback(): acpi_subsys_suspend+0x0/0x50 returns -110
+[   91.134331] PM: Device serial0-0 failed to suspend: error -110
+[   91.134338] PM: Some devices failed to suspend, or early wake event detected
+[   91.255045] OOM killer enabled.
+[   91.255048] Restarting tasks ... done.
+[   91.298067] PM: suspend exit
+
+v5.11-rc5 plus a revert of 2be43abac5a8, suspend works;
+
+[    3.027425] Bluetooth: hci0: QCA Product ID   :0x00000010
+[    3.027428] Bluetooth: hci0: QCA SOC Version  :0x400a0200
+[    3.027429] Bluetooth: hci0: QCA ROM Version  :0x00000200
+[    3.027430] Bluetooth: hci0: QCA Patch Version:0x00000d2b
+[    3.027431] Bluetooth: hci0: QCA controller version 0x02000200
+[    3.027433] Bluetooth: hci0: QCA Downloading qca/htbtfw20.tlv
+[    3.027449] bluetooth hci0: Direct firmware load for qca/htbtfw20.tlv failed with error -2
+[    3.027451] Bluetooth: hci0: QCA Failed to request file: qca/htbtfw20.tlv (-2)
+[    3.032824] Bluetooth: hci0: QCA Failed to download patch (-2)
+<cut>
+[   13.143154] fscrypt: AES-256-CTS-CBC using implementation "cts(cbc-aes-aesni)"
+[   13.165061] fscrypt: AES-256-XTS using implementation "xts-aes-aesni"
+[   13.225180] broken atomic modeset userspace detected, disabling atomic
+[   14.343141] psmouse serio1: Failed to deactivate mouse on isa0060/serio1: -5
+[   14.823182] psmouse serio1: Failed to enable mouse on isa0060/serio1
+[   19.111270] input: PS/2 Generic Mouse as /devices/platform/i8042/serio1/input/input2
+[   19.315153] psmouse serio1: Failed to enable mouse on isa0060/serio1
+[  173.918828] PM: suspend entry (s2idle)
+[  173.922617] Filesystems sync: 0.003 seconds
+[  173.925127] Freezing user space processes ... (elapsed 0.001 seconds) done.
+[  173.926656] OOM killer disabled.
+[  173.926658] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[  173.927776] printk: Suspending console(s) (use no_console_suspend to debug)
+[  174.176572] psmouse serio1: Failed to disable mouse on isa0060/serio1
+[  175.190979] mhi mhi0: Allowing M3 transition
+[  175.190995] mhi mhi0: Wait for M3 completion
+[  175.260930] ACPI: EC: interrupt blocked
+[  186.827253] ACPI: EC: interrupt unblocked
+[  186.968527] mhi mhi0: Entered with PM state: M3, MHI state: M3
+[  187.322090] OOM killer enabled.
+[  187.322092] Restarting tasks ... done.
+[  187.362639] PM: suspend exit
