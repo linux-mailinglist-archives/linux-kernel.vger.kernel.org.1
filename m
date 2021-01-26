@@ -2,175 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD73F30418D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA734304191
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406039AbhAZPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:07:26 -0500
-Received: from mail-wr1-f52.google.com ([209.85.221.52]:47015 "EHLO
-        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406117AbhAZPG5 (ORCPT
+        id S2406130AbhAZPII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:08:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20274 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406124AbhAZPHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:06:57 -0500
-Received: by mail-wr1-f52.google.com with SMTP id q7so16802572wre.13;
-        Tue, 26 Jan 2021 07:06:40 -0800 (PST)
+        Tue, 26 Jan 2021 10:07:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611673582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qi8UwE6Qmiu1KuWS8PgB1EdfHB74B6eg32KdKcjwVaY=;
+        b=Yy1VNSXwX6kTanuT0Vb4BRGC9jV5buGQI1zkn/MxV2w3s5AMlgcR9cG3SAyDnb7X3YoQBw
+        /9Gk7+QbG6r6jWMSnN/UUvGbnLAxMHriuEZLbj4MqkkPAnrhVdMbjYHWCNyCAZDiFWwrK+
+        h+X4TH9BZFqtmuq8a8GskghCBC/sM6I=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-D8VxDtiJNjCM28BLKRIx0Q-1; Tue, 26 Jan 2021 10:06:20 -0500
+X-MC-Unique: D8VxDtiJNjCM28BLKRIx0Q-1
+Received: by mail-qv1-f71.google.com with SMTP id b1so785548qvk.17
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:06:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1zxAP5nWOub6Bvc04Q0nYCpX745bg4gnoQMttyKcbDA=;
-        b=cLyO/H40Qe5XBacyvxPrEls2PLQpH229f1gtEJhXThmPVRs0jqLeLFJ66FS4BNao6X
-         Ik0zRQmTfxZCZ10g5dBtUebX1+ISJoiGEgv2ZQsZerr0AKmDwtgV/Aa1mCNaUeEJCvWl
-         /0DiVwEW4v9bOW9d/AIrtJOm8239T3DrIgQ6Xgy8SlO1RAOS50Atmhuem8VKJfdPVsek
-         w3oFXqk/G/5zW73vgu+UZDQVBn2frbgn/DHaAcprKr+ToZMN136S3rcoQH8GkhPCV/IZ
-         7W6Hl5r9yH4qj6PloJk6n0hg/Pd4W4p7zLOhwRzNpMRr1LDRGEb9H2pMoFrACCdj+wCy
-         ZJug==
-X-Gm-Message-State: AOAM533xm0AKkD+0quXUwxs04rKwWMZZTGXqhRULzOTnXhHORbiucVUq
-        6OfoHdGLRGtga92sP0CLaAw=
-X-Google-Smtp-Source: ABdhPJz6nXhDC+EdSuhgT02+BMd0x/AUACUUkmfcFOGpK/ISfMtzwNbVHBGQODyMvxpp8w2rucWM5Q==
-X-Received: by 2002:a5d:640c:: with SMTP id z12mr6619568wru.342.1611673575016;
-        Tue, 26 Jan 2021 07:06:15 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id i131sm3814078wmi.25.2021.01.26.07.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 07:06:14 -0800 (PST)
-Date:   Tue, 26 Jan 2021 15:06:13 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
- partition
-Message-ID: <20210126150613.6fg5f5ouqicq4job@liuwe-devbox-debian-v2>
-References: <20210120120058.29138-1-wei.liu@kernel.org>
- <20210120120058.29138-3-wei.liu@kernel.org>
- <CA+CK2bDHYxTr_ttbC88u1OvT-=cm5do5RmyoxC+joz=GjK1WtA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qi8UwE6Qmiu1KuWS8PgB1EdfHB74B6eg32KdKcjwVaY=;
+        b=XXvqFVT8mcmMxAJyLBPg4A4VAhoMyyZ6pQfIsPUFhd+r/7mrYn4h0bYIo79WwC1a3b
+         hgomuMaPt3mAvhgTjQR7mYn9JhBwI8E6IKukcJ+lUN29LmpRwwjO+Zky6x4aAga+aUcx
+         OtF+CO1ZbRb2jO3UceQgWw8iJ4jupbqQL/sdWf3VJCAn3mXvXlD/Rugx2oN8r5ySHS+a
+         0p1HelTiqJoiohmkfEcYlCvHNHBut2shb6omloy7uSipHy2B3uclVpB/z/cWFGG3/KAC
+         0m4LsKnoa3SBmz+kN7nzgxDHMXWcLprmmj3gJAeMPtBzWocIdU+6JU0Q5sXF2eAyJZ6X
+         JilQ==
+X-Gm-Message-State: AOAM530EMYU4vTmN2VEVi/VKPAmXlS1ROuv2oxhrT5TGVgy9DwUnN/5q
+        tdgUKJWpI/0BdtAA504kEIJveyEI6ucjIeXDZn17iMVQb+nxvF96Db3LI9QpRc321I05sBDQRwm
+        6S6wbHBXlKNYjRPCj+s/jIEU+
+X-Received: by 2002:a0c:8e85:: with SMTP id x5mr5912594qvb.11.1611673580281;
+        Tue, 26 Jan 2021 07:06:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzkvTacOp9Nmqu9dKsH2VEK7Y5dOGzYE628PW7VS04bYssQxYzMpNCZ8WXXtjkccyqMknwRGw==
+X-Received: by 2002:a0c:8e85:: with SMTP id x5mr5912570qvb.11.1611673580046;
+        Tue, 26 Jan 2021 07:06:20 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 17sm15114656qtu.23.2021.01.26.07.06.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 07:06:19 -0800 (PST)
+Subject: Re: [PATCH v2 4/4] MAINTAINERS: Add entry for Intel MAX 10 mfd driver
+To:     Xu Yilun <yilun.xu@intel.com>, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+References: <1611643836-7183-1-git-send-email-yilun.xu@intel.com>
+ <1611643836-7183-5-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <5c75dafc-8103-100e-2b06-f0b229827ef0@redhat.com>
+Date:   Tue, 26 Jan 2021 07:06:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bDHYxTr_ttbC88u1OvT-=cm5do5RmyoxC+joz=GjK1WtA@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1611643836-7183-5-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:03:18AM -0500, Pavel Tatashin wrote:
-> On Wed, Jan 20, 2021 at 7:01 AM Wei Liu <wei.liu@kernel.org> wrote:
-> >
-> > For now we can use the privilege flag to check. Stash the value to be
-> > used later.
-> >
-> > Put in a bunch of defines for future use when we want to have more
-> > fine-grained detection.
-> >
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> > v3: move hv_root_partition to mshyperv.c
-> > ---
-> >  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
-> >  arch/x86/include/asm/mshyperv.h    |  2 ++
-> >  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
-> >  3 files changed, 32 insertions(+)
-> >
-> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> > index 6bf42aed387e..204010350604 100644
-> > --- a/arch/x86/include/asm/hyperv-tlfs.h
-> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> > @@ -21,6 +21,7 @@
-> >  #define HYPERV_CPUID_FEATURES                  0x40000003
-> >  #define HYPERV_CPUID_ENLIGHTMENT_INFO          0x40000004
-> >  #define HYPERV_CPUID_IMPLEMENT_LIMITS          0x40000005
-> > +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES   0x40000007
-> >  #define HYPERV_CPUID_NESTED_FEATURES           0x4000000A
-> >
-> >  #define HYPERV_CPUID_VIRT_STACK_INTERFACE      0x40000081
-> > @@ -110,6 +111,15 @@
-> >  /* Recommend using enlightened VMCS */
-> >  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED            BIT(14)
-> >
-> > +/*
-> > + * CPU management features identification.
-> > + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
-> > + */
-> > +#define HV_X64_START_LOGICAL_PROCESSOR                 BIT(0)
-> > +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR           BIT(1)
-> > +#define HV_X64_PERFORMANCE_COUNTER_SYNC                        BIT(2)
-> > +#define HV_X64_RESERVED_IDENTITY_BIT                   BIT(31)
-> > +
-> >  /*
-> >   * Virtual processor will never share a physical core with another virtual
-> >   * processor, except for virtual processors that are reported as sibling SMT
-> > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> > index ffc289992d1b..ac2b0d110f03 100644
-> > --- a/arch/x86/include/asm/mshyperv.h
-> > +++ b/arch/x86/include/asm/mshyperv.h
-> > @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
-> >                 struct hv_guest_mapping_flush_list *flush,
-> >                 u64 start_gfn, u64 end_gfn);
-> >
-> > +extern bool hv_root_partition;
-> > +
-> >  #ifdef CONFIG_X86_64
-> >  void hv_apic_init(void);
-> >  void __init hv_init_spinlocks(void);
-> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > index f628e3dc150f..c376d191a260 100644
-> > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > @@ -32,6 +32,10 @@
-> >  #include <asm/nmi.h>
-> >  #include <clocksource/hyperv_timer.h>
-> >
-> > +/* Is Linux running as the root partition? */
-> > +bool hv_root_partition;
-> > +EXPORT_SYMBOL_GPL(hv_root_partition);
-> > +
-> >  struct ms_hyperv_info ms_hyperv;
-> >  EXPORT_SYMBOL_GPL(ms_hyperv);
-> >
-> > @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
-> >         pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
-> >                  ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
-> >
-> > +       /*
-> > +        * Check CPU management privilege.
-> > +        *
-> > +        * To mirror what Windows does we should extract CPU management
-> > +        * features and use the ReservedIdentityBit to detect if Linux is the
-> > +        * root partition. But that requires negotiating CPU management
-> > +        * interface (a process to be finalized).
-> 
-> Is this comment relevant? Do we have to mirror what Windows does?
-> 
 
-We should do that in the future when the process for negotiating CPU
-management features is stabilized / finalized.
+On 1/25/21 10:50 PM, Xu Yilun wrote:
+> This patch adds maintainer info for Intel MAX 10 mfd driver.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+>  MAINTAINERS | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 5aa18cb..10985d3 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9132,6 +9132,15 @@ F:	include/linux/mei_cl_bus.h
+>  F:	include/uapi/linux/mei.h
+>  F:	samples/mei/*
+>  
 
-> > +        *
-> > +        * For now, use the privilege flag as the indicator for running as
-> > +        * root.
-> > +        */
-> > +       if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
-> > +               hv_root_partition = true;
-> > +               pr_info("Hyper-V: running as root partition\n");
-> > +       }
-> > +
-> 
-> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+I am interested in reviewing these files like I do with
 
-Thanks for reviewing these patches.
+FPGA DFL DRIVERS
 
-Wei.
+So can you add
+
+R:    Tom Rix <trix@redhat.com>
+
+if you have to rev this patchset ?
+
+Else I will submit a followup.
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+> +INTEL MAX 10 BMC MFD DRIVER
+> +M:	Xu Yilun <yilun.xu@intel.com>
+> +S:	Maintained
+> +F:	Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
+> +F:	Documentation/hwmon/intel-m10-bmc-hwmon.rst
+> +F:	drivers/hwmon/intel-m10-bmc-hwmon.c
+> +F:	drivers/mfd/intel-m10-bmc.c
+> +F:	include/linux/mfd/intel-m10-bmc.h
+> +
+>  INTEL MENLOW THERMAL DRIVER
+>  M:	Sujith Thomas <sujith.thomas@intel.com>
+>  L:	platform-driver-x86@vger.kernel.org
+
