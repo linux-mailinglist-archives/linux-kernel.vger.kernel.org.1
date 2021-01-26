@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DE6303F4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CACA303EE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405519AbhAZNvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:51:02 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36931 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2405443AbhAZNue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:50:34 -0500
-X-UUID: 190dfdc93a5040ea87bbc400ae3243c3-20210126
-X-UUID: 190dfdc93a5040ea87bbc400ae3243c3-20210126
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1714495659; Tue, 26 Jan 2021 21:49:51 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 21:49:49 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 21:49:49 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
-        Mason Zhang <mason.zhang@mediatek.com>
-Subject: [PATCH v1 1/1] arm64: dts: mt6779: add spi host dts nodes
-Date:   Tue, 26 Jan 2021 21:35:34 +0800
-Message-ID: <20210126133531.32253-2-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210126133531.32253-1-mason.zhang@mediatek.com>
-References: <20210126133531.32253-1-mason.zhang@mediatek.com>
+        id S2392486AbhAZNi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:38:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728794AbhAZNhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:37:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D2C22B2C;
+        Tue, 26 Jan 2021 13:36:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611668214;
+        bh=7YuUvSQdT/9yQpCdwou6DuNUmWTWxxjjqnzdhUxKMK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h+zW47f0+3+RQT2TlLNwAa4MyB7Ke1ery+xx05yjejwV46aDOaDvU+RyMgry83RBV
+         4q/Qo2Q8HxI4Kzph+86wzFUk+4xVtP04A9Nn5cU8KHOFC8w3r7YIwDzm/V1mOeNjBf
+         JlRVz/QMWztT2X4z9w1VhHJ+M3a423+Ztz06HDEQooxlFPq3c6ZL1I7UTWYfKp15tP
+         DkpEtC0nHHHLo2vsBYdRPdkKoaL86XMgu/0X5u+Mx3TO8WkNV6Q9XwDxGKGeRmuQMj
+         6VsoA3DJibkJjEEIkkrmcrvgejzuwUAyeyTL1/31dnAaCcsda2zeFhcUXTYQ4yn5VM
+         im9BDQwWsv8RQ==
+Date:   Tue, 26 Jan 2021 13:36:12 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org, perex@perex.cz,
+        tiwai@suse.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
+Subject: Re: [RFC PATCH 1/2] ASoC: soc-component: add
+ snd_soc_component_read/write_field()
+Message-ID: <20210126133612.GB4839@sirena.org.uk>
+References: <20210126122020.19735-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7iMSBzlTiPOCCT2k"
+Content-Disposition: inline
+In-Reply-To: <20210126122020.19735-1-srinivas.kandagatla@linaro.org>
+X-Cookie: I don't understand you anymore.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this patch add spi host dts nodes for mt6779 IC.
 
-Change-Id: If4a3cbb09843f472210b390352db4b9886f5c00c
-Signed-off-by: Mason Zhang <mason.zhang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt6779.dtsi | 96 ++++++++++++++++++++++++
- 1 file changed, 96 insertions(+)
+--7iMSBzlTiPOCCT2k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-index 370f309d32de..272f4346d35e 100644
---- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-@@ -219,6 +219,102 @@
- 			status = "disabled";
- 		};
- 
-+		spi0: spi0@1100a000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi1: spi1@11010000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi2: spi2@11012000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi3: spi3@11013000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi4: spi4@11018000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi5: spi5@11019000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi6: spi6@1101d000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101d000 0 0x1000>;
-+			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI6>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi7: spi7@1101e000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101e000 0 0x1000>;
-+			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI7>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
- 		audio: clock-controller@11210000 {
- 			compatible = "mediatek,mt6779-audio", "syscon";
- 			reg = <0 0x11210000 0 0x1000>;
--- 
-2.18.0
+On Tue, Jan 26, 2021 at 12:20:19PM +0000, Srinivas Kandagatla wrote:
 
+> +#define __soc_component_field_shift(x) (__builtin_ffs(x) - 1)
+
+Why not have this be a static inline?
+
+> +unsigned int snd_soc_component_read_field(struct snd_soc_component *component,
+> +					  unsigned int reg, unsigned int mask)
+> +{
+> +	unsigned int val;
+> +
+> +	mutex_lock(&component->io_mutex);
+> +	val = soc_component_read_no_lock(component, reg);
+> +	if (mask)
+> +		val = (val & mask) >> __soc_component_field_shift(mask);
+
+I don't understand why this is open coding the locking when it's just a
+simple read and then shift?
+
+> +	mutex_lock(&component->io_mutex);
+> +
+> +	old = soc_component_read_no_lock(component, reg);
+> +
+> +	val = val << __soc_component_field_shift(mask);
+> +
+> +	new = (old & ~mask) | (val & mask);
+> +
+> +	change = old != new;
+> +	if (change)
+> +		ret = soc_component_write_no_lock(component, reg, new);
+> +
+> +	mutex_unlock(&component->io_mutex);
+
+This needs the lock as it's a read/modify/write but could also be
+implemented in terms of the existing update_bits() operation rather than
+open coding it.
+
+--7iMSBzlTiPOCCT2k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAQGssACgkQJNaLcl1U
+h9DlKgf9FlXbJvk+CCVzGfmugYnMLXiQZZUgTx5sDr4Ulxd2ZLhz/j2mSFj8Ja2z
+4nPYXI/DVdIyErnosbKx7bqd7NMhm61FhTAyr4CLbnB/2ZIRDcLw66HwsLcMtqW2
+6oV0fd7YCyjs5kqaNToDn/upr3jWqOmYkKLGoOoFpIThQxce7QXmnlD1TkkmtTUa
+cwUukMLQHb+kP3fTxJQ5F8++DvVZfFzRwQEuadPvzkA+uCCA/wyYT/S6+u8Kc3Hi
+1vWfXsrwiqGqQEd4lsj1hPLeiJ+T/VRsy2qn0eYUUmPPj3eH00xFrwS3mXEHPVRH
+K5Se9hdIHYO+s3HNPjepVcY0I0h1tg==
+=mgxe
+-----END PGP SIGNATURE-----
+
+--7iMSBzlTiPOCCT2k--
