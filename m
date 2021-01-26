@@ -2,110 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164F1303EA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 685F9303EAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391743AbhAZN0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
+        id S2392602AbhAZN1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:27:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391759AbhAZJ4Y (ORCPT
+        with ESMTP id S2391656AbhAZJ4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:56:24 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE1DC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:55:44 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id 186so8678744vsz.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:55:44 -0800 (PST)
+        Tue, 26 Jan 2021 04:56:45 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E730CC0613D6;
+        Tue, 26 Jan 2021 01:56:04 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id ox12so22150192ejb.2;
+        Tue, 26 Jan 2021 01:56:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=arxHqUjVCPMGGo+kdWhr5qA09DPzoA8oDcXRjdjMesU=;
-        b=EcShE3WriMxg/Eue+lluAhZy6XFdaiE7q/zIsBoYY7Ag15pVcIAPm2Rt5omAdELLCc
-         11mz6CsjnLhyj61t/GIlOHf/TvdxS3gxdXSFfStT0k870nQbJoQ9eSIIYNuucpdWD8/S
-         Sw/hzDKeBM6ISYAhYAe2Lw3q1xaBQtNpijQLFlW35bgeheAvsC77lBYtyV4oVcHveh1s
-         3mcs8sn6PHPe4ll+5zwuh/wDZZFvTa6fkB1RVZgsUwDAgARuLfkdcz9/RPCFOQ0/UuW7
-         /8XScZGzxB7cHdgTdkOiUb9Ll6WPzk2b+hSIWlPzYClk0yitUo36hYJGl2aqUGZPViDE
-         uldw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8C8pdtrwOEr8Lcj7qoDN59MpfrhsdtkivzKyNfgBHVw=;
+        b=i4fuVrNcQQvAg/YwF+wDvQKzO3U0KyXWoQb1U1Zhh1K9LMvLE6yHB9fYEf2yM5ryFe
+         Zez+fSpWh+yD0axfaJNvX2UNzmrWQjmsDVjbmkhJl+nmBZbo4e8/ezVdsm54+UoQiFTT
+         +gBvUQLEj08xIN+TLGe7DSmaopQSrsX6CiRy3crM+D0UF+FAPO3vFDaWVax0rf6ZVxnE
+         pPbMzP/k1NkOYGHDpufPAqF9VwkpFzFg0WYn3ge2pFcY6iBmV7bhrhmQr8wD0s7WlR/8
+         QZHfJ0KGvRd/GqGm/AuaKdV2HPDv7so3g+RqcqLiAs75+sCBcTxqfvscS2epCFuDA1nk
+         GKJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=arxHqUjVCPMGGo+kdWhr5qA09DPzoA8oDcXRjdjMesU=;
-        b=aYHRTMUsemS7ISic9dXC0t/rtMqQX3BAcQ1ZOCNGO28bfrgUY3LAQncTXf21gIUX5J
-         TyJKlXvnItdxK1yqPXqyCgf9ipDSkE7NmxepGkExa9NfNhEi/3c4Qe/rDAshQZ6CiAdl
-         0KntAHnUmHnNyDLQu7uLfb4lkVp+kNaSdhk41ZQixKghsGbjkoitwhD5sTIR8Pcf5rNV
-         VUCLYfhv/gxgG0yXSCGgC9wlpBu6Ogiqg/r8UR+iWrLzIXGaFr1epqvnwqgslik8Swzt
-         sfyz6obogpugE1ntI/CP9zOn6StRVJJOFL1UBsmymsos21y/bBik8YDyqimU9tO4LOad
-         vMag==
-X-Gm-Message-State: AOAM5308Uf9oaYRj3UANOfxClkYDmXrHngzmw8G0yOL/VcqHmoWJ2vCg
-        6Ps94yJHJuy14B4KuO5Z8cXG9Quwyc8dOovy+s1y1A==
-X-Google-Smtp-Source: ABdhPJz0yZvD2Kri9nEUdn+/MXiaY91SPbRIkAAb7URMZZAOXugfNTa0Bn9xEPlfbJnKhse7FqsZsh1vyYupSyURNt8=
-X-Received: by 2002:a05:6102:67b:: with SMTP id z27mr2242407vsf.19.1611654943282;
- Tue, 26 Jan 2021 01:55:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8C8pdtrwOEr8Lcj7qoDN59MpfrhsdtkivzKyNfgBHVw=;
+        b=TYsLsQJyLr05XsrvE6Sr4H+xCRrekgZKA0SDi4g5Mgr8++LmMkvZFufhpuN+KlFvMq
+         IgZklsGuyUe0W1osKHRCNOK+/XoQcAR417PmGnNNxjCCvRN5cGEgGHErOCEOjvsXbJcC
+         Lh8zv3bf/pZAB2Sy20iXMHhARDzFgNJyrrzj64rIGYgRmqbWbLbWrwlyJGvbKQSuPMwK
+         9n+WvQSwvtEJX/PRVCnMF96VTrOwyu+lvKeaAA+vyfM3iT+52xAivfKytuzpYbZYWlR8
+         PA5cbHcA1k/ZoK+cpNXQSzZl0ifTOF0tkpoeny4k3y/dHk9DlkpmUWSrafnAktCeKzQe
+         oc7w==
+X-Gm-Message-State: AOAM531v7BvGQgQiZXaejklWDjtzCn892vqY00qo/j7pFQLUVOLL48D+
+        Hz3n2XDnSNP7AXS/Kkj9/88=
+X-Google-Smtp-Source: ABdhPJw9SauEqE9zZ6vtE2izjZwy24q35l+YqHKZ3cYH6XXfCRCl0ul8HQE0XjbDgtercPxBO81gzg==
+X-Received: by 2002:a17:906:198b:: with SMTP id g11mr636151ejd.536.1611654963668;
+        Tue, 26 Jan 2021 01:56:03 -0800 (PST)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id h12sm11648310edb.16.2021.01.26.01.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 01:56:02 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v7 0/5] Add initial support for ATC260x PMICs
+Date:   Tue, 26 Jan 2021 11:55:56 +0200
+Message-Id: <cover.1611653995.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210125125050.102605-1-arnd@kernel.org> <f671f5d2-36c4-ded5-c4b9-93c5c57cc9f2@gmail.com>
-In-Reply-To: <f671f5d2-36c4-ded5-c4b9-93c5c57cc9f2@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 26 Jan 2021 10:55:07 +0100
-Message-ID: <CAPDyKFoGDHtE8JgLurwuN-W6CmmyBB3GP+7Z-bWqJiWw+TJEaQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: brcmstb: Fix sdhci_pltfm_suspend link error
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nicolas Schichan <nschichan@freebox.fr>
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "# 4.0+" <stable@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 at 18:40, Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> +Nicolas,
->
-> On 1/25/2021 4:50 AM, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > sdhci_pltfm_suspend() is only available when CONFIG_PM_SLEEP
-> > support is built into the kernel, which caused a regression
-> > in a recent bugfix:
-> >
-> > ld.lld: error: undefined symbol: sdhci_pltfm_suspend
-> >>>> referenced by sdhci-brcmstb.c
-> >>>>               mmc/host/sdhci-brcmstb.o:(sdhci_brcmstb_shutdown) in archive drivers/built-in.a
-> >
-> > Making the call conditional on the symbol fixes the link
-> > error.
-> >
-> > Fixes: 5b191dcba719 ("mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend")
-> > Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> > It would be helpful if someone could test this to ensure that the
-> > driver works correctly even when CONFIG_PM_SLEEP is disabled
->
-> Why not create stubs for sdhci_pltfm_suspend() when CONFIG_PM_SLEEP=n? I
-> don't think this is going to be a functional issue given that the
-> purpose of having the .shutdown() function is to save power if we cannot
-> that is fine, too.
-> --
-> Florian
+The ATC260x family of PMICs integrates Audio Codec, Power management,
+Clock generation and GPIO controller blocks. There are currently 3
+variants: ATC2603A, ATC2603C and ATC2609A.
 
-I would prefer this approach - we shouldn't leave stub functions
-unimplemented, which is what looks to me.
+This is re-spin of the v1 patch series submitted some time ago by
+Mani, who provided the MFD and regulator drivers for ATC2609A:
+https://lore.kernel.org/lkml/20190617155011.15376-1-manivannan.sadhasivam@linaro.org/
 
-I just posted a new patch for this, please have a look and test it.
+Since v2, I added support for ATC2603C, together with some new
+functionalities for both chips: power controller and onkey input.
+The ATC2603A chip type remains unsupported for the moment.
 
-Kind regards
-Uffe
+This has been tested on RoseapplePi, a SBC based on the Actions Semi S500
+SoC, which integrates the ATC2603C variant of the PMIC.
+
+Note that enabling the ATC260x PMICs on compatible Actions Semi Owl SoC
+based boards depends on:
+
+* the Actions Semi SIRQ driver (for PMIC DTS setup), merged in v5.10:
+  https://lore.kernel.org/lkml/cover.1600114378.git.cristian.ciocaltea@gmail.com/
+
+* the atomic transfers in Owl I2C driver (for power controller), merged in v5.11:
+  https://lore.kernel.org/lkml/cover.1602190168.git.cristian.ciocaltea@gmail.com/
+
+Additionally, please note that I have taken the authorship for the MFD
+and regulator drivers patches, considering the original code has been
+modified to a large extent.
+
+Thanks,
+Cristi
+
+Changes in v7:
+- Dropped the patches already queued for merging:
+  * regulator: Add regulator driver for ATC260x PMICs
+  * power: reset: Add poweroff driver for ATC260x PMICs
+- Rebased patchset on v5.11-rc5
+
+Changes in v6 - MFD driver updates as indicated by Lee:
+- Defined a magic number for max chip revision
+- Adjusted code formatting around i2c_driver struct initialization
+- Dropped the device initialization callback in struct atc260x and instead 
+  provided a generic function making use of a new member structure to hold
+  the hardware specific register information
+
+Changes in v5:
+- Removed an unnecessary '#include' line in the power-off driver,
+  as noticed by Sebastian
+- Rebased patchset on v5.11-rc3
+
+Changes in v4:
+- Updated MFD driver according to Lee's review
+- Handled ATC2603C's LDO12 fixed regulator per Mark's suggestion
+- Rebased patchset on v5.11-rc1
+
+Changes in v3:
+- Integrated feedback from Mani, Rob, Mark, Sebastian, Dmitry
+- Fixed issues reported by Lee's kernel test robot
+- Added new patch for 'reset-time-sec' DT binding property
+- Rebased patchset on v5.10-rc6
+
+Changes in v2:
+- Reworked MFD core & I2C driver
+  * Integrated Lee's feedback
+  * Added support for using the regmap within atomic contexts
+  * Added support for ATC2603C chip variant
+  * Reorganized KConfig entries
+- Improved regulator driver
+  * Added support for ATC2603C variant
+  * Used helper macros for more compact specification of regulator_desc items
+  * Added more regulator capabilities
+- Added power controller driver
+  * Provides system poweroff/reboot functionalities
+  * Depends on atomic transfers in the Owl I2C driver
+- Added onkey driver: exposes the power button as an input device
+- Added yaml binding doc
+- Rebased patchset on kernel v5.9-rc1
+
+Cristian Ciocaltea (4):
+  dt-bindings: input: Add reset-time-sec common property
+  dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
+  mfd: Add MFD driver for ATC260x PMICs
+  input: atc260x: Add onkey driver for ATC260x PMICs
+
+Manivannan Sadhasivam (1):
+  MAINTAINERS: Add entry for ATC260x PMIC
+
+ .../devicetree/bindings/input/input.yaml      |   7 +
+ .../bindings/mfd/actions,atc260x.yaml         | 183 +++++++++++
+ MAINTAINERS                                   |  12 +
+ drivers/input/misc/Kconfig                    |  11 +
+ drivers/input/misc/Makefile                   |   2 +-
+ drivers/input/misc/atc260x-onkey.c            | 305 +++++++++++++++++
+ drivers/mfd/Kconfig                           |  18 +
+ drivers/mfd/Makefile                          |   3 +
+ drivers/mfd/atc260x-core.c                    | 310 ++++++++++++++++++
+ drivers/mfd/atc260x-i2c.c                     |  64 ++++
+ include/linux/mfd/atc260x/atc2603c.h          | 281 ++++++++++++++++
+ include/linux/mfd/atc260x/atc2609a.h          | 308 +++++++++++++++++
+ include/linux/mfd/atc260x/core.h              |  58 ++++
+ 13 files changed, 1561 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+ create mode 100644 drivers/input/misc/atc260x-onkey.c
+ create mode 100644 drivers/mfd/atc260x-core.c
+ create mode 100644 drivers/mfd/atc260x-i2c.c
+ create mode 100644 include/linux/mfd/atc260x/atc2603c.h
+ create mode 100644 include/linux/mfd/atc260x/atc2609a.h
+ create mode 100644 include/linux/mfd/atc260x/core.h
+
+-- 
+2.30.0
+
