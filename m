@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EE3304FD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816FA304FD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236007AbhA0D0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S234563AbhA0D2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbhAZVJW (ORCPT
+        with ESMTP id S1726434AbhAZVQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:09:22 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD63C0613D6;
-        Tue, 26 Jan 2021 13:08:42 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id b21so21448669edy.6;
-        Tue, 26 Jan 2021 13:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RkQGMfW0HUkSImcIx518mXAmDUU0Hd1WL2a+H31ftRg=;
-        b=PpyTlZd+Ef4Gu7Bp4Am1vQF4eeVc/awahdqAxKxH2iMKuuJkmjsXRmGIJOmX6xSI69
-         Mfl7egAYjP9lHK+VDIn+bGz19+zWhSA279fyLnarL70DKdgAQxqMFqWIuCrt/UYX3GqW
-         AxIydyxaVdfWh2Mbi3rjNby8hAtuHgOMul9MmbiExU9Ruxs5hpZfd1NjyMIUtFLqQDu2
-         RxsNLCueEU7vyU3F2jtzuRxm5B4otTRmRK/0I61hjgrL3RIS+E5XZniZNgr/eDRAtFJF
-         gffhR8ZfF+P57ZPuMlcUU0BSjTW7r1s1jyGnejhLnAe25SZ6W5N6vbyXHZfcaFxGgjoo
-         IU3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RkQGMfW0HUkSImcIx518mXAmDUU0Hd1WL2a+H31ftRg=;
-        b=LQmMJnF28l9D+Xa4uKC3b/qUEfoqBZxLNzKlN/l9k+OpSxn/iC3wdaJGywfgaRu6Sl
-         3FmgOcaYs5B1xMIf4YoVdPmoIEu2ZrD4kzwi0JWu6MpGOev436Jb7rFBINxZ5vsUuF5a
-         ukquiNz5syxzbo7zlpJ05iZofqMHhcEHWfc/ILW0x195a7IKtLMHIyB5FhekOmIofIu+
-         q+fb2+VGH+MtOvJHgMpZEi4qhS+sxh+9d/4McYXeJ2ihxjliGgfcV3vUBA8bE5uWmX4J
-         TjgzDZorXaa/IB9ZJs+8IX3Mmw8/NyZpv5qOjQN7zRL4XPdBw5PGhE6vpeO+qoLkCn4L
-         RCfw==
-X-Gm-Message-State: AOAM530KfGRUsFceo76KYxwaSpkeNbLv844QYfTa4bt6a/X1HVcXNFzY
-        Ldp1LlURgq76FTZ/Xvka7Qc=
-X-Google-Smtp-Source: ABdhPJx4uyfwj6Lo/tPMl28u/y4Ewdr5M/XNw5xDzn1TW5suxsclcJCQg23pIxqux4atTjGO/2h7VA==
-X-Received: by 2002:a05:6402:2289:: with SMTP id cw9mr5972388edb.319.1611695321034;
-        Tue, 26 Jan 2021 13:08:41 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id m26sm10253782ejr.54.2021.01.26.13.08.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 13:08:39 -0800 (PST)
-Date:   Tue, 26 Jan 2021 23:08:37 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>
-Cc:     linus.walleij@linaro.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] net: dsa: rtl8366rb: standardize init jam tables
-Message-ID: <20210126210837.7mfzkjqsc3aui3fn@skbuf>
-References: <20210125045631.2345-1-lorenzo.carletti98@gmail.com>
- <20210125045631.2345-2-lorenzo.carletti98@gmail.com>
+        Tue, 26 Jan 2021 16:16:34 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499C8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:15:54 -0800 (PST)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1611695752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QouCh4sBxe4Uney6Y/oO3QyDWthD3YsxY73q7hXjmik=;
+        b=H76M2jfOg6Ik3nf/7/XZovdtuvJthM7K3jywAwtQjrHSoeWJwFS5p9LS5gNoZCQ5d3ITQU
+        ynp4vPNcm7Vuo4qQVX8pp6vZthudAH4dlvL9pFWzPWS+uUarHZcwlEcMdrFbpy+dw8sH8z
+        rVSEIqTFNK9mSUkw/5XuExji5V47/rxhzClHcNzYnYfadADf1Wri8iFZ1vHtnlFBTJYGjb
+        DKL65Xl31PXdEDxVfQQg2UEqEf93954d8NwygESHfy6bLQXD305ifZGCazIlIWYjo/mTQ9
+        zR2hTI8Awonkr6AW5LMGaSJu3lD0a29uNPeoeIRF9VlXqNEXFcT3NFE5QCgUCQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1611695752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QouCh4sBxe4Uney6Y/oO3QyDWthD3YsxY73q7hXjmik=;
+        b=I/Hy/PKA3EO91VBMdno7DgnvGGONWVwHOBPP6dDNJ4aGYda2c2fT4tWQLXRozX670GMFab
+        LN6MgM1KukoUMDDA==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk-rework 00/12] printk: remove logbuf_lock
+Date:   Tue, 26 Jan 2021 22:21:39 +0106
+Message-Id: <20210126211551.26536-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125045631.2345-2-lorenzo.carletti98@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+Hello,
 
-On Mon, Jan 25, 2021 at 05:56:31AM +0100, Lorenzo Carletti wrote:
-> In the rtl8366rb driver there are some jam tables which contain
-> undocumented values.
-> While trying to understand what these tables actually do,
-> I noticed a discrepancy in how one of those was treated.
+This series removes @logbuf_lock, exposing the ringbuffer locklessly
+to both readers and writers. And since @logbuf_lock was protecting
+much more than just the ringbuffer, this series clarifies and cleans
+up the various protections using comments, lockless accessors,
+atomic types, and a new finer-grained @syslog_log.
 
-And did you manage to find out what these tables actually do?
+This series takes into account the feedback from [0], which was a
+series that was partially merged in 5.11.
 
-> Most of them were plain u16 arrays, while the ethernet one was
-> an u16 matrix.
-> By looking at the vendor's droplets of source code these tables came from,
-> I found out that they were all originally u16 matrixes.
-> 
-> This commit standardizes the jam tables, turning them all into
-> u16 matrixes.
+The first few patches (1-5) are general cleanups to help simplify
+later patches. They probably are important enough to stand alone.
 
-Why? What difference does it make?
+John Ogness
 
-> This change makes it easier to understand how the jam tables are used
+[0] https://lkml.kernel.org/r/20201201205341.3871-1-john.ogness@linutronix.de
 
-No it doesn't?
+John Ogness (12):
+  printk: kmsg_dump: remove unused fields
+  printk: refactor kmsg_dump_get_buffer()
+  printk: consolidate kmsg_dump_get_buffer/syslog_print_all code
+  printk: define CONSOLE_LOG_MAX in printk.h
+  printk: use seqcount_latch for clear_seq
+  printk: use atomic64_t for devkmsg_user.seq
+  printk: add syslog_lock
+  printk: introduce a kmsg_dump iterator
+  um: synchronize kmsg_dumper
+  hv: synchronize kmsg_dumper
+  printk: remove logbuf_lock
+  printk: kmsg_dump: remove _nolock() variants
 
-> and also makes it possible for a single function to handle all of them,
-> removing some duplicated code.
+ arch/powerpc/kernel/nvram_64.c             |  12 +-
+ arch/powerpc/platforms/powernv/opal-kmsg.c |   3 +-
+ arch/powerpc/xmon/xmon.c                   |   6 +-
+ arch/um/kernel/kmsg_dump.c                 |  13 +-
+ drivers/hv/vmbus_drv.c                     |  17 +-
+ drivers/mtd/mtdoops.c                      |   5 +-
+ fs/pstore/platform.c                       |   5 +-
+ include/linux/kmsg_dump.h                  |  52 +--
+ include/linux/printk.h                     |   1 +
+ kernel/debug/kdb/kdb_main.c                |  10 +-
+ kernel/printk/internal.h                   |   4 +-
+ kernel/printk/printk.c                     | 427 ++++++++++-----------
+ kernel/printk/printk_safe.c                |  29 +-
+ 13 files changed, 281 insertions(+), 303 deletions(-)
 
-On which RTL8366RB chip revisions did you test for regressions?
+-- 
+2.20.1
 
-On another note, the patch doesn't apply cleanly to net-next/master.
