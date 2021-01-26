@@ -2,126 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FE1303FBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A09303FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405742AbhAZOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:08:26 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:32768 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405714AbhAZOHu (ORCPT
+        id S2405701AbhAZOIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731311AbhAZOHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:07:50 -0500
-Date:   Tue, 26 Jan 2021 14:06:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1611670025;
-        bh=salyD/WHDIurAfXLaRdlHjy/N3gO/EgJ38mXhbWj+8A=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=q+HTsB7Uqut7TDSqzeqkeRLfypg5t9zC4sq5LSGRFXYLjJ4ngWqoirWhUky/juxGQ
-         rN7eNCEZGezvPUctVw4/tc5Rbg+bY8AbpHw33S4jL4mdDogThy2JFU+eLWJNfBLAma
-         fJu7BQd7ZQmcn9HjcaXfniqfIEedKnoIcXypjjEw=
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [PATCH v2 4/4] ARM: dts: qcom: pm8941: Add nodes for QCOM SPMI Flash LEDs
-Message-ID: <20210126140240.1517044-5-nfraprado@protonmail.com>
-In-Reply-To: <20210126140240.1517044-1-nfraprado@protonmail.com>
-References: <20210126140240.1517044-1-nfraprado@protonmail.com>
+        Tue, 26 Jan 2021 09:07:52 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEF0C061A29;
+        Tue, 26 Jan 2021 06:07:11 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id a12so14729025lfb.1;
+        Tue, 26 Jan 2021 06:07:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=pWDnSoBbWygAxp3OZ/0HvBYNQEeIZVy+sfKC9BS9zyg=;
+        b=j5Smcrc90DCfvUeGmhwy6JifFQq1QWer338XergVZOO/br66fZDaoLoLBF9DZ177Hm
+         NpXisfTYI1mNJ9f6EFBJ4XidsiqnpXC7T3pZxjKRj0S/psEkV/j89ioGaKwP6xNyVT6q
+         TCdGMvaDhIi+uKlFfAQ6WcWEG/k8BjMZ0jp+/NQwF+WuiRWLvMoRV60Hsj6oyaa6Cwqg
+         XLdd6V1h8eQTTEq74pDpwwYOmJbIsPoixBmBFSNcMrN1wHHObc1/+MtstEW1o3kPohgp
+         x19ODI/ex6LTIYdck8LCO9b/IIip1I5J3Wpe4cZwJJAo7BIzxg3ojXVjF4SmoFJF7MCt
+         aVHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=pWDnSoBbWygAxp3OZ/0HvBYNQEeIZVy+sfKC9BS9zyg=;
+        b=OPbv8VvC0RqbvZD4LqITsNUAg8mDf4AZXh3UGGa6GJv+nzAnuddgCdItJmSmyZDVs0
+         G9adQOBv1cD7A4ibh3e+47Lb+CZ4KfQlXhi+mZdvU3Kbu8QIGijzJRXv2MLF3OwptIc5
+         sCTBCw4HAGHzuAMoPUD/ZwPMQcw2AqxI1oGL18+VocWBGQO/8m2lx+wWY9sm0nrhxyP9
+         2zyV71G4vJJmjdGIR9jbFtatyP4PltYYVXJdOldIZvbKO41z3JO6vATpCRS1hdLF3TUp
+         e+NTQxjtV3Kl5+lIugjAyij8Sr4aFc7eH6dkkemov5LsX+EwiZMaSeweIvovPCuLg3ec
+         Q/hg==
+X-Gm-Message-State: AOAM530bmXKHeAt+GiVHdR3AvIX8ebqb9PGtdsa80GW9Olx5UdPQlJc1
+        CmDwJQI7RUyY8hoVR3zo15o=
+X-Google-Smtp-Source: ABdhPJxBL1+lx7dVxDik9L66/FJSV5YVz+jEPTJRyGcidL5EwgFMwApg53PQbuCu57MymBgIQSCiig==
+X-Received: by 2002:a19:64e:: with SMTP id 75mr2644602lfg.90.1611670029909;
+        Tue, 26 Jan 2021 06:07:09 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id p14sm2105108lji.0.2021.01.26.06.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 06:07:08 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 26 Jan 2021 15:07:05 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IFtQQVRD?= =?utf-8?Q?H?=
+ =?utf-8?Q?=5D?= rcu: Release per-cpu krcp page cache when CPU going offline
+Message-ID: <20210126140705.GA1942@pc638.lan>
+References: <20210121064949.16164-1-qiang.zhang@windriver.com>
+ <20210121185615.GR2743@paulmck-ThinkPad-P72>
+ <20210121202635.GB2454@pc638.lan>
+ <BYAPR11MB26324D17B990FC099919CBB7FFA00@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20210122143129.GB1873@pc638.lan>
+ <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632BB67FCC17E3B32CEAEA3FFBE0@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary devicetree nodes for the Qualcomm SPMI Flash LEDs
-present in PM8941.
+> ________________________________________
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年1月22日 22:31
+> 收件人: Zhang, Qiang
+> 抄送: Uladzislau Rezki; Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: 回复: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> 
+> On Fri, Jan 22, 2021 at 01:44:36AM +0000, Zhang, Qiang wrote:
+> >
+> >
+> > ________________________________________
+> > 发件人: Uladzislau Rezki <urezki@gmail.com>
+> > 发送时间: 2021年1月22日 4:26
+> > 收件人: Zhang, Qiang
+> > 抄送: Paul E. McKenney; rcu@vger.kernel.org; linux-kernel@vger.kernel.org; urezki@gmail.com
+> > 主题: Re: [PATCH] rcu: Release per-cpu krcp page cache when CPU going offline
+> > >Hello, Qiang,
+> >
+> > > On Thu, Jan 21, 2021 at 02:49:49PM +0800, qiang.zhang@windriver.com wrote:
+> > > > From: Zqiang <qiang.zhang@windriver.com>
+> > > >
+> > > > If CPUs go offline, the corresponding krcp's page cache can
+> > > > not be use util the CPU come back online, or maybe the CPU
+> > > > will never go online again, this commit therefore free krcp's
+> > > > page cache when CPUs go offline.
+> > > >
+> > > > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > >
+> > >Do you consider it as an issue? We have 5 pages per CPU, that is 20480 bytes.
+> > >
+> >
+> > Hello Rezki
+> >
+> > In a multi CPUs system, more than one CPUs may be offline, there are more than 5 pages,  and these offline CPUs may never go online again  or  in the process of CPUs online, there are errors, which lead to the failure of online, these scenarios will lead to the per-cpu krc page cache will never be released.
+> >
+> >Thanks for your answer. I was thinking more about if you knew some >platforms
+> >which suffer from such extra page usage when CPU goes offline. Any >issues
+> >your platforms or devices run into because of that.
+> >
+> >So i understand that if CPU goes offline the 5 pages associated with it >are
+> >unused until it goes online back.
+> 
+>  I agree with you, But I still want to talk about what I think
+> 
+>  My understanding is that when the CPU is offline,  the pages is not 
+>  accessible,  beacuse we don't know when this CPU will 
+>  go online again, so we best to return these page to the buddy system,
+>  when the CPU goes online again, we can allocate page from the buddy 
+>  system to fill krcp's page cache.  maybe you may think that this memory 
+>  is small and don't need to. 
+>  
+BTW, we can release the caches via shrinker path instead, what is more makes
+sense to me. We already have a callback, that frees pages when a page allocator
+asks for it. I think in that case it would be fair to return it to the buddy
+system. It happens under low memory condition or can be done manually to flush
+system caches:
 
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
----
-Changes in v2:
-- Moved from hammerhead dts to pm8941 dtsi, as it was this way downstream
-- Now using values from leds-qcom-spmi-flash.h
+echo 3 > /proc/sys/vm/drop_caches
 
- arch/arm/boot/dts/qcom-pm8941.dtsi | 38 ++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+What do you think?
 
-diff --git a/arch/arm/boot/dts/qcom-pm8941.dtsi b/arch/arm/boot/dts/qcom-pm=
-8941.dtsi
-index c1f2012d1c8b..89309d3c777c 100644
---- a/arch/arm/boot/dts/qcom-pm8941.dtsi
-+++ b/arch/arm/boot/dts/qcom-pm8941.dtsi
-@@ -2,6 +2,8 @@
- #include <dt-bindings/iio/qcom,spmi-vadc.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/spmi/spmi.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/leds/leds-qcom-spmi-flash.h>
-=20
- &spmi_bus {
-=20
-@@ -189,5 +191,41 @@ pm8941_5vs2: 5vs2 {
- =09=09=09=09regulator-initial-mode =3D <1>;
- =09=09=09};
- =09=09};
-+
-+=09=09qcom,spmi-flash@d300 {
-+=09=09=09status =3D "okay";
-+
-+=09=09=09compatible =3D "qcom,spmi-flash";
-+=09=09=09reg =3D <0xd300 0x100>;
-+=09=09=09flash-boost-supply =3D <&pm8941_5vs1>;
-+=09=09=09torch-boost-supply =3D <&pm8941_5v>;
-+=09=09=09pm8941_flash0: led0 {
-+=09=09=09=09led-sources =3D <0>;
-+=09=09=09=09function =3D LED_FUNCTION_FLASH;
-+=09=09=09=09color =3D <LED_COLOR_ID_WHITE>;
-+=09=09=09=09led-max-microamp =3D <200000>;
-+=09=09=09=09flash-max-microamp =3D <1000000>;
-+=09=09=09=09flash-max-timeout-us =3D <1280000>;
-+=09=09=09=09default-state =3D "off";
-+=09=09=09=09qcom,clamp-curr =3D <200000>;
-+=09=09=09=09qcom,headroom =3D <QCOM_SPMI_FLASH_HEADROOM_500MV>;
-+=09=09=09=09qcom,startup-dly =3D <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
-+=09=09=09=09qcom,safety-timer;
-+=09=09=09};
-+
-+=09=09=09pm8941_flash1: led1 {
-+=09=09=09=09led-sources =3D <1>;
-+=09=09=09=09function =3D LED_FUNCTION_FLASH;
-+=09=09=09=09color =3D <LED_COLOR_ID_WHITE>;
-+=09=09=09=09led-max-microamp =3D <200000>;
-+=09=09=09=09flash-max-microamp =3D <1000000>;
-+=09=09=09=09flash-max-timeout-us =3D <1280000>;
-+=09=09=09=09default-state =3D "off";
-+=09=09=09=09qcom,clamp-curr =3D <200000>;
-+=09=09=09=09qcom,headroom =3D <QCOM_SPMI_FLASH_HEADROOM_500MV>;
-+=09=09=09=09qcom,startup-dly =3D <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
-+=09=09=09=09qcom,safety-timer;
-+=09=09=09};
-+=09=09};
- =09};
- };
---=20
-2.30.0
-
-
+--
+Vlad Rezki
