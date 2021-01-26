@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE3730317D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D3A303166
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 02:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731545AbhAZBZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 20:25:06 -0500
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:39823 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731962AbhAYTgv (ORCPT
+        id S1730056AbhAZBmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 20:42:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55260 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727755AbhAZBhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 14:36:51 -0500
-Received: by mail-oi1-f182.google.com with SMTP id w124so16019191oia.6;
-        Mon, 25 Jan 2021 11:36:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2Mfcort+Cx9P/ImE6swOSzUGiaClCZE9b0/iAMA9F9Q=;
-        b=Ed+4ONi/9BozoSEDk4zDN/HceDnNYUYylrW8KrjkIUJ3/aTHTelLKQGYXSaecpJGQf
-         3pzf3ylIsxk38JdtC6OC0dWa5d98qT54O7EhNm1INsp3IqVEyYvS+IBfWbyKPwodq6bR
-         /x8CZ5TEKtSJeGMlqg/eR7WUous6j9GsC9P8VjoWJ3QV9Bnp1zIRU7z/UAh7h5eHwSZD
-         jaX5Xmgjm8Wix6z9DKEOtmmy3PXXsZF3En8bGipvpNtbCFJ4Umw7USXapoxEEXNxw3Ez
-         PV57u4TwWwd/NwQh2V9CAXo1UnNGiGdt6R5IeMSZ9M2UOckTiyM1mV6/KFdjpsGbVOTX
-         1MIQ==
-X-Gm-Message-State: AOAM531wmrLugZKTI0Z9IYTdOG6B1uLZ6yJ1q/GTVJIKQDO1dxg9AxEM
-        Mfpswzco+eHl/F30E5qixA==
-X-Google-Smtp-Source: ABdhPJyysfruDxF/asXQAzWaVXtu5DWsOOovw/zNgLHRPd5UvkSk/0vk7PCZ7tysXz5A/csbtH3I6A==
-X-Received: by 2002:aca:75d3:: with SMTP id q202mr1082002oic.36.1611603370750;
-        Mon, 25 Jan 2021 11:36:10 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k65sm3670668oia.19.2021.01.25.11.36.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 11:36:09 -0800 (PST)
-Received: (nullmailer pid 830149 invoked by uid 1000);
-        Mon, 25 Jan 2021 19:36:08 -0000
-Date:   Mon, 25 Jan 2021 13:36:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Alexandru Tachici <alexandru.tachici@analog.com>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        devicetree@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 23/24] dt-bindings:iio:adc: update adc.yaml reference
-Message-ID: <20210125193608.GB829546@robh.at.kernel.org>
-References: <cover.1610535349.git.mchehab+huawei@kernel.org>
- <8e37dba8ae9099acd649bab8a1cf718caa4f3e6a.1610535350.git.mchehab+huawei@kernel.org>
+        Mon, 25 Jan 2021 20:37:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611624961;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oKm0Ja8X4Ojgn+JREDsvj+rdNkNRQb5M2c2kSDsJ3+k=;
+        b=Z5czwtJ05uSl69BbcYXcOGmBn/OyWgAoMRyDS8jvzMG0PjD2HGG3Un7l1ggghBXGqVPYiH
+        o0Pi2YzdnOmNsDnjVAYQkvSMzh5Uf0kBQ0s1Ljvlw/n0RXPmo4QE2f2mnSgJ8CfkVkIE1a
+        CddfglBOP13VVAYibgmKlDzUtWchSUc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-wNEaR2FzN823zaodbI2_Gw-1; Mon, 25 Jan 2021 19:10:41 -0500
+X-MC-Unique: wNEaR2FzN823zaodbI2_Gw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD50D180A096;
+        Tue, 26 Jan 2021 00:10:38 +0000 (UTC)
+Received: from Whitewolf.lyude.net (ovpn-118-245.rdu2.redhat.com [10.10.118.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9548360938;
+        Tue, 26 Jan 2021 00:10:34 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     Jani Nikula <jani.nikula@intel.com>,
+        Dave Airlie <airlied@gmail.com>, greg.depoire@gmail.com,
+        Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC v2 1/5] drm/nouveau/kms/nv40-/backlight: Assign prop type once
+Date:   Mon, 25 Jan 2021 19:10:27 -0500
+Message-Id: <20210126001031.881048-2-lyude@redhat.com>
+In-Reply-To: <20210126001031.881048-1-lyude@redhat.com>
+References: <20210126001031.881048-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e37dba8ae9099acd649bab8a1cf718caa4f3e6a.1610535350.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 11:59:24 +0100, Mauro Carvalho Chehab wrote:
-> Changeset b70d154d6558 ("dt-bindings:iio:adc: convert adc.txt to yaml")
-> renamed: Documentation/devicetree/bindings/iio/adc/adc.txt
-> to: Documentation/devicetree/bindings/iio/adc/adc.yaml.
-> 
-> Update its cross-reference accordingly.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Jani Nikula <jani.nikula@intel.com>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: greg.depoire@gmail.com
+---
+ drivers/gpu/drm/nouveau/nouveau_backlight.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Applied, thanks!
+diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+index 72f35a2babcb..42b498e7e2bf 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
++++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+@@ -106,7 +106,6 @@ nv40_backlight_init(struct nouveau_encoder *encoder,
+ 	if (!(nvif_rd32(device, NV40_PMC_BACKLIGHT) & NV40_PMC_BACKLIGHT_MASK))
+ 		return -ENODEV;
+ 
+-	props->type = BACKLIGHT_RAW;
+ 	props->max_brightness = 31;
+ 	*ops = &nv40_bl_ops;
+ 	return 0;
+@@ -212,7 +211,6 @@ nv50_backlight_init(struct nouveau_encoder *nv_encoder,
+ 	else
+ 		*ops = &nva3_bl_ops;
+ 
+-	props->type = BACKLIGHT_RAW;
+ 	props->max_brightness = 100;
+ 
+ 	return 0;
+@@ -226,7 +224,7 @@ nouveau_backlight_init(struct drm_connector *connector)
+ 	struct nouveau_encoder *nv_encoder = NULL;
+ 	struct nvif_device *device = &drm->client.device;
+ 	char backlight_name[BL_NAME_SIZE];
+-	struct backlight_properties props = {0};
++	struct backlight_properties props = { .type = BACKLIGHT_RAW, 0 };
+ 	const struct backlight_ops *ops;
+ 	int ret;
+ 
+-- 
+2.29.2
+
