@@ -2,78 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC4C30416E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E388930415A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406055AbhAZPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406015AbhAZPCC (ORCPT
+        id S2406078AbhAZPC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:02:59 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:60886 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2406027AbhAZPCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:02:02 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3989EC061D73
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:01:22 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id s18so6787037ljg.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:01:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lirWGcwxQ/9sPMV+iwf/h9oS1/CrHerBIWG2c3EGSGk=;
-        b=oxDNjk3iYXpmm6bruISbusuPot9758mJ8Dgv+nZKud8ztqpQNcDycw29k3Ecz0PiyL
-         o42TBWfTSj49+9TPcA+9BZ3Zim6TnBDn56Ya7bmFqDxaz0wH8t9qCSXFJezTPjfiRwaB
-         O6bJhXI6k27/dPyMOVaiNgRVN/zh8XTY05LAa0W6F2iIsY65mUpDEvUDWbKPts4L4neT
-         UlP7PrSI5Q/gg5m8VV4LRpepfajeLsAioMA8gRGlOYAe5ItJpoAKB2veaJUXnDlyjpbl
-         uzlUiwlNAa5t4lx/ZS9G6uSjCBSLmozFkbTwd7jb14OdgxmDinoWOCAHfVC5eMwuA4le
-         p0OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lirWGcwxQ/9sPMV+iwf/h9oS1/CrHerBIWG2c3EGSGk=;
-        b=ARdRjDkOg8MiZnxJwY/50CSVTWjJ6TQqT4uTX6akEdBOI34p7PlJBdYd6vSJdkRIB2
-         AgaU8v0tpXnVOI6YZ+KxSUaHCTMna/Lcpnm3CyySQcMGRJ8v66051h8QLizLSFTrvKG9
-         jph1hpBIRvpstffep0z5aKRUKdOWJjYf4FvfV/0dQQ2JfwUWhDHofuptXvDTQKjGinrY
-         Jyd7pqLa4Gs8pL07ICcoNF3LuNjBHZmZL1RuOKy5/kzK9LPRkBkKWnlTrj4rdhekGbMq
-         A/LN4tTUhdO5Q488fPHZkemT6504QDOYkrEv7OFfzehPzd+8Rj/ycwOrIgqTZkCX1jqs
-         28PQ==
-X-Gm-Message-State: AOAM531k5fM6bc0Y1WGDjALUNlOjYZDz0mntbIR7R1+TjXF955ZeOKpA
-        8NPDgE0r5VzsUW1wVgBt/1JdtyFOkLaUXqrGQdII8g==
-X-Google-Smtp-Source: ABdhPJw7GgZKBeeQTizTG5WDVnMhfRi/N35rHmdXVZj4220Qaw571LqXQu07Fhyh4yYgtdx58u66xSSMeVVEqT4HoEo=
-X-Received: by 2002:a2e:b4cd:: with SMTP id r13mr3179920ljm.273.1611673280673;
- Tue, 26 Jan 2021 07:01:20 -0800 (PST)
+        Tue, 26 Jan 2021 10:02:40 -0500
+X-UUID: 088f668070b041209353f71c69a4154d-20210126
+X-UUID: 088f668070b041209353f71c69a4154d-20210126
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1954290461; Tue, 26 Jan 2021 23:01:52 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 23:01:50 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 23:01:50 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <bigeasy@linutronix.de>
+CC:     <akpm@linux-foundation.org>, <lecopzer.chen@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <marc.zyngier@arm.com>, <peterx@redhat.com>, <rppt@kernel.org>,
+        <tglx@linutronix.de>, <walken@google.com>,
+        <yj.chiang@mediatek.com>, <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] ARM: mm: harden branch predictor before opening interrupts during fault
+Date:   Tue, 26 Jan 2021 23:01:50 +0800
+Message-ID: <20210126150150.13905-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210126110716.wv4igts76n3kg3ch@linutronix.de>
+References: <20210126110716.wv4igts76n3kg3ch@linutronix.de>
 MIME-Version: 1.0
-References: <20210126050817.GA187797@x1>
-In-Reply-To: <20210126050817.GA187797@x1>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 26 Jan 2021 16:01:08 +0100
-Message-ID: <CACRpkdafPAJXYar=n2En7GC=gVQ74iOejH4j5cDu3Co3PR8h=Q@mail.gmail.com>
-Subject: Re: pinctl.rst instead of pinctrl.rst?
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: D66D7140C17D41472CE48D1CD6A2F9666C9EA354FC4251B7BA19B574BE151C652000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 6:08 AM Drew Fustini <drew@beagleboard.org> wrote:
+> On 2021-01-26 10:59:32 [+0000], Russell King - ARM Linux admin wrote:
+> > On Tue, Jan 26, 2021 at 05:17:08PM +0800, Lecopzer Chen wrote:
+> > > Hi all,
+> > > 
+> > > I don't see any fix for this issue now(maybe I missed it..?),
+> > > could we fix this if there is better solution?
+> > > This issue exists almost two years.
+> > 
+> > I don't think anyone provided an acceptable patch.
+> > 
+> > The first patch moved the hardening out of the translation/section
+> > fault handling. Since the kernel is mapped with sections, these
+> > are above TASK_SIZE, and the whole point of the branch prediction
+> > hardening is to prevent the prediction in the kernel being exploited,
+> > missing the hardening effectively makes the mitigation useless.
+> > 
+> > The discussion in February 2019 never concluded from what I can see.
+> 
+> My memory is that I never got a reply which I understood.
+> Let me try again this week with the information above.
 
-> I was having trouble finding the pinctrl rst documentation until I
-> realized it is named pinctl with no 'r':
->
-> Documentation/driver-api/pinctl.rst
->
-> Is there a reason for this?
 
-No.
+NOTE:
+Before sending this mail, I had searched the relative threads and
+there are two solutions in general:
+    1. Add get_pcpu()/put_cpu() https://lkml.org/lkml/2019/6/3/426
+       Reject by Marc:
+       > The right fix would be to move the call to a point where we haven't
+       > enabled preemption yet.
 
-> Is it worth me submitting a patch to rename and change tree-wide
-> references?
+    2. Move out like the patch from Sebastian:
+       This seems follow the concept of 1.
+       (move the call to a point where we haven't enabled preemption yet).
+       But I can't find any reply in the thread.
 
-I would rather rename it pin-control.rst in that case.
+Now the CONFIG_HARDEN_BRANCH_PREDICTOR has already backported to LTS,
+and after upgrading ARM CONFIG_CPU_V7 products to latest LTS, the
+CONFIG_HARDEN_BRANCH_PREDICTOR will be default y and this issue makes
+our devices panic and we have to either disable HARDEN_BRANCH_PREDICTOR
+or hack in-house to avoid the kernel panic.
 
-Yours,
-Linus Walleij
+
+I'll wait for anyone have acceptable idea and patching(maybe Sebastian could? :)),
+and I'll also take some time to find other solution too.
+
+
+Thanks,
+Lecopzer
+
