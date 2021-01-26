@@ -2,191 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA04304273
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19648304279
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390955AbhAZPZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:25:51 -0500
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:35435 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404621AbhAZPYr (ORCPT
+        id S2404083AbhAZP0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:26:21 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:53361 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391539AbhAZPZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:24:47 -0500
-Received: by mail-wr1-f48.google.com with SMTP id l12so16885992wry.2;
-        Tue, 26 Jan 2021 07:24:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PrVukTZfpBWrivFQx71zTzZ9+Nxp6Oo20gBZUehsy5s=;
-        b=ZhFEKZhoHsRLqnYTE3mmkL1eDK+6wkvEniFxlT1IucXQLoXLwZmbIc+4FsOdljcdlA
-         U7djDnxDJ5e+bWosXt0CSL1CnEOXFHkVW9qPujWcxmo2n5eSi2APZWiHQGRkM137eI35
-         NkRE3vUwRMyYyX925+yoEFf9OlfwL6w4yzw4sIlYbkPxlWzTOiW28/NVPaJJRu0SRNfZ
-         aG1c8AbbHMyj001hoz7lKG+viJ6tVeuhsyQ/6NvGZ6jZKI2TsxhVodq46itV9WVHV8AX
-         +GSYHTXHfRoN56RndMeIFFKoMFz3Ieq85+Ukt0yYprWzeA2XyueDoSdP8G9ODpgsLgTt
-         HhKw==
-X-Gm-Message-State: AOAM531AUm+9c5hzIWjsVPPmSnYmsdJ5uxhcbwlOjdCL9LfxKQcGd9li
-        IfQQVVbEVBi2tr4xz24rQ6s=
-X-Google-Smtp-Source: ABdhPJyiHQ3GQJRDGIeVA81E2ax1dSw7LkvxoYhVeCxBQ0oJbFBvU6SYZ/92UzPlHpF5prZAbNS00w==
-X-Received: by 2002:a5d:4402:: with SMTP id z2mr6659970wrq.265.1611674644833;
-        Tue, 26 Jan 2021 07:24:04 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id u7sm15268845wrr.80.2021.01.26.07.24.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 07:24:04 -0800 (PST)
-Date:   Tue, 26 Jan 2021 15:24:03 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
- partition
-Message-ID: <20210126152403.5x5p5f5vb3lchqo6@liuwe-devbox-debian-v2>
-References: <20210120120058.29138-1-wei.liu@kernel.org>
- <20210120120058.29138-3-wei.liu@kernel.org>
- <MWHPR21MB159358B1D6151AC5B5D38C7FD7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210126151512.jz4f3jxfs7ommvm3@liuwe-devbox-debian-v2>
+        Tue, 26 Jan 2021 10:25:17 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 615C2B47;
+        Tue, 26 Jan 2021 10:24:30 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 26 Jan 2021 10:24:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=N58P68rmnDJxoYYRk7nViKAuN+J
+        BxJrfBhrOUbLBiS8=; b=bMv/TMmgBMOX8kgzlkOTxmHHdgOeJQKfRcSIvfMwu6B
+        gNDqqOSaEo5BfkhYgYhFHkjKnwh7mymtcT4EqO5OcWgZQBx+3Gl0pux8H5ZuXLFi
+        LPSG7O94PpTMRTaAO9H67HJtzdshOIjNiAl5rkQJscFSsQid9NSm066hr6Snzo2K
+        FDtfC/7d4GeB3lO811YglJBK8lyJkkYhSuP+Df35Adx7qn7QTFNOrzwmqTx44yLT
+        lGYdN7G5vHuu46i+nB+xllZ94xkXOwopC7cbWReju5N/mQeclN22dQLSUgRSkWxT
+        GKaydJni/KvTIVNY7WMI9ZV3FO53Jgg1+b5d8b50tTg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=N58P68
+        rmnDJxoYYRk7nViKAuN+JBxJrfBhrOUbLBiS8=; b=dqNxADrXGnulfEb1fcwQGS
+        JKmK6JqjYrmEbtuxDY9X3Fne/f7iEn2neuW3Rj9THnmmwCzDa42g1ysiJtbz/hDT
+        RDqZO1D6qS85AqyLFSZFMjgdSqnvkWsZCkONakjM7KXQI09MAgv0a95OrFF+Xr7M
+        3H6M0M79HN8Ef8X6g/1OMQ5mFr4TfewdNcUmmP232IRSIr+zrw7gDzv9ObdtouGU
+        2Eb443dKT/yENKknDYr66viLHpE+hCIcepk+x9NUQDVsc2BOhB2HFGo+JMT1qn/0
+        cmQN6Hgah11w9yMnMeqXFVYQvyCNajfePm5OLFp4/opOgjc/0qwmAPUtbv/UwbSw
+        ==
+X-ME-Sender: <xms:LDQQYAk2th3yH9GW2Bs341OEuXh8dUU5TcNy1SnzoWEkXFd9NQcJVg>
+    <xme:LDQQYP0zY0E5G87x4LV1b5wn6Fw_MB4DhgLmzG55IUMZAofbwigSnqftuDU9u6cbM
+    vX6mXgZXtL6YvzrZmU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeigddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:LDQQYOrIjkK4YsUH8Z00KU-GuAIrFK7iXiYq0Yer5xuNC6IHQzdr3A>
+    <xmx:LDQQYMkz6Qf5u4gTfLb4M9sxLmhS5YlT2MbqHgmSBQtOzHrshn-vUw>
+    <xmx:LDQQYO1mYSpQPsTPMFokeVZTjly4xr5R6aSgVLpEZ6ot-8KoWUJ_7g>
+    <xmx:LTQQYK-qRUMryIfVopHcPNQybCGguCGCoFxozKnNQ6VUoJE3hyJoRw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5F9F4108005B;
+        Tue, 26 Jan 2021 10:24:28 -0500 (EST)
+Date:   Tue, 26 Jan 2021 16:24:26 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     liu xiang <liu.xiang@zlingsmart.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        liuxiang_1999 <liuxiang_1999@126.com>
+Subject: Re: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
+Message-ID: <20210126152426.pmnuipcyaloaz4tx@gilmour>
+References: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
+ <20210121164013.cqfxvach4ugkohm7@gilmour>
+ <CACRpkdb1gn2e9=ip6ipAwW27vmf1FCs_y1Z=w-K8y8Z9MXVBMw@mail.gmail.com>
+ <5c4b7a8c-c549-43ae-8ec6-5ae3ed26d321.liu.xiang@zlingsmart.com>
+ <CACRpkdaJQcuWwS2g4UgRpWb+iHYSmWoNj6gEsvGwtPZq+aJBbQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3t3ycay2bf7rxezc"
 Content-Disposition: inline
-In-Reply-To: <20210126151512.jz4f3jxfs7ommvm3@liuwe-devbox-debian-v2>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <CACRpkdaJQcuWwS2g4UgRpWb+iHYSmWoNj6gEsvGwtPZq+aJBbQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 03:15:12PM +0000, Wei Liu wrote:
-> On Tue, Jan 26, 2021 at 12:31:31AM +0000, Michael Kelley wrote:
-> > From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
-> > > 
-> > > For now we can use the privilege flag to check. Stash the value to be
-> > > used later.
-> > > 
-> > > Put in a bunch of defines for future use when we want to have more
-> > > fine-grained detection.
-> > > 
-> > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > > ---
-> > > v3: move hv_root_partition to mshyperv.c
-> > > ---
-> > >  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
-> > >  arch/x86/include/asm/mshyperv.h    |  2 ++
-> > >  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
-> > >  3 files changed, 32 insertions(+)
-> > > 
-> > > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> > > index 6bf42aed387e..204010350604 100644
-> > > --- a/arch/x86/include/asm/hyperv-tlfs.h
-> > > +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> > > @@ -21,6 +21,7 @@
-> > >  #define HYPERV_CPUID_FEATURES			0x40000003
-> > >  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
-> > >  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
-> > > +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES	0x40000007
-> > >  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
-> > > 
-> > >  #define HYPERV_CPUID_VIRT_STACK_INTERFACE	0x40000081
-> > > @@ -110,6 +111,15 @@
-> > >  /* Recommend using enlightened VMCS */
-> > >  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED		BIT(14)
-> > > 
-> > > +/*
-> > > + * CPU management features identification.
-> > > + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
-> > > + */
-> > > +#define HV_X64_START_LOGICAL_PROCESSOR			BIT(0)
-> > > +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR		BIT(1)
-> > > +#define HV_X64_PERFORMANCE_COUNTER_SYNC			BIT(2)
-> > > +#define HV_X64_RESERVED_IDENTITY_BIT			BIT(31)
-> > > +
-> > 
-> > I wonder if these bit definitions should go in the asm-generic part of
-> > hyperv-tlfs.h instead of the X64 specific part.  They look very architecture
-> > neutral (in which case the X64 should be dropped from the name
-> > as well).  Of course, they can be moved later when/if we get to that point
-> > and have a firmer understanding of what is and isn't arch neutral.
-> 
-> Yes. This is the approach I'm taking here. They can be easily moved in
-> the future if there is a need.
-> 
-> > 
-> > >  /*
-> > >   * Virtual processor will never share a physical core with another virtual
-> > >   * processor, except for virtual processors that are reported as sibling SMT
-> > > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> > > index ffc289992d1b..ac2b0d110f03 100644
-> > > --- a/arch/x86/include/asm/mshyperv.h
-> > > +++ b/arch/x86/include/asm/mshyperv.h
-> > > @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
-> > >  		struct hv_guest_mapping_flush_list *flush,
-> > >  		u64 start_gfn, u64 end_gfn);
-> > > 
-> > > +extern bool hv_root_partition;
-> > > +
-> > >  #ifdef CONFIG_X86_64
-> > >  void hv_apic_init(void);
-> > >  void __init hv_init_spinlocks(void);
-> > > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > > index f628e3dc150f..c376d191a260 100644
-> > > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > > @@ -32,6 +32,10 @@
-> > >  #include <asm/nmi.h>
-> > >  #include <clocksource/hyperv_timer.h>
-> > > 
-> > > +/* Is Linux running as the root partition? */
-> > > +bool hv_root_partition;
-> > > +EXPORT_SYMBOL_GPL(hv_root_partition);
-> > > +
-> > >  struct ms_hyperv_info ms_hyperv;
-> > >  EXPORT_SYMBOL_GPL(ms_hyperv);
-> > > 
-> > > @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
-> > >  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
-> > >  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
-> > > 
-> > > +	/*
-> > > +	 * Check CPU management privilege.
-> > > +	 *
-> > > +	 * To mirror what Windows does we should extract CPU management
-> > > +	 * features and use the ReservedIdentityBit to detect if Linux is the
-> > > +	 * root partition. But that requires negotiating CPU management
-> > > +	 * interface (a process to be finalized).
-> > > +	 *
-> > > +	 * For now, use the privilege flag as the indicator for running as
-> > > +	 * root.
-> > > +	 */
-> > > +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
-> > 
-> > Should the EBX value be captured in the ms_hyperv structure with the
-> > other similar values, and then used from there?
-> > 
-> 
-> There is only one usage of this in this whole series so I didn't bother
-> capturing. I would also like to clean up ms_hyperv_info's fields a bit.
 
-Correction: there are two patches that use this. But the rest of my
-argument stands.
+--3t3ycay2bf7rxezc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Given there are quite some patches pending which change ms_hyperv_info
-> struct, I would like to avoid creating more conflicts than necessary.
-> 
-> My plan is to implement my idea from the thread "Field names inside
-> ms_hyperv_info" once all patches that touch ms_hyperv_info are merged.
-> 
-> Wei.
+On Tue, Jan 26, 2021 at 04:03:29PM +0100, Linus Walleij wrote:
+> On Tue, Jan 26, 2021 at 7:31 AM liu xiang <liu.xiang@zlingsmart.com> wrot=
+e:
+>=20
+> > > Liu can you make a patch to Kconfig to just select REGULATOR?
+> > > Possibly even the specific regulator driver this SoC is using
+> > > if it is very specific for this purpose.
+> >
+> > I found that the regulator driver is related to the specific board, not=
+ the SoC.
+> > There is no board config for ARM64 SoC like ARM.
+> > Is a good idea to select the regulator driver in the pinctrl Konfig? Or=
+ just
+> > select CONFIG_REGULATOR_FIXED_VOLTAGE to avoid the use-after-free warni=
+ng?
+>=20
+> If that regulator is what the board uses to satisfy this driver then that
+> is what you should select. Write some blurb in the commit message
+> about what is going on.
+>=20
+> You can even add a comment in Kconfig like that:
+>=20
+> # Needed to provide power to rails
+> select REGULATOR_FIXED_VOLTAGE
+
+Virtually all the boards will need a regulator, but you can't make the
+assumption that this is the driver that is going to be used. In most
+case, it isn't.
+
+But it's not really a big deal, we depend on the framework itself being
+enabled for regulator_get to return the proper error, not one given
+driver.
+
+Maxime
+
+--3t3ycay2bf7rxezc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBA0KgAKCRDj7w1vZxhR
+xdm2AP9Vg1fFmdBMLPOzFtzelXWiubltA/UbM3djut80g40SsgEAonnEgt7nnczQ
+xpjCO5ObhLC7IWv1ZoKyTSfECCr2SgY=
+=NX1o
+-----END PGP SIGNATURE-----
+
+--3t3ycay2bf7rxezc--
