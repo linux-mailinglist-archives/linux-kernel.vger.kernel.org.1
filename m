@@ -2,185 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87FF303C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A083D303C3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405135AbhAZL4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:56:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57370 "EHLO
+        id S2405221AbhAZL4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:56:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48529 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392594AbhAZLz0 (ORCPT
+        by vger.kernel.org with ESMTP id S2405244AbhAZL4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:55:26 -0500
+        Tue, 26 Jan 2021 06:56:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611662039;
+        s=mimecast20190719; t=1611662101;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=lu9/PZN6EuVk/z3XNYlg5mJrwNIE9biPlhKJVxceJZ4=;
-        b=IaFllKxfKiA2EmnvqOLkg439gj7R22DuTKohInuRI6/JPkRs1werNBp3eu1JPFGwbNU2vX
-        0hkOZLRQXuzr3Wftf720kaxnmaSVXhi9WW/TS0oe6q7mPOgFEpg8Z63jF9ERdA0nPHqucc
-        83hI632/ZOmxpEwgYO9E1Guv30jKD0A=
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KsgN+L2zgOz+BGgNbLxDKJ2nVpdxi7VzfvE3jmc9pXQ=;
+        b=YCTkwykvRJ10xxfDwwH9N3dkuFDFah9ToHRDt5EF21Ws0h0D7Yhgp4urtFUOvR2CVEW2WQ
+        DSfikfGwL82eDuJ+PYxXE4yhgOyUUpkClH2u+HNe5SbwP95UJHGYHMR9mVcU9KIc9fxOrQ
+        xvm2myEozRWB8ere169vOEuk/cZkXGM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-375-oW5-O8WNNj-ttep1JWpU3w-1; Tue, 26 Jan 2021 06:53:55 -0500
-X-MC-Unique: oW5-O8WNNj-ttep1JWpU3w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-88-XFywqEy2NHSXxmw36VoO3w-1; Tue, 26 Jan 2021 06:54:57 -0500
+X-MC-Unique: XFywqEy2NHSXxmw36VoO3w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED00615724;
-        Tue, 26 Jan 2021 11:53:53 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-12-72.pek2.redhat.com [10.72.12.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F01C510023AB;
-        Tue, 26 Jan 2021 11:53:49 +0000 (UTC)
-From:   Lianbo Jiang <lijiang@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux-foundation.org,
-        jsnitsel@redhat.com, thomas.lendacky@amd.com, robin.murphy@arm.com,
-        bhe@redhat.com, hch@infradead.org, baolu.lu@linux.intel.com
-Subject: [PATCH v3 2/2] iommu: use the __iommu_attach_device() directly for deferred attach
-Date:   Tue, 26 Jan 2021 19:53:37 +0800
-Message-Id: <20210126115337.20068-3-lijiang@redhat.com>
-In-Reply-To: <20210126115337.20068-1-lijiang@redhat.com>
-References: <20210126115337.20068-1-lijiang@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB24215722;
+        Tue, 26 Jan 2021 11:54:54 +0000 (UTC)
+Received: from T590 (ovpn-12-167.pek2.redhat.com [10.72.12.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3BDA25D9C2;
+        Tue, 26 Jan 2021 11:54:43 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 19:54:39 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Changheun Lee <nanich.lee@samsung.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "asml.silence@gmail.com" <asml.silence@gmail.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "osandov@fb.com" <osandov@fb.com>,
+        "patchwork-bot@kernel.org" <patchwork-bot@kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "tom.leiming@gmail.com" <tom.leiming@gmail.com>,
+        "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
+        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
+        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
+        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
+        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
+        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>,
+        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>
+Subject: Re: [PATCH v3 1/2] bio: limit bio max size
+Message-ID: <20210126115439.GA1116639@T590>
+References: <CGME20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347@epcas1p2.samsung.com>
+ <20210126013235.28711-1-nanich.lee@samsung.com>
+ <20210126035748.GA1071341@T590>
+ <BL0PR04MB65143B60B6062996764423C3E7BC9@BL0PR04MB6514.namprd04.prod.outlook.com>
+ <20210126060724.GA1086419@T590>
+ <BL0PR04MB65144B93443C4F8EF9C48024E7BC9@BL0PR04MB6514.namprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL0PR04MB65144B93443C4F8EF9C48024E7BC9@BL0PR04MB6514.namprd04.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, because domain attach allows to be deferred from iommu
-driver to device driver, and when iommu initializes, the devices
-on the bus will be scanned and the default groups will be allocated.
+On Tue, Jan 26, 2021 at 06:26:02AM +0000, Damien Le Moal wrote:
+> On 2021/01/26 15:07, Ming Lei wrote:
+> > On Tue, Jan 26, 2021 at 04:06:06AM +0000, Damien Le Moal wrote:
+> >> On 2021/01/26 12:58, Ming Lei wrote:
+> >>> On Tue, Jan 26, 2021 at 10:32:34AM +0900, Changheun Lee wrote:
+> >>>> bio size can grow up to 4GB when muli-page bvec is enabled.
+> >>>> but sometimes it would lead to inefficient behaviors.
+> >>>> in case of large chunk direct I/O, - 32MB chunk read in user space -
+> >>>> all pages for 32MB would be merged to a bio structure if the pages
+> >>>> physical addresses are contiguous. it makes some delay to submit
+> >>>> until merge complete. bio max size should be limited to a proper size.
+> >>>>
+> >>>> When 32MB chunk read with direct I/O option is coming from userspace,
+> >>>> kernel behavior is below now. it's timeline.
+> >>>>
+> >>>>  | bio merge for 32MB. total 8,192 pages are merged.
+> >>>>  | total elapsed time is over 2ms.
+> >>>>  |------------------ ... ----------------------->|
+> >>>>                                                  | 8,192 pages merged a bio.
+> >>>>                                                  | at this time, first bio submit is done.
+> >>>>                                                  | 1 bio is split to 32 read request and issue.
+> >>>>                                                  |--------------->
+> >>>>                                                   |--------------->
+> >>>>                                                    |--------------->
+> >>>>                                                               ......
+> >>>>                                                                    |--------------->
+> >>>>                                                                     |--------------->|
+> >>>>                           total 19ms elapsed to complete 32MB read done from device. |
+> >>>>
+> >>>> If bio max size is limited with 1MB, behavior is changed below.
+> >>>>
+> >>>>  | bio merge for 1MB. 256 pages are merged for each bio.
+> >>>>  | total 32 bio will be made.
+> >>>>  | total elapsed time is over 2ms. it's same.
+> >>>>  | but, first bio submit timing is fast. about 100us.
+> >>>>  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+> >>>>       | 256 pages merged a bio.
+> >>>>       | at this time, first bio submit is done.
+> >>>>       | and 1 read request is issued for 1 bio.
+> >>>>       |--------------->
+> >>>>            |--------------->
+> >>>>                 |--------------->
+> >>>>                                       ......
+> >>>>                                                  |--------------->
+> >>>>                                                   |--------------->|
+> >>>>         total 17ms elapsed to complete 32MB read done from device. |
+> >>>>
+> >>>> As a result, read request issue timing is faster if bio max size is limited.
+> >>>> Current kernel behavior with multipage bvec, super large bio can be created.
+> >>>> And it lead to delay first I/O request issue.
+> >>>>
+> >>>> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> >>>> ---
+> >>>>  block/bio.c            | 17 ++++++++++++++++-
+> >>>>  include/linux/bio.h    |  4 +++-
+> >>>>  include/linux/blkdev.h |  3 +++
+> >>>>  3 files changed, 22 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/block/bio.c b/block/bio.c
+> >>>> index 1f2cc1fbe283..ec0281889045 100644
+> >>>> --- a/block/bio.c
+> >>>> +++ b/block/bio.c
+> >>>> @@ -287,6 +287,21 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+> >>>>  }
+> >>>>  EXPORT_SYMBOL(bio_init);
+> >>>>  
+> >>>> +unsigned int bio_max_size(struct bio *bio)
+> >>>> +{
+> >>>> +	struct request_queue *q;
+> >>>> +
+> >>>> +	if (!bio->bi_disk)
+> >>>> +		return UINT_MAX;
+> >>>> +
+> >>>> +	q = bio->bi_disk->queue;
+> >>>> +	if (!blk_queue_limit_bio_size(q))
+> >>>> +		return UINT_MAX;
+> >>>> +
+> >>>> +	return blk_queue_get_max_sectors(q, bio_op(bio)) << SECTOR_SHIFT;
+> >>>> +}
+> >>>> +EXPORT_SYMBOL(bio_max_size);
+> >>>> +
+> >>>>  /**
+> >>>>   * bio_reset - reinitialize a bio
+> >>>>   * @bio:	bio to reset
+> >>>> @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+> >>>>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+> >>>>  
+> >>>>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> >>>> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> >>>> +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+> >>>>  				*same_page = false;
+> >>>>  				return false;
+> >>>>  			}
+> >>>
+> >>> So far we don't need bio->bi_disk or bio->bi_bdev(will be changed in
+> >>> Christoph's patch) during adding page to bio, so there is null ptr
+> >>> refereance risk.
+> >>>
+> >>>> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> >>>> index 1edda614f7ce..cdb134ca7bf5 100644
+> >>>> --- a/include/linux/bio.h
+> >>>> +++ b/include/linux/bio.h
+> >>>> @@ -100,6 +100,8 @@ static inline void *bio_data(struct bio *bio)
+> >>>>  	return NULL;
+> >>>>  }
+> >>>>  
+> >>>> +extern unsigned int bio_max_size(struct bio *);
+> >>>> +
+> >>>>  /**
+> >>>>   * bio_full - check if the bio is full
+> >>>>   * @bio:	bio to check
+> >>>> @@ -113,7 +115,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+> >>>>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+> >>>>  		return true;
+> >>>>  
+> >>>> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> >>>> +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+> >>>>  		return true;
+> >>>>  
+> >>>>  	return false;
+> >>>> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> >>>> index f94ee3089e01..3aeab9e7e97b 100644
+> >>>> --- a/include/linux/blkdev.h
+> >>>> +++ b/include/linux/blkdev.h
+> >>>> @@ -621,6 +621,7 @@ struct request_queue {
+> >>>>  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+> >>>>  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+> >>>>  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
+> >>>> +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
+> >>>>  
+> >>>>  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+> >>>>  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+> >>>> @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+> >>>>  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
+> >>>>  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
+> >>>>  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
+> >>>> +#define blk_queue_limit_bio_size(q)	\
+> >>>> +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
+> >>>
+> >>> I don't think it is a good idea by adding queue flag for this purpose,
+> >>> since this case just needs to limit bio size for not delay bio submission
+> >>> too much, which is kind of logical thing, nothing to do with request queue.
+> >>>
+> >>> Just wondering why you don't take the following way:
+> >>>
+> >>>
+> >>> diff --git a/block/bio.c b/block/bio.c
+> >>> index 99040a7e6656..35852f7f47d4 100644
+> >>> --- a/block/bio.c
+> >>> +++ b/block/bio.c
+> >>> @@ -1081,7 +1081,7 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+> >>>   * It's intended for direct IO, so doesn't do PSI tracking, the caller is
+> >>>   * responsible for setting BIO_WORKINGSET if necessary.
+> >>>   */
+> >>> -int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+> >>> +int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter, bool sync)
+> >>>  {
+> >>>  	int ret = 0;
+> >>>  
+> >>> @@ -1092,12 +1092,20 @@ int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+> >>>  		bio_set_flag(bio, BIO_NO_PAGE_REF);
+> >>>  		return 0;
+> >>>  	} else {
+> >>> +		/*
+> >>> +		 * Don't add too many pages in case of sync dio for
+> >>> +		 * avoiding delay bio submission too much especially
+> >>> +		 * pinning user pages in memory isn't cheap.
+> >>> +		 */
+> >>> +		const unsigned int max_size = sync ? (1U << 12) : UINT_MAX;
+> >>
+> >> 4KB max bio size ? That is a little small :)
+> > 
+> > It should have been (1U << 20), :-(
+> 
+> Sounds better !
+> 
+> > 
+> >> In any case, I am not a fan of using an arbitrary value not related to the
+> >> actual device characteristics. Wouldn't it be better to us the device
+> >> max_sectors limit ? And that limit would need to be zone_append_max_sectors for
+> >> zone append writes. So some helper like Changheun bio_max_size() may be useful.
+> > 
+> > Firstly, bio->bi_disk may not be initialized when adding page to bio; secondly this
+> > limit isn't really related with device, is it? Also if it is one queue limit, it has
+> > to be stacked.
+> 
+> 1MB can be used as a fallback default if the gendisk is not yet set. If it is,
 
-Due to the above changes, some devices could be added to the same
-group as below:
+IMO, only sync dio on slow machine needs such limit because pinning userspace
+pages to memory may take a bit long, so far not see other workloads needs this limit.
 
-[    3.859417] pci 0000:01:00.0: Adding to iommu group 16
-[    3.864572] pci 0000:01:00.1: Adding to iommu group 16
-[    3.869738] pci 0000:02:00.0: Adding to iommu group 17
-[    3.874892] pci 0000:02:00.1: Adding to iommu group 17
+Even today I get queries from client about why 4MB user space IO won't be converted to
+4MB bio, some workload needs big size IO.
 
-But when attaching these devices, it doesn't allow that a group has
-more than one device, otherwise it will return an error. This conflicts
-with the deferred attaching. Unfortunately, it has two devices in the
-same group for my side, for example:
+> using a queue limit that does not cause bio splitting after submit makes most
+> sense as that avoid useless overhead. I agree, it is not critical, but it would
+> be nice to have some number that causes less splitting than the arbitrary 1MB.
 
-[    9.627014] iommu_group_device_count(): device name[0]:0000:01:00.0
-[    9.633545] iommu_group_device_count(): device name[1]:0000:01:00.1
-...
-[   10.255609] iommu_group_device_count(): device name[0]:0000:02:00.0
-[   10.262144] iommu_group_device_count(): device name[1]:0000:02:00.1
+That is another story. Each fs bio needs two allocation(one fixed length
+bio allocation, and variable length of bvec table), however bio splitting just
+needs single fixed length bio allocation. So if the source bio(fs bio) for holding
+data becomes smaller, splitting may become less, but more fs bio and bvec table
+allocation may be involved, not sure this way always gets better performance.
 
-Finally, which caused the failure of tg3 driver when tg3 driver calls
-the dma_alloc_coherent() to allocate coherent memory in the tg3_test_dma().
+Also in theory, bio splitting may not need to allocate one whole bio
+allocation, what matters is just the actual position/size info of the
+to-be-splitted bio.
 
-[    9.660310] tg3 0000:01:00.0: DMA engine test failed, aborting
-[    9.754085] tg3: probe of 0000:01:00.0 failed with error -12
-[    9.997512] tg3 0000:01:00.1: DMA engine test failed, aborting
-[   10.043053] tg3: probe of 0000:01:00.1 failed with error -12
-[   10.288905] tg3 0000:02:00.0: DMA engine test failed, aborting
-[   10.334070] tg3: probe of 0000:02:00.0 failed with error -12
-[   10.578303] tg3 0000:02:00.1: DMA engine test failed, aborting
-[   10.622629] tg3: probe of 0000:02:00.1 failed with error -12
+> E,g, most HDDs will likely have that 1MB BIO split... And max_sectors is a
+> stacked queue limit, no ? We could use max_hw_sectors too I think.
 
-In addition, the similar situations also occur in other drivers such
-as the bnxt_en driver. That can be reproduced easily in kdump kernel
-when SME is active.
+bio_add_page() is really fast path, and checking queue limit here may
+hurt performance because queue_limits reference is added to the fast path.
 
-Let's move the handling currently in iommu_dma_deferred_attach() into
-the iommu core code so that it can call the __iommu_attach_device()
-directly instead of the iommu_attach_device(). The external interface
-iommu_attach_device() is not suitable for handling this situation.
 
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
----
- drivers/iommu/dma-iommu.c | 18 +++---------------
- drivers/iommu/iommu.c     | 10 ++++++++++
- include/linux/iommu.h     |  1 +
- 3 files changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index c80056f6c9f9..f659395e7959 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -380,18 +380,6 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
- 	return iova_reserve_iommu_regions(dev, domain);
- }
- 
--static int iommu_dma_deferred_attach(struct device *dev,
--		struct iommu_domain *domain)
--{
--	const struct iommu_ops *ops = domain->ops;
--
--	if (unlikely(ops->is_attach_deferred &&
--			ops->is_attach_deferred(domain, dev)))
--		return iommu_attach_device(domain, dev);
--
--	return 0;
--}
--
- /**
-  * dma_info_to_prot - Translate DMA API directions and attributes to IOMMU API
-  *                    page flags.
-@@ -535,7 +523,7 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
- 	dma_addr_t iova;
- 
- 	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
--	    iommu_dma_deferred_attach(dev, domain))
-+	    iommu_deferred_attach(dev, domain))
- 		return DMA_MAPPING_ERROR;
- 
- 	size = iova_align(iovad, size + iova_off);
-@@ -694,7 +682,7 @@ static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
- 	*dma_handle = DMA_MAPPING_ERROR;
- 
- 	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
--	    iommu_dma_deferred_attach(dev, domain))
-+	    iommu_deferred_attach(dev, domain))
- 		return NULL;
- 
- 	min_size = alloc_sizes & -alloc_sizes;
-@@ -978,7 +966,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	int i;
- 
- 	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
--	    iommu_dma_deferred_attach(dev, domain))
-+	    iommu_deferred_attach(dev, domain))
- 		return 0;
- 
- 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index ffeebda8d6de..15b5fd6bd554 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -1980,6 +1980,16 @@ int iommu_attach_device(struct iommu_domain *domain, struct device *dev)
- }
- EXPORT_SYMBOL_GPL(iommu_attach_device);
- 
-+int iommu_deferred_attach(struct device *dev, struct iommu_domain *domain)
-+{
-+	const struct iommu_ops *ops = domain->ops;
-+
-+	if (ops->is_attach_deferred && ops->is_attach_deferred(domain, dev))
-+		return __iommu_attach_device(domain, dev);
-+
-+	return 0;
-+}
-+
- /*
-  * Check flags and other user provided data for valid combinations. We also
-  * make sure no reserved fields or unused flags are set. This is to ensure
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index b3f0e2018c62..92ee9b56f118 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -376,6 +376,7 @@ int  iommu_device_sysfs_add(struct iommu_device *iommu,
- void iommu_device_sysfs_remove(struct iommu_device *iommu);
- int  iommu_device_link(struct iommu_device   *iommu, struct device *link);
- void iommu_device_unlink(struct iommu_device *iommu, struct device *link);
-+int iommu_deferred_attach(struct device *dev, struct iommu_domain *domain);
- 
- static inline void __iommu_device_set_ops(struct iommu_device *iommu,
- 					  const struct iommu_ops *ops)
--- 
-2.17.1
+Thanks,
+Ming
 
