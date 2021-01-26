@@ -2,115 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD6D303D0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC5A303D9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404129AbhAZKev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:34:51 -0500
-Received: from mga02.intel.com ([134.134.136.20]:23898 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730170AbhAZBmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:42:54 -0500
-IronPort-SDR: GbG+WP5dPd/MTH9/Z+Lg6wQcuP8pqTVKjKt3ynwJCQqTBCmzGNlBs2nzOoE/v33wR8JQNi/qJi
- 5RLnoCLq2nQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="166932365"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="166932365"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 17:40:43 -0800
-IronPort-SDR: oltjSG4Cjrx1U9CaXkurV2Wtn8wScfoSZr6SpTKSMcqjzt3VV7/fqL1Qis2N++AI1bDBro1iUI
- zTSCvIJxheNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="402591086"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jan 2021 17:40:39 -0800
-Subject: Re: [RFC PATCH v1] sched/fair: limit load balance redo times at the
- same sched_domain level
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Aubrey Li <aubrey.li@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-References: <1611554578-6464-1-git-send-email-aubrey.li@intel.com>
- <CAKfTPtAxnsEDL436zUypLj2XyMQyhgPvJ8q_23835sQxWzGtxw@mail.gmail.com>
- <a99d59c3-2023-1e8f-83cd-d964e156ffd6@linux.intel.com>
- <CAKfTPtCCzy5keKcEOUX6D1+wty0dtYEfA5=oezWRgKY_beO5NQ@mail.gmail.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <c4066132-d7a2-ef22-2ec0-6ba0c6fc3357@linux.intel.com>
-Date:   Tue, 26 Jan 2021 09:40:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2403962AbhAZMtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:49:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391823AbhAZKAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:00:08 -0500
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87268C061354
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:58:55 -0800 (PST)
+Received: by mail-vs1-xe32.google.com with SMTP id j138so8379402vsd.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:58:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pJCLQRxrq3qEZskHQDdRGHVs/g7GsIs44v+7gnvo2ls=;
+        b=FOFq8Rt4wj3ueoHnR83ehUcVd2jOut0bL1z0vDVXeQV2Rs3Vl4jGN3McmmUsSjU/ja
+         wamaDid3KnCaWtLk5G90d0nwdcQUc4BlfZr9SJFqdejzfVHGeCBc/cR5KQhUvKARusF1
+         ZPFskfWFCLWcp1uPPkQVOevDa63ZTw9U9oRCS0NZf9dZ/8bQWWmQCormdTj2fHKJz0Kt
+         uSapIEtaovuHMj5EW1FIropN2ShVEdx071K943vd2znRgeRaB3lkm34Z1pQ2LW+YbB6m
+         srbCbhRaXHf6YbJS0g8jFa2Adp3Yhfyn4zEZkLSssA2BzPFLsdpyfve88lfS+PLhUrxK
+         6mZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pJCLQRxrq3qEZskHQDdRGHVs/g7GsIs44v+7gnvo2ls=;
+        b=N8JlDiCYXpsju4v2jj4s+RcpE+LywQbe+2fgtakBw5kLM1dA/O44yomLDcs9W26Hqz
+         IAr97vK2vMMUXrfKyuuHtQ8puFnShaRmgnfHG42kuWf7CuUExtnhIw0Y4WoM6MHkZsU7
+         zx+jIHHaNvn49poKqYH8VmCbYi1ninht0GVWhKfHZ7H7jVRr4xZ5Ybwt9sFcJePjTjbU
+         UG7zTjP90pDHkw0JUOqLOZRyvkpakub0/pBPKamcyXN4EPcEof9csPfG6sjxMLXWaQQH
+         GXf+/ROwm5zNuj25Wb8bMoNtV4sqIGWymvUi7q2qlhlL7Ti214UqFryTeMR/PL7O6xgf
+         kQjQ==
+X-Gm-Message-State: AOAM5309AUUXHmMQd6OixdV1Q2hsy7u+zNLA8nVP1vmuNb/A06HOSk7p
+        0MALkS58ChlU1eBA4K8PNr+xeaoHBAueFs87eFxwiQ==
+X-Google-Smtp-Source: ABdhPJxABc5UXW4in2s8UJsSPUcaq4oOAuUUuvd5smFLRDOyRYY5OppaOYrWw/Wc0F4v8snNQaOM8Rlku8cV1xHbXQ4=
+X-Received: by 2002:a67:c787:: with SMTP id t7mr3895407vsk.48.1611655134813;
+ Tue, 26 Jan 2021 01:58:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtCCzy5keKcEOUX6D1+wty0dtYEfA5=oezWRgKY_beO5NQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CGME20210125064728epcas1p3c44396f8f733463d5e0add003cc2b7eb@epcas1p3.samsung.com>
+ <20210125064355.28545-1-cw9316.lee@samsung.com>
+In-Reply-To: <20210125064355.28545-1-cw9316.lee@samsung.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 26 Jan 2021 10:58:17 +0100
+Message-ID: <CAPDyKFqM+PfzoP8aznomAncAVaFqUXN8SzCVf5rauqes+jGmPQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: queue: Exclude unnecessary header file
+To:     Chanwoo Lee <cw9316.lee@samsung.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "(Exiting) Baolin Wang" <baolin.wang@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Coly Li <colyli@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sarthak Garg <sartgarg@codeaurora.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/25 22:51, Vincent Guittot wrote:
-> On Mon, 25 Jan 2021 at 15:00, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->>
->> On 2021/1/25 18:56, Vincent Guittot wrote:
->>> On Mon, 25 Jan 2021 at 06:50, Aubrey Li <aubrey.li@intel.com> wrote:
->>>>
->>>> A long-tail load balance cost is observed on the newly idle path,
->>>> this is caused by a race window between the first nr_running check
->>>> of the busiest runqueue and its nr_running recheck in detach_tasks.
->>>>
->>>> Before the busiest runqueue is locked, the tasks on the busiest
->>>> runqueue could be pulled by other CPUs and nr_running of the busiest
->>>> runqueu becomes 1, this causes detach_tasks breaks with LBF_ALL_PINNED
->>>
->>> We should better detect that when trying to detach task like below
->>
->> This should be a compromise from my understanding. If we give up load balance
->> this time due to the race condition, we do reduce the load balance cost on the
->> newly idle path, but if there is an imbalance indeed at the same sched_domain
-> 
-> Redo path is there in case, LB has found an imbalance but it can't
-> move some loads from this busiest rq to dest rq because of some cpu
-> affinity. So it tries to fix the imbalance by moving load onto another
-> rq of the group. In your case, the imbalance has disappeared because
-> it has already been pulled by another rq so you don't have to try to
-> find another imbalance. And I would even say you should not in order
-> to let other level to take a chance to spread the load
+On Mon, 25 Jan 2021 at 07:47, Chanwoo Lee <cw9316.lee@samsung.com> wrote:
+>
+> From: ChanWoo Lee <cw9316.lee@samsung.com>
+>
+> From the 4.19 kernel, thread related code has been removed in queue.c.
+> So we can exclude unnecessary header file.
+>
+> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
 
-Here is one simple case I have seen:
-1) CPU_a becomes idle and invoke newly idle balance
-2) Group_b is found as the busiest group
-3) CPU_b_1 is found as the busiest CPU, nr_running = 5
-4) detach_tasks check CPU_b_1's run queue again, nr_running = 1, goto redo
-5) Group_b is still found as the busiest group
-6) This time CPU_b_2 is found as the busiest CPU, nr_running = 3
-7) detach_tasks successfully, 2 tasks moved.
+Applied for next, thanks!
 
-If we skipped redo,
-- CPU_a exit load balance and remain idle
-- tasks stay on CPU_b_2's runqueue, wait for the next load balancing
+Kind regards
+Uffe
 
-The two tasks could have been moved to the idle CPU and get executed
-immediately.
 
-> 
->> level, we have to wait the next softirq entry to handle that imbalance. This
->> means the tasks on the second busiest runqueue have to stay longer, which could
->> introduce tail latency as well. That's why I introduced a variable to control
->> the redo loops. I'll send this to the benchmark queue to see if it makes any
-> 
-> TBH, I don't like multiplying the number of knobs
-> I see.
-
-Thanks,
--Aubrey
+> ---
+>  drivers/mmc/core/queue.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+> index de7cb0369c30..c7218da6f17c 100644
+> --- a/drivers/mmc/core/queue.c
+> +++ b/drivers/mmc/core/queue.c
+> @@ -7,7 +7,6 @@
+>  #include <linux/module.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/freezer.h>
+> -#include <linux/kthread.h>
+>  #include <linux/scatterlist.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/backing-dev.h>
+> --
+> 2.29.0
+>
