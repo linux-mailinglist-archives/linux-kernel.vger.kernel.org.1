@@ -2,102 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6DD304F9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FB3304FA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhA0DRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:17:12 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:23141 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388214AbhAZUf7 (ORCPT
+        id S235550AbhA0DUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:20:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393121AbhAZUnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:35:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611693340; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=PksgwQjYAE5mCkWpEhf8FuD4MEP1lZzvNn1nk/aOcJ4=; b=FFlpRz8uAtsaubLt0sgYJ2RAkdiHeZJg0FSo1v4IsgzryuikDFi+1bAnu1zFn28zTvaO6Eld
- ZfNEXx0+jw+Qny8snpSwqPILecS0+drrOp/AC4MPBAl8u18DEx8t18n6oybr25dRlyZtCemf
- h87PfUecJK8osriVkPds7F4/hTY=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60107cfdad4c9e395b9242fe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 20:35:09
- GMT
-Sender: sramana=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 61CDBC433CA; Tue, 26 Jan 2021 20:35:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.11] (cpe-70-95-74-122.san.res.rr.com [70.95.74.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sramana)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 836DAC433C6;
-        Tue, 26 Jan 2021 20:35:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 836DAC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sramana@codeaurora.org
-Subject: Re: [PATCH v4 19/21] arm64: cpufeatures: Allow disabling of BTI from
- the command-line
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-References: <20210118094533.2874082-1-maz@kernel.org>
- <20210118094533.2874082-20-maz@kernel.org>
- <YAwxhuw8L0Fp3cUf@Catalins-MacBook-Air.local>
-From:   Srinivas Ramana <sramana@codeaurora.org>
-Message-ID: <f78c9df6-1dc1-a2fa-08c9-5b9e890c320e@codeaurora.org>
-Date:   Tue, 26 Jan 2021 12:35:05 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 26 Jan 2021 15:43:50 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4ADC0613ED;
+        Tue, 26 Jan 2021 12:43:25 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id e9so2978038pjj.0;
+        Tue, 26 Jan 2021 12:43:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XA+jyv1loiGPphrOL8kn5H8su7PXADpnQ1gR33eeAE4=;
+        b=PP38fahaKMJC62EY7XKecdBtPSaTl4VhZR05btl5dnOp7IdtmNqJYWmkAhL8DzS6Kj
+         wNuNRosuSulIeXoWHgl4qFS5cvRnrSy2zHxZjbKpDvWqSakX7mZoVVaGSva5+1pZ+za9
+         g5zGlasJdNCqAfmZGTXAzc4rLglraGQzOFRGK3aIKc5EFhsk2ABAzDZpU39JHQFPm2wi
+         SmY7preEDlxU25nnXV7L9FGA4mQBFCtOamNsARduywSQ/sN6HKcy5BcopP7xZPdL5iUz
+         lByVPaErGJmC/kDGLnesjhkIjQ3IaqNvqlv9I2sqJ1je5Uuu+w0s+ORZRF+kBsMfb3m8
+         vtHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XA+jyv1loiGPphrOL8kn5H8su7PXADpnQ1gR33eeAE4=;
+        b=X761MBi2zny4LF4cEpdBEv7FeXf7wEW28DkP80DUrtzSIiPuLMAelGIc+QhaKpXMWe
+         aZrGga7SbgM3n6ewaYpBht8UU6guj5r/siUBm5D4yT7r8JbbVskacm6aam+I6RNlHGSm
+         EwkucLzUOqBcWEkGdu2BWAr4DSBdwEVpKCDt1OORg7QGBqm+zes7N6GQryX8xJeljBsn
+         pK3+EEyL45C7Kw+y6DotGbUn4JODqY8EGeRHRvg8GX3irCZH44qVOlwNFiyCwcrPq2cD
+         HyAcpeYAFJAUuwzzCbTj5rTDcvT5W0/8YEBbZy9CvGx8jXoTxQqfvvDuWFpwBGHCK6IJ
+         BHPw==
+X-Gm-Message-State: AOAM5305X3IcRXlhP9LU728jP9itR6kitzF9PhGZ24PhpgZJXQkDqKd9
+        cLiU/jon9Mf6ig6+DBnCMuI=
+X-Google-Smtp-Source: ABdhPJwwmT30kogCuc3lhP7aqEqdxyYVgkl88E1BimVSr1avbycjpHPuhpnAYWxZo8EeOpApKsljAQ==
+X-Received: by 2002:a17:90a:d58c:: with SMTP id v12mr1684421pju.37.1611693804887;
+        Tue, 26 Jan 2021 12:43:24 -0800 (PST)
+Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
+        by smtp.gmail.com with ESMTPSA id hs21sm2990530pjb.6.2021.01.26.12.43.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 12:43:24 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+X-Google-Original-From: Nadav Amit
+To:     iommu@lists.linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] iommu/vt-d: do not use flush-queue when caching-mode is on
+Date:   Tue, 26 Jan 2021 12:38:56 -0800
+Message-Id: <20210126203856.1544088-1-namit@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YAwxhuw8L0Fp3cUf@Catalins-MacBook-Air.local>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
+From: Nadav Amit <namit@vmware.com>
 
-On 1/23/2021 6:24 AM, Catalin Marinas wrote:
-> On Mon, Jan 18, 2021 at 09:45:31AM +0000, Marc Zyngier wrote:
->> In order to be able to disable BTI at runtime, whether it is
->> for testing purposes, or to work around HW issues, let's add
->> support for overriding the ID_AA64PFR1_EL1.BTI field.
->>
->> This is further mapped on the arm64.nobti command-line alias.
->>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Verified this Series for BTI as well for command line control.
-With arm64.nobti:
-BTI is disabled on both primary and secondary cores as expected(verified 
-page table entries).
-HWCAPs show no BTI support and kernel instructions are being treated as 
-NOPs.
-We don't have plan to repeat the test on v5 as there are not major 
-changes here.
+When an Intel IOMMU is virtualized, and a physical device is
+passed-through to the VM, changes of the virtual IOMMU need to be
+propagated to the physical IOMMU. The hypervisor therefore needs to
+monitor PTE mappings in the IOMMU page-tables. Intel specifications
+provide "caching-mode" capability that a virtual IOMMU uses to report
+that the IOMMU is virtualized and a TLB flush is needed after mapping to
+allow the hypervisor to propagate virtual IOMMU mappings to the physical
+IOMMU. To the best of my knowledge no real physical IOMMU reports
+"caching-mode" as turned on.
 
-Tested-by: Srinivas Ramana <sramana@codeaurora.org>
+Synchronizing the virtual and the physical TLBs is expensive if the
+hypervisor is unaware which PTEs have changed, as the hypervisor is
+required to walk all the virtualized tables and look for changes.
+Consequently, domain flushes are much more expensive than page-specific
+flushes on virtualized IOMMUs with passthrough devices. The kernel
+therefore exploited the "caching-mode" indication to avoid domain
+flushing and use page-specific flushing in virtualized environments. See
+commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
+mode.")
+
+This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
+of iova deferred flushing"). Now, when batched TLB flushing is used (the
+default), full TLB domain flushes are performed frequently, requiring
+the hypervisor to perform expensive synchronization between the virtual
+TLB and the physical one.
+
+Getting batched TLB flushes to use in such circumstances page-specific
+invalidations again is not easy, since the TLB invalidation scheme
+assumes that "full" domain TLB flushes are performed for scalability.
+
+Disable batched TLB flushes when caching-mode is on, as the performance
+benefit from using batched TLB invalidations is likely to be much
+smaller than the overhead of the virtual-to-physical IOMMU page-tables
+synchronization.
+
+Fixes: 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching mode.")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ drivers/iommu/intel/iommu.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 788119c5b021..4e08f5e17175 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -5373,6 +5373,30 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
+ 	return ret;
+ }
+ 
++static int
++intel_iommu_domain_get_attr_use_flush_queue(struct iommu_domain *domain)
++{
++	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
++	struct intel_iommu *iommu = domain_get_iommu(dmar_domain);
++
++	if (intel_iommu_strict)
++		return 0;
++
++	/*
++	 * The flush queue implementation does not perform page-selective
++	 * invalidations that are required for efficient TLB flushes in virtual
++	 * environments. The benefit of batching is likely to be much lower than
++	 * the overhead of synchronizing the virtual and physical IOMMU
++	 * page-tables.
++	 */
++	if (iommu && cap_caching_mode(iommu->cap)) {
++		pr_warn_once("IOMMU batching is partially disabled due to virtualization");
++		return 0;
++	}
++
++	return 1;
++}
++
+ static int
+ intel_iommu_domain_get_attr(struct iommu_domain *domain,
+ 			    enum iommu_attr attr, void *data)
+@@ -5383,7 +5407,7 @@ intel_iommu_domain_get_attr(struct iommu_domain *domain,
+ 	case IOMMU_DOMAIN_DMA:
+ 		switch (attr) {
+ 		case DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE:
+-			*(int *)data = !intel_iommu_strict;
++			*(int *)data = !intel_iommu_domain_get_attr_use_flush_queue(domain);
+ 			return 0;
+ 		default:
+ 			return -ENODEV;
+-- 
+2.25.1
 
