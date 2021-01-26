@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFA83042F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC643042F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403960AbhAZPtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:49:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392685AbhAZPsd (ORCPT
+        id S2391924AbhAZPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:50:44 -0500
+Received: from a1.mail.mailgun.net ([198.61.254.60]:14396 "EHLO
+        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392748AbhAZPs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:48:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611676026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qzu8Yi9XdW/qKp/+NlwEE61olqGo5JkdqMwkmHc/Mx0=;
-        b=bnsnkxAo9rI60GNxKLic0Os/xtkwbkNiUjxA87kjgOwTJie2cF4HkU7/VPh6uHkyKdz7Se
-        dpaqRDJw+xt9uNR9G5Z0ACN2HZ6WfoPwdG0I+nyNuhnOYpwNkEVKULqBg0570Sx1RRC8uX
-        bE+Ddai1G6BME32q5o5gG5uH3cTOs5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-segurc8MMgCOFb4JYAA6kg-1; Tue, 26 Jan 2021 10:47:03 -0500
-X-MC-Unique: segurc8MMgCOFb4JYAA6kg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 26 Jan 2021 10:48:57 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611676117; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=AIGp3sOSpcvWiZSeRL/t8BvDsbq1gMaRV6JTPMxNUP4=; b=u0wQFuGL6/FkSLDnimB7GdTLipE+xSnFU9K52giG5Jh/eooLOfdxqQ+xo3CysE8ZKpTke3sw
+ WygjBAGJQBVPExwc2SpVyzXr9FxvWC7eghPSjIgm5KFxBpWa6tQeQFDc/uvq0SFonSC/r9gP
+ vwwQS8fXEP73zToutjMlCs3C2MQ=
+X-Mailgun-Sending-Ip: 198.61.254.60
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 601039ab72b7c29fd5db02d1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 15:47:55
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5DBBAC43467; Tue, 26 Jan 2021 15:47:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF276107B45B;
-        Tue, 26 Jan 2021 15:47:00 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 27F447770E;
-        Tue, 26 Jan 2021 15:46:53 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 09:46:51 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Greg KH <greg@kroah.com>, Justin Forbes <jforbes@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210126154651.itfrnhwfistia3ss@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
- <20210125212755.jfwlqogpcarmxdgt@treble>
- <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
- <20210125220757.vxdsf6sttpy46cq7@treble>
- <YA/PLdX5m9f4v+Yl@kroah.com>
- <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
- <YBAeYaDReAc9VscA@kroah.com>
- <20210126145155.kcfbnzfqg5qugvcl@treble>
- <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net>
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49718C433CA;
+        Tue, 26 Jan 2021 15:47:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 49718C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 0/4] arm64: dts: qcom: Add watchdog bark irq for  SC7180, SDM845, SM8150, SM8250
+Date:   Tue, 26 Jan 2021 21:17:28 +0530
+Message-Id: <cover.1611466260.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 04:15:37PM +0100, Peter Zijlstra wrote:
-> On Tue, Jan 26, 2021 at 08:51:55AM -0600, Josh Poimboeuf wrote:
-> > User space mixes compiler versions all the time.  The C ABI is stable.
-> > 
-> > What specifically is the harder issue you're referring to?
-> 
-> I don't think the C ABI captures nearly enough. Imagine trying to mix a
-> compiler with and without asm-goto support (ok, we fail to build without
-> by now, but just imagine).
-> 
-> No C ABI violated, but having that GCC extention vs not having it
-> radically changes the kernel ABI.
-> 
-> I think I'm with Greg here, just don't do it.
+This series adds pre-timeout notification support via bark
+interrupt for SC7180, SDM845, SM8150, SM8250 SoCs.
 
-Ok, thank you for an actual example.  asm goto is a good one.
+Note: This has a functional dependency on [1] without which
+the watchdog functionality would be broken.
 
-But it's not a cut-and-dry issue.  Otherwise how could modversions
-possibly work?
+[1] https://lore.kernel.org/patchwork/patch/1371266/
 
-So yes, we should enforce GCC versions, but I still haven't seen a
-reason it should be more than just "same compiler and *major* version".
+Sai Prakash Ranjan (4):
+  arm64: dts: qcom: sc7180: Add watchdog bark interrupt
+  arm64: dts: qcom: sdm845: Add watchdog bark interrupt
+  arm64: dts: qcom: sm8150: Add watchdog bark interrupt
+  arm64: dts: qcom: sm8250: Add watchdog bark interrupt
 
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 1 +
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 1 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 1 +
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 1 +
+ 4 files changed, 4 insertions(+)
+
+
+base-commit: 76bb4dc36d0e6bd13c70536a77240f93a0260f7e
+prerequisite-patch-id: 46f598da3a2dbddfefa72da5636438142a00babd
 -- 
-Josh
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
