@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D8030454C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E42A2304555
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:30:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbhAZR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:28:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53364 "EHLO mx2.suse.de"
+        id S2391664AbhAZRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:30:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729658AbhAZHfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:35:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611646304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7zMRtj92K4aLVsKF/LtuTzpzMNc9rmo/TxWykS3K0E0=;
-        b=fbzVzS60+bW4/eLvVlMg8GidpFB1jBrR7hcptqrY8DOrxY95Wqr6BYjafHEM6FDX7G5i/a
-        47NUGFfcrm6l+Of7J1sWw4Lzuue/Bl54LKMg59hi6hWCs5djiniqInQ7mh6N/vOqeVmO+1
-        dcHiiymtcGUHsS6UXafRNc9p1dmXURc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3F491AE61;
-        Tue, 26 Jan 2021 07:31:44 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 08:31:42 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-Message-ID: <20210126073142.GY827@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-9-rppt@kernel.org>
- <20210125165451.GT827@dhcp22.suse.cz>
- <20210125213817.GM6332@kernel.org>
+        id S1730672AbhAZHf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:35:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 121D9230FE;
+        Tue, 26 Jan 2021 07:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611646515;
+        bh=+VAs2ymsR3wvwxQFkon4/lt3ON1FUNprV+UepWushio=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DH2Lp/8Ef0k9WGN0ll9FmubItN0Z4unrWnNQS2pyl2CUBL7o4QsLZbVTFfKsobAFJ
+         rqis4X+XbAgqsLOIi2xs0N9LOezi8R1B3MJRlaAf+t5K7louVm5tILOwBOPekx54Dp
+         gxGYVH9sPqyKT9rTqpWuBYCY/4Ml/MC0cOYw5dSCTJwQMG0iNcMSQJWPiMJQGz01Ki
+         A22EreErsNsWRT1n182mAs2KUT0HFIOn49DPq47GwhpEw133zKoi2C3eSrEIDvRSro
+         yals0i+X72Z5A+lrvA7iUlU3O1m7Ebf/8Fx9SxxtUcGSuay+HFsCn+KXGiyEhuM4Q0
+         ot6GUJlxXOVnw==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l4Isa-00BqrJ-FX; Tue, 26 Jan 2021 08:35:12 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jonathan Chocron <jonnyc@amazon.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@axis.com, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH RFC 0/2] Convert designware-pcie and kirin-pcie to yaml
+Date:   Tue, 26 Jan 2021 08:35:05 +0100
+Message-Id: <cover.1611645945.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125213817.GM6332@kernel.org>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25-01-21 23:38:17, Mike Rapoport wrote:
-> On Mon, Jan 25, 2021 at 05:54:51PM +0100, Michal Hocko wrote:
-> > On Thu 21-01-21 14:27:20, Mike Rapoport wrote:
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > 
-> > > Account memory consumed by secretmem to memcg. The accounting is updated
-> > > when the memory is actually allocated and freed.
-> > 
-> > What does this mean?
-> 
-> That means that the accounting is updated when secretmem does cma_alloc()
-> and cma_relase().
-> 
-> > What are the lifetime rules?
-> 
-> Hmm, what do you mean by lifetime rules?
+Rob,
 
-OK, so let's start by reservation time (mmap time right?) then the
-instantiation time (faulting in memory). What if the calling process of
-the former has a different memcg context than the later. E.g. when you
-send your fd or inherited fd over fork will move to a different memcg.
+As I'm preparing some upstream patches for kirin-pcie driver to support
+Hikey 970, I opted to try first to convert the existing schema to yaml.
 
-What about freeing path? E.g. when you punch a hole in the middle of
-a mapping?
+It should be noticed that those two patches currently won't pass
+cleanly with dtbs_check/dt_binding_check.
 
-Please make sure to document all this.
+I'm out of ideas about how to fix. It sounds to me that the checking
+tools are trying to enforce different types of reference types than
+the ones used by designware drivers.:
 
-> > [...]
-> > 
-> > > +static int secretmem_account_pages(struct page *page, gfp_t gfp, int order)
-> > > +{
-> > > +	int err;
-> > > +
-> > > +	err = memcg_kmem_charge_page(page, gfp, order);
-> > > +	if (err)
-> > > +		return err;
-> > > +
-> > > +	/*
-> > > +	 * seceremem caches are unreclaimable kernel allocations, so treat
-> > > +	 * them as unreclaimable slab memory for VM statistics purposes
-> > > +	 */
-> > > +	mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-> > > +			      PAGE_SIZE << order);
-> > 
-> > A lot of memcg accounted memory is not reclaimable. Why do you abuse
-> > SLAB counter when this is not a slab owned memory? Why do you use the
-> > kmem accounting API when __GFP_ACCOUNT should give you the same without
-> > this details?
-> 
-> I cannot use __GFP_ACCOUNT because cma_alloc() does not use gfp.
+$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/designware,pcie.yaml dt_binding_check
+  LINT    Documentation/devicetree/bindings
+  DTEX    Documentation/devicetree/bindings/pci/designware,pcie.example.dts
+  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+  DTC     Documentation/devicetree/bindings/pci/designware,pcie.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/pci/designware,pcie.example.dt.yaml
 
-Other people are working on this to change. But OK, I do see that this
-can be done later but it looks rather awkward.
 
-> Besides, kmem accounting with __GFP_ACCOUNT does not seem
-> to update stats and there was an explicit request for statistics:
->  
-> https://lore.kernel.org/lkml/CALo0P13aq3GsONnZrksZNU9RtfhMsZXGWhK1n=xYJWQizCd4Zw@mail.gmail.com/
+		[[2164260864, 0, 0, 3724541952, 0, 65536, 2181038080, 0, 3493855232, 3493855232, 0, 218103808]] is not of type 'boolean'
+		True was expected
+		[[2164260864, 0, 0, 3724541952, 0, 65536, 2181038080, 0, 3493855232, 3493855232, 0, 218103808]] is not of type 'null'
+	[2164260864, 0, 0, 3724541952, 0, 65536, 2181038080, 0, 3493855232, 3493855232, 0, 218103808] is too long
+	From schema: /home/mchehab/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
 
-charging and stats are two different things. You can still take care of
-your stats without explicitly using the charging API. But this is a mere
-detail. It just hit my eyes.
+$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml dt_binding_check
+  DTEX    Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dts
+  DTC     Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml
+/devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@f4000000: 'reset-gpios' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+/devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@f4000000: '#interrupt-cells', 'bus-range', 'clock-names', 'clocks', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'num-lanes', 'ranges' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
 
-> As for (ab)using NR_SLAB_UNRECLAIMABLE_B, as it was already discussed here:
-> 
-> https://lore.kernel.org/lkml/20201129172625.GD557259@kernel.org/
+I ran out of ideas about how to solve that. So, I'm posting it as a RFC.
 
-Those arguments should be a part of the changelof.
+Mauro Carvalho Chehab (2):
+  dt: pci: designware-pcie.txt: convert it to yaml
+  dt: pci: kirin-pcie.txt: convert it to yaml
 
-> I think that a dedicated stats counter would be too much at the moment and
-> NR_SLAB_UNRECLAIMABLE_B is the only explicit stat for unreclaimable memory.
+ .../bindings/pci/amlogic,meson-pcie.txt       |   4 +-
+ .../bindings/pci/axis,artpec6-pcie.txt        |   2 +-
+ .../bindings/pci/designware,pcie.yaml         | 194 ++++++++++++++++++
+ .../bindings/pci/designware-pcie.txt          |  77 -------
+ .../bindings/pci/fsl,imx6q-pcie.txt           |   2 +-
+ .../bindings/pci/hisilicon,kirin-pcie.yaml    |  98 +++++++++
+ .../bindings/pci/hisilicon-histb-pcie.txt     |   2 +-
+ .../bindings/pci/hisilicon-pcie.txt           |   2 +-
+ .../devicetree/bindings/pci/kirin-pcie.txt    |  50 -----
+ .../bindings/pci/layerscape-pci.txt           |   2 +-
+ .../bindings/pci/nvidia,tegra194-pcie.txt     |   4 +-
+ .../devicetree/bindings/pci/pci-armada8k.txt  |   2 +-
+ .../devicetree/bindings/pci/pci-keystone.txt  |  10 +-
+ .../devicetree/bindings/pci/pcie-al.txt       |   2 +-
+ .../devicetree/bindings/pci/qcom,pcie.txt     |  14 +-
+ .../bindings/pci/samsung,exynos5440-pcie.txt  |   4 +-
+ .../pci/socionext,uniphier-pcie-ep.yaml       |   2 +-
+ .../devicetree/bindings/pci/ti-pci.txt        |   4 +-
+ .../devicetree/bindings/pci/uniphier-pcie.txt |   2 +-
+ MAINTAINERS                                   |   4 +-
+ 20 files changed, 323 insertions(+), 158 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/designware,pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/designware-pcie.txt
+ create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
 
-Why do you think it would be too much? If the secret memory becomes a
-prevalent memory user because it will happen to back the whole virtual
-machine then hiding it into any existing counter would be less than
-useful.
-
-Please note that this all is a user visible stuff that will become PITA
-(if possible) to change later on. You should really have strong
-arguments in your justification here.
 -- 
-Michal Hocko
-SUSE Labs
+2.29.2
+
+
