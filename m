@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF602304E22
+	by mail.lfdr.de (Postfix) with ESMTP id 26023304E21
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389959AbhA0ALZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:11:25 -0500
-Received: from smtprelay0161.hostedemail.com ([216.40.44.161]:46970 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727782AbhAZREe (ORCPT
+        id S2389932AbhA0ALS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:11:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38088 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727641AbhAZRDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:04:34 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id A67621803DDAB;
-        Tue, 26 Jan 2021 16:46:57 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E64DE180A90FF;
-        Tue, 26 Jan 2021 16:46:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2911:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:4321:4425:5007:7652:10004:10400:11232:11473:11657:11658:11914:12043:12297:12555:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21324:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: burn65_26005d02758f
-X-Filterd-Recvd-Size: 2031
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 26 Jan 2021 16:46:54 +0000 (UTC)
-Message-ID: <7d113851044ad16fa7f4c4e5c32af723e2f3c359.camel@perches.com>
-Subject: Re: [PATCH v3] rtlwifi: Simplify bool comparison
-From:   Joe Perches <joe@perches.com>
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
-        kvalo@codeaurora.org
-Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 26 Jan 2021 08:46:53 -0800
-In-Reply-To: <1611649916-21936-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-References: <1611649916-21936-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 26 Jan 2021 12:03:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611680539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I4ZKb8bFlXRVvfL07LOhyv8cAdRu+Z/S+GDSbvfqb1Y=;
+        b=Quyr2BbYcbKL2yiRH2J+TQAj7dwQCXprDhtVQ3k1LYcgNweqBohiMbZdmZxIckNtm1cjxB
+        yPuryyojPhEx4D3Kg+SQcix7geEHv8dXKioXiV9dK28BqWz5ffs3eZkrGPYuTSGa107Ht5
+        ABhQ03+BHZA/PhfKFd8idqfnuBswdtU=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-sZkq5HL8PeSdX4T3A5KBow-1; Tue, 26 Jan 2021 11:47:03 -0500
+X-MC-Unique: sZkq5HL8PeSdX4T3A5KBow-1
+Received: by mail-ed1-f72.google.com with SMTP id e25so9630057edq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 08:47:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I4ZKb8bFlXRVvfL07LOhyv8cAdRu+Z/S+GDSbvfqb1Y=;
+        b=egTn8D0WY9TFnbNRGWNH5fEKOZADdue4KWd4+CDcfZCxzFgInbrqwLHi7vrlpe6R9v
+         K8c2QQnF9MXHAYS4Rd7lI0fDrapzzz+OL6FJ2nLNZQ1noRW6vjB4vhpm91eIBPJksOeU
+         C+CisGIN1Fn+o0PFitvkarotDhSZOtYS4+j+LF85wE36GYf9Rxi6qwT+kNDbhThj9Ddl
+         AxiVH9L8m6f24vkFLRkr8SDcrw1qiK1o3r7eT1AUvhYGoHxe75R9XBbiDFP2YI7ZA24p
+         XO8Pf+xVwoCJuScVph1K6d4+7eCxp8uCHmdxHAvseAIwVuOVImcAFYHwR85X/60c6Oyt
+         EWKg==
+X-Gm-Message-State: AOAM530TMHSt4xVyYSkmY2JGV44uHa42o6DqVNbYYL0dDBSPTkVg8D3l
+        FXD3vzMIpiOmkA5pgYerwaPLtnTLaoglwFqH/TLIva/IfxLZUga/7jPfxrX0CzsNeOV1x0rBdc2
+        j9n4ZShUwd8e/57gN0ziISlU9ZCFiQg8g3We1ASQEhiereb2dKJTY2AGjavcy57KpPBSKFQaaj/
+        3Y
+X-Received: by 2002:a50:ee94:: with SMTP id f20mr5409160edr.222.1611679622212;
+        Tue, 26 Jan 2021 08:47:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwWAWMTdXHRABB/i4tSZ9e4vzIsNpvFRyrBXtBgagESBXWm++q9yOphXqQ8dkTSGP0xwomHmQ==
+X-Received: by 2002:a50:ee94:: with SMTP id f20mr5409148edr.222.1611679622048;
+        Tue, 26 Jan 2021 08:47:02 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dj25sm12571694edb.5.2021.01.26.08.47.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 08:47:01 -0800 (PST)
+Subject: Re: [PATCH v2 0/3] Use static_call for kvm_x86_ops
+To:     Jason Baron <jbaron@akamai.com>, seanjc@google.com
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1610680941.git.jbaron@akamai.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <7efb7e51-611c-e4eb-be32-fefafb664309@redhat.com>
+Date:   Tue, 26 Jan 2021 17:47:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1610680941.git.jbaron@akamai.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-26 at 16:31 +0800, Jiapeng Zhong wrote:
-> Fix the following coccicheck warning:
-> ./drivers/net/wireless/realtek/rtlwifi/ps.c:798:7-21: WARNING:
-> Comparison to bool
-> ./drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3848:7-17:
-> WARNING: Comparison of 0/1 to bool variable
-[]
-> diff --git a/drivers/net/wireless/realtek/rtlwifi/ps.c b/drivers/net/wireless/realtek/rtlwifi/ps.c
-[]
-> @@ -798,9 +798,9 @@ static void rtl_p2p_noa_ie(struct ieee80211_hw *hw, void *data,
->  		ie += 3 + noa_len;
->  	}
->  
+On 15/01/21 04:27, Jason Baron wrote:
+> Hi,
 > 
-> -	if (find_p2p_ie == true) {
-> +	if (find_p2p_ie) {
->  		if ((p2pinfo->p2p_ps_mode > P2P_PS_NONE) &&
-> -		    (find_p2p_ps_ie == false))
-> +		    (!find_p2p_ps_ie))
->  			rtl_p2p_ps_cmd(hw, P2P_PS_DISABLE);
->  	}
+> Convert kvm_x86_ops to use static_call. Shows good performance
+> gains for cpuid loop micro-benchmark (results in patch 3/3).
 
-Always review suggested coccinelle patches before submission and
-see if there are ways to improve the code beyond what the spatch
-tool suggests.
+Queued, thanks.
 
-Perhaps integrate these tests and removed an indent level too:
+Paolo
 
-	if (find_p2p_ie && !find_p2p_ps_ie &&
-	    p2pinfo->p2p_ps_mode > P2P_PS_NONE)
-		rtl_p2p_ps_cmd(hw, P2P_PS_DISABLE);
-
+> Thanks,
+> 
+> -Jason
+> 
+> 
+> Changes from v1:
+> -Introduce kvm-x86-ops header with eye towards using this to define
+>   svm_x86_ops and vmx_x86_ops in follow on patches (Paolo, Sean)
+> -add new patch (1/3), that adds a vmx/svm prefix to help facilitate
+>   svm_x86_ops and vmx_x86_ops future conversions.
+> -added amd perf numbres to description of patch 3/3
+> 
+> Jason Baron (3):
+>    KVM: X86: append vmx/svm prefix to additional kvm_x86_ops functions
+>    KVM: x86: introduce definitions to support static calls for kvm_x86_ops
+>    KVM: x86: use static calls to reduce kvm_x86_ops overhead
+> 
+>   arch/x86/include/asm/kvm-x86-ops.h | 127 +++++++++++++++
+>   arch/x86/include/asm/kvm_host.h    |  21 ++-
+>   arch/x86/kvm/cpuid.c               |   2 +-
+>   arch/x86/kvm/hyperv.c              |   4 +-
+>   arch/x86/kvm/irq.c                 |   3 +-
+>   arch/x86/kvm/kvm_cache_regs.h      |  10 +-
+>   arch/x86/kvm/lapic.c               |  30 ++--
+>   arch/x86/kvm/mmu.h                 |   6 +-
+>   arch/x86/kvm/mmu/mmu.c             |  15 +-
+>   arch/x86/kvm/mmu/spte.c            |   2 +-
+>   arch/x86/kvm/pmu.c                 |   2 +-
+>   arch/x86/kvm/svm/svm.c             |  20 +--
+>   arch/x86/kvm/trace.h               |   4 +-
+>   arch/x86/kvm/vmx/nested.c          |   2 +-
+>   arch/x86/kvm/vmx/vmx.c             |  30 ++--
+>   arch/x86/kvm/vmx/vmx.h             |   2 +-
+>   arch/x86/kvm/x86.c                 | 307 +++++++++++++++++++------------------
+>   arch/x86/kvm/x86.h                 |   6 +-
+>   18 files changed, 369 insertions(+), 224 deletions(-)
+>   create mode 100644 arch/x86/include/asm/kvm-x86-ops.h
+> 
 
