@@ -2,433 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE2930459C
+	by mail.lfdr.de (Postfix) with ESMTP id 7E97030459D
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393071AbhAZRpL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 12:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47430 "EHLO
+        id S2393105AbhAZRpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730798AbhAZIIv (ORCPT
+        with ESMTP id S2389692AbhAZIJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:08:51 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9604EC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:08:04 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l4JOH-0005lV-Sf; Tue, 26 Jan 2021 09:07:57 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1l4JOH-0007m2-0x; Tue, 26 Jan 2021 09:07:57 +0100
-Date:   Tue, 26 Jan 2021 09:07:57 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Robin van der Gracht <robin@protonic.nl>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v3 2/2] counter: add GPIO based pulse counters
-Message-ID: <20210126080756.xi637l6ne3g4vgb7@pengutronix.de>
-References: <20210122112434.27886-1-o.rempel@pengutronix.de>
- <20210122112434.27886-3-o.rempel@pengutronix.de>
- <20210124144737.7978d3c8@archlinux>
+        Tue, 26 Jan 2021 03:09:11 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB39FC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:08:30 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id a1so15439474wrq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:08:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BWSqUOlk+ak9l1rPunOxQ2onISYRzDG2ZO1186X5oyA=;
+        b=IXBf/c5lBUIKWLAQ8uYbXCKxxmJ3j3zwMz7OQg3zcntdzeDmQnseUnpzmlaQPeVlt9
+         Ef5wsuGWDykn9x8LKu5ARTRhgy9plfvV0EaXBdQRV6LyFEZo7talwJxywyfdgnOP8Ta8
+         2GYzlBg1BABfKo/Zb0zZq4rtRFCDPQiZ3MFtpFpPoDc+1bfmXOwLn7t4+aXf6KoGJfS4
+         E8+qmdCnuJvx0Nm3yiBl8RAtiH5CRdYjBcq/EYHQdJRsLobzFJ8/fPO9E6l/E+4RsP9S
+         0a2k/jDCBLnYcWsecANrjUmYUo2lETmT8Wux6GcHyBZZJjY0m4/hmHy/SALuj/oEaZsd
+         kJbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BWSqUOlk+ak9l1rPunOxQ2onISYRzDG2ZO1186X5oyA=;
+        b=RgSzKZXlMFvPDWBhaAZITZjZa2ZSQzT1GwYvXuGe49096Ftr2NVmCOQhoPYj1RZtcd
+         VHCWP57SZalpzlc7cOCxshawBC6doASieElCw/WPmZwfpvyJdz7VmDv19mCHoUBYW8GB
+         cqxhZhT0GoRoiTAczurhuw6nVqyQuFfgLYz3YotC2YheXvED+HOnif8JPzUd0xLE2cEA
+         wZBpgA3YepK0ABwgOob74EccPYmiWdoSnyQRH99q16iwuflMYlcl54ApGU1G7D3Aihcd
+         PcZitlz3nqERL6m1wGqnk+zz3T9Xy7DevKw5evp5uCtcZpmZLOhnTASsCphY8yLbrphP
+         FSpA==
+X-Gm-Message-State: AOAM532+bjbj20gzMq23Dfu03C4tt3Ku9Nv8/xHnaoizt91mO+rISTj+
+        gkc/uUWbwKaBzs2wpMmEE2iSiA==
+X-Google-Smtp-Source: ABdhPJyDgpvS0kgkj37xm4VzfVta2m4pc/X4+3xw+9sizjaotltJFHDD+bUkdUmgXyYftECZLcwM5w==
+X-Received: by 2002:adf:decf:: with SMTP id i15mr4616287wrn.405.1611648509408;
+        Tue, 26 Jan 2021 00:08:29 -0800 (PST)
+Received: from trex (182.red-79-146-86.dynamicip.rima-tde.net. [79.146.86.182])
+        by smtp.gmail.com with ESMTPSA id w4sm2027547wmc.13.2021.01.26.00.08.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 26 Jan 2021 00:08:28 -0800 (PST)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Tue, 26 Jan 2021 09:08:27 +0100
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Jorge Ramirez-Ortiz <jorge@foundries.io>,
+        Arnd Bergmann <arnd@arndb.de>,
+        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] optee: simplify i2c access
+Message-ID: <20210126080827.GA26654@trex>
+References: <20210125113758.2430680-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210124144737.7978d3c8@archlinux>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:48:52 up 54 days, 21:55, 25 users,  load average: 0.00, 0.01,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210125113758.2430680-1-arnd@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On 25/01/21, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Storing a bogus i2c_client structure on the stack adds overhead and
+> causes a compile-time warning:
+> 
+> drivers/tee/optee/rpc.c:493:6: error: stack frame size of 1056 bytes in function 'optee_handle_rpc' [-Werror,-Wframe-larger-than=]
+> void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
+> 
+> Change the implementation of handle_rpc_func_cmd_i2c_transfer() to
+> open-code the i2c_transfer() call, which makes it easier to read
+> and avoids the warning.
+> 
+> Fixes: c05210ab9757 ("drivers: optee: allow op-tee to access devices on the i2c bus")
 
-On Sun, Jan 24, 2021 at 02:47:37PM +0000, Jonathan Cameron wrote:
-> On Fri, 22 Jan 2021 12:24:34 +0100
-> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> 
-> > Add simple GPIO base pulse counter. This device is used to measure
-> > rotation speed of some agricultural devices, so no high frequency on the
-> > counter pin is expected.
-> > 
-> > The maximal measurement frequency depends on the CPU and system load. On
-> > the idle iMX6S I was able to measure up to 20kHz without count drops.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
-> Hi Oleksij,
-> 
-> A few comments inline.
-> 
-> Thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/counter/Kconfig          |   9 ++
-> >  drivers/counter/Makefile         |   1 +
-> >  drivers/counter/gpio-pulse-cnt.c | 244 +++++++++++++++++++++++++++++++
-> >  3 files changed, 254 insertions(+)
-> >  create mode 100644 drivers/counter/gpio-pulse-cnt.c
-> > 
-> > diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
-> > index 2de53ab0dd25..9ad1d9d49dd1 100644
-> > --- a/drivers/counter/Kconfig
-> > +++ b/drivers/counter/Kconfig
-> > @@ -29,6 +29,15 @@ config 104_QUAD_8
-> >  	  The base port addresses for the devices may be configured via the base
-> >  	  array module parameter.
-> >  
-> > +config GPIO_PULSE_CNT
-> > +	tristate "GPIO pulse counter driver"
-> > +	depends on GPIOLIB
-> > +	help
-> > +	  Select this option to enable GPIO pulse counter driver.
-> > +
-> > +	  To compile this driver as a module, choose M here: the
-> > +	  module will be called gpio-pulse-cnt.
-> > +
-> >  config STM32_TIMER_CNT
-> >  	tristate "STM32 Timer encoder counter driver"
-> >  	depends on MFD_STM32_TIMERS || COMPILE_TEST
-> > diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
-> > index 0a393f71e481..6a5c3fc6f2a0 100644
-> > --- a/drivers/counter/Makefile
-> > +++ b/drivers/counter/Makefile
-> > @@ -6,6 +6,7 @@
-> >  obj-$(CONFIG_COUNTER) += counter.o
-> >  
-> >  obj-$(CONFIG_104_QUAD_8)	+= 104-quad-8.o
-> > +obj-$(CONFIG_GPIO_PULSE_CNT)	+= gpio-pulse-cnt.o
-> >  obj-$(CONFIG_STM32_TIMER_CNT)	+= stm32-timer-cnt.o
-> >  obj-$(CONFIG_STM32_LPTIMER_CNT)	+= stm32-lptimer-cnt.o
-> >  obj-$(CONFIG_TI_EQEP)		+= ti-eqep.o
-> > diff --git a/drivers/counter/gpio-pulse-cnt.c b/drivers/counter/gpio-pulse-cnt.c
-> > new file mode 100644
-> > index 000000000000..9454345c77ad
-> > --- /dev/null
-> > +++ b/drivers/counter/gpio-pulse-cnt.c
-> > @@ -0,0 +1,244 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2021 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
-> > + */
-> > +
-> > +#include <linux/counter.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_device.h>
-> 
-> why of_device.h?  Probably want mod_devicetable.h instead.
+does fixing stack-frame compile warnings need a 'fixes' tag?
 
-done
-
-> > +#include <linux/platform_device.h>
-> > +
-> > +#define GPIO_PULSE_NAME		"gpio-pulse-counter"
-> > +
-> > +struct gpio_pulse_priv {
-> > +	struct counter_device counter;
-> > +	struct gpio_desc *gpio;
-> > +	int irq;
-> > +	bool enabled;
-> > +	atomic_t count;
-> > +};
-> > +
-> > +static irqreturn_t gpio_pulse_irq_isr(int irq, void *dev_id)
-> > +{
-> > +	struct gpio_pulse_priv *priv = dev_id;
-> > +
-> > +	if (!priv->enabled)
-> > +		return IRQ_NONE;
-> > +
-> > +	atomic_inc(&priv->count);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static ssize_t gpio_pulse_count_enable_read(struct counter_device *counter,
-> > +					    struct counter_count *count,
-> > +					    void *private, char *buf)
-> > +{
-> > +	struct gpio_pulse_priv *priv = counter->priv;
-> > +
-> > +	return sysfs_emit(buf, "%d\n", priv->enabled);
-> > +}
-> > +
-> > +static ssize_t gpio_pulse_count_enable_write(struct counter_device *counter,
-> > +					     struct counter_count *count,
-> > +					     void *private,
-> > +					     const char *buf, size_t len)
-> > +{
-> > +	struct gpio_pulse_priv *priv = counter->priv;
-> > +	bool enable;
-> > +	ssize_t ret;
-> > +
-> > +	ret = kstrtobool(buf, &enable);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (priv->enabled == enable)
-> > +		return len;
-> > +
-> > +	priv->enabled = enable;
-> > +
-> > +	if (enable)
-> > +		enable_irq(priv->irq);
-> > +	else
-> > +		disable_irq(priv->irq);
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/tee/optee/rpc.c | 31 ++++++++++++++++---------------
+>  1 file changed, 16 insertions(+), 15 deletions(-)
 > 
-> As pointed out by Ahmad, this is all racy.
-> Personally I'd just let the race happen, and don't
-> bother with the priv->enabled at all.
-
-yes, i forgot about existence of IRQ_NOAUTOEN
-
-> We aren't going to be dealing with shared interrupts
-> here so if we get a race, it's between userspace write
-> getting through to enable / disable the interrupt and
-> a pulse coming in.  The userspace part is so unpredictable on
-> timing etc the race isn't pretty meaningless (you might count
-> one extra, but then if userspace took a bit longer you might
-> do that anyway).
-> 
-> 
-> > +
-> > +	return len;
-> > +}
-> > +
-> > +static const struct counter_count_ext gpio_pulse_count_ext[] = {
-> > +	{
-> > +		.name = "enable",
-> > +		.read = gpio_pulse_count_enable_read,
-> > +		.write = gpio_pulse_count_enable_write,
-> > +	},
-> > +};
-> > +
-> > +static enum counter_synapse_action gpio_pulse_synapse_actions[] = {
-> > +	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> > +};
-> > +
-> > +static int gpio_pulse_action_get(struct counter_device *counter,
-> > +			    struct counter_count *count,
-> > +			    struct counter_synapse *synapse,
-> > +			    size_t *action)
-> > +{
-> > +	*action = COUNTER_SYNAPSE_ACTION_RISING_EDGE;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int gpio_pulse_count_read(struct counter_device *counter,
-> > +				 struct counter_count *count,
-> > +				 unsigned long *val)
-> > +{
-> > +	struct gpio_pulse_priv *priv = counter->priv;
-> > +
-> > +	*val = atomic_read(&priv->count);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int gpio_pulse_count_write(struct counter_device *counter,
-> > +				  struct counter_count *count,
-> > +				  const unsigned long val)
-> > +{
-> > +	struct gpio_pulse_priv *priv = counter->priv;
-> > +
-> > +	atomic_set(&priv->count, val);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int gpio_pulse_count_function_get(struct counter_device *counter,
-> > +					 struct counter_count *count,
-> > +					 size_t *function)
-> > +{
-> > +	*function = COUNTER_COUNT_FUNCTION_INCREASE;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int gpio_pulse_count_signal_read(struct counter_device *counter,
-> > +					struct counter_signal *signal,
-> > +					enum counter_signal_value *val)
-> > +{
-> > +	struct gpio_pulse_priv *priv = counter->priv;
-> > +	int ret;
-> > +
-> > +	ret = gpiod_get_value(priv->gpio);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	*val = ret ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct counter_ops gpio_pulse_cnt_ops = {
-> > +	.action_get = gpio_pulse_action_get,
-> > +	.count_read = gpio_pulse_count_read,
-> > +	.count_write = gpio_pulse_count_write,
-> > +	.function_get = gpio_pulse_count_function_get,
-> > +	.signal_read  = gpio_pulse_count_signal_read,
-> > +};
-> > +
-> > +static struct counter_signal gpio_pulse_signals[] = {
-> > +	{
-> > +		.id = 0,
-> > +		.name = "Channel 0 signal",
-> > +	},
-> > +};
-> > +
-> > +static struct counter_synapse gpio_pulse_count_synapses[] = {
-> > +	{
-> > +		.actions_list = gpio_pulse_synapse_actions,
-> > +		.num_actions = ARRAY_SIZE(gpio_pulse_synapse_actions),
-> > +		.signal = &gpio_pulse_signals[0]
-> > +	},
-> > +};
-> > +
-> > +static enum counter_count_function gpio_pulse_count_functions[] = {
-> > +	COUNTER_COUNT_FUNCTION_INCREASE,
-> > +};
-> > +
-> > +static struct counter_count gpio_pulse_counts[] = {
-> > +	{
-> > +		.id = 0,
-> > +		.name = "Channel 1 Count",
-> > +		.functions_list = gpio_pulse_count_functions,
-> > +		.num_functions = ARRAY_SIZE(gpio_pulse_count_functions),
-> > +		.synapses = gpio_pulse_count_synapses,
-> > +		.num_synapses = ARRAY_SIZE(gpio_pulse_count_synapses),
-> > +		.ext = gpio_pulse_count_ext,
-> > +		.num_ext = ARRAY_SIZE(gpio_pulse_count_ext),
-> > +	},
-> > +};
-> > +
-> > +static int gpio_pulse_cnt_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct gpio_pulse_priv *priv;
-> > +	int ret;
-> > +
-> > +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> > +	if (!priv)
-> > +		return -ENOMEM;
-> > +
-> > +	if (gpiod_count(dev, NULL) != 1) {
-> > +		dev_err(dev, "Error, need exactly 1 gpio for device\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	priv->gpio = devm_gpiod_get(dev, NULL, GPIOD_IN);
-> > +	if (IS_ERR(priv->gpio))
-> > +		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get gpio\n");
-> 
-> My gut feeling here is that it probably makes sense to drop
-> the direct read of the signal level, and hence allow the driver
-> to be provided with an interrupt instead of a gpio.
-> 
-> Afterall, not all gpio lines are interrupt capable.
-
-Hm, .. I need to be able to sense GPIO level for diagnostic interface.
-So, in this case i'll need to get irq and gpio separately 
-
-> > +
-> > +	priv->irq = gpiod_to_irq(priv->gpio);
-> > +	if (priv->irq < 0) {
-> > +		dev_err(dev, "failed to map GPIO to IRQ: %d\n", priv->irq);
-> > +		return priv->irq;
-> > +	}
-> > +
-> > +	priv->counter.name = dev_name(dev);
-> > +	priv->counter.parent = dev;
-> > +	priv->counter.ops = &gpio_pulse_cnt_ops;
-> > +	priv->counter.counts = gpio_pulse_counts;
-> > +	priv->counter.num_counts = ARRAY_SIZE(gpio_pulse_counts);
-> > +	priv->counter.signals = gpio_pulse_signals;
-> > +	priv->counter.num_signals = ARRAY_SIZE(gpio_pulse_signals);
-> > +	priv->counter.priv = priv;
-> > +
-> > +	ret = devm_request_irq(dev, priv->irq, gpio_pulse_irq_isr,
-> > +			       IRQF_TRIGGER_RISING | IRQF_NO_THREAD,
-> > +			       GPIO_PULSE_NAME, priv);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	disable_irq(priv->irq);
-> 
-> Race condition here (messy at least) that we can close down.
-
-ACK
-
-> Note there is ongoing work to try and do this in a nice generic
-> fashion, but in the meantime call
->
-> irq_set_status_flags(priv->irq, IRQ_NOAUTOEN);
-
-^^ yes! this is what i was seeking! Thx.
-
-> before the devm_request_irq()
-> 
-> https://lore.kernel.org/lkml/20210107223926.35284-2-song.bao.hua@hisilicon.com/
-
-Nice!
-
-> There are a lot of cases that series will tidy up, but let us do the best
-> we can in the meantime!
+> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> index 1e3614e4798f..6cbb3643c6c4 100644
+> --- a/drivers/tee/optee/rpc.c
+> +++ b/drivers/tee/optee/rpc.c
+> @@ -54,8 +54,9 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+>  static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+>  					     struct optee_msg_arg *arg)
+>  {
+> -	struct i2c_client client = { 0 };
+>  	struct tee_param *params;
+> +	struct i2c_adapter *adapter;
+> +	struct i2c_msg msg = { };
+>  	size_t i;
+>  	int ret = -EOPNOTSUPP;
+>  	u8 attr[] = {
+> @@ -85,48 +86,48 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+>  			goto bad;
+>  	}
 >  
-> > +
-> > +	platform_set_drvdata(pdev, priv);
-> > +
-> > +	return devm_counter_register(dev, &priv->counter);
-> > +}
-> > +
-> > +static const struct of_device_id gpio_pulse_cnt_of_match[] = {
-> > +	{ .compatible = "virtual,gpio-pulse-counter", },
-> > +	{}
-> > +};
-> > +MODULE_DEVICE_TABLE(of, gpio_pulse_cnt_of_match);
-> > +
-> > +static struct platform_driver gpio_pulse_cnt_driver = {
-> > +	.probe = gpio_pulse_cnt_probe,
-> > +	.driver = {
-> > +		.name = GPIO_PULSE_NAME,
-> > +		.of_match_table = gpio_pulse_cnt_of_match,
-> > +	},
-> > +};
-> > +module_platform_driver(gpio_pulse_cnt_driver);
-> > +
-> > +MODULE_ALIAS("platform:gpio-pulse-counter");
-> > +MODULE_AUTHOR("Oleksij Rempel <o.rempel@pengutronix.de>");
-> > +MODULE_DESCRIPTION("GPIO pulse counter driver");
-> > +MODULE_LICENSE("GPL v2");
-
-Thank you.
-
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> -	client.adapter = i2c_get_adapter(params[0].u.value.b);
+> -	if (!client.adapter)
+> +	adapter = i2c_get_adapter(params[0].u.value.b);
+> +	if (!adapter)
+>  		goto bad;
+>  
+>  	if (params[1].u.value.a & OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT) {
+> -		if (!i2c_check_functionality(client.adapter,
+> +		if (!i2c_check_functionality(adapter,
+>  					     I2C_FUNC_10BIT_ADDR)) {
+> -			i2c_put_adapter(client.adapter);
+> +			i2c_put_adapter(adapter);
+>  			goto bad;
+>  		}
+>  
+> -		client.flags = I2C_CLIENT_TEN;
+> +		msg.flags = I2C_M_TEN;
+>  	}
+>  
+> -	client.addr = params[0].u.value.c;
+> -	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
+> +	msg.addr = params[0].u.value.c;
+> +	msg.buf  = params[2].u.memref.shm->kaddr;
+> +	msg.len  = params[2].u.memref.size;
+>  
+>  	switch (params[0].u.value.a) {
+>  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
+> -		ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
+> -				      params[2].u.memref.size);
+> +		msg.flags |= I2C_M_RD;
+>  		break;
+>  	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
+> -		ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
+> -				      params[2].u.memref.size);
+>  		break;
+>  	default:
+> -		i2c_put_adapter(client.adapter);
+> +		i2c_put_adapter(adapter);
+>  		goto bad;
+>  	}
+>  
+> +	ret = i2c_transfer(adapter, &msg, 1);
+> +
+>  	if (ret < 0) {
+>  		arg->ret = TEEC_ERROR_COMMUNICATION;
+>  	} else {
+> -		params[3].u.value.a = ret;
+> +		params[3].u.value.a = msg.len;
+>  		if (optee_to_msg_param(arg->params, arg->num_params, params))
+>  			arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+>  		else
+>  			arg->ret = TEEC_SUCCESS;
+>  	}
+>  
+> -	i2c_put_adapter(client.adapter);
+> +	i2c_put_adapter(adapter);
+>  	kfree(params);
+>  	return;
+>  bad:
+> -- 
+> 2.29.2
+> 
