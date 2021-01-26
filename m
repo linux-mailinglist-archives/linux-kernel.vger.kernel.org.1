@@ -2,154 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175B6303B30
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90161303B2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405026AbhAZLJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:09:37 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11190 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729694AbhAZGly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:41:54 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DPxst15TDzl9tD;
-        Tue, 26 Jan 2021 14:39:30 +0800 (CST)
-Received: from [10.174.179.117] (10.174.179.117) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 14:40:50 +0800
-Subject: Re: [PATCH v11 01/13] mm/vmalloc: fix HUGE_VMAP regression by
- enabling huge pages in vmalloc_to_page
-To:     Nicholas Piggin <npiggin@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Ding Tianhong <dingtianhong@huawei.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210126044510.2491820-1-npiggin@gmail.com>
- <20210126044510.2491820-2-npiggin@gmail.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <76f6c211-c383-51d2-7c5a-575f0d51b82d@huawei.com>
-Date:   Tue, 26 Jan 2021 14:40:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210126044510.2491820-2-npiggin@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.117]
-X-CFilter-Loop: Reflected
+        id S2404885AbhAZLKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:10:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34846 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389275AbhAZG4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 01:56:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4EDD3AE91;
+        Tue, 26 Jan 2021 06:55:49 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 07:55:47 +0100
+Message-ID: <s5hbldc2nm4.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pau Oliva Fora <pof@eslack.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-scsi@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 0/3] isa: Make the remove callback for isa drivers return void
+In-Reply-To: <20210122092449.426097-1-uwe@kleine-koenig.org>
+References: <20210122092449.426097-1-uwe@kleine-koenig.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/26 12:44, Nicholas Piggin wrote:
-> vmalloc_to_page returns NULL for addresses mapped by larger pages[*].
-> Whether or not a vmap is huge depends on the architecture details,
-> alignments, boot options, etc., which the caller can not be expected
-> to know. Therefore HUGE_VMAP is a regression for vmalloc_to_page.
+On Fri, 22 Jan 2021 10:24:46 +0100,
+Uwe Kleine-König wrote:
 > 
-> This change teaches vmalloc_to_page about larger pages, and returns
-> the struct page that corresponds to the offset within the large page.
-> This makes the API agnostic to mapping implementation details.
+> Hello,
 > 
-> [*] As explained by commit 029c54b095995 ("mm/vmalloc.c: huge-vmap:
->     fail gracefully on unexpected huge vmap mappings")
+> changes since v1
+> (https://lore.kernel.org/r/20210121204812.402589-1-uwe@kleine-koenig.org):
+>  - fix build failure, found by the kernel test robot
+>    (my grep missed the struct isa_driver embedded in struct
+>    radio_isa_driver). For this I introduced patch 2 and adapted patch 3
+>    a bit. An interdiff is below.
+>  - Added Acks/Reviews by Guenter Roeck, William Breathitt Gray, Marc
+>    Kleine-Budde, Wolfram Sang and Takashi Iwai <tiwai@suse.de>
 > 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  mm/vmalloc.c | 41 ++++++++++++++++++++++++++---------------
->  1 file changed, 26 insertions(+), 15 deletions(-)
+> The base-commit I specified (by hand *sigh*) in v1 was broken, must be a
+> cut-n-paste-error, sorry for that.
 > 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index e6f352bf0498..62372f9e0167 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -34,7 +34,7 @@
->  #include <linux/bitops.h>
->  #include <linux/rbtree_augmented.h>
->  #include <linux/overflow.h>
-> -
-> +#include <linux/pgtable.h>
->  #include <linux/uaccess.h>
->  #include <asm/tlbflush.h>
->  #include <asm/shmparam.h>
-> @@ -343,7 +343,9 @@ int is_vmalloc_or_module_addr(const void *x)
->  }
->  
->  /*
-> - * Walk a vmap address to the struct page it maps.
-> + * Walk a vmap address to the struct page it maps. Huge vmap mappings will
-> + * return the tail page that corresponds to the base page address, which
-> + * matches small vmap mappings.
->   */
->  struct page *vmalloc_to_page(const void *vmalloc_addr)
->  {
-> @@ -363,25 +365,33 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
->  
->  	if (pgd_none(*pgd))
->  		return NULL;
-> +	if (WARN_ON_ONCE(pgd_leaf(*pgd)))
-> +		return NULL; /* XXX: no allowance for huge pgd */
-> +	if (WARN_ON_ONCE(pgd_bad(*pgd)))
-> +		return NULL;
-> +
->  	p4d = p4d_offset(pgd, addr);
->  	if (p4d_none(*p4d))
->  		return NULL;
-> -	pud = pud_offset(p4d, addr);
-> +	if (p4d_leaf(*p4d))
-> +		return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
-> +	if (WARN_ON_ONCE(p4d_bad(*p4d)))
-> +		return NULL;
->  
-> -	/*
-> -	 * Don't dereference bad PUD or PMD (below) entries. This will also
-> -	 * identify huge mappings, which we may encounter on architectures
-> -	 * that define CONFIG_HAVE_ARCH_HUGE_VMAP=y. Such regions will be
-> -	 * identified as vmalloc addresses by is_vmalloc_addr(), but are
-> -	 * not [unambiguously] associated with a struct page, so there is
-> -	 * no correct value to return for them.
-> -	 */
-> -	WARN_ON_ONCE(pud_bad(*pud));
-> -	if (pud_none(*pud) || pud_bad(*pud))
-> +	pud = pud_offset(p4d, addr);
-> +	if (pud_none(*pud))
-> +		return NULL;
-> +	if (pud_leaf(*pud))
-> +		return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-> +	if (WARN_ON_ONCE(pud_bad(*pud)))
->  		return NULL;
-> +
->  	pmd = pmd_offset(pud, addr);
-> -	WARN_ON_ONCE(pmd_bad(*pmd));
-> -	if (pmd_none(*pmd) || pmd_bad(*pmd))
-> +	if (pmd_none(*pmd))
-> +		return NULL;
-> +	if (pmd_leaf(*pmd))
-> +		return pmd_page(*pmd) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
-> +	if (WARN_ON_ONCE(pmd_bad(*pmd)))
->  		return NULL;
->  
->  	ptep = pte_offset_map(pmd, addr);
-> @@ -389,6 +399,7 @@ struct page *vmalloc_to_page(const void *vmalloc_addr)
->  	if (pte_present(pte))
->  		page = pte_page(pte);
->  	pte_unmap(ptep);
-> +
->  	return page;
->  }
->  EXPORT_SYMBOL(vmalloc_to_page);
-> 
+> Takashi suggested to take this series via sound.git given that this is
+> the most affected tree. This is fine for me. Otherwise I can also
+> provide an immutable branch. For both variants we still need a few acks
+> though.
 
-LGTM. Thanks.
+Now I applied all three patches to my sound.git tree.
+It's found in isa-void-remove-callback signed tag, in case anyone else
+wants to merge in.  The branch is based on 5.11-rc4.
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/isa-void-remove-callback
+
+
+thanks,
+
+Takashi
