@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 348C9304EF6
+	by mail.lfdr.de (Postfix) with ESMTP id A6165304EF7
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404946AbhA0Bab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:30:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
+        id S2404970AbhA0Bai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394767AbhAZSfi (ORCPT
+        with ESMTP id S2394775AbhAZSfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:35:38 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E250AC061756;
-        Tue, 26 Jan 2021 10:34:57 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id q2so7484423plk.4;
-        Tue, 26 Jan 2021 10:34:57 -0800 (PST)
+        Tue, 26 Jan 2021 13:35:42 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414A3C0613D6;
+        Tue, 26 Jan 2021 10:35:02 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id g15so2754036pjd.2;
+        Tue, 26 Jan 2021 10:35:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OR9wVz2vxGr4uGs0aRUSPWq5Qs/Y5o7RNeRWhP0NrZ0=;
-        b=bx7/Of/QgmIIlJDhv2cIBDHcAMgF2psnNmkAvZ6KbKf80bcchoKgJX3ZDVUNhf5w3r
-         ZSGqDJh2MBJo0oc9E54zWqgaYh8qFRHXV9kSe7uts1BOck7A+8/oWE+vLvH2f1Gvupo6
-         SYOamguevR5Gp3w2Utkivq8XP24pIM3+tQib/1JERwyfbfwda8KjARJoLiAw0qgZUptT
-         EL5H2QSsrn03tgP/YvO3q6ae/NEDMGVuOlj1fB+CvZVTOTjy9BOuVNy654DmlrAXB7yS
-         VN/WA+/DsX47GvvlTWG8xt19RJ0BSxBjLSIVm5W3xBFu4bTxuUuwKWAwFMGAh0/W+BXY
-         fUIQ==
+        bh=6xBjojemrIICF/vl8V5tDr3Zp6uDLBqRICYfScnuO8M=;
+        b=iruQUIgQiNgJrLRO9/EBb3aqH5y6+bSnQbUFW3wyjWa4lSEi++Y2ZDT2nqXgPJVzHe
+         8Pb1mDxiD3J2VJxL46JPGIeQrDPHBckHM8Ax7IQRLuOFO84QZzGWHbr+LVy0pYoGHcvH
+         b/sFebwHyZW44POLqm4selzpRdsmw3+QqLS2tUXMMBCIPM46P36W85mGAlB8yCQnN56A
+         FGW71RLo6+Z+JgJXU4qSeAVMEH4ZNDqq+j5G2Sr4znexaU1MS3MGPDd50iHoCLMhySai
+         VWzCQJIcrsYkdj/y1QCTY9Qi2wmfsHZ6ot8FDqx7s75vwqBC4S0WvVQ+sHmZPRfcJi1m
+         vQmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OR9wVz2vxGr4uGs0aRUSPWq5Qs/Y5o7RNeRWhP0NrZ0=;
-        b=CsiXiJUKp+yM7m3lZvKUI4Z31i5D6tLr/4iVXwk43UqSqR1MtoMXmsGm8VE5yXvJW4
-         TXgqJEyHQvHpfAlhKMx6FbVInbOZw3ZPvNl0/7iB1RZWF8TsNJUu3/Of59+DYBJJZiHQ
-         tMjzzljbp9v2/ixFtRvyYJFnQfpkq3/OfKQP3JFn5FFHy6M9XqMKmyYmmexSkotsRS8M
-         3gsO1LyfN7dHt+rwUt503oga6BYZk+A6Ty3hDja3vv51DDFxWv7poj8AZy+BW0Jh2eKV
-         S0x0PIA5U3709BkIGSBdGkWS8GTPjMY33Elp5KUEpe9pN8NKsdg/+SLb4FCQB+9NDCpE
-         9oiw==
-X-Gm-Message-State: AOAM530Gx2eaDRUEtCxUAd3FjdBGF+UvcEHXbsyFiUssHltagierPIdH
-        0O798ueAQxqnQSxaXoGNC3uhU/rwPUw/0eZVMOw=
-X-Google-Smtp-Source: ABdhPJwigx9Ufx12ORwvqE9EwFeEjggnfZabvy73Op19avx0lbykcm49Yndao87OO0FjgGbMT5/2CQ==
-X-Received: by 2002:a17:90a:a508:: with SMTP id a8mr1146415pjq.75.1611686097307;
-        Tue, 26 Jan 2021 10:34:57 -0800 (PST)
+        bh=6xBjojemrIICF/vl8V5tDr3Zp6uDLBqRICYfScnuO8M=;
+        b=WA9YalZb/lYlMoLvciPlhGp4mPZSFyd/Q13OGz4AKcobIh5XoXKgschIHwygUxi8Yb
+         7uih2gTOYVeqpBFcPTACt0Nqg5CDXND08k1Inri28LLaFs9Yum5/ePX8oFz4NO38FEjS
+         7sSHtrelHwSpGil59gL3yWzHLWztU6ZSuS/pUPogVFIF6wrB8c3/dbGhyJmOF9C2/RVM
+         VIyQAgfrXni7gJ6VHJBJOdC0S2JVKTkl8jH2TDGc8WoFAdks1lZ9igkXCUw5Knb9Pll6
+         iTDMVh2dC121ihG3+Qp2XygB3EN9MhoJZDOyromALgrrXnWFdYVkBOVPdWy2aMtRV2QA
+         OUrQ==
+X-Gm-Message-State: AOAM533lQjKF/vbNvBIkByPwF/u/VkUAfeXJ4aob1KQ88HJhCO+F5n51
+        c71dX3wSGvTWOwmG8I2nFCg=
+X-Google-Smtp-Source: ABdhPJyAlS3QOBvfItT197fMR9Vyp0UPTGYb6PrNqASrRoR4ARWHSy+ZqpF/uruk/NwnkG0SB6FlaQ==
+X-Received: by 2002:a17:90a:ab8e:: with SMTP id n14mr1130385pjq.96.1611686101757;
+        Tue, 26 Jan 2021 10:35:01 -0800 (PST)
 Received: from localhost.localdomain ([49.207.195.86])
-        by smtp.gmail.com with ESMTPSA id y75sm472711pfg.119.2021.01.26.10.34.54
+        by smtp.gmail.com with ESMTPSA id y75sm472711pfg.119.2021.01.26.10.34.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:34:56 -0800 (PST)
+        Tue, 26 Jan 2021 10:35:01 -0800 (PST)
 From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Anant Thazhemadam <anant.thazhemadam@gmail.com>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 02/12] usb: misc: cypress_cy7c63: update to use usb_control_msg_recv()
-Date:   Wed, 27 Jan 2021 00:03:53 +0530
-Message-Id: <20210126183403.911653-3-anant.thazhemadam@gmail.com>
+Subject: [PATCH v3 03/12] usb: misc: cytherm: update to use usb_control_msg_recv()
+Date:   Wed, 27 Jan 2021 00:03:54 +0530
+Message-Id: <20210126183403.911653-4-anant.thazhemadam@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
 References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,54 +72,258 @@ created in the calling functions.
 For this reason, the instance of usb_control_msg() has been replaced with
 usb_control_msg_recv().
 
+The return value checking enforced by callers of the updated function have
+also been appropriately updated.
+
 Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 ---
- drivers/usb/misc/cypress_cy7c63.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+ drivers/usb/misc/cytherm.c | 128 +++++++++++++------------------------
+ 1 file changed, 43 insertions(+), 85 deletions(-)
 
-diff --git a/drivers/usb/misc/cypress_cy7c63.c b/drivers/usb/misc/cypress_cy7c63.c
-index 14faec51d7a5..76a320ef17a7 100644
---- a/drivers/usb/misc/cypress_cy7c63.c
-+++ b/drivers/usb/misc/cypress_cy7c63.c
-@@ -70,24 +70,15 @@ static int vendor_command(struct cypress *dev, unsigned char request,
- 			  unsigned char address, unsigned char data)
+diff --git a/drivers/usb/misc/cytherm.c b/drivers/usb/misc/cytherm.c
+index 3e3802aaefa3..2ca36ea5b76a 100644
+--- a/drivers/usb/misc/cytherm.c
++++ b/drivers/usb/misc/cytherm.c
+@@ -51,12 +51,12 @@ static int vendor_command(struct usb_device *dev, unsigned char request,
+ 			  unsigned char value, unsigned char index,
+ 			  void *buf, int size)
  {
- 	int retval = 0;
--	unsigned int pipe;
--	unsigned char *iobuf;
--
--	/* allocate some memory for the i/o buffer*/
--	iobuf = kzalloc(CYPRESS_MAX_REQSIZE, GFP_KERNEL);
--	if (!iobuf) {
--		retval = -ENOMEM;
--		goto error;
--	}
-+	u8 iobuf[CYPRESS_MAX_REQSIZE] = {0};
- 
- 	dev_dbg(&dev->udev->dev, "Sending usb_control_msg (data: %d)\n", data);
- 
- 	/* prepare usb control message and send it upstream */
--	pipe = usb_rcvctrlpipe(dev->udev, 0);
--	retval = usb_control_msg(dev->udev, pipe, request,
--				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
--				 address, data, iobuf, CYPRESS_MAX_REQSIZE,
--				 USB_CTRL_GET_TIMEOUT);
-+	retval = usb_control_msg_recv(dev->udev, 0, request,
-+				      USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+				      address, data, &iobuf, CYPRESS_MAX_REQSIZE,
-+				      USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
- 
- 	/* store returned data (more READs to be added) */
- 	switch (request) {
-@@ -107,8 +98,6 @@ static int vendor_command(struct cypress *dev, unsigned char request,
- 			break;
- 	}
- 
--	kfree(iobuf);
--error:
- 	return retval;
+-	return usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
+-			       request, 
+-			       USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+-			       value, 
+-			       index, buf, size,
+-			       USB_CTRL_GET_TIMEOUT);
++	return usb_control_msg_recv(dev, 0,
++				    request,
++				    USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++				    value,
++				    index, buf, size,
++				    USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
  }
  
+ 
+@@ -78,33 +78,27 @@ static ssize_t brightness_store(struct device *dev, struct device_attribute *att
+ 	struct usb_interface *intf = to_usb_interface(dev);
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+-	unsigned char *buffer;
++	unsigned char buffer[8];
+ 	int retval;
+-   
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
+ 
+ 	cytherm->brightness = simple_strtoul(buf, NULL, 10);
+-   
++
+ 	if (cytherm->brightness > 0xFF)
+ 		cytherm->brightness = 0xFF;
+ 	else if (cytherm->brightness < 0)
+ 		cytherm->brightness = 0;
+-   
++
+ 	/* Set brightness */
+ 	retval = vendor_command(cytherm->udev, WRITE_RAM, BRIGHTNESS, 
+-				cytherm->brightness, buffer, 8);
+-	if (retval)
+-		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
++				cytherm->brightness, &buffer, 8);
++	if (!retval)
++		dev_dbg(&cytherm->udev->dev, "brightness set correctly\n");
+ 	/* Inform µC that we have changed the brightness setting */
+ 	retval = vendor_command(cytherm->udev, WRITE_RAM, BRIGHTNESS_SEM,
+-				0x01, buffer, 8);
+-	if (retval)
+-		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+-   
+-	kfree(buffer);
+-   
++				0x01, &buffer, 8);
++	if (!retval)
++		dev_dbg(&cytherm->udev->dev, "µC informed of change in brightness setting\n");
++
+ 	return count;
+ }
+ static DEVICE_ATTR_RW(brightness);
+@@ -120,28 +114,22 @@ static ssize_t temp_show(struct device *dev, struct device_attribute *attr, char
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+ 	int retval;
+-	unsigned char *buffer;
++	unsigned char buffer[8];
+ 
+ 	int temp, sign;
+    
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
+-
+ 	/* read temperature */
+-	retval = vendor_command(cytherm->udev, READ_RAM, TEMP, 0, buffer, 8);
+-	if (retval)
+-		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
++	retval = vendor_command(cytherm->udev, READ_RAM, TEMP, 0, &buffer, 8);
++	if (!retval)
++		dev_dbg(&cytherm->udev->dev, "read temperature successfully\n");
+ 	temp = buffer[1];
+    
+ 	/* read sign */
+-	retval = vendor_command(cytherm->udev, READ_RAM, SIGN, 0, buffer, 8);
+-	if (retval)
+-		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
++	retval = vendor_command(cytherm->udev, READ_RAM, SIGN, 0, &buffer, 8);
++	if (!retval)
++		dev_dbg(&cytherm->udev->dev, "read sign successfully\n");
+ 	sign = buffer[1];
+ 
+-	kfree(buffer);
+-   
+ 	return sprintf(buf, "%c%i.%i", sign ? '-' : '+', temp >> 1,
+ 		       5*(temp - ((temp >> 1) << 1)));
+ }
+@@ -157,21 +145,15 @@ static ssize_t button_show(struct device *dev, struct device_attribute *attr, ch
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+ 	int retval;
+-	unsigned char *buffer;
+-
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
++	unsigned char buffer[8];
+ 
+ 	/* check button */
+-	retval = vendor_command(cytherm->udev, READ_RAM, BUTTON, 0, buffer, 8);
+-	if (retval)
+-		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
++	retval = vendor_command(cytherm->udev, READ_RAM, BUTTON, 0, &buffer, 8);
++	if (!retval)
++		dev_dbg(&cytherm->udev->dev, "checked button successfully\n");
+    
+ 	retval = buffer[1];
+ 
+-	kfree(buffer);
+-
+ 	if (retval)
+ 		return sprintf(buf, "1");
+ 	else
+@@ -186,20 +168,14 @@ static ssize_t port0_show(struct device *dev, struct device_attribute *attr, cha
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+ 	int retval;
+-	unsigned char *buffer;
+-
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
++	unsigned char buffer[8];
+ 
+-	retval = vendor_command(cytherm->udev, READ_PORT, 0, 0, buffer, 8);
+-	if (retval)
++	retval = vendor_command(cytherm->udev, READ_PORT, 0, 0, &buffer, 8);
++	if (!retval)
+ 		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+ 
+ 	retval = buffer[1];
+ 
+-	kfree(buffer);
+-
+ 	return sprintf(buf, "%d", retval);
+ }
+ 
+@@ -209,28 +185,22 @@ static ssize_t port0_store(struct device *dev, struct device_attribute *attr, co
+ 	struct usb_interface *intf = to_usb_interface(dev);
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+-	unsigned char *buffer;
++	unsigned char buffer[8];
+ 	int retval;
+ 	int tmp;
+-   
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
+ 
+ 	tmp = simple_strtoul(buf, NULL, 10);
+-   
++
+ 	if (tmp > 0xFF)
+ 		tmp = 0xFF;
+ 	else if (tmp < 0)
+ 		tmp = 0;
+-   
++
+ 	retval = vendor_command(cytherm->udev, WRITE_PORT, 0,
+-				tmp, buffer, 8);
+-	if (retval)
++				tmp, &buffer, 8);
++	if (!retval)
+ 		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+ 
+-	kfree(buffer);
+-
+ 	return count;
+ }
+ static DEVICE_ATTR_RW(port0);
+@@ -241,19 +211,13 @@ static ssize_t port1_show(struct device *dev, struct device_attribute *attr, cha
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+ 	int retval;
+-	unsigned char *buffer;
++	unsigned char buffer[8];
+ 
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
+-
+-	retval = vendor_command(cytherm->udev, READ_PORT, 1, 0, buffer, 8);
+-	if (retval)
++	retval = vendor_command(cytherm->udev, READ_PORT, 1, 0, &buffer, 8);
++	if (!retval)
+ 		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+-   
+-	retval = buffer[1];
+ 
+-	kfree(buffer);
++	retval = buffer[1];
+ 
+ 	return sprintf(buf, "%d", retval);
+ }
+@@ -264,13 +228,9 @@ static ssize_t port1_store(struct device *dev, struct device_attribute *attr, co
+ 	struct usb_interface *intf = to_usb_interface(dev);
+ 	struct usb_cytherm *cytherm = usb_get_intfdata(intf);
+ 
+-	unsigned char *buffer;
++	unsigned char buffer[8];
+ 	int retval;
+ 	int tmp;
+-   
+-	buffer = kmalloc(8, GFP_KERNEL);
+-	if (!buffer)
+-		return 0;
+ 
+ 	tmp = simple_strtoul(buf, NULL, 10);
+    
+@@ -278,14 +238,12 @@ static ssize_t port1_store(struct device *dev, struct device_attribute *attr, co
+ 		tmp = 0xFF;
+ 	else if (tmp < 0)
+ 		tmp = 0;
+-   
++
+ 	retval = vendor_command(cytherm->udev, WRITE_PORT, 1,
+-				tmp, buffer, 8);
+-	if (retval)
++				tmp, &buffer, 8);
++	if (!retval)
+ 		dev_dbg(&cytherm->udev->dev, "retval = %d\n", retval);
+ 
+-	kfree(buffer);
+-
+ 	return count;
+ }
+ static DEVICE_ATTR_RW(port1);
 -- 
 2.25.1
 
