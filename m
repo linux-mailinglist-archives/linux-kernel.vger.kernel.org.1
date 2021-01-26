@@ -2,55 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3023045EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:07:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A78C3045EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393991AbhAZSF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:05:26 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35438 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730561AbhAZJSE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:18:04 -0500
-X-UUID: a66961597fbf451e872fc27fc8b78bf7-20210126
-X-UUID: a66961597fbf451e872fc27fc8b78bf7-20210126
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 158020583; Tue, 26 Jan 2021 17:17:20 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 17:17:18 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 17:17:18 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <lecopzer.chen@mediatek.com>
-CC:     <akpm@linux-foundation.org>, <bigeasy@linutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
-        <marc.zyngier@arm.com>, <peterx@redhat.com>, <rppt@kernel.org>,
-        <walken@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] ARM: mm: harden branch predictor before opening interrupts during fault
-Date:   Tue, 26 Jan 2021 17:17:08 +0800
-Message-ID: <20210126091708.3461-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201203092738.11866-1-lecopzer.chen@mediatek.com>
-References: <20201203092738.11866-1-lecopzer.chen@mediatek.com>
+        id S2403877AbhAZSFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:05:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57550 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389259AbhAZJTl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:19:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1A990AF85;
+        Tue, 26 Jan 2021 09:17:16 +0000 (UTC)
+Message-ID: <3f563185539b346477ca19b350d0ac8c96632398.camel@suse.de>
+Subject: Re: linux-next: Signed-off-by missing for commit in the raspberrypi
+ tree
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Tue, 26 Jan 2021 10:17:14 +0100
+In-Reply-To: <20210126191117.47fffe80@canb.auug.org.au>
+References: <20210126191117.47fffe80@canb.auug.org.au>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-XT0h9IerV7y34lokR1n/"
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-I don't see any fix for this issue now(maybe I missed it..?),
-could we fix this if there is better solution?
-This issue exists almost two years.
+--=-XT0h9IerV7y34lokR1n/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Tue, 2021-01-26 at 19:11 +1100, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Commits
+>=20
+> =C2=A0=C2=A07a5936445053 ("ARM: dts: bcm2711: Add the BSC interrupt contr=
+oller")
+> =C2=A0=C2=A069894e0baa0c ("ARM: bcm: Select BRCMSTB_L2_IRQ for bcm2835")
+>=20
+> are missing a Signed-off-by from their committer.
+>=20
 
-BRs,
-Lecopzer
+Sorry for that, I fixed the branch right away but forgot to push it.
+
+Regards,
+Nicolas
+
+
+--=-XT0h9IerV7y34lokR1n/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmAP3hoACgkQlfZmHno8
+x/7RMgf/VIKtjrAqjvBP4Ymnv8dC/4VMnq2Y2C2Ki7LRJIH/+5c2G9L45uk7dC4e
+RhQv4An+byKbow90CYp+SmWoTpnWX8EXjF6/eCD5r5+WnltmkaTgIYcwkcvEkbWk
+KMxwRzR+fQu87oRfMP/likuPVk1o6WPEyuP9UGrVmRdEKebmo5of1vNJ0WI0iZBV
+wZIQysAq0Qi2Rb6GT1ryYgxk0zAUvvthY5BMs8MhVLC1vqaa6bBbEGAkXe+RM8Md
+WZNV/zOFAVpXRg1LDRnm4VSsokIwilOp7tPt6i4YM5IY/g6ZhoppRxh8tc74JTBu
+09XfJfW8aTWweNWv3Zl+hWnR9XOa9A==
+=Ip+l
+-----END PGP SIGNATURE-----
+
+--=-XT0h9IerV7y34lokR1n/--
+
