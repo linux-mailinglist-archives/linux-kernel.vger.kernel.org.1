@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CAC303A1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCE9303A2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403882AbhAZKVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:21:55 -0500
-Received: from mga02.intel.com ([134.134.136.20]:22974 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731916AbhAZB06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:26:58 -0500
-IronPort-SDR: 2/0JnDQPLUzcAY2jn/6BtHKdwk3nbI30mT5PAS0Rt699t2RmjId8odiZQXffsMmX+lRDOoHXNh
- Sl7CLAIauVGw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="166927164"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="166927164"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:47:43 -0800
-IronPort-SDR: rQRKSz7mRTcBkQrQ0FoX5oKzzwJ0kX3/3XKdqW4ZHs2An+e264FIW28vsUJ2S27ERV0qZ2GmZ9
- aoGehJqucZMQ==
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="361756215"
-Received: from stalawai-desk.amr.corp.intel.com (HELO [10.254.124.248]) ([10.254.124.248])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 16:47:42 -0800
-Subject: Re: [PATCH] x86/mm: Tracking linear mapping split events since boot
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Saravanan D <saravanand@outlook.com>, x86@kernel.org,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-References: <BYAPR01MB40856478D5BE74CB6A7D5578CFBD9@BYAPR01MB4085.prod.exchangelabs.com>
- <30752f8e-16e9-d093-e6ec-31fd45715e9d@intel.com>
- <YA8q3eSTuIrUmPeM@slm.duckdns.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <0d402da9-d7a2-a3b4-eb6f-bd1b768b3a85@intel.com>
-Date:   Mon, 25 Jan 2021 16:47:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391798AbhAZK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732065AbhAZBbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:31:08 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BABC061220;
+        Mon, 25 Jan 2021 16:50:08 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id j21so4119784pls.7;
+        Mon, 25 Jan 2021 16:50:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=90gOqXB5kIgrCtezxzYynADxoGqHYZyZlhmhfaaFijY=;
+        b=dASJ6QC7vC3AsXlxSfTUL5EYu5Fo9DWo3oRgoZtwag1Q64ThVQAYlofDbVu5bPRcQk
+         1XHMr9KIJYgxlM2l+Fm9LshUZBE+JtLyj1FRY1flmXgmTQMCuW6nzJvEjysps2U5LsoC
+         RPLMCewbw0aV9TUi/2gzfrL7eQA2MckCGjyndG85TUHa842pEUb8QqtZ9cnxxyMCvKe7
+         obdmEd174RsNTj/pHaGrFOQSN5tq17K7JmnaYHHlc9GFySHaVhXBx+miM6pncYGTKzgf
+         qaUK3ME2+k4g1NACX15GZQ5Z8mjV5IJDau4FKh9Qk3p2P9GHUBJB1BRmFvcF3GJHevNU
+         2Ezg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=90gOqXB5kIgrCtezxzYynADxoGqHYZyZlhmhfaaFijY=;
+        b=eBpTFzm2exebuJsxtOQCO+ys1MwD8vHO2czwJnfInLXYDqkcetnAIqDmSWVB4nGqzC
+         fumT0rStZyoCgQm91Np9yI4qwvO5veRRHlV58yDmgDBksUPaZ5AJWIMxV8VJ4JgXVYxr
+         52KUy0Efe/rmO5lzPKMWR3BvhI9U/inInRQPg7XYgtrO9bcD+JKhZw1H//SIXH2BWuB1
+         seRT/unXuwHzVKzs3+daOsOjWgdFlEfUtCNbrBFBXP42/UZtSHUsX45+JWrEfqpZT9pY
+         Yaf5vMGuP+65bdRqrg4Ki77V+QVWY+ykGjEQHOtokhs9mJ+UgulaXnqOYhlhERirIjHz
+         fBVw==
+X-Gm-Message-State: AOAM533v2G0nMWpXekMpIQ/UzgR3lWjejvojxKh76t9Mb23CoK0z630e
+        nZdU5Ubuf7VKOUIYOtrp7sHYttMl2+kvybGq
+X-Google-Smtp-Source: ABdhPJyab2pKuHBsULNFgbWe4b2guUQ7smJgOJ8t+XnhYliGNJZCvyCaNHtcC7Y2VcWG8IGh4V7PHQ==
+X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr3054080pjb.10.1611622207203;
+        Mon, 25 Jan 2021 16:50:07 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.50])
+        by smtp.gmail.com with ESMTPSA id v26sm1282031pff.195.2021.01.25.16.50.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 16:50:06 -0800 (PST)
+Subject: Re: [RFC PATCH v2 0/4] make jbd2 debug switch per device
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, jack@suse.com,
+        harshadshirwadkar@gmail.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1611402263.git.brookxu@tencent.com>
+ <YA89Ov+yuX6BHJpS@mit.edu>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <c2bfc960-d86c-b20a-e3eb-7995200a5dd8@gmail.com>
+Date:   Tue, 26 Jan 2021 08:50:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <YA8q3eSTuIrUmPeM@slm.duckdns.org>
+In-Reply-To: <YA89Ov+yuX6BHJpS@mit.edu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 12:32 PM, Tejun Heo wrote:
-> On Mon, Jan 25, 2021 at 12:15:51PM -0800, Dave Hansen wrote:
->>> DirectMap4k:     3505112 kB
->>> DirectMap2M:    19464192 kB
->>> DirectMap1G:    12582912 kB
->>> DirectMap2MSplits:  1705
->>> DirectMap1GSplits:    20
->> This seems much more like something we'd want in /proc/vmstat or as a
->> tracepoint than meminfo.  A tracepoint would be especially nice because
->> the trace buffer could actually be examined if an admin finds an
->> excessive number of these.
-> Adding a TP sure can be helpful but I'm not sure how that'd make counters
-> unnecessary given that the accumulated number of events since boot is what
-> matters.
 
-Kinda.  The thing that *REALLY* matters is how many of these splits were
-avoidable and *could* be coalesced.
 
-The patch here does not actually separate out pre-boot from post-boot,
-so it's pretty hard to tell if the splits came from something like
-tracing which is totally unnecessary or they were the result of
-something at boot that we can't do anything about.
+Theodore Ts'o wrote on 2021/1/26 5:50:
+> On Sat, Jan 23, 2021 at 08:00:42PM +0800, Chunguang Xu wrote:
+>> On a multi-disk machine, because jbd2 debugging switch is global, this
+>> confuses the logs of multiple disks. It is not easy to distinguish the
+>> logs of each disk and the amount of generated logs is very large. Maybe
+>> a separate debugging switch for each disk would be better, so that we
+>> can easily distinguish the logs of a certain disk. 
+>>
+>> We can enable jbd2 debugging of a device in the following ways:
+>> echo X > /proc/fs/jbd2/sdX/jbd2_debug
+>>
+>> But there is a small disadvantage here. Because the debugging switch is
+>> placed in the journal_t object, the log before the object is initialized
+>> will be lost. However, usually this will not have much impact on
+>> debugging.
+> 
+> The jbd debugging infrastructure dates back to the very beginnings of
+> ext3, when Stephen Tweedie added them while he was first implementing
+> the jbd layer.  So this dates back to a time before we had other
+> schemes like dynamic debug or tracepoints or eBPF.
+> I wonder if instead of trying to enhance our own bespoke debugging
+> system, instead we set up something like tracepoints where they would
+> be useful.  I'm not proposing that we try to replace all jbd_debug()
+> statements with tracepoints but I think it would be useful to look at
+> what sort of information would actually be *useful* on a production
+> server, and add those tracepoints to the jbd2 layer.  What I like
+> about tracepoints is you can enable them on a much more fine-grained
+> fashion; information is sent to userspace in a much more efficient
+> manner than printk; you can filter tracepoint events in the kernel,
+> before sending them to userspace; and if you want more sophisticated
+> filtering or aggregation, you can use eBPF.
 
-This would be a lot more useful if you could reset the counters.  Then
-just reset them from userspace at boot.  Adding read-write debugfs
-exports for these should be pretty trivial.
+trace point, eBPF and other hook technologies are better for production
+environments. But for pure debugging work, adding hook points feels a bit
+heavy. However, your suggestion is very valuable, thank you very much.
+
+> What was the original use case which inspired this?  Were you indeed
+> trying to debug some kind of problem on a production system?  (Why did
+> you have multiple disks active at the same time?)  Was there a
+> specific problem you were trying to debug?  What debug level were you
+> using?  Which jbd_debug statements were most useful to you?  Which
+> just got in the way (but which had to be enabled given the log level
+> you needed to get the debug messages that you needed)?
+
+We only do this in the test environment, mainly to facilitate debugging.
+We will dynamically adjust the log level, sometimes it is 1, sometimes
+higher. There are two main reasons for multiple disks working at the same
+time. The first is that the system management tool will update the system
+disk, and the second is that the collaborative task will update other
+disks. During the actual debugging, we added more additional logs. The
+original logs of the system are useful, but some logs don't feel very
+meaningful. Thanks.
+
+>     	      	      	    	     	      - Ted
+> 
