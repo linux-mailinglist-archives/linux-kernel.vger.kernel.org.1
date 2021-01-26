@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6351D303D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9812303D74
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391810AbhAZMqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391827AbhAZKE0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:04:26 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE76C061573;
-        Tue, 26 Jan 2021 02:03:46 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id u14so2163788wmq.4;
-        Tue, 26 Jan 2021 02:03:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p+yTLdMp+wdm8rqW7k9ulXoCG2QOEZDOYmfAPK4UtQA=;
-        b=jq8Ipo3tWDxI1kpWxPZhyqC0GKEKkyGTiWH0XOiTfhWqaWQNXb3VdcdBL3GUkmjkXz
-         7Wf1zvNPKXMmd/c/LtcSsK1YVx7/+YuhwTLZwNPvSEY1aS21SSUVqD1DNIHtay8N+Prk
-         S3LUhN1aFm/7EPbcRao026d8wONA8LiyO0MyCx/bNV/MULJ+n3+TpNKMwghCGdDjrQLA
-         A2Cg0m6tpPtwD0/S5Z0iuyrkg2iHrFenhE4UwxjplugzxvzvQxbGf6FwxDDAlRdnoQsT
-         aMO1HvIYYMJL6OC6fX4tuVXsh1wWlsIoH4vu6Nwq4U0PSkdqETTTXJNF7sSWssb/mWgP
-         1OMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p+yTLdMp+wdm8rqW7k9ulXoCG2QOEZDOYmfAPK4UtQA=;
-        b=WOj4MNBXTaHn/1Rf+IW27BAhLeOicd/jESWIeU74JDNOkVG93Ht1UrNPu6yUgCnp6M
-         YBe+/UBYdPXbz1u/WBvO02eMlDp+oXRttvBATH/NwoZOiJkwc19DDHnoefiFKs6QsYYL
-         KD3BuK9ZfXvpAcR77YllD/8DgXtDcoh7sDucSXhtP7OM0DR3SPyoCEmg04vpaYg+9WF+
-         Qh/32pyS/EidGmio7DwN7nQd822jVZ2ftabqOzusSTSatY4A6eyIJYqi0HqEivfI/ftf
-         7UNX8XaZegrrF37lEc6iPEe8une+V9fPfa39hBX0vbT1AVEiKB5q2hBzOXLXjF4PnC0Y
-         ajIA==
-X-Gm-Message-State: AOAM5333LMtfamONGD4xPHQ472lhMZb2EagcjUjYJgh03uT/gDGZw6cm
-        /UP1gv4WDMIN3CmIhD2rtkc=
-X-Google-Smtp-Source: ABdhPJzh9o0CKfJiCtHBFn9UYUF0IRM/4u5jlJfX3NyVyaSeqr9h3w9B1chYOp59w4Vriij0P3Z+lA==
-X-Received: by 2002:a1c:e407:: with SMTP id b7mr3929661wmh.46.1611655425425;
-        Tue, 26 Jan 2021 02:03:45 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id r25sm26387449wrr.64.2021.01.26.02.03.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 02:03:43 -0800 (PST)
-Date:   Tue, 26 Jan 2021 11:03:42 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, jonathanh@nvidia.com,
-        robh+dt@kernel.org, lukas@wunner.de, bbrezillon@kernel.org,
-        p.yadav@ti.com, tudor.ambarus@microchip.com,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 1/9] dt-bindings: clock: tegra: Add clock ID
- TEGRA210_CLK_QSPI_PM
-Message-ID: <YA/o/stKkt7I0tg1@ulmo>
-References: <1608585459-17250-1-git-send-email-skomatineni@nvidia.com>
- <1608585459-17250-2-git-send-email-skomatineni@nvidia.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aGBUejITbxyEzHkq"
-Content-Disposition: inline
-In-Reply-To: <1608585459-17250-2-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+        id S2391402AbhAZMoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:44:12 -0500
+Received: from mga05.intel.com ([192.55.52.43]:44725 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403821AbhAZKJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:09:30 -0500
+IronPort-SDR: n1THrCiGmiGpC2f2niYIn4WkUcLBhmEvdZ2sUkd48RceslOXxQtLmRItTxLc9j/UryrWNQQhLf
+ jdg9AY3gD8Aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="264701942"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="264701942"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 02:08:49 -0800
+IronPort-SDR: aOPYzlnUI5z73Xm81GemkPBlFpsFjjVE4RsRDWTTjJ8JtCpdtb8tQY4d9VJ+8kcW3SKVZj51Vh
+ LYP/kOlYhtWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="361931330"
+Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Jan 2021 02:08:46 -0800
+From:   mohammad.athari.ismail@intel.com
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mohammad.athari.ismail@intel.com
+Subject: [PATCH net] stmmac: intel: Configure EHL PSE0 GbE and PSE1 GbE to 32 bits DMA addressing
+Date:   Tue, 26 Jan 2021 18:08:44 +0800
+Message-Id: <20210126100844.30326-1-mohammad.athari.ismail@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Voon Weifeng <weifeng.voon@intel.com>
 
---aGBUejITbxyEzHkq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix an issue where dump stack is printed and Reset Adapter occurs when
+PSE0 GbE or/and PSE1 GbE is/are enabled. EHL PSE0 GbE and PSE1 GbE use
+32 bits DMA addressing whereas EHL PCH GbE uses 64 bits DMA addressing.
 
-On Mon, Dec 21, 2020 at 01:17:31PM -0800, Sowjanya Komatineni wrote:
-> Tegra210 QSPI clock output has divider DIV2_SEL which will be enabled
-> when using DDR interface mode.
->=20
-> This patch adds clock ID for this to dt-binding.
->=20
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> ---
->  include/dt-bindings/clock/tegra210-car.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+[   25.535095] ------------[ cut here ]------------
+[   25.540276] NETDEV WATCHDOG: enp0s29f2 (intel-eth-pci): transmit queue 2 timed out
+[   25.548749] WARNING: CPU: 2 PID: 0 at net/sched/sch_generic.c:443 dev_watchdog+0x259/0x260
+[   25.558004] Modules linked in: 8021q bnep bluetooth ecryptfs snd_hda_codec_hdmi intel_gpy marvell intel_ishtp_loader intel_ishtp_hid iTCO_wdt mei_hdcp iTCO_vendor_support x86_pkg_temp_thermal kvm_intel dwmac_intel stmmac kvm igb pcs_xpcs irqbypass phylink snd_hda_intel intel_rapl_msr pcspkr dca snd_hda_codec i915 i2c_i801 i2c_smbus libphy intel_ish_ipc snd_hda_core mei_me intel_ishtp mei spi_dw_pci 8250_lpss spi_dw thermal dw_dmac_core parport_pc tpm_crb tpm_tis parport tpm_tis_core tpm intel_pmc_core sch_fq_codel uhid fuse configfs snd_sof_pci snd_sof_intel_byt snd_sof_intel_ipc snd_sof_intel_hda_common snd_sof_xtensa_dsp snd_sof snd_soc_acpi_intel_match snd_soc_acpi snd_intel_dspcfg ledtrig_audio snd_soc_core snd_compress ac97_bus snd_pcm snd_timer snd soundcore
+[   25.633795] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G     U            5.11.0-rc4-intel-lts-MISMAIL5+ #5
+[   25.644306] Hardware name: Intel Corporation Elkhart Lake Embedded Platform/ElkhartLake LPDDR4x T4 RVP1, BIOS EHLSFWI1.R00.2434.A00.2010231402 10/23/2020
+[   25.659674] RIP: 0010:dev_watchdog+0x259/0x260
+[   25.664650] Code: e8 3b 6b 60 ff eb 98 4c 89 ef c6 05 ec e7 bf 00 01 e8 fb e5 fa ff 89 d9 4c 89 ee 48 c7 c7 78 31 d2 9e 48 89 c2 e8 79 1b 18 00 <0f> 0b e9 77 ff ff ff 0f 1f 44 00 00 48 c7 47 08 00 00 00 00 48 c7
+[   25.685647] RSP: 0018:ffffb7ca80160eb8 EFLAGS: 00010286
+[   25.691498] RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000103
+[   25.699483] RDX: 0000000080000103 RSI: 00000000000000f6 RDI: 00000000ffffffff
+[   25.707465] RBP: ffff985709ce0440 R08: 0000000000000000 R09: c0000000ffffefff
+[   25.715455] R10: ffffb7ca80160cf0 R11: ffffb7ca80160ce8 R12: ffff985709ce039c
+[   25.723438] R13: ffff985709ce0000 R14: 0000000000000008 R15: ffff9857068af940
+[   25.731425] FS:  0000000000000000(0000) GS:ffff985864300000(0000) knlGS:0000000000000000
+[   25.740481] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   25.746913] CR2: 00005567f8bb76b8 CR3: 00000001f8e0a000 CR4: 0000000000350ee0
+[   25.754900] Call Trace:
+[   25.757631]  <IRQ>
+[   25.759891]  ? qdisc_put_unlocked+0x30/0x30
+[   25.764565]  ? qdisc_put_unlocked+0x30/0x30
+[   25.769245]  call_timer_fn+0x2e/0x140
+[   25.773346]  run_timer_softirq+0x1f3/0x430
+[   25.777932]  ? __hrtimer_run_queues+0x12c/0x2c0
+[   25.783005]  ? ktime_get+0x3e/0xa0
+[   25.786812]  __do_softirq+0xa6/0x2ef
+[   25.790816]  asm_call_irq_on_stack+0xf/0x20
+[   25.795501]  </IRQ>
+[   25.797852]  do_softirq_own_stack+0x5d/0x80
+[   25.802538]  irq_exit_rcu+0x94/0xb0
+[   25.806475]  sysvec_apic_timer_interrupt+0x42/0xc0
+[   25.811836]  asm_sysvec_apic_timer_interrupt+0x12/0x20
+[   25.817586] RIP: 0010:cpuidle_enter_state+0xd9/0x370
+[   25.823142] Code: 85 c0 0f 8f 0a 02 00 00 31 ff e8 22 d5 7e ff 45 84 ff 74 12 9c 58 f6 c4 02 0f 85 47 02 00 00 31 ff e8 7b a0 84 ff fb 45 85 f6 <0f> 88 ab 00 00 00 49 63 ce 48 2b 2c 24 48 89 c8 48 6b d1 68 48 c1
+[   25.844140] RSP: 0018:ffffb7ca800f7e80 EFLAGS: 00000206
+[   25.849996] RAX: ffff985864300000 RBX: 0000000000000003 RCX: 000000000000001f
+[   25.857975] RDX: 00000005f2028ea8 RSI: ffffffff9ec5907f RDI: ffffffff9ec62a5d
+[   25.865961] RBP: 00000005f2028ea8 R08: 0000000000000000 R09: 0000000000029d00
+[   25.873947] R10: 000000137b0e0508 R11: ffff9858643294e4 R12: ffff9858643336d0
+[   25.881935] R13: ffffffff9ef74b00 R14: 0000000000000003 R15: 0000000000000000
+[   25.889918]  cpuidle_enter+0x29/0x40
+[   25.893922]  do_idle+0x24a/0x290
+[   25.897536]  cpu_startup_entry+0x19/0x20
+[   25.901930]  start_secondary+0x128/0x160
+[   25.906326]  secondary_startup_64_no_verify+0xb0/0xbb
+[   25.911983] ---[ end trace b4c0c8195d0ba61f ]---
+[   25.917193] intel-eth-pci 0000:00:1d.2 enp0s29f2: Reset adapter.
 
-Hi Mark,
+Fixes: 67c08ac4140a ("net: stmmac: add EHL PSE0 & PSE1 1Gbps PCI info and PCI ID")
+Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
+Co-developed-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-It looks like you applied this patch along with the driver patches.
-Unfortunately, if I apply the DT updates without this patch, the DT
-files will fail to build because this symbol is missing.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 9a6a519426a0..103d2448e9e0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -375,6 +375,7 @@ static int ehl_pse0_common_data(struct pci_dev *pdev,
+ 				struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 2;
++	plat->addr64 = 32;
+ 	return ehl_common_data(pdev, plat);
+ }
+ 
+@@ -406,6 +407,7 @@ static int ehl_pse1_common_data(struct pci_dev *pdev,
+ 				struct plat_stmmacenet_data *plat)
+ {
+ 	plat->bus_id = 3;
++	plat->addr64 = 32;
+ 	return ehl_common_data(pdev, plat);
+ }
+ 
+-- 
+2.17.1
 
-Since the TEGRA210_CLK_QSPI_PM symbol isn't used by the driver patches
-directly, would you mind dropping this so that I can pick it up into the
-Tegra tree along with the DT updates?
-
-I realize this is completely unobvious, so sorry for not noticing and
-bringing this up earlier.
-
-Thanks,
-Thierry
-
---aGBUejITbxyEzHkq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmAP6PoACgkQ3SOs138+
-s6H0bBAAvXB1Ul7lT2k4grn2Sh05TsVP0F8DrIpm5pLc8W4C7i/wLdC2Pcxhg1Jy
-UyoR42XPTEBR/8+tMD1mzmnIfW1THuevkRDqQkiScZnxPoCSegI48JNIFpOR3mkz
-HxGmgV8NlmzyUi7Tym2X65spLUfTmBxtWG1c13Nh2oWoThNbW90FD5KYfJ+FK0jI
-C4/7M7OKLplG+DrnKLL5DkD03q/wL+QGkH1Wx0ELzKhmvxiUv2gBicUualB6OioZ
-U5UE51NE6eKDOXNHuW230ODEsVaCgDv2SRjLEjwy5hpzJSXnS83QnpTvdJVU/FzQ
-a/YKvLIY8+ztVzb51Ug9BnvuOgqTZrea3jiSODthEDPpRxtZi4ACNIvmcCPwbIPH
-clz3Z3Rzow/wooQG/AYd9wvKbLygGw3v7PO0ifh4NmbbTwuRVFVNkluTZZc5DQBt
-pAc9LJgpSZhj7AkVwi9ara/E610jnk+wDQztBOSVDxMzSUo0wi7qGVqawLcIBHYq
-MOS8Cn1GtKA6ubjGAzsmbAdFtRqKMxN9zgipcDVr5HpqwXbIkBHVAoGeBSHse+Kp
-sWb078zKw+RZamdFYifhM0234HtH9MeZuaHseIPXJroOCq62DC1scWdsoBsTX62u
-jIZSTBGpdVEVabyifqPxvPHbtCYdF/NpH/CGvh8uq1xFUD6bTZw=
-=SxaA
------END PGP SIGNATURE-----
-
---aGBUejITbxyEzHkq--
