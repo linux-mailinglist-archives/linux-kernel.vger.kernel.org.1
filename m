@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4813304F31
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DEC304F32
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392492AbhA0Bmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:42:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394953AbhAZSwC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2392514AbhA0BnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:43:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394952AbhAZSwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Jan 2021 13:52:02 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A461DC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:51:22 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id v19so12014443pgj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:51:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JqkcLdrRWfRT7A5ZhCapzuQXGaNgtjBzs0pEpKsy3fA=;
-        b=ogZA7OpLvF3JgDTUZ4JR7pDMmyOcvz+tSUZo73/pavgQEihCeV5pJMjzg+kn1F1ALT
-         MR0G5nnNCay7cKcL1WqQgpdLmKFiTaIH+PpW9v+E/jgnFBtuJ1XRr6+u+2wi+7MFr0HU
-         Z9H0DNaV5p3HWPxJfdTOIgI2A2s/zw9Iav77Pt8BDjoWkP8nUJ7I5TgkwgIaUFSpk+RA
-         sK+VJiESf26q0a2k0zvqqZi53GE6/DUgLWWLMIqFbaT4kW1jTKt+J7y+G+t14u5KFu8T
-         vIV1YBcDOgl2e+N+gzCnKFzVsqnosQX7ZyAh2NxLuZsC0rnBmJ8QvRErvCz0zOXyaOB4
-         3sew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JqkcLdrRWfRT7A5ZhCapzuQXGaNgtjBzs0pEpKsy3fA=;
-        b=FTC28ns0hf1heOd0ufbLoSpI89it1XeTp3XYwgI2irnjeRDQmuqywoMbVEOnCcQhzU
-         54G5wWMhYYa53+bP8l8fp0eX9ItRa9EvzT6O31zjjBT4tEabWXz5y5P6puwV3esrnLQY
-         HklZH9+9DL8N7bMql/f/7+hlGDVK2VShMNV469CjopZQpG/L2oybgChpA/PWgImMN1PD
-         7EhXlGa3GCMulWTGULyQLE/DOKb6apxbyVZHCUoTeqSZKuEmgzxRzpfhbexPWBiROO9S
-         NDCkOjDQXXSFDo3d4w7hRAfSg/+nu0NXDwgEogoJOgokPO+0EiIYLhFC4YOgT65ixi2n
-         tI8A==
-X-Gm-Message-State: AOAM530jufD0uec9MoBp99HTo6zS2GWnaLTiWaeyMBpcYUjm/yHP4IaW
-        Jair4IATJCDWg9oTEjuiZJGFsQ==
-X-Google-Smtp-Source: ABdhPJwYbRZ7JYTsskmgCfktmCHFvRkWcvMluxQ9k2GAdepgICHaRqokhUawBJnCT9L1XAzWUXiKjw==
-X-Received: by 2002:a63:1e56:: with SMTP id p22mr7107242pgm.70.1611687082027;
-        Tue, 26 Jan 2021 10:51:22 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 83sm9788962pfu.134.2021.01.26.10.51.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:51:21 -0800 (PST)
-Date:   Tue, 26 Jan 2021 10:51:14 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Cun Li <cun.jia.li@gmail.com>, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: update depracated jump label API
-Message-ID: <YBBkovGz4ym7NFaA@google.com>
-References: <20210111152435.50275-1-cun.jia.li@gmail.com>
- <87h7nn8ke8.fsf@vitty.brq.redhat.com>
- <24e29c32-f6cb-cf7b-9376-1281b9545e69@redhat.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 499A122A85;
+        Tue, 26 Jan 2021 18:51:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611687080;
+        bh=uiLmzytoHYzuWBm6FnEmmJCjS8V01A7V49S01KF1IQw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yge6iZFzecARoztg36lMDD943zSQbeiOKBPqHcaPGEOx3JVX5R+w/38oCDshWG7M3
+         l09y3hlLHWbftvAdpApCPn0y3yjeXrZkSmdpvpNOV8Gbnyn1ltILDQbgvj5zPquyM8
+         pCDwzhXQBWbEvTNP/ieEsHKWrG5INGkah932mTtU=
+Date:   Tue, 26 Jan 2021 19:51:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <YBBkplRxzzmPYKC+@kroah.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <24e29c32-f6cb-cf7b-9376-1281b9545e69@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021, Paolo Bonzini wrote:
-> On 11/01/21 18:15, Vitaly Kuznetsov wrote:
-> > kvm_no_apic_vcpu is different, we actually need to increase it with
-> > every vCPU which doesn't have LAPIC but maybe we can at least switch to
-> > static_branch_inc()/static_branch_dec(). It is still weird we initialize
-> > it to 'false'
+On Tue, Jan 26, 2021 at 10:30:16AM -0800, Scott Branden wrote:
+> Hi Greg,
 > 
-> "kvm_no_apic_vcpu" is badly named.  It reads as "true if no vCPU has APIC"
-> but it means "true if some vCPU has no APIC".  The latter is obviously false
-> in the beginning, because there is no vCPUs at all.
 > 
-> Perhaps a better name would be "kvm_has_noapic_vcpu" (for once,
-> smashingwordstogether is more readable than the alternative).
+> On 2021-01-25 11:29 p.m., Greg Kroah-Hartman wrote:
+> > On Mon, Jan 25, 2021 at 11:55:11AM -0800, Scott Branden wrote:
+> >> Hi All,
+> >>
+> >> The 5.10 LTS kernel being officially LTS supported for 2 years presents a problem:
+> >> why would anyone select a 5.10 kernel with 2 year LTS when 5.4 kernel has a 6 year LTS.
+> > Because they want to use all of the latest stuff that 5.10 provides
+> > them.  Don't you want faster and more secure kernels for your devices?
+> Yes, 5.10 is a more secure and less buggy kernel than 5.4.
 
-+1
+Great, use it, ship it to your customers and we are all happy.  What do
+you need me for any of this?  :)
+
+> >>   And AOSP has already declared the use
+> >> of 5.10 kernel in their Android S and T releases.
+> > Publically?  Where?  And is that really the name of the new Android
+> > releases, I thought they switched to numbers now (hence the naming of
+> > the current android-common kernel branches, marketing is fun...)
+> https://source.android.com/devices/architecture/kernel/android-common
+> Feature and launch kernels provides kernels supported per version.
+
+Oh nice, didn't know that.
+
+But note, Android kernels do not reflect the lifespan of LTS kernels.
+If that were the case, I would still be supporting 3.18 as they are
+doing that at the moment for their devices and customers, and will be
+doing so for I think another full year.
+
+So while Android is nice to see here, remember that is what Google is
+promising to support for their users.  You can do the same thing for
+your users, what do you need me here for this?  You can do the same
+thing that Google is doing for 3.18 right now, pick the stable fixes
+from upstream, backport them, test them, and push them out to their
+users.
+
+While Google is a great help to me in the LTS effort, providing huge
+amounts of resources to enable my life easier with this (i.e. funding
+Linaro's testing efforts), their promise to their customers/users does
+not depend on me keeping LTS kernels alive, if I stopped tomorrow their
+contracts are still in place and they know how to do this work
+themselves (as is proof with 3.18).
+
+So you can provide the same kind of guarantee to support any kernel
+version for any amount of time to any customer you like, it shouldn't
+require me to do that work for you, right?
+
+> >> Is there some way we could make the LTS support more clear.
+> >> A 2 year declaration is not LTS any more.
+> > Not true at all, a "normal" stable kernel is dropped after the next
+> > release happens, making their lifespan about 4 months long.  2 years is
+> > much longer than 4 months, so it still is a "long term supported" kernel
+> > in contrast, correct?
+> Perhaps a new name needs to be made for "LTS" for 6 years to distinguish it from 2 years.
+> The timeframes are very different.
+
+At this point in time, anyone wanting a kernel longer than 2 years
+should know how this all works.
+
+If not, please do some basic research, I have written whitepapers on
+this and given numerous talks.  The information is out there...
+
+> >> If 5.10 is "actually" going to be supported for 6 years it would be quite valuable to make such a declaration.
+> >> https://www.kernel.org/category/releases.html
+> > Why?  What would that change?
+> >
+> > Ok, seriously, this happens every year, and every year we go through the
+> > same thing, it's not like this is somehow new, right?
+> No, but why do we need to keep playing the same game every year now.
+
+Because, 5.4 almost did not become "6 years" of support from me.  That
+was because in the beginning, no one said they were going to use it in
+their devices and offer me help in testing and backporting.  Only when I
+knew for sure that we had people helping this out did I change the date
+on kernel.org.
+
+So far the jury is still out for 5.10, are you willing to help with
+this?  If not, why are you willing to hope that others are going to do
+your work for you?  I am talking to some companies, but am not willing
+to commit to anything in public just yet, because no one has committed
+to me yet.
+
+What would you do if you were in my situation?
+
+thanks,
+
+greg k-h
