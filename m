@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79373303A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD936303A81
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404165AbhAZKhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:37:35 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44384 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726652AbhAZBuG (ORCPT
+        id S2404151AbhAZKha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730657AbhAZBtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:50:06 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10Q1WAfm079981;
-        Mon, 25 Jan 2021 20:48:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=qDlLTrJhI9pAWTPZzvEj2myghWfEoN4K/hh1AcU5nnc=;
- b=A4jcBSUCed/y8O6j82+m2GYzSBr/aUIO0I73UYCGUArwUx0K6/bFzkcfMLmIocKzPkUq
- Pjeg/MGeo+XSF55PgkgFMmnWYIW5HA5TWW1yvNQN4yWyKuNfnxL/GgGwOd5SbroyMUgg
- UJjsrzaJvSsOtjfEp2cX6O2HwjykI1FkY7y0XJ7t0pwdwQt9jGmjctaGMACTj0Z3M02B
- DXYDLrc0axFPvjGSSOtfGyg7bL4DMvtocZ6VF2wK0jdCbNQ83GS2XLVi8JJUYMW7cT4t
- bjfiMrfljNQnviIi21EAJiAFk1zXPcjwHmhwRyES4BDRIfngTiMSB+CWnydyRKtNEt18 uQ== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36a4ttpfta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 20:48:45 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10Q1kXDu004438;
-        Tue, 26 Jan 2021 01:48:44 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma01wdc.us.ibm.com with ESMTP id 36a8uh09ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 01:48:44 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10Q1mhJw17891772
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 01:48:43 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A3AC26A057;
-        Tue, 26 Jan 2021 01:48:43 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13A986A04F;
-        Tue, 26 Jan 2021 01:48:42 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 26 Jan 2021 01:48:42 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     jarkko@kernel.org, linux-integrity@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Hulk Robot <hulkci@huawei.com>, Wang Hai <wanghai38@huawei.com>
-Subject: [PATCH v2] tpm: ibmvtpm: fix error return code in tpm_ibmvtpm_probe()
-Date:   Mon, 25 Jan 2021 20:47:53 -0500
-Message-Id: <20210126014753.340299-1-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 25 Jan 2021 20:49:20 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA91C06121E
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:48:29 -0800 (PST)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 404A4891AF;
+        Tue, 26 Jan 2021 14:48:26 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1611625706;
+        bh=qRRMqC8rH4XIRN3NtY3KqlRrQi0qUuy7wQM4OGfG+Hc=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=M0qLlBImd/iHTNw/4+bohr0tGftXc+tslr1huttjwqVJ54o231/VRMmtvAF8zg1ZF
+         reczL+/zufcOm4Nv2D7xJSl78TY1abI8b3F7lbMNizSfE8UK0QEkhae8wYk/D9tDLY
+         YgrSC2f1gRJf51mTkIzskIUuycmhWoV6gX/vwM6AZRk0/kkseDly1IHMAafWT00T3F
+         LGCl5MMZkBcpDcmIiJMbhpdt8HZTepIUuD/si7CPMUJYupR4LSc5IVJMsMIrK5lpcu
+         YBgDbQYgqfl/amxvsMoEOq5HumZpeZ8FsEsn+xIjbH7r6dHJCa4/jmeadN6Qm02K8S
+         OhrcXXSPGY+0A==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B600f74e90000>; Tue, 26 Jan 2021 14:48:25 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
+ by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
+ Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 26 Jan 2021 14:48:23 +1300
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.010; Tue, 26 Jan 2021 14:48:23 +1300
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "rppt@kernel.org" <rppt@kernel.org>
+CC:     "arnd@arndb.de" <arnd@arndb.de>,
+        "jason@lakedaemon.net" <jason@lakedaemon.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bus: mvebu-mbus: make iounmap() symmetric with ioremap()
+Thread-Topic: [PATCH] bus: mvebu-mbus: make iounmap() symmetric with ioremap()
+Thread-Index: AQHWuKL2iPKD0qVnqEGumLlGMV5UHanDSQAAgHV2dYA=
+Date:   Tue, 26 Jan 2021 01:48:23 +0000
+Message-ID: <7c0fd747-3ea1-2aa1-0c05-12ae4477a860@alliedtelesis.co.nz>
+References: <20201112032149.21906-1-chris.packham@alliedtelesis.co.nz>
+ <20201112090202.638c0c13@windsurf>
+In-Reply-To: <20201112090202.638c0c13@windsurf>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2A59864F71506E4790ED7A419B83B533@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_10:2021-01-25,2021-01-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 spamscore=0 clxscore=1011
- mlxlogscore=999 bulkscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
-
-Return error code -ETIMEDOUT rather than '0' when waiting for the
-rtce_buf to be set has timed out.
-
-Fixes: d8d74ea3c002 ("tpm: ibmvtpm: Wait for buffer to be set before proceeding")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- drivers/char/tpm/tpm_ibmvtpm.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-index 994385bf37c0..813eb2cac0ce 100644
---- a/drivers/char/tpm/tpm_ibmvtpm.c
-+++ b/drivers/char/tpm/tpm_ibmvtpm.c
-@@ -687,6 +687,7 @@ static int tpm_ibmvtpm_probe(struct vio_dev *vio_dev,
- 				ibmvtpm->rtce_buf != NULL,
- 				HZ)) {
- 		dev_err(dev, "CRQ response timed out\n");
-+		rc = -ETIMEDOUT;
- 		goto init_irq_cleanup;
- 	}
- 
--- 
-2.25.4
-
+SGkgQWxsLA0KDQpPbiAxMi8xMS8yMCA5OjAyIHBtLCBUaG9tYXMgUGV0YXp6b25pIHdyb3RlOg0K
+PiBPbiBUaHUsIDEyIE5vdiAyMDIwIDE2OjIxOjQ5ICsxMzAwDQo+IENocmlzIFBhY2toYW0gPGNo
+cmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4gd3JvdGU6DQo+DQo+PiBtYWtlIGNvY2Np
+Y2hlY2sgY29tcGxhaW5zOg0KPj4NCj4+ICAgIC4vZHJpdmVycy9idXMvbXZlYnUtbWJ1cy5jOjEx
+MTM6Mi04OiBFUlJPUjogbWlzc2luZyBpb3VubWFwOyBpb3JlbWFwIG9uIGxpbmUgMTEwNiBhbmQg
+ZXhlY3V0aW9uIHZpYSBjb25kaXRpb25hbCBvbiBsaW5lIDExMTENCj4+DQo+PiBJdCB0b29rIHNv
+bWUgc3RhcmluZyBidXQgSSBkb24ndCB0aGluayB0aGVyZSBpcyBhIHByb2JsZW0gYmVjYXVzZSB0
+aGUNCj4+IGZpbGUgZ2xvYmFsIGBtYnVzX3N0YXRlYCBpcyBwYXNzZWQgbXZlYnVfbWJ1c19jb21t
+b25faW5pdCgpIGFzIHRoZQ0KPj4gYG1idXNgIHBhcmFtZXRlciBzbyBgbWJ1c19zdGF0ZS5tYnVz
+d2luc19iYXNlYCBhbmQgYG1idXMtPm1idXN3aW5zX2Jhc2VgDQo+PiBhcmUgdGhlIHNhbWUgdGhp
+bmcuIEJ1dCB0aGlzIGlzIGNvbmZ1c2luZyBmb3IgYW55b25lIHJlYWRpbmcgdGhlIGNvZGUNCj4+
+IGFuZCBvbmUgbGVzcyBjb21wbGFpbnQgZnJvbSBjb2NjaWNoZWNrIHdvdWxkIGJlIG5pY2Ugc28g
+bGV0cyBmaXggaXQuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMu
+cGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiBBY2tlZC1ieTogVGhvbWFzIFBldGF6em9u
+aSA8dGhvbWFzLnBldGF6em9uaUBib290bGluLmNvbT4NCg0KSnVzdCBnb2luZyB0aHJvdWdoIHNv
+bWUgb2xkIGJyYW5jaGVzLiBUaGlzIGRvZXNuJ3Qgc2VlbSB0byBoYXZlIGJlZW4gDQpwaWNrZWQg
+dXAuIEhhdmUgSSBtaXNzZWQgYSBtYWludGFpbmVyPw0KDQo=
