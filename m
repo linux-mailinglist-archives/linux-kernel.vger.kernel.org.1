@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7C1303CEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58DC303CED
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729694AbhAZMZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54506 "EHLO
+        id S2391564AbhAZMYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:24:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404521AbhAZKwr (ORCPT
+        with ESMTP id S2404481AbhAZKwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:52:47 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC0CC06178C
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:51:22 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id g10so15954743wrx.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:51:22 -0800 (PST)
+        Tue, 26 Jan 2021 05:52:49 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D620C061797
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:51:25 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id e15so2336497wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:51:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t86iMQKIqsS0m2aCrWu55vo8IS053fSBSrJitc0MorY=;
-        b=o7mD/KjydYdHiZ0EaOi+To5IHQ2Tr3u1GFOjlqb57h46hhwlQI9CbkB+zdYmqK0C2A
-         Ndn6MZHrdqMvjJA6yFwjCnRuyvQwx9uNrzKIlYIDbSayT6cahYF7zn/w3ixc9SmG7gMl
-         O3kiZStPme9n68UyflaMzQ4Xtl4Qm4+h/cYBUnT1AjEHGaodBv1V18nFA8qmsTCuYICd
-         us2Y1L2Mk9j9mCuN8LCYzBCBfL4jGL1Gp0hNs/7S9LFU08Pjz4MJhVT/D6FtmDgTPiMR
-         c96mheNENcTGjtOYLmjONbjVreusfNQ/oeFotn42jd7TwDAWKkSVEqLGyJW/raAvT4Ab
-         a1qg==
+        bh=eDB2VePP2gLo3jktXjvGnSm3jDWHWVOh6rC8z0CbRvQ=;
+        b=D7x3P3OFR2vff+Yisjrvazi8eadRJNZbJnawBZbQpfFxy4dMa/orEnq0vHCEEDJL5p
+         kLf5J9b4uznLltOw5/AuQA7c4JtVJS5tWd3XV2xZCo/QMYerYkgcfBVBJ8m/gt3+9pII
+         fVhlxp2QrMCtwfNZoLRG6TGUEXup8VrC6YaIUNfjVr8LmWlbg2NbS7jjmegOFbe7KmRK
+         8bTtTWco0Xh45LldthuzzW8S4sL4fQ/ZdfVmAwzTguy8WBcROiEkYlEmabKewjrhpJeE
+         S5iKogUo4fst39p5sS8skCcFs1ScgkFe4iJncmXTbaBjfclKz/4Cgitov9ctk+kgVtjS
+         Aa5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t86iMQKIqsS0m2aCrWu55vo8IS053fSBSrJitc0MorY=;
-        b=mKjx+rPu8uj4aKKa+1vdFaGJn/CZG0AsgZVXW2H2kfvoqKK7ZZiCD2PtukFLh/BsPl
-         ipkFo8wWGxL8qKB3Q4K2QNG7E28j0viosIXthyThN3r89NzaGbIe7FUyPZ5qelTuOYJW
-         XtRCqawluGJtJ8oEKWI2jTcxD2qDpetEh6hUz0mBOT5iqoCTpOynuufxinbu5nqQ5gvv
-         F059CI4UvXIBmBxhUYswBLTGJx3Lz/F/Gpy1YaOegf4SpEGk88/FkUDxMTlk9ihgvjcY
-         fgTrobUNUHzLxTvd8HOpnB3SputRUHogsuRKqRAaTN6XVsRb6xWJmfAT0wgOlAFhS370
-         adSw==
-X-Gm-Message-State: AOAM532mBrQ0H5UcUS5qQiyKigG0keFus1fifxsmxOp63qzXXuyiWHR6
-        HeBjKO1FQ4JM4hrR7pMF86Sgyw==
-X-Google-Smtp-Source: ABdhPJyTqVADEw9M3IHNU0FlSb0fH6q1RWNU4RKVai0zsh9bNEHZ4TfAJv6yPLjuOy5tjfaM/4Uofw==
-X-Received: by 2002:adf:80c3:: with SMTP id 61mr4963946wrl.100.1611658281280;
-        Tue, 26 Jan 2021 02:51:21 -0800 (PST)
+        bh=eDB2VePP2gLo3jktXjvGnSm3jDWHWVOh6rC8z0CbRvQ=;
+        b=FEOopLA4bVVQY+vwI2v8ixby5RQ4Ue1tFnhEwhAF1JsBBi4HsfHQwxt14tnR8/peQj
+         fjSsLJNwTbkknM3Ni1mCo/rF4MmJxWHeQZTiRar6EVdEYIwYCmoZnIKdlxK7m6XoLqR0
+         bmj+UVgzVBZoQsgRQBP0rvRXKwIQdnjGeUI1ezqg0ayUwBFK9cGgC5/mplUvq4B7QGxn
+         Wtv5i3HdDtpmIe6dqp/ksa9xPhcDJWXFp75d1eILWtShPextlFCoSg61hUCWRg/x8I07
+         zlfulpz+jBJST9fXl1KOAMGv0xZ9TjFImnB3m+ddCM5S2M9i+euglIOcQXiwrkVAZZQJ
+         +5ZA==
+X-Gm-Message-State: AOAM530m7CgO2fE4O3mmG5xGQeiHuYIMYUVPzGOgvKamcfTzibyLlDln
+        LcK1YuENwdHqD9Ehp+Rvem6W+0ZUCa5/wQ==
+X-Google-Smtp-Source: ABdhPJxt0t0zfhum4rHmKwRmfDFrxAJaGG/0X91xEqYzJx6/dtV9+zRIwoFomMvoiUeOP+B2K1NtCQ==
+X-Received: by 2002:a7b:ce96:: with SMTP id q22mr4150055wmj.165.1611658283791;
+        Tue, 26 Jan 2021 02:51:23 -0800 (PST)
 Received: from localhost.localdomain ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id h18sm7177879wru.65.2021.01.26.02.51.20
+        by smtp.gmail.com with ESMTPSA id h18sm7177879wru.65.2021.01.26.02.51.22
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Jan 2021 02:51:20 -0800 (PST)
+        Tue, 26 Jan 2021 02:51:23 -0800 (PST)
 From:   Paolo Valente <paolo.valente@linaro.org>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         Paolo Valente <paolo.valente@linaro.org>,
         Jan Kara <jack@suse.cz>
-Subject: [PATCH BUGFIX/IMPROVEMENT 3/6] block, bfq: make shared queues inherit wakers
-Date:   Tue, 26 Jan 2021 11:50:59 +0100
-Message-Id: <20210126105102.53102-4-paolo.valente@linaro.org>
+Subject: [PATCH BUGFIX/IMPROVEMENT 5/6] block, bfq: keep shared queues out of the waker mechanism
+Date:   Tue, 26 Jan 2021 11:51:01 +0100
+Message-Id: <20210126105102.53102-6-paolo.valente@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210126105102.53102-1-paolo.valente@linaro.org>
 References: <20210126105102.53102-1-paolo.valente@linaro.org>
@@ -65,90 +65,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider a bfq_queue bfqq that is about to be merged with another
-bfq_queue new_bfqq. The processes associated with bfqq are cooperators
-of the processes associated with new_bfqq. So, if bfqq has a waker,
-then it is reasonable (and beneficial for throughput) to assume that
-all these processes will be happy to let bfqq's waker freely inject
-I/O when they have no I/O. So this commit makes new_bfqq inherit
-bfqq's waker.
+Shared queues are likely to receive I/O at a high rate. This may
+deceptively let them be considered as wakers of other queues. But a
+false waker will unjustly steal bandwidth to its supposedly woken
+queue. So considering also shared queues in the waking mechanism may
+cause more control troubles than throughput benefits. This commit
+keeps shared queues out of the waker-detection mechanism.
 
 Tested-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
 ---
- block/bfq-iosched.c | 42 +++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 3 deletions(-)
+ block/bfq-iosched.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index e5b83910fbe0..c5bda33c0923 100644
+index 0c7e203085f1..23d0dd7bd90f 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -2819,6 +2819,29 @@ bfq_merge_bfqqs(struct bfq_data *bfqd, struct bfq_io_cq *bic,
- 		bfq_mark_bfqq_IO_bound(new_bfqq);
- 	bfq_clear_bfqq_IO_bound(bfqq);
- 
+@@ -5825,7 +5825,17 @@ static void bfq_completed_request(struct bfq_queue *bfqq, struct bfq_data *bfqd)
+ 			1UL<<(BFQ_RATE_SHIFT - 10))
+ 		bfq_update_rate_reset(bfqd, NULL);
+ 	bfqd->last_completion = now_ns;
+-	bfqd->last_completed_rq_bfqq = bfqq;
 +	/*
-+	 * The processes associated with bfqq are cooperators of the
-+	 * processes associated with new_bfqq. So, if bfqq has a
-+	 * waker, then assume that all these processes will be happy
-+	 * to let bfqq's waker freely inject I/O when they have no
-+	 * I/O.
++	 * Shared queues are likely to receive I/O at a high
++	 * rate. This may deceptively let them be considered as wakers
++	 * of other queues. But a false waker will unjustly steal
++	 * bandwidth to its supposedly woken queue. So considering
++	 * also shared queues in the waking mechanism may cause more
++	 * control troubles than throughput benefits. Then do not set
++	 * last_completed_rq_bfqq to bfqq if bfqq is a shared queue.
 +	 */
-+	if (bfqq->waker_bfqq && !new_bfqq->waker_bfqq &&
-+	    bfqq->waker_bfqq != new_bfqq) {
-+		new_bfqq->waker_bfqq = bfqq->waker_bfqq;
-+		new_bfqq->tentative_waker_bfqq = NULL;
-+
-+		/*
-+		 * If the waker queue disappears, then
-+		 * new_bfqq->waker_bfqq must be reset. So insert
-+		 * new_bfqq into the woken_list of the waker. See
-+		 * bfq_check_waker for details.
-+		 */
-+		hlist_add_head(&new_bfqq->woken_list_node,
-+			       &new_bfqq->waker_bfqq->woken_list);
-+
-+	}
-+
++	if (!bfq_bfqq_coop(bfqq))
++		bfqd->last_completed_rq_bfqq = bfqq;
+ 
  	/*
- 	 * If bfqq is weight-raised, then let new_bfqq inherit
- 	 * weight-raising. To reduce false positives, neglect the case
-@@ -6276,7 +6299,7 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
- 	if (likely(!new_queue)) {
- 		/* If the queue was seeky for too long, break it apart. */
- 		if (bfq_bfqq_coop(bfqq) && bfq_bfqq_split_coop(bfqq)) {
--			bfq_log_bfqq(bfqd, bfqq, "breaking apart bfqq");
-+			struct bfq_queue *old_bfqq = bfqq;
- 
- 			/* Update bic before losing reference to bfqq */
- 			if (bfq_bfqq_in_large_burst(bfqq))
-@@ -6285,11 +6308,24 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
- 			bfqq = bfq_split_bfqq(bic, bfqq);
- 			split = true;
- 
--			if (!bfqq)
-+			if (!bfqq) {
- 				bfqq = bfq_get_bfqq_handle_split(bfqd, bic, bio,
- 								 true, is_sync,
- 								 NULL);
--			else
-+				bfqq->waker_bfqq = old_bfqq->waker_bfqq;
-+				bfqq->tentative_waker_bfqq = NULL;
-+
-+				/*
-+				 * If the waker queue disappears, then
-+				 * new_bfqq->waker_bfqq must be
-+				 * reset. So insert new_bfqq into the
-+				 * woken_list of the waker. See
-+				 * bfq_check_waker for details.
-+				 */
-+				if (bfqq->waker_bfqq)
-+					hlist_add_head(&bfqq->woken_list_node,
-+						       &bfqq->waker_bfqq->woken_list);
-+			} else
- 				bfqq_already_existing = true;
- 		}
- 	}
+ 	 * If we are waiting to discover whether the request pattern
 -- 
 2.20.1
 
