@@ -2,123 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338C0303BBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C00E9303BC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405255AbhAZLfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:35:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391841AbhAZKR0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:17:26 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FE7C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:16:46 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id my11so1131375pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:16:46 -0800 (PST)
+        id S2392547AbhAZLhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:37:07 -0500
+Received: from mail-bn7nam10on2131.outbound.protection.outlook.com ([40.107.92.131]:35296
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732989AbhAZKT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:19:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PeFLs7vwLAVhIylNkMRL3W4Uajyj0N2FwUMkXQVMhHydgcKH0fFxzyk0YoE++2S+juBZ9EZcZMwNMsjicNvbh6Ml6tMkiIwNiwMij9eWzIyAduMpNZRGWCNRKCEXKKJOiaS28/rDHbpCbcjTTMDU4ON1l+ImB9/Ca6kObJplVI049tyPTPL3kr+ISUWh/fEkk0JkFbFXXyIA+S/G/E3csnr29n3YBVq5z77iVX7ftkYTXCuU1jLD2USTXvfFLC+g2+zUstuG6JV9lLGo7eT9CFiiWotJWDr8M4V5EuFxKClPX4z81tZT3OiNRix946EGuM8mVWUSELz5SbwFqBMmIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E+Z7Elnhm3BhrgNeRyrqBv5JwYYEJY57zgz/EOQdRlg=;
+ b=Rt/xGsYs8Q0krRJF7rqXnGZAmN5pevRDryaLUEBDw/HVGFuIbm9qfxv4CxKkMj0u/5BFb1eynUd+svmzkjW56cNn3dGFA90MGUuLIQBPXKBsUIvvVO1nffGikWCDN96htwUhseOs4mLx3u+c1E7Hds/NXGy3hwnq4PqOVEg72c7fjhEUm0q10gJ4NrywyIcum+MK3bx7K5/38fHt+NA11bZV0daWbUoUp1I0kqARXV982UErjdzwybV3e4QkMuuv8hSdKdSQ00SVaywKTM8MrGEwe/tc8lws744jLYVhKw0vw4Vz/FxMOqWbujWcEjgkLiBiVWvOAPdjWY8lWmSOpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=sR1f6/9qxbOzaGUBvKshvPIEd27XjEPY6YY4xmBmtPw=;
-        b=hByZTPn+kC7e4UW2FPK/AIyIGf9W594vufpomYmL3zBVkQjdrkkQGpHS3xs7297uF8
-         VOZuXvTyW9sl55CPyhKIIMU+riCrnYcmolSmzO7a2ks0VOAD5PMXwyn75ZqZWJt9qd0f
-         fgvVhIgSOjxP+3wo55hLn6DBp6ZeyaybNzl7PQFEyHP/ZCCm93jKAiAbAkNLYGghQIag
-         TqE5huzf5DEhD5ui8CJ2NJPiTNuT1oUOjfl4UoGUE2sZnIoHd8lmUCLKDEPX+0+H/MCW
-         Qi7nLK7V9o/vLa4YcxC1L1QBFwSMvu3lrbd/9irKOurZORXuC/OvuF5VuOJIx4D6xK8Q
-         DINw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=sR1f6/9qxbOzaGUBvKshvPIEd27XjEPY6YY4xmBmtPw=;
-        b=aJQnU/43i21QoPInYRSEl2dFEUMG/HuLDSRZc55FygTzGIaHtmYbizPazt3NAjB7dW
-         5mvLeAKya6+05wBWyxOnND8lwJbmLviQEi00XlmbVHlajGgfnb2ZU2zSCDKH7M55maIT
-         3vK5ZMDcL3kJ6eQskPpQ8w3/JxgCckHZcvBgdAVvg1+ymZhEnFlT2t6jw81nrPXU3ODf
-         dP3rlWfrgbIpd/CPoVU6Ao+iSNkFxqoKZiCZ1RfFE3lLsW+2+Tf67YRzlQ2vRECOHPtC
-         XbXxWm2Z4QEqbbtyh0jUqu0FdxsPvH3ieWQjRE7v8LLdvuhsb2zShtvgekfsGV63E/rH
-         MivQ==
-X-Gm-Message-State: AOAM5332CsFzwgKyBn8Uvjg6NmItelvxwHLVQ+sLFKfrwaMVX1M/imUf
-        e+4ECkVcYka3JWdlaULPmOkmjDGlzAY=
-X-Google-Smtp-Source: ABdhPJwg+JTjblgrrhG9vFEfUG1cblX6qFxLOGQzgNLdQMrgRvDnqGJyI0cCwhxPL54X1bAz2FR0zA==
-X-Received: by 2002:a17:902:9a4a:b029:dc:435c:70ad with SMTP id x10-20020a1709029a4ab02900dc435c70admr5154709plv.77.1611656206142;
-        Tue, 26 Jan 2021 02:16:46 -0800 (PST)
-Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
-        by smtp.gmail.com with ESMTPSA id d2sm1840594pjd.29.2021.01.26.02.16.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 02:16:45 -0800 (PST)
-Date:   Tue, 26 Jan 2021 20:16:39 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v4 20/23] powerpc/syscall: Do not check unsupported scv
- vector on PPC32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
-        <f02af988a86f7e83b6492df7c4fa1b53bcd1919b.1611585031.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <f02af988a86f7e83b6492df7c4fa1b53bcd1919b.1611585031.git.christophe.leroy@csgroup.eu>
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E+Z7Elnhm3BhrgNeRyrqBv5JwYYEJY57zgz/EOQdRlg=;
+ b=euDil4XuXMZkJoPfqVc5+ciA3EeOfz0M/yjrda5SEw+IAsZmR7Gm4NNMfENuuzlklWJ/fw8IqBsqehDEU3s+SV3qysH83PoRtszNXmRxQf77GVzM7WXe9OJJUfL83HkRuCx4XSalMshWHKDfuIUZjjVo4OaPNrRWQGBpXWQo79Q=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by SJ0PR04MB7359.namprd04.prod.outlook.com (2603:10b6:a03:2a0::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Tue, 26 Jan
+ 2021 10:19:05 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5813:96a7:b2d6:132%6]) with mapi id 15.20.3763.019; Tue, 26 Jan 2021
+ 10:19:04 +0000
+Date:   Tue, 26 Jan 2021 18:18:30 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings:drm/bridge:anx7625:add HDCP support
+ flag and swing reg
+Message-ID: <20210126101830.GA32321@zhaomy-pc>
+References: <cover.1611572142.git.xji@analogixsemi.com>
+ <75e29d7386df2ebca4a8e3f0b91c8370a4a8f74f.1611572143.git.xji@analogixsemi.com>
+ <1611586295.672940.327907.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611586295.672940.327907.nullmailer@robh.at.kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HKAPR04CA0018.apcprd04.prod.outlook.com
+ (2603:1096:203:d0::28) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-Message-Id: <1611656145.efq1cxcpts.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zhaomy-pc (61.148.116.10) by HKAPR04CA0018.apcprd04.prod.outlook.com (2603:1096:203:d0::28) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3784.11 via Frontend Transport; Tue, 26 Jan 2021 10:19:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e26b7eb2-498b-4fb0-9c30-08d8c1e3cec3
+X-MS-TrafficTypeDiagnostic: SJ0PR04MB7359:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR04MB73590A0BAC31D3E4C148DA62C7BC9@SJ0PR04MB7359.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iy2A/mwol1B6HCLgx//k4msxzh/2LEdVr0AWGn9sd28ANU9fuwGhhg5nKDDVHEXj4ZcEowTAM6auG1KBTD26PkSea3y/KmqO5rWTkzNqeLtHe62e9noi2jJdF9nEznPIj0Wk9PIMVTx2JTw1AEy98SZlaFQ1zb4T8lenUDAttID3Eoh2Wunv13UqNEp30ZxxklyofqpK+iAeaNN4YeSCsp3twAwbiXGFUh3eEbGzK8Yg0oRigxLOR6UFElAd+E1InE/g7iclDyp1fFsA0uo/MGteT9JJCsgCRDI7CoE7jm2omtgihJa5qRzow0aKXl4xOG7enOL6wtQF3ztnwu4irOqmvCcJoJC1GiCBWERLZziXvYFh+VYKwcGKcC3B7ITYnF65i0N0nkE7crKU8Ar5ml4cEmSuUgvQeR1RezB6P3vQj5JJ4NZT4uiIJ+0BTDpSaBnoRiXu/KnPu2FpoDyYhG6Q9sUFFsni9v9CGqe6EAOkfes5N/ck1/W5yOZO0qcA6Z5OHuCkL266RISaR2MqCsgC8etUaIuWV+9nP1vvwak5Js9CetR8YH1r/hKmD2BwvWecwy9Sm59G5/Slxpq1u/6TY+zK3/LlhIhfxKA8jKt6hv4aOLp6kbdjjTJPoujvM1eVqR5JxuCyPugbs6HaWg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(396003)(136003)(346002)(376002)(366004)(9686003)(1076003)(83380400001)(8676002)(52116002)(2906002)(33716001)(6916009)(16526019)(6666004)(26005)(5660300002)(66556008)(6496006)(33656002)(55016002)(966005)(66476007)(54906003)(956004)(4326008)(8936002)(478600001)(66946007)(7416002)(86362001)(316002)(186003)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Nf7YoK9A0FmNDPAumgnGIShN/pAAFaH2MtUdNmatHw8tCVPRO7zRdknjM692?=
+ =?us-ascii?Q?nx0UJCG4K1CVfNiolENiWsHGA0Zp1s8A/IcHUFSRTOBX/n+zAMGpyLkoIDoa?=
+ =?us-ascii?Q?6hiMAEBxL0SFuxEcShLu+MHkWbYTgdFblXSBlQRgMVjfapPMexmZgaVfF1qY?=
+ =?us-ascii?Q?TJekb56CLNgfbAHKRhBsKZkXj25iDTIWFBMjX3A9XnMnYX/W/DKXwFFXNI1I?=
+ =?us-ascii?Q?5TDrWR+hqoX4p5031ruWmE9OBYxZei/mpoaiPNyAfOs/4KSs9gfjNe5oPfYi?=
+ =?us-ascii?Q?G5LGTKb71SZzOrVb4yuAleIfyD+KX0+HXbyu4tJtARSAA/jzjlYidRgF+5Pj?=
+ =?us-ascii?Q?YLHhyXhuGoKhiqqwwqlhDzlC3o4VNLDiBv2ee+dJqT82M2IrKhUbov2vTIAC?=
+ =?us-ascii?Q?8idho1jhJlferi48vIljUXqAdGaeXAkt5l0wWrHxNxtpfd1jKgGhQ0aq9Zxy?=
+ =?us-ascii?Q?o+Y9pHr2KE4pPQfqxuAm3yFZUmjofxKwGJU+tlzD01fzYJLtGnmsDy3gs/ot?=
+ =?us-ascii?Q?PJtorzzNQ3K6IeZlFU3EFLNxPHRJptwcabwyxiUtMmnJmeu46EOecoqKy5p8?=
+ =?us-ascii?Q?a9a0fCVogyOw54PV+65aiGZpxmAAksuhmragO83TcFCrrjPXx+S4DgF5kPjO?=
+ =?us-ascii?Q?M69788nd2XmmqtS1zFB3WKoTFQB75FSGuFnFZhfGerRr+zKjOPLFDNy8Jxuf?=
+ =?us-ascii?Q?+des9P7Vybzy8Cn8NqnIde2d2cSKIWX8Dd57AELeSLGVmkLVg4WwH6Q5MjLV?=
+ =?us-ascii?Q?GvQY8O7MtJGsm1z7M0S39WS+PONxJl18M5HwrHlOGnwDM/l5nXrNQr420W6F?=
+ =?us-ascii?Q?X5cDPsRYr5OKryZ52FuWUL+eIbwbV1soEweuB1wk6nY9XbqkQRs7xOmKRlRA?=
+ =?us-ascii?Q?jBADp+1sWjbgx1ejUkN189QpmpZVkozHHmWKV859LLT5RGU9VnjEM7l4e9sy?=
+ =?us-ascii?Q?ETFK/Gozt095gFuOQf5CUzTWGdn4e4W/2DxJbLikw81Jt5thUQThXrHZpvgg?=
+ =?us-ascii?Q?hZR5OukP/SAvHNfKCFyp68SUAS+p4xGWzxr5Y1BMZYahmhwx71kXcO9v+kAi?=
+ =?us-ascii?Q?M/8yKOPf?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e26b7eb2-498b-4fb0-9c30-08d8c1e3cec3
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 10:19:04.6694
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bDG5m1TzXiFLGzuYP2njiEn3PauXMCShi1Nmf4vcRoJ2MCx1QXdRoo7iKs7sMrC7S4PRdUgZgXzTNWtSg93p8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7359
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of January 26, 2021 12:48 am:
-> Only PPC64 has scv. No need to check the 0x7ff0 trap on PPC32.
->=20
-> And ignore the scv parameter in syscall_exit_prepare (Save 14 cycles
-> 346 =3D> 332 cycles)
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/kernel/entry_32.S | 1 -
->  arch/powerpc/kernel/syscall.c  | 7 +++++--
->  2 files changed, 5 insertions(+), 3 deletions(-)
->=20
-> diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_3=
-2.S
-> index 9922a04650f7..6ae9c7bcb06c 100644
-> --- a/arch/powerpc/kernel/entry_32.S
-> +++ b/arch/powerpc/kernel/entry_32.S
-> @@ -343,7 +343,6 @@ transfer_to_syscall:
-> =20
->  ret_from_syscall:
->  	addi    r4,r1,STACK_FRAME_OVERHEAD
-> -	li	r5,0
->  	bl	syscall_exit_prepare
->  #if defined(CONFIG_4xx) || defined(CONFIG_BOOKE)
->  	/* If the process has its own DBCR0 value, load it up.  The internal
-> diff --git a/arch/powerpc/kernel/syscall.c b/arch/powerpc/kernel/syscall.=
-c
-> index 476909b11051..30f8a397a522 100644
-> --- a/arch/powerpc/kernel/syscall.c
-> +++ b/arch/powerpc/kernel/syscall.c
-> @@ -86,7 +86,7 @@ notrace long system_call_exception(long r3, long r4, lo=
-ng r5,
->  	local_irq_enable();
-> =20
->  	if (unlikely(current_thread_info()->flags & _TIF_SYSCALL_DOTRACE)) {
-> -		if (unlikely(regs->trap =3D=3D 0x7ff0)) {
-> +		if (IS_ENABLED(CONFIG_PPC64) && unlikely(regs->trap =3D=3D 0x7ff0)) {
->  			/* Unsupported scv vector */
->  			_exception(SIGILL, regs, ILL_ILLOPC, regs->nip);
->  			return regs->gpr[3];
-> @@ -109,7 +109,7 @@ notrace long system_call_exception(long r3, long r4, =
-long r5,
->  		r8 =3D regs->gpr[8];
-> =20
->  	} else if (unlikely(r0 >=3D NR_syscalls)) {
-> -		if (unlikely(regs->trap =3D=3D 0x7ff0)) {
-> +		if (IS_ENABLED(CONFIG_PPC64) && unlikely(regs->trap =3D=3D 0x7ff0)) {
-
-Perhaps this could be hidden behind a function like trap_is_scv()?
-
-trap_is_unsupported_scv() ?
-
+On Mon, Jan 25, 2021 at 08:51:35AM -0600, Rob Herring wrote:
+> On Mon, 25 Jan 2021 19:12:21 +0800, Xin Ji wrote:
+> > Add 'bus-type' and 'data-lanes' define for port0, add HDCP support
+> > flag and DP tx lane0 and lane1 swing register array define.
+> > 
+> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > ---
+> >  .../bindings/display/bridge/analogix,anx7625.yaml  | 57 ++++++++++++++++++++--
+> >  1 file changed, 54 insertions(+), 3 deletions(-)
+> > 
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+Hi Rob, OK, I'll fix it in the next serial.
 Thanks,
-Nick
+Xin
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.example.dt.yaml: encoder@58: ports: '#address-cells', '#size-cells' do not match any of the regexes: 'pinctrl-[0-9]+'
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.example.dt.yaml: encoder@58: ports:port@1:endpoint: Additional properties are not allowed ('remote-endpoint' was unexpected)
+> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> 
+> See https://patchwork.ozlabs.org/patch/1431199
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
