@@ -2,124 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A004303E49
+	by mail.lfdr.de (Postfix) with ESMTP id 7B794303E4A
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403943AbhAZNNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:13:05 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44150 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391394AbhAZNMY (ORCPT
+        id S2404008AbhAZNNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:13:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403767AbhAZNMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:12:24 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10QDBL5Z008181;
-        Tue, 26 Jan 2021 07:11:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611666681;
-        bh=OIxGDssUznp79R7M1f90S5wax2WpL57deA7dDnGEwwA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=fe1LJKhE3Y3iZRsBL2BvM55jbAq2kKHkEoGsJlp9dcb9zcJ4QQHXbSC7CNeTdbl3R
-         CurkbvL9QmudLAUQJ/+HThQpACqKIqHbFSj0SPBhBr31YVRiU7YUnBsFY5cX4jGOiL
-         WpMrI8euqqv50Ze0zUdR1V70MfjOlxlwt8ElDpJc=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10QDBLt9106335
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Jan 2021 07:11:21 -0600
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
- Jan 2021 07:11:20 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 26 Jan 2021 07:11:21 -0600
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10QDBHET129147;
-        Tue, 26 Jan 2021 07:11:18 -0600
-Subject: Re: [PATCH v2 2/6] drivers: net: davinci_mdio: Use
- of_device_get_match_data()
-To:     Stephen Boyd <swboyd@chromium.org>, Rob Herring <robh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        <linux-omap@vger.kernel.org>
-References: <20210123034428.2841052-1-swboyd@chromium.org>
- <20210123034428.2841052-3-swboyd@chromium.org>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <b0ed5a7f-920d-6732-f146-4d184a7c8661@ti.com>
-Date:   Tue, 26 Jan 2021 15:11:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 26 Jan 2021 08:12:55 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FCCC0611BD
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:12:15 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id 31so9727389plb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:12:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4yz02GiswhidfSCxDhxsCfQ1U1OCeS05kp58XLLSkHI=;
+        b=t5ymdC5k3D/PxMaII0V9xfDDw5xB7oE+g56DDyCOGPByJJyF2qnyn8jIFCCFwwl+Kw
+         mHQxkHzyv7y9Mx8zMT19wDeNLM/PAS9GQXi17OZng5fUdylqVwpzLt367fQNaLfw+L2a
+         nxccuFK/3bB0+cPdfVgZsGtfKltUS6ieFg7PoobiyDn/0/GpEchZhQkISwkOl7CzcXJ8
+         BgoMywAbmliZnPDNsyp1V5uNiOEh6rd2tJ0QcDlBwrZFapgaTXqPJyUI35xr1GCy8ueu
+         OPHG7IpTLnkHPh2dnIc6h4h27631H2Kwhov/bO27MNXDolmVqK5rlj/5OoXyiaNuGUtf
+         05bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4yz02GiswhidfSCxDhxsCfQ1U1OCeS05kp58XLLSkHI=;
+        b=ox4n+JAqn7ho5fFazLnh/L3vGhl2AwCIt0iF26ybtAwRGx+uqRKMQl9tiNPBQnCt56
+         a8G7BQvOVYJLejnQdYYx7xHwieSF4sXFiyFQaFVEsYe/cKzQu344XTqWFf7w8AyPIOxh
+         4y9a4CvpoPInZ+wVqjZkgph9hKIz7JhvlW5UzHJ+YKdLSPhMQUGn2MdHnw/eQ34wKvc1
+         4W7DaPrCRQYgpINTCBvmOPuV/KFMox1S7rdquiIgQ7dS5/id/y31sNVN0M23vDPISB0U
+         3dmYdTLIMex6WLq0mzKwNfKR011ykGyGct5JNJN/B70jEwkkzAls7ZqNDmIr3Hx7iWPP
+         Nkrg==
+X-Gm-Message-State: AOAM533F+11MNUvxvggWoBxuewZzxBSVZt4uk20CW/KkRUVXxjDL2DWO
+        VhT8IIVr0bRt83NTJKq2V9c=
+X-Google-Smtp-Source: ABdhPJzR8wLYLQsVYfj6qAZehYyx0M0CxHOpePj7UPFJ275CZUvDY46ClZK7fuw8mjexl0G/+t+Nkg==
+X-Received: by 2002:a17:902:b692:b029:de:43aa:6537 with SMTP id c18-20020a170902b692b02900de43aa6537mr6137430pls.65.1611666734751;
+        Tue, 26 Jan 2021 05:12:14 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id bt8sm2549205pjb.0.2021.01.26.05.12.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 05:12:14 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: yang.yang29@zte.com.cn
+To:     paul@paul-moore.com
+Cc:     eparis@redhat.com, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>
+Subject: [PATCH] audit: Make audit_filter_syscall() return void
+Date:   Tue, 26 Jan 2021 05:11:51 -0800
+Message-Id: <20210126131151.10418-1-yang.yang29@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210123034428.2841052-3-swboyd@chromium.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yang Yang <yang.yang29@zte.com.cn>
 
+No invoker users the return value of audit_filter_syscall().
+So make it return void.
 
-On 23/01/2021 05:44, Stephen Boyd wrote:
-> Use the more modern API to get the match data out of the of match table.
-> This saves some code, lines, and nicely avoids referencing the match
-> table when it is undefined with configurations where CONFIG_OF=n.
-> 
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Grygorii Strashko <grygorii.strashko@ti.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: <linux-omap@vger.kernel.org>
-> ---
-> 
-> Please ack so Rob can apply.
-> 
->   drivers/net/ethernet/ti/davinci_mdio.c | 12 ++++--------
->   1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/ti/davinci_mdio.c b/drivers/net/ethernet/ti/davinci_mdio.c
-> index cfff3d48807a..a4efd5e35158 100644
-> --- a/drivers/net/ethernet/ti/davinci_mdio.c
-> +++ b/drivers/net/ethernet/ti/davinci_mdio.c
-> @@ -358,20 +358,16 @@ static int davinci_mdio_probe(struct platform_device *pdev)
->   	}
->   
->   	if (IS_ENABLED(CONFIG_OF) && dev->of_node) {
-> -		const struct of_device_id	*of_id;
-> +		const struct davinci_mdio_of_param *of_mdio_data;
->   
->   		ret = davinci_mdio_probe_dt(&data->pdata, pdev);
->   		if (ret)
->   			return ret;
->   		snprintf(data->bus->id, MII_BUS_ID_SIZE, "%s", pdev->name);
->   
-> -		of_id = of_match_device(davinci_mdio_of_mtable, &pdev->dev);
-> -		if (of_id) {
-> -			const struct davinci_mdio_of_param *of_mdio_data;
-> -
-> -			of_mdio_data = of_id->data;
-> -			if (of_mdio_data)
-> -				autosuspend_delay_ms =
-> +		of_mdio_data = of_device_get_match_data(&pdev->dev);
-> +		if (of_mdio_data) {
-> +			autosuspend_delay_ms =
->   					of_mdio_data->autosuspend_delay_ms;
->   		}
->   	} else {
-> 
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+---
+ kernel/auditsc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thank you.
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index ce8c9e2279ba..c8e16b9c0f21 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -804,7 +804,7 @@ static int audit_in_mask(const struct audit_krule *rule, unsigned long val)
+  * also not high enough that we already know we have to write an audit
+  * record (i.e., the state is AUDIT_SETUP_CONTEXT or AUDIT_BUILD_CONTEXT).
+  */
+-static enum audit_state audit_filter_syscall(struct task_struct *tsk,
++static void audit_filter_syscall(struct task_struct *tsk,
+ 					     struct audit_context *ctx,
+ 					     struct list_head *list)
+ {
+@@ -812,7 +812,7 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
+ 	enum audit_state state;
+ 
+ 	if (auditd_test_task(tsk))
+-		return AUDIT_DISABLED;
++		return;
+ 
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(e, list, list) {
+@@ -821,11 +821,11 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
+ 				       &state, false)) {
+ 			rcu_read_unlock();
+ 			ctx->current_state = state;
+-			return state;
++			return;
+ 		}
+ 	}
+ 	rcu_read_unlock();
+-	return AUDIT_BUILD_CONTEXT;
++	return;
+ }
+ 
+ /*
 -- 
-Best regards,
-grygorii
+2.25.1
+
