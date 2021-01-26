@@ -2,89 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE5A3045B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77543045B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393490AbhAZRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:50:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390134AbhAZIaN (ORCPT
+        id S2393497AbhAZRvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:51:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389856AbhAZIak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:30:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611649726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bhV4Mq5/sBWiSQk3XJm+QtpJxWDhek1THdWB8YUzVxE=;
-        b=gDVwcKsOHAPEnXI7g+VHzM/wEB6hZ3IMrTylTl5dXzr6xzfO/tI95kKzs0wz9O9P48GbNt
-        9HAjX5e6xiklSk5WjkO7/DgkSCgSj5vuz8eslTZhaYmRmO6gS43HhpqhEwEZpIP7XZ6VVQ
-        VYexVSihAwQdRv7ne0eEEhLKxW4vSeY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-83--4Inxhf7N6asR7JiI5xpBw-1; Tue, 26 Jan 2021 03:28:44 -0500
-X-MC-Unique: -4Inxhf7N6asR7JiI5xpBw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFFA310054FF;
-        Tue, 26 Jan 2021 08:28:42 +0000 (UTC)
-Received: from [10.72.12.70] (ovpn-12-70.pek2.redhat.com [10.72.12.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B76672168;
-        Tue, 26 Jan 2021 08:28:35 +0000 (UTC)
-Subject: Re: [PATCH v3] vhost_vdpa: fix the problem in
- vhost_vdpa_set_config_call
-To:     Cindy Lu <lulu@redhat.com>, mst@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <20210126071607.31487-1-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <757a05d2-c82e-e957-1b7c-55eb64495f1b@redhat.com>
-Date:   Tue, 26 Jan 2021 16:28:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 26 Jan 2021 03:30:40 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C807AC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:29:58 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id a1so15499336wrq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:29:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YoJL14Xv0wOFOwwfdYEM7FDsz0s8zH6rRaAdm+Z0noo=;
+        b=N9q340mh/XXjb5TgWj8TYxDHhMvw0SQDVqzJT7gTk1jWzzU6rnuLTWfxlwMLE4fgjO
+         oSxBMJvMSV5+PAnGV9dLO2FvlyIhf9kUAF5SArfY/qhY6791nqI5K8eBW98EYHSQ4hng
+         2IjhIjiLTMIo73OrwBKjKhQA/XimrXP4aOOvHk4fYWsuiHJRlwj9c5QJm7u8UiTyDt1s
+         dsO8yKXFqfAV562YWVQpYdSMYkFszkUmyk+lk59dEPNR4Q76jw3PyI0s/+nxktbW4OLd
+         r08RutR+HVJ+L+R65x+9xO6FgBofh5Cwc24HUw+UMBr4m5c+QSjpgRKBEdSOW6GULuzq
+         UNDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YoJL14Xv0wOFOwwfdYEM7FDsz0s8zH6rRaAdm+Z0noo=;
+        b=R33ZeQF0q1dxzNDOC/yf2dSh03tmc9Av2Ok6Q+ByH+alzDqoyQJHrDHeVJ0BpDso0i
+         DPcW66fa4Y/XZcdCRbSGOKm6XDsR4kwyRFE02Dci8B6Rja+1eR686FSPMY3ar+WVpGSe
+         B28UEjoT1gEE4Y9f+OfoacbW/395icArUQfJYhGj9h3/Jqg8dQ1dc8Jc+4NU6FcMUcev
+         7PqU+iDCGnsgR0gqDsrP3lAAvqdDnaLP4MAT4mD/717CkP/Y67cVOkU2fwpCzBpojeFx
+         xJUnFqO1mcFsI2nK9fbI86I2GdwKfi7q/Pocvrbt4HJqT/y7KhHiHhJ2VZrEMQDCdnlF
+         FrwA==
+X-Gm-Message-State: AOAM530cBYfoTxPQPdUDOC58JCMtK26LM9XYWvLItzOwthijKF7TKaaV
+        rptqN7Wi/AUBNYlyUaYQ37PCUg==
+X-Google-Smtp-Source: ABdhPJxYE9Gyzn2ngzlcXkb2Xzeys3TeVUOi9ycUWgcWATBm1ZwQkahSXfclXSohvAZRxDPm00lwSg==
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr4848964wru.268.1611649797348;
+        Tue, 26 Jan 2021 00:29:57 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id i59sm28235856wri.3.2021.01.26.00.29.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 00:29:56 -0800 (PST)
+Date:   Tue, 26 Jan 2021 08:29:54 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v2 09/17] mfd: Support for ROHM BD71815 PMIC core
+Message-ID: <20210126082954.GF4903@dell>
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+ <14480ca837005aecd7053202c2347e36ad29faee.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+ <20210125141044.GZ4903@dell>
+ <7a3d897d6af9f4310e5cc98ca74123192da49e27.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20210126071607.31487-1-lulu@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <7a3d897d6af9f4310e5cc98ca74123192da49e27.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 25 Jan 2021, Matti Vaittinen wrote:
 
-On 2021/1/26 下午3:16, Cindy Lu wrote:
-> In vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
-> this cb.private will finally use in vhost_vdpa_config_cb as
-> vhost_vdpa. Fix this issue.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 776f395004d82 ("vhost_vdpa: Support config interrupt in vdpa")
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> Hello Lee,
+> 
+> Thanks again for the review!
+> 
+> On Mon, 2021-01-25 at 14:10 +0000, Lee Jones wrote:
+> > On Tue, 19 Jan 2021, Matti Vaittinen wrote:
+> > 
+> > > Add core support for ROHM BD71815 Power Management IC.
+> > > 
+> > > The IC integrates regulators, a battery charger with a coulomb
+> > > counter,
+> > > a real-time clock (RTC), clock gate and general-purpose outputs
+> > > (GPO).
+> > > 
+> > > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > > ---
+> > > Changes since v1:
+> > >   - Used BIT() for better readability
+> > >   - removed some unused definitions
+> > > 
+> > >  drivers/mfd/Kconfig              |  15 +-
+> > >  drivers/mfd/rohm-bd71828.c       | 416 +++++++++++++++++++++--
+> > >  include/linux/mfd/rohm-bd71815.h | 561
+> > > +++++++++++++++++++++++++++++++
+> > >  include/linux/mfd/rohm-bd71828.h |   3 +
+> > >  4 files changed, 952 insertions(+), 43 deletions(-)
+> > >  create mode 100644 include/linux/mfd/rohm-bd71815.h
+> > > 
+> > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > > index bdfce7b15621..59bfacb91898 100644
+> > > --- a/drivers/mfd/Kconfig
+> > > +++ b/drivers/mfd/Kconfig
+> > > @@ -1984,19 +1984,20 @@ config MFD_ROHM_BD70528
+> > >  	  charger.
+> > >  
+> > >  config MFD_ROHM_BD71828
+> > > -	tristate "ROHM BD71828 Power Management IC"
+> > > +	tristate "ROHM BD71828 and BD71815 Power Management IC"
+> > >  	depends on I2C=y
+> > >  	depends on OF
+> > >  	select REGMAP_I2C
+> > >  	select REGMAP_IRQ
+> > >  	select MFD_CORE
+> > >  	help
+> > > -	  Select this option to get support for the ROHM BD71828 Power
+> > > -	  Management IC. BD71828GW is a single-chip power management IC
+> > > for
+> > > -	  battery-powered portable devices. The IC integrates 7 buck
+> > > -	  converters, 7 LDOs, and a 1500 mA single-cell linear charger.
+> > > -	  Also included is a Coulomb counter, a real-time clock (RTC),
+> > > and
+> > > -	  a 32.768 kHz clock gate.
+> > > +	  Select this option to get support for the ROHM BD71828 and
+> > > BD71815
+> > > +	  Power Management ICs. BD71828GW and BD71815AGW are single-
+> > > chip power
+> > > +	  management ICs mainly for battery-powered portable devices.
+> > > +	  The BD71828 integrates 7 buck converters and 7 LDOs. The
+> > > BD71815
+> > > +	  has 5 bucks, 7 LDOs, and a boost for driving LEDs. Both ICs
+> > > provide
+> > > +	  also a single-cell linear charger, a Coulomb counter, a real-
+> > > time
+> > > +	  clock (RTC), GPIOs and a 32.768 kHz clock gate.
+> > >  
+> > >  config MFD_STM32_LPTIMER
+> > >  	tristate "Support for STM32 Low-Power Timer"
+> > > diff --git a/drivers/mfd/rohm-bd71828.c b/drivers/mfd/rohm-
+> > > bd71828.c
+> > > index 210261d026f2..28b82477ce4c 100644
+> > > --- a/drivers/mfd/rohm-bd71828.c
+> > > +++ b/drivers/mfd/rohm-bd71828.c
+> > > @@ -2,7 +2,7 @@
+> > >  //
+> > >  // Copyright (C) 2019 ROHM Semiconductors
+> > >  //
+> > > -// ROHM BD71828 PMIC driver
+> > > +// ROHM BD71828/BD71815 PMIC driver
+> > >  
+> > >  #include <linux/gpio_keys.h>
+> > >  #include <linux/i2c.h>
+> > > @@ -11,7 +11,9 @@
+> > >  #include <linux/ioport.h>
+> > >  #include <linux/irq.h>
+> > >  #include <linux/mfd/core.h>
+> > > +#include <linux/mfd/rohm-bd71815.h>
+> > >  #include <linux/mfd/rohm-bd71828.h>
+> > > +#include <linux/mfd/rohm-generic.h>
+> > >  #include <linux/module.h>
+> > >  #include <linux/of_device.h>
+> > >  #include <linux/regmap.h>
+> > > @@ -29,12 +31,102 @@ static struct gpio_keys_platform_data
+> > > bd71828_powerkey_data = {
+> > >  	.name = "bd71828-pwrkey",
+> > >  };
+> > >  
+> > > -static const struct resource rtc_irqs[] = {
+> > > +static const struct resource bd71815_rtc_irqs[] = {
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC0, "bd71815-rtc-alm-0"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC1, "bd71815-rtc-alm-1"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_RTC2, "bd71815-rtc-alm-2"),
+> > > +};
+> > > +
+> > > +static const struct resource bd71828_rtc_irqs[] = {
+> > >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC0, "bd71828-rtc-alm-0"),
+> > >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC1, "bd71828-rtc-alm-1"),
+> > >  	DEFINE_RES_IRQ_NAMED(BD71828_INT_RTC2, "bd71828-rtc-alm-2"),
+> > >  };
+> > >  
+> > > +static struct resource bd71815_power_irqs[] = {
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_RMV, "bd71815-dcin-rmv"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_OUT, "bd71815-clps-out"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CLPS_IN, "bd71815-clps-in"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_RES, "bd71815-dcin-
+> > > ovp-res"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_OVP_DET, "bd71815-dcin-
+> > > ovp-det"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_RES, "bd71815-dcin-
+> > > mon-res"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_DCIN_MON_DET, "bd71815-dcin-
+> > > mon-det"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_RES, "bd71815-vsys-uv-
+> > > res"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_UV_DET, "bd71815-vsys-uv-
+> > > det"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_RES, "bd71815-vsys-
+> > > low-res"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_LOW_DET, "bd71815-vsys-
+> > > low-det"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-
+> > > mon-res"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_VSYS_MON_RES, "bd71815-vsys-
+> > > mon-det"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TEMP, "bd71815-chg-
+> > > wdg-temp"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_WDG_TIME, "bd71815-chg-
+> > > wdg"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_RES, "bd71815-
+> > > rechg-res"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RECHARGE_DET, "bd71815-
+> > > rechg-det"),
+> > > +	DEFINE_RES_IRQ_NAMED(BD71815_INT_CHG_RANGED_TEMP_TRANSITION,
+> > > +			     "bd71815-ranged-temp-transit"),
+> > 
+> > The new line limit is 100.  Feel free to run these out.
+> 
+> I learn new things every day it seems. This change is more than
+> welcome!
 
+Please see:
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+ bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning")
 
+... for a more complete description.
 
-> ---
->   drivers/vhost/vdpa.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index ef688c8c0e0e..3fbb9c1f49da 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
->   	struct eventfd_ctx *ctx;
->   
->   	cb.callback = vhost_vdpa_config_cb;
-> -	cb.private = v->vdpa;
-> +	cb.private = v;
->   	if (copy_from_user(&fd, argp, sizeof(fd)))
->   		return  -EFAULT;
->   
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
