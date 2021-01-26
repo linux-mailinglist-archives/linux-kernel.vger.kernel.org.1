@@ -2,84 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EF03040E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC1F230410C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391265AbhAZOuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:50:39 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:38840 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391316AbhAZJjT (ORCPT
+        id S2391377AbhAZO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:56:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39437 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391040AbhAZJel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:39:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611653959; x=1643189959;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=NQ7l4oDImBnVyOc+iYZ5NgNpi62aMQ9qjS6hc354pFk=;
-  b=qHqEiJ41gfTw7Uk6DMmymytchgBB53e0aKEijEsJ9YltYQc8qdMcxFRZ
-   l4tZ/qFao0GofHCBq5+h1pQNU/MilDBl167h53DX+zpb24k/pC/GueZZN
-   IEU4yU30rPvNdjbLs5kOs+1uxFl5dT62VoMQZp6jpHxeu2Vbk83O4x/At
-   rR5tIPXn01jsACt5KeYgBUlMwyZb630vCkBKa+jsWnJmlSJqvTapfE5IG
-   NJ8MbbUBMPQAPuXsHwSBjORMv6jX2rTt064Jjm79zTIoP6JU7tHN3ypmj
-   IbQccv636DR2IUQeA3FTtL7OsWrZ9GmCdjTPGIXe9IpE6VfAei8fpnicx
-   g==;
-IronPort-SDR: 1182lLgxHhaPPboY0paWFaNT3LQ5kaBkt/nkQBkqIaWLQUL+QTQMPhUldeXLlJ48ZKgueBMMpU
- SnROm+IDPNlVTLPGau8Im4sMwFkjUyaZ6nLR0cLFJdXrRkVtpQJwmuZfGkGvPOqN91OuOyRVXM
- fhBLMNKvXevhOevyP8wwU701Yat94SXSkCGoWYzSNh7X+/Z8opAdEDPAM1SajiD8izX3zLYK+/
- OK0TIRCc8ADUbqjL4U4XFDVXm3mFnj3T8fCD64ojweJt0IJJU/0ZCRUJJkEUkLOIGTQ0dx79cF
- pok=
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="41780873"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 02:36:53 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 02:36:53 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 26 Jan 2021 02:36:50 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
-CC:     <sudeep.holla@arm.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 3/7] drivers: soc: atmel: fix "__initconst should be placed after socs[]" warning
-Date:   Tue, 26 Jan 2021 11:29:32 +0200
-Message-ID: <1611653376-24168-4-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
+        Tue, 26 Jan 2021 04:34:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611653594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PcrXNhlDKomMCLfJNYybeh+OpNdfCtsOzQcjyLVp37M=;
+        b=fUkPCU/7b8+O4MZ7EXbxFGCHzkfYEKP+ua9Hs0PATVq0Mz3xnuAkl938b8HXVGsd4jWgup
+        sfaSaAyKpuX4qkO72B7J3rsW52VUefmeaBT8goGcriyZu6JE1PVNiomgDtpPywO+74IbXW
+        QWLiXB85yf3ApzNn07T6iZI4rAg9x0U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-62-GChiiOwsNMWmxCBONT9r2Q-1; Tue, 26 Jan 2021 04:33:13 -0500
+X-MC-Unique: GChiiOwsNMWmxCBONT9r2Q-1
+Received: by mail-ed1-f71.google.com with SMTP id ck25so9044709edb.16
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:33:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PcrXNhlDKomMCLfJNYybeh+OpNdfCtsOzQcjyLVp37M=;
+        b=B9mU8+rwmx91OoFcrZDqs6BwQYoGKKd/Hlme/YZ8Ok/bYBomUx73Qskxh2qHYjxae/
+         rdg5z2NCDP2y5DcVzpq+FI3LrLlsMk2yNPbv287/iotyxQxbDI9EESUxn3QI0hUoptY/
+         G/PyyB4v+dweSm9jjpwAlDDkp0ze7hqbUNzELZ2K1z6fcPpi5LDr/JODt6Y+lO9+yqGI
+         akScIh14M/aqYpfw0QOsPyHlPR5Hr/NNtfaQGXd1rLoqB98IwJkYtEort3JdsHa9Rcu6
+         mK3riRhrvJ0KbQ7BMPpq5TKCCDi4JplpuW8O9cnPM44oTpKcNMmfTBLHIsdZw91pNqk4
+         nlEw==
+X-Gm-Message-State: AOAM5305j/aw2wdFGd8fFdeTDpr4tlhlaeDXc52aL5725rlqXy0rcGds
+        JZeLOHJChg6lYcKnee+qTeZB1+hK2bWcqfNQ2okm4XpSjzdRSg2MiXeeTQaf0/qI8Tn04fcEx/T
+        f5WziI2PY2xXSeRKp2FzDY8QYzkl82XGcplS71Wrdk/Ug+4gCERF+8whMGpb1jDD/Zex+uOEM84
+        v5
+X-Received: by 2002:a17:907:9710:: with SMTP id jg16mr3017575ejc.286.1611653592041;
+        Tue, 26 Jan 2021 01:33:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyR/KtoRSXk3hGJDjmpgB2IHv1y+LGmFyGanS7w1DkJt6Hjfu5vnx33qOdP9bqKL93pCOatbw==
+X-Received: by 2002:a17:907:9710:: with SMTP id jg16mr3017552ejc.286.1611653591863;
+        Tue, 26 Jan 2021 01:33:11 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id ke7sm9484812ejc.7.2021.01.26.01.33.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 01:33:11 -0800 (PST)
+Subject: Re: [RESEND v13 10/10] KVM: vmx/pmu: Release guest LBR event via lazy
+ release mechanism
+To:     Like Xu <like.xu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, kan.liang@intel.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210108013704.134985-1-like.xu@linux.intel.com>
+ <20210108013704.134985-11-like.xu@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <310d674c-44e7-7b46-064f-7cb88c456d0f@redhat.com>
+Date:   Tue, 26 Jan 2021 10:33:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210108013704.134985-11-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch.pl warning: "__initconst should be placed after socs[]".
+On 08/01/21 02:37, Like Xu wrote:
+> The vPMU uses GUEST_LBR_IN_USE_IDX (bit 58) in 'pmu->pmc_in_use' to
+> indicate whether a guest LBR event is still needed by the vcpu. If the
+> vcpu no longer accesses LBR related registers within a scheduling time
+> slice, and the enable bit of LBR has been unset, vPMU will treat the
+> guest LBR event as a bland event of a vPMC counter and release it
+> as usual. Also, the pass-through state of LBR records msrs is cancelled.
+> 
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> ---
+>   arch/x86/kvm/pmu.c           |  7 +++++++
+>   arch/x86/kvm/pmu.h           |  4 ++++
+>   arch/x86/kvm/vmx/pmu_intel.c | 17 ++++++++++++++++-
+>   3 files changed, 27 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 405890c723a1..e7c72eea07d4 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -463,6 +463,7 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
+>   	struct kvm_pmc *pmc = NULL;
+>   	DECLARE_BITMAP(bitmask, X86_PMC_IDX_MAX);
+>   	int i;
+> +	bool extra_cleanup = false;
+>   
+>   	pmu->need_cleanup = false;
+>   
+> @@ -474,8 +475,14 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
+>   
+>   		if (pmc && pmc->perf_event && !pmc_speculative_in_use(pmc))
+>   			pmc_stop_counter(pmc);
+> +
+> +		if (i == INTEL_GUEST_LBR_INUSE)
+> +			extra_cleanup = true;
+>   	}
+>   
+> +	if (extra_cleanup && kvm_x86_ops.pmu_ops->cleanup)
+> +		kvm_x86_ops.pmu_ops->cleanup(vcpu);
+> +
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- drivers/soc/atmel/soc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You can call this function always, it's cleaner than hardcoding 
+INTEL_GUEST_LBR_INUSE.
 
-diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-index d54ec271a15d..8d89e2426fc8 100644
---- a/drivers/soc/atmel/soc.c
-+++ b/drivers/soc/atmel/soc.c
-@@ -30,7 +30,7 @@
- #define AT91_CIDR_EXT			BIT(31)
- #define AT91_CIDR_MATCH_MASK		GENMASK(30, 5)
- 
--static const struct at91_soc __initconst socs[] = {
-+static const struct at91_soc socs[] __initconst = {
- #ifdef CONFIG_SOC_AT91RM9200
- 	AT91_SOC(AT91RM9200_CIDR_MATCH, 0, "at91rm9200 BGA", "at91rm9200"),
- #endif
--- 
-2.7.4
+You can also use INTEL_PMC_IDX_FIXED_VLBR directly instead of 
+INTEL_GUEST_LBR_INUSE.
+
+Paolo
 
