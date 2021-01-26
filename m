@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE411303FDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510C5303FDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405615AbhAZOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:12:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51862 "EHLO mail.kernel.org"
+        id S2405734AbhAZOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:12:57 -0500
+Received: from foss.arm.com ([217.140.110.172]:41858 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405757AbhAZOKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:10:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A92922B2C
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 14:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611670159;
-        bh=dywcinLhnWbCGkwmC7N27KWDoiSsoR2mDWme4MvGMX4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lM1fUy6Pf1Ouniobh3R22FFSWZdr8Ds/zPrpGFz7dYQIkwi1K2L3ZTEBXuJ1YX7Bo
-         3h8FhPbAihY1lVZ834KbiWSnnYmmyGKV373xPvTG4WZivQ9ZNY7qsSiU24LMwMVrj5
-         Gnmvw1skGRFfYNJVtiFl1lEMAg+kkB9slgS/2CVAUZhAdWdUsGR3MCQqGEFeISZZuZ
-         aN2wwo2QqqYE4nbJ78CV25cW7Y7dL4sszl1L8BEBcfZmFpBQUaXv5HzF85pW5rWcXb
-         LYuPa/g22p4Yuxjb2DAe4pXSt7riXmx8/8yoeww07FrzEFIRwUs7+At4XqRmTgSOKr
-         OAqMEouGVBryg==
-Received: by mail-oi1-f170.google.com with SMTP id d18so9240916oic.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:09:19 -0800 (PST)
-X-Gm-Message-State: AOAM5315hB9BQtXvJHgRVbs8vS/yuA+YF+/HYt97Eeo/t70WHKwR0Jkp
-        r5s98EnMgxjmOPquTR1egZ0iqlVp1MxkLIAqzac=
-X-Google-Smtp-Source: ABdhPJzg4s1MsR3KH/HUBStRGQGi14cr6taM6xDfLQvIzDToIyO+J2m+BiSP/UmK0hcWuxTRWlYa8ICOsMJfNKBmOOs=
-X-Received: by 2002:aca:eb0a:: with SMTP id j10mr3405012oih.4.1611670158912;
- Tue, 26 Jan 2021 06:09:18 -0800 (PST)
+        id S2392684AbhAZOMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 09:12:40 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EFD6106F;
+        Tue, 26 Jan 2021 06:11:55 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.45.247])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E33073F68F;
+        Tue, 26 Jan 2021 06:11:50 -0800 (PST)
+Date:   Tue, 26 Jan 2021 14:11:48 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Jia He <justin.he@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Gavin Shan <gshan@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: Re: [RFC PATCH 1/2] arm64/cpuinfo: Move init_cpu_features() ahead of
+ setup.c::early_fixmap_init()
+Message-ID: <20210126141148.GC80448@C02TD0UTHF1T.local>
+References: <20210113014047.14371-1-justin.he@arm.com>
+ <20210113014047.14371-2-justin.he@arm.com>
+ <20210126135712.GA29956@willie-the-truck>
 MIME-Version: 1.0
-References: <20210125113758.2430680-1-arnd@kernel.org> <20210126080827.GA26654@trex>
- <CAK8P3a09stVcEr9xBOLbkw7ZtzdZpP_pqE4wYRzBoC70c3h1eA@mail.gmail.com> <20210126114507.GA9282@trex>
-In-Reply-To: <20210126114507.GA9282@trex>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 26 Jan 2021 15:09:02 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0nZSejOkQScYBPnDP+2H_bo2nmtOqxW1j-F4tb6dbLAA@mail.gmail.com>
-Message-ID: <CAK8P3a0nZSejOkQScYBPnDP+2H_bo2nmtOqxW1j-F4tb6dbLAA@mail.gmail.com>
-Subject: Re: [PATCH] optee: simplify i2c access
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        op-tee@lists.trustedfirmware.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126135712.GA29956@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:50 PM Jorge Ramirez-Ortiz, Foundries
-<jorge@foundries.io> wrote:
-> On 26/01/21, Arnd Bergmann wrote:
-> > On Tue, Jan 26, 2021 at 9:08 AM Jorge Ramirez-Ortiz, Foundries
-> >
-> > The fixes tag only describes which commit introduced the bug, it is irrelevant
-> > what type of bug this is.
->
-> thanks Arnd.
->
-> what compiler warnings are defined as kernel bugs? is there a list
-> that you use when tracking these?
+On Tue, Jan 26, 2021 at 01:57:13PM +0000, Will Deacon wrote:
+> > @@ -297,16 +297,20 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+> >  	 */
+> >  	arm64_use_ng_mappings = kaslr_requires_kpti();
+> >  
+> > -	early_fixmap_init();
+> > -	early_ioremap_init();
+> > -
+> > -	setup_machine_fdt(__fdt_pointer);
+> > -
+> >  	/*
+> >  	 * Initialise the static keys early as they may be enabled by the
+> >  	 * cpufeature code and early parameters.
+> >  	 */
+> >  	jump_label_init();
+> 
+> I don't think your patch changes this, but afaict jump_label_init() uses
+> per-cpu variables via cpus_read_lock(), yet we don't initialise our offset
+> until later on. Any idea how that works?
 
-I consider any warning a bug, a normal kernel build should always be
-warning free.
+We initialize the boot CPU's offset twice during boot, once before this
+in smp_setup_processor_id(), and once afterwards in
+smp_prepare_boot_cpu() since setup_per_cpu_areas() will allocate a new
+region for CPU0.
 
-I sometimes send fixes for warnings that only happen with 'make W=1',
-'make C=1' or even 'make W=2'. For those, I would only categorize them
-as a real bug if they actually cause runtime misbehavior, but there are
-some -Wsomething flags that we would like to enable by default in the
-future.
+IIUC per-cpu writes before smp_prepare_boot_cpu() are potentially dodgy
+since they might be copied to other CPUs, but reads are all fine.
 
-      Arnd
+Mark.
