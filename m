@@ -2,130 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30281303AD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21318303A89
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404613AbhAZKy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:54:29 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34250 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729110AbhAZDK6 (ORCPT
+        id S2404260AbhAZKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731895AbhAZCDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:10:58 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10Q0GdCH124859;
-        Mon, 25 Jan 2021 18:16:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611620199;
-        bh=L+f4ohZrdj488CP3I7uIPQegEJlAgJImjluiVuvJrcA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=SvdgqdQS3ePBAKHWoAKSIOh32WDJ+cxGIFBElawyaWhStFSv569KvJA+sx84x2f6E
-         3yIjZq8TUh857IyO1M0YpXcPcQOOsbr9jG96QKAfogSsDBdF/LoRXFh7Z4psbqqnrx
-         IqrA2p762TzawbT/tnwaamFTLnq/c1nMHi0XQob8=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10Q0Gdcd047151
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 25 Jan 2021 18:16:39 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
- Jan 2021 18:16:38 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 25 Jan 2021 18:16:38 -0600
-Received: from [10.250.69.64] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10Q0GcAE007721;
-        Mon, 25 Jan 2021 18:16:38 -0600
-Subject: Re: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
-To:     Rob Herring <robh@kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Lechner <david@lechnology.com>,
-        <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-References: <20210115205819.19426-1-s-anna@ti.com>
- <20210126000443.GA1223706@robh.at.kernel.org>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <8f4a47f8-18dc-cb73-10db-033e5e5adb25@ti.com>
-Date:   Mon, 25 Jan 2021 18:16:38 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 25 Jan 2021 21:03:32 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BC9C061797;
+        Mon, 25 Jan 2021 16:21:28 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id u4so697536pjn.4;
+        Mon, 25 Jan 2021 16:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UJgAgQP11zokYfGVBujFOzsobumPVUSFg2V2m/PgB6o=;
+        b=OeoEzKs9iAFX8/BeqfqPipxRkleqtnWRdmDMD8chcVl03j4u4ZwPXcuCOKurjfh/P1
+         qkJZJzi8TDx+4DJAH+ps2vpKt8D1JUFkN1ST96z9oU9ozPiTSl8PBRc5cfF6axK6h9zi
+         XI7yR5rbczgPl6xszy6bmZQGkx/cuf5orYq9IScvttfCLQr+6VWqXDngzKMCv30FxeQW
+         gl+uajegBYNtgnidpPuZP9BMw7Jg+5VZHbMVPcT9mOoLPbeOhgC+bpzZ9ot9PP+WoFY1
+         Bg5kUhAkuiZAqIhGxBdIONr7fBlMF++Oh09xU7frX6fJlkaKOPQY1HkANlCz8aSgatXG
+         e0Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UJgAgQP11zokYfGVBujFOzsobumPVUSFg2V2m/PgB6o=;
+        b=FUAgwWfNMKVa4xVhTJos9XGk/Z3OnqmxeFof7rW1rSqAH2vOHgdQ8XRgzJ9fW/Ab5h
+         Vsya8WTK46NIGLDXyzwGi46VVyzM6YneDh2XvCKBMKkiGuBW5hmygBjASM33kt1aN2Ug
+         Slv/Glzuqjdx8OKsmhYutj1fTJO4OHdtrDYzX45T+QAaHmd7YFAetssFY12zObyftImj
+         kH1UwekQgC9RfpBzKqDVOvGXZV+AKvwyl+JcxbQ8Ti/K0NFfBv8Aj/F80IOGbT0fx1GO
+         s8ilYo2+OEXCRVGz9WP/byU/g64ImGIVm6lhiQ/6EQ3IdFU9BIXDlzxD0Ivmp8Pw5xFh
+         DisQ==
+X-Gm-Message-State: AOAM531pwsdIyzlXAeX0xfMqq2rVfo2JpVUrOLHM4X3LT+byC/9+RIRj
+        +D2ApL3eJc7Q+yLZf/Irn2zeaCX6UKBOjb0W
+X-Google-Smtp-Source: ABdhPJwdN2PSGcAKJxECxKhru6o8AkmRJkwKT3ibdDYUc5n+TyrNSc8V1SjBL+R6kGj1ONYUGVIgmw==
+X-Received: by 2002:a17:90b:3111:: with SMTP id gc17mr2890786pjb.164.1611620487511;
+        Mon, 25 Jan 2021 16:21:27 -0800 (PST)
+Received: from [127.0.0.1] ([203.205.141.50])
+        by smtp.gmail.com with ESMTPSA id a31sm17671665pgb.93.2021.01.25.16.21.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 16:21:26 -0800 (PST)
+Subject: Re: [RFC PATCH v2 1/4] jbd2: make jdb2_debug module parameter per
+ device
+To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>, jack@suse.com,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <cover.1611402263.git.brookxu@tencent.com>
+ <2364f54ebe6b03d4d12802531175f0b4cd2857ae.1611402263.git.brookxu@tencent.com>
+ <CAD+ocbx18bb-UB79wcqMDMZmjCzUKUtUBEH9wKApyrUD8KpXxQ@mail.gmail.com>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <ef1ff688-a549-f1b7-7a80-a281e45abe3f@gmail.com>
+Date:   Tue, 26 Jan 2021 08:21:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210126000443.GA1223706@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAD+ocbx18bb-UB79wcqMDMZmjCzUKUtUBEH9wKApyrUD8KpXxQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On 1/25/21 6:04 PM, Rob Herring wrote:
-> On Fri, Jan 15, 2021 at 02:58:19PM -0600, Suman Anna wrote:
->> The '#address-cells' property looks to be a required property for
->> interrupt controller nodes as indicated by a warning message seen
->> when building dtbs with W=2. Adding the property to the PRUSS INTC
->> dts nodes though fails the dtbs_check. Add this property to the
->> PRUSS INTC binding to make it compliant with both dtbs_check and
->> building dtbs.
+
+harshad shirwadkar wrote on 2021/1/26 1:15:
+> Hey hi! I don't see my previous comments being handled here or am I
+> missing something? It'd be really handy to have the device name
+> printed in jbd2 logs.
+
+Maybe I miss something..,the origin switch has been reserved, the new added
+switch and the origin switch together determine whether the log of a certain
+device is finally output. . Also, I will add device information to the next
+version.thanks.
+
+> On Sat, Jan 23, 2021 at 4:01 AM Chunguang Xu <brookxu.cn@gmail.com> wrote:
 >>
->> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> On a multi-disk machine, because jbd2's debugging switch is global,this
+>> confuses the logs of multiple disks. It is not easy to distinguish the
+>> logs of each disk and the amount of generated logs is very large. Maybe
+>> a separate debugging switch for each disk would be better, so that we
+>> can easily distinguish the logs of a certain disk.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+>> Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 >> ---
->> Hi Rob,
+>>  fs/jbd2/journal.c     | 55 ++++++++++++++++++++++++++++++++++++++++---
+>>  fs/jbd2/transaction.c |  2 +-
+>>  include/linux/jbd2.h  |  7 ++++++
+>>  3 files changed, 60 insertions(+), 4 deletions(-)
 >>
->> This patch is also part of our effort to get rid of the warnings seen
->> around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
->> INTC bindings to not get a warning with dtbs_check while also ensuring
->> no warnings while building dtbs with W=2.
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index 2dc944442802..1f32b854ea28 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -101,13 +101,13 @@ EXPORT_SYMBOL(jbd2_inode_cache);
+>>  static int jbd2_journal_create_slab(size_t slab_size);
 >>
->> I would have expected the '#address-cells' requirement to be inherited
->> automatically. And looking through the schema files, I actually do not
->> see the interrupt-controller.yaml included automatically anywhere. You
->> had asked us to drop the inclusion in this binding in our first version
->> with YAML [3]. Am I missing something, and how do we ensure that this
->> is enforced automatically for everyone?
-> 
-> interrupt-controller.yaml is applied to any node named 
-> 'interrupt-controller'. More generally, if 'compatible' is not present, 
-> then we look at $nodename for the default 'select'. In your case, you 
-> didn't name the node appropriately.
-
-Thanks for the clarification. Yeah, I didn't add anything specifically, since
-the expectation is interrupt-controller. Should I be adding that to this binding?
-
->  
-> We can't check this in interrupt-controller.yaml because #address-cells 
-> is not always 0. GICv3 is one notable exception.
-> 
+>>  #ifdef CONFIG_JBD2_DEBUG
+>> -void __jbd2_debug(int level, const char *file, const char *func,
+>> +void jbd2_log(int level, journal_t *j, const char *file, const char *func,
+>>                   unsigned int line, const char *fmt, ...)
+>>  {
+>>         struct va_format vaf;
+>>         va_list args;
 >>
->> regards
->> Suman
+>> -       if (level > jbd2_journal_enable_debug)
+>> +       if (!j || (level > jbd2_journal_enable_debug && level > j->j_debug_level))
+>>                 return;
+>>         va_start(args, fmt);
+>>         vaf.fmt = fmt;
+>> @@ -115,7 +115,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
+>>         printk(KERN_DEBUG "%s: (%s, %u): %pV", file, func, line, &vaf);
+>>         va_end(args);
+>>  }
+>> -EXPORT_SYMBOL(__jbd2_debug);
+>> +EXPORT_SYMBOL(jbd2_log);
+>>  #endif
 >>
->> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
-> 
-> I've commented on this thread now in regards to #address-cells.
-
-I suppose I still need this patch to be defined to unblock the ICSSG nodes
-getting accepted by our dts maintainer. Care to give your Reviewed-by for the
-change? Or I can spin a v2 with $nodename added as well if that's needed too.
-
-regards
-Suman
-
-> 
-> Rob
-> 
->> [2] https://patchwork.kernel.org/project/linux-arm-kernel/cover/20210114194805.8231-1-s-anna@ti.com/
->> [3] https://patchwork.kernel.org/comment/23484523/
+>>  /* Checksumming functions */
+>> @@ -1257,6 +1257,48 @@ static int jbd2_seq_info_release(struct inode *inode, struct file *file)
+>>         return seq_release(inode, file);
+>>  }
 >>
->>  .../bindings/interrupt-controller/ti,pruss-intc.yaml        | 6 ++++++
->>  1 file changed, 6 insertions(+)
-
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +static int jbd2_proc_debug_show(struct seq_file *m, void *v)
+>> +{
+>> +       journal_t *j = m->private;
+>> +
+>> +       seq_printf(m, "%d\n", j->j_debug_level);
+>> +       return 0;
+>> +}
+>> +
+>> +static int jbd2_proc_debug_open(struct inode *inode, struct file *file)
+>> +{
+>> +       journal_t *journal = PDE_DATA(inode);
+>> +
+>> +       return single_open(file, jbd2_proc_debug_show, journal);
+>> +}
+>> +
+>> +static ssize_t jbd2_proc_debug_write(struct file *file,
+>> +               const char __user *buffer, size_t count, loff_t *ppos)
+>> +{
+>> +       struct seq_file *seq = file->private_data;
+>> +       journal_t *j = seq->private;
+>> +       char c;
+>> +
+>> +       if (get_user(c, buffer))
+>> +               return -EFAULT;
+>> +
+>> +       if (c < '0' || c > '5')
+>> +               return -EINVAL;
+>> +
+>> +       j->j_debug_level = c - '0';
+>> +       return count;
+>> +}
+>> +
+>> +static const struct proc_ops jbd2_debug_proc_ops = {
+>> +       .proc_open      = jbd2_proc_debug_open,
+>> +       .proc_read      = seq_read,
+>> +       .proc_write     = jbd2_proc_debug_write,
+>> +       .proc_release   = single_release,
+>> +       .proc_lseek     = seq_lseek,
+>> +};
+>> +#endif
+>> +
+>>  static const struct proc_ops jbd2_info_proc_ops = {
+>>         .proc_open      = jbd2_seq_info_open,
+>>         .proc_read      = seq_read,
+>> @@ -1272,12 +1314,19 @@ static void jbd2_stats_proc_init(journal_t *journal)
+>>         if (journal->j_proc_entry) {
+>>                 proc_create_data("info", S_IRUGO, journal->j_proc_entry,
+>>                                  &jbd2_info_proc_ops, journal);
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +               proc_create_data("jbd2_debug", S_IRUGO, journal->j_proc_entry,
+>> +                                &jbd2_debug_proc_ops, journal);
+>> +#endif
+>>         }
+>>  }
+>>
+>>  static void jbd2_stats_proc_exit(journal_t *journal)
+>>  {
+>>         remove_proc_entry("info", journal->j_proc_entry);
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +       remove_proc_entry("jbd2_debug", journal->j_proc_entry);
+>> +#endif
+>>         remove_proc_entry(journal->j_devname, proc_jbd2_stats);
+>>  }
+>>
+>> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+>> index 9396666b7314..71787e826788 100644
+>> --- a/fs/jbd2/transaction.c
+>> +++ b/fs/jbd2/transaction.c
+>> @@ -150,7 +150,7 @@ static inline void update_t_max_wait(transaction_t *transaction,
+>>                                      unsigned long ts)
+>>  {
+>>  #ifdef CONFIG_JBD2_DEBUG
+>> -       if (jbd2_journal_enable_debug &&
+>> +       if ((jbd2_journal_enable_debug || transaction->t_journal->j_debug_level) &&
+>>             time_after(transaction->t_start, ts)) {
+>>                 ts = jbd2_time_diff(ts, transaction->t_start);
+>>                 spin_lock(&transaction->t_handle_lock);
+>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>> index 99d3cd051ac3..600a2ea8324a 100644
+>> --- a/include/linux/jbd2.h
+>> +++ b/include/linux/jbd2.h
+>> @@ -1211,6 +1211,13 @@ struct journal_s
+>>          */
+>>         struct transaction_stats_s j_stats;
+>>
+>> +#ifdef CONFIG_JBD2_DEBUG
+>> +       /**
+>> +        * @j_debug_level: debugging level for jbd2.
+>> +        */
+>> +       unsigned int j_debug_level;
+>> +#endif
+>> +
+>>         /**
+>>          * @j_failed_commit: Failed journal commit ID.
+>>          */
+>> --
+>> 2.30.0
+>>
