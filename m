@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1033043BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F453043B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405162AbhAZQXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:23:51 -0500
-Received: from mga05.intel.com ([192.55.52.43]:22920 "EHLO mga05.intel.com"
+        id S2404764AbhAZQWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:22:37 -0500
+Received: from www.zeus03.de ([194.117.254.33]:34074 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392864AbhAZQXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:23:15 -0500
-IronPort-SDR: AWLXCPma6Ex1pHJUisyRTzLD1VqL41gF7ND/Y1t61afODmam3X+9Sw235+RII8A24BljqeBb0Y
- OEy6YukLM+Cg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="264751108"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="264751108"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 08:21:24 -0800
-IronPort-SDR: 71bB2xu2lj1b31rvA/hp4TtsFp1SGDz6arxVTeLjP8+4PzJECTDVtga2zRndSPIwZ6+ZzGUOCi
- Ld9HJeCkZZNQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="356764277"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 26 Jan 2021 08:21:24 -0800
-Received: from [10.254.127.77] (kliang2-MOBL.ccr.corp.intel.com [10.254.127.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 0EFE858010C;
-        Tue, 26 Jan 2021 08:21:22 -0800 (PST)
-Subject: Re: [PATCH 03/12] perf/x86/intel: Add perf core PMU support for
- Sapphire Rapids
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com
-References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
- <1611088711-17177-4-git-send-email-kan.liang@linux.intel.com>
- <YBA3V59bsOA9j/wj@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <0272153e-f2a5-67df-9402-16d3cc118713@linux.intel.com>
-Date:   Tue, 26 Jan 2021 11:21:21 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2392864AbhAZQWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:22:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=69XObF95WtSS8VyhOlUCKP8GNjcj
+        eQqS/KWP7VudESk=; b=t1f9Q827OEAaWutJdtDDS0k9EJPHWWoWWr957FRBx637
+        zh2HXlDNl8F8RL59/sGp+tfydc8ueHPCo7dEMEaATNB8+g0/YfDTXn9Psh0SyD27
+        8iWFvgYqBy0DDW8TIlA/2WYjF+ws0U5VllrqM0luptI0mjAwXj5pF36jhtg7odI=
+Received: (qmail 3782982 invoked from network); 26 Jan 2021 17:21:38 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 26 Jan 2021 17:21:38 +0100
+X-UD-Smtp-Session: l3s3148p1@G1qEDNC5EOUgAwDPXyX1AEdA8SGgn5QT
+Date:   Tue, 26 Jan 2021 17:21:37 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] dmaengine: rcar-dmac: Add helpers for clearing
+ DMA channel status
+Message-ID: <20210126162137.GB928@ninjato>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-4-geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <YBA3V59bsOA9j/wj@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="R3G7APHDIzY6R/pk"
+Content-Disposition: inline
+In-Reply-To: <20210125142431.1049668-4-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--R3G7APHDIzY6R/pk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 1/26/2021 10:37 AM, Peter Zijlstra wrote:
-> On Tue, Jan 19, 2021 at 12:38:22PM -0800, kan.liang@linux.intel.com wrote:
->> @@ -1577,9 +1668,20 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
->>   	}
->>   
->>   	if (format_size & PEBS_DATACFG_MEMINFO) {
->> +		if (sample_type & PERF_SAMPLE_WEIGHT) {
->> +			u64 weight = meminfo->latency;
->> +
->> +			if (x86_pmu.flags & PMU_FL_INSTR_LATENCY)
->> +				weight >>= PEBS_CACHE_LATENCY_OFFSET;
->> +			data->weight = weight & PEBS_LATENCY_MASK ?:
->>   				intel_get_tsx_weight(meminfo->tsx_tuning);
->> +		}
->> +
->> +		if (sample_type & PERF_SAMPLE_WEIGHT_EXT) {
->> +			data->weight_ext.val = 0;
->> +			if (x86_pmu.flags & PMU_FL_INSTR_LATENCY)
->> +				data->weight_ext.instr_latency = meminfo->latency & PEBS_LATENCY_MASK;
->> +		}
->>   
->>   		if (sample_type & PERF_SAMPLE_DATA_SRC)
->>   			data->data_src.val = get_data_src(event, meminfo->aux);
-> 
-> Talk to me about that SAMPLE_WEIGHT stuff.... I'm not liking it.
-> 
-> Sure you want multiple dimensions, but urgh.
-> 
-> Also, afaict, as proposed you're wasting 80/128 bits. That is, all data
-> you want to export fits in a single u64 and yet you're using two, which
-> is mighty daft.
-> 
-> Sure, pebs::lat / pebs_meminfo::latency is defined as a u64, but you
-> can't tell me that that is ever actually more than 4G cycles. Even the
-> TSX block latency is u32.
-> 
-> So how about defining SAMPLE_WEIGHT_STRUCT which uses the exact same
-> data as SAMPLE_WEIGHT but unions it with a struct. I'm not sure if we
-> want:
-> 
-> union sample_weight {
-> 	u64 weight;
-> 
-> 	struct {
-> 		u32	low_dword;
-> 		u32	high_dword;
-> 	};
-> 
-> 	/* or */
-> 
-> 	struct {
-> 		u32	low_dword;
-> 		u16	high_word;
-> 		u16	higher_word;
-> 	};
-> };
-> 
-> Then have the core code enforce SAMPLE_WEIGHT ^ SAMPLE_WEIGHT_STRUCT and
-> make the existing code never set the high dword.
+On Mon, Jan 25, 2021 at 03:24:30PM +0100, Geert Uytterhoeven wrote:
+> Extract the code to clear the status of one or all channels into their
+> own helpers, to prepare for the different handling of the R-Car V3U SoC.
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-So the kernel will only accept either SAMPLE_WEIGHT type or 
-SAMPLE_WEIGHT_STRUCT type. It should error out if both types are set, right?
+Looks good and works fine with I2C + DMA on V3U:
 
-I will check if u32 is enough for meminfo::latency on the previous 
-platforms.
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Thanks,
-Kan
+
+--R3G7APHDIzY6R/pk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAQQZEACgkQFA3kzBSg
+KbaP4A/+KgYXyUS3zhyOqcl7Xa5VAc9DYaWvoiDNQcspOqmkqPw+NlA9XkuUwJU0
+CWU27aTsRbyhYKzPMNxjIH+16ztGPRG0Zkr0OSvYYPMuMerD6DlkW1wLDufKq7+L
+u+g2kx//tTP6TaKOGLdIsimkeB2MhghVOctslPOggEk5QBI4D9qf9mHzXOeM0v3K
+jBUyefwwzOm3XA/oMiL6HNVRdgPIqT71afaOyO1xBFPKFvjP2iZRoVSPKP0Hfe/i
+1ANFt96h5VpQsgvQwLIDkSDdMH/Hp8jHTkAkaEFx3m6C4KlFBqwlLb27VLvaRkXz
+Z6NyBwC0uCrKVhxKcpOb2CkBC5MKW4ZtwMlKhlF1Q+WBtWunrO8U4DhNfjfnq+7l
+Y0u37r699hJDGFqAGCrq1SWFHDOtWl8mnIlAnxFXQufH0grhSMS/anQYtvbE94m1
+NFnd7TeLc3ThvHDuZQ8WJ6ZjknxoSn26SNoUORY+gqIEpbwkoMhlpPYTkes4EzNc
+6BjDoIxgBJyRUUPqhzhNN6pY/C0bzEsbuw4gDx5yPpLWOcsZ8FPjxliz4S5mnuhG
+KG7LhjvnPToQ7XvGTB3w1i5TmXvlTcOaNp/HRILDJy31c31ef+ZfsX+m9s+DZhjA
+3J+JAOJVTV+pYCLvCEL0Z0BjVVGXMZQ335lAWhywcLr7Dq+iPYo=
+=y8Ux
+-----END PGP SIGNATURE-----
+
+--R3G7APHDIzY6R/pk--
