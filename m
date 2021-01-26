@@ -2,95 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D29304582
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54896304583
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbhAZRjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:39:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731533AbhAZIBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:01:44 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0861C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:00:54 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DPzgj5C9Vz9sSs;
-        Tue, 26 Jan 2021 19:00:49 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611648051;
-        bh=H6AIkwMVmcNUMqcYZNv6i2PDekiR2N8Weacqx/lRuso=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QQTzeZSPVt19G/EhuC1FNOJtoSRF/Mti55ip2ymssvbOek3ahUG0OqvmXDJHARrWg
-         3LE6XcdMcsqm5nBfwPT0QRl7gA/ZDQzyK+UxjkyOqgHjtcN+vBrcuGPe4/rZMLqM+n
-         KWvwwFkFEjDHtL8CNRyZz+8fdzMEv3hEOtDaH6ThrHzfjbh2Xww1XJlX/bh7HOKHxw
-         ZsTEisEiCc+z1JphEcuZjRw807Cvoc2GyHIPucDCiGxDivMuJsvJvT8qOCxMlvXck0
-         6iivf67MVoFFJtQEnXcsW/wC01B0CRw4BhqPlcER30rp2yfiC8p9VgmdQMWRCvUdyM
-         v63/tLblRvX8A==
-Date:   Tue, 26 Jan 2021 19:00:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: Dealing with complex patch series in linux-next
-Message-ID: <20210126190030.109f24d7@canb.auug.org.au>
-In-Reply-To: <20210125094323.gz7g5p6xeifolf5v@wittgenstein>
-References: <20210125094323.gz7g5p6xeifolf5v@wittgenstein>
+        id S2391604AbhAZRkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:40:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34774 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389672AbhAZIBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:01:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611648061; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9slJ+Ud3Qp4uGdxPfooc/fvRWSdUmMjQcd1zwclQhNE=;
+        b=BqSNfuQw+L7EsMgvK+5Nq1aDStIFDn3EWnzSOTHH+JyJ+5H6YFgje+4FqkNJHtZg6w7OU4
+        hTRElZv2hMncP46wT1TZJGUYN0tZ/ab9xRlu8BHxw5UUs4p0GJZwzNOyRQxVGcAi/oq5yY
+        6cP3FJDMFNjT45b6GZ3jBF1neXenBOo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 762F5ADD6;
+        Tue, 26 Jan 2021 08:01:01 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 09:01:00 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: Adding missing mem_cgroup_uncharge() to
+ __add_to_page_cache_locked()
+Message-ID: <20210126080100.GC827@dhcp22.suse.cz>
+References: <20210125042441.20030-1-longman@redhat.com>
+ <20210125092815.GB827@dhcp22.suse.cz>
+ <de87d009-985a-87d3-08fb-c688e23d60a9@redhat.com>
+ <20210125160328.GP827@dhcp22.suse.cz>
+ <20210125162506.GF308988@casper.infradead.org>
+ <20210125164118.GS827@dhcp22.suse.cz>
+ <20210125181436.GV827@dhcp22.suse.cz>
+ <53eb7692-e559-a914-e103-adfe951d7a7c@redhat.com>
+ <YA8TcICO1OpFwKsj@cmpxchg.org>
+ <bbc6c5d0-bcc9-f538-af4c-166b0d2d1c04@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dwYo/3GJS.IXDhHaYhCUWEA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bbc6c5d0-bcc9-f538-af4c-166b0d2d1c04@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dwYo/3GJS.IXDhHaYhCUWEA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon 25-01-21 13:57:18, Waiman Long wrote:
+> On 1/25/21 1:52 PM, Johannes Weiner wrote:
+> > On Mon, Jan 25, 2021 at 01:23:58PM -0500, Waiman Long wrote:
+> > > On 1/25/21 1:14 PM, Michal Hocko wrote:
+[...]
+> > > > With the proposed simplification by Willy
+> > > > Acked-by: Michal Hocko <mhocko@suse.com>
+> > > Thank for the ack. However, I am a bit confused about what you mean by
+> > > simplification. There is another linux-next patch that changes the condition
+> > > for mem_cgroup_charge() to
+> > > 
+> > > -       if (!huge) {
+> > > +       if (!huge && !page_is_secretmem(page)) {
+> > >                  error = mem_cgroup_charge(page, current->mm, gfp);
+> > > 
+> > > That is the main reason why I introduced the boolean variable as I don't
+> > > want to call the external page_is_secretmem() function twice.
+> > The variable works for me.
+> > 
+> > On the other hand, as Michal points out, the uncharge function will be
+> > called again on the page when it's being freed (in non-fscache cases),
+> > so you're already relying on being able to call it on any page -
+> > charged, uncharged, never charged. It would be fine to call it
+> > unconditionally in the error path. Aesthetic preference, I guess.
 
-Hi Christian,
+Yes aesthetic preference... Just compare to 
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 5c9d564317a5..7aa05420107e 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -896,11 +896,14 @@ noinline int __add_to_page_cache_locked(struct page *page,
+ 
+ 	if (xas_error(&xas)) {
+ 		error = xas_error(&xas);
+-		goto error;
++		goto error_uncharge;
+ 	}
+ 
+ 	trace_mm_filemap_add_to_page_cache(page);
+ 	return 0;
++error_uncharge:
++	/* memcg will ignore uncharged pages */
++	mem_cgroup_uncharge(page);
+ error:
+ 	page->mapping = NULL;
+ 	/* Leave page->index set: truncation relies upon it */
 
-On Mon, 25 Jan 2021 10:43:23 +0100 Christian Brauner <christian.brauner@ubu=
-ntu.com> wrote:
->
-> After having received another round of acks on the idmapped mounts
-> series and other fses about to move forward with porting I moved forward
-> with merging [1] into my for-next branch which is tracked by sfr in
-> linux-next.
-> Given the nature of the series I expected there to be a good chunk of
-> merge conflicts including some non-trivial ones. But there proved to be
-> too many conflicts or at least a few ones that sfr couldn't handle
-> without more insight into the series. So after talking to sfr this
-> morning we decided to drop the tree for today.
+which resembles our usual state unwinding style much more.
 
-OK, so tomorrow, I will try merging your tree really early.  This will,
-at least, spread the conflict pain out for me (yesterday it hit all at
-once at 4pm and added an hour to my day before I gave up).  Lets see
-how that goes.
+> That may be true. However, I haven't fully studied how the huge page memory
+> accounting work to make sure the uncharge function can be called for huge
+> pages.
 
-Unless someone comes up with a better suggestion, of course :-)
---=20
-Cheers,
-Stephen Rothwell
+... but this is rather lame argument to make, don't you think. This
+sounds like a ducktaping engineering to me. Over time this leads to a
+terrible code. Seriously!
 
---Sig_/dwYo/3GJS.IXDhHaYhCUWEA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAPzB4ACgkQAVBC80lX
-0GwO+Qf/bddgWmiMWClpz+v4qxnZKL2wMxc2CkwDfqER6EMwl4FEBIg4ZgOZ+a0i
-KdEGtdAiAkbxHRleyWBwm3jlWpZq2UkuhKkf1Rm2EgmdzZ8uetZhAHQ12JnGwPtq
-GmELdu+69usk0uQMiePNXcOr8H9SzmWONMNa1FIo8esbrWyrTPSRLypq56vOcZAR
-ygQ3gm8pcWjj8apnoKWhloPrubWUBXhwVwYt3kbHSb8OmtMx4qqN6PCwNpyxJQg4
-m2/othbbqWuflr/pARPSSxcVEQhldtR6vLmxBN0edv/YcJIVWqSO/nE+5oppu0O3
-d8S9TCUy2HoC+3qZA4xboV4CFo0pDg==
-=hkfw
------END PGP SIGNATURE-----
-
---Sig_/dwYo/3GJS.IXDhHaYhCUWEA--
+All that being said I do not want to block this or bother people with
+more emails but geez
+-- 
+Michal Hocko
+SUSE Labs
