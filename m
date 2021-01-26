@@ -2,72 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE456303E65
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7943B303E6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392598AbhAZNRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:17:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404246AbhAZMqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:46:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C7123104;
-        Tue, 26 Jan 2021 12:45:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611665129;
-        bh=jc3jk7zdFTpc4OCqxDpiaeq59UaQ0zVzd2okvWJnK0k=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VwM0R70f5mCKBMPG6MizOTQGdQsSd5f9qbHbneivJMl0X/ywm332UB3s9WS1njMM3
-         gTGsZY0ylXfqIjFAHRsIAgJoyFu6DqFqDLTz6iNa4cbFeLzlcogUeQRAeA+SWTCtGE
-         JLhwdN6KDV5puZ4Y4KELWjd7zg0sRprD/EesK5RX4FWfKjQwJnzfqImARVAkNoGost
-         AGitMGPsRAt5+BMIGH4vVbBBdjErSAVar0pgozGcjHRctHmJ6F+DA7W5Urnnomk0dX
-         stGx2SaNCdgianuiQjf84Iic+RffQU5RSh86p2op5pmA2gfBVHUUbXDl50WkAdontI
-         IqKOp0wBvbYbw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regulator fixes for v5.11-rc5
-Date:   Tue, 26 Jan 2021 12:44:33 +0000
-Message-Id: <20210126124529.37C7123104@mail.kernel.org>
+        id S2404341AbhAZNS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:18:26 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11502 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391790AbhAZMp6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 07:45:58 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQ5yR2C4WzjDdv;
+        Tue, 26 Jan 2021 20:43:59 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 26 Jan 2021 20:45:01 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <xiexiangyou@huawei.com>, <zhengchuan@huawei.com>,
+        <yubihong@huawei.com>
+Subject: [RFC PATCH 0/7] kvm: arm64: Implement SW/HW combined dirty log
+Date:   Tue, 26 Jan 2021 20:44:37 +0800
+Message-ID: <20210126124444.27136-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+The intention:
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+On arm64 platform, we tracking dirty log of vCPU through guest memory abort.
+KVM occupys some vCPU time of guest to change stage2 mapping and mark dirty.
+This leads to heavy side effect on VM, especially when multi vCPU race and
+some of them block on kvm mmu_lock.
 
-are available in the Git repository at:
+DBM is a HW auxiliary approach to log dirty. MMU chages PTE to be writable if
+its DBM bit is set. Then KVM doesn't occupy vCPU time to log dirty.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.11-rc5
+About this patch series:
 
-for you to fetch changes up to 14a71d509ac809dcf56d7e3ca376b15d17bd0ddd:
+The biggest problem of apply DBM for stage2 is that software must scan PTs to
+collect dirty state, which may cost much time and affect downtime of migration.
 
-  regulator: Fix lockdep warning resolving supplies (2021-01-22 14:03:07 +0000)
+This series realize a SW/HW combined dirty log that can effectively solve this
+problem (The smmu side can also use this approach to solve dma dirty log tracking).
 
-----------------------------------------------------------------
-regulator: Fixes for v5.11
+The core idea is that we do not enable hardware dirty at start (do not add DBM bit).
+When a arbitrary PT occurs fault, we execute soft tracking for this PT and enable
+hardware tracking for its *nearby* PTs (e.g. Add DBM bit for nearby 16PTs). Then when
+sync dirty log, we have known all PTs with hardware dirty enabled, so we do not need
+to scan all PTs.
 
-The main thing here is a change to make sure that we don't try to double
-resolve the supply of a regulator if we have two probes going on
-simultaneously, plus an incremental fix on top of that to resolve a
-lockdep issue it introduced.
+        mem abort point             mem abort point
+              ↓                            ↓
+---------------------------------------------------------------
+        |********|        |        |********|        |        |
+---------------------------------------------------------------
+             ↑                            ↑
+        set DBM bit of               set DBM bit of
+     this PT section (64PTEs)      this PT section (64PTEs)
 
-There's also a patch from Dmitry Osipenko adding stubs for some
-functions to avoid build issues in consumers in some configurations.
+We may worry that when dirty rate is over-high we still need to scan too much PTs.
+We mainly concern the VM stop time. With Qemu dirty rate throttling, the dirty memory
+is closing to the VM stop threshold, so there is a little PTs to scan after VM stop.
 
-----------------------------------------------------------------
-David Collins (1):
-      regulator: core: avoid regulator_resolve_supply() race condition
+It has the advantages of hardware tracking that minimizes side effect on vCPU,
+and also has the advantages of software tracking that controls vCPU dirty rate.
+Moreover, software tracking helps us to scan PTs at some fixed points, which
+greatly reduces scanning time. And the biggest benefit is that we can apply this
+solution for dma dirty tracking.
 
-Dmitry Osipenko (1):
-      regulator: consumer: Add missing stubs to regulator/consumer.h
+Test:
 
-Mark Brown (2):
-      Merge v5.11-rc3
-      regulator: Fix lockdep warning resolving supplies
+Host: Kunpeng 920 with 128 CPU 512G RAM. Disable Transparent Hugepage (Ensure test result
+      is not effected by dissolve of block page table at the early stage of migration).
+VM:   16 CPU 16GB RAM. Run 4 pair of (redis_benchmark+redis_server).
 
- drivers/regulator/core.c           | 44 ++++++++++++++++++++++++++++----------
- include/linux/regulator/consumer.h | 30 ++++++++++++++++++++++++++
- 2 files changed, 63 insertions(+), 11 deletions(-)
+Each run 5 times for software dirty log and SW/HW conbined dirty log. 
+
+Test result:
+
+Gain 5%~7% improvement of redis QPS during VM migration.
+VM downtime is not affected fundamentally.
+About 56.7% of DBM is effectively used.
+
+Keqian Zhu (7):
+  arm64: cpufeature: Add API to report system support of HWDBM
+  kvm: arm64: Use atomic operation when update PTE
+  kvm: arm64: Add level_apply parameter for stage2_attr_walker
+  kvm: arm64: Add some HW_DBM related pgtable interfaces
+  kvm: arm64: Add some HW_DBM related mmu interfaces
+  kvm: arm64: Only write protect selected PTE
+  kvm: arm64: Start up SW/HW combined dirty log
+
+ arch/arm64/include/asm/cpufeature.h  |  12 +++
+ arch/arm64/include/asm/kvm_host.h    |   6 ++
+ arch/arm64/include/asm/kvm_mmu.h     |   7 ++
+ arch/arm64/include/asm/kvm_pgtable.h |  45 ++++++++++
+ arch/arm64/kvm/arm.c                 | 125 ++++++++++++++++++++++++++
+ arch/arm64/kvm/hyp/pgtable.c         | 130 ++++++++++++++++++++++-----
+ arch/arm64/kvm/mmu.c                 |  47 +++++++++-
+ arch/arm64/kvm/reset.c               |   8 +-
+ 8 files changed, 351 insertions(+), 29 deletions(-)
+
+-- 
+2.19.1
+
