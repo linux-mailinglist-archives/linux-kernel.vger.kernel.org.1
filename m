@@ -2,496 +2,537 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5513044DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4843044DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389913AbhAZRQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:16:05 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11590 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730199AbhAZGKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:10:31 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DPx9Y07cczMQ80;
-        Tue, 26 Jan 2021 14:08:01 +0800 (CST)
-Received: from [10.174.177.80] (10.174.177.80) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 14:07:54 +0800
-Subject: Re: [PATCH v11 05/13] mm: HUGE_VMAP arch support cleanup
-To:     Nicholas Piggin <npiggin@gmail.com>, <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20210126044510.2491820-1-npiggin@gmail.com>
- <20210126044510.2491820-6-npiggin@gmail.com>
-From:   Ding Tianhong <dingtianhong@huawei.com>
-Message-ID: <4dd92193-a5d8-545a-6503-d3db25ceb6e1@huawei.com>
-Date:   Tue, 26 Jan 2021 14:07:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2390112AbhAZRQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:16:35 -0500
+Received: from mail-vi1eur05on2040.outbound.protection.outlook.com ([40.107.21.40]:47329
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729293AbhAZG1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 01:27:03 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J2efTIGwv3DusI1oqlRckNWWssikyHOPBJKoOoV5Hsnr7QtGjEBFqwyD/jfjquRLqRqSMNI8MRtzF/SgWUD9gB+82Kj3A1vH5HfEmSC9gP06OwFrR1cHA7Gmrv3PVt5X8ngflymAwQ2uvs1qCFLEOJEeFsBRJRMac+hyGr689i//CeH7+3C1aF+HVtiKi/MX+b+d7JCbXTM3YppMKH+HbHYf2XaaPuIoLuiUxRIM7iRIe60/m/5/ab+hr9Af7AgweilKtsa8zxB3qcNGNEo2SiFjnr/sNO+fSusdgQ+lTUKtqBbR7yW1HGos/y4RJwbR8NpkE3pYvtjaJJwzIYKjOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q8IjOJ2z3Xo7HXeBq+cUCTPFMkd8UIQ7HivERc9Ys4w=;
+ b=jQVqxCodYiVYy30+yn6m3jMd1x6AAaX/k7EyYd6aOXgcmK6cUrCutauLF5KZFp6YKlMGWhZB9a642txWvHiF/6D1zpAPbng+gUzO7mUScBaG6hB7lYcvVEGNJtEcam5hRhsTtXgdk9qrMN4ElSany+GM1TUljxwSajbYf4JsLa9+G3oB3OZSQ5dBpxTpSP98//iwf0DMQcPwrwjrgruEfSb1o+EXlOCHDTM/vp1mrxhcK2W1IBQe8DxayJ9S2b+UtaSw7QaqNtT6PQ6uWon62tHNN3TLWmKhQ70G29v/Lc3ZPSimS+FsJh4xJFCMOKP+eH2DVy9usVUyIDGMJCSVvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q8IjOJ2z3Xo7HXeBq+cUCTPFMkd8UIQ7HivERc9Ys4w=;
+ b=BQS1E1L9Y4VU33lMCyPdf+HHS5mazwHIMvIzk8nO2Jo1eC0Wxq/L6Fa54Y+Df2SOWypZgYAAK8xNm/LkpboVY5WCzRuv3oU5EY7vYGNSDBY18e49EFOS3cQ2EkxFK63wMCG6jfcCS29BU9ECcQSVOBBEY1nnyR60TkfeOjQG3j8=
+Authentication-Results: lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR04MB2973.eurprd04.prod.outlook.com (2603:10a6:802:10::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Tue, 26 Jan
+ 2021 06:25:39 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3784.017; Tue, 26 Jan 2021
+ 06:25:39 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     p.zabel@pengutronix.de, airlied@linux.ie, daniel@ffwll.ch,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, laurentiu.palcu@oss.nxp.com,
+        guido.gunther@puri.sm
+Subject: [PATCH v7 1/6] dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
+Date:   Tue, 26 Jan 2021 14:14:46 +0800
+Message-Id: <1611641691-17554-2-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1611641691-17554-1-git-send-email-victor.liu@nxp.com>
+References: <1611641691-17554-1-git-send-email-victor.liu@nxp.com>
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR03CA0108.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::36) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
 MIME-Version: 1.0
-In-Reply-To: <20210126044510.2491820-6-npiggin@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.80]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0108.apcprd03.prod.outlook.com (2603:1096:4:7c::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3805.6 via Frontend Transport; Tue, 26 Jan 2021 06:25:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 09af22d7-50ec-49d9-562b-08d8c1c3333d
+X-MS-TrafficTypeDiagnostic: VI1PR04MB2973:
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB2973DB12F7A54179A6A3459D98BC0@VI1PR04MB2973.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hugOUDaFF7HiF4aSZ8ED/m8SxTS82tBPzJrDZZaVIA39clxxD8eKMcKeRg7NiYY8tlhnB5oUJLGgRT7NVfbnvx4whGexrTAmURhcHpD1Q3T7kRxPbezlov9s0gZc1N9JjO2hZ9qn6hAHWEJXz/cQ9bDiKHxtln6ID1fNvXLo9lZz+f4d9XOXSXUOvvfNW4a5IwgtsyR7EP8TZteoPxg43Z1hyyxdXhgd8G0ViVRzruuOXjxt9gFdJtFEq7c29ge5MKPPlYDBRNgFEEgA3rEUiqv/Dwj8t2F1Oiri45U7YcJsrUk9y+olMD7ypkt5sXtVjm2FV08U47EQHa328fEIom9jtQ3q9zYqap+X/ofsgwmfwPXUWdX4WbmMQoPmKYPphA6kezKlCvpxmqAXYZMQx2FOOxDcMpsi2u9xNgAxkOO4F/OmN6ztuBZWpnGh8Z+QTp+fotlPu9IVA4ICPpgZzvjsLoXGAIt3wAzrNDDfjpKUmn3GFaWL8bc7RoFFTVMH3SzHHK/H1qv6oeITjbFSQQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(346002)(366004)(6506007)(83380400001)(4326008)(6512007)(86362001)(2906002)(52116002)(30864003)(478600001)(956004)(2616005)(26005)(186003)(966005)(16526019)(5660300002)(8676002)(69590400011)(316002)(7416002)(36756003)(66946007)(6666004)(66476007)(6486002)(66556008)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ANy9kAKulTvr3httYJuLwQXYoxvnSYmdLB6CWfzQlvKExLV9UYx0PO0/GCSh?=
+ =?us-ascii?Q?fEvwJJjfaEey8rNoNMW22Q/V5m15osLAmc5YlV3UeDfmGbzhV31CLH4lk0Bx?=
+ =?us-ascii?Q?IUgqvGGPz56Uvu/MIailygDgIHohv7A6LViVqqs/sRTCiasODqFKFVGXK0sQ?=
+ =?us-ascii?Q?8wLe2GLxKCjhu7po6jpO4ylPTFrWYwYzH/Hdx0xpufXgCSZl2L1ArvueeRZL?=
+ =?us-ascii?Q?/4xMfhTG8l647wkxTvnKLWgY06zJ/tG+4JQqX01bia+ED2PduM18cIxbir+G?=
+ =?us-ascii?Q?3ov4eEvxYf7BhrbpMuX54iYhv84ACOCuTXRhDf0eUOcvfcTDhpZ0RlQsNTfI?=
+ =?us-ascii?Q?0qPp01BRSdC6FB2iYXa4mpybWVKU22qZsnS4Dcongr09HaoAKC1O1s8eBEC0?=
+ =?us-ascii?Q?w9lB0gPYdStUSfQxH88DZ4krp+Dke8DtIJWGt7bIcGrXWPpERnToF8YKbI4c?=
+ =?us-ascii?Q?uO2NPVLN/edGH1Q0f1wkyUdTZQTUk8CiRMoEKqKUavPd2Yft9soJC9cID4kx?=
+ =?us-ascii?Q?TVv0xtHu9sWt709hf4pMcHGVKRhX9yYuUInxPrqX+XGWrXFIuiRI3RT2Exva?=
+ =?us-ascii?Q?7lHqTX2dlywanYm7ZgDPQfo+HMNkMWm7E7/4UBfaWff1LvGbSj27Dg+vVsZs?=
+ =?us-ascii?Q?1UtBdClPxv/t5A2Oe18AkoTDporrjKp+TD2TgyYII89UNbDXS4XY0g+9zwAt?=
+ =?us-ascii?Q?1td07lWkPcgmd0YdOFFyZ1cFQaHFf6MZOtMvpEEjdjcnHfB5hNOrv+sbmunR?=
+ =?us-ascii?Q?pkt5XJsbXYrYrYrMwMfSExyYYM0rzj2O6qMhPGaDIyjf6z/ROK1IdcxyiPYx?=
+ =?us-ascii?Q?yrfT1kRxZGcx6OTeA931W8ICglJKbUUNoEItXLY0YctefiNm1JP0gdfLBrqn?=
+ =?us-ascii?Q?Nhc3t6QGMyYccCZi83su6/MBE2ftQUGkmddtpUN4kMjpnlZBrMsEHX/l41+g?=
+ =?us-ascii?Q?ffIHRTQZp5n/nNVhEo4DIKt+OAglxDo0peksensgHHWhQFP80f5PMsThuF19?=
+ =?us-ascii?Q?v1bopYOJRf4S7e7T9Q6g8wEx3sIPTkw2YgBzONTMq7JAOAhDdKaw4VDyscMN?=
+ =?us-ascii?Q?ZgOfNRPd?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09af22d7-50ec-49d9-562b-08d8c1c3333d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 06:25:39.8554
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8kUBbDEm125EcPVImLXmBXt+Vbkfx2a/7PAAfdhniFeHT7prRZl4OpEFBHodEX5JqQsqE+x2s13HsQbgUcaXLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB2973
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Ding Tianhong <dingtianhong@huawei.com>
+This patch adds bindings for i.MX8qxp/qm Display Processing Unit.
 
-On 2021/1/26 12:45, Nicholas Piggin wrote:
-> This changes the awkward approach where architectures provide init
-> functions to determine which levels they can provide large mappings for,
-> to one where the arch is queried for each call.
-> 
-> This removes code and indirection, and allows constant-folding of dead
-> code for unsupported levels.
-> 
-> This also adds a prot argument to the arch query. This is unused
-> currently but could help with some architectures (e.g., some powerpc
-> processors can't map uncacheable memory with large pages).
-> 
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com> [arm64]
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/arm64/include/asm/vmalloc.h         |  8 ++
->  arch/arm64/mm/mmu.c                      | 10 +--
->  arch/powerpc/include/asm/vmalloc.h       |  8 ++
->  arch/powerpc/mm/book3s64/radix_pgtable.c |  8 +-
->  arch/x86/include/asm/vmalloc.h           |  7 ++
->  arch/x86/mm/ioremap.c                    | 12 +--
->  include/linux/io.h                       |  9 ---
->  include/linux/vmalloc.h                  |  6 ++
->  init/main.c                              |  1 -
->  mm/ioremap.c                             | 94 ++++++++++--------------
->  10 files changed, 85 insertions(+), 78 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/vmalloc.h b/arch/arm64/include/asm/vmalloc.h
-> index 2ca708ab9b20..597b40405319 100644
-> --- a/arch/arm64/include/asm/vmalloc.h
-> +++ b/arch/arm64/include/asm/vmalloc.h
-> @@ -1,4 +1,12 @@
->  #ifndef _ASM_ARM64_VMALLOC_H
->  #define _ASM_ARM64_VMALLOC_H
->  
-> +#include <asm/page.h>
-> +
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot);
-> +bool arch_vmap_pud_supported(pgprot_t prot);
-> +bool arch_vmap_pmd_supported(pgprot_t prot);
-> +#endif
-> +
->  #endif /* _ASM_ARM64_VMALLOC_H */
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index ae0c3d023824..1613d290cbd1 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1313,12 +1313,12 @@ void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
->  	return dt_virt;
->  }
->  
-> -int __init arch_ioremap_p4d_supported(void)
-> +bool arch_vmap_p4d_supported(pgprot_t prot)
->  {
-> -	return 0;
-> +	return false;
->  }
->  
-> -int __init arch_ioremap_pud_supported(void)
-> +bool arch_vmap_pud_supported(pgprot_t prot)
->  {
->  	/*
->  	 * Only 4k granule supports level 1 block mappings.
-> @@ -1328,9 +1328,9 @@ int __init arch_ioremap_pud_supported(void)
->  	       !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
->  }
->  
-> -int __init arch_ioremap_pmd_supported(void)
-> +bool arch_vmap_pmd_supported(pgprot_t prot)
->  {
-> -	/* See arch_ioremap_pud_supported() */
-> +	/* See arch_vmap_pud_supported() */
->  	return !IS_ENABLED(CONFIG_PTDUMP_DEBUGFS);
->  }
->  
-> diff --git a/arch/powerpc/include/asm/vmalloc.h b/arch/powerpc/include/asm/vmalloc.h
-> index b992dfaaa161..105abb73f075 100644
-> --- a/arch/powerpc/include/asm/vmalloc.h
-> +++ b/arch/powerpc/include/asm/vmalloc.h
-> @@ -1,4 +1,12 @@
->  #ifndef _ASM_POWERPC_VMALLOC_H
->  #define _ASM_POWERPC_VMALLOC_H
->  
-> +#include <asm/page.h>
-> +
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot);
-> +bool arch_vmap_pud_supported(pgprot_t prot);
-> +bool arch_vmap_pmd_supported(pgprot_t prot);
-> +#endif
-> +
->  #endif /* _ASM_POWERPC_VMALLOC_H */
-> diff --git a/arch/powerpc/mm/book3s64/radix_pgtable.c b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> index 98f0b243c1ab..743807fc210f 100644
-> --- a/arch/powerpc/mm/book3s64/radix_pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/radix_pgtable.c
-> @@ -1082,13 +1082,13 @@ void radix__ptep_modify_prot_commit(struct vm_area_struct *vma,
->  	set_pte_at(mm, addr, ptep, pte);
->  }
->  
-> -int __init arch_ioremap_pud_supported(void)
-> +bool arch_vmap_pud_supported(pgprot_t prot)
->  {
->  	/* HPT does not cope with large pages in the vmalloc area */
->  	return radix_enabled();
->  }
->  
-> -int __init arch_ioremap_pmd_supported(void)
-> +bool arch_vmap_pmd_supported(pgprot_t prot)
->  {
->  	return radix_enabled();
->  }
-> @@ -1182,7 +1182,7 @@ int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
->  	return 1;
->  }
->  
-> -int __init arch_ioremap_p4d_supported(void)
-> +bool arch_vmap_p4d_supported(pgprot_t prot)
->  {
-> -	return 0;
-> +	return false;
->  }
-> diff --git a/arch/x86/include/asm/vmalloc.h b/arch/x86/include/asm/vmalloc.h
-> index 29837740b520..094ea2b565f3 100644
-> --- a/arch/x86/include/asm/vmalloc.h
-> +++ b/arch/x86/include/asm/vmalloc.h
-> @@ -1,6 +1,13 @@
->  #ifndef _ASM_X86_VMALLOC_H
->  #define _ASM_X86_VMALLOC_H
->  
-> +#include <asm/page.h>
->  #include <asm/pgtable_areas.h>
->  
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot);
-> +bool arch_vmap_pud_supported(pgprot_t prot);
-> +bool arch_vmap_pmd_supported(pgprot_t prot);
-> +#endif
-> +
->  #endif /* _ASM_X86_VMALLOC_H */
-> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-> index 9e5ccc56f8e0..fbaf0c447986 100644
-> --- a/arch/x86/mm/ioremap.c
-> +++ b/arch/x86/mm/ioremap.c
-> @@ -481,24 +481,26 @@ void iounmap(volatile void __iomem *addr)
->  }
->  EXPORT_SYMBOL(iounmap);
->  
-> -int __init arch_ioremap_p4d_supported(void)
-> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +bool arch_vmap_p4d_supported(pgprot_t prot)
->  {
-> -	return 0;
-> +	return false;
->  }
->  
-> -int __init arch_ioremap_pud_supported(void)
-> +bool arch_vmap_pud_supported(pgprot_t prot)
->  {
->  #ifdef CONFIG_X86_64
->  	return boot_cpu_has(X86_FEATURE_GBPAGES);
->  #else
-> -	return 0;
-> +	return false;
->  #endif
->  }
->  
-> -int __init arch_ioremap_pmd_supported(void)
-> +bool arch_vmap_pmd_supported(pgprot_t prot)
->  {
->  	return boot_cpu_has(X86_FEATURE_PSE);
->  }
-> +#endif
->  
->  /*
->   * Convert a physical pointer to a virtual kernel pointer for /dev/mem
-> diff --git a/include/linux/io.h b/include/linux/io.h
-> index 8394c56babc2..f1effd4d7a3c 100644
-> --- a/include/linux/io.h
-> +++ b/include/linux/io.h
-> @@ -31,15 +31,6 @@ static inline int ioremap_page_range(unsigned long addr, unsigned long end,
->  }
->  #endif
->  
-> -#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> -void __init ioremap_huge_init(void);
-> -int arch_ioremap_p4d_supported(void);
-> -int arch_ioremap_pud_supported(void);
-> -int arch_ioremap_pmd_supported(void);
-> -#else
-> -static inline void ioremap_huge_init(void) { }
-> -#endif
-> -
->  /*
->   * Managed iomap interface
->   */
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index 80c0181c411d..00bd62bd701e 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -83,6 +83,12 @@ struct vmap_area {
->  	};
->  };
->  
-> +#ifndef CONFIG_HAVE_ARCH_HUGE_VMAP
-> +static inline bool arch_vmap_p4d_supported(pgprot_t prot) { return false; }
-> +static inline bool arch_vmap_pud_supported(pgprot_t prot) { return false; }
-> +static inline bool arch_vmap_pmd_supported(pgprot_t prot) { return false; }
-> +#endif
-> +
->  /*
->   *	Highlevel APIs for driver use
->   */
-> diff --git a/init/main.c b/init/main.c
-> index c68d784376ca..bf9389e5b2e4 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -834,7 +834,6 @@ static void __init mm_init(void)
->  	pgtable_init();
->  	debug_objects_mem_init();
->  	vmalloc_init();
-> -	ioremap_huge_init();
->  	/* Should be run before the first non-init thread is created */
->  	init_espfix_bsp();
->  	/* Should be run after espfix64 is set up. */
-> diff --git a/mm/ioremap.c b/mm/ioremap.c
-> index 3f4d36f9745a..3264d0203785 100644
-> --- a/mm/ioremap.c
-> +++ b/mm/ioremap.c
-> @@ -16,49 +16,16 @@
->  #include "pgalloc-track.h"
->  
->  #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
-> -static int __read_mostly ioremap_p4d_capable;
-> -static int __read_mostly ioremap_pud_capable;
-> -static int __read_mostly ioremap_pmd_capable;
-> -static int __read_mostly ioremap_huge_disabled;
-> +static bool __ro_after_init iomap_max_page_shift = PAGE_SHIFT;
->  
->  static int __init set_nohugeiomap(char *str)
->  {
-> -	ioremap_huge_disabled = 1;
-> +	iomap_max_page_shift = P4D_SHIFT;
->  	return 0;
->  }
->  early_param("nohugeiomap", set_nohugeiomap);
-> -
-> -void __init ioremap_huge_init(void)
-> -{
-> -	if (!ioremap_huge_disabled) {
-> -		if (arch_ioremap_p4d_supported())
-> -			ioremap_p4d_capable = 1;
-> -		if (arch_ioremap_pud_supported())
-> -			ioremap_pud_capable = 1;
-> -		if (arch_ioremap_pmd_supported())
-> -			ioremap_pmd_capable = 1;
-> -	}
-> -}
-> -
-> -static inline int ioremap_p4d_enabled(void)
-> -{
-> -	return ioremap_p4d_capable;
-> -}
-> -
-> -static inline int ioremap_pud_enabled(void)
-> -{
-> -	return ioremap_pud_capable;
-> -}
-> -
-> -static inline int ioremap_pmd_enabled(void)
-> -{
-> -	return ioremap_pmd_capable;
-> -}
-> -
-> -#else	/* !CONFIG_HAVE_ARCH_HUGE_VMAP */
-> -static inline int ioremap_p4d_enabled(void) { return 0; }
-> -static inline int ioremap_pud_enabled(void) { return 0; }
-> -static inline int ioremap_pmd_enabled(void) { return 0; }
-> +#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
-> +static const bool iomap_max_page_shift = PAGE_SHIFT;
->  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
->  
->  static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
-> @@ -82,9 +49,13 @@ static int vmap_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
->  }
->  
->  static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
-> -	if (!ioremap_pmd_enabled())
-> +	if (max_page_shift < PMD_SHIFT)
-> +		return 0;
-> +
-> +	if (!arch_vmap_pmd_supported(prot))
->  		return 0;
->  
->  	if ((end - addr) != PMD_SIZE)
-> @@ -104,7 +75,7 @@ static int vmap_try_huge_pmd(pmd_t *pmd, unsigned long addr, unsigned long end,
->  
->  static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  			phys_addr_t phys_addr, pgprot_t prot,
-> -			pgtbl_mod_mask *mask)
-> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
->  {
->  	pmd_t *pmd;
->  	unsigned long next;
-> @@ -115,7 +86,8 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  	do {
->  		next = pmd_addr_end(addr, end);
->  
-> -		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot)) {
-> +		if (vmap_try_huge_pmd(pmd, addr, next, phys_addr, prot,
-> +					max_page_shift)) {
->  			*mask |= PGTBL_PMD_MODIFIED;
->  			continue;
->  		}
-> @@ -127,9 +99,13 @@ static int vmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->  }
->  
->  static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
-> -	if (!ioremap_pud_enabled())
-> +	if (max_page_shift < PUD_SHIFT)
-> +		return 0;
-> +
-> +	if (!arch_vmap_pud_supported(prot))
->  		return 0;
->  
->  	if ((end - addr) != PUD_SIZE)
-> @@ -149,7 +125,7 @@ static int vmap_try_huge_pud(pud_t *pud, unsigned long addr, unsigned long end,
->  
->  static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
->  			phys_addr_t phys_addr, pgprot_t prot,
-> -			pgtbl_mod_mask *mask)
-> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
->  {
->  	pud_t *pud;
->  	unsigned long next;
-> @@ -160,21 +136,27 @@ static int vmap_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
->  	do {
->  		next = pud_addr_end(addr, end);
->  
-> -		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot)) {
-> +		if (vmap_try_huge_pud(pud, addr, next, phys_addr, prot,
-> +					max_page_shift)) {
->  			*mask |= PGTBL_PUD_MODIFIED;
->  			continue;
->  		}
->  
-> -		if (vmap_pmd_range(pud, addr, next, phys_addr, prot, mask))
-> +		if (vmap_pmd_range(pud, addr, next, phys_addr, prot,
-> +					max_page_shift, mask))
->  			return -ENOMEM;
->  	} while (pud++, phys_addr += (next - addr), addr = next, addr != end);
->  	return 0;
->  }
->  
->  static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
-> -	if (!ioremap_p4d_enabled())
-> +	if (max_page_shift < P4D_SHIFT)
-> +		return 0;
-> +
-> +	if (!arch_vmap_p4d_supported(prot))
->  		return 0;
->  
->  	if ((end - addr) != P4D_SIZE)
-> @@ -194,7 +176,7 @@ static int vmap_try_huge_p4d(p4d_t *p4d, unsigned long addr, unsigned long end,
->  
->  static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
->  			phys_addr_t phys_addr, pgprot_t prot,
-> -			pgtbl_mod_mask *mask)
-> +			unsigned int max_page_shift, pgtbl_mod_mask *mask)
->  {
->  	p4d_t *p4d;
->  	unsigned long next;
-> @@ -205,19 +187,22 @@ static int vmap_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
->  	do {
->  		next = p4d_addr_end(addr, end);
->  
-> -		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot)) {
-> +		if (vmap_try_huge_p4d(p4d, addr, next, phys_addr, prot,
-> +					max_page_shift)) {
->  			*mask |= PGTBL_P4D_MODIFIED;
->  			continue;
->  		}
->  
-> -		if (vmap_pud_range(p4d, addr, next, phys_addr, prot, mask))
-> +		if (vmap_pud_range(p4d, addr, next, phys_addr, prot,
-> +					max_page_shift, mask))
->  			return -ENOMEM;
->  	} while (p4d++, phys_addr += (next - addr), addr = next, addr != end);
->  	return 0;
->  }
->  
->  static int vmap_range(unsigned long addr, unsigned long end,
-> -			phys_addr_t phys_addr, pgprot_t prot)
-> +			phys_addr_t phys_addr, pgprot_t prot,
-> +			unsigned int max_page_shift)
->  {
->  	pgd_t *pgd;
->  	unsigned long start;
-> @@ -232,7 +217,8 @@ static int vmap_range(unsigned long addr, unsigned long end,
->  	pgd = pgd_offset_k(addr);
->  	do {
->  		next = pgd_addr_end(addr, end);
-> -		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot, &mask);
-> +		err = vmap_p4d_range(pgd, addr, next, phys_addr, prot,
-> +					max_page_shift, &mask);
->  		if (err)
->  			break;
->  	} while (pgd++, phys_addr += (next - addr), addr = next, addr != end);
-> @@ -248,7 +234,7 @@ static int vmap_range(unsigned long addr, unsigned long end,
->  int ioremap_page_range(unsigned long addr,
->  		       unsigned long end, phys_addr_t phys_addr, pgprot_t prot)
->  {
-> -	return vmap_range(addr, end, phys_addr, prot);
-> +	return vmap_range(addr, end, phys_addr, prot, iomap_max_page_shift);
->  }
->  
->  #ifdef CONFIG_GENERIC_IOREMAP
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Liu Ying <victor.liu@nxp.com>
+---
+v6->v7:
+* Add Rob's R-b tag back.
+
+v5->v6:
+* Use graph schema. So, drop Rob's R-b tag as review is needed.
+
+v4->v5:
+* No change.
+
+v3->v4:
+* Improve compatible property by using enum instead of oneOf+const. (Rob)
+* Add Rob's R-b tag.
+
+v2->v3:
+* No change.
+
+v1->v2:
+* Fix yamllint warnings.
+* Require bypass0 and bypass1 clocks for both i.MX8qxp and i.MX8qm, as the
+  display controller subsystem spec does say that they exist.
+* Use new dt binding way to add clocks in the example.
+* Trivial tweaks for the example.
+
+ .../bindings/display/imx/fsl,imx8qxp-dpu.yaml      | 387 +++++++++++++++++++++
+ 1 file changed, 387 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml b/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+new file mode 100644
+index 00000000..9da9560
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
+@@ -0,0 +1,387 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/imx/fsl,imx8qxp-dpu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX8qm/qxp Display Processing Unit
++
++maintainers:
++  - Liu Ying <victor.liu@nxp.com>
++
++description: |
++  The Freescale i.MX8qm/qxp Display Processing Unit(DPU) is comprised of two
++  main components that include a blit engine for 2D graphics accelerations
++  and a display controller for display output processing, as well as a command
++  sequencer.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx8qxp-dpu
++      - fsl,imx8qm-dpu
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: |
++          store9 shadow load interrupt(blit engine)
++      - description: |
++          store9 frame complete interrupt(blit engine)
++      - description: |
++          store9 sequence complete interrupt(blit engine)
++      - description: |
++          extdst0 shadow load interrupt
++          (display controller, content stream 0)
++      - description: |
++          extdst0 frame complete interrupt
++          (display controller, content stream 0)
++      - description: |
++          extdst0 sequence complete interrupt
++          (display controller, content stream 0)
++      - description: |
++          extdst4 shadow load interrupt
++          (display controller, safety stream 0)
++      - description: |
++          extdst4 frame complete interrupt
++          (display controller, safety stream 0)
++      - description: |
++          extdst4 sequence complete interrupt
++          (display controller, safety stream 0)
++      - description: |
++          extdst1 shadow load interrupt
++          (display controller, content stream 1)
++      - description: |
++          extdst1 frame complete interrupt
++          (display controller, content stream 1)
++      - description: |
++          extdst1 sequence complete interrupt
++          (display controller, content stream 1)
++      - description: |
++          extdst5 shadow load interrupt
++          (display controller, safety stream 1)
++      - description: |
++          extdst5 frame complete interrupt
++          (display controller, safety stream 1)
++      - description: |
++          extdst5 sequence complete interrupt
++          (display controller, safety stream 1)
++      - description: |
++          disengcfg0 shadow load interrupt
++          (display controller, display stream 0)
++      - description: |
++          disengcfg0 frame complete interrupt
++          (display controller, display stream 0)
++      - description: |
++          disengcfg0 sequence complete interrupt
++          (display controller, display stream 0)
++      - description: |
++          framegen0 programmable interrupt0
++          (display controller, display stream 0)
++      - description: |
++          framegen0 programmable interrupt1
++          (display controller, display stream 0)
++      - description: |
++          framegen0 programmable interrupt2
++          (display controller, display stream 0)
++      - description: |
++          framegen0 programmable interrupt3
++          (display controller, display stream 0)
++      - description: |
++          signature0 shadow load interrupt
++          (display controller, display stream 0)
++      - description: |
++          signature0 measurement valid interrupt
++          (display controller, display stream 0)
++      - description: |
++          signature0 error condition interrupt
++          (display controller, display stream 0)
++      - description: |
++          disengcfg1 shadow load interrupt
++          (display controller, display stream 1)
++      - description: |
++          disengcfg1 frame complete interrupt
++          (display controller, display stream 1)
++      - description: |
++          disengcfg1 sequence complete interrupt
++          (display controller, display stream 1)
++      - description: |
++          framegen1 programmable interrupt0
++          (display controller, display stream 1)
++      - description: |
++          framegen1 programmable interrupt1
++          (display controller, display stream 1)
++      - description: |
++          framegen1 programmable interrupt2
++          (display controller, display stream 1)
++      - description: |
++          framegen1 programmable interrupt3
++          (display controller, display stream 1)
++      - description: |
++          signature1 shadow load interrupt
++          (display controller, display stream 1)
++      - description: |
++          signature1 measurement valid interrupt
++          (display controller, display stream 1)
++      - description: |
++          signature1 error condition interrupt
++          (display controller, display stream 1)
++      - description: |
++          command sequencer error condition interrupt(command sequencer)
++      - description: |
++          common control software interrupt0(common control)
++      - description: |
++          common control software interrupt1(common control)
++      - description: |
++          common control software interrupt2(common control)
++      - description: |
++          common control software interrupt3(common control)
++      - description: |
++          framegen0 sychronization status activated interrupt
++          (display controller, safety stream 0)
++      - description: |
++          framegen0 sychronization status deactivated interrupt
++          (display controller, safety stream 0)
++      - description: |
++          framegen0 sychronization status activated interrupt
++          (display controller, content stream 0)
++      - description: |
++          framegen0 sychronization status deactivated interrupt
++          (display controller, content stream 0)
++      - description: |
++          framegen1 sychronization status activated interrupt
++          (display controller, safety stream 1)
++      - description: |
++          framegen1 sychronization status deactivated interrupt
++          (display controller, safety stream 1)
++      - description: |
++          framegen1 sychronization status activated interrupt
++          (display controller, content stream 1)
++      - description: |
++          framegen1 sychronization status deactivated interrupt
++          (display controller, content stream 1)
++
++  interrupt-names:
++    items:
++      - const: store9_shdload
++      - const: store9_framecomplete
++      - const: store9_seqcomplete
++      - const: extdst0_shdload
++      - const: extdst0_framecomplete
++      - const: extdst0_seqcomplete
++      - const: extdst4_shdload
++      - const: extdst4_framecomplete
++      - const: extdst4_seqcomplete
++      - const: extdst1_shdload
++      - const: extdst1_framecomplete
++      - const: extdst1_seqcomplete
++      - const: extdst5_shdload
++      - const: extdst5_framecomplete
++      - const: extdst5_seqcomplete
++      - const: disengcfg_shdload0
++      - const: disengcfg_framecomplete0
++      - const: disengcfg_seqcomplete0
++      - const: framegen0_int0
++      - const: framegen0_int1
++      - const: framegen0_int2
++      - const: framegen0_int3
++      - const: sig0_shdload
++      - const: sig0_valid
++      - const: sig0_error
++      - const: disengcfg_shdload1
++      - const: disengcfg_framecomplete1
++      - const: disengcfg_seqcomplete1
++      - const: framegen1_int0
++      - const: framegen1_int1
++      - const: framegen1_int2
++      - const: framegen1_int3
++      - const: sig1_shdload
++      - const: sig1_valid
++      - const: sig1_error
++      - const: cmdseq_error
++      - const: comctrl_sw0
++      - const: comctrl_sw1
++      - const: comctrl_sw2
++      - const: comctrl_sw3
++      - const: framegen0_primsync_on
++      - const: framegen0_primsync_off
++      - const: framegen0_secsync_on
++      - const: framegen0_secsync_off
++      - const: framegen1_primsync_on
++      - const: framegen1_primsync_off
++      - const: framegen1_secsync_on
++      - const: framegen1_secsync_off
++
++  clocks:
++    maxItems: 8
++
++  clock-names:
++    items:
++      - const: axi
++      - const: cfg
++      - const: pll0
++      - const: pll1
++      - const: bypass0
++      - const: bypass1
++      - const: disp0
++      - const: disp1
++
++  power-domains:
++    items:
++      - description: DC power-domain
++      - description: PLL0 power-domain
++      - description: PLL1 power-domain
++
++  power-domain-names:
++    items:
++      - const: dc
++      - const: pll0
++      - const: pll1
++
++  fsl,dpr-channels:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description: |
++      List of phandle which points to DPR channels associated with
++      this DPU instance.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: The DPU output port node from display stream0.
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description: The DPU output port node from display stream1.
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++  - clocks
++  - clock-names
++  - power-domains
++  - power-domain-names
++  - fsl,dpr-channels
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8-lpcg.h>
++    #include <dt-bindings/firmware/imx/rsrc.h>
++    dpu@56180000 {
++        compatible = "fsl,imx8qxp-dpu";
++        reg = <0x56180000 0x40000>;
++        interrupt-parent = <&dc0_irqsteer>;
++        interrupts = <448>, <449>, <450>,  <64>,
++                      <65>,  <66>,  <67>,  <68>,
++                      <69>,  <70>, <193>, <194>,
++                     <195>, <196>, <197>,  <72>,
++                      <73>,  <74>,  <75>,  <76>,
++                      <77>,  <78>,  <79>,  <80>,
++                      <81>, <199>, <200>, <201>,
++                     <202>, <203>, <204>, <205>,
++                     <206>, <207>, <208>,   <0>,
++                       <1>,   <2>,   <3>,   <4>,
++                      <82>,  <83>,  <84>,  <85>,
++                     <209>, <210>, <211>, <212>;
++        interrupt-names = "store9_shdload",
++                          "store9_framecomplete",
++                          "store9_seqcomplete",
++                          "extdst0_shdload",
++                          "extdst0_framecomplete",
++                          "extdst0_seqcomplete",
++                          "extdst4_shdload",
++                          "extdst4_framecomplete",
++                          "extdst4_seqcomplete",
++                          "extdst1_shdload",
++                          "extdst1_framecomplete",
++                          "extdst1_seqcomplete",
++                          "extdst5_shdload",
++                          "extdst5_framecomplete",
++                          "extdst5_seqcomplete",
++                          "disengcfg_shdload0",
++                          "disengcfg_framecomplete0",
++                          "disengcfg_seqcomplete0",
++                          "framegen0_int0",
++                          "framegen0_int1",
++                          "framegen0_int2",
++                          "framegen0_int3",
++                          "sig0_shdload",
++                          "sig0_valid",
++                          "sig0_error",
++                          "disengcfg_shdload1",
++                          "disengcfg_framecomplete1",
++                          "disengcfg_seqcomplete1",
++                          "framegen1_int0",
++                          "framegen1_int1",
++                          "framegen1_int2",
++                          "framegen1_int3",
++                          "sig1_shdload",
++                          "sig1_valid",
++                          "sig1_error",
++                          "cmdseq_error",
++                          "comctrl_sw0",
++                          "comctrl_sw1",
++                          "comctrl_sw2",
++                          "comctrl_sw3",
++                          "framegen0_primsync_on",
++                          "framegen0_primsync_off",
++                          "framegen0_secsync_on",
++                          "framegen0_secsync_off",
++                          "framegen1_primsync_on",
++                          "framegen1_primsync_off",
++                          "framegen1_secsync_on",
++                          "framegen1_secsync_off";
++        clocks = <&dc0_dpu_lpcg IMX_LPCG_CLK_5>,
++                 <&dc0_dpu_lpcg IMX_LPCG_CLK_4>,
++                 <&clk IMX_SC_R_DC_0_PLL_0 IMX_SC_PM_CLK_PLL>,
++                 <&clk IMX_SC_R_DC_0_PLL_1 IMX_SC_PM_CLK_PLL>,
++                 <&clk IMX_SC_R_DC_0_VIDEO0 IMX_SC_PM_CLK_BYPASS>,
++                 <&clk IMX_SC_R_DC_0_VIDEO1 IMX_SC_PM_CLK_BYPASS>,
++                 <&dc0_disp_lpcg IMX_LPCG_CLK_0>,
++                 <&dc0_disp_lpcg IMX_LPCG_CLK_1>;
++        clock-names = "axi", "cfg",
++                      "pll0", "pll1", "bypass0", "bypass1",
++                      "disp0", "disp1";
++        power-domains = <&pd IMX_SC_R_DC_0>,
++                        <&pd IMX_SC_R_DC_0_PLL_0>,
++                        <&pd IMX_SC_R_DC_0_PLL_1>;
++        power-domain-names = "dc", "pll0", "pll1";
++        fsl,dpr-channels = <&dc0_dpr1_channel1>,
++                           <&dc0_dpr1_channel2>,
++                           <&dc0_dpr1_channel3>,
++                           <&dc0_dpr2_channel1>,
++                           <&dc0_dpr2_channel2>,
++                           <&dc0_dpr2_channel3>;
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            port@0 {
++                reg = <0>;
++                dpu0_disp0_pixel_combiner0_ch0: endpoint {
++                    remote-endpoint = <&pixel_combiner0_ch0_dpu0_disp0>;
++                };
++            };
++
++            port@1 {
++                reg = <1>;
++                dpu0_disp1_pixel_combiner0_ch1: endpoint {
++                    remote-endpoint = <&pixel_combiner0_ch1_dpu0_disp1>;
++                };
++            };
++        };
++    };
+-- 
+2.7.4
 
