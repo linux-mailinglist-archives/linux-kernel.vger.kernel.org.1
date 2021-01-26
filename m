@@ -2,200 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940F9303FEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D50303FCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405700AbhAZOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:06:09 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:38260 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405608AbhAZOEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:04:55 -0500
-Date:   Tue, 26 Jan 2021 14:04:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1611669852;
-        bh=mbQbonKTWOJG/8gSURwb2HOD/90QOtBxSCKvG2gI4So=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=asITbJ20piki8V4dq2FdGySHW4Jz9wuRLKpSqWyrGCxQPMshDoQ/XcALmQeSuyzz4
-         P0eiekzy+SfZaNA9+NNENnX04w/6I5M7a2MEm894adRHiGdTYySJLBhQrACjywokPB
-         X8I9M7BUJXOly0k33ZSgzwMDhwhXkAUoelhSjv/w=
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [PATCH v2 1/4] dt-bindings: leds: Add binding for qcom-spmi-flash
-Message-ID: <20210126140240.1517044-2-nfraprado@protonmail.com>
-In-Reply-To: <20210126140240.1517044-1-nfraprado@protonmail.com>
-References: <20210126140240.1517044-1-nfraprado@protonmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        id S2392705AbhAZOLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:11:18 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:49896 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2391768AbhAZOGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 09:06:38 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxRb2nIRBg_DsNAA--.17412S2;
+        Tue, 26 Jan 2021 22:05:28 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64 to fix build errors
+Date:   Tue, 26 Jan 2021 22:05:25 +0800
+Message-Id: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9AxRb2nIRBg_DsNAA--.17412S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrW5Aw1UCFy7uFyxAFWUurg_yoWrXFyDpa
+        1Duw1kWF45WryUAFn8Ar1Ik3y3Jw45G3yjvFy5W34jv3ZIgFyfJrsakr15Gr1ktF4qva18
+        Kry3WrWagr1UZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JUWlksUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree binding for QCOM SPMI Flash LEDs, which are part of
-PM8941, and are used both as lantern and camera flash.
+There exists many build errors when make M=samples/bpf on the Loongson
+platform, this issue is MIPS related, x86 compiles just fine.
 
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+Here are some errors:
+
+  CLANG-bpf  samples/bpf/sockex2_kern.o
+In file included from samples/bpf/sockex2_kern.c:2:
+In file included from ./include/uapi/linux/in.h:24:
+In file included from ./include/linux/socket.h:8:
+In file included from ./include/linux/uio.h:8:
+In file included from ./include/linux/kernel.h:11:
+In file included from ./include/linux/bitops.h:32:
+In file included from ./arch/mips/include/asm/bitops.h:19:
+In file included from ./arch/mips/include/asm/barrier.h:11:
+./arch/mips/include/asm/addrspace.h:13:10: fatal error: 'spaces.h' file not found
+         ^~~~~~~~~~
+1 error generated.
+
+  CLANG-bpf  samples/bpf/sockex2_kern.o
+In file included from samples/bpf/sockex2_kern.c:2:
+In file included from ./include/uapi/linux/in.h:24:
+In file included from ./include/linux/socket.h:8:
+In file included from ./include/linux/uio.h:8:
+In file included from ./include/linux/kernel.h:11:
+In file included from ./include/linux/bitops.h:32:
+In file included from ./arch/mips/include/asm/bitops.h:22:
+In file included from ./arch/mips/include/asm/cpu-features.h:13:
+In file included from ./arch/mips/include/asm/cpu-info.h:15:
+In file included from ./include/linux/cache.h:6:
+./arch/mips/include/asm/cache.h:12:10: fatal error: 'kmalloc.h' file not found
+         ^~~~~~~~~~~
+1 error generated.
+
+  CLANG-bpf  samples/bpf/sockex2_kern.o
+In file included from samples/bpf/sockex2_kern.c:2:
+In file included from ./include/uapi/linux/in.h:24:
+In file included from ./include/linux/socket.h:8:
+In file included from ./include/linux/uio.h:8:
+In file included from ./include/linux/kernel.h:11:
+In file included from ./include/linux/bitops.h:32:
+In file included from ./arch/mips/include/asm/bitops.h:22:
+./arch/mips/include/asm/cpu-features.h:15:10: fatal error: 'cpu-feature-overrides.h' file not found
+         ^~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+
+$ find arch/mips/include/asm -name spaces.h | sort
+arch/mips/include/asm/mach-ar7/spaces.h
+...
+arch/mips/include/asm/mach-generic/spaces.h
+...
+arch/mips/include/asm/mach-loongson64/spaces.h
+...
+arch/mips/include/asm/mach-tx49xx/spaces.h
+
+$ find arch/mips/include/asm -name kmalloc.h | sort
+arch/mips/include/asm/mach-generic/kmalloc.h
+arch/mips/include/asm/mach-ip32/kmalloc.h
+arch/mips/include/asm/mach-tx49xx/kmalloc.h
+
+$ find arch/mips/include/asm -name cpu-feature-overrides.h | sort
+arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h
+...
+arch/mips/include/asm/mach-generic/cpu-feature-overrides.h
+...
+arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
+...
+arch/mips/include/asm/mach-tx49xx/cpu-feature-overrides.h
+
+In the arch/mips/Makefile, there exists the following board-dependent
+options:
+
+include arch/mips/Kbuild.platforms
+cflags-y += -I$(srctree)/arch/mips/include/asm/mach-generic
+
+So we can do the similar things in samples/bpf/Makefile, just add
+platform specific and generic include dir for MIPS Loongson64 to
+fix the build errors.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
-Changes in v2:
-- Add this commit
+ samples/bpf/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
- .../bindings/leds/leds-qcom-spmi-flash.yaml   | 94 +++++++++++++++++++
- .../dt-bindings/leds/leds-qcom-spmi-flash.h   | 15 +++
- 2 files changed, 109 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-spmi-f=
-lash.yaml
- create mode 100644 include/dt-bindings/leds/leds-qcom-spmi-flash.h
-
-diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.ya=
-ml b/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
-new file mode 100644
-index 000000000000..169716e14f67
---- /dev/null
-+++ b/Documentation/devicetree/bindings/leds/leds-qcom-spmi-flash.yaml
-@@ -0,0 +1,94 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/leds/leds-qcom-spmi-flash.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm SPMI Flash LEDs
-+
-+maintainers:
-+  - N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
-+
-+description: |
-+  The Qualcomm SPMI Flash LEDs are part of Qualcomm PMICs and are used pri=
-marily
-+  as a camera or video flash. They can also be used as a lantern when on t=
-orch
-+  mode.
-+  The PMIC is connected to Host processor via SPMI bus.
-+
-+properties:
-+  compatible:
-+    const: qcom,spmi-flash
-+
-+  reg:
-+    maxItems: 1
-+
-+  flash-boost-supply:
-+    description: SMBB regulator for LED flash mode
-+
-+  torch-boost-supply:
-+    description: SMBB regulator for LED torch mode
-+
-+patternProperties:
-+  "^led[0-1]$":
-+    type: object
-+    $ref: common.yaml#
-+
-+    properties:
-+      qcom,clamp-curr:
-+        description: current to clamp at, in uA
-+        $ref: /schemas/types.yaml#definitions/uint32
-+
-+      qcom,headroom:
-+        description: |
-+          headroom to use. Use one of QCOM_SPMI_FLASH_HEADROOM_* defined i=
-n
-+          include/dt-bindings/leds/leds-qcom-spmi-flash.h
-+        $ref: /schemas/types.yaml#definitions/uint32
-+        minimum: 0
-+        maximum: 3
-+
-+      qcom,startup-dly:
-+        description: |
-+          delay before flashing. Use one of QCOM_SPMI_FLASH_STARTUP_DLY_*
-+          defined in include/dt-bindings/leds/leds-qcom-spmi-flash.h
-+        $ref: /schemas/types.yaml#definitions/uint32
-+        minimum: 0
-+        maximum: 3
-+
-+      qcom,safety-timer:
-+        description: include for safety timer use, otherwise watchdog time=
-r will be used
-+        type: boolean
-+
-+required:
-+  - compatible
-+  - reg
-+  - flash-boost-supply
-+  - torch-boost-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/leds/common.h>
-+    #include <dt-bindings/leds/leds-qcom-spmi-flash.h>
-+
-+    qcom,leds@d300 {
-+        compatible =3D "qcom,spmi-flash";
-+        reg =3D <0xd300 0x100>;
-+        flash-boost-supply =3D <&pm8941_5vs1>;
-+        torch-boost-supply =3D <&pm8941_5v>;
-+
-+        led0 {
-+            led-sources =3D <0>;
-+            function =3D LED_FUNCTION_FLASH;
-+            color =3D <LED_COLOR_ID_WHITE>;
-+            led-max-microamp =3D <200000>;
-+            flash-max-microamp =3D <1000000>;
-+            flash-max-timeout-us =3D <1280000>;
-+            default-state =3D "off";
-+            qcom,clamp-curr =3D <200000>;
-+            qcom,headroom =3D <QCOM_SPMI_FLASH_HEADROOM_500MV>;
-+            qcom,startup-dly =3D <QCOM_SPMI_FLASH_STARTUP_DLY_128US>;
-+            qcom,safety-timer;
-+        };
-+    };
-+...
-diff --git a/include/dt-bindings/leds/leds-qcom-spmi-flash.h b/include/dt-b=
-indings/leds/leds-qcom-spmi-flash.h
-new file mode 100644
-index 000000000000..8bd54a8e831d
---- /dev/null
-+++ b/include/dt-bindings/leds/leds-qcom-spmi-flash.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _DT_BINDINGS_LEDS_QCOM_SPMI_FLASH_H
-+#define _DT_BINDINGS_LEDS_QCOM_SPMI_FLASH_H
-+
-+#define QCOM_SPMI_FLASH_HEADROOM_250MV=090
-+#define QCOM_SPMI_FLASH_HEADROOM_300MV=091
-+#define QCOM_SPMI_FLASH_HEADROOM_400MV=092
-+#define QCOM_SPMI_FLASH_HEADROOM_500MV=093
-+
-+#define QCOM_SPMI_FLASH_STARTUP_DLY_10US=090
-+#define QCOM_SPMI_FLASH_STARTUP_DLY_32US=091
-+#define QCOM_SPMI_FLASH_STARTUP_DLY_64US=092
-+#define QCOM_SPMI_FLASH_STARTUP_DLY_128US=093
-+
-+#endif
---=20
-2.30.0
-
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 362f314..45ceca4 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -185,6 +185,10 @@ endif
+ 
+ ifeq ($(ARCH), mips)
+ TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
++ifdef CONFIG_MACH_LOONGSON64
++BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-loongson64
++BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-generic
++endif
+ endif
+ 
+ TPROGS_CFLAGS += -Wall -O2
+-- 
+2.1.0
 
