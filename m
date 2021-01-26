@@ -2,182 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA7D304EF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76FAB304EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404859AbhA0BaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S2405261AbhA0Bc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:32:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391622AbhAZSfC (ORCPT
+        with ESMTP id S1729239AbhAZShm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:35:02 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF89C061573;
-        Tue, 26 Jan 2021 10:34:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=sEe7JZmLM6XUizAhFmljQXgrT2pBkysrCkaIf1qi5+A=; b=cLiUWGAfdyZayF6zjF6dU2GFdO
-        ewzTXtNjF8uG8GGQqkHANNwicnMMc0wSTl1l3x9+QH0OXNn9Bz/4/CURL+P/w/OhAgKolJjnHfGt3
-        PgyirGr1F6JiT/MBCVoABSavVfF9TVtktLfHvZLtkvEB1qLnGWpGVXoPxACjuY3Laa08=;
-Received: from p200300ccff1467001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff14:6700:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1l4TAS-0006AS-Hf; Tue, 26 Jan 2021 19:34:20 +0100
-Date:   Tue, 26 Jan 2021 19:34:19 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Armin Preiml <apreiml@strohwolke.at>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dts: ARM: add kobo glo hd ebook reader
-Message-ID: <20210126193419.1e067639@aktux>
-In-Reply-To: <20210126173130.45427-1-apreiml@strohwolke.at>
-References: <20210126173130.45427-1-apreiml@strohwolke.at>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 26 Jan 2021 13:37:42 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D71C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:35:21 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d4so10258548plh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:35:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=52fk0kbTrSyL0AV53feeXDmkSTW51BS9ESJn2yxoUuM=;
+        b=BXnVKBBewzcmU+iInQU6fc2SRb1zGGDmJYV7q/3MuDLdwJOU29DFVx3acEOV8hTGmM
+         7JlY+CBo3+V/aBej5Sv9kWso4Uyj/+NpTWoNudQw/1uvF+Pzym5KeQMvoD0OtWBGEuN9
+         HkVxGuHu+SbfoxTR39spoz6B78B9VUUEvTR2ULAJnwnKeST9hjcjyCy/vQ9hfIqJtuBF
+         Ptn6YNlj8DgAGEH6QjYecrtXf6nnQWaIp2GSmRBsm03XyOHhQK1BqNbSWY9rlUvx4OT6
+         0lWRTKEq9RBxbTLWWN/5hSe/Tuw7URFdgFe48IIrYBy9z5HuDERH0vlLcOHP+Pid5aCM
+         OJYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=52fk0kbTrSyL0AV53feeXDmkSTW51BS9ESJn2yxoUuM=;
+        b=iQDFIOOHl+B+MrXoW0FBk8qsvE/8OCiB3DaNXkHHmxd+/2Wq7kqc3slotYIVDCKcEp
+         Ib4QkR1cy2athFF1YkjxeHVHR69AXOt83fIyTIs3TqhDTMLUR1O9/yNcWxD3fUvtDJx0
+         85WoQ1W9uoApp/t9/bXFpJ5lfsqHz+H50pBIIjBUwLsHOrM7Tvt1OcCLdgJULPf4KZx1
+         gxZXQnnqDC2M+XtcOAe2GmlDC/87DHLs+Km0NpFtkda13lMWZA8dqfh7gYD+6SYpnUGj
+         lqaElVR2xp8SI7uNMuYGVRqVjUbAw0pCXThZqif/uwHQTaZiWY0nW+KmjH2/eL2B82Uy
+         JfjA==
+X-Gm-Message-State: AOAM532RCHcMt+6bvs3Z3Q/Kl/FDSNUZyKQb//2mNxga+odtkP6qeiYv
+        EWGT6Qq053xKUOSARypOhoE=
+X-Google-Smtp-Source: ABdhPJzj/wTR+p6KFUxo/iXhBe+SKn79OGD4mI7OeiNEsMrK7LnfYumb2eGNfQ8MfKUikPNJQos0tw==
+X-Received: by 2002:a17:902:ac87:b029:e0:17b:68d2 with SMTP id h7-20020a170902ac87b02900e0017b68d2mr7404713plr.0.1611686120618;
+        Tue, 26 Jan 2021 10:35:20 -0800 (PST)
+Received: from localhost.localdomain ([49.37.2.129])
+        by smtp.gmail.com with ESMTPSA id a31sm19713654pgb.93.2021.01.26.10.35.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 10:35:19 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH RFC 0/3] checkpatch: add verbose mode
+Date:   Wed, 27 Jan 2021 00:05:18 +0530
+Message-Id: <20210126183521.26535-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -1.0 (-)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[resent with some more complete address list, get_maintainer.pl
-provides more]
+This patch series adds a verbose mode to checkpatch.
+The verbose test descriptions are loaded from the
+checkpatch documentation and parsed by checkpatch.
 
-Hi,
+The documentation itself needs more work. More input
+on the usage and test descriptions are needed.
 
-On Tue, 26 Jan 2021 18:31:31 +0100
-Armin Preiml <apreiml@strohwolke.at> wrote:
+Also the visual aspects of the verbose mode needs
+some work put into. The usual printing of verbose
+descriptions can cause confusion and maybe hard to
+distinguish from the actual warnings.
 
-> This patch adds basic support for the kobo glo hd reader. It defines CPU, 
-> memory, UART and storage.Also add pin control settings for i2c and sdhc. 
-> 
-> All values where extracted from the vendor kernel and u-boot sources.
-> 
-> Signed-off-by: Armin Preiml <apreiml@strohwolke.at>
-> 
-> ---
->  arch/arm/boot/dts/Makefile               |   1 +
->  arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts | 164 +++++++++++++++++++++++
->  2 files changed, 165 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 3d1ea0b25..ba608414e 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -598,6 +598,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
->  	imx6qp-zii-rdu2.dtb
->  dtb-$(CONFIG_SOC_IMX6SL) += \
->  	imx6sl-evk.dtb \
-> +	imx6sl-kobo-glo-hd.dtb \
->  	imx6sl-tolino-shine2hd.dtb \
->  	imx6sl-tolino-shine3.dtb \
->  	imx6sl-warp.dtb
-> diff --git a/arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts b/arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts
-> new file mode 100644
-> index 000000000..759699e9e
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx6sl-kobo-glo-hd.dts
-> @@ -0,0 +1,164 @@
-> +// SPDX-License-Identifier: (GPL-2.0)
-> +/*
-> + * Device tree for the Kobo Glo HD ebook reader.
-> + *
-> + * Name on mainboard is: 37NB-E60Q90+4A1
-> + * Board name in uboot sources: E60Q90  
-> + *
-> + * Copyright 2021 Armin Preiml
-> + * based on works
-> + * Copyright 2015 Freescale Semiconductor, Inc.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include "imx6sl.dtsi"
-> +
-> +/ {
-> +	model = "Kobo Glo HD";
-> +	compatible = "kobo,glohd", "fsl,imx6sl";
-> +
+Please note that this is only an initial attempt
+and any comments are welcome.
 
-kobo,glohd should be added to
-Documentation/devicetree/bindings/arm/fsl.yaml
-[...]
-> +        pinctrl_uart1: uart1grp {
-> +                fsl,pins = <
-> +			MX6SL_PAD_UART1_TXD__UART1_TX_DATA 0x1b0b1
-> +			MX6SL_PAD_UART1_RXD__UART1_RX_DATA 0x1b0b1
-> +		>;
-> +	};
-> +
-hmm, pictures (we are talking about FCC ID NOIKBN437, right?) show two
-uarts, next to each other. Which one is this? 
-The other uart might be the same as in the tolino2-shinehd.
+Dwaipayan Ray (3):
+  checkpatch: add verbose mode
+  docs: add documentation for checkpatch
+  docs: add documentation for checkpatch
 
-> +	pinctrl_usdhc1: usdhc1grp { /* 50MHZ (>50MHZ: 0x1f0f9) */
-> +                fsl,pins = <
-> +			MX6SL_PAD_SD1_CLK__SD1_CLK 0x1f071
-> +			MX6SL_PAD_SD1_CMD__SD1_CMD 0x1f071
-> +			MX6SL_PAD_SD1_DAT0__SD1_DATA0 0x1f071
-> +			MX6SL_PAD_SD1_DAT1__SD1_DATA1 0x1f071
-> +			MX6SL_PAD_SD1_DAT2__SD1_DATA2 0x1f071
-> +			MX6SL_PAD_SD1_DAT3__SD1_DATA3 0x1f071
-> +			MX6SL_PAD_SD1_DAT4__SD1_DATA4 0x1f071
-> +			MX6SL_PAD_SD1_DAT5__SD1_DATA5 0x1f071
-> +			MX6SL_PAD_SD1_DAT6__SD1_DATA6 0x1f071
-> +			MX6SL_PAD_SD1_DAT7__SD1_DATA7 0x1f071
-> +		>;
-> +	};
-> +
-That is for emmc? And it is not populated, so probably better not
-enable that here.
+ Documentation/dev-tools/checkpatch.rst | 283 +++++++++++++++++++++++++
+ Documentation/dev-tools/index.rst      |   1 +
+ scripts/checkpatch.pl                  |  55 +++++
+ 3 files changed, 339 insertions(+)
+ create mode 100644 Documentation/dev-tools/checkpatch.rst
 
-[...]
+-- 
+2.30.0
 
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	status = "okay";
-> +};
-> +
-> +&usdhc1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usdhc1>;
-> +	status = "okay";
-> +};
-> +
-and also not add this.
-
-I guess it might be a good idea to really compare it to the tolino2
-shine hd. The boards seem to look similar, but not identical. Hmm,
-different number of buttons?
-The question is how similar they are. I think the Kobo Glo HD has a
-good driver situation. 
-The main PMIC RC5T619 (the rn5t618 driver supports that) is well
-supported in mainline kernel. It should give regulators, RTC and battery
-information.
-The touchscreen (driver zforce_ts) should alse be supported. So
-you might go further forward.
-
-If you are really brave, you could add a complete devicetree on top
-of my branch
-kobo/drm-merged-5.10 of github.com/akemnade/linux. Besides of backlight,
-it should give full hardware support (including a drm driver for the
-display), so we can see what is different and whether we can use
-a .dtsi file to define common things.
-Picture of the Tolino2 internals:
-https://misc.andi.de1.cc/tolino2.jpg
-
-Regards,
-Andreas
