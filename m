@@ -2,180 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815D33045FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498A23045FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394022AbhAZSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:08:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:47196 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405128AbhAZQcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:32:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1102031B;
-        Tue, 26 Jan 2021 08:31:39 -0800 (PST)
-Received: from [10.57.43.46] (unknown [10.57.43.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AA543F66E;
-        Tue, 26 Jan 2021 08:31:37 -0800 (PST)
-Subject: Re: [PATCH v2 1/3] iommu/arm-smmu: Add support for driver IOMMU fault
- handlers
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        iommu@lists.linux-foundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20201124191600.2051751-1-jcrouse@codeaurora.org>
- <20201124191600.2051751-2-jcrouse@codeaurora.org>
- <20210122124125.GA24102@willie-the-truck>
- <8ba2f53d-abbf-af7f-07f6-48ad7f383a37@arm.com>
- <20210125215107.GB16374@jcrouse1-lnx.qualcomm.com>
- <dc035204-ade7-03ec-0b82-2ecedc856d42@arm.com>
- <CAF6AEGtfm=vO6s3vQLNotz=spM9EdXbuNi_vfmCqVd7DmyEMCA@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <d8b870cd-b0c7-2f4a-697d-4de8d437fdc5@arm.com>
-Date:   Tue, 26 Jan 2021 16:31:36 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <CAF6AEGtfm=vO6s3vQLNotz=spM9EdXbuNi_vfmCqVd7DmyEMCA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+        id S2394043AbhAZSIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:08:54 -0500
+Received: from mail-mw2nam10on2086.outbound.protection.outlook.com ([40.107.94.86]:49121
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405815AbhAZQdU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:33:20 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hGxIOg+kcf5ynst5k70KMSTiFKKhX4fEw1XkMBjlSS4RrFoqdfwqbqrtuYQhdcB6Npiwp/dX4XlRghoGH97ko+HnIA17Z7flpem4sDCR5l3RZ1ZeAZ0HV9zXKnfxNAjVaFCJmpde4bKm1vF08/dCDmVeq2a7CX9bRdtm2w5eJyHxsT1Xw5XKOGO2cO2Qd2k0aMrZzCt06hb8btKDIY+j8RiStdEETrUAhTTHtasY0nyqZm4fBj1Ei2AdIQIZn24ETvOWaBx6gOzEbV3LikGS383uvLem2TKzPbe581tKNa4Ib1ioK1fFoKmsCHdkhCJuEU0VJpajBGnsT1RNAG8x/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sa8AqGSYJj0vazGQE3/aYNHkELCzmTelROBSMzIlRKA=;
+ b=B5dEjLyVHddH5PPvtgSh0ekjnUErg/pBX2BKS9eTIuZ6uRtnQn873NMMl8ZYZ30+PH7P2OzphgE+aSkBsPD141zmhZ7putRvoL/cj2ypQURN6lW3B4LCp1dg6lpGFlTbyaqQQ5UDuH0jE30f2Z8ejodepUKN/l62vsx7YQflEpGXIVMjzze8aW1YayzlNLNNxSouJes9DEx+HWKCHNkQ5OOQeJ10y5zTQgU9ruRo5Am7iNJ9y2nYhf65Zh+GgX7rvtL5hwpmhsFmGv23qGary3cP55OdhCsFRGwkrQNPf7vXhzsuArOjnBJH+vl+wvn61Ik22O26EirkTByP0xi1Jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sa8AqGSYJj0vazGQE3/aYNHkELCzmTelROBSMzIlRKA=;
+ b=j1y/zOzC+scftAEzxHrBa16JY+uIvocmtHkkmLojHjAJ8xcT9z4AgIHxFqbFeZxWHAscbeDoWD+Kr24JBijibKexNlIFeohN7snzco+kJdB+Gpn1OX7evgqyAEYITFuG13OnR+yvHYY/o1U5Izpz35S0/MKPhuuo1p1CGjie/7c=
+Authentication-Results: rjwysocki.net; dkim=none (message not signed)
+ header.d=none;rjwysocki.net; dmarc=none action=none header.from=amd.com;
+Received: from SA0PR12MB4512.namprd12.prod.outlook.com (2603:10b6:806:71::9)
+ by SA0PR12MB4431.namprd12.prod.outlook.com (2603:10b6:806:95::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Tue, 26 Jan
+ 2021 16:32:26 +0000
+Received: from SA0PR12MB4512.namprd12.prod.outlook.com
+ ([fe80::ed7d:d788:82d2:edd4]) by SA0PR12MB4512.namprd12.prod.outlook.com
+ ([fe80::ed7d:d788:82d2:edd4%5]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
+ 16:32:26 +0000
+From:   Terry Bowman <terry.bowman@amd.com>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, james.morse@arm.com,
+        tony.luck@intel.com, bp@alien8.de, yazen.ghannam@amd.com,
+        terry.bowman@amd.com, guohanjun@huawei.com,
+        colin.king@canonical.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jon.grimm@amd.com
+Subject: [PATCH v2] ACPI / APEI: Add is_generic_error() to identify GHES sources
+Date:   Tue, 26 Jan 2021 10:32:01 -0600
+Message-Id: <20210126163201.1433505-1-terry.bowman@amd.com>
+X-Mailer: git-send-email 2.27.0
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [165.204.78.2]
+X-ClientProxiedBy: SA0PR11CA0138.namprd11.prod.outlook.com
+ (2603:10b6:806:131::23) To SA0PR12MB4512.namprd12.prod.outlook.com
+ (2603:10b6:806:71::9)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ethanolxb27ehost.amd.com (165.204.78.2) by SA0PR11CA0138.namprd11.prod.outlook.com (2603:10b6:806:131::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 26 Jan 2021 16:32:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: eb746909-0af8-403a-fc1f-08d8c217f759
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4431:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4431DDBCB46A466754598C8683BC9@SA0PR12MB4431.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:901;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9J7AUbTu7OQ1NdzmXjjhadTNB7+2dxuGKcIT5+6PJQv2xxBHEK73w1+a53LlHFHMuUFkM7k0ogSxKXCioLztJeV3Tuw4d0arH7Zc3NtcIyhKXZVp7pURpdLw61OPykvfscdulQRUTiGP8kcdps8u+xCQljU/Dkt1Erg5J3rrfly6vVBWwvS2CuAWF4koA5wuUbGFp6AIEBBYmVbuqAXeN+SNaD871JQovwZvSrOm0pXAluQqZpmjZiCPEbDNz/VoWx+SIPT0p4E7o6BWJS+FBe0MVLtjIwuDUJtHw+wSOLVyaTzTsIYGzhrdA+hXV/PyekuC0ZBoM3uhEEoCL5YvriOONVLLUZ+O2n4ySsR1AsMU8LZ49Mp502GvbUEEny/kRSEeaIo0j6PaoAf1sXq3mq9ydD1TiUwMLnkWdbFQ9CVqJKN0qkQ4YuqflNq99GkYJiebkU/ioggMAsr9DwKR0Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4512.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(396003)(376002)(39860400002)(478600001)(8936002)(66946007)(8676002)(7696005)(52116002)(109986005)(26005)(1076003)(6486002)(86362001)(956004)(2906002)(4326008)(5660300002)(186003)(6666004)(16526019)(36756003)(83380400001)(44832011)(66476007)(2616005)(66556008)(316002)(41533002)(266003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tNjU7uP+PiCfRx560FB28hZm3c5opMqNr3MfRUTFabgnI2TE1lCvfeBb/TbL?=
+ =?us-ascii?Q?jqVaF/igY1sFC4hVaX9smLADNxXOAczlE4Vy8AMJDSdU/sfMBVcQmhZJi6Hq?=
+ =?us-ascii?Q?nsnOZO4mDILKcHq7YnO4IWaZXfaosjQvCtBjAZNQz4CYKI0k9O+hZb21Yilq?=
+ =?us-ascii?Q?g95SoQ2SSWvLxqESucbny0iCfO4CpozTPkPCY2lq//U91LzRhUUwoyfduEsk?=
+ =?us-ascii?Q?PNy5FowITpLItkDCcDGx04d1Suw+fQh9j0Vz0DcVSjzhC+KYuFrefqP0Gc9J?=
+ =?us-ascii?Q?KQBIGkZpU8Tj8Ib0dHzbC41WSQkvkmvZiZUzh4kK2XqdGB6RPSZvSTOUyA4Q?=
+ =?us-ascii?Q?zOVCas/QthR1saVk8NQaqAmDi3ZVW76TOVeG6MnoPRaeu1f3dPfvavjoOuo4?=
+ =?us-ascii?Q?utUPt7sBEXXtXQIAjtkA6rfa71lJvT7MXftH+FR0fsjViKTUnn3PtonIl3UZ?=
+ =?us-ascii?Q?P8o0umykbumUFs4uRZjubHsjzZgcVL/gRRgSiDzq9VNeqJ1Pz7dxeqvFpjWJ?=
+ =?us-ascii?Q?y6UVrFiSpukPG1V9RTGk1QSEPDgqIPiZ7e5+BJpbG7gclOW275BKsNYtTaAm?=
+ =?us-ascii?Q?BnKf7jUfC3pDNV7SJoenDQrzWBkoeElzubaqz8YVLCOwLN6AmJ5CjEfcKbX/?=
+ =?us-ascii?Q?6dLrZiWvNKB+ooenzkDJxCnVEB73SNLIdgLgui1nws2D+x0qNLXt1JOqzkbO?=
+ =?us-ascii?Q?QwMxzw+at8NtHk/QT90t4mkNe4yJGgRMgvdOiI5DvFHf/jSYUuXe/lJZpAjH?=
+ =?us-ascii?Q?MuskAG+BhT40sfZvESIzPf7Ybgc6dGrc3NP6WRzcen1GD5LPVrtFl2faI3My?=
+ =?us-ascii?Q?21oTt0iD2+aC3rLMiDGW9YSMEFFyWF1zjAy8TaTnjv6jE92p+QZRNoY2r051?=
+ =?us-ascii?Q?Kp3lBR+ADPuFIILGpDptwAM8ZIIBGlDPxLZumcawVrMe27ErxOW+0uyG72ho?=
+ =?us-ascii?Q?BDKJRCJFbbdLDdjEE7UixiWuVLGNJkOiQwANwPbSkxkViNR+jhPphWsCmprT?=
+ =?us-ascii?Q?y0qzC0VB+4frMFaNqeBrlJ09JfGpaiai0dEf2w2P/efBgwBQeUduoSZSRCxK?=
+ =?us-ascii?Q?z73NAfOk?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb746909-0af8-403a-fc1f-08d8c217f759
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR12MB4512.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 16:32:26.5300
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xAGmVC1Em2mGew5IRh/V4aWm2or53egOcysN8Wx8cr/EngzVAq9Ozd98guxuFEPSIjHD7gqZqvXbAnrhGROvnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4431
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 16:05, Rob Clark wrote:
-> On Tue, Jan 26, 2021 at 3:41 AM Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-01-25 21:51, Jordan Crouse wrote:
->>> On Fri, Jan 22, 2021 at 12:53:17PM +0000, Robin Murphy wrote:
->>>> On 2021-01-22 12:41, Will Deacon wrote:
->>>>> On Tue, Nov 24, 2020 at 12:15:58PM -0700, Jordan Crouse wrote:
->>>>>> Call report_iommu_fault() to allow upper-level drivers to register their
->>>>>> own fault handlers.
->>>>>>
->>>>>> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
->>>>>> ---
->>>>>>
->>>>>>    drivers/iommu/arm/arm-smmu/arm-smmu.c | 16 +++++++++++++---
->>>>>>    1 file changed, 13 insertions(+), 3 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>>>>> index 0f28a8614da3..7fd18bbda8f5 100644
->>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>>>>> @@ -427,6 +427,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
->>>>>>     struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->>>>>>     struct arm_smmu_device *smmu = smmu_domain->smmu;
->>>>>>     int idx = smmu_domain->cfg.cbndx;
->>>>>> +  int ret;
->>>>>>     fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
->>>>>>     if (!(fsr & ARM_SMMU_FSR_FAULT))
->>>>>> @@ -436,11 +437,20 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
->>>>>>     iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
->>>>>>     cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
->>>>>> -  dev_err_ratelimited(smmu->dev,
->>>>>> -  "Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
->>>>>> +  ret = report_iommu_fault(domain, dev, iova,
->>>>>> +          fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
->>>>>> +
->>>>>> +  if (ret == -ENOSYS)
->>>>>> +          dev_err_ratelimited(smmu->dev,
->>>>>> +          "Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
->>>>>>                         fsr, iova, fsynr, cbfrsynra, idx);
->>>>>> -  arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
->>>>>> +  /*
->>>>>> +   * If the iommu fault returns an error (except -ENOSYS) then assume that
->>>>>> +   * they will handle resuming on their own
->>>>>> +   */
->>>>>> +  if (!ret || ret == -ENOSYS)
->>>>>> +          arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
->>>>>
->>>>> Hmm, I don't grok this part. If the fault handler returned an error and
->>>>> we don't clear the FSR, won't we just re-take the irq immediately?
->>>>
->>>> If we don't touch the FSR at all, yes. Even if we clear the fault indicator
->>>> bits, the interrupt *might* remain asserted until a stalled transaction is
->>>> actually resolved - that's that lovely IMP-DEF corner.
->>>>
->>>> Robin.
->>>>
->>>
->>> This is for stall-on-fault. The idea is that if the developer chooses to do so
->>> we would stall the GPU after a fault long enough to take a picture of it with
->>> devcoredump and then release the FSR. Since we can't take the devcoredump from
->>> the interrupt handler we schedule it in a worker and then return an error
->>> to let the main handler know that we'll come back around clear the FSR later
->>> when we are done.
->>
->> Sure, but clearing FSR is not writing to RESUME to resolve the stalled
->> transaction(s). You can already snarf the FSR contents from your
->> report_iommu_fault() handler if you want to, so either way I don't see
->> what's gained by not clearing it as expected at the point where we've
->> handled the *interrupt*, even if it will take longer to decide what to
->> do with the underlying *fault* that it signalled. I'm particularly not
->> keen on having unusual behaviour in the core interrupt handling which
->> callers may unwittingly trigger, for the sake of one
->> very-very-driver-specific flow having a slightly richer debugging
->> experience.
-> 
-> Tbf, "slightly" is an understatement.. it is a big enough improvement
-> that I've hacked up deferred resume several times to debug various
-> issues. ;-)
+From: Yazen Ghannam <yazen.ghannam@amd.com>
 
-Oh, fear not, I fully appreciate that keeping the GPU stalled on a 
-faulting transaction is a game-changer in itself ("almost like a real 
-MMU!"). That comment was only aimed at whatever the perceived benefits 
-are of deliberately not trying to clear the SMMU interrupt (even if it 
-*would* stay clear). I have no issue with calling report_iommu_fault(), 
-I'm just wary of doing anything weird with the result.
+Refactor duplicated GHES identity logic into is_generic_error().
 
-> (Which is always a bit of a PITA because of things moving around in
-> arm-smmu as well as the drm side of things.)
-> 
-> But from my recollection, we can clear FSR immediately, all we need to
-> do is defer writing ARM_SMMU_CB_RESUME
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Reviewed-by: Robert Richter <rrichter@amd.com>
+Co-developed-by: Terry Bowman <terry.bowman@amd.com>
+Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+---
+Changes in v2:
+  - Rename is_ghes_type() to is_generic_error()
+  - Add co-developed-by
+  
+ drivers/acpi/apei/hest.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Phew! Thanks for the reassurance :)
+diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+index 6e980fe16772..f220bb00e91b 100644
+--- a/drivers/acpi/apei/hest.c
++++ b/drivers/acpi/apei/hest.c
+@@ -49,6 +49,12 @@ static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
+ 	[ACPI_HEST_TYPE_IA32_DEFERRED_CHECK] = -1,
+ };
+ 
++static inline bool is_generic_error(struct acpi_hest_header *hest_hdr)
++{
++	return hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
++	       hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2;
++}
++
+ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
+ {
+ 	u16 hest_type = hest_hdr->type;
+@@ -141,8 +147,7 @@ static int __init hest_parse_ghes_count(struct acpi_hest_header *hest_hdr, void
+ {
+ 	int *count = data;
+ 
+-	if (hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR ||
+-	    hest_hdr->type == ACPI_HEST_TYPE_GENERIC_ERROR_V2)
++	if (is_generic_error(hest_hdr))
+ 		(*count)++;
+ 	return 0;
+ }
+@@ -153,9 +158,7 @@ static int __init hest_parse_ghes(struct acpi_hest_header *hest_hdr, void *data)
+ 	struct ghes_arr *ghes_arr = data;
+ 	int rc, i;
+ 
+-	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
+-	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
++	if (!is_generic_error(hest_hdr))
+ 		return 0;
+ 
+ 	if (!((struct acpi_hest_generic *)hest_hdr)->enabled)
+--
+2.27.0
 
-Robin.
-
-> 
-> BR,
-> -R
-> 
->>
->> For actually *handling* faults, I thought we were going to need to hook
->> up the new IOPF fault queue stuff anyway?
->>
->> Robin.
->>
->>> It is assumed that we'll have to turn off interrupts in our handler to allow
->>> this to work. Its all very implementation specific, but then again we're
->>> assuming that if you want to do this then you know what you are doing.
->>>
->>> In that spirit the error that skips the FSR should probably be something
->>> specific instead of "all errors" - that way a well meaning handler that returns
->>> a -EINVAL doesn't accidentally break itself.
->>>
->>> Jordan
->>>
->>>>> I think
->>>>> it would be better to do this unconditionally, and print the "Unhandled
->>>>> context fault" message for any non-zero value of ret.
->>>
->>>>>
->>>>> Will
->>>>>
->>>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
