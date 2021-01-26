@@ -2,163 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EABC1303C1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864FE303C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405343AbhAZLvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:51:51 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11884 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405534AbhAZLti (ORCPT
+        id S2405498AbhAZLwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:52:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27538 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405452AbhAZLwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:49:38 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DQ4jV433Mz7Wyh;
-        Tue, 26 Jan 2021 19:47:42 +0800 (CST)
-Received: from [10.174.177.80] (10.174.177.80) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 19:48:46 +0800
-Subject: Re: [PATCH v11 12/13] mm/vmalloc: Hugepage vmalloc mappings
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210126044510.2491820-1-npiggin@gmail.com>
- <20210126044510.2491820-13-npiggin@gmail.com>
- <0f360e6e-6d34-19ce-6c76-a17a5f4f7fc3@huawei.com>
- <1611653945.t3oot63nwn.astroid@bobo.none>
-From:   Ding Tianhong <dingtianhong@huawei.com>
-Message-ID: <a84836bb-d913-eb58-cd16-b268f479bd8b@huawei.com>
-Date:   Tue, 26 Jan 2021 19:48:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Tue, 26 Jan 2021 06:52:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611661842;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SILO0IvFQEm5YDmK2vltUgaI/9xMJ74zaX6JPESGWag=;
+        b=a2x0Bh7GbuPkXiNwARk20n8UQFlnU96O4N4OFP4c01Sogwb1OnZ58k+yB2dgMLtwwhNceR
+        k3EulbMvHd8/woLepDsCGve0LHdS0u/KTkSVukunAkl/dyB0PgsK4jDofHldGCKKMjqzac
+        FNrZs6TG/Wd/HE5PUIPoD32+PZ89wys=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-xWJC4Uq6MQeerYUQxr-2Ig-1; Tue, 26 Jan 2021 06:50:38 -0500
+X-MC-Unique: xWJC4Uq6MQeerYUQxr-2Ig-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E086C100E33A;
+        Tue, 26 Jan 2021 11:50:33 +0000 (UTC)
+Received: from starship (unknown [10.35.206.204])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7565F5BBAD;
+        Tue, 26 Jan 2021 11:50:29 +0000 (UTC)
+Message-ID: <bae0e578fbf00db7b61465c240679bad8e672105.camel@redhat.com>
+Subject: Re: [PATCH v3 2/4] KVM: SVM: Add emulation support for #GP
+ triggered by SVM instructions
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, luto@amacapital.net
+Date:   Tue, 26 Jan 2021 13:50:28 +0200
+In-Reply-To: <20210126081831.570253-3-wei.huang2@amd.com>
+References: <20210126081831.570253-1-wei.huang2@amd.com>
+         <20210126081831.570253-3-wei.huang2@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <1611653945.t3oot63nwn.astroid@bobo.none>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.80]
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/26 17:47, Nicholas Piggin wrote:
-> Excerpts from Ding Tianhong's message of January 26, 2021 4:59 pm:
->> On 2021/1/26 12:45, Nicholas Piggin wrote:
->>> Support huge page vmalloc mappings. Config option HAVE_ARCH_HUGE_VMALLOC
->>> enables support on architectures that define HAVE_ARCH_HUGE_VMAP and
->>> supports PMD sized vmap mappings.
->>>
->>> vmalloc will attempt to allocate PMD-sized pages if allocating PMD size
->>> or larger, and fall back to small pages if that was unsuccessful.
->>>
->>> Architectures must ensure that any arch specific vmalloc allocations
->>> that require PAGE_SIZE mappings (e.g., module allocations vs strict
->>> module rwx) use the VM_NOHUGE flag to inhibit larger mappings.
->>>
->>> When hugepage vmalloc mappings are enabled in the next patch, this
->>> reduces TLB misses by nearly 30x on a `git diff` workload on a 2-node
->>> POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
->>>
->>> This can result in more internal fragmentation and memory overhead for a
->>> given allocation, an option nohugevmalloc is added to disable at boot.
->>>
->>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->>> ---
->>>  arch/Kconfig            |  11 ++
->>>  include/linux/vmalloc.h |  21 ++++
->>>  mm/page_alloc.c         |   5 +-
->>>  mm/vmalloc.c            | 215 +++++++++++++++++++++++++++++++---------
->>>  4 files changed, 205 insertions(+), 47 deletions(-)
->>>
->>> diff --git a/arch/Kconfig b/arch/Kconfig
->>> index 24862d15f3a3..eef170e0c9b8 100644
->>> --- a/arch/Kconfig
->>> +++ b/arch/Kconfig
->>> @@ -724,6 +724,17 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
->>>  config HAVE_ARCH_HUGE_VMAP
->>>  	bool
->>>  
->>> +#
->>> +#  Archs that select this would be capable of PMD-sized vmaps (i.e.,
->>> +#  arch_vmap_pmd_supported() returns true), and they must make no assumptions
->>> +#  that vmalloc memory is mapped with PAGE_SIZE ptes. The VM_NO_HUGE_VMAP flag
->>> +#  can be used to prohibit arch-specific allocations from using hugepages to
->>> +#  help with this (e.g., modules may require it).
->>> +#
->>> +config HAVE_ARCH_HUGE_VMALLOC
->>> +	depends on HAVE_ARCH_HUGE_VMAP
->>> +	bool
->>> +
->>>  config ARCH_WANT_HUGE_PMD_SHARE
->>>  	bool
->>>  
->>> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
->>> index 99ea72d547dc..93270adf5db5 100644
->>> --- a/include/linux/vmalloc.h
->>> +++ b/include/linux/vmalloc.h
->>> @@ -25,6 +25,7 @@ struct notifier_block;		/* in notifier.h */
->>>  #define VM_NO_GUARD		0x00000040      /* don't add guard page */
->>>  #define VM_KASAN		0x00000080      /* has allocated kasan shadow memory */
->>>  #define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfree */
->>> +#define VM_NO_HUGE_VMAP		0x00000200	/* force PAGE_SIZE pte mapping */
->>>
->>>  /*
->>>   * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALLOC.
->>> @@ -59,6 +60,9 @@ struct vm_struct {
->>>  	unsigned long		size;
->>>  	unsigned long		flags;
->>>  	struct page		**pages;
->>> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMALLOC
->>> +	unsigned int		page_order;
->>> +#endif
->>>  	unsigned int		nr_pages;
->>>  	phys_addr_t		phys_addr;
->>>  	const void		*caller;
->> Hi Nicholas:
->>
->> Give a suggestion :)
->>
->> The page order was only used to indicate the huge page flag for vm area, and only valid when
->> size bigger than PMD_SIZE, so can we use the vm flgas to instead of that, just like define the
->> new flag named VM_HUGEPAGE, it would not break the vm struct, and it is easier for me to backport the serious
->> patches to our own branches. (Base on the lts version).
+On Tue, 2021-01-26 at 03:18 -0500, Wei Huang wrote:
+> From: Bandan Das <bsd@redhat.com>
 > 
-> Hmm, it might be possible. I'm not sure if 1GB vmallocs will be used any 
-> time soon (or maybe they will for edge case configurations? It would be 
-> trivial to add support for).
+> While running SVM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
+> CPUs check EAX against reserved memory regions (e.g. SMM memory on host)
+> before checking VMCB's instruction intercept. If EAX falls into such
+> memory areas, #GP is triggered before VMEXIT. This causes problem under
+> nested virtualization. To solve this problem, KVM needs to trap #GP and
+> check the instructions triggering #GP. For VM execution instructions,
+> KVM emulates these instructions.
 > 
-
-1GB vmallocs is really crazy, but maybe used for future. :)
-
-> The other concern I have is that Christophe IIRC was asking about 
-> implementing a mapping for PPC which used TLB mappings that were 
-> different than kernel page table tree size. Although I guess we could 
-> deal with that when it comes.
+> Co-developed-by: Wei Huang <wei.huang2@amd.com>
+> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> Signed-off-by: Bandan Das <bsd@redhat.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 109 ++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 91 insertions(+), 18 deletions(-)
 > 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 7ef171790d02..e5ca01e25e89 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -200,6 +200,8 @@ module_param(sev_es, int, 0444);
+>  bool __read_mostly dump_invalid_vmcb;
+>  module_param(dump_invalid_vmcb, bool, 0644);
+>  
+> +bool svm_gp_erratum_intercept = true;
+I'll expect this to be a module parm, so that user
+could override it, just like enable_vmware_backdoor
 
-I didn't check the PPC platform, but a agree with you.
+> +
+>  static u8 rsm_ins_bytes[] = "\x0f\xaa";
+>  
+>  static void svm_complete_interrupts(struct vcpu_svm *svm);
+> @@ -288,6 +290,9 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+>  		if (!(efer & EFER_SVME)) {
+>  			svm_leave_nested(svm);
+>  			svm_set_gif(svm, true);
+> +			/* #GP intercept is still needed in vmware_backdoor */
+> +			if (!enable_vmware_backdoor)
+I would use if (svm_gp_erratum_intercept && !enable_vmware_backdoor) to document
+this.
 
-> I like the flexibility of page_order though. How hard would it be for 
-> you to do the backport with VM_HUGEPAGE yourself?
-> 
+> +				clr_exception_intercept(svm, GP_VECTOR);
+>  
+>  			/*
+>  			 * Free the nested guest state, unless we are in SMM.
+> @@ -309,6 +314,10 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+>  
+>  	svm->vmcb->save.efer = efer | EFER_SVME;
+>  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
+> +	/* Enable #GP interception for SVM instructions */
+> +	if (svm_gp_erratum_intercept)
+> +		set_exception_intercept(svm, GP_VECTOR);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -1957,24 +1966,6 @@ static int ac_interception(struct vcpu_svm *svm)
+>  	return 1;
+>  }
+>  
+> -static int gp_interception(struct vcpu_svm *svm)
+> -{
+> -	struct kvm_vcpu *vcpu = &svm->vcpu;
+> -	u32 error_code = svm->vmcb->control.exit_info_1;
+> -
+> -	WARN_ON_ONCE(!enable_vmware_backdoor);	
+> -
+> -	/*
+> -	 * VMware backdoor emulation on #GP interception only handles IN{S},
+> -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
+> -	 */
+> -	if (error_code) {
+> -		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
+> -		return 1;
+> -	}
+> -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
+> -}
+> -
+>  static bool is_erratum_383(void)
+>  {
+>  	int err, i;
+> @@ -2173,6 +2164,88 @@ static int vmrun_interception(struct vcpu_svm *svm)
+>  	return nested_svm_vmrun(svm);
+>  }
+>  
+> +enum {
+> +	NONE_SVM_INSTR,
+> +	SVM_INSTR_VMRUN,
+> +	SVM_INSTR_VMLOAD,
+> +	SVM_INSTR_VMSAVE,
+> +};
+> +
+> +/* Return NONE_SVM_INSTR if not SVM instrs, otherwise return decode result */
+> +static int svm_instr_opcode(struct kvm_vcpu *vcpu)
+> +{
+> +	struct x86_emulate_ctxt *ctxt = vcpu->arch.emulate_ctxt;
+> +
+> +	if (ctxt->b != 0x1 || ctxt->opcode_len != 2)
+> +		return NONE_SVM_INSTR;
+> +
+> +	switch (ctxt->modrm) {
+> +	case 0xd8: /* VMRUN */
+> +		return SVM_INSTR_VMRUN;
+> +	case 0xda: /* VMLOAD */
+> +		return SVM_INSTR_VMLOAD;
+> +	case 0xdb: /* VMSAVE */
+> +		return SVM_INSTR_VMSAVE;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return NONE_SVM_INSTR;
+> +}
+> +
+> +static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
+> +{
+> +	int (*const svm_instr_handlers[])(struct vcpu_svm *svm) = {
+> +		[SVM_INSTR_VMRUN] = vmrun_interception,
+> +		[SVM_INSTR_VMLOAD] = vmload_interception,
+> +		[SVM_INSTR_VMSAVE] = vmsave_interception,
+> +	};
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +
+> +	return svm_instr_handlers[opcode](svm);
+> +}
+> +
+> +/*
+> + * #GP handling code. Note that #GP can be triggered under the following two
+> + * cases:
+> + *   1) SVM VM-related instructions (VMRUN/VMSAVE/VMLOAD) that trigger #GP on
+> + *      some AMD CPUs when EAX of these instructions are in the reserved memory
+> + *      regions (e.g. SMM memory on host).
+> + *   2) VMware backdoor
+> + */
+> +static int gp_interception(struct vcpu_svm *svm)
+> +{
+> +	struct kvm_vcpu *vcpu = &svm->vcpu;
+> +	u32 error_code = svm->vmcb->control.exit_info_1;
+> +	int opcode;
+> +
+> +	/* Both #GP cases have zero error_code */
+> +	if (error_code)
+> +		goto reinject;
+> +
+> +	/* Decode the instruction for usage later */
+> +	if (x86_decode_emulated_instruction(vcpu, 0, NULL, 0) != EMULATION_OK)
+> +		goto reinject;
+> +
+> +	opcode = svm_instr_opcode(vcpu);
+> +
+> +	if (opcode == NONE_SVM_INSTR) {
+> +		WARN_ON_ONCE(!enable_vmware_backdoor);
+> +
+> +		/*
+> +		 * VMware backdoor emulation on #GP interception only handles
+> +		 * IN{S}, OUT{S}, and RDPMC.
+> +		 */
+> +		return kvm_emulate_instruction(vcpu,
+> +				EMULTYPE_VMWARE_GP | EMULTYPE_NO_DECODE);
+> +	} else
 
-Yes, i can fix it with VM_HUGEPAGE for my own branch.
+I would check svm_gp_erratum_intercept here, not do any emulation
+if not set, and print a warning.
 
-> I should also say, thanks for all the review and testing from the Huawei 
-> team. Do you have an x86 patch?
-I only enable and use it for x86 and aarch64 platform, this serious patches is
-really help us a lot. Thanks.
+> +		return emulate_svm_instr(vcpu, opcode);
+> +
+> +reinject:
+> +	kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
+> +	return 1;
+> +}
+> +
+>  void svm_set_gif(struct vcpu_svm *svm, bool value)
+>  {
+>  	if (value) {
 
-Ding
 
-> Thanks,
-> Nick
-> .
-> 
+Best regards,
+	Maxim Levitsky
 
