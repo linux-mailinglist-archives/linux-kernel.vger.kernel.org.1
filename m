@@ -2,104 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515FC303F7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C37303F73
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405529AbhAZN7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405598AbhAZN5D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:57:03 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFEDC0611BD
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:56:23 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id g3so9829153plp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:56:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PLopm+nrSb+Okoh9RwkXyxLkE32CQhc9+HXJvPrxQb4=;
-        b=RvJfkf28Wk5Xtg8jR3Gp8he1XgD6VQWnnVruv4X1jwyV/oNmxTH+tOQ4LlSR8C1s7B
-         HvTXVV6ucfBlY5EFXzq4GVi26U9E41wcQbGtTUU31wJm4syeCVnjIBmHVRwwI/PLK/Xr
-         +F9xMZP9Qw+KRwBB9AbuSOIRWmyXGCmZuW6Rq+6IQgJ5YlQzJMkKUNRK54G/x+APJC0Q
-         WbgR7MRVa3qD7mgAXbm5Sc9ZbWXxc83h4IIVMk50n5is6fzo5aOBPfxkjzn1+yQje6Dc
-         93LpB1ioS8i7PO7Nt/zA9ZkwvdcmIH6fvaBPIZORAfpaOt2FhJDm3Vly0U/G4FBIPOG6
-         KnGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PLopm+nrSb+Okoh9RwkXyxLkE32CQhc9+HXJvPrxQb4=;
-        b=XYnSXQHaYvDlbjIvEe8YFsz1y2aHQ0WqGQ56qa+rSZ/5bvW4nAhRxQAcdGm9TjVMBS
-         ziVH4hAKscr154zfW0KU6WQ0SYxGvo6xn8+WRa8+E8hxs0P+765F+0dyyz0uRsPd5ql/
-         B+cy8u2n6UR2aNPZ0KOWGnMJlTkYcZzEf8V8nOvjBT5tGNDS9A0ipvUSjJbXeY5v0nFL
-         uFa+Vfu6PCggQ5ey7LRDZdEV4pg+B5kQ+YCXgDUgfzgNIxWgdeQDDPDHzbLkNAvfV5aA
-         XyRrg6NACfZxHQksu/FWeWlZJBxpxbb6BcUBRgTAQ834DlzpcjXutzPmlXMiGwv5fyFN
-         S/sA==
-X-Gm-Message-State: AOAM531pJOeI6ZwrJOY5CFEccqF6Pl9vFwZOMGVQ0dscqDu0R86JwZAC
-        /JRiwsnoT8V7PRp/nqHzsQc=
-X-Google-Smtp-Source: ABdhPJwof+FC12gJZtih8+puFm8cdpF2/TVMbujKejXQOEFMUBGHhS/YQrYaGA7I/Hi1ewa3bbRFkw==
-X-Received: by 2002:a17:902:6bca:b029:df:fb48:8c39 with SMTP id m10-20020a1709026bcab02900dffb488c39mr6084593plt.31.1611669383219;
-        Tue, 26 Jan 2021 05:56:23 -0800 (PST)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id y21sm19446682pfp.208.2021.01.26.05.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 05:56:22 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     tomba@kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, sebastian.reichel@collabora.com,
-        laurent.pinchart@ideasonboard.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH] drm/omap: dsi: fix unreachable code in dsi_vc_send_short()
-Date:   Tue, 26 Jan 2021 05:55:11 -0800
-Message-Id: <20210126135511.10989-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        id S2405612AbhAZN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:58:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405105AbhAZN6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:58:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B8B42255F;
+        Tue, 26 Jan 2021 13:57:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611669439;
+        bh=y7F+oWWxh1fjhvS0/oYgJ5q2LarzXJddNMbpoRLzou8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AzigRl4/0g9GQwgdqBXyf3gsHha1GfHYFtbDU3N5jkW26gnAuZrcCF1OuW8D1TPYN
+         jQh5WarDLnJy9ljEhBGhTiUA/fPOy95tClb5YkAi290zspzvb43FUVcMG5uN8XlK2/
+         56O9nY0B7Y+/FXDc6MKQxykynjbEzTT2Nx7YVhSORkkZ20UFGeNHSsNAaI3kyO6NT6
+         mNubMMkYjOQ9QMZV2qdaLXdDB2oXRlrikpKj9G/fXpHGCsof+1JOo+kqDn229E/ZSa
+         HQ6OnnOuRbMEpJOCuM9ibcllbTALw9lwdlLfOQWZCskXhhpnPNJmXBNCk1+MrzJIZY
+         7o2Ab+wqxH4BA==
+Date:   Tue, 26 Jan 2021 13:57:13 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Jia He <justin.he@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Gavin Shan <gshan@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>
+Subject: Re: [RFC PATCH 1/2] arm64/cpuinfo: Move init_cpu_features() ahead of
+ setup.c::early_fixmap_init()
+Message-ID: <20210126135712.GA29956@willie-the-truck>
+References: <20210113014047.14371-1-justin.he@arm.com>
+ <20210113014047.14371-2-justin.he@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113014047.14371-2-justin.he@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Wed, Jan 13, 2021 at 09:40:46AM +0800, Jia He wrote:
+> Move init_cpu_features() ahead of setup_arch()->early_fixmap_init(), which
+> is the preparation work for checking the condition to assign
+> arm64_use_ng_mappings as cpus_have_const_cap(ARM64_UNMAP_KERNEL_AT_EL0).
+> 
+> Besides, jump_label_init() is also moved ahead because
+> cpus_have_const_cap() depends on static key enable api.
+> 
+> Percpu helpers should be avoided in cpuinfo_store_boot_cpu() before percpu
+> init at main.c::setup_per_cpu_areas()
+> 
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>  arch/arm64/include/asm/cpu.h |  1 +
+>  arch/arm64/kernel/cpuinfo.c  | 13 ++++++++++---
+>  arch/arm64/kernel/setup.c    | 14 +++++++++-----
+>  arch/arm64/kernel/smp.c      |  3 +--
+>  4 files changed, 21 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
+> index 7faae6ff3ab4..59f36f5e3c04 100644
+> --- a/arch/arm64/include/asm/cpu.h
+> +++ b/arch/arm64/include/asm/cpu.h
+> @@ -63,6 +63,7 @@ DECLARE_PER_CPU(struct cpuinfo_arm64, cpu_data);
+>  
+>  void cpuinfo_store_cpu(void);
+>  void __init cpuinfo_store_boot_cpu(void);
+> +void __init save_boot_cpuinfo_data(void);
+>  
+>  void __init init_cpu_features(struct cpuinfo_arm64 *info);
+>  void update_cpu_features(int cpu, struct cpuinfo_arm64 *info,
+> diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+> index 77605aec25fe..f8de5b8bae20 100644
+> --- a/arch/arm64/kernel/cpuinfo.c
+> +++ b/arch/arm64/kernel/cpuinfo.c
+> @@ -413,9 +413,16 @@ void cpuinfo_store_cpu(void)
+>  
+>  void __init cpuinfo_store_boot_cpu(void)
+>  {
+> -	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, 0);
+> -	__cpuinfo_store_cpu(info);
+> +	__cpuinfo_store_cpu(&boot_cpu_data);
+>  
+> -	boot_cpu_data = *info;
+>  	init_cpu_features(&boot_cpu_data);
+>  }
+> +
+> +void __init save_boot_cpuinfo_data(void)
+> +{
+> +	struct cpuinfo_arm64 *info;
+> +
+> +	set_my_cpu_offset(per_cpu_offset(smp_processor_id()));
+> +	info = &per_cpu(cpu_data, 0);
+> +	*info = boot_cpu_data;
+> +}
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index 1a57a76e1cc2..e078ab068f3b 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -297,16 +297,20 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+>  	 */
+>  	arm64_use_ng_mappings = kaslr_requires_kpti();
+>  
+> -	early_fixmap_init();
+> -	early_ioremap_init();
+> -
+> -	setup_machine_fdt(__fdt_pointer);
+> -
+>  	/*
+>  	 * Initialise the static keys early as they may be enabled by the
+>  	 * cpufeature code and early parameters.
+>  	 */
+>  	jump_label_init();
 
-The 'r' in dsi_vc_send_short() is of type 'unsigned int', so the
-'r < 0' can't be true.
+I don't think your patch changes this, but afaict jump_label_init() uses
+per-cpu variables via cpus_read_lock(), yet we don't initialise our offset
+until later on. Any idea how that works?
 
-Fix this by introducing a 'err' insteaded.
-
-Fixes: 1ed6253856cb
-("drm/omap: dsi: switch dsi_vc_send_long/short to mipi_dsi_msg")
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- drivers/gpu/drm/omapdrm/dss/dsi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
-index 8e11612f5fe1..febcc87ddfe1 100644
---- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-+++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-@@ -2149,11 +2149,12 @@ static int dsi_vc_send_short(struct dsi_data *dsi, int vc,
- 			     const struct mipi_dsi_msg *msg)
- {
- 	struct mipi_dsi_packet pkt;
-+	int err;
- 	u32 r;
- 
--	r = mipi_dsi_create_packet(&pkt, msg);
--	if (r < 0)
--		return r;
-+	err = mipi_dsi_create_packet(&pkt, msg);
-+	if (err)
-+		return err;
- 
- 	WARN_ON(!dsi_bus_is_locked(dsi));
- 
--- 
-2.25.1
-
+Will
