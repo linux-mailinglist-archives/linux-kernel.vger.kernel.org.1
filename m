@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A84303DF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662F3303DB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404317AbhAZM72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:59:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404110AbhAZMuG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:50:06 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F5FC08EBAC
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:57 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id b5so16308886wrr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WpANnWfGT2qFPSHlNEWTmbJ1paMcoIJGvrRr1eRAMJE=;
-        b=elRCoD0E+0EyiixUe4a1EB+4QZXPB3Rc7DM40jZU9+fIbi8dg5nsnJG0nbovfzqy1M
-         csONUjfx2MdwVvhkhkgRD7KhgaJSn/HM1hM7wrhMx+mq3Q+w/pyOVdfLyKyPJThdIyXx
-         tTx7izzkrcjpvF/ybDkHNhY96HYJXm8R49kYKVYM0R8tZF2dAdNwMWxLm+F9Ng8GFViS
-         deXzu9E57xoZRjxcr8LUXfv11flWbtwBhVgedFQzNQ1IE1WxgWsPynNLQOxy5k6bdgj3
-         XQ3D+2IcZJ2f9hM3vnr1DK8sIejTFlPSSpfto7GH7yXeMYWz6Mvfwa9/z7dOt7/KoH/E
-         XK5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WpANnWfGT2qFPSHlNEWTmbJ1paMcoIJGvrRr1eRAMJE=;
-        b=JAuO6t13PKV2I3ZhVHDcxSjjXAD09YcfPLqIjpycSwDSY0vT/v5lA+0cUIqgBg0Oue
-         IUPyOG6nZD1ckZw6DQxZI6lbcUsVBxsnpuO72YujssGZOBFDvsTzfaIzSPq/BS76ENGF
-         KdfKo8m4EWC5wgEzv6tmztIQmLvr5eGd8jg77XYVmOfipdRdQBYhu7JP6ehCrNevNmyz
-         Kz2rTibv5QSSMxmBeQD0LT6AVAH7A2b3XE5slJsayzC07p4N1dxRzAowrDi7Qeen2bL+
-         EhdntyRpovKDVqFo7woXO3t6zYP2LhmIBYCTOwERBCJrnpCavGx9lJt6m88q/fwVdFxT
-         0UBQ==
-X-Gm-Message-State: AOAM532GBEL5VkWIvwfY7hB61jJ09PS7ImD4fErfYz2xEyfaKglBBbT4
-        QfJK2VSFEw4+UfGZuPQ93+5MXQ==
-X-Google-Smtp-Source: ABdhPJxRSdr8DaSZ3Ha889ki6igIj2ynJ5QQ+X5CFywOPJ1iNvepjcEBe8xUh3/g3cl2uRdPipvcVA==
-X-Received: by 2002:adf:eb4e:: with SMTP id u14mr5939543wrn.99.1611665276345;
-        Tue, 26 Jan 2021 04:47:56 -0800 (PST)
-Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:55 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 18/20] RDMA/hw/hfi1/user_exp_rcv: Demote half-documented and kernel-doc abuses
-Date:   Tue, 26 Jan 2021 12:47:30 +0000
-Message-Id: <20210126124732.3320971-19-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
-References: <20210126124732.3320971-1-lee.jones@linaro.org>
+        id S2392323AbhAZMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:52:48 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:48216 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391915AbhAZMvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 07:51:13 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id D37C520534;
+        Tue, 26 Jan 2021 13:50:27 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id HX9cLZtSrG5O; Tue, 26 Jan 2021 13:50:27 +0100 (CET)
+Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 5C52D200A7;
+        Tue, 26 Jan 2021 13:50:27 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
+ 14.3.487.0; Tue, 26 Jan 2021 13:50:27 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Tue, 26 Jan
+ 2021 13:50:26 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 144A33182E68;
+ Tue, 26 Jan 2021 13:50:27 +0100 (CET)
+Date:   Tue, 26 Jan 2021 13:50:27 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Dongseok Yi <dseok.yi@samsung.com>
+CC:     "'David S. Miller'" <davem@davemloft.net>,
+        'Alexander Lobakin' <alobakin@pm.me>,
+        <namkyu78.kim@samsung.com>, 'Jakub Kicinski' <kuba@kernel.org>,
+        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
+        "'Willem de Bruijn'" <willemb@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v3] udp: ipv4: manipulate network header of NATed UDP
+ GRO fraglist
+Message-ID: <20210126125027.GX3576117@gauss3.secunet.de>
+References: <CGME20210121133649epcas2p493d5d59df1b48ee8e3282ab766f37a70@epcas2p4.samsung.com>
+ <1611235479-39399-1-git-send-email-dseok.yi@samsung.com>
+ <20210125124544.GW3576117@gauss3.secunet.de>
+ <026001d6f37a$97461300$c5d23900$@samsung.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <026001d6f37a$97461300$c5d23900$@samsung.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, Jan 26, 2021 at 09:31:29AM +0900, Dongseok Yi wrote:
+> On 1/25/21 9:45 PM, Steffen Klassert wrote:
+> > On Thu, Jan 21, 2021 at 10:24:39PM +0900, Dongseok Yi wrote:
+> > >
+> > > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
+> > > +				     __be32 *oldip, __be32 *newip,
+> > > +				     __be16 *oldport, __be16 *newport)
+> > > +{
+> > > +	struct udphdr *uh;
+> > > +	struct iphdr *iph;
+> > > +
+> > > +	if (*oldip == *newip && *oldport == *newport)
+> > > +		return;
+> > 
+> > This check is redundant as you check this already in
+> > __udpv4_gso_segment_list_csum.
+> 
+> When comes in __udpv4_gso_segment_csum, the condition would be
+> SNAT or DNAT. I think we don't need to do the function if the
+> condition is not met. I want to skip the function for SNAT checksum
+> when DNAT only case. Is it better to remove the check?
 
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'fd' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'tidbuf' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'node' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'idx' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'npages' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:174: warning: Function parameter or member 'mapped' not described in 'unpin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:196: warning: Function parameter or member 'fd' not described in 'pin_rcv_pages'
- drivers/infiniband/hw/hfi1/user_exp_rcv.c:196: warning: Function parameter or member 'tidbuf' not described in 'pin_rcv_pages'
+Ok, so it can be seen as an optimization. It is ok as it is.
 
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc: Doug Ledford <dledford@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/infiniband/hw/hfi1/user_exp_rcv.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
 
-diff --git a/drivers/infiniband/hw/hfi1/user_exp_rcv.c b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-index b94fc7fd75a96..58dcab2679d9d 100644
---- a/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-+++ b/drivers/infiniband/hw/hfi1/user_exp_rcv.c
-@@ -154,12 +154,12 @@ void hfi1_user_exp_rcv_free(struct hfi1_filedata *fd)
- 	fd->entry_to_rb = NULL;
- }
- 
--/**
-+/*
-  * Release pinned receive buffer pages.
-  *
-- * @mapped - true if the pages have been DMA mapped. false otherwise.
-- * @idx - Index of the first page to unpin.
-- * @npages - No of pages to unpin.
-+ * @mapped: true if the pages have been DMA mapped. false otherwise.
-+ * @idx: Index of the first page to unpin.
-+ * @npages: No of pages to unpin.
-  *
-  * If the pages have been DMA mapped (indicated by mapped parameter), their
-  * info will be passed via a struct tid_rb_node. If they haven't been mapped,
-@@ -189,7 +189,7 @@ static void unpin_rcv_pages(struct hfi1_filedata *fd,
- 	fd->tid_n_pinned -= npages;
- }
- 
--/**
-+/*
-  * Pin receive buffer pages.
-  */
- static int pin_rcv_pages(struct hfi1_filedata *fd, struct tid_user_buf *tidbuf)
--- 
-2.25.1
-
+Thanks!
