@@ -2,327 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9F2304FA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0B6304FA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbhA0DRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:17:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40642 "EHLO mail.kernel.org"
+        id S235424AbhA0DRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:17:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390044AbhAZUlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387726AbhAZUlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Jan 2021 15:41:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E34221FC;
-        Tue, 26 Jan 2021 20:41:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 549FB22228;
+        Tue, 26 Jan 2021 20:41:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611693663;
-        bh=cExETPQ2nAIvQUq2HKq3vBmh7qSjwyRGqe6E9byeBUU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qqZKNxmdB2ZcnJgzel6OnniFKwmqjQIn9ZH/+xump1kQeHEy4mtr+YlqzXQtG5j6V
-         pTKtgG/D1bBOA9bJuvVe69qsXzR2Gozh1+5up6bnNW/xnuO/S5g1CNT0+WsTtlPdDk
-         30gpzukDBCFLh4/VEviwnaRf1/rxRJ8DsdohzUi6fxfXzYIh4e1ljKElMP0dowC55i
-         Rndoc17TCQ5bMj9tj4bZ7LM2qMLFS6PQOdlRBslyNBCnOKPxCNrT4dnTU6tWlARWqu
-         leWIqCpk0e1aJO/GtVqXy/29NbnZA7IcjjdIXbBfY6oCXM9t/9nTybgmsRhyeGLkgP
-         O+u6CtAP3rC/w==
+        s=k20201202; t=1611693665;
+        bh=i1Eyd7na4zdgN3GI8mAOz2jE0EPKvw+WzGzXBBtHEaw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sdEH1kd6NP+ZJF2o8VrnYaXD25jKNxfc4hT17KSLGVHLC8AydxvVnQ89bp7e5jYZn
+         xWKAgnkHVnYHwSaFBr22dyHJHWCWWNYWCXzmIgsE2fH1s8W+bxn9NGy/TAq2GEhDht
+         5iUleIZR2TYqqxeEmtCOQ+tLGqFbMEy030AagnqQGR+/+3iBdtsj9wEPzjg7O5J0XJ
+         N+3qrZymRd84SR/rkPiu7VwwIowFN6Pah5ZrXOiQuw3FM0QiogMR0GmTltYJHDhTJT
+         Sp+uQVBDf5j8XQasr53P6oEiUgoLCgyXFnNmbcx1k4M9SnLc+8odhRPz6wSDBaZ1E4
+         YXlN7l4ZWZt1w==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Sharabi <osharabi@habana.ai>
-Subject: [PATCH 1/3] habanalabs: modify device_idle interface
-Date:   Tue, 26 Jan 2021 22:40:55 +0200
-Message-Id: <20210126204057.329-1-ogabbay@kernel.org>
+Cc:     Ofir Bitton <obitton@habana.ai>
+Subject: [PATCH 2/3] habanalabs: staged submission support
+Date:   Tue, 26 Jan 2021 22:40:56 +0200
+Message-Id: <20210126204057.329-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210126204057.329-1-ogabbay@kernel.org>
+References: <20210126204057.329-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ohad Sharabi <osharabi@habana.ai>
+From: Ofir Bitton <obitton@habana.ai>
 
-Currently this API uses single 64 bits mask for engines idle indication.
-Recently, it was observed that more bits are needed for some ASICs.
-This patch modifies the use of the idle mask and the idle_extensions
-mask.
+We introduce a new mechanism named Staged Submission.
+This mechanism allows the user to send a whole CS in pieces.
+Each CS will not require completion rather than the
+last CS. Timeout timer will be triggered upon reception of the first
+CS in group.
 
-Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
+Signed-off-by: Ofir Bitton <obitton@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/common/context.c      |  9 +++--
- drivers/misc/habanalabs/common/debugfs.c      |  2 +-
- drivers/misc/habanalabs/common/habanalabs.h   |  4 +-
- .../misc/habanalabs/common/habanalabs_ioctl.c |  5 ++-
- drivers/misc/habanalabs/gaudi/gaudi.c         | 37 ++++++++-----------
- drivers/misc/habanalabs/goya/goya.c           | 21 +++++------
- include/uapi/misc/habanalabs.h                |  4 +-
- 7 files changed, 40 insertions(+), 42 deletions(-)
+ .../habanalabs/common/command_submission.c    | 214 ++++++++++++++++--
+ drivers/misc/habanalabs/common/habanalabs.h   |   9 +
+ drivers/misc/habanalabs/common/hw_queue.c     |  27 +++
+ drivers/misc/habanalabs/gaudi/gaudi.c         |   1 +
+ 4 files changed, 227 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
-index 829fe98eed61..cda871afb8f4 100644
---- a/drivers/misc/habanalabs/common/context.c
-+++ b/drivers/misc/habanalabs/common/context.c
-@@ -12,7 +12,7 @@
- static void hl_ctx_fini(struct hl_ctx *ctx)
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index 57daff0e59ae..7bd4a03b3429 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -334,6 +334,133 @@ static void complete_job(struct hl_device *hdev, struct hl_cs_job *job)
+ 	cs_job_put(job);
+ }
+ 
++/*
++ * hl_staged_cs_find_first - locate the first CS in this staged submission
++ *
++ * @hdev: pointer to device structure
++ * @cs_seq: staged submission sequence number
++ *
++ * @note: This function must be called under 'hdev->cs_mirror_lock'
++ *
++ * Find and return a CS pointer with the given sequence
++ */
++struct hl_cs *hl_staged_cs_find_first(struct hl_device *hdev, u64 cs_seq)
++{
++	struct hl_cs *cs;
++
++	list_for_each_entry_reverse(cs, &hdev->cs_mirror_list, mirror_node)
++		if (cs->staged_cs && cs->staged_first &&
++				cs->sequence == cs_seq)
++			return cs;
++
++	return NULL;
++}
++
++/*
++ * is_staged_cs_last_exists - returns true if the last CS in sequence exists
++ *
++ * @hdev: pointer to device structure
++ * @cs: staged submission member
++ *
++ */
++bool is_staged_cs_last_exists(struct hl_device *hdev, struct hl_cs *cs)
++{
++	struct hl_cs *last_entry;
++
++	last_entry = list_last_entry(&cs->staged_cs_node, struct hl_cs,
++								staged_cs_node);
++
++	if (last_entry->staged_last)
++		return true;
++
++	return false;
++}
++
++/*
++ * staged_cs_get - get CS reference if this CS is a part of a staged CS
++ *
++ * @hdev: pointer to device structure
++ * @cs: current CS
++ * @cs_seq: staged submission sequence number
++ *
++ * Increment CS reference for every CS in this staged submission except for
++ * the CS which get completion.
++ */
++static void staged_cs_get(struct hl_device *hdev, struct hl_cs *cs)
++{
++	/* Only the last CS in this staged submission will get a completion.
++	 * We must increment the reference for all other CS's in this
++	 * staged submission.
++	 * Once we get a completion we will release the whole staged submission.
++	 */
++	if (!cs->staged_last)
++		cs_get(cs);
++}
++
++/*
++ * staged_cs_put - put a CS in case it is part of staged submission
++ *
++ * @hdev: pointer to device structure
++ * @cs: CS to put
++ *
++ * This function decrements a CS reference (for a non completion CS)
++ */
++static void staged_cs_put(struct hl_device *hdev, struct hl_cs *cs)
++{
++	/* We release all CS's in a staged submission except the last
++	 * CS which we have never incremented its reference.
++	 */
++	if (!cs_needs_completion(cs))
++		cs_put(cs);
++}
++
++static void cs_handle_tdr(struct hl_device *hdev, struct hl_cs *cs)
++{
++	bool next_entry_found = false;
++	struct hl_cs *next;
++
++	if (!cs_needs_timeout(cs))
++		return;
++
++	spin_lock(&hdev->cs_mirror_lock);
++
++	/* We need to handle tdr only once for the complete staged submission.
++	 * Hence, we choose the CS that reaches this function first which is
++	 * the CS marked as 'staged_last'.
++	 */
++	if (cs->staged_cs && cs->staged_last)
++		cs = hl_staged_cs_find_first(hdev, cs->staged_sequence);
++
++	spin_unlock(&hdev->cs_mirror_lock);
++
++	/* Don't cancel TDR in case this CS was timedout because we might be
++	 * running from the TDR context
++	 */
++	if (cs && (cs->timedout ||
++			hdev->timeout_jiffies == MAX_SCHEDULE_TIMEOUT))
++		return;
++
++	if (cs && cs->tdr_active)
++		cancel_delayed_work_sync(&cs->work_tdr);
++
++	spin_lock(&hdev->cs_mirror_lock);
++
++	/* queue TDR for next CS */
++	list_for_each_entry(next, &hdev->cs_mirror_list, mirror_node)
++		if (cs_needs_timeout(next)) {
++			next_entry_found = true;
++			break;
++		}
++
++	if (next_entry_found && !next->tdr_active) {
++		next->tdr_active = true;
++		schedule_delayed_work(&next->work_tdr,
++					hdev->timeout_jiffies);
++	}
++
++	spin_unlock(&hdev->cs_mirror_lock);
++}
++
+ static void cs_do_release(struct kref *ref)
  {
- 	struct hl_device *hdev = ctx->hdev;
--	u64 idle_mask = 0;
-+	u64 idle_mask[HL_BUSY_ENGINES_MASK_EXT_SIZE] = {0};
- 	int i;
+ 	struct hl_cs *cs = container_of(ref, struct hl_cs, refcount);
+@@ -391,32 +518,29 @@ static void cs_do_release(struct kref *ref)
+ 	list_del_init(&cs->mirror_node);
+ 	spin_unlock(&hdev->cs_mirror_lock);
  
- 	/* Release all allocated pending cb's, those cb's were never
-@@ -55,10 +55,11 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
+-	/* Don't cancel TDR in case this CS was timedout because we might be
+-	 * running from the TDR context
+-	 */
+-	if (!cs->timedout && hdev->timeout_jiffies != MAX_SCHEDULE_TIMEOUT) {
+-		bool next_entry_found = false;
+-		struct hl_cs *next;
+-
+-		if (cs->tdr_active)
+-			cancel_delayed_work_sync(&cs->work_tdr);
++	cs_handle_tdr(hdev, cs);
  
- 		if ((!hdev->pldm) && (hdev->pdev) &&
- 				(!hdev->asic_funcs->is_device_idle(hdev,
--							&idle_mask, NULL)))
-+					idle_mask,
-+					HL_BUSY_ENGINES_MASK_EXT_SIZE, NULL)))
- 			dev_notice(hdev->dev,
--				"device not idle after user context is closed (0x%llx)\n",
--				idle_mask);
-+					"device not idle after user context is closed (0x%llx, 0x%llx)\n",
-+						idle_mask[0], idle_mask[1]);
- 	} else {
- 		dev_dbg(hdev->dev, "closing kernel context\n");
- 		hdev->asic_funcs->ctx_fini(ctx);
-diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
-index 9e3c1efe56ba..df847a6d19f4 100644
---- a/drivers/misc/habanalabs/common/debugfs.c
-+++ b/drivers/misc/habanalabs/common/debugfs.c
-@@ -414,7 +414,7 @@ static int engines_show(struct seq_file *s, void *data)
- 		return 0;
+-		spin_lock(&hdev->cs_mirror_lock);
+-
+-		/* queue TDR for next CS */
+-		list_for_each_entry(next, &hdev->cs_mirror_list, mirror_node)
+-			if (cs_needs_timeout(next)) {
+-				next_entry_found = true;
+-				break;
+-			}
++	if (cs->staged_cs) {
++		/* the completion CS decrements reference for the entire
++		 * staged submission
++		 */
++		if (cs->staged_last) {
++			struct hl_cs *staged_cs, *tmp;
+ 
+-		if (next_entry_found && !next->tdr_active) {
+-			next->tdr_active = true;
+-			schedule_delayed_work(&next->work_tdr,
+-						hdev->timeout_jiffies);
++			list_for_each_entry_safe(staged_cs, tmp,
++					&cs->staged_cs_node, staged_cs_node)
++				staged_cs_put(hdev, staged_cs);
+ 		}
+ 
+-		spin_unlock(&hdev->cs_mirror_lock);
++		/* A staged CS will be a member in the list only after it
++		 * was submitted. We used 'cs_mirror_lock' when inserting
++		 * it to list so we will use it again when removing it
++		 */
++		if (cs->submitted) {
++			spin_lock(&hdev->cs_mirror_lock);
++			list_del(&cs->staged_cs_node);
++			spin_unlock(&hdev->cs_mirror_lock);
++		}
  	}
  
--	hdev->asic_funcs->is_device_idle(hdev, NULL, s);
-+	hdev->asic_funcs->is_device_idle(hdev, NULL, 0, s);
+ out:
+@@ -614,6 +738,8 @@ static void cs_rollback(struct hl_device *hdev, struct hl_cs *cs)
+ {
+ 	struct hl_cs_job *job, *tmp;
  
++	staged_cs_put(hdev, cs);
++
+ 	list_for_each_entry_safe(job, tmp, &cs->job_list, cs_node)
+ 		complete_job(hdev, job);
+ }
+@@ -623,7 +749,9 @@ void hl_cs_rollback_all(struct hl_device *hdev)
+ 	int i;
+ 	struct hl_cs *cs, *tmp;
+ 
+-	/* flush all completions */
++	/* flush all completions before iterating over the CS mirror list in
++	 * order to avoid a race with the release functions
++	 */
+ 	for (i = 0 ; i < hdev->asic_prop.completion_queues_count ; i++)
+ 		flush_workqueue(hdev->cq_wq[i]);
+ 
+@@ -632,7 +760,7 @@ void hl_cs_rollback_all(struct hl_device *hdev)
+ 		cs_get(cs);
+ 		cs->aborted = true;
+ 		dev_warn_ratelimited(hdev->dev, "Killing CS %d.%llu\n",
+-					cs->ctx->asid, cs->sequence);
++				cs->ctx->asid, cs->sequence);
+ 		cs_rollback(hdev, cs);
+ 		cs_put(cs);
+ 	}
+@@ -804,6 +932,12 @@ static int hl_cs_sanity_checks(struct hl_fpriv *hpriv, union hl_cs_args *args)
+ 		return -EBUSY;
+ 	}
+ 
++	if ((args->in.cs_flags & HL_CS_FLAGS_STAGED_SUBMISSION) &&
++			!hdev->supports_staged_submission) {
++		dev_err(hdev->dev, "staged submission not supported");
++		return -EPERM;
++	}
++
+ 	cs_type_flags = args->in.cs_flags & HL_CS_FLAGS_TYPE_MASK;
+ 
+ 	if (unlikely(cs_type_flags && !is_power_of_2(cs_type_flags))) {
+@@ -875,6 +1009,34 @@ static int hl_cs_copy_chunk_array(struct hl_device *hdev,
  	return 0;
  }
+ 
++static int cs_staged_submission(struct hl_device *hdev, struct hl_cs *cs,
++				u64 sequence, u32 flags)
++{
++	if (!(flags & HL_CS_FLAGS_STAGED_SUBMISSION))
++		return 0;
++
++	cs->staged_last = !!(flags & HL_CS_FLAGS_STAGED_SUBMISSION_LAST);
++	cs->staged_first = !!(flags & HL_CS_FLAGS_STAGED_SUBMISSION_FIRST);
++
++	if (cs->staged_first) {
++		/* Staged CS sequence is the first CS sequence */
++		INIT_LIST_HEAD(&cs->staged_cs_node);
++		cs->staged_sequence = cs->sequence;
++	} else {
++		/* User sequence will be validated in 'hl_hw_queue_schedule_cs'
++		 * under the cs_mirror_lock
++		 */
++		cs->staged_sequence = sequence;
++	}
++
++	/* Increment CS reference if needed */
++	staged_cs_get(hdev, cs);
++
++	cs->staged_cs = true;
++
++	return 0;
++}
++
+ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 				u32 num_chunks, u64 *cs_seq, u32 flags)
+ {
+@@ -914,6 +1076,10 @@ static int cs_ioctl_default(struct hl_fpriv *hpriv, void __user *chunks,
+ 
+ 	hl_debugfs_add_cs(cs);
+ 
++	rc = cs_staged_submission(hdev, cs, user_sequence, flags);
++	if (rc)
++		goto free_cs_object;
++
+ 	/* Validate ALL the CS chunks before submitting the CS */
+ 	for (i = 0 ; i < num_chunks ; i++) {
+ 		struct hl_cs_chunk *chunk = &cs_chunk_array[i];
 diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index fd2fffd20ba1..be7947d69dfa 100644
+index be7947d69dfa..30f32f2edb8a 100644
 --- a/drivers/misc/habanalabs/common/habanalabs.h
 +++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -933,8 +933,8 @@ struct hl_asic_funcs {
- 	void (*set_clock_gating)(struct hl_device *hdev);
- 	void (*disable_clock_gating)(struct hl_device *hdev);
- 	int (*debug_coresight)(struct hl_device *hdev, void *data);
--	bool (*is_device_idle)(struct hl_device *hdev, u64 *mask,
--				struct seq_file *s);
-+	bool (*is_device_idle)(struct hl_device *hdev, u64 *mask_arr,
-+					u8 mask_len, struct seq_file *s);
- 	int (*soft_reset_late_init)(struct hl_device *hdev);
- 	void (*hw_queues_lock)(struct hl_device *hdev);
- 	void (*hw_queues_unlock)(struct hl_device *hdev);
-diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-index 628bdc56dca3..e86f46d4b613 100644
---- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-+++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
-@@ -145,9 +145,10 @@ static int hw_idle(struct hl_device *hdev, struct hl_info_args *args)
- 		return -EINVAL;
+@@ -1169,8 +1169,11 @@ struct hl_userptr {
+  * @finish_work: workqueue object to run when CS is completed by H/W.
+  * @work_tdr: delayed work node for TDR.
+  * @mirror_node : node in device mirror list of command submissions.
++ * @staged_cs_node: node in the staged cs list.
+  * @debugfs_list: node in debugfs list of command submissions.
+  * @sequence: the sequence number of this CS.
++ * @staged_sequence: the sequence of the staged submission this CS is part of,
++ *                   relevant only if staged_cs is set.
+  * @type: CS_TYPE_*.
+  * @submitted: true if CS was submitted to H/W.
+  * @completed: true if CS was completed by device.
+@@ -1195,8 +1198,10 @@ struct hl_cs {
+ 	struct work_struct	finish_work;
+ 	struct delayed_work	work_tdr;
+ 	struct list_head	mirror_node;
++	struct list_head	staged_cs_node;
+ 	struct list_head	debugfs_list;
+ 	u64			sequence;
++	u64			staged_sequence;
+ 	enum hl_cs_type		type;
+ 	u8			submitted;
+ 	u8			completed;
+@@ -1905,6 +1910,7 @@ struct hl_mmu_funcs {
+  *                          user processes
+  * @device_fini_pending: true if device_fini was called and might be
+  *                       waiting for the reset thread to finish
++ * @supports_staged_submission: true if staged submissions are supported
+  */
+ struct hl_device {
+ 	struct pci_dev			*pdev;
+@@ -2010,6 +2016,7 @@ struct hl_device {
+ 	u8				needs_reset;
+ 	u8				process_kill_trial_cnt;
+ 	u8				device_fini_pending;
++	u8				supports_staged_submission;
  
- 	hw_idle.is_idle = hdev->asic_funcs->is_device_idle(hdev,
--					&hw_idle.busy_engines_mask_ext, NULL);
-+					hw_idle.busy_engines_mask_ext,
-+					HL_BUSY_ENGINES_MASK_EXT_SIZE, NULL);
- 	hw_idle.busy_engines_mask =
--			lower_32_bits(hw_idle.busy_engines_mask_ext);
-+			lower_32_bits(hw_idle.busy_engines_mask_ext[0]);
+ 	/* Parameters for bring-up */
+ 	u64				nic_ports_mask;
+@@ -2207,6 +2214,8 @@ void hl_fence_get(struct hl_fence *fence);
+ void cs_get(struct hl_cs *cs);
+ bool cs_needs_completion(struct hl_cs *cs);
+ bool cs_needs_timeout(struct hl_cs *cs);
++bool is_staged_cs_last_exists(struct hl_device *hdev, struct hl_cs *cs);
++struct hl_cs *hl_staged_cs_find_first(struct hl_device *hdev, u64 cs_seq);
  
- 	return copy_to_user(out, &hw_idle,
- 		min((size_t) max_size, sizeof(hw_idle))) ? -EFAULT : 0;
+ void goya_set_asic_funcs(struct hl_device *hdev);
+ void gaudi_set_asic_funcs(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/hw_queue.c b/drivers/misc/habanalabs/common/hw_queue.c
+index ad440ae785a3..0f335182267f 100644
+--- a/drivers/misc/habanalabs/common/hw_queue.c
++++ b/drivers/misc/habanalabs/common/hw_queue.c
+@@ -596,6 +596,31 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
+ 		hdev->asic_funcs->collective_wait_init_cs(cs);
+ 
+ 	spin_lock(&hdev->cs_mirror_lock);
++
++	/* Verify staged CS exists and add to the staged list */
++	if (cs->staged_cs && !cs->staged_first) {
++		struct hl_cs *staged_cs;
++
++		staged_cs = hl_staged_cs_find_first(hdev, cs->staged_sequence);
++		if (!staged_cs) {
++			dev_err(hdev->dev,
++				"Cannot find staged submission sequence %llu",
++				cs->staged_sequence);
++			rc = -EINVAL;
++			goto unlock_cs_mirror;
++		}
++
++		if (is_staged_cs_last_exists(hdev, staged_cs)) {
++			dev_err(hdev->dev,
++				"Staged submission sequence %llu already submitted",
++				cs->staged_sequence);
++			rc = -EINVAL;
++			goto unlock_cs_mirror;
++		}
++
++		list_add_tail(&cs->staged_cs_node, &staged_cs->staged_cs_node);
++	}
++
+ 	list_add_tail(&cs->mirror_node, &hdev->cs_mirror_list);
+ 
+ 	/* Queue TDR if the CS is the first entry and if timeout is wanted */
+@@ -637,6 +662,8 @@ int hl_hw_queue_schedule_cs(struct hl_cs *cs)
+ 
+ 	goto out;
+ 
++unlock_cs_mirror:
++	spin_unlock(&hdev->cs_mirror_lock);
+ unroll_cq_resv:
+ 	q = &hdev->kernel_queues[0];
+ 	for (i = 0 ; (i < max_queues) && (cq_cnt > 0) ; i++, q++) {
 diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index e1c6072e5fb3..9a3d2fb477a8 100644
+index 9a3d2fb477a8..1348016309e3 100644
 --- a/drivers/misc/habanalabs/gaudi/gaudi.c
 +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4538,7 +4538,6 @@ static int gaudi_scrub_device_mem(struct hl_device *hdev, u64 addr, u64 size)
- {
- 	struct asic_fixed_properties *prop = &hdev->asic_prop;
- 	struct gaudi_device *gaudi = hdev->asic_specific;
--	u64 idle_mask = 0;
- 	int rc = 0;
- 	u64 val = 0;
+@@ -1627,6 +1627,7 @@ static int gaudi_sw_init(struct hl_device *hdev)
  
-@@ -4551,8 +4550,8 @@ static int gaudi_scrub_device_mem(struct hl_device *hdev, u64 addr, u64 size)
- 				hdev,
- 				mmDMA0_CORE_STS0/* dummy */,
- 				val/* dummy */,
--				(hdev->asic_funcs->is_device_idle(hdev,
--						&idle_mask, NULL)),
-+				(hdev->asic_funcs->is_device_idle(hdev, NULL,
-+						0, NULL)),
- 						1000,
- 						HBM_SCRUBBING_TIMEOUT_US);
- 		if (rc) {
-@@ -6423,7 +6422,7 @@ static int gaudi_send_job_on_qman0(struct hl_device *hdev,
- 	else
- 		timeout = HL_DEVICE_TIMEOUT_USEC;
+ 	hdev->supports_sync_stream = true;
+ 	hdev->supports_coresight = true;
++	hdev->supports_staged_submission = true;
  
--	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, NULL)) {
-+	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, 0, NULL)) {
- 		dev_err_ratelimited(hdev->dev,
- 			"Can't send driver job on QMAN0 because the device is not idle\n");
- 		return -EBUSY;
-@@ -7706,13 +7705,14 @@ static int gaudi_cpucp_info_get(struct hl_device *hdev)
  	return 0;
- }
  
--static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
--					struct seq_file *s)
-+static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask_arr,
-+					u8 mask_len, struct seq_file *s)
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
- 	const char *fmt = "%-5d%-9s%#-14x%#-12x%#x\n";
- 	const char *mme_slave_fmt = "%-5d%-9s%-14s%-12s%#x\n";
- 	const char *nic_fmt = "%-5d%-9s%#-14x%#x\n";
-+	unsigned long *mask = (unsigned long *)mask_arr;
- 	u32 qm_glbl_sts0, qm_cgm_sts, dma_core_sts0, tpc_cfg_sts, mme_arch_sts;
- 	bool is_idle = true, is_eng_idle, is_slave;
- 	u64 offset;
-@@ -7738,9 +7738,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
- 				IS_DMA_IDLE(dma_core_sts0);
- 		is_idle &= is_eng_idle;
- 
--		if (mask)
--			*mask |= ((u64) !is_eng_idle) <<
--					(GAUDI_ENGINE_ID_DMA_0 + dma_id);
-+		if (mask && !is_eng_idle)
-+			set_bit(GAUDI_ENGINE_ID_DMA_0 + dma_id, mask);
- 		if (s)
- 			seq_printf(s, fmt, dma_id,
- 				is_eng_idle ? "Y" : "N", qm_glbl_sts0,
-@@ -7761,9 +7760,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
- 				IS_TPC_IDLE(tpc_cfg_sts);
- 		is_idle &= is_eng_idle;
- 
--		if (mask)
--			*mask |= ((u64) !is_eng_idle) <<
--						(GAUDI_ENGINE_ID_TPC_0 + i);
-+		if (mask && !is_eng_idle)
-+			set_bit(GAUDI_ENGINE_ID_TPC_0 + i, mask);
- 		if (s)
- 			seq_printf(s, fmt, i,
- 				is_eng_idle ? "Y" : "N",
-@@ -7790,9 +7788,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
- 
- 		is_idle &= is_eng_idle;
- 
--		if (mask)
--			*mask |= ((u64) !is_eng_idle) <<
--						(GAUDI_ENGINE_ID_MME_0 + i);
-+		if (mask && !is_eng_idle)
-+			set_bit(GAUDI_ENGINE_ID_MME_0 + i, mask);
- 		if (s) {
- 			if (!is_slave)
- 				seq_printf(s, fmt, i,
-@@ -7818,9 +7815,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
- 			is_eng_idle = IS_QM_IDLE(qm_glbl_sts0, qm_cgm_sts);
- 			is_idle &= is_eng_idle;
- 
--			if (mask)
--				*mask |= ((u64) !is_eng_idle) <<
--						(GAUDI_ENGINE_ID_NIC_0 + port);
-+			if (mask && !is_eng_idle)
-+				set_bit(GAUDI_ENGINE_ID_NIC_0 + port, mask);
- 			if (s)
- 				seq_printf(s, nic_fmt, port,
- 						is_eng_idle ? "Y" : "N",
-@@ -7834,9 +7830,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
- 			is_eng_idle = IS_QM_IDLE(qm_glbl_sts0, qm_cgm_sts);
- 			is_idle &= is_eng_idle;
- 
--			if (mask)
--				*mask |= ((u64) !is_eng_idle) <<
--						(GAUDI_ENGINE_ID_NIC_0 + port);
-+			if (mask && !is_eng_idle)
-+				set_bit(GAUDI_ENGINE_ID_NIC_0 + port, mask);
- 			if (s)
- 				seq_printf(s, nic_fmt, port,
- 						is_eng_idle ? "Y" : "N",
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 6b4c41188495..a954e7c02375 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -2916,7 +2916,7 @@ static int goya_send_job_on_qman0(struct hl_device *hdev, struct hl_cs_job *job)
- 	else
- 		timeout = HL_DEVICE_TIMEOUT_USEC;
- 
--	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, NULL)) {
-+	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, 0, NULL)) {
- 		dev_err_ratelimited(hdev->dev,
- 			"Can't send driver job on QMAN0 because the device is not idle\n");
- 		return -EBUSY;
-@@ -5187,11 +5187,12 @@ static void goya_disable_clock_gating(struct hl_device *hdev)
- 	/* clock gating not supported in Goya */
- }
- 
--static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
--				struct seq_file *s)
-+static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask_arr,
-+					u8 mask_len, struct seq_file *s)
- {
- 	const char *fmt = "%-5d%-9s%#-14x%#-16x%#x\n";
- 	const char *dma_fmt = "%-5d%-9s%#-14x%#x\n";
-+	unsigned long *mask = (unsigned long *)mask_arr;
- 	u32 qm_glbl_sts0, cmdq_glbl_sts0, dma_core_sts0, tpc_cfg_sts,
- 		mme_arch_sts;
- 	bool is_idle = true, is_eng_idle;
-@@ -5211,9 +5212,8 @@ static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
- 				IS_DMA_IDLE(dma_core_sts0);
- 		is_idle &= is_eng_idle;
- 
--		if (mask)
--			*mask |= ((u64) !is_eng_idle) <<
--						(GOYA_ENGINE_ID_DMA_0 + i);
-+		if (mask && !is_eng_idle)
-+			set_bit(GOYA_ENGINE_ID_DMA_0 + i, mask);
- 		if (s)
- 			seq_printf(s, dma_fmt, i, is_eng_idle ? "Y" : "N",
- 					qm_glbl_sts0, dma_core_sts0);
-@@ -5235,9 +5235,8 @@ static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
- 				IS_TPC_IDLE(tpc_cfg_sts);
- 		is_idle &= is_eng_idle;
- 
--		if (mask)
--			*mask |= ((u64) !is_eng_idle) <<
--						(GOYA_ENGINE_ID_TPC_0 + i);
-+		if (mask && !is_eng_idle)
-+			set_bit(GOYA_ENGINE_ID_TPC_0 + i, mask);
- 		if (s)
- 			seq_printf(s, fmt, i, is_eng_idle ? "Y" : "N",
- 				qm_glbl_sts0, cmdq_glbl_sts0, tpc_cfg_sts);
-@@ -5256,8 +5255,8 @@ static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
- 			IS_MME_IDLE(mme_arch_sts);
- 	is_idle &= is_eng_idle;
- 
--	if (mask)
--		*mask |= ((u64) !is_eng_idle) << GOYA_ENGINE_ID_MME_0;
-+	if (mask && !is_eng_idle)
-+		set_bit(GOYA_ENGINE_ID_MME_0, mask);
- 	if (s) {
- 		seq_printf(s, fmt, 0, is_eng_idle ? "Y" : "N", qm_glbl_sts0,
- 				cmdq_glbl_sts0, mme_arch_sts);
-diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
-index b1c09eba8ac2..ebde42b37b43 100644
---- a/include/uapi/misc/habanalabs.h
-+++ b/include/uapi/misc/habanalabs.h
-@@ -331,6 +331,8 @@ struct hl_info_dram_usage {
- 	__u64 ctx_dram_mem;
- };
- 
-+#define HL_BUSY_ENGINES_MASK_EXT_SIZE	2
-+
- struct hl_info_hw_idle {
- 	__u32 is_idle;
- 	/*
-@@ -343,7 +345,7 @@ struct hl_info_hw_idle {
- 	 * Extended Bitmask of busy engines.
- 	 * Bits definition is according to `enum <chip>_enging_id'.
- 	 */
--	__u64 busy_engines_mask_ext;
-+	__u64 busy_engines_mask_ext[HL_BUSY_ENGINES_MASK_EXT_SIZE];
- };
- 
- struct hl_info_device_status {
 -- 
 2.25.1
 
