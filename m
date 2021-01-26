@@ -2,69 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE92303ED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE00303F7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404827AbhAZNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:36:41 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55212 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404592AbhAZNe2 (ORCPT
+        id S2405656AbhAZN7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:59:41 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36294 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2404105AbhAZNti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:34:28 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMzR8Xr_1611668024;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UMzR8Xr_1611668024)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 Jan 2021 21:33:44 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     axboe@kernel.dk, tj@kernel.org
-Cc:     joseph.qi@linux.alibaba.com, baolin.wang@linux.alibaba.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] blk-cgroup: Use cond_resched() when destroy blkgs
-Date:   Tue, 26 Jan 2021 21:33:25 +0800
-Message-Id: <8f4fb91ced02e58ef425189c83214086f1154a0c.1611664710.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Tue, 26 Jan 2021 08:49:38 -0500
+X-UUID: 85a3cf059ecb43d49e7a5c3333651339-20210126
+X-UUID: 85a3cf059ecb43d49e7a5c3333651339-20210126
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 757840574; Tue, 26 Jan 2021 21:48:53 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 21:48:51 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 21:48:50 +0800
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
+        Mason Zhang <mason.zhang@mediatek.com>
+Subject: [PATCH v1] arm64: dts: add spi nodes for MT6779
+Date:   Tue, 26 Jan 2021 21:35:32 +0800
+Message-ID: <20210126133531.32253-1-mason.zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 8A557D8BEB95744737A59A2EA6D8482F53660D56334A6816CA3C82BE6742886D2000:8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On !PREEMPT kernel, we can get below softlockup when doing stress
-testing with creating and destroying block cgroup repeatly. The
-reason is it may take a long time to acquire the queue's lock in
-the loop of blkcg_destroy_blkgs(), thus we can use cond_resched()
-instead of cpu_relax() to avoid this issue, since the
-blkcg_destroy_blkgs() is not called from atomic contexts.
+This patch adds support spi to MT6779 SOC
 
-[ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
-[ 4757.010698] Call trace:
-[ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
-[ 4757.010701]  cgwb_release_workfn+0x104/0x158
-[ 4757.010702]  process_one_work+0x1bc/0x3f0
-[ 4757.010704]  worker_thread+0x164/0x468
-[ 4757.010705]  kthread+0x108/0x138
-
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: Mason Zhang <mason.zhang@mediatek.com>
 ---
- block/blk-cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt6779.dtsi | 96 ++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 3465d6e..af7c0ce 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1028,7 +1028,7 @@ void blkcg_destroy_blkgs(struct blkcg *blkcg)
- 			spin_unlock(&q->queue_lock);
- 		} else {
- 			spin_unlock_irq(&blkcg->lock);
--			cpu_relax();
-+			cond_resched();
- 			spin_lock_irq(&blkcg->lock);
- 		}
- 	}
+diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+index 370f309d32de..272f4346d35e 100644
+--- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+@@ -219,6 +219,102 @@
+ 			status = "disabled";
+ 		};
+ 
++		spi0: spi0@1100a000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x1100a000 0 0x1000>;
++			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				<&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI0>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi1: spi1@11010000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x11010000 0 0x1000>;
++			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				<&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI1>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi2: spi2@11012000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x11012000 0 0x1000>;
++			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI2>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi3: spi3@11013000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x11013000 0 0x1000>;
++			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI3>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi4: spi4@11018000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x11018000 0 0x1000>;
++			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI4>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi5: spi5@11019000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x11019000 0 0x1000>;
++			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				<&topckgen CLK_TOP_SPI>,
++				<&infracfg_ao CLK_INFRA_SPI5>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi6: spi6@1101d000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x1101d000 0 0x1000>;
++			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI6>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
++		spi7: spi7@1101e000 {
++			compatible = "mediatek,mt6779-spi",
++				     "mediatek,mt6765-spi";
++			mediatek,pad-select = <0>;
++			reg = <0 0x1101e000 0 0x1000>;
++			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW>;
++			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
++				 <&topckgen CLK_TOP_SPI>,
++				 <&infracfg_ao CLK_INFRA_SPI7>;
++			clock-names = "parent-clk", "sel-clk", "spi-clk";
++		};
++
+ 		audio: clock-controller@11210000 {
+ 			compatible = "mediatek,mt6779-audio", "syscon";
+ 			reg = <0 0x11210000 0 0x1000>;
 -- 
-1.8.3.1
-
+2.18.0
