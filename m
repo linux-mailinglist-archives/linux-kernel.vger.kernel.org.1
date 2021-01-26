@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB29304FA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384FE304FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235585AbhA0DUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394558AbhAZUt6 (ORCPT
+        id S235603AbhA0DUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:20:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36720 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405693AbhAZUyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:49:58 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBF6C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:49:18 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id p15so2718490pjv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:49:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=JT5edQcn2lC/ohAJBe7VJY+gZeoJrzYd010rHqJGKDE=;
-        b=Sl3WiOu4tIDOkkgv6i4aMIADj6Mw5A+pPOV31fbYQXGVQgOWouYMM9sniqU/pYH0k7
-         2bREpiqbqKcRGqldVB4KKeo0Crk7SCoIXJWfguKvvlG8NCnvIuoyx5dlIZKLjioqq8dd
-         UOkv/2z8yKxiOcEI6Qx+6Jjygo437bYF0l+IWzWFxzmvNrQi2oKLFiTj9uHv18Vo+8LS
-         SXfRYG5Bu3tI76sinpnZrXtxRnYYxLP7ukt94RAtwQabXFW7v37K9A3D3MX8L4iu30Gc
-         BV5CZUT7tAIm/dQbcvnszeOQCpOd+2emTElIqjZRG/A8fPqerkeY6wXr7UKHybt0vmC8
-         +gmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=JT5edQcn2lC/ohAJBe7VJY+gZeoJrzYd010rHqJGKDE=;
-        b=WRsa9ZwHoE6PipOYqKZay37W+gPZcHO9gHksuvU+TGHZizYPHg/d8gz/hcKPeUIi9V
-         +P8Oe9pEY7sSJAAtbTWRXnyrtsGUo2YEnLu1MtOkPMfaXL2iziJlMWhQenfi3YGBu12q
-         jhUSFx8caFR/s91ZKWmru3Awk9+ySIhZSf2UD1l9QjVN/S8DgpFS844ppmwsB5jtPCxb
-         2fEVYZ5pX/Y0FnoNmECqHQWTS01REBCjrSr/HXZzTsCPL8kpCpRxVpQJm4C3wg4CdH/y
-         LRDNW4AZLVUTCMqzR/QLaz3ZR+VNIRHYwKdio82lj6uTYABMs/yHUhdjwwd9v3apW+CK
-         bxWQ==
-X-Gm-Message-State: AOAM530qLCCjlRzyYD4S6d3KaReQqaybl+XGcWyDWMCv2wzAstfZ2n+O
-        D+eDwyC0mFUZzAyvtDnzMfqWlA==
-X-Google-Smtp-Source: ABdhPJwA1UPfoLVM0WjNCKLOq5x/h3QTY0cFUQ35qcbp6rEGWNEdcfmYEUqAIdnU/kAhNaggnal1yw==
-X-Received: by 2002:a17:902:f683:b029:de:18c7:41fa with SMTP id l3-20020a170902f683b02900de18c741famr7595126plg.57.1611694157738;
-        Tue, 26 Jan 2021 12:49:17 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id 67sm24396pfv.20.2021.01.26.12.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 12:49:15 -0800 (PST)
-Date:   Tue, 26 Jan 2021 12:49:14 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-cc:     Tom Lendacky <thomas.lendacky@amd.com>, Tejun Heo <tj@kernel.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "Grimm, Jon" <jon.grimm@amd.com>,
-        "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-In-Reply-To: <YAopkDN85GtWAj3a@google.com>
-Message-ID: <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
-References: <YAICLR8PBXxAcOMz@mtj.duckdns.org> <YAIUwGUPDmYfUm/a@google.com> <YAJg5MB/Qn5dRqmu@mtj.duckdns.org> <YAJsUyH2zspZxF2S@google.com> <YAb//EYCkZ7wnl6D@mtj.duckdns.org> <YAfYL7V6E4/P83Mg@google.com> <YAhc8khTUc2AFDcd@mtj.duckdns.org>
- <be699d89-1bd8-25ae-fc6f-1e356b768c75@amd.com> <YAmj4Q2J9htW2Fe8@mtj.duckdns.org> <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com> <YAopkDN85GtWAj3a@google.com>
+        Tue, 26 Jan 2021 15:54:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611694366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qNmYQghzyEo5Nu0f80VNhQIBJIqh9/mSmZbgpxpbU6s=;
+        b=IeGwo1qlHKuPJVySN6Jumgq7vzMZg0fT7BfO1qV+FNMcTCPxFWZbwKqt4iknaj4IpiSlxj
+        wGVy05I7gyviljrlKlYmuVHfAdY0CUDrpSL08Y/9qX6JyKWwEAwz1fkN95C2jf3Qq7iIS5
+        gi+IrWTTPRFx51l5LmtkaG42PUlwwCw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-sboSZlTcOw63awkb_eqR8Q-1; Tue, 26 Jan 2021 15:52:43 -0500
+X-MC-Unique: sboSZlTcOw63awkb_eqR8Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D899A393AE;
+        Tue, 26 Jan 2021 20:52:40 +0000 (UTC)
+Received: from krava (unknown [10.40.192.149])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 248FA10013C0;
+        Tue, 26 Jan 2021 20:52:36 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 21:52:36 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
+Message-ID: <20210126205236.GD120879@krava>
+References: <20210114134044.1418404-1-jolsa@kernel.org>
+ <20210114134044.1418404-3-jolsa@kernel.org>
+ <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
+ <20210114200120.GF1416940@krava>
+ <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com>
+ <20210114220234.GA1456269@krava>
+ <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
+ <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021, Sean Christopherson wrote:
-
-> True, but the expected dual-usage is more about backwards compatibility than
-> anything else.  Running an SEV-ES VM requires a heavily enlightened guest vBIOS
-> and kernel, which means that a VM that was created as an SEV guest cannot easily
-> be converted to an SEV-ES guest, and it would require cooperation from the guest
-> (if it's even feasible?).
+On Thu, Jan 14, 2021 at 07:47:20PM -0800, Alexei Starovoitov wrote:
+> On Thu, Jan 14, 2021 at 3:44 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 1/14/21 2:02 PM, Jiri Olsa wrote:
+> > > On Thu, Jan 14, 2021 at 01:05:33PM -0800, Yonghong Song wrote:
+> > >>
+> > >>
+> > >> On 1/14/21 12:01 PM, Jiri Olsa wrote:
+> > >>> On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
+> > >>>>
+> > >>>>
+> > >>>> On 1/14/21 5:40 AM, Jiri Olsa wrote:
+> > >>>>> It's possible to have other build id types (other than default SHA1).
+> > >>>>> Currently there's also ld support for MD5 build id.
+> > >>>>
+> > >>>> Currently, bpf build_id based stackmap does not returns the size of
+> > >>>> the build_id. Did you see an issue here? I guess user space can check
+> > >>>> the length of non-zero bits of the build id to decide what kind of
+> > >>>> type it is, right?
+> > >>>
+> > >>> you can have zero bytes in the build id hash, so you need to get the size
+> > >>>
+> > >>> I never saw MD5 being used in practise just SHA1, but we added the
+> > >>> size to be complete and make sure we'll fit with build id, because
+> > >>> there's only limited space in mmap2 event
+> > >>
+> > >> I am asking to check whether we should extend uapi struct
+> > >> bpf_stack_build_id to include build_id_size as well. I guess
+> > >> we can delay this until a real use case.
+> > >
+> > > right, we can try make some MD5 build id binaries and check if it
+> > > explodes with some bcc tools, but I don't expect that.. I'll try
+> > > to find some time for that
+> >
+> > Thanks. We may have issues on bcc side. For build_id collected in
+> > kernel, bcc always generates a length-20 string. But for user
+> > binaries, the build_id string length is equal to actual size of
+> > the build_id. They may not match (MD5 length is 16).
+> > The fix is probably to append '0's (up to length 20) for user
+> > binary build_id's.
+> >
+> > I guess MD5 is very seldom used. I will wait if you can reproduce
+> > the issue and then we might fix it.
 > 
-> SEV-SNP, another incremental enhancement (on SEV-ES), further strengthens the
-> argument for SEV and SEV-* coexistenence.  SEV-SNP and SEV-ES will share the
-> same ASID range, so the question is really, "do we expect to run SEV guests and
-> any flavor of SEV-* guests on the same platform".  And due to SEV-* not being
-> directly backward compatible with SEV, the answer will eventually be "yes", as
-> we'll want to keep running existing SEV guest while also spinning up new SEV-*
-> guests.
-> 
+> Indeed.
+> Jiri, please check whether md5 is really an issue.
+> Sounds like we have to do something on the kernel side.
+> Hopefully zero padding will be enough.
+> I would prefer to avoid extending uapi struct to cover rare case.
 
-Agreed, cloud providers will most certainly want to run both SEV and SEV-* 
-guests on the same platform.
+build_id_parse is already doing the zero padding, so we are ok
 
-> That being said, it's certainly possible to abstract the different key types
-> between AMD and Intel (assuming s390 won't use the cgroup due to it's plethora
-> of keys).  TDX private keys are equivalent to SEV-ES ASIDs, and MKTME keys (if
-> the kernel ever gains a user) could be thrown into the same bucket as SEV IDs,
-> albeit with some minor mental gymnastics.
-> 
-> E.g. this mapping isn't horrendous:
-> 
->   encrpytion_ids.basic.*       == SEV   == MKTME
->   encrpytion_ids.enhanced.*    == SEV-* == TDX
-> 
-> The names will likely be a bit vague, but I don't think they'll be so far off
-> that it'd be impossible for someone with SEV/TDX knowledge to glean their intent.
-> And realistically, if anyone gets to the point where they care about controlling
-> SEV or TDX IDs, they've already plowed through hundreds of pages of dense
-> documentation; having to read a few lines of cgroup docs to understand basic vs.
-> enhanced probably won't faze them at all.
-> 
+I tried several bcc tools over perf bench with md5 buildid and
+the results looked ok
 
-The abstraction makes sense for both AMD and Intel offerings today.  It 
-makes me wonder if we want a read-only 
-encryption_ids.{basic,enhanced}.type file to describe the underlying 
-technology ("SEV-ES/SEV-SNP", "TDX", etc).  Since the technology is 
-discoverable by other means and we are assuming one encryption type per 
-pool of encryption ids, we likely don't need this.
+jirka
 
-I'm slightly concerned about extensibility if there is to be an 
-incremental enhancement atop SEV-* or TDX with yet another pool of 
-encryption ids.  (For example, when we only had hugepages, this name was 
-perfect; then we got 1GB pages which became "gigantic pages", so are 512GB 
-pages "enormous"? :)  I could argue (encryption_ids.basic.*,
-encryption_ids.enhanced.*) should map to 
-(encryption_ids.legacy.*, encryption_ids.*) but that's likely 
-bikeshedding.
-
-Thomas: does encryption_ids.{basic,enhanced}.* make sense for ASID 
-partitioning?
-
-Tejun: if this makes sense for legacy SEV and SEV-* per Thomas, and this 
-is now abstracted to be technology (vendor) neutral, does this make sense 
-to you?
