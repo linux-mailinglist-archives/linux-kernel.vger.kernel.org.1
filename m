@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311BD303F54
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA03303F1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405436AbhAZNuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:50:17 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11447 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404868AbhAZNnB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:43:01 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DQ7Db06DfzjCXQ;
-        Tue, 26 Jan 2021 21:41:19 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 21:42:10 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
-        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>,
-        Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH v1 5/5] KVM: arm64: Adapt page-table code to new handling of coalescing tables
-Date:   Tue, 26 Jan 2021 21:42:02 +0800
-Message-ID: <20210126134202.381996-6-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210126134202.381996-1-wangyanan55@huawei.com>
-References: <20210126134202.381996-1-wangyanan55@huawei.com>
+        id S2405146AbhAZNof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:44:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404748AbhAZNnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:43:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7816A2223D;
+        Tue, 26 Jan 2021 13:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611668581;
+        bh=gZmSYgI/wa2/JnuwHcpAdHOfBP02jfH9AVoTNyQbgPc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nWwXoa8f5j/f3gLzJfb7C9m7/sFDrLHniZrrgAr3k2Zu3c66CVjRNMxSWU5xSb82l
+         xkhszdemIvKTLDQEn/CA3Prn09unXNPsfylBVtz0NWF3xhFUXP6/xNwbeEb4x2nHAm
+         iEauYN0wy4xpv3vvbtmFWBixLfgryqrihSe9YIGeNFLbszkFD3WISoI/eGC8gN77VG
+         WP4VXgt+jg3IslYG6sSXafeRZvIxj6IdlyD/5lzQ6XslXEZR/dLn9wP5PzVInhrUds
+         8U6PrAPO0jaaVWObpmUklbMTVpVSiUKZG5E1AhSmm3pWa2M4cGUKOq5gdYy0zEysqE
+         mKV/13nCeXk+Q==
+Received: by mail-ed1-f50.google.com with SMTP id s11so19790292edd.5;
+        Tue, 26 Jan 2021 05:43:01 -0800 (PST)
+X-Gm-Message-State: AOAM531ztYVgbFC7mYXKPFi4ClaRRBRgZz4lns3RNcteLNyVkKNB0CQe
+        vZgzmJK1dZgaGHU5l0iYB/vtSIv6T7hpTadaJA==
+X-Google-Smtp-Source: ABdhPJyedjeaKb7Y7yFDeXhCNsA7wEgX8BmR5Dj0sgd1WrT81hG16uP3pAjOTds7G2dy9MdFeUk38Ykxu3sHpbfk3lQ=
+X-Received: by 2002:a50:fc04:: with SMTP id i4mr4670026edr.137.1611668580145;
+ Tue, 26 Jan 2021 05:43:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+References: <20210125105757.661240-1-uwe@kleine-koenig.org>
+ <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com> <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+In-Reply-To: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 26 Jan 2021 07:42:48 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJQjnNULke5uyNbrj5kkS=3MSxug2BFXAia1ucyaDhx5Q@mail.gmail.com>
+Message-ID: <CAL_JsqJQjnNULke5uyNbrj5kkS=3MSxug2BFXAia1ucyaDhx5Q@mail.gmail.com>
+Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        cyril@debamax.com, Arnd Bergmann <arnd@arndb.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With new handling of coalescing tables, we can install the block entry
-before unmap of the old table mappings. So make the installation in
-stage2_map_walk_table_pre(), and elide the installation from function
-stage2_map_walk_table_post().
+On Tue, Jan 26, 2021 at 1:27 AM Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.or=
+g> wrote:
+>
+> Hello Masahiro,
+>
+> On 1/25/21 10:53 PM, Masahiro Yamada wrote:
+> > On Mon, Jan 25, 2021 at 8:07 PM Uwe Kleine-K=C3=B6nig <uwe@kleine-koeni=
+g.org> wrote:
+> >>
+> >> Adding the -@ switch to dtc results in the binary devicetrees containi=
+ng
+> >> a list of symbolic references and their paths. This is necessary to
+> >> apply device tree overlays e.g. on Raspberry Pi as described on
+> >> https://www.raspberrypi.org/documentation/configuration/device-tree.md=
+.
+> >>
+> >> Obviously the downside of this change is an increas of the size of the
+> >> generated dtbs, for an arm out-of-tree build (multi_v7_defconfig):
+> >>
+> >>          $ du -s arch/arm/boot/dts*
+> >>          101380  arch/arm/boot/dts-pre
+> >>          114308  arch/arm/boot/dts-post
+> >>
+> >> so this is in average an increase of 12.8% in size.
+> >>
+> >> Signed-off-by: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
+> >
+> >
+> > (CCing DT ML.)
+>
+> makes sense, thanks.
+>
+> > https://www.spinics.net/lists/linux-kbuild/msg27904.html
+> >
+> > See Rob's comment:
+> >
+> > "We've already rejected doing that. Turning on '-@' can grow the dtb
+> > size by a significant amount which could be problematic for some
+> > boards."
+>
+> The patch was created after some conversation on irc which continued
+> after I sent the patch. I added the participating parties to Cc:.
+>
+> The (relevant) followups were:
+>
+> Geert suggested to always generate the symbols and provide a way to
+> strip the symbols for installation if and when they are not needed.
+>
+> Rob said: "I'm less concerned with the size increases, but rather that
+> labels go from purely source syntax to an ABI. I'd rather see some
+> decision as to which labels are enabled or not."
 
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/hyp/pgtable.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+I've also said move the arm32 dts files to family subdirectories and
+enable '-@' per directory. I've posted a script to do the whole thing,
+but I think the preference is one-by-one. This is needed anyways if
+we're going to start adding overlays which Viresh is working on.
 
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index ab1c94985ed0..fb755aac4384 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -436,6 +436,7 @@ struct stage2_map_data {
- 	kvm_pte_t			attr;
- 
- 	kvm_pte_t			*anchor;
-+	kvm_pte_t			*follow;
- 
- 	struct kvm_s2_mmu		*mmu;
- 	struct kvm_mmu_memory_cache	*memcache;
-@@ -550,13 +551,13 @@ static int stage2_map_walk_table_pre(u64 addr, u64 end, u32 level,
- 	kvm_set_invalid_pte(ptep);
- 
- 	/*
--	 * Invalidate the whole stage-2, as we may have numerous leaf
--	 * entries below us which would otherwise need invalidating
--	 * individually.
-+	 * If there is an existing table entry and block mapping is needed here,
-+	 * then set the anchor and replace it with a block entry. The sub-level
-+	 * mappings will later be unmapped lazily.
- 	 */
--	kvm_call_hyp(__kvm_tlb_flush_vmid, data->mmu);
- 	data->anchor = ptep;
--	return 0;
-+	data->follow = kvm_pte_follow(*ptep);
-+	return stage2_coalesce_tables_into_block(addr, level, ptep, data);
- }
- 
- static int stage2_map_walk_leaf(u64 addr, u64 end, u32 level, kvm_pte_t *ptep,
-@@ -608,20 +609,18 @@ static int stage2_map_walk_table_post(u64 addr, u64 end, u32 level,
- 				      kvm_pte_t *ptep,
- 				      struct stage2_map_data *data)
- {
--	int ret = 0;
--
- 	if (!data->anchor)
- 		return 0;
- 
--	free_page((unsigned long)kvm_pte_follow(*ptep));
--	put_page(virt_to_page(ptep));
--
--	if (data->anchor == ptep) {
-+	if (data->anchor != ptep) {
-+		free_page((unsigned long)kvm_pte_follow(*ptep));
-+		put_page(virt_to_page(ptep));
-+	} else {
-+		free_page((unsigned long)data->follow);
- 		data->anchor = NULL;
--		ret = stage2_map_walk_leaf(addr, end, level, ptep, data);
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- /*
--- 
-2.19.1
-
+Rob
