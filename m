@@ -2,60 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A346304618
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACDB30461A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394318AbhAZSPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:15:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389909AbhAZRui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:50:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF4BD2224C;
-        Tue, 26 Jan 2021 17:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611683398;
-        bh=ix5zJ6JWxdoag7Pi/sGk5niBB/BRtMgouJs8I7834qI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QlmBe9gDOtXQz1sz7N3XMxwQGKMs/kj/5q94ltAL+JYThZi2SOYOO/qoDyHa5+qIr
-         JE56dqfoBYM7SOGJj1LFEGSI5KdlbEsJ1OGvB+asxu+UzpPRMyQS7HCEl9ZC9EWHK3
-         qdcDshfRJ7tGjJ2edO1Aw8EDjHUUgKxBPkG1eAKs=
-Date:   Tue, 26 Jan 2021 18:49:53 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        Yu Chen <chenyu56@huawei.com>, linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Alex Dewar <alex.dewar90@gmail.com>
-Subject: Re: [PATCH v4 0/5] Promote Hikey 970 USB phy out of staging
-Message-ID: <YBBWQeglmuDn1g11@kroah.com>
-References: <cover.1611052729.git.mchehab+huawei@kernel.org>
+        id S2394353AbhAZSPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391407AbhAZRvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:51:02 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDDCC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:50:21 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id d22so20843425edy.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:50:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YDZ9xoM4vkjgG3VDn83cus2ZyU7tS/ImHr1EbR40OHE=;
+        b=iC68VBpaq64YNVQ0gyie62K2q0gqKG2wunAeMFJligWQ54mFY6PLhbrOxMmB1Snsrn
+         0iShrefSXyHlxlN+8Q01JLqZUHgUdC4dPm083RP/P3G/HjqXJvx5QaNoLA+/CSe5uglG
+         oCWZXKNRQA8x+9nVwamn+mDCLqUFyKlzOV+3EpXHa8AaC5IVSJx910YSC18RZPWc81FJ
+         ltKjl4opEIguMtRBiMwBDki887zMS5XWqqiJz+57O7hld88oTYnoGPI1DqSPOACvYHV6
+         26MiLHaOJpXDLenM4lVZhCqcgeWByzzXB8oi3MdeA4rODu556+k1D2I+NKeM2iME7D/w
+         wH+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YDZ9xoM4vkjgG3VDn83cus2ZyU7tS/ImHr1EbR40OHE=;
+        b=oY82VX5J/F/Cnz/2Az/i9CFolrfWUthKDNbNPtrSbPdXcOENyCN5/bBu1/zgD8YP/g
+         vKluh68cA+SRuYgOvRbxsYShbTMv3qgBq7ZeW/2uxYtWLYyV0G8fHZ3RW7j8alXu6jgX
+         iaeBCqfvE+mrXYTf0Sq4fMq5ytblqu19JDcJRcLUWEvGa3/6mm3C7KaeNps7WUoo+QO9
+         6T62gHN5WpqezvSJz0MuxiJeae8j5d+PB2w+FkDtA2PEGLza+Rb/ulu2JveXcLXFrAif
+         NXp27jefi71CbmrrH8WW2enB9iPY1UNVOehLs5t2j3rP3pw+jNiauQXwX+IJjX8D/zDo
+         GJBA==
+X-Gm-Message-State: AOAM530zD2YNMrNbGQ/DKQbKFgql6J5IBX7pvrXUXGabWDhLz42B1cIb
+        IDO5roBvURViMoWlpBox8q/O/2/u9g81hnm85FUYmQ==
+X-Google-Smtp-Source: ABdhPJx3Yv1kBkYCpT7b1VeYY0tK4Gs4XrFwiszGuqBHo9jL/4XtOW+Fht+NXcjZCRLEkjSwZDjZJ0Ui6hVhT9ALTl8=
+X-Received: by 2002:aa7:d4c8:: with SMTP id t8mr5784370edr.199.1611683419835;
+ Tue, 26 Jan 2021 09:50:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1611052729.git.mchehab+huawei@kernel.org>
+References: <20210126014450.1901335-1-lokeshgidra@google.com>
+In-Reply-To: <20210126014450.1901335-1-lokeshgidra@google.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Tue, 26 Jan 2021 09:50:08 -0800
+Message-ID: <CA+EESO5MafN2aa8+BC_KP+BfRNqw9ySpQJwymuuZd4BBxPn4fA@mail.gmail.com>
+Subject: Re: [PATCH v1] userfaultfd.2: Add UFFD_USER_MODE_ONLY flag
+To:     linux-man@vger.kernel.org
+Cc:     Daniel Colascione <dancol@dancol.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 11:44:38AM +0100, Mauro Carvalho Chehab wrote:
-> Hi Vinod/Rob,
-> 
-> This series moves  the Hikey 970 USB PHY driver out of staging.
-> 
-> Patches 1 to 4 contain the fixes from staging. Patch 5 moves the
-> driver from staging:
-> 
-> 	$ git show 82ce73ac9a38 --summary
-> 	...
-> 	 rename drivers/staging/hikey9xx/phy-hi3670-usb3.yaml => Documentation/devicetree/bindings/phy/hisilicon,hi3670-usb3.yaml (100%)
-> 	 rename drivers/{staging/hikey9xx => phy/hisilicon}/phy-hi3670-usb3.c (100%)
-> 
-> I opted to use --no-renames on this series in order to make easier to
-> review via e-mail, as the entire driver and DT bindings will be seen
-> at the last patch on this series.
+On Mon, Jan 25, 2021 at 5:44 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> Add description of UFFD_USER_MODE_ONLY flag to userfaultfd(2) manual
+> page, which is required after [1]. Also updated the description of
+> unprivileged_userfaultfd file in proc(5) as per [2].
+>
+> [1] https://lore.kernel.org/linux-mm/20201215031349.NXimL388W%25akpm@linux-foundation.org/
+> [2] https://lore.kernel.org/linux-mm/20201215031354.gUsHJUpKo%25akpm@linux-foundation.org/
+>
+> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> ---
+>  man2/userfaultfd.2 |  5 +++++
+>  man5/proc.5        | 12 ++++++++++++
+>  2 files changed, 17 insertions(+)
+>
+> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
+> index e7dc9f813..792a49d52 100644
+> --- a/man2/userfaultfd.2
+> +++ b/man2/userfaultfd.2
+> @@ -72,6 +72,11 @@ See the description of the
+>  .BR O_NONBLOCK
+>  flag in
+>  .BR open (2).
+> +.TP
+> +.BR UFFD_USER_MODE_ONLY " (Since Linux 5.11)"
+> +Allow handling of user-mode page-faults only. See the description of the
+> +unprivileged_userfaultfd file in
+> +.BR proc (5).
+>  .PP
+>  When the last file descriptor referring to a userfaultfd object is closed,
+>  all memory ranges that were registered with the object are unregistered
+> diff --git a/man5/proc.5 b/man5/proc.5
+> index f16a29d6e..cb2350c0c 100644
+> --- a/man5/proc.5
+> +++ b/man5/proc.5
+> @@ -5905,6 +5905,18 @@ If this file has the value 0, then only processes that have the
+>  capability may employ
+>  .BR userfaultfd (2).
+>  The default value in this file is 1.
+> +.IP
+> +Starting with Linux 5.11,
+> +.BR userfaultfd (2)
+> +can be used by all processes, however, if this file has the value 0, then
+> +.BR UFFD_USER_MODE_ONLY
+> +flag must be passed to it, which restricts page-fault handling to only
+> +user-mode faults. This restriction is not applicable for processes with
+> +.B CAP_SYS_PTRACE
+> +capability, or if this file has the value 1. Furthermore, the default
+> +value in this file is changed to 0. For further details see the
+> +Linux kernel source file
+> +.I Documentation/admin\-guide/sysctl/vm.rst.
+>  .TP
+>  .IR /proc/sysrq\-trigger " (since Linux 2.4.21)"
+>  Writing a character to this file triggers the same SysRq function as
+> --
 
-First 4 patches applied to my tree, thanks.
+Adding the right linux-mm mailing list. Mistakenly used
+linux-mm@kvack.kernel.org earlier.
 
-greg k-h
+> 2.30.0.280.ga3ce27912f-goog
+>
