@@ -2,80 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510C5303FDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB635303FE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405734AbhAZOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:12:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:41858 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392684AbhAZOMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:12:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EFD6106F;
-        Tue, 26 Jan 2021 06:11:55 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.45.247])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E33073F68F;
-        Tue, 26 Jan 2021 06:11:50 -0800 (PST)
-Date:   Tue, 26 Jan 2021 14:11:48 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Jia He <justin.he@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Mark Brown <broonie@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: Re: [RFC PATCH 1/2] arm64/cpuinfo: Move init_cpu_features() ahead of
- setup.c::early_fixmap_init()
-Message-ID: <20210126141148.GC80448@C02TD0UTHF1T.local>
-References: <20210113014047.14371-1-justin.he@arm.com>
- <20210113014047.14371-2-justin.he@arm.com>
- <20210126135712.GA29956@willie-the-truck>
+        id S2405768AbhAZONM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:13:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405642AbhAZOMy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 09:12:54 -0500
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070ACC061D73
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:11:55 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8105C3F277;
+        Tue, 26 Jan 2021 15:11:53 +0100 (CET)
+Subject: Re: [PATCH v2 3/9] clk: qcom: Add SDM660 Multimedia Clock Controller
+ (MMCC) driver
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>, agross@kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org
+References: <20210113183817.447866-1-angelogioacchino.delregno@somainline.org>
+ <20210113183817.447866-4-angelogioacchino.delregno@somainline.org>
+ <2453cbae-bd30-416c-4432-9b27754670e1@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <6ba8ac3c-d33b-3ab2-5855-f99d431b397a@somainline.org>
+Date:   Tue, 26 Jan 2021 15:11:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126135712.GA29956@willie-the-truck>
+In-Reply-To: <2453cbae-bd30-416c-4432-9b27754670e1@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 01:57:13PM +0000, Will Deacon wrote:
-> > @@ -297,16 +297,20 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
-> >  	 */
-> >  	arm64_use_ng_mappings = kaslr_requires_kpti();
-> >  
-> > -	early_fixmap_init();
-> > -	early_ioremap_init();
-> > -
-> > -	setup_machine_fdt(__fdt_pointer);
-> > -
-> >  	/*
-> >  	 * Initialise the static keys early as they may be enabled by the
-> >  	 * cpufeature code and early parameters.
-> >  	 */
-> >  	jump_label_init();
+Il 26/01/21 14:39, Stanimir Varbanov ha scritto:
 > 
-> I don't think your patch changes this, but afaict jump_label_init() uses
-> per-cpu variables via cpus_read_lock(), yet we don't initialise our offset
-> until later on. Any idea how that works?
+> 
+> On 1/13/21 8:38 PM, AngeloGioacchino Del Regno wrote:
+>> From: Martin Botka <martin.botka@somainline.org>
+>>
+>> Add a driver for the multimedia clock controller found on SDM660
+>> based devices. This should allow most multimedia device drivers
+>> to probe and control their clocks.
+>>
+>> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+>> Co-developed-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+>> [angelogioacchino.delregno@somainline.org: Cleaned up SDM630 clock fixups]
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/clk/qcom/Kconfig                     |    9 +
+>>   drivers/clk/qcom/Makefile                    |    1 +
+>>   drivers/clk/qcom/mmcc-sdm660.c               | 2864 ++++++++++++++++++
+>>   include/dt-bindings/clock/qcom,mmcc-sdm660.h |  162 +
+>>   4 files changed, 3036 insertions(+)
+>>   create mode 100644 drivers/clk/qcom/mmcc-sdm660.c
+>>   create mode 100644 include/dt-bindings/clock/qcom,mmcc-sdm660.h
+>>
+>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+>> index d32bb12cd8d0..eb9746e84556 100644
+>> --- a/drivers/clk/qcom/Kconfig
+>> +++ b/drivers/clk/qcom/Kconfig
+>> @@ -366,6 +366,15 @@ config SDM_GCC_660
+>>   	  Say Y if you want to use peripheral devices such as UART, SPI,
+>>   	  i2C, USB, UFS, SDDC, PCIe, etc.
+>>   
+>> +config SDM_MMCC_660
+>> +	tristate "SDM660 Multimedia Clock Controller"
+>> +	select SDM_GCC_660
+>> +	select QCOM_GDSC
+>> +	help
+>> +	  Support for the multimedia clock controller on SDM660 devices.
+>> +	  Say Y if you want to support multimedia devices such as display,
+>> +	  graphics, video encode/decode, camera, etc.
+>> +
+>>   config QCS_TURING_404
+>>   	tristate "QCS404 Turing Clock Controller"
+>>   	help
+>> diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
+>> index 9e5e0e3cb7b4..bfa8350f088d 100644
+>> --- a/drivers/clk/qcom/Makefile
+>> +++ b/drivers/clk/qcom/Makefile
+>> @@ -62,6 +62,7 @@ obj-$(CONFIG_SC_VIDEOCC_7180) += videocc-sc7180.o
+>>   obj-$(CONFIG_SDM_CAMCC_845) += camcc-sdm845.o
+>>   obj-$(CONFIG_SDM_DISPCC_845) += dispcc-sdm845.o
+>>   obj-$(CONFIG_SDM_GCC_660) += gcc-sdm660.o
+>> +obj-$(CONFIG_SDM_MMCC_660) += mmcc-sdm660.o
+>>   obj-$(CONFIG_SDM_GCC_845) += gcc-sdm845.o
+>>   obj-$(CONFIG_SDM_GPUCC_845) += gpucc-sdm845.o
+>>   obj-$(CONFIG_SDM_LPASSCC_845) += lpasscc-sdm845.o
+>> diff --git a/drivers/clk/qcom/mmcc-sdm660.c b/drivers/clk/qcom/mmcc-sdm660.c
+>> new file mode 100644
+>> index 000000000000..d268e1c89f57
+>> --- /dev/null
+>> +++ b/drivers/clk/qcom/mmcc-sdm660.c
+>> @@ -0,0 +1,2864 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2020, Martin Botka <martin.botka@somainline.org>
+>> + * Copyright (c) 2020, Konrad Dybcio <konrad.dybcio@somainline.org>
+>> + */
+>> +
+>> +#include <linux/kernel.h>
+>> +#include <linux/bitops.h>
+>> +#include <linux/err.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_device.h>
+>> +#include <linux/clk-provider.h>
+>> +#include <linux/regmap.h>
+>> +#include <linux/reset-controller.h>
+>> +#include <linux/clk.h>
+>> +
+>> +
+>> +#include <dt-bindings/clock/qcom,mmcc-sdm660.h>
+>> +
+>> +#include "common.h"
+>> +#include "clk-regmap.h"
+>> +#include "clk-regmap-divider.h"
+>> +#include "clk-alpha-pll.h"
+>> +#include "clk-rcg.h"
+>> +#include "clk-branch.h"
+>> +#include "reset.h"
+>> +#include "gdsc.h"
+>> +
+> 
+> <cut>
+> 
+>> +
+>> +static struct gdsc venus_gdsc = {
+>> +	.gdscr = 0x1024,
+>> +	.pd = {
+>> +		.name = "venus",
+>> +	},
+>> +	.pwrsts = PWRSTS_OFF_ON,
+>> +};
+>> +
+>> +static struct gdsc venus_core0_gdsc = {
+>> +	.gdscr = 0x1040,
+>> +	.pd = {
+>> +		.name = "venus_core0",
+>> +	},
+>> +	.parent = &venus_gdsc.pd,
+>> +	.pwrsts = PWRSTS_OFF_ON,
+> 
+> I think this gdsc should be under hw control?
+> 
+> +	.flags = HW_CTRL,
+> 
 
-We initialize the boot CPU's offset twice during boot, once before this
-in smp_setup_processor_id(), and once afterwards in
-smp_prepare_boot_cpu() since setup_per_cpu_areas() will allocate a new
-region for CPU0.
+Feels strange, eh? Was the same for me, but then noupe, there is no
+hw control for this GDSC downstream, nor a hw_ctrl address for it, so
+on this SoC it shouldn't be under hw control.
 
-IIUC per-cpu writes before smp_prepare_boot_cpu() are potentially dodgy
-since they might be copied to other CPUs, but reads are all fine.
+Besides that, testing also agrees with this (enc/dec works)...
 
-Mark.
+P.S.: Thanks for the review!
+-- Angelo
+
+>> +};
+>> +
+
