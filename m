@@ -2,139 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1265E304023
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653A030403C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392752AbhAZOXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:23:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392725AbhAZOWe (ORCPT
+        id S2405658AbhAZO0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:26:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392439AbhAZOYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:22:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611670867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eNSgEeZdLLIuAUCEHsaDo4oQ9eCOI3cWro5zxhTZ7Zw=;
-        b=UHy01+qSuctzVzQtKxOQJ5xwREjXR8drt9FNFtubDxGu2xGRmy/pPxwoLarD2KKcZ2Ahj0
-        QEGdGVTiZr5KU0sseupmeSErL3OJ+sKPqdvUQJE7TdQzfiTSROIwpZr5vcE/+jjH7jBXO5
-        c7LD7tw1fuvvWVwm2XRZZMEfdS5Jo74=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-z29P9GPcOnCMU6L5RrGxjw-1; Tue, 26 Jan 2021 09:21:05 -0500
-X-MC-Unique: z29P9GPcOnCMU6L5RrGxjw-1
-Received: by mail-ed1-f71.google.com with SMTP id a26so9506081edx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:21:05 -0800 (PST)
+        Tue, 26 Jan 2021 09:24:08 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74FAC0611BD
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:23:25 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id a14so8645279edu.7
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1czbBZLLxHwEsDj/a0a94VF0yBz3u23rkRDZfhlmeos=;
+        b=nyCAT2ReufMhKUDlIx0rQQya1EhvNd3CAXYn6nE2QL4Vmc6395uy5mK+D+jGDLbH8z
+         YBTHMXZ5OTYvLZQCey/ax2VfTRjckHrVObU3ETyQjToqgDfw4if7zzGcu1bFvjVsLdLT
+         F4gzk6kKy+eZ2ZD6f+6CMfR+xgdho8L/8V2tlsFkR6eehlqnDN5KeIm2DzPp7oGr46TA
+         I1QpUnH2hx6ubfWT7ZKBTQ13Ru+n+hkvKoz317kqYa32yGBC2jDOOm4nFn9neiUgZb6E
+         n4mwe9IXjh/CKhqAes1aQMDcP5JYr8mrKYekaWRrWhxbJQXU9qlhVaUOoSQLVgeLluAG
+         GjNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eNSgEeZdLLIuAUCEHsaDo4oQ9eCOI3cWro5zxhTZ7Zw=;
-        b=Agz7N7BKL4/uewA0od6rWsHURDLHxQ8BnaVIW5oUB5YFg5660GIyDvo5NcXyyEsHEN
-         Wemr3Rj4vo8SbwIdc9TG+rQ8NWW0LWxDuK8Fh4DMNhnt4kTupeo+yN5HDHQiLmdS0+X6
-         lUEFvxl7nACo7MB/SlE90so7UC8muDbv5Zr5mCr58lJhdfsbYobl9r5um1GV75RkQt1/
-         f9+kxHlhcpQlb1kMOo3on26Ru1OjtGwdfGnMl9zwXLPjOpy34CyW8Nda0OG0CXkrAesl
-         E2cl64eFXYtYoEBYd8irHFOPI108her7e7owM4YR2GlocGKw4LN1kSNaw5RO0LDJ0q/k
-         F2MA==
-X-Gm-Message-State: AOAM53331AeYcTUWDaxN5EBi8HNIo0RXuxbnAsYzIYZa0IBoMbxoALzm
-        kEhtNisaDaySpWFYt/euxleE7ySnTZvEoYonM49OCn+Wf4ydwONhEElqyF2QBRfjf/dvghEH0Um
-        HiLkhgbtzwbh8X5wGHvXd+X+T
-X-Received: by 2002:a17:906:408:: with SMTP id d8mr3624268eja.280.1611670864713;
-        Tue, 26 Jan 2021 06:21:04 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz2W8EByYnzrwIDSPVxt774Ltw1ieXyNKu9vDpx3vyeHrpguT+p5+1YuhMLcKr0IZCwqLDswA==
-X-Received: by 2002:a17:906:408:: with SMTP id d8mr3624251eja.280.1611670864513;
-        Tue, 26 Jan 2021 06:21:04 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n5sm10943648edw.7.2021.01.26.06.21.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 06:21:03 -0800 (PST)
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-21-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 20/24] kvm: x86/mmu: Add atomic option for setting SPTEs
-Message-ID: <dc9e48b8-c5fb-ea17-c732-b224d78daa74@redhat.com>
-Date:   Tue, 26 Jan 2021 15:21:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1czbBZLLxHwEsDj/a0a94VF0yBz3u23rkRDZfhlmeos=;
+        b=dk7JmKqUwGdEG8VAEvyrWAbAnaZEZEioHYqInbN4r/B6fE8fKz7RV/6ya1QAZZ6Cd6
+         8SzocG9bGlkzwyCZd42T5EePCvBJs0CxcKXeAZ7+YhA00qEWOKt0C2xW3Uc89m1ROSpt
+         L6al/ngHFskYz4dBnepZCOKo1dw/BiVwxn6O3+1urcFoEu4HzBXo6SzfbIEA1cZb3E9v
+         9rDN8qI+ICvE0q15zGvcBkNCmMO8Yt3tckR/Fh9unU1cOKxeyc+zSZwiXzk+mWEEeDqq
+         EyLyrePo0sbxMlneQcxBzbfFuOJCHGSQRHRyftD7WTKS2SeeaE5NEdGFSl/ex1wO+DoT
+         o2Cg==
+X-Gm-Message-State: AOAM531MBOdDoprcVmqDPOJAAUuu/3oUpCg4oirZ6ovQJPsJnwNdoWZY
+        lJLlaXWy5xUsYtDuVNoJ07Bclv+zv2oYVNZ5LSNwdg==
+X-Google-Smtp-Source: ABdhPJxP3v2LeM908ihblFdyCJ83JaTf4lsLhbskKLoinjZa37ZibxDpo5jfrONK2pUpfuITkUtYiA+FbDR8mmfbk/0=
+X-Received: by 2002:a05:6402:3508:: with SMTP id b8mr4815634edd.341.1611671004588;
+ Tue, 26 Jan 2021 06:23:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112181041.356734-21-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210125201156.1330164-1-pasha.tatashin@soleen.com>
+ <20210125201156.1330164-2-pasha.tatashin@soleen.com> <YA/fwFU+Wg6+jr85@pevik>
+In-Reply-To: <YA/fwFU+Wg6+jr85@pevik>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 26 Jan 2021 09:22:48 -0500
+Message-ID: <CA+CK2bBVdVOP6TmJED4Wndovxf+dGbcbw=0LQ8neAGL_2=TEwA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] loop: scale loop device by introducing per device lock
+To:     Petr Vorel <pvorel@suse.cz>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        James Morris <jmorris@namei.org>, lukas.bulwahn@gmail.com,
+        hch@lst.de, ming.lei@redhat.com, mzxreary@0pointer.de,
+        mcgrof@kernel.org, zhengbin13@huawei.com, maco@android.com,
+        Colin King <colin.king@canonical.com>, evgreen@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/21 19:10, Ben Gardon wrote:
->  static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
-> -				u64 old_spte, u64 new_spte, int level);
-> +				u64 old_spte, u64 new_spte, int level,
-> +				bool atomic);
+On Tue, Jan 26, 2021 at 4:24 AM Petr Vorel <pvorel@suse.cz> wrote:
+>
+> Hi,
+>
+> > Currently, loop device has only one global lock:
+> > loop_ctl_mutex.
+>
+> > This becomes hot in scenarios where many loop devices are used.
+>
+> > Scale it by introducing per-device lock: lo_mutex that protects the
+> > fields in struct loop_device. Keep loop_ctl_mutex to protect global
+> > data such as loop_index_idr, loop_lookup, loop_add.
+>
+> > Lock ordering: loop_ctl_mutex > lo_mutex.
+>
+> Reviewed-by: Petr Vorel <pvorel@suse.cz>
 
-If you don't mind, I prefer "shared" as the name for the new argument 
-(i.e. "this is what you need to know", rathar than "this is what I want 
-you to do").
+Thank you for reviewing this patch.
 
-> 
-> +/*
-> + * tdp_mmu_set_spte_atomic - Set a TDP MMU SPTE atomically and handle the
-> + * associated bookkeeping
-> + *
-> + * @kvm: kvm instance
-> + * @iter: a tdp_iter instance currently on the SPTE that should be set
-> + * @new_spte: The value the SPTE should be set to
-> + * Returns: true if the SPTE was set, false if it was not. If false is returned,
-> + *	    this function will have no side-effects.
-> + */
-> +static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
-> +					   struct tdp_iter *iter,
-> +					   u64 new_spte)
-> +{
-> +	u64 *root_pt = tdp_iter_root_pt(iter);
-> +	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
-> +	int as_id = kvm_mmu_page_as_id(root);
-> +
-> +	kvm_mmu_lock_assert_held_shared(kvm);
-> +
-> +	if (cmpxchg64(iter->sptep, iter->old_spte, new_spte) != iter->old_spte)
-> +		return false;
-> +
-> +	handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
-> +			    iter->level, true);
-> +
-> +	return true;
-> +}
-> +
-> +
-
-Still unused as of this patch, so please move it where it's used.
-
-Note that in this case, "atomic" in the name is appropriate, think of 
-hypothetical code like this:
-
-	if (!shared)
-		tdp_mmu_set_spte(...)
-	else if (!tdp_mmu_set_spte_atomic(...)
-		
-
-which says "if there could be concurrent changes, be careful and do 
-everything with atomic operations".
-
-Paolo
-
+Pasha
