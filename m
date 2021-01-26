@@ -2,118 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E7C3042F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69C930430F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391630AbhAZPuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:50:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392714AbhAZPsj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:48:39 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91158C061D73
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:47:57 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id r38so5772189pgk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1x9LcmflL/RTdretuBZJnXxKrfKid3zNWQywy21TUpc=;
-        b=qaKSUwQtZ2h/z3VY8p3dor+qBdjQvTF50BJYaN/IFpwDvVfRwsY/7gKmpff4psZmDo
-         EIAhDAhUxcEfgckDZ9YnAG+HuWDSEtDTVW2qbbaL13bV51sjtzdGAy2JkvrRsRyDahvh
-         0GfK3PvWWYyISL/+FRHmaOfqUBy1nx4KiXuUEmVoJrY9aVc+qV/d18ZTwySSbuv41lo+
-         xv66T++ko3TmO8LQPyeEzLUNwpClh+6vSjA6QurcUKj1KCIZUVvXK5iquJJK9AdmkF0p
-         5neCeQ4iU0plRWfdr5N1/rq+iMWOVrKMfjQn3bzBVoz7mQqbYP65jfW+PoPvhl1H+lmk
-         ArGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1x9LcmflL/RTdretuBZJnXxKrfKid3zNWQywy21TUpc=;
-        b=KYOEWA+OOGBeBBJUMhBdgbBfN0urcZI68c/1BHCcrNbVfhmwh7JeyUu0QqReOF+A1b
-         VVkY5QgogEMFL0qHGKEGPFNR8kQT/RHazQXcLCV/lkJTUPpbmWjzB1S2j/nJMzGY8+U5
-         FjMv01M05kjjxPC5X0t8nSVUd5/ANwzLScS5mr0wpn+p8Ta8UnjkJADFRjlPE9IFPLEJ
-         9GPBw0PjD/yamcS1zhrESg1UQEzWAp4+nOmG17bOunQ4+/e5NLLVfrSjRAVl7+HdWU7e
-         o11k19TOuKVLpvzWhYGaE6yykr7v9ztCnmVqlkeEAee2yJwlY24rXQA/zqvvHLt6MZmD
-         J22A==
-X-Gm-Message-State: AOAM532Ri2IgSyuslF90YiWibMi0V/JlGSujmAbbsvfZMJuNKaUri94l
-        vsuNCNcfhyoj0Pjv9IBKcSuYpw==
-X-Google-Smtp-Source: ABdhPJzpVv6puQt3HY7WsP4woZzvAy3kkO5fdI8te5lGrQBAdCBMyyIzLbeEnD9ZmYABOohmWggLcA==
-X-Received: by 2002:a63:450d:: with SMTP id s13mr6063176pga.443.1611676077130;
-        Tue, 26 Jan 2021 07:47:57 -0800 (PST)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id fv12sm2610575pjb.22.2021.01.26.07.47.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 07:47:56 -0800 (PST)
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-To:     Jan Kara <jack@suse.cz>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jia Cheng Hu <jia.jiachenghu@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210125204032.6b6a604b@canb.auug.org.au>
- <3F91181A-EDF2-4F01-9839-17B40D6EA07F@linaro.org>
- <fb60bac7-f572-d131-d761-f6ce10a05f69@kernel.dk>
- <20210126132946.GC10966@quack2.suse.cz>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a2d6399c-ba61-472b-1bf2-aa261d7dbbbe@kernel.dk>
-Date:   Tue, 26 Jan 2021 08:47:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391591AbhAZPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:53:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391059AbhAZPuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:50:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDF3C217BA;
+        Tue, 26 Jan 2021 15:49:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611676172;
+        bh=/qOarcR3puRm4ZERRBIze4MlNkoBXifiZ3qYK5UdTmM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rRLOf47pjRRlhbT0supOockTREKZvkPt+PJR12qzmQyKiuLqutQKRrodhtSM6RtRi
+         G2uCg6Rof088MhHGy30FwBRCXTtKgtv+14B3U9CsqCd2poLqxgY6o1WsE0+qs4hQvy
+         cR/VLSyySWDELsGENjgR3PgLcMnwgmOyWiM6Z/g/pv+hQGNM1dzOIqq/mOOr+5c3O1
+         EtJeMqPsoZNJzt7H07VS0Io3U+1GJItXLeJTeTUrMK3SxdT4jMqNiG/mhWtt+zi7Zq
+         T9DoCEX9Al888QjuEJ8yU6/8i0fnfMH307/EJY07JDjfzfqgY89AQ2bpQWABeGYuR6
+         6Fmf96Yi772AQ==
+Received: by mail-ed1-f46.google.com with SMTP id c6so20357533ede.0;
+        Tue, 26 Jan 2021 07:49:31 -0800 (PST)
+X-Gm-Message-State: AOAM531xd/tQkAHMWlklfNKK5++NPV1DpgiyiFWM715G8VKbnv1CwnYk
+        OAVOMzkMjFogbTZcY2ElZ7lDO300HK1hE8aDuQ==
+X-Google-Smtp-Source: ABdhPJxZ9g0m4dWI0Km5B8bq7UV0dXpv0lCREWIBsO2jYyBiTZc4nHCknvg29Uyq/GzzBSu2Nm7iCgn0IaGTV1wOAg0=
+X-Received: by 2002:aa7:c895:: with SMTP id p21mr5057035eds.165.1611676170393;
+ Tue, 26 Jan 2021 07:49:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210126132946.GC10966@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1611645945.git.mchehab+huawei@kernel.org> <30795b4a1cea54292d49881d5843e2bdbc496e4d.1611645945.git.mchehab+huawei@kernel.org>
+In-Reply-To: <30795b4a1cea54292d49881d5843e2bdbc496e4d.1611645945.git.mchehab+huawei@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 26 Jan 2021 09:49:18 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJrkvkBMzyAf_Wbv8tbEWbfTwjgwLYKf=Cr8S5mo_URfQ@mail.gmail.com>
+Message-ID: <CAL_JsqJrkvkBMzyAf_Wbv8tbEWbfTwjgwLYKf=Cr8S5mo_URfQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] dt: pci: kirin-pcie.txt: convert it to yaml
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 6:29 AM, Jan Kara wrote:
-> On Mon 25-01-21 11:39:50, Jens Axboe wrote:
->> On 1/25/21 11:35 AM, Paolo Valente wrote:
->>>
->>>
->>>> Il giorno 25 gen 2021, alle ore 10:40, Stephen Rothwell <sfr@canb.auug.org.au> ha scritto:
->>>>
->>>> Hi all,
->>>>
->>>> In commit
->>>>
->>>>  d4fc3640ff36 ("block, bfq: set next_rq to waker_bfqq->next_rq in waker injection")
->>>>
->>>> Fixes tag
->>>>
->>>>  Fixes: c5089591c3ba ("block, bfq: detect wakers and unconditionally inject their I/O")
->>>>
->>>> has these problem(s):
->>>>
->>>>  - Target SHA1 does not exist
->>>>
->>>> Maybe you meant
->>>>
->>>> Fixes: 13a857a4c4e8 ("block, bfq: detect wakers and unconditionally inject their I/O")
->>>>
->>>
->>> Hi Jens,
->>> how to proceed in such a case (with patches already applied by you)?
->>> Shall I send you a v2 with only this change?
->>
->> We just have to ignore it... But in the future, always double check that
->> you are using the right shas, not some sha from an internal tree.
-> 
-> FWIW I have a commit hook in my git tree that just refuses a commit with
-> unknown Fixes tag SHA. Exactly to catch such mishaps in the patches I
-> merge...
+On Tue, Jan 26, 2021 at 1:35 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Convert the file into a JSON description at the yaml format.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 98 +++++++++++++++++++
+>  .../devicetree/bindings/pci/kirin-pcie.txt    | 50 ----------
+>  MAINTAINERS                                   |  2 +-
+>  3 files changed, 99 insertions(+), 51 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+>
+> diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> new file mode 100644
+> index 000000000000..8d8112b2aca0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> @@ -0,0 +1,98 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/hisilicon,kirin-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiSilicon Kirin SoCs PCIe host DT description
+> +
+> +maintainers:
+> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> +
+> +description: |
+> +  Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
+> +  It shares common functions with the PCIe DesignWare core driver and
+> +  inherits common properties defined in
+> +  Documentation/devicetree/bindings/pci/designware-pcie.yaml.
 
-That's not a bad idea, would help catch it upfront. Can you share the
-hook?
+Drop this and move the $ref to here.
 
--- 
-Jens Axboe
+> +
+> +properties:
+> +  compatible:
+> +    const: hisilicon,kirin960-pcie
+> +
+> +  reg:
+> +    description: |
+> +      Should contain rc_dbi, apb, phy, config registers location and length.
+> +
+> +  reg-names:
+> +    description: |
+> +      Must include the following entries:
+> +      "dbi": controller configuration registers;
+> +      "apb": apb Ctrl register defined by Kirin;
+> +      "phy": apb PHY register defined by Kirin;
+> +      "config": PCIe configuration space registers.
 
+That needs to be a schema listing the entries.
+
+> +
+> +  "#address-cells":
+> +    const: 3
+> +
+> +  "#size-cells":
+> +    const: 2
+
+Covered by pci-bus.yaml.
+
+> +
+> +  reset-gpios:
+> +    description: The GPIO to generate PCIe PERST# assert and deassert signal.
+> +    maxItems: 1
+> +
+> +allOf:
+> +  - $ref: "designware,pcie.yaml#"
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - reset-gpios
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - device_type
+> +  - ranges
+> +  - "#interrupt-cells"
+> +  - interrupt-map-mask
+> +  - interrupt-map
+
+pci-bus.yaml covers most of these.
+
+> +
+> +additionalProperties: false
+
+This will cause the example to fail (some reason these didn't get
+picked up by PW). You need to use 'unevaluatedProperties: false' here.
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/hi3660-clock.h>
+> +
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      pcie@f4000000 {
+> +        compatible = "hisilicon,kirin960-pcie";
+> +        reg = <0x0 0xf4000000 0x0 0x1000>,
+> +              <0x0 0xff3fe000 0x0 0x1000>,
+> +              <0x0 0xf3f20000 0x0 0x40000>,
+> +              <0x0 0xF4000000 0 0x2000>;
+> +        reg-names = "dbi","apb","phy", "config";
+> +        bus-range = <0x0  0x1>;
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        device_type = "pci";
+> +        ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
+> +        num-lanes = <1>;
+> +        #interrupt-cells = <1>;
+> +        interrupt-map-mask = <0xf800 0 0 7>;
+> +        interrupt-map = <0x0 0 0 1 &gic 0 0 0  282 4>,
+> +                        <0x0 0 0 2 &gic 0 0 0  283 4>,
+> +                        <0x0 0 0 3 &gic 0 0 0  284 4>,
+> +                        <0x0 0 0 4 &gic 0 0 0  285 4>;
+> +        clocks = <&crg_ctrl HI3660_PCIEPHY_REF>,
+> +                 <&crg_ctrl HI3660_CLK_GATE_PCIEAUX>,
+> +                 <&crg_ctrl HI3660_PCLK_GATE_PCIE_PHY>,
+> +                 <&crg_ctrl HI3660_PCLK_GATE_PCIE_SYS>,
+> +                 <&crg_ctrl HI3660_ACLK_GATE_PCIE>;
+> +        clock-names = "pcie_phy_ref", "pcie_aux", "pcie_apb_phy",
+> +                      "pcie_apb_sys", "pcie_aclk";
+> +        reset-gpios = <&gpio11 1 0 >;
+> +      };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/pci/kirin-pcie.txt b/Documentation/devicetree/bindings/pci/kirin-pcie.txt
+> deleted file mode 100644
+> index 8e4fe7fc50f9..000000000000
+> --- a/Documentation/devicetree/bindings/pci/kirin-pcie.txt
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -HiSilicon Kirin SoCs PCIe host DT description
+> -
+> -Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
+> -It shares common functions with the PCIe DesignWare core driver and
+> -inherits common properties defined in
+> -Documentation/devicetree/bindings/pci/designware,pcie.yaml.
+> -
+> -Additional properties are described here:
+> -
+> -Required properties
+> -- compatible:
+> -       "hisilicon,kirin960-pcie" for PCIe of Kirin960 SoC
+> -- reg: Should contain rc_dbi, apb, phy, config registers location and length.
+> -- reg-names: Must include the following entries:
+> -  "dbi": controller configuration registers;
+> -  "apb": apb Ctrl register defined by Kirin;
+> -  "phy": apb PHY register defined by Kirin;
+> -  "config": PCIe configuration space registers.
+> -- reset-gpios: The GPIO to generate PCIe PERST# assert and deassert signal.
+> -
+> -Optional properties:
+> -
+> -Example based on kirin960:
+> -
+> -       pcie@f4000000 {
+> -               compatible = "hisilicon,kirin-pcie";
+> -               reg = <0x0 0xf4000000 0x0 0x1000>, <0x0 0xff3fe000 0x0 0x1000>,
+> -                     <0x0 0xf3f20000 0x0 0x40000>, <0x0 0xF4000000 0 0x2000>;
+> -               reg-names = "dbi","apb","phy", "config";
+> -               bus-range = <0x0  0x1>;
+> -               #address-cells = <3>;
+> -               #size-cells = <2>;
+> -               device_type = "pci";
+> -               ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
+> -               num-lanes = <1>;
+> -               #interrupt-cells = <1>;
+> -               interrupt-map-mask = <0xf800 0 0 7>;
+> -               interrupt-map = <0x0 0 0 1 &gic 0 0 0  282 4>,
+> -                               <0x0 0 0 2 &gic 0 0 0  283 4>,
+> -                               <0x0 0 0 3 &gic 0 0 0  284 4>,
+> -                               <0x0 0 0 4 &gic 0 0 0  285 4>;
+> -               clocks = <&crg_ctrl HI3660_PCIEPHY_REF>,
+> -                        <&crg_ctrl HI3660_CLK_GATE_PCIEAUX>,
+> -                        <&crg_ctrl HI3660_PCLK_GATE_PCIE_PHY>,
+> -                        <&crg_ctrl HI3660_PCLK_GATE_PCIE_SYS>,
+> -                        <&crg_ctrl HI3660_ACLK_GATE_PCIE>;
+> -               clock-names = "pcie_phy_ref", "pcie_aux",
+> -                             "pcie_apb_phy", "pcie_apb_sys", "pcie_aclk";
+> -               reset-gpios = <&gpio11 1 0 >;
+> -       };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3bb3233830ec..2b98a4763724 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13611,7 +13611,7 @@ M:      Xiaowei Song <songxiaowei@hisilicon.com>
+>  M:     Binghui Wang <wangbinghui@hisilicon.com>
+>  L:     linux-pci@vger.kernel.org
+>  S:     Maintained
+> -F:     Documentation/devicetree/bindings/pci/kirin-pcie.txt
+> +F:     Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+>  F:     drivers/pci/controller/dwc/pcie-kirin.c
+>
+>  PCIE DRIVER FOR HISILICON STB
+> --
+> 2.29.2
+>
