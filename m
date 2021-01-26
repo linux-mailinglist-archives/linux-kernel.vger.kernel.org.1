@@ -2,247 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A5E3040F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A973040EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403985AbhAZOwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:52:51 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:16239 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391269AbhAZJh5 (ORCPT
+        id S2389998AbhAZOv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:51:58 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:38840 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391282AbhAZJiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:37:57 -0500
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210126093709epoutp02c75afe86b365ea862a920908331c3c5d~dvp6O93vo0668006680epoutp020
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:37:09 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210126093709epoutp02c75afe86b365ea862a920908331c3c5d~dvp6O93vo0668006680epoutp020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611653829;
-        bh=6KJ5IrzEH2Lxqjn/7m4vNbGpTi5F2GTuLYWAuPNTtXk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=UpP75/aTjqTkg/3nI/yJxb1+bOrlvA9aVe84cL6V9+5Cw4IXUE3V2DP0PmP54Msp/
-         mPkWIuBSoCJ9ph+9noz31gAlZJjUkNmoYnZHy9fFxu4kG9LBuqP8JKsCypoKpxvk0a
-         XNVGcbuUo9m+PjvYFsyyaBAPJZ4+vFNCepz53XU8=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210126093708epcas1p2ef8c76fba4bbc05b1cff41e842f73068~dvp5M7zyT1425114251epcas1p2X;
-        Tue, 26 Jan 2021 09:37:08 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.166]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DQ1pq3CMkz4x9Pw; Tue, 26 Jan
-        2021 09:37:07 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AF.AA.10463.3C2EF006; Tue, 26 Jan 2021 18:37:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210126093706epcas1p150e9b57a678f8724fa8ab9eddcec8a42~dvp3FoRL93218732187epcas1p1d;
-        Tue, 26 Jan 2021 09:37:06 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210126093706epsmtrp25140fe84c0cd9c74f2229b3cfe439a2d~dvp3EU4fk3088930889epsmtrp2M;
-        Tue, 26 Jan 2021 09:37:06 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-9c-600fe2c3d639
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        99.D2.08745.2C2EF006; Tue, 26 Jan 2021 18:37:06 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210126093706epsmtip2dd69f25523dc8dfb37b2ff61d9b51eea~dvp2z_M_k2925929259epsmtip2T;
-        Tue, 26 Jan 2021 09:37:06 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
-        tj@kernel.org, tom.leiming@gmail.com
-Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
-Subject: [PATCH v3 1/2] bio: limit bio max size
-Date:   Tue, 26 Jan 2021 18:21:29 +0900
-Message-Id: <20210126092129.6676-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 26 Jan 2021 04:38:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1611653882; x=1643189882;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=NMyubT7ft1GnS8iH61qx4woIIkpCUMsKjr6KUJqttL8=;
+  b=VQuMJdu6X/Zv3Dmuh34dAiWrhnWzbJszGApbJYgupyth/+dknUaRb5mQ
+   xtEHEb/WfQXOgOPbG7fPcSFSc8T01BSGOGEzb9yEqmfX+nulbNiZm9zyS
+   FO756KAlkA2OK1ANJ8svEziY8iTG1lKZXj3jzcd9ECCItzX3QwXrSnBe1
+   OARdHQaqhLAeFJnf4DlQ2CSKH0l7m3jqfgGytuJtXOMJQSZBR6Pi3wn2a
+   hA0juNGlcOLvEM0VXETUpVFcg9DErkKnu6jg6Io9IuL+9PpwlvOUigSvn
+   qsU1IgRE4T07oFgB97l6viV6/mX8xe/mUQkiH7jP0dBJnu2r2TD3j7yGH
+   g==;
+IronPort-SDR: UdXB937ZseT8WNzFv5CCmmKSXidoB3eNobxaRyWF4yyepXtVqO7YEM81dagFHUHnpLSiIGT7WQ
+ XL0KdB1Dj1iKLGt3KqKXHj+nXILZV7bt1sJr8MqxjfgPrlv3891oOPsxGzMMPVB/T2FtwZLpXm
+ y6p8XIMaoFq3dLmJOkU9w6vKYUz553TK2ROpeJu2ukL/kCXNk9h1MgnXNv9suSMCjXF1CUijoA
+ ZNoOb99iLJMAlFOX7bbWhFFN1N6uDk0qv9dIBDxlIiWN49S19AJVEWjVQwUuFlrG1eKeG1ke1O
+ 5sA=
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="41780808"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 02:36:45 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 26 Jan 2021 02:36:45 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 26 Jan 2021 02:36:42 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
+CC:     <sudeep.holla@arm.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 0/7] drivers: soc: atmel: add support for sama7g5
+Date:   Tue, 26 Jan 2021 11:29:29 +0200
+Message-ID: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFJsWRmVeSWpSXmKPExsWy7bCmvu7hR/wJBlt7xS3mrNrGaLH6bj+b
-        RWv7NyaLnidNrBZ/u+4xWXx9WGyx95a2xeVdc9gsDk1uZrKYvnkOs8W1+2fYLQ7fu8pi8XDJ
-        RGaLcyc/sVrMe+xg8Wv5UUaL9z+us1uc2jGZ2WL93p9sDsIeE5vfsXvsnHWX3ePy2VKPTas6
-        2Tze77vK5tG3ZRWjx+dNch7tB7qZAjiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
-        LS3MlRTyEnNTbZVcfAJ03TJzgL5RUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQY
-        GhToFSfmFpfmpesl5+daGRoYGJkCVSbkZDzb+56x4LpWxdXjixgbGOfJdTFyckgImEgc2DuH
-        sYuRi0NIYAejxL/j+9kgnE+MEifePWMHqRIS+MwocbJFHaZj1YFL7BBFu4A6lt9lgyvqnQw2
-        lk1AR6Lv7S2wSSICLUwSbe+vMYM4zAKPGSWunGwD6xAW0Jfom7+OBcRmEVCV6LlzjxXE5hWw
-        kni0o48NYp28xNPe5cwQcUGJkzOfgNUzA8Wbt84GGyohsIdD4s/dFUwQDS4Su7/2MUPYwhKv
-        jm9hh7ClJD6/28sG0dDNKNHcNp8RwpnAKLHk+TKobmOJT58/AyU4gFZoSqzfpQ8RVpTY+Xsu
-        I8RmPol3X3tYQUokBHglOtqEIEpUJM603GeG2fV87U6oiR4SJ5teM0OCKFbi2LO7zBMY5Wch
-        +WcWkn9mISxewMi8ilEstaA4Nz212LDABDleNzGCE7WWxQ7GuW8/6B1iZOJgPMQowcGsJMK7
-        W48nQYg3JbGyKrUoP76oNCe1+BCjKTCEJzJLiSbnA3NFXkm8oamRsbGxhYmZuZmpsZI4b5LB
-        g3ghgfTEktTs1NSC1CKYPiYOTqkGpoQWl5dmZ3Q/7PEy2nZykubW8JDzvpW9pbMOcqV72Kno
-        3xW6YH1HsPZG7Ec/DeW6G9bbbmUtjjW1r4jOEV3TlRu8M+LdUX2OF4o7wx/vPyj2c+P5K79W
-        PguJW3VF6dXpxxUsB5/eThf4d4+34MVZBs+cQibnwx9b1VR26N+7bbjEp01cWedO/tKHwXsa
-        1036Otng4wz/rqzfWdN3XN9T15/O9nrP85CNjcVH5baz3Gp9xxPvcvc23+Nwqe0+EuwqFQW7
-        3vOumMo+IXiNxc6nFjsf8UeenHZZIvejgE+oe1Pb/OrJNuwW17P3fWBZVnh3o4n1gbt8Lqt8
-        trkxGoZH6p7YPue51LTSDc9cVJSLjymxFGckGmoxFxUnAgATZ1WnXQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOLMWRmVeSWpSXmKPExsWy7bCSvO6hR/wJBvveilrMWbWN0WL13X42
-        i9b2b0wWPU+aWC3+dt1jsvj6sNhi7y1ti8u75rBZHJrczGQxffMcZotr98+wWxy+d5XF4uGS
-        icwW505+YrWY99jB4tfyo4wW739cZ7c4tWMys8X6vT/ZHIQ9Jja/Y/fYOesuu8fls6Uem1Z1
-        snm833eVzaNvyypGj8+b5DzaD3QzBXBEcdmkpOZklqUW6dslcGU82/ueseC6VsXV44sYGxjn
-        yXUxcnJICJhIrDpwib2LkYtDSGAHo8T6jf9YIRJSEsdPvAWyOYBsYYnDh4shaj4ySqxaux+s
-        hk1AR6Lv7S02kISIwCQmib0HdzODOMwCrxkluh4vYgGpEhbQl+ibvw7MZhFQlei5cw+sm1fA
-        SuLRjj42iG3yEk97lzNDxAUlTs58AlbPDBRv3jqbeQIj3ywkqVlIUgsYmVYxSqYWFOem5xYb
-        FhjlpZbrFSfmFpfmpesl5+duYgTHjZbWDsY9qz7oHWJk4mA8xCjBwawkwrtbjydBiDclsbIq
-        tSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBqY1F37EbW5e2vh6xi2u
-        6Dttkh6pK34JfmquD5R583zZ/ncKzXPajfZcZi1d3vgsMfx219K/nUk7Favehp2REj9wxdbi
-        pP37HrucXnPm1DPbDn27LCB8be7M/qetmlt2RD89clK+OOyT5YzTEypOaM269SZdL9Yy7FHa
-        25XmxTUmH1jPtj7Zz8xaLGITcEbajKWu8cfKm8wNtz+8/fju27s3D2b2KF+92FIpkfGhq+zA
-        Tg2fpBfXN0++IjJnZ6evQ8PlZykuM8+9sTR64TXl2roKdj6GhaIuPKcmTegzrn779PDM5xP4
-        O41zrE4tcE/geX9FctuhC+tfOzccW6yy0GH/Dd1CQ5cNRy6+9p944u3GE0osxRmJhlrMRcWJ
-        AH43gCUKAwAA
-X-CMS-MailID: 20210126093706epcas1p150e9b57a678f8724fa8ab9eddcec8a42
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210126093706epcas1p150e9b57a678f8724fa8ab9eddcec8a42
-References: <CGME20210126093706epcas1p150e9b57a678f8724fa8ab9eddcec8a42@epcas1p1.samsung.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bio size can grow up to 4GB when muli-page bvec is enabled.
-but sometimes it would lead to inefficient behaviors.
-in case of large chunk direct I/O, - 32MB chunk read in user space -
-all pages for 32MB would be merged to a bio structure if the pages
-physical addresses are contiguous. it makes some delay to submit
-until merge complete. bio max size should be limited to a proper size.
+Hi,
 
-When 32MB chunk read with direct I/O option is coming from userspace,
-kernel behavior is below now. it's timeline.
+This series adds support for SAMA7G5 identification. Along with this
+included also some fixes.
 
- | bio merge for 32MB. total 8,192 pages are merged.
- | total elapsed time is over 2ms.
- |------------------ ... ----------------------->|
-                                                 | 8,192 pages merged a bio.
-                                                 | at this time, first bio submit is done.
-                                                 | 1 bio is split to 32 read request and issue.
-                                                 |--------------->
-                                                  |--------------->
-                                                   |--------------->
-                                                              ......
-                                                                   |--------------->
-                                                                    |--------------->|
-                          total 19ms elapsed to complete 32MB read done from device. |
+Thank you,
+Claudiu Beznea
 
-If bio max size is limited with 1MB, behavior is changed below.
+Changes in v2:
+- use proper license identifier
+- s/licence/license/g
 
- | bio merge for 1MB. 256 pages are merged for each bio.
- | total 32 bio will be made.
- | total elapsed time is over 2ms. it's same.
- | but, first bio submit timing is fast. about 100us.
- |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-      | 256 pages merged a bio.
-      | at this time, first bio submit is done.
-      | and 1 read request is issued for 1 bio.
-      |--------------->
-           |--------------->
-                |--------------->
-                                      ......
-                                                 |--------------->
-                                                  |--------------->|
-        total 17ms elapsed to complete 32MB read done from device. |
+Claudiu Beznea (7):
+  drivers: soc: atmel: add spdx license identifier
+  drivers: soc: atmel: use GENMASK
+  drivers: soc: atmel: fix "__initconst should be placed after socs[]"  
+      warning
+  drivers: soc: atmel: add null entry at the end of
+    at91_soc_allowed_list[]
+  drivers: soc: atmel: add per soc id and version match masks
+  dt-bindings: atmel-sysreg: add "microchip,sama7g5-chipid"
+  drivers: soc: atmel: add support for sama7g5
 
-As a result, read request issue timing is faster if bio max size is limited.
-Current kernel behavior with multipage bvec, super large bio can be created.
-And it lead to delay first I/O request issue.
+ .../devicetree/bindings/arm/atmel-sysregs.txt      |   2 +-
+ drivers/soc/atmel/soc.c                            | 219 ++++++++++++++-------
+ drivers/soc/atmel/soc.h                            |  14 +-
+ 3 files changed, 166 insertions(+), 69 deletions(-)
 
-Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
----
- block/bio.c            | 17 ++++++++++++++++-
- include/linux/bio.h    |  4 +++-
- include/linux/blkdev.h |  3 +++
- 3 files changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/block/bio.c b/block/bio.c
-index 1f2cc1fbe283..ec0281889045 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -287,6 +287,21 @@ void bio_init(struct bio *bio, struct bio_vec *table,
- }
- EXPORT_SYMBOL(bio_init);
- 
-+unsigned int bio_max_size(struct bio *bio)
-+{
-+	struct request_queue *q;
-+
-+	if (!bio->bi_disk)
-+		return UINT_MAX;
-+
-+	q = bio->bi_disk->queue;
-+	if (!blk_queue_limit_bio_size(q))
-+		return UINT_MAX;
-+
-+	return blk_queue_get_max_sectors(q, bio_op(bio)) << SECTOR_SHIFT;
-+}
-+EXPORT_SYMBOL(bio_max_size);
-+
- /**
-  * bio_reset - reinitialize a bio
-  * @bio:	bio to reset
-@@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
- 		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
- 
- 		if (page_is_mergeable(bv, page, len, off, same_page)) {
--			if (bio->bi_iter.bi_size > UINT_MAX - len) {
-+			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
- 				*same_page = false;
- 				return false;
- 			}
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 1edda614f7ce..cdb134ca7bf5 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -100,6 +100,8 @@ static inline void *bio_data(struct bio *bio)
- 	return NULL;
- }
- 
-+extern unsigned int bio_max_size(struct bio *);
-+
- /**
-  * bio_full - check if the bio is full
-  * @bio:	bio to check
-@@ -113,7 +115,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
- 	if (bio->bi_vcnt >= bio->bi_max_vecs)
- 		return true;
- 
--	if (bio->bi_iter.bi_size > UINT_MAX - len)
-+	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
- 		return true;
- 
- 	return false;
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index f94ee3089e01..3aeab9e7e97b 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -621,6 +621,7 @@ struct request_queue {
- #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
- #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
- #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
-+#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
- 
- #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
- 				 (1 << QUEUE_FLAG_SAME_COMP) |		\
-@@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
- #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
- #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
- #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
-+#define blk_queue_limit_bio_size(q)	\
-+	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
- 
- extern void blk_set_pm_only(struct request_queue *q);
- extern void blk_clear_pm_only(struct request_queue *q);
 -- 
-2.28.0
+2.7.4
 
