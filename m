@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470423043CB
+	by mail.lfdr.de (Postfix) with ESMTP id C268D3043CC
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404631AbhAZQ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:26:46 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:12677 "EHLO m42-8.mailgun.net"
+        id S2404704AbhAZQ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:26:52 -0500
+Received: from www.zeus03.de ([194.117.254.33]:35136 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390911AbhAZQ0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:26:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611678363; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=roFrb5eBhPqZTvXpSEWS1kSBgr+K1E0l4LAsnVOoPAw=;
- b=F+fHENjKCG8Mas6EpzwPMgVywFrO1mWUry08bGkXBFZKH9l1ecN1uHZEYeBqFHY1LcBEZW0W
- 6mxcAt4HznJ5NTNI1xY075HeTHGV3seE7RDGPAC3bGJBRda5GOskpFNC0wX1OgTSbkGkTGQd
- ovHgTa7hNIM8utKSM4F86flWHo4=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 6010427cfb02735e8cffe38c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 16:25:32
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2357AC433ED; Tue, 26 Jan 2021 16:25:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AAB1EC433CA;
-        Tue, 26 Jan 2021 16:25:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AAB1EC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S2392879AbhAZQ0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:26:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=Xqs1mtjaC3nVZ+Jiv8DQnPtyMH32
+        zxsqqXVsjiZLZ4M=; b=O3xUFAq9kmMnUmXFuiX6D6aJL8zxM3+INUWh1huJwjvQ
+        bXwC96aEOrz8/4yntpUaDUAiEIfc7CCi3nAblU6htd3hTiXLJPj3olX0iEYwzXJz
+        0AVRHKqFho3n1b8nedkQj1jrfttYDusi0+kfjuOFfzOmjcArf+Gg+wxzmL2Dsv4=
+Received: (qmail 3783984 invoked from network); 26 Jan 2021 17:25:34 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 26 Jan 2021 17:25:34 +0100
+X-UD-Smtp-Session: l3s3148p1@IoeUGtC5KuUgAwDPXyX1AEdA8SGgn5QT
+Date:   Tue, 26 Jan 2021 17:25:33 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
+Message-ID: <20210126162533.GC928@ninjato>
+References: <20210125142431.1049668-1-geert+renesas@glider.be>
+ <20210125142431.1049668-5-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH wireless v2 -next] wcn36xx: Remove unnecessary memset
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20201223012516.24286-1-zhengyongjun3@huawei.com>
-References: <20201223012516.24286-1-zhengyongjun3@huawei.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <wcn36xx@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210126162531.2357AC433ED@smtp.codeaurora.org>
-Date:   Tue, 26 Jan 2021 16:25:31 +0000 (UTC)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JWEK1jqKZ6MHAcjA"
+Content-Disposition: inline
+In-Reply-To: <20210125142431.1049668-5-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 
-> memcpy operation is next to memset code, and the size to copy is equals to the size to
-> memset, so the memset operation is unnecessary, remove it.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+--JWEK1jqKZ6MHAcjA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Patch applied to ath-next branch of ath.git, thanks.
+On Mon, Jan 25, 2021 at 03:24:31PM +0100, Geert Uytterhoeven wrote:
+> The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
+> the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
+>   1. The per-channel registers are located in a second register block.
+>      Add support for mapping the second block, using the appropriate
+>      offsets and stride.
+>   2. The common Channel Clear Register (DMACHCLR) was replaced by a
+>      per-channel register.
+>      Update rcar_dmac_chan_clear{,_all}() to handle this.
+>      As rcar_dmac_init() needs to clear the status before the individual
+>      channels are probed, channel index and base address initialization
+>      are moved forward.
+>=20
+> Inspired by a patch in the BSP by Phong Hoang
+> <phong.hoang.wz@renesas.com>.
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-337cd0d3ce0c wcn36xx: Remove unnecessary memset
+Apporach looks good, didn't check the gory details. However, it still
+works fine with I2C + DMA on V3U, so:
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20201223012516.24286-1-zhengyongjun3@huawei.com/
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
+--JWEK1jqKZ6MHAcjA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAQQn0ACgkQFA3kzBSg
+KbZi4w/9Eeda53xRTs5EXMmbccCC/SLtFJBLKhFFO0GyoiQxmU4OrFfnrL60vcJ1
+WCc3uJBPIf20FKLwOIt8b+lXotJalWh6aCl4iZj7BgeKSNdPNkBjtqcCMR0nQBbg
+Ps33xRRhp8pO0r1K91o37GnW/NKWYTshUz9loB4j/OCpiIob4tiBb/hTRLNJ3loI
+x3RgLCi7269RqC47cq+T+VbNk8ftbzWBXEcFTT5+We+Enr2qPM58XRSXRgZv79NI
+/ChfzGotu5KHUrxQPPknyb9+OCmG7RM6g+AOxiYjBy3jk51IoW+tZxhrjliAkktI
++C/+PPbtwAocwLgTKJwQMzU6XUoXaeqPgHRpoCfl4ZXMnbsoObYwtD82SoTjZUCM
+nkEvzt9FHN6/xd5WTZscHmSXGY7sVmM6I83chFNzcfukv9/iIV7SSWbN8ir3ashL
+SYeUB6yrgk2Br3UpufdS8/Ptddmq6WlXWStSoBloUukB+WEvyK9D6uWJfIKW1655
+Ny5y11hrhmPdRmVFnZbbfcEMq3tLM+06jj8+VuenlNTg9in6IqEQFaqo+nzesfWZ
+q+Dtr30W3Qptp/ktWLHUiEHqKC2Ww09O6y5pJfBpGEzgJpblhqJP6XMv/42RKKYV
+zzUEnGFsgtnwXgWAzEmmWanoXDmiMYP0PyvP7gzJS9OjF7c2hB0=
+=6eRP
+-----END PGP SIGNATURE-----
+
+--JWEK1jqKZ6MHAcjA--
