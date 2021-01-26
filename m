@@ -2,127 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A207F3040FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FE0304102
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405985AbhAZOyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:54:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47196 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391355AbhAZOxa (ORCPT
+        id S2405882AbhAZOyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405823AbhAZOyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:53:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611672722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JYmGL08JF+gArRQ9p5k0wHfnv2GHvkk5CmReF6hsoP4=;
-        b=gLTsYT5tXl7cYR3lptw28rmQghstxPXNbKb6TxqKx4rX+6PeE7GaYPE1j4akkEB37bZ9nv
-        V/w19cxO6C4FyPS+k1NpIwTcrm1lxj/+gxyWXJOfteXNcXR4ZbWhr+1coV81VZBcfUOCya
-        DBiUM/vGmThwe7KO5eWLJAmPWN6nr/c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-Fy7Ek9dBP26p1I4vvyZkDg-1; Tue, 26 Jan 2021 09:52:00 -0500
-X-MC-Unique: Fy7Ek9dBP26p1I4vvyZkDg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B63A515722;
-        Tue, 26 Jan 2021 14:51:58 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79B3260CD1;
-        Tue, 26 Jan 2021 14:51:57 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 08:51:55 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     Justin Forbes <jforbes@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
- modules
-Message-ID: <20210126145155.kcfbnzfqg5qugvcl@treble>
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
- <20210125212755.jfwlqogpcarmxdgt@treble>
- <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
- <20210125220757.vxdsf6sttpy46cq7@treble>
- <YA/PLdX5m9f4v+Yl@kroah.com>
- <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
- <YBAeYaDReAc9VscA@kroah.com>
+        Tue, 26 Jan 2021 09:54:05 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A496C0698C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:53:25 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id m22so23075896lfg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:53:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2FZjycms5gnBCIpvZP+ctIDCiLaUF2g3Z9pOjKVsdC0=;
+        b=YC1EV9dV4gLXUfWerPjvjrjQdSJ+wwfVBcUDEIaM0flplCFVLxlAChsv3hzwWoy7iz
+         Hi0S30M8VFmQ8BsE4iPn7f80s/c66XPGgfA2t01Mjh484dbNXrOpb2yVjTqtAWqQ8cRk
+         mJPIODGZR5ngh8wJEIT1rYkNxEj7xy4zsGH23iGkEgzlXHb4YaNKMTbsEVlAIrHaH4hL
+         p6GCSBNLjPJML3NJMc4PO7Ae3TbHCp5XPliFMWLGLT4LLDMNDN2snpJhaqoqZRs6RmuQ
+         0+eMcBEjfyuknWpS8iMeqRNP3VFSQbHl0Yxb4FuYt/+hFHftJxrFFgZzJHMVB5HPhr3d
+         slSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2FZjycms5gnBCIpvZP+ctIDCiLaUF2g3Z9pOjKVsdC0=;
+        b=JGXOvlZpTevSbpVOkzxuiJDHpWiBJURbAUzz7DDUhvOXytDqALnAiwY2a++y6O8m8S
+         k6HIJkUphAMI9P17vh/d53pl3S2m6RFoIqnqWMT5nsrUX2W2H00LlZBCUciwy9nxee9C
+         yGfe6lHpKiw/rjiFTp/O/nSbAZLUb/nMzs/QVkb9/AmbsX/KQi80Imh8ZRQiZzpU6B4n
+         eX2TDTRQvZVewRnkSBp20BX3GyJqIhOx41LqsPOb15vB2EnvXEv9+rYRZoVIxMG2uCUA
+         fsZQQVaqF9z7V+RnhjjTZj/9oXQREaQZ99WF9+BMZoJzGZJ2CQAqTR+t+U6GiuF40Vx/
+         Npvg==
+X-Gm-Message-State: AOAM5337ePdTXNO8t/6zntOXYsVH4XHncvv5mF7KOwe48QRF5FY+VwXD
+        Dc5LvhCrFiV/5CuXqyE4BzmhdlArD8gRReQ4X3ujUw==
+X-Google-Smtp-Source: ABdhPJyaXqdBSRbne+mx+lif6Cq8WwZOJakN0nseaAW1Q7KoMw1ocidpAn9dDfM8IO/W87GNbGvCW6b3/uPSuBZrfGs=
+X-Received: by 2002:ac2:4285:: with SMTP id m5mr2653252lfh.649.1611672803601;
+ Tue, 26 Jan 2021 06:53:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YBAeYaDReAc9VscA@kroah.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210115171115.123155-1-konrad.dybcio@somainline.org>
+In-Reply-To: <20210115171115.123155-1-konrad.dybcio@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Jan 2021 15:53:12 +0100
+Message-ID: <CACRpkdZ46OSTNited84091XzikVA9HFncmrX_iXZ62mGUJEmVQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom-pmic-gpio: Add support for pm8019
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 02:51:29PM +0100, Greg KH wrote:
-> On Tue, Jan 26, 2021 at 06:44:44AM -0600, Justin Forbes wrote:
-> > On Tue, Jan 26, 2021 at 2:21 AM Greg KH <greg@kroah.com> wrote:
-> > >
-> > > On Mon, Jan 25, 2021 at 04:07:57PM -0600, Josh Poimboeuf wrote:
-> > > > On Tue, Jan 26, 2021 at 06:44:35AM +0900, Masahiro Yamada wrote:
-> > > > > > > If people use a different compiler, they must be
-> > > > > > > prepared for any possible problem.
-> > > > > > >
-> > > > > > > Using different compiler flags for in-tree and out-of-tree
-> > > > > > > is even more dangerous.
-> > > > > > >
-> > > > > > > For example, CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled
-> > > > > > > for in-tree build, and then disabled for out-of-tree modules,
-> > > > > > > the struct layout will mismatch, won't it?
-> > > > > >
-> > > > > > If you read the patch you'll notice that it handles that case, when it's
-> > > > > > caused by GCC mismatch.
-> > > > > >
-> > > > > > However, as alluded to in the [1] footnote, it doesn't handle the case
-> > > > > > where the OOT build system doesn't have gcc-plugin-devel installed.
-> > > > > > Then CONFIG_GCC_PLUGIN_RANDSTRUCT gets silently disabled and the build
-> > > > > > succeeds!  That happens even without a GCC mismatch.
-> > > > >
-> > > > >
-> > > > > Ah, sorry.
-> > > > >
-> > > > > I responded too early before reading the patch fully.
-> > > > >
-> > > > > But, I do not like to make RANDSTRUCT a special case.
-> > > > >
-> > > > > I'd rather want to stop building for any plugin.
-> > > >
-> > > > Other than RANDSTRUCT there doesn't seem to be any problem with
-> > > > disabling them (and printing a warning) in the OOT build.  Why not give
-> > > > users that option?  It's harmless, and will make distro's (and their
-> > > > users') lives easier.
-> > > >
-> > > > Either GCC mismatch is ok, or it's not.  Let's not half-enforce it.
-> > >
-> > > As I said earlier, it's not ok, we can not support it at all.
-> > >
-> > 
-> > Support and enforce are 2 completely different things.  To shed a bit
-> > more light on this, the real issue that prompted this was breaking CI
-> > systems.  As we enabled gcc plugins in Fedora, and the toolchain folks
-> > went through 3 different snapshots of gcc 11 in a week. Any CI process
-> > that built an out of tree module failed. I don't think this is nearly
-> > as much of a concern for stable distros, as it is for CI in
-> > development cycles.
-> 
-> It's better to have an obvious break like this than to silently accept
-> things and then have a much harder issue to debug at runtime, right?
+On Fri, Jan 15, 2021 at 6:11 PM Konrad Dybcio
+<konrad.dybcio@somainline.org> wrote:
 
-User space mixes compiler versions all the time.  The C ABI is stable.
+> PM8019 provides 6 GPIOs. Add a compatible to support that.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-What specifically is the harder issue you're referring to?
+Patch applied.
 
--- 
-Josh
-
+Yours,
+Linus Walleij
