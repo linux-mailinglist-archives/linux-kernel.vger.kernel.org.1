@@ -2,100 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15CF304041
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1216303FF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405712AbhAZO0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391724AbhAZN0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:26:22 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2528C061A29;
-        Tue, 26 Jan 2021 05:25:30 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d13so4013426plg.0;
-        Tue, 26 Jan 2021 05:25:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=hJpx0sAUwwTFVj7mi1u3wPShyqbE8agveuBzNbpt04c=;
-        b=VUVw7SCR7FSAHmjqsGnuI2BZNY6fiwd1M2tIyoOUO2UT32Fc7Y22aaLUmbOeuP35mb
-         P6kk217DvEtf/E81MGXRCzjJbie0rCIO6fqmdJsXry3+lwVOXKfo7lr3gPrzIDi2Ln1K
-         6LCJxe8VD7LnOqT4FhIIZwaCHa4JvUibRtqXmH6KScWXlnzhVEqSprFM+gbnxD9WJV7i
-         oED+4CUVzJHJ6zLIdYB4I6gl7a3BYC5d0G99y7Ncf7PRfrsqGYbY4OB2y14Q2RA16uuV
-         hnnTtSyNzwAQCfUSCuZi/Gtve4erGUqPFLbl5Mg7KMqc3oGn83PFdhxJ6fWfwIaIOl28
-         IOuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=hJpx0sAUwwTFVj7mi1u3wPShyqbE8agveuBzNbpt04c=;
-        b=kMZz+lLQbQxO/u2u0xTKAvzIdf0I5hsyz3VzD2jM9ZpuXveq0dr2A/zuY6C7s8P2D4
-         ub//9cgYic06FS1/lxEn1RpKrJ1Gk5I2TeVgu0mlhHl33/Wc0D9WkyKTC/wZsr6RnJX6
-         oc82J45UXV8YfyC2bi0CT9jw45J+F2KHYGNOn4TIc+AibYQI6XR/nXS9GnGEgX5x/Zxk
-         zQdEXpnke6WWTxlSzs8vUXTvsyPRGZpeExhFfdVgqZgeZYEORtGg0FZ9nMH1wlUSytlx
-         CA8LqdCiMeklBCDRrORR7icEZSy1Rjr4wavIjkIuzzRJ9+PQhV1I37ye4/t2noqmcuHt
-         mZpg==
-X-Gm-Message-State: AOAM533GSbV6BI3yhMLRpEA3CNGUHVEBHcTz+on32p7QbAxqWJFRhvTK
-        98hVB+CFgJgHVYE/QoXQ6uBy0SIpfkA=
-X-Google-Smtp-Source: ABdhPJx6cCSvPh7H5Xm88DxJ8Yl0KyQ+k+xeKWqvcP0d9k5AZwCfxwEo3yvsuTu1r3Xbcn+4eErslw==
-X-Received: by 2002:a17:90a:ad48:: with SMTP id w8mr6306010pjv.48.1611667530301;
-        Tue, 26 Jan 2021 05:25:30 -0800 (PST)
-Received: from [10.230.128.89] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id r5sm18752031pfl.165.2021.01.26.05.25.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 05:25:29 -0800 (PST)
-Subject: Re: [PATCH v1] scsi: lpfc: Add auto select on IRQ_POLL
-To:     Tong Zhang <ztong0001@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210126000554.309858-1-ztong0001@gmail.com>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <8e4e3e25-e69f-56ee-bff6-4fbf68262b38@gmail.com>
-Date:   Tue, 26 Jan 2021 05:25:28 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2405696AbhAZOR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:17:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392387AbhAZNlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:41:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9890122B2C;
+        Tue, 26 Jan 2021 13:41:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611668466;
+        bh=tsP/6VnTXBvfdiAA08tZZWUPULid+fmM1izixKhw6tA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZgyxJhdQu1yrNH/2sNpc5+tCRBkGvet94K81yFb40HymwIpAB/uWVcPrvkwZyqdSq
+         4VsIeN6FwNtD7dpP9Z4lnZCzn5xQKpga+Lyw4klTkDK5JQHcyl7WR1aKzMJ0uCE8M5
+         kzh+fB3R3gDU14BBZrz7n0o6HILneUMgJjyxZSN8MxlB8hiCxBcNSY+8lRdr4XYL/y
+         8F7HBfTljiKOvkftxKXPfTzeBZPfmenTpI3t8Dltm2PxKWHkahrZ2bkOI8ds639tWz
+         sxxTdkatdnlvk485atINQp7OKrduDBwOu8CXU+ejb1cHIzsOwGsmxNn4K0FUgBhPuR
+         teo6wA/agcsbQ==
+From:   Jeff Layton <jlayton@kernel.org>
+To:     ceph-devel@vger.kernel.org, idryomov@gmail.com, dhowells@redhat.com
+Cc:     willy@infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
+Subject: [PATCH 1/6] ceph: disable old fscache readpage handling
+Date:   Tue, 26 Jan 2021 08:40:58 -0500
+Message-Id: <20210126134103.240031-2-jlayton@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210126134103.240031-1-jlayton@kernel.org>
+References: <20210126134103.240031-1-jlayton@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210126000554.309858-1-ztong0001@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/2021 4:05 PM, Tong Zhang wrote:
-> lpfc depends on irq_poll library, but it is not selected automatically.
-> When irq_poll is not selected, compiling it can run into following error
->
-> ERROR: modpost: "irq_poll_init" [drivers/scsi/lpfc/lpfc.ko] undefined!
-> ERROR: modpost: "irq_poll_sched" [drivers/scsi/lpfc/lpfc.ko] undefined!
-> ERROR: modpost: "irq_poll_complete" [drivers/scsi/lpfc/lpfc.ko] undefined!
->
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> ---
->   drivers/scsi/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
-> index 701b61ec76ee..c79ac0731b13 100644
-> --- a/drivers/scsi/Kconfig
-> +++ b/drivers/scsi/Kconfig
-> @@ -1159,6 +1159,7 @@ config SCSI_LPFC
->   	depends on NVME_TARGET_FC || NVME_TARGET_FC=n
->   	depends on NVME_FC || NVME_FC=n
->   	select CRC_T10DIF
-> +	select IRQ_POLL
->   	help
->             This lpfc driver supports the Emulex LightPulse
->             Family of Fibre Channel PCI host adapters.
+With the new netfs read helper functions, we won't need a lot of this
+infrastructure as it handles the pagecache pages itself. Rip out the
+read handling for now, and much of the old infrastructure that deals in
+individual pages.
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+The cookie handling is mostly unchanged, however.
 
--- james
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/ceph/addr.c  |  31 +-----------
+ fs/ceph/cache.c | 123 ------------------------------------------------
+ fs/ceph/cache.h |  91 +----------------------------------
+ fs/ceph/caps.c  |   9 ----
+ 4 files changed, 3 insertions(+), 251 deletions(-)
+
+diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
+index 950552944436..2b17bb36e548 100644
+--- a/fs/ceph/addr.c
++++ b/fs/ceph/addr.c
+@@ -155,8 +155,6 @@ static void ceph_invalidatepage(struct page *page, unsigned int offset,
+ 		return;
+ 	}
+ 
+-	ceph_invalidate_fscache_page(inode, page);
+-
+ 	WARN_ON(!PageLocked(page));
+ 	if (!PagePrivate(page))
+ 		return;
+@@ -175,10 +173,6 @@ static int ceph_releasepage(struct page *page, gfp_t g)
+ 	dout("%p releasepage %p idx %lu (%sdirty)\n", page->mapping->host,
+ 	     page, page->index, PageDirty(page) ? "" : "not ");
+ 
+-	/* Can we release the page from the cache? */
+-	if (!ceph_release_fscache_page(page, g))
+-		return 0;
+-
+ 	return !PagePrivate(page);
+ }
+ 
+@@ -213,10 +207,6 @@ static int ceph_do_readpage(struct file *filp, struct page *page)
+ 		return 0;
+ 	}
+ 
+-	err = ceph_readpage_from_fscache(inode, page);
+-	if (err == 0)
+-		return -EINPROGRESS;
+-
+ 	dout("readpage ino %llx.%llx file %p off %llu len %llu page %p index %lu\n",
+ 	     vino.ino, vino.snap, filp, off, len, page, page->index);
+ 	req = ceph_osdc_new_request(osdc, &ci->i_layout, vino, off, &len, 0, 1,
+@@ -241,7 +231,6 @@ static int ceph_do_readpage(struct file *filp, struct page *page)
+ 	if (err == -ENOENT)
+ 		err = 0;
+ 	if (err < 0) {
+-		ceph_fscache_readpage_cancel(inode, page);
+ 		if (err == -EBLOCKLISTED)
+ 			fsc->blocklisted = true;
+ 		goto out;
+@@ -253,8 +242,6 @@ static int ceph_do_readpage(struct file *filp, struct page *page)
+ 		flush_dcache_page(page);
+ 
+ 	SetPageUptodate(page);
+-	ceph_readpage_to_fscache(inode, page);
+-
+ out:
+ 	return err < 0 ? err : 0;
+ }
+@@ -294,10 +281,8 @@ static void finish_read(struct ceph_osd_request *req)
+ 	for (i = 0; i < num_pages; i++) {
+ 		struct page *page = osd_data->pages[i];
+ 
+-		if (rc < 0 && rc != -ENOENT) {
+-			ceph_fscache_readpage_cancel(inode, page);
++		if (rc < 0 && rc != -ENOENT)
+ 			goto unlock;
+-		}
+ 		if (bytes < (int)PAGE_SIZE) {
+ 			/* zero (remainder of) page */
+ 			int s = bytes < 0 ? 0 : bytes;
+@@ -307,7 +292,6 @@ static void finish_read(struct ceph_osd_request *req)
+ 		     page->index);
+ 		flush_dcache_page(page);
+ 		SetPageUptodate(page);
+-		ceph_readpage_to_fscache(inode, page);
+ unlock:
+ 		unlock_page(page);
+ 		put_page(page);
+@@ -408,7 +392,6 @@ static int start_read(struct inode *inode, struct ceph_rw_context *rw_ctx,
+ 		     page->index);
+ 		if (add_to_page_cache_lru(page, &inode->i_data, page->index,
+ 					  GFP_KERNEL)) {
+-			ceph_fscache_uncache_page(inode, page);
+ 			put_page(page);
+ 			dout("start_read %p add_to_page_cache failed %p\n",
+ 			     inode, page);
+@@ -440,10 +423,8 @@ static int start_read(struct inode *inode, struct ceph_rw_context *rw_ctx,
+ 	return nr_pages;
+ 
+ out_pages:
+-	for (i = 0; i < nr_pages; ++i) {
+-		ceph_fscache_readpage_cancel(inode, pages[i]);
++	for (i = 0; i < nr_pages; ++i)
+ 		unlock_page(pages[i]);
+-	}
+ 	ceph_put_page_vector(pages, nr_pages, false);
+ out_put:
+ 	ceph_osdc_put_request(req);
+@@ -471,12 +452,6 @@ static int ceph_readpages(struct file *file, struct address_space *mapping,
+ 	if (ceph_inode(inode)->i_inline_version != CEPH_INLINE_NONE)
+ 		return -EINVAL;
+ 
+-	rc = ceph_readpages_from_fscache(mapping->host, mapping, page_list,
+-					 &nr_pages);
+-
+-	if (rc == 0)
+-		goto out;
+-
+ 	rw_ctx = ceph_find_rw_context(fi);
+ 	max = fsc->mount_options->rsize >> PAGE_SHIFT;
+ 	dout("readpages %p file %p ctx %p nr_pages %d max %d\n",
+@@ -487,8 +462,6 @@ static int ceph_readpages(struct file *file, struct address_space *mapping,
+ 			goto out;
+ 	}
+ out:
+-	ceph_fscache_readpages_cancel(inode, page_list);
+-
+ 	dout("readpages %p file %p ret %d\n", inode, file, rc);
+ 	return rc;
+ }
+diff --git a/fs/ceph/cache.c b/fs/ceph/cache.c
+index 2f5cb6bc78e1..bd185faeeb8e 100644
+--- a/fs/ceph/cache.c
++++ b/fs/ceph/cache.c
+@@ -205,108 +205,6 @@ void ceph_fscache_file_set_cookie(struct inode *inode, struct file *filp)
+ 	}
+ }
+ 
+-static void ceph_readpage_from_fscache_complete(struct page *page, void *data, int error)
+-{
+-	if (!error)
+-		SetPageUptodate(page);
+-
+-	unlock_page(page);
+-}
+-
+-static inline bool cache_valid(struct ceph_inode_info *ci)
+-{
+-	return ci->i_fscache_gen == ci->i_rdcache_gen;
+-}
+-
+-
+-/* Atempt to read from the fscache,
+- *
+- * This function is called from the readpage_nounlock context. DO NOT attempt to
+- * unlock the page here (or in the callback).
+- */
+-int ceph_readpage_from_fscache(struct inode *inode, struct page *page)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	int ret;
+-
+-	if (!cache_valid(ci))
+-		return -ENOBUFS;
+-
+-	ret = fscache_read_or_alloc_page(ci->fscache, page,
+-					 ceph_readpage_from_fscache_complete, NULL,
+-					 GFP_KERNEL);
+-
+-	switch (ret) {
+-		case 0: /* Page found */
+-			dout("page read submitted\n");
+-			return 0;
+-		case -ENOBUFS: /* Pages were not found, and can't be */
+-		case -ENODATA: /* Pages were not found */
+-			dout("page/inode not in cache\n");
+-			return ret;
+-		default:
+-			dout("%s: unknown error ret = %i\n", __func__, ret);
+-			return ret;
+-	}
+-}
+-
+-int ceph_readpages_from_fscache(struct inode *inode,
+-				  struct address_space *mapping,
+-				  struct list_head *pages,
+-				  unsigned *nr_pages)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	int ret;
+-
+-	if (!cache_valid(ci))
+-		return -ENOBUFS;
+-
+-	ret = fscache_read_or_alloc_pages(ci->fscache, mapping, pages, nr_pages,
+-					  ceph_readpage_from_fscache_complete,
+-					  NULL, mapping_gfp_mask(mapping));
+-
+-	switch (ret) {
+-		case 0: /* All pages found */
+-			dout("all-page read submitted\n");
+-			return 0;
+-		case -ENOBUFS: /* Some pages were not found, and can't be */
+-		case -ENODATA: /* some pages were not found */
+-			dout("page/inode not in cache\n");
+-			return ret;
+-		default:
+-			dout("%s: unknown error ret = %i\n", __func__, ret);
+-			return ret;
+-	}
+-}
+-
+-void ceph_readpage_to_fscache(struct inode *inode, struct page *page)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	int ret;
+-
+-	if (!PageFsCache(page))
+-		return;
+-
+-	if (!cache_valid(ci))
+-		return;
+-
+-	ret = fscache_write_page(ci->fscache, page, i_size_read(inode),
+-				 GFP_KERNEL);
+-	if (ret)
+-		 fscache_uncache_page(ci->fscache, page);
+-}
+-
+-void ceph_invalidate_fscache_page(struct inode* inode, struct page *page)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-
+-	if (!PageFsCache(page))
+-		return;
+-
+-	fscache_wait_on_page_write(ci->fscache, page);
+-	fscache_uncache_page(ci->fscache, page);
+-}
+-
+ void ceph_fscache_unregister_fs(struct ceph_fs_client* fsc)
+ {
+ 	if (fscache_cookie_valid(fsc->fscache)) {
+@@ -329,24 +227,3 @@ void ceph_fscache_unregister_fs(struct ceph_fs_client* fsc)
+ 	}
+ 	fsc->fscache = NULL;
+ }
+-
+-/*
+- * caller should hold CEPH_CAP_FILE_{RD,CACHE}
+- */
+-void ceph_fscache_revalidate_cookie(struct ceph_inode_info *ci)
+-{
+-	if (cache_valid(ci))
+-		return;
+-
+-	/* resue i_truncate_mutex. There should be no pending
+-	 * truncate while the caller holds CEPH_CAP_FILE_RD */
+-	mutex_lock(&ci->i_truncate_mutex);
+-	if (!cache_valid(ci)) {
+-		if (fscache_check_consistency(ci->fscache, &ci->i_vino))
+-			fscache_invalidate(ci->fscache);
+-		spin_lock(&ci->i_ceph_lock);
+-		ci->i_fscache_gen = ci->i_rdcache_gen;
+-		spin_unlock(&ci->i_ceph_lock);
+-	}
+-	mutex_unlock(&ci->i_truncate_mutex);
+-}
+diff --git a/fs/ceph/cache.h b/fs/ceph/cache.h
+index 89dbdd1eb14a..10c21317b62f 100644
+--- a/fs/ceph/cache.h
++++ b/fs/ceph/cache.h
+@@ -29,13 +29,10 @@ int ceph_readpages_from_fscache(struct inode *inode,
+ 				struct address_space *mapping,
+ 				struct list_head *pages,
+ 				unsigned *nr_pages);
+-void ceph_readpage_to_fscache(struct inode *inode, struct page *page);
+-void ceph_invalidate_fscache_page(struct inode* inode, struct page *page);
+ 
+ static inline void ceph_fscache_inode_init(struct ceph_inode_info *ci)
+ {
+ 	ci->fscache = NULL;
+-	ci->i_fscache_gen = 0;
+ }
+ 
+ static inline void ceph_fscache_invalidate(struct inode *inode)
+@@ -43,40 +40,6 @@ static inline void ceph_fscache_invalidate(struct inode *inode)
+ 	fscache_invalidate(ceph_inode(inode)->fscache);
+ }
+ 
+-static inline void ceph_fscache_uncache_page(struct inode *inode,
+-					     struct page *page)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	return fscache_uncache_page(ci->fscache, page);
+-}
+-
+-static inline int ceph_release_fscache_page(struct page *page, gfp_t gfp)
+-{
+-	struct inode* inode = page->mapping->host;
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	return fscache_maybe_release_page(ci->fscache, page, gfp);
+-}
+-
+-static inline void ceph_fscache_readpage_cancel(struct inode *inode,
+-						struct page *page)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	if (fscache_cookie_valid(ci->fscache) && PageFsCache(page))
+-		__fscache_uncache_page(ci->fscache, page);
+-}
+-
+-static inline void ceph_fscache_readpages_cancel(struct inode *inode,
+-						 struct list_head *pages)
+-{
+-	struct ceph_inode_info *ci = ceph_inode(inode);
+-	return fscache_readpages_cancel(ci->fscache, pages);
+-}
+-
+-static inline void ceph_disable_fscache_readpage(struct ceph_inode_info *ci)
+-{
+-	ci->i_fscache_gen = ci->i_rdcache_gen - 1;
+-}
+-
+ #else
+ 
+ static inline int ceph_fscache_register(void)
+@@ -115,62 +78,10 @@ static inline void ceph_fscache_file_set_cookie(struct inode *inode,
+ {
+ }
+ 
+-static inline void ceph_fscache_revalidate_cookie(struct ceph_inode_info *ci)
+-{
+-}
+-
+-static inline void ceph_fscache_uncache_page(struct inode *inode,
+-					     struct page *pages)
+-{
+-}
+-
+-static inline int ceph_readpage_from_fscache(struct inode* inode,
+-					     struct page *page)
+-{
+-	return -ENOBUFS;
+-}
+-
+-static inline int ceph_readpages_from_fscache(struct inode *inode,
+-					      struct address_space *mapping,
+-					      struct list_head *pages,
+-					      unsigned *nr_pages)
+-{
+-	return -ENOBUFS;
+-}
+-
+-static inline void ceph_readpage_to_fscache(struct inode *inode,
+-					    struct page *page)
+-{
+-}
+-
+ static inline void ceph_fscache_invalidate(struct inode *inode)
+ {
+ }
+ 
+-static inline void ceph_invalidate_fscache_page(struct inode *inode,
+-						struct page *page)
+-{
+-}
+-
+-static inline int ceph_release_fscache_page(struct page *page, gfp_t gfp)
+-{
+-	return 1;
+-}
+-
+-static inline void ceph_fscache_readpage_cancel(struct inode *inode,
+-						struct page *page)
+-{
+-}
+-
+-static inline void ceph_fscache_readpages_cancel(struct inode *inode,
+-						 struct list_head *pages)
+-{
+-}
+-
+-static inline void ceph_disable_fscache_readpage(struct ceph_inode_info *ci)
+-{
+-}
+-
+ #endif
+ 
+-#endif
++#endif /* _CEPH_CACHE_H */
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 255a512f1277..ca07dfc60652 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -2730,10 +2730,6 @@ static int try_get_cap_refs(struct inode *inode, int need, int want,
+ 				*got = need | want;
+ 			else
+ 				*got = need;
+-			if (S_ISREG(inode->i_mode) &&
+-			    (need & CEPH_CAP_FILE_RD) &&
+-			    !(*got & CEPH_CAP_FILE_CACHE))
+-				ceph_disable_fscache_readpage(ci);
+ 			ceph_take_cap_refs(ci, *got, true);
+ 			ret = 1;
+ 		}
+@@ -2983,11 +2979,6 @@ int ceph_get_caps(struct file *filp, int need, int want,
+ 		}
+ 		break;
+ 	}
+-
+-	if (S_ISREG(ci->vfs_inode.i_mode) &&
+-	    (_got & CEPH_CAP_FILE_RD) && (_got & CEPH_CAP_FILE_CACHE))
+-		ceph_fscache_revalidate_cookie(ci);
+-
+ 	*got = _got;
+ 	return 0;
+ }
+-- 
+2.29.2
 
