@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173F1304EFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07D6304EF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405054AbhA0BcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:32:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:52234 "EHLO foss.arm.com"
+        id S2404822AbhA0B3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:29:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:52150 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727886AbhAZSgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:36:55 -0500
+        id S1727140AbhAZSej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:34:39 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98ABB113E;
-        Tue, 26 Jan 2021 10:36:09 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.45.247])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EABA83F66B;
-        Tue, 26 Jan 2021 10:36:07 -0800 (PST)
-Date:   Tue, 26 Jan 2021 18:36:02 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>
-Subject: Re: Preemptible idr_alloc() in QRTR code
-Message-ID: <20210126183534.GA90035@C02TD0UTHF1T.local>
-References: <20210126104734.GB80448@C02TD0UTHF1T.local>
- <20210126145833.GM308988@casper.infradead.org>
- <20210126162154.GD80448@C02TD0UTHF1T.local>
- <YBBKla3I2TxMFIvZ@builder.lan>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2E0D106F;
+        Tue, 26 Jan 2021 10:33:47 -0800 (PST)
+Received: from [10.37.12.25] (unknown [10.37.12.25])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2E5A3F66B;
+        Tue, 26 Jan 2021 10:33:45 -0800 (PST)
+Subject: Re: [PATCH] arm64: Fix kernel address detection of __is_lm_address()
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, stable@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20210126134056.45747-1-vincenzo.frascino@arm.com>
+ <20210126163638.GA3509@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <1fe8bff7-3ed2-ae96-e52b-dad59cd22539@arm.com>
+Date:   Tue, 26 Jan 2021 18:37:39 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBBKla3I2TxMFIvZ@builder.lan>
+In-Reply-To: <20210126163638.GA3509@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:00:05AM -0600, Bjorn Andersson wrote:
-> On Tue 26 Jan 10:21 CST 2021, Mark Rutland wrote:
-> 
-> > On Tue, Jan 26, 2021 at 02:58:33PM +0000, Matthew Wilcox wrote:
-> > > On Tue, Jan 26, 2021 at 10:47:34AM +0000, Mark Rutland wrote:
-> > > > Hi,
-> > > > 
-> > > > When fuzzing arm64 with Syzkaller, I'm seeing some splats where
-> > > > this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
-> > > > radix_tree_node_alloc(), in a preemptible context:
-> > > 
-> > > I sent a patch to fix this last June.  The maintainer seems to be
-> > > under the impression that I care an awful lot more about their
-> > > code than I do.
-> > > 
-> > > https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
-> > 
-> > Ah; I hadn't spotted the (glaringly obvious) GFP_ATOMIC abuse, thanks
-> > for the pointer, and sorry for the noise.
-> > 
-> 
-> I'm afraid this isn't as obvious to me as it is to you. Are you saying
-> that one must not use GFP_ATOMIC in non-atomic contexts?
-> 
-> That said, glancing at the code I'm puzzled to why it would use
-> GFP_ATOMIC.
 
-I'm also not entirely sure about the legitimacy of GFP_ATOMIC outside of
-atomic contexts -- I couldn't spot any documentation saying that wasn't
-legitimate, but Matthew's commit message implies so, and it sticks out
-as odd.
 
-> > It looks like Eric was after a fix that trivially backported to v4.7
-> > (and hence couldn't rely on xarray) but instead it just got left broken
-> > for months. :/
-> > 
-> > Bjorn, is this something you care about? You seem to have the most
-> > commits to the file, and otherwise the official maintainer is Dave
-> > Miller per get_maintainer.pl.
+On 1/26/21 4:36 PM, Catalin Marinas wrote:
+> On Tue, Jan 26, 2021 at 01:40:56PM +0000, Vincenzo Frascino wrote:
+>> Currently, the __is_lm_address() check just masks out the top 12 bits
+>> of the address, but if they are 0, it still yields a true result.
+>> This has as a side effect that virt_addr_valid() returns true even for
+>> invalid virtual addresses (e.g. 0x0).
+>>
+>> Fix the detection checking that it's actually a kernel address starting
+>> at PAGE_OFFSET.
+>>
+>> Fixes: f4693c2716b35 ("arm64: mm: extend linear region for 52-bit VA configurations")
+>> Cc: <stable@vger.kernel.org> # 5.4.x
 > 
-> I certainly care about qrtr working and remember glancing at Matthew's
-> patch, but seems like I never found time to properly review it.
+> Not sure what happened with the Fixes tag but that's definitely not what
+> it fixes. The above is a 5.11 commit that preserves the semantics of an
+> older commit. So it should be:
 > 
-> > It is very tempting to make the config option depend on BROKEN...
+> Fixes: 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using __is_lm_address()")
 > 
-> I hear you and that would be bad, so I'll make sure to take a proper
-> look at this and Matthew's patch.
 
-Thanks! I'm happy to try/test patches if that's any help. My main
-concern here is that this can be triggered on arbitrary platforms so
-long as the driver is built in (e.g. my Syzkaller instance is hitting
-this within a VM).
+Yes that is correct. I moved the release to which applies backword but I forgot
+to update the fixes tag I suppose.
 
-Thanks,
-Mark.
+...
+
+> 
+> Anyway, no need to repost, I can update the fixes tag myself.
+>
+
+Thank you for this.
+
+> In terms of stable backports, it may be cleaner to backport 7bc1a0f9e176
+> ("arm64: mm: use single quantity to represent the PA to VA translation")
+> which has a Fixes tag already but never made it to -stable. On top of
+> this, we can backport Ard's latest f4693c2716b35 ("arm64: mm: extend
+> linear region for 52-bit VA configurations"). I just tried these locally
+> and the conflicts were fairly trivial.
+> 
+
+Ok, thank you for digging it. I will give it a try tomorrow.
+
+-- 
+Regards,
+Vincenzo
