@@ -2,160 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46354304EE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6597D304EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391429AbhA0BN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:13:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39965 "EHLO
+        id S1728490AbhA0BWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:22:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37426 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392727AbhAZSXD (ORCPT
+        by vger.kernel.org with ESMTP id S2389253AbhAZSYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:23:03 -0500
+        Tue, 26 Jan 2021 13:24:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611685294;
+        s=mimecast20190719; t=1611685398;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WPRqqg/hKvvV7tM4ellUlpmK/euLKyEJZWsNuDFTzlw=;
-        b=NTN+dcy78OIt6FZyZxIb3YYcQOKv6ZtJ5d2R7joio1mjd2tX7+ZCFiLUfOt8hGVKAEER6I
-        7BsoQOTncsxUKpqFJesDDef4n/fY1QWAO6ZmhyObszDFJu1Uw6pLperSnq9PHJozyLVVrD
-        5wJXIiiD6VPzxkuf8QowJ0ITiTSfk0A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-b7rwBjQNMmS8CtGWbXF7Vg-1; Tue, 26 Jan 2021 13:21:30 -0500
-X-MC-Unique: b7rwBjQNMmS8CtGWbXF7Vg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 037E5107ACE8;
-        Tue, 26 Jan 2021 18:21:28 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B85D6F80A;
-        Tue, 26 Jan 2021 18:21:24 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH v1 2/2] mm: simplify free_highmem_page() and free_reserved_page()
-Date:   Tue, 26 Jan 2021 19:21:13 +0100
-Message-Id: <20210126182113.19892-3-david@redhat.com>
-In-Reply-To: <20210126182113.19892-1-david@redhat.com>
-References: <20210126182113.19892-1-david@redhat.com>
+        bh=mTz7Xoz/xvXYECYSVr5bsWFWwC4zp+4NtN2NN+NvbGo=;
+        b=bsIZIhHk/f0FnX5xOUPvcRsAYxF2wV4Zsks9Wsj1ea1M2TwzQaCgrBNHwxaQ7kAnhQ4YB+
+        TUGMWFlvXQoCs3fTNDViiChLuJTz0qOAHe8LuCq9KbmfkFCA0MYMcwW7pBl0/jQZ9VssEi
+        ZYjMJ4aoSytZtVJ01Uvo4PAyY/saIso=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-YKksl6WhP5-zJuJiL-_Spw-1; Tue, 26 Jan 2021 13:23:15 -0500
+X-MC-Unique: YKksl6WhP5-zJuJiL-_Spw-1
+Received: by mail-ed1-f69.google.com with SMTP id a24so9772786eda.14
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:23:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mTz7Xoz/xvXYECYSVr5bsWFWwC4zp+4NtN2NN+NvbGo=;
+        b=c2Ha5B8ieyg5iyxZlUsanVrL6RtPfkDpPrgtz541vuzvrG4J+xqXPuEmWotP0cVtbQ
+         jdrrmBtW31J1iSMOBVAzU2c0sSlilHKCMWr3yzOHPofpFs02WZV4tE3i2j3xHmq5t0Pd
+         N5V1iQzJwbBt8kDnJQeffibJjvS1t41M3F5W17+DowKWrKPwIj5WiW0ZFU2OLpL64mT0
+         4I8X7Jq4OhFhbvWLxfH3m9avALk7c84eGcNa2TUYmHgzt4ph4rCcH1l9cj//NFeZEsv5
+         0cWviu+8ZgdZvdTejZD+D6egOR8eIEZHgSLnt1KSS6fdEh5ADgcRPS7wKQBbN8YqqMBB
+         rSog==
+X-Gm-Message-State: AOAM532+AdxH+fsvIR/OqnVW+Jmu8wnWSnR2Sqork0mCrRV9Z4CMYVA+
+        Uz10V0z4GyeX4tuLgSml64Dj7egIFekG/JZXS8nCkY0vSmxPN8I0/Ezqd0hPIebJkRkXmfxlyZi
+        KomZkAujhhqWnzmKaESJIeqK4gjTTTO7kgxPA5YClZzuGAkDdU9q6f+tcSQm7veV51HN+nfr5Hg
+        8W
+X-Received: by 2002:a05:6402:304e:: with SMTP id bu14mr5340168edb.60.1611685394138;
+        Tue, 26 Jan 2021 10:23:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzr51I20o6O5R03Qzlo4pmpOKwtbS3ynzLph+LxnPczeJmRRvNM0dj1mdVqb/N74vT5qUFbNQ==
+X-Received: by 2002:a05:6402:304e:: with SMTP id bu14mr5340145edb.60.1611685393882;
+        Tue, 26 Jan 2021 10:23:13 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y2sm1522942ejd.27.2021.01.26.10.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 10:23:13 -0800 (PST)
+To:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-6-chenyi.qiang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [RFC 5/7] KVM: MMU: Add support for PKS emulation
+Message-ID: <0689bda9-e91a-2b06-3dd6-f78572879296@redhat.com>
+Date:   Tue, 26 Jan 2021 19:23:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200807084841.7112-6-chenyi.qiang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adjust_managed_page_count() as called by free_reserved_page() properly
-handles pages in a highmem zone, so we can reuse it for
-free_highmem_page().
+On 07/08/20 10:48, Chenyi Qiang wrote:
+> 
+>  		if (pte_access & PT_USER_MASK)
+>  			pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
+> +		else if (!kvm_get_msr(vcpu, MSR_IA32_PKRS, &pkrs))
+> +			pkr_bits = (pkrs >> (pte_pkey * 2)) & 3;
 
-We can now get rid of totalhigh_pages_inc() and simplify
-free_reserved_page().
+You should be able to always use vcpu->arch.pkrs here.  So
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/highmem-internal.h |  5 -----
- include/linux/mm.h               | 16 ++--------------
- mm/page_alloc.c                  | 11 -----------
- 3 files changed, 2 insertions(+), 30 deletions(-)
+pkr = pte_access & PT_USER_MASK ? vcpu->arch.pkru : vcpu->arch.pkrs;
+pkr_bits = (pkr >> pte_pkey * 2) & 3;
 
-diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
-index 1bbe96dc8be6..7902c7d8b55f 100644
---- a/include/linux/highmem-internal.h
-+++ b/include/linux/highmem-internal.h
-@@ -127,11 +127,6 @@ static inline unsigned long totalhigh_pages(void)
- 	return (unsigned long)atomic_long_read(&_totalhigh_pages);
- }
- 
--static inline void totalhigh_pages_inc(void)
--{
--	atomic_long_inc(&_totalhigh_pages);
--}
--
- static inline void totalhigh_pages_add(long count)
- {
- 	atomic_long_add(count, &_totalhigh_pages);
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index a5d618d08506..494c69433a34 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2303,32 +2303,20 @@ extern void free_initmem(void);
- extern unsigned long free_reserved_area(void *start, void *end,
- 					int poison, const char *s);
- 
--#ifdef	CONFIG_HIGHMEM
--/*
-- * Free a highmem page into the buddy system, adjusting totalhigh_pages
-- * and totalram_pages.
-- */
--extern void free_highmem_page(struct page *page);
--#endif
--
- extern void adjust_managed_page_count(struct page *page, long count);
- extern void mem_init_print_info(const char *str);
- 
- extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
- 
- /* Free the reserved page into the buddy system, so it gets managed. */
--static inline void __free_reserved_page(struct page *page)
-+static inline void free_reserved_page(struct page *page)
- {
- 	ClearPageReserved(page);
- 	init_page_count(page);
- 	__free_page(page);
--}
--
--static inline void free_reserved_page(struct page *page)
--{
--	__free_reserved_page(page);
- 	adjust_managed_page_count(page, 1);
- }
-+#define free_highmem_page(page) free_reserved_page(page)
- 
- static inline void mark_page_reserved(struct page *page)
- {
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b031a5ae0bd5..b2e42f10d4d4 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7711,17 +7711,6 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
- 	return pages;
- }
- 
--#ifdef	CONFIG_HIGHMEM
--void free_highmem_page(struct page *page)
--{
--	__free_reserved_page(page);
--	totalram_pages_inc();
--	atomic_long_inc(&page_zone(page)->managed_pages);
--	totalhigh_pages_inc();
--}
--#endif
--
--
- void __init mem_init_print_info(const char *str)
- {
- 	unsigned long physpages, codesize, datasize, rosize, bss_size;
--- 
-2.29.2
+Paolo
 
