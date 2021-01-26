@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9549B303B99
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D0E303B9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392491AbhAZL2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:28:23 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:38840 "EHLO
+        id S2392470AbhAZL2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:28:43 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:25154 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390976AbhAZJiu (ORCPT
+        with ESMTP id S2391287AbhAZJi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:38:50 -0500
+        Tue, 26 Jan 2021 04:38:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611653930; x=1643189930;
+  t=1611653938; x=1643189938;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=JOdG/Z1OAni9L4m9IjMWpESAQUvrPyDFCRJalxyKhRs=;
-  b=pKpa/2mBL3pGWLdf114PCeeCzPbP+HIwRl4toZzs2mUiNhTCZdlMZQ1g
-   zaWlHBorGlK1ilCK/1g5XAhHRCN7LSj9r+brrHhpKYYXo+/Zld7jFy4ev
-   ZvQkT5mbkXqNWgxOogzLmLKOWaQCcS4isXgr0b+umMh3k2lRm6ygZ+heG
-   0WM+WzR2h1/vwWYzfsM5HM6W/hCqcrxF1NP7GlqevvQ6b9PjteNnQS2CA
-   ss2y7Ei9nhdGVx2UCvkEcdZL15+vCFBtuXUq2KcXNrjhcZbrBI3dSmLyJ
-   4C9b/cU4nhUeaRBm3/rbMqoyYCB3ij4MPMKwUETGpKCiZz2DZY6LJQ8L2
-   Q==;
-IronPort-SDR: 78zvZlWiazOgh10+XluaKahQvDfrA2TlNi36d8QDOLBAyjdN3oESc2HqmQ/UuPNNdA1CfYMW2g
- 0AnMHgjHqctKHFVlVjR/7FLLHY2RtJK/mkA/sidJlOjnQCXUdnuDaqPqvQvQTymPsrichARLLR
- zEOo92vHnc8ZatzLQfZVGe0J5fALrBL+kjWHe7+MKHVTJRWPfrZ1j2XgRnGmBzaEqw5lIUtwnz
- W5XquCgOvPnGW6u4GfreB9CCWQocIWbd5fDp/HzXeIuMxHn1TWk1nDIXWRgwyi1Tv0N2JmFr0q
- 86k=
+  bh=0TcMDeeSvBKch7hfPdFMu408z8/652SGDG8G4sCr8Kk=;
+  b=WHIN6ZBUtqcuMNgtfG1w3Oth2uUUgingvFETyY+rDikEqBqDrCkqquMP
+   kv0l7uQOgzPwY1IP+F878hTAELSkflRGvLF1KPyAPV8ybWkOQCvGSFoVR
+   HuSmEGChhhgB3ldxwXmT6uJQ8CtVH5RmsmY3vDr0U+lsUvVlfpe7CXuJ2
+   45EaIl556y62l+PJSHgd/3m78JntOiYEfOFhIDpk3zJLjcKphMozu4Dq5
+   Apemg4107MS3CydiyTJ19m7Vrvg4/em38CKLvGAc1e/o+U1TU959If6S0
+   q2Bt8kiuvKpG6KiQU6yWWYF4tSHVJxvzZNWaTD8NB/c1tHxZcYDuTT8oO
+   A==;
+IronPort-SDR: QldJHFtatyPODkY37CMJWjJevWONZGZapIoJ0RQtQlgQI4V34XqcU2/mxvBXt3CjH6SJGr/jlG
+ AkhWQ8ZyUrYag1VhsgtA4dGTGWPOixngPkeOEiVAWHMec6y4HbcqS9wydkAN6WSo9ht+0Yij/Z
+ Nk42Ry3YLh8T5idjrmbKqqLR+Y1K5PyDeL2xWo9qGEa8Wqoh8YKAC81pmtmIMZgu6VwPQFamuW
+ QexfyM3qf7yukuBw1gXnFpssjhBo7Z4ZdyML8cCp08cYOnIpRm6NY8ELPQ/Ub6muy/Fb/ly6DR
+ b4A=
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="41780833"
+   d="scan'208";a="104250525"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 02:36:49 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 02:36:58 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 02:36:48 -0700
+ 15.1.1979.3; Tue, 26 Jan 2021 02:36:58 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 26 Jan 2021 02:36:45 -0700
+ 15.1.1979.3 via Frontend Transport; Tue, 26 Jan 2021 02:36:56 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <robh+dt@kernel.org>, <nicolas.ferre@microchip.com>,
         <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>
@@ -48,9 +48,9 @@ CC:     <sudeep.holla@arm.com>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 1/7] drivers: soc: atmel: add spdx license identifier
-Date:   Tue, 26 Jan 2021 11:29:30 +0200
-Message-ID: <1611653376-24168-2-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 5/7] drivers: soc: atmel: add per soc id and version match masks
+Date:   Tue, 26 Jan 2021 11:29:34 +0200
+Message-ID: <1611653376-24168-6-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
@@ -60,32 +60,338 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SPDX-License-Identifier.
+SAMA7G5 has different masks for chip ID and chip version on CIDR
+register compared to previous AT91 SoCs. For this the commit adapts
+the code for SAMA7G5 addition by introducing 2 new members in
+struct at91_soc and fill them properly and also preparing the
+parsing of proper DT binding.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/soc/atmel/soc.c | 1 +
- drivers/soc/atmel/soc.h | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/soc/atmel/soc.c | 193 ++++++++++++++++++++++++++++++++----------------
+ drivers/soc/atmel/soc.h |   7 +-
+ 2 files changed, 135 insertions(+), 65 deletions(-)
 
 diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-index 2dc86728b132..755a82502ef4 100644
+index 9a2c08a26ea4..813052dc9fce 100644
 --- a/drivers/soc/atmel/soc.c
 +++ b/drivers/soc/atmel/soc.c
-@@ -1,3 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Copyright (C) 2015 Atmel
-  *
+@@ -26,7 +26,8 @@
+ #define AT91_DBGU_EXID			0x44
+ #define AT91_CHIPID_CIDR		0x00
+ #define AT91_CHIPID_EXID		0x04
+-#define AT91_CIDR_VERSION(x)		((x) & 0x1f)
++#define AT91_CIDR_VERSION(x, m)		((x) & (m))
++#define AT91_CIDR_VERSION_MASK		GENMASK(4, 0)
+ #define AT91_CIDR_EXT			BIT(31)
+ #define AT91_CIDR_MATCH_MASK		GENMASK(30, 5)
+ 
+@@ -35,120 +36,180 @@ static const struct at91_soc socs[] __initconst = {
+ 	AT91_SOC(AT91RM9200_CIDR_MATCH, 0, "at91rm9200 BGA", "at91rm9200"),
+ #endif
+ #ifdef CONFIG_SOC_AT91SAM9
+-	AT91_SOC(AT91SAM9260_CIDR_MATCH, 0, "at91sam9260", NULL),
+-	AT91_SOC(AT91SAM9261_CIDR_MATCH, 0, "at91sam9261", NULL),
+-	AT91_SOC(AT91SAM9263_CIDR_MATCH, 0, "at91sam9263", NULL),
+-	AT91_SOC(AT91SAM9G20_CIDR_MATCH, 0, "at91sam9g20", NULL),
+-	AT91_SOC(AT91SAM9RL64_CIDR_MATCH, 0, "at91sam9rl64", NULL),
+-	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91SAM9M11_EXID_MATCH,
++	AT91_SOC(AT91SAM9260_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9260", NULL),
++	AT91_SOC(AT91SAM9261_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9261", NULL),
++	AT91_SOC(AT91SAM9263_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9263", NULL),
++	AT91_SOC(AT91SAM9G20_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9g20", NULL),
++	AT91_SOC(AT91SAM9RL64_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9rl64", NULL),
++	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9M11_EXID_MATCH,
+ 		 "at91sam9m11", "at91sam9g45"),
+-	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91SAM9M10_EXID_MATCH,
++	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9M10_EXID_MATCH,
+ 		 "at91sam9m10", "at91sam9g45"),
+-	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91SAM9G46_EXID_MATCH,
++	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9G46_EXID_MATCH,
+ 		 "at91sam9g46", "at91sam9g45"),
+-	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91SAM9G45_EXID_MATCH,
++	AT91_SOC(AT91SAM9G45_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9G45_EXID_MATCH,
+ 		 "at91sam9g45", "at91sam9g45"),
+-	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91SAM9G15_EXID_MATCH,
++	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9G15_EXID_MATCH,
+ 		 "at91sam9g15", "at91sam9x5"),
+-	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91SAM9G35_EXID_MATCH,
++	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9G35_EXID_MATCH,
+ 		 "at91sam9g35", "at91sam9x5"),
+-	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91SAM9X35_EXID_MATCH,
++	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9X35_EXID_MATCH,
+ 		 "at91sam9x35", "at91sam9x5"),
+-	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91SAM9G25_EXID_MATCH,
++	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9G25_EXID_MATCH,
+ 		 "at91sam9g25", "at91sam9x5"),
+-	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91SAM9X25_EXID_MATCH,
++	AT91_SOC(AT91SAM9X5_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9X25_EXID_MATCH,
+ 		 "at91sam9x25", "at91sam9x5"),
+-	AT91_SOC(AT91SAM9N12_CIDR_MATCH, AT91SAM9CN12_EXID_MATCH,
++	AT91_SOC(AT91SAM9N12_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9CN12_EXID_MATCH,
+ 		 "at91sam9cn12", "at91sam9n12"),
+-	AT91_SOC(AT91SAM9N12_CIDR_MATCH, AT91SAM9N12_EXID_MATCH,
++	AT91_SOC(AT91SAM9N12_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9N12_EXID_MATCH,
+ 		 "at91sam9n12", "at91sam9n12"),
+-	AT91_SOC(AT91SAM9N12_CIDR_MATCH, AT91SAM9CN11_EXID_MATCH,
++	AT91_SOC(AT91SAM9N12_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, AT91SAM9CN11_EXID_MATCH,
+ 		 "at91sam9cn11", "at91sam9n12"),
+-	AT91_SOC(AT91SAM9XE128_CIDR_MATCH, 0, "at91sam9xe128", "at91sam9xe128"),
+-	AT91_SOC(AT91SAM9XE256_CIDR_MATCH, 0, "at91sam9xe256", "at91sam9xe256"),
+-	AT91_SOC(AT91SAM9XE512_CIDR_MATCH, 0, "at91sam9xe512", "at91sam9xe512"),
++	AT91_SOC(AT91SAM9XE128_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9xe128", "at91sam9xe128"),
++	AT91_SOC(AT91SAM9XE256_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9xe256", "at91sam9xe256"),
++	AT91_SOC(AT91SAM9XE512_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, 0, "at91sam9xe512", "at91sam9xe512"),
+ #endif
+ #ifdef CONFIG_SOC_SAM9X60
+-	AT91_SOC(SAM9X60_CIDR_MATCH, SAM9X60_EXID_MATCH, "sam9x60", "sam9x60"),
++	AT91_SOC(SAM9X60_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAM9X60_EXID_MATCH,
++		 "sam9x60", "sam9x60"),
+ #endif
+ #ifdef CONFIG_SOC_SAMA5
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D21CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D21CU_EXID_MATCH,
+ 		 "sama5d21", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D22CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D22CU_EXID_MATCH,
+ 		 "sama5d22", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D225C_D1M_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D225C_D1M_EXID_MATCH,
+ 		 "sama5d225c 16MiB SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D23CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D23CU_EXID_MATCH,
+ 		 "sama5d23", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D24CX_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D24CX_EXID_MATCH,
+ 		 "sama5d24", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D24CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D24CU_EXID_MATCH,
+ 		 "sama5d24", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D26CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D26CU_EXID_MATCH,
+ 		 "sama5d26", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D27CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D27CU_EXID_MATCH,
+ 		 "sama5d27", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D27CN_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D27CN_EXID_MATCH,
+ 		 "sama5d27", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D27C_D1G_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D27C_D1G_EXID_MATCH,
+ 		 "sama5d27c 128MiB SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D27C_D5M_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D27C_D5M_EXID_MATCH,
+ 		 "sama5d27c 64MiB SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D27C_LD1G_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D27C_LD1G_EXID_MATCH,
+ 		 "sama5d27c 128MiB LPDDR2 SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D27C_LD2G_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D27C_LD2G_EXID_MATCH,
+ 		 "sama5d27c 256MiB LPDDR2 SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D28CU_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D28CU_EXID_MATCH,
+ 		 "sama5d28", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D28CN_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D28CN_EXID_MATCH,
+ 		 "sama5d28", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D28C_D1G_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D28C_D1G_EXID_MATCH,
+ 		 "sama5d28c 128MiB SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D28C_LD1G_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D28C_LD1G_EXID_MATCH,
+ 		 "sama5d28c 128MiB LPDDR2 SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D2_CIDR_MATCH, SAMA5D28C_LD2G_EXID_MATCH,
++	AT91_SOC(SAMA5D2_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D28C_LD2G_EXID_MATCH,
+ 		 "sama5d28c 256MiB LPDDR2 SiP", "sama5d2"),
+-	AT91_SOC(SAMA5D3_CIDR_MATCH, SAMA5D31_EXID_MATCH,
++	AT91_SOC(SAMA5D3_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D31_EXID_MATCH,
+ 		 "sama5d31", "sama5d3"),
+-	AT91_SOC(SAMA5D3_CIDR_MATCH, SAMA5D33_EXID_MATCH,
++	AT91_SOC(SAMA5D3_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D33_EXID_MATCH,
+ 		 "sama5d33", "sama5d3"),
+-	AT91_SOC(SAMA5D3_CIDR_MATCH, SAMA5D34_EXID_MATCH,
++	AT91_SOC(SAMA5D3_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D34_EXID_MATCH,
+ 		 "sama5d34", "sama5d3"),
+-	AT91_SOC(SAMA5D3_CIDR_MATCH, SAMA5D35_EXID_MATCH,
++	AT91_SOC(SAMA5D3_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D35_EXID_MATCH,
+ 		 "sama5d35", "sama5d3"),
+-	AT91_SOC(SAMA5D3_CIDR_MATCH, SAMA5D36_EXID_MATCH,
++	AT91_SOC(SAMA5D3_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D36_EXID_MATCH,
+ 		 "sama5d36", "sama5d3"),
+-	AT91_SOC(SAMA5D4_CIDR_MATCH, SAMA5D41_EXID_MATCH,
++	AT91_SOC(SAMA5D4_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D41_EXID_MATCH,
+ 		 "sama5d41", "sama5d4"),
+-	AT91_SOC(SAMA5D4_CIDR_MATCH, SAMA5D42_EXID_MATCH,
++	AT91_SOC(SAMA5D4_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D42_EXID_MATCH,
+ 		 "sama5d42", "sama5d4"),
+-	AT91_SOC(SAMA5D4_CIDR_MATCH, SAMA5D43_EXID_MATCH,
++	AT91_SOC(SAMA5D4_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D43_EXID_MATCH,
+ 		 "sama5d43", "sama5d4"),
+-	AT91_SOC(SAMA5D4_CIDR_MATCH, SAMA5D44_EXID_MATCH,
++	AT91_SOC(SAMA5D4_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMA5D44_EXID_MATCH,
+ 		 "sama5d44", "sama5d4"),
+ #endif
+ #ifdef CONFIG_SOC_SAMV7
+-	AT91_SOC(SAME70Q21_CIDR_MATCH, SAME70Q21_EXID_MATCH,
++	AT91_SOC(SAME70Q21_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAME70Q21_EXID_MATCH,
+ 		 "same70q21", "same7"),
+-	AT91_SOC(SAME70Q20_CIDR_MATCH, SAME70Q20_EXID_MATCH,
++	AT91_SOC(SAME70Q20_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAME70Q20_EXID_MATCH,
+ 		 "same70q20", "same7"),
+-	AT91_SOC(SAME70Q19_CIDR_MATCH, SAME70Q19_EXID_MATCH,
++	AT91_SOC(SAME70Q19_CIDR_MATCH, AT91_CIDR_MATCH_MASK
++		 AT91_CIDR_VERSION_MASK, SAME70Q19_EXID_MATCH,
+ 		 "same70q19", "same7"),
+-	AT91_SOC(SAMS70Q21_CIDR_MATCH, SAMS70Q21_EXID_MATCH,
++	AT91_SOC(SAMS70Q21_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMS70Q21_EXID_MATCH,
+ 		 "sams70q21", "sams7"),
+-	AT91_SOC(SAMS70Q20_CIDR_MATCH, SAMS70Q20_EXID_MATCH,
++	AT91_SOC(SAMS70Q20_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMS70Q20_EXID_MATCH,
+ 		 "sams70q20", "sams7"),
+-	AT91_SOC(SAMS70Q19_CIDR_MATCH, SAMS70Q19_EXID_MATCH,
++	AT91_SOC(SAMS70Q19_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMS70Q19_EXID_MATCH,
+ 		 "sams70q19", "sams7"),
+-	AT91_SOC(SAMV71Q21_CIDR_MATCH, SAMV71Q21_EXID_MATCH,
++	AT91_SOC(SAMV71Q21_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMV71Q21_EXID_MATCH,
+ 		 "samv71q21", "samv7"),
+-	AT91_SOC(SAMV71Q20_CIDR_MATCH, SAMV71Q20_EXID_MATCH,
++	AT91_SOC(SAMV71Q20_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMV71Q20_EXID_MATCH,
+ 		 "samv71q20", "samv7"),
+-	AT91_SOC(SAMV71Q19_CIDR_MATCH, SAMV71Q19_EXID_MATCH,
++	AT91_SOC(SAMV71Q19_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMV71Q19_EXID_MATCH,
+ 		 "samv71q19", "samv7"),
+-	AT91_SOC(SAMV70Q20_CIDR_MATCH, SAMV70Q20_EXID_MATCH,
++	AT91_SOC(SAMV70Q20_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMV70Q20_EXID_MATCH,
+ 		 "samv70q20", "samv7"),
+-	AT91_SOC(SAMV70Q19_CIDR_MATCH, SAMV70Q19_EXID_MATCH,
++	AT91_SOC(SAMV70Q19_CIDR_MATCH, AT91_CIDR_MATCH_MASK,
++		 AT91_CIDR_VERSION_MASK, SAMV70Q19_EXID_MATCH,
+ 		 "samv70q19", "samv7"),
+ #endif
+ 	{ /* sentinel */ },
+@@ -186,8 +247,12 @@ static int __init at91_get_cidr_exid_from_chipid(u32 *cidr, u32 *exid)
+ {
+ 	struct device_node *np;
+ 	void __iomem *regs;
++	static const struct of_device_id chipids[] = {
++		{ .compatible = "atmel,sama5d2-chipid" },
++		{ },
++	};
+ 
+-	np = of_find_compatible_node(NULL, NULL, "atmel,sama5d2-chipid");
++	np = of_find_matching_node(NULL, chipids);
+ 	if (!np)
+ 		return -ENODEV;
+ 
+@@ -230,7 +295,7 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
+ 	}
+ 
+ 	for (soc = socs; soc->name; soc++) {
+-		if (soc->cidr_match != (cidr & AT91_CIDR_MATCH_MASK))
++		if (soc->cidr_match != (cidr & soc->cidr_mask))
+ 			continue;
+ 
+ 		if (!(cidr & AT91_CIDR_EXT) || soc->exid_match == exid)
+@@ -249,7 +314,7 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
+ 	soc_dev_attr->family = soc->family;
+ 	soc_dev_attr->soc_id = soc->name;
+ 	soc_dev_attr->revision = kasprintf(GFP_KERNEL, "%X",
+-					   AT91_CIDR_VERSION(cidr));
++					   AT91_CIDR_VERSION(cidr, soc->version_mask));
+ 	soc_dev = soc_device_register(soc_dev_attr);
+ 	if (IS_ERR(soc_dev)) {
+ 		kfree(soc_dev_attr->revision);
+@@ -261,7 +326,7 @@ struct soc_device * __init at91_soc_init(const struct at91_soc *socs)
+ 	if (soc->family)
+ 		pr_info("Detected SoC family: %s\n", soc->family);
+ 	pr_info("Detected SoC: %s, revision %X\n", soc->name,
+-		AT91_CIDR_VERSION(cidr));
++		AT91_CIDR_VERSION(cidr, soc->version_mask));
+ 
+ 	return soc_dev;
+ }
 diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-index ee652e4841a5..77b27124362c 100644
+index 77b27124362c..8a51cd973103 100644
 --- a/drivers/soc/atmel/soc.h
 +++ b/drivers/soc/atmel/soc.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
- /*
-  * Copyright (C) 2015 Atmel
-  *
+@@ -17,14 +17,19 @@
+ 
+ struct at91_soc {
+ 	u32 cidr_match;
++	u32 cidr_mask;
++	u32 version_mask;
+ 	u32 exid_match;
+ 	const char *name;
+ 	const char *family;
+ };
+ 
+-#define AT91_SOC(__cidr, __exid, __name, __family)		\
++#define AT91_SOC(__cidr, __cidr_mask, __version_mask, __exid,	\
++		 __name, __family)				\
+ 	{							\
+ 		.cidr_match = (__cidr),				\
++		.cidr_mask = (__cidr_mask),			\
++		.version_mask = (__version_mask),		\
+ 		.exid_match = (__exid),				\
+ 		.name = (__name),				\
+ 		.family = (__family),				\
 -- 
 2.7.4
 
