@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8ECC303BFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3B3303BFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392568AbhAZLq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:46:58 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:50075 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2405076AbhAZLhs (ORCPT
+        id S2392575AbhAZLrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:47:03 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50088 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405236AbhAZLjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:37:48 -0500
-X-UUID: 990d186ba92343e8bfd443ea0b47d956-20210126
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ubXBAWnixO4YxtuhUh1DiAeTDZZzaPG4feh7XdGCkaE=;
-        b=JfxGp6V1b8fbco8zdvweb7b0pKkQeRcu1RrE8rv+wYeHzfvHwX6ivQeE2drN+VAb3T7I5JzZWgAqca64Y8wggH6a5RaQclskbWZSv6EvLMFD+V5lT5ylxjBX3TL+pu/K/P0YeIHQMHFvnZq4m/Oh2mpGqmRcTn9oOOUAqWMhRIM=;
-X-UUID: 990d186ba92343e8bfd443ea0b47d956-20210126
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 679044507; Tue, 26 Jan 2021 19:37:03 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 26 Jan
- 2021 19:37:00 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 19:37:00 +0800
-Message-ID: <1611661020.15158.4.camel@mhfsdcap03>
-Subject: Re: [RESEND, V2] i2c: mediatek: Move suspend and resume handling to
- NOIRQ phase
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
-Date:   Tue, 26 Jan 2021 19:37:00 +0800
-In-Reply-To: <1610180990-23496-1-git-send-email-qii.wang@mediatek.com>
-References: <1610180990-23496-1-git-send-email-qii.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 26 Jan 2021 06:39:04 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 64FD41C0B82; Tue, 26 Jan 2021 12:38:18 +0100 (CET)
+Date:   Tue, 26 Jan 2021 12:38:17 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/203] 5.10.11-rc2 review
+Message-ID: <20210126113817.GA23197@amd>
+References: <20210126094313.589480033@linuxfoundation.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: D2689A47C73DBFA32FCB9D08FDB02ABC14DCEABC9620876DA2B7C062BC0DFA232000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+In-Reply-To: <20210126094313.589480033@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgV29sZnJhbSwNCg0KT24gU2F0LCAyMDIxLTAxLTA5IGF0IDE2OjI5ICswODAwLCBxaWkud2Fu
-Z0BtZWRpYXRlay5jb20gd3JvdGU6DQo+IEZyb206IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRl
-ay5jb20+DQo+IA0KPiBTb21lIGkyYyBkZXZpY2UgZHJpdmVyIGluZGlyZWN0bHkgdXNlcyBJMkMg
-ZHJpdmVyIHdoZW4gaXQgaXMgbm93DQo+IGJlaW5nIHN1c3BlbmRlZC4gVGhlIGkyYyBkZXZpY2Vz
-IGRyaXZlciBpcyBzdXNwZW5kZWQgZHVyaW5nIHRoZQ0KPiBOT0lSUSBwaGFzZSBhbmQgdGhpcyBj
-YW5ub3QgYmUgY2hhbmdlZCBkdWUgdG8gb3RoZXIgZGVwZW5kZW5jaWVzLg0KPiBUaGVyZWZvcmUs
-IHdlIGFsc28gbmVlZCB0byBtb3ZlIHRoZSBzdXNwZW5kIGhhbmRsaW5nIGZvciB0aGUgSTJDDQo+
-IGNvbnRyb2xsZXIgZHJpdmVyIHRvIHRoZSBOT0lSUSBwaGFzZSBhcyB3ZWxsLg0KPiANCj4gU2ln
-bmVkLW9mZi1ieTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+IA0K
-PiBDaGFuZ2VzIGluIHYyOg0KPiAgICAgICAgIC0gUmVwbGllZCBzb21lIGNvbW1lbnRzDQo+ICAg
-ICAgICAgLSBGaXhlZCB0aGUgd3Jvbmcgc3BlbGxpbmcgbWVkYWl0ZWsgdG8gbWVkaWF0ZWsNCj4g
-DQo+ICBkcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jIHwgMTkgKysrKysrKysrKysrKysr
-Ky0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0p
-DQo+IA0KDQpJIGhhdmVuJ3Qgc2VlbiBhbnkgbmV3IGNvbW1lbnRzLCBjYW4gaXQgZ28gaW50byA1
-LjExPw0KDQpUaGFua3MNCg0KCVFpaQ0K
 
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This is the start of the stable review cycle for the 5.10.11 release.
+> There are 203 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Thu, 28 Jan 2021 09:42:40 +0000.
+> Anything received after that time might be too late.
+
+CIP testing did not find any problems here. (Due to minimal changs
+between -rc1 and rc2, that's expectd I guess)
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+							=09
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--rwEMma7ioTxnRzrJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAP/ykACgkQMOfwapXb+vK1+wCbBObVfpAMyhSICShA6DCt1dQy
+fsYAn0kLoeBXkr5RulLT9kxUBLdAKiXW
+=82Cd
+-----END PGP SIGNATURE-----
+
+--rwEMma7ioTxnRzrJ--
