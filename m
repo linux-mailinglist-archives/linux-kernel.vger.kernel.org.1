@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE843042B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B62304326
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406322AbhAZPfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:35:22 -0500
-Received: from mga17.intel.com ([192.55.52.151]:58872 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392811AbhAZPfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:35:15 -0500
-IronPort-SDR: x1Q/FBf1CCZr2Vu7F4intRNL5acpjB1gYo/kK3x1AH8XifIZmleINloYIgwBe6Onu0iWvzo1lj
- 4Cb6n952mAug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="159693926"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="159693926"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 07:33:21 -0800
-IronPort-SDR: W7kAfcDQ2+t8EGYvZ/ABt9l24x7pRnATI0btsmXCq4glTZgcvOXYnLGY3qcLuHaehrEFN+suE1
- iVM1xcc9Ve7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="406748156"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP; 26 Jan 2021 07:33:21 -0800
-Received: from [10.254.127.77] (kliang2-MOBL.ccr.corp.intel.com [10.254.127.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 5A31358010C;
-        Tue, 26 Jan 2021 07:33:20 -0800 (PST)
-Subject: Re: [PATCH 01/12] perf/core: Add PERF_SAMPLE_WEIGHT_EXT
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com
-References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
- <1611088711-17177-2-git-send-email-kan.liang@linux.intel.com>
- <YBAqYyTuqxsH8tqR@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <d018282d-f47d-4382-2538-59c6930a74c3@linux.intel.com>
-Date:   Tue, 26 Jan 2021 10:33:18 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2391997AbhAZPzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:55:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389758AbhAZPgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:36:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611675278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+sg4yNwZrAUtqGjsjAIZF/lC9W6Hi56SguvTv3qRusA=;
+        b=AvAimHzoNnyt6HHce6CcX+chG4tX7GRBMoCQqfIxXhqI8JNTZLdVRQ5eCsiWDp3LoQW+Ll
+        BeRU+iGXcpfeyr40dWf/CDbUTRRooyC2d0rayKu4vV7JNCkHFFE87e7d5qPvPql+tPM8IL
+        LMZSLZtAFSNufeHw3Gm8odSA9k8MABg=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187--fUI9n9MMnaSq1rXqoClfQ-1; Tue, 26 Jan 2021 10:34:36 -0500
+X-MC-Unique: -fUI9n9MMnaSq1rXqoClfQ-1
+Received: by mail-ed1-f72.google.com with SMTP id n8so9547222edo.19
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:34:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+sg4yNwZrAUtqGjsjAIZF/lC9W6Hi56SguvTv3qRusA=;
+        b=fBzkrpO/Cj5U8xL/XBTegzWrt+XSs3DDYtYB6bwzQnXHOAYEJcXKhFhHDhYUDsbW0G
+         LxlwciPxcOWxG0du7eL7nfK6hSkcrPxLuesvH38Sjski+sRMSS/1YS5hgSkLb/Lcbdrm
+         dTGMf6AXgQj2hgTnZO1d3HqY1fGNma3gtDogKLOXDa9Nw3CDi2DcU0v6pd5oFJ1x4Y8F
+         GjOSyms4EYfjkY45hKW1BH4uQECHNwdgFn81mvNJMhz/GyV1g0euUbw+pLln0wmUCi3t
+         GVdPhVHceCHB3qZHa/IxVvjDeKyVlycMEppEVIK0S1ZNWeDG7NdJIQPLGUaRb8907GeX
+         +cjA==
+X-Gm-Message-State: AOAM532DbS/hTZxVTPqHwqPV1tpahwrLptOdYcRZcKI4dUA+5WaINDUn
+        LNt4xkhsM00w5jgJJhc2jvheWIDEaNUJlE7I4wtitYQwuG22FApnS2i/NZB1/+uLXg0/y881g6C
+        5xp9by8J/5Dj5bhXqjdUdPogNfHAVNLnqzqHZzeLB
+X-Received: by 2002:a17:906:4451:: with SMTP id i17mr2289509ejp.436.1611675275260;
+        Tue, 26 Jan 2021 07:34:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzSasZks4PL3NUJQfxg7We8UW4x28G54NbjOgDuCVAFpi7QKXrub9Pz5L3G6Ovg3Un+JLmrv6pQRbddbpD7RMI=
+X-Received: by 2002:a17:906:4451:: with SMTP id i17mr2289493ejp.436.1611675275099;
+ Tue, 26 Jan 2021 07:34:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBAqYyTuqxsH8tqR@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
+ <161161054970.2537118.5401048451896267742.stgit@warthog.procyon.org.uk> <20210126035928.GJ308988@casper.infradead.org>
+In-Reply-To: <20210126035928.GJ308988@casper.infradead.org>
+From:   David Wysochanski <dwysocha@redhat.com>
+Date:   Tue, 26 Jan 2021 10:33:59 -0500
+Message-ID: <CALF+zOkNMHjtH+cZrGQFqbH5dD5gUpV+y3k-Bt31E35d4kn1oA@mail.gmail.com>
+Subject: Re: [PATCH 25/32] NFS: Clean up nfs_readpage() and nfs_readpages()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs <linux-nfs@vger.kernel.org>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 25, 2021 at 11:01 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Jan 25, 2021 at 09:35:49PM +0000, David Howells wrote:
+> > -int nfs_readpage(struct file *file, struct page *page)
+> > +int nfs_readpage(struct file *filp, struct page *page)
+>
+> I appreciate we're inconsistent between file and filp, but we're actually
+> moving more towards file than filp.
+>
+Got it, easy enough to change.
 
-
-On 1/26/2021 9:42 AM, Peter Zijlstra wrote:
-> On Tue, Jan 19, 2021 at 12:38:20PM -0800, kan.liang@linux.intel.com wrote:
-> 
->> @@ -900,6 +901,13 @@ enum perf_event_type {
->>   	 *	  char			data[size]; } && PERF_SAMPLE_AUX
->>   	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
->>   	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
->> +	 *	{ union {
->> +	 *		u64		weight_ext;
->> +	 *		struct {
->> +	 *			u64	instr_latency:16,
->> +	 *				reserved:48;
->> +	 *		};
->> +	 *	} && PERF_SAMPLE_WEIGHT_EXT
->>   	 * };
->>   	 */
->>   	PERF_RECORD_SAMPLE			= 9,
->> @@ -1248,4 +1256,12 @@ struct perf_branch_entry {
->>   		reserved:40;
->>   };
->>   
->> +union perf_weight_ext {
->> +	__u64		val;
->> +	struct {
->> +		__u64	instr_latency:16,
->> +			reserved:48;
->> +	};
->> +};
->> +
->>   #endif /* _UAPI_LINUX_PERF_EVENT_H */
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 55d1879..9363d12 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -1903,6 +1903,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
->>   	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
->>   		size += sizeof(data->code_page_size);
->>   
->> +	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
->> +		size += sizeof(data->weight_ext);
->> +
->>   	event->header_size = size;
->>   }
->>   
->> @@ -6952,6 +6955,9 @@ void perf_output_sample(struct perf_output_handle *handle,
->>   			perf_aux_sample_output(event, handle, data);
->>   	}
->>   
->> +	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
->> +		perf_output_put(handle, data->weight_ext);
->> +
->>   	if (!event->attr.watermark) {
->>   		int wakeup_events = event->attr.wakeup_events;
->>   
-> 
-> This patch is broken and will expose uninitialized kernel stack.
-> 
-
-Could we initialize the 'weight_ext' in perf_sample_data_init()?
-
-I understand that we prefer not to set the field in 
-perf_sample_data_init() to minimize the cachelines touched.
-However, the perf_sample_data_init() should be the most proper place to 
-do the initialization. Also, the 'weight' is already initialized in it. 
-As an extension, I think the 'weight_ext' should be initialized in it as 
-well.
-
-In the perf_prepare_sample(), I think we can only clear the unused 
-fields. The [0:15] bits may still leak the data.
-
-Thanks,
-Kan
