@@ -2,63 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FB3304FA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9F2304FA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbhA0DUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393121AbhAZUnu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:43:50 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4ADC0613ED;
-        Tue, 26 Jan 2021 12:43:25 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id e9so2978038pjj.0;
-        Tue, 26 Jan 2021 12:43:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XA+jyv1loiGPphrOL8kn5H8su7PXADpnQ1gR33eeAE4=;
-        b=PP38fahaKMJC62EY7XKecdBtPSaTl4VhZR05btl5dnOp7IdtmNqJYWmkAhL8DzS6Kj
-         wNuNRosuSulIeXoWHgl4qFS5cvRnrSy2zHxZjbKpDvWqSakX7mZoVVaGSva5+1pZ+za9
-         g5zGlasJdNCqAfmZGTXAzc4rLglraGQzOFRGK3aIKc5EFhsk2ABAzDZpU39JHQFPm2wi
-         SmY7preEDlxU25nnXV7L9FGA4mQBFCtOamNsARduywSQ/sN6HKcy5BcopP7xZPdL5iUz
-         lByVPaErGJmC/kDGLnesjhkIjQ3IaqNvqlv9I2sqJ1je5Uuu+w0s+ORZRF+kBsMfb3m8
-         vtHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XA+jyv1loiGPphrOL8kn5H8su7PXADpnQ1gR33eeAE4=;
-        b=X761MBi2zny4LF4cEpdBEv7FeXf7wEW28DkP80DUrtzSIiPuLMAelGIc+QhaKpXMWe
-         aZrGga7SbgM3n6ewaYpBht8UU6guj5r/siUBm5D4yT7r8JbbVskacm6aam+I6RNlHGSm
-         EwkucLzUOqBcWEkGdu2BWAr4DSBdwEVpKCDt1OORg7QGBqm+zes7N6GQryX8xJeljBsn
-         pK3+EEyL45C7Kw+y6DotGbUn4JODqY8EGeRHRvg8GX3irCZH44qVOlwNFiyCwcrPq2cD
-         HyAcpeYAFJAUuwzzCbTj5rTDcvT5W0/8YEBbZy9CvGx8jXoTxQqfvvDuWFpwBGHCK6IJ
-         BHPw==
-X-Gm-Message-State: AOAM5305X3IcRXlhP9LU728jP9itR6kitzF9PhGZ24PhpgZJXQkDqKd9
-        cLiU/jon9Mf6ig6+DBnCMuI=
-X-Google-Smtp-Source: ABdhPJwwmT30kogCuc3lhP7aqEqdxyYVgkl88E1BimVSr1avbycjpHPuhpnAYWxZo8EeOpApKsljAQ==
-X-Received: by 2002:a17:90a:d58c:: with SMTP id v12mr1684421pju.37.1611693804887;
-        Tue, 26 Jan 2021 12:43:24 -0800 (PST)
-Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id hs21sm2990530pjb.6.2021.01.26.12.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 12:43:24 -0800 (PST)
-From:   Nadav Amit <nadav.amit@gmail.com>
-X-Google-Original-From: Nadav Amit
-To:     iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] iommu/vt-d: do not use flush-queue when caching-mode is on
-Date:   Tue, 26 Jan 2021 12:38:56 -0800
-Message-Id: <20210126203856.1544088-1-namit@vmware.com>
+        id S235436AbhA0DRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:17:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390044AbhAZUlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 15:41:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7E34221FC;
+        Tue, 26 Jan 2021 20:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611693663;
+        bh=cExETPQ2nAIvQUq2HKq3vBmh7qSjwyRGqe6E9byeBUU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qqZKNxmdB2ZcnJgzel6OnniFKwmqjQIn9ZH/+xump1kQeHEy4mtr+YlqzXQtG5j6V
+         pTKtgG/D1bBOA9bJuvVe69qsXzR2Gozh1+5up6bnNW/xnuO/S5g1CNT0+WsTtlPdDk
+         30gpzukDBCFLh4/VEviwnaRf1/rxRJ8DsdohzUi6fxfXzYIh4e1ljKElMP0dowC55i
+         Rndoc17TCQ5bMj9tj4bZ7LM2qMLFS6PQOdlRBslyNBCnOKPxCNrT4dnTU6tWlARWqu
+         leWIqCpk0e1aJO/GtVqXy/29NbnZA7IcjjdIXbBfY6oCXM9t/9nTybgmsRhyeGLkgP
+         O+u6CtAP3rC/w==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ohad Sharabi <osharabi@habana.ai>
+Subject: [PATCH 1/3] habanalabs: modify device_idle interface
+Date:   Tue, 26 Jan 2021 22:40:55 +0200
+Message-Id: <20210126204057.329-1-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,98 +36,293 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+From: Ohad Sharabi <osharabi@habana.ai>
 
-When an Intel IOMMU is virtualized, and a physical device is
-passed-through to the VM, changes of the virtual IOMMU need to be
-propagated to the physical IOMMU. The hypervisor therefore needs to
-monitor PTE mappings in the IOMMU page-tables. Intel specifications
-provide "caching-mode" capability that a virtual IOMMU uses to report
-that the IOMMU is virtualized and a TLB flush is needed after mapping to
-allow the hypervisor to propagate virtual IOMMU mappings to the physical
-IOMMU. To the best of my knowledge no real physical IOMMU reports
-"caching-mode" as turned on.
+Currently this API uses single 64 bits mask for engines idle indication.
+Recently, it was observed that more bits are needed for some ASICs.
+This patch modifies the use of the idle mask and the idle_extensions
+mask.
 
-Synchronizing the virtual and the physical TLBs is expensive if the
-hypervisor is unaware which PTEs have changed, as the hypervisor is
-required to walk all the virtualized tables and look for changes.
-Consequently, domain flushes are much more expensive than page-specific
-flushes on virtualized IOMMUs with passthrough devices. The kernel
-therefore exploited the "caching-mode" indication to avoid domain
-flushing and use page-specific flushing in virtualized environments. See
-commit 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching
-mode.")
-
-This behavior changed after commit 13cf01744608 ("iommu/vt-d: Make use
-of iova deferred flushing"). Now, when batched TLB flushing is used (the
-default), full TLB domain flushes are performed frequently, requiring
-the hypervisor to perform expensive synchronization between the virtual
-TLB and the physical one.
-
-Getting batched TLB flushes to use in such circumstances page-specific
-invalidations again is not easy, since the TLB invalidation scheme
-assumes that "full" domain TLB flushes are performed for scalability.
-
-Disable batched TLB flushes when caching-mode is on, as the performance
-benefit from using batched TLB invalidations is likely to be much
-smaller than the overhead of the virtual-to-physical IOMMU page-tables
-synchronization.
-
-Fixes: 78d5f0f500e6 ("intel-iommu: Avoid global flushes with caching mode.")
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
+Signed-off-by: Ohad Sharabi <osharabi@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/iommu/intel/iommu.c | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/common/context.c      |  9 +++--
+ drivers/misc/habanalabs/common/debugfs.c      |  2 +-
+ drivers/misc/habanalabs/common/habanalabs.h   |  4 +-
+ .../misc/habanalabs/common/habanalabs_ioctl.c |  5 ++-
+ drivers/misc/habanalabs/gaudi/gaudi.c         | 37 ++++++++-----------
+ drivers/misc/habanalabs/goya/goya.c           | 21 +++++------
+ include/uapi/misc/habanalabs.h                |  4 +-
+ 7 files changed, 40 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 788119c5b021..4e08f5e17175 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5373,6 +5373,30 @@ intel_iommu_domain_set_attr(struct iommu_domain *domain,
- 	return ret;
+diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
+index 829fe98eed61..cda871afb8f4 100644
+--- a/drivers/misc/habanalabs/common/context.c
++++ b/drivers/misc/habanalabs/common/context.c
+@@ -12,7 +12,7 @@
+ static void hl_ctx_fini(struct hl_ctx *ctx)
+ {
+ 	struct hl_device *hdev = ctx->hdev;
+-	u64 idle_mask = 0;
++	u64 idle_mask[HL_BUSY_ENGINES_MASK_EXT_SIZE] = {0};
+ 	int i;
+ 
+ 	/* Release all allocated pending cb's, those cb's were never
+@@ -55,10 +55,11 @@ static void hl_ctx_fini(struct hl_ctx *ctx)
+ 
+ 		if ((!hdev->pldm) && (hdev->pdev) &&
+ 				(!hdev->asic_funcs->is_device_idle(hdev,
+-							&idle_mask, NULL)))
++					idle_mask,
++					HL_BUSY_ENGINES_MASK_EXT_SIZE, NULL)))
+ 			dev_notice(hdev->dev,
+-				"device not idle after user context is closed (0x%llx)\n",
+-				idle_mask);
++					"device not idle after user context is closed (0x%llx, 0x%llx)\n",
++						idle_mask[0], idle_mask[1]);
+ 	} else {
+ 		dev_dbg(hdev->dev, "closing kernel context\n");
+ 		hdev->asic_funcs->ctx_fini(ctx);
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index 9e3c1efe56ba..df847a6d19f4 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -414,7 +414,7 @@ static int engines_show(struct seq_file *s, void *data)
+ 		return 0;
+ 	}
+ 
+-	hdev->asic_funcs->is_device_idle(hdev, NULL, s);
++	hdev->asic_funcs->is_device_idle(hdev, NULL, 0, s);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index fd2fffd20ba1..be7947d69dfa 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -933,8 +933,8 @@ struct hl_asic_funcs {
+ 	void (*set_clock_gating)(struct hl_device *hdev);
+ 	void (*disable_clock_gating)(struct hl_device *hdev);
+ 	int (*debug_coresight)(struct hl_device *hdev, void *data);
+-	bool (*is_device_idle)(struct hl_device *hdev, u64 *mask,
+-				struct seq_file *s);
++	bool (*is_device_idle)(struct hl_device *hdev, u64 *mask_arr,
++					u8 mask_len, struct seq_file *s);
+ 	int (*soft_reset_late_init)(struct hl_device *hdev);
+ 	void (*hw_queues_lock)(struct hl_device *hdev);
+ 	void (*hw_queues_unlock)(struct hl_device *hdev);
+diff --git a/drivers/misc/habanalabs/common/habanalabs_ioctl.c b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+index 628bdc56dca3..e86f46d4b613 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_ioctl.c
++++ b/drivers/misc/habanalabs/common/habanalabs_ioctl.c
+@@ -145,9 +145,10 @@ static int hw_idle(struct hl_device *hdev, struct hl_info_args *args)
+ 		return -EINVAL;
+ 
+ 	hw_idle.is_idle = hdev->asic_funcs->is_device_idle(hdev,
+-					&hw_idle.busy_engines_mask_ext, NULL);
++					hw_idle.busy_engines_mask_ext,
++					HL_BUSY_ENGINES_MASK_EXT_SIZE, NULL);
+ 	hw_idle.busy_engines_mask =
+-			lower_32_bits(hw_idle.busy_engines_mask_ext);
++			lower_32_bits(hw_idle.busy_engines_mask_ext[0]);
+ 
+ 	return copy_to_user(out, &hw_idle,
+ 		min((size_t) max_size, sizeof(hw_idle))) ? -EFAULT : 0;
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index e1c6072e5fb3..9a3d2fb477a8 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -4538,7 +4538,6 @@ static int gaudi_scrub_device_mem(struct hl_device *hdev, u64 addr, u64 size)
+ {
+ 	struct asic_fixed_properties *prop = &hdev->asic_prop;
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+-	u64 idle_mask = 0;
+ 	int rc = 0;
+ 	u64 val = 0;
+ 
+@@ -4551,8 +4550,8 @@ static int gaudi_scrub_device_mem(struct hl_device *hdev, u64 addr, u64 size)
+ 				hdev,
+ 				mmDMA0_CORE_STS0/* dummy */,
+ 				val/* dummy */,
+-				(hdev->asic_funcs->is_device_idle(hdev,
+-						&idle_mask, NULL)),
++				(hdev->asic_funcs->is_device_idle(hdev, NULL,
++						0, NULL)),
+ 						1000,
+ 						HBM_SCRUBBING_TIMEOUT_US);
+ 		if (rc) {
+@@ -6423,7 +6422,7 @@ static int gaudi_send_job_on_qman0(struct hl_device *hdev,
+ 	else
+ 		timeout = HL_DEVICE_TIMEOUT_USEC;
+ 
+-	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, NULL)) {
++	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, 0, NULL)) {
+ 		dev_err_ratelimited(hdev->dev,
+ 			"Can't send driver job on QMAN0 because the device is not idle\n");
+ 		return -EBUSY;
+@@ -7706,13 +7705,14 @@ static int gaudi_cpucp_info_get(struct hl_device *hdev)
+ 	return 0;
  }
  
-+static int
-+intel_iommu_domain_get_attr_use_flush_queue(struct iommu_domain *domain)
-+{
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct intel_iommu *iommu = domain_get_iommu(dmar_domain);
+-static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+-					struct seq_file *s)
++static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask_arr,
++					u8 mask_len, struct seq_file *s)
+ {
+ 	struct gaudi_device *gaudi = hdev->asic_specific;
+ 	const char *fmt = "%-5d%-9s%#-14x%#-12x%#x\n";
+ 	const char *mme_slave_fmt = "%-5d%-9s%-14s%-12s%#x\n";
+ 	const char *nic_fmt = "%-5d%-9s%#-14x%#x\n";
++	unsigned long *mask = (unsigned long *)mask_arr;
+ 	u32 qm_glbl_sts0, qm_cgm_sts, dma_core_sts0, tpc_cfg_sts, mme_arch_sts;
+ 	bool is_idle = true, is_eng_idle, is_slave;
+ 	u64 offset;
+@@ -7738,9 +7738,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 				IS_DMA_IDLE(dma_core_sts0);
+ 		is_idle &= is_eng_idle;
+ 
+-		if (mask)
+-			*mask |= ((u64) !is_eng_idle) <<
+-					(GAUDI_ENGINE_ID_DMA_0 + dma_id);
++		if (mask && !is_eng_idle)
++			set_bit(GAUDI_ENGINE_ID_DMA_0 + dma_id, mask);
+ 		if (s)
+ 			seq_printf(s, fmt, dma_id,
+ 				is_eng_idle ? "Y" : "N", qm_glbl_sts0,
+@@ -7761,9 +7760,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 				IS_TPC_IDLE(tpc_cfg_sts);
+ 		is_idle &= is_eng_idle;
+ 
+-		if (mask)
+-			*mask |= ((u64) !is_eng_idle) <<
+-						(GAUDI_ENGINE_ID_TPC_0 + i);
++		if (mask && !is_eng_idle)
++			set_bit(GAUDI_ENGINE_ID_TPC_0 + i, mask);
+ 		if (s)
+ 			seq_printf(s, fmt, i,
+ 				is_eng_idle ? "Y" : "N",
+@@ -7790,9 +7788,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 
+ 		is_idle &= is_eng_idle;
+ 
+-		if (mask)
+-			*mask |= ((u64) !is_eng_idle) <<
+-						(GAUDI_ENGINE_ID_MME_0 + i);
++		if (mask && !is_eng_idle)
++			set_bit(GAUDI_ENGINE_ID_MME_0 + i, mask);
+ 		if (s) {
+ 			if (!is_slave)
+ 				seq_printf(s, fmt, i,
+@@ -7818,9 +7815,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 			is_eng_idle = IS_QM_IDLE(qm_glbl_sts0, qm_cgm_sts);
+ 			is_idle &= is_eng_idle;
+ 
+-			if (mask)
+-				*mask |= ((u64) !is_eng_idle) <<
+-						(GAUDI_ENGINE_ID_NIC_0 + port);
++			if (mask && !is_eng_idle)
++				set_bit(GAUDI_ENGINE_ID_NIC_0 + port, mask);
+ 			if (s)
+ 				seq_printf(s, nic_fmt, port,
+ 						is_eng_idle ? "Y" : "N",
+@@ -7834,9 +7830,8 @@ static bool gaudi_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 			is_eng_idle = IS_QM_IDLE(qm_glbl_sts0, qm_cgm_sts);
+ 			is_idle &= is_eng_idle;
+ 
+-			if (mask)
+-				*mask |= ((u64) !is_eng_idle) <<
+-						(GAUDI_ENGINE_ID_NIC_0 + port);
++			if (mask && !is_eng_idle)
++				set_bit(GAUDI_ENGINE_ID_NIC_0 + port, mask);
+ 			if (s)
+ 				seq_printf(s, nic_fmt, port,
+ 						is_eng_idle ? "Y" : "N",
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 6b4c41188495..a954e7c02375 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -2916,7 +2916,7 @@ static int goya_send_job_on_qman0(struct hl_device *hdev, struct hl_cs_job *job)
+ 	else
+ 		timeout = HL_DEVICE_TIMEOUT_USEC;
+ 
+-	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, NULL)) {
++	if (!hdev->asic_funcs->is_device_idle(hdev, NULL, 0, NULL)) {
+ 		dev_err_ratelimited(hdev->dev,
+ 			"Can't send driver job on QMAN0 because the device is not idle\n");
+ 		return -EBUSY;
+@@ -5187,11 +5187,12 @@ static void goya_disable_clock_gating(struct hl_device *hdev)
+ 	/* clock gating not supported in Goya */
+ }
+ 
+-static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
+-				struct seq_file *s)
++static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask_arr,
++					u8 mask_len, struct seq_file *s)
+ {
+ 	const char *fmt = "%-5d%-9s%#-14x%#-16x%#x\n";
+ 	const char *dma_fmt = "%-5d%-9s%#-14x%#x\n";
++	unsigned long *mask = (unsigned long *)mask_arr;
+ 	u32 qm_glbl_sts0, cmdq_glbl_sts0, dma_core_sts0, tpc_cfg_sts,
+ 		mme_arch_sts;
+ 	bool is_idle = true, is_eng_idle;
+@@ -5211,9 +5212,8 @@ static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 				IS_DMA_IDLE(dma_core_sts0);
+ 		is_idle &= is_eng_idle;
+ 
+-		if (mask)
+-			*mask |= ((u64) !is_eng_idle) <<
+-						(GOYA_ENGINE_ID_DMA_0 + i);
++		if (mask && !is_eng_idle)
++			set_bit(GOYA_ENGINE_ID_DMA_0 + i, mask);
+ 		if (s)
+ 			seq_printf(s, dma_fmt, i, is_eng_idle ? "Y" : "N",
+ 					qm_glbl_sts0, dma_core_sts0);
+@@ -5235,9 +5235,8 @@ static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 				IS_TPC_IDLE(tpc_cfg_sts);
+ 		is_idle &= is_eng_idle;
+ 
+-		if (mask)
+-			*mask |= ((u64) !is_eng_idle) <<
+-						(GOYA_ENGINE_ID_TPC_0 + i);
++		if (mask && !is_eng_idle)
++			set_bit(GOYA_ENGINE_ID_TPC_0 + i, mask);
+ 		if (s)
+ 			seq_printf(s, fmt, i, is_eng_idle ? "Y" : "N",
+ 				qm_glbl_sts0, cmdq_glbl_sts0, tpc_cfg_sts);
+@@ -5256,8 +5255,8 @@ static bool goya_is_device_idle(struct hl_device *hdev, u64 *mask,
+ 			IS_MME_IDLE(mme_arch_sts);
+ 	is_idle &= is_eng_idle;
+ 
+-	if (mask)
+-		*mask |= ((u64) !is_eng_idle) << GOYA_ENGINE_ID_MME_0;
++	if (mask && !is_eng_idle)
++		set_bit(GOYA_ENGINE_ID_MME_0, mask);
+ 	if (s) {
+ 		seq_printf(s, fmt, 0, is_eng_idle ? "Y" : "N", qm_glbl_sts0,
+ 				cmdq_glbl_sts0, mme_arch_sts);
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index b1c09eba8ac2..ebde42b37b43 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -331,6 +331,8 @@ struct hl_info_dram_usage {
+ 	__u64 ctx_dram_mem;
+ };
+ 
++#define HL_BUSY_ENGINES_MASK_EXT_SIZE	2
 +
-+	if (intel_iommu_strict)
-+		return 0;
-+
-+	/*
-+	 * The flush queue implementation does not perform page-selective
-+	 * invalidations that are required for efficient TLB flushes in virtual
-+	 * environments. The benefit of batching is likely to be much lower than
-+	 * the overhead of synchronizing the virtual and physical IOMMU
-+	 * page-tables.
-+	 */
-+	if (iommu && cap_caching_mode(iommu->cap)) {
-+		pr_warn_once("IOMMU batching is partially disabled due to virtualization");
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
- static int
- intel_iommu_domain_get_attr(struct iommu_domain *domain,
- 			    enum iommu_attr attr, void *data)
-@@ -5383,7 +5407,7 @@ intel_iommu_domain_get_attr(struct iommu_domain *domain,
- 	case IOMMU_DOMAIN_DMA:
- 		switch (attr) {
- 		case DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE:
--			*(int *)data = !intel_iommu_strict;
-+			*(int *)data = !intel_iommu_domain_get_attr_use_flush_queue(domain);
- 			return 0;
- 		default:
- 			return -ENODEV;
+ struct hl_info_hw_idle {
+ 	__u32 is_idle;
+ 	/*
+@@ -343,7 +345,7 @@ struct hl_info_hw_idle {
+ 	 * Extended Bitmask of busy engines.
+ 	 * Bits definition is according to `enum <chip>_enging_id'.
+ 	 */
+-	__u64 busy_engines_mask_ext;
++	__u64 busy_engines_mask_ext[HL_BUSY_ENGINES_MASK_EXT_SIZE];
+ };
+ 
+ struct hl_info_device_status {
 -- 
 2.25.1
 
