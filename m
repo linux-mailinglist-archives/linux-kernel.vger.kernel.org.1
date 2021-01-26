@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6978303BE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A779303BE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405428AbhAZLmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404791AbhAZLDL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:03:11 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C63C061573;
-        Tue, 26 Jan 2021 03:02:30 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id w1so22290987ejf.11;
-        Tue, 26 Jan 2021 03:02:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tGus94grLYPWSUM0bMFUmChMXn+Sc5UCDSiVFm8Bk1g=;
-        b=ReLxtoNk/T9yXEhHKg8pHbxSJw3aJoyT/IEKEoIyVyeulTYz+4TP45B5rr4TihDhhv
-         17I+sgm2Ant/VgPBELLeO5DsCELkpNd8VASufye+/0aURAJIDZddTMAgWF7ImRzyxQEA
-         rVq9VqepJAu29BhI3wx9AQTCzqmObuq5/kZH5Qu9GKKX5zBbOtfoawLHK57+eYd71VZm
-         kH/TAv0BLQGfAcq04zf7TOp5jS+IlbY+qvgrzTUoVwHJDGAsmEEIla5U/PABcEf5J9NM
-         hxSDeyQezd8wS6bI7OppyoHqfzpcNfjWa9NJUp+k2Szj5UKgvfcm/3cHrdv9ptGGBSpS
-         yAlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tGus94grLYPWSUM0bMFUmChMXn+Sc5UCDSiVFm8Bk1g=;
-        b=ETS/UVs7nLTb+/wp+jZnnWr327SfBP/EJPS1PH+xuhOaoaNk53NWWzbqpR25I0Wq3A
-         i9CkYaKtw78EyP7brTHiXAf2/rXO1EWw+/0YUNZpQLWngTvwqJDcdIWYyBLW2HapPjwe
-         0oRP1Yn65lZTXxRkVfcdVT+FHLO3JilfMdpEvyeWZQT2yFVXS34OVQ9MywsSPBNw6SiY
-         25ovuz7OGH0idvvOLSdoaKH5eh/xeE1gyFnsr7cQs+i/mctXUdbz6lcoY6wiI5hO2Gyd
-         +3zuWqdEMSXlAEH5YuZl0CQBhGQqRuoYz0SIvq/nsUdaBgE/1dC6n8mOZAO4R/eAY5Ha
-         PR5g==
-X-Gm-Message-State: AOAM531U4nnS7O4Or4naFJzRBS2DaeUv1hYqyTAfZHWE/bGVXt1AMoGE
-        9FcyrfvzXAQD4FnaNEA0PYgZHnmkS+E=
-X-Google-Smtp-Source: ABdhPJweKLVCgdb55W52Fgzza7M8uQ3muJw6gFw6GteiCpKniAv8SkhaI6jSnMSRGamCzzANptF5tQ==
-X-Received: by 2002:a17:906:c954:: with SMTP id fw20mr3076916ejb.342.1611658949575;
-        Tue, 26 Jan 2021 03:02:29 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id a2sm9533408ejk.80.2021.01.26.03.02.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Jan 2021 03:02:28 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
-Date:   Tue, 26 Jan 2021 12:02:20 +0100
-Message-Id: <20210126110221.10815-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S2392557AbhAZLnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:43:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:33680 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732252AbhAZLDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:03:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D71C7D6E;
+        Tue, 26 Jan 2021 03:02:38 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0A9E3F66B;
+        Tue, 26 Jan 2021 03:02:33 -0800 (PST)
+Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
+ add cluster scheduler
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
+ <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
+ <20210108151241.GA47324@e123083-lin>
+ <99c07bdf-02d1-153a-bd1e-2f4200cc67c5@linux.intel.com>
+ <20210111092811.GB47324@e123083-lin>
+ <4fdc781e-7385-2ae6-d9c9-3ec165f473c4@arm.com>
+ <076088f4daf64727b1587b162eb08dda@hisilicon.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <bf0edcb6-6dc7-5591-35ac-08e94bf7dce9@arm.com>
+Date:   Tue, 26 Jan 2021 12:02:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <076088f4daf64727b1587b162eb08dda@hisilicon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below aimed at powerpc generates
-notifications in the Rockchip ARM tree.
+On 25/01/2021 11:50, Song Bao Hua (Barry Song) wrote:
+> 
+>> -----Original Message-----
+>> From: Dietmar Eggemann [mailto:dietmar.eggemann@arm.com]
+>> Sent: Wednesday, January 13, 2021 12:00 AM
+>> To: Morten Rasmussen <morten.rasmussen@arm.com>; Tim Chen
+>> <tim.c.chen@linux.intel.com>
+>> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+>> valentin.schneider@arm.com; catalin.marinas@arm.com; will@kernel.org;
+>> rjw@rjwysocki.net; vincent.guittot@linaro.org; lenb@kernel.org;
+>> gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
+>> mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
+>> rostedt@goodmis.org; bsegall@google.com; mgorman@suse.de;
+>> mark.rutland@arm.com; sudeep.holla@arm.com; aubrey.li@linux.intel.com;
+>> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+>> linux-acpi@vger.kernel.org; linuxarm@openeuler.org; xuwei (O)
+>> <xuwei5@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>; tiantao (H)
+>> <tiantao6@hisilicon.com>
+>> Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
+>> add cluster scheduler
+>>
+>> On 11/01/2021 10:28, Morten Rasmussen wrote:
+>>> On Fri, Jan 08, 2021 at 12:22:41PM -0800, Tim Chen wrote:
+>>>>
+>>>>
+>>>> On 1/8/21 7:12 AM, Morten Rasmussen wrote:
+>>>>> On Thu, Jan 07, 2021 at 03:16:47PM -0800, Tim Chen wrote:
+>>>>>> On 1/6/21 12:30 AM, Barry Song wrote:
 
-Fix pinctrl "sleep" nodename by renaming it to "suspend"
-for rk3036-kylin and rk3288
+[...]
 
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+>> wake_wide() switches between packing (select_idle_sibling(), llc_size
+>> CPUs) and spreading (find_idlest_cpu(), all CPUs).
+>>
+>> AFAICS, since none of the sched domains set SD_BALANCE_WAKE, currently
+>> all wakeups are (llc-)packed.
+> 
+> Sorry for late response. I was struggling with some other topology
+> issues recently.
+> 
+> For "all wakeups are (llc-)packed",
+> it seems you mean current want_affine is only affecting the new_cpu,
+> and for wake-up path, we will always go to select_idle_sibling() rather
+> than find_idlest_cpu() since nobody sets SD_WAKE_BALANCE in any
+> sched_domain ?
+> 
+>>
+>>  select_task_rq_fair()
+>>
+>>    for_each_domain(cpu, tmp)
+>>
+>>      if (tmp->flags & sd_flag)
+>>        sd = tmp;
+>>
+>>
+>> In case we would like to further distinguish between llc-packing and
+>> even narrower (cluster or MC-L2)-packing, we would introduce a 2. level
+>> packing vs. spreading heuristic further down in sis().
+> 
+> I didn't get your point on "2 level packing". Would you like
+> to describe more? It seems you mean we need to have separate
+> calculation for avg_scan_cost and sched_feat(SIS_) for cluster
+> (or MC-L2) since cluster and llc are not in the same level
+> physically?
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3036-kylin.dts | 2 +-
- arch/arm/boot/dts/rk3288.dtsi      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+By '1. level packing' I meant going sis() (i.e. sd=per_cpu(sd_llc,
+target)) instead of routing WF_TTWU through find_idlest_cpu() which uses
+a broader sd span (in case all sd's (or at least up to an sd > llc)
+would have SD_BALANCE_WAKE set).
+wake_wide() (wakee/waker flip heuristic) is currently used to make this
+decision. But since no sd sets SD_BALANCE_WAKE we always go sis() for
+WF_TTWU.
 
-diff --git a/arch/arm/boot/dts/rk3036-kylin.dts b/arch/arm/boot/dts/rk3036-kylin.dts
-index 7154b827e..e817eba8c 100644
---- a/arch/arm/boot/dts/rk3036-kylin.dts
-+++ b/arch/arm/boot/dts/rk3036-kylin.dts
-@@ -390,7 +390,7 @@
- 		};
- 	};
- 
--	sleep {
-+	suspend {
- 		global_pwroff: global-pwroff {
- 			rockchip,pins = <2 RK_PA7 1 &pcfg_pull_none>;
- 		};
-diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
-index 29ffe2eb9..7dec6935f 100644
---- a/arch/arm/boot/dts/rk3288.dtsi
-+++ b/arch/arm/boot/dts/rk3288.dtsi
-@@ -1593,7 +1593,7 @@
- 			drive-strength = <12>;
- 		};
- 
--		sleep {
-+		suspend {
- 			global_pwroff: global-pwroff {
- 				rockchip,pins = <0 RK_PA0 1 &pcfg_pull_none>;
- 			};
--- 
-2.11.0
+'2. level packing' would be the decision between cluster- and
+llc-packing. The question was which heuristic could be used here.
 
+>> IMHO, Barry's current implementation doesn't do this right now. Instead
+>> he's trying to pack on cluster first and if not successful look further
+>> among the remaining llc CPUs for an idle CPU.
+> 
+> Yes. That is exactly what the current patch is doing.
+
+And this will be favoring cluster- over llc-packing for each task instead.
