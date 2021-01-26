@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1F230410C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4413040E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391377AbhAZO42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:56:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39437 "EHLO
+        id S2390154AbhAZOvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:51:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30216 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391040AbhAZJel (ORCPT
+        by vger.kernel.org with ESMTP id S2391284AbhAZJiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:34:41 -0500
+        Tue, 26 Jan 2021 04:38:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611653594;
+        s=mimecast20190719; t=1611653796;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PcrXNhlDKomMCLfJNYybeh+OpNdfCtsOzQcjyLVp37M=;
-        b=fUkPCU/7b8+O4MZ7EXbxFGCHzkfYEKP+ua9Hs0PATVq0Mz3xnuAkl938b8HXVGsd4jWgup
-        sfaSaAyKpuX4qkO72B7J3rsW52VUefmeaBT8goGcriyZu6JE1PVNiomgDtpPywO+74IbXW
-        QWLiXB85yf3ApzNn07T6iZI4rAg9x0U=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-GChiiOwsNMWmxCBONT9r2Q-1; Tue, 26 Jan 2021 04:33:13 -0500
-X-MC-Unique: GChiiOwsNMWmxCBONT9r2Q-1
-Received: by mail-ed1-f71.google.com with SMTP id ck25so9044709edb.16
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:33:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PcrXNhlDKomMCLfJNYybeh+OpNdfCtsOzQcjyLVp37M=;
-        b=B9mU8+rwmx91OoFcrZDqs6BwQYoGKKd/Hlme/YZ8Ok/bYBomUx73Qskxh2qHYjxae/
-         rdg5z2NCDP2y5DcVzpq+FI3LrLlsMk2yNPbv287/iotyxQxbDI9EESUxn3QI0hUoptY/
-         G/PyyB4v+dweSm9jjpwAlDDkp0ze7hqbUNzELZ2K1z6fcPpi5LDr/JODt6Y+lO9+yqGI
-         akScIh14M/aqYpfw0QOsPyHlPR5Hr/NNtfaQGXd1rLoqB98IwJkYtEort3JdsHa9Rcu6
-         mK3riRhrvJ0KbQ7BMPpq5TKCCDi4JplpuW8O9cnPM44oTpKcNMmfTBLHIsdZw91pNqk4
-         nlEw==
-X-Gm-Message-State: AOAM5305j/aw2wdFGd8fFdeTDpr4tlhlaeDXc52aL5725rlqXy0rcGds
-        JZeLOHJChg6lYcKnee+qTeZB1+hK2bWcqfNQ2okm4XpSjzdRSg2MiXeeTQaf0/qI8Tn04fcEx/T
-        f5WziI2PY2xXSeRKp2FzDY8QYzkl82XGcplS71Wrdk/Ug+4gCERF+8whMGpb1jDD/Zex+uOEM84
-        v5
-X-Received: by 2002:a17:907:9710:: with SMTP id jg16mr3017575ejc.286.1611653592041;
-        Tue, 26 Jan 2021 01:33:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyR/KtoRSXk3hGJDjmpgB2IHv1y+LGmFyGanS7w1DkJt6Hjfu5vnx33qOdP9bqKL93pCOatbw==
-X-Received: by 2002:a17:907:9710:: with SMTP id jg16mr3017552ejc.286.1611653591863;
-        Tue, 26 Jan 2021 01:33:11 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id ke7sm9484812ejc.7.2021.01.26.01.33.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 01:33:11 -0800 (PST)
-Subject: Re: [RESEND v13 10/10] KVM: vmx/pmu: Release guest LBR event via lazy
- release mechanism
-To:     Like Xu <like.xu@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
-        wei.w.wang@intel.com, kan.liang@intel.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210108013704.134985-1-like.xu@linux.intel.com>
- <20210108013704.134985-11-like.xu@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <310d674c-44e7-7b46-064f-7cb88c456d0f@redhat.com>
-Date:   Tue, 26 Jan 2021 10:33:09 +0100
+        bh=oNqVieVd9v1G344GzpIPbD3/DSjB6v+2rop/NW6XtKU=;
+        b=Q+lR/abdCriK0gwWQRcBlD9GxaBxdbp8dsyDQZgZY//lcSg4NvVKTqLEanzd166Sxp63gE
+        vYeqiKfQSogLHtDoBY/iQZEaI+AZJBqo5hYy/aW5YJDMR0SFBLJIr5kPmtTjOa2gIzG49H
+        i5rmDp7IxACMhmKs5MLU0jeTgnSopcs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-U-Izs0d0Oeif6_p39Ww8hw-1; Tue, 26 Jan 2021 04:36:33 -0500
+X-MC-Unique: U-Izs0d0Oeif6_p39Ww8hw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BD021005504;
+        Tue, 26 Jan 2021 09:36:29 +0000 (UTC)
+Received: from [10.36.114.192] (ovpn-114-192.ams2.redhat.com [10.36.114.192])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1481D60871;
+        Tue, 26 Jan 2021 09:36:21 +0000 (UTC)
+Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
+ associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com,
+        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com>
+ <20210126092942.GA10602@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
+Date:   Tue, 26 Jan 2021 10:36:21 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210108013704.134985-11-like.xu@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210126092942.GA10602@linux>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/01/21 02:37, Like Xu wrote:
-> The vPMU uses GUEST_LBR_IN_USE_IDX (bit 58) in 'pmu->pmc_in_use' to
-> indicate whether a guest LBR event is still needed by the vcpu. If the
-> vcpu no longer accesses LBR related registers within a scheduling time
-> slice, and the enable bit of LBR has been unset, vPMU will treat the
-> guest LBR event as a bland event of a vPMC counter and release it
-> as usual. Also, the pass-through state of LBR records msrs is cancelled.
+On 26.01.21 10:29, Oscar Salvador wrote:
+> On Sun, Jan 17, 2021 at 11:10:46PM +0800, Muchun Song wrote:
+>> When we free a HugeTLB page to the buddy allocator, we should allocate the
+>> vmemmap pages associated with it. We can do that in the __free_hugepage()
+>> before freeing it to buddy.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > 
-> Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> ---
->   arch/x86/kvm/pmu.c           |  7 +++++++
->   arch/x86/kvm/pmu.h           |  4 ++++
->   arch/x86/kvm/vmx/pmu_intel.c | 17 ++++++++++++++++-
->   3 files changed, 27 insertions(+), 1 deletion(-)
+> This series has grown a certain grade of madurity and improvment, but it seems
+> to me that we have been stuck in this patch (and patch#4) for quite some time.
 > 
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 405890c723a1..e7c72eea07d4 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -463,6 +463,7 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
->   	struct kvm_pmc *pmc = NULL;
->   	DECLARE_BITMAP(bitmask, X86_PMC_IDX_MAX);
->   	int i;
-> +	bool extra_cleanup = false;
->   
->   	pmu->need_cleanup = false;
->   
-> @@ -474,8 +475,14 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
->   
->   		if (pmc && pmc->perf_event && !pmc_speculative_in_use(pmc))
->   			pmc_stop_counter(pmc);
-> +
-> +		if (i == INTEL_GUEST_LBR_INUSE)
-> +			extra_cleanup = true;
->   	}
->   
-> +	if (extra_cleanup && kvm_x86_ops.pmu_ops->cleanup)
-> +		kvm_x86_ops.pmu_ops->cleanup(vcpu);
-> +
+> Would it be acceptable for a first implementation to not let hugetlb pages to
+> be freed when this feature is in use?
+> This would simplify things for now, as we could get rid of patch#4 and patch#5.
+> We can always extend functionality once this has been merged, right?
 
-You can call this function always, it's cleaner than hardcoding 
-INTEL_GUEST_LBR_INUSE.
+I think either keep it completely simple (only free vmemmap of hugetlb
+pages allocated early during boot - which is what's not sufficient for
+some use cases) or implement the full thing properly (meaning, solve
+most challenging issues to get the basics running).
 
-You can also use INTEL_PMC_IDX_FIXED_VLBR directly instead of 
-INTEL_GUEST_LBR_INUSE.
+I don't want to have some easy parts of complex features merged (e.g.,
+breaking other stuff as you indicate below), and later finding out "it's
+not that easy" again and being stuck with it forever.
 
-Paolo
+> 
+> Of course, this means that e.g: memory-hotplug (hot-remove) will not fully work
+> when this in place, but well.
+
+Can you elaborate? Are we're talking about having hugepages in
+ZONE_MOVABLE that are not migratable (and/or dissolvable) anymore? Than
+a clear NACK from my side.
+
+-- 
+Thanks,
+
+David / dhildenb
 
