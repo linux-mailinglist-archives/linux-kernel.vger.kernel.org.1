@@ -2,154 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E83F304F7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6692304F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhA0DM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391674AbhAZTM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:12:59 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF05CC06174A;
-        Tue, 26 Jan 2021 11:12:18 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id g15so12046980pgu.9;
-        Tue, 26 Jan 2021 11:12:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z+Elf6KN7gCVxKH5y5v8VFFxpAzRjoRyqfE2dK5dzCQ=;
-        b=CzMop3FhOdFGtWBkHlk/GUz/sqkCJ9tRBC/4jNGcxWNawh9ndTJDO/q315ne2lbJ0R
-         gk+2ZghnnXjkzlDQN1M9uTa6WRDOsyuI+rFitPzUAGAAZS0s5nYP5yFboFjQyoEy6ybq
-         ufGydHojAu8poq6x5fWLpp8DbYktqiIJmV9B7pWfV9m24uS9iM8BYVCCaB2ex21Dzhj9
-         5HB5LEZ4IQsmd9mKZDv7xX0AwcXHhRSEtzdZ9i+raHscQXLTaBqz5W32bLsR6DH661ak
-         f5+olSkBh+BJ82RaHyOpZP/vYklYI7PsrBeNo5NUDxFmiRoa2BTB4qpk4X1JDOwTXOCm
-         HPBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=z+Elf6KN7gCVxKH5y5v8VFFxpAzRjoRyqfE2dK5dzCQ=;
-        b=GoGygaWuQxRgFJbPtyhQ20FjL+/ci15fRbas/o8HIBgYlOXX2W+g+DAdOQ7hDdeLQv
-         7wcWQWpVjM059U757/ikS0iNePM6cFak+twsklYuTAiQEefAJAQ6D90/MU2guCIZCaZ8
-         5pHYvuJw5ZhQd7j9hJahD3BMjhoKg56VRXcDyWRyRY7BZEAsPHrlFPst+xG93fKNKzPV
-         Hfp4oV9yobFvo7TbSZI4C1ZAGdot93HfNrUdbZMLp/unrPE75qMGUKwYcmmEiNbe+Kuj
-         alAFTKjyK65zBAjlM1+1F4KbgGfN+WFoL114IyX0VTAPN/Jrn5JYKUrsMOdsXIQfftwu
-         VLoA==
-X-Gm-Message-State: AOAM530tAK3BQ63MBsrlAPN6QQo3T2cHZJ0zcfdaaQk4xLxdA9k2IY5U
-        /UqxKCmcGtbuCte53GioNhY=
-X-Google-Smtp-Source: ABdhPJzAeJ2VBQP8Ty12PWfHYgZ3qBVMPcowpow+95wbsOdOdX7sQMm9xF9YxgnjsVF1aa+ITIH1ug==
-X-Received: by 2002:a62:7d03:0:b029:1bb:5919:6dec with SMTP id y3-20020a627d030000b02901bb59196decmr6759692pfc.76.1611688338278;
-        Tue, 26 Jan 2021 11:12:18 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:9dd5:b47b:bb84:dede])
-        by smtp.gmail.com with ESMTPSA id b14sm3091649pju.14.2021.01.26.11.12.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 11:12:17 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 26 Jan 2021 11:12:14 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
-        david@redhat.com, surenb@google.com, pullip.cho@samsung.com,
-        joaodias@google.com, hridya@google.com, john.stultz@linaro.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, hch@infradead.org, robh+dt@kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 1/4] mm: cma: introduce gfp flag in cma_alloc instead
- of no_warn
-Message-ID: <YBBpjvBRtvi3Rl9F@google.com>
-References: <20210121175502.274391-1-minchan@kernel.org>
- <20210121175502.274391-2-minchan@kernel.org>
- <20210125130701.GF827@dhcp22.suse.cz>
- <YA8fKgFLuOi/rSez@google.com>
- <20210126073808.GZ827@dhcp22.suse.cz>
+        id S233939AbhA0DNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:13:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44138 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395252AbhAZTOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 14:14:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3403CAC97;
+        Tue, 26 Jan 2021 19:13:12 +0000 (UTC)
+Subject: Re: [PATCH v2 03/10] mm: don't pass "enum lru_list" to lru list
+ addition functions
+To:     Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210122220600.906146-1-yuzhao@google.com>
+ <20210122220600.906146-4-yuzhao@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <85b3e8f2-5982-3329-c20d-cf062b8da71e@suse.cz>
+Date:   Tue, 26 Jan 2021 20:13:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126073808.GZ827@dhcp22.suse.cz>
+In-Reply-To: <20210122220600.906146-4-yuzhao@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 08:38:08AM +0100, Michal Hocko wrote:
-> On Mon 25-01-21 11:42:34, Minchan Kim wrote:
-> > On Mon, Jan 25, 2021 at 02:07:01PM +0100, Michal Hocko wrote:
-> > > On Thu 21-01-21 09:54:59, Minchan Kim wrote:
-> > > > The upcoming patch will introduce __GFP_NORETRY semantic
-> > > > in alloc_contig_range which is a failfast mode of the API.
-> > > > Instead of adding a additional parameter for gfp, replace
-> > > > no_warn with gfp flag.
-> > > > 
-> > > > To keep old behaviors, it follows the rule below.
-> > > > 
-> > > >   no_warn 			gfp_flags
-> > > > 
-> > > >   false         		GFP_KERNEL
-> > > >   true          		GFP_KERNEL|__GFP_NOWARN
-> > > >   gfp & __GFP_NOWARN		GFP_KERNEL | (gfp & __GFP_NOWARN)
-> > > > 
-> > > > Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > > [...]
-> > > > diff --git a/mm/cma.c b/mm/cma.c
-> > > > index 0ba69cd16aeb..d50627686fec 100644
-> > > > --- a/mm/cma.c
-> > > > +++ b/mm/cma.c
-> > > > @@ -419,13 +419,13 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
-> > > >   * @cma:   Contiguous memory region for which the allocation is performed.
-> > > >   * @count: Requested number of pages.
-> > > >   * @align: Requested alignment of pages (in PAGE_SIZE order).
-> > > > - * @no_warn: Avoid printing message about failed allocation
-> > > > + * @gfp_mask: GFP mask to use during the cma allocation.
-> > > 
-> > > Call out supported gfp flags explicitly. Have a look at kvmalloc_node
-> > > for a guidance.
-> > 
-> > How about this?
-> > 
-> > 
-> > diff --git a/mm/cma.c b/mm/cma.c
-> > index d50627686fec..b94727b694d6 100644
-> > --- a/mm/cma.c
-> > +++ b/mm/cma.c
-> > @@ -423,6 +423,10 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
-> >   *
-> >   * This function allocates part of contiguous memory on specific
-> >   * contiguous memory area.
-> > + *
-> > + * For gfp_mask, GFP_KERNEL and __GFP_NORETRY are supported. __GFP_NORETRY
-> > + * will avoid costly functions(e.g., waiting on page_writeback and locking)
-> > + * at current implementaion during the page migration.
-> 
-> rather than explicitly mentioning what the flag implies I think it would
-> be more useful to state the intended usecase. See how kvmalloc_node says
-> "__GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-> preferable to the vmalloc fallback, due to visible performance
-> drawbacks.
-> __GFP_NOWARN is also supported to suppress allocation failure messages."
-> 
-> This would help people not familiar with internals to see whether this
-> flag is a good fit for them.
-> 
-> In this case I woul go with
-> "
-> @flags: gfp mask. Must be compatible (superset) with GFP_KERNEL.
-> [...]
-> Reclaim modifiers (__GFP_RETRY_MAYFAIL, __GFP_NOFAIL) are not supported.
-> __GFP_NORETRY is supported, and it should be used for opportunistic
-> allocation attempts that should rather fail quickly when the caller has
-> a fallback strategy.
-> "
-> 
-> Obviously for this patch you will go with a simple statement that
-> Reclaim modifiers are not supported at all.
+On 1/22/21 11:05 PM, Yu Zhao wrote:
+> The "enum lru_list" parameter to add_page_to_lru_list() and
+> add_page_to_lru_list_tail() is redundant in the sense that it can
+> be extracted from the "struct page" parameter by page_lru().
 
-After more discussion for gfp_flags in thread of next patch, let me
-changes a bit more based on it.
+Okay, however, it means repeated extraction of a value that we already knew. The
+result of compilation is rather sad. This is bloat-o-meter on mm/built-in.a
+(without CONFIG_DEBUG_VM, btw) between patch 2 and 5:
 
-Thanks for the suggestion, Michal.
+add/remove: 0/0 grow/shrink: 10/5 up/down: 1837/-60 (1777)
+Function                                     old     new   delta
+lru_deactivate_file_fn                       932    1368    +436
+lru_lazyfree_fn.part                         629     953    +324
+check_move_unevictable_pages                1171    1424    +253
+__activate_page.part                         735     984    +249
+lru_deactivate_fn.part                       593     822    +229
+perf_trace_mm_lru_insertion                  458     560    +102
+trace_event_raw_event_mm_lru_insertion       412     500     +88
+__page_cache_release                         479     558     +79
+release_pages                               1430    1499     +69
+pagevec_move_tail_fn.part                    761     769      +8
+isolate_lru_page                             471     470      -1
+__bpf_trace_mm_lru_insertion                   7       5      -2
+__traceiter_mm_lru_insertion                  55      47      -8
+isolate_migratepages_block                  3200    3185     -15
+__pagevec_lru_add_fn                        1092    1058     -34
+
+
+> A caveat is that we need to make sure PageActive() or
+> PageUnevictable() is correctly set or cleared before calling
+> these two functions. And they are indeed.
+> 
+> Link: https://lore.kernel.org/linux-mm/20201207220949.830352-4-yuzhao@google.com/
+> Signed-off-by: Yu Zhao <yuzhao@google.com>
+> ---
+>  include/linux/mm_inline.h |  8 ++++++--
+>  mm/swap.c                 | 15 +++++++--------
+>  mm/vmscan.c               |  6 ++----
+>  3 files changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
+> index 2889741f450a..130ba3201d3f 100644
+> --- a/include/linux/mm_inline.h
+> +++ b/include/linux/mm_inline.h
+> @@ -106,15 +106,19 @@ static __always_inline enum lru_list page_lru(struct page *page)
+>  }
+>  
+>  static __always_inline void add_page_to_lru_list(struct page *page,
+> -				struct lruvec *lruvec, enum lru_list lru)
+> +				struct lruvec *lruvec)
+>  {
+> +	enum lru_list lru = page_lru(page);
+> +
+>  	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
+>  	list_add(&page->lru, &lruvec->lists[lru]);
+>  }
+>  
+>  static __always_inline void add_page_to_lru_list_tail(struct page *page,
+> -				struct lruvec *lruvec, enum lru_list lru)
+> +				struct lruvec *lruvec)
+>  {
+> +	enum lru_list lru = page_lru(page);
+> +
+>  	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
+>  	list_add_tail(&page->lru, &lruvec->lists[lru]);
+>  }
+> diff --git a/mm/swap.c b/mm/swap.c
+> index 490553f3f9ef..4b058ef37add 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -231,7 +231,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec)
+>  	if (!PageUnevictable(page)) {
+>  		del_page_from_lru_list(page, lruvec, page_lru(page));
+>  		ClearPageActive(page);
+> -		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+> +		add_page_to_lru_list_tail(page, lruvec);
+>  		__count_vm_events(PGROTATED, thp_nr_pages(page));
+>  	}
+>  }
+> @@ -313,8 +313,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec)
+>  
+>  		del_page_from_lru_list(page, lruvec, lru);
+>  		SetPageActive(page);
+> -		lru += LRU_ACTIVE;
+> -		add_page_to_lru_list(page, lruvec, lru);
+> +		add_page_to_lru_list(page, lruvec);
+>  		trace_mm_lru_activate(page);
+>  
+>  		__count_vm_events(PGACTIVATE, nr_pages);
+> @@ -543,14 +542,14 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec)
+>  		 * It can make readahead confusing.  But race window
+>  		 * is _really_ small and  it's non-critical problem.
+>  		 */
+> -		add_page_to_lru_list(page, lruvec, lru);
+> +		add_page_to_lru_list(page, lruvec);
+>  		SetPageReclaim(page);
+>  	} else {
+>  		/*
+>  		 * The page's writeback ends up during pagevec
+>  		 * We moves tha page into tail of inactive.
+>  		 */
+> -		add_page_to_lru_list_tail(page, lruvec, lru);
+> +		add_page_to_lru_list_tail(page, lruvec);
+>  		__count_vm_events(PGROTATED, nr_pages);
+>  	}
+>  
+> @@ -570,7 +569,7 @@ static void lru_deactivate_fn(struct page *page, struct lruvec *lruvec)
+>  		del_page_from_lru_list(page, lruvec, lru + LRU_ACTIVE);
+>  		ClearPageActive(page);
+>  		ClearPageReferenced(page);
+> -		add_page_to_lru_list(page, lruvec, lru);
+> +		add_page_to_lru_list(page, lruvec);
+>  
+>  		__count_vm_events(PGDEACTIVATE, nr_pages);
+>  		__count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE,
+> @@ -595,7 +594,7 @@ static void lru_lazyfree_fn(struct page *page, struct lruvec *lruvec)
+>  		 * anonymous pages
+>  		 */
+>  		ClearPageSwapBacked(page);
+> -		add_page_to_lru_list(page, lruvec, LRU_INACTIVE_FILE);
+> +		add_page_to_lru_list(page, lruvec);
+>  
+>  		__count_vm_events(PGLAZYFREE, nr_pages);
+>  		__count_memcg_events(lruvec_memcg(lruvec), PGLAZYFREE,
+> @@ -1005,7 +1004,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
+>  			__count_vm_events(UNEVICTABLE_PGCULLED, nr_pages);
+>  	}
+>  
+> -	add_page_to_lru_list(page, lruvec, lru);
+> +	add_page_to_lru_list(page, lruvec);
+>  	trace_mm_lru_insertion(page, lru);
+>  }
+>  
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 19875660e8f8..09e4f97488c9 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1867,7 +1867,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  		 * inhibits memcg migration).
+>  		 */
+>  		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
+> -		add_page_to_lru_list(page, lruvec, page_lru(page));
+> +		add_page_to_lru_list(page, lruvec);
+>  		nr_pages = thp_nr_pages(page);
+>  		nr_moved += nr_pages;
+>  		if (PageActive(page))
+> @@ -4282,12 +4282,10 @@ void check_move_unevictable_pages(struct pagevec *pvec)
+>  
+>  		lruvec = relock_page_lruvec_irq(page, lruvec);
+>  		if (page_evictable(page) && PageUnevictable(page)) {
+> -			enum lru_list lru = page_lru_base_type(page);
+> -
+>  			VM_BUG_ON_PAGE(PageActive(page), page);
+>  			ClearPageUnevictable(page);
+>  			del_page_from_lru_list(page, lruvec, LRU_UNEVICTABLE);
+> -			add_page_to_lru_list(page, lruvec, lru);
+> +			add_page_to_lru_list(page, lruvec);
+>  			pgrescued += nr_pages;
+>  		}
+>  		SetPageLRU(page);
+> 
+
