@@ -2,160 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671FD30401D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B1B304022
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392681AbhAZOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405829AbhAZOOR (ORCPT
+        id S2392727AbhAZOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:22:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23799 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403985AbhAZOPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:14:17 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CDAC0611C2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:13:37 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id b11so16826032ybj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kGoosFUL0iAtgjPJ/Qryecn6FpvdivveQoTTsE0iKR0=;
-        b=TXO8fFxPvO8UIA9n/3U8U2WCnzEYDuF5L/VWb6aoupYrxKDGd99CKGrmT6c4E+kyVZ
-         aSnHCHJPj+Tqb4zn8qacZHg1f0YkhC+Y8jXPgpL0N0UI2Bs+pylUii13IHEklmPMYnF0
-         TkIpaUo0A/SeEXRgnNonviuM8R5H9qEJ/ZebL/ImZmv8quwBW6E8h6Le8kbfbLoljkHd
-         QUSXYAKFIdrBC0O1lVxOiu2cdHpEHXrULqitPeS4RmCgKDxboKhJerfJecVkCmUuBmPW
-         jdlX/+ZUd8lGmahUYcTNdzKe8pfoeKxFmQaJSdo42MoLbhNWMaNyUojb7Os9O0lezfbm
-         owtg==
+        Tue, 26 Jan 2021 09:15:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611670411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0XmClLgpdiAZK6ABwbP7OwH9PhDGGYb9dqqasaMbUXU=;
+        b=YeSf+i818qMN53wZ7drhI33di3GhqGaJkaML4XcIIb7nqKKDvP09PDvTHBXj8c0ySVdvA3
+        KYiTIC1cjYOeHeTe1OHlJ5S5KPlBTp6qWCUaX2PAfD3fJRCs6BwZdyb6IwA36K5XB2rNJ5
+        f9awN7SosR+xAFs0DB9AmillDvP0r9I=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-ll-Ij2BeNDij3f9vS-GpeA-1; Tue, 26 Jan 2021 09:13:29 -0500
+X-MC-Unique: ll-Ij2BeNDij3f9vS-GpeA-1
+Received: by mail-ej1-f69.google.com with SMTP id b18so4958892ejz.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:13:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kGoosFUL0iAtgjPJ/Qryecn6FpvdivveQoTTsE0iKR0=;
-        b=BMOn+g2pL153bK7ucxrcESpbe0FxtmIkHX0SdyEoFjSlRNf5B5ZhPqNcw+7aT4czlJ
-         Nm+nlzBHG/Q+RYiHgMxGskKM8F4J9WhWA+4FFhdAhZfNz+va7OB0AiqF9OpMG2oV8Pxj
-         RmDh/l+x9GwEMNYLSKN+2/WRyvzh2Ig7yxowzM+R7bS0Ic0Im7f/xjBEWPi5Aezd/R6R
-         1hIraVrbZ0Bp5dA2fdDWlbuwGKnzlbGU2x54uJ+vcRed3e+Wjxx7JwfBi5nbWE790PdV
-         uWsASNR1q7MeDykJoPSBv5qx3C//S03NxH4rmoW3E2XoDerPOFml4txht8HL/WuFrw9w
-         sWyg==
-X-Gm-Message-State: AOAM533l5j0VD/ov94veYMe0bBAq1T1f9+CHMMRrBOSbFNDAnIiNCdJ9
-        VSQRlalOWjDzjJvR0uMc/E9EvLM4u5R3i610EXhyIPzY3gfS0w==
-X-Google-Smtp-Source: ABdhPJzBMoROp11YJ8YGX48IbPjG63ZUYy+CS6PmXpGsqlSy8VGIa1H8WHk6izbZXM6/pJhdTbg9OC4SdhjI9VX0auI=
-X-Received: by 2002:a25:4c8a:: with SMTP id z132mr8921794yba.350.1611670416383;
- Tue, 26 Jan 2021 06:13:36 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0XmClLgpdiAZK6ABwbP7OwH9PhDGGYb9dqqasaMbUXU=;
+        b=L805MZh51w5GUe3lGIFZChSCNXL7A5Fk8fEJOLQvn7xO9w9CEpcp34hRpiYkkaPHnV
+         ops+KEC0iNheXuWRHLiNMGNnD1VO7BgflYmF29ekwI1K1OkoepQ+t1zKWjYeFqT2nWwv
+         NLBwAxEX9EQ8CH9sKw/ts5IYOZ1bk0ZpJHR/fbLomfdv3+OlUErw/3JISV7JFbIY9+or
+         lk+uMXBPvYLVf/wCpSmFZu10V8wV4+lddUIk60Qz3koQ05XForwvV+z9Cj48l5SPNoSf
+         lX5r7WfUEvzJDzWw4h6AXjK3Nq5qpQsmx3etct5eleu400K65XTWbEY1o5ayzZ3lB+Tk
+         FCZQ==
+X-Gm-Message-State: AOAM531TdFDcXvA06rj0iMauHNNtrcRcc5feaKLnX111Cvw4pHmkfZv1
+        wjg/bddjAcdzGxiNptt8EKt+2cZqiV3qONqnke2i3dXjH3tVFZVeO41dFydP9ufgn15ivUQmt5y
+        gS6BQfvAmS2VvSc1MGelnhGtQ
+X-Received: by 2002:a17:906:1689:: with SMTP id s9mr3502064ejd.500.1611670408301;
+        Tue, 26 Jan 2021 06:13:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzxi1QfIxQADqBnFEJxOPrj4y68FFhT3rMTNL2K3ql/AAo8qnrn8CLNhzsYz8mHMWZ8PTcrtw==
+X-Received: by 2002:a17:906:1689:: with SMTP id s9mr3502048ejd.500.1611670408146;
+        Tue, 26 Jan 2021 06:13:28 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d5sm4951358edu.12.2021.01.26.06.13.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 06:13:27 -0800 (PST)
+Subject: Re: [PATCH 07/24] kvm: x86/mmu: Add comment on __tdp_mmu_set_spte
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-8-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <59044c30-3ffb-e0ca-9bb0-7b409e6bec08@redhat.com>
+Date:   Tue, 26 Jan 2021 15:13:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210125085622.2322-1-candlesea@gmail.com> <97d1f36a3b534b7fbd3790a0277ccaf5@AcuMS.aculab.com>
-In-Reply-To: <97d1f36a3b534b7fbd3790a0277ccaf5@AcuMS.aculab.com>
-From:   Candle Sun <candlesea@gmail.com>
-Date:   Tue, 26 Jan 2021 22:13:25 +0800
-Message-ID: <CAPnx3XPRnpPQyW7UO_TTmQrHwitDw+_i3ESVkaGq+JyiY9Pu0w@mail.gmail.com>
-Subject: Re: [PATCH] lkdtm: fix memory copy size for WRITE_KERN
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "keescook@chromium.org" <keescook@chromium.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "candle.sun@unisoc.com" <candle.sun@unisoc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210112181041.356734-8-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 6:37 PM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Candle Sun
-> > Sent: 25 January 2021 08:56
-> >
-> > From: Candle Sun <candle.sun@unisoc.com>
-> >
-> > Though do_overwritten() follows do_nothing() in source code, the final
-> > memory address order is determined by compiler. We can't always assume
-> > address of do_overwritten() is bigger than do_nothing(). At least the
-> > Clang we are using places do_overwritten() before do_nothing() in the
-> > object. This causes the copy size in lkdtm_WRITE_KERN() is *really*
-> > big and WRITE_KERN test on ARM32 arch will fail.
-> >
-> > Compare the address order before doing the subtraction.
->
-> It isn't clear that helps.
-> Compile with -ffunction-sections and/or do LTO an there
-> is no reason at all why the functions should be together.
->
-> Even without that lkdtm_WRITE_KERN() could easily be between them.
->
-> You need to get the size of the 'empty function' from the
-> symbol table.
->
->         David
+On 12/01/21 19:10, Ben Gardon wrote:
+> __tdp_mmu_set_spte is a very important function in the TDP MMU which
+> already accepts several arguments and will take more in future commits.
+> To offset this complexity, add a comment to the function describing each
+> of the arguemnts.
+> 
+> No functional change intended.
+> 
+> Reviewed-by: Peter Feiner <pfeiner@google.com>
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>   arch/x86/kvm/mmu/tdp_mmu.c | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 2650fa9fe066..b033da8243fc 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -357,6 +357,22 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>   				      new_spte, level);
+>   }
+>   
+> +/*
+> + * __tdp_mmu_set_spte - Set a TDP MMU SPTE and handle the associated bookkeeping
+> + * @kvm: kvm instance
+> + * @iter: a tdp_iter instance currently on the SPTE that should be set
+> + * @new_spte: The value the SPTE should be set to
+> + * @record_acc_track: Notify the MM subsystem of changes to the accessed state
+> + *		      of the page. Should be set unless handling an MMU
+> + *		      notifier for access tracking. Leaving record_acc_track
+> + *		      unset in that case prevents page accesses from being
+> + *		      double counted.
+> + * @record_dirty_log: Record the page as dirty in the dirty bitmap if
+> + *		      appropriate for the change being made. Should be set
+> + *		      unless performing certain dirty logging operations.
+> + *		      Leaving record_dirty_log unset in that case prevents page
+> + *		      writes from being double counted.
+> + */
+>   static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+>   				      u64 new_spte, bool record_acc_track,
+>   				      bool record_dirty_log)
+> 
 
-Thanks David.
+Queued, thanks.
 
-I think using abs() by Nick's advice would be better. But could you
-point out which kernel function can get function size?
+Paolo
 
-Regards,
-Candle
-
-
->
-> >
-> > Signed-off-by: Candle Sun <candle.sun@unisoc.com>
-> > ---
-> >  drivers/misc/lkdtm/perms.c | 19 +++++++++----------
-> >  1 file changed, 9 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/misc/lkdtm/perms.c b/drivers/misc/lkdtm/perms.c
-> > index 2dede2ef658f..fbfbdf89d668 100644
-> > --- a/drivers/misc/lkdtm/perms.c
-> > +++ b/drivers/misc/lkdtm/perms.c
-> > @@ -31,13 +31,13 @@ static unsigned long ro_after_init __ro_after_init = 0x55AA5500;
-> >   * This just returns to the caller. It is designed to be copied into
-> >   * non-executable memory regions.
-> >   */
-> > -static void do_nothing(void)
-> > +static noinline void do_nothing(void)
-> >  {
-> >       return;
-> >  }
-> >
-> >  /* Must immediately follow do_nothing for size calculuations to work out. */
-> > -static void do_overwritten(void)
-> > +static noinline void do_overwritten(void)
-> >  {
-> >       pr_info("do_overwritten wasn't overwritten!\n");
-> >       return;
-> > @@ -110,15 +110,14 @@ void lkdtm_WRITE_RO_AFTER_INIT(void)
-> >
-> >  void lkdtm_WRITE_KERN(void)
-> >  {
-> > -     size_t size;
-> > -     volatile unsigned char *ptr;
-> > +     unsigned long value_dow = (unsigned long)do_overwritten;
-> > +     unsigned long value_do =  (unsigned long)do_nothing;
-> > +     size_t size = (size_t)(value_dow > value_do ?
-> > +                     value_dow - value_do : value_do - value_dow);
-> >
-> > -     size = (unsigned long)do_overwritten - (unsigned long)do_nothing;
-> > -     ptr = (unsigned char *)do_overwritten;
-> > -
-> > -     pr_info("attempting bad %zu byte write at %px\n", size, ptr);
-> > -     memcpy((void *)ptr, (unsigned char *)do_nothing, size);
-> > -     flush_icache_range((unsigned long)ptr, (unsigned long)(ptr + size));
-> > +     pr_info("attempting bad %zu byte write at %px\n", size, do_overwritten);
-> > +     memcpy((void *)value_dow, (void *)value_do, size);
-> > +     flush_icache_range(value_dow, value_dow + (unsigned long)size);
-> >       pr_err("FAIL: survived bad write\n");
-> >
-> >       do_overwritten();
-> > --
-> > 2.17.0
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
->
