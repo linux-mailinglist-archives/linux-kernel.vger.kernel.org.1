@@ -2,92 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD709303BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E284303BC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392526AbhAZLgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:36:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43358 "EHLO mx2.suse.de"
+        id S2391657AbhAZLgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:36:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390944AbhAZKUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:20:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611656392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FkBlpLaDLCjmZaDvBj+nmc1/By5Jyg5M7J+fO4B7Whk=;
-        b=mtCxn6j0A/mh0LBKPiDz4ztviV4HkdrzPqf3uj9oB4ypZic601FKrti0WVEckGQnRr99Cd
-        49ulTY0OojdKvVqB8DyMLyGtVT3l1L6HWwjvOsiIsbmeTyXT7T1PhEh7zUswGx3af0EVxk
-        q5DAUvY+as7fxIaUNVFBvFArUNaDp8E=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B6D6AE40;
-        Tue, 26 Jan 2021 10:19:52 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 11:19:50 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210126101950.GJ827@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-7-rppt@kernel.org>
- <20210125170122.GU827@dhcp22.suse.cz>
- <20210125213618.GL6332@kernel.org>
- <20210126071614.GX827@dhcp22.suse.cz>
- <20210126083311.GN6332@kernel.org>
- <20210126090013.GF827@dhcp22.suse.cz>
- <20210126092011.GP6332@kernel.org>
- <20210126094903.GI827@dhcp22.suse.cz>
- <23850371-a19f-51fa-d813-6e78624ee8f8@redhat.com>
+        id S2391347AbhAZKVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:21:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F349921744;
+        Tue, 26 Jan 2021 10:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611656418;
+        bh=6DOvlm706rmhsW1z1XjS9Clql0hWOECtjaG3EOjR5u4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KcIYYnFn0cJDwM+1zp1u10ruU2hCRePNLJ4RdTreVgSbjPDenCm07um2xBQsalAJm
+         egkrX2ln79A+NTumO5yry667om3cEYlqxWhf/mNfNdJFniUCTq/aLaAas/HXAown0a
+         RvyD5eo7+xjeSHVvCEIjmcUDg8YcVgSwxJk9mH6sgO000Lt6HqqiaIjRISpI/V65Pw
+         d9GbleLg8aH2FjmaDBrpJcW+ASClD2PEvKQ9lXxvbmPUW8qILxfe97ApTcXAMzr6Pp
+         6h1TUp4WOGjttXHqE0BLl9vXzp/Os79mfvvG0e1ab6r1aNWlm/8wQ09rtBIkk3JGAa
+         sQaIs+1Vrh//A==
+Date:   Tue, 26 Jan 2021 10:20:14 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com
+Subject: Re: [PATCH v2] locking/rwsem: Remove empty rwsem.h
+Message-ID: <20210126102014.GB29204@willie-the-truck>
+References: <20210126101721.976027-1-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <23850371-a19f-51fa-d813-6e78624ee8f8@redhat.com>
+In-Reply-To: <20210126101721.976027-1-nborisov@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26-01-21 10:53:08, David Hildenbrand wrote:
-[...]
-> I assume you've seen the benchmark results provided by Xing Zhengjun
+On Tue, Jan 26, 2021 at 12:17:21PM +0200, Nikolay Borisov wrote:
+> This is a leftover from 7f26482a872c ("locking/percpu-rwsem: Remove the embedded rwsem")
 > 
-> https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+> V2:
+>  * Add reference to commit which made the file useless.
+> 
+>  kernel/locking/rwsem.h | 0
+>  1 file changed, 0 insertions(+), 0 deletions(-)
+>  delete mode 100644 kernel/locking/rwsem.h
+> 
+> diff --git a/kernel/locking/rwsem.h b/kernel/locking/rwsem.h
+> deleted file mode 100644
+> index e69de29bb2d1..000000000000
 
-I was not. Thanks for the pointer. I will have a look.
+Acked-by: Will Deacon <will@kernel.org>
 
--- 
-Michal Hocko
-SUSE Labs
+Will
