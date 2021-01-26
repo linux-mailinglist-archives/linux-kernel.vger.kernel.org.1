@@ -2,171 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71384304549
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B92304552
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729683AbhAZR0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:26:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37410 "EHLO
+        id S1731671AbhAZR3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389555AbhAZHV6 (ORCPT
+        with ESMTP id S1730180AbhAZHfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:21:58 -0500
-X-Greylist: delayed 73382 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 25 Jan 2021 23:21:12 PST
-Received: from antares.kleine-koenig.org (antares.kleine-koenig.org [IPv6:2a01:4f8:c0c:3a97::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F52C061573;
-        Mon, 25 Jan 2021 23:21:12 -0800 (PST)
-Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
-        by antares.kleine-koenig.org (Postfix) with ESMTP id 46AFDADE69D;
-        Tue, 26 Jan 2021 08:21:09 +0100 (CET)
-Received: from antares.kleine-koenig.org ([94.130.110.236])
-        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
-        with ESMTP id V7DnAz6ZVq0I; Tue, 26 Jan 2021 08:21:07 +0100 (CET)
-Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5ad:20fc:e287:a8e4:9290:29e6])
-        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
-        Tue, 26 Jan 2021 08:21:07 +0100 (CET)
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        cyril@debamax.com, Arnd Bergmann <arnd@arndb.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rob Herring <robh@kernel.org>
-References: <20210125105757.661240-1-uwe@kleine-koenig.org>
- <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
-From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
-Message-ID: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
-Date:   Tue, 26 Jan 2021 08:20:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 26 Jan 2021 02:35:54 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE0FC061573;
+        Mon, 25 Jan 2021 23:25:24 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id u15so115875plf.1;
+        Mon, 25 Jan 2021 23:25:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tpj3ybU4120wd2c47Rjps1g04Qm5dWT54O3NvokuXtg=;
+        b=SeREUFtvVta/QikDIsJfNDYjyCMZU53duhQ8BBqY+28nkpa6IHRILmBPRAvO4MDdGk
+         PH+KtN7UidVTheQitGPvKYulTXv7kHxV99ieogw6404k7JqTfvEtkbZZ3GaZ8GUIEX3x
+         /KSjeeNUIHfpbs8mZml3btb6UXPTw3qPqhVYLqifJjZvMhpxtsGmn5XhIYg++0t3ohya
+         6PL+3rhLMTM8STaZ3q57GVb5Aut0KPRB+ndH8tX4SvULQxO5uA3tHlSnP5TBpgIBGbzP
+         Jqelb9VPnAjY1X/WSYdiDzUVUFMOl0jG9sQxCUTWwsQNk/mA25l+nsIUktUkXJsQ3M7G
+         x7HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tpj3ybU4120wd2c47Rjps1g04Qm5dWT54O3NvokuXtg=;
+        b=sqi5hl/P4MpnSsnA8roMRaDFjmTeDOdPgGiX/oPpNZcdJBlEHDjKgYiw5fGd0O58xr
+         110MOHFu1ZdyGh6pqvYjN6BCk23x2wr7MGTJOURfCGlejUHhbee0v3LgkWSXNoGyCTP1
+         PdVNI5zfYXAzJwJHgWwtaEq0TDNn2AC5EwQ0OLvVXQiUYEcM8jHzOD5z8+bq6c5UtE6M
+         tRA/tbDTyTjf/2JGmQEwhYAt3NcVhfut4gmTYuSZzx0lNjaiuAk7qr5Lk6dOHdebenFI
+         sioLDO9BBCE+puhWytnMpil09Yh1lEZflzTIxtnz3qFivvdu6wa1KUWjJcnXrQxM+rxD
+         c7Gg==
+X-Gm-Message-State: AOAM530W+ZgdtZPi9vDXFmYB06JmalUdUYGdXEXUOC2scu+YmD/n4Wpg
+        x/lyqrgLr01gCDCp7Kj4Aps=
+X-Google-Smtp-Source: ABdhPJwpBsucfGKM8QZzzZillS1vNYCPRM2covSqQBV0gYQ77UogpTt3CXFV/oN1jG6oLP8Vt8i1Yw==
+X-Received: by 2002:a17:90a:8996:: with SMTP id v22mr4730206pjn.235.1611645924475;
+        Mon, 25 Jan 2021 23:25:24 -0800 (PST)
+Received: from cl-arch-kdev.. (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id l12sm1320256pjg.54.2021.01.25.23.25.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 23:25:23 -0800 (PST)
+From:   Fox Chen <foxhlchen@gmail.com>
+To:     corbet@lwn.net, vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, grandmaster@al2klimov.de
+Cc:     Fox Chen <foxhlchen@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/12] docs: path-lookup: Update pathlookup docs
+Date:   Tue, 26 Jan 2021 15:24:31 +0800
+Message-Id: <20210126072443.33066-1-foxhlchen@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX
-Content-Type: multipart/mixed; boundary="bIO7wac1lK89xpNlKc4oBcYpFRZsCPvJE";
- protected-headers="v1"
-From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Michal Marek <michal.lkml@markovi.net>,
- Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, cyril@debamax.com,
- Arnd Bergmann <arnd@arndb.de>, Maxime Ripard <mripard@kernel.org>,
- DTML <devicetree@vger.kernel.org>, Geert Uytterhoeven
- <geert@linux-m68k.org>, Rob Herring <robh@kernel.org>
-Message-ID: <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
-Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
-References: <20210125105757.661240-1-uwe@kleine-koenig.org>
- <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
-In-Reply-To: <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
-
---bIO7wac1lK89xpNlKc4oBcYpFRZsCPvJE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hello Masahiro,
-
-On 1/25/21 10:53 PM, Masahiro Yamada wrote:
-> On Mon, Jan 25, 2021 at 8:07 PM Uwe Kleine-K=C3=B6nig <uwe@kleine-koeni=
-g.org> wrote:
->>
->> Adding the -@ switch to dtc results in the binary devicetrees containi=
-ng
->> a list of symbolic references and their paths. This is necessary to
->> apply device tree overlays e.g. on Raspberry Pi as described on
->> https://www.raspberrypi.org/documentation/configuration/device-tree.md=
-=2E
->>
->> Obviously the downside of this change is an increas of the size of the=
-
->> generated dtbs, for an arm out-of-tree build (multi_v7_defconfig):
->>
->>          $ du -s arch/arm/boot/dts*
->>          101380  arch/arm/boot/dts-pre
->>          114308  arch/arm/boot/dts-post
->>
->> so this is in average an increase of 12.8% in size.
->>
->> Signed-off-by: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
->=20
->=20
-> (CCing DT ML.)
-
-makes sense, thanks.
-
-> https://www.spinics.net/lists/linux-kbuild/msg27904.html
->=20
-> See Rob's comment:
->=20
-> "We've already rejected doing that. Turning on '-@' can grow the dtb
-> size by a significant amount which could be problematic for some
-> boards."
-
-The patch was created after some conversation on irc which continued
-after I sent the patch. I added the participating parties to Cc:.
-
-The (relevant) followups were:
-
-Geert suggested to always generate the symbols and provide a way to
-strip the symbols for installation if and when they are not needed.
-
-Rob said: "I'm less concerned with the size increases, but rather that
-labels go from purely source syntax to an ABI. I'd rather see some
-decision as to which labels are enabled or not."
-
-And then I learned with hints from Rob and Geert that symbols are not
-really necessary for overlays, you just cannot use named labels. But
-using
-
-	target-path =3D "/soc/i2c@23473245";
-
-or
-
-	target =3D <&{/soc/i2c@23473245}>;
-
-instead of
-
-	target =3D <&i2c1>;
-
-works fine. (And if you need to add a phandle the &{/path/to/node}
-construct should work, too (but I didn't test).) Using labels is a tad=20
-nicer, but the problem I wanted to address with my patch now has a known =
-
-different solution.
-
-Best regards
-Uwe
+The Path lookup is a very complex subject in VFS. The path-lookup
+document provides a very detailed guidance to help people understand
+how path lookup works in the kernel.This document was originally
+written based on three lwn articles five years ago. As times goes by,
+some of the content was outdated. This patchset is intended to update
+the document to make it more relevant to current codebase.
 
 
---bIO7wac1lK89xpNlKc4oBcYpFRZsCPvJE--
+Fox Chen (12):
+  docs: path-lookup: update follow_managed() part
+  docs: path-lookup: update path_to_nameidata() parth
+  docs: path-lookup: update path_mountpoint() part
+  docs: path-lookup: update do_last() part
+  docs: path-lookup: remove filename_mountpoint
+  docs: path-lookup: Add macro name to symlink limit description
+  docs: path-lookup: i_op->follow_link replaced with i_op->get_link
+  docs: path-lookup: update i_op->put_link and cookie description
+  docs: path-lookup: no get_link()
+  docs: path-lookup: update WALK_GET, WALK_PUT desc
+  docs: path-lookup: update get_link() ->follow_link description
+  docs: path-lookup: update symlink description
 
---Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+ Documentation/filesystems/path-lookup.rst | 146 ++++++++++------------
+ 1 file changed, 63 insertions(+), 83 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.30.0
 
-iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAPwtwACgkQwfwUeK3K
-7AlKXwgAm+kcs8YKGPW7BkNgCAJ44hDVJaUMseUumkbzSu+J7mJb/cEZ0bG87K+J
-SzhQcJQ2LoASq0ZMg6dTn2PyqBDv63nnKmHiFVa+3z9J9EWPK+ZvZSyvoX0PLjiO
-/IoBG+Vaei0hav2poeDjBdSWybhP567KYiYPkrmlbUyt9Aq6fgaEqgOGnnaZbxII
-YOJ51Aec1JjAzlb8uD9dOYPmNKAFqlfONfBcr9abIACfc6FEKQytp/yvn6UvkHrL
-tdP1lubPpzJXFJp8Md4yCPRRUbTpB8b7qvLXIge0YVUeU641roNdDnX9TY818ffA
-qXrWfwyBKeMboKt30RTEfkHmEmIDew==
-=nA4F
------END PGP SIGNATURE-----
-
---Md9uBspQZ8si26wbTEXGrXNDQsO6WS1FX--
