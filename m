@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB20304280
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D081304282
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406124AbhAZP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:27:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52906 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406264AbhAZP1B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:27:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611674735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJe0QMue+MrGLDqG9YMY3B8wc1OhQAcndv4QLZtzS5Q=;
-        b=XZ4XXj3RQLC1MO2SguWy4v0N70WOJeihrwJLp9EUo0FQGg6WKggxCwuXGWAbRj/NK7KvNM
-        iwefUJ3F/Vd7atA9uc4ZYFT8TB3DqCEy776Xvw1B7E14LwCX1X8qgI7bRONVnJyXEs9PA5
-        /25prPZfK8AAHBsW9+lbLL8upw+Ss3I=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-RDZWNL1oOjGMKFASb-fYgA-1; Tue, 26 Jan 2021 10:25:33 -0500
-X-MC-Unique: RDZWNL1oOjGMKFASb-fYgA-1
-Received: by mail-ed1-f69.google.com with SMTP id m18so2905882edp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:25:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VJe0QMue+MrGLDqG9YMY3B8wc1OhQAcndv4QLZtzS5Q=;
-        b=Ry4nxxveTVYBeWzMtCEPstUC6B+L7yvey72+mx82afHSrGJu3rIxdqiUxbE5VObwE7
-         VvDztHfAQftdjfgyx7O9QD9vLQHqIXByfskx8CEcM8PM9LVbUiPhxgBCWBbz4KKgbJhy
-         z5XzNHMP5xDPwfNwlDuea1uL2aBn4pcx6x4uEUSycbERFxwvK5E9OQl5EO0hnaMWFky+
-         K9B7RWbq/uJ3F2VwI07s9K++GzYy5hfIhaDWYYlsstbZHSyAfV1NXw7VdNbACFifrDah
-         jmwI37qAK6orlPY0iNJhWLx4SicFRzJnh1Y0xNbq+93MH4cXVMHp25kM+E3zD0/22yLV
-         xL3w==
-X-Gm-Message-State: AOAM531Hz/zdMpLD84ytflvBQl353WiJWpL49IlvSnn3Ruq4qTudT6WP
-        75ne8hkEtuZU3s9BULFG7/H8xmxN3bUoQCyqTuBJju3gehbQymtcNIYqWZPJ2h38OwK7sv+v/KL
-        QrIbH0D+z8AfOlZRLZZRLpTTAVBugFkKhBxzXo1Dl
-X-Received: by 2002:a05:6402:3589:: with SMTP id y9mr5114911edc.344.1611674731923;
-        Tue, 26 Jan 2021 07:25:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzlAcqaq8CqekYAOTl5XTKJw4byUxjRunvP1wQKBAqraCVAKiDEx3Vt3nz1iiXtLgQBV8BZqw1Aaq6eAK2Q72M=
-X-Received: by 2002:a05:6402:3589:: with SMTP id y9mr5114888edc.344.1611674731765;
- Tue, 26 Jan 2021 07:25:31 -0800 (PST)
+        id S2406279AbhAZP2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:28:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392290AbhAZP1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:27:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D28C22D58;
+        Tue, 26 Jan 2021 15:26:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611674803;
+        bh=w8mSdzw2vih+0TFqWZSIck7PWCi9bcM/xz0FN1eYr3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rCGV/avioWinhQtovDeog1G705f64yQSpIb7iAvYZNpIetyCCBOZVTs3VWTGUZ7nf
+         hHS41ea7skQwo7Mahx23PVE79mRd0UdfR7h73HPjToZO2DD/Ae5+Xf0DTl5FmeiWTO
+         ACb/Ytg42CJneuvK8R9+xYsmtsM03n91fzuwsrIOGObGHkOAbX7asDhPFaPg84Daar
+         R1GF9813AvMYeu1M+CA+bZzYLJUYdi0jqvEul9DptSVQ+uoPpQ3MAH3jxPY8MEkiOm
+         /XNm49yANQeluC1KdJDgnzTPa6zapH1bCW1aAAXNeiwoQ+EuPipE2TVcYkRemsTpoa
+         R/O0SotBLRCWA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l4QF2-0000kb-44; Tue, 26 Jan 2021 16:26:52 +0100
+Date:   Tue, 26 Jan 2021 16:26:52 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     linux-usb@vger.kernel.org
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH 00/10] USB: serial: xr: fix up remaining issues in new
+ driver
+Message-ID: <YBA0vO06cBvoK3Hr@hovoldconsulting.com>
+References: <20210121102922.17439-1-johan@kernel.org>
 MIME-Version: 1.0
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
- <161161057357.2537118.6542184374596533032.stgit@warthog.procyon.org.uk> <20210126040540.GK308988@casper.infradead.org>
-In-Reply-To: <20210126040540.GK308988@casper.infradead.org>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Tue, 26 Jan 2021 10:24:55 -0500
-Message-ID: <CALF+zOn80NoeaBW8i9djC8qBCEng7riaHgz77uhxipaZ+RJ5ew@mail.gmail.com>
-Subject: Re: [PATCH 27/32] NFS: Refactor nfs_readpage() and
- nfs_readpage_async() to use nfs_readdesc
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121102922.17439-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:06 PM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Jan 25, 2021 at 09:36:13PM +0000, David Howells wrote:
-> > +int nfs_readpage_async(void *data, struct inode *inode,
-> >                      struct page *page)
-> >  {
-> > +     struct nfs_readdesc *desc = (struct nfs_readdesc *)data;
->
-> You don't need a cast to cast from void.
->
-Right, fixing.
+On Thu, Jan 21, 2021 at 11:29:11AM +0100, Johan Hovold wrote:
+> This series fixes the remaining issues in the new MaxLinear driver that
+> were pointed out here:
+> 
+> 	https://lore.kernel.org/r/YAlVLOqzx8otPgOg@hovoldconsulting.com
 
-> > @@ -440,17 +439,16 @@ int nfs_readpages(struct file *filp, struct address_space *mapping,
-> >       if (ret == 0)
-> >               goto read_complete; /* all pages were read */
-> >
-> > -     desc.pgio = &pgio;
-> > -     nfs_pageio_init_read(&pgio, inode, false,
-> > +     nfs_pageio_init_read(&desc.pgio, inode, false,
->
-> I like what you've done here, embedding the pgio in the desc.
->
-Thanks for the review!
+> Johan Hovold (10):
+>   USB: serial: xr: fix NULL-deref at probe
+>   USB: serial: xr: fix interface leak at disconnect
+>   USB: serial: xr: use subsystem usb_device at probe
+>   USB: serial: xr: use termios flag helpers
+>   USB: serial: xr: document vendor-request recipient
+>   USB: serial: xr: clean up line-settings handling
+>   USB: serial: xr: simplify line-speed logic
+>   USB: serial: xr: fix gpio-mode handling
+>   USB: serial: xr: fix pin configuration
+>   USB: serial: xr: fix B0 handling
+> 
+>  drivers/usb/serial/xr_serial.c | 102 +++++++++++++++++++--------------
+>  1 file changed, 59 insertions(+), 43 deletions(-)
 
+I have applied these now.
+
+Johan
