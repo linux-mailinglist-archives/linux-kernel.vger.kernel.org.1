@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B587303AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A612303AD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404369AbhAZKxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:53:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732415AbhAZCqr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:46:47 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A6DC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:46:07 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id o7so468336pgl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hWGZswVflRpHTssK7VvTt7HKTpyszr8rzXo8cgMjsjA=;
-        b=UhhxZJLv7oppd27QQQf7NmOdXXi/dtkkLvnyAZonNWeNR4BFCWJVnaN2I1jqFVdYPu
-         +AKS5xYuMabNbOKh7OtTfUvr3YiOEmUsh8Q8XCwhUrxvwlv8cKnKTiUafwD1IOwrGE9b
-         fSOJUxUVXSlDk8rIPcuKFrDwxsNICU6fuFQFwueejxSwIu48+/VELScVP+lHUGRyTo4C
-         mhpu9rx18gQCr5iN1kZH24PA/xEDgJPNjUh3TmO73YKZjCv4o0NLJFZIrlAFsypF4FlY
-         KFMaDVnD4R3srQhVo7Sujov8VSBcnOBkVc0lCcrKjqB2Q7nNgwX+DOicMk/J2FzHUBJC
-         rTWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hWGZswVflRpHTssK7VvTt7HKTpyszr8rzXo8cgMjsjA=;
-        b=eMPcRAvAysg/0Zs0O2jfdi5nPA2J4maGD2ERMV0WMF78YGvjhHFIOiVU3Se9wSabZZ
-         mRZAoBKKIzzMHeby4/xvh2QFm0fTkOA7eoTrFzfuMMbe8Gce4F/blwC8WnhoAL0s0laE
-         DP0kUbNCVldXfU0FQNMqNioogdY6sRtraLYG7pvAWpANmYpfyOg2nFxFbYU1ZfgU8gkh
-         taYRgobbW3gjn64Vbb+J5Qq+xr3PI9cCireK855l4s3BwqsQOgDkSS3iPpTtpYjgdjNw
-         98Xd/UsW/970Ma36SIBYpHtJtvt/8mk8erfiE/KBQvQHe7QX1Mcxiy+dvdBDAqQBGlfP
-         kf5g==
-X-Gm-Message-State: AOAM5313T+qTUVGcI58hIzYGkg3JLSBO/6F3eJbAvFd0md52gNlmPNRi
-        uCK12coFAjnkWv+W6cUilxX9mUIMkyVXHjIsQT4/5Q==
-X-Google-Smtp-Source: ABdhPJzJw/g9vq/ezd6LGNCYqQY7xJY3b/k9Wogea+ntQG37KA2GV//3WD/k9+DNv/VVGlGj2BQCiYKLx5n/xWQfUHc=
-X-Received: by 2002:aa7:8ed2:0:b029:1b9:7c87:8f44 with SMTP id
- b18-20020aa78ed20000b02901b97c878f44mr3290964pfr.49.1611629166691; Mon, 25
- Jan 2021 18:46:06 -0800 (PST)
+        id S2404245AbhAZKxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:53:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729771AbhAZCsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:48:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 865C322EBF;
+        Tue, 26 Jan 2021 02:47:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611629244;
+        bh=LwqYiU3oRlYo9FShj+CR8F39sEMecoUEsL8JexS7mlk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ytpa+AJgfdSkPhWvfrCLezbbz355uloVnAK/2fKFQowbfA7lckWbiPn6NoxlBkrnu
+         5lfD+IlN9yrOP5buiZRptqOt56rvqd0mOQyYpSXM4E8NT/ggkTGpHV/0HLoY5D+EiY
+         YMjJhjvEBNl1LKp5ZjV97nYWBX08ak0aS0XtjjaepdSTfopPsNCBTYQcf1qIDrn+29
+         n/wtiPxcTkTFBUmUA7G/gke7Z0eytD8X8ZFXJUM5vLerJnOTKJhj2m6ZWdz7NftPJO
+         jfsrRHCYxJ67dpXzOFr5MBwDARwWlRonY5N0c+V6+6YiCYvJPchobIAFYxH80IznUW
+         dqr3/w0ervbYQ==
+Received: by mail-ej1-f45.google.com with SMTP id ox12so21016791ejb.2;
+        Mon, 25 Jan 2021 18:47:24 -0800 (PST)
+X-Gm-Message-State: AOAM531LUtRKVvxE8UkeGh+nwI1tehCA1EAYu7KK62B8gromemeBM635
+        ktJcCAAwjIbhF7B65Sy/05pKcql9JBih+AXtPg==
+X-Google-Smtp-Source: ABdhPJzhkSY6hKt7+GAS1hDt9h/064YyPtrM+ZOJ1MWC9e2hwRKo3F2kv3CME3814mJk+ka7plMlgXPIv5fl/5/2FYo=
+X-Received: by 2002:a17:906:a94:: with SMTP id y20mr2013640ejf.525.1611629243021;
+ Mon, 25 Jan 2021 18:47:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-3-songmuchun@bytedance.com> <472a58b9-12cb-3c3-d132-13dbae5174f0@google.com>
- <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com>
- <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org> <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com>
- <2d9bfd8d-a77f-6470-807c-1a71ffeac3ff@google.com>
-In-Reply-To: <2d9bfd8d-a77f-6470-807c-1a71ffeac3ff@google.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 26 Jan 2021 10:45:30 +0800
-Message-ID: <CAMZfGtWCy-krzL1ejOOq2rZQ3mPbBUSNqmQd-svABMKxE0FcsA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v13 02/12] mm: hugetlb: introduce a new
- config HUGETLB_PAGE_FREE_VMEMMAP
-To:     David Rientjes <rientjes@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210115205819.19426-1-s-anna@ti.com> <20210126000443.GA1223706@robh.at.kernel.org>
+ <8f4a47f8-18dc-cb73-10db-033e5e5adb25@ti.com>
+In-Reply-To: <8f4a47f8-18dc-cb73-10db-033e5e5adb25@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 25 Jan 2021 20:47:11 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLYfGvJ=zYbdJp4pUjmmJ_ROu1u_0dVwTj06Cw5+23fGw@mail.gmail.com>
+Message-ID: <CAL_JsqLYfGvJ=zYbdJp4pUjmmJ_ROu1u_0dVwTj06Cw5+23fGw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Lechner <david@lechnology.com>,
+        devicetree@vger.kernel.org,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:47 AM David Rientjes <rientjes@google.com> wrote:
+On Mon, Jan 25, 2021 at 6:16 PM Suman Anna <s-anna@ti.com> wrote:
 >
-> On Mon, 25 Jan 2021, Muchun Song wrote:
+> Hi Rob,
 >
-> > > >> I'm not sure I understand the rationale for providing this help text if
-> > > >> this is def_bool depending on CONFIG_HUGETLB_PAGE.  Are you intending that
-> > > >> this is actually configurable and we want to provide guidance to the admin
-> > > >> on when to disable it (which it currently doesn't)?  If not, why have the
-> > > >> help text?
-> > > >
-> > > > This is __not__ configurable. Seems like a comment to help others
-> > > > understand this option. Like Randy said.
-> > >
-> > > Yes, it could be written with '#' (or "comment") comment syntax instead of as help text.
+> On 1/25/21 6:04 PM, Rob Herring wrote:
+> > On Fri, Jan 15, 2021 at 02:58:19PM -0600, Suman Anna wrote:
+> >> The '#address-cells' property looks to be a required property for
+> >> interrupt controller nodes as indicated by a warning message seen
+> >> when building dtbs with W=2. Adding the property to the PRUSS INTC
+> >> dts nodes though fails the dtbs_check. Add this property to the
+> >> PRUSS INTC binding to make it compliant with both dtbs_check and
+> >> building dtbs.
+> >>
+> >> Signed-off-by: Suman Anna <s-anna@ti.com>
+> >> ---
+> >> Hi Rob,
+> >>
+> >> This patch is also part of our effort to get rid of the warnings seen
+> >> around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
+> >> INTC bindings to not get a warning with dtbs_check while also ensuring
+> >> no warnings while building dtbs with W=2.
+> >>
+> >> I would have expected the '#address-cells' requirement to be inherited
+> >> automatically. And looking through the schema files, I actually do not
+> >> see the interrupt-controller.yaml included automatically anywhere. You
+> >> had asked us to drop the inclusion in this binding in our first version
+> >> with YAML [3]. Am I missing something, and how do we ensure that this
+> >> is enforced automatically for everyone?
 > >
-> > Got it. I will update in the next version. Thanks.
-> >
+> > interrupt-controller.yaml is applied to any node named
+> > 'interrupt-controller'. More generally, if 'compatible' is not present,
+> > then we look at $nodename for the default 'select'. In your case, you
+> > didn't name the node appropriately.
 >
-> I'm not sure that Kconfig is the right place to document functional
-> behavior of the kernel, especially for non-configurable options.  Seems
-> like this is already served by existing comments added by this patch
-> series in the files where the description is helpful.
+> Thanks for the clarification. Yeah, I didn't add anything specifically, since
+> the expectation is interrupt-controller. Should I be adding that to this binding?
 
-OK. So do you mean just remove the help text here?
+No, either interrupt-controller.yaml needs to learn a new node name or
+your node names need to be fixed. I prefer the latter, but if you have
+more than 1 and don't have a unit-address (and in turn a 'reg' prop)
+we'd have to do the former. How are the interrupts controllers
+accessed if there's no way to address them?
 
-Thanks.
+>
+> >
+> > We can't check this in interrupt-controller.yaml because #address-cells
+> > is not always 0. GICv3 is one notable exception.
+> >
+> >>
+> >> regards
+> >> Suman
+> >>
+> >> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
+> >
+> > I've commented on this thread now in regards to #address-cells.
+>
+> I suppose I still need this patch to be defined to unblock the ICSSG nodes
+> getting accepted by our dts maintainer. Care to give your Reviewed-by for the
+> change? Or I can spin a v2 with $nodename added as well if that's needed too.
+
+No, I don't think you have to add #address-cells. We need to fix the
+warning in dtc.
+
+Rob
