@@ -2,130 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2CB304565
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F010630456F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbhAZReH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:34:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55270 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389499AbhAZHj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:39:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611646694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M0mfPAgr5/mcN1gE3PCuv5bB2pgiXjtbaOMlL4p0sos=;
-        b=dsN+HPpNY9OXHC9dhykB1ubNv7WY+/ssIg+VKsRreb5xETHkTsTy8aRfsyHDwwgKdOPzP0
-        qKyX9kw9S0Bk0tz8DxM73Y+gzQhzQ+8sLd8bNWurnabNn6pNiENZhfoXXBGczpWSztCK9H
-        QDqCpDzJ61X1KCI15VL6J8c5NJdRVsc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BF732AE56;
-        Tue, 26 Jan 2021 07:38:14 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 08:38:08 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, hyesoo.yu@samsung.com,
-        david@redhat.com, surenb@google.com, pullip.cho@samsung.com,
-        joaodias@google.com, hridya@google.com, john.stultz@linaro.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, hch@infradead.org, robh+dt@kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v4 1/4] mm: cma: introduce gfp flag in cma_alloc instead
- of no_warn
-Message-ID: <20210126073808.GZ827@dhcp22.suse.cz>
-References: <20210121175502.274391-1-minchan@kernel.org>
- <20210121175502.274391-2-minchan@kernel.org>
- <20210125130701.GF827@dhcp22.suse.cz>
- <YA8fKgFLuOi/rSez@google.com>
+        id S2392301AbhAZRfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389465AbhAZHlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:41:35 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B15C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:39:28 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id w11so1492354qvz.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:39:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MuwuMM1E8EDH+ukP+fboaIDTRxHiGHEVLbQM3XUxmow=;
+        b=cd/IZ7dTUOKWb4uxlB9z6AelujYZfyEijwkUXr6NM5yTwl+513pkERu6h0dMWkhdaU
+         At23qG9KTayL3QvCcZJZDYJC33EhuLzzs10LzS4N9jM5ieLQ/Zc8wxRKCfQZLpi2+OSZ
+         DvpfPKJ6icTje8vFQO9dFH07mj4NftWxu8Rmw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MuwuMM1E8EDH+ukP+fboaIDTRxHiGHEVLbQM3XUxmow=;
+        b=dHymJ8eBfxubEtp59rRza+jyGR/C62r8zqrQSIs6UYZ2+kty0fiLTwVvDzrk3/SL5J
+         QDSe9s25bAVYxjoDcCKJLnXAz94JZwDOCjYPU3VIfMHDOveSLXkAwGCYUXwpYKd0sjUl
+         8VnwuK13qi1opf8cGKSOTSTinXt+BflXo3vTedQO2me2Z5K5ZZRDjbOMnmfdlVO3a/cA
+         30vC3ThcXW4oFgYiVOQMCQxLlNoINdugdk7CFOSEmkWolfQzjwuP4VayS3vzHMUPZzye
+         HiiSPEtgNelIlT3xNC8Q/IDfX4iCeiv2IPfvjldv6NlIiI4sAcn4uV4RL5+p5bGi744S
+         F7/Q==
+X-Gm-Message-State: AOAM532gETThgwteb8uwhqtO4jpWB44tgoxbH0/MdUGu2M9QVGILvQRC
+        FabDHmu5S+pgaZVMnjjhQYk6jGa+YBt2d5elM7+5Kw==
+X-Google-Smtp-Source: ABdhPJx2m2RK3FQFasvssPNmERYPUcOGckV3GmTjsOq1oZjbkp1d0L3SN2CIYmwEZ8kJTM5lEImXMaoaoAu951JMl7M=
+X-Received: by 2002:a0c:a905:: with SMTP id y5mr4391981qva.55.1611646767316;
+ Mon, 25 Jan 2021 23:39:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YA8fKgFLuOi/rSez@google.com>
+References: <20210125064234.2078146-1-stevensd@google.com> <YA8PXCEVukW0UzC5@google.com>
+In-Reply-To: <YA8PXCEVukW0UzC5@google.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Tue, 26 Jan 2021 16:39:16 +0900
+Message-ID: <CAD=HUj5YMtSJY6ZO9TRXHDEfWRM1o3Lrm7nkz=G2VJ_oZ-c5mw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/mmu: consider the hva in mmu_notifer retry
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25-01-21 11:42:34, Minchan Kim wrote:
-> On Mon, Jan 25, 2021 at 02:07:01PM +0100, Michal Hocko wrote:
-> > On Thu 21-01-21 09:54:59, Minchan Kim wrote:
-> > > The upcoming patch will introduce __GFP_NORETRY semantic
-> > > in alloc_contig_range which is a failfast mode of the API.
-> > > Instead of adding a additional parameter for gfp, replace
-> > > no_warn with gfp flag.
-> > > 
-> > > To keep old behaviors, it follows the rule below.
-> > > 
-> > >   no_warn 			gfp_flags
-> > > 
-> > >   false         		GFP_KERNEL
-> > >   true          		GFP_KERNEL|__GFP_NOWARN
-> > >   gfp & __GFP_NOWARN		GFP_KERNEL | (gfp & __GFP_NOWARN)
-> > > 
-> > > Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> > > Signed-off-by: Minchan Kim <minchan@kernel.org>
-> > [...]
-> > > diff --git a/mm/cma.c b/mm/cma.c
-> > > index 0ba69cd16aeb..d50627686fec 100644
-> > > --- a/mm/cma.c
-> > > +++ b/mm/cma.c
-> > > @@ -419,13 +419,13 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
-> > >   * @cma:   Contiguous memory region for which the allocation is performed.
-> > >   * @count: Requested number of pages.
-> > >   * @align: Requested alignment of pages (in PAGE_SIZE order).
-> > > - * @no_warn: Avoid printing message about failed allocation
-> > > + * @gfp_mask: GFP mask to use during the cma allocation.
-> > 
-> > Call out supported gfp flags explicitly. Have a look at kvmalloc_node
-> > for a guidance.
-> 
-> How about this?
-> 
-> 
-> diff --git a/mm/cma.c b/mm/cma.c
-> index d50627686fec..b94727b694d6 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -423,6 +423,10 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
->   *
->   * This function allocates part of contiguous memory on specific
->   * contiguous memory area.
-> + *
-> + * For gfp_mask, GFP_KERNEL and __GFP_NORETRY are supported. __GFP_NORETRY
-> + * will avoid costly functions(e.g., waiting on page_writeback and locking)
-> + * at current implementaion during the page migration.
+> > This has the secondary effect of greatly reducing the likelihood of extreme
+>
+> Out of curiosity, is this really the _secondary_ effect?  I would expect this
+> change to primarily benefit scenarios where the invalidation has gotten
+> waylaid for whatever reason.
 
-rather than explicitly mentioning what the flag implies I think it would
-be more useful to state the intended usecase. See how kvmalloc_node says
-"__GFP_RETRY_MAYFAIL is supported, and it should be used only if kmalloc is
-preferable to the vmalloc fallback, due to visible performance
-drawbacks.
-__GFP_NOWARN is also supported to suppress allocation failure messages."
+Yeah, this is the primary benefit. I was thinking about it as the
+reduction in page fault retries is the direct effect, and that in turn
+leads to a secondary effect of a reduction in the chance of extreme
+latency. But I guess that's not a particularly important distinction
+to make. I'll reword this.
 
-This would help people not familiar with internals to see whether this
-flag is a good fit for them.
+>
+> This needs a comment to explicitly state that 'count > 1' cannot be done at
+> this time.  My initial thought is that it would be more intuitive to check for
+> 'count > 1' here, but that would potentially check the wrong wrange when count
+> goes from 2->1.  The comment about persistence in invalidate_range_start() is a
+> good hint, but I think it's worth being explicit to avoid bad "cleanup" in the
+> future.
+>
+> > +     if (unlikely(kvm->mmu_notifier_count)) {
+> > +             if (kvm->mmu_notifier_range_start <= hva &&
+> > +                 hva < kvm->mmu_notifier_range_end)
 
-In this case I woul go with
-"
-@flags: gfp mask. Must be compatible (superset) with GFP_KERNEL.
-[...]
-Reclaim modifiers (__GFP_RETRY_MAYFAIL, __GFP_NOFAIL) are not supported.
-__GFP_NORETRY is supported, and it should be used for opportunistic
-allocation attempts that should rather fail quickly when the caller has
-a fallback strategy.
-"
+I'm not sure I understand what you're suggesting here. How exactly
+would 'count > 1' be used incorrectly here? I'm fine with adding a
+comment, but I'm not sure what the comment needs to clarify.
 
-Obviously for this patch you will go with a simple statement that
-Reclaim modifiers are not supported at all.
-
->   */
->  struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->                        gfp_t gfp_mask)
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+-David
