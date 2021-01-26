@@ -2,107 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837AD303D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E91F303D0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404019AbhAZMgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:36:21 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:24085 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403894AbhAZKaQ (ORCPT
+        id S1731894AbhAZMcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404028AbhAZKgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:30:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611657016; x=1643193016;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=7DPQRXFrlX+u7KxDE5WzIgzALAuas9XxehDfgOsVGl0=;
-  b=tjj/sE56Mmo9+XOLPMSEgr0UrG9bXwg2KNnbqIcrqB3a4xEdGURzl+r8
-   kONwrGjuSOA6C2yXc2fTnJ98pEIQGd1VJWGeSd3vim0U1p+Kly9Y8Dbgw
-   3UTMK6oNvTldzoOT4ZvKKiu5PQL3K7x9YqimeBzmENRfx4PKjKBOMM4pg
-   iHJdtKLlsAUAEkoMgo4tvlyI/ueAoIrine2xJuYqDLXtKYN/C0VTzqt65
-   WWo0+c17IXOevNnzNflgY8E8aENoFVx46H7wyq8vn62ETOmyCP/bCwDHb
-   +Z2oIM6nPfYKpIRwF+c0d72IhMPLTNxiFB8SKVTWEqXGKgJL3khfEKdXF
-   g==;
-IronPort-SDR: gAcIQArD9brbJfyyN2rRrkQ8Eu3w7MDn7HSG5V+u7d34L3xANwU676dEUVRrL0PtF5kLfjmTkT
- TlRnz/Oj1Gn6yHa9M52QUuiH4rvYcshZuUcgZqXm+aA/dF5EpOqgZ5IJesloeuLHclaSSAR8GV
- hCb2wUiMj+aSyyR22BnR9q6kO05TFKxe8Zs1mBAKEk6mTbV8lml4JZqD6LwN42SXijfuqgCEQl
- /fANdCrBUbX/zkFV0XE490nU9Lp5DG42kwbKyZRxDkGutzSi8puSuCZwEQGhjiq9/R33YP1AQI
- dmU=
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="41786281"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 03:29:00 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 03:29:00 -0700
-Received: from [10.171.246.120] (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 26 Jan 2021 03:28:57 -0700
-Subject: Re: [PATCH v2 1/7] drivers: soc: atmel: add spdx license identifier
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        <robh+dt@kernel.org>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>
-CC:     <sudeep.holla@arm.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1611653376-24168-1-git-send-email-claudiu.beznea@microchip.com>
- <1611653376-24168-2-git-send-email-claudiu.beznea@microchip.com>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <436dfb02-cab0-fffe-d0c3-5b34476a05f6@microchip.com>
-Date:   Tue, 26 Jan 2021 11:28:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 26 Jan 2021 05:36:55 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28178C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:36:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2ZILNUMQYhjI5ZvuWMR1TJyaymk/UehpyHbNsinJtCA=; b=Z7as2SVEGI3WeWY4Igr7Ce6CNS
+        Tp10ipVqbslayAFfdU9fmPtts1ibiD3rfb9dzgdzGGjK2LlFa2osD/S+54DfzAMrXDKWH4rproYrt
+        /j2/ueA+XqbIQHmaeI6+uYwSBzwT8380UX6LZX3V2lfCEwR5ByjL+9ovbt1h+qtwoTuKFpuQB8yQ3
+        tcMaWYm3WAfHXxI2f+COA5xXrdjGw7fFyMejCa+vxLRyFMfGwpXyyzsfHZrQkD9GvqkoAemISLRYc
+        A5okcYChV/XVdiNw1h3XrStD8hHxSLmVJ+4gnNrVRgQ/ruPRRn1idruOuMgprSOg7VYmqF4WW94dK
+        tvsq1EPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4LgZ-005Rey-3J; Tue, 26 Jan 2021 10:35:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2F61E300DB4;
+        Tue, 26 Jan 2021 11:34:58 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 16B7E207CB5F8; Tue, 26 Jan 2021 11:34:58 +0100 (CET)
+Date:   Tue, 26 Jan 2021 11:34:58 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-kernel@vger.kernel.org,
+        mingo@redhat.com
+Subject: Re: [PATCH v2] locking/rwsem: Remove empty rwsem.h
+Message-ID: <YA/wUuRWtB/uunth@hirez.programming.kicks-ass.net>
+References: <20210126101721.976027-1-nborisov@suse.com>
+ <20210126102014.GB29204@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <1611653376-24168-2-git-send-email-claudiu.beznea@microchip.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126102014.GB29204@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/01/2021 at 10:29, Claudiu Beznea wrote:
-> Add SPDX-License-Identifier.
+On Tue, Jan 26, 2021 at 10:20:14AM +0000, Will Deacon wrote:
+> On Tue, Jan 26, 2021 at 12:17:21PM +0200, Nikolay Borisov wrote:
+> > This is a leftover from 7f26482a872c ("locking/percpu-rwsem: Remove the embedded rwsem")
+> > 
+> > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> > ---
+> > V2:
+> >  * Add reference to commit which made the file useless.
+> > 
+> >  kernel/locking/rwsem.h | 0
+> >  1 file changed, 0 insertions(+), 0 deletions(-)
+> >  delete mode 100644 kernel/locking/rwsem.h
+> > 
+> > diff --git a/kernel/locking/rwsem.h b/kernel/locking/rwsem.h
+> > deleted file mode 100644
+> > index e69de29bb2d1..000000000000
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Acked-by: Will Deacon <will@kernel.org>
 
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-
-I remove license boilerplate text now that it's useless and queue this 
-one on top of at91-soc.
-
-Thanks, best regards,
-   Nicolas
-
-> ---
->   drivers/soc/atmel/soc.c | 1 +
->   drivers/soc/atmel/soc.h | 1 +
->   2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/soc/atmel/soc.c b/drivers/soc/atmel/soc.c
-> index 2dc86728b132..755a82502ef4 100644
-> --- a/drivers/soc/atmel/soc.c
-> +++ b/drivers/soc/atmel/soc.c
-> @@ -1,3 +1,4 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
->   /*
->    * Copyright (C) 2015 Atmel
->    *
-> diff --git a/drivers/soc/atmel/soc.h b/drivers/soc/atmel/soc.h
-> index ee652e4841a5..77b27124362c 100644
-> --- a/drivers/soc/atmel/soc.h
-> +++ b/drivers/soc/atmel/soc.h
-> @@ -1,3 +1,4 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (C) 2015 Atmel
->    *
-> 
-
-
--- 
-Nicolas Ferre
+Thanks!
