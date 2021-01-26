@@ -2,222 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D806303C3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC64303BAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405088AbhAZL3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        id S2405125AbhAZL3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731145AbhAZJp4 (ORCPT
+        with ESMTP id S2391276AbhAZJsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:45:56 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70359C061573;
-        Tue, 26 Jan 2021 01:45:16 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id q129so32352057iod.0;
-        Tue, 26 Jan 2021 01:45:16 -0800 (PST)
+        Tue, 26 Jan 2021 04:48:08 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9357CC06174A;
+        Tue, 26 Jan 2021 01:47:28 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id g15so11134669pgu.9;
+        Tue, 26 Jan 2021 01:47:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZIW7mnwPUf6YWlYV9Dc8rQUYYrNuTxch5ZKKzYw0AFE=;
-        b=ByfMfrJVJCKfp9k9KLuY9+zPDSK/oFPLxitqpAXbJiff4391iSWe8bKaYpGBbCmmvE
-         FIyrmxZBTVaD2k5CbmUL7zZ898btlbJNEgMoRgegkdChxpRG0wHsfu+P1j+Xvk9nnHyD
-         x/5TkGYudvDAChZjGnJXtjw1q2R5CB8MhAJtJUoaU2DvDlmWgqbJ3Hdn//kyJbj3JTrU
-         eoaAyB08XmQ+F9wGYcs+tDXIbHAV95o7rM+y7DAztaGQ0U83UmbjTSn+AWLbCEI2CUOn
-         fL21yhJXU7mRf8+Npa6Fd/e0B0JcBAWP1EetClFEvo5H0/nbc91eHMYHCXE0g3OjS1WV
-         y3bA==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=SPAzPMHTUwMywoI0YQ3zzW5m1bqgTd/Dm/sAyJYiZoU=;
+        b=W2PrIvrIVmdbuaEdejTXL/7FLIJb/5mP1qpGdgnJtEEGw7NLZ+e/FI97ohHsWVDipd
+         5dF8C5mNdVkZUqB8JfAS7PVUERPWq0KWNurxULF9TUHwuvDN0DeZRbbdCL34p8Gvz4rL
+         lmYEI8nq984fQtKOef6ZAELQJyH11zFN8f4BrI4A2zhXFdY6nTsAOBxwfPyggbwFRezg
+         fqippu/BO5P96Mb8WjAFpfV2A8YAsRcRl8N4VBP7YTcQzZte9XHY+e/2unQxKMhd6eSy
+         UmIiqO7KXZL6uSq5C2Wr8+0OKovo+QEy7YhcRTzibFN1n3rz7n4oqURRM4erA2+Pfj+/
+         3vRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZIW7mnwPUf6YWlYV9Dc8rQUYYrNuTxch5ZKKzYw0AFE=;
-        b=fi4Gsd1X1UnHzLEH4LduDZbTwYZwXnHrZh8luRFKorFaUFgP0kMHeeChC4OFZdFDyk
-         6lUIwXfggD+3QfKSLpFJ56KLlULSc4RCDi/eNGwjTxJ1OrWA+L/RwP2Nl8Y9X4pahwTk
-         HnvJcuZyoLHDipQJYo9Jw7CtUivPcNO2y1mZNL0c0w4jR/pAJHSZdPKGgMEuZb3VgdKG
-         8X9mpgP4JfSCsdN6lCWoXrRsp4TkZstHeWpgKeiXgb3PDeAQKRloDIJ1vQkSHBNYrzlB
-         ABMKwV6T1hQIpNL5sADfqN3fh8ukHAChy6+X9pjzfdLJLmZYDFb5liZxGeWIAdBCSBWO
-         rZhA==
-X-Gm-Message-State: AOAM5314U4v/PnUdnfueKPkmCtx0kXlKWXRLZ7PbVlnRLs9ZjEFDDHW5
-        NnxRLQwaDX13zmcYhze2RHlDUZApD756AhkdPkw=
-X-Google-Smtp-Source: ABdhPJyuTTVkkTksmE/DzwuiRARXE9iUtKPzZJoMvirmHVYMYFMkCjf7EuwR1M8S0b8H68CNmqnHUn+oa+2RK/ndoqk=
-X-Received: by 2002:a02:7fc5:: with SMTP id r188mr4063015jac.69.1611654315745;
- Tue, 26 Jan 2021 01:45:15 -0800 (PST)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=SPAzPMHTUwMywoI0YQ3zzW5m1bqgTd/Dm/sAyJYiZoU=;
+        b=JyN2bTF+sm2Xr84SuTvJoEZbff4ya2QqFWyrbpx9lTUku2W2ZNGGKxGYjEAe4VAaLu
+         x3k2sXaaZRCzSErK54himzCcZXARTNZT9F7dExq0pzdijOMzcUaMweJJZQayYigOk82v
+         3nd4LJAwSEOe3fynxUxZZK32bBb6K/KTOZYo5aCUGXSEK3f2+UWhIX0ztxgkF/BCTcbL
+         Oav6Epsh50Ty6ZAg/sVEmLl4CH9B8KhW5VZdMfkPuWmT3De8VkgS1QkviVluNY/7moJF
+         FDZcWamuhzG83fTHNvKMl2yEmQBST5tc07SYjCMuwYeTlvfDG/esHMDhM0DGkA65Z4vk
+         pqZg==
+X-Gm-Message-State: AOAM530Q1JNy9CCaTdVjDBkPf+P9mGg+OrjNAry4yJv6jpGH7ffRMmAs
+        AeyVFcXXRBoUqyeIOXOSNWM=
+X-Google-Smtp-Source: ABdhPJw2MXPKRaA2kctx6FW3cVhePx8H93ZknPUe2RtbSEpjbwM/uc3AYcTkxnbnOic06K/F2HkFzQ==
+X-Received: by 2002:a62:54c3:0:b029:1bc:731c:dfc1 with SMTP id i186-20020a6254c30000b02901bc731cdfc1mr4627362pfb.20.1611654448148;
+        Tue, 26 Jan 2021 01:47:28 -0800 (PST)
+Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
+        by smtp.gmail.com with ESMTPSA id v21sm1095752pfn.80.2021.01.26.01.47.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 01:47:27 -0800 (PST)
+Date:   Tue, 26 Jan 2021 19:47:22 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v11 12/13] mm/vmalloc: Hugepage vmalloc mappings
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Ding Tianhong <dingtianhong@huawei.com>, linux-mm@kvack.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210126044510.2491820-1-npiggin@gmail.com>
+        <20210126044510.2491820-13-npiggin@gmail.com>
+        <0f360e6e-6d34-19ce-6c76-a17a5f4f7fc3@huawei.com>
+In-Reply-To: <0f360e6e-6d34-19ce-6c76-a17a5f4f7fc3@huawei.com>
 MIME-Version: 1.0
-References: <20210122162529.84978-1-alexandru.ardelean@analog.com>
- <20210122162529.84978-4-alexandru.ardelean@analog.com> <20210124181126.07c100a5@archlinux>
- <YA8b0az9c0Hha405@kroah.com>
-In-Reply-To: <YA8b0az9c0Hha405@kroah.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 26 Jan 2021 11:45:04 +0200
-Message-ID: <CA+U=DsoogP2Bj5zsE-1BwOhZy20jjvEhgh780FSiQU4M9AwoxA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/12][RESEND] iio: buffer: rework buffer &
- scan_elements dir creation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        nuno.sa@analog.com, "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1611653945.t3oot63nwn.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 9:32 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Jan 24, 2021 at 06:11:26PM +0000, Jonathan Cameron wrote:
-> > On Fri, 22 Jan 2021 18:25:20 +0200
-> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> >
-> > > When adding more than one IIO buffer per IIO device, we will need to create
-> > > a buffer & scan_elements directory for each buffer.
-> > > We also want to move the 'scan_elements' to be a sub-directory of the
-> > > 'buffer' folder.
-> > >
-> > > The format we want to reach is, for a iio:device0 folder, for 2 buffers
-> > > [for example], we have a 'buffer0' and a 'buffer1' subfolder, and each with
-> > > it's own 'scan_elements' subfolder.
-> > >
-> > > So, for example:
-> > >    iio:device0/buffer0
-> > >       scan_elements/
-> > >
-> > >    iio:device0/buffer1
-> > >       scan_elements/
-> > >
-> > > The other attributes under 'bufferX' would remain unchanged.
-> > >
-> > > However, we would also need to symlink back to the old 'buffer' &
-> > > 'scan_elements' folders, to keep backwards compatibility.
-> > >
-> > > Doing all these, require that we maintain the kobjects for each 'bufferX'
-> > > and 'scan_elements' so that we can symlink them back. We also need to
-> > > implement the sysfs_ops for these folders.
-> > >
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> >
-> > +CC GregKH and Rafael W for feedback on various things inline.
-> >
-> > It might be that this is the neatest solution that we can come up with but
-> > more eyes would be good!
->
-> In short, please do NOT do this.
->
-> At all.
->
-> no.
->
-> {sigh}
->
-> >
-> > Whilst I think this looks fine, I'm less confident than I'd like to be.
-> >
-> > Jonathan
-> >
-> > > ---
-> > >  drivers/iio/industrialio-buffer.c | 195 +++++++++++++++++++++++++++---
-> > >  drivers/iio/industrialio-core.c   |  24 ++--
-> > >  include/linux/iio/buffer_impl.h   |  14 ++-
-> > >  include/linux/iio/iio.h           |   2 +-
-> > >  4 files changed, 200 insertions(+), 35 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> > > index 0412c4fda4c1..0f470d902790 100644
-> > > --- a/drivers/iio/industrialio-buffer.c
-> > > +++ b/drivers/iio/industrialio-buffer.c
-> > > @@ -1175,8 +1175,6 @@ static ssize_t iio_buffer_store_enable(struct device *dev,
-> > >     return (ret < 0) ? ret : len;
-> > >  }
-> > >
-> > > -static const char * const iio_scan_elements_group_name = "scan_elements";
-> > > -
-> > >  static ssize_t iio_buffer_show_watermark(struct device *dev,
-> > >                                      struct device_attribute *attr,
-> > >                                      char *buf)
-> > > @@ -1252,6 +1250,124 @@ static struct attribute *iio_buffer_attrs[] = {
-> > >     &dev_attr_data_available.attr,
-> > >  };
-> > >
-> > > +#define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
-> > > +
-> > > +static ssize_t iio_buffer_dir_attr_show(struct kobject *kobj,
-> > > +                                   struct attribute *attr,
-> > > +                                   char *buf)
-> > > +{
-> > > +   struct iio_buffer *buffer = container_of(kobj, struct iio_buffer, buffer_dir);
-> > > +   struct device_attribute *dattr;
-> > > +
-> > > +   dattr = to_dev_attr(attr);
-> > > +
-> > > +   return dattr->show(&buffer->indio_dev->dev, dattr, buf);
-> > > +}
->
->
-> First off, you are dealing with "raw" kobjects here, below a 'struct
-> device' in the device tree, which means that suddenly userspace does not
-> know what in the world is going on, and you lost events and lots of
-> other stuff.
->
-> Never do this.  It should not be needed, and you are just trying to
-> paper over one odd decision of an api with another one you will be stuck
-> with for forever.
->
-> Remember the driver core can create subdirectories for your attributes
-> automatically if you want them to be in a subdir, but that's it, no
-> further than that.  Just name the attribute group.
->
-> But yes, you can not create a symlink to there, because (surprise), you
-> don't want to!
->
-> So please, just rethink your naming, create a totally new naming scheme
-> for multiple entities, and just drop the old one (or keep a single
-> value if you really want to.)  Don't make it harder than it has to be
-> please, you can never remove the "compatible symlinks", just make a new
-> api and move on.
+Excerpts from Ding Tianhong's message of January 26, 2021 4:59 pm:
+> On 2021/1/26 12:45, Nicholas Piggin wrote:
+>> Support huge page vmalloc mappings. Config option HAVE_ARCH_HUGE_VMALLOC
+>> enables support on architectures that define HAVE_ARCH_HUGE_VMAP and
+>> supports PMD sized vmap mappings.
+>>=20
+>> vmalloc will attempt to allocate PMD-sized pages if allocating PMD size
+>> or larger, and fall back to small pages if that was unsuccessful.
+>>=20
+>> Architectures must ensure that any arch specific vmalloc allocations
+>> that require PAGE_SIZE mappings (e.g., module allocations vs strict
+>> module rwx) use the VM_NOHUGE flag to inhibit larger mappings.
+>>=20
+>> When hugepage vmalloc mappings are enabled in the next patch, this
+>> reduces TLB misses by nearly 30x on a `git diff` workload on a 2-node
+>> POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%.
+>>=20
+>> This can result in more internal fragmentation and memory overhead for a
+>> given allocation, an option nohugevmalloc is added to disable at boot.
+>>=20
+>> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+>> ---
+>>  arch/Kconfig            |  11 ++
+>>  include/linux/vmalloc.h |  21 ++++
+>>  mm/page_alloc.c         |   5 +-
+>>  mm/vmalloc.c            | 215 +++++++++++++++++++++++++++++++---------
+>>  4 files changed, 205 insertions(+), 47 deletions(-)
+>>=20
+>> diff --git a/arch/Kconfig b/arch/Kconfig
+>> index 24862d15f3a3..eef170e0c9b8 100644
+>> --- a/arch/Kconfig
+>> +++ b/arch/Kconfig
+>> @@ -724,6 +724,17 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+>>  config HAVE_ARCH_HUGE_VMAP
+>>  	bool
+>> =20
+>> +#
+>> +#  Archs that select this would be capable of PMD-sized vmaps (i.e.,
+>> +#  arch_vmap_pmd_supported() returns true), and they must make no assum=
+ptions
+>> +#  that vmalloc memory is mapped with PAGE_SIZE ptes. The VM_NO_HUGE_VM=
+AP flag
+>> +#  can be used to prohibit arch-specific allocations from using hugepag=
+es to
+>> +#  help with this (e.g., modules may require it).
+>> +#
+>> +config HAVE_ARCH_HUGE_VMALLOC
+>> +	depends on HAVE_ARCH_HUGE_VMAP
+>> +	bool
+>> +
+>>  config ARCH_WANT_HUGE_PMD_SHARE
+>>  	bool
+>> =20
+>> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+>> index 99ea72d547dc..93270adf5db5 100644
+>> --- a/include/linux/vmalloc.h
+>> +++ b/include/linux/vmalloc.h
+>> @@ -25,6 +25,7 @@ struct notifier_block;		/* in notifier.h */
+>>  #define VM_NO_GUARD		0x00000040      /* don't add guard page */
+>>  #define VM_KASAN		0x00000080      /* has allocated kasan shadow memory =
+*/
+>>  #define VM_MAP_PUT_PAGES	0x00000100	/* put pages and free array in vfre=
+e */
+>> +#define VM_NO_HUGE_VMAP		0x00000200	/* force PAGE_SIZE pte mapping */
+>>=20
+>>  /*
+>>   * VM_KASAN is used slighly differently depending on CONFIG_KASAN_VMALL=
+OC.
+>> @@ -59,6 +60,9 @@ struct vm_struct {
+>>  	unsigned long		size;
+>>  	unsigned long		flags;
+>>  	struct page		**pages;
+>> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMALLOC
+>> +	unsigned int		page_order;
+>> +#endif
+>>  	unsigned int		nr_pages;
+>>  	phys_addr_t		phys_addr;
+>>  	const void		*caller;
+> Hi Nicholas:
+>=20
+> Give a suggestion :)
+>=20
+> The page order was only used to indicate the huge page flag for vm area, =
+and only valid when
+> size bigger than PMD_SIZE, so can we use the vm flgas to instead of that,=
+ just like define the
+> new flag named VM_HUGEPAGE, it would not break the vm struct, and it is e=
+asier for me to backport the serious
+> patches to our own branches. (Base on the lts version).
 
+Hmm, it might be possible. I'm not sure if 1GB vmallocs will be used any=20
+time soon (or maybe they will for edge case configurations? It would be=20
+trivial to add support for).
 
-So, coming back to Jonathan.
-Any thoughts on how to proceed?
+The other concern I have is that Christophe IIRC was asking about=20
+implementing a mapping for PPC which used TLB mappings that were=20
+different than kernel page table tree size. Although I guess we could=20
+deal with that when it comes.
 
-We could merge the files 'buffer & scan_elements' [from in the
-/sys/bus/iio/devices/iio:deviceX/{buffer,scan_elements}
+I like the flexibility of page_order though. How hard would it be for=20
+you to do the backport with VM_HUGEPAGE yourself?
 
-So, essentially:
-# ls /sys/bus/iio/devices/iio:deviceX/bufferY
-data_available       length              watermark
-enable                   length_align_bytes
-in_voltage0_en      in_voltage0_type   in_voltage1_index
-in_voltage0_index  in_voltage1_en     in_voltage1_type
+I should also say, thanks for all the review and testing from the Huawei=20
+team. Do you have an x86 patch?
 
-Where:
-# ls  /sys/bus/iio/devices/iio:deviceX/scan_elements
-in_voltage0_en     in_voltage0_type   in_voltage1_index
-in_voltage0_index  in_voltage1_en     in_voltage1_typ
-
-# ls  /sys/bus/iio/devices/iio:deviceX/buffer
-data_available      length              watermark
-enable              length_align_bytes
-
-I don't think we need to add any prefixes for the scan_elements/buffer
-files, or?
-
-Do we still do this new ioctl() for buffer0, 1, 2, N being accessed
-via anon inodes?
-Or do we go [back] via the route of each buffer with it's own chardev?
-i.e.  introduce a "/dev/iio/deviceX/bufferY" structure
-
-I'm fine either way.
-
-Thanks
-Alex
-
->
-> thanks,
->
-> greg k-h
+Thanks,
+Nick
