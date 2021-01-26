@@ -2,179 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7511304DAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86596304DB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387708AbhAZXNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:13:34 -0500
-Received: from mail-pf1-f180.google.com ([209.85.210.180]:46013 "EHLO
-        mail-pf1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727162AbhAZFC1 (ORCPT
+        id S2387781AbhAZXNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:13:54 -0500
+Received: from mail-io1-f47.google.com ([209.85.166.47]:36687 "EHLO
+        mail-io1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731222AbhAZFFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:02:27 -0500
-Received: by mail-pf1-f180.google.com with SMTP id j12so9788443pfj.12;
-        Mon, 25 Jan 2021 21:02:12 -0800 (PST)
+        Tue, 26 Jan 2021 00:05:16 -0500
+Received: by mail-io1-f47.google.com with SMTP id d81so31304456iof.3
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 21:04:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5sPaQ9hxkwyZ8/SMdBWsfsk9BJ2xUder9O8LP6uJOsg=;
-        b=to+4vOmdrJ0RTW0/XAnAbZVEC9dBeVtPBCKU5MMTsVFcoF/fqXtSVmo+Edi8VCUYjD
-         oluSOr4fQFzA108fMAJA2YoL9T2cq/RIwnGX9Z8Zv1jAZ3NgfaObdfcAGrxSj0JAfGSd
-         3mpzfA097oSrdqnoVNKapUCJe5tibyFeCIPc/4Fv7fV4chCZuFusLrTKqlgfOwCT9X7x
-         de4/NswH7uvbsvtYwQY+/PBPA+xR+fKhfCT4ys/LBXokNCK1qgfKkLTpmBfrLtzr+kfM
-         r5u2K/xoYFnWWhVIWCR0lC5fjJhO3KbN3ZNngSa01j/b7pFD6lCH3Wi9j5xZn/9zT8P1
-         q6hA==
-X-Gm-Message-State: AOAM533Zw6S9T1y3mHxmIIO5wWkjYLJJFiR4Xyu6sUbXMc/XHMYmTal+
-        Zyfe7cxItsf4lM6s1bLpF5jzP+50Qsc=
-X-Google-Smtp-Source: ABdhPJxlLcvjc++VLFUFQyYSB6lgmgpqyeqbYSYX8zDuAFLDQsRCTV84AGDbI8jZEegBwKCzSxfeaw==
-X-Received: by 2002:a62:d5:0:b029:1b4:144c:f217 with SMTP id 204-20020a6200d50000b02901b4144cf217mr3487246pfa.13.1611637307273;
-        Mon, 25 Jan 2021 21:01:47 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id i4sm9537864pfo.40.2021.01.25.21.01.46
+        bh=vcdD4SJ/UJtTKofX4QSGmixhFV/E0gfx+ZOLgohHiJg=;
+        b=I9zQuLV2/8oSAp1f240TLJsGUzKFAKAkyW5zgm20KFhZVZ3EI65cj8Ndlj0TYg7Djz
+         ct7mvXzdpYJV04J2lW5hzSw1XpoVC7rVTqrQEx6QFFI6SQ6a9iatEP+skIH02nD+Ho2X
+         GbliUygQ/GV1kabFJZwZfAWHcd9R5BkNT2PjpBr+/1bpk2cnc/fWg+kAGavggmgNSmCX
+         cWGr96asMUcqYZHXz7TrJ//MnPFtkFLGOTZ+MeIvl0ZpGT3hztasct37DpyM0kmIJmCw
+         /644qU/Ejy7WgtMZJkh+FYc+8jR5DPbBCLo9p5bQjvIC3CHxOMnhgNW0FeAchv4gXJYV
+         3xdA==
+X-Gm-Message-State: AOAM530qGEZTqirUqviy/Fde7c7zN/txLIA/ynHMmBJadGm6hBFHR8a7
+        s2NQW8rPY9HPMoRs6Q5+hyE=
+X-Google-Smtp-Source: ABdhPJz9drmHYLiK1+qRtINPstvzZsK5QeLoMsxQbH2TDitFv8DLpDoJtWqIYuBlSwaud9U9LO0UHw==
+X-Received: by 2002:a02:9042:: with SMTP id y2mr3428226jaf.94.1611637474552;
+        Mon, 25 Jan 2021 21:04:34 -0800 (PST)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id d12sm11855755ioh.51.2021.01.25.21.04.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 21:01:46 -0800 (PST)
-Date:   Mon, 25 Jan 2021 21:01:45 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv3 2/6] firmware: stratix10-svc: extend SVC driver to get
- the firmware version
-Message-ID: <YA+iOW079Pq6L6yH@epycbox.lan>
-References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
- <1611608188-25621-3-git-send-email-richard.gong@linux.intel.com>
+        Mon, 25 Jan 2021 21:04:33 -0800 (PST)
+Date:   Tue, 26 Jan 2021 05:04:32 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] percpu: fix clang modpost warning in
+ pcpu_build_alloc_info()
+Message-ID: <YA+i4O/2OrUI2pcK@google.com>
+References: <20201231212852.3175381-1-dennis@kernel.org>
+ <20210104234651.GA3548546@ubuntu-m3-large-x86>
+ <X/O46grb51Z4faI1@google.com>
+ <CAK8P3a2ZWfNeXKSm8K_SUhhwkor17jFo3xApLXjzfPqX0eUDUA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611608188-25621-3-git-send-email-richard.gong@linux.intel.com>
+In-Reply-To: <CAK8P3a2ZWfNeXKSm8K_SUhhwkor17jFo3xApLXjzfPqX0eUDUA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
-
-On Mon, Jan 25, 2021 at 02:56:24PM -0600, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
+On Mon, Jan 25, 2021 at 12:07:24PM +0100, Arnd Bergmann wrote:
+> On Tue, Jan 5, 2021 at 1:55 AM Dennis Zhou <dennis@kernel.org> wrote:
+> >
+> > On Mon, Jan 04, 2021 at 04:46:51PM -0700, Nathan Chancellor wrote:
+> > > On Thu, Dec 31, 2020 at 09:28:52PM +0000, Dennis Zhou wrote:
+> > > >
+> >
+> > Hi Nathan,
+> >
+> > >
+> > > Hi Dennis,
+> > >
+> > > I did a bisect of the problematic config against defconfig and it points
+> > > out that CONFIG_GCOV_PROFILE_ALL is in the bad config but not the good
+> > > config, which makes some sense as that will mess with clang's inlining
+> > > heuristics. It does not appear to be the single config that makes a
+> > > difference but it gives some clarity.
+> > >
+> >
+> > Ah, thanks. To me it's kind of a corner case that I don't have a lot of
+> > insight into. __init code is pretty limited and this warning is really
+> > at the compilers whim. However, in this case only clang throws this
+> > warning.
+> >
+> > > I do not personally have any strong opinions around the patch but is it
+> > > really that much wasted memory to just annotate mask with __refdata?
+> >
+> > It's really not much memory, 1 bit per max # of cpus. The reported
+> > config is on the extreme side compiling with 8k NR_CPUS, so 1kb. I'm
+> > just not in love with the idea of adding a patch to improve readability
+> > and it cost idle memory to resolve a compile time warning.
+> >
+> > If no one else chimes in in the next few days, I'll probably just apply
+> > it and go from there. If another issue comes up I'll drop this and tag
+> > it as __refdata.
 > 
-> Extend Intel service layer driver to get the firmware version running at
-> FPGA device. Therefore FPGA manager driver, one of Intel service layer
-> driver's client, can decide whether to handle the newly added bitstream
-> authentication function based on the retrieved firmware version.
+> I've come across this one again in linux-next today, and found that
+> I had an old patch for it already, that I had never submitted:
 > 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-> ---
-> v3: new added, changes for getting firmware version
-Thanks for doing that.
-> ---
->  drivers/firmware/stratix10-svc.c                    | 12 ++++++++++--
->  include/linux/firmware/intel/stratix10-smc.h        | 21 +++++++++++++++++++--
->  include/linux/firmware/intel/stratix10-svc-client.h |  4 ++++
->  3 files changed, 33 insertions(+), 4 deletions(-)
+> From 7d6f40414490092b86f1a64d8c42426ee350da1a Mon Sep 17 00:00:00 2001
+> From: Arnd Bergmann <arnd@arndb.de>
+> Date: Mon, 7 Dec 2020 23:24:20 +0100
+> Subject: [PATCH] mm: percpu: fix section mismatch warning
 > 
-> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-> index 3aa489d..1443bbd 100644
-> --- a/drivers/firmware/stratix10-svc.c
-> +++ b/drivers/firmware/stratix10-svc.c
-> @@ -306,6 +306,7 @@ static void svc_thread_recv_status_ok(struct stratix10_svc_data *p_data,
->  		break;
->  	case COMMAND_RSU_RETRY:
->  	case COMMAND_RSU_MAX_RETRY:
-> +	case COMMAND_FIRMWARE_VERSION:
->  		cb_data->status = BIT(SVC_STATUS_OK);
->  		cb_data->kaddr1 = &res.a1;
->  		break;
-> @@ -422,6 +423,11 @@ static int svc_normal_to_secure_thread(void *data)
->  			a1 = 0;
->  			a2 = 0;
->  			break;
-> +		case COMMAND_FIRMWARE_VERSION:
-> +			a0 = INTEL_SIP_SMC_FIRMWARE_VERSION;
-> +			a1 = 0;
-> +			a2 = 0;
-> +			break;
->  		default:
->  			pr_warn("it shouldn't happen\n");
->  			break;
-> @@ -487,11 +493,13 @@ static int svc_normal_to_secure_thread(void *data)
->  
->  			/*
->  			 * be compatible with older version firmware which
-> -			 * doesn't support RSU notify or retry
-> +			 * doesn't support RSU notify, retry or bitstream
-> +			 * authentication.
->  			 */
->  			if ((pdata->command == COMMAND_RSU_RETRY) ||
->  			    (pdata->command == COMMAND_RSU_MAX_RETRY) ||
-> -				(pdata->command == COMMAND_RSU_NOTIFY)) {
-> +			    (pdata->command == COMMAND_RSU_NOTIFY) ||
-> +			    (pdata->command == COMMAND_FIRMWARE_VERSION)) {
->  				cbdata->status =
->  					BIT(SVC_STATUS_NO_SUPPORT);
->  				cbdata->kaddr1 = NULL;
-> diff --git a/include/linux/firmware/intel/stratix10-smc.h b/include/linux/firmware/intel/stratix10-smc.h
-> index c3e5ab0..505fcca 100644
-> --- a/include/linux/firmware/intel/stratix10-smc.h
-> +++ b/include/linux/firmware/intel/stratix10-smc.h
-> @@ -321,8 +321,6 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
->  #define INTEL_SIP_SMC_ECC_DBE \
->  	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_ECC_DBE)
->  
-> -#endif
-> -
->  /**
->   * Request INTEL_SIP_SMC_RSU_NOTIFY
->   *
-> @@ -404,3 +402,22 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
->  #define INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY 18
->  #define INTEL_SIP_SMC_RSU_MAX_RETRY \
->  	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY)
-> +
-> +/**
-> + * Request INTEL_SIP_SMC_FIRMWARE_VERSION
-> + *
-> + * Sync call used to query the version of running firmware
-> + *
-> + * Call register usage:
-> + * a0 INTEL_SIP_SMC_FIRMWARE_VERSION
-> + * a1-a7 not used
-> + *
-> + * Return status:
-> + * a0 INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_STATUS_ERROR
-> + * a1 running firmware version
-> + */
-> +#define INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION 31
-> +#define INTEL_SIP_SMC_FIRMWARE_VERSION \
-> +	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION)
-> +
-> +#endif
-> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-> index 7ada1f2..15e5477 100644
-> --- a/include/linux/firmware/intel/stratix10-svc-client.h
-> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
-> @@ -109,6 +109,9 @@ struct stratix10_svc_chan;
->   *
->   * @COMMAND_RSU_DCMF_VERSION: query firmware for the DCMF version, return status
->   * is SVC_STATUS_OK or SVC_STATUS_ERROR
-Is DCMF explaines somewhere? Maybe I missed it.
-> + *
-> + * @COMMAND_FIRMWARE_VERSION: query running firmware version, return status
-> + * is SVC_STATUS_OK or SVC_STATUS_ERROR
+> Building with arm64 clang sometimes (fairly rarely) shows a
+> warning about the pcpu_build_alloc_info() function:
+> 
+> WARNING: modpost: vmlinux.o(.text+0x21697c): Section mismatch in
+> reference from the function cpumask_clear_cpu() to the variable
+> .init.data:pcpu_build_alloc_info.mask
+> The function cpumask_clear_cpu() references
+> the variable __initdata pcpu_build_alloc_info.mask.
+> This is often because cpumask_clear_cpu lacks a __initdata
+> annotation or the annotation of pcpu_build_alloc_info.mask is wrong.
+> 
+> What appears to be going on here is that the compiler decides to not
+> inline the cpumask_clear_cpu() function that is marked 'inline' but not
+> 'always_inline', and it then produces a specialized version of it that
+> references the static mask unconditionally as an optimization.
+> 
+> Marking cpumask_clear_cpu() as __always_inline would fix it, as would
+> removing the __initdata annotation on the variable.  I went for marking
+> the function as __attribute__((flatten)) instead because all functions
+> called from it are really meant to be inlined here, and it prevents
+> the same problem happening here again. This is unlikely to be a problem
+> elsewhere because there are very few function-local static __initdata
+> variables in the kernel.
+> 
+> Fixes: 6c207504ae79 ("percpu: reduce the number of cpu distance comparisons")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index 5ede8dd407d5..527181c46b08 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -2662,10 +2662,9 @@ early_param("percpu_alloc", percpu_alloc_setup);
+>   * On success, pointer to the new allocation_info is returned.  On
+>   * failure, ERR_PTR value is returned.
 >   */
->  enum stratix10_svc_command_code {
->  	COMMAND_NOOP = 0,
-> @@ -122,6 +125,7 @@ enum stratix10_svc_command_code {
->  	COMMAND_RSU_RETRY,
->  	COMMAND_RSU_MAX_RETRY,
->  	COMMAND_RSU_DCMF_VERSION,
-> +	COMMAND_FIRMWARE_VERSION,
->  };
->  
->  /**
-> -- 
-> 2.7.4
+> -static struct pcpu_alloc_info * __init pcpu_build_alloc_info(
+> -                               size_t reserved_size, size_t dyn_size,
+> -                               size_t atom_size,
+> -                               pcpu_fc_cpu_distance_fn_t cpu_distance_fn)
+> +static struct pcpu_alloc_info * __init __attribute__((flatten))
+> +pcpu_build_alloc_info(size_t reserved_size, size_t dyn_size, size_t atom_size,
+> +                     pcpu_fc_cpu_distance_fn_t cpu_distance_fn)
+>  {
+>         static int group_map[NR_CPUS] __initdata;
+>         static int group_cnt[NR_CPUS] __initdata;
 > 
+> 
+> Not sure if this would be any better than your patch.
+> 
+>        Arnd
+
+Hi Arnd,
+
+I like this solution a lot more than my previous solution because this
+is a lot less fragile.
+
 Thanks,
-Moritz
+Dennis
