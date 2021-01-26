@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67934303E03
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47226303DF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404205AbhAZM7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:59:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S2392635AbhAZNBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:01:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391300AbhAZMtq (ORCPT
+        with ESMTP id S2404111AbhAZMuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:49:46 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599D9C08E8BB
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:49 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id q7so16302863wre.13
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:49 -0800 (PST)
+        Tue, 26 Jan 2021 07:50:08 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11BCC08EC29
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:58 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id a9so16323316wrt.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rnUOXuaDVhzv+JRzF2N3phcXKpl5z42SkYZrTN+HwL8=;
-        b=MqNVz8RNxX/zGJoBvGZbRzmox2XT2+Oo/kNZZVSP2zXsRlIQkB6mQwDoEBKNS+SK4q
-         Z/4yHb7RqDDLXtoV7Rl536qDZwv7sYfZeavJ9tMpe+Ksv1Ss4RMNynaIgYmnCjSGWGsF
-         3HiYTJDeO+PRz9SVF6G9UzhTAwOJSAWOtGC+eGgr9wfCHNVoNzlL7j9NDn9SUsa5uPbi
-         6YEDTLtk6bftJmna9JYd7xBUpLEzK5bn6EcKNrY6GWQ7h/M1NeyNVZOkfxXt+SMg+Wgh
-         /wOOjdsMNBbmv2tmNmERZuUae9CxU8/Vg3xFbF/Ip/K+RnHJZRZBY7hHLbW0jKAt2bub
-         Kk7A==
+        bh=hpZFRWRMBRyHqA4LFeJIkJ1VyU/15BjqrvkCVLk60G8=;
+        b=DflQqkzq+/EGK2NRxBd+UtoUZey4O18FCOsB6PA4MWcs0g95luUnYoA6knuBlQ5/qp
+         CgvuKM45GRD/OIqwCBbca5ujHMHfRJbTDzmUpXVbXYh4zY0KpMEuAbIzZ1XmYhvTwPap
+         vYjczVegm3Q+G8SIyoUU8+YYzXF7fGtH8lbRsu4Uchkb/WGsFPE5/KJbYRFmt2Yk08hr
+         1GWbwyXOKtbBXbLPHYjlgM8LLjC3UAglmVnuur88kLNR/8kmS4wpSMUeoGsohdeHLrDH
+         u4smr8dfKBuJigXsgKOGFABXrP/IH2m2crw6/yl26Qq+8JiE703LwKdkT4jAav7es7mJ
+         dh+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rnUOXuaDVhzv+JRzF2N3phcXKpl5z42SkYZrTN+HwL8=;
-        b=ohOleDCFBhKIJ9iz9JBe20hrTIo3OxTdB3sQ03F+VIWWAdUN37+X1vcPbJ4/cWLfCs
-         DyL11Dm8e4bhcssrA77o+AucISoIunOfw83DEPbEF/RDS0yJQa28u3krqNfohMVkRZJ2
-         5z96XgZMW3nd7zZfpB6MUSNFNmxdhAoMhjD1PFTxH2zuK/Af9vsC8oB53YIdQXCIN8mC
-         WCIbg5zmx9g0PofDCMeaOnR00WqR7G7GO8tlj6a2qsmJV0uVt+WdlM/Xkeu9HoWUaUVf
-         +fBhcwUyd5gYqSkannAtJl+8iviJiUCue/UPbn25Kl0+8Y+uOpiCi3Sp1IBR2tqAYt8Y
-         I2DQ==
-X-Gm-Message-State: AOAM533BD5O+W6k0HE+BSNgByUhKDQBFjEVeceC3a5KQBxI+JPTS8dnB
-        lu277gXNsPwGH2wjiaIVk6NeHg==
-X-Google-Smtp-Source: ABdhPJyLudmPTC3h2iicIMU90/lCacPFTuduSuKUdXae8KM5eDTxCucVccuknk2sFWP6UvfheL9vuA==
-X-Received: by 2002:adf:cd83:: with SMTP id q3mr5883891wrj.225.1611665268097;
-        Tue, 26 Jan 2021 04:47:48 -0800 (PST)
+        bh=hpZFRWRMBRyHqA4LFeJIkJ1VyU/15BjqrvkCVLk60G8=;
+        b=kfmSVvnaBF0MmvCe5+HpLAGrdpMeK8hBBHk2P8mGYfX/5Lw/CZUdnanlrhS84ME7SH
+         sGJpKwrPp/v2Ywp35hoL0vIm9a7eoFnt/FvH+SfXdGlTzIsDoaq589sLB8GwFRdGr0kr
+         +u6aPhUM+eMNb5Ca/R8sBENq7pGoG6KX5TNuGBZwzAmgdgwt514j4xsf69DqzjS8OSRN
+         314SSjzgk5MmAmJEzvMMwa1tuz6jakPU3lNbCwBJ83FoFXp4ZNEAnfPPTHVxQscjRTIh
+         NQCIITTghnJh7yCaPelaI4HSrcAp2WibuYgsgKrYypeZAXdvguii7BK3GTmSIV6Zk5A8
+         eEhA==
+X-Gm-Message-State: AOAM533tGY1Hr80jZ1Q1CRNggSb5fUd6yoznLoh445PlBN9AJLSfMTZ4
+        55I+i2oJwLc6j+QTOHav5SfB9Q==
+X-Google-Smtp-Source: ABdhPJyVPFTqKtMzBmyMdMFKJ4bT4S7ncfaXrWgISj8V3pzak4nLhMepCV/vRlbcIr5IAY+QkkG3/w==
+X-Received: by 2002:adf:e610:: with SMTP id p16mr5842178wrm.169.1611665277555;
+        Tue, 26 Jan 2021 04:47:57 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.47
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:47 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:56 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 11/20] RDMA/hw/hfi1/rc: Fix a few function documentation issues
-Date:   Tue, 26 Jan 2021 12:47:23 +0000
-Message-Id: <20210126124732.3320971-12-lee.jones@linaro.org>
+Subject: [PATCH 19/20] RDMA/hw/hfi1/verbs: Demote non-conforming doc header and fix a misspelling
+Date:   Tue, 26 Jan 2021 12:47:31 +0000
+Message-Id: <20210126124732.3320971-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
 References: <20210126124732.3320971-1-lee.jones@linaro.org>
@@ -69,14 +69,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hfi1/rc.c:430: warning: Function parameter or member 'ps' not described in 'hfi1_make_rc_req'
- drivers/infiniband/hw/hfi1/rc.c:1387: warning: Function parameter or member 'packet' not described in 'hfi1_send_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:1387: warning: Function parameter or member 'is_fecn' not described in 'hfi1_send_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:1387: warning: Excess function parameter 'qp' description in 'hfi1_send_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2008: warning: Function parameter or member 'aeth' not described in 'do_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2008: warning: Function parameter or member 'val' not described in 'do_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2008: warning: Function parameter or member 'rcd' not described in 'do_rc_ack'
- drivers/infiniband/hw/hfi1/rc.c:2554: warning: Function parameter or member 'rcd' not described in 'rc_rcv_error'
+ drivers/infiniband/hw/hfi1/verbs.c:741: warning: Function parameter or member 'qp' not described in 'update_tx_opstats'
+ drivers/infiniband/hw/hfi1/verbs.c:1160: warning: Function parameter or member 'pkey' not described in 'egress_pkey_check'
+ drivers/infiniband/hw/hfi1/verbs.c:1160: warning: Excess function parameter 'bkey' description in 'egress_pkey_check'
+ drivers/infiniband/hw/hfi1/verbs.c:1217: warning: Function parameter or member 'qp' not described in 'get_send_routine'
+ drivers/infiniband/hw/hfi1/verbs.c:1217: warning: Function parameter or member 'ps' not described in 'get_send_routine'
 
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
@@ -85,38 +82,40 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hfi1/rc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/verbs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/rc.c b/drivers/infiniband/hw/hfi1/rc.c
-index 1bb5f57152d35..7194236aec8fe 100644
---- a/drivers/infiniband/hw/hfi1/rc.c
-+++ b/drivers/infiniband/hw/hfi1/rc.c
-@@ -421,6 +421,7 @@ static int make_rc_ack(struct hfi1_ibdev *dev, struct rvt_qp *qp,
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index 3591923abebb9..0dd4bb0a5a7e6 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -729,7 +729,7 @@ static noinline int build_verbs_ulp_payload(
+ 
  /**
-  * hfi1_make_rc_req - construct a request packet (SEND, RDMA r/w, ATOMIC)
-  * @qp: a pointer to the QP
-+ * @ps: the current packet state
+  * update_tx_opstats - record stats by opcode
+- * @qp; the qp
++ * @qp: the qp
+  * @ps: transmit packet state
+  * @plen: the plen in dwords
   *
-  * Assumes s_lock is held.
-  *
-@@ -1992,7 +1993,7 @@ static void update_qp_retry_state(struct rvt_qp *qp, u32 psn, u32 spsn,
- 	}
+@@ -1145,7 +1145,7 @@ static inline int egress_pkey_matches_entry(u16 pkey, u16 ent)
+  * egress_pkey_check - check P_KEY of a packet
+  * @ppd:  Physical IB port data
+  * @slid: SLID for packet
+- * @bkey: PKEY for header
++ * @pkey: PKEY for header
+  * @sc5:  SC for packet
+  * @s_pkey_index: It will be used for look up optimization for kernel contexts
+  * only. If it is negative value, then it means user contexts is calling this
+@@ -1206,7 +1206,7 @@ int egress_pkey_check(struct hfi1_pportdata *ppd, u32 slid, u16 pkey,
+ 	return 1;
  }
  
 -/**
 +/*
-  * do_rc_ack - process an incoming RC ACK
-  * @qp: the QP the ACK came in on
-  * @psn: the packet sequence number of the ACK
-@@ -2541,6 +2542,7 @@ static inline void rc_cancel_ack(struct rvt_qp *qp)
-  * @opcode: the opcode for this packet
-  * @psn: the packet sequence number for this packet
-  * @diff: the difference between the PSN and the expected PSN
-+ * @rcd: the receive context
+  * get_send_routine - choose an egress routine
   *
-  * This is called from hfi1_rc_rcv() to process an unexpected
-  * incoming RC packet for the given QP.
+  * Choose an egress routine based on QP type
 -- 
 2.25.1
 
