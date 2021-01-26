@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5432304641
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF063045DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393713AbhAZR4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:56:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390687AbhAZIz1 (ORCPT
+        id S2393898AbhAZSBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:01:07 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:5410 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390873AbhAZJFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:55:27 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CF7C0613ED;
-        Tue, 26 Jan 2021 00:54:46 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DQ0sw029nz9sCD;
-        Tue, 26 Jan 2021 19:54:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1611651284;
-        bh=I3s1EpOWv+y62ui6MVTuNwPkXzAWpBfawc34KNcJQLY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XgNPtOths/PcYpcPvxamvHx/uIUFcyMdEoOBn6m39GsNjW3UyBPhk/qOE6gVtBQGs
-         GXO7r1t1m26z3/K0viBmGh+3FxeYA8d9qXjH9qI7C1tHzK4MqVx3LBpYKk6u0sySY7
-         zjq4/yXfZunh5wyemRFGZ/I0SY6u00SFe61BMlc3mVneaCfkOiXk2MBL0U2eQKvEAK
-         Ay0RVoB6d+lbevVXMXT3VqGWB+wUXjMX6XWFRFyY/+pv9P151fFM/4UNNeJc3aYChV
-         KZMqWUjgzIF8fiBRcI9CZNSi9YFhvdemzjC86xvJB4Ebl/M56kp3MUsrT6ipqqRU2l
-         ETNk4h/kZgvFA==
-Date:   Tue, 26 Jan 2021 19:54:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Bastien Nocera <hadess@hadess.net>,
-        Florian Dollinger <dollinger.florian@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the bluetooth tree
-Message-ID: <20210126195441.69c45ad9@canb.auug.org.au>
+        Tue, 26 Jan 2021 04:05:30 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10Q8v017012790;
+        Tue, 26 Jan 2021 10:04:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=k6uscXkXABTNJTneIu2qnrDFpyKKioS22qyjfIif7ss=;
+ b=N8iBKEpqEWEP022q+rZqm7+J3l/PVobuB9lozp4zODiZXjieCvuz4cwnLOLBUVP4aUHV
+ cseTpUST7qMKSQCHfh16u3w51YlcNTG4sdsEA3ZNTwV3rQ4a4JvuiiyVOvbIjqDEGVie
+ O943fbVyZlwmUMJUC/oGEydVBpwklPzjAdfH0zJpl8YHHVAz3Wc9DXtRZzDHr9ufsZOs
+ 8QeKMIjV3z+QFMzroFyD61R32+yaJAIOgLRkQ+HN/WOzAoQ3p0KhZBec6zo4Hw7KQ4Os
+ AZnMG6PS9j8/FkH2rPZJByqDt9ff+7L60WNt/2uCaeYzde9YzhZ7QnI+hNDQVzOV2xU2 7w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3689tdr2kp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 10:04:39 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2332C100034;
+        Tue, 26 Jan 2021 10:04:38 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 133412288C8;
+        Tue, 26 Jan 2021 10:04:38 +0100 (CET)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan 2021 10:04:37
+ +0100
+From:   <gabriel.fernandez@foss.st.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Etienne Carriere <etienne.carriere@st.com>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
+        <marex@denx.de>
+CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 07/14] dt-bindings: clock: add IDs for SCMI clocks on stm32mp15
+Date:   Tue, 26 Jan 2021 10:01:13 +0100
+Message-ID: <20210126090120.19900-8-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
+References: <20210126090120.19900-1-gabriel.fernandez@foss.st.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BmVtMDl89ADAvxfWA1h0GMF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_06:2021-01-25,2021-01-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BmVtMDl89ADAvxfWA1h0GMF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-Hi all,
+stm32mp15 TZ secure firmware provides SCMI clocks for oscillators, some
+PLL output and few secure aware interfaces.
+This change defines the SCMI clock identifiers used by SCMI agents
+and servers.
+Server SCMI0 exposes clocks and reset controllers for resources under
+RCC[TZEN] configuration control.
+Server SCMI1 exposes clocks for resources under RCC[MCKPROT] control.
 
-Commit
+Signed-off-by: Etienne Carriere <etienne.carriere@st.com>
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+---
+ include/dt-bindings/clock/stm32mp1-clks.h | 27 +++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-  98d2c3e17310 ("Bluetooth: L2CAP: Try harder to accept device not knowing =
-options")
+diff --git a/include/dt-bindings/clock/stm32mp1-clks.h b/include/dt-bindings/clock/stm32mp1-clks.h
+index 4cdaf135829c..e02770b98e6c 100644
+--- a/include/dt-bindings/clock/stm32mp1-clks.h
++++ b/include/dt-bindings/clock/stm32mp1-clks.h
+@@ -248,4 +248,31 @@
+ 
+ #define STM32MP1_LAST_CLK 232
+ 
++/* SCMI clock identifiers */
++#define CK_SCMI0_HSE		0
++#define CK_SCMI0_HSI		1
++#define CK_SCMI0_CSI		2
++#define CK_SCMI0_LSE		3
++#define CK_SCMI0_LSI		4
++#define CK_SCMI0_PLL2_Q		5
++#define CK_SCMI0_PLL2_R		6
++#define CK_SCMI0_MPU		7
++#define CK_SCMI0_AXI		8
++#define CK_SCMI0_BSEC		9
++#define CK_SCMI0_CRYP1		10
++#define CK_SCMI0_GPIOZ		11
++#define CK_SCMI0_HASH1		12
++#define CK_SCMI0_I2C4		13
++#define CK_SCMI0_I2C6		14
++#define CK_SCMI0_IWDG1		15
++#define CK_SCMI0_RNG1		16
++#define CK_SCMI0_RTC		17
++#define CK_SCMI0_RTCAPB		18
++#define CK_SCMI0_SPI6		19
++#define CK_SCMI0_USART1		20
++
++#define CK_SCMI1_PLL3_Q		0
++#define CK_SCMI1_PLL3_R		1
++#define CK_SCMI1_MCU		2
++
+ #endif /* _DT_BINDINGS_STM32MP1_CLKS_H_ */
+-- 
+2.17.1
 
-is missing a Signed-off-by from its author.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/BmVtMDl89ADAvxfWA1h0GMF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAP2NEACgkQAVBC80lX
-0GwKwAgAmU5gtV87Z+KrIlM1yHD2+tDHiaT5i9Qmxk5l0iHZW/eKcz1AtEeOyiEh
-So7JtLfJWOZbNkgvgdM+AEOWfar+SFRIWvzIWW36awJoPfS4+k6pgI1/HEWlUF+6
-P1d7jcSzWAKbDykaRaJPdfSTwsieRGWFNIXrjAv2CifeqYu3iIJI1cKPNReGPn1m
-a6XKSHvHX+wNmmmWHdrBtUljW1RbrM08IBA/m5D2PDNMjnhrxO5tEqWjXV/7Lw8r
-bCKBqDqzgWR8+I2cFTtmRoNuDuNXOFR1N/thmn0ha3sL2acVHvImKy+690yCubdE
-N4THJQtRwCexejXjPw/M1BXUElOv/g==
-=4jbi
------END PGP SIGNATURE-----
-
---Sig_/BmVtMDl89ADAvxfWA1h0GMF--
