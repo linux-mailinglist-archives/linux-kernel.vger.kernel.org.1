@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7A30401F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD123303FFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392700AbhAZOWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:22:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52743 "EHLO
+        id S2405784AbhAZOSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:18:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44630 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405604AbhAZOPw (ORCPT
+        by vger.kernel.org with ESMTP id S2405624AbhAZOP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:15:52 -0500
+        Tue, 26 Jan 2021 09:15:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611670463;
+        s=mimecast20190719; t=1611670473;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mkYJgccn/z7hy1ePkMnR/5smC+AZZcHpvTFxrxDkSNU=;
-        b=QwUUHUcbeSiGzsKMyhvYXxJyjFqoXOzb5Yejh8OoKItQi+cAYYk15rI+arlaz1KVzp4Rf0
-        dJZCwtnoDwom9Wm/bzMQeU9tZI7osuq5RA5GKJpOAz47m2CkqQHkOpInAEuZwq9kX6ToZG
-        FV53YLJ8FAjfUsxhNbE4I22C3m74iJw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-495-5dVtKTOGNLmyyyMMLFvsVg-1; Tue, 26 Jan 2021 09:14:21 -0500
-X-MC-Unique: 5dVtKTOGNLmyyyMMLFvsVg-1
-Received: by mail-ed1-f70.google.com with SMTP id k5so9417969edk.15
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:14:20 -0800 (PST)
+        bh=VDatwy9yr1egcmeaxWIyYl6nPc9FqgpaSNtd+mv8gY0=;
+        b=cf7EpmXHP9qm3hsGYhriF4k+Oe0ZY2m4z20hp8Dxdz5x8vqFKsQhuqh6FqGHXzOEYoYWBD
+        m+yy3wMmqrTKu2BC+sk2Sbe/QSnZ6Jhi3/NvJPcU2hG3AIn4kK2ky4DeTWkA9lYaYbh5gb
+        G7Nda6trUO1R1+/INzkB5m0sXGOXKMk=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-emuljht2MsKMBc_w_5q9Hg-1; Tue, 26 Jan 2021 09:14:30 -0500
+X-MC-Unique: emuljht2MsKMBc_w_5q9Hg-1
+Received: by mail-ej1-f71.google.com with SMTP id jg11so4991100ejc.23
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:14:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=mkYJgccn/z7hy1ePkMnR/5smC+AZZcHpvTFxrxDkSNU=;
-        b=TztTXWNjUJVT8Kq6Qo42SAFJLOiYrC7jXMSAhjEQJ5we2/hRUM1YoOw17ECPSZwVnQ
-         eN+vx5P54AgQRK8T87lPWJtixKHwrK/4lmXeTbUTVpBLFKxW/+2tbzYr4D/So72pJL03
-         7mi10fsBtuqHbtnLIKHRf8QiuZN3wb6ZamI335bI30Y/cpPP1rNV45lpPPC1fz6StjvA
-         j/L4dvLkj8XnQxsdUvlv85j90PUzXRlWjKuzEdpx/3sAuQZP45xUoWewJAykGWnArofd
-         to2v6gAtuOBD7EtWkqHWWzwNQlmLUMD41ziC6Ctp3YqH4jcuw0OgddNx+TeXKcgq8yVa
-         kl4g==
-X-Gm-Message-State: AOAM53080le/IueQ+ysFXBxL1XrJWfLZjvWIyii34Vtj5Y/IJOJwj8da
-        IgIwrOV+4CRVJ9ELVglMiXwUAXtV62tZ+Ju+2kOWnjj+V0JYD7fTtVpJYe4gOzeKo5etPrFUOzH
-        lMN42DoBSLxqr1E/y7k3Ku0M4
-X-Received: by 2002:a17:906:796:: with SMTP id l22mr3616216ejc.247.1611670460041;
-        Tue, 26 Jan 2021 06:14:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwkxnTqREDfh1bdGSipEr+24o8IlvB2ibHXTuznrfuQ8ea8f4Gj4WU55TPyxDDGrLil+doZYw==
-X-Received: by 2002:a17:906:796:: with SMTP id l22mr3616196ejc.247.1611670459875;
-        Tue, 26 Jan 2021 06:14:19 -0800 (PST)
+        bh=VDatwy9yr1egcmeaxWIyYl6nPc9FqgpaSNtd+mv8gY0=;
+        b=tPbNIGYC9akunFisw4edJkUjiUXT8a2kpFY8AM5LQCt2L7zXr74vy/CMWacHvfLOK9
+         R2MTWA2hhrv0hryRaPcVFdmOXbM9Jh2Y5cyF9zWF0LvNS3DkQbZQyQ+k9m7c0hF41tTz
+         nd8st18XNA3aM4y0WiQu2HfgfKd6iBIWE1Z45kcQ0lOEni562tzxbzptvulqOhBIEbXu
+         KmXLzp/XW1Lq7dvkvmp958dC1tJO4nqagQ9WufsyOSNy/GDqLDHGC9t5YxK9HrOam8mJ
+         oFWTGmOsOy1iWVzdQn1J2fX9xUgT4UFUkJvb3i1MXZgDKYq9hPoxaq/AJLGkrswyitJS
+         5EvQ==
+X-Gm-Message-State: AOAM533OYryJlK911lpCxPxW5MnAkCC81tLsraY/pdgqPhtR3NdJ5N+i
+        mzF6Hut0arMsirFw3ssJA8fVWZOKuJM9DdZNucdys9Q6NERy72JGLkTm35Mhm4hf7GxzjDUHm85
+        Vsh3rC1fwXkcezkuGKBWNtw76
+X-Received: by 2002:a17:906:af41:: with SMTP id ly1mr3418966ejb.491.1611670469049;
+        Tue, 26 Jan 2021 06:14:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxLZHvvd991wi5LSYomm6Tr/MOTO7vpWabw8m6oShLXFqGN22xFOyRlIE7vZuC2Ph16eIU8NQ==
+X-Received: by 2002:a17:906:af41:: with SMTP id ly1mr3418953ejb.491.1611670468904;
+        Tue, 26 Jan 2021 06:14:28 -0800 (PST)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g14sm12643662edm.31.2021.01.26.06.14.17
+        by smtp.gmail.com with ESMTPSA id p16sm12367785edw.44.2021.01.26.06.14.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 06:14:18 -0800 (PST)
-Subject: Re: [PATCH 10/24] kvm: x86/mmu: Factor out handle disconnected pt
+        Tue, 26 Jan 2021 06:14:28 -0800 (PST)
+Subject: Re: [PATCH 09/24] kvm: x86/mmu: Don't redundantly clear TDP MMU pt
+ memory
 To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org
 Cc:     Peter Xu <peterx@redhat.com>,
@@ -66,14 +67,14 @@ Cc:     Peter Xu <peterx@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-11-bgardon@google.com>
+ <20210112181041.356734-10-bgardon@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <47e0b040-f9de-376d-80a3-75b5680a7b85@redhat.com>
-Date:   Tue, 26 Jan 2021 15:14:16 +0100
+Message-ID: <48cafbae-3e73-d5ca-ddbc-13e1bbfafb2f@redhat.com>
+Date:   Tue, 26 Jan 2021 15:14:25 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210112181041.356734-11-bgardon@google.com>
+In-Reply-To: <20210112181041.356734-10-bgardon@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -82,9 +83,9 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 12/01/21 19:10, Ben Gardon wrote:
-> Factor out the code to handle a disconnected subtree of the TDP paging
-> structure from the code to handle the change to an individual SPTE.
-> Future commits will build on this to allow asynchronous page freeing.
+> The KVM MMU caches already guarantee that shadow page table memory will
+> be zeroed, so there is no reason to re-zero the page in the TDP MMU page
+> fault handler.
 > 
 > No functional change intended.
 > 
@@ -92,109 +93,21 @@ On 12/01/21 19:10, Ben Gardon wrote:
 > 
 > Signed-off-by: Ben Gardon <bgardon@google.com>
 > ---
->   arch/x86/kvm/mmu/tdp_mmu.c | 75 +++++++++++++++++++++++---------------
->   1 file changed, 46 insertions(+), 29 deletions(-)
+>   arch/x86/kvm/mmu/tdp_mmu.c | 1 -
+>   1 file changed, 1 deletion(-)
 > 
 > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 55df596696c7..e8f35cd46b4c 100644
+> index 411938e97a00..55df596696c7 100644
 > --- a/arch/x86/kvm/mmu/tdp_mmu.c
 > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -234,6 +234,49 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
->   	}
->   }
+> @@ -665,7 +665,6 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+>   			sp = alloc_tdp_mmu_page(vcpu, iter.gfn, iter.level);
+>   			list_add(&sp->link, &vcpu->kvm->arch.tdp_mmu_pages);
+>   			child_pt = sp->spt;
+> -			clear_page(child_pt);
+>   			new_spte = make_nonleaf_spte(child_pt,
+>   						     !shadow_accessed_mask);
 >   
-> +/**
-> + * handle_disconnected_tdp_mmu_page - handle a pt removed from the TDP structure
-> + *
-> + * @kvm: kvm instance
-> + * @pt: the page removed from the paging structure
-> + *
-> + * Given a page table that has been removed from the TDP paging structure,
-> + * iterates through the page table to clear SPTEs and free child page tables.
-> + */
-> +static void handle_disconnected_tdp_mmu_page(struct kvm *kvm, u64 *pt)
-> +{
-> +	struct kvm_mmu_page *sp;
-> +	gfn_t gfn;
-> +	int level;
-> +	u64 old_child_spte;
-> +	int i;
-> +
-> +	sp = sptep_to_sp(pt);
-> +	gfn = sp->gfn;
-> +	level = sp->role.level;
-> +
-> +	trace_kvm_mmu_prepare_zap_page(sp);
-> +
-> +	list_del(&sp->link);
-> +
-> +	if (sp->lpage_disallowed)
-> +		unaccount_huge_nx_page(kvm, sp);
-> +
-> +	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
-> +		old_child_spte = READ_ONCE(*(pt + i));
-> +		WRITE_ONCE(*(pt + i), 0);
-> +		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
-> +			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
-> +			old_child_spte, 0, level - 1);
-> +	}
-> +
-> +	kvm_flush_remote_tlbs_with_address(kvm, gfn,
-> +					   KVM_PAGES_PER_HPAGE(level));
-> +
-> +	free_page((unsigned long)pt);
-> +	kmem_cache_free(mmu_page_header_cache, sp);
-> +}
-> +
->   /**
->    * handle_changed_spte - handle bookkeeping associated with an SPTE change
->    * @kvm: kvm instance
-> @@ -254,10 +297,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->   	bool was_leaf = was_present && is_last_spte(old_spte, level);
->   	bool is_leaf = is_present && is_last_spte(new_spte, level);
->   	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
-> -	u64 *pt;
-> -	struct kvm_mmu_page *sp;
-> -	u64 old_child_spte;
-> -	int i;
->   
->   	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
->   	WARN_ON(level < PG_LEVEL_4K);
-> @@ -321,31 +360,9 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->   	 * Recursively handle child PTs if the change removed a subtree from
->   	 * the paging structure.
->   	 */
-> -	if (was_present && !was_leaf && (pfn_changed || !is_present)) {
-> -		pt = spte_to_child_pt(old_spte, level);
-> -		sp = sptep_to_sp(pt);
-> -
-> -		trace_kvm_mmu_prepare_zap_page(sp);
-> -
-> -		list_del(&sp->link);
-> -
-> -		if (sp->lpage_disallowed)
-> -			unaccount_huge_nx_page(kvm, sp);
-> -
-> -		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
-> -			old_child_spte = READ_ONCE(*(pt + i));
-> -			WRITE_ONCE(*(pt + i), 0);
-> -			handle_changed_spte(kvm, as_id,
-> -				gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
-> -				old_child_spte, 0, level - 1);
-> -		}
-> -
-> -		kvm_flush_remote_tlbs_with_address(kvm, gfn,
-> -						   KVM_PAGES_PER_HPAGE(level));
-> -
-> -		free_page((unsigned long)pt);
-> -		kmem_cache_free(mmu_page_header_cache, sp);
-> -	}
-> +	if (was_present && !was_leaf && (pfn_changed || !is_present))
-> +		handle_disconnected_tdp_mmu_page(kvm,
-> +				spte_to_child_pt(old_spte, level));
->   }
->   
->   static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
 > 
 
 Queued, thanks.
