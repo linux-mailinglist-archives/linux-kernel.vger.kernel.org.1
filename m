@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D081304282
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811353042A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406279AbhAZP2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:28:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42436 "EHLO mail.kernel.org"
+        id S2389908AbhAZPar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:30:47 -0500
+Received: from m12-12.163.com ([220.181.12.12]:47333 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392290AbhAZP1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:27:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D28C22D58;
-        Tue, 26 Jan 2021 15:26:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611674803;
-        bh=w8mSdzw2vih+0TFqWZSIck7PWCi9bcM/xz0FN1eYr3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rCGV/avioWinhQtovDeog1G705f64yQSpIb7iAvYZNpIetyCCBOZVTs3VWTGUZ7nf
-         hHS41ea7skQwo7Mahx23PVE79mRd0UdfR7h73HPjToZO2DD/Ae5+Xf0DTl5FmeiWTO
-         ACb/Ytg42CJneuvK8R9+xYsmtsM03n91fzuwsrIOGObGHkOAbX7asDhPFaPg84Daar
-         R1GF9813AvMYeu1M+CA+bZzYLJUYdi0jqvEul9DptSVQ+uoPpQ3MAH3jxPY8MEkiOm
-         /XNm49yANQeluC1KdJDgnzTPa6zapH1bCW1aAAXNeiwoQ+EuPipE2TVcYkRemsTpoa
-         R/O0SotBLRCWA==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l4QF2-0000kb-44; Tue, 26 Jan 2021 16:26:52 +0100
-Date:   Tue, 26 Jan 2021 16:26:52 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     linux-usb@vger.kernel.org
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH 00/10] USB: serial: xr: fix up remaining issues in new
- driver
-Message-ID: <YBA0vO06cBvoK3Hr@hovoldconsulting.com>
-References: <20210121102922.17439-1-johan@kernel.org>
+        id S2406342AbhAZP3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:29:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=ivLqm
+        J1s2EDsj6FXSmy+6Xh15a30zNVySkMMhcp7/mI=; b=WytMhn0djV8vM8fJQY79A
+        A85wGSpwTTAP1jE9t/sNbbhRxlr9gkIQRl0oGXqHZcEgMYsLzYk/W10p6hRd+1lI
+        8h5QhJBaohK6eCye709+mNNl4QWDwMo5BNUBJGGeXon+y82W6gYNZ3LwcRGnrPDU
+        6EYanJqdONprGB9fpiValQ=
+Received: from [192.168.31.187] (unknown [36.170.37.79])
+        by smtp8 (Coremail) with SMTP id DMCowABnbo6PKRBgoMiGNw--.4455S2;
+        Tue, 26 Jan 2021 22:39:12 +0800 (CST)
+Subject: Re: [PATCH] arch/arm/mm/mmu.c: Remove duplicate header
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hailong Liu <liu.hailong6@zte.com.cn>
+References: <20210119133320.8557-1-carver4lio@163.com>
+ <CACRpkdbVwjJygak+tqjLXtqs-kwVH4VbqWp23NUgs=8wFepSPg@mail.gmail.com>
+From:   carver4lio@163.com
+Message-ID: <bc9c4778-3188-f59a-1889-41eac9e84584@163.com>
+Date:   Tue, 26 Jan 2021 22:39:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121102922.17439-1-johan@kernel.org>
+In-Reply-To: <CACRpkdbVwjJygak+tqjLXtqs-kwVH4VbqWp23NUgs=8wFepSPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: DMCowABnbo6PKRBgoMiGNw--.4455S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU-WlkDUUUU
+X-Originating-IP: [36.170.37.79]
+X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/xtbBXgomnVaD5mSEfwABsC
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:29:11AM +0100, Johan Hovold wrote:
-> This series fixes the remaining issues in the new MaxLinear driver that
-> were pointed out here:
+On 1/22/21 6:11 PM, Linus Walleij wrote:
+> On Tue, Jan 19, 2021 at 2:34 PM Hailong liu <carver4lio@163.com> wrote:
 > 
-> 	https://lore.kernel.org/r/YAlVLOqzx8otPgOg@hovoldconsulting.com
-
-> Johan Hovold (10):
->   USB: serial: xr: fix NULL-deref at probe
->   USB: serial: xr: fix interface leak at disconnect
->   USB: serial: xr: use subsystem usb_device at probe
->   USB: serial: xr: use termios flag helpers
->   USB: serial: xr: document vendor-request recipient
->   USB: serial: xr: clean up line-settings handling
->   USB: serial: xr: simplify line-speed logic
->   USB: serial: xr: fix gpio-mode handling
->   USB: serial: xr: fix pin configuration
->   USB: serial: xr: fix B0 handling
+>> From: Hailong Liu <liu.hailong6@zte.com.cn>
+>>
+>> Remove asm/fixmap.h which is included more than once.
+>>
+>> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
 > 
->  drivers/usb/serial/xr_serial.c | 102 +++++++++++++++++++--------------
->  1 file changed, 59 insertions(+), 43 deletions(-)
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Please put this into Russell's patch tracker so he can merge it.
 
-I have applied these now.
+I have put this patch into Russell's patch tracker, and its status now is
+incoming.
 
-Johan
+
