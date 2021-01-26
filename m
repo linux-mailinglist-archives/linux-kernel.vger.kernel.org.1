@@ -2,104 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B54303F87
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603C6303FF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405636AbhAZOB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:01:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405655AbhAZOAQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:00:16 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C483C061D73
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:59:36 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id a109so16249035otc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:59:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YTsupxga+KtJHJ2/NwGiOg8d0eBxSmIPJj1rUhYEku0=;
-        b=yZ54dQI7WHPKCbJ+/b1AnRgCgElbV/u79mPNAInoK/gifKSkO/cgksWh5+YswXIUkB
-         X66rUBm/PkWwkTrXbSReCtBrnOhvjVVXExV7yfeos0jPSQtjTz/uvEuZBr5hZDojhvWw
-         HjbWc2KUBDg7j66deFQaLawYvG8xk7JH/zhjA9WomtqszMWICRrnb75pOLKC70hxQ7E6
-         7IF7FmTP1IrI8um/tg2lYWbR9IdUBZ0wsrhKjQxosu9T0zTJ2efRETym6gkwsr5+1l85
-         BD1XHMN6NXPUh9Rt1Yi4Vpo4e57AGV60/0R6oGQZm2sVDLhOy6h9V3cK+mRs98Tt67CK
-         S0GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YTsupxga+KtJHJ2/NwGiOg8d0eBxSmIPJj1rUhYEku0=;
-        b=G16XRUrKh21lS7GWr+gbRFWR8fMUtK6Oy/4xnWOx6AlNyNQCL4Plv1FtAD0rz+kaU4
-         6Wd7fZopwPzHVMrzhPgFcwHnJszsLTDVd+EEpTkc/9OPwzjTQSnx40AMIxX4S/OxgcEl
-         vTE7CS/Iyli7KG5TE7vgSRYTNFXWYNUpdqV/mp5HCx3OqKN7s3Gk4aSVNZ5ypsWlfIDZ
-         4ZT42R5s2SK3Q1M89wok/Z0BvfL+w7A9jftKW6Tj2+iw+Wu3no8AVHjed9XZiVnWYfU4
-         fQIJASLkAULCy/0z266m4nrg4wEZK+JPTVojRV1iaPZeslMmWqKX9lSnz7Oj6XxIyPQi
-         R76A==
-X-Gm-Message-State: AOAM5314ch9syTfWxXjbrhwBzz5hfuud1EVB7pXDjfQV58tusUYjLxQA
-        oX15sNoRfqRGwfEL9v1J+v/nNA==
-X-Google-Smtp-Source: ABdhPJymcp9pMAiu4zVhoCug/E78peraXZ+L6YX6ZbPuuw5jYLiWmahXMCax5kRqBawVjHCZAWMf+g==
-X-Received: by 2002:a05:6830:1614:: with SMTP id g20mr3941554otr.77.1611669575430;
-        Tue, 26 Jan 2021 05:59:35 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z3sm4126369ota.80.2021.01.26.05.59.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 05:59:34 -0800 (PST)
-Date:   Tue, 26 Jan 2021 07:59:32 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH 04/21] clk: qcom: clk-regmap: Provide missing description
- for 'devm_clk_register_regmap()'s dev param
-Message-ID: <20210126135932.GC1241218@yoga>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
- <20210126124540.3320214-5-lee.jones@linaro.org>
+        id S2392737AbhAZORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:17:16 -0500
+Received: from mga02.intel.com ([134.134.136.20]:7404 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392688AbhAZNls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:41:48 -0500
+IronPort-SDR: MRL9Ttc//G+ifgUdQ1tG00y8KUVwWg8qUfg5yDAR68uvNVwGQ/Z045elmPD6ONs3nQSo9oV6oU
+ 5nVzvLac/w3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="167000411"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="167000411"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 05:40:00 -0800
+IronPort-SDR: QEPpNYvB7Nf0nr7yJw2c1Rbo8Iri/iNym0Adk43Mz5xovxm3lpIoUsF0AHBS+k1So0yyu2eveq
+ tBEmgUqBPepg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="356725885"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by orsmga006.jf.intel.com with ESMTP; 26 Jan 2021 05:40:00 -0800
+Subject: Re: [PATCHv3 6/6] fpga: stratix10-soc: extend driver for bitstream
+ authentication
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     trix@redhat.com, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
+        Richard Gong <richard.gong@intel.com>
+References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
+ <1611608188-25621-7-git-send-email-richard.gong@linux.intel.com>
+ <YA+kDJ4gd1VIxQqE@epycbox.lan>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <eb20a836-a6df-fb5f-f73d-74f1a7fb77dd@linux.intel.com>
+Date:   Tue, 26 Jan 2021 08:00:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126124540.3320214-5-lee.jones@linaro.org>
+In-Reply-To: <YA+kDJ4gd1VIxQqE@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26 Jan 06:45 CST 2021, Lee Jones wrote:
+Hi Moritz,
 
-> Fixes the following W=1 kernel build warning(s):
+On 1/25/21 11:09 PM, Moritz Fischer wrote:
+> On Mon, Jan 25, 2021 at 02:56:28PM -0600, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Extend FPGA manager driver to support FPGA bitstream authentication on
+>> Intel SocFPGA platforms.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>> v3: add handle to retriev the firmware version to keep driver
+>>      back compatible
+>> v2: use flag defined in stratix10-svc driver
+>> ---
+>>   drivers/fpga/stratix10-soc.c | 62 +++++++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 56 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+>> index 657a70c..59d738c 100644
+>> --- a/drivers/fpga/stratix10-soc.c
+>> +++ b/drivers/fpga/stratix10-soc.c
+>> @@ -24,6 +24,10 @@
+>>   #define S10_BUFFER_TIMEOUT (msecs_to_jiffies(SVC_RECONFIG_BUFFER_TIMEOUT_MS))
+>>   #define S10_RECONFIG_TIMEOUT (msecs_to_jiffies(SVC_RECONFIG_REQUEST_TIMEOUT_MS))
+>>   
+>> +#define INVALID_FIRMWARE_VERSION	0xFFFF
+>> +typedef void (*s10_callback)(struct stratix10_svc_client *client,
+>> +			     struct stratix10_svc_cb_data *data);
+>> +
+>>   /*
+>>    * struct s10_svc_buf
+>>    * buf:  virtual address of buf provided by service layer
+>> @@ -40,11 +44,13 @@ struct s10_priv {
+>>   	struct completion status_return_completion;
+>>   	struct s10_svc_buf svc_bufs[NUM_SVC_BUFS];
+>>   	unsigned long status;
+>> +	unsigned int fw_version;
+>>   };
+>>   
+>>   static int s10_svc_send_msg(struct s10_priv *priv,
+>>   			    enum stratix10_svc_command_code command,
+>> -			    void *payload, u32 payload_length)
+>> +			    void *payload, u32 payload_length,
+>> +			    s10_callback callback)
+>>   {
+>>   	struct stratix10_svc_chan *chan = priv->chan;
+>>   	struct device *dev = priv->client.dev;
+>> @@ -57,6 +63,7 @@ static int s10_svc_send_msg(struct s10_priv *priv,
+>>   	msg.command = command;
+>>   	msg.payload = payload;
+>>   	msg.payload_length = payload_length;
+>> +	priv->client.receive_cb = callback;
+>>   
+>>   	ret = stratix10_svc_send(chan, &msg);
+>>   	dev_dbg(dev, "stratix10_svc_send returned status %d\n", ret);
+>> @@ -134,6 +141,29 @@ static void s10_unlock_bufs(struct s10_priv *priv, void *kaddr)
+>>   }
+>>   
+>>   /*
+>> + * s10_fw_version_callback - callback for the version of running firmware
+>> + * @client: service layer client struct
+>> + * @data: message from service layer
+>> + */
+>> +static void s10_fw_version_callback(struct stratix10_svc_client *client,
+>> +				    struct stratix10_svc_cb_data *data)
+>> +{
+>> +	struct s10_priv *priv = client->priv;
+>> +	unsigned int *version = (unsigned int *)data->kaddr1;
+>> +
+>> +	if (data->status == BIT(SVC_STATUS_OK))
+>> +		priv->fw_version = *version;
+>> +	else if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
+>> +		dev_warn(client->dev,
+>> +			 "FW doesn't support bitstream authentication\n");
+>> +	else
+>> +		dev_err(client->dev, "Failed to get FW version %lu\n",
+>> +			BIT(data->status));
+>> +
+>> +	complete(&priv->status_return_completion);
+>> +}
+>> +
+>> +/*
+>>    * s10_receive_callback - callback for service layer to use to provide client
+>>    * (this driver) messages received through the mailbox.
+>>    * client: service layer client struct
+>> @@ -186,13 +216,22 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
+>>   	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
+>>   		dev_dbg(dev, "Requesting partial reconfiguration.\n");
+>>   		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
+>> +	} else if (info->flags & FPGA_MGR_BITSTREM_AUTHENTICATION) {
+> BITSTREAM ;-)
 > 
->  drivers/clk/qcom/clk-regmap.c:97: warning: Function parameter or member 'dev' not described in 'devm_clk_register_regmap'
-> 
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
+> Nit: Maybe the flag could be FPGA_MGR_BITSTREAM_AUTHENTICATE and/or
+> FPGA_MGR_BITSTREAM_AUTH_AND_PERSIST.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Thanks, I will correct both in next submission.
 
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/clk/qcom/clk-regmap.c | 1 +
->  1 file changed, 1 insertion(+)
+>> +		if (priv->fw_version == INVALID_FIRMWARE_VERSION) {
+>> +			dev_err(dev, "FW doesn't support\n");
+>> +			return -EINVAL;
+>> +		}
+>> +
+>> +		dev_dbg(dev, "Requesting bitstream authentication.\n");
+>> +		ctype.flags |= BIT(COMMAND_AUTHENTICATE_BITSTREAM);
+>>   	} else {
+>>   		dev_dbg(dev, "Requesting full reconfiguration.\n");
+>>   	}
+>>   
+>>   	reinit_completion(&priv->status_return_completion);
+>>   	ret = s10_svc_send_msg(priv, COMMAND_RECONFIG,
+>> -			       &ctype, sizeof(ctype));
+>> +			       &ctype, sizeof(ctype),
+>> +			       s10_receive_callback);
+>>   	if (ret < 0)
+>>   		goto init_done;
+>>   
+>> @@ -259,7 +298,7 @@ static int s10_send_buf(struct fpga_manager *mgr, const char *buf, size_t count)
+>>   	svc_buf = priv->svc_bufs[i].buf;
+>>   	memcpy(svc_buf, buf, xfer_sz);
+>>   	ret = s10_svc_send_msg(priv, COMMAND_RECONFIG_DATA_SUBMIT,
+>> -			       svc_buf, xfer_sz);
+>> +			       svc_buf, xfer_sz, s10_receive_callback);
+>>   	if (ret < 0) {
+>>   		dev_err(dev,
+>>   			"Error while sending data to service layer (%d)", ret);
+>> @@ -303,7 +342,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
+>>   
+>>   			ret = s10_svc_send_msg(
+>>   				priv, COMMAND_RECONFIG_DATA_CLAIM,
+>> -				NULL, 0);
+>> +				NULL, 0, s10_receive_callback);
+>>   			if (ret < 0)
+>>   				break;
+>>   		}
+>> @@ -357,7 +396,8 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
+>>   	do {
+>>   		reinit_completion(&priv->status_return_completion);
+>>   
+>> -		ret = s10_svc_send_msg(priv, COMMAND_RECONFIG_STATUS, NULL, 0);
+>> +		ret = s10_svc_send_msg(priv, COMMAND_RECONFIG_STATUS,
+>> +				       NULL, 0, s10_receive_callback);
+>>   		if (ret < 0)
+>>   			break;
+>>   
+>> @@ -411,8 +451,9 @@ static int s10_probe(struct platform_device *pdev)
+>>   	if (!priv)
+>>   		return -ENOMEM;
+>>   
+>> +	priv->fw_version = INVALID_FIRMWARE_VERSION;
+>>   	priv->client.dev = dev;
+>> -	priv->client.receive_cb = s10_receive_callback;
+>> +	priv->client.receive_cb = NULL;
+>>   	priv->client.priv = priv;
+>>   
+>>   	priv->chan = stratix10_svc_request_channel_byname(&priv->client,
+>> @@ -440,6 +481,15 @@ static int s10_probe(struct platform_device *pdev)
+>>   		goto probe_err;
+>>   	}
+>>   
+>> +	/* get the running firmware version */
+>> +	ret = s10_svc_send_msg(priv, COMMAND_FIRMWARE_VERSION,
+>> +			       NULL, 0, s10_fw_version_callback);
+>> +	if (ret) {
+>> +		dev_err(dev, "couldn't get firmware version\n");
+>> +		fpga_mgr_free(mgr);
+>> +		goto probe_err;
+>> +	}
+>> +
+>>   	platform_set_drvdata(pdev, mgr);
+>>   	return ret;
+>>   
+>> -- 
+>> 2.7.4
+>>
+> Thanks,
+> Moritz
 > 
-> diff --git a/drivers/clk/qcom/clk-regmap.c b/drivers/clk/qcom/clk-regmap.c
-> index ce80db27ccf2a..92ac4e0d7dbe2 100644
-> --- a/drivers/clk/qcom/clk-regmap.c
-> +++ b/drivers/clk/qcom/clk-regmap.c
-> @@ -87,6 +87,7 @@ EXPORT_SYMBOL_GPL(clk_disable_regmap);
->  /**
->   * devm_clk_register_regmap - register a clk_regmap clock
->   *
-> + * @dev: reference to the caller's device
->   * @rclk: clk to operate on
->   *
->   * Clocks that use regmap for their register I/O should register their
-> -- 
-> 2.25.1
-> 
+Regards,
+Richard
