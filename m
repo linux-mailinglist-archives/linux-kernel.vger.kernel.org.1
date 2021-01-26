@@ -2,173 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BD9304DA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3680D304DA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:47:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387470AbhAZXM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729324AbhAZEzJ (ORCPT
+        id S2387592AbhAZXNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:13:17 -0500
+Received: from mail-pf1-f172.google.com ([209.85.210.172]:34419 "EHLO
+        mail-pf1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730077AbhAZE6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 23:55:09 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69813C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 20:54:29 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id 31so9136507plb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 20:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zWzZEjtMI7dPvku+j5LOMBapAYYLqsSnngDI0xcSPtU=;
-        b=mdZXnij8j2OhoSuz0AxfBhIxqiB+8yZ9jo3y8Eyh3ODyLDaCAyDWBPMrglhVBGkODv
-         Crv1+LoHFbqcgWZZnnx6/1VH42DX6IXP0AbtgUKK9Hwhj8tjohWGrg0iNVALj8E40VLK
-         z6I8tpUKtdoi+7EbBR7z/JUJLBMD3LUmZCurMjMSOZR8P46fh+ToDppHamydxYc8CWVv
-         qQQ1O7kYy1617y4/KRAXlD3Dehj3QYGfjPvkDOZ6Slt4w9wxY1jLKpBsZbzzv/Ypq2Hv
-         oIZDmQy5/Ze9lBQxTJ5oVqFmvxbJD35P165x33/BDl34KS+z/TIglWhWZ3uMMtmNbIwl
-         XY8g==
+        Mon, 25 Jan 2021 23:58:44 -0500
+Received: by mail-pf1-f172.google.com with SMTP id m6so9824919pfk.1;
+        Mon, 25 Jan 2021 20:58:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zWzZEjtMI7dPvku+j5LOMBapAYYLqsSnngDI0xcSPtU=;
-        b=kGwd1Go4dzANe7VNl7WAmSDKab/t5AuHAVPTG8/ZoiD/HmcXxFDZoDlCBsXzF4Gdga
-         6Sg6MpbmLGJbcss3HAKjeOc/rt7xJfBlsn3xjfq4YnzQxeQnsxg0t8W9YPmv/hXFfaHI
-         TJH+VQ5viLFXrCTVwLtCoaA5pTrRwPdRB8wFQ4B3vlJGXHfWC+mIe6kST+/GhCB+BmPZ
-         9MsuvWQUlb36dx1TsEH4wBjBaIcD2PuLdkpljPL3psuRxQgmdzFrjmd5lUJbdkmcD6m6
-         StJM3ZQX5C9DZheNQ7qS0DdUwUet6HCdNUZVCEhwRlTZxaDIDnVHILY23JO+Az012j/R
-         i7Sw==
-X-Gm-Message-State: AOAM533za/GJnLS4m/vWvLBJjHSmJFgCi5CoKReQzV85S59TnvaXoDVI
-        CXuaP1KJ4yDulhSyS7MKnIc=
-X-Google-Smtp-Source: ABdhPJywTkPitOcbrsL64q10OuxjK3xV19FLJoWY/kuHyIiloXjVdY125pYsW/JbsEdfQlC4T2Htig==
-X-Received: by 2002:a17:90a:4209:: with SMTP id o9mr4130449pjg.75.1611636869086;
-        Mon, 25 Jan 2021 20:54:29 -0800 (PST)
-Received: from bobo.ozlabs.ibm.com (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
-        by smtp.gmail.com with ESMTPSA id w184sm18803382pgb.71.2021.01.25.20.54.26
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qMQSXSqdqPw2ouePc311mhljsHLmSTms1OySVvrYkrQ=;
+        b=I+uZOgjBknJKnVv8jzUyqSxTeoyK4u8DpRXLT0a+EH2dbMbOkH+9Vwqz8TcJypsZJ2
+         lLhwy3gPayzHyKtlCVIPIcVKzbwL3g4SdtCn62xEAidhWOXlP0cYd1inxN8oRTMy1H6u
+         FErVteYQSqVZ429J0hZk9kkZz08oYtIgXOQHxo16m9pEO4qS8Od8rzrnQxUcKFhnFsbh
+         6chtOiVW+9N9II3vBRuOeXc+KqLj4AsYRiP9zXWpjDqU7iMTZ0cVGnArU12Sp5517pdD
+         v91blbPpXoZecb4VGaf5BgiRJDjndug7rWiEpHOv10dN4J8Jh44kvJ7L1okMNP3Egxxp
+         lCxA==
+X-Gm-Message-State: AOAM532uTn9Pg/voGXayv2AlzFPgFCOIPwCDVOW2DSUgsvly+dZBluBm
+        /tyUEzRemay92QHPY0M4SD4=
+X-Google-Smtp-Source: ABdhPJzXL22joUj3DpEtTOenQ7xjmtwixqwQ1eHOi0Q+A458V511AYfdTWKvgRGjrMVBVwT7NTDqyw==
+X-Received: by 2002:a62:37c7:0:b029:1aa:22ea:537d with SMTP id e190-20020a6237c70000b02901aa22ea537dmr3680475pfa.56.1611637079026;
+        Mon, 25 Jan 2021 20:57:59 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id bk18sm908042pjb.41.2021.01.25.20.57.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 20:54:28 -0800 (PST)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 5/5] mm/vmalloc: improve allocation failure error messages
-Date:   Tue, 26 Jan 2021 14:54:04 +1000
-Message-Id: <20210126045404.2492588-6-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210126045404.2492588-1-npiggin@gmail.com>
-References: <20210126045404.2492588-1-npiggin@gmail.com>
+        Mon, 25 Jan 2021 20:57:58 -0800 (PST)
+Date:   Mon, 25 Jan 2021 20:57:57 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>,
+        gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v9 1/2] uio: uio_dfl: add userspace i/o driver for DFL bus
+Message-ID: <YA+hVZzbAI56NQPT@epycbox.lan>
+References: <1611564563-9665-1-git-send-email-yilun.xu@intel.com>
+ <1611564563-9665-2-git-send-email-yilun.xu@intel.com>
+ <e9bb1ff8-f630-f1a3-985c-7e51369a733f@redhat.com>
+ <YA98/8r+yOCurHAJ@epycbox.lan>
+ <20210126024005.GB3907@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126024005.GB3907@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several reasons why a vmalloc can fail, virtual space
-exhausted, page array allocation failure, page allocation failure,
-and kernel page table allocation failure.
+On Tue, Jan 26, 2021 at 10:40:05AM +0800, Xu Yilun wrote:
+> On Mon, Jan 25, 2021 at 06:22:55PM -0800, Moritz Fischer wrote:
+> > On Mon, Jan 25, 2021 at 11:00:38AM -0800, Tom Rix wrote:
+> > > 
+> > > On 1/25/21 12:49 AM, Xu Yilun wrote:
+> > > > This patch supports the DFL drivers be written in userspace. This is
+> > > > realized by exposing the userspace I/O device interfaces.
+> > > >
+> > > > The driver now only binds the ether group feature, which has no irq. So
+> > > > the irq support is not implemented yet.
+> > > >
+> > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > ---
+> > > > v9: switch to add a uio driver in drivers/uio
+> > > > ---
+> > > >  drivers/uio/Kconfig   | 13 ++++++++++
+> > > >  drivers/uio/Makefile  |  1 +
+> > > >  drivers/uio/uio_dfl.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> > > 
+> > > You should add this to the MAINTAINERS file.
+> > 
+> > This is covered by MAINTAINERS under drivers/uio.
+> 
+> Yes. But is it OK I also add the file in "FPGA DFL DRIVERS"? So DFL
+> developers would also be aware if there is change. It is a little
+> different from other feature driver, it is like a generic driver for
+> DFL bus.
+Fair enough. I meant you don't have to if you don't want to. If you want
+to feel free to do so :)
+> 
+> > > 
+> > > >  3 files changed, 80 insertions(+)
+> > > >  create mode 100644 drivers/uio/uio_dfl.c
+> > > >
+> > > > diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+> > > > index 202ee81..44778f8 100644
+> > > > --- a/drivers/uio/Kconfig
+> > > > +++ b/drivers/uio/Kconfig
+> > > > @@ -165,4 +165,17 @@ config UIO_HV_GENERIC
+> > > >  	  to network and storage devices from userspace.
+> > > >  
+> > > >  	  If you compile this as a module, it will be called uio_hv_generic.
+> > > > +
+> > > > +config UIO_DFL
+> > > > +	tristate "Generic driver for DFL bus"
+> > > 
+> > > The term 'DFL' will be unknown to folks in drivers/uio
+> > > 
+> > > I think it would be better if DFL was always prefixed 'FPGA DFL'
+> > > 
+> > > > +	depends on FPGA_DFL
+> > > > +	help
+> > > > +	  Generic DFL (Device Feature List) driver for Userspace I/O devices.
+> > > > +	  It is useful to provide direct access to DFL devices from userspace.
+> > > > +	  A sample userspace application using this driver is available for
+> > > > +	  download in a git repository:
+> > > > +
+> > > > +	    git clone https://github.com/OPAE/opae-sdk.git
+> > > > +
+> > > > +	  If you compile this as a module, it will be called uio_dfl.
+> > 
+> > I'm not sure KConfig is the right place for this.
+> 
+> Do you mean the OPAE link? I see several uio drivers provide their
+> userspace application link in Kconfig. I guess the uio drivers are
+> selected for these applications so it may be better pointing out where
+> they are.
 
-Add distinct warning messages for the main causes of failure, with
-some added information like page order or allocation size where
-applicable.
+Ok, works for me.
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- mm/vmalloc.c | 40 ++++++++++++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 12 deletions(-)
-
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 5ff190590fe4..4facf582a3be 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2790,6 +2790,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 
- 	if (!pages) {
- 		free_vm_area(area);
-+		warn_alloc(gfp_mask, NULL,
-+			   "vmalloc size %lu allocation failure: "
-+			   "page array size %lu allocation failed",
-+			   area->nr_pages * PAGE_SIZE, array_size);
- 		return NULL;
- 	}
- 
-@@ -2813,6 +2817,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 			/* Successfully allocated i pages, free them in __vfree() */
- 			area->nr_pages = i;
- 			atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
-+			warn_alloc(gfp_mask, NULL,
-+				   "vmalloc size %lu allocation failure: "
-+				   "page order %u allocation failed",
-+				   area->nr_pages * PAGE_SIZE, page_order);
- 			goto fail;
- 		}
- 
-@@ -2824,15 +2832,17 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	}
- 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
- 
--	if (vmap_pages_range(addr, addr + size, prot, pages, page_shift) < 0)
-+	if (vmap_pages_range(addr, addr + size, prot, pages, page_shift) < 0) {
-+		warn_alloc(gfp_mask, NULL,
-+			   "vmalloc size %lu allocation failure: "
-+			   "failed to map pages",
-+			   area->nr_pages * PAGE_SIZE);
- 		goto fail;
-+	}
- 
- 	return area->addr;
- 
- fail:
--	warn_alloc(gfp_mask, NULL,
--			  "vmalloc: allocation failure, allocated %ld of %ld bytes",
--			  (area->nr_pages*PAGE_SIZE), size);
- 	__vfree(area->addr);
- 	return NULL;
- }
-@@ -2866,8 +2876,15 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 	unsigned long real_align = align;
- 	unsigned int shift = PAGE_SHIFT;
- 
--	if (!size || (size >> PAGE_SHIFT) > totalram_pages())
--		goto fail;
-+	if (WARN_ON_ONCE(!size))
-+		return NULL;
-+
-+	if ((size >> PAGE_SHIFT) > totalram_pages()) {
-+		warn_alloc(gfp_mask, NULL,
-+			   "vmalloc size %lu allocation failure: "
-+			   "exceeds total pages", real_size);
-+		return NULL;
-+	}
- 
- 	if (vmap_allow_huge && !(vm_flags & VM_NO_HUGE_VMAP) &&
- 			arch_vmap_pmd_supported(prot)) {
-@@ -2894,8 +2911,12 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 	size = PAGE_ALIGN(size);
- 	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
- 				vm_flags, start, end, node, gfp_mask, caller);
--	if (!area)
-+	if (!area) {
-+		warn_alloc(gfp_mask, NULL,
-+			   "vmalloc size %lu allocation failure: "
-+			   "vm_struct allocation failed", real_size);
- 		goto fail;
-+	}
- 
- 	addr = __vmalloc_area_node(area, gfp_mask, prot, shift, node);
- 	if (!addr)
-@@ -2920,11 +2941,6 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 		goto again;
- 	}
- 
--	if (!area) {
--		/* Warn for area allocation, page allocations already warn */
--		warn_alloc(gfp_mask, NULL,
--			  "vmalloc: allocation failure: %lu bytes", real_size);
--	}
- 	return NULL;
- }
- 
--- 
-2.23.0
-
+- Moritz
