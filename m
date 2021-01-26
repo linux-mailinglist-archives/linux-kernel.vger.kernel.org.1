@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0C2304512
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF296304537
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391235AbhAZRWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:22:15 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11591 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731907AbhAZGyF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:54:05 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DPy866p8FzMPVl;
-        Tue, 26 Jan 2021 14:51:50 +0800 (CST)
-Received: from [10.174.179.117] (10.174.179.117) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 26 Jan 2021 14:53:18 +0800
-Subject: Re: [PATCH] mm/hugetlb: Simplify the calculation of variables
-To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <1611643468-52233-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <3378e469-be94-956a-a53c-4067e437e604@huawei.com>
-Date:   Tue, 26 Jan 2021 14:53:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2389213AbhAZRZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:25:47 -0500
+Received: from cmyk.emenem.pl ([217.79.154.63]:33666 "EHLO smtp.emenem.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389301AbhAZHEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:04:25 -0500
+X-Virus-Scanned: amavisd-new at emenem.pl
+Received: from [192.168.1.10] (50-78-106-33-static.hfc.comcastbusiness.net [50.78.106.33])
+        (authenticated bits=0)
+        by cmyk.emenem.pl (8.16.1/8.16.1) with ESMTPSA id 10Q73KTY004535
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
+        Tue, 26 Jan 2021 08:03:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ans.pl; s=20190507;
+        t=1611644604; bh=TrMD3FOf+kYV4iVemjpv9uv2g6NIByAxM4bdy2QXUcg=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=JRknTEvF/LG/fVhbNvod3UxDwkueT+HBJHzM9aScl+Jm6/rr3cOgLC2SHoBZHny7l
+         HXj6uI35w9kIi+fZZJg4rv1tyDt1yW26h4BTWz3WYfS8I1uOTcRsqQgz6NVoHmun0b
+         xTDw4fR7Jhpyh5vjw2TKxyKBXFmAHpjoahkuFNy0=
+Subject: Re: [PATCH 5.4 55/86] x86/mmx: Use KFPU_387 for MMX string operations
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>
+Cc:     stable@vger.kernel.org, Krzysztof Mazur <krzysiek@podlesie.net>,
+        Borislav Petkov <bp@suse.de>
+References: <20210125183201.024962206@linuxfoundation.org>
+ <20210125183203.376765980@linuxfoundation.org>
+From:   =?UTF-8?Q?Krzysztof_Ol=c4=99dzki?= <ole@ans.pl>
+Message-ID: <e2877c91-bd08-ad07-6f5c-4da59acbf2d6@ans.pl>
+Date:   Mon, 25 Jan 2021 23:03:18 -0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <1611643468-52233-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210125183203.376765980@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.117]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/1/26 14:44, Jiapeng Zhong wrote:
-> Fix the following coccicheck warnings:
+On 2021-01-25 at 10:39, Greg Kroah-Hartman wrote:
+> From: Andy Lutomirski <luto@kernel.org>
 > 
-> ./mm/hugetlb.c:3372:20-22: WARNING !A || A && B is equivalent to
-> !A || B.
+> commit 67de8dca50c027ca0fa3b62a488ee5035036a0da upstream.
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-> ---
->  mm/hugetlb.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> The default kernel_fpu_begin() doesn't work on systems that support XMM but
+> haven't yet enabled CR4.OSFXSR.  This causes crashes when _mmx_memcpy() is
+> called too early because LDMXCSR generates #UD when the aforementioned bit
+> is clear.
 > 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index cbf32d2..5e6a6e7 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3367,8 +3367,7 @@ static unsigned int allowed_mems_nr(struct hstate *h)
->  	mpol_allowed = policy_nodemask_current(gfp_mask);
->  
->  	for_each_node_mask(node, cpuset_current_mems_allowed) {
-> -		if (!mpol_allowed ||
-> -		    (mpol_allowed && node_isset(node, *mpol_allowed)))
-> +		if (!mpol_allowed || node_isset(node, *mpol_allowed))
->  			nr += array[node];
->  	}
->  
+> Fix it by using kernel_fpu_begin_mask(KFPU_387) explicitly.
 > 
+> Fixes: 7ad816762f9b ("x86/fpu: Reset MXCSR to default in kernel_fpu_begin()")
+> Reported-by: Krzysztof Mazur <krzysiek@podlesie.net>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Tested-by: Krzysztof Piotr Olędzki <ole@ans.pl>
+> Tested-by: Krzysztof Mazur <krzysiek@podlesie.net>
+> Cc: <stable@vger.kernel.org>
+> Link: https://lkml.kernel.org/r/e7bf21855fe99e5f3baa27446e32623358f69e8d.1611205691.git.luto@kernel.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-I'm gonna do this too. :)
+Similar to 5.10.11, we also need 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e45122893a9870813f9bd7b4add4f613e6f29008 
+in 5.4.93:
 
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+Otherwise, the kernel will fail to compile if CONFIG_X86_USE_3DNOW=y
+
+arch/x86/lib/mmx_32.c: In function '_mmx_memcpy':
+arch/x86/lib/mmx_32.c:50:2: error: implicit declaration of function 
+'kernel_fpu_begin_mask'; did you mean 'kernel_fpu_begin'? 
+[-Werror=implicit-function-declaration]
+    50 |  kernel_fpu_begin_mask(KFPU_387);
+       |  ^~~~~~~~~~~~~~~~~~~~~
+       |  kernel_fpu_begin
+arch/x86/lib/mmx_32.c:50:24: error: 'KFPU_387' undeclared (first use in 
+this function)
+    50 |  kernel_fpu_begin_mask(KFPU_387);
+       |                        ^~~~~~~~
+arch/x86/lib/mmx_32.c:50:24: note: each undeclared identifier is 
+reported only once for each function it appears in
+arch/x86/lib/mmx_32.c: In function 'fast_clear_page':
+arch/x86/lib/mmx_32.c:140:24: error: 'KFPU_387' undeclared (first use in 
+this function)
+   140 |  kernel_fpu_begin_mask(KFPU_387);
+       |                        ^~~~~~~~
+arch/x86/lib/mmx_32.c: In function 'fast_copy_page':
+arch/x86/lib/mmx_32.c:173:24: error: 'KFPU_387' undeclared (first use in 
+this function)
+   173 |  kernel_fpu_begin_mask(KFPU_387);
+       |                        ^~~~~~~~
+
+Thanks,
+  Krzysztof
+
