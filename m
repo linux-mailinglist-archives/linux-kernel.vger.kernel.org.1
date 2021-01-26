@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E666F3045EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7453045F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403809AbhAZSFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:05:38 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:40222 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbhAZJS7 (ORCPT
+        id S2404021AbhAZSFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:05:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390980AbhAZJYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:18:59 -0500
-Received: from marcel-macpro.holtmann.net (p4ff9f11c.dip0.t-ipconnect.de [79.249.241.28])
-        by mail.holtmann.org (Postfix) with ESMTPSA id A962DCECE6;
-        Tue, 26 Jan 2021 10:25:23 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH v4] Bluetooth: btrtl: Enable WBS for the specific Realtek
- devices
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210126020434.4911-1-max.chou@realtek.com>
-Date:   Tue, 26 Jan 2021 10:17:58 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex_lu@realsil.com.cn, hildawu@realtek.com, kidman@realtek.com,
-        abhishekpandit@chromium.org, josephsih@chromium.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <DD1FF7EB-CC31-4E90-B0E6-5E7B86256956@holtmann.org>
-References: <20210126020434.4911-1-max.chou@realtek.com>
-To:     Max Chou <max.chou@realtek.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Tue, 26 Jan 2021 04:24:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF78AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:24:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=+OtfEgx/CrQms/KzxhC+8LI0oesZp6YvKvcU/ZJAXaQ=; b=PM/ThATZ3HRwA0ToVGZUIwtiqu
+        JpPVhiFCUsfvHKhkqHld9mxA8onxAtSGanyP4POw/e3rhs2HdtfiuFL6vlkQdwT2CIb9aYBO6uFI/
+        8Sp2qciNI2sjIbNYtFDfUL7x/ymvJ4KDyzVnC4qNxj9tJIvFXf9ezbPXLH+Ri9SjCb2BOsq03gnUX
+        BjL42J/HCYfiYSq5uiGmTJ410/hUbV8qS4XiJ0zCwJmnM3BSTxUWiz1m3065qMlrREwEMW+DoT4IW
+        AkH0GBrDBLv+oob5veZ1+sA2vXQT7MaIXrCX6sw4wCxe+YW7vxE8m+wxBy+nNfzCThe1uT9UQFxGc
+        oHk2YQyw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4KYj-005M7q-Eq; Tue, 26 Jan 2021 09:23:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE52D300DB4;
+        Tue, 26 Jan 2021 10:22:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8343420297EDB; Tue, 26 Jan 2021 10:22:48 +0100 (CET)
+Date:   Tue, 26 Jan 2021 10:22:48 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Question on migrate_disabe/enable()
+Message-ID: <YA/faHXHWw1UfmUB@hirez.programming.kicks-ass.net>
+References: <BYAPR11MB2632E0BCC9CE86D7DB6E7CFEFFBC9@BYAPR11MB2632.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632E0BCC9CE86D7DB6E7CFEFFBC9@BYAPR11MB2632.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
-
-> By this change, it will enable WBS supported on the specific Realtek BT
-> devices, such as RTL8822C and RTL8852A.
-> In the future, it's able to maintain what the Realtek devices support WBS
-> here.
+On Tue, Jan 26, 2021 at 02:12:45AM +0000, Zhang, Qiang wrote:
+> Hello Peterz, tglx
 > 
-> Tested-by: Hilda Wu <hildawu@realtek.com>
-> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> Signed-off-by: Max Chou <max.chou@realtek.com>
+> I have some questions about migrate_disabe/enable(),  in the past
+> migrate_disabe/enable() is replaced by preempt_disable/enable() in no
+> RT system.
 > 
-> ---
-> change in v4
-> -remove the unnecessary comment to avoid the unaligned starting point.
-> ---
-> drivers/bluetooth/btrtl.c | 29 +++++++++++++++++++++++------
-> 1 file changed, 23 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-> index 24f03a1f8d57..adcd054313a4 100644
-> --- a/drivers/bluetooth/btrtl.c
-> +++ b/drivers/bluetooth/btrtl.c
-> @@ -38,6 +38,19 @@
-> 	.hci_ver = (hciv), \
-> 	.hci_bus = (bus)
-> 
-> +enum  btrtl_chip_id {
+> And now migrate_disabe/enable() has its own implementation, I want to
+> know in migrate_disabe/enable() critical area is blocking allowed?  
 
-fix the whitespace part here.
+Yes, obviously. Otherwise it would've been preempt_disable().
 
-> +	CHIP_ID_8723A,
-> +	CHIP_ID_8723B,
-> +	CHIP_ID_8821A,
-> +	CHIP_ID_8761A,
-> +	CHIP_ID_8822B = 8,
-> +	CHIP_ID_8723D,
-> +	CHIP_ID_8821C,
-> +	CHIP_ID_8822C = 13,
-> +	CHIP_ID_8761B,
-> +	CHIP_ID_8852A = 18,
-> +};
-> +
+> If allowed, There's a blockage in migrate_disabe/enable() critical
+> area, and this time if CPU going offline，offline time will be longer.
+> Is this normal phenomenon？
 
-Regards
-
-Marcel
-
+Ofcourse.
