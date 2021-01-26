@@ -2,151 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0517D303CE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B81303CE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404729AbhAZK7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732382AbhAZDvm (ORCPT
+        id S2404746AbhAZK7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:59:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732150AbhAZD7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:51:42 -0500
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26144C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:51:02 -0800 (PST)
-Received: by mail-vk1-xa2b.google.com with SMTP id u22so3612931vke.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:51:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ERr5chMqnNNOJKWjJQq+7FvSss//dhrARZABMDducAA=;
-        b=W/5lZiBQNy1JWJYiV5a6JWLJcRKAUyoKq3slnRqZSP4vOjPev+cn+lNyupPDziwn9w
-         6+WUe48shBn7tR9tR/udXYSJT0Dww3knoEu2UWFmh1ZQQlAQst0b15RVbB0Hrl/7QD3D
-         mRUVvAHou5iwmkNVsSVglunqWxGATL+TT9hgU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ERr5chMqnNNOJKWjJQq+7FvSss//dhrARZABMDducAA=;
-        b=HhjQM36mlRvqSnjtkXDFSBCACmxX7Jgmffcfsl/aWgITOTM4Gq0/63jLMMjjMTF0Jg
-         zAuk48ivDuEPp+xviGDf3eO/8VjFKtU2LiD8dOAgNjVE9aYcRlISP+Cjmq+WvIjRkEFH
-         pnGqDEKuEG6WvkWvQDz0UoKOv5KvS0I49Ox0zH7DPvNhNGKSLqW714CcVhuhBEk5rM87
-         o2acM96RCKrNX4C3HymmqQOP3pMe1eW5ODmp4ZK4GZKfPNbTL6Hn5zlwp6eyYsQ1rP9b
-         9FbHHwub5kVRB5L4IK2khr8rth+hg7DSorh7Oo0gYeYZWfwVDDFqPDX4okQwHVpaB/aM
-         GX1w==
-X-Gm-Message-State: AOAM5329piurDY1Fru8U6brBJK8y+1T0cs3DR9+/i3S9RkMMqLvzeY7d
-        70RtaIIhRHcSAFlk+uolwaCmIN9a+E/zM7cMns+n9A==
-X-Google-Smtp-Source: ABdhPJz69r02bEWD3eKp0baSYASMm3Qknvcg9NadY9ZzXeYK9s/g659l+yUCcvs8dDhMVq9K3yZ9udvKzrJCk0SJcmw=
-X-Received: by 2002:ac5:ce9b:: with SMTP id 27mr3045021vke.9.1611633061185;
- Mon, 25 Jan 2021 19:51:01 -0800 (PST)
+        Mon, 25 Jan 2021 22:59:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611633490;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EK2/fEVOtBHw6/+Cycnygn+HlAZtj//OqqPZxrrvsc4=;
+        b=ddQcFrKG61Xet7pNitvUfvV/ECq6r+PHWggOMMxG8q0ZM4bnIiUB4Ek17lljs/Qa5hzPOf
+        SYv1MjkmfbgEcqPkaNh1qKlmQ0Lf+mJ3dmYYqpnhcDIx6X3DPJ1a7/1lUb0eJtTYim7sp3
+        q5JUzQ7SNASXXGC0ayZzzc8YbcHBjwA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-psxH4RQFPCuGM1-W-EGWyw-1; Mon, 25 Jan 2021 22:58:05 -0500
+X-MC-Unique: psxH4RQFPCuGM1-W-EGWyw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90C92180A093;
+        Tue, 26 Jan 2021 03:58:03 +0000 (UTC)
+Received: from T590 (ovpn-13-71.pek2.redhat.com [10.72.13.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D0D8760C47;
+        Tue, 26 Jan 2021 03:57:52 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 11:57:48 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        osandov@fb.com, patchwork-bot@kernel.org, tj@kernel.org,
+        tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, mj0123.lee@samsung.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v3 1/2] bio: limit bio max size
+Message-ID: <20210126035748.GA1071341@T590>
+References: <CGME20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347@epcas1p2.samsung.com>
+ <20210126013235.28711-1-nanich.lee@samsung.com>
 MIME-Version: 1.0
-References: <CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com>
- <20210126013414.GE4626@dread.disaster.area>
-In-Reply-To: <20210126013414.GE4626@dread.disaster.area>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Tue, 26 Jan 2021 11:50:50 +0800
-Message-ID: <CANMq1KAgD_98607w308h3QSGaiRTkyVThmWmUuExxqh3r+tZsA@mail.gmail.com>
-Subject: Re: [BUG] copy_file_range with sysfs file as input
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Luis Lozano <llozano@chromium.org>, iant@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126013235.28711-1-nanich.lee@samsung.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 9:34 AM Dave Chinner <david@fromorbit.com> wrote:
->
-> On Mon, Jan 25, 2021 at 03:54:31PM +0800, Nicolas Boichat wrote:
-> > Hi copy_file_range experts,
-> >
-> > We hit this interesting issue when upgrading Go compiler from 1.13 to
-> > 1.15 [1]. Basically we use Go's `io.Copy` to copy the content of
-> > `/sys/kernel/debug/tracing/trace` to a temporary file.
-> >
-> > Under the hood, Go now uses `copy_file_range` syscall to optimize the
-> > copy operation. However, that fails to copy any content when the input
-> > file is from sysfs/tracefs, with an apparent size of 0 (but there is
-> > still content when you `cat` it, of course).
-> >
-> > A repro case is available in comment7 (adapted from the man page),
-> > also copied below [2].
-> >
-> > Output looks like this (on kernels 5.4.89 (chromeos), 5.7.17 and
-> > 5.10.3 (chromeos))
-> > $ ./copyfrom /sys/kernel/debug/tracing/trace x
-> > 0 bytes copied
->
-> That's basically telling you that copy_file_range() was unable to
-> copy anything. The man page says:
->
-> RETURN VALUE
->        Upon  successful  completion,  copy_file_range() will return
->        the number of bytes copied between files.  This could be less
->        than the length originally requested.  If the file offset
->        of fd_in is at or past the end of file, no bytes are copied,
->        and copy_file_range() returns zero.
->
-> THe man page explains it perfectly.
+On Tue, Jan 26, 2021 at 10:32:34AM +0900, Changheun Lee wrote:
+> bio size can grow up to 4GB when muli-page bvec is enabled.
+> but sometimes it would lead to inefficient behaviors.
+> in case of large chunk direct I/O, - 32MB chunk read in user space -
+> all pages for 32MB would be merged to a bio structure if the pages
+> physical addresses are contiguous. it makes some delay to submit
+> until merge complete. bio max size should be limited to a proper size.
+> 
+> When 32MB chunk read with direct I/O option is coming from userspace,
+> kernel behavior is below now. it's timeline.
+> 
+>  | bio merge for 32MB. total 8,192 pages are merged.
+>  | total elapsed time is over 2ms.
+>  |------------------ ... ----------------------->|
+>                                                  | 8,192 pages merged a bio.
+>                                                  | at this time, first bio submit is done.
+>                                                  | 1 bio is split to 32 read request and issue.
+>                                                  |--------------->
+>                                                   |--------------->
+>                                                    |--------------->
+>                                                               ......
+>                                                                    |--------------->
+>                                                                     |--------------->|
+>                           total 19ms elapsed to complete 32MB read done from device. |
+> 
+> If bio max size is limited with 1MB, behavior is changed below.
+> 
+>  | bio merge for 1MB. 256 pages are merged for each bio.
+>  | total 32 bio will be made.
+>  | total elapsed time is over 2ms. it's same.
+>  | but, first bio submit timing is fast. about 100us.
+>  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+>       | 256 pages merged a bio.
+>       | at this time, first bio submit is done.
+>       | and 1 read request is issued for 1 bio.
+>       |--------------->
+>            |--------------->
+>                 |--------------->
+>                                       ......
+>                                                  |--------------->
+>                                                   |--------------->|
+>         total 17ms elapsed to complete 32MB read done from device. |
+> 
+> As a result, read request issue timing is faster if bio max size is limited.
+> Current kernel behavior with multipage bvec, super large bio can be created.
+> And it lead to delay first I/O request issue.
+> 
+> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+> ---
+>  block/bio.c            | 17 ++++++++++++++++-
+>  include/linux/bio.h    |  4 +++-
+>  include/linux/blkdev.h |  3 +++
+>  3 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index 1f2cc1fbe283..ec0281889045 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -287,6 +287,21 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+>  }
+>  EXPORT_SYMBOL(bio_init);
+>  
+> +unsigned int bio_max_size(struct bio *bio)
+> +{
+> +	struct request_queue *q;
+> +
+> +	if (!bio->bi_disk)
+> +		return UINT_MAX;
+> +
+> +	q = bio->bi_disk->queue;
+> +	if (!blk_queue_limit_bio_size(q))
+> +		return UINT_MAX;
+> +
+> +	return blk_queue_get_max_sectors(q, bio_op(bio)) << SECTOR_SHIFT;
+> +}
+> +EXPORT_SYMBOL(bio_max_size);
+> +
+>  /**
+>   * bio_reset - reinitialize a bio
+>   * @bio:	bio to reset
+> @@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+>  
+>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+> +			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+>  				*same_page = false;
+>  				return false;
+>  			}
 
-I'm not that confident the explanation is perfect ,-)
+So far we don't need bio->bi_disk or bio->bi_bdev(will be changed in
+Christoph's patch) during adding page to bio, so there is null ptr
+refereance risk.
 
-How does one define "EOF"? The read manpage
-(https://man7.org/linux/man-pages/man2/read.2.html) defines it as a
-zero return value. I don't think using the inode file size is
-standard. Seems like the kernel is not even trying to read from the
-source file here.
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index 1edda614f7ce..cdb134ca7bf5 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -100,6 +100,8 @@ static inline void *bio_data(struct bio *bio)
+>  	return NULL;
+>  }
+>  
+> +extern unsigned int bio_max_size(struct bio *);
+> +
+>  /**
+>   * bio_full - check if the bio is full
+>   * @bio:	bio to check
+> @@ -113,7 +115,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+>  		return true;
+>  
+> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+> +	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+>  		return true;
+>  
+>  	return false;
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index f94ee3089e01..3aeab9e7e97b 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -621,6 +621,7 @@ struct request_queue {
+>  #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+>  #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+>  #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
+> +#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
+>  
+>  #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+>  				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+> @@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+>  #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
+>  #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
+>  #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
+> +#define blk_queue_limit_bio_size(q)	\
+> +	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
 
-In any case, I can fix this issue by dropping the count check here:
-https://elixir.bootlin.com/linux/latest/source/fs/read_write.c#L1445 .
-I'll send a patch so that we can discuss based on that.
+I don't think it is a good idea by adding queue flag for this purpose,
+since this case just needs to limit bio size for not delay bio submission
+too much, which is kind of logical thing, nothing to do with request queue.
 
-> Look at the trace file you are
-> trying to copy:
->
-> $ ls -l /sys/kernel/debug/tracing/trace
-> -rw-r--r-- 1 root root 0 Jan 19 12:17 /sys/kernel/debug/tracing/trace
-> $ cat /sys/kernel/debug/tracing/trace
-> tracer: nop
-> #
-> # entries-in-buffer/entries-written: 0/0   #P:8
-> #
-> #                              _-----=> irqs-off
-> #                             / _----=> need-resched
-> #                            | / _---=> hardirq/softirq
-> #                            || / _--=> preempt-depth
-> #                            ||| /     delay
-> #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-> #              | |       |   ||||       |         |
->
-> Yup, the sysfs file reports it's size as zero length, so the CFR
-> syscall is saying "there's nothing to copy from this empty file" and
-> so correctly is returning zero without even trying to copy anything
-> because the file offset is at EOF...
->
-> IOWs, there's no copy_file_range() bug here - it's behaving as
-> documented.
->
-> 'cat' "works" in this situation because it doesn't check the file
-> size and just attempts to read unconditionally from the file. Hence
-> it happily returns non-existent stale data from busted filesystem
-> implementations that allow data to be read from beyond EOF...
-
-`cp` also works, so does `dd` and basically any other file operation.
-
-(and I wouldn't call procfs, sysfs, debugfs and friends "busted", they
-are just... special)
+Just wondering why you don't take the following way:
 
 
->
-> Cheers,
->
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+diff --git a/block/bio.c b/block/bio.c
+index 99040a7e6656..35852f7f47d4 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -1081,7 +1081,7 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
+  * It's intended for direct IO, so doesn't do PSI tracking, the caller is
+  * responsible for setting BIO_WORKINGSET if necessary.
+  */
+-int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
++int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter, bool sync)
+ {
+ 	int ret = 0;
+ 
+@@ -1092,12 +1092,20 @@ int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+ 		bio_set_flag(bio, BIO_NO_PAGE_REF);
+ 		return 0;
+ 	} else {
++		/*
++		 * Don't add too many pages in case of sync dio for
++		 * avoiding delay bio submission too much especially
++		 * pinning user pages in memory isn't cheap.
++		 */
++		const unsigned int max_size = sync ? (1U << 12) : UINT_MAX;
++
+ 		do {
+ 			if (bio_op(bio) == REQ_OP_ZONE_APPEND)
+ 				ret = __bio_iov_append_get_pages(bio, iter);
+ 			else
+ 				ret = __bio_iov_iter_get_pages(bio, iter);
+-		} while (!ret && iov_iter_count(iter) && !bio_full(bio, 0));
++		} while (!ret && iov_iter_count(iter) && !bio_full(bio, 0) &&
++				bio->bi_iter.bi_size < max_size);
+ 	}
+ 
+ 	/* don't account direct I/O as memory stall */
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 6f5bd9950baf..0d1d436aca17 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -246,7 +246,7 @@ __blkdev_direct_IO_simple(struct kiocb *iocb, struct iov_iter *iter,
+ 	bio.bi_end_io = blkdev_bio_end_io_simple;
+ 	bio.bi_ioprio = iocb->ki_ioprio;
+ 
+-	ret = bio_iov_iter_get_pages(&bio, iter);
++	ret = bio_iov_iter_get_pages(&bio, iter, true);
+ 	if (unlikely(ret))
+ 		goto out;
+ 	ret = bio.bi_iter.bi_size;
+@@ -397,7 +397,7 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
+ 		bio->bi_end_io = blkdev_bio_end_io;
+ 		bio->bi_ioprio = iocb->ki_ioprio;
+ 
+-		ret = bio_iov_iter_get_pages(bio, iter);
++		ret = bio_iov_iter_get_pages(bio, iter, is_sync);
+ 		if (unlikely(ret)) {
+ 			bio->bi_status = BLK_STS_IOERR;
+ 			bio_endio(bio);
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index ea1e8f696076..5105982a9bf8 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -277,7 +277,8 @@ iomap_dio_bio_actor(struct inode *inode, loff_t pos, loff_t length,
+ 		bio->bi_private = dio;
+ 		bio->bi_end_io = iomap_dio_bio_end_io;
+ 
+-		ret = bio_iov_iter_get_pages(bio, dio->submit.iter);
++		ret = bio_iov_iter_get_pages(bio, dio->submit.iter,
++				is_sync_kiocb(dio->iocb));
+ 		if (unlikely(ret)) {
+ 			/*
+ 			 * We have to stop part way through an IO. We must fall
+diff --git a/fs/zonefs/super.c b/fs/zonefs/super.c
+index bec47f2d074b..c95ac37f9305 100644
+--- a/fs/zonefs/super.c
++++ b/fs/zonefs/super.c
+@@ -690,7 +690,7 @@ static ssize_t zonefs_file_dio_append(struct kiocb *iocb, struct iov_iter *from)
+ 	if (iocb->ki_flags & IOCB_DSYNC)
+ 		bio->bi_opf |= REQ_FUA;
+ 
+-	ret = bio_iov_iter_get_pages(bio, from);
++	ret = bio_iov_iter_get_pages(bio, from, is_sync_kiocb(iocb));
+ 	if (unlikely(ret))
+ 		goto out_release;
+ 
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 676870b2c88d..fa3a503b955c 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -472,7 +472,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+ 		unsigned int len, unsigned int off, bool *same_page);
+ void __bio_add_page(struct bio *bio, struct page *page,
+ 		unsigned int len, unsigned int off);
+-int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter);
++int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter, bool sync);
+ void bio_release_pages(struct bio *bio, bool mark_dirty);
+ extern void bio_set_pages_dirty(struct bio *bio);
+ extern void bio_check_pages_dirty(struct bio *bio);
+
+
+Thanks,
+Ming
+
