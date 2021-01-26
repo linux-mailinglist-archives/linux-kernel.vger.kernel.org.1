@@ -2,355 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E54E304E6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 254E8304E7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390989AbhA0AbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:31:09 -0500
-Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:9088
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390526AbhAZRTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:19:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yl/tLmgz+AVy7MMuSSA557QLxrzjdXAPrWGhOEbw7H6JnedAFHvi+koYVvxc5UDXAm5W932P4qXfx0Kfsuc7eQPYjXi7R058cKcvW51CkL1QjBht/aIRA7zkoY7GzjYQyW9UVkWm2+BWKjPh10Sbvf7T+yHgXofjWt0TczWXxKypldChcq3ffO4Y1FXcmDbu/UglnRQxIb0KgHKUXrTDEKtqAClwEsuREGd5C/B5AhzRBsYGpm01AkcSnqr+kHxIRZLHH3ZSVjtya+sMQO+NxNT47lMKVOtdwXR/GF2492fsM8ZNr97dXCc9bLW7GLXz0oVomEGSo/HEBt6ZUNzb0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NTMGDBmvPV+TasK3eYvYkHWPZHCuZzbnVw3mcCTSIxQ=;
- b=cG3/XrS5QgotCQs1066Vj6lW3eLxFIUWDlnMnRXwYwACJBqIo0SMRo7ZrpPak+1DjQLHqsCfYm+G/Wn1Uvzh2yreEgzIDcJK9w6rjIqwRloFakdhhbe4qVj5dxxjU327VPdMIZCxCSDDvomoyfc80R7CBYTbnVnPi5elf7rfIDImWmnIoO83Ca8TZbmFgBtmemP5+DuYonRKrwiEI4GpM0vExFwyIk8hrrbkoqVtrvd+JF12XCAVWvCTlF+ZbeMKffhRdYrpg0kGFqh8Jz7IsXAikqp15PnfOIOXAHx81IG9VayXrVerjZ8g/fvg84OUGTDFB7aC1ryGrLkUfzJWRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S2391220AbhA0Ab7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:31:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729372AbhAZRZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:25:17 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05632C061352;
+        Tue, 26 Jan 2021 09:24:22 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id d22so20744104edy.1;
+        Tue, 26 Jan 2021 09:24:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NTMGDBmvPV+TasK3eYvYkHWPZHCuZzbnVw3mcCTSIxQ=;
- b=pCxVURvQEZ55WjhwYb8y1yAZU/q3zPy4Bvd+vhhfk7LVwiPeSBuaWp/YNRDPgd3V8q40PP3IkbT6eg5qU08mWPQ8NEvKQcpvsw8r6MSgddsQJmxnYmlOEG5zkM6pCF+jB3S5iflEKnLWCIRl/2QUAhx+18p7bHne7V5H8KznTOE=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM5PR1101MB2251.namprd11.prod.outlook.com (2603:10b6:4:53::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Tue, 26 Jan
- 2021 17:18:14 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d%4]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
- 17:18:14 +0000
-Date:   Tue, 26 Jan 2021 12:18:12 -0500
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()
-Message-ID: <20210126171811.GC23530@windriver.com>
-References: <20210121223355.59780-1-paul.gortmaker@windriver.com>
- <20210121223355.59780-4-paul.gortmaker@windriver.com>
- <CAAH8bW8GYYsHy7c8KD3EL+a1mR+wCrj7WFS+Gp5=4CJbz7GpgA@mail.gmail.com>
- <20210122044357.GS16838@windriver.com>
- <CAAH8bW9UZZwnyXu5vFbxr4OpU8s-+61NzS0yg6gMGmH9Zty_mw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAH8bW9UZZwnyXu5vFbxr4OpU8s-+61NzS0yg6gMGmH9Zty_mw@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YT1PR01CA0110.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2c::19) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rXdrRsGhj1nVaU/LhEQmWVDqTDKRL6AiUbAzoR14U/Q=;
+        b=dssj/O/2ZBdNudvVz5W2VrCqJcBSQ3WkMa/+yX8XkxKJcyARtjRQEFL65tsJVgBXYG
+         34TxH0xv5IjzWW8eFUPGws3aTV2FTUDr5KOUsRBci+cUnKoMh/GL/sNzLRZg2f3QiSEu
+         lUFPfHCcgqJUQwlGkPS2H7LPA27SmThY6QddfHbVASPkQcnIjqm/tly4GImiMa8uQSML
+         HFgSX+77QiMHqfBihlBOmjdtMTHDGyjDSmx4G2urhkqM6vmKVYlMbcNeBHQKgOlbsM5k
+         hNIAFTpV7Ck02mO6na+o3js9WJL6zqScpHg59J/lZ6EbgDhLcDOoBDXvU1az+AzD6qyG
+         Yz9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=rXdrRsGhj1nVaU/LhEQmWVDqTDKRL6AiUbAzoR14U/Q=;
+        b=D7Xvfyt1KzN3NqH7D+138A4JQl3flI5FCt4SZq0YE/JE3+O6cVWFF1SGjilHTZ2ryv
+         R/Hs2+rMB7EePOqIydVDko7CRFleAE2EmQ19kpOFD99kS/T0ZAj43AwmOIGwya0opOCo
+         aH1R9rncB4jIfGFjKB9QGSJJ1xjF9DM3tGS1/9VJ8p8Yql8Pp7xSHlhVgkWCMN91RUuh
+         jtHdySf9BDSsKrCG6cjNYjdZh5nSmIyGvbbw+VcO/qFVD5S4/9S7Ob8C9Tg9pCrEJ+At
+         VmH1i21hzkzniADjyqpzenqZqvliYgHUwyvVE8QW9Xr/M0SKjAxjLejXbck7zzkrSDRt
+         lDDg==
+X-Gm-Message-State: AOAM532f2pHfXWXErK7heI3D/Gp1D+ZoXKZXET51e05Gk3Y681rsJE+v
+        +IEb71Zfp4iBHwdJt1m1YiA1xxqoosY=
+X-Google-Smtp-Source: ABdhPJzrksf33ja4yDHmx6t7wrasuKi8/7n1ukCKJ5v6U1Qc1Ambq9leA3x6YXmqidQkBSFL158/4A==
+X-Received: by 2002:aa7:dcc9:: with SMTP id w9mr5334384edu.22.1611681860554;
+        Tue, 26 Jan 2021 09:24:20 -0800 (PST)
+Received: from [192.168.8.158] ([148.252.129.161])
+        by smtp.gmail.com with ESMTPSA id o13sm12666412edt.64.2021.01.26.09.24.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 09:24:19 -0800 (PST)
+Subject: Re: [PATCH] fs: io_uring.c: Add skip option for __io_sqe_files_update
+To:     Noah Goldstein <goldstein.w.n@gmail.com>
+Cc:     noah <goldstein.n@wustl.edu>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "open list:IO_URING" <io-uring@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201220065025.116516-1-goldstein.w.n@gmail.com>
+ <0cdf2aac-6364-742d-debb-cfd58b4c6f2b@gmail.com>
+ <20201222021043.GA139782@gmail.com>
+ <32c9ce7e-569d-3f94-535e-00e072de772e@gmail.com>
+ <CAFUsyf+m8SseZ1NzZoYJe4KSH30v-XJeP5P9FvtxQT_5bvsK9Q@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Message-ID: <792d56e4-b258-65b4-d0b5-dbfd728d5a02@gmail.com>
+Date:   Tue, 26 Jan 2021 17:20:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by YT1PR01CA0110.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11 via Frontend Transport; Tue, 26 Jan 2021 17:18:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 15f5f8d4-30ed-4b02-0ebe-08d8c21e5d78
-X-MS-TrafficTypeDiagnostic: DM5PR1101MB2251:
-X-Microsoft-Antispam-PRVS: <DM5PR1101MB225120A94760AF9C73556CBB83BC9@DM5PR1101MB2251.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eMBCBXXmWnBpNY5HUEKWv5Z8QSf5LPZ/sOAK+dB2IkyJXK+Ubw4fGFzEV/29lHarjlTK8gpQ1/7qpcmgmHuZSHBlUytZRiUTEpGN6ifrfVAitbiKzTbQQ/gUHkaXBYPRhOqS/e5QFmJMqtzq2wQ5S6czVz5pwhyK0owJLnC9VxU8/FUHDTnS50N2pqsGB+J5Q8ZPCdCVP2agx9SRuNHUeTFcrgQip/xSwAgVi27qYIGjnATciB6aFiFPAFsCG/fDgcPoYuAVFeCfSmXPskbGgvS8LxIk6+s6/KxNc9KWLSlVw52ckD3Mlc2V09wQmsQdpbwyxHdcmY3QdACn43qPaRZmOF+hwlNqFvN0RnTEWIldgkDAkXQSQ3pk4MTUb82ul2PLfGyMHkLUpyG7eWbi0iRnfr2DSJxoBlG7OVSvpN3I+L24KHbakETkwW0MRAU600EtEzQtw3eH8NG2gNdWqaZPYbC/NP5Fij1NkmdWvaQcyRGwbgdVtfF17TzWiqvvDmithmYYMtzzs/wmyE8e4HA1Z8+VF0WZhUM4LikpteWPTgNf6wOHb4RXdqD1oATfQIvEJLmzR59dUEe5g2V41tHr2kPlFyK115O2JWdVTig=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(346002)(366004)(396003)(376002)(966005)(5660300002)(186003)(53546011)(7696005)(8886007)(26005)(8676002)(66946007)(83380400001)(55016002)(1076003)(2616005)(2906002)(44832011)(86362001)(52116002)(316002)(36756003)(33656002)(6916009)(956004)(8936002)(16526019)(66556008)(66476007)(478600001)(4326008)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bRlmer5PRiyANmkXCbJ4jxs25PeTdMITaWVwuc7fDmyLRAaE+321o8t/jn39?=
- =?us-ascii?Q?B2SIHqMNkOamZ82v2pH/9Ngbk3oRodPnGyYvOHuQC01CBp44h5rCe5T1JCPy?=
- =?us-ascii?Q?LXWUGEzbqREKFdZD5ttQjgaIX1iN/eWf2wv24lAzgirRskPzP2VfNVU44Ov0?=
- =?us-ascii?Q?7z/Yzu5iMrV+JXBnwQ9bPJ/Sq1J/jP9LyuKccB2nsUICHH24BBbeUY79gdxC?=
- =?us-ascii?Q?k7vOLdSjtd3ckcmPl7bo6Tds4+4cwMP+TAko3B1CQ+iLL9j0S07uvVjxFwi+?=
- =?us-ascii?Q?L+56JQMAM/r/lQnJjg0lqttiayl07a3SFmgM+G/StU4bOF57WHTDGdb/bPYa?=
- =?us-ascii?Q?+3ZZa+nKss/B58r4WT+Iivo3DyjoHYCTg7JIOxIxJYq8G3wDsc0ToEdCfX34?=
- =?us-ascii?Q?0RbvhusqQjZUR1nb7mia4lYQbxTMWIcejO7KS9f+nWpMeOKKkL4gUcW6fKzN?=
- =?us-ascii?Q?BXhYdg9Eck1G5ekIWPyJ2W4+JBMuuCwSyIrR+w6JgI3avIdLJxebq6kzqRXx?=
- =?us-ascii?Q?JURYvXCF6Z+jy3Ubl6ue6LdWnZ5owNsCIbbmrugLkbmwZ/fXGA51uj+sx0nA?=
- =?us-ascii?Q?V1EMbF7P9rKaSAVbryk9qTzRLZNCmm5RT6HC5nC/V1+ytMuPxmVrilwXUqE8?=
- =?us-ascii?Q?vubSq0VIm4fDFDzSsrEWfto8qc/dzudkAtRBIjW1iHK2u+z1WuLW2gGXJDO6?=
- =?us-ascii?Q?GyuWIDKAl70D7/fB2ggGN9fkgoOHz5Xxz7Cex6ci1T+JigJPGcI7x8DcPQKj?=
- =?us-ascii?Q?9mOp7e5mg3R6Fr09fvk+qii0Z3q1qD4uJ88rPH7PDz+szYd/gWKfsDDQ+kep?=
- =?us-ascii?Q?wjE+dqYmpi5tlTJG3q/If347+1EhYdovf3NPEDKmMXdwBf09eTydDrQ9f4cm?=
- =?us-ascii?Q?tAWJTBpS3Qc7+IC9mekvlJdHvsxZyT7A+sVapZPr3SAgId5k4BpIGBKj30xO?=
- =?us-ascii?Q?9aO30KhuojjTNfBfZOLtR1dMCwa66L7fOyTHv5bzVVj6ogwCH5iggdB5hnJK?=
- =?us-ascii?Q?8duMiddPvA8YDg6aPJg3e0TdGgRk5SabGIruYqW+jDTS3j0qsV4aPP0lea3L?=
- =?us-ascii?Q?sLMF0T4G?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 15f5f8d4-30ed-4b02-0ebe-08d8c21e5d78
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 17:18:14.7464
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 63Y0T4QMn8UO9A7UOTRolrPPVfhtXH/tMQHtXRIEElr0Csj6hm8Xx/AHe39W1tzpOdSEIm30GwBtd3i/8fu0ypJ32pdYQpKZatOPVCfGi1w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2251
+In-Reply-To: <CAFUsyf+m8SseZ1NzZoYJe4KSH30v-XJeP5P9FvtxQT_5bvsK9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Re: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()] On 22/01/2021 (Fri 15:08) Yury Norov wrote:
-
-> On Thu, Jan 21, 2021 at 8:44 PM Paul Gortmaker
-> <paul.gortmaker@windriver.com> wrote:
-> >
-> > [Re: [PATCH 3/3] lib: support N as end of range in bitmap_parselist()] On 21/01/2021 (Thu 16:29) Yury Norov wrote:
-> >
-> > > On Thu, Jan 21, 2021 at 2:34 PM Paul Gortmaker
-> > > <paul.gortmaker@windriver.com> wrote:
-> > > >
-> > > > While this is done for all bitmaps, the original use case in mind was
-> > > > for CPU masks and cpulist_parse().  Credit to Yury who suggested to
-> > > > push it down from CPU subsys to bitmap - it simplified things a lot.
-> > >
-> > > Can you convert your credit to Suggested-by or Reviewed-by? :)
-> >
-> > Sure, of course.
-
-Now done for v3.
-
-> >
-> > [...]
-> >
-> > > > diff --git a/lib/bitmap.c b/lib/bitmap.c
-> > > > index a1010646fbe5..d498ea9d526b 100644
-> > > > --- a/lib/bitmap.c
-> > > > +++ b/lib/bitmap.c
-> > > > @@ -571,7 +571,7 @@ static const char *bitmap_find_region_reverse(const char *start, const char *end
-> > > >         return end;
-> > > >  }
-> > > >
-> > > > -static const char *bitmap_parse_region(const char *str, struct region *r)
-> > > > +static const char *bitmap_parse_region(const char *str, struct region *r, int nmaskbits)
-> > > >  {
-> > >
-> > > in bitmap_parselist() you can store nmaskbits in the struct region, and avoid
-> > > passing nmaskbits as a parameter.
-> >
-> > OK.   FWIW, I considered that and went with the param so as to not open
-> > the door to someone possibly using an uninitialized struct value later.
-
-Also now done - reduces parameter passing and enables moving a sanity
-check from set_region into check_region where it IMHO belongs.
-
-> >
-> > > >         str = bitmap_getnum(str, &r->start);
-> > > >         if (IS_ERR(str))
-> > > > @@ -583,9 +583,15 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
-> > > >         if (*str != '-')
-> > > >                 return ERR_PTR(-EINVAL);
-> > > >
-> > > > -       str = bitmap_getnum(str + 1, &r->end);
-> > > > -       if (IS_ERR(str))
-> > > > -               return str;
-> > > > +       str++;
-> > > > +       if (*str == 'N') {
-> > > > +               r->end = nmaskbits - 1;
-> > > > +               str++;
-> > > > +       } else {
-> > > > +               str = bitmap_getnum(str, &r->end);
-> > > > +               if (IS_ERR(str))
-> > > > +                       return str;
-> > > > +       }
-> > >
-> > > Indeed it's much simpler. But I don't like that you increase the nesting level.
-> > > Can you keep bitmap_parse_region() a single-tab style function?
-
-No increase in nesting level in v3.
-
-> >
-> > Rather a strict coding style, but we can replace with:
-> >
-> >        if (*str == 'N') {
-> >                r->end = nmaskbits - 1;
-> >                str++;
-> >        } else {
-> >                str = bitmap_getnum(str, &r->end);
-> >        }
-> >
-> >        if (IS_ERR(str))
-> >                return str;
-> >
-> > Is that what you were after?
-> >
-> > > What about group size? Are you going to support N there, like "0-N:5/N"?
-> >
-> > No.  I would think that the group size has to be less than 1/2 of
-> > the nmaskbits or you get the rather pointless case of just one group.
-> > Plus conflating "end of range" with "group size" just adds confusion.
-> > So it is currently not legal:
-> >
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 4-N:2/4 > cpuset.cpus
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> > 4-5,8-9,12-13
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 4-N:2/N > cpuset.cpus
-> > /bin/echo: write error: Invalid argument
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo#
-> >
-> > > What about "N-N"? Is it legal? Maybe hide new logic in bitmap_getnum()?
-> >
-> > The "N-N" is also not supported/legal.  The allowed use is listed as
-> > being for the end of a range only.  The code enforces this by ensuring
-> > the char previous is a '-'  ; hence a leading N is invalid:
-> >
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo N-N > cpuset.cpus
-> > /bin/echo: write error: Invalid argument
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 0-N > cpuset.cpus
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> > 0-15
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo#
-> >
-> > I think "use for end of range only" makes sense in the mathematical
-> > sense most of us have seen during school:  {0, 1, 2, ...  N-1, N} as
-> > used in the end point of a range of numbers.  I could make the "only"
-> > part more explicit and concrete in the comments/docs if desired.
-> >
-> > I'm not sure I see the value in complicating things in order to add
-> > or extend support to non-intuitive use cases beyond that - to me that
-> > seems to just make things more confusing for end users.  But again
-> > if you've something in mind that I'm simply missing, then by all
-> > means please elaborate.
+On 26/01/2021 17:14, Noah Goldstein wrote:
+> On Tue, Jan 26, 2021 at 7:29 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 22/12/2020 02:10, Noah Goldstein wrote:
+>>> On Sun, Dec 20, 2020 at 03:18:05PM +0000, Pavel Begunkov wrote:
+>>>> On 20/12/2020 06:50, noah wrote:> From: noah <goldstein.n@wustl.edu>
+>>>>>
+>>>>> This patch makes it so that specify a file descriptor value of -2 will
+>>>>> skip updating the corresponding fixed file index.
+>>>>>
+>>>>> This will allow for users to reduce the number of syscalls necessary
+>>>>> to update a sparse file range when using the fixed file option.
+>>>>
+>>>> Answering the github thread -- it's indeed a simple change, I had it the
+>>>> same day you posted the issue. See below it's a bit cleaner. However, I
+>>>> want to first review "io_uring: buffer registration enhancements", and
+>>>> if it's good, for easier merging/etc I'd rather prefer to let it go
+>>>> first (even if partially).
+>>
+>> Noah, want to give it a try? I've just sent a prep patch, with it you
+>> can implement it cleaner with one continue.
 > 
-> OK, let me share my view on this. As you said in the patch description,
-> N is substitution to the number of the last CPU, in your example sort of
-> #define N (15).
-> 
-> So, when I do echo N-N > cpuset.cpus, I want it to work as if I do
-> echo 15-15 > cpuset.cpus. Why? Because in my terribly huge config
-> I just want to do s/15/N.
+>  Absolutely. Will get on it ASAP.
 
-Okay, That might seem like a simple point, but it helped a lot in
-letting me understand how you were looking at this and in turn what
-kinds of "interesting" parameter combinations are currently accepted.
+Perfect. Even better if you add a liburing test
 
-> 
-> Now let's check how it works .
-> 
-> root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# echo 15-15>cpuset.cpus
-> root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> 15
-> root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# echo 0-0>cpuset.cpus
-> root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> 0
-> 
-> OK, works as expected. And what about N?
-> 
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 0-N > cpuset.cpus
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> > 0-15
-> 
-> OK, looks good.
-> 
-> > root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo N-N > cpuset.cpus
-> > /bin/echo: write error: Invalid argument
-> 
-> Why? If N is 15, it should work exactly as 15-15, but it doesn't...
-> This is the source
-> of confusion and unneeded refactoring of user scripts. (In practice of course
-> nobody will use "N" because it's broken.) Documentation says nothing about
-> this limitation, and this is a real example of "complicating things".
-
-So the disconnect was that I was thinking "where does N make sense to
-use" and you were thinking "N is just a number - let it be used anywhere
-and let the sanity checks take care of the rest".  I can see that now.
-
-I have added self-tests for some of these interesting (but yet valid)
-inputs, like "15-15:15/15" as a way to document what is currently
-supported.  I then copied those (i.e "N-N:N/N") to ensure that N is
-consistent with being "just a number" as you outlined above.
-
-> You can do better - parse "N" in bitmap_getnum() and avoid all that confusion.
-
-N is now handled in getnum in v3 of the series and treated as simply
-just another number, with no special cases related to where it appears.
-
-> Same logic regarding all/none: all is the equivalent of 0-15, none is something
-> like ", ,". Now let's try with "0-15,0-3, ," (imagine it's a result of
-> merging configs).
-> 
-> root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# echo 0-15,0-3, , >cpuset.cpus
-> root@yury-ThinkPad:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
-> 0-15
-
-Given that "none" has no users (now or envisioned) and basically amounts
-to being a no-op as ", ," it seems to make sense to just drop it.  Which
-made me reconsider implementing "all" as well.  Since "0-N" is the same
-strlen as "all" and achieves exactly the same result, I've dropped the
-idea of accepting "all" as well in the interest of keeping it simple.
-
-Please have a look at v3 if you have the time and see if there are any
-remaining things you'd like to see implemented differently, or things
-I've inadvertently missed.  There are more commits (added tests) but
-each change is hopefully a small, easy to review, standalone item.
-
-It seems like vger/lkml is having some issues, but assuming the mails
-eventually get through, the v3 series should get archived at:
-
-https://lore.kernel.org/lkml/20210126171141.122639-1-paul.gortmaker@windriver.com/
-
-Thanks,
-Paul.
---
-
-> 
-> OK, works. But if I do 's/0-15/all' and 's/ /none', things get broken. This
-> again brings a special case where it can be avoided - just  parse all/none
-> at the beginning of bitmap_parse_region().
-> 
-> After reading the description, one can think that you introduce simple and
-> convenient extensions to existing interface. In fact this is a new interface
-> which is mostly incompatible with the existing one.
-> 
-> > > I would also like to see tests covering new functionality. As a user of "N",
-> > > I want to be 100% sure that this "N" is a full equivalent of NR_CPUS, including
-> > > error codes that the parser returns. Otherwise it will be hard to maintain the
-> > > transition.
-> >
-> > That is a reasonable request.  I will look into adding "N" based type
-> > tests to the existing bitmap test cases in a separate commit.
-> >
-> > Thanks,
-> > Paul.
-> > --
-> >
-> > >
-> > > >         if (end_of_region(*str))
-> > > >                 goto no_pattern;
-> > > > @@ -628,6 +634,8 @@ static const char *bitmap_parse_region(const char *str, struct region *r)
-> > > >   * Syntax: range:used_size/group_size
-> > > >   * Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
-> > > >   * Optionally the self-descriptive "all" or "none" can be used.
-> > > > + * The value 'N' can be used as the end of a range to indicate the maximum
-> > > > + * allowed value; i.e (nmaskbits - 1).
-> > > >   *
-> > > >   * Returns: 0 on success, -errno on invalid input strings. Error values:
-> > > >   *
-> > > > @@ -656,7 +664,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
-> > > >                 if (buf == NULL)
-> > > >                         return 0;
-> > > >
-> > > > -               buf = bitmap_parse_region(buf, &r);
-> > > > +               buf = bitmap_parse_region(buf, &r, nmaskbits);
-> > > >                 if (IS_ERR(buf))
-> > > >                         return PTR_ERR(buf);
-> > > >
-> > > > --
-> > > > 2.17.1
-> > > >
+-- 
+Pavel Begunkov
