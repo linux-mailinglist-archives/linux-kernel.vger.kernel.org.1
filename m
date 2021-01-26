@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883F0303BD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056A5303BD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405400AbhAZLj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:39:56 -0500
-Received: from foss.arm.com ([217.140.110.172]:32954 "EHLO foss.arm.com"
+        id S2404178AbhAZLkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:40:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404244AbhAZKsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:48:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 105B3D6E;
-        Tue, 26 Jan 2021 02:47:38 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.45.247])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B147F3F66B;
-        Tue, 26 Jan 2021 02:47:36 -0800 (PST)
-Date:   Tue, 26 Jan 2021 10:47:34 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Preemptible idr_alloc() in QRTR code
-Message-ID: <20210126104734.GB80448@C02TD0UTHF1T.local>
+        id S2404253AbhAZKvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:51:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 871A4230FD;
+        Tue, 26 Jan 2021 10:50:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611658258;
+        bh=Xfyl0VQcIuqe4e956VVFqDmX5OfaPoi+OGgwbqduj08=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=m+ho0nCSB6XlRcFx0GW9VXbH0Hp/2ViCkA9BlS5LqN5OFmhEWi9cZU5htWmGu3SMS
+         /814gETtB06b8EhpNGKSdhxcwPe+eoFsaJuQcEdsiszgAq0asP0MYcACJciDP3wwME
+         UAYfosjlI/IvL3s0tpWaGDR7feEUvxsfKbGMsZSDh60PV/D7eojPY5DLefLm06u6Lb
+         YzM1hfswqdgKQBfCsQimXV+NECOW7Fz5r8OjuBDQqCcmf+2WcNghrjhiejrSwVpWHv
+         GoS/lX5BowAfGixianMRKGyFl2NhOV1tpjOM9WMjXxWnTdvLmbvtux4OiAxsMvwL7q
+         cNOvTmDq/5zgg==
+Date:   Tue, 26 Jan 2021 11:50:54 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-doc@vger.kernel.org, live-patching@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] Documentation: livepatch: Document reliable
+ stacktrace and minor cleanup
+In-Reply-To: <nycvar.YFH.7.76.2101221158450.5622@cbobk.fhfr.pm>
+Message-ID: <nycvar.YFH.7.76.2101261150400.5622@cbobk.fhfr.pm>
+References: <20210120164714.16581-1-broonie@kernel.org> <20210121115226.565790ef@lwn.net> <nycvar.YFH.7.76.2101221158450.5622@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 22 Jan 2021, Jiri Kosina wrote:
 
-When fuzzing arm64 with Syzkaller, I'm seeing some splats where
-this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
-radix_tree_node_alloc(), in a preemptible context:
+> > > This series adds a document, mainly written by Mark Rutland, which 
+> > > makes explicit the requirements for implementing reliable stacktrace 
+> > > in order to aid architectures adding this feature.  It also updates 
+> > > the other livepatching documents to use automatically generated tables 
+> > > of contents following review comments on Mark's document.
+> > 
+> > So...is this deemed ready and, if so, do you want it to go through the
+> > docs tree or via some other path?
+> 
+> I am planning to take it through livepatching tree unless there are any 
+> additional last-minutes comments.
 
-| BUG: using smp_processor_id() in preemptible [00000000] code: syz-executor.1/32582
-| caller is debug_smp_processor_id+0x24/0x30
-| CPU: 3 PID: 32582 Comm: syz-executor.1 Not tainted 5.11.0-rc4-next-20210125-00001-gf57e7edf910d #3
-| Hardware name: linux,dummy-virt (DT)
-| Call trace:
-|  dump_backtrace+0x0/0x4a8
-|  show_stack+0x34/0x88
-|  dump_stack+0x1d4/0x2a0
-|  check_preemption_disabled+0x1b8/0x210
-|  debug_smp_processor_id+0x24/0x30
-|  radix_tree_node_alloc.constprop.17+0x26c/0x3d0
-|  radix_tree_extend+0x200/0x420
-|  idr_get_free+0x63c/0xa38
-|  idr_alloc_u32+0x164/0x2a0
-|  __qrtr_bind.isra.8+0x350/0x658
-|  qrtr_bind+0x18c/0x218
-|  __sys_bind+0x1fc/0x238
-|  __arm64_sys_bind+0x78/0xb0
-|  el0_svc_common+0x1ac/0x4c8
-|  do_el0_svc+0xfc/0x150
-|  el0_svc+0x24/0x38
-|  el0_sync_handler+0x134/0x180
-|  el0_sync+0x154/0x180
+Now applied to for-5.12/doc branch. Thanks,
 
-It's not clear to me whether this is a bug in the caller or a bug the
-implementation of idr_alloc(). The kerneldoc for idr_alloc() mentions
-that callers must provide their own locking (and in this case a mutex is
-used), but doesn't mention that preemption must be disabled.
+-- 
+Jiri Kosina
+SUSE Labs
 
-Is this an intentional requirement that's simply missing from the
-documentation and requires a change to the QRTR code, or is this
-something to fix within the bowels of idr_alloc() and its callees?
-
-Thanks,
-Mark.
