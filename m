@@ -2,243 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75A33045FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815D33045FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394032AbhAZSIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:08:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60029 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405786AbhAZQdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:33:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611678697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l2Y2CW5pjrTFlbr8X4jblLq+HUbom2Mq//dMTHDECc4=;
-        b=G1kElh2ViZR4Go6CInLb1NKXE/tlBwekhKQcySHCqbEw+Z6GBapxJXELZFiqgK8eQgoHAL
-        nG7ghaQ3ZHjIgnpPgkg+uuqfSsAWunojFz8fHkXPAr+01nYSYDOec92xKcDSSZquojCCLK
-        SPw7oe6Qz0c39Gd95DkVvjpdxI2yuyU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-4jqQbQX4ODqibA4E9yKN0A-1; Tue, 26 Jan 2021 11:31:36 -0500
-X-MC-Unique: 4jqQbQX4ODqibA4E9yKN0A-1
-Received: by mail-ej1-f69.google.com with SMTP id q11so5143218ejd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 08:31:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l2Y2CW5pjrTFlbr8X4jblLq+HUbom2Mq//dMTHDECc4=;
-        b=blDYNdv4YMoGtAOxIPyVpoqw6D0QusZve2v+MBQmMbVJvvIZoCI8ShIX8E6VoT1AbR
-         dsdaHGhChm4//us5Oypa3q7j7Bdt//fDR+dv5N1RRjqPqKLjMpqV3wIV5nmgL88+os8S
-         mWcyp3GrK3/bH1Lao57l3E0vWP2VxYUyQnMzRCdYBBIX6zgidquZmsaHRF+6AdlJHZCT
-         mgaGnNYjK+RZ+gC4lj0NEalQZazB+mZn837kHrf92I825B6f/Cw1UobPkUS25uInQBDW
-         LioQ8s78aNI1gw5zAe0xRmZyeifsTGMjodLl/T5Ec88+GzLRNmL4R0OvuoM0dKsfjzlW
-         vFIA==
-X-Gm-Message-State: AOAM5321n66NS8WLII+jmJWq++K6CXLfy/003qq3ge17YfGTagH2kCPA
-        7R5MSKsYv+A5N25f3UcjsB49OKkRKCWnrkychTLfpKcnJiWP7p2nwTc4+UZuKX5g42UENB58Hd2
-        IHfSJu6S1wJ8g4c3zRxP10JbheCeVHKVKzmxtR7kwiRjenitEOBOW0zSFKfq4LyxSqEevbKRGFT
-        IK
-X-Received: by 2002:a05:6402:18f:: with SMTP id r15mr5431823edv.53.1611678694444;
-        Tue, 26 Jan 2021 08:31:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzDEiGhXDOZ0je0P9Euzn3jEWrj0fTIiNEG/VxaB9/orPDlLcBP1w6rnV42V12/9yYMlN4/YA==
-X-Received: by 2002:a05:6402:18f:: with SMTP id r15mr5431795edv.53.1611678694193;
-        Tue, 26 Jan 2021 08:31:34 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id m26sm9947142ejr.54.2021.01.26.08.31.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 08:31:33 -0800 (PST)
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
+        id S2394022AbhAZSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:08:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:47196 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405128AbhAZQcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:32:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1102031B;
+        Tue, 26 Jan 2021 08:31:39 -0800 (PST)
+Received: from [10.57.43.46] (unknown [10.57.43.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AA543F66E;
+        Tue, 26 Jan 2021 08:31:37 -0800 (PST)
+Subject: Re: [PATCH v2 1/3] iommu/arm-smmu: Add support for driver IOMMU fault
+ handlers
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Will Deacon <will@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        iommu@lists.linux-foundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210108064924.1677-1-chenyi.qiang@intel.com>
- <20210108064924.1677-2-chenyi.qiang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RESEND PATCH 1/2] KVM: X86: Add support for the emulation of
- DR6_BUS_LOCK bit
-Message-ID: <fc29c63f-7820-078a-7d92-4a7adf828067@redhat.com>
-Date:   Tue, 26 Jan 2021 17:31:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Krishna Reddy <vdumpa@nvidia.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201124191600.2051751-1-jcrouse@codeaurora.org>
+ <20201124191600.2051751-2-jcrouse@codeaurora.org>
+ <20210122124125.GA24102@willie-the-truck>
+ <8ba2f53d-abbf-af7f-07f6-48ad7f383a37@arm.com>
+ <20210125215107.GB16374@jcrouse1-lnx.qualcomm.com>
+ <dc035204-ade7-03ec-0b82-2ecedc856d42@arm.com>
+ <CAF6AEGtfm=vO6s3vQLNotz=spM9EdXbuNi_vfmCqVd7DmyEMCA@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <d8b870cd-b0c7-2f4a-697d-4de8d437fdc5@arm.com>
+Date:   Tue, 26 Jan 2021 16:31:36 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210108064924.1677-2-chenyi.qiang@intel.com>
+In-Reply-To: <CAF6AEGtfm=vO6s3vQLNotz=spM9EdXbuNi_vfmCqVd7DmyEMCA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/01/21 07:49, Chenyi Qiang wrote:
-> To avoid breaking the CPUs without bus lock detection, activate the
-> DR6_BUS_LOCK bit (bit 11) conditionally in DR6_FIXED_1 bits.
+On 2021-01-26 16:05, Rob Clark wrote:
+> On Tue, Jan 26, 2021 at 3:41 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2021-01-25 21:51, Jordan Crouse wrote:
+>>> On Fri, Jan 22, 2021 at 12:53:17PM +0000, Robin Murphy wrote:
+>>>> On 2021-01-22 12:41, Will Deacon wrote:
+>>>>> On Tue, Nov 24, 2020 at 12:15:58PM -0700, Jordan Crouse wrote:
+>>>>>> Call report_iommu_fault() to allow upper-level drivers to register their
+>>>>>> own fault handlers.
+>>>>>>
+>>>>>> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+>>>>>> ---
+>>>>>>
+>>>>>>    drivers/iommu/arm/arm-smmu/arm-smmu.c | 16 +++++++++++++---
+>>>>>>    1 file changed, 13 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>>>> index 0f28a8614da3..7fd18bbda8f5 100644
+>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>>>> @@ -427,6 +427,7 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+>>>>>>     struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>>>>>>     struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>>>>>     int idx = smmu_domain->cfg.cbndx;
+>>>>>> +  int ret;
+>>>>>>     fsr = arm_smmu_cb_read(smmu, idx, ARM_SMMU_CB_FSR);
+>>>>>>     if (!(fsr & ARM_SMMU_FSR_FAULT))
+>>>>>> @@ -436,11 +437,20 @@ static irqreturn_t arm_smmu_context_fault(int irq, void *dev)
+>>>>>>     iova = arm_smmu_cb_readq(smmu, idx, ARM_SMMU_CB_FAR);
+>>>>>>     cbfrsynra = arm_smmu_gr1_read(smmu, ARM_SMMU_GR1_CBFRSYNRA(idx));
+>>>>>> -  dev_err_ratelimited(smmu->dev,
+>>>>>> -  "Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+>>>>>> +  ret = report_iommu_fault(domain, dev, iova,
+>>>>>> +          fsynr & ARM_SMMU_FSYNR0_WNR ? IOMMU_FAULT_WRITE : IOMMU_FAULT_READ);
+>>>>>> +
+>>>>>> +  if (ret == -ENOSYS)
+>>>>>> +          dev_err_ratelimited(smmu->dev,
+>>>>>> +          "Unhandled context fault: fsr=0x%x, iova=0x%08lx, fsynr=0x%x, cbfrsynra=0x%x, cb=%d\n",
+>>>>>>                         fsr, iova, fsynr, cbfrsynra, idx);
+>>>>>> -  arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+>>>>>> +  /*
+>>>>>> +   * If the iommu fault returns an error (except -ENOSYS) then assume that
+>>>>>> +   * they will handle resuming on their own
+>>>>>> +   */
+>>>>>> +  if (!ret || ret == -ENOSYS)
+>>>>>> +          arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_FSR, fsr);
+>>>>>
+>>>>> Hmm, I don't grok this part. If the fault handler returned an error and
+>>>>> we don't clear the FSR, won't we just re-take the irq immediately?
+>>>>
+>>>> If we don't touch the FSR at all, yes. Even if we clear the fault indicator
+>>>> bits, the interrupt *might* remain asserted until a stalled transaction is
+>>>> actually resolved - that's that lovely IMP-DEF corner.
+>>>>
+>>>> Robin.
+>>>>
+>>>
+>>> This is for stall-on-fault. The idea is that if the developer chooses to do so
+>>> we would stall the GPU after a fault long enough to take a picture of it with
+>>> devcoredump and then release the FSR. Since we can't take the devcoredump from
+>>> the interrupt handler we schedule it in a worker and then return an error
+>>> to let the main handler know that we'll come back around clear the FSR later
+>>> when we are done.
+>>
+>> Sure, but clearing FSR is not writing to RESUME to resolve the stalled
+>> transaction(s). You can already snarf the FSR contents from your
+>> report_iommu_fault() handler if you want to, so either way I don't see
+>> what's gained by not clearing it as expected at the point where we've
+>> handled the *interrupt*, even if it will take longer to decide what to
+>> do with the underlying *fault* that it signalled. I'm particularly not
+>> keen on having unusual behaviour in the core interrupt handling which
+>> callers may unwittingly trigger, for the sake of one
+>> very-very-driver-specific flow having a slightly richer debugging
+>> experience.
 > 
-> The set/clear of DR6_BUS_LOCK is similar to the DR6_RTM in DR6
-> register. The processor clears DR6_BUS_LOCK when bus lock debug
-> exception is generated. (For all other #DB the processor sets this bit
-> to 1.) Software #DB handler should set this bit before returning to the
-> interrupted task.
+> Tbf, "slightly" is an understatement.. it is a big enough improvement
+> that I've hacked up deferred resume several times to debug various
+> issues. ;-)
+
+Oh, fear not, I fully appreciate that keeping the GPU stalled on a 
+faulting transaction is a game-changer in itself ("almost like a real 
+MMU!"). That comment was only aimed at whatever the perceived benefits 
+are of deliberately not trying to clear the SMMU interrupt (even if it 
+*would* stay clear). I have no issue with calling report_iommu_fault(), 
+I'm just wary of doing anything weird with the result.
+
+> (Which is always a bit of a PITA because of things moving around in
+> arm-smmu as well as the drm side of things.)
 > 
-> For VM exit caused by debug exception, bit 11 of the exit qualification
-> is set to indicate that a bus lock debug exception condition was
-> detected. The VMM should emulate the exception by clearing bit 11 of the
-> guest DR6.
+> But from my recollection, we can clear FSR immediately, all we need to
+> do is defer writing ARM_SMMU_CB_RESUME
 
-Please rename DR6_INIT to DR6_ACTIVE_LOW, and then a lot of changes 
-become simpler:
+Phew! Thanks for the reassurance :)
 
-> -		dr6 |= DR6_BD | DR6_RTM;
-> +		dr6 |= DR6_BD | DR6_RTM | DR6_BUS_LOCK;
+Robin.
 
-dr6 |= DR6_BD | DR6_ACTIVE_LOW;
-
->   		ctxt->ops->set_dr(ctxt, 6, dr6);
->   		return emulate_db(ctxt);
->   	}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index cce0143a6f80..3d8a0e30314f 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1860,7 +1860,7 @@ static void svm_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
->   	get_debugreg(vcpu->arch.db[2], 2);
->   	get_debugreg(vcpu->arch.db[3], 3);
->   	/*
-> -	 * We cannot reset svm->vmcb->save.dr6 to DR6_FIXED_1|DR6_RTM here,
-> +	 * We cannot reset svm->vmcb->save.dr6 to DR6_FIXED_1|DR6_RTM|DR6_BUS_LOCK here,
-
-We cannot reset svm->vmcb->save.dr6 to DR6_ACTIVE_LOW
-
->   	 * because db_interception might need it.  We can do it before vmentry.
->   	 */
->   	vcpu->arch.dr6 = svm->vmcb->save.dr6;
-> @@ -1911,7 +1911,7 @@ static int db_interception(struct vcpu_svm *svm)
->   	if (!(svm->vcpu.guest_debug &
->   	      (KVM_GUESTDBG_SINGLESTEP | KVM_GUESTDBG_USE_HW_BP)) &&
->   		!svm->nmi_singlestep) {
-> -		u32 payload = (svm->vmcb->save.dr6 ^ DR6_RTM) & ~DR6_FIXED_1;
-> +		u32 payload = (svm->vmcb->save.dr6 ^ (DR6_RTM|DR6_BUS_LOCK)) & ~DR6_FIXED_1;
-
-u32 payload = svm->vmcb->save.dr6 ^ DR6_ACTIVE_LOW;
-
->   		kvm_queue_exception_p(&svm->vcpu, DB_VECTOR, payload);
->   		return 1;
->   	}
-> @@ -3778,7 +3778,7 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->   	if (unlikely(svm->vcpu.arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT))
->   		svm_set_dr6(svm, vcpu->arch.dr6);
->   	else
-> -		svm_set_dr6(svm, DR6_FIXED_1 | DR6_RTM);
-> +		svm_set_dr6(svm, DR6_FIXED_1 | DR6_RTM | DR6_BUS_LOCK);
-
-svm_set_dr6(svm, DR6_ACTIVE_LOW);
-
->   
->   	clgi();
->   	kvm_load_guest_xsave_state(vcpu);
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index e2f26564a12d..c5d71a9b3729 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -412,7 +412,7 @@ static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit
->   			if (!has_payload) {
->   				payload = vcpu->arch.dr6;
->   				payload &= ~(DR6_FIXED_1 | DR6_BT);
-> -				payload ^= DR6_RTM;
-> +				payload ^= DR6_RTM | DR6_BUS_LOCK;
-
-payload &= ~DR6_BT;
-payload ^= DR6_ACTIVE_LOW;
-
->   			}
->   			*exit_qual = payload;
->   		} else
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3f7c1fc7a3ce..06de2b9e57f3 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -483,19 +483,20 @@ void kvm_deliver_exception_payload(struct kvm_vcpu *vcpu)
->   		 */
->   		vcpu->arch.dr6 &= ~DR_TRAP_BITS;
->   		/*
-> -		 * DR6.RTM is set by all #DB exceptions that don't clear it.
-> +		 * DR6.RTM and DR6.BUS_LOCK are set by all #DB exceptions
-> +		 * that don't clear it.
->   		 */
-> -		vcpu->arch.dr6 |= DR6_RTM;
-> +		vcpu->arch.dr6 |= DR6_RTM | DR6_BUS_LOCK;
->   		vcpu->arch.dr6 |= payload;
->   		/*
-> -		 * Bit 16 should be set in the payload whenever the #DB
-> -		 * exception should clear DR6.RTM. This makes the payload
-> -		 * compatible with the pending debug exceptions under VMX.
-> -		 * Though not currently documented in the SDM, this also
-> -		 * makes the payload compatible with the exit qualification
-> -		 * for #DB exceptions under VMX.
-> +		 * Bit 16/Bit 11 should be set in the payload whenever
-> +		 * the #DB exception should clear DR6.RTM/DR6.BUS_LOCK.
-> +		 * This makes the payload compatible with the pending debug
-> +		 * exceptions under VMX. Though not currently documented in
-> +		 * the SDM, this also makes the payload compatible with the
-> +		 * exit qualification for #DB exceptions under VMX.
->   		 */
-> -		vcpu->arch.dr6 ^= payload & DR6_RTM;
-> +		vcpu->arch.dr6 ^= payload & (DR6_RTM | DR6_BUS_LOCK);
-
-vcpu->arch.dr6 &= ~DR_TRAP_BITS;
-vcpu->arch.dr6 |= DR6_ACTIVE_LOW;
-vcpu->arch.dr6 |= payload;
-vcpu->arch.dr6 ^= payload & DR6_ACTIVE_LOW;
-
-(with comments :))
-
-and so on.
-
-Thanks!
-
-Paolo
-
->   
->   		/*
->   		 * The #DB payload is defined as compatible with the 'pending
-> @@ -1126,6 +1127,9 @@ static u64 kvm_dr6_fixed(struct kvm_vcpu *vcpu)
->   
->   	if (!guest_cpuid_has(vcpu, X86_FEATURE_RTM))
->   		fixed |= DR6_RTM;
-> +
-> +	if (!guest_cpuid_has(vcpu, X86_FEATURE_BUS_LOCK_DETECT))
-> +		fixed |= DR6_BUS_LOCK;
->   	return fixed;
->   }
->   
-> @@ -7197,7 +7201,8 @@ static int kvm_vcpu_do_singlestep(struct kvm_vcpu *vcpu)
->   	struct kvm_run *kvm_run = vcpu->run;
->   
->   	if (vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP) {
-> -		kvm_run->debug.arch.dr6 = DR6_BS | DR6_FIXED_1 | DR6_RTM;
-> +		kvm_run->debug.arch.dr6 = DR6_BS | DR6_FIXED_1 | DR6_RTM |
-> +					  DR6_BUS_LOCK;
->   		kvm_run->debug.arch.pc = kvm_get_linear_rip(vcpu);
->   		kvm_run->debug.arch.exception = DB_VECTOR;
->   		kvm_run->exit_reason = KVM_EXIT_DEBUG;
-> @@ -7241,7 +7246,8 @@ static bool kvm_vcpu_check_breakpoint(struct kvm_vcpu *vcpu, int *r)
->   					   vcpu->arch.eff_db);
->   
->   		if (dr6 != 0) {
-> -			kvm_run->debug.arch.dr6 = dr6 | DR6_FIXED_1 | DR6_RTM;
-> +			kvm_run->debug.arch.dr6 = dr6 | DR6_FIXED_1 | DR6_RTM |
-> +						  DR6_BUS_LOCK;
->   			kvm_run->debug.arch.pc = eip;
->   			kvm_run->debug.arch.exception = DB_VECTOR;
->   			kvm_run->exit_reason = KVM_EXIT_DEBUG;
 > 
-
+> BR,
+> -R
+> 
+>>
+>> For actually *handling* faults, I thought we were going to need to hook
+>> up the new IOPF fault queue stuff anyway?
+>>
+>> Robin.
+>>
+>>> It is assumed that we'll have to turn off interrupts in our handler to allow
+>>> this to work. Its all very implementation specific, but then again we're
+>>> assuming that if you want to do this then you know what you are doing.
+>>>
+>>> In that spirit the error that skips the FSR should probably be something
+>>> specific instead of "all errors" - that way a well meaning handler that returns
+>>> a -EINVAL doesn't accidentally break itself.
+>>>
+>>> Jordan
+>>>
+>>>>> I think
+>>>>> it would be better to do this unconditionally, and print the "Unhandled
+>>>>> context fault" message for any non-zero value of ret.
+>>>
+>>>>>
+>>>>> Will
+>>>>>
+>>>
+>> _______________________________________________
+>> iommu mailing list
+>> iommu@lists.linux-foundation.org
+>> https://lists.linuxfoundation.org/mailman/listinfo/iommu
