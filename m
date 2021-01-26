@@ -2,152 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98E8303AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502FC303AA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404302AbhAZKoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        id S2404323AbhAZKob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732142AbhAZCFz (ORCPT
+        with ESMTP id S1732118AbhAZCFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 21:05:55 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A229BC0617A9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:01:20 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id b17so2305591plz.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:01:20 -0800 (PST)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B2EC06121C
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:01:21 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id n25so10321716pgb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:01:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cuvqgCacX4Pb/J8emd8ASYQj+aaRXfkyo5/tJUTXC18=;
-        b=Q1nyIoOg9cA/NbhZwjGDZ1yfAR40idBgrI8GJtJYQD0Jy5i4RP5cMAnGe8d3sup0X9
-         TtInhbmtjpHx5/vQC6JZ25GsSIDxUgJkKpRCryJVAUzjjG39MnQ33CfJtSDKLYdgc6du
-         MQ9XR+oahIBNnUJIEzG9uyxkdZI3aRmVXxjRU=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CwR87wWKGN87Uj91sl/0p7HuMQTyHPtAIc5V3JQ83s8=;
+        b=YPwrzYVJrYdPYwHIGB3C19HPxzuv9YzJ+nIRNaIvV20lQdHz1/6vQval/My80vZAif
+         2Mf1JnEJF2+hwnySNCeCyJusxqB9BF8/Ye0F8fUjcJRJsTizbPiBuPkams8MZtxfDHW/
+         LBFW8/7helwz0fgR8tRechOnzmtGxFv6Ta6s8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cuvqgCacX4Pb/J8emd8ASYQj+aaRXfkyo5/tJUTXC18=;
-        b=IH9z09eIA7eQDAnbaTlUvhcV40P/I2Z3o+YQ+Q24L75yQtuNuduTfNBojeIQekpOGm
-         V+V+UV/yUCv7FtAZuD5X4kwWy/hNwkimaCD9B2/B+CtMzhwbGSZ0G/DNw3j2FkSkF7eE
-         j0EOsTW8XQv5UbaH9xpPAww8XAyVCrQU8DPFLbFit48gsblBbslhXHRZXQGjxouDdUZ/
-         MEsOR7ppPPP0S8cVM5cOjQeQ1pjYSfQAirR/ayt0CmIHIF1E6v4qfQv+13I6JWaOELDr
-         hEFwJymFkBgPQb+LsXLct7lBVPMWP1C9xVUOpAIXi2IuiW6bPVJ8BvS3ezoAQDgHI7Zb
-         NMaw==
-X-Gm-Message-State: AOAM5337YOIDDgTAvOjgnMrvo+6OOrJuBBpaFuumvJjJUhh4hkD+MCDR
-        OIh0Uepql2x0OCbLUfKJAxla+Q==
-X-Google-Smtp-Source: ABdhPJw/S2YrtvvvxKvJJZka0jRnlXv6swbqbI0W46SZnmLlTUVuNP8AiVQFCtSIVh74m6nO4eXWsQ==
-X-Received: by 2002:a17:90a:f318:: with SMTP id ca24mr3337732pjb.30.1611626480086;
-        Mon, 25 Jan 2021 18:01:20 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CwR87wWKGN87Uj91sl/0p7HuMQTyHPtAIc5V3JQ83s8=;
+        b=HexB9J4X29fDRamixnfLdfREQEXfKA/xpLc+bpYsGuOYhcqQkCy1WAukFk7OHHvDqO
+         zhUmkZ2IoWPn2dXJij+UpsDUEol11qyLJ2X7iNq/MAkAS4GLo6pDhRK7/uM3r14yvrnh
+         2EjpYxCjTu6GA7nLzGsoGwWQ6X0AA2rOuo42m22Biy9FqEJZCoIGajwzsptP/8ZHlBzs
+         aHkTUrC3qvwwvuruCgYd2mHUsjZvk1v+bbdVu6Lw5FsGUyM9RDFxew/EgGTUCaPAmF54
+         +e45WvpmrxYAZ+2y2kP+gGZKlJB0fD5hX4kt7n2UMKiSiQD6A4uk4S+O2FryXFFy5A06
+         dpZA==
+X-Gm-Message-State: AOAM532/6liVLtI85RTw05wLwDupdF50zqzTH0SLbleXJBkOpbKOld1I
+        clTQbRVyamaw4V0NGDVT/i/T9w==
+X-Google-Smtp-Source: ABdhPJz3odRAgcQ1j787bJW2s+4egACLkFMmu73JkQmpyg2vFSv2uojWpbBv8exlxsmEi/FMdjnpBw==
+X-Received: by 2002:a62:7694:0:b029:1b9:8d43:95af with SMTP id r142-20020a6276940000b02901b98d4395afmr3154420pfc.2.1611626481406;
+        Mon, 25 Jan 2021 18:01:21 -0800 (PST)
 Received: from smtp.gmail.com ([2620:15c:202:201:1066:b437:97cd:2278])
-        by smtp.gmail.com with ESMTPSA id n2sm16975028pfu.42.2021.01.25.18.01.18
+        by smtp.gmail.com with ESMTPSA id n2sm16975028pfu.42.2021.01.25.18.01.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 18:01:19 -0800 (PST)
+        Mon, 25 Jan 2021 18:01:20 -0800 (PST)
 From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Krishna Manikandan <mkrishn@codeaurora.org>
-Subject: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
-Date:   Mon, 25 Jan 2021 18:01:13 -0800
-Message-Id: <20210126020117.2753615-1-swboyd@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCHv2 0/3] iio: Add a ChromeOS EC MKBP proximity driver
+Date:   Mon, 25 Jan 2021 18:01:14 -0800
+Message-Id: <20210126020117.2753615-2-swboyd@chromium.org>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+In-Reply-To: <20210126020117.2753615-1-swboyd@chromium.org>
+References: <20210126020117.2753615-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lockdep complains about an AA deadlock when rebooting the device.
+This is a different approach to [1] where I tried to add this proximity
+sensor logic to the input subsystem. Instead, we'll take the approach of
+making a small IIO proximity driver that parses the EC switch bitmap to
+find out if the front proximity sensor is detecting something or not.
+This allows us to treat proximity sensors as IIO devices all the time in
+userspace instead of handling this switch on the EC via the input
+subsystem and then other proximity sensors via IIO.
 
-============================================
-WARNING: possible recursive locking detected
-5.4.91 #1 Not tainted
---------------------------------------------
-reboot/5213 is trying to acquire lock:
-ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+I propose this is all merged through IIO subsystem. Please ack
+the first patch so it can be merged that way.
 
-but task is already holding lock:
-ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
+Changes from v1:
+ * Driver moved location
+ * Put mkbp everywhere
+ * Fixed up DT binding to not fail and make sure is a child of cros-ec
+ * Simplified logic for sending a message
+ * Dropped CONFIG_OF usage
+ * Sorted includes
 
-other info that might help us debug this:
-Possible unsafe locking scenario:
+[1] https://lore.kernel.org/r/20201205004709.3126266-1-swboyd@chromium.org
 
-CPU0
-----
-lock(&kms->commit_lock[i]);
-lock(&kms->commit_lock[i]);
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Benson Leung <bleung@chromium.org>
+Cc: Guenter Roeck <groeck@chromium.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Gwendal Grignou <gwendal@chromium.org>
+Cc: <devicetree@vger.kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
 
-*** DEADLOCK ***
+Stephen Boyd (3):
+  platform/chrome: cros_ec: Add SW_FRONT_PROXIMITY MKBP define
+  dt-bindings: iio: Add cros ec proximity yaml doc
+  iio: proximity: Add a ChromeOS EC MKBP proximity driver
 
-May be due to missing lock nesting notation
+ .../google,cros-ec-mkbp-proximity.yaml        |  38 +++
+ .../bindings/mfd/google,cros-ec.yaml          |   3 +
+ drivers/iio/proximity/Kconfig                 |  11 +
+ drivers/iio/proximity/Makefile                |   1 +
+ .../iio/proximity/cros_ec_mkbp_proximity.c    | 243 ++++++++++++++++++
+ .../linux/platform_data/cros_ec_commands.h    |   1 +
+ 6 files changed, 297 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/proximity/google,cros-ec-mkbp-proximity.yaml
+ create mode 100644 drivers/iio/proximity/cros_ec_mkbp_proximity.c
 
-6 locks held by reboot/5213:
-__arm64_sys_reboot+0x148/0x2a0
-device_shutdown+0x10c/0x2c4
-drm_atomic_helper_shutdown+0x48/0xfc
-modeset_lock+0x120/0x24c
-lock_crtcs+0x60/0xa4
-
-stack backtrace:
-CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
-Hardware name: Google Pompom (rev1) with LTE (DT)
-Call trace:
-dump_backtrace+0x0/0x1dc
-show_stack+0x24/0x30
-dump_stack+0xfc/0x1a8
-__lock_acquire+0xcd0/0x22b8
-lock_acquire+0x1ec/0x240
-__mutex_lock_common+0xe0/0xc84
-mutex_lock_nested+0x48/0x58
-lock_crtcs+0x60/0xa4
-msm_atomic_commit_tail+0x348/0x570
-commit_tail+0xdc/0x178
-drm_atomic_helper_commit+0x160/0x168
-drm_atomic_commit+0x68/0x80
-
-This is because lockdep thinks all the locks taken in lock_crtcs() are
-the same lock, when they actually aren't. That's because we call
-mutex_init() in msm_kms_init() and that assigns on static key for every
-lock initialized in this loop. Let's allocate a dynamic number of
-lock_class_keys and assign them to each lock so that lockdep can figure
-out an AA deadlock isn't possible here.
-
-Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
-Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index d8151a89e163..4735251a394d 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -157,6 +157,7 @@ struct msm_kms {
- 	 * from the crtc's pending_timer close to end of the frame:
- 	 */
- 	struct mutex commit_lock[MAX_CRTCS];
-+	struct lock_class_key commit_lock_keys[MAX_CRTCS];
- 	unsigned pending_crtc_mask;
- 	struct msm_pending_timer pending_timers[MAX_CRTCS];
- };
-@@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
- {
- 	unsigned i, ret;
- 
--	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
--		mutex_init(&kms->commit_lock[i]);
-+	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
-+		lockdep_register_key(&kms->commit_lock_keys[i]);
-+		__mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
-+			     &kms->commit_lock_keys[i]);
-+	}
- 
- 	kms->funcs = funcs;
- 
 
 base-commit: 19c329f6808995b142b3966301f217c831e7cf31
 -- 
