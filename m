@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08D930456B
+	by mail.lfdr.de (Postfix) with ESMTP id 4024730456A
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392043AbhAZRfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:35:33 -0500
-Received: from muru.com ([72.249.23.125]:52928 "EHLO muru.com"
+        id S2392009AbhAZRf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:35:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388185AbhAZHkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:40:31 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 139A18317;
-        Tue, 26 Jan 2021 07:28:47 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 3/3] bus: ti-sysc: Detect more modules for debugging
-Date:   Tue, 26 Jan 2021 09:28:35 +0200
-Message-Id: <20210126072835.26551-4-tony@atomide.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210126072835.26551-1-tony@atomide.com>
-References: <20210126072835.26551-1-tony@atomide.com>
+        id S1726506AbhAZHkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:40:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C503222DFB;
+        Tue, 26 Jan 2021 07:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611646168;
+        bh=EeYd7CB89GWAcW8uYhjNeyGSFBIHZRdbLk/gleJ31F0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CNaZz2CRyrqkmqEJ1L1MkcmfJ1EYBiqHIz1t+RsnXvcu8flhZMFUTbYNSpfAd0EQN
+         vC6l8OFAzqdw7q/Yp3BZc0vofaA1B32DcMVvtkoNgXWVbaB+2EnOzBIowUGEbtfyW0
+         E8r5zyzAOjHkbbqCg+ndL2FzVJpzXyWa5muasrNQ=
+Date:   Tue, 26 Jan 2021 08:29:25 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <YA/E1bHRmZb50MlS@kroah.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to see what the interconnect target module names are for
-debugging.
+On Mon, Jan 25, 2021 at 11:55:11AM -0800, Scott Branden wrote:
+> Hi All,
+> 
+> The 5.10 LTS kernel being officially LTS supported for 2 years presents a problem:
+> why would anyone select a 5.10 kernel with 2 year LTS when 5.4 kernel has a 6 year LTS.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/bus/ti-sysc.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Because they want to use all of the latest stuff that 5.10 provides
+them.  Don't you want faster and more secure kernels for your devices?
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1496,12 +1496,16 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("dwc3", 0, 0, 0x10, -ENODEV, 0x500a0200, 0xffffffff, 0),
- 	SYSC_QUIRK("d2d", 0x4a0b6000, 0, 0x10, 0x14, 0x00000010, 0xffffffff, 0),
- 	SYSC_QUIRK("d2d", 0x4a0cd000, 0, 0x10, 0x14, 0x00000010, 0xffffffff, 0),
-+	SYSC_QUIRK("elm", 0x48080000, 0, 0x10, 0x14, 0x00000020, 0xffffffff, 0),
-+	SYSC_QUIRK("emif", 0, 0, -ENODEV, -ENODEV, 0x40441403, 0xffff0fff, 0),
-+	SYSC_QUIRK("emif", 0, 0, -ENODEV, -ENODEV, 0x50440500, 0xffffffff, 0),
- 	SYSC_QUIRK("epwmss", 0, 0, 0x4, -ENODEV, 0x47400001, 0xffffffff, 0),
- 	SYSC_QUIRK("gpu", 0, 0x1fc00, 0x1fc10, -ENODEV, 0, 0, 0),
- 	SYSC_QUIRK("gpu", 0, 0xfe00, 0xfe10, -ENODEV, 0x40000000 , 0xffffffff, 0),
- 	SYSC_QUIRK("hdmi", 0, 0, 0x10, -ENODEV, 0x50031d00, 0xffffffff, 0),
- 	SYSC_QUIRK("hsi", 0, 0, 0x10, 0x14, 0x50043101, 0xffffffff, 0),
- 	SYSC_QUIRK("iss", 0, 0, 0x10, -ENODEV, 0x40000101, 0xffffffff, 0),
-+	SYSC_QUIRK("keypad", 0x4a31c000, 0, 0x10, 0x14, 0x00000020, 0xffffffff, 0),
- 	SYSC_QUIRK("mcasp", 0, 0, 0x4, -ENODEV, 0x44306302, 0xffffffff, 0),
- 	SYSC_QUIRK("mcasp", 0, 0, 0x4, -ENODEV, 0x44307b02, 0xffffffff, 0),
- 	SYSC_QUIRK("mcbsp", 0, -ENODEV, 0x8c, -ENODEV, 0, 0, 0),
-@@ -1513,11 +1517,14 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 	SYSC_QUIRK("ocp2scp", 0, 0, -ENODEV, -ENODEV, 0x50060007, 0xffffffff, 0),
- 	SYSC_QUIRK("padconf", 0, 0, 0x10, -ENODEV, 0x4fff0800, 0xffffffff, 0),
- 	SYSC_QUIRK("padconf", 0, 0, -ENODEV, -ENODEV, 0x40001100, 0xffffffff, 0),
-+	SYSC_QUIRK("pcie", 0x51000000, -ENODEV, -ENODEV, -ENODEV, 0, 0, 0),
-+	SYSC_QUIRK("pcie", 0x51800000, -ENODEV, -ENODEV, -ENODEV, 0, 0, 0),
- 	SYSC_QUIRK("prcm", 0, 0, -ENODEV, -ENODEV, 0x40000100, 0xffffffff, 0),
- 	SYSC_QUIRK("prcm", 0, 0, -ENODEV, -ENODEV, 0x00004102, 0xffffffff, 0),
- 	SYSC_QUIRK("prcm", 0, 0, -ENODEV, -ENODEV, 0x40000400, 0xffffffff, 0),
- 	SYSC_QUIRK("rfbi", 0x4832a800, 0, 0x10, 0x14, 0x00000010, 0xffffffff, 0),
- 	SYSC_QUIRK("rfbi", 0x58002000, 0, 0x10, 0x14, 0x00000010, 0xffffffff, 0),
-+	SYSC_QUIRK("sata", 0, 0xfc, 0x1100, -ENODEV, 0x5e412000, 0xffffffff, 0),
- 	SYSC_QUIRK("scm", 0, 0, 0x10, -ENODEV, 0x40000900, 0xffffffff, 0),
- 	SYSC_QUIRK("scm", 0, 0, -ENODEV, -ENODEV, 0x4e8b0100, 0xffffffff, 0),
- 	SYSC_QUIRK("scm", 0, 0, -ENODEV, -ENODEV, 0x4f000100, 0xffffffff, 0),
--- 
-2.30.0
+> Yet, various unofficial reports indicate it will be supported for 6 years.
+
+Rumors are nice, aren't they :)
+
+>  And AOSP has already declared the use
+> of 5.10 kernel in their Android S and T releases.
+
+Publically?  Where?  And is that really the name of the new Android
+releases, I thought they switched to numbers now (hence the naming of
+the current android-common kernel branches, marketing is fun...)
+
+> Is there some way we could make the LTS support more clear.
+> A 2 year declaration is not LTS any more.
+
+Not true at all, a "normal" stable kernel is dropped after the next
+release happens, making their lifespan about 4 months long.  2 years is
+much longer than 4 months, so it still is a "long term supported" kernel
+in contrast, correct?
+
+> If 5.10 is "actually" going to be supported for 6 years it would be quite valuable to make such a declaration.
+> https://www.kernel.org/category/releases.html
+
+Why?  What would that change?
+
+Ok, seriously, this happens every year, and every year we go through the
+same thing, it's not like this is somehow new, right?
+
+I want to see companies _using_ the kernel, and most importantly,
+_updating_ their devices with it, to know if it is worth to keep around
+for longer than 2 years.  I also, hopefully, want to see how those
+companies will help me out in the testing and maintenance of that kernel
+version in order to make supporting it for 6 years actually possible.
+
+So, are you planning on using 5.10?  Will you will be willing to help
+out in testing the -rc releases I make to let me know if there are any
+problems, and to help in pointing out and backporting any specific
+patches that your platforms need for that kernel release?
+
+When I get this kind of promises and support from companies, then I am
+glad to bump up the length of the kernel support from 2 to 6 years, and
+I mark it on the web site.  Traditionally this happens in Febuary/March
+once I hear from enough companies.  Can I count on your support in this
+endeavor?
+
+Also, a meta-comment.  Please reconsider using a single kernel version
+for longer than 2 years on systems that you actively support and
+maintain.  It's generally a bad idea unless you are stuck with millions
+of out-of-tree code that something like a customer-unfriendly SoC vendor
+provides.  If you are stuck in that type of situation, well they have
+decided to spend extra money to keep their out-of-tree code alive, so
+why are they forcing you to also spend extra money and energy?
+
+I can go on about this topic at length if you want me to, I have lots of
+examples of how to, and not to, maintain a kernel for a device for a
+long period of time...
+
+thanks,
+
+greg k-h
