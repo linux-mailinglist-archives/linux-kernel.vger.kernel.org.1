@@ -2,145 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42A2304555
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAE03045B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391664AbhAZRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:30:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730672AbhAZHf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:35:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 121D9230FE;
-        Tue, 26 Jan 2021 07:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611646515;
-        bh=+VAs2ymsR3wvwxQFkon4/lt3ON1FUNprV+UepWushio=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DH2Lp/8Ef0k9WGN0ll9FmubItN0Z4unrWnNQS2pyl2CUBL7o4QsLZbVTFfKsobAFJ
-         rqis4X+XbAgqsLOIi2xs0N9LOezi8R1B3MJRlaAf+t5K7louVm5tILOwBOPekx54Dp
-         gxGYVH9sPqyKT9rTqpWuBYCY/4Ml/MC0cOYw5dSCTJwQMG0iNcMSQJWPiMJQGz01Ki
-         A22EreErsNsWRT1n182mAs2KUT0HFIOn49DPq47GwhpEw133zKoi2C3eSrEIDvRSro
-         yals0i+X72Z5A+lrvA7iUlU3O1m7Ebf/8Fx9SxxtUcGSuay+HFsCn+KXGiyEhuM4Q0
-         ot6GUJlxXOVnw==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l4Isa-00BqrJ-FX; Tue, 26 Jan 2021 08:35:12 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Jonathan Chocron <jonnyc@amazon.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@axis.com, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH RFC 0/2] Convert designware-pcie and kirin-pcie to yaml
-Date:   Tue, 26 Jan 2021 08:35:05 +0100
-Message-Id: <cover.1611645945.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2389820AbhAZRv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:51:59 -0500
+Received: from mail-m975.mail.163.com ([123.126.97.5]:39152 "EHLO
+        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389965AbhAZIgm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:36:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=L7wRq
+        yZN9bDScq/SPTZt1MjJWDbCm2B0pcGx9u9lRGI=; b=dmyeiKzOI7Nvf6paZ6/tw
+        9fDG9OYaGQViJwXfuMvMU1PJWi2XFUSsVO58D6tqpo9hW9++0jE25RGpnI8ZnF/l
+        IZCefNfValnakMVQnzapXqmZfuqmxbi5axa4YqdQR4rUfC49inEtMXw+iTsRbbvU
+        foNUX3ciPkyuWnJ/0eBwM8=
+Received: from localhost (unknown [218.94.48.178])
+        by smtp5 (Coremail) with SMTP id HdxpCgA3mAxuhQ9gjgSTAA--.28S2;
+        Tue, 26 Jan 2021 10:58:58 +0800 (CST)
+Date:   Tue, 26 Jan 2021 10:58:54 +0800
+From:   Guoqing Chi <chi962464zy@163.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Tom Rix <trix@redhat.com>, martin.blumenstingl@googlemail.com,
+        linux-kernel@vger.kernel.org, chiguoqing@yulong.com,
+        huyue2@yulong.com, zhangwen@yulong.com, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v2] iio: imu: bmi160: add mutex_lock for avoiding race
+Message-ID: <20210126105854.0000192d@163.com>
+In-Reply-To: <20210123152659.563cddeb@archlinux>
+References: <20210119112211.26404-1-chi962464zy@163.com>
+        <c93224b5-008c-fc80-f466-88c387d5b08f@redhat.com>
+        <20210120094802.00001fee@163.com>
+        <9c9333cb-bd6c-0f29-f35b-7592f457c746@redhat.com>
+        <20210123152659.563cddeb@archlinux>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: HdxpCgA3mAxuhQ9gjgSTAA--.28S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtFWrZFy3tr4UWF1kCFyDJrb_yoW7Ww4rpa
+        4UGF45CrW8XF1xCr12qrn8CF98t34Iqr18W3s7Ja45ZrZ0yFnIyr1UJ3409rnYyr1UGr42
+        qrWUArZxuF1kZr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07USdgAUUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/xtbBSRImRFaD9d-jRAAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob,
+On Sat, 23 Jan 2021 15:26:59 +0000
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-As I'm preparing some upstream patches for kirin-pcie driver to support
-Hikey 970, I opted to try first to convert the existing schema to yaml.
+> On Wed, 20 Jan 2021 07:06:23 -0800
+> Tom Rix <trix@redhat.com> wrote:
+> 
+> > On 1/19/21 5:48 PM, Guoqing Chi wrote:  
+> > > On Tue, 19 Jan 2021 06:54:45 -0800
+> > > Tom Rix <trix@redhat.com> wrote:
+> > >    
+> > >> On 1/19/21 3:22 AM, Guoqing Chi wrote:    
+> > >>> From: chiguoqing <chi962464zy@163.com>
+> > >>>
+> > >>> Adding mutex_lock, when read and write reg need to use this
+> > >>> lock to avoid race.
+> > >>>
+> > >>> Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
+> > >>> ---
+> > >>> v2:Follow write function to fix read function.
+> > >>> Adding mutex init in core probe function.
+> > >>> Adding break in switch case at read and write function.
+> > >>>
+> > >>>  drivers/iio/imu/bmi160/bmi160.h      |  2 ++
+> > >>>  drivers/iio/imu/bmi160/bmi160_core.c | 34
+> > >>> +++++++++++++++++++--------- 2 files changed, 25 insertions(+),
+> > >>> 11 deletions(-)
+> > >>>
+> > >>> diff --git a/drivers/iio/imu/bmi160/bmi160.h
+> > >>> b/drivers/iio/imu/bmi160/bmi160.h index
+> > >>> 32c2ea2d7112..0c189a8b5b53 100644 ---
+> > >>> a/drivers/iio/imu/bmi160/bmi160.h +++
+> > >>> b/drivers/iio/imu/bmi160/bmi160.h @@ -3,9 +3,11 @@
+> > >>>  #define BMI160_H_
+> > >>>  
+> > >>>  #include <linux/iio/iio.h>
+> > >>> +#include <linux/mutex.h>
+> > >>>  #include <linux/regulator/consumer.h>
+> > >>>  
+> > >>>  struct bmi160_data {
+> > >>> +	struct mutex lock;
+> > >>>  	struct regmap *regmap;
+> > >>>  	struct iio_trigger *trig;
+> > >>>  	struct regulator_bulk_data supplies[2];
+> > >>> diff --git a/drivers/iio/imu/bmi160/bmi160_core.c
+> > >>> b/drivers/iio/imu/bmi160/bmi160_core.c index
+> > >>> 290b5ef83f77..e303378f4841 100644 ---
+> > >>> a/drivers/iio/imu/bmi160/bmi160_core.c +++
+> > >>> b/drivers/iio/imu/bmi160/bmi160_core.c @@ -452,26 +452,32 @@
+> > >>> static int bmi160_read_raw(struct iio_dev *indio_dev, int ret;
+> > >>>  	struct bmi160_data *data = iio_priv(indio_dev);
+> > >>>  
+> > >>> +	mutex_lock(&data->lock);
+> > >>>  	switch (mask) {
+> > >>>  	case IIO_CHAN_INFO_RAW:
+> > >>>  		ret = bmi160_get_data(data, chan->type,
+> > >>> chan->channel2, val);
+> > >>> -		if (ret)
+> > >>> -			return ret;
+> > >>> -		return IIO_VAL_INT;
+> > >>> +		if (!ret)
+> > >>> +			ret = IIO_VAL_INT;
+> > >>> +		break;
+> > >>>  	case IIO_CHAN_INFO_SCALE:
+> > >>>  		*val = 0;
+> > >>>  		ret = bmi160_get_scale(data,
+> > >>>  				       bmi160_to_sensor(chan->type),
+> > >>> val2);
+> > >>> -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> > >>> +		if (!ret)
+> > >>> +			ret = IIO_VAL_INT_PLUS_MICRO;      
+> > >> Looking better, another question..
+> > >>
+> > >> Why does the write() function return the results directly while
+> > >> the read() function
+> > >>
+> > >> translates them to other values ?
+> > >>
+> > >> Tom    
+> > > It is original design in this driver. In order to
+> > > differentiate raw to scale and SAMP_FREQ, while the scale and
+> > > SAMP_FREQ are needless. I think log information can be added for
+> > > this purpose, and return results directly.
+> > > It is not change the return values for my modify.It's best to
+> > > keep the original design.Is that all right?    
+> > 
+> > Ok.
+> > 
+> > Reviewed-by: Tom Rix <trix@redhat.com>  
+> 
+> Hi Guoqing Chi,
+> 
+> For some reason the original patch email (start of this thread) never
+> made it to my inbox or indeed the archive at lore.kernel.org.
+> 
+> Please resend (picking up Tom's reviewed by) and make sure to cc
+> linux-iio@vger.kernel.org + jic23@kernel.org
+> 
+> Then check if they make it to lore.kernel.org as that should highlight
+> any issues where it is getting blocked etc.
+> 
+> Thanks,
+> 
+> Jonathan
 
-It should be noticed that those two patches currently won't pass
-cleanly with dtbs_check/dt_binding_check.
+Hi Jonathan,
 
-I'm out of ideas about how to fix. It sounds to me that the checking
-tools are trying to enforce different types of reference types than
-the ones used by designware drivers.:
+I have resend patch V2(picking up Tom's reviewed by) for add
+linux-iio@vger.kernel.org + jic23@kernel.org.
 
-$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/designware,pcie.yaml dt_binding_check
-  LINT    Documentation/devicetree/bindings
-  DTEX    Documentation/devicetree/bindings/pci/designware,pcie.example.dts
-  CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
-  SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
-  DTC     Documentation/devicetree/bindings/pci/designware,pcie.example.dt.yaml
-  CHECK   Documentation/devicetree/bindings/pci/designware,pcie.example.dt.yaml
+Thanks.
 
-
-		[[2164260864, 0, 0, 3724541952, 0, 65536, 2181038080, 0, 3493855232, 3493855232, 0, 218103808]] is not of type 'boolean'
-		True was expected
-		[[2164260864, 0, 0, 3724541952, 0, 65536, 2181038080, 0, 3493855232, 3493855232, 0, 218103808]] is not of type 'null'
-	[2164260864, 0, 0, 3724541952, 0, 65536, 2181038080, 0, 3493855232, 3493855232, 0, 218103808] is too long
-	From schema: /home/mchehab/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
-
-$ make CROSS_COMPILE=aarch64-linux-gnu- ARCH=arm64 DT_SCHEMA_FILES=Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml dt_binding_check
-  DTEX    Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dts
-  DTC     Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml
-  CHECK   Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml
-/devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@f4000000: 'reset-gpios' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-/devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.example.dt.yaml: pcie@f4000000: '#interrupt-cells', 'bus-range', 'clock-names', 'clocks', 'device_type', 'interrupt-map', 'interrupt-map-mask', 'num-lanes', 'ranges' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /devel/v4l/hikey970/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
-
-I ran out of ideas about how to solve that. So, I'm posting it as a RFC.
-
-Mauro Carvalho Chehab (2):
-  dt: pci: designware-pcie.txt: convert it to yaml
-  dt: pci: kirin-pcie.txt: convert it to yaml
-
- .../bindings/pci/amlogic,meson-pcie.txt       |   4 +-
- .../bindings/pci/axis,artpec6-pcie.txt        |   2 +-
- .../bindings/pci/designware,pcie.yaml         | 194 ++++++++++++++++++
- .../bindings/pci/designware-pcie.txt          |  77 -------
- .../bindings/pci/fsl,imx6q-pcie.txt           |   2 +-
- .../bindings/pci/hisilicon,kirin-pcie.yaml    |  98 +++++++++
- .../bindings/pci/hisilicon-histb-pcie.txt     |   2 +-
- .../bindings/pci/hisilicon-pcie.txt           |   2 +-
- .../devicetree/bindings/pci/kirin-pcie.txt    |  50 -----
- .../bindings/pci/layerscape-pci.txt           |   2 +-
- .../bindings/pci/nvidia,tegra194-pcie.txt     |   4 +-
- .../devicetree/bindings/pci/pci-armada8k.txt  |   2 +-
- .../devicetree/bindings/pci/pci-keystone.txt  |  10 +-
- .../devicetree/bindings/pci/pcie-al.txt       |   2 +-
- .../devicetree/bindings/pci/qcom,pcie.txt     |  14 +-
- .../bindings/pci/samsung,exynos5440-pcie.txt  |   4 +-
- .../pci/socionext,uniphier-pcie-ep.yaml       |   2 +-
- .../devicetree/bindings/pci/ti-pci.txt        |   4 +-
- .../devicetree/bindings/pci/uniphier-pcie.txt |   2 +-
- MAINTAINERS                                   |   4 +-
- 20 files changed, 323 insertions(+), 158 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/designware,pcie.yaml
- delete mode 100644 Documentation/devicetree/bindings/pci/designware-pcie.txt
- create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
- delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
-
--- 
-2.29.2
-
+> 
+> >   
+> > > Guoqing Chi    
+> > >>> +		break;
+> > >>>  	case IIO_CHAN_INFO_SAMP_FREQ:
+> > >>>  		ret = bmi160_get_odr(data,
+> > >>> bmi160_to_sensor(chan->type), val, val2);
+> > >>> -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> > >>> +		if (!ret)
+> > >>> +			ret = IIO_VAL_INT_PLUS_MICRO;
+> > >>> +		break;
+> > >>>  	default:
+> > >>> -		return -EINVAL;
+> > >>> +		ret = -EINVAL;
+> > >>>  	}
+> > >>> +	mutex_unlock(&data->lock);
+> > >>>  
+> > >>> -	return 0;
+> > >>> +	return ret;
+> > >>>  }
+> > >>>  
+> > >>>  static int bmi160_write_raw(struct iio_dev *indio_dev,
+> > >>> @@ -479,19 +485,24 @@ static int bmi160_write_raw(struct iio_dev
+> > >>> *indio_dev, int val, int val2, long mask)
+> > >>>  {
+> > >>>  	struct bmi160_data *data = iio_priv(indio_dev);
+> > >>> +	int result;
+> > >>>  
+> > >>> +	mutex_lock(&data->lock);
+> > >>>  	switch (mask) {
+> > >>>  	case IIO_CHAN_INFO_SCALE:
+> > >>> -		return bmi160_set_scale(data,
+> > >>> +		result = bmi160_set_scale(data,
+> > >>>  					bmi160_to_sensor(chan->type),
+> > >>> val2);
+> > >>> +		break;
+> > >>>  	case IIO_CHAN_INFO_SAMP_FREQ:
+> > >>> -		return bmi160_set_odr(data,
+> > >>> bmi160_to_sensor(chan->type),
+> > >>> +		result = bmi160_set_odr(data,
+> > >>> bmi160_to_sensor(chan->type), val, val2);
+> > >>> +		break;
+> > >>>  	default:
+> > >>> -		return -EINVAL;
+> > >>> +		result = -EINVAL;
+> > >>>  	}
+> > >>> +	mutex_unlock(&data->lock);
+> > >>>  
+> > >>> -	return 0;
+> > >>> +	return result;
+> > >>>  }
+> > >>>  
+> > >>>  static
+> > >>> @@ -838,6 +849,7 @@ int bmi160_core_probe(struct device *dev,
+> > >>> struct regmap *regmap, return -ENOMEM;
+> > >>>  
+> > >>>  	data = iio_priv(indio_dev);
+> > >>> +	mutex_init(&data->lock);
+> > >>>  	dev_set_drvdata(dev, indio_dev);
+> > >>>  	data->regmap = regmap;
+> > >>>        
+> >   
 
