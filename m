@@ -2,104 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F0B303A10
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB752303A37
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391924AbhAZKTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:19:11 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:10112 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387445AbhAZBXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:23:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611624195; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=7OsIShq8IRb2YDHJ4/j58ebi3yNhkVmimR5GqE3wAqY=; b=kxK9ABfaS5POFEkIE+gsg72luKKcR7jhH/AuesATUpjKPNwHB4WQ0fpVv/15tOUXWbTzmCA7
- mEbBXxrw4f1D/+8zqGywJDGjYQgRl1QLkGgtGf979m8QAUm1NmqI6LZh/FtPZXZEt5jFTMHe
- XB3J6AGZCNEZZbJOKwqXR42MULQ=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 600f6cfe5677aca7bd490ac0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 01:14:38
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D725AC43463; Tue, 26 Jan 2021 01:14:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.78.65] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91F3AC433C6;
-        Tue, 26 Jan 2021 01:14:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91F3AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
- requirements
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
-        jackp@codeaurora.org
-References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
- <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
- <YAsHbj/mITeiY5Cq@builder.lan>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
-Date:   Mon, 25 Jan 2021 17:14:35 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S1726727AbhAZK2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727052AbhAZBb0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:31:26 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7D0C0698C0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:18:14 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id e9so787109pjj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:18:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0BZifB+iVMGmxp83gSV8xBJi4ZuHE+jJzS5b46pYB0A=;
+        b=buRZJlIfAEszu7DTDxrGpStS4yJ+JlArTcXt0x76ycaU2bjFQCHidprSrOBF3N1xve
+         e2RNFHNjUFXkRgFexKzldGH0QtYp6XGsa/hwV2THVKhJrBrbOYGfciG0gbWd3kkjhV6l
+         hJasfeZTmZ6+c6txPNSZExg1rsZfom+QZAd74=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0BZifB+iVMGmxp83gSV8xBJi4ZuHE+jJzS5b46pYB0A=;
+        b=aCbevUpahBRHWfD8rIFhHuNSi7U3I+i4nyP2NZE/TVtqGjzsSZuOu6n4u44et8w254
+         5l2BMpX0mkdbR3x5Z+n1W62cXVDPBPxbTZoPp2ki5E8uSY307MaXD2c07ugmTspU3c5Q
+         2PDxRkVObqUuoRZMYZQ9UQti+aQ3yThmjj6Zjflv7e8Z2C/R22+TTk0BQmnONEhVrwKn
+         5h2gJSyX5+wLiD4RpqDlVKBTAZVZg/wsT3yTSlo2u1xYcwG5MWQ0DyT3DxVkqaBhBn91
+         qBn5riYUa82f9aHd+9rlfIR05zYnE8k63aGa/fdGLl76W9gxqYCFix7lQou+sQk9WKRw
+         Ry8g==
+X-Gm-Message-State: AOAM531nSsxcu8ID6i2TMrU1zq6wA918LpYlQ0uYCtcozXJgMrBc/ain
+        05xcuxJSSHx8NaWnC4pUv+Rc+Q==
+X-Google-Smtp-Source: ABdhPJzq03UOZA3rzW/Jku1UL/Q9+LLv9sYit5RxxJUopLFrSfRQH8oSRCQ/AdGoGrss8ksnQD4EKg==
+X-Received: by 2002:a17:90a:77c1:: with SMTP id e1mr3157796pjs.141.1611623893652;
+        Mon, 25 Jan 2021 17:18:13 -0800 (PST)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:50cc:9282:4fdd:3979])
+        by smtp.gmail.com with ESMTPSA id k9sm522248pji.8.2021.01.25.17.18.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 17:18:12 -0800 (PST)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+Cc:     fshao@chromium.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        hoegsberg@chromium.org, boris.brezillon@collabora.com,
+        hsinyi@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v11 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+Date:   Tue, 26 Jan 2021 09:17:56 +0800
+Message-Id: <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+In-Reply-To: <20210126011759.1605641-1-drinkcat@chromium.org>
+References: <20210126011759.1605641-1-drinkcat@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <YAsHbj/mITeiY5Cq@builder.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Define a compatible string for the Mali Bifrost GPU found in
+Mediatek's MT8183 SoCs.
 
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
 
-On 1/22/2021 9:12 AM, Bjorn Andersson wrote:
-> On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
-> 
+Changes in v11:
+ - binding: power-domain-names not power-domainS-names
 
-Hi Bjorn,
-> 
-> Under what circumstances should we specify this? And in particular are
-> there scenarios (in the Qualcomm platforms) where this must not be set?
->The TXFIFO dynamic allocation is actually a feature within the DWC3
-controller, and isn't specifically for QCOM based platforms.  It won't
-do any harm functionally if this flag is not set, as this is meant for
-enhancing performance/bandwidth.
+Changes in v10:
+ - Fix the binding to make sure sram-supply property can be provided.
 
-> In particular, the composition can be changed in runtime, so should we
-> set this for all Qualcomm platforms?
-> 
-Ideally yes, if we want to increase bandwith for situations where SS
-endpoint bursting is set to a higher value.
+Changes in v9: None
+Changes in v8: None
+Changes in v7: None
+Changes in v6:
+ - Rebased, actually tested with recent mesa driver.
 
-> And if that's the case, can we not just set it from the qcom driver?
-> 
-Since this is a common DWC3 core feature, I think it would make more
-sense to have it in DWC3 core instead of a vendor's DWC3 glue driver.
+Changes in v5:
+ - Rename "2d" power domain to "core2"
 
-Thanks
-Wesley Cheng
+Changes in v4:
+ - Add power-domain-names description
+   (kept Alyssa's reviewed-by as the change is minor)
 
-> Regards,
-> Bjorn
+Changes in v3: None
+Changes in v2: None
 
+ .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+index 184492162e7e..3e758f88e2cd 100644
+--- a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
++++ b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+@@ -17,6 +17,7 @@ properties:
+     items:
+       - enum:
+           - amlogic,meson-g12a-mali
++          - mediatek,mt8183-mali
+           - realtek,rtd1619-mali
+           - rockchip,px30-mali
+       - const: arm,mali-bifrost # Mali Bifrost GPU model/revision is fully discoverable
+@@ -41,6 +42,8 @@ properties:
+ 
+   mali-supply: true
+ 
++  sram-supply: true
++
+   operating-points-v2: true
+ 
+   power-domains:
+@@ -87,6 +90,31 @@ allOf:
+     then:
+       required:
+         - resets
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mediatek,mt8183-mali
++    then:
++      properties:
++        power-domains:
++          description:
++            List of phandle and PM domain specifier as documented in
++            Documentation/devicetree/bindings/power/power_domain.txt
++          minItems: 3
++          maxItems: 3
++        power-domain-names:
++          items:
++            - const: core0
++            - const: core1
++            - const: core2
++      required:
++        - sram-supply
++        - power-domains
++        - power-domain-names
++    else:
++      properties:
++        sram-supply: false
+ 
+ examples:
+   - |
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.30.0.280.ga3ce27912f-goog
+
