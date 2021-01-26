@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6661304F3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899A9304F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405362AbhA0Bpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732781AbhAZS6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:58:02 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7048AC0612F2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:14 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id u17so35865581iow.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4XCw/DKlPzbfEbK7Wq85mEUjWal6SYNVmWAVH0HVNQI=;
-        b=ttpVKqscHXaGViXdvSusZvZERSWcJPWvYrFU9sZywNA8AMsbqBK3qqsXM+VmaQ0sAx
-         6pDXe50mX9MdwXdzf6HPA/JAeCOMg1wiI2BrTO10adpMmHAcSDrSsDFlyrcjTpQdhlMr
-         kq6xvoIFeT4GX4IGY1llEZ4fW/aFINUcCcBaCCWM6L9v3VWnSa2L3YFGcN+ndos8iVwU
-         jkGwlD+KXlet9d1CMy44S6GkaJS6lX4jaDKEO8SagXVkwNrm1xyhbgixjsMbtWd69td7
-         /ujPltyUdXWNCWqJ+U1d9Jst10Xm24X8NXzBGKvjnMbKx9O0SS0u4wPzJwENRRf5JOhQ
-         i8FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4XCw/DKlPzbfEbK7Wq85mEUjWal6SYNVmWAVH0HVNQI=;
-        b=IFm5V+BOFnTc7tM3jsC3fOO+fJkWIUdlLrYs7SZUz2XvamBZ8LuZ/kQfNmZAE4/1Np
-         lGqsXMvUPIeH3vWD9V62MdxW08JIbd/ogbWCsvmIA6suzRTilq+K28ePJ2lowea8rI0N
-         Zg0C2GESR+6NjTrGc9AKxNhRjQh26ms7rwRFVKhqgm/fuXgyuZu7VRPwcTJwrthpZcYd
-         iJxWtDevG3q3vgnCKalD6ObMtEeGSOkJXne6/QfxMBmA1fKmca4rbPbv2LipYZ0nI1Pm
-         bUnnKssBMD7Oro6TkK/Kb6qBtLD8Bf87xhbFldVVP9IqL7rxEdZlcIalSnQpxbwTgOH/
-         56BA==
-X-Gm-Message-State: AOAM53059imPpNMbSOeENsDw65IjKUMxShhoc+KfEfuC87H6wLfBGCzK
-        5q3xBTCi08PawD9ZRV0j5dyeEg==
-X-Google-Smtp-Source: ABdhPJxmdBae+jtQZrJUa1v7TtQbok3Z7C9DRv/TjW+uO6wbi2nuXcDzIrtbFLX44XiFXIP40gmBlg==
-X-Received: by 2002:a05:6e02:541:: with SMTP id i1mr5962831ils.295.1611687433855;
-        Tue, 26 Jan 2021 10:57:13 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l14sm13060681ilh.58.2021.01.26.10.57.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:57:13 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 6/6] net: ipa: don't pass size to ipa_cmd_transfer_add()
-Date:   Tue, 26 Jan 2021 12:57:03 -0600
-Message-Id: <20210126185703.29087-7-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210126185703.29087-1-elder@linaro.org>
-References: <20210126185703.29087-1-elder@linaro.org>
+        id S2405316AbhA0BpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:45:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39006 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731992AbhAZS5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:57:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8FDD5AC97;
+        Tue, 26 Jan 2021 18:57:09 +0000 (UTC)
+Subject: Re: [PATCH v2 01/10] mm: use add_page_to_lru_list()
+To:     Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210122220600.906146-1-yuzhao@google.com>
+ <20210122220600.906146-2-yuzhao@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <5f53f969-b92e-1d86-6b90-7bd93e390a21@suse.cz>
+Date:   Tue, 26 Jan 2021 19:57:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210122220600.906146-2-yuzhao@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only time we transfer data (rather than issuing a command) out
-of the AP->command TX endpoint is when we're clearing the hardware
-pipeline.  All that's needed is a "small" data buffer, and its
-contents aren't even important.
+On 1/22/21 11:05 PM, Yu Zhao wrote:
+> There is add_page_to_lru_list(), and move_pages_to_lru() should reuse
+> it, not duplicate it.
+> 
+> Link: https://lore.kernel.org/linux-mm/20201207220949.830352-2-yuzhao@google.com/
+> Signed-off-by: Yu Zhao <yuzhao@google.com>
+> Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-For convenience, we just transfer a command structure in this case
-(it's already mapped for DMA).  The TRE is added to a transaction
-using ipa_cmd_ip_tag_status_add(), but we ignore the size value
-provided to that function.  So just get rid of the size argument.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_cmd.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
-index eb50e7437359a..97b50fee60089 100644
---- a/drivers/net/ipa/ipa_cmd.c
-+++ b/drivers/net/ipa/ipa_cmd.c
-@@ -550,7 +550,7 @@ static void ipa_cmd_ip_tag_status_add(struct gsi_trans *trans)
- }
- 
- /* Issue a small command TX data transfer */
--static void ipa_cmd_transfer_add(struct gsi_trans *trans, u16 size)
-+static void ipa_cmd_transfer_add(struct gsi_trans *trans)
- {
- 	struct ipa *ipa = container_of(trans->gsi, struct ipa, gsi);
- 	enum dma_data_direction direction = DMA_TO_DEVICE;
-@@ -558,8 +558,6 @@ static void ipa_cmd_transfer_add(struct gsi_trans *trans, u16 size)
- 	union ipa_cmd_payload *payload;
- 	dma_addr_t payload_addr;
- 
--	/* assert(size <= sizeof(*payload)); */
--
- 	/* Just transfer a zero-filled payload structure */
- 	payload = ipa_cmd_payload_alloc(ipa, &payload_addr);
- 
-@@ -590,7 +588,7 @@ void ipa_cmd_pipeline_clear_add(struct gsi_trans *trans)
- 	endpoint = ipa->name_map[IPA_ENDPOINT_AP_LAN_RX];
- 	ipa_cmd_ip_packet_init_add(trans, endpoint->endpoint_id);
- 	ipa_cmd_ip_tag_status_add(trans);
--	ipa_cmd_transfer_add(trans, 4);
-+	ipa_cmd_transfer_add(trans);
- }
- 
- /* Returns the number of commands required to clear the pipeline */
--- 
-2.20.1
+> ---
+>  mm/vmscan.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 04509994aed4..19875660e8f8 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1823,7 +1823,6 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  	int nr_pages, nr_moved = 0;
+>  	LIST_HEAD(pages_to_free);
+>  	struct page *page;
+> -	enum lru_list lru;
+>  
+>  	while (!list_empty(list)) {
+>  		page = lru_to_page(list);
+> @@ -1868,11 +1867,8 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  		 * inhibits memcg migration).
+>  		 */
+>  		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
+> -		lru = page_lru(page);
+> +		add_page_to_lru_list(page, lruvec, page_lru(page));
+>  		nr_pages = thp_nr_pages(page);
+> -
+> -		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
+> -		list_add(&page->lru, &lruvec->lists[lru]);
+>  		nr_moved += nr_pages;
+>  		if (PageActive(page))
+>  			workingset_age_nonresident(lruvec, nr_pages);
+> 
 
