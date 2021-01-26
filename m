@@ -2,177 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474B0303BB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEFC303BAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404843AbhAZLcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:32:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27157 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391735AbhAZJy5 (ORCPT
+        id S2405083AbhAZLcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:32:09 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:58993 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391737AbhAZJzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:54:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611654809;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IUod4ETbztcXWv5kUceZZzVauSHrXgAqLfR6bEGhJrw=;
-        b=gcQISBwjC9oS0YagKFO5AQYmS2voSMsXxTmgFug/MdXAEeO+UtfevQrezyPmjZRnNIjrU7
-        a0NZFSatD17LO+pv3X0tRSbKq4WIDT5+eqhfr6ZPUgIH5zPitvPXJ3fho8BRcRJfq6n0wc
-        yA+HPGx1rQ05MgFs4176KyIBnTtq7lE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-Upuk_9QSN6-qAucf0rE94A-1; Tue, 26 Jan 2021 04:53:25 -0500
-X-MC-Unique: Upuk_9QSN6-qAucf0rE94A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7562F107ACFB;
-        Tue, 26 Jan 2021 09:53:19 +0000 (UTC)
-Received: from [10.36.114.192] (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 024AB19D80;
-        Tue, 26 Jan 2021 09:53:09 +0000 (UTC)
-Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
- create "secret" memory areas
-To:     Michal Hocko <mhocko@suse.com>, Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-7-rppt@kernel.org> <20210125170122.GU827@dhcp22.suse.cz>
- <20210125213618.GL6332@kernel.org> <20210126071614.GX827@dhcp22.suse.cz>
- <20210126083311.GN6332@kernel.org> <20210126090013.GF827@dhcp22.suse.cz>
- <20210126092011.GP6332@kernel.org> <20210126094903.GI827@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <23850371-a19f-51fa-d813-6e78624ee8f8@redhat.com>
-Date:   Tue, 26 Jan 2021 10:53:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20210126094903.GI827@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
+        Tue, 26 Jan 2021 04:55:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1611655671; x=1643191671;
+  h=from:to:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=k75xZMIKW8UwrsrlMfEiwXdhhy9Tt2mC48q9gmvCypU=;
+  b=dTEwijvyHsAMxdQw7qJbRDMnY1LCA8VmeNnzxiL6hhUIW4O1Z79cY5Ct
+   V1bkEfym1w0Mos/6BeY+rXvMKC+uds5+uduuK48t5gyiyVvmb++9iRs2q
+   7cErLD+KAN+h9+sYiUnQne+Q0OfCE2g4f+pC8I/bMZDMuga/0rvAhuvw5
+   qc3uK8b2lZDyfeavgHLoQLYgGMj5sGS209ehnOP6xTkIhyfyMI29pCHHp
+   iXQ5tgDdlmNOOT2y9b8ReN1lq9OaGCiwGhnfYknl0ikSz8Up8wVFbw5YO
+   5m4Bf8bKpP+WyLeQZ39Cv55tdd83uqmzsQXz+Ev+csEHh5Z7dLRzGHGLa
+   A==;
+IronPort-SDR: zVhy9QepD/rhyxaow+f3BHTqKIJELBoCOnfu67BMeVzSI0+ttRDwP5KDX3QbmbDx/fT4iumtcC
+ wcJJQ0fHnMDbYHRzixS67xSUfb+oOL6/ApzPF0/CdMnpEcUELJjjDzJGsMAiiWxuNAV6XAY7JN
+ C3Il2si8HnfhOw8UT4JoxZsoRwfn/RlCvhIFcA6QG84E8E1T8NGuSI9WBsTX9vRgM5g9znJdWD
+ jxSUZtLdATXJCUgWbbzd4drG11JZJr9tJa194FHN3kmibveLRKQPBBgbzEjZKnoIysKkJILdlH
+ ZKo=
+X-IronPort-AV: E=Sophos;i="5.79,375,1602518400"; 
+   d="scan'208";a="262351015"
+Received: from mail-dm6nam12lp2168.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.168])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jan 2021 18:06:02 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jjrCjb8JHFRyV2FFZbBOOEM5dv364SDNFJCBtzqR3Rdf6lBaVBr6KmJdFQFsvENIAHzzv2zq9v3iSegS0z2KVPMvcCIisOxOJmhdT9m6YwiVcbZXaT5p2VsLXOotgNwtMuDvGTp8dKOmnviZAkSk4Z6ulvyjc/4Ssol0euALs7Um+2FwodlpIoQYUEK33W5aiEFl8nii+bY2zYhUyJSHnRpY5M5huPE5Ef6R3GT0CbxkgZu1jp1KxovTKerlqSmQ1GwmA4uVYQUeASyjP6FKi51IduHDlG38+r/x/Dir4c0WfrSVHrz+lj+/youKqh44pBjP0+AGvLdzvnfMvevSKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yiiW4nHVLfvMQJ9ydarmR72oGvvW54S+kGyiPmuXav4=;
+ b=H8vCNiOBLylXFAtNXqv0UEfxG5H6pUZB8Y97mg0CA7PlRfjYUiA9DN5aLrnwLAjRa3RHqHBh+iz1bpGmrpzfhr61MeRGuryX3vvWi0a6JSlWFFr1biKd5B/2rLPxVn0cLSnDSkivfsnb+J/MbaUlnHtrZkGnOQI2xLNvbbQ+lby87hJVZK6pffZvPvaBooRUv9QwDJiSpQWLyBKpf1MKB6wCMiT4GPu6YoogCznUipiPSKX8Xr/8CirzyOqkxOHW3ShSCJfDohgXndV6aVKFC+bEJZ4i5TIDgxc+3vx6s8G2/6fCWOsYqIM47X80qbux05izxwXQoXFan1yN0XR9Mg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yiiW4nHVLfvMQJ9ydarmR72oGvvW54S+kGyiPmuXav4=;
+ b=i2OuJTK7SJPbOv49HcudN3J++4g+2+SQALrsgIBhBckrQezl8sgKvmA8XRoKVGyqKofT/GENDGqNrS8MOmRR5EupSaHtFe4vau6NOvDbpHMD92Z4cawieZAeMquDufxCpCeESztL4VcXPXhJSeoSuq4vNUI+Qugb++9TOC59B/s=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB5592.namprd04.prod.outlook.com (2603:10b6:a03:10a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Tue, 26 Jan
+ 2021 09:53:51 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::1d83:38d9:143:4c9c]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::1d83:38d9:143:4c9c%5]) with mapi id 15.20.3784.016; Tue, 26 Jan 2021
+ 09:53:51 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
+        "hch@lst.de" <hch@lst.de>, "pvorel@suse.cz" <pvorel@suse.cz>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "mzxreary@0pointer.de" <mzxreary@0pointer.de>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "zhengbin13@huawei.com" <zhengbin13@huawei.com>,
+        "maco@android.com" <maco@android.com>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "evgreen@chromium.org" <evgreen@chromium.org>
+Subject: Re: [PATCH v3 1/1] loop: scale loop device by introducing per device
+ lock
+Thread-Topic: [PATCH v3 1/1] loop: scale loop device by introducing per device
+ lock
+Thread-Index: AQHW81bClynMFg2aekKXT4gGzq3SkA==
+Date:   Tue, 26 Jan 2021 09:53:51 +0000
+Message-ID: <BYAPR04MB4965A6FB4ED51882E326EC1A86BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20210125201156.1330164-1-pasha.tatashin@soleen.com>
+ <20210125201156.1330164-2-pasha.tatashin@soleen.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: soleen.com; dkim=none (message not signed)
+ header.d=none;soleen.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2600:8802:270c:4b00:4c16:6058:6f22:9176]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8e2c0b0e-d32f-45a4-6115-08d8c1e0491f
+x-ms-traffictypediagnostic: BYAPR04MB5592:
+x-microsoft-antispam-prvs: <BYAPR04MB5592C9014466A43FE2DA179B86BC0@BYAPR04MB5592.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JKCyzTR6EvZO4OsECsi9JUmnkSQj0itqRuVyo32YEyznW4u+02QSK0IWXET1/vCC/zpVo8DxB7GLU5OyipAUKXteR3RP3aTltwaTMvLRfbPUZTbNbuJxAPZzgyG/A2pUtMha+VaG+CyYJfRIu4J6LoQIn8iBfiHm7agXFE43Dk9aHcskKpSrzdfrqadaubtvG07oWdeM14nBPjoXITKaR5b2zuqYNS0Y75o1j+ZJZXZs5KA1062c1mkM4fY6dSyfxpYici9lxoEoA8LuY9qHEX5BmA8lVomvqF74cQNFdkHZaHUqGepzm4jNzz0Xrp6VZyMPe1WUgwqWcF7b+LkNfDdl5tTKTJnxVSShePhSSwp6zOi7e4EJCHLzjg9+ie6gXX4r2YYb7OVrdSbQNO4ocj000cBFyp8ez0PP8ZvHxRET2wZkYwUiiHrG2LYDfjrJtXuajf2ZHD7LVi3mh2fExJw0HpCLKTwQCdvt7ZV69ylHoNwdoLjSrEi8gqwADPYWuFF7nhZgzS3JL+bioySftvCZ+Om1Oxa/YZT6uOczWQseoXTCJUPP1WnXbOo7xpul
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(396003)(39860400002)(2906002)(64756008)(186003)(76116006)(66446008)(316002)(66476007)(8676002)(478600001)(9686003)(110136005)(6506007)(7416002)(52536014)(8936002)(83380400001)(7696005)(5660300002)(53546011)(55016002)(71200400001)(66556008)(33656002)(921005)(66946007)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?bXHj8hx/WbpfX1TXD9sAQNNdlAg7KZaTEDwiNYLCv10abR4iou3tXG1ysfKJ?=
+ =?us-ascii?Q?ZEoUlFbT2Bov/fLlogf4BGJOWZgtFjcaZbQvv4EneiTve16iBpPeyXmW0p/Y?=
+ =?us-ascii?Q?s6AiE6RIgszIRaDusC8ySxFYVya9WOsqZ9TShXItbhs+46hIKiHzVrb1mXkN?=
+ =?us-ascii?Q?dHfSSSOPHtoxRJlGva2car6/AgmbzdgOZsXPPaV8ZAphfSnEkZGmrKSremO7?=
+ =?us-ascii?Q?cUhOrXqXrKKaHKV2A0J3JGGpg6FgYLJrfnj1Gwgw1xLPHQBA7oNy9O9dHUqJ?=
+ =?us-ascii?Q?SW4c14pHa4npH0Y0MrSi02EytbPSOEbVBpOU88YuYOJ9nmKsqrAoUldXORC4?=
+ =?us-ascii?Q?iDrmwFhU6U61wM0fiRoqvBWSeCIQUrtKfwhAClcNytcaxozWkbfTtnuyKFvU?=
+ =?us-ascii?Q?cd9D8SdnGBHIWeB0N5FWFDu10r9JkRHCb6x8Cjprj4qrt4S03vspcTYcOwNT?=
+ =?us-ascii?Q?gmm3aTqHoVY4R/ZB62rrBZidxV03RohQHASIOK/dD/NqK35FP8kuzgnibiJF?=
+ =?us-ascii?Q?eesbJtRjsmcHSmuJZMWXSsMPKOoKQfoRcywEFFOxNG+GMOxoQDAg9xhF5r4R?=
+ =?us-ascii?Q?RgmvUEe9Z79cpKbQUc0BxJeC9WQ3t4ETk8kPstY9oBFuXEQlEGqChCR6O0BU?=
+ =?us-ascii?Q?sWnmIymw3LHDoy5RTKIlkXpa0FPZql+nz8el60M9z1w8il+7lvqVoCSW7/cF?=
+ =?us-ascii?Q?TD3CPQCTLlAO/IMri7kiBc286/20LFGTDNphFJfYIpWK5hPDjVY79K+2fqLy?=
+ =?us-ascii?Q?Blp63xTn7SwB5kpof0vgFlPQlZt82YU4Je0dYm4LKMuzl3L8M2fCk8DR2mOr?=
+ =?us-ascii?Q?l/YzUK+VTeH04km3S13Rogn9wtsa9qsL9+ISGNluw0p775232UnXhKhaUY8r?=
+ =?us-ascii?Q?S6l6NuPosCmSu+tWSxdZbEXXb4pjoF66h6J63uoVqZfMgpRVyNT0r0FcbJLU?=
+ =?us-ascii?Q?XubinE/L26nEwfWd5Pf33YoOtn7yCjwtiPkdv/vGGsi1CWi20BJa6YmkjF2U?=
+ =?us-ascii?Q?eTh+nx7ZCppI4zUmGXfcAAEi86lecIPjNOFNXAEJElce0Q6s9emn+BVcwDSj?=
+ =?us-ascii?Q?pFDIcfXxgGPPcCp6Drj7o6DETM2E07WC0kHbj86oOXGIIHn5lboscae1+Bly?=
+ =?us-ascii?Q?17lVb0+3I2gt2yGP7SC81YKAKQg+4lXzwA=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2c0b0e-d32f-45a4-6115-08d8c1e0491f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 09:53:51.3565
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CzeyWrwGCwm5a9ifqVrkdDFvosMPyofCNsmAcq+MmVyXAkAqOjdm4sasPiIJy7QbMWQFXOg8Eer/QJUXCtc/Dgp+hWWKgI/at+xxMre0XAs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5592
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.01.21 10:49, Michal Hocko wrote:
-> On Tue 26-01-21 11:20:11, Mike Rapoport wrote:
->> On Tue, Jan 26, 2021 at 10:00:13AM +0100, Michal Hocko wrote:
->>> On Tue 26-01-21 10:33:11, Mike Rapoport wrote:
->>>> On Tue, Jan 26, 2021 at 08:16:14AM +0100, Michal Hocko wrote:
->>>>> On Mon 25-01-21 23:36:18, Mike Rapoport wrote:
->>>>>> On Mon, Jan 25, 2021 at 06:01:22PM +0100, Michal Hocko wrote:
->>>>>>> On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
->>>>>>>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>>>>>>
->>>>>>>> Introduce "memfd_secret" system call with the ability to create memory
->>>>>>>> areas visible only in the context of the owning process and not mapped not
->>>>>>>> only to other processes but in the kernel page tables as well.
->>>>>>>>
->>>>>>>> The user will create a file descriptor using the memfd_secret() system
->>>>>>>> call. The memory areas created by mmap() calls from this file descriptor
->>>>>>>> will be unmapped from the kernel direct map and they will be only mapped in
->>>>>>>> the page table of the owning mm.
->>>>>>>>
->>>>>>>> The secret memory remains accessible in the process context using uaccess
->>>>>>>> primitives, but it is not accessible using direct/linear map addresses.
->>>>>>>>
->>>>>>>> Functions in the follow_page()/get_user_page() family will refuse to return
->>>>>>>> a page that belongs to the secret memory area.
->>>>>>>>
->>>>>>>> A page that was a part of the secret memory area is cleared when it is
->>>>>>>> freed.
->>>>>>>>
->>>>>>>> The following example demonstrates creation of a secret mapping (error
->>>>>>>> handling is omitted):
->>>>>>>>
->>>>>>>> 	fd = memfd_secret(0);
->>>>>>>> 	ftruncate(fd, MAP_SIZE);
->>>>>>>> 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
->>>>>>>
->>>>>>> I do not see any access control or permission model for this feature.
->>>>>>> Is this feature generally safe to anybody?
->>>>>>
->>>>>> The mappings obey memlock limit. Besides, this feature should be enabled
->>>>>> explicitly at boot with the kernel parameter that says what is the maximal
->>>>>> memory size secretmem can consume.
->>>>>
->>>>> Why is such a model sufficient and future proof? I mean even when it has
->>>>> to be enabled by an admin it is still all or nothing approach. Mlock
->>>>> limit is not really useful because it is per mm rather than per user.
->>>>>
->>>>> Is there any reason why this is allowed for non-privileged processes?
->>>>> Maybe this has been discussed in the past but is there any reason why
->>>>> this cannot be done by a special device which will allow to provide at
->>>>> least some permission policy?
->>>>  
->>>> Why this should not be allowed for non-privileged processes? This behaves
->>>> similarly to mlocked memory, so I don't see a reason why secretmem should
->>>> have different permissions model.
->>>
->>> Because appart from the reclaim aspect it fragments the direct mapping
->>> IIUC. That might have an impact on all others, right?
->>
->> It does fragment the direct map, but first it only splits 1G pages to 2M
->> pages and as was discussed several times already it's not that clear which
->> page size in the direct map is the best and this is very much workload
->> dependent.
-> 
-> I do appreciate this has been discussed but this changelog is not
-> specific on any of that reasoning and I am pretty sure nobody will
-> remember details in few years in the future. Also some numbers would be
-> appropriate.
-> 
->> These are the results of the benchmarks I've run with the default direct
->> mapping covered with 1G pages, with disabled 1G pages using "nogbpages" in
->> the kernel command line and with the entire direct map forced to use 4K
->> pages using a simple patch to arch/x86/mm/init.c.
->>
->> https://docs.google.com/spreadsheets/d/1tdD-cu8e93vnfGsTFxZ5YdaEfs2E1GELlvWNOGkJV2U/edit?usp=sharing
-> 
-> A good start for the data I am asking above.
-
-I assume you've seen the benchmark results provided by Xing Zhengjun
-
-https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
-
--- 
-Thanks,
-
-David / dhildenb
-
+On 1/25/21 12:15 PM, Pavel Tatashin wrote:=0A=
+> Currently, loop device has only one global lock:=0A=
+> loop_ctl_mutex.=0A=
+Above line can be :-=0A=
+Currently, loop device has only one global lock: loop_ctl_mutex.=0A=
+=0A=
+Also please provide a complete discretion what are the members it protects,=
+=0A=
+i.e. how big the size of the current locking is, helps the reviewers &=0A=
+maintainer.=0A=
+> This becomes hot in scenarios where many loop devices are used.=0A=
+>=0A=
+> Scale it by introducing per-device lock: lo_mutex that protects the=0A=
+> fields in struct loop_device. Keep loop_ctl_mutex to protect global=0A=
+> data such as loop_index_idr, loop_lookup, loop_add.=0A=
+When it comes to scaling, lockstat data is more descriptive and useful alon=
+g=0A=
+with thetotal time of execution which has contention numbers with increasin=
+g=0A=
+number of threads/devices/users on logarithmic scale, at-least that is=0A=
+how I've=0A=
+solved the some of file-systems scaling issues in the past.=0A=
+>=0A=
+> Lock ordering: loop_ctl_mutex > lo_mutex.=0A=
+The above statement needs a in-detail commit log description. Usually >=0A=
+sort of statements are not a good practice for something as important as=0A=
+lock priority which was not present in the original code.=0A=
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>=0A=
+> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>=0A=
+> ---=0A=
+>  drivers/block/loop.c | 92 +++++++++++++++++++++++++-------------------=
+=0A=
+>=0A=
+>=0A=
+>  =0A=
+>  	/*=0A=
+> -	 * Need not hold loop_ctl_mutex to fput backing file.=0A=
+> -	 * Calling fput holding loop_ctl_mutex triggers a circular=0A=
+> +	 * Need not hold lo_mutex to fput backing file.=0A=
+> +	 * Calling fput holding lo_mutex triggers a circular=0A=
+>  	 * lock dependency possibility warning as fput can take=0A=
+> -	 * bd_mutex which is usually taken before loop_ctl_mutex.=0A=
+> +	 * bd_mutex which is usually taken before lo_mutex.=0A=
+>  	 */=0A=
+This is not in your patch, but since you are touching this comment can you=
+=0A=
+please consider this, it save an entire line and the wasted space:-=0A=
+       /*  =0A=
+        * Need not hold lo_mutex to fput backing file. Calling fput holding=
+=0A=
+        * lo_mutex triggers a circular lock dependency possibility=0A=
+warning as=0A=
+        * fput can take bd_mutex which is usually take before lo_mutex.=0A=
+        */=0A=
+=0A=
+> @@ -1879,27 +1879,33 @@ static int lo_open(struct block_device *bdev, fmo=
+de_t mode)=0A=
+>  	struct loop_device *lo;=0A=
+>  	int err;=0A=
+>  =0A=
+> +	/*=0A=
+> +	 * take loop_ctl_mutex to protect lo pointer from race with=0A=
+> +	 * loop_control_ioctl(LOOP_CTL_REMOVE), however, to reduce=0A=
+> +	 * contention release it prior to updating lo->lo_refcnt.=0A=
+> +	 */=0A=
+=0A=
+The above comment could be :-=0A=
+=0A=
+        /*  =0A=
+         * Take loop_ctl_mutex to protect lo pointer from race with=0A=
+         * loop_control_ioctl(LOOP_CTL_REMOVE), however, to reduce=0A=
+contention=0A=
+         * release it prior to updating lo->lo_refcnt.=0A=
+         */=0A=
+>  	err =3D mutex_lock_killable(&loop_ctl_mutex);=0A=
+>  	if (err)=0A=
