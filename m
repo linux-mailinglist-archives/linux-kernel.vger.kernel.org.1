@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCEF3043C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470423043CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392854AbhAZQZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:25:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40192 "EHLO mx2.suse.de"
+        id S2404631AbhAZQ0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:26:46 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:12677 "EHLO m42-8.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391033AbhAZQZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:25:39 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EE0D9ACF5;
-        Tue, 26 Jan 2021 16:24:57 +0000 (UTC)
-Subject: Re: [PATCH] mm/workingset.c: avoid unnecessary max_nodes estimation
- in count_shadow_nodes()
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210123073825.46709-1-linmiaohe@huawei.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <8dea8eff-3100-4f57-5d61-e532803d256f@suse.cz>
-Date:   Tue, 26 Jan 2021 17:24:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2390911AbhAZQ0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:26:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611678363; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=roFrb5eBhPqZTvXpSEWS1kSBgr+K1E0l4LAsnVOoPAw=;
+ b=F+fHENjKCG8Mas6EpzwPMgVywFrO1mWUry08bGkXBFZKH9l1ecN1uHZEYeBqFHY1LcBEZW0W
+ 6mxcAt4HznJ5NTNI1xY075HeTHGV3seE7RDGPAC3bGJBRda5GOskpFNC0wX1OgTSbkGkTGQd
+ ovHgTa7hNIM8utKSM4F86flWHo4=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6010427cfb02735e8cffe38c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 16:25:32
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2357AC433ED; Tue, 26 Jan 2021 16:25:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AAB1EC433CA;
+        Tue, 26 Jan 2021 16:25:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AAB1EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210123073825.46709-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH wireless v2 -next] wcn36xx: Remove unnecessary memset
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20201223012516.24286-1-zhengyongjun3@huawei.com>
+References: <20201223012516.24286-1-zhengyongjun3@huawei.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <wcn36xx@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210126162531.2357AC433ED@smtp.codeaurora.org>
+Date:   Tue, 26 Jan 2021 16:25:31 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/23/21 8:38 AM, Miaohe Lin wrote:
-> If list_lru_shrink_count is 0, we always return SHRINK_EMPTY regardless of
-> the value of max_nodes. So we can return early if nodes == 0 to save some
-> cpu cycles of approximating a reasonable limit for the nodes.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> memcpy operation is next to memset code, and the size to copy is equals to the size to
+> memset, so the memset operation is unnecessary, remove it.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-> ---
->  mm/workingset.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index 10e96de945b3..7db8f3dad13c 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -461,6 +461,8 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
->  	unsigned long pages;
->  
->  	nodes = list_lru_shrink_count(&shadow_nodes, sc);
-> +	if (!nodes)
-> +		return SHRINK_EMPTY;
->  
->  	/*
->  	 * Approximate a reasonable limit for the nodes
-> @@ -503,9 +505,6 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
->  
->  	max_nodes = pages >> (XA_CHUNK_SHIFT - 3);
->  
-> -	if (!nodes)
-> -		return SHRINK_EMPTY;
-> -
->  	if (nodes <= max_nodes)
->  		return 0;
->  	return nodes - max_nodes;
-> 
+Patch applied to ath-next branch of ath.git, thanks.
+
+337cd0d3ce0c wcn36xx: Remove unnecessary memset
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20201223012516.24286-1-zhengyongjun3@huawei.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
