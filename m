@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A522303A8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512C8303A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404274AbhAZKld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:41:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731982AbhAZCDc (ORCPT
+        id S2404217AbhAZKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:43:38 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:45960 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730878AbhAZCFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:03:32 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2CAC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:14:12 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id e15so1190765wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vz7Wx3SXxaN+HsWZGzhnHFVDxGZAroM2JwH4bW0nEhM=;
-        b=WulKks/yUSJwwUol1tm6wB9TJkukXvTYKvdB2ceQgXomgHQMSU12Q0ukxoGukdPNr8
-         HGAjlTfWtd5HvJzNWyfyy0crd2HH+/syiXerMgHWpnjKX2vL/MjmxngjAkb9Ff2XGB5O
-         2/Kvk7D9kj7xdMH5EBWmOi+BQjBDhtTEW1Gfpa+yh52P9hNpbK7Lr+NmN28rhnuHGel+
-         dO62MQLsOV4fBk09tq1r4tc2zrJUdUMA+jCyQbkJYdTVuaGSVsKAM9Ytr4Ozzu8qwh3t
-         JdPEfNF7P53HhUk4Nx0zB6G5G3rIGu1xvUCi6Vt61QOVMpU8sH7py/rv4XF0bp+yCvWD
-         rXZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vz7Wx3SXxaN+HsWZGzhnHFVDxGZAroM2JwH4bW0nEhM=;
-        b=sVnI3yqTvp1OhUkc0mwrcdCyQxlukFAMuhNQKe3QW2CEW9a1ZdZ/Jw/G3kNU05q/Tn
-         qHLCnbwrV2DdFHu5h8TTrO3Dpob5TlONaHh+nYhH0QQRzLcp7IMGuY4Nm8PlRVFcl+sD
-         TL/ZbLrczKvpeVj1dmaLDwUXUXGVHrElO2r9OtDGF6V3rJzHcwsRQSKpSckgnWjsp3uz
-         oVK0SOy8/u1tH7RK86KmKyXkZ+a8qJkIaHNK58dDThfSg3fQK7ElUWUB8iBhdny/G4Qi
-         6h0kWAyUuW9FaU1SW9lPkhgRyqhiTWvz0NTjy7p+gUpps21PYlkKdJteuADA+Mg2ImDm
-         EbNg==
-X-Gm-Message-State: AOAM530nrTKwiE4D7ZIVM528JyJiWeyKoaBGBcLVSKm5XM33PXi29KkP
-        FXa+dW/6tib7HVagFQwvwYlaZHOQZhp1rril8Rof7Q==
-X-Google-Smtp-Source: ABdhPJytUOFxylJO9GQfWCZxkgmC08Bcn5+HCLBHOxR+Vvj6poU2sA/tL72vkNkKpaNCAmBDljbV4s4UOoZM8sJO7UI=
-X-Received: by 2002:a1c:7906:: with SMTP id l6mr2247505wme.22.1611620051415;
- Mon, 25 Jan 2021 16:14:11 -0800 (PST)
+        Mon, 25 Jan 2021 21:05:42 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10Q0GdCH124859;
+        Mon, 25 Jan 2021 18:16:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611620199;
+        bh=L+f4ohZrdj488CP3I7uIPQegEJlAgJImjluiVuvJrcA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=SvdgqdQS3ePBAKHWoAKSIOh32WDJ+cxGIFBElawyaWhStFSv569KvJA+sx84x2f6E
+         3yIjZq8TUh857IyO1M0YpXcPcQOOsbr9jG96QKAfogSsDBdF/LoRXFh7Z4psbqqnrx
+         IqrA2p762TzawbT/tnwaamFTLnq/c1nMHi0XQob8=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10Q0Gdcd047151
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 25 Jan 2021 18:16:39 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 25
+ Jan 2021 18:16:38 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 25 Jan 2021 18:16:38 -0600
+Received: from [10.250.69.64] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10Q0GcAE007721;
+        Mon, 25 Jan 2021 18:16:38 -0600
+Subject: Re: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
+To:     Rob Herring <robh@kernel.org>
+CC:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Lechner <david@lechnology.com>,
+        <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+References: <20210115205819.19426-1-s-anna@ti.com>
+ <20210126000443.GA1223706@robh.at.kernel.org>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <8f4a47f8-18dc-cb73-10db-033e5e5adb25@ti.com>
+Date:   Mon, 25 Jan 2021 18:16:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210120202337.1481402-1-surenb@google.com> <20210125131935.GI827@dhcp22.suse.cz>
-In-Reply-To: <20210125131935.GI827@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 25 Jan 2021 16:14:00 -0800
-Message-ID: <CAJuCfpGu_x4vxXejTUfD4Mjun=qJOsdoRs42gQhiv30EnED=nA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] process_madvise.2: Add process_madvise man page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-man@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210126000443.GA1223706@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 5:19 AM 'Michal Hocko' via kernel-team
-<kernel-team@android.com> wrote:
->
-> On Wed 20-01-21 12:23:37, Suren Baghdasaryan wrote:
-> [...]
-> >     MADV_COLD (since Linux 5.4.1)
-> >         Deactivate a given range of pages by moving them from active to
-> >         inactive LRU list. This is done to accelerate the reclaim of these
-> >         pages. The advice might be ignored for some pages in the range when it
-> >         is not applicable.
->
-> I do not think we want to talk about active/inactive LRU lists here.
-> Wouldn't it be sufficient to say
-> Deactive a given range of pages which will make them a more probable
-> reclaim target should there be a memory pressure. This is a
-> non-destructive operation.
-
-That sounds better. Will update in the next version.
-
->
-> Other than that, looks good to me from the content POV.
->
-> Thanks!
-
-Thanks for the review Michal!
-
-> --
-> Michal Hocko
-> SUSE Labs
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+<<< No Message Collected >>>
