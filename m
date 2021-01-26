@@ -2,146 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CA8303A4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5967F303A77
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391997AbhAZKaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728940AbhAZBeK (ORCPT
+        id S1731055AbhAZKgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:36:49 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:42352 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730367AbhAZBtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:34:10 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0423C0698CF
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:22:27 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id h11so30485907ioh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:22:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O1PipcbfAZi1zl/MYuhsQR5QeK+Th3Jp83jqSTIEX24=;
-        b=S3R99dyZDE45n5Z813wbq/dUqTCcUe20nk0q0pkFAHFkc+pnIxU82xT+V7whGOL0mn
-         6x3SAtzcAkW5Ij9QKpweBHxSfFQB7b1YmXOYg+D9PhI7d5Rt1eMw8m+MY+zsJedjCj+N
-         YfJrRW644KFpeJqvFNYGSZXDFyGoVe2tMqkU4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O1PipcbfAZi1zl/MYuhsQR5QeK+Th3Jp83jqSTIEX24=;
-        b=Fo+0wym7GQs/022cF3mYnl7h6B+bXedlPQaWX3NA+b4gSQi8AACcKL7rimw7LfypeJ
-         suMIqDvwUPIPO+k9Pu/t+Kqa6PbG/4R2tNcTXcMqvnr9kZd6nhWAG8BdQOsZoQLSmQfS
-         MrpHCdMoaU8pvRl0BvQGHxSX0CIbjkPiy1sTeHry9aquQaIbSwbNNtTHg/iM1TwygTVK
-         Iew4lroUYjPCJ0J0VlrCuGAhv9h6RPc4q65w7YyziN2hkU+Hc3X6e5rDQphDjwwzuvct
-         DRPZobisg0BRCR8SqyO17kcOHw/YLv1dt9/C29kg1Kihp5e5kIX/yJ5uyUPEK+rKPwi7
-         dEUQ==
-X-Gm-Message-State: AOAM533HYXqPqUqh2RtgrSA2SBOjWYF9mz+yRWXl8wmoJQiqIuZfYhRI
-        vfvmAz/uHBFP+hRzwpO94ZXG+A/MpESyfg==
-X-Google-Smtp-Source: ABdhPJwgMKxknI44sx2fSv2m3L5pEyIOezryeq9Ih2ND7e2d0Nr20Pqr+zVl1v+CpnPC2zEhhlSg2w==
-X-Received: by 2002:a92:6410:: with SMTP id y16mr2675926ilb.126.1611624146922;
-        Mon, 25 Jan 2021 17:22:26 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c25sm11466896iom.11.2021.01.25.17.22.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 17:22:26 -0800 (PST)
-Subject: Re: [PATCH v4 01/17] selftests/resctrl: Fix compilation issues for
- global variables
-To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        David Binderman <dcb314@hotmail.com>,
-        Babu Moger <babu.moger@amd.com>,
-        James Morse <james.morse@arm.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-References: <20201130202010.178373-1-fenghua.yu@intel.com>
- <20201130202010.178373-2-fenghua.yu@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f79c885b-b67f-09ca-69f9-726cd6211e53@linuxfoundation.org>
-Date:   Mon, 25 Jan 2021 18:22:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 25 Jan 2021 20:49:18 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210126014808epoutp04537b74da9f61dd9abdbd4129c8056837~dpQZfax1E1794017940epoutp04Z
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:48:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210126014808epoutp04537b74da9f61dd9abdbd4129c8056837~dpQZfax1E1794017940epoutp04Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611625688;
+        bh=6KJ5IrzEH2Lxqjn/7m4vNbGpTi5F2GTuLYWAuPNTtXk=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Y23T0gJcUyQwe05dsCuMb6lyLeO6om4fWMv65zfeK8jOaajg256Rg05Qe6BvhEV4I
+         6Cor4Qpg7ti84msSPYRpm9Ea9EA2W53RWPs1mldTWzI2j/zzXxDW0ekJ9HWe7qeHzZ
+         fri49DMSE+KVAbd2+EfnRw38SNhT7bbAvheRyiO8=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210126014807epcas1p4f4216e7a28022dd0f946a67617b861cf~dpQYzxSc_0541605416epcas1p4Q;
+        Tue, 26 Jan 2021 01:48:07 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DPqPf1zBJz4x9QL; Tue, 26 Jan
+        2021 01:48:06 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        CF.6D.63458.6D47F006; Tue, 26 Jan 2021 10:48:06 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347~dpQWzbXLJ3020030200epcas1p23;
+        Tue, 26 Jan 2021 01:48:05 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210126014805epsmtrp2f536e392057eb0eac2c059f21086608e~dpQWyZWDZ0582805828epsmtrp2E;
+        Tue, 26 Jan 2021 01:48:05 +0000 (GMT)
+X-AuditID: b6c32a36-6dfff7000000f7e2-c9-600f74d6b11e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        18.18.08745.5D47F006; Tue, 26 Jan 2021 10:48:05 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210126014805epsmtip1be5c30d0e22673c01c2ddb598edc1fb4~dpQWitjmK2087020870epsmtip1-;
+        Tue, 26 Jan 2021 01:48:05 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v3 1/2] bio: limit bio max size
+Date:   Tue, 26 Jan 2021 10:32:34 +0900
+Message-Id: <20210126013235.28711-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201130202010.178373-2-fenghua.yu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNJsWRmVeSWpSXmKPExsWy7bCmvu61Ev4Eg+VPuCzmrNrGaLH6bj+b
+        RWv7NyaLnidNrBZ/u+4xWXx9WGyx95a2xeVdc9gsDk1uZrKYvnkOs8W1+2fYLQ7fu8pi8XDJ
+        RGaLcyc/sVrMe+xg8Wv5UUaL9z+us1uc2jGZ2WL93p9sDsIeE5vfsXvsnHWX3ePy2VKPTas6
+        2Tze77vK5tG3ZRWjx+dNch7tB7qZAjiicmwyUhNTUosUUvOS81My89JtlbyD453jTc0MDHUN
+        LS3MlRTyEnNTbZVcfAJ03TJzgL5RUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BQY
+        GhToFSfmFpfmpesl5+daGRoYGJkCVSbkZDzb+56x4LpWxdXjixgbGOfJdTFyckgImEicWv2c
+        sYuRi0NIYAejxPyv89kgnE+MErevfGGHcD4zShzefogNpuXCul1QLbsYJT4dXccIVzVl80xm
+        kCo2AR2Jvre3wGaJCLQwSbS9v8YM4jALPGaUuHKyDWyWsIC+RN/8dSwgNouAqsT5qbuAijg4
+        eAWsJT7+5IBYJy/xtHc52FBeAUGJkzOfgJUzA8Wbt84GmykhcIRD4sqiB8wQDS4Sh/b0s0LY
+        whKvjm9hh7ClJD6/28sG0dDNKNHcNp8RwpnAKLHk+TImiCpjiU+fPzOCXMEsoCmxfpc+RFhR
+        YufvuYwQm/kk3n3tYQUpkRDglehoE4IoUZE403KfGWbX87U7oSZ6SOze+Q6sVUggVuLKpT3M
+        ExjlZyH5ZxaSf2YhLF7AyLyKUSy1oDg3PbXYsMAIOWI3MYJTtZbZDsZJbz/oHWJk4mA8xCjB
+        wawkwrtbjydBiDclsbIqtSg/vqg0J7X4EKMpMIAnMkuJJucDs0VeSbyhqZGxsbGFiZm5mamx
+        kjhvosGDeCGB9MSS1OzU1ILUIpg+Jg5OqQam6Hi/CSWK8uGfHZjmTf1+JPFp+fHAV/Hvv3w3
+        UpOdvfBAcUd6rND/g1sd9r4+INZ+evrm2Lb75pXVHd27lumxNu965Ky98LDdLJt9P9jCfPR3
+        /RDIqs7wffwsLWJ3JYO1qmSal2nT/sv7Fh3fsjhC+bvspLOLnq/5bZ7GYnWwcc3NG6FGmR92
+        KZj5RXGyblk4rZmx/m5xoD5jO9NByVaZq+Lz3GY5TZu/b75Hlb/nLf2XvwP1RSTObxE3/blP
+        dcHqr6yLLmq/vjU/2v2ozx+/t2uiZMpjtV4di25Q8vyr+rvW4sKCwnVtZ7ZUyN+5vvjShG7e
+        NdoTd/1MvJ6V/CWSZW84R/VK8zC+iZOLqjbKKrEUZyQaajEXFScCAPLwZ+heBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnO7VEv4Eg1mvpS3mrNrGaLH6bj+b
+        RWv7NyaLnidNrBZ/u+4xWXx9WGyx95a2xeVdc9gsDk1uZrKYvnkOs8W1+2fYLQ7fu8pi8XDJ
+        RGaLcyc/sVrMe+xg8Wv5UUaL9z+us1uc2jGZ2WL93p9sDsIeE5vfsXvsnHWX3ePy2VKPTas6
+        2Tze77vK5tG3ZRWjx+dNch7tB7qZAjiiuGxSUnMyy1KL9O0SuDKe7X3PWHBdq+Lq8UWMDYzz
+        5LoYOTkkBEwkLqzbxdjFyMUhJLCDUeLc+ytMEAkpieMn3rJ2MXIA2cIShw8XQ9R8ZJT4//cz
+        C0gNm4CORN/bW2wgCRGBSUwSew/uZgZxmAVeM0p0PV4EViUsoC/RN38dmM0ioCpxfuouZpCp
+        vALWEh9/ckAsk5d42rucGcTmFRCUODnzCVg5M1C8eets5gmMfLOQpGYhSS1gZFrFKJlaUJyb
+        nltsWGCUl1quV5yYW1yal66XnJ+7iREcNVpaOxj3rPqgd4iRiYPxEKMEB7OSCO9uPZ4EId6U
+        xMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZODilGpgWF8448OXQ946z
+        65iMv6+JqY6RCumMYtL9ymoZ5Nd6esWDqp9Hti86dp9Z7f3tr/LuC74fclRTi+gSr/+zbdNr
+        u7I3q68frZjbP7Mh7yLvoch/TkvsXOVEZ00yT8rcd1HlRcvzW9+PH1iuyX5h9r5XXp2d/RNW
+        B0oXTzww580K6eximcOp1jtWLDJer5rbkirVeP7W+TDlzq22Alf/t99fuP+s8GntM96fav/2
+        3Vt1hv1eVP9PDoHwmXcez8/WiHuq//P5ZLVPMUb/Nkz6c+BsgOCEBeJXpst28ms1FKZ+lJ9p
+        OXfdDaF37xf837231tE+46vT6qPP9VID337lNrWd9Klim9fhK6E2HW/eMvAqeymxFGckGmox
+        FxUnAgBE2fEDCQMAAA==
+X-CMS-MailID: 20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347
+References: <CGME20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/20 1:19 PM, Fenghua Yu wrote:
-> Reinette reported following compilation issue on Fedora 32, gcc version
-> 10.1.1
-> 
-> /usr/bin/ld: cqm_test.o:<src_dir>/cqm_test.c:22: multiple definition of
-> `cache_size'; cat_test.o:<src_dir>/cat_test.c:23: first defined here
-> 
-> The same issue is reported for long_mask, cbm_mask, count_of_bits etc
-> variables as well. Compiler isn't happy because these variables are
-> defined globally in two .c files namely cqm_test.c and cat_test.c and
-> the compiler during compilation finds that the variable is already
-> defined (multiple definition error).
-> 
-> Taking a closer look at the usage of these variables reveals that these
-> variables are used only locally to functions such as cqm_resctrl_val()
-> (defined in cqm_test.c) and cat_perf_miss_val() (defined in cat_test.c).
-> These variables are not shared between those functions. So, there is no
-> need for these variables to be global. Hence, fix this issue by making
-> them local variables to the functions where they are used.
-> 
+bio size can grow up to 4GB when muli-page bvec is enabled.
+but sometimes it would lead to inefficient behaviors.
+in case of large chunk direct I/O, - 32MB chunk read in user space -
+all pages for 32MB would be merged to a bio structure if the pages
+physical addresses are contiguous. it makes some delay to submit
+until merge complete. bio max size should be limited to a proper size.
 
-Easy fix to this problem would be making these variables static to
-these files. I am not seeing any real advantage to changing these
-variable to local variables.
+When 32MB chunk read with direct I/O option is coming from userspace,
+kernel behavior is below now. it's timeline.
 
-diff --git a/tools/testing/selftests/resctrl/cat_test.c 
-b/tools/testing/selftests/resctrl/cat_test.c
-index 5da43767b973..360456b8a1b6 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -17,10 +17,10 @@
-  #define MAX_DIFF_PERCENT       4
-  #define MAX_DIFF               1000000
+ | bio merge for 32MB. total 8,192 pages are merged.
+ | total elapsed time is over 2ms.
+ |------------------ ... ----------------------->|
+                                                 | 8,192 pages merged a bio.
+                                                 | at this time, first bio submit is done.
+                                                 | 1 bio is split to 32 read request and issue.
+                                                 |--------------->
+                                                  |--------------->
+                                                   |--------------->
+                                                              ......
+                                                                   |--------------->
+                                                                    |--------------->|
+                          total 19ms elapsed to complete 32MB read done from device. |
 
--int count_of_bits;
--char cbm_mask[256];
--unsigned long long_mask;
--unsigned long cache_size;
-+static int count_of_bits;
-+static cbm_mask[256];
-+static unsigned long long_mask;
-+static unsigned long cache_size;
+If bio max size is limited with 1MB, behavior is changed below.
 
-Same changes made to tools/testing/selftests/resctrl/cqm_test.c
+ | bio merge for 1MB. 256 pages are merged for each bio.
+ | total 32 bio will be made.
+ | total elapsed time is over 2ms. it's same.
+ | but, first bio submit timing is fast. about 100us.
+ |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+      | 256 pages merged a bio.
+      | at this time, first bio submit is done.
+      | and 1 read request is issued for 1 bio.
+      |--------------->
+           |--------------->
+                |--------------->
+                                      ......
+                                                 |--------------->
+                                                  |--------------->|
+        total 17ms elapsed to complete 32MB read done from device. |
 
-> To fix issues for other global variables (e.g: bm_pid, ppid, llc_occup_path
-> and is_amd) that are used across .c files, declare them as extern.
-> 
+As a result, read request issue timing is faster if bio max size is limited.
+Current kernel behavior with multipage bvec, super large bio can be created.
+And it lead to delay first I/O request issue.
 
-This change is fine. Make this a separate patch.
+Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+---
+ block/bio.c            | 17 ++++++++++++++++-
+ include/linux/bio.h    |  4 +++-
+ include/linux/blkdev.h |  3 +++
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
-This way, we can take it as a fixes to stables.
+diff --git a/block/bio.c b/block/bio.c
+index 1f2cc1fbe283..ec0281889045 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -287,6 +287,21 @@ void bio_init(struct bio *bio, struct bio_vec *table,
+ }
+ EXPORT_SYMBOL(bio_init);
+ 
++unsigned int bio_max_size(struct bio *bio)
++{
++	struct request_queue *q;
++
++	if (!bio->bi_disk)
++		return UINT_MAX;
++
++	q = bio->bi_disk->queue;
++	if (!blk_queue_limit_bio_size(q))
++		return UINT_MAX;
++
++	return blk_queue_get_max_sectors(q, bio_op(bio)) << SECTOR_SHIFT;
++}
++EXPORT_SYMBOL(bio_max_size);
++
+ /**
+  * bio_reset - reinitialize a bio
+  * @bio:	bio to reset
+@@ -877,7 +892,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+ 		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+ 
+ 		if (page_is_mergeable(bv, page, len, off, same_page)) {
+-			if (bio->bi_iter.bi_size > UINT_MAX - len) {
++			if (bio->bi_iter.bi_size > bio_max_size(bio) - len) {
+ 				*same_page = false;
+ 				return false;
+ 			}
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index 1edda614f7ce..cdb134ca7bf5 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -100,6 +100,8 @@ static inline void *bio_data(struct bio *bio)
+ 	return NULL;
+ }
+ 
++extern unsigned int bio_max_size(struct bio *);
++
+ /**
+  * bio_full - check if the bio is full
+  * @bio:	bio to check
+@@ -113,7 +115,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+ 	if (bio->bi_vcnt >= bio->bi_max_vecs)
+ 		return true;
+ 
+-	if (bio->bi_iter.bi_size > UINT_MAX - len)
++	if (bio->bi_iter.bi_size > bio_max_size(bio) - len)
+ 		return true;
+ 
+ 	return false;
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index f94ee3089e01..3aeab9e7e97b 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -621,6 +621,7 @@ struct request_queue {
+ #define QUEUE_FLAG_RQ_ALLOC_TIME 27	/* record rq->alloc_time_ns */
+ #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
+ #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
++#define QUEUE_FLAG_LIMIT_BIO_SIZE 30	/* limit bio size */
+ 
+ #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
+ 				 (1 << QUEUE_FLAG_SAME_COMP) |		\
+@@ -667,6 +668,8 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
+ #define blk_queue_fua(q)	test_bit(QUEUE_FLAG_FUA, &(q)->queue_flags)
+ #define blk_queue_registered(q)	test_bit(QUEUE_FLAG_REGISTERED, &(q)->queue_flags)
+ #define blk_queue_nowait(q)	test_bit(QUEUE_FLAG_NOWAIT, &(q)->queue_flags)
++#define blk_queue_limit_bio_size(q)	\
++	test_bit(QUEUE_FLAG_LIMIT_BIO_SIZE, &(q)->queue_flags)
+ 
+ extern void blk_set_pm_only(struct request_queue *q);
+ extern void blk_clear_pm_only(struct request_queue *q);
+-- 
+2.28.0
 
-With the above the test builds fine. There is a bigger problem that
-needs fixing: (thix might have been fixed in later patches perhaps):
-
-cqm_test.c: In function ‘check_results’:
-cqm_test.c:89:9: warning: ‘fgets’ writing 1024 bytes into a region of 
-size 512 overflows the destination [-Wstringop-overflow=]
-    89 |  while (fgets(temp, 1024, fp)) {
-       |         ^~~~~~~~~~~~~~~~~~~~~
-In file included from resctrl.h:5,
-                  from cqm_test.c:11:
-/usr/include/stdio.h:568:14: note: in a call to function ‘fgets’ 
-declared with attribute ‘write_only (1, 2)’
-   568 | extern char *fgets (char *__restrict __s, int __n, FILE 
-*__restrict __stream)
-       |              ^~~~~
-
-
-thanks,
--- Shuah
