@@ -2,60 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BF93046C7
+	by mail.lfdr.de (Postfix) with ESMTP id D86233046C8
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390791AbhAZRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:20:16 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:37649 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388545AbhAZGgm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:36:42 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UMxNWQf_1611642950;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMxNWQf_1611642950)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 Jan 2021 14:35:54 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     njavali@marvell.com
-Cc:     mrangankar@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] scsi/qla4xxx: Simplify the calculation of variables
-Date:   Tue, 26 Jan 2021 14:35:48 +0800
-Message-Id: <1611642948-43192-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S2390893AbhAZRUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:20:23 -0500
+Received: from verein.lst.de ([213.95.11.211]:46943 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387603AbhAZGjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 01:39:00 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E1D7468BFE; Tue, 26 Jan 2021 07:38:17 +0100 (CET)
+Date:   Tue, 26 Jan 2021 07:38:17 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 3/5] powerpc/xive: remove unnecessary unmap_kernel_range
+Message-ID: <20210126063817.GC26674@lst.de>
+References: <20210126045404.2492588-1-npiggin@gmail.com> <20210126045404.2492588-4-npiggin@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126045404.2492588-4-npiggin@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Tue, Jan 26, 2021 at 02:54:02PM +1000, Nicholas Piggin wrote:
+> iounmap will remove ptes.
 
-./drivers/scsi/qla4xxx/ql4_83xx.c:475:23-25: WARNING !A || A && B is
-equivalent to !A || B.
+Looks good,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
----
- drivers/scsi/qla4xxx/ql4_83xx.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/qla4xxx/ql4_83xx.c b/drivers/scsi/qla4xxx/ql4_83xx.c
-index 5f56122..64244a6 100644
---- a/drivers/scsi/qla4xxx/ql4_83xx.c
-+++ b/drivers/scsi/qla4xxx/ql4_83xx.c
-@@ -471,9 +471,7 @@ int qla4_83xx_can_perform_reset(struct scsi_qla_host *ha)
- 			}
- 		} else if (device_map[i].device_type == ISCSI_CLASS) {
- 			if (drv_active & (1 << device_map[i].func_num)) {
--				if (!iscsi_present ||
--				    (iscsi_present &&
--				     (iscsi_func_low > device_map[i].func_num)))
-+				if (!iscsi_present || (iscsi_func_low > device_map[i].func_num))
- 					iscsi_func_low = device_map[i].func_num;
- 
- 				iscsi_present++;
--- 
-1.8.3.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
