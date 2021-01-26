@@ -2,164 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717C9304FE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D341A304FE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236311AbhA0DeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbhAZVUJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:20:09 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9E4C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:19:01 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id c12so13387768qtv.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:19:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cxJuuMsa2jIO+Tc7/X3iH1iIFgmN0hDTq5SLplTk3iw=;
-        b=QdQiCZypVFfKH4yNeGOjaRL5hxwqgKZiu4RqmwTDneDFb4EpmeiAaNbPVVJm/NQugo
-         uormYN/750ESm/TPMXgs+HOWDt5+QKz4VcU6x6AKM06+o9qwCBz1OzfZLSOefQLbGSws
-         TqT3s3zcSauhUJfiRbfERE1qhuG6NNASPwQTIFqcM5qJdgUtU7RgwF5eSUM7280aTFMp
-         E/TQPDMntSITfia3jONr7zsla+LreiuAiIxM5nu12MEQpjRL8+Eq3nx9ejhbDHic9D73
-         7GVnTFucZXSRHoQ1W2p43sdPCE8VtKOK5I3zaogSLVLpHdKULvJO9gLosXcTmhuhTPDY
-         JvhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cxJuuMsa2jIO+Tc7/X3iH1iIFgmN0hDTq5SLplTk3iw=;
-        b=jDfpySO/xeeiDB2x1dC4ivcU4jl1NtSQAoyjRR06VaJWMmolyrSI0w5aagk9ud85Cd
-         +2hLPkL6M53eeD5hXy/qQWjQ0wHDYbuE+JPXRf5aCjizjTYbQaEShbzNe5qUYrHgdxIQ
-         NhkU4kMTZ4D6b9NjeaoI6CNFtq93rKZU4gdJfLQBafD1KlXEg/XifGxS7KDkTYtlugUz
-         k7B9QQWQ3p0n435B6xraAeeQCVP137PdSLT9gwVxvyrsNtC924kjPx04sm6KgWWq7ylq
-         2LJeFS0v+Aoe02LDq+vbD3GrLewf+RXsNqu88bkzQDDx+w4oK+wAKs3Ec9kjUn1ehQyA
-         asQA==
-X-Gm-Message-State: AOAM530XtzF2RWI7YJn31jRuf/KCTCbqmRjzSKRKdeAlrds/5Oc0EWFa
-        Rka7YDEq7ilBh+NKz4ZXDTN1mA==
-X-Google-Smtp-Source: ABdhPJxcVhas9teyj/3N9iOrznAi2kswqX5kofHpa7y3HxWtrKQzuHm/9Dg9LyRReD3fJVMse6mtHA==
-X-Received: by 2002:ac8:5714:: with SMTP id 20mr7054840qtw.197.1611695941146;
-        Tue, 26 Jan 2021 13:19:01 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id x134sm15001476qka.1.2021.01.26.13.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 13:19:00 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, vkoul@kernel.org
-Cc:     shawn.guo@linaro.org, srinivas.kandagatla@linaro.org,
-        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dma: qcom: bam_dma: Manage clocks when controlled_remotely is set
-Date:   Tue, 26 Jan 2021 16:18:59 -0500
-Message-Id: <20210126211859.790892-1-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S236331AbhA0DeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:34:08 -0500
+Received: from mga03.intel.com ([134.134.136.65]:26824 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728305AbhAZVUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:20:30 -0500
+IronPort-SDR: J3LnKVKHc4rJDDQBjayy9k1z+vY2CT2SPuMm6KXV6HWujbiAvjm+En82Y6Md/rTinC4ABKL5Eo
+ LqQxbPNgrXgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180053369"
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="180053369"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:18:44 -0800
+IronPort-SDR: 4iTTBV0o2ga6lWkHDHxryG2WhSuJdilm+bkuKDP78IT3/ZezPB9TtMHwN3ICZydABh+UTCaJ8F
+ Hn/e1OEa8bNA==
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="362132839"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:18:41 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l4VkW-00EvYJ-2y; Tue, 26 Jan 2021 23:19:44 +0200
+Date:   Tue, 26 Jan 2021 23:19:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, lizefan@huawei.com, mingo@kernel.org,
+        tglx@linutronix.de, josh@joshtriplett.org, yury.norov@gmail.com,
+        peterz@infradead.org, paulmck@kernel.org, fweisbec@gmail.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH 4/8] lib: bitmap: move ERANGE check from set_region to
+ check_region
+Message-ID: <YBCHcMcwMPQLBlAV@smile.fi.intel.com>
+References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
+ <20210126171141.122639-5-paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126171141.122639-5-paul.gortmaker@windriver.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When bam dma is "controlled remotely", thus far clocks were not controlled
-from the Linux. In this scenario, Linux was disabling runtime pm in bam dma
-driver and not doing any clock management in suspend/resume hooks.
+On Tue, Jan 26, 2021 at 12:11:37PM -0500, Paul Gortmaker wrote:
+> It makes sense to do all the checks in check_region() and not 1/2
+> in check_region and 1/2 in set_region.
+> 
+> Since set_region is called immediately after check_region, the net
+> effect on runtime is zero, but it gets rid of an if (...) return...
 
-With introduction of crypto engine bam dma, the clock is a rpmh resource
-that can be controlled from both Linux and TZ/remote side.  Now bam dma
-clock is getting enabled during probe even though the bam dma can be
-"controlled remotely". But due to clocks not being handled properly,
-bam_suspend generates a unbalanced clk_unprepare warning during system
-suspend.
+Like it!
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-To fix the above issue and to enable proper clock-management, this patch
-enables runtim-pm and handles bam dma clocks in suspend/resume hooks if
-the clock node is present irrespective of controlled_remotely property.
+> Cc: Yury Norov <yury.norov@gmail.com>
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> ---
+>  lib/bitmap.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
+> 
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 162e2850c622..833f152a2c43 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -500,17 +500,12 @@ struct region {
+>  	unsigned int nbits;
+>  };
+>  
+> -static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
+> +static void bitmap_set_region(const struct region *r, unsigned long *bitmap)
+>  {
+>  	unsigned int start;
+>  
+> -	if (r->end >= r->nbits)
+> -		return -ERANGE;
+> -
+>  	for (start = r->start; start <= r->end; start += r->group_len)
+>  		bitmap_set(bitmap, start, min(r->end - start + 1, r->off));
+> -
+> -	return 0;
+>  }
+>  
+>  static int bitmap_check_region(const struct region *r)
+> @@ -518,6 +513,9 @@ static int bitmap_check_region(const struct region *r)
+>  	if (r->start > r->end || r->group_len == 0 || r->off > r->group_len)
+>  		return -EINVAL;
+>  
+> +	if (r->end >= r->nbits)
+> +		return -ERANGE;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -656,9 +654,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+>  		if (ret)
+>  			return ret;
+>  
+> -		ret = bitmap_set_region(&r, maskp);
+> -		if (ret)
+> -			return ret;
+> +		bitmap_set_region(&r, maskp);
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.17.1
+> 
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
-
-v1->v2:
-	- As per Shawn's suggestion, use devm_clk_get_optional to get the
-	  bam clock if the "controlled_remotely" property is set so that
-	  the clock code takes care of setting the bam clock to NULL if
-	  not specified by dt. 
-	- Remove the check for "controlled_remotely" property in
-	  bam_dma_resume now that clock enable / disable is based on
-	  whether bamclk is NULL or not.
-	- Rebased to v5.11-rc5
-
- drivers/dma/qcom/bam_dma.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-index 88579857ca1d..c8a77b428b52 100644
---- a/drivers/dma/qcom/bam_dma.c
-+++ b/drivers/dma/qcom/bam_dma.c
-@@ -1270,13 +1270,13 @@ static int bam_dma_probe(struct platform_device *pdev)
- 			dev_err(bdev->dev, "num-ees unspecified in dt\n");
- 	}
- 
--	bdev->bamclk = devm_clk_get(bdev->dev, "bam_clk");
--	if (IS_ERR(bdev->bamclk)) {
--		if (!bdev->controlled_remotely)
--			return PTR_ERR(bdev->bamclk);
-+	if (bdev->controlled_remotely)
-+		bdev->bamclk = devm_clk_get_optional(bdev->dev, "bam_clk");
-+	else
-+		bdev->bamclk = devm_clk_get(bdev->dev, "bam_clk");
- 
--		bdev->bamclk = NULL;
--	}
-+	if (IS_ERR(bdev->bamclk))
-+		return PTR_ERR(bdev->bamclk);
- 
- 	ret = clk_prepare_enable(bdev->bamclk);
- 	if (ret) {
-@@ -1350,7 +1350,7 @@ static int bam_dma_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_unregister_dma;
- 
--	if (bdev->controlled_remotely) {
-+	if (!bdev->bamclk) {
- 		pm_runtime_disable(&pdev->dev);
- 		return 0;
- 	}
-@@ -1438,10 +1438,10 @@ static int __maybe_unused bam_dma_suspend(struct device *dev)
- {
- 	struct bam_device *bdev = dev_get_drvdata(dev);
- 
--	if (!bdev->controlled_remotely)
-+	if (bdev->bamclk) {
- 		pm_runtime_force_suspend(dev);
--
--	clk_unprepare(bdev->bamclk);
-+		clk_unprepare(bdev->bamclk);
-+	}
- 
- 	return 0;
- }
-@@ -1451,12 +1451,13 @@ static int __maybe_unused bam_dma_resume(struct device *dev)
- 	struct bam_device *bdev = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = clk_prepare(bdev->bamclk);
--	if (ret)
--		return ret;
-+	if (bdev->bamclk) {
-+		ret = clk_prepare(bdev->bamclk);
-+		if (ret)
-+			return ret;
- 
--	if (!bdev->controlled_remotely)
- 		pm_runtime_force_resume(dev);
-+	}
- 
- 	return 0;
- }
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
