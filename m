@@ -2,120 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E43F303B13
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED063303B2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbhAZLGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:06:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728070AbhAZGME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:12:04 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF827C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 22:11:16 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id e9so1624254pjj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 22:11:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ofSELr0g41+S/wAw3xUz/6AdS5ttG052FfoGVJVMa5Q=;
-        b=bILGxlB47kIhXwRWllAtOsJDXq1D44Np3y2XBbrmDSS0huIuZvwiEMXPTWNx1d5sQK
-         I8CMHgjfEPvlrsqswpl3e9Q/61LViVjIu9pWJGjaFv2O7S9UGqOe3fm2q2YIJ+lt5b9e
-         98q/TYG+kyTRBNzl/chArtL/7111QjEBH7shEk9Eu1DYwBoK3JDDz4Uu12QMOmZgZ1GN
-         3FqaDuRrSiEaHeLiAlv+uP78EjTyqsTunE1svH6sReSPMKyTv1/3kRmQaaskITmAenir
-         MdgMILFDGAxPp2EkmKJjIRXEpR45HtXarB9maMuNLcIIRg9F/WG6zgm5moDwmLKIgBYg
-         Vj6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ofSELr0g41+S/wAw3xUz/6AdS5ttG052FfoGVJVMa5Q=;
-        b=E4NyEbGoXuf4hJoYrD19crWcNSAQVgQZwUxqCwWtWa2I5mzpWbTS8pKCtSuqNkgAqp
-         RfDvFmIugJSTNdc7Y719dl9/zcY0uSp0QAwsE1yFziA6mNyspglsOJ0nkQnZrxBXF/OM
-         ss5L9Cuk6iPRbAIZHAhSwo5ig0TyYT35iEuEZtQ0nA3wmWL5i+WFJmG/Kkn0i/B2KgnE
-         id3BI6BxmuksAqa0L04ccsKC5R0hGJCZ1OphOhNG3ylysBwOSX7IeIuyXWF6mGJz05Pm
-         FjALjraY17ogC7vcENFuR7swGnmtqHw2hSvduEuolWi+h7+nqHf0+JzORck2NW++uSx2
-         YhlQ==
-X-Gm-Message-State: AOAM532xnCgB9FDijz01ydApwu9m1H9YQyo7bZFvYnifBLojKo40TOKh
-        X5u0Woflanzgz6xU5i4RUzc7u3ZtJSRO0vI2GGbI6Q==
-X-Google-Smtp-Source: ABdhPJyLCHgfCC70u4HOxxVDs+uHV5Nmsr//xCGybvnz30Ufog35rQHYCZhHYjMe9eYjblkzVR3QBZOZUB+TUHb0W8c=
-X-Received: by 2002:a17:90a:3e81:: with SMTP id k1mr4517001pjc.13.1611641476408;
- Mon, 25 Jan 2021 22:11:16 -0800 (PST)
+        id S2405055AbhAZLJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388076AbhAZGn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 01:43:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C95B822B3F;
+        Tue, 26 Jan 2021 06:42:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611643367;
+        bh=bYiLoT3jWDdN2YAySXxdPXkMujwT9IfHnqKAdrHmEVM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qY36ekrKI0/nHDx0hnxfvQiTgHH8mlKp0aLjhUc1ZSfIKXe9S+HVlLXym9EWalUKQ
+         mfM7HhPI9VPpoi7nVwVVltlV1Twycv2hyeIujujgty8YiwfkBB9BnQewfZX9CqhuZM
+         5rMhu10gGKbSiW1yCfQz/4HmcvClXpMbuyUK/Fiw4kn6F/WAvJDGARgNSQs/DQ3myn
+         jz8x5oW0Z16ZD9o8JOPziCkgFy3qnPPf414lBQQ1lD5bshawHxNOgk/NWPpspkRKkE
+         bkinF8HPZSDtO4d6nOyTaq3zKbGcM2Kyc21b1uIlTSLihNUqeBpNsj2QVqVhK51rLM
+         hR+DWzByAfGEg==
+Date:   Tue, 26 Jan 2021 08:13:44 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ronak Doshi <doshir@vmware.com>
+Cc:     netdev@vger.kernel.org, Petr Vandrovec <petr@vmware.com>,
+        "maintainer:VMWARE VMXNET3 ETHERNET DRIVER" <pv-drivers@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 net-next] Remove buf_info from device accessible
+ structures
+Message-ID: <20210126061344.GA1053290@unreal>
+References: <20210125223456.25043-1-doshir@vmware.com>
 MIME-Version: 1.0
-References: <20210126031009.96266-1-songmuchun@bytedance.com> <f0388d4e-c72a-947f-6f12-8ae52d588543@oracle.com>
-In-Reply-To: <f0388d4e-c72a-947f-6f12-8ae52d588543@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 26 Jan 2021 14:10:39 +0800
-Message-ID: <CAMZfGtXqOXC8JTt5v-75Uumaj+eLSGn-xo5mnNvmm7ZtBKgboA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: hugetlb: fix missing put_page in gather_surplus_pages()
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Hui Su <sh_def@163.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125223456.25043-1-doshir@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:31 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 1/25/21 7:10 PM, Muchun Song wrote:
-> > The VM_BUG_ON_PAGE avoids the generation of any code, even if that
-> > expression has side-effects when !CONFIG_DEBUG_VM.
-> >
-> > Fixes: e5dfacebe4a4 ("mm/hugetlb.c: just use put_page_testzero() instead of page_count()")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Cc: <stable@vger.kernel.org>
-> > ---
-> >  mm/hugetlb.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> Thanks for finding and fixing this!  My bad for not noticing when the bug
-> was introduced.
->
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index a6bad1f686c5..082ed643020b 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -2047,13 +2047,16 @@ static int gather_surplus_pages(struct hstate *h, long delta)
-> >
-> >       /* Free the needed pages to the hugetlb pool */
-> >       list_for_each_entry_safe(page, tmp, &surplus_list, lru) {
-> > +             int zeroed;
-> > +
-> >               if ((--needed) < 0)
-> >                       break;
-> >               /*
-> >                * This page is now managed by the hugetlb allocator and has
-> >                * no users -- drop the buddy allocator's reference.
-> >                */
-> > -             VM_BUG_ON_PAGE(!put_page_testzero(page), page);
-> > +             zeroed = put_page_testzero(page);
-> > +             VM_BUG_ON_PAGE(!zeroed, page);
-> >               enqueue_huge_page(h, page);
->
-> I was wondering why this was not causing any problems.  We are putting the
-> hugetlb page on the free list with a count of 1.  There is no check in the
-> enqueue code.  When we dequeue the page, set_page_refcounted() is used to
-> set the count to 1 without looking at the current value.  And, all the other
-> VM_DEBUG macros are off so we mostly do not notice the bug.
+On Mon, Jan 25, 2021 at 02:34:56PM -0800, Ronak Doshi wrote:
+> vmxnet3: Remove buf_info from device accessible structures
 
-Yeah. You are right. I also thought about this question.
-It is a very hidden bug.
+This line should be part of the "Subject: ..." and not as separated line.
+
+Thanks
 
 >
-> Thanks again,
+> buf_info structures in RX & TX queues are private driver data that
+> do not need to be visible to the device.  Although there is physical
+> address and length in the queue descriptor that points to these
+> structures, their layout is not standardized, and device never looks
+> at them.
 >
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> So lets allocate these structures in non-DMA-able memory, and fill
+> physical address as all-ones and length as zero in the queue
+> descriptor.
 >
+> That should alleviate worries brought by Martin Radev in
+> https://lists.osuosl.org/pipermail/intel-wired-lan/Week-of-Mon-20210104/022829.html
+> that malicious vmxnet3 device could subvert SVM/TDX guarantees.
+>
+> Signed-off-by: Petr Vandrovec <petr@vmware.com>
+> Signed-off-by: Ronak Doshi <doshir@vmware.com>
+> ---
+> Changes in v2:
+>  - Use kcalloc_node()
+>  - Remove log for memory allocation failure
+> Changes in v3:
+>  - Do not pass __GFP_ZERO to kcalloc
+> ---
+>  drivers/net/vmxnet3/vmxnet3_drv.c | 37 ++++++++++++-------------------------
+>  drivers/net/vmxnet3/vmxnet3_int.h |  2 --
+>  2 files changed, 12 insertions(+), 27 deletions(-)
+>
+> diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
+> index 336504b7531d..419e81b21d9b 100644
+> --- a/drivers/net/vmxnet3/vmxnet3_drv.c
+> +++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+> @@ -452,9 +452,7 @@ vmxnet3_tq_destroy(struct vmxnet3_tx_queue *tq,
+>  		tq->comp_ring.base = NULL;
+>  	}
+>  	if (tq->buf_info) {
+> -		dma_free_coherent(&adapter->pdev->dev,
+> -				  tq->tx_ring.size * sizeof(tq->buf_info[0]),
+> -				  tq->buf_info, tq->buf_info_pa);
+> +		kfree(tq->buf_info);
+>  		tq->buf_info = NULL;
+>  	}
+>  }
+> @@ -505,8 +503,6 @@ static int
+>  vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
+>  		  struct vmxnet3_adapter *adapter)
+>  {
+> -	size_t sz;
+> -
+>  	BUG_ON(tq->tx_ring.base || tq->data_ring.base ||
+>  	       tq->comp_ring.base || tq->buf_info);
+>
+> @@ -534,9 +530,9 @@ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
+>  		goto err;
+>  	}
+>
+> -	sz = tq->tx_ring.size * sizeof(tq->buf_info[0]);
+> -	tq->buf_info = dma_alloc_coherent(&adapter->pdev->dev, sz,
+> -					  &tq->buf_info_pa, GFP_KERNEL);
+> +	tq->buf_info = kcalloc_node(tq->tx_ring.size, sizeof(tq->buf_info[0]),
+> +				    GFP_KERNEL,
+> +				    dev_to_node(&adapter->pdev->dev));
+>  	if (!tq->buf_info)
+>  		goto err;
+>
+> @@ -1738,10 +1734,7 @@ static void vmxnet3_rq_destroy(struct vmxnet3_rx_queue *rq,
+>  	}
+>
+>  	if (rq->buf_info[0]) {
+> -		size_t sz = sizeof(struct vmxnet3_rx_buf_info) *
+> -			(rq->rx_ring[0].size + rq->rx_ring[1].size);
+> -		dma_free_coherent(&adapter->pdev->dev, sz, rq->buf_info[0],
+> -				  rq->buf_info_pa);
+> +		kfree(rq->buf_info[0]);
+>  		rq->buf_info[0] = rq->buf_info[1] = NULL;
+>  	}
+>  }
+> @@ -1883,10 +1876,9 @@ vmxnet3_rq_create(struct vmxnet3_rx_queue *rq, struct vmxnet3_adapter *adapter)
+>  		goto err;
+>  	}
+>
+> -	sz = sizeof(struct vmxnet3_rx_buf_info) * (rq->rx_ring[0].size +
+> -						   rq->rx_ring[1].size);
+> -	bi = dma_alloc_coherent(&adapter->pdev->dev, sz, &rq->buf_info_pa,
+> -				GFP_KERNEL);
+> +	bi = kcalloc_node(rq->rx_ring[0].size + rq->rx_ring[1].size,
+> +			  sizeof(rq->buf_info[0][0]), GFP_KERNEL,
+> +			  dev_to_node(&adapter->pdev->dev));
+>  	if (!bi)
+>  		goto err;
+>
+> @@ -2522,14 +2514,12 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
+>  		tqc->txRingBasePA   = cpu_to_le64(tq->tx_ring.basePA);
+>  		tqc->dataRingBasePA = cpu_to_le64(tq->data_ring.basePA);
+>  		tqc->compRingBasePA = cpu_to_le64(tq->comp_ring.basePA);
+> -		tqc->ddPA           = cpu_to_le64(tq->buf_info_pa);
+> +		tqc->ddPA           = cpu_to_le64(~0ULL);
+>  		tqc->txRingSize     = cpu_to_le32(tq->tx_ring.size);
+>  		tqc->dataRingSize   = cpu_to_le32(tq->data_ring.size);
+>  		tqc->txDataRingDescSize = cpu_to_le32(tq->txdata_desc_size);
+>  		tqc->compRingSize   = cpu_to_le32(tq->comp_ring.size);
+> -		tqc->ddLen          = cpu_to_le32(
+> -					sizeof(struct vmxnet3_tx_buf_info) *
+> -					tqc->txRingSize);
+> +		tqc->ddLen          = cpu_to_le32(0);
+>  		tqc->intrIdx        = tq->comp_ring.intr_idx;
+>  	}
+>
+> @@ -2541,14 +2531,11 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
+>  		rqc->rxRingBasePA[0] = cpu_to_le64(rq->rx_ring[0].basePA);
+>  		rqc->rxRingBasePA[1] = cpu_to_le64(rq->rx_ring[1].basePA);
+>  		rqc->compRingBasePA  = cpu_to_le64(rq->comp_ring.basePA);
+> -		rqc->ddPA            = cpu_to_le64(rq->buf_info_pa);
+> +		rqc->ddPA            = cpu_to_le64(~0ULL);
+>  		rqc->rxRingSize[0]   = cpu_to_le32(rq->rx_ring[0].size);
+>  		rqc->rxRingSize[1]   = cpu_to_le32(rq->rx_ring[1].size);
+>  		rqc->compRingSize    = cpu_to_le32(rq->comp_ring.size);
+> -		rqc->ddLen           = cpu_to_le32(
+> -					sizeof(struct vmxnet3_rx_buf_info) *
+> -					(rqc->rxRingSize[0] +
+> -					 rqc->rxRingSize[1]));
+> +		rqc->ddLen           = cpu_to_le32(0);
+>  		rqc->intrIdx         = rq->comp_ring.intr_idx;
+>  		if (VMXNET3_VERSION_GE_3(adapter)) {
+>  			rqc->rxDataRingBasePA =
+> diff --git a/drivers/net/vmxnet3/vmxnet3_int.h b/drivers/net/vmxnet3/vmxnet3_int.h
+> index d958b92c9429..e910596b79cf 100644
+> --- a/drivers/net/vmxnet3/vmxnet3_int.h
+> +++ b/drivers/net/vmxnet3/vmxnet3_int.h
+> @@ -240,7 +240,6 @@ struct vmxnet3_tx_queue {
+>  	spinlock_t                      tx_lock;
+>  	struct vmxnet3_cmd_ring         tx_ring;
+>  	struct vmxnet3_tx_buf_info      *buf_info;
+> -	dma_addr_t                       buf_info_pa;
+>  	struct vmxnet3_tx_data_ring     data_ring;
+>  	struct vmxnet3_comp_ring        comp_ring;
+>  	struct Vmxnet3_TxQueueCtrl      *shared;
+> @@ -298,7 +297,6 @@ struct vmxnet3_rx_queue {
+>  	u32 qid2;           /* rqID in RCD for buffer from 2nd ring */
+>  	u32 dataRingQid;    /* rqID in RCD for buffer from data ring */
+>  	struct vmxnet3_rx_buf_info     *buf_info[2];
+> -	dma_addr_t                      buf_info_pa;
+>  	struct Vmxnet3_RxQueueCtrl            *shared;
+>  	struct vmxnet3_rq_driver_stats  stats;
+>  } __attribute__((__aligned__(SMP_CACHE_BYTES)));
 > --
-> Mike Kravetz
+> 2.11.0
 >
-> >       }
-> >  free:
-> >
