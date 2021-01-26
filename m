@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F395304DC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DB2304DEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388068AbhAZXPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:15:53 -0500
-Received: from mx.socionext.com ([202.248.49.38]:47481 "EHLO mx.socionext.com"
+        id S2388658AbhAZXZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:25:13 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:56928 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732684AbhAZF0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:26:35 -0500
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 26 Jan 2021 14:25:35 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id 27D702059025;
-        Tue, 26 Jan 2021 14:25:35 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Tue, 26 Jan 2021 14:25:35 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id C1729B1D40;
-        Tue, 26 Jan 2021 14:25:34 +0900 (JST)
-Received: from [10.212.21.92] (unknown [10.212.21.92])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 1EBC912014A;
-        Tue, 26 Jan 2021 14:25:34 +0900 (JST)
-Subject: Re: [PATCH] PCI: dwc: Move forward the iATU detection process
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        gustavo.pimentel@synopsys.com, jingoohan1@gmail.com,
-        jaswinder.singh@linaro.org, masami.hiramatsu@linaro.org
-References: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <7d2d8a01-1339-2858-0d6a-5674f1cf2bca@socionext.com>
-Date:   Tue, 26 Jan 2021 14:25:33 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-MIME-Version: 1.0
-In-Reply-To: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1732442AbhAZFte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 00:49:34 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3BC741A0168;
+        Tue, 26 Jan 2021 06:48:46 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E33541A0C31;
+        Tue, 26 Jan 2021 06:48:43 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id AF022402F0;
+        Tue, 26 Jan 2021 06:48:40 +0100 (CET)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lars@metafoo.de, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dmaengine_pcm: add peripheral configuration
+Date:   Tue, 26 Jan 2021 13:38:16 +0800
+Message-Id: <1611639496-4616-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The commit e7bbb7acabf4 ("dmaengine: add peripheral configuration")
+adds peripheral configuration for dma_slave_config.
 
-This looks to me the same fix as my posted patch[1].
-Is this more effective than mine?
+This configuration is useful for some audio peripherals, for
+example, the peripheral supports multi fifos, we can
+let the DMA know which fifos are selected. So also add
+this configuration for snd_dmaengine_dai_dma_data.
 
-Thank you,
-
-[1] https://www.spinics.net/lists/linux-pci/msg103889.html
-
-On 2021/01/25 13:48, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> 
-> In the dw_pcie_ep_init(), it depends on the detected iATU region
-> numbers to allocate the in/outbound window management bit map.
-> It fails after the commit 281f1f99cf3a ("PCI: dwc: Detect number
-> of iATU windows").
-> 
-> So this patch move the iATU region detection into a new function,
-> move forward the detection to the very beginning of functions
-> dw_pcie_host_init() and dw_pcie_ep_init(). And also remove it
-> from the dw_pcie_setup(), since it's more like a software
-> perspective initialization step than hardware setup.
-> 
-> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> ---
->   drivers/pci/controller/dwc/pcie-designware-ep.c   |  2 ++
->   drivers/pci/controller/dwc/pcie-designware-host.c |  2 ++
->   drivers/pci/controller/dwc/pcie-designware.c      | 11 ++++++++---
->   drivers/pci/controller/dwc/pcie-designware.h      |  1 +
->   4 files changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index bcd1cd9ba8c8..fcf935bf6f5e 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -707,6 +707,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->   		}
->   	}
->   
-> +	dw_pcie_iatu_detect(pci);
-> +
->   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "addr_space");
->   	if (!res)
->   		return -EINVAL;
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 8a84c005f32b..8eae817c138d 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -316,6 +316,8 @@ int dw_pcie_host_init(struct pcie_port *pp)
->   			return PTR_ERR(pci->dbi_base);
->   	}
->   
-> +	dw_pcie_iatu_detect(pci);
-> +
->   	bridge = devm_pci_alloc_host_bridge(dev, 0);
->   	if (!bridge)
->   		return -ENOMEM;
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 5b72a5448d2e..5b9bf02d918b 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -654,11 +654,9 @@ static void dw_pcie_iatu_detect_regions(struct dw_pcie *pci)
->   	pci->num_ob_windows = ob;
->   }
->   
-> -void dw_pcie_setup(struct dw_pcie *pci)
-> +void dw_pcie_iatu_detect(struct dw_pcie *pci)
->   {
-> -	u32 val;
->   	struct device *dev = pci->dev;
-> -	struct device_node *np = dev->of_node;
->   	struct platform_device *pdev = to_platform_device(dev);
->   
->   	if (pci->version >= 0x480A || (!pci->version &&
-> @@ -687,6 +685,13 @@ void dw_pcie_setup(struct dw_pcie *pci)
->   
->   	dev_info(pci->dev, "Detected iATU regions: %u outbound, %u inbound",
->   		 pci->num_ob_windows, pci->num_ib_windows);
-> +}
-> +
-> +void dw_pcie_setup(struct dw_pcie *pci)
-> +{
-> +	u32 val;
-> +	struct device *dev = pci->dev;
-> +	struct device_node *np = dev->of_node;
->   
->   	if (pci->link_gen > 0)
->   		dw_pcie_link_set_max_speed(pci, pci->link_gen);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 5d979953800d..867369d4c4f7 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -305,6 +305,7 @@ int dw_pcie_prog_inbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->   void dw_pcie_disable_atu(struct dw_pcie *pci, int index,
->   			 enum dw_pcie_region_type type);
->   void dw_pcie_setup(struct dw_pcie *pci);
-> +void dw_pcie_iatu_detect(struct dw_pcie *pci);
->   
->   static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
->   {
-> 
-
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
-Best Regards
-Kunihiko Hayashi
+ include/sound/dmaengine_pcm.h | 5 +++++
+ sound/core/pcm_dmaengine.c    | 2 ++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 8c5e38180fb0..96666efddb39 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -66,6 +66,9 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
+  * @chan_name: Custom channel name to use when requesting DMA channel.
+  * @fifo_size: FIFO size of the DAI controller in bytes
+  * @flags: PCM_DAI flags, only SND_DMAENGINE_PCM_DAI_FLAG_PACK for now
++ * @peripheral_config: peripheral configuration for programming peripheral
++ * for dmaengine transfer
++ * @peripheral_size: peripheral configuration buffer size
+  */
+ struct snd_dmaengine_dai_dma_data {
+ 	dma_addr_t addr;
+@@ -76,6 +79,8 @@ struct snd_dmaengine_dai_dma_data {
+ 	const char *chan_name;
+ 	unsigned int fifo_size;
+ 	unsigned int flags;
++	void *peripheral_config;
++	size_t peripheral_size;
+ };
+ 
+ void snd_dmaengine_pcm_set_config_from_dai_data(
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index 4d0e8fe535a1..1fc2fa077574 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -125,6 +125,8 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+ 	}
+ 
+ 	slave_config->slave_id = dma_data->slave_id;
++	slave_config->peripheral_config = dma_data->peripheral_config;
++	slave_config->peripheral_size = dma_data->peripheral_size;
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
+ 
+-- 
+2.27.0
+
