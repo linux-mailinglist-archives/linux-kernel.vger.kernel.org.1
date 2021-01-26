@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1910304E56
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D5D304E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390650AbhA0A1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389536AbhAZRPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:15:03 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DE7C06178A;
-        Tue, 26 Jan 2021 09:14:32 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id jx18so2590226pjb.5;
-        Tue, 26 Jan 2021 09:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9RUQDUCB4nEFZH/9cXs5GJzrckaItKmxCSraWMnirXk=;
-        b=j3fMrSOEhbc64LKIGw9LoA5TX2A1MwYsnXX/wxqp5wCvR4f8+ezNT6wIaiEiNotTDF
-         RlpLsvybHJnsnPtzk4FI/S974NL47u+bIjWabBSNRi2h7IoAZaoE92RRFZSqVEtaX6gx
-         7U1+MXIHKskmB7XhcFLRy1mw1XDXCDxzXKQRdagTRclfQQtFFwJMGYngT/umYZ3hqxNL
-         8rOXGMJ+3SeQ3PSZiXr1VV+cRbHqvAnuDtjM9Pbh12UE2RrfUlmBO1qxEq0DTJGovjaC
-         t3cUkK9ZWenlRhQoi3gKdcWroQfpT5RLX79dquBmnGhgc6x8GxTyrefUipo8eSQfgkNE
-         IQ/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9RUQDUCB4nEFZH/9cXs5GJzrckaItKmxCSraWMnirXk=;
-        b=qqzf+Zn4HKqWUIEan4NJX+h2iB7veofJUsyPk4qt0brqOagMsup40emXKCX0/E5vtJ
-         QeOpc0MzPF7455clEPObCCteLZQnOsD0b/cFylxpIWkqXFZMvVa+oGNOX0rGBRo2xCvG
-         tGumwLRd6DnoxfeBAoHxYQLK43GSG7FBCCHkLmcNO7bQpmQjNjO/gqQr7kqRgSujYI1r
-         QNipA3rW7ep8rpQluV7JK4NEsqUcfzS1AV3hfLpKVNGXapdigmT0iU87D9gDMnb1UCXg
-         adg4LJVuESypOzqdaFtRvxq6HUIFtTSBTPP8WapPK/BIeRVZktaT7xVIN1k6vxOMK34c
-         Z5jw==
-X-Gm-Message-State: AOAM533mS99g/x9hNyF8hkcY4cW2Ht9H6fwOWhXnLmgXqUHUeHGzaXA4
-        hFYAkNLqbpymlziiPgBaY7wwdcQqJarn5sW32zo=
-X-Google-Smtp-Source: ABdhPJzYTKb9IEjRqjI7iyOcJZliWbdlre5eibcyLPnCNHKpuHHBAeMONkMRXQZEIX3rszJM5SLxXQ2HSlQ3BpSFjUE=
-X-Received: by 2002:a17:90b:716:: with SMTP id s22mr763424pjz.223.1611681272019;
- Tue, 26 Jan 2021 09:14:32 -0800 (PST)
+        id S2390735AbhA0A3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:29:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40312 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389583AbhAZRPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:15:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 64A15B913;
+        Tue, 26 Jan 2021 17:14:52 +0000 (UTC)
+To:     Timur Tabi <timur@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Petr Mladek <pmladek@suse.com>, roman.fietze@magna.com,
+        keescook@chromium.org, Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>, linux-mm@kvack.org,
+        Akinobu Mita <akinobu.mita@gmail.com>
+References: <20210116220950.47078-1-timur@kernel.org>
+ <20210118182635.GD2260413@casper.infradead.org>
+ <ed7e0656-9271-3ccf-ef88-153da1ee31c9@kernel.org>
+ <YAYtbbHAHeEwunkW@jagdpanzerIV.localdomain>
+ <20210119014725.GH2260413@casper.infradead.org>
+ <YAa2oCNWjExWlQTu@jagdpanzerIV.localdomain>
+ <09c70d6b-c989-ca23-7ee8-b404bb0490f0@suse.cz>
+ <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH 0/2] introduce DUMP_PREFIX_UNHASHED for hex dumps
+Message-ID: <083dd940-60c1-4cc8-fc89-8815b253d5c5@suse.cz>
+Date:   Tue, 26 Jan 2021 18:14:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20201220065025.116516-1-goldstein.w.n@gmail.com>
- <0cdf2aac-6364-742d-debb-cfd58b4c6f2b@gmail.com> <20201222021043.GA139782@gmail.com>
- <32c9ce7e-569d-3f94-535e-00e072de772e@gmail.com>
-In-Reply-To: <32c9ce7e-569d-3f94-535e-00e072de772e@gmail.com>
-From:   Noah Goldstein <goldstein.w.n@gmail.com>
-Date:   Tue, 26 Jan 2021 12:14:21 -0500
-Message-ID: <CAFUsyf+m8SseZ1NzZoYJe4KSH30v-XJeP5P9FvtxQT_5bvsK9Q@mail.gmail.com>
-Subject: Re: [PATCH] fs: io_uring.c: Add skip option for __io_sqe_files_update
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     noah <goldstein.n@wustl.edu>, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "open list:IO_URING" <io-uring@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cd9e7a31-e4f6-69d3-0648-c6228108b592@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 7:29 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 22/12/2020 02:10, Noah Goldstein wrote:
-> > On Sun, Dec 20, 2020 at 03:18:05PM +0000, Pavel Begunkov wrote:
-> >> On 20/12/2020 06:50, noah wrote:> From: noah <goldstein.n@wustl.edu>
-> >>>
-> >>> This patch makes it so that specify a file descriptor value of -2 will
-> >>> skip updating the corresponding fixed file index.
-> >>>
-> >>> This will allow for users to reduce the number of syscalls necessary
-> >>> to update a sparse file range when using the fixed file option.
-> >>
-> >> Answering the github thread -- it's indeed a simple change, I had it the
-> >> same day you posted the issue. See below it's a bit cleaner. However, I
-> >> want to first review "io_uring: buffer registration enhancements", and
-> >> if it's good, for easier merging/etc I'd rather prefer to let it go
-> >> first (even if partially).
->
-> Noah, want to give it a try? I've just sent a prep patch, with it you
-> can implement it cleaner with one continue.
->
+On 1/26/21 5:59 PM, Timur Tabi wrote:
+> On 1/26/21 10:47 AM, Vlastimil Babka wrote:
+>> Given Linus' current stance later in this thread, could we revive the idea of a
+>> boot time option, or at least a CONFIG (I assume a runtime toggle would be too
+>> much, even if limited to !kernel_lockdown:)  , that would disable all hashing?
+>> It would be really useful for a development/active debugging, as evidenced
+>> below. Thanks.
+> 
+> So you're saying:
+> 
+> if CONFIG_PRINTK_NEVER_HASH is disabled, then %p prints hashed addresses and %px
+> prints unhashed.
+> 
+> If CONFIG_PRINTK_NEVER_HASH is enabled, then %p and %px both print unhashed
+> addresses.
 
- Absolutely. Will get on it ASAP.
+Minimally, yes. KASLR is configurable like this, so why not printing of kernel
+pointers?
 
-> >>
-> >> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> >> index 941fe9b64fd9..b3ae9d5da17e 100644
-> >> --- a/fs/io_uring.c
-> >> +++ b/fs/io_uring.c
-> >> @@ -7847,9 +7847,8 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
-> >>      if (IS_ERR(ref_node))
-> >>              return PTR_ERR(ref_node);
-> >>
-> >> -    done = 0;
-> >>      fds = u64_to_user_ptr(up->fds);
-> >> -    while (nr_args) {
-> >> +    for (done = 0; done < nr_args; done++) {
-> >>              struct fixed_file_table *table;
-> >>              unsigned index;
-> >>
-> >> @@ -7858,7 +7857,10 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
-> >>                      err = -EFAULT;
-> >>                      break;
-> >>              }
-> >> -            i = array_index_nospec(up->offset, ctx->nr_user_files);
-> >> +            if (fd == IORING_REGISTER_FILES_SKIP)
-> >> +                    continue;
-> >> +
-> >> +            i = array_index_nospec(up->offset + done, ctx->nr_user_files);
-> >>              table = &ctx->file_data->table[i >> IORING_FILE_TABLE_SHIFT];
-> >>              index = i & IORING_FILE_TABLE_MASK;
-> >>              if (table->files[index]) {
-> >> @@ -7896,9 +7898,6 @@ static int __io_sqe_files_update(struct io_ring_ctx *ctx,
-> >>                              break;
-> >>                      }
-> >>              }
-> >> -            nr_args--;
-> >> -            done++;
-> >> -            up->offset++;
-> >>      }
-> >>
-> >>      if (needs_switch) {
->
-> --
-> Pavel Begunkov
+> I like this idea, and I would accept it as a solution if I had to, but I still
+> would also like for an option for print_hex_dump() to print unhashed addresses
+> even when CONFIG_PRINTK_NEVER_HASH is disabled.  I can't always recompile the
+> entire kernel for my testing purposes.
+
+Yeah, obviously a boot option would be nicer. The discussion Kees pointed to [1]
+seemed to be about papering over problems with entropy? Not about making
+development/debugging easier. But I understand it was not the first time and I
+didn't check the older ones.
+
+> The only drawback to this idea is: what happens if distros start enabling
+> CONFIG_PRINTK_NEVER_HASH by default, just because it makes debugging easier?
+
+There's tons of other options already where the choice is between security and
+performance, and distros make their choice (including, again, KASLR itself).
+Pointer hashing would be just another one.
+
+If it was a boot option, I would personally be for leaving hashing enabled by
+default, with opt-in boot option to disable it. Then if I'm instructing a user
+to boot the distro kernel (without recompile) with e.g. slub_debug or
+debug_pagealloc or page_owner in order to debug some issue, I would additionally
+instruct them to add the 'no_pointer_hashing' parameter.
+
+[1]
+https://lore.kernel.org/lkml/CA+55aFwieC1-nAs+NFq9RTwaR8ef9hWa4MjNBWL41F-8wM49eA@mail.gmail.com/
