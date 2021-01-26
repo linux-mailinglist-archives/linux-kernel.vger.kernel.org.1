@@ -2,130 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6173304DB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C62304DB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387868AbhAZXON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:14:13 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:62105 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbhAZFIw (ORCPT
+        id S2387883AbhAZXOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:14:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727377AbhAZFJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:08:52 -0500
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210126050805epoutp0177afbabca2abb7c986044bbacf37b4bc~dr__tW1sb0958209582epoutp012
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:08:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210126050805epoutp0177afbabca2abb7c986044bbacf37b4bc~dr__tW1sb0958209582epoutp012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611637685;
-        bh=vqROIDmaSvsLlGImacUn4JYph8r0jrP/w4/IEv9wYEo=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=HVsW/My4umhfWVAyqwAM7MV+A5uibjZ2b5Td9MsTlO8sDb22fWY+qGdaKJnxUnCr/
-         oqxbIjLTgc9CEU2fXukynnJVwnV5PpL8ZBmZatNNDdFTrdDhpwbQc99JYX/gAHKeIE
-         itS1t+1hCQc2n9iFh1YHRnDvpp0kljxLRxwMr1tc=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20210126050805epcas1p4b7af6e66c8d35407f9ecf503634b2876~dr__KJ87_0080400804epcas1p4H;
-        Tue, 26 Jan 2021 05:08:05 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DPvrN0V2Pz4x9Pw; Tue, 26 Jan
-        2021 05:08:04 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A9.8A.09577.3B3AF006; Tue, 26 Jan 2021 14:08:03 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210126050803epcas1p181f28ec96236552fad1901672aed6f2b~dr_83eSKy2695926959epcas1p1P;
-        Tue, 26 Jan 2021 05:08:03 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210126050803epsmtrp1bcddb9539ce6550404ff8c9361844fc2~dr_82uhZj2301423014epsmtrp1P;
-        Tue, 26 Jan 2021 05:08:03 +0000 (GMT)
-X-AuditID: b6c32a39-bfdff70000002569-a4-600fa3b3f05e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BC.AC.13470.3B3AF006; Tue, 26 Jan 2021 14:08:03 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210126050803epsmtip1a77f5a94ef9fe62dcc840b75bd7682fb~dr_8nohi52075620756epsmtip1M;
-        Tue, 26 Jan 2021 05:08:03 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Matthew Wilcox'" <willy@infradead.org>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sj1557.seo@samsung.com>, <syzkaller-bugs@googlegroups.com>,
-        "'syzbot'" <syzbot+da4fe66aaadd3c2e2d1c@syzkaller.appspotmail.com>
-In-Reply-To: 
-Subject: RE: UBSAN: shift-out-of-bounds in exfat_fill_super
-Date:   Tue, 26 Jan 2021 14:08:03 +0900
-Message-ID: <052101d6f3a1$3997c420$acc74c60$@samsung.com>
+        Tue, 26 Jan 2021 00:09:19 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC40C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 21:08:20 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d4so9179400plh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 21:08:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=FU71qPbIJQVTuxT6YbCDyAvn+zOVqEswtHSNOm8FjI0=;
+        b=Xhu/uOys82DIaKhKIWPIOFCE+R/lI/8W9VQ12UqkRsnR2WYYvyGb5vYTUwDmE39gg2
+         oyuI/FBGErVKFGrytbnMunurR/1y4by7R3UaxrH/dWmhJAmMergoLtpg5amFowBZoDmI
+         kAjKCrbP6BpuzCCgb8Vv+Ftu4AMzeF5k/VDiRqUBdvzHFRvkOMfTrqIyLnvuJO00+bax
+         xCK8y/Pw1UwXXPG9FGbzS+13SlgWQKi2wIuPDB1mCJFBTd35J4foW9JD+yDHOSygLWHR
+         cZmA8YwyGOIsoOvm6/JozQExERFKYmknox+Y2nkjsY1H9JaOajzEJKbMrD2Zn6BAQ5Rv
+         9u3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=FU71qPbIJQVTuxT6YbCDyAvn+zOVqEswtHSNOm8FjI0=;
+        b=YHTPtatz0e/jkVezZkRy7H1hq1tWlAVqLVuUDdv3aQ2OCUnRVwFLv5qiDUfmQG3BOh
+         qXQpGauxzJ2rH7kFzIscfVrmmU0uQ62MdyakNKN0MvRDeoeTjaZKfBbMPgV4SM/VvOlp
+         WhTlnl26q4rhEijrXsvcxqitGXrPVBJPiiISuiO/unG7CIYdlEXh2N7UYx9CYNSOBYDd
+         JFfwg3t4FsiIz5k9084zdLemmQmcHYWwjVZ3d9Nsh2ZDzJEWkCnpojpYcEma77A10fk+
+         n8UrKfRgJ2gDgAukRHkKPiKGEYW7mY0/0QUOIDqGyGL4Q+yGb8h29P5ntVbrQWteBHXX
+         Q2/w==
+X-Gm-Message-State: AOAM533XDS7hl9VkQSrHdoRDGpyhBHlTSWFpN8EXbuNiHvhVBeCMXjC7
+        WmdkarHxAkaWtfKK76am/j/InA==
+X-Google-Smtp-Source: ABdhPJyfHrpS93QjLT54XIVTxubgwCp8usm7xe/w0kMToYGrbPz6QqD6EeIEfcusqUuEtd2A4GZnZA==
+X-Received: by 2002:a17:902:523:b029:dc:1aa4:28e7 with SMTP id 32-20020a1709020523b02900dc1aa428e7mr4379086plf.4.1611637700060;
+        Mon, 25 Jan 2021 21:08:20 -0800 (PST)
+Received: from x1 ([2601:1c0:4701:ae70:dd5e:ff29:33fe:cad2])
+        by smtp.gmail.com with ESMTPSA id fv19sm933893pjb.20.2021.01.25.21.08.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 21:08:19 -0800 (PST)
+Date:   Mon, 25 Jan 2021 21:08:17 -0800
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: pinctl.rst instead of pinctrl.rst?
+Message-ID: <20210126050817.GA187797@x1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKx/jOXwjWHcb1Mo6E7TSXbn6EBcQJApmhQAe65oTeoYcKoMIAAB+GA
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphk+LIzCtJLcpLzFFi42LZdlhTX3fLYv4Eg7W2Fnv2nmSxuLxrDpvF
-        ln9HWC3uXWe0uLFlLrPF7x9z2BzYPPZMPMnmsXmFlkffllWMHjPfqnl83iQXwBqVY5ORmpiS
-        WqSQmpecn5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDtF1JoSwxpxQoFJBY
-        XKykb2dTlF9akqqQkV9cYquUWpCSU2BoUKBXnJhbXJqXrpecn2tlaGBgZApUmZCT0fblBWvB
-        BfaKO7cfMDcwrmbtYuTgkBAwkTix36qLkYtDSGAHo0TTkevsEM4nRollu/cyQTjfGCWW3mpn
-        gemY+54DIr6XUaJ5zzpGCOclo8Sn7p9sXYycHGwCuhL//uwHs0UEdCS6Xm5nBSliFjjBKHHl
-        zmmw3ZwCvBIT/lmD1AgLWEtMebobrJ5FQFVi3+0GdhCbV8BSYuGtaYwQtqDEyZlPWEBsZgF5
-        ie1v5zCD2BICChI/ny5jhdjlJnF49kmoGhGJ2Z1tUDVTOSSWveSEsF0kZjy+ywphC0u8Or6F
-        HcKWknjZ38YO8WS1xMf9UK0djBIvvttC2MYSN9dvALueWUBTYv0ufYiwosTO33MZIbbySbz7
-        2gMNXF6JjjYhiBJVib5Lh5kgbGmJrvYP7BMYlWYh+WsWkr9mIbl/FsKyBYwsqxjFUguKc9NT
-        iw0LTJFjehMjOFlqWe5gnP72g94hRiYOxkOMEhzMSiK8u/V4EoR4UxIrq1KL8uOLSnNSiw8x
-        mgJDeiKzlGhyPjBd55XEG5oaGRsbW5iYmZuZGiuJ8yYZPIgXEkhPLEnNTk0tSC2C6WPi4JRq
-        YCpKWnH34p3Kxjm1zvnGi7oux+ulWyRE35I/175ijdr0U4vjzzxUTpi0qM2gfwOvmc3dyUmq
-        jYJBBjarF56pWCjIu89Cadu3JUuqVFJfSzZ5XpabdPp+EBNj0n/rKO50h+i7Ezq267+eHX0i
-        yPukxuapggal292YoiotXJ6/NXs7/16dSeVu8/2R5VHPt7lMmhbTHlbdMXPZ3VKmh2fPpN59
-        ax+bs5/Hv4V3sXOoQ0L2HSab77wp+ldUz+jdKDzc4BiZYp4i81rwZo1tCP+7d6XnFor6dh2q
-        4FS8c8lR/uTarKkbj73bGJWu0riL76R5otjVia+PVTziZir137n/2Ycgx0mxD65mmFz2uPxr
-        jRJLcUaioRZzUXEiAKDGeHwfBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBLMWRmVeSWpSXmKPExsWy7bCSnO7mxfwJBlNfyFjs2XuSxeLyrjls
-        Flv+HWG1uHed0eLGlrnMFr9/zGFzYPPYM/Ekm8fmFVoefVtWMXrMfKvm8XmTXABrFJdNSmpO
-        Zllqkb5dAldG25cXrAUX2Cvu3H7A3MC4mrWLkYNDQsBEYu57ji5GLg4hgd2MEr8/f2DqYuQE
-        iktLHDtxhhmiRlji8OFiiJrnjBJXWjcxg9SwCehK/Puznw3EFhHQkeh6uZ0VpIhZ4AyjxPeu
-        6ywQHdsZJTp+/WEHmcQpwCsx4Z81SIOwgLXElKe7wZpZBFQl9t1uYAexeQUsJRbemsYIYQtK
-        nJz5hAWklVlAT6JtI1iYWUBeYvvbOcwQdypI/Hy6jBXiBjeJw7NPskDUiEjM7mxjnsAoPAvJ
-        pFkIk2YhmTQLSccCRpZVjJKpBcW56bnFhgWGeanlesWJucWleel6yfm5mxjBkaOluYNx+6oP
-        eocYmTgYDzFKcDArifDu1uNJEOJNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZq
-        akFqEUyWiYNTqoHpgNQ5hkvNM3Y8e7Kjd/GZ9/Y/Tz3MnerwcuGk+2n3TF8/PWU2t3VBMC+T
-        6IfXQpmGRnUiVhrT7kc+X91+dPZxM7bwjxM65y2JUFLceXlS0M8Aq1v9B9dvuVEeqzineFlY
-        zIWqLVlbbVX2KKnyxgjIeAhr2237I2If+qTlcMqdL5Yv9M6891bcpMrS3r40zbrom/aGwK9/
-        79RMXThLMm9Z1JTnng9nRb7+VPI5MU7o5JaJhlO2Pp/6++6SjrxvdjVbpz3/PM0qTbTjhYB2
-        HuNVKym562rt3tKvVqZMV39c1WArnL1lZUH4/ymBszftzs2yCcs9tdXQzVLmN3fs0j1yu6Oe
-        rPmmPG3v9uvPfvoLVCmxFGckGmoxFxUnAgBpP4tyCwMAAA==
-X-CMS-MailID: 20210126050803epcas1p181f28ec96236552fad1901672aed6f2b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210125184007epcas1p39999c1e4325b738e4ff5e42899b8f6b7
-References: <000000000000c2865c05b9bcee02@google.com>
-        <CGME20210125184007epcas1p39999c1e4325b738e4ff5e42899b8f6b7@epcas1p3.samsung.com>
-        <20210125183918.GH308988@casper.infradead.org> 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > On Mon, Jan 25, 2021 at 09:33:14AM -0800, syzbot wrote:
-> > > UBSAN: shift-out-of-bounds in fs/exfat/super.c:471:28 shift exponent
-> > > 4294967294 is too large for 32-bit type 'int'
-> >
-> > This is an integer underflow:
-> >
-> >         sbi->dentries_per_clu = 1 <<
-> >                 (sbi->cluster_size_bits - DENTRY_SIZE_BITS);
-> >
-> > I think the problem is that there is no validation of sect_per_clus_bits.
-> > We should check it is at least DENTRY_SIZE_BITS and probably that it's
-> > less than ... 16?  64?  I don't know what legitimate values are in this field, but I would imagine
-> that 255 is completely unacceptable.
-> exfat specification describe sect_per_clus_bits field of boot sector could be at most 32 and at least
-                                                                                                 typo ^^16
-> 0. And sect_size_bits can also affect this calculation, It also needs validation.
-> I will fix it.
-> Thanks!
+I was having trouble finding the pinctrl rst documentation until I
+realized it is named pinctl with no 'r':
 
+Documentation/driver-api/pinctl.rst
+
+Is there a reason for this?
+
+Is it worth me submitting a patch to rename and change tree-wide
+references?
+
+Thanks,
+Drew
