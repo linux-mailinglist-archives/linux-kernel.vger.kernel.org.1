@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FE2303BD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EAA303C0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405311AbhAZLjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:39:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:60928 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404267AbhAZKlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:41:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08040113E;
-        Tue, 26 Jan 2021 02:40:33 -0800 (PST)
-Received: from e123648.arm.com (unknown [10.57.2.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 55E0A3F66B;
-        Tue, 26 Jan 2021 02:40:30 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
-        Dietmar.Eggemann@arm.com, lukasz.luba@arm.com, amitk@kernel.org,
-        rui.zhang@intel.com, cw00.choi@samsung.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-Subject: [RFC][PATCH 3/3] thermal: power_allocator: get proper max power limited by user
-Date:   Tue, 26 Jan 2021 10:40:01 +0000
-Message-Id: <20210126104001.20361-4-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210126104001.20361-1-lukasz.luba@arm.com>
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
+        id S2405384AbhAZLjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:39:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404228AbhAZKmr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:42:47 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC04C061573;
+        Tue, 26 Jan 2021 02:42:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=hr2jNE3FMs8l6Tfz1HIwxXewKUv5fGgvc4zfcKNrlaA=; b=WEjIlqkhoVgDHdg9Ci9uC20sx
+        Aq1xjvy8PWLCLqhxTv70yicvH+0kQAObTd0/f5e+0xFweCfTW1eThsfgw69Wqj+VBXTZsNd2j8hoT
+        fSgHaIniEvMfRZKBIcSRlaUv8TJHVSKuBViU6pScN25mk7DhylHilRVZZImp/bOqeBszQ/rJ9lwbr
+        OrhK0yRPaGHjC7MX78I7otVrF+x9Z4vD6alNVN3KqU0ashV2KonhjSEGtgYnfMcKLVOMShZEk2SHL
+        xYpxuF9hV0A6H/lMUHaQFeljsooO23dqnz1ZUtyOVWNu6AgqYX7L9ABu+UlenVS2SEatkKZEJnBE6
+        o5pnSNlug==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52916)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l4LnI-0004Hj-Tt; Tue, 26 Jan 2021 10:41:57 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l4LnH-0003jP-6L; Tue, 26 Jan 2021 10:41:55 +0000
+Date:   Tue, 26 Jan 2021 10:41:55 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm: smp: remove unused variable
+Message-ID: <20210126104155.GF1551@shell.armlinux.org.uk>
+References: <20201228120147.59387-1-wsa+renesas@sang-engineering.com>
+ <CAMuHMdWD-8YxdrTmaTW7YTOFj+8hHM5LvegnC274QOTOO_gXcg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdWD-8YxdrTmaTW7YTOFj+8hHM5LvegnC274QOTOO_gXcg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new API interface to get the maximum power of the cooling device. This
-is needed to properly allocate and split the total power budget. The
-allowed limit is taken from supported cooling device and then checked with
-limits set in DT. The final state value is used for asking for the related
-power value the cooling device.
+On Tue, Jan 26, 2021 at 11:04:47AM +0100, Geert Uytterhoeven wrote:
+> Hi Wolfram,
+> 
+> On Mon, Dec 28, 2020 at 1:03 PM Wolfram Sang
+> <wsa+renesas@sang-engineering.com> wrote:
+> > Not used anymore after refactoring:
+> >
+> > arch/arm/kernel/smp.c: In function ‘show_ipi_list’:
+> > arch/arm/kernel/smp.c:543:16: warning: variable ‘irq’ set but not used [-Wunused-but-set-variable]
+> >   543 |   unsigned int irq;
+> >
+> > Fixes: 88c637748e31 ("ARM: smp: Use irq_desc_kstat_cpu() in show_ipi_list()")
+> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> 
+> Known issue since Dec 15, and still not fixed...
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- drivers/thermal/gov_power_allocator.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+Those who cause breakage really should be the ones to look at patches
+that fix their breakage.
 
-diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-index 92acae53df49..ec33fba5a358 100644
---- a/drivers/thermal/gov_power_allocator.c
-+++ b/drivers/thermal/gov_power_allocator.c
-@@ -308,6 +308,20 @@ power_actor_set_power(struct thermal_cooling_device *cdev,
- 	return 0;
- }
- 
-+static int
-+power_actor_get_max_power(struct thermal_cooling_device *cdev,
-+			  struct thermal_instance *instance, u32 *max_power)
-+{
-+	unsigned long min_state = 0;
-+
-+	if (cdev->ops->get_user_min_state)
-+		cdev->ops->get_user_min_state(cdev, &min_state);
-+
-+	min_state = max(instance->lower, min_state);
-+
-+	return cdev->ops->state2power(cdev, min_state, max_power);
-+}
-+
- /**
-  * divvy_up_power() - divvy the allocated power between the actors
-  * @req_power:	each actor's requested power
-@@ -455,8 +469,7 @@ static int allocate_power(struct thermal_zone_device *tz,
- 
- 		weighted_req_power[i] = frac_to_int(weight * req_power[i]);
- 
--		if (cdev->ops->state2power(cdev, instance->lower,
--					   &max_power[i]))
-+		if (power_actor_get_max_power(cdev, instance, &max_power[i]))
- 			continue;
- 
- 		total_req_power += req_power[i];
+The way patches get applied is if they end up in my patch system... if
+they don't make it there, they don't get applied.
+
 -- 
-2.17.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
