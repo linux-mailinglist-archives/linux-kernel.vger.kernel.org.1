@@ -2,202 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E360A303ECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE92303ED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404644AbhAZNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:33:58 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11510 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404592AbhAZNdF (ORCPT
+        id S2404827AbhAZNgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:36:41 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55212 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404592AbhAZNe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:33:05 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQ70p5v8Jzj4x4;
-        Tue, 26 Jan 2021 21:31:06 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.162) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Tue, 26 Jan 2021
- 21:32:09 +0800
-Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
- external aborts occur in user-mode
-To:     <james.morse@arm.com>, <lenb@kernel.org>
-References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
-CC:     <rafael@kernel.org>, <rjw@rjwysocki.net>, <tony.luck@intel.com>,
-        <bp@alien8.de>, <akpm@linux-foundation.org>, <jroedel@suse.de>,
-        <peterz@infradead.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-From:   tanxiaofei <tanxiaofei@huawei.com>
-Message-ID: <94a38a33-a949-3cce-d617-e1476912596e@huawei.com>
-Date:   Tue, 26 Jan 2021 21:32:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Tue, 26 Jan 2021 08:34:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMzR8Xr_1611668024;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UMzR8Xr_1611668024)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Jan 2021 21:33:44 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     axboe@kernel.dk, tj@kernel.org
+Cc:     joseph.qi@linux.alibaba.com, baolin.wang@linux.alibaba.com,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] blk-cgroup: Use cond_resched() when destroy blkgs
+Date:   Tue, 26 Jan 2021 21:33:25 +0800
+Message-Id: <8f4fb91ced02e58ef425189c83214086f1154a0c.1611664710.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.192.162]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@James
-Hi James, please help to review this patch. Thank you very much. :)
+On !PREEMPT kernel, we can get below softlockup when doing stress
+testing with creating and destroying block cgroup repeatly. The
+reason is it may take a long time to acquire the queue's lock in
+the loop of blkcg_destroy_blkgs(), thus we can use cond_resched()
+instead of cpu_relax() to avoid this issue, since the
+blkcg_destroy_blkgs() is not called from atomic contexts.
 
-On 2020/12/10 20:09, Xiaofei Tan wrote:
-> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
-> synchronise with APEI's irq work") applied, do_sea() return directly
-> for user-mode if apei_claim_sea() handled any error record. Therefore,
-> each error record reported by the user-mode SEA must be effectively
-> processed in APEI GHES driver.
->
-> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
-> Error Section, as it has nothing to do with SEA). It is not enough.
-> Because ARM Processor Error could also be used for SEA in some hardware
-> platforms, such as Kunpeng9xx series. We can't ask them to switch to
-> use Memory Error Section for two reasons:
-> 1)The server was delivered to customers, and it will introduce
-> compatibility issue.
-> 2)It make sense to use ARM Processor Error Section. Because either
-> cache or memory errors could generate SEA when consumed by a processor.
->
-> Do memory failure handling for ARM Processor Error Section just like
-> for Memory Error Section.
->
-> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> ---
-> Changes since v4:
-> - 1. Change the patch name from " ACPI / APEI: do memory failure on the
-> physical address reported by ARM processor error section" to this
-> more proper one.
-> - 2. Add a comment in the code to tell why not filter out corrected
-> error in an uncorrected section.
->
-> Changes since v3:
-> - Print unhandled error following James Morse's advice.
->
-> Changes since v2:
-> - Updated commit log
-> ---
->  drivers/acpi/apei/ghes.c | 76 +++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 59 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index fce7ade..0893968 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
->  	gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
->  }
->
-> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> -				       int sev)
-> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
->  {
->  	unsigned long pfn;
-> -	int flags = -1;
-> -	int sec_sev = ghes_severity(gdata->error_severity);
-> -	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
->
->  	if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
->  		return false;
->
-> -	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> -		return false;
-> -
-> -	pfn = mem_err->physical_addr >> PAGE_SHIFT;
-> +	pfn = PHYS_PFN(physical_addr);
->  	if (!pfn_valid(pfn)) {
->  		pr_warn_ratelimited(FW_WARN GHES_PFX
->  		"Invalid address in generic error data: %#llx\n",
-> -		mem_err->physical_addr);
-> +		physical_addr);
->  		return false;
->  	}
->
-> +	memory_failure_queue(pfn, flags);
-> +	return true;
-> +}
-> +
-> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
-> +				       int sev)
-> +{
-> +	int flags = -1;
-> +	int sec_sev = ghes_severity(gdata->error_severity);
-> +	struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
-> +
-> +	if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
-> +		return false;
-> +
->  	/* iff following two events can be handled properly by now */
->  	if (sec_sev == GHES_SEV_CORRECTED &&
->  	    (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
-> @@ -470,14 +477,51 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
->  	if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
->  		flags = 0;
->
-> -	if (flags != -1) {
-> -		memory_failure_queue(pfn, flags);
-> -		return true;
-> -	}
-> +	if (flags != -1)
-> +		return ghes_do_memory_failure(mem_err->physical_addr, flags);
->
->  	return false;
->  }
->
-> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
-> +{
-> +	struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> +	struct cper_arm_err_info *err_info;
-> +	bool queued = false;
-> +	int sec_sev, i;
-> +
-> +	log_arm_hw_error(err);
-> +
-> +	sec_sev = ghes_severity(gdata->error_severity);
-> +	if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
-> +		return false;
-> +
-> +	err_info = (struct cper_arm_err_info *) (err + 1);
-> +	for (i = 0; i < err->err_info_num; i++, err_info++) {
-> +		bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
-> +		bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
-> +
-> +		/*
-> +		 * The field (err_info->error_info & BIT(26)) is fixed to set to
-> +		 * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
-> +		 * firmware won't mix corrected errors in an uncorrected section,
-> +		 * and don't filter out 'corrected' error here.
-> +		 */
-> +		if (!is_cache || !has_pa) {
-> +			pr_warn_ratelimited(FW_WARN GHES_PFX
-> +			"Unhandled processor error type %s\n",
-> +			err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
-> +			cper_proc_error_type_strs[err_info->type] : "unknown error");
-> +			continue;
-> +		}
-> +
-> +		if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
-> +			queued = true;
-> +	}
-> +
-> +	return queued;
-> +}
-> +
->  /*
->   * PCIe AER errors need to be sent to the AER driver for reporting and
->   * recovery. The GHES severities map to the following AER severities and
-> @@ -605,9 +649,7 @@ static bool ghes_do_proc(struct ghes *ghes,
->  			ghes_handle_aer(gdata);
->  		}
->  		else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
-> -			struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
-> -
-> -			log_arm_hw_error(err);
-> +			queued = ghes_handle_arm_hw_error(gdata, sev);
->  		} else {
->  			void *err = acpi_hest_get_payload(gdata);
->
->
+[ 4757.010308] watchdog: BUG: soft lockup - CPU#11 stuck for 94s!
+[ 4757.010698] Call trace:
+[ 4757.010700]  blkcg_destroy_blkgs+0x68/0x150
+[ 4757.010701]  cgwb_release_workfn+0x104/0x158
+[ 4757.010702]  process_one_work+0x1bc/0x3f0
+[ 4757.010704]  worker_thread+0x164/0x468
+[ 4757.010705]  kthread+0x108/0x138
+
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ block/blk-cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 3465d6e..af7c0ce 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1028,7 +1028,7 @@ void blkcg_destroy_blkgs(struct blkcg *blkcg)
+ 			spin_unlock(&q->queue_lock);
+ 		} else {
+ 			spin_unlock_irq(&blkcg->lock);
+-			cpu_relax();
++			cond_resched();
+ 			spin_lock_irq(&blkcg->lock);
+ 		}
+ 	}
+-- 
+1.8.3.1
 
