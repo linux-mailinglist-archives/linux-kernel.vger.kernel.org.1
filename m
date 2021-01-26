@@ -2,167 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62542303ECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD634303ED5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404632AbhAZNdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:33:13 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55618 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404444AbhAZNcH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:32:07 -0500
-X-UUID: 1c850dbb11be4f359ea5f03d2d240bd8-20210126
-X-UUID: 1c850dbb11be4f359ea5f03d2d240bd8-20210126
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1390792882; Tue, 26 Jan 2021 21:31:20 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 21:31:18 +0800
-Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 21:31:18 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
-        mtk22786 <Mason.Zhang@mediatek.com>,
-        Mason Zhang <mason.zhang@mediatek.com>
-Subject: [PATCH v1 1/1] arm64: dts: mt6779: add spi host dts nodes
-Date:   Tue, 26 Jan 2021 21:18:39 +0800
-Message-ID: <20210126131839.2168-2-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210126131839.2168-1-mason.zhang@mediatek.com>
-References: <20210126131839.2168-1-mason.zhang@mediatek.com>
+        id S2404715AbhAZNgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:36:00 -0500
+Received: from mga06.intel.com ([134.134.136.31]:48273 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392005AbhAZN0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:26:43 -0500
+IronPort-SDR: Ksr2gGZ7dn03b/85c1HgNMlPduJ5NJC4EiCDNMkUNQVcrdHtToYzTjEMhgvdUx+T9+FNarGHaf
+ N+TpHz0X3cag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="241429103"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="241429103"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 05:24:53 -0800
+IronPort-SDR: g4Zswe3qz4zMid/EyEG5xz4WWhFPriWd/t2t5KrG0ShP0j9WNEEJayXNCJQTEkRkM2/IHRNzgx
+ zk+bb8SSGplQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="369103591"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga002.jf.intel.com with SMTP; 26 Jan 2021 05:24:36 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 26 Jan 2021 15:24:35 +0200
+Date:   Tue, 26 Jan 2021 15:24:35 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        dri-devel@lists.freedesktop.org, Sandy Huang <hjc@rock-chips.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-tegra@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Marek Vasut <marex@denx.de>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-rockchip@lists.infradead.org,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        freedreno@lists.freedesktop.org,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-msm@vger.kernel.org,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        virtualization@lists.linux-foundation.org,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Alison Wang <alison.wang@nxp.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        linux-renesas-soc@vger.kernel.org, linux-mips@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-mediatek@lists.infradead
+Subject: Re: [PATCH v2 10/11] drm: Use state helper instead of the plane
+ state pointer
+Message-ID: <YBAYE4YH4bgURmuf@intel.com>
+References: <20210121163537.1466118-1-maxime@cerno.tech>
+ <20210121163537.1466118-10-maxime@cerno.tech>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 3CEE20003B000953DADB1DA8BE2D11D7441859CF93F43EF4A6FEB6449928E85B2000:8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210121163537.1466118-10-maxime@cerno.tech>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: mtk22786 <Mason.Zhang@mediatek.com>
+On Thu, Jan 21, 2021 at 05:35:35PM +0100, Maxime Ripard wrote:
+> Many drivers reference the plane->state pointer in order to get the
+> current plane state in their atomic_update or atomic_disable hooks,
+> which would be the new plane state in the global atomic state since
+> _swap_state happened when those hooks are run.
+> 
+> Use the drm_atomic_get_new_plane_state helper to get that state to make it
+> more obvious.
+> 
+> This was made using the coccinelle script below:
+> 
+> @ plane_atomic_func @
+> identifier helpers;
+> identifier func;
+> @@
+> 
+> (
+>  static const struct drm_plane_helper_funcs helpers = {
+>  	...,
+>  	.atomic_disable = func,
+> 	...,
+>  };
+> |
+>  static const struct drm_plane_helper_funcs helpers = {
+>  	...,
+>  	.atomic_update = func,
+> 	...,
+>  };
+> )
+> 
+> @ adds_new_state @
+> identifier plane_atomic_func.func;
+> identifier plane, state;
+> identifier new_state;
+> @@
+> 
+>  func(struct drm_plane *plane, struct drm_atomic_state *state)
+>  {
+>  	...
+> -	struct drm_plane_state *new_state = plane->state;
+> +	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state, plane);
+> 	...
+>  }
+> 
+> @ include depends on adds_new_state @
+> @@
+> 
+>  #include <drm/drm_atomic.h>
+> 
+> @ no_include depends on !include && adds_new_state @
+> @@
+> 
+> + #include <drm/drm_atomic.h>
+>   #include <drm/...>
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-this patch add spi host dts nodes for mt6779 IC.
+Looks great.
 
-Change-Id: If4a3cbb09843f472210b390352db4b9886f5c00c
-Signed-off-by: Mason Zhang <mason.zhang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt6779.dtsi | 96 ++++++++++++++++++++++++
- 1 file changed, 96 insertions(+)
+Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-index 370f309d32de..272f4346d35e 100644
---- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-@@ -219,6 +219,102 @@
- 			status = "disabled";
- 		};
- 
-+		spi0: spi0@1100a000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi1: spi1@11010000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi2: spi2@11012000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi3: spi3@11013000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi4: spi4@11018000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi5: spi5@11019000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi6: spi6@1101d000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101d000 0 0x1000>;
-+			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI6>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi7: spi7@1101e000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101e000 0 0x1000>;
-+			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI7>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
- 		audio: clock-controller@11210000 {
- 			compatible = "mediatek,mt6779-audio", "syscon";
- 			reg = <0 0x11210000 0 0x1000>;
 -- 
-2.18.0
-
+Ville Syrjälä
+Intel
