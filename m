@@ -2,86 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D6304EF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F36304F09
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404822AbhA0B3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:29:51 -0500
-Received: from foss.arm.com ([217.140.110.172]:52150 "EHLO foss.arm.com"
+        id S1727529AbhA0Be7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:34:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727140AbhAZSej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:34:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2E0D106F;
-        Tue, 26 Jan 2021 10:33:47 -0800 (PST)
-Received: from [10.37.12.25] (unknown [10.37.12.25])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2E5A3F66B;
-        Tue, 26 Jan 2021 10:33:45 -0800 (PST)
-Subject: Re: [PATCH] arm64: Fix kernel address detection of __is_lm_address()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, stable@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20210126134056.45747-1-vincenzo.frascino@arm.com>
- <20210126163638.GA3509@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <1fe8bff7-3ed2-ae96-e52b-dad59cd22539@arm.com>
-Date:   Tue, 26 Jan 2021 18:37:39 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2390777AbhAZSii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:38:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2115222228;
+        Tue, 26 Jan 2021 18:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611686275;
+        bh=xUeA3b+24ASFTVknmkJ3IDzVp+8929p2ULJFb29osFE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U0ablg5T6qZtXP2ARalwLVEog0zkjGaO2/u2WJdTvirQfIzxSc7I1o4JuSy+1hSXO
+         +07VPZmdtqzq6Hw/laDccCMhP8OpIKcBOl1squbx27aJp+q/svkeojv2SE6a+gLLwk
+         /DcPaPWUJsnevHhnqF1WhrAWT0mDT5wMIAJIDZYU=
+Date:   Tue, 26 Jan 2021 19:37:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Samuel Thibault <samuel.thibault@ens-lyon.org>
+Cc:     linux-kernel@vger.kernel.org, speakup@linux-speakup.org
+Subject: Re: [PATCH 1/4] This merely adds the missing synth parameter to all
+ io functions.
+Message-ID: <YBBhgVZpTn9T2eL5@kroah.com>
+References: <20210111223737.697336-1-samuel.thibault@ens-lyon.org>
+ <20210111223737.697336-2-samuel.thibault@ens-lyon.org>
 MIME-Version: 1.0
-In-Reply-To: <20210126163638.GA3509@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111223737.697336-2-samuel.thibault@ens-lyon.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 11, 2021 at 11:37:34PM +0100, Samuel Thibault wrote:
+> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
+I can't take a patch without any changelog text :(
 
-On 1/26/21 4:36 PM, Catalin Marinas wrote:
-> On Tue, Jan 26, 2021 at 01:40:56PM +0000, Vincenzo Frascino wrote:
->> Currently, the __is_lm_address() check just masks out the top 12 bits
->> of the address, but if they are 0, it still yields a true result.
->> This has as a side effect that virt_addr_valid() returns true even for
->> invalid virtual addresses (e.g. 0x0).
->>
->> Fix the detection checking that it's actually a kernel address starting
->> at PAGE_OFFSET.
->>
->> Fixes: f4693c2716b35 ("arm64: mm: extend linear region for 52-bit VA configurations")
->> Cc: <stable@vger.kernel.org> # 5.4.x
-> 
-> Not sure what happened with the Fixes tag but that's definitely not what
-> it fixes. The above is a 5.11 commit that preserves the semantics of an
-> older commit. So it should be:
-> 
-> Fixes: 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using __is_lm_address()")
-> 
+Can you fix this up and resend the series?  Sorry for the delay in
+reviewing this.
 
-Yes that is correct. I moved the release to which applies backword but I forgot
-to update the fixes tag I suppose.
-
-...
-
-> 
-> Anyway, no need to repost, I can update the fixes tag myself.
->
-
-Thank you for this.
-
-> In terms of stable backports, it may be cleaner to backport 7bc1a0f9e176
-> ("arm64: mm: use single quantity to represent the PA to VA translation")
-> which has a Fixes tag already but never made it to -stable. On top of
-> this, we can backport Ard's latest f4693c2716b35 ("arm64: mm: extend
-> linear region for 52-bit VA configurations"). I just tried these locally
-> and the conflicts were fairly trivial.
-> 
-
-Ok, thank you for digging it. I will give it a try tomorrow.
-
--- 
-Regards,
-Vincenzo
+greg k-h
