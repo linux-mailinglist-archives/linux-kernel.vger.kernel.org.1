@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9BF304579
+	by mail.lfdr.de (Postfix) with ESMTP id 8033E30457A
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392557AbhAZRin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:38:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58664 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387605AbhAZHtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:49:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CF3AEAD4E;
-        Tue, 26 Jan 2021 07:48:24 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 08:48:20 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
- vmemmap pages associated with each HugeTLB page
-Message-ID: <20210126074815.GA8809@linux>
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
- <6a68fde-583d-b8bb-a2c8-fbe32e03b@google.com>
- <CAMZfGtXpg30RhrPm836S6Tr09ynKRPG=_DXtXt9sVTTponnC-g@mail.gmail.com>
- <CAMZfGtX19x8m+Bkvj+8Ue31m5L_4DmgtZevp2fd++JL7nuSzWw@mail.gmail.com>
- <552e8214-bc6f-8d90-0ed8-b3aff75d0e47@redhat.com>
- <CAMZfGtWK=zBri_zAx=uP_dLv2Kh-2_vfjAyN7XtESwqukg5Eug@mail.gmail.com>
- <b8ef43c1-e4b5-eae2-0cdf-1ce25accc36f@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8ef43c1-e4b5-eae2-0cdf-1ce25accc36f@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2392595AbhAZRiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:38:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389482AbhAZHuu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:50:50 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1F5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:50:02 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id t8so11077425ljk.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=QzNr7Y36ceZ98RJN+WjlQV3oeSFVn4zACIduR95Oy6w=;
+        b=YMB8K50GIVNRpC0zCf5QxVa16FCljbVWL2+bEBT+BXpkJvwwah/jjSyt3rAn2FV3eq
+         3Ht3q/hPN187G3xvyqaETyQkgy1AhyJ544lujYGu3JqBnYz9/OqJo71R7FMTJxE1BATB
+         UFSxUViJ1rOyidSmEJFKCCKjmouKQzyz9/fGmkxyuMNSEy82BnzYKml+mkcpjwvA58/N
+         dTWmFLIFs9pjMwj8mmqDSEsQpXl+nPIS3xxkMHNgt7EtSqdfEfU/dwN8YROOO0AU5BW5
+         rUN186YmBRr5gjXTjURMPYYDcvNR42MzcuGEbyNQqMLdICSW+KdLgda1KbED9ThhH03q
+         LOqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=QzNr7Y36ceZ98RJN+WjlQV3oeSFVn4zACIduR95Oy6w=;
+        b=miG1Zw2QX7HcLdmeVDMCoqAGOxbsRqiEqAdUGFvQku6MeFD3bdw3u5Rr9Q9rWZNfXA
+         WNKzI5IiL1bzNZ4ml/HOaGlCLYi5/xRG9P7HelTJ/x9tcqEHRpZNcTQYK9Mnvx+xo6fN
+         z8ly7Btc36vJ3GYDMblNQjHxLNwVudUwgi23hI+/sLGcr5o1ivP475vc5h0Bl9SCt+X9
+         jhkzrgWzPo1X+ZIkDlbX00/o5CYRSpWfzf3HEXtb6hxOARy1bKcRURkLuBcbI+v9RKx0
+         XtHzY7aiU8DUAJcaKkjk6bE+cvR0hjeLpGtZN2ZZVxs726slYjOrEed5XJD9cKrTD+b5
+         iSHQ==
+X-Gm-Message-State: AOAM530pfaP0AAmzr2MmiB+dA3nsgMHHGR0lx1BNLu1CfzUkWoI8B1sJ
+        WR18hTsaurcWs7QSvJZtii/d5w==
+X-Google-Smtp-Source: ABdhPJzGj0hsn5+J9qBrOrmv41eiastPsTnom0tHpYcTffF0mdgOwieJ0RsqviboExS19wjT1ye9CQ==
+X-Received: by 2002:a2e:94d0:: with SMTP id r16mr2232979ljh.332.1611647400805;
+        Mon, 25 Jan 2021 23:50:00 -0800 (PST)
+Received: from localhost.localdomain ([85.249.43.69])
+        by smtp.googlemail.com with ESMTPSA id j2sm2401068lfe.134.2021.01.25.23.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 23:50:00 -0800 (PST)
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+To:     mchehab@kernel.org, dave.stevenson@raspberrypi.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sakari.ailus@linux.intel.com, peter.griffin@linaro.org,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Subject: [PATCH] media: i2c: imx219: Implement V4L2_CID_LINK_FREQ control
+Date:   Tue, 26 Jan 2021 10:49:34 +0300
+Message-Id: <20210126074934.26980-1-andrey.konovalov@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 03:25:35PM -0800, Mike Kravetz wrote:
-> IIUC, even non-gigantic hugetlb pages can exist in CMA.  They can be migrated
-> out of CMA if needed (except free pages in the pool, but that is a separate
-> issue David H already noted in another thread).
+This control is needed for imx219 driver, as the link frequency
+is independent from the pixel rate in this case, and can't be
+calculated from the pixel rate.
 
-Yeah, as discussed I am taking a look at that.
+Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+---
+ drivers/media/i2c/imx219.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+index 92a8d52776b8..6e3382b85a90 100644
+--- a/drivers/media/i2c/imx219.c
++++ b/drivers/media/i2c/imx219.c
+@@ -390,6 +390,10 @@ static const struct imx219_reg raw10_framefmt_regs[] = {
+ 	{0x0309, 0x0a},
+ };
  
-> When we first started discussing this patch set, one suggestion was to force
-> hugetlb pool pages to be allocated at boot time and never permit them to be
-> freed back to the buddy allocator.  A primary reason for the suggestion was
-> to avoid this issue of needing to allocate memory when freeing a hugetlb page
-> to buddy.  IMO, that would be an unreasonable restriction for many existing
-> hugetlb use cases.
-
-AFAIK it was suggested as a way to simplify things in the first go of this
-patchset.
-Please note that the first versions of this patchset was dealing with PMD
-mapped vmemmap pages and overall it was quite convulated for a first
-version.
-Since then, things had simplified quite a lot (e.g: we went from 22 patches to 12),
-so I do not feel the need to force the pages to be allocated at boot time.
-
-> A simple thought is that we simply fail the 'freeing hugetlb page to buddy'
-> if we can not allocate the required vmemmap pages.  However, as David R says
-> freeing hugetlb pages to buddy is a reasonable way to free up memory in oom
-> situations.  However, failing the operation 'might' be better than looping
-> forever trying to allocate the pages needed?  As mentioned in the previous
-> patch, it would be better to use GFP_ATOMIC to at least dip into reserves if
-> we can.
-
-I also agree that GFP_ATOMIC might make some sense.
-If the system is under memory pressure, I think it is best if we go the extra
-mile in order to free up to 4096 pages or 512 pages.
-Otherwise we might have a nice hugetlb page we might not need and a lack of
-memory.
-
-> I think using pages of the hugetlb for vmemmap to cover pages of the hugetlb
-> is the only way we can guarantee success of freeing a hugetlb page to buddy.
-> However, this should only only be used when there is no other option and could
-> result in vmemmap pages residing in CMA or ZONE_MOVABLE.  I'm not sure how
-> much better this is than failing the free to buddy operation.
-
-And how would you tell when there is no other option?
-
-> I don't have a solution.  Just wanted to share some thoughts.
-> 
-> BTW, just thought of something else.  Consider offlining a memory section that
-> contains a free hugetlb page.  The offline code will try to disolve the hugetlb
-> page (free to buddy).  So, vmemmap pages will need to be allocated.  We will
-> try to allocate vmemap pages on the same node as the hugetlb page.  But, if
-> this memory section is the last of the node all the pages will have been
-> isolated and no allocations will succeed.  Is that a possible scenario, or am
-> I just having too many negative thoughts?
-
-IIUC, GFP_ATOMIC will reset ALLOC_CPUSET flags at some point and the nodemask will
-be cleared, so I guess the system will try to allocate from another node.
-But I am not sure about that one.
-
-I would like to hear Michal's thoughts on this.
-
-
++static const s64 imx219_link_freq_menu[] = {
++	IMX219_DEFAULT_LINK_FREQ,
++};
++
+ static const char * const imx219_test_pattern_menu[] = {
+ 	"Disabled",
+ 	"Color Bars",
+@@ -547,6 +551,7 @@ struct imx219 {
+ 	struct v4l2_ctrl_handler ctrl_handler;
+ 	/* V4L2 Controls */
+ 	struct v4l2_ctrl *pixel_rate;
++	struct v4l2_ctrl *link_freq;
+ 	struct v4l2_ctrl *exposure;
+ 	struct v4l2_ctrl *vflip;
+ 	struct v4l2_ctrl *hflip;
+@@ -1269,7 +1274,7 @@ static int imx219_init_controls(struct imx219 *imx219)
+ 	int i, ret;
+ 
+ 	ctrl_hdlr = &imx219->ctrl_handler;
+-	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 11);
++	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 12);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1283,6 +1288,14 @@ static int imx219_init_controls(struct imx219 *imx219)
+ 					       IMX219_PIXEL_RATE, 1,
+ 					       IMX219_PIXEL_RATE);
+ 
++	imx219->link_freq =
++		v4l2_ctrl_new_int_menu(ctrl_hdlr, &imx219_ctrl_ops,
++				       V4L2_CID_LINK_FREQ,
++				       ARRAY_SIZE(imx219_link_freq_menu) - 1, 0,
++				       imx219_link_freq_menu);
++	if (imx219->link_freq)
++		imx219->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
++
+ 	/* Initial vblank/hblank/exposure parameters based on current mode */
+ 	imx219->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx219_ctrl_ops,
+ 					   V4L2_CID_VBLANK, IMX219_VBLANK_MIN,
 -- 
-Oscar Salvador
-SUSE L3
+2.17.1
+
