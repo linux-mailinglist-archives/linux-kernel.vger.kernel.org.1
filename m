@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABAB303AE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBCD303ADE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404525AbhAZKzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:55:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45316 "EHLO mail.kernel.org"
+        id S1732498AbhAZKz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:55:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726851AbhAZDUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727045AbhAZDUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 22:20:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id EAAE022AAC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id F332F22D04;
         Tue, 26 Jan 2021 03:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611631211;
-        bh=0BYXnPwP/7+FDy+ACZrXbGfA1ZDJYTwE8vtnENsCVNQ=;
+        bh=Eq7bieJZtKDYCyu5A++q0xsq5LHk5AJNhRbeLAevgdk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=F/7gZBD48vDK9w4c64ZBsQ03x7wkIpODzeFTv/nX6uTsAN0IYL3aQRIZfgACk7x0v
-         ve2Rgg9PU4PTiRZhpCJ4mLIMttr6L/4dLszZtuZWqRgQvVACFvNIeFKclCnqgj6zQS
-         qy2DqvAOtyLPaxc3kF8GqNJbqmi2UqBaEiH1PyAh6TGOyOpn1qoMmc/v1o2lRUzUUP
-         Zyrhi6fG8zv35EDMh6IQzRE0E0njiFUNZ9Ll6Q3GTwXBNN5kJXwZm02Ltv4rMDbWgB
-         brHPZ2y+DJv5IgZc9J/jTznH9osmA6lZcQaw6P0bHTmcYOxPfFI77vIFmMYo2OcBT/
-         Sbf2Lsst+JKMQ==
+        b=e4XxxYD40rJleLQi42qn7kvmAkwBxaqGEjWstE4aOwuoWt+ZMhgq/VWipysdKO+YC
+         TkVy6Db7ic/Nw4oaxK8mmiJVjQGVfdOqrpnO9u/N893yI20SVXd6nn62S6inwc0TES
+         6SlpkoQB0D8J6YED5f1Zs2tcG/Ep5aW7B9BTclcdxD4SdhyR+DeQLKAXsjZCQ8MMcN
+         TB9WFp8GbzAKl5G37tc0PpoLOMVb8ExlGMlpqU/bRevTPRt8GXuS8FT5izzyMqkqs+
+         Cp4xBCpxP84y/Okvz8lSSx/Gxad9jxLoq95VsX8Jt6zxDwHL5Ukjudsy86ieVeakjd
+         P2RE7IsfwFoYw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DAF8461E41;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E7DCD61FC3;
         Tue, 26 Jan 2021 03:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/2] dsa: add MT7530 GPIO support
+Subject: Re: [PATCH] bridge: Use PTR_ERR_OR_ZERO instead if(IS_ERR(...)) + PTR_ERR
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161163121089.4087.613122174827769113.git-patchwork-notify@kernel.org>
+Message-Id: <161163121094.4087.10728008683417299022.git-patchwork-notify@kernel.org>
 Date:   Tue, 26 Jan 2021 03:20:10 +0000
-References: <20210125044322.6280-1-dqfext@gmail.com>
-In-Reply-To: <20210125044322.6280-1-dqfext@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        robh+dt@kernel.org, matthias.bgg@gmail.com, sean.wang@mediatek.com,
-        Landen.Chao@mediatek.com, p.zabel@pengutronix.de,
-        linux@armlinux.org.uk, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, frank-w@public-files.de,
-        opensource@vdorst.com
+References: <1611542381-91178-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1611542381-91178-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Cc:     roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        kuba@kernel.org, natechancellor@gmail.com, ndesaulniers@google.com,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 25 Jan 2021 12:43:20 +0800 you wrote:
-> MT7530's LED controller can be used as GPIO controller. Add support for
-> it.
+On Mon, 25 Jan 2021 10:39:41 +0800 you wrote:
+> coccicheck suggested using PTR_ERR_OR_ZERO() and looking at the code.
 > 
-> DENG Qingfang (2):
->   dt-bindings: net: dsa: add MT7530 GPIO controller binding
->   net: dsa: mt7530: MT7530 optional GPIO support
+> Fix the following coccicheck warnings:
+> 
+> ./net/bridge/br_multicast.c:1295:7-13: WARNING: PTR_ERR_OR_ZERO can be
+> used.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v2,1/2] dt-bindings: net: dsa: add MT7530 GPIO controller binding
-    https://git.kernel.org/netdev/net-next/c/974d5ba60df7
-  - [net-next,v2,2/2] net: dsa: mt7530: MT7530 optional GPIO support
-    https://git.kernel.org/netdev/net-next/c/429a0edeefd8
+  - bridge: Use PTR_ERR_OR_ZERO instead if(IS_ERR(...)) + PTR_ERR
+    https://git.kernel.org/netdev/net-next/c/8d21c882aba8
 
 You are awesome, thank you!
 --
