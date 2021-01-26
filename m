@@ -2,225 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202D8304DBC
+	by mail.lfdr.de (Postfix) with ESMTP id 91871304DBD
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387954AbhAZXPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:15:00 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54304 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729460AbhAZFNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:13:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611637963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=49marjx9OVpCtWChzV71/n5GQNf3sqfNJ/GzhbLMboc=;
-        b=XPbTaM10hujlC8lk1zwTwMr3KRTuMHfQyrJReGUJhJovmO4+UIGFxAGtlEvQmjgOSLxhJS
-        7MUClVIjhk7oXphZGOv+d5IDLGOKbLbaW0jZ3WVXsJQ4/MN5vFInfQYPYqaXcl8wtRnXIo
-        rKC52UY+uuYOi40cgQiqNklMEz+d2KE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 18429ABDA;
-        Tue, 26 Jan 2021 05:12:43 +0000 (UTC)
-Subject: Re: [PATCH] x86/xen: avoid warning in Xen pv guest with
- CONFIG_AMD_MEM_ENCRYPT enabled
-To:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-References: <20210125140013.10198-1-jgross@suse.com>
- <e49727ce-80b6-9eb6-8bd7-a4ce63c693e0@citrix.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <aebac64f-a807-f3c6-1738-f14a4470efe3@suse.com>
-Date:   Tue, 26 Jan 2021 06:12:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2387966AbhAZXPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:15:04 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:55627 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731137AbhAZFP0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 00:15:26 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210126051438epoutp02cda307fb3f3a2f709c45d07e5f7d2258~dsEspjyTO2663526635epoutp02U
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:14:38 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210126051438epoutp02cda307fb3f3a2f709c45d07e5f7d2258~dsEspjyTO2663526635epoutp02U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611638078;
+        bh=V3/RsDa7SlFeveEQjTFri1OGy7EDXG+DF6UqoJ8C288=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=oxRsdkqsDS7PmOzGGwWBdj3s9eCGiCiu0FkYUYT9ulOJfJHMFueurdnEeVFOiadqD
+         8AtJg/3V2OBs3+jqhMskT8tDnpjC7l2VM29VCGWBNyh/kbMSo4IqeGx6UsjeiADEM7
+         5ws4HSeKi/3b8TUsYYbcA1xDv1QZsCNM7y1h4LQY=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210126051437epcas1p4d277724b82041b43c51d64ffcb713db0~dsEsJj28I1711317113epcas1p4X;
+        Tue, 26 Jan 2021 05:14:37 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.166]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DPvzx30fdz4x9QC; Tue, 26 Jan
+        2021 05:14:37 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        10.3C.09577.D35AF006; Tue, 26 Jan 2021 14:14:37 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210126051436epcas1p3925eeb28aa57629eb9e2cabf42fa05a7~dsErDp2fL0076600766epcas1p3K;
+        Tue, 26 Jan 2021 05:14:36 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210126051436epsmtrp175719e8c795f64e19457ef962d992f3a~dsErC9i7G2571625716epsmtrp1y;
+        Tue, 26 Jan 2021 05:14:36 +0000 (GMT)
+X-AuditID: b6c32a39-193b3a8000002569-23-600fa53dcaa7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F6.60.08745.C35AF006; Tue, 26 Jan 2021 14:14:36 +0900 (KST)
+Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210126051436epsmtip1c985373c68a856513f7f48e0ca97553b~dsEq0XyHy2211522115epsmtip12;
+        Tue, 26 Jan 2021 05:14:36 +0000 (GMT)
+From:   "Namjae Jeon" <namjae.jeon@samsung.com>
+To:     "'Randy Dunlap'" <rdunlap@infradead.org>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sj1557.seo@samsung.com>, <syzkaller-bugs@googlegroups.com>,
+        "'syzbot'" <syzbot+da4fe66aaadd3c2e2d1c@syzkaller.appspotmail.com>,
+        "'Matthew Wilcox'" <willy@infradead.org>
+In-Reply-To: <40b5993e-d99e-b2b9-6568-80e46e2d3cb1@infradead.org>
+Subject: RE: UBSAN: shift-out-of-bounds in exfat_fill_super
+Date:   Tue, 26 Jan 2021 14:14:36 +0900
+Message-ID: <052201d6f3a2$23f468c0$6bdd3a40$@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <e49727ce-80b6-9eb6-8bd7-a4ce63c693e0@citrix.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="XHVzGyfRUC0eXveO8Q9uFYbueNBdFtLAT"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKx/jOXwjWHcb1Mo6E7TSXbn6EBcQHuuaE3ApB445ICJF3SPahOIchQ
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmvq7tUv4EgxWdHBZ79p5ksbi8aw6b
+        xds701kstvw7wmpx7zqjxY0tc5ktfv+Yw+bA7rFn4kk2j80rtDz6tqxi9Jj5Vs3j8ya5ANao
+        HJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoBuUFMoS
+        c0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUpOQWGBgV6xYm5xaV56XrJ+blWhgYGRqZAlQk5
+        GRMWTWMq+MJZMXm/RgPjWfYuRg4OCQETiflfc7oYuTiEBHYwSkxedoAFwvnEKHH22zQmCOcz
+        o8SGdZ+BMpxgHVP3zmUDsYUEdjFK/PziA1H0klHi7ovrrCAJNgFdiX9/9oMViQjoSNzc/IkR
+        pIhZ4AujxK+Xv5lAEpwCjhLvuj8yg9jCAtYSU57uBmtgEVCVePr9MNg2XgFLibPnnkLZghIn
+        Zz4Bs5kF5CW2v53DDHGRgsTPp8tYIZa5Sax7tZYVokZEYnZnG1TNRA6Jj61+ELaLxKGPX6C+
+        EZZ4dXwLO4QtJfGyvw0aLtUSH/dDtXYwSrz4bgthG0vcXL+BFaSEWUBTYv0ufYiwosTO33MZ
+        IbbySbz72sMKMYVXoqNNCKJEVaLv0mEmCFtaoqv9A/sERqVZSP6aheSvWUjun4WwbAEjyypG
+        sdSC4tz01GLDAlPkmN7ECE6cWpY7GKe//aB3iJGJg/EQowQHs5II7249ngQh3pTEyqrUovz4
+        otKc1OJDjKbAkJ7ILCWanA9M3Xkl8YamRsbGxhYmZuZmpsZK4rxJBg/ihQTSE0tSs1NTC1KL
+        YPqYODilGpi6tF+2VL7bGB3/cO8ylUrJbq163UeHvEwFQsKk7qjMUjDmzbiWVH5laUk1S8vd
+        Y0ofT05WEv/Iah+bL+j55W3ChLxrTG0yLfEcaZZTRP+uTNj+YZKjTcCXhapH3LrYH+henLXV
+        f+nlM3dPm7qba0yx1y3KnxnsazYvNtFh7wzZ7tBkte8Hj/GK92+b+dY38szWLyLWDnMc2y73
+        pW5zmL/xxCnHI3dbmi6tmBl/I2iDb0A2/+HSkiqtbRdW/XebZL+04IPT1UtFdaLia+yDLFit
+        7s09wHZbPn4d59RJt/PMlzg/S/U1ic6dwagq8oP/0c6uIv27V+o616008X+w+uKV3rCHPzs0
+        fxsmBK0vuqDEUpyRaKjFXFScCAAoW5Y8JQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWy7bCSnK7NUv4Eg57HGhZ79p5ksbi8aw6b
+        xds701kstvw7wmpx7zqjxY0tc5ktfv+Yw+bA7rFn4kk2j80rtDz6tqxi9Jj5Vs3j8ya5ANYo
+        LpuU1JzMstQifbsErowJi6YxFXzhrJi8X6OB8Sx7FyMnh4SAicTUvXPZuhi5OIQEdjBKvGj8
+        zQaRkJY4duIMcxcjB5AtLHH4cDFEzXNGie9vD7OA1LAJ6Er8+7MfrF5EQEfi5uZPjCBFzAI/
+        GCUmNk9jBUkICbxmlPj0RRfE5hRwlHjX/ZEZxBYWsJaY8nQ3WDOLgKrE0+8QQ3kFLCXOnnsK
+        ZQtKnJz5BMxmFtCWeHrzKZQtL7H97RxmiEMVJH4+XcYKcYSbxLpXa1khakQkZne2MU9gFJ6F
+        ZNQsJKNmIRk1C0nLAkaWVYySqQXFuem5xYYFRnmp5XrFibnFpXnpesn5uZsYwXGkpbWDcc+q
+        D3qHGJk4GA8xSnAwK4nw7tbjSRDiTUmsrEotyo8vKs1JLT7EKM3BoiTOe6HrZLyQQHpiSWp2
+        ampBahFMlomDU6qBKbO9bZU+0+p9Vzuar593y27243lavIr31MYHr9+2y+axqbyaf3hdMsel
+        H/phzKLhxXbHq7c1qa/ZdjBwok3tri13F2ca56fVmxUfrS3TvpHG8MU423uvwZIoc8WiRHvp
+        SkbGqoiz4otlAyJm6xpHzT6924GJvWLZxCC5e2eS+AR0Ji6v57xWms01nX3/Y4cpFayGjasf
+        MYS2s17a/Tb0SZPDX6NJwos7Tn89X3P0Xfydu99kOFVc7t2bdjc7dpnky2PJj4UOMp/Um6Kj
+        b2M95drDt4ovzomt81Wd9SNkt+ePZzHvAvrFXu07/i9C/2Jms8TM3XdumVrt8qncYxB0wPpv
+        gZnVl5aA3Y9slKzVlFiKMxINtZiLihMBz5xrkxIDAAA=
+X-CMS-MailID: 20210126051436epcas1p3925eeb28aa57629eb9e2cabf42fa05a7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210126043409epcas1p4c035b515ac6e34f1773e890c148d39d7
+References: <000000000000c2865c05b9bcee02@google.com>
+        <20210125183918.GH308988@casper.infradead.org>
+        <CGME20210126043409epcas1p4c035b515ac6e34f1773e890c148d39d7@epcas1p4.samsung.com>
+        <40b5993e-d99e-b2b9-6568-80e46e2d3cb1@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XHVzGyfRUC0eXveO8Q9uFYbueNBdFtLAT
-Content-Type: multipart/mixed; boundary="p6iUJ0v9Xpb5hIrz3itGqDsjdkeo2TL1K";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Andrew Cooper <andrew.cooper3@citrix.com>,
- xen-devel@lists.xenproject.org, x86@kernel.org, linux-kernel@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>, stable@vger.kernel.org
-Message-ID: <aebac64f-a807-f3c6-1738-f14a4470efe3@suse.com>
-Subject: Re: [PATCH] x86/xen: avoid warning in Xen pv guest with
- CONFIG_AMD_MEM_ENCRYPT enabled
-References: <20210125140013.10198-1-jgross@suse.com>
- <e49727ce-80b6-9eb6-8bd7-a4ce63c693e0@citrix.com>
-In-Reply-To: <e49727ce-80b6-9eb6-8bd7-a4ce63c693e0@citrix.com>
+> On 1/25/21 10:39 AM, Matthew Wilcox wrote:
+> > On Mon, Jan 25, 2021 at 09:33:14AM -0800, syzbot wrote:
+> >> UBSAN: shift-out-of-bounds in fs/exfat/super.c:471:28 shift exponent
+> >> 4294967294 is too large for 32-bit type 'int'
+> >
+> > This is an integer underflow:
+> >
+> >         sbi->dentries_per_clu = 1 <<
+> >                 (sbi->cluster_size_bits - DENTRY_SIZE_BITS);
+> >
+> > I think the problem is that there is no validation of sect_per_clus_bits.
+> > We should check it is at least DENTRY_SIZE_BITS and probably that it's
+> > less than ... 16?  64?  I don't know what legitimate values are in
+> > this field, but I would imagine that 255 is completely unacceptable.
+> 
+> Ack all of that. The syzbot boot_sector has sect_per_clus_bits == 3 and sect_size_bits == 0, so sbi-
+> >cluster_size_bits is 3, then UBSAN goes bang on:
+> 
+> 	sbi->dentries_per_clu = 1 <<
+> 		(sbi->cluster_size_bits - DENTRY_SIZE_BITS); // 3 - 5
+> 
+> 
+> There is also an unprotected shift at line 480:
+> 
+> 	if (sbi->num_FAT_sectors << p_boot->sect_size_bits <
+> 	    sbi->num_clusters * 4) {
+> 
+> that should be protected IMO.
+Right. I will also add validation for fat_length as well as sect_size_bits before this.
 
---p6iUJ0v9Xpb5hIrz3itGqDsjdkeo2TL1K
-Content-Type: multipart/mixed;
- boundary="------------1803E39325F8E2E2391D0043"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------1803E39325F8E2E2391D0043
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 25.01.21 18:26, Andrew Cooper wrote:
-> On 25/01/2021 14:00, Juergen Gross wrote:
->> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c=
-
->> index 4409306364dc..82948251f57b 100644
->> --- a/arch/x86/xen/enlighten_pv.c
->> +++ b/arch/x86/xen/enlighten_pv.c
->> @@ -583,6 +583,14 @@ DEFINE_IDTENTRY_RAW(xenpv_exc_debug)
->>   		exc_debug(regs);
->>   }
->>  =20
->> +#ifdef CONFIG_AMD_MEM_ENCRYPT
->> +DEFINE_IDTENTRY_RAW(xenpv_exc_vmm_communication)
->> +{
->> +	/* This should never happen and there is no way to handle it. */
->> +	panic("X86_TRAP_VC in Xen PV mode.");
->=20
-> Honestly, exactly the same is true of #VE, #HV and #SX.
->=20
-> What we do in the hypervisor is wire up one handler for all unknown
-> exceptions (to avoid potential future #DF issues) leading to a panic.
-> Wouldn't it be better to do this unconditionally, especially as #GP/#NP=
-
-> doesn't work for PV guests for unregistered callbacks, rather than
-> fixing up piecewise like this?
-
-I agree it would be better to have a "catch all unknown" handler.
-
-I'll have a try how this would look like.
+Thanks!
+> 
+> 
+> --
+> ~Randy
 
 
-Juergen
-
-
---------------1803E39325F8E2E2391D0043
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------1803E39325F8E2E2391D0043--
-
---p6iUJ0v9Xpb5hIrz3itGqDsjdkeo2TL1K--
-
---XHVzGyfRUC0eXveO8Q9uFYbueNBdFtLAT
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAPpMoFAwAAAAAACgkQsN6d1ii/Ey/n
-IQf+KGDwniWU5Jgabvgu45feMNXYGsMKyS6GCjE9Vj+JBtWUrpbwj5OTMea7rJQ3qU4ZoiPUVZ3F
-ZLkIrHL/4MGdCkgti42F6e+fzCkJGEqy35fG7XiBwrV9OQ98lSi36PEYEQiICHeKD7/jvPTMQDz/
-kKD0arpB/ldL5cTuKZE+2rL9ZO6JAlJGAz5fhfPtDAe1eOi0zoPLfM5NCCqNuBKY/mWth+r9oQDM
-UUsvcf8bjJjYC3BqPUGDGXJJh/ey0/fzl5z+jJBcWFA84IBi3J5l9UMFFeglqq5hE0FBHnbGcPYi
-a1YiFiCWX5Rq7d/HIWs3fAu+k2iXfUrbFSa3ec1G/Q==
-=yDae
------END PGP SIGNATURE-----
-
---XHVzGyfRUC0eXveO8Q9uFYbueNBdFtLAT--
