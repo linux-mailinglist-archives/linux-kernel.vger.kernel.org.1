@@ -2,268 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CBF303B94
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A569303B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392217AbhAZL04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:26:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39178 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391084AbhAZJae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:30:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9F58DACF4;
-        Tue, 26 Jan 2021 09:29:52 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 10:29:46 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
- associated with each HugeTLB page
-Message-ID: <20210126092942.GA10602@linux>
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
+        id S2404956AbhAZL1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:27:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48710 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391162AbhAZJbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:31:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611653408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h+ZpZHpOkIPnIutZEYCghjpUFXEecoOLDsLy71i5vGQ=;
+        b=hR4pW+LWomkdON9SViap7LahQOgEMGyng20K4Fs+wXkh3aC9iqhRImreKN73gpfVvdA/30
+        880423Pt/NL6e6lNtsDo+ZqMEY3KP8Qnoen8fo5fd9MU1k3U0El2dlJTeh9+WJG4zNtGfd
+        14aKiZGy5r8Itdgvmf2EyNXwkJmL1qY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-y6F1hYppPgiDu2r3UvxGzg-1; Tue, 26 Jan 2021 04:30:07 -0500
+X-MC-Unique: y6F1hYppPgiDu2r3UvxGzg-1
+Received: by mail-wr1-f70.google.com with SMTP id u3so10815185wri.19
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:30:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h+ZpZHpOkIPnIutZEYCghjpUFXEecoOLDsLy71i5vGQ=;
+        b=KcHspg6P0HZF1OQAB6sjwraf95P6kwA9GhKuTEPVTtSbvugspclnP0urRnSJYMx6BK
+         uRnH3RcIZDef6AabjJpwX1wYYyd5e2UqsLKy5X4NzSkeMnNlMDxO5PLJHKuixpaOgOkO
+         pq/rKO0oPYbIW+d8oJbjZty8HdO6eFfugY3l6nOHIqBrOlX+KZCdwWsAky03dxpUNjhw
+         eLCRKu+xnRdOt7b9kv9t9HZFdb34OK/Umg/y3Ln7pjR2Pb1+/h2KlZPxwHLzM4jIqgEg
+         Yg+GXEVACjWJ14OMH3RQuBgSRjQQ/jdyt0lEmg0KcR0leP1iJ9yv6u9P41F3yx7n2GCh
+         3Zuw==
+X-Gm-Message-State: AOAM531lbWQ8AZnoSQzCEAhKrkgtDeD99ndvuadKoP3GEKTNFjeTfdUA
+        9QNqbRq536b272LIvPbw0bxnvg2BI046knPnxaLXmpxjjV5ThG/mmSzQU88EU2B+ApQ/luWtbCk
+        uUSHZ5KIAYA3DFepveR9lUMyCTNfhPlpB4GkOtlvS7/uOYSp/YyahMtf/4QItw6uPxTS3H+yhwS
+        nA
+X-Received: by 2002:a05:6000:1142:: with SMTP id d2mr5142103wrx.307.1611653405294;
+        Tue, 26 Jan 2021 01:30:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzWAoc/h4SZNsmz+mkEnH2HYCgpbjliy09pP/DmoI918Oq2WzaI7/Z4F+HSwDBlb9skYXBc3w==
+X-Received: by 2002:a05:6000:1142:: with SMTP id d2mr5142070wrx.307.1611653405005;
+        Tue, 26 Jan 2021 01:30:05 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k131sm2540210wmb.37.2021.01.26.01.30.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 01:30:04 -0800 (PST)
+Subject: Re: [RESEND v13 09/10] KVM: vmx/pmu: Expose LBR_FMT in the
+ MSR_IA32_PERF_CAPABILITIES
+To:     Like Xu <like.xu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, kan.liang@intel.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210108013704.134985-1-like.xu@linux.intel.com>
+ <20210108013704.134985-10-like.xu@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2ff8ca5a-32ec-ca5d-50c3-d1690e933f6d@redhat.com>
+Date:   Tue, 26 Jan 2021 10:30:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210117151053.24600-6-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210108013704.134985-10-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 11:10:46PM +0800, Muchun Song wrote:
-> When we free a HugeTLB page to the buddy allocator, we should allocate the
-> vmemmap pages associated with it. We can do that in the __free_hugepage()
-> before freeing it to buddy.
+On 08/01/21 02:37, Like Xu wrote:
+> Userspace could enable guest LBR feature when the exactly supported
+> LBR format value is initialized to the MSR_IA32_PERF_CAPABILITIES
+> and the LBR is also compatible with vPMU version and host cpu model.
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-This series has grown a certain grade of madurity and improvment, but it seems
-to me that we have been stuck in this patch (and patch#4) for quite some time.
-
-Would it be acceptable for a first implementation to not let hugetlb pages to
-be freed when this feature is in use?
-This would simplify things for now, as we could get rid of patch#4 and patch#5.
-We can always extend functionality once this has been merged, right?
-
-Of course, this means that e.g: memory-hotplug (hot-remove) will not fully work
-when this in place, but well.
-
-I would like to hear what others think, but in my opinion it would be a big step
-to move on.
-
-
-
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
 > ---
->  include/linux/mm.h   |  2 ++
->  mm/hugetlb.c         |  2 ++
->  mm/hugetlb_vmemmap.c | 15 ++++++++++
->  mm/hugetlb_vmemmap.h |  5 ++++
->  mm/sparse-vmemmap.c  | 77 +++++++++++++++++++++++++++++++++++++++++++++++++++-
->  5 files changed, 100 insertions(+), 1 deletion(-)
+>   arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
+>   arch/x86/kvm/vmx/vmx.c          | 7 +++++++
+>   2 files changed, 15 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index f928994ed273..16b55d13b0ab 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3007,6 +3007,8 @@ static inline void print_vma_addr(char *prefix, unsigned long rip)
->  
->  void vmemmap_remap_free(unsigned long start, unsigned long end,
->  			unsigned long reuse);
-> +void vmemmap_remap_alloc(unsigned long start, unsigned long end,
-> +			 unsigned long reuse);
->  
->  void *sparse_buffer_alloc(unsigned long size);
->  struct page * __populate_section_memmap(unsigned long pfn,
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index c165186ec2cf..d11c32fcdb38 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1326,6 +1326,8 @@ static void update_hpage_vmemmap_workfn(struct work_struct *work)
->  		page->mapping = NULL;
->  		h = page_hstate(page);
->  
-> +		alloc_huge_page_vmemmap(h, page);
+> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+> index 57b940c613ab..a9a7c4d1b634 100644
+> --- a/arch/x86/kvm/vmx/capabilities.h
+> +++ b/arch/x86/kvm/vmx/capabilities.h
+> @@ -378,7 +378,14 @@ static inline u64 vmx_get_perf_capabilities(void)
+>   	 * Since counters are virtualized, KVM would support full
+>   	 * width counting unconditionally, even if the host lacks it.
+>   	 */
+> -	return PMU_CAP_FW_WRITES;
+> +	u64 perf_cap = PMU_CAP_FW_WRITES;
 > +
->  		spin_lock(&hugetlb_lock);
->  		__free_hugepage(h, page);
->  		spin_unlock(&hugetlb_lock);
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 19f1898aaede..6108ae80314f 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -183,6 +183,21 @@ static inline unsigned long free_vmemmap_pages_size_per_hpage(struct hstate *h)
->  	return (unsigned long)free_vmemmap_pages_per_hpage(h) << PAGE_SHIFT;
->  }
->  
-> +void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> +{
-> +	unsigned long vmemmap_addr = (unsigned long)head;
-> +	unsigned long vmemmap_end, vmemmap_reuse;
+> +	if (boot_cpu_has(X86_FEATURE_PDCM))
+> +		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
 > +
-> +	if (!free_vmemmap_pages_per_hpage(h))
-> +		return;
+> +	perf_cap |= perf_cap & PMU_CAP_LBR_FMT;
 > +
-> +	vmemmap_addr += RESERVE_VMEMMAP_SIZE;
-> +	vmemmap_end = vmemmap_addr + free_vmemmap_pages_size_per_hpage(h);
-> +	vmemmap_reuse = vmemmap_addr - PAGE_SIZE;
-> +
-> +	vmemmap_remap_alloc(vmemmap_addr, vmemmap_end, vmemmap_reuse);
-> +}
-> +
->  void free_huge_page_vmemmap(struct hstate *h, struct page *head)
->  {
->  	unsigned long vmemmap_addr = (unsigned long)head;
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> index 01f8637adbe0..b2c8d2f11d48 100644
-> --- a/mm/hugetlb_vmemmap.h
-> +++ b/mm/hugetlb_vmemmap.h
-> @@ -11,6 +11,7 @@
->  #include <linux/hugetlb.h>
->  
->  #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
-> +void alloc_huge_page_vmemmap(struct hstate *h, struct page *head);
->  void free_huge_page_vmemmap(struct hstate *h, struct page *head);
->  
->  /*
-> @@ -25,6 +26,10 @@ static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
->  	return 0;
->  }
->  #else
-> +static inline void alloc_huge_page_vmemmap(struct hstate *h, struct page *head)
-> +{
-> +}
-> +
->  static inline void free_huge_page_vmemmap(struct hstate *h, struct page *head)
->  {
->  }
-> diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> index ce4be1fa93c2..3b146d5949f3 100644
-> --- a/mm/sparse-vmemmap.c
-> +++ b/mm/sparse-vmemmap.c
-> @@ -29,6 +29,7 @@
->  #include <linux/sched.h>
->  #include <linux/pgtable.h>
->  #include <linux/bootmem_info.h>
-> +#include <linux/delay.h>
->  
->  #include <asm/dma.h>
->  #include <asm/pgalloc.h>
-> @@ -40,7 +41,8 @@
->   * @remap_pte:		called for each non-empty PTE (lowest-level) entry.
->   * @reuse_page:		the page which is reused for the tail vmemmap pages.
->   * @reuse_addr:		the virtual address of the @reuse_page page.
-> - * @vmemmap_pages:	the list head of the vmemmap pages that can be freed.
-> + * @vmemmap_pages:	the list head of the vmemmap pages that can be freed
-> + *			or is mapped from.
->   */
->  struct vmemmap_remap_walk {
->  	void (*remap_pte)(pte_t *pte, unsigned long addr,
-> @@ -50,6 +52,10 @@ struct vmemmap_remap_walk {
->  	struct list_head *vmemmap_pages;
->  };
->  
-> +/* The gfp mask of allocating vmemmap page */
-> +#define GFP_VMEMMAP_PAGE		\
-> +	(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN | __GFP_THISNODE)
-> +
->  static void vmemmap_pte_range(pmd_t *pmd, unsigned long addr,
->  			      unsigned long end,
->  			      struct vmemmap_remap_walk *walk)
-> @@ -228,6 +234,75 @@ void vmemmap_remap_free(unsigned long start, unsigned long end,
->  	free_vmemmap_page_list(&vmemmap_pages);
->  }
->  
-> +static void vmemmap_restore_pte(pte_t *pte, unsigned long addr,
-> +				struct vmemmap_remap_walk *walk)
-> +{
-> +	pgprot_t pgprot = PAGE_KERNEL;
-> +	struct page *page;
-> +	void *to;
-> +
-> +	BUG_ON(pte_page(*pte) != walk->reuse_page);
-> +
-> +	page = list_first_entry(walk->vmemmap_pages, struct page, lru);
-> +	list_del(&page->lru);
-> +	to = page_to_virt(page);
-> +	copy_page(to, (void *)walk->reuse_addr);
-> +
-> +	set_pte_at(&init_mm, addr, pte, mk_pte(page, pgprot));
-> +}
-> +
-> +static void alloc_vmemmap_page_list(struct list_head *list,
-> +				    unsigned long start, unsigned long end)
-> +{
-> +	unsigned long addr;
-> +
-> +	for (addr = start; addr < end; addr += PAGE_SIZE) {
-> +		struct page *page;
-> +		int nid = page_to_nid((const void *)addr);
-> +
-> +retry:
-> +		page = alloc_pages_node(nid, GFP_VMEMMAP_PAGE, 0);
-> +		if (unlikely(!page)) {
-> +			msleep(100);
-> +			/*
-> +			 * We should retry infinitely, because we cannot
-> +			 * handle allocation failures. Once we allocate
-> +			 * vmemmap pages successfully, then we can free
-> +			 * a HugeTLB page.
-> +			 */
-> +			goto retry;
+> +	return perf_cap;
+>   }
+>   
+>   static inline u64 vmx_supported_debugctl(void)
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index ad3b079f6700..9cb5b1e4fc27 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2229,6 +2229,13 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   	case MSR_IA32_PERF_CAPABILITIES:
+>   		if (data && !vcpu_to_pmu(vcpu)->version)
+>   			return 1;
+> +		if (data & PMU_CAP_LBR_FMT) {
+> +			if ((data & PMU_CAP_LBR_FMT) !=
+> +			    (vmx_get_perf_capabilities() & PMU_CAP_LBR_FMT))
+> +				return 1;
+> +			if (!intel_pmu_lbr_is_compatible(vcpu))
+> +				return 1;
 > +		}
-> +		list_add_tail(&page->lru, list);
-> +	}
-> +}
-> +
-> +/**
-> + * vmemmap_remap_alloc - remap the vmemmap virtual address range [@start, end)
-> + *			 to the page which is from the @vmemmap_pages
-> + *			 respectively.
-> + * @start:	start address of the vmemmap virtual address range.
-> + * @end:	end address of the vmemmap virtual address range.
-> + * @reuse:	reuse address.
-> + */
-> +void vmemmap_remap_alloc(unsigned long start, unsigned long end,
-> +			 unsigned long reuse)
-> +{
-> +	LIST_HEAD(vmemmap_pages);
-> +	struct vmemmap_remap_walk walk = {
-> +		.remap_pte	= vmemmap_restore_pte,
-> +		.reuse_addr	= reuse,
-> +		.vmemmap_pages	= &vmemmap_pages,
-> +	};
-> +
-> +	might_sleep();
-> +
-> +	/* See the comment in the vmemmap_remap_free(). */
-> +	BUG_ON(start - reuse != PAGE_SIZE);
-> +
-> +	alloc_vmemmap_page_list(&vmemmap_pages, start, end);
-> +	vmemmap_remap_range(reuse, end, &walk);
-> +}
-> +
->  /*
->   * Allocate a block of memory to be used to back the virtual memory map
->   * or to back the page tables that are used to create the mapping.
-> -- 
-> 2.11.0
-> 
+>   		ret = kvm_set_msr_common(vcpu, msr_info);
+>   		break;
+>   
 > 
 
--- 
-Oscar Salvador
-SUSE L3
+Please move this hunk to patch 4.
+
+Paolo
+
