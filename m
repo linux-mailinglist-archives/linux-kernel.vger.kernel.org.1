@@ -2,305 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69290303AD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8D2303A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404579AbhAZKyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:54:24 -0500
-Received: from mailout2.samsung.com ([203.254.224.25]:36351 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728310AbhAZDJC (ORCPT
+        id S2404204AbhAZKfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730771AbhAZBpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:09:02 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210126003135epoutp0248988f7f26b8fed3a6553639225ebf80~doNkEiG9i2925729257epoutp02C
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:31:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210126003135epoutp0248988f7f26b8fed3a6553639225ebf80~doNkEiG9i2925729257epoutp02C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1611621095;
-        bh=OGsj0MIkfZyHE5NB7L5PUMSmlStzrlK4MtVhzEASbSs=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=B0p6OWhGMQlNRmkHj4YUQp7gfboquYB4cc++ftdLQtcD5b9Uj6vhLR50ZbbFMY+jh
-         9Xr9AO/qBH6EyZyKwtN4/2lgu7sxXdQDziDzoak7anqPeZkvlC6kJ8lS/eJa1jl/g6
-         ZW2qMC5UjhHfPBlCkQEMIXj92fbOoLZEyCV0qDMk=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210126003135epcas2p4647eac927b8dd478b8e804f3100b1736~doNjpjh1b2228122281epcas2p4u;
-        Tue, 26 Jan 2021 00:31:35 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DPnjK1vzbz4x9Pp; Tue, 26 Jan
-        2021 00:31:33 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        98.1E.05262.2E26F006; Tue, 26 Jan 2021 09:31:30 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210126003130epcas2p4edac02397592781f3f06fd0c58421c44~doNfXQtOm2472924729epcas2p4y;
-        Tue, 26 Jan 2021 00:31:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210126003130epsmtrp26f9d9f62bdd05e83caca4106c42dedb3~doNfWbMQl0296902969epsmtrp2G;
-        Tue, 26 Jan 2021 00:31:30 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-e1-600f62e2bcb5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        00.78.13470.2E26F006; Tue, 26 Jan 2021 09:31:30 +0900 (KST)
-Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210126003130epsmtip2e461871cde2e8e6352adef2e2667bb26~doNfH35tU2637426374epsmtip21;
-        Tue, 26 Jan 2021 00:31:30 +0000 (GMT)
-From:   "Dongseok Yi" <dseok.yi@samsung.com>
-To:     "'Steffen Klassert'" <steffen.klassert@secunet.com>
-Cc:     "'David S. Miller'" <davem@davemloft.net>,
-        "'Alexander Lobakin'" <alobakin@pm.me>, <namkyu78.kim@samsung.com>,
-        "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
-        "'Willem de Bruijn'" <willemb@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20210125124544.GW3576117@gauss3.secunet.de>
-Subject: RE: [PATCH net v3] udp: ipv4: manipulate network header of NATed
- UDP GRO fraglist
-Date:   Tue, 26 Jan 2021 09:31:29 +0900
-Message-ID: <026001d6f37a$97461300$c5d23900$@samsung.com>
+        Mon, 25 Jan 2021 20:45:06 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20708.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::708])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BD9C061353;
+        Mon, 25 Jan 2021 16:37:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jRQDY/bxuziyW09y/06Q52brwJrYFb87/jGbbmTYUi5qd4Dp1B0ljvhewxteeb/PdYhzOSzNtH3fgpJaSgC6igtTFBU3P13wKQ1rVS1ncl69AUYVHUh6H5yvGC2bI1YQ4r+Yck1UC+XjIkDj6DIIswUcWI5Y9T01Vr5jm1aDDF5uM3zzCWKisTH9ktWoEOpFpU0Iw/RZyIwcE0Rms8UBvWjRkZq0MCGPmcXTlhZgSQHIYtB4HNLpcGDeOUfyh92YATGH6Cv4QIg6jBi60DEODga58q2xPkHw0PG3zdj5S1UwPAli+dDpPxN7rm0PzxdYU8/UGSOUnfDp9zihLDfs3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uOVAqUgOQa3ji4pJdHOEu55JcTrFUWnbQhlL17Z3bZ4=;
+ b=K0/32TqGKGCdo7oK5KtsMCdBsXx+XZvGNc69SmM0Q/H+yyA2S6feMV7EiIykMvX+h5mNN+7l8KeBDKqoWBc+DVu4DBGl955Hae1Bp7dvpYIyCVuQOKd0GqMiCwsWoxUkvB3Bx+brOJ4kLrp/n5KxauecfrYJfCoHAarL+eG4muhKTsWMru5qzOAqYSykz46hHQNjLugspLM/tgYA2RBN+xecbnx6IDilm+qH2iyOPoNUINn+GiYKvX2n2URtUnJm8ShWi8Kbj2F7mHapFlLwkDHMsJv+F0isXbJ86I3pRGf/IWpEFoijZ59AJ/NxIHstgoaUYYv5LCizu/VO1R+IAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uOVAqUgOQa3ji4pJdHOEu55JcTrFUWnbQhlL17Z3bZ4=;
+ b=WsWlkTeHtHKYO425chBpxntw4hFIpYtkyl4bWUEOdcDOuYxcmRqXT2xc67X+hpq1el+H9ZjthTyfS0HKGMeNPRnRG3Ni9wMuCHzpyWL+9hTveFfVb3BB57pvETQEer4ea1tTk2mlsNJYtAEa8e82IgE+NCeoz7qOI0s7fRBKJs0=
+Received: from (2603:10b6:301:7c::11) by
+ MWHPR21MB0862.namprd21.prod.outlook.com (2603:10b6:300:77::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.1; Tue, 26 Jan 2021 00:31:31 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3825.003; Tue, 26 Jan 2021
+ 00:31:31 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
+CC:     "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: RE: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
+ partition
+Thread-Topic: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
+ partition
+Thread-Index: AQHW7yPvqzTQq44n9EKlBqAzieFq1qo5FUJA
+Date:   Tue, 26 Jan 2021 00:31:31 +0000
+Message-ID: <MWHPR21MB159358B1D6151AC5B5D38C7FD7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-3-wei.liu@kernel.org>
+In-Reply-To: <20210120120058.29138-3-wei.liu@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-26T00:31:29Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=578ca824-e84b-4ffb-abb5-5b2ddd2cbd43;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [66.75.126.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1b2ecc36-7574-49ba-e7c6-08d8c191ba72
+x-ms-traffictypediagnostic: MWHPR21MB0862:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB08622467D62F271DDB1F8C09D7BC9@MWHPR21MB0862.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2733;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QMMOaBK9DJQ4oBmTkD5X3td/SmjIEE+qq1ZmEWfHUXAedGyUrRIZsziMmHN7tGarm2qY/Kxn4zoOdlBCc4FLME25C9/izHkS7l+BrO91ILu8LrDj1D/173mK8P/2MgZGZ90/1QDditroHyjrhuJf1JdMTNpAWtAX1uSb7sx3lNwy07TSLp8ohizX/IWlJxNUTMfC2+wgO6RsJ0LibRZWtQxyhHNSSUEUMcgCpSVKzmHZT9JQNXbuFnoMNbeanw6I25t99whMsMb6WFfLonZ8Pm9ZjI86Ba0I0+hijkurzSMQO/RMiZti19XeZ+1cH2Tw4E5AwneVZKhPQcUXFzn0ZrFZLBscaVuSUKDxcSlb6aze5U+/TanCkHR+ImMYWgZeT3Dcai4wqnDWmAtaf1TQ/9ylpM9Rhaxo3Tq5St11YRzxjsy5Mmrqvn8t/jIiEkGOoPibrNpyTheGZ2ii+XkiBde3p77XrePq2kJMkeaZxISWuD1pNFI4h5fG+DHOZwRG1sdJwV+5A44twjQahbQS4g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(346002)(376002)(83380400001)(7696005)(66556008)(76116006)(8936002)(9686003)(8676002)(66946007)(86362001)(66446008)(64756008)(82960400001)(82950400001)(66476007)(55016002)(8990500004)(10290500003)(33656002)(71200400001)(5660300002)(316002)(478600001)(4326008)(7416002)(26005)(6506007)(52536014)(2906002)(186003)(54906003)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?iIl9XN4ovmqBeGYLfkxpjxqcmnJcTVhenZYn+OZMhQlv43thscOch2HLFO8q?=
+ =?us-ascii?Q?PPAfbtteceryrWgJ+fa3HFGFoisrYF4wTST/UyHEYN5B9qBPkHOxGv/Qrztp?=
+ =?us-ascii?Q?wvAOkLSBHfq1zSbjkwdswf5j50gBvAsWafVY9INgdzY9i3Am4zI6cVisezY0?=
+ =?us-ascii?Q?og/VdMkKnlf4/rj5/PZ1YpHNIF7z6pPqRvM058PMnH8eaE31JR96BysfxkwV?=
+ =?us-ascii?Q?PQ6qN0SxsllRQMX+qGfuLHc32TTMHDqb1pRQCx3GJy7/wGWgKb8v+5KrnNpI?=
+ =?us-ascii?Q?aqiqBuJGHhi7F8DDlOqiDLZYxNoZ4/dA6jIr0cpZfx7Pr63Iwgp4k46S3cG6?=
+ =?us-ascii?Q?Rz1YKcNfPttt8qOi5ChojWWd4iN8wLkiO/J2m04Rzwb6/bvNu8oyf4eFMweS?=
+ =?us-ascii?Q?YiqvUJgtJvxjMv3HSHxcmRN53Ac1uKXTR7jTGwlUJj9oQwbNZcsjnRFxfoWC?=
+ =?us-ascii?Q?PGy9LWtbhzJjS0N5A7ED7n/6jhVXRTosrrP203bhfE6cMfzgjyEErpYGtgqA?=
+ =?us-ascii?Q?Kfly+PMnD5PALlUHboqm1lq5YgaoS2wi/CyqoX40UWEeMcEaAMi1Y87IZ5tH?=
+ =?us-ascii?Q?jBMaNofPfYd0vsx7ty8Dd2VpmH1goMeQ0QYFrNKyoY8yM/G0pFyioyHsLt1U?=
+ =?us-ascii?Q?hn6+8HpStuoZyWQPhPMwiKQMnNlZgjSO20aMZsAtEtnLaldH7tIRRb0OruyJ?=
+ =?us-ascii?Q?fS+Ja1b9gW1t6+qptzUiyptHJd1gdAS0M4NspiFdTX8aSgAWRytmcD+37EY+?=
+ =?us-ascii?Q?cHKswDBdLEPYcG+ePGZeaPzBxiMSA/lzRbvVApvB1mC/iepz3Z9S5rvYHgb+?=
+ =?us-ascii?Q?3fo77APiz91YLQGD85VGdEw5+cEqXAfxFOyz+2qbDnP85kAGtlgzMNFwEz1V?=
+ =?us-ascii?Q?wXF5kCSC3MYAE6BXot19DB6V5avPbNsf7xV54AylqQmqkDpBrep/6K1b/rCO?=
+ =?us-ascii?Q?n774YIHvkCELus/HL9hI2xwZ54zO9OMQ4u6/bxHS1uU4qPpiAZEmt7waGO/T?=
+ =?us-ascii?Q?Y0OIa514XbGzrbSm3KFXMfAaxUEZNkKXlOXBYpDPGlnaDun5pg83B1A1b9hZ?=
+ =?us-ascii?Q?gbHdzGRz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQD8+b0cWZtPvmUMIOPw0keCYjUzAAJKUisyAbm6YsWrzN/I0A==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmqe6jJP4Eg70rzC1WPd7OYjHnfAuL
-        xYVtfawWl3fNYbNouNPMZnFsgZjF7s4f7Bbvthxht/i6t4vFgdNjy8qbTB4LNpV6bFrVyebR
-        dm0Vk8fRPefYPPq2rGL02NS6hNXj8ya5AI6oHJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMD
-        Q11DSwtzJYW8xNxUWyUXnwBdt8wcoOuUFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUp
-        OQWGhgV6xYm5xaV56XrJ+blWhgYGRqZAlQk5GW9nnGMvuGtSsb3zGnMD42bNLkZODgkBE4mV
-        RzqZuhi5OIQEdjBKXPzcwQ7hfGKU+LPtMzOE841R4vmDBWxdjBxgLRcPFEPE9zJKPLtxjA3C
-        ecEoca5vIzPIXDYBLYk3s9pZQWwRAXOJ1a+mge1gFtjKJPHw61QWkEmcApYSHw+UgNQIC8RI
-        rN/6iR3EZhFQlbi+qRtsDi9QybKJy9ghbEGJkzOfsIDYzAIGEu/PzWeGsOUltr+dwwzxj4LE
-        z6fLoPY6SfTd72WCqBGRmN3ZBvaNhMAeDonrN1+yQ3zjIvFqix5Er7DEq+Nb2CFsKYnP7/ZC
-        PVwv0dodA9HawyhxZR/EDRICxhKznrUzQtQoSxy5BXUan0TH4b9Q03klOtqEIEwliYlf4iEa
-        JSRenJzMMoFRaRaSv2Yh+WsWkr9mIbl/ASPLKkax1ILi3PTUYqMCY+S43sQITrha7jsYZ7z9
-        oHeIkYmD8RCjBAezkgjvbj2eBCHelMTKqtSi/Pii0pzU4kOMpsCgnsgsJZqcD0z5eSXxhqZG
-        ZmYGlqYWpmZGFkrivMUGD+KFBNITS1KzU1MLUotg+pg4OKUamBxCpGUeLTRZ2GxQmOk1qTzz
-        3I8H3uu5g9r945pkp7LFPay0q2p0PTT36yyfpxN7o5Jn8B6/b6MSZFHFsf5g/8oZdeUx/38X
-        1FZnPK1U/LcsQe9+QIrzp9hJrz0dJyaU/CxSXHRaQeTIK3ORvd18D68962d3DpLaMeeCoN6R
-        maofLtRqJBj4XNDcUyIlE/34kNKW1ewMm8VZ5f5qMpRW14vcFJWxXr46VTv17QQd7zs8XI+k
-        ts5gFb3/+7rtNatErSdfzd7xsxSqWS/kZ7/5nunCRR5VLX7OWN8FsxPcWg8WbvZ6eU/5pavL
-        dPc1H9ecyV95r34HjzfvCZN1/O1nPjx7+Okq06yEFdz3gssNlViKMxINtZiLihMByeXtDEEE
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvO6jJP4Eg0O7pCxWPd7OYjHnfAuL
-        xYVtfawWl3fNYbNouNPMZnFsgZjF7s4f7Bbvthxht/i6t4vFgdNjy8qbTB4LNpV6bFrVyebR
-        dm0Vk8fRPefYPPq2rGL02NS6hNXj8ya5AI4oLpuU1JzMstQifbsEroy3M86xF9w1qdjeeY25
-        gXGzZhcjB4eEgInExQPFXYxcHEICuxklHh/exwYRl5DYtdm1i5ETyBSWuN9yhBWi5hmjxJv7
-        k1hAEmwCWhJvZrWzgtgiAuYSq19NYwIpYhbYzSTxtec+M0THYUaJO/M+sIJM5RSwlPh4oASk
-        QVggSuLy1K2MIDaLgKrE9U3dzCA2L1DJsonL2CFsQYmTM5+ALWMWMJI4d2g/G4QtL7H97Rxm
-        iOsUJH4+XQZ1hJNE3/1eJogaEYnZnW3MExiFZyEZNQvJqFlIRs1C0rKAkWUVo2RqQXFuem6x
-        YYFhXmq5XnFibnFpXrpecn7uJkZw7Glp7mDcvuqD3iFGJg7GQ4wSHMxKIry79XgShHhTEiur
-        Uovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamAKyJ3hd/e1zq2FV7tf
-        35rBUb7k9obexOK/J7dk362q+9odId3zLW22Dtf6XjZeQ9cO5TTGpljdnC7uWwumxwXM2rnt
-        40Sh6x3JV+4bhZktz76vy/rrTdMTvu5Ny7Q0a29EBoov/DzV99KhiDTBn09PXZhXLvd6kc3F
-        TT+3K6SnKc1o/MnQr5U0/9vZlYve2q6NObD6pb3Ahw/3fit16U1ytEsVShUqnM/NlzL/fNqZ
-        5jXPZy6KeV7w2lr15Kdgx/0vOeS7C9TepV44cFpjtopLaO9qX5dJWyv9VSYUs56SvLnnTc+H
-        RyWe7dduL98Wxmm7Lsj1n1et9NxXRgLHohu0TMuNHntmXPrzYEP59f+9SizFGYmGWsxFxYkA
-        H/WuMiwDAAA=
-X-CMS-MailID: 20210126003130epcas2p4edac02397592781f3f06fd0c58421c44
-X-Msg-Generator: CA
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210121133649epcas2p493d5d59df1b48ee8e3282ab766f37a70
-References: <CGME20210121133649epcas2p493d5d59df1b48ee8e3282ab766f37a70@epcas2p4.samsung.com>
-        <1611235479-39399-1-git-send-email-dseok.yi@samsung.com>
-        <20210125124544.GW3576117@gauss3.secunet.de>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b2ecc36-7574-49ba-e7c6-08d8c191ba72
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 00:31:31.4087
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9zNLjjCqNIb2XEQThag1zfAMjiNxqAHCiYFhrolUuEPVtCtAC77xYKkzoGv/t7G1JIG8ZspIOQqtnKHUNHh/wqlV1DO+0SqUDhiP1Q8NbBs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0862
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 9:45 PM, Steffen Klassert wrote:
-> On Thu, Jan 21, 2021 at 10:24:39PM +0900, Dongseok Yi wrote:
-> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> > skb_gso_segment is updated but following frag_skbs are not updated.
-> >
-> > A call path skb_mac_gso_segment -> inet_gso_segment ->
-> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> > does not try to update UDP/IP header of the segment list but copy
-> > only the MAC header.
-> >
-> > Update port, addr and check of each skb of the segment list in
-> > __udp_gso_segment_list. It covers both SNAT and DNAT.
-> >
-> > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> > ---
-> > v1:
-> > Steffen Klassert said, there could be 2 options.
-> > https://lore.kernel.org/patchwork/patch/1362257/
-> > I was trying to write a quick fix, but it was not easy to forward
-> > segmented list. Currently, assuming DNAT only.
-> >
-> > v2:
-> > Per Steffen Klassert request, moved the procedure from
-> > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
-> >
-> > v3:
-> > Per Steffen Klassert request, applied fast return by comparing seg
-> > and seg->next at the beginning of __udpv4_gso_segment_list_csum.
-> >
-> > Fixed uh->dest = *newport and iph->daddr = *newip to
-> > *oldport = *newport and *oldip = *newip.
-> >
-> >  include/net/udp.h      |  2 +-
-> >  net/ipv4/udp_offload.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++----
-> >  net/ipv6/udp_offload.c |  2 +-
-> >  3 files changed, 69 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/include/net/udp.h b/include/net/udp.h
-> > index 877832b..01351ba 100644
-> > --- a/include/net/udp.h
-> > +++ b/include/net/udp.h
-> > @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
-> >  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
-> >
-> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> > -				  netdev_features_t features);
-> > +				  netdev_features_t features, bool is_ipv6);
-> >
-> >  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
-> >  {
-> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> > index ff39e94..43660cf 100644
-> > --- a/net/ipv4/udp_offload.c
-> > +++ b/net/ipv4/udp_offload.c
-> > @@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
-> >  }
-> >  EXPORT_SYMBOL(skb_udp_tunnel_segment);
-> >
-> > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-> > +				     __be32 *oldip, __be32 *newip,
-> > +				     __be16 *oldport, __be16 *newport)
-> > +{
-> > +	struct udphdr *uh;
-> > +	struct iphdr *iph;
-> > +
-> > +	if (*oldip == *newip && *oldport == *newport)
-> > +		return;
-> 
-> This check is redundant as you check this already in
-> __udpv4_gso_segment_list_csum.
+From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 A=
+M
+>=20
+> For now we can use the privilege flag to check. Stash the value to be
+> used later.
+>=20
+> Put in a bunch of defines for future use when we want to have more
+> fine-grained detection.
+>=20
+> Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> ---
+> v3: move hv_root_partition to mshyperv.c
+> ---
+>  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
+>  arch/x86/include/asm/mshyperv.h    |  2 ++
+>  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
+>  3 files changed, 32 insertions(+)
+>=20
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hy=
+perv-tlfs.h
+> index 6bf42aed387e..204010350604 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -21,6 +21,7 @@
+>  #define HYPERV_CPUID_FEATURES			0x40000003
+>  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
+>  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
+> +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES	0x40000007
+>  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
+>=20
+>  #define HYPERV_CPUID_VIRT_STACK_INTERFACE	0x40000081
+> @@ -110,6 +111,15 @@
+>  /* Recommend using enlightened VMCS */
+>  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED		BIT(14)
+>=20
+> +/*
+> + * CPU management features identification.
+> + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
+> + */
+> +#define HV_X64_START_LOGICAL_PROCESSOR			BIT(0)
+> +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR		BIT(1)
+> +#define HV_X64_PERFORMANCE_COUNTER_SYNC			BIT(2)
+> +#define HV_X64_RESERVED_IDENTITY_BIT			BIT(31)
+> +
 
-When comes in __udpv4_gso_segment_csum, the condition would be
-SNAT or DNAT. I think we don't need to do the function if the
-condition is not met. I want to skip the function for SNAT checksum
-when DNAT only case. Is it better to remove the check?
+I wonder if these bit definitions should go in the asm-generic part of
+hyperv-tlfs.h instead of the X64 specific part.  They look very architectur=
+e
+neutral (in which case the X64 should be dropped from the name
+as well).  Of course, they can be moved later when/if we get to that point
+and have a firmer understanding of what is and isn't arch neutral.
 
-> 
-> Looks ok otherwise.
-> 
-> > +
-> > +	uh = udp_hdr(seg);
-> > +	iph = ip_hdr(seg);
-> > +
-> > +	if (uh->check) {
-> > +		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-> > +					 true);
-> > +		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-> > +					 false);
-> > +		if (!uh->check)
-> > +			uh->check = CSUM_MANGLED_0;
-> > +	}
-> > +	*oldport = *newport;
-> > +
-> > +	csum_replace4(&iph->check, *oldip, *newip);
-> > +	*oldip = *newip;
-> > +}
-> > +
-> > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-> > +{
-> > +	struct sk_buff *seg;
-> > +	struct udphdr *uh, *uh2;
-> > +	struct iphdr *iph, *iph2;
-> > +
-> > +	seg = segs;
-> > +	uh = udp_hdr(seg);
-> > +	iph = ip_hdr(seg);
-> > +
-> > +	if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
-> > +	    (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
-> > +	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
-> > +	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
-> > +		return segs;
-> > +
-> > +	while ((seg = seg->next)) {
-> > +		uh2 = udp_hdr(seg);
-> > +		iph2 = ip_hdr(seg);
-> > +
-> > +		__udpv4_gso_segment_csum(seg,
-> > +					 &iph2->saddr, &iph->saddr,
-> > +					 &uh2->source, &uh->source);
-> > +		__udpv4_gso_segment_csum(seg,
-> > +					 &iph2->daddr, &iph->daddr,
-> > +					 &uh2->dest, &uh->dest);
-> > +	}
-> > +
-> > +	return segs;
-> > +}
-> > +
-> >  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
-> > -					      netdev_features_t features)
-> > +					      netdev_features_t features,
-> > +					      bool is_ipv6)
-> >  {
-> >  	unsigned int mss = skb_shinfo(skb)->gso_size;
-> >
-> > @@ -198,11 +257,14 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
-> >
-> >  	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
-> >
-> > -	return skb;
-> > +	if (is_ipv6)
-> > +		return skb;
-> > +	else
-> > +		return __udpv4_gso_segment_list_csum(skb);
-> >  }
-> >
-> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> > -				  netdev_features_t features)
-> > +				  netdev_features_t features, bool is_ipv6)
-> >  {
-> >  	struct sock *sk = gso_skb->sk;
-> >  	unsigned int sum_truesize = 0;
-> > @@ -214,7 +276,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> >  	__be16 newlen;
-> >
-> >  	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
-> > -		return __udp_gso_segment_list(gso_skb, features);
-> > +		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
-> >
-> >  	mss = skb_shinfo(gso_skb)->gso_size;
-> >  	if (gso_skb->len <= sizeof(*uh) + mss)
-> > @@ -328,7 +390,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
-> >  		goto out;
-> >
-> >  	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> > -		return __udp_gso_segment(skb, features);
-> > +		return __udp_gso_segment(skb, features, false);
-> >
-> >  	mss = skb_shinfo(skb)->gso_size;
-> >  	if (unlikely(skb->len <= mss))
-> > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-> > index c7bd7b1..faa823c 100644
-> > --- a/net/ipv6/udp_offload.c
-> > +++ b/net/ipv6/udp_offload.c
-> > @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
-> >  			goto out;
-> >
-> >  		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> > -			return __udp_gso_segment(skb, features);
-> > +			return __udp_gso_segment(skb, features, true);
-> >
-> >  		mss = skb_shinfo(skb)->gso_size;
-> >  		if (unlikely(skb->len <= mss))
-> > --
-> > 2.7.4
+>  /*
+>   * Virtual processor will never share a physical core with another virtu=
+al
+>   * processor, except for virtual processors that are reported as sibling=
+ SMT
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyp=
+erv.h
+> index ffc289992d1b..ac2b0d110f03 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
+>  		struct hv_guest_mapping_flush_list *flush,
+>  		u64 start_gfn, u64 end_gfn);
+>=20
+> +extern bool hv_root_partition;
+> +
+>  #ifdef CONFIG_X86_64
+>  void hv_apic_init(void);
+>  void __init hv_init_spinlocks(void);
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyper=
+v.c
+> index f628e3dc150f..c376d191a260 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -32,6 +32,10 @@
+>  #include <asm/nmi.h>
+>  #include <clocksource/hyperv_timer.h>
+>=20
+> +/* Is Linux running as the root partition? */
+> +bool hv_root_partition;
+> +EXPORT_SYMBOL_GPL(hv_root_partition);
+> +
+>  struct ms_hyperv_info ms_hyperv;
+>  EXPORT_SYMBOL_GPL(ms_hyperv);
+>=20
+> @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
+>  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
+>  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
+>=20
+> +	/*
+> +	 * Check CPU management privilege.
+> +	 *
+> +	 * To mirror what Windows does we should extract CPU management
+> +	 * features and use the ReservedIdentityBit to detect if Linux is the
+> +	 * root partition. But that requires negotiating CPU management
+> +	 * interface (a process to be finalized).
+> +	 *
+> +	 * For now, use the privilege flag as the indicator for running as
+> +	 * root.
+> +	 */
+> +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
+
+Should the EBX value be captured in the ms_hyperv structure with the
+other similar values, and then used from there?
+
+Michael
+
+> +		hv_root_partition =3D true;
+> +		pr_info("Hyper-V: running as root partition\n");
+> +	}
+> +
+>  	/*
+>  	 * Extract host information.
+>  	 */
+> --
+> 2.20.1
+
 
