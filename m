@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CA4303C20
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1C4303C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405367AbhAZLjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:39:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404178AbhAZKkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:40:39 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB5AC06174A;
-        Tue, 26 Jan 2021 02:39:57 -0800 (PST)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id B900223E6C;
-        Tue, 26 Jan 2021 11:39:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1611657595;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dCH/YXfZ9HXdQBHPo7Nn9zVU+J0dd/QGNvh+wOZ/2X0=;
-        b=GKqOOoubkXGqrd/zE5rlnqsPTy9r0oLk3z+IM3Sf/2UoHZvkZLtvwOhunJfmhZwOa6B0aK
-        cdugxcwYILhWGaAagQO7wh0vXI4z0begDwW+Die9587dy0ps0+RVeAl6opeJ7UERxokhLv
-        UX9LiZSc46WBwqVpsZdf7Ik5uNyVZGk=
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 26 Jan 2021 11:39:54 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Minghuan Lian <minghuan.Lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH] PCI: dwc: layerscape: convert to
- builtin_platform_driver()
-In-Reply-To: <20210126100256.GA20547@e121166-lin.cambridge.arm.com>
-References: <20210120105246.23218-1-michael@walle.cc>
- <20210126100256.GA20547@e121166-lin.cambridge.arm.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <1a36ef741c5ab2a6e90b38c58944aa25@walle.cc>
-X-Sender: michael@walle.cc
+        id S2405349AbhAZLjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:39:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:60876 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404262AbhAZKlJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:41:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DF83D6E;
+        Tue, 26 Jan 2021 02:40:23 -0800 (PST)
+Received: from e123648.arm.com (unknown [10.57.2.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CA2D83F66B;
+        Tue, 26 Jan 2021 02:40:20 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     vireshk@kernel.org, rafael@kernel.org, daniel.lezcano@linaro.org,
+        Dietmar.Eggemann@arm.com, lukasz.luba@arm.com, amitk@kernel.org,
+        rui.zhang@intel.com, cw00.choi@samsung.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+Subject: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max power
+Date:   Tue, 26 Jan 2021 10:39:58 +0000
+Message-Id: <20210126104001.20361-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-01-26 11:02, schrieb Lorenzo Pieralisi:
-> On Wed, Jan 20, 2021 at 11:52:46AM +0100, Michael Walle wrote:
->> fw_devlink will defer the probe until all suppliers are ready. We 
->> can't
->> use builtin_platform_driver_probe() because it doesn't retry after 
->> probe
->> deferral. Convert it to builtin_platform_driver().
->> 
->> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> 
-> I will have to drop this Fixes: tag if you don't mind, it is not
-> in the mainline.
+Hi all,
 
-That commit is in Greg's for-next tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=driver-core-next&id=e590474768f1cc04852190b61dec692411b22e2a
+This patch set tries to add the missing feature in the Intelligent Power
+Allocation (IPA) governor which is: frequency limit set by user space.
+User can set max allowed frequency for a given device which has impact on
+max allowed power. In current design there is no mechanism to figure this
+out. IPA must know the maximum allowed power for every device. It is then
+used for proper power split and divvy-up. When the user limit for max
+frequency is not know, IPA assumes it is the highest possible frequency.
+It causes wrong power split across the devices.
 
-I was under the impression there are other commits with this
-particular fixes tag, too. Either it was removed from
-for-next queues or I was confused.
+This new mechanism provides the max allowed frequency to the thermal
+framework and then max allowed power to the IPA.
+The implementation is done in this way because currently there is no way
+to retrieve the limits from the PM QoS, without uncapping the local
+thermal limit and reading the next value. It would be a heavy way of
+doing these things, since it should be done every polling time (e.g. 50ms).
+Also, the value stored in PM QoS can be different than the real OPP 'rate'
+so still would need conversion into proper OPP for comparison with EM.
+Furthermore, uncapping the device in thermal just to check the user freq
+limit is not the safest way.
+Thus, this simple implementation moves the calculation of the proper
+frequency to the sysfs write code, since it's called less often. The value
+is then used as-is in the thermal framework without any hassle.
 
-But I'm fine with removing the tag, assuming this will end
-up together with the "driver core: Set fw_devlink=on by default"
-commit in 5.11.
+As it's a RFC, it still misses the cpufreq sysfs implementation, but would
+be addressed if all agree.
 
--michael
+Regards,
+Lukasz Luba
+
+Lukasz Luba (3):
+  PM /devfreq: add user frequency limits into devfreq struct
+  thermal: devfreq_cooling: add new callback to get user limit for min
+    state
+  thermal: power_allocator: get proper max power limited by user
+
+ drivers/devfreq/devfreq.c             | 41 ++++++++++++++++++++++++---
+ drivers/thermal/devfreq_cooling.c     | 33 +++++++++++++++++++++
+ drivers/thermal/gov_power_allocator.c | 17 +++++++++--
+ include/linux/devfreq.h               |  4 +++
+ include/linux/thermal.h               |  1 +
+ 5 files changed, 90 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
+
