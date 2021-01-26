@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD557303DB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7549303DCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392173AbhAZMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
+        id S2392300AbhAZMvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391934AbhAZMt4 (ORCPT
+        with ESMTP id S2392138AbhAZMt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:49:56 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC73C08EB23
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:50 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id a1so16329465wrq.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:50 -0800 (PST)
+        Tue, 26 Jan 2021 07:49:58 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48CCC08EB26
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:51 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id m13so1882574wro.12
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bWXDn1Q9e79o1Ahbq11jdzTrjLD5igFdf2jngDni798=;
-        b=GPuwh5UMbRYTIAqxWcuNWJoL/UZWeUSNS+EYoNcJ91J1TkfsGI0YNqhubB8RQGeReP
-         neR90OV2gzOy6VqYlffob/ri5kelHkNcePX6VgL5r6gjn53vWKYh1VhkWeVMupGxgm6L
-         Kyk2/aynygYowh/ZUb+kJT+/UzEgzQh8/S39Aj5luzRPazsi5gYNnVxOy25nQ2hIWfrW
-         oEqQPDq0lO6Fu0Mc+7vHtAf6nkQJaDUyF6Lz4A2Ljfwt/JxlLysavqwwH2dYXWr97Er0
-         tP+eCmUz7yoWJoSEEQm/BxcMxpvB5T0xjZLLveUJp5jFyX56K967T7uxSIKonfYu4t1T
-         mj3w==
+        bh=4f4I65tHSu0Sevubz3lp3Zk+K7fk0+tHrgiLNeMd+Rc=;
+        b=p4HdJ6LjNhnbcw4Rkb46d4O637uRz+G/y5kFGVkp3mw/I0eBw5VnPxLp4bvxxC6wPD
+         GUyd4XS8uv/MF76CwjocbLJjE/kwtXYQ+If2ymHM+H/TPnFDJnXwSXLLdWBhlOJ4MQBn
+         nNO/VP+yk6ec2yyGbteddQCv3ieCJxN/y5KZ+AnFkCHYtohS/SQxbSQxTaGYs3+iqI0P
+         tOWUnxm8z/PTmJkNGaUVOnm9brIEBrrC6EjUD72jUJkyPtLQ5kljrZhftYjfpDSmgdec
+         4yGsORj7TSSiL+/AspbTUt4v+Ni4/pBRg9UtqRw/eDSoHo/NE7EZm1Nbw+cuJCQqSOKh
+         p+/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bWXDn1Q9e79o1Ahbq11jdzTrjLD5igFdf2jngDni798=;
-        b=CcZ3jAtZ/CVRNIehRejPYDpduWaKtwO4pxlkD7kbPiKPct59RQ9pir45QowbtNv6ly
-         p7/WjpDMVAMqvgBfrvSK9ASMKkEKnGqdXsIMid2cSVZ11Q4Rp4+MQ+ku/I6EQ9oO5EER
-         FDMNFyF08sCsiEt0pOfa8yqz6lyv+DboB5Ei9gbyZOBb26xpFIl2ItXcAd5UH8WMJKJr
-         /WQdpnyS6U04p+yo+8VW3y0nErcETAz0oSKfNIi+F7QalAFvcQ0SV47eKpVS24vmtra7
-         GejrzoMw4J6EREl3xx4KWZ+JcTtaVCPwld+yYEjzb294O6/3+r/OL978bRUuOYi0YeA1
-         r56w==
-X-Gm-Message-State: AOAM532x2SMll+AHSUmpEVL2p1LLNEguw+k4aeIoq+cbVRXr99y+urMg
-        HojEvr4eY1NubMHzby59jxBz8w==
-X-Google-Smtp-Source: ABdhPJyoqraqYP5Lncuk2TmsiQknmS5tV0xjuVaaRBE6kIXCodS8Icxj6NLW9Dse8QaRWrHHIWGA5g==
-X-Received: by 2002:adf:f403:: with SMTP id g3mr5943566wro.212.1611665269305;
-        Tue, 26 Jan 2021 04:47:49 -0800 (PST)
+        bh=4f4I65tHSu0Sevubz3lp3Zk+K7fk0+tHrgiLNeMd+Rc=;
+        b=Vid0vIkAey146bglRvTcRLp1UQgVccZqTi/Fn6aNE1Wt55IU7+byx06j1f2d2giv+C
+         2zjvK5KjVnfHBxvrubbxUaWSU1A6zYnn+0JH3Y3zy9apHGG1fsXqUew/d0FN56PEvOEl
+         jTTPEq8F+j8i8w673VqPpEapAKlvToNHv4kOBBrmnHMR68nGxNnuIpgmy1j2sdgC/dVH
+         w1gqNlsd7Tq4NDRuO5S5Wy5JEG21F/q/hnjRqqYpBIHMy0hiRcupA0BJexlkVx4IJYHi
+         R9aPs+yKyyr3iCVztISlxdZMjJXK8ptivm56g6nqfp343iAI8s9E5orrYfLRG6ZdPELL
+         rT4g==
+X-Gm-Message-State: AOAM5329wN0AIUTuYCpQPrDtG0SeMxRRHxM6Ybt9zoSDYEweWtrERp+M
+        kBFEDCYUY219DnBCa9CH9nBxaA==
+X-Google-Smtp-Source: ABdhPJwFJFyJiQxPN+ieJwSG+epJ+dfgs4HDsCWwPmw6XySAq1DHWA1Fxp8sJuDlEEZ9YiFCba30Dg==
+X-Received: by 2002:a5d:414c:: with SMTP id c12mr6099593wrq.251.1611665270492;
+        Tue, 26 Jan 2021 04:47:50 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.48
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:48 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:49 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 12/20] RDMA/hw/hfi1/qp: Fix some formatting issues and demote kernel-doc abuse
-Date:   Tue, 26 Jan 2021 12:47:24 +0000
-Message-Id: <20210126124732.3320971-13-lee.jones@linaro.org>
+Subject: [PATCH 13/20] RDMA/hw/hfi1/ruc: Fix a small formatting and description issues
+Date:   Tue, 26 Jan 2021 12:47:25 +0000
+Message-Id: <20210126124732.3320971-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
 References: <20210126124732.3320971-1-lee.jones@linaro.org>
@@ -69,13 +69,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hfi1/qp.c:195: warning: Function parameter or member 'dev' not described in 'verbs_mtu_enum_to_int'
- drivers/infiniband/hw/hfi1/qp.c:195: warning: Function parameter or member 'mtu' not described in 'verbs_mtu_enum_to_int'
- drivers/infiniband/hw/hfi1/qp.c:306: warning: Function parameter or member 'qp' not described in 'hfi1_setup_wqe'
- drivers/infiniband/hw/hfi1/qp.c:306: warning: Function parameter or member 'wqe' not described in 'hfi1_setup_wqe'
- drivers/infiniband/hw/hfi1/qp.c:306: warning: Function parameter or member 'call_send' not described in 'hfi1_setup_wqe'
- drivers/infiniband/hw/hfi1/qp.c:922: warning: Function parameter or member 'qp' not described in 'hfi1_qp_iter_cb'
- drivers/infiniband/hw/hfi1/qp.c:922: warning: Function parameter or member 'v' not described in 'hfi1_qp_iter_cb'
+ drivers/infiniband/hw/hfi1/ruc.c:277: warning: Function parameter or member 'bth1' not described in 'hfi1_make_ruc_header_16B'
+ drivers/infiniband/hw/hfi1/ruc.c:365: warning: Function parameter or member 'bth1' not described in 'hfi1_make_ruc_header_9B'
+ drivers/infiniband/hw/hfi1/ruc.c:472: warning: Function parameter or member 'tid' not described in 'hfi1_schedule_send_yield'
+ drivers/infiniband/hw/hfi1/ruc.c:472: warning: Excess function parameter 'timeout' description in 'hfi1_schedule_send_yield'
 
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
@@ -84,55 +81,42 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hfi1/qp.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/infiniband/hw/hfi1/ruc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/qp.c b/drivers/infiniband/hw/hfi1/qp.c
-index 681bb4e918c92..e037df9115127 100644
---- a/drivers/infiniband/hw/hfi1/qp.c
-+++ b/drivers/infiniband/hw/hfi1/qp.c
-@@ -186,7 +186,7 @@ static void flush_iowait(struct rvt_qp *qp)
- 	write_sequnlock_irqrestore(lock, flags);
- }
- 
--/**
-+/*
-  * This function is what we would push to the core layer if we wanted to be a
-  * "first class citizen".  Instead we hide this here and rely on Verbs ULPs
-  * to blindly pass the MTU enum value from the PathRecord to us.
-@@ -289,9 +289,9 @@ void hfi1_modify_qp(struct rvt_qp *qp, struct ib_qp_attr *attr,
- 
+diff --git a/drivers/infiniband/hw/hfi1/ruc.c b/drivers/infiniband/hw/hfi1/ruc.c
+index 23ac6057b2112..c3fa1814c6a86 100644
+--- a/drivers/infiniband/hw/hfi1/ruc.c
++++ b/drivers/infiniband/hw/hfi1/ruc.c
+@@ -260,6 +260,7 @@ static inline void hfi1_make_ruc_bth(struct rvt_qp *qp,
+  * @qp: the queue pair
+  * @ohdr: a pointer to the destination header memory
+  * @bth0: bth0 passed in from the RC/UC builder
++ * @bth1: bth1 passed in from the RC/UC builder
+  * @bth2: bth2 passed in from the RC/UC builder
+  * @middle: non zero implies indicates ahg "could" be used
+  * @ps: the current packet state
+@@ -348,6 +349,7 @@ static inline void hfi1_make_ruc_header_16B(struct rvt_qp *qp,
+  * @qp: the queue pair
+  * @ohdr: a pointer to the destination header memory
+  * @bth0: bth0 passed in from the RC/UC builder
++ * @bth1: bth1 passed in from the RC/UC builder
+  * @bth2: bth2 passed in from the RC/UC builder
+  * @middle: non zero implies indicates ahg "could" be used
+  * @ps: the current packet state
+@@ -455,11 +457,10 @@ void hfi1_make_ruc_header(struct rvt_qp *qp, struct ib_other_headers *ohdr,
  /**
-  * hfi1_setup_wqe - set up the wqe
-- * @qp - The qp
-- * @wqe - The built wqe
-- * @call_send - Determine if the send should be posted or scheduled.
-+ * @qp: The qp
-+ * @wqe: The built wqe
-+ * @call_send: Determine if the send should be posted or scheduled.
+  * hfi1_schedule_send_yield - test for a yield required for QP
+  * send engine
+- * @timeout: Final time for timeout slice for jiffies
+  * @qp: a pointer to QP
+  * @ps: a pointer to a structure with commonly lookup values for
+  *      the the send engine progress
+- * @tid - true if it is the tid leg
++ * @tid: true if it is the tid leg
   *
-  * Perform setup of the wqe.  This is called
-  * prior to inserting the wqe into the ring but after
-@@ -595,7 +595,7 @@ struct sdma_engine *qp_to_sdma_engine(struct rvt_qp *qp, u8 sc5)
- 	return sde;
- }
- 
--/*
-+/**
-  * qp_to_send_context - map a qp to a send context
-  * @qp: the QP
-  * @sc5: the 5 bit sc
-@@ -912,8 +912,8 @@ void notify_error_qp(struct rvt_qp *qp)
- 
- /**
-  * hfi1_qp_iter_cb - callback for iterator
-- * @qp - the qp
-- * @v - the sl in low bits of v
-+ * @qp: the qp
-+ * @v: the sl in low bits of v
-  *
-  * This is called from the iterator callback to work
-  * on an individual qp.
+  * This routine checks if the time slice for the QP has expired
+  * for RC QPs, if so an additional work entry is queued. At this
 -- 
 2.25.1
 
