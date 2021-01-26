@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB10303AAD
+	by mail.lfdr.de (Postfix) with ESMTP id C37E0303AAE
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404293AbhAZKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:47:40 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:62052 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbhAZCLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:11:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611627075; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kBJZDG2tUANkOa6JriIfIEN3HbEWWrkMH6tsmb1Uudg=;
- b=XAsMDjXgDNfw0ndtQNrHZL7aS06eKoiOgHiRbrItvZ9kdGy0Vzn3+63eUy8MnX2bOCiC6YW0
- vETY1bfSHHDHU/0SI5CUFjPHba/uIxPzPYe5wBWw/hClJ1UxFFedi6A4wEmGd/xPlOshHOlj
- TBcZYp5FCvAO2BPr95io+jjxLVo=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 600f7a18ad4c9e395b687c2d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 02:10:32
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6FACAC43465; Tue, 26 Jan 2021 02:10:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 92270C433CA;
-        Tue, 26 Jan 2021 02:10:31 +0000 (UTC)
+        id S2404349AbhAZKrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:47:47 -0500
+Received: from mail-dm6nam12on2065.outbound.protection.outlook.com ([40.107.243.65]:17665
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726603AbhAZCNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:13:36 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nEzcUlOKO7mt862Jk8TQykjp20Fpd8XQ8lSVtl0b02zd+bGfDCvUZ9jPHxFqWybhpu1e22Ldax42mdQIapHmSUXEGfnvmeyIrxMwwL7TIuLh2LFUNIcfu3wDAClI3lA2CNmLiz42MEKJ+TPEfHJJEzgSkV3vbFmqkMcOo1Wd4CbR/KKZ3bQ1RWOjudzxCWfx91APHW0pc+yw7t7TTEeIBHnkGDetdxsKli3wmPlADtXYgxaIF/lUiN+XtUOLPzW6lTQQyDNGU+8V5sUsm345u3hfziWAs1BcSb4rhW0hrao67lLrMaVGX4hggTP83JaErjmndqKUdI3MiR5PMxI2PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ASsmje/S+obvmANpMtbDjoL70MJ7ZvUNcZLdFGnF18g=;
+ b=IuGvIJGGwyBUxGGlkT0aPfSXKfgC+kLeePcdcPnvgfkxTH8pFTt5vsqvGnrufDNs44sfKPkN5fo4aj51r4UbFHnA2pkiLpBLDElGdcuHTbV32MVXyO6NWMoTpamRJHa0gx4tCSXdrvDFdmatyW3/KHXXBBYv5AMAZYP9luubkb1004+DXEnkdHz6UnrDWkiaRDJoz4hhl+fMWjGZQQgvlcF1G7pc+6n3gdVPvlkwwZtW+YwViFvyim+3Bn6+NYUN39IKHMZ3QepX/Oh8bmbQFDkXxHmVXSlKgr2HJwLsrVn8yDSNCnDijvF8QiqUMqHTUljYgLi9VLlS+uoJu3SmwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ASsmje/S+obvmANpMtbDjoL70MJ7ZvUNcZLdFGnF18g=;
+ b=a6SpRRklLDio5GFynOWS4Ja6yNp3fEIZ9UiagvtptOkYn9KOI7eVtijYHNx4XaQeGCemt95wGkG0crwQdrXPJ28ron+TXUwTiahYzph9ctbr7inbNYEeLN/Ko8z6Hpp6IRDgiepJQ4Kzq+Jol3FUbZJARji3e/klYogNVRv21No=
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BY5PR11MB4225.namprd11.prod.outlook.com (2603:10b6:a03:1ba::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.19; Tue, 26 Jan
+ 2021 02:12:45 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.017; Tue, 26 Jan 2021
+ 02:12:45 +0000
+From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+To:     "peterz@infradead.org" <peterz@infradead.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Question on migrate_disabe/enable()
+Thread-Topic: Question on migrate_disabe/enable()
+Thread-Index: AQHW84bOF+3rqGjcZUW04nBm71/AnQ==
+Date:   Tue, 26 Jan 2021 02:12:45 +0000
+Message-ID: <BYAPR11MB2632E0BCC9CE86D7DB6E7CFEFFBC9@BYAPR11MB2632.namprd11.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=windriver.com;
+x-originating-ip: [60.247.85.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 94d84ba1-d768-418d-2dc9-08d8c19fded1
+x-ms-traffictypediagnostic: BY5PR11MB4225:
+x-microsoft-antispam-prvs: <BY5PR11MB4225ADAB6AD1B84A72A72959FFBC9@BY5PR11MB4225.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8DYf26DxEhtkIKNO3GKdImNaUfQFe2mA98K5dtwYpUsrwWFTQ2YEM+LE3FRrzjMIUC5Ze+B4ojgPLz8xwHI8XPvX3kLbrZIzFVF9q2l34sMRj7a7o9ygTkBD4QJSYQiB8kfCxMJvgHP17jxXZSQndPsenLrbzacl5x+3gFR7Osqn0ia0wncjKXvtVWH4rzAdN6gb2TboeLlymjkRg7f8HJ5cnW4dzhKmku+bdNtpe3r/5ZPLBWMQrPZclx+DioXo2s3pPXpW9EI9EAs0NTZbu8vweNUi0ok7WcGeOyqb2B+IA0pgNokqVwmjtkI/eqzJBf99Nrb5q+bcO33yjKYR7DGpGBXf0feb+FKVM/j1Kh8bhaqT5sSr+RPJhw+zOcv/XwkOgnEr3tTJtQKU+lZEAQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39850400004)(366004)(376002)(71200400001)(8676002)(6506007)(316002)(110136005)(8936002)(76116006)(91956017)(64756008)(66556008)(66476007)(66946007)(66446008)(478600001)(7696005)(4744005)(5660300002)(86362001)(33656002)(52536014)(83380400001)(2906002)(55016002)(186003)(4326008)(26005)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?SldGYkFkUnFIbk54aVlyWXRYM05WUUN4bVlGYmRIREFRbmhuVXEwZHRtRGN6?=
+ =?gb2312?B?ck5BWWw5dnNBdTA2ZlFhSlk0M1VzNnNDbmtJZmtNRUcwMUkrekJNTjBndm9R?=
+ =?gb2312?B?T05iNElZaXJMcjJjc3ZEd21SMzBpVVFPT3ZYNHA0blJvbWhDQU9qNTVMOG5v?=
+ =?gb2312?B?YkJlZjV1WlZoZ3lucTEvUkY2azZUa0QwMllzVzlZcVFZdWQ2TTlsNkprNmJF?=
+ =?gb2312?B?VVZyN3BCUnpSTnJBVHBNMytMU1pBRjRsaHhaVGg4Wk1YQ0JUcFdWUFRqZnBy?=
+ =?gb2312?B?T2RjRHRsWW5sRW5DSWxLc2xTOTE2WGthM0s1MWhKU3NSaFhGT3dxRTdkcVNv?=
+ =?gb2312?B?OWVBS2tqVEM5VGp2cnRxbHBQemVqdnRuV0RlZ3FRQm9DOHpwUklLeGsxQXJ2?=
+ =?gb2312?B?VUEybFUySUh4S2JQZ1p3YW1QeG5kYy9rZ3JFbFdRZ1NNeUE5ckJCbEpWRmdr?=
+ =?gb2312?B?MDBsVjY3ZHBmTXpPRGRveUJabXI4VWxkZjMrQ3lpZEk4KzdWNHhWK25GNEpn?=
+ =?gb2312?B?THBuQmdMS3JjTTlmM2orQXJ4akdJbkVTRVk5STM2S3ZOT0NhdFhhWEtvakFY?=
+ =?gb2312?B?bERpZUNkTGhtejdTaEpQWjk3ZUlZM3kwdzl1bzdRSk9SUW1jN01MaDgva2lv?=
+ =?gb2312?B?MXJHbE5ONkNoWnVDY2FHMDI1SUhjbGlvSzQzV1pCbVNuWHNJanVrRnY3bVo1?=
+ =?gb2312?B?MSs0TTVJaXRlYVZSem1NZlNKMUE1TG9nRUxxRUFyd0lxVGxQQlB5YkdyUlhJ?=
+ =?gb2312?B?UTZFRHFPdVYrbzdobTNxRGZ6QUJKZ2xHZklyMENxYkpiektPZW5YTXJFMkFE?=
+ =?gb2312?B?ejJGZ0dmMTgzQVVxM3FlcmYzS081WE5NKy8wRUxvWDJrOEMrNDI5dFJQNHdD?=
+ =?gb2312?B?TUltTGtQdkEwVlphaEk0YWxmQmczeXkzRDgzdzlFbzl6RmxFRy9FcUx3Tisr?=
+ =?gb2312?B?aGR6YTlObUsyS0NuWVFqL1JCMzljTEkxRVhVNUpoV29tQ2NrRWY4d0VYbGJi?=
+ =?gb2312?B?bFpZYmtINThZazlKVmZ1ZTZHM2dKekxrR3JzL3ZRcEluanVrUVo3RVdvQ2lR?=
+ =?gb2312?B?R1RSKzM5VjF3ODBuU29rZGVrY2pFS0ZMZ2JYajhhNC9MdmQydXErOFU5OHoy?=
+ =?gb2312?B?T1VIRnNpVkFvb2h5MGxRWStyM3BpdGd4MXRNcmVzbWdFQ25IcHN0WHdBTk9Z?=
+ =?gb2312?B?S3cwb1JlUTRQcnIzTmxQZG1nTmZLOVlkQXZLdzlYZVlDLy9sRDlZT25Cd2Y4?=
+ =?gb2312?B?ZWNMYnZtTGNrRmlGY1pudGQwYzBkUGJySDNvRlovMlJyaXlWNGp0TDJ6UmpM?=
+ =?gb2312?B?YVpZZ24xTTV5dWM4dVN6aUZrd2o3Ym9WL3VUY01IamNtekFjc0k4cmtQWmlO?=
+ =?gb2312?Q?zXbPQkkWu+gPG9MxkkWJ8WbuTREHnJMM=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 26 Jan 2021 10:10:31 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>, jaegeuk@kernel.org,
-        asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] scsi: ufs: Fix some problems in task management
- request implementation
-In-Reply-To: <DM6PR04MB65754B0CF70B9A3EB036D157FCBD9@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <1611199388-24668-1-git-send-email-cang@codeaurora.org>
- <DM6PR04MB65754B0CF70B9A3EB036D157FCBD9@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <6362e6f2117237b934eea44f700fd13a@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94d84ba1-d768-418d-2dc9-08d8c19fded1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 02:12:45.2408
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +ozOaUSavnsGsDH1aHMwpPTP2sGA7zxA7ZGOG/bQysMQPq/eb2vhYC7qLRXUVueoSAO14ySy1YghGOLHMHHT+SMvdXaXHW2MXQvZ2WtRfSE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4225
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-25 19:36, Avri Altman wrote:
->> Current task management request send/compl implementation is broken, 
->> the
->> problems and fixes are listed as below:
->> 
->> Problem: TMR completion timeout. ufshcd_tmc_handler() calls
->>          blk_mq_tagset_busy_iter(fn == ufshcd_compl_tm()), but since
->>          blk_mq_tagset_busy_iter() only iterates over all reserved 
->> tags and
->>          started requests, so ufshcd_compl_tm() never gets a chance to 
->> run.
->> Fix:     Call blk_mq_start_request() in __ufshcd_issue_tm_cmd().
->> 
->> Problem: Race condition in send/compl paths. ufshcd_compl_tm() looks 
->> for
->>          all 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL and call 
->> complete()
->>          for each req who has the req->end_io_data set. There can be a 
->> race
->>          condition btw tmc send/compl, because req->end_io_data is 
->> set, in
->>          __ufshcd_issue_tm_cmd(), without host lock protection, so it 
->> is
->>          possible that when ufshcd_compl_tm() checks the 
->> req->end_io_data,
->>          req->end_io_data is set but the corresponding tag has not 
->> been set
->>          in the REG_UTP_TASK_REQ_DOOR_BELL. Thus, ufshcd_tmc_handler()
->> may
->>          wrongly complete TMRs which have not been sent.
->> Fix:     Protect req->end_io_data with host lock. And let 
->> ufshcd_compl_tm()
->>          only handle those tm cmds which have been completed instead 
->> of
->>          looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
->> 
->> Problem: In __ufshcd_issue_tm_cmd(), it is not right to use hba->nutrs 
->> +
->>          req->tag as the Task Tag in one TMR UPIU.
->> Fix:     Directly use req->tag as Task Tag.
->> 
->> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-> Since you are practically reverting Bart's change (69a6c269c097),
-> maybe cc him as well,
-> And add a fixes tag?
-> 
-
-Hi Avri,
-
-It is not reverting Bart's change, but making TMR work properly based
-on it. I am ok with the Bart's idea of getting a tag for TMR from
-blk_get_request(), and this patch respects that idea.
-
-> Also, even though all those fixes are around the same place, but
-> fixing different issues,
-> You might want to consider to separate those.  Whatever you think.
-> 
-
-Thanks for the suggestion. I treat it as a whole because it is 
-convenient
-for me to get it ported and tested over different platforms. I may
-revise it in next version after more comments come on it.
-
-Thanks,
-Can Guo.
-
-> Thanks,
-> Avri
+SGVsbG8gUGV0ZXJ6LCB0Z2x4CgpJIGhhdmUgc29tZSBxdWVzdGlvbnMgYWJvdXQgbWlncmF0ZV9k
+aXNhYmUvZW5hYmxlKCksICBpbiB0aGUgcGFzdCBtaWdyYXRlX2Rpc2FiZS9lbmFibGUoKSBpcyBy
+ZXBsYWNlZCBieSBwcmVlbXB0X2Rpc2FibGUvZW5hYmxlKCkgaW4gbm8gUlQgc3lzdGVtLgoKQW5k
+IG5vdyBtaWdyYXRlX2Rpc2FiZS9lbmFibGUoKSBoYXMgaXRzIG93biBpbXBsZW1lbnRhdGlvbiwg
+SSB3YW50IHRvIGtub3cgaW4gbWlncmF0ZV9kaXNhYmUvZW5hYmxlKCkgY3JpdGljYWwgYXJlYSBp
+cyBibG9ja2luZyBhbGxvd2VkPyAgCgpJZiBhbGxvd2VkLCBUaGVyZSdzIGEgYmxvY2thZ2UgaW4g
+bWlncmF0ZV9kaXNhYmUvZW5hYmxlKCkgY3JpdGljYWwgYXJlYSwgYW5kIHRoaXMgdGltZSBpZiBD
+UFUgZ29pbmcgb2ZmbGluZaOsb2ZmbGluZSB0aW1lIHdpbGwgYmUgbG9uZ2VyLiBJcyB0aGlzIG5v
+cm1hbCBwaGVub21lbm9uo78KClRoYW5rcwpRaWFuZwoKCgoKCgoKCgoKCgoKCgo=
