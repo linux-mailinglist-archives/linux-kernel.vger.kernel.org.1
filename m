@@ -2,105 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4B2304194
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD73F30418D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406158AbhAZPIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:08:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34092 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406091AbhAZPGp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:06:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611673558; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXc9QyfjbzYkr/9E7kWbWAYLlI4FbRmuEeT8rg+wTwU=;
-        b=RcjpwZyxbSnL27+xPbzI8DyQUePSR4WX2wnQ97UeZMl/oXbeJLspplWQnjrpGmeZ7f77M8
-        pp/AUp1dBACy/R4ZeJn8VoibDW4Ammk83FYCwymuY2mppYsbTam98rNT5itWkQIDggqXZG
-        gLCeXQM4w8C09vqYIx/Yft3mlmE8rVM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E4094AF2F;
-        Tue, 26 Jan 2021 15:05:57 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 16:05:55 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
+        id S2406039AbhAZPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:07:26 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:47015 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406117AbhAZPG5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:06:57 -0500
+Received: by mail-wr1-f52.google.com with SMTP id q7so16802572wre.13;
+        Tue, 26 Jan 2021 07:06:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1zxAP5nWOub6Bvc04Q0nYCpX745bg4gnoQMttyKcbDA=;
+        b=cLyO/H40Qe5XBacyvxPrEls2PLQpH229f1gtEJhXThmPVRs0jqLeLFJ66FS4BNao6X
+         Ik0zRQmTfxZCZ10g5dBtUebX1+ISJoiGEgv2ZQsZerr0AKmDwtgV/Aa1mCNaUeEJCvWl
+         /0DiVwEW4v9bOW9d/AIrtJOm8239T3DrIgQ6Xgy8SlO1RAOS50Atmhuem8VKJfdPVsek
+         w3oFXqk/G/5zW73vgu+UZDQVBn2frbgn/DHaAcprKr+ToZMN136S3rcoQH8GkhPCV/IZ
+         7W6Hl5r9yH4qj6PloJk6n0hg/Pd4W4p7zLOhwRzNpMRr1LDRGEb9H2pMoFrACCdj+wCy
+         ZJug==
+X-Gm-Message-State: AOAM533xm0AKkD+0quXUwxs04rKwWMZZTGXqhRULzOTnXhHORbiucVUq
+        6OfoHdGLRGtga92sP0CLaAw=
+X-Google-Smtp-Source: ABdhPJz6nXhDC+EdSuhgT02+BMd0x/AUACUUkmfcFOGpK/ISfMtzwNbVHBGQODyMvxpp8w2rucWM5Q==
+X-Received: by 2002:a5d:640c:: with SMTP id z12mr6619568wru.342.1611673575016;
+        Tue, 26 Jan 2021 07:06:15 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id i131sm3814078wmi.25.2021.01.26.07.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 07:06:14 -0800 (PST)
+Date:   Tue, 26 Jan 2021 15:06:13 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 08/11] secretmem: add memcg accounting
-Message-ID: <20210126150555.GU827@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-9-rppt@kernel.org>
- <20210125165451.GT827@dhcp22.suse.cz>
- <20210125213817.GM6332@kernel.org>
- <20210126144838.GL308988@casper.infradead.org>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
+ partition
+Message-ID: <20210126150613.6fg5f5ouqicq4job@liuwe-devbox-debian-v2>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-3-wei.liu@kernel.org>
+ <CA+CK2bDHYxTr_ttbC88u1OvT-=cm5do5RmyoxC+joz=GjK1WtA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126144838.GL308988@casper.infradead.org>
+In-Reply-To: <CA+CK2bDHYxTr_ttbC88u1OvT-=cm5do5RmyoxC+joz=GjK1WtA@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26-01-21 14:48:38, Matthew Wilcox wrote:
-> On Mon, Jan 25, 2021 at 11:38:17PM +0200, Mike Rapoport wrote:
-> > I cannot use __GFP_ACCOUNT because cma_alloc() does not use gfp.
-> > Besides, kmem accounting with __GFP_ACCOUNT does not seem
-> > to update stats and there was an explicit request for statistics:
-> >  
-> > https://lore.kernel.org/lkml/CALo0P13aq3GsONnZrksZNU9RtfhMsZXGWhK1n=xYJWQizCd4Zw@mail.gmail.com/
-> > 
-> > As for (ab)using NR_SLAB_UNRECLAIMABLE_B, as it was already discussed here:
-> > 
-> > https://lore.kernel.org/lkml/20201129172625.GD557259@kernel.org/
-> > 
-> > I think that a dedicated stats counter would be too much at the moment and
-> > NR_SLAB_UNRECLAIMABLE_B is the only explicit stat for unreclaimable memory.
+On Wed, Jan 20, 2021 at 11:03:18AM -0500, Pavel Tatashin wrote:
+> On Wed, Jan 20, 2021 at 7:01 AM Wei Liu <wei.liu@kernel.org> wrote:
+> >
+> > For now we can use the privilege flag to check. Stash the value to be
+> > used later.
+> >
+> > Put in a bunch of defines for future use when we want to have more
+> > fine-grained detection.
+> >
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > ---
+> > v3: move hv_root_partition to mshyperv.c
+> > ---
+> >  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
+> >  arch/x86/include/asm/mshyperv.h    |  2 ++
+> >  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
+> >  3 files changed, 32 insertions(+)
+> >
+> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> > index 6bf42aed387e..204010350604 100644
+> > --- a/arch/x86/include/asm/hyperv-tlfs.h
+> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> > @@ -21,6 +21,7 @@
+> >  #define HYPERV_CPUID_FEATURES                  0x40000003
+> >  #define HYPERV_CPUID_ENLIGHTMENT_INFO          0x40000004
+> >  #define HYPERV_CPUID_IMPLEMENT_LIMITS          0x40000005
+> > +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES   0x40000007
+> >  #define HYPERV_CPUID_NESTED_FEATURES           0x4000000A
+> >
+> >  #define HYPERV_CPUID_VIRT_STACK_INTERFACE      0x40000081
+> > @@ -110,6 +111,15 @@
+> >  /* Recommend using enlightened VMCS */
+> >  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED            BIT(14)
+> >
+> > +/*
+> > + * CPU management features identification.
+> > + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
+> > + */
+> > +#define HV_X64_START_LOGICAL_PROCESSOR                 BIT(0)
+> > +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR           BIT(1)
+> > +#define HV_X64_PERFORMANCE_COUNTER_SYNC                        BIT(2)
+> > +#define HV_X64_RESERVED_IDENTITY_BIT                   BIT(31)
+> > +
+> >  /*
+> >   * Virtual processor will never share a physical core with another virtual
+> >   * processor, except for virtual processors that are reported as sibling SMT
+> > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> > index ffc289992d1b..ac2b0d110f03 100644
+> > --- a/arch/x86/include/asm/mshyperv.h
+> > +++ b/arch/x86/include/asm/mshyperv.h
+> > @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
+> >                 struct hv_guest_mapping_flush_list *flush,
+> >                 u64 start_gfn, u64 end_gfn);
+> >
+> > +extern bool hv_root_partition;
+> > +
+> >  #ifdef CONFIG_X86_64
+> >  void hv_apic_init(void);
+> >  void __init hv_init_spinlocks(void);
+> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> > index f628e3dc150f..c376d191a260 100644
+> > --- a/arch/x86/kernel/cpu/mshyperv.c
+> > +++ b/arch/x86/kernel/cpu/mshyperv.c
+> > @@ -32,6 +32,10 @@
+> >  #include <asm/nmi.h>
+> >  #include <clocksource/hyperv_timer.h>
+> >
+> > +/* Is Linux running as the root partition? */
+> > +bool hv_root_partition;
+> > +EXPORT_SYMBOL_GPL(hv_root_partition);
+> > +
+> >  struct ms_hyperv_info ms_hyperv;
+> >  EXPORT_SYMBOL_GPL(ms_hyperv);
+> >
+> > @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
+> >         pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
+> >                  ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
+> >
+> > +       /*
+> > +        * Check CPU management privilege.
+> > +        *
+> > +        * To mirror what Windows does we should extract CPU management
+> > +        * features and use the ReservedIdentityBit to detect if Linux is the
+> > +        * root partition. But that requires negotiating CPU management
+> > +        * interface (a process to be finalized).
 > 
-> That's not true -- Mlocked is also unreclaimable.  And doesn't this
-> feel more like mlocked memory than unreclaimable slab?  It's also
-> Unevictable, so could be counted there instead.
+> Is this comment relevant? Do we have to mirror what Windows does?
+> 
 
-yes, that is indeed true, except the unreclaimable counter is tracking
-the unevictable LRUs. These pages are not on any LRU and that can cause
-some confusion. Maybe they shouldn't be so special and they should live
-on unevistable LRU and get their stats automagically.
+We should do that in the future when the process for negotiating CPU
+management features is stabilized / finalized.
 
-I definitely do agree that this would be a better fit than NR_SLAB
-abuse. But considering that this is somehow even more special than mlock
-then a dedicated counter sounds as even better fit.
--- 
-Michal Hocko
-SUSE Labs
+> > +        *
+> > +        * For now, use the privilege flag as the indicator for running as
+> > +        * root.
+> > +        */
+> > +       if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
+> > +               hv_root_partition = true;
+> > +               pr_info("Hyper-V: running as root partition\n");
+> > +       }
+> > +
+> 
+> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+
+Thanks for reviewing these patches.
+
+Wei.
