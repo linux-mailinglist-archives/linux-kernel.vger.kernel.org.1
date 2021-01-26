@@ -2,135 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFF5303CAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2219303CA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405094AbhAZMNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
+        id S2392523AbhAZMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:11:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404947AbhAZLJU (ORCPT
+        with ESMTP id S2403784AbhAZLOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:09:20 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50E3C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:08:33 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id h9so5744946wrr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:08:33 -0800 (PST)
+        Tue, 26 Jan 2021 06:14:44 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C474C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:14:04 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id bl23so1766024ejb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:14:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YexESypTZUXGxM0RNYUq5KscUb8ruQBrW1cIhg1mZJ0=;
-        b=bskZDSuMdTWcqASyQOy7OtS5KG6+pzOlrEOQmnZLWuKDog92AwWAC1iTsT88zhd+Ja
-         ZTzLqQWfD+pNGaDtTg9/JwZGrg2jqNk3p00j0Vqeou4Es5qRMXi3/B5C/X8WDGdgvLC8
-         Mj3oB0BD2rnEjNWyqV+6YxFkgxDX0gk7IrTBWoutXmKk+hMV/QjsiqUyNqRK8Iswsc7m
-         L/hxU2h/VFLAZ4DsQP4cuQ7HTUZC0vC1x1KXSwSA/5/55OU/Ep4640dCRmO3bKDGb5Zn
-         HmIQWYUROmzmI+3qbDfiEH9LsEymELXtGaIE2e6Wv5p2XA69vrlDal64gt7vPdqeUPwV
-         TT1A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fYupSZfGSpqos6EzshWCWKgBwX/sGM1t83TUapOfzmM=;
+        b=VbexN5wLBRJtg3Xgj9BkYYyyr8SuLc06wkm+NGzg/+9oJil7Roa4JQw0qf+F1c9gey
+         kwas/UBso+IGlk25Nb7MvzV7jPPHeySjaDI9Y6Z7wxy8F2tglLnCJ8I3B3YO7WE4fjt4
+         LmmHmByJBRG/pXkHSCmfehy8xkazxFN7wpStnCmiDR1guqhho+s9k+OVjSORLAr6A6rb
+         i63WLSkgoZIt7ZTM4X0kp9tTXECGodFypL8yEyj6XQApclBz1gCrNEGQg5qTruHQEbxt
+         eDV/QlD6K5kgFiZAzlNWxYeJGca740vq8hLL5xNKz+rLBRehXA9/Ek+Oeov/dObbNTPi
+         vItA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YexESypTZUXGxM0RNYUq5KscUb8ruQBrW1cIhg1mZJ0=;
-        b=JDrfC4sl4hUX/hrZIDgfip9QS6pTDuZfpS/c0+lqBBa6UgNvIEze7dik/XZRtkLAJC
-         BaHHAVaSDy1HesBfydtoNUEpldncnU9WBt/F6+GteRzT524S3QEwK81qZGO9NvzDeGJp
-         kxDt2AZAsNpH7NYbIGt5DATAShjBlMG1NY04hG/NXwf6nTYb1VKBPFgDYyTPRywxOkbv
-         lfkWQUheMMJCqomg5LgNPd83b7RXoFxlDsDLv1Fvk21qg0DNlPDWyaXttbT1MjAdu1e/
-         5ANHBB3k6cA66XvjquAOhIrFJGvPnJzX02b3952rIyb/qVFdqueTgD/WKhTVo2bCf5nx
-         l2/Q==
-X-Gm-Message-State: AOAM532ae7nsNMIuA8lK9a50Op81qV1oM36OVDohji5odmTEFv/zmIbp
-        WmGw2EpbYPse/btA6ntcmD7zxg==
-X-Google-Smtp-Source: ABdhPJyfP85ucHm7H/Dm1TztP6OgLXgNB/BxHatQ80kHkb7XarU2/+PooSiT+4Wl68HlfXcBzEPDXg==
-X-Received: by 2002:a5d:440a:: with SMTP id z10mr5556407wrq.266.1611659312476;
-        Tue, 26 Jan 2021 03:08:32 -0800 (PST)
-Received: from apalos.home (athedsl-376992.home.otenet.gr. [79.131.24.158])
-        by smtp.gmail.com with ESMTPSA id z18sm10610031wro.91.2021.01.26.03.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 03:08:31 -0800 (PST)
-Date:   Tue, 26 Jan 2021 13:08:28 +0200
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH net-next 3/3] net: page_pool: simplify page recycling
- condition tests
-Message-ID: <YA/4LNJPEQJv++mo@apalos.home>
-References: <20210125164612.243838-1-alobakin@pm.me>
- <20210125164612.243838-4-alobakin@pm.me>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fYupSZfGSpqos6EzshWCWKgBwX/sGM1t83TUapOfzmM=;
+        b=JxKq+gdQywq+azMwvIu4S03WfsPuFpuliRH2Kxp7mshc9iVC7rbMGh3EzOQJ1Blvu+
+         JeYz6o/PFRYAd0msZ2E0VOj/cFmIuMLe3jjUBwA7dBwVp8cExhUcYrWz+0zJvHJIwhVg
+         kmpFkb96FMwcIr1G16GGMKAsL7hjwf2/FLvr54tb4M9MJWRs6XgnIX/1lpB10jJiXil1
+         gTffvmPM4gsTdD/sTKKXVgoUJ3gqAQCthZBQDgw6fAB529+ZjiRuxyts4iu5eVDsVBUG
+         Eu37PFA3Bh1lENJlUmO11k4ybdQwbjAFYK05YRWLLUgT8enxqwWO23YaFE/wzbj9fzSo
+         QQbg==
+X-Gm-Message-State: AOAM530FrlXeLIdX4mejPniEBCue+EiMOgGme2oSwB4d6T3DA8m4Qu4B
+        lbpx31M5BkPYsnAjtfE7CIQInZ2C/+mRSaFS9IZjvw==
+X-Google-Smtp-Source: ABdhPJwITm2P906snRNQzkdwvalIaBuZXKqAsdaamIm+KLMDW0TYv3btFTjih2Ul5m4jPuWGP8A2Ce1hF4b8DTtGZAQ=
+X-Received: by 2002:a17:906:39d0:: with SMTP id i16mr3149157eje.18.1611659642780;
+ Tue, 26 Jan 2021 03:14:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125164612.243838-4-alobakin@pm.me>
+References: <20210126094301.457437398@linuxfoundation.org>
+In-Reply-To: <20210126094301.457437398@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 26 Jan 2021 16:43:51 +0530
+Message-ID: <CA+G9fYtqJDKOwFGevaOmmK7gbKgo61CpL70yyG2daOxvRp5FSQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/88] 5.4.93-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, sagar.kadam@sifive.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 04:47:20PM +0000, Alexander Lobakin wrote:
-> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-> this function is just a redundant wrapper over page_is_pfmemalloc(),
-> so Inline it into its sole call site.
-> 
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  net/core/page_pool.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
-> 
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index f3c690b8c8e3..ad8b0707af04 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *page,
->  	return true;
->  }
->  
-> -/* page is NOT reusable when:
-> - * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
-> - */
-> -static bool pool_page_reusable(struct page_pool *pool, struct page *page)
-> -{
-> -	return !page_is_pfmemalloc(page);
-> -}
-> -
->  /* If the page refcnt == 1, this will try to recycle the page.
->   * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
->   * the configured size min(dma_sync_size, pool->max_len).
-> @@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
->  	 * regular page allocator APIs.
->  	 *
->  	 * refcnt == 1 means page_pool owns page, and can recycle it.
-> +	 *
-> +	 * page is NOT reusable when allocated when system is under
-> +	 * some pressure. (page_is_pfmemalloc)
->  	 */
-> -	if (likely(page_ref_count(page) == 1 &&
-> -		   pool_page_reusable(pool, page))) {
-> +	if (likely(page_ref_count(page) == 1 && !page_is_pfmemalloc(page))) {
->  		/* Read barrier done in page_ref_count / READ_ONCE */
->  
->  		if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> -- 
-> 2.30.0
-> 
-> 
+On Tue, 26 Jan 2021 at 15:33, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.93 release.
+> There are 88 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 28 Jan 2021 09:42:44 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.93-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+As Daniel pointed in the other email thread,
+riscv failed build:
+     * clang-10-defconfig -  FAILED
+     * clang-11-defconfig -  FAILED
+     * gcc-8-defconfig -  FAILED
+     * gcc-9-defconfig -  FAILED
+     * gcc-10-defconfig -  FAILED
+
+the riscv build failed due to the below commit.
+
+> Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+>     dts: phy: add GPIO number and active state used for phy reset
+
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=riscv
+CROSS_COMPILE=riscv64-linux-gnu- 'CC=sccache riscv64-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts:88.27-28 syntax error
+FATAL ERROR: Unable to parse input tree
+
+Build log,
+https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/986616680
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
