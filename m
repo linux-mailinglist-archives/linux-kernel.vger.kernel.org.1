@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41240304DE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D196304DEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 01:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388534AbhAZXXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 18:23:30 -0500
-Received: from mga06.intel.com ([134.134.136.31]:32229 "EHLO mga06.intel.com"
+        id S2388622AbhAZXYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 18:24:54 -0500
+Received: from mga18.intel.com ([134.134.136.126]:50985 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388763AbhAZFqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 00:46:01 -0500
-IronPort-SDR: zD1buEwU7p2m1k3j/H9ztYqRtR/RHTtzni0/TCnyqMsZFhW0Bk5RlnzWH268nhMMMe3w+P+q0e
- dRyZfUpEsy9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="241381385"
+        id S1730027AbhAZFtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 00:49:00 -0500
+IronPort-SDR: nEgJ5LY49QR1QHlvej6SXTX/N9yzEvVb0R+VAfHrDhE+ZgzmqCykUJ3K0farun0m/JgfV3RGiv
+ bZ4lNlx39V6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="167524701"
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="241381385"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:40:41 -0800
-IronPort-SDR: F1IXRONNOKtaOcTHi/AaSMx76aTF5kqqIAS/UVen8Z9NVA80g2M55qcdmIaFoP9mtpjFQ+ZSNr
- KIWm7JioRUUQ==
+   d="scan'208";a="167524701"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:40:42 -0800
+IronPort-SDR: zFvUzrKNzP9fNMehBmZUplnAz3JcHWyzJoo6PyJEcLXZiSGaBQPeGk7GvQ7B5NMiq1E0sA7aUD
+ Rvg2AaFAc63w==
 X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="504418204"
+   d="scan'208";a="406585169"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:40:41 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 21:40:41 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id A40FB6375;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id ACF716375;
         Mon, 25 Jan 2021 21:40:41 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 93AB3363534; Mon, 25 Jan 2021 21:40:41 -0800 (PST)
+        id 9D5AA363510; Mon, 25 Jan 2021 21:40:41 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -38,9 +38,9 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
         "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
-Subject: [PATCH v3 29/34] Intel tsens i2c slave driver.
-Date:   Mon, 25 Jan 2021 21:40:31 -0800
-Message-Id: <20210126054036.61587-30-mgross@linux.intel.com>
+Subject: [PATCH v3 30/34] misc:intel_tsens: Intel Keem Bay tsens driver.
+Date:   Mon, 25 Jan 2021 21:40:32 -0800
+Message-Id: <20210126054036.61587-31-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210126054036.61587-1-mgross@linux.intel.com>
 References: <20210126054036.61587-1-mgross@linux.intel.com>
@@ -50,42 +50,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "C, Udhayakumar" <udhayakumar.c@intel.com>
 
-Add Intel tsens i2c slave driver for Intel Edge.AI Computer Vision
-platforms.
+Add keembey_thermal driver to expose on chip temperature
+sensors, and register call back functions for periodic sampling.
 
-The tsens i2c slave driver enables reading of on chip sensors present
-in the Intel Edge.AI Computer Vision platforms. In the tsens i2c module
-various junction and SoC temperatures are reported using i2c slave
-protocol.
+This driver does following:
+* Reads temperature data from on chip sensors present in Keem Bay
+  platform.
+* Registers callback function to intel tsens driver for sampling
+  temperature values periodically.
+* Decode the raw values from registers to Celsius.
 
+Acked-by: mark gross <mgross@linux.intel.com>
 Signed-off-by: C, Udhayakumar <udhayakumar.c@intel.com>
 ---
- drivers/misc/intel_tsens/Kconfig           |  15 +++
+ drivers/misc/intel_tsens/Kconfig           |  12 +
  drivers/misc/intel_tsens/Makefile          |   1 +
- drivers/misc/intel_tsens/intel_tsens_i2c.c | 119 +++++++++++++++++++++
- 3 files changed, 135 insertions(+)
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_i2c.c
+ drivers/misc/intel_tsens/keembay_thermal.c | 169 ++++++++++
+ drivers/misc/intel_tsens/keembay_tsens.h   | 366 +++++++++++++++++++++
+ 4 files changed, 548 insertions(+)
+ create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
+ create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
 
 diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-index 8b263fdd80c3..9b2198ab28c3 100644
+index 9b2198ab28c3..bd575d99281d 100644
 --- a/drivers/misc/intel_tsens/Kconfig
 +++ b/drivers/misc/intel_tsens/Kconfig
-@@ -14,6 +14,21 @@ config INTEL_TSENS_LOCAL_HOST
+@@ -29,6 +29,18 @@ config INTEL_TSENS_I2C_SLAVE
  	  Say Y if using a processor that includes the Intel VPU such as
  	  Keem Bay.  If unsure, say N.
  
-+config INTEL_TSENS_I2C_SLAVE
-+	bool "I2C slave driver for intel tsens"
-+	depends on INTEL_TSENS_LOCAL_HOST
-+	select I2C
-+	select I2C_SLAVE
++config KEEMBAY_THERMAL
++	tristate "Temperature sensor driver for intel Keem Bay"
++	depends on INTEL_TSENS_LOCAL_HOST && ARCH_KEEMBAY
 +	help
-+	  This option enables tsens I2C slave driver.
++	  Enable this option if you want to have support for Keem Bay
++	  thermal management sensors.
 +
-+	  This driver is used for reporting thermal data via I2C
-+	  SMBUS to remote host.
-+	  Enable this option if you want to have support for thermal
-+	  management controller.
++	  This driver is used for reading onchip temperature sensor
++	  values from Keem Bay SoC.
 +	  Say Y if using a processor that includes the Intel VPU such as
 +	  Keem Bay.  If unsure, say N.
 +
@@ -93,140 +95,561 @@ index 8b263fdd80c3..9b2198ab28c3 100644
  	tristate "Temperature sensor driver for intel tsens remote host"
  	depends on I2C && THERMAL
 diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
-index 250dc484fb49..f6f41bbca80c 100644
+index f6f41bbca80c..00f63c2d5b2f 100644
 --- a/drivers/misc/intel_tsens/Makefile
 +++ b/drivers/misc/intel_tsens/Makefile
-@@ -5,4 +5,5 @@
- #
- 
+@@ -7,3 +7,4 @@
  obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
-+obj-$(CONFIG_INTEL_TSENS_I2C_SLAVE)	+= intel_tsens_i2c.o
+ obj-$(CONFIG_INTEL_TSENS_I2C_SLAVE)	+= intel_tsens_i2c.o
  obj-$(CONFIG_INTEL_TSENS_IA_HOST)	+= intel_tsens_host.o
-diff --git a/drivers/misc/intel_tsens/intel_tsens_i2c.c b/drivers/misc/intel_tsens/intel_tsens_i2c.c
++obj-$(CONFIG_KEEMBAY_THERMAL)		+= keembay_thermal.o
+diff --git a/drivers/misc/intel_tsens/keembay_thermal.c b/drivers/misc/intel_tsens/keembay_thermal.c
 new file mode 100644
-index 000000000000..520c3f4bf392
+index 000000000000..d6c8fa8fc3aa
 --- /dev/null
-+++ b/drivers/misc/intel_tsens/intel_tsens_i2c.c
-@@ -0,0 +1,119 @@
++++ b/drivers/misc/intel_tsens/keembay_thermal.c
+@@ -0,0 +1,169 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + *
-+ * Intel tsens I2C thermal Driver
++ * Intel Keem Bay thermal Driver
 + *
 + * Copyright (C) 2020 Intel Corporation
 + *
 + */
 +
-+#include <linux/i2c.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/io.h>
 +#include <linux/kernel.h>
 +#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
 +#include <linux/slab.h>
++#include <linux/thermal.h>
 +#include "intel_tsens_thermal.h"
++#include "keembay_tsens.h"
 +
-+#define TSENS_BYTE_INDEX_SHIFT	0x6
-+#define TSENS_BYTE_INDEX_MASK	0x3
-+#define TSENS_SENSOR_TYPE_MASK	0x3F
-+
-+struct intel_tsens_i2c {
-+	int sensor_type;
-+	u16 buffer_idx;
-+	bool read_only;
-+	u8 idx_write_cnt;
-+	struct intel_tsens_i2c_plat_data *plat_data;
++struct keembay_thermal_priv {
++	const char *name;
++	void __iomem *base_addr;
++	/* sensor lock*/
++	spinlock_t lock;
++	int current_temp[KEEMBAY_SENSOR_MAX];
++	struct intel_tsens_plat_data *plat_data;
 +};
 +
-+static int intel_i2c_tsens_slave_cb(struct i2c_client *client,
-+				    enum i2c_slave_event event, u8 *val)
++static void kmb_sensor_read_temp(void __iomem *regs_val,
++				 int offset,
++				 int sample_valid_mask,
++				 int sample_value,
++				 int bit_shift,
++				 int *temp)
 +{
-+	struct intel_tsens_i2c *tsens_i2c = i2c_get_clientdata(client);
-+	struct intel_tsens_i2c_plat_data *plat_data = tsens_i2c->plat_data;
-+	int ret = 0;
++	int reg_val, kmb_raw_index;
 +
-+	switch (event) {
-+	case I2C_SLAVE_WRITE_RECEIVED:
-+		tsens_i2c->sensor_type = *val;
++	/* clear the bit of TSENS_EN and re-enable again */
++	iowrite32(0x00, regs_val + AON_TSENS_CFG);
++	iowrite32(CFG_MASK_MANUAL, regs_val + AON_TSENS_CFG);
++	reg_val = ioread32(regs_val + offset);
++	if (reg_val & sample_valid_mask) {
++		reg_val = (reg_val >> bit_shift) & sample_value;
++		kmb_raw_index = reg_val - KEEMBAY_SENSOR_BASE_TEMP;
++		if (kmb_raw_index < 0)
++			reg_val = raw_kmb[0];
++		else if (kmb_raw_index > (raw_kmb_size - 1))
++			reg_val = raw_kmb[raw_kmb_size - 1];
++		else
++			reg_val = raw_kmb[kmb_raw_index];
++		*temp = reg_val;
++	} else {
++		*temp = -255;
++	}
++}
++
++/*The lock is assumed to be held by the caller.*/
++static int keembay_get_temp(struct platform_device *pdev, int type, int *temp)
++{
++	struct keembay_thermal_priv *priv = platform_get_drvdata(pdev);
++
++	spin_lock(&priv->lock);
++	switch (type) {
++	case KEEMBAY_SENSOR_MSS:
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA0,
++				     MSS_T_SAMPLE_VALID,
++				     MSS_T_SAMPLE,
++				     MSS_BIT_SHIFT,
++				     temp);
++		priv->current_temp[KEEMBAY_SENSOR_MSS] = *temp;
 +		break;
 +
-+	case I2C_SLAVE_READ_PROCESSED:
-+	case I2C_SLAVE_READ_REQUESTED:
-+		if (plat_data->get_temp) {
-+			int temp;
-+			int sensor_type = tsens_i2c->sensor_type &
-+						TSENS_SENSOR_TYPE_MASK;
-+
-+			if (!plat_data->get_temp(sensor_type, &temp,
-+						 plat_data->pdata)) {
-+				u8 offset = (tsens_i2c->sensor_type >>
-+						TSENS_BYTE_INDEX_SHIFT) &
-+						TSENS_BYTE_INDEX_MASK;
-+				u8 *ptr_temp = (u8 *)&temp;
-+
-+				*val = ptr_temp[offset];
-+				tsens_i2c->buffer_idx++;
-+				ret = 0;
-+			} else {
-+				ret = -EINVAL;
-+			}
-+		} else {
-+			ret = -EINVAL;
-+		}
++	case KEEMBAY_SENSOR_CSS:
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA0,
++				     CSS_T_SAMPLE_VALID,
++				     CSS_T_SAMPLE,
++				     CSS_BIT_SHIFT,
++				     temp);
++		priv->current_temp[KEEMBAY_SENSOR_CSS] = *temp;
 +		break;
 +
-+	case I2C_SLAVE_STOP:
-+	case I2C_SLAVE_WRITE_REQUESTED:
-+		tsens_i2c->idx_write_cnt = 0;
-+		tsens_i2c->buffer_idx = 0;
++	case KEEMBAY_SENSOR_NCE:
++	{
++		int nce0, nce1;
++
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA1,
++				     NCE0_T_SAMPLE_VALID,
++				     NCE0_T_SAMPLE,
++				     NCE0_BIT_SHIFT,
++				     &nce0);
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA1,
++				     NCE1_T_SAMPLE_VALID,
++				     NCE1_T_SAMPLE,
++				     NCE1_BIT_SHIFT,
++				     &nce1);
++		*temp = max(nce0, nce1);
++		priv->current_temp[KEEMBAY_SENSOR_NCE] = *temp;
++	}
++		break;
++
++	case KEEMBAY_SENSOR_SOC:
++	{
++		int i;
++
++		*temp = 0;
++		for (i = 0; i < KEEMBAY_SENSOR_MAX; i++)
++			*temp = max(*temp, priv->current_temp[i]);
++	}
 +		break;
 +
 +	default:
 +		break;
 +	}
-+	return ret;
++	spin_unlock(&priv->lock);
++
++	return 0;
 +}
 +
-+static int intel_i2c_tsens_slave_probe(struct i2c_client *client,
-+				       const struct i2c_device_id *id)
-+{	struct intel_tsens_i2c *priv;
-+	int ret;
++static int keembay_thermal_probe(struct platform_device *pdev)
++{
++	struct intel_tsens_plat_data *plat_data;
++	struct keembay_thermal_priv *priv;
 +
-+	if (!id->driver_data) {
-+		dev_err(&client->dev, "No platform data");
++	plat_data = pdev->dev.platform_data;
++	if (!plat_data) {
++		dev_err(&pdev->dev, "Platform data not found\n");
 +		return -EINVAL;
 +	}
-+	priv = devm_kzalloc(&client->dev,
-+			    sizeof(struct intel_tsens_i2c),
++	if (!plat_data->base_addr)
++		return -EINVAL;
++
++	priv = devm_kzalloc(&pdev->dev,
++			    sizeof(struct keembay_thermal_priv),
 +			    GFP_KERNEL);
 +	if (!priv)
 +		return -ENOMEM;
-+	priv->plat_data = (struct intel_tsens_i2c_plat_data *)id->driver_data;
-+	i2c_set_clientdata(client, priv);
-+	ret = i2c_slave_register(client, intel_i2c_tsens_slave_cb);
-+	if (ret)
-+		dev_err(&client->dev, "i2c slave register failed\n");
++	priv->name = plat_data->name;
++	priv->base_addr = plat_data->base_addr;
++	priv->plat_data = plat_data;
++	plat_data->get_temp = keembay_get_temp;
++	spin_lock_init(&priv->lock);
++	platform_set_drvdata(pdev, priv);
++	dev_info(&pdev->dev, "Thermal driver loaded for %s\n",
++		 plat_data->name);
++	return 0;
++}
 +
-+	return ret;
-+};
-+
-+static struct i2c_device_id intel_i2c_tsens_slave_id[] = {
-+	{ "intel_tsens", (kernel_ulong_t)&i2c_plat_data},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, intel_i2c_tsens_slave_id);
-+
-+static struct i2c_driver intel_i2c_tsens_slave_driver = {
++static struct platform_driver keembay_thermal_driver = {
++	.probe = keembay_thermal_probe,
 +	.driver = {
-+		.name = "intel_tsens",
++		.name = "intel,keembay_thermal",
 +	},
-+	.probe = intel_i2c_tsens_slave_probe,
-+	.remove = i2c_slave_unregister,
-+	.id_table = intel_i2c_tsens_slave_id,
 +};
 +
-+module_i2c_driver(intel_i2c_tsens_slave_driver);
++module_platform_driver(keembay_thermal_driver);
 +
++MODULE_DESCRIPTION("Keem Bay Thermal Driver");
++MODULE_AUTHOR("Sandeep Singh <sandeep1.singh@intel.com>");
++MODULE_AUTHOR("Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>");
 +MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
-+MODULE_DESCRIPTION("tsens i2c slave driver");
-+MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/misc/intel_tsens/keembay_tsens.h b/drivers/misc/intel_tsens/keembay_tsens.h
+new file mode 100644
+index 000000000000..e9b927a31e22
+--- /dev/null
++++ b/drivers/misc/intel_tsens/keembay_tsens.h
+@@ -0,0 +1,366 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ *
++ * Intel Keem Bay thermal Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ *
++ */
++
++#ifndef _LINUX_KEEMBAY_TSENS_H
++#define _LINUX_KEEMBAY_TSENS_H
++
++#include <linux/thermal.h>
++
++/* Register values for keembay temperature (PVT Sensor) */
++#define AON_TSENS_TRIM0_CFG		0x0030
++#define AON_TSENS_TRIM1_CFG		0x0034
++#define AON_TSENS_CFG			0x0038
++#define AON_TSENS_INT0			0x203c
++#define AON_TSENS_INT1			0x2040
++#define AON_TSENS_IRQ_CLEAR		0x0044
++#define AON_TSENS_DATA0			0x0048
++#define MSS_T_SAMPLE_VALID		0x80000000
++#define MSS_T_SAMPLE			0x3ff
++#define CSS_T_SAMPLE_VALID		0x8000
++#define CSS_T_SAMPLE			0x3ff
++#define NCE1_T_SAMPLE_VALID		0x80000000
++#define NCE1_T_SAMPLE			0x3ff
++#define NCE0_T_SAMPLE_VALID		0x8000
++#define NCE0_T_SAMPLE			0x3ff
++#define AON_TSENS_DATA1			0x004c
++#define AON_INTERFACE			0x20260000
++/* Bit shift for registers*/
++#define MSS_BIT_SHIFT			16
++#define CSS_BIT_SHIFT			0
++#define NCE0_BIT_SHIFT			0
++#define NCE1_BIT_SHIFT			16
++/* mask values for config register */
++#define CFG_MASK_AUTO			0x80ff //(auto configuration)
++#define CFG_IRQ_MASK			0x8fff
++#define CFG_MASK_MANUAL		0x000f // TSENS_EN (manual config)
++
++/**
++ * KEEMBAY_SENSOR_MSS - Media subsystem junction temperature.
++ * KEEMBAY_SENSOR_CSS - Compute subsystem junction temperature.
++ * KEEMBAY_SENSOR_NCE - Neural computing engine junction temperature.
++ *			For NCE two sensors are available in kemmaby paltform,
++ *			maximum temperature of these two sensors will be
++ *			returned as NCE temperature.
++ * KEEMBAY_SENSOR_SOC - Soc temperature.
++ *			Maximum of MSS, CSS and NCE would be returned as
++ *			SOC temperature.
++ */
++enum keembay_thermal_sensor_en {
++	KEEMBAY_SENSOR_MSS,
++	KEEMBAY_SENSOR_CSS,
++	KEEMBAY_SENSOR_NCE,
++	KEEMBAY_SENSOR_SOC,
++	KEEMBAY_SENSOR_MAX
++};
++
++#define KEEMBAY_SENSOR_BASE_TEMP 27
++
++static const int raw_kmb[] = {
++39956,  -39637, -39319, -39001, -38684,
++
++38367,  -38050, -37734, -37418, -37103,
++
++36787,  -36472, -36158, -35844, -35530,
++
++35216,  -34903, -34590, -34278, -33966,
++
++33654,  -33343, -33032, -32721, -32411,
++
++32101,  -31791, -31482, -31173, -30864,
++
++30556,  -30248, -29940, -29633, -29326,
++
++29020,  -28713, -28407, -28102, -27797,
++
++27492,  -27187, -26883, -26579, -26276,
++
++25973,  -25670, -25367, -25065, -24763,
++
++24462,  -24160, -23860, -23559, -23259,
++
++22959,  -22660, -22360, -22062, -21763,
++
++21465,  -21167, -20869, -20572, -20275,
++
++19979,  -19683, -19387, -19091, -18796,
++
++18501,  -18206, -17912, -17618, -17325,
++
++-17031, -16738,  -16446, -16153, -15861,
++
++-15570, -15278,  -14987, -14697, -14406,
++
++-14116, -13826,  -13537, -13248, -12959,
++
++-12670, -12382,  -12094, -11807, -11520,
++
++-11233, -10946,  -10660, -10374, -10088,
++
++-9803, -9518, -9233, -8949, -8665,
++
++-8381, -8097, -7814, -7531, -7249,
++
++-6967, -6685, -6403, -6122, -5841,
++
++-5560, -5279, -4999, -4720, -4440,
++
++-4161, -3882, -3603, -3325, -3047,
++
++-2770, -2492, -2215, -1938, -1662,
++
++-1386, -1110, -834, -559, -284,
++
++-9, 265, 539, 813, 1086,
++
++1360, 1633, 1905, 2177, 2449,
++
++2721, 2993, 3264, 3535, 3805,
++
++4075, 4345, 4615, 4884, 5153,
++
++5422, 5691, 5959, 6227, 6495,
++
++6762, 7029, 7296, 7562, 7829,
++
++8095, 8360, 8626, 8891, 9155,
++
++9420, 9684, 9948, 10212, 10475,
++
++10738, 11001, 11264, 11526, 11788,
++
++12049, 12311, 12572, 12833, 13093,
++
++13354, 13614, 13874, 14133, 14392,
++
++14651, 14910, 15168, 15426, 15684,
++
++15942, 16199, 16456, 16713, 16969,
++
++17225, 17481, 17737, 17992, 18247,
++
++18502, 18757, 19011, 19265, 19519,
++
++19772, 20025, 20278, 20531, 20784,
++
++21036, 21288, 21539, 21791, 22042,
++
++22292, 22543, 22793, 23043, 23293,
++
++23543, 23792, 24041, 24290, 24538,
++
++24786, 25034, 25282, 25529, 25776,
++
++26023, 26270, 26516, 26763, 27008,
++
++27254, 27499, 27745, 27989, 28234,
++
++28478, 28722, 28966, 29210, 29453,
++
++29696, 29939, 30182, 30424, 30666,
++
++30908, 31149, 31391, 31632, 31873,
++
++32113, 32353, 32593, 32833, 33073,
++
++33312, 33551, 33790, 34029, 34267,
++
++34505, 34743, 34980, 35218, 35455,
++
++35692, 35928, 36165, 36401, 36637,
++
++36872, 37108, 37343, 37578, 37813,
++
++38047, 38281, 38515, 38749, 38982,
++
++39216, 39448, 39681, 39914, 40146,
++
++40378, 40610, 40841, 41073, 41304,
++
++41535, 41765, 41996, 42226, 42456,
++
++42686, 42915, 43144, 43373, 43602,
++
++43830, 44059, 44287, 44515, 44742,
++
++44970, 45197, 45424, 45650, 45877,
++
++46103, 46329, 46555, 46780, 47006,
++
++47231, 47456, 47680, 47905, 48129,
++
++48353, 48576, 48800,  49023, 49246,
++
++49469, 49692, 49914,  50136, 50358,
++
++50580, 50801, 51023,  51244, 51464,
++
++51685, 51905, 52126,  52346, 52565,
++
++52785, 53004, 53223,  53442, 53661,
++
++53879, 54097, 54315,  54533, 54750,
++
++54968, 55185, 55402,  55618, 55835,
++
++56051, 56267, 56483,  56699, 56914,
++
++57129, 57344, 57559,  57773, 57988,
++
++58202, 58416, 58630,  58843, 59056,
++
++59269, 59482, 59695,  59907, 60120,
++
++60332, 60543, 60755,  60966, 61178,
++
++61389, 61599, 61810,  62020, 62231,
++
++62440, 62650, 62860,  63069, 63278,
++
++63487, 63696, 63904,  64113, 64321,
++
++64529, 64737, 64944,  65151, 65358,
++
++65565, 65772, 65979,  66185, 66391,
++
++66597, 66803, 67008, 67213, 67419,
++
++67624, 67828, 68033, 68237, 68441,
++
++68645, 68849, 69052, 69256, 69459,
++
++69662, 69865, 70067, 70270, 70472,
++
++70674, 70876, 71077, 71279, 71480,
++
++71681, 71882, 72082, 72283, 72483,
++
++72683, 72883, 73083, 73282, 73481,
++
++73680, 73879, 74078, 74277, 74475,
++
++74673, 74871, 75069, 75266, 75464,
++
++75661, 75858, 76055, 76252, 76448,
++
++76644, 76841, 77037, 77232, 77428,
++
++77623, 77818, 78013, 78208, 78403,
++
++78597, 78792, 78986, 79180, 79373,
++
++79567, 79760, 79953, 80146, 80339,
++
++80532, 80724, 80917, 81109, 81301,
++
++81492, 81684, 81875, 82066, 82258,
++
++82448, 82639, 82830, 83020, 83210,
++
++83400, 83590, 83779, 83969, 84158,
++
++84347, 84536, 84725, 84913, 85102,
++
++85290, 85478, 85666, 85854, 86041,
++
++86228, 86416, 86603, 86789, 86976,
++
++87163, 87349, 87535, 87721, 87907,
++
++88092, 88278, 88463, 88648, 88833,
++
++89018, 89203, 89387, 89571, 89755,
++
++89939, 90123, 90307, 90490, 90674,
++
++90857, 91040, 91222, 91405, 91587,
++
++91770, 91952, 92134, 92315, 92497,
++
++92679, 92860, 93041, 93222, 93403,
++
++93583, 93764, 93944, 94124, 94304,
++
++94484, 94664, 94843, 95023, 95202,
++
++95381, 95560, 95738, 95917, 96095,
++
++96273, 96451, 96629, 96807, 96985,
++
++97162, 97339, 97516, 97693, 97870,
++
++98047, 98223, 98399, 98576, 98752,
++
++98927, 99103, 99279, 99454, 99629,
++
++99804, 99979, 100154, 100328, 100503,
++
++100677, 100851, 101025, 101199, 101373,
++
++101546, 101720, 101893, 102066, 102239,
++
++102411, 102584, 102756, 102929, 103101,
++
++103273, 103445, 103616, 103788, 103959,
++
++104130, 104302, 104472, 104643, 104814,
++
++104984, 105155, 105325, 105495, 105665,
++
++105835, 106004, 106174, 106343, 106512,
++
++106681, 106850, 107019, 107187, 107355,
++
++107524, 107692, 107860, 108028, 108195,
++
++108363, 108530, 108697, 108865, 109031,
++
++109198, 109365, 109531, 109698, 109864,
++
++110030, 110196, 110362, 110528, 110693,
++
++110858, 111024, 111189, 111354, 111518,
++
++111683, 111848, 112012, 112176, 112340,
++
++112504, 112668, 112832, 112995, 113159,
++
++113322, 113485, 113648, 113811, 113973,
++
++114136, 114298, 114461, 114623, 114785,
++
++114947, 115108, 115270, 115431, 115593,
++
++115754, 115915, 116076, 116236, 116397,
++
++116558, 116718, 116878, 117038, 117198,
++
++117358, 117518, 117677, 117836, 117996,
++
++118155, 118314, 118473, 118631, 118790,
++
++118948, 119107, 119265, 119423, 119581,
++
++119739, 119896, 120054, 120211, 120368,
++
++120525, 120682, 120839, 120996, 121153,
++
++121309, 121465, 121622, 121778, 121934,
++
++122089, 122245, 122400, 122556, 122711,
++
++122866, 123021, 123176, 123331, 123486,
++
++123640, 123794, 123949, 124103, 124257,
++
++124411, 124564, 124718, 124871, 125025,
++};
++
++static int raw_kmb_size = sizeof(raw_kmb) / sizeof(int);
++
++#endif /* _LINUX_KEEMBAY_TSENS_H */
 -- 
 2.17.1
 
