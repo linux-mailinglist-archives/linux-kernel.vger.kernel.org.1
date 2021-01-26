@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE00303F7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DE6303F4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405656AbhAZN7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:59:41 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:36294 "EHLO
+        id S2405519AbhAZNvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:51:02 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36931 "EHLO
         mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404105AbhAZNti (ORCPT
+        with ESMTP id S2405443AbhAZNue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:49:38 -0500
-X-UUID: 85a3cf059ecb43d49e7a5c3333651339-20210126
-X-UUID: 85a3cf059ecb43d49e7a5c3333651339-20210126
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        Tue, 26 Jan 2021 08:50:34 -0500
+X-UUID: 190dfdc93a5040ea87bbc400ae3243c3-20210126
+X-UUID: 190dfdc93a5040ea87bbc400ae3243c3-20210126
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
         (envelope-from <mason.zhang@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 757840574; Tue, 26 Jan 2021 21:48:53 +0800
+        with ESMTP id 1714495659; Tue, 26 Jan 2021 21:49:51 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 21:48:51 +0800
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 21:49:49 +0800
 Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 21:48:50 +0800
+ Transport; Tue, 26 Jan 2021 21:49:49 +0800
 From:   Mason Zhang <mason.zhang@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>
@@ -32,19 +32,21 @@ CC:     <devicetree@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
         Mason Zhang <mason.zhang@mediatek.com>
-Subject: [PATCH v1] arm64: dts: add spi nodes for MT6779
-Date:   Tue, 26 Jan 2021 21:35:32 +0800
-Message-ID: <20210126133531.32253-1-mason.zhang@mediatek.com>
+Subject: [PATCH v1 1/1] arm64: dts: mt6779: add spi host dts nodes
+Date:   Tue, 26 Jan 2021 21:35:34 +0800
+Message-ID: <20210126133531.32253-2-mason.zhang@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210126133531.32253-1-mason.zhang@mediatek.com>
+References: <20210126133531.32253-1-mason.zhang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 8A557D8BEB95744737A59A2EA6D8482F53660D56334A6816CA3C82BE6742886D2000:8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support spi to MT6779 SOC
+this patch add spi host dts nodes for mt6779 IC.
 
+Change-Id: If4a3cbb09843f472210b390352db4b9886f5c00c
 Signed-off-by: Mason Zhang <mason.zhang@mediatek.com>
 ---
  arch/arm64/boot/dts/mediatek/mt6779.dtsi | 96 ++++++++++++++++++++++++
@@ -159,3 +161,4 @@ index 370f309d32de..272f4346d35e 100644
  			reg = <0 0x11210000 0 0x1000>;
 -- 
 2.18.0
+
