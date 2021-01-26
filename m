@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0C4303F21
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15CF304041
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391729AbhAZNpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:45:17 -0500
-Received: from mga01.intel.com ([192.55.52.88]:33260 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405243AbhAZNol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:44:41 -0500
-IronPort-SDR: nyj/eVyxZKECFe1XJ8NkTsOk6EE/NnRv2h7b7Vt9alCvOP7x1RZ8KM0G/fCZIQY+DD+8rhDm8u
- F3nhqmq3COMw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="198689176"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="198689176"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 05:42:54 -0800
-IronPort-SDR: z5HKJiY8UqzEy591AFqdOKmfurt0K0FiY4UyqrhraP4QPIWXdbbJXqlZ+agW+raRY9ZgYyel4I
- vDaZtVL0XwbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="356726394"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by orsmga006.jf.intel.com with ESMTP; 26 Jan 2021 05:42:54 -0800
-Subject: Re: [PATCHv3 4/6] fpga: of-fpga-region: add authenticate-fpga-config
- property
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     trix@redhat.com, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinguyen@kernel.org, sridhar.rajagopal@intel.com,
-        Richard Gong <richard.gong@intel.com>
-References: <1611608188-25621-1-git-send-email-richard.gong@linux.intel.com>
- <1611608188-25621-5-git-send-email-richard.gong@linux.intel.com>
- <YA+kQ2unznKRqp8p@epycbox.lan>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <a4c874a4-fd7b-d0c3-fde0-783e52055c7b@linux.intel.com>
-Date:   Tue, 26 Jan 2021 08:03:40 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2405712AbhAZO0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:26:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391724AbhAZN0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:26:22 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2528C061A29;
+        Tue, 26 Jan 2021 05:25:30 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d13so4013426plg.0;
+        Tue, 26 Jan 2021 05:25:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=hJpx0sAUwwTFVj7mi1u3wPShyqbE8agveuBzNbpt04c=;
+        b=VUVw7SCR7FSAHmjqsGnuI2BZNY6fiwd1M2tIyoOUO2UT32Fc7Y22aaLUmbOeuP35mb
+         P6kk217DvEtf/E81MGXRCzjJbie0rCIO6fqmdJsXry3+lwVOXKfo7lr3gPrzIDi2Ln1K
+         6LCJxe8VD7LnOqT4FhIIZwaCHa4JvUibRtqXmH6KScWXlnzhVEqSprFM+gbnxD9WJV7i
+         oED+4CUVzJHJ6zLIdYB4I6gl7a3BYC5d0G99y7Ncf7PRfrsqGYbY4OB2y14Q2RA16uuV
+         hnnTtSyNzwAQCfUSCuZi/Gtve4erGUqPFLbl5Mg7KMqc3oGn83PFdhxJ6fWfwIaIOl28
+         IOuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=hJpx0sAUwwTFVj7mi1u3wPShyqbE8agveuBzNbpt04c=;
+        b=kMZz+lLQbQxO/u2u0xTKAvzIdf0I5hsyz3VzD2jM9ZpuXveq0dr2A/zuY6C7s8P2D4
+         ub//9cgYic06FS1/lxEn1RpKrJ1Gk5I2TeVgu0mlhHl33/Wc0D9WkyKTC/wZsr6RnJX6
+         oc82J45UXV8YfyC2bi0CT9jw45J+F2KHYGNOn4TIc+AibYQI6XR/nXS9GnGEgX5x/Zxk
+         zQdEXpnke6WWTxlSzs8vUXTvsyPRGZpeExhFfdVgqZgeZYEORtGg0FZ9nMH1wlUSytlx
+         CA8LqdCiMeklBCDRrORR7icEZSy1Rjr4wavIjkIuzzRJ9+PQhV1I37ye4/t2noqmcuHt
+         mZpg==
+X-Gm-Message-State: AOAM533GSbV6BI3yhMLRpEA3CNGUHVEBHcTz+on32p7QbAxqWJFRhvTK
+        98hVB+CFgJgHVYE/QoXQ6uBy0SIpfkA=
+X-Google-Smtp-Source: ABdhPJx6cCSvPh7H5Xm88DxJ8Yl0KyQ+k+xeKWqvcP0d9k5AZwCfxwEo3yvsuTu1r3Xbcn+4eErslw==
+X-Received: by 2002:a17:90a:ad48:: with SMTP id w8mr6306010pjv.48.1611667530301;
+        Tue, 26 Jan 2021 05:25:30 -0800 (PST)
+Received: from [10.230.128.89] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id r5sm18752031pfl.165.2021.01.26.05.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 05:25:29 -0800 (PST)
+Subject: Re: [PATCH v1] scsi: lpfc: Add auto select on IRQ_POLL
+To:     Tong Zhang <ztong0001@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210126000554.309858-1-ztong0001@gmail.com>
+From:   James Smart <jsmart2021@gmail.com>
+Message-ID: <8e4e3e25-e69f-56ee-bff6-4fbf68262b38@gmail.com>
+Date:   Tue, 26 Jan 2021 05:25:28 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <YA+kQ2unznKRqp8p@epycbox.lan>
+In-Reply-To: <20210126000554.309858-1-ztong0001@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/25/2021 4:05 PM, Tong Zhang wrote:
+> lpfc depends on irq_poll library, but it is not selected automatically.
+> When irq_poll is not selected, compiling it can run into following error
+>
+> ERROR: modpost: "irq_poll_init" [drivers/scsi/lpfc/lpfc.ko] undefined!
+> ERROR: modpost: "irq_poll_sched" [drivers/scsi/lpfc/lpfc.ko] undefined!
+> ERROR: modpost: "irq_poll_complete" [drivers/scsi/lpfc/lpfc.ko] undefined!
+>
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>   drivers/scsi/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+> index 701b61ec76ee..c79ac0731b13 100644
+> --- a/drivers/scsi/Kconfig
+> +++ b/drivers/scsi/Kconfig
+> @@ -1159,6 +1159,7 @@ config SCSI_LPFC
+>   	depends on NVME_TARGET_FC || NVME_TARGET_FC=n
+>   	depends on NVME_FC || NVME_FC=n
+>   	select CRC_T10DIF
+> +	select IRQ_POLL
+>   	help
+>             This lpfc driver supports the Emulex LightPulse
+>             Family of Fibre Channel PCI host adapters.
 
-Hi Moritz,
+Reviewed-by: James Smart <jsmart2021@gmail.com>
 
-On 1/25/21 11:10 PM, Moritz Fischer wrote:
-> On Mon, Jan 25, 2021 at 02:56:26PM -0600, richard.gong@linux.intel.com wrote:
->> From: Richard Gong <richard.gong@intel.com>
->>
->> Add authenticate-fpga-config property to support FPGA bitstream
->> authentication, which makes sure a signed bitstream has valid signatures.
->>
->> Signed-off-by: Richard Gong <richard.gong@intel.com>
->> ---
->> v3: no change
->> v2: changed in alphabetical order
->> ---
->>   drivers/fpga/of-fpga-region.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
->> index e405309..3840883 100644
->> --- a/drivers/fpga/of-fpga-region.c
->> +++ b/drivers/fpga/of-fpga-region.c
->> @@ -219,6 +219,9 @@ static struct fpga_image_info *of_fpga_region_parse_ov(
->>   	info->overlay = overlay;
->>   
->>   	/* Read FPGA region properties from the overlay */
->> +	if (of_property_read_bool(overlay, "authenticate-fpga-config"))
->> +		info->flags |= FPGA_MGR_BITSTREM_AUTHENTICATION;
->> +
-> Should you check here that no new nodes are being added as you *only*
-> authenticate?
+-- james
 
-Sure, I will add additional checks in next submission.
-
-> 
->>   	if (of_property_read_bool(overlay, "partial-fpga-config"))
->>   		info->flags |= FPGA_MGR_PARTIAL_RECONFIG;
->>   
->> -- 
->> 2.7.4
->>
-> 
-> Thanks,
-> Moritz
-> 
-Regards,
-Richard
