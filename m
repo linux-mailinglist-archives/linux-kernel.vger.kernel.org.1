@@ -2,121 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C468303E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBE2303E4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404304AbhAZNOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:14:23 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:58738 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404098AbhAZNNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:13:37 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EE95C1A0D28;
-        Tue, 26 Jan 2021 14:12:39 +0100 (CET)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E1DDB1A021C;
-        Tue, 26 Jan 2021 14:12:39 +0100 (CET)
-Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id CE06E2034A;
-        Tue, 26 Jan 2021 14:12:39 +0100 (CET)
-Date:   Tue, 26 Jan 2021 15:12:39 +0200
-From:   Abel Vesa <abel.vesa@nxp.com>
-To:     Sascha Hauer <sha@pengutronix.de>
-Cc:     Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: Re: [RFC] clk: Mark HW enabled clocks as enabled in core
-Message-ID: <20210126131239.uyolpawk2jfat7z4@fsr-ub1664-175>
-References: <1611660096-12381-1-git-send-email-abel.vesa@nxp.com>
- <20210126115105.GD28722@pengutronix.de>
+        id S2404112AbhAZNNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:13:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404110AbhAZNNg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:13:36 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EF0C0698C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:12:52 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l4O9C-0001l3-9Y; Tue, 26 Jan 2021 14:12:42 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1l4O9A-0002CY-VU; Tue, 26 Jan 2021 14:12:40 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v4 2/2] counter: add IRQ or GPIO based pulse counter
+Date:   Tue, 26 Jan 2021 14:12:39 +0100
+Message-Id: <20210126131239.8335-3-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210126131239.8335-1-o.rempel@pengutronix.de>
+References: <20210126131239.8335-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126115105.GD28722@pengutronix.de>
-User-Agent: NeoMutt/20180622
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-26 12:51:05, Sascha Hauer wrote:
-> On Tue, Jan 26, 2021 at 01:21:36PM +0200, Abel Vesa wrote:
-> > Some clocks are already enabled in HW even before the kernel
-> > starts to boot. So, in order to make sure that these clocks do not
-> > get disabled when clk_disable_unused call is done or when
-> > reparenting clocks, we enable them in core on clock registration.
-> > Such a clock will have to be registered with CLK_IGNORE_UNUSED flag
-> > and also needs to have the is_enabled ops implemented.
-> > 
-> > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> > ---
-> >  drivers/clk/clk.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> > index 3d751ae5bc70..26d55851cfa5 100644
-> > --- a/drivers/clk/clk.c
-> > +++ b/drivers/clk/clk.c
-> > @@ -3416,6 +3416,7 @@ static int __clk_core_init(struct clk_core *core)
-> >  	int ret;
-> >  	struct clk_core *parent;
-> >  	unsigned long rate;
-> > +	bool is_hw_enabled = false;
-> >  	int phase;
-> >  
-> >  	if (!core)
-> > @@ -3558,12 +3559,20 @@ static int __clk_core_init(struct clk_core *core)
-> >  		rate = 0;
-> >  	core->rate = core->req_rate = rate;
-> >  
-> > +	/*
-> > +	 * If the clock has the CLK_IGNORE_UNUSED flag set and it is already
-> > +	 * enabled in HW, enable it in core too so it won't get accidentally
-> > +	 * disabled when walking the orphan tree and reparenting clocks
-> > +	 */
-> > +	if (core->flags & CLK_IGNORE_UNUSED && core->ops->is_enabled)
-> > +		is_hw_enabled = clk_core_is_enabled(core);
-> > +
-> >  	/*
-> >  	 * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
-> >  	 * don't get accidentally disabled when walking the orphan tree and
-> >  	 * reparenting clocks
-> >  	 */
-> > -	if (core->flags & CLK_IS_CRITICAL) {
-> > +	if (core->flags & CLK_IS_CRITICAL || is_hw_enabled) {
-> >  		unsigned long flags;
-> >  
-> >  		ret = clk_core_prepare(core);
-> 
-> This means that a bootloader enabled clock with CLK_IGNORE_UNUSED flag
-> can effectively never be disabled because the prepare/enable count is 1
-> without any user. This is the behaviour we want to have with critical
-> clocks, but I don't think this is desired for clocks with the
-> CLK_IGNORE_UNUSED flag.
-> 
+Add simple IRQ or GPIO base pulse counter. This device is used to measure
+rotation speed of some agricultural devices, so no high frequency on the
+counter pin is expected.
 
-Here is the way I see it. Critical clocks means the system can't work
-without, so do not ever disable/unprepare. The "ignore unused" flag
-tells the core to not do anything to this clock, even if it is unused.
-For now, it just leaves the clock alone, but the flag could be used for
-some other stuff in the future.
+The maximal measurement frequency depends on the CPU and system load. On
+the idle iMX6S I was able to measure up to 20kHz without count drops.
 
-Now, the behavior is entirely different.
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ drivers/counter/Kconfig     |  10 ++
+ drivers/counter/Makefile    |   1 +
+ drivers/counter/pulse-cnt.c | 235 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 246 insertions(+)
+ create mode 100644 drivers/counter/pulse-cnt.c
 
-For the "critical" clock disable/unprepare, the core does nothing
-(returns without calling the disable/unprepare ops).
+diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
+index 2de53ab0dd25..73107a861648 100644
+--- a/drivers/counter/Kconfig
++++ b/drivers/counter/Kconfig
+@@ -29,6 +29,16 @@ config 104_QUAD_8
+ 	  The base port addresses for the devices may be configured via the base
+ 	  array module parameter.
+ 
++config PULSE_CNT
++	tristate "Pulse counter driver"
++	depends on GPIOLIB
++	help
++	  Select this option to enable pulse counter driver. Any interrupt source
++	  can be used by this driver as the pulse source.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called gpio-pulse-cnt.
++
+ config STM32_TIMER_CNT
+ 	tristate "STM32 Timer encoder counter driver"
+ 	depends on MFD_STM32_TIMERS || COMPILE_TEST
+diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
+index 0a393f71e481..73999e39e984 100644
+--- a/drivers/counter/Makefile
++++ b/drivers/counter/Makefile
+@@ -6,6 +6,7 @@
+ obj-$(CONFIG_COUNTER) += counter.o
+ 
+ obj-$(CONFIG_104_QUAD_8)	+= 104-quad-8.o
++obj-$(CONFIG_PULSE_CNT)		+= pulse-cnt.o
+ obj-$(CONFIG_STM32_TIMER_CNT)	+= stm32-timer-cnt.o
+ obj-$(CONFIG_STM32_LPTIMER_CNT)	+= stm32-lptimer-cnt.o
+ obj-$(CONFIG_TI_EQEP)		+= ti-eqep.o
+diff --git a/drivers/counter/pulse-cnt.c b/drivers/counter/pulse-cnt.c
+new file mode 100644
+index 000000000000..4128b4b3661e
+--- /dev/null
++++ b/drivers/counter/pulse-cnt.c
+@@ -0,0 +1,235 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
++ */
++
++#include <linux/counter.h>
++#include <linux/gpio/consumer.h>
++#include <linux/interrupt.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#define PULSE_CNT_NAME		"pulse-cnt"
++
++struct pulse_cnt_priv {
++	struct counter_device counter;
++	struct counter_ops ops;
++	struct gpio_desc *gpio;
++	int irq;
++	bool enabled;
++	atomic_t count;
++};
++
++static irqreturn_t pulse_cnt_isr(int irq, void *dev_id)
++{
++	struct pulse_cnt_priv *priv = dev_id;
++
++	atomic_inc(&priv->count);
++
++	return IRQ_HANDLED;
++}
++
++static ssize_t pulse_cnt_enable_read(struct counter_device *counter,
++				     struct counter_count *count, void *private,
++				     char *buf)
++{
++	struct pulse_cnt_priv *priv = counter->priv;
++
++	return sysfs_emit(buf, "%d\n", priv->enabled);
++}
++
++static ssize_t pulse_cnt_enable_write(struct counter_device *counter,
++				      struct counter_count *count,
++				      void *private, const char *buf,
++				      size_t len)
++{
++	struct pulse_cnt_priv *priv = counter->priv;
++	bool enable;
++	ssize_t ret;
++
++	ret = kstrtobool(buf, &enable);
++	if (ret)
++		return ret;
++
++	if (priv->enabled == enable)
++		return len;
++
++	if (enable) {
++		priv->enabled = enable;
++		enable_irq(priv->irq);
++	} else {
++		disable_irq(priv->irq);
++		priv->enabled = enable;
++	}
++
++	return len;
++}
++
++static const struct counter_count_ext pulse_cnt_ext[] = {
++	{
++		.name = "enable",
++		.read = pulse_cnt_enable_read,
++		.write = pulse_cnt_enable_write,
++	},
++};
++
++static enum counter_synapse_action pulse_cnt_synapse_actionss[] = {
++	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
++};
++
++static int pulse_cnt_action_get(struct counter_device *counter,
++			    struct counter_count *count,
++			    struct counter_synapse *synapse,
++			    size_t *action)
++{
++	*action = COUNTER_SYNAPSE_ACTION_RISING_EDGE;
++
++	return 0;
++}
++
++static int pulse_cnt_read(struct counter_device *counter,
++				 struct counter_count *count,
++				 unsigned long *val)
++{
++	struct pulse_cnt_priv *priv = counter->priv;
++
++	*val = atomic_read(&priv->count);
++
++	return 0;
++}
++
++static int pulse_cnt_write(struct counter_device *counter,
++				  struct counter_count *count,
++				  const unsigned long val)
++{
++	struct pulse_cnt_priv *priv = counter->priv;
++
++	atomic_set(&priv->count, val);
++
++	return 0;
++}
++
++static int pulse_cnt_function_get(struct counter_device *counter,
++				  struct counter_count *count, size_t *function)
++{
++	*function = COUNTER_COUNT_FUNCTION_INCREASE;
++
++	return 0;
++}
++
++static int pulse_cnt_signal_read(struct counter_device *counter,
++				 struct counter_signal *signal,
++				 enum counter_signal_value *val)
++{
++	struct pulse_cnt_priv *priv = counter->priv;
++	int ret;
++
++	ret = gpiod_get_value(priv->gpio);
++	if (ret < 0)
++		return ret;
++
++	*val = ret ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
++
++	return 0;
++}
++
++static struct counter_signal pulse_cnt_signals[] = {
++	{
++		.id = 0,
++		.name = "Channel 0 signal",
++	},
++};
++
++static struct counter_synapse pulse_cnt_synapses[] = {
++	{
++		.actions_list = pulse_cnt_synapse_actionss,
++		.num_actions = ARRAY_SIZE(pulse_cnt_synapse_actionss),
++		.signal = &pulse_cnt_signals[0]
++	},
++};
++
++static enum counter_count_function pulse_cnt_functions[] = {
++	COUNTER_COUNT_FUNCTION_INCREASE,
++};
++
++static struct counter_count pulse_cnts[] = {
++	{
++		.id = 0,
++		.name = "Channel 1 Count",
++		.functions_list = pulse_cnt_functions,
++		.num_functions = ARRAY_SIZE(pulse_cnt_functions),
++		.synapses = pulse_cnt_synapses,
++		.num_synapses = ARRAY_SIZE(pulse_cnt_synapses),
++		.ext = pulse_cnt_ext,
++		.num_ext = ARRAY_SIZE(pulse_cnt_ext),
++	},
++};
++
++static int pulse_cnt_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct pulse_cnt_priv *priv;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->irq = platform_get_irq(pdev,  0);
++	if (priv->irq < 0) {
++		dev_err(dev, "failed to map GPIO to IRQ: %d\n", priv->irq);
++		return priv->irq;
++	}
++
++	priv->gpio = devm_gpiod_get_optional(dev, NULL, GPIOD_IN);
++	if (IS_ERR(priv->gpio))
++		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get gpio\n");
++
++	priv->ops.action_get = pulse_cnt_action_get;
++	priv->ops.count_read = pulse_cnt_read;
++	priv->ops.count_write = pulse_cnt_write;
++	priv->ops.function_get = pulse_cnt_function_get;
++	if (priv->gpio)
++		priv->ops.signal_read  = pulse_cnt_signal_read;
++
++	priv->counter.name = dev_name(dev);
++	priv->counter.parent = dev;
++	priv->counter.ops = &priv->ops;
++	priv->counter.counts = pulse_cnts;
++	priv->counter.num_counts = ARRAY_SIZE(pulse_cnts);
++	priv->counter.signals = pulse_cnt_signals;
++	priv->counter.num_signals = ARRAY_SIZE(pulse_cnt_signals);
++	priv->counter.priv = priv;
++
++	irq_set_status_flags(priv->irq, IRQ_NOAUTOEN);
++	ret = devm_request_irq(dev, priv->irq, pulse_cnt_isr,
++			       IRQF_TRIGGER_RISING | IRQF_NO_THREAD,
++			       PULSE_CNT_NAME, priv);
++	if (ret)
++		return ret;
++
++	platform_set_drvdata(pdev, priv);
++
++	return devm_counter_register(dev, &priv->counter);
++}
++
++static const struct of_device_id pulse_cnt_of_match[] = {
++	{ .compatible = "virtual,pulse-counter", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, pulse_cnt_of_match);
++
++static struct platform_driver pulse_cnt_driver = {
++	.probe = pulse_cnt_probe,
++	.driver = {
++		.name = PULSE_CNT_NAME,
++		.of_match_table = pulse_cnt_of_match,
++	},
++};
++module_platform_driver(pulse_cnt_driver);
++
++MODULE_ALIAS("platform:pulse-counter");
++MODULE_AUTHOR("Oleksij Rempel <o.rempel@pengutronix.de>");
++MODULE_DESCRIPTION("Pulse counter driver");
++MODULE_LICENSE("GPL v2");
+-- 
+2.30.0
 
-As for the "ignore unused", the clock can be disabled later on,
-which would decrement the prepare/enable counter.
-The imx earlycon serial driver could implement a late initcall,
-that takes the clocks from the devicetree uart node and disables
-them. The user doesn't even count in this situation.
-
-Plus, there is no other reason someone would use the CLK_IGNORE_UNUSED,
-other than leaving a clock that is already enabled stay as is (at least,
-not with the current implementation). So why not mark it as enabled in 
-the core, if the HW says it is enabled ?
