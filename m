@@ -2,105 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58DC303CED
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B20DF303CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391564AbhAZMYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:24:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
+        id S2392606AbhAZMVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404481AbhAZKwt (ORCPT
+        with ESMTP id S2404774AbhAZLDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:52:49 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D620C061797
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:51:25 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id e15so2336497wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 02:51:24 -0800 (PST)
+        Tue, 26 Jan 2021 06:03:12 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5E4C06174A;
+        Tue, 26 Jan 2021 03:02:31 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id hs11so22372548ejc.1;
+        Tue, 26 Jan 2021 03:02:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eDB2VePP2gLo3jktXjvGnSm3jDWHWVOh6rC8z0CbRvQ=;
-        b=D7x3P3OFR2vff+Yisjrvazi8eadRJNZbJnawBZbQpfFxy4dMa/orEnq0vHCEEDJL5p
-         kLf5J9b4uznLltOw5/AuQA7c4JtVJS5tWd3XV2xZCo/QMYerYkgcfBVBJ8m/gt3+9pII
-         fVhlxp2QrMCtwfNZoLRG6TGUEXup8VrC6YaIUNfjVr8LmWlbg2NbS7jjmegOFbe7KmRK
-         8bTtTWco0Xh45LldthuzzW8S4sL4fQ/ZdfVmAwzTguy8WBcROiEkYlEmabKewjrhpJeE
-         S5iKogUo4fst39p5sS8skCcFs1ScgkFe4iJncmXTbaBjfclKz/4Cgitov9ctk+kgVtjS
-         Aa5Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=9ExoicPWb9nj37ivHRf0sfAyfETbOTvzRxB/xRvmXmU=;
+        b=gULRw+fQvf6cEe5Jiju+B7Su1M7tU8zPqZgjfo1mPadYvRypYxul3cs9pu/COoyDJT
+         TRlb4Scm0NubDKK0NBbvUatnV0YGTkpjdl74Xti1i8GIbMCKw5CIlvBziTw7n3rpzL09
+         pdwRh9qRCXaGe535cg5CLr3UEFRR0VJ201z1cAcaf2+DdP9NVGVHHLqzvH0vrm+Y5wry
+         K5iE0r9CmUnRa59orDPb8uyQbcHydzTjhCysHH8uDPJiUaeh9IooxMCNLgSrOYEoQRei
+         7lZINf5OB3Q29V5fwqh4KIcH0B1iXxoWG449ZVeBp2rs/odQyk9POcMXrhB0zXpkhF2W
+         uIUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eDB2VePP2gLo3jktXjvGnSm3jDWHWVOh6rC8z0CbRvQ=;
-        b=FEOopLA4bVVQY+vwI2v8ixby5RQ4Ue1tFnhEwhAF1JsBBi4HsfHQwxt14tnR8/peQj
-         fjSsLJNwTbkknM3Ni1mCo/rF4MmJxWHeQZTiRar6EVdEYIwYCmoZnIKdlxK7m6XoLqR0
-         bmj+UVgzVBZoQsgRQBP0rvRXKwIQdnjGeUI1ezqg0ayUwBFK9cGgC5/mplUvq4B7QGxn
-         Wtv5i3HdDtpmIe6dqp/ksa9xPhcDJWXFp75d1eILWtShPextlFCoSg61hUCWRg/x8I07
-         zlfulpz+jBJST9fXl1KOAMGv0xZ9TjFImnB3m+ddCM5S2M9i+euglIOcQXiwrkVAZZQJ
-         +5ZA==
-X-Gm-Message-State: AOAM530m7CgO2fE4O3mmG5xGQeiHuYIMYUVPzGOgvKamcfTzibyLlDln
-        LcK1YuENwdHqD9Ehp+Rvem6W+0ZUCa5/wQ==
-X-Google-Smtp-Source: ABdhPJxt0t0zfhum4rHmKwRmfDFrxAJaGG/0X91xEqYzJx6/dtV9+zRIwoFomMvoiUeOP+B2K1NtCQ==
-X-Received: by 2002:a7b:ce96:: with SMTP id q22mr4150055wmj.165.1611658283791;
-        Tue, 26 Jan 2021 02:51:23 -0800 (PST)
-Received: from localhost.localdomain ([83.216.184.132])
-        by smtp.gmail.com with ESMTPSA id h18sm7177879wru.65.2021.01.26.02.51.22
+         :references;
+        bh=9ExoicPWb9nj37ivHRf0sfAyfETbOTvzRxB/xRvmXmU=;
+        b=CErrLEWiBkdpVAZ/A7WU5cuGITaNwd+CsfnSHBGQzoDi7TUK1O7qagrjkz4+lUXSo0
+         IfRHHt7hcnod7MvUifSrpPQdxBdsdp7QMDm/QTPqHsiTd9DO7/NwdnCZKBkFbmuLnAP8
+         Q+7WhMTObMVAAnv2v2jrcgH1g78mxuWfEC4Ni3/JYvJFuRDRcssSVQp1NsomuEwWQVo9
+         Kq2Ys9kvK/52KectT35P5FJa5n9svF9lyrMhlrYwTbefXHMOnF0xpmUm1gj6rwcBsPS7
+         nXt1G5/X/Rb+n/mBijlWlVFn+PBGgwEDuH3m1G4/44ezLCOspYBgH5bY7gM3ZxbdYn8r
+         DsHg==
+X-Gm-Message-State: AOAM533FRQR47skPz7ew+apiy2v3RcqeSDRd4kGl2w+77ZTmBeZhgjOX
+        fwAv4yA4j+3apOKCGxtttNs=
+X-Google-Smtp-Source: ABdhPJwD9bEZYnFDqHJRo/ilNGeJy4pvg35s/7WkgPHClbyyzEy8XmUpbC8NKCoi6q6Eq7z2G7aUrw==
+X-Received: by 2002:a17:907:94d4:: with SMTP id dn20mr3126122ejc.397.1611658950596;
+        Tue, 26 Jan 2021 03:02:30 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id a2sm9533408ejk.80.2021.01.26.03.02.29
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 26 Jan 2021 02:51:23 -0800 (PST)
-From:   Paolo Valente <paolo.valente@linaro.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH BUGFIX/IMPROVEMENT 5/6] block, bfq: keep shared queues out of the waker mechanism
-Date:   Tue, 26 Jan 2021 11:51:01 +0100
-Message-Id: <20210126105102.53102-6-paolo.valente@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210126105102.53102-1-paolo.valente@linaro.org>
-References: <20210126105102.53102-1-paolo.valente@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 26 Jan 2021 03:02:29 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] arm64: dts: rockchip: fix pinctrl sleep nodename for rk3399.dtsi
+Date:   Tue, 26 Jan 2021 12:02:21 +0100
+Message-Id: <20210126110221.10815-2-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210126110221.10815-1-jbx6244@gmail.com>
+References: <20210126110221.10815-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shared queues are likely to receive I/O at a high rate. This may
-deceptively let them be considered as wakers of other queues. But a
-false waker will unjustly steal bandwidth to its supposedly woken
-queue. So considering also shared queues in the waking mechanism may
-cause more control troubles than throughput benefits. This commit
-keeps shared queues out of the waker-detection mechanism.
+A test with the command below aimed at powerpc generates
+notifications in the Rockchip arm64 tree.
 
-Tested-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Fix pinctrl "sleep" nodename by renaming it to "suspend"
+for rk3399.dtsi
+
+make ARCH=arm64 dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- block/bfq-iosched.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 0c7e203085f1..23d0dd7bd90f 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -5825,7 +5825,17 @@ static void bfq_completed_request(struct bfq_queue *bfqq, struct bfq_data *bfqd)
- 			1UL<<(BFQ_RATE_SHIFT - 10))
- 		bfq_update_rate_reset(bfqd, NULL);
- 	bfqd->last_completion = now_ns;
--	bfqd->last_completed_rq_bfqq = bfqq;
-+	/*
-+	 * Shared queues are likely to receive I/O at a high
-+	 * rate. This may deceptively let them be considered as wakers
-+	 * of other queues. But a false waker will unjustly steal
-+	 * bandwidth to its supposedly woken queue. So considering
-+	 * also shared queues in the waking mechanism may cause more
-+	 * control troubles than throughput benefits. Then do not set
-+	 * last_completed_rq_bfqq to bfqq if bfqq is a shared queue.
-+	 */
-+	if (!bfq_bfqq_coop(bfqq))
-+		bfqd->last_completed_rq_bfqq = bfqq;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index d0602f62f..6c571fee8 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -2347,7 +2347,7 @@
+ 			};
+ 		};
  
- 	/*
- 	 * If we are waiting to discover whether the request pattern
+-		sleep {
++		suspend {
+ 			ap_pwroff: ap-pwroff {
+ 				rockchip,pins = <1 RK_PA5 1 &pcfg_pull_none>;
+ 			};
 -- 
-2.20.1
+2.11.0
 
