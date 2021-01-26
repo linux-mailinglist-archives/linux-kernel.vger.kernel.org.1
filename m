@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAFA304360
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF56D304378
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:12:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404841AbhAZQG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:06:28 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:36254 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404676AbhAZQEL (ORCPT
+        id S2404616AbhAZQLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:11:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404642AbhAZQFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:04:11 -0500
-X-UUID: 25fff92989674ba4b424e38b509e0346-20210127
-X-UUID: 25fff92989674ba4b424e38b509e0346-20210127
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <lecopzer.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 437533301; Wed, 27 Jan 2021 00:03:14 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 27 Jan 2021 00:03:13 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 27 Jan 2021 00:03:13 +0800
-From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
-To:     <linux@armlinux.org.uk>
-CC:     <akpm@linux-foundation.org>, <bigeasy@linutronix.de>,
-        <gregkh@linuxfoundation.org>, <lecopzer.chen@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <marc.zyngier@arm.com>,
-        <peterx@redhat.com>, <rppt@kernel.org>, <tglx@linutronix.de>,
-        <walken@google.com>, <yj.chiang@mediatek.com>
-Subject: Re: [PATCH] ARM: mm: harden branch predictor before opening interrupts during fault
-Date:   Wed, 27 Jan 2021 00:03:03 +0800
-Message-ID: <20210126160303.16157-1-lecopzer.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210126152916.GJ1551@shell.armlinux.org.uk>
-References: <20210126152916.GJ1551@shell.armlinux.org.uk>
+        Tue, 26 Jan 2021 11:05:54 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10B7C061A29;
+        Tue, 26 Jan 2021 08:05:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JH2sQI58od0xGBtZkjCcZFqHlgfaX4NaN7zGq9O0+9Y=; b=imOXpyr+CGs3ITzYf0b3iOjGMk
+        7+TVcmqZt2bp26YWSnfYjX+DbDjo9eZ43CB3OZrDEjyoVfCU4JoaD3ZA+MdQj0Ktm8URPnojsYVv1
+        +Fk5/H1h3hYHJTmeLtgHDxpegDiZ4vIBIaCjfpL7VoLlcfpLqGHBZpcpJ6+skN2jd9gHMKmvi5Usm
+        AeohIoZ39cmiHNmywfRUk9IMZbDp3PTGyY5AVNVc7fzcRDleSruFGtQxmAt295gN2t1goR4o4CCkv
+        6hhfuutOQj7P7btCVm1wj0cccPvZydX7jN3C6IH/9gvvt3ooJ0j3QBTT7Mpn9GzCoCzEQj43NW5Bw
+        Ty2GJlRA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l4Qq2-0008JW-EJ; Tue, 26 Jan 2021 16:05:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1BFB23019CE;
+        Tue, 26 Jan 2021 17:05:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 086E92027D383; Tue, 26 Jan 2021 17:05:04 +0100 (CET)
+Date:   Tue, 26 Jan 2021 17:05:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Greg KH <greg@kroah.com>, Justin Forbes <jforbes@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <YBA9r13+1uuyDYuR@hirez.programming.kicks-ass.net>
+References: <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
+ <20210125212755.jfwlqogpcarmxdgt@treble>
+ <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
+ <20210125220757.vxdsf6sttpy46cq7@treble>
+ <YA/PLdX5m9f4v+Yl@kroah.com>
+ <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
+ <YBAeYaDReAc9VscA@kroah.com>
+ <20210126145155.kcfbnzfqg5qugvcl@treble>
+ <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net>
+ <20210126154651.itfrnhwfistia3ss@treble>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126154651.itfrnhwfistia3ss@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Jan 26, 2021 at 11:01:50PM +0800, Lecopzer Chen wrote:
-> > > On 2021-01-26 10:59:32 [+0000], Russell King - ARM Linux admin wrote:
-> > > > On Tue, Jan 26, 2021 at 05:17:08PM +0800, Lecopzer Chen wrote:
-> > > > > Hi all,
-> > > > > 
-> > > > > I don't see any fix for this issue now(maybe I missed it..?),
-> > > > > could we fix this if there is better solution?
-> > > > > This issue exists almost two years.
-> > > > 
-> > > > I don't think anyone provided an acceptable patch.
-> > > > 
-> > > > The first patch moved the hardening out of the translation/section
-> > > > fault handling. Since the kernel is mapped with sections, these
-> > > > are above TASK_SIZE, and the whole point of the branch prediction
-> > > > hardening is to prevent the prediction in the kernel being exploited,
-> > > > missing the hardening effectively makes the mitigation useless.
-> > > > 
-> > > > The discussion in February 2019 never concluded from what I can see.
+On Tue, Jan 26, 2021 at 09:46:51AM -0600, Josh Poimboeuf wrote:
+> On Tue, Jan 26, 2021 at 04:15:37PM +0100, Peter Zijlstra wrote:
+> > On Tue, Jan 26, 2021 at 08:51:55AM -0600, Josh Poimboeuf wrote:
+> > > User space mixes compiler versions all the time.  The C ABI is stable.
 > > > 
-> > > My memory is that I never got a reply which I understood.
-> > > Let me try again this week with the information above.
+> > > What specifically is the harder issue you're referring to?
 > > 
+> > I don't think the C ABI captures nearly enough. Imagine trying to mix a
+> > compiler with and without asm-goto support (ok, we fail to build without
+> > by now, but just imagine).
 > > 
-> > NOTE:
-> > Before sending this mail, I had searched the relative threads and
-> > there are two solutions in general:
-> >     1. Add get_pcpu()/put_cpu() https://lkml.org/lkml/2019/6/3/426
-> >        Reject by Marc:
-> >        > The right fix would be to move the call to a point where we haven't
-> >        > enabled preemption yet.
+> > No C ABI violated, but having that GCC extention vs not having it
+> > radically changes the kernel ABI.
 > > 
-> >     2. Move out like the patch from Sebastian:
-> >        This seems follow the concept of 1.
-> >        (move the call to a point where we haven't enabled preemption yet).
-> >        But I can't find any reply in the thread.
-> > 
-> > Now the CONFIG_HARDEN_BRANCH_PREDICTOR has already backported to LTS,
-> > and after upgrading ARM CONFIG_CPU_V7 products to latest LTS, the
-> > CONFIG_HARDEN_BRANCH_PREDICTOR will be default y and this issue makes
-> > our devices panic and we have to either disable HARDEN_BRANCH_PREDICTOR
-> > or hack in-house to avoid the kernel panic.
+> > I think I'm with Greg here, just don't do it.
 > 
-> It does _not_ cause the kernel to panic, ever. A kernel panic takes
-> out the system. This is not the case here.
+> Ok, thank you for an actual example.  asm goto is a good one.
 > 
-> It merely causes a noisy message to be emitted in the kernel log, and
-> the system survives. That is way more preferable than breaking the
-> effect of branch predictor hardening.
+> But it's not a cut-and-dry issue.  Otherwise how could modversions
+> possibly work?
 > 
-> If it is taking out your kernel with a real panic, then there is
-> something wrong elsewhere - and this is _not_ something that should
-> be happening during normal system operation.
+> So yes, we should enforce GCC versions, but I still haven't seen a
+> reason it should be more than just "same compiler and *major* version".
 
-Oh, yes, you're right;
+Why bother? rebuilding the kernel and all modules is a matter of 10
+minutes at most on a decently beefy build box.
 
-After reread the panic log, our panic happened because
--> invalid userspace memory access
--> debug_preempt log
--> the program seg fault
--> main service need the program but it crash
--> panic
-
-Sorry for wrong information and thanks a lot for the correctness.
-I think I have to see why the in-house hacking is working...
-
-Thanks!!
-
-BRs,
-Lecopzer
-
+What actual problem are we trying to solve here?
