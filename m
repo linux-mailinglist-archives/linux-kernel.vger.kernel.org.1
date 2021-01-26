@@ -2,104 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F010630456F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDFD304577
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392301AbhAZRfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:35:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389465AbhAZHlf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:41:35 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B15C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:39:28 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id w11so1492354qvz.12
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 23:39:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MuwuMM1E8EDH+ukP+fboaIDTRxHiGHEVLbQM3XUxmow=;
-        b=cd/IZ7dTUOKWb4uxlB9z6AelujYZfyEijwkUXr6NM5yTwl+513pkERu6h0dMWkhdaU
-         At23qG9KTayL3QvCcZJZDYJC33EhuLzzs10LzS4N9jM5ieLQ/Zc8wxRKCfQZLpi2+OSZ
-         DvpfPKJ6icTje8vFQO9dFH07mj4NftWxu8Rmw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MuwuMM1E8EDH+ukP+fboaIDTRxHiGHEVLbQM3XUxmow=;
-        b=dHymJ8eBfxubEtp59rRza+jyGR/C62r8zqrQSIs6UYZ2+kty0fiLTwVvDzrk3/SL5J
-         QDSe9s25bAVYxjoDcCKJLnXAz94JZwDOCjYPU3VIfMHDOveSLXkAwGCYUXwpYKd0sjUl
-         8VnwuK13qi1opf8cGKSOTSTinXt+BflXo3vTedQO2me2Z5K5ZZRDjbOMnmfdlVO3a/cA
-         30vC3ThcXW4oFgYiVOQMCQxLlNoINdugdk7CFOSEmkWolfQzjwuP4VayS3vzHMUPZzye
-         HiiSPEtgNelIlT3xNC8Q/IDfX4iCeiv2IPfvjldv6NlIiI4sAcn4uV4RL5+p5bGi744S
-         F7/Q==
-X-Gm-Message-State: AOAM532gETThgwteb8uwhqtO4jpWB44tgoxbH0/MdUGu2M9QVGILvQRC
-        FabDHmu5S+pgaZVMnjjhQYk6jGa+YBt2d5elM7+5Kw==
-X-Google-Smtp-Source: ABdhPJx2m2RK3FQFasvssPNmERYPUcOGckV3GmTjsOq1oZjbkp1d0L3SN2CIYmwEZ8kJTM5lEImXMaoaoAu951JMl7M=
-X-Received: by 2002:a0c:a905:: with SMTP id y5mr4391981qva.55.1611646767316;
- Mon, 25 Jan 2021 23:39:27 -0800 (PST)
+        id S2392510AbhAZRiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:38:15 -0500
+Received: from mga12.intel.com ([192.55.52.136]:59008 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729739AbhAZHqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:46:33 -0500
+IronPort-SDR: 8YPlViTyZaTc0oJHvKbDCC/wRm8QgbIM3g/dIwj2Dc1DLqWhJcy+H9x0DNYPv+h/x1tO38ZUeR
+ OVbPVaJouk6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="159039066"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="159039066"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 23:40:53 -0800
+IronPort-SDR: zgP8Qm+Gvv16cNo08q7txgjrXUAHycE6DfPglon2E99+Tj1Ov+xN+jww9nqH65/mWfOgqC6HX3
+ XZcYxqUhNXKg==
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="387728025"
+Received: from kleve-mobl1.ger.corp.intel.com (HELO ubuntu) ([10.252.52.33])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 23:40:43 -0800
+Date:   Tue, 26 Jan 2021 08:40:41 +0100 (CET)
+From:   Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+cc:     virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, virtio-dev@lists.oasis-open.org,
+        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Re: [PATCH v2 7/9] ALSA: virtio: introduce jack support
+In-Reply-To: <20210124165408.1122868-8-anton.yakovlev@opensynergy.com>
+Message-ID: <8dce1870-9ffe-949d-ee5a-f2564f88ac5@intel.com>
+References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com> <20210124165408.1122868-8-anton.yakovlev@opensynergy.com>
 MIME-Version: 1.0
-References: <20210125064234.2078146-1-stevensd@google.com> <YA8PXCEVukW0UzC5@google.com>
-In-Reply-To: <YA8PXCEVukW0UzC5@google.com>
-From:   David Stevens <stevensd@chromium.org>
-Date:   Tue, 26 Jan 2021 16:39:16 +0900
-Message-ID: <CAD=HUj5YMtSJY6ZO9TRXHDEfWRM1o3Lrm7nkz=G2VJ_oZ-c5mw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: consider the hva in mmu_notifer retry
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > This has the secondary effect of greatly reducing the likelihood of extreme
+
+On Sun, 24 Jan 2021, Anton Yakovlev wrote:
+
+> Enumerate all available jacks and create ALSA controls.
 >
-> Out of curiosity, is this really the _secondary_ effect?  I would expect this
-> change to primarily benefit scenarios where the invalidation has gotten
-> waylaid for whatever reason.
-
-Yeah, this is the primary benefit. I was thinking about it as the
-reduction in page fault retries is the direct effect, and that in turn
-leads to a secondary effect of a reduction in the chance of extreme
-latency. But I guess that's not a particularly important distinction
-to make. I'll reword this.
-
+> At the moment jacks have a simple implementation and can only be used
+> to receive notifications about a plugged in/out device.
 >
-> This needs a comment to explicitly state that 'count > 1' cannot be done at
-> this time.  My initial thought is that it would be more intuitive to check for
-> 'count > 1' here, but that would potentially check the wrong wrange when count
-> goes from 2->1.  The comment about persistence in invalidate_range_start() is a
-> good hint, but I think it's worth being explicit to avoid bad "cleanup" in the
-> future.
->
-> > +     if (unlikely(kvm->mmu_notifier_count)) {
-> > +             if (kvm->mmu_notifier_range_start <= hva &&
-> > +                 hva < kvm->mmu_notifier_range_end)
+> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> ---
+> sound/virtio/Makefile      |   1 +
+> sound/virtio/virtio_card.c |  18 +++
+> sound/virtio/virtio_card.h |  12 ++
+> sound/virtio/virtio_jack.c | 255 +++++++++++++++++++++++++++++++++++++
+> 4 files changed, 286 insertions(+)
+> create mode 100644 sound/virtio/virtio_jack.c
 
-I'm not sure I understand what you're suggesting here. How exactly
-would 'count > 1' be used incorrectly here? I'm fine with adding a
-comment, but I'm not sure what the comment needs to clarify.
+[snip]
 
--David
+> diff --git a/sound/virtio/virtio_jack.c b/sound/virtio/virtio_jack.c
+> new file mode 100644
+> index 000000000000..83593c59f6bf
+> --- /dev/null
+> +++ b/sound/virtio/virtio_jack.c
+> @@ -0,0 +1,255 @@
+
+[snip]
+
+> +/**
+> + * virtsnd_jack_parse_cfg() - Parse the jack configuration.
+> + * @snd: VirtIO sound device.
+> + *
+> + * This function is called during initial device initialization.
+> + *
+> + * Context: Any context that permits to sleep.
+> + * Return: 0 on success, -errno on failure.
+> + */
+> +int virtsnd_jack_parse_cfg(struct virtio_snd *snd)
+> +{
+> +	struct virtio_device *vdev = snd->vdev;
+> +	struct virtio_snd_jack_info *info;
+> +	unsigned int i;
+> +	int rc;
+> +
+> +	virtio_cread(vdev, struct virtio_snd_config, jacks, &snd->njacks);
+> +	if (!snd->njacks)
+> +		return 0;
+> +
+> +	snd->jacks = devm_kcalloc(&vdev->dev, snd->njacks, sizeof(*snd->jacks),
+> +				  GFP_KERNEL);
+> +	if (!snd->jacks)
+> +		return -ENOMEM;
+> +
+> +	info = devm_kcalloc(&vdev->dev, snd->njacks, sizeof(*info), GFP_KERNEL);
+
+just kcalloc()
+
+> +	if (!info)
+> +		return -ENOMEM;
+> +
+> +	rc = virtsnd_ctl_query_info(snd, VIRTIO_SND_R_JACK_INFO, 0, snd->njacks,
+> +				    sizeof(*info), info);
+> +	if (rc)
+> +		return rc;
+> +
+> +	for (i = 0; i < snd->njacks; ++i) {
+> +		struct virtio_jack *jack = &snd->jacks[i];
+> +		struct virtio_pcm *pcm;
+> +
+> +		jack->nid = le32_to_cpu(info[i].hdr.hda_fn_nid);
+> +		jack->features = le32_to_cpu(info[i].features);
+> +		jack->defconf = le32_to_cpu(info[i].hda_reg_defconf);
+> +		jack->caps = le32_to_cpu(info[i].hda_reg_caps);
+> +		jack->connected = info[i].connected;
+> +
+> +		pcm = virtsnd_pcm_find_or_create(snd, jack->nid);
+> +		if (IS_ERR(pcm))
+> +			return PTR_ERR(pcm);
+> +	}
+> +
+> +	devm_kfree(&vdev->dev, info);
+> +
+> +	return 0;
+> +}
+
+Thanks
+Guennadi
