@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8656C3041F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D13E3041E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406184AbhAZPNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:13:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732372AbhAZPMf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:12:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611673869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rKPAVmdSu3nxsiB9pgAVODRr/xR8Ner0j63a+nV5B7k=;
-        b=WRbRte+Y8Eb44wCGDpdOM/gmNRZQf7qSm0Biepoyll9muGhmmafGHPzKk3fHYjzYWwjoJ/
-        3KEzF6O078PTfKHwptBK+zxAKwzzRbD3N9jWKTgD1as0dvGKqiB9wnHxKdxj3KPcwvfnUs
-        ouUaDugXSE2Q/IJTmDXBbKZeiecO6nk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-olBCcwDpMf-_8EC8eT48xQ-1; Tue, 26 Jan 2021 10:11:07 -0500
-X-MC-Unique: olBCcwDpMf-_8EC8eT48xQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCE34193410C;
-        Tue, 26 Jan 2021 15:11:00 +0000 (UTC)
-Received: from [10.36.114.192] (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 624EC1F0;
-        Tue, 26 Jan 2021 15:10:54 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
- <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
- <20210126145819.GB16870@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
- associated with each HugeTLB page
-Message-ID: <259b9669-0515-01a2-d714-617011f87194@redhat.com>
-Date:   Tue, 26 Jan 2021 16:10:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2406154AbhAZPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:13:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406146AbhAZPND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:13:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7643022D58;
+        Tue, 26 Jan 2021 15:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611673937;
+        bh=w5ozOYZ3HxfzVfJmXXR2CxVeoHVuWxUEYSte4Jx+PkE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Poong0rJYeogSdCf8+uThGqrNP1E3P3YunCLcazrTkIbq4Pe6S9i49f7NbgSx4PTW
+         K9Auj81dwa3zYS6KM7lzlJ1n24Hq+QPN+40Ym93BGqbsSUi5SDIuMwokpzEoPyrxHs
+         zZZhfClQzzBRApJ/RIAMQGcoJV/uh9yWouGXZdGvv3m70qlYhDehLRp6xKXJxF9OaP
+         8nsKuSWmo9lHaoPcrXBt27AShXWqD+8K1JEXn+8zbkvivT/Lpsw/9LqxM9QpS5ojY0
+         2nWn0aRJxwl9fny6/TH8fNuduxdJFO1yWetp/RX6hl4dCyYGCi1A7QHM1Ul+R9CIw6
+         ru+noguW8IZWw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 44C67352268C; Tue, 26 Jan 2021 07:12:17 -0800 (PST)
+Date:   Tue, 26 Jan 2021 07:12:17 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH] s390: allow reschedule on syscall restart
+Message-ID: <20210126151217.GD2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210121143926.21440-1-svens@linux.ibm.com>
+ <20210121143926.21440-2-svens@linux.ibm.com>
+ <a522c1ac-703a-ba99-c44c-3dd09e4cc4be@de.ibm.com>
+ <20210126212553.5d5a21b8@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210126145819.GB16870@linux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126212553.5d5a21b8@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.01.21 15:58, Oscar Salvador wrote:
-> On Tue, Jan 26, 2021 at 10:36:21AM +0100, David Hildenbrand wrote:
->> I think either keep it completely simple (only free vmemmap of hugetlb
->> pages allocated early during boot - which is what's not sufficient for
->> some use cases) or implement the full thing properly (meaning, solve
->> most challenging issues to get the basics running).
->>
->> I don't want to have some easy parts of complex features merged (e.g.,
->> breaking other stuff as you indicate below), and later finding out "it's
->> not that easy" again and being stuck with it forever.
+On Tue, Jan 26, 2021 at 09:25:53PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Well, we could try to do an optimistic allocation, without tricky loopings.
-> If that fails, refuse to shrink the pool at that moment.
+> On Tue, 26 Jan 2021 07:59:51 +0100 Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> >
+> > On 21.01.21 15:39, Sven Schnelle wrote:
+> > > Commit 845f44e8ef28 ("sched: Report local wake up on resched blind zone
+> > > within idle loop") from next-20210121 causes a warning because s390
+> > > doesn't call sched_resched_local_allow() when restarting a syscall.
+> > > 
+> > > Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+> > > ---
+> > >  arch/s390/kernel/syscall.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/arch/s390/kernel/syscall.c b/arch/s390/kernel/syscall.c
+> > > index bc8e650e377d..2b39ac40f970 100644
+> > > --- a/arch/s390/kernel/syscall.c
+> > > +++ b/arch/s390/kernel/syscall.c
+> > > @@ -162,6 +162,7 @@ void noinstr __do_syscall(struct pt_regs *regs, int per_trap)
+> > >  		do_syscall(regs);
+> > >  		if (!test_pt_regs_flag(regs, PIF_SYSCALL_RESTART))
+> > >  			break;
+> > > +		sched_resched_local_allow();
+> > >  		local_irq_enable();
+> > >  	}
+> > >  	exit_to_user_mode();  
+> > 
+> > Yesterdays next now fails with
+> > 
+> > 
+> > arch/s390/kernel/syscall.c: In function '__do_syscall':
+> > arch/s390/kernel/syscall.c:165:3: error: implicit declaration of function 'sched_resched_local_allow' [-Werror=implicit-function-declaration]
+> >   165 |   sched_resched_local_allow();
+> >       |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> > make[2]: *** [scripts/Makefile.build:288: arch/s390/kernel/syscall.o] Error 1
+> > make[2]: *** Waiting for unfinished jobs....
+> > make[1]: *** [scripts/Makefile.build:530: arch/s390/kernel] Error 2
+> > make[1]: *** Waiting for unfinished jobs....
 > 
-> The user could always try to shrink it later via /proc/sys/vm/nr_hugepages
-> interface.
-> 
-> But I am just thinking out loud..
+> I have now removed the merge fix up for tomorrow.  It seems that the
+> commits that needed it have been removed :-(
 
-The real issue seems to be discarding the vmemmap on any memory that has 
-movability constraints - CMA and ZONE_MOVABLE; otherwise, as discussed, 
-we can reuse parts of the thingy we're freeing for the vmemmap. Not that 
-it would be ideal: that once-a-huge-page thing will never ever be a huge 
-page again - but if it helps with OOM in corner cases, sure.
+Review comments mean that they need rework, apologies for the hassle!
 
-Possible simplification: don't perform the optimization for now with 
-free huge pages residing on ZONE_MOVABLE or CMA. Certainly not perfect: 
-what happens when migrating a huge page from ZONE_NORMAL to 
-(ZONE_MOVABLE|CMA)?
-
-> 
->>> Of course, this means that e.g: memory-hotplug (hot-remove) will not fully work
->>> when this in place, but well.
->>
->> Can you elaborate? Are we're talking about having hugepages in
->> ZONE_MOVABLE that are not migratable (and/or dissolvable) anymore? Than
->> a clear NACK from my side.
-> 
-> Pretty much, yeah.
-
-Note that we most likely soon have to tackle migrating/dissolving (free) 
-hugetlbfs pages from alloc_contig_range() context - e.g., for CMA 
-allocations. That's certainly something to keep in mind regarding any 
-approaches that already break offline_pages().
-
--- 
-Thanks,
-
-David / dhildenb
-
+							Thanx, Paul
