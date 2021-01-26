@@ -2,46 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE2A303E75
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CD9303E25
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404381AbhAZNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:20:30 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48094 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2392106AbhAZNTK (ORCPT
+        id S2392256AbhAZNIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:08:45 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11443 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392310AbhAZNI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:19:10 -0500
-X-UUID: 09c21eeeb4cf4e2dbd905fcc12b92921-20210126
-X-UUID: 09c21eeeb4cf4e2dbd905fcc12b92921-20210126
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1321847218; Tue, 26 Jan 2021 21:18:24 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 21:18:22 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 21:18:22 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>
-Subject: [PATCH v1] arm64: dts: add spi host nodes for MT6779
-Date:   Tue, 26 Jan 2021 21:05:42 +0800
-Message-ID: <20210126130543.21793-1-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 26 Jan 2021 08:08:29 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DQ6Sb2LQ1zjCX4;
+        Tue, 26 Jan 2021 21:06:39 +0800 (CST)
+Received: from S00345302A-PC.china.huawei.com (10.47.82.74) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 26 Jan 2021 21:07:30 +0800
+From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>
+CC:     <joro@8bytes.org>, <jean-philippe@linaro.org>, <will@kernel.org>,
+        <prime.zeng@hisilicon.com>, <linuxarm@openeuler.org>
+Subject: [PATCH] iommu: Check dev->iommu in iommu_dev_xxx functions
+Date:   Tue, 26 Jan 2021 13:06:29 +0000
+Message-ID: <20210126130629.8928-1-shameerali.kolothum.thodi@huawei.com>
+X-Mailer: git-send-email 2.12.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 1E9C39A89B9F8F3B2A7C2F25B47ECE25B242B18EB3EE10651F9513162462C4612000:8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.82.74]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds spi host nodes for MT6779 SOC
+The device iommu probe/attach might have failed leaving dev->iommu
+to NULL and device drivers may still invoke these functions resulting
+a crash in iommu vendor driver code. Hence make sure we check that.
 
+Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+---
+ drivers/iommu/iommu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index ffeebda8d6de..cb68153c5cc0 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -2867,7 +2867,7 @@ bool iommu_dev_has_feature(struct device *dev, enum iommu_dev_features feat)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 
+-	if (ops && ops->dev_has_feat)
++	if (dev->iommu && ops && ops->dev_has_feat)
+ 		return ops->dev_has_feat(dev, feat);
+ 
+ 	return false;
+@@ -2878,7 +2878,7 @@ int iommu_dev_enable_feature(struct device *dev, enum iommu_dev_features feat)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 
+-	if (ops && ops->dev_enable_feat)
++	if (dev->iommu && ops && ops->dev_enable_feat)
+ 		return ops->dev_enable_feat(dev, feat);
+ 
+ 	return -ENODEV;
+@@ -2894,7 +2894,7 @@ int iommu_dev_disable_feature(struct device *dev, enum iommu_dev_features feat)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 
+-	if (ops && ops->dev_disable_feat)
++	if (dev->iommu && ops && ops->dev_disable_feat)
+ 		return ops->dev_disable_feat(dev, feat);
+ 
+ 	return -EBUSY;
+@@ -2905,7 +2905,7 @@ bool iommu_dev_feature_enabled(struct device *dev, enum iommu_dev_features feat)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 
+-	if (ops && ops->dev_feat_enabled)
++	if (dev->iommu && ops && ops->dev_feat_enabled)
+ 		return ops->dev_feat_enabled(dev, feat);
+ 
+ 	return false;
+-- 
+2.17.1
 
