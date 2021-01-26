@@ -2,243 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21014304F96
+	by mail.lfdr.de (Postfix) with ESMTP id 919A4304F97
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhA0DQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:16:05 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:43346 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393038AbhAZUME (ORCPT
+        id S235208AbhA0DQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:16:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405451AbhAZUNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:12:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1611691923; x=1643227923;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Iud4u6y9O0BVCeDjBLb2YvF7/PXS8yWU9m/W37EPe78=;
-  b=ER/u1Z9/N9p7djvxsy26SRN1Bdy6J9Uvz8HkYbsSBfuxWayXmucsy7PB
-   PTW90YxFStiphJb38AfbEqNb74n2J5bAprpiijTacIePlsyCdK/eTdSZF
-   6ovWH8qs4QCv4rcw4wt/25oFj3AnDTb1P2Q+AZTZg2vk1EuKtDTSDShNI
-   IN2iXuZ17w2q7GFap9xMnYLOcN05mYrcNNQfN4UJhnFCxV78VNQAnzJJl
-   hz6qXp4o5TJ109kExLVhv7S6PFjez8QCrkcxCAtkZ/7KDZT+OopMnMK+a
-   tFHJ4LJ37zrl/GOy5YmQaLVFnKtKVWfiv+9vIJUVh3m02cp5VxB5clHKn
-   A==;
-IronPort-SDR: 0M4uwziWPEJ2AaoDRexoomEz25B4S+FDGRwi003VDQ/rlUWPQaG5K19rMgnLz9tgWgQwy7TcNC
- Vt+ACcI5C9SE55h16OkYJNZlaaNGyA70y0i6VSHuPbZHncfP1sal6j/aqJU48jAEg+YkXWeQC6
- BQSbC+AN5g/B/Tr4UfHRmbaGOr+ARCegQttUtQREx5SL24NsaSymq71sf5WQ9tRyO+THabsx+i
- OR/Qo7pSgBmOqH4S2H06p0ULzc2bbGTRcMFuxeqr+eOD5dXZVMkUI8M1h5zZVJpX/4SiYJKQdO
- GCU=
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="41858671"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Jan 2021 13:10:41 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 13:10:35 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 26 Jan 2021 13:10:35 -0700
-Date:   Tue, 26 Jan 2021 21:10:34 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-CC:     =?utf-8?B?SmnFmcOtIFDDrXJrbw==?= <jiri@resnulli.us>,
-        <ivecera@redhat.com>, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <roopa@nvidia.com>,
-        <nikolay@nvidia.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next 3/4] bridge: mrp: Extend br_mrp_switchdev to
- detect better the errors
-Message-ID: <20210126201034.ihjwtyfsnkxk2pwo@soft-dev3.localdomain>
-References: <20210123161812.1043345-1-horatiu.vultur@microchip.com>
- <20210123161812.1043345-4-horatiu.vultur@microchip.com>
- <CAF=yD-KdqagGYZwzke-tX257JbtbPwi-2p0esOV1EFX3DN_ZUg@mail.gmail.com>
+        Tue, 26 Jan 2021 15:13:44 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E7AC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:13:04 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id o16so2557951pgg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:13:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=MZYb3kMF2SoGhQLq5uahaotIljLrCGTAaVi1yzZyu+E=;
+        b=rQtBBq+7DEn/8UuWrdJpmlK6c2JgXMWkSZxkTYfBFywMyAgDmZ3D6kVk1XD7N4TpHG
+         PvdaUbNm1FtCjSsxSNKYb21sZWE+FesWDmaqZJe1fIRIN+d01oQOLKWNmEyBCUWpaCnA
+         tyRSF3dTrqreqh7gLq8WNVhIakPsxJvlRMGDbiZtfBMgQlpRubYNmTs8aqj5jPNuw3MZ
+         Qj+oYMuu64b3BBGRK2XStdfjft74djPS0nsShYhxMadKUIDsyoYSXbU0KgSCFJ86cr48
+         BFU4RksGcs+cVjZ/WsOGHyS5w5Ho7RdcZn2+1Xj63/rQ81KjK+iAQW+PBT70u49bbumo
+         if8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=MZYb3kMF2SoGhQLq5uahaotIljLrCGTAaVi1yzZyu+E=;
+        b=E1K+eeTdYAERoZQ5T7U20wj6Z/uglGLthqRlKJLESd5io2Eg7bTH55MA0gTq6IB4lK
+         HOR8HMwKYB8iSyoNVORWx/OauiphX+qXelgoSWHhel5CQyt4vdpoiW3FcZwYdt1CXje2
+         pPaAwNSbTwwfFbQ8xTIRU4tyLcy3z7GQMOoCz6nr/lAIc5QYa9VjwZgEEJzGsAZxom+b
+         ITES7dHBkTHyV6ktZlQSeeMXBlxDHs6AdLKD2QjOWAMCB0QwZ/NDEeFefROeQ63XZCN6
+         zHEhi/0vjw63Vh0E8XECJATWUTeTGf6n9MCKcpltIsyVWuTGXI4jcHO1SIoqNqZp2AnP
+         3Tjw==
+X-Gm-Message-State: AOAM530MYmCARQoYVdFG//i8tO0255xSfOmLHgOZ//NkIV4vAZ7SyEx5
+        /LQAP4jTh8lIUk906R+peiIK+Q==
+X-Google-Smtp-Source: ABdhPJwZygl3THYUBXlV0yKqnpk9E6JCOBrWWpJo/lOob6A1GtjpuoLMvN5gWCLSRVFfbY7V4Hp60A==
+X-Received: by 2002:aa7:8f13:0:b029:1bd:f965:66d8 with SMTP id x19-20020aa78f130000b02901bdf96566d8mr6613362pfr.80.1611691983496;
+        Tue, 26 Jan 2021 12:13:03 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 124sm19455216pfd.59.2021.01.26.12.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 12:13:01 -0800 (PST)
+Date:   Tue, 26 Jan 2021 12:13:00 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?Q?HORIGUCHI_NAOYA=28=E5=A0=80=E5=8F=A3_=E7=9B=B4=E4=B9=9F=29?= 
+        <naoya.horiguchi@nec.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v13 02/12] mm: hugetlb: introduce a new
+ config HUGETLB_PAGE_FREE_VMEMMAP
+In-Reply-To: <CAMZfGtWCy-krzL1ejOOq2rZQ3mPbBUSNqmQd-svABMKxE0FcsA@mail.gmail.com>
+Message-ID: <4ab7e425-711f-dad9-6a43-e480d5a92b8a@google.com>
+References: <20210117151053.24600-1-songmuchun@bytedance.com> <20210117151053.24600-3-songmuchun@bytedance.com> <472a58b9-12cb-3c3-d132-13dbae5174f0@google.com> <CAMZfGtUGT6UP3aBEGmMvahOu5akvqoVoiXQqQvAdY82P6VGiTg@mail.gmail.com> <eef4ff8b-f3e3-6ae0-bae8-243bd0c8add0@infradead.org>
+ <CAMZfGtV5rcCq6EGFAG4joRfWht0=1WE6Oik7LgNUPr-_iNX4Xg@mail.gmail.com> <2d9bfd8d-a77f-6470-807c-1a71ffeac3ff@google.com> <CAMZfGtWCy-krzL1ejOOq2rZQ3mPbBUSNqmQd-svABMKxE0FcsA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <CAF=yD-KdqagGYZwzke-tX257JbtbPwi-2p0esOV1EFX3DN_ZUg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 01/25/2021 19:06, Willem de Bruijn wrote:
-> On Sat, Jan 23, 2021 at 11:23 AM Horatiu Vultur
-> <horatiu.vultur@microchip.com> wrote:
+On Tue, 26 Jan 2021, Muchun Song wrote:
 
-Hi Willem,
+> > I'm not sure that Kconfig is the right place to document functional
+> > behavior of the kernel, especially for non-configurable options.  Seems
+> > like this is already served by existing comments added by this patch
+> > series in the files where the description is helpful.
+> 
+> OK. So do you mean just remove the help text here?
+> 
 
-> >
-> > This patch extends the br_mrp_switchdev functions to be able to have a
-> > better understanding what cause the issue and if the SW needs to be used
-> > as a backup.
-> >
-> > There are the following cases:
-> > - when the code is compiled without CONFIG_NET_SWITCHDEV. In this case
-> >   return success so the SW can continue with the protocol. Depending on
-> >   the function it returns 0 or BR_MRP_SW.
-> > - when code is compiled with CONFIG_NET_SWITCHDEV and the driver doesn't
-> >   implement any MRP callbacks, then the HW can't run MRP so it just
-> >   returns -EOPNOTSUPP. So the SW will stop further to configure the
-> >   node.
-> > - when code is compiled with CONFIG_NET_SWITCHDEV and the driver fully
-> >   supports any MRP functionality then the SW doesn't need to do
-> >   anything.  The functions will return 0 or BR_MRP_HW.
-> > - when code is compiled with CONFIG_NET_SWITCHDEV and the HW can't run
-> >   completely the protocol but it can help the SW to run it.  For
-> >   example, the HW can't support completely MRM role(can't detect when it
-> >   stops receiving MRP Test frames) but it can redirect these frames to
-> >   CPU. In this case it is possible to have a SW fallback. The SW will
-> >   try initially to call the driver with sw_backup set to false, meaning
-> >   that the HW can implement completely the role. If the driver returns
-> >   -EOPNOTSUPP, the SW will try again with sw_backup set to false,
-> >   meaning that the SW will detect when it stops receiving the frames. In
-> >   case the driver returns 0 then the SW will continue to configure the
-> >   node accordingly.
-> >
-> > In this way is more clear when the SW needs to stop configuring the
-> > node, or when the SW is used as a backup or the HW can implement the
-> > functionality.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> 
-> 
-> > -int br_mrp_switchdev_set_ring_role(struct net_bridge *br,
-> > -                                  struct br_mrp *mrp,
-> > -                                  enum br_mrp_ring_role_type role)
-> > +enum br_mrp_hw_support
-> > +br_mrp_switchdev_set_ring_role(struct net_bridge *br, struct br_mrp *mrp,
-> > +                              enum br_mrp_ring_role_type role)
-> >  {
-> >         struct switchdev_obj_ring_role_mrp mrp_role = {
-> >                 .obj.orig_dev = br->dev,
-> >                 .obj.id = SWITCHDEV_OBJ_ID_RING_ROLE_MRP,
-> >                 .ring_role = role,
-> >                 .ring_id = mrp->ring_id,
-> > +               .sw_backup = false,
-> >         };
-> >         int err;
-> >
-> > +       /* If switchdev is not enabled then just run in SW */
-> > +       if (!IS_ENABLED(CONFIG_NET_SWITCHDEV))
-> > +               return BR_MRP_SW;
-> > +
-> > +       /* First try to see if HW can implement comptletly the role in HW */
-> 
-> typo: completely
-> 
-> >         if (role == BR_MRP_RING_ROLE_DISABLED)
-> >                 err = switchdev_port_obj_del(br->dev, &mrp_role.obj);
-> >         else
-> >                 err = switchdev_port_obj_add(br->dev, &mrp_role.obj, NULL);
-> >
-> > -       return err;
-> > +       /* In case of success then just return and notify the SW that doesn't
-> > +        * need to do anything
-> > +        */
-> > +       if (!err)
-> > +               return BR_MRP_HW;
-> > +
-> > +       /* There was some issue then is not possible at all to have this role so
-> > +        * just return failire
-> 
-> typo: failure
-> 
-> > +        */
-> > +       if (err != -EOPNOTSUPP)
-> > +               return BR_MRP_NONE;
-> > +
-> > +       /* In case the HW can't run complety in HW the protocol, we try again
-> 
-> typo: completely. Please proofread your comments closely. I saw at
-> least one typo in the commit messages too.
-
-Sorry for that. I will fix those in the next version.
-> 
-> More in general comments that say what the code does can generally be eschewed.
-> 
-> > +        * and this time to allow the SW to help, but the HW needs to redirect
-> > +        * the frames to CPU.
-> > +        */
-> > +       mrp_role.sw_backup = true;
-> > +       err = switchdev_port_obj_add(br->dev, &mrp_role.obj, NULL);
-> 
-> This calls the same function. I did not see code that changes behavior
-> based on sw_backup. Will this not give the same result?
-
-No, because is the driver responsibility to check that flag and
-implement what it can support. If the sw_backup is false, then it is
-expected the driver to implement completely the functionality in HW. If
-sw_backup is true it just needs to help the SW to run. So the driver can
-check this flag and decide what to do.
-
-> 
-> Also, this lacks the role test (add or del). Is that because if
-> falling back onto SW mode during add, this code does not get called at
-> all on delete?
-
-Good catch!. It should have the check.
-
-> 
-> > +
-> > +       /* In case of success then notify the SW that it needs to help with the
-> > +        * protocol
-> > +        */
-> > +       if (!err)
-> > +               return BR_MRP_SW;
-> > +
-> > +       return BR_MRP_NONE;
-> >  }
-> >
-> > -int br_mrp_switchdev_send_ring_test(struct net_bridge *br,
-> > -                                   struct br_mrp *mrp, u32 interval,
-> > -                                   u8 max_miss, u32 period,
-> > -                                   bool monitor)
-> > +enum br_mrp_hw_support
-> > +br_mrp_switchdev_send_ring_test(struct net_bridge *br, struct br_mrp *mrp,
-> > +                               u32 interval, u8 max_miss, u32 period,
-> > +                               bool monitor)
-> >  {
-> >         struct switchdev_obj_ring_test_mrp test = {
-> >                 .obj.orig_dev = br->dev,
-> > @@ -79,12 +106,29 @@ int br_mrp_switchdev_send_ring_test(struct net_bridge *br,
-> >         };
-> >         int err;
-> >
-> > +       /* If switchdev is not enabled then just run in SW */
-> > +       if (!IS_ENABLED(CONFIG_NET_SWITCHDEV))
-> > +               return BR_MRP_SW;
-> > +
-> >         if (interval == 0)
-> >                 err = switchdev_port_obj_del(br->dev, &test.obj);
-> >         else
-> >                 err = switchdev_port_obj_add(br->dev, &test.obj, NULL);
-> >
-> > -       return err;
-> > +       /* If everything succeed then the HW can send this frames, so the SW
-> > +        * doesn't need to generate them
-> > +        */
-> > +       if (!err)
-> > +               return BR_MRP_HW;
-> > +
-> > +       /* There was an error when the HW was configured so the SW return
-> > +        * failure
-> > +        */
-> > +       if (err != -EOPNOTSUPP)
-> > +               return BR_MRP_NONE;
-> > +
-> > +       /* So the HW can't generate these frames so allow the SW to do that */
-> > +       return BR_MRP_SW;
-> 
-> This is the same ternary test as above. It recurs a few times. Perhaps
-> it can use a helper.
-
-Yes, I will try to have a look.
-
--- 
-/Horatiu
+Yeah, I'd suggest removing the help text from a non-configurable Kconfig 
+option and double checking that its substance is available elsewhere (like 
+the giant comment in mm/hugetlb_vmemmap.c).
