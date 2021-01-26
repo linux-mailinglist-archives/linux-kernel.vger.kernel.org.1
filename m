@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E942304E35
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF602304E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404087AbhA0ASM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728600AbhAZRIE (ORCPT
+        id S2389959AbhA0ALZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:11:25 -0500
+Received: from smtprelay0161.hostedemail.com ([216.40.44.161]:46970 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727782AbhAZREe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:08:04 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041F5C061A2B;
-        Tue, 26 Jan 2021 08:46:52 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 60BB6128025E;
-        Tue, 26 Jan 2021 08:46:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1611679609;
-        bh=YYXnRPkivoOQxj54PhIN26oV5DaWUkpUQrmfHkVSlNU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=ppIoAxCFDVqtgUWlciU6HC4WacNGp4rGFFc9rJ3UYff+qWhXsPAw/7CxEwo8D9t9r
-         VKEMzkyoULgQhSLHDJwwr45B4xgnnkkPSi4hT88o41fDDQA6YIDr9x4b3QJasMGjhq
-         TWViLYPh6j/ibqwTHyBotM/JJqFZQjzabutH3ZjI=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id gPbahwszsqyx; Tue, 26 Jan 2021 08:46:49 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id B80391280232;
-        Tue, 26 Jan 2021 08:46:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1611679609;
-        bh=YYXnRPkivoOQxj54PhIN26oV5DaWUkpUQrmfHkVSlNU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=ppIoAxCFDVqtgUWlciU6HC4WacNGp4rGFFc9rJ3UYff+qWhXsPAw/7CxEwo8D9t9r
-         VKEMzkyoULgQhSLHDJwwr45B4xgnnkkPSi4hT88o41fDDQA6YIDr9x4b3QJasMGjhq
-         TWViLYPh6j/ibqwTHyBotM/JJqFZQjzabutH3ZjI=
-Message-ID: <a0249ad7b498e6f1cc065814350e145a07e92d37.camel@HansenPartnership.com>
-Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     =?UTF-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "Tj (Elloe Linux)" <ml.linux@elloe.vision>,
-        Dirk Gouders <dirk@gouders.net>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Date:   Tue, 26 Jan 2021 08:46:48 -0800
-In-Reply-To: <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
-References: <20210123014247.989368-1-lma@semihalf.com>
-         <20210125171846.GA31929@roeck-us.net>
-         <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Tue, 26 Jan 2021 12:04:34 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave01.hostedemail.com (Postfix) with ESMTP id A67621803DDAB;
+        Tue, 26 Jan 2021 16:46:57 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E64DE180A90FF;
+        Tue, 26 Jan 2021 16:46:55 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2911:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:4321:4425:5007:7652:10004:10400:11232:11473:11657:11658:11914:12043:12297:12555:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21324:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: burn65_26005d02758f
+X-Filterd-Recvd-Size: 2031
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 26 Jan 2021 16:46:54 +0000 (UTC)
+Message-ID: <7d113851044ad16fa7f4c4e5c32af723e2f3c359.camel@perches.com>
+Subject: Re: [PATCH v3] rtlwifi: Simplify bool comparison
+From:   Joe Perches <joe@perches.com>
+To:     Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>,
+        kvalo@codeaurora.org
+Cc:     pkshih@realtek.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 26 Jan 2021 08:46:53 -0800
+In-Reply-To: <1611649916-21936-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+References: <1611649916-21936-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-26 at 16:46 +0100, Åukasz Majczak wrote:
-> Hi Jarkko, Guenter
+On Tue, 2021-01-26 at 16:31 +0800, Jiapeng Zhong wrote:
+> Fix the following coccicheck warning:
+> ./drivers/net/wireless/realtek/rtlwifi/ps.c:798:7-21: WARNING:
+> Comparison to bool
+> ./drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c:3848:7-17:
+> WARNING: Comparison of 0/1 to bool variable
+[]
+> diff --git a/drivers/net/wireless/realtek/rtlwifi/ps.c b/drivers/net/wireless/realtek/rtlwifi/ps.c
+[]
+> @@ -798,9 +798,9 @@ static void rtl_p2p_noa_ie(struct ieee80211_hw *hw, void *data,
+>  		ie += 3 + noa_len;
+>  	}
+>  
 > 
-> Yes, here are the logs when failure occurs -
-> https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
-> Look for a phrase "TPM returned invalid status"
+> -	if (find_p2p_ie == true) {
+> +	if (find_p2p_ie) {
+>  		if ((p2pinfo->p2p_ps_mode > P2P_PS_NONE) &&
+> -		    (find_p2p_ps_ie == false))
+> +		    (!find_p2p_ps_ie))
+>  			rtl_p2p_ps_cmd(hw, P2P_PS_DISABLE);
+>  	}
 
-We've had other reports of this:
+Always review suggested coccinelle patches before submission and
+see if there are ways to improve the code beyond what the spatch
+tool suggests.
 
-https://lore.kernel.org/linux-integrity/ghsgagsnag.fsf@gouders.net/
-https://lore.kernel.org/linux-integrity/374e918c-f167-9308-2bea-ae6bc6a3d2e3@elloe.vision/
+Perhaps integrate these tests and removed an indent level too:
 
-The problem is some TIS TPMs don't begin in the correct locality so we
-have to set it.  When I proposed the check, I also proposed a fix for
-this problem:
-
-https://lore.kernel.org/linux-integrity/20201001180925.13808-5-James.Bottomley@HansenPartnership.com/
-
-But it's part of a series that never went upstream.  Part of the reason
-was Jarkko proposed the get/put patch to fix this instead, but that
-never went upstream either.  We need to decide an approach and apply
-one or other fixes.
-
-James
+	if (find_p2p_ie && !find_p2p_ps_ie &&
+	    p2pinfo->p2p_ps_mode > P2P_PS_NONE)
+		rtl_p2p_ps_cmd(hw, P2P_PS_DISABLE);
 
 
