@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B503030BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 01:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C103030C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 01:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731397AbhAZABh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 25 Jan 2021 19:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732672AbhAZABG (ORCPT
+        id S1732465AbhAZADB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 25 Jan 2021 19:03:01 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:35178 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732186AbhAZABw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 19:01:06 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C47C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:00:16 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id v3so11096840qtw.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q3hQKKDL/rIKCOLNuY7qc43WgUGbkH80XLlaEuiLryY=;
-        b=mL2GizBDe++KylkdLkw3fSBjaCsZnW+ica9Z8b1bZn/53QIC+zlbK0geHaLG4oZAnG
-         sfhfkhDqu2udUKflCpK8lE4bICKCq648gecjdKcyPg1I59jVbpsQgfB2vkj+jXcaDgEr
-         cFfZ+p1LAgasC9ylOCTKp15uKDIPEpWBnSTtHkQySTLrbBgB31+T2vUY7jcSlOa28gke
-         fHI2gYCCTbobG4dJC2nxEvjaqtwGdZuUwGlxkHkgS5EN+VG4IAFBNutbBaZhL+80UyN6
-         ufFGq1vQyp7CRncoGZbzCFmLWm17br8xGOnmMjnJyT/evJ47ZTpbu+C8g0F0TQ+AcCXS
-         aXHA==
+        Mon, 25 Jan 2021 19:01:52 -0500
+Received: by mail-oi1-f170.google.com with SMTP id w8so16763858oie.2;
+        Mon, 25 Jan 2021 16:01:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q3hQKKDL/rIKCOLNuY7qc43WgUGbkH80XLlaEuiLryY=;
-        b=jFQVHQh5r9rMu2pvqThKhs0oP5h+8gvwOb6YKXPIZc0mXn0wvTTreduP3yMCcrJ4JT
-         ewFLuGw+pL0FQPGHXqqhfeHYfxxnbk9jLy1i9k2l6LJxkkthd3SOOSew2XNZ9trfQSlV
-         TtXILs554t6aaqnXHDDo9RiAaKlOslEWj6fac/VL7zIQsFWCAim76zS/vv1gMfa2nHpl
-         MOm0WPkZNhfneTPszR/d0/qMRNiPm1mXKTMQGJtK3Lo9Y8o1RB+pyckMc3BvmDafDCGe
-         O1Bpi7b3PQbldDeEuNenpAb3Jf+iCeR+ZtJJdeJ5VUXNcoLhYFYiRkWM5l0X8Ig91Kln
-         0vcg==
-X-Gm-Message-State: AOAM532Uet0BZDFpR/g2IxqVxGuc8WzW4wlD6p16Qe+FsmxXHkdBrdam
-        d6jEx2/0Q/TgpV76cljsi7Ozni0Ed+zRZn9BA0nJMg==
-X-Google-Smtp-Source: ABdhPJzxM8AkLfzXiiKd2XqBDnujkPjqBLq1Jf0h+R5Eot05NvEGmzQ236hj1qOiUqvOMrroCSOOMP9t4vldAX3XuNo=
-X-Received: by 2002:ac8:7cb:: with SMTP id m11mr2952690qth.307.1611619215955;
- Mon, 25 Jan 2021 16:00:15 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=du5YoegYLBKhCges/+sXzMbO3GMQX37nv6WSDKN2xZ4=;
+        b=s+rK1hTNwXWGIN8rdsbbeeZDwlib483Ki9WESLk8LALn8vsnV32kNlMs3S5e9wlkxi
+         p6ceNfNEa0/Gk2QY1pHVs5XuUppXwvlJlWM83AlacoZxpq0cw0hbUpAwDNiznH8BxQOs
+         zlpUZdsUuxYuJE3zWJQGpR2q7yFm/e77TVjgNoPOrwXGtHtH5dbyusl7LJRQAyf7QooL
+         JmvYJDGZX7RRiYy/3+5x3uZ6pJtiHqcqCETI/UPZ1BEtf4vZZ5Ljplf1s4fepp/YR7m3
+         rtcDgWdMwEOCbf6EQvtax8u/5aE/ddwPgkV1wU67dR37mCj/Z9P4PUu+w1U3FP6xSxe/
+         mHbA==
+X-Gm-Message-State: AOAM533VZ9Tw9Veod7LGNKfGEvxbrYGZezPjkC8zmrv+sai/GUt5Tsej
+        JVzfgxVxaSg0sxbRgyIuyw==
+X-Google-Smtp-Source: ABdhPJx07tuOIe51LMcOFboVe0ycViNWO8nGfvcSmhDCtSDNPHuOPvtDnJLKlxnCvD5S61PZkWHSZg==
+X-Received: by 2002:aca:5185:: with SMTP id f127mr1652630oib.18.1611619270848;
+        Mon, 25 Jan 2021 16:01:10 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id x141sm1828485oia.3.2021.01.25.16.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 16:01:09 -0800 (PST)
+Received: (nullmailer pid 1303788 invoked by uid 1000);
+        Tue, 26 Jan 2021 00:01:08 -0000
+Date:   Mon, 25 Jan 2021 18:01:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
+        Tero Kristo <t-kristo@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
+ #address-cells for interrupt-controller
+Message-ID: <20210126000108.GA1267192@robh.at.kernel.org>
+References: <20201117161942.38754-1-nsekhar@ti.com>
+ <20201117161942.38754-3-nsekhar@ti.com>
+ <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
+ <20201118151259.kpag44djji4ssiup@eldest>
+ <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
 MIME-Version: 1.0
-References: <20210122235238.655049-1-elavila@google.com> <87im7l2lcr.fsf@jogness.linutronix.de>
-In-Reply-To: <87im7l2lcr.fsf@jogness.linutronix.de>
-From:   "J. Avila" <elavila@google.com>
-Date:   Mon, 25 Jan 2021 16:00:05 -0800
-Message-ID: <CAGFReeNEf7a4W4hEx5bD+v0qsdszrgPfh1Sa-B-2HeaAY5natg@mail.gmail.com>
-Subject: Re: Issue in dmesg time with lockless ring buffer
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul McKenney <paulmck@kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Nov 19, 2020 at 01:17:36PM +0200, Grygorii Strashko wrote:
+> 
+> 
+> On 18/11/2020 17:12, Nishanth Menon wrote:
+> > On 13:38-20201118, Grygorii Strashko wrote:
+> > > Hi Rob,
+> > > 
+> > > On 17/11/2020 18:19, Sekhar Nori wrote:
+> > > > With dtc 1.6.0, building TI device-tree files with W=2 results in warnings
+> > > > like below for all interrupt controllers.
+> > > > 
+> > > > /bus@100000/bus@30000000/interrupt-controller1: Missing #address-cells in interrupt provider
+> > > > 
+> > > > Fix these by adding #address-cells = <0>; for all interrupt controllers in
+> > > > TI device-tree files. Any other #address-cells value is really only needed
+> > > > if interrupt-map property is being used (which is not the case for existing
+> > > > TI device-tree files)
+> > > > 
+> > > > Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> > > > ---
+> > > >    arch/arm64/boot/dts/ti/k3-am65-main.dtsi              |  5 +++++
+> > > >    arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi            |  2 ++
+> > > >    arch/arm64/boot/dts/ti/k3-am654-base-board.dts        |  1 +
+> > > >    arch/arm64/boot/dts/ti/k3-j7200-main.dtsi             |  3 +++
+> > > >    arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi       |  1 +
+> > > >    arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts |  1 +
+> > > >    arch/arm64/boot/dts/ti/k3-j721e-main.dtsi             | 11 +++++++++++
+> > > >    arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi       |  3 +++
+> > > >    8 files changed, 27 insertions(+)
+> > > > 
+> > > > diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> > > > index aa8725db0187..55aaa1404d7d 100644
+> > > > --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> > > > +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> > > > @@ -440,6 +440,7 @@
+> > > >    		interrupt-controller;
+> > > >    		interrupt-parent = <&gic500>;
+> > > >    		#interrupt-cells = <1>;
+> > > > +		#address-cells = <0>;
+> > > Does it really required or mandatory to have #address-cells = <0>; defined for interrupt-controller DT nodes which
+> > > do not have child nodes and no "interrupt-map"?
+> > 
+> > Just to help clarify (I could be mistaken as well): is'nt the
+> > interrupt map for user interrupt map nodes that refer to this
+> > interrupt controller node to state they dont need a parent address
+> > specifier - so are we claiming none of the users will have an
+> > interrupt-map (now and never in the future as well) - we we might want
+> > to explain why we think that is the case, and if we are expecting dtc
+> > to deduce that (if so how?)?
+> > 
+> 
+> The main reason I commented - is hope to get some clarification from DT maintainers.
+> 90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
+> (most often is present in PCI and GIC nodes).
+> and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
+> 
+> And there is no "never" here - #address-cells always can be added if really required.
 
-This dmesg uses /dev/kmsg; we've verified that we don't see this long
-dmesg time when reading from syslog (via dmesg -S).
+Once required, how does one figure that out? It's not obvious and 
+requires booting. So we need something at build time. I'm okay with 
+loosening the check as long as it warns when a interrupt parent phandle 
+in an interrupt-map is missing '#address-cells'.
 
-We've also tried testing this with logging daemons disabled as well as
-within initrd - both result in similar behavior.
+Now that I look back at the dtc change, I'm now confused why this 
+check got applied. Both David and I wanted changes in regards to 
+#address-cells. Either a separate check or part of interrupt-map checks. 
+And the interrupt-map check never got applied. Andre?
 
-If it's relevant, this was done on a toybox shell.
-
-Thanks,
-
-Avila
-
-On Mon, Jan 25, 2021 at 5:32 AM John Ogness <john.ogness@linutronix.de> wrote:
->
-> On 2021-01-22, "J. Avila" <elavila@google.com> wrote:
-> > When doing some internal testing on a 5.10.4 kernel, we found that the
-> > time taken for dmesg seemed to increase from the order of milliseconds
-> > to the order of seconds when the dmesg size approached the ~1.2MB
-> > limit. After doing some digging, we found that by reverting all of the
-> > patches in printk/ up to and including
-> > 896fbe20b4e2333fb55cc9b9b783ebcc49eee7c7 ("use the lockless
-> > ringbuffer"), we were able to once more see normal dmesg times.
-> >
-> > This kernel had no meaningful diffs in the printk/ dir when compared
-> > to Linus' tree. This behavior was consistently reproducible using the
-> > following steps:
-> >
-> > 1) In one shell, run "time dmesg > /dev/null"
-> > 2) In another, constantly write to /dev/kmsg
-> >
-> > Within ~5 minutes, we saw that dmesg times increased to 1 second, only
-> > increasing further from there. Is this a known issue?
->
-> The last couple days I have tried to reproduce this issue with no
-> success.
->
-> Is your dmesg using /dev/kmsg or syslog() to read the buffer?
->
-> Are there any syslog daemons or systemd running? Perhaps you can run
-> your test within an initrd to see if this effect is still visible?
->
-> John Ogness
+Rob
