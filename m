@@ -2,65 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E24304644
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DD630464A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393765AbhAZR4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:56:38 -0500
-Received: from mail-m971.mail.163.com ([123.126.97.1]:55418 "EHLO
-        mail-m971.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390611AbhAZI5J (ORCPT
+        id S2393088AbhAZRpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:45:16 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37579 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387955AbhAZIJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:57:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=NETUb
-        YkXW50xbfjAqgKRKzfv0E+zezRS1w8QI/+9u/w=; b=PkjaktfJDPoEV2ckMG4fq
-        Fr6KaPNz80ZX5j1p7qbgKRIW6/MCbwayFY1aqHcnWzWUpcIuVTnMZXF5npgSKn+E
-        VCz771xO13iEIIi1GP1APui7Fe1PUHUK4Wvg4aH4an74HqRcHskfZTd0Z5cpYpDc
-        OliMMTOv/jeyVuUwOOVLtA=
-Received: from COOL-20201218BF.ccdomain.com (unknown [218.94.48.178])
-        by smtp1 (Coremail) with SMTP id GdxpCgDn7DRToA9gfgFmAg--.66S2;
-        Tue, 26 Jan 2021 12:53:53 +0800 (CST)
-From:   mateng <ayowoe@163.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, mateng <mateng@yulong.com>
-Subject: [PATCH] Change 'addres' to 'address'.
-Date:   Tue, 26 Jan 2021 12:53:48 +0800
-Message-Id: <20210126045348.1454-1-ayowoe@163.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        Tue, 26 Jan 2021 03:09:07 -0500
+X-UUID: fa9a013fdd19488ea7f73dcc9debcf21-20210126
+X-UUID: fa9a013fdd19488ea7f73dcc9debcf21-20210126
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1348852731; Tue, 26 Jan 2021 16:03:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 16:03:56 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 16:03:56 +0800
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ryan Case <ryandcase@chromium.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Henry Chen <henryc.chen@mediatek.com>
+Subject: [PATCH V8 04/12] soc: mediatek: add support for mt6873
+Date:   Tue, 26 Jan 2021 16:03:46 +0800
+Message-ID: <1611648234-15043-5-git-send-email-henryc.chen@mediatek.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
+References: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GdxpCgDn7DRToA9gfgFmAg--.66S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruF18GFyfJF4DCw1kKF1kAFb_yoWxKrc_W3
-        48Xr4Iqr48KFnIkw1kCF4fWa4rtFs5ur1fGF1Yg3y3JFWa9r1fJr1qvFy3Wa17ArW3KF17
-        Gr1UCa92yw13KjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUercTPUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5d1r40rh6rljoofrz/1tbi6wEmKlXlu3BRCAAAsE
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: mateng <mateng@yulong.com>
+add support for mt6873
 
-Signed-off-by: mateng <mateng@yulong.com>
+Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 ---
- drivers/misc/vmw_vmci/vmci_queue_pair.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soc/mediatek/mtk-dvfsrc.c | 114 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 114 insertions(+)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.h b/drivers/misc/vmw_vmci/vmci_queue_pair.h
-index 00017fc..c4e6e92 100644
---- a/drivers/misc/vmw_vmci/vmci_queue_pair.h
-+++ b/drivers/misc/vmw_vmci/vmci_queue_pair.h
-@@ -104,7 +104,7 @@ struct vmci_qp_dtch_info {
- struct vmci_qp_page_store {
- 	/* Reference to pages backing the queue pair. */
- 	u64 pages;
--	/* Length of pageList/virtual addres range (in pages). */
-+	/* Length of pageList/virtual address range (in pages). */
- 	u32 len;
+diff --git a/drivers/soc/mediatek/mtk-dvfsrc.c b/drivers/soc/mediatek/mtk-dvfsrc.c
+index c0c6d91..a422680 100644
+--- a/drivers/soc/mediatek/mtk-dvfsrc.c
++++ b/drivers/soc/mediatek/mtk-dvfsrc.c
+@@ -102,6 +102,16 @@ enum dvfsrc_regs {
+ 	[DVFSRC_SW_BW] =	0x160,
  };
  
++static const int mt6873_regs[] = {
++	[DVFSRC_SW_REQ] =		0xC,
++	[DVFSRC_LEVEL] =		0xD44,
++	[DVFSRC_SW_PEAK_BW] =		0x278,
++	[DVFSRC_SW_BW] =		0x26C,
++	[DVFSRC_SW_HRT_BW] =		0x290,
++	[DVFSRC_TARGET_LEVEL] =		0xD48,
++	[DVFSRC_VCORE_REQUEST] =	0x6C,
++};
++
+ static const struct dvfsrc_opp *get_current_opp(struct mtk_dvfsrc *dvfsrc)
+ {
+ 	int level;
+@@ -127,6 +137,78 @@ static int dvfsrc_wait_for_vcore_level(struct mtk_dvfsrc *dvfsrc, u32 level)
+ 					 POLL_TIMEOUT);
+ }
+ 
++static int mt6873_get_target_level(struct mtk_dvfsrc *dvfsrc)
++{
++	return dvfsrc_read(dvfsrc, DVFSRC_TARGET_LEVEL);
++}
++
++static int mt6873_get_current_level(struct mtk_dvfsrc *dvfsrc)
++{
++	u32 curr_level;
++
++	/* HW level 0 is begin from 0x1, and max opp is 0x1*/
++	curr_level = ffs(dvfsrc_read(dvfsrc, DVFSRC_LEVEL));
++	if (curr_level > dvfsrc->curr_opps->num_opp)
++		curr_level = 0;
++	else
++		curr_level = dvfsrc->curr_opps->num_opp - curr_level;
++
++	return curr_level;
++}
++
++static int mt6873_wait_for_opp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	const struct dvfsrc_opp *target, *curr;
++
++	target = &dvfsrc->curr_opps->opps[level];
++	return readx_poll_timeout_atomic(get_current_opp, dvfsrc, curr,
++		curr->dram_opp >= target->dram_opp,
++		STARTUP_TIME, POLL_TIMEOUT);
++}
++
++static u32 mt6873_get_vcore_level(struct mtk_dvfsrc *dvfsrc)
++{
++	return (dvfsrc_read(dvfsrc, DVFSRC_SW_REQ) >> 4) & 0x7;
++}
++
++static u32 mt6873_get_vcp_level(struct mtk_dvfsrc *dvfsrc)
++{
++	return (dvfsrc_read(dvfsrc, DVFSRC_VCORE_REQUEST) >> 12) & 0x7;
++}
++
++static void mt6873_set_dram_bw(struct mtk_dvfsrc *dvfsrc, u64 bw)
++{
++	bw = div_u64(kbps_to_mbps(bw), 100);
++	bw = min_t(u64, bw, 0xFF);
++	dvfsrc_write(dvfsrc, DVFSRC_SW_BW, bw);
++}
++
++static void mt6873_set_dram_peak_bw(struct mtk_dvfsrc *dvfsrc, u64 bw)
++{
++	bw = div_u64(kbps_to_mbps(bw), 100);
++	bw = min_t(u64, bw, 0xFF);
++	dvfsrc_write(dvfsrc, DVFSRC_SW_PEAK_BW, bw);
++}
++
++static void mt6873_set_dram_hrtbw(struct mtk_dvfsrc *dvfsrc, u64 bw)
++{
++	bw = div_u64((kbps_to_mbps(bw) + 29), 30);
++	bw = min_t(u64, bw, 0x3FF);
++	dvfsrc_write(dvfsrc, DVFSRC_SW_HRT_BW, bw);
++}
++
++static void mt6873_set_vcore_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	spin_lock(&dvfsrc->req_lock);
++	dvfsrc_rmw(dvfsrc, DVFSRC_SW_REQ, level, 0x7, 4);
++	spin_unlock(&dvfsrc->req_lock);
++}
++
++static void mt6873_set_vscp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	dvfsrc_rmw(dvfsrc, DVFSRC_VCORE_REQUEST, level, 0x7, 12);
++}
++
+ static int mt8183_wait_for_opp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
+ {
+ 	const struct dvfsrc_opp *target, *curr;
+@@ -377,6 +459,35 @@ static int mtk_dvfsrc_probe(struct platform_device *pdev)
+ 	.wait_for_vcore_level = dvfsrc_wait_for_vcore_level,
+ };
+ 
++static const struct dvfsrc_opp dvfsrc_opp_mt6873_lp4[] = {
++	{0, 0}, {1, 0}, {2, 0}, {3, 0},
++	{0, 1}, {1, 1}, {2, 1}, {3, 1},
++	{0, 2}, {1, 2}, {2, 2}, {3, 2},
++	{1, 3}, {2, 3}, {3, 3}, {1, 4},
++	{2, 4}, {3, 4}, {2, 5}, {3, 5},
++	{3, 6},
++};
++
++static const struct dvfsrc_opp_desc dvfsrc_opp_mt6873_desc[] = {
++	DVFSRC_OPP_DESC(dvfsrc_opp_mt6873_lp4),
++};
++
++static const struct dvfsrc_soc_data mt6873_data = {
++	.opps_desc = dvfsrc_opp_mt6873_desc,
++	.regs = mt6873_regs,
++	.get_target_level = mt6873_get_target_level,
++	.get_current_level = mt6873_get_current_level,
++	.get_vcore_level = mt6873_get_vcore_level,
++	.get_vcp_level = mt6873_get_vcp_level,
++	.set_dram_bw = mt6873_set_dram_bw,
++	.set_dram_peak_bw = mt6873_set_dram_peak_bw,
++	.set_dram_hrtbw = mt6873_set_dram_hrtbw,
++	.set_vcore_level = mt6873_set_vcore_level,
++	.set_vscp_level = mt6873_set_vscp_level,
++	.wait_for_opp_level = mt6873_wait_for_opp_level,
++	.wait_for_vcore_level = dvfsrc_wait_for_vcore_level,
++};
++
+ static int mtk_dvfsrc_remove(struct platform_device *pdev)
+ {
+ 	struct mtk_dvfsrc *dvfsrc = platform_get_drvdata(pdev);
+@@ -392,6 +503,9 @@ static int mtk_dvfsrc_remove(struct platform_device *pdev)
+ 		.compatible = "mediatek,mt8183-dvfsrc",
+ 		.data = &mt8183_data,
+ 	}, {
++		.compatible = "mediatek,mt6873-dvfsrc",
++		.data = &mt6873_data,
++	}, {
+ 		/* sentinel */
+ 	},
+ };
 -- 
 1.9.1
 
