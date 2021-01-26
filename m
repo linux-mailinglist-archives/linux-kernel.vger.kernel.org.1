@@ -2,114 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBF1304FA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB29304FA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235572AbhA0DUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:20:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36116 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394294AbhAZUt0 (ORCPT
+        id S235585AbhA0DUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394558AbhAZUt6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:49:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611694076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/HCxN2RDFJhyhwGoOhLA9wekT4P5GPKPHVcg2cvskDY=;
-        b=YLUoThmeXIKSpGsp/6xJtWJ/2zWZuNkdvRJ6D3pmYGTxHWDv+RWSPBFCsvwMfP8qCOdyS2
-        ekquteeOADP/UzM4tnQTq0n8m4AJje4giYoB6U4y6aszuCkU5T/DSUQJm8ySNyvCaciR5a
-        Tu1QfEzjFnZwqmhzqcpJW0ZQpgN5UVo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-bafGV_0COrKgI_eTkhlkJg-1; Tue, 26 Jan 2021 15:47:54 -0500
-X-MC-Unique: bafGV_0COrKgI_eTkhlkJg-1
-Received: by mail-ed1-f72.google.com with SMTP id q12so5143039edr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:47:54 -0800 (PST)
+        Tue, 26 Jan 2021 15:49:58 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBF6C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:49:18 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id p15so2718490pjv.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:49:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=JT5edQcn2lC/ohAJBe7VJY+gZeoJrzYd010rHqJGKDE=;
+        b=Sl3WiOu4tIDOkkgv6i4aMIADj6Mw5A+pPOV31fbYQXGVQgOWouYMM9sniqU/pYH0k7
+         2bREpiqbqKcRGqldVB4KKeo0Crk7SCoIXJWfguKvvlG8NCnvIuoyx5dlIZKLjioqq8dd
+         UOkv/2z8yKxiOcEI6Qx+6Jjygo437bYF0l+IWzWFxzmvNrQi2oKLFiTj9uHv18Vo+8LS
+         SXfRYG5Bu3tI76sinpnZrXtxRnYYxLP7ukt94RAtwQabXFW7v37K9A3D3MX8L4iu30Gc
+         BV5CZUT7tAIm/dQbcvnszeOQCpOd+2emTElIqjZRG/A8fPqerkeY6wXr7UKHybt0vmC8
+         +gmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/HCxN2RDFJhyhwGoOhLA9wekT4P5GPKPHVcg2cvskDY=;
-        b=VeMEQ5mn8YA+/i/BlkydcUv6JcDXzZr5KnXa31rPgVRS8J+CitNBjW0T4aEseEl4ea
-         jc4TB4H0WX4fnjQqReKB/0WZ15Jqq0dtBXyX+oIhOhlwVeaRpsIzJCnMECzzEYlBNq6C
-         E/ZE/GAvnAGBW5X7zWvOrcHnp7FO+VpDzs7nweUBv215Z13W3uUjx4PfoW19O4IJYqJh
-         vvX6lU4BBH00tZCRy47hUbQF/MPyO/YB98Mpwsk05Xz9a4ClTV6OcVqFjqNCA3nexIio
-         /ZMdWI3wKEYBOIJwwfIQrJ2IwOxidYrYJ84wcOvf917u/LOUQudrK+q4xhT1CzPsgNRl
-         Ov4A==
-X-Gm-Message-State: AOAM533i0JUfEj8PkcBF9hxPPlLknlloczKmRVVV69xMKK9FC1juyQtc
-        LAjHXAe3/CQMg7y7aHMXFwvupvSFMBUCrmibhn1Z4j52IFLV3bVt1v6oSTsWX8PRrpiSKNrXzzi
-        6raR/EsbfFy6v8+OMdjwl1xN2
-X-Received: by 2002:a05:6402:b30:: with SMTP id bo16mr6189941edb.84.1611694073167;
-        Tue, 26 Jan 2021 12:47:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzmZ5HCWexDCC3GBD7cA6Oeb9RSprTKU/jHiBICZcXEbfaoLoWKIRxt5Atedh7pEV7ZLumFIQ==
-X-Received: by 2002:a05:6402:b30:: with SMTP id bo16mr6189928edb.84.1611694073017;
-        Tue, 26 Jan 2021 12:47:53 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id x21sm1202290eje.118.2021.01.26.12.47.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 12:47:51 -0800 (PST)
-Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-16-bgardon@google.com> <YAjIddUuw/SZ+7ut@google.com>
- <460d38b9-d920-9339-1293-5900d242db37@redhat.com>
- <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
- <fae0e326-cfd4-bf5d-97b5-ae632fb2de34@redhat.com>
- <CANgfPd_TOpc_cinPwAyH-0WajRM1nZvn9q6s70jno5LFf2vsdQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f1ef3118-2a8e-4bf2-b3b0-60ac4947e106@redhat.com>
-Date:   Tue, 26 Jan 2021 21:47:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=JT5edQcn2lC/ohAJBe7VJY+gZeoJrzYd010rHqJGKDE=;
+        b=WRsa9ZwHoE6PipOYqKZay37W+gPZcHO9gHksuvU+TGHZizYPHg/d8gz/hcKPeUIi9V
+         +P8Oe9pEY7sSJAAtbTWRXnyrtsGUo2YEnLu1MtOkPMfaXL2iziJlMWhQenfi3YGBu12q
+         jhUSFx8caFR/s91ZKWmru3Awk9+ySIhZSf2UD1l9QjVN/S8DgpFS844ppmwsB5jtPCxb
+         2fEVYZ5pX/Y0FnoNmECqHQWTS01REBCjrSr/HXZzTsCPL8kpCpRxVpQJm4C3wg4CdH/y
+         LRDNW4AZLVUTCMqzR/QLaz3ZR+VNIRHYwKdio82lj6uTYABMs/yHUhdjwwd9v3apW+CK
+         bxWQ==
+X-Gm-Message-State: AOAM530qLCCjlRzyYD4S6d3KaReQqaybl+XGcWyDWMCv2wzAstfZ2n+O
+        D+eDwyC0mFUZzAyvtDnzMfqWlA==
+X-Google-Smtp-Source: ABdhPJwA1UPfoLVM0WjNCKLOq5x/h3QTY0cFUQ35qcbp6rEGWNEdcfmYEUqAIdnU/kAhNaggnal1yw==
+X-Received: by 2002:a17:902:f683:b029:de:18c7:41fa with SMTP id l3-20020a170902f683b02900de18c741famr7595126plg.57.1611694157738;
+        Tue, 26 Jan 2021 12:49:17 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 67sm24396pfv.20.2021.01.26.12.49.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 12:49:15 -0800 (PST)
+Date:   Tue, 26 Jan 2021 12:49:14 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+cc:     Tom Lendacky <thomas.lendacky@amd.com>, Tejun Heo <tj@kernel.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>,
+        "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+In-Reply-To: <YAopkDN85GtWAj3a@google.com>
+Message-ID: <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
+References: <YAICLR8PBXxAcOMz@mtj.duckdns.org> <YAIUwGUPDmYfUm/a@google.com> <YAJg5MB/Qn5dRqmu@mtj.duckdns.org> <YAJsUyH2zspZxF2S@google.com> <YAb//EYCkZ7wnl6D@mtj.duckdns.org> <YAfYL7V6E4/P83Mg@google.com> <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+ <be699d89-1bd8-25ae-fc6f-1e356b768c75@amd.com> <YAmj4Q2J9htW2Fe8@mtj.duckdns.org> <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com> <YAopkDN85GtWAj3a@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd_TOpc_cinPwAyH-0WajRM1nZvn9q6s70jno5LFf2vsdQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/01/21 19:11, Ben Gardon wrote:
-> When I did a strict replacement I found ~10% worse memory population
-> performance.
-> Running dirty_log_perf_test -v 96 -b 3g -i 5 with the TDP MMU
-> disabled, I got 119 sec to populate memory as the baseline and 134 sec
-> with an earlier version of this series which just replaced the
-> spinlock with an rwlock. I believe this difference is statistically
-> significant, but didn't run multiple trials.
-> I didn't take notes when profiling, but I'm pretty sure the rwlock
-> slowpath showed up a lot. This was a very high contention scenario, so
-> it's probably not indicative of real-world performance.
-> In the slow path, the rwlock is certainly slower than a spin lock.
+On Thu, 21 Jan 2021, Sean Christopherson wrote:
+
+> True, but the expected dual-usage is more about backwards compatibility than
+> anything else.  Running an SEV-ES VM requires a heavily enlightened guest vBIOS
+> and kernel, which means that a VM that was created as an SEV guest cannot easily
+> be converted to an SEV-ES guest, and it would require cooperation from the guest
+> (if it's even feasible?).
 > 
-> If the real impact doesn't seem too large, I'd be very happy to just
-> replace the spinlock.
+> SEV-SNP, another incremental enhancement (on SEV-ES), further strengthens the
+> argument for SEV and SEV-* coexistenence.  SEV-SNP and SEV-ES will share the
+> same ASID range, so the question is really, "do we expect to run SEV guests and
+> any flavor of SEV-* guests on the same platform".  And due to SEV-* not being
+> directly backward compatible with SEV, the answer will eventually be "yes", as
+> we'll want to keep running existing SEV guest while also spinning up new SEV-*
+> guests.
+> 
 
-Ok, so let's use the union idea and add a "#define KVM_HAVE_MMU_RWLOCK" 
-to x86.  The virt/kvm/kvm_main.c MMU notifiers functions can use the 
-#define to pick between write_lock and spin_lock.
+Agreed, cloud providers will most certainly want to run both SEV and SEV-* 
+guests on the same platform.
 
-For x86 I want to switch to tdp_mmu=1 by default as soon as parallel 
-page faults are in, so we can use the rwlock unconditionally and drop 
-the wrappers, except possibly for some kind of kvm_mmu_lock/unlock_root 
-that choose between read_lock for TDP MMU and write_lock for shadow MMU.
+> That being said, it's certainly possible to abstract the different key types
+> between AMD and Intel (assuming s390 won't use the cgroup due to it's plethora
+> of keys).  TDX private keys are equivalent to SEV-ES ASIDs, and MKTME keys (if
+> the kernel ever gains a user) could be thrown into the same bucket as SEV IDs,
+> albeit with some minor mental gymnastics.
+> 
+> E.g. this mapping isn't horrendous:
+> 
+>   encrpytion_ids.basic.*       == SEV   == MKTME
+>   encrpytion_ids.enhanced.*    == SEV-* == TDX
+> 
+> The names will likely be a bit vague, but I don't think they'll be so far off
+> that it'd be impossible for someone with SEV/TDX knowledge to glean their intent.
+> And realistically, if anyone gets to the point where they care about controlling
+> SEV or TDX IDs, they've already plowed through hundreds of pages of dense
+> documentation; having to read a few lines of cgroup docs to understand basic vs.
+> enhanced probably won't faze them at all.
+> 
 
-Thanks!
+The abstraction makes sense for both AMD and Intel offerings today.  It 
+makes me wonder if we want a read-only 
+encryption_ids.{basic,enhanced}.type file to describe the underlying 
+technology ("SEV-ES/SEV-SNP", "TDX", etc).  Since the technology is 
+discoverable by other means and we are assuming one encryption type per 
+pool of encryption ids, we likely don't need this.
 
-Paolo
+I'm slightly concerned about extensibility if there is to be an 
+incremental enhancement atop SEV-* or TDX with yet another pool of 
+encryption ids.  (For example, when we only had hugepages, this name was 
+perfect; then we got 1GB pages which became "gigantic pages", so are 512GB 
+pages "enormous"? :)  I could argue (encryption_ids.basic.*,
+encryption_ids.enhanced.*) should map to 
+(encryption_ids.legacy.*, encryption_ids.*) but that's likely 
+bikeshedding.
 
+Thomas: does encryption_ids.{basic,enhanced}.* make sense for ASID 
+partitioning?
+
+Tejun: if this makes sense for legacy SEV and SEV-* per Thomas, and this 
+is now abstracted to be technology (vendor) neutral, does this make sense 
+to you?
