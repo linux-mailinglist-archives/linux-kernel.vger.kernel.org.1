@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4FF303A6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D8C303A74
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404150AbhAZKe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        id S2404038AbhAZKgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:36:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730365AbhAZBmy (ORCPT
+        with ESMTP id S1730744AbhAZBpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:42:54 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F71C061224;
-        Mon, 25 Jan 2021 17:38:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I4QtGGdUD49OQbpnA/+iW6hZGEJcEQdxNTE3QJXFu+k=; b=th6+D7onHmuxEzk677tybiCqfY
-        hhGc9w/VT61khYhuxx2E1kXIsOZGSF8+E1JP2Cvik6UBR/5b9Nw1Gin/GJ/RDDPaHQuwd8aX3Z5R6
-        LuJpCUqsZxHBgVXAyJOFwvagUUVKqq/2tD0/zQ5NLUIocvQ3sFd+r65lKsnAv70oMOdY65n7/vmc0
-        5u4hBE/tFpodrVaPe+lRr8QseonmbE9ty/7mie8ThsqBBqlrcHJgYHdXAyo8VhXZYJeq+djp+RU1Z
-        bkG5n7D1xoNHEi6ZrSR5P+ndK11HLCtkbsp86N94CxpjEcmp6tYmalu5GJ74rGgTmoQ4gK9HCOanm
-        TCWQ7O8g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4DH9-004uVe-DU; Tue, 26 Jan 2021 01:36:32 +0000
-Date:   Tue, 26 Jan 2021 01:36:11 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Dave Wysochanski <dwysocha@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 32/32] NFS: Convert readpage to readahead and use
- netfs_readahead for fscache
-Message-ID: <20210126013611.GI308988@casper.infradead.org>
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
- <161161064956.2537118.3354798147866150631.stgit@warthog.procyon.org.uk>
+        Mon, 25 Jan 2021 20:45:06 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E14C061222
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:37:20 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id f17so17710683ljg.12
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bf166UoAnPc1eZpDjnQH9epQkjWpJiBGn+Kivjd66Vs=;
+        b=oOsrHEhUPIoudIBY2uckM+qwmMEmLGAIdNI65PBfo3TgKAFFsma8vspe8npKdFs83Z
+         lEBGO3PDFdZ4oeVOWDwecmXwR5wBP5Yon7/Ht7V1708J+phYi9CfF4YWf34hXZQOTt1l
+         ZDozrBwCdXxLFRDJKRqCNS4+DbWg14anD0xGAdSJFi21Y6+VooaeYLj9999zlsC45leu
+         hJsqZ0iXXsvO/8V4Tg0E2uW49VZRAZuhIbJvkeq+BSaeDm1IVFEdZ8RNuZY1XOgf4PJj
+         cRZlSyaSLp/zrXe3nF6NdrJHgPS0rhs4mTV6JGyPd5918uh4D2rDlYtmmeeFwUk+bhRZ
+         xxuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bf166UoAnPc1eZpDjnQH9epQkjWpJiBGn+Kivjd66Vs=;
+        b=N+M5j6KMKpV74uvYknENY5PwCw/cwQum2dnmgh7LoIjNbIgv6WggFJ+8KF+YCGxr9o
+         R8pqxXL5kVSUk5fUHu6VyhvH/1hLEDAVeR3ojfvbpQtRfVqtqiAQeqKjOCRr9b/YQcv/
+         FKgpb2t26wxAOGAMAcJ488+ETjLrcKkXxk7oF0SRbG+ie8jzQgoEtlHHU7Baoku6ArzC
+         IK4wKIRfUTN4ktxTc3sFNd4gBmqSA55CaZ4UQcFZKXsakWQu3nQ42GC0mR1Qkwf89lgN
+         Mo0mdPldoO67nzh1QLPSBGEFAiWh73nrPXAvZ/tud40EMcSeSMB9uvZyhOaWMVTcV22k
+         DUWw==
+X-Gm-Message-State: AOAM530k6oYiqAibydFdsO1XaHUrtN+69XzQ1BBfALt8PZ0e+5P9yaix
+        h3CNe5oK5rWjyT68e20j10mFhK052Ih74lUR
+X-Google-Smtp-Source: ABdhPJy1uXJuVTg+wSoApWiNFDLZVjwDWKEjVg4pKWrjxSQWCcoiIxrVufUDpbfLz96lgmuC51oCSQ==
+X-Received: by 2002:a2e:a303:: with SMTP id l3mr1550173lje.395.1611625038687;
+        Mon, 25 Jan 2021 17:37:18 -0800 (PST)
+Received: from localhost ([2a02:a310:53e:fc00:4aa4:72ff:fea0:3782])
+        by smtp.gmail.com with ESMTPSA id h9sm783318lfj.24.2021.01.25.17.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 17:37:18 -0800 (PST)
+From:   Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] groups: Use flexible-array member in struct group_info
+Date:   Tue, 26 Jan 2021 02:37:15 +0100
+Message-Id: <155995eed35c3c1bdcc56e69d8997c8e4c46740a.1611620846.git.hubert.jasudowicz@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161161064956.2537118.3354798147866150631.stgit@warthog.procyon.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace zero-size array with flexible array member, as recommended by
+the docs.
 
-For Subject: s/readpage/readpages/
+Signed-off-by: Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
+---
+Hi, get_maintainers doesn't return anything except for the mailing list.
+Sending to Andrew Morton as last resort. Sorry for accidental spam.
 
-On Mon, Jan 25, 2021 at 09:37:29PM +0000, David Howells wrote:
-> +int __nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-> +				 struct readahead_control *rac)
+diff --git a/include/linux/cred.h b/include/linux/cred.h
+index 18639c069263..4c6350503697 100644
+--- a/include/linux/cred.h
++++ b/include/linux/cred.h
+@@ -25,7 +25,7 @@ struct inode;
+ struct group_info {
+ 	atomic_t	usage;
+ 	int		ngroups;
+-	kgid_t		gid[0];
++	kgid_t		gid[];
+ } __randomize_layout;
+ 
+ /**
 
-I thought you wanted it called ractl instead of rac?  That's what I've
-been using in new code.
+base-commit: 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
+-- 
+2.30.0
 
-> -	dfprintk(FSCACHE, "NFS: nfs_getpages_from_fscache (0x%p/%u/0x%p)\n",
-> -		 nfs_i_fscache(inode), npages, inode);
-> +	dfprintk(FSCACHE, "NFS: nfs_readahead_from_fscache (0x%p/0x%p)\n",
-> +		 nfs_i_fscache(inode), inode);
-
-We do have readahead_count() if this is useful information to be logging.
-
-> +static inline int nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-> +					     struct readahead_control *rac)
->  {
-> -	if (NFS_I(inode)->fscache)
-> -		return __nfs_readpages_from_fscache(ctx, inode, mapping, pages,
-> -						    nr_pages);
-> +	if (NFS_I(rac->mapping->host)->fscache)
-> +		return __nfs_readahead_from_fscache(desc, rac);
->  	return -ENOBUFS;
->  }
-
-Not entirely sure that it's worth having the two functions separated any more.
-
->  	/* attempt to read as many of the pages as possible from the cache
->  	 * - this returns -ENOBUFS immediately if the cookie is negative
->  	 */
-> -	ret = nfs_readpages_from_fscache(desc.ctx, inode, mapping,
-> -					 pages, &nr_pages);
-> +	ret = nfs_readahead_from_fscache(&desc, rac);
->  	if (ret == 0)
->  		goto read_complete; /* all pages were read */
->  
->  	nfs_pageio_init_read(&desc.pgio, inode, false,
->  			     &nfs_async_read_completion_ops);
->  
-> -	ret = read_cache_pages(mapping, pages, readpage_async_filler, &desc);
-> +	while ((page = readahead_page(rac))) {
-> +		ret = readpage_async_filler(&desc, page);
-> +		put_page(page);
-> +	}
-
-I thought with the new API we didn't need to do this kind of thing
-any more?  ie no matter whether fscache is configured in or not, it'll
-submit the I/Os.
