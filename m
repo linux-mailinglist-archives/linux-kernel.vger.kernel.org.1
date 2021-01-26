@@ -2,168 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A0F304EEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ABC304EEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391999AbhA0BZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:25:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394697AbhAZS05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:26:57 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C71DC06174A;
-        Tue, 26 Jan 2021 10:26:17 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id n15so12238245qkh.8;
-        Tue, 26 Jan 2021 10:26:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XqI5CT/DnJOGMvQUgx1q4HMcG5oJyLGiChqHaW7eiXs=;
-        b=dbGfmcirlMr7XQ8UCxSwOoJJMLi0Rzh/bjCY+R5ltIEbPKK+t+Ke5/x8JOiE3AsPE9
-         63nzAWtjztLpnRaT+hf8blfrqdlsnztgZgzAF3sS4ig/ihLsnFWfHgLVMKaDIi1JaKtb
-         jj20eXCopZtvQjniZK1HeGGflqz9Veqt28YsOkp0PiWAF6yTnMZZZbiVIFEHGf1xYjU2
-         zUIgcqRXfuXoSLf5g2c8IXA3EUXgmbirXtB0AtA2GPAzDRGof7WQLIRafkAXsTTkKrZW
-         qJgQaGGlFq7yIO4+kofGS3Pfd1ta6eTXMuEYuy9jRWt9/ZoUJCIeirvFEcScmwh96Z/h
-         AkuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XqI5CT/DnJOGMvQUgx1q4HMcG5oJyLGiChqHaW7eiXs=;
-        b=gvTW+Fubmw0z6BT2o6VfY/m3rxyh0K8NM+CXyYuNYiLYRHOhTOzl+neYyAl2UhXYPK
-         BoRhf/oBTSsVwbRPpyxXD+P8fyey/PxJ+CRNHCd+TWRlELPiDOGn5KOJmPskIz2bFoXD
-         0UCOWMSDv1hLbywdsijiXkCzQxKHTiCGaGOm2l8OM+zQQ3EtP4El2lPSTxRK8oJV8QyT
-         i6va6cskQ6jnnPAQOtNmvoRE77vA6QhYIPDmOA78sCKFZnrwAFlgFnPI1a1flNNUOqiz
-         NZh+Jcrc/7IzEatVhnR8BTH5ztY4bo5+QTuxOligTpcKbEYuP8kY4pjF7AH9+EYP4gNP
-         hIlw==
-X-Gm-Message-State: AOAM5332YgVC1cSO1OX7rJ3Oj1vKlzOvOCkICbd7NznSr2dkfzSj7uGF
-        /EHcYP3T4kQdur9As+go6P8=
-X-Google-Smtp-Source: ABdhPJwLdWihoqdNvgl99J+/q85Po4ByMYuL+PNmJr3LhfXQ6Ok+pE9gTWXnRznU0BaxdQDeZ/IF8g==
-X-Received: by 2002:a37:4815:: with SMTP id v21mr6997141qka.130.1611685576324;
-        Tue, 26 Jan 2021 10:26:16 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id r17sm13537371qta.78.2021.01.26.10.26.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 10:26:15 -0800 (PST)
-Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     DTML <devicetree@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, cyril@debamax.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210125105757.661240-1-uwe@kleine-koenig.org>
- <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
- <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
- <5e552b57-4e8b-6774-577d-4fa7a8d440ba@gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <98217e0b-e937-f5b3-fa16-57c79b6ae3f6@gmail.com>
-Date:   Tue, 26 Jan 2021 12:26:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2392041AbhA0B0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:26:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728624AbhAZS1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:27:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C32207A9;
+        Tue, 26 Jan 2021 18:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611685617;
+        bh=mS4fwRCoDBpjB2pQf4JgN+vKx0b/jP8+diUiuhUDlNY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jqTSVnzkNI1pw4SkMEPZVenKL5EBNeXDXThSaq/NYS00TyHO6RMN9l7n2hF0qgXsB
+         MmXqklVicSbsEwdjASSGGsnFIcqGoc3+4wA3oU1eMIm1RbXQnqQrFbkfcNGrzavQBO
+         Pg7o3dJEkSvfTwxmmGDd06ceJR8iTDcSRfM0HWj6OIgcnLbC/8Sfh9ObjF6rwaLNg7
+         oMpnRoRgBmyzEpy6dFXw2Bqtr9OBQpV0XP9dj8BgfOKZwkyXxPCzjzo35gsu0bVPdg
+         tdyfLMe3v4qEsQeNzxZfVKe2k0gb6beRA+0RdyW2iee0MqQI8h3DHNvuDy0nNRtSqc
+         8moYTUwV3ciqw==
+Date:   Tue, 26 Jan 2021 20:26:48 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-csky@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guo Ren <guoren@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: Re: [PATCH v1] csky: use free_initmem_default() in free_initmem()
+Message-ID: <20210126182648.GR6332@kernel.org>
+References: <20210126181420.19223-1-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <5e552b57-4e8b-6774-577d-4fa7a8d440ba@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126181420.19223-1-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
-
-On 1/26/21 12:03 PM, Frank Rowand wrote:
-> +frank
+On Tue, Jan 26, 2021 at 07:14:20PM +0100, David Hildenbrand wrote:
+> The existing code is essentially
+> free_initmem_default()->free_reserved_area() without poisoning.
 > 
-> On 1/26/21 1:20 AM, Uwe Kleine-König wrote:
->> Hello Masahiro,
->>
->> On 1/25/21 10:53 PM, Masahiro Yamada wrote:
->>> On Mon, Jan 25, 2021 at 8:07 PM Uwe Kleine-König <uwe@kleine-koenig.org> wrote:
->>>>
->>>> Adding the -@ switch to dtc results in the binary devicetrees containing
->>>> a list of symbolic references and their paths. This is necessary to
->>>> apply device tree overlays e.g. on Raspberry Pi as described on
->>>> https://www.raspberrypi.org/documentation/configuration/device-tree.md.
->>>>
->>>> Obviously the downside of this change is an increas of the size of the
->>>> generated dtbs, for an arm out-of-tree build (multi_v7_defconfig):
->>>>
->>>>          $ du -s arch/arm/boot/dts*
->>>>          101380  arch/arm/boot/dts-pre
->>>>          114308  arch/arm/boot/dts-post
->>>>
->>>> so this is in average an increase of 12.8% in size.
->>>>
->>>> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
->>>
->>>
->>> (CCing DT ML.)
->>
->> makes sense, thanks.
->>
->>> https://www.spinics.net/lists/linux-kbuild/msg27904.html
->>>
->>> See Rob's comment:
->>>
->>> "We've already rejected doing that. Turning on '-@' can grow the dtb
->>> size by a significant amount which could be problematic for some
->>> boards."
->>
->> The patch was created after some conversation on irc which continued
->> after I sent the patch. I added the participating parties to Cc:.
+> Note that existing code missed to update the managed page count of the
+> zone.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+> 
+> Not compile tested as documentation on how to get
+> 	https://gitlab.com/c-sky/buildroot
+> running, especially with a custom kernel, is a bit sparse.
 
-Unfortunately I have not been on irc recently (now rectified).  Do you
-perchance have a copy of the irc conversation that you can send me?
-(No need to edit out unrelated messages, a simple cut and paste from
-the start of the conversation to the end is fine.)
+You can pick a cross-compiler from here:
 
--Frank
-
->>
->> The (relevant) followups were:
->>
->> Geert suggested to always generate the symbols and provide a way to
->> strip the symbols for installation if and when they are not needed.
->>
->> Rob said: "I'm less concerned with the size increases, but rather that
->> labels go from purely source syntax to an ABI. I'd rather see some
->> decision as to which labels are enabled or not."
->>
->> And then I learned with hints from Rob and Geert that symbols are not
->> really necessary for overlays, you just cannot use named labels. But
->> using
->>
->>     target-path = "/soc/i2c@23473245";
->>
->> or
->>
->>     target = <&{/soc/i2c@23473245}>;
->>
->> instead of
->>
->>     target = <&i2c1>;
->>
->> works fine. (And if you need to add a phandle the &{/path/to/node}
->> construct should work, too (but I didn't test).) Using labels is a tad nicer, but the problem I wanted to address with my patch now has a known different solution.
->>
->> Best regards
->> Uwe
->>
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
+https://mirrors.edge.kernel.org/pub/tools/crosstool/
+ 
+> ---
+>  arch/csky/mm/init.c | 17 +----------------
+>  1 file changed, 1 insertion(+), 16 deletions(-)
+> 
+> diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+> index 81e4e5e78f38..894050a8ce09 100644
+> --- a/arch/csky/mm/init.c
+> +++ b/arch/csky/mm/init.c
+> @@ -110,24 +110,9 @@ void __init mem_init(void)
+>  	mem_init_print_info(NULL);
+>  }
+>  
+> -extern char __init_begin[], __init_end[];
+> -
+>  void free_initmem(void)
+>  {
+> -	unsigned long addr;
+> -
+> -	addr = (unsigned long) &__init_begin;
+> -
+> -	while (addr < (unsigned long) &__init_end) {
+> -		ClearPageReserved(virt_to_page(addr));
+> -		init_page_count(virt_to_page(addr));
+> -		free_page(addr);
+> -		totalram_pages_inc();
+> -		addr += PAGE_SIZE;
+> -	}
+> -
+> -	pr_info("Freeing unused kernel memory: %dk freed\n",
+> -	((unsigned int)&__init_end - (unsigned int)&__init_begin) >> 10);
+> +	free_initmem_default(-1);
+>  }
+>  
+>  void pgd_init(unsigned long *p)
+> -- 
+> 2.29.2
 > 
 
+-- 
+Sincerely yours,
+Mike.
