@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DBD303ADB
+	by mail.lfdr.de (Postfix) with ESMTP id A9549303ADC
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404665AbhAZKyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S2392025AbhAZKzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:55:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732498AbhAZDSP (ORCPT
+        with ESMTP id S1726494AbhAZDT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:18:15 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9DFC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:17:36 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id m6so9672920pfm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:17:36 -0800 (PST)
+        Mon, 25 Jan 2021 22:19:26 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EF5C061786;
+        Mon, 25 Jan 2021 19:18:46 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id e15so11336791qte.9;
+        Mon, 25 Jan 2021 19:18:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WtFgKdR1zjiiMUBUqPm6k1kFKyYgh6EYu3v9cVSqtNg=;
-        b=sF2eUBaye/dI0ORb+IJysE7/kIYxkBm/QMObpU+MUJZOrBp6kYvodeYp2+/6R4d8Ky
-         veYIGeTldP9GIH+ZjLtGdEYpDt5BQG1w3Db2expTGEvQKwojiz/U3M6jWPQiesrZ4r4L
-         U1kRgxxLL/gkrH4xPOfrVpjmFtrqnGINACEaC+Qe90jkH5vT2mlrfRCuK9fI8q/+acJX
-         DLnNw8/xEW9x/ie/wPvyN3tGT3zco2Ml8BrNoO9CjaqvPFZClPS0aAUqesDvlB8fVmBk
-         /HPpJXB2Pl0CmkgOoEKVIAjPJBLgLRT+aIZbTtnlj8QHIGzfdEpHF62I1IIIeIA04SIQ
-         OyBg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=R4zTw/KUHkZ7GxgA8tgI3QkL2W/1ErlRdJf6EwwBHlw=;
+        b=QrCD5aZ73FhtIsV9YLOgpLpSHAbH8b6Px7otIvUV4e+WT+YaAHKlrLaSxKAHG+m3KZ
+         wyGBJ4MMpNhrk8OIWuFTseECmuR1U3n+bgf0VseGWd803U3tMCm9LQufZdKo5NLxmgLP
+         XiB3xpJGu+R0mJaGyE2sIUz1m+06kyyG4Mf2XqK7F7x405hK+zy7hYlmp3dVgsGVOjfh
+         xwffkNMtQgrUsyOo9Yh9NN18kxinFul1APkjgfb1RJBkWzZb4hj6hjZfuuNeZHZo5ZPz
+         jBhDy2LMZLidDUMpOY9F19BzgNz8sPkxaEP+WufNMkxSekSz6GLjTN+9przJgDqn7L6/
+         a9qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=WtFgKdR1zjiiMUBUqPm6k1kFKyYgh6EYu3v9cVSqtNg=;
-        b=e1IpnSkaCaBtWxoRdB3XyhQeubZR9N9Zal2lk1sn8J2oocIQh/R/107vhBo+xEheis
-         1LufEecILyzqFwO1xdvZ8ZJfsloArGJYGwcesEX/tZNmOz/yoC9ekhfW1gI4c41v8H/C
-         JsmgzDeXwuPrVXRQDacQuAcXGHFjTX+xXpLLsxGxJX/UFl8q/b7L9NQjMMY4z1wyM6o8
-         SP2aK1LKLOf2SRan7HSXk2YrfmPeXfHHo3C+j6dFDeIV+zFJonugnA24T3dRNPHCfz58
-         zB8Io7wsF2zJDLa7mwEbgCpGwVdXOc/prVlgx7pyu7X2vXtEQCjaXAIfsbzpvR3Bl7f6
-         UtQw==
-X-Gm-Message-State: AOAM5312OIHOC6UaCZP+ZrC/E5kxV7C/i32rUv9Ad9bJ1Na/fvEbjoA1
-        HlxuR2RuJxqs6J6wyB5n6nqdgg==
-X-Google-Smtp-Source: ABdhPJwWnnS4E0Ae7GCEUQPpPqdK8Q740j7chsbzcZJz2wQZQj2JkkLhhH44+ynxVV8IrPQkZt85CA==
-X-Received: by 2002:a62:1c84:0:b029:1c4:f959:7b29 with SMTP id c126-20020a621c840000b02901c4f9597b29mr61452pfc.34.1611631055566;
-        Mon, 25 Jan 2021 19:17:35 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id m195sm18419305pfd.215.2021.01.25.19.17.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 25 Jan 2021 19:17:34 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     sh_def@163.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>, stable@vger.kernel.org
-Subject: [PATCH] mm: hugetlb: fix missing put_page in gather_surplus_pages()
-Date:   Tue, 26 Jan 2021 11:10:09 +0800
-Message-Id: <20210126031009.96266-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        bh=R4zTw/KUHkZ7GxgA8tgI3QkL2W/1ErlRdJf6EwwBHlw=;
+        b=I7lpwPukQ+rd6pMhRZrq5uVRsP7XKXEm8Ijr859Sy8wypGuM8G+msb4/FUtrTAjaQ7
+         AqpDrTLHxvJkKeNl6cPpEPdJMikTwwp2b5HUtOx2LG57hp+gOAanQZIEayZn/63q3vYo
+         MjKJ3SSPqFJnNa1EgJsVA9Biyly8uk9F5R/GHVOFXo/V7my2/zTozF1j0LdDqaWyNmol
+         z/U9EYVwzmCHz578dMTOdEHZkTtHTlUezFQvkbckmGL3lKl7Lm2XVaItMtoF3r6P6VBz
+         uUaXUjoK6waMOuidyRGaDpn+5wasuywpcGmGhERiW+azQykBmge3MWis76tKxmAZOGWy
+         JQkQ==
+X-Gm-Message-State: AOAM533EXHAZveDtSLhE6q7cAue1B1c1yBAj2fQx7d1xeHOK+gxkRVmn
+        HdcA0XuY64iYQWFBgATUvK4=
+X-Google-Smtp-Source: ABdhPJzNtwCvwCwPmPm0z5mP3U59Mdd0j8MjrX4L1La8D/8b5ln2vc80HZfBkNBxnOcntbyOen9m2Q==
+X-Received: by 2002:aed:2183:: with SMTP id l3mr3496136qtc.75.1611631125465;
+        Mon, 25 Jan 2021 19:18:45 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id z5sm3348516qkc.61.2021.01.25.19.18.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 19:18:45 -0800 (PST)
+Subject: Re: [PATCH V6 5/6] of: unittest: Create overlay_common.dtsi and
+ testcases_common.dtsi
+To:     David Gibson <david@gibson.dropbear.id.au>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>, devicetree@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>
+References: <cover.1611312122.git.viresh.kumar@linaro.org>
+ <94180731aa4a17e4834458a979de7de782dc73d4.1611312122.git.viresh.kumar@linaro.org>
+ <20210123030709.GI4400@yekko.fritz.box>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <ff39a4ff-ee73-8f70-fddb-f869f5317c6a@gmail.com>
+Date:   Mon, 25 Jan 2021 21:18:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210123030709.GI4400@yekko.fritz.box>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VM_BUG_ON_PAGE avoids the generation of any code, even if that
-expression has side-effects when !CONFIG_DEBUG_VM.
+On 1/22/21 9:07 PM, David Gibson wrote:
+> On Fri, Jan 22, 2021 at 04:20:35PM +0530, Viresh Kumar wrote:
+>> In order to build-test the same unit-test files using fdtoverlay tool,
+>> move the device nodes from the existing overlay_base.dts and
+>> testcases_common.dts files to .dtsi files. The .dts files now include
+>> the new .dtsi files, resulting in exactly the same behavior as earlier.
+>>
+>> The .dtsi files can now be reused for compile time tests using
+>> fdtoverlay (will be done in a later patch).
+>>
+>> This is required because the base files passed to fdtoverlay tool
+>> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
+>> tag).
+>>
+>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> ---
+>>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+>>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+>>  drivers/of/unittest-data/testcases.dts        | 17 +---
+>>  .../of/unittest-data/testcases_common.dtsi    | 18 ++++
+>>  4 files changed, 111 insertions(+), 105 deletions(-)
+>>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+>>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+>>
+>> diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unittest-data/overlay_base.dts
+>> index 99ab9d12d00b..ab9014589c5d 100644
+>> --- a/drivers/of/unittest-data/overlay_base.dts
+>> +++ b/drivers/of/unittest-data/overlay_base.dts
+>> @@ -2,92 +2,4 @@
+>>  /dts-v1/;
+>>  /plugin/;
+> 
+> This still makes no sense to me.  Is this data intended as a base
+> tree, or as an overlay?  If it's an overlay, what are the constraints
+> on the base tree it's supposed to apply to.
 
-Fixes: e5dfacebe4a4 ("mm/hugetlb.c: just use put_page_testzero() instead of page_count()")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Cc: <stable@vger.kernel.org>
----
- mm/hugetlb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I have already replied several times that this should not make sense to
+anyone unless they read unittest.c and see in detail how these FDTs are
+abused.  I have stated several times that the usage is bizarre and not
+normal.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a6bad1f686c5..082ed643020b 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2047,13 +2047,16 @@ static int gather_surplus_pages(struct hstate *h, long delta)
- 
- 	/* Free the needed pages to the hugetlb pool */
- 	list_for_each_entry_safe(page, tmp, &surplus_list, lru) {
-+		int zeroed;
-+
- 		if ((--needed) < 0)
- 			break;
- 		/*
- 		 * This page is now managed by the hugetlb allocator and has
- 		 * no users -- drop the buddy allocator's reference.
- 		 */
--		VM_BUG_ON_PAGE(!put_page_testzero(page), page);
-+		zeroed = put_page_testzero(page);
-+		VM_BUG_ON_PAGE(!zeroed, page);
- 		enqueue_huge_page(h, page);
- 	}
- free:
--- 
-2.11.0
+> 
+> This patch is treating it as both in different places, but that's such
+> a bizarre usecase it needs detailed justification.  It really looks
+> like the unittest stuff is doing some very bogus stuff that should be
+> fixed first, before trying to do this on top.
+> 
 
+The unittest stuff is bizarre, but it is correct.  This patch series does
+not alter the current usage.
+
+-Frank
