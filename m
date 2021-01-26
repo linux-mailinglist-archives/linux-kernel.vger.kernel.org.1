@@ -2,46 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D89B303BED
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74C7303BF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405335AbhAZLou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:44:50 -0500
-Received: from muru.com ([72.249.23.125]:53228 "EHLO muru.com"
+        id S2405426AbhAZLpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:45:23 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:35842 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392266AbhAZLU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:20:58 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 76DD48057;
-        Tue, 26 Jan 2021 11:20:21 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 13:20:14 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-omap@vger.kernel.org, hns@goldelico.com,
-        aford@beaconembedded.com,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] ARM: dts: omap36xx: Remove turbo mode for 1GHz
- variants
-Message-ID: <YA/67lrhQsPRxiEw@atomide.com>
-References: <20210109170103.1249838-1-aford173@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210109170103.1249838-1-aford173@gmail.com>
+        id S2392211AbhAZLWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:22:39 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 73AD11A0CDE;
+        Tue, 26 Jan 2021 12:21:52 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 675601A0CD2;
+        Tue, 26 Jan 2021 12:21:52 +0100 (CET)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 1BC612034A;
+        Tue, 26 Jan 2021 12:21:52 +0100 (CET)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
+Subject: [RFC] clk: Mark HW enabled clocks as enabled in core
+Date:   Tue, 26 Jan 2021 13:21:36 +0200
+Message-Id: <1611660096-12381-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Adam Ford <aford173@gmail.com> [210109 19:01]:
-> Previously, the 1GHz variants were marked as a turbo,
-> because that variant has reduced thermal operating range.
-> 
-> Now that the thermal throttling is in place, it should be
-> safe to remove the turbo-mode from the 1GHz variants, because
-> the CPU will automatically slow if the thermal limit is reached.
+Some clocks are already enabled in HW even before the kernel
+starts to boot. So, in order to make sure that these clocks do not
+get disabled when clk_disable_unused call is done or when
+reparenting clocks, we enable them in core on clock registration.
+Such a clock will have to be registered with CLK_IGNORE_UNUSED flag
+and also needs to have the is_enabled ops implemented.
 
-Thanks applying into omap-for-v5.12/dt.
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+---
+ drivers/clk/clk.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Tony
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 3d751ae5bc70..26d55851cfa5 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -3416,6 +3416,7 @@ static int __clk_core_init(struct clk_core *core)
+ 	int ret;
+ 	struct clk_core *parent;
+ 	unsigned long rate;
++	bool is_hw_enabled = false;
+ 	int phase;
+ 
+ 	if (!core)
+@@ -3558,12 +3559,20 @@ static int __clk_core_init(struct clk_core *core)
+ 		rate = 0;
+ 	core->rate = core->req_rate = rate;
+ 
++	/*
++	 * If the clock has the CLK_IGNORE_UNUSED flag set and it is already
++	 * enabled in HW, enable it in core too so it won't get accidentally
++	 * disabled when walking the orphan tree and reparenting clocks
++	 */
++	if (core->flags & CLK_IGNORE_UNUSED && core->ops->is_enabled)
++		is_hw_enabled = clk_core_is_enabled(core);
++
+ 	/*
+ 	 * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
+ 	 * don't get accidentally disabled when walking the orphan tree and
+ 	 * reparenting clocks
+ 	 */
+-	if (core->flags & CLK_IS_CRITICAL) {
++	if (core->flags & CLK_IS_CRITICAL || is_hw_enabled) {
+ 		unsigned long flags;
+ 
+ 		ret = clk_core_prepare(core);
+-- 
+2.29.2
+
