@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EAA303C0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883F0303BD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405384AbhAZLjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:39:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404228AbhAZKmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:42:47 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC04C061573;
-        Tue, 26 Jan 2021 02:42:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=hr2jNE3FMs8l6Tfz1HIwxXewKUv5fGgvc4zfcKNrlaA=; b=WEjIlqkhoVgDHdg9Ci9uC20sx
-        Aq1xjvy8PWLCLqhxTv70yicvH+0kQAObTd0/f5e+0xFweCfTW1eThsfgw69Wqj+VBXTZsNd2j8hoT
-        fSgHaIniEvMfRZKBIcSRlaUv8TJHVSKuBViU6pScN25mk7DhylHilRVZZImp/bOqeBszQ/rJ9lwbr
-        OrhK0yRPaGHjC7MX78I7otVrF+x9Z4vD6alNVN3KqU0ashV2KonhjSEGtgYnfMcKLVOMShZEk2SHL
-        xYpxuF9hV0A6H/lMUHaQFeljsooO23dqnz1ZUtyOVWNu6AgqYX7L9ABu+UlenVS2SEatkKZEJnBE6
-        o5pnSNlug==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52916)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l4LnI-0004Hj-Tt; Tue, 26 Jan 2021 10:41:57 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l4LnH-0003jP-6L; Tue, 26 Jan 2021 10:41:55 +0000
-Date:   Tue, 26 Jan 2021 10:41:55 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm: smp: remove unused variable
-Message-ID: <20210126104155.GF1551@shell.armlinux.org.uk>
-References: <20201228120147.59387-1-wsa+renesas@sang-engineering.com>
- <CAMuHMdWD-8YxdrTmaTW7YTOFj+8hHM5LvegnC274QOTOO_gXcg@mail.gmail.com>
+        id S2405400AbhAZLj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:39:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:32954 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404244AbhAZKsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:48:23 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 105B3D6E;
+        Tue, 26 Jan 2021 02:47:38 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.45.247])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B147F3F66B;
+        Tue, 26 Jan 2021 02:47:36 -0800 (PST)
+Date:   Tue, 26 Jan 2021 10:47:34 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Preemptible idr_alloc() in QRTR code
+Message-ID: <20210126104734.GB80448@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdWD-8YxdrTmaTW7YTOFj+8hHM5LvegnC274QOTOO_gXcg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 11:04:47AM +0100, Geert Uytterhoeven wrote:
-> Hi Wolfram,
-> 
-> On Mon, Dec 28, 2020 at 1:03 PM Wolfram Sang
-> <wsa+renesas@sang-engineering.com> wrote:
-> > Not used anymore after refactoring:
-> >
-> > arch/arm/kernel/smp.c: In function ‘show_ipi_list’:
-> > arch/arm/kernel/smp.c:543:16: warning: variable ‘irq’ set but not used [-Wunused-but-set-variable]
-> >   543 |   unsigned int irq;
-> >
-> > Fixes: 88c637748e31 ("ARM: smp: Use irq_desc_kstat_cpu() in show_ipi_list()")
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Marc Zyngier <maz@kernel.org>
-> 
-> Known issue since Dec 15, and still not fixed...
-> 
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Hi,
 
-Those who cause breakage really should be the ones to look at patches
-that fix their breakage.
+When fuzzing arm64 with Syzkaller, I'm seeing some splats where
+this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
+radix_tree_node_alloc(), in a preemptible context:
 
-The way patches get applied is if they end up in my patch system... if
-they don't make it there, they don't get applied.
+| BUG: using smp_processor_id() in preemptible [00000000] code: syz-executor.1/32582
+| caller is debug_smp_processor_id+0x24/0x30
+| CPU: 3 PID: 32582 Comm: syz-executor.1 Not tainted 5.11.0-rc4-next-20210125-00001-gf57e7edf910d #3
+| Hardware name: linux,dummy-virt (DT)
+| Call trace:
+|  dump_backtrace+0x0/0x4a8
+|  show_stack+0x34/0x88
+|  dump_stack+0x1d4/0x2a0
+|  check_preemption_disabled+0x1b8/0x210
+|  debug_smp_processor_id+0x24/0x30
+|  radix_tree_node_alloc.constprop.17+0x26c/0x3d0
+|  radix_tree_extend+0x200/0x420
+|  idr_get_free+0x63c/0xa38
+|  idr_alloc_u32+0x164/0x2a0
+|  __qrtr_bind.isra.8+0x350/0x658
+|  qrtr_bind+0x18c/0x218
+|  __sys_bind+0x1fc/0x238
+|  __arm64_sys_bind+0x78/0xb0
+|  el0_svc_common+0x1ac/0x4c8
+|  do_el0_svc+0xfc/0x150
+|  el0_svc+0x24/0x38
+|  el0_sync_handler+0x134/0x180
+|  el0_sync+0x154/0x180
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+It's not clear to me whether this is a bug in the caller or a bug the
+implementation of idr_alloc(). The kerneldoc for idr_alloc() mentions
+that callers must provide their own locking (and in this case a mutex is
+used), but doesn't mention that preemption must be disabled.
+
+Is this an intentional requirement that's simply missing from the
+documentation and requires a change to the QRTR code, or is this
+something to fix within the bowels of idr_alloc() and its callees?
+
+Thanks,
+Mark.
