@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED588304FDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE28304FDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbhA0Dbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:31:51 -0500
-Received: from mga04.intel.com ([192.55.52.120]:53182 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728474AbhAZVRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:17:16 -0500
-IronPort-SDR: Q3ls2qKXQnZEAkdZvqthIm2wwS6TxWDA/tdLs3aPlwSuXh1mxsa1wbWxF8dzTIuy0ltlEqjLNV
- quaacNK/qG4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="177404015"
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="177404015"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:15:25 -0800
-IronPort-SDR: 4w6R7wFf9OeCY8ftyhMJo55ic+Kkh/cM2onU4+bpeId/WtFGGyYcs20amZCNmrZyVcnFVxC42O
- sqkEzkLUh7SQ==
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="406853637"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:15:23 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l4VhJ-00EvM1-Px; Tue, 26 Jan 2021 23:16:25 +0200
-Date:   Tue, 26 Jan 2021 23:16:25 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, lizefan@huawei.com, mingo@kernel.org,
-        tglx@linutronix.de, josh@joshtriplett.org, yury.norov@gmail.com,
-        peterz@infradead.org, paulmck@kernel.org, fweisbec@gmail.com,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH 3/8] lib: bitmap: fold nbits into region struct
-Message-ID: <YBCGqfW0hKSgo9Rl@smile.fi.intel.com>
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
- <20210126171141.122639-4-paul.gortmaker@windriver.com>
+        id S236199AbhA0Dcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:32:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27937 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729485AbhAZVS6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:18:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611695852;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZegfSQaVgR/gl1215NTcom+C+m68vfkGvT34DFtcorI=;
+        b=QHH1WrnE9RnnhCl/Jq1WsxHnH2yBTMk2QLgyYwYURdgZx/SMr53z01BXNi/Safmm3eKLwa
+        wtgTVO7FCuCbDcTdft503pzTwQHVed0QohvyeTQdNw2SAkjkiywcWVbLvGl/YcSWpNycbJ
+        EJmBPcIuIWKSuaY166beL7tXy1Cj9Io=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-sKZ4waErPguMXlXgrqyjPA-1; Tue, 26 Jan 2021 16:17:27 -0500
+X-MC-Unique: sKZ4waErPguMXlXgrqyjPA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 117A8A0C23;
+        Tue, 26 Jan 2021 21:17:26 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.29])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9E4551F0;
+        Tue, 26 Jan 2021 21:17:24 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 26 Jan 2021 22:17:25 +0100 (CET)
+Date:   Tue, 26 Jan 2021 22:17:23 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Jianlin Lv <Jianlin.Lv@arm.com>, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tracing: precise log info for kretprobe addr err
+Message-ID: <20210126211722.GA23645@redhat.com>
+References: <20210125160108.2147511-1-Jianlin.Lv@arm.com>
+ <20210125181926.GA10248@redhat.com>
+ <20210125133840.511b1496@gandalf.local.home>
+ <20210126131536.f6e3a737a7b948799084fa7a@kernel.org>
+ <20210126202058.GC12469@redhat.com>
+ <20210126154302.302a3bb0@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126171141.122639-4-paul.gortmaker@windriver.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210126154302.302a3bb0@gandalf.local.home>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:11:36PM -0500, Paul Gortmaker wrote:
-> This will reduce parameter passing and enable using nbits as part
-> of future dynamic region parameter parsing.
+On 01/26, Steven Rostedt wrote:
+>
+> On Tue, 26 Jan 2021 21:20:59 +0100
+> Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> > > No, not wrong. Even offset != 0, if the symbol exists in the kernel,
+> > > kprobe_on_func_entry() will check it.
+> >
+> > Yes, but unless I am totally confused... if kprobe_on_func_entry() returns false,
+> > then trace_kprobe_create() should fail with BAD_RETPROBE even if offset == 0 ?
+>
+> From what I understand. kprobe_on_func_entry() can return false if you pass
+> in: "MOD:not_yet_loaded_module_func", but this is OK, because when the
+> module is loaded, and the "not_yet_loaded_module_func" exists, the
+> kretprobe will then be added.
+>
+> The strchr(symbol,":") check is to see if "MOD:" (or some other ":" command)
+> is in the name, and we don't want it to fail if it is. Which is why we
+> should have that commented.
 
-One nit below, nevertheless
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Agreed, this matches my understanding.
 
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  lib/bitmap.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
-> 
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 75006c4036e9..162e2850c622 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
->  
->  /*
->   * Region 9-38:4/10 describes the following bitmap structure:
-> - * 0	   9  12    18			38
-> - * .........****......****......****......
-> - *	    ^  ^     ^			 ^
-> - *      start  off   group_len	       end
-> + * 0	   9  12    18			38	     N
-> + * .........****......****......****..................
-> + *	    ^  ^     ^			 ^	     ^
-> + *      start  off   group_len	       end	 nbits
->   */
->  struct region {
->  	unsigned int start;
->  	unsigned int off;
->  	unsigned int group_len;
->  	unsigned int end;
-> +	unsigned int nbits;
->  };
->  
-> -static int bitmap_set_region(const struct region *r,
-> -				unsigned long *bitmap, int nbits)
-> +static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
->  {
->  	unsigned int start;
->  
-> -	if (r->end >= nbits)
-> +	if (r->end >= r->nbits)
->  		return -ERANGE;
->  
->  	for (start = r->start; start <= r->end; start += r->group_len)
-> @@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->  	struct region r;
->  	long ret;
->  
-> -	bitmap_zero(maskp, nmaskbits);
-> +	r.nbits = nmaskbits;
+But just in case... not sure I read this code correctly, but I think that
+module_kallsyms_lookup_name("not_yet_loaded_module_func") should work even
+without the "MOD:" prefix.
 
-> +	bitmap_zero(maskp, r.nbits);
+IOW, kprobe_on_func_entry("not_yet_loaded_module_func") can fail, and then
+later succeed if you load the module which provides this symbol.
 
-This sounds not right from style perspective.
-You have completely uninitialized r on stack, then you assign only one value
-for immediate use here and...
+But even if I am right, I agree with the strchr(symbol,":") check.
 
->  	while (buf) {
->  		buf = bitmap_find_region(buf);
-> @@ -655,7 +656,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->  		if (ret)
->  			return ret;
->  
-> -		ret = bitmap_set_region(&r, maskp, nmaskbits);
-> +		ret = bitmap_set_region(&r, maskp);
-
-...hiding this fact here. Which I would expect that &r may be rewritten here.
-
-I would leave these unchanged and simple assign the value in
-bitmap_set_region().
-
->  		if (ret)
->  			return ret;
->  	}
-> -- 
-> 2.17.1
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Oleg.
 
