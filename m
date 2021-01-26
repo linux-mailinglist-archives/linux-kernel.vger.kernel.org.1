@@ -2,107 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35ECB303A84
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98E8303AA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404127AbhAZKjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        id S2404302AbhAZKoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731425AbhAZB42 (ORCPT
+        with ESMTP id S1732142AbhAZCFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:56:28 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE21C0617AA
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:55:46 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id f6so14811836ots.9
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:55:46 -0800 (PST)
+        Mon, 25 Jan 2021 21:05:55 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A229BC0617A9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:01:20 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id b17so2305591plz.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 18:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9KzooEzNJudfs8vdN5QNNjT5ojSccFf8tRCUDI4AzCU=;
-        b=DrrZxszCva3FTmhjfGLJzJrc3wB1j9Eo1KC1LtQ1FsXEAot/Ybv1blTIhPyYfOyNgm
-         T+EnnqpzXEgGxvkc5i5z3xWPJFSweRtK1ezOLRhZqB9KkPfVkAJgZe+QbwttIrq6o+KV
-         P037KGFPglzPjXgxTXJS39oLXUzxdz5TXf6EzvuL3hKV7vjf1eejNoUmuw3U2b6RzyQZ
-         L6Q3IVVx+LIhLxC56CMMwW7q/y3HgIeMJ1R3w4HPKVYpiGvapKZzdhqMPfXaWX6WiDuO
-         WGSGo6/tKzYFvFHEgNt/XsbxjzZZ32UPz4bALilazsw8kaZcw0CPfmpBk9M+MS0mnh39
-         dFuw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cuvqgCacX4Pb/J8emd8ASYQj+aaRXfkyo5/tJUTXC18=;
+        b=Q1nyIoOg9cA/NbhZwjGDZ1yfAR40idBgrI8GJtJYQD0Jy5i4RP5cMAnGe8d3sup0X9
+         TtInhbmtjpHx5/vQC6JZ25GsSIDxUgJkKpRCryJVAUzjjG39MnQ33CfJtSDKLYdgc6du
+         MQ9XR+oahIBNnUJIEzG9uyxkdZI3aRmVXxjRU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9KzooEzNJudfs8vdN5QNNjT5ojSccFf8tRCUDI4AzCU=;
-        b=ra37GQSl9cEU49dLRPXerf7DoP8CFfPELS3nX54pY8S3PiOPUClbInAO5cXVzpIafb
-         ugCm4UMu6zclE1oK2DDIxTCkcoK+rEFyn8/x2Iy7q8f3AUUAkuH4R9nZ4+IPMulZzLNh
-         eNXq9FQqYaT5+ampw+WiG6ya63sMDpPh1Ft+RDswQbiwTCAxjqq9YVRR4yZqhIysklDI
-         Z8Sinz3oykDOTPfnlfa7dREZQbozrvt5yYarIxWmyfYrRp31/i9Whl39V1OZ5hrdREG0
-         7HE7vEG44jdtk8QSqDdqsdwYEA/IUTKnhx0YLNfNKfFHD5utv4fV2xunY77QCGXT2rzd
-         mfkA==
-X-Gm-Message-State: AOAM5312fesOSUM/MXZ2Kkx8x6jc7qltdZiKBF1/Q42+f6lZWngr4+F4
-        O+yQAste/6XuLt0qKve+1ovatw==
-X-Google-Smtp-Source: ABdhPJy0I4DahIrO5X9v/d1v+VookruyQO2N2rKgJW3rTf5Kc3BH3ob0xCJT8rOz43pd7Lzf+gYM+A==
-X-Received: by 2002:a9d:4e89:: with SMTP id v9mr2322939otk.171.1611626146046;
-        Mon, 25 Jan 2021 17:55:46 -0800 (PST)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id d10sm3570160ooh.32.2021.01.25.17.55.45
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cuvqgCacX4Pb/J8emd8ASYQj+aaRXfkyo5/tJUTXC18=;
+        b=IH9z09eIA7eQDAnbaTlUvhcV40P/I2Z3o+YQ+Q24L75yQtuNuduTfNBojeIQekpOGm
+         V+V+UV/yUCv7FtAZuD5X4kwWy/hNwkimaCD9B2/B+CtMzhwbGSZ0G/DNw3j2FkSkF7eE
+         j0EOsTW8XQv5UbaH9xpPAww8XAyVCrQU8DPFLbFit48gsblBbslhXHRZXQGjxouDdUZ/
+         MEsOR7ppPPP0S8cVM5cOjQeQ1pjYSfQAirR/ayt0CmIHIF1E6v4qfQv+13I6JWaOELDr
+         hEFwJymFkBgPQb+LsXLct7lBVPMWP1C9xVUOpAIXi2IuiW6bPVJ8BvS3ezoAQDgHI7Zb
+         NMaw==
+X-Gm-Message-State: AOAM5337YOIDDgTAvOjgnMrvo+6OOrJuBBpaFuumvJjJUhh4hkD+MCDR
+        OIh0Uepql2x0OCbLUfKJAxla+Q==
+X-Google-Smtp-Source: ABdhPJw/S2YrtvvvxKvJJZka0jRnlXv6swbqbI0W46SZnmLlTUVuNP8AiVQFCtSIVh74m6nO4eXWsQ==
+X-Received: by 2002:a17:90a:f318:: with SMTP id ca24mr3337732pjb.30.1611626480086;
+        Mon, 25 Jan 2021 18:01:20 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:1066:b437:97cd:2278])
+        by smtp.gmail.com with ESMTPSA id n2sm16975028pfu.42.2021.01.25.18.01.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 17:55:45 -0800 (PST)
-Date:   Mon, 25 Jan 2021 19:55:43 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
-        jackp@codeaurora.org
-Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
- requirements
-Message-ID: <20210126015543.GB1241218@yoga>
-References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
- <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
- <YAsHbj/mITeiY5Cq@builder.lan>
- <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
+        Mon, 25 Jan 2021 18:01:19 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+Subject: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
+Date:   Mon, 25 Jan 2021 18:01:13 -0800
+Message-Id: <20210126020117.2753615-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 25 Jan 19:14 CST 2021, Wesley Cheng wrote:
+Lockdep complains about an AA deadlock when rebooting the device.
 
-> 
-> 
-> On 1/22/2021 9:12 AM, Bjorn Andersson wrote:
-> > On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
-> > 
-> 
-> Hi Bjorn,
-> > 
-> > Under what circumstances should we specify this? And in particular are
-> > there scenarios (in the Qualcomm platforms) where this must not be set?
-> >The TXFIFO dynamic allocation is actually a feature within the DWC3
-> controller, and isn't specifically for QCOM based platforms.  It won't
-> do any harm functionally if this flag is not set, as this is meant for
-> enhancing performance/bandwidth.
-> 
-> > In particular, the composition can be changed in runtime, so should we
-> > set this for all Qualcomm platforms?
-> > 
-> Ideally yes, if we want to increase bandwith for situations where SS
-> endpoint bursting is set to a higher value.
-> 
-> > And if that's the case, can we not just set it from the qcom driver?
-> > 
-> Since this is a common DWC3 core feature, I think it would make more
-> sense to have it in DWC3 core instead of a vendor's DWC3 glue driver.
-> 
+============================================
+WARNING: possible recursive locking detected
+5.4.91 #1 Not tainted
+--------------------------------------------
+reboot/5213 is trying to acquire lock:
+ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
 
-I don't have any objections to implementing it in the core driver, but
-my question is can we just skip the DT binding and just enable it from
-the vendor driver?
+but task is already holding lock:
+ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
 
-Regards,
-Bjorn
+other info that might help us debug this:
+Possible unsafe locking scenario:
+
+CPU0
+----
+lock(&kms->commit_lock[i]);
+lock(&kms->commit_lock[i]);
+
+*** DEADLOCK ***
+
+May be due to missing lock nesting notation
+
+6 locks held by reboot/5213:
+__arm64_sys_reboot+0x148/0x2a0
+device_shutdown+0x10c/0x2c4
+drm_atomic_helper_shutdown+0x48/0xfc
+modeset_lock+0x120/0x24c
+lock_crtcs+0x60/0xa4
+
+stack backtrace:
+CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
+Hardware name: Google Pompom (rev1) with LTE (DT)
+Call trace:
+dump_backtrace+0x0/0x1dc
+show_stack+0x24/0x30
+dump_stack+0xfc/0x1a8
+__lock_acquire+0xcd0/0x22b8
+lock_acquire+0x1ec/0x240
+__mutex_lock_common+0xe0/0xc84
+mutex_lock_nested+0x48/0x58
+lock_crtcs+0x60/0xa4
+msm_atomic_commit_tail+0x348/0x570
+commit_tail+0xdc/0x178
+drm_atomic_helper_commit+0x160/0x168
+drm_atomic_commit+0x68/0x80
+
+This is because lockdep thinks all the locks taken in lock_crtcs() are
+the same lock, when they actually aren't. That's because we call
+mutex_init() in msm_kms_init() and that assigns on static key for every
+lock initialized in this loop. Let's allocate a dynamic number of
+lock_class_keys and assign them to each lock so that lockdep can figure
+out an AA deadlock isn't possible here.
+
+Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
+Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+index d8151a89e163..4735251a394d 100644
+--- a/drivers/gpu/drm/msm/msm_kms.h
++++ b/drivers/gpu/drm/msm/msm_kms.h
+@@ -157,6 +157,7 @@ struct msm_kms {
+ 	 * from the crtc's pending_timer close to end of the frame:
+ 	 */
+ 	struct mutex commit_lock[MAX_CRTCS];
++	struct lock_class_key commit_lock_keys[MAX_CRTCS];
+ 	unsigned pending_crtc_mask;
+ 	struct msm_pending_timer pending_timers[MAX_CRTCS];
+ };
+@@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
+ {
+ 	unsigned i, ret;
+ 
+-	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
+-		mutex_init(&kms->commit_lock[i]);
++	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
++		lockdep_register_key(&kms->commit_lock_keys[i]);
++		__mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
++			     &kms->commit_lock_keys[i]);
++	}
+ 
+ 	kms->funcs = funcs;
+ 
+
+base-commit: 19c329f6808995b142b3966301f217c831e7cf31
+-- 
+https://chromeos.dev
+
