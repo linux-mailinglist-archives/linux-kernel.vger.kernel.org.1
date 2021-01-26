@@ -2,141 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFE6303C62
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B276D303C6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405508AbhAZMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:01:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52409 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405574AbhAZMBb (ORCPT
+        id S2405525AbhAZMCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:02:30 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:48608 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2405305AbhAZMCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:01:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611662400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0K+uxPNJ6B3Dq1KRGq+oPPt+0m7OL0bJ7iaA9EZ6ZgM=;
-        b=B9nMSuzr5B85MRydWuaW8p7w0ZeGn1eQYBSK/ztxKrn9X2VotThT3aSSoFMoKOAQQwnBlp
-        GOFGVd4axPNVknbYRHD58ZfTuj+gQ+WU+lJGFNXrcdd8ZHBhEQRNu7f3nHr6vIyv2yoDIO
-        UAWnXeSeVUdcb1oF8m0fCNet9YWLuGY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-w5tS4UMfMiCqw4OIpTAjVw-1; Tue, 26 Jan 2021 06:59:58 -0500
-X-MC-Unique: w5tS4UMfMiCqw4OIpTAjVw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AACF180A086;
-        Tue, 26 Jan 2021 11:59:56 +0000 (UTC)
-Received: from starship (unknown [10.35.206.204])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 71B6460C62;
-        Tue, 26 Jan 2021 11:59:49 +0000 (UTC)
-Message-ID: <b636e2d15ab17302265ef932575f26647b7a959f.camel@redhat.com>
-Subject: Re: [PATCH v3 4/4] KVM: SVM: Support #GP handling for the case of
- nested on nested
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, luto@amacapital.net
-Date:   Tue, 26 Jan 2021 13:59:48 +0200
-In-Reply-To: <20210126081831.570253-5-wei.huang2@amd.com>
-References: <20210126081831.570253-1-wei.huang2@amd.com>
-         <20210126081831.570253-5-wei.huang2@amd.com>
+        Tue, 26 Jan 2021 07:02:02 -0500
+X-UUID: 25cea06461e3435db86dfa532cc29f75-20210126
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=oAYBDnd46n/nrsFHoThyvhzrrUWPsLR/Mvddequ82jM=;
+        b=IRyUMiZzSSbD8Gy5yyV+3fDyCqN1oCz8Q3WYXKvWdlhXcS+KwLnRS9eQUBkUbKGzdS6qy4ucLS3wt3WnZgSDrDnfk+ctFr2B0qXZ+wAbFJ+fjx7hZ8HGmmSMYyAQ0xJu5wP/jL1Z96NGIO62CejeUxl6cMIo4p3yIrQatRVHXc4=;
+X-UUID: 25cea06461e3435db86dfa532cc29f75-20210126
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1998379757; Tue, 26 Jan 2021 20:01:06 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 26 Jan
+ 2021 20:01:02 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 20:01:01 +0800
+Message-ID: <1611662461.14672.22.camel@mhfsdcap03>
+Subject: Re: [v7,1/7] dt-bindings: PCI: mediatek-gen3: Add YAML schema
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <youlin.pei@mediatek.com>, <devicetree@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <Rex-BC.Chen@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <maz@kernel.org>,
+        <drinkcat@chromium.org>, <linux-kernel@vger.kernel.org>,
+        <anson.chuang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Sj Huang" <sj.huang@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        <sin_jieyang@mediatek.com>, <linux-arm-kernel@lists.infradead.org>
+Date:   Tue, 26 Jan 2021 20:01:01 +0800
+In-Reply-To: <20210125202220.GA905995@robh.at.kernel.org>
+References: <20210113114001.5804-1-jianjun.wang@mediatek.com>
+         <20210113114001.5804-2-jianjun.wang@mediatek.com>
+         <20210125202220.GA905995@robh.at.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-TM-SNTS-SMTP: F1DA409755172DE8362284DDADA00A7EBF387AB58BF3F0CEECE433EDDC46C67A2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-26 at 03:18 -0500, Wei Huang wrote:
-> Under the case of nested on nested (L0->L1->L2->L3), #GP triggered by
-> SVM instructions can be hided from L1. Instead the hypervisor can
-> inject the proper #VMEXIT to inform L1 of what is happening. Thus L1
-> can avoid invoking the #GP workaround. For this reason we turns on
-> guest VM's X86_FEATURE_SVME_ADDR_CHK bit for KVM running inside VM to
-> receive the notification and change behavior.
-> 
-> Similarly we check if vcpu is under guest mode before emulating the
-> vmware-backdoor instructions. For the case of nested on nested, we
-> let the guest handle it.
-> 
-> Co-developed-by: Bandan Das <bsd@redhat.com>
-> Signed-off-by: Bandan Das <bsd@redhat.com>
-> Signed-off-by: Wei Huang <wei.huang2@amd.com>
-> Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
-> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index f9233c79265b..83c401d2709f 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -929,6 +929,9 @@ static __init void svm_set_cpu_caps(void)
->  
->  		if (npt_enabled)
->  			kvm_cpu_cap_set(X86_FEATURE_NPT);
-> +
-> +		/* Nested VM can receive #VMEXIT instead of triggering #GP */
-> +		kvm_cpu_cap_set(X86_FEATURE_SVME_ADDR_CHK);
->  	}
->  
->  	/* CPUID 0x80000008 */
-> @@ -2198,6 +2201,11 @@ static int svm_instr_opcode(struct kvm_vcpu *vcpu)
->  
->  static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
->  {
-> +	const int guest_mode_exit_codes[] = {
-> +		[SVM_INSTR_VMRUN] = SVM_EXIT_VMRUN,
-> +		[SVM_INSTR_VMLOAD] = SVM_EXIT_VMLOAD,
-> +		[SVM_INSTR_VMSAVE] = SVM_EXIT_VMSAVE,
-> +	};
->  	int (*const svm_instr_handlers[])(struct vcpu_svm *svm) = {
->  		[SVM_INSTR_VMRUN] = vmrun_interception,
->  		[SVM_INSTR_VMLOAD] = vmload_interception,
-> @@ -2205,7 +2213,14 @@ static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
->  	};
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  
-> -	return svm_instr_handlers[opcode](svm);
-> +	if (is_guest_mode(vcpu)) {
-> +		svm->vmcb->control.exit_code = guest_mode_exit_codes[opcode];
-> +		svm->vmcb->control.exit_info_1 = 0;
-> +		svm->vmcb->control.exit_info_2 = 0;
-> +
-> +		return nested_svm_vmexit(svm);
-> +	} else
-> +		return svm_instr_handlers[opcode](svm);
->  }
->  
->  /*
-> @@ -2239,7 +2254,8 @@ static int gp_interception(struct vcpu_svm *svm)
->  		 * VMware backdoor emulation on #GP interception only handles
->  		 * IN{S}, OUT{S}, and RDPMC.
->  		 */
-> -		return kvm_emulate_instruction(vcpu,
-> +		if (!is_guest_mode(vcpu))
-> +			return kvm_emulate_instruction(vcpu,
->  				EMULTYPE_VMWARE_GP | EMULTYPE_NO_DECODE);
->  	} else
->  		return emulate_svm_instr(vcpu, opcode);
-
-To be honest I expected the vmware backdoor fix to be in a separate patch,
-but I see that Paulo already took these patches so I guess it is too late.
-
-Anyway I am very happy to see this workaround merged, and see that bug
-disappear forever.
-
-Best regards,
-	Maxim Levitsky
+T24gTW9uLCAyMDIxLTAxLTI1IGF0IDE0OjIyIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gV2VkLCBKYW4gMTMsIDIwMjEgYXQgMDc6Mzk6NTVQTSArMDgwMCwgSmlhbmp1biBXYW5nIHdy
+b3RlOg0KPiA+IEFkZCBZQU1MIHNjaGVtYXMgZG9jdW1lbnRhdGlvbiBmb3IgR2VuMyBQQ0llIGNv
+bnRyb2xsZXIgb24NCj4gPiBNZWRpYVRlayBTb0NzLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6
+IEppYW5qdW4gV2FuZyA8amlhbmp1bi53YW5nQG1lZGlhdGVrLmNvbT4NCj4gPiBBY2tlZC1ieTog
+UnlkZXIgTGVlIDxyeWRlci5sZWVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vYmlu
+ZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sICAgICAgfCAxNzIgKysrKysrKysrKysr
+KysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxNzIgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVh
+dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRp
+YXRlay1wY2llLWdlbjMueWFtbA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sIGIvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0K
+PiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMDAwMDAwLi5mMTMzZmIw
+MTg0ZjENCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0KPiA+IEBAIC0wLDAgKzEs
+MTcyIEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wIE9SIEJTRC0y
+LUNsYXVzZSkNCj4gPiArJVlBTUwgMS4yDQo+ID4gKy0tLQ0KPiA+ICskaWQ6IGh0dHA6Ly9kZXZp
+Y2V0cmVlLm9yZy9zY2hlbWFzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbCMNCj4gPiArJHNj
+aGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4g
+Kw0KPiA+ICt0aXRsZTogR2VuMyBQQ0llIGNvbnRyb2xsZXIgb24gTWVkaWFUZWsgU29Dcw0KPiA+
+ICsNCj4gPiArbWFpbnRhaW5lcnM6DQo+ID4gKyAgLSBKaWFuanVuIFdhbmcgPGppYW5qdW4ud2Fu
+Z0BtZWRpYXRlay5jb20+DQo+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfCsNCj4gPiArICBQQ0ll
+IEdlbjMgTUFDIGNvbnRyb2xsZXIgZm9yIE1lZGlhVGVrIFNvQ3MsIGl0IHN1cHBvcnRzIEdlbjMg
+c3BlZWQNCj4gPiArICBhbmQgY29tcGF0aWJsZSB3aXRoIEdlbjIsIEdlbjEgc3BlZWQuDQo+ID4g
+Kw0KPiA+ICsgIFRoaXMgUENJZSBjb250cm9sbGVyIHN1cHBvcnRzIHVwIHRvIDI1NiBNU0kgdmVj
+dG9ycywgdGhlIE1TSSBoYXJkd2FyZQ0KPiA+ICsgIGJsb2NrIGRpYWdyYW0gaXMgYXMgZm9sbG93
+czoNCj4gPiArDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgKy0tLS0tKw0KPiA+ICsgICAgICAg
+ICAgICAgICAgICAgIHwgR0lDIHwNCj4gPiArICAgICAgICAgICAgICAgICAgICArLS0tLS0rDQo+
+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgXg0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+IHwNCj4gPiArICAgICAgICAgICAgICAgICAgIHBvcnQtPmlycQ0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIHwNCj4gPiArICAgICAgICAgICAgICAgKy0rLSstKy0rLSstKy0rLSsNCj4gPiAr
+ICAgICAgICAgICAgICAgfDB8MXwyfDN8NHw1fDZ8N3wgKFBDSWUgaW50YykNCj4gPiArICAgICAg
+ICAgICAgICAgKy0rLSstKy0rLSstKy0rLSsNCj4gPiArICAgICAgICAgICAgICAgIF4gXiAgICAg
+ICAgICAgXg0KPiA+ICsgICAgICAgICAgICAgICAgfCB8ICAgIC4uLiAgICB8DQo+ID4gKyAgICAg
+ICAgKy0tLS0tLS0rICstLS0tLS0rICAgICstLS0tLS0tLS0tLSsNCj4gPiArICAgICAgICB8ICAg
+ICAgICAgICAgICAgIHwgICAgICAgICAgICAgICAgfA0KPiA+ICsgICstKy0rLS0tKy0tKy0tKyAg
+Ky0rLSstLS0rLS0rLS0rICArLSstKy0tLSstLSstLSsNCj4gPiArICB8MHwxfC4uLnwzMHwzMXwg
+IHwwfDF8Li4ufDMwfDMxfCAgfDB8MXwuLi58MzB8MzF8IChNU0kgc2V0cykNCj4gPiArICArLSst
+Ky0tLSstLSstLSsgICstKy0rLS0tKy0tKy0tKyAgKy0rLSstLS0rLS0rLS0rDQo+ID4gKyAgIF4g
+XiAgICAgIF4gIF4gICAgXiBeICAgICAgXiAgXiAgICBeIF4gICAgICBeICBeDQo+ID4gKyAgIHwg
+fCAgICAgIHwgIHwgICAgfCB8ICAgICAgfCAgfCAgICB8IHwgICAgICB8ICB8ICAoTVNJIHZlY3Rv
+cnMpDQo+ID4gKyAgIHwgfCAgICAgIHwgIHwgICAgfCB8ICAgICAgfCAgfCAgICB8IHwgICAgICB8
+ICB8DQo+ID4gKw0KPiA+ICsgICAgKE1TSSBTRVQwKSAgICAgICAoTVNJIFNFVDEpICAuLi4gICAo
+TVNJIFNFVDcpDQo+ID4gKw0KPiA+ICsgIFdpdGggMjU2IE1TSSB2ZWN0b3JzIHN1cHBvcnRlZCwg
+dGhlIE1TSSB2ZWN0b3JzIGFyZSBjb21wb3NlZCBvZiA4IHNldHMsDQo+ID4gKyAgZWFjaCBzZXQg
+aGFzIGl0cyBvd24gYWRkcmVzcyBmb3IgTVNJIG1lc3NhZ2UsIGFuZCBzdXBwb3J0cyAzMiBNU0kg
+dmVjdG9ycw0KPiA+ICsgIHRvIGdlbmVyYXRlIGludGVycnVwdC4NCj4gPiArDQo+ID4gK2FsbE9m
+Og0KPiA+ICsgIC0gJHJlZjogL3NjaGVtYXMvcGNpL3BjaS1idXMueWFtbCMNCj4gPiArDQo+ID4g
+K3Byb3BlcnRpZXM6DQo+ID4gKyAgY29tcGF0aWJsZToNCj4gPiArICAgIGNvbnN0OiBtZWRpYXRl
+ayxtdDgxOTItcGNpZQ0KPiA+ICsNCj4gPiArICByZWc6DQo+ID4gKyAgICBtYXhJdGVtczogMQ0K
+PiA+ICsNCj4gPiArICBpbnRlcnJ1cHRzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+
+ID4gKyAgcmFuZ2VzOg0KPiA+ICsgICAgbWluSXRlbXM6IDENCj4gPiArICAgIG1heEl0ZW1zOiA4
+DQo+ID4gKw0KPiA+ICsgIHJlc2V0czoNCj4gPiArICAgIG1pbkl0ZW1zOiAxDQo+ID4gKyAgICBt
+YXhJdGVtczogMg0KPiANCj4gV2h5IHRoZSByYW5nZT8gVGhlIFNvQyBlaXRoZXIgaGFzIHRoZSBy
+ZXNldCBsaW5lcyBvciBpdCBkb2Vzbid0Lg0KPiANCj4gPiArDQo+ID4gKyAgcmVzZXQtbmFtZXM6
+DQo+ID4gKyAgICBhbnlPZjoNCj4gPiArICAgICAgLSBjb25zdDogbWFjDQo+ID4gKyAgICAgIC0g
+Y29uc3Q6IHBoeQ0KPiANCj4gSSBkb24ndCB0aGluayB0aGlzIHNob3VsZCBzdGF5LCBidXQgaWYg
+c28sIGJldHRlciBleHByZXNzZWQgbGlrZSB0aGlzOg0KPiANCj4gbWluSXRlbXM6IDENCj4gbWF4
+SXRlbXM6IDINCj4gaXRlbXM6DQo+ICAgZW51bTogWyBtYWMsIHBoeSBdDQoNCkhpIFJvYiwNCg0K
+VGhhbmtzIGZvciB5b3VyIHJldmlldywgZG9lcyB0aGlzIG1lYW5zIHRoYXQgSSBzaG91bGQgbWVy
+Z2UgdGhlIHJlc2V0cw0KYW5kIHJlc2V0LW5hbWVzIHRvZ2V0aGVyIGFzIHRoZSBmb2xsb3dpbmcg
+cHJvcGVydHk/DQoNCnJlc2V0czoNCiAgbWluSXRlbXM6IDENCiAgbWF4SXRlbXM6IDINCiAgaXRl
+bXM6DQogICAgZW51bTogWyBtYWMsIHBoeSBdDQo+IA0KPiANCj4gPiArDQo+ID4gKyAgY2xvY2tz
+Og0KPiA+ICsgICAgbWF4SXRlbXM6IDYNCj4gPiArDQo+ID4gKyAgY2xvY2stbmFtZXM6DQo+ID4g
+KyAgICBpdGVtczoNCj4gPiArICAgICAgLSBjb25zdDogcGxfMjUwbQ0KPiA+ICsgICAgICAtIGNv
+bnN0OiB0bF8yNm0NCj4gPiArICAgICAgLSBjb25zdDogdGxfOTZtDQo+ID4gKyAgICAgIC0gY29u
+c3Q6IHRsXzMyaw0KPiA+ICsgICAgICAtIGNvbnN0OiBwZXJpXzI2bQ0KPiA+ICsgICAgICAtIGNv
+bnN0OiB0b3BfMTMzbQ0KPiA+ICsNCj4gPiArICBhc3NpZ25lZC1jbG9ja3M6DQo+ID4gKyAgICBt
+YXhJdGVtczogMQ0KPiA+ICsNCj4gPiArICBhc3NpZ25lZC1jbG9jay1wYXJlbnRzOg0KPiA+ICsg
+ICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgcGh5czoNCj4gPiArICAgIG1heEl0ZW1zOiAx
+DQo+ID4gKw0KPiA+ICsgICcjaW50ZXJydXB0LWNlbGxzJzoNCj4gPiArICAgIGNvbnN0OiAxDQo+
+ID4gKw0KPiA+ICsgIGludGVycnVwdC1jb250cm9sbGVyOg0KPiA+ICsgICAgZGVzY3JpcHRpb246
+IEludGVycnVwdCBjb250cm9sbGVyIG5vZGUgZm9yIGhhbmRsaW5nIGxlZ2FjeSBQQ0kgaW50ZXJy
+dXB0cy4NCj4gPiArICAgIHR5cGU6IG9iamVjdA0KPiA+ICsgICAgcHJvcGVydGllczoNCj4gPiAr
+ICAgICAgJyNhZGRyZXNzLWNlbGxzJzoNCj4gPiArICAgICAgICBjb25zdDogMA0KPiA+ICsgICAg
+ICAnI2ludGVycnVwdC1jZWxscyc6DQo+ID4gKyAgICAgICAgY29uc3Q6IDENCj4gPiArICAgICAg
+aW50ZXJydXB0LWNvbnRyb2xsZXI6IHRydWUNCj4gPiArDQo+ID4gKyAgICByZXF1aXJlZDoNCj4g
+PiArICAgICAgLSAnI2FkZHJlc3MtY2VsbHMnDQo+ID4gKyAgICAgIC0gJyNpbnRlcnJ1cHQtY2Vs
+bHMnDQo+ID4gKyAgICAgIC0gaW50ZXJydXB0LWNvbnRyb2xsZXINCj4gPiArDQo+ID4gKyAgICBh
+ZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4gPiArDQo+ID4gK3JlcXVpcmVkOg0KPiA+ICsg
+IC0gY29tcGF0aWJsZQ0KPiA+ICsgIC0gcmVnDQo+ID4gKyAgLSBpbnRlcnJ1cHRzDQo+ID4gKyAg
+LSByYW5nZXMNCj4gPiArICAtIGNsb2Nrcw0KPiA+ICsgIC0gJyNpbnRlcnJ1cHQtY2VsbHMnDQo+
+ID4gKyAgLSBpbnRlcnJ1cHQtY29udHJvbGxlcg0KPiA+ICsNCj4gPiArdW5ldmFsdWF0ZWRQcm9w
+ZXJ0aWVzOiBmYWxzZQ0KPiA+ICsNCj4gPiArZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAg
+ICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvYXJtLWdpYy5oPg0K
+PiA+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2lycS5o
+Pg0KPiA+ICsNCj4gPiArICAgIGJ1cyB7DQo+ID4gKyAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8
+Mj47DQo+ID4gKyAgICAgICAgI3NpemUtY2VsbHMgPSA8Mj47DQo+ID4gKw0KPiA+ICsgICAgICAg
+IHBjaWU6IHBjaWVAMTEyMzAwMDAgew0KPiA+ICsgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1l
+ZGlhdGVrLG10ODE5Mi1wY2llIjsNCj4gPiArICAgICAgICAgICAgZGV2aWNlX3R5cGUgPSAicGNp
+IjsNCj4gPiArICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8Mz47DQo+ID4gKyAgICAgICAg
+ICAgICNzaXplLWNlbGxzID0gPDI+Ow0KPiA+ICsgICAgICAgICAgICByZWcgPSA8MHgwMCAweDEx
+MjMwMDAwIDB4MDAgMHg0MDAwPjsNCj4gPiArICAgICAgICAgICAgcmVnLW5hbWVzID0gInBjaWUt
+bWFjIjsNCj4gDQo+IE5vdCBkb2N1bWVudGVkLiBEcm9wLg0KSSB3aWxsIGFkZCB0aGUgcHJvcGVy
+dHkgaW5mb3JtYXRpb24gZm9yIHJlZy1uYW1lcyBpbiB0aGUgbmV4dCB2ZXJzaW9uLA0KaXQncyB1
+c2VkIGJ5IGNvbnRyb2xsZXIgZHJpdmVyIHRvIGdldCB0aGUgcmVnaXN0ZXIgcmVzb3VyY2UuDQoN
+ClRoYW5rcy4NCj4gDQo+ID4gKyAgICAgICAgICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAyNTEg
+SVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCj4gPiArICAgICAgICAgICAgYnVzLXJhbmdlID0gPDB4
+MDAgMHhmZj47DQo+ID4gKyAgICAgICAgICAgIHJhbmdlcyA9IDwweDgyMDAwMDAwIDB4MDAgMHgx
+MjAwMDAwMCAweDAwDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAweDEyMDAwMDAwIDB4MDAg
+MHgxMDAwMDAwPjsNCj4gPiArICAgICAgICAgICAgY2xvY2tzID0gPCZpbmZyYWNmZyA0ND4sDQo+
+ID4gKyAgICAgICAgICAgICAgICAgICAgIDwmaW5mcmFjZmcgNDA+LA0KPiA+ICsgICAgICAgICAg
+ICAgICAgICAgICA8JmluZnJhY2ZnIDQzPiwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgPCZp
+bmZyYWNmZyA5Nz4sDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgIDwmaW5mcmFjZmcgOTk+LA0K
+PiA+ICsgICAgICAgICAgICAgICAgICAgICA8JmluZnJhY2ZnIDExMT47DQo+ID4gKyAgICAgICAg
+ICAgIGNsb2NrLW5hbWVzID0gInBsXzI1MG0iLCAidGxfMjZtIiwgInRsXzk2bSIsDQo+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgInRsXzMyayIsICJwZXJpXzI2bSIsICJ0b3BfMTMzbSI7
+DQo+ID4gKyAgICAgICAgICAgIGFzc2lnbmVkLWNsb2NrcyA9IDwmdG9wY2tnZW4gNTA+Ow0KPiA+
+ICsgICAgICAgICAgICBhc3NpZ25lZC1jbG9jay1wYXJlbnRzID0gPCZ0b3Bja2dlbiA5MT47DQo+
+ID4gKw0KPiA+ICsgICAgICAgICAgICBwaHlzID0gPCZwY2llcGh5PjsNCj4gPiArICAgICAgICAg
+ICAgcGh5LW5hbWVzID0gInBjaWUtcGh5IjsNCj4gPiArICAgICAgICAgICAgcmVzZXRzID0gPCZp
+bmZyYWNmZ19yc3QgMD47DQo+ID4gKyAgICAgICAgICAgIHJlc2V0LW5hbWVzID0gInBoeSI7DQo+
+ID4gKw0KPiA+ICsgICAgICAgICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KPiA+ICsgICAg
+ICAgICAgICBpbnRlcnJ1cHQtbWFwLW1hc2sgPSA8MCAwIDAgMHg3PjsNCj4gPiArICAgICAgICAg
+ICAgaW50ZXJydXB0LW1hcCA9IDwwIDAgMCAxICZwY2llX2ludGMgMD4sDQo+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICA8MCAwIDAgMiAmcGNpZV9pbnRjIDE+LA0KPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgPDAgMCAwIDMgJnBjaWVfaW50YyAyPiwNCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIDwwIDAgMCA0ICZwY2llX2ludGMgMz47DQo+ID4gKyAgICAg
+ICAgICAgIHBjaWVfaW50YzogaW50ZXJydXB0LWNvbnRyb2xsZXIgew0KPiA+ICsgICAgICAgICAg
+ICAgICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQo+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+aW50ZXJydXB0LWNvbnRyb2xsZXI7DQo+ID4gKyAgICAgICAgICAgIH07DQo+ID4gKyAgICAgICAg
+fTsNCj4gPiArICAgIH07DQo+ID4gLS0gDQo+ID4gMi4yNS4xDQo+ID4gDQo+IA0KPiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eC1tZWRpYXRl
+ayBtYWlsaW5nIGxpc3QNCj4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVr
+DQoNCg==
 
