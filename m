@@ -2,123 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876DA303B0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057D9303B0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404903AbhAZLEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:04:55 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:58586 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbhAZEeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 23:34:00 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611635616; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=YoZ7b2gqHviotf0RFHsePw2Vtw+XQmyfSKqQucAiqTU=; b=NPA0NozxXTC3Lngu5bdmjCX8CmhhOFJnffv/BwHSuBEMosRVxuySmGVbMs9DPtJHWAtKwXWJ
- kOEOVVphkPHPbly1gD1fOHPGc83B6M9OiGow3x4M5lfT0N4kXGHJnYIFjc86Qrw7ZF7mpN3L
- CvC1Ft2HgQHz72OBtR/IWytsplg=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 600f9b72bdcf468287eeb287 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 04:32:50
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 755FEC43464; Tue, 26 Jan 2021 04:32:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.110.78.65] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1E8F0C433C6;
-        Tue, 26 Jan 2021 04:32:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1E8F0C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
- requirements
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
-        jackp@codeaurora.org
-References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
- <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
- <YAsHbj/mITeiY5Cq@builder.lan>
- <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
- <20210126015543.GB1241218@yoga>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <99dd9419-a8fd-9eb2-9582-d24f865ecf70@codeaurora.org>
-Date:   Mon, 25 Jan 2021 20:32:47 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2404937AbhAZLE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:04:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45500 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726822AbhAZEe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 23:34:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3948AAD78;
+        Tue, 26 Jan 2021 04:34:15 +0000 (UTC)
+Subject: Re: [PATCH] bcache: dont reset bio opf in bch_data_insert_start
+To:     Dongsheng Yang <dongsheng.yang@easystack.cn>
+References: <20210125042942.1087170-1-dongsheng.yang@easystack.cn>
+ <7569abf3-3e54-986e-8307-751fa5e00828@suse.de>
+ <17578d50-4113-8f25-827e-840fafb09d6f@easystack.cn>
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchristi@redhat.com
+From:   Coly Li <colyli@suse.de>
+Message-ID: <92c66f2d-22af-abd7-6fcb-ad896185c0c6@suse.de>
+Date:   Tue, 26 Jan 2021 12:34:12 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210126015543.GB1241218@yoga>
+In-Reply-To: <17578d50-4113-8f25-827e-840fafb09d6f@easystack.cn>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/25/2021 5:55 PM, Bjorn Andersson wrote:
-> On Mon 25 Jan 19:14 CST 2021, Wesley Cheng wrote:
+On 1/26/21 12:32 PM, Dongsheng Yang wrote:
 > 
->>
->>
->> On 1/22/2021 9:12 AM, Bjorn Andersson wrote:
->>> On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
+> 在 2021/1/25 星期一 下午 12:53, Coly Li 写道:
+>> On 1/25/21 12:29 PM, Dongsheng Yang wrote:
+>>> commit ad0d9e76(bcache: use bio op accessors) makes the bi_opf
+>>> modified by bio_set_op_attrs(). But there is a logical
+>>> problem in this commit:
 >>>
->>
->> Hi Bjorn,
+>>>                  trace_bcache_cache_insert(k);
+>>>                  bch_keylist_push(&op->insert_keys);
 >>>
->>> Under what circumstances should we specify this? And in particular are
->>> there scenarios (in the Qualcomm platforms) where this must not be set?
->>> The TXFIFO dynamic allocation is actually a feature within the DWC3
->> controller, and isn't specifically for QCOM based platforms.  It won't
->> do any harm functionally if this flag is not set, as this is meant for
->> enhancing performance/bandwidth.
->>
->>> In particular, the composition can be changed in runtime, so should we
->>> set this for all Qualcomm platforms?
+>>> -               n->bi_rw |= REQ_WRITE;
+>>> +               bio_set_op_attrs(n, REQ_OP_WRITE, 0);
+>>>                  bch_submit_bbio(n, op->c, k, 0);
+>>>          } while (n != bio);
 >>>
->> Ideally yes, if we want to increase bandwith for situations where SS
->> endpoint bursting is set to a higher value.
->>
->>> And if that's the case, can we not just set it from the qcom driver?
+>>> The old code add REQ_WRITE into bio n and keep other flags; the
+>>> new code set REQ_OP_WRITE to bi_opf, but reset all other flags.
 >>>
->> Since this is a common DWC3 core feature, I think it would make more
->> sense to have it in DWC3 core instead of a vendor's DWC3 glue driver.
+>>> This problem is discoverd in our performance testing:
+>>> (1) start a fio with 1M x 128depth for read in /dev/nvme0n1p1
+>>> (2) start a fio with 1M x 128depth for write in /dev/escache0 (cache
+>>> device is /dev/nvme0n1p2)
+>>>
+>>> We found the BW of reading is 2000+M/s, but the BW of writing is
+>>> 0-100M/s. After some debugging, we found the problem is io submit in
+>>> writting is very slow.
+>>>
+>>> bch_data_insert_start() insert a bio to /dev/nvme0n1p1, but as
+>>> cached_dev submit stack bio will be added into current->bio_list, and
+>>> return.Then __submit_bio_noacct() will submit the new bio in bio_list
+>>> into /dev/nvme0n1p1. This operation would be slow in
+>>> blk_mq_submit_bio() -> rq_qos_throttle(q, bio);
+>>>
+>>> The rq_qos_throttle() will call wbt_should_throttle(),
+>>> static inline bool wbt_should_throttle(struct rq_wb *rwb, struct bio
+>>> *bio)
+>>> {
+>>>          switch (bio_op(bio)) {
+>>>          case REQ_OP_WRITE:
+>>>                  /*
+>>>                   * Don't throttle WRITE_ODIRECT
+>>>                   */
+>>>                  if ((bio->bi_opf & (REQ_SYNC | REQ_IDLE)) ==
+>>>                      (REQ_SYNC | REQ_IDLE))
+>>>                          return false;
+>>> ... ...
+>>> }
+>>>
+>>> As the bio_set_op_attrs() reset the (REQ_SYNC | REQ_IDLE), so this write
+>>> bio will be considered as non-direct write.
+>>>
+>>> After this fix, bio to nvme will flaged as (REQ_SYNC | REQ_IDLE),
+>>> then fio for writing will get about 1000M/s bandwidth.
+>>>
+>>> Fixes: ad0d9e76a4124708dddd00c04fc4b56fc86c02d6
+>> It should be,
+>> Fixes: ad0d9e76a412 ("bcache: use bio op accessors")
 >>
+>>> Signed-off-by: Dongsheng Yang<dongsheng.yang@easystack.cn>
+>> Please CC the fixed patch author  Mike Christie<mchristi@redhat.com>.
 > 
-> I don't have any objections to implementing it in the core driver, but
-> my question is can we just skip the DT binding and just enable it from
-> the vendor driver?
 > 
-> Regards,
-> Bjorn
+> Hi Coly,
+> 
+>     Should I send a V2 for commit message update?
+> 
+> Or you can help to fix it when you take it from maillist?
 > 
 
-Hi Bjorn,
+Yes, please fix it in v2 version. And let's wait for response from Mike,
+maybe he has better suggestion to fix.
 
-I see.  I think there are some designs which don't have a DWC3 glue
-driver, so assuming there may be other platforms using this, there may
-not always be a vendor driver to set this.
+Thanks.
 
-Thanks
-Wesley Cheng
+Coly Li
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
