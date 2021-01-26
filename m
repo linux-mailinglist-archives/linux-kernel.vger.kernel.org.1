@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9240E303E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04422303E40
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404210AbhAZNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S2392457AbhAZNMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403854AbhAZMrY (ORCPT
+        with ESMTP id S2391655AbhAZMrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:47:24 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CCEC0698C5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:45:48 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id c127so2614880wmf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:45:48 -0800 (PST)
+        Tue, 26 Jan 2021 07:47:52 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B1EC0698C9
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:45:49 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id 6so16308797wri.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:45:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HHkd09sGQoktrv+rkNaMJyxZ3/BBMappx4i1qFyA51o=;
-        b=TnYbFNbQymHArsvv6uMgb5tO3NV5ZnbJxvZzMuj+1YlGF4WEMMgKVeViAGi6q+qoFc
-         rYEHRkr8wrhzIEJ0KYFizjHBZBjPUmAsSX6B5wGaskQglrH5c5UrsbeGazcmS4NCeKZN
-         TSs37HB8TICrWogbEReV4KE2rUwYlSEIGChJJpEOQRJ14zYlsqmuH2ASFKwrrazTfWr8
-         VILbJQ0gzu9SJzW4ozcjvP5X86pRPWJ3yrCL9TdRNXG/eX+lfARbzE0B34srRPyLEGZI
-         hpdL8SOAnlS8c9NJf96iFNX4CEopinC21YSoHPMIAmS1K3vJl9xlXnezvOkzEHpxNqRb
-         N4ow==
+        bh=WIsLlUBr7Kh7BZjK4/tzaEQaD5gOhXUmlIRcSEzBbI8=;
+        b=KBIuvuxWrh/YHwqRTTMIL423owDV0Nl1IVyou3pBo7m5XVmmufbH5nQK9UNoFci9Eo
+         jVd9fgJLVT8P5uq6Tv2hUOZ9+OmlPR2PsLU6f8QlQVValXfKle4l32gUn/QJK8Ifgcv0
+         PBMoX2RNgiCpryMQMK1LgBovkr9KiSwo9NDHo9y1CqE+KTyu+vn0zsuofbhM+8uthjoU
+         E1fgKyqvTOHvY27HGmHT1IrWVy9fUyTb7ggpapnW8AlsJOW+hn23+BnmfNu51ZVTyIc7
+         /PFTwFTeqSl+AFoJMglXVM+qTf0RV0zQXwGfgKA+LqDD261F7dYfnxgJiiTyF2aTIXIX
+         PBAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HHkd09sGQoktrv+rkNaMJyxZ3/BBMappx4i1qFyA51o=;
-        b=OfW/91LwIvLgimiDb9NExTJRtyjpGTy46U7WBtTJamJAWLIcsUGThaOrXe+qQeuJK+
-         hqUIMIQGpBraiBg5Sq+Vd+qwTJ7qe5bOxwN5zXzUs9uGm/QNrXBzPhx74lYcd8+6bqzl
-         aQuj1kZUbzE9fOjCxg6uA3V7QhNbNr2KzlvVN/IMzZ5h1DpY0z8z8nDy1L15Twyrmveq
-         nsxrtRKpX+VshwkNcjbxOHCmlvqx+RMzzWkGo3cjFdM2qvHOM6quKWPhVa4HovrAOnJs
-         rhH6D3TA28LNDMyj2MG/l6NbqRrQevF/cjUkkFoV4mCRNEScP4UfxSixIbodH4dGSZMu
-         QEWw==
-X-Gm-Message-State: AOAM533+6M6BZmtBXPII5QCwVKmyfsUNDgI6cHBu14OQBjAB4MwjWw8h
-        JCh8Zoa4HUrqKnN7EyXdQSoW2A==
-X-Google-Smtp-Source: ABdhPJznDZLr3xkcd36SC/SloQ9HjiUzc0tkJlFOigVXQd5LVJLP45/rs7+AF+735jAMGyeQsWkaDQ==
-X-Received: by 2002:a1c:9648:: with SMTP id y69mr4463242wmd.40.1611665147239;
-        Tue, 26 Jan 2021 04:45:47 -0800 (PST)
+        bh=WIsLlUBr7Kh7BZjK4/tzaEQaD5gOhXUmlIRcSEzBbI8=;
+        b=G5Szd8Hrgwk1RxiaQKUwsjt0CXtzqUu80tI1B0Jyf+cnlsIfkEW/m+J0Xj9Vqw2OWr
+         r2Yso4Fv3S65KpvXrQRknBras6gOlzmT55Gao6/RVv9yacL+JrmQGszF7PsR+n//kPcy
+         PTw54Fkgr38qoMWs/wBwbhijFBCYRWrNqc0ZSxJKWZv0s6/mDkCTiGECVNFywr+iJxjX
+         b+z0+tdgUqKoIluXcWZNAHcUTO2J9hlcOL6GFhzaxUYgGXoOrO9P19Dp3YF8+zxHTX3J
+         bqkBaoFsh1BQb4kAVbEtsLDdQWgvmWERAVzPuFMdmtLBPE899goIF6e5MyvrJ7TSLK1w
+         qEzQ==
+X-Gm-Message-State: AOAM530uZUKR2dmhPl+He49AOILY6/JDnZRmFjLfM0fElL22qM3ASG2Z
+        0OzYXdHUDp0NAxNGmQ1a6MlMQAI+omFqQaVa
+X-Google-Smtp-Source: ABdhPJw0HLmHdiO+0F1VaKkiHXNhdaDuJI4cogpFC+eE4O4lwiCiOlbdxHobBO6VAE1F0EjG2/oIlA==
+X-Received: by 2002:adf:c18d:: with SMTP id x13mr5826470wre.128.1611665148519;
+        Tue, 26 Jan 2021 04:45:48 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id i131sm3263073wmi.25.2021.01.26.04.45.46
+        by smtp.gmail.com with ESMTPSA id i131sm3263073wmi.25.2021.01.26.04.45.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:45:46 -0800 (PST)
+        Tue, 26 Jan 2021 04:45:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Tero Kristo <kristo@kernel.org>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Richard Woodruff <r-woodruff2@ti.com>,
-        linux-omap@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: [PATCH 02/21] clk: ti: clkt_dpll: Fix some kernel-doc misdemeanours
-Date:   Tue, 26 Jan 2021 12:45:21 +0000
-Message-Id: <20210126124540.3320214-3-lee.jones@linaro.org>
+        Stephen Boyd <sboyd@kernel.org>, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH 03/21] clk: ti: dpll3xxx: Fix some kernel-doc headers and promote other worthy ones
+Date:   Tue, 26 Jan 2021 12:45:22 +0000
+Message-Id: <20210126124540.3320214-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
 References: <20210126124540.3320214-1-lee.jones@linaro.org>
@@ -69,36 +68,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/clk/ti/clkt_dpll.c:284: warning: Function parameter or member 'hw' not described in 'omap2_dpll_round_rate'
- drivers/clk/ti/clkt_dpll.c:284: warning: Function parameter or member 'parent_rate' not described in 'omap2_dpll_round_rate'
- drivers/clk/ti/clkt_dpll.c:284: warning: Excess function parameter 'clk' description in 'omap2_dpll_round_rate'
+ drivers/clk/ti/dpll3xxx.c:414: warning: Function parameter or member 'hw' not described in 'omap3_dpll_recalc'
+ drivers/clk/ti/dpll3xxx.c:414: warning: Function parameter or member 'parent_rate' not described in 'omap3_dpll_recalc'
+ drivers/clk/ti/dpll3xxx.c:414: warning: Excess function parameter 'clk' description in 'omap3_dpll_recalc'
+ drivers/clk/ti/dpll3xxx.c:437: warning: Function parameter or member 'hw' not described in 'omap3_noncore_dpll_enable'
+ drivers/clk/ti/dpll3xxx.c:437: warning: Excess function parameter 'clk' description in 'omap3_noncore_dpll_enable'
+ drivers/clk/ti/dpll3xxx.c:479: warning: Function parameter or member 'hw' not described in 'omap3_noncore_dpll_disable'
+ drivers/clk/ti/dpll3xxx.c:479: warning: Excess function parameter 'clk' description in 'omap3_noncore_dpll_disable'
+ drivers/clk/ti/dpll3xxx.c:755: warning: Function parameter or member 'hw' not described in 'omap3_clkoutx2_recalc'
+ drivers/clk/ti/dpll3xxx.c:755: warning: Function parameter or member 'parent_rate' not described in 'omap3_clkoutx2_recalc'
+ drivers/clk/ti/dpll3xxx.c:755: warning: Excess function parameter 'clk' description in 'omap3_clkoutx2_recalc'
 
 Cc: Tero Kristo <kristo@kernel.org>
 Cc: Michael Turquette <mturquette@baylibre.com>
 Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Richard Woodruff <r-woodruff2@ti.com>
 Cc: linux-omap@vger.kernel.org
 Cc: linux-clk@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/clk/ti/clkt_dpll.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/clk/ti/dpll3xxx.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/ti/clkt_dpll.c b/drivers/clk/ti/clkt_dpll.c
-index 87ece6cd4226b..dfaa4d1f0b64b 100644
---- a/drivers/clk/ti/clkt_dpll.c
-+++ b/drivers/clk/ti/clkt_dpll.c
-@@ -269,8 +269,9 @@ unsigned long omap2_get_dpll_rate(struct clk_hw_omap *clk)
+diff --git a/drivers/clk/ti/dpll3xxx.c b/drivers/clk/ti/dpll3xxx.c
+index 2490026948b47..6097b099a5dff 100644
+--- a/drivers/clk/ti/dpll3xxx.c
++++ b/drivers/clk/ti/dpll3xxx.c
+@@ -125,7 +125,7 @@ static u16 _omap3_dpll_compute_freqsel(struct clk_hw_omap *clk, u8 n)
+ 	return f;
+ }
+ 
+-/*
++/**
+  * _omap3_noncore_dpll_lock - instruct a DPLL to lock and wait for readiness
+  * @clk: pointer to a DPLL struct clk
+  *
+@@ -168,7 +168,7 @@ static int _omap3_noncore_dpll_lock(struct clk_hw_omap *clk)
+ 	return r;
+ }
+ 
+-/*
++/**
+  * _omap3_noncore_dpll_bypass - instruct a DPLL to bypass and wait for readiness
+  * @clk: pointer to a DPLL struct clk
+  *
+@@ -204,7 +204,7 @@ static int _omap3_noncore_dpll_bypass(struct clk_hw_omap *clk)
+ 	return r;
+ }
+ 
+-/*
++/**
+  * _omap3_noncore_dpll_stop - instruct a DPLL to stop
+  * @clk: pointer to a DPLL struct clk
+  *
+@@ -291,7 +291,7 @@ static void _lookup_sddiv(struct clk_hw_omap *clk, u8 *sd_div, u16 m, u8 n)
+ 	*sd_div = sd;
+ }
+ 
+-/*
++/**
+  * _omap3_noncore_dpll_program - set non-core DPLL M,N values directly
+  * @clk:	struct clk * of DPLL to set
+  * @freqsel:	FREQSEL value to set
+@@ -406,7 +406,8 @@ static int omap3_noncore_dpll_program(struct clk_hw_omap *clk, u16 freqsel)
  
  /**
-  * omap2_dpll_round_rate - round a target rate for an OMAP DPLL
-- * @clk: struct clk * for a DPLL
-+ * @hw: struct clk_hw containing the struct clk * for a DPLL
-  * @target_rate: desired DPLL clock rate
-+ * @parent_rate: parent's DPLL clock rate
+  * omap3_dpll_recalc - recalculate DPLL rate
+- * @clk: DPLL struct clk
++ * @hw: struct clk_hw containing the DPLL struct clk
++ * @parent_rate: clock rate of the DPLL parent
   *
-  * Given a DPLL and a desired target rate, round the target rate to a
-  * possible, programmable rate for this DPLL.  Attempts to select the
+  * Recalculate and propagate the DPLL rate.
+  */
+@@ -421,7 +422,7 @@ unsigned long omap3_dpll_recalc(struct clk_hw *hw, unsigned long parent_rate)
+ 
+ /**
+  * omap3_noncore_dpll_enable - instruct a DPLL to enter bypass or lock mode
+- * @clk: pointer to a DPLL struct clk
++ * @hw: struct clk_hw containing then pointer to a DPLL struct clk
+  *
+  * Instructs a non-CORE DPLL to enable, e.g., to enter bypass or lock.
+  * The choice of modes depends on the DPLL's programmed rate: if it is
+@@ -470,7 +471,7 @@ int omap3_noncore_dpll_enable(struct clk_hw *hw)
+ 
+ /**
+  * omap3_noncore_dpll_disable - instruct a DPLL to enter low-power stop
+- * @clk: pointer to a DPLL struct clk
++ * @hw: struct clk_hw containing then pointer to a DPLL struct clk
+  *
+  * Instructs a non-CORE DPLL to enter low-power stop.  This function is
+  * intended for use in struct clkops.  No return value.
+@@ -745,7 +746,8 @@ static struct clk_hw_omap *omap3_find_clkoutx2_dpll(struct clk_hw *hw)
+ 
+ /**
+  * omap3_clkoutx2_recalc - recalculate DPLL X2 output virtual clock rate
+- * @clk: DPLL output struct clk
++ * @hw: pointer  struct clk_hw
++ * @parent_rate: clock rate of the DPLL parent
+  *
+  * Using parent clock DPLL data, look up DPLL state.  If locked, set our
+  * rate to the dpll_clk * 2; otherwise, just use dpll_clk.
+@@ -913,7 +915,7 @@ const struct clk_hw_omap_ops clkhwops_omap3_dpll = {
+  * omap3_dpll4_set_rate - set rate for omap3 per-dpll
+  * @hw: clock to change
+  * @rate: target rate for clock
+- * @parent_rate: rate of the parent clock
++ * @parent_rate: clock rate of the DPLL parent
+  *
+  * Check if the current SoC supports the per-dpll reprogram operation
+  * or not, and then do the rate change if supported. Returns -EINVAL
 -- 
 2.25.1
 
