@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C6F304180
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0385F30417C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406108AbhAZPGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:06:36 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:25143 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406091AbhAZPEt (ORCPT
+        id S2406080AbhAZPGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406084AbhAZPEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:04:49 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611673458; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=IztOt7KkSVqYmC1VzzYEoYQ79+qoX3F00dyOKDY9YFY=; b=i+i06lIL2rnKZew+VEO4pLUrPCStJJjBULND46zkr6/AMjQZ2WzEKTYdF1P/99QLhHSSnaMn
- 5WwsDiWzaDriKZ/qATAMQzsSBAQ2fZoEiwUr8qPoAZLd/D+ranJPYDCnxvx15o+ZAior17D/
- dA+e/VBXK9QYhxFYK+LMjE5kWlg=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60102f305677aca7bd5a4f8d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 15:03:12
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 05215C43461; Tue, 26 Jan 2021 15:03:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51099C433CA;
-        Tue, 26 Jan 2021 15:03:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51099C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        jorge@foundries.io
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] watchdog: qcom: Remove incorrect usage of QCOM_WDT_ENABLE_IRQ
-Date:   Tue, 26 Jan 2021 20:32:41 +0530
-Message-Id: <20210126150241.10009-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        Tue, 26 Jan 2021 10:04:24 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680A0C061A29
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:03:44 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id t8so12609597ljk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:03:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KecQmTVET4kmmQb+nGX7vlSRx0qisPRYWkX9lTkeJwg=;
+        b=tMxc7G8wt7liaMOEZUYsU792Zl7DIEWinvwQf01g4C8G/gktlKtYPlb7aVD62qQ31+
+         TPPtTaUtCo2l4J5uChJE5wyRijakGYaqqa2MQs3sXeJ6yGWOfzqclxWdEx0HVKMfFDYG
+         oHiR5NSBEyR/jx33tUPqlH/vW44cGk0fPXHXZR9gjcaG5aOHK3z9o1IukaoSzqdmfbcs
+         jxHfV5wr5/guFDlOmSiARfMcRXavnjpy28Nr9/iIWcrppMd5sTTUSMCd9KS+yvyA13U+
+         DaKco1PmEy5DWKAzQVVSEZzTVyl92U1eFp5S26ttUknDtHEL3FVabupf6FM2hcu1x8Yw
+         7FTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KecQmTVET4kmmQb+nGX7vlSRx0qisPRYWkX9lTkeJwg=;
+        b=jD+kaxjY9LyAmK1p5ksSYhcWAuBd4MXPnaIxv0tflXb8/GHr1N/JMj9V8kGGe4AZMW
+         vMbZ1WZI8lvrJjTGwvBuD3KZbxeJvjywF3qhpJlvVbYGMdHMw9vFK9PM5svCp4XIed8c
+         n5CPpJbz94wOvVW7YNZkAyn52qu5twmKeBTqIhW09aafLLiikcKidc4dI31g2FDmxLy7
+         Dwrq36tMCTPbzQNGtSH9Y71mbu5mgviZpSmSzGx/+DFJ668mwTdeoCNtLcWQtGvD2S0i
+         AxP9MxFpuKDOlQiXQjP4FDPf3FPggSuxnsK/O8GCR60mJq7dcw1jutLGdCh1ZWH9LTGV
+         Hy/g==
+X-Gm-Message-State: AOAM533oo4x7NQJeodvwlHxGhgT/ILsJIWo99eInEbMkhaLATrJm0esx
+        f4D8rRgYD/fzr4bSKpl82L9/MtlgSGRKCSRj01lLYg==
+X-Google-Smtp-Source: ABdhPJwG/6a1Su0120L5C7R1KMmFNO61Pb5eFJNnzViBU06i6BbRAEw7ofQUlMC7EP9ZRYICO8aQcEMFWBxyALLM+7A=
+X-Received: by 2002:a2e:b4cd:: with SMTP id r13mr3186242ljm.273.1611673422964;
+ Tue, 26 Jan 2021 07:03:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
+ <20210121164013.cqfxvach4ugkohm7@gilmour> <CACRpkdb1gn2e9=ip6ipAwW27vmf1FCs_y1Z=w-K8y8Z9MXVBMw@mail.gmail.com>
+ <5c4b7a8c-c549-43ae-8ec6-5ae3ed26d321.liu.xiang@zlingsmart.com>
+In-Reply-To: <5c4b7a8c-c549-43ae-8ec6-5ae3ed26d321.liu.xiang@zlingsmart.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 26 Jan 2021 16:03:29 +0100
+Message-ID: <CACRpkdaJQcuWwS2g4UgRpWb+iHYSmWoNj6gEsvGwtPZq+aJBbQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
+To:     liu xiang <liu.xiang@zlingsmart.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        liuxiang_1999 <liuxiang_1999@126.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
-of watchdog control register is wakeup interrupt enable bit and
-not related to bark interrupt at all, BIT(0) is used for that.
-So remove incorrect usage of this bit when supporting bark irq for
-pre-timeout notification. Currently with this bit set and bark
-interrupt specified, pre-timeout notification and/or watchdog
-reset/bite does not occur.
+On Tue, Jan 26, 2021 at 7:31 AM liu xiang <liu.xiang@zlingsmart.com> wrote:
 
-Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the bark irq is available")
-Cc: stable@vger.kernel.org
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
+> > Liu can you make a patch to Kconfig to just select REGULATOR?
+> > Possibly even the specific regulator driver this SoC is using
+> > if it is very specific for this purpose.
+>
+> I found that the regulator driver is related to the specific board, not the SoC.
+> There is no board config for ARM64 SoC like ARM.
+> Is a good idea to select the regulator driver in the pinctrl Konfig? Or just
+> select CONFIG_REGULATOR_FIXED_VOLTAGE to avoid the use-after-free warning?
 
-Reading the conversations from when qcom pre-timeout support was
-added [1], Bjorn already had mentioned it was not right to touch this
-bit, not sure which SoC the pre-timeout was tested on at that time,
-but I have tested this on SDM845, SM8150, SC7180 and watchdog bark
-and bite does not occur with enabling this bit with the bark irq
-specified in DT.
+If that regulator is what the board uses to satisfy this driver then that
+is what you should select. Write some blurb in the commit message
+about what is going on.
 
-[1] https://lore.kernel.org/linux-watchdog/20190906174009.GC11938@tuxbook-pro/
+You can even add a comment in Kconfig like that:
 
----
- drivers/watchdog/qcom-wdt.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+# Needed to provide power to rails
+select REGULATOR_FIXED_VOLTAGE
 
-diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-index 7cf0f2ec649b..e38a87ffe5f5 100644
---- a/drivers/watchdog/qcom-wdt.c
-+++ b/drivers/watchdog/qcom-wdt.c
-@@ -22,7 +22,6 @@ enum wdt_reg {
- };
- 
- #define QCOM_WDT_ENABLE		BIT(0)
--#define QCOM_WDT_ENABLE_IRQ	BIT(1)
- 
- static const u32 reg_offset_data_apcs_tmr[] = {
- 	[WDT_RST] = 0x38,
-@@ -63,16 +62,6 @@ struct qcom_wdt *to_qcom_wdt(struct watchdog_device *wdd)
- 	return container_of(wdd, struct qcom_wdt, wdd);
- }
- 
--static inline int qcom_get_enable(struct watchdog_device *wdd)
--{
--	int enable = QCOM_WDT_ENABLE;
--
--	if (wdd->pretimeout)
--		enable |= QCOM_WDT_ENABLE_IRQ;
--
--	return enable;
--}
--
- static irqreturn_t qcom_wdt_isr(int irq, void *arg)
- {
- 	struct watchdog_device *wdd = arg;
-@@ -91,7 +80,7 @@ static int qcom_wdt_start(struct watchdog_device *wdd)
- 	writel(1, wdt_addr(wdt, WDT_RST));
- 	writel(bark * wdt->rate, wdt_addr(wdt, WDT_BARK_TIME));
- 	writel(wdd->timeout * wdt->rate, wdt_addr(wdt, WDT_BITE_TIME));
--	writel(qcom_get_enable(wdd), wdt_addr(wdt, WDT_EN));
-+	writel(QCOM_WDT_ENABLE, wdt_addr(wdt, WDT_EN));
- 	return 0;
- }
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Yours,
+Linus Walleij
