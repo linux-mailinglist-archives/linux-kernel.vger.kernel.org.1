@@ -2,137 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C325303BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD709303BC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405259AbhAZLgE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 06:36:04 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:29191 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403860AbhAZKUX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:20:23 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UMybJJp_1611656340;
-Received: from 30.27.242.88(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UMybJJp_1611656340)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 26 Jan 2021 18:19:31 +0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v3 0/4] sched/fair: Burstable CFS bandwidth controller
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
-Date:   Tue, 26 Jan 2021 18:18:59 +0800
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, khlebnikov@yandex-team.ru,
-        linux-kernel@vger.kernel.org, mgorman@suse.de, mingo@redhat.com,
-        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <9FD4A7E9-B545-40AB-A5B5-66DF37991474@linux.alibaba.com>
-References: <20201217074620.58338-1-changhuaixin@linux.alibaba.com>
- <20210121110453.18899-1-changhuaixin@linux.alibaba.com>
-To:     changhuaixin <changhuaixin@linux.alibaba.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S2392526AbhAZLgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:36:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43358 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390944AbhAZKUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:20:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611656392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FkBlpLaDLCjmZaDvBj+nmc1/By5Jyg5M7J+fO4B7Whk=;
+        b=mtCxn6j0A/mh0LBKPiDz4ztviV4HkdrzPqf3uj9oB4ypZic601FKrti0WVEckGQnRr99Cd
+        49ulTY0OojdKvVqB8DyMLyGtVT3l1L6HWwjvOsiIsbmeTyXT7T1PhEh7zUswGx3af0EVxk
+        q5DAUvY+as7fxIaUNVFBvFArUNaDp8E=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4B6D6AE40;
+        Tue, 26 Jan 2021 10:19:52 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 11:19:50 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+Message-ID: <20210126101950.GJ827@dhcp22.suse.cz>
+References: <20210121122723.3446-1-rppt@kernel.org>
+ <20210121122723.3446-7-rppt@kernel.org>
+ <20210125170122.GU827@dhcp22.suse.cz>
+ <20210125213618.GL6332@kernel.org>
+ <20210126071614.GX827@dhcp22.suse.cz>
+ <20210126083311.GN6332@kernel.org>
+ <20210126090013.GF827@dhcp22.suse.cz>
+ <20210126092011.GP6332@kernel.org>
+ <20210126094903.GI827@dhcp22.suse.cz>
+ <23850371-a19f-51fa-d813-6e78624ee8f8@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23850371-a19f-51fa-d813-6e78624ee8f8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue 26-01-21 10:53:08, David Hildenbrand wrote:
+[...]
+> I assume you've seen the benchmark results provided by Xing Zhengjun
+> 
+> https://lore.kernel.org/linux-mm/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
 
+I was not. Thanks for the pointer. I will have a look.
 
-> On Jan 21, 2021, at 7:04 PM, Huaixin Chang <changhuaixin@linux.alibaba.com> wrote:
-> 
-> Changelog
-> 
-> v3:
-> 1. Fix another issue reported by test robot.
-> 2. Update docs as Randy Dunlap suggested.
-> 
-> v2:
-> 1. Fix an issue reported by test robot.
-> 2. Rewriting docs. Appreciate any further suggestions or help.
-> 
-> The CFS bandwidth controller limits CPU requests of a task group to
-> quota during each period. However, parallel workloads might be bursty
-> so that they get throttled. And they are latency sensitive at the same
-> time so that throttling them is undesired.
-> 
-> Scaling up period and quota allows greater burst capacity. But it might
-> cause longer stuck till next refill. We introduce "burst" to allow
-> accumulating unused quota from previous periods, and to be assigned when
-> a task group requests more CPU than quota during a specific period. Thus
-> allowing CPU time requests as long as the average requested CPU time is
-> below quota on the long run. The maximum accumulation is capped by burst
-> and is set 0 by default, thus the traditional behaviour remains.
-> 
-> A huge drop of 99th tail latency from more than 500ms to 27ms is seen for
-> real java workloads when using burst. Similar drops are seen when
-> testing with schbench too:
-> 
-> 	echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
-> 	echo 700000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
-> 	echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_period_us
-> 	echo 400000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
-> 
-> 	# The average CPU usage is around 500%, which is 200ms CPU time
-> 	# every 40ms.
-> 	./schbench -m 1 -t 30 -r 60 -c 10000 -R 500
-> 
-> 	Without burst:
-> 
-> 	Latency percentiles (usec)
-> 	50.0000th: 7
-> 	75.0000th: 8
-> 	90.0000th: 9
-> 	95.0000th: 10
-> 	*99.0000th: 933
-> 	99.5000th: 981
-> 	99.9000th: 3068
-> 	min=0, max=20054
-> 	rps: 498.31 p95 (usec) 10 p99 (usec) 933 p95/cputime 0.10% p99/cputime 9.33%
-> 
-> 	With burst:
-> 
-> 	Latency percentiles (usec)
-> 	50.0000th: 7
-> 	75.0000th: 8
-> 	90.0000th: 9
-> 	95.0000th: 9
-> 	*99.0000th: 12
-> 	99.5000th: 13
-> 	99.9000th: 19
-> 	min=0, max=406
-> 	rps: 498.36 p95 (usec) 9 p99 (usec) 12 p95/cputime 0.09% p99/cputime 0.12%
-> 
-> How much workloads with benefit from burstable CFS bandwidth control
-> depends on how bursty and how latency sensitive they are.
-> 
-> Previously, Cong Wang and Konstantin Khlebnikov proposed similar
-> feature:
-> https://lore.kernel.org/lkml/20180522062017.5193-1-xiyou.wangcong@gmail.com/
-> https://lore.kernel.org/lkml/157476581065.5793.4518979877345136813.stgit@buzz/
-> 
-> This time we present more latency statistics and handle overflow while
-> accumulating.
-> 
-> Huaixin Chang (4):
->  sched/fair: Introduce primitives for CFS bandwidth burst
->  sched/fair: Make CFS bandwidth controller burstable
->  sched/fair: Add cfs bandwidth burst statistics
->  sched/fair: Add document for burstable CFS bandwidth control
-> 
-> Documentation/scheduler/sched-bwc.rst |  49 +++++++++++--
-> include/linux/sched/sysctl.h          |   2 +
-> kernel/sched/core.c                   | 126 +++++++++++++++++++++++++++++-----
-> kernel/sched/fair.c                   |  58 +++++++++++++---
-> kernel/sched/sched.h                  |   9 ++-
-> kernel/sysctl.c                       |  18 +++++
-> 6 files changed, 232 insertions(+), 30 deletions(-)
-> 
-> -- 
-> 2.14.4.44.g2045bb6
-
-Ping, any new comments on this patchset? If there're no other concerns, I think it's ready to be merged?
-
-
+-- 
+Michal Hocko
+SUSE Labs
