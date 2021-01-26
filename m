@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B7D3043DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 938F9304399
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392915AbhAZQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:28:32 -0500
-Received: from smtp.asem.it ([151.1.184.197]:52086 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390984AbhAZJ1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:27:52 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000732223.MSG 
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:25:20 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
- Jan 2021 10:25:18 +0100
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 26 Jan 2021 10:25:18 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Neuschaefer <j.neuschaefer@gmx.net>
-CC:     <linux-mtd@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v1] mtd: spi-nor: core: fix/remove references to spi-nor.c
-Date:   Tue, 26 Jan 2021 10:25:16 +0100
-Message-ID: <20210126092516.1431913-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
+        id S2391047AbhAZQSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:18:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47913 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391037AbhAZJ3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:29:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611653278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TJqmWe0B1zwIrZ9/DXGf/qzkCZYW3LkB48QuI/Vyvzk=;
+        b=HRRtZ4K4sE1bFnn7yM5x1XSy1waFyHjLyu2DHKGqTgzp2p0FV575LJav8fNNgPdf76IRze
+        02UCwyURz650XGqdSAi+k21Khk3eMUj+cewCn9sLpK+6vDpt1Gx6GZHnV7o4mZMHyUx7fx
+        3gPV2hr5MDpfVFiU1ZeNUv/oGzmDXNk=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-69-YaTLfWUyMXeY-w1l3JX2ew-1; Tue, 26 Jan 2021 04:27:56 -0500
+X-MC-Unique: YaTLfWUyMXeY-w1l3JX2ew-1
+Received: by mail-wr1-f71.google.com with SMTP id q6so240644wro.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:27:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TJqmWe0B1zwIrZ9/DXGf/qzkCZYW3LkB48QuI/Vyvzk=;
+        b=qJbCqYM0O1eH3VmyhPafVzcstW7RktyyFDP+1svwbwOQxu69JCu+P5NmvhTpTGNLv9
+         9yeXLEl/m4iQPxx2jMbDxeQ4SY4EQxwrv19nrCPE5IsrKvaKU68FRvv33a0F7vGEQ1pZ
+         dOW4ogrcQdYAaeVaHkqW6CiLGUrT3kmWOR/EBJOr/pf7l/RzzwGNU8qXYPfqPySwzFXI
+         AwrQq1o5BUVbe0SGlHVAmdYsUh0NuoNU8ZR+PoMoGnXARUY2SVZu10CI5AkmX+my5fqJ
+         PSRfPtgSrbJt3sH3+cmthK+69XoNJxBDl3nPnCEexFCr+R73SY380By5jHCwktFLLqae
+         kG8w==
+X-Gm-Message-State: AOAM532hTC8oip8Vl9CpGqVRx9Hcqgpcuh1Uj5URl9DjPsFOWAueeYPR
+        35yX6GwqdAH7RlzwSX9crUkgW4tvZ8Xlm4uznC2ifKo5u1YKuNxfNeNrm8YUAQZDgQfjFWWV8qZ
+        9tiVk/c34yLUJjzVPijUHkC6IZ9aOr2ArvHCgcYggnEKgD8lzHBmXDqU/QuwMcuuQUX4QFK8dyo
+        YK
+X-Received: by 2002:adf:d187:: with SMTP id v7mr5085186wrc.50.1611653275001;
+        Tue, 26 Jan 2021 01:27:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxwJZvz1tWGNB31K2PdD/RQMxJIfSfaRIG9JEMFcujSvclTmPqLN1LlqyQzG38ZcxH8Ux9nVw==
+X-Received: by 2002:adf:d187:: with SMTP id v7mr5085155wrc.50.1611653274835;
+        Tue, 26 Jan 2021 01:27:54 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j2sm24648989wrh.78.2021.01.26.01.27.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 01:27:54 -0800 (PST)
+Subject: Re: [RESEND v13 07/10] KVM: vmx/pmu: Reduce the overhead of LBR
+ pass-through or cancellation
+To:     Like Xu <like.xu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, ak@linux.intel.com,
+        wei.w.wang@intel.com, kan.liang@intel.com, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210108013704.134985-1-like.xu@linux.intel.com>
+ <20210108013704.134985-8-like.xu@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <59d947ae-3f6f-2efa-0d2d-3b130cb0bb5c@redhat.com>
+Date:   Tue, 26 Jan 2021 10:27:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F22.600FDFFF.0009,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+In-Reply-To: <20210108013704.134985-8-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The old file:
+On 08/01/21 02:37, Like Xu wrote:
+> +
+> +	/* A flag to reduce the overhead of LBR pass-through or cancellation. */
+> +	bool already_passthrough;
 
-drivers/mtd/spi-nor/spi-nor.c
+	/* True if LBRs are marked as not intercepted in the MSR bitmap  */
+	bool msr_passthrough;
 
-is not more present and now some of its code is
-contained in:
-
-drivers/mtd/spi-nor/core.c
-
-This patch fix/remove the references to the old
-spi-nor.c file.
-
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- Documentation/driver-api/mtd/spi-nor.rst | 2 +-
- drivers/mtd/spi-nor/core.c               | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driver-api/mtd/spi-nor.rst
-index 4a3adca417fd..bf2db371d3fb 100644
---- a/Documentation/driver-api/mtd/spi-nor.rst
-+++ b/Documentation/driver-api/mtd/spi-nor.rst
-@@ -61,7 +61,7 @@ Part III - How can drivers use the framework?
- 
- The main API is spi_nor_scan(). Before you call the hook, a driver should
- initialize the necessary fields for spi_nor{}. Please see
--drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to spi-fsl-qspi.c
-+drivers/mtd/spi-nor/core.c for detail. Please also refer to spi-fsl-qspi.c
- when you want to write a new driver for a SPI NOR controller.
- Another API is spi_nor_restore(), this is used to restore the status of SPI
- flash chip such as addressing mode. Call it whenever detach the driver from
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 20df44b753da..6ae7d4c2d2b6 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3701,8 +3701,8 @@ static void spi_nor_shutdown(struct spi_mem *spimem)
-  * encourage new users to add support to the spi-nor library, and simply bind
-  * against a generic string here (e.g., "jedec,spi-nor").
-  *
-- * Many flash names are kept here in this list (as well as in spi-nor.c) to
-- * keep them available as module aliases for existing platforms.
-+ * Many flash names are kept here in this list to keep them available
-+ * as module aliases for existing platforms.
-  */
- static const struct spi_device_id spi_nor_dev_ids[] = {
- 	/*
--- 
-2.25.1
+>   };
+>   
+>   /*
+> 
 
