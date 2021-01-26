@@ -2,53 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D329B3045B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE5A3045B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393455AbhAZRuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:50:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390000AbhAZI1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:27:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73517221EA;
-        Tue, 26 Jan 2021 08:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611649624;
-        bh=25zZYKOmoVPTW9yZu15uNT/rWxBGwiq4FeiJ8t5wLQI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PyAqUo3oQoc5AUuu9ouTopJhGOXDlPTKK0bU9LRpnpguxgHQiLEBgnOfnJf3my+hd
-         Qg6s/n6wCrLnWfDdVaYiJTHOv354Hr4xIUvnpNhZG8OHE0aFNGsU7/zV8KgAWHoCn9
-         XS1zSPz7t+LxTSp2/Jjbt+5T5aDYI43RyAP+JwoA=
-Date:   Tue, 26 Jan 2021 09:27:01 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof =?utf-8?Q?Ol=C4=99dzki?= <ole@ans.pl>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        stable@vger.kernel.org, Krzysztof Mazur <krzysiek@podlesie.net>,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH 5.10 119/199] x86/mmx: Use KFPU_387 for MMX string
- operations
-Message-ID: <YA/SVYUj53QZPkWd@kroah.com>
-References: <20210125183216.245315437@linuxfoundation.org>
- <20210125183221.250497496@linuxfoundation.org>
- <82dfa5e7-286d-777a-b1aa-ebe5144e79db@ans.pl>
+        id S2393490AbhAZRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:50:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38713 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390134AbhAZIaN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:30:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611649726;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bhV4Mq5/sBWiSQk3XJm+QtpJxWDhek1THdWB8YUzVxE=;
+        b=gDVwcKsOHAPEnXI7g+VHzM/wEB6hZ3IMrTylTl5dXzr6xzfO/tI95kKzs0wz9O9P48GbNt
+        9HAjX5e6xiklSk5WjkO7/DgkSCgSj5vuz8eslTZhaYmRmO6gS43HhpqhEwEZpIP7XZ6VVQ
+        VYexVSihAwQdRv7ne0eEEhLKxW4vSeY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-83--4Inxhf7N6asR7JiI5xpBw-1; Tue, 26 Jan 2021 03:28:44 -0500
+X-MC-Unique: -4Inxhf7N6asR7JiI5xpBw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFFA310054FF;
+        Tue, 26 Jan 2021 08:28:42 +0000 (UTC)
+Received: from [10.72.12.70] (ovpn-12-70.pek2.redhat.com [10.72.12.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B76672168;
+        Tue, 26 Jan 2021 08:28:35 +0000 (UTC)
+Subject: Re: [PATCH v3] vhost_vdpa: fix the problem in
+ vhost_vdpa_set_config_call
+To:     Cindy Lu <lulu@redhat.com>, mst@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc:     stable@vger.kernel.org
+References: <20210126071607.31487-1-lulu@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <757a05d2-c82e-e957-1b7c-55eb64495f1b@redhat.com>
+Date:   Tue, 26 Jan 2021 16:28:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210126071607.31487-1-lulu@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <82dfa5e7-286d-777a-b1aa-ebe5144e79db@ans.pl>
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 07:24:56PM -0800, Krzysztof Olędzki wrote:
-> Hi,
-> 
-> I think for both 5.4-stable and 5.10-stable we also need https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e45122893a9870813f9bd7b4add4f613e6f29008
-> - "x86/fpu: Add kernel_fpu_begin_mask() to selectively initialize state"
-> 
-> Without this, there is no kernel_fpu_begin_mask().
 
-Thank you, I have now added this to both trees.
+On 2021/1/26 下午3:16, Cindy Lu wrote:
+> In vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
+> this cb.private will finally use in vhost_vdpa_config_cb as
+> vhost_vdpa. Fix this issue.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 776f395004d82 ("vhost_vdpa: Support config interrupt in vdpa")
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
 
-greg k-h
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+>   drivers/vhost/vdpa.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index ef688c8c0e0e..3fbb9c1f49da 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+>   	struct eventfd_ctx *ctx;
+>   
+>   	cb.callback = vhost_vdpa_config_cb;
+> -	cb.private = v->vdpa;
+> +	cb.private = v;
+>   	if (copy_from_user(&fd, argp, sizeof(fd)))
+>   		return  -EFAULT;
+>   
+
