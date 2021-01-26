@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A14304E7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CF5304E7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404355AbhA0AcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:32:04 -0500
-Received: from foss.arm.com ([217.140.110.172]:49436 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387609AbhAZRZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:25:39 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53A0331B;
-        Tue, 26 Jan 2021 09:24:52 -0800 (PST)
-Received: from [10.57.43.46] (unknown [10.57.43.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 207543F66E;
-        Tue, 26 Jan 2021 09:24:51 -0800 (PST)
-Subject: Re: [PATCH] iommu: Check dev->iommu in iommu_dev_xxx functions
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-References: <20210126130629.8928-1-shameerali.kolothum.thodi@huawei.com>
- <20210126135039.000039a0@arm.com>
- <8654e506fa26443f8f4413ec8fd96bf7@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <5828b2f9-e1d3-fd96-ebf3-2a38c903c9c3@arm.com>
-Date:   Tue, 26 Jan 2021 17:24:45 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2404381AbhA0AcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:32:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54981 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727103AbhAZR2J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:28:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611681999;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=InZZx23ByJsMJtgt8v5MW2KPKFZSHMum0ATgeWIjqd8=;
+        b=QPAj0sEI+R319997Zm2uGU1TPqp5yidRph4JSPk6URld4d+dF5P0rCfglkkFyCE88+HqJJ
+        p3W8muyb3aalY+7lon+UYDgejAQP03EfRar1E0lHY5LaPKa7yf84zviZa9bHOYmjC+ONa3
+        eyZmHxpBGIfVphbf3leUcLijQWDczu8=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-247-AAuGIw78NAmXptvnnG9fDg-1; Tue, 26 Jan 2021 12:26:36 -0500
+X-MC-Unique: AAuGIw78NAmXptvnnG9fDg-1
+Received: by mail-ej1-f69.google.com with SMTP id k3so5192141ejr.16
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:26:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=InZZx23ByJsMJtgt8v5MW2KPKFZSHMum0ATgeWIjqd8=;
+        b=ITvbf38322kHt2l5OvXB33MVWEMZUTHxyHIpIyTQijNA/1jydfLKNiXJR7pMuIaqF/
+         MyCIVEfR4SIrQxvDHO/V0bKquhn/2eWUkWRZDqUYTlyu1d9dJEG+TzAfEYjhCvTw058X
+         A40IiU7sH+52SVluwOAquyRZ2qi+1JmMXv5w+raNKN9J/Y7J/VBpGb5acYOr3Vn+rVgK
+         jJUXx6PIlKmbSPebQ8cmfDuBP/uyNpdAIB8dj/s/b6cX0QTqxXrbcim+WVUG8LnLx4uR
+         fBC0jjzmVcdeog6nyC3egANGM0I3jIbVuUPfIHPg9hjebqMSrqVgSKU1hQ/Bue6NgP9/
+         2fvw==
+X-Gm-Message-State: AOAM532kr1hGlXkyk5MqTMdvAUv2Pr1kOJlRVzwv3MLjMXvCop2T7QeB
+        UY5BBqRquhmoRaRsV3mn3BJBPoiLKgtjDoLuKmA5jpO+swcIGRqkEogrK3jQqvDb9ZW/hzrw+mE
+        LKmioKf07LKJY8K1Yg4tccnnx
+X-Received: by 2002:a17:906:51d0:: with SMTP id v16mr4206642ejk.510.1611681995781;
+        Tue, 26 Jan 2021 09:26:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzgaHAAGGEQ9wEkCKCReCIm094S45eXiZvU1xS2t+W5jQo1GluQUlphaRP+rMn95s2NGrkfUg==
+X-Received: by 2002:a17:906:51d0:: with SMTP id v16mr4206634ejk.510.1611681995633;
+        Tue, 26 Jan 2021 09:26:35 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k2sm10057634ejp.6.2021.01.26.09.26.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 09:26:34 -0800 (PST)
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <1610960877-3110-1-git-send-email-wanpengli@tencent.com>
+ <CANRm+Cx65UHSJA+S4qRR1wdZ=dhyM=U=KwZnbNUSN4XdM1nyQA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2] KVM: kvmclock: Fix vCPUs > 64 can't be
+ online/hotpluged
+Message-ID: <146d2a3f-88db-ff80-29d6-de2b22efdf61@redhat.com>
+Date:   Tue, 26 Jan 2021 18:26:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <8654e506fa26443f8f4413ec8fd96bf7@huawei.com>
+In-Reply-To: <CANRm+Cx65UHSJA+S4qRR1wdZ=dhyM=U=KwZnbNUSN4XdM1nyQA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 16:40, Shameerali Kolothum Thodi wrote:
-> Hi Robin,
-> 
->> -----Original Message-----
->> From: Robin Murphy [mailto:robin.murphy@arm.com]
->> Sent: 26 January 2021 13:51
->> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
->> Cc: linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org;
->> jean-philippe@linaro.org; will@kernel.org; linuxarm@openeuler.org; Zengtao
->> (B) <prime.zeng@hisilicon.com>
->> Subject: Re: [PATCH] iommu: Check dev->iommu in iommu_dev_xxx functions
+On 26/01/21 02:28, Wanpeng Li wrote:
+> ping，
+> On Mon, 18 Jan 2021 at 17:08, Wanpeng Li <kernellwp@gmail.com> wrote:
 >>
->> On Tue, 26 Jan 2021 13:06:29 +0000
->> Shameer Kolothum <shameerali.kolothum.thodi@huawei.com> wrote:
+>> From: Wanpeng Li <wanpengli@tencent.com>
 >>
->>> The device iommu probe/attach might have failed leaving dev->iommu to
->>> NULL and device drivers may still invoke these functions resulting a
->>> crash in iommu vendor driver code. Hence make sure we check that.
->>>
->>> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
->>> ---
->>>   drivers/iommu/iommu.c | 8 ++++----
->>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c index
->>> ffeebda8d6de..cb68153c5cc0 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -2867,7 +2867,7 @@ bool iommu_dev_has_feature(struct device *dev,
->>> enum iommu_dev_features feat) {
->>>   	const struct iommu_ops *ops = dev->bus->iommu_ops;
->>>
->>> -	if (ops && ops->dev_has_feat)
->>> +	if (dev->iommu && ops && ops->dev_has_feat)
->>>   		return ops->dev_has_feat(dev, feat);
->>
->> Might make sense to make these more self-contained, e.g.:
->>
->> 	if (dev->iommu && dev->iommu->ops->foo)
->> 		dev->iommu->ops->foo()
-> 
-> Right. Does that mean adding ops to "struct dev_iommu" or retrieve ops like
-> below,
-> 
-> if (dev->iommu && dev->iommu->iommu_dev->ops->foo)
->   		dev->iommu->iommu_dev->ops->foo()
->   
-> Sorry, not clear to me.
+>> The per-cpu vsyscall pvclock data pointer assigns either an element of the
+>> static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory
+>> hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if
+>> kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in
+>> kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it by not
+>> assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode is not
+>> VDSO_CLOCKMODE_PVCLOCK.
 
-Bleh, I was thinking that dev->iommu pointed directly to a struct 
-iommu_device there, sorry. There are too many things and not enough 
-distinct names for the things.
+I am sorry, I still cannot figure out this patch.
 
-But yeah, basically that if the device's "I am associated with an IOMMU" 
-data is set, then by construction it must lead to a set of ops which are 
-definitely valid. Conceptually it's cleaner than combining two different 
-data sources (the per-device info plus the bus ops which may or may not 
-be relevant to a given device), even if cosmetically we have to juggle 
-through practically every possible permutation of the names "iommu" and 
-"device" to get there :/
+Is hotplug still broken if kvm vsyscall is enabled?
 
-Robin.
+Paolo
+
+>> Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
+>> Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
+>> Tested-by: Haiwei Li <lihaiwei@tencent.com>
+>> Cc: Brijesh Singh <brijesh.singh@amd.com>
+>> Cc: stable@vger.kernel.org#v4.19-rc5+
+>> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+>> ---
+>> v1 -> v2:
+>>   * add code comments
+>>
+>>   arch/x86/kernel/kvmclock.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+>> index aa59374..01d4e55c 100644
+>> --- a/arch/x86/kernel/kvmclock.c
+>> +++ b/arch/x86/kernel/kvmclock.c
+>> @@ -294,9 +294,11 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+>>          /*
+>>           * The per cpu area setup replicates CPU0 data to all cpu
+>>           * pointers. So carefully check. CPU0 has been set up in init
+>> -        * already.
+>> +        * already. Assign vsyscall pvclock data pointer iff kvmclock
+>> +        * vsyscall is enabled.
+>>           */
+>> -       if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)))
+>> +       if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)) ||
+>> +           (kvm_clock.vdso_clock_mode != VDSO_CLOCKMODE_PVCLOCK))
+>>                  return 0;
+>>
+>>          /* Use the static page for the first CPUs, allocate otherwise */
+>> --
+>> 2.7.4
+>>
+> 
+
