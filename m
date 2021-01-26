@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA9B303B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D23AC303BA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392482AbhAZL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
+        id S2405066AbhAZL3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:29:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391195AbhAZJhz (ORCPT
+        with ESMTP id S1731164AbhAZJqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:37:55 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114BDC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:37:10 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id f1so12039280lfu.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:37:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fc97bl9y/fOUWfcqC9Hh9udHha7efiEnc5d5nu4VkAU=;
-        b=vd1XuR3gcGy119h75Y1qjivJKBqfMQoxlVfdaFE8OOJ2A7JYfLrSDiKeDDulAHSNrA
-         MclXbRVXfHjAiw06826JQERooCqRYe5tGUyUBFnRcU+r4Fnp+nw+ZgwBLpDl9dzSETIN
-         bHIKEFQ9jPwYKMb17EdGRflrasDgMbTkVP248=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fc97bl9y/fOUWfcqC9Hh9udHha7efiEnc5d5nu4VkAU=;
-        b=szHHtDJ/CUqiGAKXKEJsVKgOqGMklsMdk3TWfcf7fC/LTvdhpqaijaKs3xpKMpCXuP
-         EMxgxt0dDhISEbXVcjfaYnXGHeQ5F6Gme9rAAj0LQmAnBe7sAML/fs0ErSPo4LhK3U8Y
-         UTZGJgMaOYDYgY3SnaEJqsljMQ3fyw3ltK0GQqnHxoB2lo8GLY9BgFWtMn4Fojtb0Zxn
-         0phc17yHsOFLPSWglytgq8fmARodW5jQc3RanUZPdbinvNpt+QMLsnLCcU2grVDS5Qv1
-         j5YIW2y+0fBIuFlt8rjPQzK8F6QwiY9UX9LlI95quEjmJoc7CpCgzsxp8VMsN1VeUSzT
-         F8Pg==
-X-Gm-Message-State: AOAM533/UH93epLtKwPmuGJynWq1V7BahLkK5t2YqH56C38J8irRBoMP
-        BqgKy7uNWvkjzjxNxulfagBZeAQRl/Fh14STXUDoqw==
-X-Google-Smtp-Source: ABdhPJyCGPCvmzSWUJppoFAjsEUtCf8KWSJC0FJrI/QII7dvxqZrr5XBPR4F3kafupLvwui/f8oqxjIf8OmPtbBhies=
-X-Received: by 2002:a19:c56:: with SMTP id 83mr2467065lfm.325.1611653828443;
- Tue, 26 Jan 2021 01:37:08 -0800 (PST)
+        Tue, 26 Jan 2021 04:46:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB13C06174A;
+        Tue, 26 Jan 2021 01:45:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1CPjkpcybqu4UmrIlyT7CxahkHobB8NLRUbQkEtv9gU=; b=OepRa5e8f56TtZHozt6NKrD7SL
+        7NAzZdheLyCJJIT2t2Otw19/WTxOE2bbb5RBIxNNUYL+zRG/pNHRno6mX+rkJvNO+5Yfl+od1ZH1o
+        3rtGWLm8NGasKwlRHdpeezA4HOMoDdHUVBSWew6rjO8PcY92SL2J2eMftsMpOjTDBCJQCdqValhdr
+        AeFKcKWSzj40c2vTUCF4YaGOvldQpTO50q23BNz4zDOWcSz013OsCF6owkBOSq9xRDB1cv3Mej/HJ
+        Gyy1ToJDQEi70A8gQZw19NxIxi1aE5bMFjUNAYQSV8d2xd+oCk7UIetGWvGwjarlIS2tjnoQ4lhqc
+        TPsD0BSA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4Kpx-005NSo-Qp; Tue, 26 Jan 2021 09:40:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50941300DB4;
+        Tue, 26 Jan 2021 10:40:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2A0E420297EDB; Tue, 26 Jan 2021 10:40:36 +0100 (CET)
+Date:   Tue, 26 Jan 2021 10:40:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v17 11/26] x86/mm: Update ptep_set_wrprotect() and
+ pmdp_set_wrprotect() for transition from _PAGE_DIRTY to _PAGE_COW
+Message-ID: <YA/jlOuNpcPPNHA1@hirez.programming.kicks-ass.net>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-12-yu-cheng.yu@intel.com>
+ <20210125182709.GC23290@zn.tnic>
+ <YA/W63sob0keoD+i@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210126082606.3183-1-minhquangbui99@gmail.com>
-In-Reply-To: <20210126082606.3183-1-minhquangbui99@gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 26 Jan 2021 09:36:57 +0000
-Message-ID: <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
-To:     Bui Quang Minh <minhquangbui99@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YA/W63sob0keoD+i@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
->
-> In 32-bit architecture, the result of sizeof() is a 32-bit integer so
-> the expression becomes the multiplication between 2 32-bit integer which
-> can potentially leads to integer overflow. As a result,
-> bpf_map_area_alloc() allocates less memory than needed.
->
-> Fix this by casting 1 operand to u64.
+On Tue, Jan 26, 2021 at 09:46:36AM +0100, Peter Zijlstra wrote:
+> On Mon, Jan 25, 2021 at 07:27:09PM +0100, Borislav Petkov wrote:
+> 
+> > > +		pte_t old_pte, new_pte;
+> > > +
+> > > +		do {
+> > > +			old_pte = READ_ONCE(*ptep);
+> > > +			new_pte = pte_wrprotect(old_pte);
+> > 
+> > Maybe I'm missing something but those two can happen outside of the
+> > loop, no? Or is *ptep somehow changing concurrently while the loop is
+> > doing the CMPXCHG and you need to recreate it each time?
+> > 
+> > IOW, you can generate upfront and do the empty loop...
+> > 
+> > > +
+> > > +		} while (!try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
+> > > +
+> > > +		return;
+> > > +	}
+> 
+> Empty loop would be wrong, but that wants to be written like:
+> 
+> 	old_pte = READ_ONCE(*ptep);
+> 	do {
+> 		new_pte = pte_wrprotect(old_pte);
+> 	} while (try_cmpxchg(&ptep->pte, &old_pte.pte, new_pte.pte));
 
-Some quick thoughts:
-* Should this have a Fixes tag?
-* Seems like there are quite a few similar calls scattered around
-(cpumap, etc.). Did you audit these as well?
-* I'd prefer a calloc style version of bpf_map_area_alloc although
-that might conflict with Fixes tag.
+! went missing, too early, moar wake-up juice.
 
-Lorenz
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+> Since try_cmpxchg() will update old_pte on failure.
