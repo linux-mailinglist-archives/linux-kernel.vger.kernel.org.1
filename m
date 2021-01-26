@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4A3303DE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F67303DE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:58:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392364AbhAZM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
+        id S2403783AbhAZM5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404064AbhAZMtc (ORCPT
+        with ESMTP id S2404070AbhAZMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Jan 2021 07:49:32 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEEBC0698C4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:42 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id v15so16308516wrx.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:42 -0800 (PST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95F9C0698C6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:43 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id v15so16308578wrx.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5iSr6BVX0vLsZ6XbdKfpACTjI5e2CvJxacmXWu0DW1o=;
-        b=f68ZTT5BAx8LNsgLSWm/TjA2tIVW26h6lNl+CnoQEtts8XlWcVHbIzA6GJQeyq3TyT
-         puEHbfG0J4EZKkEyTDgAraOOa/BZooJ6LvvY7nZDW6VDOaafEuSJOV1jhSkbqk244pwK
-         idPuhasszf5w3/gQfZFkcQ3CmH/4RF02z5w6H9rm1ifn1t58GjQcdZUNSe4cYw8ilDNW
-         SzqLU+TmgRluyNbUptpAmsTp00jH/i2Atp3qjH1lQeUMTo+9NR89ZPwAjm+Lw9LEHN3Q
-         f8U7Hq2N99WZDlIycYqNcfutBXXYaoMPkzuxtXkl9Sv8he3llLKvltIjw4Yaix9P/x4u
-         +LwQ==
+        bh=JqnwtQpR7zRjxIxGO7OfabuwI6zTkwI4IUC4xHbde+s=;
+        b=cvBHhXkuxzLiX4OWL+cfWzUSDdd4nPQDjG7e6O1QSdyaTPN7Yt35vJ9pbIvvuVUdfp
+         KM5HmyTi7kZjfI9KbsyBD9kJY2TGHCPIQ9AuVvkCyGyPf5EF52V0RnWi2Akf0/3Z8yQi
+         +/aw38tTxASeKdQcOyvftC9hve/tcgnAw6k0yAAIY1Mh3pjyMRIg+AwpM/jvl9Xc8Jao
+         pDF2MkqQLJ517MBxidBsH+ri6DTNvZZfTLRJUzvoTJ1ovH/W0fTAef8t2SOW8Qs1O4Kp
+         GAUVCTTAvY4jxK7gZUZb0PVaHjsapSFM68bSTZi6exaViaHjAgjkplPbjJaBnPphTewQ
+         bXOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5iSr6BVX0vLsZ6XbdKfpACTjI5e2CvJxacmXWu0DW1o=;
-        b=Ofw9AxJqu0Y0A+HK26YK6AxoklXu4BWqlMwF0RVgn7NZXNeW58xHcoCnoxGxamQxoT
-         SkOvst/t04o3se4a0OtVOq7HNaUMFF0/w3iYgwJNrBHRGdhmc3heq0hKOpZaIcCXM+RZ
-         ZhdqR6YCGy5qDsfmkyzpj+oG5n1u4q4ygXxES1+xgyybvZG/XvdIcSZvxxHNGotzw3dY
-         4T0IGsT/CyUt4/bZj0wfoQESIHKuOaX4JkgsgfgQFUdKaU0VDNcv5lxYTDyS0gqg6jJ9
-         dc11BrZcO+YDIucW5kIa0/sZm7ovC4f0Crfm23sRU6UcgZA0GJ0LdfpPOYtuM6qHsu4A
-         PKWw==
-X-Gm-Message-State: AOAM530YZHkNpKMFbOW4RD0IzRt2NoGWfZnW5Ir2tV6HfpaivJ3e+xo6
-        hhcfiq0PMvv2c8ppLdltoKnIrQ==
-X-Google-Smtp-Source: ABdhPJx6VwGxc6iFcBAt+2Q5SwbgbOSyw8EcYP6v7CxipTnjTDMcohXo8wuR7p0/yZ1LW2zXgB4wiA==
-X-Received: by 2002:adf:f403:: with SMTP id g3mr5943028wro.212.1611665261306;
-        Tue, 26 Jan 2021 04:47:41 -0800 (PST)
+        bh=JqnwtQpR7zRjxIxGO7OfabuwI6zTkwI4IUC4xHbde+s=;
+        b=e3w+klSJu6hCPTqqd0rAt2bwD2RppZjOt8XtfwtPo8FWIco+qrYzsLGmFvO0oh7VlE
+         n1T8nprHqjqimpMHOHrfm+AS8sZf7iNIMHUlplPio6bXmyE1wTO7UWI2i0hpT1LAJ2fQ
+         DFDy1JjVIFGShbKGzXoKMC+WguU+Jq3vaYFCJxWTgYl8NLRSmzwvqtk9cbprzG/hK9Sh
+         kZwK6ZTe01z7WebzeL5Ehbev3+pRYuJFik0YacZ33xxz5sb93cxC4f41wLt+drsBNWNH
+         2WnccbUof+gipA5c7I35ROoMetbYVlFQ6lJVzgPr/GUZAYnklesFIgcdVe/Jw4D1CFdS
+         E07g==
+X-Gm-Message-State: AOAM531zWw9DJEm4OptSfhG1DBJ6ZgevU0yTwM0ftgWAQSlk7mwlJ/Wd
+        6OkMVmCk72hYjn6MXm5t2liImQ==
+X-Google-Smtp-Source: ABdhPJypSWwMtVwU6H4CcatzRF+WbHG464YrhUgYvMZYokv2g6bW06791dituSqjsOiwOz40Kp6DMg==
+X-Received: by 2002:a5d:6847:: with SMTP id o7mr5944354wrw.216.1611665262428;
+        Tue, 26 Jan 2021 04:47:42 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.40
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:40 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:41 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 05/20] RDMA/hw/hfi1/msix: Add description for 'name' and remove superfluous param 'idx'
-Date:   Tue, 26 Jan 2021 12:47:17 +0000
-Message-Id: <20210126124732.3320971-6-lee.jones@linaro.org>
+Subject: [PATCH 06/20] RDMA/sw/rdmavt/mad: Fix misspelling of 'rvt_process_mad()'s 'in_mad_size' param
+Date:   Tue, 26 Jan 2021 12:47:18 +0000
+Message-Id: <20210126124732.3320971-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
 References: <20210126124732.3320971-1-lee.jones@linaro.org>
@@ -69,33 +69,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hfi1/msix.c:120: warning: Function parameter or member 'name' not described in 'msix_request_irq'
- drivers/infiniband/hw/hfi1/msix.c:120: warning: Excess function parameter 'idx' description in 'msix_request_irq'
+ drivers/infiniband/sw/rdmavt/mad.c:78: warning: Function parameter or member 'in_mad_size' not described in 'rvt_process_mad'
 
-Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hfi1/msix.c | 2 +-
+ drivers/infiniband/sw/rdmavt/mad.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/msix.c b/drivers/infiniband/hw/hfi1/msix.c
-index d61ee853d215c..cf3040bb177f6 100644
---- a/drivers/infiniband/hw/hfi1/msix.c
-+++ b/drivers/infiniband/hw/hfi1/msix.c
-@@ -103,8 +103,8 @@ int msix_initialize(struct hfi1_devdata *dd)
-  * @arg: context information for the IRQ
-  * @handler: IRQ handler
-  * @thread: IRQ thread handler (could be NULL)
-- * @idx: zero base idx if multiple devices are needed
-  * @type: affinty IRQ type
-+ * @name: IRQ name
-  *
-  * Allocated an MSIx vector if available, and then create the appropriate
-  * meta data needed to keep track of the pci IRQ request.
+diff --git a/drivers/infiniband/sw/rdmavt/mad.c b/drivers/infiniband/sw/rdmavt/mad.c
+index 8cc4de9aa6644..fa5be13a43944 100644
+--- a/drivers/infiniband/sw/rdmavt/mad.c
++++ b/drivers/infiniband/sw/rdmavt/mad.c
+@@ -57,7 +57,7 @@
+  * @in_wc: the work completion entry for this packet
+  * @in_grh: the global route header for this packet
+  * @in: the incoming MAD
+- * @out_mad_size: size of the incoming MAD reply
++ * @in_mad_size: size of the incoming MAD reply
+  * @out: any outgoing MAD reply
+  * @out_mad_size: size of the outgoing MAD reply
+  * @out_mad_pkey_index: unused
 -- 
 2.25.1
 
