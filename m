@@ -2,135 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D971B3045CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D553045D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390435AbhAZR5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:57:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42188 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389252AbhAZJBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:01:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611651614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zkv2AYFPAFtxWhWHYsYeaPluSGEX7L9fbE1dulH4ZuI=;
-        b=GhOz2w0RXQwI2+PODq5b2aw0wmG2/sHAvfuOFXRfFu5hn6slnJT04Sf+X1LOm2o3qdxim/
-        JikKF5QkQLdr6WDSRfvS9d7btR4sMzkc9Aq9OiCszZ4qwYknWGfN3kTR7NPMMKuqkDIc/Q
-        bxcYYnrayTxMggILhsJvpQJW45eKvt8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 69D77AF4E;
-        Tue, 26 Jan 2021 09:00:14 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 10:00:13 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 06/11] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <20210126090013.GF827@dhcp22.suse.cz>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-7-rppt@kernel.org>
- <20210125170122.GU827@dhcp22.suse.cz>
- <20210125213618.GL6332@kernel.org>
- <20210126071614.GX827@dhcp22.suse.cz>
- <20210126083311.GN6332@kernel.org>
+        id S2390306AbhAZR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:57:52 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11160 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390770AbhAZJB3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:01:29 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DQ0zL3bJpz15yjp;
+        Tue, 26 Jan 2021 16:59:26 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.87) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 26 Jan 2021
+ 17:00:30 +0800
+Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
+ <20210125154717.GW4605@ziepe.ca>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        <linux-accelerators@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linux-mm@kvack.org>, <song.bao.hua@hisilicon.com>,
+        <liguozhu@hisilicon.com>, Sihang Chen <chensihang1@hisilicon.com>
+From:   Zhou Wang <wangzhou1@hisilicon.com>
+Message-ID: <c20b0894-dd04-cf67-0975-7219f95bcaae@hisilicon.com>
+Date:   Tue, 26 Jan 2021 17:00:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126083311.GN6332@kernel.org>
+In-Reply-To: <20210125154717.GW4605@ziepe.ca>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.188.87]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 26-01-21 10:33:11, Mike Rapoport wrote:
-> On Tue, Jan 26, 2021 at 08:16:14AM +0100, Michal Hocko wrote:
-> > On Mon 25-01-21 23:36:18, Mike Rapoport wrote:
-> > > On Mon, Jan 25, 2021 at 06:01:22PM +0100, Michal Hocko wrote:
-> > > > On Thu 21-01-21 14:27:18, Mike Rapoport wrote:
-> > > > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > > > 
-> > > > > Introduce "memfd_secret" system call with the ability to create memory
-> > > > > areas visible only in the context of the owning process and not mapped not
-> > > > > only to other processes but in the kernel page tables as well.
-> > > > > 
-> > > > > The user will create a file descriptor using the memfd_secret() system
-> > > > > call. The memory areas created by mmap() calls from this file descriptor
-> > > > > will be unmapped from the kernel direct map and they will be only mapped in
-> > > > > the page table of the owning mm.
-> > > > > 
-> > > > > The secret memory remains accessible in the process context using uaccess
-> > > > > primitives, but it is not accessible using direct/linear map addresses.
-> > > > > 
-> > > > > Functions in the follow_page()/get_user_page() family will refuse to return
-> > > > > a page that belongs to the secret memory area.
-> > > > > 
-> > > > > A page that was a part of the secret memory area is cleared when it is
-> > > > > freed.
-> > > > > 
-> > > > > The following example demonstrates creation of a secret mapping (error
-> > > > > handling is omitted):
-> > > > > 
-> > > > > 	fd = memfd_secret(0);
-> > > > > 	ftruncate(fd, MAP_SIZE);
-> > > > > 	ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-> > > > 
-> > > > I do not see any access control or permission model for this feature.
-> > > > Is this feature generally safe to anybody?
-> > > 
-> > > The mappings obey memlock limit. Besides, this feature should be enabled
-> > > explicitly at boot with the kernel parameter that says what is the maximal
-> > > memory size secretmem can consume.
-> > 
-> > Why is such a model sufficient and future proof? I mean even when it has
-> > to be enabled by an admin it is still all or nothing approach. Mlock
-> > limit is not really useful because it is per mm rather than per user.
-> > 
-> > Is there any reason why this is allowed for non-privileged processes?
-> > Maybe this has been discussed in the past but is there any reason why
-> > this cannot be done by a special device which will allow to provide at
-> > least some permission policy?
->  
-> Why this should not be allowed for non-privileged processes? This behaves
-> similarly to mlocked memory, so I don't see a reason why secretmem should
-> have different permissions model.
+On 2021/1/25 23:47, Jason Gunthorpe wrote:
+> On Mon, Jan 25, 2021 at 04:34:56PM +0800, Zhou Wang wrote:
+> 
+>> +static int uacce_pin_page(struct uacce_pin_container *priv,
+>> +			  struct uacce_pin_address *addr)
+>> +{
+>> +	unsigned int flags = FOLL_FORCE | FOLL_WRITE;
+>> +	unsigned long first, last, nr_pages;
+>> +	struct page **pages;
+>> +	struct pin_pages *p;
+>> +	int ret;
+>> +
+>> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
+>> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
+>> +	nr_pages = last - first + 1;
+>> +
+>> +	pages = vmalloc(nr_pages * sizeof(struct page *));
+>> +	if (!pages)
+>> +		return -ENOMEM;
+>> +
+>> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
+>> +	if (!p) {
+>> +		ret = -ENOMEM;
+>> +		goto free;
+>> +	}
+>> +
+>> +	ret = pin_user_pages_fast(addr->addr & PAGE_MASK, nr_pages,
+>> +				  flags | FOLL_LONGTERM, pages);
+> 
+> This needs to copy the RLIMIT_MEMLOCK and can_do_mlock() stuff from
+> other places, like ib_umem_get
 
-Because appart from the reclaim aspect it fragments the direct mapping
-IIUC. That might have an impact on all others, right?
+I am confused as can_do_mlock seems to be about the limitation of mlock,
+which has different meaning with pin memory?
 
--- 
-Michal Hocko
-SUSE Labs
+> 
+>> +	ret = xa_err(xa_store(&priv->array, p->first, p, GFP_KERNEL));
+> 
+> And this is really weird, I don't think it makes sense to make handles
+> for DMA based on the starting VA.
+
+Here starting VA is used as an index of pinned pages. When doing unpinning,
+starting VA is used to get pinned pages, check unpinned VA/size.
+
+But it has problem here to use xa_store here as new one will replace old one :(
+Seems we can use xa_insert here, which returns -EBUSY if the entry at one
+index is not empty. The design here will be that we only support to pin same
+VA once.
+
+> 
+>> +static int uacce_unpin_page(struct uacce_pin_container *priv,
+>> +			    struct uacce_pin_address *addr)
+>> +{
+>> +	unsigned long first, last, nr_pages;
+>> +	struct pin_pages *p;
+>> +
+>> +	first = (addr->addr & PAGE_MASK) >> PAGE_SHIFT;
+>> +	last = ((addr->addr + addr->size - 1) & PAGE_MASK) >> PAGE_SHIFT;
+>> +	nr_pages = last - first + 1;
+>> +
+>> +	/* find pin_pages */
+>> +	p = xa_load(&priv->array, first);
+>> +	if (!p)
+>> +		return -ENODEV;
+>> +
+>> +	if (p->nr_pages != nr_pages)
+>> +		return -EINVAL;
+>> +
+>> +	/* unpin */
+>> +	unpin_user_pages(p->pages, p->nr_pages);
+> 
+> And unpinning without guaranteeing there is no ongoing DMA is really
+> weird
+> 
+> Are you abusing this in conjunction with a SVA scheme just to prevent
+> page motion? Why wasn't mlock good enough?
+
+Just as Barry said, mlock can not avoid IOPF from page migration.
+
+Best,
+Zhou
+
+> 
+> Jason
+> 
+> .
+> 
+
