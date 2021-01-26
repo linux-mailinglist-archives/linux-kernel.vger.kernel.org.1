@@ -2,230 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9490304EC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:34:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D33304EC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404772AbhA0A4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:56:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394568AbhAZSSU (ORCPT
+        id S2404807AbhA0A4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:56:15 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:28614 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394577AbhAZSSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:18:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611685011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tmAwlqcFRm5dq0TJYgLmlazW5uNrUdUC5Uj9cYPhSCQ=;
-        b=hgexd5lPM1nIe8sNx0Osfe6Z/BBXYeK4ULYMcgr3Bnh4kCntPoumT46fp/urDUUvIvcWxe
-        RSQ7pATzGLIChaGgk8IW5E5ypbY/slPm7W+lya/jhGrorPrd2pZrjNmiz3RmP6cmag6sYn
-        9uD16vBJgAoFyJ1Pmqh08aVJ1i7ati8=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-458-kC-aHg0QMO-SC2cjB130Eg-1; Tue, 26 Jan 2021 13:16:49 -0500
-X-MC-Unique: kC-aHg0QMO-SC2cjB130Eg-1
-Received: by mail-ej1-f71.google.com with SMTP id p1so5270201ejo.4
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:16:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tmAwlqcFRm5dq0TJYgLmlazW5uNrUdUC5Uj9cYPhSCQ=;
-        b=livrU2M6+i+GER1U9MFCBqSAXJZ2fd0oUrvvHT+NIULxxqHR/+yz3ihPTqzT5Ko1oS
-         i14u4tuRkMHO1tKpYpoRu4jx78N/U1N/tP6fn4CPcbBjTXrZS9VtDyr3XB8kVwa5E2sy
-         AqHFP2N2+JEzkeAPcXAmm1Drmaz1rumIefcoPZttLI8kD3t5WqHt6CAXV5Zj85iZBBvD
-         qGRGZkkEKJenYIyqAyF4DE+VoRXt4F0n/NwSY2tHtIGjvO091AdiuyyaVxtZ+gLJCUJc
-         +cBho8sdxOqFSKVRV4ir0wiPHB1V18VJWYmvc9RhzU74AyElvYT854tHQv2+Kqcm7MzH
-         0A5A==
-X-Gm-Message-State: AOAM532K8sEFA95UPR055WpRscYvInD3jwYsc70cgqlfIQSLivaQEXdn
-        vFJV3uoIkUiBtu7AwzyyjVz/VlrmFtaZKM3f1T6SHytKSiGhM7NbHt0VTNJCgSBSdZsoRvVUai7
-        CA4fL2sn0HaCoQ4+qjhfvRmFhv+lXHO9S8WVd6KP/rBF4t7qQpInIIXH02RqiQyLuRUj8XJssIG
-        vf
-X-Received: by 2002:a17:906:705:: with SMTP id y5mr4274373ejb.83.1611685008154;
-        Tue, 26 Jan 2021 10:16:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzsSJBnwQfhxbfgn+ahh/+fnRtzUKGdLjXMNEwDv1vHszj2URdSImu5elTuKBMInycbKAzeFg==
-X-Received: by 2002:a17:906:705:: with SMTP id y5mr4274344ejb.83.1611685007865;
-        Tue, 26 Jan 2021 10:16:47 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id o4sm6591828edw.78.2021.01.26.10.16.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 10:16:47 -0800 (PST)
-Subject: Re: [RFC 3/7] KVM: MMU: Rename the pkru to pkr
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200807084841.7112-1-chenyi.qiang@intel.com>
- <20200807084841.7112-4-chenyi.qiang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0116e8c6-2e2a-173a-a903-e3d3e9f05a2c@redhat.com>
-Date:   Tue, 26 Jan 2021 19:16:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 26 Jan 2021 13:18:31 -0500
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 10QIHaHi032508;
+        Wed, 27 Jan 2021 03:17:36 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 10QIHaHi032508
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611685056;
+        bh=7tljXjQsNuev2v37BYuqJOM0jeTlpNcM2yL5Elu3JGE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KQujx/bdocMevef+yC9nmNWMoTHCcY9KbDGg82TZ+hSU6KBu9S9sK6rNB8IAsc9Qg
+         X/Cd5ht5NIvpC8VVCHqMJ9txgoE3xScs1ApA9yszMJqGY6zyLDXU1Aa5UOGYl1RUho
+         RfmwTRug5iZV/2MFuETqrpbxaDpaVNBcYYSc5Y2Sok/rRQQCusHmPdbhUKwpcFpo3K
+         COzAdRXY/to2uoJnFIr/tvFbCSNnrKUly8VrXE/zAFygi2xFPYduOXUbkQfI5pzrdS
+         kFQTRaGW4L9wuxHFAEmt7YntvfH1BMNU22XuhnZSqhXRYdRKi6yXnQiTLLxmt/LGH0
+         Yn0wcq6dmfbhQ==
+X-Nifty-SrcIP: [209.85.216.47]
+Received: by mail-pj1-f47.google.com with SMTP id p15so2477446pjv.3;
+        Tue, 26 Jan 2021 10:17:36 -0800 (PST)
+X-Gm-Message-State: AOAM531Z2zPUNtiFWqWUZZCAzA+ZiGBHsFJ22bNZxPIynzCG2zuMWr4s
+        wlZ2S9YdUM62AwJ6tJntPfK5wRSCNexFgUxyNGk=
+X-Google-Smtp-Source: ABdhPJyXIJbPd31WVVw4B7jaubRTUgL+rizWhKKm5x0X96w7h3rapE8ZF7rZIGNMp7EZ/2ysInRNGOAyi7aOT8UL9G4=
+X-Received: by 2002:a17:90a:9a84:: with SMTP id e4mr1063642pjp.87.1611685055872;
+ Tue, 26 Jan 2021 10:17:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200807084841.7112-4-chenyi.qiang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210114100216.11787-1-info@metux.net> <CAK7LNARE2nGgRGgux9jRcv1ogfFBgBzxKygHxeHwy_GcnZO7sg@mail.gmail.com>
+In-Reply-To: <CAK7LNARE2nGgRGgux9jRcv1ogfFBgBzxKygHxeHwy_GcnZO7sg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 27 Jan 2021 03:16:59 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATbnm+M4STsNFHrnNymA75G96aLQOMO22mXxsC8chEwtA@mail.gmail.com>
+Message-ID: <CAK7LNATbnm+M4STsNFHrnNymA75G96aLQOMO22mXxsC8chEwtA@mail.gmail.com>
+Subject: Re: [PATCH] scripts: kconfig: fix HOSTCC call
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/08/20 10:48, Chenyi Qiang wrote:
-> PKRU represents the PKU register utilized in the protection key rights
-> check for user pages. Protection Keys for Superviosr Pages (PKS) extends
-> the protection key architecture to cover supervisor pages.
-> 
-> Rename the *pkru* related variables and functions to *pkr* which stands
-> for both of the PKRU and PKRS. It makes sense because both registers
-> have the same format. PKS and PKU can also share the same bitmap to
-> cache the conditions where protection key checks are needed.
-> 
-> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
-> ---
->   arch/x86/include/asm/kvm_host.h |  2 +-
->   arch/x86/kvm/mmu.h              | 12 ++++++------
->   arch/x86/kvm/mmu/mmu.c          | 18 +++++++++---------
->   3 files changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index be5363b21540..6b739d0d1c97 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -427,7 +427,7 @@ struct kvm_mmu {
->   	* with PFEC.RSVD replaced by ACC_USER_MASK from the page tables.
->   	* Each domain has 2 bits which are ANDed with AD and WD from PKRU.
->   	*/
-> -	u32 pkru_mask;
-> +	u32 pkr_mask;
->   
->   	u64 *pae_root;
->   	u64 *lm_root;
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 444bb9c54548..0c2fdf0abf22 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -193,8 +193,8 @@ static inline u8 permission_fault(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->   	u32 errcode = PFERR_PRESENT_MASK;
->   
->   	WARN_ON(pfec & (PFERR_PK_MASK | PFERR_RSVD_MASK));
-> -	if (unlikely(mmu->pkru_mask)) {
-> -		u32 pkru_bits, offset;
-> +	if (unlikely(mmu->pkr_mask)) {
-> +		u32 pkr_bits, offset;
->   
->   		/*
->   		* PKRU defines 32 bits, there are 16 domains and 2
-> @@ -202,15 +202,15 @@ static inline u8 permission_fault(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->   		* index of the protection domain, so pte_pkey * 2 is
->   		* is the index of the first bit for the domain.
->   		*/
-> -		pkru_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
-> +		pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
->   
->   		/* clear present bit, replace PFEC.RSVD with ACC_USER_MASK. */
->   		offset = (pfec & ~1) +
->   			((pte_access & PT_USER_MASK) << (PFERR_RSVD_BIT - PT_USER_SHIFT));
->   
-> -		pkru_bits &= mmu->pkru_mask >> offset;
-> -		errcode |= -pkru_bits & PFERR_PK_MASK;
-> -		fault |= (pkru_bits != 0);
-> +		pkr_bits &= mmu->pkr_mask >> offset;
-> +		errcode |= -pkr_bits & PFERR_PK_MASK;
-> +		fault |= (pkr_bits != 0);
->   	}
->   
->   	return -(u32)fault & errcode;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 6d6a0ae7800c..481442f5e27a 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4716,20 +4716,20 @@ static void update_permission_bitmask(struct kvm_vcpu *vcpu,
->   * away both AD and WD.  For all reads or if the last condition holds, WD
->   * only will be masked away.
->   */
-> -static void update_pkru_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
-> +static void update_pkr_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->   				bool ept)
->   {
->   	unsigned bit;
->   	bool wp;
->   
->   	if (ept) {
-> -		mmu->pkru_mask = 0;
-> +		mmu->pkr_mask = 0;
->   		return;
->   	}
->   
->   	/* PKEY is enabled only if CR4.PKE and EFER.LMA are both set. */
->   	if (!kvm_read_cr4_bits(vcpu, X86_CR4_PKE) || !is_long_mode(vcpu)) {
-> -		mmu->pkru_mask = 0;
-> +		mmu->pkr_mask = 0;
->   		return;
->   	}
->   
-> @@ -4763,7 +4763,7 @@ static void update_pkru_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->   		/* PKRU.WD stops write access. */
->   		pkey_bits |= (!!check_write) << 1;
->   
-> -		mmu->pkru_mask |= (pkey_bits & 3) << pfec;
-> +		mmu->pkr_mask |= (pkey_bits & 3) << pfec;
->   	}
->   }
->   
-> @@ -4785,7 +4785,7 @@ static void paging64_init_context_common(struct kvm_vcpu *vcpu,
->   
->   	reset_rsvds_bits_mask(vcpu, context);
->   	update_permission_bitmask(vcpu, context, false);
-> -	update_pkru_bitmask(vcpu, context, false);
-> +	update_pkr_bitmask(vcpu, context, false);
->   	update_last_nonleaf_level(vcpu, context);
->   
->   	MMU_WARN_ON(!is_pae(vcpu));
-> @@ -4815,7 +4815,7 @@ static void paging32_init_context(struct kvm_vcpu *vcpu,
->   
->   	reset_rsvds_bits_mask(vcpu, context);
->   	update_permission_bitmask(vcpu, context, false);
-> -	update_pkru_bitmask(vcpu, context, false);
-> +	update_pkr_bitmask(vcpu, context, false);
->   	update_last_nonleaf_level(vcpu, context);
->   
->   	context->page_fault = paging32_page_fault;
-> @@ -4925,7 +4925,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
->   	}
->   
->   	update_permission_bitmask(vcpu, context, false);
-> -	update_pkru_bitmask(vcpu, context, false);
-> +	update_pkr_bitmask(vcpu, context, false);
->   	update_last_nonleaf_level(vcpu, context);
->   	reset_tdp_shadow_zero_bits_mask(vcpu, context);
->   }
-> @@ -5032,7 +5032,7 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
->   	context->mmu_role.as_u64 = new_role.as_u64;
->   
->   	update_permission_bitmask(vcpu, context, true);
-> -	update_pkru_bitmask(vcpu, context, true);
-> +	update_pkr_bitmask(vcpu, context, true);
->   	update_last_nonleaf_level(vcpu, context);
->   	reset_rsvds_bits_mask_ept(vcpu, context, execonly);
->   	reset_ept_shadow_zero_bits_mask(vcpu, context, execonly);
-> @@ -5103,7 +5103,7 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
->   	}
->   
->   	update_permission_bitmask(vcpu, g_context, false);
-> -	update_pkru_bitmask(vcpu, g_context, false);
-> +	update_pkr_bitmask(vcpu, g_context, false);
->   	update_last_nonleaf_level(vcpu, g_context);
->   }
->   
-> 
+On Fri, Jan 15, 2021 at 4:00 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Thu, Jan 14, 2021 at 7:05 PM Enrico Weigelt, metux IT consult
+> <info@metux.net> wrote:
+> >
+>
+> Thanks for catching this.
+>
+>
+> > The change c0f975af1745391749e4306aa8081b9a4d2cced8 introduces a bug when
+>
+> Please use 12-digit hash ("subject") style.
+>
+>
+> Commit c0f975af1745 ("kconfig: Support building mconf with vendor
+> sysroot ncurses")
+>
+>
+>
+> > HOSTCC contains parameters: the whole command line is treated as the program
+> > name (with spaces in it). Therefore, we have to remove the quotes.
+> >
+> > Fixes: c0f975af1745391749e4306aa8081b9a4d2cced8
+>
+> Ditto.
+>
+> Fixes: c0f975af1745 ("kconfig: Support building mconf with vendor
+> sysroot ncurses")
+>
+>
+>
+> > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> > ---
+> >  scripts/kconfig/mconf-cfg.sh | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/kconfig/mconf-cfg.sh b/scripts/kconfig/mconf-cfg.sh
+> > index fcd4acd4e9cb..40fa449ed049 100755
+> > --- a/scripts/kconfig/mconf-cfg.sh
+> > +++ b/scripts/kconfig/mconf-cfg.sh
+> > @@ -35,7 +35,7 @@ fi
+> >
+> >  # As a final fallback before giving up, check if $HOSTCC knows of a default
+> >  # ncurses installation (e.g. from a vendor-specific sysroot).
+> > -if echo '#include <ncurses.h>' | "${HOSTCC}" -E - >/dev/null 2>&1; then
+> > +if echo '#include <ncurses.h>' | ${HOSTCC} -E - >/dev/null ; then
+>
+>
+> Please keep 2>&1.
+>
+> This script will display the enough error message at the end.
+>
+>
+>
+> >         echo cflags=\"-D_GNU_SOURCE\"
+> >         echo libs=\"-lncurses\"
+> >         exit 0
+> > --
+> > 2.11.0
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
+I did not get v2.
+
+I fixed them up by myself and applied it to linux-kbuild/fixes.
+
+
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
