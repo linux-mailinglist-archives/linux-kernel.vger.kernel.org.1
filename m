@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2E2303BCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6386303BCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405181AbhAZLh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:37:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47300 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403940AbhAZK2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:28:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611656871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pOda+MvC/sHys1dv13U5VXg25nGXKMCvumVGvRV1f6c=;
-        b=YXcm+GxgMkbGv/c1skH0GerHWmZ9Lg6XaKFaz1+x8Tcu5n/72+9fgMM3TUNxfnCmzzpFjB
-        8LaejLB6PN4pv9IecvMVR1SJ8AdLY6X8WgHAwU63vhnjo21J7xY+xKr1h7JIQ+ELYwN25i
-        vBEg+gsy5UtGntgHdqm3PK8WpPW62lw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 164A5ABDA;
-        Tue, 26 Jan 2021 10:27:51 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 11:27:50 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] printk: rectify kernel-doc for prb_rec_init_wr()
-Message-ID: <YA/upguVH/Jj0GJz@localhost.localdomain>
-References: <20210125081748.19903-1-lukas.bulwahn@gmail.com>
+        id S2405193AbhAZLig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:38:36 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:43782 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729050AbhAZK3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:29:52 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-103-0STilh9oPG2ZWsVCMifh3A-1; Tue, 26 Jan 2021 10:28:09 +0000
+X-MC-Unique: 0STilh9oPG2ZWsVCMifh3A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 26 Jan 2021 10:28:09 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 26 Jan 2021 10:28:09 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nicholas Piggin' <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "msuchanek@suse.de" <msuchanek@suse.de>,
+        Paul Mackerras <paulus@samba.org>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 11/23] powerpc/syscall: Rename syscall_64.c into
+ syscall.c
+Thread-Topic: [PATCH v4 11/23] powerpc/syscall: Rename syscall_64.c into
+ syscall.c
+Thread-Index: AQHW8807JGe39joh3kmpEKEvm5M8jao5syyQ
+Date:   Tue, 26 Jan 2021 10:28:09 +0000
+Message-ID: <d9993f034db848d1afeffa322373b811@AcuMS.aculab.com>
+References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+ <ff9dd4accdc897013594768833d54444e4823bf9.1611585031.git.christophe.leroy@csgroup.eu>
+ <1611656343.yaxha7r2q4.astroid@bobo.none>
+In-Reply-To: <1611656343.yaxha7r2q4.astroid@bobo.none>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125081748.19903-1-lukas.bulwahn@gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-01-25 09:17:48, Lukas Bulwahn wrote:
-> The command 'find ./kernel/printk/ | xargs ./scripts/kernel-doc -none'
-> reported a mismatch with the kernel-doc of prb_rec_init_wr().
-> 
-> Rectify the kernel-doc, such that no issues remain for ./kernel/printk/.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+RnJvbTogTmljaG9sYXMgUGlnZ2luDQo+IFNlbnQ6IDI2IEphbnVhcnkgMjAyMSAxMDoyMQ0KPiAN
+Cj4gRXhjZXJwdHMgZnJvbSBDaHJpc3RvcGhlIExlcm95J3MgbWVzc2FnZSBvZiBKYW51YXJ5IDI2
+LCAyMDIxIDEyOjQ4IGFtOg0KPiA+IHN5c2NhbGxfNjQuYyB3aWxsIGJlIHJldXNlZCBhbG1vc3Qg
+YXMgaXMgZm9yIFBQQzMyLg0KPiA+DQo+ID4gUmVuYW1lIGl0IHN5c2NhbGwuYw0KPiANCj4gQ291
+bGQgeW91IHJlbmFtZSBpdCB0byBpbnRlcnJ1cHQuYyBpbnN0ZWFkPyBBIHN5c3RlbSBjYWxsIGlz
+IGFuDQo+IGludGVycnVwdCwgYW5kIHRoZSBmaWxlIG5vdyBhbHNvIGhhcyBjb2RlIHRvIHJldHVy
+biBmcm9tIG90aGVyDQo+IGludGVycnVwdHMgYXMgd2VsbCwgYW5kIGl0IG1hdGNoZXMgdGhlIG5l
+dyBhc20vaW50ZXJydXB0LmggZnJvbQ0KPiB0aGUgaW50ZXJydXB0cyBzZXJpZXMuDQoNCkhtbW0u
+Li4uDQoNClRoYXQgbWlnaHQgbWFrZSBpdCBoYXJkZXIgZm9yIHNvbWVvbmUgbG9va2luZyBmb3Ig
+dGhlIHN5c3RlbSBjYWxsDQplbnRyeSBjb2RlIHRvIGZpbmQgaXQuDQoNCkluIHNvbWUgc2Vuc2Ug
+aW50ZXJydXB0cyBhcmUgdGhlIHNpbXBsZXIgY2FzZS4NCg0KRXNwZWNpYWxseSB3aGVuIGNvbXBh
+cmluZyB3aXRoIG90aGVyIGFyY2hpdGVjdHVyZXMgd2hpY2ggaGF2ZQ0Kc3BlY2lhbCBpbnN0cnVj
+dGlvbnMgZm9yIHN5c2NhbGwgZW50cnkuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
+c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
+IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-The patch has been committed into printk/linux.git, branch
-printk-rework.
-
-Best Regards,
-Petr
