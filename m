@@ -2,124 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFAB304052
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC33E30405E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405851AbhAZOae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:30:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405910AbhAZO31 (ORCPT
+        id S2392770AbhAZOcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391938AbhAZOaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:29:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611671279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S2rkCrBfD5bDyHEtmODfflBbzJI4arxA1fFAqYtnYDM=;
-        b=jSv7tTVizSLIaAJIf00Z1c8xTmZ2jl0i0azTuCnNQR1jGXP9j3ZmdZvqXNvnhVs6KtNpXb
-        UPweVla/kcawclvogkz0Jnc/h0nJHJl6GWyjTxrFUWQLdr59Itc3QDRQRKmJ227Fkp/L1S
-        yslkXf1CUWVU75EELRBTWVcQRWnlkXI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-53-N1UyxMv2J24kkv46ZuQ-1; Tue, 26 Jan 2021 09:27:58 -0500
-X-MC-Unique: 53-N1UyxMv2J24kkv46ZuQ-1
-Received: by mail-ej1-f70.google.com with SMTP id jg11so5006150ejc.23
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:27:57 -0800 (PST)
+        Tue, 26 Jan 2021 09:30:46 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFD6C0611C2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:30:05 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id g1so19999327edu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:30:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=US8a/kB/55AFjkFFf4UVOg+wWSaZCuyXBjpUsvs+feI=;
+        b=lpn4V6P0eE+FY6dqw/ysEzqC/coXbO5OV+4q6B/Z9DSxXvvF6hCV9twibOZb1hb3IZ
+         uW/yUXid/E3Rk1HIzRWfV2D7+/Xo2SUX0FegjPS8XW++udkKwsIBtDBkf1P7XwGo29w5
+         c20hEJI7NzNoZDg6BZ+CjioEVbqz1EEd9wQzkq1112iJEvNEG2gusx7NH5JmQvppOaHf
+         E0/rX+x3fA6eN98/fX4WqYDyYJ3UOmE3faZh3LO7XWLRQkXIac7Gv82w7Jwl+T5Xx9sn
+         cT7VIwZ58SnAzZxfhQPpWrFsuBiY/NNoeoxP/9lDqnJbcRqiDXx1k293FX7j7G4IkYNz
+         HngQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S2rkCrBfD5bDyHEtmODfflBbzJI4arxA1fFAqYtnYDM=;
-        b=haOr41eUpJOyg69O0DzsFUNAAvVKxgUXjcHJQOnsrQIK2diMxSXwHYpUiDvUvgsFRB
-         hn6cJ4ApuxhHBDA1mkA662x5kTCEntvy3F+8dYXiJCkFEajhKQRAiMbUL9Mt2ysstahw
-         BEvRB+S5CMlwK7rcNNnbWATXgfkOIys/Gh2fnkjtoBaAf5HrW4u3GGpyjhxFNoFPQG+Z
-         9u6iQ4htzwPbYCHO535GToH0cYJ8I2gZvAUmgeXOv0ibQ34SytfPlCuJiULqlRqjO/AN
-         1bo7dMx0R9oMXBkKgcyKosAEbiEghNh1yxRv7R5CADDHZ0krHMsJ/uE8Nfg4da1zdRuO
-         Z9Cg==
-X-Gm-Message-State: AOAM533W0qJqMCg4tni4nXZoF+G6tITYO9UXkNaU8vFp4FAhD8yjlvP2
-        CeTUvU+mjZaT/5HnE1tET8XiyoWMih7F0bq9AHectd+Mh8pyeeyt+7Vj7cvjUlIU0Yh2bnuM1M7
-        voUbxhyAk6sfJ2taY5/4zXRdT
-X-Received: by 2002:a05:6402:11d3:: with SMTP id j19mr4765436edw.314.1611671276829;
-        Tue, 26 Jan 2021 06:27:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJymiLts94MhJprL7ggs26FXkQnjVmTw7hH1In4bWJNPScrukS4CJH/wOJ+P5zaNXELDyYRxBg==
-X-Received: by 2002:a05:6402:11d3:: with SMTP id j19mr4765416edw.314.1611671276648;
-        Tue, 26 Jan 2021 06:27:56 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id dj25sm12362694edb.5.2021.01.26.06.27.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 06:27:55 -0800 (PST)
-To:     Sean Christopherson <seanjc@google.com>,
-        Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-20-bgardon@google.com> <YAnUhCocizx97FWL@google.com>
- <YAnzB3Uwn3AVTXGN@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 19/24] kvm: x86/mmu: Protect tdp_mmu_pages with a lock
-Message-ID: <335d27f7-0849-de37-f380-a5018c5c5535@redhat.com>
-Date:   Tue, 26 Jan 2021 15:27:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=US8a/kB/55AFjkFFf4UVOg+wWSaZCuyXBjpUsvs+feI=;
+        b=hoiiojjirZIYJ+0BQIQgOpYu/X3kfwyTWms2I5PKaswG509px8TeWlYY0yyaYs2Qei
+         p8yVO+JS37/bFUi0zGLAXtS0ySPV7CZtMJYwuAoOL+whvBMRZfbUJWfnw0ylZyNMHMgs
+         0Odq50g05rf2Or1Ix3oaMIwu0i1z8NCdgL2+SXwMKYDh8x5rIs2MvQERY4GtDqv+3dTC
+         ldL7BoKabZjSEUfNGJiSK60HVgW5h2rxVxw3q+7adYhlUq7mm3EEBTidw257JMwlScVz
+         GlerDq5dza6pw84qaAk7gtMdKicmPO1272JspS3OKa2qLAtlX2Ojzjgj8nB02lGSrbRW
+         DbJg==
+X-Gm-Message-State: AOAM532o6iC13XYvNVDMSEvVGW3zgvrXZtskJCnZSg63JqMtONHFuOGP
+        W+g6M602CN1UFPIB7ihKJHA1gtDJrRMrnKheRrLVVg==
+X-Google-Smtp-Source: ABdhPJz0ls97OG8+OSmc9t5sQKWLr7rZ0A9Jbf5tTkXRc1iBOLXK3fdIESF/F71aZUt8OTnFhumnht6dZlyx93lBEF4=
+X-Received: by 2002:aa7:d803:: with SMTP id v3mr4667824edq.153.1611671404169;
+ Tue, 26 Jan 2021 06:30:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YAnzB3Uwn3AVTXGN@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210125201156.1330164-1-pasha.tatashin@soleen.com>
+ <20210125201156.1330164-2-pasha.tatashin@soleen.com> <BYAPR04MB4965A6FB4ED51882E326EC1A86BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
+In-Reply-To: <BYAPR04MB4965A6FB4ED51882E326EC1A86BC9@BYAPR04MB4965.namprd04.prod.outlook.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 26 Jan 2021 09:29:28 -0500
+Message-ID: <CA+CK2bAQcGPYtbGziyRpzTRQ8WCLsvM2DmFYLwDRMXMX6U38+w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] loop: scale loop device by introducing per device lock
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc:     "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
+        "hch@lst.de" <hch@lst.de>, "pvorel@suse.cz" <pvorel@suse.cz>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "mzxreary@0pointer.de" <mzxreary@0pointer.de>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "zhengbin13@huawei.com" <zhengbin13@huawei.com>,
+        "maco@android.com" <maco@android.com>,
+        "colin.king@canonical.com" <colin.king@canonical.com>,
+        "evgreen@chromium.org" <evgreen@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/01/21 22:32, Sean Christopherson wrote:
-> Coming back to this series, I wonder if the RCU approach is truly necessary to
-> get the desired scalability.  If both zap_collapsible_sptes() and NX huge page
-> recovery zap_only_  leaf SPTEs, then the only path that can actually unlink a
-> shadow page while holding the lock for read is the page fault path that installs
-> a huge page over an existing shadow page.
-> 
-> Assuming the above analysis is correct, I think it's worth exploring alternatives
-> to using RCU to defer freeing the SP memory, e.g. promoting to a write lock in
-> the specific case of overwriting a SP (though that may not exist for rwlocks),
-> or maybe something entirely different?
+On Tue, Jan 26, 2021 at 4:53 AM Chaitanya Kulkarni
+<Chaitanya.Kulkarni@wdc.com> wrote:
+>
+> On 1/25/21 12:15 PM, Pavel Tatashin wrote:
+> > Currently, loop device has only one global lock:
+> > loop_ctl_mutex.
+> Above line can be :-
+> Currently, loop device has only one global lock: loop_ctl_mutex.
 
-You can do the deferred freeing with a short write-side critical section 
-to ensure all readers have terminated.
+OK
 
-If the bool argument to handle_disconnected_tdp_mmu_page is true(*), the 
-pages would be added to an llist, instead of being freed immediately. 
-At the end of a shared critical section you would do
+>
+> Also please provide a complete discretion what are the members it protects,
+> i.e. how big the size of the current locking is, helps the reviewers &
+> maintainer.
 
-	if (!llist_empty(&kvm->arch.tdp_mmu_disconnected_pages)) {
-		struct llist_node *first;
-		kvm_mmu_lock(kvm);
-		first = __list_del_all(&kvm->arch.tdp_mmu_disconnected_pages);
-		kvm_mmu_unlock(kvm);
+Sure
 
-		/*
-		 * All vCPUs have already stopped using the pages when
-		 * their TLBs were flushed.  The exclusive critical
-		 * section above means that there can be no readers
-		 * either.
-		 */
-		tdp_mmu_free_disconnected_pages(first);
-	}
+> > This becomes hot in scenarios where many loop devices are used.
+> >
+> > Scale it by introducing per-device lock: lo_mutex that protects the
+> > fields in struct loop_device. Keep loop_ctl_mutex to protect global
+> > data such as loop_index_idr, loop_lookup, loop_add.
+> When it comes to scaling, lockstat data is more descriptive and useful along
+> with thetotal time of execution which has contention numbers with increasing
+> number of threads/devices/users on logarithmic scale, at-least that is
+> how I've
+> solved the some of file-systems scaling issues in the past.
 
-So this is still deferred reclamation, but it's done by one of the vCPUs 
-rather than a worker RCU thread.  This would replace patches 11/12/13 
-and probably would be implemented after patch 18.
+I found this issue using perf that shows profiling. I've previously
+used lockstat, it is indeed a good tool to work with lock contentions.
 
-Paolo
+> >
+> > Lock ordering: loop_ctl_mutex > lo_mutex.
+> The above statement needs a in-detail commit log description. Usually >
+> sort of statements are not a good practice for something as important as
+> lock priority which was not present in the original code.
 
-(*) this idea is what prompted the comment about s/atomic/shared/
+OK, I will expand this to clearly state that new lock ordering
+requirement is that loop_ctl_mutex must be taken before lo_mutex.
 
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> > ---
+> >  drivers/block/loop.c | 92 +++++++++++++++++++++++++-------------------
+> >
+> >
+> >
+> >       /*
+> > -      * Need not hold loop_ctl_mutex to fput backing file.
+> > -      * Calling fput holding loop_ctl_mutex triggers a circular
+> > +      * Need not hold lo_mutex to fput backing file.
+> > +      * Calling fput holding lo_mutex triggers a circular
+> >        * lock dependency possibility warning as fput can take
+> > -      * bd_mutex which is usually taken before loop_ctl_mutex.
+> > +      * bd_mutex which is usually taken before lo_mutex.
+> >        */
+> This is not in your patch, but since you are touching this comment can you
+> please consider this, it save an entire line and the wasted space:-
+
+OK
+
+>        /*
+>         * Need not hold lo_mutex to fput backing file. Calling fput holding
+>         * lo_mutex triggers a circular lock dependency possibility
+> warning as
+>         * fput can take bd_mutex which is usually take before lo_mutex.
+>         */
+>
+> > @@ -1879,27 +1879,33 @@ static int lo_open(struct block_device *bdev, fmode_t mode)
+> >       struct loop_device *lo;
+> >       int err;
+> >
+> > +     /*
+> > +      * take loop_ctl_mutex to protect lo pointer from race with
+> > +      * loop_control_ioctl(LOOP_CTL_REMOVE), however, to reduce
+> > +      * contention release it prior to updating lo->lo_refcnt.
+> > +      */
+>
+> The above comment could be :-
+>
+>         /*
+>          * Take loop_ctl_mutex to protect lo pointer from race with
+>          * loop_control_ioctl(LOOP_CTL_REMOVE), however, to reduce
+> contention
+>          * release it prior to updating lo->lo_refcnt.
+>          */
+
+OK
+
+> >       err = mutex_lock_killable(&loop_ctl_mutex);
+> >       if (err)
+
+I will send an updated patch soon.
+
+Thank you,
+Pasha
