@@ -2,378 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0E2303B71
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35597303B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392287AbhAZLVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:21:24 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40166 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390498AbhAZIpW (ORCPT
+        id S2392315AbhAZLWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:22:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387545AbhAZIrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:45:22 -0500
-X-UUID: afee96f18aed44fc91e8c0c1edba5bdb-20210126
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ab5V6Jg+4cCkW2NoySIkH8C7eY3leIfl1X6U8aIDygM=;
-        b=apIkwoLe/pH90rtw1K78KvyWCLKf+jjKm/xUuFHPWs6b4fiDrBjuKIE/t/uOv/aVaH/NEFIe7DsGnEa3XNfrTLbWBgWseG1YZ/x/hhnMZru3sRPtXCBeufP8GFwjURBPq9Ho5xiw7+PggEi+w1YBIyurr/XxVO7pKEfyWZ5yjXE=;
-X-UUID: afee96f18aed44fc91e8c0c1edba5bdb-20210126
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <tiffany.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 76383182; Tue, 26 Jan 2021 16:44:20 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 16:44:17 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 16:44:18 +0800
-Message-ID: <1611650658.20687.3.camel@mtksdaap41>
-Subject: Re: [PATCH 3/3] media: mtk-vcodec: Separating mtk encoder driver
-From:   Tiffany Lin <tiffany.lin@mediatek.com>
-To:     Irui Wang <irui.wang@mediatek.com>
-CC:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Tomasz Figa" <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
-Date:   Tue, 26 Jan 2021 16:44:18 +0800
-In-Reply-To: <20210121061804.26423-3-irui.wang@mediatek.com>
-References: <20210121061804.26423-1-irui.wang@mediatek.com>
-         <20210121061804.26423-3-irui.wang@mediatek.com>
+        Tue, 26 Jan 2021 03:47:23 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C73C06178A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:45:58 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id e5so11886277qkn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=q26ZBusReJ2YrAmJB0oDT6oI5qrK0euXWGrW2rW3Gh0=;
+        b=esiVhbCEJ6T9J9VikNfg8mJ0ctududK2bqeahRkSvhpx+66YkL5/khs80zh5p/osaB
+         iUKgK44kOCSdHOZBD55XaEP+/MEEBCXw2UGWfxIA3fRvJXzwjK7b8n2NM5R4RIptX4PA
+         bF6bbJ/Hr6gyVFtB02Y7q4MEDidv/WudeIJ6+H+uqSKMM1V6UURkvTmnEsCtBGtPfsPV
+         vQO4GoGQ4vSqU++mw7BlgQkFibEWOz+lUrsxWC4zTZ9Fxm4waF44tyFWfQz/8OvAuVqj
+         hrAV7XvKknWylvOvWbOvTS2Cm1k4y92vZ1ecfmXGBQHHFRXhLNAetp32kjenKwPXyzLg
+         BPlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=q26ZBusReJ2YrAmJB0oDT6oI5qrK0euXWGrW2rW3Gh0=;
+        b=jNnSmBMtp80g84fyWky3/cvRmsW/G/zfWdO0Uza/Y5p9O4Bjdbc6X14D0vI3az5B5y
+         UXbOEhGI9i9jOZI6K6H6q5Eme/v/9tRe4qfLNBGNKLrig3bpHMNkFIZDwfMhOXFZV9q4
+         bj0pcg1Z7HJyQMuBCEE4UMmKue/DiTq08il8mJuis6ASbU5nvySnRFlWflasGETLVJYX
+         UrkimMGO6WuWrdCrmrhIuQDmu6+DOF5zjkhOH5ODTITp85cwO0MQ52iCQeQ+KueXR32U
+         p57zK0gTVLr5Tdtm9UUIXn7Co7u88mBfAjk2HaKdFNeZD8K6p5yWSixO4qUlAJNNDOWr
+         9O2w==
+X-Gm-Message-State: AOAM530iH66BQJ57CV9H78PZSYzYc9Nq+0J3p54mtaxy3W83/6osbO/h
+        7hJkcM92uf8tbHNq5RGghFQyQyZwez5e
+X-Google-Smtp-Source: ABdhPJyWpRKbgW1iDi3MBvaSUQI1BlYEnKtynvY6Se7uj5OAyuxSdzGhkR83S+d2y/I45ZgcbK3AJ31LZEjt
+Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:4430:c29c:1e76:3e65])
+ (user=kyletso job=sendgmr) by 2002:ad4:43ea:: with SMTP id
+ f10mr4556495qvu.52.1611650757277; Tue, 26 Jan 2021 00:45:57 -0800 (PST)
+Date:   Tue, 26 Jan 2021 16:45:42 +0800
+In-Reply-To: <20210126084544.682641-1-kyletso@google.com>
+Message-Id: <20210126084544.682641-2-kyletso@google.com>
+Mime-Version: 1.0
+References: <20210126084544.682641-1-kyletso@google.com>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH 1/3] usb: typec: Determine common SVDM Versions
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        hdegoede@redhat.com, badhri@google.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTIxIGF0IDE0OjE4ICswODAwLCBJcnVpIFdhbmcgd3JvdGU6DQo+IE1U
-SyBIMjY0IEVuY29kZXIoVkVOQ19TWVMpIGFuZCBWUDggRW5jb2RlcihWRU5DX0xUX1NZUykgYXJl
-IHR3bw0KPiBpbmRlcGVuZGVudCBoYXJkd2FyZSBpbnN0YW5jZS4gVGhleSBoYXZlIHRoZWlyIG93
-bmVyIGludGVycnVwdCwNCj4gcmVnaXN0ZXIgbWFwcGluZywgYW5kIHNwZWNpYWwgY2xvY2tzLg0K
-PiANCj4gVGhpcyBwYXRjaCBzZXBlcmF0ZXMgdGhlbSBpbnRvIHR3byBkcml2ZXJzOg0KPiBVc2Vy
-IENhbGwgIlZJRElPQ19RVUVSWUNBUCI6DQo+IEgyNjQgRW5jb2RlciByZXR1cm4gZHJpdmVyIG5h
-bWUgIm10ay12Y29kZWMtZW5jIjsNCj4gVlA4IEVuY29kZXIgcmV0dXJuIGRyaXZlciBuYW1lICJt
-dGstdmVuYy12cDguDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBj
-aHJvbWl1bS5vcmc+DQo+IFNpZ25lZC1vZmYtYnk6IE1hb2d1YW5nIE1lbmcgPG1hb2d1YW5nLm1l
-bmdAbWVkaWF0ZWsuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBJcnVpIFdhbmcgPGlydWkud2FuZ0Bt
-ZWRpYXRlay5jb20+DQo+IA0KQWNrZWQtYnk6IFRpZmZhbnkgTGluIDx0aWZmYW55LmxpbkBtZWRp
-YXRlay5jb20+DQoNCj4gLS0tDQo+ICAuLi4vcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVj
-X2Rydi5oICAgICAgfCAgMTAgKy0NCj4gIC4uLi9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29k
-ZWNfZW5jLmMgICAgICB8ICAyMyArKystDQo+ICAuLi4vcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtf
-dmNvZGVjX2VuY19kcnYuYyAgfCAxMjEgKysrKysrKy0tLS0tLS0tLS0tDQo+ICAuLi4vcGxhdGZv
-cm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2VuY19wbS5jICAgfCAgNDAgKy0tLS0tDQo+ICAuLi4v
-cGxhdGZvcm0vbXRrLXZjb2RlYy92ZW5jL3ZlbmNfdnA4X2lmLmMgICAgfCAgIDQgKy0NCj4gIDUg
-ZmlsZXMgY2hhbmdlZCwgODIgaW5zZXJ0aW9ucygrKSwgMTE2IGRlbGV0aW9ucygtKQ0KPiANCj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVj
-X2Rydi5oIGIvZHJpdmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZHJ2
-LmgNCj4gaW5kZXggM2RkMDEwY2JhMjNlLi4xNTk0ZWRjYzcwNmQgMTAwNjQ0DQo+IC0tLSBhL2Ry
-aXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2Rydi5oDQo+ICsrKyBi
-L2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2Rydi5oDQo+IEBA
-IC0xOSw2ICsxOSw3IEBADQo+ICAjZGVmaW5lIE1US19WQ09ERUNfRFJWX05BTUUJIm10a192Y29k
-ZWNfZHJ2Ig0KPiAgI2RlZmluZSBNVEtfVkNPREVDX0RFQ19OQU1FCSJtdGstdmNvZGVjLWRlYyIN
-Cj4gICNkZWZpbmUgTVRLX1ZDT0RFQ19FTkNfTkFNRQkibXRrLXZjb2RlYy1lbmMiDQo+ICsjZGVm
-aW5lIE1US19WRU5DX1ZQOF9OQU1FCSJtdGstdmVuYy12cDgiDQo+ICAjZGVmaW5lIE1US19QTEFU
-Rk9STV9TVFIJInBsYXRmb3JtOm10ODE3MyINCj4gIA0KPiAgI2RlZmluZSBNVEtfVkNPREVDX01B
-WF9QTEFORVMJMw0KPiBAQCAtMTkzLDcgKzE5NCw2IEBAIHN0cnVjdCBtdGtfdmNvZGVjX3BtIHsN
-Cj4gIA0KPiAgCXN0cnVjdCBtdGtfdmNvZGVjX2Nsawl2ZW5jX2NsazsNCj4gIAlzdHJ1Y3QgZGV2
-aWNlCSpsYXJidmVuYzsNCj4gLQlzdHJ1Y3QgZGV2aWNlCSpsYXJidmVuY2x0Ow0KPiAgCXN0cnVj
-dCBkZXZpY2UJKmRldjsNCj4gIAlzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYJKm10a2RldjsNCj4gIH07
-DQo+IEBAIC0zMTEsMjUgKzMxMSwyNyBAQCBlbnVtIG10a19jaGlwIHsNCj4gICAqIEBjaGlwOiBj
-aGlwIHRoaXMgZW5jb2RlciBpcyBjb21wYXRpYmxlIHdpdGgNCj4gICAqDQo+ICAgKiBAdXNlc19l
-eHQ6IHdoZXRoZXIgdGhlIGVuY29kZXIgdXNlcyB0aGUgZXh0ZW5kZWQgZmlybXdhcmUgbWVzc2Fn
-aW5nIGZvcm1hdA0KPiAtICogQGhhc19sdF9pcnE6IHdoZXRoZXIgdGhlIGVuY29kZXIgdXNlcyB0
-aGUgTFQgaXJxDQo+ICsgKiBAbmFtZTogd2hldGhlciB0aGUgZW5jb2RlciBjb3JlIGlzIHZwOA0K
-PiAgICogQG1pbl9iaXJhdGU6IG1pbmltdW0gc3VwcG9ydGVkIGVuY29kaW5nIGJpdHJhdGUNCj4g
-ICAqIEBtYXhfYml0cmF0ZTogbWF4aW11bSBzdXBwb3J0ZWQgZW5jb2RpbmcgYml0cmF0ZQ0KPiAg
-ICogQGNhcHR1cmVfZm9ybWF0czogYXJyYXkgb2Ygc3VwcG9ydGVkIGNhcHR1cmUgZm9ybWF0cw0K
-PiAgICogQG51bV9jYXB0dXJlX2Zvcm1hdHM6IG51bWJlciBvZiBlbnRyaWVzIGluIGNhcHR1cmVf
-Zm9ybWF0cw0KPiAgICogQG91dHB1dF9mb3JtYXRzOiBhcnJheSBvZiBzdXBwb3J0ZWQgb3V0cHV0
-IGZvcm1hdHMNCj4gICAqIEBudW1fb3V0cHV0X2Zvcm1hdHM6IG51bWJlciBvZiBlbnRyaWVzIGlu
-IG91dHB1dF9mb3JtYXRzDQo+ICsgKiBAY29yZV9pZDogc3RhbmQgZm9yIGgyNjQgb3IgdnA4IGVu
-Y29kZSBpbmRleA0KPiAgICovDQo+ICBzdHJ1Y3QgbXRrX3Zjb2RlY19lbmNfcGRhdGEgew0KPiAg
-CWVudW0gbXRrX2NoaXAgY2hpcDsNCj4gIA0KPiAgCWJvb2wgdXNlc19leHQ7DQo+IC0JYm9vbCBo
-YXNfbHRfaXJxOw0KPiArCWNvbnN0IGNoYXIgKm5hbWU7DQo+ICAJdW5zaWduZWQgbG9uZyBtaW5f
-Yml0cmF0ZTsNCj4gIAl1bnNpZ25lZCBsb25nIG1heF9iaXRyYXRlOw0KPiAgCWNvbnN0IHN0cnVj
-dCBtdGtfdmlkZW9fZm10ICpjYXB0dXJlX2Zvcm1hdHM7DQo+ICAJc2l6ZV90IG51bV9jYXB0dXJl
-X2Zvcm1hdHM7DQo+ICAJY29uc3Qgc3RydWN0IG10a192aWRlb19mbXQgKm91dHB1dF9mb3JtYXRz
-Ow0KPiAgCXNpemVfdCBudW1fb3V0cHV0X2Zvcm1hdHM7DQo+ICsJaW50IGNvcmVfaWQ7DQo+ICB9
-Ow0KPiAgDQo+ICAjZGVmaW5lIE1US19FTkNfQ1RYX0lTX0VYVChjdHgpICgoY3R4KS0+ZGV2LT52
-ZW5jX3BkYXRhLT51c2VzX2V4dCkNCj4gQEAgLTM2MSw3ICszNjMsNiBAQCBzdHJ1Y3QgbXRrX3Zj
-b2RlY19lbmNfcGRhdGEgew0KPiAgICoNCj4gICAqIEBkZWNfaXJxOiBkZWNvZGVyIGlycSByZXNv
-dXJjZQ0KPiAgICogQGVuY19pcnE6IGgyNjQgZW5jb2RlciBpcnEgcmVzb3VyY2UNCj4gLSAqIEBl
-bmNfbHRfaXJxOiB2cDggZW5jb2RlciBpcnEgcmVzb3VyY2UNCj4gICAqDQo+ICAgKiBAZGVjX211
-dGV4OiBkZWNvZGVyIGhhcmR3YXJlIGxvY2sNCj4gICAqIEBlbmNfbXV0ZXg6IGVuY29kZXIgaGFy
-ZHdhcmUgbG9jay4NCj4gQEAgLTM5Nyw3ICszOTgsNiBAQCBzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYg
-ew0KPiAgDQo+ICAJaW50IGRlY19pcnE7DQo+ICAJaW50IGVuY19pcnE7DQo+IC0JaW50IGVuY19s
-dF9pcnE7DQo+ICANCj4gIAlzdHJ1Y3QgbXV0ZXggZGVjX211dGV4Ow0KPiAgCXN0cnVjdCBtdXRl
-eCBlbmNfbXV0ZXg7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12
-Y29kZWMvbXRrX3Zjb2RlY19lbmMuYyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2Rl
-Yy9tdGtfdmNvZGVjX2VuYy5jDQo+IGluZGV4IDIxZGUxNDMxY2ZjYi4uMGRhNjg3MWI0YjM5IDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zjb2Rl
-Y19lbmMuYw0KPiArKysgYi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zj
-b2RlY19lbmMuYw0KPiBAQCAtOSw2ICs5LDcgQEANCj4gICNpbmNsdWRlIDxtZWRpYS92NGwyLW1l
-bTJtZW0uaD4NCj4gICNpbmNsdWRlIDxtZWRpYS92aWRlb2J1ZjItZG1hLWNvbnRpZy5oPg0KPiAg
-I2luY2x1ZGUgPHNvYy9tZWRpYXRlay9zbWkuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9wbV9ydW50
-aW1lLmg+DQo+ICANCj4gICNpbmNsdWRlICJtdGtfdmNvZGVjX2Rydi5oIg0KPiAgI2luY2x1ZGUg
-Im10a192Y29kZWNfZW5jLmgiDQo+IEBAIC0xODksNyArMTkwLDEwIEBAIHN0YXRpYyBpbnQgdmlk
-aW9jX2VudW1fZm10X3ZpZF9vdXQoc3RydWN0IGZpbGUgKmZpbGUsIHZvaWQgKnByaXYsDQo+ICBz
-dGF0aWMgaW50IHZpZGlvY192ZW5jX3F1ZXJ5Y2FwKHN0cnVjdCBmaWxlICpmaWxlLCB2b2lkICpw
-cml2LA0KPiAgCQkJCXN0cnVjdCB2NGwyX2NhcGFiaWxpdHkgKmNhcCkNCj4gIHsNCj4gLQlzdHJz
-Y3B5KGNhcC0+ZHJpdmVyLCBNVEtfVkNPREVDX0VOQ19OQU1FLCBzaXplb2YoY2FwLT5kcml2ZXIp
-KTsNCj4gKwljb25zdCBzdHJ1Y3QgbXRrX3Zjb2RlY19lbmNfcGRhdGEgKnBkYXRhID0NCj4gKwkJ
-ZmhfdG9fY3R4KHByaXYpLT5kZXYtPnZlbmNfcGRhdGE7DQo+ICsNCj4gKwlzdHJzY3B5KGNhcC0+
-ZHJpdmVyLCBwZGF0YS0+bmFtZSwgc2l6ZW9mKGNhcC0+ZHJpdmVyKSk7DQo+ICAJc3Ryc2NweShj
-YXAtPmJ1c19pbmZvLCBNVEtfUExBVEZPUk1fU1RSLCBzaXplb2YoY2FwLT5idXNfaW5mbykpOw0K
-PiAgCXN0cnNjcHkoY2FwLT5jYXJkLCBNVEtfUExBVEZPUk1fU1RSLCBzaXplb2YoY2FwLT5jYXJk
-KSk7DQo+ICANCj4gQEAgLTc5Nyw3ICs4MDEsNyBAQCBzdGF0aWMgaW50IHZiMm9wc192ZW5jX3N0
-YXJ0X3N0cmVhbWluZyhzdHJ1Y3QgdmIyX3F1ZXVlICpxLCB1bnNpZ25lZCBpbnQgY291bnQpDQo+
-ICAJICAqLw0KPiAgCWlmICgoY3R4LT5zdGF0ZSA9PSBNVEtfU1RBVEVfQUJPUlQpIHx8IChjdHgt
-PnN0YXRlID09IE1US19TVEFURV9GUkVFKSkgew0KPiAgCQlyZXQgPSAtRUlPOw0KPiAtCQlnb3Rv
-IGVycl9zZXRfcGFyYW07DQo+ICsJCWdvdG8gZXJyX3N0YXJ0X3N0cmVhbTsNCj4gIAl9DQo+ICAN
-Cj4gIAkvKiBEbyB0aGUgaW5pdGlhbGl6YXRpb24gd2hlbiBib3RoIHN0YXJ0X3N0cmVhbWluZyBo
-YXZlIGJlZW4gY2FsbGVkICovDQo+IEBAIC04MDksNiArODEzLDEyIEBAIHN0YXRpYyBpbnQgdmIy
-b3BzX3ZlbmNfc3RhcnRfc3RyZWFtaW5nKHN0cnVjdCB2YjJfcXVldWUgKnEsIHVuc2lnbmVkIGlu
-dCBjb3VudCkNCj4gIAkJCXJldHVybiAwOw0KPiAgCX0NCj4gIA0KPiArCXJldCA9IHBtX3J1bnRp
-bWVfZ2V0X3N5bmMoJmN0eC0+ZGV2LT5wbGF0X2Rldi0+ZGV2KTsNCj4gKwlpZiAocmV0IDwgMCkg
-ew0KPiArCQltdGtfdjRsMl9lcnIoInBtX3J1bnRpbWVfZ2V0X3N5bmMgZmFpbCAlZCIsIHJldCk7
-DQo+ICsJCWdvdG8gZXJyX3N0YXJ0X3N0cmVhbTsNCj4gKwl9DQo+ICsNCj4gIAltdGtfdmVuY19z
-ZXRfcGFyYW0oY3R4LCAmcGFyYW0pOw0KPiAgCXJldCA9IHZlbmNfaWZfc2V0X3BhcmFtKGN0eCwg
-VkVOQ19TRVRfUEFSQU1fRU5DLCAmcGFyYW0pOw0KPiAgCWlmIChyZXQpIHsNCj4gQEAgLTgzNSw2
-ICs4NDUsMTEgQEAgc3RhdGljIGludCB2YjJvcHNfdmVuY19zdGFydF9zdHJlYW1pbmcoc3RydWN0
-IHZiMl9xdWV1ZSAqcSwgdW5zaWduZWQgaW50IGNvdW50KQ0KPiAgCXJldHVybiAwOw0KPiAgDQo+
-ICBlcnJfc2V0X3BhcmFtOg0KPiArCXJldCA9IHBtX3J1bnRpbWVfcHV0KCZjdHgtPmRldi0+cGxh
-dF9kZXYtPmRldik7DQo+ICsJaWYgKHJldCA8IDApDQo+ICsJCW10a192NGwyX2VycigicG1fcnVu
-dGltZV9wdXQgZmFpbCAlZCIsIHJldCk7DQo+ICsNCj4gK2Vycl9zdGFydF9zdHJlYW06DQo+ICAJ
-Zm9yIChpID0gMDsgaSA8IHEtPm51bV9idWZmZXJzOyArK2kpIHsNCj4gIAkJc3RydWN0IHZiMl9i
-dWZmZXIgKmJ1ZiA9IHZiMl9nZXRfYnVmZmVyKHEsIGkpOw0KPiAgDQo+IEBAIC04ODgsNiArOTAz
-LDEwIEBAIHN0YXRpYyB2b2lkIHZiMm9wc192ZW5jX3N0b3Bfc3RyZWFtaW5nKHN0cnVjdCB2YjJf
-cXVldWUgKnEpDQo+ICAJaWYgKHJldCkNCj4gIAkJbXRrX3Y0bDJfZXJyKCJ2ZW5jX2lmX2RlaW5p
-dCBmYWlsZWQ9JWQiLCByZXQpOw0KPiAgDQo+ICsJcmV0ID0gcG1fcnVudGltZV9wdXQoJmN0eC0+
-ZGV2LT5wbGF0X2Rldi0+ZGV2KTsNCj4gKwlpZiAocmV0IDwgMCkNCj4gKwkJbXRrX3Y0bDJfZXJy
-KCJwbV9ydW50aW1lX3B1dCBmYWlsICVkIiwgcmV0KTsNCj4gKw0KPiAgCWN0eC0+c3RhdGUgPSBN
-VEtfU1RBVEVfRlJFRTsNCj4gIH0NCj4gIA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tZWRpYS9w
-bGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZW5jX2Rydi5jIGIvZHJpdmVycy9tZWRpYS9w
-bGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZW5jX2Rydi5jDQo+IGluZGV4IGRmYjQyZTE5
-YmY4MS4uNGJlZTQyNDU0MjUzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRmb3Jt
-L210ay12Y29kZWMvbXRrX3Zjb2RlY19lbmNfZHJ2LmMNCj4gKysrIGIvZHJpdmVycy9tZWRpYS9w
-bGF0Zm9ybS9tdGstdmNvZGVjL210a192Y29kZWNfZW5jX2Rydi5jDQo+IEBAIC00OSwxMiArNDks
-MTUgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfdmlkZW9fZm10IG10a192aWRlb19mb3JtYXRz
-X291dHB1dF9tdDgxNzNbXSA9IHsNCj4gIAl9LA0KPiAgfTsNCj4gIA0KPiAtc3RhdGljIGNvbnN0
-IHN0cnVjdCBtdGtfdmlkZW9fZm10IG10a192aWRlb19mb3JtYXRzX2NhcHR1cmVfbXQ4MTczW10g
-PSAgew0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfdmlkZW9fZm10IG10a192aWRlb19mb3Jt
-YXRzX2NhcHR1cmVfbXQ4MTczX2gyNjRbXSA9ICB7DQo+ICAJew0KPiAgCQkuZm91cmNjID0gVjRM
-Ml9QSVhfRk1UX0gyNjQsDQo+ICAJCS50eXBlID0gTVRLX0ZNVF9FTkMsDQo+ICAJCS5udW1fcGxh
-bmVzID0gMSwNCj4gIAl9LA0KPiArfTsNCj4gKw0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtf
-dmlkZW9fZm10IG10a192aWRlb19mb3JtYXRzX2NhcHR1cmVfbXQ4MTczX3ZwOFtdID0gIHsNCj4g
-IAl7DQo+ICAJCS5mb3VyY2MgPSBWNEwyX1BJWF9GTVRfVlA4LA0KPiAgCQkudHlwZSA9IE1US19G
-TVRfRU5DLA0KPiBAQCAtMTEwLDM1ICsxMTMsMTMgQEAgc3RhdGljIGlycXJldHVybl90IG10a192
-Y29kZWNfZW5jX2lycV9oYW5kbGVyKGludCBpcnEsIHZvaWQgKnByaXYpDQo+ICAJY3R4ID0gZGV2
-LT5jdXJyX2N0eDsNCj4gIAlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZkZXYtPmlycWxvY2ssIGZs
-YWdzKTsNCj4gIA0KPiAtCW10a192NGwyX2RlYnVnKDEsICJpZD0lZCIsIGN0eC0+aWQpOw0KPiAt
-CWFkZHIgPSBkZXYtPnJlZ19iYXNlW1ZFTkNfU1lTXSArIE1US19WRU5DX0lSUV9BQ0tfT0ZGU0VU
-Ow0KPiAtDQo+IC0JY3R4LT5pcnFfc3RhdHVzID0gcmVhZGwoZGV2LT5yZWdfYmFzZVtWRU5DX1NZ
-U10gKw0KPiAtCQkJCShNVEtfVkVOQ19JUlFfU1RBVFVTX09GRlNFVCkpOw0KPiAtDQo+IC0JY2xl
-YW5faXJxX3N0YXR1cyhjdHgtPmlycV9zdGF0dXMsIGFkZHIpOw0KPiAtDQo+IC0Jd2FrZV91cF9j
-dHgoY3R4LCBNVEtfSU5TVF9JUlFfUkVDRUlWRUQpOw0KPiAtCXJldHVybiBJUlFfSEFORExFRDsN
-Cj4gLX0NCj4gLQ0KPiAtc3RhdGljIGlycXJldHVybl90IG10a192Y29kZWNfZW5jX2x0X2lycV9o
-YW5kbGVyKGludCBpcnEsIHZvaWQgKnByaXYpDQo+IC17DQo+IC0Jc3RydWN0IG10a192Y29kZWNf
-ZGV2ICpkZXYgPSBwcml2Ow0KPiAtCXN0cnVjdCBtdGtfdmNvZGVjX2N0eCAqY3R4Ow0KPiAtCXVu
-c2lnbmVkIGxvbmcgZmxhZ3M7DQo+IC0Jdm9pZCBfX2lvbWVtICphZGRyOw0KPiAtDQo+IC0Jc3Bp
-bl9sb2NrX2lycXNhdmUoJmRldi0+aXJxbG9jaywgZmxhZ3MpOw0KPiAtCWN0eCA9IGRldi0+Y3Vy
-cl9jdHg7DQo+IC0Jc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2LT5pcnFsb2NrLCBmbGFncyk7
-DQo+ICsJbXRrX3Y0bDJfZGVidWcoMSwgImlkPSVkIGNvcmVpZDolZCIsIGN0eC0+aWQsIGRldi0+
-dmVuY19wZGF0YS0+Y29yZV9pZCk7DQo+ICsJYWRkciA9IGRldi0+cmVnX2Jhc2VbZGV2LT52ZW5j
-X3BkYXRhLT5jb3JlX2lkXSArDQo+ICsJCQkJTVRLX1ZFTkNfSVJRX0FDS19PRkZTRVQ7DQo+ICAN
-Cj4gLQltdGtfdjRsMl9kZWJ1ZygxLCAiaWQ9JWQiLCBjdHgtPmlkKTsNCj4gLQljdHgtPmlycV9z
-dGF0dXMgPSByZWFkbChkZXYtPnJlZ19iYXNlW1ZFTkNfTFRfU1lTXSArDQo+ICsJY3R4LT5pcnFf
-c3RhdHVzID0gcmVhZGwoZGV2LT5yZWdfYmFzZVtkZXYtPnZlbmNfcGRhdGEtPmNvcmVfaWRdICsN
-Cj4gIAkJCQkoTVRLX1ZFTkNfSVJRX1NUQVRVU19PRkZTRVQpKTsNCj4gIA0KPiAtCWFkZHIgPSBk
-ZXYtPnJlZ19iYXNlW1ZFTkNfTFRfU1lTXSArIE1US19WRU5DX0lSUV9BQ0tfT0ZGU0VUOw0KPiAt
-DQo+ICAJY2xlYW5faXJxX3N0YXR1cyhjdHgtPmlycV9zdGF0dXMsIGFkZHIpOw0KPiAgDQo+ICAJ
-d2FrZV91cF9jdHgoY3R4LCBNVEtfSU5TVF9JUlFfUkVDRUlWRUQpOw0KPiBAQCAtMjkzLDE3ICsy
-NzQsMjEgQEAgc3RhdGljIGludCBtdGtfdmNvZGVjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZp
-Y2UgKnBkZXYpDQo+ICAJZGV2LT52ZW5jX3BkYXRhID0gb2ZfZGV2aWNlX2dldF9tYXRjaF9kYXRh
-KCZwZGV2LT5kZXYpOw0KPiAgCXJldCA9IG10a192Y29kZWNfaW5pdF9lbmNfcG0oZGV2KTsNCj4g
-IAlpZiAocmV0IDwgMCkgew0KPiAtCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWlsZWQgdG8gZ2V0
-IG10IHZjb2RlYyBjbG9jayBzb3VyY2UhIik7DQo+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIkZh
-aWxlZCB0byBnZXQgbXRrIHZjb2RlYyBjbG9jayBzb3VyY2UhIik7DQo+ICAJCWdvdG8gZXJyX2Vu
-Y19wbTsNCj4gIAl9DQo+ICANCj4gLQlyZXMgPSBwbGF0Zm9ybV9nZXRfcmVzb3VyY2UocGRldiwg
-SU9SRVNPVVJDRV9NRU0sIDApOw0KPiAtCWRldi0+cmVnX2Jhc2VbVkVOQ19TWVNdID0gZGV2bV9p
-b3JlbWFwX3Jlc291cmNlKCZwZGV2LT5kZXYsIHJlcyk7DQo+IC0JaWYgKElTX0VSUigoX19mb3Jj
-ZSB2b2lkICopZGV2LT5yZWdfYmFzZVtWRU5DX1NZU10pKSB7DQo+IC0JCXJldCA9IFBUUl9FUlIo
-KF9fZm9yY2Ugdm9pZCAqKWRldi0+cmVnX2Jhc2VbVkVOQ19TWVNdKTsNCj4gKwlwbV9ydW50aW1l
-X2VuYWJsZSgmcGRldi0+ZGV2KTsNCj4gKw0KPiArCXNucHJpbnRmKGRldi0+djRsMl9kZXYubmFt
-ZSwgc2l6ZW9mKGRldi0+djRsMl9kZXYubmFtZSksICIlcyIsDQo+ICsJCSBkZXYtPnZlbmNfcGRh
-dGEtPm5hbWUpOw0KPiArDQo+ICsJZGV2LT5yZWdfYmFzZVtkZXYtPnZlbmNfcGRhdGEtPmNvcmVf
-aWRdID0NCj4gKwkJZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlKHBkZXYsIDApOw0KPiAr
-CWlmIChJU19FUlIoZGV2LT5yZWdfYmFzZVtkZXYtPnZlbmNfcGRhdGEtPmNvcmVfaWRdKSkgew0K
-PiArCQlyZXQgPSBQVFJfRVJSKGRldi0+cmVnX2Jhc2VbZGV2LT52ZW5jX3BkYXRhLT5jb3JlX2lk
-XSk7DQo+ICAJCWdvdG8gZXJyX3JlczsNCj4gIAl9DQo+IC0JbXRrX3Y0bDJfZGVidWcoMiwgInJl
-Z1slZF0gYmFzZT0weCVwIiwgaSwgZGV2LT5yZWdfYmFzZVtWRU5DX1NZU10pOw0KPiAgDQo+ICAJ
-cmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfSVJRLCAwKTsNCj4g
-IAlpZiAocmVzID09IE5VTEwpIHsNCj4gQEAgLTMxOCw0NCArMzAzLDE3IEBAIHN0YXRpYyBpbnQg
-bXRrX3Zjb2RlY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgCQkJICAg
-ICAgIG10a192Y29kZWNfZW5jX2lycV9oYW5kbGVyLA0KPiAgCQkJICAgICAgIDAsIHBkZXYtPm5h
-bWUsIGRldik7DQo+ICAJaWYgKHJldCkgew0KPiAtCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJGYWls
-ZWQgdG8gaW5zdGFsbCBkZXYtPmVuY19pcnEgJWQgKCVkKSIsDQo+IC0JCQlkZXYtPmVuY19pcnEs
-DQo+IC0JCQlyZXQpOw0KPiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsDQo+ICsJCQkiRmFpbGVkIHRv
-IGluc3RhbGwgZGV2LT5lbmNfaXJxICVkICglZCkgY29yZV9pZDolZCIsDQo+ICsJCQlkZXYtPmVu
-Y19pcnEsIHJldCwgZGV2LT52ZW5jX3BkYXRhLT5jb3JlX2lkKTsNCj4gIAkJcmV0ID0gLUVJTlZB
-TDsNCj4gIAkJZ290byBlcnJfcmVzOw0KPiAgCX0NCj4gIA0KPiAtCWlmIChkZXYtPnZlbmNfcGRh
-dGEtPmhhc19sdF9pcnEpIHsNCj4gLQkJcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYs
-IElPUkVTT1VSQ0VfTUVNLCAxKTsNCj4gLQkJZGV2LT5yZWdfYmFzZVtWRU5DX0xUX1NZU10gPSBk
-ZXZtX2lvcmVtYXBfcmVzb3VyY2UoJnBkZXYtPmRldiwgcmVzKTsNCj4gLQkJaWYgKElTX0VSUigo
-X19mb3JjZSB2b2lkICopZGV2LT5yZWdfYmFzZVtWRU5DX0xUX1NZU10pKSB7DQo+IC0JCQlyZXQg
-PSBQVFJfRVJSKChfX2ZvcmNlIHZvaWQgKilkZXYtPnJlZ19iYXNlW1ZFTkNfTFRfU1lTXSk7DQo+
-IC0JCQlnb3RvIGVycl9yZXM7DQo+IC0JCX0NCj4gLQkJbXRrX3Y0bDJfZGVidWcoMiwgInJlZ1sl
-ZF0gYmFzZT0weCVwIiwgaSwgZGV2LT5yZWdfYmFzZVtWRU5DX0xUX1NZU10pOw0KPiAtDQo+IC0J
-CWRldi0+ZW5jX2x0X2lycSA9IHBsYXRmb3JtX2dldF9pcnEocGRldiwgMSk7DQo+IC0JCWlycV9z
-ZXRfc3RhdHVzX2ZsYWdzKGRldi0+ZW5jX2x0X2lycSwgSVJRX05PQVVUT0VOKTsNCj4gLQkJcmV0
-ID0gZGV2bV9yZXF1ZXN0X2lycSgmcGRldi0+ZGV2LA0KPiAtCQkJCSAgICAgICBkZXYtPmVuY19s
-dF9pcnEsDQo+IC0JCQkJICAgICAgIG10a192Y29kZWNfZW5jX2x0X2lycV9oYW5kbGVyLA0KPiAt
-CQkJCSAgICAgICAwLCBwZGV2LT5uYW1lLCBkZXYpOw0KPiAtCQlpZiAocmV0KSB7DQo+IC0JCQlk
-ZXZfZXJyKCZwZGV2LT5kZXYsDQo+IC0JCQkJIkZhaWxlZCB0byBpbnN0YWxsIGRldi0+ZW5jX2x0
-X2lycSAlZCAoJWQpIiwNCj4gLQkJCQlkZXYtPmVuY19sdF9pcnEsIHJldCk7DQo+IC0JCQlyZXQg
-PSAtRUlOVkFMOw0KPiAtCQkJZ290byBlcnJfcmVzOw0KPiAtCQl9DQo+IC0JfQ0KPiAtDQo+ICAJ
-bXV0ZXhfaW5pdCgmZGV2LT5lbmNfbXV0ZXgpOw0KPiAgCW11dGV4X2luaXQoJmRldi0+ZGV2X211
-dGV4KTsNCj4gIAlzcGluX2xvY2tfaW5pdCgmZGV2LT5pcnFsb2NrKTsNCj4gIA0KPiAtCXNucHJp
-bnRmKGRldi0+djRsMl9kZXYubmFtZSwgc2l6ZW9mKGRldi0+djRsMl9kZXYubmFtZSksICIlcyIs
-DQo+IC0JCSAiW01US19WNEwyX1ZFTkNdIik7DQo+IC0NCj4gIAlyZXQgPSB2NGwyX2RldmljZV9y
-ZWdpc3RlcigmcGRldi0+ZGV2LCAmZGV2LT52NGwyX2Rldik7DQo+ICAJaWYgKHJldCkgew0KPiAg
-CQltdGtfdjRsMl9lcnIoInY0bDJfZGV2aWNlX3JlZ2lzdGVyIGVycj0lZCIsIHJldCk7DQo+IEBA
-IC0zODEsNyArMzM5LDcgQEAgc3RhdGljIGludCBtdGtfdmNvZGVjX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAJCQkJCVY0TDJfQ0FQX1NUUkVBTUlORzsNCj4gIA0KPiAg
-CXNucHJpbnRmKHZmZF9lbmMtPm5hbWUsIHNpemVvZih2ZmRfZW5jLT5uYW1lKSwgIiVzIiwNCj4g
-LQkJIE1US19WQ09ERUNfRU5DX05BTUUpOw0KPiArCQkJZGV2LT52ZW5jX3BkYXRhLT5uYW1lKTsN
-Cj4gIAl2aWRlb19zZXRfZHJ2ZGF0YSh2ZmRfZW5jLCBkZXYpOw0KPiAgCWRldi0+dmZkX2VuYyA9
-IHZmZF9lbmM7DQo+ICAJcGxhdGZvcm1fc2V0X2RydmRhdGEocGRldiwgZGV2KTsNCj4gQEAgLTQw
-OSw4ICszNjcsOCBAQCBzdGF0aWMgaW50IG10a192Y29kZWNfcHJvYmUoc3RydWN0IHBsYXRmb3Jt
-X2RldmljZSAqcGRldikNCj4gIAkJZ290byBlcnJfZW5jX3JlZzsNCj4gIAl9DQo+ICANCj4gLQlt
-dGtfdjRsMl9kZWJ1ZygwLCAiZW5jb2RlciByZWdpc3RlcmVkIGFzIC9kZXYvdmlkZW8lZCIsDQo+
-IC0JCQl2ZmRfZW5jLT5udW0pOw0KPiArCW10a192NGwyX2RlYnVnKDAsICJlbmNvZGVyICVkIHJl
-Z2lzdGVyZWQgYXMgL2Rldi92aWRlbyVkIiwNCj4gKwkJICAgICAgIGRldi0+dmVuY19wZGF0YS0+
-Y29yZV9pZCwgdmZkX2VuYy0+bnVtKTsNCj4gIA0KPiAgCXJldHVybiAwOw0KPiAgDQo+IEBAIC00
-MjksMjAgKzM4NywzMyBAQCBzdGF0aWMgaW50IG10a192Y29kZWNfcHJvYmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZSAqcGRldikNCj4gIAlyZXR1cm4gcmV0Ow0KPiAgfQ0KPiAgDQo+IC1zdGF0aWMg
-Y29uc3Qgc3RydWN0IG10a192Y29kZWNfZW5jX3BkYXRhIG10ODE3M19wZGF0YSA9IHsNCj4gK3N0
-YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX3Zjb2RlY19lbmNfcGRhdGEgbXQ4MTczX2F2Y19wZGF0YSA9
-IHsNCj4gIAkuY2hpcCA9IE1US19NVDgxNzMsDQo+IC0JLmhhc19sdF9pcnEgPSB0cnVlLA0KPiAt
-CS5jYXB0dXJlX2Zvcm1hdHMgPSBtdGtfdmlkZW9fZm9ybWF0c19jYXB0dXJlX210ODE3MywNCj4g
-LQkubnVtX2NhcHR1cmVfZm9ybWF0cyA9IEFSUkFZX1NJWkUobXRrX3ZpZGVvX2Zvcm1hdHNfY2Fw
-dHVyZV9tdDgxNzMpLA0KPiArCS5uYW1lID0gTVRLX1ZDT0RFQ19FTkNfTkFNRSwNCj4gKwkuY2Fw
-dHVyZV9mb3JtYXRzID0gbXRrX3ZpZGVvX2Zvcm1hdHNfY2FwdHVyZV9tdDgxNzNfaDI2NCwNCj4g
-KwkubnVtX2NhcHR1cmVfZm9ybWF0cyA9IDEsDQo+ICAJLm91dHB1dF9mb3JtYXRzID0gbXRrX3Zp
-ZGVvX2Zvcm1hdHNfb3V0cHV0X210ODE3MywNCj4gIAkubnVtX291dHB1dF9mb3JtYXRzID0gQVJS
-QVlfU0laRShtdGtfdmlkZW9fZm9ybWF0c19vdXRwdXRfbXQ4MTczKSwNCj4gLQkubWluX2JpdHJh
-dGUgPSAxLA0KPiArCS5taW5fYml0cmF0ZSA9IDY0LA0KPiArCS5tYXhfYml0cmF0ZSA9IDQwMDAw
-MDAsDQo+ICsJLmNvcmVfaWQgPSBWRU5DX1NZUywNCj4gK307DQo+ICsNCj4gK3N0YXRpYyBjb25z
-dCBzdHJ1Y3QgbXRrX3Zjb2RlY19lbmNfcGRhdGEgbXQ4MTczX3ZwOF9wZGF0YSA9IHsNCj4gKwku
-Y2hpcCA9IE1US19NVDgxNzMsDQo+ICsJLm5hbWUgPSBNVEtfVkVOQ19WUDhfTkFNRSwNCj4gKwku
-Y2FwdHVyZV9mb3JtYXRzID0gbXRrX3ZpZGVvX2Zvcm1hdHNfY2FwdHVyZV9tdDgxNzNfdnA4LA0K
-PiArCS5udW1fY2FwdHVyZV9mb3JtYXRzID0gMSwNCj4gKwkub3V0cHV0X2Zvcm1hdHMgPSBtdGtf
-dmlkZW9fZm9ybWF0c19vdXRwdXRfbXQ4MTczLA0KPiArCS5udW1fb3V0cHV0X2Zvcm1hdHMgPSBB
-UlJBWV9TSVpFKG10a192aWRlb19mb3JtYXRzX291dHB1dF9tdDgxNzMpLA0KPiArCS5taW5fYml0
-cmF0ZSA9IDY0LA0KPiAgCS5tYXhfYml0cmF0ZSA9IDQwMDAwMDAsDQo+ICsJLmNvcmVfaWQgPSBW
-RU5DX0xUX1NZUywNCj4gIH07DQo+ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX3Zjb2Rl
-Y19lbmNfcGRhdGEgbXQ4MTgzX3BkYXRhID0gew0KPiAgCS5jaGlwID0gTVRLX01UODE4MywNCj4g
-LQkuaGFzX2x0X2lycSA9IGZhbHNlLA0KPiArCS5uYW1lID0gTVRLX1ZDT0RFQ19FTkNfTkFNRSwN
-Cj4gIAkudXNlc19leHQgPSB0cnVlLA0KPiAgCS5jYXB0dXJlX2Zvcm1hdHMgPSBtdGtfdmlkZW9f
-Zm9ybWF0c19jYXB0dXJlX210ODE4MywNCj4gIAkubnVtX2NhcHR1cmVfZm9ybWF0cyA9IEFSUkFZ
-X1NJWkUobXRrX3ZpZGVvX2Zvcm1hdHNfY2FwdHVyZV9tdDgxODMpLA0KPiBAQCAtNDUxLDEwICs0
-MjIsMTQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfdmNvZGVjX2VuY19wZGF0YSBtdDgxODNf
-cGRhdGEgPSB7DQo+ICAJLm51bV9vdXRwdXRfZm9ybWF0cyA9IEFSUkFZX1NJWkUobXRrX3ZpZGVv
-X2Zvcm1hdHNfb3V0cHV0X210ODE3MyksDQo+ICAJLm1pbl9iaXRyYXRlID0gNjQsDQo+ICAJLm1h
-eF9iaXRyYXRlID0gNDAwMDAwMDAsDQo+ICsJLmNvcmVfaWQgPSBWRU5DX1NZUywNCj4gIH07DQo+
-ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a192Y29kZWNfZW5jX21h
-dGNoW10gPSB7DQo+IC0Jey5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My12Y29kZWMtZW5j
-IiwgLmRhdGEgPSAmbXQ4MTczX3BkYXRhfSwNCj4gKwl7LmNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ4MTczLXZjb2RlYy1hdmMtZW5jIiwNCj4gKwkJCS5kYXRhID0gJm10ODE3M19hdmNfcGRhdGF9
-LA0KPiArCXsuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtdmNvZGVjLXZwOC1lbmMiLA0K
-PiArCQkJLmRhdGEgPSAmbXQ4MTczX3ZwOF9wZGF0YX0sDQo+ICAJey5jb21wYXRpYmxlID0gIm1l
-ZGlhdGVrLG10ODE4My12Y29kZWMtZW5jIiwgLmRhdGEgPSAmbXQ4MTgzX3BkYXRhfSwNCj4gIAl7
-fSwNCj4gIH07DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29k
-ZWMvbXRrX3Zjb2RlY19lbmNfcG0uYyBiL2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2Rl
-Yy9tdGtfdmNvZGVjX2VuY19wbS5jDQo+IGluZGV4IDNiN2M1NGQ2YWE4Zi4uMWIyZTQ5MzBlZDI3
-IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvbXRrX3Zj
-b2RlY19lbmNfcG0uYw0KPiArKysgYi9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMv
-bXRrX3Zjb2RlY19lbmNfcG0uYw0KPiBAQCAtNDMsMjMgKzQzLDYgQEAgaW50IG10a192Y29kZWNf
-aW5pdF9lbmNfcG0oc3RydWN0IG10a192Y29kZWNfZGV2ICptdGtkZXYpDQo+ICAJCXJldHVybiAt
-RU5PREVWOw0KPiAgCX0NCj4gIAlwbS0+bGFyYnZlbmMgPSAmcGRldi0+ZGV2Ow0KPiAtDQo+IC0J
-bm9kZSA9IG9mX3BhcnNlX3BoYW5kbGUoZGV2LT5vZl9ub2RlLCAibWVkaWF0ZWssbGFyYiIsIDEp
-Ow0KPiAtCWlmICghbm9kZSkgew0KPiAtCQltdGtfdjRsMl9lcnIoIm5vIG1lZGlhdGVrLGxhcmIg
-Zm91bmQiKTsNCj4gLQkJcmV0ID0gLUVOT0RFVjsNCj4gLQkJZ290byBwdXRfbGFyYnZlbmM7DQo+
-IC0JfQ0KPiAtDQo+IC0JcGRldiA9IG9mX2ZpbmRfZGV2aWNlX2J5X25vZGUobm9kZSk7DQo+IC0J
-b2Zfbm9kZV9wdXQobm9kZSk7DQo+IC0JaWYgKCFwZGV2KSB7DQo+IC0JCW10a192NGwyX2Vycigi
-bm8gbWVkaWF0ZWssbGFyYiBkZXZpY2UgZm91bmQiKTsNCj4gLQkJcmV0ID0gLUVOT0RFVjsNCj4g
-LQkJZ290byBwdXRfbGFyYnZlbmM7DQo+IC0JfQ0KPiAtDQo+IC0JcG0tPmxhcmJ2ZW5jbHQgPSAm
-cGRldi0+ZGV2Ow0KPiAgCXBkZXYgPSBtdGtkZXYtPnBsYXRfZGV2Ow0KPiAgCXBtLT5kZXYgPSAm
-cGRldi0+ZGV2Ow0KPiAgDQo+IEBAIC03MSwxMiArNTQsMTIgQEAgaW50IG10a192Y29kZWNfaW5p
-dF9lbmNfcG0oc3RydWN0IG10a192Y29kZWNfZGV2ICptdGtkZXYpDQo+ICAJCQlHRlBfS0VSTkVM
-KTsNCj4gIAkJaWYgKCFlbmNfY2xrLT5jbGtfaW5mbykgew0KPiAgCQkJcmV0ID0gLUVOT01FTTsN
-Cj4gLQkJCWdvdG8gcHV0X2xhcmJ2ZW5jbHQ7DQo+ICsJCQlnb3RvIHB1dF9sYXJidmVuYzsNCj4g
-IAkJfQ0KPiAgCX0gZWxzZSB7DQo+ICAJCW10a192NGwyX2VycigiRmFpbGVkIHRvIGdldCB2ZW5j
-IGNsb2NrIGNvdW50Iik7DQo+ICAJCXJldCA9IC1FSU5WQUw7DQo+IC0JCWdvdG8gcHV0X2xhcmJ2
-ZW5jbHQ7DQo+ICsJCWdvdG8gcHV0X2xhcmJ2ZW5jOw0KPiAgCX0NCj4gIA0KPiAgCWZvciAoaSA9
-IDA7IGkgPCBlbmNfY2xrLT5jbGtfbnVtOyBpKyspIHsNCj4gQEAgLTg1LDcgKzY4LDcgQEAgaW50
-IG10a192Y29kZWNfaW5pdF9lbmNfcG0oc3RydWN0IG10a192Y29kZWNfZGV2ICptdGtkZXYpDQo+
-ICAJCQkiY2xvY2stbmFtZXMiLCBpLCAmY2xrX2luZm8tPmNsa19uYW1lKTsNCj4gIAkJaWYgKHJl
-dCkgew0KPiAgCQkJbXRrX3Y0bDJfZXJyKCJ2ZW5jIGZhaWxlZCB0byBnZXQgY2xrIG5hbWUgJWQi
-LCBpKTsNCj4gLQkJCWdvdG8gcHV0X2xhcmJ2ZW5jbHQ7DQo+ICsJCQlnb3RvIHB1dF9sYXJidmVu
-YzsNCj4gIAkJfQ0KPiAgCQljbGtfaW5mby0+dmNvZGVjX2NsayA9IGRldm1fY2xrX2dldCgmcGRl
-di0+ZGV2LA0KPiAgCQkJY2xrX2luZm8tPmNsa19uYW1lKTsNCj4gQEAgLTkzLDE0ICs3NiwxMiBA
-QCBpbnQgbXRrX3Zjb2RlY19pbml0X2VuY19wbShzdHJ1Y3QgbXRrX3Zjb2RlY19kZXYgKm10a2Rl
-dikNCj4gIAkJCW10a192NGwyX2VycigidmVuYyBkZXZtX2Nsa19nZXQgKCVkKSVzIGZhaWwiLCBp
-LA0KPiAgCQkJCWNsa19pbmZvLT5jbGtfbmFtZSk7DQo+ICAJCQlyZXQgPSBQVFJfRVJSKGNsa19p
-bmZvLT52Y29kZWNfY2xrKTsNCj4gLQkJCWdvdG8gcHV0X2xhcmJ2ZW5jbHQ7DQo+ICsJCQlnb3Rv
-IHB1dF9sYXJidmVuYzsNCj4gIAkJfQ0KPiAgCX0NCj4gIA0KPiAgCXJldHVybiAwOw0KPiAgDQo+
-IC1wdXRfbGFyYnZlbmNsdDoNCj4gLQlwdXRfZGV2aWNlKHBtLT5sYXJidmVuY2x0KTsNCj4gIHB1
-dF9sYXJidmVuYzoNCj4gIAlwdXRfZGV2aWNlKHBtLT5sYXJidmVuYyk7DQo+ICAJcmV0dXJuIHJl
-dDsNCj4gQEAgLTEwOCw3ICs4OSw3IEBAIGludCBtdGtfdmNvZGVjX2luaXRfZW5jX3BtKHN0cnVj
-dCBtdGtfdmNvZGVjX2RldiAqbXRrZGV2KQ0KPiAgDQo+ICB2b2lkIG10a192Y29kZWNfcmVsZWFz
-ZV9lbmNfcG0oc3RydWN0IG10a192Y29kZWNfZGV2ICptdGtkZXYpDQo+ICB7DQo+IC0JcHV0X2Rl
-dmljZShtdGtkZXYtPnBtLmxhcmJ2ZW5jbHQpOw0KPiArCXBtX3J1bnRpbWVfZGlzYWJsZShtdGtk
-ZXYtPnBtLmRldik7DQo+ICAJcHV0X2RldmljZShtdGtkZXYtPnBtLmxhcmJ2ZW5jKTsNCj4gIH0N
-Cj4gIA0KPiBAQCAtMTMwLDE4ICsxMTEsMTAgQEAgdm9pZCBtdGtfdmNvZGVjX2VuY19jbG9ja19v
-bihzdHJ1Y3QgbXRrX3Zjb2RlY19wbSAqcG0pDQo+ICAJcmV0ID0gbXRrX3NtaV9sYXJiX2dldChw
-bS0+bGFyYnZlbmMpOw0KPiAgCWlmIChyZXQpIHsNCj4gIAkJbXRrX3Y0bDJfZXJyKCJtdGtfc21p
-X2xhcmJfZ2V0IGxhcmIzIGZhaWwgJWQiLCByZXQpOw0KPiAtCQlnb3RvIGxhcmJ2ZW5jZXJyOw0K
-PiAtCX0NCj4gLQlyZXQgPSBtdGtfc21pX2xhcmJfZ2V0KHBtLT5sYXJidmVuY2x0KTsNCj4gLQlp
-ZiAocmV0KSB7DQo+IC0JCW10a192NGwyX2VycigibXRrX3NtaV9sYXJiX2dldCBsYXJiNCBmYWls
-ICVkIiwgcmV0KTsNCj4gLQkJZ290byBsYXJidmVuY2x0ZXJyOw0KPiArCQlnb3RvIGNsa2VycjsN
-Cj4gIAl9DQo+ICAJcmV0dXJuOw0KPiAgDQo+IC1sYXJidmVuY2x0ZXJyOg0KPiAtCW10a19zbWlf
-bGFyYl9wdXQocG0tPmxhcmJ2ZW5jKTsNCj4gLWxhcmJ2ZW5jZXJyOg0KPiAgY2xrZXJyOg0KPiAg
-CWZvciAoaSAtPSAxOyBpID49IDA7IGktLSkNCj4gIAkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGVu
-Y19jbGstPmNsa19pbmZvW2ldLnZjb2RlY19jbGspOw0KPiBAQCAtMTUzLDcgKzEyNiw2IEBAIHZv
-aWQgbXRrX3Zjb2RlY19lbmNfY2xvY2tfb2ZmKHN0cnVjdCBtdGtfdmNvZGVjX3BtICpwbSkNCj4g
-IAlpbnQgaSA9IDA7DQo+ICANCj4gIAltdGtfc21pX2xhcmJfcHV0KHBtLT5sYXJidmVuYyk7DQo+
-IC0JbXRrX3NtaV9sYXJiX3B1dChwbS0+bGFyYnZlbmNsdCk7DQo+ICAJZm9yIChpID0gZW5jX2Ns
-ay0+Y2xrX251bSAtIDE7IGkgPj0gMDsgaS0tKQ0KPiAgCQljbGtfZGlzYWJsZV91bnByZXBhcmUo
-ZW5jX2Nsay0+Y2xrX2luZm9baV0udmNvZGVjX2Nsayk7DQo+ICB9DQo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvdmVuYy92ZW5jX3ZwOF9pZi5jIGIvZHJp
-dmVycy9tZWRpYS9wbGF0Zm9ybS9tdGstdmNvZGVjL3ZlbmMvdmVuY192cDhfaWYuYw0KPiBpbmRl
-eCAxMWFiYjE5MWFkYTUuLjgyNjdhOWM0ZmQyNSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tZWRp
-YS9wbGF0Zm9ybS9tdGstdmNvZGVjL3ZlbmMvdmVuY192cDhfaWYuYw0KPiArKysgYi9kcml2ZXJz
-L21lZGlhL3BsYXRmb3JtL210ay12Y29kZWMvdmVuYy92ZW5jX3ZwOF9pZi5jDQo+IEBAIC0zNjcs
-NyArMzY3LDcgQEAgc3RhdGljIGludCB2cDhfZW5jX2VuY29kZSh2b2lkICpoYW5kbGUsDQo+ICAN
-Cj4gIAltdGtfdmNvZGVjX2RlYnVnX2VudGVyKGluc3QpOw0KPiAgDQo+IC0JZW5hYmxlX2lycShj
-dHgtPmRldi0+ZW5jX2x0X2lycSk7DQo+ICsJZW5hYmxlX2lycShjdHgtPmRldi0+ZW5jX2lycSk7
-DQo+ICANCj4gIAlzd2l0Y2ggKG9wdCkgew0KPiAgCWNhc2UgVkVOQ19TVEFSVF9PUFRfRU5DT0RF
-X0ZSQU1FOg0KPiBAQCAtMzg2LDcgKzM4Niw3IEBAIHN0YXRpYyBpbnQgdnA4X2VuY19lbmNvZGUo
-dm9pZCAqaGFuZGxlLA0KPiAgDQo+ICBlbmNvZGVfZXJyOg0KPiAgDQo+IC0JZGlzYWJsZV9pcnEo
-Y3R4LT5kZXYtPmVuY19sdF9pcnEpOw0KPiArCWRpc2FibGVfaXJxKGN0eC0+ZGV2LT5lbmNfaXJx
-KTsNCj4gIAltdGtfdmNvZGVjX2RlYnVnX2xlYXZlKGluc3QpOw0KPiAgDQo+ICAJcmV0dXJuIHJl
-dDsNCg0K
+PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10
+  6.4.4.2.3 Structured VDM Version
+  "The Structured VDM Version field of the Discover Identity Command
+  sent and received during VDM discovery Shall be used to determine the
+  lowest common Structured VDM Version supported by the Port Partners or
+  Cable Plug and Shall continue to operate using this Specification
+  Revision until they are Detached."
+
+Also clear the fields newly defined in SVDM version 2.0 for
+compatibilities. And fix some ID Header fields changed in the Spec.
+
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+ drivers/usb/typec/altmodes/displayport.c |  6 +++-
+ drivers/usb/typec/class.c                |  8 ++---
+ drivers/usb/typec/tcpm/tcpm.c            | 44 +++++++++++++++++++-----
+ drivers/usb/typec/ucsi/displayport.c     | 12 +++++--
+ include/linux/usb/pd_vdo.h               | 40 +++++++++++++++------
+ 5 files changed, 83 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
+index e62e5e3da01e..baf289acf707 100644
+--- a/drivers/usb/typec/altmodes/displayport.c
++++ b/drivers/usb/typec/altmodes/displayport.c
+@@ -15,7 +15,7 @@
+ #include <linux/usb/typec_dp.h>
+ #include "displayport.h"
+ 
+-#define DP_HEADER(_dp, cmd)		(VDO((_dp)->alt->svid, 1, cmd) | \
++#define DP_HEADER(_dp, cmd)		(VDO((_dp)->alt->svid, 1, (_dp)->svdm_ver, cmd) | \
+ 					 VDO_OPOS(USB_TYPEC_DP_MODE))
+ 
+ enum {
+@@ -57,6 +57,7 @@ struct dp_altmode {
+ 	struct typec_displayport_data data;
+ 
+ 	enum dp_state state;
++	u32 svdm_ver;
+ 
+ 	struct mutex lock; /* device lock */
+ 	struct work_struct work;
+@@ -266,6 +267,8 @@ static int dp_altmode_vdm(struct typec_altmode *alt,
+ 	case CMDT_RSP_ACK:
+ 		switch (cmd) {
+ 		case CMD_ENTER_MODE:
++			if (PD_VDO_SVDM_VER(hdr) < SVDM_MAX_VER)
++				dp->svdm_ver = PD_VDO_SVDM_VER(hdr);
+ 			dp->state = DP_STATE_UPDATE;
+ 			break;
+ 		case CMD_EXIT_MODE:
+@@ -536,6 +539,7 @@ int dp_altmode_probe(struct typec_altmode *alt)
+ 	mutex_init(&dp->lock);
+ 	dp->port = port;
+ 	dp->alt = alt;
++	dp->svdm_ver = SVDM_MAX_VER;
+ 
+ 	alt->desc = "DisplayPort";
+ 	alt->ops = &dp_altmode_ops;
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 8f77669f9cf4..862afb377752 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -86,7 +86,7 @@ static const char * const typec_accessory_modes[] = {
+ 
+ /* Product types defined in USB PD Specification R3.0 V2.0 */
+ static const char * const product_type_ufp[8] = {
+-	[IDH_PTYPE_UNDEF]		= "undefined",
++	[IDH_PTYPE_NOT_UFP]		= "not_ufp",
+ 	[IDH_PTYPE_HUB]			= "hub",
+ 	[IDH_PTYPE_PERIPH]		= "peripheral",
+ 	[IDH_PTYPE_PSD]			= "psd",
+@@ -94,17 +94,17 @@ static const char * const product_type_ufp[8] = {
+ };
+ 
+ static const char * const product_type_dfp[8] = {
+-	[IDH_PTYPE_DFP_UNDEF]		= "undefined",
++	[IDH_PTYPE_NOT_DFP]		= "not_dfp",
+ 	[IDH_PTYPE_DFP_HUB]		= "hub",
+ 	[IDH_PTYPE_DFP_HOST]		= "host",
+ 	[IDH_PTYPE_DFP_PB]		= "power_brick",
+-	[IDH_PTYPE_DFP_AMC]		= "amc",
+ };
+ 
+ static const char * const product_type_cable[8] = {
+-	[IDH_PTYPE_UNDEF]		= "undefined",
++	[IDH_PTYPE_NOT_CABLE]		= "not_cable",
+ 	[IDH_PTYPE_PCABLE]		= "passive",
+ 	[IDH_PTYPE_ACABLE]		= "active",
++	[IDH_PTYPE_VPD]			= "vpd",
+ };
+ 
+ static struct usb_pd_identity *get_pd_identity(struct device *dev)
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 0afd8ef692e8..c14cf7842520 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -408,6 +408,7 @@ struct tcpm_port {
+ 	u8 vdo_count;
+ 	/* VDO to retry if UFP responder replied busy */
+ 	u32 vdo_retry;
++	unsigned int svdm_version;
+ 
+ 	/* PPS */
+ 	struct pd_pps_data pps_data;
+@@ -1500,10 +1501,21 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 			if (PD_VDO_VID(p[0]) != USB_SID_PD)
+ 				break;
+ 
++			if (PD_VDO_SVDM_VER(p[0]) <= SVDM_MAX_VER)
++				port->svdm_version = PD_VDO_SVDM_VER(p[0]);
+ 			/* 6.4.4.3.1: Only respond as UFP (device) */
+ 			if (port->data_role == TYPEC_DEVICE &&
+ 			    port->nr_snk_vdo) {
+-				for (i = 0; i <  port->nr_snk_vdo; i++)
++				/*
++				 * Product Type DFP and Connector Type are not defined in SVDM
++				 * version 1.0 and shall be set to zero.
++				 */
++				if (port->svdm_version < SVDM_V20)
++					response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
++						      & ~IDH_CONN_MASK;
++				else
++					response[1] = port->snk_vdo[0];
++				for (i = 1; i <  port->nr_snk_vdo; i++)
+ 					response[i + 1] = port->snk_vdo[i];
+ 				rlen = port->nr_snk_vdo + 1;
+ 			}
+@@ -1532,6 +1544,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 			response[0] = p[0] | VDO_CMDT(CMDT_RSP_BUSY);
+ 			rlen = 1;
+ 		}
++		response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
++			      (VDO_SVDM_VERS(port->svdm_version));
+ 		break;
+ 	case CMDT_RSP_ACK:
+ 		/* silently drop message if we are not connected */
+@@ -1542,19 +1556,21 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 
+ 		switch (cmd) {
+ 		case CMD_DISCOVER_IDENT:
++			if (PD_VDO_SVDM_VER(p[0]) <= SVDM_MAX_VER)
++				port->svdm_version = PD_VDO_SVDM_VER(p[0]);
+ 			/* 6.4.4.3.1 */
+ 			svdm_consume_identity(port, p, cnt);
+-			response[0] = VDO(USB_SID_PD, 1, CMD_DISCOVER_SVID);
++			response[0] = VDO(USB_SID_PD, 1, port->svdm_version, CMD_DISCOVER_SVID);
+ 			rlen = 1;
+ 			break;
+ 		case CMD_DISCOVER_SVID:
+ 			/* 6.4.4.3.2 */
+ 			if (svdm_consume_svids(port, p, cnt)) {
+-				response[0] = VDO(USB_SID_PD, 1,
++				response[0] = VDO(USB_SID_PD, 1, port->svdm_version,
+ 						  CMD_DISCOVER_SVID);
+ 				rlen = 1;
+ 			} else if (modep->nsvids && supports_modal(port)) {
+-				response[0] = VDO(modep->svids[0], 1,
++				response[0] = VDO(modep->svids[0], 1, port->svdm_version,
+ 						  CMD_DISCOVER_MODES);
+ 				rlen = 1;
+ 			}
+@@ -1565,7 +1581,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 			modep->svid_index++;
+ 			if (modep->svid_index < modep->nsvids) {
+ 				u16 svid = modep->svids[modep->svid_index];
+-				response[0] = VDO(svid, 1, CMD_DISCOVER_MODES);
++				response[0] = VDO(svid, 1, port->svdm_version,
++						  CMD_DISCOVER_MODES);
+ 				rlen = 1;
+ 			} else {
+ 				tcpm_register_partner_altmodes(port);
+@@ -1592,6 +1609,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 			/* Unrecognized SVDM */
+ 			response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+ 			rlen = 1;
++			response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
++				      (VDO_SVDM_VERS(port->svdm_version));
+ 			break;
+ 		}
+ 		break;
+@@ -1611,6 +1630,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 			/* Unrecognized SVDM */
+ 			response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+ 			rlen = 1;
++			response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
++				      (VDO_SVDM_VERS(port->svdm_version));
+ 			break;
+ 		}
+ 		port->vdm_sm_running = false;
+@@ -1618,6 +1639,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
+ 	default:
+ 		response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
+ 		rlen = 1;
++		response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
++			      (VDO_SVDM_VERS(port->svdm_version));
+ 		port->vdm_sm_running = false;
+ 		break;
+ 	}
+@@ -1695,7 +1718,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+ 			break;
+ 		case ADEV_QUEUE_VDM_SEND_EXIT_MODE_ON_FAIL:
+ 			if (typec_altmode_vdm(adev, p[0], &p[1], cnt)) {
+-				response[0] = VDO(adev->svid, 1, CMD_EXIT_MODE);
++				response[0] = VDO(adev->svid, 1, port->svdm_version, CMD_EXIT_MODE);
+ 				response[0] |= VDO_OPOS(adev->mode);
+ 				rlen = 1;
+ 			}
+@@ -1729,7 +1752,8 @@ static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
+ 
+ 	/* set VDM header with VID & CMD */
+ 	header = VDO(vid, ((vid & USB_SID_PD) == USB_SID_PD) ?
+-			1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION), cmd);
++			1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION),
++			port->svdm_version, cmd);
+ 	tcpm_queue_vdm(port, header, data, count);
+ }
+ 
+@@ -2024,7 +2048,7 @@ static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+ 	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+ 	u32 header;
+ 
+-	header = VDO(altmode->svid, vdo ? 2 : 1, CMD_ENTER_MODE);
++	header = VDO(altmode->svid, vdo ? 2 : 1, port->svdm_version, CMD_ENTER_MODE);
+ 	header |= VDO_OPOS(altmode->mode);
+ 
+ 	tcpm_queue_vdm_unlocked(port, header, vdo, vdo ? 1 : 0);
+@@ -2036,7 +2060,7 @@ static int tcpm_altmode_exit(struct typec_altmode *altmode)
+ 	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+ 	u32 header;
+ 
+-	header = VDO(altmode->svid, 1, CMD_EXIT_MODE);
++	header = VDO(altmode->svid, 1, port->svdm_version, CMD_EXIT_MODE);
+ 	header |= VDO_OPOS(altmode->mode);
+ 
+ 	tcpm_queue_vdm_unlocked(port, header, NULL, 0);
+@@ -3716,6 +3740,7 @@ static void run_state_machine(struct tcpm_port *port)
+ 		port->pwr_opmode = TYPEC_PWR_MODE_USB;
+ 		port->caps_count = 0;
+ 		port->negotiated_rev = PD_MAX_REV;
++		port->svdm_version = SVDM_MAX_VER;
+ 		port->message_id = 0;
+ 		port->rx_msgid = -1;
+ 		port->explicit_contract = false;
+@@ -3938,6 +3963,7 @@ static void run_state_machine(struct tcpm_port *port)
+ 		typec_set_pwr_opmode(port->typec_port, opmode);
+ 		port->pwr_opmode = TYPEC_PWR_MODE_USB;
+ 		port->negotiated_rev = PD_MAX_REV;
++		port->svdm_version = SVDM_MAX_VER;
+ 		port->message_id = 0;
+ 		port->rx_msgid = -1;
+ 		port->explicit_contract = false;
+diff --git a/drivers/usb/typec/ucsi/displayport.c b/drivers/usb/typec/ucsi/displayport.c
+index 261131c9e37c..421ad3e0d976 100644
+--- a/drivers/usb/typec/ucsi/displayport.c
++++ b/drivers/usb/typec/ucsi/displayport.c
+@@ -28,6 +28,7 @@ struct ucsi_dp {
+ 	u32 header;
+ 	u32 *vdo_data;
+ 	u8 vdo_size;
++	u32 svdm_ver;
+ };
+ 
+ /*
+@@ -83,7 +84,7 @@ static int ucsi_displayport_enter(struct typec_altmode *alt, u32 *vdo)
+ 	 * mode, and letting the alt mode driver continue.
+ 	 */
+ 
+-	dp->header = VDO(USB_TYPEC_DP_SID, 1, CMD_ENTER_MODE);
++	dp->header = VDO(USB_TYPEC_DP_SID, 1, dp->svdm_ver, CMD_ENTER_MODE);
+ 	dp->header |= VDO_OPOS(USB_TYPEC_DP_MODE);
+ 	dp->header |= VDO_CMDT(CMDT_RSP_ACK);
+ 
+@@ -120,7 +121,7 @@ static int ucsi_displayport_exit(struct typec_altmode *alt)
+ 	if (ret < 0)
+ 		goto out_unlock;
+ 
+-	dp->header = VDO(USB_TYPEC_DP_SID, 1, CMD_EXIT_MODE);
++	dp->header = VDO(USB_TYPEC_DP_SID, 1, dp->svdm_ver, CMD_EXIT_MODE);
+ 	dp->header |= VDO_OPOS(USB_TYPEC_DP_MODE);
+ 	dp->header |= VDO_CMDT(CMDT_RSP_ACK);
+ 
+@@ -200,7 +201,11 @@ static int ucsi_displayport_vdm(struct typec_altmode *alt,
+ 
+ 	switch (cmd_type) {
+ 	case CMDT_INIT:
+-		dp->header = VDO(USB_TYPEC_DP_SID, 1, cmd);
++		if (PD_VDO_SVDM_VER(header) != dp->svdm_ver &&
++		    PD_VDO_SVDM_VER(header) < SVDM_MAX_VER)
++			dp->svdm_ver = PD_VDO_SVDM_VER(header);
++
++		dp->header = VDO(USB_TYPEC_DP_SID, 1, dp->svdm_ver, cmd);
+ 		dp->header |= VDO_OPOS(USB_TYPEC_DP_MODE);
+ 
+ 		switch (cmd) {
+@@ -310,6 +315,7 @@ struct typec_altmode *ucsi_register_displayport(struct ucsi_connector *con,
+ 	dp->offset = offset;
+ 	dp->con = con;
+ 	dp->alt = alt;
++	dp->svdm_ver = SVDM_MAX_VER;
+ 
+ 	alt->ops = &ucsi_displayport_ops;
+ 	typec_altmode_set_drvdata(alt, dp);
+diff --git a/include/linux/usb/pd_vdo.h b/include/linux/usb/pd_vdo.h
+index 8c08eeb9a74b..5283a08527ce 100644
+--- a/include/linux/usb/pd_vdo.h
++++ b/include/linux/usb/pd_vdo.h
+@@ -16,27 +16,33 @@
+ #define VDO_MAX_OBJECTS		6
+ #define VDO_MAX_SIZE		(VDO_MAX_OBJECTS + 1)
+ 
++#define SVDM_V10		0
++#define SVDM_V20		1
++#define SVDM_MAX_VER		SVDM_V20
++
+ /*
+  * VDM header
+  * ----------
+  * <31:16>  :: SVID
+  * <15>     :: VDM type ( 1b == structured, 0b == unstructured )
+- * <14:13>  :: Structured VDM version (can only be 00 == 1.0 currently)
++ * <14:13>  :: Structured VDM version
+  * <12:11>  :: reserved
+  * <10:8>   :: object position (1-7 valid ... used for enter/exit mode only)
+  * <7:6>    :: command type (SVDM only?)
+  * <5>      :: reserved (SVDM), command type (UVDM)
+  * <4:0>    :: command
+  */
+-#define VDO(vid, type, custom)				\
++#define VDO(vid, type, ver, custom)				\
+ 	(((vid) << 16) |				\
+ 	 ((type) << 15) |				\
++	 ((ver) << 13) |				\
+ 	 ((custom) & 0x7FFF))
+ 
+ #define VDO_SVDM_TYPE		(1 << 15)
+ #define VDO_SVDM_VERS(x)	((x) << 13)
+ #define VDO_OPOS(x)		((x) << 8)
+ #define VDO_CMDT(x)		((x) << 6)
++#define VDO_SVDM_VERS_MASK	VDO_SVDM_VERS(0x3)
+ #define VDO_OPOS_MASK		VDO_OPOS(0x7)
+ #define VDO_CMDT_MASK		VDO_CMDT(0x3)
+ 
+@@ -74,6 +80,7 @@
+ 
+ #define PD_VDO_VID(vdo)		((vdo) >> 16)
+ #define PD_VDO_SVDM(vdo)	(((vdo) >> 15) & 1)
++#define PD_VDO_SVDM_VER(vdo)	(((vdo) >> 13) & 0x3)
+ #define PD_VDO_OPOS(vdo)	(((vdo) >> 8) & 0x7)
+ #define PD_VDO_CMD(vdo)		((vdo) & 0x1f)
+ #define PD_VDO_CMDT(vdo)	(((vdo) >> 6) & 0x3)
+@@ -103,34 +110,46 @@
+  * --------------------
+  * <31>     :: data capable as a USB host
+  * <30>     :: data capable as a USB device
+- * <29:27>  :: product type (UFP / Cable)
++ * <29:27>  :: product type (UFP / Cable / VPD)
+  * <26>     :: modal operation supported (1b == yes)
+- * <25:16>  :: product type (DFP)
++ * <25:23>  :: product type (DFP) (SVDM version 2.0+ only; set to zero in version 1.0)
++ * <22:21>  :: connector type (SVDM version 2.0+ only; set to zero in version 1.0)
++ * <20:16>  :: Reserved, Shall be set to zero
+  * <15:0>   :: USB-IF assigned VID for this cable vendor
+  */
+-#define IDH_PTYPE_UNDEF		0
++/* SOP Product Type (UFP) */
++#define IDH_PTYPE_NOT_UFP	0
+ #define IDH_PTYPE_HUB		1
+ #define IDH_PTYPE_PERIPH	2
+ #define IDH_PTYPE_PSD		3
+ #define IDH_PTYPE_AMA		5
+ 
++/* SOP' Product Type (Cable Plug / VPD) */
++#define IDH_PTYPE_NOT_CABLE	0
+ #define IDH_PTYPE_PCABLE	3
+ #define IDH_PTYPE_ACABLE	4
++#define IDH_PTYPE_VPD		6
+ 
+-#define IDH_PTYPE_DFP_UNDEF	0
++/* SOP Product Type (DFP) */
++#define IDH_PTYPE_NOT_DFP	0
+ #define IDH_PTYPE_DFP_HUB	1
+ #define IDH_PTYPE_DFP_HOST	2
+ #define IDH_PTYPE_DFP_PB	3
+-#define IDH_PTYPE_DFP_AMC	4
+ 
+-#define VDO_IDH(usbh, usbd, ptype, is_modal, vid)		\
+-	((usbh) << 31 | (usbd) << 30 | ((ptype) & 0x7) << 27	\
+-	 | (is_modal) << 26 | ((vid) & 0xffff))
++/* ID Header Mask */
++#define IDH_DFP_MASK		GENMASK(25, 23)
++#define IDH_CONN_MASK		GENMASK(22, 21)
++
++#define VDO_IDH(usbh, usbd, ufp_cable, is_modal, dfp, conn, vid)		\
++	((usbh) << 31 | (usbd) << 30 | ((ufp_cable) & 0x7) << 27		\
++	 | (is_modal) << 26 | ((dfp) & 0x7) << 23 | ((conn) & 0x3) << 21	\
++	 | ((vid) & 0xffff))
+ 
+ #define PD_IDH_PTYPE(vdo)	(((vdo) >> 27) & 0x7)
+ #define PD_IDH_VID(vdo)		((vdo) & 0xffff)
+ #define PD_IDH_MODAL_SUPP(vdo)	((vdo) & (1 << 26))
+ #define PD_IDH_DFP_PTYPE(vdo)	(((vdo) >> 23) & 0x7)
++#define PD_IDH_CONN_TYPE(vdo)	(((vdo) >> 21) & 0x3)
+ 
+ /*
+  * Cert Stat VDO
+@@ -138,6 +157,7 @@
+  * <31:0>  : USB-IF assigned XID for this cable
+  */
+ #define PD_CSTAT_XID(vdo)	(vdo)
++#define VDO_CERT(xid)		((xid) & 0xffffffff)
+ 
+ /*
+  * Product VDO
+-- 
+2.30.0.280.ga3ce27912f-goog
 
