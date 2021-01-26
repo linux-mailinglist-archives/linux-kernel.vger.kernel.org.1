@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EED303E31
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC77303E23
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392644AbhAZNKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S2391886AbhAZNIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391959AbhAZMsy (ORCPT
+        with ESMTP id S2391691AbhAZMs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:48:54 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45674C03542E
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:46:07 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id f16so2324755wmq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:46:07 -0800 (PST)
+        Tue, 26 Jan 2021 07:48:58 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55119C035431
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:46:08 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id y187so2635173wmd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:46:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ACuhHqUyAOgeit1pJS1MxY6/38vCSWpT3UKaTx8+/JY=;
-        b=fM8B1mFx2eVpjNGE3vhWFZC0WnRAysxKHxe+DAlNp0M68o88FbxPu79MK7N6KiE2w6
-         9Xz6u4qdahy0LI9WhaFK/lyoXeoeyTIRv3jDEuQ+1axa99t2wwYOv3R4ZYP7Nf33NHcF
-         h/ifupziL/bRk8bMH6nIbZRqrxAaPuu8HhFAWxW4P1w0jDAp4QjTtN/sMy8BVDVsBKeJ
-         5XqZMH2ZHCMbswWDflwfuj2IwwEkK5sK41ABrUURUYOQM0CqIeNKuZ/QR+TlG/5OyQY4
-         UAK2fLKyhInTzveMOSTFN0HX58oaY6FSzzY0nRCsLMpkwG8QaNeop7L+F9Ub+d7NkC/G
-         +g1Q==
+        bh=VUPD/cY/LxhsyGz5jHztNy8YoBG2hAYfm7OqDgw4v6U=;
+        b=FAKKvRzUpV5MunUaX3y3M0fVr0O0QjwYBT91T6fALGVpWDMVrP5aQT40HU3JSycRAE
+         VkDgwCNzC0hH+sllDZ8T04ETOnXBWzWOUMuu3HSV2R7tB98d4jTiTKh+tjhbKv20jKCo
+         YrsgE74qauxuN2zfXJa50Wq5qbd2iMgMLIqFIcpk0UOmgQkUNoBVyiwXyzbnCrPRVYUU
+         ZdmlfIUGK2DdYXj5phDiTToHiksYJcmgPaNYsQGJZP7jFG492ugjPOD6p8Jpgxd4YqFy
+         9CpIBbASUxkCTSLjhQr33AvPkSK3BCKuoqCCBTkyan5ugwIoCIpFf59EcIWWABAUBMMD
+         G/lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ACuhHqUyAOgeit1pJS1MxY6/38vCSWpT3UKaTx8+/JY=;
-        b=qPcvpOzdGx3/6mRcCAWLVUhAFumtyaTEtRr/z4bmei2hMuoUV1MNHIWDpkL2B54A1L
-         APQsr2BKnxV9cGi70M6CQAHO0TMwYSA1qlnCUIZqXhEAMCgvv2tgEFYCLLPlvkJjDNfr
-         mReIPs3MkCdEbH4WDGxVurmG8zL2mdY6RRbJaW4IlVXDeqgULfXXkBQSn4qF3UpgZCsp
-         Egwr02p9v59ffFcJrjwugY3wpLPIt9StQ+5TYgpACSkHIVQVrnALAd6kksmdCBfVGeGL
-         HnrfV4RjjWbMV6tcEQJ1osfK+OhUb11rn5MLhErv2xTCwTc5gorA3Y3l/EOFm344udd9
-         ECpQ==
-X-Gm-Message-State: AOAM532IqUdb6VbBqS8P1zyVZ7wHM0YkkqDaBpzDGrevfCiaEfa9iLCP
-        YeKYOjFnUi9cr2PvvoWqsHgM7A==
-X-Google-Smtp-Source: ABdhPJwZRlj953gT/ow/PoTz03HbJCu8kx7ksSmJH59sdocGmJhel18R3yS87cxTtuQ5kIlJ9yN83w==
-X-Received: by 2002:a1c:f706:: with SMTP id v6mr4569286wmh.85.1611665166044;
-        Tue, 26 Jan 2021 04:46:06 -0800 (PST)
+        bh=VUPD/cY/LxhsyGz5jHztNy8YoBG2hAYfm7OqDgw4v6U=;
+        b=bRMqf9llykF0lluZi+zY0VpopCIlm1ODmbQXQu5EofaztajPjUKJkPB/LpU+7sllsG
+         6H8ZJLxsx6ZloeAPI5f7fZ9fLzBDzG86vzez19O26YQPwTDTX5wGIYfiAegbhgrE2c35
+         zH0SYB6/nN1wojngEKIijth+FqUNTvD0mVkGfMS378AccEzQMfnrC5QW3BxDQQHoFdFh
+         Fl65ab+fF3NChav8H1UOZFLIJzMKUqExrqdWI7P2N04q3q+o1MBovHL95DO7Cm9xthzq
+         1BhVyuMLduGQrNJHDSNNyEDAxTX+PWcgE1lz2tp2QIe1KAp/sAVB/ZuE0y6lg2i8yHLH
+         kapg==
+X-Gm-Message-State: AOAM5330kJ5sXtVnC0d5/t2wqxJhxW99CZdqD70Y4Tzsiv6oYz2nMeLD
+        /VKxDV2H6fUT+5CAWP6QsD2KTw==
+X-Google-Smtp-Source: ABdhPJzDfZrmi2kd5wjC1UYrN12+BpCm+J6hNVRU+Vg0taR5ItIW4r04IRJtEUstdKlRYXEEAID4Cw==
+X-Received: by 2002:a1c:9648:: with SMTP id y69mr4464374wmd.40.1611665167134;
+        Tue, 26 Jan 2021 04:46:07 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id i131sm3263073wmi.25.2021.01.26.04.46.05
+        by smtp.gmail.com with ESMTPSA id i131sm3263073wmi.25.2021.01.26.04.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:46:05 -0800 (PST)
+        Tue, 26 Jan 2021 04:46:06 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH 18/21] clk: qcom: clk-rpm: Remove a bunch of superfluous code
-Date:   Tue, 26 Jan 2021 12:45:37 +0000
-Message-Id: <20210126124540.3320214-19-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 19/21] clk: spear: Move prototype to accessible header
+Date:   Tue, 26 Jan 2021 12:45:38 +0000
+Message-Id: <20210126124540.3320214-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
 References: <20210126124540.3320214-1-lee.jones@linaro.org>
@@ -70,100 +70,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/clk/qcom/clk-rpm.c:453:29: warning: ‘clk_rpm_branch_ops’ defined but not used [-Wunused-const-variable=]
+ drivers/clk/spear/spear1310_clock.c:385:13: warning: no previous prototype for ‘spear1310_clk_init’ [-Wmissing-prototypes]
+ drivers/clk/spear/spear1340_clock.c:442:13: warning: no previous prototype for ‘spear1340_clk_init’ [-Wmissing-prototypes]
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Michael Turquette <mturquette@baylibre.com>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: linux-clk@vger.kernel.org
+Cc: Viresh Kumar <vireshk@kernel.org>
+Cc: Shiraz Hashim <shiraz.linux.kernel@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/clk/qcom/clk-rpm.c | 63 --------------------------------------
- 1 file changed, 63 deletions(-)
+ arch/arm/mach-spear/generic.h       | 12 ------------
+ arch/arm/mach-spear/spear13xx.c     |  1 +
+ drivers/clk/spear/spear1310_clock.c |  1 +
+ drivers/clk/spear/spear1340_clock.c |  1 +
+ include/linux/clk/spear.h           | 23 +++++++++++++++++++++++
+ 5 files changed, 26 insertions(+), 12 deletions(-)
+ create mode 100644 include/linux/clk/spear.h
 
-diff --git a/drivers/clk/qcom/clk-rpm.c b/drivers/clk/qcom/clk-rpm.c
-index f71d228fd6bd5..a18811c380187 100644
---- a/drivers/clk/qcom/clk-rpm.c
-+++ b/drivers/clk/qcom/clk-rpm.c
-@@ -73,62 +73,6 @@
- 		},							      \
- 	}
+diff --git a/arch/arm/mach-spear/generic.h b/arch/arm/mach-spear/generic.h
+index 25b4c5e66e396..8ec2b92dca192 100644
+--- a/arch/arm/mach-spear/generic.h
++++ b/arch/arm/mach-spear/generic.h
+@@ -43,16 +43,4 @@ void spear13xx_cpu_die(unsigned int cpu);
  
--#define DEFINE_CLK_RPM_PXO_BRANCH(_platform, _name, _active, r_id, r)	      \
--	static struct clk_rpm _platform##_##_active;			      \
--	static struct clk_rpm _platform##_##_name = {			      \
--		.rpm_clk_id = (r_id),					      \
--		.active_only = true,					      \
--		.peer = &_platform##_##_active,				      \
--		.rate = (r),						      \
--		.branch = true,						      \
--		.hw.init = &(struct clk_init_data){			      \
--			.ops = &clk_rpm_branch_ops,			      \
--			.name = #_name,					      \
--			.parent_names = (const char *[]){ "pxo_board" },      \
--			.num_parents = 1,				      \
--		},							      \
--	};								      \
--	static struct clk_rpm _platform##_##_active = {			      \
--		.rpm_clk_id = (r_id),					      \
--		.peer = &_platform##_##_name,				      \
--		.rate = (r),						      \
--		.branch = true,						      \
--		.hw.init = &(struct clk_init_data){			      \
--			.ops = &clk_rpm_branch_ops,			      \
--			.name = #_active,				      \
--			.parent_names = (const char *[]){ "pxo_board" },      \
--			.num_parents = 1,				      \
--		},							      \
--	}
--
--#define DEFINE_CLK_RPM_CXO_BRANCH(_platform, _name, _active, r_id, r)	      \
--	static struct clk_rpm _platform##_##_active;			      \
--	static struct clk_rpm _platform##_##_name = {			      \
--		.rpm_clk_id = (r_id),					      \
--		.peer = &_platform##_##_active,				      \
--		.rate = (r),						      \
--		.branch = true,						      \
--		.hw.init = &(struct clk_init_data){			      \
--			.ops = &clk_rpm_branch_ops,			      \
--			.name = #_name,					      \
--			.parent_names = (const char *[]){ "cxo_board" },      \
--			.num_parents = 1,				      \
--		},							      \
--	};								      \
--	static struct clk_rpm _platform##_##_active = {			      \
--		.rpm_clk_id = (r_id),					      \
--		.active_only = true,					      \
--		.peer = &_platform##_##_name,				      \
--		.rate = (r),						      \
--		.branch = true,						      \
--		.hw.init = &(struct clk_init_data){			      \
--			.ops = &clk_rpm_branch_ops,			      \
--			.name = #_active,				      \
--			.parent_names = (const char *[]){ "cxo_board" },      \
--			.num_parents = 1,				      \
--		},							      \
--	}
--
- #define to_clk_rpm(_hw) container_of(_hw, struct clk_rpm, hw)
+ extern const struct smp_operations spear13xx_smp_ops;
  
- struct rpm_cc;
-@@ -450,13 +394,6 @@ static const struct clk_ops clk_rpm_ops = {
- 	.recalc_rate	= clk_rpm_recalc_rate,
- };
- 
--static const struct clk_ops clk_rpm_branch_ops = {
--	.prepare	= clk_rpm_prepare,
--	.unprepare	= clk_rpm_unprepare,
--	.round_rate	= clk_rpm_round_rate,
--	.recalc_rate	= clk_rpm_recalc_rate,
--};
+-#ifdef CONFIG_MACH_SPEAR1310
+-void __init spear1310_clk_init(void __iomem *misc_base, void __iomem *ras_base);
+-#else
+-static inline void spear1310_clk_init(void __iomem *misc_base, void __iomem *ras_base) {}
+-#endif
 -
- /* MSM8660/APQ8060 */
- DEFINE_CLK_RPM(msm8660, afab_clk, afab_a_clk, QCOM_RPM_APPS_FABRIC_CLK);
- DEFINE_CLK_RPM(msm8660, sfab_clk, sfab_a_clk, QCOM_RPM_SYS_FABRIC_CLK);
+-#ifdef CONFIG_MACH_SPEAR1340
+-void __init spear1340_clk_init(void __iomem *misc_base);
+-#else
+-static inline void spear1340_clk_init(void __iomem *misc_base) {}
+-#endif
+-
+ #endif /* __MACH_GENERIC_H */
+diff --git a/arch/arm/mach-spear/spear13xx.c b/arch/arm/mach-spear/spear13xx.c
+index 31c43cabf3623..74d1ca2a529a7 100644
+--- a/arch/arm/mach-spear/spear13xx.c
++++ b/arch/arm/mach-spear/spear13xx.c
+@@ -15,6 +15,7 @@
+ 
+ #include <linux/amba/pl022.h>
+ #include <linux/clk.h>
++#include <linux/clk/spear.h>
+ #include <linux/clocksource.h>
+ #include <linux/err.h>
+ #include <linux/of.h>
+diff --git a/drivers/clk/spear/spear1310_clock.c b/drivers/clk/spear/spear1310_clock.c
+index 591248c9a88e7..8c89748667899 100644
+--- a/drivers/clk/spear/spear1310_clock.c
++++ b/drivers/clk/spear/spear1310_clock.c
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/clkdev.h>
++#include <linux/clk/spear.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/of_platform.h>
+diff --git a/drivers/clk/spear/spear1340_clock.c b/drivers/clk/spear/spear1340_clock.c
+index 9163bbb464112..c0dc94355c873 100644
+--- a/drivers/clk/spear/spear1340_clock.c
++++ b/drivers/clk/spear/spear1340_clock.c
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/clkdev.h>
++#include <linux/clk/spear.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/of_platform.h>
+diff --git a/include/linux/clk/spear.h b/include/linux/clk/spear.h
+new file mode 100644
+index 0000000000000..a64d034ceddd2
+--- /dev/null
++++ b/include/linux/clk/spear.h
+@@ -0,0 +1,23 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Copyright (C) 2020 STMicroelectronics - All Rights Reserved
++ *
++ * Author: Lee Jones <lee.jones@linaro.org>
++ */
++
++#ifndef __LINUX_CLK_SPEAR_H
++#define __LINUX_CLK_SPEAR_H
++
++#ifdef CONFIG_MACH_SPEAR1310
++void __init spear1310_clk_init(void __iomem *misc_base, void __iomem *ras_base);
++#else
++static inline void spear1310_clk_init(void __iomem *misc_base, void __iomem *ras_base) {}
++#endif
++
++#ifdef CONFIG_MACH_SPEAR1340
++void __init spear1340_clk_init(void __iomem *misc_base);
++#else
++static inline void spear1340_clk_init(void __iomem *misc_base) {}
++#endif
++
++#endif
 -- 
 2.25.1
 
