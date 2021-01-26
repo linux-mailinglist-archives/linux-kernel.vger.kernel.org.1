@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACDB30461A
+	by mail.lfdr.de (Postfix) with ESMTP id CB10E30461B
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394353AbhAZSPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:15:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391407AbhAZRvC (ORCPT
+        id S2394370AbhAZSPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:15:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393816AbhAZR4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:51:02 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDDCC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:50:21 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id d22so20843425edy.1
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:50:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YDZ9xoM4vkjgG3VDn83cus2ZyU7tS/ImHr1EbR40OHE=;
-        b=iC68VBpaq64YNVQ0gyie62K2q0gqKG2wunAeMFJligWQ54mFY6PLhbrOxMmB1Snsrn
-         0iShrefSXyHlxlN+8Q01JLqZUHgUdC4dPm083RP/P3G/HjqXJvx5QaNoLA+/CSe5uglG
-         oCWZXKNRQA8x+9nVwamn+mDCLqUFyKlzOV+3EpXHa8AaC5IVSJx910YSC18RZPWc81FJ
-         ltKjl4opEIguMtRBiMwBDki887zMS5XWqqiJz+57O7hld88oTYnoGPI1DqSPOACvYHV6
-         26MiLHaOJpXDLenM4lVZhCqcgeWByzzXB8oi3MdeA4rODu556+k1D2I+NKeM2iME7D/w
-         wH+g==
+        Tue, 26 Jan 2021 12:56:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611683727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rMaRRif4x/o1qr3EHWx3D3A3paOWJunfGP7cUczujlk=;
+        b=APJk68J32PY3pKhg5gMrs+7PPZIDeDLVaivQG4R9b5fIWnqz2yIfd7ev86YFqTc27vY/m+
+        m/7fo38AUIO5EgjCiU3aGxFLml/iB4F7ZfUg3DbpDZ43Cgii16N780VGmxkKOqP3xNNvjH
+        B0y8sKdKnBUnIUvNgZGgwK2nViyDz9w=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-qdDcLVCZMualDhxZR39wfA-1; Tue, 26 Jan 2021 12:55:25 -0500
+X-MC-Unique: qdDcLVCZMualDhxZR39wfA-1
+Received: by mail-ed1-f70.google.com with SMTP id m18so3126120edp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:55:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YDZ9xoM4vkjgG3VDn83cus2ZyU7tS/ImHr1EbR40OHE=;
-        b=oY82VX5J/F/Cnz/2Az/i9CFolrfWUthKDNbNPtrSbPdXcOENyCN5/bBu1/zgD8YP/g
-         vKluh68cA+SRuYgOvRbxsYShbTMv3qgBq7ZeW/2uxYtWLYyV0G8fHZ3RW7j8alXu6jgX
-         iaeBCqfvE+mrXYTf0Sq4fMq5ytblqu19JDcJRcLUWEvGa3/6mm3C7KaeNps7WUoo+QO9
-         6T62gHN5WpqezvSJz0MuxiJeae8j5d+PB2w+FkDtA2PEGLza+Rb/ulu2JveXcLXFrAif
-         NXp27jefi71CbmrrH8WW2enB9iPY1UNVOehLs5t2j3rP3pw+jNiauQXwX+IJjX8D/zDo
-         GJBA==
-X-Gm-Message-State: AOAM530zD2YNMrNbGQ/DKQbKFgql6J5IBX7pvrXUXGabWDhLz42B1cIb
-        IDO5roBvURViMoWlpBox8q/O/2/u9g81hnm85FUYmQ==
-X-Google-Smtp-Source: ABdhPJx3Yv1kBkYCpT7b1VeYY0tK4Gs4XrFwiszGuqBHo9jL/4XtOW+Fht+NXcjZCRLEkjSwZDjZJ0Ui6hVhT9ALTl8=
-X-Received: by 2002:aa7:d4c8:: with SMTP id t8mr5784370edr.199.1611683419835;
- Tue, 26 Jan 2021 09:50:19 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rMaRRif4x/o1qr3EHWx3D3A3paOWJunfGP7cUczujlk=;
+        b=KAIM3fhpAKsOSeJFzJJF3cv9DyG9x6TMniwgAwvE3y0izmm3VlQisZbT++JPoznLbm
+         A6HrWIi7Gxfy0ByaciD5a6Dy4YOaFLq+7FiGBO9oBvxdH+Ah7dTZZ1WQZ+MBhOwOe+zy
+         LOFX9nUgE4mF+GE9DoaijHxIl1KjQQ+YQ5pv/4ZFmfF9WXQCV3/BidieV0SbYgVkXLWw
+         hfinru9v/eWS7cF7TePiiPC2AENWWr09FgWWV+7Cw4xEEogFIh6qGWej+YOpImLnpViZ
+         pdBatrOfokzydAKKhYAlPsNEHT3MQPCnhcPrNXLqsflU4bkiliU5+gfgQc+1qRZkodjG
+         CBCw==
+X-Gm-Message-State: AOAM533skGwVZ3AvKKPzFwhwbpWy70QpQZixgxr1imUcKL6o51rx/8RA
+        qtc3j1A2HhnJ5ply+jY7MAk5kl+ayNEy32LSN60qXRyq4wPnU2bQ2E1sJr9vkdQ8a1S5eRrLdd1
+        K4y4kteZvaNbr3j2zu2UX0vXb
+X-Received: by 2002:a17:906:4159:: with SMTP id l25mr3994039ejk.311.1611683723883;
+        Tue, 26 Jan 2021 09:55:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw6rarq4cXLZKda6ZVXoCfOJgKXeUCmPj3eahyTXTqq3OCDu6EEaLCS8azd/93eAI0Bboegcg==
+X-Received: by 2002:a17:906:4159:: with SMTP id l25mr3993860ejk.311.1611683718719;
+        Tue, 26 Jan 2021 09:55:18 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x16sm10255151ejc.22.2021.01.26.09.55.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 09:55:17 -0800 (PST)
+Subject: Re: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210112181041.356734-1-bgardon@google.com>
+ <20210112181041.356734-16-bgardon@google.com> <YAjIddUuw/SZ+7ut@google.com>
+ <460d38b9-d920-9339-1293-5900d242db37@redhat.com>
+ <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <fae0e326-cfd4-bf5d-97b5-ae632fb2de34@redhat.com>
+Date:   Tue, 26 Jan 2021 18:55:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210126014450.1901335-1-lokeshgidra@google.com>
-In-Reply-To: <20210126014450.1901335-1-lokeshgidra@google.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Tue, 26 Jan 2021 09:50:08 -0800
-Message-ID: <CA+EESO5MafN2aa8+BC_KP+BfRNqw9ySpQJwymuuZd4BBxPn4fA@mail.gmail.com>
-Subject: Re: [PATCH v1] userfaultfd.2: Add UFFD_USER_MODE_ONLY flag
-To:     linux-man@vger.kernel.org
-Cc:     Daniel Colascione <dancol@dancol.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANgfPd_WvXP=mOnxFR8BY=WnbR5Gn8RpK7aR_mOrdDiCh4VEeQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 5:44 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
->
-> Add description of UFFD_USER_MODE_ONLY flag to userfaultfd(2) manual
-> page, which is required after [1]. Also updated the description of
-> unprivileged_userfaultfd file in proc(5) as per [2].
->
-> [1] https://lore.kernel.org/linux-mm/20201215031349.NXimL388W%25akpm@linux-foundation.org/
-> [2] https://lore.kernel.org/linux-mm/20201215031354.gUsHJUpKo%25akpm@linux-foundation.org/
->
-> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> ---
->  man2/userfaultfd.2 |  5 +++++
->  man5/proc.5        | 12 ++++++++++++
->  2 files changed, 17 insertions(+)
->
-> diff --git a/man2/userfaultfd.2 b/man2/userfaultfd.2
-> index e7dc9f813..792a49d52 100644
-> --- a/man2/userfaultfd.2
-> +++ b/man2/userfaultfd.2
-> @@ -72,6 +72,11 @@ See the description of the
->  .BR O_NONBLOCK
->  flag in
->  .BR open (2).
-> +.TP
-> +.BR UFFD_USER_MODE_ONLY " (Since Linux 5.11)"
-> +Allow handling of user-mode page-faults only. See the description of the
-> +unprivileged_userfaultfd file in
-> +.BR proc (5).
->  .PP
->  When the last file descriptor referring to a userfaultfd object is closed,
->  all memory ranges that were registered with the object are unregistered
-> diff --git a/man5/proc.5 b/man5/proc.5
-> index f16a29d6e..cb2350c0c 100644
-> --- a/man5/proc.5
-> +++ b/man5/proc.5
-> @@ -5905,6 +5905,18 @@ If this file has the value 0, then only processes that have the
->  capability may employ
->  .BR userfaultfd (2).
->  The default value in this file is 1.
-> +.IP
-> +Starting with Linux 5.11,
-> +.BR userfaultfd (2)
-> +can be used by all processes, however, if this file has the value 0, then
-> +.BR UFFD_USER_MODE_ONLY
-> +flag must be passed to it, which restricts page-fault handling to only
-> +user-mode faults. This restriction is not applicable for processes with
-> +.B CAP_SYS_PTRACE
-> +capability, or if this file has the value 1. Furthermore, the default
-> +value in this file is changed to 0. For further details see the
-> +Linux kernel source file
-> +.I Documentation/admin\-guide/sysctl/vm.rst.
->  .TP
->  .IR /proc/sysrq\-trigger " (since Linux 2.4.21)"
->  Writing a character to this file triggers the same SysRq function as
-> --
+On 26/01/21 18:47, Ben Gardon wrote:
+> Enough that it motivated me to implement this more complex union
+> scheme. While the difference was pronounced in the dirty log perf test
+> microbenchmark, it's an open question as to whether it would matter in
+> practice.
 
-Adding the right linux-mm mailing list. Mistakenly used
-linux-mm@kvack.kernel.org earlier.
+I'll look at getting some numbers if it's just the dirty log perf test. 
+  Did you see anything in the profile pointing specifically at rwlock?
 
-> 2.30.0.280.ga3ce27912f-goog
->
+Paolo
+
