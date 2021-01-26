@@ -2,99 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751BB3040B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 833803040A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405937AbhAZOm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:42:58 -0500
-Received: from m12-12.163.com ([220.181.12.12]:54730 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391478AbhAZOmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:42:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Subject:From:Message-ID:Date:MIME-Version; bh=XqxZk
-        6Q21yuXDtAlxWPHamBd0euAii3WqYerQCRCsFI=; b=jCbQsSkBEzOetCO5nF1ht
-        KNBb+bZmFJW5oVapHE3S9iX7DOZpO/OvxWSzgpPMuKkLfe+obq+98O2hoP2LMNdk
-        u+KY9mZERjvSispv24Lkxzm+55oqVIyKY6H0G8QaBhzcabpIJ8IrmHbI1zSOu7Dg
-        1QmY5HbveoF1nyvoqfb7F4=
-Received: from [192.168.31.187] (unknown [36.170.37.79])
-        by smtp8 (Coremail) with SMTP id DMCowADX34doKRBgBbuGNw--.3258S2;
-        Tue, 26 Jan 2021 22:38:33 +0800 (CST)
-Subject: Re: [RESEND PATCH v2] arm/mm/ptdump:Add address markers for KASAN
- regions
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Hailong Liu <liu.hailong6@zte.com.cn>
-References: <20210120125010.10896-1-carver4lio@163.com>
- <CACRpkda5VXyg5F7r4RaHrSh303KZ3FjxnLEsQ1tFNXjMhxDqLw@mail.gmail.com>
-From:   carver4lio@163.com
-Message-ID: <bf5040d0-a131-02a5-8eed-005e2604b355@163.com>
-Date:   Tue, 26 Jan 2021 22:38:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2405915AbhAZOlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:41:37 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:45017 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731937AbhAZOkQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 09:40:16 -0500
+Received: by mail-ot1-f53.google.com with SMTP id e70so16321945ote.11;
+        Tue, 26 Jan 2021 06:40:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wo5OioLhRARFUuZ3uDklbIqehPU5MqYOZCCmUSeRzHI=;
+        b=BcCRrlRyDATRVebL8o1/vaX0mAMRNpjspaR4Dwu/fvRpgtc0hn9TTph37h4AlRa/MK
+         uRT0WwivX/lvem69owbSsn6+UtUKBhx6F8qzYI6U3jl8EoQ9nB89JuCjZKezw1IbuojP
+         kjqMbAHcF+QZmwktkWKQVLhLVhCaCQTSVObR/9P/Kpgbdlr9yMS7Ps4xvG81L3XkWfb/
+         1kleDVEjkMNhlVOn339FvsKTwHYPrWBqFwTdbFxBp2CYkYXhQMp8TbnEHRZnrYnPwTXr
+         WWyh8mg6JNs6+FDYZQECPRN55xWayCFQGhDTcoc0VwBR+DvHvG7paiidvdMvpNtsWAD/
+         /PTw==
+X-Gm-Message-State: AOAM533gK+canjjboWrJfKuzxk2pcTlCvZAnc1snIEdLIj53PU+9Px+L
+        M6kR7f3s3vJ9l7WGw3H+dw==
+X-Google-Smtp-Source: ABdhPJybCZz3f/NsOR3Cto6GEj1zUyuNuIScCXiYtXOlPja9QQhHz5JSg58waL37WxiU1/gy5YjoGw==
+X-Received: by 2002:a05:6830:1db8:: with SMTP id z24mr4211947oti.50.1611671975663;
+        Tue, 26 Jan 2021 06:39:35 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r1sm3890619ooq.16.2021.01.26.06.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 06:39:34 -0800 (PST)
+Received: (nullmailer pid 2943719 invoked by uid 1000);
+        Tue, 26 Jan 2021 14:39:33 -0000
+Date:   Tue, 26 Jan 2021 08:39:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     marijn.suijten@somainline.org, martin.botka@somainline.org,
+        robh+dt@kernel.org, konrad.dybcio@somainline.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] dt-bindings: pinctrl: Add bindings for Awinic
+ AW9523/AW9523B
+Message-ID: <20210126143933.GA2943577@robh.at.kernel.org>
+References: <20210125182219.213214-1-angelogioacchino.delregno@somainline.org>
+ <20210125182219.213214-2-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkda5VXyg5F7r4RaHrSh303KZ3FjxnLEsQ1tFNXjMhxDqLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: DMCowADX34doKRBgBbuGNw--.3258S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFW8Cr4UWryUGF1fAFW8WFg_yoWkZFc_Xr
-        40yFn7ur45Ar1fCFn7GFn5Xrn0gr9Fg3yDJF93KF93Xry0vrWDCF4DCFZa9w4rAry7Gr4S
-        yr42vw1kt3429jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUetUUUUUUUU==
-X-Originating-IP: [36.170.37.79]
-X-CM-SenderInfo: xfdu4v3uuox0i6rwjhhfrp/1tbiWAkmnVuHvVmxywAAso
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125182219.213214-2-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/21/21 4:36 PM, Linus Walleij wrote:
-> On Wed, Jan 20, 2021 at 1:54 PM Hailong liu <carver4lio@163.com> wrote:
+On Mon, 25 Jan 2021 19:22:19 +0100, AngeloGioacchino Del Regno wrote:
+> Add bindings for the Awinic AW9523/AW9523B I2C GPIO Expander driver.
 > 
->> From: Hailong Liu <liu.hailong6@zte.com.cn>
->>
->> ARM has recently supported KASAN, so I think that it's time to add KASAN
->> regions for PTDUMP on ARM.
->>
->> I have tested this patch with QEMU + vexpress-a15. Both CONFIG_ARM_LPAE
->> and no CONFIG_ARM_LPAE.
->>
->> The result after patching looks like this:
->>  ---[ Kasan shadow start ]---
->>  0x6ee00000-0x7af00000         193M     RW NX SHD MEM/CACHED/WBWA
->>  0x7b000000-0x7f000000          64M     ro NX SHD MEM/CACHED/WBWA
->>  ---[ Kasan shadow end ]---
->>  ---[ Modules ]---
->>  ---[ Kernel Mapping ]---
->>         ......
->>  ---[ vmalloc() Area ]---
->>         ......
->>  ---[ vmalloc() End ]---
->>  ---[ Fixmap Area ]---
->>  ---[ Vectors ]---
->>         ......
->>  ---[ Vectors End ]---
->>
->> v2:
->> - fix the puzzling subject and the description due to my
->> carelessness.
->>
->> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../pinctrl/awinic,aw9523-pinctrl.yaml        | 139 ++++++++++++++++++
+>  1 file changed, 139 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
 > 
-> Looks correct!
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Please put this into Russell's patch tracker.
 
-I have put this patch into Russell's patch tracker, and its status now is
-incoming.
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
