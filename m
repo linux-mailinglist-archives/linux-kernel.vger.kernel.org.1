@@ -2,114 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2219303CA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0C7303C8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392523AbhAZMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403784AbhAZLOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:14:44 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C474C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:14:04 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id bl23so1766024ejb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 03:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fYupSZfGSpqos6EzshWCWKgBwX/sGM1t83TUapOfzmM=;
-        b=VbexN5wLBRJtg3Xgj9BkYYyyr8SuLc06wkm+NGzg/+9oJil7Roa4JQw0qf+F1c9gey
-         kwas/UBso+IGlk25Nb7MvzV7jPPHeySjaDI9Y6Z7wxy8F2tglLnCJ8I3B3YO7WE4fjt4
-         LmmHmByJBRG/pXkHSCmfehy8xkazxFN7wpStnCmiDR1guqhho+s9k+OVjSORLAr6A6rb
-         i63WLSkgoZIt7ZTM4X0kp9tTXECGodFypL8yEyj6XQApclBz1gCrNEGQg5qTruHQEbxt
-         eDV/QlD6K5kgFiZAzlNWxYeJGca740vq8hLL5xNKz+rLBRehXA9/Ek+Oeov/dObbNTPi
-         vItA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fYupSZfGSpqos6EzshWCWKgBwX/sGM1t83TUapOfzmM=;
-        b=JxKq+gdQywq+azMwvIu4S03WfsPuFpuliRH2Kxp7mshc9iVC7rbMGh3EzOQJ1Blvu+
-         JeYz6o/PFRYAd0msZ2E0VOj/cFmIuMLe3jjUBwA7dBwVp8cExhUcYrWz+0zJvHJIwhVg
-         kmpFkb96FMwcIr1G16GGMKAsL7hjwf2/FLvr54tb4M9MJWRs6XgnIX/1lpB10jJiXil1
-         gTffvmPM4gsTdD/sTKKXVgoUJ3gqAQCthZBQDgw6fAB529+ZjiRuxyts4iu5eVDsVBUG
-         Eu37PFA3Bh1lENJlUmO11k4ybdQwbjAFYK05YRWLLUgT8enxqwWO23YaFE/wzbj9fzSo
-         QQbg==
-X-Gm-Message-State: AOAM530FrlXeLIdX4mejPniEBCue+EiMOgGme2oSwB4d6T3DA8m4Qu4B
-        lbpx31M5BkPYsnAjtfE7CIQInZ2C/+mRSaFS9IZjvw==
-X-Google-Smtp-Source: ABdhPJwITm2P906snRNQzkdwvalIaBuZXKqAsdaamIm+KLMDW0TYv3btFTjih2Ul5m4jPuWGP8A2Ce1hF4b8DTtGZAQ=
-X-Received: by 2002:a17:906:39d0:: with SMTP id i16mr3149157eje.18.1611659642780;
- Tue, 26 Jan 2021 03:14:02 -0800 (PST)
+        id S2392284AbhAZMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:08:35 -0500
+Received: from muru.com ([72.249.23.125]:53244 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392313AbhAZLV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:21:58 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 303E18057;
+        Tue, 26 Jan 2021 11:21:21 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 13:21:14 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Enric Balletbo i Serra <eballetbo@gmail.com>,
+        Javier Martinez Canillas <javier@dowhile0.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: omap3-igep: Change email address in copyright
+ notice
+Message-ID: <YA/7KmtGlhcyF65m@atomide.com>
+References: <20210118081707.160596-1-javierm@redhat.com>
 MIME-Version: 1.0
-References: <20210126094301.457437398@linuxfoundation.org>
-In-Reply-To: <20210126094301.457437398@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 26 Jan 2021 16:43:51 +0530
-Message-ID: <CA+G9fYtqJDKOwFGevaOmmK7gbKgo61CpL70yyG2daOxvRp5FSQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/88] 5.4.93-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>, sagar.kadam@sifive.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118081707.160596-1-javierm@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 at 15:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.93 release.
-> There are 88 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 28 Jan 2021 09:42:44 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.93-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+* Javier Martinez Canillas <javierm@redhat.com> [210118 10:17]:
+> I've switched employer a long time ago and the mentioned email address no
+> longer exists. Use my personal address to prevent the issue in the future.
 
-As Daniel pointed in the other email thread,
-riscv failed build:
-     * clang-10-defconfig -  FAILED
-     * clang-11-defconfig -  FAILED
-     * gcc-8-defconfig -  FAILED
-     * gcc-9-defconfig -  FAILED
-     * gcc-10-defconfig -  FAILED
+Thanks applying into omap-for-v5.12/dt.
 
-the riscv build failed due to the below commit.
-
-> Sagar Shrikant Kadam <sagar.kadam@sifive.com>
->     dts: phy: add GPIO number and active state used for phy reset
-
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=riscv
-CROSS_COMPILE=riscv64-linux-gnu- 'CC=sccache riscv64-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dts:88.27-28 syntax error
-FATAL ERROR: Unable to parse input tree
-
-Build log,
-https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/986616680
-
--- 
-Linaro LKFT
-https://lkft.linaro.org
+Tony
