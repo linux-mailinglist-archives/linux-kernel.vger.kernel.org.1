@@ -2,115 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2234304332
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59B430432E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404308AbhAZP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
+        id S2403947AbhAZP5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404144AbhAZP5Z (ORCPT
+        with ESMTP id S2404033AbhAZP40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:57:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CD6C061A29
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:56:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=SwwSz04nAiitxppm41x59LNVjdYgPkKG1Bk647+oE+s=; b=Islfy0bjDLGA2KUoXMGMGwM+q0
-        ddqVVRNHC8PWeTXwKsKJGhcTNOI8oWxGXD76NFBEMLyPilgM2Q3EUWDYaakHBQiWBINuqOIY8ZZE6
-        j9aKImwGQAno1yAsvwJGgeKiR5L6jC3yMNuPXTaenNCml6as2v7ZL4W/QSkqQs0dWKkaS3lPJtNFw
-        JFAiiCVEJGrzCzNaBoYQ5CsvmdO8y/ssbjP3WxkXpch/z9GguEUNX8lqcH42quL09uNJqF2U8tgWn
-        7q3w1ADsCwFfr8UYKAZgiPmvptUTF7d5RPFysn0PlnisFJjKu2LAR8Lo2QGmimUq3Sgc3AYZ0CRdD
-        fNUbONrg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4QgG-005reX-UB; Tue, 26 Jan 2021 15:55:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6FE4B300DAE;
-        Tue, 26 Jan 2021 16:55:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5BA2E2029059B; Tue, 26 Jan 2021 16:55:00 +0100 (CET)
-Date:   Tue, 26 Jan 2021 16:55:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com
-Subject: Re: [PATCH 01/12] perf/core: Add PERF_SAMPLE_WEIGHT_EXT
-Message-ID: <YBA7VMH4l6J8LlCZ@hirez.programming.kicks-ass.net>
-References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
- <1611088711-17177-2-git-send-email-kan.liang@linux.intel.com>
- <YBAqYyTuqxsH8tqR@hirez.programming.kicks-ass.net>
- <d018282d-f47d-4382-2538-59c6930a74c3@linux.intel.com>
+        Tue, 26 Jan 2021 10:56:26 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CD7C0698C0
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:55:45 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id f11so20148033ljm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:55:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1qbmsERETvvhmGcrikQHaWP/ykH+HxLm8R4w+ova73M=;
+        b=bjS7vGEOTjywoQGHoQ/5v81uMWTKMT+tReITGMTMwdMkp/2jAVJsFULLopIbWpJAcT
+         Z1nmq6BNImxs7UhzeY8DppHWy5cKw3Mh2LetNztovAth6Y0ywRbJQCZPc/czRHqcTYzY
+         sI5ZGp7RBv4MsWX3Yrl6QF8EKH1hnVG4M1sHgFFg+GYFixlADm8/fQ/V9po7YP/t1K1c
+         ue72cHiKFQ74Pl7SI8APNE/5xqsXheIKiJMdvHsbn2src4NJ8aGdhyV1nqUu3BJAXm/d
+         Q1tPvwZmEkQnaEwEoq1sxqf/G9bsmJ4gtv/AvL966DCYV/GuUVld5L5tz9cSMg/8hd7N
+         YoqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1qbmsERETvvhmGcrikQHaWP/ykH+HxLm8R4w+ova73M=;
+        b=OgCO+28/fgOWAL97nF3tM8+08XdpWPaMYeTpRvo20VIjCCvO7OMrUsx0ycTlcsGouP
+         yJfOXT+1CLFRNFWXiyqcW6QU22woKhbBphJMcWdMHnL6srxC+j3OUvYl/Vfp7bLjXttb
+         VdL6S7fvCn1fNyZswrmbZAxcT00asXiJjH6li5DuI5Abmal36nf2plJF0BStiMlGRpyZ
+         bO7sqcR9FPQudd3rBdf7gZimCeBP03b+jEFkziLp7WIuHIXKpeomrEDojpT8t1SbtpkT
+         quvEvwXjfpPIbw4XCjB0LNAAIN42pnzhkRl/zo+1A1QYlMuvNzHaY0uLSb0SO1e/rLLU
+         esyQ==
+X-Gm-Message-State: AOAM5337HTRyA5K0aDf/e3hm4Va+qxPplirXwyYkxps/LwfsotaId+bU
+        DaZkpLgdsShaMcCpV69cRkMCNA==
+X-Google-Smtp-Source: ABdhPJxmxfWWfClFxwpfrcM7WVP0LljcTC4+s4EiVqOiKTXtYoECMMgt/0KEPp+mtfHMEeCHoaY9cA==
+X-Received: by 2002:a2e:9d8e:: with SMTP id c14mr3355503ljj.477.1611676544197;
+        Tue, 26 Jan 2021 07:55:44 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id z1sm2481481lfc.303.2021.01.26.07.55.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 07:55:43 -0800 (PST)
+Subject: Re: [PATCH] media: i2c: imx219: Implement V4L2_CID_LINK_FREQ control
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Peter Griffin <peter.griffin@linaro.org>
+References: <20210126074934.26980-1-andrey.konovalov@linaro.org>
+ <CAPY8ntBmVoe_dMKhd7imcQYRcdJLn4PG3rXzZvGBRVbeCjiL0A@mail.gmail.com>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <4c72313b-1b4a-0c7a-a553-144b17763aaa@linaro.org>
+Date:   Tue, 26 Jan 2021 18:55:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d018282d-f47d-4382-2538-59c6930a74c3@linux.intel.com>
+In-Reply-To: <CAPY8ntBmVoe_dMKhd7imcQYRcdJLn4PG3rXzZvGBRVbeCjiL0A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:33:18AM -0500, Liang, Kan wrote:
-> 
-> 
-> On 1/26/2021 9:42 AM, Peter Zijlstra wrote:
-> > On Tue, Jan 19, 2021 at 12:38:20PM -0800, kan.liang@linux.intel.com wrote:
-> > 
-> > > @@ -900,6 +901,13 @@ enum perf_event_type {
-> > >   	 *	  char			data[size]; } && PERF_SAMPLE_AUX
-> > >   	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
-> > >   	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
-> > > +	 *	{ union {
-> > > +	 *		u64		weight_ext;
-> > > +	 *		struct {
-> > > +	 *			u64	instr_latency:16,
-> > > +	 *				reserved:48;
-> > > +	 *		};
-> > > +	 *	} && PERF_SAMPLE_WEIGHT_EXT
-> > >   	 * };
-> > >   	 */
-> > >   	PERF_RECORD_SAMPLE			= 9,
-> > > @@ -1248,4 +1256,12 @@ struct perf_branch_entry {
-> > >   		reserved:40;
-> > >   };
-> > > +union perf_weight_ext {
-> > > +	__u64		val;
-> > > +	struct {
-> > > +		__u64	instr_latency:16,
-> > > +			reserved:48;
-> > > +	};
-> > > +};
-> > > +
-> > >   #endif /* _UAPI_LINUX_PERF_EVENT_H */
-> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > index 55d1879..9363d12 100644
-> > > --- a/kernel/events/core.c
-> > > +++ b/kernel/events/core.c
-> > > @@ -1903,6 +1903,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
-> > >   	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
-> > >   		size += sizeof(data->code_page_size);
-> > > +	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
-> > > +		size += sizeof(data->weight_ext);
-> > > +
-> > >   	event->header_size = size;
-> > >   }
-> > > @@ -6952,6 +6955,9 @@ void perf_output_sample(struct perf_output_handle *handle,
-> > >   			perf_aux_sample_output(event, handle, data);
-> > >   	}
-> > > +	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
-> > > +		perf_output_put(handle, data->weight_ext);
-> > > +
-> > >   	if (!event->attr.watermark) {
-> > >   		int wakeup_events = event->attr.wakeup_events;
-> > 
-> > This patch is broken and will expose uninitialized kernel stack.
-> > 
-> 
-> Could we initialize the 'weight_ext' in perf_sample_data_init()?
+Hi Dave,
 
-No. Also see my other mail for why I hate this thing.
+On 26.01.2021 16:01, Dave Stevenson wrote:
+> Hi Andrey
+> 
+> On Tue, 26 Jan 2021 at 07:50, Andrey Konovalov
+> <andrey.konovalov@linaro.org> wrote:
+>>
+>> This control is needed for imx219 driver, as the link frequency
+>> is independent from the pixel rate in this case, and can't be
+>> calculated from the pixel rate.
+>>
+>> Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+>> ---
+>>   drivers/media/i2c/imx219.c | 15 ++++++++++++++-
+>>   1 file changed, 14 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
+>> index 92a8d52776b8..6e3382b85a90 100644
+>> --- a/drivers/media/i2c/imx219.c
+>> +++ b/drivers/media/i2c/imx219.c
+>> @@ -390,6 +390,10 @@ static const struct imx219_reg raw10_framefmt_regs[] = {
+>>          {0x0309, 0x0a},
+>>   };
+>>
+>> +static const s64 imx219_link_freq_menu[] = {
+>> +       IMX219_DEFAULT_LINK_FREQ,
+> 
+> Link frequency is one of the parameters that is largely irrelevant on
+> the Pi, so I've partially ignored it.
+
+I faced a problem with the imx219 8-bit modes not working with the camss driver
+(drivers/media/platform/qcom/camss), as based on the link frequency calculated
+from the pixel rate the driver sets the csiphy clock to 100MHz which is too low
+for the actual link frequency (4 * 100MHz < 456MHz), and the captured image
+becomes garbage.
+
+> Is the link frequency really the same for all modes? Even 8 bit vs 10
+> bit readout?
+
+Yes, this is exactly the case.
+
+> The pixel rate is constant at 182.4Mpix/s for all modes.
+
+Right.
+
+> Switching to 8 bit changes register 0x0309 (op_pix_clk_div) from 10 to 8.
+> Figure 43 "Clock System Block Diagram" in the datasheet I have says
+> this reduces the divider to the FIFO between the pipeline and MIPI. As
+> we haven't changed PLL2 or Pre-div2 I'd expect the link frequency to
+> stay the same,
+
+That's true.
+
+> but that leaves me confused over that FIFO clock as
+> it'll go UP in frequency. I can't quite see how that works, but it
+> clearly does.
+
+Yes, the FIFO makes it possible for the different write and read rates to work.
+There are few words regarding this in the datasheet, but this isn't enough
+to fully understand how it works:
+"If, Pix Rate of PLL1 domain < Data Rate of PLL2 domain, data is always
+correctly output from the sensor" (page 81)
+
+If I read the datasheet right, for 10-bit modes the both rates are the same
+(91.2 MHz). In the 8-bit modes the "Data Rate" increases to 114 MHz while
+the "Pix Rate" remains at 91.2 MHz.
+
+> Both 8 and 10 bit modes do read out at the same frame / pixel rate,
+> therefore that bit is correct, but that leaves me puzzling over link
+> frequency. I have no information on how big that FIFO is, or how it's
+> clocked on input and output.
+> 
+> Simplest option is that as I need to go into the office in the next
+> day or so I'll pop into the lab and measure it in each mode.
+
+That would be nice!
+In my home "office" I only have a small piece of hardware which claims
+to be able to deal with 2 signals up to 72MHz each, which is not enough
+for such kind of measurements.
+
+> Otherwise I have no issues with the implementation of the patch.
+> 
+>    Dave
+
+Thanks,
+Andrey
+
+>> +};
+>> +
+>>   static const char * const imx219_test_pattern_menu[] = {
+>>          "Disabled",
+>>          "Color Bars",
+>> @@ -547,6 +551,7 @@ struct imx219 {
+>>          struct v4l2_ctrl_handler ctrl_handler;
+>>          /* V4L2 Controls */
+>>          struct v4l2_ctrl *pixel_rate;
+>> +       struct v4l2_ctrl *link_freq;
+>>          struct v4l2_ctrl *exposure;
+>>          struct v4l2_ctrl *vflip;
+>>          struct v4l2_ctrl *hflip;
+>> @@ -1269,7 +1274,7 @@ static int imx219_init_controls(struct imx219 *imx219)
+>>          int i, ret;
+>>
+>>          ctrl_hdlr = &imx219->ctrl_handler;
+>> -       ret = v4l2_ctrl_handler_init(ctrl_hdlr, 11);
+>> +       ret = v4l2_ctrl_handler_init(ctrl_hdlr, 12);
+>>          if (ret)
+>>                  return ret;
+>>
+>> @@ -1283,6 +1288,14 @@ static int imx219_init_controls(struct imx219 *imx219)
+>>                                                 IMX219_PIXEL_RATE, 1,
+>>                                                 IMX219_PIXEL_RATE);
+>>
+>> +       imx219->link_freq =
+>> +               v4l2_ctrl_new_int_menu(ctrl_hdlr, &imx219_ctrl_ops,
+>> +                                      V4L2_CID_LINK_FREQ,
+>> +                                      ARRAY_SIZE(imx219_link_freq_menu) - 1, 0,
+>> +                                      imx219_link_freq_menu);
+>> +       if (imx219->link_freq)
+>> +               imx219->link_freq->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+>> +
+>>          /* Initial vblank/hblank/exposure parameters based on current mode */
+>>          imx219->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx219_ctrl_ops,
+>>                                             V4L2_CID_VBLANK, IMX219_VBLANK_MIN,
+>> --
+>> 2.17.1
+>>
