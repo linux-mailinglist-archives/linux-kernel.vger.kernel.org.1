@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8969303BA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD9D303C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392505AbhAZLbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391366AbhAZJsN (ORCPT
+        id S2405278AbhAZLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:39:12 -0500
+Received: from mail-m973.mail.163.com ([123.126.97.3]:59830 "EHLO
+        mail-m973.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404256AbhAZKk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:48:13 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45BBAC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 01:47:33 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1l4KwV-0001x5-BC; Tue, 26 Jan 2021 10:47:23 +0100
-Received: from hardanger.blackshift.org (unknown [IPv6:2a03:f580:87bc:d400:6c72:efc:f7c6:b5c2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 040F05CD72C;
-        Mon, 25 Jan 2021 17:50:02 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 18:50:02 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     trix@redhat.com
-Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
-        socketcan@hartkopp.net, colin.king@canonical.com,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: mcba_usb: remove h from printk format specifier
-Message-ID: <20210125175002.7afvx63iqoiqgucz@hardanger.blackshift.org>
-References: <20210124150916.1920434-1-trix@redhat.com>
+        Tue, 26 Jan 2021 05:40:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=84Y9h
+        S/hcQTEsxI71PSydVVNvKNfRlJa3uPZUddnRwM=; b=XAAKBjyyNTG3QzvWxLa/H
+        +y5QB0v9fsw2e9lely1iEVu55+ce1qqKlDpn4iUgvt87HzN4iWCjvCU6NNKaxNAZ
+        A+h7ByJXhbZqV8waUCtmninJCyjQneRLQfqUKYBpLtmLJ901+/qsBKt2g9S1W4Yh
+        NVuaP4mvMO9dwjsrTsRBLE=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp3 (Coremail) with SMTP id G9xpCgAnPHtWrQ9gGw6oUg--.51898S2;
+        Tue, 26 Jan 2021 13:49:14 +0800 (CST)
+From:   dingsenjie@163.com
+To:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] scsi/megaraid: fix spelling typo of allocated
+Date:   Tue, 26 Jan 2021 13:49:08 +0800
+Message-Id: <20210126054908.45468-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mnrr4n7v7iy5rkut"
-Content-Disposition: inline
-In-Reply-To: <20210124150916.1920434-1-trix@redhat.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: G9xpCgAnPHtWrQ9gGw6oUg--.51898S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw4xWF1xXrWUJw4UJryfCrg_yoWDCrbEgr
+        W8trn7tryayrs7C34xJ3yrZrZ7t3yYv3WkJ3Wvqr9xuwnrZrsIyF1j9r13Jay7J3yDCasI
+        y345Kr1Ikw1vqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5h18PUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiHhomyFSIsgdKdgAAs-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: dingsenjie <dingsenjie@yulong.com>
 
---mnrr4n7v7iy5rkut
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+allocted -> allocated
 
-On 21-01-24 07:09:16, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
->=20
-> This change fixes the checkpatch warning described in this commit
-> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of
->   unnecessary %h[xudi] and %hh[xudi]")
->=20
-> Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi].
->=20
-> Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/scsi/megaraid/megaraid_mbox.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Added to linux-can-next/testing.
+diff --git a/drivers/scsi/megaraid/megaraid_mbox.c b/drivers/scsi/megaraid/megaraid_mbox.c
+index 4a27ac8..d57e938 100644
+--- a/drivers/scsi/megaraid/megaraid_mbox.c
++++ b/drivers/scsi/megaraid/megaraid_mbox.c
+@@ -1165,7 +1165,7 @@ static DEVICE_ATTR(megaraid_mbox_app_hndl, S_IRUSR, megaraid_sysfs_show_app_hndl
+ 	 * structure
+ 	 * Since passthru and extended passthru commands are exclusive, they
+ 	 * share common memory pool. Passthru structures piggyback on memory
+-	 * allocted to extended passthru since passthru is smaller of the two
++	 * allocated to extended passthru since passthru is smaller of the two
+ 	 */
+ 	raid_dev->epthru_pool_handle = dma_pool_create("megaraid mbox pthru",
+ 			&adapter->pdev->dev, sizeof(mraid_epassthru_t), 128, 0);
+-- 
+1.9.1
 
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---mnrr4n7v7iy5rkut
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmAPBMcACgkQqclaivrt
-76kUGQf+JLQZOWRFcqRCPuMen2ZqE1NyXfQrfReiAvL/TeAoiCTG9r1asgTvnzMn
-sKSIW9cQkDHc8Ub7CprAgmrN/LMsGgdyi2LxsDfYXljpt324ZKeLP7VVtjga8+PQ
-uvuR+SAlld3seXmSABMcsrf4ViJf4IcXU0zgfxPzMT6Cyb5QvwbUKTonnye6kMUH
-NAmYQlgFLCgInyVvklEkDf52X2DAy8boTIUt6gdcKy8J9Iw/5FSHrhZq9FVJ3OKV
-IInvSsThpO51aX73SuC5iAR5fci33Hnd61ElhIKZaCe/sGK8FTY6ChRI69GQNAl1
-1AKyAk60SI4AaruWbQA58y+2o2MRPA==
-=nlzt
------END PGP SIGNATURE-----
-
---mnrr4n7v7iy5rkut--
