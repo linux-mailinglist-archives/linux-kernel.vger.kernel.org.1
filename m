@@ -2,65 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BB5304E36
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEEB304E1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404106AbhA0ASO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:18:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728513AbhAZRIE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:08:04 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0605C061A29
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 08:45:47 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id e22so34871111iog.6
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 08:45:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BdN+glEVgeYhnUo2SFc/y+zPoJzWySqh9gKW4wQ+MUc=;
-        b=g2NzyrdO8qJc9gCmNX6MMT+uVx9heLOB8e6cxKjT4RRCRVRezEQsRZrty72bZ8jTbG
-         ePCn51fae/rChUFBImBy+iN7wS30ENu0xAo9KS1sojNC3/8dez9eHbWjCURFPdXyBPj6
-         zvsxX2Pl5YqHPLyWJ3N/f4gB6V10Ynpd0TmWg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BdN+glEVgeYhnUo2SFc/y+zPoJzWySqh9gKW4wQ+MUc=;
-        b=FyUSgjlfMAXi9A+ijsUjRhVh/RdFGoFsJ3M+d2L48spvINoA9jJ5/OoHP2LFAakjPL
-         cZdzBSSQ/GHhnzzf3Yjluty8AfGIEF6sdJMuWVQ4/nIS/0iY+9or6HQ9UIXKwcw7ILrZ
-         /EJSOo2GMVFc0R3tZHL6aqbQ24qfWYT+CvIJ2jWmWtZGRUoye4O8ZRaCx71SfFF1lRZP
-         f/UPRMBvo3AH3YumuG8mKuEzHk88Gjv2R4fxy4yvjcNtYzd326ctvhtHsK8XpT1cxvEE
-         fKoaWrzy1L3KWO5UY/zdWilDRwjS2vYPqUFdAV94JRF9D7XCeL3tbLvc4VQGyZ3ezsMd
-         fdOg==
-X-Gm-Message-State: AOAM532hHKHzVko0ceW0lJ3rCZbW3aSl9UhNcQIxZD/LAyyByDa24U9L
-        ijbiWYEftpdFdUUfcoJGobshvw==
-X-Google-Smtp-Source: ABdhPJzoEfRlJfb2BxFmWyNOtUPG+bzH7lGmNi5OkZqiYHDR18+VfL7GrL6LHQreL1gGeAJ1cXyQ3w==
-X-Received: by 2002:a05:6e02:507:: with SMTP id d7mr5097817ils.133.1611679547103;
-        Tue, 26 Jan 2021 08:45:47 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v2sm11205221ilj.19.2021.01.26.08.45.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 08:45:46 -0800 (PST)
-Subject: Re: [PATCH v2 0/8] cpupower: Updates and cleanup to support AMD
- Family 0x19
-To:     Nathan Fontenot <nathan.fontenot@amd.com>, rrichter@amd.com,
-        shuah@kernel.org, linux-kernel@vger.kernel.org, trenn@suse.com,
-        linux-pm@vger.kernel.org
-Cc:     boris.ostrovsky@oracle.com, joao.m.martins@oracle.com,
-        konrad.wilk@oracle.com, Shuah Khan <skhan@linuxfoundation.org>
-References: <161159600371.68367.14890273216040482793.stgit@ethanol01c7-host.amd.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <bbc30a6a-de13-869a-f58e-cb98bb070d4e@linuxfoundation.org>
-Date:   Tue, 26 Jan 2021 09:45:45 -0700
+        id S2389910AbhA0ALM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:11:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:48540 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727975AbhAZRDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:03:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CAC5D6E;
+        Tue, 26 Jan 2021 08:46:09 -0800 (PST)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C56053F66E;
+        Tue, 26 Jan 2021 08:46:08 -0800 (PST)
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Will Deacon <will@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Jon Masters <jcm@jonmasters.org>, mark.rutland@arm.com,
+        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
+        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <20210107181416.GA3536@willie-the-truck>
+ <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
+ <20210108103216.GA17931@e121166-lin.cambridge.arm.com>
+ <20210122194829.GE25471@willie-the-truck>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <4c2db08d-ccc4-05eb-6b7b-5fd7d07dd11e@arm.com>
+Date:   Tue, 26 Jan 2021 10:46:04 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <161159600371.68367.14890273216040482793.stgit@ethanol01c7-host.amd.com>
+In-Reply-To: <20210122194829.GE25471@willie-the-truck>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -68,57 +43,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/25/21 10:34 AM, Nathan Fontenot wrote:
-> Updates to the cpupower command to add support for AMD family 0x19
-> and cleanup the code to remove many of the family checks to hopefully
-> make any future family updates easier.
-> 
-> The first couple of patches are simple updates to rename the structs
-> in the msr_pstate union to better reflect current support and correcting
-> the name of the CPUPOWER_CAP_AMD_CPB cpuid cap flag.
-> 
-> Patches 3, 5, and 8 update the family checks to either replace
-> them with a new cpuid cap flag based off of cpuid checks or check for
-> family >= 0x17 where removing the direct family check isn't possible.
-> 
-> The reamianing patches are cleanups to remove unneeded extra enabled bit
-> checking, remove passing no longer used variables, and remove unused
-> variables in decode_pstates().
-> ---
-> 
-> Updates for v2:
-> - Patch 1/8: Add links to AMD PPR and BKDG to commit message.
-> - Patch 3/8: Update and add back removed comment.
-> 
-> ---
-> 
-> Nathan Fontenot (7):
->        cpupower: Update msr_pstate union struct naming
->        cpupower: Add CPUPOWER_CAP_AMD_HW_PSTATE cpuid caps flag
->        cpupower: Remove unused pscur variable.
->        cpupower: Update family checks when decoding HW pstates
->        cpupower: Condense pstate enabled bit checks in decode_pstates()
->        cpupower: Remove family arg to decode_pstates()
->        cpupower: Add cpuid cap flag for MSR_AMD_HWCR support
-> 
-> Robert Richter (1):
->        cpupower: Correct macro name for CPB caps flag
-> 
-> 
->   tools/power/cpupower/utils/cpufreq-info.c    |    3 -
->   tools/power/cpupower/utils/helpers/amd.c     |   65 ++++++++++++--------------
->   tools/power/cpupower/utils/helpers/cpuid.c   |   20 +++++++-
->   tools/power/cpupower/utils/helpers/helpers.h |   14 +++---
->   tools/power/cpupower/utils/helpers/misc.c    |    9 +---
->   5 files changed, 57 insertions(+), 54 deletions(-)
-> 
-> --
-> Nathan Fontenot
-> 
+Hi,
 
-Thank you. Applied now for 5.12-rc1
+On 1/22/21 1:48 PM, Will Deacon wrote:
+> Hi Lorenzo,
+> 
+> On Fri, Jan 08, 2021 at 10:32:16AM +0000, Lorenzo Pieralisi wrote:
+>> On Thu, Jan 07, 2021 at 04:05:48PM -0500, Jon Masters wrote:
+>>> On 1/7/21 1:14 PM, Will Deacon wrote:
+>>>
+>>>> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
+>>>>> Given that most arm64 platform's PCI implementations needs quirks
+>>>>> to deal with problematic config accesses, this is a good place to
+>>>>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+>>>>> standard SMC conduit designed to provide a simple PCI config
+>>>>> accessor. This specification enhances the existing ACPI/PCI
+>>>>> abstraction and expects power, config, etc functionality is handled
+>>>>> by the platform. It also is very explicit that the resulting config
+>>>>> space registers must behave as is specified by the pci specification.
+>>>>>
+>>>>> Lets hook the normal ACPI/PCI config path, and when we detect
+>>>>> missing MADT data, attempt to probe the SMC conduit. If the conduit
+>>>>> exists and responds for the requested segment number (provided by the
+>>>>> ACPI namespace) attach a custom pci_ecam_ops which redirects
+>>>>> all config read/write requests to the firmware.
+>>>>>
+>>>>> This patch is based on the Arm PCI Config space access document @
+>>>>> https://developer.arm.com/documentation/den0115/latest
+>>>>
+>>>> Why does firmware need to be involved with this at all? Can't we just
+>>>> quirk Linux when these broken designs show up in production? We'll need
+>>>> to modify Linux _anyway_ when the firmware interface isn't implemented
+>>>> correctly...
+>>>
+>>> I agree with Will on this. I think we want to find a way to address some
+>>> of the non-compliance concerns through quirks in Linux. However...
+>>
+>> I understand the concern and if you are asking me if this can be fixed
+>> in Linux it obviously can. The point is, at what cost for SW and
+>> maintenance - in Linux and other OSes, I think Jeremy summed it up
+>> pretty well:
+>>
+>> https://lore.kernel.org/linux-pci/61558f73-9ac8-69fe-34c1-2074dec5f18a@arm.com
+>>
+>> The issue here is that what we are asked to support on ARM64 ACPI is a
+>> moving target and the target carries PCI with it.
+>>
+>> This potentially means that all drivers in:
+>>
+>> drivers/pci/controller
+>>
+>> may require an MCFG quirk and to implement it we may have to:
+>>
+>> - Define new ACPI bindings (that may need AML and that's already a
+>>    showstopper for some OSes)
+>> - Require to manage clocks in the kernel (see link-up checks)
+>> - Handle PCI config space faults in the kernel
+>>
+>> Do we really want to do that ? I don't think so. Therefore we need
+>> to have a policy to define what constitutes a "reasonable" quirk and
+>> that's not objective I am afraid, however we slice it (there is no
+>> such a thing as eg 90% ECAM).
+> 
+> Without a doubt, I would much prefer to see these quirks and workarounds
+> in Linux than hidden behind a firmware interface. Every single time.
+> 
+> This isn't like the usual fragmentation problems, where firmware swoops in
+> to save the day; CPU onlining, spectre mitigations, early entropy etc. All
+> of these problems exist because there isn't a standard method to implement
+> them outside of firmware, and so adding a layer of abstraction there makes
+> sense.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git/log/?h=cpupower
+There are a lot of parallels with PSCI here because there were existing 
+standards for cpu online.
 
-thanks,
--- Shuah
+> 
+> But PCIe is already a standard!
+
+And it says that ECAM is optional, particularly if there are 
+firmware/platform standardized ways of accessing the config space.
+
+> 
+> We shouldn't paper over hardware designers' inability to follow a ~20 year
+> old standard by hiding it behind another standard that is hot off the press.
+> Seriously.
+
+No disagreement, but its been more than half a decade and there are some 
+high (millions!) volume parts, that still don't have kernel support.
+
+> 
+> There is not a scrap of evidence to suggest that the firmware
+> implementations will be any better, but they will certainly be harder to
+> debug and maintain.  I have significant reservations about Arm's interest in
+> maintaining the spec as both more errata appear and the PCIe spec evolves
+> (after all, this is outside of SBSA, no?). The whole thing stinks of "if all
+> you have is a hammer, then everything looks like a nail". But this isn't the
+> sort of problem that is solved with yet another spec -- instead, how about
+> encouraging vendors to read the specs that already exist?
+
+PSCI, isn't a good example of a firmware interface that works?
+
+> 
+>> The SMC is an olive branch and just to make sure it is crystal clear
+>> there won't be room for adding quirks if the implementation turns out
+>> to be broken, if a line in the sand is what we want here it is.
+> 
+> I appreciate the sentiment, but you're not solving the problem here. You're
+> moving it somewhere else. Somewhere where you don't have to deal with it
+> (and I honestly can't blame you for that), but also somewhere where you
+> _can't_ necessarily deal with it. The inevitable outcome is an endless
+> succession of crappy, non-compliant machines which only appear to operate
+> correctly with particularly kernel/firmware combinations. Imagine trying to
+> use something like that?
+> 
+> The approach championed here actively discourages vendors from building
+> spec-compliant hardware and reduces our ability to work around problems
+> on such hardware at the same time.
+> 
+> So I won't be applying these patches, sorry.
+
+Does that mean its open season for ECAM quirks, and we can expect them 
+to start being merged now?
+
+Thanks.
+
