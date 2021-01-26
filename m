@@ -2,114 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45489304FCA
+	by mail.lfdr.de (Postfix) with ESMTP id B6410304FCB
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235834AbhA0DZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
+        id S235850AbhA0DZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:25:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730908AbhAZU7w (ORCPT
+        with ESMTP id S2405857AbhAZVAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 15:59:52 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BB9C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:59:09 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id l9so25023791ejx.3
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 12:59:09 -0800 (PST)
+        Tue, 26 Jan 2021 16:00:47 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A53C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:00:02 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id u7so5212434iol.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 13:00:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LkWc8jdaLg/m0l0bUIXMZoNlWUmtThzXolrQWgPDX9A=;
-        b=SFgx+1jwDHwJl5/pYtVEUsFV+wBy/bBhSy0FXJgKgD+ttppOw8/W/4THhlOgTHHSjW
-         5LV23rvCou1k0Vl3fhFTbbFDO6sPwRbDQOu73Yfdvo8i4hzlBH2dU8kyAJzcnnyryHDC
-         CxKjBL+GGf/k33tub7BYkHJzDr9CSoVSkePsFaT/rjhT++hqA33QE2CwyKgfHjk2G9Nd
-         cWGLm7Jh/Qs3kbVDKsurij+3rxco0k9O67c7e0f0v3sOf63I452GqmLfROKpbkUn7keW
-         ZntnhN/MSqUTcje+Z2rZ2pGKDovVxUpzFu590X9P06W9Ef/YBFm34vMp0/bN/TBwd9C3
-         72wg==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M2I9sdcBhNd2ZDpjOFUA3JTjooXZgJestl6B5WtLqYw=;
+        b=gxFNJhfN4Chrhg5kdayB/ftyn/fnw2+Wb29YdrTDNZLITfcjnAYGg/UCD9KQ9iBKVq
+         BTLngUgnymBGRjQPJU1AR8aQOyBGqngK8WBqyzvUVBBi2UozLEtk86hlfMu1L/tZvD8F
+         LHE3q/aRZAw4CozvujuR16fcm3Ff9Ar9NX+HI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=LkWc8jdaLg/m0l0bUIXMZoNlWUmtThzXolrQWgPDX9A=;
-        b=BnLxhmZlCbZbQcfjZB0APvKoTY41yoAXPj3SDms8tPdA5pP+Z8kbO9RMU62U5NSbft
-         95jx6ehKTaSyHY6WLq0DOYko77eHzjNpDbkkUcAHReLR67j5FKWKmGDe3YAAd/vs15Ac
-         hOfFLn/Z333iFjThgL+KBlhKGostZXqHp47h0cGa4FKPdqhse2WYDwCCkHcPW2eUqOaR
-         wDBo19HHSVCXYGZ6ZPeJ1D7gMpqfxbsfw6u+d9GyONEAylNLQOWzvDc62VDR6aFYUS/D
-         n5KvRVIkGwg52u77VumBEEUUZ3XwRFCyvvqeErOZacdVpJK09NK34dv4secU4TdRq6y0
-         2bvQ==
-X-Gm-Message-State: AOAM532qzWKB+1QpuKQ0atU4945CpWxufMi0JmYlsTLB127306NzdnVO
-        kNPPGCdbPLb/1msPy8YXerw=
-X-Google-Smtp-Source: ABdhPJxFRsDnpx0/61JI/BZ8ao9iHInjvmWiWg+yTrONOjF/ZpTZgSOaez4fYwoHjCfeEeLRCb967Q==
-X-Received: by 2002:a17:906:4451:: with SMTP id i17mr3044930ejp.436.1611694748684;
-        Tue, 26 Jan 2021 12:59:08 -0800 (PST)
-Received: from stitch.. ([2a01:4262:1ab:c:9ff1:8caf:ad1a:a1f7])
-        by smtp.gmail.com with ESMTPSA id bd5sm12660434edb.86.2021.01.26.12.59.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 12:59:08 -0800 (PST)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915/gt: use new tasklet API in execlist selftest
-Date:   Tue, 26 Jan 2021 21:59:02 +0100
-Message-Id: <20210126205902.5584-1-kernel@esmil.dk>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M2I9sdcBhNd2ZDpjOFUA3JTjooXZgJestl6B5WtLqYw=;
+        b=YBwv6LCbkgYcO/9ns+OBw5yyxID7F8pJ0JkLUa8wpv11LzuZbrbrhdrlowUq1UGzak
+         DpU6M+mByD81wuWNaUKvGmFxFGaudzbdYETXI7OgU/CWOnKz0QohTq4hxhiyyk3e0Uuq
+         F55locNjY1TeQ+RrQcbX4LbyGfUb0kMQveMdpyh9g1LkHvaSpCga4ob165NSMLo2DUtf
+         QDFeFYikw9wBZAfl2IqHdZKJgrp8zgpD4P2VaYhvfejpeBRLmoUIaSui5rZxEpCb/mxN
+         XaDczOu41GqchhHaT0q0aJO018vnWPznlg2HIyxXEHi9XxDSEiBz5hzvOLxMiFjCYB/0
+         uMOQ==
+X-Gm-Message-State: AOAM533QJ7pLHb+OVPbiYaxXY2EJamYHNyTWrx9ISKo3YyaFu9MzvoS2
+        /4zJ2GmESMR34zq0YpLPjBlXDJDKPwd4CeITTI/LIpsEzTr41Q==
+X-Google-Smtp-Source: ABdhPJzvH7Kidi4YOoM0fLFVkzyTXOAV6ZfOIiPcZ3USyJUikHCwq2RYFlwUjIIUAbctdiscwBVKEW0PTWMU/GTDmuQ=
+X-Received: by 2002:a05:6e02:6ce:: with SMTP id p14mr5849847ils.50.1611694802243;
+ Tue, 26 Jan 2021 13:00:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210122225443.186184-1-swboyd@chromium.org> <20210122225443.186184-4-swboyd@chromium.org>
+ <20210124173820.4528b9c9@archlinux> <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
+ <161160076017.76967.4467861058817044169@swboyd.mtv.corp.google.com>
+ <CAPUE2uu555NT1=u=1Nb8WExT7RvK8mj5kBiDfGymHiAmoj2WCg@mail.gmail.com> <161161826068.76967.15170332425672601158@swboyd.mtv.corp.google.com>
+In-Reply-To: <161161826068.76967.15170332425672601158@swboyd.mtv.corp.google.com>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Tue, 26 Jan 2021 12:59:50 -0800
+Message-ID: <CAPUE2uuf-7h2Zjvb7bVqPb+=KSMKfAV-vopey1XwP0U+AGRZAA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity driver
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This converts the execlist selftest to use the new tasklet API in
-commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+On Mon, Jan 25, 2021 at 3:44 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Gwendal Grignou (2021-01-25 14:28:46)
+> > On Mon, Jan 25, 2021 at 10:52 AM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > Quoting Gwendal Grignou (2021-01-24 13:41:44)
+> > > > On Sun, Jan 24, 2021 at 9:38 AM Jonathan Cameron <jic23@kernel.org> wrote:
+> > > > >
+> > > > > On Fri, 22 Jan 2021 14:54:43 -0800
+> > > > > Stephen Boyd <swboyd@chromium.org> wrote:
+> > > > > > +     if (event_type == EC_MKBP_EVENT_SWITCH) {
+> > > > > > +             data = container_of(nb, struct cros_ec_proximity_data, notifier);
+> > > > > > +             indio_dev = data->indio_dev;
+> > > > > > +
+> > > > > > +             mutex_lock(&data->lock);
+> > > > > > +             if (data->enabled) {
+> > > > > > +                     timestamp = iio_get_time_ns(indio_dev);
+> > > > For Android, given the timestamp must be time it happens, not reported
+> > > > [https://source.android.com/devices/sensors/sensors-hal2] """The
+> > > > timestamp must be accurate and correspond to the time at which the
+> > > > event physically happened, not the time it was reported.""", consider
+> > > > using ec_dev->last_event_time and apply a delta if the iio clock base
+> > > > is different from CLOCK_BOOTTIME.
+> > >
+> > > Ah alright. Is there a reason why cros_ec_get_time_ns() is using
+> > > boottime instead of plain ktime_get(), i.e. CLOCK_MONOTONIC? Otherwise I
+> > > suppose some sort of cros_ec API should be exposed to convert the
+> > > last_event_time to whatever clock base is desired. Does that exist?
+> > CLOCK_BOOTTIME was chosen to be Android compliant, as it includes
+> > suspend time and match elapsedRealtime() [see
+> > https://developer.android.com/reference/android/os/SystemClock#elapsedRealtime()]
+> > Chromebook set iio clock reference for all sensor to CLOCK_BOOTTIME
+> > (see https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/mems_setup/configuration.cc#127).
+> > In case the iio device clock_id is not CLOCK_BOOTTIME/"bootime", we
+> > need to add a delta, like in cros_ec_sensors_push_data()
+> > [https://elixir.bootlin.com/linux/latest/source/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c#L210]
+>
+> The delta may help but what if the clock is adjusted in the time between
+> the event is timestamped and this driver reading the timestamp? That
+> could lead to some odd behavior where the timestamp is in the future
+> because we don't know what sort of adjustment was made, e.g. the
+> realtime clock being moved back in time.
+>
+> I'd rather have a way to request that cros_ec core timestamp the event
+> with some clock base that this driver desires,
+ec_dev->last_event_time is collected outside of the IIO stack, and can
+be used by multiple drivers.
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
----
-Hi Chris,
+> instead of having to do
+> an offset after the fact. For now I'll use ec_dev->last_event_time
+> because this is only used on chromeos and that should work until
+> userspace is changed, but in the future I think we'll need to have a way
+> for this IIO device to be notified when the clock base changes in
+> iio_device_set_clock() and then have this driver call into cros_ec to
+> request that such a timestamp be made when this event is seen. Or even
+> better have a way to request that cros_ec timestamp the event itself on
+> the EC side, but I don't know if that's possible.
+One way would be use the EC sensor stack that collect such timestamp,
+but that would be more firmware changes.
 
-I seem to have missed some tasklist manipulation in the execlist
-selftest.  Feel free to squash this into my previous patch
-("drm/i915/gt: use new tasklet API for execution list")
-or leave it like this. Whatever is fine by me.
-
-/Emil
----
- drivers/gpu/drm/i915/gt/selftest_execlists.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/gt/selftest_execlists.c b/drivers/gpu/drm/i915/gt/selftest_execlists.c
-index 264b5ebdb021..ba55cd018f5b 100644
---- a/drivers/gpu/drm/i915/gt/selftest_execlists.c
-+++ b/drivers/gpu/drm/i915/gt/selftest_execlists.c
-@@ -609,7 +609,7 @@ static int live_hold_reset(void *arg)
- 		}
- 		tasklet_disable(&engine->execlists.tasklet);
- 
--		engine->execlists.tasklet.func(engine->execlists.tasklet.data);
-+		engine->execlists.tasklet.callback(&engine->execlists.tasklet);
- 		GEM_BUG_ON(execlists_active(&engine->execlists) != rq);
- 
- 		i915_request_get(rq);
-@@ -4610,7 +4610,7 @@ static int reset_virtual_engine(struct intel_gt *gt,
- 	}
- 	tasklet_disable(&engine->execlists.tasklet);
- 
--	engine->execlists.tasklet.func(engine->execlists.tasklet.data);
-+	engine->execlists.tasklet.callback(&engine->execlists.tasklet);
- 	GEM_BUG_ON(execlists_active(&engine->execlists) != rq);
- 
- 	/* Fake a preemption event; failed of course */
--- 
-2.30.0
-
+On second thought, to keep it simple and consistent with other IIO
+drivers, I suggest to keep using iio_get_time_ns() when the sensor
+clock is not CLOCK_BOOTTIME, ec_dev->last_event_time when it is.
+>
+> > > > > > +static const struct of_device_id cros_ec_proximity_of_match[] = {
+> > > > > > +     { .compatible = "google,cros-ec-proximity" },
+> > > > > > +     {}
+> > > > > > +};
+> > > > > > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
+> > > > > > +#endif
+> > > > > > +
+> > > > > > +static struct platform_driver cros_ec_proximity_driver = {
+> > > > > > +     .driver = {
+> > > > > > +             .name = "cros-ec-proximity",
+> > > > > > +             .of_match_table = of_match_ptr(cros_ec_proximity_of_match),
+> > > > Add a ACPI match table to match.
+> > >
+> > > I don't have an ACPI system in hand. What should the ACPI table look
+> > > like? Can ACPI use the of_match_table logic?
+> > AFAIK, ACPI uses .acpi_match_table, see
+> > drivers/iio/magnetometer/ak8975.c for a simple example.
+>
+> Ok. I'm leaning towards punting on this. I don't have an ACPI system to
+> test and I don't know what the ACPI match table should have in it. If
+> you can tell me what to put in the acpi_match_table then I can add it.
