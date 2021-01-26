@@ -2,105 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B052304E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C17304E46
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390241AbhA0AWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:22:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:48778 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729902AbhAZRL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:11:28 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 843DFD6E;
-        Tue, 26 Jan 2021 09:08:55 -0800 (PST)
-Received: from [10.57.40.145] (unknown [10.57.40.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 099A63F66E;
-        Tue, 26 Jan 2021 09:08:45 -0800 (PST)
-Subject: Re: [PATCH v3 4/5] amba: Make the remove callback return void
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
- <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <3e42b2ea-c713-31b2-9c86-c49a70d8e1f4@arm.com>
-Date:   Tue, 26 Jan 2021 17:08:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2390281AbhA0AXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:23:36 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:54769 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729409AbhAZRMi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:12:38 -0500
+Received: by mail-wm1-f54.google.com with SMTP id u14so3095602wml.4;
+        Tue, 26 Jan 2021 09:11:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GLTk04HLYEc0gHiobpBa2Rf8M0brcNpNc92sIr4mWa4=;
+        b=HzFN6h7VgYDJ0GrnNgJi+1OZOJvWq8H9Kfxp9YPDRGfeCSsEtzdczhImKVlpiXFhb7
+         gw+Y/TXap4Ysli5lNZTPUn10whpDmUpKkxEKvBbh5k5rv6FYRqFVrCF4T7Si4T8XN5/1
+         ZNKOVzrKiiopU3o3h3lylou2s8pl12nk0ScnVNJQUx1s9yGsFZ9O9sXgsW4WO+ChP3hK
+         5R+RoWEgz2vJRRnEH6XC6FFgWPmAPAkhjh5A4NC7B80BRNMWuXB6bWOwg2KYyajB/B9D
+         K3c91bifbUOqoBNIPCjl58PdNVvDvYlscyKvzMIW4HzGSnFDvsSM/TXNlco3zvbql11A
+         R7hg==
+X-Gm-Message-State: AOAM5327gUrvF1t1UeH/+4EunTdgig/+E/MFyqm2ZulPbn9ZLVk+Ded2
+        hnOUAGMnQ6gRCQUM0gAvDJo=
+X-Google-Smtp-Source: ABdhPJzP4kThibk+kuyUve55nZxz6LRnRBwXuMSrFxaQQubIzNi5ZEPZmsIsGMymKQHOtSz5yUZz/w==
+X-Received: by 2002:a7b:c151:: with SMTP id z17mr623588wmi.15.1611681083373;
+        Tue, 26 Jan 2021 09:11:23 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id q7sm29859745wrx.18.2021.01.26.09.11.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 09:11:22 -0800 (PST)
+Date:   Tue, 26 Jan 2021 17:11:21 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>
+Cc:     Matheus Castello <matheus@castello.eng.br>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <liuwe@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] x86/Hyper-V: Support for free page reporting
+Message-ID: <20210126171121.ujxojhmkjhuilry6@liuwe-devbox-debian-v2>
+References: <SN4PR2101MB0880CA1C933184498DF1F595C0D09@SN4PR2101MB0880.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN4PR2101MB0880CA1C933184498DF1F595C0D09@SN4PR2101MB0880.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 1/26/21 4:58 PM, Uwe Kleine-König wrote:
-> All amba drivers return 0 in their remove callback. Together with the
-> driver core ignoring the return value anyhow, it doesn't make sense to
-> return a value here.
+On Wed, Jan 06, 2021 at 11:20:33PM +0000, Sunil Muthuswamy wrote:
+> Linux has support for free page reporting now (36e66c554b5c) for
+> virtualized environment. On Hyper-V when virtually backed VMs are
+> configured, Hyper-V will advertise cold memory discard capability,
+> when supported. This patch adds the support to hook into the free
+> page reporting infrastructure and leverage the Hyper-V cold memory
+> discard hint hypercall to report/free these pages back to the host.
 > 
-> Change the remove prototype to return void, which makes it explicit that
-> returning an error value doesn't work as expected. This simplifies changing
-> the core remove callback to return void, too.
-> 
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org> # for drivers/memory
-> Acked-by: Mark Brown <broonie@kernel.org>
-  > Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
+> Tested-by: Matheus Castello <matheus@castello.eng.br>
 
-
->   drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 +---
-
-You are most likely to have a conflict for the above file, with what is
-in coresight/next. It should be easy to resolve.
-
-Otherwise, the changes look good for the drivers/hwtracing/coresight/*
-
-Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
