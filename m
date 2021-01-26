@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9338303C2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488AA303BD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405240AbhAZLjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:39:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:60670 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404175AbhAZKfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:35:23 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 862E2D6E;
-        Tue, 26 Jan 2021 02:34:34 -0800 (PST)
-Received: from [10.57.43.46] (unknown [10.57.43.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FCA73F66B;
-        Tue, 26 Jan 2021 02:34:33 -0800 (PST)
-Subject: Re: [PATCH] iommu/arm-smmu-qcom: Fix mask extraction for bootloader
- programmed SMRs
-To:     "Isaac J. Manjarres" <isaacm@codeaurora.org>, will@kernel.org,
-        joro@8bytes.org, bjorn.andersson@linaro.org
-Cc:     stable@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <1611611545-19055-1-git-send-email-isaacm@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <21495c0d-d029-48c8-bbe7-fc45ff7d9326@arm.com>
-Date:   Tue, 26 Jan 2021 10:34:31 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2405260AbhAZLjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404186AbhAZKje (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:39:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A098FC06174A;
+        Tue, 26 Jan 2021 02:38:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pxo8uZRUhENPW3XIRCXJ8iQA/Z1MSNpaDogrCKSFXlU=; b=nZ8BLIiuTqNMm7dM+EeDAmkWHE
+        +llp6DlJXADF0aQXp2gSslLaAHK5VGfegLyT8qy8MjpqkAhUVoLbR3SwxM7rgeGME8CDJ+SBXa8tz
+        KkXYO9bjdaHDVUSGBBzWLJAA37eyawbJaToXgRh2TWQx8+LK9qk97afTxANeYU0IPMLxyS3ZdGdin
+        EKW+2wQQm38mw+GCh68EvLxIEUauM1wrOQj+vj82zdakEo5sI0KLq+f5j+skM0Op6tGcf+/jdOB5F
+        O3OmbicpjZkUB1E6Tr95rA63CFV254b+tDtJ9YsBDDAGVQJrwRBxMPwgkGE05XgTYt/8XeWkqnwcY
+        G4ovpHag==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4Li6-005RqZ-Dm; Tue, 26 Jan 2021 10:36:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 834793059C6;
+        Tue, 26 Jan 2021 11:36:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7465E20F042C2; Tue, 26 Jan 2021 11:36:33 +0100 (CET)
+Date:   Tue, 26 Jan 2021 11:36:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "Xu, Like" <like.xu@intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>, luwei.kang@intel.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Wang, Wei W" <wei.w.wang@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf/intel: Remove Perfmon-v4 counter_freezing support
+Message-ID: <YA/wsQQqbGD1pCDR@hirez.programming.kicks-ass.net>
+References: <20201109021254.79755-1-like.xu@linux.intel.com>
+ <20201110151257.GP2611@hirez.programming.kicks-ass.net>
+ <20201110153721.GQ2651@hirez.programming.kicks-ass.net>
+ <CABPqkBS+-g0qbsruAMfOJf-Zfac8nz9v2LCWfrrvVd+ptoLxZg@mail.gmail.com>
+ <2ce24056-0711-26b3-a62c-3bedc88d7aa7@intel.com>
+ <9a85e154-d552-3478-6e99-3f693b3da7ed@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1611611545-19055-1-git-send-email-isaacm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a85e154-d552-3478-6e99-3f693b3da7ed@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-25 21:52, Isaac J. Manjarres wrote:
-> When extracting the mask for a SMR that was programmed by the
-> bootloader, the SMR's valid bit is also extracted and is treated
-> as part of the mask, which is not correct. Consider the scenario
-> where an SMMU master whose context is determined by a bootloader
-> programmed SMR is removed (omitting parts of device/driver core):
-> 
-> ->iommu_release_device()
->   -> arm_smmu_release_device()
->    -> arm_smmu_master_free_smes()
->     -> arm_smmu_free_sme() /* Assume that the SME is now free */
->     -> arm_smmu_write_sme()
->      -> arm_smmu_write_smr() /* Construct SMR value using mask and SID */
-> 
-> Since the valid bit was considered as part of the mask, the SMR will
-> be programmed as valid.
+On Tue, Jan 26, 2021 at 10:51:39AM +0100, Paolo Bonzini wrote:
+> What is the state of this work?  I was expecting a new version that doesn't
+> use counter_freezing.  However, I see that counter_freezing is still in
+> there, so this patch from Peter has never been applied.
 
-Ah, right, because ARM_SMMU_SMR_{ID,MASK} are 16-bit fields to 
-accommodate EXIDS, which doesn't matter normally when the IDs are 
-strictly validated in arm_smmu_probe_device()...
-
-> Fix the SMR mask extraction step for bootloader programmed SMRs
-> by masking out the valid bit when we know that we're already
-> working with a valid SMR.
-
-This seems like the neatest approach to me.
-
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
-> Fixes: 07a7f2caaa5a ("iommu/arm-smmu-qcom: Read back stream mappings")
-> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
-> Cc: stable@vger.kernel.org
-> ---
->   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index bcda170..abb1d2f 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -206,6 +206,8 @@ static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
->   		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
->   
->   		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
-> +			/* Ignore valid bit for SMR mask extraction. */
-> +			smr &= ~ARM_SMMU_SMR_VALID;
->   			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
->   			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
->   			smmu->smrs[i].valid = true;
-> 
+Bah, I forgot about it. Lemme go find it.
