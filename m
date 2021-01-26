@@ -2,138 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C37D303CA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0CA303CC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392429AbhAZMLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:11:22 -0500
-Received: from foss.arm.com ([217.140.110.172]:36500 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392305AbhAZMKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:10:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 21C2B101E;
-        Tue, 26 Jan 2021 04:10:06 -0800 (PST)
-Received: from [10.37.12.25] (unknown [10.37.12.25])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D90C53F66B;
-        Tue, 26 Jan 2021 04:10:03 -0800 (PST)
-Subject: Re: [PATCH v4 1/3] arm64: Improve kernel address detection of
- __is_lm_address()
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Will Deacon <will@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-References: <20210122155642.23187-1-vincenzo.frascino@arm.com>
- <20210122155642.23187-2-vincenzo.frascino@arm.com>
- <20210125130204.GA4565@C02TD0UTHF1T.local>
- <ddc0f9e2-f63e-9c34-f0a4-067d1c5d63b8@arm.com> <20210125145911.GG25360@gaia>
- <4bd1c01b-613c-787f-4363-c55a071f14ae@arm.com> <20210125175630.GK25360@gaia>
- <62348cb4-0b2e-e17a-d930-8d41dc4200d3@arm.com> <20210126120754.GB20158@gaia>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <e368874c-667e-0989-5a5c-f74f107cc03c@arm.com>
-Date:   Tue, 26 Jan 2021 12:13:57 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2392308AbhAZMSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392100AbhAZMPE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 07:15:04 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81861C06121F
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:14:14 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id e22so33050382iog.6
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:14:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EC39G0Ax8o5xiVZFYRu69aLO5XoCRyDi17a7mGnSFZo=;
+        b=r8AYrsZRuCFRQfTfgDZEV7m0HnCGFkrKWhuoxIKBvavhhKyiH91iH0wNKC1ICdxV/0
+         YQON8bqY3ZIFiBQLMajIPCAz9F5pNRP8vOEgZRsM6LQccpGbqalsG5wAuDXvPunaoHIw
+         ekzTO9byEqgQx2CLxpG6XHiaOEIrrrrqoRI2gCrWR8lLWvvD3O3G6HtIp1+tQdx5Pi01
+         vs7/zX/A57ukNR8q//ro81Hwxzjaj0ksC8T6P2xJ3oUaBJf4mTyvmFOYFIsZTb1N4myQ
+         kcCqpdYvWEYn9wqDqjLmrPau/rA6DhOrUO5H6mqcpj9/LOEYw3HT5gvXYnyEbkNI+mWd
+         I+sA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EC39G0Ax8o5xiVZFYRu69aLO5XoCRyDi17a7mGnSFZo=;
+        b=Sc1dkNi7ApzWfcGiDsyvfX7WVMrWQQdisjoQOxHUKdtDC3RdU3m6XSP9vbtI2O9/OK
+         YcL4Al43+aVjOx1louNNJYAGKZSXv5xvDfGwcuHNS80TAwmXI6S/oPCZfVE4+RK8IEU2
+         KNEfq800OVkbrHYZU82xNbrQXxbLuUX2uGreFx1Yx4hoCVfPEhjDjVTk3Icaxj+r9tu4
+         doxm7q2ZsQ4GQxcxMqrG13XoJguymjrOD8qIRa+gQ/1rVTryA9vKiSOFAdeXTr+gum6f
+         AMee/2AI6p/hjdiY5Pf1Z0gKflbLaUPzH9NO2+5e/tyAqo812Ziadi58zuT8QO5d+xq8
+         v6Gg==
+X-Gm-Message-State: AOAM530GdItdq1Xw2jmDddSM+fmlq9e9M8ziEjMAwQ/S4GsgRTdjfM4d
+        5YtPXPYL9qQtv1JBNmFt3uj09FJpwru8fAe8QDUlyg==
+X-Google-Smtp-Source: ABdhPJyMRKzi5LXKf6VVfX1CA7f7jhHD11qmds4OoBv4zF/WiFQLxHOInc5RWLzUAs3AKHW09nEdMJrq3TGGyh6DZQM=
+X-Received: by 2002:a05:6602:2e83:: with SMTP id m3mr3651738iow.160.1611663253649;
+ Tue, 26 Jan 2021 04:14:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210126120754.GB20158@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210126094913.180945-1-raychi@google.com> <YA/ogYkHrbmd1Eyo@kroah.com>
+In-Reply-To: <YA/ogYkHrbmd1Eyo@kroah.com>
+From:   Ray Chi <raychi@google.com>
+Date:   Tue, 26 Jan 2021 20:14:02 +0800
+Message-ID: <CAPBYUsAc25n2kFD2VQVkx7oeFXU888MWKGCQeusT4HgV1JKY3w@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: add EXPORT_SYMBOL_GPL for role init functions
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 26, 2021 at 6:01 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Jan 26, 2021 at 05:49:13PM +0800, Ray Chi wrote:
+> > Currently, role init functions are used in dwc3 driver but
+> > can't be called from kernel modules.
+> >   dwc3_host_init
+> >   dwc3_host_exit
+> >   dwc3_gadget_init
+> >   dwc3_gadget_exit
+> >   dwc3_event_buffers_setup
+> >   dwc3_event_buffers_cleanup
+> >
+> > If other kernel modules want to use these functions, it needs
+> > EXPORT_SYMBOL_GPL() to get compile pass.
+> >
+> > Signed-off-by: Ray Chi <raychi@google.com>
+>
+> What current kernel configuration fails without this patch applied?  I
+> don't see any in-tree users of this as a module that would break, or am
+> I missing something?
+>
+> thanks,
+>
+> greg k-h
 
-
-On 1/26/21 12:07 PM, Catalin Marinas wrote:
-> On Tue, Jan 26, 2021 at 11:58:13AM +0000, Vincenzo Frascino wrote:
->> On 1/25/21 5:56 PM, Catalin Marinas wrote:
->>> On Mon, Jan 25, 2021 at 04:09:57PM +0000, Vincenzo Frascino wrote:
->>>> On 1/25/21 2:59 PM, Catalin Marinas wrote:
->>>>> On Mon, Jan 25, 2021 at 02:36:34PM +0000, Vincenzo Frascino wrote:
->>>>>> On 1/25/21 1:02 PM, Mark Rutland wrote:
->>>>>>> On Fri, Jan 22, 2021 at 03:56:40PM +0000, Vincenzo Frascino wrote:
->>>>>>>> Currently, the __is_lm_address() check just masks out the top 12 bits
->>>>>>>> of the address, but if they are 0, it still yields a true result.
->>>>>>>> This has as a side effect that virt_addr_valid() returns true even for
->>>>>>>> invalid virtual addresses (e.g. 0x0).
->>>>>>>>
->>>>>>>> Improve the detection checking that it's actually a kernel address
->>>>>>>> starting at PAGE_OFFSET.
->>>>>>>>
->>>>>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>>>>>> Cc: Will Deacon <will@kernel.org>
->>>>>>>> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
->>>>>>>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->>>>>>>> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
->>>>>>>
->>>>>>> Looking around, it seems that there are some existing uses of
->>>>>>> virt_addr_valid() that expect it to reject addresses outside of the
->>>>>>> TTBR1 range. For example, check_mem_type() in drivers/tee/optee/call.c.
->>>>>>>
->>>>>>> Given that, I think we need something that's easy to backport to stable.
->>>>>>>
->>>>>>
->>>>>> I agree, I started looking at it this morning and I found cases even in the main
->>>>>> allocators (slub and page_alloc) either then the one you mentioned.
->>>>>>
->>>>>>> This patch itself looks fine, but it's not going to backport very far,
->>>>>>> so I suspect we might need to write a preparatory patch that adds an
->>>>>>> explicit range check to virt_addr_valid() which can be trivially
->>>>>>> backported.
->>>>>>>
->>>>>>
->>>>>> I checked the old releases and I agree this is not back-portable as it stands.
->>>>>> I propose therefore to add a preparatory patch with the check below:
->>>>>>
->>>>>> #define __is_ttrb1_address(addr)	((u64)(addr) >= PAGE_OFFSET && \
->>>>>> 					(u64)(addr) < PAGE_END)
->>>>>>
->>>>>> If it works for you I am happy to take care of it and post a new version of my
->>>>>> patches.
->>>>>
->>>>> I'm not entirely sure we need a preparatory patch. IIUC (it needs
->>>>> checking), virt_addr_valid() was fine until 5.4, broken by commit
->>>>> 14c127c957c1 ("arm64: mm: Flip kernel VA space"). Will addressed the
->>>>> flip case in 68dd8ef32162 ("arm64: memory: Fix virt_addr_valid() using
->>>>> __is_lm_address()") but this broke the <PAGE_OFFSET case. So in 5.4 a
->>>>> NULL address is considered valid.
->>>>>
->>>>> Ard's commit f4693c2716b3 ("arm64: mm: extend linear region for 52-bit
->>>>> VA configurations") changed the test to no longer rely on va_bits but
->>>>> did not change the broken semantics.
->>>>>
->>>>> If Ard's change plus the fix proposed in this test works on 5.4, I'd say
->>>>> we just merge this patch with the corresponding Cc stable and Fixes tags
->>>>> and tweak it slightly when doing the backports as it wouldn't apply
->>>>> cleanly. IOW, I wouldn't add another check to virt_addr_valid() as we
->>>>> did not need one prior to 5.4.
->>>>
->>>> Thank you for the detailed analysis. I checked on 5.4 and it seems that Ard
->>>> patch (not a clean backport) plus my proposed fix works correctly and solves the
->>>> issue.
->>>
->>> I didn't mean the backport of the whole commit f4693c2716b3 as it
->>> probably has other dependencies, just the __is_lm_address() change in
->>> that patch.
->>
->> Then call it preparatory patch ;)
-> 
-> It's preparatory only for the stable backports, not for current
-> mainline. But I'd rather change the upstream patch when backporting to
-> apply cleanly, no need for a preparatory stable patch.
-> 
-
-Thanks for the clarification.
-
--- 
-Regards,
-Vincenzo
+There is no failure for current status. This patch is just used for
+any kernel modules
+which want to call these functions. I think it is an expandability of
+dwc3 core driver.
