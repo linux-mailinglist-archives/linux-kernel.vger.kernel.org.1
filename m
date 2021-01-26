@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00797303E6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A540303E80
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404366AbhAZNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:18:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
+        id S2404333AbhAZNPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391772AbhAZMpp (ORCPT
+        with ESMTP id S2391856AbhAZMrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:45:45 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B420C0611C2;
-        Tue, 26 Jan 2021 04:45:05 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id r4so9690760pls.11;
-        Tue, 26 Jan 2021 04:45:05 -0800 (PST)
+        Tue, 26 Jan 2021 07:47:22 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB4FC0698C1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:45:47 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id c128so2648520wme.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:45:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=9a81CG4SHOE28Bf8JJ1zvGq039y62JTzwIy7vae083Y=;
-        b=ky0kWgI1LhXYaXsAmJ3DPyuoBYZMViZexpYgH+lpR2fKLFGoegxnu9/k3rbGHODZyk
-         Yr14jWtSXW7v5rStY+WOtp92vmAz+CqAlEcMBJxOQ9Bc6GjQbc/+4kUd9iNE3tLWEb3G
-         VVlFyl4iftXuDICb/Gg9Sz8lFN1hxhWZwgHLDGw4Kl7N1RZIdUSdtG+fu7ds1ah1OwVi
-         djgCyNSy9SP1y1FVl7T9/TstnplOWbfR7P4Uo2pgV1Orns/GptBAzM512RQAnKJKaXHw
-         9LEHAGFBou2Fk8FhC4h+8/uYPOP3zBGt00OV3ir+5PbX0F3vwhq2/pUDGfd/nU7lAA3i
-         hOTw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PGeifpJKwjmOW+Ep9Ua2GRyOjoW8Ji8HLmvStTZxjac=;
+        b=v/GZXImGJGb/kVvhK0npWRAIjwWvAMSPszbanie2gyQyaHIgNwv+GU3OY5PEDCFNvb
+         Pdc4HM2L/mZ726eJc04eNfiTzO4Z89LCNDfVMeHPSFU3MY1VHTFI6+/myba3re2O/8Zi
+         c6h/JKld/C95nLyWd2MAKMotO9aJeyjdcfO5QrDqoAchQcQg5NFB0on4wIzTMMqcT2GU
+         CFT5LRCbrpOnA4+gIOhhegepdFDJMwbIYFrbkwXajcdkASOpNhqkyYtwiJ1gM8Zb7ecv
+         rBjrxYe5yH1RmYRdRFxfUp/TSCEX4bn8VDsyg4XFIOKnnsI2fQ98NaAipX4yDM/ozDbO
+         lpJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=9a81CG4SHOE28Bf8JJ1zvGq039y62JTzwIy7vae083Y=;
-        b=X8UCF87zR495Cu3FMe7aIQ2jHdh53eCCgQneQ7oAqdsZRdEFBIDPkaLsp4vxJO8bE5
-         t0gHx4aYLXk9BTDtaA6JBbbGjGCJO9K6/pBPEhKkzDXMCfBtyQcsIqa+ht91dBt9c41x
-         /nfUREMxyO7HdlXnI9io3stu7J5DPeBQ9jyOedAp3QVD334PFNTJ2fVOO7GcZ0eamvcy
-         5iHzzi5lRiVIeuGhUYhuGXjcmCTL8hIwLj925pReHoOvQdF4nVmgr3Zx/6RF44zRYg/R
-         NTwOiJJ5DL2ZcqYMrVd+6mlyd4O4Atc2zfpMckuOC0ewropYM0z3UnRWTWUDcOMBiMGp
-         CXpg==
-X-Gm-Message-State: AOAM530Etcdzg0c2ojWIfM67u9PnbXUcI2JVK16aak+NYvQaJHDJmTg5
-        z7tdDXDr3QUhi+0dzi7sCpM=
-X-Google-Smtp-Source: ABdhPJxiCb7QZ0TikxQ7E5YkT7Pg9cG8f+dof/LTW/qDOqRE5N2oICgGiXNuVElqx4NoD4DJGnZazg==
-X-Received: by 2002:a17:90b:fd3:: with SMTP id gd19mr6134207pjb.129.1611665105027;
-        Tue, 26 Jan 2021 04:45:05 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id b203sm19214968pfb.11.2021.01.26.04.45.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PGeifpJKwjmOW+Ep9Ua2GRyOjoW8Ji8HLmvStTZxjac=;
+        b=d8cOYel3UBCTRcmp1l1qDImQBtzqzCXd5FOkNqB6Lpuv2eDs/ObwClLwhOb5NccNBV
+         e5/KchW/pMXrQPNqyvQcKZFyPuuU+W8FdSOoLl79uVTdG/ZFxSdX21zZPbZpF7nj4OYw
+         tUqqcB9Hbuzz5dqnqwe/4X/N/9dLtV6h/j+P+MEKtBzN74F6Kz56V9stlME9TUZVl8v+
+         3ICjSJ4Gzqp50OLN1zabyaXH3SsENN8ZTXsL89Cf5DXZwgIYrE/SaGHl3vPpAWDJ44ax
+         wGNd0i3lDLCsG3+9z1LSSiFmKua0CND+RUKBpR/KS/y12RplOC8KqiU9WYCUzbN7CuP1
+         jK7g==
+X-Gm-Message-State: AOAM530GzxHLL5njnvTWfHgW8puvQnN5J4beC+oKw15UlhSBupRFbHJa
+        7FtbmcZoWbKMdUTkKOXc5SJT/w==
+X-Google-Smtp-Source: ABdhPJxXTxLgbK5EkVRfr+MJjeLWFuHWBUr/C2CyGD6BUSoJivoD9uH6eJohEpOALz25PXoDpvXWJw==
+X-Received: by 2002:a1c:f706:: with SMTP id v6mr4568060wmh.85.1611665145981;
+        Tue, 26 Jan 2021 04:45:45 -0800 (PST)
+Received: from dell.default ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id i131sm3263073wmi.25.2021.01.26.04.45.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:45:04 -0800 (PST)
-Date:   Tue, 26 Jan 2021 20:44:59 +0800
-From:   carlis <zhangxuezhi3@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
-        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
-        colin.king@canonical.com, zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v2] fbtft: add tearing signal detect
-Message-ID: <20210126204459.00002b7e@gmail.com>
-In-Reply-To: <20210126081745.GX2696@kadam>
-References: <1611564252-84205-1-git-send-email-zhangxuezhi3@gmail.com>
-        <20210126081745.GX2696@kadam>
-Organization: Tyzmig-ryrjum-8kedto
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 26 Jan 2021 04:45:45 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 01/21] clk: zynq: pll: Fix kernel-doc formatting in 'clk_register_zynq_pll's header
+Date:   Tue, 26 Jan 2021 12:45:20 +0000
+Message-Id: <20210126124540.3320214-2-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210126124540.3320214-1-lee.jones@linaro.org>
+References: <20210126124540.3320214-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 11:17:45 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
+Fixes the following W=1 kernel build warning(s):
 
-> On Mon, Jan 25, 2021 at 04:44:12PM +0800, Carlis wrote:
-> > From: "carlis.zhang_cp" <zhangxuezhi1@yulong.com>  
-> 
-> I was really expecting that you would fix this and Signed-off-by as
-> well.
-> 
-> regards,
-> dan carpenter
-> 
-I have fix this in patch v3
-> regards,
-> zhangxuezhi
+ drivers/clk/zynq/pll.c:187: warning: Function parameter or member 'name' not described in 'clk_register_zynq_pll'
+ drivers/clk/zynq/pll.c:187: warning: Function parameter or member 'parent' not described in 'clk_register_zynq_pll'
+ drivers/clk/zynq/pll.c:187: warning: Function parameter or member 'pll_ctrl' not described in 'clk_register_zynq_pll'
+ drivers/clk/zynq/pll.c:187: warning: Function parameter or member 'pll_status' not described in 'clk_register_zynq_pll'
+ drivers/clk/zynq/pll.c:187: warning: Function parameter or member 'lock_index' not described in 'clk_register_zynq_pll'
+ drivers/clk/zynq/pll.c:187: warning: Function parameter or member 'lock' not described in 'clk_register_zynq_pll'
+
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: "Sören Brinkmann" <soren.brinkmann@xilinx.com>
+Cc: linux-clk@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/clk/zynq/pll.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/clk/zynq/pll.c b/drivers/clk/zynq/pll.c
+index dcb2037a95964..54f4184de89af 100644
+--- a/drivers/clk/zynq/pll.c
++++ b/drivers/clk/zynq/pll.c
+@@ -173,12 +173,12 @@ static const struct clk_ops zynq_pll_ops = {
+ 
+ /**
+  * clk_register_zynq_pll() - Register PLL with the clock framework
+- * @name	PLL name
+- * @parent	Parent clock name
+- * @pll_ctrl	Pointer to PLL control register
+- * @pll_status	Pointer to PLL status register
+- * @lock_index	Bit index to this PLL's lock status bit in @pll_status
+- * @lock	Register lock
++ * @name:	PLL name
++ * @parent:	Parent clock name
++ * @pll_ctrl:	Pointer to PLL control register
++ * @pll_status:	Pointer to PLL status register
++ * @lock_index:	Bit index to this PLL's lock status bit in @pll_status
++ * @lock:	Register lock
+  * Returns handle to the registered clock.
+  */
+ struct clk *clk_register_zynq_pll(const char *name, const char *parent,
+-- 
+2.25.1
+
