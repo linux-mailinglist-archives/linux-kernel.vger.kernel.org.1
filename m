@@ -2,135 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEBB304E8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA6A304E91
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391504AbhA0AhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:37:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37395 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389643AbhAZR5p (ORCPT
+        id S2388756AbhA0AiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:38:10 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2430 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392072AbhAZR6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:57:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611683776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cjcRuMlXWMX2jcWSUD4WW4Hh5bqDrTG5xDVGalMcWRw=;
-        b=LSpP0gCkIqkqLQ9i9xRTh7PaMt/T0Et11XngsV85dYCiRsqkixOIMeyQ6tB+bpkdjP/5Lt
-        wN6K0Dd7y3WXnrqpHxs9IZU8HP3Sdz0CoFTa6H8ytexQhDlg4JbJhPmZFTZUBCCKXE4K72
-        n4WuMZ9nJ+iv/1yEVNo7bcI317PslOs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-BbtHlCX8NPCzdHK19d6gLA-1; Tue, 26 Jan 2021 12:56:14 -0500
-X-MC-Unique: BbtHlCX8NPCzdHK19d6gLA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 39718107ACF9;
-        Tue, 26 Jan 2021 17:56:13 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD6D05D6AD;
-        Tue, 26 Jan 2021 17:56:12 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] KVM fixes for Linux 5.11-rc5
-Date:   Tue, 26 Jan 2021 12:56:12 -0500
-Message-Id: <20210126175612.1533411-1-pbonzini@redhat.com>
+        Tue, 26 Jan 2021 12:58:55 -0500
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DQDqc26slz67gXH;
+        Wed, 27 Jan 2021 01:53:32 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 26 Jan 2021 18:57:55 +0100
+Received: from [10.47.2.35] (10.47.2.35) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 26 Jan
+ 2021 17:57:53 +0000
+Subject: Re: [PATCH RFC 0/4] Fix arm64 crash for accessing unmapped IO port
+ regions (reboot)
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <1610729929-188490-1-git-send-email-john.garry@huawei.com>
+ <CAK8P3a38HsXrebiCdJXJdxdBvS7AUjs+rVEex-0JQ+ZsytTy8A@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <fe18fbe3-e7e6-039d-aaf8-67bfb4cf2375@huawei.com>
+Date:   Tue, 26 Jan 2021 17:56:31 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <CAK8P3a38HsXrebiCdJXJdxdBvS7AUjs+rVEex-0JQ+ZsytTy8A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.2.35]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+>>
+>> For reference, here's how /proc/ioports looks on my arm64 system with
+>> this change:
+>>
+>> root@ubuntu:/home/john# more /proc/ioports
+>> 00010000-0001ffff : PCI Bus 0002:f8
+>>    00010000-00010fff : PCI Bus 0002:f9
+>>      00010000-00010007 : 0002:f9:00.0
+>>        00010000-00010007 : serial
+>>      00010008-0001000f : 0002:f9:00.1
+>>        00010008-0001000f : serial
+>>      00010010-00010017 : 0002:f9:00.2
+>>      00010018-0001001f : 0002:f9:00.2
+>> 00020000-0002ffff : PCI Bus 0004:88
+>> 00030000-0003ffff : PCI Bus 0005:78
+>> 00040000-0004ffff : PCI Bus 0006:c0
+>> 00050000-0005ffff : PCI Bus 0007:90
+>> 00060000-0006ffff : PCI Bus 000a:10
+>> 00070000-0007ffff : PCI Bus 000c:20
+>> 00080000-0008ffff : PCI Bus 000d:30
 
-The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+Hi Arnd,
 
-  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+> Doesn't this mean we lose the ability to access PCI devices
+> with legacy ISA compatibility? Most importantly, any GPU today
+> should in theory still support VGA frame buffer mode or text
+> console, but both of these stop working if the low I/O ports are
+> not mapped to the corresponding PCI bus.
 
-are available in the Git repository at:
+Hmmm.. so are you saying that there is an expectation that the kernel 
+PIO region assigned for these devices must start at 0x0? If so, I assume 
+it's because fixed IO ports are used.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> There is of course
+> already a problem if you have multiple PCI host bridges, and
+> each one gets its own PIO range, which means that only one
+> of them can have an ISA bridge with working PIO behind it.
 
-for you to fetch changes up to 9a78e15802a87de2b08dfd1bd88e855201d2c8fa:
+The answer to my question, above, seems to be 'yes' now.
 
-  KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX (2021-01-25 18:54:09 -0500)
+> 
+> Another such case would be a BMC that has legacy ISA devices
+> behind a (real or emulated) LPC bus, e.g. a 8250 UART, ps2
+> keyboard, RTC, or an ATA CDROM. Not sure if any of those are
+> ever used on Arm machines.
+> 
+> Regarding the size of the reservation, does this actually need
+> to cover the 0x0fff...0xffff range or just 0x0000...0x0fff? I don't
+> think there are any drivers that hardcode I/O ports beyond 0x0fff
+> because those would not work on ISA buses but require PCI
+> assigned BARs.
 
-----------------------------------------------------------------
-* x86 bugfixes
-* Documentation fixes
-* Avoid performance regression due to SEV-ES patches
+I just chose the complete legacy IO port range, that being 0x0--0xffff. 
+If there would be no hardcoded ports beyond 0x0fff, then reserving 
+0x0--0xfff would work.
 
-ARM:
-- Don't allow tagged pointers to point to memslots
-- Filter out ARMv8.1+ PMU events on v8.0 hardware
-- Hide PMU registers from userspace when no PMU is configured
-- More PMU cleanups
-- Don't try to handle broken PSCI firmware
-- More sys_reg() to reg_to_encoding() conversions
+> 
+> One more thought: There are two common ways in which PCI
+> host bridges map their PIO ports: either each host bridge has
+> its own 0x0...0xffff BAR range but gets remapped to an
+> arbitrary range of port numbers in the kernel, or each host bridge
+> uses a distinct range of port numbers, and the kernel can use
+> a 1:1 mapping between hardware and software port numbers,
+> i.e. the number in the BAR is the same as in the kernel.
+> 
+> If all numbers are shifted by 0x10000, that second case no
+> longer works, and there is always an offset.
 
-----------------------------------------------------------------
-Alexandru Elisei (1):
-      KVM: arm64: Use the reg_to_encoding() macro instead of sys_reg()
+Yes, this change would definitely break the second. But does - or could 
+- anyone use it on arm64? I didn't think that it was possible.
 
-David Brazdil (1):
-      KVM: arm64: Allow PSCI SYSTEM_OFF/RESET to return
-
-Jay Zhou (1):
-      KVM: x86: get smi pending status correctly
-
-Like Xu (2):
-      KVM: x86/pmu: Fix UBSAN shift-out-of-bounds warning in intel_pmu_refresh()
-      KVM: x86/pmu: Fix HW_REF_CPU_CYCLES event pseudo-encoding in intel_arch_events[]
-
-Lorenzo Brescia (1):
-      kvm: tracing: Fix unmatched kvm_entry and kvm_exit events
-
-Marc Zyngier (4):
-      KVM: arm64: Hide PMU registers from userspace when not available
-      KVM: arm64: Simplify handling of absent PMU system registers
-      KVM: arm64: Filter out v8.1+ events on v8.0 HW
-      KVM: Forbid the use of tagged userspace addresses for memslots
-
-Maxim Levitsky (1):
-      KVM: nVMX: Sync unsync'd vmcs02 state to vmcs12 on migration
-
-Paolo Bonzini (2):
-      Merge tag 'kvmarm-fixes-5.11-2' of git://git.kernel.org/.../kvmarm/kvmarm into HEAD
-      KVM: x86: allow KVM_REQ_GET_NESTED_STATE_PAGES outside guest mode for VMX
-
-Quentin Perret (1):
-      KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
-
-Sean Christopherson (3):
-      KVM: x86: Add more protection against undefined behavior in rsvd_bits()
-      KVM: SVM: Unconditionally sync GPRs to GHCB on VMRUN of SEV-ES guest
-      KVM: x86: Revert "KVM: x86: Mark GPRs dirty when written"
-
-Steven Price (1):
-      KVM: arm64: Compute TPIDR_EL2 ignoring MTE tag
-
-Zenghui Yu (1):
-      KVM: Documentation: Update description of KVM_{GET,CLEAR}_DIRTY_LOG
-
- Documentation/virt/kvm/api.rst       | 21 ++++----
- arch/arm64/kvm/arm.c                 |  3 +-
- arch/arm64/kvm/hyp/nvhe/psci-relay.c | 13 ++---
- arch/arm64/kvm/pmu-emul.c            | 10 ++--
- arch/arm64/kvm/sys_regs.c            | 93 ++++++++++++++++++++++--------------
- arch/x86/kvm/kvm_cache_regs.h        | 51 ++++++++++----------
- arch/x86/kvm/mmu.h                   |  9 +++-
- arch/x86/kvm/svm/nested.c            |  3 ++
- arch/x86/kvm/svm/sev.c               | 15 +++---
- arch/x86/kvm/svm/svm.c               |  2 +
- arch/x86/kvm/vmx/nested.c            | 44 ++++++++++++-----
- arch/x86/kvm/vmx/pmu_intel.c         |  6 ++-
- arch/x86/kvm/vmx/vmx.c               |  2 +
- arch/x86/kvm/x86.c                   | 11 +++--
- virt/kvm/kvm_main.c                  |  1 +
- 15 files changed, 172 insertions(+), 112 deletions(-)
-
+Thanks,
+John
