@@ -2,185 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA5530420A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF03304237
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406231AbhAZPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:16:42 -0500
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:52594 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406053AbhAZPP5 (ORCPT
+        id S2406266AbhAZPUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390639AbhAZPU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:15:57 -0500
-Received: by mail-wm1-f53.google.com with SMTP id m187so2755986wme.2;
-        Tue, 26 Jan 2021 07:15:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nsr5M9DRFMqInpuwv5Xd2i8l7XIErxkUkU+kMNMeqzY=;
-        b=qCfondhnhXwcR6v75bZjyDjlRHbOhsrjr6m5bGF0ofVzjL7r7ztQaM1mbnGCnYOirW
-         Ijt2RTn8MCsy4XdhNH3VT4Aw597NVbKUYltezSH5WDWROycn8Vym+7meeNNFKBFe36Pe
-         uzF8Ap+VoWp3XAN6fLnvhVXxTGLWH+Xec9jUcx7US8oY/FBTxe8Y9NBNv1AvcWaE4Piw
-         XDP+R59EYy/YFm+Nl1TXwyMiZuXn5BUeUu9XM+vpIfIVjlz/J5t/H2fYs0UrRc3g0Ppl
-         PIICaCVLI+yQQCLKSQXHEAt618mvuwMoqU5EXJtHI6s/wGxFh6RLHEZRPwdlDuv2G0je
-         6JYQ==
-X-Gm-Message-State: AOAM530dwpdmHs+nlFuXRUDYeu2vEXUa1B6QECnm1sAe1qHSpVlCtldf
-        OHzFiQnj6U/ELlBBijZ+lWo=
-X-Google-Smtp-Source: ABdhPJxgzk946sVj33edywfjyES7QVRX3uQIxXx0tPSGSNNg6h3JDc4ax4Zve7ZKOD2jkYwULH5u7g==
-X-Received: by 2002:a7b:cf34:: with SMTP id m20mr224184wmg.84.1611674114090;
-        Tue, 26 Jan 2021 07:15:14 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id m2sm3448801wml.34.2021.01.26.07.15.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 07:15:13 -0800 (PST)
-Date:   Tue, 26 Jan 2021 15:15:12 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
- partition
-Message-ID: <20210126151512.jz4f3jxfs7ommvm3@liuwe-devbox-debian-v2>
-References: <20210120120058.29138-1-wei.liu@kernel.org>
- <20210120120058.29138-3-wei.liu@kernel.org>
- <MWHPR21MB159358B1D6151AC5B5D38C7FD7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Tue, 26 Jan 2021 10:20:29 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF415C061A29;
+        Tue, 26 Jan 2021 07:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9IyfDUY9gRwkXrwY1oV4vu/+hGxopMEms5A7OVkxUio=; b=Y2BMhbsgvYx926tj96xAEKz7yz
+        8jK7gNSal72u30y2DwQWb+Kh2GIL7BjjMkXXz/C7hV2sc0mk+f7AZAi0P0XdwTOi8rcsO486yidly
+        sBLkNALeLzZjVbAQDmG3A9dgLDiUyCdFHA+joVrTqcwapPjjG4dB32JW+wdBYH+SugaFIGcqHZ225
+        BPxFf2GuXXbKens4VxEsDwXEDnzYg18z3zg4dV0QtS0xhhsvAn9wnLtsczmDHNtlw4jfkH5ogkYxI
+        LtezdWH92r8nEgY0X/QOBUDkxsfrAbfF+Vhdj2ciCK55TaGET3hZ4x1ilVLgtw4o6VVJiHRk6p71k
+        an8Dagng==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4Q4A-005oH1-8h; Tue, 26 Jan 2021 15:16:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 69F683019CE;
+        Tue, 26 Jan 2021 16:15:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4CA882144C091; Tue, 26 Jan 2021 16:15:37 +0100 (CET)
+Date:   Tue, 26 Jan 2021 16:15:37 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Greg KH <greg@kroah.com>, Justin Forbes <jforbes@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
+ <20210125212755.jfwlqogpcarmxdgt@treble>
+ <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
+ <20210125220757.vxdsf6sttpy46cq7@treble>
+ <YA/PLdX5m9f4v+Yl@kroah.com>
+ <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
+ <YBAeYaDReAc9VscA@kroah.com>
+ <20210126145155.kcfbnzfqg5qugvcl@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MWHPR21MB159358B1D6151AC5B5D38C7FD7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210126145155.kcfbnzfqg5qugvcl@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:31:31AM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
-> > 
-> > For now we can use the privilege flag to check. Stash the value to be
-> > used later.
-> > 
-> > Put in a bunch of defines for future use when we want to have more
-> > fine-grained detection.
-> > 
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> > v3: move hv_root_partition to mshyperv.c
-> > ---
-> >  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
-> >  arch/x86/include/asm/mshyperv.h    |  2 ++
-> >  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
-> >  3 files changed, 32 insertions(+)
-> > 
-> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> > index 6bf42aed387e..204010350604 100644
-> > --- a/arch/x86/include/asm/hyperv-tlfs.h
-> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> > @@ -21,6 +21,7 @@
-> >  #define HYPERV_CPUID_FEATURES			0x40000003
-> >  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
-> >  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
-> > +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES	0x40000007
-> >  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
-> > 
-> >  #define HYPERV_CPUID_VIRT_STACK_INTERFACE	0x40000081
-> > @@ -110,6 +111,15 @@
-> >  /* Recommend using enlightened VMCS */
-> >  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED		BIT(14)
-> > 
-> > +/*
-> > + * CPU management features identification.
-> > + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
-> > + */
-> > +#define HV_X64_START_LOGICAL_PROCESSOR			BIT(0)
-> > +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR		BIT(1)
-> > +#define HV_X64_PERFORMANCE_COUNTER_SYNC			BIT(2)
-> > +#define HV_X64_RESERVED_IDENTITY_BIT			BIT(31)
-> > +
+On Tue, Jan 26, 2021 at 08:51:55AM -0600, Josh Poimboeuf wrote:
+> User space mixes compiler versions all the time.  The C ABI is stable.
 > 
-> I wonder if these bit definitions should go in the asm-generic part of
-> hyperv-tlfs.h instead of the X64 specific part.  They look very architecture
-> neutral (in which case the X64 should be dropped from the name
-> as well).  Of course, they can be moved later when/if we get to that point
-> and have a firmer understanding of what is and isn't arch neutral.
+> What specifically is the harder issue you're referring to?
 
-Yes. This is the approach I'm taking here. They can be easily moved in
-the future if there is a need.
+I don't think the C ABI captures nearly enough. Imagine trying to mix a
+compiler with and without asm-goto support (ok, we fail to build without
+by now, but just imagine).
 
-> 
-> >  /*
-> >   * Virtual processor will never share a physical core with another virtual
-> >   * processor, except for virtual processors that are reported as sibling SMT
-> > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> > index ffc289992d1b..ac2b0d110f03 100644
-> > --- a/arch/x86/include/asm/mshyperv.h
-> > +++ b/arch/x86/include/asm/mshyperv.h
-> > @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
-> >  		struct hv_guest_mapping_flush_list *flush,
-> >  		u64 start_gfn, u64 end_gfn);
-> > 
-> > +extern bool hv_root_partition;
-> > +
-> >  #ifdef CONFIG_X86_64
-> >  void hv_apic_init(void);
-> >  void __init hv_init_spinlocks(void);
-> > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> > index f628e3dc150f..c376d191a260 100644
-> > --- a/arch/x86/kernel/cpu/mshyperv.c
-> > +++ b/arch/x86/kernel/cpu/mshyperv.c
-> > @@ -32,6 +32,10 @@
-> >  #include <asm/nmi.h>
-> >  #include <clocksource/hyperv_timer.h>
-> > 
-> > +/* Is Linux running as the root partition? */
-> > +bool hv_root_partition;
-> > +EXPORT_SYMBOL_GPL(hv_root_partition);
-> > +
-> >  struct ms_hyperv_info ms_hyperv;
-> >  EXPORT_SYMBOL_GPL(ms_hyperv);
-> > 
-> > @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
-> >  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
-> >  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
-> > 
-> > +	/*
-> > +	 * Check CPU management privilege.
-> > +	 *
-> > +	 * To mirror what Windows does we should extract CPU management
-> > +	 * features and use the ReservedIdentityBit to detect if Linux is the
-> > +	 * root partition. But that requires negotiating CPU management
-> > +	 * interface (a process to be finalized).
-> > +	 *
-> > +	 * For now, use the privilege flag as the indicator for running as
-> > +	 * root.
-> > +	 */
-> > +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
-> 
-> Should the EBX value be captured in the ms_hyperv structure with the
-> other similar values, and then used from there?
-> 
+No C ABI violated, but having that GCC extention vs not having it
+radically changes the kernel ABI.
 
-There is only one usage of this in this whole series so I didn't bother
-capturing. I would also like to clean up ms_hyperv_info's fields a bit.
-
-Given there are quite some patches pending which change ms_hyperv_info
-struct, I would like to avoid creating more conflicts than necessary.
-
-My plan is to implement my idea from the thread "Field names inside
-ms_hyperv_info" once all patches that touch ms_hyperv_info are merged.
-
-Wei.
+I think I'm with Greg here, just don't do it.
