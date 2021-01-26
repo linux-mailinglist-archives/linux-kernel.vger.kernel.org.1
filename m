@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25583304392
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B7D3043DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391122AbhAZJa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 04:30:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36566 "EHLO mail.kernel.org"
+        id S2392915AbhAZQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:28:32 -0500
+Received: from smtp.asem.it ([151.1.184.197]:52086 "EHLO smtp.asem.it"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729955AbhAYStj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 13:49:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93FEB207B3;
-        Mon, 25 Jan 2021 18:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611600538;
-        bh=wYXBU36vIOmvDdKuwLMo2YmG9nlb8T9LIa/JdrEhOfw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F1YlIcojfUFbJ5PDrdf2sbL0Xe8Ash5+RwVzQ7IpHQVOe44Ea6T6dK1A5SqKX3f4p
-         /aQ3pRuZBN6VhGabK61zjbNg532idEy0D6ZURcR+RFzsBj1l3fe0yvQ8mmmWs39dwb
-         GyQkXkXaZPPHcozkkxWHoMJwh1KhBL1SeFTDm9Ik=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
-        Ion Agorria <ion@agorria.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 052/199] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
-Date:   Mon, 25 Jan 2021 19:37:54 +0100
-Message-Id: <20210125183218.459966224@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210125183216.245315437@linuxfoundation.org>
-References: <20210125183216.245315437@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2390984AbhAZJ1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:27:52 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000732223.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:25:20 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
+ Jan 2021 10:25:18 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 26 Jan 2021 10:25:18 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jonathan Neuschaefer <j.neuschaefer@gmx.net>
+CC:     <linux-mtd@lists.infradead.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v1] mtd: spi-nor: core: fix/remove references to spi-nor.c
+Date:   Tue, 26 Jan 2021 10:25:16 +0100
+Message-ID: <20210126092516.1431913-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F22.600FDFFF.0009,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Geis <pgwipeout@gmail.com>
+The old file:
 
-[ Upstream commit 615d435400435876ac68c1de37e9526a9164eaec ]
+drivers/mtd/spi-nor/spi-nor.c
 
-Currently hda on tegra30 fails to open a stream with an input/output error.
+is not more present and now some of its code is
+contained in:
 
-For example:
-speaker-test -Dhw:0,3 -c 2
+drivers/mtd/spi-nor/core.c
 
-speaker-test 1.2.2
+This patch fix/remove the references to the old
+spi-nor.c file.
 
-Playback device is hw:0,3
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 16384
-Period size range from 32 to 8192
-Using max buffer size 16384
-Periods = 4
-was set period_size = 4096
-was set buffer_size = 16384
- 0 - Front Left
-Write error: -5,Input/output error
-xrun_recovery failed: -5,Input/output error
-Transfer failed: Input/output error
-
-The tegra-hda device was introduced in tegra30 but only utilized in
-tegra124 until recent chips. Tegra210/186 work only due to a hardware
-change. For this reason it is unknown when this issue first manifested.
-Discussions with the hardware team show this applies to all current tegra
-chips. It has been resolved in the tegra234, which does not have hda
-support at this time.
-
-The explanation from the hardware team is this:
-Below is the striping formula referenced from HD audio spec.
-   { ((num_channels * bits_per_sample) / number of SDOs) >= 8 }
-
-The current issue is seen because Tegra HW has a problem with boundary
-condition (= 8) for striping. The reason why it is not seen on
-Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is
-read from GCAP register.
-
-For the given stream (channels = 2, bps = 16);
-ratio = (channels * bps) / NSDO = 32 / NSDO;
-
-On Tegra30,      ratio = 32/4 = 8  (FAIL)
-On Tegra210/186, ratio = 32/2 = 16 (PASS)
-On Tegra194,     ratio = 32/4 = 8  (FAIL) ==> Earlier workaround was
-applied for it
-
-If Tegra210/186 is forced to use 4SDO, it fails there as well. So the
-behavior is consistent across all these chips.
-
-Applying the fix in [1] universally resolves this issue on tegra30-hda.
-Tested on the Ouya game console and the tf201 tablet.
-
-[1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
-Tegra194")
-
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Ion Agorria <ion@agorria.com>
-Reviewed-by: Sameer Pujar <spujar@nvidia.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-Link: https://lore.kernel.org/r/20210108135913.2421585-3-pgwipeout@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 ---
- sound/pci/hda/hda_tegra.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/driver-api/mtd/spi-nor.rst | 2 +-
+ drivers/mtd/spi-nor/core.c               | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 70164d1428d40..361cf2041911a 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -388,7 +388,7 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
- 	 * in powers of 2, next available ratio is 16 which can be
- 	 * used as a limiting factor here.
- 	 */
--	if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
-+	if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
- 		chip->bus.core.sdo_limit = 16;
+diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/driver-api/mtd/spi-nor.rst
+index 4a3adca417fd..bf2db371d3fb 100644
+--- a/Documentation/driver-api/mtd/spi-nor.rst
++++ b/Documentation/driver-api/mtd/spi-nor.rst
+@@ -61,7 +61,7 @@ Part III - How can drivers use the framework?
  
- 	/* codec detection */
+ The main API is spi_nor_scan(). Before you call the hook, a driver should
+ initialize the necessary fields for spi_nor{}. Please see
+-drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to spi-fsl-qspi.c
++drivers/mtd/spi-nor/core.c for detail. Please also refer to spi-fsl-qspi.c
+ when you want to write a new driver for a SPI NOR controller.
+ Another API is spi_nor_restore(), this is used to restore the status of SPI
+ flash chip such as addressing mode. Call it whenever detach the driver from
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 20df44b753da..6ae7d4c2d2b6 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3701,8 +3701,8 @@ static void spi_nor_shutdown(struct spi_mem *spimem)
+  * encourage new users to add support to the spi-nor library, and simply bind
+  * against a generic string here (e.g., "jedec,spi-nor").
+  *
+- * Many flash names are kept here in this list (as well as in spi-nor.c) to
+- * keep them available as module aliases for existing platforms.
++ * Many flash names are kept here in this list to keep them available
++ * as module aliases for existing platforms.
+  */
+ static const struct spi_device_id spi_nor_dev_ids[] = {
+ 	/*
 -- 
-2.27.0
-
-
+2.25.1
 
