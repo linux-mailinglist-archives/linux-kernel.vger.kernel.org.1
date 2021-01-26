@@ -2,137 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B5D303A7E
+	by mail.lfdr.de (Postfix) with ESMTP id BAC55303A7F
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404139AbhAZKiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729907AbhAZBxp (ORCPT
+        id S2404203AbhAZKia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:38:30 -0500
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:23744 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731259AbhAZBzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:53:45 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC855C06121C
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:53:01 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id k8so14819823otr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xxAVgjAWeUTEVk1HKoPhPhQyjhCFuGz73HIshLBYon4=;
-        b=riPm+/XUbjsAldf1p8jPot+uVTxVczaBXz0aEQG7pvqrNi1989sRc/7cbedqpPJPx9
-         nzsf66cprhMZT2cJbOEQAnxvi48Dds+OfeLAYrGgEbRez4WPjZ7WxbOHuJSganDrzCSi
-         Y/15cdUHCTLPzgEzBOxIy8h27TyTOwjjBZpGjsievDj3LuyRVXuBDwo3n1ZT3pXS2N7V
-         2vlii1CFP1R7IoYfng2lqfkebgwsEVGHnh6Rd/Ok01UoeEZjeakwah+DQcwmHUu1F+uF
-         AeglkbPIhIr6BMfzKfqBgePaBlZrhitoSQuxrRHN8B3xZo/nro6oNYhHlsOgx0FMwri0
-         b7mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xxAVgjAWeUTEVk1HKoPhPhQyjhCFuGz73HIshLBYon4=;
-        b=M1VJ8hSoAUvsc2mi6KJY7bOpv2ZT4B9nShsFGZIEPQJkSO5gcprA+pOKlm0rr7c08u
-         4h7hU+xyUOMPIANzGiUulpupE2oIoMxZA9DjvM5Y9N310mcXZ6edq+5Vrv0sjS9Yi4tC
-         hwSk8Nv2ydRDnhRO+oNBnUyQPSEVUjlaXnOOdUEkM90Ikgdtg2jUrYHlyXEUi/eWsKF1
-         0S1WsVUXxqBHONHpaWbPclxjBG6OZG4+uqz7Q65U6LGZvICnJhr1UxrYAo5Uxh+lhJU0
-         EfZyA2uP14F3PjcjlTsoXx6hnRn6cww7aAUqWi8Z84Lq386T77XbVcdH/Nz9xXvD7Uj+
-         Kngw==
-X-Gm-Message-State: AOAM533YuzUH+FIQvYqXeB/zx535VljHF4DDhbNLcomp5C1oUyH72d0e
-        Y2VPxzrmq2SMPKoy5kjGaXGMNg==
-X-Google-Smtp-Source: ABdhPJwmBKO2BxEJEdzwgX6J9ip8RQTuHi2fV5X10UwC0NNCZWDYPMwTCr8sBOgxExy4ZelLMj18eA==
-X-Received: by 2002:a05:6830:1545:: with SMTP id l5mr2484767otp.61.1611625981223;
-        Mon, 25 Jan 2021 17:53:01 -0800 (PST)
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
-        by smtp.gmail.com with ESMTPSA id y10sm2846742ooy.11.2021.01.25.17.53.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 17:53:00 -0800 (PST)
-Date:   Mon, 25 Jan 2021 19:52:59 -0600
-From:   Tyler Hicks <code@tyhicks.com>
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>
-Subject: Re: [PATCH 1/2] ecryptfs: fix uid translation for setxattr on
- security.capability
-Message-ID: <20210126015259.GC81247@sequoia>
-References: <20210119162204.2081137-1-mszeredi@redhat.com>
- <20210119162204.2081137-2-mszeredi@redhat.com>
- <20210122183141.GB81247@sequoia>
- <CAOssrKd-P=4n-nzhjnvnChbCkcrAaLC=NjmCTDRHtzRtzJaU-g@mail.gmail.com>
+        Mon, 25 Jan 2021 20:55:08 -0500
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 10Q1s0YE007298;
+        Tue, 26 Jan 2021 10:54:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 10Q1s0YE007298
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611626040;
+        bh=oagMBAQOcxiRZ10Xc720/BqDn/zB60BP15C0zBwRb4w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=zI91evfU1dQERp5iU3LtP62wJx77tUr8nmioJzfKCIUdXRqdNGY50QKTCfHsXDczC
+         TLHadaES9+8s70Z0DNoxPGz9jadiJZaOwZNh9GyPPKS1GpBKQH52m4WtdOta1EYkNS
+         xkgJT3MwbzyJz28JMiLxavtq5Ui2SI9gMfZUK20ox55+HQ2tI2dDeGAnyovQvNHyzQ
+         gPeuJxmoE0CMK9wplQfJlTmC7VDnsWHie7kJuJyl6A0yaPb2gG9Ptp5pnhfMHG3mCY
+         evGg1fma2gtyWqFdxLUs11ySnYLw0heiBoezBfZtrWRZJ/67pc6dTdx3dM8Ia+U1Pf
+         rD5WSVxjOXnmA==
+X-Nifty-SrcIP: [209.85.216.53]
+Received: by mail-pj1-f53.google.com with SMTP id gx1so873911pjb.1;
+        Mon, 25 Jan 2021 17:54:00 -0800 (PST)
+X-Gm-Message-State: AOAM532h1dvsVcTA77q1OLt8DJK7e/lG0YiRxWL0xeq8RHxoPai0g854
+        wqn0EJuaDhF1ghU7CM6JupEEwhtBF1woeeY8fiY=
+X-Google-Smtp-Source: ABdhPJwJ9KkvPgY3Ko2Vqz35MecJG3zqwoeNOStkvrhv8bzGg2t1HOBt5xq4IYHIoiGkCQq+U+0aGZ43TJHANLrpCg0=
+X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr3328264pjh.198.1611626039493;
+ Mon, 25 Jan 2021 17:53:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOssrKd-P=4n-nzhjnvnChbCkcrAaLC=NjmCTDRHtzRtzJaU-g@mail.gmail.com>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <202101251401.F18409FDD1@keescook>
+In-Reply-To: <202101251401.F18409FDD1@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 26 Jan 2021 10:53:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASOf=B_j5o=L=BL+vz_JK_d3QYUuHg8h+3SP6qOyYD86A@mail.gmail.com>
+Message-ID: <CAK7LNASOf=B_j5o=L=BL+vz_JK_d3QYUuHg8h+3SP6qOyYD86A@mail.gmail.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-25 14:25:38, Miklos Szeredi wrote:
-> On Fri, Jan 22, 2021 at 7:31 PM Tyler Hicks <code@tyhicks.com> wrote:
-> >
-> > On 2021-01-19 17:22:03, Miklos Szeredi wrote:
-> > > Prior to commit 7c03e2cda4a5 ("vfs: move cap_convert_nscap() call into
-> > > vfs_setxattr()") the translation of nscap->rootid did not take stacked
-> > > filesystems (overlayfs and ecryptfs) into account.
-> > >
-> > > That patch fixed the overlay case, but made the ecryptfs case worse.
-> >
-> > Thanks for sending a fix!
-> >
-> > I know that you don't have an eCryptfs setup to test with but I'm at a
-> > loss about how to test this from the userns/fscaps side of things. Do
-> > you have a sequence of unshare/setcap/getcap commands that I can run on
-> > a file inside of an eCryptfs mount to verify that the bug exists after
-> > 7c03e2cda4a5 and then again to verify that this patch fixes the bug?
-> 
-> You need two terminals:
-> $ = <USER>
-> # = root
-> 
-> $ unshare -Um
-> $ echo $$
-> <PID>
-> # echo "0 1000 1" > uid_map
-> # cp uid_map gid_map
-> # echo 1000 2000 1 >> uid_map
-> # echo 2000 3000 1 >> uid_map
-> # cat uid_map > /proc/<PID>/uid_map
-> # cat gid_map > /proc/<PID>/gid_map
-> $ mkdir ~/tmp ~/mnt
-> $ mount -t tmpfs tmpfs ~/tmp
-> $ pwd
-> /home/<USER>
-> # nsenter -t <PID> -m
-> # [setup ecryptfs on /home/<USER>/mnt using /home/<USER>/tmp]
-> $ cd ~/mnt
-> $ touch test
-> $ /sbin/setcap -n 1000 cap_dac_override+eip test
-> $ /sbin/getcap -n test
-> test = cap_dac_override+eip [rootid=1000]
-> 
-> Without the patch, I'm thinking that it will do a double translate and
-> end up with rootid=2000 in the user namespace, but I might well have
-> messed it up...
-> 
-> Let me know how this goes.
+On Tue, Jan 26, 2021 at 7:03 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Jan 25, 2021 at 02:42:10PM -0600, Josh Poimboeuf wrote:
+> > When a GCC version mismatch is detected, print a warning and disable the
+> > plugin.  The only exception is the RANDSTRUCT plugin which needs all
+> > code to see the same struct layouts.  In that case print an error.
+>
+> I prefer this patch as-is: only randstruct needs a hard failure. The
+> others likely work (in fact, randstruct likely works too).
+>
+> Masahiro, are you suggesting to be a hard-failure for all plugins?
 
-Spot-on instructions. Thank you for taking the time to provide the
-steps.
+Yes.
 
-I was able to repro the bug and verify the fix. The change visually
-looks good to me and it passed through the eCryptfs regression tests.
+I want to require
+"I swear to use the same compiler version for external modules"
+when you enable GCC plugins.
 
-I've pushed it to the eCryptfs next branch and I plan to submit it to
-Linus on Thursday. Thanks again!
 
-Tyler
 
-> 
-> Thanks,
-> Miklos
-> 
+
+config CC_VERSION_CHECK_FOR_EXTERNAL_MODULES
+        bool "Check the compiler version before building external modules"
+        help
+           If this option is enabled, the compiler version is checked
+           before building external modules. This ensures the same
+           compiler is used for the kernel and external modules.
+
+
+config GCC_PLUGINS
+        ...
+        depends on CC_VERSION_CHECK_FOR_EXTERNAL_MODULES
+
+
+
+In Makefile, check the version for out-of-tree modules
+if CONFIG_CC_VERSION_CHECK_FOR_EXTERNAL_MODULES.
+
+
+
+
+There is no difference in the fact that
+you cannot use a different compiler for external modules
+if CONFIG_GCC_PLUGINS=y.
+
+
+
+
+We started with the assumption that modules must be compiled
+by the same compiler as the kernel was.
+https://lore.kernel.org/patchwork/patch/836247/#1031547
+
+Now that the compiler capability is evaluated in Kconfig,
+this is a harder requirement.
+
+In reality, a different compiler might be used,
+and, this requirement might be loosened, but
+the same compiler should be required for CONFIG_GCC_PLUGINS.
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
