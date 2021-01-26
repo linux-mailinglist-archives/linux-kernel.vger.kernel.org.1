@@ -2,139 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E148C304EC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9490304EC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404738AbhA0AzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394533AbhAZSRm (ORCPT
+        id S2404772AbhA0A4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:56:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46534 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394568AbhAZSSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:17:42 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CD5C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:17:02 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id x78so17623790ybe.11
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:17:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C63W8Y93BecXXNue/Bt+pWJEqyrzx0Hg2TryKJ8xF3U=;
-        b=sIcUAWDvgO5KukWwqZJd2E/uyHM7Mwiuujj/xRIJmAqOEKjNZ/LDqryjCMHouSf+d2
-         tf8WOOX6A6ROU0JzpV7ZplsXpA32diogSjKpYjY7aVNBEay/uqM1ZDZaWetg1H7sPo1b
-         v1/iaAIDy5XXh3IToXwNgfm7YTvUsmbXECeLZu19sP7C9tswdUHxrpbQyM8tPfnNMPwt
-         vslKnigoR6jEFlTl1qSzODTjHJ7qoO6763loZuCXJxPfWEWdMGXlUXM/Kqv4SJdyoflc
-         mzCDyfvN6PeMRmWfDRqKT6iqTsWnZDXFNxOICuB+3L7vVMqKA5sDjMCdg5fAM0fk5fn7
-         0zzQ==
+        Tue, 26 Jan 2021 13:18:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611685011;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tmAwlqcFRm5dq0TJYgLmlazW5uNrUdUC5Uj9cYPhSCQ=;
+        b=hgexd5lPM1nIe8sNx0Osfe6Z/BBXYeK4ULYMcgr3Bnh4kCntPoumT46fp/urDUUvIvcWxe
+        RSQ7pATzGLIChaGgk8IW5E5ypbY/slPm7W+lya/jhGrorPrd2pZrjNmiz3RmP6cmag6sYn
+        9uD16vBJgAoFyJ1Pmqh08aVJ1i7ati8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-458-kC-aHg0QMO-SC2cjB130Eg-1; Tue, 26 Jan 2021 13:16:49 -0500
+X-MC-Unique: kC-aHg0QMO-SC2cjB130Eg-1
+Received: by mail-ej1-f71.google.com with SMTP id p1so5270201ejo.4
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:16:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C63W8Y93BecXXNue/Bt+pWJEqyrzx0Hg2TryKJ8xF3U=;
-        b=PAExhdWFV2tSfbq1I6r3vB4bDzoeYg/TX8H11ku5Fl3mlvE4ExGpMmAp4WzVNRq977
-         0KIvijn5e07w+cfL75ekeV7J6F6OIAG/X0f5KHuzVSduC5bptCfVAlm3XamWt6bWmQki
-         HhDwF101yf96LfnKrU2cpr/R2rTEQ5L0TCgsB6lqHVVqaJruaGIxWdJcyN/sxjeBvZL7
-         JT12wZdo5U4wn7KGRvFviLAQfdRVdNwOJCSh8qpgkj0ebdF6F41HFNY6oY8Xs+icNOBU
-         1hFSbjN1bf6BOwTOuOzAwd7/qJezgdsmn0QwiGegL6Y70bhGavIdQtyPifZH0cLGNTjj
-         mYdQ==
-X-Gm-Message-State: AOAM531pNowL8EaG1KEJkrHY8+ZSIkm2Ez07qATQq7DYyD2BjUTyH1O4
-        AhUMZIRz3CLQtVggAOwB4wCshypJxV41DQ8Q9w35+g==
-X-Google-Smtp-Source: ABdhPJyKBxbNwKUWs/G+whnZ2vm5Q3D8MJv7kvnkBA1M/xXs+yzBq5YtqbfmfAIzYvaozMNBN7cAp0S7OJeN5pkLzLo=
-X-Received: by 2002:a25:8b8b:: with SMTP id j11mr9347224ybl.310.1611685021454;
- Tue, 26 Jan 2021 10:17:01 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tmAwlqcFRm5dq0TJYgLmlazW5uNrUdUC5Uj9cYPhSCQ=;
+        b=livrU2M6+i+GER1U9MFCBqSAXJZ2fd0oUrvvHT+NIULxxqHR/+yz3ihPTqzT5Ko1oS
+         i14u4tuRkMHO1tKpYpoRu4jx78N/U1N/tP6fn4CPcbBjTXrZS9VtDyr3XB8kVwa5E2sy
+         AqHFP2N2+JEzkeAPcXAmm1Drmaz1rumIefcoPZttLI8kD3t5WqHt6CAXV5Zj85iZBBvD
+         qGRGZkkEKJenYIyqAyF4DE+VoRXt4F0n/NwSY2tHtIGjvO091AdiuyyaVxtZ+gLJCUJc
+         +cBho8sdxOqFSKVRV4ir0wiPHB1V18VJWYmvc9RhzU74AyElvYT854tHQv2+Kqcm7MzH
+         0A5A==
+X-Gm-Message-State: AOAM532K8sEFA95UPR055WpRscYvInD3jwYsc70cgqlfIQSLivaQEXdn
+        vFJV3uoIkUiBtu7AwzyyjVz/VlrmFtaZKM3f1T6SHytKSiGhM7NbHt0VTNJCgSBSdZsoRvVUai7
+        CA4fL2sn0HaCoQ4+qjhfvRmFhv+lXHO9S8WVd6KP/rBF4t7qQpInIIXH02RqiQyLuRUj8XJssIG
+        vf
+X-Received: by 2002:a17:906:705:: with SMTP id y5mr4274373ejb.83.1611685008154;
+        Tue, 26 Jan 2021 10:16:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzsSJBnwQfhxbfgn+ahh/+fnRtzUKGdLjXMNEwDv1vHszj2URdSImu5elTuKBMInycbKAzeFg==
+X-Received: by 2002:a17:906:705:: with SMTP id y5mr4274344ejb.83.1611685007865;
+        Tue, 26 Jan 2021 10:16:47 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o4sm6591828edw.78.2021.01.26.10.16.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 10:16:47 -0800 (PST)
+Subject: Re: [RFC 3/7] KVM: MMU: Rename the pkru to pkr
+To:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-4-chenyi.qiang@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0116e8c6-2e2a-173a-a903-e3d3e9f05a2c@redhat.com>
+Date:   Tue, 26 Jan 2021 19:16:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210122193600.1415639-1-saravanak@google.com> <CAHp75VfKiuVd7JO-0nwCuvy7tgPZScOpKX8Q4+oT+JSBR+d=ew@mail.gmail.com>
-In-Reply-To: <CAHp75VfKiuVd7JO-0nwCuvy7tgPZScOpKX8Q4+oT+JSBR+d=ew@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 26 Jan 2021 10:16:25 -0800
-Message-ID: <CAGETcx_FmOvLe4fN8ZZ_Kno-DnUy2DcPayk9Szmx2vrihr0KoQ@mail.gmail.com>
-Subject: Re: [PATCH v2] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200807084841.7112-4-chenyi.qiang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 1:40 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Friday, January 22, 2021, Saravana Kannan <saravanak@google.com> wrote:
->>
->> There are multiple instances of GPIO device tree nodes of the form:
->>
->> foo {
->>         compatible = "acme,foo";
->>         ...
->>
->>         gpio0: gpio0@xxxxxxxx {
->>                 compatible = "acme,bar";
->>                 ...
->>                 gpio-controller;
->>         };
->>
->>         gpio1: gpio1@xxxxxxxx {
->>                 compatible = "acme,bar";
->>                 ...
->>                 gpio-controller;
->>         };
->>
->>         ...
->> }
->>
->> bazz {
->>         my-gpios = <&gpio0 ...>;
->> }
->>
->> Case 1: The driver for "foo" populates struct device for these gpio*
->> nodes and then probes them using a driver that binds with "acme,bar".
->> This driver for "acme,bar" then registers the gpio* nodes with gpiolib.
->> This lines up with how DT nodes with the "compatible" property are
->> typically converted to struct devices and then registered with driver
->> core to probe them. This also allows the gpio* devices to hook into all
->> the driver core capabilities like runtime PM, probe deferral,
->> suspend/resume ordering, device links, etc.
->>
->> Case 2: The driver for "foo" doesn't populate struct devices for these
->> gpio* nodes before registering them with gpiolib. Instead it just loops
->> through its child nodes and directly registers the gpio* nodes with
->> gpiolib.
->>
->> Drivers that follow case 2 cause problems with fw_devlink=on. This is
->> because fw_devlink will prevent bazz from probing until there's a struct
->> device that has gpio0 as its fwnode (because bazz lists gpio0 as a GPIO
->> supplier). Once the struct device is available, fw_devlink will create a
->> device link with gpio0 device as the supplier and bazz device as the
->> consumer. After this point, since the gpio0 device will never bind to a
->> driver, the device link will prevent bazz device from ever probing.
->>
->> Finding and refactoring all the instances of drivers that follow case 2
->> will cause a lot of code churn and it is not something that can be done
->> in one shot. In some instances it might not even be possible to refactor
->> them cleanly. Examples of such instances are [1] [2].
->>
->> This patch works around this problem and avoids all the code churn by
->> simply setting the fwnode of the gpio_device and creating a stub driver
->> to bind to the gpio_device. This allows all the consumers to continue
->> probing when the driver follows case 2.
->>
->
-> Do we need to unregister it at __exit initcall?
-> What side effects would be of the stub driver presence on the GPIO bus? Any traverse on it will work as before?
+On 07/08/20 10:48, Chenyi Qiang wrote:
+> PKRU represents the PKU register utilized in the protection key rights
+> check for user pages. Protection Keys for Superviosr Pages (PKS) extends
+> the protection key architecture to cover supervisor pages.
+> 
+> Rename the *pkru* related variables and functions to *pkr* which stands
+> for both of the PKRU and PKRS. It makes sense because both registers
+> have the same format. PKS and PKU can also share the same bitmap to
+> cache the conditions where protection key checks are needed.
+> 
+> Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h |  2 +-
+>   arch/x86/kvm/mmu.h              | 12 ++++++------
+>   arch/x86/kvm/mmu/mmu.c          | 18 +++++++++---------
+>   3 files changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index be5363b21540..6b739d0d1c97 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -427,7 +427,7 @@ struct kvm_mmu {
+>   	* with PFEC.RSVD replaced by ACC_USER_MASK from the page tables.
+>   	* Each domain has 2 bits which are ANDed with AD and WD from PKRU.
+>   	*/
+> -	u32 pkru_mask;
+> +	u32 pkr_mask;
+>   
+>   	u64 *pae_root;
+>   	u64 *lm_root;
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 444bb9c54548..0c2fdf0abf22 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -193,8 +193,8 @@ static inline u8 permission_fault(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>   	u32 errcode = PFERR_PRESENT_MASK;
+>   
+>   	WARN_ON(pfec & (PFERR_PK_MASK | PFERR_RSVD_MASK));
+> -	if (unlikely(mmu->pkru_mask)) {
+> -		u32 pkru_bits, offset;
+> +	if (unlikely(mmu->pkr_mask)) {
+> +		u32 pkr_bits, offset;
+>   
+>   		/*
+>   		* PKRU defines 32 bits, there are 16 domains and 2
+> @@ -202,15 +202,15 @@ static inline u8 permission_fault(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>   		* index of the protection domain, so pte_pkey * 2 is
+>   		* is the index of the first bit for the domain.
+>   		*/
+> -		pkru_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
+> +		pkr_bits = (vcpu->arch.pkru >> (pte_pkey * 2)) & 3;
+>   
+>   		/* clear present bit, replace PFEC.RSVD with ACC_USER_MASK. */
+>   		offset = (pfec & ~1) +
+>   			((pte_access & PT_USER_MASK) << (PFERR_RSVD_BIT - PT_USER_SHIFT));
+>   
+> -		pkru_bits &= mmu->pkru_mask >> offset;
+> -		errcode |= -pkru_bits & PFERR_PK_MASK;
+> -		fault |= (pkru_bits != 0);
+> +		pkr_bits &= mmu->pkr_mask >> offset;
+> +		errcode |= -pkr_bits & PFERR_PK_MASK;
+> +		fault |= (pkr_bits != 0);
+>   	}
+>   
+>   	return -(u32)fault & errcode;
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 6d6a0ae7800c..481442f5e27a 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4716,20 +4716,20 @@ static void update_permission_bitmask(struct kvm_vcpu *vcpu,
+>   * away both AD and WD.  For all reads or if the last condition holds, WD
+>   * only will be masked away.
+>   */
+> -static void update_pkru_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+> +static void update_pkr_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>   				bool ept)
+>   {
+>   	unsigned bit;
+>   	bool wp;
+>   
+>   	if (ept) {
+> -		mmu->pkru_mask = 0;
+> +		mmu->pkr_mask = 0;
+>   		return;
+>   	}
+>   
+>   	/* PKEY is enabled only if CR4.PKE and EFER.LMA are both set. */
+>   	if (!kvm_read_cr4_bits(vcpu, X86_CR4_PKE) || !is_long_mode(vcpu)) {
+> -		mmu->pkru_mask = 0;
+> +		mmu->pkr_mask = 0;
+>   		return;
+>   	}
+>   
+> @@ -4763,7 +4763,7 @@ static void update_pkru_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>   		/* PKRU.WD stops write access. */
+>   		pkey_bits |= (!!check_write) << 1;
+>   
+> -		mmu->pkru_mask |= (pkey_bits & 3) << pfec;
+> +		mmu->pkr_mask |= (pkey_bits & 3) << pfec;
+>   	}
+>   }
+>   
+> @@ -4785,7 +4785,7 @@ static void paging64_init_context_common(struct kvm_vcpu *vcpu,
+>   
+>   	reset_rsvds_bits_mask(vcpu, context);
+>   	update_permission_bitmask(vcpu, context, false);
+> -	update_pkru_bitmask(vcpu, context, false);
+> +	update_pkr_bitmask(vcpu, context, false);
+>   	update_last_nonleaf_level(vcpu, context);
+>   
+>   	MMU_WARN_ON(!is_pae(vcpu));
+> @@ -4815,7 +4815,7 @@ static void paging32_init_context(struct kvm_vcpu *vcpu,
+>   
+>   	reset_rsvds_bits_mask(vcpu, context);
+>   	update_permission_bitmask(vcpu, context, false);
+> -	update_pkru_bitmask(vcpu, context, false);
+> +	update_pkr_bitmask(vcpu, context, false);
+>   	update_last_nonleaf_level(vcpu, context);
+>   
+>   	context->page_fault = paging32_page_fault;
+> @@ -4925,7 +4925,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+>   	}
+>   
+>   	update_permission_bitmask(vcpu, context, false);
+> -	update_pkru_bitmask(vcpu, context, false);
+> +	update_pkr_bitmask(vcpu, context, false);
+>   	update_last_nonleaf_level(vcpu, context);
+>   	reset_tdp_shadow_zero_bits_mask(vcpu, context);
+>   }
+> @@ -5032,7 +5032,7 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
+>   	context->mmu_role.as_u64 = new_role.as_u64;
+>   
+>   	update_permission_bitmask(vcpu, context, true);
+> -	update_pkru_bitmask(vcpu, context, true);
+> +	update_pkr_bitmask(vcpu, context, true);
+>   	update_last_nonleaf_level(vcpu, context);
+>   	reset_rsvds_bits_mask_ept(vcpu, context, execonly);
+>   	reset_ept_shadow_zero_bits_mask(vcpu, context, execonly);
+> @@ -5103,7 +5103,7 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
+>   	}
+>   
+>   	update_permission_bitmask(vcpu, g_context, false);
+> -	update_pkru_bitmask(vcpu, g_context, false);
+> +	update_pkr_bitmask(vcpu, g_context, false);
+>   	update_last_nonleaf_level(vcpu, g_context);
+>   }
+>   
+> 
 
-I checked. There is no __exit initcall.
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
--Saravana
