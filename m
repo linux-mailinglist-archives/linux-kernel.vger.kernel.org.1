@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A1F30463D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7166430463A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393339AbhAZRqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:46:24 -0500
-Received: from mga03.intel.com ([134.134.136.65]:7333 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389685AbhAZIRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:17:43 -0500
-IronPort-SDR: aXEIvNg2Od9NFNvG3ii+ffGkRK+ut/kgJhP9ZwM1eg3wpzSzLFv9c55MkfFG6wMyQQt2QElVXN
- HarnJea+ltOw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="179946985"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="179946985"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:15:52 -0800
-IronPort-SDR: RyXTL8a39rMcJII30OSQ7JLgYTMXws0K6NW/SnkAdeFm/Eq4q0GvY6UvHmA0IGL8IoQkA7xETY
- pglZrRdtAJSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="577725450"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by fmsmga005.fm.intel.com with ESMTP; 26 Jan 2021 00:15:50 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 1/2] iommu/vt-d: Clear PRQ overflow only when PRQ is empty
-Date:   Tue, 26 Jan 2021 16:07:29 +0800
-Message-Id: <20210126080730.2232859-2-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210126080730.2232859-1-baolu.lu@linux.intel.com>
-References: <20210126080730.2232859-1-baolu.lu@linux.intel.com>
+        id S2393253AbhAZRqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:46:08 -0500
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:59803 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389729AbhAZIO1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:14:27 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 34A9ED30;
+        Tue, 26 Jan 2021 03:13:37 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 26 Jan 2021 03:13:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=z3CgsX2Q3UZcJEN+GpCQOg4Ir/z
+        7oA+6ArewKns30U4=; b=rDOx/6ZUI8TxCbWGJMIlD0dDFF+rn5534ywQhMzaZgo
+        wlTks+D+m1RZPuayaeTh/hZQKMRCBZavryl3wDlV/wlX1KPdTidi1u6PahE4YVwH
+        GUo+sEV4VRwKLh7qQX0kkhrRfwK5VkpTIwmhr05TiXguICe2axplJmwN8Gfn6o36
+        XH8vN55EEO8iTdqBnIQNzXgpDaJ7Oz+p5St4JaFbaNOmIddAAtqQWbTUIXo6cYxM
+        JMqAmxeOqZcppaZyOPOUSAnjiw5hxi17Rxq1KONgLQrWQmgg2rTz2Ver4cb3l8Ga
+        X8vSRk8Nt8tj1G3nicBmbSg6QRBif1A/PBy5Je6ja0A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=z3CgsX
+        2Q3UZcJEN+GpCQOg4Ir/z7oA+6ArewKns30U4=; b=G0oY0yN9dgNm73u2QNcNdi
+        kJdzcO+BDT9qJLU6GVcv8raPqZ1oejgrCvMLyaSuJlOcFSbkB6GkMOtYLBKfcMKi
+        66xQ8C+XxwfholykK+KT2yzbXj9gEnIrlIocNrOmha403OmEPAggFAgRL1oPdsnN
+        tPR+CN2Su0Pckmjup/TFEfAiU1shKHoyjvxm4YzDS80tTwxK3DAp8PguANIUxL03
+        UXTpGZZpJqHMWvhqlLt2BoTq+airlge5tPEBUOB+nZUWqZcXE489ah0i4li+bg/b
+        3Dcg+vxLFCTEf4rp7R4N7vzd5HQVhwxLekPkJ8yqsDH86FEVueXdbkU0lidqFysA
+        ==
+X-ME-Sender: <xms:MM8PYPzuJ03ON_420FBPtsMUHZ7cJcyB_HeGBogs2xY7IT1z4vu9QA>
+    <xme:MM8PYHRF_dogLECYepX7eTGZ_dInBPDqZO1LoIFqYWazR0JbaaVkRnpCgPcbjQqR6
+    0tMu-Kfu2sqgw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeggdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:MM8PYJUijWAi3Z-j74UZ6LAe1bGYGXbxyVzrlooUHuktt16f6vWbIQ>
+    <xmx:MM8PYJgDaUV_anrq6PVb05FHzqxWsGWRpP-Nv2wBsFtLSwo07rCRUA>
+    <xmx:MM8PYBDcVEN8yqndJ5_d6437iiQf06ypk_HKwQJnZLcIcG1qIIsJAQ>
+    <xmx:MM8PYLAU03_Rb3lEmc2-tgg7WwaD52WXhGYc7ibT5bnTwe4epaHx2A>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 18DFA1080063;
+        Tue, 26 Jan 2021 03:13:35 -0500 (EST)
+Date:   Tue, 26 Jan 2021 09:13:33 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Justin Forbes <jforbes@redhat.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <YA/PLdX5m9f4v+Yl@kroah.com>
+References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
+ <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
+ <20210125212755.jfwlqogpcarmxdgt@treble>
+ <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
+ <20210125220757.vxdsf6sttpy46cq7@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125220757.vxdsf6sttpy46cq7@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is incorrect to always clear PRO when it's set w/o first checking
-whether the overflow condition has been cleared. Current code assumes
-that if an overflow condition occurs it must have been cleared by earlier
-loop. However since the code runs in a threaded context, the overflow
-condition could occur even after setting the head to the tail under some
-extreme condition. To be sane, we should read both head/tail again when
-seeing a pending PRO and only clear PRO after all pending PRs have been
-handled.
+On Mon, Jan 25, 2021 at 04:07:57PM -0600, Josh Poimboeuf wrote:
+> On Tue, Jan 26, 2021 at 06:44:35AM +0900, Masahiro Yamada wrote:
+> > > > If people use a different compiler, they must be
+> > > > prepared for any possible problem.
+> > > >
+> > > > Using different compiler flags for in-tree and out-of-tree
+> > > > is even more dangerous.
+> > > >
+> > > > For example, CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled
+> > > > for in-tree build, and then disabled for out-of-tree modules,
+> > > > the struct layout will mismatch, won't it?
+> > >
+> > > If you read the patch you'll notice that it handles that case, when it's
+> > > caused by GCC mismatch.
+> > >
+> > > However, as alluded to in the [1] footnote, it doesn't handle the case
+> > > where the OOT build system doesn't have gcc-plugin-devel installed.
+> > > Then CONFIG_GCC_PLUGIN_RANDSTRUCT gets silently disabled and the build
+> > > succeeds!  That happens even without a GCC mismatch.
+> > 
+> > 
+> > Ah, sorry.
+> > 
+> > I responded too early before reading the patch fully.
+> > 
+> > But, I do not like to make RANDSTRUCT a special case.
+> > 
+> > I'd rather want to stop building for any plugin.
+> 
+> Other than RANDSTRUCT there doesn't seem to be any problem with
+> disabling them (and printing a warning) in the OOT build.  Why not give
+> users that option?  It's harmless, and will make distro's (and their
+> users') lives easier.
+> 
+> Either GCC mismatch is ok, or it's not.  Let's not half-enforce it.
 
-Suggested-by: Kevin Tian <kevin.tian@intel.com>
-Link: https://lore.kernel.org/linux-iommu/MWHPR11MB18862D2EA5BD432BF22D99A48CA09@MWHPR11MB1886.namprd11.prod.outlook.com/
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+As I said earlier, it's not ok, we can not support it at all.
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 033b25886e57..d7c98c5fa4e7 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -1042,8 +1042,17 @@ static irqreturn_t prq_event_thread(int irq, void *d)
- 	 * Clear the page request overflow bit and wake up all threads that
- 	 * are waiting for the completion of this handling.
- 	 */
--	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO)
--		writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
-+	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
-+		pr_info_ratelimited("IOMMU: %s: PRQ overflow detected\n",
-+				    iommu->name);
-+		head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
-+		tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
-+		if (head == tail) {
-+			writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
-+			pr_info_ratelimited("IOMMU: %s: PRQ overflow cleared",
-+					    iommu->name);
-+		}
-+	}
- 
- 	if (!completion_done(&iommu->prq_complete))
- 		complete(&iommu->prq_complete);
--- 
-2.25.1
+thanks,
 
+greg k-h
