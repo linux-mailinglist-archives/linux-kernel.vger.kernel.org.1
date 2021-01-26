@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9A7304354
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38F330435E
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404525AbhAZQCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:02:35 -0500
-Received: from www62.your-server.de ([213.133.104.62]:55492 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391626AbhAZQCJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:02:09 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4QmC-0007wD-Pt; Tue, 26 Jan 2021 17:01:08 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4QmC-000VGR-Et; Tue, 26 Jan 2021 17:01:08 +0100
-Subject: Re: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64
- to fix build errors
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-References: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <67891f2f-a374-54fb-e6e5-44145190934f@iogearbox.net>
-Date:   Tue, 26 Jan 2021 17:01:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2404460AbhAZQFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:05:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51124 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404545AbhAZQCj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 11:02:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5F312AB92;
+        Tue, 26 Jan 2021 16:01:56 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 243FF1F2A70; Tue, 26 Jan 2021 17:01:56 +0100 (CET)
+Date:   Tue, 26 Jan 2021 17:01:56 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Jan Kara <jack@suse.cz>, Paolo Valente <paolo.valente@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jia Cheng Hu <jia.jiachenghu@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the block tree
+Message-ID: <20210126160156.GF10966@quack2.suse.cz>
+References: <20210125204032.6b6a604b@canb.auug.org.au>
+ <3F91181A-EDF2-4F01-9839-17B40D6EA07F@linaro.org>
+ <fb60bac7-f572-d131-d761-f6ce10a05f69@kernel.dk>
+ <20210126132946.GC10966@quack2.suse.cz>
+ <a2d6399c-ba61-472b-1bf2-aa261d7dbbbe@kernel.dk>
 MIME-Version: 1.0
-In-Reply-To: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26061/Tue Jan 26 13:29:51 2021)
+Content-Type: multipart/mixed; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <a2d6399c-ba61-472b-1bf2-aa261d7dbbbe@kernel.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 3:05 PM, Tiezhu Yang wrote:
-> There exists many build errors when make M=samples/bpf on the Loongson
-> platform, this issue is MIPS related, x86 compiles just fine.
+
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue 26-01-21 08:47:55, Jens Axboe wrote:
+> On 1/26/21 6:29 AM, Jan Kara wrote:
+> > On Mon 25-01-21 11:39:50, Jens Axboe wrote:
+> >> On 1/25/21 11:35 AM, Paolo Valente wrote:
+> >>>
+> >>>
+> >>>> Il giorno 25 gen 2021, alle ore 10:40, Stephen Rothwell <sfr@canb.auug.org.au> ha scritto:
+> >>>>
+> >>>> Hi all,
+> >>>>
+> >>>> In commit
+> >>>>
+> >>>>  d4fc3640ff36 ("block, bfq: set next_rq to waker_bfqq->next_rq in waker injection")
+> >>>>
+> >>>> Fixes tag
+> >>>>
+> >>>>  Fixes: c5089591c3ba ("block, bfq: detect wakers and unconditionally inject their I/O")
+> >>>>
+> >>>> has these problem(s):
+> >>>>
+> >>>>  - Target SHA1 does not exist
+> >>>>
+> >>>> Maybe you meant
+> >>>>
+> >>>> Fixes: 13a857a4c4e8 ("block, bfq: detect wakers and unconditionally inject their I/O")
+> >>>>
+> >>>
+> >>> Hi Jens,
+> >>> how to proceed in such a case (with patches already applied by you)?
+> >>> Shall I send you a v2 with only this change?
+> >>
+> >> We just have to ignore it... But in the future, always double check that
+> >> you are using the right shas, not some sha from an internal tree.
+> > 
+> > FWIW I have a commit hook in my git tree that just refuses a commit with
+> > unknown Fixes tag SHA. Exactly to catch such mishaps in the patches I
+> > merge...
 > 
-> Here are some errors:
-[...]
-> 
-> So we can do the similar things in samples/bpf/Makefile, just add
-> platform specific and generic include dir for MIPS Loongson64 to
-> fix the build errors.
+> That's not a bad idea, would help catch it upfront. Can you share the
+> hook?
 
-Your patch from [0] said ...
+Sure, attached. Note that the hook just gets commit ID from the Fixes tag
+and formats it with 12 commit ID digits and appropriate commit subject.
 
-   There exists many build warnings when make M=samples/bpf on the Loongson
-   platform, this issue is MIPS related, x86 compiles just fine.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
-   Here are some warnings:
-   [...]
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=commit-msg
 
-   With #ifndef __SANE_USERSPACE_TYPES__  in tools/include/linux/types.h,
-   the above error has gone and this ifndef change does not hurt other
-   compilations.
+#!/bin/sh
+#
+# Called by "git commit" with one argument, the name of the file
+# that has the commit message.  The hook should exit with non-zero
+# status after issuing an appropriate message if it wants to stop the
+# commit.  The hook is allowed to edit the commit message file.
 
-... which ave the impression that all the issues were fixed. What else
-is needed aside from this patch here? More samples/bpf fixes coming? If
-yes, please all submit them as a series instead of individual ones.
+# Process all Fixes tags, check commit IDs and set appropriate commit titles.
 
-  [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=190d1c921ad0862da14807e1670f54020f48e889
+for COMMIT in $(sed -n -e 's/^Fixes: \([0-9a-z]*\).*/\1/p' "$1"); do
+	GOOD=$(git show -s --abbrev-commit --abbrev=12 --pretty=format:"%h (\"%s\")%n" $COMMIT -- 2>/dev/null)
+	if [ -z "$GOOD" ]; then
+		echo "Unknown commit: $COMMIT"
+		exit 1
+	fi
+	echo "Setting fixes tag: $GOOD"
+	sed -i -e "s/^Fixes: $COMMIT.*/Fixes: $GOOD/" "$1"
+done
 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   samples/bpf/Makefile | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index 362f314..45ceca4 100644
-> --- a/samples/bpf/Makefile
-> +++ b/samples/bpf/Makefile
-> @@ -185,6 +185,10 @@ endif
->   
->   ifeq ($(ARCH), mips)
->   TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
-> +ifdef CONFIG_MACH_LOONGSON64
-> +BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-loongson64
-> +BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-generic
-> +endif
->   endif
->   
->   TPROGS_CFLAGS += -Wall -O2
-> 
+exit 0
 
+--huq684BweRXVnRxX--
