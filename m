@@ -2,138 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699B6304336
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58730432F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404342AbhAZP6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:58:23 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37579 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731383AbhAZPzk (ORCPT
+        id S2404129AbhAZP5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:57:22 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58642 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404038AbhAZP4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:55:40 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 387118A2;
-        Tue, 26 Jan 2021 10:54:34 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 26 Jan 2021 10:54:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=WEhBWcXfYR0hSsHK9E0r3hiNKHR
-        ePLjjhBxL3as/9sE=; b=JOEresn8MPDAspRi6prGDc+No1q7PVUbhDpq7HTLhQK
-        JNhH5RHWDaPRXw9u7EHSqQ8P08wangpwIORfTPz+hSfWsh6mAiJRShPI4k19v3la
-        0UzvqrKN3Z5JLnOW54DQV0oByrp7xPnAcwBNGnRjokO7ZeKhTcdVlOsNaYMeyJQj
-        5ksTh96KeT9RVKs7YMI6XiYc980Urf7ThMHG1HV1F1vMS5t9h7U/nLSScvz8OUiX
-        WrfZjyaDYu/C7YIKCbmGuvBqxjDS79KnsUETXoPhWPT+pufNvD95vgwWyeP0PChY
-        jBYSh3EcVne0BgMhn7d8WVGFwSbyb1w34V1al2p04Kg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WEhBWc
-        XfYR0hSsHK9E0r3hiNKHRePLjjhBxL3as/9sE=; b=XwanmoC3uY6llMW455zQRg
-        UY9hFOH/7Dn6KoIe0Rmoy8az2yCtYiif70lB1aVY6DM+t1VtEUKBGZw/qMW0WFBl
-        EtK2lH3JEbZY2N/ULCfFc2Cv8VITJC+qoOsIzI3o+FWGuHtoov+vkGS5IUJzr5KX
-        Y2ZptQMyShDRUWGiu+rCENWU03qzSkLPRzzG53tJmOGR6xtOReP00W/owhEUe2Pl
-        JHnuLZ6sWCJxCX1eTe8KwZNzwKm2Gxq7zOxt5nEvc1qS2Z7vv0ASTv7PkJUBJGWW
-        UtQpB6FeihVv4CfDe6hYyQtpO6fuq6KjT/fQaaOK2BiRr0chVHrn2bpohq1y6I8Q
-        ==
-X-ME-Sender: <xms:ODsQYDyl7rcfWDo1hcxU_FA6YLDKLhYxrbc12-qCyuCtUz7xBP1nOQ>
-    <xme:ODsQYLReVlzHXLNoV2aIih0J3Yb2K7IrAKJ2RLuYYEv0e45ttHQxnru2Wdo_OtDgE
-    Ed8zrYACB-o5yOINbE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeigddvtdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:ODsQYNViLEcViZFqy3zuhvIt0bSulyiPnXXaNGjKqtdXlGsu6CBfEg>
-    <xmx:ODsQYNje8EXOJWtn7gj0DNeqt3glrKu6FS8Xns6WZPjuxDdqttLSFg>
-    <xmx:ODsQYFC2KCtpoGkrwyq0NP62kwYFWT_VOIC2U-VlRvVLQuo0khlLOw>
-    <xmx:OTsQYPD9pHqGOerf-T4a20UT96gDPLtcFfmcYRxGnZ-dSPScJzjB3A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 077C524005A;
-        Tue, 26 Jan 2021 10:54:31 -0500 (EST)
-Date:   Tue, 26 Jan 2021 16:54:30 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Emilio =?utf-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Boris BREZILLON <boris.brezillon@free-electrons.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 12/21] clk: sunxi: clk-sun6i-ar100: Demote non-conformant
- kernel-doc header
-Message-ID: <20210126155430.llxijnwf5i4z3end@gilmour>
-References: <20210126124540.3320214-1-lee.jones@linaro.org>
- <20210126124540.3320214-13-lee.jones@linaro.org>
+        Tue, 26 Jan 2021 10:56:48 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10QFsqjg073040;
+        Tue, 26 Jan 2021 09:54:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611676492;
+        bh=hUvKQU0Snwdl605ZoDKkRxVXh6lpILjpBfiJhsZr2Qw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Oj2q57S32ucPnNxs6Ysppalx9Zu9XTxUeJSAfqb6L+T12VaxJrw/50+VLjNuDOUTa
+         188yVzPdtOJ0M8AG3OzdqB6/LBKtB+ImenDgeKFvvcMr1PvAT8X43d8djLSvdkLc9o
+         52TGOt6vyX/WfhUbRA+G+tIhq6TjULuZx4RRyEVU=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10QFsqKd055804
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 26 Jan 2021 09:54:52 -0600
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
+ Jan 2021 09:54:51 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 26 Jan 2021 09:54:51 -0600
+Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10QFspg7120927;
+        Tue, 26 Jan 2021 09:54:51 -0600
+Subject: Re: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
+To:     Rob Herring <robh@kernel.org>
+CC:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        David Lechner <david@lechnology.com>,
+        <devicetree@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+References: <20210115205819.19426-1-s-anna@ti.com>
+ <20210126000443.GA1223706@robh.at.kernel.org>
+ <8f4a47f8-18dc-cb73-10db-033e5e5adb25@ti.com>
+ <CAL_JsqLYfGvJ=zYbdJp4pUjmmJ_ROu1u_0dVwTj06Cw5+23fGw@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <23225695-57ea-f255-798b-17cf6962e543@ti.com>
+Date:   Tue, 26 Jan 2021 09:54:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qnn2dox7m5n4tnba"
-Content-Disposition: inline
-In-Reply-To: <20210126124540.3320214-13-lee.jones@linaro.org>
+In-Reply-To: <CAL_JsqLYfGvJ=zYbdJp4pUjmmJ_ROu1u_0dVwTj06Cw5+23fGw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---qnn2dox7m5n4tnba
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 1/25/21 8:47 PM, Rob Herring wrote:
+> On Mon, Jan 25, 2021 at 6:16 PM Suman Anna <s-anna@ti.com> wrote:
+>>
+>> Hi Rob,
+>>
+>> On 1/25/21 6:04 PM, Rob Herring wrote:
+>>> On Fri, Jan 15, 2021 at 02:58:19PM -0600, Suman Anna wrote:
+>>>> The '#address-cells' property looks to be a required property for
+>>>> interrupt controller nodes as indicated by a warning message seen
+>>>> when building dtbs with W=2. Adding the property to the PRUSS INTC
+>>>> dts nodes though fails the dtbs_check. Add this property to the
+>>>> PRUSS INTC binding to make it compliant with both dtbs_check and
+>>>> building dtbs.
+>>>>
+>>>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>>>> ---
+>>>> Hi Rob,
+>>>>
+>>>> This patch is also part of our effort to get rid of the warnings seen
+>>>> around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
+>>>> INTC bindings to not get a warning with dtbs_check while also ensuring
+>>>> no warnings while building dtbs with W=2.
+>>>>
+>>>> I would have expected the '#address-cells' requirement to be inherited
+>>>> automatically. And looking through the schema files, I actually do not
+>>>> see the interrupt-controller.yaml included automatically anywhere. You
+>>>> had asked us to drop the inclusion in this binding in our first version
+>>>> with YAML [3]. Am I missing something, and how do we ensure that this
+>>>> is enforced automatically for everyone?
+>>>
+>>> interrupt-controller.yaml is applied to any node named
+>>> 'interrupt-controller'. More generally, if 'compatible' is not present,
+>>> then we look at $nodename for the default 'select'. In your case, you
+>>> didn't name the node appropriately.
+>>
+>> Thanks for the clarification. Yeah, I didn't add anything specifically, since
+>> the expectation is interrupt-controller. Should I be adding that to this binding?
+> 
+> No, either interrupt-controller.yaml needs to learn a new node name or
+> your node names need to be fixed. I prefer the latter, but if you have
+> more than 1 and don't have a unit-address (and in turn a 'reg' prop)
+> we'd have to do the former. How are the interrupts controllers
+> accessed if there's no way to address them?
 
-On Tue, Jan 26, 2021 at 12:45:31PM +0000, Lee Jones wrote:
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/clk/sunxi/clk-sun6i-ar100.c:26: warning: Function parameter or m=
-ember 'req' not described in 'sun6i_get_ar100_factors'
->=20
-> Cc: "Emilio L=F3pez" <emilio@elopez.com.ar>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Jernej Skrabec <jernej.skrabec@siol.net>
-> Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/clk/sunxi/clk-sun6i-ar100.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/clk/sunxi/clk-sun6i-ar100.c b/drivers/clk/sunxi/clk-=
-sun6i-ar100.c
-> index e1b7d0929cf7f..54babc2b4b9ee 100644
-> --- a/drivers/clk/sunxi/clk-sun6i-ar100.c
-> +++ b/drivers/clk/sunxi/clk-sun6i-ar100.c
-> @@ -16,7 +16,7 @@
-> =20
->  #include "clk-factors.h"
-> =20
-> -/**
-> +/*
->   * sun6i_get_ar100_factors - Calculates factors p, m for AR100
->   *
->   * AR100 rate is calculated as follows
+The PRUSS INTC will always have a unit-address, so we won't have the issues with
+having to maintain unique names. All my examples already have the nodes in the
+form 'interrupt-controller@<addr>'. Anyway, I will drop this patch, and post a
+new patch adding the $nodename to the binding.
 
-This is the sixth patch doing the exact same thing over the files in
-that folder you sent. Please fix all the occurences at once
+> 
+>>
+>>>
+>>> We can't check this in interrupt-controller.yaml because #address-cells
+>>> is not always 0. GICv3 is one notable exception.
+>>>
+>>>>
+>>>> regards
+>>>> Suman
+>>>>
+>>>> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
+>>>
+>>> I've commented on this thread now in regards to #address-cells.
+>>
+>> I suppose I still need this patch to be defined to unblock the ICSSG nodes
+>> getting accepted by our dts maintainer. Care to give your Reviewed-by for the
+>> change? Or I can spin a v2 with $nodename added as well if that's needed too.
+> 
+> No, I don't think you have to add #address-cells. We need to fix the
+> warning in dtc.
 
-Maxime
+Thank you for clarifying this.
 
---qnn2dox7m5n4tnba
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBA7NgAKCRDj7w1vZxhR
-xYO7APwOiVCyUAzi+H1ya3JfgPFkWNp8lSe27PibLsdTLuL4FAD8Cba36b3FZnYw
-MHel4mag1MjL961Dlv0HLQVQRetMewM=
-=L8vk
------END PGP SIGNATURE-----
-
---qnn2dox7m5n4tnba--
+regards
+Suman
