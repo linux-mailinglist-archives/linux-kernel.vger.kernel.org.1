@@ -2,152 +2,571 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1F4303B43
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E193303B47
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404992AbhAZLO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:14:59 -0500
-Received: from esa5.fujitsucc.c3s2.iphmx.com ([68.232.159.76]:54817 "EHLO
-        esa5.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728488AbhAZIGt (ORCPT
+        id S1731603AbhAZLPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:15:50 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35889 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389665AbhAZIIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:06:49 -0500
-IronPort-SDR: 8aDFyMddk+//Yxe92vzfQph6xAqJiCAyhX6JcFmjSy7RrHOtMe8EfB20HcHgkVqUrwDudXB4Nj
- IhJZEzM5/qI8am936iu61wdl+RiVTFSmebiaHJBH/CTkYG9pXhZhknZUuo4i7ciYqSL5lunXTQ
- fup3C9PzlHQfQcOJMEYuGLN/3BJl/x+SZyrqg7UAK/xfIQcl/bEXY9TH7050CWCoEer6+zQRvx
- 0Hi2YkQKm8CEYtCMR6QC2Y4y4hHkOOlSUze/bH1TjNaA+/4s9cYOS8erdgqqVt9I2DphFcErJy
- vus=
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="25071521"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602514800"; 
-   d="scan'208";a="25071521"
-Received: from mail-ty1jpn01lp2055.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.55])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 17:03:32 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n++Srhbh+tXtGILrLALW3nx+nh11JoSsKqswVMGZhMNDiaAtwdSV0WG1DgyoxIwwkfjSnJnjLpJtR9Yc36GXeLRJk7Isu1xX95jHpnIaCcypum8hq8l8SDIsMdEFLbdt7u930a77vWHRFcaq788N0RyBNvRPpQ9Wu8UNyczz5jYMvtxxexFNjNIv/+PLe+gjNMSnS9K9LHSIwUNW5YQRgXKevDq2k2loGIwLLVS8KzBpmJkRMxwLIvlHfoCLhAK/wDYaOexiiiYuRuEqUEC5By+Dad4LUX3eMMXDNCY1hqUMGPZjiqtxIL5b8nlT7gb1Bigvz6/0qbAEFnhEhDOa7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3UWBoujJrDINirzdyl4LdFdpJyBNsRHpgsF6QLhXWQ4=;
- b=J1r4QFcoIZUHpTLKeG55JemUMA+kMewKvf5mBZzQbKryxgxE4UvFuDAUtPl0+xRr6uG/PPFJ6WJ8c34veAOZ7hEh1SJ8BHCRpXm0qq+5ZhIXrcnCXxRITD0r43XmZvj4LpTXuRakHvz7pkJQhJaPfmAcV42ne4pT9rw2W7Pc2qULBHpZzp8NcxFNzGncM8s497xW67NHr7zLcEvw7boSrol7I4E0JSqmHqstKXoEYsiQHynV2rU6w8brcww1YKgBoGi5NVv/4TH4zEFhv7wOXjl1fWaIM4WzElz9698sCUsZWxPwRoiN0S5k6GEHCoFC77dtrqGYUr0poiG/TVs0Ug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3UWBoujJrDINirzdyl4LdFdpJyBNsRHpgsF6QLhXWQ4=;
- b=BsoTPj26/qjQgPPlM+Cmj8ACgUdqi33pRPIJCExH/Kz7mVGIZVMuOdXcfJ/FeMB3VUNORdGmeeLznauguZkY/qlzy6hLkcpW9zqJt/OMLfOL1H+CLEI65TWk9b19DfXgJqS7uT94oeq1YWy5cvKmjLDh1nS7qSGtFic5yDJTYDk=
-Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
- by OSBPR01MB3095.jpnprd01.prod.outlook.com (2603:1096:604:1d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.14; Tue, 26 Jan
- 2021 08:03:29 +0000
-Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
- ([fe80::340a:689c:36e1:fedd]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
- ([fe80::340a:689c:36e1:fedd%7]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
- 08:03:29 +0000
-From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
-To:     'John Garry' <john.garry@huawei.com>
-CC:     "will@kernel.org" <will@kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "leo.yan@linaro.org" <leo.yan@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
+        Tue, 26 Jan 2021 03:08:39 -0500
+X-UUID: 36f44e781c804cc4a930a4aad0b18915-20210126
+X-UUID: 36f44e781c804cc4a930a4aad0b18915-20210126
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 956547362; Tue, 26 Jan 2021 16:03:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 16:03:56 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 16:03:56 +0800
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ryan Case <ryandcase@chromium.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 3/3] perf vendor events: Add Fujitsu A64FX V1.2 pmu
- event
-Thread-Topic: [PATCH v2 3/3] perf vendor events: Add Fujitsu A64FX V1.2 pmu
- event
-Thread-Index: AQHW7+ShaO8SfWqmV0W2c0KaDfSTBaoyWX8AgADbuSCABRsRAIABQycw
-Date:   Tue, 26 Jan 2021 08:03:29 +0000
-Message-ID: <OSBPR01MB4600437C6564700CCA65654CF7BC0@OSBPR01MB4600.jpnprd01.prod.outlook.com>
-References: <20210121105425.2695843-1-nakamura.shun@jp.fujitsu.com>
- <20210121105425.2695843-4-nakamura.shun@jp.fujitsu.com>
- <a0f7c814-5c56-4e17-1198-a611d19f57d5@huawei.com>
- <OSBPR01MB4600A7B761F965C443D92DCFF7A00@OSBPR01MB4600.jpnprd01.prod.outlook.com>
- <59c31515-8275-5dfe-0276-ed9353bceb6c@huawei.com>
-In-Reply-To: <59c31515-8275-5dfe-0276-ed9353bceb6c@huawei.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-shieldmailcheckermailid: d2b094aaac05471da359b656f1e25076
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.3
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fujitsu.com;
-x-originating-ip: [218.44.52.179]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 583dc3b3-b3e6-42aa-1f5e-08d8c1d0de05
-x-ms-traffictypediagnostic: OSBPR01MB3095:
-x-microsoft-antispam-prvs: <OSBPR01MB3095C60C59FF9CCC3D600F5DF7BC0@OSBPR01MB3095.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: roXQefkTaAT6HAQUmjqEjEucl3djBTGJwsWw8Yp81ErSWB0TZy7IIGosoiA2r/KBEl8edh/Kfw88xy+yZ6DZ/7BRN2r+UMVrxJv9hTs3Yr1bKqmAuUkObakLSRcCAF976rQBz8diHEMmjkg7CQxuj3Gnh+soOeI2zxDCwPXvQZxmI6T6+7WXG0gLy6eQe3kckQ8zY9yLydOh7k7Y1ltjnk5MvU7sP6a2m8fNwRolgrw/772/16a6EaybWpv06WTKK2jIU6P/L2F7RC+LgLAU4L5nIvkwQ9IVBV02iAUvU6zyh0ELWGdMBsRoogcxeW8do4uIp4LMgsAJ0nH9N7MOVrjyQbsYzZTyxi3S1Vkcq3pENNnMwEyqcnoZhKiYAeqsb6XaUt4H0gPS1wZVR+caXJ/My54lHc2gIL7BJWsvKIcHhNO4/TejrLRln+dFPJF7IPTGc6emJDdy2JcAJ43ac59QgoyISWl8ghiG0P0QAN2iLx5VXLP8QzDiaDcORTzbRsIGNnkVQjPCVb9Pvjs75yVNca5L+Qj3p5a8B6zwKw01OQMz2my5Zk4c5HE9n/VorgNFQR7PsT8x0AIKJofEhJYHKpQXA446BlGg8lxD1SzURCOGCEttLAsZZMQc9Z/jCpahjlelkA6s+8Gx53kbQg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(346002)(366004)(396003)(6506007)(53546011)(66946007)(64756008)(33656002)(52536014)(85182001)(66556008)(186003)(8936002)(76116006)(66446008)(8676002)(66476007)(26005)(7696005)(83380400001)(2906002)(5660300002)(55016002)(9686003)(71200400001)(316002)(54906003)(966005)(478600001)(86362001)(6916009)(4326008)(777600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?SkV4d1pTWkQvNHY4a3BNRitORWk0RVF2cnEzMk9HMy9OaWl0Q3pnTXNiZmow?=
- =?utf-8?B?djlQMEIyUFd1akY1dnVMVGVVaTZ0VGRnYnRlTC9mdkkwMVcvVWc4ME5YaURU?=
- =?utf-8?B?Yy9taHhiTU80bE9yQmppcVdlcG9sTUtsTjRyRnlzZEFsNG4yeDFucUIwY1Bv?=
- =?utf-8?B?RzUvQ2UvRGpPc2xoTGFxTHFRcWVBL3JPOWIxZlhHd05GS0lMcWJ3NlMwalZH?=
- =?utf-8?B?cHJDWjJCTzRkNHBkK1hTSmpzbE5uRHlMOUFydUJqMXkxejJrRHNXN3FmbWZm?=
- =?utf-8?B?T29MeGNnMjJXL1RRRnNsTm9oNmNDSnBkZGVjdC9IbE9tcGFiRkVqZ3VEMklX?=
- =?utf-8?B?dkRTY0tmVjBqeWk4djg2Wm9VQUVjUVNVRkpCcTU0ZTR1MDNIUC9KdnIzQmFF?=
- =?utf-8?B?RENiM2t4bnBzOXd3OHVEK29HalZUV1d6bU9TdnozTklVbitCRWIwSHFwbmlz?=
- =?utf-8?B?TjBqM0tXY0RiRG1BTy9WZEtYN0xXak5DbTFPQzZkcThNTE1lRDRJR1Ivd2ls?=
- =?utf-8?B?R0dZKzJnNUc1SFhOUzZRbGdEamR0VXBsUVkwZFM0NXpaQkEySktDdjBtMXRw?=
- =?utf-8?B?Y01mWlhsNG1ZRm4xSzVtOHI4cUJZenRBalFrYUFaSEZpQkhscFZGN3AvVFpJ?=
- =?utf-8?B?VURzTW5XaVRLZW9ZMU9GUytMNXA0VG1hclR3UXNTaTZxMVJBZyt5Qko1bE55?=
- =?utf-8?B?SFROUDlMd1BtNUlHRSttK3Erc09YMzlYOUdsM05sdE81VDFHZ1hRQXZBV3E4?=
- =?utf-8?B?OHpaK2xuRzZSNWtKVnMvS2tFSGN2Y01vc1BYNWhRTEUrMVhtaXk2VXk1ZjNW?=
- =?utf-8?B?R0Rwbzdna1NSTmRadHYxays3dW9SQ3NXMVZPaTMrOVgrL3FNcmI5VXFkRWcv?=
- =?utf-8?B?SDZ2bmphWkZpOFBGZmNtL1RWdHF5Y1pDTXc0Zm83Q1d4TnVMb1ZVMFk0ZTc0?=
- =?utf-8?B?SlVzRWtuMG9wMTZqVDA3QWZ5bis4anQwMlZTSmVxRHZGamRPbXBpTDBvVmJT?=
- =?utf-8?B?QUUyK1Z4R1B3cUQySDZzY2xIcXlQYTJSMlFLenhyb2s1TGFaampMckNndlhL?=
- =?utf-8?B?V0E0bDBOMmRGVU9tcG92SXBTZHB2TC9EWFVScnlHYmo2bXpzRWtHVVFxd3lY?=
- =?utf-8?B?MFBBUDhpa2pYbGZja2xBeHN3bXZYaDI3YjRxZHdPdW40d2ZqZkVJaTQ5QzJ6?=
- =?utf-8?B?eWpyb3kxUFAzUDcvdlc2UUFVOTZkS2JQdlExanl6NWpucVBzamZQRmJlUHZm?=
- =?utf-8?B?Mm5DZUpicmViV2Q2MXhaazFDWmRhcDdDSUN4eGluNm0rTTdkQ0g3RDc0OC9a?=
- =?utf-8?B?R2hiSjZvVnhWemRjSXRYUFRWNzh1dktpdFBEQUNzbW9ZMGJjbTBkVUViWVZm?=
- =?utf-8?B?Q3A3dGtCSHhjWTJmSVFya2JKVU5IeGNIRlJJYVY0N2M2L21xa29ROWduRGVk?=
- =?utf-8?Q?B2c/oD/H?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Henry Chen <henryc.chen@mediatek.com>
+Subject: [PATCH V8 03/12] soc: mediatek: add driver for dvfsrc support
+Date:   Tue, 26 Jan 2021 16:03:45 +0800
+Message-ID: <1611648234-15043-4-git-send-email-henryc.chen@mediatek.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
+References: <1611648234-15043-1-git-send-email-henryc.chen@mediatek.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 583dc3b3-b3e6-42aa-1f5e-08d8c1d0de05
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 08:03:29.4561
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jhDriN+3ElO+4xAtsvuBe7FIXDVsLpyoKwq/O2Kfzqm/sdLJiO9vYJVEddMBEaKPsaWUuBAh6XrIWzSUx8p/FCWDdEOzaWTA8F3J7EZbrbs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB3095
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEpvaG4NCg0KVGhhbmtzIGZvciB0aGUgaW5mby4NCg0KQmVzdCBSZWdhcmRzDQpTaHVuc3Vr
-ZQ0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2huIEdhcnJ5IDxqb2hu
-LmdhcnJ5QGh1YXdlaS5jb20+DQo+IFNlbnQ6IE1vbmRheSwgSmFudWFyeSAyNSwgMjAyMSA5OjQ2
-IFBNDQo+IFRvOiBOYWthbXVyYSwgU2h1bnN1a2Uv5Lit5p2RIOS/iuS7iyA8bmFrYW11cmEuc2h1
-bkBmdWppdHN1LmNvbT4NCj4gQ2M6IHdpbGxAa2VybmVsLm9yZzsgbWF0aGlldS5wb2lyaWVyQGxp
-bmFyby5vcmc7IGxlby55YW5AbGluYXJvLm9yZzsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5p
-bmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJl
-OiBbUEFUQ0ggdjIgMy8zXSBwZXJmIHZlbmRvciBldmVudHM6IEFkZCBGdWppdHN1IEE2NEZYIFYx
-LjIgcG11DQo+IGV2ZW50DQo+IA0KPiBPbiAyMi8wMS8yMDIxIDA4OjM3LCBuYWthbXVyYS5zaHVu
-QGZ1aml0c3UuY29tIHdyb3RlOg0KPiA+PiBJIHRoaW5rIHRoYXQgd2UgbmVlZCB0byB0aGUgc2Ft
-ZSBoZXJlIGFzIHRoZSBJTVBERUYgcmVjb21tZW5kZWQNCj4gPj4gZXZlbnRzIC0gYWRkIGEgY29t
-bW9uIEpTT04gdG8gcmVkdWNlIHRoZSBkdXBsaWNhdGlvbi4NCj4gPj4NCj4gPj4gSSBoYWQgZG9u
-ZSB3b3JrIG9uIHRoaXMgZm9yIGN1cnJlbnQgQ1BVcywgYnV0IG5ldmVyIGdvdCBpdCBmaW5pc2hl
-ZC4NCj4gPj4gTGV0IG1lIGNoZWNrIHRoZSBzdGF0dXMuDQo+ID4gSWYgeW91IGxldCBtZSBrbm93
-IHRoZSByZXN1bHQsIEkgd2lsbCByZXNlbmQgdGhlIHBhdGNoIGFjY29yZGluZyB0byB0aGUgcG9s
-aWN5Lg0KPiANCj4gSSBqdXN0IHNlbnQgdGhpczoNCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bGttbC8xNjExNTc1NjAwLTI0NDAtMS1naXQtc2VuZC1lbWFpbC1qb2huLmdhcnJ5QGh1DQo+IGF3
-ZWkuY29tL1QvI3UNCj4gDQo+IEFuZCBub3cgSSBoYXZlIG5vdGljZWQgdGhhdCBJIGRpZCBub3Qg
-Y2MgYXJtNjQgcmV2aWV3ZXJzIDooDQo+IA0KPiBBbnl3YXksIGl0IHNob3VsZCBiZSBvayB0byBi
-YXNlIG9uIHRoYXQgc2VyaWVzLg0KPiANCj4gQW5kIHBsZWFzZSBhZGQgZ3V5cyB1bmRlciAiUEVS
-Rk9STUFOQ0UgRVZFTlRTIFNVQlNZU1RFTSIgZm9yIHNlbmRpbmcNCj4gcGF0Y2hlcyBmb3IgcGVy
-ZiwgYW5kIG5vdCBqdXN0IHRoZSBhcm02NCBndXlzLg0KPiANCj4gVGhhbmtzLA0KPiBKb2huDQo=
+Add dvfsrc driver for MT6873/MT8183/MT8192
+
+Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
+---
+ drivers/soc/mediatek/Kconfig            |  11 +
+ drivers/soc/mediatek/Makefile           |   1 +
+ drivers/soc/mediatek/mtk-dvfsrc.c       | 421 ++++++++++++++++++++++++++++++++
+ include/linux/soc/mediatek/mtk_dvfsrc.h |  35 +++
+ 4 files changed, 468 insertions(+)
+ create mode 100644 drivers/soc/mediatek/mtk-dvfsrc.c
+ create mode 100644 include/linux/soc/mediatek/mtk_dvfsrc.h
+
+diff --git a/drivers/soc/mediatek/Kconfig b/drivers/soc/mediatek/Kconfig
+index fdd8bc0..2dcf023 100644
+--- a/drivers/soc/mediatek/Kconfig
++++ b/drivers/soc/mediatek/Kconfig
+@@ -26,6 +26,17 @@ config MTK_DEVAPC
+ 	  The violation information is logged for further analysis or
+ 	  countermeasures.
+ 
++config MTK_DVFSRC
++	tristate "MediaTek DVFSRC Support"
++	depends on ARCH_MEDIATEK
++	help
++	  Say yes here to add support for the MediaTek DVFSRC (dynamic voltage
++	  and frequency scaling resource collector) found
++	  on different MediaTek SoCs. The DVFSRC is a proprietary
++	  hardware which is used to collect all the requests from
++	  system and turn into the decision of minimum Vcore voltage
++	  and minimum DRAM frequency to fulfill those requests.
++
+ config MTK_INFRACFG
+ 	bool "MediaTek INFRACFG Support"
+ 	select REGMAP
+diff --git a/drivers/soc/mediatek/Makefile b/drivers/soc/mediatek/Makefile
+index b6908db..4ead103 100644
+--- a/drivers/soc/mediatek/Makefile
++++ b/drivers/soc/mediatek/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_MTK_CMDQ) += mtk-cmdq-helper.o
+ obj-$(CONFIG_MTK_DEVAPC) += mtk-devapc.o
++obj-$(CONFIG_MTK_DVFSRC) += mtk-dvfsrc.o
+ obj-$(CONFIG_MTK_INFRACFG) += mtk-infracfg.o
+ obj-$(CONFIG_MTK_PMIC_WRAP) += mtk-pmic-wrap.o
+ obj-$(CONFIG_MTK_SCPSYS) += mtk-scpsys.o
+diff --git a/drivers/soc/mediatek/mtk-dvfsrc.c b/drivers/soc/mediatek/mtk-dvfsrc.c
+new file mode 100644
+index 0000000..c0c6d91
+--- /dev/null
++++ b/drivers/soc/mediatek/mtk-dvfsrc.c
+@@ -0,0 +1,421 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 MediaTek Inc.
++ */
++
++#include <linux/arm-smccc.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++#include <linux/module.h>
++#include <linux/notifier.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/soc/mediatek/mtk_dvfsrc.h>
++#include <linux/soc/mediatek/mtk_sip_svc.h>
++
++#define DVFSRC_IDLE     0x00
++#define DVFSRC_GET_TARGET_LEVEL(x)  (((x) >> 0) & 0x0000ffff)
++#define DVFSRC_GET_CURRENT_LEVEL(x) (((x) >> 16) & 0x0000ffff)
++#define kbps_to_mbps(x) ((x) / 1000)
++
++#define POLL_TIMEOUT        1000
++#define STARTUP_TIME        1
++
++#define MTK_SIP_DVFSRC_INIT		0x00
++
++#define DVFSRC_OPP_DESC(_opp_table)	\
++{	\
++	.opps = _opp_table,	\
++	.num_opp = ARRAY_SIZE(_opp_table),	\
++}
++
++struct dvfsrc_opp {
++	u32 vcore_opp;
++	u32 dram_opp;
++};
++
++struct dvfsrc_opp_desc {
++	const struct dvfsrc_opp *opps;
++	u32 num_opp;
++};
++
++struct mtk_dvfsrc;
++struct dvfsrc_soc_data {
++	const int *regs;
++	const struct dvfsrc_opp_desc *opps_desc;
++	int (*get_target_level)(struct mtk_dvfsrc *dvfsrc);
++	int (*get_current_level)(struct mtk_dvfsrc *dvfsrc);
++	u32 (*get_vcore_level)(struct mtk_dvfsrc *dvfsrc);
++	u32 (*get_vcp_level)(struct mtk_dvfsrc *dvfsrc);
++	void (*set_dram_bw)(struct mtk_dvfsrc *dvfsrc, u64 bw);
++	void (*set_dram_peak_bw)(struct mtk_dvfsrc *dvfsrc, u64 bw);
++	void (*set_dram_hrtbw)(struct mtk_dvfsrc *dvfsrc, u64 bw);
++	void (*set_opp_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
++	void (*set_vcore_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
++	void (*set_vscp_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
++	int (*wait_for_opp_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
++	int (*wait_for_vcore_level)(struct mtk_dvfsrc *dvfsrc, u32 level);
++};
++
++struct mtk_dvfsrc {
++	struct device *dev;
++	struct platform_device *icc;
++	struct platform_device *regulator;
++	const struct dvfsrc_soc_data *dvd;
++	int dram_type;
++	const struct dvfsrc_opp_desc *curr_opps;
++	void __iomem *regs;
++	spinlock_t req_lock;
++	struct mutex pstate_lock;
++	struct notifier_block scpsys_notifier;
++};
++
++static u32 dvfsrc_read(struct mtk_dvfsrc *dvfs, u32 offset)
++{
++	return readl(dvfs->regs + dvfs->dvd->regs[offset]);
++}
++
++static void dvfsrc_write(struct mtk_dvfsrc *dvfs, u32 offset, u32 val)
++{
++	writel(val, dvfs->regs + dvfs->dvd->regs[offset]);
++}
++
++#define dvfsrc_rmw(dvfs, offset, val, mask, shift) \
++	dvfsrc_write(dvfs, offset, \
++		(dvfsrc_read(dvfs, offset) & ~(mask << shift)) | (val << shift))
++
++enum dvfsrc_regs {
++	DVFSRC_SW_REQ,
++	DVFSRC_SW_REQ2,
++	DVFSRC_LEVEL,
++	DVFSRC_TARGET_LEVEL,
++	DVFSRC_SW_BW,
++	DVFSRC_SW_PEAK_BW,
++	DVFSRC_SW_HRT_BW,
++	DVFSRC_VCORE_REQUEST,
++};
++
++static const int mt8183_regs[] = {
++	[DVFSRC_SW_REQ] =	0x4,
++	[DVFSRC_SW_REQ2] =	0x8,
++	[DVFSRC_LEVEL] =	0xDC,
++	[DVFSRC_SW_BW] =	0x160,
++};
++
++static const struct dvfsrc_opp *get_current_opp(struct mtk_dvfsrc *dvfsrc)
++{
++	int level;
++
++	level = dvfsrc->dvd->get_current_level(dvfsrc);
++	return &dvfsrc->curr_opps->opps[level];
++}
++
++static int dvfsrc_is_idle(struct mtk_dvfsrc *dvfsrc)
++{
++	if (!dvfsrc->dvd->get_target_level)
++		return true;
++
++	return dvfsrc->dvd->get_target_level(dvfsrc);
++}
++
++static int dvfsrc_wait_for_vcore_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	const struct dvfsrc_opp *curr;
++
++	return readx_poll_timeout_atomic(get_current_opp, dvfsrc, curr,
++					 curr->vcore_opp >= level, STARTUP_TIME,
++					 POLL_TIMEOUT);
++}
++
++static int mt8183_wait_for_opp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	const struct dvfsrc_opp *target, *curr;
++	int ret;
++
++	target = &dvfsrc->curr_opps->opps[level];
++	ret = readx_poll_timeout(get_current_opp, dvfsrc, curr,
++				 curr->dram_opp >= target->dram_opp &&
++				 curr->vcore_opp >= target->vcore_opp,
++				 STARTUP_TIME, POLL_TIMEOUT);
++	if (ret < 0) {
++		dev_warn(dvfsrc->dev,
++			 "timeout, target: %u, dram: %d, vcore: %d\n", level,
++			 curr->dram_opp, curr->vcore_opp);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int mt8183_get_target_level(struct mtk_dvfsrc *dvfsrc)
++{
++	return DVFSRC_GET_TARGET_LEVEL(dvfsrc_read(dvfsrc, DVFSRC_LEVEL));
++}
++
++static int mt8183_get_current_level(struct mtk_dvfsrc *dvfsrc)
++{
++	int level;
++
++	/* HW level 0 is begin from 0x10000 */
++	level = DVFSRC_GET_CURRENT_LEVEL(dvfsrc_read(dvfsrc, DVFSRC_LEVEL));
++	/* Array index start from 0 */
++	return ffs(level) - 1;
++}
++
++static u32 mt8183_get_vcore_level(struct mtk_dvfsrc *dvfsrc)
++{
++	return (dvfsrc_read(dvfsrc, DVFSRC_SW_REQ2) >> 2) & 0x3;
++}
++
++static void mt8183_set_dram_bw(struct mtk_dvfsrc *dvfsrc, u64 bw)
++{
++	dvfsrc_write(dvfsrc, DVFSRC_SW_BW, div_u64(kbps_to_mbps(bw), 100));
++}
++
++static void mt8183_set_opp_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	int vcore_opp, dram_opp;
++	const struct dvfsrc_opp *opp;
++
++	/* translate pstate to dvfsrc level, and set it to DVFSRC HW */
++	opp = &dvfsrc->curr_opps->opps[level];
++	vcore_opp = opp->vcore_opp;
++	dram_opp = opp->dram_opp;
++
++	dev_dbg(dvfsrc->dev, "vcore_opp: %d, dram_opp: %d\n",
++		vcore_opp, dram_opp);
++	dvfsrc_write(dvfsrc, DVFSRC_SW_REQ, dram_opp | vcore_opp << 2);
++}
++
++static void mt8183_set_vcore_level(struct mtk_dvfsrc *dvfsrc, u32 level)
++{
++	dvfsrc_write(dvfsrc, DVFSRC_SW_REQ2, level << 2);
++}
++
++void mtk_dvfsrc_send_request(const struct device *dev, u32 cmd, u64 data)
++{
++	int ret, state;
++	struct mtk_dvfsrc *dvfsrc = dev_get_drvdata(dev);
++
++	dev_dbg(dvfsrc->dev, "cmd: %d, data: %llu\n", cmd, data);
++
++	switch (cmd) {
++	case MTK_DVFSRC_CMD_BW_REQUEST:
++		dvfsrc->dvd->set_dram_bw(dvfsrc, data);
++		return;
++	case MTK_DVFSRC_CMD_PEAK_BW_REQUEST:
++		if (dvfsrc->dvd->set_dram_peak_bw)
++			dvfsrc->dvd->set_dram_peak_bw(dvfsrc, data);
++		return;
++	case MTK_DVFSRC_CMD_OPP_REQUEST:
++		if (dvfsrc->dvd->set_opp_level)
++			dvfsrc->dvd->set_opp_level(dvfsrc, data);
++		break;
++	case MTK_DVFSRC_CMD_VCORE_REQUEST:
++		dvfsrc->dvd->set_vcore_level(dvfsrc, data);
++		break;
++	case MTK_DVFSRC_CMD_HRTBW_REQUEST:
++		if (dvfsrc->dvd->set_dram_hrtbw)
++			dvfsrc->dvd->set_dram_hrtbw(dvfsrc, data);
++		else
++			return;
++		break;
++	case MTK_DVFSRC_CMD_VSCP_REQUEST:
++		dvfsrc->dvd->set_vscp_level(dvfsrc, data);
++		break;
++	default:
++		dev_err(dvfsrc->dev, "unknown command: %d\n", cmd);
++		return;
++	}
++
++	/* DVFSRC need to wait at least 2T(~196ns) to handle request
++	 * after recieving command
++	 */
++	udelay(STARTUP_TIME);
++
++	ret = readx_poll_timeout(dvfsrc_is_idle, dvfsrc,
++				 state, state == DVFSRC_IDLE,
++				 STARTUP_TIME, POLL_TIMEOUT);
++
++	if (ret < 0) {
++		dev_warn(dvfsrc->dev,
++			 "%d: idle timeout, data: %llu, last: %d -> %d\n",
++			 cmd, data,
++			 dvfsrc->dvd->get_current_level(dvfsrc),
++			 dvfsrc->dvd->get_target_level(dvfsrc));
++		return;
++	}
++
++	/* The previous change may be requested by previous request.
++	 * So we delay 1us, then start checking opp is reached enough.
++	 */
++	udelay(STARTUP_TIME);
++
++	if (cmd == MTK_DVFSRC_CMD_OPP_REQUEST)
++		ret = dvfsrc->dvd->wait_for_opp_level(dvfsrc, data);
++	else
++		ret = dvfsrc->dvd->wait_for_vcore_level(dvfsrc, data);
++
++	if (ret < 0) {
++		dev_warn(dvfsrc->dev,
++			 "%d: wait timeout, data: %llu, last: %d -> %d\n",
++			 cmd, data,
++			 dvfsrc->dvd->get_current_level(dvfsrc),
++			 dvfsrc->dvd->get_target_level(dvfsrc));
++	}
++
++}
++EXPORT_SYMBOL(mtk_dvfsrc_send_request);
++
++int mtk_dvfsrc_query_info(const struct device *dev, u32 cmd, int *data)
++{
++	struct mtk_dvfsrc *dvfsrc = dev_get_drvdata(dev);
++
++	switch (cmd) {
++	case MTK_DVFSRC_CMD_VCORE_LEVEL_QUERY:
++		*data = dvfsrc->dvd->get_vcore_level(dvfsrc);
++		break;
++	case MTK_DVFSRC_CMD_VSCP_LEVEL_QUERY:
++		*data = dvfsrc->dvd->get_vcp_level(dvfsrc);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(mtk_dvfsrc_query_info);
++
++static int mtk_dvfsrc_probe(struct platform_device *pdev)
++{
++	struct arm_smccc_res ares;
++	struct resource *res;
++	struct mtk_dvfsrc *dvfsrc;
++	int ret;
++
++	dvfsrc = devm_kzalloc(&pdev->dev, sizeof(*dvfsrc), GFP_KERNEL);
++	if (!dvfsrc)
++		return -ENOMEM;
++
++	dvfsrc->dvd = of_device_get_match_data(&pdev->dev);
++	dvfsrc->dev = &pdev->dev;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	dvfsrc->regs = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(dvfsrc->regs))
++		return PTR_ERR(dvfsrc->regs);
++
++	spin_lock_init(&dvfsrc->req_lock);
++	mutex_init(&dvfsrc->pstate_lock);
++
++	arm_smccc_smc(MTK_SIP_VCOREFS_CONTROL, MTK_SIP_DVFSRC_INIT, 0, 0, 0,
++		0, 0, 0, &ares);
++
++	if (!ares.a0) {
++		dvfsrc->dram_type = ares.a1;
++		dev_info(dvfsrc->dev, "dram_type: %d\n", dvfsrc->dram_type);
++	} else {
++		dev_err(dvfsrc->dev, "init fails: %lu\n", ares.a0);
++		return ares.a0;
++	}
++
++	dvfsrc->curr_opps = &dvfsrc->dvd->opps_desc[dvfsrc->dram_type];
++	platform_set_drvdata(pdev, dvfsrc);
++
++	dvfsrc->regulator = platform_device_register_data(dvfsrc->dev,
++			"mtk-dvfsrc-regulator", -1, NULL, 0);
++	if (IS_ERR(dvfsrc->regulator)) {
++		dev_err(dvfsrc->dev, "Failed create regulator device\n");
++		ret = PTR_ERR(dvfsrc->regulator);
++		goto err;
++	}
++
++	dvfsrc->icc = platform_device_register_data(dvfsrc->dev,
++			"mediatek-emi-icc", -1, NULL, 0);
++	if (IS_ERR(dvfsrc->icc)) {
++		dev_err(dvfsrc->dev, "Failed create icc device\n");
++		ret = PTR_ERR(dvfsrc->icc);
++		goto unregister_regulator;
++	}
++
++	ret = devm_of_platform_populate(&pdev->dev);
++	if (ret)
++		platform_device_unregister(dvfsrc->icc);
++
++	return 0;
++
++unregister_regulator:
++	platform_device_unregister(dvfsrc->regulator);
++err:
++	return ret;
++}
++
++static const struct dvfsrc_opp dvfsrc_opp_mt8183_lp4[] = {
++	{0, 0}, {0, 1}, {0, 2}, {1, 2},
++};
++
++static const struct dvfsrc_opp dvfsrc_opp_mt8183_lp3[] = {
++	{0, 0}, {0, 1}, {1, 1}, {1, 2},
++};
++
++static const struct dvfsrc_opp_desc dvfsrc_opp_mt8183_desc[] = {
++	DVFSRC_OPP_DESC(dvfsrc_opp_mt8183_lp4),
++	DVFSRC_OPP_DESC(dvfsrc_opp_mt8183_lp3),
++	DVFSRC_OPP_DESC(dvfsrc_opp_mt8183_lp3),
++};
++
++static const struct dvfsrc_soc_data mt8183_data = {
++	.opps_desc = dvfsrc_opp_mt8183_desc,
++	.regs = mt8183_regs,
++	.get_target_level = mt8183_get_target_level,
++	.get_current_level = mt8183_get_current_level,
++	.get_vcore_level = mt8183_get_vcore_level,
++	.set_dram_bw = mt8183_set_dram_bw,
++	.set_opp_level = mt8183_set_opp_level,
++	.set_vcore_level = mt8183_set_vcore_level,
++	.wait_for_opp_level = mt8183_wait_for_opp_level,
++	.wait_for_vcore_level = dvfsrc_wait_for_vcore_level,
++};
++
++static int mtk_dvfsrc_remove(struct platform_device *pdev)
++{
++	struct mtk_dvfsrc *dvfsrc = platform_get_drvdata(pdev);
++
++	platform_device_unregister(dvfsrc->regulator);
++	platform_device_unregister(dvfsrc->icc);
++
++	return 0;
++}
++
++static const struct of_device_id mtk_dvfsrc_of_match[] = {
++	{
++		.compatible = "mediatek,mt8183-dvfsrc",
++		.data = &mt8183_data,
++	}, {
++		/* sentinel */
++	},
++};
++
++static struct platform_driver mtk_dvfsrc_driver = {
++	.probe	= mtk_dvfsrc_probe,
++	.remove	= mtk_dvfsrc_remove,
++	.driver = {
++		.name = "mtk-dvfsrc",
++		.of_match_table = of_match_ptr(mtk_dvfsrc_of_match),
++	},
++};
++
++static int __init mtk_dvfsrc_init(void)
++{
++	return platform_driver_register(&mtk_dvfsrc_driver);
++}
++subsys_initcall(mtk_dvfsrc_init);
++
++static void __exit mtk_dvfsrc_exit(void)
++{
++	platform_driver_unregister(&mtk_dvfsrc_driver);
++}
++module_exit(mtk_dvfsrc_exit);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("MTK DVFSRC driver");
+diff --git a/include/linux/soc/mediatek/mtk_dvfsrc.h b/include/linux/soc/mediatek/mtk_dvfsrc.h
+new file mode 100644
+index 0000000..823eff9
+--- /dev/null
++++ b/include/linux/soc/mediatek/mtk_dvfsrc.h
+@@ -0,0 +1,35 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * Copyright (c) 2021 MediaTek Inc.
++ */
++
++#ifndef __SOC_MTK_DVFSRC_H
++#define __SOC_MTK_DVFSRC_H
++
++#define MTK_DVFSRC_CMD_BW_REQUEST		0
++#define MTK_DVFSRC_CMD_OPP_REQUEST		1
++#define MTK_DVFSRC_CMD_VCORE_REQUEST		2
++#define MTK_DVFSRC_CMD_HRTBW_REQUEST		3
++#define MTK_DVFSRC_CMD_VSCP_REQUEST		4
++#define MTK_DVFSRC_CMD_PEAK_BW_REQUEST		5
++
++#define MTK_DVFSRC_CMD_VCORE_LEVEL_QUERY	0
++#define MTK_DVFSRC_CMD_VSCP_LEVEL_QUERY		1
++
++#if IS_ENABLED(CONFIG_MTK_DVFSRC)
++void mtk_dvfsrc_send_request(const struct device *dev, u32 cmd, u64 data);
++int mtk_dvfsrc_query_info(const struct device *dev, u32 cmd, int *data);
++
++#else
++
++static inline void mtk_dvfsrc_send_request(const struct device *dev, u32 cmd,
++					   u64 data)
++{ return -ENODEV; }
++
++static inline int mtk_dvfsrc_query_info(const struct device *dev, u32 cmd,
++					int *data);
++{ return -ENODEV; }
++
++#endif /* CONFIG_MTK_DVFSRC */
++
++#endif
+-- 
+1.9.1
+
