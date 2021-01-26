@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0385F30417C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B271E3041BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406080AbhAZPGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S2406037AbhAZPLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406084AbhAZPEY (ORCPT
+        with ESMTP id S2406197AbhAZPJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:04:24 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680A0C061A29
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:03:44 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id t8so12609597ljk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:03:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KecQmTVET4kmmQb+nGX7vlSRx0qisPRYWkX9lTkeJwg=;
-        b=tMxc7G8wt7liaMOEZUYsU792Zl7DIEWinvwQf01g4C8G/gktlKtYPlb7aVD62qQ31+
-         TPPtTaUtCo2l4J5uChJE5wyRijakGYaqqa2MQs3sXeJ6yGWOfzqclxWdEx0HVKMfFDYG
-         oHiR5NSBEyR/jx33tUPqlH/vW44cGk0fPXHXZR9gjcaG5aOHK3z9o1IukaoSzqdmfbcs
-         jxHfV5wr5/guFDlOmSiARfMcRXavnjpy28Nr9/iIWcrppMd5sTTUSMCd9KS+yvyA13U+
-         DaKco1PmEy5DWKAzQVVSEZzTVyl92U1eFp5S26ttUknDtHEL3FVabupf6FM2hcu1x8Yw
-         7FTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KecQmTVET4kmmQb+nGX7vlSRx0qisPRYWkX9lTkeJwg=;
-        b=jD+kaxjY9LyAmK1p5ksSYhcWAuBd4MXPnaIxv0tflXb8/GHr1N/JMj9V8kGGe4AZMW
-         vMbZ1WZI8lvrJjTGwvBuD3KZbxeJvjywF3qhpJlvVbYGMdHMw9vFK9PM5svCp4XIed8c
-         n5CPpJbz94wOvVW7YNZkAyn52qu5twmKeBTqIhW09aafLLiikcKidc4dI31g2FDmxLy7
-         Dwrq36tMCTPbzQNGtSH9Y71mbu5mgviZpSmSzGx/+DFJ668mwTdeoCNtLcWQtGvD2S0i
-         AxP9MxFpuKDOlQiXQjP4FDPf3FPggSuxnsK/O8GCR60mJq7dcw1jutLGdCh1ZWH9LTGV
-         Hy/g==
-X-Gm-Message-State: AOAM533oo4x7NQJeodvwlHxGhgT/ILsJIWo99eInEbMkhaLATrJm0esx
-        f4D8rRgYD/fzr4bSKpl82L9/MtlgSGRKCSRj01lLYg==
-X-Google-Smtp-Source: ABdhPJwG/6a1Su0120L5C7R1KMmFNO61Pb5eFJNnzViBU06i6BbRAEw7ofQUlMC7EP9ZRYICO8aQcEMFWBxyALLM+7A=
-X-Received: by 2002:a2e:b4cd:: with SMTP id r13mr3186242ljm.273.1611673422964;
- Tue, 26 Jan 2021 07:03:42 -0800 (PST)
+        Tue, 26 Jan 2021 10:09:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E93DC061A31;
+        Tue, 26 Jan 2021 07:08:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jywVRgQb+R/8nrC6wcC0tprf9W0TUepj2A0VJnxWY7w=; b=D4n+1nPul2NOhNPZRJuwX9YBXA
+        JCsbDOMHCHWzYej2yXoxgPSqOSFOSutcobuuWI4mrpr2gxzMUDgMRUeHaPla/101DVXo0E2AWgrYV
+        9qcPPaqJlzqQgs6POzLFnL8qlSEosQofGYG+V4fgpkbMBH1OXZo0s+BaoVzJ/LlxghxvO5AM8vdZC
+        jMQpJZRfNz/zt9dVM8wPjs6RQke1S6dshAm2nT/DLTOsyf8oKb4OkCjOmzr+JzXgQOSUezIeXLnIW
+        NfWwvWl5+8K859FC+VwnewuNACvy8w+x7rH5FySoGGAL4E4cH50i7BeSeMiPrAJHyFaG6G1Gg8GMv
+        qIaWxJVQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4PuB-005nGD-92; Tue, 26 Jan 2021 15:05:48 +0000
+Date:   Tue, 26 Jan 2021 15:05:19 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Changheun Lee <nanich.lee@samsung.com>, Johannes.Thumshirn@wdc.com,
+        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        osandov@fb.com, patchwork-bot@kernel.org, tj@kernel.org,
+        tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, mj0123.lee@samsung.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v3 1/2] bio: limit bio max size
+Message-ID: <20210126150519.GA1377213@infradead.org>
+References: <CGME20210126014805epcas1p2c4fc40f01c9c89b0a94ff6cac5408347@epcas1p2.samsung.com>
+ <20210126013235.28711-1-nanich.lee@samsung.com>
+ <20210126035748.GA1071341@T590>
 MIME-Version: 1.0
-References: <20210119062908.20169-1-liu.xiang@zlingsmart.com>
- <20210121164013.cqfxvach4ugkohm7@gilmour> <CACRpkdb1gn2e9=ip6ipAwW27vmf1FCs_y1Z=w-K8y8Z9MXVBMw@mail.gmail.com>
- <5c4b7a8c-c549-43ae-8ec6-5ae3ed26d321.liu.xiang@zlingsmart.com>
-In-Reply-To: <5c4b7a8c-c549-43ae-8ec6-5ae3ed26d321.liu.xiang@zlingsmart.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 26 Jan 2021 16:03:29 +0100
-Message-ID: <CACRpkdaJQcuWwS2g4UgRpWb+iHYSmWoNj6gEsvGwtPZq+aJBbQ@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: sunxi: fix use-after-free in sunxi_pmx_free()
-To:     liu xiang <liu.xiang@zlingsmart.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        liuxiang_1999 <liuxiang_1999@126.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126035748.GA1071341@T590>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 7:31 AM liu xiang <liu.xiang@zlingsmart.com> wrote:
+On Tue, Jan 26, 2021 at 11:57:48AM +0800, Ming Lei wrote:
+> >  				*same_page = false;
+> >  				return false;
+> >  			}
+> 
+> So far we don't need bio->bi_disk or bio->bi_bdev(will be changed in
+> Christoph's patch) during adding page to bio, so there is null ptr
+> refereance risk.
 
-> > Liu can you make a patch to Kconfig to just select REGULATOR?
-> > Possibly even the specific regulator driver this SoC is using
-> > if it is very specific for this purpose.
->
-> I found that the regulator driver is related to the specific board, not the SoC.
-> There is no board config for ARM64 SoC like ARM.
-> Is a good idea to select the regulator driver in the pinctrl Konfig? Or just
-> select CONFIG_REGULATOR_FIXED_VOLTAGE to avoid the use-after-free warning?
-
-If that regulator is what the board uses to satisfy this driver then that
-is what you should select. Write some blurb in the commit message
-about what is going on.
-
-You can even add a comment in Kconfig like that:
-
-# Needed to provide power to rails
-select REGULATOR_FIXED_VOLTAGE
-
-Yours,
-Linus Walleij
+I've started resurrecting my old plan to always have a valid device
+in the bio from allocation time on.  It is pretty invasive, but
+probably worth it.  Sending out the first prep series right now, the
+actual changes should be ready for an RFC later this week.
