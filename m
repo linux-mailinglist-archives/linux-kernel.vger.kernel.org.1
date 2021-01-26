@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D341A304FE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FACC304FE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236331AbhA0DeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:34:08 -0500
-Received: from mga03.intel.com ([134.134.136.65]:26824 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728305AbhAZVUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:20:30 -0500
-IronPort-SDR: J3LnKVKHc4rJDDQBjayy9k1z+vY2CT2SPuMm6KXV6HWujbiAvjm+En82Y6Md/rTinC4ABKL5Eo
- LqQxbPNgrXgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180053369"
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="180053369"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:18:44 -0800
-IronPort-SDR: 4iTTBV0o2ga6lWkHDHxryG2WhSuJdilm+bkuKDP78IT3/ZezPB9TtMHwN3ICZydABh+UTCaJ8F
- Hn/e1OEa8bNA==
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="362132839"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:18:41 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l4VkW-00EvYJ-2y; Tue, 26 Jan 2021 23:19:44 +0200
-Date:   Tue, 26 Jan 2021 23:19:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, lizefan@huawei.com, mingo@kernel.org,
-        tglx@linutronix.de, josh@joshtriplett.org, yury.norov@gmail.com,
-        peterz@infradead.org, paulmck@kernel.org, fweisbec@gmail.com,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH 4/8] lib: bitmap: move ERANGE check from set_region to
- check_region
-Message-ID: <YBCHcMcwMPQLBlAV@smile.fi.intel.com>
-References: <20210126171141.122639-1-paul.gortmaker@windriver.com>
- <20210126171141.122639-5-paul.gortmaker@windriver.com>
+        id S236348AbhA0DeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:34:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730010AbhAZVWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:22:08 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92348C0613ED;
+        Tue, 26 Jan 2021 13:21:26 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id j13so21525597edp.2;
+        Tue, 26 Jan 2021 13:21:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ST72NpNiWqGqAmDnIglIq4qqpfbif3rOOqv4QJndT00=;
+        b=NTPgBLCt4jWVNE1sRWCNVWYSgz2jvQLBM8uYJUGhriCmGP0rwCgLI0Q/DNOIj86d5m
+         ytOoR7EZOJMjFzoxDhZ8IC5YK9XuAKDoDSagSSY/0LdeeOWM8T1QKN5iNrgbsRXgPldC
+         355X1RERr8XUckOqFe7JDIwDRJlBT6pu1jQhOIcIK/lWJSNb46A7CB7Ez4yPkepWeDA7
+         xXVwQmtmHshvyQv1g0qjxnpKD9nrRs4q6hut8y0Db6BbrynDqP/oOWVCU13yIs9M0yzz
+         RH4lvorabwFZSqptaDocjqqJgOUHtn8lTXPIs47VZnDZ/SDcvWKUPGNPkD7jIpZQgThL
+         /YCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ST72NpNiWqGqAmDnIglIq4qqpfbif3rOOqv4QJndT00=;
+        b=mIGP3DnO8HfBYRXlp6Hyex10suB1WfciL5Cfz+V/iB3NV3tAnoq4PnVC6emariHsP2
+         1IIiSx4r3SRwa/bvq+G7+FRKW3YxBtehQgX9ToWtN9nXt9rJJtMYPjNuF5UyGHNBlTak
+         eKPDw9bZx4ExC0TX+pSgf2xdi7KTYxo+gjFYCX1Hz36gCqXgb+0j9qmqMxiedY8jV0C+
+         XwDVHVP1fnfs2A/7FMZCDQezngxlaV4UNGn88a5rorZo/XgI7OtB8G0OUeyV1i5ieuFJ
+         3dRJ3SDLuRUDDqyO5b81Soj6QQxMF0x8E9kyPe/kOCMP7jGtxTUedZHZsNS4EFNmfAxW
+         Nkww==
+X-Gm-Message-State: AOAM532yL2Q2I/3cvaraFvKMZso0TEy9Laa89SD98OrLCG95pnPpJI7C
+        uQHrjlPyaoKApJcH6Zj+qpA=
+X-Google-Smtp-Source: ABdhPJyDuh27x8pJ4ko7OieJdPGlYmb/9HJWMdPtpmfHDigB8FhJlZqwxzHVUqCjwFXRSlEiz/zGAw==
+X-Received: by 2002:aa7:c485:: with SMTP id m5mr5964424edq.320.1611696084707;
+        Tue, 26 Jan 2021 13:21:24 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id f13sm10295956ejf.42.2021.01.26.13.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 13:21:23 -0800 (PST)
+Date:   Tue, 26 Jan 2021 23:21:22 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lorenzo Carletti <lorenzo.carletti98@gmail.com>
+Cc:     linus.walleij@linaro.org, andrew@lunn.ch, vivien.didelot@gmail.com,
+        f.fainelli@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] net: dsa: rtl8366rb: standardize init jam tables
+Message-ID: <20210126212122.vthdb46vx2avx2ap@skbuf>
+References: <20210125045631.2345-1-lorenzo.carletti98@gmail.com>
+ <20210125045631.2345-2-lorenzo.carletti98@gmail.com>
+ <20210126210837.7mfzkjqsc3aui3fn@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126171141.122639-5-paul.gortmaker@windriver.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210126210837.7mfzkjqsc3aui3fn@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:11:37PM -0500, Paul Gortmaker wrote:
-> It makes sense to do all the checks in check_region() and not 1/2
-> in check_region and 1/2 in set_region.
-> 
-> Since set_region is called immediately after check_region, the net
-> effect on runtime is zero, but it gets rid of an if (...) return...
+On Tue, Jan 26, 2021 at 11:08:37PM +0200, Vladimir Oltean wrote:
+> On another note, the patch doesn't apply cleanly to net-next/master.
 
-Like it!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Cc: Yury Norov <yury.norov@gmail.com>
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> ---
->  lib/bitmap.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 162e2850c622..833f152a2c43 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -500,17 +500,12 @@ struct region {
->  	unsigned int nbits;
->  };
->  
-> -static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
-> +static void bitmap_set_region(const struct region *r, unsigned long *bitmap)
->  {
->  	unsigned int start;
->  
-> -	if (r->end >= r->nbits)
-> -		return -ERANGE;
-> -
->  	for (start = r->start; start <= r->end; start += r->group_len)
->  		bitmap_set(bitmap, start, min(r->end - start + 1, r->off));
-> -
-> -	return 0;
->  }
->  
->  static int bitmap_check_region(const struct region *r)
-> @@ -518,6 +513,9 @@ static int bitmap_check_region(const struct region *r)
->  	if (r->start > r->end || r->group_len == 0 || r->off > r->group_len)
->  		return -EINVAL;
->  
-> +	if (r->end >= r->nbits)
-> +		return -ERANGE;
-> +
->  	return 0;
->  }
->  
-> @@ -656,9 +654,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
->  		if (ret)
->  			return ret;
->  
-> -		ret = bitmap_set_region(&r, maskp);
-> -		if (ret)
-> -			return ret;
-> +		bitmap_set_region(&r, maskp);
->  	}
->  
->  	return 0;
-> -- 
-> 2.17.1
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sorry, it does, I should learn how to apply a patch some day.
