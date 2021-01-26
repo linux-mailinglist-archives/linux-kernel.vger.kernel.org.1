@@ -2,225 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4B3303ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DBD303ADB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404647AbhAZKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:54:44 -0500
-Received: from mail-m975.mail.163.com ([123.126.97.5]:60468 "EHLO
-        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbhAZDRg (ORCPT
+        id S2404665AbhAZKyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732498AbhAZDSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:17:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=L7wRq
-        yZN9bDScq/SPTZt1MjJWDbCm2B0pcGx9u9lRGI=; b=dmyeiKzOI7Nvf6paZ6/tw
-        9fDG9OYaGQViJwXfuMvMU1PJWi2XFUSsVO58D6tqpo9hW9++0jE25RGpnI8ZnF/l
-        IZCefNfValnakMVQnzapXqmZfuqmxbi5axa4YqdQR4rUfC49inEtMXw+iTsRbbvU
-        foNUX3ciPkyuWnJ/0eBwM8=
-Received: from localhost (unknown [218.94.48.178])
-        by smtp5 (Coremail) with SMTP id HdxpCgA3mAxuhQ9gjgSTAA--.28S2;
-        Tue, 26 Jan 2021 10:58:58 +0800 (CST)
-Date:   Tue, 26 Jan 2021 10:58:54 +0800
-From:   Guoqing Chi <chi962464zy@163.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Tom Rix <trix@redhat.com>, martin.blumenstingl@googlemail.com,
-        linux-kernel@vger.kernel.org, chiguoqing@yulong.com,
-        huyue2@yulong.com, zhangwen@yulong.com, linux-iio@vger.kernel.org
-Subject: Re: [PATCH v2] iio: imu: bmi160: add mutex_lock for avoiding race
-Message-ID: <20210126105854.0000192d@163.com>
-In-Reply-To: <20210123152659.563cddeb@archlinux>
-References: <20210119112211.26404-1-chi962464zy@163.com>
-        <c93224b5-008c-fc80-f466-88c387d5b08f@redhat.com>
-        <20210120094802.00001fee@163.com>
-        <9c9333cb-bd6c-0f29-f35b-7592f457c746@redhat.com>
-        <20210123152659.563cddeb@archlinux>
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
+        Mon, 25 Jan 2021 22:18:15 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9DFC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:17:36 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id m6so9672920pfm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 19:17:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WtFgKdR1zjiiMUBUqPm6k1kFKyYgh6EYu3v9cVSqtNg=;
+        b=sF2eUBaye/dI0ORb+IJysE7/kIYxkBm/QMObpU+MUJZOrBp6kYvodeYp2+/6R4d8Ky
+         veYIGeTldP9GIH+ZjLtGdEYpDt5BQG1w3Db2expTGEvQKwojiz/U3M6jWPQiesrZ4r4L
+         U1kRgxxLL/gkrH4xPOfrVpjmFtrqnGINACEaC+Qe90jkH5vT2mlrfRCuK9fI8q/+acJX
+         DLnNw8/xEW9x/ie/wPvyN3tGT3zco2Ml8BrNoO9CjaqvPFZClPS0aAUqesDvlB8fVmBk
+         /HPpJXB2Pl0CmkgOoEKVIAjPJBLgLRT+aIZbTtnlj8QHIGzfdEpHF62I1IIIeIA04SIQ
+         OyBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WtFgKdR1zjiiMUBUqPm6k1kFKyYgh6EYu3v9cVSqtNg=;
+        b=e1IpnSkaCaBtWxoRdB3XyhQeubZR9N9Zal2lk1sn8J2oocIQh/R/107vhBo+xEheis
+         1LufEecILyzqFwO1xdvZ8ZJfsloArGJYGwcesEX/tZNmOz/yoC9ekhfW1gI4c41v8H/C
+         JsmgzDeXwuPrVXRQDacQuAcXGHFjTX+xXpLLsxGxJX/UFl8q/b7L9NQjMMY4z1wyM6o8
+         SP2aK1LKLOf2SRan7HSXk2YrfmPeXfHHo3C+j6dFDeIV+zFJonugnA24T3dRNPHCfz58
+         zB8Io7wsF2zJDLa7mwEbgCpGwVdXOc/prVlgx7pyu7X2vXtEQCjaXAIfsbzpvR3Bl7f6
+         UtQw==
+X-Gm-Message-State: AOAM5312OIHOC6UaCZP+ZrC/E5kxV7C/i32rUv9Ad9bJ1Na/fvEbjoA1
+        HlxuR2RuJxqs6J6wyB5n6nqdgg==
+X-Google-Smtp-Source: ABdhPJwWnnS4E0Ae7GCEUQPpPqdK8Q740j7chsbzcZJz2wQZQj2JkkLhhH44+ynxVV8IrPQkZt85CA==
+X-Received: by 2002:a62:1c84:0:b029:1c4:f959:7b29 with SMTP id c126-20020a621c840000b02901c4f9597b29mr61452pfc.34.1611631055566;
+        Mon, 25 Jan 2021 19:17:35 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.236])
+        by smtp.gmail.com with ESMTPSA id m195sm18419305pfd.215.2021.01.25.19.17.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 25 Jan 2021 19:17:34 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
+Cc:     sh_def@163.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>, stable@vger.kernel.org
+Subject: [PATCH] mm: hugetlb: fix missing put_page in gather_surplus_pages()
+Date:   Tue, 26 Jan 2021 11:10:09 +0800
+Message-Id: <20210126031009.96266-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: HdxpCgA3mAxuhQ9gjgSTAA--.28S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxtFWrZFy3tr4UWF1kCFyDJrb_yoW7Ww4rpa
-        4UGF45CrW8XF1xCr12qrn8CF98t34Iqr18W3s7Ja45ZrZ0yFnIyr1UJ3409rnYyr1UGr42
-        qrWUArZxuF1kZr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07USdgAUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/xtbBSRImRFaD9d-jRAAAsh
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 23 Jan 2021 15:26:59 +0000
-Jonathan Cameron <jic23@kernel.org> wrote:
+The VM_BUG_ON_PAGE avoids the generation of any code, even if that
+expression has side-effects when !CONFIG_DEBUG_VM.
 
-> On Wed, 20 Jan 2021 07:06:23 -0800
-> Tom Rix <trix@redhat.com> wrote:
-> 
-> > On 1/19/21 5:48 PM, Guoqing Chi wrote:  
-> > > On Tue, 19 Jan 2021 06:54:45 -0800
-> > > Tom Rix <trix@redhat.com> wrote:
-> > >    
-> > >> On 1/19/21 3:22 AM, Guoqing Chi wrote:    
-> > >>> From: chiguoqing <chi962464zy@163.com>
-> > >>>
-> > >>> Adding mutex_lock, when read and write reg need to use this
-> > >>> lock to avoid race.
-> > >>>
-> > >>> Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
-> > >>> ---
-> > >>> v2:Follow write function to fix read function.
-> > >>> Adding mutex init in core probe function.
-> > >>> Adding break in switch case at read and write function.
-> > >>>
-> > >>>  drivers/iio/imu/bmi160/bmi160.h      |  2 ++
-> > >>>  drivers/iio/imu/bmi160/bmi160_core.c | 34
-> > >>> +++++++++++++++++++--------- 2 files changed, 25 insertions(+),
-> > >>> 11 deletions(-)
-> > >>>
-> > >>> diff --git a/drivers/iio/imu/bmi160/bmi160.h
-> > >>> b/drivers/iio/imu/bmi160/bmi160.h index
-> > >>> 32c2ea2d7112..0c189a8b5b53 100644 ---
-> > >>> a/drivers/iio/imu/bmi160/bmi160.h +++
-> > >>> b/drivers/iio/imu/bmi160/bmi160.h @@ -3,9 +3,11 @@
-> > >>>  #define BMI160_H_
-> > >>>  
-> > >>>  #include <linux/iio/iio.h>
-> > >>> +#include <linux/mutex.h>
-> > >>>  #include <linux/regulator/consumer.h>
-> > >>>  
-> > >>>  struct bmi160_data {
-> > >>> +	struct mutex lock;
-> > >>>  	struct regmap *regmap;
-> > >>>  	struct iio_trigger *trig;
-> > >>>  	struct regulator_bulk_data supplies[2];
-> > >>> diff --git a/drivers/iio/imu/bmi160/bmi160_core.c
-> > >>> b/drivers/iio/imu/bmi160/bmi160_core.c index
-> > >>> 290b5ef83f77..e303378f4841 100644 ---
-> > >>> a/drivers/iio/imu/bmi160/bmi160_core.c +++
-> > >>> b/drivers/iio/imu/bmi160/bmi160_core.c @@ -452,26 +452,32 @@
-> > >>> static int bmi160_read_raw(struct iio_dev *indio_dev, int ret;
-> > >>>  	struct bmi160_data *data = iio_priv(indio_dev);
-> > >>>  
-> > >>> +	mutex_lock(&data->lock);
-> > >>>  	switch (mask) {
-> > >>>  	case IIO_CHAN_INFO_RAW:
-> > >>>  		ret = bmi160_get_data(data, chan->type,
-> > >>> chan->channel2, val);
-> > >>> -		if (ret)
-> > >>> -			return ret;
-> > >>> -		return IIO_VAL_INT;
-> > >>> +		if (!ret)
-> > >>> +			ret = IIO_VAL_INT;
-> > >>> +		break;
-> > >>>  	case IIO_CHAN_INFO_SCALE:
-> > >>>  		*val = 0;
-> > >>>  		ret = bmi160_get_scale(data,
-> > >>>  				       bmi160_to_sensor(chan->type),
-> > >>> val2);
-> > >>> -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> > >>> +		if (!ret)
-> > >>> +			ret = IIO_VAL_INT_PLUS_MICRO;      
-> > >> Looking better, another question..
-> > >>
-> > >> Why does the write() function return the results directly while
-> > >> the read() function
-> > >>
-> > >> translates them to other values ?
-> > >>
-> > >> Tom    
-> > > It is original design in this driver. In order to
-> > > differentiate raw to scale and SAMP_FREQ, while the scale and
-> > > SAMP_FREQ are needless. I think log information can be added for
-> > > this purpose, and return results directly.
-> > > It is not change the return values for my modify.It's best to
-> > > keep the original design.Is that all right?    
-> > 
-> > Ok.
-> > 
-> > Reviewed-by: Tom Rix <trix@redhat.com>  
-> 
-> Hi Guoqing Chi,
-> 
-> For some reason the original patch email (start of this thread) never
-> made it to my inbox or indeed the archive at lore.kernel.org.
-> 
-> Please resend (picking up Tom's reviewed by) and make sure to cc
-> linux-iio@vger.kernel.org + jic23@kernel.org
-> 
-> Then check if they make it to lore.kernel.org as that should highlight
-> any issues where it is getting blocked etc.
-> 
-> Thanks,
-> 
-> Jonathan
+Fixes: e5dfacebe4a4 ("mm/hugetlb.c: just use put_page_testzero() instead of page_count()")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Cc: <stable@vger.kernel.org>
+---
+ mm/hugetlb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Hi Jonathan,
-
-I have resend patch V2(picking up Tom's reviewed by) for add
-linux-iio@vger.kernel.org + jic23@kernel.org.
-
-Thanks.
-
-> 
-> >   
-> > > Guoqing Chi    
-> > >>> +		break;
-> > >>>  	case IIO_CHAN_INFO_SAMP_FREQ:
-> > >>>  		ret = bmi160_get_odr(data,
-> > >>> bmi160_to_sensor(chan->type), val, val2);
-> > >>> -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
-> > >>> +		if (!ret)
-> > >>> +			ret = IIO_VAL_INT_PLUS_MICRO;
-> > >>> +		break;
-> > >>>  	default:
-> > >>> -		return -EINVAL;
-> > >>> +		ret = -EINVAL;
-> > >>>  	}
-> > >>> +	mutex_unlock(&data->lock);
-> > >>>  
-> > >>> -	return 0;
-> > >>> +	return ret;
-> > >>>  }
-> > >>>  
-> > >>>  static int bmi160_write_raw(struct iio_dev *indio_dev,
-> > >>> @@ -479,19 +485,24 @@ static int bmi160_write_raw(struct iio_dev
-> > >>> *indio_dev, int val, int val2, long mask)
-> > >>>  {
-> > >>>  	struct bmi160_data *data = iio_priv(indio_dev);
-> > >>> +	int result;
-> > >>>  
-> > >>> +	mutex_lock(&data->lock);
-> > >>>  	switch (mask) {
-> > >>>  	case IIO_CHAN_INFO_SCALE:
-> > >>> -		return bmi160_set_scale(data,
-> > >>> +		result = bmi160_set_scale(data,
-> > >>>  					bmi160_to_sensor(chan->type),
-> > >>> val2);
-> > >>> +		break;
-> > >>>  	case IIO_CHAN_INFO_SAMP_FREQ:
-> > >>> -		return bmi160_set_odr(data,
-> > >>> bmi160_to_sensor(chan->type),
-> > >>> +		result = bmi160_set_odr(data,
-> > >>> bmi160_to_sensor(chan->type), val, val2);
-> > >>> +		break;
-> > >>>  	default:
-> > >>> -		return -EINVAL;
-> > >>> +		result = -EINVAL;
-> > >>>  	}
-> > >>> +	mutex_unlock(&data->lock);
-> > >>>  
-> > >>> -	return 0;
-> > >>> +	return result;
-> > >>>  }
-> > >>>  
-> > >>>  static
-> > >>> @@ -838,6 +849,7 @@ int bmi160_core_probe(struct device *dev,
-> > >>> struct regmap *regmap, return -ENOMEM;
-> > >>>  
-> > >>>  	data = iio_priv(indio_dev);
-> > >>> +	mutex_init(&data->lock);
-> > >>>  	dev_set_drvdata(dev, indio_dev);
-> > >>>  	data->regmap = regmap;
-> > >>>        
-> >   
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index a6bad1f686c5..082ed643020b 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2047,13 +2047,16 @@ static int gather_surplus_pages(struct hstate *h, long delta)
+ 
+ 	/* Free the needed pages to the hugetlb pool */
+ 	list_for_each_entry_safe(page, tmp, &surplus_list, lru) {
++		int zeroed;
++
+ 		if ((--needed) < 0)
+ 			break;
+ 		/*
+ 		 * This page is now managed by the hugetlb allocator and has
+ 		 * no users -- drop the buddy allocator's reference.
+ 		 */
+-		VM_BUG_ON_PAGE(!put_page_testzero(page), page);
++		zeroed = put_page_testzero(page);
++		VM_BUG_ON_PAGE(!zeroed, page);
+ 		enqueue_huge_page(h, page);
+ 	}
+ free:
+-- 
+2.11.0
 
