@@ -2,68 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D73930471F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952E6304732
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730835AbhAZRNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:13:49 -0500
-Received: from mail-m975.mail.163.com ([123.126.97.5]:52358 "EHLO
-        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729641AbhAZGCL (ORCPT
+        id S1727034AbhAZRJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:09:27 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:54130 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727309AbhAZGCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:02:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5Qzhy
-        HkOIhzhyDKQmARRKm/yKJdbh50BiqAFk60dd7M=; b=HQv1XYRkgJvVvwKz2p6MX
-        m2HfOT5CjTGyT18MnKmQfxiqV85u7AWSyu03/iTYhPwWaUy8m+qf3d7XBCgq8gwJ
-        wedBfvtUsKhEoKCxBE6gVoWq26FjRfP5V6atMD4vOTgGSX7CmCfjfIuq8TY+ZUhm
-        WeGj6Nymf10UjaozghbmMA=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp5 (Coremail) with SMTP id HdxpCgD3_4FpkA9gI1qZAA--.101S2;
-        Tue, 26 Jan 2021 11:45:52 +0800 (CST)
-From:   dingsenjie@163.com
-To:     herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] crypto/ccree: fix spelling typo of allocated
-Date:   Tue, 26 Jan 2021 11:45:53 +0800
-Message-Id: <20210126034553.44496-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Tue, 26 Jan 2021 01:02:03 -0500
+X-UUID: beee6b93ef014787948b329bda876e1d-20210126
+X-UUID: beee6b93ef014787948b329bda876e1d-20210126
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 595013166; Tue, 26 Jan 2021 14:01:06 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 26 Jan 2021 14:01:04 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 26 Jan 2021 14:01:03 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <yi.kuo@mediatek.com>
+Subject: [PATCH v2] memory: mtk-smi: Support SMI modular
+Date:   Tue, 26 Jan 2021 14:00:55 +0800
+Message-ID: <20210126060055.11050-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HdxpCgD3_4FpkA9gI1qZAA--.101S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruw4xWrWDurW5tr43AF1DJrb_yoW3Awb_u3
-        yxWay7Xryj9wn3tr4UJw48ZrWF9343uFs2gr4jqrW5XFy3Zrs5uFy7ur13Ar17JrWrXryk
-        uws2g3Wayw43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5cNVDUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiThEmyFUDHcZbaAAAsP
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 413277F7CA28486647A4C0608B164AEC3EA3B448FD5BFC262DF895F4FE03C3FF2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+This patch mainly support SMI modular. Switch MTK_SMI to tristate,
+and add module_exit/module_license.
 
-allocted -> allocated
-
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/crypto/ccree/cc_cipher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patch rebase on the clean v5.11-rc1.
+and this one: memory: mtk-smi: Use platform_register_drivers
+https://lore.kernel.org/linux-arm-kernel/20210121062429.26504-2-yong.wu@mediatek.com/
 
-diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
-index cdfee50..78833491 100644
---- a/drivers/crypto/ccree/cc_cipher.c
-+++ b/drivers/crypto/ccree/cc_cipher.c
-@@ -921,7 +921,7 @@ static int cc_cipher_process(struct skcipher_request *req,
- 			return crypto_skcipher_decrypt(subreq);
- 	}
+change note:
+a) squash the last two of v1 into one patch.
+b) Remove module_alias
+---
+ drivers/memory/Kconfig     | 2 +-
+ drivers/memory/mtk-smi.c   | 9 +++++++++
+ include/soc/mediatek/smi.h | 2 +-
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index 3ea6913df176..05c6d4a32285 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -173,7 +173,7 @@ config JZ4780_NEMC
+ 	  memory devices such as NAND and SRAM.
  
--	/* The IV we are handed may be allocted from the stack so
-+	/* The IV we are handed may be allocated from the stack so
- 	 * we must copy it to a DMAable buffer before use.
- 	 */
- 	req_ctx->iv = kmemdup(iv, ivsize, flags);
+ config MTK_SMI
+-	bool "Mediatek SoC Memory Controller driver" if COMPILE_TEST
++	tristate "MediaTek SoC Memory Controller driver" if COMPILE_TEST
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	help
+ 	  This driver is for the Memory Controller module in MediaTek SoCs,
+diff --git a/drivers/memory/mtk-smi.c b/drivers/memory/mtk-smi.c
+index e2aebd2bfa8e..3a269415db73 100644
+--- a/drivers/memory/mtk-smi.c
++++ b/drivers/memory/mtk-smi.c
+@@ -597,3 +597,12 @@ static int __init mtk_smi_init(void)
+ 	return platform_register_drivers(smidrivers, ARRAY_SIZE(smidrivers));
+ }
+ module_init(mtk_smi_init);
++
++static void __exit mtk_smi_exit(void)
++{
++	platform_unregister_drivers(smidrivers, ARRAY_SIZE(smidrivers));
++}
++module_exit(mtk_smi_exit);
++
++MODULE_DESCRIPTION("MediaTek SMI driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/soc/mediatek/smi.h b/include/soc/mediatek/smi.h
+index 5a34b87d89e3..29e2fb8f33d6 100644
+--- a/include/soc/mediatek/smi.h
++++ b/include/soc/mediatek/smi.h
+@@ -9,7 +9,7 @@
+ #include <linux/bitops.h>
+ #include <linux/device.h>
+ 
+-#ifdef CONFIG_MTK_SMI
++#if IS_ENABLED(CONFIG_MTK_SMI)
+ 
+ #define MTK_LARB_NR_MAX		16
+ 
 -- 
-1.9.1
+2.18.0
 
