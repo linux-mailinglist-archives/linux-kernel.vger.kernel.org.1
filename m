@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9DC303A99
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA6B303AA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404198AbhAZKnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:43:07 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:45045 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732086AbhAZCFe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:05:34 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10Q24d772009407, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10Q24d772009407
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Jan 2021 10:04:39 +0800
-Received: from localhost.localdomain (172.21.132.186) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 26 Jan 2021 10:04:38 +0800
-From:   <max.chou@realtek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
-        <luiz.dentz@gmail.com>, <linux-bluetooth@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <alex_lu@realsil.com.cn>, <hildawu@realtek.com>,
-        <kidman@realtek.com>, <max.chou@realtek.com>,
-        <abhishekpandit@chromium.org>, <josephsih@chromium.org>
-Subject: [PATCH v4] Bluetooth: btrtl: Enable WBS for the specific Realtek devices
-Date:   Tue, 26 Jan 2021 10:04:34 +0800
-Message-ID: <20210126020434.4911-1-max.chou@realtek.com>
-X-Mailer: git-send-email 2.17.1
+        id S2404401AbhAZKpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:45:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37432 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731065AbhAZCHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:07:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BA4F22EBF;
+        Tue, 26 Jan 2021 02:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611626783;
+        bh=YGAANK8L9e+mLQGBGtUyNcxlA05RGcL/dRm8R3QZimA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j0F+KQnyQhSFzPmy4spIusLLEyzLU/NH2f28CItVWhk6q8lFTK291lg4Yyv9AxTww
+         7NoI+wZm8Dx2KPP3kenAgz1E+vxIsSeigsjsMCZuOJ1pGACu7tJW6vbRKAFkKTGm+P
+         DA96y1S6GMTyrK9D6WBeYGxcvI6IloGtvA2kkKs9jLuiFSlq2w1hYIy1otxEnlqfys
+         nTCtWAfPSk/aOQd+HNb0aaN3pimp9Y1UbenaWoyAHLK4CbkovAjMv7dzx5369wxfy6
+         ZBpZTqf8ei0xUlTWEke57ebfDXnucF6YZ+qOUdnLXengEi4yTAjrzOC7STiNztt9pk
+         a0uQjWbEbsKZw==
+Received: by mail-ed1-f46.google.com with SMTP id g1so17946193edu.4;
+        Mon, 25 Jan 2021 18:06:23 -0800 (PST)
+X-Gm-Message-State: AOAM531PhMP/rUWB73g5JBRqKjmolGGyExu9BrDmRyv8hIvifOMugfHE
+        1nT7fOD7wBXIvgPVD/LfWm72tNcWEnnjl+C+WA==
+X-Google-Smtp-Source: ABdhPJweh1PUzzmE10rGd3297H4LLle3hpTK3RC9qiKGn1v/Vs694RWOj5hwq8I9snXJi3mMGX4LoqqdvmWzIXT2v7E=
+X-Received: by 2002:aa7:c895:: with SMTP id p21mr2748271eds.165.1611626781894;
+ Mon, 25 Jan 2021 18:06:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.21.132.186]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS03.realtek.com.tw (172.21.6.96)
+References: <20200528132541.463300-1-arch0.zheng@gmail.com> <ebbba4ac-ea65-472c-5a3a-201dfe59e402@alliedtelesis.co.nz>
+In-Reply-To: <ebbba4ac-ea65-472c-5a3a-201dfe59e402@alliedtelesis.co.nz>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 25 Jan 2021 20:06:10 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+8TDagRWyxZHo+qeeV7zDok2mnq10B-B9-L2QoqMr=FQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+8TDagRWyxZHo+qeeV7zDok2mnq10B-B9-L2QoqMr=FQ@mail.gmail.com>
+Subject: Re: [PATCH v2] of/fdt: Remove redundant kbasename function call
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Qi Zheng <arch0.zheng@gmail.com>,
+        "frowand.list@gmail.com" <frowand.list@gmail.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Chou <max.chou@realtek.com>
++LAKML given it's an Arm issue
 
-By this change, it will enable WBS supported on the specific Realtek BT
-devices, such as RTL8822C and RTL8852A.
-In the future, it's able to maintain what the Realtek devices support WBS
-here.
+On Mon, Jan 25, 2021 at 6:47 PM Chris Packham
+<Chris.Packham@alliedtelesis.co.nz> wrote:
+>
+> Hi All,
+>
+> On 29/05/20 1:25 am, Qi Zheng wrote:
+> > For version 1 to 3 of the device tree, this is the node full
+> > path as a zero terminated string, starting with "/". The
+> > following equation will not hold, since the node name has
+> > been processed in the fdt_get_name().
+> >
+> >       *pathp == '/'
+> >
+> > For version 16 and later, this is the node unit name only
+> > (or an empty string for the root node). So the above
+> > equation will still not hold.
+> >
+> > So the kbasename() is redundant, just remove it.
+> >
+> > Signed-off-by: Qi Zheng <arch0.zheng@gmail.com>
+> > ---
+> >
+> > Change in v2:
+> >       remove another kbasename() also.
+> >
+> >   drivers/of/fdt.c | 4 ----
+> >   1 file changed, 4 deletions(-)
+> >
+> > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > index 38619e9ef6b2..4602e467ca8b 100644
+> > --- a/drivers/of/fdt.c
+> > +++ b/drivers/of/fdt.c
+> > @@ -643,8 +643,6 @@ int __init of_scan_flat_dt(int (*it)(unsigned long node,
+> >            offset = fdt_next_node(blob, offset, &depth)) {
+> >
+> >               pathp = fdt_get_name(blob, offset, NULL);
+> > -             if (*pathp == '/')
+> > -                     pathp = kbasename(pathp);
+> >               rc = it(offset, pathp, depth, data);
+> >       }
+> >       return rc;
+> > @@ -671,8 +669,6 @@ int __init of_scan_flat_dt_subnodes(unsigned long parent,
+> >               int rc;
+> >
+> >               pathp = fdt_get_name(blob, node, NULL);
+> > -             if (*pathp == '/')
+> > -                     pathp = kbasename(pathp);
+> >               rc = it(node, pathp, data);
+> >               if (rc)
+> >                       return rc;
+>
+> I'm trying to keep our boards up to date with newer kernels.
+>
+> I've just hit a problem on an older board that uses
+> CONFIG_ARM_APPENDED_DTB and has a number of command line args passed up
+> from the bootloader that are required for a successful boot.
+>
+> I'm stepping through kernel versions in the hope that keeping things
+> running is easier in smaller increments I'm up to v5.8. I'm not
+> currently able to check a newer kernel on this board but looking at the
+> code the problem still seems to exist in the latest tree.
+>
+> early_init_dt_scan_chosen() searches for "chosen" prior to this change
+> the "/chosen" node that gets inserted by atags_to_fdt.c but with this
+> change it can't find it and fails to boot.
 
-Tested-by: Hilda Wu <hildawu@realtek.com>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Signed-off-by: Max Chou <max.chou@realtek.com>
+Given this code works for normal cases, I'm guessing the problem is in
+atags_to_fdt.c or libfdt. Is it possible to add an empty chosen node
+to the DT and see if that makes any difference.
 
----
-change in v4
- -remove the unnecessary comment to avoid the unaligned starting point.
----
- drivers/bluetooth/btrtl.c | 29 +++++++++++++++++++++++------
- 1 file changed, 23 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 24f03a1f8d57..adcd054313a4 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -38,6 +38,19 @@
- 	.hci_ver = (hciv), \
- 	.hci_bus = (bus)
- 
-+enum  btrtl_chip_id {
-+	CHIP_ID_8723A,
-+	CHIP_ID_8723B,
-+	CHIP_ID_8821A,
-+	CHIP_ID_8761A,
-+	CHIP_ID_8822B = 8,
-+	CHIP_ID_8723D,
-+	CHIP_ID_8821C,
-+	CHIP_ID_8822C = 13,
-+	CHIP_ID_8761B,
-+	CHIP_ID_8852A = 18,
-+};
-+
- struct id_table {
- 	__u16 match_flags;
- 	__u16 lmp_subver;
-@@ -58,6 +71,7 @@ struct btrtl_device_info {
- 	u8 *cfg_data;
- 	int cfg_len;
- 	bool drop_fw;
-+	int project_id;
- };
- 
- static const struct id_table ic_id_table[] = {
-@@ -307,8 +321,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
- 
- 	/* Find project_id in table */
- 	for (i = 0; i < ARRAY_SIZE(project_id_to_lmp_subver); i++) {
--		if (project_id == project_id_to_lmp_subver[i].id)
-+		if (project_id == project_id_to_lmp_subver[i].id) {
-+			btrtl_dev->project_id = project_id;
- 			break;
-+		}
- 	}
- 
- 	if (i >= ARRAY_SIZE(project_id_to_lmp_subver)) {
-@@ -719,18 +735,19 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
- 	 */
- 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
- 
--	if (!btrtl_dev->ic_info)
--		goto done;
--
- 	/* Enable central-peripheral role (able to create new connections with
- 	 * an existing connection in slave role).
- 	 */
--	switch (btrtl_dev->ic_info->lmp_subver) {
--	case RTL_ROM_LMP_8822B:
-+	/* Enable WBS supported for the specific Realtek devices. */
-+	switch (btrtl_dev->project_id) {
-+	case CHIP_ID_8822C:
-+	case CHIP_ID_8852A:
- 		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
-+		set_bit(HCI_QUIRK_WIDEBAND_SPEECH_SUPPORTED, &hdev->quirks);
- 		break;
- 	default:
- 		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
-+		rtl_dev_dbg(hdev, "WBS supported not enabled.");
- 		break;
- 	}
- 
--- 
-2.17.1
-
+Rob
