@@ -2,131 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2168303AAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69290303AD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404355AbhAZKrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:47:14 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39368 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731012AbhAZCKA (ORCPT
+        id S2404579AbhAZKyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:54:24 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:36351 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728310AbhAZDJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:10:00 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10Q02eSN052276;
-        Mon, 25 Jan 2021 19:31:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=5orEmH7GjXb9T6dppAu3nZMub/TPP4rO1PEClnt1LXU=;
- b=lLtaOxwg1Fv1ZjUNm2LyqU+iZJvHxtlxbbORaNuqcfncuVIndP1hXMRkQDCjJ5CigIVr
- QMW5NmzbbiGQDrq+k0YekUqP0iDbbZUt72lOM+rTGhE2E+GvTMOwNTfn0zYAEv+jau4Z
- vH1Xct0QqDS5JsySaQWMGg8D7ZQfq+S4z02ZhYEwEbaHL+RiCnZQKQBgAf4mSQbAOrDw
- V3HrKiKXVuT37T1RjmFx1P/MFbjbcLtmh1DXUI8/1xb0HuZG+UoOcSWHDvqSmz2ekqka
- g98K9EikZdCbZ/tYl/BufLVPUDTsLMXFkMFnCHpfH2I8tevDt7/xRAX906B35wBIt/oJ dw== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36a64yk2rh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Jan 2021 19:31:03 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10Q0KIPk018190;
-        Tue, 26 Jan 2021 00:31:02 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma02wdc.us.ibm.com with ESMTP id 36a6wsrk92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 26 Jan 2021 00:31:02 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10Q0V1nI4588032
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 00:31:01 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B552C6059;
-        Tue, 26 Jan 2021 00:31:01 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0FC57C6055;
-        Tue, 26 Jan 2021 00:30:57 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.183.123])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Tue, 26 Jan 2021 00:30:57 +0000 (GMT)
-References: <20201220064959.GB392325@kernel.org>
- <20210122043714.266075-1-bauerman@linux.ibm.com>
- <20210123180911.aafa8404a3a7a30779713456@linux-foundation.org>
- <20210124073421.GG6332@kernel.org>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        iamjoonsoo.kim@lge.com, Ram Pai <linuxram@us.ibm.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        mhocko@kernel.org, riel@surriel.com
-Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations
- with kernel_end
-In-reply-to: <20210124073421.GG6332@kernel.org>
-Date:   Mon, 25 Jan 2021 21:30:55 -0300
-Message-ID: <87h7n44k00.fsf@manicouagan.localdomain>
+        Mon, 25 Jan 2021 22:09:02 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210126003135epoutp0248988f7f26b8fed3a6553639225ebf80~doNkEiG9i2925729257epoutp02C
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 00:31:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210126003135epoutp0248988f7f26b8fed3a6553639225ebf80~doNkEiG9i2925729257epoutp02C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611621095;
+        bh=OGsj0MIkfZyHE5NB7L5PUMSmlStzrlK4MtVhzEASbSs=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=B0p6OWhGMQlNRmkHj4YUQp7gfboquYB4cc++ftdLQtcD5b9Uj6vhLR50ZbbFMY+jh
+         9Xr9AO/qBH6EyZyKwtN4/2lgu7sxXdQDziDzoak7anqPeZkvlC6kJ8lS/eJa1jl/g6
+         ZW2qMC5UjhHfPBlCkQEMIXj92fbOoLZEyCV0qDMk=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210126003135epcas2p4647eac927b8dd478b8e804f3100b1736~doNjpjh1b2228122281epcas2p4u;
+        Tue, 26 Jan 2021 00:31:35 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DPnjK1vzbz4x9Pp; Tue, 26 Jan
+        2021 00:31:33 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.1E.05262.2E26F006; Tue, 26 Jan 2021 09:31:30 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210126003130epcas2p4edac02397592781f3f06fd0c58421c44~doNfXQtOm2472924729epcas2p4y;
+        Tue, 26 Jan 2021 00:31:30 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210126003130epsmtrp26f9d9f62bdd05e83caca4106c42dedb3~doNfWbMQl0296902969epsmtrp2G;
+        Tue, 26 Jan 2021 00:31:30 +0000 (GMT)
+X-AuditID: b6c32a47-b81ff7000000148e-e1-600f62e2bcb5
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        00.78.13470.2E26F006; Tue, 26 Jan 2021 09:31:30 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210126003130epsmtip2e461871cde2e8e6352adef2e2667bb26~doNfH35tU2637426374epsmtip21;
+        Tue, 26 Jan 2021 00:31:30 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Steffen Klassert'" <steffen.klassert@secunet.com>
+Cc:     "'David S. Miller'" <davem@davemloft.net>,
+        "'Alexander Lobakin'" <alobakin@pm.me>, <namkyu78.kim@samsung.com>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
+        "'Willem de Bruijn'" <willemb@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210125124544.GW3576117@gauss3.secunet.de>
+Subject: RE: [PATCH net v3] udp: ipv4: manipulate network header of NATed
+ UDP GRO fraglist
+Date:   Tue, 26 Jan 2021 09:31:29 +0900
+Message-ID: <026001d6f37a$97461300$c5d23900$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-25_10:2021-01-25,2021-01-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 bulkscore=0
- spamscore=0 adultscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101250119
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQD8+b0cWZtPvmUMIOPw0keCYjUzAAJKUisyAbm6YsWrzN/I0A==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmqe6jJP4Eg70rzC1WPd7OYjHnfAuL
+        xYVtfawWl3fNYbNouNPMZnFsgZjF7s4f7Bbvthxht/i6t4vFgdNjy8qbTB4LNpV6bFrVyebR
+        dm0Vk8fRPefYPPq2rGL02NS6hNXj8ya5AI6oHJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMD
+        Q11DSwtzJYW8xNxUWyUXnwBdt8wcoOuUFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUp
+        OQWGhgV6xYm5xaV56XrJ+blWhgYGRqZAlQk5GW9nnGMvuGtSsb3zGnMD42bNLkZODgkBE4mV
+        RzqZuhi5OIQEdjBKXPzcwQ7hfGKU+LPtMzOE841R4vmDBWxdjBxgLRcPFEPE9zJKPLtxjA3C
+        ecEoca5vIzPIXDYBLYk3s9pZQWwRAXOJ1a+mge1gFtjKJPHw61QWkEmcApYSHw+UgNQIC8RI
+        rN/6iR3EZhFQlbi+qRtsDi9QybKJy9ghbEGJkzOfsIDYzAIGEu/PzWeGsOUltr+dwwzxj4LE
+        z6fLoPY6SfTd72WCqBGRmN3ZBvaNhMAeDonrN1+yQ3zjIvFqix5Er7DEq+Nb2CFsKYnP7/ZC
+        PVwv0dodA9HawyhxZR/EDRICxhKznrUzQtQoSxy5BXUan0TH4b9Q03klOtqEIEwliYlf4iEa
+        JSRenJzMMoFRaRaSv2Yh+WsWkr9mIbl/ASPLKkax1ILi3PTUYqMCY+S43sQITrha7jsYZ7z9
+        oHeIkYmD8RCjBAezkgjvbj2eBCHelMTKqtSi/Pii0pzU4kOMpsCgnsgsJZqcD0z5eSXxhqZG
+        ZmYGlqYWpmZGFkrivMUGD+KFBNITS1KzU1MLUotg+pg4OKUamBxCpGUeLTRZ2GxQmOk1qTzz
+        3I8H3uu5g9r945pkp7LFPay0q2p0PTT36yyfpxN7o5Jn8B6/b6MSZFHFsf5g/8oZdeUx/38X
+        1FZnPK1U/LcsQe9+QIrzp9hJrz0dJyaU/CxSXHRaQeTIK3ORvd18D68962d3DpLaMeeCoN6R
+        maofLtRqJBj4XNDcUyIlE/34kNKW1ewMm8VZ5f5qMpRW14vcFJWxXr46VTv17QQd7zs8XI+k
+        ts5gFb3/+7rtNatErSdfzd7xsxSqWS/kZ7/5nunCRR5VLX7OWN8FsxPcWg8WbvZ6eU/5pavL
+        dPc1H9ecyV95r34HjzfvCZN1/O1nPjx7+Okq06yEFdz3gssNlViKMxINtZiLihMByeXtDEEE
+        AAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvO6jJP4Eg0O7pCxWPd7OYjHnfAuL
+        xYVtfawWl3fNYbNouNPMZnFsgZjF7s4f7Bbvthxht/i6t4vFgdNjy8qbTB4LNpV6bFrVyebR
+        dm0Vk8fRPefYPPq2rGL02NS6hNXj8ya5AI4oLpuU1JzMstQifbsEroy3M86xF9w1qdjeeY25
+        gXGzZhcjB4eEgInExQPFXYxcHEICuxklHh/exwYRl5DYtdm1i5ETyBSWuN9yhBWi5hmjxJv7
+        k1hAEmwCWhJvZrWzgtgiAuYSq19NYwIpYhbYzSTxtec+M0THYUaJO/M+sIJM5RSwlPh4oASk
+        QVggSuLy1K2MIDaLgKrE9U3dzCA2L1DJsonL2CFsQYmTM5+ALWMWMJI4d2g/G4QtL7H97Rxm
+        iOsUJH4+XQZ1hJNE3/1eJogaEYnZnW3MExiFZyEZNQvJqFlIRs1C0rKAkWUVo2RqQXFuem6x
+        YYFhXmq5XnFibnFpXrpecn7uJkZw7Glp7mDcvuqD3iFGJg7GQ4wSHMxKIry79XgShHhTEiur
+        Uovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBaBJNl4uCUamAKyJ3hd/e1zq2FV7tf
+        35rBUb7k9obexOK/J7dk362q+9odId3zLW22Dtf6XjZeQ9cO5TTGpljdnC7uWwumxwXM2rnt
+        40Sh6x3JV+4bhZktz76vy/rrTdMTvu5Ny7Q0a29EBoov/DzV99KhiDTBn09PXZhXLvd6kc3F
+        TT+3K6SnKc1o/MnQr5U0/9vZlYve2q6NObD6pb3Ahw/3fit16U1ytEsVShUqnM/NlzL/fNqZ
+        5jXPZy6KeV7w2lr15Kdgx/0vOeS7C9TepV44cFpjtopLaO9qX5dJWyv9VSYUs56SvLnnTc+H
+        RyWe7dduL98Wxmm7Lsj1n1et9NxXRgLHohu0TMuNHntmXPrzYEP59f+9SizFGYmGWsxFxYkA
+        H/WuMiwDAAA=
+X-CMS-MailID: 20210126003130epcas2p4edac02397592781f3f06fd0c58421c44
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210121133649epcas2p493d5d59df1b48ee8e3282ab766f37a70
+References: <CGME20210121133649epcas2p493d5d59df1b48ee8e3282ab766f37a70@epcas2p4.samsung.com>
+        <1611235479-39399-1-git-send-email-dseok.yi@samsung.com>
+        <20210125124544.GW3576117@gauss3.secunet.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/25/21 9:45 PM, Steffen Klassert wrote:
+> On Thu, Jan 21, 2021 at 10:24:39PM +0900, Dongseok Yi wrote:
+> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> > skb_gso_segment is updated but following frag_skbs are not updated.
+> >
+> > A call path skb_mac_gso_segment -> inet_gso_segment ->
+> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> > does not try to update UDP/IP header of the segment list but copy
+> > only the MAC header.
+> >
+> > Update port, addr and check of each skb of the segment list in
+> > __udp_gso_segment_list. It covers both SNAT and DNAT.
+> >
+> > Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > ---
+> > v1:
+> > Steffen Klassert said, there could be 2 options.
+> > https://lore.kernel.org/patchwork/patch/1362257/
+> > I was trying to write a quick fix, but it was not easy to forward
+> > segmented list. Currently, assuming DNAT only.
+> >
+> > v2:
+> > Per Steffen Klassert request, moved the procedure from
+> > udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
+> >
+> > v3:
+> > Per Steffen Klassert request, applied fast return by comparing seg
+> > and seg->next at the beginning of __udpv4_gso_segment_list_csum.
+> >
+> > Fixed uh->dest = *newport and iph->daddr = *newip to
+> > *oldport = *newport and *oldip = *newip.
+> >
+> >  include/net/udp.h      |  2 +-
+> >  net/ipv4/udp_offload.c | 72 ++++++++++++++++++++++++++++++++++++++++++++++----
+> >  net/ipv6/udp_offload.c |  2 +-
+> >  3 files changed, 69 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/net/udp.h b/include/net/udp.h
+> > index 877832b..01351ba 100644
+> > --- a/include/net/udp.h
+> > +++ b/include/net/udp.h
+> > @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
+> >  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
+> >
+> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> > -				  netdev_features_t features);
+> > +				  netdev_features_t features, bool is_ipv6);
+> >
+> >  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
+> >  {
+> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > index ff39e94..43660cf 100644
+> > --- a/net/ipv4/udp_offload.c
+> > +++ b/net/ipv4/udp_offload.c
+> > @@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
+> >  }
+> >  EXPORT_SYMBOL(skb_udp_tunnel_segment);
+> >
+> > +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
+> > +				     __be32 *oldip, __be32 *newip,
+> > +				     __be16 *oldport, __be16 *newport)
+> > +{
+> > +	struct udphdr *uh;
+> > +	struct iphdr *iph;
+> > +
+> > +	if (*oldip == *newip && *oldport == *newport)
+> > +		return;
+> 
+> This check is redundant as you check this already in
+> __udpv4_gso_segment_list_csum.
 
-Mike Rapoport <rppt@kernel.org> writes:
+When comes in __udpv4_gso_segment_csum, the condition would be
+SNAT or DNAT. I think we don't need to do the function if the
+condition is not met. I want to skip the function for SNAT checksum
+when DNAT only case. Is it better to remove the check?
 
-> On Sat, Jan 23, 2021 at 06:09:11PM -0800, Andrew Morton wrote:
->> On Fri, 22 Jan 2021 01:37:14 -0300 Thiago Jung Bauermann <bauerman@linux.ibm.com> wrote:
->> 
->> > Mike Rapoport <rppt@kernel.org> writes:
->> > 
->> > > > Signed-off-by: Roman Gushchin <guro@fb.com>
->> > > 
->> > > Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
->> > 
->> > I've seen a couple of spurious triggers of the WARN_ONCE() removed by this
->> > patch. This happens on some ppc64le bare metal (powernv) server machines with
->> > CONFIG_SWIOTLB=y and crashkernel=4G, as described in a candidate patch I posted
->> > to solve this issue in a different way:
->> > 
->> > https://lore.kernel.org/linuxppc-dev/20201218062103.76102-1-bauerman@linux.ibm.com/
->> > 
->> > Since this patch solves that problem, is it possible to include it in the next
->> > feasible v5.11-rcX, with the following tag?
->> 
->> We could do this,
+> 
+> Looks ok otherwise.
+> 
+> > +
+> > +	uh = udp_hdr(seg);
+> > +	iph = ip_hdr(seg);
+> > +
+> > +	if (uh->check) {
+> > +		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
+> > +					 true);
+> > +		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
+> > +					 false);
+> > +		if (!uh->check)
+> > +			uh->check = CSUM_MANGLED_0;
+> > +	}
+> > +	*oldport = *newport;
+> > +
+> > +	csum_replace4(&iph->check, *oldip, *newip);
+> > +	*oldip = *newip;
+> > +}
+> > +
+> > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
+> > +{
+> > +	struct sk_buff *seg;
+> > +	struct udphdr *uh, *uh2;
+> > +	struct iphdr *iph, *iph2;
+> > +
+> > +	seg = segs;
+> > +	uh = udp_hdr(seg);
+> > +	iph = ip_hdr(seg);
+> > +
+> > +	if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
+> > +	    (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
+> > +	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
+> > +	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
+> > +		return segs;
+> > +
+> > +	while ((seg = seg->next)) {
+> > +		uh2 = udp_hdr(seg);
+> > +		iph2 = ip_hdr(seg);
+> > +
+> > +		__udpv4_gso_segment_csum(seg,
+> > +					 &iph2->saddr, &iph->saddr,
+> > +					 &uh2->source, &uh->source);
+> > +		__udpv4_gso_segment_csum(seg,
+> > +					 &iph2->daddr, &iph->daddr,
+> > +					 &uh2->dest, &uh->dest);
+> > +	}
+> > +
+> > +	return segs;
+> > +}
+> > +
+> >  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+> > -					      netdev_features_t features)
+> > +					      netdev_features_t features,
+> > +					      bool is_ipv6)
+> >  {
+> >  	unsigned int mss = skb_shinfo(skb)->gso_size;
+> >
+> > @@ -198,11 +257,14 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+> >
+> >  	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
+> >
+> > -	return skb;
+> > +	if (is_ipv6)
+> > +		return skb;
+> > +	else
+> > +		return __udpv4_gso_segment_list_csum(skb);
+> >  }
+> >
+> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> > -				  netdev_features_t features)
+> > +				  netdev_features_t features, bool is_ipv6)
+> >  {
+> >  	struct sock *sk = gso_skb->sk;
+> >  	unsigned int sum_truesize = 0;
+> > @@ -214,7 +276,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> >  	__be16 newlen;
+> >
+> >  	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
+> > -		return __udp_gso_segment_list(gso_skb, features);
+> > +		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
+> >
+> >  	mss = skb_shinfo(gso_skb)->gso_size;
+> >  	if (gso_skb->len <= sizeof(*uh) + mss)
+> > @@ -328,7 +390,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+> >  		goto out;
+> >
+> >  	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+> > -		return __udp_gso_segment(skb, features);
+> > +		return __udp_gso_segment(skb, features, false);
+> >
+> >  	mss = skb_shinfo(skb)->gso_size;
+> >  	if (unlikely(skb->len <= mss))
+> > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> > index c7bd7b1..faa823c 100644
+> > --- a/net/ipv6/udp_offload.c
+> > +++ b/net/ipv6/udp_offload.c
+> > @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
+> >  			goto out;
+> >
+> >  		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+> > -			return __udp_gso_segment(skb, features);
+> > +			return __udp_gso_segment(skb, features, true);
+> >
+> >  		mss = skb_shinfo(skb)->gso_size;
+> >  		if (unlikely(skb->len <= mss))
+> > --
+> > 2.7.4
 
-Thanks!
-
->> if we're confident that this patch doesn't depend on
->> [1/2] "mm: cma: allocate cma areas bottom-up"?  I think it is...
->
-> A think it does not depend on cma bottom-up allocation, it's rather the other
-> way around: without this CMA bottom-up allocation could fail with KASLR
-> enabled.
-
-I agree. Conceptually, this could have been patch 1 in this series.
-
-> Still, this patch may need updates to the way x86 does early reservations:
->
-> https://lore.kernel.org/lkml/20210115083255.12744-1-rppt@kernel.org
-
-Ah, I wasn't aware of this. Thanks for fixing those issues. That series
-seems to be well accepted.
-
->> > Fixes: 8fabc623238e ("powerpc: Ensure that swiotlb buffer is allocated from low memory")
->> 
->> I added that.
-
-Thanks!
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
