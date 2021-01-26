@@ -2,236 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21318303A89
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 912E0303A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404260AbhAZKk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54000 "EHLO
+        id S2404121AbhAZKkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731895AbhAZCDc (ORCPT
+        with ESMTP id S1732045AbhAZCDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 25 Jan 2021 21:03:32 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BC9C061797;
-        Mon, 25 Jan 2021 16:21:28 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id u4so697536pjn.4;
-        Mon, 25 Jan 2021 16:21:28 -0800 (PST)
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F5EC0617A7
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:22:42 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id f2so12362599ljp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 16:22:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UJgAgQP11zokYfGVBujFOzsobumPVUSFg2V2m/PgB6o=;
-        b=OeoEzKs9iAFX8/BeqfqPipxRkleqtnWRdmDMD8chcVl03j4u4ZwPXcuCOKurjfh/P1
-         qkJZJzi8TDx+4DJAH+ps2vpKt8D1JUFkN1ST96z9oU9ozPiTSl8PBRc5cfF6axK6h9zi
-         XI7yR5rbczgPl6xszy6bmZQGkx/cuf5orYq9IScvttfCLQr+6VWqXDngzKMCv30FxeQW
-         gl+uajegBYNtgnidpPuZP9BMw7Jg+5VZHbMVPcT9mOoLPbeOhgC+bpzZ9ot9PP+WoFY1
-         Bg5kUhAkuiZAqIhGxBdIONr7fBlMF++Oh09xU7frX6fJlkaKOPQY1HkANlCz8aSgatXG
-         e0Sw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uzP+mQr0Cb/8D8KEPDEqrJxNdNlq28R+Q5Q0SVRRzQk=;
+        b=nArHdRc0ztw+g37RqkKvQRyU1WUXhJabqeq8z/jOkHeN+U9J5iZdwpuTzUsw8aI2oZ
+         5w7opESA/cwvBZGpvLUThRy8Licw5lBB5rWYHAoRs9UCS2SvHCrY9O+To5Hu6G0MmY1T
+         DAVDqyy2rV7G7KXeQVumOWfZQLiMWcjw9BZu0zAffuSOPLZI/Gt9k89524/XtioVszCR
+         LlSAIij3paVS9pI0EQ44ut6x+aCCwLjHjTH88MPxG29/BkISVp0GW6j2aHoKRn4bI9Uh
+         elLQaS2Jb6YfTGdarilgv527tSPPpX0aINOBrd5gzGrWV0W2uVzaYYcZVjUipeNJC/WD
+         MfAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UJgAgQP11zokYfGVBujFOzsobumPVUSFg2V2m/PgB6o=;
-        b=FUAgwWfNMKVa4xVhTJos9XGk/Z3OnqmxeFof7rW1rSqAH2vOHgdQ8XRgzJ9fW/Ab5h
-         Vsya8WTK46NIGLDXyzwGi46VVyzM6YneDh2XvCKBMKkiGuBW5hmygBjASM33kt1aN2Ug
-         Slv/Glzuqjdx8OKsmhYutj1fTJO4OHdtrDYzX45T+QAaHmd7YFAetssFY12zObyftImj
-         kH1UwekQgC9RfpBzKqDVOvGXZV+AKvwyl+JcxbQ8Ti/K0NFfBv8Aj/F80IOGbT0fx1GO
-         s8ilYo2+OEXCRVGz9WP/byU/g64ImGIVm6lhiQ/6EQ3IdFU9BIXDlzxD0Ivmp8Pw5xFh
-         DisQ==
-X-Gm-Message-State: AOAM531pwsdIyzlXAeX0xfMqq2rVfo2JpVUrOLHM4X3LT+byC/9+RIRj
-        +D2ApL3eJc7Q+yLZf/Irn2zeaCX6UKBOjb0W
-X-Google-Smtp-Source: ABdhPJwdN2PSGcAKJxECxKhru6o8AkmRJkwKT3ibdDYUc5n+TyrNSc8V1SjBL+R6kGj1ONYUGVIgmw==
-X-Received: by 2002:a17:90b:3111:: with SMTP id gc17mr2890786pjb.164.1611620487511;
-        Mon, 25 Jan 2021 16:21:27 -0800 (PST)
-Received: from [127.0.0.1] ([203.205.141.50])
-        by smtp.gmail.com with ESMTPSA id a31sm17671665pgb.93.2021.01.25.16.21.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Jan 2021 16:21:26 -0800 (PST)
-Subject: Re: [RFC PATCH v2 1/4] jbd2: make jdb2_debug module parameter per
- device
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>, jack@suse.com,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <cover.1611402263.git.brookxu@tencent.com>
- <2364f54ebe6b03d4d12802531175f0b4cd2857ae.1611402263.git.brookxu@tencent.com>
- <CAD+ocbx18bb-UB79wcqMDMZmjCzUKUtUBEH9wKApyrUD8KpXxQ@mail.gmail.com>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <ef1ff688-a549-f1b7-7a80-a281e45abe3f@gmail.com>
-Date:   Tue, 26 Jan 2021 08:21:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uzP+mQr0Cb/8D8KEPDEqrJxNdNlq28R+Q5Q0SVRRzQk=;
+        b=rXvwCCHyRkwdLtTc00UrDikdtfUqwbjDFdM+jH1/DM18xJxwY+tDsclFrTUlQZmU2v
+         LLu24D93LFJ92hD3g6eohTs2t4jykwV3WT5wCc2+j8EM/0QywlnM9AtW6UIZABtmLmmT
+         DuDRpoeaEIjBBx6+IzmY6e5TDgc4Fw8mVZPhFscMGodDqYP8WnhZAuMyD9KPOkecRR8l
+         6anmsjKHaJ+Yvobug26pttBDECKghmm4FBCuEJcVE3Qjg3xFG1beJQqu5hQu/lC2Pt2R
+         CfX+4xfGMHi/HZc4YUZgn3fnlSIEoCgE0EXdlxm+gHwKZu57qyNPN4qv/tzzDzx3EkZa
+         b0TA==
+X-Gm-Message-State: AOAM530MwNbTlYI0/LjQYjLbIG9+k8k7K1zWIyzn9PWEqLi1wDHeHiaj
+        za3PDlPB/QhUdBHo9JwoG2fxBRCJWfSUF38hzu6kisNDapfClQ==
+X-Google-Smtp-Source: ABdhPJxp+Kxl2ljNST0OVZOxZ4MKFvOww3YK6lmH1s9MIhI4ZeVv4w+LKMj2K658dKogD+dj15y8P4T/UXa6TxHZBzw=
+X-Received: by 2002:a05:651c:39c:: with SMTP id e28mr1441416ljp.81.1611620560792;
+ Mon, 25 Jan 2021 16:22:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAD+ocbx18bb-UB79wcqMDMZmjCzUKUtUBEH9wKApyrUD8KpXxQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CABXGCsMvRzY_JHH4cPtxQ3nsYrsEJFgD0Wh5Aimx+iGB8GnY3g@mail.gmail.com>
+ <20210124111047.13404-1-hdanton@sina.com> <CABXGCsMY5eEefYLvnqtws8MRAqHOaDW9JwfsCPnLZydLDQqyuA@mail.gmail.com>
+In-Reply-To: <CABXGCsMY5eEefYLvnqtws8MRAqHOaDW9JwfsCPnLZydLDQqyuA@mail.gmail.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Tue, 26 Jan 2021 05:22:29 +0500
+Message-ID: <CABXGCsONEisAip4GHqJ=HR905CYd+=vd+NRWJgxTyg3rNqNoyQ@mail.gmail.com>
+Subject: Re: BUG: KASAN: use-after-free in __list_add_valid+0x81/0xa0 (5.11-rc4)
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>, paulmck@linux.vnet.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 24 Jan 2021 at 23:23, Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> Thanks for looking at the issue.
+> Why the proposed patch not intended for testing?
+> It is not the final (optimal) variant?
+>
+>
+> --
+> Best Regards,
+> Mike Gavrilov.
 
+With disabled kasan I got slightly different trace (which flooded the
+kernel logs):
 
-harshad shirwadkar wrote on 2021/1/26 1:15:
-> Hey hi! I don't see my previous comments being handled here or am I
-> missing something? It'd be really handy to have the device name
-> printed in jbd2 logs.
+z3fold: No free chunks in unbuddied
+------------[ cut here ]------------
+WARNING: CPU: 16 PID: 270 at mm/z3fold.c:1120 z3fold_zpool_malloc+0xe4/0x780
+Modules linked in: tun snd_seq_dummy snd_hrtimer uinput rfcomm
+nft_objref nf_conntrack_netbios_ns nf_conntrack_broadcast nft_fib_inet
+nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4
+nf_reject_ipv6 nft_reject nft_ct nft_chain_nat ip6table_nat
+ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_raw
+iptable_security ip_set nf_tables nfnetlink ip6table_filter ip6_tables
+iptable_filter cmac bnep zstd sunrpc vfat fat uas usb_storage
+hid_logitech_hidpp hid_logitech_dj mt76x2u mt76x2_common mt76x02_usb
+mt76_usb mt76x02_lib mt76 gspca_zc3xx gspca_main snd_hda_codec_realtek
+snd_hda_codec_generic intel_rapl_msr snd_hda_codec_hdmi ledtrig_audio
+intel_rapl_common snd_hda_intel snd_intel_dspcfg iwlmvm
+soundwire_intel soundwire_generic_allocation snd_soc_core mac80211
+snd_compress snd_pcm_dmaengine soundwire_cadence snd_hda_codec joydev
+edac_mce_amd uvcvideo snd_hda_core kvm_amd btusb
+ videobuf2_vmalloc btrtl videobuf2_memops ac97_bus videobuf2_v4l2
+btbcm snd_usb_audio libarc4 btintel videobuf2_common snd_usbmidi_lib
+kvm bluetooth snd_hwdep iwlwifi videodev snd_seq snd_rawmidi eeepc_wmi
+asus_wmi snd_seq_device irqbypass mc sparse_keymap xpad ecdh_generic
+snd_pcm rapl ff_memless wmi_bmof video ecc cfg80211 pcspkr snd_timer
+k10temp snd sp5100_tco i2c_piix4 soundcore rfkill acpi_cpufreq
+binfmt_misc ip_tables amdgpu drm_ttm_helper ttm iommu_v2 gpu_sched
+drm_kms_helper crct10dif_pclmul crc32_pclmul crc32c_intel cec igb nvme
+drm ghash_clmulni_intel ccp xhci_pci dca nvme_core xhci_pci_renesas
+i2c_algo_bit wmi pinctrl_amd fuse
+CPU: 16 PID: 270 Comm: kswapd0 Tainted: G        W        ---------
+---  5.11.0-0.rc4.20210120git45dfb8a5659a.133.fc34.x86_64 #1
+Hardware name: System manufacturer System Product Name/ROG STRIX
+X570-I GAMING, BIOS 3402 01/13/2021
+RIP: 0010:z3fold_zpool_malloc+0xe4/0x780
+Code: 0f c1 43 58 83 f8 01 0f 84 7c 06 00 00 85 c0 0f 8e 93 06 00 00
+48 8d 7b 10 e8 a8 8c 9a 00 48 c7 c7 c8 b5 5f b2 e8 46 ce 93 00 <0f> 0b
+eb 81 c7 04 24 00 00 00 00 8b 7c 24 18 85 ff 0f 84 a6 00 00
+RSP: 0018:ffffb39dc086b910 EFLAGS: 00010282
+RAX: 0000000000000023 RBX: ffff9c12bfc3f000 RCX: 0000000000000000
+RDX: ffff9c1888be9f60 RSI: ffff9c1888bdb2a0 RDI: ffff9c1888bdb2a0
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffb39dc086b750
+R10: ffffb39dc086b748 R11: 0000000000000000 R12: ffff9c11b25cd400
+R13: 0000000000012800 R14: 00000000000001a0 R15: 0000000000000007
+FS:  0000000000000000(0000) GS:ffff9c1888a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00001a925bb89fe8 CR3: 00000003862c4000 CR4: 0000000000350ee0
+Call Trace:
+ ? _raw_spin_unlock+0x1f/0x30
+ zswap_frontswap_store+0x43e/0x890
+ __frontswap_store+0xc8/0x170
+ swap_writepage+0x39/0x70
+ pageout+0x125/0x540
+ shrink_page_list+0x1329/0x1bc0
+ shrink_inactive_list+0x12a/0x440
+ shrink_lruvec+0x4a9/0x6d0
+ ? super_cache_count+0x79/0xf0
+ shrink_node+0x2d1/0x700
+ balance_pgdat+0x2f5/0x650
+ kswapd+0x21d/0x4d0
+ ? do_wait_intr_irq+0xd0/0xd0
+ ? balance_pgdat+0x650/0x650
+ kthread+0x13a/0x150
+ ? __kthread_bind_mask+0x60/0x60
+ ret_from_fork+0x22/0x30
+irq event stamp: 46
+hardirqs last  enabled at (45): [<ffffffffb1d3fea1>]
+_raw_spin_unlock_irqrestore+0x41/0x50
+hardirqs last disabled at (46): [<ffffffffb1d39aaf>] __schedule+0x6ef/0xb20
+softirqs last  enabled at (0): [<ffffffffb10ddbbb>] copy_process+0x8fb/0x1de0
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+---[ end trace d045ca861a4f792f ]---
+z3fold: No free chunks in unbuddied
 
-Maybe I miss something..,the origin switch has been reserved, the new added
-switch and the origin switch together determine whether the log of a certain
-device is finally output. . Also, I will add device information to the next
-version.thanks.
+Full kernel log is here: https://pastebin.com/BTJ0Fz6d
 
-> On Sat, Jan 23, 2021 at 4:01 AM Chunguang Xu <brookxu.cn@gmail.com> wrote:
->>
->> From: Chunguang Xu <brookxu@tencent.com>
->>
->> On a multi-disk machine, because jbd2's debugging switch is global,this
->> confuses the logs of multiple disks. It is not easy to distinguish the
->> logs of each disk and the amount of generated logs is very large. Maybe
->> a separate debugging switch for each disk would be better, so that we
->> can easily distinguish the logs of a certain disk.
->>
->> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
->> Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
->> ---
->>  fs/jbd2/journal.c     | 55 ++++++++++++++++++++++++++++++++++++++++---
->>  fs/jbd2/transaction.c |  2 +-
->>  include/linux/jbd2.h  |  7 ++++++
->>  3 files changed, 60 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
->> index 2dc944442802..1f32b854ea28 100644
->> --- a/fs/jbd2/journal.c
->> +++ b/fs/jbd2/journal.c
->> @@ -101,13 +101,13 @@ EXPORT_SYMBOL(jbd2_inode_cache);
->>  static int jbd2_journal_create_slab(size_t slab_size);
->>
->>  #ifdef CONFIG_JBD2_DEBUG
->> -void __jbd2_debug(int level, const char *file, const char *func,
->> +void jbd2_log(int level, journal_t *j, const char *file, const char *func,
->>                   unsigned int line, const char *fmt, ...)
->>  {
->>         struct va_format vaf;
->>         va_list args;
->>
->> -       if (level > jbd2_journal_enable_debug)
->> +       if (!j || (level > jbd2_journal_enable_debug && level > j->j_debug_level))
->>                 return;
->>         va_start(args, fmt);
->>         vaf.fmt = fmt;
->> @@ -115,7 +115,7 @@ void __jbd2_debug(int level, const char *file, const char *func,
->>         printk(KERN_DEBUG "%s: (%s, %u): %pV", file, func, line, &vaf);
->>         va_end(args);
->>  }
->> -EXPORT_SYMBOL(__jbd2_debug);
->> +EXPORT_SYMBOL(jbd2_log);
->>  #endif
->>
->>  /* Checksumming functions */
->> @@ -1257,6 +1257,48 @@ static int jbd2_seq_info_release(struct inode *inode, struct file *file)
->>         return seq_release(inode, file);
->>  }
->>
->> +#ifdef CONFIG_JBD2_DEBUG
->> +static int jbd2_proc_debug_show(struct seq_file *m, void *v)
->> +{
->> +       journal_t *j = m->private;
->> +
->> +       seq_printf(m, "%d\n", j->j_debug_level);
->> +       return 0;
->> +}
->> +
->> +static int jbd2_proc_debug_open(struct inode *inode, struct file *file)
->> +{
->> +       journal_t *journal = PDE_DATA(inode);
->> +
->> +       return single_open(file, jbd2_proc_debug_show, journal);
->> +}
->> +
->> +static ssize_t jbd2_proc_debug_write(struct file *file,
->> +               const char __user *buffer, size_t count, loff_t *ppos)
->> +{
->> +       struct seq_file *seq = file->private_data;
->> +       journal_t *j = seq->private;
->> +       char c;
->> +
->> +       if (get_user(c, buffer))
->> +               return -EFAULT;
->> +
->> +       if (c < '0' || c > '5')
->> +               return -EINVAL;
->> +
->> +       j->j_debug_level = c - '0';
->> +       return count;
->> +}
->> +
->> +static const struct proc_ops jbd2_debug_proc_ops = {
->> +       .proc_open      = jbd2_proc_debug_open,
->> +       .proc_read      = seq_read,
->> +       .proc_write     = jbd2_proc_debug_write,
->> +       .proc_release   = single_release,
->> +       .proc_lseek     = seq_lseek,
->> +};
->> +#endif
->> +
->>  static const struct proc_ops jbd2_info_proc_ops = {
->>         .proc_open      = jbd2_seq_info_open,
->>         .proc_read      = seq_read,
->> @@ -1272,12 +1314,19 @@ static void jbd2_stats_proc_init(journal_t *journal)
->>         if (journal->j_proc_entry) {
->>                 proc_create_data("info", S_IRUGO, journal->j_proc_entry,
->>                                  &jbd2_info_proc_ops, journal);
->> +#ifdef CONFIG_JBD2_DEBUG
->> +               proc_create_data("jbd2_debug", S_IRUGO, journal->j_proc_entry,
->> +                                &jbd2_debug_proc_ops, journal);
->> +#endif
->>         }
->>  }
->>
->>  static void jbd2_stats_proc_exit(journal_t *journal)
->>  {
->>         remove_proc_entry("info", journal->j_proc_entry);
->> +#ifdef CONFIG_JBD2_DEBUG
->> +       remove_proc_entry("jbd2_debug", journal->j_proc_entry);
->> +#endif
->>         remove_proc_entry(journal->j_devname, proc_jbd2_stats);
->>  }
->>
->> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
->> index 9396666b7314..71787e826788 100644
->> --- a/fs/jbd2/transaction.c
->> +++ b/fs/jbd2/transaction.c
->> @@ -150,7 +150,7 @@ static inline void update_t_max_wait(transaction_t *transaction,
->>                                      unsigned long ts)
->>  {
->>  #ifdef CONFIG_JBD2_DEBUG
->> -       if (jbd2_journal_enable_debug &&
->> +       if ((jbd2_journal_enable_debug || transaction->t_journal->j_debug_level) &&
->>             time_after(transaction->t_start, ts)) {
->>                 ts = jbd2_time_diff(ts, transaction->t_start);
->>                 spin_lock(&transaction->t_handle_lock);
->> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
->> index 99d3cd051ac3..600a2ea8324a 100644
->> --- a/include/linux/jbd2.h
->> +++ b/include/linux/jbd2.h
->> @@ -1211,6 +1211,13 @@ struct journal_s
->>          */
->>         struct transaction_stats_s j_stats;
->>
->> +#ifdef CONFIG_JBD2_DEBUG
->> +       /**
->> +        * @j_debug_level: debugging level for jbd2.
->> +        */
->> +       unsigned int j_debug_level;
->> +#endif
->> +
->>         /**
->>          * @j_failed_commit: Failed journal commit ID.
->>          */
->> --
->> 2.30.0
->>
+-- 
+Best Regards,
+Mike Gavrilov.
