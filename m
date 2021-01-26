@@ -2,92 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881833043AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1523043AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 17:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392862AbhAZQVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 11:21:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392769AbhAZQTt (ORCPT
+        id S2391046AbhAZQWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 11:22:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392853AbhAZQVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 11:19:49 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374E2C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 08:19:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bTVvC5dBR5FLlE9aUyJVC2BZBj2HyB/7vwwlQxUnBck=; b=C5keJZV7t+vZnW8XTMdFqGzzfn
-        MVc5vqicYyZPKSy4dENoX77LyL3g3KjXZKd5IVEmEPUwwPLrQ8o2bvOQRW++UxJ4AzAFhpGyD8cCz
-        gt/jNNPVkdtsYeuSRoqWTaimij6c/k3vzpEriSMovk4d78bobHpvRFW7VyYmI3VQoMP+n+u2gv9LG
-        2PgZXzyM7CI46JEzMc+pYIBZoh1eGfFglfECV2US9ZQWBv8IsHdl1zaZJFVQFt3g2OfvCk7NfOI4y
-        1APsxeqTel7ylYt8TlozliWM+u25T4/gevo40zgxFrKjlvVeLLkku2vRF+Ko8NRYmxVSFigcZP59n
-        TFO51hUQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4R3V-0000lO-0F; Tue, 26 Jan 2021 16:19:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 79CC13019CE;
-        Tue, 26 Jan 2021 17:18:59 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 46C002C538ED8; Tue, 26 Jan 2021 17:18:59 +0100 (CET)
-Date:   Tue, 26 Jan 2021 17:18:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Fix BUG: Invalid wait context in hrtimer_interrupt()
-Message-ID: <YBBA81osV7cHN2fb@hirez.programming.kicks-ass.net>
-References: <20210123233741.3614408-1-qais.yousef@arm.com>
- <YA+em8XkTidYetGE@jagdpanzerIV.localdomain>
- <20210126145917.r64vzibgpiwyuake@e107158-lin>
- <874kj3lo3h.fsf@jogness.linutronix.de>
+        Tue, 26 Jan 2021 11:21:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611677982;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OkRiY5ow5UKClr4i0QoBZwnQcXWa51RD9uvqs2Ng6cs=;
+        b=QDV/4qnS79Sggec0Zqo3CHsTTHoeEEwK5Eym38ahXBDfrnym5hUDP/UorcHh3LuLaAAIuS
+        CpNznKsmsY9JbB/getKZJlqDoxazqyUyaKS+XYBWBlNrxV3b971czRr9WxdXuGtpH5bKwF
+        mMtJ7bhG1jLkO5hpYBMM0hbb30ScMwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-MdJ5HRgVMcuTlAbJ4OK0YA-1; Tue, 26 Jan 2021 11:19:40 -0500
+X-MC-Unique: MdJ5HRgVMcuTlAbJ4OK0YA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE7D91081B3C;
+        Tue, 26 Jan 2021 16:19:37 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 405696B8DD;
+        Tue, 26 Jan 2021 16:19:36 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 10:19:34 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Justin Forbes <jforbes@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, Greg KH <greg@kroah.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-hardening@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT
+ modules
+Message-ID: <20210126161934.z6sng4irl5teonvj@treble>
+References: <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
+ <20210125220757.vxdsf6sttpy46cq7@treble>
+ <YA/PLdX5m9f4v+Yl@kroah.com>
+ <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
+ <YBAeYaDReAc9VscA@kroah.com>
+ <20210126145155.kcfbnzfqg5qugvcl@treble>
+ <YBAyGU7H8E98xKng@hirez.programming.kicks-ass.net>
+ <20210126154651.itfrnhwfistia3ss@treble>
+ <YBA9r13+1uuyDYuR@hirez.programming.kicks-ass.net>
+ <CAFbkSA1CibJ6sp+LPLy3hpchLLH2B5__Lk31TLeVThXi5eZV7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <874kj3lo3h.fsf@jogness.linutronix.de>
+In-Reply-To: <CAFbkSA1CibJ6sp+LPLy3hpchLLH2B5__Lk31TLeVThXi5eZV7Q@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 04:28:42PM +0106, John Ogness wrote:
-> On 2021-01-26, Qais Yousef <qais.yousef@arm.com> wrote:
-> > 	[67628.393550] =============================
-> > 	[67628.393554] [ BUG: Invalid wait context ]
-> > 	[67628.393557] 5.11.0-rc3-00019-g86be331946f7 #37 Not tainted
-> > 	[67628.393560] -----------------------------
-> > 	[67628.393563] sugov:0/192 is trying to lock:
-> > 	[67628.393566] ffff000800b1d898 (&port_lock_key){-.-.}-{3:3}, at: pl011_console_write+0x138/0x218
-> > 	[67628.393581] other info that might help us debug this:
-> > 	[67628.393584] context-{2:2}
-> > 	[67628.393586] 4 locks held by sugov:0/192:
-> > 	[67628.393589]  #0: ffff0008059cb720 (&sg_policy->work_lock){+.+.}-{4:4}, at: sugov_work+0x58/0x88
-> > 	[67628.393603]  #1: ffff800015446f20 (prepare_lock){+.+.}-{4:4}, at: clk_prepare_lock+0x34/0xb0
-
-
-> pl011_console_write() does:
+On Tue, Jan 26, 2021 at 10:15:52AM -0600, Justin Forbes wrote:
+> On Tue, Jan 26, 2021 at 10:05 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Jan 26, 2021 at 09:46:51AM -0600, Josh Poimboeuf wrote:
+> > > On Tue, Jan 26, 2021 at 04:15:37PM +0100, Peter Zijlstra wrote:
+> > > > On Tue, Jan 26, 2021 at 08:51:55AM -0600, Josh Poimboeuf wrote:
+> > > > > User space mixes compiler versions all the time.  The C ABI is stable.
+> > > > >
+> > > > > What specifically is the harder issue you're referring to?
+> > > >
+> > > > I don't think the C ABI captures nearly enough. Imagine trying to mix a
+> > > > compiler with and without asm-goto support (ok, we fail to build without
+> > > > by now, but just imagine).
+> > > >
+> > > > No C ABI violated, but having that GCC extention vs not having it
+> > > > radically changes the kernel ABI.
+> > > >
+> > > > I think I'm with Greg here, just don't do it.
+> > >
+> > > Ok, thank you for an actual example.  asm goto is a good one.
+> > >
+> > > But it's not a cut-and-dry issue.  Otherwise how could modversions
+> > > possibly work?
+> > >
+> > > So yes, we should enforce GCC versions, but I still haven't seen a
+> > > reason it should be more than just "same compiler and *major* version".
+> >
+> > Why bother? rebuilding the kernel and all modules is a matter of 10
+> > minutes at most on a decently beefy build box.
+> >
+> > What actual problem are we trying to solve here?
 > 
->     local_irq_save(flags);
->     spin_lock(&uap->port.lock);
-> 
-> This needs to be:
-> 
->     spin_lock_irqsave(&uap->port.lock, flags);
-> 
-> Of course, it will be a trickier than that because of the
-> @oops_in_progress madness. This bug has been around for quite a while.
+> This is true for those of us used to working with source and building
+> by hand. For users who want everything packaged, rebuilding a kernel
+> package for install is considerably longer, and for distros providing
+> builds for multiple arches, we are looking at a couple of hours at
+> best.  From a Fedora standpoint, I am perfectly fine with it failing
+> if someone tries to build a module on gcc10 when the kernel was built
+> with gcc11.  It's tedious when the kernel was built with gcc11
+> yesterday, and a new gcc11 build today means that kernel needs to be
+> rebuilt.
 
-Well yes, but that's not going to be fixing anything.
+Right.  It's a problem for distro users.  The compiler and kernel are in
+separate packages, with separate release cadences.  The latest compiler
+version may not exactly match what was used to build the latest kernel.
 
-The problem is that sugov_work() is holding a raw_spin_lock, and you're
-trying to acquire a spin_lock.
+-- 
+Josh
 
-That's an invalid lock nesting.
