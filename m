@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB2B304F82
+	by mail.lfdr.de (Postfix) with ESMTP id BE567304F83
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234742AbhA0DOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:14:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2395483AbhAZT0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:26:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3060321919;
-        Tue, 26 Jan 2021 19:25:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1611689149;
-        bh=7p17PBfMCykVh1TIGmJBWLR2D/SrpQqGJdfo8kfnJCw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zqtjfJr5D5BXLs8eV+utNBwa4j1u4xciLLVwIjLMkAsLwmF++rPICPsNvADiiQDn3
-         vDvKDd5BLubjILbSPCtXLNr883Tr3+hF3BGUgHHQFvsxu1fPj6bnk60K6PjO415jAQ
-         xAi7Mlcp2scZFHh6fhwApXuihk5x4mLwo0jY5HXM=
-Date:   Tue, 26 Jan 2021 11:25:47 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Piotr Figiel <figiel@google.com>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Michel Lespinasse <walken@google.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        mathieu.desnoyers@efficios.com, viro@zeniv.linux.org.uk,
-        peterz@infradead.org, paulmck@kernel.org, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
-        pjt@google.com
-Subject: Re: [PATCH v3] fs/proc: Expose RSEQ configuration
-Message-Id: <20210126112547.d3f18b6a2abe864e8bfa7fcd@linux-foundation.org>
-In-Reply-To: <20210126185412.175204-1-figiel@google.com>
-References: <20210126185412.175204-1-figiel@google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234798AbhA0DOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391665AbhAZT1T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 14:27:19 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491F2C061756;
+        Tue, 26 Jan 2021 11:26:39 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id p5so19687748oif.7;
+        Tue, 26 Jan 2021 11:26:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wgrz1dPVKupkhL+Fml0W2YtS2FbtQoFf8uzy5Hj48uU=;
+        b=iEVPSohBydLz3bStc1ZClm1h6Gn4rAkU1H06ctzRhy2XlqNjMEe7MWeTaNeGDU2z/+
+         8NPXuWniMeG9Rj8yVks108hYQAom/t/XvsJ/80bvyj8bVESkSRfNrtdT0N1o58k8RgVd
+         6dSPYrRMu5zIP27ozm4OLxsSShyMKmZSqlD1WJBV6iDYYedbUAU+C2lqQXuS/rXS3UWN
+         G3g2W1QtS7lQ4XgGiF87VKM/E+lRM7oPWxiE2ZSVBxsfNcpWmNCOJ91SUNK+MW7/dPIQ
+         XT1BmC9Hp0yjvgp7iippUHPo6Ylknxed3eevYctPcDkitOFRCTtlnkZsyRB1EsfW30pC
+         vIgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wgrz1dPVKupkhL+Fml0W2YtS2FbtQoFf8uzy5Hj48uU=;
+        b=bLby1/uyA4szozUUs/0aHoaM9aZ39vhCSrdDDCf4VB654XskTNZud8eIXGjc1qLXnZ
+         1hZCiPXk+iSoFqoSC5nPCpMa3nPQT02PNgsrbFpRD21qhlctQO9Ap+oR8RM3NQS23Rme
+         KrwYFx1mx3jci6CK+cd6MCGeKa5Om0EC1H+35JVySmhwkxWWtzizwtRvsqYxxiYUBdLx
+         XzM8snQTi9PBuJ8VWKLoOoHyPFRvqsZMoei+L24iJ8Y5nbLeSYnLtZGCKuNvmAaXVLQy
+         4Hn7oj0XJTdy8yMJLh6lf456dtKO7/7m++MRx7Fhm+tyudQ3SZWfCKPVIVQGJA/+dz4x
+         jkgw==
+X-Gm-Message-State: AOAM533jfZGLSF9CqpcWSiLXQn6k4ded783NqHaHtRZ7mUyQRJmr4wOe
+        bAliknxL4OmeoAjWZIGJabs=
+X-Google-Smtp-Source: ABdhPJwIMYElqNmp6NnlP+XEpLUr098DzGBrpNErAsFBsO7guo5f3v+8lwMQsN285f/vjVv/3YT1Pw==
+X-Received: by 2002:aca:180b:: with SMTP id h11mr819225oih.18.1611689198104;
+        Tue, 26 Jan 2021 11:26:38 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m15sm4284985otl.11.2021.01.26.11.26.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 26 Jan 2021 11:26:37 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 26 Jan 2021 11:26:36 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/87] 5.4.93-rc3 review
+Message-ID: <20210126192636.GB31936@roeck-us.net>
+References: <20210126111748.320806573@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126111748.320806573@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Jan 2021 19:54:12 +0100 Piotr Figiel <figiel@google.com> wrote:
-
-> For userspace checkpoint and restore (C/R) some way of getting process
-> state containing RSEQ configuration is needed.
+On Tue, Jan 26, 2021 at 12:22:10PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.93 release.
+> There are 87 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> There are two ways this information is going to be used:
->  - to re-enable RSEQ for threads which had it enabled before C/R
->  - to detect if a thread was in a critical section during C/R
+> Responses should be made by Thu, 28 Jan 2021 11:17:31 +0000.
+> Anything received after that time might be too late.
 > 
-> Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-> using the address registered before C/R.
-> 
-> Detection whether the thread is in a critical section during C/R is
-> needed to enforce behavior of RSEQ abort during C/R. Attaching with
-> ptrace() before registers are dumped itself doesn't cause RSEQ abort.
-> Restoring the instruction pointer within the critical section is
-> problematic because rseq_cs may get cleared before the control is
-> passed to the migrated application code leading to RSEQ invariants not
-> being preserved.
-> 
-> To achieve above goals expose the RSEQ structure address and the
-> signature value with the new per-thread procfs file "rseq".
 
-Using "/proc/<pid>/rseq" would be more informative.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 427 pass: 427 fail: 0
 
->  fs/exec.c      |  2 ++
->  fs/proc/base.c | 22 ++++++++++++++++++++++
->  kernel/rseq.c  |  4 ++++
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-A Documentation/ update would be appropriate.
-
->  3 files changed, 28 insertions(+)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 5d4d52039105..5d84f98847f1 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1830,7 +1830,9 @@ static int bprm_execve(struct linux_binprm *bprm,
->  	/* execve succeeded */
->  	current->fs->in_exec = 0;
->  	current->in_execve = 0;
-> +	task_lock(current);
->  	rseq_execve(current);
-> +	task_unlock(current);
-
-There's a comment over the task_lock() implementation which explains
-what things it locks.  An update to that would be helpful.
-
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -662,6 +662,22 @@ static int proc_pid_syscall(struct seq_file *m, struct pid_namespace *ns,
->  
->  	return 0;
->  }
-> +
-> +#ifdef CONFIG_RSEQ
-> +static int proc_pid_rseq(struct seq_file *m, struct pid_namespace *ns,
-> +				struct pid *pid, struct task_struct *task)
-> +{
-> +	int res = lock_trace(task);
-> +
-> +	if (res)
-> +		return res;
-> +	task_lock(task);
-> +	seq_printf(m, "%px %08x\n", task->rseq, task->rseq_sig);
-> +	task_unlock(task);
-> +	unlock_trace(task);
-> +	return 0;
-> +}
-
-Do we actually need task_lock() for this purpose?  Would
-exec_update_lock() alone be adequate and appropriate?
-
-
+Guenter
