@@ -2,174 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5ED0304630
+	by mail.lfdr.de (Postfix) with ESMTP id 736BA30462F
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404037AbhAZSUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:20:25 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:45182 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390578AbhAZSEb (ORCPT
+        id S2403791AbhAZSUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:20:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731380AbhAZSEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:04:31 -0500
-Received: from [192.168.254.32] (unknown [47.187.219.45])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 40D9120B7192;
-        Tue, 26 Jan 2021 10:03:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 40D9120B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1611684212;
-        bh=VkWouM927sS4tAA7jtXNPFYjeYSo0tacxiplhxttVOs=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=q60zSDdvN+Rup5Vcwic4qbLREsKILOQ/wVvLBox2wYRIjVRrbvyno2Oid33hAh0NW
-         o1gw3Z0fLDgLG0YC/0FgxJNA63izCpq1/7ynmb+E+VWquERtyrP7a/RBQRXg/u8zK6
-         D7gaINkh0KFPqnQN5CkX8Ys/UMniFZpNYdi04Gq8=
-Subject: Re: Live patching on ARM64
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>,
-        Julien Thierry <jthierry@redhat.com>, jpoimboe@redhat.com,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f3fe6a60-9ac2-591d-1b83-9113c50dc492@linux.microsoft.com>
- <20210115123347.GB39776@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <a3393eb3-03a5-e4dd-f40c-b801cc60778e@linux.microsoft.com>
-Date:   Tue, 26 Jan 2021 12:03:31 -0600
+        Tue, 26 Jan 2021 13:04:38 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8101DC061574;
+        Tue, 26 Jan 2021 10:03:58 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id t14so9267884qto.8;
+        Tue, 26 Jan 2021 10:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nXCZHlDeOu1W7tWclqY0N0hv7zg7bY3yXMrnGLStIvU=;
+        b=BRypEvXZJOSvc/4OoNIoKvVKY7lcy0RcPA1Uxj+sYjR/icWTpCxaPgtJLRJLBFI51h
+         XW9R/DsDI+cavfet8ggWAxY8E+DmLFcXEKN2/NqmyueWwZSu6yPInhsdvya9sFvpVuV6
+         j8y/6IX2LY989AkHwptxbHPpr5FaAbPiER/gPeN6gS65LyPpw6yO6pzU/uTerfNJyawu
+         Q19FmdtIAvIhFJDEs1J1CumQYmb7g2wGve2pSgBUpRF3omE3sHtGFaviwjntlDAYOcks
+         uQ0JtxkoGK9A5hA4mjRnfb7zr0ANMTQq3KU9EwszhN0SoZn+1xwxqbu7NNplZDqJsHrn
+         RrdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nXCZHlDeOu1W7tWclqY0N0hv7zg7bY3yXMrnGLStIvU=;
+        b=kqvdBNjlTvRhYeKYrtKtvU/etNyFTLsKxWt2SUHq39uXI0AYKTnSw4gaZD58IYMMOC
+         mPqjOiHnZ/PvFjT+0xiOTU5K2RjBO179yC1dbKYQe8y8p4ceh3v9AUznzz5K4ZwUIbLO
+         XtFUJ9+cF2lk21hWOlaxMgsEUaZPGV7Y3ql0fHfXbq0dmGr3LFQxbekVjZBlmxf54mmX
+         wYcRqdVtVhffS0SeYebJQUCLrE2vyqc0kNJGqxVA7gW7nnxoq/i/QMclUCClHwSikSvu
+         H+l+P6hWjDGCuT3mpIGrXpO8tiRx+nn0a6qpaBP8v16l8uRDBHYBmrpGjMuR936YEAOD
+         YvKw==
+X-Gm-Message-State: AOAM533ZbMjznvkofTPOZDQkhcbIvGnFv0LltF/CdceX3h3h7MubNbiy
+        O+DHdZx2bSe1+mNTARVHKvg=
+X-Google-Smtp-Source: ABdhPJwqnhIgbfRIEpY87vK45ovcVlNAgTl1yo1q7eoeQGm9MdIW7+1ziE7jWa+gK6R3QPyRcbdtuA==
+X-Received: by 2002:ac8:5d45:: with SMTP id g5mr6236171qtx.247.1611684237696;
+        Tue, 26 Jan 2021 10:03:57 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id d26sm13496164qtw.58.2021.01.26.10.03.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 10:03:57 -0800 (PST)
+Subject: Re: [PATCH] cmd_dtc: Enable generation of device tree symbols
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     DTML <devicetree@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>, cyril@debamax.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20210125105757.661240-1-uwe@kleine-koenig.org>
+ <CAK7LNAS5t1wew0MMFjdB5HGCAMerhU7pAGiFhcTtCRUAAjGLpw@mail.gmail.com>
+ <9d9bb0f6-d4f4-b1b9-a4c4-786987578085@kleine-koenig.org>
+ <CAMuHMdUmtMxucQ9DWvROVPVv2uGEzpRmtv1=jrjm09xU=gHHyw@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <1e713129-db54-64c3-59e3-fc0dba0e0f19@gmail.com>
+Date:   Tue, 26 Jan 2021 12:03:56 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210115123347.GB39776@C02TD0UTHF1T.local>
+In-Reply-To: <CAMuHMdUmtMxucQ9DWvROVPVv2uGEzpRmtv1=jrjm09xU=gHHyw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
++frank
 
-Mark Rutland had sent me some ideas on what work is pending for ARM64 live patching.
-I sent some questions to Mark Rutland. I forgot to include everyone in the email.
-Sorry about that. I have reproduced my questions and his responses below. Please
-chime in with any comments:
-
-Thanks!
-
-
-
-
-On Mon, Jan 25, 2021 at 11:58:47AM -0600, Madhavan T. Venkataraman wrote:
-> Some questions below:
-
-I've answered thos below.
-
-If possible, I'd prefer to handle future queries on a public list (so
-that others can chime in, and so that it gets archived), so if you could
-direct further questions to a thread on LAKML, that would be much
-appreciated.
-
-> On 1/15/21 6:33 AM, Mark Rutland wrote:
-> [...]
+On 1/26/21 2:43 AM, Geert Uytterhoeven wrote:
+> Hi Uwe,
+> 
+> On Tue, Jan 26, 2021 at 8:21 AM Uwe Kleine-König <uwe@kleine-koenig.org> wrote:
+>> And then I learned with hints from Rob and Geert that symbols are not
+>> really necessary for overlays, you just cannot use named labels. But
+>> using
 >>
->> One general thing that I believe we'll need to do is to rework code to
->> be patch-safe (which implies being noinstr-safe too). For example, we'll
->> need to rework the instruction patching code such that this cannot end
->> up patching itself (or anything that has instrumented it) in an unsafe
->> way.
+>>         target-path = "/soc/i2c@23473245";
 >>
->
-> OK. I understand that. Are there are other scenarios that make patching
-> unsafe?
-
-I suspect so; these are simply the cases I'm immediately aware of. I
-suspect there are other cases that we will need to consider that don't
-immediately spring to mind.
-
-> I expect the kernel already handles scenarios such as two CPUs patching
-> the same location at the same time or a thread executing at a location that is
-> currently being patched.
-
-IIRC that is supposed to be catered for by ftrace (and so I assume for
-livepatching too); I'm not certain about kprobes. In addition to
-synchronization in the core ftrace code, arm64's ftrace_modify_code()
-has a sanity-check with a non-atomic RMW sequence. We might be able to
-make that more robust wiuth a faultable cmpxchg, and some changes around
-ftrace_update_ftrace_func() and ftrace_make_nop()  to get rid of the
-unvalidated cases.
-
-> Any other scenarios to be considered?
-
-I'm not immediately aware of others, but suspect more cases will become
-apparent as work progresses on the bits we already know about.
-
->> Once we have objtool it should be possible to identify those cases
->> automatically. Currently I'm aware that we'll need to do something in at
->> least the following places:
+>> or
 >>
->
-> OK. AFAIK, objtool checks for the following:
->
->         - returning from noinstr function with instrumentation enabled
->
->         - calling instrumentable functions from noinstr code without:
->
->                 instrumentation_begin();
->                 instrumentation_end();
->
-> Is that what you mean?
-
-That's what I was thinking of, yes -- this should highlight some places
-that will need attention.
-
-> Does objtool check other things as well that is relevant to (un)safe
-> patching?
-
-I'm not entirely familiar with objtool, so I'm not exactly sure what it
-can do; I expect Josh and Julien can give more detail here.
-
->> * The insn framework (which is used by some patching code), since the
->>   bulk of it lives in arch/arm64/kernel/insn.c and isn't marked noinstr.
->>   
->>   We can probably shift the bulk of the aarch64_insn_gen_*() and
->>   aarch64_get_*() helpers into a header as __always_inline functions,
->>   which would allow them to be used in noinstr code. As those are
->>   typically invoked with a number of constant arguments that the
->>   compiler can fold, this /might/ work out as an optimization if the
->>   compiler can elide the error paths.
->
-> OK. I will take a look at the insn code.
-
-IIRC Julien's objtool series had some patches had some patches moving
-the insn code about, so it'd be worth checking whether that's a help or
-a hindrance. If it's possible to split out a set of preparatory patches
-that make that ready both for objtool and the kernel, that would make it
-easier to review that and queue it early.
-
->> * The alternatives code, since we call instrumentable and patchable
->>   functions between updating instructions and performing all the
->>   necessary maintenance. There are a number of cases within
->>   __apply_alternatives(), e.g.
+>>         target = <&{/soc/i2c@23473245}>;
 >>
->>   - test_bit()
->>   - cpus_have_cap()
->>   - pr_info_once()
->>   - lm_alias()
->>   - alt_cb, if the callback is not marked as noinstr, or if it calls
->>     instrumentable code (e.g. from the insn framework).
->>   - clean_dcache_range_nopatch(), as read_sanitised_ftr_reg() and
->>     related code can be instrumented.
+>> instead of
 >>
->>   This might need some underlying rework elsewhere (e.g. in the
->>   cpufeature code, or atomics framework).
+>>         target = <&i2c1>;
 >>
->> So on the kernel side, maybe a first step would be to try to headerize
->> the insn generation code as __always_inline, and see whether that looks
->> ok? With that out of the way it'd be a bit easier to rework patching
->> code depending on the insn framework.
->
-> OK. I will study this.
-
-Great, thanks!
-
-Mark.
-
+>> works fine. (And if you need to add a phandle the &{/path/to/node}
+>> construct should work, too (but I didn't test).) Using labels is a tad
+>> nicer, but the problem I wanted to address with my patch now has a known
+>> different solution.
+> 
+> Please don't use "target" and "target-path".  Since the introduction of
+> sugar syntax support in v4.15[1], you can just use "&label", like in a normal
+> DTS file.  Paths do need the special "&{/path/to/node}" syntax instead
+> of "/path/to/node", though.
+> 
+> As usual, you can find lots of examples of DT overlays in my repo[2].
+> 
+> [1] commit 4201d057ea91c3d6 ("scripts/dtc: Update to upstream version
+> v1.4.5-3-gb1a60033c110")
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers.git/log/?h=topic/renesas-overlays
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
 
