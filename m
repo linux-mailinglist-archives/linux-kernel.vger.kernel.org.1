@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57317304069
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 451F330409B
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405855AbhAZOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405682AbhAZOez (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:34:55 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CECBDC0611BD;
-        Tue, 26 Jan 2021 06:34:14 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id a9so16706068wrt.5;
-        Tue, 26 Jan 2021 06:34:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WQgoOzkoghLE6Txd+mKAF3gxLvF0S/uKlI4N69soRhE=;
-        b=jxs8HxFpIg6YPigYvawjbGoE/XfEaYCF0qSAav6v8xWlLxSCXeihY19oqSMp20Qq7d
-         5JROpMbEAV11YeCHFf6RIPvnFqiZgVba9NoEq6Pz8EV0rVH0ud3GqwuCp2K4i7vZoUWV
-         I4TFk6qtfrPdqDRqzg3W2S4TS2aoaWMEM8JHUDSoS6pmVFt0faInjGBlR7ntwq5SYXXd
-         uSqJd7R2T1NqVN7BMhYQSvxgJW2pyeqeI40lHGHgRmJVqUOgoECh3grkYXoe9XZGRwq+
-         noWspL0I6ThQmJrqo0iNr7OflvdxwtwK31fVhuiICp2tVzZ4KH8N8wO86BCLJtqTw+J+
-         XG4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WQgoOzkoghLE6Txd+mKAF3gxLvF0S/uKlI4N69soRhE=;
-        b=TF4t0By/7dg+KhYK4+Wbrxd40HMgU9ZWZjNCbf/jiGZADFSaPuy5W5V3mbRweuS1Uu
-         ADF9YZunQyQUXvuwkf9WkXUS2V3ynVACx+yQMuGGDkX7NoYr8bIBWx3Bv2wO1jQ65OPp
-         yAVd3E0YgEyjYv3zMAVDlrgN8YKqsJobbVTdhWi/3C/Nq3yceq9KCKws/ZLGhqPDb4BL
-         TsEdXrp08cM2UkwbdbAgYNRx6N9sRVzyWJfic/xbRU9AojNrEfOakxZaK8/ks30Hb+sr
-         uWtXZMYacIRQYKs/GseajnEInDi0XupbxbNvvvuV92bdSY31VxcvF0/91lrTirOtYDAA
-         Pe2A==
-X-Gm-Message-State: AOAM530euBPULtagC8q2xX+zSAPWZF/fB0tweOGza8xCn4G6cLM6Atz1
-        OjBSNoHaFVC9X2Um/hRxO6z+rv/MEm05n1tA
-X-Google-Smtp-Source: ABdhPJwXvKqZTEvMYDKx36YVJRsaxgeOq/5KAZqLeD5x+8Tp1TDkENk/jKQveqLCyeiuRKGPo4UYgQ==
-X-Received: by 2002:adf:dd83:: with SMTP id x3mr6321160wrl.421.1611671653231;
-        Tue, 26 Jan 2021 06:34:13 -0800 (PST)
-Received: from anparri (host-95-238-70-33.retail.telecomitalia.it. [95.238.70.33])
-        by smtp.gmail.com with ESMTPSA id s23sm3350129wmc.35.2021.01.26.06.34.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 06:34:12 -0800 (PST)
-Date:   Tue, 26 Jan 2021 15:34:05 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] hv_netvsc: Copy packets sent by Hyper-V out of
- the receive buffer
-Message-ID: <20210126143405.GA1364@anparri>
-References: <20210126113847.1676-1-parri.andrea@gmail.com>
+        id S2391528AbhAZOjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:39:42 -0500
+Received: from smtp.asem.it ([151.1.184.197]:64868 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405924AbhAZOie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 09:38:34 -0500
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000733461.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 15:37:50 +0100S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
+ Jan 2021 15:37:50 +0100
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 26 Jan 2021 15:37:50 +0100
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v1] mtd: spi-nor: add ACPI support for non-JEDEC SPI-NOR
+Date:   Tue, 26 Jan 2021 15:37:48 +0100
+Message-ID: <20210126143748.1546187-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126113847.1676-1-parri.andrea@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A782F15.6010293E.00A0,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:38:47PM +0100, Andrea Parri (Microsoft) wrote:
-> Pointers to receive-buffer packets sent by Hyper-V are used within the
-> guest VM.  Hyper-V can send packets with erroneous values or modify
-> packet fields after they are processed by the guest.  To defend against
-> these scenarios, copy (sections of) the incoming packet after validating
-> their length and offset fields in netvsc_filter_receive().  In this way,
-> the packet can no longer be modified by the host.
-> 
-> Reported-by: Juan Vazquez <juvazq@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
+In a x86 machine, an additional device can be described
+inside the BIOS ACPI tables.
+For example, an I2C GPIO expander, a LED, etc.,
+can be successfully declared in ACPI, so that the related
+device driver can start automatically at the boot.
 
-Please ignore this submission, I'm sending a new version shortly...  Sorry for
-the hassle.
+But for the SPI NOR devices, the ACPI description works
+for JEDEC-compatible devices only.
 
-  Andrea
+For example, an Everspin MR25H40 MRAM device (non-JEDEC
+compatible), declared using the following table,
+does not work:
+
+    Scope (\_SB.SPI1)
+    {
+        Device (NVR0)
+        {
+            Name (_HID, "PRP0001")
+            Name (_DDN, "Everspin MR25H40 MRAM")
+            Name (_CRS, ResourceTemplate () {
+                SpiSerialBus (
+                1,                      // Chip select
+                PolarityLow,            // Chip select is active low
+                FourWireMode,           // Full duplex
+                8,                      // Bits per word is 8 (byte)
+                ControllerInitiated,    // Don't care
+                10000000,               // 10 MHz
+                ClockPolarityLow,       // SPI mode 0 ClockPolarityLow
+                ClockPhaseFirst,        // SPI mode 0 ClockPhaseFirst
+                "\\_SB.SPI1",           // SPI host controller
+                0,                      // Must be 0
+                ResourceConsumer,
+                ,
+                )
+            })
+
+            Name (_DSD, Package () {
+                ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+                Package () {
+                    Package () {"compatible", "mr25h40"},
+                }
+            })
+        }
+    }
+
+To enable the detection of a non-JEDEC device described
+in a BIOS ACPI table, it is necessary to add its id name
+in the spi_nor_of_table structure.
+With this change, all the SPI NOR devices (JEDEC and
+non-JEDEC) can be detected by the kernel (and the above
+example of ACPI table finally works).
+
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ drivers/mtd/spi-nor/core.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 6ae7d4c2d2b6..b6fb8b15c439 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3755,6 +3755,19 @@ static const struct of_device_id spi_nor_of_table[] = {
+ 	 * JEDEC READ ID opcode (0x9F). Use this, if possible.
+ 	 */
+ 	{ .compatible = "jedec,spi-nor" },
++	{ .compatible = "m25p05-nonjedec" },
++	{ .compatible = "m25p10-nonjedec" },
++	{ .compatible = "m25p20-nonjedec" },
++	{ .compatible = "m25p40-nonjedec" },
++	{ .compatible = "m25p80-nonjedec" },
++	{ .compatible = "m25p16-nonjedec" },
++	{ .compatible = "m25p32-nonjedec" },
++	{ .compatible = "m25p64-nonjedec" },
++	{ .compatible = "m25p128-nonjedec" },
++	{ .compatible = "mr25h128" },
++	{ .compatible = "mr25h256" },
++	{ .compatible = "mr25h10" },
++	{ .compatible = "mr25h40" },
+ 	{ /* sentinel */ },
+ };
+ MODULE_DEVICE_TABLE(of, spi_nor_of_table);
+-- 
+2.25.1
+
