@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F292304209
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7F730413A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406226AbhAZPQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:16:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59411 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391030AbhAZPAO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:00:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611673126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=okIvk1yUHM3ghAKbiDcTVr1biqV692Nex0+1fcP9uyA=;
-        b=LhUSBOyEocIs6y1SLeDlLnx8K586Gb79nU0yILb1fi7TKiqym1uhnYJhJpK+y5cSaMYlRA
-        QOvCMT/WbkoadABpFZnFrVJrDRZVhuVwlchuCXi18z+HfvRUW5kEFmE44IwxPaNGZQU2jp
-        lTKigwKwOgEDW4VAcluK6gqQaDIK+5M=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-1YVEHjPhN9OabLCknXsW7w-1; Tue, 26 Jan 2021 09:58:42 -0500
-X-MC-Unique: 1YVEHjPhN9OabLCknXsW7w-1
-Received: by mail-qt1-f200.google.com with SMTP id e9so9372852qtq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:58:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=okIvk1yUHM3ghAKbiDcTVr1biqV692Nex0+1fcP9uyA=;
-        b=qGOWchHri+jpP9KJ6l9zPParVvgi/Vomadc0TKV3WEU90/k2ToWYzWnhhSukin/iUt
-         XVOaGlj/0pPYa1kPlV21CXIVCsU1JBUiMDw0NxITJmrwJlPoyjXYd8feVP5BSx4Wr/+H
-         FFMdir5bREB+1OO0GwUmgvlKscHRFVG5J2bpIHjORWXVjK3AIUXa0sW86gQQqdKfPQ6t
-         82F5JDSdg1Lzk/shfyhsgVml9IQOwV4qUtij9Rq0beJhhU4OgjGkZJCq2iYYvyj+e8z5
-         jsg9UQUNv1vIDPjKDXWueGo61ryEyhgkuFUgcfxIAPmqBT/CcS5fo8S4ArJIq34GqGHY
-         m9pQ==
-X-Gm-Message-State: AOAM5335PGfvxM5pf8Q9sBKHhO046+e3+E69BllC8WroRdg6hNNSIn+X
-        /zH5SNHav4qKdUhQhn8VaxqD79IQZr+t28N5csiRNgsIlJmbcZfardRJSgvulDSEo/0+0jEu+87
-        xuJ585EtykUQlWdKWUTkmP3OA
-X-Received: by 2002:a37:7003:: with SMTP id l3mr6074616qkc.467.1611673122480;
-        Tue, 26 Jan 2021 06:58:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxf0OrXTo6I0HZ8tt8zacXtWeJldDE5lGxzJfva/sqqcRi21TrWHB6uP7Xhk3gJ008sacu6Hw==
-X-Received: by 2002:a37:7003:: with SMTP id l3mr6074578qkc.467.1611673122147;
-        Tue, 26 Jan 2021 06:58:42 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id v18sm2833857qkv.62.2021.01.26.06.58.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 06:58:41 -0800 (PST)
-Subject: Re: [PATCH v2 2/4] mfd: intel-m10-bmc: Simplify the legacy version
- reg definition
-To:     Xu Yilun <yilun.xu@intel.com>, lee.jones@linaro.org,
+        id S2391482AbhAZPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:00:41 -0500
+Received: from foss.arm.com ([217.140.110.172]:43706 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391573AbhAZPAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 10:00:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7A89E113E;
+        Tue, 26 Jan 2021 06:59:21 -0800 (PST)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 792433F68F;
+        Tue, 26 Jan 2021 06:59:20 -0800 (PST)
+Date:   Tue, 26 Jan 2021 14:59:17 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         linux-kernel@vger.kernel.org
-Cc:     matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, hao.wu@intel.com
-References: <1611643836-7183-1-git-send-email-yilun.xu@intel.com>
- <1611643836-7183-3-git-send-email-yilun.xu@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <8b101def-1969-97ab-0c56-732e9159b4e7@redhat.com>
-Date:   Tue, 26 Jan 2021 06:58:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Subject: Re: [PATCH 0/2] Fix BUG: Invalid wait context in hrtimer_interrupt()
+Message-ID: <20210126145917.r64vzibgpiwyuake@e107158-lin>
+References: <20210123233741.3614408-1-qais.yousef@arm.com>
+ <YA+em8XkTidYetGE@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <1611643836-7183-3-git-send-email-yilun.xu@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <YA+em8XkTidYetGE@jagdpanzerIV.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/26/21 13:46, Sergey Senozhatsky wrote:
+> On (21/01/23 23:37), Qais Yousef wrote:
+> > 
+> > I hit a pr_warn() inside hrtimer_interrupt() which lead to a BUG: Invalid wait
+> > context splat.
+> > 
+> > The problem wasn't reproducible but I think the cause is obvious, printk can't
+> > be called from interrupt context.
+> > 
+> > AFAICU printk_deferred() is safe from NMI, so I assumed it is safe to be called
+> > from hrtimer_interrupt() too. Adding a pr_warn_once() inside
+> > hrtimer_interrupt() in a location where it is always hit produces the BUG
+> > splat. Replacing it with pr_warn_deferred_once() generates the printk warning
+> > without any splat.
+> 
+> Could you please post the lockdep splat?
 
-On 1/25/21 10:50 PM, Xu Yilun wrote:
-> The version register is the only one in the legacy I/O space to be
-> accessed, so it is not necessary to define the legacy base & version
-> register offset. A direct definition of the legacy version register
-> address would be fine.
->
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> ---
->  drivers/mfd/intel-m10-bmc.c       | 12 +++++-------
->  include/linux/mfd/intel-m10-bmc.h |  2 +-
->  2 files changed, 6 insertions(+), 8 deletions(-)
+Sorry I should have done that. I thought printk() in interrupt is not allowed
+and obvious.
 
-Thanks for adding M10BMC_LEGACY_BUILD_VER
+I reported it here: https://lore.kernel.org/lkml/20210114124512.mg3vexudfmoadef5@e107158-lin/
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+	# [67628.388606] hrtimer: interrupt took 304720 ns
+	[67628.393546]
+	[67628.393550] =============================
+	[67628.393554] [ BUG: Invalid wait context ]
+	[67628.393557] 5.11.0-rc3-00019-g86be331946f7 #37 Not tainted
+	[67628.393560] -----------------------------
+	[67628.393563] sugov:0/192 is trying to lock:
+	[67628.393566] ffff000800b1d898 (&port_lock_key){-.-.}-{3:3}, at: pl011_console_write+0x138/0x218
+	[67628.393581] other info that might help us debug this:
+	[67628.393584] context-{2:2}
+	[67628.393586] 4 locks held by sugov:0/192:
+	[67628.393589]  #0: ffff0008059cb720 (&sg_policy->work_lock){+.+.}-{4:4}, at: sugov_work+0x58/0x88
+	[67628.393603]  #1: ffff800015446f20 (prepare_lock){+.+.}-{4:4}, at: clk_prepare_lock+0x34/0xb0
+	[67628.393618]  #2: ffff8000152aaa60 (console_lock){+.+.}-{0:0}, at: vprintk_emit+0x12c/0x310
+	[67628.393632]  #3: ffff8000152aab88 (console_owner){-.-.}-{0:0}, at: console_unlock+0x190/0x6d8
+	[67628.393646] stack backtrace:
+	[67628.393649] CPU: 0 PID: 192 Comm: sugov:0 Not tainted 5.11.0-rc3-00019-g86be331946f7 #37
+	[67628.393653] Hardware name: ARM Juno development board (r2) (DT)
+	[67628.393656] Call trace:
+	[67628.393659]  dump_backtrace+0x0/0x1b0
+	[67628.393661]  show_stack+0x20/0x70
+	[67628.393664]  dump_stack+0xf8/0x168
+	[67628.393666]  __lock_acquire+0x964/0x1c88
+	[67628.393669]  lock_acquire+0x26c/0x500
+	[67628.393671]  _raw_spin_lock+0x64/0x88
+	[67628.393674]  pl011_console_write+0x138/0x218
+	[67628.393677]  console_unlock+0x2c4/0x6d8
+	[67628.393680]  vprintk_emit+0x134/0x310
+	[67628.393682]  vprintk_default+0x40/0x50
+	[67628.393685]  vprintk_func+0xfc/0x2b0
+	[67628.393687]  printk+0x68/0x90
+	[67628.393690]  hrtimer_interrupt+0x24c/0x250
+	[67628.393693]  arch_timer_handler_phys+0x3c/0x50
+	[67628.393695]  handle_percpu_devid_irq+0xd8/0x460
+	[67628.393698]  generic_handle_irq+0x38/0x50
+	[67628.393701]  __handle_domain_irq+0x6c/0xc8
+	[67628.393704]  gic_handle_irq+0xb0/0xf0
+	[67628.393706]  el1_irq+0xb4/0x180
+	[67628.393709]  _raw_spin_unlock_irqrestore+0x58/0xa8
+	[67628.393712]  hrtimer_start_range_ns+0x1b0/0x420
+	[67628.393715]  msg_submit+0x100/0x108
+	[67628.393717]  mbox_send_message+0x84/0x128
+	[67628.393720]  scpi_send_message+0x11c/0x2a8
+	[67628.393723]  scpi_dvfs_set_idx+0x48/0x70
+	[67628.393726]  scpi_dvfs_set_rate+0x60/0x78
+	[67628.393728]  clk_change_rate+0x184/0x8a8
+	[67628.393731]  clk_core_set_rate_nolock+0x1c0/0x280
+	[67628.393734]  clk_set_rate+0x40/0x98
+	[67628.393736]  scpi_cpufreq_set_target+0x40/0x68
+	[67628.393739]  __cpufreq_driver_target+0x1a0/0x5d0
 
-> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
-> index b84579b..aad86f0 100644
-> --- a/drivers/mfd/intel-m10-bmc.c
-> +++ b/drivers/mfd/intel-m10-bmc.c
-> @@ -74,16 +74,14 @@ static int check_m10bmc_version(struct intel_m10bmc *ddata)
->  
->  	/*
->  	 * This check is to filter out the very old legacy BMC versions,
-> -	 * M10BMC_LEGACY_SYS_BASE is the offset to this old block of mmio
-> -	 * registers. In the old BMC chips, the BMC version info is stored
-> -	 * in this old version register (M10BMC_LEGACY_SYS_BASE +
-> -	 * M10BMC_BUILD_VER), so its read out value would have not been
-> -	 * LEGACY_INVALID (0xffffffff). But in new BMC chips that the
-> +	 * 0x300400 is the offset to this old block of mmio registers. In the
-> +	 * old BMC chips, the BMC version info is stored in this old version
-> +	 * register (0x300400 + 0x68), so its read out value would have not
-> +	 * been LEGACY_INVALID (0xffffffff). But in new BMC chips that the
->  	 * driver supports, the value of this register should be
->  	 * LEGACY_INVALID.
->  	 */
-> -	ret = m10bmc_raw_read(ddata,
-> -			      M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER, &v);
-> +	ret = m10bmc_raw_read(ddata, M10BMC_LEGACY_BUILD_VER, &v);
->  	if (ret)
->  		return -ENODEV;
->  
-> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-> index 06da62c..99f44b1 100644
-> --- a/include/linux/mfd/intel-m10-bmc.h
-> +++ b/include/linux/mfd/intel-m10-bmc.h
-> @@ -9,7 +9,7 @@
->  
->  #include <linux/regmap.h>
->  
-> -#define M10BMC_LEGACY_SYS_BASE		0x300400
-> +#define M10BMC_LEGACY_BUILD_VER		0x300468
->  #define M10BMC_SYS_BASE			0x300800
->  #define M10BMC_MEM_END			0x1fffffff
->  
+> Why is it invalid? Is this... -rt kernel, perhaps?
 
+No I was running on Linus master at the time.
+
+AFAIU printk will hold the console lock which could sleep in interrupt context.
+
+Did I miss something?
+
+Thanks
+
+--
+Qais Yousef
