@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC1F303BF4
+	by mail.lfdr.de (Postfix) with ESMTP id B4543303BF5
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405401AbhAZLpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:45:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49948 "EHLO
+        id S1731022AbhAZLqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:46:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39495 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392200AbhAZLZV (ORCPT
+        by vger.kernel.org with ESMTP id S2403782AbhAZL1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 06:25:21 -0500
+        Tue, 26 Jan 2021 06:27:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611660217;
+        s=mimecast20190719; t=1611660349;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CiONnZ1ymNvkzwHvQA22Owl9Y/QjdZQ6wIbCWQAKdh8=;
-        b=EZ+/GJ/4qvfv/mYT+71kfn4at5pi3pICr6NRKsY7qvjleHGv19IcUkfXHQyxDeHtPMr6zE
-        5VYRvNwX/aSKatUOqmwwRNdeKcD3LLECNQZ/h5AwBmkXsmV10sCArXBk16wpbmCsYY71ZH
-        ozaJEnu9I9kKiHuQiM8m0ly1ymKiI2M=
+        bh=B7xj1vVc4HNNMNiCYZvylA2+cbCnK0udL5Jus77CY5w=;
+        b=Dvm9ZTjRiK7EPxNyRb2OOKjVgqtgqzV8jHDfKaOBWA5eBX2k2V2rpGssQMzgkupMJkqogO
+        ddh96BLOOPc9BA7Y4hVD+MmWKoq4XwKeMNXiDdV0wlEZiQHRG/Xpm9WwdkSqemM9y35QUS
+        kPNBUbmBg7KfeWnwQp62eIygSqTpZCI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-ynpxj2G4NXunwoVC9Wy3RQ-1; Tue, 26 Jan 2021 06:23:35 -0500
-X-MC-Unique: ynpxj2G4NXunwoVC9Wy3RQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-254-k2dwZpoEMeOE1nsI7jRpkw-1; Tue, 26 Jan 2021 06:25:46 -0500
+X-MC-Unique: k2dwZpoEMeOE1nsI7jRpkw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA6E6802B42;
-        Tue, 26 Jan 2021 11:23:33 +0000 (UTC)
-Received: from [10.36.114.192] (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA229100239F;
-        Tue, 26 Jan 2021 11:23:32 +0000 (UTC)
-Subject: Re: [PATCH] mm/page_owner: Use helper function zone_end_pfn() to get
- end_pfn
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210123070538.5861-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <25c538a0-8d10-7c2c-6562-52a91ac158a6@redhat.com>
-Date:   Tue, 26 Jan 2021 12:23:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3D0E107ACE3;
+        Tue, 26 Jan 2021 11:25:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 778AB62950;
+        Tue, 26 Jan 2021 11:25:40 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200921112218.GB2139@willie-the-truck>
+References: <20200921112218.GB2139@willie-the-truck> <20200721195132.GJ10769@hirez.programming.kicks-ass.net> <202006142054.C00B3E9C9@keescook> <20200612183450.4189588-1-keescook@chromium.org> <7be4d56b-0406-099b-e505-02e074c5173e@huawei.com> <544539.1595328664@warthog.procyon.org.uk> <202007211144.A68C31D@keescook> <3211866.1595933798@warthog.procyon.org.uk> <20200729111120.GA2638@hirez.programming.kicks-ass.net>
+To:     Will Deacon <will@kernel.org>
+Cc:     dhowells@redhat.com, peterz@infradead.org,
+        Kees Cook <keescook@chromium.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Paul Moore <paul@paul-moore.com>, edumazet@google.com,
+        paulmck@kernel.org, shakeelb@google.com,
+        James Morris <jamorris@linux.microsoft.com>,
+        alex.huangjianhui@huawei.com, dylix.dailei@huawei.com,
+        chenzefeng2@huawei.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] locking/refcount: Provide __refcount API to obtain the old value
 MIME-Version: 1.0
-In-Reply-To: <20210123070538.5861-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2697075.1611660339.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 26 Jan 2021 11:25:39 +0000
+Message-ID: <2697076.1611660339@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.01.21 08:05, Miaohe Lin wrote:
-> Commit 108bcc96ef70 ("mm: add & use zone_end_pfn() and zone_spans_pfn()")
-> introduced the helper zone_end_pfn() to calculate the zone end pfn. But
-> pagetypeinfo_showmixedcount_print forgot to use it. And the initialization
-> of local variable pfn is duplicated, remove one.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/page_owner.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index af464bb7fbe7..d15c7c4994f5 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -263,8 +263,8 @@ void pagetypeinfo_showmixedcount_print(struct seq_file *m,
->   	struct page *page;
->   	struct page_ext *page_ext;
->   	struct page_owner *page_owner;
-> -	unsigned long pfn = zone->zone_start_pfn, block_end_pfn;
-> -	unsigned long end_pfn = pfn + zone->spanned_pages;
-> +	unsigned long pfn, block_end_pfn;
-> +	unsigned long end_pfn = zone_end_pfn(zone);
->   	unsigned long count[MIGRATE_TYPES] = { 0, };
->   	int pageblock_mt, page_mt;
->   	int i;
-> 
+Will Deacon <will@kernel.org> wrote:
 
-Looks a little weird that we initialize "end_pfn" directly and "pfn" 
-not. I'd make this consistent.
+> > @@ -219,9 +235,14 @@ static inline void refcount_add(int i, r
+> >   *
+> >   * Return: true if the increment was successful, false otherwise
+> >   */
+> > +static inline __must_check bool __refcount_inc_not_zero(refcount_t *r=
+, int *oldp)
+> > +{
+> > +	return __refcount_add_not_zero(1, r, oldp);
+> > +}
+> =
 
-Anyhow
+> Where returning both a bool to indicate whether the old value was zero
+> and also the old value itself is a bit OTT.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Actually, with the i386 cmpxchg, that makes sense.  You can use the Z flag=
+ to
+give you the bool, saving on checking the old value.
 
--- 
-Thanks,
-
-David / dhildenb
+David
 
