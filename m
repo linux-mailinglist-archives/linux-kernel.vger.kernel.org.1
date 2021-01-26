@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC55303A7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ECB303A84
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404203AbhAZKia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:38:30 -0500
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:23744 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731259AbhAZBzI (ORCPT
+        id S2404127AbhAZKjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731425AbhAZB42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:55:08 -0500
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 10Q1s0YE007298;
-        Tue, 26 Jan 2021 10:54:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 10Q1s0YE007298
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611626040;
-        bh=oagMBAQOcxiRZ10Xc720/BqDn/zB60BP15C0zBwRb4w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=zI91evfU1dQERp5iU3LtP62wJx77tUr8nmioJzfKCIUdXRqdNGY50QKTCfHsXDczC
-         TLHadaES9+8s70Z0DNoxPGz9jadiJZaOwZNh9GyPPKS1GpBKQH52m4WtdOta1EYkNS
-         xkgJT3MwbzyJz28JMiLxavtq5Ui2SI9gMfZUK20ox55+HQ2tI2dDeGAnyovQvNHyzQ
-         gPeuJxmoE0CMK9wplQfJlTmC7VDnsWHie7kJuJyl6A0yaPb2gG9Ptp5pnhfMHG3mCY
-         evGg1fma2gtyWqFdxLUs11ySnYLw0heiBoezBfZtrWRZJ/67pc6dTdx3dM8Ia+U1Pf
-         rD5WSVxjOXnmA==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id gx1so873911pjb.1;
-        Mon, 25 Jan 2021 17:54:00 -0800 (PST)
-X-Gm-Message-State: AOAM532h1dvsVcTA77q1OLt8DJK7e/lG0YiRxWL0xeq8RHxoPai0g854
-        wqn0EJuaDhF1ghU7CM6JupEEwhtBF1woeeY8fiY=
-X-Google-Smtp-Source: ABdhPJwJ9KkvPgY3Ko2Vqz35MecJG3zqwoeNOStkvrhv8bzGg2t1HOBt5xq4IYHIoiGkCQq+U+0aGZ43TJHANLrpCg0=
-X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr3328264pjh.198.1611626039493;
- Mon, 25 Jan 2021 17:53:59 -0800 (PST)
+        Mon, 25 Jan 2021 20:56:28 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE21C0617AA
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:55:46 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id f6so14811836ots.9
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:55:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9KzooEzNJudfs8vdN5QNNjT5ojSccFf8tRCUDI4AzCU=;
+        b=DrrZxszCva3FTmhjfGLJzJrc3wB1j9Eo1KC1LtQ1FsXEAot/Ybv1blTIhPyYfOyNgm
+         T+EnnqpzXEgGxvkc5i5z3xWPJFSweRtK1ezOLRhZqB9KkPfVkAJgZe+QbwttIrq6o+KV
+         P037KGFPglzPjXgxTXJS39oLXUzxdz5TXf6EzvuL3hKV7vjf1eejNoUmuw3U2b6RzyQZ
+         L6Q3IVVx+LIhLxC56CMMwW7q/y3HgIeMJ1R3w4HPKVYpiGvapKZzdhqMPfXaWX6WiDuO
+         WGSGo6/tKzYFvFHEgNt/XsbxjzZZ32UPz4bALilazsw8kaZcw0CPfmpBk9M+MS0mnh39
+         dFuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9KzooEzNJudfs8vdN5QNNjT5ojSccFf8tRCUDI4AzCU=;
+        b=ra37GQSl9cEU49dLRPXerf7DoP8CFfPELS3nX54pY8S3PiOPUClbInAO5cXVzpIafb
+         ugCm4UMu6zclE1oK2DDIxTCkcoK+rEFyn8/x2Iy7q8f3AUUAkuH4R9nZ4+IPMulZzLNh
+         eNXq9FQqYaT5+ampw+WiG6ya63sMDpPh1Ft+RDswQbiwTCAxjqq9YVRR4yZqhIysklDI
+         Z8Sinz3oykDOTPfnlfa7dREZQbozrvt5yYarIxWmyfYrRp31/i9Whl39V1OZ5hrdREG0
+         7HE7vEG44jdtk8QSqDdqsdwYEA/IUTKnhx0YLNfNKfFHD5utv4fV2xunY77QCGXT2rzd
+         mfkA==
+X-Gm-Message-State: AOAM5312fesOSUM/MXZ2Kkx8x6jc7qltdZiKBF1/Q42+f6lZWngr4+F4
+        O+yQAste/6XuLt0qKve+1ovatw==
+X-Google-Smtp-Source: ABdhPJy0I4DahIrO5X9v/d1v+VookruyQO2N2rKgJW3rTf5Kc3BH3ob0xCJT8rOz43pd7Lzf+gYM+A==
+X-Received: by 2002:a9d:4e89:: with SMTP id v9mr2322939otk.171.1611626146046;
+        Mon, 25 Jan 2021 17:55:46 -0800 (PST)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id d10sm3570160ooh.32.2021.01.25.17.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jan 2021 17:55:45 -0800 (PST)
+Date:   Mon, 25 Jan 2021 19:55:43 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
+        jackp@codeaurora.org
+Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+Message-ID: <20210126015543.GB1241218@yoga>
+References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
+ <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
+ <YAsHbj/mITeiY5Cq@builder.lan>
+ <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
 MIME-Version: 1.0
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <202101251401.F18409FDD1@keescook>
-In-Reply-To: <202101251401.F18409FDD1@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 26 Jan 2021 10:53:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASOf=B_j5o=L=BL+vz_JK_d3QYUuHg8h+3SP6qOyYD86A@mail.gmail.com>
-Message-ID: <CAK7LNASOf=B_j5o=L=BL+vz_JK_d3QYUuHg8h+3SP6qOyYD86A@mail.gmail.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 7:03 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Jan 25, 2021 at 02:42:10PM -0600, Josh Poimboeuf wrote:
-> > When a GCC version mismatch is detected, print a warning and disable the
-> > plugin.  The only exception is the RANDSTRUCT plugin which needs all
-> > code to see the same struct layouts.  In that case print an error.
->
-> I prefer this patch as-is: only randstruct needs a hard failure. The
-> others likely work (in fact, randstruct likely works too).
->
-> Masahiro, are you suggesting to be a hard-failure for all plugins?
+On Mon 25 Jan 19:14 CST 2021, Wesley Cheng wrote:
 
-Yes.
+> 
+> 
+> On 1/22/2021 9:12 AM, Bjorn Andersson wrote:
+> > On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
+> > 
+> 
+> Hi Bjorn,
+> > 
+> > Under what circumstances should we specify this? And in particular are
+> > there scenarios (in the Qualcomm platforms) where this must not be set?
+> >The TXFIFO dynamic allocation is actually a feature within the DWC3
+> controller, and isn't specifically for QCOM based platforms.  It won't
+> do any harm functionally if this flag is not set, as this is meant for
+> enhancing performance/bandwidth.
+> 
+> > In particular, the composition can be changed in runtime, so should we
+> > set this for all Qualcomm platforms?
+> > 
+> Ideally yes, if we want to increase bandwith for situations where SS
+> endpoint bursting is set to a higher value.
+> 
+> > And if that's the case, can we not just set it from the qcom driver?
+> > 
+> Since this is a common DWC3 core feature, I think it would make more
+> sense to have it in DWC3 core instead of a vendor's DWC3 glue driver.
+> 
 
-I want to require
-"I swear to use the same compiler version for external modules"
-when you enable GCC plugins.
+I don't have any objections to implementing it in the core driver, but
+my question is can we just skip the DT binding and just enable it from
+the vendor driver?
 
-
-
-
-config CC_VERSION_CHECK_FOR_EXTERNAL_MODULES
-        bool "Check the compiler version before building external modules"
-        help
-           If this option is enabled, the compiler version is checked
-           before building external modules. This ensures the same
-           compiler is used for the kernel and external modules.
-
-
-config GCC_PLUGINS
-        ...
-        depends on CC_VERSION_CHECK_FOR_EXTERNAL_MODULES
-
-
-
-In Makefile, check the version for out-of-tree modules
-if CONFIG_CC_VERSION_CHECK_FOR_EXTERNAL_MODULES.
-
-
-
-
-There is no difference in the fact that
-you cannot use a different compiler for external modules
-if CONFIG_GCC_PLUGINS=y.
-
-
-
-
-We started with the assumption that modules must be compiled
-by the same compiler as the kernel was.
-https://lore.kernel.org/patchwork/patch/836247/#1031547
-
-Now that the compiler capability is evaluated in Kconfig,
-this is a harder requirement.
-
-In reality, a different compiler might be used,
-and, this requirement might be loosened, but
-the same compiler should be required for CONFIG_GCC_PLUGINS.
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Regards,
+Bjorn
