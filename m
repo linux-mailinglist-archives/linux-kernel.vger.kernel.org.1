@@ -2,238 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBBC303F32
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E809A303F31
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405029AbhAZNrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405020AbhAZNoV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:44:21 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70171C0611BD;
-        Tue, 26 Jan 2021 05:43:41 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id m22so22767924lfg.5;
-        Tue, 26 Jan 2021 05:43:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=OQBVQzafF3WAXz8Rj+wUggOGA8r5wNMBBaUu9EM+CG8=;
-        b=lrx2FI7Y5dJ7hnx0/hONevLyeebykp/8sNmTZqtueyOEJZK/3zpV/l60nM9AL3c3DJ
-         3fejPxFP1NUMIrvW58aZpgjO2ZyWhjvxpZJm6GFZWJzfh1hLwGBhebFI9TSAbctgdRG4
-         FQ+y+v5ySCc53mskkoWhWUZatldrhphjGdUh8L7RixbDTV6u6sg12dH+BAesBfarHfAT
-         hpIwRPdY1T6CAVPIkDV6QLgLy8on9vJ5LizDVkXD7XN91WZ3Qu0d4FokPaQg+XrAeiZW
-         oTgZ/B7XkNAYIK3HbkPGvfmTHgvt+H7isn8YIwbsqebvIHAJGCCnoOxIX/ByKl13gkx4
-         eJPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=OQBVQzafF3WAXz8Rj+wUggOGA8r5wNMBBaUu9EM+CG8=;
-        b=k+cb9lumz6RHuVz5QEkMXlmJNscaUrDlpM2K1HnhNbz6LG8ZLYd145578weUaZRu1C
-         b7CmeU/88Bnlv7lcMTnkyaA3pR3ddU60snlmG8z1EPu9HzdVmpW8rQPX5Y1YGhSnCDEZ
-         5mhrpgEFYNo1uSaxKd/DqhyR3usKg9mVcUosO2IvTr+s5Ui+kFlqtR2BkYqrlubzuQ76
-         JSBbpdaSaG7Bsj/RaKMIoDOoAszwe/uFKVyDgbjuZWIU56QJ/tLnapDS7ylLFeN9Suhn
-         3ToUd+nLoKOPLRwJLVNbp+Qx1YtP4o1MbQFjKfCE9PyIop7o7F5d2t3ZC8RPfLseuJ/r
-         ge2w==
-X-Gm-Message-State: AOAM531SuvAkTdidKotVvhg1NaAAyNOE3gVuoJICiaP+VtH58dJAjqSb
-        XDo/qiWmOgfq6iB2LMuVp6M5tmiHEiqWqQ==
-X-Google-Smtp-Source: ABdhPJxmVjRW7oca8dXeaIosnCmMYzLR9WJ80KG0TkgaBMaKOgjIXc+w75hx4jx/A5bHOJWck2Bpug==
-X-Received: by 2002:a19:700b:: with SMTP id h11mr2590221lfc.356.1611668619941;
-        Tue, 26 Jan 2021 05:43:39 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m78sm2063684lfa.270.2021.01.26.05.43.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 05:43:38 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Tue, 26 Jan 2021 14:43:36 +0100
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        id S2405147AbhAZNqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:46:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:40292 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392626AbhAZNpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:45:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B481B31B;
+        Tue, 26 Jan 2021 05:44:20 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CEF043F68F;
+        Tue, 26 Jan 2021 05:44:18 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: =?utf-8?B?5Zue5aSNOiDlm57lpI06IOWbng==?= =?utf-8?B?5aSNOg==?=
- [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-Message-ID: <20210126134336.GA1884@pc638.lan>
-References: <20210120162148.1973-1-urezki@gmail.com>
- <20210120162148.1973-3-urezki@gmail.com>
- <BYAPR11MB263252B1BD73A38DD8C0AF4EFFBF0@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20210124215700.GB1076@pc636>
- <BYAPR11MB2632939DA9FB6AC1B25FA847FFBD9@BYAPR11MB2632.namprd11.prod.outlook.com>
- <BYAPR11MB2632ACF42A88E65F1C164021FFBD9@BYAPR11MB2632.namprd11.prod.outlook.com>
- <20210125134930.GA1869@pc638.lan>
- <BYAPR11MB2632016E5622E83656CF805BFFBC9@BYAPR11MB2632.namprd11.prod.outlook.com>
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCH v5 0/2] kasan: Fix metadata detection for KASAN_HW_TAGS
+Date:   Tue, 26 Jan 2021 13:44:07 +0000
+Message-Id: <20210126134409.47894-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB2632016E5622E83656CF805BFFBC9@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 09:33:40AM +0000, Zhang, Qiang wrote:
-> 
-> 
-> ________________________________________
-> 发件人: Uladzislau Rezki <urezki@gmail.com>
-> 发送时间: 2021年1月25日 21:49
-> 收件人: Zhang, Qiang
-> 抄送: Uladzislau Rezki; LKML; RCU; Paul E . McKenney; Michael Ellerman; Andrew Morton; Daniel Axtens; Frederic Weisbecker; Neeraj Upadhyay; Joel Fernandes; Peter Zijlstra; Michal Hocko; Thomas Gleixner; Theodore Y . Ts'o; Sebastian Andrzej Siewior; Oleksiy Avramchenko
-> 主题: Re: 回复: 回复: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-> 
-> > >Hello, Zhang.
-> >
-> > > >________________________________________
-> > > >发件人: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > > >发送时间: 2021年1月21日 0:21
-> > > >收件人: LKML; RCU; Paul E . McKenney; Michael Ellerman
-> > > >抄送: Andrew Morton; Daniel Axtens; Frederic Weisbecker; Neeraj >Upadhyay; Joel Fernandes; Peter Zijlstra; Michal Hocko; Thomas >Gleixner; Theodore Y . Ts'o; Sebastian Andrzej Siewior; Uladzislau >Rezki; Oleksiy Avramchenko
-> > > >主题: [PATCH 3/3] kvfree_rcu: use migrate_disable/enable()
-> > > >
-> > > >Since the page is obtained in a fully preemptible context, dropping
-> > > >the lock can lead to migration onto another CPU. As a result a prev.
-> > > >bnode of that CPU may be underutilised, because a decision has been
-> > > >made for a CPU that was run out of free slots to store a pointer.
-> > > >
-> > > >migrate_disable/enable() are now independent of RT, use it in order
-> > > >to prevent any migration during a page request for a specific CPU it
-> > > >is requested for.
-> > >
-> > >
-> > > Hello Rezki
-> > >
-> > > The critical migrate_disable/enable() area is not allowed to block, under RT and non RT.
-> > > There is such a description in preempt.h
-> > >
-> > >
-> > > * Notes on the implementation.
-> > >  *
-> > >  * The implementation is particularly tricky since existing code patterns
-> > >  * dictate neither migrate_disable() nor migrate_enable() is allowed to block.
-> > >  * This means that it cannot use cpus_read_lock() to serialize against hotplug,
-> > >  * nor can it easily migrate itself into a pending affinity mask change on
-> > >  * migrate_enable().
-> > >
-> > >How i interpret it is migrate_enable()/migrate_disable() are not allowed to
-> > >use any blocking primitives, such as rwsem/mutexes/etc. in order to mark a
-> > >current context as non-migratable.
-> > >
-> > >void migrate_disable(void)
-> > >{
-> > > struct task_struct *p = current;
-> > >
-> > > if (p->migration_disabled) {
-> > >  p->migration_disabled++;
-> > >  return;
-> > > }
-> >
-> > > preempt_disable();
-> > > this_rq()->nr_pinned++;
-> > > p->migration_disabled = 1;
-> > > preempt_enable();
-> > >}
-> > >
-> > >It does nothing that prevents you from doing schedule() or even wait for any
-> > >event(mutex slow path behaviour), when the process is removed from the run-queue.
-> > >I mean after the migrate_disable() is invoked. Or i miss something?
-> >
-> > Hello Rezki
-> >
-> > Sorry, there's something wrong with the previous description.
-> > There are the following scenarios
-> >
-> > Due to migrate_disable will increase  this_rq()->nr_pinned , after that
-> > if get_free_page be blocked, and this time, CPU going offline,
-> > the sched_cpu_wait_empty() be called in per-cpu "cpuhp/%d" task,
-> > and be blocked.
-> >
-> >But after the migrate_disable() is invoked a CPU can not be brought down.
-> >If there are pinned tasks a "hotplug path" will be blocked on balance_hotplug_wait()
-> >call.
-> 
-> > blocked:
-> > sched_cpu_wait_empty()
-> > {
-> >       struct rq *rq = this_rq();
-> >        rcuwait_wait_event(&rq->hotplug_wait,
-> >                            rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
-> >                            TASK_UNINTERRUPTIBLE);
-> > }
-> >
-> >Exactly.
-> 
-> > wakeup:
-> > balance_push()
-> > {
-> >         if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
-> >
-> >                 if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
-> >                     rcuwait_active(&rq->hotplug_wait)) {
-> >                         raw_spin_unlock(&rq->lock);
-> >                         rcuwait_wake_up(&rq->hotplug_wait);
-> >                         raw_spin_lock(&rq->lock);
-> >                 }
-> >                 return;
-> >         }
-> > }
-> >
-> > One of the conditions for this function to wake up is "rq->nr_pinned  == 0"
-> > that is to say between migrate_disable/enable, if blocked will defect CPU going
-> > offline longer blocking time.
-> >
-> >Indeed, the hotplug time is affected. For example in case of waiting for
-> >a mutex to be released, an owner will wakeup waiters. But this is expectable.
-> 
-> >
-> > I'm not sure that's a problem，and I didn't find it in the kernel code  between
-> >  migrate_disable/enable possible sleep calls.
-> >
-> >For example z3fold.c:
-> 
-> >/* Add to the appropriate unbuddied list */
-> >static inline void add_to_unbuddied(struct z3fold_pool *pool,
-> >                                struct z3fold_header *zhdr)
-> >{
-> >       if (zhdr->first_chunks == 0 || zhdr->last_chunks == 0 ||
-> >                        zhdr->middle_chunks == 0) {
-> >                struct list_head *unbuddied;
-> >              int freechunks = num_free_chunks(zhdr);
-> >
-> >                migrate_disable();
-> >                unbuddied = this_cpu_ptr(pool->unbuddied);
-> >                spin_lock(&pool->lock);
-> >                list_add(&zhdr->buddy, &unbuddied[freechunks]);
-> >                spin_unlock(&pool->lock);
-> >                zhdr->cpu = smp_processor_id();
-> >                migrate_enable();
-> >        }
-> >}
-> 
-> >for PREEMPT_RT kernel a spinlock is converted to rt-mutex, thus it can sleep.
-> 
->  I forgot that. Thank you for your explanation.
-> 
->  
-No problem. I also has recently learned about spinlock and rt-mutexes :)
+With the introduction of KASAN_HW_TAGS, kasan_report() currently assumes
+that every location in memory has valid metadata associated. This is due
+to the fact that addr_has_metadata() returns always true.
 
---
-Vlad Rezki
+As a consequence of this, an invalid address (e.g. NULL pointer address)
+passed to kasan_report() when KASAN_HW_TAGS is enabled, leads to a
+kernel panic.
+
+Example below, based on arm64:
+
+ ==================================================================
+ BUG: KASAN: invalid-access in 0x0
+ Read at addr 0000000000000000 by task swapper/0/1
+ Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+ Mem abort info:
+   ESR = 0x96000004
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+ Data abort info:
+   ISV = 0, ISS = 0x00000004
+   CM = 0, WnR = 0
+
+...
+
+ Call trace:
+  mte_get_mem_tag+0x24/0x40
+  kasan_report+0x1a4/0x410
+  alsa_sound_last_init+0x8c/0xa4
+  do_one_initcall+0x50/0x1b0
+  kernel_init_freeable+0x1d4/0x23c
+  kernel_init+0x14/0x118
+  ret_from_fork+0x10/0x34
+ Code: d65f03c0 9000f021 f9428021 b6cfff61 (d9600000)
+ ---[ end trace 377c8bb45bdd3a1a ]---
+ hrtimer: interrupt took 48694256 ns
+ note: swapper/0[1] exited with preempt_count 1
+ Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+ SMP: stopping secondary CPUs
+ Kernel Offset: 0x35abaf140000 from 0xffff800010000000
+ PHYS_OFFSET: 0x40000000
+ CPU features: 0x0a7e0152,61c0a030
+ Memory Limit: none
+ ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+
+This series fixes the behavior of addr_has_metadata() that now returns
+true only when the address is valid.
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Leon Romanovsky <leonro@mellanox.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
+Vincenzo Frascino (2):
+  kasan: Add explicit preconditions to kasan_report()
+  kasan: Make addr_has_metadata() return true for valid addresses
+
+ include/linux/kasan.h | 7 +++++++
+ mm/kasan/kasan.h      | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+-- 
+2.30.0
+
