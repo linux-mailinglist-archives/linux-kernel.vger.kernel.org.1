@@ -2,156 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD10B304F7A
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2DB304F79
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 04:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhA0DMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 22:12:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23892 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390638AbhAZTMf (ORCPT
+        id S232859AbhA0DLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 22:11:20 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65310 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395233AbhAZTMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:12:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611688268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dhSDWdgO45oMOw4U14ZD4IpWy4LqGlGQzgyJ+NX3F9s=;
-        b=PKFkldKYoJmzAYl28A5f1X0tODSPYnLzvOpooZGKWxtaUSXfOK3QTEPYlAQX2I1r41pB3p
-        S8W8Y3o0GGcI4uI2w91VgU2HXBU7ZvQ+m1ntBVa4G6Ep7EtklFj1s0I3Z/mjU6FNXCvPUp
-        4NyAS5dupBZ1QVyr9TvCHzYS4lCOwhE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-QeAKOKXmMyq_D-t53wH5Fw-1; Tue, 26 Jan 2021 14:11:04 -0500
-X-MC-Unique: QeAKOKXmMyq_D-t53wH5Fw-1
-Received: by mail-ed1-f70.google.com with SMTP id w4so9840632edu.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 11:11:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dhSDWdgO45oMOw4U14ZD4IpWy4LqGlGQzgyJ+NX3F9s=;
-        b=EFWYH/DkcWEZoRimwlICbk+2+tP7WJlemIb6lHo5gZ0SJxau+8bih6V8dmqKbtNSVV
-         hP/nxwcPVNbuJqVQP3g8KvFzCBwuoamZCLY7vvOq59rKn1tE4NqOaxRGjYHX3YPqFHvx
-         rU3vlNq068qMadYVntlzMG/RgMXIhN7TUmVQwxDwyfgekLu42/Deszss9KUA9n6UXkcX
-         igXkIvcYt3X2+Y4fDIDYbSnx9ybLy+XC15P/PnBFBYIM+oOcD0kZXkIn1w9M/R703jGq
-         ZJKfKLG0KC+yFtCatVBdWr1MCHSi8IZZnasBq5g6pLR9pyTx5lx39di/cXEWs0IbbKBA
-         JVgQ==
-X-Gm-Message-State: AOAM531yutghSFPYoV4Id4fX5uKSKYcV9pcAAB3YURNtivfCM9FEY3CD
-        /ohvScG9xWBYUHLvBXVLvEKoubfUuRM+f+cm2Nkc7H47VDBAPY7+dCT0yFBW9QQgZrwH+6NHgyV
-        YGVJiDIaOFTINjnicdOicgVNkEk3ct5tHlxNJJocM
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr5760863edv.211.1611688263262;
-        Tue, 26 Jan 2021 11:11:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9khL2OyLeDGiHbXxhgFxEoiQEWhWSGq0ZEPFvGyzCXtwZceNpjSLzAw970dmzg8NCnH9M4SKeWZSU2be3AaE=
-X-Received: by 2002:aa7:ce87:: with SMTP id y7mr5760842edv.211.1611688263103;
- Tue, 26 Jan 2021 11:11:03 -0800 (PST)
+        Tue, 26 Jan 2021 14:12:19 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ1Xkb076035;
+        Tue, 26 Jan 2021 14:11:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=sigtRxcd2FME8yadU5aWQfSDBgsJlGfepDO9gFD1khI=;
+ b=s35ICghB3gT4W1wUBiam9O16eJZe2THQdFPT5s3hbG9dK2qqT6fwx/2XnuHJ4vzVKUjH
+ jnIVWUmqOAD/Nh2oTxlMydkIGns6SrKzLi+9bajSf2cPxZjfX22dbghitAIarjMcQLnO
+ xBErrDc/ZecU8/zVrs7onCHjygMCDLJcxqH9bXS3iTfCOyS1PSNoZO5TWcP070wDoJWW
+ 16qH9cwYUh7SOcovqAQzwGIIq02KhOdi7oU0ZVkiS3Fit5c4hjM7bg2Wbs1US5ezXUXa
+ hxFuM3lkETJoTB7HawZN6lzx/326LIiDiXPZD0YYmCBjRsM68xXZSH5vrjfSkoy6zT/B ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36apmqv81y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 14:11:24 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10QJ2sOB080479;
+        Tue, 26 Jan 2021 14:11:24 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36apmqv81m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 14:11:24 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10QJ36ee027883;
+        Tue, 26 Jan 2021 19:11:23 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04dal.us.ibm.com with ESMTP id 36agvekssm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 26 Jan 2021 19:11:23 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10QJBMDk25166310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Jan 2021 19:11:22 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30741136051;
+        Tue, 26 Jan 2021 19:11:22 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 933DE136055;
+        Tue, 26 Jan 2021 19:11:21 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 26 Jan 2021 19:11:21 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     dhowells@redhat.com, keyrings@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v2 0/3] Add support for x509 certs with NIST p256 and p192 keys
+Date:   Tue, 26 Jan 2021 14:11:12 -0500
+Message-Id: <20210126191115.434842-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk>
- <161161064956.2537118.3354798147866150631.stgit@warthog.procyon.org.uk>
- <20210126013611.GI308988@casper.infradead.org> <D6C85B77-17CA-4BA6-9C2C-C63A8AF613AB@oracle.com>
-In-Reply-To: <D6C85B77-17CA-4BA6-9C2C-C63A8AF613AB@oracle.com>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Tue, 26 Jan 2021 14:10:26 -0500
-Message-ID: <CALF+zOm++OzAebR4wu+Hdf8Aa8GpXZu8Am9eVajVUiDMBJE63w@mail.gmail.com>
-Subject: Re: [PATCH 32/32] NFS: Convert readpage to readahead and use
- netfs_readahead for fscache
-To:     Chuck Lever <chuck.lever@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs <linux-cachefs@redhat.com>,
-        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "v9fs-developer@lists.sourceforge.net" 
-        <v9fs-developer@lists.sourceforge.net>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_10:2021-01-26,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101260096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:25 AM Chuck Lever <chuck.lever@oracle.com> wrote:
->
->
->
-> > On Jan 25, 2021, at 8:36 PM, Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> >
-> > For Subject: s/readpage/readpages/
-> >
-> > On Mon, Jan 25, 2021 at 09:37:29PM +0000, David Howells wrote:
-> >> +int __nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-> >> +                             struct readahead_control *rac)
-> >
-> > I thought you wanted it called ractl instead of rac?  That's what I've
-> > been using in new code.
-> >
-> >> -    dfprintk(FSCACHE, "NFS: nfs_getpages_from_fscache (0x%p/%u/0x%p)\n",
-> >> -             nfs_i_fscache(inode), npages, inode);
-> >> +    dfprintk(FSCACHE, "NFS: nfs_readahead_from_fscache (0x%p/0x%p)\n",
-> >> +             nfs_i_fscache(inode), inode);
-> >
-> > We do have readahead_count() if this is useful information to be logging.
->
-> As a sidebar, the Linux NFS community is transitioning to tracepoints.
-> It would be helpful (but not completely necessary) to use tracepoints
-> in new code instead of printk.
->
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-The netfs API has a lot of good tracepoints and to be honest I think we can
-get rid of fscache's rpcdebug, but let me take a closer look to be
-sure.  I didn't use rpcdebug much, if at all, in the latest rounds of debugging.
+This series of patches adds support for x509 certificates signed by a CA
+that uses NIST p256 or p192 keys for signing. It also adds support for
+certificates where the public key is a NIST p256 or p192 key. The math
+for ECDSA signature verification is also added.
 
+Since self-signed certificates are verified upon loading, the following
+script can be used for testing:
 
+keyctrl newring test @u
 
->
-> >> +static inline int nfs_readahead_from_fscache(struct nfs_readdesc *desc,
-> >> +                                         struct readahead_control *rac)
-> >> {
-> >> -    if (NFS_I(inode)->fscache)
-> >> -            return __nfs_readpages_from_fscache(ctx, inode, mapping, pages,
-> >> -                                                nr_pages);
-> >> +    if (NFS_I(rac->mapping->host)->fscache)
-> >> +            return __nfs_readahead_from_fscache(desc, rac);
-> >>      return -ENOBUFS;
-> >> }
-> >
-> > Not entirely sure that it's worth having the two functions separated any more.
-> >
-> >>      /* attempt to read as many of the pages as possible from the cache
-> >>       * - this returns -ENOBUFS immediately if the cookie is negative
-> >>       */
-> >> -    ret = nfs_readpages_from_fscache(desc.ctx, inode, mapping,
-> >> -                                     pages, &nr_pages);
-> >> +    ret = nfs_readahead_from_fscache(&desc, rac);
-> >>      if (ret == 0)
-> >>              goto read_complete; /* all pages were read */
-> >>
-> >>      nfs_pageio_init_read(&desc.pgio, inode, false,
-> >>                           &nfs_async_read_completion_ops);
-> >>
-> >> -    ret = read_cache_pages(mapping, pages, readpage_async_filler, &desc);
-> >> +    while ((page = readahead_page(rac))) {
-> >> +            ret = readpage_async_filler(&desc, page);
-> >> +            put_page(page);
-> >> +    }
-> >
-> > I thought with the new API we didn't need to do this kind of thing
-> > any more?  ie no matter whether fscache is configured in or not, it'll
-> > submit the I/Os.
->
-> --
-> Chuck Lever
->
->
->
+while :; do
+	for hash in sha1 sha224 sha256 sha384 sha512; do
+		openssl req \
+			-x509 \
+			-${hash} \
+			-newkey ec \
+			-pkeyopt ec_paramgen_curve:prime256v1 \
+			-keyout key.pem \
+			-days 365 \
+			-subj '/CN=test' \
+			-nodes \
+			-outform der \
+			-out cert.der
+		keyctl padd asymmetric testkey %keyring:test < cert.der
+		if [ $? -ne 0 ]; then
+			echo "ERROR"
+			exit 1
+		fi
+	done
+done
+
+It also works with restricted keyrings where an RSA key is used to sign
+a NIST P256/P192 key. Scripts for testing are here:
+
+https://github.com/stefanberger/eckey-testing
+
+The ECDSA signature verification will be used by IMA Appraisal where ECDSA
+file signatures stored in RPM packages will use substantially less space
+than if RSA signatures were to be used.
+
+   Stefan
+
+v1->v2:
+  - using faster vli_sub rather than newly added vli_mod_fast to 'reduce'
+    result
+  - rearranged switch statements to follow after RSA
+  - 3rd patch from 1st posting is now 1st patch
+
+Stefan Berger (3):
+  x509: Detect sm2 keys by their parameters OID
+  x509: Add support for parsing x509 certs with NIST p256 keys
+  x509: Add support for NIST p192 keys in certificates and akcipher
+
+ crypto/Makefile                           |   9 +-
+ crypto/asymmetric_keys/public_key.c       |  19 ++
+ crypto/asymmetric_keys/x509_cert_parser.c |  45 ++-
+ crypto/ecc.c                              | 317 ++++++++++++++++++++++
+ crypto/ecc.h                              |   2 +
+ crypto/ecc_curve_defs.h                   |   4 +
+ crypto/eccsignature.asn1                  |   4 +
+ include/linux/oid_registry.h              |   6 +
+ 8 files changed, 403 insertions(+), 3 deletions(-)
+ create mode 100644 crypto/eccsignature.asn1
+
+-- 
+2.25.4
 
