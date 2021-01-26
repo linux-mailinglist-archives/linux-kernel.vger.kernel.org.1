@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD695303FD1
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43118303F8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392720AbhAZOMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:12:02 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:47057 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2405771AbhAZOKH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:10:07 -0500
-X-UUID: c8408ea7ad494aabbad222b78a77b1c1-20210126
-X-UUID: c8408ea7ad494aabbad222b78a77b1c1-20210126
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1475293282; Tue, 26 Jan 2021 22:09:08 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 26 Jan 2021 22:09:06 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 26 Jan 2021 22:09:06 +0800
-From:   Mason Zhang <mason.zhang@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
-        Mason Zhang <mason.zhang@mediatek.com>
-Subject: [PATCH v1] arm64: dts: add spi node for MT6779
-Date:   Tue, 26 Jan 2021 21:56:26 +0800
-Message-ID: <20210126135626.31352-1-mason.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S2405634AbhAZOBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:01:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55868 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404105AbhAZOAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 09:00:09 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611669562; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JCAbd7z4tqnsZ/4DW7kFHtVQefHj8K36GoZRlW3XnSo=;
+        b=ZVLCr3UY2N0PhZ0VDIfebHpRaQ/hMHCTcYTjnRQBQG3Yag66LWNdyr/5XdFhp6daJM2I3E
+        x+5YvjS6MlrU8aDPbmWDJT3dE0/o5r5HoFgftOyRjNeyTPYIOud0km9wUY65Sk/ak27xq+
+        1HTlodXIwUGChEPqDjTdqe0j0DyWiA4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C8F26AB9F;
+        Tue, 26 Jan 2021 13:59:21 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 14:59:18 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>
+Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
+ slub page order
+Message-ID: <20210126135918.GQ827@dhcp22.suse.cz>
+References: <20201118082759.1413056-1-bharata@linux.ibm.com>
+ <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
+ <20210121053003.GB2587010@in.ibm.com>
+ <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
+ <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
+ <20210126085243.GE827@dhcp22.suse.cz>
+ <CAKfTPtAhqiHtPMUTZv8Bs3Cg5=HXLmrda=j4_HFrF=7ztYZLGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtAhqiHtPMUTZv8Bs3Cg5=HXLmrda=j4_HFrF=7ztYZLGA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support spi to MT6779 SOC
+On Tue 26-01-21 14:38:14, Vincent Guittot wrote:
+> On Tue, 26 Jan 2021 at 09:52, Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 21-01-21 19:19:21, Vlastimil Babka wrote:
+> > [...]
+> > > We could also start questioning the very assumption that number of cpus should
+> > > affect slab page size in the first place. Should it? After all, each CPU will
+> > > have one or more slab pages privately cached, as we discuss in the other
+> > > thread... So why make the slab pages also larger?
+> >
+> > I do agree. What is the acutal justification for this scaling?
+> >         /*
+> >          * Attempt to find best configuration for a slab. This
+> >          * works by first attempting to generate a layout with
+> >          * the best configuration and backing off gradually.
+> >          *
+> >          * First we increase the acceptable waste in a slab. Then
+> >          * we reduce the minimum objects required in a slab.
+> >          */
+> >
+> > doesn't speak about CPUs.  9b2cd506e5f2 ("slub: Calculate min_objects
+> > based on number of processors.") does talk about hackbench "This has
+> > been shown to address the performance issues in hackbench on 16p etc."
+> > but it doesn't give any more details to tell actually _why_ that works.
+> >
+> > This thread shows that this is still somehow related to performance but
+> > the real reason is not clear. I believe we should be focusing on the
+> > actual reasons for the performance impact than playing with some fancy
+> > math and tuning for a benchmark on a particular machine which doesn't
+> > work for others due to subtle initialization timing issues.
+> >
+> > Fundamentally why should higher number of CPUs imply the size of slab in
+> > the first place?
+> 
+> A 1st answer is that the activity and the number of threads involved
+> scales with the number of CPUs. Regarding the hackbench benchmark as
+> an example, the number of group/threads raise to a higher level on the
+> server than on the small system which doesn't seem unreasonable.
+> 
+> On 8 CPUs, I run hackbench with up to 16 groups which means 16*40
+> threads. But I raise up to 256 groups, which means 256*40 threads, on
+> the 224 CPUs system. In fact, hackbench -g 1 (with 1 group) doesn't
+> regress on the 224 CPUs  system.  The next test with 4 groups starts
+> to regress by -7%. But the next one: hackbench -g 16 regresses by 187%
+> (duration is almost 3 times longer). It seems reasonable to assume
+> that the number of running threads and resources scale with the number
+> of CPUs because we want to run more stuff.
 
-Signed-off-by: Mason Zhang <mason.zhang@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt6779.dtsi | 96 ++++++++++++++++++++++++
- 1 file changed, 96 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-index 370f309d32de..272f4346d35e 100644
---- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-@@ -219,6 +219,102 @@
- 			status = "disabled";
- 		};
- 
-+		spi0: spi0@1100a000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1100a000 0 0x1000>;
-+			interrupts = <GIC_SPI 143 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI0>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi1: spi1@11010000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11010000 0 0x1000>;
-+			interrupts = <GIC_SPI 147 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI1>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi2: spi2@11012000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11012000 0 0x1000>;
-+			interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI2>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi3: spi3@11013000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11013000 0 0x1000>;
-+			interrupts = <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI3>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi4: spi4@11018000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11018000 0 0x1000>;
-+			interrupts = <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI4>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi5: spi5@11019000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x11019000 0 0x1000>;
-+			interrupts = <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				<&topckgen CLK_TOP_SPI>,
-+				<&infracfg_ao CLK_INFRA_SPI5>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi6: spi6@1101d000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101d000 0 0x1000>;
-+			interrupts = <GIC_SPI 144 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI6>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
-+		spi7: spi7@1101e000 {
-+			compatible = "mediatek,mt6779-spi",
-+				     "mediatek,mt6765-spi";
-+			mediatek,pad-select = <0>;
-+			reg = <0 0x1101e000 0 0x1000>;
-+			interrupts = <GIC_SPI 145 IRQ_TYPE_LEVEL_LOW>;
-+			clocks = <&topckgen CLK_TOP_MAINPLL_D5_D2>,
-+				 <&topckgen CLK_TOP_SPI>,
-+				 <&infracfg_ao CLK_INFRA_SPI7>;
-+			clock-names = "parent-clk", "sel-clk", "spi-clk";
-+		};
-+
- 		audio: clock-controller@11210000 {
- 			compatible = "mediatek,mt6779-audio", "syscon";
- 			reg = <0 0x11210000 0 0x1000>;
+OK, I do understand that more jobs scale with the number of CPUs but I
+would also expect that higher order pages are generally more expensive
+to get so this is not really a clear cut especially under some more
+demand on the memory where allocations are smooth. So the question
+really is whether this is not just optimizing for artificial conditions.
 -- 
-2.18.0
-
+Michal Hocko
+SUSE Labs
