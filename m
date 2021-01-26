@@ -2,106 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5108C304F45
+	by mail.lfdr.de (Postfix) with ESMTP id C17A3304F46
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405508AbhA0Brj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:47:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388455AbhAZTHB (ORCPT
+        id S1727204AbhA0Bse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:48:34 -0500
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:21048 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2395039AbhAZTHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:07:01 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88298C061574;
-        Tue, 26 Jan 2021 11:06:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=zUcP2Ekow40wDr8LQu56g1JOWBLSxsWCwNUDwttWnJY=; b=ad84LgFWJ8FgdoRvBSNVnAdb+
-        0I6Sw5zFHnURG6DddKEQ8HbimmJVGhfZNBE+p4AhrkuGcqgL8wXJS/82Ulh3PCv17KG3N45R7A4lo
-        nmAWv3AnHF/mSc9xZD1jBN9qCv/KUXD01csQwhWLG+rkGDTkxKX1bLlQ1gn5TyX5Nq4qryobh41F5
-        DB4HHmb9nD2Xu3mV8TLNo+8B+nWoKTBy48lo4Q1JucKdB4IQ7QCREGM7mwYt646OKNjClWNUO1E6M
-        j60U9ebf7BAEOHy7IwgCDiy4Xjl4pjGwcbLID7o2kdNIzvVrdpvSEcEUXs6vOb5LBBAMtPHo30HE4
-        oAMpwR9Vw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53070)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l4TeW-0004lN-0N; Tue, 26 Jan 2021 19:05:24 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l4TeJ-00042E-C4; Tue, 26 Jan 2021 19:05:11 +0000
-Date:   Tue, 26 Jan 2021 19:05:11 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-rtc@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-serial@vger.kernel.org, coresight@lists.linaro.org,
-        linux-input@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-crypto@vger.kernel.org,
-        kernel@pengutronix.de, Leo Yan <leo.yan@linaro.org>,
-        dmaengine@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCH v3 4/5] amba: Make the remove callback return void
-Message-ID: <20210126190511.GK1551@shell.armlinux.org.uk>
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
- <20210126165835.687514-5-u.kleine-koenig@pengutronix.de>
- <3e42b2ea-c713-31b2-9c86-c49a70d8e1f4@arm.com>
- <20210126175652.3caoqfnsky2es42f@pengutronix.de>
+        Tue, 26 Jan 2021 14:07:39 -0500
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Tue, 26 Jan 2021 11:06:39 -0800
+Received: from htb-1n-eng-dhcp122.eng.vmware.com (unknown [10.20.114.3])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 3B34C203FB;
+        Tue, 26 Jan 2021 11:06:42 -0800 (PST)
+Received: by htb-1n-eng-dhcp122.eng.vmware.com (Postfix, from userid 0)
+        id 3425EA9FB7; Tue, 26 Jan 2021 11:06:42 -0800 (PST)
+From:   Ronak Doshi <doshir@vmware.com>
+To:     <netdev@vger.kernel.org>
+CC:     Ronak Doshi <doshir@vmware.com>, Petr Vandrovec <petr@vmware.com>,
+        "maintainer:VMWARE VMXNET3 ETHERNET DRIVER" <pv-drivers@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 net-next] vmxnet3: Remove buf_info from device accessible structures
+Date:   Tue, 26 Jan 2021 11:06:40 -0800
+Message-ID: <20210126190640.26942-1-doshir@vmware.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210126175652.3caoqfnsky2es42f@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: doshir@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 06:56:52PM +0100, Uwe Kleine-König wrote:
-> I'm surprised to see that the remove callback introduced in 2952ecf5df33
-> ("coresight: etm4x: Refactor probing routine") has an __exit annotation.
+buf_info structures in RX & TX queues are private driver data that
+do not need to be visible to the device.  Although there is physical
+address and length in the queue descriptor that points to these
+structures, their layout is not standardized, and device never looks
+at them.
 
-In general, remove callbacks should not have an __exit annotation.
-__exit _can_ be discarded at link time for built-in stuff.
+So lets allocate these structures in non-DMA-able memory, and fill
+physical address as all-ones and length as zero in the queue
+descriptor.
 
+That should alleviate worries brought by Martin Radev in
+https://lists.osuosl.org/pipermail/intel-wired-lan/Week-of-Mon-20210104/022829.html
+that malicious vmxnet3 device could subvert SVM/TDX guarantees.
+
+Signed-off-by: Petr Vandrovec <petr@vmware.com>
+Signed-off-by: Ronak Doshi <doshir@vmware.com>
+---
+Changes in v2:
+ - Use kcalloc_node()
+ - Remove log for memory allocation failure
+Changes in v3:
+ - Do not pass __GFP_ZERO to kcalloc
+Changes in v4:
+ - Modified description to not have subject line
+---
+ drivers/net/vmxnet3/vmxnet3_drv.c | 37 ++++++++++++-------------------------
+ drivers/net/vmxnet3/vmxnet3_int.h |  2 --
+ 2 files changed, 12 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/net/vmxnet3/vmxnet3_drv.c b/drivers/net/vmxnet3/vmxnet3_drv.c
+index 336504b7531d..419e81b21d9b 100644
+--- a/drivers/net/vmxnet3/vmxnet3_drv.c
++++ b/drivers/net/vmxnet3/vmxnet3_drv.c
+@@ -452,9 +452,7 @@ vmxnet3_tq_destroy(struct vmxnet3_tx_queue *tq,
+ 		tq->comp_ring.base = NULL;
+ 	}
+ 	if (tq->buf_info) {
+-		dma_free_coherent(&adapter->pdev->dev,
+-				  tq->tx_ring.size * sizeof(tq->buf_info[0]),
+-				  tq->buf_info, tq->buf_info_pa);
++		kfree(tq->buf_info);
+ 		tq->buf_info = NULL;
+ 	}
+ }
+@@ -505,8 +503,6 @@ static int
+ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
+ 		  struct vmxnet3_adapter *adapter)
+ {
+-	size_t sz;
+-
+ 	BUG_ON(tq->tx_ring.base || tq->data_ring.base ||
+ 	       tq->comp_ring.base || tq->buf_info);
+ 
+@@ -534,9 +530,9 @@ vmxnet3_tq_create(struct vmxnet3_tx_queue *tq,
+ 		goto err;
+ 	}
+ 
+-	sz = tq->tx_ring.size * sizeof(tq->buf_info[0]);
+-	tq->buf_info = dma_alloc_coherent(&adapter->pdev->dev, sz,
+-					  &tq->buf_info_pa, GFP_KERNEL);
++	tq->buf_info = kcalloc_node(tq->tx_ring.size, sizeof(tq->buf_info[0]),
++				    GFP_KERNEL,
++				    dev_to_node(&adapter->pdev->dev));
+ 	if (!tq->buf_info)
+ 		goto err;
+ 
+@@ -1738,10 +1734,7 @@ static void vmxnet3_rq_destroy(struct vmxnet3_rx_queue *rq,
+ 	}
+ 
+ 	if (rq->buf_info[0]) {
+-		size_t sz = sizeof(struct vmxnet3_rx_buf_info) *
+-			(rq->rx_ring[0].size + rq->rx_ring[1].size);
+-		dma_free_coherent(&adapter->pdev->dev, sz, rq->buf_info[0],
+-				  rq->buf_info_pa);
++		kfree(rq->buf_info[0]);
+ 		rq->buf_info[0] = rq->buf_info[1] = NULL;
+ 	}
+ }
+@@ -1883,10 +1876,9 @@ vmxnet3_rq_create(struct vmxnet3_rx_queue *rq, struct vmxnet3_adapter *adapter)
+ 		goto err;
+ 	}
+ 
+-	sz = sizeof(struct vmxnet3_rx_buf_info) * (rq->rx_ring[0].size +
+-						   rq->rx_ring[1].size);
+-	bi = dma_alloc_coherent(&adapter->pdev->dev, sz, &rq->buf_info_pa,
+-				GFP_KERNEL);
++	bi = kcalloc_node(rq->rx_ring[0].size + rq->rx_ring[1].size,
++			  sizeof(rq->buf_info[0][0]), GFP_KERNEL,
++			  dev_to_node(&adapter->pdev->dev));
+ 	if (!bi)
+ 		goto err;
+ 
+@@ -2522,14 +2514,12 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
+ 		tqc->txRingBasePA   = cpu_to_le64(tq->tx_ring.basePA);
+ 		tqc->dataRingBasePA = cpu_to_le64(tq->data_ring.basePA);
+ 		tqc->compRingBasePA = cpu_to_le64(tq->comp_ring.basePA);
+-		tqc->ddPA           = cpu_to_le64(tq->buf_info_pa);
++		tqc->ddPA           = cpu_to_le64(~0ULL);
+ 		tqc->txRingSize     = cpu_to_le32(tq->tx_ring.size);
+ 		tqc->dataRingSize   = cpu_to_le32(tq->data_ring.size);
+ 		tqc->txDataRingDescSize = cpu_to_le32(tq->txdata_desc_size);
+ 		tqc->compRingSize   = cpu_to_le32(tq->comp_ring.size);
+-		tqc->ddLen          = cpu_to_le32(
+-					sizeof(struct vmxnet3_tx_buf_info) *
+-					tqc->txRingSize);
++		tqc->ddLen          = cpu_to_le32(0);
+ 		tqc->intrIdx        = tq->comp_ring.intr_idx;
+ 	}
+ 
+@@ -2541,14 +2531,11 @@ vmxnet3_setup_driver_shared(struct vmxnet3_adapter *adapter)
+ 		rqc->rxRingBasePA[0] = cpu_to_le64(rq->rx_ring[0].basePA);
+ 		rqc->rxRingBasePA[1] = cpu_to_le64(rq->rx_ring[1].basePA);
+ 		rqc->compRingBasePA  = cpu_to_le64(rq->comp_ring.basePA);
+-		rqc->ddPA            = cpu_to_le64(rq->buf_info_pa);
++		rqc->ddPA            = cpu_to_le64(~0ULL);
+ 		rqc->rxRingSize[0]   = cpu_to_le32(rq->rx_ring[0].size);
+ 		rqc->rxRingSize[1]   = cpu_to_le32(rq->rx_ring[1].size);
+ 		rqc->compRingSize    = cpu_to_le32(rq->comp_ring.size);
+-		rqc->ddLen           = cpu_to_le32(
+-					sizeof(struct vmxnet3_rx_buf_info) *
+-					(rqc->rxRingSize[0] +
+-					 rqc->rxRingSize[1]));
++		rqc->ddLen           = cpu_to_le32(0);
+ 		rqc->intrIdx         = rq->comp_ring.intr_idx;
+ 		if (VMXNET3_VERSION_GE_3(adapter)) {
+ 			rqc->rxDataRingBasePA =
+diff --git a/drivers/net/vmxnet3/vmxnet3_int.h b/drivers/net/vmxnet3/vmxnet3_int.h
+index d958b92c9429..e910596b79cf 100644
+--- a/drivers/net/vmxnet3/vmxnet3_int.h
++++ b/drivers/net/vmxnet3/vmxnet3_int.h
+@@ -240,7 +240,6 @@ struct vmxnet3_tx_queue {
+ 	spinlock_t                      tx_lock;
+ 	struct vmxnet3_cmd_ring         tx_ring;
+ 	struct vmxnet3_tx_buf_info      *buf_info;
+-	dma_addr_t                       buf_info_pa;
+ 	struct vmxnet3_tx_data_ring     data_ring;
+ 	struct vmxnet3_comp_ring        comp_ring;
+ 	struct Vmxnet3_TxQueueCtrl      *shared;
+@@ -298,7 +297,6 @@ struct vmxnet3_rx_queue {
+ 	u32 qid2;           /* rqID in RCD for buffer from 2nd ring */
+ 	u32 dataRingQid;    /* rqID in RCD for buffer from data ring */
+ 	struct vmxnet3_rx_buf_info     *buf_info[2];
+-	dma_addr_t                      buf_info_pa;
+ 	struct Vmxnet3_RxQueueCtrl            *shared;
+ 	struct vmxnet3_rq_driver_stats  stats;
+ } __attribute__((__aligned__(SMP_CACHE_BYTES)));
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.11.0
+
