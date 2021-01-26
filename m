@@ -2,155 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4CE3042CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1A73042CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391346AbhAZPmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:42:38 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54070 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392006AbhAZPkD (ORCPT
+        id S2391900AbhAZPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:43:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31654 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392830AbhAZPkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:40:03 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 597A62C1;
-        Tue, 26 Jan 2021 16:39:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1611675558;
-        bh=Pby13UJp8gKyOcj8Zok5aTPgmkef0wuX4nO2OfrKUYk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JVeM4bcqDjxxdAD+nQ13zTsSWvUJ5ZJDWt9bb9F63f/ZwuYA8k3X+nt59FAEb3i54
-         Ha7mANWTihATYJPSa31itWIUCByNh59ib248T8h9iLaadibpHUc1d9oNw16gHQrDKn
-         cecKKPgkz5aSA4fj3bylfWvgGWb63ZgCTNQxLX7Y=
-Date:   Tue, 26 Jan 2021 17:38:58 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 04/12] media: uvcvideo: Provide sync and async
- uvc_ctrl_status_event
-Message-ID: <YBA3krpfIfIB2vYc@pendragon.ideasonboard.com>
-References: <20201223133528.55014-1-ribalda@chromium.org>
- <20201223133528.55014-5-ribalda@chromium.org>
+        Tue, 26 Jan 2021 10:40:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611675562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NyKAGnu0Dzw8+jDrxr/Ep1aGiPjWBIFfIK64+l4ewV8=;
+        b=H2Y9nuUQCzUdTrDypNLoCriQEALObGrXd9+eYCYPFt54z67DBrb/OLWR93EMiiNaruukMC
+        6uA7RW/6HUCSuPC3oiLBALGnwO8+EQvWKK+S2N1RrMa+KSNtMGUmqXXQ1FKAmGDYm231Sb
+        t6L7Q8OgxtW95FqOgYRMOrVqN66NB1Y=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-Dx_0pBmUOVOrxjDSLI3a3A-1; Tue, 26 Jan 2021 10:39:20 -0500
+X-MC-Unique: Dx_0pBmUOVOrxjDSLI3a3A-1
+Received: by mail-oo1-f72.google.com with SMTP id z6so6950635oop.10
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:39:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NyKAGnu0Dzw8+jDrxr/Ep1aGiPjWBIFfIK64+l4ewV8=;
+        b=Hn8YxPTwsWlaH1cFGqtJcSRbnXUnXdgf018xqwLbG1LjtdCBCgvzwc9DttK99cWTA8
+         FULMLMTroFEfauyGT7sJtYHmnhpZlOMmQZAN8cbEYHUeiGXXg9Aw/khGC3DbaSfkFJUl
+         L78SlQqnZyPVCwelFKUJx/ElGJGEaCHVJ8TJjjbTOEngaldlBmQ9rYtobh9+Jf7uiUGJ
+         GL1WXjl8dda3mJJZYbU3HNvFlwn97xTbxxAJj2SOBcF8eImmYtxoZ9G2BA8nX95olsv1
+         Basi34YqcQiVsYx1Heo8mGlWo5ut5QP7WatZnxo0T1j2pec/mquO8f2GmiJbUb+MDjYp
+         8VXA==
+X-Gm-Message-State: AOAM533fJleAEmlkcS+J0GbNcSDbAMcKMtkeQgpwgVgJZJCUbErt1fTo
+        OJ91Nm9hvkzWCqhxUQGr60LZsZFv6jn+8YJKkXblh3NrtdALdlapbzHLmhXSlcry5b518qYGLu9
+        POlKylUk53ncWA/OC7tts8xF2
+X-Received: by 2002:aca:4d97:: with SMTP id a145mr136408oib.147.1611675560052;
+        Tue, 26 Jan 2021 07:39:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzMbcypJ5oSFTaiecJO8qs1t+tc8ekhdrPrFMmZO8Mc/NS5EH0sSElr4VVhYtgOpU5jYyUYZA==
+X-Received: by 2002:aca:4d97:: with SMTP id a145mr136400oib.147.1611675559862;
+        Tue, 26 Jan 2021 07:39:19 -0800 (PST)
+Received: from [192.168.1.38] (cpe-70-113-46-183.austin.res.rr.com. [70.113.46.183])
+        by smtp.gmail.com with ESMTPSA id d10sm3870758ooh.32.2021.01.26.07.39.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 07:39:18 -0800 (PST)
+From:   Wei Huang <wehuang@redhat.com>
+X-Google-Original-From: Wei Huang <wei.huang2@amd.com>
+Subject: Re: [PATCH v3 3/4] KVM: SVM: Add support for SVM instruction address
+ check change
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, seanjc@google.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, luto@amacapital.net
+References: <20210126081831.570253-1-wei.huang2@amd.com>
+ <20210126081831.570253-4-wei.huang2@amd.com>
+ <f8a2fbc829a553b936b8babc5c1df2b1e88f51d7.camel@redhat.com>
+Message-ID: <aee0d84b-52b6-bf1e-557f-5990dfe4000d@amd.com>
+Date:   Tue, 26 Jan 2021 09:39:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201223133528.55014-5-ribalda@chromium.org>
+In-Reply-To: <f8a2fbc829a553b936b8babc5c1df2b1e88f51d7.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
 
-Thank you for the patch.
 
-On Wed, Dec 23, 2020 at 02:35:20PM +0100, Ricardo Ribalda wrote:
-> Split the functionality of void uvc_ctrl_status_event_work in two, so it
-> can be called by functions outside interrupt context and not part of an
-> URB.
+On 1/26/21 5:52 AM, Maxim Levitsky wrote:
+> On Tue, 2021-01-26 at 03:18 -0500, Wei Huang wrote:
+>> New AMD CPUs have a change that checks #VMEXIT intercept on special SVM
+>> instructions before checking their EAX against reserved memory region.
+>> This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, #VMEXIT
+>> is triggered before #GP. KVM doesn't need to intercept and emulate #GP
+>> faults as #GP is supposed to be triggered.
+>>
+>> Co-developed-by: Bandan Das <bsd@redhat.com>
+>> Signed-off-by: Bandan Das <bsd@redhat.com>
+>> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+>> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+>> ---
+>>   arch/x86/include/asm/cpufeatures.h | 1 +
+>>   arch/x86/kvm/svm/svm.c             | 3 +++
+>>   2 files changed, 4 insertions(+)
+>>
+>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+>> index 84b887825f12..ea89d6fdd79a 100644
+>> --- a/arch/x86/include/asm/cpufeatures.h
+>> +++ b/arch/x86/include/asm/cpufeatures.h
+>> @@ -337,6 +337,7 @@
+>>   #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
+>>   #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
+>>   #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
+>> +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
+>>   
+>>   /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+>>   #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index e5ca01e25e89..f9233c79265b 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -1036,6 +1036,9 @@ static __init int svm_hardware_setup(void)
+>>   		}
+>>   	}
+>>   
+>> +	if (boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
+>> +		svm_gp_erratum_intercept = false;
+>> +
+> Again, I would make svm_gp_erratum_intercept a tri-state module param,
+> and here if it is in 'auto' state do this.
 > 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+I will try to craft a param patch and see if it flies...
 
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c   | 25 +++++++++++++++----------
->  drivers/media/usb/uvc/uvc_status.c |  3 ++-
->  drivers/media/usb/uvc/uvcvideo.h   |  4 +++-
->  3 files changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 9f6174a10e73..4d43f4c3e349 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1254,17 +1254,12 @@ static void uvc_ctrl_send_slave_event(struct uvc_video_chain *chain,
->  	uvc_ctrl_send_event(chain, handle, ctrl, mapping, val, changes);
->  }
->  
-> -static void uvc_ctrl_status_event_work(struct work_struct *work)
-> +void uvc_ctrl_status_event(struct uvc_video_chain *chain,
-> +			   struct uvc_control *ctrl, const u8 *data)
->  {
-> -	struct uvc_device *dev = container_of(work, struct uvc_device,
-> -					      async_ctrl.work);
-> -	struct uvc_ctrl_work *w = &dev->async_ctrl;
-> -	struct uvc_video_chain *chain = w->chain;
->  	struct uvc_control_mapping *mapping;
-> -	struct uvc_control *ctrl = w->ctrl;
->  	struct uvc_fh *handle;
->  	unsigned int i;
-> -	int ret;
->  
->  	mutex_lock(&chain->ctrl_mutex);
->  
-> @@ -1272,7 +1267,7 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
->  	ctrl->handle = NULL;
->  
->  	list_for_each_entry(mapping, &ctrl->info.mappings, list) {
-> -		s32 value = __uvc_ctrl_get_value(mapping, w->data);
-> +		s32 value = __uvc_ctrl_get_value(mapping, data);
->  
->  		/*
->  		 * handle may be NULL here if the device sends auto-update
-> @@ -1291,6 +1286,16 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
->  	}
->  
->  	mutex_unlock(&chain->ctrl_mutex);
-> +}
-> +
-> +static void uvc_ctrl_status_event_work(struct work_struct *work)
-> +{
-> +	struct uvc_device *dev = container_of(work, struct uvc_device,
-> +					      async_ctrl.work);
-> +	struct uvc_ctrl_work *w = &dev->async_ctrl;
-> +	int ret;
-> +
-> +	uvc_ctrl_status_event(w->chain, w->ctrl, w->data);
->  
->  	/* Resubmit the URB. */
->  	w->urb->interval = dev->int_ep->desc.bInterval;
-> @@ -1300,8 +1305,8 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
->  			   ret);
->  }
->  
-> -bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
-> -			   struct uvc_control *ctrl, const u8 *data)
-> +bool uvc_ctrl_status_event_async(struct urb *urb, struct uvc_video_chain *chain,
-> +				 struct uvc_control *ctrl, const u8 *data)
->  {
->  	struct uvc_device *dev = chain->dev;
->  	struct uvc_ctrl_work *w = &dev->async_ctrl;
-> diff --git a/drivers/media/usb/uvc/uvc_status.c b/drivers/media/usb/uvc/uvc_status.c
-> index 2bdb0ff203f8..3e26d82a906d 100644
-> --- a/drivers/media/usb/uvc/uvc_status.c
-> +++ b/drivers/media/usb/uvc/uvc_status.c
-> @@ -179,7 +179,8 @@ static bool uvc_event_control(struct urb *urb,
->  
->  	switch (status->bAttribute) {
->  	case UVC_CTRL_VALUE_CHANGE:
-> -		return uvc_ctrl_status_event(urb, chain, ctrl, status->bValue);
-> +		return uvc_ctrl_status_event_async(urb, chain, ctrl,
-> +						   status->bValue);
->  
->  	case UVC_CTRL_INFO_CHANGE:
->  	case UVC_CTRL_FAILURE_CHANGE:
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index c50b0546901f..be784ed8354d 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -843,7 +843,9 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
->  int uvc_ctrl_init_device(struct uvc_device *dev);
->  void uvc_ctrl_cleanup_device(struct uvc_device *dev);
->  int uvc_ctrl_restore_values(struct uvc_device *dev);
-> -bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
-> +bool uvc_ctrl_status_event_async(struct urb *urb, struct uvc_video_chain *chain,
-> +				 struct uvc_control *ctrl, const u8 *data);
-> +void uvc_ctrl_status_event(struct uvc_video_chain *chain,
->  			   struct uvc_control *ctrl, const u8 *data);
->  
->  int uvc_ctrl_begin(struct uvc_video_chain *chain);
-
--- 
-Regards,
-
-Laurent Pinchart
