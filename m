@@ -2,123 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353E2303E66
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B811303E63
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391907AbhAZNRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:17:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32915 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391624AbhAZMqY (ORCPT
+        id S2392168AbhAZNQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:16:54 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11507 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391845AbhAZMrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 07:46:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611665098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MNJERmT7Vuz6QxflZTnA+auIcqBlbQ/3RdflYOHk/Tk=;
-        b=ITlDy8fEY8yrxCCmqQq5zel1zkmrbCy8mlKTSWoyJ26O/DQp40o2f5uVNV+iUp0A7H733H
-        GBkVmZSE4JjqzqbBPN3uhtcxQiKrENcbYPPSV58erinhwymwAeKHWUhDl42BZEnvOf9uwU
-        epwNoU3ndf2ruv53QCnkHrgWBbBoWWQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-1zGM5JogMHa-VFnrsMalzQ-1; Tue, 26 Jan 2021 07:44:56 -0500
-X-MC-Unique: 1zGM5JogMHa-VFnrsMalzQ-1
-Received: by mail-wr1-f70.google.com with SMTP id l13so11031546wrq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:44:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MNJERmT7Vuz6QxflZTnA+auIcqBlbQ/3RdflYOHk/Tk=;
-        b=OmSwtwdu9oUUZur5C9zjcsVO95RhYxUsjCaN7Z3Bu4+8wDqWlUfh1852J3KXJrJVet
-         KMBTzACTrUgbh/UunYR+ltmU44NG1x8TbdYzibOGXISl1SOR8xi6I9yaW7PZV6Z7+zbx
-         b1WhimKEM+Ruk+WB2Q1U42qw2hJKlxYfoVvFxtS305sKM7LzdTw43UL7woZy9eCbtqyc
-         PnxfdBZkIzvFraqpGsUYw2hBJkbSd/XAqSdzDc/+/jBzwPGZJEAG9c7iHlPs2nJSgAtm
-         gbZ5kFe862qaQBIusiF4HOoG0F/XqdQ4VKcS/vjMOedC+0keQHQjpI+cRQVpSpRUQIjh
-         9G9A==
-X-Gm-Message-State: AOAM532UXjOJOSFm3wWh67yBeImiOTZuiARXuDboOYeA8233UW6E+3ym
-        C3VVzwqmdEli/3CpcuYt8ndAe6ZH6mAwYWVaEIwZ4PmXK5vWDigB9sVg6xEaeg5ziXDxkmYi8YJ
-        ImA6Puob/ZngOT4BJyA5uka+DqSkpcE6Lt8QMbxfb
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr6052889wrd.33.1611665095174;
-        Tue, 26 Jan 2021 04:44:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwidMAkaJwMIbKsfh4oZmDF/v+rGyEjI2VgDeYGU4BuvgYrjHrnFErK1GdiavCeAFABamnHBsxDCBqo39sR5jg=
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr6052870wrd.33.1611665095013;
- Tue, 26 Jan 2021 04:44:55 -0800 (PST)
+        Tue, 26 Jan 2021 07:47:13 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DQ5yX1G7wzjDdr;
+        Tue, 26 Jan 2021 20:44:04 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 26 Jan 2021 20:45:07 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <xiexiangyou@huawei.com>, <zhengchuan@huawei.com>,
+        <yubihong@huawei.com>
+Subject: [RFC PATCH 7/7] kvm: arm64: Start up SW/HW combined dirty log
+Date:   Tue, 26 Jan 2021 20:44:44 +0800
+Message-ID: <20210126124444.27136-8-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
+In-Reply-To: <20210126124444.27136-1-zhukeqian1@huawei.com>
+References: <20210126124444.27136-1-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-References: <efe6b039a544da8215d5e54aa7c4b6d1986fc2b0.1611607264.git.jpoimboe@redhat.com>
- <CAK7LNAS=uOi=8xJU=NiKnXQW2iCazbErg_TX0gL9oayBiDffiA@mail.gmail.com>
- <20210125212755.jfwlqogpcarmxdgt@treble> <CAK7LNAS+EG9doX3qUmu4M3=mRNmdybSv4180Xnuubiwmsq0Agw@mail.gmail.com>
- <20210125220757.vxdsf6sttpy46cq7@treble> <YA/PLdX5m9f4v+Yl@kroah.com>
-In-Reply-To: <YA/PLdX5m9f4v+Yl@kroah.com>
-From:   Justin Forbes <jforbes@redhat.com>
-Date:   Tue, 26 Jan 2021 06:44:44 -0600
-Message-ID: <CAFbkSA0m1pqmXh29j6wJ9fG05yC72T1kNC0QU3rF7Oh2NoMwYQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] gcc-plugins: Handle GCC version mismatch for OOT modules
-To:     Greg KH <greg@kroah.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:21 AM Greg KH <greg@kroah.com> wrote:
->
-> On Mon, Jan 25, 2021 at 04:07:57PM -0600, Josh Poimboeuf wrote:
-> > On Tue, Jan 26, 2021 at 06:44:35AM +0900, Masahiro Yamada wrote:
-> > > > > If people use a different compiler, they must be
-> > > > > prepared for any possible problem.
-> > > > >
-> > > > > Using different compiler flags for in-tree and out-of-tree
-> > > > > is even more dangerous.
-> > > > >
-> > > > > For example, CONFIG_GCC_PLUGIN_RANDSTRUCT is enabled
-> > > > > for in-tree build, and then disabled for out-of-tree modules,
-> > > > > the struct layout will mismatch, won't it?
-> > > >
-> > > > If you read the patch you'll notice that it handles that case, when it's
-> > > > caused by GCC mismatch.
-> > > >
-> > > > However, as alluded to in the [1] footnote, it doesn't handle the case
-> > > > where the OOT build system doesn't have gcc-plugin-devel installed.
-> > > > Then CONFIG_GCC_PLUGIN_RANDSTRUCT gets silently disabled and the build
-> > > > succeeds!  That happens even without a GCC mismatch.
-> > >
-> > >
-> > > Ah, sorry.
-> > >
-> > > I responded too early before reading the patch fully.
-> > >
-> > > But, I do not like to make RANDSTRUCT a special case.
-> > >
-> > > I'd rather want to stop building for any plugin.
-> >
-> > Other than RANDSTRUCT there doesn't seem to be any problem with
-> > disabling them (and printing a warning) in the OOT build.  Why not give
-> > users that option?  It's harmless, and will make distro's (and their
-> > users') lives easier.
-> >
-> > Either GCC mismatch is ok, or it's not.  Let's not half-enforce it.
->
-> As I said earlier, it's not ok, we can not support it at all.
->
+We do not enable hardware dirty at start (do not add DBM bit). When
+an arbitrary PT occurs fault, we execute soft tracking for this PT
+and enable hardware tracking for its nearby PTs (Add DBM bit for
+nearby 64PTs). Then when sync dirty log, we have known all PTs with
+hardware dirty enabled, so we do not need to scan all PTs.
 
-Support and enforce are 2 completely different things.  To shed a bit
-more light on this, the real issue that prompted this was breaking CI
-systems.  As we enabled gcc plugins in Fedora, and the toolchain folks
-went through 3 different snapshots of gcc 11 in a week. Any CI process
-that built an out of tree module failed. I don't think this is nearly
-as much of a concern for stable distros, as it is for CI in
-development cycles.
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+---
+ arch/arm64/include/asm/kvm_host.h |   6 ++
+ arch/arm64/kvm/arm.c              | 125 ++++++++++++++++++++++++++++++
+ arch/arm64/kvm/mmu.c              |   7 +-
+ arch/arm64/kvm/reset.c            |   8 +-
+ 4 files changed, 141 insertions(+), 5 deletions(-)
 
-Justin
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 8fcfab0c2567..e9ea5b546326 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -99,6 +99,8 @@ struct kvm_s2_mmu {
+ };
+ 
+ struct kvm_arch_memory_slot {
++	#define HWDBM_GRANULE_SHIFT 6  /* 64 pages per bit */
++	unsigned long *hwdbm_bitmap;
+ };
+ 
+ struct kvm_arch {
+@@ -565,6 +567,10 @@ struct kvm_vcpu_stat {
+ 	u64 exits;
+ };
+ 
++int kvm_arm_init_hwdbm_bitmap(struct kvm_memory_slot *memslot);
++void kvm_arm_destroy_hwdbm_bitmap(struct kvm_memory_slot *memslot);
++void kvm_arm_enable_nearby_hwdbm(struct kvm *kvm, gfn_t gfn);
++
+ int kvm_vcpu_preferred_target(struct kvm_vcpu_init *init);
+ unsigned long kvm_arm_num_regs(struct kvm_vcpu *vcpu);
+ int kvm_arm_copy_reg_indices(struct kvm_vcpu *vcpu, u64 __user *indices);
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 04c44853b103..9e05d45fa6be 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -1257,9 +1257,134 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	return r;
+ }
+ 
++static unsigned long kvm_hwdbm_bitmap_bytes(struct kvm_memory_slot *memslot)
++{
++	unsigned long nbits = DIV_ROUND_UP(memslot->npages, 1 << HWDBM_GRANULE_SHIFT);
++
++	return ALIGN(nbits, BITS_PER_LONG) / 8;
++}
++
++static unsigned long *kvm_second_hwdbm_bitmap(struct kvm_memory_slot *memslot)
++{
++	unsigned long len = kvm_hwdbm_bitmap_bytes(memslot);
++
++	return (void *)memslot->arch.hwdbm_bitmap + len;
++}
++
++/*
++ * Allocate twice space. Refer kvm_arch_sync_dirty_log() to see why the
++ * second space is needed.
++ */
++int kvm_arm_init_hwdbm_bitmap(struct kvm_memory_slot *memslot)
++{
++	unsigned long bytes = 2 * kvm_hwdbm_bitmap_bytes(memslot);
++
++	if (!system_supports_hw_dbm())
++		return 0;
++
++	if (memslot->arch.hwdbm_bitmap) {
++		/* Inherited from old memslot */
++		bitmap_clear(memslot->arch.hwdbm_bitmap, 0, bytes * 8);
++	} else {
++		memslot->arch.hwdbm_bitmap = kvzalloc(bytes, GFP_KERNEL_ACCOUNT);
++		if (!memslot->arch.hwdbm_bitmap)
++			return -ENOMEM;
++	}
++
++	return 0;
++}
++
++void kvm_arm_destroy_hwdbm_bitmap(struct kvm_memory_slot *memslot)
++{
++	if (!memslot->arch.hwdbm_bitmap)
++		return;
++
++	kvfree(memslot->arch.hwdbm_bitmap);
++	memslot->arch.hwdbm_bitmap = NULL;
++}
++
++/* Add DBM for nearby pagetables but do not across memslot */
++void kvm_arm_enable_nearby_hwdbm(struct kvm *kvm, gfn_t gfn)
++{
++	struct kvm_memory_slot *memslot;
++
++	memslot = gfn_to_memslot(kvm, gfn);
++	if (memslot && kvm_slot_dirty_track_enabled(memslot) &&
++	    memslot->arch.hwdbm_bitmap) {
++		unsigned long rel_gfn = gfn - memslot->base_gfn;
++		unsigned long dbm_idx = rel_gfn >> HWDBM_GRANULE_SHIFT;
++		unsigned long start_page, npages;
++
++		if (!test_and_set_bit(dbm_idx, memslot->arch.hwdbm_bitmap)) {
++			start_page = dbm_idx << HWDBM_GRANULE_SHIFT;
++			npages = 1 << HWDBM_GRANULE_SHIFT;
++			npages = min(memslot->npages - start_page, npages);
++			kvm_stage2_set_dbm(kvm, memslot, start_page, npages);
++		}
++	}
++}
++
++/*
++ * We have to find a place to clear hwdbm_bitmap, and clear hwdbm_bitmap means
++ * to clear DBM bit of all related pgtables. Note that between we clear DBM bit
++ * and flush TLB, HW dirty log may occur, so we must scan all related pgtables
++ * after flush TLB. Giving above, it's best choice to clear hwdbm_bitmap before
++ * sync HW dirty log.
++ */
+ void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
+ {
++	unsigned long *second_bitmap = kvm_second_hwdbm_bitmap(memslot);
++	unsigned long start_page, npages;
++	unsigned int end, rs, re;
++	bool has_hwdbm = false;
++
++	if (!memslot->arch.hwdbm_bitmap)
++		return;
+ 
++	end = kvm_hwdbm_bitmap_bytes(memslot) * 8;
++	bitmap_clear(second_bitmap, 0, end);
++
++	spin_lock(&kvm->mmu_lock);
++	bitmap_for_each_set_region(memslot->arch.hwdbm_bitmap, rs, re, 0, end) {
++		has_hwdbm = true;
++
++		/*
++		 * Must clear bitmap before clear DBM bit. During we clear DBM
++		 * (it releases the mmu spinlock periodly), SW dirty tracking
++		 * has chance to add DBM which overlaps what we are clearing. So
++		 * if we clear bitmap after clear DBM, we will face a situation
++		 * that bitmap is cleared but DBM are lefted, then we may have
++		 * no chance to scan these lefted pgtables anymore.
++		 */
++		bitmap_clear(memslot->arch.hwdbm_bitmap, rs, re - rs);
++
++		/* Record the bitmap cleared */
++		bitmap_set(second_bitmap, rs, re - rs);
++
++		start_page = rs << HWDBM_GRANULE_SHIFT;
++		npages = (re - rs) << HWDBM_GRANULE_SHIFT;
++		npages = min(memslot->npages - start_page, npages);
++		kvm_stage2_clear_dbm(kvm, memslot, start_page, npages);
++	}
++	spin_unlock(&kvm->mmu_lock);
++
++	if (!has_hwdbm)
++		return;
++
++	/*
++	 * Ensure vcpu write-actions that occur after we clear hwdbm_bitmap can
++	 * be catched by guest memory abort handler.
++	 */
++	kvm_flush_remote_tlbs(kvm);
++
++	spin_lock(&kvm->mmu_lock);
++	bitmap_for_each_set_region(second_bitmap, rs, re, 0, end) {
++		start_page = rs << HWDBM_GRANULE_SHIFT;
++		npages = (re - rs) << HWDBM_GRANULE_SHIFT;
++		npages = min(memslot->npages - start_page, npages);
++		kvm_stage2_sync_dirty(kvm, memslot, start_page, npages);
++	}
++	spin_unlock(&kvm->mmu_lock);
+ }
+ 
+ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 2f8c6770a4dc..1a8702035ddd 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -939,6 +939,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	 */
+ 	if (fault_status == FSC_PERM && vma_pagesize == fault_granule) {
+ 		ret = kvm_pgtable_stage2_relax_perms(pgt, fault_ipa, prot);
++
++		/* Put here with high probability that nearby PTEs are valid */
++		if (!ret && vma_pagesize == PAGE_SIZE && writable)
++			kvm_arm_enable_nearby_hwdbm(kvm, gfn);
+ 	} else {
+ 		ret = kvm_pgtable_stage2_map(pgt, fault_ipa, vma_pagesize,
+ 					     __pfn_to_phys(pfn), prot,
+@@ -1407,11 +1411,12 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 	spin_unlock(&kvm->mmu_lock);
+ out:
+ 	mmap_read_unlock(current->mm);
+-	return ret;
++	return ret ? : kvm_arm_init_hwdbm_bitmap(memslot);
+ }
+ 
+ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ {
++	kvm_arm_destroy_hwdbm_bitmap(slot);
+ }
+ 
+ void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen)
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 47f3f035f3ea..231d11009db7 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -376,11 +376,11 @@ int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
+ 	vtcr |= VTCR_EL2_LVLS_TO_SL0(lvls);
+ 
+ 	/*
+-	 * Enable the Hardware Access Flag management, unconditionally
+-	 * on all CPUs. The features is RES0 on CPUs without the support
+-	 * and must be ignored by the CPUs.
++	 * Enable the Hardware Access Flag and Dirty State management
++	 * unconditionally on all CPUs. The features are RES0 on CPUs
++	 * without the support and must be ignored by the CPUs.
+ 	 */
+-	vtcr |= VTCR_EL2_HA;
++	vtcr |= VTCR_EL2_HA | VTCR_EL2_HD;
+ 
+ 	/* Set the vmid bits */
+ 	vtcr |= (kvm_get_vmid_bits() == 16) ?
+-- 
+2.19.1
 
