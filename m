@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4921303BC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19D8303BB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392537AbhAZLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:36:47 -0500
-Received: from m12-18.163.com ([220.181.12.18]:34164 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391657AbhAZKV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 05:21:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=PgTMq
-        TZn7npXraokTycNIhlMSf+uj61Uk0lqhNzYuKY=; b=aKU4BSjw31sUQfWrUhc0L
-        JbmuCXTftdKu7dpY6VpIZ1tcmHyxv6q4pf84FvprEtC5SJRO0Jwsv0KgQ206mLxb
-        jPihZZKij7z6B7K0dDQ6lA7FyY96yY5r1i12UWmkjlNmEyAV+g3E6WXHmrnDrKdo
-        mxU/6iNMwk5KpyUAb09drc=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp14 (Coremail) with SMTP id EsCowAAXHgry6A9goABtRA--.24561S2;
-        Tue, 26 Jan 2021 18:03:34 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] drivers/power/supply: fix typo
-Date:   Tue, 26 Jan 2021 18:03:26 +0800
-Message-Id: <20210126100326.869-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S2392469AbhAZLdq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 26 Jan 2021 06:33:46 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:39094 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390004AbhAZKFj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 05:05:39 -0500
+Received: by mail-ot1-f45.google.com with SMTP id i30so15676691ota.6;
+        Tue, 26 Jan 2021 02:05:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rF/1vmEFIVRHjc8AWuZDMv+It2bXb57sOL79ReSBh8A=;
+        b=PV7HUAmdZMxB/Orc1r0hfREx0Dewzfq44/aVkssoQkc/CJw3+BuCObBQ4f/jaZJ/KT
+         BLjMLSvehXfv0Zm1aMlzpfc6fqkf7txiKcW3HQp7Y1SZ50+OC0H0BV+DQHQ8n6LPl08U
+         CU6ZD0cuPs7H+HySQAGzHds5pdCCOF39QXXyym+m+kVS7J7oj05tF/Vtb4HyqI4lg5Ac
+         EIAxh8tNUr9PIyVdfOMbjN4B2VmlIpx84/w+wZyPTJd5HbsSvUqMO4qfN3fELLUbrkCP
+         N01XfB/WUc1Odm/fpmbCA51qxFkV4zV4cMzc/s+2pAFK0Z9dyHxay97r9sVwafuJJrpX
+         PR8Q==
+X-Gm-Message-State: AOAM5332T9ETGyn+dJIsBIo28QoXUSjy65NSKgQ5K6UbBZIQj9OgWjYm
+        OE5IIZOfGI8Z5pPQHvyjMCH6tulurkmwXGxfhstm9ZDI
+X-Google-Smtp-Source: ABdhPJzoRECB4L8uCs8vp+zPXDTBi+GBtP4zmDVSAH9+pdMgnTKapYgjlRDr/HMP1hVrai5n4e0LYvGrLm4Da6OPk70=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr3400993otr.107.1611655498614;
+ Tue, 26 Jan 2021 02:04:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAAXHgry6A9goABtRA--.24561S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWruFy8KryxGFWkXF17GF47twb_yoW8Jr18pa
-        n2vFnrWw4jyFWUJa4DA3ya9FyYganakrWj9w4fG3WrZF43Xws3Wr15tF47Xr1IyryxXF4S
-        qasIyw4xtF1jkr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jESoXUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbipRYmiVUMcELpTQAAsT
+References: <20201228120147.59387-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201228120147.59387-1-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 26 Jan 2021 11:04:47 +0100
+Message-ID: <CAMuHMdWD-8YxdrTmaTW7YTOFj+8hHM5LvegnC274QOTOO_gXcg@mail.gmail.com>
+Subject: Re: [PATCH] arm: smp: remove unused variable
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+Hi Wolfram,
 
-Change 'exeeds' to 'exceeds'.
+On Mon, Dec 28, 2020 at 1:03 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Not used anymore after refactoring:
+>
+> arch/arm/kernel/smp.c: In function ‘show_ipi_list’:
+> arch/arm/kernel/smp.c:543:16: warning: variable ‘irq’ set but not used [-Wunused-but-set-variable]
+>   543 |   unsigned int irq;
+>
+> Fixes: 88c637748e31 ("ARM: smp: Use irq_desc_kstat_cpu() in show_ipi_list()")
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- drivers/power/supply/charger-manager.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Known issue since Dec 15, and still not fixed...
 
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index 6fcebe4..731351d8 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -570,7 +570,7 @@ static int cm_get_target_status(struct charger_manager *cm)
- 		return POWER_SUPPLY_STATUS_DISCHARGING;
- 
- 	if (cm_check_thermal_status(cm)) {
--		/* Check if discharging duration exeeds limit. */
-+		/* Check if discharging duration exceeds limit. */
- 		if (check_charging_duration(cm))
- 			goto charging_ok;
- 		return POWER_SUPPLY_STATUS_NOT_CHARGING;
-@@ -578,7 +578,7 @@ static int cm_get_target_status(struct charger_manager *cm)
- 
- 	switch (cm->battery_status) {
- 	case POWER_SUPPLY_STATUS_CHARGING:
--		/* Check if charging duration exeeds limit. */
-+		/* Check if charging duration exceeds limit. */
- 		if (check_charging_duration(cm))
- 			return POWER_SUPPLY_STATUS_FULL;
- 		fallthrough;
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-1.9.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
