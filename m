@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DBA303AE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B9F303AEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404565AbhAZK5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:57:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        id S2404616AbhAZK52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:57:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732099AbhAZD2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 22:28:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76B8A2256F;
-        Tue, 26 Jan 2021 03:27:34 +0000 (UTC)
+        id S1727395AbhAZDe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 22:34:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC87B2256F;
+        Tue, 26 Jan 2021 03:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611631654;
-        bh=h90NenU3bBs6nTKkn9ChQTzjwguZxyJs58vaCJSQLNU=;
+        s=k20201202; t=1611632058;
+        bh=24HMPQ5KBU07aAaSWFCm7Hw0EU4+OQOjiR7tdKvjwPM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nhGDtX46VXV2foWEDNgtLYmlLT/xAvPnv6y+NuXkYh8VjwCZMv4mPwCCqUMDCZg/z
-         gLdW5lr7Djbb04Y+Sdvo9O4udfCmMEujxxgvx8u14lexfBq/htW0rHYJfrBtvXE5FB
-         9t5LQbAQGerlD9pPXmbUphG8g+UKX2I41dgsxydRsuQHQEwfKkFk7tNOa911aYSuof
-         TA+jNhWSDn7Hr1MdaKGX6E1DA768akqe+3yHEJLRKiMt3mP4pB7TpX+KabKF6m0sD+
-         PAuzQNJanWbwSVyG3/IZFiLv9224en9dPxUPs8HYlvFfMB9PMNhtWHPClvZtv81qtA
-         BU281FaAs3HWg==
-Date:   Mon, 25 Jan 2021 19:27:33 -0800
+        b=Nm+zXjykcxUTXpSMGgyXXLQAtfzbqqCxgaP25ucAkuMnoTCAa/e9KPs2Zr3z51p1Q
+         ZNybeuOqYBTzqiFZC2oO2NWhXmXRJ9vYIJTtBJGnVcFsm6ixcLyYT54rQ1ML/IsN1g
+         rbepJOqgrP0ZFuYgdQjM8ri07ktb0/unKey7ZDlYwmCsNtYo9dvyJLZmTfyjalwqDB
+         brmInUA77epSIEZKIGCpMqftCeceiAI6RKIOFM5dDnUilFR2EnCO9sahdVs2CJdvK2
+         Q4A/8+ENmUW4ZH/KMr+7JkV4ERiJa2omBdbwHgJAxcghrismRUI9KhIpyGMVWtsGJ8
+         RFalLFgz0hdeA==
+Date:   Mon, 25 Jan 2021 19:34:16 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, elder@kernel.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 3/6] net: ipa: drop packet if status has valid
- tag
-Message-ID: <20210125192733.38ff2ac5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210125212947.17097-4-elder@linaro.org>
-References: <20210125212947.17097-1-elder@linaro.org>
-        <20210125212947.17097-4-elder@linaro.org>
+To:     samirweng1979 <samirweng1979@163.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: Re: [PATCH] nfc/ftp: fix typo issue
+Message-ID: <20210125193416.7b26b264@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210123074835.9448-1-samirweng1979@163.com>
+References: <20210123074835.9448-1-samirweng1979@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -43,28 +40,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 15:29:44 -0600 Alex Elder wrote:
-> Introduce ipa_endpoint_status_tag(), which returns true if received
-> status indicates its tag field is valid.  The endpoint parameter is
-> not yet used.
+On Sat, 23 Jan 2021 15:48:35 +0800 samirweng1979 wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
 > 
-> Call this from ipa_status_drop_packet(), and drop the packet if the
-> status indicates the tag was valid.  Pass the endpoint pointer to
-> ipa_status_drop_packet(), and rename it ipa_endpoint_status_drop().
-> The endpoint will be used in the next patch.
+> change 'paquet' to 'packet'
 > 
-> Signed-off-by: Alex Elder <elder@linaro.org>
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 
-> @@ -1172,11 +1175,22 @@ static bool ipa_endpoint_status_skip(struct ipa_endpoint *endpoint,
->  	return false;	/* Don't skip this packet, process it */
->  }
->  
-> +static bool ipa_endpoint_status_tag(struct ipa_endpoint *endpoint,
-> +				    const struct ipa_status *status)
-> +{
-> +	return !!(status->mask & IPA_STATUS_MASK_TAG_VALID_FMASK);
+s/ftp/fdp/
 
-drivers/net/ipa/ipa_endpoint.c:1181:25: warning: restricted __le16 degrades to integer
-
-> +}
-> +
+Applied, thanks.
