@@ -2,263 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4218303F6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3C0303F4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 14:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405577AbhAZN4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 08:56:37 -0500
-Received: from mail-vi1eur05on2041.outbound.protection.outlook.com ([40.107.21.41]:36033
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405324AbhAZNt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 08:49:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JDGOQQpmG1+rMPmNyT3U8Q/3UAv0wdpiZ2Usf4U/8rfAhC2Cty9qQ7e7x8daeABcrmHdTfrWkwZ8cO0cxeP1r+MZOQFyde4WBcsqo0GdAHsszayLrZrHulnotf6Cwj2Rv8E9NO3sIU+UgMVGUfAFbDX10DYHcU++45TCH+zH5pjQKe1Wa6v/sILaB6g6khe4dakgWjYxPN5cYMYaVMoFtdSU2U8JWChy9AbC7jybEC/twmgZlM9bvqMrqWlwyDaUKNS5YUp/z+BkuBt3cIOvOieS8UXX1+QZH6D4K4JIKliDh75DJAGf+lk4MJAxfzb0MsQBF3XxsIhoH1L+F5P41A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M1JA0sJy9eutZnQlJ+efnB8pueuNZzGjwaZdaGFH5p8=;
- b=lT6Ckm5t5iVgClN1o1wBLIY+xeJ+siNqi8DKuBOLnvkegVxIFhNofLtXXr/Y1PKx9XX1dXhnZY6ncjPfOwQ7Z/F410qx2wWf2Ot2cUC2zaAJYC9LTK0DJ29eZbI24b+ShEfa3/bRhUfupH6rCffEJvrx7wMS+o7/K33HUVUbBp2OscxBwf8VE3nXR7/URRNJNSnFDHcA4Ardq1KzTToTuaH9DmMCcdKYCtH5NxkdFKuqt/9ghhtCaqysDGJf6NZyQP/HbjuGYbdEkZ3Kvj3g7LIGAtFt8aIVlL6oKt8VhCDJ4KxA7HZnzWr0ByvY65vzydH3hC7duWyvzpsOVJ9mbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M1JA0sJy9eutZnQlJ+efnB8pueuNZzGjwaZdaGFH5p8=;
- b=sEnqeT4ZS3MsZ4srTuJZi5u1bWWU708SYerRPteL/HoDF2K+C2iWpU4Alhw622nl1zLgqv2pIck67gGTNTqCMxSn5aqoUmqpXEN1BeulPDsmuK7StPHv53I5kqQFAdJfGALArf+FziZsFgHSjwfmA0mE1jsWtOj8fr1Fnry+iLI=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DBBPR04MB7593.eurprd04.prod.outlook.com (2603:10a6:10:20c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Tue, 26 Jan
- 2021 13:49:07 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d58c:d479:d094:43d0%9]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
- 13:49:07 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul@crapouillou.net" <paul@crapouillou.net>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "patrice.chotard@st.com" <patrice.chotard@st.com>
-Subject: RE: [PATCH V9 01/10] dt-bindings: remoteproc: convert imx rproc
- bindings to json-schema
-Thread-Topic: [PATCH V9 01/10] dt-bindings: remoteproc: convert imx rproc
- bindings to json-schema
-Thread-Index: AQHW75K8L0MhP7c9CUeTrDqB4eKp76o59BSg
-Date:   Tue, 26 Jan 2021 13:49:06 +0000
-Message-ID: <DB6PR0402MB2760432F84DC98247148477288BC0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1611191015-22584-1-git-send-email-peng.fan@nxp.com>
- <1611191015-22584-2-git-send-email-peng.fan@nxp.com>
-In-Reply-To: <1611191015-22584-2-git-send-email-peng.fan@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wizery.com; dkim=none (message not signed)
- header.d=none;wizery.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [49.65.215.117]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3c8e9e31-7c09-4962-a0a0-08d8c2012690
-x-ms-traffictypediagnostic: DBBPR04MB7593:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR04MB7593258F75E249A01CA00E8388BC0@DBBPR04MB7593.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0JOOZWF4Nz35AsUM9ZSZwW5kEtJXkGD/JYCbaObNtlvITgKorLRmPegkWHpIDk0QIBkf4p7fTLX+DFbr3EMI0HXtUajiuf+eoN5psKbiqpX72wc5TISCmaAIraJxHlBasE0vm6wGOd/UuOgueg6JQz2jbF6/2tSJ/Fq1/rAsLJCeXi3Ki4+7Qlfdw9cGPZv+SRpAuWl+9RPS6MyBgLTBYv5+q6GCKV5CCzmb8sjdW5GeKgUQps89YSdAhKLEUxCBprKq27kT+Lx7r+ZlVv2Un1qCSHeRj7Bm11ZJ8+Wze6GsZjINT6gblCbH9E3zWs5DNTNv2gWl9xrhPZJyanVf4/T9fWEtNsaAb+UXZKHvyY4bQmvBmOdLMCoCkK92wM58P/6WjoVCnJrEZ+4aUQYetRYHVbdDI2yMHFYl1z7zKogIKbRkt1KDMW3QPleJQvu9grDOXOsPdfubWXH+66zQiUlwzuYJ3HRwhbs37QM5XdEYNXVzJr5Oui4PgTZQWmlK33Wy6E7R1g3ngllg4X0Fz+liXeZqa0tylBmgs53quV5kmuZpuWqekY9UhwLv1l3v+BFGqSl5kGMO0uashKpI3sbInbvCYYX/kaco1iZLC/Y=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39850400004)(376002)(346002)(366004)(6506007)(110136005)(186003)(71200400001)(33656002)(4326008)(8936002)(8676002)(7696005)(83380400001)(54906003)(316002)(26005)(9686003)(44832011)(76116006)(55016002)(2906002)(478600001)(7416002)(966005)(52536014)(64756008)(66446008)(86362001)(66476007)(5660300002)(66946007)(66556008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5nZDlHUnn/dRg+VqAGGv6pCfzGMxRBMwhg7G2GeYbvYlZ3BGzf9aPzh+SITE?=
- =?us-ascii?Q?B/ZUj3cUjDrtfO5s6MCF7cq2qMP30q9Qqe05Rxu4Votn11/snjjP7eicmkpd?=
- =?us-ascii?Q?rDOKjB30ad02fiPgtmzMGNxt+gJYGQEO687NZTD6pVepCy9p1enXzAXX/oRZ?=
- =?us-ascii?Q?nI+o4tFtcO6nevI4r6o6Yo8v5IgCY7fOe2zx1HH4ahkIzl7CL61VjGkNRucx?=
- =?us-ascii?Q?w+7IXxgwtJ4kQScfWagMkH7GzlgNDYNdEPCTl2xAsryuTePwzWD/12Vqlemv?=
- =?us-ascii?Q?vB8CgY212j0uuHc/BWd3Mz1QfMXfpR6w17vsXW31/WR/jc72aNedISQuVSI7?=
- =?us-ascii?Q?s+CAbKFsJbbZybDP1JRnOWO5j3TuhIrBvCupnM6f++HinaBEiVp0zmC7phOh?=
- =?us-ascii?Q?YHBFqWnThC6hXidk3/9F8hnwehUuhx8eKmcc1xoKHWchmKoJtR8AUuxJr2gQ?=
- =?us-ascii?Q?fo+txG+bQIpeGRO71WMW+80NNjkF0jtUw4NeiksakroTYPEfrfDiGDPdLA+0?=
- =?us-ascii?Q?Qk6tTCSYMgYA1zPmCFlFAhfdEgdP7xHgXUcFwQ/QbHvjpyNWzv6VKYysqN8E?=
- =?us-ascii?Q?GGCMuNLZwOtCttx4DS8aEPI9+TbjoQZws/N4J2ncLWfgR2gs+Isl9sUj/O7H?=
- =?us-ascii?Q?lHTjONhNrRN7sTvhU5N3Eh6fgPxKqCXTE/N1OKKqu61NwZFVfuJ1M0KX+ryG?=
- =?us-ascii?Q?9neZQThPhVbuExIamKIwq6FvktCuM7xiIWf26nWikA7JEwHRVf2hbLb6AN7f?=
- =?us-ascii?Q?EYPNTLxPE2EGkRDdIWnXIQ4lKuX0paDB3hYLLFMntRi1N3RZFLls75/5tcWt?=
- =?us-ascii?Q?mg1diZxVqCbKkUekHAi1XN1B4hl41M6PfK1J/G4NcLg1Bu5w4hLREh5fxgEH?=
- =?us-ascii?Q?KNh5bG6zfsaQOEXTzr9IQ0J2z/uJJPe50lPlqJ73Bz56lsWeyRQjFmEQLoQK?=
- =?us-ascii?Q?7jFBRgAUIODK8b3emX390mI+G1voYJDxFZYI7J0ui0Qd9yriqzdGyVE+Bf8t?=
- =?us-ascii?Q?jrrvVF+7W381mh20wl27a+PzDVP3OlfJmDd4KSzwd8p8I8kKgRi5BZGeE3Ea?=
- =?us-ascii?Q?Nsyt4792?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2405545AbhAZNv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 08:51:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405512AbhAZNut (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 08:50:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611668959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MYu5BQ2EF91Z99K/GYTOY1vC6Pp9/D8PfbMST9otyFw=;
+        b=DfpreiwZmIBn0o4wJcZP5+HrlZoWMzjUVHucFYfDvtFvOZepcMva1iA7CCyu29m6vEWGuG
+        tBkmUZJQuOnTETVEQlhgI922kS/9OzFknuNesPSDxsBANd55iYpslOSFxROyJDNIRF/Oni
+        G2YkucaB0PR8OuEOEa0Wi/PousVY7og=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-LeoNUzoQNFK94Tj2kWD9Tg-1; Tue, 26 Jan 2021 08:49:17 -0500
+X-MC-Unique: LeoNUzoQNFK94Tj2kWD9Tg-1
+Received: by mail-qk1-f198.google.com with SMTP id d194so4515513qke.3
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 05:49:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=MYu5BQ2EF91Z99K/GYTOY1vC6Pp9/D8PfbMST9otyFw=;
+        b=NnTwTWmNkv81sI1gtD2c1pGAW6CMI61soLVTFO64cYiRn9KOck2KmEJqb+RjILpMqF
+         3IujpLPF0bd7Fo6IPOmOmhVgUrEA+6qKhPDELZaM/x66pKW1OB6oulnDtj2xujd0MxvO
+         IAmRItPgg3lDJkjt/HQdFZHM009Y8zqp4p0wtRrisHzkdfUjJk1mvMEByNl66uo8ljPR
+         ZMD/vyUBmx06GeDYeK4VnYSB+QlUZu5gijdpE6WH1BtcjfvQX2qQTRrde/2a07NYtQPP
+         0Dx6hJwl3gPizegSHW299Hsx6otb9m1nsGT/hVJDJTfe8L69mlGuvJs0vb0ZdU4i4swc
+         Sr+Q==
+X-Gm-Message-State: AOAM5337VTKZwA5Nb26Xj+AtYh++woVZKMTSTBQOke85Fct36YfETB7q
+        DXtSjgzCmw7PY9WecPp2DsNGYSA3s0Ld6AWkQiezwr6G0j5W3evuvPMIo2Hjj/9F5jTAPR35IOG
+        s8DoNTD2e/GjrfpF62aMS3mdY
+X-Received: by 2002:a37:8344:: with SMTP id f65mr5590665qkd.398.1611668957158;
+        Tue, 26 Jan 2021 05:49:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzZDLsBwpdlQ4agI0cNfcNke8pZgQ77JzfLYMIDWdFaOKEFCetH7NP1xUkn9txwyk3OaxJ2ww==
+X-Received: by 2002:a37:8344:: with SMTP id f65mr5590638qkd.398.1611668956833;
+        Tue, 26 Jan 2021 05:49:16 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u5sm14547658qkb.120.2021.01.26.05.49.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 05:49:16 -0800 (PST)
+Subject: Re: [PATCH v9 1/2] uio: uio_dfl: add userspace i/o driver for DFL bus
+To:     Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com
+References: <1611564563-9665-1-git-send-email-yilun.xu@intel.com>
+ <1611564563-9665-2-git-send-email-yilun.xu@intel.com>
+ <e9bb1ff8-f630-f1a3-985c-7e51369a733f@redhat.com>
+ <YA98/8r+yOCurHAJ@epycbox.lan> <20210126024005.GB3907@yilunxu-OptiPlex-7050>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <2453fe70-9459-f260-305c-3ca5d6fa8aff@redhat.com>
+Date:   Tue, 26 Jan 2021 05:49:14 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c8e9e31-7c09-4962-a0a0-08d8c2012690
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2021 13:49:06.8404
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tvUThoRxXw/j+JW2s1W9p423RCMS3//lXhehtpbx0iDlgOUCeRcGkVd6Q0kVeHisRxqFE6fNgFFhuI5iw+4YYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7593
+In-Reply-To: <20210126024005.GB3907@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-> Subject: [PATCH V9 01/10] dt-bindings: remoteproc: convert imx rproc
-> bindings to json-schema
+On 1/25/21 6:40 PM, Xu Yilun wrote:
+> On Mon, Jan 25, 2021 at 06:22:55PM -0800, Moritz Fischer wrote:
+>> On Mon, Jan 25, 2021 at 11:00:38AM -0800, Tom Rix wrote:
+>>> On 1/25/21 12:49 AM, Xu Yilun wrote:
+>>>> This patch supports the DFL drivers be written in userspace. This is
+>>>> realized by exposing the userspace I/O device interfaces.
+>>>>
+>>>> The driver now only binds the ether group feature, which has no irq. So
+>>>> the irq support is not implemented yet.
+>>>>
+>>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+>>>> ---
+>>>> v9: switch to add a uio driver in drivers/uio
+>>>> ---
+>>>>  drivers/uio/Kconfig   | 13 ++++++++++
+>>>>  drivers/uio/Makefile  |  1 +
+>>>>  drivers/uio/uio_dfl.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>>> You should add this to the MAINTAINERS file.
+>> This is covered by MAINTAINERS under drivers/uio.
+> Yes. But is it OK I also add the file in "FPGA DFL DRIVERS"? So DFL
+> developers would also be aware if there is change. It is a little
+> different from other feature driver, it is like a generic driver for
+> DFL bus.
 
-Do you have time to give a look and including
-https://patchwork.kernel.org/project/linux-remoteproc/
-patch/1611191015-22584-3-git-send-email-peng.fan@nxp.com/
+I think the issue is which maintainer branch this gets merged into.
 
-If could get your R-b or A-b tag, we could have the whole patchset
-merge into remoteproc tree.
+It would not be linux-fpga.
 
-Thanks,
-Peng.
+It is this sort of driver I want to add to FPGA SUBDEVICES list described here
 
->=20
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Convert the imx rproc binding to DT schema format using json-schema.
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../bindings/remoteproc/fsl,imx-rproc.yaml    | 59 +++++++++++++++++++
->  .../bindings/remoteproc/imx-rproc.txt         | 33 -----------
->  2 files changed, 59 insertions(+), 33 deletions(-)  create mode 100644
-> Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
->  delete mode 100644
-> Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
->=20
-> diff --git
-> a/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> new file mode 100644
-> index 000000000000..bce6ccfe1538
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) %YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/remoteproc/fsl,imx-rproc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: NXP iMX6SX/iMX7D Co-Processor Bindings
-> +
-> +description:
-> +  This binding provides support for ARM Cortex M4 Co-processor found on
-> some NXP iMX SoCs.
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx7d-cm4
-> +      - fsl,imx6sx-cm4
-> +
-> +  clocks:
-> +    description:
-> +      Clock for co-processor (See ../clock/clock-bindings.txt)
-> +
-> +  syscon:
-> +    description:
-> +      Phandle to syscon block which provide access to System Reset
-> + Controller
-> +
-> +  memory-region:
-> +    description:
-> +      list of phandels to the reserved memory regions.
-> +      (see ../reserved-memory/reserved-memory.txt)
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - syscon
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx7d-clock.h>
-> +    m4_reserved_sysmem1: cm4@80000000 {
-> +      reg =3D <0x80000000 0x80000>;
-> +    };
-> +
-> +    m4_reserved_sysmem2: cm4@81000000 {
-> +      reg =3D <0x81000000 0x80000>;
-> +    };
-> +
-> +    imx7d-cm4 {
-> +      compatible	=3D "fsl,imx7d-cm4";
-> +      memory-region	=3D <&m4_reserved_sysmem1>,
-> <&m4_reserved_sysmem2>;
-> +      syscon		=3D <&src>;
-> +      clocks		=3D <&clks IMX7D_ARM_M4_ROOT_CLK>;
-> +    };
-> +
-> +...
-> diff --git a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> b/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> deleted file mode 100644
-> index fbcefd965dc4..000000000000
-> --- a/Documentation/devicetree/bindings/remoteproc/imx-rproc.txt
-> +++ /dev/null
-> @@ -1,33 +0,0 @@
-> -NXP iMX6SX/iMX7D Co-Processor Bindings
-> -----------------------------------------
-> -
-> -This binding provides support for ARM Cortex M4 Co-processor found on
-> some -NXP iMX SoCs.
-> -
-> -Required properties:
-> -- compatible		Should be one of:
-> -				"fsl,imx7d-cm4"
-> -				"fsl,imx6sx-cm4"
-> -- clocks		Clock for co-processor (See: ../clock/clock-bindings.txt)
-> -- syscon		Phandle to syscon block which provide access to
-> -			System Reset Controller
-> -
-> -Optional properties:
-> -- memory-region		list of phandels to the reserved memory regions.
-> -			(See: ../reserved-memory/reserved-memory.txt)
-> -
-> -Example:
-> -	m4_reserved_sysmem1: cm4@80000000 {
-> -		reg =3D <0x80000000 0x80000>;
-> -	};
-> -
-> -	m4_reserved_sysmem2: cm4@81000000 {
-> -		reg =3D <0x81000000 0x80000>;
-> -	};
-> -
-> -	imx7d-cm4 {
-> -		compatible	=3D "fsl,imx7d-cm4";
-> -		memory-region	=3D <&m4_reserved_sysmem1>,
-> <&m4_reserved_sysmem2>;
-> -		syscon		=3D <&src>;
-> -		clocks		=3D <&clks IMX7D_ARM_M4_ROOT_CLK>;
-> -	};
-> --
-> 2.28.0
+https://lore.kernel.org/linux-fpga/96a9d3d9-6091-47c9-21f9-0cfdd9464732@redhat.com/
+
+Where the driver is maintained in the subsystem but reviewed in linux-fpga.
+
+Tom
+
+>>>>  3 files changed, 80 insertions(+)
+>>>>  create mode 100644 drivers/uio/uio_dfl.c
+>>>>
+>>>> diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+>>>> index 202ee81..44778f8 100644
+>>>> --- a/drivers/uio/Kconfig
+>>>> +++ b/drivers/uio/Kconfig
+>>>> @@ -165,4 +165,17 @@ config UIO_HV_GENERIC
+>>>>  	  to network and storage devices from userspace.
+>>>>  
+>>>>  	  If you compile this as a module, it will be called uio_hv_generic.
+>>>> +
+>>>> +config UIO_DFL
+>>>> +	tristate "Generic driver for DFL bus"
+>>> The term 'DFL' will be unknown to folks in drivers/uio
+>>>
+>>> I think it would be better if DFL was always prefixed 'FPGA DFL'
+>>>
+>>>> +	depends on FPGA_DFL
+>>>> +	help
+>>>> +	  Generic DFL (Device Feature List) driver for Userspace I/O devices.
+>>>> +	  It is useful to provide direct access to DFL devices from userspace.
+>>>> +	  A sample userspace application using this driver is available for
+>>>> +	  download in a git repository:
+>>>> +
+>>>> +	    git clone https://github.com/OPAE/opae-sdk.git
+>>>> +
+>>>> +	  If you compile this as a module, it will be called uio_dfl.
+>> I'm not sure KConfig is the right place for this.
+> Do you mean the OPAE link? I see several uio drivers provide their
+> userspace application link in Kconfig. I guess the uio drivers are
+> selected for these applications so it may be better pointing out where
+> they are.
+>
+> Thanks,
+> Yilun
+>
 
