@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73271303A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145EC303A3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403872AbhAZK1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:27:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        id S2391963AbhAZK3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:29:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbhAZBbZ (ORCPT
+        with ESMTP id S1730484AbhAZBb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:31:25 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D19C0698C5
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:18:23 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id q2so5997195plk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:18:23 -0800 (PST)
+        Mon, 25 Jan 2021 20:31:59 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DA1C0698CE
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:22:21 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id x21so30605790iog.10
+        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:22:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cW8krSz9Suh27i3kFLRH+rKbVyIy/nSf3JAVtiB3NGg=;
-        b=OMcAX8e+LPP25ZJuWYYSgfhNFgcP++z9OXPz3H76Ovwj4lxCkaDbAt80h+rthknDrq
-         iJuS3q9mOu9ltZ1mqU9i7psDGke7EPWs5StZWbYFBwnQdv6EuQAYuIrrSMk00/dCcYP8
-         TXAomikkDj+f0/yxJkFL1lBn852p9TZcaJI+o=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dlpRJM3I+4DPOrAE8u678/FfQCJG2zfnjie74y4spew=;
+        b=h4OvjVgPx9HhMh8kZ+Af7g/wzchZIQeaoVsoZZwrc13tmZ1P1b7cyymbeKfXfecsI6
+         68v8mEOZugNeDK4ChYVJc46W8uQ1uzY0OJ91Zn5Mlh2sQKaGUrYYjFpeKhpIS2LU5nyU
+         34caxyNlL3Vt8VUqc+fa/oia3SwZ3GgpV6X+I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cW8krSz9Suh27i3kFLRH+rKbVyIy/nSf3JAVtiB3NGg=;
-        b=aR3U6kRcEh2+uJYLBFVqrnxjqzQRSSYc6NfOZ6hAoD38keIkOs8U5RWEA0rnhSF5ud
-         V0AWu7BrUy5GLTVegjSYaq2psc881z/wBeD01lxK9Xyvr/425uV9dD3bxPNxfrzz6RcU
-         SWMsHHU2sSDFCmXRnyvhWT3taNqnFl8tFBqVbQwUPPG9XfxzRqkA69OVKCDpQCX2TlPN
-         eIQnlo8qi0ajnNAilzj9jKPc8NXUof6ay3yyuEsAr9+t5xrMdPZGlzROV+rRK+5RHzhB
-         bLlb7dVBFxlBgwt1+wIzejf9mZ1ia5zYQwJePWgBerNzIpy49rCmEGMDonv2wkRywob3
-         ZsxQ==
-X-Gm-Message-State: AOAM531kmWmAGC1AUbdADMwDmiSnZ3QSUdI1P63fj0bYuPcwNC1s/mli
-        MIxJl7Pdjg/Nwf2jXyt3OXg5kg==
-X-Google-Smtp-Source: ABdhPJz1KwRDKhFH1+4vA/V0bCaojV/wBSjNoY/yJR26q15uQ6o7lk+MBQ0LDf1TE+A2gIPGNnJuTg==
-X-Received: by 2002:a17:902:bccc:b029:de:8483:506d with SMTP id o12-20020a170902bcccb02900de8483506dmr3201535pls.53.1611623903115;
-        Mon, 25 Jan 2021 17:18:23 -0800 (PST)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:50cc:9282:4fdd:3979])
-        by smtp.gmail.com with ESMTPSA id k9sm522248pji.8.2021.01.25.17.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 17:18:22 -0800 (PST)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Cc:     fshao@chromium.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        hoegsberg@chromium.org, boris.brezillon@collabora.com,
-        hsinyi@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v11 4/4] drm/panfrost: Add mt8183-mali compatible string
-Date:   Tue, 26 Jan 2021 09:17:59 +0800
-Message-Id: <20210126091747.v11.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-In-Reply-To: <20210126011759.1605641-1-drinkcat@chromium.org>
-References: <20210126011759.1605641-1-drinkcat@chromium.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dlpRJM3I+4DPOrAE8u678/FfQCJG2zfnjie74y4spew=;
+        b=JUdKjlr2VDv8rFsYxdkY4nwyXIMtgKAEkAB7WzBl0xnoZTsMk5n/ptEwqSlg1q/Ct2
+         3BpqzoYx/RunzxFqTl6me/lnej6tfpbmyU/g7URmk+s/3UpOmTp+RiLs8ZV2GKyCAEeH
+         MFevhPGAoVZ3gZl3DtckK45/WJnKw7/sXXD0QKV6/FCtdMxgG7F8fjOGAVb0GySTuP3e
+         I888YQLf1snHB88SE3qldlgaqsp5OXLHfks2r2O3+HJARzMmtGe8iWI+LFwheD2HFss4
+         szPkT1k3WoSSKJzNsI2nFgxi8pk+mpIBXz04yPOhpTeFyNe1wZ7924fA47AUQQGAm1re
+         HAxg==
+X-Gm-Message-State: AOAM5309u5z8CNUnFfr/Jy12A793oztsf02CkBc+v/e5odQepO3LbWx7
+        +hAh6agojPyYFXO0q+Dhr4ndkPN/hCZ8CQ==
+X-Google-Smtp-Source: ABdhPJwFaxf13pKy7qhwTRsw3PVetTSqZuRz3NLkcNKrbLVT2lq18zevUbQ/jMqmfIeCcmgWmYydFA==
+X-Received: by 2002:a92:bbcb:: with SMTP id x72mr2612632ilk.104.1611624140939;
+        Mon, 25 Jan 2021 17:22:20 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x64sm12895265ilk.47.2021.01.25.17.22.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Jan 2021 17:22:20 -0800 (PST)
+Subject: Re: [PATCH v4 00/17] Miscellaneous fixes for resctrl selftests
+To:     Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        David Binderman <dcb314@hotmail.com>,
+        Babu Moger <babu.moger@amd.com>,
+        James Morse <james.morse@arm.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201130202010.178373-1-fenghua.yu@intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <9df84c6a-3113-1f3d-5e61-cd68bc6f2d62@linuxfoundation.org>
+Date:   Mon, 25 Jan 2021 18:22:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201130202010.178373-1-fenghua.yu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for MT8183's G72 Bifrost.
+On 11/30/20 1:19 PM, Fenghua Yu wrote:
+> This patch set has several miscellaneous fixes to resctrl selftest tool
+> that are easily visible to user. V1 had fixes to CAT test and CMT test
+> but they were dropped in V2 because having them here made the patchset
+> humongous. So, changes to CAT test and CMT test will be posted in another
+> patchset.
+> 
+> Change Log:
+> v4:
+> - Address various comments from Shuah Khan:
+>    1. Combine a few patches e.g. a couple of fixing typos patches into one
+>       and a couple of unmounting patches into one etc.
+>    2. Add config file.
+>    3. Remove "Fixes" tags.
+>    4. Change strcmp() to strncmp().
+>    5. Move the global variable fixing patch to the patch 1 so that the
+>       compilation issue is fixed first.
+> 
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-Reviewed-by: Tomeu Vizoso <tomeu.vizoso@collabora.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
----
+Sorry for the delay. Please cc linux-kselftest in your next version.
+I have a few comments on the patches.
 
-Changes in v11: None
-Changes in v10: None
-Changes in v9: None
-Changes in v8: None
-Changes in v7:
- - Fix GPU ID in commit message
-
-Changes in v6:
- - Context conflicts, reflow the code.
- - Use ARRAY_SIZE for power domains too.
-
-Changes in v5:
- - Change power domain name from 2d to core2.
-
-Changes in v4:
- - Add power domain names.
-
-Changes in v3:
- - Match mt8183-mali instead of bifrost, as we require special
-   handling for the 2 regulators and 3 power domains.
-
-Changes in v2: None
-
- drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 83a461bdeea8..ca07098a6141 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -665,6 +665,15 @@ static const struct panfrost_compatible amlogic_data = {
- 	.vendor_quirk = panfrost_gpu_amlogic_quirk,
- };
- 
-+const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
-+const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
-+static const struct panfrost_compatible mediatek_mt8183_data = {
-+	.num_supplies = ARRAY_SIZE(mediatek_mt8183_supplies),
-+	.supply_names = mediatek_mt8183_supplies,
-+	.num_pm_domains = ARRAY_SIZE(mediatek_mt8183_pm_domains),
-+	.pm_domain_names = mediatek_mt8183_pm_domains,
-+};
-+
- static const struct of_device_id dt_match[] = {
- 	/* Set first to probe before the generic compatibles */
- 	{ .compatible = "amlogic,meson-gxm-mali",
-@@ -681,6 +690,7 @@ static const struct of_device_id dt_match[] = {
- 	{ .compatible = "arm,mali-t860", .data = &default_data, },
- 	{ .compatible = "arm,mali-t880", .data = &default_data, },
- 	{ .compatible = "arm,mali-bifrost", .data = &default_data, },
-+	{ .compatible = "mediatek,mt8183-mali", .data = &mediatek_mt8183_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, dt_match);
--- 
-2.30.0.280.ga3ce27912f-goog
+thanks,
+-- Shuah
 
