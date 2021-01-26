@@ -2,55 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B89DD3045F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F117C3045F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390989AbhAZSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 13:07:20 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40704 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389955AbhAZJ07 (ORCPT
+        id S2391886AbhAZSHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 13:07:52 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:43126 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389961AbhAZJ1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:26:59 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id A8D121F44FBB
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     Gwendal Grignou <gwendal@chromium.org>, groeck@chromium.org,
-        rdunlap@infradead.org, bleung@chromium.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] platform: chrome: Simplify interrupt path
-Date:   Tue, 26 Jan 2021 10:25:35 +0100
-Message-Id: <161165311118.2160839.18188794339266196197.b4-ty@collabora.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210122054637.1422289-1-gwendal@chromium.org>
-References: <20210122054637.1422289-1-gwendal@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 26 Jan 2021 04:27:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UMxxyMj_1611653142;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UMxxyMj_1611653142)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 26 Jan 2021 17:25:49 +0800
+From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+To:     mchehab@kernel.org
+Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] media: atomisp: Simplify the calculation of variables
+Date:   Tue, 26 Jan 2021 17:25:40 +0800
+Message-Id: <1611653140-76630-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Jan 2021 21:46:35 -0800, Gwendal Grignou wrote:
-> rrespective of the transport (i2c, spi, ish, rpmsg), have all cros ec
-> interrupt stack call the threaded part (bottom half) of the interrupt
-> handler.
-> Fix an issue where EC could be stuck if it sends a message while the AP
-> is not powered on.
-> 
-> Changes since v1:
-> - fix merging issue and function comments syntax.
-> 
-> [...]
+Fix the following coccicheck warnings:
 
-Applied, thanks!
+./drivers/staging/media/atomisp/pci/sh_css_params.c:4652:24-26: WARNING
+!A || A && B is equivalent to !A || B.
 
-[1/2] platform: cros_ec: Call interrupt bottom half in ISH or RPMSG mode
-      commit: 24c69043be1725606e876b47d496a0f9f87d176a
-[2/2] platform: cros_ec: Call interrupt bottom half at probe time
-      commit: 4daeb395f1754340927d8d58269593e4e3b6afcd
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/staging/media/atomisp/pci/sh_css_params.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Best regards,
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_params.c b/drivers/staging/media/atomisp/pci/sh_css_params.c
+index 24fc497..9eb02f4 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_params.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_params.c
+@@ -4649,10 +4649,8 @@ struct ia_css_dvs_6axis_config *
+ 	params = stream->isp_params_configs;
+ 
+ 	/* Backward compatibility by default consider pipe as Video*/
+-	if (!params || (params &&
+-			!params->pipe_dvs_6axis_config[IA_CSS_PIPE_ID_VIDEO])) {
++	if (!params || !params->pipe_dvs_6axis_config[IA_CSS_PIPE_ID_VIDEO])
+ 		goto err;
+-	}
+ 
+ 	dvs_config = kvcalloc(1, sizeof(struct ia_css_dvs_6axis_config),
+ 			      GFP_KERNEL);
 -- 
-Enric Balletbo i Serra <enric.balletbo@collabora.com>
+1.8.3.1
+
