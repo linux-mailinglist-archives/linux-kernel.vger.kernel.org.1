@@ -2,111 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1886304E8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E941304E8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391343AbhA0Agn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:36:43 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:60000 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392244AbhAZRy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:54:57 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10QHroMI193769;
-        Tue, 26 Jan 2021 17:53:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=gqTIlCrmkR4s8Y9TJxhSa5y/C1OAm/ZoUsX5inr5tbY=;
- b=CWzvj3hwc893o1b+uL+P4wzRrDrsyh0Y8Kb8rU2zaad5fVfTdmLaOq3O3wo2riArXvhU
- cl0xMZ0o4Ms0OVyNP45Z3DW26w+iEy3bwF6DFOPTQr1Yd4yVS21TyRs4p6bDF7eRfIyB
- XEBm16sO8DHB6eMXvJGqRL4jkj1XoNEtsde1G3DYpEKUoIpkmBvGNNtTLrycfZx0eLJm
- x9CfOqcWZgwCCqOjF5sJSnS7EmHug0t8+vOWxou+lvaoKw4qSLJNNy0G71V5lYsUOtbD
- txbO4IkuwTnN1y20Opt8a1mAC03OUGwRqc0oDuL7Q8A+rew2s1137oH5CytIFO9fi2BL GA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 368b7quax0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 17:53:58 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10QHjekl154723;
-        Tue, 26 Jan 2021 17:51:57 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 368wjrevms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 26 Jan 2021 17:51:56 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10QHpoWG017246;
-        Tue, 26 Jan 2021 17:51:50 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 26 Jan 2021 09:51:49 -0800
-Date:   Tue, 26 Jan 2021 20:51:41 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Carlis <zhangxuezhi3@gmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-fbdev@vger.kernel.org, mh12gx2825@gmail.com,
-        oliver.graute@kococonnector.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, sbrivio@redhat.com,
-        colin.king@canonical.com, zhangxuezhi1@yulong.com
-Subject: Re: [PATCH v4] fbtft: add tearing signal detect
-Message-ID: <20210126175141.GZ2696@kadam>
-References: <1611664835-150687-1-git-send-email-zhangxuezhi3@gmail.com>
+        id S2391379AbhA0Agx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:36:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393622AbhAZRzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:55:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7EE222210;
+        Tue, 26 Jan 2021 17:54:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611683699;
+        bh=sWdJkC0XV13qzG3cgYLFyf1qRUk6OlIgEZOFy1MdMrs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YPgYpVMXj6hKPm4YzKQvuYAr3i+s5n8xqAxzJjpH8Hs0NDADyx3v4tMhoi82ajkWo
+         ILg7eNmfjEzCSlHo6DSL3j5tX0omyvqQdRTIhen1MbywJ0F7fFc+cFaQJEiAx+jG13
+         dOFjyNNANY3dxyB6XqprCEnCS62KeqbiDwEO7fWg=
+Date:   Tue, 26 Jan 2021 18:54:57 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        Mayulong <mayulong1@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Wei Xu <xuwei5@hisilicon.com>, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v5 00/21] Move Hisilicon 6421v600 SPMI driver set out of
+ staging
+Message-ID: <YBBXcdLbj92yMJhw@kroah.com>
+References: <cover.1611212783.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611664835-150687-1-git-send-email-zhangxuezhi3@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- adultscore=0 mlxscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260092
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9876 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101260093
+In-Reply-To: <cover.1611212783.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 08:40:35PM +0800, Carlis wrote:
-> @@ -82,6 +111,29 @@ enum st7789v_command {
->   */
->  static int init_display(struct fbtft_par *par)
->  {
-> +	int rc;
-> +	struct device *dev = par->info->device;
-> +
-> +	par->gpio.te = devm_gpiod_get_index_optional(dev, "te", 0, GPIOD_IN);
-> +	if (par->gpio.te) {
+On Thu, Jan 21, 2021 at 08:18:02AM +0100, Mauro Carvalho Chehab wrote:
+> Hi Mark/Lee,
+> 
+> This patch series finish addressing support for Hikey 970
+> SPMI controller, PMIC and regulators.
+> 
+> This version was generated with -M, in order to make easier
+> to merge upstream.  Also, rebased on the top of v5.10,
+> without any dependencies from the other patch series
+> I'm submitting for this board.
+> 
+> Yet,  patch 18 to 20 modifies drivers/staging/hikey9xx/Kconfig
+> and drivers/staging/hikey9xx/Makefile. So, trivial conflicts
+> will rise if they're applied via different trees, as they all
+> remove some lines from such files. 
 
-I explained in my earlier review that devm_gpiod_get_index_optional()
-can return error pointers...  There was quite a bit of detail about how
-to handle this correctly in my earlier review, but I think you might
-not have noticed it.  Please read it again.
+I've applied the first 13 patches, except for patch 3, as that did not
+apply, to my tree, thanks.
 
-> +		init_completion(&spi_panel_te);
-> +		mutex_init(&te_mutex);
-> +		rc = devm_request_irq(dev,
-> +				      gpiod_to_irq(par->gpio.te),
-> +				     spi_panel_te_handler, IRQF_TRIGGER_RISING,
-> +				     "TE_GPIO", par);
-> +		if (rc) {
-> +			pr_err("TE request_irq failed.\n");
-> +			devm_gpiod_put(dev, par->gpio.te);
-> +			par->gpio.te = NULL;
-> +		} else {
-> +			disable_irq_nosync(gpiod_to_irq(par->gpio.te));
-> +			pr_info("TE request_irq completion.\n");
-> +		}
-> +	} else {
-> +		pr_err("%s:%d, TE gpio not specified\n",
-> +		       __func__, __LINE__);
-> +	}
-
-regards,
-dan carpenter
-
+greg k-h
