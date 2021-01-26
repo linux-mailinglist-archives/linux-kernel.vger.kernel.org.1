@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CB1304E79
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A14304E7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391202AbhA0Abx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:31:53 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13628 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729577AbhAZRYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:24:45 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601050340000>; Tue, 26 Jan 2021 09:24:04 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan
- 2021 17:24:01 +0000
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 26 Jan
- 2021 17:23:58 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.104)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 26 Jan 2021 17:23:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EzZyqCDfIplx6QvVY9cyqCbu9NIiue3ushXQt9sdxMyvqDKr8pDMv8D0vRVCj7PVZ7SxCGvuHViFll49zGI9b7XwuzK1pVkJSzHf85v/dFpcPgCXLNo/JGwjEFRZAXRPiRXXpd3yrOgLU+nxG0kbTt6YXaBYXF85Or7cqwT0ZAsY/GSyyuJiimO72QsI6AckwK0CdIFss++aD02DcnisGHERvNfd56fXZ7zrD/Iepy7HlwYfwzPNPe9GFf0Q9BPpvY6LjhqNMVJPo5wPyLbJvt5sTcm6fxM/H2WsHG+gMx5OtzVlCiy8Wo/cK9sIAQAPFJjCIp7ZNfjOsIawSdfniQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5g0pegqcpdUlRveGMYLQQ2W+tvGG8hi7r9v0xewWA0U=;
- b=Ez4cLjM+zWPynQ1dZlGwwoej6ltmGuUd6nyOmgDFAXFQUzQHfD/uZYO7nyt3eqfID8Q/+qG8rHHHl6Jb3frRLHVunGNebMvUsRL4mAQJu9WNe6QKzLbD3TThVrWoC+c8c4riU5QJjY+OdK2OmbhRXQkeFyfPxLz86y6wtUsTJgBOr7Yds5Weqi0b9dKKAPQlE4DcMTqF9U26zjukqsD6lodbn84haUeROcaAvWA4IXuUcpnrsl3s/a7CqNVaVCSW7Y6Qs7DRRVK0yHT5ZCMVIse19DShfqzRNr/p0OKQE27ets6l705EdqtALyv+DRIHAzXFQgu39tjs4n7Gem6wDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.11; Tue, 26 Jan
- 2021 17:23:56 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
- 17:23:56 +0000
-Date:   Tue, 26 Jan 2021 13:23:54 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
-        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
-        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
-        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
-        <gmataev@nvidia.com>, <cjia@nvidia.com>
-Subject: Re: [PATCH RFC v1 0/3] Introduce vfio-pci-core subsystem
-Message-ID: <20210126172354.GH4147@nvidia.com>
-References: <20210117181534.65724-1-mgurtovoy@nvidia.com>
- <20210122122503.4e492b96@omen.home.shazbot.org>
- <20210122200421.GH4147@nvidia.com>
- <20210125172035.3b61b91b.cohuck@redhat.com>
- <20210125180440.GR4147@nvidia.com>
- <20210125163151.5e0aeecb@omen.home.shazbot.org>
- <20210126004522.GD4147@nvidia.com>
- <20210125203429.587c20fd@x1.home.shazbot.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210125203429.587c20fd@x1.home.shazbot.org>
-X-ClientProxiedBy: MN2PR17CA0036.namprd17.prod.outlook.com
- (2603:10b6:208:15e::49) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2404355AbhA0AcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:32:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:49436 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387609AbhAZRZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:25:39 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53A0331B;
+        Tue, 26 Jan 2021 09:24:52 -0800 (PST)
+Received: from [10.57.43.46] (unknown [10.57.43.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 207543F66E;
+        Tue, 26 Jan 2021 09:24:51 -0800 (PST)
+Subject: Re: [PATCH] iommu: Check dev->iommu in iommu_dev_xxx functions
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>
+References: <20210126130629.8928-1-shameerali.kolothum.thodi@huawei.com>
+ <20210126135039.000039a0@arm.com>
+ <8654e506fa26443f8f4413ec8fd96bf7@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5828b2f9-e1d3-fd96-ebf3-2a38c903c9c3@arm.com>
+Date:   Tue, 26 Jan 2021 17:24:45 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR17CA0036.namprd17.prod.outlook.com (2603:10b6:208:15e::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 26 Jan 2021 17:23:55 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l4S4I-0077tE-Oe; Tue, 26 Jan 2021 13:23:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1611681844; bh=5g0pegqcpdUlRveGMYLQQ2W+tvGG8hi7r9v0xewWA0U=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=NHRmAGj4QRzRPBhVOHN63QqHjsX/v30i2XaU2XgnJU4qZRbxGkEuAzA3itOq6nKCe
-         823oTeaPiNiD7Y3XSeUVvAQX23Pzs9rb1+AbGNvV6j1hCQlFJS8uZ+EOQ8VMigpC2I
-         FHF6kLf3F2BjEOBsuu3QaUleg08BUnQZ8+mXq0+WyQ45IsVldZP63nB+S5oVWmasQi
-         fvZZtuBTjK9FneDTAyo2FHVX8L7ycE5QF9qL9MdBVTlAQK/SITv8bXBek4Pf6mT0ri
-         INJCDNBpor8eVIw5wqrovxSHHUrdWoigIPUEhNJ+43jggDvteBCrgIe4Rw4UxMuzB4
-         DnAuOzQCS08Lg==
+In-Reply-To: <8654e506fa26443f8f4413ec8fd96bf7@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 08:34:29PM -0700, Alex Williamson wrote:
-
-> > someting like this was already tried in May and didn't go anywhere -
-> > are you surprised that we are reluctant to commit alot of resources
-> > doing a complete job just to have it go nowhere again?
+On 2021-01-26 16:40, Shameerali Kolothum Thodi wrote:
+> Hi Robin,
 > 
-> That's not really what I'm getting from your feedback, indicating
-> vfio-pci is essentially done, the mlx stub driver should be enough to
-> see the direction, and additional concerns can be handled with TODO
-> comments. 
+>> -----Original Message-----
+>> From: Robin Murphy [mailto:robin.murphy@arm.com]
+>> Sent: 26 January 2021 13:51
+>> To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+>> Cc: linux-kernel@vger.kernel.org; iommu@lists.linux-foundation.org;
+>> jean-philippe@linaro.org; will@kernel.org; linuxarm@openeuler.org; Zengtao
+>> (B) <prime.zeng@hisilicon.com>
+>> Subject: Re: [PATCH] iommu: Check dev->iommu in iommu_dev_xxx functions
+>>
+>> On Tue, 26 Jan 2021 13:06:29 +0000
+>> Shameer Kolothum <shameerali.kolothum.thodi@huawei.com> wrote:
+>>
+>>> The device iommu probe/attach might have failed leaving dev->iommu to
+>>> NULL and device drivers may still invoke these functions resulting a
+>>> crash in iommu vendor driver code. Hence make sure we check that.
+>>>
+>>> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+>>> ---
+>>>   drivers/iommu/iommu.c | 8 ++++----
+>>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c index
+>>> ffeebda8d6de..cb68153c5cc0 100644
+>>> --- a/drivers/iommu/iommu.c
+>>> +++ b/drivers/iommu/iommu.c
+>>> @@ -2867,7 +2867,7 @@ bool iommu_dev_has_feature(struct device *dev,
+>>> enum iommu_dev_features feat) {
+>>>   	const struct iommu_ops *ops = dev->bus->iommu_ops;
+>>>
+>>> -	if (ops && ops->dev_has_feat)
+>>> +	if (dev->iommu && ops && ops->dev_has_feat)
+>>>   		return ops->dev_has_feat(dev, feat);
+>>
+>> Might make sense to make these more self-contained, e.g.:
+>>
+>> 	if (dev->iommu && dev->iommu->ops->foo)
+>> 		dev->iommu->ops->foo()
+> 
+> Right. Does that mean adding ops to "struct dev_iommu" or retrieve ops like
+> below,
+> 
+> if (dev->iommu && dev->iommu->iommu_dev->ops->foo)
+>   		dev->iommu->iommu_dev->ops->foo()
+>   
+> Sorry, not clear to me.
 
-I think we are looking at this RFC in different ways. I see it as
-largely "done" showing the general design of few big ideas:
+Bleh, I was thinking that dev->iommu pointed directly to a struct 
+iommu_device there, sorry. There are too many things and not enough 
+distinct names for the things.
 
- - new vfio drivers will be creating treating VFIO PCI as a "VFIO bus
-   driver" library
- - These new drivers are PCI devices bound via driver core as peers to
-   vfio-pci, vs sub drivers of vfio-pci
- - It uses the subsystem -> driver -> library pattern for composing drivers
-   instead of the subsystem -> midlayer -> driver pattern mdev/platform use
- - It will have some driver facing API from vfio-pci-core that is
-   close to what is shown in the RFC
- - The drivers can "double bind" in the driver core to access the PF
-   resources via aux devices from the VF VFIO driver.
+But yeah, basically that if the device's "I am associated with an IOMMU" 
+data is set, then by construction it must lead to a set of ops which are 
+definitely valid. Conceptually it's cleaner than combining two different 
+data sources (the per-device info plus the bus ops which may or may not 
+be relevant to a given device), even if cosmetically we have to juggle 
+through practically every possible permutation of the names "iommu" and 
+"device" to get there :/
 
-The point of a RFC discussion is to try to come to some community
-understanding on a general high level direction.
-
-It is not a perfectly polished illustration of things that shouldn't
-be contentious or technically hard. There are alot of things that can
-be polished here, this illustration has lots of stuff in vfio-pci-core
-that really should be in vfio-pci - it will take time and effort to
-properly split things up and do a great job here.
-
-> Sorry if this is not construed as actual feedback, I think both
-> Connie and I are making an effort to understand this and being
-> hampered by lack of a clear api or a vendor driver that's anything
-> more than vfio-pci plus an aux bus interface.  Thanks,
-
-I appreciate the effort, and there is a lot to understand here. Most
-of this stuff is very new technology and not backed by industry
-standards bodies.
-
-I really do think this simplified RFC will help the process - I've
-seen the internal prototype and it is a mass of opaque device specific
-code. Max's V2 should flesh things out more.
-
-Thanks,
-Jason
+Robin.
