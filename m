@@ -2,146 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C58730432F
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2234304332
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404129AbhAZP5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:57:22 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58642 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404038AbhAZP4s (ORCPT
+        id S2404308AbhAZP6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404144AbhAZP5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:56:48 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10QFsqjg073040;
-        Tue, 26 Jan 2021 09:54:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1611676492;
-        bh=hUvKQU0Snwdl605ZoDKkRxVXh6lpILjpBfiJhsZr2Qw=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Oj2q57S32ucPnNxs6Ysppalx9Zu9XTxUeJSAfqb6L+T12VaxJrw/50+VLjNuDOUTa
-         188yVzPdtOJ0M8AG3OzdqB6/LBKtB+ImenDgeKFvvcMr1PvAT8X43d8djLSvdkLc9o
-         52TGOt6vyX/WfhUbRA+G+tIhq6TjULuZx4RRyEVU=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10QFsqKd055804
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 26 Jan 2021 09:54:52 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 26
- Jan 2021 09:54:51 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 26 Jan 2021 09:54:51 -0600
-Received: from [10.250.35.71] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10QFspg7120927;
-        Tue, 26 Jan 2021 09:54:51 -0600
-Subject: Re: [PATCH] dt-bindings: irqchip: Add #address-cells to PRUSS INTC
-To:     Rob Herring <robh@kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        David Lechner <david@lechnology.com>,
-        <devicetree@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-References: <20210115205819.19426-1-s-anna@ti.com>
- <20210126000443.GA1223706@robh.at.kernel.org>
- <8f4a47f8-18dc-cb73-10db-033e5e5adb25@ti.com>
- <CAL_JsqLYfGvJ=zYbdJp4pUjmmJ_ROu1u_0dVwTj06Cw5+23fGw@mail.gmail.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <23225695-57ea-f255-798b-17cf6962e543@ti.com>
-Date:   Tue, 26 Jan 2021 09:54:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 26 Jan 2021 10:57:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CD6C061A29
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 07:56:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SwwSz04nAiitxppm41x59LNVjdYgPkKG1Bk647+oE+s=; b=Islfy0bjDLGA2KUoXMGMGwM+q0
+        ddqVVRNHC8PWeTXwKsKJGhcTNOI8oWxGXD76NFBEMLyPilgM2Q3EUWDYaakHBQiWBINuqOIY8ZZE6
+        j9aKImwGQAno1yAsvwJGgeKiR5L6jC3yMNuPXTaenNCml6as2v7ZL4W/QSkqQs0dWKkaS3lPJtNFw
+        JFAiiCVEJGrzCzNaBoYQ5CsvmdO8y/ssbjP3WxkXpch/z9GguEUNX8lqcH42quL09uNJqF2U8tgWn
+        7q3w1ADsCwFfr8UYKAZgiPmvptUTF7d5RPFysn0PlnisFJjKu2LAR8Lo2QGmimUq3Sgc3AYZ0CRdD
+        fNUbONrg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l4QgG-005reX-UB; Tue, 26 Jan 2021 15:55:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6FE4B300DAE;
+        Tue, 26 Jan 2021 16:55:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5BA2E2029059B; Tue, 26 Jan 2021 16:55:00 +0100 (CET)
+Date:   Tue, 26 Jan 2021 16:55:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com
+Subject: Re: [PATCH 01/12] perf/core: Add PERF_SAMPLE_WEIGHT_EXT
+Message-ID: <YBA7VMH4l6J8LlCZ@hirez.programming.kicks-ass.net>
+References: <1611088711-17177-1-git-send-email-kan.liang@linux.intel.com>
+ <1611088711-17177-2-git-send-email-kan.liang@linux.intel.com>
+ <YBAqYyTuqxsH8tqR@hirez.programming.kicks-ass.net>
+ <d018282d-f47d-4382-2538-59c6930a74c3@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLYfGvJ=zYbdJp4pUjmmJ_ROu1u_0dVwTj06Cw5+23fGw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d018282d-f47d-4382-2538-59c6930a74c3@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 1/25/21 8:47 PM, Rob Herring wrote:
-> On Mon, Jan 25, 2021 at 6:16 PM Suman Anna <s-anna@ti.com> wrote:
->>
->> Hi Rob,
->>
->> On 1/25/21 6:04 PM, Rob Herring wrote:
->>> On Fri, Jan 15, 2021 at 02:58:19PM -0600, Suman Anna wrote:
->>>> The '#address-cells' property looks to be a required property for
->>>> interrupt controller nodes as indicated by a warning message seen
->>>> when building dtbs with W=2. Adding the property to the PRUSS INTC
->>>> dts nodes though fails the dtbs_check. Add this property to the
->>>> PRUSS INTC binding to make it compliant with both dtbs_check and
->>>> building dtbs.
->>>>
->>>> Signed-off-by: Suman Anna <s-anna@ti.com>
->>>> ---
->>>> Hi Rob,
->>>>
->>>> This patch is also part of our effort to get rid of the warnings seen
->>>> around interrupt providers on TI K3 dtbs [1]. I needed this in the PRUSS
->>>> INTC bindings to not get a warning with dtbs_check while also ensuring
->>>> no warnings while building dtbs with W=2.
->>>>
->>>> I would have expected the '#address-cells' requirement to be inherited
->>>> automatically. And looking through the schema files, I actually do not
->>>> see the interrupt-controller.yaml included automatically anywhere. You
->>>> had asked us to drop the inclusion in this binding in our first version
->>>> with YAML [3]. Am I missing something, and how do we ensure that this
->>>> is enforced automatically for everyone?
->>>
->>> interrupt-controller.yaml is applied to any node named
->>> 'interrupt-controller'. More generally, if 'compatible' is not present,
->>> then we look at $nodename for the default 'select'. In your case, you
->>> didn't name the node appropriately.
->>
->> Thanks for the clarification. Yeah, I didn't add anything specifically, since
->> the expectation is interrupt-controller. Should I be adding that to this binding?
+On Tue, Jan 26, 2021 at 10:33:18AM -0500, Liang, Kan wrote:
 > 
-> No, either interrupt-controller.yaml needs to learn a new node name or
-> your node names need to be fixed. I prefer the latter, but if you have
-> more than 1 and don't have a unit-address (and in turn a 'reg' prop)
-> we'd have to do the former. How are the interrupts controllers
-> accessed if there's no way to address them?
-
-The PRUSS INTC will always have a unit-address, so we won't have the issues with
-having to maintain unique names. All my examples already have the nodes in the
-form 'interrupt-controller@<addr>'. Anyway, I will drop this patch, and post a
-new patch adding the $nodename to the binding.
-
 > 
->>
->>>
->>> We can't check this in interrupt-controller.yaml because #address-cells
->>> is not always 0. GICv3 is one notable exception.
->>>
->>>>
->>>> regards
->>>> Suman
->>>>
->>>> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115083003.27387-1-lokeshvutla@ti.com/
->>>
->>> I've commented on this thread now in regards to #address-cells.
->>
->> I suppose I still need this patch to be defined to unblock the ICSSG nodes
->> getting accepted by our dts maintainer. Care to give your Reviewed-by for the
->> change? Or I can spin a v2 with $nodename added as well if that's needed too.
+> On 1/26/2021 9:42 AM, Peter Zijlstra wrote:
+> > On Tue, Jan 19, 2021 at 12:38:20PM -0800, kan.liang@linux.intel.com wrote:
+> > 
+> > > @@ -900,6 +901,13 @@ enum perf_event_type {
+> > >   	 *	  char			data[size]; } && PERF_SAMPLE_AUX
+> > >   	 *	{ u64			data_page_size;} && PERF_SAMPLE_DATA_PAGE_SIZE
+> > >   	 *	{ u64			code_page_size;} && PERF_SAMPLE_CODE_PAGE_SIZE
+> > > +	 *	{ union {
+> > > +	 *		u64		weight_ext;
+> > > +	 *		struct {
+> > > +	 *			u64	instr_latency:16,
+> > > +	 *				reserved:48;
+> > > +	 *		};
+> > > +	 *	} && PERF_SAMPLE_WEIGHT_EXT
+> > >   	 * };
+> > >   	 */
+> > >   	PERF_RECORD_SAMPLE			= 9,
+> > > @@ -1248,4 +1256,12 @@ struct perf_branch_entry {
+> > >   		reserved:40;
+> > >   };
+> > > +union perf_weight_ext {
+> > > +	__u64		val;
+> > > +	struct {
+> > > +		__u64	instr_latency:16,
+> > > +			reserved:48;
+> > > +	};
+> > > +};
+> > > +
+> > >   #endif /* _UAPI_LINUX_PERF_EVENT_H */
+> > > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > > index 55d1879..9363d12 100644
+> > > --- a/kernel/events/core.c
+> > > +++ b/kernel/events/core.c
+> > > @@ -1903,6 +1903,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
+> > >   	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
+> > >   		size += sizeof(data->code_page_size);
+> > > +	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
+> > > +		size += sizeof(data->weight_ext);
+> > > +
+> > >   	event->header_size = size;
+> > >   }
+> > > @@ -6952,6 +6955,9 @@ void perf_output_sample(struct perf_output_handle *handle,
+> > >   			perf_aux_sample_output(event, handle, data);
+> > >   	}
+> > > +	if (sample_type & PERF_SAMPLE_WEIGHT_EXT)
+> > > +		perf_output_put(handle, data->weight_ext);
+> > > +
+> > >   	if (!event->attr.watermark) {
+> > >   		int wakeup_events = event->attr.wakeup_events;
+> > 
+> > This patch is broken and will expose uninitialized kernel stack.
+> > 
 > 
-> No, I don't think you have to add #address-cells. We need to fix the
-> warning in dtc.
+> Could we initialize the 'weight_ext' in perf_sample_data_init()?
 
-Thank you for clarifying this.
-
-regards
-Suman
+No. Also see my other mail for why I hate this thing.
