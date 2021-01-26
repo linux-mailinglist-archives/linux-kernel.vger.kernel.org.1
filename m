@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CA330453C
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A515A304541
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 18:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390173AbhAZR0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:26:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389425AbhAZHK7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 02:10:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C3E207D0;
-        Tue, 26 Jan 2021 07:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611644976;
-        bh=VUKUXiWtc1WfRrnWZa+PidTl8O0Y71iu0ioZZtcjl8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TI+CWhWKfvjVqATikcy+T5wHg4nmrMcSREmAxU5grW3dHsNTgSPVAqwfY06s26ubg
-         8/K9n4OQi2rp+sd+w6yllD3zSgupREk0Mb6tKbXO8p5zMr9kpMj96vP+bLYWnHynmc
-         MEj+5R6Oqz4Q7DqCFyPGcV7srz9duNUrOp2gV1Kk=
-Date:   Tue, 26 Jan 2021 08:09:32 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     mateng <ayowoe@163.com>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        mateng <mateng@yulong.com>
-Subject: Re: [PATCH] Change 'addres' to 'address'.
-Message-ID: <YA/ALG9uSxorYLj9@kroah.com>
-References: <20210126045348.1454-1-ayowoe@163.com>
+        id S2391564AbhAZR0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:26:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50306 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389293AbhAZHRv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 02:17:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611645381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yIlOP1z9vmdG98LkyGhO2vFGnoyUBAuXU0XkS/MGEis=;
+        b=QDp52P5a+t1uN7HuXkj/VYkIKd20ruNmtukvGGQxlHPvym2g2DrUJ0+GQDU/gEsEKQl937
+        3nY6UhJNxqkNmiqCAGLPmW1auySdJBt1o9UpicMsTmL1+ShnJo58XsLUV333bE+KdvjoCA
+        oKRKqm2D2G6zRSFNkdeUYGqOVdq1UTQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-89-aLjSun_bOb2qfWCJd3owGA-1; Tue, 26 Jan 2021 02:16:17 -0500
+X-MC-Unique: aLjSun_bOb2qfWCJd3owGA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C17F190B2A1;
+        Tue, 26 Jan 2021 07:16:16 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-12-115.pek2.redhat.com [10.72.12.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B044E5D74E;
+        Tue, 26 Jan 2021 07:16:10 +0000 (UTC)
+From:   Cindy Lu <lulu@redhat.com>
+To:     lulu@redhat.com, jasowang@redhat.com, mst@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc:     stable@vger.kernel.org
+Subject: [PATCH v3] vhost_vdpa: fix the problem in vhost_vdpa_set_config_call
+Date:   Tue, 26 Jan 2021 15:16:07 +0800
+Message-Id: <20210126071607.31487-1-lulu@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126045348.1454-1-ayowoe@163.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:53:48PM +0800, mateng wrote:
-> From: mateng <mateng@yulong.com>
-> 
-> Signed-off-by: mateng <mateng@yulong.com>
-> ---
->  drivers/misc/vmw_vmci/vmci_queue_pair.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.h b/drivers/misc/vmw_vmci/vmci_queue_pair.h
-> index 00017fc..c4e6e92 100644
-> --- a/drivers/misc/vmw_vmci/vmci_queue_pair.h
-> +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.h
-> @@ -104,7 +104,7 @@ struct vmci_qp_dtch_info {
->  struct vmci_qp_page_store {
->  	/* Reference to pages backing the queue pair. */
->  	u64 pages;
-> -	/* Length of pageList/virtual addres range (in pages). */
-> +	/* Length of pageList/virtual address range (in pages). */
->  	u32 len;
->  };
->  
-> -- 
-> 1.9.1
-> 
+In vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
+this cb.private will finally use in vhost_vdpa_config_cb as
+vhost_vdpa. Fix this issue.
 
-Hi,
+Cc: stable@vger.kernel.org
+Fixes: 776f395004d82 ("vhost_vdpa: Support config interrupt in vdpa")
+Signed-off-by: Cindy Lu <lulu@redhat.com>
+---
+ drivers/vhost/vdpa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index ef688c8c0e0e..3fbb9c1f49da 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+ 	struct eventfd_ctx *ctx;
+ 
+ 	cb.callback = vhost_vdpa_config_cb;
+-	cb.private = v->vdpa;
++	cb.private = v;
+ 	if (copy_from_user(&fd, argp, sizeof(fd)))
+ 		return  -EFAULT;
+ 
+-- 
+2.21.3
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file, Documentation/SubmittingPatches
-  for how to do this correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
