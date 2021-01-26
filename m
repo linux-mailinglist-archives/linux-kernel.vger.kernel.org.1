@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDD030465D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D73930471F
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 19:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388230AbhAZRZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 12:25:43 -0500
-Received: from mail-m974.mail.163.com ([123.126.97.4]:44754 "EHLO
-        mail-m974.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389295AbhAZG51 (ORCPT
+        id S1730835AbhAZRNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 12:13:49 -0500
+Received: from mail-m975.mail.163.com ([123.126.97.5]:52358 "EHLO
+        mail-m975.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729641AbhAZGCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:57:27 -0500
-X-Greylist: delayed 14485 seconds by postgrey-1.27 at vger.kernel.org; Tue, 26 Jan 2021 01:57:26 EST
+        Tue, 26 Jan 2021 01:02:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=K5K9NFGYOsZZL/fGgQ
-        V3jvN8qQG+N2RPICK9SX7rPvk=; b=e2adE11js3m55YblhCHJHjPXI3KoBzSdUl
-        2XC1gmrRyGAjiuiRsqHihH8qcp3F6mkH0WFfv2Mbbsdscjk2Nu4tr17dD6q9w4n1
-        N8WjS6QntNaqNuACp8FJWZr8Gwr+uAadG/2hHicUL2fVJf1Ao896ua3gKFhmGGcK
-        s6OB3EgBg=
-Received: from COOL-20200923LL.ccdomain.com (unknown [218.94.48.178])
-        by smtp4 (Coremail) with SMTP id HNxpCgBXDyVohA9gnJGHhg--.6151S2;
-        Tue, 26 Jan 2021 10:54:35 +0800 (CST)
-From:   Guoqing Chi <chi962464zy@163.com>
-To:     hverkuil@xs4all.nl
-Cc:     mchehab@kernel.org, linux-kernel@vger.kernel.org,
-        zhangwen@yulong.com, chiguoqing@yulong.com,
-        chiguoqing <chi962464zy@163.com>
-Subject: [PATCH resend] media: vidtv: remove redundant quote
-Date:   Tue, 26 Jan 2021 10:54:18 +0800
-Message-Id: <20210126025418.4069-1-chi962464zy@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: HNxpCgBXDyVohA9gnJGHhg--.6151S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XF1fWFWktw4ftryxZr15CFg_yoW3XFb_uw
-        n7Zr4xW342yry0yr15JF9rAryFkayDZFn5XFnIqw1YvFy7Z345GasFvw1UGw42ga1ava97
-        ZF15JF18ur1xGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRuiih7UUUUU==
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5Qzhy
+        HkOIhzhyDKQmARRKm/yKJdbh50BiqAFk60dd7M=; b=HQv1XYRkgJvVvwKz2p6MX
+        m2HfOT5CjTGyT18MnKmQfxiqV85u7AWSyu03/iTYhPwWaUy8m+qf3d7XBCgq8gwJ
+        wedBfvtUsKhEoKCxBE6gVoWq26FjRfP5V6atMD4vOTgGSX7CmCfjfIuq8TY+ZUhm
+        WeGj6Nymf10UjaozghbmMA=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp5 (Coremail) with SMTP id HdxpCgD3_4FpkA9gI1qZAA--.101S2;
+        Tue, 26 Jan 2021 11:45:52 +0800 (CST)
+From:   dingsenjie@163.com
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] crypto/ccree: fix spelling typo of allocated
+Date:   Tue, 26 Jan 2021 11:45:53 +0800
+Message-Id: <20210126034553.44496-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: HdxpCgD3_4FpkA9gI1qZAA--.101S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWruw4xWrWDurW5tr43AF1DJrb_yoW3Awb_u3
+        yxWay7Xryj9wn3tr4UJw48ZrWF9343uFs2gr4jqrW5XFy3Zrs5uFy7ur13Ar17JrWrXryk
+        uws2g3Wayw43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5cNVDUUUUU==
 X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiJwsmRF5u9TbneQAAsj
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiThEmyFUDHcZbaAAAsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangwen <zhangwen@yulong.com>
+From: dingsenjie <dingsenjie@yulong.com>
 
-Repeated references string.h
+allocted -> allocated
 
-Signed-off-by: zhangwen <zhangwen@yulong.com>
-Signed-off-by: chiguoqing <chi962464zy@163.com>
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
 ---
- drivers/media/test-drivers/vidtv/vidtv_psi.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/crypto/ccree/cc_cipher.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_psi.c b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-index 4511a2a98405..8ff27d26c343 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_psi.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_psi.c
-@@ -19,7 +19,6 @@
- #include <linux/ratelimit.h>
- #include <linux/slab.h>
- #include <linux/string.h>
--#include <linux/string.h>
- #include <linux/time.h>
- #include <linux/types.h>
+diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
+index cdfee50..78833491 100644
+--- a/drivers/crypto/ccree/cc_cipher.c
++++ b/drivers/crypto/ccree/cc_cipher.c
+@@ -921,7 +921,7 @@ static int cc_cipher_process(struct skcipher_request *req,
+ 			return crypto_skcipher_decrypt(subreq);
+ 	}
  
+-	/* The IV we are handed may be allocted from the stack so
++	/* The IV we are handed may be allocated from the stack so
+ 	 * we must copy it to a DMAable buffer before use.
+ 	 */
+ 	req_ctx->iv = kmemdup(iv, ivsize, flags);
 -- 
-2.17.1
+1.9.1
 
