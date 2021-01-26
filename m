@@ -2,194 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBC930425D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA04304273
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392802AbhAZPYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389107AbhAZPXp (ORCPT
+        id S2390955AbhAZPZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:25:51 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:35435 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404621AbhAZPYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:23:45 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E401EC061A31;
-        Tue, 26 Jan 2021 07:23:04 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id k8so16524231otr.8;
-        Tue, 26 Jan 2021 07:23:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9HqJz4ccFu+2h4+0g/4xAgaRFGGTbElPLcdY6EqSi4g=;
-        b=J9//tWL5VV1XxropJFiiLpj2bX7uW6LYBGx5uYDqyqvvMq7xfv0NTziP3AZEi4AadA
-         8BiBR/BlPHs4zzP2kG2yNDQOSSi/9+DG5I8nPNz7Zek4yXtkgrokk8qJxQsIF/1UqEuf
-         TzVM8oHZpUng88iju5MIeQHipRmcssLRI8g1JrIhQmyyyhh5aK/1L2/lPPpinPQuvM1X
-         NNyCg5dLrLL47SIQVG8Fus8nDtfxXQHtWJgN+1DvQu7OulYWY5VlGGzRYAW9QGYmtnjq
-         d5Bi6b20VSK2LRsRL9q8NwDy+ebqfgMJobIZZCSnN0lp+sQj+uKVKwtUBIb+C7rKrEKT
-         GCQg==
+        Tue, 26 Jan 2021 10:24:47 -0500
+Received: by mail-wr1-f48.google.com with SMTP id l12so16885992wry.2;
+        Tue, 26 Jan 2021 07:24:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=9HqJz4ccFu+2h4+0g/4xAgaRFGGTbElPLcdY6EqSi4g=;
-        b=Hv+h+ddc5gi+x8l++Cfa6MPWx9grH+P66nbbqhfa8SR26pIAAm/4KguqQQLcyAISnJ
-         el7B8iLOwg1heg8cKqiYdhjVjuzERzej8maBURUSo8N6BLcUGEfFzeimNp5CjblU7FCv
-         wr3O/g8XIK4WYhkrMkopr7MDUcJJ1IGmJwL45R0TIpwFo05gl37S1sGGQHQCR9wXr1g/
-         xmTDwSAzDBCUk4GKxVwog4sshiKWqpTHgyQ6csXo4Pvogj2rBzd42zN59H/NlTziM3Ih
-         GbbywGkholt+MQKWIMT+1Pld2ZKMCWsW1Yx0iTVeTerSZm05hBfi+h2iBjNW97qBMqSM
-         xTWA==
-X-Gm-Message-State: AOAM5328ZEPTXL1apdOVqN/LRTiyFPR0G+jT50j6LfQY6kO7XFq6OnBp
-        uwSFH1KiS77+ks1HVI3bALki/6c6Xw4=
-X-Google-Smtp-Source: ABdhPJxgKwJGdMviBooR22j1M56rJfq2oNt3Fy+S9pjMXiciLviX4pKU78H8g03p+tKJ5WaPmKMLuA==
-X-Received: by 2002:a9d:20e9:: with SMTP id x96mr4221433ota.193.1611674584069;
-        Tue, 26 Jan 2021 07:23:04 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l64sm4191634oib.13.2021.01.26.07.23.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 07:23:02 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: qcom: Remove incorrect usage of
- QCOM_WDT_ENABLE_IRQ
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        jorge@foundries.io
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210126150241.10009-1-saiprakash.ranjan@codeaurora.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <1c9d5e19-7ddd-345d-aa2d-b4fb48d9b4df@roeck-us.net>
-Date:   Tue, 26 Jan 2021 07:23:00 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PrVukTZfpBWrivFQx71zTzZ9+Nxp6Oo20gBZUehsy5s=;
+        b=ZhFEKZhoHsRLqnYTE3mmkL1eDK+6wkvEniFxlT1IucXQLoXLwZmbIc+4FsOdljcdlA
+         U7djDnxDJ5e+bWosXt0CSL1CnEOXFHkVW9qPujWcxmo2n5eSi2APZWiHQGRkM137eI35
+         NkRE3vUwRMyYyX925+yoEFf9OlfwL6w4yzw4sIlYbkPxlWzTOiW28/NVPaJJRu0SRNfZ
+         aG1c8AbbHMyj001hoz7lKG+viJ6tVeuhsyQ/6NvGZ6jZKI2TsxhVodq46itV9WVHV8AX
+         +GSYHTXHfRoN56RndMeIFFKoMFz3Ieq85+Ukt0yYprWzeA2XyueDoSdP8G9ODpgsLgTt
+         HhKw==
+X-Gm-Message-State: AOAM531AUm+9c5hzIWjsVPPmSnYmsdJ5uxhcbwlOjdCL9LfxKQcGd9li
+        IfQQVVbEVBi2tr4xz24rQ6s=
+X-Google-Smtp-Source: ABdhPJyiHQ3GQJRDGIeVA81E2ax1dSw7LkvxoYhVeCxBQ0oJbFBvU6SYZ/92UzPlHpF5prZAbNS00w==
+X-Received: by 2002:a5d:4402:: with SMTP id z2mr6659970wrq.265.1611674644833;
+        Tue, 26 Jan 2021 07:24:04 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u7sm15268845wrr.80.2021.01.26.07.24.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 07:24:04 -0800 (PST)
+Date:   Tue, 26 Jan 2021 15:24:03 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v5 02/16] x86/hyperv: detect if Linux is the root
+ partition
+Message-ID: <20210126152403.5x5p5f5vb3lchqo6@liuwe-devbox-debian-v2>
+References: <20210120120058.29138-1-wei.liu@kernel.org>
+ <20210120120058.29138-3-wei.liu@kernel.org>
+ <MWHPR21MB159358B1D6151AC5B5D38C7FD7BC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <20210126151512.jz4f3jxfs7ommvm3@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-In-Reply-To: <20210126150241.10009-1-saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126151512.jz4f3jxfs7ommvm3@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 7:02 AM, Sai Prakash Ranjan wrote:
-> As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
-> of watchdog control register is wakeup interrupt enable bit and
-> not related to bark interrupt at all, BIT(0) is used for that.
-> So remove incorrect usage of this bit when supporting bark irq for
-> pre-timeout notification. Currently with this bit set and bark
-> interrupt specified, pre-timeout notification and/or watchdog
-> reset/bite does not occur.
+On Tue, Jan 26, 2021 at 03:15:12PM +0000, Wei Liu wrote:
+> On Tue, Jan 26, 2021 at 12:31:31AM +0000, Michael Kelley wrote:
+> > From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
+> > > 
+> > > For now we can use the privilege flag to check. Stash the value to be
+> > > used later.
+> > > 
+> > > Put in a bunch of defines for future use when we want to have more
+> > > fine-grained detection.
+> > > 
+> > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > > ---
+> > > v3: move hv_root_partition to mshyperv.c
+> > > ---
+> > >  arch/x86/include/asm/hyperv-tlfs.h | 10 ++++++++++
+> > >  arch/x86/include/asm/mshyperv.h    |  2 ++
+> > >  arch/x86/kernel/cpu/mshyperv.c     | 20 ++++++++++++++++++++
+> > >  3 files changed, 32 insertions(+)
+> > > 
+> > > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> > > index 6bf42aed387e..204010350604 100644
+> > > --- a/arch/x86/include/asm/hyperv-tlfs.h
+> > > +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> > > @@ -21,6 +21,7 @@
+> > >  #define HYPERV_CPUID_FEATURES			0x40000003
+> > >  #define HYPERV_CPUID_ENLIGHTMENT_INFO		0x40000004
+> > >  #define HYPERV_CPUID_IMPLEMENT_LIMITS		0x40000005
+> > > +#define HYPERV_CPUID_CPU_MANAGEMENT_FEATURES	0x40000007
+> > >  #define HYPERV_CPUID_NESTED_FEATURES		0x4000000A
+> > > 
+> > >  #define HYPERV_CPUID_VIRT_STACK_INTERFACE	0x40000081
+> > > @@ -110,6 +111,15 @@
+> > >  /* Recommend using enlightened VMCS */
+> > >  #define HV_X64_ENLIGHTENED_VMCS_RECOMMENDED		BIT(14)
+> > > 
+> > > +/*
+> > > + * CPU management features identification.
+> > > + * These are HYPERV_CPUID_CPU_MANAGEMENT_FEATURES.EAX bits.
+> > > + */
+> > > +#define HV_X64_START_LOGICAL_PROCESSOR			BIT(0)
+> > > +#define HV_X64_CREATE_ROOT_VIRTUAL_PROCESSOR		BIT(1)
+> > > +#define HV_X64_PERFORMANCE_COUNTER_SYNC			BIT(2)
+> > > +#define HV_X64_RESERVED_IDENTITY_BIT			BIT(31)
+> > > +
+> > 
+> > I wonder if these bit definitions should go in the asm-generic part of
+> > hyperv-tlfs.h instead of the X64 specific part.  They look very architecture
+> > neutral (in which case the X64 should be dropped from the name
+> > as well).  Of course, they can be moved later when/if we get to that point
+> > and have a firmer understanding of what is and isn't arch neutral.
 > 
-> Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the bark irq is available")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Yes. This is the approach I'm taking here. They can be easily moved in
+> the future if there is a need.
+> 
+> > 
+> > >  /*
+> > >   * Virtual processor will never share a physical core with another virtual
+> > >   * processor, except for virtual processors that are reported as sibling SMT
+> > > diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> > > index ffc289992d1b..ac2b0d110f03 100644
+> > > --- a/arch/x86/include/asm/mshyperv.h
+> > > +++ b/arch/x86/include/asm/mshyperv.h
+> > > @@ -237,6 +237,8 @@ int hyperv_fill_flush_guest_mapping_list(
+> > >  		struct hv_guest_mapping_flush_list *flush,
+> > >  		u64 start_gfn, u64 end_gfn);
+> > > 
+> > > +extern bool hv_root_partition;
+> > > +
+> > >  #ifdef CONFIG_X86_64
+> > >  void hv_apic_init(void);
+> > >  void __init hv_init_spinlocks(void);
+> > > diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> > > index f628e3dc150f..c376d191a260 100644
+> > > --- a/arch/x86/kernel/cpu/mshyperv.c
+> > > +++ b/arch/x86/kernel/cpu/mshyperv.c
+> > > @@ -32,6 +32,10 @@
+> > >  #include <asm/nmi.h>
+> > >  #include <clocksource/hyperv_timer.h>
+> > > 
+> > > +/* Is Linux running as the root partition? */
+> > > +bool hv_root_partition;
+> > > +EXPORT_SYMBOL_GPL(hv_root_partition);
+> > > +
+> > >  struct ms_hyperv_info ms_hyperv;
+> > >  EXPORT_SYMBOL_GPL(ms_hyperv);
+> > > 
+> > > @@ -237,6 +241,22 @@ static void __init ms_hyperv_init_platform(void)
+> > >  	pr_debug("Hyper-V: max %u virtual processors, %u logical processors\n",
+> > >  		 ms_hyperv.max_vp_index, ms_hyperv.max_lp_index);
+> > > 
+> > > +	/*
+> > > +	 * Check CPU management privilege.
+> > > +	 *
+> > > +	 * To mirror what Windows does we should extract CPU management
+> > > +	 * features and use the ReservedIdentityBit to detect if Linux is the
+> > > +	 * root partition. But that requires negotiating CPU management
+> > > +	 * interface (a process to be finalized).
+> > > +	 *
+> > > +	 * For now, use the privilege flag as the indicator for running as
+> > > +	 * root.
+> > > +	 */
+> > > +	if (cpuid_ebx(HYPERV_CPUID_FEATURES) & HV_CPU_MANAGEMENT) {
+> > 
+> > Should the EBX value be captured in the ms_hyperv structure with the
+> > other similar values, and then used from there?
+> > 
+> 
+> There is only one usage of this in this whole series so I didn't bother
+> capturing. I would also like to clean up ms_hyperv_info's fields a bit.
 
-Assuming that pretimeout _does_ work with this patch applied,
+Correction: there are two patches that use this. But the rest of my
+argument stands.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
 > 
-> Reading the conversations from when qcom pre-timeout support was
-> added [1], Bjorn already had mentioned it was not right to touch this
-> bit, not sure which SoC the pre-timeout was tested on at that time,
-> but I have tested this on SDM845, SM8150, SC7180 and watchdog bark
-> and bite does not occur with enabling this bit with the bark irq
-> specified in DT.
+> Given there are quite some patches pending which change ms_hyperv_info
+> struct, I would like to avoid creating more conflicts than necessary.
 > 
-> [1] https://lore.kernel.org/linux-watchdog/20190906174009.GC11938@tuxbook-pro/
+> My plan is to implement my idea from the thread "Field names inside
+> ms_hyperv_info" once all patches that touch ms_hyperv_info are merged.
 > 
-> ---
->  drivers/watchdog/qcom-wdt.c | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
-> 
-> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
-> index 7cf0f2ec649b..e38a87ffe5f5 100644
-> --- a/drivers/watchdog/qcom-wdt.c
-> +++ b/drivers/watchdog/qcom-wdt.c
-> @@ -22,7 +22,6 @@ enum wdt_reg {
->  };
->  
->  #define QCOM_WDT_ENABLE		BIT(0)
-> -#define QCOM_WDT_ENABLE_IRQ	BIT(1)
->  
->  static const u32 reg_offset_data_apcs_tmr[] = {
->  	[WDT_RST] = 0x38,
-> @@ -63,16 +62,6 @@ struct qcom_wdt *to_qcom_wdt(struct watchdog_device *wdd)
->  	return container_of(wdd, struct qcom_wdt, wdd);
->  }
->  
-> -static inline int qcom_get_enable(struct watchdog_device *wdd)
-> -{
-> -	int enable = QCOM_WDT_ENABLE;
-> -
-> -	if (wdd->pretimeout)
-> -		enable |= QCOM_WDT_ENABLE_IRQ;
-> -
-> -	return enable;
-> -}
-> -
->  static irqreturn_t qcom_wdt_isr(int irq, void *arg)
->  {
->  	struct watchdog_device *wdd = arg;
-> @@ -91,7 +80,7 @@ static int qcom_wdt_start(struct watchdog_device *wdd)
->  	writel(1, wdt_addr(wdt, WDT_RST));
->  	writel(bark * wdt->rate, wdt_addr(wdt, WDT_BARK_TIME));
->  	writel(wdd->timeout * wdt->rate, wdt_addr(wdt, WDT_BITE_TIME));
-> -	writel(qcom_get_enable(wdd), wdt_addr(wdt, WDT_EN));
-> +	writel(QCOM_WDT_ENABLE, wdt_addr(wdt, WDT_EN));
->  	return 0;
->  }
->  
-> 
-
+> Wei.
