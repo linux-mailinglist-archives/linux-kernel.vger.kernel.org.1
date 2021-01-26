@@ -2,57 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF110304207
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F292304209
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 16:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406208AbhAZPPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 10:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406053AbhAZPAU (ORCPT
+        id S2406226AbhAZPQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 10:16:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59411 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391030AbhAZPAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 10:00:20 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE371C061A29;
-        Tue, 26 Jan 2021 06:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=q8zSrOkZUfVVAD2RPXwAf5szQHGrfXRJx7Z8scfma+s=; b=iv7/I/bKOaKzsf9Xt2C+lpVDBe
-        svBfrpEprvl4TV7+gFlHRnZyQhBhmgio2tap8Qe1ADwSQxk/RctEe74Yy526cTqoibXSNO++CwEo9
-        dX/F+h4eG1fwcpms36HJmJw3vh6cFLjjkiNyLzkDZVZkGg4NfCQTJr4NmHZzIKP/JOqzqWHRks/wU
-        o9NiMCmFY6QWoFGg+1e9IQr1WZs7IjSNHxOjF7LgliMZWG5QTtq0dzwfxpuVOd0/fvvOP6/zcc1Rk
-        2XP4IeObKpxrS2kWOFCT93/neD97G6QXiFf6x6pMD56G+IWrA2m1pinViIubdcjHpL8tl5oiXSbkn
-        xZZarrJA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l4Pnd-005mUs-5O; Tue, 26 Jan 2021 14:58:43 +0000
-Date:   Tue, 26 Jan 2021 14:58:33 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: Preemptible idr_alloc() in QRTR code
-Message-ID: <20210126145833.GM308988@casper.infradead.org>
-References: <20210126104734.GB80448@C02TD0UTHF1T.local>
+        Tue, 26 Jan 2021 10:00:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611673126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=okIvk1yUHM3ghAKbiDcTVr1biqV692Nex0+1fcP9uyA=;
+        b=LhUSBOyEocIs6y1SLeDlLnx8K586Gb79nU0yILb1fi7TKiqym1uhnYJhJpK+y5cSaMYlRA
+        QOvCMT/WbkoadABpFZnFrVJrDRZVhuVwlchuCXi18z+HfvRUW5kEFmE44IwxPaNGZQU2jp
+        lTKigwKwOgEDW4VAcluK6gqQaDIK+5M=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-1YVEHjPhN9OabLCknXsW7w-1; Tue, 26 Jan 2021 09:58:42 -0500
+X-MC-Unique: 1YVEHjPhN9OabLCknXsW7w-1
+Received: by mail-qt1-f200.google.com with SMTP id e9so9372852qtq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:58:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=okIvk1yUHM3ghAKbiDcTVr1biqV692Nex0+1fcP9uyA=;
+        b=qGOWchHri+jpP9KJ6l9zPParVvgi/Vomadc0TKV3WEU90/k2ToWYzWnhhSukin/iUt
+         XVOaGlj/0pPYa1kPlV21CXIVCsU1JBUiMDw0NxITJmrwJlPoyjXYd8feVP5BSx4Wr/+H
+         FFMdir5bREB+1OO0GwUmgvlKscHRFVG5J2bpIHjORWXVjK3AIUXa0sW86gQQqdKfPQ6t
+         82F5JDSdg1Lzk/shfyhsgVml9IQOwV4qUtij9Rq0beJhhU4OgjGkZJCq2iYYvyj+e8z5
+         jsg9UQUNv1vIDPjKDXWueGo61ryEyhgkuFUgcfxIAPmqBT/CcS5fo8S4ArJIq34GqGHY
+         m9pQ==
+X-Gm-Message-State: AOAM5335PGfvxM5pf8Q9sBKHhO046+e3+E69BllC8WroRdg6hNNSIn+X
+        /zH5SNHav4qKdUhQhn8VaxqD79IQZr+t28N5csiRNgsIlJmbcZfardRJSgvulDSEo/0+0jEu+87
+        xuJ585EtykUQlWdKWUTkmP3OA
+X-Received: by 2002:a37:7003:: with SMTP id l3mr6074616qkc.467.1611673122480;
+        Tue, 26 Jan 2021 06:58:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxf0OrXTo6I0HZ8tt8zacXtWeJldDE5lGxzJfva/sqqcRi21TrWHB6uP7Xhk3gJ008sacu6Hw==
+X-Received: by 2002:a37:7003:: with SMTP id l3mr6074578qkc.467.1611673122147;
+        Tue, 26 Jan 2021 06:58:42 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v18sm2833857qkv.62.2021.01.26.06.58.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 06:58:41 -0800 (PST)
+Subject: Re: [PATCH v2 2/4] mfd: intel-m10-bmc: Simplify the legacy version
+ reg definition
+To:     Xu Yilun <yilun.xu@intel.com>, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
+        lgoncalv@redhat.com, hao.wu@intel.com
+References: <1611643836-7183-1-git-send-email-yilun.xu@intel.com>
+ <1611643836-7183-3-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <8b101def-1969-97ab-0c56-732e9159b4e7@redhat.com>
+Date:   Tue, 26 Jan 2021 06:58:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126104734.GB80448@C02TD0UTHF1T.local>
+In-Reply-To: <1611643836-7183-3-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:47:34AM +0000, Mark Rutland wrote:
-> Hi,
-> 
-> When fuzzing arm64 with Syzkaller, I'm seeing some splats where
-> this_cpu_ptr() is used in the bowels of idr_alloc(), by way of
-> radix_tree_node_alloc(), in a preemptible context:
 
-I sent a patch to fix this last June.  The maintainer seems to be
-under the impression that I care an awful lot more about their
-code than I do.
+On 1/25/21 10:50 PM, Xu Yilun wrote:
+> The version register is the only one in the legacy I/O space to be
+> accessed, so it is not necessary to define the legacy base & version
+> register offset. A direct definition of the legacy version register
+> address would be fine.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+>  drivers/mfd/intel-m10-bmc.c       | 12 +++++-------
+>  include/linux/mfd/intel-m10-bmc.h |  2 +-
+>  2 files changed, 6 insertions(+), 8 deletions(-)
 
-https://lore.kernel.org/netdev/20200605120037.17427-1-willy@infradead.org/
+Thanks for adding M10BMC_LEGACY_BUILD_VER
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+> index b84579b..aad86f0 100644
+> --- a/drivers/mfd/intel-m10-bmc.c
+> +++ b/drivers/mfd/intel-m10-bmc.c
+> @@ -74,16 +74,14 @@ static int check_m10bmc_version(struct intel_m10bmc *ddata)
+>  
+>  	/*
+>  	 * This check is to filter out the very old legacy BMC versions,
+> -	 * M10BMC_LEGACY_SYS_BASE is the offset to this old block of mmio
+> -	 * registers. In the old BMC chips, the BMC version info is stored
+> -	 * in this old version register (M10BMC_LEGACY_SYS_BASE +
+> -	 * M10BMC_BUILD_VER), so its read out value would have not been
+> -	 * LEGACY_INVALID (0xffffffff). But in new BMC chips that the
+> +	 * 0x300400 is the offset to this old block of mmio registers. In the
+> +	 * old BMC chips, the BMC version info is stored in this old version
+> +	 * register (0x300400 + 0x68), so its read out value would have not
+> +	 * been LEGACY_INVALID (0xffffffff). But in new BMC chips that the
+>  	 * driver supports, the value of this register should be
+>  	 * LEGACY_INVALID.
+>  	 */
+> -	ret = m10bmc_raw_read(ddata,
+> -			      M10BMC_LEGACY_SYS_BASE + M10BMC_BUILD_VER, &v);
+> +	ret = m10bmc_raw_read(ddata, M10BMC_LEGACY_BUILD_VER, &v);
+>  	if (ret)
+>  		return -ENODEV;
+>  
+> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> index 06da62c..99f44b1 100644
+> --- a/include/linux/mfd/intel-m10-bmc.h
+> +++ b/include/linux/mfd/intel-m10-bmc.h
+> @@ -9,7 +9,7 @@
+>  
+>  #include <linux/regmap.h>
+>  
+> -#define M10BMC_LEGACY_SYS_BASE		0x300400
+> +#define M10BMC_LEGACY_BUILD_VER		0x300468
+>  #define M10BMC_SYS_BASE			0x300800
+>  #define M10BMC_MEM_END			0x1fffffff
+>  
+
