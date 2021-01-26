@@ -2,135 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CF5304E7C
+	by mail.lfdr.de (Postfix) with ESMTP id 854D1304E7D
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404381AbhA0AcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 19:32:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54981 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727103AbhAZR2J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 12:28:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611681999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=InZZx23ByJsMJtgt8v5MW2KPKFZSHMum0ATgeWIjqd8=;
-        b=QPAj0sEI+R319997Zm2uGU1TPqp5yidRph4JSPk6URld4d+dF5P0rCfglkkFyCE88+HqJJ
-        p3W8muyb3aalY+7lon+UYDgejAQP03EfRar1E0lHY5LaPKa7yf84zviZa9bHOYmjC+ONa3
-        eyZmHxpBGIfVphbf3leUcLijQWDczu8=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-AAuGIw78NAmXptvnnG9fDg-1; Tue, 26 Jan 2021 12:26:36 -0500
-X-MC-Unique: AAuGIw78NAmXptvnnG9fDg-1
-Received: by mail-ej1-f69.google.com with SMTP id k3so5192141ejr.16
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 09:26:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=InZZx23ByJsMJtgt8v5MW2KPKFZSHMum0ATgeWIjqd8=;
-        b=ITvbf38322kHt2l5OvXB33MVWEMZUTHxyHIpIyTQijNA/1jydfLKNiXJR7pMuIaqF/
-         MyCIVEfR4SIrQxvDHO/V0bKquhn/2eWUkWRZDqUYTlyu1d9dJEG+TzAfEYjhCvTw058X
-         A40IiU7sH+52SVluwOAquyRZ2qi+1JmMXv5w+raNKN9J/Y7J/VBpGb5acYOr3Vn+rVgK
-         jJUXx6PIlKmbSPebQ8cmfDuBP/uyNpdAIB8dj/s/b6cX0QTqxXrbcim+WVUG8LnLx4uR
-         fBC0jjzmVcdeog6nyC3egANGM0I3jIbVuUPfIHPg9hjebqMSrqVgSKU1hQ/Bue6NgP9/
-         2fvw==
-X-Gm-Message-State: AOAM532kr1hGlXkyk5MqTMdvAUv2Pr1kOJlRVzwv3MLjMXvCop2T7QeB
-        UY5BBqRquhmoRaRsV3mn3BJBPoiLKgtjDoLuKmA5jpO+swcIGRqkEogrK3jQqvDb9ZW/hzrw+mE
-        LKmioKf07LKJY8K1Yg4tccnnx
-X-Received: by 2002:a17:906:51d0:: with SMTP id v16mr4206642ejk.510.1611681995781;
-        Tue, 26 Jan 2021 09:26:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzgaHAAGGEQ9wEkCKCReCIm094S45eXiZvU1xS2t+W5jQo1GluQUlphaRP+rMn95s2NGrkfUg==
-X-Received: by 2002:a17:906:51d0:: with SMTP id v16mr4206634ejk.510.1611681995633;
-        Tue, 26 Jan 2021 09:26:35 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k2sm10057634ejp.6.2021.01.26.09.26.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 09:26:34 -0800 (PST)
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <1610960877-3110-1-git-send-email-wanpengli@tencent.com>
- <CANRm+Cx65UHSJA+S4qRR1wdZ=dhyM=U=KwZnbNUSN4XdM1nyQA@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2] KVM: kvmclock: Fix vCPUs > 64 can't be
- online/hotpluged
-Message-ID: <146d2a3f-88db-ff80-29d6-de2b22efdf61@redhat.com>
-Date:   Tue, 26 Jan 2021 18:26:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2404401AbhA0AcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 19:32:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728431AbhAZR3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:29:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60E83206D4;
+        Tue, 26 Jan 2021 17:28:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611682100;
+        bh=ZkiXibUcTj8V0sblKd22isCBEsKuiG4JthiNyAM9pK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q2vCQZkZb0vypHnuY71QVAycNdPtd3MXwwG40ic3eynp/8/S8lXFYJT3BpzR7tvNV
+         DP6JFwdZDJAOD26QNh1eQg+73ab5giDI/oWQDSwRegSMm+pD4bvpdc+2Jbye58Rph8
+         mCXqni3uf8Ov4gVnKOLZj0lEqX5SSM9pSQxKhGIzhpe1tCe7uxUBiLnGJpJyFwvGHF
+         EmGgZvi8SKQH3zV3PNTlc33r8HiVMYtBJhlcwhBKCHk2r4U3XOPZsJ/oIg4cOC0E4A
+         zaHfJTjQvx/1fv6inYuTcuorjJu4UQjm6dbbQ71er3ldIDYNmob03LLg/z74NJwdDc
+         DWjQRy5hl4Lqw==
+Date:   Tue, 26 Jan 2021 22:58:15 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 0/3] dmaengine: Allow building MMP DMA drivers as modules
+Message-ID: <20210126172815.GW2771@vkoul-mobl>
+References: <20210121110356.1768635-1-lkundrak@v3.sk>
 MIME-Version: 1.0
-In-Reply-To: <CANRm+Cx65UHSJA+S4qRR1wdZ=dhyM=U=KwZnbNUSN4XdM1nyQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121110356.1768635-1-lkundrak@v3.sk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/01/21 02:28, Wanpeng Li wrote:
-> ping，
-> On Mon, 18 Jan 2021 at 17:08, Wanpeng Li <kernellwp@gmail.com> wrote:
->>
->> From: Wanpeng Li <wanpengli@tencent.com>
->>
->> The per-cpu vsyscall pvclock data pointer assigns either an element of the
->> static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory
->> hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if
->> kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in
->> kvmclock_setup_percpu() which returns -ENOMEM. This patch fixes it by not
->> assigning vsyscall pvclock data pointer if kvmclock vdso_clock_mode is not
->> VDSO_CLOCKMODE_PVCLOCK.
-
-I am sorry, I still cannot figure out this patch.
-
-Is hotplug still broken if kvm vsyscall is enabled?
-
-Paolo
-
->> Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
->> Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
->> Tested-by: Haiwei Li <lihaiwei@tencent.com>
->> Cc: Brijesh Singh <brijesh.singh@amd.com>
->> Cc: stable@vger.kernel.org#v4.19-rc5+
->> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
->> ---
->> v1 -> v2:
->>   * add code comments
->>
->>   arch/x86/kernel/kvmclock.c | 6 ++++--
->>   1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
->> index aa59374..01d4e55c 100644
->> --- a/arch/x86/kernel/kvmclock.c
->> +++ b/arch/x86/kernel/kvmclock.c
->> @@ -294,9 +294,11 @@ static int kvmclock_setup_percpu(unsigned int cpu)
->>          /*
->>           * The per cpu area setup replicates CPU0 data to all cpu
->>           * pointers. So carefully check. CPU0 has been set up in init
->> -        * already.
->> +        * already. Assign vsyscall pvclock data pointer iff kvmclock
->> +        * vsyscall is enabled.
->>           */
->> -       if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)))
->> +       if (!cpu || (p && p != per_cpu(hv_clock_per_cpu, 0)) ||
->> +           (kvm_clock.vdso_clock_mode != VDSO_CLOCKMODE_PVCLOCK))
->>                  return 0;
->>
->>          /* Use the static page for the first CPUs, allocate otherwise */
->> --
->> 2.7.4
->>
+On 21-01-21, 12:03, Lubomir Rintel wrote:
+> Hi,
 > 
+> please consider attaching the patches chained to this message.
+> 
+> The last two are straighforward Kconfig changes that allow building mmp_tdma 
+> and mmp_pdma as modules so that distros that will choose to enable the drivers 
+> will not add bloat to their kernels for other platforms.
+> 
+> The first one gets rid of a symbol that would be exported by mmp_pdma,
+> because it is entirely unnecessary.
 
+Applied, thanks
+
+-- 
+~Vinod
