@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28709304EF8
+	by mail.lfdr.de (Postfix) with ESMTP id 99EE4304EF9
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404992AbhA0Bap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
+        id S2405035AbhA0BcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394786AbhAZSf4 (ORCPT
+        with ESMTP id S2394789AbhAZSgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:35:56 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414FEC0613ED;
-        Tue, 26 Jan 2021 10:35:15 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id r38so6094039pgk.13;
-        Tue, 26 Jan 2021 10:35:15 -0800 (PST)
+        Tue, 26 Jan 2021 13:36:01 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D827DC061786;
+        Tue, 26 Jan 2021 10:35:20 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id u11so10222004plg.13;
+        Tue, 26 Jan 2021 10:35:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bx/cdqgCma3iJlb8vZQT1JZ3qzb90ip49lgcVaqCQT4=;
-        b=EJMrC+txD3IibE4RjJTLeJTuzedtcFYTmUJkcn1eVGc80DtwSuR/EcGdGNwRSTecPV
-         FtLjuT1AAW/qNN037/aYSj4FeojMzsdii6pt9izxTvfVR5N8KGz/GDFBoV8NMK+9RU+S
-         di1OssSp00gaJ/wyNv9viH8t56ymmxdSX2l6t0o1KlXajkSQiq5bWsnjsOhL73On1ebu
-         oum8vbRWtI7k4qQU1PrJLwtPD2JuiMxx4zBVIw6MDEpaotlhNkoq4SZEd9d8DZfrojUw
-         ibSoB/Ww8ZZcQ2y6cu2vzS6bNfKzgMAPJ0mn91m/YEyNJfMJTlcWH49jqnIt9mDSE4QQ
-         hbxw==
+        bh=Rlm5PUymFHRx39FCcGjfRRBHQ3f0wd7qTZT6jsgLwkA=;
+        b=pldzPP87+IAjdQFo5gB4mTAxJDiykolSRf9RJD1R29q+gjloKdScXFVNudyO2fzqLd
+         pKGc4a8CbMMLXXFffBakorBGXvFI86RZ4j54HqOtEntkoiiBUjp223sTRA+iSmxpftjA
+         xLKf34yLq+7cgACxqGLUK7nVpQDDrtZcgzdz8ppQTvf0MLoYNkD0fbs+XTrLz9qVo9Uv
+         4qRfAPcsocDP0VYL6DYm6hCQRQJpXlLUOJb1Bk9mKW21y4Py/bP4/h9mJPrlQJXqurAH
+         qBOlxTdCrH6skMWJ5s4Ix/QoYqGxilFFEXgDpfGN+vcQUZf8M/B+T0PE8QCqCkIB0p5+
+         9i+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bx/cdqgCma3iJlb8vZQT1JZ3qzb90ip49lgcVaqCQT4=;
-        b=PtO6r+xVyMxgKR1Pw1wGGB4JWOFPxN+LZqZHttSd5Y4zrBBRsV+wLApilhHl12nxul
-         Rj6me46g4En97bwf4Alvn6iOojqsG8NsqIgiY/2U9GNld/n80Ddraw/CSny+Uh2j57tu
-         s9vmi9p4yKLx7HFADZADMcSPMSkP3WnopX06L1sg8Dm5y9ueN/8GG6VlRtZTku5fePtp
-         2Z2d61rW024H9zwFFfIw/vFVTlSNSLcmJArrAZ1jQojLq5NoexojQlADowYiiQdo+10q
-         VZgBWOTCzexNdGi10+aSBS51UKwyXemrxVpSkv7rSkpqfD1VkwijIghupTcxJzEq4KIE
-         cl9A==
-X-Gm-Message-State: AOAM532u9UlikzGmN3faLkheT2Q87oZa/UniHCT9bzeG9DhIFsGWKYQW
-        UQNuDbUV5Ifohfk39VmhC3/lvHSgrmycR+kyNsE=
-X-Google-Smtp-Source: ABdhPJxsmzYM41sw3Zm/u83d4UqAR9pPCvyLi9JYwpsBEL3ZWQjorpTAKyBIOVb0F6ZLsN10DPNvqw==
-X-Received: by 2002:a62:1b95:0:b029:19b:178f:84d7 with SMTP id b143-20020a621b950000b029019b178f84d7mr6633080pfb.70.1611686114735;
-        Tue, 26 Jan 2021 10:35:14 -0800 (PST)
+        bh=Rlm5PUymFHRx39FCcGjfRRBHQ3f0wd7qTZT6jsgLwkA=;
+        b=d9F0KGX3HtxxiydluBJ9QGcKZa2a3ZOlng1+IFzPP3tAw//6spQAhEknBwgfzApfX/
+         sD/0KIVldUwq9b7T1opzraPqlhopK+LbNmEWzr6OfT1Vtxfl0Ekh1U4/ETkS+nlEg0JI
+         nX6mhC5gaP0WqyMMaL9MoBF018/+qXoxOauBZu3cWiF2/SrNAsCOSLisx8ZArISXt4Ls
+         zlmvF8tOTZ6yaAs5TXLyrdEEb1J+gAEU24IDdopEjzysP4VCtZqRbmC2MfWM02bmU0Dn
+         8bg4dJ/kWX6UgKbuHOlclYpSnJdje0QxIYt5OqGgXVBbuzzEZOXRiSmemq5upC/4KquI
+         rlbA==
+X-Gm-Message-State: AOAM531YqJHyzE8f1SdbuK2LbYQs1pulML/sx9wuo4DvL7KV6waHkn44
+        56KC+2g0/Gv4qrJTt7xXSrE=
+X-Google-Smtp-Source: ABdhPJx3PTeB+SUcDOUGdw45AWK8WChpigGSoWVxOGNYaACq2CBMS5O81epaga9lJRTIOjl3cqyexg==
+X-Received: by 2002:a17:90b:4a4d:: with SMTP id lb13mr1164903pjb.44.1611686120413;
+        Tue, 26 Jan 2021 10:35:20 -0800 (PST)
 Received: from localhost.localdomain ([49.207.195.86])
-        by smtp.gmail.com with ESMTPSA id y75sm472711pfg.119.2021.01.26.10.35.11
+        by smtp.gmail.com with ESMTPSA id y75sm472711pfg.119.2021.01.26.10.35.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 10:35:13 -0800 (PST)
+        Tue, 26 Jan 2021 10:35:19 -0800 (PST)
 From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
         Anant Thazhemadam <anant.thazhemadam@gmail.com>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 04/12] usb: misc: ehset: update to use the usb_control_msg_{send|recv}() API
-Date:   Wed, 27 Jan 2021 00:03:55 +0530
-Message-Id: <20210126183403.911653-5-anant.thazhemadam@gmail.com>
+Subject: [PATCH v3 05/12] usb: misc: ezusb: update to use usb_control_msg_send()
+Date:   Wed, 27 Jan 2021 00:03:56 +0530
+Message-Id: <20210126183403.911653-6-anant.thazhemadam@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
 References: <20210126183403.911653-1-anant.thazhemadam@gmail.com>
@@ -71,140 +68,45 @@ The newer usb_control_msg_{send|recv}() API are an improvement on the
 existing usb_control_msg() as it ensures that a short read/write is treated
 as an error, data can be used off the stack, and raw usb pipes need not be
 created in the calling functions.
-For this reason, instances of usb_control_msg() have been replaced with
-usb_control_msg_{recv|send}() appropriately.
+For this reason, the instance of usb_control_msg() has been replaced with
+usb_control_msg_send() appropriately.
 
 Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
 ---
- drivers/usb/misc/ehset.c | 76 +++++++++++++++++-----------------------
- 1 file changed, 32 insertions(+), 44 deletions(-)
+ drivers/usb/misc/ezusb.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/usb/misc/ehset.c b/drivers/usb/misc/ehset.c
-index 2752e1f4f4d0..f87890f9cd26 100644
---- a/drivers/usb/misc/ehset.c
-+++ b/drivers/usb/misc/ehset.c
-@@ -24,68 +24,57 @@ static int ehset_probe(struct usb_interface *intf,
- 	int ret = -EINVAL;
- 	struct usb_device *dev = interface_to_usbdev(intf);
- 	struct usb_device *hub_udev = dev->parent;
--	struct usb_device_descriptor *buf;
-+	struct usb_device_descriptor buf;
- 	u8 portnum = dev->portnum;
- 	u16 test_pid = le16_to_cpu(dev->descriptor.idProduct);
+diff --git a/drivers/usb/misc/ezusb.c b/drivers/usb/misc/ezusb.c
+index f058d8029761..78aaee56c2b7 100644
+--- a/drivers/usb/misc/ezusb.c
++++ b/drivers/usb/misc/ezusb.c
+@@ -31,24 +31,12 @@ static const struct ezusb_fx_type ezusb_fx1 = {
+ static int ezusb_writememory(struct usb_device *dev, int address,
+ 				unsigned char *data, int length, __u8 request)
+ {
+-	int result;
+-	unsigned char *transfer_buffer;
+-
+ 	if (!dev)
+ 		return -ENODEV;
  
- 	switch (test_pid) {
- 	case TEST_SE0_NAK_PID:
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_SET_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_TEST,
--					(USB_TEST_SE0_NAK << 8) | portnum,
--					NULL, 0, 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-+					   (USB_TEST_SE0_NAK << 8) | portnum,
-+					   NULL, 0, 1000, GFP_KERNEL);
- 		break;
- 	case TEST_J_PID:
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_SET_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_TEST,
--					(USB_TEST_J << 8) | portnum,
--					NULL, 0, 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-+					   (USB_TEST_J << 8) | portnum, NULL, 0,
-+					   1000, GFP_KERNEL);
- 		break;
- 	case TEST_K_PID:
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_SET_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_TEST,
--					(USB_TEST_K << 8) | portnum,
--					NULL, 0, 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-+					   (USB_TEST_K << 8) | portnum, NULL, 0,
-+					   1000, GFP_KERNEL);
- 		break;
- 	case TEST_PACKET_PID:
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_SET_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_TEST,
--					(USB_TEST_PACKET << 8) | portnum,
--					NULL, 0, 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-+					   (USB_TEST_PACKET << 8) | portnum,
-+					   NULL, 0, 1000, GFP_KERNEL);
- 		break;
- 	case TEST_HS_HOST_PORT_SUSPEND_RESUME:
- 		/* Test: wait for 15secs -> suspend -> 15secs delay -> resume */
- 		msleep(15 * 1000);
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_SET_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_SUSPEND, portnum,
--					NULL, 0, 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_SUSPEND,
-+					   portnum, NULL, 0, 1000, GFP_KERNEL);
- 		if (ret < 0)
- 			break;
- 
- 		msleep(15 * 1000);
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_CLEAR_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_SUSPEND, portnum,
--					NULL, 0, 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_CLEAR_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_SUSPEND,
-+					   portnum, NULL, 0, 1000, GFP_KERNEL);
- 		break;
- 	case TEST_SINGLE_STEP_GET_DEV_DESC:
- 		/* Test: wait for 15secs -> GetDescriptor request */
- 		msleep(15 * 1000);
--		buf = kmalloc(USB_DT_DEVICE_SIZE, GFP_KERNEL);
--		if (!buf)
--			return -ENOMEM;
- 
--		ret = usb_control_msg(dev, usb_rcvctrlpipe(dev, 0),
--					USB_REQ_GET_DESCRIPTOR, USB_DIR_IN,
--					USB_DT_DEVICE << 8, 0,
--					buf, USB_DT_DEVICE_SIZE,
--					USB_CTRL_GET_TIMEOUT);
--		kfree(buf);
-+		ret = usb_control_msg_recv(dev, 0, USB_REQ_GET_DESCRIPTOR,
-+					   USB_DIR_IN, USB_DT_DEVICE << 8, 0,
-+					   &buf, USB_DT_DEVICE_SIZE,
-+					   USB_CTRL_GET_TIMEOUT, GFP_KERNEL);
- 		break;
- 	case TEST_SINGLE_STEP_SET_FEATURE:
- 		/*
-@@ -100,11 +89,10 @@ static int ehset_probe(struct usb_interface *intf,
- 			break;
- 		}
- 
--		ret = usb_control_msg(hub_udev, usb_sndctrlpipe(hub_udev, 0),
--					USB_REQ_SET_FEATURE, USB_RT_PORT,
--					USB_PORT_FEAT_TEST,
--					(6 << 8) | portnum,
--					NULL, 0, 60 * 1000);
-+		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
-+					   USB_RT_PORT, USB_PORT_FEAT_TEST,
-+					   (6 << 8) | portnum, NULL, 0,
-+					   60 * 1000, GFP_KERNEL);
- 
- 		break;
- 	default:
-@@ -112,7 +100,7 @@ static int ehset_probe(struct usb_interface *intf,
- 			__func__, test_pid);
- 	}
- 
--	return (ret < 0) ? ret : 0;
-+	return ret;
+-	transfer_buffer = kmemdup(data, length, GFP_KERNEL);
+-	if (!transfer_buffer) {
+-		dev_err(&dev->dev, "%s - kmalloc(%d) failed.\n",
+-							__func__, length);
+-		return -ENOMEM;
+-	}
+-	result = usb_control_msg(dev, usb_sndctrlpipe(dev, 0), request,
++	return usb_control_msg_send(dev, 0, request,
+ 				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+-				 address, 0, transfer_buffer, length, 3000);
+-
+-	kfree(transfer_buffer);
+-	return result;
++				 address, 0, data, length, 3000, GFP_KERNEL);
  }
  
- static void ehset_disconnect(struct usb_interface *intf)
+ static int ezusb_set_reset(struct usb_device *dev, unsigned short cpucs_reg,
 -- 
 2.25.1
 
