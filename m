@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C82E303B86
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA27303B87
 	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392161AbhAZLX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:23:59 -0500
-Received: from mga07.intel.com ([134.134.136.100]:43131 "EHLO mga07.intel.com"
+        id S2392335AbhAZLYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:24:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42624 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728161AbhAZIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:55:43 -0500
-IronPort-SDR: KKL/ZWufeUk/aISqYHmG5FDkdh3TApN0Fpde8RGFVvUxvqSGWeJg5nq1Csuexc1lDb2tzYFPuv
- ibUQrdI+7yZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="243950321"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="243950321"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:54:53 -0800
-IronPort-SDR: HiSh2Eab8nbapDkJt/yoex7HLrUMn5c6fcYl8n6fDvfcicaBSFH5j4xuk/qLprrEo+P/BqLUc8
- LTbakaIISQ5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="393680509"
-Received: from glass.png.intel.com ([10.158.65.51])
-  by orsmga007.jf.intel.com with ESMTP; 26 Jan 2021 00:54:49 -0800
-From:   Wong Vee Khee <vee.khee.wong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>
-Subject: [PATCH net-next 1/1] stmmac: intel: Add ADL-S 1Gbps PCI IDs
-Date:   Tue, 26 Jan 2021 16:58:32 +0800
-Message-Id: <20210126085832.3814-1-vee.khee.wong@intel.com>
-X-Mailer: git-send-email 2.17.0
+        id S2388923AbhAZJBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:01:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4B70CAC4F;
+        Tue, 26 Jan 2021 09:01:01 +0000 (UTC)
+Message-ID: <1611651660.11983.64.camel@suse.cz>
+Subject: Re: [PATCH v2 0/1] AMD EPYC: fix schedutil perf regression
+ (freq-invariance)
+From:   Giovanni Gherdovich <ggherdovich@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Michael Larabel <Michael@phoronix.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Date:   Tue, 26 Jan 2021 10:01:00 +0100
+In-Reply-To: <YA6CqYcaEhUoyJdH@hirez.programming.kicks-ass.net>
+References: <20210122204038.3238-1-ggherdovich@suse.cz>
+         <a5071cb5-6a5b-d2e4-ff06-fa7810b8127c@phoronix.com>
+         <YA6CqYcaEhUoyJdH@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Wong, Vee Khee" <vee.khee.wong@intel.com>
+On Mon, 2021-01-25 at 09:34 +0100, Peter Zijlstra wrote:
+> On Sun, Jan 24, 2021 at 04:30:57PM -0600, Michael Larabel wrote:
+> > From ongoing tests of this patch, it still certainly shows to address most
+> > of the Linux 5.11 performance regression previously encountered when using
+> > Schedutil. Additionally, for a number of workloads where not seeing a
+> > regression from 5.10 to 5.11 Git is still showing even better performance
+> > with this patch. The power monitoring on the AMD EPYC server is showing
+> > higher power spikes but the average power consumption rate is roughly
+> > comparable to that of Linux 5.11 Git, which is higher than 5.10 by just
+> > about 3%.
+> > 
+> > So this patch still seems to be working out well and indeed taking care of
+> > some wide losses seen otherwise on Linux 5.11 when using Schedutil on AMD
+> > Zen2/Zen3. Still have some other tests running but so far no unexpected
+> > results.
+> > 
+> 
+> Did you do all this writing and forget to add:
+> 
+> Tested-by: Michael Larabel <Michael@phoronix.com>
+> 
+> ?
 
-Added PCI IDs for both Ethernet TSN Controllers on the ADL-S.
+Michael confirmed me off-list that yes, the patch should carry the
+"Tested-by" tag with his name.
 
-Also, skip SerDes programming sequences as these are being carried out
-at the BIOS level for ADL-S.
 
-Signed-off-by: Wong, Vee Khee <vee.khee.wong@intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 9a6a519426a0..9c272a241136 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -457,6 +457,21 @@ static struct stmmac_pci_info tgl_sgmii1g_info = {
- 	.setup = tgl_sgmii_data,
- };
- 
-+static int adls_sgmii_data(struct pci_dev *pdev,
-+			   struct plat_stmmacenet_data *plat)
-+{
-+	plat->bus_id = 1;
-+	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+
-+	/* SerDes power up and power down are done in BIOS for ADL */
-+
-+	return tgl_common_data(pdev, plat);
-+}
-+
-+static struct stmmac_pci_info adls_sgmii1g_info = {
-+	.setup = adls_sgmii_data,
-+};
-+
- static const struct stmmac_pci_func_data galileo_stmmac_func_data[] = {
- 	{
- 		.func = 6,
-@@ -724,6 +739,8 @@ static SIMPLE_DEV_PM_OPS(intel_eth_pm_ops, intel_eth_pci_suspend,
- #define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_0_ID		0x43ac
- #define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_1_ID		0x43a2
- #define PCI_DEVICE_ID_INTEL_TGL_SGMII1G_ID		0xa0ac
-+#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_0_ID		0x7aac
-+#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_1_ID		0x7aad
- 
- static const struct pci_device_id intel_eth_pci_id_table[] = {
- 	{ PCI_DEVICE_DATA(INTEL, QUARK_ID, &quark_info) },
-@@ -739,6 +756,8 @@ static const struct pci_device_id intel_eth_pci_id_table[] = {
- 	{ PCI_DEVICE_DATA(INTEL, TGL_SGMII1G_ID, &tgl_sgmii1g_info) },
- 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_0_ID, &tgl_sgmii1g_info) },
- 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1_ID, &tgl_sgmii1g_info) },
-+	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0_ID, &adls_sgmii1g_info) },
-+	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1_ID, &adls_sgmii1g_info) },
- 	{}
- };
- MODULE_DEVICE_TABLE(pci, intel_eth_pci_id_table);
--- 
-2.17.0
-
+Giovanni
