@@ -2,249 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97EA304059
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBE13040DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 15:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731532AbhAZOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 09:33:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20311 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392742AbhAZObU (ORCPT
+        id S2405980AbhAZOuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 09:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391445AbhAZOuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:31:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611671394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KHCT0BxIY7k8a9W3GWCwiNnAfNTrj8UuA0m2keYyjt0=;
-        b=B0S+JgSKqtwcFAmaY5ezWX2WI7I93rSXGBlM6YmMrvSL+EIC2cH0dtZrI0rD3pTDzmg/Ex
-        I2bnqvelhBckGBMPBKFEpJr7ox/PsRzNTRxEoBuXimUCE6Xtq2Q3LqWFAPBw3s8tjN6jP5
-        WlMNB2ISiFIlio9w8jwNsWzr+fumLyE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-173-QDWUiAP3NwK2vxd229R-oQ-1; Tue, 26 Jan 2021 09:29:53 -0500
-X-MC-Unique: QDWUiAP3NwK2vxd229R-oQ-1
-Received: by mail-ej1-f70.google.com with SMTP id dc21so4982000ejb.19
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:29:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KHCT0BxIY7k8a9W3GWCwiNnAfNTrj8UuA0m2keYyjt0=;
-        b=HSlu9E4L7yBLWtQK30Hm9687gPRYA2hk+7eVsWd+B44xRaQEIUQqp4+Wt4Fk4O09qo
-         QmxYUdgqJ+cRbaBwcRy9rXSIHALUMpuTCrtp2P8MlmAOiJ2+ad2Kj3bKy8/8kefZyIyq
-         cwmqB18xpdD4P7920YJ2RbqEZqh0HyiMcC5oz8sPpVtrz5uDEleyuTToHfybe+5i5kb6
-         uEBP1DE0wNBabqMcr/qJBLkmpXDM82Wsw7nIWw+uYyg4D+4ncoXQ7Ia/7jkx+f6G946d
-         2gXdN8rAgQsRyWyX5FHaK2OY+TbmBdA7Jjl5p+m17/rFPIQKk5SJuVkTtV/4juApqBlK
-         MVCA==
-X-Gm-Message-State: AOAM530pm0JdzsnOZTPDID2r0TM159hbLFBiGJD5Vbp0YIczHWx8mV3D
-        GA4eKaoFgbrUAHuUnSPTgwLQ3zK7tDvT5urePqothccKA51TfSq7BxiBc9hY2qVKsQVXVhQCCfQ
-        GH2pJDVWfdDgJr2oo0AauNAgZ
-X-Received: by 2002:aa7:d88e:: with SMTP id u14mr4676737edq.72.1611671391339;
-        Tue, 26 Jan 2021 06:29:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyTZQnmkGRrTjQTffqnedeWve/2GbBxWmqgN+CQlqe8O+YndEJGrNTN+0Hhl0tmmY/VpvK/PA==
-X-Received: by 2002:aa7:d88e:: with SMTP id u14mr4676725edq.72.1611671391190;
-        Tue, 26 Jan 2021 06:29:51 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r11sm12517280edt.58.2021.01.26.06.29.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 06:29:50 -0800 (PST)
-Subject: Re: [PATCH 16/24] kvm: mmu: Wrap mmu_lock assertions
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20210112181041.356734-1-bgardon@google.com>
- <20210112181041.356734-17-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <feb59127-60cd-d0c9-1520-84232c01c6c9@redhat.com>
-Date:   Tue, 26 Jan 2021 15:29:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 26 Jan 2021 09:50:09 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A13C061A31
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 06:49:29 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1l4PMI-0003n4-Qi; Tue, 26 Jan 2021 15:30:18 +0100
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1l4PMH-0003DS-Ns; Tue, 26 Jan 2021 15:30:17 +0100
+Date:   Tue, 26 Jan 2021 15:30:17 +0100
+From:   Sascha Hauer <sha@pengutronix.de>
+To:     Abel Vesa <abel.vesa@nxp.com>
+Cc:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org
+Subject: Re: [RFC] clk: Mark HW enabled clocks as enabled in core
+Message-ID: <20210126143017.GF28722@pengutronix.de>
+References: <1611660096-12381-1-git-send-email-abel.vesa@nxp.com>
+ <20210126115105.GD28722@pengutronix.de>
+ <20210126131239.uyolpawk2jfat7z4@fsr-ub1664-175>
 MIME-Version: 1.0
-In-Reply-To: <20210112181041.356734-17-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126131239.uyolpawk2jfat7z4@fsr-ub1664-175>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 14:54:26 up 55 days,  2:21, 98 users,  load average: 0.04, 0.07,
+ 0.09
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/21 19:10, Ben Gardon wrote:
-> Wrap assertions and warnings checking the MMU lock state in a function
-> which uses lockdep_assert_held. While the existing checks use a few
-> different functions to check the lock state, they are all better off
-> using lockdep_assert_held. This will support a refactoring to move the
-> mmu_lock to struct kvm_arch so that it can be replaced with an rwlock for
-> x86.
+On Tue, Jan 26, 2021 at 03:12:39PM +0200, Abel Vesa wrote:
+> On 21-01-26 12:51:05, Sascha Hauer wrote:
+> > On Tue, Jan 26, 2021 at 01:21:36PM +0200, Abel Vesa wrote:
+> > > Some clocks are already enabled in HW even before the kernel
+> > > starts to boot. So, in order to make sure that these clocks do not
+> > > get disabled when clk_disable_unused call is done or when
+> > > reparenting clocks, we enable them in core on clock registration.
+> > > Such a clock will have to be registered with CLK_IGNORE_UNUSED flag
+> > > and also needs to have the is_enabled ops implemented.
+> > > 
+> > > Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> > > ---
+> > >  drivers/clk/clk.c | 11 ++++++++++-
+> > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> > > index 3d751ae5bc70..26d55851cfa5 100644
+> > > --- a/drivers/clk/clk.c
+> > > +++ b/drivers/clk/clk.c
+> > > @@ -3416,6 +3416,7 @@ static int __clk_core_init(struct clk_core *core)
+> > >  	int ret;
+> > >  	struct clk_core *parent;
+> > >  	unsigned long rate;
+> > > +	bool is_hw_enabled = false;
+> > >  	int phase;
+> > >  
+> > >  	if (!core)
+> > > @@ -3558,12 +3559,20 @@ static int __clk_core_init(struct clk_core *core)
+> > >  		rate = 0;
+> > >  	core->rate = core->req_rate = rate;
+> > >  
+> > > +	/*
+> > > +	 * If the clock has the CLK_IGNORE_UNUSED flag set and it is already
+> > > +	 * enabled in HW, enable it in core too so it won't get accidentally
+> > > +	 * disabled when walking the orphan tree and reparenting clocks
+> > > +	 */
+> > > +	if (core->flags & CLK_IGNORE_UNUSED && core->ops->is_enabled)
+> > > +		is_hw_enabled = clk_core_is_enabled(core);
+> > > +
+> > >  	/*
+> > >  	 * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
+> > >  	 * don't get accidentally disabled when walking the orphan tree and
+> > >  	 * reparenting clocks
+> > >  	 */
+> > > -	if (core->flags & CLK_IS_CRITICAL) {
+> > > +	if (core->flags & CLK_IS_CRITICAL || is_hw_enabled) {
+> > >  		unsigned long flags;
+> > >  
+> > >  		ret = clk_core_prepare(core);
+> > 
+> > This means that a bootloader enabled clock with CLK_IGNORE_UNUSED flag
+> > can effectively never be disabled because the prepare/enable count is 1
+> > without any user. This is the behaviour we want to have with critical
+> > clocks, but I don't think this is desired for clocks with the
+> > CLK_IGNORE_UNUSED flag.
+> > 
 > 
-> Reviewed-by: Peter Feiner <pfeiner@google.com>
+> Here is the way I see it. Critical clocks means the system can't work
+> without, so do not ever disable/unprepare. The "ignore unused" flag
+> tells the core to not do anything to this clock, even if it is unused.
+> For now, it just leaves the clock alone, but the flag could be used for
+> some other stuff in the future.
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->   arch/arm64/kvm/mmu.c                     | 2 +-
->   arch/powerpc/include/asm/kvm_book3s_64.h | 7 +++----
->   arch/powerpc/kvm/book3s_hv_nested.c      | 3 +--
->   arch/x86/kvm/mmu/mmu_internal.h          | 4 ++--
->   arch/x86/kvm/mmu/tdp_mmu.c               | 8 ++++----
->   include/linux/kvm_host.h                 | 1 +
->   virt/kvm/kvm_main.c                      | 5 +++++
->   7 files changed, 17 insertions(+), 13 deletions(-)
+> Now, the behavior is entirely different.
 > 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 57ef1ec23b56..8b54eb58bf47 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -130,7 +130,7 @@ static void __unmap_stage2_range(struct kvm_s2_mmu *mmu, phys_addr_t start, u64
->   	struct kvm *kvm = mmu->kvm;
->   	phys_addr_t end = start + size;
->   
-> -	assert_spin_locked(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   	WARN_ON(size & ~PAGE_MASK);
->   	WARN_ON(stage2_apply_range(kvm, start, end, kvm_pgtable_stage2_unmap,
->   				   may_block));
-> diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
-> index 9bb9bb370b53..db2e437cd97c 100644
-> --- a/arch/powerpc/include/asm/kvm_book3s_64.h
-> +++ b/arch/powerpc/include/asm/kvm_book3s_64.h
-> @@ -650,8 +650,8 @@ static inline pte_t *find_kvm_secondary_pte(struct kvm *kvm, unsigned long ea,
->   {
->   	pte_t *pte;
->   
-> -	VM_WARN(!spin_is_locked(&kvm->mmu_lock),
-> -		"%s called with kvm mmu_lock not held \n", __func__);
-> +	kvm_mmu_lock_assert_held(kvm);
-> +
->   	pte = __find_linux_pte(kvm->arch.pgtable, ea, NULL, hshift);
->   
->   	return pte;
-> @@ -662,8 +662,7 @@ static inline pte_t *find_kvm_host_pte(struct kvm *kvm, unsigned long mmu_seq,
->   {
->   	pte_t *pte;
->   
-> -	VM_WARN(!spin_is_locked(&kvm->mmu_lock),
-> -		"%s called with kvm mmu_lock not held \n", __func__);
-> +	kvm_mmu_lock_assert_held(kvm);
->   
->   	if (mmu_notifier_retry(kvm, mmu_seq))
->   		return NULL;
-> diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3s_hv_nested.c
-> index 18890dca9476..6d5987d1eee7 100644
-> --- a/arch/powerpc/kvm/book3s_hv_nested.c
-> +++ b/arch/powerpc/kvm/book3s_hv_nested.c
-> @@ -767,8 +767,7 @@ pte_t *find_kvm_nested_guest_pte(struct kvm *kvm, unsigned long lpid,
->   	if (!gp)
->   		return NULL;
->   
-> -	VM_WARN(!spin_is_locked(&kvm->mmu_lock),
-> -		"%s called with kvm mmu_lock not held \n", __func__);
-> +	kvm_mmu_lock_assert_held(kvm);
->   	pte = __find_linux_pte(gp->shadow_pgtable, ea, NULL, hshift);
->   
->   	return pte;
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 7f599cc64178..cc8268cf28d2 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -101,14 +101,14 @@ void kvm_flush_remote_tlbs_with_address(struct kvm *kvm,
->   static inline void kvm_mmu_get_root(struct kvm *kvm, struct kvm_mmu_page *sp)
->   {
->   	BUG_ON(!sp->root_count);
-> -	lockdep_assert_held(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   
->   	++sp->root_count;
->   }
->   
->   static inline bool kvm_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *sp)
->   {
-> -	lockdep_assert_held(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   	--sp->root_count;
->   
->   	return !sp->root_count;
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index fb911ca428b2..1d7c01300495 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -117,7 +117,7 @@ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
->   {
->   	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
->   
-> -	lockdep_assert_held(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   
->   	WARN_ON(root->root_count);
->   	WARN_ON(!root->tdp_mmu_page);
-> @@ -425,7 +425,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
->   	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
->   	int as_id = kvm_mmu_page_as_id(root);
->   
-> -	lockdep_assert_held(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   
->   	WRITE_ONCE(*iter->sptep, new_spte);
->   
-> @@ -1139,7 +1139,7 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
->   	struct kvm_mmu_page *root;
->   	int root_as_id;
->   
-> -	lockdep_assert_held(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   	for_each_tdp_mmu_root(kvm, root) {
->   		root_as_id = kvm_mmu_page_as_id(root);
->   		if (root_as_id != slot->as_id)
-> @@ -1324,7 +1324,7 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
->   	int root_as_id;
->   	bool spte_set = false;
->   
-> -	lockdep_assert_held(&kvm->mmu_lock);
-> +	kvm_mmu_lock_assert_held(kvm);
->   	for_each_tdp_mmu_root(kvm, root) {
->   		root_as_id = kvm_mmu_page_as_id(root);
->   		if (root_as_id != slot->as_id)
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 6e2773fc406c..022e3522788f 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1499,5 +1499,6 @@ void kvm_mmu_lock(struct kvm *kvm);
->   void kvm_mmu_unlock(struct kvm *kvm);
->   int kvm_mmu_lock_needbreak(struct kvm *kvm);
->   int kvm_mmu_lock_cond_resched(struct kvm *kvm);
-> +void kvm_mmu_lock_assert_held(struct kvm *kvm);
-
-Probably better to make this an empty inline if !defined(CONFIG_LOCKDEP).
-
-Paolo
-
->   #endif
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index b4c49a7e0556..c504f876176b 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -452,6 +452,11 @@ int kvm_mmu_lock_cond_resched(struct kvm *kvm)
->   	return cond_resched_lock(&kvm->mmu_lock);
->   }
->   
-> +void kvm_mmu_lock_assert_held(struct kvm *kvm)
-> +{
-> +	lockdep_assert_held(&kvm->mmu_lock);
-> +}
-> +
->   #if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
->   static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
->   {
+> For the "critical" clock disable/unprepare, the core does nothing
+> (returns without calling the disable/unprepare ops).
 > 
+> As for the "ignore unused", the clock can be disabled later on,
+> which would decrement the prepare/enable counter.
+> The imx earlycon serial driver could implement a late initcall,
+> that takes the clocks from the devicetree uart node and disables
+> them. The user doesn't even count in this situation.
+> 
+> Plus, there is no other reason someone would use the CLK_IGNORE_UNUSED,
+> other than leaving a clock that is already enabled stay as is (at least,
+> not with the current implementation). So why not mark it as enabled in 
+> the core, if the HW says it is enabled ?
 
+The CLK_IGNORE_UNUSED is there from the start of the clock framework, so
+there is no commit message that tells what it shall be used for. AFAIR
+the flag was thought for being used with clocks which should not be
+disabled, but had no driver initially that used them.
+Implementation of this flag was likely broken from the start as well,
+because in this situation:
+
+      a
+     / \
+    b   c (CLK_IGNORE_UNUSED)
+
+When clk b is enabled/disabled then the parent of clock c is disabled as
+well, so CLK_IGNORE_UNUSED doesn't help at all. In that sense your patch
+really improves things, because the above example would be fixed.
+
+Anyway, CLK_IGNORE_UNUSED is excessively used in the kernel, we have
+over 1000 clocks that have this flag set. With your patch all of a
+sudden all these clocks won't be disabled anymore and all these clocks
+will require some fixup to finally disable them when desired. I don't
+think this is a good idea.
+
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
