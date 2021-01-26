@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAAB304EDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46354304EE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391145AbhA0BKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:10:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59117 "EHLO
+        id S2391429AbhA0BN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:13:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39965 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388900AbhAZSW6 (ORCPT
+        by vger.kernel.org with ESMTP id S2392727AbhAZSXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:22:58 -0500
+        Tue, 26 Jan 2021 13:23:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611685290;
+        s=mimecast20190719; t=1611685294;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fJzmx/FDrJMCCLLcPZO2xno8mAW17V5sI1Mz8ht2blY=;
-        b=YsR6GkLRioQxsEtGYcineuASbefYOppmoQb/1I0+qkRO0C4zwuBrMMRpicZ5Ndo4c0Z8Vv
-        SP7mlKKdeDGye8RbqmpxMqeTsZzz8vXk/lioE2jUv0Hgy+rV5hHTfxyIGg1si48EvFsJKV
-        e8opDTmx5soyKOSinISNmaXQVxAAvM4=
+        bh=WPRqqg/hKvvV7tM4ellUlpmK/euLKyEJZWsNuDFTzlw=;
+        b=NTN+dcy78OIt6FZyZxIb3YYcQOKv6ZtJ5d2R7joio1mjd2tX7+ZCFiLUfOt8hGVKAEER6I
+        7BsoQOTncsxUKpqFJesDDef4n/fY1QWAO6ZmhyObszDFJu1Uw6pLperSnq9PHJozyLVVrD
+        5wJXIiiD6VPzxkuf8QowJ0ITiTSfk0A=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-HIxeCZ2DNiWixeoS2pS0Ug-1; Tue, 26 Jan 2021 13:21:26 -0500
-X-MC-Unique: HIxeCZ2DNiWixeoS2pS0Ug-1
+ us-mta-402-b7rwBjQNMmS8CtGWbXF7Vg-1; Tue, 26 Jan 2021 13:21:30 -0500
+X-MC-Unique: b7rwBjQNMmS8CtGWbXF7Vg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A7B9801817;
-        Tue, 26 Jan 2021 18:21:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 037E5107ACE8;
+        Tue, 26 Jan 2021 18:21:28 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7FA946F80A;
-        Tue, 26 Jan 2021 18:21:21 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B85D6F80A;
+        Tue, 26 Jan 2021 18:21:24 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, linux-fbdev@vger.kernel.org,
@@ -45,12 +45,10 @@ Cc:     linux-mm@kvack.org, linux-fbdev@vger.kernel.org,
         Mike Rapoport <rppt@kernel.org>,
         Oscar Salvador <osalvador@suse.de>,
         Michal Hocko <mhocko@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH v1 1/2] video: fbdev: acornfb: remove free_unused_pages()
-Date:   Tue, 26 Jan 2021 19:21:12 +0100
-Message-Id: <20210126182113.19892-2-david@redhat.com>
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [PATCH v1 2/2] mm: simplify free_highmem_page() and free_reserved_page()
+Date:   Tue, 26 Jan 2021 19:21:13 +0100
+Message-Id: <20210126182113.19892-3-david@redhat.com>
 In-Reply-To: <20210126182113.19892-1-david@redhat.com>
 References: <20210126182113.19892-1-david@redhat.com>
 MIME-Version: 1.0
@@ -60,8 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is never used and it is one of the last remaining user of
-__free_reserved_page(). Let's just drop it.
+adjust_managed_page_count() as called by free_reserved_page() properly
+handles pages in a highmem zone, so we can reuse it for
+free_highmem_page().
+
+We can now get rid of totalhigh_pages_inc() and simplify
+free_reserved_page().
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -70,58 +72,90 @@ Cc: Mike Rapoport <rppt@kernel.org>
 Cc: Oscar Salvador <osalvador@suse.de>
 Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/video/fbdev/acornfb.c | 34 ----------------------------------
- 1 file changed, 34 deletions(-)
+ include/linux/highmem-internal.h |  5 -----
+ include/linux/mm.h               | 16 ++--------------
+ mm/page_alloc.c                  | 11 -----------
+ 3 files changed, 2 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/video/fbdev/acornfb.c b/drivers/video/fbdev/acornfb.c
-index bcc92aecf666..1b72edc01cfb 100644
---- a/drivers/video/fbdev/acornfb.c
-+++ b/drivers/video/fbdev/acornfb.c
-@@ -921,40 +921,6 @@ static int acornfb_detect_monitortype(void)
- 	return 4;
+diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
+index 1bbe96dc8be6..7902c7d8b55f 100644
+--- a/include/linux/highmem-internal.h
++++ b/include/linux/highmem-internal.h
+@@ -127,11 +127,6 @@ static inline unsigned long totalhigh_pages(void)
+ 	return (unsigned long)atomic_long_read(&_totalhigh_pages);
  }
  
--/*
-- * This enables the unused memory to be freed on older Acorn machines.
-- * We are freeing memory on behalf of the architecture initialisation
-- * code here.
-- */
--static inline void
--free_unused_pages(unsigned int virtual_start, unsigned int virtual_end)
+-static inline void totalhigh_pages_inc(void)
 -{
--	int mb_freed = 0;
--
--	/*
--	 * Align addresses
--	 */
--	virtual_start = PAGE_ALIGN(virtual_start);
--	virtual_end = PAGE_ALIGN(virtual_end);
--
--	while (virtual_start < virtual_end) {
--		struct page *page;
--
--		/*
--		 * Clear page reserved bit,
--		 * set count to 1, and free
--		 * the page.
--		 */
--		page = virt_to_page(virtual_start);
--		__free_reserved_page(page);
--
--		virtual_start += PAGE_SIZE;
--		mb_freed += PAGE_SIZE / 1024;
--	}
--
--	printk("acornfb: freed %dK memory\n", mb_freed);
+-	atomic_long_inc(&_totalhigh_pages);
 -}
 -
- static int acornfb_probe(struct platform_device *dev)
+ static inline void totalhigh_pages_add(long count)
  {
- 	unsigned long size;
+ 	atomic_long_add(count, &_totalhigh_pages);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index a5d618d08506..494c69433a34 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2303,32 +2303,20 @@ extern void free_initmem(void);
+ extern unsigned long free_reserved_area(void *start, void *end,
+ 					int poison, const char *s);
+ 
+-#ifdef	CONFIG_HIGHMEM
+-/*
+- * Free a highmem page into the buddy system, adjusting totalhigh_pages
+- * and totalram_pages.
+- */
+-extern void free_highmem_page(struct page *page);
+-#endif
+-
+ extern void adjust_managed_page_count(struct page *page, long count);
+ extern void mem_init_print_info(const char *str);
+ 
+ extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+ 
+ /* Free the reserved page into the buddy system, so it gets managed. */
+-static inline void __free_reserved_page(struct page *page)
++static inline void free_reserved_page(struct page *page)
+ {
+ 	ClearPageReserved(page);
+ 	init_page_count(page);
+ 	__free_page(page);
+-}
+-
+-static inline void free_reserved_page(struct page *page)
+-{
+-	__free_reserved_page(page);
+ 	adjust_managed_page_count(page, 1);
+ }
++#define free_highmem_page(page) free_reserved_page(page)
+ 
+ static inline void mark_page_reserved(struct page *page)
+ {
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b031a5ae0bd5..b2e42f10d4d4 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7711,17 +7711,6 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+ 	return pages;
+ }
+ 
+-#ifdef	CONFIG_HIGHMEM
+-void free_highmem_page(struct page *page)
+-{
+-	__free_reserved_page(page);
+-	totalram_pages_inc();
+-	atomic_long_inc(&page_zone(page)->managed_pages);
+-	totalhigh_pages_inc();
+-}
+-#endif
+-
+-
+ void __init mem_init_print_info(const char *str)
+ {
+ 	unsigned long physpages, codesize, datasize, rosize, bss_size;
 -- 
 2.29.2
 
