@@ -2,91 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6B9303B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC46E303B2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404876AbhAZLIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:08:52 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:18927 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731602AbhAZGbu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 01:31:50 -0500
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 10Q6UflO000379;
-        Tue, 26 Jan 2021 15:30:41 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10Q6UflO000379
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1611642641;
-        bh=iVaE8IL3BJxmTNmvbOKH4R8adawBu8l6ZHniwssBbIw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xaAfKfEv9KCwzr40/PlSGZ6mtWVEZEtY96Qby5ePeFFxHwjTrvvPVH3RvTSBvAxow
-         zJkQ88d+rP5UY2+avG9lYCxmlQJoiFYyOw3WHy0A1ce/94XJ+Ap3RKPHVFFc+abu9D
-         f+2zL8IvSppf/5dx8i7BRRePdglIKfnk4JrfZok1sV78dyrsA66MHMUbENdOw6foVs
-         fTx9zWm1O4Js5EMAST0To82whkhYpF/m0g+m6N+gdA/k7ZXbtAtfg4nG9RXXMakTCe
-         Nh7AITfcSkUwEA3GEE5YSpFHpYZZN6z9Sk5CHW051lVxpPacgOIjukWp3u2WxKE8YE
-         xS6cLvOAry5iw==
-X-Nifty-SrcIP: [209.85.214.176]
-Received: by mail-pl1-f176.google.com with SMTP id 31so9235929plb.10;
-        Mon, 25 Jan 2021 22:30:41 -0800 (PST)
-X-Gm-Message-State: AOAM530taaRtw77IHUyIVjGAGxLXGdW5+D2lfuT2P13eChQR1wkW/738
-        blYzEPIqw5t4ZySgvLDl0xiT7DD2EHa04Q3m2xE=
-X-Google-Smtp-Source: ABdhPJy+7jU88obY9na00ufhW7PvUPgr5fiOuqVCD80+WRyTnU06O0/OflCyXFnPiKeY9a85NjSH5DgbnP60wo8nns4=
-X-Received: by 2002:a17:90a:9a84:: with SMTP id e4mr4435656pjp.87.1611642640784;
- Mon, 25 Jan 2021 22:30:40 -0800 (PST)
+        id S2404854AbhAZLJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:09:00 -0500
+Received: from verein.lst.de ([213.95.11.211]:46928 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387899AbhAZGil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 01:38:41 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 2442368B02; Tue, 26 Jan 2021 07:37:53 +0100 (CET)
+Date:   Tue, 26 Jan 2021 07:37:52 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/5] mm/vmalloc: remove map_kernel_range
+Message-ID: <20210126063752.GA26674@lst.de>
+References: <20210126045404.2492588-1-npiggin@gmail.com> <20210126045404.2492588-2-npiggin@gmail.com>
 MIME-Version: 1.0
-References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35>
- <3394639.6NgGvCfkNl@devpool47> <2525730.a3zTd9XyL1@devpool47>
-In-Reply-To: <2525730.a3zTd9XyL1@devpool47>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 26 Jan 2021 15:30:03 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQykaDV4DfOv2xzK1fQLEK_hVY3CamAWNXn+-ELJOJdiA@mail.gmail.com>
-Message-ID: <CAK7LNAQykaDV4DfOv2xzK1fQLEK_hVY3CamAWNXn+-ELJOJdiA@mail.gmail.com>
-Subject: Re: [PATCH v5] scripts: use pkg-config to locate libcrypto
-To:     Rolf Eike Beer <eb@emlix.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126045404.2492588-2-npiggin@gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:42 PM Rolf Eike Beer <eb@emlix.com> wrote:
->
-> Am Mittwoch, 13. Januar 2021, 13:49:12 CET schrieb Rolf Eike Beer:
-> > Otherwise build fails if the headers are not in the default location. W=
-hile
-> > at it also ask pkg-config for the libs, with fallback to the existing
-> > value.
->
-> Can someone please take this through the kbuild-tree? Noone seems to be
-> interested in picking this up so far.
->
-> Thanks,
->
-> Eike
-> --
-> Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-> Fon +49 551 30664-0, Fax +49 551 30664-11
-> Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
-> Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 31=
-60
-> Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-Id=
-Nr.: DE 205 198 055
->
-> emlix - smart embedded open source
+Looks good,
 
-
-
-Is 'PKG_CONFIG' necessary?
-
-I see many Makefiles hard-coding 'pkg-config'.
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+Reviewed-by: Christoph Hellwig <hch@lst.de>
