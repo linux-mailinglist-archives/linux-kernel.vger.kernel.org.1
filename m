@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA86303A2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F0B303A10
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbhAZK0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:26:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731988AbhAZBbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:31:07 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE6EC061BD1
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:13:06 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id o18so11177430qtp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:13:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RCicovIuFlmz+ypg8L3PoOuWlGavLF3Xg9FrMyiBxf8=;
-        b=FB2Tpuc1HrWHU67D7lihDbhcABDw5J5jULrlvaEJiPnINhch/RYMx7KL9QSB7Af8dY
-         eH5T39U+ajK31mQxL1tWTDvzMpIG97rSMoZXoSjD8DhGhUGc35qANZRwTXlDuQluhV13
-         Ql5lQPMXrM7LhYGrk7FkUEgp8wsEtvO5FzDN26ha0sAcxusN1/qGjE7U5vjZ158aS0+G
-         MPy3uXN88BmRua0FNN6IoBJSSK7zVWM4st6ypV63RN9lQ9q9+xjmW9rJC9qnDzaXN7t8
-         lBtssPvQLIz/CZJQMZIXYo/GnVdnm2+8Y4kXGKOPFxcqVA9HhwPemMQrEhpXii7XrXJ3
-         ItJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RCicovIuFlmz+ypg8L3PoOuWlGavLF3Xg9FrMyiBxf8=;
-        b=Vd/kFoxuAA8EFzTbseXsblWWE4JMuVW9LjMPMcd4XMxDC0yd/XTpPJGdiLaih1VJ/r
-         WjEk03R71XKrQ5S56qvke3qVZ3o1z+xY/PCPysyCa4aPfepLrVh9yUUEsFzaJNKYIx17
-         uu43yOXG8GwA7QptiJoQqXy1WvJgvH0rtlgVe94MkOVinzhQo0TlNPZGJrELeT2MG5EJ
-         aOXR2eCPTYkVP0eEjtNAdO8Re7gZk68zPS9FoFX0mRCNL5gKy9ONYD4KkYWP+cc6Rgvr
-         s3u/XG3b2u55LyUsTby47+uwMy7/0XcHKq4dfVczSv2Klb7C3/1elVMM324bZ4MNFV5N
-         wzWQ==
-X-Gm-Message-State: AOAM53019OgIDqZZ4N1dnkOhPutYN2+uKLgFXn08TzsPfgnI/BOAVpZl
-        E7bfn8JMrQv07b+IAaW+yv1V698YrAsy7lJF
-X-Google-Smtp-Source: ABdhPJxpdPeFFvMV3gAxS1etvOF2FWSYe21i1REZljAHSmM3iwf+cRwhsoyKqoNP4Os8WkMpKLF4aA==
-X-Received: by 2002:ac8:698a:: with SMTP id o10mr3184010qtq.242.1611623585887;
-        Mon, 25 Jan 2021 17:13:05 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id 16sm12266715qtp.38.2021.01.25.17.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 17:13:05 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l4Cum-006tPi-OX; Mon, 25 Jan 2021 21:13:04 -0400
-Date:   Mon, 25 Jan 2021 21:13:04 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Cc:     "Wangzhou (B)" <wangzhou1@hisilicon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        "linux-accelerators@lists.ozlabs.org" 
-        <linux-accelerators@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "chensihang (A)" <chensihang1@hisilicon.com>
-Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
-Message-ID: <20210126011304.GZ4605@ziepe.ca>
-References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
- <20210125154717.GW4605@ziepe.ca>
- <96b655ade2534a65974a378bb68383ee@hisilicon.com>
- <20210125231619.GY4605@ziepe.ca>
- <5f64a68042c64f37b5cba74028bd2189@hisilicon.com>
+        id S2391924AbhAZKTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:19:11 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:10112 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387445AbhAZBXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:23:34 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611624195; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=7OsIShq8IRb2YDHJ4/j58ebi3yNhkVmimR5GqE3wAqY=; b=kxK9ABfaS5POFEkIE+gsg72luKKcR7jhH/AuesATUpjKPNwHB4WQ0fpVv/15tOUXWbTzmCA7
+ mEbBXxrw4f1D/+8zqGywJDGjYQgRl1QLkGgtGf979m8QAUm1NmqI6LZh/FtPZXZEt5jFTMHe
+ XB3J6AGZCNEZZbJOKwqXR42MULQ=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 600f6cfe5677aca7bd490ac0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 26 Jan 2021 01:14:38
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D725AC43463; Tue, 26 Jan 2021 01:14:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.78.65] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91F3AC433C6;
+        Tue, 26 Jan 2021 01:14:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91F3AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v6 3/4] usb: dwc3: Resize TX FIFOs to meet EP bursting
+ requirements
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, peter.chen@nxp.com,
+        jackp@codeaurora.org
+References: <1611288100-31118-1-git-send-email-wcheng@codeaurora.org>
+ <1611288100-31118-4-git-send-email-wcheng@codeaurora.org>
+ <YAsHbj/mITeiY5Cq@builder.lan>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <724cb274-36ce-fb48-a156-4eaf9e686fdf@codeaurora.org>
+Date:   Mon, 25 Jan 2021 17:14:35 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f64a68042c64f37b5cba74028bd2189@hisilicon.com>
+In-Reply-To: <YAsHbj/mITeiY5Cq@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 11:35:22PM +0000, Song Bao Hua (Barry Song) wrote:
 
-> > On Mon, Jan 25, 2021 at 10:21:14PM +0000, Song Bao Hua (Barry Song) wrote:
-> > > mlock, while certainly be able to prevent swapping out, it won't
-> > > be able to stop page moving due to:
-> > > * memory compaction in alloc_pages()
-> > > * making huge pages
-> > > * numa balance
-> > > * memory compaction in CMA
-> > 
-> > Enabling those things is a major reason to have SVA device in the
-> > first place, providing a SW API to turn it all off seems like the
-> > wrong direction.
+
+On 1/22/2021 9:12 AM, Bjorn Andersson wrote:
+> On Thu 21 Jan 22:01 CST 2021, Wesley Cheng wrote:
 > 
-> I wouldn't say this is a major reason to have SVA. If we read the
-> history of SVA and papers, people would think easy programming due
-> to data struct sharing between cpu and device, and process space
-> isolation in device would be the major reasons for SVA. SVA also
-> declares it supports zero-copy while zero-copy doesn't necessarily
-> depend on SVA.
 
-Once you have to explicitly make system calls to declare memory under
-IO, you loose all of that.
+Hi Bjorn,
+> 
+> Under what circumstances should we specify this? And in particular are
+> there scenarios (in the Qualcomm platforms) where this must not be set?
+>The TXFIFO dynamic allocation is actually a feature within the DWC3
+controller, and isn't specifically for QCOM based platforms.  It won't
+do any harm functionally if this flag is not set, as this is meant for
+enhancing performance/bandwidth.
 
-Since you've asked the app to be explicit about the DMAs it intends to
-do, there is not really much reason to use SVA for those DMAs anymore.
+> In particular, the composition can be changed in runtime, so should we
+> set this for all Qualcomm platforms?
+> 
+Ideally yes, if we want to increase bandwith for situations where SS
+endpoint bursting is set to a higher value.
 
-Jason
+> And if that's the case, can we not just set it from the qcom driver?
+> 
+Since this is a common DWC3 core feature, I think it would make more
+sense to have it in DWC3 core instead of a vendor's DWC3 glue driver.
+
+Thanks
+Wesley Cheng
+
+> Regards,
+> Bjorn
+
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
