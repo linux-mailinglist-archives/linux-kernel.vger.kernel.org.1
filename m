@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9078E304EEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0C0304EF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392161AbhA0B3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:29:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390018AbhAZSbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:31:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 620E32224C;
-        Tue, 26 Jan 2021 18:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611685871;
-        bh=hwpSfinBZDh5+w+x/QjBXQLW3oRDY80SILSq+Y5HHDo=;
+        id S2404267AbhA0B3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:29:18 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:53987 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730929AbhAZSdY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:33:24 -0500
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 10QIVnHR008303;
+        Wed, 27 Jan 2021 03:31:49 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10QIVnHR008303
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611685909;
+        bh=/cbf7e8LmV7x9OtCuoBUae5y80EWIXt9JqqUtFKiUGQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DbOc4zipI517A/lToLn+hLdBxnb+4ETZgccGUoDS8yTx9I8CKUKe43KkrBpH2KNhG
-         e0TC9cE2cVJ36WFnsJ5mT095cOpAHT5QBmTtwlylevIm6IP0hcaSUAzzfro3uxMJIF
-         ftPMqQ63SPF0NLgoBnzcnp/s94+cuxluyG8rzolofAm/h1bKrECj7/ccYV4kmB1vRP
-         F3OJZfdJjkZSOKkNmVSk39VQGoAJkWiDpZdGvacm5sx9jttzp/E0xjt64kZQM1LItN
-         4uizTTRZqSBEgLk+gwWSVJbledYwceh17445fTuiVRxVGoXCXXuARoGHCK/hClwAoG
-         sMu42Mx2KdqFg==
-Received: by mail-qk1-f175.google.com with SMTP id x81so14041717qkb.0;
-        Tue, 26 Jan 2021 10:31:11 -0800 (PST)
-X-Gm-Message-State: AOAM532aqv1C31Bb7aQWOAOMfsnMtd3ajgVQFfokF2vfpvpQBkAUz0Yy
-        g6+e7zqNEHRYM4iHXVAoFNYOnpZ4D1fK8nGDrw==
-X-Google-Smtp-Source: ABdhPJx5ciP8LyJGQSq/H1+pseWon7Ig+U4yOWlMwo2IZRc9cg1vUsBdUbLWYhYdqnQx92cYs4tCNXh/KuAPK0M0fVw=
-X-Received: by 2002:a37:642:: with SMTP id 63mr6985257qkg.311.1611685870559;
- Tue, 26 Jan 2021 10:31:10 -0800 (PST)
+        b=rxycYHt8rCDfLSHGFXvlHRXizbEMfEEz9NHGNRQbyY35IfYEGaF+rJ3r/IVkCBrck
+         f16WOjgwPsGIb6FKuNTTWsZQXFca12XpglKRd+MB0Ufwq5GUMcD7rTVgJCZDPXJOeT
+         ZhBHe/T84o8zqoXH4CyUh4A+fDjSFGAUQvgC5RufEmFGURABCGWFgCOQ+ld5XaYQ2a
+         xxTpSn+9k0+zEByg5UTYWdI6LqVIfOsS8y2URi4Lg8i2uiCo/aANu7jFcqEIDsscBV
+         MeSf1I51Da5WSSZYfhUwbkK1F5c9FJxVDdFdtXOPlBeQQYhDDKeXwbbZ9fbiMqVOM2
+         +IN6JWgOnCl4Q==
+X-Nifty-SrcIP: [209.85.215.175]
+Received: by mail-pg1-f175.google.com with SMTP id c132so11997138pga.3;
+        Tue, 26 Jan 2021 10:31:49 -0800 (PST)
+X-Gm-Message-State: AOAM533D55PuOtXwBpezd5kwaV4i6L2esi9ZordAq7/cCmDyernsBeyz
+        u26b7Hms0lFMAHJn6xt2W+2gLYmTrfRvakrqRzI=
+X-Google-Smtp-Source: ABdhPJyI9P2i1eBVt1LJ8nZ/tmGy3m7Kd7gmq+2nA5uZ+g8cMWLfh9ilb8p7qv4I5POT6DncROCedKctHD/HTs8qyzA=
+X-Received: by 2002:aa7:8602:0:b029:1bb:4dfd:92fc with SMTP id
+ p2-20020aa786020000b02901bb4dfd92fcmr6488077pfn.63.1611685908608; Tue, 26 Jan
+ 2021 10:31:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20210123034428.2841052-1-swboyd@chromium.org> <20210123034428.2841052-6-swboyd@chromium.org>
-In-Reply-To: <20210123034428.2841052-6-swboyd@chromium.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 26 Jan 2021 12:30:58 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJbdfhqNF4xgues0Rm7KS8_8Xq2767q7DcdyeQ_Vqb58Q@mail.gmail.com>
-Message-ID: <CAL_JsqJbdfhqNF4xgues0Rm7KS8_8Xq2767q7DcdyeQ_Vqb58Q@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] hwmon: (lm70) Avoid undefined reference to match table
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Linux HWMON List <linux-hwmon@vger.kernel.org>
+References: <20210120040403.2897639-1-masahiroy@kernel.org>
+In-Reply-To: <20210120040403.2897639-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 27 Jan 2021 03:31:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARqYOEySMvVQx31KPOPKeB+UZ3wn4-NF2qcGf=ajOdsyw@mail.gmail.com>
+Message-ID: <CAK7LNARqYOEySMvVQx31KPOPKeB+UZ3wn4-NF2qcGf=ajOdsyw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: stop removing stale <linux/version.h> file
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 9:44 PM Stephen Boyd <swboyd@chromium.org> wrote:
+On Wed, Jan 20, 2021 at 1:04 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> We're going to remove of_match_ptr() from the definition of
-> of_match_device() when CONFIG_OF=n. This way we can always be certain
-> that of_match_device() acts the same when CONFIG_OF is set and when it
-> isn't. Add of_match_ptr() here so that this doesn't break when that
-> change is made to the of_match_device() API.
+> Revert commit 223c24a7dba9 ("kbuild: Automatically remove stale
+> <linux/version.h> file").
 >
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> Acked-by: Guenter Roeck <linux@roeck-us.net>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Jean Delvare <jdelvare@suse.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: <linux-hwmon@vger.kernel.org>
+> It was more than 6 years ago. I do not expect anybody to start
+> git-bisect for such a big window.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->
-> Please ack so Rob can apply.
->
->  drivers/hwmon/lm70.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/hwmon/lm70.c b/drivers/hwmon/lm70.c
-> index ae2b84263a44..e3153ae80634 100644
-> --- a/drivers/hwmon/lm70.c
-> +++ b/drivers/hwmon/lm70.c
-> @@ -178,7 +178,7 @@ static int lm70_probe(struct spi_device *spi)
->         struct lm70 *p_lm70;
->         int chip;
->
-> -       of_match = of_match_device(lm70_of_ids, &spi->dev);
-> +       of_match = of_match_device(of_match_ptr(lm70_of_ids), &spi->dev);
->         if (of_match)
->                 chip = (int)(uintptr_t)of_match->data;
 
-Why can't this do:
+Applied to linux-kbuild.
 
-if (spi->dev.of_node)
-    chip = (int)(uintptr_t)of_device_get_match_data();
-else {
 
->         else {
+
+>  Makefile | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 23d0494e48bc..ebbf7158dfa0 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -257,7 +257,6 @@ export building_out_of_srctree srctree objtree VPATH
+>  # of make so .config is not included in this case either (for *config).
+>
+>  version_h := include/generated/uapi/linux/version.h
+> -old_version_h := include/linux/version.h
+>
+>  clean-targets := %clean mrproper cleandocs
+>  no-dot-config-targets := $(clean-targets) \
+> @@ -1261,7 +1260,6 @@ endef
+>
+>  $(version_h): FORCE
+>         $(call filechk,version.h)
+> -       $(Q)rm -f $(old_version_h)
+>
+>  include/generated/utsrelease.h: include/config/kernel.release FORCE
+>         $(call filechk,utsrelease.h)
 > --
-> https://chromeos.dev
+> 2.27.0
 >
+
+
+-- 
+Best Regards
+Masahiro Yamada
