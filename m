@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6360304F42
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A7F304F38
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405459AbhA0BrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:47:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
+        id S2405231AbhA0BoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395045AbhAZTEZ (ORCPT
+        with ESMTP id S1731563AbhAZS5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:04:25 -0500
-X-Greylist: delayed 460 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 26 Jan 2021 11:03:45 PST
-Received: from iam.tj (unknown [IPv6:2a01:7e00:e000:151::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E56FC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 11:03:45 -0800 (PST)
-Received: from [IPv6:2a02:8011:2007:0:37a2:855e:7ada:e97f] (unknown [IPv6:2a02:8011:2007:0:37a2:855e:7ada:e97f])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        by iam.tj (Postfix) with ESMTPSA id 93A01340F6;
-        Tue, 26 Jan 2021 18:56:00 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=elloe.vision; s=2019;
-        t=1611687361; bh=pW5BRli1GLGipBIINvB0TPU8uc9pLCA7uO+KzYIjKp0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QLqnp4U75FOJmxWaBj47zhyMtwv3z5qUoxEt5iy32Ze+uuN88tnXz0r1iCIZ7WIty
-         6mRj29gYHxQjrtcJPbgRYD1DPb0GLMryd4SMtro3kaMNV9DqQri6LRSK8QNrmONmZi
-         LJlRxWa0Up0K/csa1kOPlL7iPM6Lxka35SVEP07pdF7C+cEDqaaSNmEFchORoB4/Yg
-         ACjc2fYPdB2azFATIu/EKw7W9Cu+xsF7wgxyqxA2H8vRQeIco1+oOKWrFg9FFOeX3c
-         WMHTLnP7ttgzlspCye1Gw/Q9QPvWJ/pBVwhKdKu72Y4S5bZ+JCyk9EFO8vGVlUZ5Wv
-         13uxMcGjh+1GA==
-Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Dirk Gouders <dirk@gouders.net>
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-References: <20210123014247.989368-1-lma@semihalf.com>
- <20210125171846.GA31929@roeck-us.net>
- <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
- <a0249ad7b498e6f1cc065814350e145a07e92d37.camel@HansenPartnership.com>
-From:   "Tj (Elloe Linux)" <ml.linux@elloe.vision>
-Organization: Elloe CIC
-Message-ID: <31c50c4f-487f-1977-2962-4a138b0d0ecc@elloe.vision>
-Date:   Tue, 26 Jan 2021 18:55:59 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 26 Jan 2021 13:57:48 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3FDC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:07 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id u17so35865017iow.1
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 10:57:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fou4Lq6mqe4XTJhzFND5pizo3LVmYALorA/wjxT+0ac=;
+        b=sGHnTtrj7FyNa6xiPsUCJAQMIsP0G9PyW0J+KcYlWeD++uJfn/ri7o4fQVl2Wm3THE
+         nWH+BpbHA6wOFpNLmYOxmkx97tE/08Vt0JX0eUhm9vr+EpzlHS94rtgKJpioumwq7A65
+         XCM3t98NxMXAFgwOeo8mcALYUGhSCzTXjZZagAzD5Nbo8XVMomgpr6Q/2tRz6XRXj2Ck
+         ToGrFmVcI2fX4elaUatKAWqZwLQVWU0pulrJED5Qfgu6ZdvayZZPTlk7wS2vp1GJqmoA
+         4aOYISeZvG58f6p/Sf8nEuJQEwdN2IBQp8pCv/NeRBb6YNeDqUaLguF/HJoApyxAcoDH
+         NZwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Fou4Lq6mqe4XTJhzFND5pizo3LVmYALorA/wjxT+0ac=;
+        b=kuf8dm2X2rjOCiZ9ghDh39X3g7qKjTx/EUg+zwb/GtPiufryFGo00N24+oNCLIjIGJ
+         xzj5buVkftqGBIApUb9szeV7U8+dhx8k82EmmHhV1epgduaKR7OApN0wgSTeaHeyCKF6
+         NcEDodAACrOg3LTxPEpNSRtqkGIknWaQv8FN5wNB6FZqEUknfEHH10q8kdDMcaI6Kpu8
+         mTIj9n56RMTXEexiiQSv4ZLBlR/LATXCESbXNRBcdWIRzT/ezmz7dxXQ/wlcM/JCQiY7
+         FHOHMLRtDNizVkOEibcKAUfet0Sv+ZUgtNzwpkEWotkCx6iTYikdCbMjlM+HVHAYxNow
+         oUqQ==
+X-Gm-Message-State: AOAM530JqfWKTNdTeFU1t1D5z+rKyHFqtqr2zjiN+kNM3+MkNbZcNTA7
+        5HZ4j4Mdz8Cv/gapTdRQuoEn6OhUZWPpJg==
+X-Google-Smtp-Source: ABdhPJy00gWpHXop/6jAzwA1TFCJ+LKJEXem6EQ1XuR1YkA5x/dJKi//oToRJjc3Rywwt8gJTYOXjQ==
+X-Received: by 2002:a02:c80a:: with SMTP id p10mr5928747jao.3.1611687427249;
+        Tue, 26 Jan 2021 10:57:07 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id l14sm13060681ilh.58.2021.01.26.10.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 10:57:06 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/6] net: ipa: hardware pipeline cleanup fixes
+Date:   Tue, 26 Jan 2021 12:56:57 -0600
+Message-Id: <20210126185703.29087-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <a0249ad7b498e6f1cc065814350e145a07e92d37.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/01/2021 16:46, James Bottomley wrote:
-> On Tue, 2021-01-26 at 16:46 +0100, Łukasz Majczak wrote:
->> Hi Jarkko, Guenter
->>
->> Yes, here are the logs when failure occurs -
->> https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
->> Look for a phrase "TPM returned invalid status"
-> 
-> We've had other reports of this:
-> 
-> https://lore.kernel.org/linux-integrity/ghsgagsnag.fsf@gouders.net/
-> https://lore.kernel.org/linux-integrity/374e918c-f167-9308-2bea-ae6bc6a3d2e3@elloe.vision/
-> 
-> The problem is some TIS TPMs don't begin in the correct locality so we
-> have to set it.  When I proposed the check, I also proposed a fix for
-> this problem:
-> 
-> https://lore.kernel.org/linux-integrity/20201001180925.13808-5-James.Bottomley@HansenPartnership.com/
-> 
-This patch solves the error messages on top of -rc5
+Version 2 of this series fixes a "restricted __le16 degrades to
+integer" warning from sparse in the third patch.  The normal host
+architecture is little-endian, so the problem did not produce
+incorrect behavior, but the code was wrong not to perform the
+endianness conversion.  The updated patch uses le16_get_bits() to
+properly extract the value of the field we're interested in.
 
-> But it's part of a series that never went upstream.  Part of the reason
-> was Jarkko proposed the get/put patch to fix this instead, but that
-> never went upstream either.  We need to decide an approach and apply
-> one or other fixes.
-> 
-> James
-> 
-> 
+Everything else remains the same.  Below is the original description.
+
+					-Alex
+
+There is a procedure currently referred to as a "tag process" that
+is performed to clear the IPA hardware pipeline--either at the time
+of a modem crash, or when suspending modem GSI channels.
+
+One thing done in this procedure is issuing a command that sends a
+data packet originating from the AP->command TX endpoint, destined
+for the AP<-LAN RX (default) endpoint.  And although we currently
+wait for the send to complete, we do *not* wait for the packet to be
+received.  But the pipeline can't be assumed clear until we have
+actually received this packet.
+
+This series addresses this by detecting when the pipeline-clearing
+packet has been received, and using a completion to allow a waiter
+to know when that has happened.  This uses the IPA status capability
+(which sends an extra status buffer for certain packets).  It also
+uses the ability to supply a "tag" with a packet, which will be
+delivered with the packet's status buffer.  We tag the data packet
+that's sent to clear the pipeline, and use the receipt of a status
+buffer associated with a tagged packet to determine when that packet
+has arrived.
+
+"Tag status" just desribes one aspect of this procedure, so some
+symbols are renamed to be more like "pipeline clear" so they better
+describe the larger purpose.  Finally, two functions used in this
+code don't use their arguments, so those arguments are removed.
+
+					-Alex
+
+Alex Elder (6):
+  net: ipa: rename "tag status" symbols
+  net: ipa: minor update to handling of packet with status
+  net: ipa: drop packet if status has valid tag
+  net: ipa: signal when tag transfer completes
+  net: ipa: don't pass tag value to ipa_cmd_ip_tag_status_add()
+  net: ipa: don't pass size to ipa_cmd_transfer_add()
+
+ drivers/net/ipa/ipa.h          |  2 +
+ drivers/net/ipa/ipa_cmd.c      | 45 +++++++++++++------
+ drivers/net/ipa/ipa_cmd.h      | 24 ++++++-----
+ drivers/net/ipa/ipa_endpoint.c | 79 ++++++++++++++++++++++++++--------
+ drivers/net/ipa/ipa_main.c     |  1 +
+ 5 files changed, 109 insertions(+), 42 deletions(-)
+
+-- 
+2.20.1
 
