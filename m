@@ -2,208 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41504304F14
-	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D572C304F11
+	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 02:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392319AbhA0Blh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:41:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47941 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2394836AbhAZSob (ORCPT
+        id S2392302AbhA0Bl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393932AbhAZSoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:44:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611686582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KGHdetCJush3K+fWXeFM7UR5m16TdWTXEUMSsFL3aak=;
-        b=CG9EKbSevOmtCUjNNxmoaQfCR8z04SjMXR0RNeosaml64SrlY0sZFVDXNCtF7GQdO5e7Vj
-        3Ob8v0Z7BheKqIAWrACLE9M0K3iIg+vO+0nRkQ4sBdBwUJtFpNzVv2MERSxMLh+mzRiETC
-        XcEQ8jTPG/8uwdGnWEreKKbpAYQpgEk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-277-5chqgj35MoeUn93n_XVp9Q-1; Tue, 26 Jan 2021 13:43:00 -0500
-X-MC-Unique: 5chqgj35MoeUn93n_XVp9Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28C111005504;
-        Tue, 26 Jan 2021 18:42:58 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 76BE65D761;
-        Tue, 26 Jan 2021 18:42:49 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 13:42:46 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v24 21/25] audit: add support for non-syscall auxiliary
- records
-Message-ID: <20210126184246.GM1762914@madcap2.tricolour.ca>
-References: <20210126164108.1958-1-casey@schaufler-ca.com>
- <20210126164108.1958-22-casey@schaufler-ca.com>
+        Tue, 26 Jan 2021 13:44:06 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CBAC061573;
+        Tue, 26 Jan 2021 10:43:26 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id u4so2762377pjn.4;
+        Tue, 26 Jan 2021 10:43:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U3RPz+yz5AMp3COYBrptJ7ltjHtzj0/cdcpauOw8WBU=;
+        b=X9aY9/+Zz6rhHUHSCZi31LIkXY402OPSNF3bjd6GPjxm8bY4WDKzggONJr69N4Ix4L
+         Nw05q4kEsfsEsKecwQFLcm/cWozvVyRgoOUk+RmDk+SS9UdPE8/VkxMkr4YemvykFzhn
+         V++o1omImUL9IBmeNUXQiWL0QpbIUR1m5g+aBGI7qdyCK2BFQ5NuQ4cfrd/Vp5/Rb3g5
+         7L3OosH1bkTXY+Z1GyobTc6ag2rF+3FS7tf9gi8OEPZvMjhxjYWmVnKuOs8CPx1Fg37I
+         nHGaWfVRVZrgD0qABG2SByGBi9iTMPRViI25LYaHCAWuHNyRMAEPBAbd/bzDGglCFYib
+         8buw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U3RPz+yz5AMp3COYBrptJ7ltjHtzj0/cdcpauOw8WBU=;
+        b=QZOoKaDOLjsMHc0kakWYcUMlU0saYRzAO8ztke9/eVRnRGjYiUDG4/lYUdqUyzGjXb
+         BinCkJ/fV6QOSg6a8yNdD9cCzgzNC68BS0kv/X5oohQSCuCI0FhhBvZcnB6Z4I7bRwXW
+         1onkHEfdYpi6hShIw00qz2zTFDo1wdnDX8Z7p92FxsV5V1h496cVfsYE9ltLBR90itgP
+         qwp35yI994ADTafGPp2ZSj8A1v+1NR3YeYOYpLkgLqUuxhHfon/4N8qFD7NfeezSvrxO
+         giAvyWx3jlrjTQuIKoMS5R3p8n79N6I64sK6rfB3H05B+iNPiC0MxzFmtJHwTqbrF7UD
+         IOTw==
+X-Gm-Message-State: AOAM531LKOUpdAb+6G4t8pj71pWFxLo8w7R5qSHLQ7CsUHfUuFmocHnJ
+        cKDSkTJCXxxUH/nDaJiSV+DaXYP/3F7wRIM1n5M=
+X-Google-Smtp-Source: ABdhPJz0urdgQobV9Pm2eFglcydn6H6KKBed1DlnJTCPTUYjCfBAxGqjD4LQfmC85lP4UALqC0O4vD4il/DeUkg3UrI=
+X-Received: by 2002:a17:90b:716:: with SMTP id s22mr1156878pjz.223.1611686606310;
+ Tue, 26 Jan 2021 10:43:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126164108.1958-22-casey@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201220065025.116516-1-goldstein.w.n@gmail.com>
+ <0cdf2aac-6364-742d-debb-cfd58b4c6f2b@gmail.com> <20201222021043.GA139782@gmail.com>
+ <32c9ce7e-569d-3f94-535e-00e072de772e@gmail.com> <CAFUsyf+m8SseZ1NzZoYJe4KSH30v-XJeP5P9FvtxQT_5bvsK9Q@mail.gmail.com>
+ <792d56e4-b258-65b4-d0b5-dbfd728d5a02@gmail.com>
+In-Reply-To: <792d56e4-b258-65b4-d0b5-dbfd728d5a02@gmail.com>
+From:   Noah Goldstein <goldstein.w.n@gmail.com>
+Date:   Tue, 26 Jan 2021 13:43:15 -0500
+Message-ID: <CAFUsyfK8OSDzfNCCwVPD8O=Fp0XSHWQ+HRCiC36BA-rH+c9D7g@mail.gmail.com>
+Subject: Re: [PATCH] fs: io_uring.c: Add skip option for __io_sqe_files_update
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     noah <goldstein.n@wustl.edu>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "open list:IO_URING" <io-uring@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-26 08:41, Casey Schaufler wrote:
-> Standalone audit records have the timestamp and serial number generated
-> on the fly and as such are unique, making them standalone.  This new
-> function audit_alloc_local() generates a local audit context that will
-> be used only for a standalone record and its auxiliary record(s).  The
-> context is discarded immediately after the local associated records are
-> produced.
-> 
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: linux-audit@redhat.com
-> To: Richard Guy Briggs <rgb@redhat.com>
+On Tue, Jan 26, 2021 at 12:24 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> On 26/01/2021 17:14, Noah Goldstein wrote:
+> > On Tue, Jan 26, 2021 at 7:29 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> >>
+> >> On 22/12/2020 02:10, Noah Goldstein wrote:
+> >>> On Sun, Dec 20, 2020 at 03:18:05PM +0000, Pavel Begunkov wrote:
+> >>>> On 20/12/2020 06:50, noah wrote:> From: noah <goldstein.n@wustl.edu>
+> >>>>>
+> >>>>> This patch makes it so that specify a file descriptor value of -2 will
+> >>>>> skip updating the corresponding fixed file index.
+> >>>>>
+> >>>>> This will allow for users to reduce the number of syscalls necessary
+> >>>>> to update a sparse file range when using the fixed file option.
+> >>>>
+> >>>> Answering the github thread -- it's indeed a simple change, I had it the
+> >>>> same day you posted the issue. See below it's a bit cleaner. However, I
+> >>>> want to first review "io_uring: buffer registration enhancements", and
+> >>>> if it's good, for easier merging/etc I'd rather prefer to let it go
+> >>>> first (even if partially).
+> >>
+> >> Noah, want to give it a try? I've just sent a prep patch, with it you
+> >> can implement it cleaner with one continue.
+> >
+> >  Absolutely. Will get on it ASAP.
+>
+> Perfect. Even better if you add a liburing test
+>
+> --
+> Pavel Begunkov
 
-This has been minorly bothering me for several revisions...  Is there a
-way for the development/authorship to be accurately reflected
-if/when this patch is merged before the contid patch set?
+Do you think the return value should not include files skipped?
 
-> ---
->  include/linux/audit.h |  8 ++++++++
->  kernel/audit.h        |  1 +
->  kernel/auditsc.c      | 33 ++++++++++++++++++++++++++++-----
->  3 files changed, 37 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/audit.h b/include/linux/audit.h
-> index 418a485af114..97cd7471e572 100644
-> --- a/include/linux/audit.h
-> +++ b/include/linux/audit.h
-> @@ -289,6 +289,8 @@ static inline int audit_signal_info(int sig, struct task_struct *t)
->  				/* Public API */
->  extern int  audit_alloc(struct task_struct *task);
->  extern void __audit_free(struct task_struct *task);
-> +extern struct audit_context *audit_alloc_local(gfp_t gfpflags);
-> +extern void audit_free_context(struct audit_context *context);
->  extern void __audit_syscall_entry(int major, unsigned long a0, unsigned long a1,
->  				  unsigned long a2, unsigned long a3);
->  extern void __audit_syscall_exit(int ret_success, long ret_value);
-> @@ -552,6 +554,12 @@ static inline void audit_log_nfcfg(const char *name, u8 af,
->  extern int audit_n_rules;
->  extern int audit_signals;
->  #else /* CONFIG_AUDITSYSCALL */
-> ++static inline struct audit_context *audit_alloc_local(gfp_t gfpflags)
-> +{
-> +	return NULL;
-> +}
-> +static inline void audit_free_context(struct audit_context *context)
-> +{ }
->  static inline int audit_alloc(struct task_struct *task)
->  {
->  	return 0;
-> diff --git a/kernel/audit.h b/kernel/audit.h
-> index ce41886807bb..3f2285e1c6e0 100644
-> --- a/kernel/audit.h
-> +++ b/kernel/audit.h
-> @@ -99,6 +99,7 @@ struct audit_proctitle {
->  struct audit_context {
->  	int		    dummy;	/* must be the first element */
->  	int		    in_syscall;	/* 1 if task is in a syscall */
-> +	bool		    local;	/* local context needed */
->  	enum audit_state    state, current_state;
->  	unsigned int	    serial;     /* serial number for record */
->  	int		    major;      /* syscall number */
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index de2b2ecb3aea..479b3933d788 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -927,11 +927,13 @@ static inline void audit_free_aux(struct audit_context *context)
->  	}
->  }
->  
-> -static inline struct audit_context *audit_alloc_context(enum audit_state state)
-> +static inline struct audit_context *audit_alloc_context(enum audit_state state,
-> +							gfp_t gfpflags)
->  {
->  	struct audit_context *context;
->  
-> -	context = kzalloc(sizeof(*context), GFP_KERNEL);
-> +	/* We can be called in atomic context via audit_tg() */
-> +	context = kzalloc(sizeof(*context), gfpflags);
->  	if (!context)
->  		return NULL;
->  	context->state = state;
-> @@ -967,7 +969,8 @@ int audit_alloc(struct task_struct *tsk)
->  		return 0;
->  	}
->  
-> -	if (!(context = audit_alloc_context(state))) {
-> +	context = audit_alloc_context(state, GFP_KERNEL);
-> +	if (!context) {
->  		kfree(key);
->  		audit_log_lost("out of memory in audit_alloc");
->  		return -ENOMEM;
-> @@ -979,8 +982,27 @@ int audit_alloc(struct task_struct *tsk)
->  	return 0;
->  }
->  
-> -static inline void audit_free_context(struct audit_context *context)
-> +struct audit_context *audit_alloc_local(gfp_t gfpflags)
->  {
-> +	struct audit_context *context = NULL;
-> +
-> +	context = audit_alloc_context(AUDIT_RECORD_CONTEXT, gfpflags);
-> +	if (!context) {
-> +		audit_log_lost("out of memory in audit_alloc_local");
-> +		goto out;
-> +	}
-> +	context->serial = audit_serial();
-> +	ktime_get_coarse_real_ts64(&context->ctime);
-> +	context->local = true;
-> +out:
-> +	return context;
-> +}
-> +EXPORT_SYMBOL(audit_alloc_local);
-> +
-> +void audit_free_context(struct audit_context *context)
-> +{
-> +	if (!context)
-> +		return;
->  	audit_free_module(context);
->  	audit_free_names(context);
->  	unroll_tree_refs(context, NULL, 0);
-> @@ -991,6 +1013,7 @@ static inline void audit_free_context(struct audit_context *context)
->  	audit_proctitle_free(context);
->  	kfree(context);
->  }
-> +EXPORT_SYMBOL(audit_free_context);
->  
->  static int audit_log_pid_context(struct audit_context *context, pid_t pid,
->  				 kuid_t auid, kuid_t uid,
-> @@ -2214,7 +2237,7 @@ EXPORT_SYMBOL_GPL(__audit_inode_child);
->  int auditsc_get_stamp(struct audit_context *ctx,
->  		       struct timespec64 *t, unsigned int *serial)
->  {
-> -	if (!ctx->in_syscall)
-> +	if (!ctx->in_syscall && !ctx->local)
->  		return 0;
->  	if (!ctx->serial)
->  		ctx->serial = audit_serial();
-> -- 
-> 2.25.4
-> 
+i.e register fds[1, 2, 3, -1] with no errors returns 4. should fds[1,
+2, -2, -1] return 3 or 4 do you think?
 
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+Personally think the latter makes more sense. Thoughts?
