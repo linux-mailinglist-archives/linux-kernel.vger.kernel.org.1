@@ -2,69 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2DC304F47
+	by mail.lfdr.de (Postfix) with ESMTP id 7A959304F48
 	for <lists+linux-kernel@lfdr.de>; Wed, 27 Jan 2021 03:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbhA0Btv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 20:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395046AbhAZTHr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 14:07:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB241C061793;
-        Tue, 26 Jan 2021 11:07:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=+LdD4/VTbZAQ6DFaSKzwl0erv/Zz82bmpJz90Y/Ti+E=; b=lXdSsEG2toGD3XVnQM4rlf5HkO
-        N4dAirEAHHqP0fEWBn6q+IphMYZIU+5ChKkDt4jkoAaGCtgMF4J/f7VUM0TBH1hZQ7N5E4CC0JKEs
-        uSgLip0FeP/6aM+vYhO4o2DlfDMs0tpvf7OPzcnM0cmpPFVtFbM9ZhnJZD8BatvUXcvkyn1judml9
-        zrzfVEDdKZ6J9UInWGr8KFjGcomFxBglZM0VZ0UQjlqD7DCgeK4uzRovhUn7YP9Jt211dt6JREiAA
-        GFelQZlVe8bz6xRLgUvvM2jbtEXONaZBMUShDmjdvQlFcP6rdHHZCFQgaD3Y9GMmjgzsc8u6bkWio
-        q3eJmiqQ==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4Tg7-00027N-Oz; Tue, 26 Jan 2021 19:07:04 +0000
-Subject: Re: Getting a new fs in the kernel
-To:     Amy Parker <enbyamy@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CAE1WUT7xJyx_gbxJu3r9DJGbqSkWZa-moieiDWC0bue2CxwAwg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <767fac1c-3763-2991-37fb-2291246d5464@infradead.org>
-Date:   Tue, 26 Jan 2021 11:06:58 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <CAE1WUT7xJyx_gbxJu3r9DJGbqSkWZa-moieiDWC0bue2CxwAwg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1728303AbhA0BuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 20:50:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2395057AbhAZTHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 14:07:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D9B5922228;
+        Tue, 26 Jan 2021 19:07:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611688028;
+        bh=hrKRaJ0folIsgpSOswzJs0BTbJYM+fV3ceV+e1S9cyw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=CNerbn92HfAFwNdSyifPwE/ZpMcz5J/CWfMpuQIL0bPBr+kdL4kmLnHIabEVqLcxd
+         0WVhq7zzxkbzvH09TXHYjjuD89QqUGmxxakLXYk3n1IFxwqkjyzlPkAd6er4OxzDRS
+         LkKmMeWPBP/mn9lAA+rLhaHbonsRdar4fPLlrMokgzU+uJvomvnZiVcgSczeZqtYTV
+         aw0wqzYnBajRmlJMzL0lo/BCY1TwEqn5wwNp/aH98TxCVPflZNxhZfBNhas/2TVk8a
+         8i7N2wC8fzgNxMF8YuL7oDsXbovDp/qZ2XdXFwnJm+jB/01ZY/AFixQ71zLm8TiLks
+         QAy0baMq/gv3A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C943761E3F;
+        Tue, 26 Jan 2021 19:07:08 +0000 (UTC)
+Subject: Re: [GIT PULL] SPI fixes for v5.11-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210126124549.055F723122@mail.kernel.org>
+References: <20210126124549.055F723122@mail.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210126124549.055F723122@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.11-rc5
+X-PR-Tracked-Commit-Id: 396cf2a46adddbf51373e16225c1d25254310046
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c7230a48ed5ebdda54867816303e974c154841d1
+Message-Id: <161168802873.27611.13244511493591585866.pr-tracker-bot@kernel.org>
+Date:   Tue, 26 Jan 2021 19:07:08 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/26/21 8:23 AM, Amy Parker wrote:
-> Kernel development newcomer here. I've begun creating a concept for a
-> new filesystem, and ideally once it's completed, rich, and stable I'd
-> try to get it into the kernel.
+The pull request you sent on Tue, 26 Jan 2021 12:44:56 +0000:
 
-Ideally you would not wait until it's complete, rich, and stable.
-RERO: release early, release often
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.11-rc5
 
-> What would be the process for this? I'd assume a patch sequence, but
-> they'd all be dependent on each other, and sending in tons of
-> dependent patches doesn't sound like a great idea. I've seen requests
-> for pulls, but since I'm new here I don't really know what to do.
-> 
-> Thank you for guidance!
-> 
-> Best regards,
-> Amy Parker
-> she/her/hers
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c7230a48ed5ebdda54867816303e974c154841d1
+
+Thank you!
 
 -- 
-~Randy
-netiquette: https://people.kernel.org/tglx/notes-about-netiquette
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
