@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68514303DEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C73E4303DB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 13:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404253AbhAZM7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 07:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S2391550AbhAZMwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 07:52:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404043AbhAZMuD (ORCPT
+        with ESMTP id S2404099AbhAZMuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 26 Jan 2021 07:50:03 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B4FC08EB27
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:52 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id 7so16324116wrz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:52 -0800 (PST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2426FC08EB2A
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:54 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id p15so9657616wrq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 26 Jan 2021 04:47:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KhBTgPPE+CNVhO1Y8qQbvF45hvKHKoqMW4XtGytDEOs=;
-        b=cfwbVsKfOtrkKii2UrrmoX+t6KB5CDu+uAzLKYjRtQcEBbqL435TuCTuR0tDsfQf9q
-         OFNFb0dcFT3Nj31cZ8dYKPkBktH/cvmzq6XTK3BiGAd8uBbbSEh3rDiPsC9RKyv3l7SQ
-         4BnPjpapNAstilkpKahZfuvrj+bZMUjaPcRCkUNreZ5oTxQ0UzzMWjznb74RPohoGxt6
-         UdQNhKDgFdIawrA1MX1txF++KP6FucsTnQWvnOlFlBHGngQh8+HkSz9iLGSdMWNmGnqN
-         q2aJkdp12tgk1lcR3iiLAouxmIsPkyGtXMMFJHQyxwih8pL1cZ4WP2tZ1lshlUmsrYlK
-         KjLg==
+        bh=9/3ugDjDRvHTQ/02f6IlRMQWKsjtDgmsBi/8dZ2CLI4=;
+        b=EQegMAgrLM+Vr8PO8VzM7X3XUCOndiJh4RMraOt81gPr7MwY3n9rPF7FSh4Du93Lz3
+         Rx4WQ+umSynWAJhTevwqFS3Mv+Sca2TGkcTknt3N0smXTkDzDYeIY044JrTgHbrrmIAg
+         +V41G2CEe0nxpS4NcOezKqgHhsvb80vmTRe28HIzCgNcHfvMn22F/YOzU8NvA1+ov7Y/
+         lwuLuOr/kgvzbd0CuI1zZSx55iomagSI7Ro6XoA8nLuSC8LOc0sugmRvrDLS/7kwbE2e
+         evgXPM2lyg67gnAHc1msOez/krfP2VJ90ATYy/e4RWt1tz7FoEGlu5R9yUxcg6xjKrVY
+         DP2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KhBTgPPE+CNVhO1Y8qQbvF45hvKHKoqMW4XtGytDEOs=;
-        b=UsKDiSiwa1giN+G+UQfqkoVTQsOyDG4TSFvfxVpkZhnkptUaVa10LNR1M7+hrtHBMj
-         ibA//QPGYLJ7p5+V566a8i6/AWpZOa+k+HB/0OxKifAUf82pjfc7RfuEhlwc8/TJC1+m
-         1+SmzhMExGEPf9HP0Z1gFYgsMQwSCAeoCypAH4Gul+BgEp3K9Lh0/RUGe8mh9fw49zFu
-         +SWlBIDq7+qoYWUdV1vl4uAWZzpAX3wen+62DHzl7BRPCMrIz6OSUi+TCLrQLXEL2vHZ
-         67vVIZs7lBZICgOSFDeHRX9pKgFRYdLHjcCi6rhpZLIu8V0kcwwVcnTBEMue/cYZMhqP
-         FShA==
-X-Gm-Message-State: AOAM5310+nQTnKv7b2nb93KtstaexTJatTHdk7PYWi3T+6NQwIj3L6QJ
-        NVl7o5s7BisvZ1Hadsw7h4RvUR0S9rWPCZbW
-X-Google-Smtp-Source: ABdhPJwxtpN3OCMIXfq63j1dD0WyBcmrYv3dGBVioIP73N0G/bUoqDHuRDPVnuAEsTGDpRWGjGQASQ==
-X-Received: by 2002:a5d:4243:: with SMTP id s3mr5900388wrr.31.1611665271660;
-        Tue, 26 Jan 2021 04:47:51 -0800 (PST)
+        bh=9/3ugDjDRvHTQ/02f6IlRMQWKsjtDgmsBi/8dZ2CLI4=;
+        b=L1rUd0oSlstRusIsGMyIjKCDUbrQbfr6oTe2jHDleoe8xM+UNO3zR7G+WYWeTUYf1c
+         HX2x0C/ZHyhRHfNS+XN6oeUJMCv+L6E6jGB9MSNXnrBQPa3p3C/aqtqjc23tRh6WxCEC
+         mTr/BlnKcU3hTHM+1cdZUYM5E8wRml0FoDolXjBjBkMrX/8yk55SfV71GW1IjkE50JHb
+         2QDoDdDZGfyN+vlL9ISOCXYR74ypyG51eeOnkkXu0F1e+7FtE5tXGJC3b4F6RDMd2T2r
+         /XS+7N5utHsH6iHf8bQnfX0tiwdpMlcW5wue+9pzF9meFdacojYP0aJUp2NUFK5DzWzM
+         we3A==
+X-Gm-Message-State: AOAM531EB6dcDnqVJZiatuUGrqvOZJQD7r3eZxzeGjwGj7n557p/qcag
+        MtECS6R7WXPNJ4hndXgjinWrFQ==
+X-Google-Smtp-Source: ABdhPJyri6xa2WTEf8CycWDv4AHunjQCgUCllTOhxa8Z9mAIhGPlgIVDAh2Lzz/ZrrtFPDpswpzomA==
+X-Received: by 2002:a5d:4d86:: with SMTP id b6mr5909547wru.152.1611665272896;
+        Tue, 26 Jan 2021 04:47:52 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.50
+        by smtp.gmail.com with ESMTPSA id p15sm26942190wrt.15.2021.01.26.04.47.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 04:47:51 -0800 (PST)
+        Tue, 26 Jan 2021 04:47:52 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 14/20] RDMA/hw/hfi1/sdma: Fix misnaming of 'sdma_send_txlist()'s 'count_out' param
-Date:   Tue, 26 Jan 2021 12:47:26 +0000
-Message-Id: <20210126124732.3320971-15-lee.jones@linaro.org>
+Subject: [PATCH 15/20] RDMA/hw/hfi1/tid_rdma: Fix a plethora of kernel-doc issues
+Date:   Tue, 26 Jan 2021 12:47:27 +0000
+Message-Id: <20210126124732.3320971-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210126124732.3320971-1-lee.jones@linaro.org>
 References: <20210126124732.3320971-1-lee.jones@linaro.org>
@@ -69,8 +69,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/infiniband/hw/hfi1/sdma.c:2476: warning: Function parameter or member 'count_out' not described in 'sdma_send_txlist'
- drivers/infiniband/hw/hfi1/sdma.c:2476: warning: Excess function parameter 'count' description in 'sdma_send_txlist'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:321: warning: Function parameter or member 'rdi' not described in 'qp_to_rcd'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:321: warning: Function parameter or member 'qp' not described in 'qp_to_rcd'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:505: warning: Function parameter or member 'queue' not described in 'kernel_tid_waiters'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:536: warning: Function parameter or member 'rcd' not described in 'dequeue_tid_waiter'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:536: warning: Function parameter or member 'queue' not described in 'dequeue_tid_waiter'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:536: warning: Function parameter or member 'qp' not described in 'dequeue_tid_waiter'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:562: warning: Function parameter or member 'queue' not described in 'queue_qp_for_tid_wait'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:607: warning: Function parameter or member 'qp' not described in 'tid_rdma_schedule_tid_wakeup'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:639: warning: Function parameter or member 'work' not described in 'tid_rdma_trigger_resume'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:666: warning: Function parameter or member 'qp' not described in '_tid_rdma_flush_wait'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:666: warning: Function parameter or member 'queue' not described in '_tid_rdma_flush_wait'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:713: warning: Function parameter or member 'rcd' not described in 'kern_reserve_flow'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:713: warning: Function parameter or member 'last' not described in 'kern_reserve_flow'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:879: warning: Function parameter or member 'flow' not described in 'tid_rdma_find_phys_blocks_4k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:879: warning: Function parameter or member 'pages' not described in 'tid_rdma_find_phys_blocks_4k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:879: warning: Function parameter or member 'npages' not described in 'tid_rdma_find_phys_blocks_4k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:879: warning: Function parameter or member 'list' not described in 'tid_rdma_find_phys_blocks_4k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:972: warning: Function parameter or member 'list' not described in 'tid_flush_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:972: warning: Function parameter or member 'idx' not described in 'tid_flush_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:972: warning: Function parameter or member 'pages' not described in 'tid_flush_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:972: warning: Function parameter or member 'sets' not described in 'tid_flush_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1017: warning: Function parameter or member 'flow' not described in 'tid_rdma_find_phys_blocks_8k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1017: warning: Function parameter or member 'pages' not described in 'tid_rdma_find_phys_blocks_8k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1017: warning: Function parameter or member 'npages' not described in 'tid_rdma_find_phys_blocks_8k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1017: warning: Function parameter or member 'list' not described in 'tid_rdma_find_phys_blocks_8k'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1083: warning: Function parameter or member 'flow' not described in 'kern_find_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1083: warning: Function parameter or member 'pages' not described in 'kern_find_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1083: warning: Function parameter or member 'ss' not described in 'kern_find_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1083: warning: Function parameter or member 'last' not described in 'kern_find_pages'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:1604: warning: Function parameter or member 'req' not described in 'hfi1_kern_exp_rcv_free_flows'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:3458: warning: Function parameter or member 'qp' not described in 'hfi1_tid_write_alloc_resources'
+ drivers/infiniband/hw/hfi1/tid_rdma.c:3458: warning: Function parameter or member 'intr_ctx' not described in 'hfi1_tid_write_alloc_resources'
 
 Cc: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
@@ -79,30 +109,158 @@ Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/infiniband/hw/hfi1/sdma.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/hfi1/tid_rdma.c | 47 +++++++++++++++------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
-index 27ec2851160ae..46b5290b2839d 100644
---- a/drivers/infiniband/hw/hfi1/sdma.c
-+++ b/drivers/infiniband/hw/hfi1/sdma.c
-@@ -2448,11 +2448,11 @@ int sdma_send_txreq(struct sdma_engine *sde,
-  * @sde: sdma engine to use
-  * @wait: SE wait structure to use when full (may be NULL)
-  * @tx_list: list of sdma_txreqs to submit
-- * @count: pointer to a u16 which, after return will contain the total number of
-- *         sdma_txreqs removed from the tx_list. This will include sdma_txreqs
-- *         whose SDMA descriptors are submitted to the ring and the sdma_txreqs
-- *         which are added to SDMA engine flush list if the SDMA engine state is
-- *         not running.
-+ * @count_out: pointer to a u16 which, after return will contain the total number of
-+ *             sdma_txreqs removed from the tx_list. This will include sdma_txreqs
-+ *             whose SDMA descriptors are submitted to the ring and the sdma_txreqs
-+ *             which are added to SDMA engine flush list if the SDMA engine state is
-+ *             not running.
+diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c b/drivers/infiniband/hw/hfi1/tid_rdma.c
+index 92aa2a9b3b5ac..0b1f9e4d038b0 100644
+--- a/drivers/infiniband/hw/hfi1/tid_rdma.c
++++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+@@ -309,7 +309,8 @@ int hfi1_kern_exp_rcv_init(struct hfi1_ctxtdata *rcd, int reinit)
+ 
+ /**
+  * qp_to_rcd - determine the receive context used by a qp
+- * @qp - the qp
++ * @rdi: rvt dev struct
++ * @qp: the qp
   *
-  * The call submits the list into the ring.
+  * This routine returns the receive context associated
+  * with a a qp's qpn.
+@@ -484,6 +485,7 @@ static struct rvt_qp *first_qp(struct hfi1_ctxtdata *rcd,
+ /**
+  * kernel_tid_waiters - determine rcd wait
+  * @rcd: the receive context
++ * @queue: the queue to operate on
+  * @qp: the head of the qp being processed
   *
+  * This routine will return false IFF
+@@ -517,7 +519,9 @@ static bool kernel_tid_waiters(struct hfi1_ctxtdata *rcd,
+ 
+ /**
+  * dequeue_tid_waiter - dequeue the qp from the list
+- * @qp - the qp to remove the wait list
++ * @rcd: the receive context
++ * @queue: the queue to operate on
++ * @qp: the qp to remove the wait list
+  *
+  * This routine removes the indicated qp from the
+  * wait list if it is there.
+@@ -549,6 +553,7 @@ static void dequeue_tid_waiter(struct hfi1_ctxtdata *rcd,
+ /**
+  * queue_qp_for_tid_wait - suspend QP on tid space
+  * @rcd: the receive context
++ * @queue: the queue to operate on
+  * @qp: the qp
+  *
+  * The qp is inserted at the tail of the rcd
+@@ -593,7 +598,7 @@ static void __trigger_tid_waiter(struct rvt_qp *qp)
+ 
+ /**
+  * tid_rdma_schedule_tid_wakeup - schedule wakeup for a qp
+- * @qp - the qp
++ * @qp: the qp
+  *
+  * trigger a schedule or a waiting qp in a deadlock
+  * safe manner.  The qp reference is held prior
+@@ -630,7 +635,7 @@ static void tid_rdma_schedule_tid_wakeup(struct rvt_qp *qp)
+ 
+ /**
+  * tid_rdma_trigger_resume - field a trigger work request
+- * @work - the work item
++ * @work: the work item
+  *
+  * Complete the off qp trigger processing by directly
+  * calling the progress routine.
+@@ -654,7 +659,7 @@ static void tid_rdma_trigger_resume(struct work_struct *work)
+ 	rvt_put_qp(qp);
+ }
+ 
+-/**
++/*
+  * tid_rdma_flush_wait - unwind any tid space wait
+  *
+  * This is called when resetting a qp to
+@@ -693,8 +698,8 @@ void hfi1_tid_rdma_flush_wait(struct rvt_qp *qp)
+ /* Flow functions */
+ /**
+  * kern_reserve_flow - allocate a hardware flow
+- * @rcd - the context to use for allocation
+- * @last - the index of the preferred flow. Use RXE_NUM_TID_FLOWS to
++ * @rcd: the context to use for allocation
++ * @last: the index of the preferred flow. Use RXE_NUM_TID_FLOWS to
+  *         signify "don't care".
+  *
+  * Use a bit mask based allocation to reserve a hardware
+@@ -860,9 +865,10 @@ static u8 trdma_pset_order(struct tid_rdma_pageset *s)
+ 
+ /**
+  * tid_rdma_find_phys_blocks_4k - get groups base on mr info
+- * @npages - number of pages
+- * @pages - pointer to an array of page structs
+- * @list - page set array to return
++ * @flow: overall info for a TID RDMA segment
++ * @pages: pointer to an array of page structs
++ * @npages: number of pages
++ * @list: page set array to return
+  *
+  * This routine returns the number of groups associated with
+  * the current sge information.  This implementation is based
+@@ -949,10 +955,10 @@ static u32 tid_rdma_find_phys_blocks_4k(struct tid_rdma_flow *flow,
+ 
+ /**
+  * tid_flush_pages - dump out pages into pagesets
+- * @list - list of pagesets
+- * @idx - pointer to current page index
+- * @pages - number of pages to dump
+- * @sets - current number of pagesset
++ * @list: list of pagesets
++ * @idx: pointer to current page index
++ * @pages: number of pages to dump
++ * @sets: current number of pagesset
+  *
+  * This routine flushes out accumuated pages.
+  *
+@@ -990,9 +996,10 @@ static u32 tid_flush_pages(struct tid_rdma_pageset *list,
+ 
+ /**
+  * tid_rdma_find_phys_blocks_8k - get groups base on mr info
+- * @pages - pointer to an array of page structs
+- * @npages - number of pages
+- * @list - page set array to return
++ * @flow: overall info for a TID RDMA segment
++ * @pages: pointer to an array of page structs
++ * @npages: number of pages
++ * @list: page set array to return
+  *
+  * This routine parses an array of pages to compute pagesets
+  * in an 8k compatible way.
+@@ -1064,7 +1071,7 @@ static u32 tid_rdma_find_phys_blocks_8k(struct tid_rdma_flow *flow,
+ 	return sets;
+ }
+ 
+-/**
++/*
+  * Find pages for one segment of a sge array represented by @ss. The function
+  * does not check the sge, the sge must have been checked for alignment with a
+  * prior call to hfi1_kern_trdma_ok. Other sge checking is done as part of
+@@ -1598,7 +1605,7 @@ void hfi1_kern_exp_rcv_clear_all(struct tid_rdma_request *req)
+ 
+ /**
+  * hfi1_kern_exp_rcv_free_flows - free priviously allocated flow information
+- * @req - the tid rdma request to be cleaned
++ * @req: the tid rdma request to be cleaned
+  */
+ static void hfi1_kern_exp_rcv_free_flows(struct tid_rdma_request *req)
+ {
+@@ -3435,7 +3442,7 @@ static u32 hfi1_compute_tid_rnr_timeout(struct rvt_qp *qp, u32 to_seg)
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * Central place for resource allocation at TID write responder,
+  * is called from write_req and write_data interrupt handlers as
+  * well as the send thread when a queued QP is scheduled for
 -- 
 2.25.1
 
