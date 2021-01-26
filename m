@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D769303B83
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C82E303B86
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 12:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392299AbhAZLXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 06:23:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38046 "EHLO mx2.suse.de"
+        id S2392161AbhAZLX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 06:23:59 -0500
+Received: from mga07.intel.com ([134.134.136.100]:43131 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390527AbhAZIxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:53:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611651167; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hAwcZaaALzsM4ZhpVy8/22ZJ6aCFgMiw425G+gf8mFY=;
-        b=UfJY4QRP0UQwryv2Z3vPNZ5WTKsvVz4kDKv/IvWNLWMDXOZMdLYfvVsENYAb4DgsdIBcYp
-        Uv0LClvObYF0xlidjzvSrj95GdJSdj4RT7jibXBG7EfN3TJ18rcTdpxCTR/SdJHUUChhmf
-        ulD8FK4v6noJdjRbH9LaD6IM3wyc5bY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 49AF9AC4F;
-        Tue, 26 Jan 2021 08:52:47 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 09:52:43 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>, guro@fb.com,
-        shakeelb@google.com, Johannes Weiner <hannes@cmpxchg.org>,
-        aneesh.kumar@linux.ibm.com, Jann Horn <jannh@google.com>
-Subject: Re: [RFC PATCH v0] mm/slub: Let number of online CPUs determine the
- slub page order
-Message-ID: <20210126085243.GE827@dhcp22.suse.cz>
-References: <20201118082759.1413056-1-bharata@linux.ibm.com>
- <CAKfTPtA_JgMf_+zdFbcb_V9rM7JBWNPjAz9irgwFj7Rou=xzZg@mail.gmail.com>
- <20210121053003.GB2587010@in.ibm.com>
- <alpine.DEB.2.22.394.2101210959060.100764@www.lameter.com>
- <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7fb9425-9a62-c7b8-604d-5828d7e6b1da@suse.cz>
+        id S1728161AbhAZIzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:55:43 -0500
+IronPort-SDR: KKL/ZWufeUk/aISqYHmG5FDkdh3TApN0Fpde8RGFVvUxvqSGWeJg5nq1Csuexc1lDb2tzYFPuv
+ ibUQrdI+7yZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="243950321"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="243950321"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:54:53 -0800
+IronPort-SDR: HiSh2Eab8nbapDkJt/yoex7HLrUMn5c6fcYl8n6fDvfcicaBSFH5j4xuk/qLprrEo+P/BqLUc8
+ LTbakaIISQ5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="393680509"
+Received: from glass.png.intel.com ([10.158.65.51])
+  by orsmga007.jf.intel.com with ESMTP; 26 Jan 2021 00:54:49 -0800
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH net-next 1/1] stmmac: intel: Add ADL-S 1Gbps PCI IDs
+Date:   Tue, 26 Jan 2021 16:58:32 +0800
+Message-Id: <20210126085832.3814-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 21-01-21 19:19:21, Vlastimil Babka wrote:
-[...]
-> We could also start questioning the very assumption that number of cpus should
-> affect slab page size in the first place. Should it? After all, each CPU will
-> have one or more slab pages privately cached, as we discuss in the other
-> thread... So why make the slab pages also larger?
+From: "Wong, Vee Khee" <vee.khee.wong@intel.com>
 
-I do agree. What is the acutal justification for this scaling?
-        /*
-         * Attempt to find best configuration for a slab. This
-         * works by first attempting to generate a layout with
-         * the best configuration and backing off gradually.
-         *
-         * First we increase the acceptable waste in a slab. Then
-         * we reduce the minimum objects required in a slab.
-         */
+Added PCI IDs for both Ethernet TSN Controllers on the ADL-S.
 
-doesn't speak about CPUs.  9b2cd506e5f2 ("slub: Calculate min_objects
-based on number of processors.") does talk about hackbench "This has
-been shown to address the performance issues in hackbench on 16p etc."
-but it doesn't give any more details to tell actually _why_ that works.
+Also, skip SerDes programming sequences as these are being carried out
+at the BIOS level for ADL-S.
 
-This thread shows that this is still somehow related to performance but
-the real reason is not clear. I believe we should be focusing on the
-actual reasons for the performance impact than playing with some fancy
-math and tuning for a benchmark on a particular machine which doesn't
-work for others due to subtle initialization timing issues.
+Signed-off-by: Wong, Vee Khee <vee.khee.wong@intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Fundamentally why should higher number of CPUs imply the size of slab in
-the first place?
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 9a6a519426a0..9c272a241136 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -457,6 +457,21 @@ static struct stmmac_pci_info tgl_sgmii1g_info = {
+ 	.setup = tgl_sgmii_data,
+ };
+ 
++static int adls_sgmii_data(struct pci_dev *pdev,
++			   struct plat_stmmacenet_data *plat)
++{
++	plat->bus_id = 1;
++	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
++
++	/* SerDes power up and power down are done in BIOS for ADL */
++
++	return tgl_common_data(pdev, plat);
++}
++
++static struct stmmac_pci_info adls_sgmii1g_info = {
++	.setup = adls_sgmii_data,
++};
++
+ static const struct stmmac_pci_func_data galileo_stmmac_func_data[] = {
+ 	{
+ 		.func = 6,
+@@ -724,6 +739,8 @@ static SIMPLE_DEV_PM_OPS(intel_eth_pm_ops, intel_eth_pci_suspend,
+ #define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_0_ID		0x43ac
+ #define PCI_DEVICE_ID_INTEL_TGLH_SGMII1G_1_ID		0x43a2
+ #define PCI_DEVICE_ID_INTEL_TGL_SGMII1G_ID		0xa0ac
++#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_0_ID		0x7aac
++#define PCI_DEVICE_ID_INTEL_ADLS_SGMII1G_1_ID		0x7aad
+ 
+ static const struct pci_device_id intel_eth_pci_id_table[] = {
+ 	{ PCI_DEVICE_DATA(INTEL, QUARK_ID, &quark_info) },
+@@ -739,6 +756,8 @@ static const struct pci_device_id intel_eth_pci_id_table[] = {
+ 	{ PCI_DEVICE_DATA(INTEL, TGL_SGMII1G_ID, &tgl_sgmii1g_info) },
+ 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_0_ID, &tgl_sgmii1g_info) },
+ 	{ PCI_DEVICE_DATA(INTEL, TGLH_SGMII1G_1_ID, &tgl_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_0_ID, &adls_sgmii1g_info) },
++	{ PCI_DEVICE_DATA(INTEL, ADLS_SGMII1G_1_ID, &adls_sgmii1g_info) },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(pci, intel_eth_pci_id_table);
 -- 
-Michal Hocko
-SUSE Labs
+2.17.0
+
