@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4E0303A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E367303A6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 26 Jan 2021 11:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404185AbhAZKf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 26 Jan 2021 05:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730729AbhAZBpG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:45:06 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8388C061223
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:37:28 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id q8so20596358lfm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 25 Jan 2021 17:37:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2onhwU3NGN48TGwEtG+WOFx1Rxu7aFi2BaPq35If454=;
-        b=OgSkIcCVpKTCPe6BSISGgqz9yOi2y3GJmOUJXtcagbsb6WDC3W+d7abxlHW5e7pg3K
-         lH+Fryns/Y/2q8eDt+EmH2DC9bVAFgSQmWDm9Hckuwp2Qwk2xrlux8KpwZqya+Y5EPnl
-         1oniMdmPn4KmfLcy5kMhwVHSvSBJG0UuVc/U9HEqcrdkS3yh9TDDGpAEvucKAYobw9CH
-         vGBRvzo57J7KkJGwSX9f9ZRNrvf/SRJEslFcYQE7oIimrCrmoBdaHK2LGkSVMsrfZPK5
-         Y0VohXtDNKya2ayzxUtYHFghYpk1hzLXaPxehQ7ZJnMnTF5IRaDWVeEAsKDrXG3yNW1H
-         QGnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2onhwU3NGN48TGwEtG+WOFx1Rxu7aFi2BaPq35If454=;
-        b=CL0ays6dRyvZtkePXx50JFEvFs/63pB0kyPHB+Vdg3GLuvY+kBxHGtrXZSx6ZJlp7O
-         SRg8yjf5KwMGnlkvm5KB+hWfasnN9J6Pphp/sZ3MHe1U0kplhT1t10Qw7IA5MfzIz99a
-         XTpakxL6SsmWDvfO9AElpjjVJPwM8BKok6t76foe6FJrMvlk78HDbOVUFIznesESqHF7
-         szJwZWzZRok2uJYPQr0sd6y8fyPgKP4Q/keCAgaRMujsfglDLqewyS+WHhEZ0hEUshCQ
-         P9HPYERjYp7oFoW2U1wnUczfO1YitmS1xfkX3e2boU3KecwtKn0GjvcWM9K+5PgrzSzI
-         Lzsg==
-X-Gm-Message-State: AOAM533JlubNhWHh+CHG9d2saq5ytnMm1u9Br6i4RnO2rPB9VLiQfHYB
-        cNFb/weAYJKJ4D/oHACP5AI=
-X-Google-Smtp-Source: ABdhPJxdKuglsvM83wEfg9aBbS9iKvJFZPcCLSjSZKg9eZz7iWnL+AXotJP82ozSrjGADD+w7WeFaQ==
-X-Received: by 2002:ac2:5e81:: with SMTP id b1mr1503396lfq.473.1611625047312;
-        Mon, 25 Jan 2021 17:37:27 -0800 (PST)
-Received: from localhost ([2a02:a310:53e:fc00:4aa4:72ff:fea0:3782])
-        by smtp.gmail.com with ESMTPSA id o4sm755532lfo.231.2021.01.25.17.37.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 17:37:26 -0800 (PST)
-From:   Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Micah Morton <mortonm@chromium.org>,
-        Gao Xiang <xiang@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Thomas Cedeno <thomascedeno@google.com>
-Subject: [PATCH 2/2] groups: Simplify struct group_info allocation
-Date:   Tue, 26 Jan 2021 02:37:16 +0100
-Message-Id: <ba9ba5beea9a44b7196c41a0d9528abd5f20dd2e.1611620846.git.hubert.jasudowicz@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <155995eed35c3c1bdcc56e69d8997c8e4c46740a.1611620846.git.hubert.jasudowicz@gmail.com>
-References: <155995eed35c3c1bdcc56e69d8997c8e4c46740a.1611620846.git.hubert.jasudowicz@gmail.com>
+        id S2404109AbhAZKec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 26 Jan 2021 05:34:32 -0500
+Received: from mga12.intel.com ([192.55.52.136]:15030 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730961AbhAZBmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:42:54 -0500
+IronPort-SDR: 2hZBl9ZYwJtE3YDDK3uIkdgpd0rLjiXSBbbgTtUntpC92imeLN0rTvuY/znC9UYluPhNbu7BSb
+ x5l/zhyULiew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="159010474"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="159010474"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 17:42:01 -0800
+IronPort-SDR: 5MlRWDw70QwTghgTgw6xLgpclTJUgcqtcmx9Wwwl0rkmGHRqKJTpq8D0FsnxmYyFfdT+4MbYJA
+ QTZnQA9YnNaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="429512742"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga001.jf.intel.com with ESMTP; 25 Jan 2021 17:41:58 -0800
+Date:   Tue, 26 Jan 2021 09:37:40 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     gregkh@linuxfoundation.org, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH v9 1/2] uio: uio_dfl: add userspace i/o driver for DFL bus
+Message-ID: <20210126013740.GA3907@yilunxu-OptiPlex-7050>
+References: <1611564563-9665-1-git-send-email-yilun.xu@intel.com>
+ <1611564563-9665-2-git-send-email-yilun.xu@intel.com>
+ <e9bb1ff8-f630-f1a3-985c-7e51369a733f@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9bb1ff8-f630-f1a3-985c-7e51369a733f@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combine kmalloc and vmalloc into a single call.
-Use struct_size macro instead of direct size calculation.
+On Mon, Jan 25, 2021 at 11:00:38AM -0800, Tom Rix wrote:
+> 
+> On 1/25/21 12:49 AM, Xu Yilun wrote:
+> > This patch supports the DFL drivers be written in userspace. This is
+> > realized by exposing the userspace I/O device interfaces.
+> >
+> > The driver now only binds the ether group feature, which has no irq. So
+> > the irq support is not implemented yet.
+> >
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > ---
+> > v9: switch to add a uio driver in drivers/uio
+> > ---
+> >  drivers/uio/Kconfig   | 13 ++++++++++
+> >  drivers/uio/Makefile  |  1 +
+> >  drivers/uio/uio_dfl.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> 
+> You should add this to the MAINTAINERS file.
 
-Signed-off-by: Hubert Jasudowicz <hubert.jasudowicz@gmail.com>
----
- kernel/groups.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+OK. I could add recored the file under "FPGA DFL DRIVERS"
 
-diff --git a/kernel/groups.c b/kernel/groups.c
-index fe7e6385530e..787b381c7c00 100644
---- a/kernel/groups.c
-+++ b/kernel/groups.c
-@@ -15,12 +15,7 @@
- struct group_info *groups_alloc(int gidsetsize)
- {
- 	struct group_info *gi;
--	unsigned int len;
--
--	len = sizeof(struct group_info) + sizeof(kgid_t) * gidsetsize;
--	gi = kmalloc(len, GFP_KERNEL_ACCOUNT|__GFP_NOWARN|__GFP_NORETRY);
--	if (!gi)
--		gi = __vmalloc(len, GFP_KERNEL_ACCOUNT);
-+	gi = kvmalloc(struct_size(gi, gid, gidsetsize), GFP_KERNEL_ACCOUNT);
- 	if (!gi)
- 		return NULL;
- 
--- 
-2.30.0
+> 
+> >  3 files changed, 80 insertions(+)
+> >  create mode 100644 drivers/uio/uio_dfl.c
+> >
+> > diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+> > index 202ee81..44778f8 100644
+> > --- a/drivers/uio/Kconfig
+> > +++ b/drivers/uio/Kconfig
+> > @@ -165,4 +165,17 @@ config UIO_HV_GENERIC
+> >  	  to network and storage devices from userspace.
+> >  
+> >  	  If you compile this as a module, it will be called uio_hv_generic.
+> > +
+> > +config UIO_DFL
+> > +	tristate "Generic driver for DFL bus"
+> 
+> The term 'DFL' will be unknown to folks in drivers/uio
+> 
+> I think it would be better if DFL was always prefixed 'FPGA DFL'
 
+The bus is named as "DFL bus", how about we add the full name like the
+following help message.
+
+  tristate "Generic driver for DFL (Device Feature List) bus"
+
+> 
+> > +	depends on FPGA_DFL
+> > +	help
+> > +	  Generic DFL (Device Feature List) driver for Userspace I/O devices.
+> > +	  It is useful to provide direct access to DFL devices from userspace.
+> > +	  A sample userspace application using this driver is available for
+> > +	  download in a git repository:
+> > +
+> > +	    git clone https://github.com/OPAE/opae-sdk.git
+> > +
+> > +	  If you compile this as a module, it will be called uio_dfl.
+> 
+> opae-sdk is pretty large and uncovered in the Documentation/fpga/dfl.rst.
+> 
+> Where in opae-sdk is this example ?
+
+You can find the example in tools/libopaeuio/. I could add the path in
+help message.
+
+Thanks,
+Yilun
+
+> 
+> If you can point me at the example, I will turn it into a selftest.
